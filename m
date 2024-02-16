@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-68870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7184858125
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:34:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5708A85812A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:34:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7653B1F280C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:34:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C30F1C20AE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:34:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35072134CD2;
-	Fri, 16 Feb 2024 15:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4521350E3;
+	Fri, 16 Feb 2024 15:25:59 +0000 (UTC)
 Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CDF5134CC6;
-	Fri, 16 Feb 2024 15:25:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A91A1350C0;
+	Fri, 16 Feb 2024 15:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708097140; cv=none; b=t2zA4/jMj8puWrC3OGoO1OFJYJsBk0mD1W6RJXo5G3KFxpC/zLVH7kju9ZWu6ysF8HmeKsEf6XFj4AhjiUwrhakNwuf1eRV7y8ODSPNbeZe2trAfkOuUcku6aRnieOWkHSlsmBlDFyczuR6WIzXvUbPiUUiBf3fvVlu/KZRDNyk=
+	t=1708097158; cv=none; b=r9TxpsZv6NM//pV0l6/TMOBkBwh6iPopN7zwIhusO+a48woCOo9Ny4LF2pajK6CWnuNnbC1zei8iKT6bck43gEuK0vKkD2YC6rPZHB5BCXCpJlo5+nkCjQLG5pq9o7CYH5KrmZrsLdSff08bLws+WS40+XRXQej9sq6AU9C5yY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708097140; c=relaxed/simple;
-	bh=yBLUhpeAUzPAqo16EKBu9cOxlJA9biOKiyVYJXyBxSE=;
+	s=arc-20240116; t=1708097158; c=relaxed/simple;
+	bh=A2BcJYDl5tONmMZ4A16bYcljQ/ecPCjaz0WFAl8YME4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WYiDEb0NJ7k2hzI1IYnGOlgul1ZpEHgWgqJRA+c4X+FKQa0SX4XQhu18u07Si4vDgsdhydDq9x0JRahOdJ158SkpDs1qljeocAC75iKKAKbD/yZ8u5HV137C5jrynUPPdWIkA+dULhHBdSQgkj5oCirTIamebsZaM7t3UVbx2bY=
+	 MIME-Version; b=FD2PF2EWxAzg+tHINHuVfuWOe609eqUP6fKwfp43zsr6Ees1rKxiVMU/WSKelBsJbqd/FpAhyg92AE+TYOfv5svO4t3YR+xroEfsE58D9wfl7VXD/3rrYHPZl8VO3V8eKz5yxHNEaIe67beUsOi3wWPiGK0dnKpObR+7qapwyZc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TbwHh2Gb4z9xsyV;
-	Fri, 16 Feb 2024 23:06:24 +0800 (CST)
+	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4TbwJ31Gg8z9xtVJ;
+	Fri, 16 Feb 2024 23:06:43 +0800 (CST)
 Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 9E75A1405A2;
-	Fri, 16 Feb 2024 23:25:25 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 0AFDF1408C5;
+	Fri, 16 Feb 2024 23:25:42 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.48.131.30])
-	by APP2 (Coremail) with SMTP id GxC2BwAHQCRBfs9lTLSaAg--.11044S3;
-	Fri, 16 Feb 2024 16:25:24 +0100 (CET)
+	by APP2 (Coremail) with SMTP id GxC2BwAHQCRBfs9lTLSaAg--.11044S4;
+	Fri, 16 Feb 2024 16:25:41 +0100 (CET)
 From: Petr Tesarik <petrtesarik@huaweicloud.com>
 To: Dave Hansen <dave.hansen@intel.com>
 Cc: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
@@ -74,9 +74,9 @@ Cc: =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?= <petr@tesarici.cz>,
 	Roberto Sassu <roberto.sassu@huaweicloud.com>,
 	David Howells <dhowells@redhat.com>,
 	Petr Tesarik <petr.tesarik1@huawei-partners.com>
-Subject: [RFC 1/8] mpi: Introduce mpi_key_length()
-Date: Fri, 16 Feb 2024 16:24:28 +0100
-Message-Id: <20240216152435.1575-2-petrtesarik@huaweicloud.com>
+Subject: [RFC 2/8] rsa: add parser of raw format
+Date: Fri, 16 Feb 2024 16:24:29 +0100
+Message-Id: <20240216152435.1575-3-petrtesarik@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240216152435.1575-1-petrtesarik@huaweicloud.com>
 References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
@@ -88,102 +88,186 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:GxC2BwAHQCRBfs9lTLSaAg--.11044S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WrWUJFyUAr47KFWUuF4kZwb_yoW8KF4fpF
-	4Ykw45JrWkJr1SkFyfC3Z5G3W5G3WvgF1UKrZrJw17J39xCrnxWFZ7C34Yva18Gr1xAF1U
-	X3y3WFZ5Crn5ZaDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+X-CM-TRANSID:GxC2BwAHQCRBfs9lTLSaAg--.11044S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF1fXw48uFy8Wr4xKr1kGrg_yoW7Gr4fpF
+	45G3yrKrWUJFyvyF4fuw1fJr13Jw1fuw4jqFZ3J3sYywsrWr1UJw47CF4F9Fy5Gr9FyF12
+	yr4Yg3WY9r1DXaDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
 	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-	8EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
-	e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-	8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-	jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
-	kIwI1lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
-	0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-	IF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnI
-	WIevJa73UjIFyTuYvjTRMfOzDUUUU
+	Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	A2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1U
+	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+	IY04v7MxkF7I0En4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY
+	6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+	CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
+	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
+	4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
+	daVFxhVjvjDU0xZFpf9x0pRHKZLUUUUU=
 X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
 
 From: Roberto Sassu <roberto.sassu@huawei.com>
 
-Introduce the new function to get the number of bits and bytes from an MPI.
+Parse the RSA key with RAW format if the ASN.1 parser returns an error.
 
 Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 ---
- include/linux/mpi.h       |  2 ++
- lib/crypto/mpi/mpicoder.c | 33 ++++++++++++++++++++++++++-------
- 2 files changed, 28 insertions(+), 7 deletions(-)
+ crypto/rsa.c                  | 14 +++++--
+ crypto/rsa_helper.c           | 69 +++++++++++++++++++++++++++++++++++
+ include/crypto/internal/rsa.h |  6 +++
+ 3 files changed, 85 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mpi.h b/include/linux/mpi.h
-index eb0d1c1db208..a7dd4c9d8120 100644
---- a/include/linux/mpi.h
-+++ b/include/linux/mpi.h
-@@ -90,6 +90,8 @@ enum gcry_mpi_format {
- };
+diff --git a/crypto/rsa.c b/crypto/rsa.c
+index b9cd11fb7d36..a26cfda7d7c9 100644
+--- a/crypto/rsa.c
++++ b/crypto/rsa.c
+@@ -244,8 +244,11 @@ static int rsa_set_pub_key(struct crypto_akcipher *tfm, const void *key,
+ 	rsa_free_mpi_key(mpi_key);
  
- MPI mpi_read_raw_data(const void *xbuffer, size_t nbytes);
-+int mpi_key_length(const void *xbuffer, unsigned int ret_nread,
-+		   unsigned int *nbits_arg, unsigned int *nbytes_arg);
- MPI mpi_read_from_buffer(const void *buffer, unsigned *ret_nread);
- int mpi_fromstr(MPI val, const char *str);
- MPI mpi_scanval(const char *string);
-diff --git a/lib/crypto/mpi/mpicoder.c b/lib/crypto/mpi/mpicoder.c
-index 3cb6bd148fa9..92447a1c8bf9 100644
---- a/lib/crypto/mpi/mpicoder.c
-+++ b/lib/crypto/mpi/mpicoder.c
-@@ -79,22 +79,41 @@ MPI mpi_read_raw_data(const void *xbuffer, size_t nbytes)
+ 	ret = rsa_parse_pub_key(&raw_key, key, keylen);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ret = rsa_parse_pub_key_raw(&raw_key, key, keylen);
++		if (ret)
++			return ret;
++	}
+ 
+ 	mpi_key->e = mpi_read_raw_data(raw_key.e, raw_key.e_sz);
+ 	if (!mpi_key->e)
+@@ -283,8 +286,11 @@ static int rsa_set_priv_key(struct crypto_akcipher *tfm, const void *key,
+ 	rsa_free_mpi_key(mpi_key);
+ 
+ 	ret = rsa_parse_priv_key(&raw_key, key, keylen);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ret = rsa_parse_priv_key_raw(&raw_key, key, keylen);
++		if (ret)
++			return ret;
++	}
+ 
+ 	mpi_key->d = mpi_read_raw_data(raw_key.d, raw_key.d_sz);
+ 	if (!mpi_key->d)
+diff --git a/crypto/rsa_helper.c b/crypto/rsa_helper.c
+index 94266f29049c..fb9443df8f0b 100644
+--- a/crypto/rsa_helper.c
++++ b/crypto/rsa_helper.c
+@@ -9,6 +9,7 @@
+ #include <linux/export.h>
+ #include <linux/err.h>
+ #include <linux/fips.h>
++#include <linux/mpi.h>
+ #include <crypto/internal/rsa.h>
+ #include "rsapubkey.asn1.h"
+ #include "rsaprivkey.asn1.h"
+@@ -148,6 +149,32 @@ int rsa_get_qinv(void *context, size_t hdrlen, unsigned char tag,
+ 	return 0;
  }
- EXPORT_SYMBOL_GPL(mpi_read_raw_data);
  
--MPI mpi_read_from_buffer(const void *xbuffer, unsigned *ret_nread)
-+int mpi_key_length(const void *xbuffer, unsigned int ret_nread,
-+		   unsigned int *nbits_arg, unsigned int *nbytes_arg)
- {
- 	const uint8_t *buffer = xbuffer;
--	unsigned int nbits, nbytes;
--	MPI val;
-+	unsigned int nbits;
- 
--	if (*ret_nread < 2)
--		return ERR_PTR(-EINVAL);
-+	if (ret_nread < 2)
-+		return -EINVAL;
- 	nbits = buffer[0] << 8 | buffer[1];
- 
- 	if (nbits > MAX_EXTERN_MPI_BITS) {
- 		pr_info("MPI: mpi too large (%u bits)\n", nbits);
--		return ERR_PTR(-EINVAL);
-+		return -EINVAL;
- 	}
- 
--	nbytes = DIV_ROUND_UP(nbits, 8);
-+	if (nbits_arg)
-+		*nbits_arg = nbits;
-+	if (nbytes_arg)
-+		*nbytes_arg = DIV_ROUND_UP(nbits, 8);
++typedef int (*rsa_get_func)(void *, size_t, unsigned char,
++			    const void *, size_t);
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(mpi_key_length);
-+
-+MPI mpi_read_from_buffer(const void *xbuffer, unsigned int *ret_nread)
++static int rsa_parse_key_raw(struct rsa_key *rsa_key,
++			     const void *key, unsigned int key_len,
++			     rsa_get_func *func, int n_func)
 +{
-+	const uint8_t *buffer = xbuffer;
-+	unsigned int nbytes;
-+	MPI val;
-+	int ret;
++	unsigned int nbytes, len = key_len;
++	const void *key_ptr = key;
++	int ret, i;
 +
-+	ret = mpi_key_length(xbuffer, *ret_nread, NULL, &nbytes);
-+	if (ret < 0)
-+		return ERR_PTR(ret);
++	for (i = 0; i < n_func; i++) {
++		ret = mpi_key_length(key_ptr, len, NULL, &nbytes);
++		if (ret < 0)
++			return ret;
 +
- 	if (nbytes + 2 > *ret_nread) {
- 		pr_info("MPI: mpi larger than buffer nbytes=%u ret_nread=%u\n",
- 				nbytes, *ret_nread);
++		ret = func[i](rsa_key, 0, 0, key_ptr + 2, nbytes);
++		if (ret < 0)
++			return ret;
++
++		key_ptr += nbytes + 2;
++	}
++
++	return (key_ptr == key + key_len) ? 0 : -EINVAL;
++}
++
+ /**
+  * rsa_parse_pub_key() - decodes the BER encoded buffer and stores in the
+  *                       provided struct rsa_key, pointers to the raw key as is,
+@@ -166,6 +193,27 @@ int rsa_parse_pub_key(struct rsa_key *rsa_key, const void *key,
+ }
+ EXPORT_SYMBOL_GPL(rsa_parse_pub_key);
+ 
++/**
++ * rsa_parse_pub_key_raw() - parse the RAW key and store in the provided struct
++ *                           rsa_key, pointers to the raw key as is, so that
++ *                           the caller can copy it or MPI parse it, etc.
++ *
++ * @rsa_key:	struct rsa_key key representation
++ * @key:	key in RAW format
++ * @key_len:	length of key
++ *
++ * Return:	0 on success or error code in case of error
++ */
++int rsa_parse_pub_key_raw(struct rsa_key *rsa_key, const void *key,
++			  unsigned int key_len)
++{
++	rsa_get_func pub_func[] = {rsa_get_n, rsa_get_e};
++
++	return rsa_parse_key_raw(rsa_key, key, key_len,
++				 pub_func, ARRAY_SIZE(pub_func));
++}
++EXPORT_SYMBOL_GPL(rsa_parse_pub_key_raw);
++
+ /**
+  * rsa_parse_priv_key() - decodes the BER encoded buffer and stores in the
+  *                        provided struct rsa_key, pointers to the raw key
+@@ -184,3 +232,24 @@ int rsa_parse_priv_key(struct rsa_key *rsa_key, const void *key,
+ 	return asn1_ber_decoder(&rsaprivkey_decoder, rsa_key, key, key_len);
+ }
+ EXPORT_SYMBOL_GPL(rsa_parse_priv_key);
++
++/**
++ * rsa_parse_priv_key_raw() - parse the RAW key and store in the provided struct
++ *                            rsa_key, pointers to the raw key as is, so that
++ *                            the caller can copy it or MPI parse it, etc.
++ *
++ * @rsa_key:	struct rsa_key key representation
++ * @key:	key in RAW format
++ * @key_len:	length of key
++ *
++ * Return:	0 on success or error code in case of error
++ */
++int rsa_parse_priv_key_raw(struct rsa_key *rsa_key, const void *key,
++			   unsigned int key_len)
++{
++	rsa_get_func priv_func[] = {rsa_get_n, rsa_get_e, rsa_get_d};
++
++	return rsa_parse_key_raw(rsa_key, key, key_len,
++				 priv_func, ARRAY_SIZE(priv_func));
++}
++EXPORT_SYMBOL_GPL(rsa_parse_priv_key_raw);
+diff --git a/include/crypto/internal/rsa.h b/include/crypto/internal/rsa.h
+index e870133f4b77..7141e806ceea 100644
+--- a/include/crypto/internal/rsa.h
++++ b/include/crypto/internal/rsa.h
+@@ -50,8 +50,14 @@ struct rsa_key {
+ int rsa_parse_pub_key(struct rsa_key *rsa_key, const void *key,
+ 		      unsigned int key_len);
+ 
++int rsa_parse_pub_key_raw(struct rsa_key *rsa_key, const void *key,
++			  unsigned int key_len);
++
+ int rsa_parse_priv_key(struct rsa_key *rsa_key, const void *key,
+ 		       unsigned int key_len);
+ 
++int rsa_parse_priv_key_raw(struct rsa_key *rsa_key, const void *key,
++			   unsigned int key_len);
++
+ extern struct crypto_template rsa_pkcs1pad_tmpl;
+ #endif
 -- 
 2.34.1
 
