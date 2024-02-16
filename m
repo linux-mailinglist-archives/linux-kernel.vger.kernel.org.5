@@ -1,102 +1,135 @@
-Return-Path: <linux-kernel+bounces-68092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BB378575E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:16:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D70158575EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:19:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6A991F233A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:16:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E4F7283358
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 222A51401F;
-	Fri, 16 Feb 2024 06:15:51 +0000 (UTC)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88AF914003;
+	Fri, 16 Feb 2024 06:19:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HAmT4VjZ"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768A6134A9;
-	Fri, 16 Feb 2024 06:15:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D9510979;
+	Fri, 16 Feb 2024 06:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708064150; cv=none; b=oRY1RMBX75sn/5swBH3FqwORphsTilDQVtOtfo9DYgx3ESKPADhUkr1qADxOpt9GKeHlIQYSKbd1EwxJxyAIVpw3aw1efGfBXwaAVfJkuO4cxqYP+6TfeZCqsUbyP9bnpqSHU/4UogTq5FO8I6G2PIW8eh04psjG3s3El4VxAS4=
+	t=1708064378; cv=none; b=p/vasPIkjGcCvTkm/zRc4iXynM3vywwTZTVTEuTakp8CZIjcmp8VNZ2mi6DjDbgsYSF5juWz3g6WIlH1zNQvFT9W25MqA99CuoMuIA7CtjOxKsyPEg8PqnEmfEjUMiVx1zpDqoPE3D+5ps1aH5gJ95T2eF4UoY9PLMZIsviqNkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708064150; c=relaxed/simple;
-	bh=Ubc/MvalYUWkd+30i+jxBtN9hVIKtcmQjeQHCy0qO6g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ua9UQPCSkiKaf4BFcM5GdhwpYMvcuSc0Cons1RIQaJ0McrOMiamJY5V0BTvdXVHZ6iJiXaxvn9PMJdgA19WouOSD2GfZPvnGwNCGlmE2r3cS2g5wiClNJO7feUqhjYQLINdPYxaqlf7QTgiaNiiHYatSEDgnnR1+tvvjrDnfFSA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rarVh-00045P-0e; Fri, 16 Feb 2024 07:15:45 +0100
-Message-ID: <379b81ae-b95e-4a55-ab42-597c58c3fe35@leemhuis.info>
-Date: Fri, 16 Feb 2024 07:15:44 +0100
+	s=arc-20240116; t=1708064378; c=relaxed/simple;
+	bh=twDT7pQukCriu5b7GZvI8MsCbZs40QK0iZ/i8KWlgCI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hQHEnhiX8jhGLCpbXRs/n49Fzq7pxiPnJKYXmf5cI3+L8cqmVfgIFs+m0JH/YcHdOCcOrccGXl+Ad/KbilEBPu3Q/lpBoBEzRvTYEX63V2kbrfuuqvamGRLmohjclMIuGyTs82DmjyXvnJpryS1XmUpNJtA3EICmGkwBImLtcU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HAmT4VjZ; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3dbc8426f3so39189066b.1;
+        Thu, 15 Feb 2024 22:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708064375; x=1708669175; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=twDT7pQukCriu5b7GZvI8MsCbZs40QK0iZ/i8KWlgCI=;
+        b=HAmT4VjZAlyDbs6F6VN2odRNpKU47eGnCfYH1gPP74wj0HZo7LcEKe+fpE31AHSrPk
+         q02BjmfoR/ro8cERH+W+yndE+xTFnoT0VHEIVmAM944vbS4YW28Zyq3yewEdvVcCqPwA
+         4TFCL5hlHv8bP7s6KPGl+cy+1J07dslQxD4jTfN1IZFvCyU7SYH2GbJqtcxetLECPFHT
+         NK15BBRX/CB+M/LJTO3gqoyXtrejC2TpHwb5Dw4A1BFWRnmFWbaLREqz591RrxXxHkza
+         xRMO9ulNi0b0hRFZJLi/lqVSUfg2D1kbE8ar4pNN1g7mMI12klAb2pvlWE19Fh2trzbi
+         kiYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708064375; x=1708669175;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=twDT7pQukCriu5b7GZvI8MsCbZs40QK0iZ/i8KWlgCI=;
+        b=SzqR4zfOhBiMvZB1ZbE+mmXVmq7ATUztlHM+vZ3uyATgm4dPZ39IHTaLdWhrC0U5jK
+         NKAZsxGx6dfhWHYV7QDeanI8NLnnUdiNkz3G/vNaAguB8x5R7OAL/90wxuGqdXFvhTCd
+         LVjfqQt+kg3JcwzHWJWvqLkcngXvGziDZsvyugY7XGxMZVU9CQBNxETiG6BTKeMxLUEg
+         +ZQMOirdoJo0DU3FlDhAkYcjqRX9wW1DwjXG+buDV8gSJ+fl+7XGB69s608vYloTTO93
+         43PvMBKXfrcxF6WnbEpFrinVUU3LDr2KhB792Dc1F0poTAysmIpo1sr4ZSkAtS63E1Gd
+         qIDA==
+X-Forwarded-Encrypted: i=1; AJvYcCX0XW8KxH2N5HfgaDfn4TT13rsYW89ga945d6ELW+jCDabcK8rU6hOGe8kPlTPU1KI4gt3nu8p6JFlCFlPQaPq5SG/Dc/wi2OVNaJ+1DIyS9tbpOltSzFVd4id8vpNSuGEB3gSmZLfr
+X-Gm-Message-State: AOJu0YzxQCzTFpDbNfE8fdHcbIb+MfUxLFtG0MfRPUoL/FA7e4sBY1uy
+	SYNmNCgQ15dFlZZXScEIXQWyHdoptdWAC0iMghIJ+e5p1jUy/GTdFn6MG9h1EqQeTjvHIMo0/MB
+	pDyR9OzoUu69qUwByTON+Dqj3D/E=
+X-Google-Smtp-Source: AGHT+IG3UH321Wj+62YjK+x82KH4WpkZBya/9VqrCbb8iOi2xWuIQnhYdvT8EKc9ZPnqf6YyWJaQstUaRwJ/OfHfStI=
+X-Received: by 2002:a17:906:8404:b0:a3c:f7c9:5ba with SMTP id
+ n4-20020a170906840400b00a3cf7c905bamr2441015ejx.10.1708064375165; Thu, 15 Feb
+ 2024 22:19:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: =?UTF-8?Q?Re=3A_This_is_the_fourth_time_I=C3=A2ve_tried_to_find_wha?=
- =?UTF-8?Q?t_led_to_the_regression_of_outgoing_network_speed_and_each_time_I?=
- =?UTF-8?Q?_find_the_merge_commit_8c94ccc7cd691472461448f98e2372c75849406c?=
-Content-Language: en-US, de-DE
-To: Mathias Nyman <mathias.nyman@linux.intel.com>,
- Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>, niklas.neronin@linux.intel.com,
- Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
- Greg KH <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
- Linux kernel regressions list <regressions@lists.linux.dev>
-References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
- <Zb6D/5R8nNrxveAP@cae.in-ulm.de> <Zb/30qOGYAH4j6Mn@cae.in-ulm.de>
- <CABXGCsPu73D+JS9dpvzX78RktK2VOv_xT8vvuVaQ=B6zs2dMNQ@mail.gmail.com>
- <e7b96819-edf7-1f9f-7b01-e2e805c99b33@linux.intel.com>
- <CABXGCsPjW_Gr4fGBzYSkr_4tsn0fvuT72G-YJYXcb1a4kX=CQw@mail.gmail.com>
- <2d87509a-1515-520c-4b9e-bba4cd4fa2c6@linux.intel.com>
- <CABXGCsPdXqRG6v97KDGy+o59xc3ayaq3rLj267veC7YcKVp8ww@mail.gmail.com>
- <1126ed0a-bfc1-a752-1b5e-f1339d7a8aa5@linux.intel.com>
- <CABXGCsN5_O3iKDOyYxtsGTGDA6fw4962CjzXLSnOK3rscELq+Q@mail.gmail.com>
- <a026ecd8-6fba-017d-d673-0d0759a37ed8@linux.intel.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-In-Reply-To: <a026ecd8-6fba-017d-d673-0d0759a37ed8@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708064148;76dc59d5;
-X-HE-SMSGID: 1rarVh-00045P-0e
+References: <piosq44nxwlfeutperrk6d23bx564qlbfirc5xlbouyrunf24r@u6qsgqp47fz6> <tencent_B08771190400813E0CC41E36A3F540AACA07@qq.com>
+In-Reply-To: <tencent_B08771190400813E0CC41E36A3F540AACA07@qq.com>
+From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date: Fri, 16 Feb 2024 07:19:23 +0100
+Message-ID: <CAKXUXMy8WZwAqrARe-6nNhtvjSiosDD3X5aPZPfn7GXtkG8B8w@mail.gmail.com>
+Subject: Re: [PATCH] Fixed case issue with 'fault-injection' in documentation
+To: "Ran.Park" <ranpark@foxmail.com>
+Cc: ricardo@marliere.net, akinobu.mita@gmail.com, corbet@lwn.net, 
+	linux-doc@vger.kernel.org, linux-kernel-mentees@lists.linuxfoundation.org, 
+	linux-kernel@vger.kernel.org, skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[CCing the regression list, as it should be in the loop for regressions:
-https://docs.kernel.org/admin-guide/reporting-regressions.html]
+On Fri, Feb 16, 2024 at 6:29=E2=80=AFAM Ran.Park <ranpark@foxmail.com> wrot=
+e:
+>
+> Thank you for your reply. I'm sorry that I noticed this problem
+> while browsing the document. I have not seen any report about this proble=
+m
+> on lore.kernel.org or other places. Should I mention the situation elsewh=
+ere
+> and then resend the patch to mention and fix the problem.
+>
 
-On 08.02.24 16:43, Mathias Nyman wrote:
-> On 8.2.2024 12.32, Mikhail Gavrilov wrote:
->> On Thu, Feb 8, 2024 at 2:23 PM Mathias Nyman
->> <mathias.nyman@linux.intel.com> wrote:
->>>
->>> My guess is that CPU0 spends more time with interrupts disabled than
->>> other CPUs.
->>> Either because it's handling interrupts from some other hardware, or
->>> running
->>> code that disables interrupts (for example kernel code inside
->>> spin_lock_irq),
->>> and thus not able to handle network adapter interrupts at the same
->>> rate as CPU23
->>
->> Can this be fixed?
-> 
-> Not sure, I'm not that familiar with this area.
-> Maybe running irqbalance could help?
+Ran, in the future: please do not remove the context when you reply to
+somebody's email.
 
-Mikhail, what's the status of this? I wonder if I should track this as a
-regression to ensure Linus is aware of this.
+In this case, I wanted to help you to understand what Ricardo was
+asking, but his original response was not in your email. So, I copy
+and pasted it now---but that is not how it is supposed to be for
+someone replying to your email.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+On Wed, Feb 14, 2024 at 2:21=E2=80=AFPM Ricardo B. Marliere
+<ricardo@marliere.net> wrote:
+>
+> Hi Ran,
+>
+> On 14 Feb 19:40, Ran.Park wrote:
+> > In the 'fault-injection' subdirectory, the first letter F
+> > is capitalized, whereas in index.rst f is lowercase, but in
+> > index.rst all other elements in the same column are capitalized.
+>
+> Does this fix any error or build warning? If so, it should be mentioned.
+>
+
+Ricardo suggests that:
+
+- you run 'make htmldocs' before applying the patch and check for the
+existing warnings.
+
+- you run 'make cleandocs' and 'make htmldocs' after applying the
+patch and check for the existing warnings.
+
+Did any warning disappear or appear due to your patch? Were you
+motivated by a specific warning you observed during the build and you
+addressing that?
+
+So, for starters: did you already try 'make htmldocs' with your patch
+applied? What did you observe?
+
+
+Lukas
 
