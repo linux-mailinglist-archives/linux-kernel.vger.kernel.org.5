@@ -1,135 +1,118 @@
-Return-Path: <linux-kernel+bounces-69390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D45285885C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:07:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DCDC85885E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5564B276B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:07:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFA241C211D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D4471482FE;
-	Fri, 16 Feb 2024 22:07:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6D71482FE;
+	Fri, 16 Feb 2024 22:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="JABqaPdL"
-Received: from smtp-fw-52004.amazon.com (smtp-fw-52004.amazon.com [52.119.213.154])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mHcf8iEN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69E20146900;
-	Fri, 16 Feb 2024 22:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1830C1482E2;
+	Fri, 16 Feb 2024 22:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708121221; cv=none; b=B+p4LpbRF/UXPymJjfRC1HFn2fw/oofhoR5f+51kC4JAYnkFxX9DsTqe/2uCZ8yN++msDCwhLi2JZHh7JSaXGqE6lXeQOzkkPbX6UFFF/+PojzDJ43aag9i/dC6ElU/KdQMbL9wcc4lc8CeI0LSrbEMTIfO1S2BdazZB+TY+uzI=
+	t=1708121236; cv=none; b=sOjyD/YDLOaV8c9Rt7IK2d0+GjdfP8oFtgCTyADsAOtt6T8YDinckpZoMjskTE3ztNJWkduKWqCFXQB4F+DvLmasNx6OHs8U25O7O9B7ayq5f/PKPtSzsdmMlKRW2kFAlOxT5CINq6F1PqFzkXUHeFQTPDzSiGd0oq2vR9fcmyc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708121221; c=relaxed/simple;
-	bh=6WONRnosR0Fp6iJnVPXy3F6vPXXlIX/5qT82o+Br1wc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tvnIGdmI2liC23SJyRXhtyZj2edKIj96b3sO8mPXbYEHHSq3SsmRIJ/HB5kQJbfzMn+Nzp5GGHBNfByqDHK7NyCpx3mluY8ICP8LL/kgmnoad1hPe4tbnZ76a2ehrYwquu7upcPkH2gnKEKsRGDZkz/jFMWWPynnDZZ2ac/AenY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=JABqaPdL; arc=none smtp.client-ip=52.119.213.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1708121217; x=1739657217;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=luqn3+mL66LkEnqJW2Idc2GGi5UV6QGJD0hWMbRsxiY=;
-  b=JABqaPdL++w9JKhXsmLGNZXYGGQp028otuk2JQmLbwiPJezkpTOdwtYJ
-   3FRk/TsM9UTKeVrAPrPGNPreKWxIajc8Ye9lufPBHjyPX9FBOlrc0M+ZE
-   84CHBYYBHDcQUrOh97rogmBaq6W+QKW9OOX1ueyCmrkdEZPBp7Z/OcKse
-   8=;
-X-IronPort-AV: E=Sophos;i="6.06,165,1705363200"; 
-   d="scan'208";a="185388154"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.2])
-  by smtp-border-fw-52004.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 22:06:49 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:31833]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.24.112:2525] with esmtp (Farcaster)
- id b2c3214c-81a0-4661-9e5f-a145032dd5b0; Fri, 16 Feb 2024 22:06:48 +0000 (UTC)
-X-Farcaster-Flow-ID: b2c3214c-81a0-4661-9e5f-a145032dd5b0
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 16 Feb 2024 22:06:48 +0000
-Received: from 88665a182662.ant.amazon.com.com (10.106.100.6) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.40;
- Fri, 16 Feb 2024 22:06:44 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <keescook@chromium.org>
-CC: <alexander@mihalicyn.com>, <davem@davemloft.net>, <dhowells@redhat.com>,
-	<edumazet@google.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
-	<leitao@debian.org>, <linux-hardening@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<pabeni@redhat.com>, <wuyun.abel@bytedance.com>
-Subject: Re: [PATCH] sock: Use unsafe_memcpy() for sock_copy()
-Date: Fri, 16 Feb 2024 14:06:29 -0800
-Message-ID: <20240216220629.71672-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240216204423.work.066-kees@kernel.org>
-References: <20240216204423.work.066-kees@kernel.org>
+	s=arc-20240116; t=1708121236; c=relaxed/simple;
+	bh=+WrPzJ0IHMh3HzYg25ZL+Q0ZSnq4HdHf5TMRtD3SA+E=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=n3SE0VPSFmMh4MUU3zRwT4EW0Wu2dhkb2exVTS+RvX+gjPm4kCEnB0EkS8wkOGTF+flbTvik448b46lgfdh9SQ2hJHg87pPyz6TtO9d47/WJm7fuSK4siIuR5P9FLgQuFeAaONPQcDhlN/LlzeBrPMwX7xiQo2PGTLRzg6QGR8U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mHcf8iEN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6717AC433F1;
+	Fri, 16 Feb 2024 22:07:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708121235;
+	bh=+WrPzJ0IHMh3HzYg25ZL+Q0ZSnq4HdHf5TMRtD3SA+E=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=mHcf8iENDeEqesopXo604iob41FqlmhMYSsDUn+8ZgIzk8opsK1BcBqjsR+/ddvzP
+	 JIutE9y2hTJ4KxOlItbWgXdriaiaeajMwdGIb5WXdK2S8+jgYD/UAOy/GnxLJAqdQm
+	 g6rgWCCYJ1wd89yVZ0fSMNnbDrz/t3sKpMFuTCGHoOo4fbACXYfj/w69FpHU3zZqrq
+	 9PGkf2VQP9sXLrpJrsq4PwrlaDTTLMvvYP3sG1rU9Uwo7pxaOCzo53QRnrWime097h
+	 6KdfrnX9S6cBp6qk5912HqoYM98GCrTyQr1a144i6ztg7YA8xdFR9KQbjjhHRv6D5H
+	 ySXXejiH/wcVg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D037UWB001.ant.amazon.com (10.13.138.123) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 16 Feb 2024 22:07:12 +0000
+Message-Id: <CZ6UFX5R09DD.EWDFS24L16G1@seitikki>
+Subject: =?utf-8?q?Re:_init=5Ftis()_takes_50_ms_on_Dell_XPS_13_9360_=E2=80=93_almo?= =?utf-8?q?st_10_%_of_whole_time_until_initrd?=
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Paul Menzel" <pmenzel@molgen.mpg.de>, "Peter Huewe" <peterhuewe@gmx.de>
+Cc: <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.15.2
+References: <0eba23c7-f62a-4a85-a383-60dec9d198f9@molgen.mpg.de>
+In-Reply-To: <0eba23c7-f62a-4a85-a383-60dec9d198f9@molgen.mpg.de>
 
-From: Kees Cook <keescook@chromium.org>
-Date: Fri, 16 Feb 2024 12:44:24 -0800
-> While testing for places where zero-sized destinations were still
-> showing up in the kernel, sock_copy() was found, which is using very
-> specific memcpy() offsets for both avoiding a portion of struct sock,
-> and copying beyond the end of it (since struct sock is really just a
-> common header before the protocol-specific allocation). Instead of
-> trying to unravel this historical lack of container_of(), just switch
-> to unsafe_memcpy(), since that's effectively what was happening already
-> (memcpy() wasn't checking 0-sized destinations while the code base was
-> being converted away from fake flexible arrays).
-> 
-> Avoid the following false positive warning with future changes to
-> CONFIG_FORTIFY_SOURCE:
-> 
->   memcpy: detected field-spanning write (size 3068) of destination "&nsk->__sk_common.skc_dontcopy_end" at net/core/sock.c:2057 (size 0)
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+On Wed Feb 14, 2024 at 3:10 PM UTC, Paul Menzel wrote:
+> Dear Linux folks,
+>
+>
+> Trying to optimize the boot time of Linux on the Dell XPS 13 9360,=20
+> probing of MSFT0101:00 takes 52 ms, making `init_tis()` taking almost 10=
+=20
+> % alone until starting the initrd:
+>
+>      [    0.000000] Linux version 6.8.0-rc4=20
+> (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 13.2.0-13) 13.2.0,=20
+> GNU ld (GNU Binutils for Debian) 2.42) #20 SMP PREEMPT_DYNAMIC Mon Feb=20
+> 12 09:40:49 CET 2024
+>      [=E2=80=A6]
+>      [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0=20
+> 06/02/2022
+>      [=E2=80=A6]
+>      [    0.320057] calling  init_tis+0x0/0x100 @ 1
+>      [    0.332190] tpm_tis MSFT0101:00: 2.0 TPM (device-id 0xFE, rev-id =
+4)
+>      [    0.372164] probe of MSFT0101:00 returned 0 after 52101 usecs
+>      [    0.372186] initcall init_tis+0x0/0x100 returned 0 after 52127 us=
+ecs
+>      [=E2=80=A6]
+>      [    0.588643] Freeing unused decrypted memory: 2036K
+>      [    0.589068] Freeing unused kernel image (initmem) memory: 3976K
+>      [    0.606115] Write protecting the kernel read-only data: 22528k
+>      [    0.606527] Freeing unused kernel image (rodata/data gap)=20
+> memory: 276K
+>      [    0.652327] x86/mm: Checked W+X mappings: passed, no W+X pages=20
+> found.
+>      [    0.652329] x86/mm: Checking user space page tables
+>      [    0.695968] x86/mm: Checked W+X mappings: passed, no W+X pages=20
+> found.
+>      [    0.696104] Run /init as init process
+>      [=E2=80=A6]
+>
+> For users, where boot time is most important, can this be moved out of=20
+> the hot path somehow?
 
-I confirmed unsafe_memcpy() is just memcpy() without fortified checks.
+It can't be IRQ probing as IRQ's are *disabled* by default. So we can
+disclose that.
 
-Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+I think the delay is caused by tpm2_probe(), which is called by
+tpm_tis_core_init(). It sends an idempotent TPM2 command to the TPM
+chip to know whether it is TPM 1.x or TPM2 chip.
 
+That detection is definitely required.
 
-> ---
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: netdev@vger.kernel.org
-> ---
->  net/core/sock.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 0a7f46c37f0c..b7ea358eb18f 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -2053,8 +2053,9 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
->  
->  	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
->  
-> -	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
-> -	       prot->obj_size - offsetof(struct sock, sk_dontcopy_end));
-> +	unsafe_memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
-> +		      prot->obj_size - offsetof(struct sock, sk_dontcopy_end),
-> +		      /* alloc is larger than struct, see sk_prot_alloc() */);
->  
->  #ifdef CONFIG_SECURITY_NETWORK
->  	nsk->sk_security = sptr;
-> -- 
-> 2.34.1
+Even some other subsystems in the kernel require to know the correct
+TPM version, like hwrng and IMA.
+
+> Kind regards,
+>
+> Paul
+
+BR, Jarkko
 
