@@ -1,137 +1,176 @@
-Return-Path: <linux-kernel+bounces-68991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38252858313
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:54:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6AA4858318
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:55:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 695D71C2243C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:54:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57285B24663
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EBC3130E4F;
-	Fri, 16 Feb 2024 16:54:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B78131E22;
+	Fri, 16 Feb 2024 16:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SMRdlQnU"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hJ8DQvJb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D271E130AFB
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41BB912FB1E;
+	Fri, 16 Feb 2024 16:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708102456; cv=none; b=dDHm55/I3VKn2U2KULwAqDMFSBzD4N4rvbhAiZgDR89cDWghfn0ye35Tmi2qUtbcfbEcbHxIWZLYvMikex0+r2vXP+/6W/xN+QPL0SRqYjCJDQvT6Ab9S66Pck7qGjr/urpoDi+nPwMWK0n+lowo+A5pt3GbR6pB15KZyEo/3ZQ=
+	t=1708102469; cv=none; b=YUGghwRG/avm5vuJ5p3YIJHNzSZ/3rFHQIcYEzcqk41qUNUptDK0o70k9aKfgC0vkQC3QL6mB3HoVY+QVSiz6rzP+HNXswpEU7cLFT7TqpFK334X/0I5K2g511Pek6KLJA0Bel+wiUy3+iA8laQxrqeMpk64FMuxcC9THj3TKo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708102456; c=relaxed/simple;
-	bh=Y91UWNzXuH8p9y2IvbH82XnOrZASUCU2q9704Gj6jR8=;
+	s=arc-20240116; t=1708102469; c=relaxed/simple;
+	bh=8OddoM/5Z/IMvsCA4MEbtq8hH+VVAaz1jere2rqeK4I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mgvSNbc7fSBhTLgDUKosdxBBHluCdiLemvTIPNUIZBzxYjY3o84s4JhQ4g8yRQqI7/WmvpPr9Te10UZzeGjs1VDwCCkPR5sz+J/W/Crx0Yp/KiJNL04cdst72ayTP0VnGknddd6eEBT8VeksyXwiRuJIQUgwsjk0gVmwkwWZqoM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SMRdlQnU; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6da202aa138so1668749b3a.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708102454; x=1708707254; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=br2N/R8PHJEVGm+jIHqD2c6+5tUx5kxjgFiSBw/i4S8=;
-        b=SMRdlQnUiv+6LrQ2ehvig9k9l5PaWzqQsSAhpqnhg3jFBuukeqJ5KBl3oiNaUC6/nA
-         30CJEXE6F7rc4/CTEfQ1I2L7c0BvVKXKj2d7cHIW+lvbJoXWstUhW3vsgS/sw1C+V9wZ
-         0IrIuTx8B3KBVaM1A5+y1yTn4WMhHpqKOuG+XxFQx6CShjM0JdC2FQOsiEXvDUr3Jw5d
-         X/SOeJBnQlvBN76yMw2miOxyssUgDnFG7TaT474zko52/yM9D1D/7PRZB0rOS2CXtZg1
-         3KEDx1XWENcW93LB7jz1J+3Ssr7BpqYnx7CH4bnioOowhSN0xJbT3ENUzYyn1IqcQJqf
-         qJdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708102454; x=1708707254;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=br2N/R8PHJEVGm+jIHqD2c6+5tUx5kxjgFiSBw/i4S8=;
-        b=iY/HcEP15pnl6bBAaO62VD44hjTC8RAQw15LtGm0yQHSs9yejI81fIc5eDZPhPl72e
-         ZauqhSJGpBWTX5w6jf5wFmBeWvXlOSTGrriQwbihwWuAs8hzJ8jVeFEw1UswdA9DduVF
-         9lWexsXXJ/TxFj+YRY41cNnj6M0Py72HiprYpir7HtwMU0mr4W1WIWQi9dL2tRR6ILNe
-         9GZFq96PWRMSg9adN3sOD3E/mXX8ZHWqeIn0dEA6t04cjKVbN2IWCReBOhLHT1hhgATj
-         Atg3V9kTfE0k+mH3TKELwZF2IGWrHs6UL3NAFjVrUiMoA5gbeib5mQRHhbOPpWfaqLNh
-         cDcw==
-X-Forwarded-Encrypted: i=1; AJvYcCVPTXUJCIGbIAHS+waxoi64FnbAzBUUCZFDH+lpde0pR5i9JRVZwvEVr/kPUeRCXYTjjAmcrxXRUBv74BjnSgM0S1ZWr5GanTqI4dsl
-X-Gm-Message-State: AOJu0YyP8HUgEDrZ+gu8YPMCWEVb6zJLhdaMWsTkJC1hgeF3uTE1sVcH
-	D+namfo8LvjKPjuwsrqrLyiuBFNdno6OdrODUv7ljXJ7mRLAikmsQKG/iWWTxw==
-X-Google-Smtp-Source: AGHT+IEg7nBZgAV6mmmXqEFA0ksN6sm799MQHapgL/DdyvYAzH6BOQl3qC6EYPbvT0oVYUmjTjUyCg==
-X-Received: by 2002:aa7:8a56:0:b0:6e0:f2a6:abde with SMTP id n22-20020aa78a56000000b006e0f2a6abdemr5363330pfa.5.1708102452975;
-        Fri, 16 Feb 2024 08:54:12 -0800 (PST)
-Received: from thinkpad ([120.138.12.48])
-        by smtp.gmail.com with ESMTPSA id gu8-20020a056a004e4800b006dde35245d8sm173857pfb.58.2024.02.16.08.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 08:54:12 -0800 (PST)
-Date: Fri, 16 Feb 2024 22:24:06 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Johan Hovold <johan@kernel.org>, Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] dt-bindings: PCI: qcom: Do not require
- 'msi-map-mask'
-Message-ID: <20240216165406.GD39963@thinkpad>
-References: <20240212165043.26961-1-johan+linaro@kernel.org>
- <20240212165043.26961-3-johan+linaro@kernel.org>
- <e396cf20-8598-4437-b635-09a4a737a772@linaro.org>
- <Zcy4Atjmb6-wofCL@hovoldconsulting.com>
- <59bd6e54-0d5d-4e1a-818a-475a96c223ff@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nLwmuPV43xAfJs1SwzgBvK5lot3a2Cb3RcHCG8BlyEl6FE7OuQ6s9U+/QmVtgQOedVedKZykgRdUMJIOQU/WQzwKyqkSd4Zw4EL9vMacspyCUyKlX8AzqsQo77lrIoza6eDqRocOxupdmrjmQSK3MUrIHEyvNTrKP4qwuk2zkbg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hJ8DQvJb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6CC0C433F1;
+	Fri, 16 Feb 2024 16:54:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708102468;
+	bh=8OddoM/5Z/IMvsCA4MEbtq8hH+VVAaz1jere2rqeK4I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hJ8DQvJbxtRhr01ZEId0k89q7dwWlxrtj2nDvJRjNH+HzFC71g1N1MPug2HxVBfGf
+	 +IpgYCo7u7cWxTPn/lR+LVeoU7tMMMZFH587CV6KMK3m4Hc05zEKXXzciAkT0yt/De
+	 s3AhOjbjQdAfcJFmh8XVuy9grwYk0gzoT23IH0DLkr0igwOys/E+yvUGEZOJHRZmb0
+	 2LzpX2sHpnGESSwEZpIvASKgwRTNxF0x+jA2vtKqHw0t5Az+/k3BK2dSQBcX5t2mhY
+	 FkmXwScH9gr2jrSUQFcn9mtMC4mjkP88NSh6PgUvY5ZLO1if4K8euZdTvrN6XP9CYa
+	 rnHwIn4WNmG7A==
+Date: Fri, 16 Feb 2024 16:54:24 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Ajay.Kathat@microchip.com, alexis.lothore@bootlin.com,
+	davidm@egauge.net, linux-wireless@vger.kernel.org,
+	claudiu.beznea@tuxon.dev, thomas.petazzoni@bootlin.com,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH RFC] wifi: wilc1000: fix reset line assert/deassert
+ polarity
+Message-ID: <20240216-reckless-freedom-4768ce41e939@spud>
+References: <20240213-wilc_1000_reset_line-v1-1-e01da2b23fed@bootlin.com>
+ <2ff1c701f3443e1c612a81f4077b0280850f57c6.camel@egauge.net>
+ <081bce96-f485-414c-8051-e1c14271f8cc@bootlin.com>
+ <aac398e4-d870-4ba2-8877-b98afecb8d1b@microchip.com>
+ <877cj4o0sv.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vP5ooK5Cnuawf+D0"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <59bd6e54-0d5d-4e1a-818a-475a96c223ff@linaro.org>
+In-Reply-To: <877cj4o0sv.fsf@kernel.org>
 
-On Wed, Feb 14, 2024 at 02:38:57PM +0100, Krzysztof Kozlowski wrote:
-> On 14/02/2024 13:54, Johan Hovold wrote:
-> > On Wed, Feb 14, 2024 at 01:01:20PM +0100, Krzysztof Kozlowski wrote:
-> >> On 12/02/2024 17:50, Johan Hovold wrote:
-> >>> Whether the 'msi-map-mask' property is needed or not depends on how the
-> >>> MSI interrupts are mapped and it should therefore not be described as
-> >>> required.
-> >>
-> >> I could imagine that on all devices the interrupts are mapped in a way
-> >> you need to provide msi-map-mask. IOW, can there be a Qualcomm platform
-> >> without msi-map-mask?
-> > 
-> > I don't have access to the documentation so I'll leave that for you guys
-> > to determine. I do note that the downstream DT does not use it and that
-> > we have a new devicetree in linux-next which also does not have it:
-> > 
-> > 	https://lore.kernel.org/r/20240125-topic-sm8650-upstream-pcie-its-v1-1-cb506deeb43e@linaro.org
-> > 
-> > But at least the latter looks like an omission that should be fixed.
-> 
-> Hm, either that or the mask for sm8450 was not needed as well. Anyway,
-> thanks for explanation, appreciated!
-> 
 
-msi-map-mask is definitely needed as it would allow all the devices under the
-same bus to reuse the MSI identifier. Currently, excluding this property will
-not cause any issue since there is a single device under each bus. But we cannot
-assume that is going to be the case on all boards.
+--vP5ooK5Cnuawf+D0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I will submit a patch to fix SM8650.
+On Fri, Feb 16, 2024 at 06:01:52PM +0200, Kalle Valo wrote:
+> (Adding devicetree list for comments)
+>=20
+> <Ajay.Kathat@microchip.com> writes:
+>=20
+> > On 2/13/24 09:58, Alexis Lothor=E9 wrote:
+> >>=20
+> >> On 2/13/24 17:42, David Mosberger-Tang wrote:
+> >>> On Tue, 2024-02-13 at 16:22 +0100, Alexis Lothor=E9 wrote:
+> >>>> When using a wilc1000 chip over a spi bus, users can optionally defi=
+ne a
+> >>>> reset gpio and a chip enable gpio. The reset line of wilc1000 is act=
+ive
+> >>>> low, so to hold the chip in reset, a low (physical) value must be ap=
+plied.
+> >>>>
+> >>>> The corresponding device tree binding documentation was introduced by
+> >>>> commit f31ee3c0a555 ("wilc1000: Document enable-gpios and reset-gpios
+> >>>> properties") and correctly indicates that the reset line is an activ=
+e-low
+> >>>> signal. However, the corresponding driver part, brought by commit
+> >>>> ec031ac4792c ("wilc1000: Add reset/enable GPIO support to SPI driver=
+"), is
+> >>>> misusing the gpiod APIs and apply an inverted logic when powering up=
+/down
+> >>>> the chip (for example, setting the reset line to a logic "1" during =
+power
+> >>>> up, which in fact asserts the reset line when device tree describes =
+the
+> >>>> reset line as GPIO_ACTIVE_LOW).
+> >>>
+> >>> Note that commit ec031ac4792c is doing the right thing in regards to =
+an
+> >>> ACTIVE_LOW RESET pin and the binding documentation is consistent with=
+ that code.
+> >>>
+> >>> It was later on that commit fcf690b0 flipped the RESET line polarity =
+to treat it
+> >>> as GPIO_ACTIVE_HIGH.  I never understood why that was done and, as yo=
+u noted, it
+> >>> introduced in inconsistency with the binding documentation.
+> >>=20
+> >> Ah, you are right, and I was wrong citing your GPIOs patch as faulty
+> >> (git-blaming too fast !), thanks for the clarification. I missed this =
+patch from
+> >> Ajay (fcf690b0) flipping the reset logic. Maybe he had issues while mi=
+ssing
+> >> proper device tree configuration and then submitted this flip ?
+> >
+> > Indeed, it was done to align the code as per the DT entry suggested in
+> > WILC1000/3000 porting guide[1 -page 18], which is already used by most
+> > of the existing users. This change has impact on the users who are using
+> > DT entry from porting guide. One approach is to retain the current code
+> > and document this if needed.
+>=20
+> So if I'm understanding the situation correctly Microchip's porting
+> guide[1] doesn't match with kernel.org documentation[2]? I'm not the
+> expert here but from my point of view the issue is clear: the code needs
+> to follow kernel.org documentation[2], not external documentation.
 
-- Mani
+My point of view would definitely be that drivers in the mainline kernel
+absolutely should respect the ABI defined in the dt-binding. What a vendor
+decides to do in their own tree I suppose is their problem, but I would
+advocate that vendor kernels would also respect the ABI from mainline.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Looking a bit more closely at the porting guide, it contains other
+properties that are not present in the dt-binding - undocumented
+compatibles and a different enable gpio property for example.
+I guess it (and the vendor version of the driver) never got updated when
+wilc1000 supported landed in mainline?
+
+> I'll add devicetree list so hopefully people there can comment also,
+> full patch available in [3].
+>=20
+> Alexis, if there are no more comments I'm in favor submitting the revert
+> you mentioned.
+
+=46rom a dt-bindings point of view, the aforementioned revert seems
+correct and would be
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Getting off my dt-binding maintainer high-horse, linux4microchip is going
+be updating to a 6.6 based kernel in the coming weeks - maybe that's a
+good time to update the vendor kernel wilc drivers (and therefore the
+porting guide?) to match the properties used by mainline Ajay?
+
+Cheers,
+Conor.
+
+--vP5ooK5Cnuawf+D0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc+TQAAKCRB4tDGHoIJi
+0mwWAQCVgXlcuztMUaj+vUYBVR0Uq5Xq2C4jK/ao24lMy8wEIQD+JiJQQoX+cszP
+esUPn0KXW8gNd8xDXqQrm0+EQRNtdgY=
+=hxLt
+-----END PGP SIGNATURE-----
+
+--vP5ooK5Cnuawf+D0--
 
