@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-69089-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81452858459
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D65D858458
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:43:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BF85284B75
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D67C91F2222A
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D8DB134758;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D687134756;
 	Fri, 16 Feb 2024 17:42:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fndWFhQn"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Gu4Ezaqp"
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E047E132477;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10ADB132C1F;
 	Fri, 16 Feb 2024 17:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708105359; cv=none; b=My3Xaqr5ox+FgMUzTgVfxXM4RlhIdf+PrTQ5QAR/XuGT+UTzTSMa9QpCatl0PL7qYrlnxTqPbQiHHric5BTleFooKtjwdXCwqOvklQr/ejODnZJQIQErVeaJa+jwlWp/oGYEF8o0OdteGSTf4AzcqhK0iZLjrbc2paPn343nDi4=
+	t=1708105359; cv=none; b=IEhJhDDzUqsK0Hbd32O84YdDCTDUqDEEmVewZeGI1n9t2tspBvn9UrfefXxLqSlkzLKn1wDr1ChAcDV3u6RV0UdoUemsQnyhQVkeIfBM0eNtCq9j4SlriO2CLcrWZ8/QLIYw3AGbiT13HmzPsfKPHfjNTj9ow4+HNal3IkbeXVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708105359; c=relaxed/simple;
-	bh=+nDcBiIHyQC/Z9LgJL8sMYQAEOQa2wTWBrZ2ynWLh7o=;
+	bh=E/90gBwLmpJXeK232Brlce3fowXySmiFqEe90Bkb9Hc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sJRAyOLGS+1AIfzIzuJrXME3Pt3I3ezqqUgf+Tk43Bzi7HrPLS/AxYgI9i+Xw8lpiV7+rGyobpk3YscP22F/whmgZawH1jqqaoMG1Bi5RzQpK+nUKObj9POKDc2IymyupZRoBGek/X/DufRHC3slFo5AeO56Sx560hDO3VQAWKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fndWFhQn; arc=none smtp.client-ip=217.70.183.194
+	 MIME-Version; b=ofdOeZP9aqOGb2QVJkmgB+Se1LqProsfSeGWOjJ6gAGzWGFb9jVD02SaQeivBoR1i4affv5zq0/FEHf09H+1gCDqjdotkQJL7XTdeEaEOkUqTeQcIfC34li7EYMeB+syNVIkAA5vz/aMBziG164SJOWUVCn2OdDdpOnEUf8APag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Gu4Ezaqp; arc=none smtp.client-ip=217.70.183.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F3E4940008;
-	Fri, 16 Feb 2024 17:42:33 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C097040009;
+	Fri, 16 Feb 2024 17:42:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708105354;
+	t=1708105355;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AFHP7WMf7cdabuKf8LPE+Tv/tjtS5NR+H70CJoKhySg=;
-	b=fndWFhQnrU1dyV5z02OwK+v7yQELtD72FtNXbHj/tQ9Q8ckEc4Y3Q/TdNmGNKs5eR8pPQw
-	N2YyCWOuTKrk23qldccCI6XH0cyzFOLOfnSnKkfcG82Ge6wkhK2ZCETF3oyORqVBAsRJKL
-	2Pn73urZ5OVriEHkdE8oqVAUTWTnWcCHm/Cufk6OfQGlDZLlX0jm6mKQXgtjR6J6S4A2uG
-	X5pgmAh5StE/NkZfC0mmfDWlmCLGXvA/BOPys3ePeNXQqrlORpmo7ZiX2SsOdH+gTYAQZH
-	zMxx3vfTQ6Bk4bXXRZ9hoU/qVMhCzmgD9BRg8uaKqJr6gk37ueBVN/QbuxVrIQ==
+	bh=nfmqPXyNaR+Aomf8hQQJpTdW18Oyoy4DRDDUy1YAmW8=;
+	b=Gu4EzaqpGe9p3mjEHXSwL8mlGL+/R90ivM05jzPQB67qyT2+xZv05L2imaQPvJO+DyamZ4
+	6bHYkXfoHa/vzpFl0AzsLKaOjWpOCxhSEdBXrhJlyNac08V0+O6cOX99jw+hys6A7/YZsV
+	FavGJGTrWGrO+z1u5waTBrNX1enHOoGn7rFs5w/ni8sMeSZA/8KZU/a58FGTniiUsrWZIY
+	I381Iv8//t+bFr7qEvPEkTm8lmooE+KPAVzT1F2RMUUtF4PkmxIchItpgjG0czrPE8/jBd
+	Z1QHNnrAqBQ2dzfc2aQUGn1WRwVUg38mf0qS45fsO7bhM5ttb7FiGKodR5gvHA==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -59,9 +59,9 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v8 04/14] MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
-Date: Fri, 16 Feb 2024 18:42:13 +0100
-Message-ID: <20240216174227.409400-5-gregory.clement@bootlin.com>
+Subject: [PATCH v8 05/14] MIPS: cps-vec: Use macros for 64bits access
+Date: Fri, 16 Feb 2024 18:42:14 +0100
+Message-ID: <20240216174227.409400-6-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240216174227.409400-1-gregory.clement@bootlin.com>
 References: <20240216174227.409400-1-gregory.clement@bootlin.com>
@@ -74,38 +74,43 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-With the expanded support for placing the kernel in XPHYS rather than
-just KSEG0, scenarios where ebase doesn't belong to KSEG0 are more
-likely to occur. In such cases, we currently experience a substantial
-and perplexing stack dump without any accompanying explanation. To
-rectify this, we aim to replace the uninformative stack dump with a
-warning that offers a clear explanation of the issue.
+Some access are 32 bits only while they seems better to be done in
+64bis for 64 bit kernel.
 
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+This was extract from an initial patch from Jiaxun
+
+Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/kernel/traps.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/mips/kernel/cps-vec.S | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 075bb08543eca..a9644c5e7ef4d 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2345,10 +2345,13 @@ void __init trap_init(void)
- 		 * EVA is special though as it allows segments to be rearranged
- 		 * and to become uncached during cache error handling.
- 		 */
--		if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >= 0x20000000))
-+		if (!IS_ENABLED(CONFIG_EVA) && ebase_pa < 0x20000000)
- 			ebase = CKSEG0ADDR(ebase_pa);
- 		else
- 			ebase = (unsigned long)phys_to_virt(ebase_pa);
-+		if (ebase_pa >= 0x20000000)
-+			pr_warn("ebase(%pa) should better be in KSeg0",
-+				&ebase_pa);
- 	}
+diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
+index df610c006b443..f876309130ad1 100644
+--- a/arch/mips/kernel/cps-vec.S
++++ b/arch/mips/kernel/cps-vec.S
+@@ -396,7 +396,7 @@ LEAF(mips_cps_boot_vpes)
+ 	/* Calculate a pointer to the VPEs struct vpe_boot_config */
+ 	li	t0, VPEBOOTCFG_SIZE
+ 	mul	t0, t0, ta1
+-	addu	t0, t0, ta3
++	PTR_ADDU t0, t0, ta3
  
- 	if (cpu_has_mmips) {
+ 	/* Set the TC restart PC */
+ 	lw	t1, VPEBOOTCFG_PC(t0)
+@@ -571,10 +571,10 @@ dcache_done:
+ 	lw	$1, TI_CPU(gp)
+ 	sll	$1, $1, LONGLOG
+ 	PTR_LA	\dest, __per_cpu_offset
+-	addu	$1, $1, \dest
++	PTR_ADDU $1, $1, \dest
+ 	lw	$1, 0($1)
+ 	PTR_LA	\dest, cps_cpu_state
+-	addu	\dest, \dest, $1
++	PTR_ADDU \dest, \dest, $1
+ 	.set	pop
+ 	.endm
+ 
 -- 
 2.43.0
 
