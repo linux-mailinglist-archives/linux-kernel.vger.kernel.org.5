@@ -1,148 +1,126 @@
-Return-Path: <linux-kernel+bounces-69028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D532285838A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:08:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C291585838C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:09:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D634D1C2096D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:08:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDA781C21C24
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5181B137C5F;
-	Fri, 16 Feb 2024 17:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72BA130E3A;
+	Fri, 16 Feb 2024 17:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cQf/OelZ"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="hOkJCiC8"
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF423135A6D
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C50B130E27
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103130; cv=none; b=DX80ObCho1712cKmtUmyZVorPYgBV/7zjgcsC1/4RAiNbkDV8fGT67yjDkYL7EujGTApS3yY1CHDSMmW+Pd4j1KbBY2cUK25XGNPf9ycf6E547PPvdxO4KkgCSrM8evsErfQO1JfliymHDinwfBYBNENgjQ/aZvY+ZV9slynHUo=
+	t=1708103263; cv=none; b=M5Mc+g3p1rYcgArW+C6BTJHnLO7QTuNteodJZOS9WteUibhwtR86JXJsIzbFW14AUVjlrsNBq+p9ThcqFXBA2nyRMk7bKiQg9yGj8hTKmfnOk/BYJ+QvHWnUkr/J4SFGlCD5IRt0iKWZLOmkJm/cYhL9F4Av3rTDNLufl7FV1rE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103130; c=relaxed/simple;
-	bh=YEe1iIkMkTl6mXT05twz1lybD8lNCICMNljhIyX2vlU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=X2QIOlM2v1zuBNBxRsXrVHVE562Ezs56ZG9kfbV17pc1JdiTRdstWfQk0Wb/n6xBo+1C5rKe5S32iHbSWsE8JfrUha8GgcKTp0vbLJmNNlsMyJllHglY9U25MWu3Iw/+YhsZSaW3TyRJ+sE4wjTWJNrDKGUq4OV6T00uRcG9GWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cQf/OelZ; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1d7354ba334so20514045ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:05:28 -0800 (PST)
+	s=arc-20240116; t=1708103263; c=relaxed/simple;
+	bh=hv233QVBwAsUo0Zdqwhyq2yzmCK3uyGXUq9pEROZ7lI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hIs03Qzz/Y9GLtm6nIk26l/ETasvvAkgyCzZ22K4wKekSSrZ0I/WuJMpdj+XxX9hUjQ6vNgX+HWhyo6c8RB3r4MY2cTyBNzt7LAa0a9P+qVMljyXtE944kWvXcL3yle20UJsVxCccpNi1XyXhk4QasGNzLZ0lVlryZWeOYOm/Eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=hOkJCiC8; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33cd856478cso596838f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:07:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708103128; x=1708707928; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xzo0goznw/Ntco681h4qJZM6h9c/lx0QHhOStfpeEEE=;
-        b=cQf/OelZQD1t6FaPQ0oMy0KKqc5oNg2hYs56A1NyX34m6vmtCCXaiLg8nvAtjtE+TH
-         OGrnmZGVMmvUL2rfSPWh8X+waHrlYBtl53Pn5p5rs/kc21CCDBkU14kSRJqoK4oWZm6a
-         AuHhpv1seLydHEu2ewb/vn9mTjTE7o652JuTxA8hOlT0F3fTYl1wz5bzHff71xYz9Don
-         MJzI/2bRl7JzN5LrMlCJd2oa4I3h2LE3OU9F9nXe3k5oclaT6+/dEy3TPEzrbZ4XXKCe
-         SB4NOINgXSXuQ54AdM4Wq3eQ5kysD9QcoEOs3pykgaJQhrqyBZiPtikrdAvPLjRda8b4
-         Nf9Q==
+        d=ffwll.ch; s=google; t=1708103259; x=1708708059; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ijTea4rY9Z92lLGWfWJZg4eI/pmK/TMqoH5QWxKStbU=;
+        b=hOkJCiC81bNLbwNUNAvGojRAzgIYTMFUdnAN5uI3aXrHqHGJPE5JnCzot210fHqXjQ
+         AkHe1FC1ohcAeTCVfjh7t6HcH9PpMj4uLwe1jX3HlEstozgwPpQLxzy02gEhnCy5ddbA
+         vU4wUFWPaH3otzh8hQkr+9QmSNG7m9+gVRGDk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708103128; x=1708707928;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xzo0goznw/Ntco681h4qJZM6h9c/lx0QHhOStfpeEEE=;
-        b=nMWbx3V+JJhIszjV+hhmv9sZdS0NsYI0DJqL0oPIxP6NiCLbAb9FLlaRgOE7Neomi8
-         Hb7PqmcBr5K2p7F7Zk21HLwGR2mDVO5NXZliEtUgC8+j3mPzzOVgUEUKXcSSTu+I4Nz+
-         6PyErj7pmza19f9uK3oIcKalvE5THURANEKfEM2xbrzBVrMNhCjKxEhwG0tcLcHGcC4d
-         JaCWQg/uweRasQhscdWVt1bzpOdXegN1foqhKu2Qgz7UwCHCZZ2lJw1SRMcFZwC1eaQi
-         Q5D1JaO0vFWfy0njTS8QQi/xYzga2uQdfer3hM+DKvJv6di7HoLSXIu9n3BmTt+FxX5A
-         2gWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmtMSrZ776AAFtOpGaJN7AKE2t5WkzNZfSi/czEz1WT+BTJHeG5R+/R6VnAHSR9Gu/XpRUoDHexSgi9pk9enTMIF9h9KQjEwRrkB1n
-X-Gm-Message-State: AOJu0YxD0c8WMh/mPVmBYRbg3Nlpe59n0QyAqKdniX32fQNwH5ojXvRV
-	qOaCNCnhQD8rmWywLNjuLZCYN810safPuhfvppjaYgu8LIeZFjRzJm/sWuJ2JA==
-X-Google-Smtp-Source: AGHT+IFDCzyH9aJybTu6AycRvO1SYkFXYvfxU6Es1A/vZvue0R0CuBR+Bwn5hZW7hpoZN5rF/ZEwJA==
-X-Received: by 2002:a17:902:d2c5:b0:1db:701b:33e0 with SMTP id n5-20020a170902d2c500b001db701b33e0mr6357753plc.14.1708103128010;
-        Fri, 16 Feb 2024 09:05:28 -0800 (PST)
-Received: from [127.0.1.1] ([120.138.12.48])
-        by smtp.gmail.com with ESMTPSA id b15-20020a170902d50f00b001d9aa663282sm95508plg.266.2024.02.16.09.05.23
+        d=1e100.net; s=20230601; t=1708103259; x=1708708059;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ijTea4rY9Z92lLGWfWJZg4eI/pmK/TMqoH5QWxKStbU=;
+        b=L2lehgU6cvo17QNbJ+w7usj9D5MmJAEIFtXBd1FplQVeWf7fjzgzujBbAxq7LaS4/H
+         JL2ifZoIY16jJvoEbRBQUwu6E2aQApfKHXZww2v1rkaYn7MomK564uyVtMO1f77Yof/S
+         ZM2FYK/W5mCP8/zMQxnLk1dfwu58NJZYuZ76j49r8rgkIZcB1qygLC6VCdBFXl756faI
+         pz/r5mzBjXIaQ4bFUnQAb8YnzbYtXGIuiQj7A6olu/ANHVWjJflQdPhvO3isO1c4PoGH
+         xi+EaegZvFkQB+9Nri1TtDULZHn24I9Wdoej4nN//j7QPiketeglimTsjfZnzFGiel+r
+         SIgg==
+X-Forwarded-Encrypted: i=1; AJvYcCX7XSlerriv20CV5G3E78Mf4QkKbqbziae1JoExRtbUS46zOV5ciWJIalIQz7Yyaw/WqbSGlH853q/p/OTli8fi6lmaQcLSyJFL5CcR
+X-Gm-Message-State: AOJu0YzAlbA69t/lROfPu+/uuP6RblpUzF1UaDe4pSm3gYFz/VABfN+E
+	LTIQ7RdNVQZChWeZr6VPamEHo3dy4Q5JrQ4ox4jo8QbSg36aAzeGs1KsKpezC4M=
+X-Google-Smtp-Source: AGHT+IHUqALZqMVn2fADheMNqneRMmQ3MvAb+MA7p/LnwiMi9nfwmdjzZU7ByFi7IURD8OofvvbuPQ==
+X-Received: by 2002:a05:6000:803:b0:33d:1d45:c658 with SMTP id bt3-20020a056000080300b0033d1d45c658mr1572596wrb.6.1708103259500;
+        Fri, 16 Feb 2024 09:07:39 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id e14-20020a5d4e8e000000b0033cdf1f15e8sm2702656wru.16.2024.02.16.09.07.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 09:05:26 -0800 (PST)
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Date: Fri, 16 Feb 2024 22:35:21 +0530
-Subject: [PATCH] arm64: dts: sm8650: Add msi-map-mask for PCIe nodes
+        Fri, 16 Feb 2024 09:07:38 -0800 (PST)
+Date: Fri, 16 Feb 2024 18:07:36 +0100
+From: Daniel Vetter <daniel@ffwll.ch>
+To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+Cc: airlied@redhat.com, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] char/agp: remove agp_bridge_data::type
+Message-ID: <Zc-WWH8_UNBCOlri@phenom.ffwll.local>
+Mail-Followup-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	airlied@redhat.com, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+References: <20240213111511.25187-1-jirislaby@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240216-sm8550-msi-map-fix-v1-1-b66d83ce48b7@linaro.org>
-X-B4-Tracking: v=1; b=H4sIANCVz2UC/x2MQQqAIBAAvyJ7bkFFQ/pKdLBaaw9WuBBB+Pek4
- wzMvCBUmAQG9UKhm4XPo4HpFCx7PDZCXhuD1dZpa3qUHLzXmIUxxwsTPxjnkMiTdWsy0MKrUNP
- /dJxq/QCbmuN3ZAAAAA==
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1655;
- i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
- bh=YEe1iIkMkTl6mXT05twz1lybD8lNCICMNljhIyX2vlU=;
- b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBlz5XTZlP1P9oCFUUIiXdV0t5k+20GxBAJixguy
- WJaznFAxzuJATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZc+V0wAKCRBVnxHm/pHO
- 9U4aB/wIVpxyFUp+gK/gJRJ91smrvGmTk8YfnaRAHiwLEN0phPdcRslim8zkXKDBR07EQVwjdMN
- o+bO7kSkjl5fK9wj79VVyhl+JB28ej5M8lhXogmrlIN7MKVKhEkO4/u3rbt43RhpS7M38Ojhz7m
- zROIaziDGj21hQBpHO3GAfTD6bBUlEAY8CdSv7mRev53j94zslS6FComze1ZVB87U1r2e2unWBO
- cWJUEd1N9TBzTSiMUp43RM8+8IS+1K3RYjGxv3BhyHcWNOuUPD4UBPI4VhHRhvM9RWre8mH2vQB
- CIob/rGzp3nO4GtjpzaspPlxXobnpPhcKwmiUbI5Lf2sbhRn
-X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
- fpr=C668AEC3C3188E4C611465E7488550E901166008
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240213111511.25187-1-jirislaby@kernel.org>
+X-Operating-System: Linux phenom 6.6.11-amd64 
 
-"msi-map-mask" is a required property for all Qcom PCIe controllers as it
-would allow all PCIe devices under a bus to share the same MSI identifier.
+On Tue, Feb 13, 2024 at 12:15:11PM +0100, Jiri Slaby (SUSE) wrote:
+> agp_bridge_data::type is unused (and I cannot find when was used last).
+> 
+> Therefore, remove it.
+> 
+> Found by https://github.com/jirislaby/clang-struct.
+> 
+> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
+> Cc: David Airlie <airlied@redhat.com>
+> Cc: dri-devel@lists.freedesktop.org
 
-Without this property, each device has to use a separate MSI identifier
-which is not possible due to platform limitations.
+Thanks, pushed to drm-misc-next.
+-Sima
 
-Currently, this is not an issue since only one device is connected to the
-bus on boards making use of this SoC.
+> ---
+>  drivers/char/agp/agp.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/char/agp/agp.h b/drivers/char/agp/agp.h
+> index 5c36ab85f80b..67d7be800a7c 100644
+> --- a/drivers/char/agp/agp.h
+> +++ b/drivers/char/agp/agp.h
+> @@ -138,7 +138,6 @@ struct agp_bridge_data {
+>  	unsigned long gart_bus_addr;
+>  	unsigned long gatt_bus_addr;
+>  	u32 mode;
+> -	enum chipset_type type;
+>  	unsigned long *key_list;
+>  	atomic_t current_memory_agp;
+>  	atomic_t agp_in_use;
+> -- 
+> 2.43.1
+> 
 
-Fixes: a33a532b3b1e ("arm64: dts: qcom: sm8650: Use GIC-ITS for PCIe0 and PCIe1")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index d488b3b3265e..12ba839f215e 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -2277,6 +2277,7 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
- 			/* Entries are reversed due to the unusual ITS DeviceID encoding */
- 			msi-map = <0x0 &gic_its 0x1401 0x1>,
- 				  <0x100 &gic_its 0x1400 0x1>;
-+			msi-map-mask = <0xff00>;
- 
- 			linux,pci-domain = <0>;
- 			num-lanes = <2>;
-@@ -2404,6 +2405,7 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
- 			/* Entries are reversed due to the unusual ITS DeviceID encoding */
- 			msi-map = <0x0 &gic_its 0x1481 0x1>,
- 				  <0x100 &gic_its 0x1480 0x1>;
-+			msi-map-mask = <0xff00>;
- 
- 			linux,pci-domain = <1>;
- 			num-lanes = <2>;
-
----
-base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
-change-id: 20240216-sm8550-msi-map-fix-ab8fe5e24df1
-
-Best regards,
 -- 
-Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
