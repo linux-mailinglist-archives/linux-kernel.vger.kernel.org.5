@@ -1,113 +1,146 @@
-Return-Path: <linux-kernel+bounces-68899-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68900-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E9448581A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:44:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17BF58581A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:44:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA4E3B2552B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:44:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFB6628A006
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B418612F5AA;
-	Fri, 16 Feb 2024 15:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5AC112F5AB;
+	Fri, 16 Feb 2024 15:44:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="i8bUIEw0"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="FB+uXG6s"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05EDC12BF03;
-	Fri, 16 Feb 2024 15:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A312F12A158;
+	Fri, 16 Feb 2024 15:44:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708098243; cv=none; b=UEJFavedJKlCOV/KoVMxWhVei+UO0qJs0lbk67mxHfeLVFgHXmsZ6IcZI9kMXgLHEyPbZs2YtuRKTfm1Rj4P0vhC0XaKCQ+EzjkKbCoWrxBztp0fZJ4aoax5S3y6BNWZkI1toE1u3LYrGqASDkGVSCCgp++KiuhjzNoAKQb9ti8=
+	t=1708098286; cv=none; b=vDjIc+6Kb4yenvqgJNqr427r2/YzDDFgggVJ5RfHK9YkYSHOW7BRGg9w6bLbj6OX2HOWKxxZksRLeklogUb6178drF7SQol+V3bOsjEF2gmFvet2KYY298/5BVlHKtHUBmEnvtGsnpwFVv4SJmcgmvEYon5qQF7giwezBCKScws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708098243; c=relaxed/simple;
-	bh=F+QVlPQi+jHUwVgrFftfh61LcSMs2H+6H2+hUGJpckA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nii9mnHDBzZNZxojhiYLB5CnB5oBgNhnkcLv3B5jyBwepOkM5zh+QJmLRttS71b6AfOn5n/yigvRziP9mJi3SR8KIO0HnDot7+6NgwQBYgo5gYPWZJ19LCqkNyPfsVTk32Qyi6JkD2FRqpa1yHG70Amg9s6ACs0vxpk7vC/GyrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=i8bUIEw0; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=mW8V17MsmL7VEwiMKsJzk5HQ8Z5PWc1CNNBk+B48w+A=; b=i8bUIEw0N70QsZY2kDWJw1w4Tm
-	6gzsJwmiUQN3C2NpHmyiXWkKt28KIwMPjgnx/9xrlHwCJES6JRmoQUaZD5nEIt36e+f5uo8g2HT+h
-	H9kX4R3NSAGfSw30WE6TPGAnrQuOP6x4LSxQDqyzuQe/C0mnUkingYlhy9lGC5TMIaGaD2na7FwjS
-	jjbeVQl9EJEasTrVJfdyFYsvW/WjFuOOD99gweBMdJUso+9N2a2jpUlnRvn9qyRUxdAgWkkNNnr6j
-	B5GhiKYPFc28873AR+zyIPUs5iEmpUBKFzjpvnOEVolxujCmlSijC2qYYPmuU0ewkbcaE518+DQ5N
-	r7G6PVoA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:33656)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rb0NH-0005ns-1X;
-	Fri, 16 Feb 2024 15:43:39 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rb0N8-0005jP-NS; Fri, 16 Feb 2024 15:43:30 +0000
-Date: Fri, 16 Feb 2024 15:43:30 +0000
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: arinc.unal@arinc9.com
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH netnext 8/8] net: dsa: mt7530: simplify link operations
- and force link down on all ports
-Message-ID: <Zc+ConfebmQdpCOF@shell.armlinux.org.uk>
-References: <20240208-for-netnext-mt7530-improvements-3-v1-0-d7c1cfd502ca@arinc9.com>
- <20240208-for-netnext-mt7530-improvements-3-v1-8-d7c1cfd502ca@arinc9.com>
+	s=arc-20240116; t=1708098286; c=relaxed/simple;
+	bh=e4ljz734j8K5IeryaDf+QcV32Hc7o/1BPmaP92RLzYE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=mPXvw9zsrgeQKhCk+7xd67ER23bfD0bDOlQ3pXuZxvbcNO88RlrMlns6ZuynaPtibmHHwhlvKviXYc9j9t6ndkj1e75ofSnI18M4IpvvL4lVXzMrR6IzQJKSkbeLUUT03XmPFi0sd4om7PxtXmbNyufhZK88bjdrp5GKycbwOAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=FB+uXG6s; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4AEE21C0006;
+	Fri, 16 Feb 2024 15:44:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708098280;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uLOKIfLa2Fcau86133DO8zv6SnmDWIf1Ivv0kU6coAI=;
+	b=FB+uXG6szCFB3RugpF1ZTfMUVw4QkzOfnYrqIos0AHclW+DR3KgszWL4UciL10wLj1nxoz
+	4uX1jPwDE64+9mE27wgjguQO3O62vz6T2SRYu18qtN50FZ+zcyECCiWfbeqlVBijZASUgA
+	1hdyH9Gj466bgdNxlnGbpi9ovUYBDWBeKC2TKY3J9Efm+CJ2Dog84RJ1CkVJL7afYYZstR
+	0ku+SzWVa5RLCWS/qoabYg/cjdwwCQxDtMT3cHGGZci+tKp3L1N/QmMHzB8PJZK+D2bueE
+	T6s3rf5+BTQZi8r+KICySJMzFoZuQmffr+TcWvOyHg/Q9mokoTP2ucoIDSRMjA==
+Message-ID: <be23b24e-5de1-400d-84fa-cf5b25e72a19@bootlin.com>
+Date: Fri, 16 Feb 2024 16:44:36 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Subject: Re: [PATCH 1/2] dt-bindings: net: Add TI DP83640
+To: Andrew Lunn <andrew@lunn.ch>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Herve Codina <herve.codina@bootlin.com>
+References: <20240130085935.33722-1-bastien.curutchet@bootlin.com>
+ <20240130085935.33722-2-bastien.curutchet@bootlin.com>
+ <dc81a307-3541-47e2-9c72-d661e76889bf@lunn.ch>
+Content-Language: en-US
+In-Reply-To: <dc81a307-3541-47e2-9c72-d661e76889bf@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240208-for-netnext-mt7530-improvements-3-v1-8-d7c1cfd502ca@arinc9.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-On Thu, Feb 08, 2024 at 08:51:36AM +0300, Arınç ÜNAL via B4 Relay wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> Currently, the link operations for switch MACs are scattered across
-> port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
-> phylink_mac_link_down.
-> 
-> port_enable and port_disable clears the link settings. Move that to
-> mt7530_setup() and mt7531_setup_common() which set up the switches. This
-> way, the link settings are cleared on all ports at setup, and then only
-> once with phylink_mac_link_down() when a link goes down.
-> 
-> Enable force mode at setup to apply the force part of the link settings.
-> This ensures that only active ports will have their link up.
+Hi Andrew,
 
-I think we may have a different interpretation of what phylink's
-mac_link_down() and mac_link_up() are supposed to be doing here.
-Of course, you have read the documentation of these methods so are
-fully aware of what they're supposed to do. So you are aware that
-when inband mode is being used, forcing the link down may be
-counter-productive depending on how the hardware works.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Thank you for your feedback.
+
+On 1/30/24 14:34, Andrew Lunn wrote:
+>> +  ti,led-config:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    enum: [1, 2, 3]
+>> +    description: |
+>> +      If present, configures the LED Mode (values defined in
+>> +      dt-bindings/net/ti-dp83640.h).
+>> +      LED configuration can also be strapped. If the strap pin is not set
+>> +      correctly or not set at all then this can be used to configure it.
+>> +       - 1     = Mode 1
+>> +        LED_LINK = ON for Good Link, OFF for No Link
+>> +        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
+>> +        LED_ACT = ON for Activity, OFF for No Activity
+>> +       - 2     = Mode 2
+>> +        LED_LINK = ON for Good Link, BLINK for Activity
+>> +        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
+>> +        LED_ACT = ON for Collision, OFF for No Collision
+>> +       - 3     = Mode 3
+>> +        LED_LINK = ON for Good Link, BLINK for Activity
+>> +        LED_SPEED = ON in 100 Mb/s, OFF in 10 Mb/s
+>> +        LED_ACT = ON for Full Duplex, OFF for Half Duplex
+>> +       - unset = Configured by straps
+> Please look at have the Marvell PHY driver supports LEDs via
+> /sys/class/leds. Now we have a generic way to supports LEDs, DT
+> properties like this will not be accepted.
+Ok I'll use /sys/class/leds
+>> +
+>> +  ti,phy-control-frames:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    enum: [0, 1]
+>> +    description: |
+>> +      If present, enables or disables the PHY control frames.
+>> +      PHY Control Frames support can also be strapped. If the strap pin is not
+>> +      set correctly or not set at all then this can be used to configure it.
+>> +       - 0     = PHY Control Frames disabled
+>> +       - 1     = PHY Control Frames enabled
+>> +       - unset = Configured by straps
+> What is a control frame?
+I'm not an expert on this but it seems that if the PHY's Serial Management
+interface is not available, it is possible to build PCF (PHY Control Frame)
+packets that will be passed to PHY through the MAC Transmit Data 
+interface. The
+PHY is then able to intercept and interpret these packets. Enabling it 
+increases
+the MII Transmit packet latency.
+You'll find details in §5.4.6 of datasheet 
+[https://www.ti.com/lit/gpn/dp83640]
+>> +
+>> +  ti,energy-detect-en:
+>> +    $ref: /schemas/types.yaml#/definitions/flag
+>> +    description: |
+>> +      If present, Energy Detect Mode is enabled. If not present, Energy Detect
+>> +      Mode is disabled. This feature can not be strapped.
+> Please use the phy tunable ETHTOOL_PHY_EDPD. There are a few examples
+> you can copy.
+
+Ok I'll do that also, thank you.
+
+
+Best regards,
+
+Bastien
+
 
