@@ -1,172 +1,146 @@
-Return-Path: <linux-kernel+bounces-68590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776BF857CDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:40:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1863A857CDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:41:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1C96B23E1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:40:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4C74287727
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:41:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7DD128818;
-	Fri, 16 Feb 2024 12:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 282E61292DE;
+	Fri, 16 Feb 2024 12:40:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OjPL0vOi"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tMec/5ws"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2077.outbound.protection.outlook.com [40.107.243.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AADD058203
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708087246; cv=none; b=Jnk9eYTpmu/4/HfUK628Dggspm4vjLep6SnVgVqOmksGKUMAa/IQg+laVMYNkmZ+2XUeLraH0VeplgoKK0DzYg/2Qti5cgAtUXpuayJaOoNaW7GdlO1zqD2kn3aU/SPLvGn5TymnyJkHg0LVLWBmSRHmMyNRG0xakFET3/J53c8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708087246; c=relaxed/simple;
-	bh=RHAVrJDR02TPJMiqDrO+AXDbXSsrU8gpy27+NAKnQUc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=muLmdTpYuj5fQK4s+pu16CsbSKrdzHn3aeIcusMSx4DBDmHyRJ4i0qR4ObEXSsePaSJyCh15Nr7tu2Uq8vYl02JbKguhhZVb+k+/M+HLF0FmUkkjvzsK9eCzwH9KkhnlzZuSZndacOLIAccOurbNUFLCQ3al+Vi4Xp96t8DhoXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OjPL0vOi; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51162964d46so335215e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 04:40:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708087243; x=1708692043; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=c/BEPC0f21cX8+pFxjO9Xj6ogm+sj9UMJhy8cDHL9rc=;
-        b=OjPL0vOimtW7ZC6XYz/uqraVgMt/tWb0TRO9C3fEQBOkN8RvTzXoETvZtApZLyQSnu
-         HTMOqnFbTJ2f5T7XrAuXwxoQZJEvVgi+DxLSonkJinfLo/8LO79xIXpWI5YjZTqHnUC8
-         5UpcnaR9ilMex32doJ8BSlkiqqJtUTISqDqzb+fGuJDamd1U2lasTs/6NcVKYovbRcC7
-         s399z2VrSe1UKEGijaqUl1L38tQyokuRB+32403ww4wImgs0d4QxNcevPWNks1W3jz93
-         t2GoxK50nxBWWgHjMj2v5lZpDCE1e967q79+hL3MsoSv9URYUp4zA9MGiaZOb0K4FqHG
-         A3kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708087243; x=1708692043;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=c/BEPC0f21cX8+pFxjO9Xj6ogm+sj9UMJhy8cDHL9rc=;
-        b=RP5r7EeON57uoHGdKeEPU7kykXABSTU7YFlZHIsugNAdvMMEuoyn6yuK/tN4adQmqa
-         qlmoyvdO3OmdHMVCtwthL1rlIZrTtqrtdIXLIf/vrkoMy8d32ikbr+VPqJxh/PHYTHfN
-         uEKKSioqTW28p3nohGn1LzPrHU3/E60MtQGJBomtwWHfUGPpR9V1tlQSTD5QvDQ4MM8H
-         O+QymTMuoI8VG6ZMvAMZD4hIcjraPjzvVQqXt5rzDE9K36Fg73pTPUDERvfWAuA1QLAJ
-         CTqv7NnFyr4bQrL74Z211ptIMK81om24vDhQnxE5OTuRhk2xKj8E12P95qevVLxEG5BM
-         K7pg==
-X-Forwarded-Encrypted: i=1; AJvYcCUZfy1+xeyJn3q9nrIm2DCkEhECJkhW+O47qxDfALcA41c246+A/kPZ/GZrh2QIQwP4RC2zYPuvXifoMH4/mdez1aAHrO7nI4c81BDi
-X-Gm-Message-State: AOJu0YyVp5xCeyJEiC66wjFU86mwJSNMjc+pYJO+F0koXLOQybLhoc6S
-	i85UCO+TayhcWevj4GAm6im8M1CRRjTJTrLAzZr/LSoC9ytk2Y3ml8cAok6z
-X-Google-Smtp-Source: AGHT+IFRSaMnjw8+3knZoCRYoJ3YhOgeltpJKK6FMRHJWpFVSx03+fMwDDJJ9ib7uI6P0LQYFOzXgg==
-X-Received: by 2002:a05:6512:249:b0:511:8e03:c9a3 with SMTP id b9-20020a056512024900b005118e03c9a3mr1302245lfo.2.1708087242403;
-        Fri, 16 Feb 2024 04:40:42 -0800 (PST)
-Received: from localhost (88-115-160-21.elisa-laajakaista.fi. [88.115.160.21])
-        by smtp.gmail.com with ESMTPSA id x17-20020ac259d1000000b005129c9758e0sm6230lfn.306.2024.02.16.04.40.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 04:40:42 -0800 (PST)
-Date: Fri, 16 Feb 2024 14:40:26 +0200
-From: Zhi Wang <zhi.wang.linux@gmail.com>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
- linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org, Joonas
- Lahtinen <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi
- <rodrigo.vivi@intel.com>, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
- Zhenyu Wang <zhenyuw@linux.intel.com>, intel-gvt-dev@lists.freedesktop.org
-Subject: Re: [PATCH 00/21] drm/i915: remove unused structure members
-Message-ID: <20240216144026.00005144.zhi.wang.linux@gmail.com>
-In-Reply-To: <87plww4ws7.fsf@intel.com>
-References: <20240216065326.6910-1-jirislaby@kernel.org>
-	<87plww4ws7.fsf@intel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.34; x86_64-w64-mingw32)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC691292CE
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708087251; cv=fail; b=KASMOIzSnqeCG25pbI0jM/S4Vw9u8fqkvbNKe3DzoPBqGFBB0HIIoAg5c39tGicdQ3zu1eDuMoO4mWkfT3HT+WrarOgoAhDYY9521U2/RVovR+iWGChB4pEciGa3jZAMeFRRSpPcA2gbCn+SuIz3nQ/V4/qdroVbI87eM0BtUTE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708087251; c=relaxed/simple;
+	bh=qtuWbu7EK56Xmv+4uwHLGStLSArhBh9UF9jYl1MnQxs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V0iNsPW2t0RxuTx82uBOiWGq4Sgej8qtyGUvF49CoexLH5eKRkcm+qYUZs9IzblyftlHFqxqseLGar0FhMO9gnBXxnGHBR5VfqwcMS6esTrObzAACLaYxLnt8SfEsaJ3e5Ale+V6ntRCHDaukwC/JKGLky+3Cnc2PFmmjtaDUbc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tMec/5ws; arc=fail smtp.client-ip=40.107.243.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MCyOK5XiJudObf76hXXNobrsGrwgntO0RPqhyq1hcl0Bh18/HBZgQ55WuoUu3A7SBvo6ChrU830pG3zgQ3Kh0ZUSEskYqVqh0BggiXCkGpTdmqKvDGE/cB0KoQFlGAGIUZfyHV3mxK+tkKdQhpE0jCxk37u4M+jq6XFZalJOZ6GdVbyS7xh7EzmkfMwkuialaw83IroRL0lBgPbAb0w1BO0fwRzGwCBDMiD0ffwTzKZSgdKYrazgj3+pHAhgkIdmLKX6Y6FMrTIB/6ou9SyA93aNuuCfjhbNOd1O/vgD+w4sJq9UsKH007nwldAvuo1a5ftEYZm+bBj2SZtFuzP2Mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vy5cMRZRanb0NbhtgpX7d0z1D4Qth75YYY3PnDr4D3g=;
+ b=fy1qv9sRdu0m4C3V0NwptYUN00Y8lKx5kRrk37JoMrjtHev++L14xs6hv2OpaNGNyEcfv9tgjeHwrPCBTh8BDPEVfHj/3hDvVVhZvrNYiTg0guLZivKb5ixO8WsKABwWxQNSb+H+ueM4dpig/1OunczrN5x114HxLIF64yWs7MKSzfPq/N+6fMqgaFN2O9iL8AXPd8agWNbq4dvoR2M1S8hF7qF9olDPJNlpLwlACX+MPQc3omNe80MOepXIBTzgOo07lgq9vEkBtxPZlU3kqGEY4MIQ77yZvKbHcb/Y/LTTmsqRf3nf4UbdmRFLJYaDL4DXiyzN+VB4VFrsPgu3MQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vy5cMRZRanb0NbhtgpX7d0z1D4Qth75YYY3PnDr4D3g=;
+ b=tMec/5wsXUS2iiEZkCOQKkUTpB/AuOxkDns4fLok3oi7/Qhd9+wvyfJ1SwLk8v3jvSg0dt7Vvykv0cluBSu2SNjhG5oyLGQICbUi8RWTu1d8pyquH44dcWGn2ZMJKKf02m/bUMCSxA55IFq0LCiuz+qxjjIS4rENHoAaXUyDjdA=
+Received: from BYAPR01CA0033.prod.exchangelabs.com (2603:10b6:a02:80::46) by
+ PH8PR12MB6987.namprd12.prod.outlook.com (2603:10b6:510:1be::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
+ 2024 12:40:46 +0000
+Received: from SJ1PEPF00001CEA.namprd03.prod.outlook.com
+ (2603:10b6:a02:80:cafe::21) by BYAPR01CA0033.outlook.office365.com
+ (2603:10b6:a02:80::46) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
+ Transport; Fri, 16 Feb 2024 12:40:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ1PEPF00001CEA.mail.protection.outlook.com (10.167.242.26) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Fri, 16 Feb 2024 12:40:45 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 16 Feb
+ 2024 06:40:44 -0600
+Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 16 Feb
+ 2024 06:40:44 -0600
+Received: from xsjssw-mmedia4.xilinx.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35
+ via Frontend Transport; Fri, 16 Feb 2024 06:40:43 -0600
+From: Rohit Visavalia <rohit.visavalia@amd.com>
+To: <gregkh@linuxfoundation.org>, <laurent.pinchart@ideasonboard.com>,
+	<maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+	<tzimmermann@suse.de>, <airlied@gmail.com>, <daniel@ffwll.ch>,
+	<michal.simek@amd.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-arm-kernel@lists.infradead.org>
+CC: <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm: xlnx: dp: Reset DisplayPort IP
+Date: Fri, 16 Feb 2024 04:40:43 -0800
+Message-ID: <20240216124043.1226713-1-rohit.visavalia@amd.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ1PEPF00001CEA:EE_|PH8PR12MB6987:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0e26fbb-2eb2-4325-ec51-08dc2eec7f00
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	mKNu5LbkKaNBUuYYJ/5bLGKPSn8R7DW1Qmh4rig+n+kOG+hoK57nNPNJslXa2RpViCHLYxAAsqympEza5G0ZVG6kc+REUVk4kpZQzvKowCIKKC9N/GesqqXLiTp02qmO3599sXyxcuYhU5wMbqf3Bc/TB+ZWmYFcLYgYwyZBcEc7ZFvAzPfMgbDrdCCVucgnW6KCXRNfh1w89XkCCAifZChK7PHPhV7evVA/C/AFUM+sxYHHUV7zbZn2qDxb7xSOtr02OqK5eWB8tL3UOZgN87Yq6D4Njgmkf4o+rLaCEY/pcph2pyrj79NyxZ0eUdInmdb8YXDUGTdeKVKzwfHNulRlvUJBmuCENupyiBgbJl879OURXh0E+mCmnWQHL/4VwDf7VHLs9TbT5UwAQcY88008ofmXs+c/2QZxvw/tJ2kF9/X282ZGpmugjr+W86BsK38f0aAlSDDhec9GyXQVJLQSESEILinODyFsqPCWufvIho8sQrIcGIbqpxTHhLf4mlw93Z+yF2bq7/EATZF0C36atKhowMYfKjBV+YmujvjrYwxucLdfp/87ATzSldXen8pRla3UnjLuYODKxymWL/ShvLU5NKkejtSyhRnU6cbetCCdzrjKHz7Vs8dBjQxx2EbEsOJbCpC0W310LhaL1SzPS/vylP5ovhzhKYU523U=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(376002)(396003)(136003)(346002)(230922051799003)(36860700004)(451199024)(82310400011)(186009)(1800799012)(64100799003)(46966006)(40470700004)(336012)(426003)(81166007)(356005)(82740400003)(70586007)(7416002)(5660300002)(4744005)(70206006)(8936002)(8676002)(4326008)(44832011)(2906002)(26005)(110136005)(2616005)(316002)(478600001)(1076003)(921011)(86362001)(36756003)(41300700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 12:40:45.6444
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0e26fbb-2eb2-4325-ec51-08dc2eec7f00
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ1PEPF00001CEA.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6987
 
-On Fri, 16 Feb 2024 10:51:20 +0200
-Jani Nikula <jani.nikula@linux.intel.com> wrote:
+Assert DisplayPort reset signal before deasserting,
+it is to clear out any registers programmed before booting kernel.
 
-> On Fri, 16 Feb 2024, "Jiri Slaby (SUSE)" <jirislaby@kernel.org> wrote:
-> > this series removes unused i915 structure members as found by
-> > clang-struct (and manually checked by me).
-> 
-> Thanks Jiri, good stuff!
-> 
-> Acked-by: Jani Nikula <jani.nikula@intel.com>
-> 
-> However, you may have overlooked that drivers/gpu/drm/i915/gvt/ is
-> maintained separately.
-> 
-> Cc: Zhenyu, Zhi, how do you want the gvt patches in this series
-> handled?
-> 
+Signed-off-by: Rohit Visavalia <rohit.visavalia@amd.com>
+---
+ drivers/gpu/drm/xlnx/zynqmp_dp.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Many thanks for the clean-up patch Jiri! Jani, it would be easier
-for us that you can help to apply the patches through i915.
-
-Thanks,
-Zhi.
-
-> 
-> BR,
-> Jani.
-> 
-> 
-> >
-> > Cc: intel-gfx@lists.freedesktop.org
-> > Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> > Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-> > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> > Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-> >
-> > Jiri Slaby (SUSE) (21):
-> >   drm/i915: remove unused intel_dvo_dev_ops hooks
-> >   drm/i915: remove structs intel_vgpu_pipe_format and
-> >     intel_vgpu_fb_format
-> >   drm/i915: remove intel_dsi::{port_bits,hs}
-> >   drm/i915: remove
-> >     intel_gvt_gtt::{mm_alloc_page_table,mm_free_page_table}
-> >   drm/i915: remove intel_gvt_mmio_info::{device,addr_range}
-> >   drm/i915: remove
-> > intel_vgpu_workload::{ring_context,restore_inhibit} drm/i915:
-> > remove intel_vbt_panel_data::edp::initialized drm/i915: remove
-> > intel_guc::ads_engine_usage_size drm/i915: remove
-> > i915_drm_client::id drm/i915: remove i915_perf_stream::size_exponent
-> >   drm/i915: remove intel_vgpu_gtt::active_ppgtt_mm_bitmap
-> >   drm/i915: remove intel_vgpu_fence::base
-> >   drm/i915: remove intel_vgpu_opregion::mapped
-> >   drm/i915: remove intel_vgpu::intx_trigger
-> >   drm/i915: remove gvt_mmio_block::device
-> >   drm/i915: remove intel_gvt_irq_info::warned
-> >   drm/i915: remove intel_gvt_event_info::policy
-> >   drm/i915: remove intel_gvt_irq::pending_events
-> >   drm/i915: remove execute_cb::signal
-> >   drm/i915: remove i915_vma::obj_hash
-> >   drm/i915: remove intel_memory_region_ops::flags
-> >
-> >  .../drm/i915/display/intel_display_types.h    |  1 -
-> >  drivers/gpu/drm/i915/display/intel_dsi.h      |  4 ---
-> >  drivers/gpu/drm/i915/display/intel_dvo_dev.h  | 25
-> > ------------------- drivers/gpu/drm/i915/gt/uc/intel_guc.h        |
-> >  2 -- drivers/gpu/drm/i915/gvt/fb_decoder.h         | 11 --------
-> >  drivers/gpu/drm/i915/gvt/gtt.h                |  3 ---
-> >  drivers/gpu/drm/i915/gvt/gvt.h                |  5 ----
-> >  drivers/gpu/drm/i915/gvt/interrupt.c          |  1 -
-> >  drivers/gpu/drm/i915/gvt/interrupt.h          |  2 --
-> >  drivers/gpu/drm/i915/gvt/mmio.h               |  2 --
-> >  drivers/gpu/drm/i915/gvt/scheduler.h          |  2 --
-> >  drivers/gpu/drm/i915/i915_drm_client.h        |  2 --
-> >  drivers/gpu/drm/i915/i915_perf_types.h        |  1 -
-> >  drivers/gpu/drm/i915/i915_request.c           |  1 -
-> >  drivers/gpu/drm/i915/i915_vma_types.h         |  1 -
-> >  drivers/gpu/drm/i915/intel_memory_region.h    |  2 --
-> >  16 files changed, 65 deletions(-)
-> 
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+index 1846c4971fd8..5a40aa1d4283 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+@@ -1714,6 +1714,10 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
+ 		goto err_free;
+ 	}
+ 
++	ret = zynqmp_dp_reset(dp, true);
++	if (ret < 0)
++		return ret;
++
+ 	ret = zynqmp_dp_reset(dp, false);
+ 	if (ret < 0)
+ 		goto err_free;
+-- 
+2.25.1
 
 
