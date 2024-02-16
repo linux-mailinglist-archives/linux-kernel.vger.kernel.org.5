@@ -1,128 +1,152 @@
-Return-Path: <linux-kernel+bounces-68354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE8F485792A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:47:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1FE85793D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:50:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BC59B228AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:47:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70364285E7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532FC1BDE0;
-	Fri, 16 Feb 2024 09:47:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DD691CA82;
+	Fri, 16 Feb 2024 09:49:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RMRg+Na/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="T9ir6dnx"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A6C1BF28;
-	Fri, 16 Feb 2024 09:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739761BC26;
+	Fri, 16 Feb 2024 09:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708076840; cv=none; b=rJDWeRKmRns6iZufTzCWg+1uNZBr5yx0qiT8dHj/2mP3cb5UTb/Md/wGyc9gSEA5FHjy8wThNoyV475r8pcjWpkiL8W0rs7P5sgGjsNnZao/lvQuqkHOQgDljqTroyNewsIvgCe0lj18slTmZPVlFvsKGzSWvQ2AU0lh9dYNQlI=
+	t=1708076974; cv=none; b=Am0esGmXJOmk0eZFsP0owePZMiDnDMtEWr7sC8l91CqF+CEZ4H1sOxl6wqXFUyY2G3Gn09DgSWWQqmxfyDqWtA+Gg9OshMDBC25BmAUIJNEaxc5LzN4L2uUI1Xl9gICaJnpAGAPjQrpEb/hbL0TPkHcec3dWsU20BOeO7X+UOG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708076840; c=relaxed/simple;
-	bh=52oYAJx/bkBj6fjp/OHIlHLzNxTJ69+yLoxIJzbK3lo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ecaFBr6ypoXD4De+CFAzisQfvZn0X6Dy3u4Gg6XNPr2paXiNpv6Ek+9lRWgBW/dvPbVJpVq2mvrzuJSGgePqrT8WTjpLCLEIlMteSWMRH8glGBjkifrZtkpE9ScIAbXloXZTl0GU6qnPQkeTmkQ1BD9O7/16+l3uvVAuEmHqrAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RMRg+Na/; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708076838; x=1739612838;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=52oYAJx/bkBj6fjp/OHIlHLzNxTJ69+yLoxIJzbK3lo=;
-  b=RMRg+Na/hvkTtrd12NOOJrbJyvxdwkNHE6bwGbVaQV0fi5H6AlxtX44d
-   769HrkiD23yMTS0u43/v27Ec98NYkTJcNCf0k9xAWgU7nkcQdVkfQmeKD
-   TfeW+HhLGAlBWSDySJe+kKlufcCZ+nuF+HNo1rtd9FBaDDcdHw3MvOATo
-   0OTXDIJXv4YWjRu2c2p8cKKY6TogvX5XLXpm/RdAYUbNJFUwCJ68Y0RES
-   qwTBPJ2lMYVidi3iRgkYAb3VP637ACqOOMTprlUCvrNcyjz85Njp6KUhf
-   OK9aAgzr0lo18ZIOVEnpoG5/N9enlMkUVn982Xww8aQPCBKyQdcgKhMHh
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="6028849"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="6028849"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:47:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="8475072"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.220.122])
-  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:47:16 -0800
-Message-ID: <c4d6a864-f1a6-47f0-ae03-c54556d34bc8@intel.com>
-Date: Fri, 16 Feb 2024 11:47:11 +0200
+	s=arc-20240116; t=1708076974; c=relaxed/simple;
+	bh=vkcf7in+HHvF7wODXOGKQNfcfhTdMHKm+z/DnZUTeD0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=chY7s9KmqTJ4y2Tz5rEkbPIzQb12f4ipdKKuK34J0Io4HiF7YGselSMVS1ogWrVpbrZeEP/5SynMKyFDcKoJvTah4IuU3elNhEL+JdREVrs7nIDQ+pdGlMLgzVBK7DYQm9Vd4RcvNCJIvyhv7qnrvlEJWAYZ8ExSRnxI1kQoOz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=T9ir6dnx; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41G4ppm2024161;
+	Fri, 16 Feb 2024 10:49:04 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=z/h6EJe
+	qC1Av5YLNEHSAWiHso3gB+EOTqFg4TUwvKR0=; b=T9ir6dnxGhQ8vE+QMPws/4w
+	0pyqUjVl4F/LLgp09kkzahj1LF7hmg0CGJsCrhqjginRLSxsDS62+9etuHKChLHN
+	+jXd7+MZrqFAnGibzEfMVJ7cA2shGfmWDSBhy104TDpm1XJcf3q9NgD3RrYz9LSL
+	YGGD34Q4hFgDhDGzrq3SdJIsKljfZ0OM6NeyxXgiY4IKsUO4xkQdJ+T9BfmAJv/R
+	9Bu6o9UnaP9GjY4kRoE0OSV6yrlmqEAns4qgMISSUFlrEVrxqzOGOfYzxP/ZKkxj
+	jPE9eY6O0uqs+GNHmSMCEpn0A83pUH0ELq5UkRrfEES+vst7AINnduFxyTQ28CA=
+	=
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wa126gy3f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 10:49:03 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 5D1B040045;
+	Fri, 16 Feb 2024 10:48:59 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 045F1237D6D;
+	Fri, 16 Feb 2024 10:48:17 +0100 (CET)
+Received: from localhost (10.201.20.114) by SHFDAG1NODE1.st.com (10.75.129.69)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 16 Feb
+ 2024 10:48:16 +0100
+From: Antonio Borneo <antonio.borneo@foss.st.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre
+ Torgue <alexandre.torgue@foss.st.com>,
+        Catalin Marinas
+	<catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+CC: Antonio Borneo <antonio.borneo@foss.st.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: [PATCH 00/12] irqchip/stm32-exti: add irq-map and STM32MP25 support
+Date: Fri, 16 Feb 2024 10:47:45 +0100
+Message-ID: <20240216094758.916722-1-antonio.borneo@foss.st.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf test: Enable Symbols test to work with a current
- module dso
-Content-Language: en-US
-To: Namhyung Kim <namhyung@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
- linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>
-References: <20240131192416.16387-1-adrian.hunter@intel.com>
- <CAP-5=fUrTzkAfXoto1P8SnTFApSSdt+mmWHCXSKVrr0kuphE0w@mail.gmail.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <CAP-5=fUrTzkAfXoto1P8SnTFApSSdt+mmWHCXSKVrr0kuphE0w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SAFCAS1NODE2.st.com (10.75.90.13) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_08,2024-02-14_01,2023-05-22_02
 
-On 31/01/24 22:58, Ian Rogers wrote:
-> On Wed, Jan 31, 2024 at 11:24 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
->>
->> The test needs a struct machine and creates one for the current host,
->> but a side-effect is that struct machine has set up kernel maps
->> including module maps.
->>
->> If the 'Symbols' test --dso option specifies a current kernel module,
->> it will already be present as a kernel dso, and a map with kmaps needs
->> to be used otherwise there will be a segfault - see below.
->>
->> For that case, find the existing map and use that. In that case also,
->> the dso is split by section into multiple dsos, so test those dsos
->> also. That in turn, shows up that those dsos have not had overlapping
->> symbols removed, so the test fails.
->>
->> Example:
->>
->>   Before:
->>
->>     $ perf test -F -v Symbols --dso /lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm-intel.ko
->>      70: Symbols                                                         :
->>     --- start ---
->>     Testing /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
->>     Segmentation fault (core dumped)
->>
->>   After:
->>
->>     $ perf test -F -v Symbols --dso /lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm-intel.ko
->>      70: Symbols                                                         :
->>     --- start ---
->>     Testing /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
->>     Overlapping symbols:
->>      41d30-41fbb l vmx_init
->>      41d30-41fbb g init_module
->>     ---- end ----
->>     Symbols: FAILED!
->>
->> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> 
-> Reviewed-by: Ian Rogers <irogers@google.com>
-> 
+This series adds support for STM32MP25 to stm32-exti driver.
+The STM32MP25 includes two instances of the EXTI irq controller,
+each mapping their EXTI events to different GIC irq sets.
 
-Thanks Ian!
+In the current driver code, the mapping between events and irqs
+would require adding to the driver two new compatibles and two
+new mapping tables for this new SoC. This way of working starts
+showing it's limits; it doesn't scale and is not flexible.
 
-This patch is still OK.
+This series introduces an optional nexus child node to the EXTI
+DT node. The nexus node provides the mapping between events and
+irqs through the standard "interrupt-map" property, thus moving
+in the DT the description of the HW connections between the EXTI
+and the GIC.
+Being the nexus child node optional, it guarantees the backward
+compatibility with all the existing DT for STM32MP1xx.
+Nevertheless the series updates and uniforms the existing DT by
+adding to them the nexus child node too.
+
+The DT node for the GIC of STM32MP25 is already upstream with:
+	#address-cells = <1>;
+This value needs to be updated to <2> because the SoC uses 64 bit
+addressing and the v2m child node of GIC requires 64 bit address
+too.
+This minor change to the GIC property "#address-cells" impacts
+the contents of the "interrupt-map" property.
+This series also anticipates the addition of the v2m child node
+to the GIC, thus avoiding any further rework.
+
+
+Antonio Borneo (11):
+  irqchip/stm32-exti: Fix minor indentation issue
+  dt-bindings: interrupt-controller: stm32-exti: Add irq nexus child
+    node
+  irqchip/stm32-exti: Map interrupts through interrupt nexus node
+  irqchip/stm32-exti: Convert driver to standard PM
+  irqchip/stm32-exti: Skip secure events
+  irqchip/stm32-exti: Mark events reserved with RIF configuration check
+  arm64: Kconfig.platforms: Enable STM32_EXTI for ARCH_STM32
+  ARM: dts: stm32: Use exti interrupt-map on stm32mp151
+  ARM: dts: stm32: Use exti interrupt-map on stm32mp131
+  arm64: dts: st: Add exti1 and exti2 nodes on stm32mp251
+  arm64: dts: st: Add interrupt parent to pinctrl on stm32mp251
+
+Christian Bruel (1):
+  arm64: dts: st: Add v2m to GIC node on stm32mp251
+
+ .../interrupt-controller/st,stm32-exti.yaml   |  42 ++++-
+ arch/arm/boot/dts/st/stm32mp131.dtsi          |  49 +++++-
+ arch/arm/boot/dts/st/stm32mp151.dtsi          |  51 ++++++
+ arch/arm64/Kconfig.platforms                  |   1 +
+ arch/arm64/boot/dts/st/stm32mp251.dtsi        | 154 +++++++++++++++++-
+ drivers/irqchip/irq-stm32-exti.c              | 148 ++++++++++++-----
+ 6 files changed, 397 insertions(+), 48 deletions(-)
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.34.1
 
 
