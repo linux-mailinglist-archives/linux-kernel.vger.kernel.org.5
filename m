@@ -1,174 +1,105 @@
-Return-Path: <linux-kernel+bounces-68303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9ADA857877
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:05:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 777B985787E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:06:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96E42861E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:05:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17A701F233E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:06:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA471BC30;
-	Fri, 16 Feb 2024 09:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EDB01B948;
+	Fri, 16 Feb 2024 09:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UM8xGeTM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Msa0LS+8"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DBEE1BC20;
-	Fri, 16 Feb 2024 09:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECEA91C288;
+	Fri, 16 Feb 2024 09:05:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708074332; cv=none; b=l4JnY53Evy5DAQsboQI1dQloNFxNOx0ueiZ5Hpxl9z0v1GAD7RGTaqnLZS6+TEMbblpdkUYdgG1JGd/nPyd2tuWIEULgBnU61enruqZWXDlVE1xhNmhcGiq511vZUli/HSx+0pBEU7mcV9xT6AAIYO9/Ao/2Exz5I/O0u+8z+bQ=
+	t=1708074339; cv=none; b=p9McfrcZKUGKEFZYI7FO3cko/dGdhgQ7iEw3yuwKWrSjNo9cFKRP6cZsIESDV1R+KXia3JNW8zPAZosiVvYds0cyobX35odsGNKxZTIi0v7Bu2/+PrOPSPWzUhpTUeBEwGe6o8b8Z/VuKAHDFTs8FI8WLAav9P5e3wdLwkcUJ8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708074332; c=relaxed/simple;
-	bh=f2wh1QsEa1UsaNBdVYAdNAwqa6OdTmucGngu4R41lrA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kgmboJBrtyW6lh+eNnebK4kAtOi2muWOoyO8oFGCfv3eaHvsQo+M53fwsTglYwc8lXbmdd0W+KaXklZ1ObToOTgsdPl95Dz0YGppeEuqQTZMe8JavcVUZZizay8Lg6LewlFHFCLsFlNq+cBLvwzXKAWWR3btkdspJoKcHDtdHO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UM8xGeTM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E738C433F1;
-	Fri, 16 Feb 2024 09:05:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708074330;
-	bh=f2wh1QsEa1UsaNBdVYAdNAwqa6OdTmucGngu4R41lrA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UM8xGeTMH6VNRn/x6xgWIILBOdW34CH016Ah5Pr6BtdNOWDTxVNYW7CVYcjQKnx1C
-	 oB5UPpxsHWVvIdjJAzVtSMQU2V2sCRbbA6okH2gzQqM55bJNyurZ3V9m16wNQKzcBI
-	 xbQtyywF85B8kP55MK6T9GMZz7OIE1VF9jlrqZIqGRCJtOAENKRua7ITqvH084oTdk
-	 CDH6T1WPnCSGYlp+hP7LCiw/y4DJMdkWXLlPbc6xuwQ9znxLEFkxNFw2mVujk9oxsf
-	 Bxykp6LgWXWczNPjJYc/nkNtzxQrkhiFcXBVqjWJeIYl4mYek0RVZel6m0MKgL3F6i
-	 gj/V8zESMI34A==
-Date: Fri, 16 Feb 2024 10:05:27 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Adam Ford <aford173@gmail.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Frank Binns <frank.binns@imgtec.com>, 
-	Matt Coster <matt.coster@imgtec.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Sarah Walker <sarah.walker@imgtec.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Nishanth Menon <nm@ti.com>, 
-	Marek Vasut <marek.vasut@mailbox.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: RE: [PATCH v2] drm/imagination: DRM_POWERVR should depend on
- ARCH_K3
-Message-ID: <nzrkujogauvn262ucxippwidyub6ikcohcjpbpn4hzj7rymctm@4owntgrmcquf>
-References: <6be2558b8462fc08095c24c9257563ab5f3ae013.1708001398.git.geert+renesas@glider.be>
- <kycepdxukfsww3tnxoo5hoiuo3vcgpqqmynokzhtl4vodgm6zc@ih4uhw7gz4jh>
- <CAMuHMdVf7ophCwKt-n_N-LBHV4+t14Gjb4d1O0T8FDk_9xMFtA@mail.gmail.com>
- <CAHCN7xJ65RP8TO7cS0p5DwE6zru5NEF0_JA+8siT_OpSeLD7pA@mail.gmail.com>
- <CAHCN7x+EnSU8qk5dBFco=0vkeknGq18qEN7vFmZs0_q83T_3+w@mail.gmail.com>
- <CAHCN7xKffJ29zyjoJVAcy3b_d=-zkFzbL=URj4yWJWzYvRdB_Q@mail.gmail.com>
- <TYCPR01MB11269CBE8429A31DE5002A5A5864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+	s=arc-20240116; t=1708074339; c=relaxed/simple;
+	bh=CQwhrTeWOnWyMnxH79QH+r74JpqB84pPIFxNLj4LUJw=;
+	h=Mime-Version:Content-Type:Date:Message-Id:To:From:Subject:Cc:
+	 References:In-Reply-To; b=np0q81iGW9OJV+JTeMapsLC0aWeqbLWBh0YHNxXtb3k7w04/MCsXWl1h+YdAMaBieQXE0wRakBc6rqqVEw0yjsVXBjzUTtlXshpYofulcR+6UIWtoRDju/YBhadg6j9ucuAnPVCb3oh9evZyyd84EztOnX1r5P8gFrYi60H5jm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Msa0LS+8; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 10FA8C0007;
+	Fri, 16 Feb 2024 09:05:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708074334;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CQwhrTeWOnWyMnxH79QH+r74JpqB84pPIFxNLj4LUJw=;
+	b=Msa0LS+8ofaQ0R4t/+bCkMl6Px0kx3f2rn8mJ+mg2kOFtYyumrYsagmxr6Y5pgBNEFKvE8
+	6r7XlqtE8cIuoxTytvqcem1LzwgLkB/rvoto8rppBVzTkENj2XiWrza+phhuoLI0YcoKwf
+	3A9XHMjd0wgu9ooKUTR7VkAb1seK9OY6yO1tRYi/3AovjcIY/nyEozFIYcCRc+3fZRrsfL
+	KJv2ZMzjh4bBUOCeEk1g47dCsFsQn8qdVMWuDWNeaCfWnyQkWlLSyV7yfYAsCq8I52YaUR
+	EUGUrwDnUm6UFqiLeEYIXdxY6YYCG0EoCSH00Ap8nLQUPjNrkHIwHKUFMXMOhQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7qyxpf6ga5atuhgo"
-Content-Disposition: inline
-In-Reply-To: <TYCPR01MB11269CBE8429A31DE5002A5A5864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
-
-
---7qyxpf6ga5atuhgo
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 16 Feb 2024 10:05:33 +0100
+Message-Id: <CZ6DTGBC02P7.1RHCB4E64N88A@bootlin.com>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Linus Walleij"
+ <linus.walleij@linaro.org>, "Andi Shyti" <andi.shyti@kernel.org>, "Rob
+ Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 13/13] MIPS: mobileye: eyeq5: add resets to I2C
+ controllers
+Cc: <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+X-Mailer: aerc 0.15.2
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-13-19a336e91dca@bootlin.com>
+ <42b7e3bb-a152-4ded-91f3-fb8043a7f413@linaro.org>
+In-Reply-To: <42b7e3bb-a152-4ded-91f3-fb8043a7f413@linaro.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Fri, Feb 16, 2024 at 08:47:46AM +0000, Biju Das wrote:
-> Hi Adam Ford,
->=20
-> > -----Original Message-----
-> > From: Adam Ford <aford173@gmail.com>
-> > Sent: Thursday, February 15, 2024 11:36 PM
-> > Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should depend on
-> > ARCH_K3
+Hello,
+
+On Fri Feb 16, 2024 at 8:59 AM CET, Krzysztof Kozlowski wrote:
+> On 15/02/2024 17:52, Th=C3=A9o Lebrun wrote:
+> > Add resets properties to each I2C controller. This depends on the
+> > reset-eyeq5 platform reset controller driver.
 > >=20
-> > On Thu, Feb 15, 2024 at 11:22=E2=80=AFAM Adam Ford <aford173@gmail.com>=
- wrote:
-> > >
-> > > On Thu, Feb 15, 2024 at 11:10=E2=80=AFAM Adam Ford <aford173@gmail.co=
-m> wrote:
-> > > >
-> > > > On Thu, Feb 15, 2024 at 10:54=E2=80=AFAM Geert Uytterhoeven
-> > > > <geert@linux-m68k.org> wrote:
-> > > > >
-> > > > > Hi Maxime,
-> > > > >
-> > > > > On Thu, Feb 15, 2024 at 5:18=E2=80=AFPM Maxime Ripard <mripard@ke=
-rnel.org>
-> > wrote:
-> > > > > > On Thu, Feb 15, 2024 at 01:50:09PM +0100, Geert Uytterhoeven
-> > wrote:
-> > > > > > > Using the Imagination Technologies PowerVR Series 6 GPU
-> > > > > > > requires a proprietary firmware image, which is currently only
-> > > > > > > available for Texas Instruments K3 AM62x SoCs.  Hence add a
-> > > > > > > dependency on ARCH_K3, to prevent asking the user about this
-> > > > > > > driver when configuring a kernel without Texas Instruments K3
-> > Multicore SoC support.
-> > > > > >
-> > > > > > This wasn't making sense the first time you sent it, and now
-> > > > > > that commit log is just plain wrong. We have firmwares for the
-> > > > > > G6110, GX6250, GX6650, BXE-4-32, and BXS-4-64 models, which can
-> > > > > > be found on (at least) Renesas, Mediatek, Rockchip, TI and
-> > > > > > StarFive, so across three
-> > > > >
-> > > > > I am so happy to be proven wrong!
-> > > > > Yeah, GX6650 is found on e.g. R-Car H3, and GX6250 on e.g. R-Car =
-M3-
-> > W.
-> > > > >
-> > > > > > architectures and 5 platforms. In two months.
-> > > > >
-> > > > > That sounds like great progress, thanks a lot!
-> > > > >
-> > > > Geert,
-> > > >
-> > > > > Where can I find these firmwares? Linux-firmware[1] seems to lack
-> > > > > all but the original K3 AM62x one.
-> > > >
-> > > > I think PowerVR has a repo [1], but the last time I checked it, the
-> > > > BVNC for the firmware didn't match what was necessary for the GX6250
-> > > > on the RZ/G2M.  I can't remember what the corresponding R-Car3 model
-> > > > is.  I haven't tried recently because I was told more documentation
-> > > > for firmware porting would be delayed until everything was pushed
-> > > > into the kernel and Mesa.  Maybe there is a better repo and/or newer
-> > > > firmware somewhere else.
-> > > >
-> > > I should have doubled checked the repo contents before I sent my last
-> > > e-mail , but it appears the firmware  [2] for the RZ/G2M, might be
-> > > present now. I don't know if there are driver updates necessary. I
-> > > checked my e-mails, but I didn't see any notification, or I would have
-> > > tried it earlier.  Either way, thank you Frank for adding it.  I'll
-> > > try to test when I have some time.
-> > >
-> >=20
-> > I don't have the proper version of Mesa setup yet, but for what it's
-> > worth, the firmware loads without error, and it doesn't hang.
->=20
-> Based on [1] and [2],
->=20
-> kmscube should work on R-Car as it works on RZ/G2L with panfrost as earli=
-er version of RZ/G2L
-> which uses drm based on RCar-Du, later changed to rzg2l-du.
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> > ---
+>
+> This should be squashed with previous patch adding i2c controllers.
+> Don't add incomplete nodes just to fix them in next patch.
 
-IIRC, the mesa support isn't there yet for kmscube to start.
+The goal was to isolate reset phandles to a single patch. The series
+with this patch dropped works because resets in their default state are
+deasserted, so this isn't a fix. And it allows testing the series on
+hardware with only the base platform series, which I found useful.
 
-Maxime
+Noted, I'll be squashed for next revision.
 
---7qyxpf6ga5atuhgo
-Content-Type: application/pgp-signature; name="signature.asc"
+Regards,
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZc8lVgAKCRDj7w1vZxhR
-xepyAQCELyUwolN79rHm8W/imYO1o+sXScI/7WVY7KyqlDvzfwD/af+pQ1kUutaA
-1pOy7cp+cy96j/y6GiXH461qSXg2GAQ=
-=qTsf
------END PGP SIGNATURE-----
-
---7qyxpf6ga5atuhgo--
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
