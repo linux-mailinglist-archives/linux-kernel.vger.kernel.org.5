@@ -1,212 +1,120 @@
-Return-Path: <linux-kernel+bounces-68598-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68599-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08673857CF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:53:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBB59857CFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154891C238C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:53:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B5601F25E31
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9457A1292CD;
-	Fri, 16 Feb 2024 12:53:52 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BB1266D4
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EB71292E2;
+	Fri, 16 Feb 2024 12:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Be6SJ7T8"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6E9266D4;
+	Fri, 16 Feb 2024 12:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708088032; cv=none; b=d7VSqGPsDySiz44BZWrTDVQM+ElL/qEvMluUCxYAZZB0+CDnxtsSsjLlTcmtW1pDlG/K5EONZeSuFMdLMYZVtm0KNCBumkqkTSMEvEUIDMlHn+RcItwFn7vvHgoPW0sovgZ1f2s/ElAKvDHVP3IITnSog1Q9V5H4Ok4CHa1bnXQ=
+	t=1708088088; cv=none; b=K82K/MTXgxaB8oL34cvzxoXVQyyU+MDvbZ4UQLAol1RDk6hrLXkLqeEBT1Z/TtIH6qkVmbS3Lb+Pm/pgIvqT1id99z6ZzjYqFGN6suAl7iF+NS5FysfkZ3jWVjAcufSFyXBOAjUMIFAFD/U5KoptFjstpmXBb2SObXIjsaRqVTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708088032; c=relaxed/simple;
-	bh=mV6JG5hlmFUbjPCFGu48elR++qZ+JbleSdHSN+R7JFg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RiGvn0fIB3TVsgkWzTufYjQc8u7Gv6yl2wPoPoaHg0s0HwmZzYHirlM0BlvsObKy0P2cP9NI2MmThUWCyaV+EVBpB1UXLSj2FilWD3ZoYsAq4qsTiqlCJOepZFVTX8o+vbsIk2d278xTeMAMJDUIbbOHePV49dOKAwYf4FA4wn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55182DA7;
-	Fri, 16 Feb 2024 04:54:29 -0800 (PST)
-Received: from [192.168.68.110] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AEF53F766;
-	Fri, 16 Feb 2024 04:53:44 -0800 (PST)
-Message-ID: <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com>
-Date: Fri, 16 Feb 2024 12:53:43 +0000
+	s=arc-20240116; t=1708088088; c=relaxed/simple;
+	bh=tH0kdxyBWBGqfP/aVOfyxzUdVukg/+pepClSHy99W70=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=OXpJEZiGvnSLSzFbWLC7St+PM+CfK1+BfS9wQbl96cOLEBBGDhImYLgNaSqwUmv8Dl8Gau8KOiU/OLR58EjdhqmVa/+oZXg0/540VcHDPC3poLunhoww3QwVz5zpHRqecSemKgnC7Mlt3Z1msrJ39z8egW8pl124UtPi4M0F/Rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Be6SJ7T8; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-33d153254b7so498020f8f.0;
+        Fri, 16 Feb 2024 04:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708088085; x=1708692885; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bEcs0xF6NsN2yndITWHFP0bv87xKQqUwp6fc0rUr7Us=;
+        b=Be6SJ7T8E4Yx1Hi+2yYWchugKtxI6BLx/k/jgvOYSC9guClOvyRN8qxcbzCxTOqF9y
+         h+I/4EeRL04z/PNN4sbBp/XXaB/wMgSmNhrGkQWaWG1tqvw4965MJrnFABJO9ckRdmc1
+         ufpFCvBBHH+gdmbUP06OwpjrO00lDSB8khLpcS4pvaTCNn2gXBoqeZJ1o/1v07ufzl4a
+         3GSIPdM0NeXE8Z7bi4XNsURzItZAgNSe58h7TABp6vxWePl8JUKApMm66yY7vzgcAZ2U
+         nD19qlXtkUdIPM8dNgtZ0QOOS9QfPwjvLPyvoHCxaY5j7p2ZXxDl1QVO845FnJxydR6C
+         KAOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708088085; x=1708692885;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bEcs0xF6NsN2yndITWHFP0bv87xKQqUwp6fc0rUr7Us=;
+        b=B/ovdmSOs+42MTwKyK+iSn/b0ZFlGjfT5LXa9rkOmVIbP6or8W6/ZDAh2/wRhvnH1u
+         KmKpsIAgU97Iz1ILQmWN+0IHXBV5fE7vSIstQKfb59Ug5PpgAEk8bqqbx8hntbj5+/wd
+         FdlJQ7txXw9n9XtZ2x7RJ+mrFjSJ8JH/MwtOF40ru9yOp1/BGUSwc6LqLL4fCaqFQyc8
+         HFYu6DFKXIjkZSx7Y6V54yOBz+iaBUVkmw2A/P9ooVdmNy7HF/JTqrZE4YE8w8AnKusI
+         5cPHo8yHjTze1uv0UnKfYmHKyK0arx3NHdYk5i2YLG6e79s1oh6iXLhlCWSgGxd6qUwY
+         cDFA==
+X-Forwarded-Encrypted: i=1; AJvYcCU9Q7x7CEczHCulHNXPD0URQGyvpg6jMtrlw16MwEA4spMEXBxMr8hYxsWPYO62wxLcLZT3vwPutjL8l/JxhFRn5UdUmkB+wWA2qvfb9ewMhXu3xpL45Q3otwBLDYLZWr3XYyE/
+X-Gm-Message-State: AOJu0YxtbJiZL7VZBuHoln8vPlYXwHV/VW9kkDb3t8WA2wXndE+FoYAt
+	H1p2DorssKACA4FGpQ3yPqDyfI0IVI/8fsmyYkMczUIFvtS7QGYS
+X-Google-Smtp-Source: AGHT+IFMPn2oquqm21v74s6a/9ew+juZRTbUTboyoq4FEcC6Y4+blWJRB6s4tNG3V2L2lEiUt5u07g==
+X-Received: by 2002:a5d:508c:0:b0:33d:1f9f:b01 with SMTP id a12-20020a5d508c000000b0033d1f9f0b01mr973514wrt.16.1708088084789;
+        Fri, 16 Feb 2024 04:54:44 -0800 (PST)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id e14-20020a5d4e8e000000b0033cdf1f15e8sm2159531wru.16.2024.02.16.04.54.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 04:54:44 -0800 (PST)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Eric Dumazet <edumazet@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	David Ahern <dsahern@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: tcp: Remove redundant initialization of variable len
+Date: Fri, 16 Feb 2024 12:54:43 +0000
+Message-Id: <20240216125443.2107244-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 12/18] arm64/mm: Wire up PTE_CONT for user mappings
-Content-Language: en-GB
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
- Andrey Ryabinin <ryabinin.a.a@gmail.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
- David Hildenbrand <david@redhat.com>,
- Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
- <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
- Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
- Yang Shi <shy828301@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- linux-arm-kernel@lists.infradead.org, x86@kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-13-ryan.roberts@arm.com> <Zc9UQy-mtYAzNWm2@arm.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <Zc9UQy-mtYAzNWm2@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Hi Catalin,
+The variable len being initialized with a value that is never read, an 
+if statement is initializing it in both paths of the if statement.
+The initialization is redundant and can be removed.
 
-Thanks for the review! Comments below...
+Cleans up clang scan build warning:
+net/ipv4/tcp_ao.c:512:11: warning: Value stored to 'len' during its
+initialization is never read [deadcode.DeadStores]
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ net/ipv4/tcp_ao.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 16/02/2024 12:25, Catalin Marinas wrote:
-> On Thu, Feb 15, 2024 at 10:31:59AM +0000, Ryan Roberts wrote:
->>  arch/arm64/mm/contpte.c          | 285 +++++++++++++++++++++++++++++++
-> 
-> Nitpick: I think most symbols in contpte.c can be EXPORT_SYMBOL_GPL().
-> We don't expect them to be used by random out of tree modules. In fact,
-> do we expect them to end up in modules at all? Most seem to be called
-> from the core mm code.
-
-The problem is that the contpte_* symbols are called from the ptep_* inline
-functions. So where those inlines are called from modules, we need to make sure
-the contpte_* symbols are available.
-
-John Hubbard originally reported this problem against v1 and I enumerated all
-the drivers that call into the ptep_* inlines here:
-https://lore.kernel.org/linux-arm-kernel/b994ff89-1a1f-26ca-9479-b08c77f94be8@arm.com/#t
-
-So they definitely need to be exported. Perhaps we can tighten it to
-EXPORT_SYMBOL_GPL(), but I was being cautious as I didn't want to break anything
-out-of-tree. I'm not sure what the normal policy is? arm64 seems to use ~equal
-amounts of both.
-
-> 
->> +#define ptep_get_lockless ptep_get_lockless
->> +static inline pte_t ptep_get_lockless(pte_t *ptep)
->> +{
->> +	pte_t pte = __ptep_get(ptep);
->> +
->> +	if (likely(!pte_valid_cont(pte)))
->> +		return pte;
->> +
->> +	return contpte_ptep_get_lockless(ptep);
->> +}
-> [...]
->> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
->> +{
->> +	/*
->> +	 * Gather access/dirty bits, which may be populated in any of the ptes
->> +	 * of the contig range. We may not be holding the PTL, so any contiguous
->> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
->> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
->> +	 * in the range are valid and have CONT_PTE set, that all pfns are
->> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
->> +	 * If we find a pte that is not consistent, then we must be racing with
->> +	 * an update so start again. If the target pte does not have CONT_PTE
->> +	 * set then that is considered consistent on its own because it is not
->> +	 * part of a contpte range.
->> +*/
-> 
-> I can't get my head around this lockless API. Maybe it works fine (and
-> may have been discussed already) but we should document what the races
-> are, why it works, what the memory ordering requirements are. For
-> example, the generic (well, x86 PAE) ptep_get_lockless() only needs to
-> ensure that the low/high 32 bits of a pte are consistent and there are
-> some ordering rules on how these are updated.
-> 
-> Does the arm64 implementation only need to be correct w.r.t. the
-> access/dirty bits? Since we can read orig_ptep atomically, I assume the
-> only other updates from unfolding would set the dirty/access bits.
-> 
->> +
->> +	pgprot_t orig_prot;
->> +	unsigned long pfn;
->> +	pte_t orig_pte;
->> +	pgprot_t prot;
->> +	pte_t *ptep;
->> +	pte_t pte;
->> +	int i;
->> +
->> +retry:
->> +	orig_pte = __ptep_get(orig_ptep);
->> +
->> +	if (!pte_valid_cont(orig_pte))
->> +		return orig_pte;
->> +
->> +	orig_prot = pte_pgprot(pte_mkold(pte_mkclean(orig_pte)));
->> +	ptep = contpte_align_down(orig_ptep);
->> +	pfn = pte_pfn(orig_pte) - (orig_ptep - ptep);
->> +
->> +	for (i = 0; i < CONT_PTES; i++, ptep++, pfn++) {
->> +		pte = __ptep_get(ptep);
->> +		prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
-> 
-> We don't have any ordering guarantees in how the ptes in this range are
-> read or written in the contpte_set_ptes() and the fold/unfold functions.
-> We might not need them given all the other checks below but it's worth
-> adding a comment.
-> 
->> +
->> +		if (!pte_valid_cont(pte) ||
->> +		   pte_pfn(pte) != pfn ||
->> +		   pgprot_val(prot) != pgprot_val(orig_prot))
->> +			goto retry;
-> 
-> I think this also needs some comment. I get the !pte_valid_cont() check
-> to attempt retrying when racing with unfolding. Are the other checks
-> needed to detect re-folding with different protection or pfn?
-> 
->> +
->> +		if (pte_dirty(pte))
->> +			orig_pte = pte_mkdirty(orig_pte);
->> +
->> +		if (pte_young(pte))
->> +			orig_pte = pte_mkyoung(orig_pte);
->> +	}
-> 
-> After writing the comments above, I think I figured out that the whole
-> point of this loop is to check that the ptes in the contig range are
-> still consistent and the only variation allowed is the dirty/young
-> state to be passed to the orig_pte returned. The original pte may have
-> been updated by the time this loop finishes but I don't think it
-> matters, it wouldn't be any different than reading a single pte and
-> returning it while it is being updated.
-
-Correct. The pte can be updated at any time, before after or during the reads.
-That was always the case. But now we have to cope with a whole contpte block
-being repainted while we are reading it. So we are just checking to make sure
-that all the ptes that we read from the contpte block are consistent with
-eachother and therefore we can trust that the access/dirty bits we gathered are
-consistent.
-
-
-> 
-> If you can make this easier to parse (in a few years time) with an
-> additional patch adding some more comments, that would be great. For
-> this patch:
-
-I already have a big block comment at the top, which was trying to explain it.
-Clearly not well enough though. I'll add more comments as a follow up patch when
-I get back from holiday.
-
-> 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-
-Thanks!
-
-> 
+diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
+index 87db432c6bb4..3afeeb68e8a7 100644
+--- a/net/ipv4/tcp_ao.c
++++ b/net/ipv4/tcp_ao.c
+@@ -509,9 +509,9 @@ static int tcp_ao_hash_header(struct tcp_sigpool *hp,
+ 			      bool exclude_options, u8 *hash,
+ 			      int hash_offset, int hash_len)
+ {
+-	int err, len = th->doff << 2;
+ 	struct scatterlist sg;
+ 	u8 *hdr = hp->scratch;
++	int err, len;
+ 
+ 	/* We are not allowed to change tcphdr, make a local copy */
+ 	if (exclude_options) {
+-- 
+2.39.2
 
 
