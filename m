@@ -1,161 +1,146 @@
-Return-Path: <linux-kernel+bounces-67894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67893-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80160857280
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:26:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0999E857278
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 019E3B24298
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:26:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AFA828457B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED515149DF2;
-	Fri, 16 Feb 2024 00:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F2039441;
+	Fri, 16 Feb 2024 00:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aHIYNU4s"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="IV3PPg3W"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2969228E8;
-	Fri, 16 Feb 2024 00:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A04A63C1
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708043184; cv=none; b=lm/P+F9UDWnCJQLfgC1NqvsIX95A2S+YGv9IVj3P6qsT5PJ8fa+7O7kNgCN1W8gjrVSYE29zxxWGTE/upoin4gVzHRFXPnh/DjPJTzRyuFFtbve9KCGokvZ+59QJQzJq4wo9ZqKW6MQOJEovHTWOrztcI7idOcI7jlRJglV9RDo=
+	t=1708043169; cv=none; b=t2NnKKaRhIAojHm2ltsLYKscttrYjwCkW8E8pvK1diA2as5J82LjaG5w9xdQc/Rsk/+gC8u0/TyxzdXTlTYfaUZ0bQfDVPdn6vpTno3S6/bThi645h/yD31oONSgVL3NnE3Np4jaCQkOPzRN8WNYJry9RI/EnlI76vISvB5uLd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708043184; c=relaxed/simple;
-	bh=oXtwZtSuO9glftnKm5bDsm0gbH6HrsEW0khA9h2R97U=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Mime-Version; b=DQwaNu4Al00k96r/9VRXvq1JKGdUyXx1+UFYCiKxH6cyqB2RVDy5pdmGgq1XTObDeBXsxtg89SZTfoCY1s8UaXlaiwcGXElV3P1m8ApjwWxexPkU5hQ4lvF/OO12fxf8l/VSyLZjqa2dTd/Yk1XTAeMtK7lTG+5om08RkdpKIF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aHIYNU4s; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41FMtnth028679;
-	Fri, 16 Feb 2024 00:25:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=Om9oyXgDiFyioTn4kHbDdu9jyc7RJhYiunD0WE9LJcY=;
- b=aHIYNU4sNfsa6W1Zi2SHNnYp5pAsdwkhgkxJcFYINTcs7hJVzXD1EVzqpEhsQw9vmW54
- 1AUJMWoYDVuVJx6grRr+rbtVY2w8d2UjRvNHeiATyyb/V4Id7ll/q4t4K9kkWwbF76vf
- j2Cm+vKS7fWCcn05rSyIYpYOC3RHWwGIQl8vhUK2MQ5fwFRVl/O4wmtSfVPLFc1bI/4z
- WnInjoiLggCOIG2skURkMzY32fQ4Puohw0GxcsUOQKf4h2y33musZLxiyLV0Uu17uJ/O
- 5yaUNhukbVWTLYDDZzJxo+gUPF+gWxMjEcxCYbSsCtxF1l3cj+kJNp6WNffJWAkLfWT5 Iw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9uucsfcr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 00:25:48 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41G0MkpP026872;
-	Fri, 16 Feb 2024 00:25:47 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9uucsfc1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 00:25:47 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41FLD05g009728;
-	Fri, 16 Feb 2024 00:25:46 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6p637q1k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 00:25:46 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41G0Ph1735258676
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Feb 2024 00:25:45 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A2A2B58061;
-	Fri, 16 Feb 2024 00:25:43 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EF01158058;
-	Fri, 16 Feb 2024 00:25:41 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.113.219])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Feb 2024 00:25:41 +0000 (GMT)
-Message-ID: <6154a26bb0efc2abbfc51df4bf1adc8279854f3c.camel@linux.ibm.com>
-Subject: Re: [PATCH v10 19/25] integrity: Move
- integrity_kernel_module_request() to IMA
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, jack@suse.cz, chuck.lever@oracle.com,
-        jlayton@kernel.org, neilb@suse.de, kolga@netapp.com,
-        Dai.Ngo@oracle.com, tom@talpey.com, paul@paul-moore.com,
-        jmorris@namei.org, serge@hallyn.com, dmitry.kasatkin@gmail.com,
-        eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, omosnace@redhat.com,
-        casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Roberto Sassu
-	 <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Date: Thu, 15 Feb 2024 19:25:41 -0500
-In-Reply-To: <09d6fa08e2d62720759f57237043a2dd9b5208ca.camel@huaweicloud.com>
-References: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
-	 <20240215103113.2369171-20-roberto.sassu@huaweicloud.com>
-	 <09d6fa08e2d62720759f57237043a2dd9b5208ca.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-22.el8) 
+	s=arc-20240116; t=1708043169; c=relaxed/simple;
+	bh=ddj6aJrQX/zLxk2ChEpJL8xzwmu/Ixsymjq9BOrMxks=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GNF92iURWRSf8NsL6t+MqvsFCV68ktGHL5iOgl2fmu31uioODAlJi/g7ShNa2UBe5ED/2dQ23R0Y7i/mH7Zy7+euiLd+HgfKbszDXot0BkNOv0Rk8MiHODMiLFw/Y+waUUCkosI9lbiEP22bZJzBSgcN766MhmKL7Dtn7Zu/3pA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=IV3PPg3W; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1db61f7ebcbso34175ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:26:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708043168; x=1708647968; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RZpqm1jNdavSpo3vr4NLG35YMtA041kvQYWASko7wIE=;
+        b=IV3PPg3WIjFfUgYg0aHskE5Hp8daLD7BPCTXWbHaKL5ipoSSGCtsQE8D7efz4ByWTW
+         FAevojuMe4Kx9U1ndmwzTN3Bd5YInhL4rfvgHESzw0nkegJxjxcccp4kkEN6I2ohWetD
+         Z8ASQdHEAOUwlizsyCyZT2/uWEm+N1XFr0HB244EnPFd21szrQ4Ip4jiYE6q+d7ed8vD
+         WtyVLcmNL8lcGzlYXtgMUUs7hQvajyzUWw7vUuVwRe1ppp6y++JdaDU17Ip1z7WZfnwl
+         v25IUFCjc3nZ35daz1ML1M9kwdHuobwLaTMQcKIpRs+TAlw0QvroJuEyIRR6gcVD2opR
+         SjRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708043168; x=1708647968;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RZpqm1jNdavSpo3vr4NLG35YMtA041kvQYWASko7wIE=;
+        b=AB6NWLbnwFrqrrtSZBR2Bcw+1MjicMzmBWP7O/mWkvk9NSQkqSLd7IsQRLKPOfuOoa
+         cMAc8gt2XqjURqkhBlzbQNG9dwb+6ogYGbk+HPjJNVq4pIzSJ2MSSub0tHeYhzCbxmwS
+         Zb94f5Ayp7umz7y/h/lY8HnLkRarLxl+S9SfgqgsIPRQjTl3u9FQcv8ohf/6STYEK6EW
+         0ISezuwj+7fSWLaUdiRVGTEQCjBR752ysV/EKq+qTBfhH/+pl6mouOhqrLctDZsQaqwp
+         tlSzZVPA8d72q+L1dTFM0zZjNmoLGHr6drrmDgD2ELgbdpaZQ2IpGVlXjCMjl4nofsVs
+         JDXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXiiVcjhJGfQ4ARC/juk8w9NzP9vxXiGb6ue/D7KLs6XZN0PRWNCtxAMKSWzj0CloEnXkV3QXocVzxacfxd4T3VnmQ0yYmiwciyDN0g
+X-Gm-Message-State: AOJu0YygEpo4ed8W8zXOC+//MF/0UEZ1Rx2zWRJX4bMtvao4z9ra56Pg
+	iU92NF5UBZL3HAfja7WIrPA/AjRseE8tO7tNtJ2Pj2GDAtPUWSnw2CZxBqJcHd9GzhkR66556gW
+	+eQ5hkQuj8VTBzAV8TF8k8A/c+y5/HOA9G7x+
+X-Google-Smtp-Source: AGHT+IFM8MofjIlAUJ2158uqKNFUxSIcGeGfFWSqFtIC8LY4LE4cYklcKC74Qia+/2KNhPLaRleuACH72UWrR5JDJyM=
+X-Received: by 2002:a17:902:fccc:b0:1d9:c0e3:3f5e with SMTP id
+ mi12-20020a170902fccc00b001d9c0e33f5emr115320plb.25.1708043167398; Thu, 15
+ Feb 2024 16:26:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: eVp6Z66UPLJF9IDvI4kibR2k_-D2yKlM
-X-Proofpoint-GUID: 8F3OPV3UWb5PHaUQpiMgR3h1AV3Tc70q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-15_23,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxlogscore=999
- suspectscore=0 spamscore=0 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 bulkscore=0 adultscore=0 impostorscore=0 mlxscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402160001
+MIME-Version: 1.0
+References: <20240215215907.20121-1-osalvador@suse.de> <20240215215907.20121-2-osalvador@suse.de>
+ <CA+fCnZddd82=Gp2j4sdks+NGpn-GSvZq8isYOwXDO=Y3TyBG1g@mail.gmail.com>
+In-Reply-To: <CA+fCnZddd82=Gp2j4sdks+NGpn-GSvZq8isYOwXDO=Y3TyBG1g@mail.gmail.com>
+From: Peter Collingbourne <pcc@google.com>
+Date: Thu, 15 Feb 2024 16:25:54 -0800
+Message-ID: <CAMn1gO680XrsvyxiKXQOcVvofEkuJNsjvoquNREtt0HxGWSqqA@mail.gmail.com>
+Subject: Re: [PATCH v10 1/7] lib/stackdepot: Fix first entry having a 0-handle
+To: Andrey Konovalov <andreyknvl@gmail.com>
+Cc: Oscar Salvador <osalvador@suse.de>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	Michal Hocko <mhocko@suse.com>, Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>, 
+	Alexander Potapenko <glider@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-02-15 at 17:09 +0100, Roberto Sassu wrote:
-> On Thu, 2024-02-15 at 11:31 +0100, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > In preparation for removing the 'integrity' LSM, move
-> > integrity_kernel_module_request() to IMA, and rename it to
-> > ima_kernel_module_request(). Rewrite the function documentation, to explain
-> > better what the problem is.
-> > 
-> > Compile it conditionally if CONFIG_INTEGRITY_ASYMMETRIC_KEYS is enabled,
-> > and call it from security.c (removed afterwards with the move of IMA to the
-> > LSM infrastructure).
-> > 
-> > Adding this hook cannot be avoided, since IMA has no control on the flags
-> > passed to crypto_alloc_sig() in public_key_verify_signature(), and thus
-> > cannot pass CRYPTO_NOLOAD, which solved the problem for EVM hashing with
-> > commit e2861fa71641 ("evm: Don't deadlock if a crypto algorithm is
-> > unavailable").
-> > 
-> > EVM alone does not need to implement this hook, first because there is no
-> > mutex to deadlock, and second because even if it had it, there should be a
-> > recursive call. However, since verification from EVM can be initiated only
-> > by setting inode metadata, deadlock would occur if modprobe would do the
-> > same while loading a kernel module (which is unlikely).
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > Acked-by: Paul Moore <paul@paul-moore.com>
-> > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> > Acked-by: Mimi Zohar <zohar@linux.ibm.com>
-> 
-> I hope the change of the ima_kernel_module_request() documentation is
-> fine for everyone.
-> 
-> If not, let me know.
+On Thu, Feb 15, 2024 at 3:37=E2=80=AFPM Andrey Konovalov <andreyknvl@gmail.=
+com> wrote:
+>
+> On Thu, Feb 15, 2024 at 10:58=E2=80=AFPM Oscar Salvador <osalvador@suse.d=
+e> wrote:
+> >
+> > The very first entry of stack_record gets a handle of 0, but this is wr=
+ong
+> > because stackdepot treats a 0-handle as a non-valid one.
+> > E.g: See the check in stack_depot_fetch()
+> >
+> > Fix this by adding and offset of 1.
+> >
+> > This bug has been lurking since the very beginning of stackdepot,
+> > but no one really cared as it seems.
+> > Because of that I am not adding a Fixes tag.
+> >
+> > Co-developed-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Marco Elver <elver@google.com>
+> > Signed-off-by: Oscar Salvador <osalvador@suse.de>
+> > Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> > ---
+> >  lib/stackdepot.c | 16 +++++++++-------
+> >  1 file changed, 9 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> > index 4a7055a63d9f..c043a4186bc5 100644
+> > --- a/lib/stackdepot.c
+> > +++ b/lib/stackdepot.c
+> > @@ -45,15 +45,16 @@
+> >  #define DEPOT_POOL_INDEX_BITS (DEPOT_HANDLE_BITS - DEPOT_OFFSET_BITS -=
+ \
+> >                                STACK_DEPOT_EXTRA_BITS)
+> >  #define DEPOT_POOLS_CAP 8192
+> > +/* The pool_index is offset by 1 so the first record does not have a 0=
+ handle. */
+> >  #define DEPOT_MAX_POOLS \
+> > -       (((1LL << (DEPOT_POOL_INDEX_BITS)) < DEPOT_POOLS_CAP) ? \
+> > -        (1LL << (DEPOT_POOL_INDEX_BITS)) : DEPOT_POOLS_CAP)
+> > +       (((1LL << (DEPOT_POOL_INDEX_BITS)) - 1 < DEPOT_POOLS_CAP) ? \
+> > +        (1LL << (DEPOT_POOL_INDEX_BITS)) - 1 : DEPOT_POOLS_CAP)
+> >
+> >  /* Compact structure that stores a reference to a stack. */
+> >  union handle_parts {
+> >         depot_stack_handle_t handle;
+> >         struct {
+> > -               u32 pool_index  : DEPOT_POOL_INDEX_BITS;
+> > +               u32 pool_index  : DEPOT_POOL_INDEX_BITS; /* pool_index =
+is offset by 1 */
 
-Thanks, Roberto.  The updated kernel-doc looks good.
+Can we rename this, say to pool_index_plus_1? This will make the code
+a bit clearer, as well as make it possible for debugging tools such as
+drgn [1] to be able to tell when the off-by-one was introduced and
+adapt accordingly.
 
-Mimi
+Peter
 
+[1] https://github.com/osandov/drgn/pull/376
 
