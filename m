@@ -1,129 +1,119 @@
-Return-Path: <linux-kernel+bounces-68113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68114-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21789857620
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3715F857621
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:53:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54BF51C227E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:52:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61E2E1C227E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 040F914A8E;
-	Fri, 16 Feb 2024 06:51:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A05E171AD;
+	Fri, 16 Feb 2024 06:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r5SkEpmS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IjWnbXDi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42682134CE;
-	Fri, 16 Feb 2024 06:51:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1A7B168B1
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708066312; cv=none; b=TcSdWADhG7oEUIapLrrnxSPf+L/GiRMo/R6//X1DfkMIA87jJYes/VaK7w58iTdymDli8Ux7PIQWlhOA8M3TQ3Br85+Zs3o1y7B6DrRUHqtMKQEOO7OaDo2Rk6JloRqW/+Nq8YEX7iEM02DLFUwcD/OUpQw08D63/iMOq05yNr0=
+	t=1708066412; cv=none; b=cBhpM1HEghQIGlufjG6+mK4+F2uK5zHxdQWkhrI6O15OPklfnU+FKWGYpcpajFx17WpWtKiZNOyzFxEmE1PMRGNvl6C+q7TjhQdF+iwW4ACbydEJ7AkgPV2fmowKTRYT0Q9Iv2mcB3XGEkZPwjO+njTMPq6ax/B/azg3P3SX9PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708066312; c=relaxed/simple;
-	bh=4OniHEQYYYMWlJOoq5xp/Wu7H+JX44MheQBlaOy9geY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JZT/6dobgSWtbJRfICLJNCiSJd0o+5LyjkFJe3A3NFRbI6t+7Rxpg3zErjDYO2t1PIdev1kksyI3seDi7W6Q/PLD5BisYFFxUJwvgywuhSFm9HeNKBolYmDKoSa+ukePm0tJNGnSzIsgtziUBkIve3CG3jTQPB2ONFuk9on+RnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r5SkEpmS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BF1CC433F1;
-	Fri, 16 Feb 2024 06:51:51 +0000 (UTC)
+	s=arc-20240116; t=1708066412; c=relaxed/simple;
+	bh=0ouwPAOvp37tNU9HOy900jC8g2eiBovoWT/VvmXWWew=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Hh2jp9kqylcDW+FkSXjw25wKFPne6skDDHVAvs0oVoECDDOs5A2AIzQwpHhukwzhXSs/TmAMv3EsieURPTFGjZOUC/T0t+uT0LVnQoD4BqOQLIJr8DSzTLk5YGvxoSdqohuumGpfGIfVEWQ0j8pLTqovoenXV43qMLviclOJhYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IjWnbXDi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18853C433F1;
+	Fri, 16 Feb 2024 06:53:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708066311;
-	bh=4OniHEQYYYMWlJOoq5xp/Wu7H+JX44MheQBlaOy9geY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=r5SkEpmSkvHJjtN0pXMbqeQbvvLOZWiU6SX10TYjnAR4E0d137coRNoroy0bgvjoo
-	 K7qXj04Hf7rVExj1f9qFr/2n7yop6TZcl5/hETHQV6bXWBpz+09ubCKwC4a8TKhh00
-	 4+Kg5Qqbd7h7a8mRkO0AChYmogH80Sh604QF06SbvTXJUpPZb0iSLv7vClO2s7piM9
-	 vMfcVvPZKEG1DL37nZarqDAlrZen0pRqY186KK2pt9xkQs8Vz6kIDLc5tDBceNv4ir
-	 YOjMg+/rLkvr5A3nc7XnQBQjHYTfNWAHw3CnYNp3kPvfk1syeqx1QCEFhJDwuhjQ7a
-	 WYIfakEiaWQpg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1ras50-000000004Cl-2tMr;
-	Fri, 16 Feb 2024 07:52:15 +0100
-Date: Fri, 16 Feb 2024 07:52:14 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH v2 2/3] PCI: qcom: Read back PARF_LTSSM register
-Message-ID: <Zc8GHrgdF7jJBgyu@hovoldconsulting.com>
-References: <20240215161114.GA1292081@bhelgaas>
- <bc7d9859-f7ec-41c5-8a9e-170ccdfff46a@linaro.org>
+	s=k20201202; t=1708066412;
+	bh=0ouwPAOvp37tNU9HOy900jC8g2eiBovoWT/VvmXWWew=;
+	h=From:To:Cc:Subject:Date:From;
+	b=IjWnbXDiQdMeLIOL7ePxjxfS1PtPIsT9yTKbOxuzfl5UDqJFOyqoBlVo35021+TCP
+	 JIBZEp2WAMoib0goWBRNCYJS0NP7aEzZUf1WyRW16hn8K2m4lgK9eLTZpzNEuPv7yr
+	 KvkcH+TvpIg0bhc1dZqoEuFwitxs0XKVJKjVZcS9aye6RmbaJfpygA5Wl12V2ukn+k
+	 llt+hk9C7yz0NvX5W1uXcXhlw8twPetGz8VX2D2kUhY6sUgwH85nB6JurogjkgGFvl
+	 XbhsUzzBQvZsG/+SUiBpPmOVDGsMmuG6+arqRE8wWMLPUxnq5U7ZJZExSmaYbQkaKv
+	 jAjNxwWg0RNrg==
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To: jani.nikula@linux.intel.com
+Cc: linux-kernel@vger.kernel.org,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	intel-gfx@lists.freedesktop.org,
+	Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+	Rodrigo Vivi <rodrigo.vivi@intel.com>,
+	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Subject: [PATCH 00/21] drm/i915: remove unused structure members
+Date: Fri, 16 Feb 2024 07:53:05 +0100
+Message-ID: <20240216065326.6910-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bc7d9859-f7ec-41c5-8a9e-170ccdfff46a@linaro.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 07:44:27PM +0100, Konrad Dybcio wrote:
-> On 15.02.2024 17:11, Bjorn Helgaas wrote:
-> > On Thu, Feb 15, 2024 at 11:21:45AM +0100, Konrad Dybcio wrote:
-> >> On 14.02.2024 23:28, Bjorn Helgaas wrote:
-> >>> On Wed, Feb 14, 2024 at 10:35:16PM +0100, Konrad Dybcio wrote:
-> >>>> On 12.02.2024 22:17, Bjorn Helgaas wrote:
-> >>>>> Maybe include the reason in the subject?  "Read back" is literally
-> >>>>> what the diff says.
-> >>>>>
-> >>>>> On Sat, Feb 10, 2024 at 06:10:06PM +0100, Konrad Dybcio wrote:
-> >>>>>> To ensure write completion, read the PARF_LTSSM register after setting
-> >>>>>> the LTSSM enable bit before polling for "link up".
-> >>>>>
-> >>>>> The write will obviously complete *some* time; I assume the point is
-> >>>>> that it's important for it to complete before some other event, and it
-> >>>>> would be nice to know why that's important.
-> >>>>
-> >>>> Right, that's very much meaningful on non-total-store-ordering
-> >>>> architectures, like arm64, where the CPU receives a store instruction,
-> >>>> but that does not necessarily impact the memory/MMIO state immediately.
-> >>>
-> >>> I was hinting that maybe we could say what the other event is, or what
-> >>> problem this solves?  E.g., maybe it's as simple as "there's no point
-> >>> in polling for link up until after the PARF_LTSSM store completes."
-> >>>
-> >>> But while the read of PARF_LTSSM might reduce the number of "is the
-> >>> link up" polls, it probably wouldn't speed anything up otherwise, so I
-> >>> suspect there's an actual functional reason for this patch, and that's
-> >>> what I'm getting at.
-> >>
-> >> So, the register containing the "enable switch" (PARF_LTSSM) can (due
-> >> to the armv8 memory model) be "written" but not "change the value of
-> >> memory/mmio from the perspective of other (non-CPU) memory-readers
-> >> (such as the MMIO-mapped PCI controller itself)".
-> >>
-> >> In that case, the CPU will happily continue calling qcom_pcie_link_up()
-> >> in a loop, waiting for the PCIe controller to bring the link up, however
-> >> the PCIE controller may have never received the PARF_LTSSM "enable link"
-> >> write by the time we decide to time out on checking the link status.
+Hi,
 
-This makes no sense. As Bjorn already said, you're just polling for the
-link to come up (for a second). And unless you have something else that
-depends on the write to have reached the device, there is no need to
-read it back. It's not going to be cached indefinitely if that's what
-you fear.
+this series removes unused i915 structure members as found by
+clang-struct (and manually checked by me).
 
-> Generally, it's a good idea to add such readbacks after all timing-
-> critical writes, especially when they concern asserting reset,
-> enabling/disabling power, etc., to make sure we're not assuming the
-> hardware state of a peripheral has changed before we ask it to do so. 
+Cc: intel-gfx@lists.freedesktop.org
+Cc: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
+Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 
-Again no, there is no general need to do that. It all depends on what
-the code does and how the device works.
+Jiri Slaby (SUSE) (21):
+  drm/i915: remove unused intel_dvo_dev_ops hooks
+  drm/i915: remove structs intel_vgpu_pipe_format and
+    intel_vgpu_fb_format
+  drm/i915: remove intel_dsi::{port_bits,hs}
+  drm/i915: remove
+    intel_gvt_gtt::{mm_alloc_page_table,mm_free_page_table}
+  drm/i915: remove intel_gvt_mmio_info::{device,addr_range}
+  drm/i915: remove intel_vgpu_workload::{ring_context,restore_inhibit}
+  drm/i915: remove intel_vbt_panel_data::edp::initialized
+  drm/i915: remove intel_guc::ads_engine_usage_size
+  drm/i915: remove i915_drm_client::id
+  drm/i915: remove i915_perf_stream::size_exponent
+  drm/i915: remove intel_vgpu_gtt::active_ppgtt_mm_bitmap
+  drm/i915: remove intel_vgpu_fence::base
+  drm/i915: remove intel_vgpu_opregion::mapped
+  drm/i915: remove intel_vgpu::intx_trigger
+  drm/i915: remove gvt_mmio_block::device
+  drm/i915: remove intel_gvt_irq_info::warned
+  drm/i915: remove intel_gvt_event_info::policy
+  drm/i915: remove intel_gvt_irq::pending_events
+  drm/i915: remove execute_cb::signal
+  drm/i915: remove i915_vma::obj_hash
+  drm/i915: remove intel_memory_region_ops::flags
 
-Johan
+ .../drm/i915/display/intel_display_types.h    |  1 -
+ drivers/gpu/drm/i915/display/intel_dsi.h      |  4 ---
+ drivers/gpu/drm/i915/display/intel_dvo_dev.h  | 25 -------------------
+ drivers/gpu/drm/i915/gt/uc/intel_guc.h        |  2 --
+ drivers/gpu/drm/i915/gvt/fb_decoder.h         | 11 --------
+ drivers/gpu/drm/i915/gvt/gtt.h                |  3 ---
+ drivers/gpu/drm/i915/gvt/gvt.h                |  5 ----
+ drivers/gpu/drm/i915/gvt/interrupt.c          |  1 -
+ drivers/gpu/drm/i915/gvt/interrupt.h          |  2 --
+ drivers/gpu/drm/i915/gvt/mmio.h               |  2 --
+ drivers/gpu/drm/i915/gvt/scheduler.h          |  2 --
+ drivers/gpu/drm/i915/i915_drm_client.h        |  2 --
+ drivers/gpu/drm/i915/i915_perf_types.h        |  1 -
+ drivers/gpu/drm/i915/i915_request.c           |  1 -
+ drivers/gpu/drm/i915/i915_vma_types.h         |  1 -
+ drivers/gpu/drm/i915/intel_memory_region.h    |  2 --
+ 16 files changed, 65 deletions(-)
+
+-- 
+2.43.1
+
 
