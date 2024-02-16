@@ -1,181 +1,174 @@
-Return-Path: <linux-kernel+bounces-68139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68138-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B7F857656
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:59:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12C2D857654
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:59:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ED4A1F24058
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:59:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87EC7B23F0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:58:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697D614012;
-	Fri, 16 Feb 2024 06:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 298101759F;
+	Fri, 16 Feb 2024 06:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BlrJsITI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iIDit2tV"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82D8179AE
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:58:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C444817551;
+	Fri, 16 Feb 2024 06:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708066737; cv=none; b=e1qUhKh8psF1XUUIOA9iwurWM9NTz4bbAnZ+dAU6xyrlqSB0p/KWMTvy1OrSTXvMu2B/3Ro/qb+qwmfaTPkPA5A22mMVMa6KRjCWF6v/ZiC5LkVN3BNg8w2cMyE5T2WSnkcvO/gRstWr1th71sTng1+QUQWu2CL49V+vdX/8iyo=
+	t=1708066730; cv=none; b=ahDoekM+MRAOu/GN39nA7zFLB+/HL8eC3SyN5bidm+/sQkUpDLeoczt4b/KhHTGhL3yObIL+0a/Mi/qZu8+/8ULEWsCOyaCZ2GLPvuvZ5yZ9vZKKzt4YuEqIkyZGZyd25dgBMoe9gHxqHZFGk2hRN1GbWAk7+teSslICoa78U88=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708066737; c=relaxed/simple;
-	bh=YROb+eaJNu6/59TKOvdKSLmQg7w+kXyN6IwLF2JJH4s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g03S8/ZeWoOBniL40JezqyLPCnvJJVxCkNvfeFvUzumr5Hso3W3vklg0nWWAYkVJf8/Fobl++XxknFKm89k1oceULMFX3+/zUefQj6z8FmvTdGigm2asROcDq6ZZ+KIRj4mW3zOe/I/cruRCSVWWp7FhAexoaPDXo5xNTR1/wOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BlrJsITI; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708066734;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BNMvTmeWJ1ziFBp7Mx8IpeakAHCa+fvWpYKZaRcTpWg=;
-	b=BlrJsITIvMgsXd9YFdy2p2nydycBakcFo90DKTq+I3KNLnJibmzGRTzgDobwz9Hkl+wF2+
-	9nMTb4Oy3zqbJPnElF0Ti0b/8zn4KgiEz8cmpv8xIUOhG0h0I3wvMc08BoV4XMkj9d2JnR
-	v8yaYufstArdEL8xZ1ed0Y1FD3M0ue4=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-73-J0ULQjgoPsaJiJdwdGEroQ-1; Fri, 16 Feb 2024 01:58:52 -0500
-X-MC-Unique: J0ULQjgoPsaJiJdwdGEroQ-1
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6e2f3e38f55so1719891a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:58:52 -0800 (PST)
+	s=arc-20240116; t=1708066730; c=relaxed/simple;
+	bh=P6j6+1DMW+2nUeGjSEWM6OnZa73ovhFYv3veacBwZq0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=AGV36SZxRlCYOO6gptM0kSkwF+0IojcJNhIvESnu/MTfki45K064sFSuN8YtH4g7tvh0pxkgWlM2mkATeBVoO54lFIQxRFVvE4avr7ZLSTMNrKEHDCfBNSbcZ3cF3miC8KNPS81ijFL64ijKJ9GrvTP+KwF2NwqUNpbQhswUi1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iIDit2tV; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2906bcae4feso241819a91.3;
+        Thu, 15 Feb 2024 22:58:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708066728; x=1708671528; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=65Y20pAH9KRtgAYGxuwGuiTjTfNVvBPLnCGbqb5FxCk=;
+        b=iIDit2tV5AnDc+KWyNWngVgta5xDpN2SPRkTNwJ3hUNTzDmijgKqlCjKSOb6Q7Jfo3
+         IoTyMX5L4IP72WyrcTwdorNiAExy1ifxh41bGt1mCZn9bTRRnC82hTCxzHh8HUlSrz4o
+         KE/OW0SBshyoP6xvHALIyM6aJZ7K0uDlv5QnGAWS5LSL1H3Z0qyLdHzmachc2jX2N+Uv
+         KedgdBY1pUK3d5nEdYieximIFsJ0IlmBUu+7z92RxYQiZctbZZ6e4FhJV7FMKKSXHWI7
+         FcWUlOUhLrn1bmvx045dxHQfWt9AHKn5EjjjAEO/IDNzxBHpsN7+UsERiKfoTDYAaaUO
+         F+oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708066732; x=1708671532;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BNMvTmeWJ1ziFBp7Mx8IpeakAHCa+fvWpYKZaRcTpWg=;
-        b=PQ94xLD0v+bj6f80Xk6+1ext0QYWidQM/0nccYmlLc3GLm8/PMIIarEEotCq8/j1h4
-         afX7ZWi5SzdB2P212S0r8WEnzjAnVFE9SrQpsZUv/lOfBRqoUpjZMZCMNmohpSKO0wWk
-         l6mtUXBmHG2V2+5wzDgtzbtgL9WC3jgmZraHp/AAZIhff8e9nQg4QZN7dELCYWq4EyJF
-         eM29WQTRr5Yj1s9DMG9yQ4D/t1gxtXjFxBzKp2iv7Rcf8k+lRJOGUF5+HYJcyzAhUxYP
-         ciXuIKgSq91RlTjo3pyjaO1V64zpScWq65DzDoMwIcOkCLr7s2GDCSPhkWe2BlHzo8nC
-         dqlw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8d1AKXVjav1sczL0E4vg2paAkMP/yej7B4deWToE0WCIoil08SSTE/2+b8v6nN2FJ0Bze5lU3fKSf4zI6DgSpSEEXbb4MA8eKFnSu
-X-Gm-Message-State: AOJu0YzorcPdcaEvAydnG/KOBo1R2ECNZWVyYIbpS0WR9Q93aJJbFkgr
-	BY7faOZODFIR1hyNO6oMd+LePwg60uz+n2uwJhZCPugi7uOfV3hxTSpvxby+LaJ5Vg64S0YWU9x
-	LIpjbRMmFATqmAxd30mqb/zcvdYt7mYnw9Po4OSBrX+3oskjplLpxNtwZAUta2lwVMFrrR+9H1G
-	n0rcfKKhlXZBV6eZSwWXoGIKgvKK4Au3ejApep
-X-Received: by 2002:a05:6358:d04c:b0:178:7c7b:77bd with SMTP id jb12-20020a056358d04c00b001787c7b77bdmr4796303rwb.27.1708066732243;
-        Thu, 15 Feb 2024 22:58:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEIS1mWsDcddpPxFekpeD1h3hjt8dIDVsyUqaSy4AgJ7AmFMXEA/DB1AOZvjCvNo30ZSH6kg0YD0Di4qNWMKJg=
-X-Received: by 2002:a05:6358:d04c:b0:178:7c7b:77bd with SMTP id
- jb12-20020a056358d04c00b001787c7b77bdmr4796292rwb.27.1708066731962; Thu, 15
- Feb 2024 22:58:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708066728; x=1708671528;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=65Y20pAH9KRtgAYGxuwGuiTjTfNVvBPLnCGbqb5FxCk=;
+        b=UsxidajonZH1W1cWkyvf/AiRSD/iXVUNOtKbHm1nRwaI34QjtSYAsAmEXrepqs5POP
+         4x1DmA10+SpOSMejWMZvgsItcKa3ILmz0G0KIrxuK55rg1g21OqzdovDEojjQbF2xh2R
+         sqiqUMZMJpEUUeOD3ynmGvBkQ1rppd6+j9N4znaBMmuycYlLlukCaT4VQP3gbP9li9TO
+         DBU3mZ5IINSHRnypJfJ/Y77BTR+ImIuxpy9hbbIcbfGTK+BnYqs6yUKaTBO1N3DsFeKy
+         nDCxw9TuCDKoTb7i1fHdC73hWXlr4p9rWbIKwP1uFO5FhdIbBzesNO0Tp6Y3EUOOVgGs
+         dP0w==
+X-Forwarded-Encrypted: i=1; AJvYcCXGh6rJblraYXB8Uq6Y1AfI8T81y8yd0c4tnRUYbyO4vlv6uB2yb300C541nAvEHqmySetjy+rkEahC3DAEnOKdR1uB3qOal5/jHoq7XNnfR4nZBVZTJshLtZzPlJnxhgkbrH7VPtwijNAn
+X-Gm-Message-State: AOJu0Yz5pCQ1uqOBjDwa146DQ0ieMx1YZ+PqNhj5SPy9z9C4pBSr9+ED
+	OpFCLkKsJkTGx8c3msJ3uhylVxiCA+VLWHuFETqtkD815jafQefn
+X-Google-Smtp-Source: AGHT+IHIh71AizHTobQTAL/8XelAtKO6OAZ26d0Ggbs+Fg7dEzVMmysY5lPDz2q8Fi6bUsHSiQ7U5w==
+X-Received: by 2002:a17:90a:fd0a:b0:297:a5e:c15 with SMTP id cv10-20020a17090afd0a00b002970a5e0c15mr3884344pjb.6.1708066727999;
+        Thu, 15 Feb 2024 22:58:47 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id hg6-20020a17090b300600b00296b57ac914sm2525943pjb.38.2024.02.15.22.58.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 22:58:47 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <ac107edb-74fd-46fa-8687-110d8db07aac@roeck-us.net>
+Date: Thu, 15 Feb 2024 22:58:46 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com> <20240201092559.910982-2-yukuai1@huaweicloud.com>
-In-Reply-To: <20240201092559.910982-2-yukuai1@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Fri, 16 Feb 2024 14:58:40 +0800
-Message-ID: <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
-Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in md_check_recovery()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com, 
-	agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org, 
-	yukuai3@huawei.com, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com, 
-	akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
+ ip_fast_csum and csum_ipv6_magic tests
+Content-Language: en-US
+To: Helge Deller <deller@gmx.de>
+Cc: Charlie Jenkins <charlie@rivosinc.com>,
+ David Laight <David.Laight@aculab.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Parisc List <linux-parisc@vger.kernel.org>, Al Viro
+ <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
+References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
+ <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
+ <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net> <Zc1pSi59aDOnqz++@ghost>
+ <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
+ <25f108d1-827f-4a18-bee4-4105fbd45974@gmx.de>
+ <b8065a61-f5eb-4ec5-a9af-6d6bcdf1ee9b@roeck-us.net>
+ <7b207808-10e7-44b0-9a9f-253e2349011d@gmx.de>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <7b207808-10e7-44b0-9a9f-253e2349011d@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 1, 2024 at 5:30=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
-ote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> mddev_suspend() never stop sync_thread, hence it doesn't make sense to
-> ignore suspended array in md_check_recovery(), which might cause
-> sync_thread can't be unregistered.
->
-> After commit f52f5c71f3d4 ("md: fix stopping sync thread"), following
-> hang can be triggered by test shell/integrity-caching.sh:
+Hi Helge,
 
-Hi Kuai
+On 2/15/24 23:31, Helge Deller wrote:
+> On 2/16/24 06:25, Guenter Roeck wrote:
+>> On Fri, Feb 16, 2024 at 06:54:55AM +0100, Helge Deller wrote:
+>>>
+>>> Can you please give a pointer to this test code?
+>>> I'm happy to try it on real hardware.
+>>>
+>> See below.
+> 
+> Testcase runs OK on physical machine:
+> 
+> #### carry64 aligned, expect 1 -> 1
+> #### carry64 unaligned 4, expect 1 -> 1
+> #### carry64 unaligned 2, expect 1 -> 1
+> #### carry32 aligned, expect 1 -> 1
+> #### carry64 unaligned, expect 1 -> 1
+> #### carry64 aligned, expect 0 -> 0
+> #### carry64 unaligned 4, expect 0 -> 0
+> #### carry64 unaligned 2, expect 0 -> 0
+> #### carry32 aligned, expect 0 -> 0
+> #### carry32 unaligned, expect 0 -> 0
+>      ok 6 test_bad_carry
+> 
 
-After applying this patch, it's still stuck at mddev_suspend. Maybe
-the deadlock can be fixed by other patches from the patch set. But
-this patch can't fix this issue. If so, the comment is not right.
+thanks a lot for the confirmation.
 
->
-> 1) suspend the array:
-> raid_postsuspend
->  mddev_suspend
->
-> 2) stop the array:
-> raid_dtr
->  md_stop
->   __md_stop_writes
->    stop_sync_thread
->     set_bit(MD_RECOVERY_INTR, &mddev->recovery);
->     md_wakeup_thread_directly(mddev->sync_thread);
->     wait_event(..., !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
->
-> 3) sync thread done:
-> md_do_sync
->  set_bit(MD_RECOVERY_DONE, &mddev->recovery);
->  md_wakeup_thread(mddev->thread);
->
-> 4) daemon thread can't unregister sync thread:
-> md_check_recovery
->  if (mddev->suspended)
->    return; -> return directly
->  md_read_sync_thread
->  clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
->  -> MD_RECOVERY_RUNNING can't be cleared, hence step 2 hang;
-
-I add some debug logs when stopping dmraid with lvremove command. The
-step you mentioned are sequential but not async. The process is :
-dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(raid_pos=
-tsuspend)
--> dm_table_destroy(raid_dtr). It looks like mddev_suspend is waiting
-for active_io to be zero.
-
-Best Regards
-Xiao
-
-> This problem is not just related to dm-raid, fix it by ignoring
-> suspended array in md_check_recovery(). And follow up patches will
-> improve dm-raid better to frozen sync thread during suspend.
->
-> Reported-by: Mikulas Patocka <mpatocka@redhat.com>
-> Closes: https://lore.kernel.org/all/8fb335e-6d2c-dbb5-d7-ded8db5145a@redh=
-at.com/
-> Fixes: 68866e425be2 ("MD: no sync IO while suspended")
-> Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/md.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 2266358d8074..07b80278eaa5 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -9469,9 +9469,6 @@ static void md_start_sync(struct work_struct *ws)
->   */
->  void md_check_recovery(struct mddev *mddev)
->  {
-> -       if (READ_ONCE(mddev->suspended))
-> -               return;
-> -
->         if (mddev->bitmap)
->                 md_bitmap_daemon_work(mddev);
->
-> --
-> 2.39.2
->
+Guenter
 
 
