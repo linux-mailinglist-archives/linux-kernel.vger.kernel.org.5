@@ -1,98 +1,125 @@
-Return-Path: <linux-kernel+bounces-68978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 241C68582E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:45:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62D6D8582EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D39E4284DC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:45:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9656F1C22335
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:47:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F8E130AF1;
-	Fri, 16 Feb 2024 16:45:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1945130E27;
+	Fri, 16 Feb 2024 16:47:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="V7TXH/54"
-Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C57043687;
-	Fri, 16 Feb 2024 16:45:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708101934; cv=none; b=OLsnIP/gnfq2Fo+zMHznEXMMGBGo9EYhNXWVqOESMq5fjyaPqhyp/2kknRJYASRAhsGIvdNAV6T3/bTk0iutyfiSnkUp/3A/OTvzR2bLmBOYz3NZWB4sREBW1ue/dE1GEBV3YRGnBI4Xit25eKTrDTJ+aX6B4kL4CN7eEAKNSsA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708101934; c=relaxed/simple;
-	bh=CsOn+DhgFeqCNSRreHl5oS9hryCOkL21maWnWfjiYWo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GA+Ic6gtaXvjkYgJVkTqxQMskUK40kGobERSkwbdLHyceb1CyWnZJp0dGBRnHB6I+/LU7SA7cZLtleIMQvPLkxmesRZgtCqiIX4jEi6aCGH7P3o+uTrwywQzzzp11g6R5m7PlpX2q3Wkaj+mairfuU6zHuWTcka0tTzy5hUVo58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=V7TXH/54; arc=none smtp.client-ip=94.231.106.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4TbyV15ms2z681Y;
-	Fri, 16 Feb 2024 17:45:29 +0100 (CET)
-Received: from [10.10.15.23] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OyzLVMnD"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4TbyTv1h07z67p1;
-	Fri, 16 Feb 2024 17:45:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=unoeuro; t=1708101929;
-	bh=Z0ojgdZAly+cJwqhDwzJMVcnx8Yr0Z18PaNMP45RmHE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=V7TXH/54ebxbS7izH3f/05iFUczZ7LrR4qYpAWGVhAnMGh1Amjz/ACzNf1j51kncU
-	 qlMR1pUNoT67s3JVOHL6GAfNYA5Koz+IKQA+3lPHcsyZlaigz2IjIUpKUnLnwW8HvF
-	 ZSOEKpQPJq9s9NJK5732Zs3gVNb+qVHqGesklTK8=
-Message-ID: <bbab8a40-ba76-42f5-8f8f-2259ce70e14e@gaisler.com>
-Date: Fri, 16 Feb 2024 17:45:21 +0100
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E57678B58
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:46:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708102020; cv=none; b=t9T9BiZDZXZwzJ2HVL0IGkrWUoAuYmILhZwX9DO/+sdMn3Q72m482ruwiDkP6+KLR/5tffzQRu8CK3tLhOpGOcmfOJWziHt9utoPKGpAbq4SQ2+gnMCbRS7N74n5IT3Dxtzr4vN9y1uan45YXCIHLshotuSJnpG/2BJUI5fkwPA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708102020; c=relaxed/simple;
+	bh=/5/86K2Z1hDqoZIqP7XxaxYaiR6tJyE2BrZYnn5TkeE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=P6MVONZNMTNLbeetHd7SMk7asAHta2HXgbqPtCyscZ8vMIYkBDuhplzMCmruHYj9d5zOiu0RoqLGnl8eKAbkzTHsIu4qr4f9F+0pONhh9EYybVbD1IvIAMdlgabtRuLcKn6l76LwLTOpSWGubhzUjPwL8xyEJTyoWCV0RcGp4n8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OyzLVMnD; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-db4364ecd6aso962164276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:46:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708102018; x=1708706818; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/5/86K2Z1hDqoZIqP7XxaxYaiR6tJyE2BrZYnn5TkeE=;
+        b=OyzLVMnDCE6jz4Q+qffCh6Gh4iWQJtQHHBHNJHFU9nOqqh5XY5J548bB3HMg+pqoZE
+         wj46/z6t6lXNQh9dj8V54j9KaGAle7I+Y7tvVVaN6koEplIwc3/Xx1nySgpkoEb5Im2/
+         DE5Vow6Od+e2urKCrffkKdJ5Qtu6IHsfBCg3S167TZSkhQfQDYF0KCEfttJy2vZkewdA
+         4L29cUOQiSv+Ytc+NB/3Xy4sXBCAz40WEeqswQISFsbw4tgpeCiG9Q89YvDZYkg3VQdq
+         VWlbGw4TJ/ibTkC5oEnw2jWyVxhd5z9qKbWOk/VDIZStfJ9x4gQwDNeyxUREYQ+UlLVT
+         hwDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708102018; x=1708706818;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/5/86K2Z1hDqoZIqP7XxaxYaiR6tJyE2BrZYnn5TkeE=;
+        b=wCwlnk3NgHGsXzJL/NCax+hVWC0kBapDPB//XbyNo/RNQip/465lxy8+voYbVLVg3x
+         lQEHGkbaNhvFyyK5De1M3taa5YlC5o2J6avX8j1uv/HwHiVe1izUqjeh6JUY9Xny4c7b
+         xplqVpkoelrfu/sZm/vcUtsQZHglAMjYUEhhxJyMXYKpBm+981JiBty+KxX8ub4bdHMu
+         xPPp0PCxxExisNLMXtvG3XDdUb/1nBa9vWhl6ulK5WtF0szEKsInY/57TjIdnQ2k2qmI
+         ji21M9/u6i08mF7EdmkCEAhE8W6f++k5nbARWw0B0g+LwvlKhl8mWRY9zf2f53m3L1tA
+         8KfA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3hWyGRSO7wigteZZ4poVVGGtw1V1O2ToknrcxXzEleNUBIowJ8dTipLBqqpP0vkE+iOt3YydDAPdcV/JaOXra7bN3KoYfi6qlPZHa
+X-Gm-Message-State: AOJu0YzewHxsqZiG6qheRIV5mkbNGdK5jzwE4RJjOviQ84MQrLycu+Fd
+	re+jSiPeuFqXlBPM25JX7w3zYB2YTDj/7w9aYZFtDZ2U+5zsUk4lIe4w/Fe5lTgXP58bc8Z6Mw5
+	y328zDifqjAsXXaBR28efjLRSJGIHfp8b3ZsZ
+X-Google-Smtp-Source: AGHT+IHpVHS0ppvETjTRvFKcu78rYESIPuQ3727VZfvfJc5knt0q+oxLKdnegsBYKFjwcpEUJdgoCQszaHZUroSf3Gc=
+X-Received: by 2002:a25:ae44:0:b0:dcc:6894:4ad4 with SMTP id
+ g4-20020a25ae44000000b00dcc68944ad4mr5406936ybe.56.1708102018033; Fri, 16 Feb
+ 2024 08:46:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] sparc: leon: grpci1: Use
- devm_platform_ioremap_resource() in grpci1_of_probe()
-Content-Language: en-US
-To: Markus Elfring <Markus.Elfring@web.de>, sparclinux@vger.kernel.org,
- kernel-janitors@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
- Rob Herring <robh@kernel.org>, Sam Ravnborg <sam@ravnborg.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <4fc017e4-c695-40d3-aed4-cbf34d44e6fa@web.de>
- <e4585b03-3629-4bd7-a349-f5471ebd8685@web.de>
-From: Andreas Larsson <andreas@gaisler.com>
-In-Reply-To: <e4585b03-3629-4bd7-a349-f5471ebd8685@web.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-19-surenb@google.com>
+ <2e26bdf7-a793-4386-bcc1-5b1c7a0405b3@suse.cz>
+In-Reply-To: <2e26bdf7-a793-4386-bcc1-5b1c7a0405b3@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 16 Feb 2024 08:46:47 -0800
+Message-ID: <CAJuCfpGUH9DNEzfDrt5O0z8T2oAfsJ7-RTTN2CGUqwA+m3g6_w@mail.gmail.com>
+Subject: Re: [PATCH v3 18/35] mm: create new codetag references during page splitting
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-02-06 16:40, Markus Elfring wrote:
-> From: Markus Elfring <elfring@users.sourceforge.net>
-> Date: Tue, 6 Feb 2024 16:30:15 +0100
-> 
-> A wrapper function is available since the commit 7945f929f1a77a1c8887a97ca07f87626858ff42
+On Fri, Feb 16, 2024 at 6:33=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/12/24 22:39, Suren Baghdasaryan wrote:
+> > When a high-order page is split into smaller ones, each newly split
+> > page should get its codetag. The original codetag is reused for these
+> > pages but it's recorded as 0-byte allocation because original codetag
+> > already accounts for the original high-order allocated page.
+>
+> Wouldn't it be possible to adjust the original's accounted size and
+> redistribute to the split pages for more accuracy?
 
-This line is needlessly long. Could you wrap it or shorten the SHA-1 ID?
-You don't need more than the first 12 characters of the SHA-1 ID.
+I can't recall why I didn't do it that way but I'll try to change and
+see if something non-obvious comes up. Thanks!
 
-> ("drivers: provide devm_platform_ioremap_resource()").
-> 
-> * Thus reuse existing functionality instead of keeping duplicate source code.
-
-The same goes for this one. Please keep the width of the commit
-description within 75 characters.
- 
-> * Delete a local variable which became unnecessary with this refactoring.
-> 
-> 
-> This issue was transformed by using the Coccinelle software.
-> 
-> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-
-Apart from that the patch looks good.
-
-Thanks,
-Andreas
+>
 
