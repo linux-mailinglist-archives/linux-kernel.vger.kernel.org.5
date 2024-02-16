@@ -1,297 +1,182 @@
-Return-Path: <linux-kernel+bounces-68683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1118857E5C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:00:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFBC1857E60
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:01:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 168BD28559D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:00:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CEC91F22E99
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AC812BF2D;
-	Fri, 16 Feb 2024 14:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 188B112C534;
+	Fri, 16 Feb 2024 14:01:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="aZ07qCt5"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2067.outbound.protection.outlook.com [40.107.92.67])
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="cZ9dnzPn"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53D54175A6
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708092041; cv=fail; b=Lbd+1byu3zXBrnfWIKiDGFXL6kHi5xzzruOVlD3559qu4Re5vZtHNJWlsX1m70+VzRA4GVIoNy04L2WTeXYZiGGUPWiVLxP4GN8pWiGEt5k8xGBYQ39NBOryCHiUHeQitJVo8uiRVBrOAw9JHvhNaf6REp7zEHk8nglX/C/o5Bg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708092041; c=relaxed/simple;
-	bh=R1BMor0gW80CB3b+Jg+ydGHnCK7vPqjeaATY5U6UC0o=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=TrqJv8uQRnphXKz0AaWKywR+AusFvIMl3EsFRR/3IC0MXUvdzLN29URMmONzEfD+lXv8XJnNP0HTuWXFse0lp0Id1Ygd4F/E+fxmyIZ+FvDbgHatlLFPMWKrgHZk5LsfVMSLw6Afv1QriAvpZYPVqNNT8fy7YbLpazoQUKGeYdE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=aZ07qCt5; arc=fail smtp.client-ip=40.107.92.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dy/etnGJkpilJP+9yx9JAdGIVO106iSwBQPtZfwBcUGZo3kv7JZrFMeCB954Zr4NG4ETbfsd2sDZ79pHCpIFm+DAWOhmlMP6plgXKNkLO9q3Nod273d4SfwWGFW2Exef4adiTltiqHVgEisxbR7bQ7O8UgKEFg70mSWQfVkBraGTTqHknYX85B2GnBvP2oSD5TyVqHBxFbiDnlfm/iQX7LkJFeYds5bd66WDuYlEogyAuHXLP9BPQPA2cZbmM5pyimSSusEMp8mG2QqXqF+BjmcI0jbSn8wXXQyP5I3MOoWOrPfZdCPjBOUdwZ9wcvKuWh9u08bkTkBq8ZxQW2rvyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5gRPrF8RIDFdtyKDd5EBOyIx8xNVl+rgtoZCzouaxig=;
- b=VqY7R2L/5Wkdxwy0NwuVYA5s3wgPGsdif2pIWSa5rWST4YWiXfNYlJ5sgjIhESwdBWn3r/R62BEgykKBquUExWTZftAZ2Av4rWaosBCUJ2DvNi10qcC5l0OXKVdfSuD79fG3n3oNvlg6IKPNvgOSMEMt91Ig+l0BBjpUuEtB44WfSt0hMmusEy3rIAo3cl7dQgwpWtAlF4C0/GJQFID9wCWt8NdspZRBfP8BLlVVlO8kxtum3tzDleIrVba/pmLxgilW2KiOmIQoMzqWCPgK0K5BU0V3h85MfGE7LalAoEvaF4sPstwIEHMIHzyubsLnjy7lXc/q4kd62LNptPDMEg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5gRPrF8RIDFdtyKDd5EBOyIx8xNVl+rgtoZCzouaxig=;
- b=aZ07qCt5zzKZEemS9ZAumkiV+Z4JAT+CiDex/8NXW541hWBJhq8tXpsRpCWmD5upMswBmqUV3zFp1C/bpDix1N5KRPfNaMiMGS6TTJNvaidym1IGvng6lFBVD51DyEO6m3lIvEKW0dI5uhkrPUCeGSXW0HLhknM3uQ2HiEY6/Gc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- SJ0PR12MB5471.namprd12.prod.outlook.com (2603:10b6:a03:300::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
- 2024 14:00:36 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::3301:dfb9:528a:1fa5]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::3301:dfb9:528a:1fa5%7]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
- 14:00:36 +0000
-Message-ID: <b52d47d1-7748-4560-94a6-520c82eb3fa2@amd.com>
-Date: Fri, 16 Feb 2024 09:00:32 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
- to eDP connectors
-Content-Language: en-US
-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-Cc: amd-gfx@lists.freedesktop.org,
- Mario Limonciello <mario.limonciello@amd.com>,
- Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
- <20240216101936.2e210be2@eldfell>
-From: Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <20240216101936.2e210be2@eldfell>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBP288CA0023.CANP288.PROD.OUTLOOK.COM
- (2603:10b6:c01:6a::19) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E461BDD8;
+	Fri, 16 Feb 2024 14:01:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708092081; cv=none; b=IcdNu54ThYw05RMrVQ4rxxk/VD3b1p0X8r3ARYomWXoCMniQCL0m2nVCcyanbHhDSKoz7jvS2kY021+jQnprVnZtX1WUsGU6QIBR18vh6Yc0Je73y0SoG7VklVeB0bYY7ADc+6gn3jJOF4SiQq6TvJHQD0b5XYaNrnNc6jQWblc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708092081; c=relaxed/simple;
+	bh=5x71ZGn9eERzODLmiS9usSdv9M+F4w7Rdht/BFSRVGg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b2INoQdNLiD4NNhWljd9mKDQdp2q/xy8re+oBOvpqb45K6PhLo02Kz8f5Ko4DOVeYrbtF72lLk+6SM9GUdTaeU1hDKwzzO/kCw491snjIsNkSDKqsvWCk6GNmVpce9g2xY1nYEmkeEkBmFAXIe6AvJVBqBrg6t4fvGSUiYC3kVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=cZ9dnzPn; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 4C219600D4;
+	Fri, 16 Feb 2024 14:01:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1708092074;
+	bh=5x71ZGn9eERzODLmiS9usSdv9M+F4w7Rdht/BFSRVGg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cZ9dnzPnX34nlCraw6AoRN8PlG5pr/ifB1VcDbL9L+8Fo/hWihXuViuFsOuT+2IPa
+	 k9GTHMc52z0wDq+2jhCDpWaB5weAI3xtiy0X4hQMk5qhGm7HjI8rwfmySdgysaouvy
+	 ovhiseL79cIukaRHVCagQ0/cx6DKJUxbSuwCBwKbUca1QHcsVIuV1Bjko1fCbCWkdY
+	 UHSERolsOWWdIM5IMko+0kcT33tXHfkrsbFq0gktkk9ULguqP6VLaSzLwH75JjMcfS
+	 U+v60dPfGaEYNpX1g9ICXTrboj6lBTMnshYIbU9u/kj3gF0wiOwqcCB2cgvRkaFoT4
+	 YOlGgr0s2AXbA==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id 165CD2004F9;
+	Fri, 16 Feb 2024 14:01:07 +0000 (UTC)
+Message-ID: <28bf1467-b7ce-4e36-a4ef-5445f65edd97@fiberby.net>
+Date: Fri, 16 Feb 2024 14:01:06 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|SJ0PR12MB5471:EE_
-X-MS-Office365-Filtering-Correlation-Id: 016fac1c-ba33-4d61-864b-08dc2ef7a651
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	E8wUFT/ZToZZJ0gdO7eVXo5JtjFLkflXk5p7sEKaRWIYiwOYJ6PvT1cE5+PkSz2DUoKiorXOCvs7qLd/d0lXq7nDznlwJ3jWxrB/3/AW9mFw2Q2DLMsfKgzVNbC/cT3NwVB2vXA2Uo++Ok1zI90DwDlmi6atgYH6huhW0irbIRCtfv11ZNBJy32ukLwshFrFm436Akq+o55jGfZ0kmJBiR8n6fBGJCx0wRwtLqiqzMoWzQ0Njm0m8oSxMOtDy54XUCJOiNOE1PVgeRS6viI7cX7YFyJkSRN0lyDEQ7psT8h8HZTuuVRy73QRfre7ohwE1UeNqkoSphyCx0QQPU02OJ7i80A99ly/9SIMYUY9riFXT8J8mYXLC8w4B0H/5PGlZUxYM37RSf/yW3t4hWr9dKRG2beMVkM+SNye0bQ9bh8jB3mlAYlL0SSCNu1NUv4tMHdAy7GCY2PBqcY0CsyTb/OYNXh72dUPQOWXonFUnU4VxV5G5+OFbUNS/fj3HmAiZT6D2F6PcD2LhHFM6RWRKcFYJezbIQN9e/sTVUdUzZ6BelhuBqRTqphRyDu6Vun7
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(136003)(346002)(39860400002)(366004)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(36756003)(86362001)(31696002)(31686004)(4326008)(8936002)(8676002)(6916009)(66476007)(66556008)(66946007)(44832011)(5660300002)(2906002)(83380400001)(38100700002)(53546011)(6666004)(41300700001)(316002)(54906003)(26005)(2616005)(478600001)(6486002)(6512007)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?RmgvMFpJcjlJTXBKU2RrVnRmdjN6OXdBWnJjQzRJdXI5ZGRIcitpaVY2OVdT?=
- =?utf-8?B?WGZJNlNjMXlHUk1PSklkRmVaTitlQ0VBWEZXS0ZLU081T2lIdHRMbCs0ZnJR?=
- =?utf-8?B?WUlob01VWGlhaGdjczQvTnpYMFlqWUhPampkTXZIdFFtaEpvcVlMcXBjSEND?=
- =?utf-8?B?YUhjNjhBaHEvaGdkdWZCRCtBamkyRzJ1S0lEeFpuZGpWVklKbzgvc1ZpaHFz?=
- =?utf-8?B?dEpUQVlOSWxSNE1BQUM2Uy9ON21DMEVSMDhEVm44dHZabjZEM1NYakRSeDZa?=
- =?utf-8?B?RlhkM1dNcTdyRmR4U3FOQjhUSXFkUHJ4eEowbmpjQmRyYlNZaXdSN1ppWTBz?=
- =?utf-8?B?SjI0R01TQWZPTHZGMzZOcWUzT0hqOFEvU0NlT1pSUkd4VmJuL2xIU3JWaHBs?=
- =?utf-8?B?c1M4T1cxbjYrSlFsQXJmOURqYzVFbFlZQXNQWUVjbk9CcXczOUIwbUZ5aS9n?=
- =?utf-8?B?dExpQktRTlFvVFA4Z2hHM00wUnh1UG0vajBKTTRONVRtTW40TzY3bWtZMng0?=
- =?utf-8?B?WlJPVGswZXlsR3hkTzF3YVpZUUtpS09XS29hNG10b0JjWUs0dTJzNWhML3Zu?=
- =?utf-8?B?SUxNK29ncUNqRWNFM21oRlY1NjYxVWQzYUcwSC9CUHpIZklmRE1VeEhUQTJU?=
- =?utf-8?B?dGNJNHQvWmY4ZjcxNjhXOVFRSGVUUnRYNzBCVzRGTmJnUmg3UTd3QVdjMktZ?=
- =?utf-8?B?Q0VDeGNNamV4UDBmR0xBS2J0S3A2Z29SUktsY1pneThpMEVyVWNjODFnSjQy?=
- =?utf-8?B?QW1YNXV0WW9tS0N6anlhdmVPcjQzS1BiMzRpdFIxb2dnTnFKUDN4a2Zmek5w?=
- =?utf-8?B?UDk2cE1jaWxGdmhCOVl2R09zdmRtckhIa0pETHRWb213blZYT3BWazhrQXN4?=
- =?utf-8?B?cmhDTWpSYXRBQ0xLZWFLV1VENG9YSjJLMUpwUVVTUVZXc21MMXd4RG1aeHIr?=
- =?utf-8?B?UXd5T0JTT29RdHZLc2wxMkExeTdQeEowcnJqKzR3SEZNMTBwRzhlM1VWUnhQ?=
- =?utf-8?B?eVQ0QUNpY1FVUjJucVVIbHplU0FQeXRuQndDN3daVU9XNU1TVGdNL0E3RkVP?=
- =?utf-8?B?bzJIRkFxaWNFOXNqbGJaTUJ6L3RVcy8vbTZsQm5tOWcrcUtKUlFoeHVQbmFp?=
- =?utf-8?B?YWttSkVieTlpczZYTmhyMjlHcmppNkxIb29qSTFQNTFpcWZwSTFjMEoyV0x1?=
- =?utf-8?B?ODFsd25SZCs4Vm55WFIrY1ZRYWlLb3R4K0VobEVTcEFmMEFLdnhtR1VKWC9U?=
- =?utf-8?B?Z3pWK2VNS2FWdlY1Y0FmTHBzaDhQNTNnS1Z6YnBkZ0dXdWlwREYrMHA3K3RR?=
- =?utf-8?B?RVVvcjcwV0M3TFVvc3NhajF6NzRpSi8wclRmT2JsQmxjREQwTVRQa3ppdXZW?=
- =?utf-8?B?NW5sT1JrMTE1VXd4TlJwZHF0UGhaN2tneVQyQ0kwRUJ6UjA4bDZNaWRSb3NL?=
- =?utf-8?B?T0VUdUhSeTVDVGtCVC9jcWpORXZVNks5Wkc4bWlBTXdjZHdsRVJ6cnRTKzcr?=
- =?utf-8?B?MkowUVg4S0lzRkxLWXNDc1oyeSs5S01LMzc3QUFCZ3ZtdGg1eFI3K0wwUUZQ?=
- =?utf-8?B?VVZob3BoYXl1SU15U2FmRnpJaHlGTWxVZ1BuTk1jN2srbG52OTBsZWE0RFJR?=
- =?utf-8?B?eG9KOXdxbjlQSU1UalpkUzcvZTZNVG9RTVVVS0FxM2RGRHJ3ckM0WC9BV3hH?=
- =?utf-8?B?MEpPM1g4bjZiS1NaS21WaWZUdmxVZ0pkTVhYb0ovL0kxZUZEck04U2I1T2ta?=
- =?utf-8?B?L3BXYWEwYmtOckFLQ0l3Tmp2QzM4MGFFWlAwcDh4LzVvVW40RjFVWERpbWw5?=
- =?utf-8?B?c2lSTWNuWk94SmpaazR2NklOZU84TDBub0NzdmVDODZiMElHblB0NjJ6Ui9O?=
- =?utf-8?B?S1hocGtEZEp3cG9DN3UrWHN5d21QL2VSYk1KUU1GRW9pYXpqdGFrdHV6MFhx?=
- =?utf-8?B?Tjg1d2p2QTR0SjNMK3ZWVXZCQ3J5SjlmSzlCdnQ5YjRaV1ZqLzl2N0x3VmFt?=
- =?utf-8?B?TnBIa3pldDN5KzlhelQrNXlQYzJvUHgxUlBZS0NHcUFGQkx1a0RTUmRDaEFB?=
- =?utf-8?B?ZFlUWWtVYWZwRjVPaVRFQzJvRVNTT1EwQjIzdmxnbWNVVDVUU2I3V1R3dVhB?=
- =?utf-8?Q?J0NVan56aCKPGN+BSuIVmobKm?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 016fac1c-ba33-4d61-864b-08dc2ef7a651
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 14:00:36.3400
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RtO3nDGMiLWBZKStOGSe6Kvi6Bd0wKf4uRybEZzGyEZedJWQxY/tYMLb+TcOaOYxu5q1wAvtmppaSg1kHoVPpw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5471
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 3/3] net: sched: make skip_sw actually skip
+ software
+Content-Language: en-US
+To: Vlad Buslov <vladbu@nvidia.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang
+ <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llu@fiberby.dk
+References: <20240215160458.1727237-1-ast@fiberby.net>
+ <20240215160458.1727237-4-ast@fiberby.net> <871q9cdbyl.fsf@nvidia.com>
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+In-Reply-To: <871q9cdbyl.fsf@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2/16/24 03:19, Pekka Paalanen wrote:
-> On Fri, 2 Feb 2024 10:28:35 -0500
-> Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
-> 
->> We want programs besides the compositor to be able to enable or disable
->> panel power saving features.
-> 
-> Could you also explain why, in the commit message, please?
-> 
-> It is unexpected for arbitrary programs to be able to override the KMS
-> client, and certainly new ways to do so should not be added without an
-> excellent justification.
+Hi Vlad,
 
-Also, to be completely honest with you, I'm not sure why it was
-initially exposed as a DRM prop, since it's a power management feature.
-Which is to say, that it doesn't really make sense to have the
-compositor control it.
-
-> 
-> Maybe debugfs would be more appropriate if the purpose is only testing
-> rather than production environments?
-> 
->> However, since they are currently only
->> configurable through DRM properties, that isn't possible. So, to remedy
->> that issue introduce a new "panel_power_savings" sysfs attribute.
-> 
-> When the DRM property was added, what was used as the userspace to
-> prove its workings?
-> 
-> 
-> Thanks,
-> pq
-> 
+On 2/16/24 08:47, Vlad Buslov wrote:
+> On Thu 15 Feb 2024 at 16:04, Asbjørn Sloth Tønnesen <ast@fiberby.net> wrote:
+>> TC filters come in 3 variants:
+>> - no flag (no opinion, process wherever possible)
+>> - skip_hw (do not process filter by hardware)
+>> - skip_sw (do not process filter by software)
 >>
->> Cc: Mario Limonciello <mario.limonciello@amd.com>
->> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
->> ---
->> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
->>      commit when setting the value, call sysfs_remove_group() in
->>      amdgpu_dm_connector_unregister() and add some documentation.
->> ---
->>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
->>   1 file changed, 76 insertions(+)
+>> However skip_sw is implemented so that the skip_sw
+>> flag can first be checked, after it has been matched.
 >>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> index 8590c9f1dda6..3c62489d03dc 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
->>   	return ret;
+>> IMHO it's common when using skip_sw, to use it on all rules.
+>>
+>> So if all filters in a block is skip_sw filters, then
+>> we can bail early, we can thus avoid having to match
+>> the filters, just to check for the skip_sw flag.
+>>
+>>   +----------------------------+--------+--------+--------+
+>>   | Test description           | Pre    | Post   | Rel.   |
+>>   |                            | kpps   | kpps   | chg.   |
+>>   +----------------------------+--------+--------+--------+
+>>   | basic forwarding + notrack | 1264.9 | 1277.7 |  1.01x |
+>>   | switch to eswitch mode     | 1067.1 | 1071.0 |  1.00x |
+>>   | add ingress qdisc          | 1056.0 | 1059.1 |  1.00x |
+>>   +----------------------------+--------+--------+--------+
+>>   | 1 non-matching rule        |  927.9 | 1057.1 |  1.14x |
+>>   | 10 non-matching rules      |  495.8 | 1055.6 |  2.13x |
+>>   | 25 non-matching rules      |  280.6 | 1053.5 |  3.75x |
+>>   | 50 non-matching rules      |  162.0 | 1055.7 |  6.52x |
+>>   | 100 non-matching rules     |   87.7 | 1019.0 | 11.62x |
+>>   +----------------------------+--------+--------+--------+
+>>
+>> perf top (100 n-m skip_sw rules - pre patch):
+>>    25.57%  [kernel]  [k] __skb_flow_dissect
+>>    20.77%  [kernel]  [k] rhashtable_jhash2
+>>    14.26%  [kernel]  [k] fl_classify
+>>    13.28%  [kernel]  [k] fl_mask_lookup
+>>     6.38%  [kernel]  [k] memset_orig
+>>     3.22%  [kernel]  [k] tcf_classify
+>>
+>> perf top (100 n-m skip_sw rules - post patch):
+>>     4.28%  [kernel]  [k] __dev_queue_xmit
+>>     3.80%  [kernel]  [k] check_preemption_disabled
+>>     3.68%  [kernel]  [k] nft_do_chain
+>>     3.08%  [kernel]  [k] __netif_receive_skb_core.constprop.0
+>>     2.59%  [kernel]  [k] mlx5e_xmit
+>>     2.48%  [kernel]  [k] mlx5e_skb_from_cqe_mpwrq_nonlinear
+>>
+>> Test setup:
+>>   DUT: Intel Xeon D-1518 (2.20GHz) w/ Nvidia/Mellanox ConnectX-6 Dx 2x100G
+>>   Data rate measured on switch (Extreme X690), and DUT connected as
+>>   a router on a stick, with pktgen and pktsink as VLANs.
+>>   Pktgen was in range 12.79 - 12.95 Mpps across all tests.
+>>
+>> Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+>> ---
+>>   include/net/pkt_cls.h | 5 +++++
+>>   net/core/dev.c        | 3 +++
+>>   2 files changed, 8 insertions(+)
+>>
+>> diff --git a/include/net/pkt_cls.h b/include/net/pkt_cls.h
+>> index a4ee43f493bb..a065da4df7ff 100644
+>> --- a/include/net/pkt_cls.h
+>> +++ b/include/net/pkt_cls.h
+>> @@ -74,6 +74,11 @@ static inline bool tcf_block_non_null_shared(struct tcf_block *block)
+>>   	return block && block->index;
 >>   }
 >>   
->> +/**
->> + * DOC: panel power savings
->> + *
->> + * The display manager allows you to set your desired **panel power savings**
->> + * level (between 0-4, with 0 representing off), e.g. using the following::
->> + *
->> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
->> + *
->> + * Modifying this value can have implications on color accuracy, so tread
->> + * carefully.
->> + */
->> +
->> +static ssize_t panel_power_savings_show(struct device *device,
->> +					struct device_attribute *attr,
->> +					char *buf)
+>> +static inline bool tcf_block_has_skip_sw_only(struct tcf_block *block)
 >> +{
->> +	struct drm_connector *connector = dev_get_drvdata(device);
->> +	struct drm_device *dev = connector->dev;
->> +	u8 val;
->> +
->> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
->> +	val = to_dm_connector_state(connector->state)->abm_level ==
->> +		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
->> +		to_dm_connector_state(connector->state)->abm_level;
->> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
->> +
->> +	return sysfs_emit(buf, "%u\n", val);
+>> +	return block && atomic_read(&block->filtercnt) == atomic_read(&block->skipswcnt);
 >> +}
+> 
+> Note that this introduces a read from heavily contended cache-line on
+> data path for all classifiers, including the ones that don't support
+> offloads. Wonder if this a concern for users running purely software tc.
+
+Unfortunately, I don't have access to any multi-CPU machines, so I haven't been
+able to test the impact of that.
+
+Alternatively I guess I could also maintain a static key in the counter update logic.
+
+
 >> +
->> +static ssize_t panel_power_savings_store(struct device *device,
->> +					 struct device_attribute *attr,
->> +					 const char *buf, size_t count)
->> +{
->> +	struct drm_connector *connector = dev_get_drvdata(device);
->> +	struct drm_device *dev = connector->dev;
->> +	long val;
->> +	int ret;
->> +
->> +	ret = kstrtol(buf, 0, &val);
->> +
->> +	if (ret)
+>>   static inline struct Qdisc *tcf_block_q(struct tcf_block *block)
+>>   {
+>>   	WARN_ON(tcf_block_shared(block));
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index d8dd293a7a27..7cd014e5066e 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -3910,6 +3910,9 @@ static int tc_run(struct tcx_entry *entry, struct sk_buff *skb,
+>>   	if (!miniq)
+>>   		return ret;
+>>   
+>> +	if (tcf_block_has_skip_sw_only(miniq->block))
 >> +		return ret;
 >> +
->> +	if (val < 0 || val > 4)
->> +		return -EINVAL;
->> +
->> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
->> +	to_dm_connector_state(connector->state)->abm_level = val ?:
->> +		ABM_LEVEL_IMMEDIATE_DISABLE;
->> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
->> +
->> +	drm_kms_helper_hotplug_event(dev);
->> +
->> +	return count;
->> +}
->> +
->> +static DEVICE_ATTR_RW(panel_power_savings);
->> +
->> +static struct attribute *amdgpu_attrs[] = {
->> +	&dev_attr_panel_power_savings.attr,
->> +	NULL
->> +};
->> +
->> +static const struct attribute_group amdgpu_group = {
->> +	.name = "amdgpu",
->> +	.attrs = amdgpu_attrs
->> +};
->> +
->>   static void amdgpu_dm_connector_unregister(struct drm_connector *connector)
->>   {
->>   	struct amdgpu_dm_connector *amdgpu_dm_connector = to_amdgpu_dm_connector(connector);
->>   
->> +	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
->>   	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
->>   }
->>   
->> @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_connector *connector)
->>   		to_amdgpu_dm_connector(connector);
->>   	int r;
->>   
->> +	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
->> +		r = sysfs_create_group(&connector->kdev->kobj,
->> +				       &amdgpu_group);
->> +		if (r)
->> +			return r;
->> +	}
->> +
->>   	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
->>   
->>   	if ((connector->connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
+>>   	tc_skb_cb(skb)->mru = 0;
+>>   	tc_skb_cb(skb)->post_ct = false;
+>>   	tcf_set_drop_reason(skb, *drop_reason);
 > 
--- 
-Hamza
 
+-- 
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
