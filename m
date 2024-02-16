@@ -1,47 +1,92 @@
-Return-Path: <linux-kernel+bounces-68271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74974857805
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:52:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D548B85780F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:53:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A75B51C212B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:52:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04B3A1C20C69
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:53:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56CB1BC4B;
-	Fri, 16 Feb 2024 08:49:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87FB1CA98;
+	Fri, 16 Feb 2024 08:50:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KcKB6+j8"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yA/4iNTU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKTSAEdQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MsHa2qgD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4HijluMb"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602F41BC39;
-	Fri, 16 Feb 2024 08:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15CF01C6BC;
+	Fri, 16 Feb 2024 08:50:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708073395; cv=none; b=iTdN5HedpdIwPyhJ8JSty8IwD9d7HTvw7n1dBpndFzFRkZIIdgVScBjWyy2cLaP7Uc98wtiXUgjWdZM+9WLEOOccMk/2MFP8+rYsSLxfbDeiw9vdiOs+Y/TmpmIRxEo41iiugDnKQZXUAlWw7CkbrV/ZagMOJhppmKkFwz5Yye4=
+	t=1708073449; cv=none; b=LLP90U4AQvRvN7ugOxa1btqHgEpN/G4/myA+Ls6aXBgHbqHYfJzZ7zmvyvu0EZ+HY7XPXvZSIPapQr30mT9Gu1dzrwNzUsdMqo8nDjIyqzm4G5ZcyNPBDC4JltqFXhCX6s75UVqL/rjZNaTUTUk2WGin/6w2TaafK+g1yV3Ub8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708073395; c=relaxed/simple;
-	bh=wbuMWjN7bWP07E2luG9Ke+7FGGg1ngKDNbVXNPaPUc8=;
+	s=arc-20240116; t=1708073449; c=relaxed/simple;
+	bh=yGT4FHDQGazhdbI/CEPDEVMPDIKAQ4DhuZOaL/hilGc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CVlpQm3Njw+USNmUidRRLeavOuuQM+qYGjsGO3nQMwC/Ez53wn2V+lWos2IkzikvlylJSCTK3DpYMk0QJMW+wumwj+YUFzFDSCY0QEomIFjDU8rbGwoISIpvrnlOCQpD5H+QRhqAFbmGezuS5t9JZwnC9jAUsNQkeO7sQ/pMsuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=KcKB6+j8; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id CAEF0564;
-	Fri, 16 Feb 2024 09:49:44 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708073385;
-	bh=wbuMWjN7bWP07E2luG9Ke+7FGGg1ngKDNbVXNPaPUc8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=KcKB6+j8AiZBFZB9Bm5n7i4kv1W5t8ydiS4bVSG/JMp+m8p4z+wkW4dV+Mf/gGyBG
-	 VtCOK0F40TX6evc9dcSZ3rQ1nVr8njRGe8d4DKaSz0hSkzvk3cJxgv8SAQHUKfvZf4
-	 RNYVpcgtUJlNhPNjLcXVQi0mOTaPIQ4nvyDB9eNo=
-Message-ID: <151e6597-e591-4c7f-a702-fb539c3e38d6@ideasonboard.com>
-Date: Fri, 16 Feb 2024 10:49:46 +0200
+	 In-Reply-To:Content-Type; b=KTy7UNLwSTqkNPhAyZBrJlqHhR2X/wPEeo8gNMWAqW4al79U3HxKu2avENQLJZOj0BkX3P1d63E3jGpDWC3qZgF0WEwcCxdH0BzqOiJi0QPGrpLm+B9Xfms8vyX9/U84HkQC/rkyUt7T32fnghIMgFRqG5x8oVACpx1xTdt2ZOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yA/4iNTU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKTSAEdQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MsHa2qgD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4HijluMb; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EB4E021F7E;
+	Fri, 16 Feb 2024 08:50:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708073446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
+	b=yA/4iNTUqEHccnKB1z66YL2dzLg6sK1GL094zaEuj86ov+1DS8px+e7N+FD+6UOoxL+hET
+	a6lfnD8rSL+k5Kpa/+qQilTpVUcCW+apQ7/X8hCA0bvGBSjhiTKKM5kFasWyPCKhwvXLte
+	963wM1MWXhSKnZKJcQC8iHq8r4lfbFI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708073446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
+	b=OKTSAEdQiQOE8QGbehxaksfU4xFFfvbOGD6CVt9rRI12E/+Xejag/fOBwE1jxEW+sGHhKg
+	icATO2U/0LamPeCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708073443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
+	b=MsHa2qgDMGrpba+EungtRB3gKcd1mAeCYnHbKWGZYMw/SQvw9DiqUo9EErZ8M7sMcyP6RG
+	RK6h/aPqWH9WJi4p9mZ0TqgjpGee9KRFe7uPaqgah31OZo6pY5y4FPhnqmVR6Vv6bGKkTT
+	CAp5/x4fPl5c6RGeBvw0LRnpDPAKPcM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708073443;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
+	b=4HijluMb7Xd7CSzHohZEysAuvCcSdzvrC8J0c602jaX9pjeHwcb45OdKVf3sUKTqTBIdpa
+	zRznxQnOpK6ORGAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FF7E1398D;
+	Fri, 16 Feb 2024 08:50:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Na8jF+Mhz2WqYwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 16 Feb 2024 08:50:43 +0000
+Message-ID: <af9eab14-367b-4832-8b78-66ca7e6ab328@suse.cz>
+Date: Fri, 16 Feb 2024 09:50:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,91 +94,116 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/4] Add common1 region for AM62, AM62A & AM65x
+Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
+ allocation profiling
 Content-Language: en-US
-To: Devarsh Thakkar <devarsht@ti.com>
-Cc: praneeth@ti.com, a-bhatia1@ti.com, j-luthra@ti.com, jyri.sarha@iki.fi,
- airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
- mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- nm@ti.com, vigneshr@ti.com, kristo@kernel.org
-References: <20240216062426.4170528-1-devarsht@ti.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240216062426.4170528-1-devarsht@ti.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+To: Kees Cook <keescook@chromium.org>, Suren Baghdasaryan <surenb@google.com>
+Cc: "Darrick J. Wong" <djwong@kernel.org>, akpm@linux-foundation.org,
+ kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+ void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+ catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de,
+ mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
+ peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+ masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+ muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+ pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+ dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-14-surenb@google.com>
+ <202402121433.5CC66F34B@keescook>
+ <CAJuCfpGU+UhtcWxk7M3diSiz-b7H64_7NMBaKS5dxVdbYWvQqA@mail.gmail.com>
+ <20240213222859.GE6184@frogsfrogsfrogs>
+ <CAJuCfpGHrCXoK828KkmahJzsO7tJsz=7fKehhkWOT8rj-xsAmA@mail.gmail.com>
+ <202402131436.2CA91AE@keescook>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <202402131436.2CA91AE@keescook>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MsHa2qgD;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4HijluMb
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 BAYES_HAM(-3.00)[100.00%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 MX_GOOD(-0.01)[];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 RCPT_COUNT_GT_50(0.00)[74];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[kernel.org,linux-foundation.org,linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -3.00
+X-Rspamd-Queue-Id: EB4E021F7E
+X-Spam-Flag: NO
 
-On 16/02/2024 08:24, Devarsh Thakkar wrote:
-> This adds DSS common1 region for respective SoCs supporting it.
+On 2/13/24 23:38, Kees Cook wrote:
+> On Tue, Feb 13, 2024 at 02:35:29PM -0800, Suren Baghdasaryan wrote:
+>> On Tue, Feb 13, 2024 at 2:29 PM Darrick J. Wong <djwong@kernel.org> wrote:
+>> >
+>> > On Mon, Feb 12, 2024 at 05:01:19PM -0800, Suren Baghdasaryan wrote:
+>> > > On Mon, Feb 12, 2024 at 2:40 PM Kees Cook <keescook@chromium.org> wrote:
+>> > > >
+>> > > > On Mon, Feb 12, 2024 at 01:38:59PM -0800, Suren Baghdasaryan wrote:
+>> > > > > Introduce CONFIG_MEM_ALLOC_PROFILING which provides definitions to easily
+>> > > > > instrument memory allocators. It registers an "alloc_tags" codetag type
+>> > > > > with /proc/allocinfo interface to output allocation tag information when
+>> > > >
+>> > > > Please don't add anything new to the top-level /proc directory. This
+>> > > > should likely live in /sys.
+>> > >
+>> > > Ack. I'll find a more appropriate place for it then.
+>> > > It just seemed like such generic information which would belong next
+>> > > to meminfo/zoneinfo and such...
+>> >
+>> > Save yourself a cycle of "rework the whole fs interface only to have
+>> > someone else tell you no" and put it in debugfs, not sysfs.  Wrangling
+>> > with debugfs is easier than all the macro-happy sysfs stuff; you don't
+>> > have to integrate with the "device" model; and there is no 'one value
+>> > per file' rule.
+>> 
+>> Thanks for the input. This file used to be in debugfs but reviewers
+>> felt it belonged in /proc if it's to be used in production
+>> environments. Some distros (like Android) disable debugfs in
+>> production.
 > 
-> Changelog:
-> V2 : Remove do-not-merge tag and add am62a dss common1 reion
-> V3 : Add Fixes tag to each commit
-> V4 : Add Reviewed-by tag and AM62A SoC TRM Link
-> V5 : Split dts patch to separate patches for each SoC
-> 
-> Devarsh Thakkar (4):
->    dt-bindings: display: ti,am65x-dss: Add support for common1 region
->    arm64: dts: ti: Add common1 register space for AM65x SoC
->    arm64: dts: ti: Add common1 register space for AM62x SoC
->    arm64: dts: ti: Add common1 register space for AM62A SoC
-> 
->   .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
->   arch/arm64/boot/dts/ti/k3-am62-main.dtsi                   | 5 +++--
->   arch/arm64/boot/dts/ti/k3-am62a-main.dtsi                  | 5 +++--
->   arch/arm64/boot/dts/ti/k3-am65-main.dtsi                   | 5 +++--
->   4 files changed, 14 insertions(+), 8 deletions(-)
-> 
+> FWIW, I agree debugfs is not right. If others feel it's right in /proc,
+> I certainly won't NAK -- it's just been that we've traditionally been
+> trying to avoid continuing to pollute the top-level /proc and instead
+> associate new things with something in /sys.
 
-For the series:
-
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-  Tomi
-
+Sysfs is really a "one value per file" thing though. /proc might be ok for a
+single overview file.
 
