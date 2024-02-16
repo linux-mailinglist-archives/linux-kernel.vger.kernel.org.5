@@ -1,150 +1,193 @@
-Return-Path: <linux-kernel+bounces-68220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62AFE857774
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:21:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7481885777A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:21:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F17228207D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:21:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F5BC282B46
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F59A2137E;
-	Fri, 16 Feb 2024 08:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BC11B951;
+	Fri, 16 Feb 2024 08:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JOdHpLou"
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hhi5FVbw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1200D1B953
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:11:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349681B94A;
+	Fri, 16 Feb 2024 08:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071094; cv=none; b=j+WU31ASNTFhJ4jigNNkFMwMaG9Lb4D9JRJb/xsImuCruSicCx7QKWP+sZElcK6W5svXKNYYXVmcvaffIab6F8lhCbe4bjnJ/aRyOrmFODmWBeA7i5PtQCXAxbaBglWfEGqWcZVUXrv7ZIUmQryMvyH9KJu+lG3BdqUFpHg9zpo=
+	t=1708071197; cv=none; b=Amo2pjih51gsyV+JiQKiklmfrfruJGQt5i6CaAbQf8iiqL9KPbl+h3qQXfxB2CAdvwTb4aBRFpAY5OkxaQX14YYf8ILV9l1yRse221yRoqjYvqZilfP7q6YjfxfnDuwIP+xPQkgt3yC5eK9nQxHVyharHileLm+bQ5U96OkQJTE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071094; c=relaxed/simple;
-	bh=KDZmKU36NUtXZcL9fJXHV2Vh6u143fv1XXUJsWQbws4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=t1cmgYNOzrP34pQs0i+pvPwgvKRV09H1HypLAj7xM2pDjj9oyuK2cwQSOL4ClfZSQ6RPWEQVKDFGtuC9l3DYmMkVnsmnbcnMFD6gPPb/D2n5qZrui3dOLnaw10MJJopSfPyZJVES78I+sRKUxolL8mC/y42lqzd5yuFHAdFSsYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JOdHpLou; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so2629535a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:11:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708071090; x=1708675890; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=10xWFeEadbzLEQb32PI22tz1cUwySXyLGYGfrCyh77o=;
-        b=JOdHpLouhmE7bfMuq0tdbzW9lH/RiCqwYZCif7CTAlda94dnnNkk3LUf1dgk+vKxEx
-         fkmwiWH981nhgB7lWwwqWhOFj7jVSvAkg8VIiqWZ277YpQHwMz+Gdp/csn94vUYcfBq/
-         1h7EJ+hg2u7AZZeGPuiyp9YbJSv0cp96DWuVt5hrvlQ/Ix323RhFyGCmdAm0DWxmYMSj
-         OeFJSZMoLTJE7XAhBL8UaABrzk7g+Rg3VGe9alA2yhyJJ6oPXfLxtko7Ka/M6conqPZj
-         qviaDsfRlpwGCGc85oMw8jsS0jfWRTVSznbA5J+/IJJ4+2egyjy4B3YJuD1+Sa93Jq6k
-         iIfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708071090; x=1708675890;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=10xWFeEadbzLEQb32PI22tz1cUwySXyLGYGfrCyh77o=;
-        b=LNnTAVtqFa0AYWy9dt/tZVnbmy3gZYM3lg6TA0RtJ5ryvLT+uOfJKDK0iByBILgR/h
-         8a7fJeYRgoJtiiscZp2eetMXP1QMP6iQEpuDXtKeKEziJuuMy98ZzlKoIWSHkCeGapvt
-         pNSF4cCX5bn1tVgZ/mIvlZkzmVH5eFGLI9bAGsk57UrQIs0iZEAlqiyVsXOahroicyQ7
-         uKLefUC9tyt9kbmMdFPhtERcIsucSTfoGMP7kk1gn5SNI2oRRXUMX39lbBo7xXG9I16g
-         tATk+cn+BxZyxEP7oGzS6C6DiTJTScTGVsCPVtXUUC2Y2KWgiQrHWbbYNcDklAWuCSxv
-         b59w==
-X-Gm-Message-State: AOJu0YyU/Y/0odTh2FBHqMECbkJMpXUg/NN7WBMPHJmi3iZrObasKtFM
-	Q87+Xto9ygrKU6UloBnxmlzeGQEaQNSogTOGq2T+h0l/9O8wQUNrkQ7mfpy5OrE=
-X-Google-Smtp-Source: AGHT+IGe5UTf79Tnrcj3yEFlHjoP3ukJ1AS7IbgKPHyTFMeLuDp7EouHJZ91pfVFNVbRkt5KeqjgUw==
-X-Received: by 2002:a17:906:5594:b0:a3d:37a4:a7e6 with SMTP id y20-20020a170906559400b00a3d37a4a7e6mr2610153ejp.21.1708071090298;
-        Fri, 16 Feb 2024 00:11:30 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id vk5-20020a170907cbc500b00a3d60daaa72sm1318662ejc.41.2024.02.16.00.11.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 00:11:29 -0800 (PST)
-Message-ID: <8f37e6c5-0834-442a-a974-6f9bae82f1cf@linaro.org>
-Date: Fri, 16 Feb 2024 09:11:28 +0100
+	s=arc-20240116; t=1708071197; c=relaxed/simple;
+	bh=2yAzUFrshahCJDeF/Txc7JdTyHzEPst4ox4Ao1JajmU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ROD6BN9KPPb9VpUB1M7IyBIJC+6uR57uiwD3FIMS5cxSu/HBunSWah6gOTk/AaNqGFT8I5oJxTbCgtED+lUmf6raNXdS+QA5Onc/2rKcaQySvffccb/Y5vB61Ee8MaCJC/eEDEqOGMf6qkdLOBXkhpDji7d+tHeVCc7d+YEddnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hhi5FVbw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CDEC433F1;
+	Fri, 16 Feb 2024 08:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708071196;
+	bh=2yAzUFrshahCJDeF/Txc7JdTyHzEPst4ox4Ao1JajmU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hhi5FVbwJBQGJrQ5LdUmS8j/Le4dlaV8h1U5wH5BlNyGQrrM2XqyMxRnsnAKFbMZx
+	 SFQaP2/aGi379Z5SHpZ7wDWSp5e8G7tgjc9AzIziwGmtse4q48U46iFQcjxylokg1P
+	 K/KhkeBJZ0tIrTsozcIJ3KwcSyKyhvNudlZ1i40K93iF9DdiWTEHMtM1Ctlw8Rn0FL
+	 87TYT0ZzNruWA3tPglsbxs14kOOquqHn11S8ZJYb+kCD+bHh6l0sKaOq/r8DsSVhnE
+	 pjRSDqix+iI+/rl9GYYLZNkr/LrWhcipZI7K9C8xWWE9FHcnzdDXIKPhtSPxTBM90q
+	 HQKdGiuY7w7pQ==
+Date: Fri, 16 Feb 2024 09:13:03 +0100
+From: Benjamin Tissoires <bentiss@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH RFC bpf-next v2 02/10] bpf/helpers: introduce sleepable
+ timers
+Message-ID: <r3yhu4h23tdg2dqj7eq3lhevsigvvb3qkge3icxmaqpgkayvoi@gxfxstkr2pxl>
+References: <20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org>
+ <20240214-hid-bpf-sleepable-v2-2-5756b054724d@kernel.org>
+ <a72147f5-2b7d-4267-9881-6a645c575838@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 26/33] ARM: dts: aspeed: FSI interrupt support
-Content-Language: en-US
-To: Eddie James <eajames@linux.ibm.com>, linux-fsi@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- andi.shyti@kernel.org, alistair@popple.id.au, joel@jms.id.au, jk@ozlabs.org,
- sboyd@kernel.org, mturquette@baylibre.com, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-References: <20240215220759.976998-1-eajames@linux.ibm.com>
- <20240215220759.976998-27-eajames@linux.ibm.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240215220759.976998-27-eajames@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a72147f5-2b7d-4267-9881-6a645c575838@linux.dev>
 
-On 15/02/2024 23:07, Eddie James wrote:
-> Enable FSI interrupt controllers for AST2600 and P10BMC hub master.
+On Feb 15 2024, Martin KaFai Lau wrote:
+> On 2/14/24 9:18 AM, Benjamin Tissoires wrote:
+> > +static void bpf_timer_work_cb(struct work_struct *work)
+> > +{
+> > +	struct bpf_hrtimer *t = container_of(work, struct bpf_hrtimer, work);
+> > +	struct bpf_map *map = t->map;
+> > +	void *value = t->value;
+> > +	bpf_callback_t callback_fn;
+> > +	void *key;
+> > +	u32 idx;
+> > +
+> > +	BTF_TYPE_EMIT(struct bpf_timer);
+> > +
+> > +	rcu_read_lock();
+> > +	callback_fn = rcu_dereference(t->sleepable_cb_fn);
+> > +	rcu_read_unlock();
 > 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
-> ---
->  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi        | 4 ++++
->  arch/arm/boot/dts/aspeed/ibm-power10-dual.dtsi | 2 ++
->  2 files changed, 6 insertions(+)
+> I took a very brief look at patch 2. One thing that may worth to ask here,
+> the rcu_read_unlock() seems to be done too early. It is protecting the
+> t->sleepable_cb_fn (?), so should it be done after finished using the
+> callback_fn?
 
-Don't mix DTS with driver code.
+Probably :)
 
-Best regards,
-Krzysztof
+TBH, everytime I work with RCUs I spent countless hours trying to
+re-understand everything, and in this case I'm currently in the "let's
+make it work" process than fixing concurrency issues.
+I still gave it a shot in case it solves my issue, but no, I still have
+the crash.
 
+But given that callback_fn might sleep, isn't it an issue to keep the
+RCU_reader lock so long? (we don't seem to call synchronize_rcu() so it
+might be fine, but I'd like the confirmation from someone else).
+
+> 
+> A high level design question. The intention of the new
+> bpf_timer_set_sleepable_cb() kfunc is actually to delay work to a workqueue.
+> It is useful to delay work from the bpf_timer_cb and it may also useful to
+> delay work from other bpf running context (e.g. the networking hooks like
+> "tc"). The bpf_timer_set_sleepable_cb() seems to be unnecessary forcing
+> delay-work must be done in a bpf_timer_cb.
+
+Basically I'm just a monkey here. I've been told that I should use
+bpf_timer[0]. But my implementation is not finished, as Alexei mentioned
+that we should bypass hrtimer if I'm not wrong [1].
+
+> 
+> Have you thought about if it is possible to create a more generic kfunc like
+> bpf_schedule_work() to delay work to a workqueue ?
+> 
+
+AFAIU if we were to have a separate bpf_schedule_work(), we still need
+all of the infra of bpf_timer, because we need to keep the programs
+around in the same way bpf_timer does. So basically, bpf_timer will not
+only be about hrtimers, but anything that need to run an async callback.
+
+I submitted this RFC v2 not for the "this is ready", but mostly because
+there is a crash and I can't see where it comes from, and I suspect this
+is from a piece I do not understand (translation from the BPF langage
+into actual elf assembly).
+
+
+Cheers,
+Benjamin
+
+[0] https://lore.kernel.org/bpf/ztou4yyrsdfmmhdwgu2f2noartpqklhvtbw7vj2ptk54eqohvb@qci7bcnbd56q/T/#mc9cab17138b13c83299f0836ca0b2dde0643ea4b
+[1] https://lore.kernel.org/bpf/ztou4yyrsdfmmhdwgu2f2noartpqklhvtbw7vj2ptk54eqohvb@qci7bcnbd56q/T/#mf59824ad625992b980afbc4f27c83e76245815e7
+
+> 
+> 
+> > +	if (!callback_fn)
+> > +		return;
+> > +
+> > +	/* FIXME: do we need any locking? */
+> > +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
+> > +		struct bpf_array *array = container_of(map, struct bpf_array, map);
+> > +
+> > +		/* compute the key */
+> > +		idx = ((char *)value - array->value) / array->elem_size;
+> > +		key = &idx;
+> > +	} else { /* hash or lru */
+> > +		key = value - round_up(map->key_size, 8);
+> > +	}
+> > +
+> > +	/* FIXME: this crashes the system with
+> > +	 * BUG: kernel NULL pointer dereference, address: 000000000000000b
+> > +	 */
+> > +	/* callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0); */
+> > +	/* The verifier checked that return value is zero. */
+> > +}
+> > +
+> 
+> [ ... ]
+> 
+> > +/* FIXME: use kernel doc style */
+> > +/* Description
+> > + *	Configure the timer to call *callback_fn* static function in a
+> > + *	sleepable context.
+> > + * Return
+> > + *	0 on success.
+> > + *	**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier.
+> > + *	**-EPERM** if *timer* is in a map that doesn't have any user references.
+> > + *	The user space should either hold a file descriptor to a map with timers
+> > + *	or pin such map in bpffs. When map is unpinned or file descriptor is
+> > + *	closed all timers in the map will be cancelled and freed.
+> > + */
+> > +__bpf_kfunc int bpf_timer_set_sleepable_cb(struct bpf_timer_kern *timer,
+> > +					   int (callback_fn)(void *map, int *key, struct bpf_timer *timer))
+> > +{
+> > +	struct bpf_throw_ctx ctx = {};
+> > +
+> > +	/* FIXME: definietely not sure this is OK */
+> > +	arch_bpf_stack_walk(bpf_stack_walker, &ctx);
+> > +	WARN_ON_ONCE(!ctx.aux);
+> > +
+> > +	if (!ctx.aux)
+> > +		return -EINVAL;
+> > +
+> > +	return __bpf_timer_set_callback(timer, (void *)callback_fn, ctx.aux, true);
+> > +}
+> > +
+> 
 
