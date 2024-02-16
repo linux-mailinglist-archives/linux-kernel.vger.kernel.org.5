@@ -1,160 +1,149 @@
-Return-Path: <linux-kernel+bounces-69296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C60378586B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:27:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C9AF8586B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:27:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C37031C21B68
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:27:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA0D8281F24
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:27:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F24EE1419BF;
-	Fri, 16 Feb 2024 20:27:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3810C13A253;
+	Fri, 16 Feb 2024 20:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MOzfxLMO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="RRxHNBPr"
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D40E135A52;
-	Fri, 16 Feb 2024 20:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A671135A52;
+	Fri, 16 Feb 2024 20:26:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708115226; cv=none; b=JJidLRhl1XSyFegFlKrmzaX1XwSZWir4BsWTS0isnJYBwci2VYB6oLPeOtDzeS4LDaUVPbOgfYmj7Tmsxxq95/q3vdCh/W7le74IGk74LRrF0cMr38D6WfFdAOmb0ErsPEpbjZ3L5BgfSSD6MqbsenvcTiyNLP/k09yuQAChLeA=
+	t=1708115222; cv=none; b=Ie/hys+z4/HpPa4V0R3I736arKK6O4zt51crsbMfamZO8CL6h2P13TFnhiNaM3SdPieJBxsyFFzwjhR182E8r1gVEPL2fjW/Adw59OVK+g3tRiY671O6masv5BbSTP4iHPKoXv4ePwic8h2ES2paefWM36DBpouZYg+hgEDr0lQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708115226; c=relaxed/simple;
-	bh=Bfl/Ng5CZItia0/GY+Hx1jAddMyPxQ6niSHRMQS6iz0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uJfqRSjw8j41KEPVczDGfSvKdeNhLWJfOb3VO1r0tBG9DDtUvi45vUQzheS3X2GYyrhbtD15ajvwwiWk4FRKBUuqwPYPDxtEnmWO/DBuk9KWA7KcJ6zKeST25AoDpsFjlHVaQ42A7XD736T5NtShiLdEX5QEF+QzjPBOE3pMpQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MOzfxLMO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BDEFC433C7;
-	Fri, 16 Feb 2024 20:27:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708115225;
-	bh=Bfl/Ng5CZItia0/GY+Hx1jAddMyPxQ6niSHRMQS6iz0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=MOzfxLMOHu6xQfc/ML3X8y0+mGW7q8Q4Y9CCiNbvf3OUYx1qXuEYbM8Yac6LN8z1j
-	 DnWiQMctxaeXmQW3sxZbQTB/kNQf6OhnPjKSpKkOnKKYrUsz0nH6Ug6EvKnevq+rHl
-	 3P6E4GRWLJGMW4YOmk6f+W75rTJQGEQairmG2BzUBXSLh7mfd7wr9KqrZF8XWbiFPR
-	 1omDWeCFRAomQBikiR9bvqeklK6VCDC2DWsZcHNMSNJKByGLYbsU5vacxOcZSEEpai
-	 eoRpBsDp4VNBNzspq8JLg4Xg9K5TLq/yf77TBxh74Cen8LqlQVZBHJK/IOTjrxSMJ6
-	 lQufX7ox0HfQQ==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Nathan Chancellor <nathan@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Lin Ma <linma@zju.edu.cn>,
-	Simon Horman <horms@kernel.org>,
-	Breno Leitao <leitao@debian.org>,
-	Tobias Brunner <tobias@strongswan.org>,
-	Raed Salem <raeds@nvidia.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] [RFC] xfrm: work around a clang-19 fortifiy-string false-positive
-Date: Fri, 16 Feb 2024 21:26:40 +0100
-Message-Id: <20240216202657.2493685-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708115222; c=relaxed/simple;
+	bh=4msKTmkJW7dgdyjzaO++qxlbe/qOaAOivOp2PggqhwA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nuNYFckE/A0BJY7dq2/p1IL/5ttXroBsJDOn92j918Bxwfmvk60Y3RxqJI+hQPS0vyjUrBqPh4iS1L+idSQv1Yf04h+lXipeKOxPprRdTlqjgC96tlpMbYeJGuMQqYYhbyUrjLj704y4bUO/07ir0N/5K2JgarSYmHqTbzrFLcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=RRxHNBPr; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1708115218;
+	bh=4msKTmkJW7dgdyjzaO++qxlbe/qOaAOivOp2PggqhwA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RRxHNBPrj8LGz7Z9Jh14gfeYIc57tQQuawpAG5T+0/bLUZ2gVOxZmtqWvWJdkkAp0
+	 YvwBEvSxw+gYg/F+iZg0/5ntvxWrGAcGbcywQ60bjIRvrKF2rYi43zWwHhIrKXF1HO
+	 jOahTC8AM3Udm230CPordzWcN6SRvRZ9FRJC89ZpSvZwzPBzsM2ymfuLZ2gykLCw/p
+	 BMQDLc5AeiN0aNA5MfhPyYVUQjhz5SG5wdzmhC0DBlTJbh5EPTQBD0d1WclweVVjVD
+	 L6FbdEkuEMTMWZJdywRnehGsoHuKKrk2PxjrMVuaDn3Gd6gm2TERJZMeXrbnxKICYw
+	 bDJwNREpp/WMQ==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Tc3PZ5RySzb14;
+	Fri, 16 Feb 2024 15:26:58 -0500 (EST)
+Message-ID: <b3ab82c4-0b1c-41d1-ac59-dfd4ef4a2b4e@efficios.com>
+Date: Fri, 16 Feb 2024 15:26:57 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dax: add set_dax_nomc() and set_dax_nocache() stub
+ helpers
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
+ Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
+ Jane Chu <jane.chu@oracle.com>, linux-fsdevel@vger.kernel.org,
+ nvdimm@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240216202300.2492566-1-arnd@kernel.org>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20240216202300.2492566-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+On 2024-02-16 15:22, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> In some randconfig builds, the IS_ERR() check appears to not get completely
+> eliminated, resulting in the compiler to insert references to these two
+> functions that cause a link failure:
+> 
+> ERROR: modpost: "set_dax_nocache" [drivers/md/dm-mod.ko] undefined!
+> ERROR: modpost: "set_dax_nomc" [drivers/md/dm-mod.ko] undefined!
+> 
+> Add more stub functions for the dax-disabled case here to make it build again.
 
-clang-19 recently got branched from clang-18 and is not yet released.
-The current version introduces exactly one new warning that I came
-across in randconfig testing, in the copy_to_user_tmpl() function:
+Hi Arnd,
 
-include/linux/fortify-string.h:420:4: error: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
-  420 |                         __write_overflow_field(p_size_field, size);
+Note that this is a duplicate of:
 
-I have not yet produced a minimized test case for it, but I have a
-local workaround, which avoids the memset() here by replacing it with
-an initializer.
+https://lore.kernel.org/lkml/20240215144633.96437-2-mathieu.desnoyers@efficios.com/
 
-The memset is required to avoid leaking stack data to user space
-and was added in commit 1f86840f8977 ("xfrm_user: fix info leak in
-copy_to_user_tmpl()"). Simply changing the initializer to set all fields
-still risks leaking data in the padding between them, which the compiler
-is free to do here. To work around that problem, explicit padding fields
-have to get added as well.
+now present in Andrew's tree.
 
-My first idea was that just adding the padding would avoid the warning
-as well, as the padding tends to confused the fortified string helpers,
-but it turns out that both changes are required here.
+The only differences are the subject, commit message and a newline between "set_dax_nomc"
+and "set_dax_synchronous" in your change.
 
-Since this is a false positive, a better fix would likely be to
-fix the compiler.
+Thanks,
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- include/uapi/linux/xfrm.h | 3 +++
- net/xfrm/xfrm_user.c      | 3 +--
- 2 files changed, 4 insertions(+), 2 deletions(-)
+Mathieu
 
-diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
-index 6a77328be114..99adac4fa648 100644
---- a/include/uapi/linux/xfrm.h
-+++ b/include/uapi/linux/xfrm.h
-@@ -27,6 +27,7 @@ struct xfrm_id {
- 	xfrm_address_t	daddr;
- 	__be32		spi;
- 	__u8		proto;
-+	__u8		__pad[3];
- };
- 
- struct xfrm_sec_ctx {
-@@ -242,11 +243,13 @@ struct xfrm_user_sec_ctx {
- struct xfrm_user_tmpl {
- 	struct xfrm_id		id;
- 	__u16			family;
-+	__u16			__pad1;
- 	xfrm_address_t		saddr;
- 	__u32			reqid;
- 	__u8			mode;
- 	__u8			share;
- 	__u8			optional;
-+	__u8			__pad2;
- 	__u32			aalgos;
- 	__u32			ealgos;
- 	__u32			calgos;
-diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-index a5232dcfea46..e81f977e183c 100644
---- a/net/xfrm/xfrm_user.c
-+++ b/net/xfrm/xfrm_user.c
-@@ -2011,7 +2011,7 @@ static int xfrm_add_policy(struct sk_buff *skb, struct nlmsghdr *nlh,
- 
- static int copy_to_user_tmpl(struct xfrm_policy *xp, struct sk_buff *skb)
- {
--	struct xfrm_user_tmpl vec[XFRM_MAX_DEPTH];
-+	struct xfrm_user_tmpl vec[XFRM_MAX_DEPTH] = {};
- 	int i;
- 
- 	if (xp->xfrm_nr == 0)
-@@ -2021,7 +2021,6 @@ static int copy_to_user_tmpl(struct xfrm_policy *xp, struct sk_buff *skb)
- 		struct xfrm_user_tmpl *up = &vec[i];
- 		struct xfrm_tmpl *kp = &xp->xfrm_vec[i];
- 
--		memset(up, 0, sizeof(*up));
- 		memcpy(&up->id, &kp->id, sizeof(up->id));
- 		up->family = kp->encap_family;
- 		memcpy(&up->saddr, &kp->saddr, sizeof(up->saddr));
+> 
+> Fixes: d888f6b0a766 ("dm: treat alloc_dax() -EOPNOTSUPP failure as non-fatal")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202402160420.e4QKwoGO-lkp@intel.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>   include/linux/dax.h | 12 +++++++++---
+>   1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index df2d52b8a245..4527c10016fb 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -64,6 +64,9 @@ void dax_write_cache(struct dax_device *dax_dev, bool wc);
+>   bool dax_write_cache_enabled(struct dax_device *dax_dev);
+>   bool dax_synchronous(struct dax_device *dax_dev);
+>   void set_dax_synchronous(struct dax_device *dax_dev);
+> +void set_dax_nocache(struct dax_device *dax_dev);
+> +void set_dax_nomc(struct dax_device *dax_dev);
+> +
+>   size_t dax_recovery_write(struct dax_device *dax_dev, pgoff_t pgoff,
+>   		void *addr, size_t bytes, struct iov_iter *i);
+>   /*
+> @@ -108,6 +111,12 @@ static inline bool dax_synchronous(struct dax_device *dax_dev)
+>   static inline void set_dax_synchronous(struct dax_device *dax_dev)
+>   {
+>   }
+> +static inline void set_dax_nocache(struct dax_device *dax_dev)
+> +{
+> +}
+> +static inline void set_dax_nomc(struct dax_device *dax_dev)
+> +{
+> +}
+>   static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+>   				struct dax_device *dax_dev)
+>   {
+> @@ -120,9 +129,6 @@ static inline size_t dax_recovery_write(struct dax_device *dax_dev,
+>   }
+>   #endif
+>   
+> -void set_dax_nocache(struct dax_device *dax_dev);
+> -void set_dax_nomc(struct dax_device *dax_dev);
+> -
+>   struct writeback_control;
+>   #if defined(CONFIG_BLOCK) && defined(CONFIG_FS_DAX)
+>   int dax_add_host(struct dax_device *dax_dev, struct gendisk *disk);
+
 -- 
-2.39.2
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
 
