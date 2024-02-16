@@ -1,680 +1,228 @@
-Return-Path: <linux-kernel+bounces-69440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C0CA858914
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:44:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABAA18588DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:38:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C13A2B2CEF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:42:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 221AE1F220B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA101534EC;
-	Fri, 16 Feb 2024 22:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD31148FFA;
+	Fri, 16 Feb 2024 22:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDkhOmBo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="TSERdHjp";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="AD9iKjE/"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 867D914E2DB;
-	Fri, 16 Feb 2024 22:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708123025; cv=none; b=tJQk7BSGaivrCID7xd4Lw6trsWyBx+k77u669IM4i5slpBdaJgcuXdnkjC+dIlZpYkafSYlE5Uvo5jambN2ClS49/O8dfyxdwUWAHmVdJX6zv10ioMhHdxjEUKAwkv0Lmasu+NV24CSuFjRBIDDY5FpV+OHlb6CKuzrhDHQR6LQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708123025; c=relaxed/simple;
-	bh=gfJ62zPQGQ+sMK6r+GqUYmho6VAFXSFIpwAWDcBpbAA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B1i1UERcTRphlxJx9QAfbeFha+r9SSU6gSqqkejGOATGpQGfoMllVS5xK29qV9xXMy17+koYeFPKA8dO1XcFKmZr+7/R66nwRk0flgH480EyAF0orP8wvBIN27r8d9jx65uy0q6CLueazBcT3+V5AdnMXu6SR+4gpyqyFUm+gQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDkhOmBo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91DE9C43390;
-	Fri, 16 Feb 2024 22:37:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708123025;
-	bh=gfJ62zPQGQ+sMK6r+GqUYmho6VAFXSFIpwAWDcBpbAA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kDkhOmBoqrlq9eeQxtBdam+MODCUkqjqMW4PH3KCGVc67s/0CRtblLcRYTgAQTVt0
-	 m2OyiM4ipr9U78+5fR6Ye/TTfaN+fP7Xm1JPdDy07C/hAAlnWfHtvAw/ZMHm72K2n4
-	 pizMhhoKBV3wc0Z7VRhsbvMGzcbM3ES2nrmB774raN+9UTm5HgPCDbpzVpFN6SEPsn
-	 uhU9R6/IZJujt0QD/DWOTQfz8IN9P0SmHFuiMFMPF0bp92/1TLCIg41sPO1T9Tf/jF
-	 iCBdT2sY4eaHvIjKGp9LCy9aRmTHwAdb/PzKTigQi57qPIAvRQ8tD/vH5ztK9LAfxk
-	 i0MD+FrmA+9ew==
-Received: by mercury (Postfix, from userid 1000)
-	id E336210633F5; Fri, 16 Feb 2024 23:36:56 +0100 (CET)
-From: Sebastian Reichel <sre@kernel.org>
-To: Sebastian Reichel <sre@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>
-Cc: Dong Aisheng <aisheng.dong@nxp.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Stefan Wahren <wahrenst@gmx.net>
-Subject: [PATCH v3 16/16] ARM: dts: imx6ull-uti260b: Add board
-Date: Fri, 16 Feb 2024 23:34:35 +0100
-Message-ID: <20240216223654.1312880-17-sre@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240216223654.1312880-1-sre@kernel.org>
-References: <20240216223654.1312880-1-sre@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82918146904;
+	Fri, 16 Feb 2024 22:35:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708122958; cv=fail; b=LGtL8I8483EvqUVtIpfi/uhC5pq0xbj9bEq+FVmeQC3wKl1/7LgXAILhxf4kSZwTku6IglNaBKW/CXr1hJeMcGUdosL4sUxdAu9+Eji9V8yO+/qX9gECm9/HoaeargprQr+XGcjOSSy/zN5o4uC3egMoZUxvd0tJNUI5o3AO+NI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708122958; c=relaxed/simple;
+	bh=cIJaD1+R9P0F5yXhNQaTbMgJV9BONgaOrTJLWGjKX2g=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=eDCFYKHPja8b2VSoiT8D7zdGAEIT+fdjREbXoPYBmXOlXpKYzEsWfioreoDsyvVSRh9pEoOnLZP7TzIpFDi0hQdylTb+xa1D6y5soHpidx+x4e+9xJps907P6naSdVquT9sWNj+LH9mWcyrirAWF/gf66I0r1cRiAJGm8LZt3A8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=TSERdHjp; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=AD9iKjE/; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41GKEUu7014707;
+	Fri, 16 Feb 2024 22:35:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=cIJaD1+R9P0F5yXhNQaTbMgJV9BONgaOrTJLWGjKX2g=;
+ b=TSERdHjpKK/KSnU+C8LV2jvqT06G/v30NUVeSroKMRWX6H2OL3uK4fSRL3X6cJnXgcQS
+ pm2Bcirv3OHaUNAaCWda2I4dYgkdQTAHOxvxSAGa/2jbxbWvgRch9TqZH1SLjYS7jZIu
+ G5z3/Z+elAFKUFrvMy1EkmtCyby47eKDFX3iC++TbIW4S1dl/euEj7yzVx2DgxQxliBu
+ jdpUVjHwlUJnjLgxwG4QpUc+xeARUVnBvjbcSWCd9cTnuNHyKBl1ap2oKGchsfjZCJM3
+ uv77+RJwpEuvpzlfuwiNnoxZ5SDbQzyGqCPdBNvc5HTt+eQzhdcJwegG9ljk7+eDf7C8 Rw== 
+Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w92s7693r-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 16 Feb 2024 22:34:59 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41GKjWqY013876;
+	Fri, 16 Feb 2024 22:34:59 GMT
+Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2041.outbound.protection.outlook.com [104.47.51.41])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3w6apfs9sa-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 16 Feb 2024 22:34:59 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YujU1n1ktxlSByBGtrJc8rDP5qfa0WwewbckLpB15bXqquBw+YAknnkN6nWPDJqGs1SHtHX9/gGX1nrmW0ua4+g/Gdi3a3xuC/lTQoi+JoUtW5hZY72h24dfgVcDlmxe05KgQqovUzsphxauswl56wdQ3wcTP48cFmobBynmmYbD99CK4m5nLOQI0Ce3o7PM/T2NF67B5KnYQS1PfZVx3A0OkY0amLYpjNkUimP99frryNzRjCMdFX3MpXi61eUBaTgbhH5d7dvnq2nbFLZGpfrjIjixFKPUu84ue0yEA/aTzGJ0O2sIdPerUmddYLhmcMR+JVfeowLUnHHEsMr8GQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cIJaD1+R9P0F5yXhNQaTbMgJV9BONgaOrTJLWGjKX2g=;
+ b=Pblh018GAGLhF0Iq8gjX/qwEogaSwVQ6zHXXddaPfloZgQZOHwal8M+ZaxRWLOKHv5k2lD3G2j6SalzACH93dL71hyP7d5XT4i6Ct794uFnc1gf6svnRuT3c/cxI85g4GUFQsXug+pMm64sYrt2BuVd8dvDVTzC2eJKbFt57FboIijZdDAqka88Qlc+WQKNARbbOHcpzu/C67OYgz9YoDqBErCmCsB8tkLSjHLkq75yMhOjTZv+608ExXNqHGIbz+u3ADMDgAr6uiHipIUAIoDcFlqUmRxUPma0QAUyWyxHcvagadHZMG1G0rhKowIHuGb949tL9rmIS00Hh32i8qw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cIJaD1+R9P0F5yXhNQaTbMgJV9BONgaOrTJLWGjKX2g=;
+ b=AD9iKjE/rJ79mlXKW96z/Rap4gSEpN08xrUuP8fWFUDdt9iaQCIYAFSFFx6411JGKVlUHfKKqDHJvunK2rS9fSVo2NQK7NIr294x8OD0HIfy+Gau+TN0st8ky+RJ0b+mfsB5d8cHFv/10/p08rigXjO3m9JJZq6nmA9KRjKfhq4=
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
+ by SJ2PR10MB7016.namprd10.prod.outlook.com (2603:10b6:a03:4cf::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Fri, 16 Feb
+ 2024 22:34:55 +0000
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::9ade:bfad:c78e:e1f9]) by CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::9ade:bfad:c78e:e1f9%7]) with mapi id 15.20.7292.029; Fri, 16 Feb 2024
+ 22:34:55 +0000
+From: Eric Snowberg <eric.snowberg@oracle.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+CC: "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        Christian Brauner
+	<brauner@kernel.org>, "jack@suse.cz" <jack@suse.cz>,
+        Chuck Lever III
+	<chuck.lever@oracle.com>,
+        Jeff Layton <jlayton@kernel.org>, "neilb@suse.de"
+	<neilb@suse.de>,
+        "kolga@netapp.com" <kolga@netapp.com>, Dai Ngo
+	<dai.ngo@oracle.com>,
+        "tom@talpey.com" <tom@talpey.com>,
+        "paul@paul-moore.com" <paul@paul-moore.com>,
+        "jmorris@namei.org"
+	<jmorris@namei.org>,
+        "serge@hallyn.com" <serge@hallyn.com>,
+        "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "dmitry.kasatkin@gmail.com"
+	<dmitry.kasatkin@gmail.com>,
+        "dhowells@redhat.com" <dhowells@redhat.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "stephen.smalley.work@gmail.com"
+	<stephen.smalley.work@gmail.com>,
+        "omosnace@redhat.com"
+	<omosnace@redhat.com>,
+        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "mic@digikod.net" <mic@digikod.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org"
+	<linux-security-module@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org"
+	<linux-integrity@vger.kernel.org>,
+        "keyrings@vger.kernel.org"
+	<keyrings@vger.kernel.org>,
+        "selinux@vger.kernel.org"
+	<selinux@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org"
+	<linux-kselftest@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v10 00/25] security: Move IMA and EVM to the LSM
+ infrastructure
+Thread-Topic: [PATCH v10 00/25] security: Move IMA and EVM to the LSM
+ infrastructure
+Thread-Index: AQHaX/o17zz0uZ0bUEuo4nwd69V4MLENkLgA
+Date: Fri, 16 Feb 2024 22:34:55 +0000
+Message-ID: <CF351A03-7B5C-4796-B597-535DF17CFD32@oracle.com>
+References: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3774.400.31)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH2PR10MB4150:EE_|SJ2PR10MB7016:EE_
+x-ms-office365-filtering-correlation-id: a769e208-c31b-4b9c-d047-08dc2f3f800d
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ Y6BuVC2qS+jeWJ7omycQrzi1jh6bBj3Dd7KhxvuhBmb2NPL2gAe1GdvAr42qFuW/U0410XcoxObtyA1utn/IbFVjcUzXH4xTY+809fk2fsUYV+fs45GX6o9057NEaIOd4eiMXzR7Wiv8VgRS/6vNBT8CJln02yKOBiZ08WfkW9M4Y9l+1fBY3ER9+3WncjJapr5UniitGH836Jk1EMRwHfTMQNc+tygF3P+lkxaqlzLZOorI4vmbEYvmuRy9c3G8JHjEEP19drpAv74E8J2ez+FUFgLSbGUZcbxKDIfPPB46Tx9+S7gZdhbxuiWihMB7k0hOLl4Efkd1oa4brJkp3CauaRkiW0mZ4RuW9f6bE7Wi+rYGGjatH8oj3rpNQP3XFmaz6+V8QI97k+L3jAXlW7UD3SUhbch4quNaBUbBxESN67itqrn6BP+Zb8Cm+beedyboQBsXbC+KL5Qif7aGpNa/hZwNWb1mW7qDQC0rECEf3n5n7SWOCnfPl0oZcfatiIxClF6HHv76LB3LhYSR+t+toZLvA1q/PhvRmDReC96c8YkRf6epelZfez3FBujGLUD/Y6vWu4bEwUtcauICYnwRSY7i3gXhTBUc+BoOR27u0+A7D4U8sQWkhaXy+Xc+
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(366004)(376002)(346002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(44832011)(4744005)(5660300002)(7416002)(76116006)(6916009)(66946007)(4326008)(66556008)(66446008)(64756008)(66476007)(8936002)(8676002)(316002)(2906002)(38070700009)(33656002)(122000001)(86362001)(26005)(6512007)(36756003)(71200400001)(6486002)(54906003)(38100700002)(6506007)(41300700001)(2616005)(53546011)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?MkZGRzdyQW1oeENJMDdTNnUraG9laHFnNm5VNWhLNjVSYUlYZmZjMnhodmlH?=
+ =?utf-8?B?WWZVbjNhUTJpcmY4TGFDd1J1T1RTbzRYRlljTWdkOHp6dTUwL09RKzBzYkdD?=
+ =?utf-8?B?UlJpQ0diaU05YnljNUtkbW5NQzBDMnlPa1B2b1A5dXVVWk91Y3EwbFBZTVFK?=
+ =?utf-8?B?Z0RsL3pTNW1zTVpOdWdacWRQYmZvVkZwVTVaZ24rNXBCTzRWek5rdnlsMW5q?=
+ =?utf-8?B?TXFDVUFLakRocW1PendKZk02MkhsQTRKRS9vTmZZc1BFZEJiVklLVkdWSktt?=
+ =?utf-8?B?N0o4NS8vckZrYkJSemhkaFp4N0NNQnVWUGpFQlpNMDBGOEg3SVJ1cHhLN1ZI?=
+ =?utf-8?B?b1ZWeG85QWlpdzJyU3IvOHl4TXNKUXJxRThYOTRTNzNDU2dxUUhwTnRYODJr?=
+ =?utf-8?B?NlVCVkRBQ0grQ2pEUEV4MXprWkVwbGgvVUdQcGJVYnJBWmhGOXFtaU1ubjFn?=
+ =?utf-8?B?SVlIc2llZWk0bE1lNVRNcFRsYlloSHMvN0dQSXMvaTVSNDVrejdtVTZmaU0x?=
+ =?utf-8?B?WTFUNi9FL2hHQVlRaTRieDE3OTFSNG5ibFMvK25yREdQYUNxZmNXR1psNXc5?=
+ =?utf-8?B?citaajd3Ym1oVkl0OG1qZnh0Vzc0QlN3aCtMb1BxWFAwOStyY0k1dkNpdHo3?=
+ =?utf-8?B?U3dkMXJlVGlmTDRWR2F0MTFaWG1kQzRlVFplQVY5VzczUGhCVlV0enFWR1pu?=
+ =?utf-8?B?R0hFTlg1WVNuRVNwcFpIUGx2S3M2elpEd2dQQTRNc0lrWmh4UDg3SEJ4LzZJ?=
+ =?utf-8?B?QXlRMFdPbUhMdXhQTE9oOFhmSEFQSlJrdVowSkxDRGhnTUFWUlFXa2hqQTdy?=
+ =?utf-8?B?bDYyUEtzcExtK3JDMEEzWmJYSERkbW9JZkplSDFMdTZBV3MwRTNvYlVPRmdl?=
+ =?utf-8?B?Z3gzQitRNGI5TjZzem53MjlMaGNnRkt2UjVSUVJ2VWREVlhYQXZvc2YwMHcy?=
+ =?utf-8?B?UGd6TzNMWkxOLzM2bmp6S3JGVVlrK0ZRYzZucjlHSEJLd3BYM3ZtRXJxNUEx?=
+ =?utf-8?B?RzBFQXVlQm9tRTdRY2s5RzFPdFNsYXRBRTlrd2plUlNjRUJxbGIyeTFtRmFo?=
+ =?utf-8?B?U3I0eFFXUXMyaVdtZDU0VXp4emM5dFE4am1maGZueDJ0Z1c1NUFFNVhpUmww?=
+ =?utf-8?B?VDdoL3oyaDliRHJZTGd6VU1ZNlhndEYzdkEwNDFCbllINVJuRyt6T0pSL1dY?=
+ =?utf-8?B?MWF5U2VuRS8yUEcvRWdkblg3NERNY29qeGhvSldlOHZUZm55ZlllZkNUam5w?=
+ =?utf-8?B?Q3hmeE9rVlBmZWpGcTFNWXA1cTNPTW9OVFI3U0Q4THd1a3RXcXJzMGVSalpS?=
+ =?utf-8?B?NElHTGR5VWdDSHZkRW81NE1lSGoyN0dLYjhXSmFFNmk4MndnVmlxSzRqVTgr?=
+ =?utf-8?B?MGxPV1lKc2NNTjV0eDJUVDZRNDBWQngrQ3FSTmU3aFp1RDc4R1oxM011Y2Fk?=
+ =?utf-8?B?LzUxU3owNVNpaE1XSTl0cFdmdy80Zm9Bc1gvTWw4WkRaOUQ5cVdXVDUxREh0?=
+ =?utf-8?B?TlFvZnhxQkJJUkYvL0huWE9SWkU4dFFtY2hzbWRlbk1WRWxlSm4xRExPU3Vt?=
+ =?utf-8?B?Zi9nNGgvL2MwNEF4azA2U01MRS9DeXlvdDNpaENxYkNiUXZXbkl2elRxSUJk?=
+ =?utf-8?B?U25yVEZJdWZ1U2FpMEJMdmFXdXdaOEdJdUtBSlNJRnZadlBHWHJGUkdqYmY2?=
+ =?utf-8?B?cTdlUE4yQTF2OXFxWGpTQmNtY3hJbTVRbytXNmIwY3ZwaW1iRnZnQU4vWXNh?=
+ =?utf-8?B?OFNYdzN0aXZkM2FmMHY5VER5QzNGSDhObGx6aXlodWwrTG0wNitrWEVDQ3RM?=
+ =?utf-8?B?WThNamVpMU1OUWJqalMvOWR3RXVwdzg3NTdnUzM3aFltZFJtczE1TldYRTVq?=
+ =?utf-8?B?VGF0RjBtQ1NyOGNsSUdJeHN2ZkR1Yklnc0FsSFQ0ZHFiMWhBcncyVHNIU3Nu?=
+ =?utf-8?B?QmdmNzVzb0wrc3RPb1Q4MndhbytFMTFvYXNweFZXdFdSNlhGcFhwbDNkN3ZE?=
+ =?utf-8?B?YkZqYXlrVVkwM0J4ZFZmSTdmTzFKcUp4bXdDZjVEQXNOV00ybjQzaG4zdUFT?=
+ =?utf-8?B?bnBwNS9XUlB3UHdwbUlUOGlhaStZSnh0TDJiZXhCVEovSlU1REljSlZEbzcr?=
+ =?utf-8?B?ZWpxRGlwcUJuU0NuaWQyT04vL1hsc2F4dFg4WCtHUGdNN2tUMXRiZEVzdytN?=
+ =?utf-8?B?ckE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <FA53A82EA4A8194197AAA8835E08ADE8@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	JC1/bcCRtYE2Cz5MoNck83/fLirH/VpOrKHKy8EeiCpiX4xdCYnaKGCSR2EbcQC7rlf0el9CiAHYkf6DKbJvBfZ6SSKvEEjUWGzaf559ItVmfkEiLMn1US/3RgpSDxpaEIFRzVBabyj7ybH9DGM4oUk7T6/ikH13sO2teptYW9WuSmzKCJVLUA6KZtFHPVU2GSvoR3GGDQQERr1LCwOlKZdjfpE4/TrN0m77QWYd3gH2KDfmD3xQOyhmI2Swpo40V/OuWeaEZbKVJAEi11eYzLrj1j+czhRK6s8EnjTGFJJUhBAs/Lmm8FT64B6+hgTkes5qaa1+v+zdN+EE+Bg5NPTs1rROjC19XwH4X3ZtrvMXeDgR66hBJp+8cQYqcnMTbuSU7JUOrBvO+I8KnSOMRbGRvFqhMLm9LjHNZsFxyXfXzqh9tgotvS7j7c4gJCfpHnboEsHcq2rNMldYVOcx8wAwyMXncN9DS8GQKBKwp3hmdqiEsppkg1qxDjv82khGIyTuRVfiQzfMLjc8tcPUrd09IXourTeVhwV5xtNAA6gJ6mPw3UKOxbPxoNdGBNB1EOphfbEPWjHzBco9bwHtei5nCsxR4BdXI/wefYZknG0=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a769e208-c31b-4b9c-d047-08dc2f3f800d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2024 22:34:55.7258
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TN4Cc8+k93vqbNlK3ezbaWNMNqboqTeC1AEZeRrPSG8texoRmPWoG539LMTBhATZtViOzVvE5jHbWU8QLgp1klNfCqRQT4tAE/KLor9SFUc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7016
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_22,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ suspectscore=0 mlxscore=0 phishscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402160178
+X-Proofpoint-GUID: KeDUHV_WteXHfEUoTJI4tmc6j5vU_uiP
+X-Proofpoint-ORIG-GUID: KeDUHV_WteXHfEUoTJI4tmc6j5vU_uiP
 
-Add UNI-T UTi260b thermal camera board.
-
-Reviewed-by: Stefan Wahren <wahrenst@gmx.net>
-Signed-off-by: Sebastian Reichel <sre@kernel.org>
----
- arch/arm/boot/dts/nxp/imx/Makefile            |   1 +
- arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts | 572 ++++++++++++++++++
- 2 files changed, 573 insertions(+)
- create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts
-
-diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
-index a724d1a7a9a0..47350cf3ddeb 100644
---- a/arch/arm/boot/dts/nxp/imx/Makefile
-+++ b/arch/arm/boot/dts/nxp/imx/Makefile
-@@ -349,6 +349,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
- 	imx6ull-tarragon-slavext.dtb \
- 	imx6ull-tqma6ull2-mba6ulx.dtb \
- 	imx6ull-tqma6ull2l-mba6ulx.dtb \
-+	imx6ull-uti260b.dtb \
- 	imx6ulz-14x14-evk.dtb \
- 	imx6ulz-bsh-smm-m2.dtb
- dtb-$(CONFIG_SOC_IMX7D) += \
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts
-new file mode 100644
-index 000000000000..2c0972145c79
---- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6ull-uti260b.dts
-@@ -0,0 +1,572 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+// Copyright (C) 2022-2024 Sebastian Reichel <sre@kernel.org>
-+
-+/dts-v1/;
-+#include "imx6ull.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/clock/imx6ul-clock.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	model = "UNI-T UTi260B Thermal Camera";
-+	compatible = "uni-t,uti260b", "fsl,imx6ull";
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@80000000 {
-+		device_type = "memory";
-+		reg = <0x80000000 0x20000000>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_led_ctrl>;
-+
-+		led {
-+			color = <LED_COLOR_ID_WHITE>;
-+			function = LED_FUNCTION_FLASH;
-+			gpios = <&gpio2 2 GPIO_ACTIVE_HIGH>;
-+			default-state = "off";
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_gpio_keys>;
-+		autorepeat;
-+
-+		up-key {
-+			label = "Up";
-+			gpios = <&gpio2 11 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_UP>;
-+		};
-+
-+		down-key {
-+			label = "Down";
-+			gpios = <&gpio2 12 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_DOWN>;
-+		};
-+
-+		left-key {
-+			label = "Left";
-+			gpios = <&gpio2 13 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_LEFT>;
-+		};
-+
-+		right-key {
-+			label = "Right";
-+			gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_RIGHT>;
-+		};
-+
-+		ok-key {
-+			label = "Ok";
-+			gpios = <&gpio2 9 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ENTER>;
-+		};
-+
-+		return-key {
-+			label = "Return";
-+			gpios = <&gpio2 15 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_ESC>;
-+		};
-+
-+		play-key {
-+			label = "Media";
-+			gpios = <&gpio2 8 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_MEDIA>;
-+		};
-+
-+		trigger-key {
-+			label = "Trigger";
-+			gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
-+			linux,code = <BTN_TRIGGER>;
-+		};
-+
-+		power-key {
-+			label = "Power";
-+			gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_POWER>;
-+		};
-+
-+		light-key {
-+			label = "Light";
-+			gpios = <&gpio2 1 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_LIGHTS_TOGGLE>;
-+		};
-+	};
-+
-+	panel_backlight: backlight {
-+		compatible = "pwm-backlight";
-+		brightness-levels = <0 4 8 16 32 64 128 255>;
-+		default-brightness-level = <6>;
-+		enable-gpios = <&gpio1 9 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_backlight_enable>;
-+		power-supply = <&reg_vsd>;
-+		pwms = <&pwm1 0 50000 0>;
-+	};
-+
-+	reg_vsd: regulator-vsd {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VSD_3V3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
-+	reg_vref: regulator-vref-4v2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "VREF_4V2";
-+		regulator-min-microvolt = <4200000>;
-+		regulator-max-microvolt = <4200000>;
-+	};
-+
-+	tp5000: charger {
-+		compatible = "gpio-charger";
-+		charger-type = "usb-sdp";
-+		gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_charger_stat1>;
-+	};
-+
-+	battery: battery {
-+		compatible = "simple-battery";
-+		/* generic 26650 battery */
-+		device-chemistry = "lithium-ion";
-+		charge-full-design-microamp-hours = <5000000>;
-+		voltage-max-design-microvolt = <4200000>;
-+		voltage-min-design-microvolt = <3300000>;
-+	};
-+
-+	fuel-gauge {
-+		compatible = "adc-battery";
-+		charged-gpios = <&gpio1 2 GPIO_ACTIVE_LOW>;
-+		io-channel-names = "voltage";
-+		io-channels = <&adc1 7>;
-+		monitored-battery = <&battery>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_charger_stat2>;
-+		power-supplies = <&tp5000>;
-+	};
-+
-+	poweroff {
-+		compatible = "gpio-poweroff";
-+		gpios = <&gpio2 4 GPIO_ACTIVE_LOW>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_poweroff>;
-+	};
-+};
-+
-+&gpio1 {
-+	ir-reset-hog {
-+		gpio-hog;
-+		gpios = <3 GPIO_ACTIVE_LOW>;
-+		line-name = "ir-reset-gpio";
-+		output-low;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_ir_reset>;
-+	};
-+};
-+
-+&gpio2 {
-+	/* configuring this to output-high results in poweroff */
-+	power-en-hog {
-+		gpio-hog;
-+		gpios = <6 GPIO_ACTIVE_HIGH>;
-+		line-name = "power-en-gpio";
-+		output-low;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_poweroff2>;
-+	};
-+};
-+
-+&ecspi3 {
-+	cs-gpios = <&gpio1 20 GPIO_ACTIVE_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_spi3>, <&mux_spi3_cs>;
-+	status = "okay";
-+
-+	panel@0 {
-+		compatible = "inanbo,t28cp45tn89-v17";
-+		reg = <0>;
-+		backlight = <&panel_backlight>;
-+		power-supply = <&reg_vsd>;
-+		spi-cpha;
-+		spi-cpol;
-+		spi-max-frequency = <1000000>;
-+		spi-rx-bus-width = <0>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&display_out>;
-+			};
-+		};
-+	};
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_uart>;
-+	status = "okay";
-+};
-+
-+&pwm1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_pwm>;
-+	status = "okay";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_i2c1>;
-+	status = "okay";
-+
-+	camera@21 {
-+		compatible = "galaxycore,gc0308";
-+		reg = <0x21>;
-+		clocks = <&clks IMX6UL_CLK_CSI>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&mux_gc0308>;
-+		powerdown-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
-+		reset-gpios = <&gpio1 6 GPIO_ACTIVE_LOW>;
-+		vdd28-supply = <&reg_vsd>;
-+
-+		port {
-+			gc0308_to_parallel: endpoint {
-+				remote-endpoint = <&parallel_from_gc0308>;
-+				bus-width = <8>;
-+				data-shift = <2>; /* lines 9:2 are used */
-+				hsync-active = <1>; /* active high */
-+				vsync-active = <1>; /* active high */
-+				data-active = <1>; /* active high */
-+				pclk-sample = <1>; /* sample on rising edge */
-+			};
-+		};
-+	};
-+};
-+
-+&csi {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_csi>;
-+
-+	port {
-+		parallel_from_gc0308: endpoint {
-+			remote-endpoint = <&gc0308_to_parallel>;
-+		};
-+	};
-+};
-+
-+&i2c2 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_i2c2>;
-+	status = "okay";
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+	};
-+};
-+
-+&lcdif {
-+	assigned-clocks = <&clks IMX6UL_CLK_LCDIF_PRE_SEL>;
-+	assigned-clock-parents = <&clks IMX6UL_CLK_PLL5_VIDEO_DIV>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_lcd_data>, <&mux_lcd_ctrl>;
-+	status = "okay";
-+
-+	port {
-+		display_out: endpoint {
-+			remote-endpoint = <&panel_in>;
-+		};
-+	};
-+};
-+
-+&usdhc1 {
-+	/* MicroSD */
-+	cd-gpios = <&gpio1 19 GPIO_ACTIVE_LOW>;
-+	keep-power-in-suspend;
-+	no-1-8-v;
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
-+	pinctrl-0 = <&mux_sdhc1>, <&mux_sdhc1_cd>;
-+	pinctrl-1 = <&mux_sdhc1_100mhz>, <&mux_sdhc1_cd>;
-+	pinctrl-2 = <&mux_sdhc1_200mhz>, <&mux_sdhc1_cd>;
-+	wakeup-source;
-+	vmmc-supply = <&reg_vsd>;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	/* eMMC */
-+	keep-power-in-suspend;
-+	no-1-8-v;
-+	non-removable;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_sdhc2>;
-+	wakeup-source;
-+	status = "okay";
-+};
-+
-+&wdog1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_wdog>;
-+};
-+
-+&adc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&mux_adc>;
-+	vref-supply = <&reg_vref>;
-+	#io-channel-cells = <1>;
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	/* USB-C connector */
-+	disable-over-current;
-+	dr_mode = "otg";
-+	status = "okay";
-+};
-+
-+&usbotg2 {
-+	/* thermal sensor */
-+	disable-over-current;
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
-+&usbphy1 {
-+	fsl,tx-d-cal = <106>;
-+};
-+
-+&usbphy2 {
-+	fsl,tx-d-cal = <106>;
-+};
-+
-+&iomuxc {
-+	mux_ir_reset: irresetgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO03__GPIO1_IO03		0x3008
-+		>;
-+	};
-+
-+	mux_poweroff: poweroffgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_ENET1_TX_DATA1__GPIO2_IO04		0x3008
-+		>;
-+	};
-+
-+	mux_poweroff2: poweroff2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_ENET1_TX_CLK__GPIO2_IO06		0x3008
-+		>;
-+	};
-+
-+	mux_charger_stat1: charger1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO01__GPIO1_IO01		0x3008
-+		>;
-+	};
-+
-+	mux_charger_stat2: charger2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO02__GPIO1_IO02		0x3008
-+		>;
-+	};
-+
-+	mux_wdog: wdoggrp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_RESET__WDOG1_WDOG_ANY		0x30b0
-+		>;
-+	};
-+
-+	mux_sdhc1_cd: sdhc1-cd-grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART1_RTS_B__GPIO1_IO19		0x17059
-+		>;
-+	};
-+
-+	mux_sdhc1: sdhc1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD			0x17059
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK			0x10071
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0		0x17059
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1		0x17059
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2		0x17059
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3		0x17059
-+		>;
-+	};
-+
-+	mux_sdhc1_100mhz: sdhc1-100mhz-grp {
-+		fsl,pins = <
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD			0x170b9
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK			0x170b9
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0		0x170b9
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1		0x170b9
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2		0x170b9
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3		0x170b9
-+		>;
-+	};
-+
-+	mux_sdhc1_200mhz: sdhc1-200mhz-grp {
-+		fsl,pins = <
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD			0x170f9
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK			0x170f9
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0		0x170f9
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1		0x170f9
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2		0x170f9
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3		0x170f9
-+		>;
-+	};
-+
-+	mux_sdhc2: sdhc2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_NAND_RE_B__USDHC2_CLK			0x10069
-+			MX6UL_PAD_NAND_WE_B__USDHC2_CMD			0x17059
-+			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0		0x17059
-+			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1		0x17059
-+			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2		0x17059
-+			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3		0x17059
-+			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4		0x17059
-+			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5		0x17059
-+			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6		0x17059
-+			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7		0x17059
-+		>;
-+	};
-+
-+	mux_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART4_TX_DATA__I2C1_SCL		0x4001b8b0
-+			MX6UL_PAD_UART4_RX_DATA__I2C1_SDA		0x4001b8b0
-+		>;
-+	};
-+
-+	mux_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART5_TX_DATA__I2C2_SCL		0x4001f8a8
-+			MX6UL_PAD_UART5_RX_DATA__I2C2_SDA		0x4001f8a8
-+		>;
-+	};
-+
-+	mux_uart: uartgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX		0x1b0b1
-+			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX		0x1b0b1
-+		>;
-+	};
-+
-+	mux_gpio_keys: gpiokeygrp {
-+		fsl,pins = <
-+			MX6UL_PAD_ENET2_TX_DATA0__GPIO2_IO11		0x3008
-+			MX6UL_PAD_ENET2_TX_DATA1__GPIO2_IO12		0x3008
-+			MX6UL_PAD_ENET2_TX_EN__GPIO2_IO13		0x3008
-+			MX6UL_PAD_ENET2_RX_EN__GPIO2_IO10		0x3008
-+			MX6UL_PAD_ENET2_RX_DATA1__GPIO2_IO09		0x3008
-+			MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15		0x3008
-+			MX6UL_PAD_ENET2_RX_DATA0__GPIO2_IO08		0x3008
-+			MX6UL_PAD_ENET2_TX_CLK__GPIO2_IO14		0x3008
-+			MX6UL_PAD_ENET1_TX_DATA0__GPIO2_IO03		0x3008
-+			MX6UL_PAD_ENET1_RX_DATA1__GPIO2_IO01		0x3008
-+		>;
-+	};
-+
-+	mux_led_ctrl: ledctrlgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_ENET1_RX_EN__GPIO2_IO02		0x3008
-+		>;
-+	};
-+
-+	mux_adc: adcgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO07__GPIO1_IO07		0xb0
-+		>;
-+	};
-+
-+	mux_pwm: pwm1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO08__PWM1_OUT			0x110b0
-+		>;
-+	};
-+
-+	mux_backlight_enable: blenablegrp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO09__GPIO1_IO09		0x3008
-+		>;
-+	};
-+
-+	mux_lcd_data: lcdifdatgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_DATA00__LCDIF_DATA00		0x79
-+			MX6UL_PAD_LCD_DATA01__LCDIF_DATA01		0x79
-+			MX6UL_PAD_LCD_DATA02__LCDIF_DATA02		0x79
-+			MX6UL_PAD_LCD_DATA03__LCDIF_DATA03		0x79
-+			MX6UL_PAD_LCD_DATA04__LCDIF_DATA04		0x79
-+			MX6UL_PAD_LCD_DATA05__LCDIF_DATA05		0x79
-+			MX6UL_PAD_LCD_DATA06__LCDIF_DATA06		0x79
-+			MX6UL_PAD_LCD_DATA07__LCDIF_DATA07		0x79
-+			MX6UL_PAD_LCD_DATA08__LCDIF_DATA08		0x79
-+			MX6UL_PAD_LCD_DATA09__LCDIF_DATA09		0x79
-+			MX6UL_PAD_LCD_DATA10__LCDIF_DATA10		0x79
-+			MX6UL_PAD_LCD_DATA11__LCDIF_DATA11		0x79
-+			MX6UL_PAD_LCD_DATA12__LCDIF_DATA12		0x79
-+			MX6UL_PAD_LCD_DATA13__LCDIF_DATA13		0x79
-+			MX6UL_PAD_LCD_DATA14__LCDIF_DATA14		0x79
-+			MX6UL_PAD_LCD_DATA15__LCDIF_DATA15		0x79
-+			MX6UL_PAD_LCD_DATA16__LCDIF_DATA16		0x79
-+			MX6UL_PAD_LCD_DATA17__LCDIF_DATA17		0x79
-+		>;
-+	};
-+
-+	mux_lcd_ctrl: lcdifctrlgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_LCD_CLK__LCDIF_CLK			0x79
-+			MX6UL_PAD_LCD_ENABLE__LCDIF_ENABLE		0x79
-+			MX6UL_PAD_LCD_HSYNC__LCDIF_HSYNC		0x79
-+			MX6UL_PAD_LCD_VSYNC__LCDIF_VSYNC		0x79
-+		>;
-+	};
-+
-+	mux_csi: csi1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_PIXCLK__CSI_PIXCLK		0x1b088
-+			MX6UL_PAD_CSI_VSYNC__CSI_VSYNC			0x1b088
-+			MX6UL_PAD_CSI_HSYNC__CSI_HSYNC			0x1b088
-+			MX6UL_PAD_CSI_DATA00__CSI_DATA02		0x1b088
-+			MX6UL_PAD_CSI_DATA01__CSI_DATA03		0x1b088
-+			MX6UL_PAD_CSI_DATA02__CSI_DATA04		0x1b088
-+			MX6UL_PAD_CSI_DATA03__CSI_DATA05		0x1b088
-+			MX6UL_PAD_CSI_DATA04__CSI_DATA06		0x1b088
-+			MX6UL_PAD_CSI_DATA05__CSI_DATA07		0x1b088
-+			MX6UL_PAD_CSI_DATA06__CSI_DATA08		0x1b088
-+			MX6UL_PAD_CSI_DATA07__CSI_DATA09		0x1b088
-+		>;
-+	};
-+
-+	mux_gc0308: gc0308grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_MCLK__CSI_MCLK			0x1e038
-+			MX6UL_PAD_GPIO1_IO05__GPIO1_IO05		0x1b088
-+			MX6UL_PAD_GPIO1_IO06__GPIO1_IO06		0x1b088
-+		>;
-+	};
-+
-+
-+	mux_spi3: ecspi3grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART2_CTS_B__ECSPI3_MOSI		0x100b1
-+			MX6UL_PAD_UART2_RX_DATA__ECSPI3_SCLK		0x100b1
-+		>;
-+	};
-+
-+	mux_spi3_cs: ecspi3_csgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART2_TX_DATA__GPIO1_IO20		0x3008
-+		>;
-+	};
-+};
--- 
-2.43.0
-
+DQoNCj4gT24gRmViIDE1LCAyMDI0LCBhdCAzOjMw4oCvQU0sIFJvYmVydG8gU2Fzc3UgPHJvYmVy
+dG8uc2Fzc3VAaHVhd2VpY2xvdWQuY29tPiB3cm90ZToNCj4gDQo+IEZyb206IFJvYmVydG8gU2Fz
+c3UgPHJvYmVydG8uc2Fzc3VAaHVhd2VpLmNvbT4NCj4gDQo+IFRoZSBwYXRjaCBzZXQgYXBwbGll
+cyBvbiB0b3Agb2YgbHNtL25leHQsIGNvbW1pdCA5NzI4MGZhMWVkOTQgKCJBdXRvbWF0ZWQNCj4g
+bWVyZ2Ugb2YgJ2RldicgaW50byAnbmV4dCciKS4NCg0KSSBoYXZlIHRlc3RlZCB0aGUgaW1hIGFw
+cHJhaXNhbCBwb3J0aW9uIGFuZCBoYXZlIG5vdCBvYnNlcnZlZCBhbnkgcmVncmVzc2lvbnMgd2l0
+aA0KdGhpcyBzZXJpZXMuICBGb3IgdGhhdCBwYXJ0IG9mIHRoZSBjb2RlLCBpZiB5b3Ugd2FudCwg
+ZmVlbCBmcmVlIHRvIGFkZDoNCg0KVGVzdGVkLWJ5OiBFcmljIFNub3diZXJnIDxlcmljLnNub3di
+ZXJnQG9yYWNsZS5jb20+DQoNCg==
 
