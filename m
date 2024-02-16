@@ -1,168 +1,150 @@
-Return-Path: <linux-kernel+bounces-69328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A06DD858772
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:45:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B20BD858774
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:45:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59AEB28F68A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:45:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7E551C26D32
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F48145FE7;
-	Fri, 16 Feb 2024 20:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5442145FF8;
+	Fri, 16 Feb 2024 20:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jxl3kh0d"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="a70QFPIy"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A74DA135A41;
-	Fri, 16 Feb 2024 20:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F6E3139584
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 20:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708116152; cv=none; b=KzblqxW4YGlob207Sw/wF/VKuZp9D0mnMFxOkdAUzII0GojGnpeli4Ga0BNVEAwlqismxIwuQ/MkFK28v5Hw7NBaWzUTMqDXmmg+lRkEig44qJjkKULl3fnkCjB/bHfsy85ATMOb4DMf9EN+rFay5XPdfb10y0l89srEp4vOP6M=
+	t=1708116275; cv=none; b=nZY5vz9Ss7g70KbCt15gDt3ciS8fODfF+qaEgSQiE4Qgh8jCKIbhTgXqe72LTcXRwDjN+WZL3z+Gl+XWqmqflZH4qeiQXBBd9TGuyZFUbgG9OjvAYn8wWwTP6myTYeD2oVf1HEiRj8bGkq8Iv+hRwEm21m5p0v2uL/dEXgRJHGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708116152; c=relaxed/simple;
-	bh=F81shhblktltp1h8t42uFEnG2IFNx0MPP8DE2AnUpg8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HcqA5/fJbNvVwSOWuVG4IURRWyJ2BQyffYGgW6mtgSmhdV8+XcrAdWveVSPZGN8pkuS6bxo4+k4y+UGsbVAynmJN4GcAw9DG6PTuDGxsnLzoADr0x1ZmJakrG+F3fd9qSWc68AGaEGiDM5xaXjGf3II52F0ghveAx22rTK9Hlyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jxl3kh0d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 579DAC43390;
-	Fri, 16 Feb 2024 20:42:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708116151;
-	bh=F81shhblktltp1h8t42uFEnG2IFNx0MPP8DE2AnUpg8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=jxl3kh0dTB9X6BR2LZOsRknePjNVjA03E9VBHUmVLm65j0oppYDjEIzuYrlqZ3xwC
-	 t1zjpPPoQ+7tT9zU9DuIWFTVFEQ2Sfu/fn3xPMpm7tYPUBmfKy1tSwlVGT/q4inBlQ
-	 CPuG3CKzSfLzypfDbPo8GgppslyblHytmHhQpuFaupFosLpu9v25BIWf3/ibbdzhau
-	 lJQ8+v4MsbT+loeClwwM6pA+dZpsZzirDa09Z1er2tfhrmIu1WVXs9ALx4I77Lm0/s
-	 7G/fuLylB/xtcxZ2JIdnYxqCzNaoaseLeisxeSr8HAOIRdku+/OaDVnN80QHb8yZ98
-	 bHM3Xv5ygml7g==
-Date: Fri, 16 Feb 2024 13:42:28 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
+	s=arc-20240116; t=1708116275; c=relaxed/simple;
+	bh=dcgKF8UiBBz34XJT7VHWm6Do34FT3jmf0XIZ/Dyw5Gc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N53DoLsLlstVh8jcUW2ea0SJZU0JncPIC8AfsZl3MXX788wYSUJJjuvmSMlHubm+KB2YeEiJlDgj6oOLbWCCpufX5jP9sYAjnxgTsd5GUcW8qjFY3ng7x+w5WbZeohKMbVwPW0PvJSYj2WIJrZCIa5bYhZuBArKso0haSdxxExQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=a70QFPIy; arc=none smtp.client-ip=209.85.210.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e104196e6eso2614758b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708116273; x=1708721073; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KfdPOM/mYc/pJQP93wRUe5zkjH2nJXn1uubLQkwefXU=;
+        b=a70QFPIyG4/o5/xtmwXYobO4aNYt4Vr1abmDz2KqPg3ykNeFldET8fWLAR3kDwVwiW
+         WBKbf6o6Ktns4fTlQHDySxUm/+Kke7cy0gDmSUoE+iEiNAS5WF2uD/EHpbIYFFgPEMDr
+         BkioCPp2YnG3mQDmYrkphCZQLDW4yg/K1nLBk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708116273; x=1708721073;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KfdPOM/mYc/pJQP93wRUe5zkjH2nJXn1uubLQkwefXU=;
+        b=E/06jPjpMHY9KLhO+SUSMmTKBv2AZtJW0tADlQ7NgheTwUH2YdmC4jdoQtEhCfKN+P
+         sWe5Y18kkaENdcfKKJyubOkCDHCueqhyhR23jMU+rVLgkHKV7+v06i5N3yy5tz0DC7fK
+         MoQRQnnzQ+Pe8SMJ3CCd+rztm5HSHXYpDoIy28b9QJQ03a3r56t32po9j8IzylXqzC/b
+         VgbBP+9qh3uL7AwyTR09pdBEJvDwG/QOZO7M3O2PirnCaBqdysQicUUDwTU2vpHwfpOe
+         5mkMhe810DO3irPMJrJcR9llDOJE01q/5bn/yLf6y2ErZgBDPGSyrhu3VRqhsUYHrIkk
+         6qOg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGxocuuMvIgx7zAX6NT4H2gguSnAgo8lgW+nicxExHu+xgCwjT+TcN7xZWahDHGyTb/TvRUaE7UmCwsWOZXFM1s7rxcr9XVANMNBEE
+X-Gm-Message-State: AOJu0Yy02ZmpKdEhLJjpkJdYiSY5LlGg+6jztr1egmAOVNUQ7Ob1cr3u
+	gpt6B7+9hMmiqo5czwkiB0yIBaxxTqSMTTYluQ3ziqoHwwNuoCPZIdsxPL6w9g==
+X-Google-Smtp-Source: AGHT+IFMp/+uwtXoTt8ZTB7NzHGsxYYLBqDWpyM5s8tBLrts/aiShty1PMRbExqYCcV/V7ylknMcZg==
+X-Received: by 2002:a05:6a00:3d11:b0:6d9:b4e6:ffb with SMTP id lo17-20020a056a003d1100b006d9b4e60ffbmr7107600pfb.0.1708116272797;
+        Fri, 16 Feb 2024 12:44:32 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id e3-20020aa798c3000000b006dfff453f8esm366899pfm.75.2024.02.16.12.44.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 12:44:32 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>, Lin Ma <linma@zju.edu.cn>,
-	Simon Horman <horms@kernel.org>, Breno Leitao <leitao@debian.org>,
-	Tobias Brunner <tobias@strongswan.org>,
-	Raed Salem <raeds@nvidia.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] [RFC] xfrm: work around a clang-19 fortifiy-string
- false-positive
-Message-ID: <20240216204228.GA3733086@dev-arch.thelio-3990X>
-References: <20240216202657.2493685-1-arnd@kernel.org>
+	Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org,
+	Kuniyuki Iwashima <kuniyu@amazon.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	David Howells <dhowells@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] sock: Use unsafe_memcpy() for sock_copy()
+Date: Fri, 16 Feb 2024 12:44:24 -0800
+Message-Id: <20240216204423.work.066-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240216202657.2493685-1-arnd@kernel.org>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1864; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=dcgKF8UiBBz34XJT7VHWm6Do34FT3jmf0XIZ/Dyw5Gc=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlz8knIiqX0gNushGFi5tcu+b6Z2huNDqRuDpnD
+ 7OBa/E/fjGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZc/JJwAKCRCJcvTf3G3A
+ Jka2D/49xf0HEbfzzY6ewPuxOsgLo3p19BQFaeQdlEVmWTaTYVIkRIeAWuEM4tucWsRNjfFhtwL
+ 6h3b29oXEkNy+gSDIPriR9wiJ22Wc1ZNZitIyF5f6Vw6JdPJIDULPiAIF5SIEAJJCLOgbW+9kDG
+ ZK1tFnFSilN3mdrPd+RaXPlGxvAfrGTb4Z13bkYd4odPAq/suwjVfTFnIGZGh+Dw7f6YWzEkKhd
+ FW+B/PJ/EXxf+tQD2nVLFBZwE/iGUKYROXMrQarGY9On+dW/KZzVYK1Xm3ku9MUDeF2kBlqwIqN
+ +v37IyAiiVTpM5O9Hmvdkm8J1AT9kWx4LMGK1TyQwwUpfgBrFs6MLmj+rRlubFGDuFJCRscbTY9
+ EqysezRvgwPS68ntriQ2+6J6Gprejz/KiUneDnklbHYHoD0O/iopV0CqZUItKqH+ZEg2fHx0yHK
+ 2x1f1c7Cg8A9zVRy/fS77XTqQTLDKzVUKCV00Ug68xBain4Htb7k7KocPnSGgD/twCM5QioXQkj
+ G5jg31qGUDwOMmWJMMG7MTjkHUEoxzRO+MqT0LBW+8kHR1M2zDSakXjZcjkSvlkWu8LegHqTIdG
+ vFpt7rr5iY4esTyi0IA3MfGnzTMPkuM2BA3sVo+rZUkepnNhuVIQAmZHj/7j2ntVSzc+9fApR8G
+ XtCi7K1 Uu1NLRFw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-Hi Arnd,
+While testing for places where zero-sized destinations were still
+showing up in the kernel, sock_copy() was found, which is using very
+specific memcpy() offsets for both avoiding a portion of struct sock,
+and copying beyond the end of it (since struct sock is really just a
+common header before the protocol-specific allocation). Instead of
+trying to unravel this historical lack of container_of(), just switch
+to unsafe_memcpy(), since that's effectively what was happening already
+(memcpy() wasn't checking 0-sized destinations while the code base was
+being converted away from fake flexible arrays).
 
-On Fri, Feb 16, 2024 at 09:26:40PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> clang-19 recently got branched from clang-18 and is not yet released.
-> The current version introduces exactly one new warning that I came
-> across in randconfig testing, in the copy_to_user_tmpl() function:
-> 
-> include/linux/fortify-string.h:420:4: error: call to '__write_overflow_field' declared with 'warning' attribute: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror,-Wattribute-warning]
->   420 |                         __write_overflow_field(p_size_field, size);
-> 
-> I have not yet produced a minimized test case for it, but I have a
-> local workaround, which avoids the memset() here by replacing it with
-> an initializer.
-> 
-> The memset is required to avoid leaking stack data to user space
-> and was added in commit 1f86840f8977 ("xfrm_user: fix info leak in
-> copy_to_user_tmpl()"). Simply changing the initializer to set all fields
-> still risks leaking data in the padding between them, which the compiler
-> is free to do here. To work around that problem, explicit padding fields
-> have to get added as well.
-> 
-> My first idea was that just adding the padding would avoid the warning
-> as well, as the padding tends to confused the fortified string helpers,
-> but it turns out that both changes are required here.
-> 
-> Since this is a false positive, a better fix would likely be to
-> fix the compiler.
+Avoid the following false positive warning with future changes to
+CONFIG_FORTIFY_SOURCE:
 
-I have some observations and notes from my initial investigation into
-this issue on our GitHub issue tracker but I have not produced a
-minimized test case either.
+  memcpy: detected field-spanning write (size 3068) of destination "&nsk->__sk_common.skc_dontcopy_end" at net/core/sock.c:2057 (size 0)
 
-https://github.com/ClangBuiltLinux/linux/issues/1985
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org
+---
+ net/core/sock.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/uapi/linux/xfrm.h | 3 +++
->  net/xfrm/xfrm_user.c      | 3 +--
->  2 files changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
-> index 6a77328be114..99adac4fa648 100644
-> --- a/include/uapi/linux/xfrm.h
-> +++ b/include/uapi/linux/xfrm.h
-> @@ -27,6 +27,7 @@ struct xfrm_id {
->  	xfrm_address_t	daddr;
->  	__be32		spi;
->  	__u8		proto;
-> +	__u8		__pad[3];
->  };
->  
->  struct xfrm_sec_ctx {
-> @@ -242,11 +243,13 @@ struct xfrm_user_sec_ctx {
->  struct xfrm_user_tmpl {
->  	struct xfrm_id		id;
->  	__u16			family;
-> +	__u16			__pad1;
->  	xfrm_address_t		saddr;
->  	__u32			reqid;
->  	__u8			mode;
->  	__u8			share;
->  	__u8			optional;
-> +	__u8			__pad2;
->  	__u32			aalgos;
->  	__u32			ealgos;
->  	__u32			calgos;
-> diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
-> index a5232dcfea46..e81f977e183c 100644
-> --- a/net/xfrm/xfrm_user.c
-> +++ b/net/xfrm/xfrm_user.c
-> @@ -2011,7 +2011,7 @@ static int xfrm_add_policy(struct sk_buff *skb, struct nlmsghdr *nlh,
->  
->  static int copy_to_user_tmpl(struct xfrm_policy *xp, struct sk_buff *skb)
->  {
-> -	struct xfrm_user_tmpl vec[XFRM_MAX_DEPTH];
-> +	struct xfrm_user_tmpl vec[XFRM_MAX_DEPTH] = {};
->  	int i;
->  
->  	if (xp->xfrm_nr == 0)
-> @@ -2021,7 +2021,6 @@ static int copy_to_user_tmpl(struct xfrm_policy *xp, struct sk_buff *skb)
->  		struct xfrm_user_tmpl *up = &vec[i];
->  		struct xfrm_tmpl *kp = &xp->xfrm_vec[i];
->  
-> -		memset(up, 0, sizeof(*up));
->  		memcpy(&up->id, &kp->id, sizeof(up->id));
->  		up->family = kp->encap_family;
->  		memcpy(&up->saddr, &kp->saddr, sizeof(up->saddr));
-> -- 
-> 2.39.2
-> 
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 0a7f46c37f0c..b7ea358eb18f 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -2053,8 +2053,9 @@ static void sock_copy(struct sock *nsk, const struct sock *osk)
+ 
+ 	memcpy(nsk, osk, offsetof(struct sock, sk_dontcopy_begin));
+ 
+-	memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
+-	       prot->obj_size - offsetof(struct sock, sk_dontcopy_end));
++	unsafe_memcpy(&nsk->sk_dontcopy_end, &osk->sk_dontcopy_end,
++		      prot->obj_size - offsetof(struct sock, sk_dontcopy_end),
++		      /* alloc is larger than struct, see sk_prot_alloc() */);
+ 
+ #ifdef CONFIG_SECURITY_NETWORK
+ 	nsk->sk_security = sptr;
+-- 
+2.34.1
+
 
