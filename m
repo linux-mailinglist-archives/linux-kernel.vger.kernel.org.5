@@ -1,258 +1,291 @@
-Return-Path: <linux-kernel+bounces-68226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D30C857794
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:25:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87045857797
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:25:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB2B128547C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:25:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A532C1C228F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D8E1D54F;
-	Fri, 16 Feb 2024 08:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D971B27D;
+	Fri, 16 Feb 2024 08:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="bXDEcl+Y"
-Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qLTEdWL2"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2725B1D546
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:19:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3392418B1B
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071596; cv=none; b=YJbtzW0RfwXCoHRr352SuxWFw2KsQtreM2WwoqiaZFJP4dh1GNyLqfzyzjX8uhzLMbVsu30VoUrFZqqBl9Hnefqgk1yu9JwGpJxzDSTgMjm8dAMyRRuryMtNKVEcm5soC1tQRwe985DkIbqy6PVLFLaJUaLilUmPdkQDFo5foyQ=
+	t=1708071679; cv=none; b=jkP5KAMWf5P3QIoeny7YymNiQeuPoDldi5QLM9oT04sy90gOHbuJZyEsZcLyNJm32JClRQHMk/n1UqeGrC/n27QyBBqGJoKe/nvj3gTS84Nse2ziHaA1e8JNSlmOaYi5GaCGww5pl9usLnl0ABqhHaoni98xCgK37h98wFdoKjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071596; c=relaxed/simple;
-	bh=uGpKEecCmfuEyzbj6dA7yDBuDlpAYE7i+nfn0lZLzFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dPApxzsf84oLRjQKazWdHAD5aBuenzh+pu4hLVzI5DwBBcxo2lyw9ophMlOJJ2AXcIiooNVG/etTH4Ppu5KzgS1Qi6izKvV+DwPZX3Um6PG2qBS88SiTpsFT8MwICsiiaEeOn056fEx6amQUzoModH78P611PFFCGm5Z0laf+qQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=bXDEcl+Y; arc=none smtp.client-ip=77.240.19.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=SwArZZWoMGaUCC+AgKvruw60znKf1jRE+TFnKaPirqQ=; b=bXDEcl+YuVId6rnVYekHhMzP3m
-	8VFTkcifS/od+wIoEWEZmqojntpPTVvKkyPo/o6Ct9sDh7TXU28ldRbXwmrVoiJ/ELzBp8eKhR3p7
-	kxss9xDt1E1B6oKtymfcp3oh36SLnfh04pA94ai2xmrQPRqlxLT47gaW6CttbAzuty6YYjsUMsqxu
-	VkvJMYkf7XdvLUS4u77ltc72S42TOxLAqGeQO03Vf1FM8pQ9R2wMcvUuHCGwJSEKxl3pz9LCkOPZe
-	5Zl2xs9kwZUu7go8VrYgbYjEuWpH2tfm+EoV3HK/bm57WzBYE57KnTwdg8kVEE6GpmfDjlkTnJn4y
-	QsEbgJvQ==;
-Received: from [194.136.85.206] (port=48728 helo=eldfell)
-	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <pekka.paalanen@haloniitty.fi>)
-	id 1ratRf-0004TR-1u;
-	Fri, 16 Feb 2024 10:19:43 +0200
-Date: Fri, 16 Feb 2024 10:19:36 +0200
-From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-To: Hamza Mahfooz <hamza.mahfooz@amd.com>
-Cc: <amd-gfx@lists.freedesktop.org>, Mario Limonciello
- <mario.limonciello@amd.com>, Harry Wentland <harry.wentland@amd.com>, Leo
- Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, "Alex
- Deucher" <alexander.deucher@amd.com>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Alex Hung
- <alex.hung@amd.com>, Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, <dri-devel@lists.freedesktop.org>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
- to eDP connectors
-Message-ID: <20240216101936.2e210be2@eldfell>
-In-Reply-To: <20240202152837.7388-1-hamza.mahfooz@amd.com>
-References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708071679; c=relaxed/simple;
+	bh=wNvH8irpVIRGBM1PyLQ/DV1p5gcS7Gn8xxWO4Z4gyY0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IS9tmtoCp4JyxC3ueskC8DKXocxafnfnVlPaUHX/uGuNh+W5SgKWhi1CZGsWfBP3Dw4Me0QdG8q1xq7gjWli1ePTs1mpAwW4FvWg/7tiA3J5nFa4Hm1WkVlgB7v2mP/zcZ7S78TvqczisHjHYCo/GNTU/3wpDn5BOhGer7OiNA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qLTEdWL2; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-563cc707c7cso1882952a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:21:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708071675; x=1708676475; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BHQjCM3MJVOw9z8k4SHGf+NLiuXZ/198hcpHesrOvd0=;
+        b=qLTEdWL20yhzYw2xKZlYoRiugT/xod3sb4H3NkxRm+AISOyY6fzKZrlwRaSxp8WSby
+         NovXtneJhWHlxzr/RZgaalYZcaRfS7wN0qLll+7Ncj7KclX/nMI2qTRwAqRHi1SaLUox
+         aow/ulXMR84VY01oVOXxf7bqEbTjxW9sPsITBI2CYdLcbQFKUy5Jis0tSNT/iYgi+MFJ
+         OLz6Asf+yJcHjOVEHPJy58Skf7DKnjQmtQ+mwtJvWecWZREnZpdZPRNbHo7cJHlGY1Bc
+         HFiLzMU65qPxgT9s09J5sEDmELNW9lXScSdetwB/vM130yBmXjx4r6gWug5UBarqJhJt
+         5xgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708071675; x=1708676475;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BHQjCM3MJVOw9z8k4SHGf+NLiuXZ/198hcpHesrOvd0=;
+        b=j2GEwsA/F/XjeyY8FXvUFp+Y1zeQ4uqBI99j4AxYHTta5SpLY8sMzWmYQj2urtrSHS
+         eIu5CYhJm+fud9PkXfg6+g7AXRJgl/W2k/9VzHNEXnPh0AJcS2ZUblt0jwF4O7ZmsUEA
+         KGsPLvArAG6mbc7dKbZV3GAeikKxD3QTrt721VrpAcdYglVov6G/tvs8PkRz7QOVFnMD
+         XSqnByiOZPWxULtFe/ooO9vfKDtp3xlNCQrlWYEZY9WQ2Ye3Zno+2QAaAU5VouHP1Zye
+         AH0a8a/XAaEIkLD2Syjm31GJUvLsLwNZ6hdoGiEO5GLDRoIScHOgQ2pbG9sQzZ73p8Mn
+         e2UQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVwaJ4oF/QmuderWBBkZPcXj95AB1ZYs1YqX4rdYEIQhKc+HlnF7HIVj7IS/mUCz3SQrD7e+HbLH46z4Cjbb8lOelyUnePpAdH013Kp
+X-Gm-Message-State: AOJu0Yx3+N0Vmh39PqRcsN1FMdJHhPFmC5//NbW8brgbPATpwyqjmT3q
+	fmDQsXcihHFi5H52BtD8m9cd7I877SOO1ht8S97WiD77sKwwaZGFThWoAdT3Tj4=
+X-Google-Smtp-Source: AGHT+IH1Jfr/rQ1P5UV32a4Ha00bRrmflv3srEDsiA+9qsOqq+vnNMHgHuIPfy/dNY4jLcDdbsJGoQ==
+X-Received: by 2002:a05:6402:500f:b0:561:fc2:bec0 with SMTP id p15-20020a056402500f00b005610fc2bec0mr7425286eda.4.1708071675397;
+        Fri, 16 Feb 2024 00:21:15 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.207.130])
+        by smtp.gmail.com with ESMTPSA id j22-20020aa7c0d6000000b0055f0b3ec5d8sm1287138edp.36.2024.02.16.00.21.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 00:21:14 -0800 (PST)
+Message-ID: <36450b1e-7a80-4d6b-9046-9a57b7c845e2@linaro.org>
+Date: Fri, 16 Feb 2024 09:21:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/N0j5fPzI_9+T2QzPPLs30WV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - whm50.louhi.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haloniitty.fi
-X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
-X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] dt-bindings: mmc: dw-mshc-hi3798cv200: rename to
+ dw-mshc-histb
+Content-Language: en-US
+To: forbidden405@outlook.com, Ulf Hansson <ulf.hansson@linaro.org>,
+ Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Igor Opaniuk <igor.opaniuk@linaro.org>,
+ tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com>
+ <20240216-b4-mmc-hi3798mv200-v1-3-7d46db845ae6@outlook.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240216-b4-mmc-hi3798mv200-v1-3-7d46db845ae6@outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---Sig_/N0j5fPzI_9+T2QzPPLs30WV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, 2 Feb 2024 10:28:35 -0500
-Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
-
-> We want programs besides the compositor to be able to enable or disable
-> panel power saving features.
-
-Could you also explain why, in the commit message, please?
-
-It is unexpected for arbitrary programs to be able to override the KMS
-client, and certainly new ways to do so should not be added without an
-excellent justification.
-
-Maybe debugfs would be more appropriate if the purpose is only testing
-rather than production environments?
-
-> However, since they are currently only
-> configurable through DRM properties, that isn't possible. So, to remedy
-> that issue introduce a new "panel_power_savings" sysfs attribute.
-
-When the DRM property was added, what was used as the userspace to
-prove its workings?
-
-
-Thanks,
-pq
-
->=20
-> Cc: Mario Limonciello <mario.limonciello@amd.com>
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+On 15/02/2024 18:46, Yang Xiwen via B4 Relay wrote:
+> From: Yang Xiwen <forbidden405@outlook.com>
+> 
+> Add binding for Hi3798MV200 DWMMC specific extension.
+> 
+> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 > ---
-> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
->     commit when setting the value, call sysfs_remove_group() in
->     amdgpu_dm_connector_unregister() and add some documentation.
-> ---
->  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
->  1 file changed, 76 insertions(+)
->=20
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
-gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> index 8590c9f1dda6..3c62489d03dc 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struc=
-t drm_connector *connector,
->  	return ret;
->  }
-> =20
-> +/**
-> + * DOC: panel power savings
-> + *
-> + * The display manager allows you to set your desired **panel power savi=
-ngs**
-> + * level (between 0-4, with 0 representing off), e.g. using the followin=
-g::
-> + *
-> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
-> + *
-> + * Modifying this value can have implications on color accuracy, so tread
-> + * carefully.
-> + */
-> +
-> +static ssize_t panel_power_savings_show(struct device *device,
-> +					struct device_attribute *attr,
-> +					char *buf)
-> +{
-> +	struct drm_connector *connector =3D dev_get_drvdata(device);
-> +	struct drm_device *dev =3D connector->dev;
-> +	u8 val;
-> +
-> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-> +	val =3D to_dm_connector_state(connector->state)->abm_level =3D=3D
-> +		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
-> +		to_dm_connector_state(connector->state)->abm_level;
-> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-> +
-> +	return sysfs_emit(buf, "%u\n", val);
-> +}
-> +
-> +static ssize_t panel_power_savings_store(struct device *device,
-> +					 struct device_attribute *attr,
-> +					 const char *buf, size_t count)
-> +{
-> +	struct drm_connector *connector =3D dev_get_drvdata(device);
-> +	struct drm_device *dev =3D connector->dev;
-> +	long val;
-> +	int ret;
-> +
-> +	ret =3D kstrtol(buf, 0, &val);
-> +
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (val < 0 || val > 4)
-> +		return -EINVAL;
-> +
-> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
-> +	to_dm_connector_state(connector->state)->abm_level =3D val ?:
-> +		ABM_LEVEL_IMMEDIATE_DISABLE;
-> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
-> +
-> +	drm_kms_helper_hotplug_event(dev);
-> +
-> +	return count;
-> +}
-> +
-> +static DEVICE_ATTR_RW(panel_power_savings);
-> +
-> +static struct attribute *amdgpu_attrs[] =3D {
-> +	&dev_attr_panel_power_savings.attr,
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group amdgpu_group =3D {
-> +	.name =3D "amdgpu",
-> +	.attrs =3D amdgpu_attrs
-> +};
-> +
->  static void amdgpu_dm_connector_unregister(struct drm_connector *connect=
-or)
->  {
->  	struct amdgpu_dm_connector *amdgpu_dm_connector =3D to_amdgpu_dm_connec=
-tor(connector);
-> =20
-> +	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
->  	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
->  }
-> =20
-> @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_conne=
-ctor *connector)
->  		to_amdgpu_dm_connector(connector);
->  	int r;
-> =20
-> +	if (connector->connector_type =3D=3D DRM_MODE_CONNECTOR_eDP) {
-> +		r =3D sysfs_create_group(&connector->kdev->kobj,
-> +				       &amdgpu_group);
-> +		if (r)
-> +			return r;
-> +	}
-> +
->  	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
-> =20
->  	if ((connector->connector_type =3D=3D DRM_MODE_CONNECTOR_DisplayPort) ||
+>  ...hi3798cv200-dw-mshc.yaml => histb-dw-mshc.yaml} | 60 +++++++++++++++++++---
+>  1 file changed, 52 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
+> similarity index 57%
+> rename from Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml
+> rename to Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
+> index 5db99cd94b90..d2f5b7bb7a58 100644
+> --- a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
+> @@ -1,11 +1,11 @@
+>  # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+>  %YAML 1.2
+>  ---
+> -$id: http://devicetree.org/schemas/mmc/hi3798cv200-dw-mshc.yaml#
+> +$id: http://devicetree.org/schemas/mmc/histb-dw-mshc.yaml#
+
+Really, one wrong filename into another...
+
+>  $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  
+>  title:
+> -  Hisilicon Hi3798CV200 SoC specific extensions to the Synopsys DWMMC controller
+> +  Hisilicon HiSTB SoCs specific extensions to the Synopsys DWMMC controller
+>  
+>  maintainers:
+>    - Yang Xiwen <forbidden405@outlook.com>
+> @@ -14,16 +14,14 @@ description:
+>    The Synopsys designware mobile storage host controller is used to interface
+>    a SoC with storage medium such as eMMC or SD/MMC cards. This file documents
+>    differences between the core Synopsys dw mshc controller properties described
+> -  by synopsys-dw-mshc.txt and the properties used by the Hisilicon Hi3798CV200
+> -  specific extensions to the Synopsys Designware Mobile Storage Host Controller.
+
+Just drop this sentence in previous/conversion patch. It's useless.
+
+> -
+> -allOf:
+> -  - $ref: synopsys-dw-mshc-common.yaml#
+
+Put it in correct place in the first time. Don't needlessly shuffle the
+code right after previous patch.
 
 
---Sig_/N0j5fPzI_9+T2QzPPLs30WV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> +  by synopsys-dw-mshc.txt and the properties used by the Hisilicon HiSTB specific
+> +  extensions to the Synopsys Designware Mobile Storage Host Controller.
+>  
+>  properties:
+>    compatible:
+>      enum:
+>        - hisilicon,hi3798cv200-dw-mshc
+> +      - hisilicon,hi3798mv200-dw-mshc
+>  
+>    reg:
+>      maxItems: 1
+> @@ -48,6 +46,12 @@ properties:
+>        control the clock phases, "ciu-sample" is required for tuning
+>        high speed modes.
+>  
+> +  hisilicon,sap-dll-reg:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description:
+> +      A phandle points to the sample delay-locked-loop(DLL)
+> +      syscon node, used for tuning.
 
------BEGIN PGP SIGNATURE-----
+Does hi3798cv200 have it?
 
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXPGpgACgkQI1/ltBGq
-qqc/7hAAlGiJifPdESkeAkI4ecEIa/VhPtuaQOWtX9tA2Lv+8u5VMhA0YyAn2ql2
-dYiw24Gu1A1b69qvyUvKzQPbhBX80PT9LEfzysYMpjCVZMv/9VlvANNZaQUojoYV
-a9+ETsbiugKUxWLgj8q7a522nPTfqZ4Hg0X0wlt31qQ9eRQDZv8v2z+x6FvEn70V
-R3C3Pi2NXCjYkqG3F+n9fcN2JDUSFFFrIZuwPJIi4MO8PWUNk47a+nyxOVKmAI/E
-MwoGilxW7pm/B7W1A1FfKo/FS+G8KhWchNB70nsE+x1fxEOLd0YypFH8fIlT86T5
-rkUNueHG73/do6FEdx5TOB//stiSnG7RRSJA2xOYd2iwPZB5VdQ/v9YB9EyW2zun
-ba9Ne51RpmT1VDBxrknWZV/wCtoRiMzRAXl4YPLlXkYZtWids7+OzJR9R2oDGw13
-8k0lgfgvV3cWFtEXpNXdcL1ErTOeow8/vmST2BTPVhuDw04pdU0RsQriV8ZygEwz
-cXmpEgkfpn/Ay8Ppe5l0Jw0IuSGRW90Sf4hmd7SQ5klLB/lV4CxLAF+xtoMDbzfP
-Ok8485dWkxEntrpGLvR/LcLXRyLuRIAFD5znUbKlBKCWQcPn8l+4gt93S2e9jiWV
-bU3eKOG1TEAOgW7hSD/yWeFQr5ceYxERSdPaMn2rN6pp2X5NiGw=
-=N/D3
------END PGP SIGNATURE-----
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -55,13 +59,25 @@ required:
+>    - clocks
+>    - clock-names
+>  
+> +allOf:
+> +  - $ref: synopsys-dw-mshc-common.yaml#
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: hisilicon,hi3798mv200-dw-mshc
+> +    then:
+> +      required:
+> +        - hisilicon,sap-dll-reg
+> +
+>  unevaluatedProperties: false
+>  
+>  examples:
+>    - |
+>      #include <dt-bindings/clock/histb-clock.h>
+>      #include <dt-bindings/interrupt-controller/arm-gic.h>
+> -    emmc: mmc@9830000 {
+> +    mmc@9830000 {
 
---Sig_/N0j5fPzI_9+T2QzPPLs30WV--
+???
+
+>        compatible = "hisilicon,hi3798cv200-dw-mshc";
+>        reg = <0x9830000 0x10000>;
+>        interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+> @@ -84,3 +100,31 @@ examples:
+>        bus-width = <8>;
+>        status = "okay";
+>      };
+> +  - |
+> +    #include <dt-bindings/clock/histb-clock.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    mmc@9830000 {
+> +      compatible = "hisilicon,hi3798mv200-dw-mshc";
+
+No need for new example.
+
+> +      reg = <0x9830000 0x10000>;
+> +      interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+> +      clocks = <&crg HISTB_MMC_CIU_CLK>,
+> +               <&crg HISTB_MMC_BIU_CLK>,
+> +               <&crg HISTB_MMC_SAMPLE_CLK>,
+> +               <&crg HISTB_MMC_DRV_CLK>;
+> +      clock-names = "ciu", "biu", "ciu-sample", "ciu-drive";
+> +      resets = <&crg 0xa0 4>;
+> +      reset-names = "reset";
+> +      pinctrl-names = "default";
+> +      pinctrl-0 = <&emmc_pins>;
+> +      fifo-depth = <256>;
+> +      clock-frequency = <50000000>;
+> +      max-frequency = <150000000>;
+> +      cap-mmc-highspeed;
+> +      mmc-ddr-1_8v;
+> +      mmc-hs200-1_8v;
+> +      mmc-hs400-1_8v;
+> +      non-removable;
+> +      bus-width = <8>;
+> +      hisilicon,sap-dll-reg = <&emmc_sap_dll_reg>;
+> +      status = "okay";
+
+No, really...
+
+> +    };
+> 
+
+Best regards,
+Krzysztof
+
 
