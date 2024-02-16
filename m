@@ -1,39 +1,62 @@
-Return-Path: <linux-kernel+bounces-68506-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CFF2857B61
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:18:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18D46857B68
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 492AE2850E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:18:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F068B20943
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:19:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AF259B64;
-	Fri, 16 Feb 2024 11:18:34 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D4558AA7;
-	Fri, 16 Feb 2024 11:18:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79F491C291;
+	Fri, 16 Feb 2024 11:19:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="THn4oTjP"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C6859B52;
+	Fri, 16 Feb 2024 11:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082314; cv=none; b=qZraVFBDNPPoeyilQcWYlWiRhlupMk8iBBmqwqnJoGyW9N+OfsykmMokhL4CURsDtIeyfPCCHOX3z6Rgzdec+YGBtblAupILPL4ulQ9/ng4YIQUx4z0edJUOZ3IZ/CQ1SOiYp2WU6xC+oPhVDP/jp03R9867OJHKCaigwDCrIkc=
+	t=1708082356; cv=none; b=ldIgVSQRxmESyxG2IbWUidrTj0Y08eKCW/bk9uj/CB1Jsb5wVNqRyXZxWqBiQCwLLBO2ypekA4iWQI3sYQ6V8uyMlDih2Ci+QrpJYACU1x1ndOStfB7VZcjQ9jnSeREVVOzfnkFPiB8fBCieqDfrM1oOSfIJfR11pjwNjnrJRUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082314; c=relaxed/simple;
-	bh=Kq1IJBQVf+kdbuVgTva05BjXKCMAbwrFjoxYlv2wTbI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b4ihqnNA9MDRrksmCJhv+5x+a8XL0D/veQ2Hv5rhEVccH2BGdqn2rPDURry8HL3A3+d0kUOluzv2684Ci9fuSVQgILFlyYc18RUE7i4/2anS6lgiY4ak/Fpwy/mtcTWDRxNZG8rmxxrwOdrm7ClIqa2485O9/4RwvvkTjEkqIJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EDEE1FB;
-	Fri, 16 Feb 2024 03:19:11 -0800 (PST)
-Received: from [192.168.68.110] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABDD73F766;
-	Fri, 16 Feb 2024 03:18:28 -0800 (PST)
-Message-ID: <58a67051-6d61-4d16-b073-266522907e05@arm.com>
-Date: Fri, 16 Feb 2024 11:18:27 +0000
+	s=arc-20240116; t=1708082356; c=relaxed/simple;
+	bh=iB6CRq25HlENFqGrsPH7JLQFt2BIJPW9dYbbZFCQLYM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=eyksR+miaHg7VqhhnaHIdCff3UtyrNgJP76vSGpz7BTVmdc6A1Ndyu5M/DuAnQKzT3cDoiAVAJ9fvmKd/GQbOCx8IiK/Nb/W82OOsolpS0YLznpXexPHYMeGctdJnth49/IVtfmYcUf7EOIVmQQhrvLrNhrIjEGJ0AWPhc4Ppik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=THn4oTjP; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41G5xJRE030155;
+	Fri, 16 Feb 2024 11:18:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=RLtP2rJDNQHP8tWz4lIqKNUcxLZ6TvPXZeB9bvCF4fQ=; b=TH
+	n4oTjP3tc20wz+n0TBL6RQMqy/7dny+3Pf1mureOcsPx+H+bsNHbPT48mA20xP80
+	p3joSG8cTD0NtSQwCnlGXI/8w/i20OO8+pqk3yWtUQ6vJRLbBEnSuPpyqU/fWwW/
+	dJPEOUf5AjLkQeN8I4KL7trWcB1ZRG8+PH9EKgOdxf+J8XIWtspP1orHFRA/ncV7
+	t3xqtk2FzbfBFyhbyI6J5egkDnur5ELbgg3XhQrPeglFmvKLRiAGm8+NcB8KW7+H
+	zZeimwcpQDQkd/4n3GEEcrTEfKNOiWOb2vxUI9rwRlQxXB5xoaO4sUXdxXsyHj+O
+	WI7n9nkj5r430KUJiDlA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wa03r8qt0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 11:18:47 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GBIk7K022931
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 11:18:46 GMT
+Received: from [10.218.16.59] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
+ 2024 03:18:34 -0800
+Message-ID: <e491ec4a-f79b-4063-bd24-bbf3644ce486@quicinc.com>
+Date: Fri, 16 Feb 2024 16:48:31 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,116 +64,114 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm/filemap: Allow arch to request folio size for exec
- memory
-Content-Language: en-GB
-To: Dave Chinner <david@fromorbit.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- David Hildenbrand <david@redhat.com>, Barry Song <21cnbao@gmail.com>,
- John Hubbard <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org
-References: <20240215154059.2863126-1-ryan.roberts@arm.com>
- <Zc6mcDlcnOZIjqGm@dread.disaster.area>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <Zc6mcDlcnOZIjqGm@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v3 2/3] dt-bindings: iio: adc: Add support for QCOM PMIC5
+ Gen3 ADC
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <jic23@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <lee@kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <daniel.lezcano@linaro.org>,
+        <lars@metafoo.de>, <luca@z3ntu.xyz>, <marijn.suijten@somainline.org>,
+        <agross@kernel.org>, <sboyd@kernel.org>, <rafael@kernel.org>,
+        <rui.zhang@intel.com>, <lukasz.luba@arm.com>,
+        <linus.walleij@linaro.org>, <quic_subbaram@quicinc.com>,
+        <quic_collinsd@quicinc.com>, <quic_amelende@quicinc.com>,
+        <quic_kamalw@quicinc.com>, <kernel@quicinc.com>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-msm-owner@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <cros-qcom-dts-watchers@chromium.org>
+References: <20231231171237.3322376-1-quic_jprakash@quicinc.com>
+ <20231231171237.3322376-3-quic_jprakash@quicinc.com>
+ <3f812ffa-ec33-448e-b72a-ce698618a8c1@linaro.org>
+ <13f2b558-a50d-44d3-85de-38e230212732@quicinc.com>
+ <CAA8EJppsn2zsAXem-m=9U8izhtAZmVe62xS5qdkwJmFTqV30gA@mail.gmail.com>
+From: Jishnu Prakash <quic_jprakash@quicinc.com>
+In-Reply-To: <CAA8EJppsn2zsAXem-m=9U8izhtAZmVe62xS5qdkwJmFTqV30gA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 3loeRtsLeLAhQLMDXOPPD-VezXsdvBWc
+X-Proofpoint-GUID: 3loeRtsLeLAhQLMDXOPPD-VezXsdvBWc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_09,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=908 lowpriorityscore=0 mlxscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2401310000 definitions=main-2402160091
 
-Hi Dave,
+Hi Dmitry,
 
-Thanks for taking a look at this! Some comments below...
+On 2/16/2024 4:18 PM, Dmitry Baryshkov wrote:
+> Hi Jishnu,
+> 
+> 
+> On Fri, 16 Feb 2024 at 12:39, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
+> 
+> Please disable sending HTML emails in your email client. It is
+> generally frowned upon, it complicates replying, it breaks quotations,
+> etc.
 
-On 16/02/2024 00:04, Dave Chinner wrote:
-> On Thu, Feb 15, 2024 at 03:40:59PM +0000, Ryan Roberts wrote:
->> Change the readahead config so that if it is being requested for an
->> executable mapping, do a synchronous read of an arch-specified size in a
->> naturally aligned manner.
+Sorry, I'm not sure how that happened, but I have fixed it now.
+
+> 
 >>
->> On arm64 if memory is physically contiguous and naturally aligned to the
->> "contpte" size, we can use contpte mappings, which improves utilization
->> of the TLB. When paired with the "multi-size THP" changes, this works
->> well to reduce dTLB pressure. However iTLB pressure is still high due to
->> executable mappings having a low liklihood of being in the required
->> folio size and mapping alignment, even when the filesystem supports
->> readahead into large folios (e.g. XFS).
+>> Hi Krzysztof,
 >>
->> The reason for the low liklihood is that the current readahead algorithm
->> starts with an order-2 folio and increases the folio order by 2 every
->> time the readahead mark is hit. But most executable memory is faulted in
->> fairly randomly and so the readahead mark is rarely hit and most
->> executable folios remain order-2.
+>> On 1/4/2024 1:48 PM, Krzysztof Kozlowski wrote:
+>>
+>> On 31/12/2023 18:12, Jishnu Prakash wrote:
+>>
+>> For the PMIC5-Gen3 type PMICs, ADC peripheral is present in HW for the
+>> following PMICs: PMK8550, PM8550, PM8550B and PM8550VX PMICs.
+>>
+
+
+>> +
+>>
+>> +      qcom,adc-tm:
+>> +        description: |
+>> +            Indicates if ADC_TM monitoring is done on this channel.
+>> +            Defined for compatible property "qcom,spmi-adc5-gen3".
 > 
-> Yup, this is a bug in the readahead code, and really has nothing to
-> do with executable files, mmap or the architecture.  We don't want
-> some magic new VM_EXEC min folio size per architecture thingy to be
-> set - we just want readahead to do the right thing.
+> You are describing qcom,spmi-adc5-gen3, are you not? So this phrase
+> adds nothing.
 
-It sounds like we agree that there is a bug but we don't agree on what the bug
-is? My view is that executable segments are accessed in a ~random manner and
-therefore readahead (as currently configured) is not very useful. But data may
-well be accessed more sequentially and therefore readahead is useful. Given both
-data and text can come from the same file, I don't think this can just be a
-mapping setting? (my understanding is that there is one "mapping" for the whole
-file?) So we need to look to VM_EXEC for that decision.
-
-> 
-> Indeed, we are already adding a mapping minimum folio order
-> directive to the address space to allow for filesystem block sizes
-> greater than PAGE_SIZE. That's the generic mechanism that this
-> functionality requires. See here:
-> 
-> https://lore.kernel.org/linux-xfs/20240213093713.1753368-5-kernel@pankajraghav.com/
-
-Great, I'm vaguely aware of this work, but haven't looked in detail. I'll go
-read it. But from your brief description, IIUC, this applies to the whole file,
-and is a constraint put in place by the filesystem? Applying to the whole file
-may make sense - that means more opportunity for contpte mappings for data pages
-too, although I guess this adds more scope for write amplificaiton because data
-tends to be writable, and text isn't. But for my use case, its not a hard
-constraint, its just a preference which can improve performance. And the
-filesystem is the wrong place to make the decision; its the arch that knows
-about the performacne opportunities with different block mapping sizes.
-
-As a side note, concerns have been expressed about the possibility of physical
-memory fragmentation becoming problematic, meaning we degrade back to small
-folios over time with my mTHP work. The intuituon is that if the whole system is
-using a few folio sizes in ~equal quantities then we might be ok, but I don't
-have any data yet. Do you have any data on fragmentation? I guess this could be
-more concerning for your use case?
+Yes, I'll remove this.
 
 > 
-> (Probably worth reading some of the other readahead mods in that
-> series and the discussion because readahead needs to ensure that it
-> fill entire high order folios in a single IO to avoid partial folio
-> up-to-date states from partial reads.)
+>> +            This is the same functionality as in the existing QCOM ADC_TM
+>> +            device, documented at devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml.
+>> +        type: boolean
+>> +
+>>
+>> Why do you duplicate entire vadc file? Why it cannot be part of that
+>> file? Oh wait, it was in v2.
+>>
+>> You now duplicated a lot of property definitions without clear reason.
+>> If this is intention, then you need to put them in common schema.
+>>
+>>
+>> Many of the properties used for earlier QCOM VADC devices will be used for this device too.....do you mean I can add a new schema file (named something like qcom,vadc.yaml) and move common properties into it (like qcom,hw-settle-time, qcom,decimation, etc) from this file and qcom,spmi-vadc.yaml?
+>>
+>> Can I do it in the same patch or should it be a separate patch coming before this one ?
 > 
-> IOWs, it seems to me that we could use this proposed generic mapping
-> min order functionality when mmap() is run and VM_EXEC is set to set
-> the min order to, say, 64kB. Then the readahead code would simply do
-> the right thing, as would all other reads and writes to that
-> mapping.
+> I'd say, separate patch. Move first, extend later.
 
-Ahh yes, hooking into your new logic to set a min order based on VM_EXEC sounds
-perfect...
-
-> 
-> We could trigger this in the ->mmap() method of the filesystem so
-> that filesysetms that can use large folios can turn it on, whilst
-> other filesystems remain blissfully unaware of the functionality.
-> Filesystems could also do smarter things here, too. eg. enable PMD
-> alignment for large mapped files....
-
-..but I don't think the filesystem is the right place. The size preference
-should be driven by arch IMHO.
+OK, I'll make it this way if no one else has any objections.
 
 Thanks,
-Ryan
+Jishnu
 
 > 
-> -Dave.
-
+>>
+>>
+>>
 
