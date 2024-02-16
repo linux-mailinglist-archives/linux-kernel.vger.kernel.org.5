@@ -1,86 +1,60 @@
-Return-Path: <linux-kernel+bounces-69289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02CBA8586A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:23:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 138828586AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BA51281512
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:23:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B541C281DF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B948913958E;
-	Fri, 16 Feb 2024 20:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1430F13B28A;
+	Fri, 16 Feb 2024 20:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A6uSvDHD"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JPDdKcSU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48211384B5;
-	Fri, 16 Feb 2024 20:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43ACF139567;
+	Fri, 16 Feb 2024 20:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708114975; cv=none; b=DuCSN9EsGQU+dmrdTNbQnaW6vQGctPE1Esibv79zQToh+/VQay9navhBDk6C3J8Y7oUZ2/hvkMAtCr9CEslPgdCRDPWpGXk2NHj5rjofT8T9mYNdtp9rIt7nnBL+9S3ZgGWPKLwY8qo/4XcrxwAEH+fhlpx8lQGkZlcXIgcVgWM=
+	t=1708114986; cv=none; b=R7io9+kEB8xovDRzbgFsEo9zat2LDSeKSFA1+8KefKMbwzxsXr1NFzw8vuzgeZVdhDp3TXQEucon/Oram7JXrTk4UcthzhBAKyrgd+OYMAJDJAUeQHi7C3i7XTf7ZJKUTlyZEsBuLdgCSxqswNvkrmIHcOhHlGbw7lf8qSjz6fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708114975; c=relaxed/simple;
-	bh=4PYSs4dleB3/NFv00OZmfg/mp6ic+ohpvdY3ebs4U9U=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version; b=KSwlVCvIhlG/sz2fHLQV9qbJkeY7x43Nh05M4l12UwvOvjMoXvVYomGoMpDpnHEGd1ySlbwwyi5cQH49wngvqrppQ7D1777jmbd7Kf2hI0tExOthkLJuTs+3Fg+3s0pIKTIDU8pNJjP/Zbv5Fya505494LdplNVJ2r6hkWQtdYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A6uSvDHD; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e141a24ba1so569103b3a.2;
-        Fri, 16 Feb 2024 12:22:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708114973; x=1708719773; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eU81Q2BIgD5tYrvXfgv/ucxZ4EAgYPkPtfRpCQEtrgQ=;
-        b=A6uSvDHDifXaNhJE+omMflnMznumPrdVKH/4mp0XRC65qS7Lc6t/tMjFF+cMiRSJ9x
-         NfdwFIU0Yu8dOvIzEEcM4WlaFlWR30cf2ClUNijb5eMPcuz17QYCxluyf/M7jgjbu34n
-         Pg0JwqF87pHEgbY0n4iDZ8glHUmGaXJJziXb1V5pOTvbbYbWpBNPGAppmxia6/E6uYmS
-         c8nbGqCzabf15bfAe4qeUVGb+0fqYwickMJDbXyE1pdUW85f90P+nfOzrL3qpeLkKsFW
-         tXbOO9hTuJg7sP+lekp858ydco+kcgM+S7Pj4i2yo66F15bnre976tQd3U4gEzGwjWJH
-         aWrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708114973; x=1708719773;
-        h=content-transfer-encoding:mime-version:reply-to:message-id:date
-         :subject:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eU81Q2BIgD5tYrvXfgv/ucxZ4EAgYPkPtfRpCQEtrgQ=;
-        b=r5G6E5+jOUzpyI5oggIVBN+2UnGUdxuXpb3zY50xzTdNZ1YLPsSOcAT99P0kGudNPL
-         UT1lwizArl6DwGWkZ9L6O8Cl9aWyM0TZjymuvF0Lb/f7fpLtrKVUR2jrqZiju3tb+M6i
-         RPWDp2WrmWOilHoHTbjRAD2ZO1SSeoZ0SfWD5djw2SXedih9qF1GDTV/LbipKImIqLTs
-         MEZ73SI9aldK95lrG12T7B54qC9Cx2vWNOUsD0OjI041kZeACGFYWuPlIKQzpTCo/So2
-         WwE21c4QPdF5g9I9E1du0lu9EwzOqosdfRODcYBbD9tNDo0xoAM9CMPw6Mw9saYm6GoF
-         Ih9w==
-X-Forwarded-Encrypted: i=1; AJvYcCVM2LE1SRql0XXixRHsNuWFlUAWWE/zN/As20vch/hErHqm440jEIowYCoH7dWN4jg0JYM7kia/tWsktt6eyy9vYi4omuspbfltxY39uK4+6ADVlbMnMJKuGnq8caHRFgtcVMgFoBZNW3Saq+KiNbafin+REBa1WGA4AASrdl9970nTI2Vu
-X-Gm-Message-State: AOJu0Yw1+t/VbVGBzESqil4mkNQKTEXYZ+vjReuujqGsx7oWGpaiomLU
-	uj9OKSrLX3GDTs28UGheLE8TfQF1y5rwjlrJ7yP6vRuaWwwCMtXN
-X-Google-Smtp-Source: AGHT+IEL2CDAl8m9TiNWfNbu7Vk5I4kYXLmLqswmwlh3NHCOrqSBtIKU6QO374pmOPIxQSEgD24QcQ==
-X-Received: by 2002:a05:6a20:9f98:b0:19e:ca3a:612b with SMTP id mm24-20020a056a209f9800b0019eca3a612bmr6613211pzb.54.1708114972731;
-        Fri, 16 Feb 2024 12:22:52 -0800 (PST)
-Received: from mhkubun.hawaii.rr.com (076-173-166-017.res.spectrum.com. [76.173.166.17])
-        by smtp.gmail.com with ESMTPSA id fk10-20020a056a003a8a00b006df50bbbaecsm352146pfb.86.2024.02.16.12.22.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 12:22:52 -0800 (PST)
-From: mhkelley58@gmail.com
-X-Google-Original-From: mhklinux@outlook.com
-To: haiyangz@microsoft.com,
-	wei.liu@kernel.org,
-	decui@microsoft.com,
-	lpieralisi@kernel.org,
-	kw@linux.com,
-	robh@kernel.org,
-	bhelgaas@google.com,
-	linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org
-Subject: [PATCH v3 1/1] PCI: hv: Fix ring buffer size calculation
-Date: Fri, 16 Feb 2024 12:22:40 -0800
-Message-Id: <20240216202240.251818-1-mhklinux@outlook.com>
-X-Mailer: git-send-email 2.25.1
-Reply-To: mhklinux@outlook.com
+	s=arc-20240116; t=1708114986; c=relaxed/simple;
+	bh=FZKDvxwOLKdXeXYFLErtJaz9RUHYu0Q/oOHwXC/6poQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WCgLuNVpUkf5v7Tn/K0dcy1R7B3+6ZBGQTSf3dzRf2zRGgOOcuzSkljcKIJxbCzqG+8sR2kyh0f/eQyXni5Zvxm+vqkEA4G0grikH7TPrnIcUwJ3hm08orjb/zw+ACczGMfsaewcfywmO6J7qlzblVnNv8sD9sYkWyqTPxCV6FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JPDdKcSU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 881A8C433C7;
+	Fri, 16 Feb 2024 20:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708114985;
+	bh=FZKDvxwOLKdXeXYFLErtJaz9RUHYu0Q/oOHwXC/6poQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=JPDdKcSU1v7J4n2vhyqtW0wo+yuczCaaDoXyAiVLDiVfD4fjvF8z33nTw5/YUrgxF
+	 4hfexzkX3VXEJRBNJH/XXBwUIdfTjbRSUmXTyxkbID0oYvjKDkhxsQOOiGNK1wnJhE
+	 OUzxHdS6lE9CA/1zP8cRM0RP35hSBLZGivQSNIYLqZ/IGAVJ0yF9XN8pPyfpkORUjX
+	 m/OorVNf1LFJeMU8fNHEQmLwfSPOi9GO+igiUmg574vQlkr9KX+G8GpQUJQRdtPyxS
+	 utLzqNDPLEK0p6RlWee0BCXZ5iwwPkQ5pJq4Oyb5OQyMHcAB8fnSGkGKPM6iF5D5Or
+	 ElmtWeeTJO8mg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Dan Williams <dan.j.williams@intel.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	kernel test robot <lkp@intel.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Jan Kara <jack@suse.cz>,
+	Jane Chu <jane.chu@oracle.com>,
+	linux-fsdevel@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] dax: add set_dax_nomc() and set_dax_nocache() stub helpers
+Date: Fri, 16 Feb 2024 21:22:51 +0100
+Message-Id: <20240216202300.2492566-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,61 +63,63 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Michael Kelley <mhklinux@outlook.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-For a physical PCI device that is passed through to a Hyper-V guest VM,
-current code specifies the VMBus ring buffer size as 4 pages.  But this
-is an inappropriate dependency, since the amount of ring buffer space
-needed is unrelated to PAGE_SIZE. For example, on x86 the ring buffer
-size ends up as 16 Kbytes, while on ARM64 with 64 Kbyte pages, the ring
-size bloats to 256 Kbytes. The ring buffer for PCI pass-thru devices
-is used for only a few messages during device setup and removal, so any
-space above a few Kbytes is wasted.
+In some randconfig builds, the IS_ERR() check appears to not get completely
+eliminated, resulting in the compiler to insert references to these two
+functions that cause a link failure:
 
-Fix this by declaring the ring buffer size to be a fixed 16 Kbytes.
-Furthermore, use the VMBUS_RING_SIZE() macro so that the ring buffer
-header is properly accounted for, and so the size is rounded up to a
-page boundary, using the page size for which the kernel is built. While
-w/64 Kbyte pages this results in a 64 Kbyte ring buffer header plus a
-64 Kbyte ring buffer, that's the smallest possible with that page size.
-It's still 128 Kbytes better than the current code.
+ERROR: modpost: "set_dax_nocache" [drivers/md/dm-mod.ko] undefined!
+ERROR: modpost: "set_dax_nomc" [drivers/md/dm-mod.ko] undefined!
 
-Cc: <stable@vger.kernel.org> # 5.15.x
-Signed-off-by: Michael Kelley <mhklinux@outlook.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Ilpo Jarvinen <ilpo.jarvinen@linux.intel.com>
+Add more stub functions for the dax-disabled case here to make it build again.
 
+Fixes: d888f6b0a766 ("dm: treat alloc_dax() -EOPNOTSUPP failure as non-fatal")
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402160420.e4QKwoGO-lkp@intel.com/
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-Changes in v3:
-* Add #include of sizes.h
-Changes in v2:
-* Use SZ_16K instead of 16 * 1024
----
- drivers/pci/controller/pci-hyperv.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/dax.h | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-index 1eaffff40b8d..5992280e8110 100644
---- a/drivers/pci/controller/pci-hyperv.c
-+++ b/drivers/pci/controller/pci-hyperv.c
-@@ -49,6 +49,7 @@
- #include <linux/refcount.h>
- #include <linux/irqdomain.h>
- #include <linux/acpi.h>
-+#include <linux/sizes.h>
- #include <asm/mshyperv.h>
- 
+diff --git a/include/linux/dax.h b/include/linux/dax.h
+index df2d52b8a245..4527c10016fb 100644
+--- a/include/linux/dax.h
++++ b/include/linux/dax.h
+@@ -64,6 +64,9 @@ void dax_write_cache(struct dax_device *dax_dev, bool wc);
+ bool dax_write_cache_enabled(struct dax_device *dax_dev);
+ bool dax_synchronous(struct dax_device *dax_dev);
+ void set_dax_synchronous(struct dax_device *dax_dev);
++void set_dax_nocache(struct dax_device *dax_dev);
++void set_dax_nomc(struct dax_device *dax_dev);
++
+ size_t dax_recovery_write(struct dax_device *dax_dev, pgoff_t pgoff,
+ 		void *addr, size_t bytes, struct iov_iter *i);
  /*
-@@ -465,7 +466,7 @@ struct pci_eject_response {
- 	u32 status;
- } __packed;
+@@ -108,6 +111,12 @@ static inline bool dax_synchronous(struct dax_device *dax_dev)
+ static inline void set_dax_synchronous(struct dax_device *dax_dev)
+ {
+ }
++static inline void set_dax_nocache(struct dax_device *dax_dev)
++{
++}
++static inline void set_dax_nomc(struct dax_device *dax_dev)
++{
++}
+ static inline bool daxdev_mapping_supported(struct vm_area_struct *vma,
+ 				struct dax_device *dax_dev)
+ {
+@@ -120,9 +129,6 @@ static inline size_t dax_recovery_write(struct dax_device *dax_dev,
+ }
+ #endif
  
--static int pci_ring_size = (4 * PAGE_SIZE);
-+static int pci_ring_size = VMBUS_RING_SIZE(SZ_16K);
- 
- /*
-  * Driver specific state.
+-void set_dax_nocache(struct dax_device *dax_dev);
+-void set_dax_nomc(struct dax_device *dax_dev);
+-
+ struct writeback_control;
+ #if defined(CONFIG_BLOCK) && defined(CONFIG_FS_DAX)
+ int dax_add_host(struct dax_device *dax_dev, struct gendisk *disk);
 -- 
-2.25.1
+2.39.2
 
 
