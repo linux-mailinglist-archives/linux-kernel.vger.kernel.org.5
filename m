@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-69197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B905985859A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:47:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F163E85859D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:47:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C6071F2469A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:47:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FC9C1C23613
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:47:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A01A137C52;
-	Fri, 16 Feb 2024 18:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912A413958F;
+	Fri, 16 Feb 2024 18:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EY6xZyo5"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wuck8IEB"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46AFF13665E;
-	Fri, 16 Feb 2024 18:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A88013665E;
+	Fri, 16 Feb 2024 18:44:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708109024; cv=none; b=pLKLsDx6OCI5QlS0Ua1qSwbsU2snZlEIiBpSLnVxZHEU/Xm0oxBszfUNiICq583a5VtCFfIqSdPmDibWVtcGa7eOlfSa/yR3ywU8mQ2qP3wKUDY3gfH9zuN1/esvQCZQpIYZXTJL2HJ2SWHg+yjA+Y9k4cQznaqeJJKwT/4jSxA=
+	t=1708109051; cv=none; b=gvNIhCBGJ/AaM9JFStzIPUDLxAmU10L/eZafBAO/Sjpc0/H07c3pv93fp7tIiZnwjgOthWS/bc95kmlmN125J9G5mo74GVONtGHZPKOldMoKk5AYmTzn+6JhJDqK5Fml2JKN4236oWKclPm/TzXoEJxxCXsP6bVKwNsA1/5Rves=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708109024; c=relaxed/simple;
-	bh=4+fih0GwYnqoqJELcbBRA7XcIDiy2701RAANwmbU3Bc=;
+	s=arc-20240116; t=1708109051; c=relaxed/simple;
+	bh=UzH2ziWK18Hgi78B2VsuSx5ZjKtY+7dxcaPi9GP0qvg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l646NkVfUVEk6M3EsUd0zWCCwiHJjMPnh2hAGyD6c7IgpokEROqKt59p5IWmI2gFVPMMm5CkCdVyVzcj3JYb4rUgI3naU4oyhZNsqAY/CNOabq0NGB9BVS2NAueE/r8cacn4iAC0BiARtbNYhorUJfA87xCSYwR0lyQTUzC4EhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EY6xZyo5; arc=none smtp.client-ip=209.85.214.173
+	 In-Reply-To:Content-Type; b=KRbL3DeTxKVmQui1OpQmFvHPpzkzlGSop3+2oDFNnUcrycHkFDwRPjQrMtvlaSocvizZirD4t3pHrfvYBBfwpKwsuHd/XlgsD0tZl8oDBQWqashLG0dLfmOu/9T3TZEHyzz6SE+nd0w8qMP4z5wqzHLN41uhnpP4Mm/0BiVvFLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wuck8IEB; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dbb47852cdso5405085ad.1;
-        Fri, 16 Feb 2024 10:43:43 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d911c2103aso16317125ad.0;
+        Fri, 16 Feb 2024 10:44:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708109022; x=1708713822; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708109050; x=1708713850; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gMxJ3PeyrtjAzp1djsTzQvQIRNx6ZEo1xGYxjB3KLLo=;
-        b=EY6xZyo5eCLLQTBh8P+d7hwMFUwjoB2eUQRPqzPaiMKReucJtJLrPXdgGotzTK+T4T
-         Ysfy7i27XTiICStYKpSP9fa3S+lFYPfZ+o5FVMjKQqgLCZHrzZ9szmzjbvqqOZfEcXFo
-         hkaxCPXhcG11jeqtXGAP6qRa7U/yTv76NE5/F9rA88sZHzSk0w4TE3GA/iKMAlNylOK6
-         /bZtVG3nN3cu1bwzhZnvRRGu1QXL5XSZMiZgYQ8PbpkNMY1uhS+mFzEH+HuvlS0irXVo
-         dYXywHICmEb+0lmuTQRjpUK+oMc9mUE/1uC5dnYoffBOww55NHWkvCU6X7rccmGMxLH7
-         grwQ==
+        bh=yTbG7sAALF1qcLs3DoYS3kFw8j/rQUhwexU1xxdPJKI=;
+        b=Wuck8IEBnEz8Y7DjE1ZsXH62lNJxMt4cAdn8B2CrVLXrjlATHdkgymWUZSA/A6DGq9
+         WMEQ/2ivp7eDrk7L++RSkv0DR9wQtljRT03D/VDHKUECtMneVdaHVNsoGzcooUsDMTW1
+         OxzefVe4S3BHgtGPS82vm3vTPaFEiET14Ut5Lu+5Oq9e0ABDj4uYfh018hGM7cldFrjp
+         7vlbkCgrldZY07SuYmIa6IKF7hcssTfo6Wk38nQOQ55pns2+MJ1LWMWe0ABZHTSKQyai
+         pICoCgM5wWj3FEHudtQyCTljpsFJVPGm51NvY6DN8nD2xGd6ccIxL4BqTkhPkpcrY2Gn
+         o7oA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708109022; x=1708713822;
+        d=1e100.net; s=20230601; t=1708109050; x=1708713850;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gMxJ3PeyrtjAzp1djsTzQvQIRNx6ZEo1xGYxjB3KLLo=;
-        b=ud1H/Y7LEZBH2hFfcaLkNJOOAiuaaWG2VOqZVbWWs7TcEuHI/qlhL1xHkrNyJukcVL
-         pf6W6MvhAzXKrA9sXtCrVJ7JqR60rFLBESgyOYLO6QzILI9pQ53pCGsBujM3MGd2ReVK
-         Ow2mPA+7PTqQYHhgK/PQMA1kUfUGhXodW+59Lhpq9obVsP/l7pb9snj2RwvvtgRVbbDL
-         ERYZjxnRL2ZVOI7Rhx0P4dppyYrSQxhVvVS92duN28Sv3h0y98pHyNacpjd7Wdbw4okm
-         Hr9/Nv3NcWRr70dOQYvMPSf6M5gkCWZFbXp+lzfmbFOabRgGu21nJiS/BxnDj2e244dP
-         o+4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW27qhfFYWCag294kL7isZ+VoNF4SFgrTQ4r1LvASAchRx+8BlTcgLTcGe+KeSnm7Jq5H3U/Zchl5eSCrGasCibFhGPraxfxqHoEoMxsQuWTFgSPMlnqhZ6Fm7GTsbCIXS9YiUJJ/LMM0+YWdZJiQwoQySGk/iN19FWG6TJtOb7
-X-Gm-Message-State: AOJu0YziCYrn5Tj9jzHvMhtAqn8r0OmjWeqyfAKrSQBFZIaxmsg2bpug
-	3RZkIOhSysejl0Hz9Lr8b5yDUtyipAkP0rR1MgF0ITlSWrRgvON0
-X-Google-Smtp-Source: AGHT+IHp8ZtQz53npJ0xullStS/Uz8UVp14addxkXMJmDOFp7mNVOFZkaMsusXMgAc+xeNt6dQw06g==
-X-Received: by 2002:a17:903:41c8:b0:1db:2ad2:eff5 with SMTP id u8-20020a17090341c800b001db2ad2eff5mr7067827ple.60.1708109022404;
-        Fri, 16 Feb 2024 10:43:42 -0800 (PST)
+        bh=yTbG7sAALF1qcLs3DoYS3kFw8j/rQUhwexU1xxdPJKI=;
+        b=bt8HnGs80XkCEX27N2VRkMUhJFp24ond1s3k0iU5rxL4upT30G00+/q8YMgqfOcJ55
+         Fg2GF3sSTT4Mt1M+H4EJWARyu7CE3fmIkBkpKpYxhUzeeRJ0BpD5IJSoRddiu9TR4q/B
+         vwPKSpWAjgYOuMgIbv/SK82JdwQeZJ8/5h9AdkS96iXE/VaMUifzPS0X3Dmj1ekMKiQF
+         DmkoXBhZNgYtt1rQwJ0ppfvAwwdugF4PfNixPR5dcHR1CD70P8WZycMxVm+Lz4+l/ul6
+         z2t+U23WYGa9w0vlj6wYtAUADrrUItC84kQ44N/Jpx+HV2NArxY392dqSL09Oehl2cin
+         wz1w==
+X-Forwarded-Encrypted: i=1; AJvYcCXCeyex+h7FzzSgww4rp7V2FjffzP3lsUi3WL0nnDqA8wIdQm+ySNlXMn9YvMA/qxaSYIwuHUdwSjJ6EZFMqmySX8PB57WEnXlUF5YMrlEc4voXSJAJ3IjzGs4MNzXBIPwCZTEcGfsaMDncabBPx1a69o/ha3Cq+XYRdzwCH1cX
+X-Gm-Message-State: AOJu0YyNuPnsgrmJsLui7ByCunZ/SkZ6PxLsjLDWsu4GtQN1TAmnbu1v
+	qx7lIpLYX/w3quimaaA+DZxnF+hDCjyyOyNbcJPkPzN8f7F7qC+C
+X-Google-Smtp-Source: AGHT+IEkfBAbPOgoa9zqyygyMJne+FLyK1YDIGq5WreKx7vSc2xACmjzE6tf1VPlQrxl2uVrqYEpvA==
+X-Received: by 2002:a17:902:fc4b:b0:1db:be67:a932 with SMTP id me11-20020a170902fc4b00b001dbbe67a932mr1000954plb.36.1708109049787;
+        Fri, 16 Feb 2024 10:44:09 -0800 (PST)
 Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id c20-20020a170902c1d400b001dbc3f2e7e8sm5586plc.98.2024.02.16.10.43.39
+        by smtp.googlemail.com with ESMTPSA id c20-20020a170902c1d400b001dbc3f2e7e8sm5586plc.98.2024.02.16.10.44.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 10:43:41 -0800 (PST)
-Message-ID: <d6c7c6c9-dc8b-4c5d-a324-b4b82f1ddd89@gmail.com>
-Date: Fri, 16 Feb 2024 10:43:38 -0800
+        Fri, 16 Feb 2024 10:44:09 -0800 (PST)
+Message-ID: <b9a5b052-cd4b-474e-a851-d1189b06e7c8@gmail.com>
+Date: Fri, 16 Feb 2024 10:44:07 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,8 +75,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next v8 01/13] net_tstamp: Add TIMESTAMPING
- SOFTWARE and HARDWARE mask
+Subject: Re: [PATCH RFC net-next v8 02/13] net: Make dev_get_hwtstamp_phylib
+ accessible
 Content-Language: en-US
 To: Kory Maincent <kory.maincent@bootlin.com>,
  Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -97,29 +97,18 @@ To: Kory Maincent <kory.maincent@bootlin.com>,
 Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
  Maxime Chevallier <maxime.chevallier@bootlin.com>,
- Rahul Rameshbabu <rrameshbabu@nvidia.com>,
- Willem de Bruijn <willemb@google.com>
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>
 References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
- <20240216-feature_ptp_netnext-v8-1-510f42f444fb@bootlin.com>
+ <20240216-feature_ptp_netnext-v8-2-510f42f444fb@bootlin.com>
 From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240216-feature_ptp_netnext-v8-1-510f42f444fb@bootlin.com>
+In-Reply-To: <20240216-feature_ptp_netnext-v8-2-510f42f444fb@bootlin.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 2/16/24 07:52, Kory Maincent wrote:
-> Timestamping software or hardware flags are often used as a group,
-> therefore adding these masks will easier future use.
-
-s/easier/ease/
-
+> Make the dev_get_hwtstamp_phylib function accessible in prevision to use
+> it from ethtool to read the hwtstamp current configuration.
 > 
-> I did not use SOF_TIMESTAMPING_SYS_HARDWARE flag as it is deprecated and
-> not use at all.
-
-s/use/used/
-
-> 
-> Reviewed-by: Willem de Bruijn <willemb@google.com>
 > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
