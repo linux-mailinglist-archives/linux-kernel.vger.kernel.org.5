@@ -1,106 +1,195 @@
-Return-Path: <linux-kernel+bounces-68594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02D92857CEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64527857CED
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5FF1C22337
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:48:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EEDE1C22B00
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:49:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046FD1292D7;
-	Fri, 16 Feb 2024 12:48:22 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7102C1292D8;
+	Fri, 16 Feb 2024 12:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lYsvJKr6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD9477F19;
-	Fri, 16 Feb 2024 12:48:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7C112883D;
+	Fri, 16 Feb 2024 12:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708087701; cv=none; b=BRT3XEdcgrjH03os8Jv2FB4l96b99hO8InGkfHsciE1CraZB67Ea9ErUeg52xxkkwePZ5Dh54FPnNwPOVOc032L2QlVcIml2kszx15LZdpGfvifn7b/tyCJstSZBV04A1vjYfCmktk18xG51Idql7+P+8gg6wJHpZ5sDncLvBY0=
+	t=1708087789; cv=none; b=T6ZSYqqVQqb8p342TLW5jWqD6xHxpM9WvDQcqxqZsQTSQCurwjYH+/JGxY/4bv8zk9GWe3Uv1h11E1m4ALNEzTEa7RUdl/yRcN4GckgUx21r/V5AvJU/aCETR1jy2mq3XcRFBk9VprcfUQhWEVCIGab88RZ+2kgaH6VyrimhSZU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708087701; c=relaxed/simple;
-	bh=ltOuHVrVTKLOnrB7B0KVPfUJ1r7SOLDqXbub8Kj3btc=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=NqThNQyIzvUIo72IGXGwmjnv+VLKyzD7vxAzwGfRK5fAwkVHoKM7PRclUPQC2kXDVEKNqrsFgBuxLf3MD/3lS8p9loqPZ3xp305SScjeAcdPgg5AQ/adst8bnPG7RC0Cu0rhQjcAy6IlYc3s6XFZzrPI4d5R8HvNsLZIVNHLXjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1b:c794::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 4636B3780626;
-	Fri, 16 Feb 2024 12:48:10 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <237e690a-2f49-4046-b054-3a878eed6748@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240216094922.257674-1-shreeya.patel@collabora.com>
- <20240216094922.257674-2-shreeya.patel@collabora.com> <237e690a-2f49-4046-b054-3a878eed6748@linaro.org>
-Date: Fri, 16 Feb 2024 12:48:10 +0000
-Cc: heiko@sntech.de, mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de, jose.abreu@synopsys.com, nelson.costa@synopsys.com, dmitry.osipenko@collabora.com, sebastian.reichel@collabora.com, shawn.wen@rock-chips.com, kernel@collabora.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org, linux-dt@vger.kernel.org, linux-arm@lists.infradead.org
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1708087789; c=relaxed/simple;
+	bh=pqG7w2RnbS8BjbrhNK5arbiLuDG9/PkGucdIlBTC7jQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=VzUerZfRrZuvm1RpE2WVmVJwH5JSghCIz08ypAGr+Gx1uXInjc1sAmXaVtoFgU09bvH305tan7gjhLEbY8EvlQWrJMko0DZG+SSxW4Rf0hNSs410Wnm9FII+/HpCEs66HbW8070ryi8pvnuc/pDuXTajdQxTKgOAiFKncZPKvlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lYsvJKr6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A3A0C433F1;
+	Fri, 16 Feb 2024 12:49:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708087789;
+	bh=pqG7w2RnbS8BjbrhNK5arbiLuDG9/PkGucdIlBTC7jQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lYsvJKr6f1cDQxULIAqOHGUjAPWhOUnOdn1C+TbA8lA3hxsduzPKxdBLGgwMBWB7M
+	 kiXdCnYEOkDVenej53oTYpjgJAbNbJMslgDuo74yB6I0Z09mVh1Hy3KIGvELHcNg5P
+	 PIoj+BzPZJWi0VNasRgsWJcxOHw0hP/SiKKfr7w/SCOZVtCkXYmWw3TQANXo4MvF9L
+	 QNCSQJQ8Xt8/QPm3ts66EB6M+k9HvH42s3MzbnbXOPE6LEhtYvY6ZGvEOsH+quo7XJ
+	 c9FCslRDZWKZesYSbUiKnMwQsS6/+c9d1LIdCL14Z8sM4lBx3V7aixtpy5NZI7WeDA
+	 El3dXqDQ7QqrQ==
+Date: Fri, 16 Feb 2024 21:49:27 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 25/36] arm64: ftrace: Enable
+ HAVE_FUNCTION_GRAPH_FREGS
+Message-Id: <20240216214927.9f25ba478d24883c72bdec81@kernel.org>
+In-Reply-To: <20240215111021.05163ba1@gandalf.local.home>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723232647.502590.10808588686838195094.stgit@devnote2>
+	<20240215111021.05163ba1@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Message-ID: <30d2-65cf5980-3-2ec9f500@242931553>
-Subject: =?utf-8?q?Re=3A?= [PATCH 1/4] =?utf-8?q?clk=3A?==?utf-8?q?_rockchip=3A?=
- =?utf-8?q?_rst-rk3588=3A?= Add BIU reset
-User-Agent: SOGoMail 5.9.1
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Friday, February 16, 2024 15:33 IST, Krzysztof Kozlowski <krzysztof.=
-kozlowski@linaro.org> wrote:
+On Thu, 15 Feb 2024 11:10:21 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> On 16/02/2024 10:49, Shreeya Patel wrote:
-> > Export hdmirx=5Fbiu soft reset id which is required by the hdmirx c=
-ontroller.
-> >=20
-> > Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+> On Wed,  7 Feb 2024 00:12:06 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Enable CONFIG_HAVE_FUNCTION_GRAPH_FREGS on arm64. Note that this
+> > depends on HAVE_DYNAMIC_FTRACE_WITH_ARGS which is enabled if the
+> > compiler supports "-fpatchable-function-entry=2". If not, it
+> > continue to use ftrace_ret_regs.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > > ---
-> >  drivers/clk/rockchip/rst-rk3588.c               | 1 +
-> >  include/dt-bindings/reset/rockchip,rk3588-cru.h | 2 ++
->=20
-> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> warnings can be ignored, but the code here looks like it needs a fix.
-> Feel free to get in touch if the warning is not clear.
->=20
-> Please do internal review. The internal Collabora review would tell y=
-ou:
-> YOU MUST run checkpatch. Then you see errors, so why do you send patc=
-h
-> with errors to the mailing list?
->=20
+> >  Changes in v3:
+> >    - Newly added.
+> > ---
+> >  arch/arm64/Kconfig               |    2 ++
+> >  arch/arm64/include/asm/ftrace.h  |    6 ++++++
+> >  arch/arm64/kernel/entry-ftrace.S |   28 ++++++++++++++++++++++++++++
+> >  3 files changed, 36 insertions(+)
+> > 
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index aa7c1d435139..34becd41ae66 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -194,6 +194,8 @@ config ARM64
+> >  	select HAVE_DYNAMIC_FTRACE
+> >  	select HAVE_DYNAMIC_FTRACE_WITH_ARGS \
+> >  		if $(cc-option,-fpatchable-function-entry=2)
+> > +	select HAVE_FUNCTION_GRAPH_FREGS \
+> > +		if HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> >  	select HAVE_DYNAMIC_FTRACE_WITH_DIRECT_CALLS \
+> >  		if DYNAMIC_FTRACE_WITH_ARGS && DYNAMIC_FTRACE_WITH_CALL_OPS
+> >  	select HAVE_DYNAMIC_FTRACE_WITH_CALL_OPS \
+> > diff --git a/arch/arm64/include/asm/ftrace.h b/arch/arm64/include/asm/ftrace.h
+> > index ab158196480c..efd5dbf74dd6 100644
+> > --- a/arch/arm64/include/asm/ftrace.h
+> > +++ b/arch/arm64/include/asm/ftrace.h
+> > @@ -131,6 +131,12 @@ ftrace_regs_set_return_value(struct ftrace_regs *fregs,
+> >  	fregs->regs[0] = ret;
+> >  }
+> >  
+> > +static __always_inline unsigned long
+> > +ftrace_regs_get_frame_pointer(struct ftrace_regs *fregs)
+> > +{
+> > +	return fregs->fp;
+> > +}
+> > +
+> >  static __always_inline void
+> >  ftrace_override_function_with_return(struct ftrace_regs *fregs)
+> >  {
+> > diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
+> > index f0c16640ef21..d87ccdb9e678 100644
+> > --- a/arch/arm64/kernel/entry-ftrace.S
+> > +++ b/arch/arm64/kernel/entry-ftrace.S
+> > @@ -328,6 +328,33 @@ SYM_FUNC_END(ftrace_stub_graph)
+> >   * Run ftrace_return_to_handler() before going back to parent.
+> >   * @fp is checked against the value passed by ftrace_graph_caller().
+> >   */
+> > +#ifdef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
+> > +SYM_CODE_START(return_to_handler)
+> > +	/* save ftrace_regs except for PC */
+> > +	sub	sp, sp, #FREGS_SIZE
+> > +	stp	x0, x1, [sp, #FREGS_X0]
+> > +	stp	x2, x3, [sp, #FREGS_X2]
+> > +	stp	x4, x5, [sp, #FREGS_X4]
+> > +	stp	x6, x7, [sp, #FREGS_X6]
+> > +	str	x8,     [sp, #FREGS_X8]
+> > +	str	x29, [sp, #FREGS_FP]
+> > +	str	x9,  [sp, #FREGS_LR]
+> > +	str	x10, [sp, #FREGS_SP]
+> 
+> Here too. The above is just garbage.
+> 
+> Let's not fill in garbarge registers. The above is useless on return of a
+> function. Heck, adding zeros is better than this. But really, we need to
+> have ftrace regs to have some kind of flag that can state what it holds.
+> Right now I see three states:
+> 
+>  1 - holds all regs and pt_regs can be retrieved
+>  2 - only holds function entry regs (parameters and stack)
+>  3 - only holds function exit regs (return value and stack)
+> 
+> Don't save anything else unless needed.
 
-I am sorry but what errors are you talking about?
-I don't see any errors reported by checkpatch :-
+OK, it is reasonable to save the registers depending on the context.
 
-shreeya@shreeya:~/collabora/rd/rockchip/torvalds$ ./scripts/checkpatch.=
-pl hdmirx/0001-clk-rockchip-rst-rk3588-Add-BIU-reset.patch
-WARNING: DT binding docs and includes should be a separate patch. See: =
-Documentation/devicetree/bindings/submitting-patches.rst
+Thanks,
 
-total: 0 errors, 1 warnings, 13 lines checked
+> 
+> -- Steve
+> 
+> > +
+> > +	mov	x0, sp
+> > +	bl	ftrace_return_to_handler	// addr = ftrace_return_to_hander(fregs);
+> > +	mov	x30, x0				// restore the original return address
+> > +
+> > +	/* restore return value regs */
+> > +	ldp x0, x1, [sp, #FREGS_X0]
+> > +	ldp x2, x3, [sp, #FREGS_X2]
+> > +	ldp x4, x5, [sp, #FREGS_X4]
+> > +	ldp x6, x7, [sp, #FREGS_X6]
+> > +	add sp, sp, #FREGS_SIZE
+> > +
+> > +	ret
+> > +SYM_CODE_END(return_to_handler)
+> > +#else /* !CONFIG_HAVE_FUNCTION_GRAPH_FREGS */
+> >  SYM_CODE_START(return_to_handler)
+> >  	/* save return value regs */
+> >  	sub sp, sp, #FGRET_REGS_SIZE
+> > @@ -350,4 +377,5 @@ SYM_CODE_START(return_to_handler)
+> >  
+> >  	ret
+> >  SYM_CODE_END(return_to_handler)
+> > +#endif /* CONFIG_HAVE_FUNCTION_GRAPH_FREGS */
+> >  #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+> 
 
-NOTE: For some of the reported defects, checkpatch may be able to
-      mechanically convert to the typical style using --fix or --fix-in=
-place.
 
-hdmirx-v1-1602/0001-clk-rockchip-rst-rk3588-Add-BIU-reset.patch has sty=
-le problems, please review.
-
-I see the above warning but that looks like a false positive to me.
-
-> Best regards,
-> Krzysztof
->=20
-> =5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
-> This list is managed by https://mailman.collabora.com
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
