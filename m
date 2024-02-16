@@ -1,180 +1,134 @@
-Return-Path: <linux-kernel+bounces-68047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A8D385754A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:17:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CC9485754E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:17:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1C5CB21003
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:17:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3BF12858DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:17:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CB6F1401C;
-	Fri, 16 Feb 2024 04:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC0612B71;
+	Fri, 16 Feb 2024 04:14:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W9laoRfr"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fy945UcM"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CB7E10788;
-	Fri, 16 Feb 2024 04:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A69B4182AE;
+	Fri, 16 Feb 2024 04:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708056553; cv=none; b=ds4+6ILfTv//s4UdI/tGzrhhL5fJOY/rTrp4Yq56sm3VrRxWsmNeiw58361ByPERofQyg45ZgTMZeW4JZVbbKO+u/NOLPwG9PwIQjSGfzTUHzbs70K5dCDx9u43dow8lVk13epXkRGsrPfEpoMFsh5ArzoZ8dsDqeVKiO832kA4=
+	t=1708056855; cv=none; b=EJFWVN9n0wQrNfDc913BjV/h2jHFTPUqchMvLYQbBiCbYo4pVU3oxsRYsBlU2ZQVXSK7StYU5ma2KuFIMxgv9hycJ9ANy2OW5M3RBnQK9BQX1tuXQxPwBT8MlcN8+FvnEpVp+2CdwnDCgbI2+ZX8xTax5zN1IZoFtVLNlyHuwa4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708056553; c=relaxed/simple;
-	bh=OXsYoToIjgeSRYAs9X9E0bo5WCdOjPMMPVgmJGURH78=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qznwB3oiexBQtinZgQY/92Z+Mzt1VMTj3KjhU9rdwrjKv/SorVpy/9hUeA5CHZVe2jSiIA4NlmTCchawOKiypF34rtM7wbtJeAdenB6ObItRxsW1etKUK3ECldC5ssYLhWiR6nP0dDQ51wZdCBKKI8hl3vr2imO/dHx4xvJO9IQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W9laoRfr; arc=none smtp.client-ip=209.85.216.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-296e22f85abso1300705a91.3;
-        Thu, 15 Feb 2024 20:09:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708056551; x=1708661351; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kW/qQndLj7MYeSMYgAPMliKXg25U647vW1M3U8+Bgew=;
-        b=W9laoRfrE/T09iHCVRLFbI8zka3kijD7BoRxno6o/kmTi5KhiwxvnaQS2u5W0kR0+r
-         bWjFe0SbynejbmGc0u7uMk+uNY2apLeN2MGRsAbaUuBoHs+s2/be0wPOgum3OtKi9ZMW
-         /pSvlZ+0z7Dmrl5Boq2Xq5pTbNdZiDeIoHj83W+2A4AQ8dUpou7EPLxesGAStGoEca5u
-         1oTRXuJVqAI1PymDnaKtT6y4WHfli+1dekEofu7PlIQ7fLm3MqbKfFDnlKS5pDhszCnY
-         dTegKOKgCHdqAQ4OmPq0Kpmhkrdr7fzNJFSea2s2KhiBBej2VjO4JXgaP/u54YbVv5dk
-         NfOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708056551; x=1708661351;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kW/qQndLj7MYeSMYgAPMliKXg25U647vW1M3U8+Bgew=;
-        b=amcm23+UC2DIrWlqd0A9BVlBbwES5CS1z13WZPIuEtNYR5yfEMfwLlpgiW3QQD3QUc
-         8Z8cmPIdJ3BjULee8alGPVyub8x7KqIr4BS+u3wQUjcyMylOEbg+5YqMonHutSX2os+9
-         nLIcHc3Fx0NW3xB3+nATjbMLWw8MLDuyF5XUAbod9DISHXLGoUnd9QHXMWqTBz2lidsf
-         dr2d7N2UyrnFlUXtj6KDdh3yLnHnABOdf8Vj7ciEWBLr51olAt8WToxiAxSWgF/ahZN4
-         huRpDDWdLdyAlBOqCy8f2gCgER1suCPl7N2lbly+J4UAURU6ZzlqJHLLE0Bl5ReOmqSp
-         N1wg==
-X-Forwarded-Encrypted: i=1; AJvYcCVBd6BzBsEMbIYRqVw8bTpUa6WkuVChWD6h/a+Xv5hwdrlTzx30vOyRLV0Pw4ZtvOuPLdsIeu9mi5MPAckBG0ikuNFWwZxeH5Bl7cftSDOu8ltTR3RXv81kMyLF8Y7ac75l+KgdhEllRlh1
-X-Gm-Message-State: AOJu0YzSWeuntVGnFEGf9SdF0zTzN6OOIDEaQVfJORfKBG7JI/1iJpGz
-	6hKU0Bvuy5ff4TYXZHP8bpPuId3yIZQBoZjd49oSlIC7I/A3/CgN
-X-Google-Smtp-Source: AGHT+IGAI6evbaJJ5nvBvX/krSGwKcXuM/Fjm1hRJ4n+X39jOxzqtqrVSivqkrRIltKTg3jrBP8pEQ==
-X-Received: by 2002:a17:90a:eac1:b0:298:d1d3:9ef4 with SMTP id ev1-20020a17090aeac100b00298d1d39ef4mr3368864pjb.27.1708056551160;
-        Thu, 15 Feb 2024 20:09:11 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:f28b:3925:777f:45d4])
-        by smtp.gmail.com with ESMTPSA id pt12-20020a17090b3d0c00b00298ff26e4c8sm2321393pjb.26.2024.02.15.20.09.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 20:09:10 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	davem@davemloft.net,
-	hannes@cmpxchg.org,
-	herbert@gondor.apana.org.au,
-	linux-crypto@vger.kernel.org,
-	linux-mm@kvack.org,
-	nphamcs@gmail.com,
-	yosryahmed@google.com,
-	zhouchengming@bytedance.com
-Cc: chriscli@google.com,
-	chrisl@kernel.org,
-	ddstreet@ieee.org,
-	linux-kernel@vger.kernel.org,
-	sjenning@redhat.com,
-	vitaly.wool@konsulko.com,
-	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH v2 3/3] crypto: scompress: remove memcpy if sg_nents is 1
-Date: Fri, 16 Feb 2024 17:08:15 +1300
-Message-Id: <20240216040815.114202-4-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240216040815.114202-1-21cnbao@gmail.com>
-References: <20240216040815.114202-1-21cnbao@gmail.com>
+	s=arc-20240116; t=1708056855; c=relaxed/simple;
+	bh=KdfMx3qtwL3V+MMACICNC/k5ORbx+f53ihuYasAXbXE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gMD/044tnSl9LCpgS2gubiORljzARvP12eENqCvWnC43mb7RZ0F9uAqfOFMdP8cAtXzBeQoBjaJzwIYZ95Iy8703loZiDLvO9V5D867aPsN4T91P5gdJneTWDtpOnr1NdIlIuT/QbSoH29w2pxJfP/YqLoxokT5IBTR2tOmz9K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fy945UcM; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41G3CJPU019202;
+	Fri, 16 Feb 2024 04:13:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bLxNPSUeDM1zYoU0JmieJdwQm/KA7OT3+zW4QSPieE0=;
+ b=fy945UcMGaXZolPWT1ZARC8XgJ+JtR4MDVcIytDOnagRJBTZOgvA21r2fi83CTQM7kI3
+ GdWRsrinLwCrmthOcxlV2VXJCpmRBhPkpfTedSrBmiJ2khA05GObdIxutmF+6J5dTk6l
+ PXAzK8bXVLjGhF6mEkQ8kajY8yTZi7fFumyIm5biBtpgcSmwmhWRDLyhM8pfwYqQqiNR
+ lRK07CMbL1V97DVYAn5kagDNyQJxtlNMW6ShNNd2XEIE5OmlqODiOYesKfB8LUu7EsTR
+ LiW71RiyBRPAwpJt5Liw6EIQWxHZ6zThtTJH2j4mAyXzWIEubqTEQsZOQz1dyYIx+oWx sA== 
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w9ykj8x2w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 04:13:57 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41G4Bmj1009896;
+	Fri, 16 Feb 2024 04:13:56 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3w6npm8prg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 04:13:56 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41G4Drjl19530426
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 16 Feb 2024 04:13:55 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2D6B858064;
+	Fri, 16 Feb 2024 04:13:53 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 763E15805A;
+	Fri, 16 Feb 2024 04:13:52 +0000 (GMT)
+Received: from [9.61.99.202] (unknown [9.61.99.202])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 16 Feb 2024 04:13:52 +0000 (GMT)
+Message-ID: <f651ea8d-795a-4511-92a1-3441d3467c35@linux.ibm.com>
+Date: Thu, 15 Feb 2024 22:13:51 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] uapi/auxvec: Define AT_HWCAP3 and AT_HWCAP4 aux
+ vector, entries
+Content-Language: en-US
+To: Michael Ellerman <mpe@ellerman.id.au>, Arnd Bergmann <arnd@kernel.org>,
+        linux-api@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Cc: Adhemerval Zanella Netto <adhemerval.zanella@linaro.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Nick Piggin <npiggin@au1.ibm.com>
+References: <a406b535-dc55-4856-8ae9-5a063644a1af@linux.ibm.com>
+ <aa657f01-7cb1-43f4-947e-173fc8a53f1f@app.fastmail.com>
+ <a50cf258-b861-40e5-8ca9-dec7721400ec@linux.ibm.com>
+ <87edddp48o.fsf@mail.lhotse>
+From: Peter Bergner <bergner@linux.ibm.com>
+In-Reply-To: <87edddp48o.fsf@mail.lhotse>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: GyEMjP-TllGv82einiGrI8xf55oCrydv
+X-Proofpoint-ORIG-GUID: GyEMjP-TllGv82einiGrI8xf55oCrydv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_03,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ mlxlogscore=713 clxscore=1015 bulkscore=0 suspectscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402160031
 
-From: Barry Song <v-songbaohua@oppo.com>
+On 2/15/24 7:49 PM, Michael Ellerman wrote:
+> Peter Bergner <bergner@linux.ibm.com> writes:
+>> On 2/15/24 2:16 AM, Arnd Bergmann wrote:
+>>> On Wed, Feb 14, 2024, at 23:34, Peter Bergner wrote:
+>>>> Arnd, we seem to have consensus on the patch below.  Is this something
+>>>> you could take and apply to your tree? 
+>>>>
+>>>
+>>> I don't mind taking it, but it may be better to use the
+>>> powerpc tree if that is where it's actually being used.
+>>
+>> So this is not a powerpc only patch, but we may be the first arch
+>> to use it.  Szabolcs mentioned that aarch64 was pretty quickly filling
+>> up their AT_HWCAP2 and that they will eventually require using AT_HWCAP3
+>> as well.  If you still think this should go through the powerpc tree,
+>> I can check on that.
+> 
+> I'm happy to take it with Arnd's ack.
+> 
+> I trimmed up the commit message a bit, see below.
 
-while sg_nents is 1 which is always true for the current kernel
-as the only user - zswap is the case, we should remove two big
-memcpy.
+Perfect.  Thanks everyone!
 
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
----
- crypto/scompress.c | 36 +++++++++++++++++++++++++++++-------
- 1 file changed, 29 insertions(+), 7 deletions(-)
+Peter
 
-diff --git a/crypto/scompress.c b/crypto/scompress.c
-index b108a30a7600..50a487eac792 100644
---- a/crypto/scompress.c
-+++ b/crypto/scompress.c
-@@ -117,6 +117,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	struct crypto_scomp *scomp = *tfm_ctx;
- 	void **ctx = acomp_request_ctx(req);
- 	struct scomp_scratch *scratch;
-+	void *src, *dst;
- 	unsigned int dlen;
- 	int ret;
- 
-@@ -134,13 +135,25 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 	scratch = raw_cpu_ptr(&scomp_scratch);
- 	spin_lock(&scratch->lock);
- 
--	scatterwalk_map_and_copy(scratch->src, req->src, 0, req->slen, 0);
-+	if (sg_nents(req->src) == 1) {
-+		src = kmap_local_page(sg_page(req->src)) + req->src->offset;
-+	} else {
-+		scatterwalk_map_and_copy(scratch->src, req->src, 0,
-+					 req->slen, 0);
-+		src = scratch->src;
-+	}
-+
-+	if (req->dst && sg_nents(req->dst) == 1)
-+		dst = kmap_local_page(sg_page(req->dst)) + req->dst->offset;
-+	else
-+		dst = scratch->dst;
-+
- 	if (dir)
--		ret = crypto_scomp_compress(scomp, scratch->src, req->slen,
--					    scratch->dst, &req->dlen, *ctx);
-+		ret = crypto_scomp_compress(scomp, src, req->slen,
-+					    dst, &req->dlen, *ctx);
- 	else
--		ret = crypto_scomp_decompress(scomp, scratch->src, req->slen,
--					      scratch->dst, &req->dlen, *ctx);
-+		ret = crypto_scomp_decompress(scomp, src, req->slen,
-+					      dst, &req->dlen, *ctx);
- 	if (!ret) {
- 		if (!req->dst) {
- 			req->dst = sgl_alloc(req->dlen, GFP_ATOMIC, NULL);
-@@ -152,10 +165,19 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
- 			ret = -ENOSPC;
- 			goto out;
- 		}
--		scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->dlen,
--					 1);
-+		if (dst == scratch->dst) {
-+			scatterwalk_map_and_copy(scratch->dst, req->dst, 0,
-+						 req->dlen, 1);
-+		} else {
-+			flush_dcache_page(sg_page(req->dst));
-+		}
- 	}
- out:
-+	if (src != scratch->src)
-+		kunmap_local(src);
-+	if (dst != scratch->dst)
-+		kunmap_local(dst);
-+
- 	spin_unlock(&scratch->lock);
- 	return ret;
- }
--- 
-2.34.1
 
 
