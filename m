@@ -1,113 +1,126 @@
-Return-Path: <linux-kernel+bounces-68982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA9698582F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:50:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A808582F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:50:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 967F9284960
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:50:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21FF62849A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:50:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6624130AF9;
-	Fri, 16 Feb 2024 16:50:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD47043687;
+	Fri, 16 Feb 2024 16:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t13bw/xR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OJtmy1S7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B91130ADC;
-	Fri, 16 Feb 2024 16:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2BB8130ADF;
+	Fri, 16 Feb 2024 16:50:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708102202; cv=none; b=X2Y85ub8iLC7F5UIbuzP1XtRE7PGWD10UHWzaGvMJCnyJ6TJbcftVnouzaNJsM8tBN9z8TGkL+MpALA8hwd2rcXjQ0DqM5yO2k4vnCTpxIeVEcfQ46U0w2oP4SKAQ4/z9w+WHdK/k9A/iPcPloMMrs6etCaNvFIqJfYzMhuCN8Q=
+	t=1708102219; cv=none; b=DwW+u2GDUu2OtnKetMB8mFpns4/cjK5f5hvKNPBu8ij8HUwQGmHV1OrpkMd9fizH9W8oKmTZoBZwKDbRU7lQmkM/feOE+fIotmMJyfs1F0A0tWh+CRlOOHUbDQeIcw2Na1ZVxgGLOAlN9YUNBY34dUXCb7BORUaZ7YxMxaqbjF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708102202; c=relaxed/simple;
-	bh=SiMGhpq8b0aD4618CGwGq2cc1u00rf6CQNT2TIldlcc=;
+	s=arc-20240116; t=1708102219; c=relaxed/simple;
+	bh=9x0VAcgRR5iydeprnwWx5rGSU/WwGPjsi6M/40rCSuw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VpQu8h8q+/mTdhgOrkeVmJXJSCIBCC9yA3zp9oLD+KFCn8yptrBhf8AdZVwyCedA1vhCEEqkZwijy+RYZQr8OR3HLyHX194jYSrKkRLtW8CafwLlbq+r5ATf/vdaBijRlLTofMG+amf+WwI6E4PpPhhkzi4fYKHZ8DTp6x6C9SI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t13bw/xR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BA8CC433C7;
-	Fri, 16 Feb 2024 16:50:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708102201;
-	bh=SiMGhpq8b0aD4618CGwGq2cc1u00rf6CQNT2TIldlcc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=t13bw/xRU9jFyduUY9Bns8DBfpplXuB0QbjWinrIUc8qlcrD86wb2FNtSjpBw9j29
-	 iWvaqLf4CSz9pkLvwiuB3WMTw/hguX+0UHCJoSn0S6zGKpzU7Z4dMRufrRDPgqBZ4g
-	 wEJ0nnFsa6dy794NHVgcdmVHVQc+nOlgtAVkAmVJ06oJcr84IT7or8yz0yZpwZ9Z/+
-	 mOLCm93vnyFsexzgtsDacq2u/bJFRpPE2bhTDoI2tJ4rbYU8r7lhD6/0eDnua1wMtK
-	 /gG7iLWgLz/IS/lLMb5fGb8d3N9jiZDtqQ6K93d9xY4TWZCNx7kEUjj1qGdjyq6z/I
-	 6/COYMhlV+uGQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id F1D3DCE0B70; Fri, 16 Feb 2024 08:50:00 -0800 (PST)
-Date: Fri, 16 Feb 2024 08:50:00 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Arnd Bergmann <arnd@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	"open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gpio: cdev: avoid uninitialized variable dereference
-Message-ID: <a3bc8b0f-7f14-4b46-a432-d3688104f11a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240216125959.3766309-1-arnd@kernel.org>
- <CAMRc=MdBbzff5BppY4Hjwfi=SnmYopnFxg1AX4QsGt3Y+-g60Q@mail.gmail.com>
- <14ab7b63-b2c0-41e3-8104-da5515b379be@app.fastmail.com>
- <c6290c26-8d06-4032-8599-83556d44687c@paulmck-laptop>
- <20c18087-dc18-4671-b4ac-c54f7fe4ad21@app.fastmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=V/VqzVHGVtu+wE7RGXWTMZbNoocMpZYcvsKafCIHhFFFJgIdCdwK8IngsGfEcCh87jaEUu8AzXi5sdUnhdgiV3OhzwS86LumtyJve3FAh1Oo3klMwJE2aoafp/TvvshSTmnHoGT7qI8fbyJ/wRhrPSawjwcubi5SgVlgJkVW02E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OJtmy1S7; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708102217; x=1739638217;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=9x0VAcgRR5iydeprnwWx5rGSU/WwGPjsi6M/40rCSuw=;
+  b=OJtmy1S7kexNi1D4GYl3chgJvnjFjn56PK2EhvLZ/KGQQX7hxNLC4Pm+
+   9TbXOJhkudOqH4cAkZVa5KNzDlGiO679A30adT9cWLZyBGdRFgmf9QF9/
+   uAmNiCJNOy/HrHvd7jvxzPxjjl0xK5Hjri7vp5E7FXAzdpFVoEDxr53jT
+   qApJwN31669KNbcOnPw6B782F8uLY98lo+2KeGLjg7Nth8a7WI6ofJLb7
+   WYjRzIHMYHSTWjVdjUOvUt2/NzD6I16xt42di60oM/JWBVtD7UNNjUCtn
+   AXxHSuMfZQMf3p9iN3qAyYTAhjUku1w4j3J2gcVfWFZ+uCEbiom+vGpxP
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2367363"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="2367363"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 08:50:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="912387756"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="912387756"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 08:50:13 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rb1Pf-000000056Gt-2LJH;
+	Fri, 16 Feb 2024 18:50:11 +0200
+Date: Fri, 16 Feb 2024 18:50:11 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: Linux ACPI <linux-acpi@vger.kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Zhang Rui <rui.zhang@intel.com>, Kees Cook <kees@kernel.org>,
+	"shiqiang.deng" <shiqiang.deng213@gmail.com>,
+	Sebastian Grzywna <swiftgeek@gmail.com>,
+	Hang Zhang <zh.nvgt@gmail.com>
+Subject: Re: [PATCH v3] ACPI: Drop the custom_method debugfs interface
+Message-ID: <Zc-SQ1SM6i6RCsRo@smile.fi.intel.com>
+References: <6029478.lOV4Wx5bFT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20c18087-dc18-4671-b4ac-c54f7fe4ad21@app.fastmail.com>
+In-Reply-To: <6029478.lOV4Wx5bFT@kreacher>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Feb 16, 2024 at 05:17:06PM +0100, Arnd Bergmann wrote:
-> On Fri, Feb 16, 2024, at 16:51, Paul E. McKenney wrote:
-> > On Fri, Feb 16, 2024 at 03:04:14PM +0100, Arnd Bergmann wrote:
-> >> On Fri, Feb 16, 2024, at 14:19, Bartosz Golaszewski wrote:
-> >> > On Fri, Feb 16, 2024 at 2:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
-> >> >>
-> >> >> From: Arnd Bergmann <arnd@arndb.de>
-> >> >>
-> >> >> The 'gc' variable is never set before it gets printed:
-> >> >>
-> >> >> drivers/gpio/gpiolib-cdev.c:2802:11: error: variable 'gc' is uninitialized when used here [-Werror,-Wuninitialized]
-> >> >>  2802 |         chip_dbg(gc, "added GPIO chardev (%d:%d)\n", MAJOR(devt), gdev->id);
-> >> >>       |                  ^~
-> >> >> drivers/gpio/gpiolib.h:277:11: note: expanded from macro 'chip_dbg'
-> >> >>   277 |         dev_dbg(&gc->gpiodev->dev, "(%s): " fmt, gc->label, ##__VA_ARGS__)
-> >> >>       |                  ^~
-> >> >>
-> >> >> Use dev_dbg() directly.
-> >> >>
-> >> >> Fixes: 8574b5b47610 ("gpio: cdev: use correct pointer accessors with SRCU")
-> >> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> >> >> ---
-> >> >
-> >> > I seem to have beat you to it[1] and my patch doesn't change the log
-> >> > message so I'll apply it instead of this one.
-> >> 
-> >> Ok, thanks. I thought about doing this, but could not
-> >> figure out which of the RCU primitives to use.
-> >
-> > I will count that as a bug against RCU's documentation, but I am not
-> > sure how to fix it.  Thoughts?
+On Fri, Feb 16, 2024 at 05:38:55PM +0100, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> I didn't really try at all, I just figured I could avoid
-> thinking about it by using the device pointer at hand.
+> The ACPI custom_method debugfs interface is security-sensitive and
+> concurrent access to it is broken [1].
 > 
-> I'm sure the docs would have told me if I had bothered to look.
+> Moreover, the recipe for preparing a customized version of a given
+> control method has changed at one point due to ACPICA changes, which
+> has not been reflected in its documentation, so whoever used it before
+> has had to adapt and it had gone unnoticed for a long time.
+> 
+> This interface was a bad idea to start with and its implementation is
+> fragile at the design level.  It's been always conceptually questionable,
+> problematic from the security standpoint and implemented poorly.
+> 
+> Patches fixing its most apparent functional issues (for example, [2]) don't
+> actually address much of the above.
+> 
+> Granted, at the time it was introduced, there was no alternative, but
+> there is the AML debugger in the kernel now and there is the configfs
+> interface allowing custom ACPI tables to be loaded.  The former can be
+> used for extensive AML debugging and the latter can be use for testing
+> new AML. [3]
+> 
+> Accordingly, drop custom_method along with its (outdated anyway)
+> documentation.
+> 
+> Link: https://lore.kernel.org/linux-acpi/20221227063335.61474-1-zh.nvgt@gmail.com/ # [1]
+> https://lore.kernel.org/linux-acpi/20231111132402.4142-1-shiqiang.deng213@gmail.com/ [2]
+> https://stackoverflow.com/questions/62849113/how-to-unload-an-overlay-loaded-using-acpi-config-sysfs # [3]
 
-OK, a low-priority bug against RCU's documentation, then.  ;-)
+I believe you missed Link: tags for 2 and 3.
 
-							Thanx, paul
+> Reported-by: Hang Zhang <zh.nvgt@gmail.com>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Reviewed-by: Zhang Rui <rui.zhang@intel.com>
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
