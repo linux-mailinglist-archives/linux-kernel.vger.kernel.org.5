@@ -1,105 +1,229 @@
-Return-Path: <linux-kernel+bounces-67934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34FB1857340
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:15:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD36857343
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E52CA286B5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:15:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31E771C23EEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78637179AE;
-	Fri, 16 Feb 2024 01:11:13 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31D0DDC6;
+	Fri, 16 Feb 2024 01:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="XVrQhvDn"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E175817991;
-	Fri, 16 Feb 2024 01:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95912D528
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708045873; cv=none; b=uWpHVoY4jRHcWz5DQf9bWm4ZtslKyYuSPHqOusEzweptyQIKri2FxjYGmH+NAriFTim8SXwG5VM5xuNKbvhRPrnf08HbNKk1hkDqf7vp8RnzMoGbOUb7eD3o/hmjn8h+F9K+HTlXVvZmFFQlOrXdqpLpFYuVHqDoJFuaSDtgbPc=
+	t=1708046068; cv=none; b=jA0t1JuqF6cGCtwl9xm9llLmff/uk+MZQuTj3l0JXMlXA5Vg5Iyn+ltx9H4M5TZh3di6lX1cqY0OvysoxnsnmxmI+ElALfqlMYeXaCSyU8sQ1OmoirwQtnhLgwVwEFsKRhxMmVAAiGEzODTk8ssQTLQ4pE6NiwUGqG+AhibvVgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708045873; c=relaxed/simple;
-	bh=oztQecXN6o6vKFvgQ7Cw0FO8kgeZTEB225WAZJbSFVc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d2DYsxpCOnHXhOKOv5BbVWqN4iDTUYiwbiIUaKzPBzbbklhKpOcot0MqFJ70KACSSrXupx7OpYD5StI96JjM2nUWFy5/TBqbUDLE5NS9dFysp38yGo95cVjekkZIxmppTqs19P3b/qJrLNlD++9hav529QCWBogXD8+UsCVeXg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C847C433F1;
-	Fri, 16 Feb 2024 01:11:05 +0000 (UTC)
-Date: Thu, 15 Feb 2024 20:12:39 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Suren Baghdasaryan
- <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
- akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in
- show_mem()
-Message-ID: <20240215201239.30ea2ca8@gandalf.local.home>
-In-Reply-To: <a3ha7fchkeugpthmatm5lw7chg6zxkapyimn3qio3pkoipg4tc@3j6xfdfoustw>
-References: <Zc4_i_ED6qjGDmhR@tiehlicka>
-	<CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
-	<ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
-	<320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
-	<efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
-	<20240215180742.34470209@gandalf.local.home>
-	<jpmlfejxcmxa7vpsuyuzykahr6kz5vjb44ecrzfylw7z4un3g7@ia3judu4xkfp>
-	<20240215192141.03421b85@gandalf.local.home>
-	<uhagqnpumyyqsnf4qj3fxm62i6la47yknuj4ngp6vfi7hqcwsy@lm46eypwe2lp>
-	<20240215193915.2d457718@gandalf.local.home>
-	<a3ha7fchkeugpthmatm5lw7chg6zxkapyimn3qio3pkoipg4tc@3j6xfdfoustw>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708046068; c=relaxed/simple;
+	bh=/Ez4WLxWzRTcW5AIUDrJbf/oLXqSy8Y+OJF+Du1Q4Ys=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:Message-ID:MIME-Version:
+	 Content-Type:References; b=rzaQAjzR5GhAFp1LcuPyg++C+ZcCxr9IaQGqrPINrAfo10x+K+Cnd+Stjj+M7Qv2N116S1te4uP2ZTXE+vFIXi2Wu+k1HTqzY3DdDarO1Ml5WP7gWnDMEMKieRACL7lDgEINB0ofA2fErzx1qSMc/RRO8sMVkFYYp55TgfvlTrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=XVrQhvDn; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240216011417epoutp03d0bd40f7db32ee56cc299869c82536ea~0Mtb_anOE1988219882epoutp03g
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:14:17 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240216011417epoutp03d0bd40f7db32ee56cc299869c82536ea~0Mtb_anOE1988219882epoutp03g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1708046057;
+	bh=/Ez4WLxWzRTcW5AIUDrJbf/oLXqSy8Y+OJF+Du1Q4Ys=;
+	h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+	b=XVrQhvDnnZ5FIvs+D8f+O1Bb3PGNnmxHHY8n/6mZ0KdEo/fFmYGyAkTKMyt6Mw913
+	 +aFMrfywOfCHr6WFB1MLTyYwNDMkXLILm53QcZRKbfpEuNWdr5kjsU8s2jH0ZSoQRp
+	 XWziUZDTP6wJBBsVRQUfMLmISxqWfHaeCxRl/sJk=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+	epcas1p4.samsung.com (KnoxPortal) with ESMTP id
+	20240216011416epcas1p4cac7d9acf02a9af79cc53fe64369dbbe~0MtbOi-xq2870828708epcas1p4q;
+	Fri, 16 Feb 2024 01:14:16 +0000 (GMT)
+Received: from epsmgec1p1-new.samsung.com (unknown [182.195.38.243]) by
+	epsnrtp2.localdomain (Postfix) with ESMTP id 4TbYqX2bslz4x9Py; Fri, 16 Feb
+	2024 01:14:16 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+	epsmgec1p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	C7.D5.19104.8E6BEC56; Fri, 16 Feb 2024 10:14:16 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240216011415epcas1p3b43e189e496be0ecf8ec1b7218571ae1~0MtaTjexP2093420934epcas1p3M;
+	Fri, 16 Feb 2024 01:14:15 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240216011415epsmtrp20dcbd47868188e20a74c90e8d84dbe30~0MtaSuBqw0980409804epsmtrp27;
+	Fri, 16 Feb 2024 01:14:15 +0000 (GMT)
+X-AuditID: b6c32a4c-559ff70000004aa0-02-65ceb6e8c092
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	39.40.08817.7E6BEC56; Fri, 16 Feb 2024 10:14:15 +0900 (KST)
+Received: from sh043lee04 (unknown [10.253.101.72]) by epsmtip2.samsung.com
+	(KnoxPortal) with ESMTPA id
+	20240216011415epsmtip2e02080efed05e9222d87f815ba82f25e~0MtaB5P7x0132101321epsmtip2M;
+	Fri, 16 Feb 2024 01:14:15 +0000 (GMT)
+From: =?utf-8?B?7J207Iq57Z2s?= <sh043.lee@samsung.com>
+To: "'Ulf Hansson'" <ulf.hansson@linaro.org>
+Cc: <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<gregkh@linuxfoundation.org>, <avri.altman@wdc.com>,
+	<grant.jung@samsung.com>, <jt77.jang@samsung.com>,
+	<dh0421.hwang@samsung.com>, <junwoo80.lee@samsung.com>,
+	<jangsub.yi@samsung.com>, <cw9316.lee@samsung.com>,
+	<sh8267.baek@samsung.com>, <wkon.kim@samsung.com>, <sh043.lee@samsung.com>
+In-Reply-To: <CAPDyKFpOLU3nsQuXLRdK2KAaQqX=Vwe0+A3jZc7pP4XaMG7Wug@mail.gmail.com>
+Subject: RE: [PATCH] mmc: sd: Add a variable to check a faulty device
+Date: Fri, 16 Feb 2024 10:14:15 +0900
+Message-ID: <000001da6075$754d6ee0$5fe84ca0$@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQI2QrZr/hQwBfLmGOt++EZEApv72gJjevE2AeL7/EgCVM+otwFeU4YKsBSKSrA=
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHJsWRmVeSWpSXmKPExsWy7bCmvu6LbedSDa6v5rN4+fMqm8WMU22s
+	FvuunWS3+PV3PbtF8+L1bBYdWyczWex4fobdYtffZiaLy7vmsFkc+d/PaNH0Zx+LxbUzJ1gt
+	jq8Nt9h86RuLA5/HnWt72Dz2z13D7tG3ZRWjx+dNch7tB7qZAlijsm0yUhNTUosUUvOS81My
+	89JtlbyD453jTc0MDHUNLS3MlRTyEnNTbZVcfAJ03TJzgA5VUihLzCkFCgUkFhcr6dvZFOWX
+	lqQqZOQXl9gqpRak5BSYFegVJ+YWl+al6+WlllgZGhgYmQIVJmRnTNmylKngtXTFrAXfmRsY
+	v4l2MXJySAiYSPS83cQKYgsJ7GGUaG+26GLkArI/MUqsn/6MGcL5xihxsv0AC0zH189roRJ7
+	GSW23N3GBOG8YJTYPvknUIaDg03ATOL5nSCQBhEBHYkZb5pZQWqYBV4ySfz58A5sEqdAoMT0
+	tTvAbGEBV4nTZ9Yzg9gsAqoS/xbOAovzClhKvJ/wgR3CFpQ4OfMJWJxZQFti2cLXzBAXKUj8
+	fLqMFWKZn8ScieugakQkZne2gV0qIXCCQ2LmpDlgx0kIuEhsboD6X1ji1fEt7BC2lMTnd3vZ
+	IOqbGSXaGr6yQDgTGCVeLHjFBFFlL9Hc2swGMohZQFNi/S59iGV8Eu++9rBCzOeV6GgTgqhW
+	lnj5aBlUp6TEkvZbUDd7SFxe38s2gVFxFpLXZiF5bRaSF2YhLFvAyLKKUSq1oDg3PTXZsMBQ
+	Ny+1HB7jyfm5mxjBCVnLZwfj9/V/9Q4xMnEwHmKU4GBWEuGd1HsmVYg3JbGyKrUoP76oNCe1
+	+BCjKTDAJzJLiSbnA3NCXkm8oYmlgYmZkYmFsaWxmZI475krZalCAumJJanZqakFqUUwfUwc
+	nFINTLbzdTkWXug+Hf8oQj5o5xz5mT+bTtRyGyin7zbVTctVZt3RKz9td2uPZI2aYd+5Gxl7
+	DzmVprffdF4168DF/OPtH+6H7n726n/AO86ucJfN3qf5ylb8YLRg+pAatljiEadYiI2p+MnD
+	3eE6zJ0Hbtw/+mDTpNuvni+qvuwxlT2R/67017nXCjzSPGqPt2fcMVtqHbElt6U+JttLxkFo
+	efT6EMUDXOftdaSStlka6OV3KL55/2ayu/vvjwsl325Xeqr/rEDldffCRzydDRPtJ5ubNuk0
+	c0vdaWou9HZac9Ogp2Ldx28dpxcEblXr+N/+K4r55/930zQqbG4eUF2lkviZKS+yVFN13mfN
+	ueoFSizFGYmGWsxFxYkABHst2FEEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsWy7bCSvO7zbedSDR5917J4+fMqm8WMU22s
+	FvuunWS3+PV3PbtF8+L1bBYdWyczWex4fobdYtffZiaLy7vmsFkc+d/PaNH0Zx+LxbUzJ1gt
+	jq8Nt9h86RuLA5/HnWt72Dz2z13D7tG3ZRWjx+dNch7tB7qZAlijuGxSUnMyy1KL9O0SuDKW
+	Hr/NWNAhUzHvnE8D40/RLkZODgkBE4mvn9cydzFycQgJ7GaUeHZ0NitEQlJi8aOHbF2MHEC2
+	sMThw8UgYSGBZ4wS5/f7goTZBMwknt8JAgmLCOhIzHjTzAoyhlngO5NEz4o7TBAzDzNJ/Pv3
+	iRmkilMgUGL62h0sILawgKvE6TPrweIsAqoS/xbOAovzClhKvJ/wgR3CFpQ4OfMJWJxZQFvi
+	6c2ncPayha+ZIe5UkPj5dBkrxBV+EnMmroOqEZGY3dnGPIFReBaSUbOQjJqFZNQsJC0LGFlW
+	MUqmFhTnpucWGxYY5aWW6xUn5haX5qXrJefnbmIEx6OW1g7GPas+6B1iZOJgPMQowcGsJMI7
+	qfdMqhBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeb697U4QE0hNLUrNTUwtSi2CyTBycUg1MO8UO
+	7GZh+qEY07PH+EHP0e5NEy4H6ChfjQn+oHHhXdWUteuVWzUmKxgGGionTJ8YINLd+L7inUMN
+	626W35yWS/Q931zdGukXx2myacnEq2/m7PuuvUWE7bZQyRfWzg+3P/paSS3KaD5tGGO5JMTf
+	P3rzXYMAr5vJC7mvqxg9Y4uNjfkyYft1Pcfc6nyui7WPV/7pDmPe5qjllmtyS8tX6/kJ//oL
+	DYycmjdeLvneWS3YuSrljWDTwotBxoe33rFTlbuxNPi5DDOb4acz7ZXe6+/9+SLCq1t14cCh
+	Q1fSzebP3iDA9uL2s+pl3gLrzju+Vog5VXRyw7YbnjJy7LKLnk+rz553PWyZX3iF4OHTSizF
+	GYmGWsxFxYkApftk0DYDAAA=
+X-CMS-MailID: 20240216011415epcas1p3b43e189e496be0ecf8ec1b7218571ae1
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240213051332epcas1p1f45d02dc34d1b95ea5608ab779d6b6cc
+References: <CGME20240213051332epcas1p1f45d02dc34d1b95ea5608ab779d6b6cc@epcas1p1.samsung.com>
+	<20240213051716.6596-1-sh043.lee@samsung.com>
+	<CAPDyKFrjZ4jRHAfXsvrEvezuHTxbA3SAniF8CuObyLuW=AUoeA@mail.gmail.com>
+	<000001da5faa$d34e1600$79ea4200$@samsung.com>
+	<CAPDyKFpOLU3nsQuXLRdK2KAaQqX=Vwe0+A3jZc7pP4XaMG7Wug@mail.gmail.com>
 
-On Thu, 15 Feb 2024 19:50:24 -0500
-Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> -----Original Message-----
+> > > On Tue, 13 Feb 2024 at 06:13, Seunghui Lee <sh043.lee=40samsung.com>
+> wrote:
+> > > >
+> > > > In mobile devices, suspend/resume situations are frequent.
+> > > > In the case of a defective SD card in which initialization fails,
+> > > > unnecessary initialization time is consumed for each resume.
+> > > > A field is needed to check that SD card initialization has failed
+> > > > on the host. It could be used to remove unnecessary initialization.
+> > >
+> > > It's not clear to me, under what circumstance you want to optimize fo=
+r.
+> > >
+> > > Is the SD card ever getting properly initialized during boot?
+> > >
+> > > Kind regards
+> > > Uffe
+> > >
+> > We receive a lot of reports about SD card issues in the market.
+> > There was no problem with the first time at the time of use, and there
+> are many cases where people recognize that it is not recognized later on.
+> In most cases, this is a problem with the SD card itself.
+>=20
+> Right. Thanks for clarifying.
+>=20
+> A follow up question from me is then, do you know more exactly *why* the
+> SD cards encounter problems?
+>=20
+> In the past people have told me that powering on/off an SD card during
+> system suspend/resume, too frequently, could damage the card. For non-
+> removable cards, the card stays powered-off even after a system resume,
+> but instead gets powered-on (and re-initialized) when there is a new
+> request for it.
+>=20
+> In other words, if the problem is related to too frequent powering on/off
+> the card, my advice would be to test with having the card set non-
+> removable (the DT property for this is =22non-removable=22), to see if th=
+at
+> can help. If that solves the problem, we can work towards another common
+> solution instead.
+>=20
 
-> > All nice, but where are the benchmarks? This looks like it will have an
-> > affect on cache and you can talk all you want about how it will not be an
-> > issue, but without real world benchmarks, it's meaningless. Numbers talk.  
-> 
-> Steve, you're being demanding. We provided sufficient benchmarks to show
-> the overhead is low enough for production, and then I gave you a
-> detailed breakdown of where our overhead is and where it'll show up. I
-> think that's reasonable.
+I understand your focus on finding the root cause of the problem.
+However, unlike internal storage, there is a limit to analyzing cards that =
+have problems in the market.
+This is because there are many different SD card manufacturers and many man=
+ufacturers leave it to OEMs.
 
-It's not unreasonable or demanding to ask for benchmarks. You showed only
-micro-benchmarks that do not show how cache misses may affect the system.
-Honestly, it sounds like you did run other benchmarks and didn't like the
-results and are fighting to not have to produce them. Really, how hard is
-it? There's lots of benchmarks you can run, like hackbench, stress-ng,
-dbench. Why is this so difficult for you?
+For deferred resume, a responsiveness problem occurs on the user side on mo=
+bile devices.
+The response time of the initializing SD card initialization in the applica=
+tion seems to be slow.
+Currently, it seems to be a good structure for the first initialization at =
+runtime resume.
 
--- Steve
+Regarding non-removable,
+We will test if we are given an opportunity to further analyze the cards oc=
+curring in the market.
+However, SD card detection is also used as a wakeup source and must be inse=
+rted/removed so I'll consider it for testing purposes.
+
+Thank you for the good suggestions though.
+
+> >
+> > SD card users cannot determine whether or not an SD card is a problem,
+> so they should be guided in this regard.
+> > It is necessary to distinguish whether the SD card is inserted but
+> unrecognized or the SD card itself is not inserted, and if there is a
+> field that can check for initialization failure, it will facilitate
+> guidance, so we considered the patch.
+> >
+> > The variable's usage is expected to be used through the sysfs node in
+> the vendor module.
+>=20
+> As Greg said, please provide the complete code.
+>=20
+> Although, I want to stress already at this point, I don't see a solution
+> with sysfs being the correct thing to do here. The kernel should be able
+> to manage this problem itself.
+>=20
+> =5B...=5D
+>=20
+> Kind regards
+> Uffe
+
+I understand it and reconsider this commit.
+Thank you for reviewing this.
+
+Seunghui Lee.
+
 
