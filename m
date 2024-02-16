@@ -1,156 +1,121 @@
-Return-Path: <linux-kernel+bounces-69457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54BAB8589BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:05:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E31F8589C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 052A2285600
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:05:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E191FB23D93
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3907C1487C0;
-	Fri, 16 Feb 2024 23:05:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA851487D6;
+	Fri, 16 Feb 2024 23:08:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MQlL78fp"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Ps4L3dEf"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E75145B18;
-	Fri, 16 Feb 2024 23:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39BBD38DFE;
+	Fri, 16 Feb 2024 23:07:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708124727; cv=none; b=k2bITC81trSQyzGT5+zZyPn3fcaN/TqBNeOJ/3+E+SCtRsZ1IzFbLzv9RGmORzumllepGYT9go3TicdAP4buRcGfpqseOMirwHiHFW0e1EJU4UTMTfZDb18gPQiputrHOoOrSnloMY+oJWc94COzrM7Su4k+s99wdb6cUkiAYbQ=
+	t=1708124880; cv=none; b=ggxjUrU2uI/eAL4iSlMAC4PBilJlHJEdEXVNbwAp0IqFcWqoG3snLS07JSsVjYf6pCNYWIvvjmVk7+n5zeBRqP5QKXrrg0GXfDvyQEijoDM/gfQOkj0pGKxZ1/tYAbc26XwYbD7mJsw7qbpcB3kxw5k5h7UBMln75EUdyOYc5Rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708124727; c=relaxed/simple;
-	bh=y6lfvpxH3GYADnSDNdchDMMrlL19uzaTYCUIWeYTaU0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tHgXiAF/ytR7y01+MY3TzuHZP+5G/JWrdT36QMcyvi+zIzCQf5thf9G9VOyVwHOBMwUmZmHPbnYqETTjxVxq9LM78c6p+V6FENqPRQQ8cVHaCphIfhKjT7GOZGxXbbyVXPMLxXjWbu7/5V4bXTQZstuil8m3m25VleOe9k7vlT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MQlL78fp; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-411baa02bc3so3693775e9.1;
-        Fri, 16 Feb 2024 15:05:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708124724; x=1708729524; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jvvT6riPM/3in09G29ne7DQlQRmcV2/DIw7p3OZyCN0=;
-        b=MQlL78fpGMBMlD6zYS6KrTn0sRKWpdFBCZxTI5LWDGeCAx0OcWiD1lzsI5JsVFuwim
-         kiiym/xnmyX9KvLFQ2durSDqe5Td1Coi6JLWcl9VbPlXkrOW/EZXOn/nSNez9uP/b+Ib
-         C4yWZ0vb5YZDkXwB6+pnirPIWenx1HDu26esOQ2Ie+CJeqFCTccq0ZSgGdLuKZ8pJCLd
-         eYM664xkFBcXeNuRm8dq+2KD/mP2d7rqGY0qTIECh8FYLwJ2ux9+cOwG0hfdU8DnGflH
-         SxGVEnn0iW1c497sm5TEKR7HvF1mm0g/c114W04s87cBiYQLcq14uKWrdo1+AMOT1inC
-         +Y6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708124724; x=1708729524;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jvvT6riPM/3in09G29ne7DQlQRmcV2/DIw7p3OZyCN0=;
-        b=rIfZUlFRxr4wspulmEcj4yMrY6Vr/1xORCblUIrsO1bft4S3wew09/3M5QNKEF114/
-         hDS5vKvKHZDyu2pWSYACHbWZyQpaEVIdWFXPIcp82hNbJVakhRZ83JtU9Wdp4Rlt+oiJ
-         t8RJu6HltxdTofg4tMTga7ExN6/dCEiFwNXlZNm1Lqa7DNsEPz6+dPE4cvLo+fPmPMai
-         v2egrdbcWuLvMwsIKr5cq7f5Hjx/AGyZjx2vTl/W1H0OSaOXyrW6VLQbZsVBfgDfMgkX
-         q6wmluZF3CjftMMZRH1q35qHzdePF9x69qaE/Xibxxrvs/MdUxMteVHokHnkEr0Omo5d
-         RhzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXjEf+XeryiDSHxEFAAvGfwLj0zh3BGwh5fQJPQsah8Z8izkKW5PhAy5Xkywg8gXuWFZrQOmbNJSlnjYOy6g7qwlM8RwuVS9U9ircnKJsfG3T2Q/EBCgrmnN+eXDENpnssvrZ39L6NO0Lk=
-X-Gm-Message-State: AOJu0YyTnp/+CZ+YD49gPxOwBt9AtTAh9dG0vveupsQsfh2vcGaJn18c
-	+YLsL9ohVT82gyLGA4BNVl0s8B+bQJGqFnluRGwkpqwudzrrUKNM
-X-Google-Smtp-Source: AGHT+IHnivDGAF/SDANh0ADh6aS6bCLig1UQ3KxB2Sk+HkFVsq5QcUrVccLzOKZX6PmMN2tegulZtg==
-X-Received: by 2002:a05:600c:4446:b0:412:cd2:2ce6 with SMTP id v6-20020a05600c444600b004120cd22ce6mr2453563wmn.3.1708124723767;
-        Fri, 16 Feb 2024 15:05:23 -0800 (PST)
-Received: from ?IPV6:2a01:4b00:d20e:7300:185d:2987:5137:7eb9? ([2a01:4b00:d20e:7300:185d:2987:5137:7eb9])
-        by smtp.gmail.com with ESMTPSA id p17-20020a05600c469100b004120b4c57c9sm3627747wmo.4.2024.02.16.15.05.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 15:05:23 -0800 (PST)
-Message-ID: <90cde49e-072d-4236-bcb9-affb0a1ce6af@gmail.com>
-Date: Fri, 16 Feb 2024 23:05:22 +0000
+	s=arc-20240116; t=1708124880; c=relaxed/simple;
+	bh=q7ADwbeBXwmo7E9aTVnbzqVj7QgPJRlOcrrBDZiAmdo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KLHxhlfFONj69pD2mkf0b9zdLiYzMEPMG1dFiuHuFKQCSs+0xnq3z1Mv3ETIdtSmLx772Xp60/OrcSrTlkxSdHBHbbj4yThh38rx7mLOzT2CFtSm1cAKigB2+ferBeKNBjyWIKvfXZqpKXQLW6hGW5MsrjxS+qB7O0HAqy+JmVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Ps4L3dEf; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708124877;
+	bh=q7ADwbeBXwmo7E9aTVnbzqVj7QgPJRlOcrrBDZiAmdo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ps4L3dEfm8WT/rFjNO3i1cLkclFgUjDwjhKEpFI4fdjWkTmR0JyWaMtjMpYDsXY9l
+	 75Ba7sjCDEp/va0JXt8iaCpyYlXyZrze2ZSKbd3wWQeVdtXroVEMW4DZa0IY8oye7X
+	 fE6QTQbq+Y+7VzbEjjQFzdpKsApI+dEfyJm4m/AuIaj0YrfnpCcpxT359Ujq4inYAV
+	 3lgRo5JBA97/J4Q6asiF4iR2tpU2euJqhJi41ow2b6mPSXeYn4qrdfyxKb+L3jAsks
+	 ZmyWtTUizHFjgjvy1rgw2pHjVAWHQ+lB6xbK0Qsl4CDFn7e0zQTEgYlyE7bMSPmEta
+	 GpBTocr4QPcgA==
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sre)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3A8783782042;
+	Fri, 16 Feb 2024 23:07:57 +0000 (UTC)
+Received: by mercury (Postfix, from userid 1000)
+	id B61D71061C38; Sat, 17 Feb 2024 00:07:56 +0100 (CET)
+Date: Sat, 17 Feb 2024 00:07:56 +0100
+From: Sebastian Reichel <sebastian.reichel@collabora.com>
+To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
+Cc: "robh+dt@kernel.org" <robh+dt@kernel.org>, 
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>, 
+	Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] power: supply: Add STC3117 fuel gauge unit driver
+Message-ID: <ed5vkqpi2vipycdpy6fwszowiuk37ltuurqpe6t3yuekxynidc@ad7zvejmu5v5>
+References: <20240205051321.4079933-1-bhavin.sharma@siliconsignals.io>
+ <eccj4u6ewr33mlp4xqwx5medeysrjuwof7ntwhm6vypmmkss73@qjbpyw5hj3t7>
+ <MAZPR01MB6957FE701F89D83DF57F7402F24C2@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ALSA: core: fix buffer overflow in
- test_format_fill_silence()
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
- Takashi Iwai <tiwai@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Naresh Kamboju
- <naresh.kamboju@linaro.org>, linux-sound@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240216130050.3786789-1-arnd@kernel.org>
-From: Ivan Orlov <ivan.orlov0322@gmail.com>
-In-Reply-To: <20240216130050.3786789-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ksq33adg27c6w63k"
+Content-Disposition: inline
+In-Reply-To: <MAZPR01MB6957FE701F89D83DF57F7402F24C2@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
 
-On 2/16/24 13:00, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> KASAN caught a buffer overflow with the hardcoded 2048 byte buffer
-> size, when 2080 bytes are written to it:
-> 
->   BUG: KASAN: slab-out-of-bounds in snd_pcm_format_set_silence+0x3bc/0x3e4
->   Write of size 8 at addr ffff0000c8149800 by task kunit_try_catch/1297
-> 
->   CPU: 0 PID: 1297 Comm: kunit_try_catch Tainted: G N 6.8.0-rc4-next-20240216 #1
->   Hardware name: linux,dummy-virt (DT)
->   Call trace:
->    kasan_report+0x78/0xc0
->    __asan_report_store_n_noabort+0x1c/0x28
->    snd_pcm_format_set_silence+0x3bc/0x3e4
->    _test_fill_silence+0xdc/0x298
->    test_format_fill_silence+0x110/0x228
->    kunit_try_run_case+0x144/0x3bc
->    kunit_generic_run_threadfn_adapter+0x50/0x94
->    kthread+0x330/0x3e8
->    ret_from_fork+0x10/0x20
-> 
->   Allocated by task 1297:
->    __kmalloc+0x17c/0x2f0
->    kunit_kmalloc_array+0x2c/0x78
->    test_format_fill_silence+0xcc/0x228
->    kunit_try_run_case+0x144/0x3bc
->    kunit_generic_run_threadfn_adapter+0x50/0x94
->    kthread+0x330/0x3e8
->    ret_from_fork+0x10/0x20
-> 
-> Replace the incorrect size with the correct length of 260 64-bit samples.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Fixes: 3e39acf56ede ("ALSA: core: Add sound core KUnit test")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Naresh, I slightly changed the patch to make the computation more obvious,
-> can you test again to make sure I got this right?
-> ---
->   sound/core/sound_kunit.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
-> index 5d5a7bf88de4..7f16101ece7a 100644
-> --- a/sound/core/sound_kunit.c
-> +++ b/sound/core/sound_kunit.c
-> @@ -8,7 +8,7 @@
->   #include <sound/core.h>
->   #include <sound/pcm.h>
->   
-> -#define SILENCE_BUFFER_SIZE 2048
-> +#define SILENCE_BUFFER_SIZE (sizeof(u64) * 260)
 
-I believe it would be good to define FILL_SILENCE_MAX_FRAMES to 260, 
-update the 'buf_samples' array correspondingly and define the 
-SILENCE_BUFFER_SIZE as (sizeof(u64) * FILL_SILENCE_MAX_FRAMES), so it 
-would be more clear where '260' came from.
+--ksq33adg27c6w63k
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thank you for fixing this!
--- 
-Kind regards,
-Ivan Orlov
+Hi,
 
+On Fri, Feb 16, 2024 at 01:34:11PM +0000, Bhavin Sharma wrote:
+> I apologize if I'm mistaken, but I noticed other minimal drivers
+> in the codebase.
+
+Please point me to a driver, which just exposes the voltage.
+
+> My understanding is that using a minimal driver shouldn't cause
+> any issues. Additionally, we can easily update this driver at any
+> time, as we're actively updating all other drivers.
+
+So why are you not doing it now? Adding current, state of charge,
+temperature and OCV is trivial. I'm not talking about supporting
+every feature of the chip, but just the bits that are a simple
+mapping between standard power supply properties and a chip
+register.
+
+-- Sebastian
+
+--ksq33adg27c6w63k
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXP6sAACgkQ2O7X88g7
++po5vg//XQHEu60f6Sq5WXycuGpwD2Rrwky4z2q70+qOWfZlOx02RIoQVRPpivS7
+AhINrWWioIm6NeRXCKwpG+6GDCRYnn0fUjM/cIgdRG1rMBClZB2aqeJ+3VdZ51H6
+f+212OtdSeKoHcblWbiHbwAJ4xr0fiV0iKxrAplJUy83l0WMykOjbAnuS5HDymXI
+6JuReyWIdjG/4NfWqGAEOOw6GdQCRBNl/u/BgkWkpKA+stJUcjK7h+2NSkfHdk+y
+zQRX0OUI0wyHA8uMSzk6MxbbWALkvm4o9IYhY36q84iekKG4W+qa6Kzpxk2n96Nq
+9bfmKQbWVEMSQz2ES2sNTjXcE+YO8LyQWZBf6D9MVtlvune4pb30nWFkIkdbd8fV
+YwheuZybikIIpfAmbOiSO2NbCH0l9iHaNcyyTXhpnIh9zylgely8La1EoQsDFwnJ
+w9zhIO/3RSMJITgAvi1nc7Z0rC2nppEMLeTV0tS3lvLU8ioiHbGR57lSMNsA7Shk
+1jF2ebCFHCHG7bZLx3kPtOByJtv/Ln8UiNXQfeNJub3xikQP/ilQbGsVnqr4wly5
+4gEdkXg+5kj4Wub1OafAwYAnVDAqJwVxK5RhUwZ9EK6r/GoH61nyOceby+tk7KL9
+omnEO+kFeYarmfYDirMkj4k43legzBrAozWg8m5zIYL1CpjnlyM=
+=B5bh
+-----END PGP SIGNATURE-----
+
+--ksq33adg27c6w63k--
 
