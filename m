@@ -1,104 +1,113 @@
-Return-Path: <linux-kernel+bounces-68511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D4B6857B76
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:21:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD607857B79
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:21:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E43E81F22E1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:21:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 691891F25CF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:21:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A81469D25;
-	Fri, 16 Feb 2024 11:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0FA676041;
+	Fri, 16 Feb 2024 11:21:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H1o7RWRQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dxUdRPjl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8D3A69D1A;
-	Fri, 16 Feb 2024 11:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058E9745FC;
+	Fri, 16 Feb 2024 11:21:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082478; cv=none; b=PH+e0lwr+dc+8byIfk6CFmR2s1GHjh1gE4ll5w+nJyDdoDC8zG1+rYkDeKb3EuxIgN1rjlnqB1OLm8crXWCEB2mAY35lGAu0iKLNv0B6ZfpgdnyFuEh4aob51b/RdINcw9uLkoj86Odgc47aLuIZLBiwxl+vI3xbBb7HMc2oRY0=
+	t=1708082494; cv=none; b=ubLdG2jy0jwgRSRCA66Q5mY50Czhk/aDLZhHHV+kurQE5nvIzCTFhyCfYMsP7gpH2JX+j+DJswI/qLxG3BGMQ26cHIvNyo/DQtRVyIWUueR6X5qvzwdqlpdKvFsT2mW10dNyRAcL6htzQ08TP0K2zWVkWDtheqtL6mzdcTcQJsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082478; c=relaxed/simple;
-	bh=VtsIdRkQYCHsC/bIz/ZZnstS2P6Z1i6oil26Gz4lv2Y=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=k6ptWx27Gf5jFYu3FuUYrB+qvR8EngaGoC4Y5xDegvKOj+5Y2CZS57lgeNM8pYjtUwXnzep9H59ozhxOHPJwU2HF32lk6qWLhcwShmHmMG7Fil8lP0icKEU9yxs43L2UB4nSyXhjmsXogBKC6R39xtE9cQSMc1ElEhyUEq8D4AM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H1o7RWRQ; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708082477; x=1739618477;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=VtsIdRkQYCHsC/bIz/ZZnstS2P6Z1i6oil26Gz4lv2Y=;
-  b=H1o7RWRQagwBr/oYHU3GxakWDOd4oOEsj8GLC3Q1oHvhT6ob6s4D6GdQ
-   CZXb9tHMIkNirclMYohU/JQxWQqlrOYoOS7iVQMyr/nb6qpbRT0Wi6UgS
-   0tCREamJqRh3GdfXu/su9Y1qFXNMaIzO/SgjrtefyHQT+6wK6bKM7nvAx
-   urr/7/Uk/pzhrEbXRWQK/c7Ahz2X8a7y+cmm70LWxQhkgGZCHaoEIqRxm
-   /hG0q1GZbE8s5meaA4NKRpp7Tt6Rd3A2f4g7vD2h5mAjlFgbVy7EyASf7
-   fKKdndP50m/rUTnCDeRmLmYxYYa9lYdwGxJr82JiRiKafMUMN84J0+/e/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="13311331"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="13311331"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 03:21:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="4107588"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.248.234])
-  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 03:21:14 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 16 Feb 2024 13:21:08 +0200 (EET)
-To: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc: Reinette Chatre <reinette.chatre@intel.com>, shuah@kernel.org, 
-    fenghua.yu@intel.com, linux-kselftest@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 3/5] selftests/resctrl: Split
- validate_resctrl_feature_request()
-In-Reply-To: <79e6f4b5bcaf36214289e56167fe1d5657cb4d24.1708072203.git.maciej.wieczor-retman@intel.com>
-Message-ID: <9d0a0e6e-f5eb-24ef-5343-df859935cd31@linux.intel.com>
-References: <cover.1708072203.git.maciej.wieczor-retman@intel.com> <79e6f4b5bcaf36214289e56167fe1d5657cb4d24.1708072203.git.maciej.wieczor-retman@intel.com>
+	s=arc-20240116; t=1708082494; c=relaxed/simple;
+	bh=aVpk1bSJsLIq7ztumwPZSfYOkIuBqVCeY6+wAlHv8tU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qvaztnETwBIWYNVinHHm+6vfFmo2n4FPy+4aUwX7cOoxsWyax59TRz/bO4KgfheMjf88ZROwLIFxcLSQQUDzchDrcIoFYl8WT7tYb1joNPzsBw9Pb1DHR7RwB5obnLd5WTMigDuH9OAQjOKC+01xolNzJOnq6sjp8fRRK84856w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dxUdRPjl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B72EC433C7;
+	Fri, 16 Feb 2024 11:21:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708082493;
+	bh=aVpk1bSJsLIq7ztumwPZSfYOkIuBqVCeY6+wAlHv8tU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=dxUdRPjlGgS2WV0HpieRofNjFNwNkr5DCLeJJsV36UWRPPa1XH8SfdxP9PFx5sIno
+	 7MqecM3bmaY1RVdJirWs3eZMlIDj8WhSO39xbdlo6garDVsKQQnCjtFagFnFnJ3qZx
+	 Y81IdiZI2ER/H4uR7D0jjb/4OTFRk4qNmgE+3wMI1YoHmzvPVw3sM6WynQhgNUqPTu
+	 RzpbXuinXPUUzq5HxANuhVbESpMSHxQ2tGcZ1NZW4yoXzbLOK16HJQSfPyFE+8w+2p
+	 etxNVfxf4YDzcQIhrmnn9w6wwqqh2JWKhT8Q4ybG6Gb1kFf9lP/EUlv2dRb3WwEFdd
+	 6NnaeAv24+S+g==
+Date: Fri, 16 Feb 2024 11:21:20 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: puranjay12@gmail.com, lars@metafoo.de, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+ thomas.haemmerle@leica-geosystems.com
+Subject: Re: [RESEND PATCH 1/2] dt-bindings: iio: ti,tmp117: add vcc supply
+ binding
+Message-ID: <20240216112120.76a0c0ca@jic23-huawei>
+In-Reply-To: <20240216102820.1395815-1-m.felsch@pengutronix.de>
+References: <20240216102820.1395815-1-m.felsch@pengutronix.de>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-587715575-1708082468=:1097"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, 16 Feb 2024 11:28:19 +0100
+Marco Felsch <m.felsch@pengutronix.de> wrote:
 
---8323328-587715575-1708082468=:1097
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+> From: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
+> 
+> Add the binding to specify the vcc supply. We can't make it required
+> since this would break the backward compatibility.
 
-On Fri, 16 Feb 2024, Maciej Wieczor-Retman wrote:
+Given convention for supplies like this is to make them required in
+the dt-binding to reflect that providing power is not optional (unlikely
+some other supplies that might not be wired up) and not worry about the
+fact that we happily provide dummy supplies for them if they aren't in a
+particular dts, it should be fine to make it required here.
 
-> validate_resctrl_feature_request() is used to test both if a resource is
-> present in the info directory, and if a passed monitoring feature is
-> present in the mon_features file.
->=20
-> Refactor validate_resctrl_feature_request() into two smaller functions
-> that each accomplish one check to give feature checking more
-> granularity:
-> - Resource directory presence in the /sys/fs/resctrl/info directory.
-> - Feature name presence in the /sys/fs/resctrl/info/<RESOURCE>/mon_featur=
-es
->   file.
->=20
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
+Jonathan
 
-Reviewed-by: Ilpo J=E4rvinen <ilpo.jarvinen@linux.intel.com>
+> 
+> Signed-off-by: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
+> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> ---
+> Resend since I forgot to add the DT maintainers
+> 
+>  .../devicetree/bindings/iio/temperature/ti,tmp117.yaml        | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+> index 8c6d7735e875..cf7799c9734f 100644
+> --- a/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+> +++ b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+> @@ -24,6 +24,9 @@ properties:
+>    reg:
+>      maxItems: 1
+>  
+> +  vcc-supply:
+> +    description: provide VCC power to the sensor.
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -39,5 +42,6 @@ examples:
+>          tmp117@48 {
+>               compatible = "ti,tmp117";
+>               reg = <0x48>;
+> +             vcc-supply = <&pmic_reg_3v3>;
+>          };
+>      };
 
---=20
- i.
-
---8323328-587715575-1708082468=:1097--
 
