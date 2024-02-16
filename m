@@ -1,111 +1,261 @@
-Return-Path: <linux-kernel+bounces-69035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 109A285839C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:10:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B23385839E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:11:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C031F283A18
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:10:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD714B26A3B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294D5131726;
-	Fri, 16 Feb 2024 17:10:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A1A132493;
+	Fri, 16 Feb 2024 17:10:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WfWMpEYC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AFUqjV/i"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC3C130E2C;
-	Fri, 16 Feb 2024 17:10:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15793130E3D
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103413; cv=none; b=UTpILSMEhhI73PI4SKPLzAaDreP36I3ISIMaMzHPLtbWCX1Yb7Xp4G4yw8/rg2Dij4GvGkhW/LeKewkZXQgH/PXSFu1u2lS6l8DiK9IvR/uPHt9uiMH1x2eBaAQrbk0d/q0mUYnU/XNMxgdCDws7OWKl054tb6UrhcbSEPG/ul0=
+	t=1708103441; cv=none; b=u/QfCE8QO6Ot7+R8WEJqFhVNloR9ZcWpdUNYIYJSq2Dpe5wiEiGNrBxMD4m6l+gQoGc/vkWUdcH3Rc+PJiIWpMa/FDQ++/EhKVBrw2ula7TgsqUvogXO1HnzxOpTEYyKTNlBupUyoWMeQ5OiQCygGLp+YHAbYdXXuHDxZhvg68c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103413; c=relaxed/simple;
-	bh=p4Knm5c67do6YY7tRiskUV2IRtPbKnIA9o0VdhlKiU4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sp2M909pbsjWEyboyPAgnh5rbSDXKnlMXpsrez+IDI/fzV3TXjtCFRUste7uQMAvz4czjPAaArFNNpiwKFgwI0tnDPbbDcMz2o55HtmvvOcXZ7B2k9NNvMXcwccrcMhjMV3OE0+kebp+Z2jnTKle5AWrtaRRWLh/ypJFrF48OUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WfWMpEYC; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708103412; x=1739639412;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=p4Knm5c67do6YY7tRiskUV2IRtPbKnIA9o0VdhlKiU4=;
-  b=WfWMpEYCj2ZbMKNeFiVmtL3yroury882JGNCkpm/Uejyicy9qhI5QixG
-   BCrejwleEJSgpFgyoXrQkZgb9/A+L/bnfgrB98n2VwPq/Li4trKJTIP3B
-   /ARs7+R2nfLv+F0rhKMmWW+UGfewqnzcfx09GZo4Cf5TAC4fLo+cNl/km
-   /jyx8BJfwOj+w9X+Q234FKyQ/HVuiyhr9kO6ON+BEx1iY0o3eq2QK5g8Y
-   vsYuXE6iN/k6y703QHmKkp3twl9lJDqSnM6V8REqnYH7cTs0XeUZGuRsP
-   jPbQSNX+MoacjJB2SqJ2GOj9vyzO3xnNItMI1Qgwr59Us8lZ297bSph+J
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="6065406"
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="6065406"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 09:10:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="8578501"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.220.122])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 09:10:09 -0800
-Message-ID: <ea3f337b-8e8f-4813-b0d7-aff0f08c5a5c@intel.com>
-Date: Fri, 16 Feb 2024 19:10:06 +0200
+	s=arc-20240116; t=1708103441; c=relaxed/simple;
+	bh=Qb/cffHRD7eH7TywIvhozOLCYtKKMQjojU9VPyw+v+k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ljrLddJTPXozTkuBFriZI24l8pDwb5Wj8eyPvz2yv2WJzLyEpl2GuS0NTQgSD0WhxSQhb5M9PdvlxLAXz9ayy9CcXz6zrddhn+bj93uD8uM/XsuplW0YyBt/d2M++ccuJML7CsnKX0nvgDI9yzFrp8VfoHDqCOudu6TED60JieI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AFUqjV/i; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708103434;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=6Ii0Q1pQtZuRQ3mM3g3FAo2+zpYotLJDehy5Xa9J8kg=;
+	b=AFUqjV/iByXVl/3vVnB1yniEwntV5wHS4lUlF8pSBaJwmspOFpa0dJxDXCUc6Ybet8JXgg
+	mBnL67KGgWDif6RqbaG/OS6SMJ5zZOAHQm8akz965ORtt+cEdR41F6XJagxAHJBq1XjH6f
+	GjzpdpWJZmBUFFJpgkj/jvwQOXm6sZc=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-54-_L2kYD-PN7y0ildATIRTBg-1; Fri, 16 Feb 2024 12:10:31 -0500
+X-MC-Unique: _L2kYD-PN7y0ildATIRTBg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 11722185A781;
+	Fri, 16 Feb 2024 17:10:31 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id E71912166AE5;
+	Fri, 16 Feb 2024 17:10:30 +0000 (UTC)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes and cleanups for 6.8-rc5
+Date: Fri, 16 Feb 2024 12:10:30 -0500
+Message-Id: <20240216171030.12745-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/7] mmc: sdhci_am654: Fix itapdly/otapdly array type
-Content-Language: en-US
-To: Judith Mendez <jm@ti.com>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Ulf Hansson <ulf.hansson@linaro.org>
-References: <20240207011520.3128382-1-jm@ti.com>
- <20240207011520.3128382-5-jm@ti.com>
-From: Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20240207011520.3128382-5-jm@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-On 7/02/24 03:15, Judith Mendez wrote:
-> While integer type works, the otap_del_sel and itap_del_sel
-> arrays are manipulated as u32, so change array types to u32.
+Linus,
 
-If it doesn't make any practical difference, then it is not
-generally considered a "fix", at least according to stable
-kernel rules, so Fixes tags are probably not warranted here.
+The following changes since commit 841c35169323cd833294798e58b9bf63fa4fa1de:
 
-> 
-> Fixes: 8ee5fc0e0b3b ("mmc: sdhci_am654: Update OTAPDLY writes")
-> Fixes: a0a62497f6aa ("mmc: sdhci_am654: Add support for input tap delay")
-> Signed-off-by: Judith Mendez <jm@ti.com>
-> ---
->  drivers/mmc/host/sdhci_am654.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
-> index 935f581c05d8..35ba7d921690 100644
-> --- a/drivers/mmc/host/sdhci_am654.c
-> +++ b/drivers/mmc/host/sdhci_am654.c
-> @@ -141,8 +141,8 @@ static const struct timing_data td[] = {
->  
->  struct sdhci_am654_data {
->  	struct regmap *base;
-> -	int otap_del_sel[ARRAY_SIZE(td)];
-> -	int itap_del_sel[ARRAY_SIZE(td)];
-> +	u32 otap_del_sel[ARRAY_SIZE(td)];
-> +	u32 itap_del_sel[ARRAY_SIZE(td)];
->  	u32 itap_del_ena[ARRAY_SIZE(td)];
->  	int clkbuf_sel;
->  	int trm_icp;
+  Linux 6.8-rc4 (2024-02-11 12:18:13 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+
+for you to fetch changes up to 9895ceeb5cd61092f147f8d611e2df575879dd6f:
+
+  Merge tag 'kvmarm-fixes-6.8-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD (2024-02-16 12:02:38 -0500)
+
+This pull request is mostly a mix of cleanups and fixes in the KVM
+selftests, but there are also some small arch/ changes.
+
+Paolo
+----------------------------------------------------------------
+ARM:
+
+* Avoid dropping the page refcount twice when freeing an unlinked
+  page-table subtree.
+
+* Don't source the VFIO Kconfig twice
+
+* Fix protected-mode locking order between kvm and vcpus
+
+RISC-V:
+
+* Fix steal-time related sparse warnings
+
+x86:
+
+* Cleanup gtod_is_based_on_tsc() to return "bool" instead of an "int"
+
+* Make a KVM_REQ_NMI request while handling KVM_SET_VCPU_EVENTS if and only
+  if the incoming events->nmi.pending is non-zero.  If the target vCPU is in
+  the UNITIALIZED state, the spurious request will result in KVM exiting to
+  userspace, which in turn causes QEMU to constantly acquire and release
+  QEMU's global mutex, to the point where the BSP is unable to make forward
+  progress.
+
+* Fix a type (u8 versus u64) goof that results in pmu->fixed_ctr_ctrl being
+  incorrectly truncated, and ultimately causes KVM to think a fixed counter
+  has already been disabled (KVM thinks the old value is '0').
+
+* Fix a stack leak in KVM_GET_MSRS where a failed MSR read from userspace
+  that is ultimately ignored due to ignore_msrs=true doesn't zero the output
+  as intended.
+
+Selftests cleanups and fixes:
+
+* Remove redundant newlines from error messages.
+
+* Delete an unused variable in the AMX test (which causes build failures when
+  compiling with -Werror).
+
+* Fail instead of skipping tests if open(), e.g. of /dev/kvm, fails with an
+  error code other than ENOENT (a Hyper-V selftest bug resulted in an EMFILE,
+  and the test eventually got skipped).
+
+* Fix TSC related bugs in several Hyper-V selftests.
+
+* Fix a bug in the dirty ring logging test where a sem_post() could be left
+  pending across multiple runs, resulting in incorrect synchronization between
+  the main thread and the vCPU worker thread.
+
+* Relax the dirty log split test's assertions on 4KiB mappings to fix false
+  positives due to the number of mappings for memslot 0 (used for code and
+  data that is NOT being dirty logged) changing, e.g. due to NUMA balancing.
+
+----------------------------------------------------------------
+Andrew Jones (8):
+      KVM: selftests: Remove redundant newlines
+      KVM: selftests: aarch64: Remove redundant newlines
+      KVM: selftests: riscv: Remove redundant newlines
+      KVM: selftests: s390x: Remove redundant newlines
+      KVM: selftests: x86_64: Remove redundant newlines
+      RISC-V: paravirt: steal_time should be static
+      RISC-V: paravirt: Use correct restricted types
+      RISC-V: KVM: Use correct restricted types
+
+Masahiro Yamada (1):
+      KVM: arm64: Do not source virt/lib/Kconfig twice
+
+Mathias Krause (1):
+      KVM: x86: Fix KVM_GET_MSRS stack info leak
+
+Mingwei Zhang (1):
+      KVM: x86/pmu: Fix type length error when reading pmu->fixed_ctr_ctrl
+
+Paolo Bonzini (5):
+      Merge tag 'kvm-x86-fixes-6.8-rcN' of https://github.com/kvm-x86/linux into HEAD
+      Merge tag 'kvm-x86-selftests-6.8-rcN' of https://github.com/kvm-x86/linux into HEAD
+      Merge tag 'kvm-riscv-fixes-6.8-1' of https://github.com/kvm-riscv/linux into HEAD
+      Merge tag 'kvmarm-fixes-6.8-1' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
+      Merge tag 'kvmarm-fixes-6.8-2' of git://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm into HEAD
+
+Prasad Pandit (1):
+      KVM: x86: make KVM_REQ_NMI request iff NMI pending for vcpu
+
+Sean Christopherson (4):
+      KVM: selftests: Reword the NX hugepage test's skip message to be more helpful
+      KVM: selftests: Delete superfluous, unused "stage" variable in AMX test
+      KVM: selftests: Fix a semaphore imbalance in the dirty ring logging test
+      KVM: selftests: Don't assert on exact number of 4KiB in dirty log split test
+
+Sebastian Ene (1):
+      KVM: arm64: Fix circular locking dependency
+
+Vitaly Kuznetsov (7):
+      KVM: selftests: Avoid infinite loop in hyperv_features when invtsc is missing
+      KVM: selftests: Fail tests when open() fails with !ENOENT
+      KVM: selftests: Generalize check_clocksource() from kvm_clock_test
+      KVM: selftests: Use generic sys_clocksource_is_tsc() in vmx_nested_tsc_scaling_test
+      KVM: selftests: Run clocksource dependent tests with hyperv_clocksource_tsc_page too
+      KVM: selftests: Make hyperv_clock require TSC based system clocksource
+      KVM: x86: Make gtod_is_based_on_tsc() return 'bool'
+
+Will Deacon (1):
+      KVM: arm64: Fix double-free following kvm_pgtable_stage2_free_unlinked()
+
+ arch/arm64/kvm/Kconfig                             |  1 -
+ arch/arm64/kvm/hyp/pgtable.c                       |  2 -
+ arch/arm64/kvm/pkvm.c                              | 27 +++++++----
+ arch/riscv/kernel/paravirt.c                       |  6 +--
+ arch/riscv/kvm/vcpu_sbi_sta.c                      | 20 ++++----
+ arch/x86/kvm/vmx/pmu_intel.c                       |  2 +-
+ arch/x86/kvm/x86.c                                 | 20 ++++----
+ tools/testing/selftests/kvm/aarch64/arch_timer.c   | 12 ++---
+ tools/testing/selftests/kvm/aarch64/hypercalls.c   | 16 +++----
+ .../selftests/kvm/aarch64/page_fault_test.c        |  6 +--
+ tools/testing/selftests/kvm/aarch64/smccc_filter.c |  2 +-
+ .../selftests/kvm/aarch64/vpmu_counter_access.c    | 12 ++---
+ tools/testing/selftests/kvm/demand_paging_test.c   |  4 +-
+ tools/testing/selftests/kvm/dirty_log_perf_test.c  |  4 +-
+ tools/testing/selftests/kvm/dirty_log_test.c       | 54 ++++++++++++----------
+ tools/testing/selftests/kvm/get-reg-list.c         |  2 +-
+ tools/testing/selftests/kvm/guest_print_test.c     |  8 ++--
+ .../testing/selftests/kvm/hardware_disable_test.c  |  6 +--
+ tools/testing/selftests/kvm/include/test_util.h    |  2 +
+ .../selftests/kvm/include/x86_64/processor.h       |  2 +
+ tools/testing/selftests/kvm/kvm_create_max_vcpus.c |  2 +-
+ tools/testing/selftests/kvm/kvm_page_table_test.c  |  4 +-
+ .../testing/selftests/kvm/lib/aarch64/processor.c  |  2 +-
+ tools/testing/selftests/kvm/lib/aarch64/vgic.c     |  4 +-
+ tools/testing/selftests/kvm/lib/elf.c              |  2 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c         | 19 ++++----
+ tools/testing/selftests/kvm/lib/memstress.c        |  2 +-
+ tools/testing/selftests/kvm/lib/riscv/processor.c  |  2 +-
+ tools/testing/selftests/kvm/lib/s390x/processor.c  |  2 +-
+ tools/testing/selftests/kvm/lib/test_util.c        | 25 ++++++++++
+ tools/testing/selftests/kvm/lib/userfaultfd_util.c |  2 +-
+ tools/testing/selftests/kvm/lib/x86_64/processor.c | 21 +++++++--
+ tools/testing/selftests/kvm/lib/x86_64/vmx.c       |  6 +--
+ .../kvm/memslot_modification_stress_test.c         |  2 +-
+ tools/testing/selftests/kvm/memslot_perf_test.c    |  6 +--
+ tools/testing/selftests/kvm/riscv/get-reg-list.c   |  2 +-
+ tools/testing/selftests/kvm/rseq_test.c            |  4 +-
+ tools/testing/selftests/kvm/s390x/resets.c         |  4 +-
+ tools/testing/selftests/kvm/s390x/sync_regs_test.c | 20 ++++----
+ .../testing/selftests/kvm/set_memory_region_test.c |  6 +--
+ .../selftests/kvm/system_counter_offset_test.c     |  2 +-
+ tools/testing/selftests/kvm/x86_64/amx_test.c      |  6 +--
+ tools/testing/selftests/kvm/x86_64/cpuid_test.c    |  4 +-
+ .../kvm/x86_64/dirty_log_page_splitting_test.c     | 21 +++++----
+ .../testing/selftests/kvm/x86_64/flds_emulation.h  |  2 +-
+ tools/testing/selftests/kvm/x86_64/hyperv_clock.c  |  5 +-
+ .../testing/selftests/kvm/x86_64/hyperv_features.c |  9 ++--
+ tools/testing/selftests/kvm/x86_64/hyperv_ipi.c    |  2 +-
+ .../selftests/kvm/x86_64/hyperv_tlb_flush.c        |  2 +-
+ .../testing/selftests/kvm/x86_64/kvm_clock_test.c  | 42 ++---------------
+ .../selftests/kvm/x86_64/nx_huge_pages_test.c      |  6 +--
+ .../selftests/kvm/x86_64/platform_info_test.c      |  2 +-
+ .../selftests/kvm/x86_64/pmu_event_filter_test.c   |  2 +-
+ .../selftests/kvm/x86_64/sev_migrate_tests.c       | 28 +++++------
+ .../kvm/x86_64/smaller_maxphyaddr_emulation_test.c |  4 +-
+ .../testing/selftests/kvm/x86_64/sync_regs_test.c  | 10 ++--
+ .../selftests/kvm/x86_64/ucna_injection_test.c     |  8 ++--
+ .../selftests/kvm/x86_64/userspace_io_test.c       |  2 +-
+ .../selftests/kvm/x86_64/vmx_apic_access_test.c    |  2 +-
+ .../selftests/kvm/x86_64/vmx_dirty_log_test.c      | 16 +++----
+ .../vmx_exception_with_invalid_guest_state.c       |  2 +-
+ .../kvm/x86_64/vmx_nested_tsc_scaling_test.c       | 19 +-------
+ .../testing/selftests/kvm/x86_64/xapic_ipi_test.c  |  8 ++--
+ .../testing/selftests/kvm/x86_64/xcr0_cpuid_test.c |  2 +-
+ tools/testing/selftests/kvm/x86_64/xss_msr_test.c  |  2 +-
+ 65 files changed, 277 insertions(+), 276 deletions(-)
 
 
