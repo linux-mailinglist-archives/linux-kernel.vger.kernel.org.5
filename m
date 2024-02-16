@@ -1,188 +1,274 @@
-Return-Path: <linux-kernel+bounces-68523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68524-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D813D857BB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:31:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EEFD857BBA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:31:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EE9EB20D9B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:31:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB66A2817CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:31:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7934977A14;
-	Fri, 16 Feb 2024 11:31:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A608077F17;
+	Fri, 16 Feb 2024 11:31:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Li7BNrv4"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IWxBdWfd"
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E6177A0F;
-	Fri, 16 Feb 2024 11:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349FD77A0F;
+	Fri, 16 Feb 2024 11:31:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708083069; cv=none; b=oezQtxR0uD9jH3JvskO0g/NdQmdBYAN29IXuBQnMxHlVv+qSqpA22LhYKH5MgRFOPlOF6Il6dCwXTOnmC2KEpVEVSvk8EerCW0CAiisR/OchWYLEiaQC04HyZLc6IbyO42lQrTTts7AapyGW5YpMQe/RByo3W3l2yZaSQcOC8dY=
+	t=1708083085; cv=none; b=kMus4KpsQr2Kxik+vTkrwpIQR4NsuxD1I848M7L3K4mBNRXWw3cQwHre5vqd9g8MtF1O3FkKOo64X0FMp6irI5yxOsqHsZ0iFBJaQNEDUOJ6apfJ18AGg1bDFHwMLZzTqPLhcNtBv4C/zuD0JXYvAAOx2/11oGw/vr+dkN0GnJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708083069; c=relaxed/simple;
-	bh=TJamkMeETVXAU6QkC7A8Ognn1K46paOc5DcsQ8n28aw=;
-	h=Content-Type:Mime-Version:Date:Message-Id:To:Cc:Subject:From:
-	 References:In-Reply-To; b=XzmrKjQRZOec6rh2gb7oBdGCxZ38GWR2zMLQ2SIde2jwNqNCs8uzNKGNo2Edk3zJdJPcP7KMA1Qu9oc73atmjQ0+hZ9ZS2Odz76Wb9F7oxTarZa3+jVHDEhzc363mvWWEfznw0AFQPsVx1mA4DxtBVfY1h/omUq5R20vyNZimXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Li7BNrv4; arc=none smtp.client-ip=209.85.218.41
+	s=arc-20240116; t=1708083085; c=relaxed/simple;
+	bh=YyM2M4MIP+dAfmapZF1grt5im1QDWJvjaaUFj2w6KT0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mNZoqujCp0B1yCWMNrCQY7yFYXpAXv15ZdoMNV8iXGW03DFEwBIKc2kWL/AOL1fcj6x/kj5ICQoSHr74EwOnuqQeW24j24v7B+dYmfstyeQIiceCJHuvm3cZpZND334YS/m3L1otIxDQkS3/+v/t6PwVS3vv1DZ7i/IjCP7TtGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IWxBdWfd; arc=none smtp.client-ip=209.85.215.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3d0d26182dso206566966b.1;
-        Fri, 16 Feb 2024 03:31:07 -0800 (PST)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5cddc5455aeso499450a12.1;
+        Fri, 16 Feb 2024 03:31:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708083066; x=1708687866; darn=vger.kernel.org;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CeAZhE7j4dRyX+kzFFWa3n1YxsCqKudIIvx3LQHUXoE=;
-        b=Li7BNrv4q2VI1du3vLMHylWl+JrA2qipZETw4SN4+vUVBuNPKSjd5z6/lNiR7wheSv
-         iO5qUaI2J7kr4hmtwe8j8OkuuJGtv3tLEFj5SFWioRpD87ZA1clL04MS3TdGNAqONT3d
-         pYCPOIGg4pRCAkmAb0YYu4VVzy5OnOuoFvfRXOFxvFhWs6IIu0ZRETsMvGatD2TO5WVm
-         EV0y5U+5oM2BIKR5BBy4GOa0p5pKiD+8zEozt9i6zgvYhJcZhB/fE6uw29W1+ChmVqSS
-         9RwAlIF5sXrMf3+9AjhkPhTxGIC+rOq52q5xkdcTojQTj+3pPJ4Qc5JWrwfwRHzEWfry
-         urlQ==
+        d=gmail.com; s=20230601; t=1708083083; x=1708687883; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lyWfSKTdRSu/XPOYIRliEz8xFdTfpgDKmLuvOF0Pin8=;
+        b=IWxBdWfdM7M09CTb26eh1SsZHdZ5O8H6uEHEYMTfm/3UOtqrCAHJd1KgyuJyeNAJiG
+         cGTbCFURophUbdAb0qgFaCqUxURAn0qyf9lxpsGeUXpcfgcyLReJRED+Ja1aQSft54m1
+         xmOHuDFrju/c5F0rI68NpgLUhP9IkevvA0bTxKyo/wt5HEpEu8HLHJ+rCOmprko/x3w4
+         nKKz4mYt8PKgnGgm6D0BzZoYBNII5ajg+cphjhFiw26bwpUqKAH9sHApWRIob5yq1qIZ
+         pn0IYgyaGlww7S8+N8tG6bTGSOjyg2ZzGZVAnr92f/DdCqXrAGE7tuQ9Z4ahHZGk36j4
+         efng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708083066; x=1708687866;
-        h=in-reply-to:references:from:subject:cc:to:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CeAZhE7j4dRyX+kzFFWa3n1YxsCqKudIIvx3LQHUXoE=;
-        b=HB4uwJy2GXndECz0I5tr6hWmOGszGILrMRVQvvddr3SlEoVo88S+ONhqldcXRcWrD/
-         PpQwpu/RhiZGgdjVn6qhuHINrHcd3GajlD4Yn7PyrACG1q/SB1OaNGsBxmdLz+7dT5rw
-         CwBuWFB9x833vKQy+wclCdZjse1crIBA7tUBU0+XVmtM73WuyA7wnfIKOmurxdrew4jg
-         28oQwn92UNnxWILAdF+89dvbIKRUJhHJAMVbigCVNJgNm+6yBWoV0DgtV3U0QouS6svl
-         jUbaJ8CKiow3nOVcn2br9qTp6LJxiIEbnCRO+qe/kbxzyLqk1br23eec0YAvRPsjdzOR
-         CtWg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmtOjIKyEoPepZk5Th/qwGodhpfIaHIvqUXNXUSZafs26h/Eju4Xmzxep9kWIZ8SXiFMYnHpQ7jXlCpPhBD1xwR77HU1aegOlljShBrgQ4EFvpt2TMWQytq18nE7BFoyjxmhXjMZa2FLN5RiqJq0++3M0BUNZRfLdWesCZokCorhavWVJ76AFQGpWdz4xUtfHtx3ozyNdflu0wGjIRW2BVZ2qyhbqzY2pPLupo7Q5sInLOKhHJTRapC4hiYE7RFqhKrbHU4Jh+xMm89ejTI72yr29KusSFqhdno3hJTWE6gtFy2jhOzxi+7ct/ITKnlR/2FVagnoqIWZr9oB0fEtLdMHFftUkyHsMqd3qpF8Z6yaDEfrHBegWRbGI=
-X-Gm-Message-State: AOJu0YySID0z82NQ5rnZS7KVunKsbfhiRr/4cV0TIGR/CVwvf2RfkHdP
-	/ruX/beMCmxrvfWMVVvO2if7sSHazbvFZH9mArmmWE5VmT7bueM3
-X-Google-Smtp-Source: AGHT+IGXWz97gD5gN+VSAVL7iY1zPTDMUokWZgtmUOJLcJDV64j1IaqQ0abnS0651OrxU9XfbwlwlQ==
-X-Received: by 2002:a17:906:11cc:b0:a3d:2cd0:c17a with SMTP id o12-20020a17090611cc00b00a3d2cd0c17amr3351354eja.58.1708083065855;
-        Fri, 16 Feb 2024 03:31:05 -0800 (PST)
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id ts4-20020a170907c5c400b00a3df003b6a9sm242282ejc.119.2024.02.16.03.31.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 03:31:05 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=b7223a00e4ef0df93c47d9276017bbb483a03ab38a891db7b003e5591ffa;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+        d=1e100.net; s=20230601; t=1708083083; x=1708687883;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lyWfSKTdRSu/XPOYIRliEz8xFdTfpgDKmLuvOF0Pin8=;
+        b=l3QOxMVjycGN3ivR87AOcAIURajjUYzXt6dFPp9OSPVC5o3Vb340TX13gQ6vE2aORH
+         vUvSWsQP2jUHOzhsyEqCJcJr3/rW/cykOeabBRUrzm7iF5IZ+sf2PXDRmNuNgwllYWnv
+         XGtNpI2vENtrpvrRNPJl/5TDaEbYc6pLE5iS+Rs1dlA0SYnsRYtrYxF6gRPXNmd+dC/Y
+         vOzHM6v7TBqpzJ6UkVhe275P1WUM2Tdph+WDnVKo3uZQ6zcUvCcIkxoDkRbf9LAf1AQE
+         B/uzFPklpbcPtAvadRbsVved984j0O8E21xDL+vWqZdxyT0Bhy5Oa2IaiSn3fY4JnW64
+         5UmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUKD+x2lyHldfiIzXUbahcKsffQbMapUrWsCrs4osH24vl0hpJmOv4QI5wP0KNu3c2yq2cW8kVPcrfYOIFIKB/jD1fGpH2SmiedMYvYnrXjHm8LT7aZ5L9GxcEaXJ17/Kk0M/Uudn2ROTf0kGaFApChki4ur8fWAPzV0kyeFSGPAisp
+X-Gm-Message-State: AOJu0Yy3kIVdUCFRLv0q/pUuSOQJ8d0/xFv38dC9NPha+lvFD5Wcw+bO
+	utrpECeNz4OLeYoX/7MzZUhW9nmBUUQCWICwMz5QRXsXDJjBVgTtxn3nVw6y9Lkgfjy/lRsHAXv
+	GG6nCdqIy8xwC4JQjAPtjmbzcg+w=
+X-Google-Smtp-Source: AGHT+IEvROAdajvDaGhJmYch+/Aub0Z04uX1ZnjW2ApKdi35HTbO5+Uw3JnvWpTAQ1JVmcbINMpElpvcdSPaIErNnAE=
+X-Received: by 2002:a17:90a:d702:b0:299:273c:7331 with SMTP id
+ y2-20020a17090ad70200b00299273c7331mr2771398pju.41.1708083083212; Fri, 16 Feb
+ 2024 03:31:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 16 Feb 2024 12:31:03 +0100
-Message-Id: <CZ6GWUQ73SSL.6HP29PU9Q7R@gmail.com>
-To: "Mark Hasemeyer" <markhas@chromium.org>, "LKML"
- <linux-kernel@vger.kernel.org>
-Cc: "AngeloGioacchino Del Regno" <angelogioacchino.delregno@collabora.com>,
- "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Rob Herring"
- <robh@kernel.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Sudeep
- Holla" <sudeep.holla@arm.com>, "Andy Shevchenko"
- <andriy.shevchenko@intel.com>, "Raul Rangel" <rrangel@chromium.org>,
- "Tzung-Bi Shih" <tzungbi@kernel.org>, "AKASHI Takahiro"
- <takahiro.akashi@linaro.org>, "Alexandre TORGUE" <alexandre.torgue@st.com>,
- "Alim Akhtar" <alim.akhtar@samsung.com>, "Andre Przywara"
- <andre.przywara@arm.com>, "Andrew Morton" <akpm@linux-foundation.org>,
- "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>, "Baoquan He"
- <bhe@redhat.com>, "Bartosz Golaszewski" <brgl@bgdev.pl>, "Benson Leung"
- <bleung@chromium.org>, "Bhanu Prakash Maiya" <bhanumaiya@chromium.org>,
- "Bjorn Andersson" <andersson@kernel.org>, "Chen-Yu Tsai"
- <wenst@chromium.org>, "Conor Dooley" <conor+dt@kernel.org>, "Daniel Scally"
- <djrscally@gmail.com>, "David Gow" <davidgow@google.com>, "Enric Balletbo i
- Serra" <eballetbo@gmail.com>, "Frank Rowand" <frowand.list@gmail.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Guenter Roeck"
- <groeck@chromium.org>, "Heikki Krogerus" <heikki.krogerus@linux.intel.com>,
- "Heiko Stuebner" <heiko@sntech.de>, "Jonathan Hunter"
- <jonathanh@nvidia.com>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Lee Jones" <lee@kernel.org>, "Len
- Brown" <lenb@kernel.org>, "Linus Walleij" <linus.walleij@linaro.org>,
- "Manivannan Sadhasivam" <mani@kernel.org>, "Mark Brown"
- <broonie@kernel.org>, "Matthias Brugger" <matthias.bgg@gmail.com>, "Michal
- Simek" <michal.simek@amd.com>, "Mika Westerberg"
- <mika.westerberg@linux.intel.com>, "Nick Hawkins" <nick.hawkins@hpe.com>,
- "Prashant Malani" <pmalani@chromium.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, "Rob Barnes" <robbarnes@google.com>, "Rob Herring"
- <robh+dt@kernel.org>, "Sakari Ailus" <sakari.ailus@linux.intel.com>,
- "Stephen Boyd" <swboyd@chromium.org>, "Takashi Iwai" <tiwai@suse.de>, "Tony
- Lindgren" <tony@atomide.com>, =?utf-8?q?Uwe_Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, "Wolfram Sang" <wsa@kernel.org>,
- <chrome-platform@lists.linux.dev>, <cros-qcom-dts-watchers@chromium.org>,
- <devicetree@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
- <linux-gpio@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
- <linux-mediatek@lists.infradead.org>, <linux-rockchip@lists.infradead.org>,
- <linux-samsung-soc@vger.kernel.org>, <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v3 00/24] Improve IRQ wake capability reporting and
- update the cros_ec driver to use it
-From: "Thierry Reding" <thierry.reding@gmail.com>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20231226192149.1830592-1-markhas@chromium.org>
-In-Reply-To: <20231226192149.1830592-1-markhas@chromium.org>
-
---b7223a00e4ef0df93c47d9276017bbb483a03ab38a891db7b003e5591ffa
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240203165307.7806-1-aford173@gmail.com> <20240203165307.7806-10-aford173@gmail.com>
+ <5916132.MhkbZ0Pkbq@steina-w>
+In-Reply-To: <5916132.MhkbZ0Pkbq@steina-w>
+From: Adam Ford <aford173@gmail.com>
+Date: Fri, 16 Feb 2024 05:31:12 -0600
+Message-ID: <CAHCN7x+80iw0PWa4F4dMA=3RRaChNEO534LPACXd6FK0ndAHpw@mail.gmail.com>
+Subject: Re: [PATCH V8 09/12] dt-bindings: display: imx: add binding for
+ i.MX8MP HDMI TX
+To: Alexander Stein <alexander.stein@ew.tq-group.com>
+Cc: linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org, 
+	marex@denx.de, frieder.schrempf@kontron.de, 
+	Lucas Stach <l.stach@pengutronix.de>, Andrzej Hajda <andrzej.hajda@intel.com>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, 
+	Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, 
+	NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>, 
+	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>, 
+	Ulf Hansson <ulf.hansson@linaro.org>, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, 
+	linux-pm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-On Tue Dec 26, 2023 at 8:21 PM CET, Mark Hasemeyer wrote:
-> Currently the cros_ec driver assumes that its associated interrupt is
-> wake capable. This is an incorrect assumption as some Chromebooks use a
-> separate wake pin, while others overload the interrupt for wake and IO.
-> This patch train updates the driver to query the underlying ACPI/DT data
-> to determine whether or not the IRQ should be enabled for wake.
+On Fri, Feb 16, 2024 at 3:05=E2=80=AFAM Alexander Stein
+<alexander.stein@ew.tq-group.com> wrote:
 >
-> Both the device tree and ACPI systems have methods for reporting IRQ
-> wake capability. In device tree based systems, a node can advertise
-> itself as a 'wakeup-source'. In ACPI based systems, GpioInt and
-> Interrupt resource descriptors can use the 'SharedAndWake' or
-> 'ExclusiveAndWake' share types.
+> Hi all,
 >
-> Some logic is added to the platform, ACPI, and DT subsystems to more
-> easily pipe wakeirq information up to the driver.
+> Am Samstag, 3. Februar 2024, 17:52:49 CET schrieb Adam Ford:
+> > From: Lucas Stach <l.stach@pengutronix.de>
+> >
+> > The HDMI TX controller on the i.MX8MP SoC is a Synopsys designware IP
+> > core with a little bit of SoC integration around it.
+> >
+> > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > ---
+> > V3:  Change name and location to better idenfity as a bridge and
+> >      HDMI 2.0a transmitter
+> >
+> >      Fix typos and feedback from Rob and added ports.
+> > ---
+> >  .../display/bridge/fsl,imx8mp-hdmi-tx.yaml    | 102 ++++++++++++++++++
+> >  1 file changed, 102 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.yam=
+l
+> >
+> > diff --git
+> > a/Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.y=
+aml
+> > b/Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.y=
+aml
+> > new file mode 100644
+> > index 000000000000..3791c9f4ebab
+> > --- /dev/null
+> > +++
+> > b/Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.y=
+aml
+> > @@ -0,0 +1,102 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8mp-hdmi-tx.y=
+aml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Freescale i.MX8MP DWC HDMI TX Encoder
+> > +
+> > +maintainers:
+> > +  - Lucas Stach <l.stach@pengutronix.de>
+> > +
+> > +description:
+> > +  The i.MX8MP HDMI transmitter is a Synopsys DesignWare
+> > +  HDMI 2.0a TX controller IP.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/display/bridge/synopsys,dw-hdmi.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - fsl,imx8mp-hdmi-tx
+> > +
+> > +  reg-io-width:
+> > +    const: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 4
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: iahb
+> > +      - const: isfr
+> > +      - const: cec
+> > +      - const: pix
+> > +
+> > +  power-domains:
+> > +    maxItems: 1
+> > +
+> > +  ports:
+> > +    $ref: /schemas/graph.yaml#/properties/ports
+> > +
+> > +    properties:
+> > +      port@0:
+> > +        $ref: /schemas/graph.yaml#/properties/port
+> > +        description: Parallel RGB input port
+> > +
+> > +      port@1:
+> > +        $ref: /schemas/graph.yaml#/properties/port
+> > +        description: HDMI output port
+> > +
+> > +    required:
+> > +      - port@0
+> > +      - port@1
 >
-> Changes in v3:
-> -Rebase on linux-next
-> -See each patch for patch specific changes
+> Is this really correct that port@1 is required? AFAICS this host already
+> supports HPD and DDC by itself, so there is no need for a dedicated HDMI
+> connector.
+> With the current state of the drivers this output port is completely igno=
+red
+> anyway. Yet it works for a lot of people.
+
+One of the feedback responses Lucas got was that it was missing the
+reference to the HDMI connector, so I added it as a response to that
+feedback.  I have tried device trees with and without it, and it
+doesn't impact anything, but It seems like there may be a requirement
+for it.
+
+adam
 >
-> Changes in v2:
-> -Rebase on linux-next
-> -Add cover letter
-> -See each patch for patch specific changes
+> Best regards,
+> Alexander
 >
-> Mark Hasemeyer (24):
-[...]
->   ARM: dts: tegra: Enable cros-ec-spi as wake source
-[...]
->   arm64: dts: tegra: Enable cros-ec-spi as wake source
-[...]
-
-Both patches applied, thanks.
-
-Thierry
-
---b7223a00e4ef0df93c47d9276017bbb483a03ab38a891db7b003e5591ffa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXPR3kACgkQ3SOs138+
-s6FXyA//QEgOaLPJMLtFwzEUNlO0/8MF3SAbMW7kCkEt3S3OMXQ3wtyOeIC3nlyN
-zwxSqhOzC1I/qdbqdnc5ejbrPWB/9d6ohPyc45vT19QAS79mc9nB2ZQm3AoVlPaA
-HGQhrtMEx6KRBu+GjS9Sz9YQjBftSWl/kr8oAwXOs6wtg2m06tfm00LF3bVFLQEu
-aTZ1Jal4+fIpK0OK/yz/yhczCMQCbVnKBClkwuoKQWJpxh7z/xYCY2Gm50VD4sN7
-F60KcEQzW8DfY5dGd1eT9oY7UqqA+yoRDGNN7KNYYurFPoEL6jZqvSts1J26pp4u
-MjFQS2jY6bjbQFR0RRUwwjPRRmUXRcGpW3qHN/+ajof0pXgRa/rWnthIB2boTs4Q
-uApu3k81kwLXVgZZh9YRXCwcYf8sgMo7Qj849I8e5vRi/MuL6jwKyU7P8SwRrWRd
-xIY0v+EKupY6iDvxPApV4b5Mw8gyxbRO6Kcm5Ep7Z8DBCeCr+g3iZFHVUXpG3vll
-PjwZW9bC+U9kcn/W5qoJrdKqGFAsaqks7fzWoIBIX5rVNbNSNZpG7Dwi/EeNUmak
-T5tJqIr3VbtsNd0ni6f42Efs9z/m0vsUKL6H5mGZoX3oTGXvzO91XF2gfFMEqOO9
-8cxE1rJREy1F73S7VZWOE46nyNPlsD6qm5+fApxvV3eKGRO5wfU=
-=fOyD
------END PGP SIGNATURE-----
-
---b7223a00e4ef0df93c47d9276017bbb483a03ab38a891db7b003e5591ffa--
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - clocks
+> > +  - clock-names
+> > +  - interrupts
+> > +  - power-domains
+> > +  - ports
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/clock/imx8mp-clock.h>
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    #include <dt-bindings/power/imx8mp-power.h>
+> > +
+> > +    hdmi@32fd8000 {
+> > +        compatible =3D "fsl,imx8mp-hdmi-tx";
+> > +        reg =3D <0x32fd8000 0x7eff>;
+> > +        interrupts =3D <0 IRQ_TYPE_LEVEL_HIGH>;
+> > +        clocks =3D <&clk IMX8MP_CLK_HDMI_APB>,
+> > +                 <&clk IMX8MP_CLK_HDMI_REF_266M>,
+> > +                 <&clk IMX8MP_CLK_32K>,
+> > +                 <&hdmi_tx_phy>;
+> > +        clock-names =3D "iahb", "isfr", "cec", "pix";
+> > +        power-domains =3D <&hdmi_blk_ctrl IMX8MP_HDMIBLK_PD_HDMI_TX>;
+> > +        reg-io-width =3D <1>;
+> > +        ports {
+> > +           #address-cells =3D <1>;
+> > +           #size-cells =3D <0>;
+> > +           port@0 {
+> > +             reg =3D <0>;
+> > +
+> > +             hdmi_tx_from_pvi: endpoint {
+> > +               remote-endpoint =3D <&pvi_to_hdmi_tx>;
+> > +             };
+> > +          };
+> > +
+> > +          port@1 {
+> > +            reg =3D <1>;
+> > +              hdmi_tx_out: endpoint {
+> > +                remote-endpoint =3D <&hdmi0_con>;
+> > +              };
+> > +          };
+> > +        };
+> > +    };
+>
+>
+> --
+> TQ-Systems GmbH | M=C3=BChlstra=C3=9Fe 2, Gut Delling | 82229 Seefeld, Ge=
+rmany
+> Amtsgericht M=C3=BCnchen, HRB 105018
+> Gesch=C3=A4ftsf=C3=BChrer: Detlef Schneider, R=C3=BCdiger Stahl, Stefan S=
+chneider
+> http://www.tq-group.com/
+>
+>
 
