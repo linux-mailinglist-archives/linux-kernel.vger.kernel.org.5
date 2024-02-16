@@ -1,129 +1,105 @@
-Return-Path: <linux-kernel+bounces-67984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 900E48573EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:06:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E71198573F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:11:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E6941F24D43
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 03:06:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BA421F22969
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 03:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14A89FC05;
-	Fri, 16 Feb 2024 03:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75590FBF7;
+	Fri, 16 Feb 2024 03:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HX0IYrqJ"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="aoq1wuo3"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02327FBE5
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 03:05:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 778F1DF58;
+	Fri, 16 Feb 2024 03:11:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708052758; cv=none; b=QFtIsyalXAxhTs/8ds/VDL6SHHnTAqK82HbbqyMfxzxMbEZc1qeUHp6ZI8pmU5WKzgtrXaabz6gMuwdxhHVeEkuenZnAoSffR5Bw173n5WLmzpNCLf3anuX3eYkbKgYcpUkSd3XHWHmrP+A6xQ1NZG3WG29MGckmRyN+PVlmZHI=
+	t=1708053075; cv=none; b=BWiaYfA//yVeM1YR3byBh4uGPkd/H0sU3lgzISfdeF3ADEBKLbtaQ9qPeoEyEvnbZB4vRWjcsx2Tsk0YyC66EUoYvIWCjKip8TgyvusSsRLqpzESmeYh4kzqFIu2lFcqF8g2izhF7r+o1lDbzQZ3VAGWRgi3i2wLMAwDhhKtUQ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708052758; c=relaxed/simple;
-	bh=8dqe4bC0acMyEVaUnbbYMP4IvFDUFr77j4xc05dO4WU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Lf75XfL/PXhjBOJqyZPgHYSCyqwztqgJTSePdYmfGa7UE7iLCO9ysTQ775SViAonJES4N+RsBgGCrjqhpcYPebveGZVIWpi6sUtippz+0bXEZl8jonJVqNLOnhK8D8K/tySYcRLIYgi7ok7xn4eTgl+i0/0RywJ6EsgWaghlQZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HX0IYrqJ; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e104196e6eso1661996b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 19:05:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708052756; x=1708657556; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I7PSTWVmaYWH42bBGC9KPcBO882rqj+Igdtxrd/WR4k=;
-        b=HX0IYrqJr+6dhxkxlZUEZ0tNL9F8cn/SZ79MKBIShu3jIOrx4EgOBW3qb1PufNJN8/
-         2e/c4jaAxyKjpDqUJzZdj+jF8dx+9SW0ZRhJwdDQT0wBmjAiWF3hXFh9l8F8mmvZJhF1
-         /Bt4EmUqQ0FlzPcgQ8wtCH9PpmcBO/u5mgKmcy5fXDpPzja+K3YjdukBm2GnAxKN+sxQ
-         L2sVfW8L3YMfGQtHNP1LUVkWVKA8mwuJI9yP5xgbIVsl7zS9f6LABiPngvXXvAuIlzTI
-         K/HXm8dAAA9pSTBJAVGrYQEIkGtF7CB6wGGnKAo/hXcWVTUuiOI4C5e9M00+sTjUqb9t
-         wHpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708052756; x=1708657556;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I7PSTWVmaYWH42bBGC9KPcBO882rqj+Igdtxrd/WR4k=;
-        b=O3s7Sie7FaznULonOfgCR6iUR4gpvAIaUWKmzqE+pZk2VKqqjxlDLTt1pIq/ZUzhJt
-         /KP+TGKYITwSDbApDw4ir1TTu9hvwvGtvWzDNRhdbEEvfn+P16aIUHZXlHckRmbATuMd
-         bJTxycI2x9XEKo4dylWx3jXxc9qQ1oenFkAi0/xPeBqueN4L4UhLmldrR6Bv+fU/J0cA
-         oTFRZAWXMQTJvX2LpcjocD3fhyRTZzkZ9Do4lHHEfRYFK3m+0jTY29U7wUUdLnI+HyZ/
-         6iz36M8Z2wD6hsJT9v2JFYIQsK8KIo1RW9AqLpojNwobrlSvc+MCcZ55iw/ZVy1njePd
-         iRQQ==
-X-Gm-Message-State: AOJu0Yyw/o0sSPsXaVGxdMNOOFinzH0fmsiwQibxEIHFJAI3ezUk8w8/
-	/rt6AcUVO1i/c3YvyvYSyv2jyTI+82Rk3kFDpXrQRR0B1f3QVpXf
-X-Google-Smtp-Source: AGHT+IG/Jyyl1szf73bIkO4ooPyYiVveqIprdngc3VwOxDhtbiHy2HZn3gG5Y8dH1/cckeRAeAjZvg==
-X-Received: by 2002:a05:6a00:22c9:b0:6e0:fb6e:124e with SMTP id f9-20020a056a0022c900b006e0fb6e124emr4794443pfj.26.1708052756168;
-        Thu, 15 Feb 2024 19:05:56 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:f28b:3925:777f:45d4])
-        by smtp.gmail.com with ESMTPSA id lc25-20020a056a004f5900b006e0eece1ca4sm2017757pfb.4.2024.02.15.19.05.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 19:05:55 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	hannes@cmpxchg.org,
-	linux-mm@kvack.org,
-	yosryahmed@google.com
-Cc: linux-kernel@vger.kernel.org,
-	Barry Song <v-songbaohua@oppo.com>,
-	Chengming Zhou <zhouchengming@bytedance.com>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: [PATCH] mm: zswap: increase reject_compress_poor but not reject_compress_fail if compression returns ENOSPC
-Date: Fri, 16 Feb 2024 16:05:39 +1300
-Message-Id: <20240216030539.110404-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708053075; c=relaxed/simple;
+	bh=255anHpEUFk/gSI9Ws2TxhyYTTQN5rCLXpeTmNKYgYc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=mA0DfBTEASjopatkNCawFJlrYHWenUo2Qs1NdSZWlMA3aiPMfIfUT2lok4IwKTuLuxe3yIM+Qmj1QZCcmlXMZKd46ytgu8GOwWq/rSyqL6Z5WfD67AwObQvsVSc0KJN/jMAzZL5ytcqMtlrqH06zR/XSPwcui+vhoM5X4zl7cUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=aoq1wuo3; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708053071;
+	bh=h6O0PTL8V1E7B5aSsOjIKqVjqP8hh0cL2eatGAHCFm0=;
+	h=Date:From:To:Cc:Subject:From;
+	b=aoq1wuo35NJmsiEbk0oTETv4y0pj+ZI3DF6r7eRPCS1M9W/sPV49aH2pySAdKBVI2
+	 eFSL193SLWat+qrgv8Uvrj7grma0knW7+JbNeJhVGX0Opy/oyIEIZQWIdlH/zBODiM
+	 wk1xY5cN3QSieTG9urY3y9SOfLplLGBidlNbMXJ4mJ1/FH5ELMVhigezqAV+dML2va
+	 bAt180bTwB0owFeE3mb2r3Q5RUuPcXLSeeNMqRU2j8Opd8EyoJLQft1hL8/g3JEpxw
+	 if7JB4mFNk4oOOvjMD7ocgYvV4U+Oi2cUp6Xco6geYjwKqZZ0cZl9rWq1BJtWbpmeA
+	 5jKJN4fEQbznQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TbcQR0m8lz4wnp;
+	Fri, 16 Feb 2024 14:11:11 +1100 (AEDT)
+Date: Fri, 16 Feb 2024 14:11:10 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Mark Brown <broonie@kernel.org>
+Cc: Dhruva Gole <d-gole@ti.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the spi tree
+Message-ID: <20240216141110.7819d939@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/5hvRLO_JClsApL6+A0cFJfL";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-From: Barry Song <v-songbaohua@oppo.com>
+--Sig_/5hvRLO_JClsApL6+A0cFJfL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-My commit fc8580edbaa6 ("mm: zsmalloc: return -ENOSPC rather than -EINVAL
-in zs_malloc while size is too large") wanted to depend on zs_malloc's
-returned ENOSPC to distinguish the case that compressed data is larger
-than the original data from normal compression cases. The commit, for
-sure, was correct and worked as expected but the code wouldn't run to
-there after commit 744e1885922a ("crypto: scomp - fix req->dst buffer
-overflow") as Chengming's this patch makes zswap_store() goto out
-immediately after the special compression case happens. So there is
-no chance to execute zs_malloc() now. We need to fix the count right
-after compressions return ENOSPC.
+Hi all,
 
-Fixes: fc8580edbaa6 ("mm: zsmalloc: return -ENOSPC rather than -EINVAL in zs_malloc while size is too large")
-Cc: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- mm/zswap.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+After merging the spi tree, today's linux-next build (htmldocs) produced
+this warning:
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 6319d2281020..9a21dbe8c056 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1627,7 +1627,10 @@ bool zswap_store(struct folio *folio)
- 	dlen = acomp_ctx->req->dlen;
- 
- 	if (ret) {
--		zswap_reject_compress_fail++;
-+		if (ret == -ENOSPC)
-+			zswap_reject_compress_poor++;
-+		else
-+			zswap_reject_compress_fail++;
- 		goto put_dstmem;
- 	}
- 
--- 
-2.34.1
+Documentation/spi/spi-summary.rst:274: WARNING: Title underline too short.
 
+Declare target Devices
+^^^^^^^^^^^^^^^^^^^^^
+
+Introduced by commit
+
+  99769a52464d ("spi: Update the "master/slave" terminology in documentatio=
+n")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/5hvRLO_JClsApL6+A0cFJfL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXO0k4ACgkQAVBC80lX
+0Gx/DAf/SaOBycm+MnyWAvUc/Xi34bSkq6N317I8FRQRzUdc3PIsyWR/XdONLb5E
+xJihEoZ+PAcasFOGhXOlhDdFovHvH/5fnIrAEusEbNE5rxBHIXOoN4bTVwKm+1vG
+eIko7zyuAOSflH79C2+JRfYNektrvscC4L3ohF/oPomVgWFerz6/MGnj0+05Jdpt
+jeUeerQCHqyF+C7NldEbcC04Wub/IZAdPLU5TnzE/R3sMkFARMThA9sa7vMgOIKh
+YOBDou//7QWCmDKbNC2zJs2nxKt1/0N8+oBFLrWixYnR2WZJifeRXmjCvZ/vzwAH
+RSIUen6l1n+OCNyRhwEl+NBB5I64Dw==
+=rN5t
+-----END PGP SIGNATURE-----
+
+--Sig_/5hvRLO_JClsApL6+A0cFJfL--
 
