@@ -1,81 +1,91 @@
-Return-Path: <linux-kernel+bounces-67885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1798F857255
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:14:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D611485725A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A335B1F24104
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:14:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154041C22820
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9D744A0F;
-	Fri, 16 Feb 2024 00:14:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD3C46A0;
+	Fri, 16 Feb 2024 00:15:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NmuFr7oc"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="BpABSFK0"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCC1320A;
-	Fri, 16 Feb 2024 00:14:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97D6B38F;
+	Fri, 16 Feb 2024 00:15:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708042484; cv=none; b=LqKkqju+PWdzbEIai+0FfCo2or/GirgB5DMGzDaOj2msLPGTAqmlki2qTn4GFnC+fvwy0o2bhLB5eT/TujHf1/iRGTEHvxOFPwJkVKYVSInfxkI431aLHuT/MJ2G5PKKK/SW0uxHP7W7DNZ3yXAT9kEbnHNK0sKtJ6QZw/bFLDQ=
+	t=1708042557; cv=none; b=dbAkCUzN5V7jFCGoKwiBuMNEfPHGUy81qNExsl9Ucl/ckwZpR2UeCg/jhcLxpbb+GTgJ0xbaYoBHnw2vkq9ioTLX4YHkNgX43f3K8RC3GrhdB7GETsg/nKWtklssEZVPrzNh9EsOLZMUQrCeeQqvBMIiMa56sG6lWP3gYWFBksw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708042484; c=relaxed/simple;
-	bh=8459CvzrorfNe/cHAzd0ENqIMMQm58MSFuttK55PuAY=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=aoOQXz4IWy8j7t1Xp4GJ/X1UL3g8GnB4He5mKjTytTKOIxcyO7wqiTM7bcUpyZMrCzApIjINTw278t1LPsbv94w86ZLbgO5sN0EKqoGTd4DRDwxsaLmwT+0kR7R8hOHbDutXQaZ727fJm195jKuJ+8UamuGGOZDRemEIC3+DwtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NmuFr7oc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C5DC433F1;
-	Fri, 16 Feb 2024 00:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1708042483;
-	bh=8459CvzrorfNe/cHAzd0ENqIMMQm58MSFuttK55PuAY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NmuFr7ocD51+UfkvZDHdvyhHagtotjPmkxo7YcRAWBCFwI6mcb1Dk8SCHmgCXuvdB
-	 n0AX/l1ga0WmPPMZCUeBERXcafl8pl0yCjOhZDCFHuAUl6NY44ayokHvZqWCiY91PU
-	 uv3zTNGTY0GhIcYj/dVFAIW1OmfzQsp3zc+0Nm5E=
-Date: Thu, 15 Feb 2024 16:14:41 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Sourav Panda <souravpanda@google.com>
-Cc: corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
- mike.kravetz@oracle.com, muchun.song@linux.dev, rppt@kernel.org,
- david@redhat.com, rdunlap@infradead.org, chenlinxuan@uniontech.com,
- yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com, bhelgaas@google.com,
- ivan@cloudflare.com, pasha.tatashin@soleen.com, yosryahmed@google.com,
- hannes@cmpxchg.org, shakeelb@google.com, kirill.shutemov@linux.intel.com,
- wangkefeng.wang@huawei.com, adobriyan@gmail.com, vbabka@suse.cz,
- Liam.Howlett@Oracle.com, surenb@google.com, linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-mm@kvack.org, willy@infradead.org, weixugc@google.com
-Subject: Re: [PATCH v8 1/1] mm: report per-page metadata information
-Message-Id: <20240215161441.c8a2350a61f6929c0dbe9e7b@linux-foundation.org>
-In-Reply-To: <20240214225741.403783-2-souravpanda@google.com>
-References: <20240214225741.403783-1-souravpanda@google.com>
-	<20240214225741.403783-2-souravpanda@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708042557; c=relaxed/simple;
+	bh=o6+gUd5DJEgPqvaI67TQJWxb0xcbvBI1jdkEAjWquzU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pKiR8I+5oIxyF1RsZB4YDxAi/LcAmxT7Y7Ey7qgkMOeoFCOdRGU/VLOqf2y2Wmcdpl8gxUH+P9hZGtvDIQn24aSjCw9YAh67QhYziojEF9d49ihs0vWYHYfXmKj5fD4iXACgkiUwpi1S96/5vp3plzhFJps7LBcA5CWSmz3N2CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=BpABSFK0; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=JqAy6DlroIJ9l7o/NbDSLbIGKoCKSO71Lmwdp7enbQw=; b=BpABSFK0gL4HaxZXBUyhj8IzPh
+	HakVCCG+QWxbe+yuxYNkCOiBxekYPzzXHpMt7MVZ31oMQ+tc8lTBBTlcthm6E7TtEEiMPdmUxzuY8
+	tcxnBn6qsAgyz0xFcudTRDXX6MmSROvw6/VmWMEzyawnkp34rpwG70JHtgIUPg1Mqwzw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1raltO-007vtb-Dh; Fri, 16 Feb 2024 01:15:50 +0100
+Date: Fri, 16 Feb 2024 01:15:50 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Ariel Elior <aelior@marvell.com>,
+	Manish Chopra <manishc@marvell.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>, netdev@vger.kernel.org,
+	linux-usb@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [Intel-wired-lan] [PATCH net-next v2 0/8] drivers: net: Convert
+ EEE handling to use linkmode bitmaps
+Message-ID: <c92f69a6-7024-4463-84d4-2be519291abf@lunn.ch>
+References: <20240214-keee-u32-cleanup-v2-0-4ac534b83d66@lunn.ch>
+ <fc1be95d-b34b-4153-ba0b-f124180a33ec@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fc1be95d-b34b-4153-ba0b-f124180a33ec@molgen.mpg.de>
 
-On Wed, 14 Feb 2024 14:57:40 -0800 Sourav Panda <souravpanda@google.com> wrote:
+> Am 15.02.24 um 12:13 AM schrieb Andrew Lunn:
+> > EEE has until recently been limited to lower speeds due to the use of
+> > the legacy u32 for link speeds. This restriction has been lifted, with
+> > the use of linkmode bitmaps. This patchset convert some MAC drivers
+> 
+> Maybe reference the commit introducing them?
 
-> Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
-> to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
-> to /proc/meminfo. This information can be used by users to see how
-> much memory is being used by per-page metadata, which can vary
-> depending on build configuration, machine architecture, and system
-> use.
+That would be:
 
-Would this information be available by the proposed memory
-allocation profiling?
+1f069de63602 ethtool: add linkmode bitmap support to struct ethtool_keee
+1d756ff13da6 ethtool: add suffix _u32 to legacy bitmap members of struct ethtool_keee
+285cc15cc555 ethtool: adjust struct ethtool_keee to kernel needs
+0b3100bc8fa7 ethtool: switch back from ethtool_keee to ethtool_eee for ioctl
+d80a52335374 ethtool: replace struct ethtool_eee with a new struct ethtool_keee on kernel side
+ 
+> One small nit: convert*s*
 
-https://lkml.kernel.org/r/20240212213922.783301-1-surenb@google.com
+Thanks.
+
+	Andrew
 
