@@ -1,146 +1,290 @@
-Return-Path: <linux-kernel+bounces-68275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CFFA857818
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:54:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFE0D85781A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:54:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8677E1F215F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:54:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C0132818CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:54:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C6819BBA;
-	Fri, 16 Feb 2024 08:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051A318B1A;
+	Fri, 16 Feb 2024 08:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="clRIr+4B"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2066.outbound.protection.outlook.com [40.107.237.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Gwqqjk3g"
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E20D51CD0C;
-	Fri, 16 Feb 2024 08:52:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.66
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708073530; cv=fail; b=l9t8SSaMFJ9lCREmvbhq4rgxAJ7Yjt5QGuwMJzNhdFo0U3LAe7A/1VxIsdJZc2VOLjDP5YkMtSesAve2nCAZhhr7ItDYa4Bae/P2Pfaeyhi3dqCux5mkLMeUCvuLCl8413vRRI7SDQul72Syq4MRzZRYyeXAotkfOPe9XIp+kI0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708073530; c=relaxed/simple;
-	bh=uzGUKZkA35cfvb0lxc8UTkoY4tPSpMZXusm76D3HBbo=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VzjKGLXkAIlg3aVA0rNP21EKM0EhN4MvUri2PaSUk5moRel9VJg0k9d3spIZz7u9rW4rZQuh+NGFvmwe66/gjHP5oyc0djeTscVIRlad0XuBC091Zle9nOeX986CvNzrFjAQkMtQvQoeaUAmv9U0OU6Hv+lgYPSKbjT0ZnvGl6w=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=clRIr+4B; arc=fail smtp.client-ip=40.107.237.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IQaTFNpY0eKDV2UXVmuyZEGumtd2QTwg5et0ThNnpM+a2OfrRt+rxN/wLPi6K5JZyIkk485ZU37GTwqHNhFP7skALsY3sSV/XPZxfvMAG6BMfEQGVwmsxvQ56xreh/lr5ucNe9w9nYqUQXgLCw9p5IkmuUk1SvkLFjsWi1Jcj7871nXYp+9MeArO+LMZiU4z2La9/tekJE6Z627yJKdrcFMkxcqfvsBXtNn6CQFpCmGm7vKuSV1oT/zSE/ZlY8JmrvfM7e23zqltbI5OCrSzAC8CaxCxY7vQxX81mBHL8ttQss90SmHzGJuPRUXkM8n0JleJWAQGEfqR9ibfdchuhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MAiLflcdaxRsQA+ukyhWqRlOnL1nXucEBnpaPOGamVk=;
- b=fsedyp1O9vjuCgo4hPsbheaC9210rxUNHHELmpixX0wEfgGchuY7guze2UJN4MVOXql3zV+pexVyAhMo/7NJ7pqj+JbbzH6ctX5Pz1s4TmwODB9/lHSNuhP9rhTnJLEOm4oRKVBEFmtMzhbZMWXBZzV96lQkdZAWGgVtUJn79cAXUunyC3mHH6ksHg1i57Fj+amrSdM/+uhbk5RcCXL+53G0OxcgGBUDhF5QGrHnSjpGX5p1MUz9Tq/qGJ6TNEOP0/rUY6DhlQxiPiWciDeWtpDfHuU+ZzENXu0aJ/9NK8/vnfw8PgYyZXP+quFFTROOk8+bX33oIgK12fpnQSozaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MAiLflcdaxRsQA+ukyhWqRlOnL1nXucEBnpaPOGamVk=;
- b=clRIr+4Busbs1VBi6L0CWfgtr2lM9TruGvSUkH+4j6QvsopKm6NJAYuRlUokcBXeDvQMV5osSJcMsus/Dyx9wHLL4QpDw1VX+71/cSp7DfvToBBYw+qCb3jxnD7xT0IeKm9UMJncPAvbgHoO2TQTekP1VUL7u8AmoqRYQ7kHlAc=
-Received: from CY5PR15CA0163.namprd15.prod.outlook.com (2603:10b6:930:81::10)
- by MW6PR12MB8705.namprd12.prod.outlook.com (2603:10b6:303:24c::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.12; Fri, 16 Feb
- 2024 08:52:05 +0000
-Received: from CY4PEPF0000EE3A.namprd03.prod.outlook.com
- (2603:10b6:930:81:cafe::56) by CY5PR15CA0163.outlook.office365.com
- (2603:10b6:930:81::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26 via Frontend
- Transport; Fri, 16 Feb 2024 08:52:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE3A.mail.protection.outlook.com (10.167.242.14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7249.19 via Frontend Transport; Fri, 16 Feb 2024 08:52:05 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 16 Feb
- 2024 02:52:02 -0600
-From: Michal Simek <michal.simek@amd.com>
-To: <linux-kernel@vger.kernel.org>, <monstr@monstr.eu>,
-	<michal.simek@xilinx.com>, <git@xilinx.com>
-CC: Alexandre Belloni <alexandre.belloni@bootlin.com>, Conor Dooley
-	<conor+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh@kernel.org>, "open
- list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
-	<devicetree@vger.kernel.org>, "moderated list:ARM/ZYNQ ARCHITECTURE"
-	<linux-arm-kernel@lists.infradead.org>, "open list:REAL TIME CLOCK (RTC)
- SUBSYSTEM" <linux-rtc@vger.kernel.org>
-Subject: [PATCH] dt-bindings: rtc: zynqmp: Describe power-domains property
-Date: Fri, 16 Feb 2024 09:51:59 +0100
-Message-ID: <94726c90ff519185767475f672d70311472ea925.1708073513.git.michal.simek@amd.com>
-X-Mailer: git-send-email 2.36.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C560B1798E
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708073666; cv=none; b=GsJTvdaKnq2BQy0MWqlCABA5zgPn1BKHFjFANCBETNihj9z+Ni8xnONuQpIJpt2rlX3YCSS1aGuQcb+R6eRk6X7zxOA6QD9leQBF2mimC6xU5JCsYootBW3dFAPNY3grSvTdLWW/zPGymhSdj4sc/XJOnCddhfqqJVk4zkhszNI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708073666; c=relaxed/simple;
+	bh=wUnJlhXN5xJsNtcSu4XQvbCP/mZi6xj/MxSEUg4NvmY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jnhSx6qLe9Q0bmMHQXxSCrTHH6XuEDaTEwmqqRF1phpfeCX1aWn58orEpmGlYKNvhxjPcb7P0dnR1XuGYsbae6YEUO8pFoUuCBnMGWzB4b9MgkcvNKedpR8d29uMAq28asKQ/b79adwt/o+uPzJITVZcL9bJjMZstiFqPe8LPTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Gwqqjk3g; arc=none smtp.client-ip=209.85.167.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c03b92998eso1458181b6e.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:54:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1708073662; x=1708678462; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yrVST/Z5WtDwWgZNk13lbgOP4HCxWcuGncW6P4GuUMc=;
+        b=Gwqqjk3gfy32MG26PRGqfdQAAB70aoFfkqIskZQbCWCvIXLENVHbTu0El31gljq8n6
+         Qx0nejMUQhWQq/hw5D26mdEmCJIEelBxdLgEimizY5qpP7ZrOTq+dQ/U6Hncwe2HaOnW
+         TZCEZcR3g5RckBwIVPyKOF2IK0AoukR8gg++b3b8nl7qcwtcCil+6g+3I6Blnl7kpwLN
+         e4iDeM/ZMKFBCreTzSwKZpTl/XExO2Ic80eqKMRqdomyHWdHRdQsTNtZO2tZFnREMDyK
+         Zya18LvjKjId6Hjl9WZ5PKgCZGEGe8NT72NEeynkIkyW2Ykr1qSntfTTq7UTg1ZVPrTR
+         yApg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708073662; x=1708678462;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yrVST/Z5WtDwWgZNk13lbgOP4HCxWcuGncW6P4GuUMc=;
+        b=gWDJKFY0iIYax1eMnXNnMpZqsrm4KzXa7LtSAceaYZTpRkBembKcZ/rjb4AbcQCVz2
+         Ym/uOMgyQQLGguLtP3MfAKB/QyVUUxGQWX5jTKy6/Vo+Aue5IaS3ARN2kn9H3QOo9WZ+
+         NkKN6k3KcuxnLi0iAfxHp8e80UHylB+V7JEhD3cXoHFbav+FvoYbAA3asQr22Dr9roq3
+         fdfEUI3oBqimXttBkgbGm9Bq+1G7tMkKTiLd/UDZsDCN5rIKKOAlHFfixmD5ZENLlPMJ
+         C33gCqD0Xw1+ZgI59QT8hcBt4IEwUTLW26txfsvV25/7DI1E58C3HvpwbMcty+VvJ1DN
+         GGlw==
+X-Forwarded-Encrypted: i=1; AJvYcCULisPXoY0wtuXe/HxtqiLjxZuwUTDoqDPT5p8e7tEf0LOZVif/3s2BokJOftxg9o0YJpidpMO86y8RJ1nVpkdgQfGSzPH0esGy2e6B
+X-Gm-Message-State: AOJu0YzlRrlAIPLdIC0eRQJUkcT1p3/gwa0CNFC70Kt5eD/k+AzS9kBC
+	SoEWJGy8eXWWGA5ipn9wD2eyr7uJEvDPP+XKbS8PNw4rxHyjHwt8YzOoReoUPMSZk/ylpVED+Ri
+	e7tH9+Z0F3Z6ModBX89E0rHnQ6bbL68B0OG9UOg==
+X-Google-Smtp-Source: AGHT+IHqCPE0xpAZuuiCUgJ5CUxaYFmPjOqnf5jWWoWOwkDmmW6aMuFCCP07tRBLL93h3SIt6pRyafPMdwHFuLplVuE=
+X-Received: by 2002:a05:6870:ac1e:b0:21e:5a35:b1cf with SMTP id
+ kw30-20020a056870ac1e00b0021e5a35b1cfmr2138392oab.35.1708073662625; Fri, 16
+ Feb 2024 00:54:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=743; i=michal.simek@amd.com; h=from:subject:message-id; bh=uzGUKZkA35cfvb0lxc8UTkoY4tPSpMZXusm76D3HBbo=; b=owGbwMvMwCR4yjP1tKYXjyLjabUkhtTzSlqzG9yv5+a+z2DxlPz6fn7Gzn16m/iEWRTlfRrdN 7653JndEcvCIMjEICumyCJtc+XM3soZU4QvHpaDmcPKBDKEgYtTACZyZDbD/OQrZVeOsmyevW3W 1rcNEgY2ORwJTxjm+6tdTw3kWNY1v3HVX9HMVwUXu+8FAgA=
-X-Developer-Key: i=michal.simek@amd.com; a=openpgp; fpr=67350C9BF5CCEE9B5364356A377C7F21FE3D1F91
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3A:EE_|MW6PR12MB8705:EE_
-X-MS-Office365-Filtering-Correlation-Id: 96392112-90d4-4959-3a9b-08dc2ecc8ce2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	h7Sz6k2k0mFr27in2dRghdpSNwiKsKpbp8OIVGf/vFfL5KcA+4E8Q+8zDQaInHhjtOt35ris9Pr0r7vX/Lhnu/vqA3e2iJy+XgBCoFF5ovkpi24OGZAPTzdJ2dzp55wEzY99xBovO+bmJS+FO2mPLYNUgqNLnSL75i3vIbLUMDqrpR3lrr7ggwOFqgNNBMo/DmA5n0pGm0WaSIfWHoYgslMqxsHnOeG0vtj6yeuHCYVWSfh+IhAVDXb1dAFIposRkwVbgKlzjVLmvgXVGKTDaIVYZXppGP2+WItaGsxiRjM/41B4cXrhBGGkAKzAe41YUbyxo0gCoqGpGUcL7UXQgYxHD+WoONKDuPaGonfV/kHiACSc1ZPbE2ekcdIBlARi0FfdZklz3bKnbeE7MRAlpiAie/vM/b7xy4j7zCM+m7jqi3YnSfelKtgpeFxP8YDbC/cuFHAjYGs6U1PbVLzTQFSxyRUbMSqe1fcEpUyP5bYZaVUhMnnR9DBwAWcgCJhNXSwS6BxVK9QbRz8veqmdywmOJrxTURFnAA9EHGC9Q4f6b4ropaCyNqKi1CutWsszv4kHl+Kw3jRPgZimaqtg1FFvVuNV65diUbRpcu9UB2QARe+CLtwRc3A5deNb10ATeMSwNR45XrqEXt3CKAUiM6D4gFUFr1oL+mmzp3mQBfY=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(376002)(39860400002)(396003)(230922051799003)(1800799012)(64100799003)(186009)(36860700004)(451199024)(82310400011)(40470700004)(46966006)(36756003)(86362001)(5660300002)(70206006)(8676002)(70586007)(4744005)(4326008)(356005)(2906002)(81166007)(8936002)(44832011)(82740400003)(426003)(16526019)(110136005)(478600001)(54906003)(6666004)(336012)(2616005)(26005)(41300700001)(316002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 08:52:05.0672
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96392112-90d4-4959-3a9b-08dc2ecc8ce2
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE3A.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR12MB8705
+References: <20230914020044.1397356-1-songshuaishuai@tinylab.org> <20230914020044.1397356-3-songshuaishuai@tinylab.org>
+In-Reply-To: <20230914020044.1397356-3-songshuaishuai@tinylab.org>
+From: yunhui cui <cuiyunhui@bytedance.com>
+Date: Fri, 16 Feb 2024 16:54:11 +0800
+Message-ID: <CAEEQ3w=Xeuoyd8T0RDv0Eoums1S5-kX4omAUsACQLGixJqio3w@mail.gmail.com>
+Subject: Re: [External] [PATCH 2/2] riscv: kexec_file: Support loading Image
+ binary file
+To: Song Shuai <songshuaishuai@tinylab.org>
+Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	lihuafei1@huawei.com, conor.dooley@microchip.com, liaochang1@huawei.com, 
+	guoren@kernel.org, ajones@ventanamicro.com, alexghiti@rivosinc.com, 
+	evan@rivosinc.com, sunilvl@ventanamicro.com, xianting.tian@linux.alibaba.com, 
+	samitolvanen@google.com, masahiroy@kernel.org, apatel@ventanamicro.com, 
+	jszhang@kernel.org, duwe@suse.de, eric.devolder@oracle.com, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-RTC has its own power domain on Xilinx Versal SOC that's why describe it as
-optional property.
+Hi Shuai,
 
-Signed-off-by: Michal Simek <michal.simek@amd.com>
----
+On Thu, Sep 14, 2023 at 10:09=E2=80=AFAM Song Shuai <songshuaishuai@tinylab=
+org> wrote:
+>
+> This patch creates image_kexec_ops to load Image binary file
+> for kexec_file_load() syscall.
+>
+> Signed-off-by: Song Shuai <songshuaishuai@tinylab.org>
+> ---
+>  arch/riscv/include/asm/image.h         |  2 +
+>  arch/riscv/include/asm/kexec.h         |  1 +
+>  arch/riscv/kernel/Makefile             |  2 +-
+>  arch/riscv/kernel/kexec_image.c        | 97 ++++++++++++++++++++++++++
+>  arch/riscv/kernel/machine_kexec_file.c |  1 +
+>  5 files changed, 102 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/riscv/kernel/kexec_image.c
+>
+> diff --git a/arch/riscv/include/asm/image.h b/arch/riscv/include/asm/imag=
+e.h
+> index e0b319af3681..8927a6ea1127 100644
+> --- a/arch/riscv/include/asm/image.h
+> +++ b/arch/riscv/include/asm/image.h
+> @@ -30,6 +30,8 @@
+>                               RISCV_HEADER_VERSION_MINOR)
+>
+>  #ifndef __ASSEMBLY__
+> +#define riscv_image_flag_field(flags, field)\
+> +                              (((flags) >> field##_SHIFT) & field##_MASK=
+)
+>  /**
+>   * struct riscv_image_header - riscv kernel image header
+>   * @code0:             Executable code
+> diff --git a/arch/riscv/include/asm/kexec.h b/arch/riscv/include/asm/kexe=
+c.h
+> index 518825fe4160..b9ee8346cc8c 100644
+> --- a/arch/riscv/include/asm/kexec.h
+> +++ b/arch/riscv/include/asm/kexec.h
+> @@ -56,6 +56,7 @@ extern riscv_kexec_method riscv_kexec_norelocate;
+>
+>  #ifdef CONFIG_KEXEC_FILE
+>  extern const struct kexec_file_ops elf_kexec_ops;
+> +extern const struct kexec_file_ops image_kexec_ops;
+>
+>  struct purgatory_info;
+>  int arch_kexec_apply_relocations_add(struct purgatory_info *pi,
+> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
+> index 1c62c639e875..9ecba3231a36 100644
+> --- a/arch/riscv/kernel/Makefile
+> +++ b/arch/riscv/kernel/Makefile
+> @@ -86,7 +86,7 @@ endif
+>  obj-$(CONFIG_HOTPLUG_CPU)      +=3D cpu-hotplug.o
+>  obj-$(CONFIG_KGDB)             +=3D kgdb.o
+>  obj-$(CONFIG_KEXEC_CORE)       +=3D kexec_relocate.o crash_save_regs.o m=
+achine_kexec.o
+> -obj-$(CONFIG_KEXEC_FILE)       +=3D kexec_elf.o machine_kexec_file.o
+> +obj-$(CONFIG_KEXEC_FILE)       +=3D kexec_elf.o kexec_image.o machine_ke=
+xec_file.o
+>  obj-$(CONFIG_CRASH_DUMP)       +=3D crash_dump.o
+>  obj-$(CONFIG_CRASH_CORE)       +=3D crash_core.o
+>
+> diff --git a/arch/riscv/kernel/kexec_image.c b/arch/riscv/kernel/kexec_im=
+age.c
+> new file mode 100644
+> index 000000000000..b6aa7f59bd53
+> --- /dev/null
+> +++ b/arch/riscv/kernel/kexec_image.c
+> @@ -0,0 +1,97 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * RISC-V Kexec image loader
+> + *
+> + */
+> +
+> +#define pr_fmt(fmt)    "kexec_file(Image): " fmt
+> +
+> +#include <linux/err.h>
+> +#include <linux/errno.h>
+> +#include <linux/kernel.h>
+> +#include <linux/kexec.h>
+> +#include <linux/pe.h>
+> +#include <linux/string.h>
+> +#include <asm/byteorder.h>
+> +#include <asm/image.h>
+> +
+> +static int image_probe(const char *kernel_buf, unsigned long kernel_len)
+> +{
+> +       const struct riscv_image_header *h =3D
+> +               (const struct riscv_image_header *)(kernel_buf);
+> +
+> +       if (!h || (kernel_len < sizeof(*h)))
+> +               return -EINVAL;
+> +
+> +       /* According to Documentation/riscv/boot-image-header.rst,
+> +        * use "magic2" field to check when version >=3D 0.2.
+> +        */
+> +
+> +       if (h->version >=3D RISCV_HEADER_VERSION &&
+> +           memcmp(&h->magic2, RISCV_IMAGE_MAGIC2, sizeof(h->magic2)))
+> +               return -EINVAL;
+> +
+> +       return 0;
+> +}
+> +
+> +static void *image_load(struct kimage *image,
+> +                               char *kernel, unsigned long kernel_len,
+> +                               char *initrd, unsigned long initrd_len,
+> +                               char *cmdline, unsigned long cmdline_len)
+> +{
+> +       struct riscv_image_header *h;
+> +       u64 flags;
+> +       bool be_image, be_kernel;
+> +       struct kexec_buf kbuf;
+> +       int ret;
+> +
+> +       /* Check Image header */
+> +       h =3D (struct riscv_image_header *)kernel;
+> +       if (!h->image_size) {
+> +               ret =3D -EINVAL;
+> +               goto out;
+> +       }
+> +
+> +       /* Check endianness */
+> +       flags =3D le64_to_cpu(h->flags);
+> +       be_image =3D riscv_image_flag_field(flags, RISCV_IMAGE_FLAG_BE);
+> +       be_kernel =3D IS_ENABLED(CONFIG_CPU_BIG_ENDIAN);
+> +       if (be_image !=3D be_kernel) {
+> +               ret =3D -EINVAL;
+> +               goto out;
+> +       }
+> +
+> +       /* Load the kernel image */
+> +       kbuf.image =3D image;
+> +       kbuf.buf_min =3D 0;
+> +       kbuf.buf_max =3D ULONG_MAX;
+> +       kbuf.top_down =3D false;
+> +
+> +       kbuf.buffer =3D kernel;
+> +       kbuf.bufsz =3D kernel_len;
+> +       kbuf.mem =3D KEXEC_BUF_MEM_UNKNOWN;
+> +       kbuf.memsz =3D le64_to_cpu(h->image_size);
+> +       kbuf.buf_align =3D le64_to_cpu(h->text_offset);
+> +
+> +       ret =3D kexec_add_buffer(&kbuf);
+> +       if (ret) {
+> +               pr_err("Error add kernel image ret=3D%d\n", ret);
+> +               goto out;
+> +       }
+> +
+> +       image->start =3D kbuf.mem;
+> +
+> +       pr_info("Loaded kernel at 0x%lx bufsz=3D0x%lx memsz=3D0x%lx\n",
+> +                               kbuf.mem, kbuf.bufsz, kbuf.memsz);
 
- Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+pr_info() or pr_debug()?
 
-diff --git a/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-index d1f5eb996dba..838c3ce494de 100644
---- a/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-+++ b/Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml
-@@ -48,6 +48,9 @@ properties:
-     default: 0x198233
-     deprecated: true
- 
-+  power-domains:
-+    maxItems: 1
-+
- required:
-   - compatible
-   - reg
--- 
-2.36.1
 
+> +
+> +       ret =3D load_extra_segments(image, kbuf.mem, kbuf.memsz,
+> +                                 initrd, initrd_len, cmdline, cmdline_le=
+n);
+> +
+> +out:
+> +       return ret ? ERR_PTR(ret) : NULL;
+> +}
+> +
+> +const struct kexec_file_ops image_kexec_ops =3D {
+> +       .probe =3D image_probe,
+> +       .load =3D image_load,
+> +};
+> diff --git a/arch/riscv/kernel/machine_kexec_file.c b/arch/riscv/kernel/m=
+achine_kexec_file.c
+> index aedb8c16a283..5dc700834f1e 100644
+> --- a/arch/riscv/kernel/machine_kexec_file.c
+> +++ b/arch/riscv/kernel/machine_kexec_file.c
+> @@ -17,6 +17,7 @@
+>
+>  const struct kexec_file_ops * const kexec_file_loaders[] =3D {
+>         &elf_kexec_ops,
+> +       &image_kexec_ops,
+>         NULL
+>  };
+>
+> --
+> 2.20.1
+>
+
+I tested these two patches. It works when
+CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY is not enabled. When
+CONFIG_ARCH_SUPPORTS_KEXEC_PURGATORY is enabled, the error is as
+follows:
+
+[45.712019] Unknown rela relocation: 34
+[45.712258] Error loading purgatory ret=3D-8
+
+How to fix it?
+
+Thanks=EF=BC=8C
+Yunhui
 
