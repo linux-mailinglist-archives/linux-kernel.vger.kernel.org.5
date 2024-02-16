@@ -1,209 +1,179 @@
-Return-Path: <linux-kernel+bounces-68778-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68779-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A310185801D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:05:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C990B858022
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5A48B28357A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:05:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 556F51F2241B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:06:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5587F12F38F;
-	Fri, 16 Feb 2024 15:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B802812F399;
+	Fri, 16 Feb 2024 15:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="VdxryVev";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b="P9VsyFTI"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2136.outbound.protection.outlook.com [40.107.21.136])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mjpAljld"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2046.outbound.protection.outlook.com [40.107.244.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A9412C7F3;
-	Fri, 16 Feb 2024 15:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.136
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095899; cv=fail; b=Oxp36u/kxZ+mNG0A5zeVb3hbgNWNeMA45qE30OngVJGkj3Hba8mny3OT+AvSHTBKnUGWAXDsUPHn0BDxHbJrqd1AFbTjYwRg0o6Zk/oONHPB7PaqGibCRTuxWY0AJCSSTj79uvGoGKVcb5WIvR7BblWtrLqCsCmE+o5uSIFlnYE=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095899; c=relaxed/simple;
-	bh=nBCHD6x/BjUEO/eBLo3RKmZIj2PshOQd+HsW0V7WZyw=;
-	h=Message-ID:Date:From:Subject:To:CC:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=qdJGkcrPJqNh2/q0MCnDtEcSRHpZ9E0z7auNaXx/GdoYyw9WbdIXtor9JsFjZE99ERYHpUE9cHlc77eBQjSxqBo/R+tG57rkrZB6PMDXL4ifTgH+Xx2b8a4h0BHWu8KMf7j0dkxTSfs3tUkVU0GME9iRTkc8eVbydBBaFbSnIGM=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl; spf=pass smtp.mailfrom=topic.nl; dkim=pass (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=VdxryVev; dkim=fail (2048-bit key) header.d=topic.nl header.i=@topic.nl header.b=P9VsyFTI reason="signature verification failed"; arc=fail smtp.client-ip=40.107.21.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=topic.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=topic.nl
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=fail;
- b=bvRMOA7XzGjcPCDu0tUGpJPFKTioVI9xjATpiwM6v81eWvy9OK6cZiobay3iNdHTZPtraiFbbSv+J5xeU1SeJQyeFpfZH1bTsu7Mia/jWipNq4RokADivq1tG4u+HsLU7vlVk6rqXaO3cvqZbjx1Wi+yiKtRZEvH8oi6/NUB6tI6DjTHzzCoUCDM80XZ4Y43UScuu8KyUDmeCxjLJzRHOb+klXW0ketnJxPnl8WSEv9j7ho4J2k8xUPkk7vbY8xOgiGwfD43AnLGnUMJldYUg2CYw4ru4yLBwv2+VErJoMWwy2gf3ZaCnu8W4XaH0eCIq5JQzZkgZtGWSd4E0ag98w==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nBCHD6x/BjUEO/eBLo3RKmZIj2PshOQd+HsW0V7WZyw=;
- b=YF5EBtCE0P5pixy4TBjb1WLqFZOT4M+jZGiLza/FHS8pt57JYvW/uCxjAzqTMNHOEwOHCMDHR2qE0j8+Y8eHJWUUcMkvL2WO2eGVFY+AuPJhsepbAWPb3daqStnPDEl81smOm1aVJTpDNeoZbFTHMCW++Zn4RJSsqisOdKMkHKMznVVIke7OiIAjbcvvIH+Mwljb+nBEALr3DUyyUULhDIE5LZ/ov8h1OFUm7BJStfNGZjVE1jTMyy9WnQ/CHihPyv8+gkE67lfXuwR0n7+tGDm2ODp5dAtHEcLcLY7VkECzLbaFO09LdihOCWvwxJTqne3mOcjJBJxQnOTKqo3KHQ==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=pass (sender ip is
- 20.93.157.195) smtp.rcpttodomain=kernel.org smtp.mailfrom=topic.nl;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=topic.nl;
- dkim=fail (signature did not verify) header.d=topic.nl; arc=fail (47)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nBCHD6x/BjUEO/eBLo3RKmZIj2PshOQd+HsW0V7WZyw=;
- b=VdxryVevC03ztoVKF2PMWrUDbWvDnOzot+0xCeC3ADMV7CnwrGv7ZJ4FlmAzrV6OdpxQjdyj6CV8Zrvd4nlLT67yS5wwDLEmP/SBSZ0p94iPBm+CbR+dkH8zDA0NfGgZuis1+KN0Q4nVe5meQy+mGc/VWimjDw6zSJeV3MkO5WmE22Ncwi/vX0bSw1IAQCMUqpCQbteubVAtcC7/4Y2kinbDV8Yf6y11lUUe1HXyr1y8fxyIQfdn5/MOx6yErMZRRww4Is2q/g6uImDjqtJtc5MESKsfIWznzEz1zHoiiPAMq67TEJ1qKNkIAJlwBysrX9yQE0qFS0lQgJXtvNSREA==
-Received: from AM6PR10CA0080.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:209:8c::21)
- by DB8PR04MB7033.eurprd04.prod.outlook.com (2603:10a6:10:125::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Fri, 16 Feb
- 2024 15:04:51 +0000
-Received: from AMS0EPF000001A2.eurprd05.prod.outlook.com
- (2603:10a6:209:8c:cafe::a5) by AM6PR10CA0080.outlook.office365.com
- (2603:10a6:209:8c::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.38 via Frontend
- Transport; Fri, 16 Feb 2024 15:04:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 20.93.157.195)
- smtp.mailfrom=topic.nl; dkim=fail (signature did not verify)
- header.d=topic.nl;dmarc=pass action=none header.from=topic.nl;
-Received-SPF: Pass (protection.outlook.com: domain of topic.nl designates
- 20.93.157.195 as permitted sender) receiver=protection.outlook.com;
- client-ip=20.93.157.195; helo=westeu11-emailsignatures-cloud.codetwo.com;
- pr=C
-Received: from westeu11-emailsignatures-cloud.codetwo.com (20.93.157.195) by
- AMS0EPF000001A2.mail.protection.outlook.com (10.167.16.235) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.25 via Frontend Transport; Fri, 16 Feb 2024 15:04:50 +0000
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (104.47.51.233) by westeu11-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Fri, 16 Feb 2024 15:04:49 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBAA612EBF9;
+	Fri, 16 Feb 2024 15:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708095953; cv=fail; b=ZaxBjKJN6TubAvOH16B2RoN2U6VrQog4IFaKkZW8cCICQVQ48oxW8ZTIoBGPqTkmBlkLE2vdh3aTF9kYhxgciQRK1p8CJTfiWhM+kKabWKC0zCVFB700bXDOUVnPeB+njA/QuCBsXS4Yg+/o2jUlog9Z5xzT/0tFPE5BoK+Odfk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708095953; c=relaxed/simple;
+	bh=nPTZR00HxSNJqi19ptaNnq9qzfkAqEVNBnYuXoKqJiE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ID9AIW/Mhthmrgq2j4LwtCBqIpgB+B4YzPIhhTd0CGhgOPMZwTYoUkoVzU9hGe1NVKlb9pgkNdQ1yIPVcVQMnqRgL01YgHkOk+NwgDWpCZZMiJqjIRG8//ZV61qS+ZhpTg5t5H++BJSyPzC9wD3l42eSjPykUwCyc9u5RZzuwF4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mjpAljld; arc=fail smtp.client-ip=40.107.244.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LWdtrm5opDozj4BRLcxbJF4/58QYzsR5vsZEEJ9KP43uoiPUBw7ZQOzWeoHZr+nJeMW38jx25eJavUNAZG7TuQMz5LgnJDf7DYewXUW3dXN+etjBf3HivGbVywFByouMq6k6ScdRXXHzZqE3CX7plFYUou8sJkrDgJVEhctNkJPKu7Gw94RFdYs/Ddzk9RwqbyjElZgXCe7cKZ+pKBbWCATqwN7W9is1b1ebzQipGnB3cUpaJ8RjtX6Pj8ihei2yliPYR3CZYyjeWfzfmhhiMzVQOdY1in1cjFXK6tVor8vqG0c5n7SbXadOkvQ2+dInp9Bl2ZC9BV1xbQLg23vr1Q==
+ b=JmrabtBEw6cYCy+LVp1vuzT2BYvL/U2qUNQ56mgymlg3IDl+lNV89sezRzHGB+xaoZBA7VjMZyWzSJ1xHSAe0aIESdRx4g6G6ReV5b+zk8p0Ohd0PS7VEqAK2qiRXN/WMVE38KjcaHWbmSgFi58/mSPNOnZRM2KvwVojx1wa/MOpdZmA5m8J6KZMYD0xPBpaHN/yPhlVF+6SMIh89C6HGU41wD4RKulnRJ9PLEV51DXS95aTv1nAANFNqsBd7QHaB6joFw7UcX3ql8FkH3qWOjEl/HcJgRIw9wM3j419bFuZVzdbkCXKoohyDP5p33VZKAvBd+jP+lNNQW/7OqKVdA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OHeiOTQ3viiI7aVgjEVoppLR4GQhFFpFIhFgAF9/lZo=;
- b=buZfmKLJYTxsCEpfHm0/Xp60qAS5KqjfLEf6lV4K/US/JcxRjtqfAsVwCgQowVUXouwXq8vUAsSX/xsk3AZQPxgPR3Znrz0Oy04bjVpPYuNKNGOdPjXrNgQIxZnOLpUUVUsiiKBxAtyPvQeK0028IX7kwf+vxd9Uh2YKFnr2suLANehuJH2CQrKQTzCeLTb/y5DUSzCEngVcGsEhuFeI4JzoIRyOurQYGTWoLmQlaj5MMqNkR0ZcV7AKHM7NYr02lo9zfju4Sad62svjbJQKnYawkeGi5AQBx6rguHooVVRXMUlvthkpipoY0EFsn3aPkKYEiPnCAyFz+VlAozmTOQ==
+ bh=Sp9+K+DlJ4MqoYLe/om6Nl4AIO68COthXe24NqKeoyA=;
+ b=AO217vO/RnRgoLkEbZpBvUG/Y2D+T2ZPtOPaj+TLFp3tNPTMP1ohv473OGyyZbzPk+dTWLezIGYEfV7VinUoUcIhkq2Oq+3oBX8kqEP8RJXoSObN394BDSXtA4FWPXPE4Uejega6W8WsmDx/wZwiIYUnLJJM+UPezS5+WJLKI0FYdibPK/SR0ck04FHp6Qrvf93MH9SkZDZb8DN4JVwDti/zaQctac8gencLlCxjW3/KCl2+AFQQLdVG/6eAReH1x8GzQesGyiReawvnPe7gYl0BsoCy+6KXAuO87KOg1kadTscXwmm3e/xYkLRHRJbaEYCFHwuD53bhpKdPx5AS3g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=topic.nl; dmarc=pass action=none header.from=topic.nl;
- dkim=pass header.d=topic.nl; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=topic.nl; s=selector2;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OHeiOTQ3viiI7aVgjEVoppLR4GQhFFpFIhFgAF9/lZo=;
- b=P9VsyFTINo/nhLjhcCp9UJWMJwqHAZLGfrjpRK1uQ8fINzJK/pfeUoN4VPDdigGwEWvdo9H4cRVYXPoAnLuad3RqyhKun6bwtpmXxW23x60IGpN5u2wHFdSj4Ie9uP73n/Fqot4qnQmt3gjPkw9vE9axNqXa6wTRadGvdGzXAwlbqUtCHZMOCZ86skTj1QOqxtRE/XdjLFVXjkUjOpC3GPVtU8K/Y5EudpzLXumV6i464qZXQBSF0NQ0m0jnyJxnvQpaxiJFPW0DD5+bw4j1GptVWwNLYoGfcNJTLfLDIHbgbpyXrNOzDUjZ5DUTvaP+SagmZKPr//VlrlNhARScqw==
-Authentication-Results-Original: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=topic.nl;
-Received: from AS8PR04MB8644.eurprd04.prod.outlook.com (2603:10a6:20b:42b::12)
- by VI1PR04MB9859.eurprd04.prod.outlook.com (2603:10a6:800:1d9::20) with
+ bh=Sp9+K+DlJ4MqoYLe/om6Nl4AIO68COthXe24NqKeoyA=;
+ b=mjpAljldCeKn0i9GYgM2g4Y9l1yWykKh/gBY2PKymvJIE6bzjdvV3ajprfgK17kKBbx5AEjYrLNwFnQZ1EvaE3CBq28EHwSK1DfzbBH9uoI6gDnfKKaQ4fuQ/0lw/3WJDHYCrEbnrrep+rHXu78uaCQigPUmztIXqnM0tEeoba2VU7ira80Nup20M3gjEZ/OuwDxA+/tQUpnYKNgHdJ8hGb4ke79ZqZwlHFy0ja1sY8BRSDZMtIDTOVlFkCMI+jqpwW503m2uluU2qRVuz9HhgYPd5+VqO6E9/3uKZUjEYJ1ZPOVYnqguUOWnCchaHFWD3eraF+y/34townY+Maojw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by SA1PR12MB6797.namprd12.prod.outlook.com (2603:10b6:806:259::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.27; Fri, 16 Feb
- 2024 15:04:45 +0000
-Received: from AS8PR04MB8644.eurprd04.prod.outlook.com
- ([fe80::651a:dedd:945a:d1dd]) by AS8PR04MB8644.eurprd04.prod.outlook.com
- ([fe80::651a:dedd:945a:d1dd%6]) with mapi id 15.20.7292.027; Fri, 16 Feb 2024
- 15:04:45 +0000
-Message-ID: <14f92c6d-7c26-437c-aaa7-9b6691cb3042@topic.nl>
-Date: Fri, 16 Feb 2024 16:04:45 +0100
-User-Agent: Mozilla Thunderbird
-From: Mike Looijmans <mike.looijmans@topic.nl>
-Subject: Re: [PATCH v4 2/2] iio: adc: ti-ads1298: Add driver
-Content-Language: en-US, nl
-To: Jonathan Cameron <jic23@kernel.org>
-CC: devicetree@vger.kernel.org, linux-iio@vger.kernel.org,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Lars-Peter Clausen <lars@metafoo.de>, Liam Beguin <liambeguin@gmail.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Maksim Kiselev <bigunclemax@gmail.com>,
- Marcus Folkesson <marcus.folkesson@gmail.com>,
- Marius Cristea <marius.cristea@microchip.com>,
- Mark Brown <broonie@kernel.org>, Niklas Schnelle <schnelle@linux.ibm.com>,
- Okan Sahin <okan.sahin@analog.com>, linux-kernel@vger.kernel.org
-References: <20240214063736.88283-1-mike.looijmans@topic.nl>
- <1b153bce-a66a-45ee-a5c6-963ea6fb1c82.949ef384-8293-46b8-903f-40a477c056ae.da2f422c-5c6b-41b4-8916-d1a90f0f0973@emailsignatures365.codetwo.com>
- <20240214063736.88283-2-mike.looijmans@topic.nl>
- <20240216133816.18c42c99@jic23-huawei>
-Organization: Topic
-In-Reply-To: <20240216133816.18c42c99@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: AS4P189CA0019.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:20b:5db::10) To AS8PR04MB8644.eurprd04.prod.outlook.com
- (2603:10a6:20b:42b::12)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.12; Fri, 16 Feb
+ 2024 15:05:47 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::96dd:1160:6472:9873%6]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
+ 15:05:47 +0000
+Date: Fri, 16 Feb 2024 11:05:46 -0400
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Leonid Bloch <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	David Ahern <dsahern@kernel.org>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <20240216150546.GD13330@nvidia.com>
+References: <20240207072435.14182-1-saeed@kernel.org>
+ <Zcx53N8lQjkpEu94@infradead.org>
+ <20240214074832.713ca16a@kernel.org>
+ <Zc22mMN2ovCadgRY@infradead.org>
+ <20240215170046.58d565ef@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215170046.58d565ef@kernel.org>
+X-ClientProxiedBy: BL1PR13CA0323.namprd13.prod.outlook.com
+ (2603:10b6:208:2c1::28) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-TrafficTypeDiagnostic:
-	AS8PR04MB8644:EE_|VI1PR04MB9859:EE_|AMS0EPF000001A2:EE_|DB8PR04MB7033:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6f00a8e0-2caf-4421-a825-08dc2f009fc6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|SA1PR12MB6797:EE_
+X-MS-Office365-Filtering-Correlation-Id: 65155c20-d6c7-4a50-da81-08dc2f00c1a5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original:
- kQHywVQczUJlMz0evUsH0z+rU214MydckbRky9kQXu4SE2kCDfwWxYQ57wmu9RBBvgk7X8vl5CeTLbN/MRNY1juJg7pCI3cXqmqu0Uas7LLZwqFA/oRY15Ce+PPIkDDAQJmuhQIFFj+DluxP7QoIGhla938RYtP6yLtsIZKoeC2OQoqQIYLDzlNjw4WJ0W1GxG2Pc+QfaF5iUKFQvBfrYfCbF6XImWe1GpYCFplaJwc4jlX7rnTFDynWfmWgbL/tyvoBF4JQhU13pzFefLA/FipR+yIBoDYRuKPGOdq+sheq06ws7VGKFBnQvt2gU2YwqKb/RmdFskL30Ky9/WGuDoqUdr2//hZqSGHjLgxZwJhpAuR5+VqDbQTq77cpjxwEQE55hkWdDCZZ0j5frHnYB1a0mtkHqJ51FOijQaH1wIHpjG0fdThNJKPzY7/F4pYcLVDpgr9J8NPL54nK4/AZwqQJfd5NGkDVz4EfdLVr7TbAGL6c/gcxZGPxy36K26ga+bban3/ljOLQynCvp2xL9kUgk52Ugk3pe9338GrbKYjP5sU/MGoR1ORzh+/l/9QYjFnfI+P/ibavhgcgrCdb/8lO0c3t04JIqawKv93TTHE=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR04MB8644.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(39830400003)(366004)(346002)(136003)(230922051799003)(451199024)(186009)(64100799003)(1800799012)(31686004)(478600001)(6512007)(41300700001)(6486002)(7416002)(44832011)(8676002)(8936002)(4326008)(5660300002)(2906002)(36916002)(6506007)(38350700005)(316002)(52116002)(53546011)(66556008)(66476007)(54906003)(66946007)(6916009)(83380400001)(15974865002)(31696002)(2616005)(26005)(38100700002)(36756003)(86362001);DIR:OUT;SFP:1102;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB9859
-X-CodeTwo-MessageID: a8ff0e3e-4cef-41c9-b468-216565b5e2d9.20240216150449@westeu11-emailsignatures-cloud.codetwo.com
-X-CodeTwoProcessed: true
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- AMS0EPF000001A2.eurprd05.prod.outlook.com
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id-Prvs:
-	2939d137-ec93-4c7c-dd35-08dc2f009cb4
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	yijI5kSD7L5otLWHgo6IyI38JHSCihYr+Io+S+2hC3B354L2hwOwbfFJE+v2Y5MZjMxoAMihOqFCOVcgHPtt2ZMAndpZCbMt+det8rBsLwHsBdlBwBmBRy9rBbN+qCV+j1Qh6RkCxcrbqzii98w85dKFyo3qW4f8Dr91ClzyMpuvemh2i1+xN26zNG6WwDl2FhTx6tcn22qfMgscs/B7k+QNcJmD24aMtAaQ8J+zKrD2GrZJGMPDk9XwSXaIqfhId5q1utUI5aj/bzPq9nuiPyYSWORxTMOu9lWqVt9BGF/wx9Kh7q7l6yMiil/SbQHUrZRVkFyc6NTDr1frpduIgGYxOb85UI0ZChbV331XTkFMcNW5J6WByfObizVhEiC/1UPK5Xl7PNjlLEAzdyNvyHZrJA3LF17JiZwNg3LkPRUlhQbRdCCBVM8Vd00zLYYRS5PnZu5y7uG1C8tirAOmqo0MSfX7SgO5BuxCTPUAULDFln24p3Wj0CaARypsGxfX1VoXAyopBRKyDdQlYhcRBgbwxqbIEdawztGPLjymAlrXekAFNSEEIw8/HjxAOOaWy631cV7lujYOR9PNIP1invpfXl9CaM2tjyzJ8XSvpR9UVO9DOLsa2pgXS+h7aglyZoGJwieKT42rAN95j3ybOQ==
+	4s17byXx9c20570xd/H46UmlCM5uBzty5kfxk3EqU+62SZgZpV/pS+EitkcvdGNrl09cmkwfIzSTFRiX2RQQ0V+FSAj6jMZmli+/89FleQZEr8yRpJbCnN4ZbFhy5tPaS9DDTlwtZ59r91Sb3J2viRWcYVqOQh7jmPWE/uQmBk35UIZyCR8TTc2sF7LAW4rs7Ax/O4+bYs9kiYo0VNhM+qqGPaugL5LnX5mP/NZizPH4xHWj6B7Ux6KE+rlgbypAHwptPRxF5u2b0koF4qghkn1X6ij3OINUBlmCbtlyoS0rrkG7372xbCfH6IcnfngMWL4778m9iq5Kfo+BwPWWYmQJdjXwCnfQ7MI5D9663/vr39f4pkHkC+4pcB5VzE5H6h2VlmQeEMMq+mtDREu2ExyhUOONGCiuGVP4Ba7+Dm08HQtD4St0qdx2WljQacSBJvq2/ckw4KDtCn+SUTbifXzHhFOjtuom/F42BCcV3XMwXFL42XbEDJfcLqEzLs0C8GRmeOsZOemS2OIJs4neW9fEwuIhWuAkvR/Dj9DX6AtHLsD8ml144wYP6gxdR9fO
 X-Forefront-Antispam-Report:
-	CIP:20.93.157.195;CTRY:NL;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:westeu11-emailsignatures-cloud.codetwo.com;PTR:westeu11-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39840400004)(230922051799003)(186009)(451199024)(64100799003)(1800799012)(82310400011)(36860700004)(46966006)(31696002)(7636003)(86362001)(356005)(15974865002)(7596003)(36756003)(6486002)(36916002)(6512007)(6506007)(316002)(478600001)(54906003)(41300700001)(83380400001)(336012)(2616005)(53546011)(26005)(2906002)(7416002)(70586007)(70206006)(31686004)(4326008)(8936002)(8676002)(6916009)(5660300002)(44832011);DIR:OUT;SFP:1102;
-X-OriginatorOrg: topic.nl
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 15:04:50.6401
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(396003)(346002)(39860400002)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(66946007)(66556008)(5660300002)(66476007)(316002)(6916009)(2906002)(4326008)(7416002)(8936002)(8676002)(86362001)(478600001)(33656002)(38100700002)(83380400001)(36756003)(6506007)(6512007)(54906003)(6486002)(41300700001)(2616005)(26005)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?opR+aDskhQKr62SSuzlC1QdeGBRmBR/Ru8kASTB0/rgEvI+kvHta/clRSsRo?=
+ =?us-ascii?Q?Ov7Ogxes72MARp7Ftvlg2v2QlYnlM9Tx5sSxiGCg3R3KzmwS8gZ+ufPHMqUA?=
+ =?us-ascii?Q?1TKoNDHlJhL07hwcNdAxp5dMWsHfBPAdfQtp0P4w/Qo8HAULKJ6t6NsqyKCL?=
+ =?us-ascii?Q?m/jgu/zBFH14R+AkL2oA2c9KuFfqcCnRzOYb2oR4BzPHSleRsLlkz5Q8yUrZ?=
+ =?us-ascii?Q?8RrpS8Fx5Rf8FgWQFFX+Z4SW8GCBtNdCjuU7qSsarTQkxmS8NUJ3ZlPpBTvI?=
+ =?us-ascii?Q?ZINxGvRV9szkuAG/riCSfWgHNMGBv6sDsZt0NPoxC7tYvIcqf/4f7FWy+sNc?=
+ =?us-ascii?Q?+Yv07fSXPQ0E024z8Ytx38J1MHgyA2+U0WYsKKIVJPFFy2uzy2m0vy4hTEBn?=
+ =?us-ascii?Q?nJQ6QMTXT/73KfhFdnnvMoO7gn1CI1A+FSlc8n763KP/ajNDAoSEl+ZLqkxi?=
+ =?us-ascii?Q?7+1Kk1mnPZIIhlJEJ595INtbmwalAtVJ+m1VpYAdcMH97qdJBjRy5aosYrTu?=
+ =?us-ascii?Q?4x6LreeTNRS8ohEiLkqGct37x3/SGyev/OMui/WpPIcv8qrMXZawsf0A0zVr?=
+ =?us-ascii?Q?p1VEyqrw5Cn34LJWwR94xkJsQGa8mkBqXpzJZEBfT+6yl7/4KU1HdBaZkw1M?=
+ =?us-ascii?Q?tfb3c0qpVpm3HCPX7Oo4xNsbIji+z1vPnBi3aA3KmzTwnAhMgJ07CG/THNcq?=
+ =?us-ascii?Q?eMgHCD42mvj8GuSUukmrtLxlsiwTI+tKdCT0aYu4lVREeewpvTUQzThZxHo7?=
+ =?us-ascii?Q?v+Vh+5apfO3PArqHLUaxo9/XJnHImjxygnGmWK8Eh5sGnYomAplfVvhTq/d/?=
+ =?us-ascii?Q?g+IwyuJ/Q7rNkItYIrWsopbiNATt3OsvbnHSxPo8MyIqlNcYdQvswQlcHcVc?=
+ =?us-ascii?Q?K+TZ+/PuqORiDsrHNdD7cDCyCuyNhjdzDHCvLWKg1G/q9VVkszBjTOQni+vA?=
+ =?us-ascii?Q?DY+f0bTQfl/GooietdVgzqIYHH53dmaKwLH2L6x9SX0dcISAhJTxflx2YcBu?=
+ =?us-ascii?Q?iNd2VedGT7IUP+j5LGzwAtMchu5KL8Ngbh/PlxcY2WMZWfJUfaQMzF4pFP0i?=
+ =?us-ascii?Q?dn5GUyHPymPMPv5y9pEfCaVZgdWYZZAMsmcw9LRH4G5lQN/gBGIetyfvZ6yk?=
+ =?us-ascii?Q?CD+FhCd4bvFV24w/KZqauE0QQOo7a7in+kWg2pFuHD02c16idSjF1dhUNr7a?=
+ =?us-ascii?Q?ZFLlUdXBdEl+LOYLViPi4fdKOZM9NN9nD4W/1I+dayPuu3xUXrXO1+HVKJDm?=
+ =?us-ascii?Q?+gYPGyuY3btBNGq+qQIgghK192t+N9RhyEETlanWJMzF60jLHZvP5+ftAWIJ?=
+ =?us-ascii?Q?2y7g3AT9QOvPiYXvOaxsTAG26rGcEFQsH0V5f7mkzevDanl81a4rvlE0gDf7?=
+ =?us-ascii?Q?JOGWEzhiLB6LUIWvV3RUr5uL0ewR1INIMX9UfFKh9+ZhlkOcF0Ak9vQkYfIg?=
+ =?us-ascii?Q?9Mr+VDe9Sc8sTfDzalSXJZ2uw25164UHufWaKBLe3w5q5Mx8L2XDTGHYrmWT?=
+ =?us-ascii?Q?TMkSNpHArty0S2Z2LYHFQhasr/5LLQExynlOBXVagjdoXtZ0hd+0pbAtkWy6?=
+ =?us-ascii?Q?18PACk74r88MVd6nxPAlXFVh6WSniCmu5nzP72Wx?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65155c20-d6c7-4a50-da81-08dc2f00c1a5
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 15:05:47.6738
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f00a8e0-2caf-4421-a825-08dc2f009fc6
-X-MS-Exchange-CrossTenant-Id: 449607a5-3517-482d-8d16-41dd868cbda3
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=449607a5-3517-482d-8d16-41dd868cbda3;Ip=[20.93.157.195];Helo=[westeu11-emailsignatures-cloud.codetwo.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	AMS0EPF000001A2.eurprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7033
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jamKDxHvNmP7I2qpCp9Krw7Dn8HZK3eOZxTZTAZjPRkkmzNBdklC5IxgjADkHelW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB6797
 
-On 16-02-2024 14:38, Jonathan Cameron wrote:
-> On Wed, 14 Feb 2024 07:37:36 +0100
-> Mike Looijmans <mike.looijmans@topic.nl> wrote:
->
->> Skeleton driver for the TI ADS1298 medical ADC. This device is
->> typically used for ECG and similar measurements. Supports data
->> acquisition at configurable scale and sampling frequency.
->>
->> Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
->>
-> Hi Mike,
->
-> One final thing noticed on a (hopefully) last read through.
->
-> /sys/bus/iio:device0/name is going to read ads1298 whichever
-> chip is detected.
->
-> Would be more useful to users if it identified the actual
-> part given that is easily read from the ID register.
+On Thu, Feb 15, 2024 at 05:00:46PM -0800, Jakub Kicinski wrote:
 
-Implemented it like that, the "name" now reflects the chip's information.
+> But this is a bit of a vicious cycle, vendors have little incentive 
+> to interoperate, and primarily focus on adding secret sauce outside of 
+> the standard. In fact you're lucky if the vendor didn't bake some
+> extension which requires custom switches into the NICs :(
 
-While at it, I also made the probe fail on invalid ID (tested by probing=20
-an empty SPI bus)
+This may all seem shocking if you come from the netdev world, but this
+has been normal for HPC networking for the last 30 years at least.
 
-And also pass the channel count into the "num_channels" member, and=20
-adapted the SPI transaction, which should support the devices with 4 or=20
-6 channels better.
+My counter perspective would be that we are currently in a pretty good
+moment for HPC industry because we actually have open source
+implementations for most of it. In fact most actual deployments are
+running something quite close to the mainline open source stack.
 
-I'll post a v5 soon, bit of testing first...
+The main hold out right now is Cray/HPE's Slingshot networking family
+(based on ethernet apparently), but less open source.
 
---=20
-Mike Looijmans
-System Expert
+I would say the HPC community has a very different community goal post
+that netdev land. Make your thing, whatever it is. Come with an open
+kernel driver, a open rdma-core, a open libfabric/ucx and plug into
+the open dpdk/nccl/ucx/libfabric layer and demonstrate your thing
+works with openmpi/etc applications.
 
-TOPIC Embedded Products B.V.
-Materiaalweg 4, 5681 RJ Best
-The Netherlands
+Supporting that open stack is broadly my north star for the kernel
+perspective as Mesa is to DRM.
 
-T: +31 (0) 499 33 69 69
-E: mike.looijmans@topic.nl
-W: www.topic.nl
+Several points of this chain are open industry standards driven by
+technical working group communities.
 
+This is what the standardization and interoperability looks like
+here. It is probably totally foreign from a netdev view point, far
+less focus on the wire protocol, devices and kernel. Here the focus is
+on application and software interoperability. Still, it is open in
+a pretty solid way.
 
-
+Jason
 
