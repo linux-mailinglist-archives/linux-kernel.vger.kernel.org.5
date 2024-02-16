@@ -1,58 +1,78 @@
-Return-Path: <linux-kernel+bounces-69253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC19E858645
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:41:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4C90858647
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4374AB23529
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:41:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 298A21F24D8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:41:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3F913AA3E;
-	Fri, 16 Feb 2024 19:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F6E6A005;
+	Fri, 16 Feb 2024 19:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRYPNC/u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CUJNyjx0"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADDE11384A6;
-	Fri, 16 Feb 2024 19:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCA8133439;
+	Fri, 16 Feb 2024 19:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708112431; cv=none; b=lJU3NZP/RTLfNc+x7mRg4Iui7cOmBTjrfh3ZQQSAXrWDru5LOisx//1GG4raCTDjYcGlh3RcVE4dAhMGQgU2Ude3uLvgA9zBnIZQsCZbIXws1licfHmT5ctCVXa1cXrm0dWD2YCF8JALXmF2l9popdmozZSz+GyVWdXcTOSKmn8=
+	t=1708112500; cv=none; b=u2euYP6mgxZ0wP+bPzDShNUY6nz5dauFgJFxln1JdvqqV/q/FvM3ms4yEv0rHpeBDktJ7HZvjx6/7Whk+6wA8rK7HpNXOiO2Q8UlSpSicFLR+vnU5QUCnCxN0KkS5kVEgJYpQQfDgerK2JAR4SAVz3caXMJ+AjZfmhEQMhfhk/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708112431; c=relaxed/simple;
-	bh=etiMiObm+F9ASsbV6LLYp5TjRxnoRmCToWxcmcZj1K8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=J5tTS0RB+G3tckBtkYdkoIlZBrjZv8B730+ImBe3g+lTjjexXdKbsNH1WPRasoDOdoXxVAst3wirc+36y1V86TAMqqY6zc5AZtw1flgTWemICN5QU2vLx39NOjXE0WqybZJwqO7Md2DdePuZm+EadG4Hu7j1EYEHZyX6Lb8QUuM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fRYPNC/u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4D2BC43390;
-	Fri, 16 Feb 2024 19:40:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708112431;
-	bh=etiMiObm+F9ASsbV6LLYp5TjRxnoRmCToWxcmcZj1K8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fRYPNC/ufDnWbXmlor3hTrxVpeLeQeqoH5Tg7VzdZ22oqQ3qLjlcQJGqBrWZcR5Ub
-	 ouYrL/CbRvtNKpTdOFIQgPUaW+HhRLqCjz4l8rAGDGNrO52C4FMbK/n9mYfRqiHiPv
-	 aGFG8KmoVc6K1f8gwozQf+vRPWxBoA52ltgfVCsadI+uVfMglPoyrlqnAO+KNtD+n1
-	 1DvQocMmt7Xwv84fgFSDj4M3YX3JVe7P3r766bZ9OTsih9V3wg2dIz5eKUFtJed+uK
-	 1lf7O5mydvMnqpnEVljBemydiL1kyxZV7erNndJb4784B1DYoDaZ76h0PWLOynQ65z
-	 3gXRHCAU2KFCw==
-From: SeongJae Park <sj@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mm/damon/lru_sort: fix quota status loss due to online tunings
-Date: Fri, 16 Feb 2024 11:40:25 -0800
-Message-Id: <20240216194025.9207-3-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240216194025.9207-1-sj@kernel.org>
-References: <20240216194025.9207-1-sj@kernel.org>
+	s=arc-20240116; t=1708112500; c=relaxed/simple;
+	bh=DH/uzdUlbeC3FFPnken3LFbJuJQKwv/KhPhyiaVAszY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tKletxDgtc9wx0fXMDSQDVU/WwPVbu7FUxoImRLtfE4FDjCtVJnkFfIouH4MBg6qjrEQUb0XGJ6jJLV78kmISjQaUDLiNyEXpoyqZMgM+w1iWD1djnrHhLe1hG27Z1PT5HGGMAZcrqNqTCzwTIWfoLAsD2/ql6x3oYDh+ou7X1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CUJNyjx0; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1d746856d85so10598795ad.0;
+        Fri, 16 Feb 2024 11:41:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708112498; x=1708717298; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=33ahW5QYorwTpyWJJP/aIrICM0csSVst9XZI4ba5EMo=;
+        b=CUJNyjx0Bui4DQWkeC4jrArnS9c1N1XsiSS1qRX9HCS7U+P2rJ1wUe22BZS8ATzU4a
+         DAG2At7ZhaUHbFTF2eKKzTcg2EyWAasxWDrUau84VbsynQLkjYHB0EqZPNHxGBqeAj2C
+         q9n1NvVNJoHmjghKJuzz3BXjWqHac4MLk1/FHlB1jDMGC9maetdQJIMCtF7onTkkbzvG
+         TgqJDfbAZTkA3SsZBysocFVjtaES8wEyr+xaogfX6N519poCkTJzB7wMFBlcumgU78D6
+         K8sbSxm4RfMzoy9PNmlOeB8z+az9o4FGYm89jDiWy4gjeyYjkBneY9W0JvwmyYe0YpdO
+         +OMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708112498; x=1708717298;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=33ahW5QYorwTpyWJJP/aIrICM0csSVst9XZI4ba5EMo=;
+        b=AkXobaXJwW4HYld4rAGuefqvGrEoa5cBWCqI5mhCyA9pH2POCBUbEOnmA5LZPGW+gb
+         2NCD2NaNzmG8az1DnC4Lj7uQbAdTtW4R4fF/DYOPgD7WnfnlH+4yeOS3XE/E7t1uuxfC
+         RO3I1woe9WfrOOqervxHJiBM1ORtCXMvtI7twXGMqKISFVPVzzPBkgfx2VJX8ldQ7A/y
+         +mnrvr0j/CIa4EivWHcEn1MLkyY+gHJHsSgtFbZ7kVBCbbpMf7tHCepaepZ4ZlQnh284
+         qwTlR1uZCj5uVTdvxcuIeIondl39Z/05m3Ps/gJF3tnFnm5F1npfGNJMhM/ZsLKJ/wSU
+         3PlA==
+X-Forwarded-Encrypted: i=1; AJvYcCUx7+SGwBT0EVJumNXaid5sQH245AQ4i6L3A6Au5k4QB0MXmFQKS+uZUV+DV8ZIOy1+4qwAsPQR6f2RYOEM8345i5ZmltmcN9eLkMhB
+X-Gm-Message-State: AOJu0Yw3R9jpra3kPLyOV5W49ZuHTJEAMIJc08vBrfEwAUFxpchfM5zb
+	RuoN0PqCrw6HS3G1YX1KpFkU8DGUA36aH5FQYBZWVaYOBj01ggpViRg8ih+O
+X-Google-Smtp-Source: AGHT+IGQoEmo/X2Fh8UUX4sWu+Gjv5w2XE861xwFe5+3cEGaTpeCejaqfIOTd8V+lh5n/WOgCC1ZoA==
+X-Received: by 2002:a17:902:ef96:b0:1db:3004:aa9f with SMTP id iz22-20020a170902ef9600b001db3004aa9fmr5050384plb.5.1708112498416;
+        Fri, 16 Feb 2024 11:41:38 -0800 (PST)
+Received: from prabhav.. ([2401:4900:1c62:ed3c:fec:32d0:af06:85d0])
+        by smtp.gmail.com with ESMTPSA id v6-20020a170903238600b001d9bd8fa492sm217800plh.211.2024.02.16.11.41.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 11:41:37 -0800 (PST)
+From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+To: skhan@linuxfoundation.org
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Subject: [PATCH] Writing the first patch correcting the spelling mistake.
+Date: Sat, 17 Feb 2024 01:11:26 +0530
+Message-Id: <20240216194126.13336-1-pvkumar5749404@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,98 +81,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-For online parameters change, DAMON_LRU_SORT creates new schemes based
-on latest values of the parameters and replaces the old schemes with the
-new one.  When creating it, the internal status of the quotas of the old
-schemes is not preserved.  As a result, charging of the quota starts
-from zero after the online tuning.  The data that collected to estimate
-the throughput of the scheme's action is also reset, and therefore the
-estimation should start from the scratch again.  Because the throughput
-estimation is being used to convert the time quota to the effective size
-quota, this could result in temporal time quota inaccuracy.  It would be
-recovered over time, though.  In short, the quota accuracy could be
-temporarily degraded after online parameters update.
-
-Fix the problem by checking the case and copying the internal fields for
-the status.
-
-Fixes: 40e983cca927 ("mm/damon: introduce DAMON-based LRU-lists Sorting")
-Cc: <stable@vger.kernel.org> # 6.0.x
-Signed-off-by: SeongJae Park <sj@kernel.org>
+Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
 ---
- mm/damon/lru_sort.c | 43 ++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 36 insertions(+), 7 deletions(-)
+ Documentation/bpf/verifier.rst               | 10 +++++-----
+ Documentation/process/submitting-patches.rst | 12 ++++++------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/mm/damon/lru_sort.c b/mm/damon/lru_sort.c
-index f2e5f9431892..3de2916a65c3 100644
---- a/mm/damon/lru_sort.c
-+++ b/mm/damon/lru_sort.c
-@@ -185,9 +185,21 @@ static struct damos *damon_lru_sort_new_cold_scheme(unsigned int cold_thres)
- 	return damon_lru_sort_new_scheme(&pattern, DAMOS_LRU_DEPRIO);
- }
+diff --git a/Documentation/bpf/verifier.rst b/Documentation/bpf/verifier.rst
+index f0ec19db301c..1b39809277d2 100644
+--- a/Documentation/bpf/verifier.rst
++++ b/Documentation/bpf/verifier.rst
+@@ -9,15 +9,15 @@ First step does DAG check to disallow loops and other CFG validation.
+ In particular it will detect programs that have unreachable instructions.
+ (though classic BPF checker allows them)
  
-+static void damon_lru_sort_copy_quota_status(struct damos_quota *dst,
-+		struct damos_quota *src)
-+{
-+	dst->total_charged_sz = src->total_charged_sz;
-+	dst->total_charged_ns = src->total_charged_ns;
-+	dst->charged_sz = src->charged_sz;
-+	dst->charged_from = src->charged_from;
-+	dst->charge_target_from = src->charge_target_from;
-+	dst->charge_addr_from = src->charge_addr_from;
-+}
-+
- static int damon_lru_sort_apply_parameters(void)
- {
--	struct damos *scheme;
-+	struct damos *scheme, *hot_scheme, *cold_scheme;
-+	struct damos *old_hot_scheme = NULL, *old_cold_scheme = NULL;
- 	unsigned int hot_thres, cold_thres;
- 	int err = 0;
+-Second step starts from the first insn and descends all possible paths.
+-It simulates execution of every insn and observes the state change of
++Second step starts from the first instruction and descends all possible paths.
++It simulates execution of every instruction and observes the state change of
+ registers and stack.
  
-@@ -195,18 +207,35 @@ static int damon_lru_sort_apply_parameters(void)
- 	if (err)
- 		return err;
+ At the start of the program the register R1 contains a pointer to context
+ and has type PTR_TO_CTX.
+-If verifier sees an insn that does R2=R1, then R2 has now type
++If verifier sees an instruction that does R2=R1, then R2 has now type
+ PTR_TO_CTX as well and can be used on the right hand side of expression.
+-If R1=PTR_TO_CTX and insn is R2=R1+R1, then R2=SCALAR_VALUE,
++If R1=PTR_TO_CTX and instruction is R2=R1+R1, then R2=SCALAR_VALUE,
+ since addition of two valid pointers makes invalid pointer.
+ (In 'secure' mode verifier will reject any type of pointer arithmetic to make
+ sure that kernel addresses don't leak to unprivileged users)
+@@ -323,7 +323,7 @@ Register liveness tracking
  
-+	damon_for_each_scheme(scheme, ctx) {
-+		if (!old_hot_scheme) {
-+			old_hot_scheme = scheme;
-+			continue;
-+		}
-+		old_cold_scheme = scheme;
-+	}
-+
- 	hot_thres = damon_max_nr_accesses(&damon_lru_sort_mon_attrs) *
- 		hot_thres_access_freq / 1000;
--	scheme = damon_lru_sort_new_hot_scheme(hot_thres);
--	if (!scheme)
-+	hot_scheme = damon_lru_sort_new_hot_scheme(hot_thres);
-+	if (!hot_scheme)
- 		return -ENOMEM;
--	damon_set_schemes(ctx, &scheme, 1);
-+	if (old_hot_scheme)
-+		damon_lru_sort_copy_quota_status(&hot_scheme->quota,
-+				&old_hot_scheme->quota);
+ In order to make state pruning effective, liveness state is tracked for each
+ register and stack slot. The basic idea is to track which registers and stack
+-slots are actually used during subseqeuent execution of the program, until
++slots are actually used during subsequent execution of the program, until
+ program exit is reached. Registers and stack slots that were never used could be
+ removed from the cached state thus making more states equivalent to a cached
+ state. This could be illustrated by the following program::
+diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
+index 66029999b587..34a68836aa60 100644
+--- a/Documentation/process/submitting-patches.rst
++++ b/Documentation/process/submitting-patches.rst
+@@ -5,7 +5,7 @@ Submitting patches: the essential guide to getting your code into the kernel
  
- 	cold_thres = cold_min_age / damon_lru_sort_mon_attrs.aggr_interval;
--	scheme = damon_lru_sort_new_cold_scheme(cold_thres);
--	if (!scheme)
-+	cold_scheme = damon_lru_sort_new_cold_scheme(cold_thres);
-+	if (!cold_scheme) {
-+		damon_destroy_scheme(hot_scheme);
- 		return -ENOMEM;
--	damon_add_scheme(ctx, scheme);
-+	}
-+	if (old_cold_scheme)
-+		damon_lru_sort_copy_quota_status(&cold_scheme->quota,
-+				&old_cold_scheme->quota);
-+
-+	damon_set_schemes(ctx, &hot_scheme, 1);
-+	damon_add_scheme(ctx, cold_scheme);
+ For a person or company who wishes to submit a change to the Linux
+ kernel, the process can sometimes be daunting if you're not familiar
+-with "the system."  This text is a collection of suggestions which
++with "the system". This text is a collection of suggestions which
+ can greatly increase the chances of your change being accepted.
  
- 	return damon_set_region_biggest_system_ram_default(target,
- 					&monitor_region_start,
+ This document contains a large number of suggestions in a relatively terse
+@@ -468,11 +468,11 @@ ask to have an Acked-by: line added to the patch's changelog.
+ Acked-by: is often used by the maintainer of the affected code when that
+ maintainer neither contributed to nor forwarded the patch.
+ 
+-Acked-by: is not as formal as Signed-off-by:.  It is a record that the acker
+-has at least reviewed the patch and has indicated acceptance.  Hence patch
+-mergers will sometimes manually convert an acker's "yep, looks good to me"
+-into an Acked-by: (but note that it is usually better to ask for an
+-explicit ack).
++Acked-by: is not as formal as Signed-off-by:. It is a record that the
++acknowledger has at least reviewed the patch and has indicated acceptance.
++Hence patch mergers will sometimes manually convert an acknowledger's
++"yep, looks good to me" into an Acked-by: (but note that it is usually
++better to ask for an explicit ack).
+ 
+ Acked-by: does not necessarily indicate acknowledgement of the entire patch.
+ For example, if a patch affects multiple subsystems and has an Acked-by: from
 -- 
-2.39.2
+2.34.1
 
 
