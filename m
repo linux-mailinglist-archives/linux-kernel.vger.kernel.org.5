@@ -1,110 +1,227 @@
-Return-Path: <linux-kernel+bounces-68085-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 971058575CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:02:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3A6D8575D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:07:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A941B22AD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:02:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 744821F231B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:07:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 674BB1401F;
-	Fri, 16 Feb 2024 06:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="THXyeRci"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0639B1401C;
+	Fri, 16 Feb 2024 06:07:31 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9076063CF;
-	Fri, 16 Feb 2024 06:02:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF13134BD
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:07:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708063356; cv=none; b=uHIfdb6S3cpIIF2EUwzV/0AbLqdEep5MJKvsS+kGAvRU4k8l2P1QRVyvhx8IyOgcDyJlGmtJYA9gluWOYRh0ll167DxNWTvCCJyqNmpXiokUbYheHsIRK5RJ86SGgrGOwzJdNnSxa8Z1cB95VM8lJTclxL3EwMi4QV+yC0qv3LM=
+	t=1708063650; cv=none; b=R8yAPR8VIOA6WVRKHNqilx7K5X/x6eDEZXLfZJ/XdHHOx2KtSFyhQkIdZpuqN5TJ8fhZuK1x4IFXsrp/BHLBePbnj6TJYSHdlREql7kdC9vyZvQzRknQiW1/JTxJA3ZhO4Kcy4AhATF/JSA2tEjoSgpdI8bY1NoUhaaVhSdGeaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708063356; c=relaxed/simple;
-	bh=xLbg9CJsDugebWTcD0p7oHppt3/BIZOhQtv1Tcg/emU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L6wnicCmN85jxHLESXiPFVzwH6c4L6/UHtE8f3T2Ne4aURJ+mxQVwMtM3ZmOl0be5I8xk2Iv5jtv69uyFqrkps8pVWH0plh8BfCt93tADp3aZuTckqRpCntDgj7fBM0rr1mhA3C4tFG8tAM/Pf5YSyoPiOZY6pj6gebFoBygLwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=THXyeRci; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D6DFC433C7;
-	Fri, 16 Feb 2024 06:02:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708063356;
-	bh=xLbg9CJsDugebWTcD0p7oHppt3/BIZOhQtv1Tcg/emU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=THXyeRcij7KtomuLH6sUqnXn8UU7L7Hte6T9jzC5fFgVNlU3zQKtDaRdHKmQbcgAN
-	 CRhnLUVsiOag7GJykwVBqAHhbNekbvdJn2iTZr3hWMoippmFXyEWEJXGt6XEtrcA5T
-	 gWtVwASk5StZBaoXwTP1sDuRPOBBYT2w1d1Ubgd4rwjDtL064eHSRhxJ3A3LYwgpRF
-	 AXuNnzln5/R5Frx7J9tRu5PklVyvd7GMXIXtfXEstV29hrLzwnpYCSIvBEq0KuSaSD
-	 6RJEcQBJ4KPZfh8oe5/P6hxicMI/Rw5+2L17q/fcIcbmzsIbNukbmK1OaO6KrkpQsH
-	 xdirAFy6zk3hw==
-Date: Fri, 16 Feb 2024 11:32:31 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Thomas Richard <thomas.richard@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
-	u-kumar1@ti.com
-Subject: Re: [PATCH v3 08/18] phy: ti: phy-j721e-wiz: split wiz_clock_init()
- function
-Message-ID: <Zc76d4B4hjTC3xum@matsya>
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-8-5c2e4a3fac1f@bootlin.com>
- <Zc4xJtLl3zo_YrBC@smile.fi.intel.com>
+	s=arc-20240116; t=1708063650; c=relaxed/simple;
+	bh=QMpt0SCftdJcIjYbXJ1LMcwEQQ/VGD+/cEUDupOQkiU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u27E691yXWXgKehHNnier3vptR9MJ5T6T2B2fwAnNfj8V0AZKH/rLtTkBw93nVeZAIymFtMIx5ynnEi42I7qZh8p4D37g1t6nqhQxh8IsOGnQ4IzAmZztJFaaqq9YL1PVblT3vvapfCAjyucyxAMVmHhG0c0FMpPokIexX1v07Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363b68b9af3so12874945ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:07:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708063648; x=1708668448;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4F2YASos/WaI9dxX5WGWFwdCo+2tbvtN26YAtxHcV9s=;
+        b=FqD5Ea6T1adXdhgFvwVC0IWaGoaqQ6lDbsC3ZL8xw9Q3X8JJssmSl7sOqKuyDid/8L
+         zIB/klj7wA6LR7ghtjnuXs2SluwxB1BbB9J05Y3CMievNeuYLPlm5qMmIkXKZYXXf3to
+         3WNiXTkiwMptwEyzpQlWjSfJnwJ0rGHhp5H9QJq+s1zbavkYPsXL0LAku0rZ2zw0GmxM
+         E6Hx9B49LkEIhP5Qd6m4f/sWCsY5512pgSTniMYk6v/JrEsQhRA+lgulJjNK8pipY2oh
+         WpnkpF9wFb+I1KP1QuwLW9muIaunMvJspmiO/l1BnKrmUNG4PzheFCILg1obrlhfybdO
+         kfyA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFYaehYNSiZpIA7krdmqpQS9pHAOOTJce0T1YsrBxPc8m4as9xn23onaJS5Izg8ur/iriCXn1pANy1KwXiER7imjUtoik/uHUKdS7c
+X-Gm-Message-State: AOJu0YwkAERnukzkyQBW+hi2CEDZuT+jgJNhailYH4zYf4vHXNWpfFdB
+	rcmVaJq6f+JyZ9SBG9ZRGImEcYtuTg/qOG/LKkaF+p2XxIsQJ1Iw48scdNP5l2HI+/ivOTjOIJu
+	1iIj6hwD038CddFk9dpSu3McxpcjcAwUcGbZLkBff0cZ55HCmvbI3czs=
+X-Google-Smtp-Source: AGHT+IG0M6rkbOe11lpZQGSZExlEryIZb9CjCRq56IOJvg3Fha44Kc2qgLHGDvA0MYeWpzzardLkaha1l9WT8hXlZy4DNY66p9EK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zc4xJtLl3zo_YrBC@smile.fi.intel.com>
+X-Received: by 2002:a92:cda8:0:b0:363:cc38:db1c with SMTP id
+ g8-20020a92cda8000000b00363cc38db1cmr322034ild.6.1708063647882; Thu, 15 Feb
+ 2024 22:07:27 -0800 (PST)
+Date: Thu, 15 Feb 2024 22:07:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fc6b2c0611798e90@google.com>
+Subject: [syzbot] [mm?] possible deadlock in lock_vma
+From: syzbot <syzbot+27f783f9d240834c9d44@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, axelrasmussen@google.com, brauner@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, lokeshgidra@google.com, mirq-linux@rere.qmqm.pl, 
+	peterx@redhat.com, rppt@kernel.org, syzkaller-bugs@googlegroups.com, 
+	viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 
-On 15-02-24, 17:43, Andy Shevchenko wrote:
-> On Thu, Feb 15, 2024 at 04:17:53PM +0100, Thomas Richard wrote:
-> > The wiz_clock_init() function mixes probe and hardware configuration.
-> > Rename the wiz_clock_init() to wiz_clock_probe() and move the hardware
-> > configuration part in a new function named wiz_clock_init().
-> > 
-> > This hardware configuration sequence must be called during the resume
-> > stage of the driver.
-> 
-> ...
-> 
-> (Side note, as this can be done later)
-> 
-> >  	if (rate >= 100000000)
-> 
-> > +		if (rate >= 100000000)
-> 
-> > +	if (rate >= 100000000)
-> 
-> I would make local definition and use it, we may get the global one as there
-> are users.
-> 
-> #define HZ_PER_GHZ	1000000000UL
+Hello,
 
-Better to define as:
-#define HZ_PER_GHZ 1 * GIGA
+syzbot found the following issue on:
 
--- 
-~Vinod
+HEAD commit:    ae00c445390b Add linux-next specific files for 20240212
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=17478592180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4eb3a27eddb32a14
+dashboard link: https://syzkaller.appspot.com/bug?extid=27f783f9d240834c9d44
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17406e42180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=111cb500180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8b2a2d0b511f/disk-ae00c445.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/a668a09c9d03/vmlinux-ae00c445.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4ad623928692/bzImage-ae00c445.xz
+
+The issue was bisected to:
+
+commit 31d97016c80a83daa4c938014c81282810a14773
+Author: Lokesh Gidra <lokeshgidra@google.com>
+Date:   Thu Feb 8 21:22:04 2024 +0000
+
+    userfaultfd: use per-vma locks in userfaultfd operations
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=129ff100180000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=119ff100180000
+console output: https://syzkaller.appspot.com/x/log.txt?x=169ff100180000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+27f783f9d240834c9d44@syzkaller.appspotmail.com
+Fixes: 31d97016c80a ("userfaultfd: use per-vma locks in userfaultfd operations")
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-rc4-next-20240212-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor800/5064 is trying to acquire lock:
+ffff888021d401a0 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:146 [inline]
+ffff888021d401a0 (&mm->mmap_lock){++++}-{3:3}, at: lock_vma+0xc5/0x260 mm/userfaultfd.c:73
+
+but task is already holding lock:
+ffff88802b989730 (&vma->vm_lock->lock){++++}-{3:3}, at: lock_vma+0x1a1/0x260 mm/userfaultfd.c:87
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&vma->vm_lock->lock){++++}-{3:3}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+       vma_start_write include/linux/mm.h:716 [inline]
+       vma_link+0x2c6/0x550 mm/mmap.c:416
+       insert_vm_struct+0x1a3/0x260 mm/mmap.c:3331
+       __bprm_mm_init fs/exec.c:282 [inline]
+       bprm_mm_init fs/exec.c:384 [inline]
+       alloc_bprm+0x543/0xa00 fs/exec.c:1579
+       kernel_execve+0x99/0xa10 fs/exec.c:2008
+       try_to_run_init_process init/main.c:1361 [inline]
+       kernel_init+0xe8/0x2b0 init/main.c:1488
+       ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
+
+-> #0 (&mm->mmap_lock){++++}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
+       mmap_read_lock include/linux/mmap_lock.h:146 [inline]
+       lock_vma+0xc5/0x260 mm/userfaultfd.c:73
+       find_and_lock_vmas mm/userfaultfd.c:1405 [inline]
+       move_pages+0x18c/0xff0 mm/userfaultfd.c:1546
+       userfaultfd_move fs/userfaultfd.c:2008 [inline]
+       userfaultfd_ioctl+0x5c10/0x72c0 fs/userfaultfd.c:2126
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:871 [inline]
+       __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:857
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(&vma->vm_lock->lock);
+                               lock(&mm->mmap_lock);
+                               lock(&vma->vm_lock->lock);
+  rlock(&mm->mmap_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor800/5064:
+ #0: ffff88802b989730 (&vma->vm_lock->lock){++++}-{3:3}, at: lock_vma+0x1a1/0x260 mm/userfaultfd.c:87
+
+stack backtrace:
+CPU: 1 PID: 5064 Comm: syz-executor800 Not tainted 6.8.0-rc4-next-20240212-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
+ mmap_read_lock include/linux/mmap_lock.h:146 [inline]
+ lock_vma+0xc5/0x260 mm/userfaultfd.c:73
+ find_and_lock_vmas mm/userfaultfd.c:1405 [inline]
+ move_pages+0x18c/0xff0 mm/userfaultfd.c:1546
+ userfaultfd_move fs/userfaultfd.c:2008 [inline]
+ userfaultfd_ioctl+0x5c10/0x72c0 fs/userfaultfd.c:2126
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:857
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f86fc35f329
+Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd53428e38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffd53429008 RCX: 00007f86fc35f329
+RDX: 0000000020000040 RSI: 00000000c028aa05 RDI: 
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
