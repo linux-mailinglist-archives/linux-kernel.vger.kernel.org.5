@@ -1,170 +1,342 @@
-Return-Path: <linux-kernel+bounces-68537-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670CF857BE8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:42:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4385857C57
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:10:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA1281F27335
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:42:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77D9128423F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D4FA77F39;
-	Fri, 16 Feb 2024 11:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80E9C7868C;
+	Fri, 16 Feb 2024 12:10:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="kvIS8qtb"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="grUmTPQ3"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2086.outbound.protection.outlook.com [40.107.94.86])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B1B459B5F;
-	Fri, 16 Feb 2024 11:41:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708083709; cv=none; b=O+sPjowcUQEOT42PED3OfOjdLkML9LVPnSFhBlmUEmGtgF92KskDsFfKGNvFJJc3zJo79hgOsrkItKSdtVexMpD00GvQmIO04tSPOQPtVb0xRy/o9lLKGkza8AKOP0QqTR883A3auDRP5LbnThEADlZYkgwUVU8BgzNAomjHcxA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708083709; c=relaxed/simple;
-	bh=ENkj9c3IlxXNoqACou83okSe3zXu5WBJkYNjVu8EpqM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gNFMdDsTcRb4PDO8iVyIWRDdG2YHJoIWvIN4mtjelwZCzDsOfyAz40CqrEkGngNiUBDJb5k95qKotBGXwiu1vW1G2zhSYIcFyiajAuoRAm0YsvMV5tK9zb5t9Edj7YeAIcOGI98tNWtASuEgGOmedcSZAWfIfv11RzgYlQPRJ38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=kvIS8qtb; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1708083686; x=1708688486; i=deller@gmx.de;
-	bh=ENkj9c3IlxXNoqACou83okSe3zXu5WBJkYNjVu8EpqM=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=kvIS8qtbuadHs+uT7skkBZZK818kmErwrw6HwDJFsVcHlcBAOVUZTte9VNyrKsoK
-	 QWg8lTomgHOBthOqvumrvEU3JQXceBFOHwPDxOM4SEiEwVvwARQ+dO9ADGGbi0R1J
-	 EXqeykYxDj+LTKD3tEsifyKuDAKMq4Klb4qGbE9E+Y1Ezt5yhXYWJTdiEpIYj39OG
-	 hiQ2/MRwNuQtRTHp/z0gBVc5quMmpbNi/XSmpCZJSCTh2Xsd6moH+pZxGxOrnaoov
-	 /l7yqg9S2qvF/pKTeE3+Iq8EPsDZKFMLNO3tNd3M0kJucLM2MJDhvZSfBObafXDY5
-	 O5wVrMTTkxfraU4LbA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.148.214]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXp5Q-1rTDsA1RXQ-00Y8u8; Fri, 16
- Feb 2024 12:41:26 +0100
-Message-ID: <61cfc73e-e406-4e98-9057-d7843e7694e7@gmx.de>
-Date: Fri, 16 Feb 2024 13:05:20 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 490D577F15;
+	Fri, 16 Feb 2024 12:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.86
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708085427; cv=fail; b=uGMbH5iU0Q1eSuhlEqoHnY58/nYcBPAwrC4a0OxH3k/0WmIhqg/uaPXajtPK5gdRt1BY6WFSaObQ+Oj25pEIKXnhdbwblY70vkqeyhDLoqTAikzGzox9VuXa+iHfcmbDD0Cb4KIOCI3sJbg7uNIo6DwJNXgidK1Mgf2nkqdf7XA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708085427; c=relaxed/simple;
+	bh=5ayKootdds6E3Ik0/kKnJVL+kJvQbubjgLPYpUHqUeM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=XWH7Vgf7yDci4i2Ko6hbVan+q4JpGRF1lRyHuRURBuaA9udAxznbXkfKOsRdh3ko6l5jwOBRsrr6NERn/09vh6ZzN9C0wKUC9jjENTrB4Aq4QVBZs2fwQaUaA1nZkkRCuQB+QHRt1489RUokAQeAuDL5MzR9C59JwVD3Y8RY6W4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=grUmTPQ3; arc=fail smtp.client-ip=40.107.94.86
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fWWHOyxIvkjQNLLOned3g895BAelbvIJnOFwgtJPlz41AYj0RL1glRVbxkcQZk0JFNU7eqy6siOcIvZl8+Th2TCeEmSL6ygS8ByOptVPd9y7ZXbES8frQevJlIH6nrbMiR9t+ObO7SUz3d5mmskLGjV2KdHrLio48Nhn0R0xUXDl1EOLDpUj/XVsNju4ETmnJsNXsnzS8xMMSPwtgrJ2Yh4dmu/KIcQToar1uN2i+w7jaGioLApsYwtEOp92cJPMiObKvjGpvKriAx5RtbVXIkEWVVAMuQyRCP8TVo4aWuhiNLyTwk1sJMNYqdeg8tBzw2gzf5D6+5UvphNKdRIv4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LEXXcMdcXNUXB1WvCSPFUsdlNAru8w33PLHAXMVmvQk=;
+ b=UZj+L7fP+lIBYMRWrSKj5BpY3Z9yATcYL0EkEGHzA2BDsZBp5HqkjGQTImYTbMO0pkBd1guWPGBarQdUeUCYQoBe3M7Jjrbev5vjBYJEjCmHOyyFvc9B0zwh7gj/FdnKncD59zuygIVGK2Atee7SkhkCWhcPpMsm2O/0eoOwH6I+sUt2JMH/4+ns2j9BMige4rAWAgEr5KKWqTTKWG+EH9jBv+qIrJ5cX4DPj+SKJAUwf9jAZcU2CMS1pWKi2S5O35eqQs64mFgSh6rz4VXqOpPL5E/j9UGUaTR5WodDwooajM2fBIpHtYKrlBMm6jiHo5UH1ui52wMIFD7BMZ/frA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LEXXcMdcXNUXB1WvCSPFUsdlNAru8w33PLHAXMVmvQk=;
+ b=grUmTPQ3cszX2/VEtM3G0FFozTNKTYNzL+0JTWgCVFJp3mSwDEnRMaGmINTv+85UejiG7+6OqzHND7QEaIVu71HxXoC37sNCFJln3RZTj7dkKpX+tRjlCeslyfeqFL4tPITDLAiYVY8AZ2fVuFhBVh+QzBgqhDyLdFne1GTmI9Y=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
+ by IA0PR12MB8280.namprd12.prod.outlook.com (2603:10b6:208:3df::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
+ 2024 12:10:20 +0000
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::9d:17f1:8b3b:1958]) by CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::9d:17f1:8b3b:1958%4]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
+ 12:10:20 +0000
+Date: Fri, 16 Feb 2024 13:10:14 +0100
+From: Robert Richter <rrichter@amd.com>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+	Fan Ni <nifan.cxl@gmail.com>
+Subject: Re: [PATCH v3 2/3] cxl/pci: Get rid of pointer arithmetic reading
+ CDAT table
+Message-ID: <Zc9QpsNa2kNQsQsR@rric.localdomain>
+References: <20240209192647.163042-1-rrichter@amd.com>
+ <20240209192647.163042-3-rrichter@amd.com>
+ <20240214173158.000005c0@Huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214173158.000005c0@Huawei.com>
+X-ClientProxiedBy: FR0P281CA0145.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:96::18) To CYYPR12MB8750.namprd12.prod.outlook.com
+ (2603:10b6:930:be::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 2/2] lib: checksum: Use aligned accesses for
- ip_fast_csum and csum_ipv6_magic tests
-Content-Language: en-US
-To: Charlie Jenkins <charlie@rivosinc.com>, Guenter Roeck <linux@roeck-us.net>
-Cc: David Laight <David.Laight@aculab.com>,
- Palmer Dabbelt <palmer@dabbelt.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Parisc List <linux-parisc@vger.kernel.org>, Al Viro
- <viro@zeniv.linux.org.uk>, linux-kernel@vger.kernel.org
-References: <20240214-fix_sparse_errors_checksum_tests-v8-0-36b60e673593@rivosinc.com>
- <20240214-fix_sparse_errors_checksum_tests-v8-2-36b60e673593@rivosinc.com>
- <2ec91b11-23c7-4beb-8cef-c68367c8f029@roeck-us.net> <Zc1pSi59aDOnqz++@ghost>
- <cb4e358b-3fd0-4ca4-bf53-9cc379087304@roeck-us.net>
- <25f108d1-827f-4a18-bee4-4105fbd45974@gmx.de>
- <6aaa4b89-a967-4b19-b4bf-a1ad5c8e9faa@roeck-us.net> <Zc79I5VDSaFnb4xj@ghost>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <Zc79I5VDSaFnb4xj@ghost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YuF9PVuGcuEpBNoBnA5hjOnuz5Bspi64Grxz2iK2S3IkdxDOLtv
- GCIoagFe46RGCoS+efUsxNyzUihQQFvedTJW87N4RIkC12WFAxCF5Lir2xaisO1CZgCQm0G
- EoeXSRdQGBscBtRjN86vJD8iSIy+My5vVZ7bFM8y4+xlQG43uQLc2qLpjuzNkr1/lMHZAa6
- PnwB1PeWf/kcK+PGdDkWQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:RTB83uO8wns=;hiZTewUlieqkNBMyVa449AXBYM6
- HdzkyUSoDb/eBmsqzN7SLxRPM72sm3iZzyQbz6IxN0vaqImha6nuQnbR+S7V0++cPK9N/L/4K
- jtlkTPedTLsFBUD5ax/Wla9tKK343Ir8ApowLkMwdeGrzQXHG4AWAeKrkqngVU7fAfXVbTHI5
- RABMhUxvWV6GLqeGNWak6iIGMOjseFrR0fCxAEywtRA02GC/Cs8nQ5YRkpE0xl1iz+iUA/aX8
- oFnFcPRodeEWeT5ojaCMJRr0cweZoRrpZMVmznSDke6BUaD9kK4c9nHq/pwzsIPbZiyaw45BK
- EXXzjptR5csN4fNBjs+Bfcu/91t6MUQUO5jZ8SPkq8PRBozGEj92HNrtw6pNkJ6iIg8Kc6LL2
- wPVwHEp7JN0D8J1JmhQpNl1eOZVAhr1JE75o8k1vLZt23QEQzBunKSCkPzuV6pEhGgR3vIDCT
- 59YCBjLvSISgG5qmBqHY/9lAbjrynkGozWPGqaYgGKIqrkG1RhXvwCVdTARyLU1Xv/gKpNVbE
- +Nagp2Y/Faurda1lhbkMzTQtUbXi51YLmuF0546r35sqXjkIOlcYuTX3vienWHsvssPG2ozO2
- iNb/GK+0hF2eci49SHMtwYKVqjId6USEb1r4Vt1BBw4ur1VVwXagVzSyoq+P0FqSx6covzOO1
- fpBL91YgifSzYQgf6yPqWIVRjB4C4iqvWANTkGrDpw3b9v9LeVAVszmpoHf5vlk2wIFYtmJel
- TjY3I86C7rjAEnvVrM8BxvUBtuC1v4UDV7CTsGW8L+ZG0/R+q8UexA/9WvH+wi3Gm411i+rAb
- rQBmcHCIVs5qAs9WnRhDCbwFfCUbJs9Q85udohi4ZUrPc=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|IA0PR12MB8280:EE_
+X-MS-Office365-Filtering-Correlation-Id: 48613418-08c0-477b-d23f-08dc2ee83edd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UE2C0td+Az1jTEHdmt6Pz5uG2m4qH/YiyLyS4WrdAL4rcgOdt1H+sl1s91Qz7VBEHl5ZA0GcNvudgrq6o90dddviaUxZDGhNte8dTUs7F2EFvRR7fT8/pRNtvndotNPBxKhDe3gBviQ0VzzpQG/Rby4LEenF6gCu85vRctD7upGWowNYkyjhV8FKL+9L29d3gvitRMmNtusn9E5vJq0l4wApnnFDuFwYSA+LDVVjt1altYUZQA6TwgKEIZUdCD6Almcn/Bn47PX5yixfKPbkk3OQdQ8GSIkxrdRM8TuZkQRuroP+zhf/4Cn3+n1ldDAlcq8xZcvxZ67I/xZz3SZAwALMwdHbORyv9DXCwk0woYkyXJqx/isfvb9ItecHiq9hSh7bosZGcZ5cI+ewIv03yvMDH7mm+6T4A+zzbsiOSr+YnCT40sZso6iJP3hZOYvuUFDjFWshi9kwln4Pfz6NOY1wJl2Iv10TqEy6800w5o7JXP706IjdNdQNazCsojZQPKS61+edLoJTnHLVHzlm7kttiYebS/U2gngS4FliS/XXa6FeW0P82WemJ7QFLbFK
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(396003)(136003)(39850400004)(230922051799003)(1800799012)(186009)(451199024)(64100799003)(66899024)(7416002)(8676002)(66556008)(2906002)(5660300002)(8936002)(4326008)(66946007)(66476007)(41300700001)(83380400001)(54906003)(6916009)(6506007)(53546011)(6666004)(6486002)(38100700002)(316002)(478600001)(6512007)(9686003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?ZEkLrThcQmYBhKKs9fX3CPaqpUmNCLZDeWNe1Jcc52SXabmGgOagYuGbmmKk?=
+ =?us-ascii?Q?qEQCnlULzLRFR7Pc6HAJ0MT5TlAzPh4/cD2asdefDGPTgkBUU1M4A2MOtBY0?=
+ =?us-ascii?Q?EWR/1HR8QCvuccjdx7MTFi0yWo81n4VLnF4d3PrVknSsCxlu2NLElqupxiLX?=
+ =?us-ascii?Q?a5EWG6yQnnnKtF6EEuAM4PGldsZ8pgME4dHDB/E4jYe7qpdGXYUqbt2YbhO5?=
+ =?us-ascii?Q?5/eUse1kJ2ZgcPqZkxAGVfthP51pelk/P/+rU7czT57ExGq128p/gPUtyaRn?=
+ =?us-ascii?Q?zYmvGWJyOekL5d4ZkWEetCh9tUMJN9xuJVTAH9OAxryqlZHOmLmLbBUuDzeS?=
+ =?us-ascii?Q?aCG1qex3MeanMxV/qRpoozSlczUMorSIZowl4rBrfqKCK3Xya71fI0i2sZXP?=
+ =?us-ascii?Q?KKJXGz/2WSBPbCFpSvRqTheuUo8RiECxji3uSef3OCSJKz/XKJ2kws6ire9X?=
+ =?us-ascii?Q?/rBphY39oEruQYnl7R1JNpk7nTaQGeR8WJMtBAN3JJXTIVWGRiKV7/rxufQk?=
+ =?us-ascii?Q?6IsEKYNWmGXo3BtlVbvmvTNkxfaqL5tOHmYUFqw+UUYgV+k/dspCoxGGHgoT?=
+ =?us-ascii?Q?C4uOlMx223ymx9DBLzphkqWtXB7KGnDKju5jBLGb2lGsod3PxttTXY/kayIM?=
+ =?us-ascii?Q?J4/gVmCYCfQ1tA9nRuIayAoRhUEWyA0uZ04zyC+JgRhehAn89JzpQGzDEuSM?=
+ =?us-ascii?Q?2DrTkPIt74lTPIhQ7FI2K6opUXElxjOVQQvA/CRFRCHKzr/Lubo00Y8tfBqd?=
+ =?us-ascii?Q?pF03GIxDC48gESu2k17nOvhncv58nJrfbYcGHkT1dzxxWloBEW4UOwaO3K8w?=
+ =?us-ascii?Q?mWKC5ayKHX+p5UDakRu3ZyPlv0OvdFb46huvdMinmXrwSUcY/3tiUMb9JubR?=
+ =?us-ascii?Q?O2uHS7L/EXW3Dtv6t7i8iM8CnPGQOCtjURooelM3tkp0IFF/uzPhLX8XWh/K?=
+ =?us-ascii?Q?b0spvWSGIzA2FAiDvN/wnttKdpUrnrDEa6LDhM90U+uhdeNaiclfjfN9IEDm?=
+ =?us-ascii?Q?W+j+T/4Qb/Z1oVw4kxslGSNy1g2iwUUqQgEq1MUCWDAjMkTBGnAolR523Hn5?=
+ =?us-ascii?Q?ZnRdZ6qlzpn43eUeCRSVJYSs34/E3W4n7loT+XTCufaLo75D62AWszu7gZaZ?=
+ =?us-ascii?Q?C0+QRVwJhvU7pXtRbtDp6F5JXdsA5WXUMJt1ipvgA7wOac8uef2GzBH0v1uE?=
+ =?us-ascii?Q?O5kZAP3261K5P3BCo5HkPDKBgEFsFTiag7XCEhMJzsst3A1sNyfJDmgvfy88?=
+ =?us-ascii?Q?9Z6DOyk5EClMLWMb9OcSQiQYnQ6V+6uYeybQ8mfzNhih74M7hHUpNUfRBwCB?=
+ =?us-ascii?Q?8KS/q85PK6mWwhll4AFGMnzi7D6FGcDqYv5V+RvjDCoEDj/RVH3AV6bEtYKo?=
+ =?us-ascii?Q?0PyToZJpmSEtaCcCCpXlQGKVrwWw6Qnhd4qubzc17IJLghVYUXJg/fQvJWek?=
+ =?us-ascii?Q?ZNg+mRq4TNLwZ7Ac2bAdrf873t/3MaZNyvN2PFcCkb0UdbrKDYsv4ebSeKRd?=
+ =?us-ascii?Q?1ULkTJY3C018/paqg0f7rGCoQlpTqIxak/g/+Ty/TQp0DPVZNjnpviXqT9FM?=
+ =?us-ascii?Q?Vl2MtMG8beMt86K87IR28qGAwRfCQ/tNnPr/AkF2?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 48613418-08c0-477b-d23f-08dc2ee83edd
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 12:10:20.4296
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vXja+0wzQKXa8sdHIKDjo3dwsbdHdUL5WjcJxtq/psJi8kQV48qJJmcZCUtpVORXLZQ2GbCOODykb3Z0Hvl+pw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB8280
 
-On 2/16/24 07:13, Charlie Jenkins wrote:
-> On Thu, Feb 15, 2024 at 10:09:42PM -0800, Guenter Roeck wrote:
->> On 2/15/24 21:54, Helge Deller wrote:
->> [ ... ]
->>>
->>> Can you please give a pointer to this test code?
->>> I'm happy to try it on real hardware.
->>>
->> You should also see the problem if you use v7 of Charlie's checksum
->> unit test fixes.
->>
->> I submitted the qemu fix (or at least what I think the fix should be)
->> a couple of minutes ago.
->>
->> https://patchwork.kernel.org/project/qemu-devel/patch/20240216053415.21=
-63286-1-linux@roeck-us.net/
->>
->>>> It is quite easy to show that carry is always set after executing ldd
->>>> on an unaligned address. That is also why I know for sure that the
->>>> problem is not seen with ldw on unaligned addresses.
->>> Interesting.
->>
->> Ultimately it wasn't surprising, with the unusual carry bit
->> implementation on hppa. The upper 8 carry bits were not masked
->> correctly when returning from a trap or interrupt.
->
-> Tangential question, but why does Linux need to save and restore the PSW
-> if that is already handled by the hardware? I am missing something.
+Hi Jonathan,
 
-e.g. for task switching.
+thanks for your review.
 
-Helge
+On 14.02.24 17:31:58, Jonathan Cameron wrote:
+> On Fri, 9 Feb 2024 20:26:46 +0100
+> Robert Richter <rrichter@amd.com> wrote:
+> 
+> > Reading the CDAT table using DOE requires a Table Access Response
+> > Header in addition to the CDAT entry. In current implementation this
+> > has caused offsets with sizeof(__le32) to the actual buffers. This led
+> > to hardly readable code and even bugs. E.g., see fix of devm_kfree()
+> > in read_cdat_data():
+> > 
+> >  c65efe3685f5 cxl/cdat: Free correct buffer on checksum error
+> > 
+> > Rework code to avoid calculations with sizeof(__le32). Introduce
+> > struct cdat_doe_rsp for this which contains the Table Access Response
+> > Header and a variable payload size for various data structures
+> > afterwards to access the CDAT table and its CDAT Data Structures
+> > without recalculating buffer offsets.
+> > 
+> > Cc: Lukas Wunner <lukas@wunner.de>
+> > Cc: Fan Ni <nifan.cxl@gmail.com>
+> > Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> > Signed-off-by: Robert Richter <rrichter@amd.com>
+> 
+> Hi Robert,
+> 
+> I like this in general.  A few comments inline though.
+> 
+> > ---
+> >  drivers/cxl/core/pci.c | 75 ++++++++++++++++++++++--------------------
+> >  drivers/cxl/cxlpci.h   | 20 +++++++++++
+> >  2 files changed, 59 insertions(+), 36 deletions(-)
+> > 
+> > diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
+> > index 39366ce94985..569354a5536f 100644
+> > --- a/drivers/cxl/core/pci.c
+> > +++ b/drivers/cxl/core/pci.c
+> > @@ -544,55 +544,55 @@ static int cxl_cdat_get_length(struct device *dev,
+> >  
+> >  static int cxl_cdat_read_table(struct device *dev,
+> >  			       struct pci_doe_mb *doe_mb,
+> > -			       void *cdat_table, size_t *cdat_length)
+> > +			       struct cdat_doe_rsp *rsp, size_t *length)
+> 
+> Nitpick, but rsp isn't a response, it's the whole table.
+> Maybe it's worth a 
+> #define cdat_doe_table cdat_doe_rsp
+> or a typedef so the two are different in name at least whilst sharing
+> same structure definition?
+
+There is a comment near the kzalloc of buf. I think introducing
+another type here for single use will just add confusion.
+
+I will also update the description of cdat_doe_rsp.
+
+> 
+> >  {
+> > -	size_t length = *cdat_length + sizeof(__le32);
+> > -	__le32 *data = cdat_table;
+> > -	int entry_handle = 0;
+> > +	size_t received, remaining = *length;
+> > +	unsigned int entry_handle = 0;
+> > +	union cdat_data *data;
+> >  	__le32 saved_dw = 0;
+> >  
+> >  	do {
+> >  		__le32 request = CDAT_DOE_REQ(entry_handle);
+> > -		struct cdat_entry_header *entry;
+> > -		size_t entry_dw;
+> >  		int rc;
+> >  
+> >  		rc = pci_doe(doe_mb, PCI_DVSEC_VENDOR_ID_CXL,
+> >  			     CXL_DOE_PROTOCOL_TABLE_ACCESS,
+> >  			     &request, sizeof(request),
+> > -			     data, length);
+> > +			     rsp, sizeof(*rsp) + remaining);
+> 
+> I guess it's not really worth using struct_size here.
+> It's main advantage is making it clear we are dealing with a
+> trailing [] 
+
+Yes, will keep it as is. Since it's a u8 array, count is equal the
+size for the remaining data and we do not need struct_size() here.
+
+> 
+> >  		if (rc < 0) {
+> >  			dev_err(dev, "DOE failed: %d", rc);
+> >  			return rc;
+> >  		}
+> >  
+> > -		/* 1 DW Table Access Response Header + CDAT entry */
+> > -		entry = (struct cdat_entry_header *)(data + 1);
+> > -		if ((entry_handle == 0 &&
+> > -		     rc != sizeof(__le32) + sizeof(struct cdat_header)) ||
+> > -		    (entry_handle > 0 &&
+> > -		     (rc < sizeof(__le32) + sizeof(*entry) ||
+> > -		      rc != sizeof(__le32) + le16_to_cpu(entry->length))))
+> > +		if (rc < sizeof(*rsp))
+> > +			return -EIO;
+> > +
+> > +		data = (void *)rsp->data;
+> 
+> Nicer to cast to (union cdat_data *) than rely on bounce via a void *
+
+Will change.
+
+> 
+> > +		received = rc - sizeof(*rsp);
+> > +
+> > +		if ((!entry_handle &&
+> 
+> Prefer == 0 for this because 0 is a magic value here.
+> 
+> > +		     received != sizeof(data->header)) ||
+> > +		    (entry_handle &&
+> > +		     (received < sizeof(data->entry) ||
+> > +		      received != le16_to_cpu(data->entry.length))))
+> >  			return -EIO;
+> 
+> Given it's two rather involved conditions maybe better to do.
+> 
+> 		if (entry_handle == 0) {
+> 			if (received != sizeof(data->header)
+> 				return -EIO;
+> 		} else {
+> 			if (received < sizeof(data->entry) ||
+> 			    received != le16_to_cpu(data->entry.length))
+> 				return -EIO;
+> 		}
+> 
+> More code but easier to see the header vs entry checks.
+> Could even define a little utility function / macro.
+> 
+> 		cdat_is_head_handle(val) entry_handle == 0
+> so you get somewhat more self documenting code.
+> 
+> 		if (cdat_is_head_handle(entry_handle)) {
+> 		} else {
+> 		}
+
+I will take this but without the macro.
+
+> 
+> >  
+> >  		/* Get the CXL table access header entry handle */
+> >  		entry_handle = FIELD_GET(CXL_DOE_TABLE_ACCESS_ENTRY_HANDLE,
+> > -					 le32_to_cpu(data[0]));
+> > -		entry_dw = rc / sizeof(__le32);
+> > -		/* Skip Header */
+> > -		entry_dw -= 1;
+> > +					 le32_to_cpu(rsp->doe_header));
+> > +
+> >  		/*
+> >  		 * Table Access Response Header overwrote the last DW of
+> >  		 * previous entry, so restore that DW
+> >  		 */
+> > -		*data = saved_dw;
+> > -		length -= entry_dw * sizeof(__le32);
+> > -		data += entry_dw;
+> > -		saved_dw = *data;
+> > +		rsp->doe_header = saved_dw;
+> 
+> I'm not keen on this looking like we are writing the doe header
+> as we are writing the tail of the last response.
+> 
+> Maybe the comment is enough.  I don't have a better idea on how
+> to make this more obvious.
+
+I think the comment is good enough here.
+
+> 
+> > +		remaining -= received;
+> > +		rsp = (void *)rsp + received;
+> 
+> Was a potential problem with previous code, but this could
+> in theory become unaligned and we should be using unaligned accessors
+> for it as a result, or maybe adding a check that it doesn't ever become so.
+> The check is probably the easier path given CDAT entries are thankfully
+> (I think) all dword multiples as are the two headers.
+
+Yes, buffers are dwords. In any case, pci_doe_recv_resp() is safe to
+be used unaligned anyway.
+
+Thanks for your review, will prepare a v4.
+
+-Robert
+
+> 
+> > +		saved_dw = rsp->doe_header;
+> >  	} while (entry_handle != CXL_DOE_TABLE_ACCESS_LAST_ENTRY);
+> >  
+> >  	/* Length in CDAT header may exceed concatenation of CDAT entries */
+> > -	*cdat_length -= length - sizeof(__le32);
+> > +	*length -= remaining;
+> >  
+> >  	return 0;
+> >  }
+> 
+> 
 
