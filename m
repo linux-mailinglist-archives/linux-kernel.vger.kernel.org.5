@@ -1,140 +1,149 @@
-Return-Path: <linux-kernel+bounces-69053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91D4B8583DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:16:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90D588583E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 218FAB27AA5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:16:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B54CA1C22BD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35DB913329C;
-	Fri, 16 Feb 2024 17:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yj9IDzlD"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB83131E3D;
+	Fri, 16 Feb 2024 17:14:37 +0000 (UTC)
+Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B75130AEC;
-	Fri, 16 Feb 2024 17:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F350F130E2F;
+	Fri, 16 Feb 2024 17:14:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103638; cv=none; b=FlrkwhPdD/vUeMJr1FAdCv4kvjSCN6Fo0WDrCymQNtMM9KIWtYKvFqAcftEWfVTidWHdaMi9jNRiFfyf7ReXZCKBX+CrVqc9NtmNkxzKfFzmRc3ekUOXcaKVa+9ifcqotUv797Zp/lmDq4c1QfF3l7pFK/p9N6i7rrqTvb9HOQE=
+	t=1708103677; cv=none; b=GHKxYsDTqg/Y1r3r7i5ijqa7hi6VhGWg1q6ugIlsmoU1i2wrMV+R1AhVhHaXD6GcQzOJm8upEqQmhlBvgihJvXy+lC3quqTID5FqOTY8nCt+JOjNPdnnaCFPTiSLB8csUK3Ab5+k8HPf2wDuuwQV3Q7OLdUaNM7iHSct6Ko+AxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103638; c=relaxed/simple;
-	bh=fYAA8xilO4KnYgQIZVtA9ts8YuATLRGZ6f+s+rtRDWY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H8DZPeP6ZVcMP/bNcQr9bJ4fTAZHzgzkB+9iIL2Rt6bH7B62qw0/TyOLJYd0sPj/rD+VWUo2d/fb6gSoq56kmXICtZfzQnpdnziW1s8leoyVKJbmkRds5p+uFNa6X1faqgsxfw31aIWR5UFUzkCzCzebxaLg0Z4OJaHG3C/juYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yj9IDzlD; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42dd6f6518fso3968381cf.1;
-        Fri, 16 Feb 2024 09:13:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708103635; x=1708708435; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pjvfE09Bk+j8kTulAxyHuFEo7lsn+ZYbAj8sdSsLEQI=;
-        b=Yj9IDzlDG1aTmi1TACel/VWh7ehQQRcrkkRID722mJoaDb9qQniQl8kQlyiuccb4RY
-         O+ckjz5lQgij8YH/mSwvOtn75+HDH8DCR33XBqVlGaGEAf/KQqvuc8lyNhRhBeuondYr
-         9pYLapqMVkzr+mUdLFH8wB4VfIadgWh9MRjuKXAV49LN3AYM8lrp4xbBlA1G2DL4K14i
-         3CNSl54/HW4uAtgVjsiy8145urN8dBpziQjH8nV793upmMPs1RbndAS1pjtywD4WCHQz
-         GcHdmv/fY55CAQm/XepslWuMP2OeRKiEulCRuavuQiaawEswV8ibx3WdzKyqYRgavOSD
-         uzUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708103635; x=1708708435;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pjvfE09Bk+j8kTulAxyHuFEo7lsn+ZYbAj8sdSsLEQI=;
-        b=fTLPq0CeUy1Tre5piqqHf8S541lM22tpPEnrTkTCNcl2ZwubIEpZBuMD0Q9Qk5yxE8
-         xgB4xtoSWPIJbu/c5wKf9KqlQSg6yxEjC8WZflZfCv3vpuG65gnObjGDPMDWP4TsdYIw
-         xw3cxOoPb2KWpkIGS3Rp49TZUG7mJFoPcXl0wWsjnlFVkghxuSvOdMZv6C0NptKygUqp
-         HaYtoqsPbQe02K8xxUbMw8igPAc0TYH/H2pKo860UnpayZXx+Xbnucq1vdTXLNrN36nf
-         XLASuAnj9+kzxRzQwjpg7McVvtdDBBttBf3k51Gm6E8T8YGF5Zm0abPJHRujk20FR/ES
-         3TyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3+UY3GuchyrjShmRMB8rtI3A49OvxwGB9whyjVemZrKX4GhO3u7VvK63IL5YU8n3NpXSfkaPE/ZxM5xgcYa8OVW1dqv8LhhRpZb7Y
-X-Gm-Message-State: AOJu0Yx5h9TGubp3NwIAliJEnQcSpa61IBYx8LFLIpvDMfA/DCvTo4pN
-	8o6v3N4ckZaHiUJE8k5AC7FTlDCLfaeMcCxRqobL4x02zgbGhUJy
-X-Google-Smtp-Source: AGHT+IGwY7as3MWB8rYJ4I9pgzQYCKHYP5+MPcdYB0dE1tHD/o8J8JD84q4msCMJqeg9XyYibSA/xg==
-X-Received: by 2002:a05:622a:15d6:b0:42c:7c75:b73b with SMTP id d22-20020a05622a15d600b0042c7c75b73bmr6001337qty.18.1708103635473;
-        Fri, 16 Feb 2024 09:13:55 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id y20-20020ac85f54000000b0042c5512c329sm105660qta.17.2024.02.16.09.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 09:13:54 -0800 (PST)
-Message-ID: <61bdd802-abe4-4544-8e48-9493a6bb99c8@gmail.com>
-Date: Fri, 16 Feb 2024 09:13:51 -0800
+	s=arc-20240116; t=1708103677; c=relaxed/simple;
+	bh=rmDRwiwblhwvtwuvm75M2GVP+g+7jtMynVV9YVddlKM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=E4YLo7lEewiCekvrjejuRDnIOrtTb12/9ei0KmALZ8n35/4qXGr/pMRQ4x48ZjvO0XC/MgE6T9urQmFONUmw39AixzG35+aOKnkgBRl+fpW6CTt2zykwRN0UspL1QmaXy2qNwm+ASBiKNMzwQdeE/bOpVZrhbkX++62Y4rp5lz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.29])
+	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Tbynt0GgWz9yLtP;
+	Sat, 17 Feb 2024 00:59:14 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.47])
+	by mail.maildlp.com (Postfix) with ESMTP id ECDE91407B0;
+	Sat, 17 Feb 2024 01:14:20 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP1 (Coremail) with SMTP id LxC2BwA3Lxjal89lNL2hAg--.6264S2;
+	Fri, 16 Feb 2024 18:14:20 +0100 (CET)
+Message-ID: <c6d0c04a979e05b85acd55d574d56f368c7aa95e.camel@huaweicloud.com>
+Subject: Re: [RFC 6/8] KEYS: PGP data parser
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
+	Petr Tesarik <petrtesarik@huaweicloud.com>
+Cc: Dave Hansen <dave.hansen@intel.com>, Petr =?UTF-8?Q?Tesa=C5=99=C3=ADk?=
+ <petr@tesarici.cz>, Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner
+ <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
+ <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "maintainer:X86
+ ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Andy Lutomirski
+ <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra
+ <peterz@infradead.org>, Xin Li <xin3.li@intel.com>, Arnd Bergmann
+ <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Rick Edgecombe
+ <rick.p.edgecombe@intel.com>,  Kees Cook <keescook@chromium.org>, "Masami
+ Hiramatsu (Google)" <mhiramat@kernel.org>, Pengfei Xu
+ <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao
+ <zegao2021@gmail.com>, "Kirill A. Shutemov"
+ <kirill.shutemov@linux.intel.com>,  Kai Huang <kai.huang@intel.com>, David
+ Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>,  Jason
+ Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
+ (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
+ <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
+ <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
+ David Howells <dhowells@redhat.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Date: Fri, 16 Feb 2024 18:13:58 +0100
+In-Reply-To: <EC53BCED-0D4C-4561-9041-584378326DD5@zytor.com>
+References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
+	 <20240216152435.1575-1-petrtesarik@huaweicloud.com>
+	 <20240216152435.1575-7-petrtesarik@huaweicloud.com>
+	 <Zc-Q5pVHjngq9lpX@casper.infradead.org>
+	 <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+	 <EC53BCED-0D4C-4561-9041-584378326DD5@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: stmmac: mmc_core: Assign, don't add interrupt
- registers
-Content-Language: en-US
-To: Jesper Nilsson <jesper.nilsson@axis.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- kernel@axis.com
-References: <20240216-stmmac_stats-v1-1-7065fa4613f8@axis.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240216-stmmac_stats-v1-1-7065fa4613f8@axis.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:LxC2BwA3Lxjal89lNL2hAg--.6264S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFyUtw45JF1xArWDGF18AFb_yoW8XF4Dpr
+	yxGa48tF4vqr4Fvr4qyw1fu34Svw4fJr1DXrn8JrWFyFn09r1akr1Ikr45WF9Fgr4xG3W2
+	yw4qgryagw1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
+	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	Ud8n5UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj5pt9QABs4
 
-On 2/16/24 07:24, Jesper Nilsson wrote:
-> The MMC IPC interrupt status and interrupt mask registers are of
-> little use as Ethernet statistics, but incrementing counters
-> based on the current interrupt and interrupt mask registers
-> makes them worse than useless.
-> 
-> For example, if the interrupt mask is set to 0x08420842,
-> the current code will increment by that amount each iteration,
-> leading to the following sequence of nonsense:
-> 
-> mmc_rx_ipc_intr_mask: 969816526
-> mmc_rx_ipc_intr_mask: 1108361744
-> 
-> Change the increment to a straight assignment to make the
-> statistics at least nominally useful.
-> 
-> Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
-> ---
->   drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> index 6a7c1d325c46..6051a22b3cec 100644
-> --- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> +++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> @@ -280,8 +280,8 @@ static void dwmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
->   	mmc->mmc_rx_vlan_frames_gb += readl(mmcaddr + MMC_RX_VLAN_FRAMES_GB);
->   	mmc->mmc_rx_watchdog_error += readl(mmcaddr + MMC_RX_WATCHDOG_ERROR);
->   	/* IPC */
-> -	mmc->mmc_rx_ipc_intr_mask += readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
-> -	mmc->mmc_rx_ipc_intr += readl(mmcaddr + MMC_RX_IPC_INTR);
-> +	mmc->mmc_rx_ipc_intr_mask = readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
-> +	mmc->mmc_rx_ipc_intr = readl(mmcaddr + MMC_RX_IPC_INTR);
+On Fri, 2024-02-16 at 09:08 -0800, H. Peter Anvin wrote:
+> On February 16, 2024 8:53:01 AM PST, Roberto Sassu <roberto.sassu@huaweic=
+loud.com> wrote:
+> > On Fri, 2024-02-16 at 16:44 +0000, Matthew Wilcox wrote:
+> > > On Fri, Feb 16, 2024 at 04:24:33PM +0100, Petr Tesarik wrote:
+> > > > From: David Howells <dhowells@redhat.com>
+> > > >=20
+> > > > Implement a PGP data parser for the crypto key type to use when
+> > > > instantiating a key.
+> > > >=20
+> > > > This parser attempts to parse the instantiation data as a PGP packe=
+t
+> > > > sequence (RFC 4880) and if it parses okay, attempts to extract a pu=
+blic-key
+> > > > algorithm key or subkey from it.
+> > >=20
+> > > I don't understand why we want to do this in-kernel instead of in
+> > > userspace and then pass in the actual key.
+> >=20
+> > Sigh, this is a long discussion.
+> >=20
+> > PGP keys would be used as a system-wide trust anchor to verify RPM
+> > package headers, which already contain file digests that can be used as
+> > reference values for kernel-enforced integrity appraisal.
+> >=20
+> > With the assumptions that:
+> >=20
+> > - In a locked-down system the kernel has more privileges than root
+> > - The kernel cannot offload this task to an user space process due to
+> >  insufficient isolation
+> >=20
+> > the only available option is to do it in the kernel (that is what I got
+> > as suggestion).
+> >=20
+> > Roberto
+> >=20
+> >=20
+>=20
+> Ok, at least one of those assumptions is false, and *definitely* this app=
+roach seems to be a solution in search of a problem.
 
-So in premise I agree with the patch, that incrementing those is not the 
-right way to go about them. However these registers are currently 
-provided as part of the statistics set, but they should instead be 
-accessed via the register dumping method.
+I'm looking for a solution to this for a long time. Could you please
+explain?
 
-In either case you will get at best a snapshot of those two registers at 
-any given time and I suppose this can help diagnose a stuck RX 
-condition, but not much more than that.
--- 
-Florian
+Thanks
+
+Roberto
 
 
