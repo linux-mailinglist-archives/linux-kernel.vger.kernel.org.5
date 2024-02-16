@@ -1,159 +1,130 @@
-Return-Path: <linux-kernel+bounces-68433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A6A9857A23
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:18:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBA26857A29
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:19:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B85461F24922
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:18:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C5B3B212DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC0E20DD9;
-	Fri, 16 Feb 2024 10:17:52 +0000 (UTC)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8708120B21;
+	Fri, 16 Feb 2024 10:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eh8YJm3k"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5774520DC8
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152DE1C2AF;
+	Fri, 16 Feb 2024 10:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708078672; cv=none; b=JtoIaNGjA0asw1utMkUeGnIkRLiawpcHVWyeOh2huLewmUPovTSETdeYsqhG/t6oI2DyxTtMV62uJfXfpNuT9YdnLIQQZjNcXJxQ+okosgH7icmaRpbTkMi/hSi5NVeE6dXdmpmZKxegeyNIF+U8PAhfCoVvVqVBD7EXpfoRboI=
+	t=1708078762; cv=none; b=dV56Z1DjEMxCvK0jaCVbyiuAI6K9XgrGPttnwe/h4qqE++n6PB6PqCBn2PkwK3sNac68TAIsMstAuxMJsIbMWbOPjb3YV/o2hb/wv3mXEbgbXllzNTs170No7zICOREkUKQxump2TaP2Rm+IJw+M1FOaRjCVB5NYVxua9mLKi/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708078672; c=relaxed/simple;
-	bh=lYwWiTcbrS7Hlpr3W3PSBMI1bxolZRwLidJEh2BgiBU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PSeFIGy5DYHvSqfVgNu+Ce0hzzV6KYiziEPFZdR0FSyMODjqfkGz6KQxSUSIVDvSsPtve/VqsJE3OZT8iuzPhnkvm/IHVvP1rRPQs4+U0v8l5GJheUtFXLNKhN57pCA0XfRLjW1l9AQzewLInkXzHL0Dl0/Cf+poO1J+mwew2Ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4TbntY1H9lz9t0H;
-	Fri, 16 Feb 2024 11:17:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id mi_EVeu5gp-A; Fri, 16 Feb 2024 11:17:41 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4TbntY0hNgz9syQ;
-	Fri, 16 Feb 2024 11:17:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 13E978B765;
-	Fri, 16 Feb 2024 11:17:41 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id d_saBaDgKqUf; Fri, 16 Feb 2024 11:17:40 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.102])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id AE7698B786;
-	Fri, 16 Feb 2024 11:17:40 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 2/2] powerpc: Don't ignore errors from set_memory_{n}p() in __kernel_map_pages()
-Date: Fri, 16 Feb 2024 11:17:34 +0100
-Message-ID: <20ef75884aa6a636e8298736f3d1056b0793d3d9.1708078640.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <3656d47c53bff577739dac536dbae31fff52f6d8.1708078640.git.christophe.leroy@csgroup.eu>
-References: <3656d47c53bff577739dac536dbae31fff52f6d8.1708078640.git.christophe.leroy@csgroup.eu>
+	s=arc-20240116; t=1708078762; c=relaxed/simple;
+	bh=HpbFXax0SSZwQVzKfKJjbyz8O1acvNAm90x+8EqL0dg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
+	 References:In-Reply-To; b=UXlGn+LINLvs6qy5+eTEWEFOLPOgPbaUYXP7avCiXw6v1tPgvjN/QnThwuOe1jmRkN2uYHoNRZtpBQs5LJvyVjSo5JgPn/6t3MZOYDpZcmOccjnvB4PauVVFYy23Gg+iy/QAymIxZU2B2PA+W82ea2rhPjacyv1/36waSqnC+To=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eh8YJm3k; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 0C906C000B;
+	Fri, 16 Feb 2024 10:18:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708078703;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QkIxqpdXEsO6giA3YQnaxtDqAl6uPWLK8CAbLV3KLI0=;
+	b=eh8YJm3kUD1UuhBwS35H7wRNZy4ZF6hgzNJpUu35b50ZAg+V/H/jT5FrzGVZeywZdOFVOO
+	qWjMGMJ7YUoXZn4AdzwFlqvvxO0Yjhj/5X0cybxa1eMp7xSASJLcuroACW1ofq4QybyH61
+	bahy1K3tVUurkVZo8QX307ELC4hrLQHabc/teilfUjUvRoy9M3KJCDb+Mk84nOBbi29KSG
+	Vej84jav2Q1yR90dBRgocxHeSc7JasGEuswPpI/CQ+PUfkTgYJaMtyYo7HwXDCj6QEW8t8
+	KSY5nkRoXwlm4mDG0JETgFIxMUtBDEvL/Cca2D++XD/DWFc9Ip8rXsxO3THTvA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708078656; l=3039; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=lYwWiTcbrS7Hlpr3W3PSBMI1bxolZRwLidJEh2BgiBU=; b=4QARmfP/MsmV0cSeFLmXJPnoW3jSj70yLfwQEZm7bgqm/aoOmeUTLZTt5MFHsmyBTPxi4HZBG S35ItvkrnzqARQrxHroqWT2Nb9KgE28JTsCR0mTCqsJOcEmn3QM+Q2A
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 16 Feb 2024 11:18:22 +0100
+Message-Id: <CZ6FD7EHIJDT.32IEDVT9FG2GP@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 02/13] dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c
+ bindings and example
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
+ <andi.shyti@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Rob Herring" <robh@kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-2-19a336e91dca@bootlin.com>
+ <20240216022227.GA850600-robh@kernel.org>
+In-Reply-To: <20240216022227.GA850600-robh@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-set_memory_p() and set_memory_np() can fail.
+Hello,
 
-As mentioned in linux/mm.h:
+On Fri Feb 16, 2024 at 3:22 AM CET, Rob Herring wrote:
+> On Thu, Feb 15, 2024 at 05:52:09PM +0100, Th=C3=A9o Lebrun wrote:
+> > Add EyeQ5 bindings to the existing Nomadik I2C dt-bindings. Add the two
+> > EyeQ5-specific properties behind a conditional. Add an example for this
+> > compatible.
 
-/*
- * To support DEBUG_PAGEALLOC architecture must ensure that
- * __kernel_map_pages() never fails
- */
+[...]
 
-So panic in case set_memory_p() or set_memory_np() fail
-in __kernel_map_pages().
+> > +allOf:
+> > +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> > +  - if:
+> > +      properties:
+> > +        compatible:
+> > +          contains:
+> > +            const: mobileye,eyeq5-i2c
+> > +    then:
+> > +      properties:
+> > +        mobileye,olb:
+> > +          $ref: /schemas/types.yaml#/definitions/phandle
+> > +          description: A phandle to the OLB syscon.
+>
+> Define properties at the top-level and then restrict them in if/then=20
+> schemas.
 
-Link: https://github.com/KSPP/linux/issues/7
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/book3s/64/hash.h |  2 +-
- arch/powerpc/mm/book3s64/hash_utils.c     |  3 ++-
- arch/powerpc/mm/pageattr.c                | 10 +++++++---
- 3 files changed, 10 insertions(+), 5 deletions(-)
+Noted, thanks.
 
-diff --git a/arch/powerpc/include/asm/book3s/64/hash.h b/arch/powerpc/include/asm/book3s/64/hash.h
-index 6e70ae511631..8f47ae79f2a6 100644
---- a/arch/powerpc/include/asm/book3s/64/hash.h
-+++ b/arch/powerpc/include/asm/book3s/64/hash.h
-@@ -269,7 +269,7 @@ int hash__create_section_mapping(unsigned long start, unsigned long end,
- 				 int nid, pgprot_t prot);
- int hash__remove_section_mapping(unsigned long start, unsigned long end);
- 
--void hash__kernel_map_pages(struct page *page, int numpages, int enable);
-+int hash__kernel_map_pages(struct page *page, int numpages, int enable);
- 
- #endif /* !__ASSEMBLY__ */
- #endif /* __KERNEL__ */
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index 0626a25b0d72..01c3b4b65241 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -2172,7 +2172,7 @@ static void kernel_unmap_linear_page(unsigned long vaddr, unsigned long lmi)
- 				     mmu_kernel_ssize, 0);
- }
- 
--void hash__kernel_map_pages(struct page *page, int numpages, int enable)
-+int hash__kernel_map_pages(struct page *page, int numpages, int enable)
- {
- 	unsigned long flags, vaddr, lmi;
- 	int i;
-@@ -2189,6 +2189,7 @@ void hash__kernel_map_pages(struct page *page, int numpages, int enable)
- 			kernel_unmap_linear_page(vaddr, lmi);
- 	}
- 	local_irq_restore(flags);
-+	return 0;
- }
- #endif /* CONFIG_DEBUG_PAGEALLOC || CONFIG_KFENCE */
- 
-diff --git a/arch/powerpc/mm/pageattr.c b/arch/powerpc/mm/pageattr.c
-index 16b8d20d6ca8..62b678585878 100644
---- a/arch/powerpc/mm/pageattr.c
-+++ b/arch/powerpc/mm/pageattr.c
-@@ -106,17 +106,21 @@ int change_memory_attr(unsigned long addr, int numpages, long action)
- #ifdef CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC
- void __kernel_map_pages(struct page *page, int numpages, int enable)
- {
-+	int err;
- 	unsigned long addr = (unsigned long)page_address(page);
- 
- 	if (PageHighMem(page))
- 		return;
- 
- 	if (IS_ENABLED(CONFIG_PPC_BOOK3S_64) && !radix_enabled())
--		hash__kernel_map_pages(page, numpages, enable);
-+		err = hash__kernel_map_pages(page, numpages, enable);
- 	else if (enable)
--		set_memory_p(addr, numpages);
-+		err = set_memory_p(addr, numpages);
- 	else
--		set_memory_np(addr, numpages);
-+		err = set_memory_np(addr, numpages);
-+
-+	if (err)
-+		panic("%s: set_memory_%sp() failed\n", enable ? "" : "n");
- }
- #endif
- #endif
--- 
-2.43.0
+> > +        mobileye,id:
+> > +          $ref: /schemas/types.yaml#/definitions/uint32
+> > +          description: Platform-wide controller ID (integer starting f=
+rom zero).
+>
+> instance indexes are a NAK. You can use i2cN aliases if you must.
+>
+> Why do you need it? To access OLB? If so, add cell args to the OLB=20
+> phandle instead.
 
+Why we do what we do: I2C controller must write a 2 bit value depending
+on the bus speed. All I2C controllers write into the same register.
+Index is used to compute the shift.
+
+mobileye,olb is a phandle to a syscon. I'll be using i2cN aliases I
+guess.
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
