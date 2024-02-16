@@ -1,135 +1,159 @@
-Return-Path: <linux-kernel+bounces-68472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2D6C857AB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:52:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42ACE857AB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 601232861C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:52:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBE0328616F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E80053E0C;
-	Fri, 16 Feb 2024 10:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75790535D3;
+	Fri, 16 Feb 2024 10:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F4zqxnqK"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dZxKMAMl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1304753E15;
-	Fri, 16 Feb 2024 10:52:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855DF535A2;
+	Fri, 16 Feb 2024 10:52:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708080751; cv=none; b=AEp0QL9QqqBdFIqgComh79iKTQCf78ANkFTaVHy18WeBLLqBixt02wy/1COSwJtexXdl7Nsl0FCpqVt7Nwor89qtV+HeXSKpKnbxpPEYLYjWWoLC06OOivCZuGL9jrBAB903/g4/grQdpAro1hh7aWcoc+RR5L1tr9L//nADRRU=
+	t=1708080772; cv=none; b=ofZBhUu3AKa13W9TTf42Rc2/9HuOp6FbtoHVbP1uDxvXUkuUAUvEZV90ZzxtgpxFirt0j/NkknVpxx6oc0NbFgBOVy1m+ZVARv8KRpmKzm3OHo+/2ap7xIuqwS7P7uAVtMm+kFOe5IcqTd85uO8rONGAhyaTF9rgKrYI42jfugQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708080751; c=relaxed/simple;
-	bh=SxPNvP02QRgALKhVAF8XtYXCiuzYHgGs0GtYnOmTTHQ=;
-	h=Content-Type:Mime-Version:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=Eqz+raflOMGcgiWmR5JaApfG+m1iqqCS1BtyQjeJDB+LC6FJLcww3eB5YbbqSmw5KxaBv0F7wjPQwOE/thXGNf3U9fjd5hgWgjLOz+jgyyANWG+DCxPi4pGgAJxrBrmZ9t756H9oaspAqluVoFDRjca8WhTh7vIZXJiDTsQEE2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F4zqxnqK; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3d5e77cfbeso334776666b.0;
-        Fri, 16 Feb 2024 02:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708080748; x=1708685548; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8BlcWNd72NqF1gKnOhmnwk5ASoyTAqAbMm6IbUppSeg=;
-        b=F4zqxnqKBmLVNq2Dg11VeR3OZspe5Vc63Ej4VUE2/yAAxfVwByStCMM/eLZ+hgmvl0
-         nWJt1CL+iOo6uuKolllo0xTpZHK5AtNQSKSoUiu4t6XD9cdL/NE6cvlUf3r4HWwrDIjJ
-         P9TZAXdrMCeuw75ur2vWvc10VeXduxCeU8LMus32JfzPcL/NcvLljikwE59TVfTQ1CJy
-         oFJYcNJShoRG0bNO3xDbwYZ//SqnktVY/MkNqYDbr186JfHeKpWgnMy0kaQq18l71f30
-         MTbEjnAYjHbrztFjjz1cAlBjXqzNrJ0mSdty7iSQEJyc6yGBR1XXfyumK9i/H+rY1e5m
-         sWzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708080748; x=1708685548;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8BlcWNd72NqF1gKnOhmnwk5ASoyTAqAbMm6IbUppSeg=;
-        b=P1bkA2bJrraKkQoBaFygCdzMLqaa/ZlY8ddK8siqmB9vTFnSKmVC4359zsWrew9qTn
-         h/y1sfv8Xtq9VRN4kFkIieXNSE5QC4dp7qzWu9Ii7U14NSBzzDBgg5Gn//1NA560pZfc
-         6qdQst9NX6WrXi2G8HKboCGUPnd/hfRxolt2GD3/M+B3i66DltWUWuD8aJPfky7HP/NM
-         OnwKzvyhF9kRLdqKgfq4+LYiXZ9VR0EeAnXP4eLA0dEul/EstUxrH2CTvag+hsqi3piS
-         o7Wkf63GeJ0FPhBETR/E9HN/WcG1nyd133hUk0A1ybUXY4Y3dVIDmsTLkrOVTqJRy7B6
-         WUWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUOfN8afqG+ElEKTa7uzVA+IDWmOuvyuWReAtWEF6bGsqyXcTyzcr7gM3NPLf/oPZ6wR5X8EEJ1oCPi9yLdSiKIxYPC1KIsrVmw3uh8PtElRfMiGLxe6bjxD/AByyp8NkJbVFndZupUj0s=
-X-Gm-Message-State: AOJu0Yw8xLKW9ANlTKLvnKhM/ukEwhSzgi0Tys6Aat9h69za6obho6Db
-	ApxBGlstLPybIhhAXPNBNuCuqnIMt1FDSlrbqe2l6o3lhM1dHfK3Xsq5WzJT
-X-Google-Smtp-Source: AGHT+IH0mDcRw34Wq9ydUOENLdvJRoSG5jkuL9c84tNSGhp68b/i9ae6/cVjEJgI+Bo3dCS82Bq4Lg==
-X-Received: by 2002:a17:906:f156:b0:a3c:7e4b:e7e7 with SMTP id gw22-20020a170906f15600b00a3c7e4be7e7mr3679222ejb.10.1708080748056;
-        Fri, 16 Feb 2024 02:52:28 -0800 (PST)
-Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id o4-20020a1709061b0400b00a3d80d7f986sm1422202ejg.82.2024.02.16.02.52.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 02:52:27 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=8eadebd4d5fd4d6fa88e29463ae8e3e13d60ee0673e0e78c74e9107668be;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1708080772; c=relaxed/simple;
+	bh=8VkaDPezDLyOsFDWG7YISAHY6yzoxdeio9M6WtqjSaw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fph5odDwzzAIxy5jkyl0UqSPnSu+73Fmg5t9SQUgEe936FhY38YpmDrBIpgxKBs59+QbCuUnvjR8AP1yYJjooi3KuHE6dOA3HPT5pBRu8qeHD6+2RHfyavfB0vXuif6+b/NDjU3A5tR04+jM7J0SbHPnlqzevmw05ZtfxhTN8vA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dZxKMAMl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0B92C433C7;
+	Fri, 16 Feb 2024 10:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708080772;
+	bh=8VkaDPezDLyOsFDWG7YISAHY6yzoxdeio9M6WtqjSaw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dZxKMAMlNEItXdf+sah3f0Cyw5u24xo2zCc00T3+8mqhBrqpOxyetDPgOL9e8avxx
+	 mv22lD1sEPmBEmFDSHApj6JOize1TuBT4VPWM4jBcJrKvhYj92EzTyN60eKdNNzhIt
+	 7yYcEj66TVVTE8xrrDPoK4urjCLlNNUpfQPba/TWUvl/7TT12Yr5dVPI/+323QCq7F
+	 TmaGxLvOhmIVwApJw/9MbnTbjlaCsq1ZAzy8dZAgR6x9rfcpnVf2SuuJSE3GDx4sNQ
+	 FBP2KsLyjT8nx4N4tU/0WxdWlWFnesGH9gIGZWVbjblrTWsB7Pb2DROPyjsNu9MQZD
+	 b6BSnB9vI28LQ==
+Date: Fri, 16 Feb 2024 16:22:41 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc: agross@kernel.org, andersson@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org,
+	quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+	quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+	dmitry.baryshkov@linaro.org, robh@kernel.org,
+	quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+	quic_parass@quicinc.com, quic_schintav@quicinc.com,
+	quic_shijjose@quicinc.com, Bjorn Helgaas <bhelgaas@google.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev
+Subject: Re: [PATCH v9 0/5] arm64: qcom: sa8775p: add support for EP PCIe
+Message-ID: <20240216105241.GB2559@thinkpad>
+References: <1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Fri, 16 Feb 2024 11:52:27 +0100
-Message-Id: <CZ6G3AJZTG6X.1P6P64B0Y3Q8W@gmail.com>
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Colin Ian King" <colin.i.king@gmail.com>, "Mikko Perttunen"
- <mperttunen@nvidia.com>, "David Airlie" <airlied@gmail.com>, "Daniel
- Vetter" <daniel@ffwll.ch>, <dri-devel@lists.freedesktop.org>,
- <linux-tegra@vger.kernel.org>
-Cc: <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][next] gpu: host1x: remove redundant assignment to
- variable space
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240215224301.2073845-1-colin.i.king@gmail.com>
-In-Reply-To: <20240215224301.2073845-1-colin.i.king@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1701432377-16899-1-git-send-email-quic_msarkar@quicinc.com>
 
---8eadebd4d5fd4d6fa88e29463ae8e3e13d60ee0673e0e78c74e9107668be
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+On Fri, Dec 01, 2023 at 05:36:11PM +0530, Mrinmay Sarkar wrote:
+> This series adds the relavent DT bindings, new compatible string,
+> add support to EPF driver and add EP PCIe node in dtsi file for
+> ep pcie0 controller.
+> 
 
-On Thu Feb 15, 2024 at 11:43 PM CET, Colin Ian King wrote:
-> The variable space is being initialized with a value that is never read,
-> it is being re-assigned later on. The initialization is redundant and
-> can be removed. Also merge two declaration lines together.
->
-> Cleans up clang scan build warning:
-> drivers/gpu/host1x/cdma.c:628:15: warning: Value stored to 'space'
-> during its initialization is never read [deadcode.DeadStores]
->
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
->  drivers/gpu/host1x/cdma.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+Applied patches 3 and 4 to pci/endpoint!
 
-Applied to drm-misc-next, thanks.
+- Mani
 
-Thierry
+> v8 -> v9:
+> - update author in "Add pci_epf_mhi_ prefix to the function" patch.
+> - add ack by and reviewed by tag in commit message.
+> 
+> v7 -> v8:
+> - Add new patch PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function
+>   names
+> - Update PCI: epf-mhi: Add support for SA8775P patch on top of the new
+>   patch and update commit message.
+> 
+> v6 -> v7:
+> - add reviewed by tag in commit message in all patches.
+> - update commit message in patch 2 as per comment.
+> - update reason for reusing PID in commit message.
+> 
+> v5 -> v6:
+> - update cover letter.
+> 
+> v4 -> v5:
+> - add maxItems to the respective field to constrain io space and
+>   interrupt in all variants.
+> 
+> v3 -> v4:
+> - add maxItems field in dt bindings
+> - update comment in patch2
+> - dropped PHY driver patch as it is already applied [1]
+> - update comment in EPF driver patch
+> - update commect in dtsi and add iommus instead of iommu-map
+> 
+> [1] https://lore.kernel.org/all/169804254205.383714.18423881810869732517.b4-ty@kernel.org/
+> 
+> v2 -> v3:
+> - removed if/then schemas, added minItems for reg,
+>   reg-bnames, interrupt and interrupt-names instead.
+> - adding qcom,sa8775p-pcie-ep compitable for sa8775p
+>   as we have some specific change to add.
+> - reusing sm8450's pcs_misc num table as it is same as sa8775p.
+>   used appropriate namespace for pcs.
+> - remove const from sa8775p_header as kernel test robot
+>   throwing some warnings due to this.
+> - remove fallback compatiable as we are adding compatiable for sa8775p.
+> 
+> v1 -> v2:
+> - update description for dma
+> - Reusing qcom,sdx55-pcie-ep compatibe so remove compaitable
+>   for sa8775p
+> - sort the defines in phy header file and remove extra defines
+> - add const in return type pci_epf_header and remove MHI_EPF_USE_DMA
+>   flag as hdma patch is not ready
+> - add fallback compatiable as qcom,sdx55-pcie-ep, add iommu property
+> 
+> 
+> Manivannan Sadhasivam (1):
+>   PCI: epf-mhi: Add "pci_epf_mhi_" prefix to the function names
+> 
+> Mrinmay Sarkar (4):
+>   dt-bindings: PCI: qcom-ep: Add support for SA8775P SoC
+>   PCI: qcom-ep: Add support for SA8775P SOC
+>   PCI: epf-mhi: Add support for SA8775P
+>   arm64: dts: qcom: sa8775p: Add ep pcie0 controller node
+> 
+>  .../devicetree/bindings/pci/qcom,pcie-ep.yaml      | 64 +++++++++++++++++++++-
+>  arch/arm64/boot/dts/qcom/sa8775p.dtsi              | 46 ++++++++++++++++
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c          |  1 +
+>  drivers/pci/endpoint/functions/pci-epf-mhi.c       | 21 ++++++-
+>  4 files changed, 128 insertions(+), 4 deletions(-)
+> 
+> -- 
+> 2.7.4
+> 
+> 
 
---8eadebd4d5fd4d6fa88e29463ae8e3e13d60ee0673e0e78c74e9107668be
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXPPmsACgkQ3SOs138+
-s6G7ww/8Ccf1z5cqdmYk/z19Ra4Oq/gXZFdq23lYsXMk8Wan8JQcyrQGHpZPzqCl
-tWXsnMCLeJk+ef3DNJRsU1/gIFbiAJlWz4c/1q01Htw5wwJ6S2RMBEyLJUJiQ3jC
-TjG+qF62jUQJed/lVA/EXKTx5Vxi9cbaZ4o0cckioVRtxP6aj3dWV/0ySc+nx1uU
-o9h8gwgyMafcLn5cVtKzf4aYLq32mDgLSY/UHhG3L6uXSLijxnPixdZyAYIq1gDH
-MVeRDtFkX/xplkI1SEFTUQ27U6qGgPszGbZSa+bqSfaoDP6fbuq2UmVaJ8jB+gr1
-f+7uxUu3lQ8vCw+NWYY0cfYPV3GajHwzeXmy2Jm0v1/XUr5cB8fU/tPFuikr8as7
-Lrweh3ZS8FbWO4WwKRvK1EdsT+RmGyQ5QVbbquU43lPvZav4CKBiZorrXdQca1gN
-yMIZQ1xJssRUWQ2fMrxq0Ze1SEiAms4SnnV6TEMxn8dE4gmaorRVLXDksVGA7mFa
-ig/P+bW/37UMQubPlhG4HmZ0G1BZrvbVoFW9cOlG3CI5+De+9RiCRMMpwfP7MXEZ
-S3x4HeyYvhFJGqk1t7EFrBZYra8UPCITSei3+Zb4symbsxmHoavbjMUwM21IS+Lg
-Rxdn8C1BMz1qj0xHP/xHtCEvgKo32hO41Sj9WL5O+3ZhXwzknzE=
-=LKQT
------END PGP SIGNATURE-----
-
---8eadebd4d5fd4d6fa88e29463ae8e3e13d60ee0673e0e78c74e9107668be--
+-- 
+மணிவண்ணன் சதாசிவம்
 
