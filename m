@@ -1,81 +1,92 @@
-Return-Path: <linux-kernel+bounces-69138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69EA18584EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:10:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D88F4858502
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:19:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DADF1C21A08
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:10:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FE422849B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C611D135A4F;
-	Fri, 16 Feb 2024 18:09:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F42E1350E3;
+	Fri, 16 Feb 2024 18:19:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="tU10yuhm"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2062.outbound.protection.outlook.com [40.107.244.62])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="tb2StxJm"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2048.outbound.protection.outlook.com [40.107.93.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088051350FA;
-	Fri, 16 Feb 2024 18:09:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5878012F377;
+	Fri, 16 Feb 2024 18:19:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.48
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708106976; cv=fail; b=p651pVqQlJv30anZ/3jyPdcwlpcPwj60qJT3k8NucHIw1mKaWXFnzgnEahAbdGnDidnqdp5X0q1EoENi7bv86LXhJh7WNdSEffOEHLldCL1UW/InJWIYNkLQJ9I/BuTllrKy05pOxoC8ZMVROM53LTJtsKGsQ5xpYf8d1Q1npKw=
+	t=1708107555; cv=fail; b=bgHhIxbioZliwFosZ1ixfti8a3oq1xY9nXPOwqRDH0L20SQvmWVt5KclfAb1KwmUwNirmXTuVAO1qg35hTQStUVCvB55ymYFNO5kNr6SgnZEwfTzK4TVbIHF2/94/HqxjSZQybPt0YAYH0pthlGh+WX19kXMMLeADjLFugN+90o=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708106976; c=relaxed/simple;
-	bh=iAvKayrX8QJrSRmwkHAdhPx63JbZqt35Hk/9enpYD10=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Ip63hxXVlh69jRmbXNh+LugbvrB8DgGXgF62ndPnXCL6TPhf9NOwbjPFUGJU/n2yHWCoJ0eQjz0WAJZmNgoPndr+lEURtohkY3pajGBZ2pYVKeYpJwer6xgFA0DLgWb1Jj/WVyVEzOdXEs3cj+obT5UB1spyZGuqRAibxuBSiE4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=tU10yuhm; arc=fail smtp.client-ip=40.107.244.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1708107555; c=relaxed/simple;
+	bh=PBhGWBYssm5RxwzCNUb8nPcM3PZKhf32Th2bgC59IiA=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 Content-Type:MIME-Version; b=jptoIiglLKMhk2rG7zQ/RkpGD/p6MeNMzuY3jXx33kqM/qN69Ex8m0BH25/2bme8FbkiAl9WV8M4VdARXf1Z4mHKOedelzlfY28XMqf5H+F3NSX20XkC0ZnAlyIog5pBvl6h5kf4kUpM08wfG6mkS0L9nFriaKEgU7nr7bi8wqc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=tb2StxJm; arc=fail smtp.client-ip=40.107.93.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HbWlwtI66PPb8R5BC2hCzjWo0exdON/yPuwYl0fIcUg+iwanXxk8g6kdXOLsQN1keB5idXf5CSI7738gUTfqJf6uIfE3DQvkr6rbCLWBLLdEJR57/WBo0Aul2SnnjG/zFVGDovZ31hvI1zAxpZZcDSunH4K538ESXJh2heQvoolcdZJQ08bnWyOQ8UGLQg8o+KpEz/VeD8omGIZZ2fdSv+dD0Sf0vjlOikCiF3mLAcg+4Fj6LOErZb2T5GKLaH+Eo7JGIh6q3Pumq65N61JpXdXjzNPTFOTTvLI9IRTAPykGb1uRz0llI0+OOl8bAiaKpaVE1EaSB1euMNw66YvkUQ==
+ b=JGT/wlhCfYDJ2p5dS9oY10DX8iS7t6yXyaFltpRdDdTErQlMFEK+WI8Z1PKY4xRgvao3p7f19hQuwEq1C17nfQ67ouLC6bN985fOMET0kvtC42hWGeIxkx037VB1bqMHuOAROnY6oaFAEjD6SVhGL3bRPzcgdvr2vJMAL7cfeP/lMOOjDvi2CDfNRe/qOGBa54FPwuaul0Kc6MFOffV4j1CfLrZwGJuDgB3e7+0gvdSRLkv03XvI8xbSNc4pYIbqSbPHLK3qI84Y2SUao0+Z+z+KdnGULdA35G9by4GosmJB+tVXK5D2cm+Ue1uy3+F7/CfuRXiD3jTZdHpX8m/fKg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZkAXukFiMFs6ljePLp0g1Vf4GOHUZnyIOY39GLY4UZs=;
- b=m7DWkikKEdwqxfbs2vEa0gVXbcGcCr/xT1XQ6V9kBT63nHVL1OVewgsHnjqyGli4N0V30buv9+7HzLMtT9DUOsnTODkarnzLaQ6DL5gfwKWqHrkI7eOWo8RhHyyHRXgHkb8ZBQyIG2Tl16wN5g50ilAlE0KHEVvmL2XgGjsOYw3XihKuncT1SlDrfn73aqWct81bxfgjGXbCJWSZybuWT99D/1b+CdW40IdTuR1Yk9JkbrEmmVz5QcVPgg6JUOiOUqcRyKqR4uBEeaxe8JCATv9uuTIw6Xacyc4ffj+00dfGAhj5TSq1b902y+Of2Nf+XjTNmGg+J6aQBcsbgImXJg==
+ bh=02r4q9XDhpN7zDi7ZTGoE3hYyKbmiz/PcPG3mkSIgto=;
+ b=hK+EhMelG6AGH8JfnxeWUeyaXxIatmTZXgCMmoLCXaEVyR/aPItVc9ENeBlvEfyqukwEX0e+04ClYT7s7yUgV3mwZvDRdkx6628rqmw4Chm/phpY04sb7NJMFuJvpgLt1UsLMZy/DyZiK9njth4183vY/veRK5irNSsW+U+ivkmc03gklBzwTxQs+zLAsiS9KvhxOL1Gx6zwVFz0ysTtXoM0khhMBMaDIGFsc3dMSymNMU9FrpMD99BdwC+fJuvNWhDGPrawcw74uPqiotNMiQ0YMjv2Hy3WYRXEZrXIX8jGVx4KXjJoiLL5Gd6rQMZLdWIK0hSv38iwWnDA/Qn4Qw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZkAXukFiMFs6ljePLp0g1Vf4GOHUZnyIOY39GLY4UZs=;
- b=tU10yuhm7z4Y756K6pc90g7nX6OsIxBjvziDSZ40Na7GieW+jhyc77nyRxre9pBQrq2jhhznq1XJ7F4Fq9a9mBF7+QRskudmxiF4vYJ4km4Cqz2FEplkS5Bzo4YWDXRWj/f0hDbdrQB6f9OdIqdlfvpeTYIhKIEKQyWna84Ob3U=
+ bh=02r4q9XDhpN7zDi7ZTGoE3hYyKbmiz/PcPG3mkSIgto=;
+ b=tb2StxJmyD5wI5Esht44UYQoyh8FXaZutkqcGbQgC0NZRWoO+OcxrO/hNj3pQKVr7W5ak9Nqmjc42UPKmtZl0n3ERZMvCgtNHYXClLa180nqfFpL8WSuFUC6U8J3yjG9xL9Nyl6mooDC0B0no2T2EYbWjN/rvTDQBZonp4Xe7f01dLbURGn1HrQFK6jrQER3hpRqkDXtLH3rIEIlL2wjlkuULKZyrYu3v19CV6TzVSvbAZGtbHB+3M/wgSjptAQmsw5C9+mcaqPq9oU8ITFNtMqS6fY66X/adDG9c7e48yxdDjN1z8B96sKRLcKjugyCPSzaiBireDG+CmrEgl8tbg==
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
- by CH3PR12MB8583.namprd12.prod.outlook.com (2603:10b6:610:15f::12) with
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
+ by SN7PR12MB6983.namprd12.prod.outlook.com (2603:10b6:806:261::20) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.15; Fri, 16 Feb
- 2024 18:09:30 +0000
-Received: from CYYPR12MB8750.namprd12.prod.outlook.com
- ([fe80::9d:17f1:8b3b:1958]) by CYYPR12MB8750.namprd12.prod.outlook.com
- ([fe80::9d:17f1:8b3b:1958%4]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
- 18:09:30 +0000
-Date: Fri, 16 Feb 2024 19:09:25 +0100
-From: Robert Richter <rrichter@amd.com>
-To: Dan Williams <dan.j.williams@intel.com>
-Cc: Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>,
-	Dave Jiang <dave.jiang@intel.com>,
-	Alison Schofield <alison.schofield@intel.com>,
-	Vishal Verma <vishal.l.verma@intel.com>,
-	Ira Weiny <ira.weiny@intel.com>, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] cxl/pci: Fix disabling memory if DVSEC CXL Range does
- not match a CFMWS window
-Message-ID: <Zc-k1TDk1hfvakQS@rric.localdomain>
-References: <20240216160113.407141-1-rrichter@amd.com>
- <65cfa34b741ea_5c762946@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65cfa34b741ea_5c762946@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-X-ClientProxiedBy: FR5P281CA0031.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f3::7) To CYYPR12MB8750.namprd12.prod.outlook.com
- (2603:10b6:930:be::18)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.30; Fri, 16 Feb
+ 2024 18:19:10 +0000
+Received: from BYAPR12MB2743.namprd12.prod.outlook.com
+ ([fe80::d726:fa79:bfce:f670]) by BYAPR12MB2743.namprd12.prod.outlook.com
+ ([fe80::d726:fa79:bfce:f670%7]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
+ 18:19:09 +0000
+References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+ <20240216-feature_ptp_netnext-v8-4-510f42f444fb@bootlin.com>
+User-agent: mu4e 1.10.8; emacs 28.2
+From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+To: Kory Maincent <kory.maincent@bootlin.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>,
+ Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh
+ <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, Nicolas
+ Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
+ <claudiu.beznea@tuxon.dev>, Willem de Bruijn
+ <willemdebruijn.kernel@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH RFC net-next v8 04/13] net: Change the API of PHY
+ default timestamp to MAC
+Date: Fri, 16 Feb 2024 10:09:36 -0800
+In-reply-to: <20240216-feature_ptp_netnext-v8-4-510f42f444fb@bootlin.com>
+Message-ID: <87jzn4gtlv.fsf@nvidia.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR06CA0047.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::24) To BYAPR12MB2743.namprd12.prod.outlook.com
+ (2603:10b6:a03:61::28)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,100 +94,322 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|CH3PR12MB8583:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9e0672cb-9de0-4a9a-8c9d-08dc2f1a6be9
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|SN7PR12MB6983:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6bb4d59c-e9dd-4e56-ac0a-08dc2f1bc509
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	Dplh0z5vOhFDGRhdxuT/ykHCpsBS3aWvM07oXdZxRDhBq/Y+iFqE/W/SHGNUB+RnpBWBsSgvwMj/n5+DvqcH96lhlkIHJz/OqkDpoMPM7UEfyFPIUy7b16h9Z/S5NDJIPEDEK2PMusHB8ShsMNKzy7jRlThNz8+DCAElpKNKSy3Y6tCqOOwKvtVpTmAy1RB5mhi6r7ihs1nO0MX1pMOPXWw4eUoApGxwdGl3rADgV3ZO0+LdTqR1xXR5ILIvyYTKXt/ty8OUqWR+/Oy/vyY4AodPgWel1Dtwb61NlLxv43by7TIPi9dL0MWm2Kjxkg66NlMJoynrkFn3fI2e5YkCVh4r9P9xtpgNxTJw1LfaFsK+uwBpVw6x6UQMgZxQs+JD0BbbhQpeUoc+q8QG+4RFun3A/dhKJeNalpPuPnafRxBuhSNc29hG0lFwsLST6ootZh1+2FYVoxgWnyiB/MaFsghVCt7wSLud0Xx8dkKJKroz5fWgGXuO6H6DyVcMcjCc8hjBCC6sFJ3LXb/rhogNQi+y8SWFFmqs1uAWUuEtSfa5OkwsxX2WsAK2YVX5nwut
+	eAXOu+ryz22LWacGoqfsPtFzKDL1vHZ6b0GoIewC3rHOdq34FDVndH9uraAV1BYmIqgLCOlXN5Ar7hWdItf0gBl/LufmknhM0j/gB109d7MZvBEBatjcokS2W62rTYY+VmfuDQ86CMEXMf8NnHRPzyz5j8S1452kviigxcSCRZR8BoIoTZ5EFZhJiLNDUhaWRAJUgzQwgM9/eVBEApklAY1thPGyo+P4xcQNVLP4L1A+jTcEcDU4k2ndILLxQwMWm7szjKHoxDl3dmQQw92FOlR9oZZBUk8Q5N2TBZLG/5qzwfaZhCgONzdDWtEPDPEcR4H1O3a1b3j8B8IqwqJ3HOzEiDlhADKhUGSoW/iM4wcd2Ssb9TJ/neOVvZIdO7E+AjFD43nz0J/oohqmytoe1I8iN2h/wfNY9Rw9Jey0ISW2H5mDUPuI/FnfI8pZFdOkgn2OEfgq+WLiI3AGR8EFxAbm9NfzKCXBouM59t7W2s+nErK3x79vUHpdYggStttWsqjHzktpV1+BlkVSWl0fnFBEmR4N2g/wJ6lQnZfMBydPa8auB4cFhsgSrsZN23Un
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(396003)(346002)(39860400002)(376002)(230922051799003)(64100799003)(186009)(1800799012)(451199024)(6486002)(6512007)(6666004)(9686003)(478600001)(41300700001)(4326008)(8936002)(8676002)(66556008)(2906002)(5660300002)(53546011)(6506007)(316002)(54906003)(66476007)(66946007)(6916009)(83380400001)(38100700002)(26005);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39860400002)(396003)(136003)(376002)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(7416002)(5660300002)(2906002)(4326008)(2616005)(41300700001)(6916009)(66946007)(8936002)(66556008)(66476007)(8676002)(26005)(83380400001)(6506007)(6486002)(6512007)(6666004)(54906003)(316002)(478600001)(38100700002)(86362001)(36756003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?sqfnwJvGGL3w32Oi0wQx9899U0P4Ny+2r4g8RazqmVot8nxeXV5YH1JK9aFP?=
- =?us-ascii?Q?WoNZhoYSQJ2ZqX6uhVeTliK3qviVMvIor0AZy4wK7D28BK2LN3NRI5gdiyOR?=
- =?us-ascii?Q?zYELBxZPKLu/9fTPa0pkEbY0K0gEN4kxrmbJA/V7DBMJnOHBlznWPDZpHdXY?=
- =?us-ascii?Q?OahQX912TE+OWtWpvnbRdRpWFR3JdPryMvscYIePQsanrBm/X+OnHuVZuvUH?=
- =?us-ascii?Q?ga6F7cKT4vdsJX6P+8hsMUtUpt+i64cHW5B9O6LOF8unc07Pv0SdRwxBCtUo?=
- =?us-ascii?Q?MBOAidAGbT3CG8gaJ8ndp6mEneyiuMGZJASNnHTq9e4xcKw1CPIoczdGnY6Y?=
- =?us-ascii?Q?Xfm8Av1AVZoRWQ1EjhvJwOYROsGqtZctd9TbvQymAPkzCkQNFXm/OSdAln92?=
- =?us-ascii?Q?qDuczsgkmHz1ZuugHkXrm6tKOgLXjFjz3FmtAY922Oe+NVPBM6ZOerEPfRoX?=
- =?us-ascii?Q?hbE91wP3nbydat7rZZCQzGzmuyGnj+KejFGtkTav+RXNr4TbkgJ2wdgpR22B?=
- =?us-ascii?Q?ejdsjItTNGzj/wILRjH0T2gEjyRzv783+aiR5EiEfh7juZGzcyqb5AtEbDLf?=
- =?us-ascii?Q?jVJVPwPZeLuWpQ5s/bTuukWZ/fUtmW1pWHo1W2fur6yiHag7RV9fq00x1dIh?=
- =?us-ascii?Q?4c+z9n3GC+9mF4Qnh+KhrIW+RMY5OXzEDUBa0wzIwHzzU6fFAcE7Wc4nTau7?=
- =?us-ascii?Q?/wrvQwzmsmaCCAfF9UZ0uCLJXihQ4o9MXLgE1jDz3DWuFsd46Q2PYbI25Yi0?=
- =?us-ascii?Q?fsUWcl8PCagMmOYh5BjwZZgbAp3pQoDj8hmBgickSUDywRR/5UnjMPHtoU8C?=
- =?us-ascii?Q?2ahiDfd/+NSwcqXZz6Onic1BrfTEnmIjAfm9QWCzmpP/xWcboHbUTPmUuUb2?=
- =?us-ascii?Q?yO2Zmw2RqkRgmXs5jQFxYLZfRxccndwE1QXRsnpPhWkMpDDcG8awuhhDInj0?=
- =?us-ascii?Q?Xvv6xN2p+KaBz37BaUKjMaK5SyslNFwP41/008S6fwlJeVX+I6e/ebUOMWEV?=
- =?us-ascii?Q?PKfAhsdeY0gjYhTETgk3BjOipFMgn6s9TW0B61Sx8ixVWNdqURosZrhHXXwW?=
- =?us-ascii?Q?0NDQpMfj4t2QTkb1fcO2/SGzYiRdaj2KRIj2XpjdyfcH8FR95FV1nyUKwkD2?=
- =?us-ascii?Q?xUTGp6Tir7nyGf4uHsdJm3cSttYd+s2il+ffotf+jKne0liPxdvMLh7gM/Ly?=
- =?us-ascii?Q?nUhcKEcnsim/bKrt+UfgdxXceffdDFQX4VEM/hT5Lq3KHe5CxI4Rp2Jxx62+?=
- =?us-ascii?Q?0hVmrBG0zttHZBOI34CyJgI5CLUxZ3LAXD13HtgG/8qdi2aSNGBJ5zRjqVj6?=
- =?us-ascii?Q?r8sMfO3c/Qwm1ifS555Dpt1St8TVAMGW20fcneurO89uzUczT4nIlJgJ1ADE?=
- =?us-ascii?Q?yZE0YNWnViG6c7sLp++UlzxVVNaQdPdEBtBjFhlGLitu09ZSdmU3Icw/AQWC?=
- =?us-ascii?Q?17dXYuNwpo6KkUrqCqPQZGmNWljRwzPqsGzoMbuwW90BYW9eaI+qnmuAFgbh?=
- =?us-ascii?Q?IgwzxKTgTkmPah2oKpGylGqzKFwWs+rLzMSW7X/PWyt7j6ANH8u00DcK77P+?=
- =?us-ascii?Q?FDw9RixK71mKBnsTxDS5A6whH6gFu0L1xvPSvRqI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9e0672cb-9de0-4a9a-8c9d-08dc2f1a6be9
-X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
+	=?us-ascii?Q?Hib1n3a5/IkOq46VzkHwa4Rnlj+pCD1V82HmhuBvziCHLA2ZV1E3HU+jDyqO?=
+ =?us-ascii?Q?H9PtMrihRNmro53AZtJIa+LcWvCp/ALU/g1k9pkoOth3Vz3ngJUKzFB4EfSB?=
+ =?us-ascii?Q?yABvU531Pa3L9mmJBR8Z/4HbChHrW1MUuEiV8iSYNoIzvRKS7gMk0Cx5mxd6?=
+ =?us-ascii?Q?yV5yb8Ew+0xRWmyu6sJb/PYEAw8S12eF1sa085bBFGxd55qXRep7OrJMedb5?=
+ =?us-ascii?Q?MiWfUDOsgNE6+CcpI1gmzuQKEDMgb/H0GWb7vLPg4KkAAipdvRbDjHuax9nU?=
+ =?us-ascii?Q?YUqRjo0zjFaNYTgTugnftSSFMXnZnUycWXkJVKw4y7Cf0vzEJQIJ98xsJCa7?=
+ =?us-ascii?Q?fq4nr0MSlHlB7pMiB+lApVSCWRV03PDpEvZJtpVz4YWYFb8CX76/HqvlcIc/?=
+ =?us-ascii?Q?iLsI6n6TX2UEZO1D+ICJJfaFvle0KC5DLPriJrmew3qVtTRMbges+1vlDVWA?=
+ =?us-ascii?Q?SG1YEe12wRsuhDQ4Cs9azHa7fjfvMVC2wOWOtSmAPMYrh7oSXXCNRqEV+5Ru?=
+ =?us-ascii?Q?8imjaj4wb34q6yRPYrIKKgHnTsD9qLEBVmU3kZU4cr89UlMJPykRUsKRN4S4?=
+ =?us-ascii?Q?Rjwcl28uX+oZ54XT7qoGp6NhK3WGf2ij/rHiIsN5nbk5ieft6HssX1w84Feo?=
+ =?us-ascii?Q?K6tDmXTtfR0W1dATjpcpgHy/FnAEcDQOOQDCLeRo1cRM6zJrRpwhScoojThg?=
+ =?us-ascii?Q?X4rgGxjrDheppPoqOX+L3wZ6WsxXialJHzQyQcqTgpFUdhU8vksXzvLxg2Ox?=
+ =?us-ascii?Q?dvPgIeVnREjP0tFCxy0ZRSHjHdrMVYtuXqSSqbSwwxSKbF0cxY5UzdvWRv0B?=
+ =?us-ascii?Q?1yfC+JgQkEIPQrNIWvr2vQNsEXtiuYzrbK2LHwnJJAC5gpwSCynTOflT8JhQ?=
+ =?us-ascii?Q?sI+hIAZKQrhMCBG6EjOIEo6+9EepEPMNjKMdTZFVPdCmEab9v+/C7cqZFMSL?=
+ =?us-ascii?Q?GV6ANYFxTf2K3dsC6w5cxZNeHxM4E5W6RXsH4GVTLoP15ObR73DDTVekKv/y?=
+ =?us-ascii?Q?DDTzoRiZkADpovtl8Wb2DEUlZj8KbvHHIhELAdd/5w/w36N4EXnZTTfRRhT1?=
+ =?us-ascii?Q?a3uQQlBCN8fWTE7B2Hzq/sLUixNueqnmnehW+NLCi31eAWeOsLXWW1swqzfY?=
+ =?us-ascii?Q?6Ct/B+bHd8FLy2dUjRmOcvMGXCRM0Dob9RYttaQdkcQbTb58eIngxtLEBxpy?=
+ =?us-ascii?Q?26KJvmvCzlcrJOXaJkqE/zAjC670IUGYTkzeQ54573rgW2c3WOhxcJJju/BJ?=
+ =?us-ascii?Q?wIoiK7d9t5tJGt9CQsjE32D3veTFPXqxe9CUbxRba5txUumViNGXxSlyH12h?=
+ =?us-ascii?Q?d7xQ0zjkmnHpSIMYmUWOKeECyd6fE5mRdWJZNnVrWx5aQ97m7I2wjXa6unBl?=
+ =?us-ascii?Q?45eaRbDEcEJrj7N5673OfRkd8jPlnL78Bm91fDXpFmWM6yXWIO78xfYyG+ol?=
+ =?us-ascii?Q?gHeR1uFHLBszn8itS10oQ83kRkwN6ZfRDHu/ZiEs205kmEkYrHmdLJHSLeB/?=
+ =?us-ascii?Q?c+ILSzb5MXQiUyRnxJ1yalrQq/XXYZhIaLP7qSsgypPhz8uAIMQyocgGRkBD?=
+ =?us-ascii?Q?EKYRXZRdVyhzH2/3ZVO9I75RS/6V0yH76e3SkJCsyvJchoMde/ctOBwEwTuI?=
+ =?us-ascii?Q?sw=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6bb4d59c-e9dd-4e56-ac0a-08dc2f1bc509
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 18:09:30.7025
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 18:19:09.8190
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4S+FlNK53UzuL5qLyv+vF4/tg7qTswZRpocMYZ4L983dgN4X/H5NUgq5STiYdvwZhjFG8/giExGVoeZnJ7V/dA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8583
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0HkNdf9roIRflVNRPPmN2epnW2QSVDqYkd+jVP4KKplivM+b8x6M6BsI2RQ4rVKgGOippHfK1KanhtGyFmcxwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6983
 
-On 16.02.24 10:02:51, Dan Williams wrote:
-> Robert Richter wrote:
-> > The Linux CXL subsystem is built on the assumption that HPA == SPA.
-> > That is, the host physical address (HPA) the HDM decoder registers are
-> > programmed with are system physical addresses (SPA).
-> > 
-> > During HDM decoder setup, the DVSEC CXL range registers (cxl-3.1,
-> > 8.1.3.8) are checked if the memory is enabled and the CXL range is in
-> > a HPA window that is described in a CFMWS structure of the CXL host
-> > bridge (cxl-3.1, 9.18.1.3).
-> > 
-> > Now, if the HPA is not an SPA, the CXL range does not match a CFMWS
-> > window and the CXL memory range will be disabled then. The HDM decoder
-> > stops working which causes system memory being disabled and further a
-> > system hang during HDM decoder initialization, typically when a CXL
-> > enabled kernel boots.
-> > 
-> > Prevent a system hang and do not disable the HDM decoder if the
-> > decoder's CXL range is not found in a CFMWS window.
-> > 
-> > Note the change only fixes a hardware hang, but does not implement
-> > HPA/SPA translation. Support for this can be added in a follow on
-> > patch series.
-> > 
-> > Signed-off-by: Robert Richter <rrichter@amd.com>
-> > ---
-> >  drivers/cxl/core/pci.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-> > index a0e7ed5ae25f..18616ca873e5 100644
-> > --- a/drivers/cxl/core/pci.c
-> > +++ b/drivers/cxl/core/pci.c
-> > @@ -478,8 +478,8 @@ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
-> >  	}
-> >  
-> >  	if (!allowed) {
-> > -		cxl_set_mem_enable(cxlds, 0);
-> > -		info->mem_enabled = 0;
-> > +		dev_err(dev, "Range register decodes outside platform defined CXL ranges.\n");
-> > +		return -ENXIO;
-> >  	}
-> 
-> This looks good to me.
 
-Thanks, Dan
+On Fri, 16 Feb, 2024 16:52:22 +0100 Kory Maincent <kory.maincent@bootlin.com> wrote:
+> Change the API to select MAC default time stamping instead of the PHY.
+> Indeed the PHY is closer to the wire therefore theoretically it has less
+> delay than the MAC timestamping but the reality is different. Due to lower
+> time stamping clock frequency, latency in the MDIO bus and no PHC hardware
+> synchronization between different PHY, the PHY PTP is often less precise
+> than the MAC. The exception is for PHY designed specially for PTP case but
+> these devices are not very widespread. For not breaking the compatibility
+> default_timestamp flag has been introduced in phy_device that is set by
+> the phy driver to know we are using the old API behavior.
+>
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> ---
+
+Overall, I agree with the motivation and reasoning behind the patch. It
+takes dedicated effort to build a good phy timestamping mechanism, so
+this approach is good. I do have a question though. In this patch if we
+set the phy as the default timestamp mechanism, does that mean for even
+non-PTP applications, the phy will be used for timestamping when
+hardware timestamping is enabled? If so, I think this might need some
+thought because there are timing applications in general when a
+timestamp closest to the MAC layer would be best.
+
+>
+> Changes in v5:
+> - Extract the API change in this patch.
+> - Rename whitelist to allowlist.
+> - Set NETDEV_TIMESTAMPING in register_netdevice function.
+> - Add software timestamping case description in ts_info.
+>
+> Change in v6:
+> - Replace the allowlist phy with a default_timestamp flag to know which
+>   phy is using old API behavior.
+> - Fix dereferenced of a possible null pointer.
+> - Follow timestamping layer naming update.
+> - Update timestamp default set between MAC and software.
+> - Update ts_info returned in case of software timestamping.
+>
+> Change in v8:
+> - Reform the implementation to use a simple phy_is_default_hwtstamp helper
+>   instead of saving the hwtstamp in the net_device struct.
+> ---
+
+One general concern
+
+>  drivers/net/phy/bcm-phy-ptp.c     |  3 +++
+>  drivers/net/phy/dp83640.c         |  3 +++
+>  drivers/net/phy/micrel.c          |  6 ++++++
+>  drivers/net/phy/mscc/mscc_ptp.c   |  3 +++
+>  drivers/net/phy/nxp-c45-tja11xx.c |  3 +++
+>  include/linux/phy.h               | 17 +++++++++++++++++
+>  net/core/dev_ioctl.c              |  8 +++-----
+>  net/core/timestamping.c           | 10 ++++++++--
+>  net/ethtool/common.c              |  2 +-
+>  9 files changed, 47 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/net/phy/bcm-phy-ptp.c b/drivers/net/phy/bcm-phy-ptp.c
+> index 617d384d4551..d3e825c951ee 100644
+> --- a/drivers/net/phy/bcm-phy-ptp.c
+> +++ b/drivers/net/phy/bcm-phy-ptp.c
+> @@ -931,6 +931,9 @@ struct bcm_ptp_private *bcm_ptp_probe(struct phy_device *phydev)
+>  		return ERR_CAST(clock);
+>  	priv->ptp_clock = clock;
+>  
+> +	/* Timestamp selected by default to keep legacy API */
+> +	phydev->default_timestamp = true;
+> +
+>  	priv->phydev = phydev;
+>  	bcm_ptp_init(priv);
+>  
+> diff --git a/drivers/net/phy/dp83640.c b/drivers/net/phy/dp83640.c
+> index 5c42c47dc564..64fd1a109c0f 100644
+> --- a/drivers/net/phy/dp83640.c
+> +++ b/drivers/net/phy/dp83640.c
+> @@ -1450,6 +1450,9 @@ static int dp83640_probe(struct phy_device *phydev)
+>  	phydev->mii_ts = &dp83640->mii_ts;
+>  	phydev->priv = dp83640;
+>  
+> +	/* Timestamp selected by default to keep legacy API */
+> +	phydev->default_timestamp = true;
+> +
+>  	spin_lock_init(&dp83640->rx_lock);
+>  	skb_queue_head_init(&dp83640->rx_queue);
+>  	skb_queue_head_init(&dp83640->tx_queue);
+> diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+> index 9b6973581989..1c9eba331b01 100644
+> --- a/drivers/net/phy/micrel.c
+> +++ b/drivers/net/phy/micrel.c
+> @@ -3177,6 +3177,9 @@ static void lan8814_ptp_init(struct phy_device *phydev)
+>  	ptp_priv->mii_ts.ts_info  = lan8814_ts_info;
+>  
+>  	phydev->mii_ts = &ptp_priv->mii_ts;
+> +
+> +	/* Timestamp selected by default to keep legacy API */
+> +	phydev->default_timestamp = true;
+>  }
+>  
+>  static int lan8814_ptp_probe_once(struct phy_device *phydev)
+> @@ -4613,6 +4616,9 @@ static int lan8841_probe(struct phy_device *phydev)
+>  
+>  	phydev->mii_ts = &ptp_priv->mii_ts;
+>  
+> +	/* Timestamp selected by default to keep legacy API */
+> +	phydev->default_timestamp = true;
+> +
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/net/phy/mscc/mscc_ptp.c b/drivers/net/phy/mscc/mscc_ptp.c
+> index eb0b032cb613..e66d20eff7c4 100644
+> --- a/drivers/net/phy/mscc/mscc_ptp.c
+> +++ b/drivers/net/phy/mscc/mscc_ptp.c
+> @@ -1570,6 +1570,9 @@ int vsc8584_ptp_probe(struct phy_device *phydev)
+>  		return PTR_ERR(vsc8531->load_save);
+>  	}
+>  
+> +	/* Timestamp selected by default to keep legacy API */
+> +	phydev->default_timestamp = true;
+> +
+>  	vsc8531->ptp->phydev = phydev;
+>  
+>  	return 0;
+> diff --git a/drivers/net/phy/nxp-c45-tja11xx.c b/drivers/net/phy/nxp-c45-tja11xx.c
+> index 3cf614b4cd52..d18c133e6013 100644
+> --- a/drivers/net/phy/nxp-c45-tja11xx.c
+> +++ b/drivers/net/phy/nxp-c45-tja11xx.c
+> @@ -1660,6 +1660,9 @@ static int nxp_c45_probe(struct phy_device *phydev)
+>  		priv->mii_ts.ts_info = nxp_c45_ts_info;
+>  		phydev->mii_ts = &priv->mii_ts;
+>  		ret = nxp_c45_init_ptp_clock(priv);
+> +
+> +		/* Timestamp selected by default to keep legacy API */
+> +		phydev->default_timestamp = true;
+>  	} else {
+>  		phydev_dbg(phydev, "PTP support not enabled even if the phy supports it");
+>  	}
+> diff --git a/include/linux/phy.h b/include/linux/phy.h
+> index c2dda21b39e1..9a31243e9f7e 100644
+> --- a/include/linux/phy.h
+> +++ b/include/linux/phy.h
+> @@ -607,6 +607,8 @@ struct macsec_ops;
+>   *                 handling shall be postponed until PHY has resumed
+>   * @irq_rerun: Flag indicating interrupts occurred while PHY was suspended,
+>   *             requiring a rerun of the interrupt handler after resume
+> + * @default_timestamp: Flag indicating whether we are using the phy
+> + *		       timestamp as the default one
+>   * @interface: enum phy_interface_t value
+>   * @possible_interfaces: bitmap if interface modes that the attached PHY
+>   *			 will switch between depending on media speed.
+> @@ -672,6 +674,8 @@ struct phy_device {
+>  	unsigned irq_suspended:1;
+>  	unsigned irq_rerun:1;
+>  
+> +	unsigned default_timestamp:1;
+> +
+>  	int rate_matching;
+>  
+>  	enum phy_state state;
+> @@ -1613,6 +1617,19 @@ static inline void phy_txtstamp(struct phy_device *phydev, struct sk_buff *skb,
+>  	phydev->mii_ts->txtstamp(phydev->mii_ts, skb, type);
+>  }
+>  
+> +/**
+> + * phy_is_default_hwtstamp - return true if phy is the default hw timestamp
+> + * @phydev: Pointer to phy_device
+> + *
+> + * This is used to get default timestamping device taking into account
+> + * the new API choice, which is selecting the timestamping from MAC by
+> + * default if the phydev does not have default_timestamp flag enabled.
+> + */
+> +static inline bool phy_is_default_hwtstamp(struct phy_device *phydev)
+> +{
+> +	return phy_has_hwtstamp(phydev) && phydev->default_timestamp;
+> +}
+> +
+>  /**
+>   * phy_is_internal - Convenience function for testing if a PHY is internal
+>   * @phydev: the phy_device struct
+> diff --git a/net/core/dev_ioctl.c b/net/core/dev_ioctl.c
+> index 847254fd7f13..3342834597cd 100644
+> --- a/net/core/dev_ioctl.c
+> +++ b/net/core/dev_ioctl.c
+> @@ -260,9 +260,7 @@ static int dev_eth_ioctl(struct net_device *dev,
+>   * @dev: Network device
+>   * @cfg: Timestamping configuration structure
+>   *
+> - * Helper for enforcing a common policy that phylib timestamping, if available,
+> - * should take precedence in front of hardware timestamping provided by the
+> - * netdev.
+> + * Helper for calling the default hardware provider timestamping.
+>   *
+>   * Note: phy_mii_ioctl() only handles SIOCSHWTSTAMP (not SIOCGHWTSTAMP), and
+>   * there only exists a phydev->mii_ts->hwtstamp() method. So this will return
+> @@ -272,7 +270,7 @@ static int dev_eth_ioctl(struct net_device *dev,
+>  int dev_get_hwtstamp_phylib(struct net_device *dev,
+>  			    struct kernel_hwtstamp_config *cfg)
+>  {
+> -	if (phy_has_hwtstamp(dev->phydev))
+> +	if (phy_is_default_hwtstamp(dev->phydev))
+>  		return phy_hwtstamp_get(dev->phydev, cfg);
+>  
+>  	return dev->netdev_ops->ndo_hwtstamp_get(dev, cfg);
+> @@ -329,7 +327,7 @@ int dev_set_hwtstamp_phylib(struct net_device *dev,
+>  			    struct netlink_ext_ack *extack)
+>  {
+>  	const struct net_device_ops *ops = dev->netdev_ops;
+> -	bool phy_ts = phy_has_hwtstamp(dev->phydev);
+> +	bool phy_ts = phy_is_default_hwtstamp(dev->phydev);
+>  	struct kernel_hwtstamp_config old_cfg = {};
+>  	bool changed = false;
+>  	int err;
+> diff --git a/net/core/timestamping.c b/net/core/timestamping.c
+> index 04840697fe79..891bfc2f62fd 100644
+> --- a/net/core/timestamping.c
+> +++ b/net/core/timestamping.c
+> @@ -25,7 +25,10 @@ void skb_clone_tx_timestamp(struct sk_buff *skb)
+>  	struct sk_buff *clone;
+>  	unsigned int type;
+>  
+> -	if (!skb->sk)
+> +	if (!skb->sk || !skb->dev)
+> +		return;
+> +
+> +	if (!phy_is_default_hwtstamp(skb->dev->phydev))
+
+Really minor but any reason to not just keep the conditional chaining
+with a single if statement?
+
+>  		return;
+>  
+>  	type = classify(skb);
+> @@ -47,7 +50,10 @@ bool skb_defer_rx_timestamp(struct sk_buff *skb)
+>  	struct mii_timestamper *mii_ts;
+>  	unsigned int type;
+>  
+> -	if (!skb->dev || !skb->dev->phydev || !skb->dev->phydev->mii_ts)
+> +	if (!skb->dev)
+> +		return false;
+> +
+> +	if (!phy_is_default_hwtstamp(skb->dev->phydev))
+
+Same here
+
+  if (!skb->dev || !phy_is_default_hwtstamp(skb->dev->phydev))
+
+>  		return false;
+>  
+>  	if (skb_headroom(skb) < ETH_HLEN)
+> diff --git a/net/ethtool/common.c b/net/ethtool/common.c
+> index ce486cec346c..e56bde53cd5c 100644
+> --- a/net/ethtool/common.c
+> +++ b/net/ethtool/common.c
+> @@ -637,7 +637,7 @@ int __ethtool_get_ts_info(struct net_device *dev, struct ethtool_ts_info *info)
+>  	memset(info, 0, sizeof(*info));
+>  	info->cmd = ETHTOOL_GET_TS_INFO;
+>  
+> -	if (phy_has_tsinfo(phydev))
+> +	if (phy_is_default_hwtstamp(phydev) && phy_has_tsinfo(phydev))
+>  		return phy_ts_info(phydev, info);
+>  	if (ops->get_ts_info)
+>  		return ops->get_ts_info(dev, info);
+
+--
+Thanks,
+
+Rahul Rameshbabu
 
