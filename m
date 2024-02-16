@@ -1,90 +1,75 @@
-Return-Path: <linux-kernel+bounces-69346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6660985879C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:05:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AAFB8587B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:10:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCF631F24366
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:05:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6289FB2996C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:04:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95D9F1482FC;
-	Fri, 16 Feb 2024 21:04:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9371468F4;
+	Fri, 16 Feb 2024 21:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PBRAKIKu"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2049.outbound.protection.outlook.com [40.107.101.49])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="09tYLByR";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sTHsysm3"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB36E1482F3;
-	Fri, 16 Feb 2024 21:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708117452; cv=fail; b=ReviLudKkk8CVpkVcBOHHta0mAivRB3o3P9iTeulvMib0CtJcbDYfdbYBe3IZRYB1coAHaiE6IpyIlGRkiIxUG45y3MUHUEumbuGFHSXi2VSlWghPluLsvx3Xgu2R+elRHzrVh0clzIS7ateGId0jS4BxGNwmZCN+yL5YvUGCLg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708117452; c=relaxed/simple;
-	bh=wPPf87GaAxlU1erWX7Yh4/qDP/tlIE6It1JmaT5+px8=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tyDX/C7y+z3UrQwPQWnDp1bEjfECFKVIVohtBJhMNFF8fvcfO7BpEeFCwsK3D6O0krabLz0nw+myRy2+dHVCoStEPP19H9A9nMgNcZTu2u9ts744M2S5opr1p+UiaGs+q51KqZ1ySadj8Ax0My41QPC0SRV1KQ0T4eV3llcqseQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PBRAKIKu; arc=fail smtp.client-ip=40.107.101.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R5Kxs+exyCZbEBIp+Dxr1Ee4U+VcEDKmwG74nQhmySXOnHLIyBLqMTB1diZhl55U37J4hn+MNNa8AnpArHn7OO2muQEo5lY7J1PBYvzhmM32ZslN6Hmwmk4TqBjqnhESzcktHHmLiUzfzjvbwtsrGIumSqrECyCPboeDfnB/NpJVvEEqQR3CsCISCob90h2ZQy15U9JQ5WTdapdLBof70BS9vU4GjczcvUSD8L+jBniHS63CQKMnYGuWJVM8sdTrzMAdZMOIE4wUzUSaRDTCUFBOeUt8yqAgIhhXrhvXllGKj5gHgcwfHUbviM6uSg4fc13mcHKgLmVGNMAsNRoR7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=3FitRbcNIgTFPearfn9e/GgNIAmweCsks0Olw+q9qHw=;
- b=DcMDaDLQG8pOo7qERAAVEXtLQN1fdmPvlZb5IMSQYIFCLqvXUPhHqlgOnb7CZH19hGYeUpTC/n8IVq0wNkIMJxjZaMgchgzOHSSDy8Un5XsWqQrhfF9zGjexEyutIOHs0ZaE+lgPruQykDi+pGfJ8PxAOW1Ta8Xj9ZJKubI1Gu5fAeklmog8M11EybTbANIjOUZzy10DAyA0mjVDfjmpeTzHd29WxJTOcR5+eVVoRH+viir/9YaldQ4hNy76QVlFsPsJmyCQnF09CNgFy+hNKRrWuXRdLgvjKPAVYrsJvviUgsP0VaLmcwsqYqrA88fxhxl/RU2hzGjYkAJSO/dGHQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linaro.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3FitRbcNIgTFPearfn9e/GgNIAmweCsks0Olw+q9qHw=;
- b=PBRAKIKuLYowRzL0fYtbB52axgFR8glgV6iZV1sr/S0YEvYBqVmo9SNlZSX2Gfo2AqPJFY9UAoAEHmI0fLtoLL1zd8lBHO2IlHYSPLPcQ7QVUyWvG9r60VbKeq2Z4R0XtehrG53og53G0SpeAWF+QiZ0fc+sAwNb4Dp9vF5mqnbN2h7V2Wv+5HM84VoD8ECN12SX22fU9mRsuBx+VW8NyulDqXtf5iqwRyGedQUCHAd2HsnmmUcO9MjSEEk8exetjyd6QJzL//EmCv10lOj8xFRdOAQnXE18we4C+zcAHqvjzEu5DSSlGTFjgNa6aeYOwJ9V0thGZaUl3GSlAk/O/w==
-Received: from MW4P223CA0009.NAMP223.PROD.OUTLOOK.COM (2603:10b6:303:80::14)
- by PH0PR12MB7469.namprd12.prod.outlook.com (2603:10b6:510:1e9::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
- 2024 21:04:07 +0000
-Received: from CO1PEPF000044FD.namprd21.prod.outlook.com
- (2603:10b6:303:80:cafe::be) by MW4P223CA0009.outlook.office365.com
- (2603:10b6:303:80::14) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.40 via Frontend
- Transport; Fri, 16 Feb 2024 21:04:06 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- CO1PEPF000044FD.mail.protection.outlook.com (10.167.241.203) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7316.0 via Frontend Transport; Fri, 16 Feb 2024 21:04:06 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Fri, 16 Feb
- 2024 13:03:48 -0800
-Received: from pohsuns-pegasus.nvidia.com (10.126.231.35) by
- rnnvmail201.nvidia.com (10.129.68.8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Fri, 16 Feb 2024 13:03:46 -0800
-From: Pohsun Su <pohsuns@nvidia.com>
-To: <daniel.lezcano@linaro.org>, <tglx@linutronix.de>,
-	<thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC: <sumitg@nvidia.com>, <linux-kernel@vger.kernel.org>,
-	<linux-tegra@vger.kernel.org>, Pohsun Su <pohsuns@nvidia.com>
-Subject: [PATCH v2 2/2] clocksource/drivers/timer-tegra186: fix watchdog self-pinging.
-Date: Sat, 17 Feb 2024 05:02:58 +0800
-Message-ID: <20240216210258.24855-3-pohsuns@nvidia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240216210258.24855-1-pohsuns@nvidia.com>
-References: <20240216210258.24855-1-pohsuns@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3967F145B13;
+	Fri, 16 Feb 2024 21:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708117447; cv=none; b=XFagkPgZTvWKMx38WIufHi007H+N+g2CmhV48lSUq2S8UP/ua5/98uUBXLg8hsLvlYQO8QAtmqXe57wflGN8dlhlSfuX/pwkcD8XwWJRgPmpzfy9abRkoLml3Ty9Niky8/D4Tnr6e9YIVFXYvaMH1YadnSl307xsbRLN8JZyh40=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708117447; c=relaxed/simple;
+	bh=2HGv2SAPNP/8SNhuPL7jV7rNyYJBGuWopRtV7aLEqMM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=pkf9Ekz/V8TWMeNcNaXeYlx2twoDzdgLkEPulmX7DnhlzkcRUkwKyccTA0Xoc7i1gpsT4vzfrnoYpK8beDnez47dFB5eaLfPjUfN6YYe5I5HGivJwLMAu1srzLqS59YAPtCNyzZ2eH5i4y9N0R+M+WyKBSK/9Gl2jEnVXcbRZVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=09tYLByR; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sTHsysm3; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708117444;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aPil28lXVu/5EuMTMJHAF2NuE7S20nDRKRUxcPw2x9A=;
+	b=09tYLByROgD3bDLYAoILh20drVnloPdm8qHaCVHSa8YslAkk+vHe5GCMRqEPgmXapRXwp7
+	haMLpBFhy7xqoxZcqtyf08Ob2ZjGCB9hHnx50L0qLeyomv7uwZvRwLH5+eCY0q2Kl3SlS8
+	wMobBVNcDkGtumiuGA36kP32BR/n7Od+jQT19U9Hk6sC/MdjnDn31ojtc+Xf3o707kLWlw
+	hJHDBj443oH4lxAbBirQ48SRQP4as2LG7Q3yN3yRzLeFpVFJFq5MfBoxZW7EXofWFsaCyK
+	Owe5hwIfmeW55ddNzU4jbNTyfHMS0Z8JV9K5LFqZln4wBoUDprmPjYu1DfgFbQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708117444;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aPil28lXVu/5EuMTMJHAF2NuE7S20nDRKRUxcPw2x9A=;
+	b=sTHsysm3f+56VNyke1nWTeQXTpJX/RT7U3ejiMXUtOjW65iwO9Uv6f1hJoBVOWapBEc/Mk
+	3esMRQST3WxV1PBg==
+To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Rob
+ Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
+ <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
+Cc: Marc Zyngier <maz@kernel.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Atish
+ Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>,
+ Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan
+ <saravanak@google.com>, Anup Patel <anup@brainfault.org>,
+ linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Anup Patel
+ <apatel@ventanamicro.com>
+Subject: Re: [PATCH v12 23/25] irqchip/riscv-aplic: Add support for MSI-mode
+In-Reply-To: <20240127161753.114685-24-apatel@ventanamicro.com>
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <20240127161753.114685-24-apatel@ventanamicro.com>
+Date: Fri, 16 Feb 2024 22:04:03 +0100
+Message-ID: <8734tsce9o.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,112 +77,48 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-ClientProxiedBy: rnnvmail202.nvidia.com (10.129.68.7) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FD:EE_|PH0PR12MB7469:EE_
-X-MS-Office365-Filtering-Correlation-Id: d42dcc06-f3f9-41a9-ea3e-08dc2f32d049
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	EEKsYmdNNyqYCGXgvbqa2pz4rFHDNJyS8kSga45k8yhbk7IXAmh7yHhegZFq0WiCXWLRXfCkEo450ajUi3WPCpxAJj6aQhpc2Mayf7alOuvHqvGre6W/vm7QC94qKjUXdObT7QARTsbwmU1HUPoyVQW1vRCuVcPY0HoWGPCqffmelVm4A6PFl/BIh+NfHhllynqqHwHiu3sw7bCkibcjnw97w/uK5kWM/wnGOiMamzydijJOthzBPIMNJn1E/DcIGHUpsbIKiqgssCt62ednhFxk308gLeH/cFIHz3lXcJ64To+VRB+n4OwR4t7kjKR9P+SMmrkR70cSOxXISXmR0d1+vm0I1Og7CyjX+kLCttjNhGagLXRu2pJbNfHuW8QxrLtbvqNS9JFD8/UGMbE+XML/h25QJbxjuKMaV80uCX5Fxes7XlupZpvQZjU8ytCtr0FCY4FGEGahw9zt71R7/Z3/QMga+wDQO2Y8PFiDPTBbUxz51EgxnmRaO2dFXAVy2Nu1znKTXuS6qbSgxBTQQm88GydoupGIBCeo03VcZKvYHGrV3tfpiuO5Gpx6LGjA0aXHkZl+lETbfAySCMR92iitzMk+6MQOaRWkv6EzkIADQPC2V3+xRCZIShzFodmPLH1zergUK0ep1F8tNjsI6Mlwsp8A1EV+9VNpzAIEZZI=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(346002)(396003)(39860400002)(376002)(136003)(230922051799003)(82310400011)(451199024)(64100799003)(186009)(1800799012)(36860700004)(46966006)(40470700004)(83380400001)(7636003)(356005)(70586007)(70206006)(82740400003)(8676002)(8936002)(4326008)(2906002)(5660300002)(426003)(107886003)(336012)(2616005)(26005)(1076003)(316002)(16526019)(110136005)(41300700001)(6636002)(54906003)(6666004)(478600001)(7696005)(86362001)(36756003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 21:04:06.7736
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d42dcc06-f3f9-41a9-ea3e-08dc2f32d049
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000044FD.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB7469
 
-This change removes watchdog self-pinging behavior.
+On Sat, Jan 27 2024 at 21:47, Anup Patel wrote:
+> We extend the existing APLIC irqchip driver to support MSI-mode for
+> RISC-V platforms having both wired interrupts and MSIs.
 
-The timer irq handler is triggered due to the 1st expiration,
-the handler disables and enables watchdog but also implicitly
-clears the expiration count so the count can only be 0 or 1.
+We? Just s/We//
 
-Since this watchdog supports opened, configured, or pinged by
-systemd, We remove this behavior or the watchdog may not bark
-when systemd crashes since the 5th expiration never comes.
+> +
+> +static void aplic_msi_irq_unmask(struct irq_data *d)
+> +{
+> +	aplic_irq_unmask(d);
+> +	irq_chip_unmask_parent(d);
+> +}
+> +
+> +static void aplic_msi_irq_mask(struct irq_data *d)
+> +{
+> +	aplic_irq_mask(d);
+> +	irq_chip_mask_parent(d);
+> +}
 
-Signed-off-by: Pohsun Su <pohsuns@nvidia.com>
----
- drivers/clocksource/timer-tegra186.c | 27 ++-------------------------
- 1 file changed, 2 insertions(+), 25 deletions(-)
+Again asymmetric vs. unmask()
 
-diff --git a/drivers/clocksource/timer-tegra186.c b/drivers/clocksource/timer-tegra186.c
-index 8f516366da86..acff97da138a 100644
---- a/drivers/clocksource/timer-tegra186.c
-+++ b/drivers/clocksource/timer-tegra186.c
-@@ -175,7 +175,8 @@ static void tegra186_wdt_enable(struct tegra186_wdt *wdt)
- 		value |= WDTCR_PERIOD(1);
- 
- 		/* enable local interrupt for WDT petting */
--		value |= WDTCR_LOCAL_INT_ENABLE;
-+		if (0)
-+			value |= WDTCR_LOCAL_INT_ENABLE;
- 
- 		/* enable local FIQ and remote interrupt for debug dump */
- 		if (0)
-@@ -407,23 +408,10 @@ static int tegra186_timer_usec_init(struct tegra186_timer *tegra)
- 	return clocksource_register_hz(&tegra->usec, USEC_PER_SEC);
- }
- 
--static irqreturn_t tegra186_timer_irq(int irq, void *data)
--{
--	struct tegra186_timer *tegra = data;
--
--	if (watchdog_active(&tegra->wdt->base)) {
--		tegra186_wdt_disable(tegra->wdt);
--		tegra186_wdt_enable(tegra->wdt);
--	}
--
--	return IRQ_HANDLED;
--}
--
- static int tegra186_timer_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
- 	struct tegra186_timer *tegra;
--	unsigned int irq;
- 	int err;
- 
- 	tegra = devm_kzalloc(dev, sizeof(*tegra), GFP_KERNEL);
-@@ -442,8 +430,6 @@ static int tegra186_timer_probe(struct platform_device *pdev)
- 	if (err < 0)
- 		return err;
- 
--	irq = err;
--
- 	/* create a watchdog using a preconfigured timer */
- 	tegra->wdt = tegra186_wdt_create(tegra, 0);
- 	if (IS_ERR(tegra->wdt)) {
-@@ -470,17 +456,8 @@ static int tegra186_timer_probe(struct platform_device *pdev)
- 		goto unregister_osc;
- 	}
- 
--	err = devm_request_irq(dev, irq, tegra186_timer_irq, 0,
--			       "tegra186-timer", tegra);
--	if (err < 0) {
--		dev_err(dev, "failed to request IRQ#%u: %d\n", irq, err);
--		goto unregister_usec;
--	}
--
- 	return 0;
- 
--unregister_usec:
--	clocksource_unregister(&tegra->usec);
- unregister_osc:
- 	clocksource_unregister(&tegra->osc);
- unregister_tsc:
--- 
-2.17.1
+> +static void aplic_msi_irq_eoi(struct irq_data *d)
+> +{
+> +	struct aplic_priv *priv = irq_data_get_irq_chip_data(d);
+> +	u32 reg_off, reg_mask;
+> +
+> +	/*
+> +	 * EOI handling only required only for level-triggered
+> +	 * interrupts in APLIC MSI mode.
+> +	 */
+> +
+> +	reg_off = APLIC_CLRIP_BASE + ((d->hwirq / APLIC_IRQBITS_PER_REG) * 4);
+> +	reg_mask = BIT(d->hwirq % APLIC_IRQBITS_PER_REG);
+> +	switch (irqd_get_trigger_type(d)) {
+> +	case IRQ_TYPE_LEVEL_LOW:
+> +		if (!(readl(priv->regs + reg_off) & reg_mask))
+> +			writel(d->hwirq, priv->regs + APLIC_SETIPNUM_LE);
 
+A comment what this condition is for would be nice.
+
+Thanks,
+
+        tglx
 
