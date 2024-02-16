@@ -1,121 +1,199 @@
-Return-Path: <linux-kernel+bounces-69458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E31F8589C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:08:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F748589D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:10:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E191FB23D93
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:08:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34B891C20445
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA851487D6;
-	Fri, 16 Feb 2024 23:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8CDC148FE6;
+	Fri, 16 Feb 2024 23:10:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Ps4L3dEf"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AOXSXFWr"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39BBD38DFE;
-	Fri, 16 Feb 2024 23:07:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADA291487D8
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708124880; cv=none; b=ggxjUrU2uI/eAL4iSlMAC4PBilJlHJEdEXVNbwAp0IqFcWqoG3snLS07JSsVjYf6pCNYWIvvjmVk7+n5zeBRqP5QKXrrg0GXfDvyQEijoDM/gfQOkj0pGKxZ1/tYAbc26XwYbD7mJsw7qbpcB3kxw5k5h7UBMln75EUdyOYc5Rw=
+	t=1708125013; cv=none; b=sJdrPHDuWnIJT/MEtjPlf+m7KIhqqJZEzuCLxsC7MihcrcVnRmWzX8p/sZVnoaUawtmbONU593LXYIPR9OuPC+CJtGlEQ5O2m00fzHZKMhmUTk/zwN5d1d3GEB10aC7wsbAl3O90Z9MnZ6h7JEwRCLJK1ENDs9AMoSzqEZ07JoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708124880; c=relaxed/simple;
-	bh=q7ADwbeBXwmo7E9aTVnbzqVj7QgPJRlOcrrBDZiAmdo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KLHxhlfFONj69pD2mkf0b9zdLiYzMEPMG1dFiuHuFKQCSs+0xnq3z1Mv3ETIdtSmLx772Xp60/OrcSrTlkxSdHBHbbj4yThh38rx7mLOzT2CFtSm1cAKigB2+ferBeKNBjyWIKvfXZqpKXQLW6hGW5MsrjxS+qB7O0HAqy+JmVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Ps4L3dEf; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708124877;
-	bh=q7ADwbeBXwmo7E9aTVnbzqVj7QgPJRlOcrrBDZiAmdo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ps4L3dEfm8WT/rFjNO3i1cLkclFgUjDwjhKEpFI4fdjWkTmR0JyWaMtjMpYDsXY9l
-	 75Ba7sjCDEp/va0JXt8iaCpyYlXyZrze2ZSKbd3wWQeVdtXroVEMW4DZa0IY8oye7X
-	 fE6QTQbq+Y+7VzbEjjQFzdpKsApI+dEfyJm4m/AuIaj0YrfnpCcpxT359Ujq4inYAV
-	 3lgRo5JBA97/J4Q6asiF4iR2tpU2euJqhJi41ow2b6mPSXeYn4qrdfyxKb+L3jAsks
-	 ZmyWtTUizHFjgjvy1rgw2pHjVAWHQ+lB6xbK0Qsl4CDFn7e0zQTEgYlyE7bMSPmEta
-	 GpBTocr4QPcgA==
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3A8783782042;
-	Fri, 16 Feb 2024 23:07:57 +0000 (UTC)
-Received: by mercury (Postfix, from userid 1000)
-	id B61D71061C38; Sat, 17 Feb 2024 00:07:56 +0100 (CET)
-Date: Sat, 17 Feb 2024 00:07:56 +0100
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Bhavin Sharma <bhavin.sharma@siliconsignals.io>
-Cc: "robh+dt@kernel.org" <robh+dt@kernel.org>, 
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>, 
-	Hardevsinh Palaniya <hardevsinh.palaniya@siliconsignals.io>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/2] power: supply: Add STC3117 fuel gauge unit driver
-Message-ID: <ed5vkqpi2vipycdpy6fwszowiuk37ltuurqpe6t3yuekxynidc@ad7zvejmu5v5>
-References: <20240205051321.4079933-1-bhavin.sharma@siliconsignals.io>
- <eccj4u6ewr33mlp4xqwx5medeysrjuwof7ntwhm6vypmmkss73@qjbpyw5hj3t7>
- <MAZPR01MB6957FE701F89D83DF57F7402F24C2@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
+	s=arc-20240116; t=1708125013; c=relaxed/simple;
+	bh=mfmEA6zSa+OORWqKlFgSku5kK5nwRZdQXnKi8D/SPd8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y/Fwk23B/7cnwhSCXtErtOroFRgFtYc4Dy0XiuylCmYgRLylktLvL3EeVtHMSSO8ALWxdqkh4VojpiVsizT5LlLsvRb3ID4/taM/hNr8U1w4Fa4i0ki1KJ/tlZ1Pz0wV0aPVAI8pGLmcwkWXZmBZi4kLuOJikYLXcDulr+kpkHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AOXSXFWr; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-607fe8cc6d8so9763837b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:10:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708125010; x=1708729810; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EpftqacOdWcIxz3VUpc3zI1U/E0RwbiBZdYsX7Kb7J4=;
+        b=AOXSXFWrpecqGsj3FvbdDQIjHjP887SkBI4Bl4qgqmEyp6wk619/ClmzdoNIeOtz1j
+         tDFBRTTZ4BXijtr5HVAG7cqu0BwWijfc2LxgvgRliDfPlGHPIGKzJIhHQjwHJelHjVyQ
+         rp/dpDg/lvX62bGEdspeYlpgcqI7rCHt98CpiYsWMLSCTyHysVsLgsH/Mi9PXkv8IZPW
+         RnrDP9WUVm04kHfQ67x4VehA87dgAMMC2vEyqSy2YCDH6nUvxKMvEaFL93I/+w8AsTPZ
+         1hRoKNSn/OHxCPYYv+J9IC1EJfc+1aBHZQcbLbRU6Wlr1XeozRteflUVXWLLrhaypy2B
+         //xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708125010; x=1708729810;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EpftqacOdWcIxz3VUpc3zI1U/E0RwbiBZdYsX7Kb7J4=;
+        b=kSqHw+X/eXXriUpM3zbNojA/2A5X9G2ycAvComxp5WaxpJta7x8r9sdNBXO5YXKeoP
+         Wyd3pmn7yesI/h+TnUHvXf6HOK4tJ/hJQj2YO9c4ucYgtDk+Hvg1meFe8dWL2Stv+FD0
+         mDwm+YtOLAV6lI4KNbFYQlxNoPoRBAgkoMCoLBz6EtvDmM56pYww4YZVW8Px+T87ECn3
+         MVgfWfUaS9ri7AcoPhkvQKzg1YGxR1nMALlkAa6moBA7E3raPeGngz5m7xvMYYnUD1s7
+         CY2PnUMCgB3srdzbHIHfysfhzVS9GIGCiSdeNjBy5TtxpXdo1Y21Himm4XcF97VVGEEv
+         SxOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUsqyNMgQWB0bbqiYt6+HsvW7IT3Tbp4e28LPy+S+D5CDF3Cdyf4NRXGC09HdNuHvn+Di+8Rd+MbWDxLzhyu+/GEvAECAwZ/wcICl6a
+X-Gm-Message-State: AOJu0Yw3ba0msThMzZyldNlj/AX+rIP76Yc9M8MkM3B7BR2XMr8AoVYi
+	zVW8g9hHxFwLqKt/4Zpfcay+B+x/EUc90hWcoLT7E4FLEihaI8XAldS6rLDSgP9vY11Gl1r4o3I
+	885RnQP7I+muIZUBv/GOVu3b9s6FRAbdQOoJCaA==
+X-Google-Smtp-Source: AGHT+IH7vS67BhaJmZ0qKWVe6no0q/4H1vlJ1cE1CsXNcFt1Pp6VcJPBg/0mptzu0uQFXbGKADhe7nfa9TyYWhC6deg=
+X-Received: by 2002:a0d:ebc6:0:b0:607:ec66:36b3 with SMTP id
+ u189-20020a0debc6000000b00607ec6636b3mr5019006ywe.19.1708125010589; Fri, 16
+ Feb 2024 15:10:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ksq33adg27c6w63k"
-Content-Disposition: inline
-In-Reply-To: <MAZPR01MB6957FE701F89D83DF57F7402F24C2@MAZPR01MB6957.INDPRD01.PROD.OUTLOOK.COM>
+References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-9-brgl@bgdev.pl>
+In-Reply-To: <20240216203215.40870-9-brgl@bgdev.pl>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Sat, 17 Feb 2024 01:09:59 +0200
+Message-ID: <CAA8EJpry2yiGXrtPqZ6RXnoTqQZr_hxA_gCPsUbmyFtEBuD4VA@mail.gmail.com>
+Subject: Re: [PATCH v5 08/18] arm64: dts: qcom: sm8650-qrd: add the Wifi node
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Kalle Valo <kvalo@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+
+On Fri, 16 Feb 2024 at 22:33, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Neil Armstrong <neil.armstrong@linaro.org>
+>
+> Describe the ath12k WLAN on-board the WCN7850 module present on the
+> board.
+
+WCN7850 is the same combo WiFi + BT chip. Is there any reason for
+describing its parts separately rather than using the same PMU
+approach?
+
+>
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> [Bartosz:
+>   - move the pcieport0 node into the .dtsi
+>   - make regulator naming consistent with existing DT code
+>   - add commit message]
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8650-qrd.dts | 29 +++++++++++++++++++++++++
+>  arch/arm64/boot/dts/qcom/sm8650.dtsi    | 10 +++++++++
+>  2 files changed, 39 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+> index b07cac2e5bc8..4623c358f634 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm8650-qrd.dts
+> @@ -845,6 +845,28 @@ &pcie0 {
+>         status = "okay";
+>  };
+>
+> +&pcieport0 {
+> +       wifi@0 {
+> +               compatible = "pci17cb,1107";
+> +               reg = <0x10000 0x0 0x0 0x0 0x0>;
+> +
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&wlan_en>;
+> +
+> +               enable-gpios = <&tlmm 16 GPIO_ACTIVE_HIGH>;
+> +
+> +               vdd-supply = <&vreg_s4i_0p85>;
+> +               vddio-supply = <&vreg_l15b_1p8>;
+> +               vddio1p2-supply = <&vreg_l3c_1p2>;
+> +               vddaon-supply = <&vreg_s2c_0p8>;
+> +               vdddig-supply = <&vreg_s3c_0p9>;
+> +               vddrfa1p2-supply = <&vreg_s1c_1p2>;
+> +               vddrfa1p8-supply = <&vreg_s6c_1p8>;
+> +
+> +               clocks = <&rpmhcc RPMH_RF_CLK1>;
+> +       };
+> +};
+> +
+>  &pcie0_phy {
+>         vdda-phy-supply = <&vreg_l1i_0p88>;
+>         vdda-pll-supply = <&vreg_l3i_1p2>;
+> @@ -1139,6 +1161,13 @@ wcd_default: wcd-reset-n-active-state {
+>                 bias-disable;
+>                 output-low;
+>         };
+> +
+> +       wlan_en: wlan-en-state {
+> +               pins = "gpio16";
+> +               function = "gpio";
+> +               drive-strength = <8>;
+> +               bias-pull-down;
+> +       };
+>  };
+>
+>  &uart14 {
+> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> index d488b3b3265e..baf4932e460c 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> @@ -2293,6 +2293,16 @@ &mc_virt SLAVE_EBI1 QCOM_ICC_TAG_ALWAYS>,
+>                         dma-coherent;
+>
+>                         status = "disabled";
+> +
+> +                       pcieport0: pcie@0 {
+> +                               device_type = "pci";
+> +                               reg = <0x0 0x0 0x0 0x0 0x0>;
+> +                               #address-cells = <3>;
+> +                               #size-cells = <2>;
+> +                               ranges;
+> +
+> +                               bus-range = <0x01 0xff>;
+> +                       };
+>                 };
+>
+>                 pcie0_phy: phy@1c06000 {
+> --
+> 2.40.1
+>
 
 
---ksq33adg27c6w63k
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-
-On Fri, Feb 16, 2024 at 01:34:11PM +0000, Bhavin Sharma wrote:
-> I apologize if I'm mistaken, but I noticed other minimal drivers
-> in the codebase.
-
-Please point me to a driver, which just exposes the voltage.
-
-> My understanding is that using a minimal driver shouldn't cause
-> any issues. Additionally, we can easily update this driver at any
-> time, as we're actively updating all other drivers.
-
-So why are you not doing it now? Adding current, state of charge,
-temperature and OCV is trivial. I'm not talking about supporting
-every feature of the chip, but just the bits that are a simple
-mapping between standard power supply properties and a chip
-register.
-
--- Sebastian
-
---ksq33adg27c6w63k
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmXP6sAACgkQ2O7X88g7
-+po5vg//XQHEu60f6Sq5WXycuGpwD2Rrwky4z2q70+qOWfZlOx02RIoQVRPpivS7
-AhINrWWioIm6NeRXCKwpG+6GDCRYnn0fUjM/cIgdRG1rMBClZB2aqeJ+3VdZ51H6
-f+212OtdSeKoHcblWbiHbwAJ4xr0fiV0iKxrAplJUy83l0WMykOjbAnuS5HDymXI
-6JuReyWIdjG/4NfWqGAEOOw6GdQCRBNl/u/BgkWkpKA+stJUcjK7h+2NSkfHdk+y
-zQRX0OUI0wyHA8uMSzk6MxbbWALkvm4o9IYhY36q84iekKG4W+qa6Kzpxk2n96Nq
-9bfmKQbWVEMSQz2ES2sNTjXcE+YO8LyQWZBf6D9MVtlvune4pb30nWFkIkdbd8fV
-YwheuZybikIIpfAmbOiSO2NbCH0l9iHaNcyyTXhpnIh9zylgely8La1EoQsDFwnJ
-w9zhIO/3RSMJITgAvi1nc7Z0rC2nppEMLeTV0tS3lvLU8ioiHbGR57lSMNsA7Shk
-1jF2ebCFHCHG7bZLx3kPtOByJtv/Ln8UiNXQfeNJub3xikQP/ilQbGsVnqr4wly5
-4gEdkXg+5kj4Wub1OafAwYAnVDAqJwVxK5RhUwZ9EK6r/GoH61nyOceby+tk7KL9
-omnEO+kFeYarmfYDirMkj4k43legzBrAozWg8m5zIYL1CpjnlyM=
-=B5bh
------END PGP SIGNATURE-----
-
---ksq33adg27c6w63k--
+-- 
+With best wishes
+Dmitry
 
