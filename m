@@ -1,193 +1,261 @@
-Return-Path: <linux-kernel+bounces-68221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7481885777A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:21:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF05685777C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:22:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F5BC282B46
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:21:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3FBF1C20B57
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BC11B951;
-	Fri, 16 Feb 2024 08:13:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hhi5FVbw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD961B969;
+	Fri, 16 Feb 2024 08:15:06 +0000 (UTC)
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 349681B94A;
-	Fri, 16 Feb 2024 08:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEC01B805;
+	Fri, 16 Feb 2024 08:14:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071197; cv=none; b=Amo2pjih51gsyV+JiQKiklmfrfruJGQt5i6CaAbQf8iiqL9KPbl+h3qQXfxB2CAdvwTb4aBRFpAY5OkxaQX14YYf8ILV9l1yRse221yRoqjYvqZilfP7q6YjfxfnDuwIP+xPQkgt3yC5eK9nQxHVyharHileLm+bQ5U96OkQJTE=
+	t=1708071306; cv=none; b=P7hdsEZ1TM/W8jLnJhX+XpZK0lIndZ3/KqSkVOidjbATztw+HpF2UGfpLXPnG7uxVs/MwNRy/EVrXMCTj8Gbzy3ol1C1BaAg/ZZlhM52Nv4Vmye1Ut8d1Yp5dqGfQ+DqYfEEkaMYQi4MMUHIjY0kKToIfAvixVBC0UwN49PSvpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071197; c=relaxed/simple;
-	bh=2yAzUFrshahCJDeF/Txc7JdTyHzEPst4ox4Ao1JajmU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ROD6BN9KPPb9VpUB1M7IyBIJC+6uR57uiwD3FIMS5cxSu/HBunSWah6gOTk/AaNqGFT8I5oJxTbCgtED+lUmf6raNXdS+QA5Onc/2rKcaQySvffccb/Y5vB61Ee8MaCJC/eEDEqOGMf6qkdLOBXkhpDji7d+tHeVCc7d+YEddnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hhi5FVbw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30CDEC433F1;
-	Fri, 16 Feb 2024 08:13:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708071196;
-	bh=2yAzUFrshahCJDeF/Txc7JdTyHzEPst4ox4Ao1JajmU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hhi5FVbwJBQGJrQ5LdUmS8j/Le4dlaV8h1U5wH5BlNyGQrrM2XqyMxRnsnAKFbMZx
-	 SFQaP2/aGi379Z5SHpZ7wDWSp5e8G7tgjc9AzIziwGmtse4q48U46iFQcjxylokg1P
-	 K/KhkeBJZ0tIrTsozcIJ3KwcSyKyhvNudlZ1i40K93iF9DdiWTEHMtM1Ctlw8Rn0FL
-	 87TYT0ZzNruWA3tPglsbxs14kOOquqHn11S8ZJYb+kCD+bHh6l0sKaOq/r8DsSVhnE
-	 pjRSDqix+iI+/rl9GYYLZNkr/LrWhcipZI7K9C8xWWE9FHcnzdDXIKPhtSPxTBM90q
-	 HQKdGiuY7w7pQ==
-Date: Fri, 16 Feb 2024 09:13:03 +0100
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH RFC bpf-next v2 02/10] bpf/helpers: introduce sleepable
- timers
-Message-ID: <r3yhu4h23tdg2dqj7eq3lhevsigvvb3qkge3icxmaqpgkayvoi@gxfxstkr2pxl>
-References: <20240214-hid-bpf-sleepable-v2-0-5756b054724d@kernel.org>
- <20240214-hid-bpf-sleepable-v2-2-5756b054724d@kernel.org>
- <a72147f5-2b7d-4267-9881-6a645c575838@linux.dev>
+	s=arc-20240116; t=1708071306; c=relaxed/simple;
+	bh=9GN9iBufDM+/oHP89fEYbJjbEjzPtGj8kAlRejRoEWg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fyzYXKJ06v2eu214Gc1gh1/rw1b9QI0VconqyM/YOopKxhkjvEsy0u+7HhOD3sVUUikNxQPQgWgY3WuYjPOi0mgwKZhYsohvHrT518FH794bvyS+j9qm41huA6Sef9rVGogAkU9VZHq3YaD88UdmE4BCiJCInKZ56C7ui4hM+xQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4Tbl8q6gv6z9tBG;
+	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id UWwJpXI0bjU3; Fri, 16 Feb 2024 09:14:51 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4Tbl8q633Lz9t0b;
+	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id CB3308B786;
+	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id WuF13jiKnWvS; Fri, 16 Feb 2024 09:14:51 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.102])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 52ADA8B765;
+	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Luis Chamberlain <mcgrof@kernel.org>,
+	linux-modules@vger.kernel.org
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-kernel@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2] module: Don't ignore errors from set_memory_XX()
+Date: Fri, 16 Feb 2024 09:14:27 +0100
+Message-ID: <21037bf38438a285f5dff9501668f1675bc45989.1708070781.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a72147f5-2b7d-4267-9881-6a645c575838@linux.dev>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708071268; l=6327; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=9GN9iBufDM+/oHP89fEYbJjbEjzPtGj8kAlRejRoEWg=; b=P3K6GlVBRBPXlxEvy+H6K/9xCzTD9h8+3DfVm6efkKz4SvieMaKF0/Xdr3B//ZCDOUWES9Nu4 EFuABmForTxC7yh5vGIiI6aREv22Jix23WCiyGo4JRXUYwDzWjrxPH7
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-On Feb 15 2024, Martin KaFai Lau wrote:
-> On 2/14/24 9:18 AM, Benjamin Tissoires wrote:
-> > +static void bpf_timer_work_cb(struct work_struct *work)
-> > +{
-> > +	struct bpf_hrtimer *t = container_of(work, struct bpf_hrtimer, work);
-> > +	struct bpf_map *map = t->map;
-> > +	void *value = t->value;
-> > +	bpf_callback_t callback_fn;
-> > +	void *key;
-> > +	u32 idx;
-> > +
-> > +	BTF_TYPE_EMIT(struct bpf_timer);
-> > +
-> > +	rcu_read_lock();
-> > +	callback_fn = rcu_dereference(t->sleepable_cb_fn);
-> > +	rcu_read_unlock();
-> 
-> I took a very brief look at patch 2. One thing that may worth to ask here,
-> the rcu_read_unlock() seems to be done too early. It is protecting the
-> t->sleepable_cb_fn (?), so should it be done after finished using the
-> callback_fn?
+set_memory_ro(), set_memory_nx(), set_memory_x() and other helpers
+can fail and return an error. In that case the memory might not be
+protected as expected and the module loading has to be aborted to
+avoid security issues.
 
-Probably :)
+Check return value of all calls to set_memory_XX() and handle
+error if any.
 
-TBH, everytime I work with RCUs I spent countless hours trying to
-re-understand everything, and in this case I'm currently in the "let's
-make it work" process than fixing concurrency issues.
-I still gave it a shot in case it solves my issue, but no, I still have
-the crash.
+Add a check to not call set_memory_XX() on NULL pointers as some
+architectures may not like it allthough numpages is always 0 in that
+case. This also avoid a useless call to set_vm_flush_reset_perms().
 
-But given that callback_fn might sleep, isn't it an issue to keep the
-RCU_reader lock so long? (we don't seem to call synchronize_rcu() so it
-might be fine, but I'd like the confirmation from someone else).
+Link: https://github.com/KSPP/linux/issues/7
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+v2:
+- Bail out early from module_set_memory() when address is NULL.
+- Properly clear bug list when module_set_memory() fails in complete_formation().
 
-> 
-> A high level design question. The intention of the new
-> bpf_timer_set_sleepable_cb() kfunc is actually to delay work to a workqueue.
-> It is useful to delay work from the bpf_timer_cb and it may also useful to
-> delay work from other bpf running context (e.g. the networking hooks like
-> "tc"). The bpf_timer_set_sleepable_cb() seems to be unnecessary forcing
-> delay-work must be done in a bpf_timer_cb.
+This patch applies on top of modules/modules-next branch
+---
+ kernel/module/internal.h   |  6 ++---
+ kernel/module/main.c       | 20 ++++++++++++---
+ kernel/module/strict_rwx.c | 51 +++++++++++++++++++++++++++-----------
+ 3 files changed, 55 insertions(+), 22 deletions(-)
 
-Basically I'm just a monkey here. I've been told that I should use
-bpf_timer[0]. But my implementation is not finished, as Alexei mentioned
-that we should bypass hrtimer if I'm not wrong [1].
+diff --git a/kernel/module/internal.h b/kernel/module/internal.h
+index 4f1b98f011da..2ebece8a789f 100644
+--- a/kernel/module/internal.h
++++ b/kernel/module/internal.h
+@@ -322,9 +322,9 @@ static inline struct module *mod_find(unsigned long addr, struct mod_tree_root *
+ }
+ #endif /* CONFIG_MODULES_TREE_LOOKUP */
+ 
+-void module_enable_rodata_ro(const struct module *mod, bool after_init);
+-void module_enable_data_nx(const struct module *mod);
+-void module_enable_text_rox(const struct module *mod);
++int module_enable_rodata_ro(const struct module *mod, bool after_init);
++int module_enable_data_nx(const struct module *mod);
++int module_enable_text_rox(const struct module *mod);
+ int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
+ 				char *secstrings, struct module *mod);
+ 
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index a9a4a4885102..689def7676c4 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -2571,7 +2571,9 @@ static noinline int do_init_module(struct module *mod)
+ 	/* Switch to core kallsyms now init is done: kallsyms may be walking! */
+ 	rcu_assign_pointer(mod->kallsyms, &mod->core_kallsyms);
+ #endif
+-	module_enable_rodata_ro(mod, true);
++	ret = module_enable_rodata_ro(mod, true);
++	if (ret)
++		goto fail_mutex_unlock;
+ 	mod_tree_remove_init(mod);
+ 	module_arch_freeing_init(mod);
+ 	for_class_mod_mem_type(type, init) {
+@@ -2609,6 +2611,8 @@ static noinline int do_init_module(struct module *mod)
+ 
+ 	return 0;
+ 
++fail_mutex_unlock:
++	mutex_unlock(&module_mutex);
+ fail_free_freeinit:
+ 	kfree(freeinit);
+ fail:
+@@ -2736,9 +2740,15 @@ static int complete_formation(struct module *mod, struct load_info *info)
+ 	module_bug_finalize(info->hdr, info->sechdrs, mod);
+ 	module_cfi_finalize(info->hdr, info->sechdrs, mod);
+ 
+-	module_enable_rodata_ro(mod, false);
+-	module_enable_data_nx(mod);
+-	module_enable_text_rox(mod);
++	err = module_enable_rodata_ro(mod, false);
++	if (err)
++		goto out_strict_rwx;
++	err = module_enable_data_nx(mod);
++	if (err)
++		goto out_strict_rwx;
++	err = module_enable_text_rox(mod);
++	if (err)
++		goto out_strict_rwx;
+ 
+ 	/*
+ 	 * Mark state as coming so strong_try_module_get() ignores us,
+@@ -2749,6 +2759,8 @@ static int complete_formation(struct module *mod, struct load_info *info)
+ 
+ 	return 0;
+ 
++out_strict_rwx:
++	module_bug_cleanup(mod);
+ out:
+ 	mutex_unlock(&module_mutex);
+ 	return err;
+diff --git a/kernel/module/strict_rwx.c b/kernel/module/strict_rwx.c
+index b36d93983465..c45caa4690e5 100644
+--- a/kernel/module/strict_rwx.c
++++ b/kernel/module/strict_rwx.c
+@@ -11,13 +11,16 @@
+ #include <linux/set_memory.h>
+ #include "internal.h"
+ 
+-static void module_set_memory(const struct module *mod, enum mod_mem_type type,
+-			      int (*set_memory)(unsigned long start, int num_pages))
++static int module_set_memory(const struct module *mod, enum mod_mem_type type,
++			     int (*set_memory)(unsigned long start, int num_pages))
+ {
+ 	const struct module_memory *mod_mem = &mod->mem[type];
+ 
++	if (!mod_mem->base)
++		return 0;
++
+ 	set_vm_flush_reset_perms(mod_mem->base);
+-	set_memory((unsigned long)mod_mem->base, mod_mem->size >> PAGE_SHIFT);
++	return set_memory((unsigned long)mod_mem->base, mod_mem->size >> PAGE_SHIFT);
+ }
+ 
+ /*
+@@ -26,35 +29,53 @@ static void module_set_memory(const struct module *mod, enum mod_mem_type type,
+  * CONFIG_STRICT_MODULE_RWX because they are needed regardless of whether we
+  * are strict.
+  */
+-void module_enable_text_rox(const struct module *mod)
++int module_enable_text_rox(const struct module *mod)
+ {
+ 	for_class_mod_mem_type(type, text) {
++		int ret;
++
+ 		if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
+-			module_set_memory(mod, type, set_memory_rox);
++			ret = module_set_memory(mod, type, set_memory_rox);
+ 		else
+-			module_set_memory(mod, type, set_memory_x);
++			ret = module_set_memory(mod, type, set_memory_x);
++		if (ret)
++			return ret;
+ 	}
++	return 0;
+ }
+ 
+-void module_enable_rodata_ro(const struct module *mod, bool after_init)
++int module_enable_rodata_ro(const struct module *mod, bool after_init)
+ {
++	int ret;
++
+ 	if (!IS_ENABLED(CONFIG_STRICT_MODULE_RWX) || !rodata_enabled)
+-		return;
++		return 0;
+ 
+-	module_set_memory(mod, MOD_RODATA, set_memory_ro);
+-	module_set_memory(mod, MOD_INIT_RODATA, set_memory_ro);
++	ret = module_set_memory(mod, MOD_RODATA, set_memory_ro);
++	if (ret)
++		return ret;
++	ret = module_set_memory(mod, MOD_INIT_RODATA, set_memory_ro);
++	if (ret)
++		return ret;
+ 
+ 	if (after_init)
+-		module_set_memory(mod, MOD_RO_AFTER_INIT, set_memory_ro);
++		return module_set_memory(mod, MOD_RO_AFTER_INIT, set_memory_ro);
++
++	return 0;
+ }
+ 
+-void module_enable_data_nx(const struct module *mod)
++int module_enable_data_nx(const struct module *mod)
+ {
+ 	if (!IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
+-		return;
++		return 0;
+ 
+-	for_class_mod_mem_type(type, data)
+-		module_set_memory(mod, type, set_memory_nx);
++	for_class_mod_mem_type(type, data) {
++		int ret = module_set_memory(mod, type, set_memory_nx);
++
++		if (ret)
++			return ret;
++	}
++	return 0;
+ }
+ 
+ int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
+-- 
+2.43.0
 
-> 
-> Have you thought about if it is possible to create a more generic kfunc like
-> bpf_schedule_work() to delay work to a workqueue ?
-> 
-
-AFAIU if we were to have a separate bpf_schedule_work(), we still need
-all of the infra of bpf_timer, because we need to keep the programs
-around in the same way bpf_timer does. So basically, bpf_timer will not
-only be about hrtimers, but anything that need to run an async callback.
-
-I submitted this RFC v2 not for the "this is ready", but mostly because
-there is a crash and I can't see where it comes from, and I suspect this
-is from a piece I do not understand (translation from the BPF langage
-into actual elf assembly).
-
-
-Cheers,
-Benjamin
-
-[0] https://lore.kernel.org/bpf/ztou4yyrsdfmmhdwgu2f2noartpqklhvtbw7vj2ptk54eqohvb@qci7bcnbd56q/T/#mc9cab17138b13c83299f0836ca0b2dde0643ea4b
-[1] https://lore.kernel.org/bpf/ztou4yyrsdfmmhdwgu2f2noartpqklhvtbw7vj2ptk54eqohvb@qci7bcnbd56q/T/#mf59824ad625992b980afbc4f27c83e76245815e7
-
-> 
-> 
-> > +	if (!callback_fn)
-> > +		return;
-> > +
-> > +	/* FIXME: do we need any locking? */
-> > +	if (map->map_type == BPF_MAP_TYPE_ARRAY) {
-> > +		struct bpf_array *array = container_of(map, struct bpf_array, map);
-> > +
-> > +		/* compute the key */
-> > +		idx = ((char *)value - array->value) / array->elem_size;
-> > +		key = &idx;
-> > +	} else { /* hash or lru */
-> > +		key = value - round_up(map->key_size, 8);
-> > +	}
-> > +
-> > +	/* FIXME: this crashes the system with
-> > +	 * BUG: kernel NULL pointer dereference, address: 000000000000000b
-> > +	 */
-> > +	/* callback_fn((u64)(long)map, (u64)(long)key, (u64)(long)value, 0, 0); */
-> > +	/* The verifier checked that return value is zero. */
-> > +}
-> > +
-> 
-> [ ... ]
-> 
-> > +/* FIXME: use kernel doc style */
-> > +/* Description
-> > + *	Configure the timer to call *callback_fn* static function in a
-> > + *	sleepable context.
-> > + * Return
-> > + *	0 on success.
-> > + *	**-EINVAL** if *timer* was not initialized with bpf_timer_init() earlier.
-> > + *	**-EPERM** if *timer* is in a map that doesn't have any user references.
-> > + *	The user space should either hold a file descriptor to a map with timers
-> > + *	or pin such map in bpffs. When map is unpinned or file descriptor is
-> > + *	closed all timers in the map will be cancelled and freed.
-> > + */
-> > +__bpf_kfunc int bpf_timer_set_sleepable_cb(struct bpf_timer_kern *timer,
-> > +					   int (callback_fn)(void *map, int *key, struct bpf_timer *timer))
-> > +{
-> > +	struct bpf_throw_ctx ctx = {};
-> > +
-> > +	/* FIXME: definietely not sure this is OK */
-> > +	arch_bpf_stack_walk(bpf_stack_walker, &ctx);
-> > +	WARN_ON_ONCE(!ctx.aux);
-> > +
-> > +	if (!ctx.aux)
-> > +		return -EINVAL;
-> > +
-> > +	return __bpf_timer_set_callback(timer, (void *)callback_fn, ctx.aux, true);
-> > +}
-> > +
-> 
 
