@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-69493-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69494-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA872858A54
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CFF17858A55
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 850B8280C96
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:54:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86D1F2898A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:54:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEF9149016;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B0814A096;
 	Fri, 16 Feb 2024 23:54:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VIf4KlhW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lrFcSa2m"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C2F12CD81;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F5D2148FFF;
 	Fri, 16 Feb 2024 23:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708127665; cv=none; b=Owm5eVAEq6DypLfapMjfFA8+hyR2r5iPW2u9cfrCIsaeBPXKgeIsePv/BmoW6rnkmxLnSuqxJuVhw+CC0CT5xn62/ckWJwED5kuavNRPX/ClbVIvAVsSbH3mr++xrYLFX1pX6Gh7sdW+bvRYERsf9AooaYlWbxmftopiPzyOEcU=
+	t=1708127666; cv=none; b=sSfOLrH/Q3vWR6FE3Ej63oSZ2Pnpkhgv9iU7ZOXQcgr4K9RL17gzTTE4vo1hb5BpdlPahCdu/nKdHskEU51fcEoNvlo5oyuVMAVv1isEp3ZVKxU3a6rP1l3c5hAWchoxs058/uWrOMw1SDTORS6bo6UXQ5+jJ3TnscpSleJ4yl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708127665; c=relaxed/simple;
-	bh=GGQvQ/+WBVLP8ch54nHxUo1wdtqt4gDJvXHKXUqMU3g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K0LbiAWc9cnLE6mH3WyaPRVQvOoT47K5MMayKJzzFl7TyJ3T3NU8drGiBgipjl6RBc2kl83ZEePLfS4Lo/2TfVQ4M53flapnQX70WlUupoxpuTX3dNgwgIuNJG+o8MrAclcJs06XqbtQ2wLEWdA4aFa9rm8Ez1eg08pd8U9ocIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VIf4KlhW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EBC5C433F1;
-	Fri, 16 Feb 2024 23:54:24 +0000 (UTC)
+	s=arc-20240116; t=1708127666; c=relaxed/simple;
+	bh=Qw5in8yXru6XDR/MkCtSi5udF5OsSGUvfaaiz1BQ/Vc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CpsXbPZG4elA9E0BSn+0Iaxmh+S3FO6MLvIJQkn9q1fivkFGqQ6rOoMk3NkSPAZrZOSjBizdNhxL4264pHcPNERtzA5oWifWxfNIVsItgc5bHvbbdO+JDd5QfH7X+RohpmA+zVKC7L27e8CMPMnJ1wcWkfX1/QcyzXDCLhk3H14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lrFcSa2m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2151BC433C7;
+	Fri, 16 Feb 2024 23:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708127665;
-	bh=GGQvQ/+WBVLP8ch54nHxUo1wdtqt4gDJvXHKXUqMU3g=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VIf4KlhWG0HmbiDVvq7OxorlyHYzLCq64uHvqGDeiN4S4Emp2K4LOB4fLqNPz3Leu
-	 sjAPzNV4gr8JQq2HP03BHsnhXcZ5qvhcHbdktOsCeQAYljEeoszTXMzMIBMdvhnl1f
-	 /vhIFSw0ypHgDQXZyKbrhYu2Ig58ml+6hMU1ShH2QtUXdEjUjko2eJvSJvpTKwEsWP
-	 nsLBQDrUMDTuiiU7O8/rFOhLBq4Zivwd7K+WrVfJk8RSNcrxegfeflDEoVcIeuEFV+
-	 B8oSYGmUJevoi6MP3GiYx6EYMqLarnTgB8xhjAnt1zvib+tiO1uB7y+H78YrSL9Lpr
-	 QSGA4oc0lIRhA==
+	bh=Qw5in8yXru6XDR/MkCtSi5udF5OsSGUvfaaiz1BQ/Vc=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=lrFcSa2mRpoWSX/v9+yZiSyZX8U54mmS1u1B7ANszJyVkrCyL0oxTOXL0Vu94WFqT
+	 QYm4QgDfKMlQ3UPjrHvUCtRN2dmb8tQgha8RkZ/8PXUnMm6113IP7ZRtg+1ewWqDY/
+	 Nb0OsPevP437xNFMXGlOQ5CV6ksbYFw80KPnOzNL+RpnxmlVhnsQvRHs0BS+qLy14v
+	 jFXjLF+R1omwAtzj+MHh1nV5lEdncpiJP8ZepuNhipnnvi37Al2HElIP9YalSxDdjb
+	 6B4cqH5ung2S5x5pdMf2G8eFi5NRF4dw+g7o0af8+EeIm8vDImvAGQ7SLWGE/Jf5ve
+	 7jOnr+a7lTTaA==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -52,22 +53,13 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Stephane Eranian <eranian@google.com>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org,
-	Ben Woodard <woodard@redhat.com>,
-	Joe Mario <jmario@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	David Blaikie <blaikie@google.com>,
-	Xu Liu <xliuprof@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	Mark Wielaard <mark@klomp.org>,
-	Jason Merrill <jason@redhat.com>,
-	"Jose E . Marchesi" <jose.marchesi@oracle.com>,
-	William Huang <williamjhuang@google.com>
-Subject: [PATCHSET 00/14] perf tools: Remaining bits of data type profiling (v6)
-Date: Fri, 16 Feb 2024 15:54:09 -0800
-Message-ID: <20240216235423.2343167-1-namhyung@kernel.org>
+	linux-trace-devel@vger.kernel.org
+Subject: [PATCH 01/14] perf dwarf-aux: Add die_collect_vars()
+Date: Fri, 16 Feb 2024 15:54:10 -0800
+Message-ID: <20240216235423.2343167-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+In-Reply-To: <20240216235423.2343167-1-namhyung@kernel.org>
+References: <20240216235423.2343167-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,119 +68,203 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+The die_collect_vars() is to find all variable information in the scope
+including function parameters.  The struct die_var_type is to save the
+type of the variable with the location (reg and offset) as well as where
+it's defined in the code (addr).
 
-This is the last part of the data type profiling series.
-So far we added the basic pointer variable support, and direct access to
-global/local variables.  Now it's time to add instruction tracking. :)
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/dwarf-aux.c | 118 +++++++++++++++++++++++++++---------
+ tools/perf/util/dwarf-aux.h |  17 ++++++
+ 2 files changed, 107 insertions(+), 28 deletions(-)
 
-For the history and background, you can refer to the previous version
-[1] and the LWN article [2].
-
- * Changes from v5
-  - rename register state from scratch to caller_saved
-  - change comment in map__objdump_2rip()
-
-
-Basically it needs to track variable (and its type) assignment to get
-a type of memory access at the sampled instruction.  Compilers don't
-generate DWARF information for every memory accesses so it cannot find
-all the necessary information from DWARF.  Therefore, it follows the
-path to the sample in the function, and update type information at
-each location when the instruction moves it.
-
-For the DWARF search, it has a list of scope entries (subroutines or
-blocks) that covers the sample already.  So it can use the scopes to
-find the shortest path to the sample instruction.
-
-Let's say we have this.  It got 5 scopes but couldn't find a matching
-variable for the sample.
-
-      +----------------  scope[0] subprogram
-      |
-      | +--------------  scope[1] lexical_block
-      | |
-      | | +------------  scope[2] inlined_subroutine
-      | | |
-      | | | +----------  scope[3] inlined_subroutine
-      | | | |
-      | | | | +--------  scope[4] lexical_block
-      | | | | |
-      | | | | |     ***  target instruction
-      ...
-
-Then it starts with the closest scope (at index 4), and find the
-shortest path from the start of the scope to the target instruction.
-Along the way, it updates type information in the scope and see if the
-location at the target instruction has the type.  If so, it can
-return with the type.
-
-Otherwise, it goes to the scope[3] and find the shortest path from the
-start of scope[3] to the start of scope[4].  And then it can combine
-the existing shortest path from the scope[4] to the target with the
-new path.  Now it can start from the scope[3] with new variables and
-types.  It can repeat this algorithm for the outer scopes.
-
-I did it this way because mostly it was able to find a type in the
-closest scope.  So it can avoid unnecessary work for outer scopes.
-
-And it added a basic per-cpu variable support for this CPU on x86_64
-which uses %gs segment register.  Also it can detect the stack-canary
-pattern which is added by compiler to detect stack overflow.
-
-The code is available at 'perf/data-profile-v6' branch in the tree
-below.  I've dropped the debug patch at the end in this series but you
-can find it in the git branch.
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks,
-Namhyung
-
-
-Cc: Ben Woodard <woodard@redhat.com>
-Cc: Joe Mario <jmario@redhat.com>
-CC: Kees Cook <keescook@chromium.org>
-Cc: David Blaikie <blaikie@google.com>
-Cc: Xu Liu <xliuprof@google.com>
-Cc: Kan Liang <kan.liang@linux.intel.com>
-Cc: Ravi Bangoria <ravi.bangoria@amd.com>
-Cc: Mark Wielaard <mark@klomp.org>
-Cc: Jason Merrill <jason@redhat.com>
-Cc: Jose E. Marchesi <jose.marchesi@oracle.com>
-Cc: William Huang <williamjhuang@google.com>
-
-
-[1] https://lore.kernel.org/linux-perf-users/20231110000012.3538610-1-namhyung@kernel.org/
-[2] https://lwn.net/Articles/955709/
-
-
-Namhyung Kim (14):
-  perf dwarf-aux: Add die_collect_vars()
-  perf dwarf-aux: Handle type transfer for memory access
-  perf annotate-data: Introduce struct data_loc_info
-  perf map: Add map__objdump_2rip()
-  perf annotate: Add annotate_get_basic_blocks()
-  perf annotate-data: Maintain variable type info
-  perf annotate-data: Add update_insn_state()
-  perf annotate-data: Handle global variable access
-  perf annotate-data: Handle call instructions
-  perf annotate-data: Implement instruction tracking
-  perf annotate: Parse x86 segment register location
-  perf annotate-data: Handle this-cpu variables in kernel
-  perf annotate-data: Track instructions with a this-cpu variable
-  perf annotate-data: Add stack canary type
-
- tools/perf/util/annotate-data.c | 710 ++++++++++++++++++++++++++++++--
- tools/perf/util/annotate-data.h |  87 +++-
- tools/perf/util/annotate.c      | 366 ++++++++++++++--
- tools/perf/util/annotate.h      |  38 ++
- tools/perf/util/dwarf-aux.c     | 232 +++++++++--
- tools/perf/util/dwarf-aux.h     |  23 ++
- tools/perf/util/map.c           |  17 +
- tools/perf/util/map.h           |   3 +
- 8 files changed, 1370 insertions(+), 106 deletions(-)
-
+diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+index 2791126069b4..f878014c9e27 100644
+--- a/tools/perf/util/dwarf-aux.c
++++ b/tools/perf/util/dwarf-aux.c
+@@ -1136,6 +1136,40 @@ int die_get_varname(Dwarf_Die *vr_die, struct strbuf *buf)
+ 	return ret < 0 ? ret : strbuf_addf(buf, "\t%s", dwarf_diename(vr_die));
+ }
+ 
++#if defined(HAVE_DWARF_GETLOCATIONS_SUPPORT) || defined(HAVE_DWARF_CFI_SUPPORT)
++static int reg_from_dwarf_op(Dwarf_Op *op)
++{
++	switch (op->atom) {
++	case DW_OP_reg0 ... DW_OP_reg31:
++		return op->atom - DW_OP_reg0;
++	case DW_OP_breg0 ... DW_OP_breg31:
++		return op->atom - DW_OP_breg0;
++	case DW_OP_regx:
++	case DW_OP_bregx:
++		return op->number;
++	default:
++		break;
++	}
++	return -1;
++}
++
++static int offset_from_dwarf_op(Dwarf_Op *op)
++{
++	switch (op->atom) {
++	case DW_OP_reg0 ... DW_OP_reg31:
++	case DW_OP_regx:
++		return 0;
++	case DW_OP_breg0 ... DW_OP_breg31:
++		return op->number;
++	case DW_OP_bregx:
++		return op->number2;
++	default:
++		break;
++	}
++	return -1;
++}
++#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT || HAVE_DWARF_CFI_SUPPORT */
++
+ #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
+ /**
+  * die_get_var_innermost_scope - Get innermost scope range of given variable DIE
+@@ -1479,41 +1513,69 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
+ 		*offset = data.offset;
+ 	return result;
+ }
+-#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
+ 
+-#ifdef HAVE_DWARF_CFI_SUPPORT
+-static int reg_from_dwarf_op(Dwarf_Op *op)
++static int __die_collect_vars_cb(Dwarf_Die *die_mem, void *arg)
+ {
+-	switch (op->atom) {
+-	case DW_OP_reg0 ... DW_OP_reg31:
+-		return op->atom - DW_OP_reg0;
+-	case DW_OP_breg0 ... DW_OP_breg31:
+-		return op->atom - DW_OP_breg0;
+-	case DW_OP_regx:
+-	case DW_OP_bregx:
+-		return op->number;
+-	default:
+-		break;
+-	}
+-	return -1;
++	struct die_var_type **var_types = arg;
++	Dwarf_Die type_die;
++	int tag = dwarf_tag(die_mem);
++	Dwarf_Attribute attr;
++	Dwarf_Addr base, start, end;
++	Dwarf_Op *ops;
++	size_t nops;
++	struct die_var_type *vt;
++
++	if (tag != DW_TAG_variable && tag != DW_TAG_formal_parameter)
++		return DIE_FIND_CB_SIBLING;
++
++	if (dwarf_attr(die_mem, DW_AT_location, &attr) == NULL)
++		return DIE_FIND_CB_SIBLING;
++
++	/*
++	 * Only collect the first location as it can reconstruct the
++	 * remaining state by following the instructions.
++	 * start = 0 means it covers the whole range.
++	 */
++	if (dwarf_getlocations(&attr, 0, &base, &start, &end, &ops, &nops) <= 0)
++		return DIE_FIND_CB_SIBLING;
++
++	if (die_get_real_type(die_mem, &type_die) == NULL)
++		return DIE_FIND_CB_SIBLING;
++
++	vt = malloc(sizeof(*vt));
++	if (vt == NULL)
++		return DIE_FIND_CB_END;
++
++	vt->die_off = dwarf_dieoffset(&type_die);
++	vt->addr = start;
++	vt->reg = reg_from_dwarf_op(ops);
++	vt->offset = offset_from_dwarf_op(ops);
++	vt->next = *var_types;
++	*var_types = vt;
++
++	return DIE_FIND_CB_SIBLING;
+ }
+ 
+-static int offset_from_dwarf_op(Dwarf_Op *op)
++/**
++ * die_collect_vars - Save all variables and parameters
++ * @sc_die: a scope DIE
++ * @var_types: a pointer to save the resulting list
++ *
++ * Save all variables and parameters in the @sc_die and save them to @var_types.
++ * The @var_types is a singly-linked list containing type and location info.
++ * Actual type can be retrieved using dwarf_offdie() with 'die_off' later.
++ *
++ * Callers should free @var_types.
++ */
++void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types)
+ {
+-	switch (op->atom) {
+-	case DW_OP_reg0 ... DW_OP_reg31:
+-	case DW_OP_regx:
+-		return 0;
+-	case DW_OP_breg0 ... DW_OP_breg31:
+-		return op->number;
+-	case DW_OP_bregx:
+-		return op->number2;
+-	default:
+-		break;
+-	}
+-	return -1;
++	Dwarf_Die die_mem;
++
++	die_find_child(sc_die, __die_collect_vars_cb, (void *)var_types, &die_mem);
+ }
++#endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
+ 
++#ifdef HAVE_DWARF_CFI_SUPPORT
+ /**
+  * die_get_cfa - Get frame base information
+  * @dwarf: a Dwarf info
+diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+index 85dd527ae1f7..efafd3a1f5b6 100644
+--- a/tools/perf/util/dwarf-aux.h
++++ b/tools/perf/util/dwarf-aux.h
+@@ -135,6 +135,15 @@ void die_skip_prologue(Dwarf_Die *sp_die, Dwarf_Die *cu_die,
+ /* Get the list of including scopes */
+ int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes);
+ 
++/* Variable type information */
++struct die_var_type {
++	struct die_var_type *next;
++	u64 die_off;
++	u64 addr;
++	int reg;
++	int offset;
++};
++
+ #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
+ 
+ /* Get byte offset range of given variable DIE */
+@@ -150,6 +159,9 @@ Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
+ 				     Dwarf_Addr addr, Dwarf_Die *die_mem,
+ 				     int *offset);
+ 
++/* Save all variables and parameters in this scope */
++void die_collect_vars(Dwarf_Die *sc_die, struct die_var_type **var_types);
++
+ #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
+ 
+ static inline int die_get_var_range(Dwarf_Die *sp_die __maybe_unused,
+@@ -178,6 +190,11 @@ static inline Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die __maybe_unu
+ 	return NULL;
+ }
+ 
++static inline void die_collect_vars(Dwarf_Die *sc_die __maybe_unused,
++				    struct die_var_type **var_types __maybe_unused)
++{
++}
++
+ #endif /* HAVE_DWARF_GETLOCATIONS_SUPPORT */
+ 
+ #ifdef HAVE_DWARF_CFI_SUPPORT
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
