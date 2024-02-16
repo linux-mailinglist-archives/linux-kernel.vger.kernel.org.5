@@ -1,141 +1,136 @@
-Return-Path: <linux-kernel+bounces-67897-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67898-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BF8F85728E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:30:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BBE857297
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:33:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80B14B22D73
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:30:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAFEC1C21648
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:33:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CE3257B;
-	Fri, 16 Feb 2024 00:30:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED0A7748D;
+	Fri, 16 Feb 2024 00:33:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cHojJF1E"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="TCBheLyH"
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561F1803
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3F7A21
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708043449; cv=none; b=PSNyvSAskH74ItIDTvBcK22Yex/0iaGtLlqremXOBqj0dqqgCLyOz2R5BxYIH8dNFKW7q+5pIeDpAn+Gdf47NEUAGkbI1xGCd8OdC1yVV+HouwKl7d1oS3lWrAKL3NpUYIHMkMrfl6zH07DZvwmYwaymteMUZ3MS2VrlvgYo4z0=
+	t=1708043604; cv=none; b=G1i/QYAsxgPLVJRWyPKAptspw0BoaxVYgem76nxd+eL9Cj8bArQgSkxQP+d6LSKADESfPauB7ftVLEtFVAzR/0anELQ8veTl65PlZEDHv6wi08KWba8txTQOSv4GpdKWhHJQwdJf1kevYj63S6FcembMSHVYoRocHzyf3m6nNho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708043449; c=relaxed/simple;
-	bh=TaCiIdWmf5Hs/zSHHhzFErweisp/bPBOIsSZAwGaxOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Btye4Z+JipZbGD1yXxPmt9SBv0qBDa1x4Wv80QknQ9XJoHv0S1yAdOWP/9ruuV8q19cHTuqkclwI/og6DAeFpAC4tpxAWayQyH6/YrMkg8qdQNBm3pdwz/p6ufFwXpEmT5qIwvSlxzAFMCHxbUMrbh1hzMZuFUg2JhOwCMXUfdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cHojJF1E; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708043447; x=1739579447;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=TaCiIdWmf5Hs/zSHHhzFErweisp/bPBOIsSZAwGaxOo=;
-  b=cHojJF1Eae+5jEWdLernQIWZCXCH9VsrzL8Y+jLIaHiv+FHA/62wR1Fe
-   zv5nRbKerKGdYYVei0MKdWu9k2CiNG9egxsoBsXAzPvnZwV8vyqhkRNiA
-   XDilDXBDTfuGL60X6Q35IC0y7jfEo6EAu4zAjTUqQ+Awlbd7MVxb+mIOT
-   5ObzrDZNOOZxB27yGFugy/49kW05JXTTc/mrp7tmut2AJOpB3oRUMQwEa
-   WItLHuvGCLOLDGUslCwaJyzipC2VPG8/NLWbyH889Q/byVQQTwQmkWjU1
-   lieD45d73YmFoZwxVxAp5P67T/65sAGZbXeRYsBfOCzovxP9CCPpR8uQ9
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="5133558"
-X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
-   d="scan'208";a="5133558"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 16:30:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,163,1705392000"; 
-   d="scan'208";a="34753302"
-Received: from jmjohns4-mobl1.amr.corp.intel.com (HELO [10.209.57.138]) ([10.209.57.138])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2024 16:30:45 -0800
-Message-ID: <acac6cc8-fd83-4541-8310-63f37cd41fa6@intel.com>
-Date: Thu, 15 Feb 2024 16:30:46 -0800
+	s=arc-20240116; t=1708043604; c=relaxed/simple;
+	bh=XuXzzdT4qpI/thepOvg44pFxyCWv6wsSemsRQD9/TFQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D2+G4Tc904tCWpO8qzoc8TXq3B2incZDAqIp9RNdI2gvx9VUhWrYUCqvDvW4iBvhz0YHnf2DjIez2zSOqA7LizWsY/VRo7BYS1GdxpptjjFMDJM/6Akz2iprpxtxkoWLeJT69TK8Wyqaiq935t4EhY/+P3HUjKPK5qb37Ou1NMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=TCBheLyH; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 Feb 2024 19:32:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708043600;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BwLdbKvwbuT7Py0w8ufFkW1cCk4JPEqYMR9dx/1h65M=;
+	b=TCBheLyHkvkCr2rg0SrQW08oAxBRtTvcZx+IRR+qV8bqJLfXAVvHTLefKtevmhJLC2yagF
+	90KJRsTt6yvwTHkdPhpkVXfpIaPw9mB+yLAmbC/9FosSVc2V4C/QiUfYBPe+UYZAzKt98o
+	D2JEy+U5Cbi2lIuDcjB+L1a1QUd7tzU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, david@redhat.com, 
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, 
+	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
+	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
+	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+Message-ID: <uhagqnpumyyqsnf4qj3fxm62i6la47yknuj4ngp6vfi7hqcwsy@lm46eypwe2lp>
+References: <Zc3X8XlnrZmh2mgN@tiehlicka>
+ <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
+ <Zc4_i_ED6qjGDmhR@tiehlicka>
+ <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
+ <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
+ <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
+ <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
+ <20240215180742.34470209@gandalf.local.home>
+ <jpmlfejxcmxa7vpsuyuzykahr6kz5vjb44ecrzfylw7z4un3g7@ia3judu4xkfp>
+ <20240215192141.03421b85@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/8] mm: Switch mm->get_unmapped_area() to a flag
-Content-Language: en-US
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>, Liam.Howlett@oracle.com,
- akpm@linux-foundation.org, debug@rivosinc.com, broonie@kernel.org,
- kirill.shutemov@linux.intel.com, keescook@chromium.org, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
- luto@kernel.org, peterz@infradead.org, hpa@zytor.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
- <20240215231332.1556787-2-rick.p.edgecombe@intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <20240215231332.1556787-2-rick.p.edgecombe@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215192141.03421b85@gandalf.local.home>
+X-Migadu-Flow: FLOW_OUT
 
-On 2/15/24 15:13, Rick Edgecombe wrote:
-> The mm_struct contains a function pointer *get_unmapped_area(), which
-> is set to either arch_get_unmapped_area() or
-> arch_get_unmapped_area_topdown() during the initialization of the mm.
+On Thu, Feb 15, 2024 at 07:21:41PM -0500, Steven Rostedt wrote:
+> On Thu, 15 Feb 2024 18:51:41 -0500
+> Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > 
-> Since the function pointer only ever points to two functions that are named
-> the same across all arch's, a function pointer is not really required. In
-> addition future changes will want to add versions of the functions that
-> take additional arguments. So to save a pointers worth of bytes in
-> mm_struct, and prevent adding additional function pointers to mm_struct in
-> future changes, remove it and keep the information about which
-> get_unmapped_area() to use in a flag.
+> > Most of that is data (505024), not text (68582, or 66k).
+> > 
+> 
+> And the 4K extra would have been data too.
 
-Indirect calls are just all kinds of evil, especially when Spectre-v2 is
-in play.  This is a really good idea.
+"It's not that much" isn't an argument for being wasteful.
 
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+> > The data is mostly the alloc tags themselves (one per allocation
+> > callsite, and you compiled the entire kernel), so that's expected.
+> > 
+> > Of the text, a lot of that is going to be slowpath stuff - module load
+> > and unload hooks, formatt and printing the output, other assorted bits.
+> > 
+> > Then there's Allocation and deallocating obj extensions vectors - not
+> > slowpath but not super fast path, not every allocation.
+> > 
+> > The fastpath instruction count overhead is pretty small
+> >  - actually doing the accounting - the core of slub.c, page_alloc.c,
+> >    percpu.c
+> >  - setting/restoring the alloc tag: this is overhead we add to every
+> >    allocation callsite, so it's the most relevant - but it's just a few
+> >    instructions.
+> > 
+> > So that's the breakdown. Definitely not zero overhead, but that fixed
+> > memory overhead (and additionally, the percpu counters) is the price we
+> > pay for very low runtime CPU overhead.
+> 
+> But where are the benchmarks that are not micro-benchmarks. How much
+> overhead does this cause to those? Is it in the noise, or is it noticeable?
 
+Microbenchmarks are how we magnify the effect of a change like this to
+the most we'll ever see. Barring cache effects, it'll be in the noise.
+
+Cache effects are a concern here because we're now touching task_struct
+in the allocation fast path; that is where the
+"compiled-in-but-turned-off" overhead comes from, because we can't add
+static keys for that code without doubling the amount of icache
+footprint, and I don't think that would be a great tradeoff.
+
+So: if your code has fastpath allocations where the hot part of
+task_struct isn't in cache, then this will be noticeable overhead to
+you, otherwise it won't be.
 
