@@ -1,100 +1,212 @@
-Return-Path: <linux-kernel+bounces-68597-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68598-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DB9C857CF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:52:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08673857CF7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:53:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 517DA1F2382D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:52:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 154891C238C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AACCF1292E0;
-	Fri, 16 Feb 2024 12:52:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="NAeRzwHM"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0471212883D
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9457A1292CD;
+	Fri, 16 Feb 2024 12:53:52 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BB1266D4
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:53:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708087931; cv=none; b=ZtomVC+cVpYsZLjhMikLrEP3mTQ/DoLdWAV8kZG58OQZUZjBgksvCEGozDvWIcIrcD8b18ZMthxKdJ/XGEuP5kRMdxnyUl7BUiM5bsJmtCfF/53RAiwkDxsNKCtTk/lFp9GcTPBHf91rEgznXnlBv9thhXvJZgz6V7e2U4a5d5g=
+	t=1708088032; cv=none; b=d7VSqGPsDySiz44BZWrTDVQM+ElL/qEvMluUCxYAZZB0+CDnxtsSsjLlTcmtW1pDlG/K5EONZeSuFMdLMYZVtm0KNCBumkqkTSMEvEUIDMlHn+RcItwFn7vvHgoPW0sovgZ1f2s/ElAKvDHVP3IITnSog1Q9V5H4Ok4CHa1bnXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708087931; c=relaxed/simple;
-	bh=pE/r6+xB3dzintHnnqc2M0R285DNLssjnyBlOWPpovg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F8LsCGTXCzfI+Temy5eNQNo/66G1mezyXpj+x56YyjrT2z+ZgIzzEnnM0KP2ciJLaY44m3gF3cfuPov+q3Zpgm0IAQR6Vx8b41YrY5UT2IWhfLvCkLle9HCJsFfqgOW+CWnjadXBkF1zrGpnVv2EzTQjx/wSmKZgRYnoSUccLFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=NAeRzwHM; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563fe793e1cso473860a12.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 04:52:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1708087925; x=1708692725; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pE/r6+xB3dzintHnnqc2M0R285DNLssjnyBlOWPpovg=;
-        b=NAeRzwHMVuMwPDLmVTt3la0rkO+dWY1Bm0ndQSPnsY4Z6fCkUFiACxb3zLvr5xL3cR
-         eZmp6nH83tF+nacmEtHYSNAO2FJQEpA1DeEWtpwB+ytQ6c3Mzo2q+iRJcSSqwm1ohG48
-         YAnk+TfDkiFeP4pyRC5kd3H86XEMaS8RXRQJZSVJ8du5Cg/YoHXwIW7GZYJ3pOKa8JvI
-         rZlCcMSnCloXlrqP2mviAcSUcgJ/+5D5PAdg1FsTrsmaB3sTsW3eo9NPMWNrYJwGQqIL
-         3iOHIqwxx6sR+Nn5wJSCx0Jhk01JJSANXtFS6QftD2VBGsDjCcgrRLy0Yz9Et8zQVDtm
-         Hx6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708087925; x=1708692725;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pE/r6+xB3dzintHnnqc2M0R285DNLssjnyBlOWPpovg=;
-        b=m2Mtra4MinsD9PWl0dlzXus2SoeSKtvnTrRJgz18ZEZ2vnFNEN64KztDHpy5TAFqEV
-         NapmQcqTc9PrtZ6t4+daSadjS/LijoQlX6F2SlJrF4To6IudDpkiZ3DkymJUmwAfuWfT
-         td5LzO67GdOKREuZYc4u1jYOXiSa7jGIiKsY0saph+ug0/ou7Ols3UXpNfegkbTnPZW3
-         8vwsB6aq2T9YFbrRUulFhoOh6VuioOgHg/2WD9+CZFowiAOgZ4ShcZrlpSfBZh5JwjCA
-         iFXaaxsmj2lTnEw2YI1aBAdyotNe4zZcIFbIadVA05dMk40b9Jzsm3SpKP3f66JDoOHt
-         r4Tg==
-X-Forwarded-Encrypted: i=1; AJvYcCXy9ssgN0ZShgJVlKrJXj8DcwB2vfQr6NKKlrdBUTw/jvt2zj50OHKV/rq3qw7M3Vxu84zzkHWesM3HglwYgD9j5MCCYepqOENLd9Dl
-X-Gm-Message-State: AOJu0YxQwqU9wqke05/gtYVxg719dljj1tyHuWWS7c/nV+Nsi3jDc3AN
-	GOg5sOBoQp65SLQoIMGqU/2jLat2QcZKujhmt8pdnfaHygXdmITI0qhjkebDEqI=
-X-Google-Smtp-Source: AGHT+IFRBKb/J9TVj5LcjAPyURuoUyqdHkJtfwCi4Sl/QZ1XMIhc2qmgUFA+H+LpAaevvSb7nPXWTg==
-X-Received: by 2002:a05:6402:1045:b0:561:cec7:cb1b with SMTP id e5-20020a056402104500b00561cec7cb1bmr3344924edu.32.1708087924910;
-        Fri, 16 Feb 2024 04:52:04 -0800 (PST)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id eh15-20020a0564020f8f00b00563e97360f9sm558625edb.31.2024.02.16.04.52.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 04:52:04 -0800 (PST)
-Date: Fri, 16 Feb 2024 13:52:01 +0100
-From: Jiri Pirko <jiri@resnulli.us>
-To: =?iso-8859-1?Q?Asbj=F8rn_Sloth_T=F8nnesen?= <ast@fiberby.net>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>,
-	Cong Wang <xiyou.wangcong@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llu@fiberby.dk
-Subject: Re: [PATCH net-next 1/3] net: sched: cls_api: add skip_sw counter
-Message-ID: <Zc9acSjD6Cf6UFrz@nanopsycho>
-References: <20240215160458.1727237-1-ast@fiberby.net>
- <20240215160458.1727237-2-ast@fiberby.net>
+	s=arc-20240116; t=1708088032; c=relaxed/simple;
+	bh=mV6JG5hlmFUbjPCFGu48elR++qZ+JbleSdHSN+R7JFg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RiGvn0fIB3TVsgkWzTufYjQc8u7Gv6yl2wPoPoaHg0s0HwmZzYHirlM0BlvsObKy0P2cP9NI2MmThUWCyaV+EVBpB1UXLSj2FilWD3ZoYsAq4qsTiqlCJOepZFVTX8o+vbsIk2d278xTeMAMJDUIbbOHePV49dOKAwYf4FA4wn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 55182DA7;
+	Fri, 16 Feb 2024 04:54:29 -0800 (PST)
+Received: from [192.168.68.110] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5AEF53F766;
+	Fri, 16 Feb 2024 04:53:44 -0800 (PST)
+Message-ID: <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com>
+Date: Fri, 16 Feb 2024 12:53:43 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240215160458.1727237-2-ast@fiberby.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 12/18] arm64/mm: Wire up PTE_CONT for user mappings
+Content-Language: en-GB
+To: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+ Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+ Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Mark Rutland <mark.rutland@arm.com>,
+ David Hildenbrand <david@redhat.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, John Hubbard
+ <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+ Barry Song <21cnbao@gmail.com>, Alistair Popple <apopple@nvidia.com>,
+ Yang Shi <shy828301@gmail.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+ linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20240215103205.2607016-1-ryan.roberts@arm.com>
+ <20240215103205.2607016-13-ryan.roberts@arm.com> <Zc9UQy-mtYAzNWm2@arm.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <Zc9UQy-mtYAzNWm2@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Thu, Feb 15, 2024 at 05:04:42PM CET, ast@fiberby.net wrote:
->Maintain a count of skip_sw filters.
->
->This counter is protected by the cb_lock, and is updated
->at the same time as offloadcnt.
->
->Signed-off-by: Asbjørn Sloth Tønnesen <ast@fiberby.net>
+Hi Catalin,
 
-Reviewed-by: Jiri Pirko <jiri@nvidia.com>
+Thanks for the review! Comments below...
+
+
+On 16/02/2024 12:25, Catalin Marinas wrote:
+> On Thu, Feb 15, 2024 at 10:31:59AM +0000, Ryan Roberts wrote:
+>>  arch/arm64/mm/contpte.c          | 285 +++++++++++++++++++++++++++++++
+> 
+> Nitpick: I think most symbols in contpte.c can be EXPORT_SYMBOL_GPL().
+> We don't expect them to be used by random out of tree modules. In fact,
+> do we expect them to end up in modules at all? Most seem to be called
+> from the core mm code.
+
+The problem is that the contpte_* symbols are called from the ptep_* inline
+functions. So where those inlines are called from modules, we need to make sure
+the contpte_* symbols are available.
+
+John Hubbard originally reported this problem against v1 and I enumerated all
+the drivers that call into the ptep_* inlines here:
+https://lore.kernel.org/linux-arm-kernel/b994ff89-1a1f-26ca-9479-b08c77f94be8@arm.com/#t
+
+So they definitely need to be exported. Perhaps we can tighten it to
+EXPORT_SYMBOL_GPL(), but I was being cautious as I didn't want to break anything
+out-of-tree. I'm not sure what the normal policy is? arm64 seems to use ~equal
+amounts of both.
+
+> 
+>> +#define ptep_get_lockless ptep_get_lockless
+>> +static inline pte_t ptep_get_lockless(pte_t *ptep)
+>> +{
+>> +	pte_t pte = __ptep_get(ptep);
+>> +
+>> +	if (likely(!pte_valid_cont(pte)))
+>> +		return pte;
+>> +
+>> +	return contpte_ptep_get_lockless(ptep);
+>> +}
+> [...]
+>> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
+>> +{
+>> +	/*
+>> +	 * Gather access/dirty bits, which may be populated in any of the ptes
+>> +	 * of the contig range. We may not be holding the PTL, so any contiguous
+>> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
+>> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
+>> +	 * in the range are valid and have CONT_PTE set, that all pfns are
+>> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
+>> +	 * If we find a pte that is not consistent, then we must be racing with
+>> +	 * an update so start again. If the target pte does not have CONT_PTE
+>> +	 * set then that is considered consistent on its own because it is not
+>> +	 * part of a contpte range.
+>> +*/
+> 
+> I can't get my head around this lockless API. Maybe it works fine (and
+> may have been discussed already) but we should document what the races
+> are, why it works, what the memory ordering requirements are. For
+> example, the generic (well, x86 PAE) ptep_get_lockless() only needs to
+> ensure that the low/high 32 bits of a pte are consistent and there are
+> some ordering rules on how these are updated.
+> 
+> Does the arm64 implementation only need to be correct w.r.t. the
+> access/dirty bits? Since we can read orig_ptep atomically, I assume the
+> only other updates from unfolding would set the dirty/access bits.
+> 
+>> +
+>> +	pgprot_t orig_prot;
+>> +	unsigned long pfn;
+>> +	pte_t orig_pte;
+>> +	pgprot_t prot;
+>> +	pte_t *ptep;
+>> +	pte_t pte;
+>> +	int i;
+>> +
+>> +retry:
+>> +	orig_pte = __ptep_get(orig_ptep);
+>> +
+>> +	if (!pte_valid_cont(orig_pte))
+>> +		return orig_pte;
+>> +
+>> +	orig_prot = pte_pgprot(pte_mkold(pte_mkclean(orig_pte)));
+>> +	ptep = contpte_align_down(orig_ptep);
+>> +	pfn = pte_pfn(orig_pte) - (orig_ptep - ptep);
+>> +
+>> +	for (i = 0; i < CONT_PTES; i++, ptep++, pfn++) {
+>> +		pte = __ptep_get(ptep);
+>> +		prot = pte_pgprot(pte_mkold(pte_mkclean(pte)));
+> 
+> We don't have any ordering guarantees in how the ptes in this range are
+> read or written in the contpte_set_ptes() and the fold/unfold functions.
+> We might not need them given all the other checks below but it's worth
+> adding a comment.
+> 
+>> +
+>> +		if (!pte_valid_cont(pte) ||
+>> +		   pte_pfn(pte) != pfn ||
+>> +		   pgprot_val(prot) != pgprot_val(orig_prot))
+>> +			goto retry;
+> 
+> I think this also needs some comment. I get the !pte_valid_cont() check
+> to attempt retrying when racing with unfolding. Are the other checks
+> needed to detect re-folding with different protection or pfn?
+> 
+>> +
+>> +		if (pte_dirty(pte))
+>> +			orig_pte = pte_mkdirty(orig_pte);
+>> +
+>> +		if (pte_young(pte))
+>> +			orig_pte = pte_mkyoung(orig_pte);
+>> +	}
+> 
+> After writing the comments above, I think I figured out that the whole
+> point of this loop is to check that the ptes in the contig range are
+> still consistent and the only variation allowed is the dirty/young
+> state to be passed to the orig_pte returned. The original pte may have
+> been updated by the time this loop finishes but I don't think it
+> matters, it wouldn't be any different than reading a single pte and
+> returning it while it is being updated.
+
+Correct. The pte can be updated at any time, before after or during the reads.
+That was always the case. But now we have to cope with a whole contpte block
+being repainted while we are reading it. So we are just checking to make sure
+that all the ptes that we read from the contpte block are consistent with
+eachother and therefore we can trust that the access/dirty bits we gathered are
+consistent.
+
+
+> 
+> If you can make this easier to parse (in a few years time) with an
+> additional patch adding some more comments, that would be great. For
+> this patch:
+
+I already have a big block comment at the top, which was trying to explain it.
+Clearly not well enough though. I'll add more comments as a follow up patch when
+I get back from holiday.
+
+> 
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+
+Thanks!
+
+> 
+
 
