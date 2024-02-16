@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-68117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C94D857630
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:54:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C654C857636
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 835781C22841
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:54:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AFA4286B7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:54:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E29C18AF6;
-	Fri, 16 Feb 2024 06:53:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4647A1B279;
+	Fri, 16 Feb 2024 06:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mLD6gqCd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AZfOy8AS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656191862F
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA6C1AACF
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708066422; cv=none; b=cETfNJQl2jqf35QHuvPAXOVogQL7IuU1FwG8pa3M1SQbiqyzmv0rvXD8K7kIW9QslxZ6OsFfeo8ayNh5MThyx/LTDhYWpZ5vLzmJkQIsIL4F+1eY8G/SPh7IhfqUy7ueDTUpsjM5OQGPOxOTWAzRmgrB+cOxKsFMq4OBdUZ0Pmg=
+	t=1708066425; cv=none; b=PpCgHPb9LglTOExvlYii0gIm5IeBWxP7C9W+eTm/8F+535E43qChkaOKiauStnqQtYqBw99TiRlEysCyJu4KXyzupg7P/lGUbpwpoKXowEbpgiJDDihfXKYKtvz1SyR8CHxPkXPMzoNs2zJParLMX/jaqFT8TnyfmitQTrGelqk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708066422; c=relaxed/simple;
-	bh=amudruWj9HLCey00JO7KSVlxOakx7qFxQBUB40Y74us=;
+	s=arc-20240116; t=1708066425; c=relaxed/simple;
+	bh=sH0FzSylb4GHpKMjELKxOSqoIZwIATsF0+uo2uRnxfE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=C/+MXUvQo08fWK9qjebjS1v/HVr/jVKe4rVFenqGVY1pXf5fIyvz4UusOe49SZTe7iVrMccdYzq5kemswDbNtlEXKbRY+uomPjKdNl4d+RF16rs17OA0c9IC6i/wnoGJcRo7ax4otzewn4Zh0ZQdhjZN20taz44r1lh1fweG12Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mLD6gqCd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BF4EC43390;
-	Fri, 16 Feb 2024 06:53:39 +0000 (UTC)
+	 MIME-Version; b=pQeU1QnNHcBeP/jH1TVpk17YEZVc5zTv1EB0Z2zUGleWvhLiu3Yx3MhjABQMPOzODHVs7EqqV5eRj9q/lyjPvh9IyfmK3GsEA1FB1fUwxux8UEuiG4I0cZR7ESKAl55a0Y1Kf18hbf/Wf3/7RuL/mxoGXpmyAGuuZ1m6s7X2HtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AZfOy8AS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 932E8C433C7;
+	Fri, 16 Feb 2024 06:53:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708066421;
-	bh=amudruWj9HLCey00JO7KSVlxOakx7qFxQBUB40Y74us=;
+	s=k20201202; t=1708066425;
+	bh=sH0FzSylb4GHpKMjELKxOSqoIZwIATsF0+uo2uRnxfE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mLD6gqCd+4bBf7thLiyk9DVfkCA8lRghiFBtNXzuEQ2h1aaq0lwuSuqaVrzZ9L4lw
-	 XWDIHc0l7tRFoASez4k/goMJyHoNQNMi7l6m70P8Hq+AAOQaD9QFZasMxiT0Vmxw4C
-	 aQHgZVvrnfHtLMLfXkht+oTJSGfrF2+UbkMSt8IZoQxq1xpMQz5ca+sNGsqNCtzfxA
-	 P6fO2HgYcv4oC/So+Gqxg6oWWXnp+nwBXMjx0FLDG4H84S/4oa2ab+ryhDsmdVC5aT
-	 7tU4WNDeciASWvRQRXWYv0sSOEJXWVY0QfzfAPpFl4UbyjYDcy2C5P1aNJPkLR42d8
-	 9xNhKMtdF4FpA==
+	b=AZfOy8AS1VK794BqL6EDv6yN4/raYXNT5U7KlgAdOJiZS4GPNDzMCLba4+68d/6CH
+	 fQweIQd5bMxXv8H33HHDsDkqEnikj528gOFmAc3ypAnDT2qYip7vOoZOqlYZuRGorc
+	 xeiSKoxWi7pPX0S3hJF9YETECd9RujLyhyKZqqV/lcAQOClVYwOFp9EnO39LsUSKG1
+	 aFFlIuiXlycxCnHFJ26ihTzCPz7pfYIiERAKyExjotKbiIzg9VuxrVuoFvvaac2nFj
+	 0M07qcJK7luruzbR+Ai8jXgBVZcXkYWynqFyfjqq4KEm4LqbG8gpdPvoIp/BxqfDug
+	 RfX7JfabFHc0A==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: jani.nikula@linux.intel.com
 Cc: linux-kernel@vger.kernel.org,
@@ -48,9 +48,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Rodrigo Vivi <rodrigo.vivi@intel.com>,
 	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
 	intel-gfx@lists.freedesktop.org
-Subject: [PATCH 03/21] drm/i915: remove intel_dsi::{port_bits,hs}
-Date: Fri, 16 Feb 2024 07:53:08 +0100
-Message-ID: <20240216065326.6910-4-jirislaby@kernel.org>
+Subject: [PATCH 04/21] drm/i915: remove intel_gvt_gtt::{mm_alloc_page_table,mm_free_page_table}
+Date: Fri, 16 Feb 2024 07:53:09 +0100
+Message-ID: <20240216065326.6910-5-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240216065326.6910-1-jirislaby@kernel.org>
 References: <20240216065326.6910-1-jirislaby@kernel.org>
@@ -62,10 +62,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-intel_dsi::port_bits is unused since commit 369602d370fa (drm/i915: Add
-support for port enable/disable for dual link configuration) and ::hs is
-unused likely since commit 063c86f60ad4 (drm/i915/dsi: remove
-intel_dsi_cmd.c and the unused functions therein). Drop them.
+intel_gvt_gtt::{mm_alloc_page_table,mm_free_page_table} are not used
+since commit ede9d0cfcb78 (drm/i915/gvt: Rework shadow graphic memory
+management code). Drop them.
 
 Found by https://github.com/jirislaby/clang-struct.
 
@@ -76,31 +75,22 @@ Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 Cc: intel-gfx@lists.freedesktop.org
 ---
- drivers/gpu/drm/i915/display/intel_dsi.h | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/gpu/drm/i915/gvt/gtt.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dsi.h b/drivers/gpu/drm/i915/display/intel_dsi.h
-index 083390e5e442..e99c94edfaae 100644
---- a/drivers/gpu/drm/i915/display/intel_dsi.h
-+++ b/drivers/gpu/drm/i915/display/intel_dsi.h
-@@ -57,9 +57,6 @@ struct intel_dsi {
- 		u16 phys;	/* ICL DSI */
- 	};
- 
--	/* if true, use HS mode, otherwise LP */
--	bool hs;
--
- 	/* virtual channel */
- 	int channel;
- 
-@@ -93,7 +90,6 @@ struct intel_dsi {
- 	bool bgr_enabled;
- 
- 	u8 pixel_overlap;
--	u32 port_bits;
- 	u32 bw_timer;
- 	u32 dphy_reg;
- 
+diff --git a/drivers/gpu/drm/i915/gvt/gtt.h b/drivers/gpu/drm/i915/gvt/gtt.h
+index 4cb183e06e95..fb96ea454fd1 100644
+--- a/drivers/gpu/drm/i915/gvt/gtt.h
++++ b/drivers/gpu/drm/i915/gvt/gtt.h
+@@ -93,8 +93,6 @@ struct intel_gvt_gtt_gma_ops {
+ struct intel_gvt_gtt {
+ 	const struct intel_gvt_gtt_pte_ops *pte_ops;
+ 	const struct intel_gvt_gtt_gma_ops *gma_ops;
+-	int (*mm_alloc_page_table)(struct intel_vgpu_mm *mm);
+-	void (*mm_free_page_table)(struct intel_vgpu_mm *mm);
+ 	struct list_head oos_page_use_list_head;
+ 	struct list_head oos_page_free_list_head;
+ 	struct mutex ppgtt_mm_lock;
 -- 
 2.43.1
 
