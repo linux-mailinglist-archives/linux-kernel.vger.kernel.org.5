@@ -1,150 +1,224 @@
-Return-Path: <linux-kernel+bounces-69507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69517-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27543858A62
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:57:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0EB4858A6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:00:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5994B1C21E50
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:57:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A83AE283B05
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4637A151CFE;
-	Fri, 16 Feb 2024 23:54:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 220A114C5AC;
+	Fri, 16 Feb 2024 23:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MTAWCSTF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VQCtYCr/"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728E3151CD1;
-	Fri, 16 Feb 2024 23:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1282A14C59A
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:55:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708127674; cv=none; b=S6sTxaWOvAsMZpd9DPADPCt27OfcJeiC8yDMci9A90RsjUc/b9xYFrO1wLu2tAHIUtTv47kI4Zyh3s5I7gbwMx3qmRUyo/muy4VMyc+C5A7LAFiLWorCCfEvenOc7hmWPLygCOdLaCBFcKZopqaNWhMs0IT3sG7zAQseBbO44KU=
+	t=1708127747; cv=none; b=hJKqKswMLBBuQWrvXNiTR/CMW0J2OpfpTTGbeBI1pSDds7swn2mTowf2Z+4hJlIiPcoSj4c6yXAlwfJhUUFOOsFBQxG8EeTNy8k9UerFfCURoM33bWFkYs4z1gy91fFDUTr/s0wUrFbld29PXa0Mk0aTAkaXSvz5neRDCoGOPOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708127674; c=relaxed/simple;
-	bh=JSCVTE9XqiSDlA8ej8yd/v+YYkjMI/c+XOMMHYmpMcI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N9xMtNa89UjGVftyZh1Pvf2NxyrpZyXmVJDNgODptdDZYiuvI+C0eAtVdHVT/q0Tv33/1zhHvVBSKUCj9UZlm0xAcx7UNKj6yBDJTD2NNOAdnVfEhVY/dHgR2lsjP2Q5x5gXcI0IeGzrQLQ7IMdPIfdfw0A8SMcP3mH6f2ZCWd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MTAWCSTF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FEFFC43390;
-	Fri, 16 Feb 2024 23:54:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708127673;
-	bh=JSCVTE9XqiSDlA8ej8yd/v+YYkjMI/c+XOMMHYmpMcI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=MTAWCSTFqFpQXQG/f3joQWMIncRQ5STu7HgSAMGWoppmG7mNaW/7UP7WCaKPO80OP
-	 PDAUkm64BEI/oIPTYpSJoVGDwyyqbp3bL/5ImyYfyvOQor5HIqw+JHIjQttryesqM7
-	 ZCnP31OeXbmcxL+hONZqbJ3VcHpNuQM8IBo0Ye/ZqY1tmOis6sJI+sxmlejm0Vfaim
-	 RzTuboxDG4k5ez7x38ETDoi/qM4dEjEOi4qu1vcJiS9DVdJQwK45+7pI0XhLYVOpUJ
-	 bNzYMjCQCG63xb4Ys6nUYvKaFb6lEbZ2vkdUBmZvGm2xRVW1XRD8tC5Rlq/Wqc7UtW
-	 jKFVz3evaBKRA==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 14/14] perf annotate-data: Add stack canary type
-Date: Fri, 16 Feb 2024 15:54:23 -0800
-Message-ID: <20240216235423.2343167-15-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240216235423.2343167-1-namhyung@kernel.org>
-References: <20240216235423.2343167-1-namhyung@kernel.org>
+	s=arc-20240116; t=1708127747; c=relaxed/simple;
+	bh=4OucJmNe1/pNjupONQadff5J4lun4ayJWUXyyzw61w8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=krjPliP3jPkbddWytiWTci3ryX0rEtkl2nx1UOocgdyj92LPL7Tyq4PS/ica6xVk8wG6tYH3HGpVcFOz1dTvvp98Nc9zleaYU5kRFOOthpT+b37IIEjEp7o/xgKzyT7Zzx+OBGsvFph6/LOT9iVjM8vz4Ype4KYXKm/2uvz1n6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VQCtYCr/; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6e10e50179bso1940276b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:55:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708127743; x=1708732543; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rUDkEiOEm4wZFWkz9cLvzAsbKQOJPsyUHuSB+y80Mkk=;
+        b=VQCtYCr/+ts5IGN30TRG5SvBOqUyUZrUebrY5VZC5UYDCsfaMgpa/3qM9YoBXxTx3U
+         Gc9AUYF5vVlvdREE3lVmWZ3yJpbArbyk4bmvb+kSQnSQlaQJV5DIvlubT0QquujUA0Br
+         fQFB+0fUe3oegyOpeZvpJiJ4HbgTWjzHAYYzk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708127743; x=1708732543;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rUDkEiOEm4wZFWkz9cLvzAsbKQOJPsyUHuSB+y80Mkk=;
+        b=F/hLdFE3qAznQK0DRPPvcbF/6Z+iclDzNPh/kBQ5EJvLKWfGbkNDLnqAFKMogTGQwE
+         dVddvKZjU+K3rnLWCzYZjd2CP2V8e94hBzzEpZ1X7pIkcLV11MxTLfq54GqLUAkUZ5AP
+         SxWe+ddd6B4u4uYGC5i1MaqhYGAOOJZOFx25Qr4kXYGuaN20+KmdtuyEFFGWZlC7KGKI
+         Z4UqWGzCQjWcVok893vebTERDJXXuxLL3yJ1Pe+RKyZze8N9NOQ9op9KYdygS/JE9+FE
+         xTSFe1EAaDXJaEy+JPiy1BOU8rSvhUTN0FOrl4jmCCGiM/APTVS5H2rrNk8zV1dIWEOu
+         Z0qA==
+X-Forwarded-Encrypted: i=1; AJvYcCWJKJBipVqLH5EGBYK1aIvaWf5lvNt6Y0mlkA9vXhr6mQpOm6nPw0v5cEs2u439Hzs8nSbvci4SAQ+vT+bu+w2liMjwpcRpC0Bmxfia
+X-Gm-Message-State: AOJu0YzRWtI9unbuTvPpsqg7RZ8woXDOssPdYd0QKLQoI43UlcNj74I0
+	Z2rj/K8Q4rvM7MvUfreW63gP9tEelOImm69UdFSRgL32jZwEOekFQWUJ9Z2akQ==
+X-Google-Smtp-Source: AGHT+IGp6ieCJBOEJNwqboZ7bIDXfwShDqq4uoQtFYAcWRwFzB9mZWSbaV8y9ctUgAo16I+2+a2wCw==
+X-Received: by 2002:a05:6a00:2d20:b0:6e1:4854:a971 with SMTP id fa32-20020a056a002d2000b006e14854a971mr1937441pfb.29.1708127743221;
+        Fri, 16 Feb 2024 15:55:43 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id ca27-20020a056a02069b00b005dc4fc80b21sm368295pgb.70.2024.02.16.15.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 15:55:42 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Alexei Starovoitov <ast@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Haowen Bai <baihaowen@meizu.com>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v2] bpf: Replace bpf_lpm_trie_key 0-length array with flexible array
+Date: Fri, 16 Feb 2024 15:55:40 -0800
+Message-Id: <20240216235536.it.234-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4343; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=4OucJmNe1/pNjupONQadff5J4lun4ayJWUXyyzw61w8=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlz/X8UPCdAKeZwgS/GrEX/APRKLSR78iobTw4y
+ dXxUgXbWaKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZc/1/AAKCRCJcvTf3G3A
+ Ju39D/9tO6fK6reOxpstX11hwZ2bgrVjYujyRm7uaqbmD+TCRcbVOzoQd0p7gjziow3lwrEyLa+
+ 4YP7D8O3gXP0SZVLS4qwYCBDTT09wuVBZzXp9rm3z8IxDmN+WpJOCaMh5j6jd84QsNNO8INr2Tf
+ Opb2E+xfhF9+rW3QEIksdQj1gOOS5o/R/jF0x+KJCS+fB5lNtJa0x545ihPNPAC76/WUdogGftD
+ SdhjFednoLYJFL/AOIiCa9GWmd8Gj7USAKFHFSs3ZkMwLqzAngxC8oPvGuK9stI/cBkAqzDj9Mg
+ ldvYlxhlCeAjn2yP0LKEEiCCGHz/KioHHO3r1J7ywT1ccobLkatybedYEk8zGMQWpfVKyWR4udr
+ ZLw4uXlAmfPdoZBZ0r8RcFpqhg6X+uTR6le6/I3JiOXHLPb2T4xaghtvCxXwWcjaG9DXXyK3wRz
+ CuLQ1arkLEbVTyyHNjBnG65P+BVRB5mJqSm1t3uA0nuMp+d2i4qgce2Z801e3gLPVI6TKVdrZHo
+ 5HqzhpSZXfrN7LaXubTTX7EVx+5jVV54lRpxKOdiOy23UrA9pI+olBpYjQHM+uztAtb6hVoHmTW
+ vRp8RuUUrhKE8U2QE65ZTTFIl1P86FFUqDgH96cB9vp3OQNZNGwBnRFR3+KxEGzvH0RQ4fKIoQn
+ q51rjQ9 nGYFw61w==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
 
-When the stack protector is enabled, compiler would generate code to
-check stack overflow with a special value called 'stack carary' at
-runtime.  On x86_64, GCC hard-codes the stack canary as %gs:40.
+Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+flexible array. Found with GCC 13:
 
-While there's a definition of fixed_percpu_data in asm/processor.h,
-it seems that the header is not included everywhere and many places
-it cannot find the type info.  As it's in the well-known location (at
-%gs:40), let's add a pseudo stack canary type to handle it specially.
+./kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+  207 |                                        *(__be16 *)&key->data[i]);
+      |                                                   ^~~~~~~~~~~~~
+./include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+  102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+      |                                                      ^
+./include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+   97 | #define be16_to_cpu __be16_to_cpu
+      |                     ^~~~~~~~~~~~~
+./kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+  206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+^
+      |                            ^~~~~~~~~~~
+In file included from ../include/linux/bpf.h:7:
+./include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+   82 |         __u8    data[0];        /* Arbitrary size */
+      |                 ^~~~
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+And found at run-time under CONFIG_FORTIFY_SOURCE:
+
+  UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
+  index 0 is out of range for type '__u8 [*]'
+
+This includes fixing the selftest which was incorrectly using a
+variable length struct as a header, identified earlier[1]. Avoid this
+by just explicitly including the prefixlen member instead of struct
+bpf_lpm_trie_key.
+
+Note that it is not possible to simply remove the "data" member, as it
+is referenced by userspace
+
+cilium:
+        struct egress_gw_policy_key in_key = {
+                .lpm_key = { 32 + 24, {} },
+                .saddr   = CLIENT_IP,
+                .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
+        };
+
+systemd:
+	ipv6_map_fd = bpf_map_new(
+			BPF_MAP_TYPE_LPM_TRIE,
+			offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
+			sizeof(uint64_t),
+			...
+
+The only risk to UAPI would be if sizeof() were used directly on the
+data member, which it does not seem to be. It is only used as a static
+initializer destination and to find its location via offsetof().
+
+Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
+Reported-by: Mark Rutland <mark.rutland@arm.com>
+Closes: https://paste.debian.net/hidden/ca500597/
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- tools/perf/util/annotate-data.h |  1 +
- tools/perf/util/annotate.c      | 24 ++++++++++++++++++++++++
- 2 files changed, 25 insertions(+)
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Song Liu <song@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: John Fastabend <john.fastabend@gmail.com>
+Cc: KP Singh <kpsingh@kernel.org>
+Cc: Stanislav Fomichev <sdf@google.com>
+Cc: Hao Luo <haoluo@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Mykola Lysenko <mykolal@fb.com>
+Cc: Shuah Khan <shuah@kernel.org>
+Cc: Haowen Bai <baihaowen@meizu.com>
+Cc: bpf@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
 
-diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index 0bfef29fa52c..e293980eb11b 100644
---- a/tools/perf/util/annotate-data.h
-+++ b/tools/perf/util/annotate-data.h
-@@ -77,6 +77,7 @@ struct annotated_data_type {
- 
- extern struct annotated_data_type unknown_type;
- extern struct annotated_data_type stackop_type;
-+extern struct annotated_data_type canary_type;
- 
- /**
-  * struct data_loc_info - Data location information
-diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 5f3136f57c62..f2683dadf3cf 100644
---- a/tools/perf/util/annotate.c
-+++ b/tools/perf/util/annotate.c
-@@ -116,6 +116,13 @@ struct annotated_data_type stackop_type = {
- 	},
+v2- clarify commit log, add more failure examples
+v1- https://lore.kernel.org/all/63e531e3.170a0220.3a46a.3262@mx.google.com/
+---
+ include/uapi/linux/bpf.h                         | 2 +-
+ tools/testing/selftests/bpf/progs/map_ptr_kern.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 754e68ca8744..359dd8a429c1 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -80,7 +80,7 @@ struct bpf_insn {
+ /* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
+ struct bpf_lpm_trie_key {
+ 	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
+-	__u8	data[0];	/* Arbitrary size */
++	__u8	data[];		/* Arbitrary size */
  };
  
-+struct annotated_data_type canary_type = {
-+	.self = {
-+		.type_name = (char *)"(stack canary)",
-+		.children = LIST_HEAD_INIT(canary_type.self.children),
-+	},
-+};
-+
- static int arch__grow_instructions(struct arch *arch)
- {
- 	struct ins *new_instructions;
-@@ -3764,6 +3771,17 @@ static bool is_stack_operation(struct arch *arch, struct disasm_line *dl)
- 	return false;
- }
+ struct bpf_cgroup_storage_key {
+diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+index 3325da17ec81..1d476c6ae284 100644
+--- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
++++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
+@@ -316,7 +316,7 @@ struct lpm_trie {
+ } __attribute__((preserve_access_index));
  
-+static bool is_stack_canary(struct arch *arch, struct annotated_op_loc *loc)
-+{
-+	/* On x86_64, %gs:40 is used for stack canary */
-+	if (arch__is(arch, "x86")) {
-+		if (loc->segment == INSN_SEG_X86_GS && loc->offset == 40)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
- 			struct disasm_line *dl)
- {
-@@ -3938,6 +3956,12 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 		}
+ struct lpm_key {
+-	struct bpf_lpm_trie_key trie_key;
++	__u32 prefixlen;
+ 	__u32 data;
+ };
  
- 		mem_type = find_data_type(&dloc);
-+
-+		if (mem_type == NULL && is_stack_canary(arch, op_loc)) {
-+			mem_type = &canary_type;
-+			dloc.type_offset = 0;
-+		}
-+
- 		if (mem_type)
- 			istat->good++;
- 		else
 -- 
-2.44.0.rc0.258.g7320e95886-goog
+2.34.1
 
 
