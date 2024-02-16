@@ -1,154 +1,112 @@
-Return-Path: <linux-kernel+bounces-68742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28E31857F48
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:26:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA3C0857F4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:27:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D468D28DD7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:26:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47F211F23C10
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:27:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14BD12D741;
-	Fri, 16 Feb 2024 14:26:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73CDE12CDB3;
+	Fri, 16 Feb 2024 14:27:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JJQrksBb"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tnVLpvzm"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A1B12BF38;
-	Fri, 16 Feb 2024 14:26:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA5E78B4C
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:27:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708093596; cv=none; b=r8E3y6/X7J+KzJ+ig7sVIjDTynp+rl1kO8XThgOtd+0mlVcVw0DoItv+JCPc1qZR1EBm0AeuXlgT/1yrCfPdVQ/0LW4irpmDS48Kgjs6az28XoDrFKcX8P3OFN4Qvv6ZsiTD2CVPsr7xgkLqtO0Z/qNBGHnUBUXUgfwdIRTf7ZY=
+	t=1708093626; cv=none; b=gHA98p6oGBUNpyK236CnyNXYeiRY15kobDju543lrECAFyPS6xpblCJ23PcHZDBq0uqKImWTnEdCRr8ZSMj8Hu9hz/WpstdKcOlDiZVwK7LX/fH5dF6LDk99+i3ZshiSHsVomM4DNLBZBjEI8DLM7mhsCU6/JF7xTn29e90NS+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708093596; c=relaxed/simple;
-	bh=5LcLqcwF4UiRaEFh9QJG+7wP8nw7SEEVXGasMmGvzJk=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=itsf8HXYOMMVIlwGNqMSlgd3EWygX3O+HSNyL4YhFHtBeZ3CJ6d8bbXpH/g31nmUiuEuwBHyK41/wXFoI0wwvEN+EBnNQCRyqoJs09+++frmeKa6SpjyGjuc4Y5u/O/onXUF+rI6OpeSMdWzHDJMNqaupg5uxS+wKLsktlHk1Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JJQrksBb; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41GDPgqQ004421;
-	Fri, 16 Feb 2024 14:26:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date : from
- : subject : to : cc : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=ji4rvO9DHftDYidWqssdtYSxRgzOurvrC6QAxs3U3yY=;
- b=JJQrksBbEN+gkUcT6zg/m8hNO8e3id0sE/L3QpcJ9N9LoyjdAmAIXkPdwsbasMTKeuQT
- bs7OA7majyzp3jLKATj+epeAG5Xr3ppb5hWihFy8husgKN6f4vz9M1pOJwW9Xys/F2Qb
- AQtIvqMw/+b5mVZFJP1W+Gx0tqAG7GL1eUuYIC5Wb34zJVmb/K0U52ByNOv3qnzDtyYo
- qXIbbUzJr4+FbMPYzFWfjyUZ3o0RrkIeaqAcm56sSva9PtbAq3N/XSWV99LwULzwgvEO
- fc8kz1RB7DG9R4KSaPF8gk/f2dGtC9S01kZapqTArIOweXn0rYENF8oYYgb+pigyjVHb cw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wa7e82xym-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 14:26:30 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41GEKdUK027007;
-	Fri, 16 Feb 2024 14:26:30 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wa7e82xnw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 14:26:29 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41GDa3DO016203;
-	Fri, 16 Feb 2024 14:25:59 GMT
-Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6myn3nxy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 14:25:59 +0000
-Received: from smtpav04.wdc07v.mail.ibm.com (smtpav04.wdc07v.mail.ibm.com [10.39.53.231])
-	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41GEPuaM49086776
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Feb 2024 14:25:59 GMT
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A204858045;
-	Fri, 16 Feb 2024 14:25:56 +0000 (GMT)
-Received: from smtpav04.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B5EBD58054;
-	Fri, 16 Feb 2024 14:25:50 +0000 (GMT)
-Received: from [9.171.40.55] (unknown [9.171.40.55])
-	by smtpav04.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Feb 2024 14:25:50 +0000 (GMT)
-Message-ID: <b3b71f26-239f-49c9-98e8-7eba2c4ecf69@linux.ibm.com>
-Date: Fri, 16 Feb 2024 15:25:50 +0100
-User-Agent: Mozilla Thunderbird
-From: Wenjia Zhang <wenjia@linux.ibm.com>
-Subject: Re: [PATCH net-next 14/15] net/smc: introduce loopback-ism DMB data
- copy control
-To: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        jaka@linux.ibm.com, Gerd Bayer <gbayer@linux.ibm.com>
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
-        tonylu@linux.alibaba.com, linux-s390@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <20240111120036.109903-15-guwen@linux.alibaba.com>
-Content-Language: en-GB
-In-Reply-To: <20240111120036.109903-15-guwen@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: mKVPBnQH21vMKZ-uew-k2Oz2qy5ICA7m
-X-Proofpoint-ORIG-GUID: TJoCJXkpQ4iB9GLJycmXdhEXFhv5BFbf
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1708093626; c=relaxed/simple;
+	bh=Edz8EsekUiMLzOhyQJud0Qpszc8nikksU/CeG6aT/44=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=OTjAAUHg7p0FblaH2w4n4d0pwhDYsaYQswYirAF1oyujjKlpSKJBNGQfMvxUQado1IzVJOKDNPr/A3tvztEJB91vhrjOf0F8axzD/19xo6xMo5cd7ctjBZwLB8cbdcCHLD0lUJ7u8Gq+EQkp6wAT5zjYowdVnb8nZReXUmfJ0Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tnVLpvzm; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55ad2a47b7aso2934989a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:27:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708093623; x=1708698423; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YX3KVONGaKL/+cfVdIf5qOfUj2ReaxP0KFNOM/lKY8g=;
+        b=tnVLpvzmyGgcrU207vb32Py2+pR2Q4Ilcy62uKmgkwOEp6+etCop8z64fRj9RNB7pF
+         NGOg69T+IodyRYWEiZ4Nk970GNTuKuYlGbjdB9FrBiUe3I/pWwJUYHUPxhC8eEF0TQQH
+         z4sy3JVHgEe0/YKvv1aq1VV3qvZ8vgguxzAu260ayiCjHYzMziEnQq9WvjlV4aWJgbUO
+         xQTphZ0ijBiGM0uClrQ7ZvLVZfNEBR3zD6Cro0u5pyeXgX5MabmeTrmc7xqtAO29e5Zn
+         NAbos5o6rKzv6CSTTyRE+kmU8MFQITErhamByYtCQf8fX4mUsfP75nuaLwNS+E3PnGKN
+         vkjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708093623; x=1708698423;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YX3KVONGaKL/+cfVdIf5qOfUj2ReaxP0KFNOM/lKY8g=;
+        b=MY6KVaQfO/vXtBG5KBiMLVCfEEzA/VmYI8v+xw7fWVlGD50HWwhMcTKLBVe5YrztxJ
+         PN/YVKCn2rcfovp6DKAK2Qm7+AAw0ubWH3fFy6b8LRYrlTsK1OLHBoEb/2guhE2sOypj
+         njXp9oTXT149wssxpYq9NWBpuIW+Ol+rhvNQcQZEJUUeLdfiZXpGKiWxYx7Xu9FhKIHD
+         WMSRcLrYG4A9GCAanSeEc7j8xh9GwIjIYDp8L3eeeWFOLivKTQsQL3ALbmt8ypo94R0g
+         274nm23dOX4CsoRxveTvrcOdZhiAJ6YrwuHfC2t/Oh+vJW1meCmmjxM3Js9gb/bntyDs
+         tW/A==
+X-Gm-Message-State: AOJu0YxdIJ2f4EJVBOd3CJToVLeKFL5H9tk1c4R+yIbshU19hrPEXSbo
+	COGjw8mhNTn/FImkhrLVneXF+2tOa+TDitWcEeSP7N+oY19NvuxLnmeEOEGDMot6uO7s0UCq+AI
+	z
+X-Google-Smtp-Source: AGHT+IHugTV6Jok5OHz7GlnSz+q/H3J1cRw1PJgwcuyGVl2rBOMyj1xn3Mds6N5/PpVu/nAw3txNPQ==
+X-Received: by 2002:a17:906:d86:b0:a3d:7559:6ed1 with SMTP id m6-20020a1709060d8600b00a3d75596ed1mr3539918eji.4.1708093623188;
+        Fri, 16 Feb 2024 06:27:03 -0800 (PST)
+Received: from rayden (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
+        by smtp.gmail.com with ESMTPSA id p19-20020a170906b21300b00a3dad483948sm1249648ejz.182.2024.02.16.06.27.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 06:27:02 -0800 (PST)
+Date: Fri, 16 Feb 2024 15:27:00 +0100
+From: Jens Wiklander <jens.wiklander@linaro.org>
+To: arm@kernel.org, soc@kernel.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	op-tee@lists.trustedfirmware.org
+Subject: [GIT PULL] Make tee_bus_type const for v6.9
+Message-ID: <20240216142700.GA3863398@rayden>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_13,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 adultscore=0 spamscore=0 clxscore=1015 impostorscore=0
- bulkscore=0 priorityscore=1501 mlxscore=0 mlxlogscore=999 phishscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402160116
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
+Hello arm-soc maitainers,
 
+Please pull this small patch making tee_bus_type const.
 
-On 11.01.24 13:00, Wen Gu wrote:
-> This provides a way to {get|set} whether loopback-ism device supports
-> merging sndbuf with peer DMB to eliminate data copies between them.
-> 
-> echo 0 > /sys/devices/virtual/smc/loopback-ism/dmb_copy # support
-> echo 1 > /sys/devices/virtual/smc/loopback-ism/dmb_copy # not support
-> 
-Besides the same confusing as Niklas already mentioned, the name of the 
-option looks not clear enough to what it means. What about:
-echo 1 > /sys/devices/virtual/smc/loopback-ism/nocopy_support # merge mode
-echo 0 > /sys/devices/virtual/smc/loopback-ism/nocopy_support # copy mode
+Thanks,
+Jens
 
-> The settings take effect after re-activating loopback-ism by:
-> 
-> echo 0 > /sys/devices/virtual/smc/loopback-ism/active
-> echo 1 > /sys/devices/virtual/smc/loopback-ism/active
-> 
-> After this, the link group related to loopback-ism will be flushed and
-> the sndbufs of subsequent connections will be merged or not merged with
-> peer DMB.
-> 
-> The motivation of this control is that the bandwidth will be highly
-> improved when sndbuf and DMB are merged, but when virtually contiguous
-> DMB is provided and merged with sndbuf, it will be concurrently accessed
-> on Tx and Rx, then there will be a bottleneck caused by lock contention
-> of find_vmap_area when there are many CPUs and CONFIG_HARDENED_USERCOPY
-> is set (see link below). So an option is provided.
-> 
-> Link: https://lore.kernel.org/all/238e63cd-e0e8-4fbf-852f-bc4d5bc35d5a@linux.alibaba.com/
-> Signed-off-by: Wen Gu <guwen@linux.alibaba.com>
-> ---
-We tried some simple workloads, and the performance of the no-copy case 
-was remarkable. Thus, we're wondering if it is necessary to have the 
-tunable setting in this loopback case? Or rather, why do we need the 
-copy option? Is that because of the bottleneck caused by using the 
-combination of the no-copy and virtually contiguours DMA? Or at least 
-let no-copy as the default one.
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+
+are available in the Git repository at:
+
+  https://git.linaro.org/people/jens.wiklander/linux-tee.git/ tags/tee-bus-type-for-v6.9
+
+for you to fetch changes up to 1d044941d53855ca06e4fa34936ff7273c8641dd:
+
+  tee: make tee_bus_type const (2024-02-15 08:28:24 +0100)
+
+----------------------------------------------------------------
+tee: make tee_bus_type const
+
+----------------------------------------------------------------
+Ricardo B. Marliere (1):
+      tee: make tee_bus_type const
+
+ drivers/tee/tee_core.c  | 2 +-
+ include/linux/tee_drv.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
