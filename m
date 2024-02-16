@@ -1,167 +1,134 @@
-Return-Path: <linux-kernel+bounces-68283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CAE085782D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:56:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C943857831
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB1C2877C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:56:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 341011C213B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3AD1B27D;
-	Fri, 16 Feb 2024 08:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219441B947;
+	Fri, 16 Feb 2024 08:56:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="NJESOs2Y"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="SJODTM/N"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1211BC43
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13E421BC3E;
+	Fri, 16 Feb 2024 08:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708073772; cv=none; b=hJDI8vdNvClgG32/wD5JYcdCa4HJxTyemCpm6t5wBMxhbXiPH5OP4rzXP3FA/u+m9XIIpHBHyOpxUseS6bdjVJ9x5tTMgezT+Ps3wdwMv1C8PrMmdlN9tatK/cEtibC6h/jVMlkW7/XQOdU5sByIMTxt/S5GsMIueaSS2C9T4bM=
+	t=1708073784; cv=none; b=cLcp7OFHW6ug6S7X6gknSK9mqI2Eu8w7U2xZS2vhavOCcFoM/IMMbnMe2Sj6l/mIEraonTwRAfFCVrYKSIxbKFBzfG4+Htofju33Jd2afnI2bN7scfCKez9S4TDIqwjbrV17+cT6t40LDbDNk9gp2t4oYRmhH6GaDlIyc/ZNINg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708073772; c=relaxed/simple;
-	bh=uqVdQY9SV/OExKyE4s6w4bLyYMVNFe3RTtHlktWdqeY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zsgw76/22ZpqB1soDvER3+2WxsvddqQmo23Z/ROEIdDZ29XVTJLR60I7qTu9wG9FBcFNIEKfqPLf3pIXsHp4ywQMXwjyssXe0yFCCHESKSO8y4w6ZgLJUOivO5ZollM/TAGV6wnQqSoOCpWIgk3Ii3wpaEoBE49AKKVntKz8R18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NJESOs2Y; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-607f5395206so6491467b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708073769; x=1708678569; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w/bNm1+I792YdZVlTWr+H7KQ1f6kurFtOITMvEEBO/k=;
-        b=NJESOs2Y3PT4OxwP5J1nMk/LAOE1gjA2BSNqG0HtqsYPdQ6hvYlbYkqMzVgRkqvrfL
-         J7RFTzIiTpFBCPvTlecAzLztnmNG3we0hR9SfcERJoPu3wyDe0V7dahUWc+qLaAoeYfz
-         W0xWLaYZDBuVLwFw4HrwaPjyF5v8xSanMZLNhiNuZYkRAnHdXC3cLmB2Vjp7zhiV6j4T
-         g9x5W62Sv2TqDGPd9K1wN2N/pvn+RBM/GYBnzpZyadzWEF+PsSZ1nDXJgupop8PfHiX7
-         Kwruhvoj9uo9UShr6VyfS2Gw9+qCM9OcsQyzMhnDWe92QGFNgNEOuBpX3y35+oHwW3TY
-         etsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708073769; x=1708678569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w/bNm1+I792YdZVlTWr+H7KQ1f6kurFtOITMvEEBO/k=;
-        b=qcRM5PBHPyQRvrY2gmxqyX2dMAEYStid6EGyqpj8SRTDIMh2HBEpNq371vplJ9ZzZj
-         8OLOs4PTZTXxbLuf+fHnttDx9riKQ4F/pEppzeHmbdXBnHTRN2cy3F9nJC7IaH0zNw5r
-         A8hO74+FgrPrJwr5LfWRaVogZfnzFJNr56yBGj/R8kIh6Dt+bMiP0PbbS800f+OJSfjv
-         rh0rv8X+qOsEdxyc9tWuusJQnv9kDDS7+zWmMN+ZURE2RATi968tT6K/RNdNuHZSNeCB
-         XqS/Vi/uqPfI7rgw0OqX7kmmUpATmupkL2QphOIGwv2tpSsNm/6oREayhkrx+1Ul7Z6E
-         ANWA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2WMsIaSJNs0pDRiXKPrM4bvJhkz2YVO0rSE7U5+RXU7i0NtZIwbMuWH5RlgHpiFpTFsR7q4YN+4CS6DX9b+g+mh8sUlUuYojEtgL6
-X-Gm-Message-State: AOJu0YzrVsRzWJ06sRnZ5D8auYNTl7rdAFJdmjHXvIKK8qorOWbEOYe4
-	tBomFMphLM6X80WX7roOYtTg5HMOAAregzQskl4703l92XNRvNovtA9rC1zGnB00JqPoBuA7U2w
-	mDLNobUk+axGc2vwNeEZytXZ3pOxlwRPaterT
-X-Google-Smtp-Source: AGHT+IFw3ocFlZSouw+paS1hIeBQ1jvyrkD/y9wwPSet8TNkGfntAT9zTk1byuyak5s5oUNAVQdQpoe3oTLJW/QgCY8=
-X-Received: by 2002:a0d:e606:0:b0:607:9d64:d68d with SMTP id
- p6-20020a0de606000000b006079d64d68dmr3931990ywe.11.1708073768807; Fri, 16 Feb
- 2024 00:56:08 -0800 (PST)
+	s=arc-20240116; t=1708073784; c=relaxed/simple;
+	bh=FL28FnfDmBq1BCaoCs/X/JHQJ1bEbFj60rIGNvUcKWk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C0/ABAuYbsi09TuaKdZeBg4h2R5H5IEGjoxMuovvM6tDgQJ3dO5TVp80sR89yhaMWLlVNUZo/0aXA4GJBfJPz9fvFyzhHXfAEDBYjEn2tP6BzrLYuru5bD5fd7LJV+UaBdcSTsVp/IqyBWTF8/mfT4Hyj5jEHKPxNXUzVXNSXSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=SJODTM/N; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E326F20002;
+	Fri, 16 Feb 2024 08:56:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708073779;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AuAEb8d/CugVhChQMJaD1N3FjnSqJYmQ5HtY9oyL3k8=;
+	b=SJODTM/NlhYT74EjZYhqVw5f0bd9Ad3L1u87aefNbA6pDoCQWb6fK6MgyoWPzxrhljRq2m
+	/9eGp0CCIGeyWoq7jujVwgN9iep6bCEnSx0liFdpHVOG9G00ayQS2fRlrfmTif95Lm5lIv
+	RLVVF/5p4Qfx01zdCZuK9sa3baHqw055qSq8HH/1VJYpsDua02dy7CinvBHJ1tgixMewfA
+	k5GruVkQkplJesn8zQ+fR6JS1gR7W8OoSFhyHKo6s7MFx/hLvcRDxPYZYUYZs8hM4ua83D
+	2DZdB2DBB1NbKcmfJZ2AH6QNvBGVOhVYuZ2JTmLGAxmSBLJ54or6Jn9kUYj4xQ==
+Date: Fri, 16 Feb 2024 09:56:16 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Luis Chamberlain
+ <mcgrof@kernel.org>, "David S. Miller" <davem@davemloft.net>, Jonathan
+ Corbet <corbet@lwn.net>, netdev@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, Russell King <linux@armlinux.org.uk>,
+ devicetree@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Dent Project
+ <dentproject@linuxfoundation.org>, Heiner Kallweit <hkallweit1@gmail.com>,
+ Frank Rowand <frowand.list@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Russ Weight
+ <russ.weight@linux.dev>, Eric Dumazet <edumazet@google.com>, "Rafael J.
+ Wysocki" <rafael@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Jakub Kicinski
+ <kuba@kernel.org>
+Subject: Re: [PATCH net-next v4 11/17] dt-bindings: net: pse-pd: Add another
+ way of describing several PSE PIs
+Message-ID: <20240216095616.3300aef3@kmaincent-XPS-13-7390>
+In-Reply-To: <170802277529.323906.8697693998570251856.robh@kernel.org>
+References: <20240215-feature_poe-v4-0-35bb4c23266c@bootlin.com>
+	<20240215-feature_poe-v4-11-35bb4c23266c@bootlin.com>
+	<170802277529.323906.8697693998570251856.robh@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-14-surenb@google.com>
- <202402121433.5CC66F34B@keescook> <CAJuCfpGU+UhtcWxk7M3diSiz-b7H64_7NMBaKS5dxVdbYWvQqA@mail.gmail.com>
- <20240213222859.GE6184@frogsfrogsfrogs> <CAJuCfpGHrCXoK828KkmahJzsO7tJsz=7fKehhkWOT8rj-xsAmA@mail.gmail.com>
- <202402131436.2CA91AE@keescook> <af9eab14-367b-4832-8b78-66ca7e6ab328@suse.cz>
-In-Reply-To: <af9eab14-367b-4832-8b78-66ca7e6ab328@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 16 Feb 2024 00:55:55 -0800
-Message-ID: <CAJuCfpF_RbdQhUpJfQNiYHXwheojF07R-L7Y53tmLZRgr7iR6g@mail.gmail.com>
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Kees Cook <keescook@chromium.org>, "Darrick J. Wong" <djwong@kernel.org>, akpm@linux-foundation.org, 
-	kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
-	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Fri, Feb 16, 2024 at 12:50=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 2/13/24 23:38, Kees Cook wrote:
-> > On Tue, Feb 13, 2024 at 02:35:29PM -0800, Suren Baghdasaryan wrote:
-> >> On Tue, Feb 13, 2024 at 2:29=E2=80=AFPM Darrick J. Wong <djwong@kernel=
-org> wrote:
-> >> >
-> >> > On Mon, Feb 12, 2024 at 05:01:19PM -0800, Suren Baghdasaryan wrote:
-> >> > > On Mon, Feb 12, 2024 at 2:40=E2=80=AFPM Kees Cook <keescook@chromi=
-um.org> wrote:
-> >> > > >
-> >> > > > On Mon, Feb 12, 2024 at 01:38:59PM -0800, Suren Baghdasaryan wro=
-te:
-> >> > > > > Introduce CONFIG_MEM_ALLOC_PROFILING which provides definition=
-s to easily
-> >> > > > > instrument memory allocators. It registers an "alloc_tags" cod=
-etag type
-> >> > > > > with /proc/allocinfo interface to output allocation tag inform=
-ation when
-> >> > > >
-> >> > > > Please don't add anything new to the top-level /proc directory. =
-This
-> >> > > > should likely live in /sys.
-> >> > >
-> >> > > Ack. I'll find a more appropriate place for it then.
-> >> > > It just seemed like such generic information which would belong ne=
-xt
-> >> > > to meminfo/zoneinfo and such...
-> >> >
-> >> > Save yourself a cycle of "rework the whole fs interface only to have
-> >> > someone else tell you no" and put it in debugfs, not sysfs.  Wrangli=
-ng
-> >> > with debugfs is easier than all the macro-happy sysfs stuff; you don=
-'t
-> >> > have to integrate with the "device" model; and there is no 'one valu=
-e
-> >> > per file' rule.
-> >>
-> >> Thanks for the input. This file used to be in debugfs but reviewers
-> >> felt it belonged in /proc if it's to be used in production
-> >> environments. Some distros (like Android) disable debugfs in
-> >> production.
-> >
-> > FWIW, I agree debugfs is not right. If others feel it's right in /proc,
-> > I certainly won't NAK -- it's just been that we've traditionally been
-> > trying to avoid continuing to pollute the top-level /proc and instead
-> > associate new things with something in /sys.
->
-> Sysfs is really a "one value per file" thing though. /proc might be ok fo=
-r a
-> single overview file.
+On Thu, 15 Feb 2024 12:46:16 -0600
+Rob Herring <robh@kernel.org> wrote:
 
-I'm preparing v4 and will keep the file it under /proc for now unless
-there are strong objections.
+> On Thu, 15 Feb 2024 17:02:52 +0100, Kory Maincent wrote:
+> > PSE PI setup may encompass multiple PSE controllers or auxiliary circui=
+ts
+> > that collectively manage power delivery to one Ethernet port.
+> > Such configurations might support a range of PoE standards and require
+> > the capability to dynamically configure power delivery based on the
+> > operational mode (e.g., PoE2 versus PoE4) or specific requirements of
+> > connected devices. In these instances, a dedicated PSE PI node becomes
+> > essential for accurately documenting the system architecture. This node
+> > would serve to detail the interactions between different PSE controller=
+s,
+> > the support for various PoE modes, and any additional logic required to
+> > coordinate power delivery across the network infrastructure.
+> >=20
+> > The old usage of "#pse-cells" is unsuficient as it carries only the PSE=
+ PI
+> > index information.
+> >=20
+> > This patch is sponsored by Dent Project <dentproject@linuxfoundation.or=
+g>.
+> >=20
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > ---
+> >=20
+> > Changes in v3:
+> > - New patch
+> >=20
+> > Changes in v4:
+> > - Remove $def
+> > - Fix pairset-names item list
+> > - Upgrade few properties description
+> > - Update the commit message
+> > ---
+> >  .../bindings/net/pse-pd/pse-controller.yaml        | 84
+> > +++++++++++++++++++++- 1 file changed, 81 insertions(+), 3 deletions(-)
+> >  =20
+>=20
+> My bot found errors running 'make DT_CHECKER_FLAGS=3D-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+Weird, I don't get your errors even with dt-schema up to date.
+Maybe I have version mismatch in other tools.
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
