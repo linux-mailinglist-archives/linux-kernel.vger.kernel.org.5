@@ -1,125 +1,112 @@
-Return-Path: <linux-kernel+bounces-68521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A7BF857BA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:29:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34276857BAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:30:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD5D91C23C51
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C9AB71F23CAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:30:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50FEE7764F;
-	Fri, 16 Feb 2024 11:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0123277F0B;
+	Fri, 16 Feb 2024 11:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I5HOEDXs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tR4aEWQS"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBEB627FF;
-	Fri, 16 Feb 2024 11:29:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A6528E02;
+	Fri, 16 Feb 2024 11:30:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082964; cv=none; b=hTPYIz9HjRxXkBNmCjTKTqioNgr+NPiXkZwc4VkhxePKjLx97hCZ7XZIR41h7PDsuRIA4djmrsB+TPKc4k8nJKqL2DztN868OqNBDDPKctqp/ZHaMK+mQTJbgOhSj/a1xsFW6HvGCMlUlL4TtpUz8QvN+2+cmSLVMBPPvA0h2YE=
+	t=1708083040; cv=none; b=gTi1zmRAvmxJy1ikRVxr3HBNxhUHi7IcRG9PHw940ay6+ZsEbny+7z4/80rj1Vr8JKhiBklc74gAtTby1v1SFPdsQn3qN1t9I6jUEOC3G0vCPzFbuCWPKdM3cL38DbDPt4q3DUs8rq9UipAYDzA8P5lrQoZHIDYzdTD5Hm/86JA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082964; c=relaxed/simple;
-	bh=LaKs5DqAuKaU3encHBxSEltA7O1irPZqnTol1trVLEk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MClMKFJc4JqZBkk9+QuE+ACFQVRkywG/vCRFq0k58inlm2rNV+dZmaBLAkIqqP4+IIu7W3n3v06fPsF1h8JMwI9Qycjd+CoFF4+Dn5VCu8RhY1enl3+XnCmhEc0szHXMVaykKJJOfgEbCSfJRM7F0Wt/bfZK7zov6jfGmLyRGws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I5HOEDXs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68980C433B2;
-	Fri, 16 Feb 2024 11:29:20 +0000 (UTC)
+	s=arc-20240116; t=1708083040; c=relaxed/simple;
+	bh=Im9oLtqekCjFldegmSJwn6Rnn4sM4mtdARjwn/lI51Y=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=gg7YlSMxB0LYwiRNsOdukWroVWkGbUV0WWGps4sFOfelWs9hnYF8ZwWWkumlmiwKeoU0Lm0OphzGBurCuL4ViO1wFQWTjmZeZ0vfadg7H0Hyi3RPnnm/3LMIpKzTExfRE5qTV1apLhRdcSQOw75egw9abjwJdby7ovdDgQCyyKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tR4aEWQS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 801E6C433F1;
+	Fri, 16 Feb 2024 11:30:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708082964;
-	bh=LaKs5DqAuKaU3encHBxSEltA7O1irPZqnTol1trVLEk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=I5HOEDXs4RGYSouKlxxc0vt7BLbZGIAj31GCowFh0QUM9Vk5PvFYU/luROXnSbWo3
-	 et5ArAltsZKlKwWWwB/uP+eDRd3i5VxvGQ1xNbTn7tzYVegk4CbuPzE6JRrJQEoHmW
-	 iOfLz0EoBtJGuTM0JaC0mDhSoD5IkVWYkCKrU4ceAUxprUNK7VB74KLkS0u2vbVhKx
-	 iONu4FBGFgdEKFSwsVEH27VY/VV+To12D6I5msl7cIEJ8vzs1H7REN7S3MYJIZWLOP
-	 lc69mS1uXXeJX99cNtgOlS0yy/PXlqiEfwIfHzqTyW6EVx6WT+qhvhHFNHKeroKfaU
-	 Ogb9QsWfW0F/A==
-Date: Fri, 16 Feb 2024 11:29:10 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: puranjay12@gmail.com, lars@metafoo.de, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@pengutronix.de,
- thomas.haemmerle@leica-geosystems.com
-Subject: Re: [RESEND PATCH 2/2] iio: temperature: tmp117: add support for
- vcc-supply
-Message-ID: <20240216112910.4059a09b@jic23-huawei>
-In-Reply-To: <20240216102820.1395815-2-m.felsch@pengutronix.de>
-References: <20240216102820.1395815-1-m.felsch@pengutronix.de>
-	<20240216102820.1395815-2-m.felsch@pengutronix.de>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=k20201202; t=1708083039;
+	bh=Im9oLtqekCjFldegmSJwn6Rnn4sM4mtdARjwn/lI51Y=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=tR4aEWQSnp6Vr3/wHf9zkqffISSvXW9tNn76MjaZwHLlng3tRBS3zhO+l9VXeD3zh
+	 lF9Q3ODEv7cM/hx2QPxahtOWK01gr+UvDOOSfUtupjrje3Qz7HLJ3VIELvT5hl/VLz
+	 DQRo1txODTjJGtpoboXBAE6e2c43gOXWrVUocRacGlx+m5tKA1tiIewY9QoBB+7i6C
+	 w8qNy/JWPmzOB6RGjjHAd6WMFand+LnIX9hJboC2svl6ZRI0pHf7U/sFMl4c+9GWTP
+	 Wx8JqUqtJbbiNqkIrxCsT4DQOR/qxt7DYFjgfagmioep+WE6q4c8mOfqW+3l0DMIQV
+	 +ZVVhUbVHkAzg==
+Date: Fri, 16 Feb 2024 05:30:38 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Rob Herring <robh@kernel.org>
+To: Shreeya Patel <shreeya.patel@collabora.com>
+Cc: linux-arm-kernel@lists.infradead.org, p.zabel@pengutronix.de, 
+ dmitry.osipenko@collabora.com, sboyd@kernel.org, 
+ sebastian.reichel@collabora.com, jose.abreu@synopsys.com, 
+ kernel@collabora.com, mchehab@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+ conor+dt@kernel.org, linux-media@vger.kernel.org, linux-dt@vger.kernel.org, 
+ linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-rockchip@lists.infradead.org, mturquette@baylibre.com, 
+ shawn.wen@rock-chips.com, linux-arm@lists.infradead.org, 
+ nelson.costa@synopsys.com, devicetree@vger.kernel.org, heiko@sntech.de
+In-Reply-To: <20240216094922.257674-3-shreeya.patel@collabora.com>
+References: <20240216094922.257674-1-shreeya.patel@collabora.com>
+ <20240216094922.257674-3-shreeya.patel@collabora.com>
+Message-Id: <170808303721.2162868.14811382528537445786.robh@kernel.org>
+Subject: Re: [PATCH 2/4] dt-bindings: media: Document bindings for HDMI RX
+ Controller
 
-On Fri, 16 Feb 2024 11:28:20 +0100
-Marco Felsch <m.felsch@pengutronix.de> wrote:
 
-> From: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
+On Fri, 16 Feb 2024 15:19:20 +0530, Shreeya Patel wrote:
+> Document bindings for the Synopsys DesignWare HDMI RX Controller.
 > 
-> Add support to specify the VCC supply which is required to power the
-> device.
-> 
-> Signed-off-by: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
-
-Hi.
-
-With power supply enables, the question that normally comes up is whether
-the device takes significant time to become available after the power is
-turned on.
-
-I had a look at the datasheet but couldn't find clear language on
-how long we need to wait before the device is usable following power up.
-There is a number for reset of 1.5 msecs so I guess we could use that
-safely?
-
-Maybe no delay is fine for reading the device ID. I've no idea.
-Sometimes we start with no delay and only end up adding one later when
-people report issues.  We could do that here.
-
-Jonathan
-
+> Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
 > ---
-> Resend since I forgot to add the DT maintainers
+>  .../bindings/media/snps,dw-hdmi-rx.yaml       | 128 ++++++++++++++++++
+>  1 file changed, 128 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.yaml
 > 
->  drivers/iio/temperature/tmp117.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/iio/temperature/tmp117.c b/drivers/iio/temperature/tmp117.c
-> index 059953015ae7..69328066811a 100644
-> --- a/drivers/iio/temperature/tmp117.c
-> +++ b/drivers/iio/temperature/tmp117.c
-> @@ -17,6 +17,7 @@
->  #include <linux/kernel.h>
->  #include <linux/limits.h>
->  #include <linux/property.h>
-> +#include <linux/regulator/consumer.h>
->  
->  #include <linux/iio/iio.h>
->  
-> @@ -152,6 +153,10 @@ static int tmp117_probe(struct i2c_client *client)
->  	if (!i2c_check_functionality(client->adapter, I2C_FUNC_SMBUS_WORD_DATA))
->  		return -EOPNOTSUPP;
->  
-> +	ret = devm_regulator_get_enable(&client->dev, "vcc");
-> +	if (ret)
-> +		return ret;
-> +
->  	dev_id = i2c_smbus_read_word_swapped(client, TMP117_REG_DEVICE_ID);
->  	if (dev_id < 0)
->  		return dev_id;
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Error: Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.example.dts:57.47-48 syntax error
+FATAL ERROR: Unable to parse input tree
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/snps,dw-hdmi-rx.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
+make: *** [Makefile:240: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240216094922.257674-3-shreeya.patel@collabora.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
