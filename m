@@ -1,149 +1,143 @@
-Return-Path: <linux-kernel+bounces-69054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69055-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90D588583E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:16:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF8B8583E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:17:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B54CA1C22BD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:16:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30BC21C23C5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:17:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB83131E3D;
-	Fri, 16 Feb 2024 17:14:37 +0000 (UTC)
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF04513340A;
+	Fri, 16 Feb 2024 17:15:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="hUmf4TAW"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F350F130E2F;
-	Fri, 16 Feb 2024 17:14:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F88C43687
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103677; cv=none; b=GHKxYsDTqg/Y1r3r7i5ijqa7hi6VhGWg1q6ugIlsmoU1i2wrMV+R1AhVhHaXD6GcQzOJm8upEqQmhlBvgihJvXy+lC3quqTID5FqOTY8nCt+JOjNPdnnaCFPTiSLB8csUK3Ab5+k8HPf2wDuuwQV3Q7OLdUaNM7iHSct6Ko+AxM=
+	t=1708103710; cv=none; b=JgRuuGXwNS53DEZZxslUNQGU/NQBnWj1gYCj8ZkwTcYIwcG0Eh4GvdZWB1XdocckNpPFLP14M/zAMp+4M+uyaih+qcDmeOCNVdz7xvIOAPf+R4eGUmPidAAmCFmOCrN4LMaxYjn9qJRPKjLOsT0xb6ABomaPu0XGTqPdd+lhB9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103677; c=relaxed/simple;
-	bh=rmDRwiwblhwvtwuvm75M2GVP+g+7jtMynVV9YVddlKM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=E4YLo7lEewiCekvrjejuRDnIOrtTb12/9ei0KmALZ8n35/4qXGr/pMRQ4x48ZjvO0XC/MgE6T9urQmFONUmw39AixzG35+aOKnkgBRl+fpW6CTt2zykwRN0UspL1QmaXy2qNwm+ASBiKNMzwQdeE/bOpVZrhbkX++62Y4rp5lz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.29])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4Tbynt0GgWz9yLtP;
-	Sat, 17 Feb 2024 00:59:14 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id ECDE91407B0;
-	Sat, 17 Feb 2024 01:14:20 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwA3Lxjal89lNL2hAg--.6264S2;
-	Fri, 16 Feb 2024 18:14:20 +0100 (CET)
-Message-ID: <c6d0c04a979e05b85acd55d574d56f368c7aa95e.camel@huaweicloud.com>
-Subject: Re: [RFC 6/8] KEYS: PGP data parser
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
-	Petr Tesarik <petrtesarik@huaweicloud.com>
-Cc: Dave Hansen <dave.hansen@intel.com>, Petr =?UTF-8?Q?Tesa=C5=99=C3=ADk?=
- <petr@tesarici.cz>, Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "maintainer:X86
- ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>, Andy Lutomirski
- <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra
- <peterz@infradead.org>, Xin Li <xin3.li@intel.com>, Arnd Bergmann
- <arnd@arndb.de>, Andrew Morton <akpm@linux-foundation.org>, Rick Edgecombe
- <rick.p.edgecombe@intel.com>,  Kees Cook <keescook@chromium.org>, "Masami
- Hiramatsu (Google)" <mhiramat@kernel.org>, Pengfei Xu
- <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao
- <zegao2021@gmail.com>, "Kirill A. Shutemov"
- <kirill.shutemov@linux.intel.com>,  Kai Huang <kai.huang@intel.com>, David
- Woodhouse <dwmw@amazon.co.uk>, Brian Gerst <brgerst@gmail.com>,  Jason
- Gunthorpe <jgg@ziepe.ca>, Joerg Roedel <jroedel@suse.de>, "Mike Rapoport
- (IBM)" <rppt@kernel.org>, Tina Zhang <tina.zhang@intel.com>, Jacob Pan
- <jacob.jun.pan@linux.intel.com>, "open list:DOCUMENTATION"
- <linux-doc@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>,
- David Howells <dhowells@redhat.com>, Petr Tesarik
- <petr.tesarik1@huawei-partners.com>
-Date: Fri, 16 Feb 2024 18:13:58 +0100
-In-Reply-To: <EC53BCED-0D4C-4561-9041-584378326DD5@zytor.com>
-References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
-	 <20240216152435.1575-1-petrtesarik@huaweicloud.com>
-	 <20240216152435.1575-7-petrtesarik@huaweicloud.com>
-	 <Zc-Q5pVHjngq9lpX@casper.infradead.org>
-	 <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
-	 <EC53BCED-0D4C-4561-9041-584378326DD5@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1708103710; c=relaxed/simple;
+	bh=0F5qTSlPkN7zpwybiJ29zbr41MUG6fVejMzapwrkqpA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cB/JbedsQODA5ePbuni3Xup9XSm25KrfEAtf5wWW92vlp3U8F5FfCaklcl0KKj01UrXvhNBg1Cf9nvT1Uf1YsboXfWih3VXcxkmRq4MKYL3KonibXB/WJK7hSdq+H+FgUitkNFmnvPKKUhzENYwXNWW+vdxcGuBXbNm9r6sr1a8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hUmf4TAW; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5120ecfd75cso3102477e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:15:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708103706; x=1708708506; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=SjqnFLCl0w+QOjidjrUgBm/5JGoP8ymIUB3cNBX26RM=;
+        b=hUmf4TAWgJTmCBGlpy+CzmKgCBqV88xFswQpPwaB43m8xOM1OmbGgFgg1UdRNX77rJ
+         XAkH75ZEPRNuLgFoBwPp6Sad0SD6HPGujR2LZ9oZ2F0mnjPlrWFu9reC0+aba7KgQQzR
+         drBihIicw5I8iUEALA9djnfZwHJGVPqHPHYuqCb6a31kCSoXia07rg+TfqQvaBrXSmgb
+         HsNcPy3bKBy6TuTvkWJsueeMTqynEmVm4+o7CyOkRuTGYim33hSpW4j1eRFLuOFDO9Ax
+         nIAeUeybtfu4POy9Fl9wFQIoP/ov2kgCrSM6VDUfuXBHkFVuQHxbMUzMLYGi5BaFO/mw
+         Fv7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708103706; x=1708708506;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SjqnFLCl0w+QOjidjrUgBm/5JGoP8ymIUB3cNBX26RM=;
+        b=Do2ONjxRyMVe/eoDWGh/pYT8aUan16pwDf1PdlF7BRvTxff2PXNMg1DoWjr8AEIYan
+         B6/AYLqcnwJUhmvwR+BGhAPuOx8MT7GWcgiVrhNVXw4HynqV9Kudf4JaECTescV6m6bF
+         OB0AXciJXRTkFTr4yHMx8nU1DrtHXWNGdxX/ZF3mbQyo0vBaThuTQ+fitdL/Ot/likbG
+         GgE68SoY3pGj2H6JJyrLMB2k8nHAsz5S2Rpif1ghirZkhDPLP9V5sHgFxuyOMo2kd1Ue
+         a9qtqAO8GXZTSGLsELpqYbrWr2e97cL9qQXwyHm4cMzWnXYajlzFJPOnzjecwCkxvn23
+         Dd8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWhzZ45V1mU33/bjgn2seiUGThWMD+HuKFdt9F9l09snYWpznvojNTKDsD+ZyV01yH0Eux+2B8t7N8cYT+vyQ7ogyR35CCk3v2rixzP
+X-Gm-Message-State: AOJu0YwL2DLFxt6R1xDz+ht9+qLw1WO2XPMkGCwb4eaY73jdipNVxSLa
+	gje8mBqhmj3G86SPQQnYxrRb2brJ6OEaARxoCWX7MGLgOM2Ido9S+59SGn4O596efdNB7BU4aOl
+	MdEpMUEyfa+233/s1CDkApKk4Xus9Nw9Q4n+q
+X-Google-Smtp-Source: AGHT+IGWo3M5xdMyPXKWXIW5ULQNkr2RgZyQgSgnB7DImaPcMJq9MUmuYo3ikJDlMmug99VbQUIKBzitV5wxc8l+7zk=
+X-Received: by 2002:a19:e041:0:b0:511:7c27:9655 with SMTP id
+ g1-20020a19e041000000b005117c279655mr3726644lfj.23.1708103706175; Fri, 16 Feb
+ 2024 09:15:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwA3Lxjal89lNL2hAg--.6264S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFyUtw45JF1xArWDGF18AFb_yoW8XF4Dpr
-	yxGa48tF4vqr4Fvr4qyw1fu34Svw4fJr1DXrn8JrWFyFn09r1akr1Ikr45WF9Fgr4xG3W2
-	yw4qgryagw1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
-	Ud8n5UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj5pt9QABs4
+References: <20240215010004.1456078-1-seanjc@google.com> <20240215010004.1456078-2-seanjc@google.com>
+ <CALzav=c0MFB7UG7yaXB3bAFampYO_xN=5Pjao6La55wy4cwjSw@mail.gmail.com>
+ <Zc5bx4p6z8e3CmKK@google.com> <Zc-XF0yQp_dDUa6f@google.com>
+In-Reply-To: <Zc-XF0yQp_dDUa6f@google.com>
+From: David Matlack <dmatlack@google.com>
+Date: Fri, 16 Feb 2024 09:14:39 -0800
+Message-ID: <CALzav=eNEzFFmkhcE9K-nr5rvZ1nzXxCaukw7hjXzWcEieX34w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: x86: Mark target gfn of emulated atomic
+ instruction as dirty
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Pasha Tatashin <tatashin@google.com>, Michael Krebs <mkrebs@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-02-16 at 09:08 -0800, H. Peter Anvin wrote:
-> On February 16, 2024 8:53:01 AM PST, Roberto Sassu <roberto.sassu@huaweic=
-loud.com> wrote:
-> > On Fri, 2024-02-16 at 16:44 +0000, Matthew Wilcox wrote:
-> > > On Fri, Feb 16, 2024 at 04:24:33PM +0100, Petr Tesarik wrote:
-> > > > From: David Howells <dhowells@redhat.com>
-> > > >=20
-> > > > Implement a PGP data parser for the crypto key type to use when
-> > > > instantiating a key.
-> > > >=20
-> > > > This parser attempts to parse the instantiation data as a PGP packe=
-t
-> > > > sequence (RFC 4880) and if it parses okay, attempts to extract a pu=
-blic-key
-> > > > algorithm key or subkey from it.
-> > >=20
-> > > I don't understand why we want to do this in-kernel instead of in
-> > > userspace and then pass in the actual key.
-> >=20
-> > Sigh, this is a long discussion.
-> >=20
-> > PGP keys would be used as a system-wide trust anchor to verify RPM
-> > package headers, which already contain file digests that can be used as
-> > reference values for kernel-enforced integrity appraisal.
-> >=20
-> > With the assumptions that:
-> >=20
-> > - In a locked-down system the kernel has more privileges than root
-> > - The kernel cannot offload this task to an user space process due to
-> >  insufficient isolation
-> >=20
-> > the only available option is to do it in the kernel (that is what I got
-> > as suggestion).
-> >=20
-> > Roberto
-> >=20
-> >=20
->=20
-> Ok, at least one of those assumptions is false, and *definitely* this app=
-roach seems to be a solution in search of a problem.
+On Fri, Feb 16, 2024 at 9:10=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> On Thu, Feb 15, 2024, Sean Christopherson wrote:
+> > On Thu, Feb 15, 2024, David Matlack wrote:
+> > > On Wed, Feb 14, 2024 at 5:00=E2=80=AFPM Sean Christopherson <seanjc@g=
+oogle.com> wrote:
+> > > >
+> > > > When emulating an atomic access on behalf of the guest, mark the ta=
+rget
+> > > > gfn dirty if the CMPXCHG by KVM is attempted and doesn't fault.  Th=
+is
+> > > > fixes a bug where KVM effectively corrupts guest memory during live
+> > > > migration by writing to guest memory without informing userspace th=
+at the
+> > > > page is dirty.
+> > > >
+> > > > Marking the page dirty got unintentionally dropped when KVM's emula=
+ted
+> > > > CMPXCHG was converted to do a user access.  Before that, KVM explic=
+itly
+> > > > mapped the guest page into kernel memory, and marked the page dirty=
+ during
+> > > > the unmap phase.
+> > > >
+> > > > Mark the page dirty even if the CMPXCHG fails, as the old data is w=
+ritten
+> > > > back on failure, i.e. the page is still written.  The value written=
+ is
+> > > > guaranteed to be the same because the operation is atomic, but KVM'=
+s ABI
+> > > > is that all writes are dirty logged regardless of the value written=
+  And
+> > > > more importantly, that's what KVM did before the buggy commit.
+> > > >
+> > > > Huge kudos to the folks on the Cc list (and many others), who did a=
+ll the
+> > > > actual work of triaging and debugging.
+> > > >
+> > > > Fixes: 1c2361f667f3 ("KVM: x86: Use __try_cmpxchg_user() to emulate=
+ atomic accesses")
+> > >
+> > > I'm only half serious but... Should we just revert this commit?
+> >
+> > No.
+>
+> David, any objection to this patch?  I'd like to get this on its way to P=
+aolo
+> asap, but also want to make sure we all agree this is the right solution =
+before
+> doing so.
 
-I'm looking for a solution to this for a long time. Could you please
-explain?
-
-Thanks
-
-Roberto
-
+Sorry for the late response. No objection to this patch. I'd like a
+better story for KVM code that interacts directly with user pointers,
+but I have no objection to fixing forward for this case.
 
