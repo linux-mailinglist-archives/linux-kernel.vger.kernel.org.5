@@ -1,50 +1,89 @@
-Return-Path: <linux-kernel+bounces-68519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E817857B9A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:26:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52FC9857B9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 510CC1C23C34
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:26:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56D271C23C7D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64BCC7762F;
-	Fri, 16 Feb 2024 11:26:51 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FA11E499
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:26:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C9317690B;
+	Fri, 16 Feb 2024 11:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="drFiaenj"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E096C1E499
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082811; cv=none; b=frIXDZHcMxlOHKsKTRXV4DU8dmVGdlW2M5ANiONvACZY24qFHaTA2SXliK6itE88pi7jRDvCLBWDKWi/oUr+m4d6EdFL9gVGGA1HXC18Nou8+PlZWK7ODKI8srp+1Bh4NhuSQBgSiZ6QVDORFdNw5U2OFj2Tx1DDJuFm78cQkYo=
+	t=1708082878; cv=none; b=Y7Jlsxc1jLkK9adksYWguUrpMwIETF5gDfMqdmSHY0DkDBBWWJhxTf3NFsV7XZIWehyfoFjE4OmGcoccn80HiA+KBOm384Qb0eCT8+Gxk/yFWuQu8gV6Ixr/u5NrCFsb6ebe+fkLhhho37RFB7Ii5MYMh+lPN0bN7VNijf8k2qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082811; c=relaxed/simple;
-	bh=r60TtNSvLpFek6w6RsdFTH0BMLv/88jRak/JmVGFlRo=;
+	s=arc-20240116; t=1708082878; c=relaxed/simple;
+	bh=6gMcMyPwgLgEbY6ZF1f8Be8kn6MRW7NRH/o8brCnnoE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=frszLjfdcUdrobYxpUr5c17d3oEdx3doFLu/eBhxeWNudxoUa9JNbf6CKXqoCQwcKRNRx94eCvydQziQLDl5L4KfXvKtXP1MXPtWU6uU/4axWHjGBGD48OUEBaTikEc6M8mI4Q0o0Sa0X9CKgCwZBTBPXHHZGQHof7ZrKgoZq1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-3c-65cf46719aab
-Date: Fri, 16 Feb 2024 20:26:36 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Oscar Salvador <osalvador@suse.de>
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, akpm@linux-foundation.org
-Subject: Re: [PATCH] sched/numa, mm: do not promote folios to nodes not set
- N_MEMORY
-Message-ID: <20240216112636.GA4266@system.software.com>
-References: <20240214035355.18335-1-byungchul@sk.com>
- <Zc0tFdGAzD9sCzZN@localhost.localdomain>
- <20240216070754.GB32626@system.software.com>
- <Zc8UPuzii_5gTsrJ@localhost.localdomain>
- <20240216091139.GA75176@system.software.com>
- <20240216092305.GC75176@system.software.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bd2JKqWIXC+nRQGmD1T4t2OS1x0XCvj9O8/fI3SeuNBQazx1sbobEW/hgDLUAvBpmxJ+93e6Us7gJJW7s5a6CaZ0ETuyhot1Eh9xE813lIk0QgPdcwvR3ZU9b/rw6egXFLo9hlq0+TlYt6rrQ3ymZ9t6uA9eNkWRdUKQc70nq10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=drFiaenj; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708082875;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ldTgol2RjHwGuL7/gP1WBAM77N/i279/pdvnyHeoM1E=;
+	b=drFiaenjO2VCSOMpqaomR7tDjMyvcCCoe6fkR1ECYkgZuU0dD9GZHpjhEyfWm4nVEyTRuC
+	l8MfPgkVZSIbsTEcjoKugGs9qU1yF3io5YYsmuyBsWwegsRapAzRLKtjCFN9Vq//I0r1Lm
+	gFxJmzWX5zFCC7IK1J8iUKomBvPCLK0=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-153-SFsltHNZMMyCxw5DJakHqQ-1; Fri, 16 Feb 2024 06:27:53 -0500
+X-MC-Unique: SFsltHNZMMyCxw5DJakHqQ-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d0047bd95so728030f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 03:27:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708082873; x=1708687673;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ldTgol2RjHwGuL7/gP1WBAM77N/i279/pdvnyHeoM1E=;
+        b=Eh1uxNuyJCEYC/vr49kvhGBIjLTi7fXKHA0mCIuvmlq6yOVfpAnNSwVFjqJjS/u2VM
+         DbgcDpwJnVFQNa3eTxSeEyUQPq3Uk135qAnYYjLdEVcfo2v3eWxcYsVbQ/MjqYgCAA71
+         HTkWwy38l8rMfnb6Oym4TRLJXBuWKL5IVODsvUOvyhkKOt9RELHCh1iXAgmMwSiyXxsN
+         qbSgdnxaaic1RljiQHbx6cV5TvElRPHt0sBA5tN+TRWR+YJkWe5xZRm38KY9po9gEtaG
+         DK3b8GBZelsONtb93KmRNfIt2pT9zginLfAj11txrq9AoUsIjtZrqoAGOcxHClgQs3ZC
+         0GEg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4/8mJtc7vuAyqfzW/Ag398FI8UKb75AFEbfYBepoY52vYuG/GYDRvEeTaZIIkZxhoRH3f46O0xa1DHLVnpvxT6QTZZ22wx6WAOTDb
+X-Gm-Message-State: AOJu0YyjYMyW6GMKTnkmlDlhvzjbSxiJ60a5pNh9iCq6p3UwycuAGPIS
+	nM13knSXRhqjLqzVgmcv1Tkp1tud35c3BDx6vgUir4mUmIIlIxAYkPrbXk0hTnl86apovB9XNuj
+	5fskWqWAkWN9zKc6Az6p5vCp3jfh0Hl9wmkg1VB9ebkWxs/JSd+U7hbto5jvWPA==
+X-Received: by 2002:adf:db4a:0:b0:33b:179d:d9aa with SMTP id f10-20020adfdb4a000000b0033b179dd9aamr3738292wrj.26.1708082872848;
+        Fri, 16 Feb 2024 03:27:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHgaY3PtAN8z8RgLWyK9s4sch0JhbTy5FoXAS+RRg2r8qkUw3EqgzlI0lsRkHqGluoJTNtjKA==
+X-Received: by 2002:adf:db4a:0:b0:33b:179d:d9aa with SMTP id f10-20020adfdb4a000000b0033b179dd9aamr3738275wrj.26.1708082872447;
+        Fri, 16 Feb 2024 03:27:52 -0800 (PST)
+Received: from redhat.com ([2a02:14f:178:2d32:e5b8:d152:6384:cef9])
+        by smtp.gmail.com with ESMTPSA id u4-20020adfcb04000000b0033d24eab9c3sm189079wrh.76.2024.02.16.03.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 03:27:51 -0800 (PST)
+Date: Fri, 16 Feb 2024 06:27:48 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>
+Cc: jasowang@redhat.com, perex@perex.cz, tiwai@suse.com,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	virtualization@lists.linux-foundation.org,
+	virtio-dev@lists.oasis-open.org,
+	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+	coverity-bot <keescook+coverity-bot@chromium.org>
+Subject: Re: [v4 PATCH] ALSA: virtio: Fix "Coverity: virtsnd_kctl_tlv_op():
+ Uninitialized variables" warning.
+Message-ID: <20240216062630-mutt-send-email-mst@kernel.org>
+References: <20240216100643.688590-1-aiswarya.cyriac@opensynergy.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,81 +92,102 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240216092305.GC75176@system.software.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuphkeLIzCtJLcpLzFFi42LhesuzSLfQ7XyqQVOzusWc9WvYLC49vspm
-	Mf1lI4vF0wlbmS3u9k9lsbi8aw6bxb01/1ktJr97xmhx6cACJosz04osjvceYLLY1/GAyaLj
-	yDdmi61Hv7M78HmsmbeG0aNl3y12jwWbSj02r9Dy2PRpErvHnWt72DxOzPjN4vF+31U2j82n
-	qz0+b5IL4IrisklJzcksSy3St0vgyji9Kb3gFF/FjlnXmBsYl3J3MXJySAiYSOxecI0Rxp5w
-	7xZzFyMHB4uAqsTZZVYgYTYBdYkbN34yg9giAmoS0141sncxcnEwC5xikpjw+QI7SL2wQJjE
-	3zcKIDW8AuYSHWd/MYPUCAnMYJL4sm41G0RCUOLkzCcsIDazgJbEjX8vmUB6mQWkJZb/4wAx
-	OQUsJfZs0QapEBVQljiw7TgTyBgJgWZ2iblP5rJAnCkpcXDFDZYJjAKzkEydhWTqLISpCxiZ
-	VzEKZeaV5SZm5pjoZVTmZVboJefnbmIExtGy2j/ROxg/XQg+xCjAwajEw3vgz9lUIdbEsuLK
-	3EOMEhzMSiK8k3rPpArxpiRWVqUW5ccXleakFh9ilOZgURLnNfpWniIkkJ5YkpqdmlqQWgST
-	ZeLglGpgdEg+uvg8187zJ2d2yb5lKQ06vOWUpPI2a+2Zfqt55R25X77o3e5uHm52LvZ0mPwb
-	jfSoB/v+y3ywmPYy72pWd2HI160/7xzf+dTgAu+rOgmGvGM7GBn3fIh/weV1db/MttC0BRcS
-	XIXm9gZ6PL/r6lq/0C4sadtHFsVr2ze9j5FefOzLX/Y5oUosxRmJhlrMRcWJAMPftn+fAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMLMWRmVeSWpSXmKPExsXC5WfdrFvodj7VYMpvCYs569ewWVx6fJXN
-	YvrLRhaLpxO2Mlvc7Z/KYnF47klWi8u75rBZ3Fvzn9Vi8rtnjBaXDixgsjgzrcjieO8BJot9
-	HQ+YLDqOfGO22Hr0O7sDv8eaeWsYPVr23WL3WLCp1GPzCi2PTZ8msXvcubaHzePEjN8sHu/3
-	XWXzWPziA5PH5tPVHp83yQVwR3HZpKTmZJalFunbJXBlnN6UXnCKr2LHrGvMDYxLubsYOTkk
-	BEwkJty7xdzFyMHBIqAqcXaZFUiYTUBd4saNn8wgtoiAmsS0V43sXYxcHMwCp5gkJny+wA5S
-	LywQJvH3jQJIDa+AuUTH2V/MIDVCAjOYJL6sW80GkRCUODnzCQuIzSygJXHj30smkF5mAWmJ
-	5f84QExOAUuJPVu0QSpEBZQlDmw7zjSBkXcWkuZZSJpnITQvYGRexSiSmVeWm5iZY6pXnJ1R
-	mZdZoZecn7uJERgVy2r/TNzB+OWy+yFGAQ5GJR7eA3/OpgqxJpYVV+YeYpTgYFYS4Z3UeyZV
-	iDclsbIqtSg/vqg0J7X4EKM0B4uSOK9XeGqCkEB6YklqdmpqQWoRTJaJg1OqgbHMxZjp+r4f
-	Rq+eu8Yk/zv2MLHa7TKrwIUyTaE9Sn9+d2Wb/eWPzZlmHLK9UEBp2gxec8bPbjdPGagtNmJ3
-	CjC/qaLVL9L3svpArFeRRp1Z9RK+IzZH1p/89mL9tmvzdFe0aJ33jbiZomgaqfNNPfX7zCnn
-	A+oEvfnNriVYihUXBH+ssPNNUGIpzkg01GIuKk4EABR6UqKGAgAA
-X-CFilter-Loop: Reflected
+In-Reply-To: <20240216100643.688590-1-aiswarya.cyriac@opensynergy.com>
 
-On Fri, Feb 16, 2024 at 06:23:05PM +0900, Byungchul Park wrote:
-> On Fri, Feb 16, 2024 at 06:11:40PM +0900, Byungchul Park wrote:
-> > On Fri, Feb 16, 2024 at 08:52:30AM +0100, Oscar Salvador wrote:
-> > > On Fri, Feb 16, 2024 at 04:07:54PM +0900, Byungchul Park wrote:
-> > > > For normal numa nodes, node_data[] is initialized at alloc_node_data(),
-> > > > but it's not for memoryless node. However, the node *gets onlined* at
-> > > > init_cpu_to_node().
-> > > > 
-> > > > Let's look at back free_area_init(). free_area_init_node() will be called
-> > > > with node_data[] not set yet, because it's already *onlined*. So
-> > > > ->zone_pgdat cannot be initialized properly in the path you mentioned.
-> > > 
-> > > I am might be missing something., so bear with me.
-> > > 
-> > > free_area_init() gets called before init_cpu_to_node() does.
-> > > free_area_init_node() gets called on every possible node.
-> > > 
-> > > free_area_init_node then() does
-> > > 
-> > >  pg_data_t *pgdat = NODE_DATA(nid);,
-> > > 
-> > > and then we call free_area_init_core().
-> > > 
-> > > free_area_init_core() does
-> > > 
-> > >  free_area_init_core() does
-> > >   zone_init_internals()
-> > > 
-> > > which ends up doing zone->zone_pgdat = NODE_DATA(nid);
-> > > 
-> > > If node_data[] was not set at all, we would already blow up when doing
-> > > the first
-> > > 
-> > >   for_each_node()
-> > >     pgdat = NODE_DATA(nid);
-> > >     free_area_init_node(nid);
-> > > 
-> > > back in free_area_init().
-> > 
-> > It seems that I got it wrong about the reason. Let me check it again and
-> > share the reason.
+On Fri, Feb 16, 2024 at 11:06:43AM +0100, Aiswarya Cyriac wrote:
+> This commit fixes the following warning when building virtio_snd driver.
+> 
+> "
+> *** CID 1583619:  Uninitialized variables  (UNINIT)
+> sound/virtio/virtio_kctl.c:294 in virtsnd_kctl_tlv_op()
+> 288
+> 289     		break;
+> 290     	}
+> 291
+> 292     	kfree(tlv);
+> 293
+> vvv     CID 1583619:  Uninitialized variables  (UNINIT)
+> vvv     Using uninitialized value "rc".
+> 294     	return rc;
+> 295     }
+> 296
+> 297     /**
+> 298      * virtsnd_kctl_get_enum_items() - Query items for the ENUMERATED element type.
+> 299      * @snd: VirtIO sound device.
+> "
+> 
+> This warning is caused by the absence of the "default" branch in the
+> switch-block, and is a false positive because the kernel calls
+> virtsnd_kctl_tlv_op() only with values for op_flag processed in
+> this block.
+> 
+> Also, this commit unifies the cleanup path for all possible control
+> paths in the callback function.
+> 
+> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> Signed-off-by: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>
+> Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+> Addresses-Coverity-ID: 1583619 ("Uninitialized variables")
+> Fixes: d6568e3de42d ("ALSA: virtio: add support for audio controls")
 
-I analyzed it wrong. Even though the issue was gone with the patch but
-it's not the fix. Sorry for making you confused. I submitted the fix with
-another patch:
 
-   https://lore.kernel.org/lkml/20240216111502.79759-1-byungchul@sk.com/
 
-	Byungchul
+> ---
+>  sound/virtio/virtio_kctl.c | 19 +++++++++++++++----
+>  1 file changed, 15 insertions(+), 4 deletions(-)
+> 
+> diff --git a/sound/virtio/virtio_kctl.c b/sound/virtio/virtio_kctl.c
+> index 0c6ac74aca1e..7aa79c05b464 100644
+> --- a/sound/virtio/virtio_kctl.c
+> +++ b/sound/virtio/virtio_kctl.c
+> @@ -253,8 +253,8 @@ static int virtsnd_kctl_tlv_op(struct snd_kcontrol *kcontrol, int op_flag,
+>  
+>  	tlv = kzalloc(size, GFP_KERNEL);
+>  	if (!tlv) {
+> -		virtsnd_ctl_msg_unref(msg);
+> -		return -ENOMEM;
+> +		rc = -ENOMEM;
+> +		goto on_msg_unref;
+>  	}
+>  
+>  	sg_init_one(&sg, tlv, size);
+> @@ -281,14 +281,25 @@ static int virtsnd_kctl_tlv_op(struct snd_kcontrol *kcontrol, int op_flag,
+>  			hdr->hdr.code =
+>  				cpu_to_le32(VIRTIO_SND_R_CTL_TLV_COMMAND);
+>  
+> -		if (copy_from_user(tlv, utlv, size))
+> +		if (copy_from_user(tlv, utlv, size)) {
+>  			rc = -EFAULT;
+> -		else
+> +			goto on_msg_unref;
+> +		} else {
+>  			rc = virtsnd_ctl_msg_send(snd, msg, &sg, NULL, false);
+> +		}
+>  
+>  		break;
+> +	default:
+> +		rc = -EINVAL;
+> +		/* We never get here - we listed all values for op_flag */
+> +		WARN_ON(1);
+> +		goto on_msg_unref;
+>  	}
+> +	kfree(tlv);
+> +	return rc;
+>  
+> +on_msg_unref:
+> +	virtsnd_ctl_msg_unref(msg);
+>  	kfree(tlv);
+>  
+>  	return rc;
+
+I don't really like adding code for a false-positive but ALSA
+maintainers seem to like this. If yes, this seems like as good
+a way as any to do it.
+
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+
+
+> -- 
+> 2.43.2
+
 
