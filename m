@@ -1,116 +1,113 @@
-Return-Path: <linux-kernel+bounces-68053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16A32857565
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:43:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ADA2857567
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:47:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 128111C2159F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:43:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD0CA1F230CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A48134A0;
-	Fri, 16 Feb 2024 04:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68012111A5;
+	Fri, 16 Feb 2024 04:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="QBYbynhN"
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L1FWQ8Yu"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98FD10961
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 04:43:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB172F5A;
+	Fri, 16 Feb 2024 04:46:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708058620; cv=none; b=uuI83r7fPhzKeh0A4roMQAwCngEHIWpyNPOhpBi0sxGsZkqLAMTOfNmwoChdrST9F6nSfMEAUf1VJtm9Zm1piLhD6jIhEOLd5GUIdYRtwgRdOVUtZPMurqtQbXu4J1yk8IwRWOspNZ+zTNNQE374ra02EkVXNHdUW+nMqPawmMc=
+	t=1708058811; cv=none; b=WIAxaCQ5WvkPoNVpPZQJNSTBkdG9mVQVobqc/PVgynIYZ4XoA2I5cDP6YmGbVCyzjeisPrx4EnEZc0IahLyddfRa1MtueF0blG0nPFRr9CjzWtAx0f9TEDbSTO/G46awz2baV7nuNp4d1iSpf9uc4zkJnZptQXHRff7+J7X7W7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708058620; c=relaxed/simple;
-	bh=waeuX8RtjIW86KprZNCOqRp/iiUFgtT5YVoezffu7hk=;
-	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
-	 From:To:Cc:Subject:References:In-Reply-To; b=MtkhLd6iZ374okYUBp9zk0y2wRUJcqeST+3Ny03KU3pxpu34UCOpdilT6qEAqKS2dZT1zI6YFv5nvi/Lm1H+scPlpN+HAz48zL44r99jSg6258EwQo+XJfNfh2T6ibwsqQrXausz2N+QHGzu/+LjPWIVVM4o1vkhSX1yJZHKAzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=QBYbynhN; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68f2a6fdeffso4893396d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:43:38 -0800 (PST)
+	s=arc-20240116; t=1708058811; c=relaxed/simple;
+	bh=jGWZcfoolQtJ4Y0ME/ZVjyNKfUiHj28zxeQ3cOw1K1w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=INDwGOYjQFaVWZDb0DBzlLqdUqRbkEP993jbBzHTv49iZO0+1x0UkF7urqjtrycsh5ZaMGue8e16Iqp3bGObqWPFSJCHDQnL1AjhmGPQqBKPDQdNtmWqR9weaVkbYwB/HCoUVlUjUS4VvbgINnTZnxUQo7km8IPWFh71YZC+1n8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L1FWQ8Yu; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d731314e67so12829755ad.1;
+        Thu, 15 Feb 2024 20:46:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1708058617; x=1708663417; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hzH2XjdwcrudKK0By8Y9Nwkfc0y204g7SCh9Xtz36uI=;
-        b=QBYbynhNm8tm4vtdLyIvMt4Z2Zw06EGImgeGy0UxZw8I8v3PH1UoZU15fXXsza7pr3
-         0DiSaO4AgoLH864p9y6EK/IUAzWOkbDxO1zpB0L6ZlRLiTFvRe3/ZAGMR4NT3r2KSvUT
-         DuUYIK3JZ6eYl3E6XGDdycU8Mvi8ClRnqREG/QRHmW/PtTw91XI3RmZPnajFuGUcTFlZ
-         /Z9ogEJgRdSq8/YY1IA/W+QhWM890BLLr1IUSou+ADEvV+tq4Cc8fW600rXRkiRlhQv4
-         uDXs6dgWvdheOELMLWtwzXTmzysYMq5aQT9or6Aq/Ap74n22SX8wBxDlI5DpsM8/4Faq
-         b5Xg==
+        d=gmail.com; s=20230601; t=1708058809; x=1708663609; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=86rkIjG0PMkUt0ErBuuXEkQG7zaakNP7oJknORJyvG4=;
+        b=L1FWQ8YuFfEX/qFetNES2nJuzw0D5R0RP+KQdc24DaaFGKETZdsZwGtlRstiqZgTJV
+         w0Q+gje2xm75Ru1QDcdi04uaqdDtkGNo3M5dDzbVbsxo3g/VdHLKEoxOOfiNQp6zkPgF
+         VkJKCAhDOOBTChd/fOGdIcs42fVqh4vJAn9Jpb/F0MO7A1v5jirOgO1EIkMRlb7/zhFB
+         5FAdutN6KUYJP7walbN0gizEJ18jwNkVsS9xMLGqUE+INtKVm0CAojb06q/CApaJOuFP
+         pHfIqTt9G7O6+24fv49sJN0LtVz/mLZ3msIV+GTnbVJleW9Y2Ha9lEJGcaV8eMLd5nec
+         RVKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708058617; x=1708663417;
-        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
-         :content-disposition:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hzH2XjdwcrudKK0By8Y9Nwkfc0y204g7SCh9Xtz36uI=;
-        b=eGp4VLM+gtWjCo1fQ7zgIws1mFYkXClM6A2K3fcAp/D82UOY621k8FWCFVsxhnmcMk
-         4mEVF2dC7gJJDPwAVmFUD+UqtraewPJxlvC/0GrhAgmMNyJ9uH3ZZhZCbH9KfX3idQ+T
-         DAq9wn2c6wgSnhpzMAp3BLwWiWCy/xVy87ZlqienzLBQKyNFmXIserCi47ZrJRoXFJ5p
-         x/wqv5b0d5kLCugrFXMXvjqIXCIuWVf9I2YYMnSpqhdh6L1QzyRFvLbOFQsekroczMw/
-         IIFwWHSqutFTq7eWm0/cLT84FXhhrVtpCaxLuYi5yTVu5w3YyN72csapf0rPeF4EunQN
-         kvtA==
-X-Gm-Message-State: AOJu0Yx6xbbi+37nsCzAzSuJm0cgflIhiQ699zgLdTOdQYv31RYpR76A
-	+mq2biXy3pIO2ptPjzXQIoqE3P1FiJrIVA2tt3nKdp9/0ConPnXf2sl+cwH20w==
-X-Google-Smtp-Source: AGHT+IH4Re2re96Bj4x8lZKg32bzmDSpm8k6SPGJJSdEF1RKaSe7UJnZBT4cDAJ/C8/g+lnnFGrBLg==
-X-Received: by 2002:a05:6214:23ce:b0:68d:129e:f5c1 with SMTP id hr14-20020a05621423ce00b0068d129ef5c1mr4407697qvb.45.1708058617658;
-        Thu, 15 Feb 2024 20:43:37 -0800 (PST)
-Received: from localhost ([70.22.175.108])
-        by smtp.gmail.com with ESMTPSA id og8-20020a056214428800b0068c4b445991sm1367791qvb.67.2024.02.15.20.43.37
+        d=1e100.net; s=20230601; t=1708058809; x=1708663609;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=86rkIjG0PMkUt0ErBuuXEkQG7zaakNP7oJknORJyvG4=;
+        b=LZ8np46s/DgWSNJTQomGlLl5846QbXHfGxkeiWM84G1sPtOHXL3OghFose4kUe4xy7
+         9+4Fg/sX8F+SNkUXW2M1Cb0+ilG8Ynx5jmd3Y+Ot9GHepp1W4kE8uVu9nBwIMkq7kSOh
+         X5N2b3MsHyDU0OXqZ6OBqIHn9GLZAnbmz+bhkIyVjYINe3LeCHOLpOaMSOMr/wSzzrbw
+         o43qpTnhQiU25pMFiBNogNLkRRxD0VjdZG+L9+bO/KsVjL4pJqJxOUkgZ093Uf3mqyqK
+         2B8nD4VfkbW2QrxkiDBT/TUgYfcY7haAJREKVB3LfXfJ//dqdut5UBQQomcqNr/9jQxQ
+         5BnA==
+X-Forwarded-Encrypted: i=1; AJvYcCUAdpODY5y2Z/plkSy9IWPBnUMZIt1ti3aSkRLBl39VLldQFUbTtx1U4jI0KxDCJkP0QJijWNTQHQD7ozuvgJ2OAgnWPkCjBxz72Q==
+X-Gm-Message-State: AOJu0YzUZhrLHI7QJ06zC6vvcoqU32AoqAtnme8/EsmgBT4F0X7487Kn
+	vMLbeT/vB93b+n1aVuNe+NTDSHtE0+2xyOo4/w725F8FK7FsuT9Q
+X-Google-Smtp-Source: AGHT+IFa2TOBD36/by28pREaHr4D9Rp8Rku7TAbpjlscgkfcZgRSNzCykUfMjU/XvXAxLdVnX4f7CA==
+X-Received: by 2002:a17:902:ee8c:b0:1da:1cdf:1cca with SMTP id a12-20020a170902ee8c00b001da1cdf1ccamr3457670pld.51.1708058809343;
+        Thu, 15 Feb 2024 20:46:49 -0800 (PST)
+Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
+        by smtp.gmail.com with ESMTPSA id b11-20020a170902b60b00b001d8f0e4bc32sm2051238pls.144.2024.02.15.20.46.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 20:43:37 -0800 (PST)
-Date: Thu, 15 Feb 2024 23:43:36 -0500
-Message-ID: <2cdfefc8661d0a82c28250fc22a93a47@paul-moore.com>
+        Thu, 15 Feb 2024 20:46:49 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 15 Feb 2024 18:46:47 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the workqueues tree
+Message-ID: <Zc7ot8BUke2Hwl3V@slm.duckdns.org>
+References: <20240216140014.4842449a@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 
-Content-Type: text/plain; charset=utf-8 
-Content-Disposition: inline 
-Content-Transfer-Encoding: 8bit
-From: Paul Moore <paul@paul-moore.com>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com, omosnace@redhat.com, casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v10 0/25] security: Move IMA and EVM to the LSM
- infrastructure
-References: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216140014.4842449a@canb.auug.org.au>
 
-On Feb 15, 2024 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+Hello,
+
+On Fri, Feb 16, 2024 at 02:00:14PM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> IMA and EVM are not effectively LSMs, especially due to the fact that in
-> the past they could not provide a security blob while there is another LSM
-> active.
+> After merging the workqueues tree, today's linux-next build (x86_64
+> allnoconfig) produced this warning:
 > 
-> That changed in the recent years, the LSM stacking feature now makes it
-> possible to stack together multiple LSMs, and allows them to provide a
-> security blob for most kernel objects. While the LSM stacking feature has
-> some limitations being worked out, it is already suitable to make IMA and
-> EVM as LSMs.
+> WARNING: unmet direct dependencies detected for IRQ_WORK
+>   Depends on [n]: SMP [=n]
+>   Selected by [y]:
+>   - PRINTK [=y]
+>   - PERF_EVENTS [=y] && HAVE_PERF_EVENTS [=y]
 > 
-> The main purpose of this patch set is to remove IMA and EVM function calls,
-> hardcoded in the LSM infrastructure and other places in the kernel, and to
-> register them as LSM hook implementations, so that those functions are
-> called by the LSM infrastructure like other regular LSMs.
+> Other allnoconfig builds produced similar warnings.
+> 
+> Introduced by commit
+> 
+>   9d6efa8d0dd0 ("workqueue, irq_work: Build fix for !CONFIG_IRQ_WORK")
 
-As discussed earlier, I've just merged this into the lsm/dev tree; a big
-thank you to Roberto for working on this and to all helped along the way
-with reviews, testing, etc.  I've wanted to see IMA/EVM integrated as
-proper LSMs for a while and I'm very happy to finally see it happening.
+Ah, sorry. I made it worse. I should have selected IRQ_WORK from SMP not
+depend on it. Will update. Thank you.
 
-Mimi, Roberto, I'm going to hold off on merging anything into the lsm/dev
-tree for a few days in case you decide you would prefer to take these
-patches yourselves.  If I don't hear anything from the two of you, I'll
-plan to send these to Linus during the next merge window.
-
---
-paul-moore.com
+-- 
+tejun
 
