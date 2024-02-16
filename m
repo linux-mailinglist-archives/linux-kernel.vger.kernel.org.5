@@ -1,112 +1,173 @@
-Return-Path: <linux-kernel+bounces-68095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC8638575EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:23:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14BBA8575FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 074221C222A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:23:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 82F0C1F236F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D075413FF5;
-	Fri, 16 Feb 2024 06:23:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16A5F14A99;
+	Fri, 16 Feb 2024 06:25:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kZ/URTLy"
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="KjyM5UKr"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B233134BD
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:23:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7829914285
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:25:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708064634; cv=none; b=G6cpBz8D7Rb8hCffgxq81z4WIVyIMpMix3VgbzyrUnDwtgcOiE/iJbG9D0KAYDY4GiVkoj1q+spPPtEvI7Milv6tNx8UuzRVX732pJYGGKSAifdbzHohWXrJQHwJUi6k0wQi6Ee0JLe9r4LtWy8E0i7FRC9vcH1G6sFjVttJTQI=
+	t=1708064756; cv=none; b=rUUf9rECn8w96HGkc1p7jvILEjuY9iWVby48f8uKUKMj5k1iaeE5PA62HWveUJAS6nQzRaaq4lsjPoCl8JEKg9kWmdlyguhPIOr41ou/PiIM+0Pg+0d3fIKo4M//TO18I7ptDgQ4ZkWBmciyxGaBd3fegpB9NLFw6HL90cCKsB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708064634; c=relaxed/simple;
-	bh=ap/AL4lHqZzJD3EPHrLC+i1FRpn+6ST6a8n/eXsj+LM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N6DMnUn7bwgKn47JBLUmYd7QvzZaNug83dBTEKLbRR3zATKClPPvwCWkcezi2H5KIuwrvda+9Id3G39bkYE/n7q1iFpdHeEwEVVMmC+8PS8xpDnXOkV8OrquOSUobdmR/B0a3dWU1f1bvqPzbi4OYqWRSYg9H5DHxejJGVcnEFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kZ/URTLy; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-33cddf4b4b5so1209493f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:23:52 -0800 (PST)
+	s=arc-20240116; t=1708064756; c=relaxed/simple;
+	bh=KivuariFpPolApka+H/P0dLLds23Rk9TayxJQuSEfUA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nSrk+YLoIuZjw92J8BfE4AxiQlEzm3a4cISqABUSuoTCdNzqi1NeAFzk0tAueqYPPaCuSHfSRbXCKv4hgvCi/ZqqE7LI3BCjryaIUkexvAXgi7hTtJfnRIPIr+CTEcLoScwgWA7VUQCMa2LhNeLsPCffuV0cwzSPmAPUU7b4/HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=KjyM5UKr; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1d73066880eso16131485ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:25:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708064631; x=1708669431; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ULnf0Z09ErzJv2F7WbwiQD8y1ATNtggEr2XiUFYMGWQ=;
-        b=kZ/URTLyo4lWSCtKt/6r9Yhp2MLVXSNuRFL1Te55dwuylRs5kANWeZHyhjqZUPtD6x
-         p7d8vRQek34amCqGUZqE2BtLu1DeP2Z/uvWVfpeMOwsaTsv+/0uFxUgpp7D2ui8SiBGj
-         tkpkT2gB8keNFpkld3CkFdxNLkry6OfZj37t8RCttKZfF9fh4J6N8ZwSDTdOsflffzjo
-         FD6r8IfZzAHDC2WgSdzlwsu5GLEbPS/rO4cvi8RoiF0vkUxJ6mmmeDoUsfIlyU/woFlU
-         YJ7ymsnQXYzUa94VDAeMqHE+2Ok3nJqxzI2i8o/067+eLt8LwPhTIFjn50xVSz5v2swY
-         XU+g==
+        d=endlessos.org; s=google; t=1708064754; x=1708669554; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=go9pnzcnTe/ILY9pnIwCtci+zv9qwK5zq4OGjkRdcEg=;
+        b=KjyM5UKrCBnBUsAhPJf5Qq1h/eDoGCJdjpJveuH8aW0mNYx0SNyaQHbJoSXLhVNq+0
+         Yfa9AWpWtC5n0cs2pJhRYeVMwNHq1X3DRbzYLXc2/oVkVGaPgRAEze0oGxaSAEjblFpA
+         1CimS/2Ldj/K6VIBBvL0ynaNYRSrNTVlNJ43bRYnWT5Pjr3mQ8B4IaJTzB85EsnsXr2e
+         0aotyhvG/5OZWWmSl3UxpflJpcyuX7G4Ve0CARJsChC188jJRTaIqtXoKeXRUKRRRsxO
+         JBz4OQQ7ZlfdtBGPr46YREVjYeqgCJ2vPocNn/9dJCRglxRTtomqSiUJKG9CQnisFHoP
+         AX+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708064631; x=1708669431;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ULnf0Z09ErzJv2F7WbwiQD8y1ATNtggEr2XiUFYMGWQ=;
-        b=tLHUYNjgbEUaL1jeLF+79qwVJHoKjIpckItelAcnKgnJZTb4U1QhvJSKRXkvKJ7W4C
-         XzAcNlpD3oF4uWIzrylXvYH3alvieScYJB/p+oaRGhreU51kuP72X6bwM1GvKF6a650V
-         vyjfhKACdGV2t9IGWYdv0Br7FcH62jUQlch5jxxlYa4MjWC9PK5klIQo59JO1TCMaLp0
-         wuK29/V4Y6OjUqEH8OfEVLpVgMoignNUPclGnc1jv58yxwcii6hxw1q99P7lqnv3byo3
-         BZEHn3Ez6uX2Xj0jEXooZxHh+VgMBClwRhP/CerNkO7CJDklcDqWO7/uwUR6n0CAN1Rr
-         Hudg==
-X-Forwarded-Encrypted: i=1; AJvYcCWPHPCNUBxuoIsUoe9Wm2vwlDBuBjK7KzvyTBmi54+o+n7EAgl78b4XMFoVJT0BlPPyvsnDIN5hZoF5rpWnqm6pO7gVSJO+G8ubwaYS
-X-Gm-Message-State: AOJu0YxiJSoByNpwGiL+R62lGJpLBR1crBJ+3QVqJXunPkdzG50twIMC
-	SpuS8jXN073Fu1R4BTKJTKkA5zqkD4+ZTHRtIs5DgCGogDgilxo=
-X-Google-Smtp-Source: AGHT+IEFpRRluIj/VNQ0ddoJrREHJO8NwODHJ49Yy8tONDulEsaSpT8rB/bDu00rmTtoMmv68HMUcg==
-X-Received: by 2002:adf:fdc6:0:b0:33c:f4fc:b91b with SMTP id i6-20020adffdc6000000b0033cf4fcb91bmr3185444wrs.52.1708064630631;
-        Thu, 15 Feb 2024 22:23:50 -0800 (PST)
-Received: from p183 ([46.53.248.67])
-        by smtp.gmail.com with ESMTPSA id bt21-20020a056000081500b0033d1f25b798sm567514wrb.82.2024.02.15.22.23.49
+        d=1e100.net; s=20230601; t=1708064754; x=1708669554;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=go9pnzcnTe/ILY9pnIwCtci+zv9qwK5zq4OGjkRdcEg=;
+        b=Bv/p1iIEN45tVeXmJIufDURWY3JodQE7OFeWZ2V9LtoJLWvXWewlba7JCdLndHPDbL
+         4Re5WylHq8hUTVrFbE8neozc7+ybzEfj0Rf+Rhtm7syLxdXbCGJ00Mdi4vHDjcyUvYS/
+         3DTLPDbLUZ2Nt+6fAfX/lsg2MZntFsAFIrlV3nb/5SNrkWMpHS9QnB82Il1xprJNH9HZ
+         GZz9dK93xib4QIsZ1fTq+92gmjuZtoxRBX+gqtc5xnpMj5sw3vPm6bMQBV3qMTn6eOJC
+         u1XixAxqTj67e0JAFu//fYzBT+MKYR8LPIkkB83shUGjn45zsN/EUXYnvgw5MwYmmLAu
+         NcoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvlcFAe/KtJy4f15fSpqOK/m5Qk6jZUCiaWMtTVUQtHPrsWGPiUuiTD2lCwQ+5gyI29hElhQVMi5flnbpZw3tsaKwZOsnr0a0zWK8C
+X-Gm-Message-State: AOJu0YzmleIuZ4u04gNYT98/mZ7Mqd78sI/fmsyRv4xaainDb9yR7MP0
+	UL6M1rhMqmrIp0YwaybhKuBP3yaIiY/Qs2miM1VHHNNbcIMKv9rViqQ84V5D8O4=
+X-Google-Smtp-Source: AGHT+IH7EJcml3M4W23V2oRSWcTU5ivUA9Rpf9CNv3pePb82LUOuAhNto94gZ7SLmoyVt9dN2Th53g==
+X-Received: by 2002:a17:90a:fb48:b0:299:3e78:91f6 with SMTP id iq8-20020a17090afb4800b002993e7891f6mr113505pjb.23.1708064753743;
+        Thu, 15 Feb 2024 22:25:53 -0800 (PST)
+Received: from starnight.endlessm-sf.com ([123.51.167.56])
+        by smtp.googlemail.com with ESMTPSA id sh18-20020a17090b525200b00298d8804ba8sm4398089pjb.46.2024.02.15.22.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 22:23:50 -0800 (PST)
-Date: Fri, 16 Feb 2024 09:23:48 +0300
-From: Alexey Dobriyan <adobriyan@gmail.com>
-To: Michal Wajdeczko <michal.wajdeczko@intel.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-kernel@vger.kernel.org, Rodrigo Vivi <rodrigo.vivi@intel.com>,
-	Jani Nikula <jani.nikula@intel.com>
-Subject: Re: [RFC] include/linux/make_type.h: Helpers for making u16/u32/u64
- values
-Message-ID: <bfb4c75e-8031-4dde-b881-21bdb238b802@p183>
-References: <ffa107dd-23dd-47e0-b3bb-06c60ca3e2e2@p183>
- <Zcz5GmAtPbdInWJU@smile.fi.intel.com>
- <cee345b1-a5aa-41bb-acb7-9b2aaef5bfb5@p183>
- <53297b2e-b7ff-4b92-b937-116cadaf8b6d@intel.com>
+        Thu, 15 Feb 2024 22:25:53 -0800 (PST)
+From: Jian-Hong Pan <jhp@endlessos.org>
+To: Bjorn Helgaas <helgaas@kernel.org>,
+	Johan Hovold <johan@kernel.org>,
+	David Box <david.e.box@linux.intel.com>,
+	=?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Nirmal Patel <nirmal.patel@linux.intel.com>,
+	Jonathan Derrick <jonathan.derrick@linux.dev>,
+	linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux@endlessos.org,
+	Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH v4 1/3] PCI: vmd: Enable PCI PM's L1 substates of remapped PCIe Root Port and NVMe
+Date: Fri, 16 Feb 2024 14:24:14 +0800
+Message-ID: <20240216062412.247052-3-jhp@endlessos.org>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <53297b2e-b7ff-4b92-b937-116cadaf8b6d@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 06:55:38PM +0100, Michal Wajdeczko wrote:
-> 
-> 
-> On 14.02.2024 18:39, Alexey Dobriyan wrote:
-> > On Wed, Feb 14, 2024 at 07:32:10PM +0200, Andy Shevchenko wrote:
-> >> On Wed, Feb 14, 2024 at 08:20:55PM +0300, Alexey Dobriyan wrote:
-> 
-> ...
-> 
-> > 
-> > Thirdly, there were no users posted.
-> 
-> for make_u64() there is already one at [1]
-> [1]
-> https://elixir.bootlin.com/linux/v6.8-rc4/source/drivers/gpu/drm/xe/xe_gt_pagefault.c#L555
+The remapped PCIe Root Port and NVMe have PCI PM L1 substates capability,
+but they are disabled originally.
 
-OK, this one doesn't truncate too.
+Here is a failed example on ASUS B1400CEAE:
 
-Honestly wordpath.h _sucks_ as a name.
+Capabilities: [900 v1] L1 PM Substates
+        L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1- L1_PM_Substates+
+                  PortCommonModeRestoreTime=32us PortTPowerOnTime=10us
+        L1SubCtl1: PCI-PM_L1.2- PCI-PM_L1.1- ASPM_L1.2+ ASPM_L1.1-
+                   T_CommonMode=0us LTR1.2_Threshold=0ns
+        L1SubCtl2: T_PwrOn=10us
 
-I'd go with stdint.h, at least this name is known from userspace.
+Power on all of the VMD remapped PCI devices before enable PCI-PM L1 PM
+Substates by following PCI Express Base Specification Revision 6.0, section
+5.5.4.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218394
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+---
+v2:
+- Power on the VMD remapped devices with pci_set_power_state_locked()
+- Prepare the PCIe LTR parameters before enable L1 Substates
+- Add note into the comments of both pci_enable_link_state() and
+  pci_enable_link_state_locked() for kernel-doc.
+- The original patch set can be split as individual patches.
+
+v3:
+- Re-send for the missed version information.
+- Split drivers/pci/pcie/aspm.c modification into following patches.
+- Fix the comment for enasuring the PCI devices in D0.
+
+v4:
+- The same
+
+ drivers/pci/controller/vmd.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pci/controller/vmd.c b/drivers/pci/controller/vmd.c
+index 87b7856f375a..6aca3f77724c 100644
+--- a/drivers/pci/controller/vmd.c
++++ b/drivers/pci/controller/vmd.c
+@@ -751,11 +751,9 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+ 	if (!(features & VMD_FEAT_BIOS_PM_QUIRK))
+ 		return 0;
+ 
+-	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+-
+ 	pos = pci_find_ext_capability(pdev, PCI_EXT_CAP_ID_LTR);
+ 	if (!pos)
+-		return 0;
++		goto out_enable_link_state;
+ 
+ 	/*
+ 	 * Skip if the max snoop LTR is non-zero, indicating BIOS has set it
+@@ -763,7 +761,7 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+ 	 */
+ 	pci_read_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, &ltr_reg);
+ 	if (!!(ltr_reg & (PCI_LTR_VALUE_MASK | PCI_LTR_SCALE_MASK)))
+-		return 0;
++		goto out_enable_link_state;
+ 
+ 	/*
+ 	 * Set the default values to the maximum required by the platform to
+@@ -775,6 +773,13 @@ static int vmd_pm_enable_quirk(struct pci_dev *pdev, void *userdata)
+ 	pci_write_config_dword(pdev, pos + PCI_LTR_MAX_SNOOP_LAT, ltr_reg);
+ 	pci_info(pdev, "VMD: Default LTR value set by driver\n");
+ 
++out_enable_link_state:
++	/*
++	 * Ensure devices are in D0 before enabling PCI-PM L1 PM Substates, per
++	 * PCIe r6.0, sec 5.5.4.
++	 */
++	pci_set_power_state_locked(pdev, PCI_D0);
++	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
+ 	return 0;
+ }
+ 
+-- 
+2.43.2
+
 
