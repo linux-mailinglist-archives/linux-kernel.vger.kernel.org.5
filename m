@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-68764-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54561857FC9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:52:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B51FC857FCC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E67B01F23380
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:52:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5CD71C223E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9191712F36A;
-	Fri, 16 Feb 2024 14:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD6112F367;
+	Fri, 16 Feb 2024 14:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p6zY6U3z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JZKs18Gx"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02E912EBF7;
-	Fri, 16 Feb 2024 14:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0971412C7F3;
+	Fri, 16 Feb 2024 14:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095139; cv=none; b=m+If3o+7Depk7k6aqPzhK//dBvxeZ846IVACUZvHHjeSy6C93Ue2T6BbDfWBkGuPMYrWhmlgzb4hTDJ/xCmRK8EIvNc/MyEL/jq/FyOPGij/XgpwJA+DlJQR6lyuei8kWNier14iLFIHuUzx2udCGr632oujyiHMbz8nSfeOjac=
+	t=1708095192; cv=none; b=lEoswM+nbYUwpj/5RxNam5grYwOPkxg8FkmELbgALOvzbGYnoSd3+2s4OE5q8fRG2SC0WugCG+MFrem5GamYU/j5G8OOySRWHajZTGg4S5Fezjy5LZ0fHNt1+f+4pazBng38nwnS7Ovy7uoE8BBfiasI0IpTY3MBx0tEv5UQEYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095139; c=relaxed/simple;
-	bh=bUtgLau8oqAzmALl7r4ZTuGib2lzrEo5ddgEED7CwzE=;
+	s=arc-20240116; t=1708095192; c=relaxed/simple;
+	bh=LMzBUEQYo4XVPtgX9jhAJ0vQ5+QsH4ZNObN1SC7ineU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DKfeEZKokd8epS8oCtiNS/5MlUnFMZNlyP53kyzqfWxLGs+LqUfLgrTmnE5AUMwK8Yq93yMWfTrB4G2uT/pQIP4z4q6kIwvlrxy9UN9dpzPCiR3qgvU8olutoBFoPLsmbikI2vVzE18SUYD/evrzh6B2DCIsEl86OIqbbiH9c5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p6zY6U3z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75C78C433F1;
-	Fri, 16 Feb 2024 14:52:16 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=YgbvaRx+6NM4TbkURk8ZdLXWN6NHEW4NjNMRZmog52qqgLSYYRkdDhqbNrGDQsJ4aXHll58Is5+Pddj8L0RQ+PaeJ1NMr7z862CxKOATcfyXF6Wnj04Fbk0+4/SfjVC7V+FAyRYFiuLKDbaE0T13zXbfh9ltTFSQBnScxjx0Sng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JZKs18Gx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6CD7C433F1;
+	Fri, 16 Feb 2024 14:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708095139;
-	bh=bUtgLau8oqAzmALl7r4ZTuGib2lzrEo5ddgEED7CwzE=;
+	s=k20201202; t=1708095191;
+	bh=LMzBUEQYo4XVPtgX9jhAJ0vQ5+QsH4ZNObN1SC7ineU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=p6zY6U3zj3ZrM2WG/PaoBQd+eQ5hktTIkzgZYbyGLxo6cmWVcR4BfE7VcQ2rOe/DL
-	 C2pyY3bVx+AT90EmcHAef2orXOZ1CvhjwfbPJTvrC2jO+yCrxe1bco7wkKYNWF+Xfi
-	 se2aG2OVaKj1yHeZt1cnRS7DB/i0DrpAvg7d7oH9YHnEGoCmfrLQyGiq+dTyglvyGK
-	 ZpdROl37gjLWO1UpEwZ7SDMrHHBP0pYm88e6MWSKs7cWuxq3TTwOqf7826l0yyHNdC
-	 shmkIkBKp74w4/p3iqE5doEYJ3HZpMdY8DoDpCHWDsd/t2Ei5afpo4kYU44eBLyFIK
-	 yUDHdjiAh03ZQ==
-Date: Fri, 16 Feb 2024 15:52:13 +0100
+	b=JZKs18GxecAhHOd/DdjSMCLrm2AVjc/3dPy73RswFIxKGlIBbCO5UUbL2wDrnB2+L
+	 yhRfrzcfoNUdbFL+LUh9olTAxNLVPIbvPDXF9xN6GUJAtdPAmIMVwEIFsnTFUG8LRH
+	 0xTdPPhihjIAkD5XdCe6HiPbPG/6mGwNFNrhdD64ORXdF46Zok7U0mlu/zU34SViit
+	 4rSz09NQG7CLu96MVUgj4WL/Yru+5Y9C+3vSbcKTerT4Xb1bdOnhK7qt831WhZlTbr
+	 kSyh1GuLclVuYFZG+NyvqDO7VsylnyNV+KKxKBmhfF+uoxw80zd2YX3iTuHIL4kib3
+	 KpmNU1A3Eck7Q==
+Date: Fri, 16 Feb 2024 15:53:05 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: Eric Dumazet <edumazet@google.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
@@ -48,10 +48,10 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Andrew Morton <akpm@linux-foundation.org>, netdev@vger.kernel.org, "David S . Miller" <davem@davemloft.net>, 
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
 	Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH 1/2] kobject: make uevent_seqnum atomic
-Message-ID: <20240216-fluggast-wohnt-17a30f7420d4@brauner>
+Subject: Re: [PATCH 2/2] kobject: reduce uevent_sock_mutex scope
+Message-ID: <20240216-handwagen-weltfremd-258b1ea3921d@brauner>
 References: <20240214084829.684541-1-edumazet@google.com>
- <20240214084829.684541-2-edumazet@google.com>
+ <20240214084829.684541-3-edumazet@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,22 +60,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240214084829.684541-2-edumazet@google.com>
+In-Reply-To: <20240214084829.684541-3-edumazet@google.com>
 
-On Wed, Feb 14, 2024 at 08:48:28AM +0000, Eric Dumazet wrote:
-> We will soon no longer acquire uevent_sock_mutex
-> for most kobject_uevent_net_broadcast() calls,
-> and also while calling uevent_net_broadcast().
+On Wed, Feb 14, 2024 at 08:48:29AM +0000, Eric Dumazet wrote:
+> This is a followup of commit a3498436b3a0 ("netns: restrict uevents")
 > 
-> Make uevent_seqnum an atomic64_t to get its own protection.
+> - uevent_sock_mutex no longer protects uevent_seqnum thanks
+>   to prior patch in the series.
 > 
-> This fixes a race while reading /sys/kernel/uevent_seqnum.
+> - uevent_net_broadcast() can run without holding uevent_sock_mutex.
+> 
+> - Instead of grabbing uevent_sock_mutex before calling
+>   kobject_uevent_net_broadcast(), we can move the
+>   mutex_lock(&uevent_sock_mutex) to the place we iterate over
+>   uevent_sock_list : uevent_net_broadcast_untagged().
+> 
+> After this patch, typical netdevice creations and destructions
+> calling uevent_net_broadcast_tagged() no longer need to acquire
+> uevent_sock_mutex.
 > 
 > Signed-off-by: Eric Dumazet <edumazet@google.com>
 > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > Cc: Christian Brauner <brauner@kernel.org>
 > ---
 
-Nice,
+Very nice,
 Reviewed-by: Christian Brauner <brauner@kernel.org>
 
