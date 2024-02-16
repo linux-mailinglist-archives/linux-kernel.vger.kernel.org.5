@@ -1,209 +1,344 @@
-Return-Path: <linux-kernel+bounces-68272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D548B85780F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:53:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE7D9857814
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:53:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04B3A1C20C69
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:53:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11CE5B21026
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B87FB1CA98;
-	Fri, 16 Feb 2024 08:50:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 395141BDCD;
+	Fri, 16 Feb 2024 08:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yA/4iNTU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKTSAEdQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MsHa2qgD";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4HijluMb"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ftKt5lEH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15CF01C6BC;
-	Fri, 16 Feb 2024 08:50:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D37018AF6;
+	Fri, 16 Feb 2024 08:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708073449; cv=none; b=LLP90U4AQvRvN7ugOxa1btqHgEpN/G4/myA+Ls6aXBgHbqHYfJzZ7zmvyvu0EZ+HY7XPXvZSIPapQr30mT9Gu1dzrwNzUsdMqo8nDjIyqzm4G5ZcyNPBDC4JltqFXhCX6s75UVqL/rjZNaTUTUk2WGin/6w2TaafK+g1yV3Ub8M=
+	t=1708073475; cv=none; b=NUYPYO32RPDQ2M5qKB/vBmhfF5J1MztTbnbFD3/d3tGUpqVuXR7Nf8jbBr8uMNlCgDFWE3IKrIqxJNORg2ub4ZsXGrkTbXKPFWXNLJlKlXFcb53O2lA2FsXd+U9frE5Q8KCkPYCFtmyEkjoYG1wa4xwfQIAmZWkpvPZuvzLdnmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708073449; c=relaxed/simple;
-	bh=yGT4FHDQGazhdbI/CEPDEVMPDIKAQ4DhuZOaL/hilGc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KTy7UNLwSTqkNPhAyZBrJlqHhR2X/wPEeo8gNMWAqW4al79U3HxKu2avENQLJZOj0BkX3P1d63E3jGpDWC3qZgF0WEwcCxdH0BzqOiJi0QPGrpLm+B9Xfms8vyX9/U84HkQC/rkyUt7T32fnghIMgFRqG5x8oVACpx1xTdt2ZOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yA/4iNTU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKTSAEdQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MsHa2qgD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4HijluMb; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EB4E021F7E;
-	Fri, 16 Feb 2024 08:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708073446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
-	b=yA/4iNTUqEHccnKB1z66YL2dzLg6sK1GL094zaEuj86ov+1DS8px+e7N+FD+6UOoxL+hET
-	a6lfnD8rSL+k5Kpa/+qQilTpVUcCW+apQ7/X8hCA0bvGBSjhiTKKM5kFasWyPCKhwvXLte
-	963wM1MWXhSKnZKJcQC8iHq8r4lfbFI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708073446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
-	b=OKTSAEdQiQOE8QGbehxaksfU4xFFfvbOGD6CVt9rRI12E/+Xejag/fOBwE1jxEW+sGHhKg
-	icATO2U/0LamPeCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708073443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
-	b=MsHa2qgDMGrpba+EungtRB3gKcd1mAeCYnHbKWGZYMw/SQvw9DiqUo9EErZ8M7sMcyP6RG
-	RK6h/aPqWH9WJi4p9mZ0TqgjpGee9KRFe7uPaqgah31OZo6pY5y4FPhnqmVR6Vv6bGKkTT
-	CAp5/x4fPl5c6RGeBvw0LRnpDPAKPcM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708073443;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LvS88A1JZEeIqJIhe88zQYazuSktyNUKiwnG9k26ga0=;
-	b=4HijluMb7Xd7CSzHohZEysAuvCcSdzvrC8J0c602jaX9pjeHwcb45OdKVf3sUKTqTBIdpa
-	zRznxQnOpK6ORGAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5FF7E1398D;
-	Fri, 16 Feb 2024 08:50:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Na8jF+Mhz2WqYwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 16 Feb 2024 08:50:43 +0000
-Message-ID: <af9eab14-367b-4832-8b78-66ca7e6ab328@suse.cz>
-Date: Fri, 16 Feb 2024 09:50:43 +0100
+	s=arc-20240116; t=1708073475; c=relaxed/simple;
+	bh=i7kDtepYVtDBE9CTUbYACMgHqVn6hAKTYCAZOtUapsQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=oSG0u62eDUZuRO25Cxs1omsz4+yNZvP/7QnHu5caTwy7rtulnVIoUn2Y6AjkrBg0Ra6DC25aP1dZJ4p2TyCgN1tJf8CQQhDDSWVOi8Pk0v9IG+d2EOf6DVrA+Hq7rmBGuoRnXs51WNW/kQz2JBcZ/d+xmkzWLwjvQ3yk84y8m7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ftKt5lEH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEB7FC433C7;
+	Fri, 16 Feb 2024 08:51:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708073474;
+	bh=i7kDtepYVtDBE9CTUbYACMgHqVn6hAKTYCAZOtUapsQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ftKt5lEHtQnA+DSfr51/DeSWoIoe5aIainy4y3vvdLXmF78zbx++OZJo53vZgw6eS
+	 mrMnXRzmmioqITOhm9tT1VX9OzksgOwZ5IXqjBNMx3m74iuk8Dl1CDoDuweqjahRXT
+	 VOLcSD7Nb9ZzkAV1QF46eb8cxyoD6j7ZZ5gB4vPs43fsE/VCNKq1gUB4twOrHbNWI7
+	 tUtZoWkmcfBuZzTPXMdgCurlbfi9PnB23B9AkjaFug2carSejO2zi4fn1Uyjp7Chmr
+	 sWEOdu4uV8bV/DKiyA4R0QQn8+sxfgfiAiFuqreV9VM13K2a1y7XChlMm2C+IJJoQ9
+	 tGkOwJDcwlBRw==
+Date: Fri, 16 Feb 2024 17:51:08 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 23/36] function_graph: Add a new exit handler with
+ parent_ip and ftrace_regs
+Message-Id: <20240216175108.79a256a20c89ed1d672c7e14@kernel.org>
+In-Reply-To: <20240215110404.4e8c5a94@gandalf.local.home>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723230476.502590.16817817024423790038.stgit@devnote2>
+	<20240215110404.4e8c5a94@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-Content-Language: en-US
-To: Kees Cook <keescook@chromium.org>, Suren Baghdasaryan <surenb@google.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, akpm@linux-foundation.org,
- kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
- void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
- catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de,
- mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
- peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
- masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
- muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
- pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
- dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-14-surenb@google.com>
- <202402121433.5CC66F34B@keescook>
- <CAJuCfpGU+UhtcWxk7M3diSiz-b7H64_7NMBaKS5dxVdbYWvQqA@mail.gmail.com>
- <20240213222859.GE6184@frogsfrogsfrogs>
- <CAJuCfpGHrCXoK828KkmahJzsO7tJsz=7fKehhkWOT8rj-xsAmA@mail.gmail.com>
- <202402131436.2CA91AE@keescook>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <202402131436.2CA91AE@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=MsHa2qgD;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=4HijluMb
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.00 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 MX_GOOD(-0.01)[];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_GT_50(0.00)[74];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[kernel.org,linux-foundation.org,linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -3.00
-X-Rspamd-Queue-Id: EB4E021F7E
-X-Spam-Flag: NO
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 2/13/24 23:38, Kees Cook wrote:
-> On Tue, Feb 13, 2024 at 02:35:29PM -0800, Suren Baghdasaryan wrote:
->> On Tue, Feb 13, 2024 at 2:29 PM Darrick J. Wong <djwong@kernel.org> wrote:
->> >
->> > On Mon, Feb 12, 2024 at 05:01:19PM -0800, Suren Baghdasaryan wrote:
->> > > On Mon, Feb 12, 2024 at 2:40 PM Kees Cook <keescook@chromium.org> wrote:
->> > > >
->> > > > On Mon, Feb 12, 2024 at 01:38:59PM -0800, Suren Baghdasaryan wrote:
->> > > > > Introduce CONFIG_MEM_ALLOC_PROFILING which provides definitions to easily
->> > > > > instrument memory allocators. It registers an "alloc_tags" codetag type
->> > > > > with /proc/allocinfo interface to output allocation tag information when
->> > > >
->> > > > Please don't add anything new to the top-level /proc directory. This
->> > > > should likely live in /sys.
->> > >
->> > > Ack. I'll find a more appropriate place for it then.
->> > > It just seemed like such generic information which would belong next
->> > > to meminfo/zoneinfo and such...
->> >
->> > Save yourself a cycle of "rework the whole fs interface only to have
->> > someone else tell you no" and put it in debugfs, not sysfs.  Wrangling
->> > with debugfs is easier than all the macro-happy sysfs stuff; you don't
->> > have to integrate with the "device" model; and there is no 'one value
->> > per file' rule.
->> 
->> Thanks for the input. This file used to be in debugfs but reviewers
->> felt it belonged in /proc if it's to be used in production
->> environments. Some distros (like Android) disable debugfs in
->> production.
+On Thu, 15 Feb 2024 11:04:04 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Wed,  7 Feb 2024 00:11:44 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 > 
-> FWIW, I agree debugfs is not right. If others feel it's right in /proc,
-> I certainly won't NAK -- it's just been that we've traditionally been
-> trying to avoid continuing to pollute the top-level /proc and instead
-> associate new things with something in /sys.
+> > diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+> > index c88bf47f46da..a061f8832b20 100644
+> > --- a/arch/x86/include/asm/ftrace.h
+> > +++ b/arch/x86/include/asm/ftrace.h
+> > @@ -72,6 +72,8 @@ arch_ftrace_get_regs(struct ftrace_regs *fregs)
+> >  	override_function_with_return(&(fregs)->regs)
+> >  #define ftrace_regs_query_register_offset(name) \
+> >  	regs_query_register_offset(name)
+> > +#define ftrace_regs_get_frame_pointer(fregs) \
+> > +	frame_pointer(&(fregs)->regs)
+> >  
+> 
+> Doesn't the above belong in the next patch that implements this for x86?
 
-Sysfs is really a "one value per file" thing though. /proc might be ok for a
-single overview file.
+Yes, thanks for pointing it!
+
+> 
+> >  struct ftrace_ops;
+> >  #define ftrace_graph_func ftrace_graph_func
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 65d4d4b68768..da2a23f5a9ed 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -43,7 +43,9 @@ struct dyn_ftrace;
+> >  
+> >  char *arch_ftrace_match_adjust(char *str, const char *search);
+> >  
+> > -#ifdef CONFIG_HAVE_FUNCTION_GRAPH_RETVAL
+> > +#ifdef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
+> > +unsigned long ftrace_return_to_handler(struct ftrace_regs *fregs);
+> > +#elif defined(CONFIG_HAVE_FUNCTION_GRAPH_RETVAL)
+> >  struct fgraph_ret_regs;
+> >  unsigned long ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs);
+> >  #else
+> > @@ -157,6 +159,7 @@ struct ftrace_regs {
+> >  #define ftrace_regs_set_instruction_pointer(fregs, ip) do { } while (0)
+> >  #endif /* CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS */
+> >  
+> > +
+> 
+> spurious newline.
+
+OK, I'll remove.
+
+> 
+> >  static __always_inline struct pt_regs *ftrace_get_regs(struct ftrace_regs *fregs)
+> >  {
+> >  	if (!fregs)
+> > @@ -1067,6 +1070,10 @@ typedef int (*trace_func_graph_regs_ent_t)(unsigned long func,
+> >  					   unsigned long parent_ip,
+> >  					   struct ftrace_regs *fregs,
+> >  					   struct fgraph_ops *); /* entry w/ regs */
+> > +typedef void (*trace_func_graph_regs_ret_t)(unsigned long func,
+> > +					    unsigned long parent_ip,
+> > +					    struct ftrace_regs *,
+> > +					    struct fgraph_ops *); /* return w/ regs */
+> >  
+> >  extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
+> >  
+> > @@ -1076,6 +1083,7 @@ struct fgraph_ops {
+> >  	trace_func_graph_ent_t		entryfunc;
+> >  	trace_func_graph_ret_t		retfunc;
+> >  	trace_func_graph_regs_ent_t	entryregfunc;
+> > +	trace_func_graph_regs_ret_t	retregfunc;
+> >  	struct ftrace_ops		ops; /* for the hash lists */
+> >  	void				*private;
+> >  	int				idx;
+> > diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> > index 61c541c36596..308b3bec01b1 100644
+> > --- a/kernel/trace/Kconfig
+> > +++ b/kernel/trace/Kconfig
+> > @@ -34,6 +34,9 @@ config HAVE_FUNCTION_GRAPH_TRACER
+> >  config HAVE_FUNCTION_GRAPH_RETVAL
+> >  	bool
+> >  
+> > +config HAVE_FUNCTION_GRAPH_FREGS
+> > +	bool
+> > +
+> >  config HAVE_DYNAMIC_FTRACE
+> >  	bool
+> >  	help
+> > @@ -232,7 +235,7 @@ config FUNCTION_GRAPH_TRACER
+> >  
+> >  config FUNCTION_GRAPH_RETVAL
+> >  	bool "Kernel Function Graph Return Value"
+> > -	depends on HAVE_FUNCTION_GRAPH_RETVAL
+> > +	depends on HAVE_FUNCTION_GRAPH_RETVAL || HAVE_FUNCTION_GRAPH_FREGS
+> >  	depends on FUNCTION_GRAPH_TRACER
+> >  	default n
+> >  	help
+> > diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> > index 459912ca72e0..12e5f108e242 100644
+> > --- a/kernel/trace/fgraph.c
+> > +++ b/kernel/trace/fgraph.c
+> > @@ -752,8 +752,8 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
+> >  
+> >  /* Retrieve a function return address to the trace stack on thread info.*/
+> >  static struct ftrace_ret_stack *
+> > -ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+> > -			unsigned long frame_pointer, int *index)
+> > +ftrace_pop_return_trace(unsigned long *ret, unsigned long frame_pointer,
+> > +			int *index)
+> >  {
+> >  	struct ftrace_ret_stack *ret_stack;
+> >  
+> > @@ -798,10 +798,6 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+> >  
+> >  	*index += FGRAPH_RET_INDEX;
+> >  	*ret = ret_stack->ret;
+> > -	trace->func = ret_stack->func;
+> > -	trace->calltime = ret_stack->calltime;
+> > -	trace->overrun = atomic_read(&current->trace_overrun);
+> > -	trace->depth = current->curr_ret_depth;
+> 
+> There's a lot of information stored in the trace structure. Why not pass
+> that to the new retregfunc?
+> 
+> Then you don't need to separate this code out.
+
+Sorry, I couldn't catch what you meant, Would you mean to call
+ftrace_pop_return_trace() before calling retregfunc()?? because some of the
+information are found from ret_stack, which is poped from shadow stack.
+
+> 
+> >  	/*
+> >  	 * We still want to trace interrupts coming in if
+> >  	 * max_depth is set to 1. Make sure the decrement is
+> > @@ -840,21 +836,42 @@ static struct notifier_block ftrace_suspend_notifier = {
+> >  /* fgraph_ret_regs is not defined without CONFIG_FUNCTION_GRAPH_RETVAL */
+> >  struct fgraph_ret_regs;
+> >  
+> > +static void fgraph_call_retfunc(struct ftrace_regs *fregs,
+> > +				struct fgraph_ret_regs *ret_regs,
+> > +				struct ftrace_ret_stack *ret_stack,
+> > +				struct fgraph_ops *gops)
+> > +{
+> > +	struct ftrace_graph_ret trace;
+> > +
+> > +	trace.func = ret_stack->func;
+> > +	trace.calltime = ret_stack->calltime;
+> > +	trace.overrun = atomic_read(&current->trace_overrun);
+> > +	trace.depth = current->curr_ret_depth;
+> > +	trace.rettime = trace_clock_local();
+> > +#ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+> > +	if (fregs)
+> > +		trace.retval = ftrace_regs_get_return_value(fregs);
+> > +	else
+> > +		trace.retval = fgraph_ret_regs_return_value(ret_regs);
+> > +#endif
+> > +	gops->retfunc(&trace, gops);
+> > +}
+> > +
+> >  /*
+> >   * Send the trace to the ring-buffer.
+> >   * @return the original return address.
+> >   */
+> > -static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs,
+> > +static unsigned long __ftrace_return_to_handler(struct ftrace_regs *fregs,
+> > +						struct fgraph_ret_regs *ret_regs,
+> >  						unsigned long frame_pointer)
+> >  {
+> >  	struct ftrace_ret_stack *ret_stack;
+> > -	struct ftrace_graph_ret trace;
+> >  	unsigned long bitmap;
+> >  	unsigned long ret;
+> >  	int index;
+> >  	int i;
+> >  
+> > -	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &index);
+> > +	ret_stack = ftrace_pop_return_trace(&ret, frame_pointer, &index);
+> >  
+> >  	if (unlikely(!ret_stack)) {
+> >  		ftrace_graph_stop();
+> > @@ -863,10 +880,8 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
+> >  		return (unsigned long)panic;
+> >  	}
+> >  
+> > -	trace.rettime = trace_clock_local();
+> > -#ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+> > -	trace.retval = fgraph_ret_regs_return_value(ret_regs);
+> > -#endif
+> > +	if (fregs)
+> > +		ftrace_regs_set_instruction_pointer(fregs, ret);
+> >  
+> >  	bitmap = get_fgraph_index_bitmap(current, index);
+> >  	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+> > @@ -877,7 +892,10 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
+> >  		if (gops == &fgraph_stub)
+> >  			continue;
+> >  
+> > -		gops->retfunc(&trace, gops);
+> > +		if (gops->retregfunc)
+> > +			gops->retregfunc(ret_stack->func, ret, fregs, gops);
+> > +		else
+> > +			fgraph_call_retfunc(fregs, ret_regs, ret_stack, gops);
+> >  	}
+> >  
+> >  	/*
+> > @@ -892,20 +910,22 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
+> >  	return ret;
+> >  }
+> >  
+> > -/*
+> > - * After all architecures have selected HAVE_FUNCTION_GRAPH_RETVAL, we can
+> > - * leave only ftrace_return_to_handler(ret_regs).
+> > - */
+> > -#ifdef CONFIG_HAVE_FUNCTION_GRAPH_RETVAL
+> > +#ifdef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
+> > +unsigned long ftrace_return_to_handler(struct ftrace_regs *fregs)
+> > +{
+> > +	return __ftrace_return_to_handler(fregs, NULL,
+> > +				ftrace_regs_get_frame_pointer(fregs));
+> > +}
+> > +#elif defined(CONFIG_HAVE_FUNCTION_GRAPH_RETVAL)
+> >  unsigned long ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs)
+> >  {
+> > -	return __ftrace_return_to_handler(ret_regs,
+> > +	return __ftrace_return_to_handler(NULL, ret_regs,
+> >  				fgraph_ret_regs_frame_pointer(ret_regs));
+> >  }
+> >  #else
+> >  unsigned long ftrace_return_to_handler(unsigned long frame_pointer)
+> >  {
+> > -	return __ftrace_return_to_handler(NULL, frame_pointer);
+> > +	return __ftrace_return_to_handler(NULL, NULL, frame_pointer);
+> >  }
+> >  #endif
+> >  
+> > @@ -1262,9 +1282,15 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+> >  	int ret = 0;
+> >  	int i;
+> >  
+> > -	if (gops->entryfunc && gops->entryregfunc)
+> > +	if ((gops->entryfunc && gops->entryregfunc) ||
+> > +	    (gops->retfunc && gops->retregfunc))
+> >  		return -EINVAL;
+> 
+> With a union, you don't need this.
+
+Indeed.
+
+> 
+> Now, is it possible to have a entryregfunc and a retfunc, or a entryfunc
+> and a retregfunc?
+
+It is possisble, but may not give any benefit.
+
+Thank you,
+
+> 
+> -- Steve
+> 
+> >  
+> > +#ifndef CONFIG_HAVE_FUNCTION_GRAPH_FREGS
+> > +	if (gops->retregfunc)
+> > +		return -EOPNOTSUPP;
+> > +#endif
+> > +
+> >  	mutex_lock(&ftrace_lock);
+> >  
+> >  	if (!gops->ops.func) {
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
