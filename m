@@ -1,95 +1,78 @@
-Return-Path: <linux-kernel+bounces-67943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67944-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0065D857362
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 228B8857368
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:28:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32EA11C21998
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:25:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 552791C2181B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:27:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A305DDC5;
-	Fri, 16 Feb 2024 01:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13062DDD5;
+	Fri, 16 Feb 2024 01:27:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NFrxFGqH"
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eikRcSiI"
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02FA98F49;
-	Fri, 16 Feb 2024 01:24:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8FAD299
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708046691; cv=none; b=iTJqhrX05kgkEII1aPu1Ux6g+E0I6j2PnEGLi+VgIRXdNuRSa0nBOcCgToc0PXI1YV0rNc9q0Zh9pjgUJmmwSTYJNxGnN9+Wuqir3jrG2HXxErJ0/Abxmie4XikpL+MvkhS9tU/TH4YK4IpIFdGuGWXw7CeqdlR/Zvy9vu5etC8=
+	t=1708046868; cv=none; b=oBBHmXzz2gjEJJOwjnDpQWZjWSYOATnxzq9Vxjtbw+cFAc9E8h2N60/VxxY4DTiJtzGjhPuRwy6tWZ6L4C/F7e+atHCV1mi5IfyfXZ+AqU56FdEM9qwXkVMEBm+8l/Z55tNly4F3+qVPsEb3LCgHM3sS9L1UuCGlW1dns23T31Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708046691; c=relaxed/simple;
-	bh=4RHOaWM73Sbfn1xpDXxyaZo4TzXIOvxgW+QTbCR9sYw=;
+	s=arc-20240116; t=1708046868; c=relaxed/simple;
+	bh=2oKO7VA3PoFchDCqL7KpfExW+/KPmg7jqfIF2Vuf9TQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=buaKa+Q2UKbtUj0HUUCu15EKHZCRNG8F1eA18ofgEYP1VIO+anad9IhWREpn4GfhzwqKZh3l0BoWhtMWhqBH0TvwFrYhlZ8ny2tTaN92DmnVR92lXxkXttka2fAzglTTdDvm1l8fyOpRfnawsDq/Fi26SzyPB5jE0D8MSV/YsH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NFrxFGqH; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412255afa19so6888285e9.3;
-        Thu, 15 Feb 2024 17:24:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708046688; x=1708651488; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Oyqz5SQV7vsHMVsXkHmWHMS+rB/T1/CKYrZbsQOdOR8=;
-        b=NFrxFGqHrrN7J2/liBo/c0bNGdIxKp5uVWsLBY6UMtnydgcjXK+tm89PiJt/4jrDBg
-         9uL2QHaM5eRzXqZd6qFR48/KBotXRfGgE2JOPXtF+s1L38+pMx/4DZwYbtmquMRopWGg
-         S9wXNxyrdVtD8CnIFuYWSG+IKT4xiXG5JAPwVv3B6jqZiudJuRJ2D2ZjmXGPAz8ML9Fo
-         xhUSLx2Hc/rGRXig+SBXuU6vq9qJOcRnF4LXWZSyNuZFuUBdH5pMKLymYIAs3nuCTsSZ
-         +xVMyvVp0SvwYkuJsnrA5ZwlJ6hUMbZv2llPb/pe6ysPc3gIROYDzcZD9Tec4e21BDqq
-         iwvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708046688; x=1708651488;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Oyqz5SQV7vsHMVsXkHmWHMS+rB/T1/CKYrZbsQOdOR8=;
-        b=OKVJZ4k3kNzaermc++luqVzFCz7Vqeb1KYNNsw4iFVeSaf00kobU5B3VFRdQMHrr6g
-         fozN1JpxEwjtzBqgh6oVGklNYuIptb26irYbzyOHRhW2EXFb5GvBdrE76L5hG2WiN8TY
-         JNdVYaJepvj2/vGzfA1b4cQnrFcQo9dPhE8SlaBEhooVp8jVj1vcYI4vzdxwnS0uW4J0
-         bKB7dyCL4fw7FmgdOomMLpb3JyP8aVEa6zmAA6HX+qDIPwxvEffZN7I4A0TgMxOR4PaA
-         hkMy+MhN/ke3jkUh3fybAWCaDN8p5d7FFwcf0aAbvddeNlj+0yc+/fvbj0NKZAVHAGCW
-         pZ/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXGwKFEIfrzp+G+0hhed79qqBgVE2Ix0/S54f576D8KiQc/AHJ4o5tlkEJ1qPp0flswPf9X4pRKmmjgxrbR/3lT0AbSIg0WEvPNZdePKAWlbJhXMiFLlu1qaN7/LfYXUHftHSyP
-X-Gm-Message-State: AOJu0YxVipnnaSx/zPIXkfq7qxgg2tT3HBR4Q1tjxID7AtIL6U7THyAJ
-	7jP/upN/fxbXTCafy/pTcXdb5tIgkhRR4y1pPYHy3Rarikg8jZ1K
-X-Google-Smtp-Source: AGHT+IGBlunrq9zjEgxmNJ3CxTO0V4JQm3KyRRcIkUsnDoNn3Qeb0dixW54hlTXUhMgR3hYWRWylUw==
-X-Received: by 2002:a5d:4104:0:b0:33b:636e:c967 with SMTP id l4-20020a5d4104000000b0033b636ec967mr2010965wrp.1.1708046688150;
-        Thu, 15 Feb 2024 17:24:48 -0800 (PST)
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id co3-20020a0560000a0300b0033cf9e35b13sm660331wrb.72.2024.02.15.17.24.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 17:24:47 -0800 (PST)
-Date: Fri, 16 Feb 2024 03:24:45 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: arinc.unal@arinc9.com
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
-	Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
-	Frank Wunderlich <frank-w@public-files.de>,
-	Bartel Eerdekens <bartel.eerdekens@constell8.be>,
-	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH net RFC] net: dsa: mt7530: fix link-local frames that
- ingress vlan filtering ports
-Message-ID: <20240216012445.em247rxfjnyufwm5@skbuf>
-References: <65bbf40d.170a0220.a87f4.becdSMTPIN_ADDED_BROKEN@mx.google.com>
- <65bbf40d.170a0220.a87f4.becdSMTPIN_ADDED_BROKEN@mx.google.com>
- <20240201232619.nsmm7lvafuem2gou@skbuf>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZuBWtWEl3iInH4XkGcveGV4JGph7Upu/qFATzguQPbO2UKC1dSdWt7akNSJ6vRKRfvaZe3lh1952Uf4OQrJUvEVRG+wvW42Cs1/ZiVfU9N82SV8muCU6oNrgzKas1BLlXzXhDPElj4/tPIE8b7HeSSM42tvDatwfGKG88lVM/ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eikRcSiI; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 Feb 2024 20:27:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708046863;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=eetpFPzcLKuw5HxOpWYVmhh5wz1OkHFu3WKeFY7241g=;
+	b=eikRcSiIlxJQoaLSe+2OYMExnYsOjBZ9AUpmDf2rLIL/Q/zgYknGLLmlbY+KHrXhdQJyXa
+	4s4NUYFAxjJDTXRvs8jDGA9ZRJ1Xl781WswYHby5Zd9fsMN57an2WOSUwRYNvGe6uJPWh3
+	lr3fAX/rJ/8V61hf1ztLpHxf+bwctRo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	Suren Baghdasaryan <surenb@google.com>, mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, 
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
+	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
+	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
+	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, 
+	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
+	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
+	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
+ allocation profiling
+Message-ID: <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-14-surenb@google.com>
+ <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
+ <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
+ <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -99,32 +82,70 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240201232619.nsmm7lvafuem2gou@skbuf>
+In-Reply-To: <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Feb 02, 2024 at 01:26:19AM +0200, Vladimir Oltean wrote:
-> On Thu, Feb 01, 2024 at 10:13:39PM +0300, Arınç ÜNAL via B4 Relay wrote:
-> > One remaining limitation is that the ingress port must have a PVID assigned
-> > to it for the frame to be trapped to the CPU port. A PVID is set by default
-> > on vlan aware and vlan unaware ports. However, when the network interface
-> > that pertains to the ingress port is attached to a vlan_filtering enabled
-> > bridge, the user can remove the PVID assignment from it which would prevent
-> > the link-local frames from being trapped to the CPU port.
-> > 
-> > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> > ---
-> > I couldn't figure out a way to bypass VLAN table lookup for link-local
-> > frames to directly trap them to the CPU port. The CPU port is hardcoded for
-> > MT7530. For MT7531 and the switch on the MT7988 SoC, it depends on the port
-> > matrix to choose the CPU port to trap the frames to. Port matrix and VLAN
-> > table seem to go hand in hand so I don't know if this would even be
-> > possible.
-> > 
-> > If possible to implement, link-local frames must not be influenced by the
-> > VLAN table. They must always be trapped to the CPU port, and trapped
-> > untagged.
+On Thu, Feb 15, 2024 at 08:22:44PM -0500, Pasha Tatashin wrote:
+> On Thu, Feb 15, 2024 at 8:00 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Thu, Feb 15, 2024 at 04:54:38PM -0800, Andrew Morton wrote:
+> > > On Mon, 12 Feb 2024 13:38:59 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+> > >
+> > > > +Example output.
+> > > > +
+> > > > +::
+> > > > +
+> > > > +    > cat /proc/allocinfo
+> > > > +
+> > > > +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_page
+> > > > +     6.08MiB     mm/slab_common.c:950 module:slab_common func:_kmalloc_order
+> > > > +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:alloc_slab_obj_exts
+> > > > +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:alloc_pages_exact
+> > > > +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtable func:__pte_alloc_one
+> > >
+> > > I don't really like the fancy MiB stuff.  Wouldn't it be better to just
+> > > present the amount of memory in plain old bytes, so people can use sort
+> > > -n on it?
+> >
+> > They can use sort -h on it; the string_get_size() patch was specifically
+> > so that we could make the output compatible with sort -h
+> >
+> > > And it's easier to tell big-from-small at a glance because
+> > > big has more digits.
+> > >
+> > > Also, the first thing any sort of downstream processing of this data is
+> > > going to have to do is to convert the fancified output back into
+> > > plain-old-bytes.  So why not just emit plain-old-bytes?
+> > >
+> > > If someone wants the fancy output (and nobody does) then that can be
+> > > done in userspace.
+> >
+> > I like simpler, more discoverable tools; e.g. we've got a bunch of
+> > interesting stuff in scripts/ but it doesn't get used nearly as much -
+> > not as accessible as cat'ing a file, definitely not going to be
+> > installed by default.
 > 
-> Isn't this, in effect, what the "Leaky VLAN Enable" bit does?
+> I also prefer plain bytes instead of MiB. A driver developer that
+> wants to verify up-to the byte allocations for a new data structure
+> that they added is going to be disappointed by the rounded MiB
+> numbers.
 
-Hm? Any news on this? I suppose this was the reason for submitting the
-otherwise ok patch as RFC?
+That's a fair point.
+
+> The data contained in this file is not consumable without at least
+> "sort -h -r", so why not just output bytes instead?
+> 
+> There is /proc/slabinfo  and there is a slabtop tool.
+> For raw /proc/allocinfo we can create an alloctop tool that would
+> parse, sort and show data in human readable format based on various
+> criteria.
+> 
+> We should also add at the top of this file "allocinfo - version: 1.0",
+> to allow future extensions (i.e. column for proc name).
+
+How would we feel about exposing two different versions in /proc? It
+should be a pretty minimal addition to .text.
+
+Personally, I hate trying to count long strings digits by eyeball...
 
