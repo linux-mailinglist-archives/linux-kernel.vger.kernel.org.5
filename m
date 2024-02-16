@@ -1,118 +1,148 @@
-Return-Path: <linux-kernel+bounces-69171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3707E858550
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:34:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49857858554
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:34:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF7A4B25B17
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:34:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CD221C214D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:34:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E3F145FFD;
-	Fri, 16 Feb 2024 18:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JIjUVToZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0651353F0;
+	Fri, 16 Feb 2024 18:32:41 +0000 (UTC)
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC1A145B21;
-	Fri, 16 Feb 2024 18:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 905241EB24;
+	Fri, 16 Feb 2024 18:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708108324; cv=none; b=LfkYluSmg7UnSnP5m4fJbvgufEoPDTKol2ZajxXDg40LbukYl3DYZaRXBGzlqb7ymUZmHEG6Jdkaqb51f/EuaMIVs07/wVa5ZLEsFv1zQS2J58un4UubnXt6Qmc4V0/kHBW8P3Yx5cu9soumAx8yW8RJq4UQrrLyv2At/eM68OQ=
+	t=1708108361; cv=none; b=nlc6tbJ06rqc60UqmEBuvBMQFMnUx2SxthUOdR3w+AMtLMHBPyLDPYTzdoW5a9LhnMRED+jVXx9hQPyo3lKCeJJACMEBxkpNZB8Cgd1DLF8jD85/cyvfHP90XtHwqcygOapKZampcRVMI466zVHkJG+a85pmSrkbs7mBAqIv5hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708108324; c=relaxed/simple;
-	bh=EuQ0oWNycJc6EUI4ZgzFYPB2MfQHGg5k+ggiEumBsng=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=XyU6Fa2JLRhIiGE6vuhTBw2LlSlE6nYE/0d3MZEN4hIFeCuAX42xyWJnPmp4Vu/t0lnbMWxXvYLV/F0VQOmdvVyUtcD2FeeAfOTCNLt2caPaSRMhq5aa8C1BjoBVgm+QNjGKQuQRIqihS9u3In+kDDEB80iDXoDJ8OGyIcXW1A0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JIjUVToZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6E82C433C7;
-	Fri, 16 Feb 2024 18:32:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708108323;
-	bh=EuQ0oWNycJc6EUI4ZgzFYPB2MfQHGg5k+ggiEumBsng=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=JIjUVToZ9OnNPRW7wZ74ZAXQQlIcXyhcK2EAgw6bEzGMA96/l9Xd7ImlVnHC/HSAA
-	 AHp2+W08dKHJh4ynlYb8oC1vIqJUnjz/XHaw/Git88hTRb6S7T27UZAlW7HzwbtGaE
-	 dm0L+KbwQX9tKFdiwbF3rjc3v9vtOQNzWrSig5Ss89NDi1ArxCLMZynVlP0YG3BOzY
-	 VQ5i8oLalUDpiLoMop1oM9vz4DCHALT1OkCJDXKELTO84yhaKTPDsSofHOulle52zg
-	 yeFghWg60WN9u/87wAo2PLiNihR7A5n+nIvour5wfyw4UHCFHWpJJy8mttA348xfOl
-	 ZxsitMFTnBynw==
-Date: Fri, 16 Feb 2024 12:32:02 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1708108361; c=relaxed/simple;
+	bh=jHtIusC8u2VsKQ0wY60VTcAHVOsfPaNM70dyO1WvRaM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RouXkDeRks1brhTlhgP/irKu0aZ5BAR2kITlxJF13UadMSKZShLibVRxuSi+qWwBZh4Q4vtj4y/r7uQoegt87bf8jJoKhrGMj+i979W6unnUClIhOoA8syy67tyAGQuKyMigfMqM0pe7hGcG8bWY6ja7AJHWkPldr/eGZiRBpsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e2f6c7e623so256649a34.1;
+        Fri, 16 Feb 2024 10:32:39 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708108358; x=1708713158;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3lHn76WTrbLX7hdeSbLZzSHNfz0r3+6mxZ3noqX4GjE=;
+        b=bvULrn/0dcv6NP0EDsm3ZCuZLU+QHm9AeTs+qauaUK9L0muJ7Ror6E2saLzv6ePq3d
+         9/gPuAaVKa9eyMScSOOtJhFM+yXi8DZfxzqo4pcIndk9sG1gyZvdXtyEZIMWrTx3flDt
+         BuJq41MIJj+Qnauo+WhGBhBeI0z+MSwOYoGouk5Fg9YccVu1R8fmMPEcObZotUoVLmJE
+         WLEBcmVyrxhIn0QwYWgiywCYFXdVFUY+8YijcR6DmN+UhAAc2NEKj8LDV+6q4AlJBcw2
+         kzgkOiEHdisksnVqVBv9NW78jYaZoTbYIeLxkN4d2kFJdPV5mWEb4dOP/yd6qaV7V5Bd
+         0LbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWna9LUUOO+6Sw1dFdI01A4UjqCazv9jiWLm2YwelRWEaJIDHkxZvXg8I1AFjZ8bhGzfRXuuN9mg2Vu+gitm4TCNsb101c38YKEL6PXx6wn+Cge9rWY/epI6bcoanQ+pOUnm9zywGeVqvy0bixbJGX8p8rsGk0svopvm7UezPSAYpuAvTRqgy/BeCl5VBPvS5woTJQ10C/09MJzJIsG
+X-Gm-Message-State: AOJu0YwiwaN7oAx1DulTjNamlxi0FsKya7+x7QTC66CynJBso7opG7MZ
+	GLE9swe37bazSETyTvJABeUEAoUvNOAuoHb5n/sT/WXzP/7j9hUGb1cKpyE8dau4ltMvFVMo47q
+	jdWVGIdGKe3lcRUkJGCavxIhEArI=
+X-Google-Smtp-Source: AGHT+IFdoQQLtZ3cQx4MmyqGlde59pY0g87onhQCSxAZLVJreS86OzI3OnIAIMwdqJ9b8pBwIrWW3E1n8X5s2FYqjw8=
+X-Received: by 2002:a05:6820:1f8d:b0:59c:d8cd:ecee with SMTP id
+ eq13-20020a0568201f8d00b0059cd8cdeceemr2838635oob.1.1708108358603; Fri, 16
+ Feb 2024 10:32:38 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Abel Vesa <abel.vesa@linaro.org>
-Cc: Sean Paul <sean@poorly.run>, Maxime Ripard <mripard@kernel.org>, 
- linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- Rob Herring <robh+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, freedreno@lists.freedesktop.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- David Airlie <airlied@gmail.com>, 
- Marijn Suijten <marijn.suijten@somainline.org>, 
- Rob Clark <robdclark@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
- Daniel Vetter <daniel@ffwll.ch>, Thomas Zimmermann <tzimmermann@suse.de>, 
- Neil Armstrong <neil.armstrong@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org>
-References: <20240216-x1e80100-display-v3-0-28b1c33ac8c0@linaro.org>
- <20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org>
-Message-Id: <170810832158.3497594.1997532394027797497.robh@kernel.org>
-Subject: Re: [PATCH v3 2/4] dt-bindings: display/msm: Document MDSS on
- X1E80100
+References: <CGME20240213074430epcas5p4c520bf2cce121cf5fa970eed429231a8@epcas5p4.samsung.com>
+ <20240213074416.2169929-1-onkarnath.1@samsung.com>
+In-Reply-To: <20240213074416.2169929-1-onkarnath.1@samsung.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 16 Feb 2024 19:32:27 +0100
+Message-ID: <CAJZ5v0gAaNd6dZaJ0sDTgJSAkG7+u2Fgc0C=m2RSBKM1gTHe9g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] ACPI: use %pe for better readability of errors
+ while printing
+To: Onkarnarth <onkarnath.1@samsung.com>
+Cc: rafael@kernel.org, lenb@kernel.org, bhelgaas@google.com, 
+	viresh.kumar@linaro.org, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org, 
+	r.thapliyal@samsung.com, maninder1.s@samsung.com, helgaas@kernel.org, 
+	Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On Fri, 16 Feb 2024 19:01:06 +0200, Abel Vesa wrote:
-> Document the MDSS hardware found on the Qualcomm X1E80100 platform.
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+On Tue, Feb 13, 2024 at 9:20=E2=80=AFAM Onkarnarth <onkarnath.1@samsung.com=
+> wrote:
+>
+> From: Onkarnath <onkarnath.1@samsung.com>
+>
+> As %pe is already introduced, it's better to use it in place of (%ld) for
+> printing errors in logs. It would enhance readability of logs.
+>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
+> Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
 > ---
->  .../bindings/display/msm/qcom,x1e80100-mdss.yaml   | 253 +++++++++++++++++++++
->  1 file changed, 253 insertions(+)
-> 
+> v1 -> v2: Updated subject line as per file history & corrected spellings
+> in description.
+> v2 -> v3: Updated Reviewed-by tag.
+>
+>  drivers/acpi/acpi_processor.c | 2 +-
+>  drivers/acpi/acpi_watchdog.c  | 2 +-
+>  drivers/acpi/pci_slot.c       | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.=
+c
+> index 4fe2ef54088c..2ddd36a21850 100644
+> --- a/drivers/acpi/acpi_processor.c
+> +++ b/drivers/acpi/acpi_processor.c
+> @@ -161,7 +161,7 @@ static void cpufreq_add_device(const char *name)
+>
+>         pdev =3D platform_device_register_simple(name, PLATFORM_DEVID_NON=
+E, NULL, 0);
+>         if (IS_ERR(pdev))
+> -               pr_info("%s device creation failed: %ld\n", name, PTR_ERR=
+(pdev));
+> +               pr_info("%s device creation failed: %pe\n", name, pdev);
+>  }
+>
+>  #ifdef CONFIG_X86
+> diff --git a/drivers/acpi/acpi_watchdog.c b/drivers/acpi/acpi_watchdog.c
+> index 8e9e001da38f..14b24157799c 100644
+> --- a/drivers/acpi/acpi_watchdog.c
+> +++ b/drivers/acpi/acpi_watchdog.c
+> @@ -179,7 +179,7 @@ void __init acpi_watchdog_init(void)
+>         pdev =3D platform_device_register_simple("wdat_wdt", PLATFORM_DEV=
+ID_NONE,
+>                                                resources, nresources);
+>         if (IS_ERR(pdev))
+> -               pr_err("Device creation failed: %ld\n", PTR_ERR(pdev));
+> +               pr_err("Device creation failed: %pe\n", pdev);
+>
+>         kfree(resources);
+>
+> diff --git a/drivers/acpi/pci_slot.c b/drivers/acpi/pci_slot.c
+> index d6cb2c27a23b..741bcc9d6d6a 100644
+> --- a/drivers/acpi/pci_slot.c
+> +++ b/drivers/acpi/pci_slot.c
+> @@ -111,7 +111,7 @@ register_slot(acpi_handle handle, u32 lvl, void *cont=
+ext, void **rv)
+>         snprintf(name, sizeof(name), "%llu", sun);
+>         pci_slot =3D pci_create_slot(pci_bus, device, name, NULL);
+>         if (IS_ERR(pci_slot)) {
+> -               pr_err("pci_create_slot returned %ld\n", PTR_ERR(pci_slot=
+));
+> +               pr_err("pci_create_slot returned %pe\n", pci_slot);
+>                 kfree(slot);
+>                 return AE_OK;
+>         }
+> --
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dts:24:18: fatal error: dt-bindings/clock/qcom,x1e80100-dispcc.h: No such file or directory
-   24 |         #include <dt-bindings/clock/qcom,x1e80100-dispcc.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Applied as 6.9 material, thanks!
 
