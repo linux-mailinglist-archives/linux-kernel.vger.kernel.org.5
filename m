@@ -1,129 +1,110 @@
-Return-Path: <linux-kernel+bounces-68886-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68887-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D7EA858165
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:39:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35082858168
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:39:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D04F21C21359
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:39:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 672C51C211D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB42D12F5B0;
-	Fri, 16 Feb 2024 15:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AFF612FB3E;
+	Fri, 16 Feb 2024 15:35:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0qn3js0c";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3jG1bRA0"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="jSdhlpob"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90F612F596;
-	Fri, 16 Feb 2024 15:33:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 385B912FB14;
+	Fri, 16 Feb 2024 15:35:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708097607; cv=none; b=sKRS49fz8Sg04SqlMnaTqjmHJ12gTR0VRP5XufUOor8VW0Zu7NWwzZ9i6y2CBUTOd9ewMSipfGzZvGANlN0fvqdF0cAyPaooTb8BGzASy7o2RewOPHCG9S+i6F5OuheWPTq7Uz2HiRhy8sI7IY2J202EmJ9ZnLDf8BNK6yB50fk=
+	t=1708097701; cv=none; b=QdDiIwMI8gyCNSF7aCxC/6Y45kZSmwxpDBjW392SsqBRsH+OUewwuLQ2yJ0tvhvVasj89IPyJhtWkjK7Rw3eS+oLuTybcGm2nLgcVVzlhI6dERAh1KE1udJduQ0YMB6ukgjyvl2vuNJLKyPQeXsotJTy1fQ/Ya0SYYzhmbOx9wA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708097607; c=relaxed/simple;
-	bh=IfUjVldnRfukpDdNPkqhhIymbBOg+T1J2z8t9u0YAfA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=fNh3YCfiF6qGyAE1L0Z0doI95syv2PAuFVo2RXCJM4bDD2R52l40wbIbx1/CqA4mehs+Yz+Nht4DclvX4N/qZKwFhnfNtk9hHK/N8cOtEsTyITRmuatzWFAyOzJVtldxBLndfZh+2UbrhFAfMeRyyOyVwlCF1TEd0mEDaLDwL1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0qn3js0c; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3jG1bRA0; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708097604;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b2MaYtjttL6XKBNL0rdPOP7iP2+uK1fvBkLYnfKG/rM=;
-	b=0qn3js0c+PxthhaToXev+IfwlGXqyVL+/2Ng4/kF4L9yOBlfcYjF+3J31ouudWdpim0mF5
-	M8TXP40JWWfQ2WGZa33Y4cjVM7s0SrwYwb36dSY/TPAmMYmOxT68r636xK6dsXZ03e/XKw
-	zOxzOcS1+VHVDBUCUdYuOd9kfYPYJD9mDUEAiZRMf/sjwafmglDv9w+oIFXecCsOfoNc9d
-	oOkwKpj+GCfn4UBe5QxTB82YtjygcYejyBhnu+4BMvbVxnqtlUjeg5Smq2Oi1/+lKQA2ja
-	kC9OocVn1stvdgl//7mcSNjQkeUqMgpZTrhUFZVdMSjHmuzOge4tL6VvmJhIDw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708097604;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=b2MaYtjttL6XKBNL0rdPOP7iP2+uK1fvBkLYnfKG/rM=;
-	b=3jG1bRA09z9Yz6hS8ZMKbnr4SudqqedyjpDGks+fqNkrunvpm9xBTYCTBJHfPWjIbNOvQH
-	/Tndz8JCl0Y1q4BA==
-To: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand
- <frowand.list@gmail.com>, Conor Dooley <conor+dt@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Atish
- Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>,
- Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan
- <saravanak@google.com>, Anup Patel <anup@brainfault.org>,
- linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, Anup Patel
- <apatel@ventanamicro.com>
-Subject: Re: [PATCH v12 14/25] irqchip/sifive-plic: Convert PLIC driver into
- a platform driver
-In-Reply-To: <20240127161753.114685-15-apatel@ventanamicro.com>
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <20240127161753.114685-15-apatel@ventanamicro.com>
-Date: Fri, 16 Feb 2024 16:33:23 +0100
-Message-ID: <87jzn4ctks.ffs@tglx>
+	s=arc-20240116; t=1708097701; c=relaxed/simple;
+	bh=SS7iDD7dZDZOfWXznvwX8y8maPYyPpOM4xbYO597iD8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lB1lUIeTGqYCMS5mgsQVaaKzdLw3Lwq5LvzJPyWmhlO1sJ0H0nfWFMQO6345PJkTA4Zxj8pCGX/oKA/fUi75fLXNqb4w5FCoqTNbXh+E6YfFiq+VEm3CA2i+h/Fj5RHcrapGeTQkNY6Fw3X9X7fS+2fQ96+bjSXcBmaHzmx35Fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=jSdhlpob; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20284C433F1;
+	Fri, 16 Feb 2024 15:34:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708097700;
+	bh=SS7iDD7dZDZOfWXznvwX8y8maPYyPpOM4xbYO597iD8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jSdhlpobzJh7tkYVoyheKTAJ2RQJIIXsgUYWbAbqzbQHjLE7NmHurOg9OkTpfyc22
+	 Ryn2vGMzQlmQhxCgtwpbivbbUmXRZOne+DYoSUVULzIrBOo9r098ubxdGbigUGYB4i
+	 pYvUkHFgcbbrw0fxUSh7sWYmtArMOhZFrfvho3bE=
+Date: Fri, 16 Feb 2024 16:34:57 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, security@kernel.org,
+	Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>,
+	Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE process
+Message-ID: <2024021620-retrieval-lethargic-eeca@gregkh>
+References: <2024021430-blanching-spotter-c7c8@gregkh>
+ <Zc5PycMenLBYECAn@tiehlicka>
+ <2024021518-stature-frightful-e7fc@gregkh>
+ <Zc5ZpB6jsuTKmhv5@tiehlicka>
+ <2024021646-procedure-faceted-ea87@gregkh>
+ <Zc9hBJuca3f_5KHx@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zc9hBJuca3f_5KHx@tiehlicka>
 
-On Sat, Jan 27 2024 at 21:47, Anup Patel wrote:
-> +	priv->irqdomain = irq_domain_create_linear(dev->fwnode, nr_irqs + 1,
-> +						   &plic_irqdomain_ops, priv);
-> +	if (WARN_ON(!priv->irqdomain))
-> +		return -ENOMEM;
+On Fri, Feb 16, 2024 at 02:20:04PM +0100, Michal Hocko wrote:
+> > Right now
+> > we are fixing lots and lots of things and no one notices as their
+> > "traditional" path of only looking at CVEs for the kernel is totally
+> > incorrect.
+> 
+> Right, there are quite a lot of people who consider CVE fixes much more
+> important than regular fixes. Their reasoning might be completely
+> misleading but there might be very good reasons to stick to minimalistic
+> approach, e.g. to reduce risk of regressions.
+> 
+> I believe it is perfectly fair to say that whoever relies on stable
+> kernels support needs to update to the latest stable kernel version to
+> be covered by security and functional fixes. On the other hand I do not
+> think it is an improvement to the process to swamp CVE database with any
+> random fixes without a proper evaluation. If the kernel community
+> doesn't believe in the CVE process then fair enough, just do not assign
+> them unless you want to explicitly call out fixes with a high impact
+> security implications. Having fewer good quality CVEs would definitely
+> improve the process.
 
-While some of the stuff is cleaned up by devm, the error handling in
-this code looks pretty fragile as it leaves initialized contexts,
-hardware state, chained handlers etc. around.
+As you know, it's almost impossible to determine if a fix is "high
+impact" or not, given that we have no idea what anyone's use case is for
+the kernel.  We have documented proof of single-byte-buffer-overflows
+resulting in complete system takeovers, and the same for very tiny
+use-after-free issues, and the same for tiny "overflow a USB string
+buffer" issues, and so on.
 
-The question is whether the system can actually boot or work at all if
-any of this fails.
+So as always, we need to treat "a bug is a bug is a bug" and when
+looking at the bug fix, if it resolves something that is known to be
+a vulnerability (again, as defined by CVE themselves), then we need to
+mark it as such.
 
-> +
->  	/*
->  	 * We can have multiple PLIC instances so setup cpuhp state
-> -	 * and register syscore operations only when context handler
-> -	 * for current/boot CPU is present.
-> +	 * and register syscore operations only after context handlers
-> +	 * of all online CPUs are initialized.
->  	 */
-> -	handler = this_cpu_ptr(&plic_handlers);
-> -	if (handler->present && !plic_cpuhp_setup_done) {
-> +	cpuhp_setup = true;
-> +	for_each_online_cpu(cpu) {
-> +		handler = per_cpu_ptr(&plic_handlers, cpu);
-> +		if (!handler->present) {
-> +			cpuhp_setup = false;
-> +			break;
-> +		}
-> +	}
-> +	if (cpuhp_setup) {
->  		cpuhp_setup_state(CPUHP_AP_IRQ_SIFIVE_PLIC_STARTING,
->  				  "irqchip/sifive/plic:starting",
->  				  plic_starting_cpu, plic_dying_cpu);
->  		register_syscore_ops(&plic_irq_syscore_ops);
-> -		plic_cpuhp_setup_done = true;
+If you find that we are marking things as a CVE thatt you do not feel
+should be marked as such, please let us know and we will be glad to
+discuss it on a case-by-case basis.
 
-I don't think that removing the setup protection is correct.
+But note, this type of classification has been happening for the kernel
+stable commits for 2+ years now, by Sasha, in the GSD records, so this
+isn't something new that we have been doing, it's just that only a very
+small group were noticing that, and now a larger one might notice this.
 
-Assume you have maxcpus=N on the kernel command line, then the above
-for_each_online_cpu() loop would result in cpuhp_setup == true when the
-instances for the not onlined CPUs are set up, no?
+thanks,
 
-Thanks,
-
-        tglx
+greg k-h
 
