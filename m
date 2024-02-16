@@ -1,152 +1,118 @@
-Return-Path: <linux-kernel+bounces-68179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 791528576E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:37:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 585DD8576E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:40:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6D50284757
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:37:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76AA1F21095
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54A41759F;
-	Fri, 16 Feb 2024 07:36:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD0017591;
+	Fri, 16 Feb 2024 07:40:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="GTRnjZLf"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHyoB/Zm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3039D14AB0;
-	Fri, 16 Feb 2024 07:36:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB1B14F64;
+	Fri, 16 Feb 2024 07:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708069011; cv=none; b=u/B74JbSSJZhW2w9wUdrF4vQWn5elGh8aN0sx9+ajgth8YmT5fwSvGCBYowJ4wvpkXSTik07udxQU9y3qtkWKF/CpbDbgUuTD6k3lMtokE2UQa6GHHGrjw61CK7KJoNePXvYY7ziLDV4QltG6/Q0+tLTJYRgNvYZ3S4uAJYLOqg=
+	t=1708069214; cv=none; b=cXndlbxHPuiRxs/vf0PrrUJpiuJLBiVgPT1Lhc5UcXSSKffS9A+3Q8wf4Xiz2azE2UkDK1wP17q69fGdS2ajs+BEgzanCHSj6dauIbYg2uBgrGgXYWPEK0xIC+mvtHqzx7vL2n/ZKbnwhxypw2gR14p/C86NrCOUipKIFD6H9Cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708069011; c=relaxed/simple;
-	bh=f8O5RfA11gnSkEMTAztpJrLXeJDtOAHp8CFzTBzu+lc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Q16QICcUlv3ElwKXpTv50eQ+TBabCLKHkQFbET/YRipbg9+AaqqPKu+QGbLySrntSiPYN9auC9/ItzySA6MYAMo9oNp0ZAZBkBl4CXJsWtPSSlI0WTJiwMk7suFDzYq90XcqvBq5pASn8Ai2wsPaFPU9STHrDLJ4GYy5xcJZloU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=GTRnjZLf; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4FD8924000B;
-	Fri, 16 Feb 2024 07:36:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708069005;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OceffZlD1lIRrksGFR8T20wExx5FlLvt5rO7c2PaCW0=;
-	b=GTRnjZLfmc2MBgiM1Zf60+hsxmEgvJSAgGfpD3EUcdMGy67ksahC4u4bWw6gKe4BQLm9hS
-	LSV9/i/SxXWbTXIqhaVJny94dwU7J7Isx8fOfAUKJFhgAgoCYOrmGsMTESGCeDB6JTGFIx
-	q5CjZxup1yTajZRgaH2xgPhKjnLk2R2zInVEGgxJpobpIO5whKDl979ttmSKs20EC9Fekb
-	QbuTDbEJbLinNt/aR2Gd7PolhTTx71myPFc0Qrt8WHYyWBLbc6YElGLJ1iqsVEV3vjBB/k
-	Cm9HzvOLZsKgKefbLRhMbBSa+TJXzKMTB3VgMlVA5smCpuKtnfYMNLZP2B8axw==
-Message-ID: <e009fda0-3dd1-4834-8dce-73756c1e32f6@bootlin.com>
-Date: Fri, 16 Feb 2024 08:36:41 +0100
+	s=arc-20240116; t=1708069214; c=relaxed/simple;
+	bh=icz55HJQfZZHEN/btHPRBr3cpgSXuR4YteZ6R/WPaGA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=LWV7mBLpwmVf2kLccfwyD1TjWVEgJNod7rYabSS7MIPWnAbIuWonw+DiBdeG494vi0GCCFqsSZfuiY3i8+rXaefJ49GkD8eeWb5jrUaWUY0V7QHSNkzMEe7fryi6bYz7/P+CQxdgu1Vgn7nY4Stfp3YCpN4IeVEHCkbAarye9KU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHyoB/Zm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F255C433C7;
+	Fri, 16 Feb 2024 07:40:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708069214;
+	bh=icz55HJQfZZHEN/btHPRBr3cpgSXuR4YteZ6R/WPaGA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=RHyoB/Zm+aeCpXvsdcAkjZ/8IP0JIcV9o5cVs3hvqpviLm+GagX2Su7pi1IzmbFTI
+	 egsQDa7ec2GbV/tx00to1LvWI7cUqCtFZbVRCA+hJ6tEaXpXf2SXZaWIRZf9hW3P3V
+	 14k+yC+cS4EZoFOf1pkEXd7JEIlN1616BOSHmiot2zsknR6TT/hB3pcHYGCYALkUgq
+	 3/MpJEb5Qu0tMkq7dlDZKPDAoDxDeZCr3R26s2hBY9Z/0qPKuuYKzoFX4LlPpaNpZn
+	 GHCAEPY6d6nFk7ERFwPg2osOonvSBgwtQb0+uPgrFpnv9+JFklxoEmklr63HlMMVYR
+	 8BGq/CQgSk+6g==
+Date: Fri, 16 Feb 2024 16:40:07 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 19/36] function_graph: Implement
+ fgraph_reserve_data() and fgraph_retrieve_data()
+Message-Id: <20240216164007.2de685ce5c78cee69e168601@kernel.org>
+In-Reply-To: <20240214185407.767243b4@gandalf.local.home>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723226123.502590.4924916690354403889.stgit@devnote2>
+	<20240214135958.23ed55e1@gandalf.local.home>
+	<20240215084552.b72d6d22ce1b93bb8e04b70a@kernel.org>
+	<20240214185407.767243b4@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 14/18] phy: cadence-torrent: add suspend and resume
- support
-Content-Language: en-US
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
- Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-14-5c2e4a3fac1f@bootlin.com>
- <Zc4x7kvFfBI2sb_E@smile.fi.intel.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <Zc4x7kvFfBI2sb_E@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.richard@bootlin.com
 
-On 2/15/24 16:46, Andy Shevchenko wrote:
->> +static int cdns_torrent_phy_suspend_noirq(struct device *dev)
->> +{
->> +	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(dev);
->> +	int i;
+On Wed, 14 Feb 2024 18:54:07 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Thu, 15 Feb 2024 08:45:52 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 > 
-> Why signed?
+> > > Hmm, the above is a fast path. I wonder if we should add a patch to make that into:
+> > > 
+> > > 	if (unlikely(size_bytes & (sizeof(long) - 1)))
+> > > 		data_size = DIV_ROUND_UP(size_bytes, sizeof(long));
+> > > 	else
+> > > 		data_size = size_bytes >> (sizeof(long) == 4 ? 2 : 3);
+> > > 
+> > > to keep from doing the division.  
+> > 
+> > OK, I thought DIV_ROUND_UP was not much cost. Since sizeof(long) is
+> > fixed 4 or 8, so 
+> > 
+> > data_size = (size_bytes + sizeof(long) - 1) >> BITS_PER_LONG;
+> > 
+> > will this work?
+> 
+> No, because BITS_PER_LONG is 32 or 64 ;-)
 
-In the for loop below, the i variable is compared to
-cdns_phy->nsubnodes, which is an int.
-
-https://elixir.bootlin.com/linux/latest/source/drivers/phy/cadence/phy-cadence-torrent.c#L360
+Oops indeed.
 
 > 
->> +	reset_control_assert(cdns_phy->phy_rst);
->> +	reset_control_assert(cdns_phy->apb_rst);
->> +	for (i = 0; i < cdns_phy->nsubnodes; i++)
->> +		reset_control_assert(cdns_phy->phys[i].lnk_rst);
->> +
->> +	if (cdns_phy->already_configured)
->> +		cdns_phy->already_configured = 0;
->> +	else
->> +		clk_disable_unprepare(cdns_phy->clk);
->> +
->> +	return 0;
->> +}
->> +
->> +static int cdns_torrent_phy_resume_noirq(struct device *dev)
->> +{
->> +	struct cdns_torrent_phy *cdns_phy = dev_get_drvdata(dev);
->> +	int node = cdns_phy->nsubnodes;
->> +	int ret, i;
+> But this should;
 > 
-> Ditto>
-
-Same reason
-
->> +	ret = cdns_torrent_clk(cdns_phy);
->> +	if (ret)
->> +		goto clk_cleanup;
->> +
->> +	/* Enable APB */
->> +	reset_control_deassert(cdns_phy->apb_rst);
->> +
->> +	if (cdns_phy->nsubnodes > 1) {
->> +		ret = cdns_torrent_phy_configure_multilink(cdns_phy);
->> +		if (ret)
->> +			goto put_lnk_rst;
->> +	}
->> +
->> +	return 0;
->> +
->> +put_lnk_rst:
->> +	for (i = 0; i < node; i++)
->> +		reset_control_assert(cdns_phy->phys[i].lnk_rst);
->> +	reset_control_assert(cdns_phy->apb_rst);
->> +	clk_disable_unprepare(cdns_phy->clk);
->> +clk_cleanup:
->> +	cdns_torrent_clk_cleanup(cdns_phy);
->> +	return ret;
->> +}
+> 	data_size = (size_bytes + sizeof(long) - 1) >> (sizeof(long) == 4 ? 2 : 3);
 > 
+> As sizeof(long) is a constant, that conditional expression will be hard
+> coded into either 2 or 3 by the compiler.
+
+Yeah. OK, let me update it.
+
+Thank you,
+
+> 
+> -- Steve
+
+
 -- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
