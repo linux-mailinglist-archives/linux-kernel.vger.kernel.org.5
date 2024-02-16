@@ -1,120 +1,92 @@
-Return-Path: <linux-kernel+bounces-68606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF29F857D10
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:01:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D59FC857D13
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:01:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7961E1F266A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:01:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84B2A1F2688F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:01:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BEB31292E7;
-	Fri, 16 Feb 2024 13:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D8021292F2;
+	Fri, 16 Feb 2024 13:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qw9uyJj5"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="mEM2voq/"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A9012883D;
-	Fri, 16 Feb 2024 13:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6984C77F19;
+	Fri, 16 Feb 2024 13:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708088456; cv=none; b=UWWKLbHzHVIX76og69Hwx/QywNgy/TJ9YmZapaIzHzaxUdVEZrTTSE2FgluSKUMNGk7j8p9SUg96Mc5b/EK5DShaWXE04vzTtsO3j/bm5N6u851WS0GJyFVah1VYRfpQXHqmw9VJM8UfdaNIctZFsup4OxLj0v+iNLJ5d1d5CEc=
+	t=1708088484; cv=none; b=rgSeSUiFHIJouusrCEKDs0Nkutla/K3ktyD16qdKe7A5FGoAdhcmfBIdhjRxS94a86E+kOyHNRBlOXl5DnrNrEGIodighJZPfKjSvhJVs/QQnsLUddOAu8ErwwBJvrYt9Sq3a+PhRYOp72ZIIbtION5hTHoXMjxlxWE4teXfe2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708088456; c=relaxed/simple;
-	bh=cJk02p6GPEQNgHFZ7cmc8x6CZ4W/98+yT4cisVv1/94=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZSu/kB3YQb7YT4TpgLZSe0fwHatE2QAobhiKzpS/uh92DGTC08kdNUUzsfTNzuz+eTDbSRnIV3aWD5tTtooeuE8UX/mze3LTYpdFOC35zgcs9sxpTqLOadBms3Er6C+NT2THzXFQVU8Sv5n6E6YbL2xNNLZsyQoheIVqrd5LaJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qw9uyJj5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81FF1C433C7;
-	Fri, 16 Feb 2024 13:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708088456;
-	bh=cJk02p6GPEQNgHFZ7cmc8x6CZ4W/98+yT4cisVv1/94=;
-	h=From:To:Cc:Subject:Date:From;
-	b=qw9uyJj5rL//tl/+WhqXqS0rS0sB2ZXF8MkSr/3r1VUYaiTzBWD76Oly4f4EIltKa
-	 AVjZfJdCzfNr7k7BYFIhok5cO4Go2c6rD4HrKBykHSlLaj5Dp/YIPRyzsoEiQdSKEx
-	 7KSLzwMPltNIlkxwjXApheXGaxyLEjFG5vmyEV7sCvi3dEyhbCQMMNPxGufOsn89iN
-	 qBNz02XSSo7jHB12IbVFiSzG9gyzHmXssjvhezbcSj2tNKH7TFQQF0jrEY5jCkrFTI
-	 o1xJhxaI4CxOKWCqECdjLS0lgmt8ucFOdi3Z0/kyFWUNVs/yJT8/2FGXC6RxHONk72
-	 /aeXCfhMJChcA==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Ivan Orlov <ivan.orlov0322@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] ALSA: core: fix buffer overflow in test_format_fill_silence()
-Date: Fri, 16 Feb 2024 14:00:36 +0100
-Message-Id: <20240216130050.3786789-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708088484; c=relaxed/simple;
+	bh=qnUUh8tWzJsSyjT1WlcIqRY2WcqBK0/hUea98FushpM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WYXbkRrOdDDnDMHZTxzpB97EnmoNxImRNlYB/Ev3wKgT+8+r7w6Pu1+GNVmz9+NYWWLgf+4xmraKZBFnUFRqBBvFVLG7sgIJ0F/ZmBTRpHbNOb95Pylg4KHgqH3PYto3yvapYtCuWle9l9XowCh3+L04T7+6JvX1jfGtgU6KqNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=mEM2voq/; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=4dC28a4HbFIUZn2NknmdS3B4n/cJsAhVYpRVdxKWey0=; b=mEM2voq/zYODJrmuHSnzRap9Q2
+	KrtoKtaAmSnnc7sxM7TfawMyNV/wLWoHp5GeXheJ/AH6iSAH82MIpTpH5rNDfBcVMHCYsWSTY704K
+	4HJsj8ftsRBTK05vzSbI3SbgYc2zS41rQHIpzKnMtluF5ZNUdXlyIlpAI3Riwa9Q+EIs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1raxq0-007yqn-Ex; Fri, 16 Feb 2024 14:01:08 +0100
+Date: Fri, 16 Feb 2024 14:01:08 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Yang Xiwen <forbidden405@outlook.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Yang Xiwen <forbidden405@foxmail.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/6] net: hisi_femac: remove unused compatible strings
+Message-ID: <428581c5-48e5-4b89-8925-9847bd69dc70@lunn.ch>
+References: <20240216-net-v1-0-e0ad972cda99@outlook.com>
+ <20240216-net-v1-2-e0ad972cda99@outlook.com>
+ <68c9477a-3940-4024-8c86-aa6106e8a210@linaro.org>
+ <SEZPR06MB695938B228E762B9B53BAF2F964C2@SEZPR06MB6959.apcprd06.prod.outlook.com>
+ <d77faffc-5bde-41f1-b6a2-ddd665c3ee08@linaro.org>
+ <SEZPR06MB6959592677F8F2C79BC2FBB7964C2@SEZPR06MB6959.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SEZPR06MB6959592677F8F2C79BC2FBB7964C2@SEZPR06MB6959.apcprd06.prod.outlook.com>
 
-From: Arnd Bergmann <arnd@arndb.de>
+> For me, it's a bit lucky to find a (partially) working driver in mainline.
+> It'll take me even more time if no mainline driver is available. In fact, i
+> wrote the driver for mainline u-boot from scratch and it has been merged. So
+> it's good to have this binding accepted unmodified, or i'll have to modify
+> u-boot side driver code to keep them sync.
 
-KASAN caught a buffer overflow with the hardcoded 2048 byte buffer
-size, when 2080 bytes are written to it:
+Sorry, but that is not how it works. If during review we decided it
+needs to be modified, you will need to modify it.
 
- BUG: KASAN: slab-out-of-bounds in snd_pcm_format_set_silence+0x3bc/0x3e4
- Write of size 8 at addr ffff0000c8149800 by task kunit_try_catch/1297
+I would suggest you first mainstream bindings to the kernel, because
+it has active DT maintainers how really care about bindings. Then get
+is merged to u-boot.
 
- CPU: 0 PID: 1297 Comm: kunit_try_catch Tainted: G N 6.8.0-rc4-next-20240216 #1
- Hardware name: linux,dummy-virt (DT)
- Call trace:
-  kasan_report+0x78/0xc0
-  __asan_report_store_n_noabort+0x1c/0x28
-  snd_pcm_format_set_silence+0x3bc/0x3e4
-  _test_fill_silence+0xdc/0x298
-  test_format_fill_silence+0x110/0x228
-  kunit_try_run_case+0x144/0x3bc
-  kunit_generic_run_threadfn_adapter+0x50/0x94
-  kthread+0x330/0x3e8
-  ret_from_fork+0x10/0x20
-
- Allocated by task 1297:
-  __kmalloc+0x17c/0x2f0
-  kunit_kmalloc_array+0x2c/0x78
-  test_format_fill_silence+0xcc/0x228
-  kunit_try_run_case+0x144/0x3bc
-  kunit_generic_run_threadfn_adapter+0x50/0x94
-  kthread+0x330/0x3e8
-  ret_from_fork+0x10/0x20
-
-Replace the incorrect size with the correct length of 260 64-bit samples.
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Fixes: 3e39acf56ede ("ALSA: core: Add sound core KUnit test")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-Naresh, I slightly changed the patch to make the computation more obvious,
-can you test again to make sure I got this right?
----
- sound/core/sound_kunit.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
-index 5d5a7bf88de4..7f16101ece7a 100644
---- a/sound/core/sound_kunit.c
-+++ b/sound/core/sound_kunit.c
-@@ -8,7 +8,7 @@
- #include <sound/core.h>
- #include <sound/pcm.h>
- 
--#define SILENCE_BUFFER_SIZE 2048
-+#define SILENCE_BUFFER_SIZE (sizeof(u64) * 260)
- #define SILENCE(...) { __VA_ARGS__ }
- #define DEFINE_FORMAT(fmt, pbits, wd, endianness, signd, silence_arr) {		\
- 	.format = SNDRV_PCM_FORMAT_##fmt, .physical_bits = pbits,		\
--- 
-2.39.2
-
+   Andrew
 
