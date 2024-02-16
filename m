@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-69509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78387858A64
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:58:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07EE6858A65
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB7D41C2223E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:58:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7222CB27ABE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2200714A0B8;
-	Fri, 16 Feb 2024 23:55:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4C014A4F7;
+	Fri, 16 Feb 2024 23:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SZ+5QDu5"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ACuy2cBZ"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8DDF14A091
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193D114A0B5
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:55:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708127717; cv=none; b=b9cWF/1sdlZncPXU4Ms3Sdjo/nopuGtWXfJHyv1il6JRXwlFD+ZlJoy6MdQxVcyX/mLPeClOnMGM2cfQ90WY5rLQVOl/M293zqxW3CkJxLRn6Kc6OKeu/jef8NLMwvURi8fd3GWjHbUk+C3Rt9BhYNjNAd9M/BYQoNLZDmQvXFo=
+	t=1708127719; cv=none; b=jMGwwby5shnQoNKOg7lhnRnh+dpEPrrzr+1yFzfwYTmgxGLl96pmjrLGnIKNMaymkFIIaivue/NdgZW0/WB14d9BsDCZ6jW3Xqq+mMwtSAAicsbUEkmaEFzBKkikGWQmrZZYJ0I8OstnFFe91KGMEwtZKZ9gbPiZGB/7L4NZA8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708127717; c=relaxed/simple;
-	bh=o/osGCI+hvlD14sD3OCM5ESdLYEEWx1V7jgoXENiCKc=;
+	s=arc-20240116; t=1708127719; c=relaxed/simple;
+	bh=mlDvuBmPP3TrmLBy1TVdW9K7nfBnqAONps2iWBo5bv4=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=BSZZeNj+PRjdQD3dA8LgZimFAnGtc9BMncbAFmpcatatFodj3H/rLtkfVOf69A+jVSnGC79BsY81RFYyB4f+pvuLSx4sBua/Uj8F0Wk1HMd7Ld1GOTTa0ykTmubriK6/bgnk1qAkmQmNgLAo3GOL7FlEU12KcBHD0DgDgsilqA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SZ+5QDu5; arc=none smtp.client-ip=209.85.128.201
+	 To:Content-Type; b=GbGGREe5y0p1NeH5DjEB2r6PbarjzeZCrO7tLSMR8r419gsl3Rv946TiQgFu4rE/KgRTJUCRqFKE0C2QLss2gCy7WCbg+uonv6kE0rLkVLAxO79tbOOUShpu8SI/caE4FkHX3de30BWO2hkfPOrYxFhufk/e0Np1lOkGHj2yzEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ACuy2cBZ; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607fbfc2584so20320287b3.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:55:15 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-d9a541b720aso4323355276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:55:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708127715; x=1708732515; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708127717; x=1708732517; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=uv/9NgKdLz0z52mqtvy0vTSbbBgaPJcb0Vk69+L979Q=;
-        b=SZ+5QDu5R4fz5A2dD5YZvaAP7J9N8Guflh0RU0g5Go1CFNPi6JcbOINcWrWPXCRA2O
-         aZhS2P63yxw+1UYakL1ecPfbLgSJKLyYKzGD/DP0EA9UCoojUPgeA/pFfWQ6cR6jgP6d
-         7+yd5UBFdPXtAVHA52+9YdOUxB/gUdnVI8rNECKYgrR8l9Q5F9UcHA8xIr9WcUuXMvKG
-         ixw/poJh2LPBB1qZyT0OaxU2vufxJP5wGaP6EMvh8VYcvmKcXz8Usajtqs4mQJCQ2alu
-         baD887QMkIW2kMQ873abiAK8mLVM1VKT2pz+v6warnszU4j4+HgM2sUACUEAxvMWtF6x
-         VMag==
+        bh=5lEV9flhamU87tdGpQxKOQUuN3cEGzsZvh7EhlSuOZU=;
+        b=ACuy2cBZWhiTW9+iKRzz655YFWBTVgzPe+DXgBwi1Ie6wzzjfJJikFzV9VyIzOa04C
+         ThrU24fX5R6o2JIeR613xK/c57JHWCEEJCiS75QExDwZFMnvNvhfzT/yuu6vOwqigEkq
+         h4kjYkhcANSFBveK1PTOYRX5hkzQPl20spH3AQTPNYZZVzJvgQqzM5QNaHjNdmp4yKOP
+         exmPdVqYiV3REVqSmtA/6ndsN3yDkX+bonf3bVGSBIEt6/7dc7arnMjvjZXGuMPejJGo
+         ItGGHEg4x+8NTbP7GG/p6FL7nkG9P8SWKxcLj2EcGoqw7qlfmgQEWqb51QnoM+1W0m3r
+         ttmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708127715; x=1708732515;
+        d=1e100.net; s=20230601; t=1708127717; x=1708732517;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uv/9NgKdLz0z52mqtvy0vTSbbBgaPJcb0Vk69+L979Q=;
-        b=IJxaN9hmZIh5TapS+qLkg074LdGA5zrb2/QPPlNMNjvYPqUps8lqrEYCpV4nQsMcKD
-         dJG2ziJ7HSeaCih4ehD8DGvqf3RcFRcZ8Oet2NG5yqoSp/asDU9Ymfi785TeH5QvUFSE
-         UG1jfeYJgLyOHQOAdtKGDmQjPgOam25G9T9F0nnPn7B1w02abwIwXyv/mzkhmgRD+pOr
-         6eHiorkL7YzTg5mobntN56yvjJ2UQfdbNM0xBVxhp/mPPaC+tmixxEoq8Zdj2RfqJYZu
-         mo57PSm8vxlAuIu/1xXeqtEZpgGdIAJq4osKFtLwQxNRRxhNgeaCOoEN5F0jnrPrV3FH
-         8buA==
-X-Forwarded-Encrypted: i=1; AJvYcCWTil4NnN9gvuzzGg2srlDDKSgDWN4n91M5UD4+GHRq41YVrjDcpsvBRVr9soRYQfXUQHSA/a1ZOAL8Wv2jA5+AFbNbbws1CRoS+sBE
-X-Gm-Message-State: AOJu0YzTtiXw2tSJp2+s8GORnUux2S21GVlcrCOyAG7gTrtZy4aWR8Eb
-	2BIlDIhp8ciGcvYQECCh6sacOW339+oEU/WhQwrj7ehk8VCXjZ/nT5HJtNmSYaGIQP7SmBd7jsk
-	ciG7+hw==
-X-Google-Smtp-Source: AGHT+IERcPUTXLeXd+X0w/UprKWv3njT8nQrdxv6I7DrnPojgAHIii49rIGcmln6wuSiMpr/VD0k58X1CbHj
+        bh=5lEV9flhamU87tdGpQxKOQUuN3cEGzsZvh7EhlSuOZU=;
+        b=rxw2HQUxKQtVUt6xilEXcfAAw91TZHQ9BY+H5+ubXiP8oZ6POmIKpz4GQtnK/s66I7
+         JOFceKWSn+pHBoQ/uSM7P3EDDP11q9xZN7V/nh4Ovkaln5kQDZznlBx5uAca4pYyEdKu
+         kzK7MSSZ4t7Qbtz0ekYrJK4nZZFNvBag9Wqlw10cg45PxTe/Gba3/AyhdZB5sDYiMZIb
+         Jl2HZYTyszILSDCbbTot1XhnrEzMZGK2Cky/Uen2WE2ASbHuQwVSOSoIBLIW6LVwY/TU
+         DHGIxsDUcTwL160+TIvoo4702dJu/0O9rojoq+JH8Gcj0VfREb09qon+5xPoq1nP8XrD
+         qBJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUanLc9dkwiJMYlvVk7cm3XwhpCqAR99/E0KAckDegiMNmhqkqKO2l2XG7/iYAkuya//4NRqZmJ8VSY+GdVjU0OdazH0s6Q9BHB38WK
+X-Gm-Message-State: AOJu0YzN7c/L6IgveVqvJd79L2qbU5qqqxTjNFUqDJ/ItoebI95pUDsO
+	9L935dJ5n9mSvSp7DBXr/Q4MZPqtbBvlD4l/euc2ojVjE9J1Hb+gScQsTG6sEVMMr8l228l7/yP
+	Wc6PZTQ==
+X-Google-Smtp-Source: AGHT+IEUu7ZIc4xVQBBz95yM/6If+AfmIrGt97iohTygKIEoa3vU8cULrj/7pehsYjAaNFO5DYaZGw3d50RX
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:4b5c:352:4272:e34e])
- (user=irogers job=sendgmr) by 2002:a81:4ec7:0:b0:608:cc1:f66f with SMTP id
- c190-20020a814ec7000000b006080cc1f66fmr155163ywb.6.1708127714785; Fri, 16 Feb
- 2024 15:55:14 -0800 (PST)
-Date: Fri, 16 Feb 2024 15:51:55 -0800
+ (user=irogers job=sendgmr) by 2002:a25:b20e:0:b0:dc6:ff54:249f with SMTP id
+ i14-20020a25b20e000000b00dc6ff54249fmr1454658ybj.8.1708127717121; Fri, 16 Feb
+ 2024 15:55:17 -0800 (PST)
+Date: Fri, 16 Feb 2024 15:51:56 -0800
 In-Reply-To: <20240216235203.229256-1-irogers@google.com>
-Message-Id: <20240216235203.229256-2-irogers@google.com>
+Message-Id: <20240216235203.229256-3-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240216235203.229256-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Subject: [PATCH v5 1/8] perf thread_map: Skip exited threads when scanning /proc
+Subject: [PATCH v5 2/8] perf list: Add scandirat compatibility function
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -89,42 +89,108 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-Scanning /proc is inherently racy. Scanning /proc/pid/task within that
-is also racy as the pid can terminate. Rather than failing in
-__thread_map__new_all_cpus, skip pids for such failures.
+scandirat is used during the printing of tracepoint events but may be
+missing from certain libcs. Add a compatibility implementation that
+uses the symlink of an fd in /proc as a path for the reliably present
+scandir.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/thread_map.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ tools/perf/util/print-events.c | 12 +++---------
+ tools/perf/util/util.c         | 19 +++++++++++++++++++
+ tools/perf/util/util.h         |  8 ++++++++
+ 3 files changed, 30 insertions(+), 9 deletions(-)
 
-diff --git a/tools/perf/util/thread_map.c b/tools/perf/util/thread_map.c
-index ea3b431b9783..b5f12390c355 100644
---- a/tools/perf/util/thread_map.c
-+++ b/tools/perf/util/thread_map.c
-@@ -109,9 +109,10 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
+diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
+index 9e47712507cc..bf79dd366e2e 100644
+--- a/tools/perf/util/print-events.c
++++ b/tools/perf/util/print-events.c
+@@ -63,6 +63,8 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
+ {
+ 	char *events_path = get_tracing_file("events");
+ 	int events_fd = open(events_path, O_PATH);
++	struct dirent **sys_namelist = NULL;
++	int sys_items;
  
- 		snprintf(path, sizeof(path), "/proc/%d/task", pid);
- 		items = scandir(path, &namelist, filter, NULL);
--		if (items <= 0)
--			goto out_free_closedir;
--
-+		if (items <= 0) {
-+			pr_debug("scandir for %d returned empty, skipping\n", pid);
-+			continue;
-+		}
- 		while (threads->nr + items >= max_threads) {
- 			max_threads *= 2;
- 			grow = true;
-@@ -152,8 +153,6 @@ static struct perf_thread_map *__thread_map__new_all_cpus(uid_t uid)
- 	for (i = 0; i < items; i++)
- 		zfree(&namelist[i]);
- 	free(namelist);
--
--out_free_closedir:
- 	zfree(&threads);
- 	goto out_closedir;
+ 	put_tracing_file(events_path);
+ 	if (events_fd < 0) {
+@@ -70,10 +72,7 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
+ 		return;
+ 	}
+ 
+-#ifdef HAVE_SCANDIRAT_SUPPORT
+-{
+-	struct dirent **sys_namelist = NULL;
+-	int sys_items = tracing_events__scandir_alphasort(&sys_namelist);
++	sys_items = tracing_events__scandir_alphasort(&sys_namelist);
+ 
+ 	for (int i = 0; i < sys_items; i++) {
+ 		struct dirent *sys_dirent = sys_namelist[i];
+@@ -130,11 +129,6 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
+ 	}
+ 
+ 	free(sys_namelist);
+-}
+-#else
+-	printf("\nWARNING: Your libc doesn't have the scandirat function, please ask its maintainers to implement it.\n"
+-	       "         As a rough fallback, please do 'ls %s' to see the available tracepoint events.\n", events_path);
+-#endif
+ 	close(events_fd);
  }
+ 
+diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+index c1fd9ba6d697..4f561e5e4162 100644
+--- a/tools/perf/util/util.c
++++ b/tools/perf/util/util.c
+@@ -552,3 +552,22 @@ int sched_getcpu(void)
+ 	return -1;
+ }
+ #endif
++
++#ifndef HAVE_SCANDIRAT_SUPPORT
++int scandirat(int dirfd, const char *dirp,
++	      struct dirent ***namelist,
++	      int (*filter)(const struct dirent *),
++	      int (*compar)(const struct dirent **, const struct dirent **))
++{
++	char path[PATH_MAX];
++	int err, fd = openat(dirfd, dirp, O_PATH);
++
++	if (fd < 0)
++		return fd;
++
++	snprintf(path, sizeof(path), "/proc/%d/fd/%d", getpid(), fd);
++	err = scandir(path, namelist, filter, compar);
++	close(fd);
++	return err;
++}
++#endif
+diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
+index 7c8915d92dca..9966c21aaf04 100644
+--- a/tools/perf/util/util.h
++++ b/tools/perf/util/util.h
+@@ -6,6 +6,7 @@
+ /* glibc 2.20 deprecates _BSD_SOURCE in favour of _DEFAULT_SOURCE */
+ #define _DEFAULT_SOURCE 1
+ 
++#include <dirent.h>
+ #include <fcntl.h>
+ #include <stdbool.h>
+ #include <stddef.h>
+@@ -56,6 +57,13 @@ int perf_tip(char **strp, const char *dirpath);
+ int sched_getcpu(void);
+ #endif
+ 
++#ifndef HAVE_SCANDIRAT_SUPPORT
++int scandirat(int dirfd, const char *dirp,
++	      struct dirent ***namelist,
++	      int (*filter)(const struct dirent *),
++	      int (*compar)(const struct dirent **, const struct dirent **));
++#endif
++
+ extern bool perf_singlethreaded;
+ 
+ void perf_set_singlethreaded(void);
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
