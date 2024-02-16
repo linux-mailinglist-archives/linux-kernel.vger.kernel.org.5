@@ -1,295 +1,134 @@
-Return-Path: <linux-kernel+bounces-68656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1172D857DE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:43:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CD8857DEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DB2C1C22AD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:43:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D659CB2479E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:45:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B808412B158;
-	Fri, 16 Feb 2024 13:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA86512BE8D;
+	Fri, 16 Feb 2024 13:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="yDE/BKBX"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2064.outbound.protection.outlook.com [40.107.223.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kl5L6pNm"
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3131292E1
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708090999; cv=fail; b=KCgDH3Wjsv9uuzlat21TRsMuNrBbkmm2gZvguK3xvtyNedSgfi+4ClUP6y6H4zV9ucj+pCPyjBECr6XPRSvSAVvkYwAd+hvV7HAiPpGba/O7jdU58WC5E0dOJ5nHMBZL94kBEQNVZszMPicQhRtnvG9BXlT+rjrIOhcOonR5iO8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708090999; c=relaxed/simple;
-	bh=wSpKiyWs7znbZpBrURMFjU+BHbVHEPJldPme5e0kHjU=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=d4J0spFg9yM9bOj0Jmkhxiui9uNrBM28ed8gbWURHm8fE3zmSvlgYfjqrrSX0FauEWV+qzhTxmn3vT4JfL1LfzSCZ8wkxXG01PuBHDVH+Ik91xQVLSWK5IPMO8oxv+S4+c3rgq78PegPefujXrarAoLQ9SEo2NO409SH8Q7u1XY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=yDE/BKBX; arc=fail smtp.client-ip=40.107.223.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nRMwm4y8Ti3OmWdp5nxxrn+63doS1aBOjSuVpUSEehM32dVyfY5tJsiuvLndAT/qFEkLR186frV6gY3hE/SiDC3c8ducDqegzwoVK6BSSHWDsZFN+7tME4cLoIuoG1d+oQxkfxddOjrvzlOZB0jcVdmu2BUxTlTWSk/NmeGOwvpnFgr99QVONdy+O7Zfv0yARdDE5MXT2xKnSWBFMkGaPxLrq0ZnGN3pIjl6fKB7fPj9+iX6rnU/UZt9l8FoX2G1T5HFFgVdUAT6yFM2Hhd2dDI8btFvx42xt6JwdFDEc5hwxXrUNVgf2cvz82x3cA64dF8OJdgFR0rxWIwf2ZfGTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/tKQmyDeCfRebiReA7Z+5zzw2sZSzF9AiWaykaE3Bqs=;
- b=b2X6S04/2nABWrlPyVAahXMdZHHhrc8QfJLrmCcC9V4dqoCADO9z3iyxtUDU8kPheSxeIH1n1/NJe14r/Q9wn90u3NLjisp9cszrcYzWX1Rth3MpbZJEbFNBEi543/QzeuSHgnhRVOTU/OV/kkz2On0SZlmEk/J8NiI4ho8KaCDGCCI4/VNfhPgNFksVVYr+8keEgXbCcN0j2wgMtQ1I+SzYoHM+gr5VFxx9xLQr/6aEGI7y2OD5kmPMDxJOAnWjdr2Z+9ZTuVG3hY7S/4YvZnK4L8RhI+GDht3X9JFGJy3VEEhchgiodCdi9O8chiTLtb8Kqt0NLmSq+9ezElt24A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/tKQmyDeCfRebiReA7Z+5zzw2sZSzF9AiWaykaE3Bqs=;
- b=yDE/BKBXKr9B0SJ6tokhYtCI8zajI2Rl+u8NOBQ0/Ep0dbw/HgKd4xFu/HoNfzaquiUuis9yYEKNybDSztLNodDU8zXTAS+OTFuP0Kq2VptE5vPFSLzcHZASOuTCbWl5Jw8xI4qvz6HAKM/8mGKlVsIc9IKVDBvWmyo+W5BnLWM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- CH3PR12MB7594.namprd12.prod.outlook.com (2603:10b6:610:140::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
- 2024 13:43:12 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::3301:dfb9:528a:1fa5]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::3301:dfb9:528a:1fa5%7]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
- 13:43:12 +0000
-Message-ID: <eaafb036-8815-401a-9c7e-986a85e3b100@amd.com>
-Date: Fri, 16 Feb 2024 08:43:09 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
- to eDP connectors
-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-Cc: amd-gfx@lists.freedesktop.org,
- Mario Limonciello <mario.limonciello@amd.com>,
- Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
- <20240216101936.2e210be2@eldfell>
-Content-Language: en-US
-From: Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <20240216101936.2e210be2@eldfell>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR01CA0002.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::10)
- To DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF03A1292E1;
+	Fri, 16 Feb 2024 13:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708091090; cv=none; b=KgashKEWWxeZiDLu4kAzg1vgHIbkeJgHpOh+R4ZuGxt7HZNKnmw8VE9YSZxtX2JdRSPOb7Ry0ya+QLGMEFTPZPnxEDjCurJGzrXAvHv/QcvpJejP0b4MEJZvK+wkhWqf6ApasT0qpBhZyxZvEGD/DirKDjUGmsA+G7ChrBBVtw0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708091090; c=relaxed/simple;
+	bh=S4L92NZefLEC20yFJLLOf9G1GvTAmeD77uKPAtDEInU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Yyrb0g2co5kOUeTmdgra5IytzxLFn+aMZG/btiLO7Yiu/oD2XnEmeIv0XDeOR6FtjqwdpjNcI6Gcvx7ZttWaEP6jxJvFkvurzfdPSl8wJ57qE004WIxqjg200Y5nz9Ck8UguYE/bD7y7lRenX9oj04wjW2Tf9fdeElCwbMhRCuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kl5L6pNm; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-206689895bfso502027fac.1;
+        Fri, 16 Feb 2024 05:44:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708091088; x=1708695888; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=coY0/edAbFAUsr5sc75rIWJqDfxEuZndNgC2ac1TWf0=;
+        b=Kl5L6pNm8WRaBF9pMzqOOnX4Utia2gymKiQTQohl/tPrVU+lZPTxxVcriA5PybwuXU
+         MQENf3q8xWJwuN7Us9rIMpKQhyb/k5NPBXH3GoZnka0avZ9MNLqdkSGa4IzOWdiJ56yO
+         bWJwLFT2v8AwqRjBnmnFVZJip3Zx1LosA02P+iinXFC497fSjXl6+vtD60tiKZGwnIcc
+         qIZCwFUaUR53FQZdQ8hr/lxC9pp1DtucWbn4oZfxi1MTOHQ3w/faWIfcICXBGBSkxqrc
+         V6jkuPYkYwP44EQ5Sy67mHAi1Q48O434EqHBUfOaFBr6Z4rSQI9ZenrTTX6CSuCCHpgf
+         6cQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708091088; x=1708695888;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=coY0/edAbFAUsr5sc75rIWJqDfxEuZndNgC2ac1TWf0=;
+        b=obL02OJgVLIA4py66YAPqhfWNqlFDcWpGpZbsSAmHisfoTXl4Wk4nzJtWdv5ONVSJq
+         9xMFnr51j2P7JsoIUKONqR5SFgGbhz1De5YKIi4+aHlLB+8vgqk/SZt1HggNZmBRzil6
+         B5QimRf+kfvCOuUgxwZz6zh0qRqZdI24+bJlmx733i5VoP4G8C+6Pz7nZVVNDKyo4a1v
+         RzkSpxnZSbzSt9G97q2NMeznqdTLVapIx/rnv9e5TIgAw7gi7blYjSeKRjphudzMKnyM
+         pwkd4VEBDbPNuVB00pH19XYBaogNij5GWGxiKteEz+hEfbtuiYIcn3uygZdgh7EHQLZa
+         80Jg==
+X-Forwarded-Encrypted: i=1; AJvYcCX/6h5UIzZoFe+uZhXIY9snFybnr+fVQZVtWRjYfqDn2c3Q9g7InY/tuGKEdlaM7EgBwN7fgqRHNvAc77sLVM76ZRPZNMup4XVuaUkGtU0FZ0Km2MVa3qonYVEqYdCJHpYzX9fBy93w
+X-Gm-Message-State: AOJu0YzaOpZlmtsxArc0FSPb6NOTYmM5ZUbbfxbDrHx8ODF44QL1M1BL
+	x0uwSmqjVlXAgZhAGgaTHY75D+KV7qvZYfKqKH+2XuZzOAoDNvRR
+X-Google-Smtp-Source: AGHT+IElgS92FK4m1DLWIi46UcX2f1EmeSGSn87CJJzItyfhuyEmA1PDbtcANh4MI1yqwPzl+LS7+A==
+X-Received: by 2002:a05:6871:152:b0:21a:3542:2ab5 with SMTP id z18-20020a056871015200b0021a35422ab5mr4479651oab.41.1708091087679;
+        Fri, 16 Feb 2024 05:44:47 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id m20-20020a63f614000000b005dab535fac2sm3249117pgh.90.2024.02.16.05.44.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 05:44:46 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+	id 3BB9C18483F4A; Fri, 16 Feb 2024 20:44:42 +0700 (WIB)
+Date: Fri, 16 Feb 2024 20:44:41 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Linux USB <linux-usb@vger.kernel.org>
+Cc: pmalani@chromium.org, jthies@google.com,
+	"Christian A. Ehrhardt" <lk@c--e.de>,
+	Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Hans de Goede <hdegoede@redhat.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Saranya Gopal <saranya.gopal@intel.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 3/3] usb: typec: ucsi: Get PD revision for partner
+Message-ID: <Zc9myZ-1oE_qsSQB@archie.me>
+References: <20240209223824.622869-1-abhishekpandit@chromium.org>
+ <20240209143723.v5.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|CH3PR12MB7594:EE_
-X-MS-Office365-Filtering-Correlation-Id: c7607c50-5e8e-42f2-4aba-08dc2ef53824
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	hfHeZm8fIVr6XTebqIAMiKOna7PWmPHQeQ8BUm/pKZSn7gJ2UkNzxeF2rs0NT3eKhGDC2c2T/YzdaruQGSnXUsTLuyzEzOf/QVuzYbIpUNeiIF50AfefCrPQJrQn2R3y1YzapN2dIihVoaj8GV3DRnZ1KkwyQ1AqVkaAl5uIugmAWAFO36QmI3Qc6rvoZAVjHYt+L9ffKRUJgoWE5si9EVJ7Km1AzzbhpYiuH7+vd3jgnzyGdWBOJTwb9Ny9Um9HoQ1oI184zpAZU/BfzReyNVKbXYRO3mzoTpiazbbHDKzOwkWLF1FS0PVq5cTGF0PUSHOxkIVYXe9LauhjqrjmalyYqodDQtS0X8FEYjiHo8v1Wp25caq8W9McOA8U7MAKjkdNLE2l9tOssvHi24IF0QpCibz0NPGjYPm4dvo/8o119pHnC5OpcV1ZmQVuNBfpdC+SxGvYa2NT7+rrGYuL37E+w8h4FXtZbQ+MyC/7UdoLr1fupL2hkdp8MLMXWFTeGnP91kvD6z4kuUSN6je8+y+veJ+7FgAq2/SdwCpnWB6d7P3CzG9f63RebVpF6Gnb
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(376002)(396003)(39860400002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(5660300002)(2906002)(44832011)(31686004)(83380400001)(26005)(8936002)(4326008)(66946007)(8676002)(6666004)(316002)(66556008)(41300700001)(478600001)(66476007)(6916009)(54906003)(2616005)(6486002)(6506007)(53546011)(6512007)(31696002)(86362001)(36756003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?dHpHd3p3T1RwMHJtU0Qvd1hta2VzOU9kdmhRRmJiWGtaM3NrZjV3c1JwTlE4?=
- =?utf-8?B?Ukh5R2tRdmRvVitzK2xqallhNmhXSUg0U1k2RFJPbGpGOWR5dDZ5MGlGODhY?=
- =?utf-8?B?bm1tQU1QcDF3U2c5a3cxUHRWTWo5QkJLMHIwT1hqL2VEa0tRNDBKRTJwYlRt?=
- =?utf-8?B?M2xiNWEvcEl3OEl6Z0ZlcnBMbkxSVGNJbWJIMkZTMlMzWmVVbDdJanFRbE9H?=
- =?utf-8?B?UVBzR0NtMTd1RC9jbGFHMHNrMS9XMDlBM3BwamgwdzZRVWZDbkVFK1VCa3gx?=
- =?utf-8?B?V1oxYWZZODBlVmxQNmpqZnRTaEFhZ0pXTlI3d29vU29odnhnU01mZ0o5SzhY?=
- =?utf-8?B?b0F5RmtXS0FRSVFJSlVsZllvUndIZ200YmRxQThmNE1vVDBLZmtMVWVDSVZS?=
- =?utf-8?B?TURrK1FySFgrdjFmR0c0RFFZWHZmTEk2bTQ2eG1mRGpJQVZtVk9WdG91ZnFE?=
- =?utf-8?B?cW9PVUFxdjVzMVE1b2VDOW5DeDlEUHNlbTFJVFhtWmQvQVl3TEN4M2hJdmI2?=
- =?utf-8?B?dnRwZlhqWDdTSXUzMFQ1dnVFUGFRTHNTSEozMmxQNUF4MEs3R1NkZ1NOOHRQ?=
- =?utf-8?B?M0kveGNkSWFDQ0Q4d1RZczMrSXg1UDFhZ2VMbVU4Qzl2Y2t4SVRtNktYOG5E?=
- =?utf-8?B?MGxLS1BwWm9WQlRveDdmRkozanRtV2k1K3hGTzdDRm5Vc0hhL3VyenhwZjlG?=
- =?utf-8?B?cXd0RkxmR1gwRVliOGFwaGN1K0hPVzlSSVlLRkdabitFZzR5WDZlM0EzeExq?=
- =?utf-8?B?TnZaamdnT1FvYkpXem5vcjlpUk5zcmNicHlGSzcxWEY1cGdXUS8ySVBQV3k5?=
- =?utf-8?B?NFpxV2NGVzBPQkRYSmF1elY3MXZPbm5xOUNsdEVleTlrc0pkUWhqdVpoYStu?=
- =?utf-8?B?aEMxb0ZRRDhxUnppdGR6UEtoUFdLUXVBUDl4QVhxZ3dqVVY3WUxBYU9vK2pu?=
- =?utf-8?B?VEErRGZycWtvSnZ0aVpoWitFRVpQZnRxKzNiZ3FpaUpLSU03Z25wZmZGTjhJ?=
- =?utf-8?B?U2h6UzB3dkt0UktjSVMrdUJTUUlRbjZwOERsZWM2MW9VMGdaZ1BmdWNrQUVN?=
- =?utf-8?B?bGY2NjJUcnhUVWFyVWV3bk1pdUpRYldmZU9HeWc4cjJtbUpsdjYyRlgzYVZ6?=
- =?utf-8?B?dmdsd1VRdkFYejF0akl3WWQ2bVNoVUJzRzNoSm5TcHgyWEdWQ2syTU5Vbjdx?=
- =?utf-8?B?dlV5YmQ3Rjg1ajJJTlpSM1J3RjA0NURiaWFKaFBRVUdndEIzT2FmL3huU0l6?=
- =?utf-8?B?VjVlM1FYMFJQWjRYK2VLU0trY2ZqUDVzQVkvY29EUjUzZWlDN1lWTjFXajdJ?=
- =?utf-8?B?YXpCZWRtUjhIbmtBWEdvZVFETjBpOTdUV0xTVHU5eVBEM0lmNkhvRHkvREpN?=
- =?utf-8?B?VTk3elIxVXdCRmJmQ0pHNlpGdnZGQzRWRTNhMXFndGlGSXJCVHVTUzJLOFlE?=
- =?utf-8?B?aUVNaDVNdnhuMWVjVDBaYnN3Q2FyRnA2R0xjVFpoYzlBdUxpeGpVb0VBMnV5?=
- =?utf-8?B?NFZhZWJuMHJHR3lMSWdJSHZvZFJlcWtDKzBXSjF3WUt3MVovNDVKSWk3R3Rk?=
- =?utf-8?B?WnR6V2VmK1BJQm9TQmxpRnY3bmpubS95MHJQTXlHbi9mMU5YS0UzQUV1NUVa?=
- =?utf-8?B?VEZJUHFhRHVmYWZvaDZseXFlSTZpViswSUNiUXF0eGdrM3ZTdmNYWVJMZWNx?=
- =?utf-8?B?ZFVORkVmZHp6bE43VDJONldMYW9PYng1RFEwbXBBanh1TEw2cU9WdVZIUzU3?=
- =?utf-8?B?VWlDZG5UMTBWVG9wWFJsb0tJWlBYVmxRNlhVbTZBNDFaM3VWRWZ4RXRPOHgr?=
- =?utf-8?B?RzIvaC9XbHA0VVZGUnFQS1NnUWRNendWNHhJdjJ3TUFxdHZUSENySCt4cHNI?=
- =?utf-8?B?TGh5VkJnZXdrYVZIVE1jQWw5RjdBWjhSVitFM1kyZ1VlVk5IZVVoU0lSUmpn?=
- =?utf-8?B?VW5BNGw3UVpvZlFDdDgrdXZKUWEwa2U3aWltaUkzQjZZRVE4NjNDRlNiaVFt?=
- =?utf-8?B?WHpFNHVPSkY4eXlPb1NqTHEyRjRFVkdJaUpSTXRJeVpCbDVZZWFQck4wRUE5?=
- =?utf-8?B?ZWlWQXdDa24yOHl3V2pqanV6cjhkcjhmQmduRnU4UzZUWjRkblArTlBwdW9x?=
- =?utf-8?Q?1hXaVSf5KNbrpnaCvsalr25dh?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7607c50-5e8e-42f2-4aba-08dc2ef53824
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 13:43:12.4973
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Fp6wraoGRurCdA44IOBeyYIPY4Giz546I3hqLx01nc5vJPRm5pHB/WuTiEb409mXYYT5C+YrXw9+0VY2pMWyWQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7594
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="xmkz5NkVvM5TFQTX"
+Content-Disposition: inline
+In-Reply-To: <20240209143723.v5.3.Idf7d373c3cbb54058403cb951d644f1f09973d15@changeid>
 
-On 2/16/24 03:19, Pekka Paalanen wrote:
-> On Fri, 2 Feb 2024 10:28:35 -0500
-> Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
-> 
->> We want programs besides the compositor to be able to enable or disable
->> panel power saving features.
-> 
-> Could you also explain why, in the commit message, please?
-> 
-> It is unexpected for arbitrary programs to be able to override the KMS
-> client, and certainly new ways to do so should not be added without an
-> excellent justification.
-> 
-> Maybe debugfs would be more appropriate if the purpose is only testing
-> rather than production environments?
-> 
->> However, since they are currently only
->> configurable through DRM properties, that isn't possible. So, to remedy
->> that issue introduce a new "panel_power_savings" sysfs attribute.
-> 
-> When the DRM property was added, what was used as the userspace to
-> prove its workings?
 
-To my knowledge, it is only used by IGT. Also, it is worth noting that
-it is a vendor specific property, so I doubt there are any compositors
-out there that felt motivated enough to use it in any capacity.
+--xmkz5NkVvM5TFQTX
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> 
-> Thanks,
-> pq
-> 
->>
->> Cc: Mario Limonciello <mario.limonciello@amd.com>
->> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
->> ---
->> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
->>      commit when setting the value, call sysfs_remove_group() in
->>      amdgpu_dm_connector_unregister() and add some documentation.
->> ---
->>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
->>   1 file changed, 76 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> index 8590c9f1dda6..3c62489d03dc 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
->>   	return ret;
->>   }
->>   
->> +/**
->> + * DOC: panel power savings
->> + *
->> + * The display manager allows you to set your desired **panel power savings**
->> + * level (between 0-4, with 0 representing off), e.g. using the following::
->> + *
->> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
->> + *
->> + * Modifying this value can have implications on color accuracy, so tread
->> + * carefully.
->> + */
->> +
->> +static ssize_t panel_power_savings_show(struct device *device,
->> +					struct device_attribute *attr,
->> +					char *buf)
->> +{
->> +	struct drm_connector *connector = dev_get_drvdata(device);
->> +	struct drm_device *dev = connector->dev;
->> +	u8 val;
->> +
->> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
->> +	val = to_dm_connector_state(connector->state)->abm_level ==
->> +		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
->> +		to_dm_connector_state(connector->state)->abm_level;
->> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
->> +
->> +	return sysfs_emit(buf, "%u\n", val);
->> +}
->> +
->> +static ssize_t panel_power_savings_store(struct device *device,
->> +					 struct device_attribute *attr,
->> +					 const char *buf, size_t count)
->> +{
->> +	struct drm_connector *connector = dev_get_drvdata(device);
->> +	struct drm_device *dev = connector->dev;
->> +	long val;
->> +	int ret;
->> +
->> +	ret = kstrtol(buf, 0, &val);
->> +
->> +	if (ret)
->> +		return ret;
->> +
->> +	if (val < 0 || val > 4)
->> +		return -EINVAL;
->> +
->> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
->> +	to_dm_connector_state(connector->state)->abm_level = val ?:
->> +		ABM_LEVEL_IMMEDIATE_DISABLE;
->> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
->> +
->> +	drm_kms_helper_hotplug_event(dev);
->> +
->> +	return count;
->> +}
->> +
->> +static DEVICE_ATTR_RW(panel_power_savings);
->> +
->> +static struct attribute *amdgpu_attrs[] = {
->> +	&dev_attr_panel_power_savings.attr,
->> +	NULL
->> +};
->> +
->> +static const struct attribute_group amdgpu_group = {
->> +	.name = "amdgpu",
->> +	.attrs = amdgpu_attrs
->> +};
->> +
->>   static void amdgpu_dm_connector_unregister(struct drm_connector *connector)
->>   {
->>   	struct amdgpu_dm_connector *amdgpu_dm_connector = to_amdgpu_dm_connector(connector);
->>   
->> +	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
->>   	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
->>   }
->>   
->> @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_connector *connector)
->>   		to_amdgpu_dm_connector(connector);
->>   	int r;
->>   
->> +	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
->> +		r = sysfs_create_group(&connector->kdev->kobj,
->> +				       &amdgpu_group);
->> +		if (r)
->> +			return r;
->> +	}
->> +
->>   	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
->>   
->>   	if ((connector->connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
-> 
--- 
-Hamza
+On Fri, Feb 09, 2024 at 02:37:32PM -0800, Abhishek Pandit-Subedi wrote:
+> +	command =3D UCSI_GET_CONNECTOR_CAPABILITY | UCSI_CONNECTOR_NUMBER(con->=
+num);
+> +	ret =3D ucsi_send_command(con->ucsi, command, &con->cap, sizeof(con->ca=
+p));
+> +	if (ret < 0) {
+> +		dev_err(con->ucsi->dev, "GET_CONNECTOR_CAPABILITY failed (%d)\n", ret);
+> +		return ret;
+> +	}
 
+Did you mean that above error is raised when the connector capability
+isn't recognized?
+
+Confused...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--xmkz5NkVvM5TFQTX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZc9mxgAKCRD2uYlJVVFO
+o4zwAP4oR4MoDeAuM/4kruIg8A3QFNP39W25pV7k9DiiprHnsAD/cmXqIp4eEyzP
+g2tnAN+Z4hBZ05uI4CtQwV1FLWWM3wU=
+=oYH6
+-----END PGP SIGNATURE-----
+
+--xmkz5NkVvM5TFQTX--
 
