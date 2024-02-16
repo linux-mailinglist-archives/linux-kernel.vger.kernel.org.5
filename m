@@ -1,102 +1,167 @@
-Return-Path: <linux-kernel+bounces-68252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68254-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A655A8577D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:43:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F4108577DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:45:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D91701C20B26
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:43:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02E7D283A5C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A8B1B947;
-	Fri, 16 Feb 2024 08:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 202811BF58;
+	Fri, 16 Feb 2024 08:41:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fX499UtL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QIyKWQZy"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA1517C76;
-	Fri, 16 Feb 2024 08:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1A11C68C;
+	Fri, 16 Feb 2024 08:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708072828; cv=none; b=mPz/AyFZsAEiM1rTfL7p9qTJ76ghMO1kP6qOQyJxoypo7+ac2Kg1coUMIKGldi9K/fLB4bMDkVeFr1dP/4pvIS262AuzXaTdA9OLt0FIFMHZKmEJbb15BhkkOjOuFsL9DZLC+DHanNuRoStKip1SDYlBOAwCUSMguWWoqjHaYNM=
+	t=1708072868; cv=none; b=D2PUcUjp6vwg8HPikGyjiiht+WFAUULdc3z6QhvwOesbrx3RaJCP7jSMe/BXVngFJJK2eB9uaIIhnYy67Ox9PvewBbnb18D+xkDarjZGHhF4r34S6BjmhsD9Zb7YQxeHVJ0nR+5VeNTeYbqX/M9JD1LBG+hHSddBxFh+b2Wmlrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708072828; c=relaxed/simple;
-	bh=NQc1ij17nNGhGaB5awK0ymJiY6GTndqpbo0GW0Fva9E=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=U6anpRIOwEwPwSMwhep9ualdKDWrTfh85Jx15CJ6t5gA1KA/R/Tt61Fa9r4Wb7HWCXOEYTv3HcKlBby4kdTw3K4jR/6k04tkVCagSCLlnca41hOtvoL82VBWmdNqiyeunIm3e/OmZOuDinVbrViHfRtr2S3y6iVbgilNQK4jnc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fX499UtL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6C664C43390;
-	Fri, 16 Feb 2024 08:40:27 +0000 (UTC)
+	s=arc-20240116; t=1708072868; c=relaxed/simple;
+	bh=wZvqkkB1tvM0qT7Zjonl08Zz23unYjSrGtBfMOx3z84=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=I4HXX4EgAuUKumU8dTd3+ctadyklikxxdsqCjUu89H8KDK/0dq/2JKH/IMU4H5GNGKBItN+ukC3xpaWBrl1o7UZfUeu3C8aC6GJMZf3+PofipXYW2L90meHvzRcEwWYBFjC1hsn7oiMxSvP8899FO50NAt30LfGx0tNgTRFTCp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QIyKWQZy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BA29C433F1;
+	Fri, 16 Feb 2024 08:41:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708072827;
-	bh=NQc1ij17nNGhGaB5awK0ymJiY6GTndqpbo0GW0Fva9E=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fX499UtLZpfei/zqq0Send+wMqjwzkWJvN9OUxHfFZ70H60uy5olg2CLFFtPLx0+E
-	 tpDl6USTP7dYGe9gQjp+9Lzz84n5q54suZ6nzmTy/IsOY9oDDesaCVNhSzsw0ilH1v
-	 fwp1w24xo8pQBlH/CtEkWfLD6xay7zGAyx+/zRJnwE3pya6bkuX4z0Up/uHAbSIJZS
-	 x5xozrEPm9KtOA34orfJOsZMSJvh/7Ghyg+v+jwsHyvF52LncXL4IQ9ulN3VVtTt0y
-	 u97qtLJehhb0SAWvz0f5FRw9QpX/0BowK5WVb10qokhzsHQtVHgP/fz1TMBwR2AlKd
-	 zgbIzUw8dGHaQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4C8A6D8C97D;
-	Fri, 16 Feb 2024 08:40:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1708072867;
+	bh=wZvqkkB1tvM0qT7Zjonl08Zz23unYjSrGtBfMOx3z84=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QIyKWQZy97QNoYLS2HFfBQL3l9noxnfyWzsod9pJNgjZW4LcYOhLsWdHTeyw4TWfv
+	 Lrfae77Vhn8tQO2Q8w6uk7jiCRO1xbiwVf9k9DFXKwGCyBqBqgpDd1b/Ya03l6Th3E
+	 PzIpSbPg1pD1+jFEubNfnXoX3h57WrjhvXBTJTFv1pl7y5+O9rF3y42HoEj+cCn4GV
+	 pHYpX3ygmCjtyVaIKnqUq1wSekoverdcEVq2St8b0SfJ0OjpVl88DftniBy4jwSBIM
+	 a3H7CucAu/R3IBk29M18Cd6AB7cJCLX5SuFrGVr/YuhBOnvozin/fP6jH2bjIjeHek
+	 a9d/tYlN+1VRA==
+Date: Fri, 16 Feb 2024 17:41:01 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 21/36] function_graph: Add selftest for passing local
+ variables
+Message-Id: <20240216174101.57c4e61a0d6b4ed21c2a22bd@kernel.org>
+In-Reply-To: <20240215100254.2891c5da@gandalf.local.home>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723228217.502590.6615001674278328094.stgit@devnote2>
+	<20240215100254.2891c5da@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4 0/6] net: ravb: Add runtime PM support (part 2)
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170807282730.9247.15391405559385840916.git-patchwork-notify@kernel.org>
-Date: Fri, 16 Feb 2024 08:40:27 +0000
-References: <20240214135800.2674435-1-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240214135800.2674435-1-claudiu.beznea.uj@bp.renesas.com>
-To: claudiu beznea <claudiu.beznea@tuxon.dev>
-Cc: s.shtylyov@omp.ru, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, biju.das.jz@bp.renesas.com,
- netdev@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-kernel@vger.kernel.org, claudiu.beznea.uj@bp.renesas.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello:
+On Thu, 15 Feb 2024 10:02:54 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Wed, 14 Feb 2024 15:57:54 +0200 you wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> On Wed,  7 Feb 2024 00:11:22 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 > 
-> Hi,
+> > From: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > 
+> > Add boot up selftest that passes variables from a function entry to a
+> > function exit, and make sure that they do get passed around.
+> > 
+> > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > ---
+> >  Changes in v2:
+> >   - Add reserved size test.
+> >   - Use pr_*() instead of printk(KERN_*).
+> > ---
+> >  kernel/trace/trace_selftest.c |  169 +++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 169 insertions(+)
+> > 
+> > diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+> > index f0758afa2f7d..4d86cd4c8c8c 100644
+> > --- a/kernel/trace/trace_selftest.c
+> > +++ b/kernel/trace/trace_selftest.c
+> > @@ -756,6 +756,173 @@ trace_selftest_startup_function(struct tracer *trace, struct trace_array *tr)
+> >  
+> >  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+> >  
+> > +#ifdef CONFIG_DYNAMIC_FTRACE
+> > +
+> > +#define BYTE_NUMBER 123
+> > +#define SHORT_NUMBER 12345
+> > +#define WORD_NUMBER 1234567890
+> > +#define LONG_NUMBER 1234567890123456789LL
+> > +
+> > +static int fgraph_store_size __initdata;
+> > +static const char *fgraph_store_type_name __initdata;
+> > +static char *fgraph_error_str __initdata;
+> > +static char fgraph_error_str_buf[128] __initdata;
+> > +
+> > +static __init int store_entry(struct ftrace_graph_ent *trace,
+> > +			      struct fgraph_ops *gops)
+> > +{
+> > +	const char *type = fgraph_store_type_name;
+> > +	int size = fgraph_store_size;
+> > +	void *p;
+> > +
+> > +	p = fgraph_reserve_data(gops->idx, size);
+> > +	if (!p) {
+> > +		snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
+> > +			 "Failed to reserve %s\n", type);
+> > +		fgraph_error_str = fgraph_error_str_buf;
+> > +		return 0;
+> > +	}
+> > +
+> > +	switch (fgraph_store_size) {
+> > +	case 1:
+> > +		*(char *)p = BYTE_NUMBER;
+> > +		break;
+> > +	case 2:
+> > +		*(short *)p = SHORT_NUMBER;
+> > +		break;
+> > +	case 4:
+> > +		*(int *)p = WORD_NUMBER;
+> > +		break;
+> > +	case 8:
+> > +		*(long long *)p = LONG_NUMBER;
+> > +		break;
+> > +	}
+> > +
 > 
-> Series adds runtime PM support for the ravb driver. This is a continuation
-> of [1].
+> What would be an interesting test is to run all versions together. That is,
+> to attach a callback that stores a byte, a callback that stores a short, a
+> callback that stores a word and a callback that stores a long, and attach
+> them all to the same function.
 > 
-> [...]
+> I guess we can add that as a separate patch.
 
-Here is the summary with links:
-  - [net-next,v4,1/6] net: ravb: Get rid of the temporary variable irq
-    https://git.kernel.org/netdev/net-next/c/a260f080660e
-  - [net-next,v4,2/6] net: ravb: Keep the reverse order of operations in ravb_close()
-    https://git.kernel.org/netdev/net-next/c/a5f149a97d09
-  - [net-next,v4,3/6] net: ravb: Return cached statistics if the interface is down
-    https://git.kernel.org/netdev/net-next/c/bbf2345fa658
-  - [net-next,v4,4/6] net: ravb: Move the update of ndev->features to ravb_set_features()
-    https://git.kernel.org/netdev/net-next/c/7bddccc9911c
-  - [net-next,v4,5/6] net: ravb: Do not apply features to hardware if the interface is down
-    https://git.kernel.org/netdev/net-next/c/a71a50e391bf
-  - [net-next,v4,6/6] net: ravb: Add runtime PM support
-    https://git.kernel.org/netdev/net-next/c/48f894ab07c4
+Would you mean we should have different callbacks which stores the different
+size of data instead of using switch()?
 
-You are awesome, thank you!
+Thank you,
+
+> 
+> -- Steve
+> 
+> 
+> > +	return 1;
+> > +}
+> > +
+
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
