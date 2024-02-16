@@ -1,150 +1,110 @@
-Return-Path: <linux-kernel+bounces-68946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F0D685823F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:17:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE0B858244
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:18:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52AD81C217DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:17:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 418111F24CE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C352B12FB39;
-	Fri, 16 Feb 2024 16:17:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB73A12FF97;
+	Fri, 16 Feb 2024 16:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="KD2crBHC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="mZn6vVlz"
-Received: from fhigh4-smtp.messagingengine.com (fhigh4-smtp.messagingengine.com [103.168.172.155])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YLhZ8Urr"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565DE12FB0F;
-	Fri, 16 Feb 2024 16:17:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B19F12FB07;
+	Fri, 16 Feb 2024 16:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708100250; cv=none; b=qXZPAWcA/gV0bbTL3PNJ9hDqQ58LzJakKeWJX+gN+N2d35NijvZzw1vsZlE9nZqA8OFPldIhd+qVmHPS+foycqRreODrP4tKePntbVWkZ+qWHwR9D274aAhQb/j28C/nj29KZMluoYlsluW7sIBxe/Prd+5LCp8AwIBj61G+C4Q=
+	t=1708100271; cv=none; b=L5eYnczTvLLr7DkShFI5NPp2mY9MC21z9N2NJIgkgA2nxyOZGzEQL8FRpBCQCIy0omQdj9l258D//Tgnoh5Z7fjrAqLJGHFWbY3Xb3SMnIktNvQACftMxHv1cVErzWdHLYZcARpsEkm93qvi1so+g5GZDwMcACH4sBpW8Wv2esQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708100250; c=relaxed/simple;
-	bh=vzXLcJ2vTatAhLaZ0FkRk3tGkWpZ6N5mBVI7/QUZOAI=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=OVfYqB/9xQzZIBm90pYheX7nw5t1LqtzwIVqW8MD300JTXbBRJurDzBo+cpme3xoZ+kOgiF8OqTmzGNB2PJZenPiT6QD0uLknG3ENaL6lm1i25W4JrkJeLk9yEx/+etUWLUVarB2gFwMIlrkKZbWznVE9aiwnovhoQwTTIYuzv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=KD2crBHC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=mZn6vVlz; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 0403A11400B2;
-	Fri, 16 Feb 2024 11:17:27 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 16 Feb 2024 11:17:27 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1708100246;
-	 x=1708186646; bh=NQ04yfFI5uomznDjKG5RYu13iYSYf7WZj9yNhO4AHb0=; b=
-	KD2crBHCIxcC72RPbN46HFPyzzSGefTiTZnOu8PVTI968EX6DtMX13+Dy5IgJGwU
-	JaCTkaSL4D1p0obCMaIZg5d5JXDC5Qj/m6Dau1WzrFgYL3kQPITZBil7Dtbtftve
-	m+dFMVEAP3Aj/1HR5JC0Wnd+e4gxXbsZQaTEeXkYJx/+hS7re/5yl8wSQV7KM2b6
-	nS21VcBebUm6yEDUdhcqJROME8zpm4dBVsDyM3m65qdzuHf6HRTpg0YrzluIT7qw
-	4o5kEqzXEq6kKlB5NS42pf1ZdkHTiryjPnGakUoaPLsQL5vtKCsamF51ZxyEIPxp
-	wK0ZGojE57/dCULbjORc2w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708100246; x=
-	1708186646; bh=NQ04yfFI5uomznDjKG5RYu13iYSYf7WZj9yNhO4AHb0=; b=m
-	Zn6vVlz6zhgI3OQGmNKzGWAIU/+zHK8C96CQvbo0fo/0Zi0vIHn1HNgOVxY6Qsdv
-	m0fjwcQbAo8NGejBbJ4bxu1lJxkgY026wTXhMz166AN/a/ArcbyCk4vXAFbyWyN+
-	msOsxZ1n/DfSQrJos/tQsumRiintwnSUjpeN54iYlzq1kAaRMADfMTeIBUlnbMEh
-	JsAhu4o9/cEynr4BQU/+EbEUEkZNQ7OVXP9p8JO0kZLPs5Fd/h+7AGc8ncpiLC1O
-	c5VQ2q3jmhyvxIpjj8KRlUPtzCZ+GcxyfFbQmP8jVm/aMMulrSkxENLMp2YuljER
-	UsVAVL5AgIQyfZzfcK1ng==
-X-ME-Sender: <xms:lorPZdeHGkoabrCX4SsvCuAWiqIBXsDcq1vFFyNzPnKBuypq_jP7lA>
-    <xme:lorPZbMcgVdUTNuNBKOs2SKK8sgGmp9ACIR3wKV0hIuvpwvfqz_XG92Co22iYBptD
-    gP9KgELXsaLK5sYJCk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvgdekiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepgeefjeehvdelvdffieejieejiedvvdfhleeivdelveehjeelteegudektdfg
-    jeevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:lorPZWhiJuidpQzNpkULB5-DFy3t-csTNIU2O1WqhV1C06dHH3kcsA>
-    <xmx:lorPZW_ChIESkKfG6YPEcmCcNfHAFFQpTrWc-Vxt2Puq8QAiyyZjIQ>
-    <xmx:lorPZZtHzijUqbGFAYpf15ZbV6F3m6iHU9fB6RFEzWruv7xPxxWNjg>
-    <xmx:lorPZa85h02KQTLz2PYvq5cPadqXeqblWD63M6CDFKhRMBSwv9FHaQ>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 76494B6008D; Fri, 16 Feb 2024 11:17:26 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1708100271; c=relaxed/simple;
+	bh=1wNdSjbg5tRh3dMTBmjtbbkcd3rSjBMoG/xSPJIZT1o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Tj/TTFMyETeMenF3GRzgz73Wqg+gnzXGQ92iLnVjeDQ4ba5IuhdlzhWCe7T34CIwMU7wYDfT1ML+X4vp9w8QxM+OG9mfeBEL9JSzXu1AOFrBiBF5lA8Yus+b40btWj14sQqLYwVf6FgDNU2G2RfCrS7fF0VVgrsehTKKCrH1dbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YLhZ8Urr; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GD3VNV002219;
+	Fri, 16 Feb 2024 16:17:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=B4eyMajiTRUV1N5hgCQ1JZM85SAd3ezHL/YInFjHpd4=; b=YL
+	hZ8UrrFO1p25b7bZ9BpKHg/JH/0ZE2O3HQpX1kMUY1EkyBa8AegeAmiBuxlzZoaI
+	dQw0MaSPXoevghgDc8QMogmjga0yuUqHCFWFG2FpMGsIdDAr/wRop/uPecQGFNXY
+	3JMSgNIMzFdvRmcrxiYLaqWpQ8ndUkYFNHmCoomOnxOvhshImtaruQucDZ2JzNK3
+	7D3mgTEqfG37kbGJS9kQz3a3HrRzMdMY3uqh6/WsbOjnbs6r6FviMxgQo6lah6kz
+	mjRUoioIuVxaZ/1EPSh/+agyGphX9d2RiDqk2Oa/gxaSqnQzp6Sdhrl4ayWS1Ohf
+	OnBKDnDjCkFzsWuqsYfw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9fkfc17a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 16:17:40 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GGHdUw010327
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 16:17:39 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
+ 2024 08:17:38 -0800
+Message-ID: <640dcd49-394b-1cc0-8cce-01aaabc751b8@quicinc.com>
+Date: Fri, 16 Feb 2024 09:17:37 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <20c18087-dc18-4671-b4ac-c54f7fe4ad21@app.fastmail.com>
-In-Reply-To: <c6290c26-8d06-4032-8599-83556d44687c@paulmck-laptop>
-References: <20240216125959.3766309-1-arnd@kernel.org>
- <CAMRc=MdBbzff5BppY4Hjwfi=SnmYopnFxg1AX4QsGt3Y+-g60Q@mail.gmail.com>
- <14ab7b63-b2c0-41e3-8104-da5515b379be@app.fastmail.com>
- <c6290c26-8d06-4032-8599-83556d44687c@paulmck-laptop>
-Date: Fri, 16 Feb 2024 17:17:06 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: "Bartosz Golaszewski" <brgl@bgdev.pl>, "Arnd Bergmann" <arnd@kernel.org>,
- "Linus Walleij" <linus.walleij@linaro.org>,
- "Kent Gibson" <warthog618@gmail.com>,
- "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
- "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] gpio: cdev: avoid uninitialized variable dereference
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH] dt-bindings: net: bluetooth: qualcomm: Fix bouncing
+ @codeaurora
+Content-Language: en-US
+To: <quic_bjorande@quicinc.com>, <marcel@holtmann.org>, <luiz.dentz@gmail.com>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <quic_bgodavar@quicinc.com>, <quic_rjliao@quicinc.com>
+CC: <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20240202181122.4118105-1-quic_jhugo@quicinc.com>
+From: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <20240202181122.4118105-1-quic_jhugo@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: kVbLdiVGyazhhJ7RiokAvXEoMV4iz0lg
+X-Proofpoint-GUID: kVbLdiVGyazhhJ7RiokAvXEoMV4iz0lg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_15,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ adultscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=489
+ spamscore=0 bulkscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402160130
 
-On Fri, Feb 16, 2024, at 16:51, Paul E. McKenney wrote:
-> On Fri, Feb 16, 2024 at 03:04:14PM +0100, Arnd Bergmann wrote:
->> On Fri, Feb 16, 2024, at 14:19, Bartosz Golaszewski wrote:
->> > On Fri, Feb 16, 2024 at 2:00=E2=80=AFPM Arnd Bergmann <arnd@kernel.=
-org> wrote:
->> >>
->> >> From: Arnd Bergmann <arnd@arndb.de>
->> >>
->> >> The 'gc' variable is never set before it gets printed:
->> >>
->> >> drivers/gpio/gpiolib-cdev.c:2802:11: error: variable 'gc' is unini=
-tialized when used here [-Werror,-Wuninitialized]
->> >>  2802 |         chip_dbg(gc, "added GPIO chardev (%d:%d)\n", MAJOR=
-(devt), gdev->id);
->> >>       |                  ^~
->> >> drivers/gpio/gpiolib.h:277:11: note: expanded from macro 'chip_dbg'
->> >>   277 |         dev_dbg(&gc->gpiodev->dev, "(%s): " fmt, gc->label=
-, ##__VA_ARGS__)
->> >>       |                  ^~
->> >>
->> >> Use dev_dbg() directly.
->> >>
->> >> Fixes: 8574b5b47610 ("gpio: cdev: use correct pointer accessors wi=
-th SRCU")
->> >> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->> >> ---
->> >
->> > I seem to have beat you to it[1] and my patch doesn't change the log
->> > message so I'll apply it instead of this one.
->>=20
->> Ok, thanks. I thought about doing this, but could not
->> figure out which of the RCU primitives to use.
->
-> I will count that as a bug against RCU's documentation, but I am not
-> sure how to fix it.  Thoughts?
+On 2/2/2024 11:11 AM, Jeffrey Hugo wrote:
+> The servers for the @codeaurora domain are long retired and any messages
+> sent there will bounce.  Update the maintainer addresses for this
+> binding to match the entries in .mailmap so that anyone looking in the
+> file for a contact will see a correct address.
+> 
+> Signed-off-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
 
-I didn't really try at all, I just figured I could avoid
-thinking about it by using the device pointer at hand.
+Rob, will you take this?  You seemed willing to take similar changes.
 
-I'm sure the docs would have told me if I had bothered to look.
-
-     Arnd
+-Jeff
 
