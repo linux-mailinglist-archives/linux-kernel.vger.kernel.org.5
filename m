@@ -1,218 +1,130 @@
-Return-Path: <linux-kernel+bounces-69203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D01D8585B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:50:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AED738585C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:50:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03EF82844B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:50:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 441CB28862B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:50:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB067135402;
-	Fri, 16 Feb 2024 18:49:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEA71369B7;
+	Fri, 16 Feb 2024 18:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzGRNdsx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="sVZ6F8Qi"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41312C688;
-	Fri, 16 Feb 2024 18:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA931350FB;
+	Fri, 16 Feb 2024 18:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708109389; cv=none; b=WINHoyd+6amuO2KIwC0GMQmLOVBa7g78Dh1/F2iPPgsM85u1I9obB94hIb+g/iGWXWcUXP7hPcshBvOeMsIcPSB2qy93iGxGd0ekEmAOsbQ1nP9IcHv8Vwc/3pThEH5EHPGK2PfQhR5BHee7P9UfBBf+piPtCjRPhtlgQqVa0HQ=
+	t=1708109421; cv=none; b=pwW1M771SSzr40YQVZN4e6M7LLwca0EuNah8xXmaqeMwP7yIlQpMKc4Me93kqNs9B71pS5cHpvRS0BbIa887UwCPQj+cNeKg1XOgbirmly0IwN0r5GJc647ADyi/Ic/kuEmyXQks4Kd+qHYBsc0NAjDCUrYegp4UjSpH2YBZqYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708109389; c=relaxed/simple;
-	bh=2MZZwgYXsEOWk7BAQ+XbZ9JkDsdKEkwKD9JcUkQvF+E=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=ZoFKO3zATIVsgGl5ly0Vr6rNAhmaQWpCD5UYC6osFMQS8LKHMh/cxECgYfcpDjBU3YoyBP8pBxl+COf5oFR9cROtqoeIt760kU6U6AvyhqymCuLDKk7tnWgkluPMPdaQtARf15wHnP0udrLRiSJUo1O4PKGy/Ghx/A5a+c9gl9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzGRNdsx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2832CC433F1;
-	Fri, 16 Feb 2024 18:49:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708109388;
-	bh=2MZZwgYXsEOWk7BAQ+XbZ9JkDsdKEkwKD9JcUkQvF+E=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=DzGRNdsxXYRHWPtmoiqK9SY4Bq0mtIqFSkEghcGQlJjZAJsHj1WlmCsOOGdcDjfgN
-	 P3YOwPbAIFZo7MkKOwy/gmrk5U7PzEJ99HrFxrpn2/FImWzco4m31uMOkwktE5CFf+
-	 gVkbhH0XjJCimIwkR7wxre+2UmsxaYuxls/jqXCs1bhEJs4sXoVJ6gSYWLYgOB7SLt
-	 ojnmnIiWRL+foL5JR8/EIf/jI5dmWxoRbR1ATglpMqaYHFGIPSQJoBzH4qkQfJVc0M
-	 1hYutf93F+z6GM96jbhf3NFiKRToR2Ns+/i/BTt0weLpQStxTs8+shHCy6yBiw0/Ly
-	 BIssNZA8rCtow==
-Date: Fri, 16 Feb 2024 12:49:46 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
-	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-i2c@vger.kernel.org, Len Brown <lenb@kernel.org>,
-	Borislav Petkov <bp@suse.de>, Jean Delvare <jdelvare@suse.de>
-Subject: Re: [PATCH v4] acpi,pci: warn about duplicate IRQ routing entries
- returned from _PRT
-Message-ID: <20240216184946.GA1349514@bhelgaas>
+	s=arc-20240116; t=1708109421; c=relaxed/simple;
+	bh=51kgdgBqZYvIt5QFXzzBCP1nSeOtXNnvlQSNHeq2iNE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VxgOFqR0bJVKjxbIZ92p8Yh1PX2iBZ2tAGX1R0AOI1EZ3SmmOn9v0u0IqYW+AMgqpVRlbg+RW+8RNjzWhWjWgHuVz4sajScIkRF2J8fYQi42HHBIUNF7peUVBUmdZm5rZuRgiLgib/1TeGgJp/EQNUR4+z84+RAzANAvZ0mnXYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=sVZ6F8Qi; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1708109415; bh=51kgdgBqZYvIt5QFXzzBCP1nSeOtXNnvlQSNHeq2iNE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=sVZ6F8QiwTZWzwbbkdtBDytu0NHg8y9VD/C31d+ZyNDOw1h+3AwTLXFlSFfWMwT64
+	 OqaUrHwB5kR5tt53iCI62v2aAZZLpv11oT/JLFVZ2KOW2vR+VFku7FHL4eZ73juj7H
+	 yX5AE9fSJAgHOUTWrzaGcimZ4hnyYHwKeI1iu4OM=
+From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
+To: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Andrey Skvortsov <andrej.skvortzov@gmail.com>
+Cc: Ondrej Jirman <megi@xff.cz>,
+	Icenowy Zheng <icenowy@aosc.io>,
+	Dalton Durst <dalton@ubports.com>,
+	Shoji Keita <awaittrot@shjk.jp>,
+	linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/4] Add support for AF8133J magnetometer
+Date: Fri, 16 Feb 2024 19:49:58 +0100
+Message-ID: <20240216185008.1370618-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iHokxYJU0Nx5gT+ay=18uhmnha-bSYk=YUKPROQGZrmw@mail.gmail.com>
 
-On Fri, Feb 16, 2024 at 07:26:06PM +0100, Rafael J. Wysocki wrote:
-> On Tue, Dec 26, 2023 at 1:50 PM Mateusz Jończyk <mat.jonczyk@o2.pl> wrote:
-> >
-> > On some platforms, the ACPI _PRT function returns duplicate interrupt
-> > routing entries. Linux uses the first matching entry, but sometimes the
-> > second matching entry contains the correct interrupt vector.
-> >
-> > As a debugging aid, print a warning to dmesg if duplicate interrupt
-> > routing entries are present. This way, we could check how many models
-> > are affected.
-> >
-> > This happens on a Dell Latitude E6500 laptop with the i2c-i801 Intel
-> > SMBus controller. This controller is nonfunctional unless its interrupt
-> > usage is disabled (using the "disable_features=0x10" module parameter).
-> >
-> > After investigation, it turned out that the driver was using an
-> > incorrect interrupt vector: in lspci output for this device there was:
-> >         Interrupt: pin B routed to IRQ 19
-> > but after running i2cdetect (without using any i2c-i801 module
-> > parameters) the following was logged to dmesg:
-> >
-> >         [...]
-> >         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
-> >         i801_smbus 0000:00:1f.3: Transaction timeout
-> >         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
-> >         i801_smbus 0000:00:1f.3: Transaction timeout
-> >         irq 17: nobody cared (try booting with the "irqpoll" option)
-> >
-> > Existence of duplicate entries in a table returned by the _PRT method
-> > was confirmed by disassembling the ACPI DSDT table.
-> >
-> > Windows XP is using IRQ3 (as reported by HWiNFO32 and in the Device
-> > Manager), which is neither of the two vectors returned by _PRT.
-> > As HWiNFO32 decoded contents of the SPD EEPROMs, the i2c-i801 device is
-> > working under Windows. It appears that Windows has reconfigured the
-> > chipset independently to use another interrupt vector for the device.
-> > This is possible, according to the chipset datasheet [1], page 436 for
-> > example (PIRQ[n]_ROUT—PIRQ[A,B,C,D] Routing Control Register).
-> >
-> > [1] https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-datasheet.pdf
-> >
-> > Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Len Brown <lenb@kernel.org>
-> > Cc: Borislav Petkov <bp@suse.de>
-> > Cc: Jean Delvare <jdelvare@suse.de>
-> > Previously-reviewed-by: Jean Delvare <jdelvare@suse.de>
-> > Previously-tested-by: Jean Delvare <jdelvare@suse.de>
-> >
-> > ---
-> > Hello,
-> >
-> > I'm resurrecting an older patch that was discussed back in January:
-> >
-> > https://lore.kernel.org/lkml/20230121153314.6109-1-mat.jonczyk@o2.pl/T/#u
-> >
-> > To consider: should we print a warning or an error in case of duplicate
-> > entries? This may not be serious enough to disturb the user with an
-> > error message at boot.
-> >
-> > I'm also looking into modifying the i2c-i801 driver to disable its usage
-> > of interrupts if one did not fire.
-> >
-> > v2: - add a newline at the end of the kernel log message,
-> >     - replace: "if (match == NULL)" -> "if (!match)"
-> >     - patch description tweaks.
-> > v3: - fix C style issues pointed by Jean Delvare,
-> >     - switch severity from warning to error.
-> > v3 RESEND: retested on top of v6.2-rc4
-> > v4: - rebase and retest on top of v6.7-rc7
-> >     - switch severity back to warning,
-> >     - change pr_err() to dev_warn() and simplify the code,
-> >     - modify patch description (describe Windows behaviour etc.)
-> > ---
-> >  drivers/acpi/pci_irq.c | 25 ++++++++++++++++++++++---
-> >  1 file changed, 22 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
-> > index ff30ceca2203..1fcf72e335b0 100644
-> > --- a/drivers/acpi/pci_irq.c
-> > +++ b/drivers/acpi/pci_irq.c
-> > @@ -203,6 +203,8 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
-> >         struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
-> >         struct acpi_pci_routing_table *entry;
-> >         acpi_handle handle = NULL;
-> > +       struct acpi_prt_entry *match = NULL;
-> > +       const char *match_int_source = NULL;
-> >
-> >         if (dev->bus->bridge)
-> >                 handle = ACPI_HANDLE(dev->bus->bridge);
-> > @@ -219,13 +221,30 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
-> >
-> >         entry = buffer.pointer;
-> >         while (entry && (entry->length > 0)) {
-> > -               if (!acpi_pci_irq_check_entry(handle, dev, pin,
-> > -                                                entry, entry_ptr))
-> > -                       break;
-> > +               struct acpi_prt_entry *curr;
-> > +
-> > +               if (!acpi_pci_irq_check_entry(handle, dev, pin, entry, &curr)) {
-> > +                       if (!match) {
-> > +                               match = curr;
-> > +                               match_int_source = entry->source;
-> > +                        } else {
-> > +                               dev_warn(&dev->dev, FW_BUG
-> 
-> dev_info() would be sufficient here IMV.
-> 
-> > +                                      "ACPI _PRT returned duplicate IRQ routing entries for INT%c: %s[%d] and %s[%d]\n",
-> > +                                      pin_name(curr->pin),
-> > +                                      match_int_source, match->index,
-> > +                                      entry->source, curr->index);
-> > +                               /* We use the first matching entry nonetheless,
-> > +                                * for compatibility with older kernels.
+From: Ondrej Jirman <megi@xff.cz>
 
-The usual comment style in this file is:
+This series adds support for AF8133J magnetometer sensor. It's a simple
+3-axis sensor with two sensitivity options and not much else to it.
 
-  /*
-   * We use ...
-   */
+This sensor is used on both Pinephone and Pinephone Pro. DT patches
+adding it will come later, once this driver is merged.
 
-> > +                                */
-> > +                       }
-> > +               }
-> > +
-> >                 entry = (struct acpi_pci_routing_table *)
-> >                     ((unsigned long)entry + entry->length);
-> >         }
-> >
-> > +       *entry_ptr = match;
-> > +
-> >         kfree(buffer.pointer);
-> >         return 0;
-> >  }
-> >
-> > base-commit: 861deac3b092f37b2c5e6871732f3e11486f7082
-> > --
-> 
-> Bjorn, any concerns regarding this one?
+Please take a look. :)
 
-No concerns from me.  
+Thank you very much,
+	Ondřej Jirman
 
-I guess this only adds a message, right?  It doesn't actually fix
-anything or change any behavior?
+v3:
+- collect more tags
+- if (ret < 0) -> (ret) where appropriate
+- scoped guard move to af8133j_set_scale()
+- remove pm_runtime_disable/enable guard from af8133j_power_down_action()
+- pretty much just this:
+  https://megous.com/dl/tmp/0001-if-ret-0-ret-where-appropriate.patch
+  https://megous.com/dl/tmp/0002-scoped-guard-move-to-af8133j_set_scale.patch
+  https://megous.com/dl/tmp/0003-remove-pm_runtime_disable-enable-guard-from-af8133j_.patch
 
-This talks about "duplicate" entries, which suggests to me that they
-are identical, but I don't think they are.  It sounds like it's two
-"matching" entries, i.e., two entries for the same (device, pin)?
+v2:
+- move maintainers patch to the end of series
+- bindings:
+  - fix compatible definition in bindings file
+  - require power supplies
+  - fix descriptions
+- driver:
+  - sort includes
+  - rework RPM, the driver should now work with RPM disabled
+    among other improvements
+    - I've tested RPM left and right doing device bind/unbind under
+      various conditions, system suspend under various conditions,
+      etc.
+  - use scoped_guard for mutexes
+  - use devm for power down and handle power down correctly with both
+    RPM enabled/disabled without tracking power state in data->powered
+  - fix issue with changing scale while RPM suspended
+  - various code formatting issues resolved
+- as for sign-offs, I've added co-developed-by for people I know for
+  sure worked on the driver, and left other tags as they were when
+  I picked up the patch 2 years ago to my Linux branch
 
-And neither of the two _PRT entries yields a working i801 device?
+Icenowy Zheng (3):
+  dt-bindings: vendor-prefix: Add prefix for Voltafield
+  dt-bindings: iio: magnetometer: Add Voltafield AF8133J
+  iio: magnetometer: add a driver for Voltafield AF8133J magnetometer
 
-Bjorn
+Ondrej Jirman (1):
+  MAINTAINERS: Add an entry for AF8133J driver
+
+ .../iio/magnetometer/voltafield,af8133j.yaml  |  60 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |   6 +
+ drivers/iio/magnetometer/Kconfig              |  12 +
+ drivers/iio/magnetometer/Makefile             |   1 +
+ drivers/iio/magnetometer/af8133j.c            | 524 ++++++++++++++++++
+ 6 files changed, 605 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/magnetometer/voltafield,af8133j.yaml
+ create mode 100644 drivers/iio/magnetometer/af8133j.c
+
+-- 
+2.43.0
+
 
