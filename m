@@ -1,126 +1,179 @@
-Return-Path: <linux-kernel+bounces-68198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA62685771E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0768785771B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:57:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E83BB1C2202C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:57:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F3B1C21FD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:57:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F2E1B959;
-	Fri, 16 Feb 2024 07:56:17 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D5717BB3;
+	Fri, 16 Feb 2024 07:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="rPQdtOrN"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B191B7E5
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D111B299;
+	Fri, 16 Feb 2024 07:56:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708070176; cv=none; b=c6F7K6yg3F0CwVUrtQ8n554p13s44qDYhQ71pe+5UWBvfHTioXnH+S92htr0vn7eit5K0RRM1emMeC5PmlznuCsI4nlUyj3qmoRYisxJEIDkMWXy3n/fKsxVrsbpzqPCguF09M73oqHH0p7BJ4XuN5kz7yxPS1PO8EvlyKpezSk=
+	t=1708070173; cv=none; b=XBEjIhskNAcAKRypVHLiD3v10Rm2aNmyl2O4e2DClXq5up8NaUThDN41J2zRkMXP2T+61Zhj0tyWfP7i9Ea4UusTZvcgFw3f8ZWYiHVKKwCDN4kf6Q+7hWboCPr0+f3J4XOngHx7gaamZ7+5php/kLtIYZcXnh5pMEu66DFu3Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708070176; c=relaxed/simple;
-	bh=7Pa9RjFBb172HlPrKPKDBn4IiTBiyGH+Iyana8ZOtJo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A1+cfjXbkASEDVun93TEd6M9oIb4mEjIfY0dLuuqxvKcSBBg6Ij7kVFLDXRqNBCmTRSk7GH5hrWWZ/X2Qj63ngGvaoPjViFmo67EKuDnjYzJabPNZn6IuEBmo7PNnFr9sKeEgg3LGjULw92/E+dlxYyVpVTngTKX5rrT5hPL+Zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rat4l-0003T5-D9; Fri, 16 Feb 2024 08:56:03 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rat4j-0012AD-TX; Fri, 16 Feb 2024 08:56:01 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7C63C29010B;
-	Fri, 16 Feb 2024 07:56:01 +0000 (UTC)
-Date: Fri, 16 Feb 2024 08:56:00 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: Vincent Mailhol <mailhol.vincent@wanadoo.fr>, 
-	Chandrasekar Ramakrishnan <rcsekar@samsung.com>, Wolfgang Grandegger <wg@grandegger.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Francesco Dolcini <francesco.dolcini@toradex.com>, linux-can@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: m_can: remove redundant check for pm_clock_support
-Message-ID: <20240216-panning-sesame-2bc66afeeb6a-mkl@pengutronix.de>
-References: <20240104235723.46931-1-francesco@dolcini.it>
- <20240216074527.GA5457@francesco-nb>
+	s=arc-20240116; t=1708070173; c=relaxed/simple;
+	bh=esGmr0k1jtvNLG9Q6hd/tXlibBc2OxKajxHeYodi/60=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=A+HuCBtlbq10RtR5gKtqSwrEW3cdk32ZiDGMfYj/xANQfxdlHFXu8jl0GVMdSOQyMrJ45bL0LEdpT+dRPNioqDSv0a8GmAAf2R3U2ixoDvcwxZxJ3dAb2IeKXztmFaBCYnSkbvRVPWhUgNPnDKnYH6PC7TrcHGr2p7Q8MV3d55g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=rPQdtOrN; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708070169;
+	bh=esGmr0k1jtvNLG9Q6hd/tXlibBc2OxKajxHeYodi/60=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=rPQdtOrNIgpCYN8og+J+TO6wRgRZnW2+Q5NvL7qnF8eshvN+FXn4MFQ03or6ST+eH
+	 OafOSvBUCqIw44Ul7/jMi6838CuvOG9TWfmidbqtZrFZknEoWzR0yjnOZlqDFJ/7rC
+	 KUSFKBdXLngEVxbICU3b/s5B+7tQAUshLMSVxajK2HQ2Z/jCtKwdQPKAEO5FB59yTY
+	 PsylJ+E8JqbDltmobddu32g2mKs5w5f0mARbc14ukrJboyiGSDzZi7byOygtgcCWvZ
+	 vq7GxOp638lurEzmRirAqhgBnYHE+cNQr9j/657RIZ1J7JZas9LXv6dU+SBgkIzKmz
+	 61NuX8oZWR27g==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 087483780A0B;
+	Fri, 16 Feb 2024 07:56:08 +0000 (UTC)
+Message-ID: <b3c384b6-7c8f-4428-a62e-1036b78217cf@collabora.com>
+Date: Fri, 16 Feb 2024 08:56:08 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2pwjxutxb5pv4fzu"
-Content-Disposition: inline
-In-Reply-To: <20240216074527.GA5457@francesco-nb>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/9] media: platform: mtk-mdp3: drop calling
+ cmdq_pkt_finalize()
+To: =?UTF-8?B?TW91ZHkgSG8gKOS9leWul+WOnyk=?= <Moudy.Ho@mediatek.com>,
+ "linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+ "chunkuang.hu@kernel.org" <chunkuang.hu@kernel.org>,
+ "mchehab@kernel.org" <mchehab@kernel.org>,
+ "linux-arm-kernel@lists.infradead.org"
+ <linux-arm-kernel@lists.infradead.org>,
+ "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+References: <20240215004931.3808-1-chunkuang.hu@kernel.org>
+ <20240215004931.3808-7-chunkuang.hu@kernel.org>
+ <4dcfaf49-aaac-4980-a149-02fec3109f31@collabora.com>
+ <af4bfdd52f0ca022730aedcb456bb1a0b105ae3e.camel@mediatek.com>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+In-Reply-To: <af4bfdd52f0ca022730aedcb456bb1a0b105ae3e.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+Il 16/02/24 07:20, Moudy Ho (何宗原) ha scritto:
+> On Thu, 2024-02-15 at 11:29 +0100, AngeloGioacchino Del Regno wrote:
+>> Il 15/02/24 01:49, Chun-Kuang Hu ha scritto:
+>>> Because client driver has the information of struct cmdq_client, so
+>>> it's not necessary to store struct cmdq_client in struct cmdq_pkt.
+>>> cmdq_pkt_finalize() use struct cmdq_client in struct cmdq_pkt, so
+>>> it's
+>>> going to be abandoned. Therefore, use cmdq_pkt_eoc() and
+>>> cmdq_pkt_nop()
+>>> to replace cmdq_pkt_finalize().
+>>
+>> No, it's not because cmdq_pkt_finalize() has cmdq_client, but because
+>> we want
+>> finer grain control over the CMDQ packets, as not all cases require
+>> the NOP
+>> packet to be appended after EOC.
+>>
+>> Besides, honestly I'm not even sure if the NOP is always required in
+>> MDP3, so...
+>>
+>> ...Moudy, you know the MDP3 way better than anyone else - can you
+>> please
+>> check if NOP is actually needed here?
+>>
+>> Thanks!
+>> Angelo
+>>
+> 
+> Hi Angelo,
+> 
+> After confirming with the hardware designer and performing the video
+> playback test, it was discovered that MDP3 is capable of excluding the
+> NOP(jump) instruction.
+> 
+
+Thank you for this extremely fast clarification.
+
+Cheers,
+Angelo
+
+> Sincerely,
+> Moudy
+>>>
+>>> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+>>> ---
+>>>    drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c | 3 ++-
+>>>    drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c | 2 ++
+>>>    drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h | 1 +
+>>>    3 files changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+>>> b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+>>> index 6adac857a477..a420d492d879 100644
+>>> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+>>> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-cmdq.c
+>>> @@ -471,7 +471,8 @@ int mdp_cmdq_send(struct mdp_dev *mdp, struct
+>>> mdp_cmdq_param *param)
+>>>    		dev_err(dev, "mdp_path_config error\n");
+>>>    		goto err_free_path;
+>>>    	}
+>>> -	cmdq_pkt_finalize(&cmd->pkt);
+>>> +	cmdq_pkt_eoc(&cmd->pkt);
+>>> +	cmdq_pkt_nop(&cmd->pkt, mdp->cmdq_shift_pa);
+>>>    
+>>>    	for (i = 0; i < num_comp; i++)
+>>>    		memcpy(&comps[i], path->comps[i].comp,
+>>> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+>>> b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+>>> index 94f4ed78523b..2214744c937c 100644
+>>> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+>>> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.c
+>>> @@ -231,6 +231,8 @@ static int mdp_probe(struct platform_device
+>>> *pdev)
+>>>    		goto err_put_scp;
+>>>    	}
+>>>    
+>>> +	mdp->cmdq_shift_pa = cmdq_get_shift_pa(mdp->cmdq_clt->chan);
+>>> +
+>>>    	init_waitqueue_head(&mdp->callback_wq);
+>>>    	ida_init(&mdp->mdp_ida);
+>>>    	platform_set_drvdata(pdev, mdp);
+>>> diff --git a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+>>> b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+>>> index 7e21d226ceb8..ed61e0bb69ee 100644
+>>> --- a/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+>>> +++ b/drivers/media/platform/mediatek/mdp3/mtk-mdp3-core.h
+>>> @@ -83,6 +83,7 @@ struct mdp_dev {
+>>>    	u32					id_count;
+>>>    	struct ida				mdp_ida;
+>>>    	struct cmdq_client			*cmdq_clt;
+>>> +	u8					cmdq_shift_pa;
+>>>    	wait_queue_head_t			callback_wq;
+>>>    
+>>>    	struct v4l2_device			v4l2_dev;
+>>
+>>
 
 
---2pwjxutxb5pv4fzu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On 16.02.2024 08:45:27, Francesco Dolcini wrote:
-> Hello Marc and Vincent,
->=20
-> On Fri, Jan 05, 2024 at 12:57:23AM +0100, Francesco Dolcini wrote:
-> > From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> >=20
-> > m_can_clk_start() already skip starting the clock when
-> > clock support is disabled, remove the redundant check in
-> > m_can_class_register().
-> >=20
-> > This also solves the imbalance with m_can_clk_stop() that is called
-> > afterward in the same function before the return.
-> >=20
-> > Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
->=20
-> Did you missed this? Or do you have some concern with it?
-
-Somehow missed it in the last PR, but already part of the next PR.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---2pwjxutxb5pv4fzu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXPFQwACgkQKDiiPnot
-vG/iDwgAmM9nBdYvm5wqDwxWU8iSl2Bdq2PS3zvmB+7XOu1iYOQ8vV9XTMv5pHrL
-1GyKQSTbp0QZ/cVUOXzWa0PATlS9xKXetojJ6V2hFoN/9P0AHhkhVTU04dwsMyM4
-NNQDWV2ENdaeKWpThVB9Yatx07lIXl5XOtmPxEqIR3LR59h1EpL2ODLXUADUU4Zu
-NklAV0XUefT+TX3ckwq/14oZhVaUf+8rXWqUvAw4OpUENWwVqWdUamrZfBFfC9bw
-lWKITH27Fa51hfZOgyW1EmZC2Tmq5h/T5ONJP9UXk0J4VH178BS6IEBSbeoZFfgN
-FJAjp782wSr5d+UNawMUKyaiL+VDiw==
-=VaPV
------END PGP SIGNATURE-----
-
---2pwjxutxb5pv4fzu--
 
