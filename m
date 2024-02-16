@@ -1,165 +1,125 @@
-Return-Path: <linux-kernel+bounces-68312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC5AE857894
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:10:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0097C857896
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:12:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F16EE1C222BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:10:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94A3EB22ABE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AF21B946;
-	Fri, 16 Feb 2024 09:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="aQh742IY"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E663F14AA0
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B72B1B81C;
+	Fri, 16 Feb 2024 09:12:04 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633D517BD6
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:11:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708074619; cv=none; b=Gp0Tt8PrC8qJqyi6WEe8N8/lTgiLElFRIoUjv2S4Kjl2kTI0g/MvWKwYBZPHdOoIMqDZpb++2XgmrcsSvdqpddvArRn1uOWN5aFpRoQcFjb0AgvwzF9zltUpzOt9KvGv/m7rV2VQEhuwceTkdMBIIrts6bTvVAFGjmuwS84cfcM=
+	t=1708074723; cv=none; b=J/42BKfAT6lzZWw6WcaWa70SmMtQTSry7z26QdrFb3WU9zoWLwBYWAOnerXR/14ZbnTmnTsHhRau0VuIcLdBlyx2Pen6FegX+fsszKzd0dP7nFRw0hNLtnIdgZ5Tuc+bVR1a1r4ZtowKd92W2BfQwZk3ERXG87rNqoqDK1E4yoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708074619; c=relaxed/simple;
-	bh=pX7JMjia3f8IZ1xtc+dpQB+HCwVwI4T6Gmsse1DOXaw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A6X7ecf3td8UYVHjTzz3wyzss3Ywf6lUoeAdm5LS7gOJOu19FMdWEBFL9AHiPwlRxv/h48AK2KkjZnkuoE/M3nxNsBhfkhKjczrDHAvo4Sg5ZQ2XiQPFiOwPuEC6GiL3Q8YZzd3vzaO9MJ2SJZ0hqz16qVawL8f2yp98YjQ3kmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=aQh742IY; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2E9CD6B3;
-	Fri, 16 Feb 2024 10:10:10 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708074611;
-	bh=pX7JMjia3f8IZ1xtc+dpQB+HCwVwI4T6Gmsse1DOXaw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=aQh742IYvoolK5My4S/EJjipf+woHXwjn4yjaGmX27lEBVKGvvpacJ6xqq+EfJkFh
-	 z0FyP+tzzgul10HWShWvt480LwPLl1DWtPxavxyJJFe7pOASWnF01dIX5nMvE7R/bj
-	 LDVnz63UN/SArXeL3/+Dg8wcS384p+gNMC61h/ZI=
-Message-ID: <b2052bc9-b2da-489b-9e5b-3c9b4f6c1c99@ideasonboard.com>
-Date: Fri, 16 Feb 2024 11:10:11 +0200
+	s=arc-20240116; t=1708074723; c=relaxed/simple;
+	bh=Ryp7q8VfnYfLCvqepfziSt+wAlGU+XTSlKDD0RP5Vxc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AcaMqJRRfUaJ494cBi4Yv8Of8CmGtaMJl1E442i/g7l4IONteX+a9v6RQBh1t2xlKTOYwsyMBSx3hynC5y2GHbSlV7VYZnZXFxp0qh4p7gbVJr6eR20copBBStRS2bcY5P/s1RxgGzq36ve6TT7OONznEjok+i0zwaYXZcH/4m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-b0-65cf26d1d245
+Date: Fri, 16 Feb 2024 18:11:40 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Oscar Salvador <osalvador@suse.de>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org
+Subject: Re: [PATCH] sched/numa, mm: do not promote folios to nodes not set
+ N_MEMORY
+Message-ID: <20240216091139.GA75176@system.software.com>
+References: <20240214035355.18335-1-byungchul@sk.com>
+ <Zc0tFdGAzD9sCzZN@localhost.localdomain>
+ <20240216070754.GB32626@system.software.com>
+ <Zc8UPuzii_5gTsrJ@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] drm/bridge: tc358767: Fix
- DRM_BRIDGE_ATTACH_NO_CONNECTOR case
-Content-Language: en-US
-To: Alexander Stein <alexander.stein@ew.tq-group.com>,
- Aradhya Bhatia <a-bhatia1@ti.com>, Andrzej Hajda <andrzej.hajda@intel.com>,
- Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org,
- marex@denx.de, Jan Kiszka <jan.kiszka@siemens.com>
-Cc: linux-kernel@vger.kernel.org
-References: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com>
- <f6af46e0-aadb-450a-9349-eec1337ea870@ti.com>
- <2f3bb86b-6f8c-4807-985e-344a0c47864c@siemens.com>
- <3277848.aeNJFYEL58@steina-w>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
- wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
- Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
- eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
- LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
- G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
- DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
- 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
- rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
- Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
- aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
- ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
- PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
- VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
- 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
- uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
- R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
- sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
- Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
- PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
- dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
- qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
- hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
- DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
- KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
- 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
- xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
- UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
- /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
- 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
- 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
- mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
- 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
- suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
- xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
- m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
- CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
- CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
- 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
- ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
- yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
- 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
-In-Reply-To: <3277848.aeNJFYEL58@steina-w>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zc8UPuzii_5gTsrJ@localhost.localdomain>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LhesuzSPei2vlUg2nHxS3mrF/DZnHp8VU2
+	i+kvG1ksnk7Yymxxt38qi8XlXXPYLO6t+c9qMfndM0aLSwcWMFmcmVZkcbz3AJPFvo4HTBYd
+	R74xW2w9+p3dgc9jzbw1jB4t+26xeyzYVOqxeYWWx6ZPk9g97lzbw+ZxYsZvFo/3+66yeWw+
+	Xe3xeZNcAFcUl01Kak5mWWqRvl0CV0bD+4nMBT+4Kn43PGZuYLzO0cXIySEhYCKx9NJndhj7
+	SGcjM4jNIqAqMf9YP1icTUBd4saNn2BxEQE1iWmvGoHiXBzMAqeYJCZ8vgDkcHAIC4RJ/H2j
+	AFLDK2AhceT/KlaQGiGBXYwS19YsYINICEqcnPmEBcRmFtCSuPHvJRNIL7OAtMTyfxwgJqeA
+	qcTfNTUgFaICyhIHth1nAhkjIdDMLrFi3yOoOyUlDq64wTKBUWAWkqmzkEydhTB1ASPzKkah
+	zLyy3MTMHBO9jMq8zAq95PzcTYzAWFpW+yd6B+OnC8GHGAU4GJV4eA/8OZsqxJpYVlyZe4hR
+	goNZSYR3Uu+ZVCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8Rt/KU4QE0hNLUrNTUwtSi2CyTByc
+	Ug2MXfLJpscN8pi3X5Hv/LVDbdfpyc+9lgZtnnz8crIlS/gz3t15ka+90tdlsCS0NFzLPTCt
+	r1Wis7Ly9tsgxnMLpBu1Vf8f97vp2fL+j4GOvueSbL+nXx93lEws8f24ofrKt/CNtxd/t5mc
+	tbK8U3X356l6eyV2n5NLaZqf0Cy+4ODtTuVjerdmKLEUZyQaajEXFScCAKiRbaKhAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKLMWRmVeSWpSXmKPExsXC5WfdrHtR7XyqwaxmXos569ewWVx6fJXN
+	YvrLRhaLpxO2Mlvc7Z/KYnF47klWi8u75rBZ3Fvzn9Vi8rtnjBaXDixgsjgzrcjieO8BJot9
+	HQ+YLDqOfGO22Hr0O7sDv8eaeWsYPVr23WL3WLCp1GPzCi2PTZ8msXvcubaHzePEjN8sHu/3
+	XWXzWPziA5PH5tPVHp83yQVwR3HZpKTmZJalFunbJXBlNLyfyFzwg6vid8Nj5gbG6xxdjJwc
+	EgImEkc6G5lBbBYBVYn5x/rZQWw2AXWJGzd+gsVFBNQkpr1qBIpzcTALnGKSmPD5ApDDwSEs
+	ECbx940CSA2vgIXEkf+rWEFqhAR2MUpcW7OADSIhKHFy5hMWEJtZQEvixr+XTCC9zALSEsv/
+	cYCYnAKmEn/X1IBUiAooSxzYdpxpAiPvLCTNs5A0z0JoXsDIvIpRJDOvLDcxM8dUrzg7ozIv
+	s0IvOT93EyMwMpbV/pm4g/HLZfdDjAIcjEo8vAf+nE0VYk0sK67MPcQowcGsJMI7qfdMqhBv
+	SmJlVWpRfnxRaU5q8SFGaQ4WJXFer/DUBCGB9MSS1OzU1ILUIpgsEwenVANj1u0VNy7b+G5f
+	z8ZiJDNR6WTjjUPOByr+/nk1L2NXeWzGdceUG+ZN8luc/+64LBV3Wf6R2EWrv4WJ9Y+mJJWv
+	Off/ztQGw/qrhcc4birmZj7wj05JnmE7bdUl51MvZrNLiPfuq31Qwt+Rqbzxl+e9mX9uXY/7
+	8fOSRty05VOtUuK4Nz3bncz/S4mlOCPRUIu5qDgRAArQxHCIAgAA
+X-CFilter-Loop: Reflected
 
-On 15/02/2024 11:03, Alexander Stein wrote:
-> Hi everyone,
+On Fri, Feb 16, 2024 at 08:52:30AM +0100, Oscar Salvador wrote:
+> On Fri, Feb 16, 2024 at 04:07:54PM +0900, Byungchul Park wrote:
+> > For normal numa nodes, node_data[] is initialized at alloc_node_data(),
+> > but it's not for memoryless node. However, the node *gets onlined* at
+> > init_cpu_to_node().
+> > 
+> > Let's look at back free_area_init(). free_area_init_node() will be called
+> > with node_data[] not set yet, because it's already *onlined*. So
+> > ->zone_pgdat cannot be initialized properly in the path you mentioned.
 > 
-> Am Donnerstag, 15. Februar 2024, 09:53:54 CET schrieb Jan Kiszka:
->> On 11.12.23 09:07, Aradhya Bhatia wrote:
->>> On 06/12/23 17:41, Tomi Valkeinen wrote:
->>>> Hi,
->>>>
->>>> On 08/11/2023 14:45, Alexander Stein wrote:
->>>>> Hi Tomi,
->>>>>
->>>>> Am Mittwoch, 8. November 2023, 12:27:21 CET schrieb Tomi Valkeinen:
->>>>>> These two patches are needed to make tc358767 work in the
->>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP
->>>>>> connector.
->>>>>>
->>>>>> I have tested this with TI AM654 EVM with a tc358767 add-on card
->>>>>> connected to a DP monitor.
->>>>>
->>>>> Just a question regarding the usage of this DSI-DP bridge.
->>>>> What is the state of the DSI lanes after the DSI host has been
->>>>> initialized,
->>>>> but before calling atomic_pre_enable? AFAIK this bridge requires LP-11
->>>>> on DSI
->>>>> at any time for accessing the AUX channel.
->>>
->>> + Marek
->>>
->>> Marek, Alexander,
->>>
->>> A quick grep tells me that you have added devicetree for tc358767 in DSI
->>> to (e)DP mode on other platforms. Could you please test these patches
->>> and report if you find any issue?
+> I am might be missing something., so bear with me.
 > 
-> Sorry, I can't provide any feedback here. I've yet to setup the DSI-DP
-> correctly.
+> free_area_init() gets called before init_cpu_to_node() does.
+> free_area_init_node() gets called on every possible node.
+> 
+> free_area_init_node then() does
+> 
+>  pg_data_t *pgdat = NODE_DATA(nid);,
+> 
+> and then we call free_area_init_core().
+> 
+> free_area_init_core() does
+> 
+>  free_area_init_core() does
+>   zone_init_internals()
+> 
+> which ends up doing zone->zone_pgdat = NODE_DATA(nid);
+> 
+> If node_data[] was not set at all, we would already blow up when doing
+> the first
+> 
+>   for_each_node()
+>     pgdat = NODE_DATA(nid);
+>     free_area_init_node(nid);
+> 
+> back in free_area_init().
 
-Ok. Does anyone have a worry that these patches make the situation worse 
-for the DSI case than it was before? Afaics, if the DSI lanes are not 
-set up early enough by the DSI host, the driver would break with and 
-without these patches.
+It seems that I got it wrong about the reason. Let me check it again and
+share the reason.
 
-These do fix the driver for DRM_BRIDGE_ATTACH_NO_CONNECTOR and DPI, so 
-I'd like to merge these unless these cause a regression with the DSI case.
+Just in case, this patch is still definitely necessary tho.
 
-  Tomi
-
+	Byungchul
 
