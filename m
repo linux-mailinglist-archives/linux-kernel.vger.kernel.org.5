@@ -1,113 +1,106 @@
-Return-Path: <linux-kernel+bounces-67903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB4728572BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:45:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7786B8572B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:44:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E9C9B22255
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:45:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 035151F22E28
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A193DDC1;
-	Fri, 16 Feb 2024 00:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85FFFBA38;
+	Fri, 16 Feb 2024 00:43:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tv+itwG+"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="XfrZ+gqM"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF838BE5E
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44B8D9454
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708044212; cv=none; b=me7/lTWmG7orZxHBjcOgU+kUyu1ZREUXFmMQcnn6ita2Bt+7BN4tFGOSr6EJbhRTDhslITNImdiO9fxhqIQyFM1iXQTHtJGyFRIqydRzE3QdyqJEDoKS3jaqm1whAWm8pLgNbwj8HQAIL1RT/HRne+OZaQfRETx6tkMxmFNa50I=
+	t=1708044208; cv=none; b=Vvy6UdQdKCqVhF4coSEBV/xg6bYh/b+N+Qn0JQo4l3dibDIMYk7RI7E/6kbVuwf3rd2BEH24ZfzyYRnRLCJ68YRqbUFWRZDzTeYmiK78cGckvHYH5hIr9pjoApToMQpqa4k+lGtYWr694bnaDfk01XhgDR5V50qRv7/msW0dA+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708044212; c=relaxed/simple;
-	bh=2+VZnPCSYNk+2pPRyl152ePQ0FX0U8JpHjxax5vPuDY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jnrngTpin+KnKq7wsuF66te5L6MQXzs4lxpnfJKN7CxIbLh4j3M1KydveMUcq067e7PcQIyOgPKKrwwCsgo8HM2scm5IcTjXHUSY/g2z/rOFIDrk1MfXgZC0BjOqCZSbKwWoiBeDrOVrfKJhfKXQLi2g722Y1MuIhRIL16PTD5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tv+itwG+; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <11f40993-ec02-48b7-aec5-13ff7cddf665@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708044208;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KlOE/QHrK685/cBSEGlCbbuAZty4HqZtwl2hI0O+jio=;
-	b=tv+itwG+azGIKJ3yf3N8V0VgYXvjLKRlNl497rfWJd7CpaqicNRKY2qiWipQT1saJxVnNj
-	2ET24KwQQh84jFd/9tAmCflA3IxxlWQjPSdARAYSJ60kbx98IfUNBRGbzk4elELkgj2qCQ
-	sFSGpacZdFq7hENHEjQbYTByzwIXDV0=
-Date: Fri, 16 Feb 2024 08:43:18 +0800
+	s=arc-20240116; t=1708044208; c=relaxed/simple;
+	bh=wpZ3+q2A27+VBpLN60qONBQkdaGjFE1Z/O7en5rKHOs=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=BP9Q+LMJWzRU6R5JlHjgUSOmiJwAiYi53jprq13rBcK/vdjglRsRQamcU8dt9s+xLQfR5duWHhK8sKlBxwQ4ViYUTWdoUb65cskxsMEnKo86lECZ8U034+Rb3pVZTzdHUCUPOOA0aUxYE75nNEXZr95NteKRO/JYlc+8wB/kbUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=XfrZ+gqM; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7bf2c826a5aso67472039f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:43:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1708044206; x=1708649006; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=906AztgBDa+u1AARHWRp02F7s/rxI61AgVNDIWi+eXM=;
+        b=XfrZ+gqMx7ImLq5Wp4a6sMC0iGU8CPVLnCzcxuNN5VVNPW9zZdTF49cANdFuDNSWG0
+         NxVDe4qrQSP03LhrnDrUEXKJXYPI8Zu9exuqT1O9I990s8+C5OGt8pMVJQZUqKQ6Q0+N
+         FUCcn1t68AijJRO6gdqU+Jq7Gr3wCjJ9a4ximnsXzIjbsxveSlQXdlbl2ULm+BaxMMcA
+         hglnXs1ZF0LXg1xernuevmRfDMyG6Rqrc6ZqEliYMg+lusSlDOHaGBn7cuBKD8GymIoT
+         PWRNn5On2RR0izyn824kkldgbZuW1BeGhO6iSXS/Fzjn6vKwIma+vwsvN2XwEzPu80/+
+         Z46A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708044206; x=1708649006;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=906AztgBDa+u1AARHWRp02F7s/rxI61AgVNDIWi+eXM=;
+        b=Hxm7ntLjmwIAiItOZTB9FtzQEC5KrLpBnrtdqZ3Fe/UASrKnzxWR+vTsXhw/DkkZSk
+         XR4fhKzDZGF/bNMybiz5qGKVlT5Xf57QVgYMVYEHhub8V5V+zQJQmBbOlxjV2uB0+KNY
+         LX/YGPrTnD5jTGMVX088KIx426tfu5QSm3d/sOu/2qkOVG/zRxkzLPKVzXrrah+TAkxW
+         Zo2TN2P110EGC2t455uGWJZKCfYAm9w1Ue9U0PEaZJYtdjSszYRSyIliC1dI2g6Z8igg
+         QV6J6bDHpnG1OKc21bgrtQIB7k4AxUUYST6qZ/MpbmDwNR9881219qOGWlFjU3CzVeiJ
+         FawA==
+X-Forwarded-Encrypted: i=1; AJvYcCXc4vR/j5GEYzCZczW8VA+UiSyB9pg8F7hbaLVYZYwCUbUh2xNbhdc19O9EAw1RJ/8RBzaVZwj1gCxGx8B9BFBxYkrCANyttv6xJ4ax
+X-Gm-Message-State: AOJu0Yz+Ovl7VzWmcsCnLGOQlmBo2wr0b/Oi038MJOVfT6h86tis1u0x
+	9w1FMejKhwyhMmMCW0/n21YHC99nXNr9jSGfo1a5eMJWCwmbGSpln+384AFNS/c=
+X-Google-Smtp-Source: AGHT+IERnpQSZ7MTb6KfYlV0kBQ6EVjYQL9pSnng2dDwidYnOh6AyMUrOQceP7bFABcYCPnVZeKZSw==
+X-Received: by 2002:a5d:841a:0:b0:7c4:5910:8ab9 with SMTP id i26-20020a5d841a000000b007c459108ab9mr4153852ion.5.1708044206274;
+        Thu, 15 Feb 2024 16:43:26 -0800 (PST)
+Received: from localhost (c-98-32-39-159.hsd1.nm.comcast.net. [98.32.39.159])
+        by smtp.gmail.com with ESMTPSA id l24-20020a02a898000000b004713ba1b284sm609266jam.44.2024.02.15.16.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 16:43:25 -0800 (PST)
+Date: Thu, 15 Feb 2024 16:43:24 -0800 (PST)
+From: Paul Walmsley <paul.walmsley@sifive.com>
+To: Samuel Holland <samuel.holland@sifive.com>
+cc: Conor Dooley <conor@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+    Greentime Hu <greentime.hu@sifive.com>, linux-riscv@lists.infradead.org, 
+    Green Wan <green.wan@sifive.com>, Albert Ou <aou@eecs.berkeley.edu>, 
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: Update SiFive driver maintainers
+In-Reply-To: <20240215234941.1663791-1-samuel.holland@sifive.com>
+Message-ID: <114d9cf3-0ebd-56c7-f3e4-57ebc235df45@sifive.com>
+References: <20240215234941.1663791-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] net/mlx5: fix possible stack overflows
-To: Arnd Bergmann <arnd@arndb.de>, Arnd Bergmann <arnd@kernel.org>,
- Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>,
- Alex Vesker <valex@nvidia.com>, Hamdan Igbaria <hamdani@nvidia.com>,
- Netdev <netdev@vger.kernel.org>, linux-rdma@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240213100848.458819-1-arnd@kernel.org>
- <84874528-daea-424d-af63-b9b86835fae6@linux.dev>
- <2ebe5a36-ce81-4d26-a12b-7affbd65c5e3@app.fastmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <2ebe5a36-ce81-4d26-a12b-7affbd65c5e3@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
 
+On Thu, 15 Feb 2024, Samuel Holland wrote:
 
-在 2024/2/15 16:03, Arnd Bergmann 写道:
-> On Thu, Feb 15, 2024, at 01:18, Zhu Yanjun wrote:
->> 在 2024/2/13 18:08, Arnd Bergmann 写道:
->>>    static int
->>> -dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
->>> +dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
->>> +		   struct mlx5dr_rule_rx_tx *rule_rx_tx,
->>>    		   bool is_rx, const u64 rule_id, u8 format_ver)
->>>    {
->>>    	struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES + DR_ACTION_MAX_STES];
->>> @@ -533,7 +532,7 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
->>>    		return 0;
->>>    
->>>    	while (i--) {
->>> -		ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
->> Before buff is reused, I am not sure whether buff should be firstly
->> zeroed or not.
-> I don't see why it would, but if you want to zero it, that would be
-> a separate patch that is already needed on the existing code,
-> which never zeroes its buffers.
+> Add myself as a maintainer for the various SiFive drivers, since I have
+> been performing cleanup activity on these drivers and reviewing patches
+> to them for a while now. Remove Palmer as a maintainer, as he is focused
+> on overall RISC-V architecture support.
+> 
+> Collapse some duplicate entries into the main SiFive drivers entry:
+>  - Conor is already maintainer of standalone cache drivers as a whole,
+>    and these files are also covered by the "sifive" file name regex.
+>  - Paul's git tree has not been updated since 2018, and all file names
+>    matching the "fu540" pattern also match the "sifive" pattern.
+>  - Green has not been active on the LKML for a couple of years.
+> 
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 
-Sure. I agree with you. In the existing code, the buffers are not zeroed.
+Acked-by: Paul Walmsley <paul.walmsley@sifive.com>
 
-But to a buffer which is used for several times, it is good to zero it 
-before it is used again.
+- Paul
 
-Can you add a new commit with the following?
-
-1). Zero the buffers in the existing code
-
-2). Add the zero functionality to your patch
-
- From my perspective, it is good to the whole commit.
-
-Please Jason and Leon comment on this.
-
-Thanks,
-
-Zhu Yanjun
-
->
->      Arnd
 
