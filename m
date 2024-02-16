@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-68385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F96F857988
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:57:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59EC85798B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:57:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 653461C20A53
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:57:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53F8B1F21B64
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA781CD1E;
-	Fri, 16 Feb 2024 09:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709161CF9B;
+	Fri, 16 Feb 2024 09:55:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="btOcickR"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="UY6mWEER"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5E31CAB0;
-	Fri, 16 Feb 2024 09:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3EF1CD30;
+	Fri, 16 Feb 2024 09:55:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708077329; cv=none; b=hLBoc/DDANJiLVcpui+C/Xi1+rofvuHSbs1qGTA84a/+ticN4d564YhOUf19hcifZknpyx7/F+EzSC+DKIcz0wH4hp6E4Bz2qo2tFls0MoEidNluzwjnh59OEDYRpM7QrzgJSt4WR5FgP1LRsMTi86Y8T+Wrsv/0VabRwDwbvhE=
+	t=1708077334; cv=none; b=uUk2EXz+srhzOLc9cJ06zjRJqSsJszRG/NrYsxhhBQiuiPo/O54KqgahOKpfDOz77XnOa4XfdCv4xYPDnyJ4VwxqwWiqdYPq91w1m6zKF78v/drg7lAqI7tztcIp+bzdamZVukImhDfxmwr0o4NFkHT0bthiH4TaCq3ozFRg9b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708077329; c=relaxed/simple;
-	bh=OPA9G2afJn3S9j/5SlNBvjfPy51p5PL0UkiWC2TuA0k=;
+	s=arc-20240116; t=1708077334; c=relaxed/simple;
+	bh=gmAkD/Ut+g4PeVc4c3qEgSPnWnGAKLWxs90pusdJPV8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HZxeKHGskfBl7i093Mk1DBBx8zZSkaVtcXxUbcggaEwhPD5RHmJpSjGJUOjCXsmnPcXnMRJ5B1y5D2i4k/MIyd7FJ7/FMwtZ5HU7aVj39kM8qhjjhKO9gKTeT6R0ytg0GgSonOh6h6XCPxZBWpr8uOyyKtwjQqOtvbjP7xYGhFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=btOcickR; arc=none smtp.client-ip=213.167.242.64
+	 MIME-Version; b=CqkaCG0aaIvH55TSkSb3BNJeZPrAS44qZ3OgEZ66htoVNkPYCER8BBrJumOEcAOoiae/gs9/U6GfwsPs+12tnMjez8kSY7V1QNrCi9VBDY+InQXfRn8QqtW3sHcXwsASwJRZMfpvO1+jAlK0HjCEng9q/anMHVXgWgiyotNMJdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=UY6mWEER; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from pyrite.hamster-moth.ts.net (h175-177-049-156.catv02.itscom.jp [175.177.49.156])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 20D8DD4A;
-	Fri, 16 Feb 2024 10:55:16 +0100 (CET)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A7D036B3;
+	Fri, 16 Feb 2024 10:55:22 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708077321;
-	bh=OPA9G2afJn3S9j/5SlNBvjfPy51p5PL0UkiWC2TuA0k=;
+	s=mail; t=1708077327;
+	bh=gmAkD/Ut+g4PeVc4c3qEgSPnWnGAKLWxs90pusdJPV8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=btOcickRwCVWKf/sFBgST1moz08pRvyHJp4TYxpSdLXBi+29cT9+wzQf4w2jC3WNv
-	 VOBpiyBapoMJ8W3hawdianPVPN4kXA1yRVN/J0P7w6Al2hgaROZ977FmAnCYLW1Sck
-	 KCpWt8Go7HpRf7FQiBbH7AeufGNFwVFpyTXOflyc=
+	b=UY6mWEERbuET0c3cu6l6AM2n/89jxzcfTAawl0IU1sXUdjLa3vFlZlqqkZZa4cOkD
+	 S8oMKaU3V1CzwhQd8+PsoPCX5qzD+127d0nlbfTeq2QAaOpaD7C4pff56iEjBNGazX
+	 ecl9Pmyu2FxiU4HsEPU5r/rrNUf33zPZYetP/IvU=
 From: Paul Elder <paul.elder@ideasonboard.com>
 To: linux-media@vger.kernel.org,
 	linux-rockchip@lists.infradead.org,
@@ -56,9 +56,9 @@ Cc: kieran.bingham@ideasonboard.com,
 	Heiko Stuebner <heiko@sntech.de>,
 	linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC support),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v12 02/12] media: rkisp1: Support setting memory stride for main path
-Date: Fri, 16 Feb 2024 18:54:48 +0900
-Message-Id: <20240216095458.2919694-3-paul.elder@ideasonboard.com>
+Subject: [PATCH v12 03/12] media: rkisp1: Support devices lacking self path
+Date: Fri, 16 Feb 2024 18:54:49 +0900
+Message-Id: <20240216095458.2919694-4-paul.elder@ideasonboard.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240216095458.2919694-1-paul.elder@ideasonboard.com>
 References: <20240216095458.2919694-1-paul.elder@ideasonboard.com>
@@ -71,202 +71,199 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 Some versions of the ISP supported by the rkisp1 driver, such as the ISP
-in the i.MX8MP, implement configurable memory stride for the main path
-the same way as already implemented by the driver for the self path.
-Support this feature by adding a main stride feature flag and program
-the corresponding registers accordingly.
+in the i.MX8MP, lack the self path. Support those ISP versions by adding
+a self path feature flag, and massage the rest of the driver to support
+the lack of a self path.
 
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 Tested-by: Adam Ford <aford173@gmail.com>
 Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
 Changes since v3:
 
-- Implement memory stride support
-- Squash patch that adds register bits definitions
-- Reword the commit message
+- Document the feature bit
+- Reorder commit
 
 Changes since v2:
 
-- Document the RKISP1_FEATURE_MAIN_STRIDE bit
+- Simplify rkisp1_path_count()
 - Use the rkisp1_has_feature() macro
 ---
- .../platform/rockchip/rkisp1/rkisp1-capture.c | 34 ++++++++++++-------
- .../platform/rockchip/rkisp1/rkisp1-common.h  |  6 ++--
- .../platform/rockchip/rkisp1/rkisp1-regs.h    | 27 +++++++++++++++
- 3 files changed, 52 insertions(+), 15 deletions(-)
+ .../platform/rockchip/rkisp1/rkisp1-capture.c     |  9 ++++++---
+ .../platform/rockchip/rkisp1/rkisp1-common.h      | 15 +++++++++++++++
+ .../media/platform/rockchip/rkisp1/rkisp1-dev.c   |  9 ++++++---
+ .../platform/rockchip/rkisp1/rkisp1-resizer.c     |  6 ++++--
+ 4 files changed, 31 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-index c381c22135a2..83a968487f24 100644
+index 83a968487f24..ca95f62822fa 100644
 --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
 +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-@@ -442,6 +442,14 @@ static void rkisp1_mp_config(struct rkisp1_capture *cap)
- 	rkisp1_write(rkisp1, cap->config->mi.cr_size_init,
- 		     rkisp1_pixfmt_comp_size(pixm, RKISP1_PLANE_CR));
- 
-+	if (rkisp1_has_feature(rkisp1, MAIN_STRIDE)) {
-+		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_LLENGTH, cap->stride);
-+		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_PIC_WIDTH, pixm->width);
-+		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_PIC_HEIGHT, pixm->height);
-+		rkisp1_write(rkisp1, RKISP1_CIF_MI_MP_Y_PIC_SIZE,
-+			     cap->stride * pixm->height);
-+	}
-+
- 	rkisp1_irq_frame_end_enable(cap);
- 
- 	/* set uv swapping for semiplanar formats */
-@@ -479,11 +487,11 @@ static void rkisp1_sp_config(struct rkisp1_capture *cap)
- 	rkisp1_write(rkisp1, cap->config->mi.cr_size_init,
- 		     rkisp1_pixfmt_comp_size(pixm, RKISP1_PLANE_CR));
- 
--	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_LLENGTH, cap->sp_y_stride);
-+	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_LLENGTH, cap->stride);
- 	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_PIC_WIDTH, pixm->width);
- 	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_PIC_HEIGHT, pixm->height);
- 	rkisp1_write(rkisp1, RKISP1_CIF_MI_SP_Y_PIC_SIZE,
--		     cap->sp_y_stride * pixm->height);
-+		     cap->stride * pixm->height);
- 
- 	rkisp1_irq_frame_end_enable(cap);
- 
-@@ -1095,8 +1103,8 @@ static const struct vb2_ops rkisp1_vb2_ops = {
-  */
- 
- static const struct v4l2_format_info *
--rkisp1_fill_pixfmt(struct v4l2_pix_format_mplane *pixm,
--		   enum rkisp1_stream_id id)
-+rkisp1_fill_pixfmt(const struct rkisp1_capture *cap,
-+		   struct v4l2_pix_format_mplane *pixm)
+@@ -730,6 +730,7 @@ irqreturn_t rkisp1_capture_isr(int irq, void *ctx)
  {
- 	struct v4l2_plane_pix_format *plane_y = &pixm->plane_fmt[0];
- 	const struct v4l2_format_info *info;
-@@ -1109,10 +1117,13 @@ rkisp1_fill_pixfmt(struct v4l2_pix_format_mplane *pixm,
+ 	struct device *dev = ctx;
+ 	struct rkisp1_device *rkisp1 = dev_get_drvdata(dev);
++	unsigned int dev_count = rkisp1_path_count(rkisp1);
+ 	unsigned int i;
+ 	u32 status;
  
- 	/*
- 	 * The SP supports custom strides, expressed as a number of pixels for
--	 * the Y plane. Clamp the stride to a reasonable value to avoid integer
--	 * overflows when calculating the bytesperline and sizeimage values.
-+	 * the Y plane, and so does the MP in ISP versions that have the
-+	 * MAIN_STRIDE feature. Clamp the stride to a reasonable value to avoid
-+	 * integer overflows when calculating the bytesperline and sizeimage
-+	 * values.
+@@ -742,7 +743,7 @@ irqreturn_t rkisp1_capture_isr(int irq, void *ctx)
+ 
+ 	rkisp1_write(rkisp1, RKISP1_CIF_MI_ICR, status);
+ 
+-	for (i = 0; i < ARRAY_SIZE(rkisp1->capture_devs); ++i) {
++	for (i = 0; i < dev_count; ++i) {
+ 		struct rkisp1_capture *cap = &rkisp1->capture_devs[i];
+ 
+ 		if (!(status & RKISP1_CIF_MI_FRAME(cap)))
+@@ -899,6 +900,7 @@ static void rkisp1_cap_stream_enable(struct rkisp1_capture *cap)
+ {
+ 	struct rkisp1_device *rkisp1 = cap->rkisp1;
+ 	struct rkisp1_capture *other = &rkisp1->capture_devs[cap->id ^ 1];
++	bool has_self_path = rkisp1_has_feature(rkisp1, SELF_PATH);
+ 
+ 	cap->ops->set_data_path(cap);
+ 	cap->ops->config(cap);
+@@ -916,7 +918,7 @@ static void rkisp1_cap_stream_enable(struct rkisp1_capture *cap)
+ 	 * This's also required because the second FE maybe corrupt
+ 	 * especially when run at 120fps.
  	 */
--	if (id == RKISP1_SELFPATH)
-+	if (cap->id == RKISP1_SELFPATH ||
-+	    rkisp1_has_feature(cap->rkisp1, MAIN_STRIDE))
- 		stride = clamp(DIV_ROUND_UP(plane_y->bytesperline, info->bpp[0]),
- 			       pixm->width, 65536U);
- 	else
-@@ -1187,7 +1198,7 @@ static void rkisp1_try_fmt(const struct rkisp1_capture *cap,
- 	pixm->ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
- 	pixm->quantization = V4L2_QUANTIZATION_DEFAULT;
+-	if (!other->is_streaming) {
++	if (!has_self_path || !other->is_streaming) {
+ 		/* force cfg update */
+ 		rkisp1_write(rkisp1, RKISP1_CIF_MI_INIT,
+ 			     RKISP1_CIF_MI_INIT_SOFT_UPD);
+@@ -1509,10 +1511,11 @@ rkisp1_capture_init(struct rkisp1_device *rkisp1, enum rkisp1_stream_id id)
  
--	info = rkisp1_fill_pixfmt(pixm, cap->id);
-+	info = rkisp1_fill_pixfmt(cap, pixm);
- 
- 	if (fmt_cfg)
- 		*fmt_cfg = fmt;
-@@ -1199,12 +1210,9 @@ static void rkisp1_set_fmt(struct rkisp1_capture *cap,
- 			   struct v4l2_pix_format_mplane *pixm)
+ int rkisp1_capture_devs_register(struct rkisp1_device *rkisp1)
  {
- 	rkisp1_try_fmt(cap, pixm, &cap->pix.cfg, &cap->pix.info);
--	cap->pix.fmt = *pixm;
++	unsigned int dev_count = rkisp1_path_count(rkisp1);
+ 	unsigned int i;
+ 	int ret;
  
--	/* SP supports custom stride in number of pixels of the Y plane */
--	if (cap->id == RKISP1_SELFPATH)
--		cap->sp_y_stride = pixm->plane_fmt[0].bytesperline /
--				   cap->pix.info->bpp[0];
-+	cap->pix.fmt = *pixm;
-+	cap->stride = pixm->plane_fmt[0].bytesperline / cap->pix.info->bpp[0];
- }
+-	for (i = 0; i < ARRAY_SIZE(rkisp1->capture_devs); i++) {
++	for (i = 0; i < dev_count; i++) {
+ 		struct rkisp1_capture *cap = &rkisp1->capture_devs[i];
  
- static int rkisp1_try_fmt_vid_cap_mplane(struct file *file, void *fh,
+ 		rkisp1_capture_init(rkisp1, i);
 diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-index be6cb42776b0..6a811b7ef1b9 100644
+index 6a811b7ef1b9..f7c251f79aa9 100644
 --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
 +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-@@ -110,6 +110,7 @@ enum rkisp1_isp_pad {
-  * enum rkisp1_feature - ISP features
+@@ -111,6 +111,7 @@ enum rkisp1_isp_pad {
   *
   * @RKISP1_FEATURE_MIPI_CSI2: The ISP has an internal MIPI CSI-2 receiver
-+ * @RKISP1_FEATURE_MAIN_STRIDE: The ISP supports configurable stride on the main path
+  * @RKISP1_FEATURE_MAIN_STRIDE: The ISP supports configurable stride on the main path
++ * @RKISP1_FEATURE_SELF_PATH: The ISP has a self path
   *
   * The ISP features are stored in a bitmask in &rkisp1_info.features and allow
   * the driver to implement support for features present in some ISP versions
-@@ -117,6 +118,7 @@ enum rkisp1_isp_pad {
-  */
+@@ -119,6 +120,7 @@ enum rkisp1_isp_pad {
  enum rkisp1_feature {
  	RKISP1_FEATURE_MIPI_CSI2 = BIT(0),
-+	RKISP1_FEATURE_MAIN_STRIDE = BIT(1),
+ 	RKISP1_FEATURE_MAIN_STRIDE = BIT(1),
++	RKISP1_FEATURE_SELF_PATH = BIT(2),
  };
  
  #define rkisp1_has_feature(rkisp1, feature) \
-@@ -266,7 +268,7 @@ struct rkisp1_device;
-  *		  handler to stop the streaming by waiting on the 'done' wait queue.
-  *		  If the irq handler is not called, the stream is stopped by the callback
-  *		  after timeout.
-- * @sp_y_stride:  the selfpath allows to configure a y stride that is longer than the image width.
-+ * @stride:       the line stride for the first plane, in pixel units
-  * @buf.lock:	  lock to protect buf.queue
-  * @buf.queue:	  queued buffer list
-  * @buf.dummy:	  dummy space to store dropped data
-@@ -287,7 +289,7 @@ struct rkisp1_capture {
- 	bool is_streaming;
- 	bool is_stopping;
- 	wait_queue_head_t done;
--	unsigned int sp_y_stride;
-+	unsigned int stride;
- 	struct {
- 		/* protects queue, curr and next */
- 		spinlock_t lock;
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-index bea69a0d766a..3b19c8411360 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-@@ -207,6 +207,24 @@
- #define RKISP1_CIF_MI_XTD_FMT_CTRL_SP_CB_CR_SWAP	BIT(1)
- #define RKISP1_CIF_MI_XTD_FMT_CTRL_DMA_CB_CR_SWAP	BIT(2)
+@@ -531,6 +533,19 @@ int rkisp1_cap_enum_mbus_codes(struct rkisp1_capture *cap,
+  */
+ const struct rkisp1_mbus_info *rkisp1_mbus_info_get_by_index(unsigned int index);
  
-+/* MI_OUTPUT_ALIGN_FORMAT */
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_LSB_ALIGNMENT			BIT(0)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_BYTES		BIT(1)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_WORDS		BIT(2)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_DWORDS		BIT(3)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_SWAP_BYTES		BIT(4)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_SWAP_WORDS		BIT(5)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_SP_BYTE_SWAP_DWORDS		BIT(6)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_DMA_BYTE_SWAP_BYTES		BIT(7)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_DMA_BYTE_SWAP_WORDS		BIT(8)
-+#define RKISP1_CIF_OUTPUT_ALIGN_FORMAT_DMA_BYTE_SWAP_DWORDS		BIT(9)
++/*
++ * rkisp1_path_count - Return the number of paths supported by the device
++ *
++ * Some devices only have a main path, while other device have both a main path
++ * and a self path. This function returns the number of paths that this device
++ * has, based on the feature flags. It should be used insted of checking
++ * ARRAY_SIZE of capture_devs/resizer_devs.
++ */
++static inline unsigned int rkisp1_path_count(struct rkisp1_device *rkisp1)
++{
++	return rkisp1_has_feature(rkisp1, SELF_PATH) ? 2 : 1;
++}
 +
-+/* MI_MP_OUTPUT_FIFO_SIZE */
-+#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_FULL	(0 << 0)
-+#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_HALF	(1 << 0)
-+#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_QUARTER	(2 << 0)
-+#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE_OUTPUT_FIFO_DEPTH_EIGHT	(3 << 0)
-+
- /* VI_CCL */
- #define RKISP1_CIF_CCL_CIF_CLK_DIS			BIT(2)
- /* VI_ISP_CLK_CTRL */
-@@ -1000,6 +1018,15 @@
- #define RKISP1_CIF_MI_SP_CB_BASE_AD_INIT2	(RKISP1_CIF_MI_BASE + 0x00000140)
- #define RKISP1_CIF_MI_SP_CR_BASE_AD_INIT2	(RKISP1_CIF_MI_BASE + 0x00000144)
- #define RKISP1_CIF_MI_XTD_FORMAT_CTRL		(RKISP1_CIF_MI_BASE + 0x00000148)
-+#define RKISP1_CIF_MI_MP_HANDSHAKE_0		(RKISP1_CIF_MI_BASE + 0x0000014C)
-+#define RKISP1_CIF_MI_MP_Y_LLENGTH		(RKISP1_CIF_MI_BASE + 0x00000150)
-+#define RKISP1_CIF_MI_MP_Y_SLICE_OFFSET		(RKISP1_CIF_MI_BASE + 0x00000154)
-+#define RKISP1_CIF_MI_MP_C_SLICE_OFFSET		(RKISP1_CIF_MI_BASE + 0x00000158)
-+#define RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT	(RKISP1_CIF_MI_BASE + 0x0000015C)
-+#define RKISP1_CIF_MI_MP_OUTPUT_FIFO_SIZE	(RKISP1_CIF_MI_BASE + 0x00000160)
-+#define RKISP1_CIF_MI_MP_Y_PIC_WIDTH		(RKISP1_CIF_MI_BASE + 0x00000164)
-+#define RKISP1_CIF_MI_MP_Y_PIC_HEIGHT		(RKISP1_CIF_MI_BASE + 0x00000168)
-+#define RKISP1_CIF_MI_MP_Y_PIC_SIZE		(RKISP1_CIF_MI_BASE + 0x0000016C)
+ /*
+  * rkisp1_sd_adjust_crop_rect - adjust a rectangle to fit into another rectangle.
+  *
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+index fd35fe76413a..f48a21985b18 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
+@@ -358,6 +358,7 @@ static const struct dev_pm_ops rkisp1_pm_ops = {
  
- #define RKISP1_CIF_SMIA_BASE			0x00001a00
- #define RKISP1_CIF_SMIA_CTRL			(RKISP1_CIF_SMIA_BASE + 0x00000000)
+ static int rkisp1_create_links(struct rkisp1_device *rkisp1)
+ {
++	unsigned int dev_count = rkisp1_path_count(rkisp1);
+ 	unsigned int i;
+ 	int ret;
+ 
+@@ -373,7 +374,7 @@ static int rkisp1_create_links(struct rkisp1_device *rkisp1)
+ 	}
+ 
+ 	/* create ISP->RSZ->CAP links */
+-	for (i = 0; i < 2; i++) {
++	for (i = 0; i < dev_count; i++) {
+ 		struct media_entity *resizer =
+ 			&rkisp1->resizer_devs[i].sd.entity;
+ 		struct media_entity *capture =
+@@ -505,7 +506,8 @@ static const struct rkisp1_info px30_isp_info = {
+ 	.isrs = px30_isp_isrs,
+ 	.isr_size = ARRAY_SIZE(px30_isp_isrs),
+ 	.isp_ver = RKISP1_V12,
+-	.features = RKISP1_FEATURE_MIPI_CSI2,
++	.features = RKISP1_FEATURE_MIPI_CSI2
++		  | RKISP1_FEATURE_SELF_PATH,
+ };
+ 
+ static const char * const rk3399_isp_clks[] = {
+@@ -524,7 +526,8 @@ static const struct rkisp1_info rk3399_isp_info = {
+ 	.isrs = rk3399_isp_isrs,
+ 	.isr_size = ARRAY_SIZE(rk3399_isp_isrs),
+ 	.isp_ver = RKISP1_V10,
+-	.features = RKISP1_FEATURE_MIPI_CSI2,
++	.features = RKISP1_FEATURE_MIPI_CSI2
++		  | RKISP1_FEATURE_SELF_PATH,
+ };
+ 
+ static const struct of_device_id rkisp1_of_match[] = {
+diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
+index a8e377701302..dd77a31e6014 100644
+--- a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
++++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
+@@ -631,6 +631,7 @@ static int rkisp1_rsz_s_stream(struct v4l2_subdev *sd, int enable)
+ 	struct rkisp1_device *rkisp1 = rsz->rkisp1;
+ 	struct rkisp1_capture *other = &rkisp1->capture_devs[rsz->id ^ 1];
+ 	enum rkisp1_shadow_regs_when when = RKISP1_SHADOW_REGS_SYNC;
++	bool has_self_path = rkisp1_has_feature(rkisp1, SELF_PATH);
+ 	struct v4l2_subdev_state *sd_state;
+ 
+ 	if (!enable) {
+@@ -639,7 +640,7 @@ static int rkisp1_rsz_s_stream(struct v4l2_subdev *sd, int enable)
+ 		return 0;
+ 	}
+ 
+-	if (other->is_streaming)
++	if (has_self_path && other->is_streaming)
+ 		when = RKISP1_SHADOW_REGS_ASYNC;
+ 
+ 	sd_state = v4l2_subdev_lock_and_get_active_state(sd);
+@@ -731,10 +732,11 @@ static int rkisp1_rsz_register(struct rkisp1_resizer *rsz)
+ 
+ int rkisp1_resizer_devs_register(struct rkisp1_device *rkisp1)
+ {
++	unsigned int dev_count = rkisp1_path_count(rkisp1);
+ 	unsigned int i;
+ 	int ret;
+ 
+-	for (i = 0; i < ARRAY_SIZE(rkisp1->resizer_devs); i++) {
++	for (i = 0; i < dev_count; i++) {
+ 		struct rkisp1_resizer *rsz = &rkisp1->resizer_devs[i];
+ 
+ 		rsz->rkisp1 = rkisp1;
 -- 
 2.39.2
 
