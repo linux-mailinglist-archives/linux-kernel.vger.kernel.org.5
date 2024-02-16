@@ -1,223 +1,218 @@
-Return-Path: <linux-kernel+bounces-69202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5148585B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:49:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D01D8585B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B92521F247D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:49:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03EF82844B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7FD13541F;
-	Fri, 16 Feb 2024 18:49:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB067135402;
+	Fri, 16 Feb 2024 18:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IczKkH7t";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eWjfjtUQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nJrH6lwW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rCplWnn+"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DzGRNdsx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9622C688;
-	Fri, 16 Feb 2024 18:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41312C688;
+	Fri, 16 Feb 2024 18:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708109348; cv=none; b=qkkHKM5Nw4GuedALyV26TEykdTKTsyHdRafMClDo+6A/gS5vdffFcfx8j9XkfxH0V7wZ59Hj8qh5MA1JfqKO56YD9ZVYFV4fVlO88FIVySdyPPQ8dQhaRcoPDG9ZHmi+jwBiO2o/2ipKC020GV9nCDacdOUUuJbFYhKqKqDUn1s=
+	t=1708109389; cv=none; b=WINHoyd+6amuO2KIwC0GMQmLOVBa7g78Dh1/F2iPPgsM85u1I9obB94hIb+g/iGWXWcUXP7hPcshBvOeMsIcPSB2qy93iGxGd0ekEmAOsbQ1nP9IcHv8Vwc/3pThEH5EHPGK2PfQhR5BHee7P9UfBBf+piPtCjRPhtlgQqVa0HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708109348; c=relaxed/simple;
-	bh=A0E9sndd7l0lu6Xyh5dd3tP87FBrCGKIlTdotIdICcY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=APKFTYuKbahBYM2HJZrBlFKkWtfrxa5vZcOqKBY2BV7lE3IgDkubRsImDOYqMym7JKuKAEc2xgZRoJF6UmwHZnHHNMUnox2w9vQ+daXtPPTShqx1B15ixc/dGfVDNPgTbFUMJDn80AERXC4G8KJwLVKAX+YCbUc58yZDeQq1Nq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IczKkH7t; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eWjfjtUQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nJrH6lwW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rCplWnn+; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E942A22116;
-	Fri, 16 Feb 2024 18:49:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708109344; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=IczKkH7ttqFZkIRIpgaqdovXlBv+wdZc/WVt3WfwuuayALZt1K/ktc8gkJLvb9DV02Aw6O
-	mqoxlagg9OnV1b3uKdi4cPs834trLa4dhnFFXfGsjiAFaJlLtwlt5k0zq1/mQUJcjUKD98
-	Yl2/H30Tkm2T430gGAIL5rZo7SIco+4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708109344;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=eWjfjtUQK+vs3+zTwA2o6NuZ4YsKpb1iorpHwofZAOTDMADyKmTQZgmjt5VFnhMbl3fvFK
-	sOX+EXx60O+jLyCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708109341; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=nJrH6lwWDcLp8vXKR4AD0HQDEbJXWoHr5M6JWvxdQL9Kq6Pe5MBk9Loldg+eWVs0EKznrW
-	bSmITWiT6i/Cg9Xr+ymmLfxfxZCjgz/13+YnHVhtrh/UFjbFZapdv6pIPhVwTWLNVzoTnF
-	773TjX4j+Iu2mcmaak8h/AOdL0cbrR4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708109341;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LIy+v1QxzmWGHbmMqIx5w7+6IieTl4Y2Xxq5xuO/0u4=;
-	b=rCplWnn+zjLptQfYWR2TYcjXBWf1sp+AS9ffhspWlwv9w0hq+Dl+5EFFBo0Z/cp/14/7Vt
-	EghNrullQkOlmIBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5AF8F1398D;
-	Fri, 16 Feb 2024 18:49:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id upbPFR2uz2WgbQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Fri, 16 Feb 2024 18:49:01 +0000
-Message-ID: <198f835b-35d6-4ae2-b993-675c871c621e@suse.cz>
-Date: Fri, 16 Feb 2024 19:49:01 +0100
+	s=arc-20240116; t=1708109389; c=relaxed/simple;
+	bh=2MZZwgYXsEOWk7BAQ+XbZ9JkDsdKEkwKD9JcUkQvF+E=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=ZoFKO3zATIVsgGl5ly0Vr6rNAhmaQWpCD5UYC6osFMQS8LKHMh/cxECgYfcpDjBU3YoyBP8pBxl+COf5oFR9cROtqoeIt760kU6U6AvyhqymCuLDKk7tnWgkluPMPdaQtARf15wHnP0udrLRiSJUo1O4PKGy/Ghx/A5a+c9gl9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DzGRNdsx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2832CC433F1;
+	Fri, 16 Feb 2024 18:49:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708109388;
+	bh=2MZZwgYXsEOWk7BAQ+XbZ9JkDsdKEkwKD9JcUkQvF+E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=DzGRNdsxXYRHWPtmoiqK9SY4Bq0mtIqFSkEghcGQlJjZAJsHj1WlmCsOOGdcDjfgN
+	 P3YOwPbAIFZo7MkKOwy/gmrk5U7PzEJ99HrFxrpn2/FImWzco4m31uMOkwktE5CFf+
+	 gVkbhH0XjJCimIwkR7wxre+2UmsxaYuxls/jqXCs1bhEJs4sXoVJ6gSYWLYgOB7SLt
+	 ojnmnIiWRL+foL5JR8/EIf/jI5dmWxoRbR1ATglpMqaYHFGIPSQJoBzH4qkQfJVc0M
+	 1hYutf93F+z6GM96jbhf3NFiKRToR2Ns+/i/BTt0weLpQStxTs8+shHCy6yBiw0/Ly
+	 BIssNZA8rCtow==
+Date: Fri, 16 Feb 2024 12:49:46 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-i2c@vger.kernel.org, Len Brown <lenb@kernel.org>,
+	Borislav Petkov <bp@suse.de>, Jean Delvare <jdelvare@suse.de>
+Subject: Re: [PATCH v4] acpi,pci: warn about duplicate IRQ routing entries
+ returned from _PRT
+Message-ID: <20240216184946.GA1349514@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 07/35] mm/slab: introduce SLAB_NO_OBJ_EXT to avoid
- obj_ext creation
-Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>, akpm@linux-foundation.org,
- mhocko@suse.com, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- mgorman@suse.de, dave@stgolabs.net, willy@infradead.org,
- liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-8-surenb@google.com>
- <fbfab72f-413d-4fc1-b10b-3373cfc6c8e9@suse.cz>
- <tbqg7sowftykfj3rptpcbewoiy632fbgbkzemgwnntme4wxhut@5dlfmdniaksr>
- <ab4b1789-910a-4cd6-802c-5012bf9d8984@suse.cz>
- <CAJuCfpH=tr1faWnn0CZ=V_Gg-0ysEsGPOje5U-DDy5x2V83pxA@mail.gmail.com>
- <CAJuCfpGBCNsvK35Bq8666cJeZ3Hwfwj6mDJ6M5Wjg7oZi8xd0g@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAJuCfpGBCNsvK35Bq8666cJeZ3Hwfwj6mDJ6M5Wjg7oZi8xd0g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.59 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.59
+In-Reply-To: <CAJZ5v0iHokxYJU0Nx5gT+ay=18uhmnha-bSYk=YUKPROQGZrmw@mail.gmail.com>
 
-On 2/16/24 19:41, Suren Baghdasaryan wrote:
-> On Thu, Feb 15, 2024 at 10:10 PM Suren Baghdasaryan <surenb@google.com> wrote:
->>
->> On Thu, Feb 15, 2024 at 1:50 PM Vlastimil Babka <vbabka@suse.cz> wrote:
->> >
->> > On 2/15/24 22:37, Kent Overstreet wrote:
->> > > On Thu, Feb 15, 2024 at 10:31:06PM +0100, Vlastimil Babka wrote:
->> > >> On 2/12/24 22:38, Suren Baghdasaryan wrote:
->> > >> > Slab extension objects can't be allocated before slab infrastructure is
->> > >> > initialized. Some caches, like kmem_cache and kmem_cache_node, are created
->> > >> > before slab infrastructure is initialized. Objects from these caches can't
->> > >> > have extension objects. Introduce SLAB_NO_OBJ_EXT slab flag to mark these
->> > >> > caches and avoid creating extensions for objects allocated from these
->> > >> > slabs.
->> > >> >
->> > >> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->> > >> > ---
->> > >> >  include/linux/slab.h | 7 +++++++
->> > >> >  mm/slub.c            | 5 +++--
->> > >> >  2 files changed, 10 insertions(+), 2 deletions(-)
->> > >> >
->> > >> > diff --git a/include/linux/slab.h b/include/linux/slab.h
->> > >> > index b5f5ee8308d0..3ac2fc830f0f 100644
->> > >> > --- a/include/linux/slab.h
->> > >> > +++ b/include/linux/slab.h
->> > >> > @@ -164,6 +164,13 @@
->> > >> >  #endif
->> > >> >  #define SLAB_TEMPORARY            SLAB_RECLAIM_ACCOUNT    /* Objects are short-lived */
->> > >> >
->> > >> > +#ifdef CONFIG_SLAB_OBJ_EXT
->> > >> > +/* Slab created using create_boot_cache */
->> > >> > +#define SLAB_NO_OBJ_EXT         ((slab_flags_t __force)0x20000000U)
->> > >>
->> > >> There's
->> > >>    #define SLAB_SKIP_KFENCE        ((slab_flags_t __force)0x20000000U)
->> > >> already, so need some other one?
->>
->> Indeed. I somehow missed it. Thanks for noticing, will fix this in the
->> next version.
+On Fri, Feb 16, 2024 at 07:26:06PM +0100, Rafael J. Wysocki wrote:
+> On Tue, Dec 26, 2023 at 1:50 PM Mateusz Jończyk <mat.jonczyk@o2.pl> wrote:
+> >
+> > On some platforms, the ACPI _PRT function returns duplicate interrupt
+> > routing entries. Linux uses the first matching entry, but sometimes the
+> > second matching entry contains the correct interrupt vector.
+> >
+> > As a debugging aid, print a warning to dmesg if duplicate interrupt
+> > routing entries are present. This way, we could check how many models
+> > are affected.
+> >
+> > This happens on a Dell Latitude E6500 laptop with the i2c-i801 Intel
+> > SMBus controller. This controller is nonfunctional unless its interrupt
+> > usage is disabled (using the "disable_features=0x10" module parameter).
+> >
+> > After investigation, it turned out that the driver was using an
+> > incorrect interrupt vector: in lspci output for this device there was:
+> >         Interrupt: pin B routed to IRQ 19
+> > but after running i2cdetect (without using any i2c-i801 module
+> > parameters) the following was logged to dmesg:
+> >
+> >         [...]
+> >         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
+> >         i801_smbus 0000:00:1f.3: Transaction timeout
+> >         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
+> >         i801_smbus 0000:00:1f.3: Transaction timeout
+> >         irq 17: nobody cared (try booting with the "irqpoll" option)
+> >
+> > Existence of duplicate entries in a table returned by the _PRT method
+> > was confirmed by disassembling the ACPI DSDT table.
+> >
+> > Windows XP is using IRQ3 (as reported by HWiNFO32 and in the Device
+> > Manager), which is neither of the two vectors returned by _PRT.
+> > As HWiNFO32 decoded contents of the SPD EEPROMs, the i2c-i801 device is
+> > working under Windows. It appears that Windows has reconfigured the
+> > chipset independently to use another interrupt vector for the device.
+> > This is possible, according to the chipset datasheet [1], page 436 for
+> > example (PIRQ[n]_ROUT—PIRQ[A,B,C,D] Routing Control Register).
+> >
+> > [1] https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-datasheet.pdf
+> >
+> > Signed-off-by: Mateusz Jończyk <mat.jonczyk@o2.pl>
+> > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Cc: Len Brown <lenb@kernel.org>
+> > Cc: Borislav Petkov <bp@suse.de>
+> > Cc: Jean Delvare <jdelvare@suse.de>
+> > Previously-reviewed-by: Jean Delvare <jdelvare@suse.de>
+> > Previously-tested-by: Jean Delvare <jdelvare@suse.de>
+> >
+> > ---
+> > Hello,
+> >
+> > I'm resurrecting an older patch that was discussed back in January:
+> >
+> > https://lore.kernel.org/lkml/20230121153314.6109-1-mat.jonczyk@o2.pl/T/#u
+> >
+> > To consider: should we print a warning or an error in case of duplicate
+> > entries? This may not be serious enough to disturb the user with an
+> > error message at boot.
+> >
+> > I'm also looking into modifying the i2c-i801 driver to disable its usage
+> > of interrupts if one did not fire.
+> >
+> > v2: - add a newline at the end of the kernel log message,
+> >     - replace: "if (match == NULL)" -> "if (!match)"
+> >     - patch description tweaks.
+> > v3: - fix C style issues pointed by Jean Delvare,
+> >     - switch severity from warning to error.
+> > v3 RESEND: retested on top of v6.2-rc4
+> > v4: - rebase and retest on top of v6.7-rc7
+> >     - switch severity back to warning,
+> >     - change pr_err() to dev_warn() and simplify the code,
+> >     - modify patch description (describe Windows behaviour etc.)
+> > ---
+> >  drivers/acpi/pci_irq.c | 25 ++++++++++++++++++++++---
+> >  1 file changed, 22 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
+> > index ff30ceca2203..1fcf72e335b0 100644
+> > --- a/drivers/acpi/pci_irq.c
+> > +++ b/drivers/acpi/pci_irq.c
+> > @@ -203,6 +203,8 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
+> >         struct acpi_buffer buffer = { ACPI_ALLOCATE_BUFFER, NULL };
+> >         struct acpi_pci_routing_table *entry;
+> >         acpi_handle handle = NULL;
+> > +       struct acpi_prt_entry *match = NULL;
+> > +       const char *match_int_source = NULL;
+> >
+> >         if (dev->bus->bridge)
+> >                 handle = ACPI_HANDLE(dev->bus->bridge);
+> > @@ -219,13 +221,30 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev *dev,
+> >
+> >         entry = buffer.pointer;
+> >         while (entry && (entry->length > 0)) {
+> > -               if (!acpi_pci_irq_check_entry(handle, dev, pin,
+> > -                                                entry, entry_ptr))
+> > -                       break;
+> > +               struct acpi_prt_entry *curr;
+> > +
+> > +               if (!acpi_pci_irq_check_entry(handle, dev, pin, entry, &curr)) {
+> > +                       if (!match) {
+> > +                               match = curr;
+> > +                               match_int_source = entry->source;
+> > +                        } else {
+> > +                               dev_warn(&dev->dev, FW_BUG
 > 
-> Apparently the only unused slab flag is 0x00000200U, all others seem
-> to be taken. I'll use it if there are no objections.
+> dev_info() would be sufficient here IMV.
+> 
+> > +                                      "ACPI _PRT returned duplicate IRQ routing entries for INT%c: %s[%d] and %s[%d]\n",
+> > +                                      pin_name(curr->pin),
+> > +                                      match_int_source, match->index,
+> > +                                      entry->source, curr->index);
+> > +                               /* We use the first matching entry nonetheless,
+> > +                                * for compatibility with older kernels.
 
-OK. Will look into the cleanup and consolidation - we already know
-SLAB_MEM_SPREAD became dead with SLAB removed. If it comes to worst, we can
-switch to 64 bits again.
+The usual comment style in this file is:
 
->>
->> > >
->> > > What's up with the order of flags in that file? They don't seem to
->> > > follow any particular ordering.
->> >
->> > Seems mostly in increasing order, except commit 4fd0b46e89879 broke it for
->> > SLAB_RECLAIM_ACCOUNT?
->> >
->> > > Seems like some cleanup is in order, but any history/context we should
->> > > know first?
->> >
->> > Yeah noted, but no need to sidetrack you.
+  /*
+   * We use ...
+   */
 
+> > +                                */
+> > +                       }
+> > +               }
+> > +
+> >                 entry = (struct acpi_pci_routing_table *)
+> >                     ((unsigned long)entry + entry->length);
+> >         }
+> >
+> > +       *entry_ptr = match;
+> > +
+> >         kfree(buffer.pointer);
+> >         return 0;
+> >  }
+> >
+> > base-commit: 861deac3b092f37b2c5e6871732f3e11486f7082
+> > --
+> 
+> Bjorn, any concerns regarding this one?
+
+No concerns from me.  
+
+I guess this only adds a message, right?  It doesn't actually fix
+anything or change any behavior?
+
+This talks about "duplicate" entries, which suggests to me that they
+are identical, but I don't think they are.  It sounds like it's two
+"matching" entries, i.e., two entries for the same (device, pin)?
+
+And neither of the two _PRT entries yields a working i801 device?
+
+Bjorn
 
