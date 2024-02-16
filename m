@@ -1,319 +1,240 @@
-Return-Path: <linux-kernel+bounces-69271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49EF2858677
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:58:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C09858679
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:02:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E3401C20F89
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:58:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 657DB1C21005
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:02:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DCD9137C50;
-	Fri, 16 Feb 2024 19:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46899137C4E;
+	Fri, 16 Feb 2024 20:01:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fiS94GIc"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dOExT7Gh"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4431369B4
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB7B0135A62
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 20:01:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708113517; cv=none; b=uZTiOTww2m31I8dbffzw9/fGjgnUGWUh+cjaj9teqr/wBVXUld99nUuphGM3FI9LSJ3fXReS450e2t9pqKVKeGUNwx2b/+y9t8xvM2LLJMbFRUKUYFHEudsH3VUSCqrcElvKS5TegTxa0Oqc4yTOpcUmRBQw+I7NGN+Nwmjvq7c=
+	t=1708113716; cv=none; b=isEgENpT1jmhM1jthgFILpUiGPGJUSWm9QZdM5A5W+rYGlzjjWsulFBxOws3zZ/KQ0xDQ9K6ZdCCwNztRG+0LnZr7Qs2XKWX/A+/W7G0MCFOs+OhZ6MzWoUXs9DKEixSxAe17+q2hJ5mqWX/CzdnhLOQhx5fkU14KETm4Oyv8Eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708113517; c=relaxed/simple;
-	bh=Y6CA/0eXmsk2eZWqeDuAH9gz/qp6eh4914mbH0EVdkg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=tLj79sQYUahKqPJeks6rGq5LaDUP2tyu3dmaW+yRMNSg4X9KLZsk8qe2wLcG/DZNrsDpUycWgg3oCE1CQZ7GfQoVrbj9nMXIzl50nojts/ZvMCrQdJkiSmLMpKfEk6yF293eMZmKBdx/hz7E2zSrvDpYPqhjEgUfvVFfE7hrEfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fiS94GIc; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708113512;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/Q2M0pDMLhIbJFR8+0n3bXsPc6PTg3nS9JCcltQaK0U=;
-	b=fiS94GIcWYV1ywc6Bp4LtgRPMlALvJC+xymLU5N1WhCw0elqmGhtuneCw/ikdoKVomjp3u
-	/WYlsuJNX9MZpRzLV4zQKLS9CCR1TeNF+uEKbRiepN4iEu6tpfL8POMOInVS2Y7r7WoF5q
-	akHUc0ZxeXfnJJ4zYfFIyDWIHM+Rb9I=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-149-MD7GTr3dNzORwlWSEnethg-1; Fri, 16 Feb 2024 14:58:29 -0500
-X-MC-Unique: MD7GTr3dNzORwlWSEnethg-1
-Received: by mail-oi1-f197.google.com with SMTP id 5614622812f47-3c0383a9522so3398462b6e.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:58:29 -0800 (PST)
+	s=arc-20240116; t=1708113716; c=relaxed/simple;
+	bh=NuyAjhXJza4q0jRrAdQBVNUOFB0Q3GISFLDj6J9JQHo=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=M3/Llo2daHptOGl0mpwPsVhaU42k7H2aeijzxunl8Y2xJcXB+1y6CjJBVBw/RSzi488rUXO6FT9kZY43Y6DUgU96QQjlA5zEbhjRvVSdk0QwBH3hWGxZjlqsv0ySU/KOJfpKnswqPxLA+K2qi1xNfkDuiHc5RJL8mEfi7WvNSUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dOExT7Gh; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so5261039276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:01:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708113714; x=1708718514; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hnC1Wqu1hjzO44T2i0P4fr+YtBb6/PxLiNAZpb948xQ=;
+        b=dOExT7GhJzeTmIik1aKj1ZwA/he4l/GYUS8mvocVlOoOQS4qYrTuY2zNH/aniNE4sV
+         0fIw88UltgPRCxzgBjWwDv7riekqZzIhGd4ePw2u72LEQ+wdnSYo5HXMsKGjrEsYnhMt
+         6785oyrINHNAhVKnA1TEDQtDiXRidj+Qzlg9DNni67ba/h/xX06RobHKt6k1mgOn/brw
+         NoZnLQOKO3SQbXDlk+nV1yBoPfPM7oH0eiL3KbievHnAmHyxJf/TWfecz2PX+lnQ5MKO
+         OtA5JdNwZINAFuoLaKqzK5x5XFyWUktR+uM1ApQ5JxR1jEKt1aagEM9uqyHsVxNcgxIp
+         7T7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708113508; x=1708718308;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/Q2M0pDMLhIbJFR8+0n3bXsPc6PTg3nS9JCcltQaK0U=;
-        b=Jz3urvtO99uElB9fQ2V0b40QA8jgJKPNMya//0lg4PvKMXcdxKFRh4LerwBD4e2wyO
-         fBVVVJcYP5jppkqCrb0ILCVjR23LDh1MtBcKyAWz4SMCURpuPQCj4vpPVimp92nrYcKy
-         gtRIy/y0230PHgzS1sjuJE6d92uFrC6qCVUBYveWYuQ724/X0B8LBt08hq8QxeVIbqNJ
-         vsJpU7t/EfKI6yeeFl2+mntUZNwjav5J6Ky5q7L7MBBmgf5G8DkuPR/qrEsNrkDJN1u4
-         DrRrz7rW4hGNW+dC/EMQOs+XhUbcj78/7oux9YrTPqMebczejd89amMiT+mH8RrM2/Aw
-         Z3bw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAZ3wwK3Q+3g1IBnUkkfDWPXZtsMagE0Yl7vs0gH4GtbsgO7gIvwDqrcdevxUqFwQyO1VoQJt9bKpEXcHjZx7nFH+RmG/A8vz294S0
-X-Gm-Message-State: AOJu0YyEmRr6fhtNobIWQiCV+YGNI5UGtTi76icJujdZAa39tSMA0ot7
-	uMS3HyFG1LZMXHYzzXCj9e8uEBhJ2yC8RjKLKlLp2Z8Gl9s3ZuJcBBphi2SXWlm6XEdqKKWZraA
-	CrXNezKdtZ7fXoI2zfe7HtXN+uAutLztpFOgyELB3z4zTpR7WUOI1Fj9bT4COyg==
-X-Received: by 2002:a05:6808:624d:b0:3c1:3489:f451 with SMTP id dt13-20020a056808624d00b003c13489f451mr5820934oib.54.1708113508492;
-        Fri, 16 Feb 2024 11:58:28 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE0gISsbHtKmdg+cmjm/kbPbQhCGSpGQpDeFj7BkHPIY4wbXdxIi1dqz2qkxCbH7bT8x9gavA==
-X-Received: by 2002:a05:6808:624d:b0:3c1:3489:f451 with SMTP id dt13-20020a056808624d00b003c13489f451mr5820924oib.54.1708113508191;
-        Fri, 16 Feb 2024 11:58:28 -0800 (PST)
-Received: from LeoBras.redhat.com ([2804:1b3:a800:4770:9d0:4bac:1782:4637])
-        by smtp.gmail.com with ESMTPSA id lq4-20020a0562145b8400b0068f1275b017sm232911qvb.24.2024.02.16.11.58.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 11:58:27 -0800 (PST)
-From: Leonardo Bras <leobras@redhat.com>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Leonardo Bras <leobras@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Tony Lindgren <tony@atomide.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	John Ogness <john.ogness@linutronix.de>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Shanker Donthineni <sdonthineni@nvidia.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-serial <linux-serial@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 4/4] tty/serial8250: Make use of IRQ_HANDLED_MANY interface
-Date: Fri, 16 Feb 2024 16:58:20 -0300
-Message-ID: <Zc--XMryevBFYetZ@LeoBras>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <8c080e51-6ae5-0e8a-69f6-ca3666164248@linux.intel.com>
-References: <20240216075948.131372-2-leobras@redhat.com> <20240216075948.131372-6-leobras@redhat.com> <8c080e51-6ae5-0e8a-69f6-ca3666164248@linux.intel.com>
+        d=1e100.net; s=20230601; t=1708113714; x=1708718514;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hnC1Wqu1hjzO44T2i0P4fr+YtBb6/PxLiNAZpb948xQ=;
+        b=KeDP1+DkpwaQpSuflwuhFL79KA0UmtXdUkbKJBnG5qHMEfuyobm39pFKqopvOYPzJC
+         rjFhWBeB1BzljINYEWgX9nBlmbQID/6oCfuQlqjAek6F9ZaMiNeGgxlGXLORiqK9TBM0
+         0V4dUQ+U5F7APpFPYEnE4VJF1E4nALvETP1rl1Wbc24CVj39CZ4BWAvVj9lZ9hlUv5K2
+         LFpnRgnHT5cGjMfwYXqKXy56dS74ymNEyt5K7f3AnlopvCR/1af0Jp10gIGWMJgWdVdc
+         DDumDaSJgbqi5VE0lQiZQCyNtyKCiYogLFfARDzkkrXQEeQyIvT3PC7tw9PX3hDAvdMf
+         PLAA==
+X-Forwarded-Encrypted: i=1; AJvYcCWLj3jkfdZ0i0oeHK7N7Y7uSSaUC5Me9IV/B4QMugsL3esfb5OI+tYr0GBawS33UoSDBoA3ZGH/VRnmGkE71YDlPLfydRUwzqA+9A6T
+X-Gm-Message-State: AOJu0YwknlpqLY01l34AxuvyRYyLU2dZlvFnXCng+AX44mRN2IDoCzmq
+	321tLP68G104l4bcOHL+svganN5G8VW7KBicYMnGHgqYP+vhVf0ovf/Ezo+65RxKxdq/WM4lvjt
+	HytxOH00+ynyG7luGuw==
+X-Google-Smtp-Source: AGHT+IFsCdaVZr8ZBA4nJqkvY7/NE5G/bJ2OgSA7Qdq0i5ahbMzq/UWaYnaW84Y6C8WrjD7VtzJgJ7eIeU2LSu+N
+X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:1105:b0:dc6:d678:371d with
+ SMTP id o5-20020a056902110500b00dc6d678371dmr1411009ybu.3.1708113713690; Fri,
+ 16 Feb 2024 12:01:53 -0800 (PST)
+Date: Fri, 16 Feb 2024 20:01:51 +0000
+In-Reply-To: <CAGsJ_4zSDP_A32jUPrYPwZ=uwU4o0a6x-GW2HO3vu8yUh0qYjA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240216030539.110404-1-21cnbao@gmail.com> <Zc8bjZFZAZneObQG@google.com>
+ <b717ae0c-ed4f-4ebc-90cf-51a8da0a6583@bytedance.com> <CAGsJ_4zSDP_A32jUPrYPwZ=uwU4o0a6x-GW2HO3vu8yUh0qYjA@mail.gmail.com>
+Message-ID: <Zc-_L70_b6Dw1BQa@google.com>
+Subject: Re: [PATCH] mm: zswap: increase reject_compress_poor but not
+ reject_compress_fail if compression returns ENOSPC
+From: Yosry Ahmed <yosryahmed@google.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: Chengming Zhou <zhouchengming@bytedance.com>, akpm@linux-foundation.org, 
+	hannes@cmpxchg.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Barry Song <v-songbaohua@oppo.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
 
-On Fri, Feb 16, 2024 at 12:12:44PM +0200, Ilpo Järvinen wrote:
-> On Fri, 16 Feb 2024, Leonardo Bras wrote:
+> > >> diff --git a/mm/zswap.c b/mm/zswap.c
+> > >> index 6319d2281020..9a21dbe8c056 100644
+> > >> --- a/mm/zswap.c
+> > >> +++ b/mm/zswap.c
+> > >> @@ -1627,7 +1627,10 @@ bool zswap_store(struct folio *folio)
+> > >>      dlen = acomp_ctx->req->dlen;
+> > >>
+> > >>      if (ret) {
+> > >> -            zswap_reject_compress_fail++;
+> > >> +            if (ret == -ENOSPC)
+> > >> +                    zswap_reject_compress_poor++;
+> > >> +            else
+> > >> +                    zswap_reject_compress_fail++;
+> > >
+> > > With this diff, we have four locations in zswap_store() where we
+> > > increment zswap_reject_compress_{poor/fail}.
+> > >
+> > > How about the following instead?A
+> > >
+> > > diff --git a/mm/zswap.c b/mm/zswap.c
+> > > index 62fe307521c93..3a7e8ba7f6116 100644
+> > > --- a/mm/zswap.c
+> > > +++ b/mm/zswap.c
+> > > @@ -1059,24 +1059,16 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+> > >        */
+> > >       ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
+> > >       dlen = acomp_ctx->req->dlen;
+> > > -     if (ret) {
+> > > -             zswap_reject_compress_fail++;
+> > > +     if (ret)
+> > >               goto unlock;
+> > > -     }
+> > >
+> > >       zpool = zswap_find_zpool(entry);
+> > >       gfp = __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLAIM;
+> > >       if (zpool_malloc_support_movable(zpool))
+> > >               gfp |= __GFP_HIGHMEM | __GFP_MOVABLE;
+> > >       ret = zpool_malloc(zpool, dlen, gfp, &handle);
+> > > -     if (ret == -ENOSPC) {
+> > > -             zswap_reject_compress_poor++;
+> > > -             goto unlock;
+> > > -     }
+> > > -     if (ret) {
+> > > -             zswap_reject_alloc_fail++;
+> > > +     if (ret)
+> > >               goto unlock;
+> > > -     }
+> > >
+> > >       buf = zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
+> > >       memcpy(buf, dst, dlen);
+> > > @@ -1086,6 +1078,10 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+> > >       entry->length = dlen;
+> > >
+> > >  unlock:
+> > > +     if (ret == -ENOSPC)
+> > > +             zswap_reject_compress_poor++;
+> > > +     else if (ret)
+> > > +             zswap_reject_alloc_fail++;
+> >
+> > Here have two cases: zswap_reject_compress_fail, zswap_reject_alloc_fail.
+
+Ah brain fart, sorry.
+
 > 
-> > For every TX byte an IRQ is requested.
-> > On threaded IRQs, the handler calls serial8250_tx_chars can send multiple
-> > bytes, limited to it's queue size (tx_loadsz).
+> Is it safe to differentiate these two cases by checking ret == -ENOMEM ?
+> otherwise, it seems the original patch still makes more sense?
+
+I don't think it is in all cases, some allocators return other error
+codes. It seems unlikely that we'll get any of them, but it can be
+missed in the future. How about we use different return codes to
+differentiate failures, and still centralize the counters handling.
+
+Something like the following (ideally that one is not a brain fart):
+
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 62fe307521c93..20ba25b7601a7 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1021,12 +1021,12 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+ {
+ 	struct crypto_acomp_ctx *acomp_ctx;
+ 	struct scatterlist input, output;
++	int comp_ret = 0, alloc_ret = 0;
+ 	unsigned int dlen = PAGE_SIZE;
+ 	unsigned long handle;
+ 	struct zpool *zpool;
+ 	char *buf;
+ 	gfp_t gfp;
+-	int ret;
+ 	u8 *dst;
+
+ 	acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+@@ -1057,26 +1057,18 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+ 	 * but in different threads running on different cpu, we have different
+ 	 * acomp instance, so multiple threads can do (de)compression in parallel.
+ 	 */
+-	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
++	comp_ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
+ 	dlen = acomp_ctx->req->dlen;
+-	if (ret) {
+-		zswap_reject_compress_fail++;
++	if (comp_ret)
+ 		goto unlock;
+-	}
+
+ 	zpool = zswap_find_zpool(entry);
+ 	gfp = __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLAIM;
+ 	if (zpool_malloc_support_movable(zpool))
+ 		gfp |= __GFP_HIGHMEM | __GFP_MOVABLE;
+-	ret = zpool_malloc(zpool, dlen, gfp, &handle);
+-	if (ret == -ENOSPC) {
+-		zswap_reject_compress_poor++;
+-		goto unlock;
+-	}
+-	if (ret) {
+-		zswap_reject_alloc_fail++;
++	alloc_ret = zpool_malloc(zpool, dlen, gfp, &handle);
++	if (alloc_ret)
+ 		goto unlock;
+-	}
+
+ 	buf = zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
+ 	memcpy(buf, dst, dlen);
+@@ -1086,6 +1078,13 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+ 	entry->length = dlen;
+
+ unlock:
++	if (comp_ret == -ENOSPC || alloc_ret == -ENOSPC)
++		zswap_reject_compress_poor++;
++	else if (comp_ret)
++		zswap_reject_compress_fail++;
++	else if (alloc_ret)
++		zswap_reject_alloc_fail++;
++
+ 	mutex_unlock(&acomp_ctx->mutex);
+ 	return ret == 0;
+ }
+
 > 
-> Perhaps I'm missing something here but I don't understand what this tries 
-> to say.
+> >
+> > >       mutex_unlock(&acomp_ctx->mutex);
+> > >       return ret == 0;
+> > >  }
+> > >
+> > >>              goto put_dstmem;
+> > >>      }
+> > >>
+> > >> --
+> > >> 2.34.1
+> > >>
 > 
-> - 8250 driver gets TX empty IRQ
-> - We write x bytes to FIFO
-> - UART blasts those bits to wire, eventually emptying FIFO
-> - We get the next TX empty IRQ
-> 
-> What in this makes "for every TX byte an IRQ is requested" true? There's 
-> one IRQ only for every x bytes TX'ed as far as I can tell!?!
-> 
-
-Context:
-I created a C program for writting data to the serial by opening /dev/ttyS0 
-and fprintf() strings of about 100bytes to it. This fprintf() runs alone in 
-a for loop. This is compiled with GCC.
-
-I noticed that it will create an IRQ for every char written to ttyS0.
-Maybe I missed something, and this is not a rule, but that's what I 
-perceived as an average.
-
-My scenario:
-- Linux compiled with force_irqthreads = true
-- serial8250 used as a serial terminal (emulated by qemu)
-
-For non-irqthreads it works just fine.
-
-But in this (force_irqthreads = true) scenario the IRQ will get triggered a 
-lot of times, and the threaded handler runs only sometimes, which makes it 
-easy for the IRQs to be handled in batch, which is fine.
-
-The issue: this causes irqs_unhandled to be incremented once every time 
-note_interrupt() did not perceive a change in threads_handled. Since the 
-threads_handled increments in batches, it means many of those IRQs will be 
-considered "unhandled", leading to the serial8250 IRQ to be disabled.
-
-I created a way (patches 2 & 3) to account for how many IRQ requests have 
-actually been handled by a handler, if that handler can deal with them in 
-batches. 
-
-This patch is about me trying to make serial8250 report how many IRQs it 
-handled, by using the (possibly incorrect) information that it will cause 
-1 IRQ per tx-byte.
-
-This 1 IRQ/tx-byte info was perceived by tracing the IRQ count and the 
-number of bytes sent. It was also reinforced by serial8250_tx_chars() which 
-seems to transmit 1 byte at a time, even though it repeats that up to FIFO 
-size (up->tx_loadsz) in that function.
-
-If that proves to be not correct, I will need to find a way of tracking 
-the number of IRQs handled in that scenario, so the IRQ disabling thing can 
-be avoided.
-
-Does it make sense?
-
-Thanks!
-Leo
-
-> -- 
->  i.
-> 
-> > When this happens, the handler return IRQ_HANDLED with reduces the
-> > unhandled IRQ counter only by 1, even though many requests have been
-> > handled at once.
-> > 
-> > This causes the unhandled IRQ counter to go up until it reaches the maximum
-> > and causes the registered IRQ to be disabled, thus breaking the serial
-> > console.
-> > 
-> > Make use of the newly introduced IRQ_HANDLED_MANY interface to return the
-> > number of requests handled, so the unhandled IRQ counter can get decreased
-> > accordingly.
-> > 
-> > Signed-off-by: Leonardo Bras <leobras@redhat.com>
-> > ---
-> >  include/linux/serial_8250.h         |  2 +-
-> >  drivers/tty/serial/8250/8250_core.c | 13 ++++++++-----
-> >  drivers/tty/serial/8250/8250_port.c | 16 ++++++++++------
-> >  3 files changed, 19 insertions(+), 12 deletions(-)
-> > 
-> > diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
-> > index ec46e3b49ee99..c9d4271b71d70 100644
-> > --- a/include/linux/serial_8250.h
-> > +++ b/include/linux/serial_8250.h
-> > @@ -200,7 +200,7 @@ int fsl8250_handle_irq(struct uart_port *port);
-> >  int serial8250_handle_irq(struct uart_port *port, unsigned int iir);
-> >  u16 serial8250_rx_chars(struct uart_8250_port *up, u16 lsr);
-> >  void serial8250_read_char(struct uart_8250_port *up, u16 lsr);
-> > -void serial8250_tx_chars(struct uart_8250_port *up);
-> > +int serial8250_tx_chars(struct uart_8250_port *up);
-> >  unsigned int serial8250_modem_status(struct uart_8250_port *up);
-> >  void serial8250_init_port(struct uart_8250_port *up);
-> >  void serial8250_set_defaults(struct uart_8250_port *up);
-> > diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
-> > index ae637155fe7cd..2fab9102eec45 100644
-> > --- a/drivers/tty/serial/8250/8250_core.c
-> > +++ b/drivers/tty/serial/8250/8250_core.c
-> > @@ -110,7 +110,7 @@ static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
-> >  {
-> >  	struct irq_info *i = dev_id;
-> >  	struct list_head *l, *end = NULL;
-> > -	int pass_counter = 0, handled = 0;
-> > +	int pass_counter = 0, handled_total = 0;
-> >  
-> >  	pr_debug("%s(%d): start\n", __func__, irq);
-> >  
-> > @@ -120,15 +120,18 @@ static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
-> >  	do {
-> >  		struct uart_8250_port *up;
-> >  		struct uart_port *port;
-> > +		int handled;
-> >  
-> >  		up = list_entry(l, struct uart_8250_port, list);
-> >  		port = &up->port;
-> >  
-> > -		if (port->handle_irq(port)) {
-> > -			handled = 1;
-> > +		handled = port->handle_irq(port);
-> > +		if (handled) {
-> > +			handled_total += handled;
-> >  			end = NULL;
-> > -		} else if (end == NULL)
-> > +		} else if (end == NULL) {
-> >  			end = l;
-> > +		}
-> >  
-> >  		l = l->next;
-> >  
-> > @@ -140,7 +143,7 @@ static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
-> >  
-> >  	pr_debug("%s(%d): end\n", __func__, irq);
-> >  
-> > -	return IRQ_RETVAL(handled);
-> > +	return IRQ_RETVAL_MANY(handled_total);
-> >  }
-> >  
-> >  /*
-> > diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> > index f799c34f1603c..74d53507a73d4 100644
-> > --- a/drivers/tty/serial/8250/8250_port.c
-> > +++ b/drivers/tty/serial/8250/8250_port.c
-> > @@ -1802,7 +1802,7 @@ u16 serial8250_rx_chars(struct uart_8250_port *up, u16 lsr)
-> >  }
-> >  EXPORT_SYMBOL_GPL(serial8250_rx_chars);
-> >  
-> > -void serial8250_tx_chars(struct uart_8250_port *up)
-> > +int serial8250_tx_chars(struct uart_8250_port *up)
-> >  {
-> >  	struct uart_port *port = &up->port;
-> >  	struct circ_buf *xmit = &port->state->xmit;
-> > @@ -1810,15 +1810,15 @@ void serial8250_tx_chars(struct uart_8250_port *up)
-> >  
-> >  	if (port->x_char) {
-> >  		uart_xchar_out(port, UART_TX);
-> > -		return;
-> > +		return 0;
-> >  	}
-> >  	if (uart_tx_stopped(port)) {
-> >  		serial8250_stop_tx(port);
-> > -		return;
-> > +		return 0;
-> >  	}
-> >  	if (uart_circ_empty(xmit)) {
-> >  		__stop_tx(up);
-> > -		return;
-> > +		return 0;
-> >  	}
-> >  
-> >  	count = up->tx_loadsz;
-> > @@ -1858,6 +1858,9 @@ void serial8250_tx_chars(struct uart_8250_port *up)
-> >  	 */
-> >  	if (uart_circ_empty(xmit) && !(up->capabilities & UART_CAP_RPM))
-> >  		__stop_tx(up);
-> > +
-> > +	/* Return number of chars sent */
-> > +	return up->tx_loadsz - count;
-> >  }
-> >  EXPORT_SYMBOL_GPL(serial8250_tx_chars);
-> >  
-> > @@ -1923,6 +1926,7 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
-> >  	bool skip_rx = false;
-> >  	unsigned long flags;
-> >  	u16 status;
-> > +	int handled = 0;
-> >  
-> >  	if (iir & UART_IIR_NO_INT)
-> >  		return 0;
-> > @@ -1956,14 +1960,14 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
-> >  	serial8250_modem_status(up);
-> >  	if ((status & UART_LSR_THRE) && (up->ier & UART_IER_THRI)) {
-> >  		if (!up->dma || up->dma->tx_err)
-> > -			serial8250_tx_chars(up);
-> > +			handled = serial8250_tx_chars(up);
-> >  		else if (!up->dma->tx_running)
-> >  			__stop_tx(up);
-> >  	}
-> >  
-> >  	uart_unlock_and_check_sysrq_irqrestore(port, flags);
-> >  
-> > -	return 1;
-> > +	return handled ? : 1;
-> >  }
-> >  EXPORT_SYMBOL_GPL(serial8250_handle_irq);
-> >  
-> > 
-> 
-
+> Thanks
+> Barry
 
