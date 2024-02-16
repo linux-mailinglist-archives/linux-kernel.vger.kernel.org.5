@@ -1,118 +1,239 @@
-Return-Path: <linux-kernel+bounces-68461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68462-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526EA857A83
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:41:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68F50857A84
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:42:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ACBE6B23750
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:41:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D16F1C21B3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:42:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838D9535A5;
-	Fri, 16 Feb 2024 10:40:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99735524C0;
+	Fri, 16 Feb 2024 10:41:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="lz2U9uLV"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NhUMIeDo"
+Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E297B1BDE6;
-	Fri, 16 Feb 2024 10:40:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41533249F7
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708080055; cv=none; b=QCcwYZgoDi+rS0Dbw27yn71v4ZlzzvbK7AYVvmbXOvIanDcRwbSz8XG0sdmucFHCjf6gqxGHyRQyP7ceg80uEJGUpKst9wkBCQP+qauatd7/BHxB2j7LVC/kDO4KVD5uZOwlFh3ax8spckPHcwHSoMk8c82NCFp1G7suY6fEXZU=
+	t=1708080115; cv=none; b=SXIuvarIeMIQGJcNvMCZ/uA11QHsX+AjFmNsVYKlZRimzN9/KtHNIqyKFfdg9k7TZgR4EVL1Pm0AE1prUIlVXc/W/koHnkYF16hJob3e7+7ejHyd5cdO5IoCk2w8LMjsHT/dHBDdt9lgLlV1Rzb3peMG2VNNC3yH5lF7XYJwN24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708080055; c=relaxed/simple;
-	bh=4vCY6JZJluyOURcmliUjf8D4UGdWpWhqShAztx1q4U0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=l3fmVSntOxxdol43dk/rqUaCUxNuq8kAG57GVqsJn+mEHbbZ0Qga4jkNqbvQq2ONkYXjdqa7fR6SID31+j2tJCwf+2j5IpdS8POjx0LUe79PlKvaPdzXoKsC4OxM7DgQsVKTLNKaISgSofd3EksW65DHPLSVLTSVzNY6dJenE/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=lz2U9uLV; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3A5F7C000A;
-	Fri, 16 Feb 2024 10:40:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708080050;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pW+H2/+M3nwxvUrdeb949EaUZPq3QzVW/JZ2LL5ih34=;
-	b=lz2U9uLVS3/HdJM1KiMEiUYoPgnBtLLrRboc8aNuca5J5CJu0LxWUJqVuayCZz+nR9Ueem
-	GJV80VRxBtCaNXb+RaZQzFs9VnINWRo7LxEGKea1LN+T5iiTAWeYwM1yVHh4eMOcWhzONe
-	I2fhfxZYlkk+hNNSIbQoJM5bSsSv/VEurY7+Z2pOjHGACRR2Jgv4naaUQuz9SGgpxBbJ5t
-	J27ZBToyYYAC2DSRAZowyPiTmeNOhTg73wSd4xiCwSTtH5AsOiSur6xqzkssVjeJs2Rcb9
-	VG5VdMHV6ulPW1rl2IMIj2P7PThpBSQ5Ct9nhZ0wDGw0WjvznvT9upEFnGxmXg==
+	s=arc-20240116; t=1708080115; c=relaxed/simple;
+	bh=JG7epGr1OLTAzJ3lroC2pStM0pw4uB/zq8g78Pdr2xQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AAh/T305QY6H7TwuufXIO2buiX8O53mXwHB5cFlIttH0jlDOI2LwJZ2f4/vPK2Q8XlfSDYgoKBpCQxTpM6Zt98EhD/koWptk7dI3d0JUbtccnzAMODrdgic4B8cOw+1Dicg83upIm04dcsq8PRgK4PDSkR2H4YiUQ16qdAKNw0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NhUMIeDo; arc=none smtp.client-ip=209.85.166.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-7bed9f5d35dso32511939f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 02:41:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708080113; x=1708684913; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=83MFj85Jw6q6w+0p9hI3fU9QbFllJZZhmeN4SqwEUMA=;
+        b=NhUMIeDoSANe03ig4s8bdUVhFGihMFdR8z8+MUrb9Kmqtk06R8cdV0atCm9nzKjJqr
+         XGI6WObsnBXwpUTRPUdO8qRi7yMYjhXIovyTyXOlqxtyLku0dheM64Wbxkeg7UgJYqZI
+         cW8S/vM7aVHBfRT8RYXjHQ9aSIj2O4kceDNXNSTq8CBCHd3PjBthuGG1mf7cX18SaLv5
+         Ik+tvz8Ieq9IUCxU0GYmJF4eiZ3QgXBbwvSvVGfwXnn8myeH4OrI+9ipkuviZad/d6ut
+         5UIQ0LBBPYp2ccWlXPF697BgMTuuyKgs5/+ACsPc5f3co1Qu22kudPJCMUXwWpg9Nqlg
+         mqUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708080113; x=1708684913;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=83MFj85Jw6q6w+0p9hI3fU9QbFllJZZhmeN4SqwEUMA=;
+        b=O3ib9B3M2m9g8ahlqwyNXeM7Sh88DGrGn7Rv273nHozs+GoLJBjGb9ToRUpT0rB27s
+         uEbRvPiV9SUO9LJMcMR2j/Qsy7m4lBnmdXNuXzzc3e5FtuoCxIOAX9012pFiwT8mqn/y
+         wtiPglBIZ6dVpApCr1Z7GlG+3+0yqJVXWp9KtPd6CjlNieU9oV9dKaS4G6pHQUzWeUjG
+         Y7Zw5/Z4cB1gfoohw5BZx/PDCUx9o1+0UD4R+7l+82TBytgufeJfCpOXK5AczNQLMjzM
+         9VKD+6DN0YUZJyBU0OG/JlXJWequ2B6sv9GpucKdRS9uMwfmf/Ggd8vYRKEFo4KJ17GV
+         B6yw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEZyiRviuAL2M2sBl1xR8Wt81OJvLVPa7SPYQbJnMUkiTtTA9+FayBsl9bv2sdAPPlFNsPuQ3GvbUg2KwdUy7x8gC8cGeS79ziN2+s
+X-Gm-Message-State: AOJu0Yw1D4li3Gn2MtX1xe3r7GEg+3BZIK2IAUvKFHnuwB/7TiCsRok9
+	hRkeOKlKu8DHZSFQXsHMCA5N5hPLhEKf0IAK3VV86g7XS/gX8IrNrTl2XymANEpoPOkbPGAigml
+	SPeRgnCMeHcEJhEpR+Vmsr1TfFWQKrPRuCFgGjg==
+X-Google-Smtp-Source: AGHT+IHohGyM7aqhsbOgrJGONi+DTcnydQ/SQ/7ZiCjHTxzt7rc6dyqTE2f0MbPjJAFGOYqpnap/L8iU4kZOMkST50k=
+X-Received: by 2002:a6b:1547:0:b0:7c4:3218:c767 with SMTP id
+ 68-20020a6b1547000000b007c43218c767mr5045416iov.11.1708080113226; Fri, 16 Feb
+ 2024 02:41:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240210-zswap-global-lru-v3-0-200495333595@bytedance.com> <20240210-zswap-global-lru-v3-2-200495333595@bytedance.com>
+In-Reply-To: <20240210-zswap-global-lru-v3-2-200495333595@bytedance.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Fri, 16 Feb 2024 02:41:41 -0800
+Message-ID: <CAKEwX=Mfyr0G_doA0HUR4JAaRe95BDDCmjejckt0YyqP0CFvJA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] mm/zswap: change zswap_pool kref to percpu_ref
+To: Chengming Zhou <zhouchengming@bytedance.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosryahmed@google.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 16 Feb 2024 11:40:50 +0100
-Message-Id: <CZ6FUECKEX2B.36QWZZA5EYPI@bootlin.com>
-Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
- <andi.shyti@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Rob Herring"
- <robh@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 02/13] dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c
- bindings and example
-X-Mailer: aerc 0.15.2
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-2-19a336e91dca@bootlin.com>
- <20240216022227.GA850600-robh@kernel.org>
- <CZ6FD7EHIJDT.32IEDVT9FG2GP@bootlin.com>
- <6effca50-29a4-43b9-86eb-310bd4e08e5c@linaro.org>
-In-Reply-To: <6effca50-29a4-43b9-86eb-310bd4e08e5c@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello,
-
-On Fri Feb 16, 2024 at 11:33 AM CET, Krzysztof Kozlowski wrote:
-> On 16/02/2024 11:18, Th=C3=A9o Lebrun wrote:
-> >=20
-> >>> +        mobileye,id:
-> >>> +          $ref: /schemas/types.yaml#/definitions/uint32
-> >>> +          description: Platform-wide controller ID (integer starting=
- from zero).
-> >>
-> >> instance indexes are a NAK. You can use i2cN aliases if you must.
-> >>
-> >> Why do you need it? To access OLB? If so, add cell args to the OLB=20
-> >> phandle instead.
-> >=20
-> > Why we do what we do: I2C controller must write a 2 bit value depending
-> > on the bus speed. All I2C controllers write into the same register.
+On Fri, Feb 16, 2024 at 12:55=E2=80=AFAM Chengming Zhou
+<zhouchengming@bytedance.com> wrote:
 >
-> Which register?  Your devices do not share IO address space.
+> All zswap entries will take a reference of zswap_pool when
+> zswap_store(), and drop it when free. Change it to use the
+> percpu_ref is better for scalability performance.
+>
+> Although percpu_ref use a bit more memory which should be ok
+> for our use case, since we almost have only one zswap_pool to
+> be using. The performance gain is for zswap_store/load hotpath.
+>
+> Testing kernel build (32 threads) in tmpfs with memory.max=3D2GB.
+> (zswap shrinker and writeback enabled with one 50GB swapfile,
+> on a 128 CPUs x86-64 machine, below is the average of 5 runs)
+>
+>         mm-unstable  zswap-global-lru
+> real    63.20        63.12
+> user    1061.75      1062.95
+> sys     268.74       264.44
 
-mobileye,olb is a prop with a phandle to a syscon. That syscon contains
-the register we are interested in.
+Idea is straightforward + code looks solid to me FWIW, so:
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
-The Linux code side of things is in the following patch. We use
-syscon_regmap_lookup_by_phandle().
+>
+> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> ---
+>  mm/zswap.c | 36 +++++++++++++++++++++++++++---------
+>  1 file changed, 27 insertions(+), 9 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index d275eb523fc4..961349162997 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -173,7 +173,7 @@ struct crypto_acomp_ctx {
+>  struct zswap_pool {
+>         struct zpool *zpools[ZSWAP_NR_ZPOOLS];
+>         struct crypto_acomp_ctx __percpu *acomp_ctx;
+> -       struct kref kref;
+> +       struct percpu_ref ref;
+>         struct list_head list;
+>         struct work_struct release_work;
+>         struct hlist_node node;
+> @@ -305,6 +305,7 @@ static void zswap_update_total_size(void)
+>  /*********************************
+>  * pool functions
+>  **********************************/
+> +static void __zswap_pool_empty(struct percpu_ref *ref);
+>
+>  static struct zswap_pool *zswap_pool_create(char *type, char *compressor=
+)
+>  {
+> @@ -358,13 +359,18 @@ static struct zswap_pool *zswap_pool_create(char *t=
+ype, char *compressor)
+>         /* being the current pool takes 1 ref; this func expects the
+>          * caller to always add the new pool as the current pool
+>          */
+> -       kref_init(&pool->kref);
+> +       ret =3D percpu_ref_init(&pool->ref, __zswap_pool_empty,
+> +                             PERCPU_REF_ALLOW_REINIT, GFP_KERNEL);
+> +       if (ret)
+> +               goto ref_fail;
+>         INIT_LIST_HEAD(&pool->list);
+>
+>         zswap_pool_debug("created", pool);
+>
+>         return pool;
+>
+> +ref_fail:
+> +       cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->no=
+de);
+>  error:
+>         if (pool->acomp_ctx)
+>                 free_percpu(pool->acomp_ctx);
+> @@ -437,8 +443,9 @@ static void __zswap_pool_release(struct work_struct *=
+work)
+>
+>         synchronize_rcu();
+>
+> -       /* nobody should have been able to get a kref... */
+> -       WARN_ON(kref_get_unless_zero(&pool->kref));
+> +       /* nobody should have been able to get a ref... */
+> +       WARN_ON(!percpu_ref_is_zero(&pool->ref));
 
-   [PATCH 10/13] i2c: nomadik: support Mobileye EyeQ5 I2C controller
-   https://lore.kernel.org/lkml/20240215-mbly-i2c-v1-10-19a336e91dca@bootli=
-n.com/
+Ah nice - this is actually even clearer :) For some reason I missed
+it, my apologies.
 
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> +       percpu_ref_exit(&pool->ref);
+>
+>         /* pool is now off zswap_pools list and has no references. */
+>         zswap_pool_destroy(pool);
+> @@ -446,11 +453,11 @@ static void __zswap_pool_release(struct work_struct=
+ *work)
+>
+>  static struct zswap_pool *zswap_pool_current(void);
+>
+> -static void __zswap_pool_empty(struct kref *kref)
+> +static void __zswap_pool_empty(struct percpu_ref *ref)
+>  {
+>         struct zswap_pool *pool;
+>
+> -       pool =3D container_of(kref, typeof(*pool), kref);
+> +       pool =3D container_of(ref, typeof(*pool), ref);
+>
+>         spin_lock(&zswap_pools_lock);
+>
+> @@ -469,12 +476,12 @@ static int __must_check zswap_pool_get(struct zswap=
+_pool *pool)
+>         if (!pool)
+>                 return 0;
+>
+> -       return kref_get_unless_zero(&pool->kref);
+> +       return percpu_ref_tryget(&pool->ref);
+>  }
+>
+>  static void zswap_pool_put(struct zswap_pool *pool)
+>  {
+> -       kref_put(&pool->kref, __zswap_pool_empty);
+> +       percpu_ref_put(&pool->ref);
+>  }
+>
+>  static struct zswap_pool *__zswap_pool_current(void)
+> @@ -604,6 +611,17 @@ static int __zswap_param_set(const char *val, const =
+struct kernel_param *kp,
+>
+>         if (!pool)
+>                 pool =3D zswap_pool_create(type, compressor);
+> +       else {
+> +               /*
+> +                * Restore the initial ref dropped by percpu_ref_kill()
+> +                * when the pool was decommissioned and switch it again
+> +                * to percpu mode.
+> +                */
+> +               percpu_ref_resurrect(&pool->ref);
+> +
+> +               /* Drop the ref from zswap_pool_find_get(). */
+> +               zswap_pool_put(pool);
+> +       }
+>
+>         if (pool)
+>                 ret =3D param_set_charp(s, kp);
+> @@ -642,7 +660,7 @@ static int __zswap_param_set(const char *val, const s=
+truct kernel_param *kp,
+>          * or the new pool we failed to add
+>          */
+>         if (put_pool)
+> -               zswap_pool_put(put_pool);
+> +               percpu_ref_kill(&put_pool->ref);
+>
+>         return ret;
+>  }
+>
+> --
+> b4 0.10.1
 
