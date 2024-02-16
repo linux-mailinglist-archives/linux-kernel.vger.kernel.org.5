@@ -1,88 +1,83 @@
-Return-Path: <linux-kernel+bounces-68677-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6E6A857E43
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:58:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86A35857E46
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 584EF1F2120B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:58:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EA0B1C222B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBA0112C531;
-	Fri, 16 Feb 2024 13:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PbegEhIP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D3B212A17B
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D4C412C812;
+	Fri, 16 Feb 2024 13:58:31 +0000 (UTC)
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 713E612C7E4;
+	Fri, 16 Feb 2024 13:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708091905; cv=none; b=ADs/8LCM1esi6kvPj12zSHxNiNswR13qJEjGAQlRgjaD2gAl/AkrTEpkEti0M2Z85RE6tsW8czgjaYpEzD9El0IbY4v4QZE5VcYGd62QJw96DNVuDKzYHORCVAsPJT1ZLEwEL1OFp02DYjeyFj2WWift2TgF5U8rvlB45Ah5YK0=
+	t=1708091910; cv=none; b=FAGuBJK3xKKIcabi5ybkRkjN31OHO+T9WvKOnMsxMWjaYjuJoF32uAd03C6qXNt2FGZsaIt4+YNQUZegv+ywmvCssWOhg1QAe6NJLqflzpSvqIUDw0CnQerISCSFns8qKWiObIEP30i38m94tEMc0FTHy4YN4xSAu1BrHbm0/CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708091905; c=relaxed/simple;
-	bh=DYer1MDOjQctt3rMYGNc1SxWw+ODGSGiCUq1XcQAyLI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UuF7zTwoPAaKsk3wq96gNhDYHtLr/flhlC3fSZthZ7TTcFKM7wTQUkBdnU7oQqtaIni7suG6iDoV1YEWe5u3DbUsDvU8UKnqiuqhfvUzmA2r6TL7HixnSkesuWOfRT4l8C+zNAp2J/HLIManzXO21lrDW3Im7S38ZkpOdGR9sOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PbegEhIP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E302EC433C7;
-	Fri, 16 Feb 2024 13:58:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708091903;
-	bh=DYer1MDOjQctt3rMYGNc1SxWw+ODGSGiCUq1XcQAyLI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=PbegEhIPANLIh7P1dBB/JNjJ59185jxfNRMHvnsacLeSzpDRXVRZQBjm15t74TRGq
-	 tlDeM+Ez3MGhB5t3KdSj0BBuCzBv1i7QRhop0ejHLF8LTtVA13pWqU8GewwOfJuPGR
-	 TySuyu/xmxiH7CTat4V5krMXjtc4OoTpt1wCs6G0bK2htVjF0JrP55HEAGWv4IzVcz
-	 zeMorCM2Xu96x3QAoAJHBFxfGkC132JOou1mVzkQ2bQS5uJNO5hB2ahhdJY+N8dj7y
-	 nfMOlQ9+hrvIUe0wQ+sjc5glbJPXFJTARLjz92gp/TwDK4VTANBlrjWDcK/PBFpeWm
-	 RdMTIJdNGIDxw==
-From: Masahiro Yamada <masahiroy@kernel.org>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
-	"Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
-	linuxppc-dev@lists.ozlabs.org
-Cc: Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] powerpc: remove unused KCSAN_SANITIZE_early_64.o in Makefile
-Date: Fri, 16 Feb 2024 22:58:17 +0900
-Message-Id: <20240216135817.2003106-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1708091910; c=relaxed/simple;
+	bh=gvevfXqvHIBXNNVCKb7to6U/1T+JLO2BfiaVSk6KNlU=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=MuV5HspbMpk+SPjW9+o3UpIb+EPDGSckXdA9l5PxwFuq+ortgHsJZtQ5vMD4MUPVFMeE/65QLj1ur3sA7zcTrAhgdB8LwQt9rwXV/vedx8EGCictiVZMdorkcsKEiKnOcc0fIyvxHflLwLkuiytv0z4QiAOQJYibu1DKVG2GarA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id D6F5092009C; Fri, 16 Feb 2024 14:58:19 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id D051D92009B;
+	Fri, 16 Feb 2024 13:58:19 +0000 (GMT)
+Date: Fri, 16 Feb 2024 13:58:19 +0000 (GMT)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>, 
+    Mika Westerberg <mika.westerberg@linux.intel.com>
+Subject: Re: [PATCH 1/1] PCI: Cleanup link activation wait logic
+In-Reply-To: <ce73f41a-b529-726f-ee4e-9d0e0cee3320@linux.intel.com>
+Message-ID: <alpine.DEB.2.21.2402161349350.3971@angie.orcam.me.uk>
+References: <20240202134108.4096-1-ilpo.jarvinen@linux.intel.com> <alpine.DEB.2.21.2402021359450.15781@angie.orcam.me.uk> <ce73f41a-b529-726f-ee4e-9d0e0cee3320@linux.intel.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Commit 2fb857bc9f9e ("powerpc/kcsan: Add exclusions from instrumentation")
-added KCSAN_SANITIZE_early_64.o to arch/powerpc/kernel/Makefile, while
-it does not compile early_64.o.
+On Fri, 16 Feb 2024, Ilpo Järvinen wrote:
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
+> >  You change the logic here in that the second conditional isn't run if the 
+> > first has not.  This is wrong, unclamping is not supposed to rely on LBMS. 
+> > It is supposed to be always run and any failure has to be reported too, as 
+> > a retraining error.
+> 
+> Now that (I think) I fully understand the intent of the second 
+> condition/block one additional question occurred to me.
+> 
+> How is the 2nd condition even supposed to work in the current place when 
+> firmware has pre-arranged the 2.5GT/s resctriction? Wouldn't the link come 
+> up fine in that case and the quirk code is not called at all since the 
+> link came up successfully?
 
- arch/powerpc/kernel/Makefile | 1 -
- 1 file changed, 1 deletion(-)
+ The quirk is called unconditionally from `pci_device_add', so an attempt 
+to unclamp will always happen with a working link for qualifying devices.
 
-diff --git a/arch/powerpc/kernel/Makefile b/arch/powerpc/kernel/Makefile
-index 72d1cd6443bc..a6f9b53c7490 100644
---- a/arch/powerpc/kernel/Makefile
-+++ b/arch/powerpc/kernel/Makefile
-@@ -55,7 +55,6 @@ CFLAGS_btext.o += -DDISABLE_BRANCH_PROFILING
- endif
- 
- KCSAN_SANITIZE_early_32.o := n
--KCSAN_SANITIZE_early_64.o := n
- KCSAN_SANITIZE_cputable.o := n
- KCSAN_SANITIZE_btext.o := n
- KCSAN_SANITIZE_paca.o := n
--- 
-2.40.1
+> Yet another thing in this quirk code I don't like is how it can leaves the 
+> target speed to 2.5GT/s when the quirk fails to get the link working 
+> (which actually does happen in the disconnection cases because DLLLA won't 
+> be set so the target speed will not be restored).
 
+ I chose to leave the target speed at the most recent setting, because the 
+link doesn't work in that case anyway, so I concluded it doesn't matter, 
+but reduces messing with the device; technically you should retrain again 
+afterwards.  I'm not opposed to changing this if you have a use case.
+
+  Maciej
 
