@@ -1,293 +1,163 @@
-Return-Path: <linux-kernel+bounces-68940-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B791485822F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:13:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB57858231
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDBFCB20BFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:13:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B8041F22BFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:13:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64B312FF67;
-	Fri, 16 Feb 2024 16:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A9212FB30;
+	Fri, 16 Feb 2024 16:13:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="cmjAfG3u";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="UNdzAoQf";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="sarZ3cqX";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="IsUGT/in"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uQ2AVVwa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6AF312C809;
-	Fri, 16 Feb 2024 16:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41CD012D770;
+	Fri, 16 Feb 2024 16:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708099973; cv=none; b=BwG0BfiCuO9WLUUudgNFAdITFd8Z5qZJSbGHxl+liORhI2yO98+a2brbhtkcVgzg+zSh7nwKVrkxZhvT5qbFICRFgdwXHX8ZIePl7veZnoeyMwyWU2IYYXNwvPljo6yyhVBNx4l1/KOZkMZe8XTLGjRZlJvxeP62zVtN5XTMNEc=
+	t=1708099999; cv=none; b=LYbihIk37TNqKBVOa5a8VJy6r6irZgoLk4byqabC2UZp7Ne6ui7JPdjhkwY3oLQZ6ddhsYVNFFNsyk4hCS6BNHw3hBlznLjsfuKZk6GMQpDjrDSQXQcG9H6SMIFeaoEUGDW65fH+MF+7NZ8qvTyB33ngbgz3MyAzdqgdSSj0zCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708099973; c=relaxed/simple;
-	bh=WPIDtCNbeVHUsJf0cC6yrergjz3xGHCU54yzOmDaAyc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=APIc3upEfN/C7D0doN0psw1fZ07epiYW+1JeL9gBHOUIxFHCZ/c8hLVv5mYoFwnP+MOh17CYVJ+dR7SfY6+lJcIpEnJkHZZSwUY8Z0yA7JJdyTqx8goL6XVQ0mBGhsagyN2FFrRmT4EmL16IRoQ7AWSSkfOljUTHeZ1GOXoOJSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=cmjAfG3u; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=UNdzAoQf; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=sarZ3cqX; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=IsUGT/in; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 04DBF21EEA;
-	Fri, 16 Feb 2024 16:12:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708099969; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pi8lq9P+ufiU0YNIcnckIE4t9aHDgpwD+S7gt0Xq2s4=;
-	b=cmjAfG3uCC0B6no8s5ahqc0GqQwbgBLS2EGp2wLZETvfD0cUAU/0zzPPj1E4MCUh24mySu
-	aDo200WwtaLp910GBLSi5TWn+iVDRPkczpOQv36l07N/RQcZPrqtJmcD3mN++65oCC6Tth
-	Ou51/4OBZ18I60osPmsZpknDk0ldQ4M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708099969;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pi8lq9P+ufiU0YNIcnckIE4t9aHDgpwD+S7gt0Xq2s4=;
-	b=UNdzAoQfC/VU4ARaHWRQuekDZJDf0iw5JMlz1yNJjdfak51TioV4KeQqCAslZBjOGeNLyj
-	y8/MsARRjGfvNZCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708099967; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pi8lq9P+ufiU0YNIcnckIE4t9aHDgpwD+S7gt0Xq2s4=;
-	b=sarZ3cqXpjCZrzZ23HlNVm1ClShtyUcmnuwYxvbs1l3X9YSU9hlt8EeAPZCjd3ZnSADAwm
-	0qyzw1UDXbODTV0gxooMv3T3ykLxOkrtq353Ecpzf58b1v/j7sm1dmxAxk99ND1r96IGet
-	fR5OsDED6qFW7/gjvrBMu2Ug+7vnWIY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708099967;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pi8lq9P+ufiU0YNIcnckIE4t9aHDgpwD+S7gt0Xq2s4=;
-	b=IsUGT/inEDt8w5Z61VyEU4xzBI6VXq02w2tTaI6lApYrYQJGevjuqb6Run8B6jSB+Rl59g
-	ca4Q7pudp7yjfEBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BCF8D13A39;
-	Fri, 16 Feb 2024 16:12:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yfX+KH6Jz2U9TAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Fri, 16 Feb 2024 16:12:46 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
- Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v10 3/8] libfs: Introduce case-insensitive string
- comparison helper
-In-Reply-To: <20240215042654.359210-4-eugen.hristev@collabora.com> (Eugen
-	Hristev's message of "Thu, 15 Feb 2024 06:26:49 +0200")
-Organization: SUSE
-References: <20240215042654.359210-1-eugen.hristev@collabora.com>
-	<20240215042654.359210-4-eugen.hristev@collabora.com>
-Date: Fri, 16 Feb 2024 11:12:37 -0500
-Message-ID: <87zfw0bd6y.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708099999; c=relaxed/simple;
+	bh=0C9+pCgjxRMOl9W9M/RJQspbO81gdJ2Y5+OCFt5kwAw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RoV3Sp4kkpKAZEudGTRBi1Ale0uBx48kMrjKFf3THWhCZNUagFyxmQ/h+NrM/3OdBN362aQMmV/f+z55DxF90sZjq9RDEa47TCMjXk1NTJeHVuHLGQYoOYVNmvhmn1EwkUgkXu+seSDSV5lEmvnrJWcdLCnymgQPuDxHhzHmhCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uQ2AVVwa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 585B0C433C7;
+	Fri, 16 Feb 2024 16:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708099998;
+	bh=0C9+pCgjxRMOl9W9M/RJQspbO81gdJ2Y5+OCFt5kwAw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uQ2AVVwaKgHAtfDxbKsFun3Cxph1v1ovRg2RMHIfxNpeAFMxZoBEOaPhg+KMRRTFM
+	 dLRVSYRF1YV2rMCcilm14ixVSLxgl1pfJyn5kLRar+fPcQITEyDRQG3ehlzAljPYF2
+	 0Z39Z/YUMeaeipQ00UVGpvdYRSjtImymJsFsrnozJG3a+dkvLQn22ewV5tlTro2cyf
+	 qQBkStYqVNzmodLKgIfctm15lIX3C6B+Bw7ZCBViG6f3pse+iE6j3E/YIMwBNWZxN2
+	 Azgk3l0gu6/rm8sOJZr7FAlI2Yak86+3NTqkyi8VIituSoZpvE8MgpL59ggOqSjqva
+	 DBapcF2ROFIgQ==
+Date: Fri, 16 Feb 2024 16:13:12 +0000
+From: Will Deacon <will@kernel.org>
+To: Nicolin Chen <nicolinc@nvidia.com>
+Cc: sagi@grimberg.me, hch@lst.de, axboe@kernel.dk, kbusch@kernel.org,
+	joro@8bytes.org, robin.murphy@arm.com, jgg@nvidia.com,
+	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, murphyt7@tcd.ie, baolu.lu@linux.intel.com
+Subject: Re: [PATCH v1 0/2] nvme-pci: Fix dma-iommu mapping failures when
+ PAGE_SIZE=64KB
+Message-ID: <20240216161312.GA2203@willie-the-truck>
+References: <cover.1707851466.git.nicolinc@nvidia.com>
+ <20240214164138.GA31927@willie-the-truck>
+ <Zc0bLAIXSAqsQJJv@Asurada-Nvidia>
+ <20240215142208.GA753@willie-the-truck>
+ <20240215163544.GA821@willie-the-truck>
+ <Zc6rr/LleQ2krkyg@Asurada-Nvidia>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=sarZ3cqX;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="IsUGT/in"
-X-Spamd-Result: default: False [-3.31 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 HAS_ORG_HEADER(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 04DBF21EEA
-X-Spam-Level: 
-X-Spam-Score: -3.31
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zc6rr/LleQ2krkyg@Asurada-Nvidia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+Hi Nicolin,
 
-> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> generic_ci_match can be used by case-insensitive filesystems to compare
-> strings under lookup with dirents in a case-insensitive way.  This
-> function is currently reimplemented by each filesystem supporting
-> casefolding, so this reduces code duplication in filesystem-specific
-> code.
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> [eugen.hristev@collabora.com: rework to first test the exact match]
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-> ---
->  fs/libfs.c         | 80 ++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  4 +++
->  2 files changed, 84 insertions(+)
->
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index bb18884ff20e..82871fa1b066 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1773,6 +1773,86 @@ static const struct dentry_operations generic_ci_dentry_ops = {
->  	.d_hash = generic_ci_d_hash,
->  	.d_compare = generic_ci_d_compare,
->  };
-> +
-> +/**
-> + * generic_ci_match() - Match a name (case-insensitively) with a dirent.
-> + * This is a filesystem helper for comparison with directory entries.
-> + * generic_ci_d_compare should be used in VFS' ->d_compare instead.
-> + *
-> + * @parent: Inode of the parent of the dirent under comparison
-> + * @name: name under lookup.
-> + * @folded_name: Optional pre-folded name under lookup
-> + * @de_name: Dirent name.
-> + * @de_name_len: dirent name length.
-> + *
-> + *
+Thanks for sharing all the logs, .config etc.
 
-Since this need a respin, mind dropping the extra empty line here?
+On Thu, Feb 15, 2024 at 04:26:23PM -0800, Nicolin Chen wrote:
+> On Thu, Feb 15, 2024 at 04:35:45PM +0000, Will Deacon wrote:
+> > On Thu, Feb 15, 2024 at 02:22:09PM +0000, Will Deacon wrote:
+> > > On Wed, Feb 14, 2024 at 11:57:32AM -0800, Nicolin Chen wrote:
+> > > > On Wed, Feb 14, 2024 at 04:41:38PM +0000, Will Deacon wrote:
+> > > > > On Tue, Feb 13, 2024 at 01:53:55PM -0800, Nicolin Chen wrote:
+> > > > And it seems to get worse, as even a 64KB mapping is failing:
+> > > > [    0.239821] nvme 0000:00:01.0: swiotlb buffer is full (sz: 65536 bytes), total 32768 (slots), used 0 (slots)
+> > > >
+> > > > With a printk, I found the iotlb_align_mask isn't correct:
+> > > >    swiotlb_area_find_slots:alloc_align_mask 0xffff, iotlb_align_mask 0x800
+> > > >
+> > > > But fixing the iotlb_align_mask to 0x7ff still fails the 64KB
+> > > > mapping..
+> > >
+> > > Hmm. A mask of 0x7ff doesn't make a lot of sense given that the slabs
+> > > are 2KiB aligned. I'll try plugging in some of the constants you have
+> > > here, as something definitely isn't right...
+> > 
+> > Sorry, another ask: please can you print 'orig_addr' in the case of the
+> > failing allocation?
+> 
+> I added nvme_print_sgl() in the nvme-pci driver before its
+> dma_map_sgtable() call, so the orig_addr isn't aligned with
+> PAGE_SIZE=64K or NVME_CTRL_PAGE_SIZE=4K:
+>  sg[0] phys_addr:0x0000000105774600 offset:17920 length:512 dma_address:0x0000000000000000 dma_length:0
+> 
+> Also attaching some verbose logs, in case you'd like to check:
+>    nvme 0000:00:01.0: swiotlb_area_find_slots: dma_get_min_align_mask 0xfff, IO_TLB_SIZE 0xfffff7ff
+>    nvme 0000:00:01.0: swiotlb_area_find_slots: alloc_align_mask 0xffff, iotlb_align_mask 0x7ff
+>    nvme 0000:00:01.0: swiotlb_area_find_slots: stride 0x20, max 0xffff
+>    nvme 0000:00:01.0: swiotlb_area_find_slots: tlb_addr=0xbd830000, iotlb_align_mask=0x7ff, alloc_align_mask=0xffff
+> => nvme 0000:00:01.0: swiotlb_area_find_slots: orig_addr=0x105774600, iotlb_align_mask=0x7ff
 
-> + * Test whether a case-insensitive directory entry matches the filename
-> + * being searched.  If @folded_name is provided, it is used instead of
-> + * recalculating the casefold of @name.
-> + *
-> + * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
-> + * < 0 on error.
-> + */
-> +int generic_ci_match(const struct inode *parent,
-> +		     const struct qstr *name,
-> +		     const struct qstr *folded_name,
-> +		     const u8 *de_name, u32 de_name_len)
-> +{
-> +	const struct super_block *sb = parent->i_sb;
-> +	const struct unicode_map *um = sb->s_encoding;
-> +	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
-> +	struct qstr dirent = QSTR_INIT(de_name, de_name_len);
-> +	int res;
-> +
-> +	if (IS_ENCRYPTED(parent)) {
-> +		const struct fscrypt_str encrypted_name =
-> +			FSTR_INIT((u8 *) de_name, de_name_len);
-> +
-> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
-> +			return -EINVAL;
-> +
-> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
-> +		if (!decrypted_name.name)
-> +			return -ENOMEM;
-> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
-> +						&decrypted_name);
-> +		if (res < 0)
-> +			goto out;
-> +		dirent.name = decrypted_name.name;
-> +		dirent.len = decrypted_name.len;
-> +	}
-> +
-> +	/*
-> +	 * Attempt a case-sensitive match first. It is cheaper and
-> +	 * should cover most lookups, including all the sane
-> +	 * applications that expect a case-sensitive filesystem.
-> +	 *
+With my patches, I think 'iotlb_align_mask' will be 0x800 here, so this
+particular allocation might be alright, however I think I'm starting to
+see the wider problem. The IOMMU code is asking for a 64k-aligned
+allocation so that it can map it safely, but at the same time
+dma_get_min_align_mask() is asking for congruence in the 4k NVME page
+offset. Now, because we're going to allocate a 64k-aligned mapping and
+offset it, I think the NVME alignment will just fall out in the wash and
+checking the 'orig_addr' (which includes the offset) is wrong.
 
+So perhaps this diff (which I'm sadly not able to test) will help? You'll
+want to apply it on top of my other patches. The idea is to ignore the
+bits of 'orig_addr' which will be aligned automatically by offseting from
+the aligned allocation. I fixed the max() thing too, although that's only
+an issue for older kernels.
 
-> +	 * This comparison is safe under RCU because the caller
-> +	 * guarantees the consistency between str and len. See
-> +	 * __d_lookup_rcu_op_compare() for details.
-> +	 */
+Cheers,
 
-This paragraph doesn't really make sense here.  It is originally from
-the d_compare hook, which can be called under RCU, but there is no RCU
-here.  Also, here we are comparing the dirent with the
-name-under-lookup, name which is already safe.
+Will
 
+--->8
 
-> +	if (folded_name->name) {
-> +		if (dirent.len == folded_name->len &&
-> +		    !memcmp(folded_name->name, dirent.name, dirent.len)) {
-> +			res = 1;
-> +			goto out;
-> +		}
-> +		res = !utf8_strncasecmp_folded(um, folded_name, &dirent);
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 283eea33dd22..4a000d97f568 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -981,8 +981,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+        dma_addr_t tbl_dma_addr =
+                phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
+        unsigned long max_slots = get_max_slots(boundary_mask);
+-       unsigned int iotlb_align_mask =
+-               dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
++       unsigned int iotlb_align_mask = dma_get_min_align_mask(dev);
+        unsigned int nslots = nr_slots(alloc_size), stride;
+        unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+        unsigned int index, slots_checked, count = 0, i;
+@@ -993,6 +992,9 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+        BUG_ON(!nslots);
+        BUG_ON(area_index >= pool->nareas);
 
-Hmm, second thought on this.  This will ignore errors from utf8_strncasecmp*,
-which CAN happen for the first time here, if the dirent itself is
-corrupted on disk (exactly why we have patch 6).  Yes, ext4_match will drop the
-error, but we want to propagate it from here, such that the warning on
-patch 6 can trigger.
++       alloc_align_mask |= (IO_TLB_SIZE - 1);
++       iotlb_align_mask &= ~alloc_align_mask;
++
+        /*
+         * For mappings with an alignment requirement don't bother looping to
+         * unaligned slots once we found an aligned one.
+@@ -1004,7 +1006,7 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
+         * allocations.
+         */
+        if (alloc_size >= PAGE_SIZE)
+-               stride = max(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
++               stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
 
-This is why I did that match dance on the original submission.  Sorry
-for suggesting it.  We really want to get the error from utf8 and
-propagate it if it is negative. basically:
+        spin_lock_irqsave(&area->lock, flags);
+        if (unlikely(nslots > pool->area_nslabs - area->used))
 
-        res > 0: match
-        res == 0: no match.
-        res < 0: propagate error and let the caller handle it
-
-
-> +	} else {
-> +		if (dirent.len == name->len &&
-> +		    !memcmp(name->name, dirent.name, dirent.len) &&
-> +		    (!sb_has_strict_encoding(sb) || !utf8_validate(um, name))) {
-> +			res = 1;
-> +			goto out;
-> +		}
-> +		res = !utf8_strncasecmp(um, name, &dirent);
-> +	}
-> +
-> +out:
-> +	kfree(decrypted_name.name);
-> +	return res;
-> +}
-> +EXPORT_SYMBOL(generic_ci_match);
->  #endif
->  
->  #ifdef CONFIG_FS_ENCRYPTION
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 820b93b2917f..7af691ff8d44 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3296,6 +3296,10 @@ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
->  extern int generic_check_addressable(unsigned, u64);
->  
->  extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
-> +extern int generic_ci_match(const struct inode *parent,
-> +			    const struct qstr *name,
-> +			    const struct qstr *folded_name,
-> +			    const u8 *de_name, u32 de_name_len);
->  
->  static inline bool sb_has_encoding(const struct super_block *sb)
->  {
-
--- 
-Gabriel Krisman Bertazi
 
