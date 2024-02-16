@@ -1,73 +1,47 @@
-Return-Path: <linux-kernel+bounces-68270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0D4A857800
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:52:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74974857805
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:52:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 708D8284916
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:52:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A75B51C212B6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:52:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BE2E179AF;
-	Fri, 16 Feb 2024 08:49:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D56CB1BC4B;
+	Fri, 16 Feb 2024 08:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LGDUuhVu"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KcKB6+j8"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A681B940
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:49:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602F41BC39;
+	Fri, 16 Feb 2024 08:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708073375; cv=none; b=daB5+8f45QFDNGTY4OM8A0576P90l5JWltWVC3UofhEW+TdlFHnSbEmt77unTBUoscm21lB9T/tqDiFgPD9qbyxzIWs0v+9zxtSfETxjqXlZ9ZKmWUIsT01w6N4Po8vgPHv+xNqbc67q7P8qz9hSzJjfQyqm8YUbpj7DJ7MUR7U=
+	t=1708073395; cv=none; b=iTdN5HedpdIwPyhJ8JSty8IwD9d7HTvw7n1dBpndFzFRkZIIdgVScBjWyy2cLaP7Uc98wtiXUgjWdZM+9WLEOOccMk/2MFP8+rYsSLxfbDeiw9vdiOs+Y/TmpmIRxEo41iiugDnKQZXUAlWw7CkbrV/ZagMOJhppmKkFwz5Yye4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708073375; c=relaxed/simple;
-	bh=8b1PfdK9G1UP8DWcZnanoDD6WxYD/lC1F5tGyAhoVsw=;
+	s=arc-20240116; t=1708073395; c=relaxed/simple;
+	bh=wbuMWjN7bWP07E2luG9Ke+7FGGg1ngKDNbVXNPaPUc8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TraPQ25Dp6Y4KKzL/jjBIrROomnyJl1zA8NKIoTEgj7UAbetRzZ/86zuYE8ZnmQiz5URv5ZqPUPexLls2nZ4MnZ0xC1HgEPxh97u8qaHus+FW+cc79Cb0Mh66RN5WMgbVz8Qzxw6Hf9gAbhPoPs7Bjc7iAFgje9My3FSye6rNM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LGDUuhVu; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d7393de183so15669755ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:49:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1708073373; x=1708678173; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ef4J5UO4FCUkGSsVpOjeciLsm69YrWZrK7HVqGKOCu8=;
-        b=LGDUuhVuCx9iOEioHTkUfTimFq1bTIjMsd2XdnLUIUEF3J95fjgjv1H/wLJkx9rT20
-         1EzcTfJv0IK6NRB/VZPsd6wNgxOLUjngfruTjO+0NGATIyHGbl/jJjMlsk60GOgv6qrE
-         +ijRXlOC7yW8/VYK30pip+EbgT5PVS67zwCK6EsP8S0RvQLCj/dmptpuBxtnxtI99e6S
-         XhGYJE77EFpn8EDgn4P5vt2/CR7+ro5JhGNuCklbzXJEjrIkOcnWQ7o7jd9UROmUY0cq
-         D3r6aQ4/MihV8RFKs3V1VEjfuhcdKUc/OR7HKRuZs+gItyCO7AnOuej1sM8S+z6uekAL
-         plSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708073373; x=1708678173;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ef4J5UO4FCUkGSsVpOjeciLsm69YrWZrK7HVqGKOCu8=;
-        b=buA0LoxVS+drq/qkVOglK7v4kw4reFaBBPG3ZZHoGA4S222LEibkLnpeUeKALIYj/x
-         kQkMi29M+iqXhxmuE7D0oU9ji7Lg2WEpmiULJNoLlRKZ9EPLJZYHXCY8ClS6GaW7tynO
-         9qCwCCd3JiWgATgbJarbQi4e+JwTTbwPbN70Yo8xHSwFkmUxaBdtPZvvVR+iOXCyRvTx
-         d10XcUAkZ3++NdmvlKiLWU1ENXBGUQpJCgiDE/q3eOM38iTnEUwBcJnTECUjif/db/o/
-         wZ2eYGXwipXuKQHU2AE6Bdafy6NUHyl2VPiC4maNrD99sim4GLf8ohHvWydug/cWagH1
-         NnDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXo1i91aiYBQboSWqZzDAWFG5cwx7bSu+G8yZosqX2kcs2fgCB6p9e0eq3DUf+LemLk2Mu6bpZfdF8F+jMHKHcJGYsdXH/MEXL09E/Q
-X-Gm-Message-State: AOJu0YyTm7l2KRVZuJ4GOYkPJycIZfm47KuyCDPVzHAW9UQQORkLTUE9
-	idfCLuLSa3YV/yAd9q0wnJLDIoZ4nV9qzzyE8GjEhsaFCM51U457CMX+DzGkjbw=
-X-Google-Smtp-Source: AGHT+IFfZdn6OadDErDuWgbMNaXtVYv3uOoUsCK9yeWZpHnbz45NwSh2/3MVCHzMg/GqBeE2vQzRUQ==
-X-Received: by 2002:a17:902:ec82:b0:1da:498:24be with SMTP id x2-20020a170902ec8200b001da049824bemr5056656plg.40.1708073372919;
-        Fri, 16 Feb 2024 00:49:32 -0800 (PST)
-Received: from [10.4.195.175] ([139.177.225.229])
-        by smtp.gmail.com with ESMTPSA id u20-20020a170902e21400b001db4c89aea5sm2529069plb.158.2024.02.16.00.49.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 00:49:32 -0800 (PST)
-Message-ID: <fbf19a7e-f70f-4d13-ab7d-69982b526168@bytedance.com>
-Date: Fri, 16 Feb 2024 16:49:28 +0800
+	 In-Reply-To:Content-Type; b=CVlpQm3Njw+USNmUidRRLeavOuuQM+qYGjsGO3nQMwC/Ez53wn2V+lWos2IkzikvlylJSCTK3DpYMk0QJMW+wumwj+YUFzFDSCY0QEomIFjDU8rbGwoISIpvrnlOCQpD5H+QRhqAFbmGezuS5t9JZwnC9jAUsNQkeO7sQ/pMsuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=KcKB6+j8; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-35-128.elisa-laajakaista.fi [91.154.35.128])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id CAEF0564;
+	Fri, 16 Feb 2024 09:49:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1708073385;
+	bh=wbuMWjN7bWP07E2luG9Ke+7FGGg1ngKDNbVXNPaPUc8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=KcKB6+j8AiZBFZB9Bm5n7i4kv1W5t8ydiS4bVSG/JMp+m8p4z+wkW4dV+Mf/gGyBG
+	 VtCOK0F40TX6evc9dcSZ3rQ1nVr8njRGe8d4DKaSz0hSkzvk3cJxgv8SAQHUKfvZf4
+	 RNYVpcgtUJlNhPNjLcXVQi0mOTaPIQ4nvyDB9eNo=
+Message-ID: <151e6597-e591-4c7f-a702-fb539c3e38d6@ideasonboard.com>
+Date: Fri, 16 Feb 2024 10:49:46 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,156 +49,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] mm/zswap: change zswap_pool kref to percpu_ref
+Subject: Re: [PATCH v5 0/4] Add common1 region for AM62, AM62A & AM65x
 Content-Language: en-US
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240210-zswap-global-lru-v2-0-fbee3b11a62e@bytedance.com>
- <20240210-zswap-global-lru-v2-2-fbee3b11a62e@bytedance.com>
- <Zc0eJ84FeR9yQ99T@google.com>
-From: Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <Zc0eJ84FeR9yQ99T@google.com>
-Content-Type: text/plain; charset=UTF-8
+To: Devarsh Thakkar <devarsht@ti.com>
+Cc: praneeth@ti.com, a-bhatia1@ti.com, j-luthra@ti.com, jyri.sarha@iki.fi,
+ airlied@gmail.com, daniel@ffwll.ch, maarten.lankhorst@linux.intel.com,
+ mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ nm@ti.com, vigneshr@ti.com, kristo@kernel.org
+References: <20240216062426.4170528-1-devarsht@ti.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
+ wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
+ Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
+ eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
+ LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
+ G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
+ DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
+ 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
+ rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
+ Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
+ aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
+ ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
+ PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
+ VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
+ 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
+ uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
+ R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
+ sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
+ Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
+ PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
+ dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
+ qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
+ hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
+ DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
+ KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
+ 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
+ xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
+ UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
+ /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
+ 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
+ 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
+ mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
+ 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
+ suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
+ xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
+ m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
+ CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
+ CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
+ 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
+ ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
+ yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
+ 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
+In-Reply-To: <20240216062426.4170528-1-devarsht@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 2024/2/15 04:10, Yosry Ahmed wrote:
-> On Wed, Feb 14, 2024 at 08:54:38AM +0000, Chengming Zhou wrote:
->> All zswap entries will take a reference of zswap_pool when
->> zswap_store(), and drop it when free. Change it to use the
->> percpu_ref is better for scalability performance.
->>
->> Although percpu_ref use a bit more memory which should be ok
->> for our use case, since we almost have only one zswap_pool to
->> be using. The performance gain is for zswap_store/load hotpath.
->>
->> Testing kernel build (32 threads) in tmpfs with memory.max=2GB.
->> (zswap shrinker and writeback enabled with one 50GB swapfile,
->> on a 128 CPUs x86-64 machine, below is the average of 5 runs)
->>
->>         mm-unstable  zswap-global-lru
->> real    63.20        63.12
->> user    1061.75      1062.95
->> sys     268.74       264.44
->>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
->> ---
->>  mm/zswap.c | 31 ++++++++++++++++++++++---------
->>  1 file changed, 22 insertions(+), 9 deletions(-)
->>
->> diff --git a/mm/zswap.c b/mm/zswap.c
->> index dbff67d7e1c7..f6470d30d337 100644
->> --- a/mm/zswap.c
->> +++ b/mm/zswap.c
->> @@ -173,7 +173,7 @@ struct crypto_acomp_ctx {
->>  struct zswap_pool {
->>  	struct zpool *zpools[ZSWAP_NR_ZPOOLS];
->>  	struct crypto_acomp_ctx __percpu *acomp_ctx;
->> -	struct kref kref;
->> +	struct percpu_ref ref;
->>  	struct list_head list;
->>  	struct work_struct release_work;
->>  	struct hlist_node node;
->> @@ -304,6 +304,7 @@ static void zswap_update_total_size(void)
->>  /*********************************
->>  * pool functions
->>  **********************************/
->> +static void __zswap_pool_empty(struct percpu_ref *ref);
->>  
->>  static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->>  {
->> @@ -357,13 +358,18 @@ static struct zswap_pool *zswap_pool_create(char *type, char *compressor)
->>  	/* being the current pool takes 1 ref; this func expects the
->>  	 * caller to always add the new pool as the current pool
->>  	 */
->> -	kref_init(&pool->kref);
->> +	ret = percpu_ref_init(&pool->ref, __zswap_pool_empty,
->> +			      PERCPU_REF_ALLOW_REINIT, GFP_KERNEL);
->> +	if (ret)
->> +		goto ref_fail;
->>  	INIT_LIST_HEAD(&pool->list);
->>  
->>  	zswap_pool_debug("created", pool);
->>  
->>  	return pool;
->>  
->> +ref_fail:
->> +	cpuhp_state_remove_instance(CPUHP_MM_ZSWP_POOL_PREPARE, &pool->node);
->>  error:
->>  	if (pool->acomp_ctx)
->>  		free_percpu(pool->acomp_ctx);
->> @@ -436,8 +442,9 @@ static void __zswap_pool_release(struct work_struct *work)
->>  
->>  	synchronize_rcu();
->>  
->> -	/* nobody should have been able to get a kref... */
->> -	WARN_ON(kref_get_unless_zero(&pool->kref));
->> +	/* nobody should have been able to get a ref... */
->> +	WARN_ON(percpu_ref_tryget(&pool->ref));
+On 16/02/2024 08:24, Devarsh Thakkar wrote:
+> This adds DSS common1 region for respective SoCs supporting it.
 > 
-> Just curious, was there any value from using kref_get_unless_zero() over
-> kref_read() here? If not, I think percpu_ref_is_zero() is more
-> intuitive. This also seems like it fits more as a debug check.
-
-Agree, percpu_ref_is_zero() is better for debug.
-
+> Changelog:
+> V2 : Remove do-not-merge tag and add am62a dss common1 reion
+> V3 : Add Fixes tag to each commit
+> V4 : Add Reviewed-by tag and AM62A SoC TRM Link
+> V5 : Split dts patch to separate patches for each SoC
 > 
->> +	percpu_ref_exit(&pool->ref);
->>  
->>  	/* pool is now off zswap_pools list and has no references. */
->>  	zswap_pool_destroy(pool);
->> @@ -445,11 +452,11 @@ static void __zswap_pool_release(struct work_struct *work)
->>  
->>  static struct zswap_pool *zswap_pool_current(void);
->>  
->> -static void __zswap_pool_empty(struct kref *kref)
->> +static void __zswap_pool_empty(struct percpu_ref *ref)
->>  {
->>  	struct zswap_pool *pool;
->>  
->> -	pool = container_of(kref, typeof(*pool), kref);
->> +	pool = container_of(ref, typeof(*pool), ref);
->>  
->>  	spin_lock(&zswap_pools_lock);
->>  
->> @@ -468,12 +475,12 @@ static int __must_check zswap_pool_get(struct zswap_pool *pool)
->>  	if (!pool)
->>  		return 0;
->>  
->> -	return kref_get_unless_zero(&pool->kref);
->> +	return percpu_ref_tryget(&pool->ref);
->>  }
->>  
->>  static void zswap_pool_put(struct zswap_pool *pool)
->>  {
->> -	kref_put(&pool->kref, __zswap_pool_empty);
->> +	percpu_ref_put(&pool->ref);
->>  }
->>  
->>  static struct zswap_pool *__zswap_pool_current(void)
->> @@ -603,6 +610,12 @@ static int __zswap_param_set(const char *val, const struct kernel_param *kp,
->>  
->>  	if (!pool)
->>  		pool = zswap_pool_create(type, compressor);
->> +	else {
->> +		/* Resurrect percpu_ref to percpu mode. */
->> +		percpu_ref_resurrect(&pool->ref);
+> Devarsh Thakkar (4):
+>    dt-bindings: display: ti,am65x-dss: Add support for common1 region
+>    arm64: dts: ti: Add common1 register space for AM65x SoC
+>    arm64: dts: ti: Add common1 register space for AM62x SoC
+>    arm64: dts: ti: Add common1 register space for AM62A SoC
 > 
-> I think this is not very clear. The previous code relied on the ref from
-> zswap_pool_find_get() to replace the initial ref that we had dropped
-> before. This is not needed with percpu_ref_resurrect() because it
-> already restores the initial ref dropped by percpu_ref_kill().
-> 
-> Perhaps something like:
-> 		/*
-> 		 * Restore the initial ref dropped by percpu_ref_kill()
-> 		 * when the pool was decommissioned and switch it again
-> 		 * to percpu mode.
-> 		 /
+>   .../devicetree/bindings/display/ti/ti,am65x-dss.yaml       | 7 +++++--
+>   arch/arm64/boot/dts/ti/k3-am62-main.dtsi                   | 5 +++--
+>   arch/arm64/boot/dts/ti/k3-am62a-main.dtsi                  | 5 +++--
+>   arch/arm64/boot/dts/ti/k3-am65-main.dtsi                   | 5 +++--
+>   4 files changed, 14 insertions(+), 8 deletions(-)
 > 
 
-Ok, will add this comment, it's clearer.
+For the series:
 
-Thanks!
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
+  Tomi
+
 
