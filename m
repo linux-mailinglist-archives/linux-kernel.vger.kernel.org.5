@@ -1,152 +1,131 @@
-Return-Path: <linux-kernel+bounces-68504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92E63857B57
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:16:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96BDB857B5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40E781F218F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:16:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A6CF1F20F39
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:17:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A68AA59B59;
-	Fri, 16 Feb 2024 11:16:10 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FA7A59B47;
-	Fri, 16 Feb 2024 11:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51EB659B6D;
+	Fri, 16 Feb 2024 11:17:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xnjqB70R"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07B459B42;
+	Fri, 16 Feb 2024 11:17:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082170; cv=none; b=pZOBSZ4gcWlE5LOVtjGtxa/ZHD0InsBDvjT2UHaKXt2pEIir/U82Lz4aqdTTN87dMjmIcD1aDuGJX9/82MPjV4s61lqyObBpQZV2Z0b0Dakf4/N3Aj25HC7b1/517IVf45nkkg5tGOCx2H/7vN0FiCyD/Wclv5vzE6GUY6NzKTg=
+	t=1708082230; cv=none; b=pr/N3PyBtvZnZBungHjeMgIsuQNT/lWMvrGhxeekkVGfGa1Uq0N3bdh3Wn1AIgjA4q2aM9OgAo4JNq+A/9bPGtlpJQS+xmzRVdvHrOLu5uDbE3D7ucXxYuKBmCYOZphMW4YKeMaF3dZkdQPqhYjtO5ns++Kwdvlr4W1ZGhFnEyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082170; c=relaxed/simple;
-	bh=9cQF1rIO8RSJzsP9my6CHgiO2RH8oNNFSgPkEebj1tw=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=CFoPGVN0hRn/lCQ+mEuG8k8zWQLZVfTqoyxOvloJoTl63xsT1KjZ4F3tcwhvOOUxjZW5Zl8vANe2hPUEa7pyO51dOOKLBGOhEJBglOb7VCzlfT6n9yFp+aTmUsjGux6f21oERyWwQV3PIGIp3yFlpEL8Hyy1fBtYXaNmdVlaSaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-14-65cf43f15fe6
-From: Byungchul Park <byungchul@sk.com>
-To: akpm@linux-foundation.org,
-	ying.huang@intel.com,
-	osalvador@suse.de,
-	baolin.wang@linux.alibaba.com,
-	hannes@cmpxchg.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	stable@vger.kernel.org
-Subject: [PATCH] mm/vmscan: Fix a bug calling wakeup_kswapd() with a wrong zone index
-Date: Fri, 16 Feb 2024 20:15:02 +0900
-Message-Id: <20240216111502.79759-1-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpiluLIzCtJLcpLzFFi42LhesuzUPej8/lUgxcLBSzmrF/DZvF/7zFG
-	i9WbfC0u75rDZnFvzX9WizPTiiwWbHzEaHFy1mQWBw6Pw2/eM3ss3vOSyWPTp0nsHidm/Gbx
-	2PnQ0mPz6WqPz5vkAtijuGxSUnMyy1KL9O0SuDJ+zr/OVNAsUbF+gXADY7NIFyMnh4SAicS0
-	u+vYYewVP3+xgNhsAuoSN278ZO5i5OIQEWhklPj0bAdYEbNAtsS9Gf1MILawQKhE59s7jCA2
-	i4CqRPfaJlYQm1fAVGLxtEWsEEPlJVZvOMAMYX9klZg22xHClpQ4uOIGywRG7gWMDKsYhTLz
-	ynITM3NM9DIq8zIr9JLzczcxAkNmWe2f6B2Mny4EH2IU4GBU4uE98OdsqhBrYllxZe4hRgkO
-	ZiUR3km9Z1KFeFMSK6tSi/Lji0pzUosPMUpzsCiJ8xp9K08REkhPLEnNTk0tSC2CyTJxcEo1
-	MLJ3soR4FXO1zmN0ldR+J61Tzt8TnHTyKOvCtJ+dbx6FurFneNj0sjBNPXnqQYb5FbuW1mtR
-	b1I3PKrw+PhgvUJ5nUyshNWpj7NvSvzPZ3r5oI5v7gPBD6cMKvIKIu5JX52d8l5t86J5xo/y
-	LtyW415Y7WF0Y5/rXD3T7PeG2YtC5N58mKlWqMRSnJFoqMVcVJwIAJhkPsgVAgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFJMWRmVeSWpSXmKPExsXC5WfdrPvR+XyqwaurTBZz1q9hs/i/9xij
-	xepNvhaH555ktbi8aw6bxb01/1ktzkwrsliw8RGjxclZk1kcOD0Ov3nP7LF4z0smj02fJrF7
-	nJjxm8Vj50NLj8UvPjB5bD5d7fF5k1wARxSXTUpqTmZZapG+XQJXxs/515kKmiUq1i8QbmBs
-	Fuli5OSQEDCRWPHzFwuIzSagLnHjxk/mLkYuDhGBRkaJT892sIMkmAWyJe7N6GcCsYUFQiU6
-	395hBLFZBFQlutc2sYLYvAKmEounLWKFGCovsXrDAeYJjBwLGBlWMYpk5pXlJmbmmOoVZ2dU
-	5mVW6CXn525iBIbAsto/E3cwfrnsfohRgINRiYf3wJ+zqUKsiWXFlbmHGCU4mJVEeCf1nkkV
-	4k1JrKxKLcqPLyrNSS0+xCjNwaIkzusVnpogJJCeWJKanZpakFoEk2Xi4JRqYNxk0mHso510
-	I6HTz3nvcqFHMw26q07Uuh6/cGuvkdee8CNHHwbfrnwn2nyRqfTvIxnm/7fcncK/zjGpvn8g
-	8OHE829eT353KSbeLu+r0CmJtLC2lvmfCrVk2VU5eqKn2J8Nm7a7dP8umRiFZMn1Knc3/9Or
-	PVHJtodl9jmfSxuFJ9mZLboTcE+JpTgj0VCLuag4EQCvUs+P/QEAAA==
-X-CFilter-Loop: Reflected
+	s=arc-20240116; t=1708082230; c=relaxed/simple;
+	bh=/WroAcfP5qG7Ht8rBeZ30Rehc+ZEdMafXSdz1qut0Qk=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K45RLyH1aOHxLhEI3GguC9frUSpT2AauTdgysZCp/kJsV48ZTLr+U5tmJnNeVLiJkYglOjHCsUe08xfRHgA7J6ZGpmEn7MY21l5bMs/1KmCkHqiGvu8r7F0LeWHNSG6tazkZMku5TC+Yg4I6ayylO6Z122fksb6igt8zC2zhXTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xnjqB70R; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41GBGYwO083346;
+	Fri, 16 Feb 2024 05:16:34 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708082194;
+	bh=nDk2WfWJt2aWSEBbueJOkQd7RmDzKK1+hpo9/zydDDU=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=xnjqB70RZei0K4O+rcT6eO2ST3qLKTEhl14fwgXrQ/PjR0cJd047YBlktyZiFMTxN
+	 kaE6WnDRU2uoAy6LBBf/cW5JbWMlYDuJH/sXEI9mWo/1w5XolypGO7ih9/EjTw5e3d
+	 lmijIfCRv+JCRF+uEubu2vehX1u8irFGHmRiYRwA=
+Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41GBGYBh004264
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 16 Feb 2024 05:16:34 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
+ (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 16
+ Feb 2024 05:16:34 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 16 Feb 2024 05:16:34 -0600
+Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41GBGXf7110209;
+	Fri, 16 Feb 2024 05:16:33 -0600
+Date: Fri, 16 Feb 2024 16:46:32 +0530
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
+CC: Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Thomas Richard
+	<thomas.richard@bootlin.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
+        Tony
+ Lindgren <tony@atomide.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz
+ Krzysztofik <jmkrzyszt@gmail.com>,
+        Andi Shyti <andi.shyti@kernel.org>, Peter
+ Rosin <peda@axentia.se>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham
+ I <kishon@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Lorenzo
+ Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-omap@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-pci@vger.kernel.org>, <gregory.clement@bootlin.com>,
+        <thomas.petazzoni@bootlin.com>, <u-kumar1@ti.com>
+Subject: Re: [PATCH v3 18/18] PCI: j721e: add suspend and resume support
+Message-ID: <8d47e1d0-69a3-475e-8dd8-64514872e026@ti.com>
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-18-5c2e4a3fac1f@bootlin.com>
+ <aa791703-81d8-420c-ba35-c8fd08bc3f07@ti.com>
+ <CZ6GG6OQUJTX.2OM5TC9YLOAXV@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CZ6GG6OQUJTX.2OM5TC9YLOAXV@bootlin.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-With numa balancing on, when a numa system is running where a numa node
-doesn't have its local memory so it has no managed zones, the following
-oops has been observed. It's because wakeup_kswapd() is called with a
-wrong zone index, -1. Fixed it by checking the index before calling
-wakeup_kswapd().
+On 24/02/16 12:09PM, Théo Lebrun wrote:
+> Hello,
+> 
+> On Fri Feb 16, 2024 at 11:48 AM CET, Siddharth Vadapalli wrote:
+> > On 24/02/15 04:18PM, Thomas Richard wrote:
+> > > From: Théo Lebrun <theo.lebrun@bootlin.com>
+> > > 
+> > > Add suspend and resume support. Only the rc mode is supported.
+> > > 
+> > > During the suspend stage PERST# is asserted, then deasserted during the
+> > > resume stage.
+> >
+> > Wouldn't this imply that the Endpoint device will be reset and therefore
+> > lose context? Or is it expected that the driver corresponding to the
+> > Endpoint Function in Linux will restore the state on resume, post reset?
+> 
+> This does imply exactly that. Endpoint driver must be able to restore
+> context anyway, as system-wide suspend could mean lost power to PCI RC
+> controller (eg suspend-to-RAM) or PCI rails (dependent on hardware).
 
-> BUG: unable to handle page fault for address: 00000000000033f3
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 0 P4D 0
-> Oops: 0000 [#1] PREEMPT SMP NOPTI
-> CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
->    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
-> Code: (omitted)
-> RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
-> RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
-> RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
-> R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
-> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
-> FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  <TASK>
-> ? __die
-> ? page_fault_oops
-> ? __pte_offset_map_lock
-> ? exc_page_fault
-> ? asm_exc_page_fault
-> ? wakeup_kswapd
-> migrate_misplaced_page
-> __handle_mm_fault
-> handle_mm_fault
-> do_user_addr_fault
-> exc_page_fault
-> asm_exc_page_fault
-> RIP: 0033:0x55b897ba0808
-> Code: (omitted)
-> RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
-> RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
-> RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
-> RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
-> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-> R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
->  </TASK>
+Thank you for confirming.
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
-Reported-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
-Cc: stable@vger.kernel.org
-Fixes: c574bbe917036 ("NUMA balancing: optimize page placement for memory tiering system")
----
- mm/migrate.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index fbc8586ed735..51ee6865b0f6 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2825,6 +2825,14 @@ static int numamigrate_isolate_folio(pg_data_t *pgdat, struct folio *folio)
- 			if (managed_zone(pgdat->node_zones + z))
- 				break;
- 		}
-+
-+		/*
-+		 * If there are no managed zones, it should not proceed
-+		 * further.
-+		 */
-+		if (z < 0)
-+			return 0;
-+
- 		wakeup_kswapd(pgdat->node_zones + z, 0,
- 			      folio_order(folio), ZONE_MOVABLE);
- 		return 0;
--- 
-2.17.1
-
+Regards,
+Siddharth.
 
