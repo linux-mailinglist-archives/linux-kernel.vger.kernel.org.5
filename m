@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-68133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74AEF85764A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:57:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCE6B85764B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28E241F21ABC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:57:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DE8BB24592
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:57:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2879E208A7;
-	Fri, 16 Feb 2024 06:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD57E20B37;
+	Fri, 16 Feb 2024 06:54:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pvmJQd1o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bvbK5G7W"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72333208B8
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C8920B0E
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708066472; cv=none; b=aksIqCqki5PqUxR+kDHyGFioYqWvREtXtIaidlpA1eQjLlhSYWUXlwkfmft8HHfkr6ZvCvK30y3VDbpEoO/Bij2nnbCaK/uHUDIX31W48e+j8RCzyFr9xeXAkDP2G77QlP/SpclxyWGYDZ83j2eeNhO4PlfARaqdVSc9gB3tFbo=
+	t=1708066476; cv=none; b=FQ14NwA1R52r4zKbEa6lhG1qNtSjtV6Sd3lyoCsrsKGv4W+VUnl4nXdao9NNIM+RNg5n5e+601aoXabvgE3ln1kQeG6pqUOTA9FkHZZ3WfFaShkBCP4dJNaFWaDvWLnQfkILeDNap0kxuViz6ltWxL+kdMrgNoUwdc35UgbSILI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708066472; c=relaxed/simple;
-	bh=vDCO89h9ED/qo4wLWevCKElHpB2BcZotTCPZ1w3i9Jc=;
+	s=arc-20240116; t=1708066476; c=relaxed/simple;
+	bh=xZUGSW7pkokV4zLjCnd/mTKR/eQZWFNFZ3+e+td1jik=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rxiGJ5a7XHWphyrsaMLWLGp3uMToMy564l7OIW/Wbny6d8ag7B1DjUgymV+R0EIiSrrmR2m2rYJ8niffNf6pyebYq39acFvh/zWHeVGQDD/kk+zBQlkT/vxbUnnONZxRLSUP1KN1LS8rySCVz/4+v2iYmc//CiPku/75Y0hPYng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pvmJQd1o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B58AC433F1;
-	Fri, 16 Feb 2024 06:54:28 +0000 (UTC)
+	 MIME-Version; b=n7m1Yu4Qf4Iw6UiEQzjyTI2lYcza338ZyoMtRDVJs1c1JpHJHMOMfZ8CwyQx3jjm643Wl98AsabCEOnDTWkz95KbP84csSCJ6IZNACkGCmwSNU/TyiyN0oMPDVlirgRRgqV6WZNJJfS0XNcDJNhgJPknbRmQdPT9SvLNizLo+2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bvbK5G7W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0B28C43390;
+	Fri, 16 Feb 2024 06:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708066471;
-	bh=vDCO89h9ED/qo4wLWevCKElHpB2BcZotTCPZ1w3i9Jc=;
+	s=k20201202; t=1708066475;
+	bh=xZUGSW7pkokV4zLjCnd/mTKR/eQZWFNFZ3+e+td1jik=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pvmJQd1o5CPP9qPttQiY8V031wAlyPP80QwLnSBoz7mapvpDVmB0wq9pCsvT88IrX
-	 Iuta+sHkqfu1xh25oWlE98lwYiv6ag5ntxnwyRNEvLwru12wKB0SJUlIzc+dQCvtsy
-	 p9TyfWuQKHnJj756zzSkg7Tqv6NYshRSJ22ABSL3L98kvQlwW2Usnm0BJnp3WjBnrz
-	 nGPIXkqWsjtkR0TyHn5IyVseq9XEN3h7IrZ7YvurSZ6awet7/7Y9Jlb0xb6lAxvrX4
-	 Dcigyiv139H7vp8DNQG7K5OwwaXijp+kQV1A/+ruD8H9e0q98RA+qk+NyC4ABkBNGm
-	 uugYm5JdvTBOw==
+	b=bvbK5G7WtJpIv0+P1LBfllzinl78UnS7HDCkgrkAygGGKuAR/29I82hegp9YHjajH
+	 Cv8tWzg5QpvUoZnq320Qk1pz2MrsXgsvoJ6I/Nfb3jIhVUdhbHuAyU0rYcZVokHmUU
+	 bsrcuCtwJbUabfZDKwDbYAgHHcBciD58mAuwUrhP8ZefsvoBmecQzDzFP4YY+pUlmo
+	 kNHUDzI4my+B9ziMkXSVZB/xu5UJ9g9w+omKiX7cqFuy4EKX5iuMu3DKTMg1x3dMBe
+	 SV0Qxg64gnQKK0SqxBKXQg26s3ZetKrwOMWRHEeQCrpvyNHYAg8EHb6fFaTQ3G1lmb
+	 pG3wpv4WdY1rw==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: jani.nikula@linux.intel.com
 Cc: linux-kernel@vger.kernel.org,
@@ -48,9 +48,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Rodrigo Vivi <rodrigo.vivi@intel.com>,
 	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
 	intel-gfx@lists.freedesktop.org
-Subject: [PATCH 19/21] drm/i915: remove execute_cb::signal
-Date: Fri, 16 Feb 2024 07:53:24 +0100
-Message-ID: <20240216065326.6910-20-jirislaby@kernel.org>
+Subject: [PATCH 20/21] drm/i915: remove i915_vma::obj_hash
+Date: Fri, 16 Feb 2024 07:53:25 +0100
+Message-ID: <20240216065326.6910-21-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240216065326.6910-1-jirislaby@kernel.org>
 References: <20240216065326.6910-1-jirislaby@kernel.org>
@@ -62,8 +62,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-execute_cb::signal is not used since commit 5ac545b8b014
-(drm/i915/request: Remove the hook from await_execution). Drop it.
+i915_vma::obj_hash was never used since its addition in commit
+4ff4b44cbb70 (drm/i915: Store a direct lookup from object handle to
+vma). Drop it.
 
 Found by https://github.com/jirislaby/clang-struct.
 
@@ -74,21 +75,21 @@ Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
 Cc: intel-gfx@lists.freedesktop.org
 ---
- drivers/gpu/drm/i915/i915_request.c | 1 -
+ drivers/gpu/drm/i915/i915_vma_types.h | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
-index f59081066a19..519e096c607c 100644
---- a/drivers/gpu/drm/i915/i915_request.c
-+++ b/drivers/gpu/drm/i915/i915_request.c
-@@ -52,7 +52,6 @@
- struct execute_cb {
- 	struct irq_work work;
- 	struct i915_sw_fence *fence;
--	struct i915_request *signal;
- };
+diff --git a/drivers/gpu/drm/i915/i915_vma_types.h b/drivers/gpu/drm/i915/i915_vma_types.h
+index 64472b7f0e77..559de74d0b11 100644
+--- a/drivers/gpu/drm/i915/i915_vma_types.h
++++ b/drivers/gpu/drm/i915/i915_vma_types.h
+@@ -290,7 +290,6 @@ struct i915_vma {
  
- static struct kmem_cache *slab_requests;
+ 	struct list_head obj_link; /* Link in the object's VMA list */
+ 	struct rb_node obj_node;
+-	struct hlist_node obj_hash;
+ 
+ 	/** This vma's place in the eviction list */
+ 	struct list_head evict_link;
 -- 
 2.43.1
 
