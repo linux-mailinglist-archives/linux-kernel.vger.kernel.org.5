@@ -1,90 +1,98 @@
-Return-Path: <linux-kernel+bounces-69159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16C2E85853B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:31:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB3FD85853C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:32:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D2541F235CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:31:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7822828225D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E52727C0A8;
-	Fri, 16 Feb 2024 18:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F8A1350E4;
+	Fri, 16 Feb 2024 18:31:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="ZFeQVpPm"
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="jtG1w6j9"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E1526AD1
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD40C12FB18
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708108299; cv=none; b=ihA9c7Ell/cuDk8aenrV+APiEr/Sgxzl8ioh5dDf6tbbOnYQSTfGYbaAtXKavVvnj3f+uipSsVcyGmbdJLkF5a600aIilkLz+tTxwwoGQMLZntmyfyISPxbZp7g1YLTTkdCd252P2dDnHKvpFg0Bd0HOZIcWf6kb7ifpgoCZE9c=
+	t=1708108302; cv=none; b=CRRa83AkzCXeZS4TB5Hze0hoWJVsVrSAJ6T/lZfXjw0cqip3NWj0c2KZjph8RJg76GWrHjoB8ewNRvKDJOmyXTYrHVNyBWnXaFl0wL2hzN8KwWAeJg8V7W76mAyjSJBfq0HK0hEsDbO2FLuoUqJ7ml43EmtkkWKJJREWBngF0Ek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708108299; c=relaxed/simple;
-	bh=jNXUayxdVOBkwWM7+pRIC9YuvsjOYXtBwv1Wh6oI4tU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=miHqYGutvZrvquNLixUfhxfwu3vZUMHbq4dGlfIlaQ/a2NulSluTY6p4nltDH8semMGCQs6aKv2qSpWudjHFt60Vau1Bom/4RGen6+yH2RqkrcgdZUx/2sDnnS2GHmkzsrdXgFXQYOmeQnhHAjKTKYGZlOOOnlSRrxkgCwSB9lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=ZFeQVpPm; arc=none smtp.client-ip=209.85.167.177
+	s=arc-20240116; t=1708108302; c=relaxed/simple;
+	bh=/tum2WF4xPzP3d2/oUJvAp904N/cyC9DIis13Mprwms=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=HhhFfbGXCyGXvimt2OaVALuE1Bisilw0lodYH5/8x45glyZpKAanQ9ttBmUXYJOxg1U0Y9D2GRB+g2Hfctcv+rkH1pk49p3DTAdH78gES1whLOFy5UxA/dnZKCNngQUsAGHSGGOxtaVUxYOOwLQROP4gh6C52FbuJx4W9fqqftk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=jtG1w6j9; arc=none smtp.client-ip=209.85.161.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c13410a319so1452238b6e.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:31:37 -0800 (PST)
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59a94c0fb55so1148342eaf.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:31:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1708108296; x=1708713096; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wVfu+j4M4dKORd0DGuQdOcQUC+s7DFnphkySbXWQt5U=;
-        b=ZFeQVpPmuq4fMKpIhZNEHJqNaQwqSpd2wshNDmAMHxu8MTK1rv97hZxpI6LYLyg6ge
-         9OMNAi7nDo26HHaziYrxlZwM9EWHtC9/G+P0/nrxWqrSnRPbqMicH153D3L7AFf5FDtD
-         sjlSABivSYAxvJC4jG1MvKDZitMy/LoP0HwKQ=
+        d=joelfernandes.org; s=google; t=1708108298; x=1708713098; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dVFjYg00n2ZAFDWX2JpqdHNuxugRyfOJfGbuxjDxV/Q=;
+        b=jtG1w6j9N5plCISXLHBSv/uwTyCu7EH8Sx8Ee3zv11t6ywmECZSmwpY0oybC7bZ5vs
+         3HQnp+vpaNyOiNVApl+5btIdCgtlyPizk07ugC55D8sOSb7Fu+M2dweor+2Qxok7q7wD
+         owi1guotqKnwmb0LsKmonexOPeI+yra9+hN+4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708108296; x=1708713096;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wVfu+j4M4dKORd0DGuQdOcQUC+s7DFnphkySbXWQt5U=;
-        b=ScngDG3mMDd7INzHFapS6DW2939QEH2LIrsy4VL5xORzsOe/mP4UkwfA+FKwxLvI1u
-         271gCQARKJ3j7PxpzkqrUkCEmobhcm8GIfavHEbSfrBKPf74sV4Zqvja40N6ODCY/kMG
-         f6a1SqwaCdlFrYBzjjkuRW6Ar80yM/7/3RMADKwt1rpEuIuZsDIt1UgAuP+NCoEuVUw1
-         7rM0e7L4scGLqj1N+krDs2mMDUXHMB7eP1C2cBxnkUWpJ7CDb9w2x6btCsZYnSf6Y1ex
-         jDl20NBpDlGSEC01Zc+Hgih6eEXunPNB1wMJtM/kOayoQThVm5BcJHYSNuwXReMuC+c7
-         VHfA==
-X-Gm-Message-State: AOJu0Yyf5FPU3BDlBHOSwNj+H9C3HPEdmLBNY4J0IX6H4JoQGkV4CThW
-	uK730MWjS1SHlsoERSQVzEQHXagY6zuVVZxPMQ/g7uTJEBKwRercSt7Q1z39jVTab7N8Uok4RW/
-	m
-X-Google-Smtp-Source: AGHT+IEFj+iOREgSG6dImBuMGADWZbfuc6gcbU2EUF+HGI3Zuumj12EcIk3OfyJ+8FAR0kTrfISsDw==
-X-Received: by 2002:a05:6808:1209:b0:3bf:dff4:7055 with SMTP id a9-20020a056808120900b003bfdff47055mr6902898oil.50.1708108295869;
-        Fri, 16 Feb 2024 10:31:35 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708108298; x=1708713098;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dVFjYg00n2ZAFDWX2JpqdHNuxugRyfOJfGbuxjDxV/Q=;
+        b=vzAEpyDBZ1jmtWKlJ7/pYt9oDhRAEMB7wuJLmC+sgWzG5F6S4UlWp0w6tz3Cdb/MvJ
+         zzC6LzNZOannRnVLbLLA5X69gZFOms3Js0jIl0/xmzA3tGi7izNwQ2x/DwxUIn9Kc/AV
+         j8lENOACWC45iAg/i1R/Dm4GoBj6g4HjA1j3ZX0xS5pa8Cp8e8dKwjerT7yVfK/nndEB
+         aQlHibMQ06LPsUwcH0C1PYYVBHBKuNq6QD4RGLdU1lCDTYkN3tz5iHLFeAWx7BJTdDGq
+         w4I2zIRbzpqaYLT30z2OJMHCSkGJ8x/7E4f34tKqB5Bmilscc0OlUfwLTWCzXCfnG2hq
+         E50g==
+X-Gm-Message-State: AOJu0Yw8UfvwLET/uoBhZgMTxhWg/NrzQXSXgPzzwLGWFThEn/JqrCL7
+	2nsuVvfukAvvDJ3v3clV0sT5vIve9H825i3rE3gjI/Hd2zUFWeydBIp+UyLkYlS64FS1+Ibt1wB
+	7
+X-Google-Smtp-Source: AGHT+IG4d+tTgEr7HVS2i1dyAW42NfNP2FA8s/3EREPMydnyHcJOKe6m7BgCYUEnEbDv0LJlWGMLLQ==
+X-Received: by 2002:a05:6358:3384:b0:176:d46c:e704 with SMTP id i4-20020a056358338400b00176d46ce704mr6500262rwd.16.1708108298409;
+        Fri, 16 Feb 2024 10:31:38 -0800 (PST)
 Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id nd13-20020a056214420d00b0068cdadb5e7esm159722qvb.31.2024.02.16.10.31.34
+        by smtp.gmail.com with ESMTPSA id nd13-20020a056214420d00b0068cdadb5e7esm159722qvb.31.2024.02.16.10.31.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 10:31:34 -0800 (PST)
+        Fri, 16 Feb 2024 10:31:37 -0800 (PST)
 From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org
+To: linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
 Cc: Suleiman Souhlal <suleiman@google.com>,
 	Youssef Esmat <youssefesmat@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
 	David Vernet <void@manifault.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	"Paul E . McKenney" <paulmck@kernel.org>,
 	joseph.salisbury@canonical.com,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
 	Luca Abeni <luca.abeni@santannapisa.it>,
 	Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
 	Vineeth Pillai <vineeth@bitbyteword.org>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Phil Auld <pauld@redhat.com>,
 	"Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 00/10] Fair scheduling deadline server fixes
-Date: Fri, 16 Feb 2024 13:30:58 -0500
-Message-Id: <20240216183108.1564958-1-joel@joelfernandes.org>
+Subject: [PATCH 01/10] sched/core: Add clearing of ->dl_server in put_prev_task_balance()
+Date: Fri, 16 Feb 2024 13:30:59 -0500
+Message-Id: <20240216183108.1564958-2-joel@joelfernandes.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240216183108.1564958-1-joel@joelfernandes.org>
+References: <20240216183108.1564958-1-joel@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,59 +101,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
-The deadline server [1] allows RT tasks to run on a system safely, while not
-wasting CPU that RT tasks may not get on an idle system due to RT throttling.
+Paths using put_prev_task_balance() need to do a pick shortly after. Make sure
+they also clear the ->dl_server on prev as a part of that.
 
-Here are patches that are mostly fixes that we found while testing out the
-deadline server [1] for ChromeOS.
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+---
+ kernel/sched/core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-The main fix is to core scheduling, but we found several other issues.
-
-These patches are based on Daniel's preview branch for v6:
-https://git.kernel.org/pub/scm/linux/kernel/git/bristot/linux.git/?h=dl_server_v6
-
-Daniel mentioned he is working on fixing the fair server interface issues [2].
-These patches apply cleanly on his preview version.
-
-[1] https://lore.kernel.org/all/cover.1699095159.git.bristot@kernel.org/
-[2] https://lore.kernel.org/all/091ca2ea-202d-4685-92ea-529186a94f0a@kernel.org/
-
-Joel Fernandes (Google) (8):
-  sched/core: Add clearing of ->dl_server in put_prev_task_balance()
-  sched/core: Fix priority checking for DL server picks
-  sched/core: Fix picking of tasks for core scheduling with DL server
-  sched/debug: Use unsigned long for cpu variable to prevent cast errors
-  selftests/sched: Add a test to verify that DL server works with core
-    scheduling
-  selftests/sched: Migrate cs_prctl_test to kselfttest
-  admin-guide/hw-vuln: Correct prctl() argument description
-  sched: Fix build error in "sched/rt: Remove default bandwidth control"
-
-Suleiman Souhlal (1):
-  sched: server: Don't start hrtick for DL server tasks
-
-Youssef Esmat (1):
-  sched/core: Clear prev->dl_server in CFS pick fast path
-
- .../admin-guide/hw-vuln/core-scheduling.rst   |   4 +-
- include/linux/sched.h                         |   3 +-
- kernel/sched/core.c                           |  46 +++-
- kernel/sched/deadline.c                       |  34 ++-
- kernel/sched/debug.c                          |   4 +-
- kernel/sched/fair.c                           |  22 +-
- kernel/sched/rt.c                             |   2 +
- kernel/sched/sched.h                          |   3 +-
- tools/testing/selftests/sched/Makefile        |  17 +-
- tools/testing/selftests/sched/common.c        |  24 ++
- tools/testing/selftests/sched/common.h        |   8 +
- .../selftests/sched/cs_dlserver_test.c        | 254 ++++++++++++++++++
- tools/testing/selftests/sched/cs_prctl_test.c |  74 ++---
- 13 files changed, 424 insertions(+), 71 deletions(-)
- create mode 100644 tools/testing/selftests/sched/common.c
- create mode 100644 tools/testing/selftests/sched/common.h
- create mode 100644 tools/testing/selftests/sched/cs_dlserver_test.c
-
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 973fd610d089..7f3a2596c1ed 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5998,6 +5998,14 @@ static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
+ #endif
+ 
+ 	put_prev_task(rq, prev);
++
++	/*
++	 * We've updated @prev and no longer need the server link, clear it.
++	 * Must be done before ->pick_next_task() because that can (re)set
++	 * ->dl_server.
++	 */
++	if (prev->dl_server)
++		prev->dl_server = NULL;
+ }
+ 
+ /*
+@@ -6041,14 +6049,6 @@ __pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ restart:
+ 	put_prev_task_balance(rq, prev, rf);
+ 
+-	/*
+-	 * We've updated @prev and no longer need the server link, clear it.
+-	 * Must be done before ->pick_next_task() because that can (re)set
+-	 * ->dl_server.
+-	 */
+-	if (prev->dl_server)
+-		prev->dl_server = NULL;
+-
+ 	for_each_class(class) {
+ 		p = class->pick_next_task(rq);
+ 		if (p)
 -- 
 2.34.1
 
