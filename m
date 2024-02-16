@@ -1,122 +1,99 @@
-Return-Path: <linux-kernel+bounces-68441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68442-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F311857A41
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:26:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A06F857A46
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:28:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 592DA1C22093
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:26:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DB731F2159D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:28:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3A32C197;
-	Fri, 16 Feb 2024 10:26:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JStXjQwk"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF012C1A8;
+	Fri, 16 Feb 2024 10:28:36 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6042E28DDB;
-	Fri, 16 Feb 2024 10:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70F6D28E0D
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:28:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708079172; cv=none; b=QL//gJDRwG8NAUU76Pr+pig4jOq/mqom2W0htnZldxluq323/z3HA601bGlgqlvm4LHym76CumXYTaz/xj1caxh1pe9U4QynP0UWV0l8NHzcEgmPTIDP8Qik4vmX5SkryMa7tL1xHRPygBt7LJM6AYkWhCGE94iH5MXZlxzyCmU=
+	t=1708079315; cv=none; b=qpPAXcdH+VXhlfa45dOtTPwk6Hb9nK8IbCoB1lVEZqAQnMge5K4eZZQ8xP7f5Oo5pkE8FDhFYowlI4epfS4X/4DRGC1IF8zB6JkvMR1o/JUCvrPdDmnmoqOGwYGA7pvgvzoHIiswkS+FCFbrs9Rejwqutm9or7VYbJDE+t4EuEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708079172; c=relaxed/simple;
-	bh=+pkZefiPmfNLRzzUaA7n5y6qDHZMRJRXzHgd4nb5GWI=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=nw/bjA+16XiDCQIbECPFzNwqW97PjD29kba0yVRYar/4dYF5A2FzJrghQJGL672mCQwHyIYCW+AZKzOrinlmeqK69QRmKSN6/4QtTKGlVC5HZ9m+Hidhv0YMks53QnG9i3qCIQyrHapYZ3it6axIyfLHtZszKCRsZwOgSUQDP5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JStXjQwk; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C30BCFF808;
-	Fri, 16 Feb 2024 10:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708079167;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+pkZefiPmfNLRzzUaA7n5y6qDHZMRJRXzHgd4nb5GWI=;
-	b=JStXjQwkH8ZEt3ydGXVRwZp6IkCy5Zb/CKP5zP2BZwV1waZcrgBbRQ1po2x6JlAl4Itmei
-	e24H/RGyChLjiA1UQe8aWbD06HYzzIK2PmACcN2dS4hdovnrnjX+il83nu9n/1/Fj0EUNr
-	DuEQ6s7HjJya1vYAA1KXYWWQW6cY9eRNTBZXPiT+rmisBFEcJWmE+e4+6GQ4P36zFAce/0
-	10oc8yiNhMWpISFBt273Za7EdagZ38B71U8e9xztbG20jWbgAQEUTiKVRUGc6CE3orTQBk
-	A921fyqr3AuzC2aRVrmIH7KoatrVo2RMPzF+QGpzuX0suvp5/oViWbtnjXYtqw==
+	s=arc-20240116; t=1708079315; c=relaxed/simple;
+	bh=qKpijvoPFZ5Podu7ukUIp3Fhx6uwAlh95tWbcp2qTvc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XUES5iS+ANjps29fSAEUqlgUjTQN4P4UqTVpDnYMt1SGwVxr70qnfgpNtxDeGEC/yIRLlxSOJeCjUdnq9M2x2QM+Y4xP3zIr632+erEwpqfJvj8tsNTfpmc4BsuieJX5YYfPnUCNh3+f0W+92ixAAoMnyjfXhf83aryaQ256ojk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
+	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+	(envelope-from <m.felsch@pengutronix.de>)
+	id 1ravS9-0006gI-H0; Fri, 16 Feb 2024 11:28:21 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: puranjay12@gmail.com,
+	jic23@kernel.org,
+	lars@metafoo.de,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org
+Cc: linux-iio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel@pengutronix.de,
+	thomas.haemmerle@leica-geosystems.com
+Subject: [RESEND PATCH 1/2] dt-bindings: iio: ti,tmp117: add vcc supply binding
+Date: Fri, 16 Feb 2024 11:28:19 +0100
+Message-Id: <20240216102820.1395815-1-m.felsch@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 16 Feb 2024 11:26:05 +0100
-Message-Id: <CZ6FJ3Z78VWO.242BXKNE6RCUV@bootlin.com>
-Cc: <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Linus Walleij"
- <linus.walleij@linaro.org>, "Andi Shyti" <andi.shyti@kernel.org>, "Rob
- Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 13/13] MIPS: mobileye: eyeq5: add resets to I2C
- controllers
-X-Mailer: aerc 0.15.2
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-13-19a336e91dca@bootlin.com>
- <42b7e3bb-a152-4ded-91f3-fb8043a7f413@linaro.org>
- <CZ6DTGBC02P7.1RHCB4E64N88A@bootlin.com>
- <c478bb6f-49b8-4251-99e9-46b4c9510953@linaro.org>
-In-Reply-To: <c478bb6f-49b8-4251-99e9-46b4c9510953@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:1101:1d::28
+X-SA-Exim-Mail-From: m.felsch@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hello,
+From: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
 
-On Fri Feb 16, 2024 at 10:17 AM CET, Krzysztof Kozlowski wrote:
-> On 16/02/2024 10:05, Th=C3=A9o Lebrun wrote:
-> > Hello,
-> >=20
-> > On Fri Feb 16, 2024 at 8:59 AM CET, Krzysztof Kozlowski wrote:
-> >> On 15/02/2024 17:52, Th=C3=A9o Lebrun wrote:
-> >>> Add resets properties to each I2C controller. This depends on the
-> >>> reset-eyeq5 platform reset controller driver.
-> >>>
-> >>> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> >>> ---
-> >>
-> >> This should be squashed with previous patch adding i2c controllers.
-> >> Don't add incomplete nodes just to fix them in next patch.
-> >=20
-> > The goal was to isolate reset phandles to a single patch. The series
->
-> That was what you did, not the goal. If that's the goal, then it is
-> clearly wrong.
->
-> > with this patch dropped works because resets in their default state are
-> > deasserted, so this isn't a fix. And it allows testing the series on
-> > hardware with only the base platform series, which I found useful.
->
-> Series or half-of-series? Anyway, commits must be logical chunks, so one
-> chunk is to add I2C controllers, not "part of I2C controllers". DTS is
-> also independent of drivers (and it will go via different trees!), so
-> whatever dependency you think of, it does not exist.
+Add the binding to specify the vcc supply. We can't make it required
+since this would break the backward compatibility.
 
-My reasoning was focused on my point-of-view as a contributor and tester
-of the series. Your explanation makes sense; I had never thought this
-through from the maintainer's POV.
+Signed-off-by: Thomas Haemmerle <thomas.haemmerle@leica-geosystems.com>
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+---
+Resend since I forgot to add the DT maintainers
 
-Thanks,
+ .../devicetree/bindings/iio/temperature/ti,tmp117.yaml        | 4 ++++
+ 1 file changed, 4 insertions(+)
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+diff --git a/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+index 8c6d7735e875..cf7799c9734f 100644
+--- a/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
++++ b/Documentation/devicetree/bindings/iio/temperature/ti,tmp117.yaml
+@@ -24,6 +24,9 @@ properties:
+   reg:
+     maxItems: 1
+ 
++  vcc-supply:
++    description: provide VCC power to the sensor.
++
+ required:
+   - compatible
+   - reg
+@@ -39,5 +42,6 @@ examples:
+         tmp117@48 {
+              compatible = "ti,tmp117";
+              reg = <0x48>;
++             vcc-supply = <&pmic_reg_3v3>;
+         };
+     };
+-- 
+2.39.2
+
 
