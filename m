@@ -1,156 +1,146 @@
-Return-Path: <linux-kernel+bounces-69000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43877858334
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:00:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232E2858337
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:01:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 704B91C23055
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:00:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA6BE28551C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 804E7130E38;
-	Fri, 16 Feb 2024 16:59:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B877130E48;
+	Fri, 16 Feb 2024 17:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D9++NuFD"
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BQZOmAn6"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FC27E784;
-	Fri, 16 Feb 2024 16:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34AB0130E3C;
+	Fri, 16 Feb 2024 17:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708102796; cv=none; b=SJMASZeYbnSSnwZ5vhHmnv+koN84RvBF3E59cgPh9Xf3XLl+tkrWGYaLHjD/usYty51uX72AUtx2QTpkeroxk5+lHacgEpB4oJLmWApCrUWtrMI+gM5uv1L9ccCs5X2oMpiIJsvht9doTVrvCZKjjxJlGNQydE+sVasU71+/iJA=
+	t=1708102868; cv=none; b=DTwCTaSefGipalZEBsSPfEgDJEdwJO1qV1Pfn7oKytxKKFWL0y48ZtjPdTAkhu+2PP0xXa1uvjTeIzRp+Ly1BXItgVrv5oBaD77TeLv3vjyoWyw29bXIbL1c2+a9Z4sbvPTcA+F1Uszd1dPJ3HXLqVcxoToUJMY79yyrdXFv9cM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708102796; c=relaxed/simple;
-	bh=KOEhEuIqAZHLvjmDU556V+igmwDiKmcNj2F0X2Zgdqc=;
+	s=arc-20240116; t=1708102868; c=relaxed/simple;
+	bh=QIGn6C67UP/6QvFhVFu1DP65JGMjupNiEXX7Y9U0G1g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZKIT7LIqxfpKANzOqLmd2XQQbNUKjfOinPvzxxJNfT4WZ0gX2ucueL35oivWrghy1OziQU6XUR+9DLaRA2fnXF5eQ6tS6g6FeOOUXOLuhCPPb6nOIhs8evISpF4/WSqvuDGDXz/4g+PtQIkgDHGdGV/LaWrO8K9jerUzMwxtzfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D9++NuFD; arc=none smtp.client-ip=209.85.215.182
+	 To:Cc:Content-Type; b=dwyW76h1qjHEdEPGbg8nMlrw+ZzOPdDkrdTv1n4gcybDcm7w3oNeZwAWq0g1RgoDwkZMtmaSEjhsoz/oAkDgr7GelThRuN+LQ+WUg+HBnqYm8fbKhcbALCRuDSdIvhdg5Dcx20VVlr3BMZeEl80wWl9yKBkdOcrM10kthQ6jBV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BQZOmAn6; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so965095a12.0;
-        Fri, 16 Feb 2024 08:59:55 -0800 (PST)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3e05775202so31390066b.3;
+        Fri, 16 Feb 2024 09:01:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708102794; x=1708707594; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708102865; x=1708707665; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/x+pl6pSSD4011o2sxhi3tmE0ghNOP6YOH/ewDjwkTI=;
-        b=D9++NuFDtfMqYh4CEU/fuANiuBz32fzjqZeV8ph2v7dtglwY1Irf4y406MbjkzWVGy
-         CbIzERvUraIHYQWDwv73sndXOlMts+aBN72aksy1hTgkr3nG9GJ/WVf8neynUvpM+gx2
-         XeZykbzhsc/1PgbH9fjahffYnur+il0bMLzAC7jnQKJb4DfZP/6QVSBzrjgSm4GjpeMe
-         GADaVmHgoitPZ8qVwbpf0IwQjWG7abkT+RLaboBsgHK1VxiNuzoyWFY4gMNzP+i58MdC
-         FPaeOZS7RcZQ1foRVaqvwafd1W+idUQwzai+ExiPjCc8HeccyGcfttVkjTWPU2iY5+mz
-         9AYQ==
+        bh=ztXazuWgeFLTVRCzNp0sF29aKvhsni1fvdU/hqpY3uo=;
+        b=BQZOmAn6G9XgOVtQRGOVwZYNMtZzRiwepAaBX46P2h+QfGKVSKMVPW3ZtACTb48Uz6
+         6MAWv5TEFNkjiiHeEnRm1+DPaMvlnCUD0+cE2jj9ywS3g08x7cTmxqWcso+ixQVAfM27
+         r7VQgXBdLidS8TKAXNcQMtnp1tx5cZpJcVJdJ9VGtYgsNrJ+gaYoSSgwfk7u/7TCfdkL
+         UPz4yYyRsPhn517nYbzJHEMA9qdHseVF1S9qETysBT5tdoxgJcjklQXAYUE2COVIO94C
+         TXXqyEMS4unf9cbXjvZ9iMRc6uEn7xWx61jrQIR0sSBGWdb/j4SeH1FUqSoToD32icq1
+         vVWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708102794; x=1708707594;
+        d=1e100.net; s=20230601; t=1708102865; x=1708707665;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/x+pl6pSSD4011o2sxhi3tmE0ghNOP6YOH/ewDjwkTI=;
-        b=Lq8XnWZITVq1f0m3fmZYfmavlvgTmb/+A1ybyUzEc4Xb/nMYrHW4y3sc1aoG1DHrKl
-         FKCDHPDuvLUl/rOz7FgyztdpZqWU3m3UyrOipChSY7pa7ZOaX61OsOkuSsxOppSqiT5Y
-         xa7PK+QrhPsSy1L+3ap1U0y8pBKxp4uxZiouj3bV0IuAGVI41K1L2e5sTmtcCU3mMHtl
-         eVozLraj/3bKMqiM/o4hS/UD06bR9vqWkem4g3TX1SXNhgj1Fsoa3EzIHcfHo/N57arX
-         dOXEkw/o9pLD9EmYZobfDP5W2mMH9t8g3e3muh1tzr0t/JGMqx6Tm/eNhOt/6ZcWh+lG
-         /+4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWSuxDovrbgMt+bJA1MFmc6DEcWAA75YrwnbXF6my0sX8RkYdYS0ZvZdMVYXmOlypDdsFNSUN2/Broc1AF0iz4mnYqIiIzWCCslE2C2TQ9PjElwmJPEzA0Z+pVcrdBsU+D/QPE4PB3flg==
-X-Gm-Message-State: AOJu0YwpgBXKKJ5Qs4qCS4XJ9Vp+/iieZnTX9izOSweSGDudbI/FYFad
-	Lq93LL/WomnFbau3zr2RQqwps8JKt2ziLcvvJiX3FIPaPbIRHe3z9+bHQEd1/UaXOjJYiW3BML5
-	8HhhYGpmlyRDoiqnDnGs4r7eRSLifcPLM
-X-Google-Smtp-Source: AGHT+IFCDrkANKvivOACqcEya2zGfx4wIMBdPgjxD/0svYgSjKn3pI/eIrsX+aXebJhmfR73YSorrnNo7W7edSVRpl8=
-X-Received: by 2002:a17:90b:1009:b0:297:1196:3716 with SMTP id
- gm9-20020a17090b100900b0029711963716mr5572994pjb.18.1708102794502; Fri, 16
- Feb 2024 08:59:54 -0800 (PST)
+        bh=ztXazuWgeFLTVRCzNp0sF29aKvhsni1fvdU/hqpY3uo=;
+        b=cK8B7VXPz1uQXfndMg45QM8FxhQICpsFE3fCKwnRHqo81Wbng59xsgqOYutzd9yW8b
+         5iwIF1c6/bVkD2eqdKBEyjrF51d8+cTIm/sw9zr6CCzwdNQUklAX6bZaznmEmaICwkun
+         le88kvovb8msZexcGIvOZ23sYmt3Dkt5O17Macb5s12NETbZSSxZoKaNCZqBtmRcuGQ7
+         KGp4LfpjiSLkutRkJk2S8pL6u30dxaDFEwpdZizt0OR/UgNMgmY3zpaN5+Hk9XWeH/cX
+         ZFlyHnp+KuJ4VP1J6wBXwt/4UpOkW+TPHtOxmhz4dZfBSxmJ91cUyGKn+z1/xtRdl4Nx
+         KNgw==
+X-Forwarded-Encrypted: i=1; AJvYcCXru78YbXDggNGd9bv7Dfo0+MIhjPNKGxcIKuE83h4d0H4FN3GwG0U2cRqW2zdBkFJBNBJTO4ODW4Vy0dCwVFAGD/wSu9c/kgHp8MF0riacgcEH4FClhXxibjAB2ugHEqdBWtkKkKR2
+X-Gm-Message-State: AOJu0YzF6DlYfe86Vmt4ai+UumvsdyvdLDuCM75rrQ8hwEp2OlV5qt/3
+	f2eP2fBV7p3mOOXLwTtEv19eCOKm1z7Kofc4qUn2FV8cUD8CTqyfCst2ZMzxTtq8hWO+i3/l0b3
+	HTer9XEqbqLi89n5/ua2pc7Z3rSI=
+X-Google-Smtp-Source: AGHT+IFk3s8UGzjSG4LKdeG+jC1wpKj1lCEkk2zmi8ut+064Q4kpWFf8zFjb1wXWM0X1a6tJ52bbQt3q7I+P4vzraUs=
+X-Received: by 2002:a17:906:6d18:b0:a3d:d238:38e3 with SMTP id
+ m24-20020a1709066d1800b00a3dd23838e3mr2226050ejr.26.1708102865262; Fri, 16
+ Feb 2024 09:01:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215133155.9198-1-ilpo.jarvinen@linux.intel.com>
- <20240215133155.9198-2-ilpo.jarvinen@linux.intel.com> <BL1PR12MB51440761895B3DF935840BF0F74D2@BL1PR12MB5144.namprd12.prod.outlook.com>
- <dd2da980-d114-e30e-fa91-79ff9ec353e7@linux.intel.com>
-In-Reply-To: <dd2da980-d114-e30e-fa91-79ff9ec353e7@linux.intel.com>
-From: Alex Deucher <alexdeucher@gmail.com>
-Date: Fri, 16 Feb 2024 11:59:42 -0500
-Message-ID: <CADnq5_MCQX+vP9aGsYdKejQtPF=rgKqNauDwqCLa39Ug8Nd-zg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] drm/radeon: Use RMW accessors for changing LNKCTL2
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, 
-	"amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, 
-	Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Leon Romanovsky <leon@kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, 
-	"Koenig, Christian" <Christian.Koenig@amd.com>, Lukas Wunner <lukas@wunner.de>
+References: <20240215180102.13887-1-fancer.lancer@gmail.com>
+ <20240215180102.13887-4-fancer.lancer@gmail.com> <Zc5mxyTjq6X_QRsQ@smile.fi.intel.com>
+ <4sbbhf4ltdwrmj7rrr6f7lnjbdxrwfjoutmcgsh2c44jy5fxzj@xgqdscqdnkkv>
+In-Reply-To: <4sbbhf4ltdwrmj7rrr6f7lnjbdxrwfjoutmcgsh2c44jy5fxzj@xgqdscqdnkkv>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 16 Feb 2024 19:00:28 +0200
+Message-ID: <CAHp75VeK0kb40Ma9WjMAGQE9Y5O1OdeuNhQwDvYCaLHbvj+60Q@mail.gmail.com>
+Subject: Re: [PATCH 3/3] spi: dw: Drop default number of CS setting
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, 
+	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, linux-spi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Applied.  Thanks.
+On Fri, Feb 16, 2024 at 5:36=E2=80=AFPM Serge Semin <fancer.lancer@gmail.co=
+m> wrote:
+> On Thu, Feb 15, 2024 at 09:32:23PM +0200, Andy Shevchenko wrote:
+> > On Thu, Feb 15, 2024 at 09:00:48PM +0300, Serge Semin wrote:
+> > > DW APB/AHB SSI core now supports the procedure which automatically
+> > > determines the number of native CS. Thus there is no longer point in
+> > > defaulting to four CS if platform doesn't specify the real number.
 
-Alex
+the platform
 
-On Fri, Feb 16, 2024 at 5:38=E2=80=AFAM Ilpo J=C3=A4rvinen
-<ilpo.jarvinen@linux.intel.com> wrote:
->
-> On Thu, 15 Feb 2024, Deucher, Alexander wrote:
->
-> > [Public]
+
+..
+
+> > > -   num_cs =3D 4;
 > >
-> > > -----Original Message-----
-> > > From: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > > Sent: Thursday, February 15, 2024 8:32 AM
-> > > To: Deucher, Alexander <Alexander.Deucher@amd.com>; amd-
-> > > gfx@lists.freedesktop.org; Daniel Vetter <daniel@ffwll.ch>; David Air=
-lie
-> > > <airlied@gmail.com>; Dennis Dalessandro
-> > > <dennis.dalessandro@cornelisnetworks.com>; dri-
-> > > devel@lists.freedesktop.org; Jason Gunthorpe <jgg@ziepe.ca>; Leon
-> > > Romanovsky <leon@kernel.org>; linux-kernel@vger.kernel.org; linux-
-> > > rdma@vger.kernel.org; Pan, Xinhui <Xinhui.Pan@amd.com>; Koenig, Chris=
-tian
-> > > <Christian.Koenig@amd.com>
-> > > Cc: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>; Lukas Wunner
-> > > <lukas@wunner.de>
-> > > Subject: [PATCH 1/3] drm/radeon: Use RMW accessors for changing LNKCT=
-L2
-> > >
-> > > Convert open coded RMW accesses for LNKCTL2 to use
-> > > pcie_capability_clear_and_set_word() which makes its easier to unders=
-tand
-> > > what the code tries to do.
-> > >
-> > > LNKCTL2 is not really owned by any driver because it is a collection =
-of control
-> > > bits that PCI core might need to touch. RMW accessors already have su=
-pport
-> > > for proper locking for a selected set of registers
-> > > (LNKCTL2 is not yet among them but likely will be in the future) to a=
-void losing
-> > > concurrent updates.
-> > >
-> > > Suggested-by: Lukas Wunner <lukas@wunner.de>
-> > > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> > Simply update the default here?
 > >
-> > The radeon and amdgpu patches are:
-> > Acked-by: Alex Deucher <alexander.deucher@amd.com>
-> >
-> > Are you looking for me to pick them up or do you want to land them as
-> > part of some larger change?  Either way is fine with me.
+> > > -   device_property_read_u32(&pdev->dev, "num-cs", &num_cs);
 >
-> Hi,
+> Do you suggest to simply:
 >
-> You please take them, I intentionally took them apart from the BW
-> controller series so they can go through the usual trees, not along with
-> the BW controller. (I don't expect the BW controller to be accepted durin=
-g
-> this cycle).
+> --- a/drivers/spi/spi-dw-mmio.c
+> +++ b/drivers/spi/spi-dw-mmio.c
+> @@ -364,8 +364,9 @@ static int dw_spi_mmio_probe(struct platform_device *=
+pdev)
+>                                      &dws->reg_io_width))
+>                 dws->reg_io_width =3D 4;
 >
-> --
->  i.
+> -       num_cs =3D 4;
+> +       num_cs =3D 0;
+>
+>         device_property_read_u32(&pdev->dev, "num-cs", &num_cs);
+>
+> ?
+
+Either this or do
+
+num_cs =3D dw_spi_get_num_cs_from_hw(...);
+
+What would work better WRT hardware?
+
+..
+
+> My idea was to make the statement looking closer to what is
+> implemented for "reg-io-width" property. An alternative to what you
+> suggest and to my patch can be converting the dw_spi::num_cs type to
+> u32 and pass it to the device_property_read_u32() method directly:
+
+..patch...
+
+> What do you think? Would that be better?
+
+I like the change, but again, are you sure it won't break any setups?
+If yes, go for this!
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
