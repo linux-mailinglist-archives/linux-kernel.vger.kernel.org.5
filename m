@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-69015-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69016-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B74785836D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:05:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8C585836E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51641285955
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:05:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9ED851C21296
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:05:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3660130AD8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCA99130E2F;
 	Fri, 16 Feb 2024 17:04:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="DzxWotRL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GoE+JqiG"
+	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="Qh+SFOC2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hrjQmkGw"
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD199131E30
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0253B13249C
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103096; cv=none; b=Jp4YULSkU8svqzDtvSeLZMV/gd0Vww+pNj0BHJfyl161sIUf89pDdkKVJVjF4mVPABrRPf/UlOfdAYEc88tx18w85d19LtMX9Fk3UONGXjmefFYfQ3m4U2ea6d296bCmIiQ8j4Oj2XGDCuM3L/22VykEJkHsQyH4Pqf7sFRMnLw=
+	t=1708103096; cv=none; b=A2Gkp262CKdU4rZIIKPb8RTuSUKSfF6Hp54Wd3ysxXIgrVt7VuOyoI3DbaiA5MuVNxsFHDFHYOsRNJ+7oxCmGBD19ImYBsuYvXyG1NPyL0Rr2Atu4cubKHeF0f2VSuXJG4YKCxDLPRA60O0slc/UuOggT7vfrBLStDzzdi/tClg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708103096; c=relaxed/simple;
-	bh=DR0lbFckfNuZyhKLKn76lt6oQdPrjkuWzMVEgeHd3OM=;
+	bh=82Y1OAgcDxB2eyqtTi+XVPaxghLqy53X5y/mvWFu9A8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YVwiUG9im2eCFpxz+lpaNKoiUDHq4f5F5f7deetAWymAHbSG25jJnyrgz11aUAjKRzeC6HoSvxfieCIVVN486ppfYkTUZZr4CiwGV4VKZBjZM3X8uYrikUeiTj9ftyJp1PzW5kxDIq6VwGHwuVD80Bb8++66yeJj6twZnrUD8bs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=DzxWotRL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GoE+JqiG; arc=none smtp.client-ip=66.111.4.25
+	 MIME-Version:Content-Type; b=nAEuXN0pT0Pp4jRUlMu/1RzTMVYe11gPuvojR+lrSsS0EXvDyXkCk4DY+WEawymr4eKj4b8hTNFP3cPCtbD2/NG22qZmkzuATld35uZz5lSCKDwpX11JZrTr8HJ6hBwcbGpOho6p21YIMn3NqWokLccnBLy5CDF0VQWmo9B7YqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=Qh+SFOC2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hrjQmkGw; arc=none smtp.client-ip=66.111.4.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailout.nyi.internal (Postfix) with ESMTP id E46E65C0098;
-	Fri, 16 Feb 2024 12:04:52 -0500 (EST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 4C4285C00A3;
+	Fri, 16 Feb 2024 12:04:54 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 16 Feb 2024 12:04:52 -0500
+  by compute6.internal (MEProxy); Fri, 16 Feb 2024 12:04:54 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
 	:cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:reply-to:subject:subject:to:to; s=fm1; t=
-	1708103092; x=1708189492; bh=nIAYvnltZL3ZJbh/6F5gZLxtE16cArxedAx
-	xW1cUxBU=; b=DzxWotRLufx7pv4QtallMVp2YEhd4si5FmDqgrVdN/IovF6MWz6
-	1O0nY1q731gXgns3Hr3abKIdATemnOGe9cPD0sm6QdMjCMK/sne8hwftBGMvHbSG
-	5hhPfp6fAeMX6zWr/1NhDEPyqQYfbV//nsZH0bTr1OIkR5EMMZ+SmFJKWnFoKa+r
-	s/akEobIzNQSi6TlVEINqok9DIR7/9QBKTRwCYArmv7ZtQu//y0E9OeKAu9ZGU0x
-	NHmxIwy21fqvlEPxTRVdFNHmpvEr4ywyq1zLEMHKvDDOJTPZw0G4NHi1Ac6Elf5H
-	NoYkNyU8PTgj7WeU+XwZWyBgLVV59IFbQPA==
+	1708103094; x=1708189494; bh=bTCMfMRgj0TAxiQeyNSNVpFoxlWh0Oj72NH
+	6xXdaFx0=; b=Qh+SFOC2uzfXFBf2MQSyLCdE/iSEti9OEl50htzixNEhyH3p6uD
+	ttorsdTatpDLJct9xYK/4M3p/v7LE26pEawkhX7e/2gw/IgIzs+ZnS0OlP6lk+GM
+	ky8YC+gWiiRpMIiUyVUI440RtoKFFQL6F3XF/7jnQTCtljg5jUe8YyQDVCwSs2X0
+	EiaOz0v44hVK/fl2b4G4CGshkV4t5MDCSjUGswZ2+MZXyZCka1nlMw/+KtnzqqMb
+	bRnU1jjZCdIibwvZ3ewjRHaciWMNXBOY5T5oWefeQM53QEmyjbNvjT09kiFL+KHE
+	MK3s+71oUT9iXOSHIQqrV9Pigpngwe7lufQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
 	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1708103092; x=1708189492; bh=nIAYvnltZL3ZJbh/6F5gZLxtE16cArxedAx
-	xW1cUxBU=; b=GoE+JqiG+iW4WKDPXvVRv2LPw/D1mtJ9WjAy9VG6serbIkjmZ/G
-	+/26VHVVwYgc2NwIU6IgKks0sC1QGa1gAB58aj3TP9S+w9HZQScnFDgurCKchrII
-	DgL6YBrf5kWArHBKs6qLK0FnBsMqPc+BG8TZ0IZG7WfJdNleBfopCmXii6hRHOiK
-	/xNfJmo7P4QgrwZcDJPt4AwtQv5wsfB8Mrqc4bDzOqVvtdAT6dMz6B2X2LQkakzD
-	5RuRGF7Guybp+ORIf9tLocFE6JCimXDDRUSBopG44tTTHx8Fhi9c7PYFM/vt/zx1
-	z5eJbHRVTfNpoGpGWt6sbWri9v2Uk9FIrow==
-X-ME-Sender: <xms:s5XPZQhFHtGgv3e0GrY96-y3gEfP648lIVnpfYr0zGbJsv8gjLJv6A>
-    <xme:s5XPZZCwPheCZR5dCV0QVX70H1SQspbWUt3PFQNJ4wh92HTzX3e537GdcAGerZGfa
-    2_g7n3OrwDMgktLwQ>
-X-ME-Received: <xmr:s5XPZYHlctTKjXjxNBuT_cAgm_drZ64li6Mpvrvlf3bDbXr-15Ot4ALEynik0CDM43dqAJeDsOveJ9HN9VYrYGenWks_Q9Jh44UyPPS2jOxggkPpewUoDSoF>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvgdeliecutefuodetggdotefrodftvf
+	1708103094; x=1708189494; bh=bTCMfMRgj0TAxiQeyNSNVpFoxlWh0Oj72NH
+	6xXdaFx0=; b=hrjQmkGwrw/QsZ5Oscv5eFQex/wKIva4wZWzZZTaY8WxwPrCbpL
+	/ZEs1k6WWt/DCUHTPsxn+xV/sxbFuyc/GeRxj0F+KqJKqsHAdfouZeJPYmbY3Llc
+	qFDPmgp0dlEjvCp0JEAVVMc7CTuB4tudRrtgDKZQNbEDGajyQl7TZbpmBYzOK2AN
+	+R8PjACg5jv+jcaXiSiRoegIQsH6NxUP8XFWTtzFS6HWHrSqvz589A1OuKpQ5i50
+	n3BqTWs+bOWlfzAO30MSVhbfDDlzGhM5UXXuob7GZAgXH9cPTf8pucGiIF2vUIRf
+	sMR7aFPAF37x1XJ6C+uErmm2LAwmQQ172bg==
+X-ME-Sender: <xms:tZXPZa3D2j_MERrBKctuJUQNjK5uR2hJTyslpKPYR23L5gKxGzibHA>
+    <xme:tZXPZdHaZG2kEdmvsBNoTDuYE9bVeHFtCdzXEVF_29FPwnGAoIvluhJMpZZLMsdWZ
+    F9W5e4nfSdkcm4jWQ>
+X-ME-Received: <xmr:tZXPZS5JlR7YrDAt-o8_LoIFUY6YwyuWpHzRSmmFWt8ti4cYhaqDcYy-p2UXXpzo7QvWlL3IJDi-8_9HNOPCvrIZo3IikmpTU1-HUs_nlxA4KeiLoakH0esN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvgdelhecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpefhvfevufffkffojghfrhggtgfgsehtkeertdertdejnecuhfhrohhmpegkihcu
@@ -72,13 +72,13 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddvgdeliecutefuodetggdote
     etkeffleelkeduffdtfedvtdejjeeutdeutdetgeejgfevtdefudejkeeiveenucevlhhu
     shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpeiiihdrhigrnhessh
     gvnhhtrdgtohhm
-X-ME-Proxy: <xmx:s5XPZRQK7WSEEKcyqAJr4mdkCdzzROM4MYfiGoHb0YPY3lTj9nz60w>
-    <xmx:s5XPZdwGr84uTKnZi9kdvALWZagphZBKykdnCgwLGcTlFUK8_YqC6w>
-    <xmx:s5XPZf4vZtz7zJyiLiO1-jg7Jph8zI1QmVeLsBZwAJyHxmKfX-dSLg>
-    <xmx:tJXPZeoUH8xXLSatcHK2xGhcCPd-0BDgS0MrRHrfsECUu_O7i1g3lg>
+X-ME-Proxy: <xmx:tZXPZb3omsRd4Gh_unjytLInkPSPx28ZhZffPl90MhlMDMW6Q_cd4w>
+    <xmx:tZXPZdGqjpNfHgN_SFnr80W6ejNms-JT3lRMbcItvw-W5wMjBsrrxA>
+    <xmx:tZXPZU8dyTj8X2r66a1dkUmSmsACKYhgtT93LZqZHivRkobfhzGwtg>
+    <xmx:tpXPZb_x42GGfPrEd_tI5M6TW2RNv2Jh4cF3zA4zg9NaaVxskZDEAg>
 Feedback-ID: iccd040f4:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 16 Feb 2024 12:04:50 -0500 (EST)
+ 16 Feb 2024 12:04:52 -0500 (EST)
 From: Zi Yan <zi.yan@sent.com>
 To: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
@@ -100,9 +100,9 @@ Cc: Zi Yan <ziy@nvidia.com>,
 	Mcgrof Chamberlain <mcgrof@kernel.org>,
 	Adam Manzanares <a.manzanares@samsung.com>,
 	"Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Subject: [PATCH v6 3/4] mm/compaction: add support for >0 order folio memory compaction.
-Date: Fri, 16 Feb 2024 12:04:31 -0500
-Message-ID: <20240216170432.1268753-4-zi.yan@sent.com>
+Subject: [PATCH v6 4/4] mm/compaction: optimize >0 order folio compaction with free page split.
+Date: Fri, 16 Feb 2024 12:04:32 -0500
+Message-ID: <20240216170432.1268753-5-zi.yan@sent.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240216170432.1268753-1-zi.yan@sent.com>
 References: <20240216170432.1268753-1-zi.yan@sent.com>
@@ -118,31 +118,17 @@ Content-Transfer-Encoding: 8bit
 
 From: Zi Yan <ziy@nvidia.com>
 
-Before last commit, memory compaction only migrates order-0 folios and
-skips >0 order folios.  Last commit splits all >0 order folios during
-compaction.  This commit migrates >0 order folios during compaction by
-keeping isolated free pages at their original size without splitting them
-into order-0 pages and using them directly during migration process.
+During migration in a memory compaction, free pages are placed in an array
+of page lists based on their order.  But the desired free page order
+(i.e., the order of a source page) might not be always present, thus
+leading to migration failures and premature compaction termination.  Split
+a high order free pages when source migration page has a lower order to
+increase migration successful rate.
 
-What is different from the prior implementation:
-1. All isolated free pages are kept in a NR_PAGE_ORDERS array of page
-   lists, where each page list stores free pages in the same order.
-2. All free pages are not post_alloc_hook() processed nor buddy pages,
-   although their orders are stored in first page's private like buddy
-   pages.
-3. During migration, in new page allocation time (i.e., in
-   compaction_alloc()), free pages are then processed by post_alloc_hook().
-   When migration fails and a new page is returned (i.e., in
-   compaction_free()), free pages are restored by reversing the
-   post_alloc_hook() operations using newly added
-   free_pages_prepare_fpi_none().
-
-Step 3 is done for a latter optimization that splitting and/or merging
-free pages during compaction becomes easier.
-
-Note: without splitting free pages, compaction can end prematurely due to
-migration will return -ENOMEM even if there is free pages.  This happens
-when no order-0 free page exist and compaction_alloc() return NULL.
+Note: merging free pages when a migration fails and a lower order free
+page is returned via compaction_free() is possible, but there is too much
+work.  Since the free pages are not buddy pages, it is hard to identify
+these free pages using existing PFN-based page merging algorithm.
 
 Signed-off-by: Zi Yan <ziy@nvidia.com>
 Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
@@ -163,331 +149,59 @@ Cc: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 Cc: Vlastimil Babka <vbabka@suse.cz>
 Cc: Yin Fengwei <fengwei.yin@intel.com>
 ---
- mm/compaction.c | 140 +++++++++++++++++++++++++++---------------------
- mm/internal.h   |   4 +-
- mm/page_alloc.c |   2 +-
- 3 files changed, 83 insertions(+), 63 deletions(-)
+ mm/compaction.c | 35 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index aa6aad805c4d..f21836ca243a 100644
+index f21836ca243a..b2a570e00a8e 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -66,45 +66,56 @@ static inline void count_compact_events(enum vm_event_item item, long delta)
- #define COMPACTION_HPAGE_ORDER	(PMD_SHIFT - PAGE_SHIFT)
- #endif
- 
--static unsigned long release_freepages(struct list_head *freelist)
-+static void split_map_pages(struct list_head *freepages)
- {
-+	unsigned int i, order;
- 	struct page *page, *next;
--	unsigned long high_pfn = 0;
-+	LIST_HEAD(tmp_list);
- 
--	list_for_each_entry_safe(page, next, freelist, lru) {
--		unsigned long pfn = page_to_pfn(page);
--		list_del(&page->lru);
--		__free_page(page);
--		if (pfn > high_pfn)
--			high_pfn = pfn;
--	}
-+	for (order = 0; order < NR_PAGE_ORDERS; order++) {
-+		list_for_each_entry_safe(page, next, &freepages[order], lru) {
-+			unsigned int nr_pages;
- 
--	return high_pfn;
-+			list_del(&page->lru);
-+
-+			nr_pages = 1 << order;
-+
-+			post_alloc_hook(page, order, __GFP_MOVABLE);
-+			if (order)
-+				split_page(page, order);
-+
-+			for (i = 0; i < nr_pages; i++) {
-+				list_add(&page->lru, &tmp_list);
-+				page++;
-+			}
-+		}
-+		list_splice_init(&tmp_list, &freepages[0]);
-+	}
- }
- 
--static void split_map_pages(struct list_head *list)
-+static unsigned long release_free_list(struct list_head *freepages)
- {
--	unsigned int i, order, nr_pages;
--	struct page *page, *next;
--	LIST_HEAD(tmp_list);
--
--	list_for_each_entry_safe(page, next, list, lru) {
--		list_del(&page->lru);
-+	int order;
-+	unsigned long high_pfn = 0;
- 
--		order = page_private(page);
--		nr_pages = 1 << order;
-+	for (order = 0; order < NR_PAGE_ORDERS; order++) {
-+		struct page *page, *next;
- 
--		post_alloc_hook(page, order, __GFP_MOVABLE);
--		if (order)
--			split_page(page, order);
-+		list_for_each_entry_safe(page, next, &freepages[order], lru) {
-+			unsigned long pfn = page_to_pfn(page);
- 
--		for (i = 0; i < nr_pages; i++) {
--			list_add(&page->lru, &tmp_list);
--			page++;
-+			list_del(&page->lru);
-+			/*
-+			 * Convert free pages into post allocation pages, so
-+			 * that we can free them via __free_page.
-+			 */
-+			post_alloc_hook(page, order, __GFP_MOVABLE);
-+			__free_pages(page, order);
-+			if (pfn > high_pfn)
-+				high_pfn = pfn;
- 		}
- 	}
--
--	list_splice(&tmp_list, list);
-+	return high_pfn;
- }
- 
- #ifdef CONFIG_COMPACTION
-@@ -657,7 +668,7 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
- 		nr_scanned += isolated - 1;
- 		total_isolated += isolated;
- 		cc->nr_freepages += isolated;
--		list_add_tail(&page->lru, freelist);
-+		list_add_tail(&page->lru, &freelist[order]);
- 
- 		if (!strict && cc->nr_migratepages <= cc->nr_freepages) {
- 			blockpfn += isolated;
-@@ -722,7 +733,11 @@ isolate_freepages_range(struct compact_control *cc,
- 			unsigned long start_pfn, unsigned long end_pfn)
- {
- 	unsigned long isolated, pfn, block_start_pfn, block_end_pfn;
--	LIST_HEAD(freelist);
-+	int order;
-+	struct list_head tmp_freepages[NR_PAGE_ORDERS];
-+
-+	for (order = 0; order < NR_PAGE_ORDERS; order++)
-+		INIT_LIST_HEAD(&tmp_freepages[order]);
- 
- 	pfn = start_pfn;
- 	block_start_pfn = pageblock_start_pfn(pfn);
-@@ -753,7 +768,7 @@ isolate_freepages_range(struct compact_control *cc,
- 			break;
- 
- 		isolated = isolate_freepages_block(cc, &isolate_start_pfn,
--					block_end_pfn, &freelist, 0, true);
-+					block_end_pfn, tmp_freepages, 0, true);
- 
- 		/*
- 		 * In strict mode, isolate_freepages_block() returns 0 if
-@@ -770,15 +785,15 @@ isolate_freepages_range(struct compact_control *cc,
- 		 */
- 	}
- 
--	/* __isolate_free_page() does not map the pages */
--	split_map_pages(&freelist);
--
- 	if (pfn < end_pfn) {
- 		/* Loop terminated early, cleanup. */
--		release_freepages(&freelist);
-+		release_free_list(tmp_freepages);
- 		return 0;
- 	}
- 
-+	/* __isolate_free_page() does not map the pages */
-+	split_map_pages(tmp_freepages);
-+
- 	/* We don't use freelists for anything. */
- 	return pfn;
- }
-@@ -1494,7 +1509,7 @@ fast_isolate_around(struct compact_control *cc, unsigned long pfn)
- 	if (!page)
- 		return;
- 
--	isolate_freepages_block(cc, &start_pfn, end_pfn, &cc->freepages, 1, false);
-+	isolate_freepages_block(cc, &start_pfn, end_pfn, cc->freepages, 1, false);
- 
- 	/* Skip this pageblock in the future as it's full or nearly full */
- 	if (start_pfn == end_pfn && !cc->no_set_skip_hint)
-@@ -1623,7 +1638,7 @@ static void fast_isolate_freepages(struct compact_control *cc)
- 				nr_scanned += nr_isolated - 1;
- 				total_isolated += nr_isolated;
- 				cc->nr_freepages += nr_isolated;
--				list_add_tail(&page->lru, &cc->freepages);
-+				list_add_tail(&page->lru, &cc->freepages[order]);
- 				count_compact_events(COMPACTISOLATED, nr_isolated);
- 			} else {
- 				/* If isolation fails, abort the search */
-@@ -1700,13 +1715,12 @@ static void isolate_freepages(struct compact_control *cc)
- 	unsigned long isolate_start_pfn; /* exact pfn we start at */
- 	unsigned long block_end_pfn;	/* end of current pageblock */
- 	unsigned long low_pfn;	     /* lowest pfn scanner is able to scan */
--	struct list_head *freelist = &cc->freepages;
- 	unsigned int stride;
- 
- 	/* Try a small search of the free lists for a candidate */
- 	fast_isolate_freepages(cc);
- 	if (cc->nr_freepages)
--		goto splitmap;
-+		return;
- 
- 	/*
- 	 * Initialise the free scanner. The starting point is where we last
-@@ -1766,7 +1780,7 @@ static void isolate_freepages(struct compact_control *cc)
- 
- 		/* Found a block suitable for isolating free pages from. */
- 		nr_isolated = isolate_freepages_block(cc, &isolate_start_pfn,
--					block_end_pfn, freelist, stride, false);
-+					block_end_pfn, cc->freepages, stride, false);
- 
- 		/* Update the skip hint if the full pageblock was scanned */
- 		if (isolate_start_pfn == block_end_pfn)
-@@ -1807,10 +1821,6 @@ static void isolate_freepages(struct compact_control *cc)
- 	 * and the loop terminated due to isolate_start_pfn < low_pfn
- 	 */
- 	cc->free_pfn = isolate_start_pfn;
--
--splitmap:
--	/* __isolate_free_page() does not map the pages */
--	split_map_pages(freelist);
- }
- 
- /*
-@@ -1821,24 +1831,22 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
- {
+@@ -1832,15 +1832,40 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
  	struct compact_control *cc = (struct compact_control *)data;
  	struct folio *dst;
-+	int order = folio_order(src);
- 
--	/* this makes migrate_pages() split the source page and retry */
--	if (folio_test_large(src) > 0)
--		return NULL;
--
--	if (list_empty(&cc->freepages)) {
-+	if (list_empty(&cc->freepages[order])) {
- 		isolate_freepages(cc);
--
--		if (list_empty(&cc->freepages))
-+		if (list_empty(&cc->freepages[order]))
- 			return NULL;
- 	}
- 
--	dst = list_entry(cc->freepages.next, struct folio, lru);
-+	dst = list_first_entry(&cc->freepages[order], struct folio, lru);
- 	list_del(&dst->lru);
--	cc->nr_freepages--;
--	cc->nr_migratepages -= 1 << folio_order(src);
--
--	return dst;
-+	post_alloc_hook(&dst->page, order, __GFP_MOVABLE);
-+	if (order)
-+		prep_compound_page(&dst->page, order);
-+	cc->nr_freepages -= 1 << order;
-+	cc->nr_migratepages -= 1 << order;
-+	return page_rmappable_folio(&dst->page);
- }
- 
- /*
-@@ -1849,10 +1857,19 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
- static void compaction_free(struct folio *dst, unsigned long data)
- {
- 	struct compact_control *cc = (struct compact_control *)data;
-+	int order = folio_order(dst);
-+	struct page *page = &dst->page;
- 
--	list_add(&dst->lru, &cc->freepages);
--	cc->nr_freepages++;
--	cc->nr_migratepages += 1 << folio_order(dst);
-+	if (folio_put_testzero(dst)) {
-+		free_pages_prepare(page, order);
-+		list_add(&dst->lru, &cc->freepages[order]);
-+		cc->nr_freepages += 1 << order;
-+	}
-+	cc->nr_migratepages += 1 << order;
-+	/*
-+	 * someone else has referenced the page, we cannot take it back to our
-+	 * free list.
-+	 */
- }
- 
- /* possible outcome of isolate_migratepages */
-@@ -2476,6 +2493,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 	const bool sync = cc->mode != MIGRATE_ASYNC;
- 	bool update_cached;
- 	unsigned int nr_succeeded = 0;
-+	int order;
- 
- 	/*
- 	 * These counters track activities during zone compaction.  Initialize
-@@ -2485,7 +2503,8 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 	cc->total_free_scanned = 0;
- 	cc->nr_migratepages = 0;
- 	cc->nr_freepages = 0;
--	INIT_LIST_HEAD(&cc->freepages);
-+	for (order = 0; order < NR_PAGE_ORDERS; order++)
-+		INIT_LIST_HEAD(&cc->freepages[order]);
- 	INIT_LIST_HEAD(&cc->migratepages);
- 
- 	cc->migratetype = gfp_migratetype(cc->gfp_mask);
-@@ -2671,7 +2690,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 	 * so we don't leave any returned pages behind in the next attempt.
- 	 */
- 	if (cc->nr_freepages > 0) {
--		unsigned long free_pfn = release_freepages(&cc->freepages);
-+		unsigned long free_pfn = release_free_list(cc->freepages);
- 
- 		cc->nr_freepages = 0;
- 		VM_BUG_ON(free_pfn == 0);
-@@ -2690,7 +2709,6 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
- 
- 	trace_mm_compaction_end(cc, start_pfn, end_pfn, sync, ret);
- 
--	VM_BUG_ON(!list_empty(&cc->freepages));
- 	VM_BUG_ON(!list_empty(&cc->migratepages));
- 
- 	return ret;
-diff --git a/mm/internal.h b/mm/internal.h
-index 1e29c5821a1d..93e229112045 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -447,6 +447,8 @@ extern void prep_compound_page(struct page *page, unsigned int order);
- 
- extern void post_alloc_hook(struct page *page, unsigned int order,
- 					gfp_t gfp_flags);
-+extern bool free_pages_prepare(struct page *page, unsigned int order);
+ 	int order = folio_order(src);
++	bool has_isolated_pages = false;
++	int start_order;
++	struct page *freepage;
++	unsigned long size;
 +
- extern int user_min_free_kbytes;
++again:
++	for (start_order = order; start_order < NR_PAGE_ORDERS; start_order++)
++		if (!list_empty(&cc->freepages[start_order]))
++			break;
  
- extern void free_unref_page(struct page *page, unsigned int order);
-@@ -481,7 +483,7 @@ int split_free_page(struct page *free_page,
-  * completes when free_pfn <= migrate_pfn
-  */
- struct compact_control {
--	struct list_head freepages;	/* List of free pages to migrate to */
-+	struct list_head freepages[NR_PAGE_ORDERS];	/* List of free pages to migrate to */
- 	struct list_head migratepages;	/* List of pages being migrated */
- 	unsigned int nr_freepages;	/* Number of isolated free pages */
- 	unsigned int nr_migratepages;	/* Number of pages to migrate */
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 70c1ed3addf3..b0b92ce997dc 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1080,7 +1080,7 @@ static void kernel_init_pages(struct page *page, int numpages)
- 	kasan_enable_current();
- }
+-	if (list_empty(&cc->freepages[order])) {
+-		isolate_freepages(cc);
+-		if (list_empty(&cc->freepages[order]))
++	/* no free pages in the list */
++	if (start_order == NR_PAGE_ORDERS) {
++		if (has_isolated_pages)
+ 			return NULL;
++		isolate_freepages(cc);
++		has_isolated_pages = true;
++		goto again;
++	}
++
++	freepage = list_first_entry(&cc->freepages[start_order], struct page,
++				lru);
++	size = 1 << start_order;
++
++	list_del(&freepage->lru);
++
++	while (start_order > order) {
++		start_order--;
++		size >>= 1;
++
++		list_add(&freepage[size].lru, &cc->freepages[start_order]);
++		set_page_private(&freepage[size], start_order);
+ 	}
++	dst = (struct folio *)freepage;
  
--static __always_inline bool free_pages_prepare(struct page *page,
-+__always_inline bool free_pages_prepare(struct page *page,
- 			unsigned int order)
- {
- 	int bad = 0;
+-	dst = list_first_entry(&cc->freepages[order], struct folio, lru);
+-	list_del(&dst->lru);
+ 	post_alloc_hook(&dst->page, order, __GFP_MOVABLE);
+ 	if (order)
+ 		prep_compound_page(&dst->page, order);
 -- 
 2.43.0
 
