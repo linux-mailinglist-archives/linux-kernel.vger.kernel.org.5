@@ -1,99 +1,144 @@
-Return-Path: <linux-kernel+bounces-68637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF3C857D9C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:23:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0D4857DA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E40F61C246EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:23:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 509BF2888B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:26:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E16DC12A143;
-	Fri, 16 Feb 2024 13:23:22 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ADD0129A99;
+	Fri, 16 Feb 2024 13:26:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ng6pjzTB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17BA21B966
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB76B1292C4
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708089802; cv=none; b=e+sGxBet2j6Roohj6pVWws1YbSER6cYbOwJj7R2N0Ft83Gp9PFk3X3F1s2sor4KO4XJ5qxiGgeUyVWG+bMCypdrP2jS/o6nPOtSOi0X9OHhSmjcmHMuxB4RGxG6rzoIkwDyhAHIXZwUR/j0Hnxbg+QYRer64bqe3oatY+cj6fhg=
+	t=1708090003; cv=none; b=HHE6PeNZ+mEHOqSFFubvWzsvvSskLjpJGk9KNx+riUVLt+XYnFRMa+vfP3y1RXKQNgG9h8sSpx0MG2t46K8MmIj29HTmbrtThNEyLo8tEFiQCiQ6g3jYRDRNB6IQ5tZ5bEZvF0v58lRKslryeKworqGfZHCEn/0AN4s29Xo1vD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708089802; c=relaxed/simple;
-	bh=FqSWe7JHiE+uJcy2YTdzs/EetirgcQbQTZpnVkzmo8Q=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=U7z69AChDVJD37wowEKDrGqQ5cHoQrhdmUX2kJ7fwRoGscd1u1HFj2M8mW0EKMVSmrqH+1VEVlTQObuh5nnYbg8RC1HEGZb+EbTyscJpKkQfJeCiNAWD9STbFb7FfwW/ePkheP+C2L++7HnmuF1cxJ1Zu9J4ESL94QrNlrElO48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-365067c1349so8472235ab.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 05:23:20 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708089800; x=1708694600;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pui2IuVeVwTnvL6WtkW/nNwS2Ezf2FXXIiCC2gR7PNI=;
-        b=A4YTvI6xcgwYBUS2YcDI7sdNHtWpAt7Hu+p/7hxyAqItcbbkilfsooVJYyPe2dsYzv
-         ugspd+kH4migPcg0YqVEmxxepU+QimYSVsHBwlh421z8tqaG+Odlb2It2TMezErhhXO4
-         9tS8J3GSbfXn5Y04Ox0nAiHjBMdiwaFfg26a3Zp674VPnNVuC19Pb+hk4Wnf1ZLV8Hub
-         VreH2f3VEmzXC3JAQeX3by2oSG+fN6b0U1C9tYprSyf/za/G0pUAq63qt5YHg+viuKuA
-         gNnUHdK/S9BjrnsxRhS5UfYs5UjZDY8E5kheusy+XJE6MVTKZRm20KquJrT6Vp98V0/H
-         Ua0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXsohNMjS3w1yo7NtvEhwTMkT9jImL/Qt6h8mQ5PTwNAfv12bP1lyEtN0k/0bxa4LVFAW8sC1w+Yu6VwH/VTajtzGr9PGWp6nqJ+fy6
-X-Gm-Message-State: AOJu0YwDqqRushC4APJLBvr/4IRcQ0wMe+jIHoYxbY50HtZ6nqnnY34j
-	sQKi1Syj1/ufNFp1JGZ3OiAcMs/CE48ce4HZUzDeOxuAnKSI3M+XAZAuQYTHQE1tWDSJlQA+8IO
-	HOOE5oQ25sCU1IRjYUAzeSR0+8N4Rs8lJWV0ArXzcCwQFebt9IPIYaug=
-X-Google-Smtp-Source: AGHT+IHP3zirBrdpmR87Ieqf/kCU11sHaFTXhByBqF1DIC5U6wixLWGetyvp0XpBzZg6W+D+cSFdv2yl1SN+mh8JUPbcqnKzWsq0
+	s=arc-20240116; t=1708090003; c=relaxed/simple;
+	bh=L+zWcKXu5rAFw6ba1pojZ+9nUXWlollmWlUww2vrm5g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IEBaV/mrYm2IFIv52EVo8nFMkVdU+deLlpTsrA7CA4PqASqrcXBTBS1mPrJiM38CJ8zj6J5R/xKgX9Z40M//8X7NftPsXXaSx8lnsd/MUqXYrRj3vV9qMlZlNCpTWCEJV22okMnaL1USgiU2CTtRfNRyLwcHEuLew3HWmbTZbZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ng6pjzTB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24375C433F1;
+	Fri, 16 Feb 2024 13:26:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708090003;
+	bh=L+zWcKXu5rAFw6ba1pojZ+9nUXWlollmWlUww2vrm5g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ng6pjzTBfYDThdI1L7wuSshOBayj6W96MOGO3ROg9KRTHrHB2jJqr5X6BfLhMBx7Z
+	 tR7Zs1CtXpHtRwppPKPywID2OYEKHKtQWUUU4V5VkW2ir+CPHmlmNQgxsEsSfFmsLs
+	 KCjJ2HMVBemy+huKm7v3K8UyxUdx4HK4Q9L8EegXaInjwmXYjWCTKoJARmZJBj5Zgn
+	 whPkn0hVyGaf+mR8ggSSAgwQHZE0BzN/+QJL1gexMtsqOk2N3ZXqxGjvtxvWG1rizd
+	 155UTM2KDbfqWBfH+JqI9zexYdD7kPZUkYvo3FpI/SS09BriWRLDgnFZLAXUYlAnq2
+	 ldGv1PdTjOFEA==
+Date: Fri, 16 Feb 2024 14:26:38 +0100
+From: Alexey Gladkov <legion@kernel.org>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Samuel Thibault <samuel.thibault@ens-lyon.org>
+Subject: Re: [RFC PATCH v1 0/5] VT: Add ability to get font requirements
+Message-ID: <Zc9ijvUofv4PCLw_@example.org>
+References: <cover.1708011391.git.legion@kernel.org>
+ <d7743747-1ec2-4557-9f2f-4cffd77284b3@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:154f:b0:363:9d58:8052 with SMTP id
- j15-20020a056e02154f00b003639d588052mr368389ilu.2.1708089800292; Fri, 16 Feb
- 2024 05:23:20 -0800 (PST)
-Date: Fri, 16 Feb 2024 05:23:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ca829f06117fa50c@google.com>
-Subject: [syzbot] Monthly v9fs report (Feb 2024)
-From: syzbot <syzbot+listc76971b2e26402bae4ab@syzkaller.appspotmail.com>
-To: asmadeus@codewreck.org, ericvh@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, lucho@ionkov.net, 
-	syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d7743747-1ec2-4557-9f2f-4cffd77284b3@kernel.org>
 
-Hello v9fs maintainers/developers,
+On Fri, Feb 16, 2024 at 08:21:38AM +0100, Jiri Slaby wrote:
+> On 15. 02. 24, 16:37, Alexey Gladkov wrote:
+> > We now have KD_FONT_OP_SET_TALL, but in fact such large fonts cannot be
+> > loaded. No console driver supports tall fonts.
+> 
+> I thought fbcon can, no? If not, we should likely remove all the 
+> KD_FONT_OP_SET_TALL checks here and there.
 
-This is a 31-day syzbot report for the v9fs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/v9fs
+I thought so too until kbd users started trying to use such fonts. A month
+after adding KD_FONT_OP_SET_TALL, support for large fonts was turned off
+in fbcon:
 
-During the period, 2 new issues were detected and 0 were fixed.
-In total, 5 issues are still open and 26 have been fixed so far.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=2b09d5d364986f724f17001ccfe4126b9b43a0be
 
-Some of the still happening issues:
+But I don't think we need to remove KD_FONT_OP_SET_TALL completely. Maybe
+support for large fonts can be fixed.
 
-Ref Crashes Repro Title
-<1> 1611    Yes   WARNING in v9fs_fid_get_acl
-                  https://syzkaller.appspot.com/bug?extid=a83dc51a78f0f4cf20da
-<2> 265     Yes   BUG: corrupted list in p9_fd_cancelled (2)
-                  https://syzkaller.appspot.com/bug?extid=1d26c4ed77bc6c5ed5e6
-<3> 9       Yes   KASAN: slab-use-after-free Read in v9fs_stat2inode_dotl
-                  https://syzkaller.appspot.com/bug?extid=7a3d75905ea1a830dbe5
+I suggested GET_INFO to solve the problem in general. Even if there is no
+SET_TALL, the problem still remains. For example newport only supports
+8x16 fonts.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > Unfortunately, userspace
+> > cannot distinguish the lack of support in the driver from errors in the
+> > font itself. In all cases, EINVAL will be returned.
+> 
+> Yeah, AFAIR userspace just tries many possibilities and sees what trial 
+> worked.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Yep. In case of big font, I don’t know how to improve the error message in
+setfont. The EINVAL is very confusing for users.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+> > How about adding another operator to get the supported font size so that
+> > userspace can handle this situation correctly?
+> 
+> The whole font interface is horrid (and we got rid of v1 interface only 
+> recently). Like (ab)using height = vpitch in KD_FONT_OP_SET_TALL :(.
 
-You may send multiple commands in a single email message.
+Yep.
+
+> So perhaps, as a band-aid, this might be fine (note you give no 
+> opportunity to find out supported vpitch for example).
+
+The vpitch can be 32 or if the height is greater, then vpitch = fnt_height
+
+> Eventually, we need to invent a v3 interface with some better font_op
+> struct with reserved fields for future use and so on.
+
+Yes, yes, yes! Can we discuss this, pleeeeese? :)
+
+> 
+> > I mean something like this proof-of-concept.
+> > 
+> > ---
+> > 
+> > Alexey Gladkov (5):
+> >    VT: Add KD_FONT_OP_GET_INFO operation
+> >    newport_con: Allow to get max font width and height
+> >    sticon: Allow to get max font width and height
+> >    vgacon: Allow to get max font width and height
+> >    fbcon: Allow to get max font width and height
+> > 
+> >   drivers/tty/vt/vt.c                 | 27 +++++++++++++++++++++++++++
+> >   drivers/tty/vt/vt_ioctl.c           |  2 +-
+> >   drivers/video/console/newport_con.c | 21 +++++++++++++++++----
+> >   drivers/video/console/sticon.c      | 21 +++++++++++++++++++--
+> >   drivers/video/console/vgacon.c      | 17 ++++++++++++++++-
+> >   drivers/video/fbdev/core/fbcon.c    | 18 +++++++++++++++++-
+> >   include/linux/console.h             |  1 +
+> >   include/uapi/linux/kd.h             |  1 +
+> >   8 files changed, 99 insertions(+), 9 deletions(-)
+> > 
+> 
+> -- 
+> js
+> suse labs
+> 
+
+-- 
+Rgrds, legion
+
 
