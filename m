@@ -1,106 +1,120 @@
-Return-Path: <linux-kernel+bounces-69374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA7C858833
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:46:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC01B858830
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:46:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A605286983
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:46:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 520C4B22854
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E35581482FF;
-	Fri, 16 Feb 2024 21:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B9C146900;
+	Fri, 16 Feb 2024 21:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Z0huVsDe"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gAVIuj6q";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fFG6Fv0u"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C0D145B03
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBF61353E4;
+	Fri, 16 Feb 2024 21:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708119968; cv=none; b=B2hi5D44jqn6gSUCe0hBsjzTGRMxjvxAOwFrCfTVYlmqLJstVtmRYz09bxsKkz8NdPV371qdT52fqa4Vfqwcd9KEHvsxbNz7NENItWCtvekfAI6JypRr86B5CKsebokHEDN3rvFvHAA4WolzLHuz5Xmnxwti5E+Vse8uphRU5ec=
+	t=1708119949; cv=none; b=R3RpxczHHwLUOpD3NQosoBFrf8Jk7KyuZzsvDJWwqqIab0wdibgxZzalWmzPRCct8RBCB6ghBW4+GZ6JYa+KnK9auIrpFugJ+DO1+XHmk0qJ73YiHoHjOsH7MNupGSG5lkwc9DHlhw9uQFLolsC85ovb2+9NT5FYPwVOqXvLJ9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708119968; c=relaxed/simple;
-	bh=o0ndNCuW/LGkSeAXqoK2Hh0K+6mw4AiIuP9CZwqmqZ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ewUN6hopgvzHh48GDypfjNR2hVnu/nwEEzaHG7AVYylA77n3g2K3QTBJJgA7NSuD/lVk9XhNt0AjAWtm8JN4hSpBSj1tkPvIe3kg/xqvHyoTV0nGJ5shBrbjnWltSAXbbpFZpcvIXky5IxwV9Prn7QOEZbzL5NB4XLyBvDWy+no=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Z0huVsDe; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-116-68.bstnma.fios.verizon.net [173.48.116.68])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41GLjLRn027258
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 16:45:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1708119925; bh=qX3u18CRlr9QIqISpdJUxdSosa3u7KUTMQrg629TsYY=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Z0huVsDeqd9GAdZu8WotBIJJhNJ7TRQBHuR0dYi51rt+y7Tb9Fr2zamV4RsUxNCDH
-	 hKaQiX3bjLkgl+FruGnCLynXeZ4NtqL1fiL84OVccG7/dtMxpVVsba3to8WcwyTyGr
-	 QOD/dzYfmyVqgGY7/P2iIpt0Vu3QmTQLETnqpuQLTqNUVGciJpAFwZkxjbEnqp6i4U
-	 WjF11+JfB+ZBM0AL8R7/U+R3q/sUDMILBXlIf90Fr7O4sG1G1Cqza9EB3ky0Pf+074
-	 odVEA7cSYStvHpU0EZkA8ECr2MkMNB2KJMk2FV5okZcb9lrAq1BCuMQu7gez9EvJvg
-	 cTtqws76t9BoA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id BD7C415C0336; Fri, 16 Feb 2024 16:45:21 -0500 (EST)
-Date: Fri, 16 Feb 2024 16:45:21 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jiri Kosina <jikos@kernel.org>
-Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>, corbet@lwn.net,
-        workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, security@kernel.org, linux@leemhuis.info,
-        Kees Cook <keescook@chromium.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH v4] Documentation: Document the Linux Kernel CVE process
-Message-ID: <20240216214521.GC549270@mit.edu>
-References: <2024021500-laziness-grimace-ed80@gregkh>
- <20240216192625.o3q6m7cjgkwyfe4y@treble>
- <nycvar.YFH.7.76.2402162108370.21798@cbobk.fhfr.pm>
+	s=arc-20240116; t=1708119949; c=relaxed/simple;
+	bh=Mk0nxUw+sq35db+ZT9456aN5/fkc1vmq/3qOwOy1K4M=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZiV6IaFQQN58flB8b+3uvKPRkEuR5LCj8O9oaFejo0HKsEhaQgmY2Mb5LeQakRQxXOyjSk3rs5Hm/2s9kyVr9asOuvAgAk0W1lE68g0cZL5jl9O2yyFelTiblgz2qkvxQR9Q4NFPF3VMfqc8O8S0FK0LQmdSmbR1nOgLvb4+syw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gAVIuj6q; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fFG6Fv0u; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708119946;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=etwgo5N1QWBMtShX9v3D2p+zgcQeVtP2GzdDLktsQC8=;
+	b=gAVIuj6qniijsqgHgtIzLeiQgR3BMvBcoIEPyBGKmP+zphoPaMN3uCeMQpVzwLe3/RiFEp
+	UZhZ5x70uxt5E4tB9R53WM/x6VohRsdB+2PV9HUuN338zr24EjVEzEprL/6ZSu7opblo0+
+	bLUvyUMTnCW134TEkRLD0Us7i04zR17Ch6fNoYCIgdeppiNZZSbv9baFd0rm760cGZqQWM
+	zNqcQYAwN3jIwAUlLSsmpoGMQzcMg51shu79JgwsKvaxu0RGKMepS+umoWN3/C2dX6gOmj
+	W7fwaHcZveJlqPIfWqx+vzUaT5QAOwfgPig+BVZmQVgZ6+5cP6etJchZaflXXg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708119946;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=etwgo5N1QWBMtShX9v3D2p+zgcQeVtP2GzdDLktsQC8=;
+	b=fFG6Fv0uT9s8hVazM4DMd94ET+uX8+bc9eWd1hNGvJMzF+aU064xWN5Hxft0bOsfnGLEs8
+	u0zXOdvBmVkPJ/Cg==
+To: Paolo Bonzini <pbonzini@redhat.com>, Xin Li <xin@zytor.com>, Sean
+ Christopherson <seanjc@google.com>, Max Kellermann
+ <max.kellermann@ionos.com>
+Cc: hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org, Stephen
+ Rothwell <sfr@canb.auug.org.au>, kvm@vger.kernel.org
+Subject: Re: [PATCH] arch/x86/entry_fred: don't set up KVM IRQs if KVM is
+ disabled
+In-Reply-To: <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
+References: <20240215133631.136538-1-max.kellermann@ionos.com>
+ <Zc5sMmT20kQmjYiq@google.com>
+ <a61b113c-613c-41df-80a5-b061889edfdf@zytor.com>
+ <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
+Date: Fri, 16 Feb 2024 22:45:45 +0100
+Message-ID: <87ttm8axrq.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2402162108370.21798@cbobk.fhfr.pm>
+Content-Type: text/plain
 
-On Fri, Feb 16, 2024 at 09:27:48PM +0100, Jiri Kosina wrote:
-> 
-> Now that you have played the distro card (thanks!) here, let me just copy 
-> my comment from LWN where someone suggested "well, it's easy, it's the job 
-> of the [paid] distros to do the triage" ...
-> 
-> The problem is, that with this new system, paid distros are going to 
-> suffer a big time (with no benefit to anybody at all). We'll have to put a 
-> lot of productive and creative (upstream) work on hold in order to have 
-> enough resources to sort out the havoc that LTS team is apparently going 
-> to create by DoSing the world with a truckload of irrelevant CVEs.
+On Fri, Feb 16 2024 at 07:31, Paolo Bonzini wrote:
+> On 2/16/24 03:10, Xin Li wrote:
+>
+> It is intentional that KVM-related things are compiled out completely
+> if !IS_ENABLED(CONFIG_KVM), because then it's also not necessary to
+> have
 
-My observation is that the old system has had pretty low-quality
-CVE's, and worse, overly inflated CVE Severity Scores, which has
-forced all people who are supporting distro and cloud serves which
-sell into the US Government market to have to do very fast releases to
-meet FedRAMP requirements.  At least once, I protested an overly
-inflated CVSS score as being completely b.s., at a particular
-enterprise distro bugzilla, and my opinion as the upstream developer
-was completely ignored.
+That's a matter of taste. In both cases _ALL_ KVM related things are
+compiled out.
 
-So quite frankly, at least one enteprise distro hasn't impressed me
-with avoiding low quality CVE's and high CVSS scores, and so I'm quite
-willing to give the new system a chance.  (Especially since I've been
-told that the Linux Kernel CVE team isn't planning on issuing CVSS
-scores, which as far as I'm concerned, is *excellent* since my
-experience is that they are quite bogus, and quite arbitrary.)
+#ifdeffing out the vector numbers is silly to begin with because these
+vector numbers stay assigned to KVM whether KVM is enabled or not.
 
-	      	   	     	   	  - Ted
+And no, I don't think it's a net win to have the #ifdeffery in that
+table. Look at apic_idts[] in arch/x86/kernel/idt.c how this ends up
+looking. It's unreadable gunk.
+
+The few NULL defines in a header file next to the real stuff
+
+#if IS_ENABLED(CONFIG_KVM)
+....
+#else
+# define fred_sysvec_kvm_posted_intr_ipi                NULL
+# define fred_sysvec_kvm_posted_intr_wakeup_ipi         NULL
+# define fred_sysvec_kvm_posted_intr_nested_ipi         NULL
+#endif
+
+are not hurting at all and they are at a place where #ifdeffery is
+required anyway. That's a very common pattern all over the kernel and it
+limits the #ifdef horror to _ONE_ place.
+
+With your change you propagate the #ifdefffery to the multiple and the
+very wrong places for absolutely zero practical value. The resulting
+binary code is exactly the same for the price of tasteless #ifdeffery in
+places where it matters.
+
+Please get rid of this #ifdef in the vector header and don't inflict
+bad taste on everyone.
+
+Thanks,
+
+        tglx
+
+
 
