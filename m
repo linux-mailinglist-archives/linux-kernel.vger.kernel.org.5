@@ -1,158 +1,314 @@
-Return-Path: <linux-kernel+bounces-68907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C15338581C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:52:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 673F58581DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:54:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61F27B22E03
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:52:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C8CF284661
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:54:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B370E12FB30;
-	Fri, 16 Feb 2024 15:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E567133289;
+	Fri, 16 Feb 2024 15:53:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="Zt2zLX7G"
-Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="VT30hQeK"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CF912F5AE
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B89F12FF8D;
+	Fri, 16 Feb 2024 15:53:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708098750; cv=none; b=XiN7DCaeBCb2wIf6rskoQvn4xNABn+5ZDOCzPI0FMhZl6e6pdsFspzb/WeUgMNCqojlK2UNWxoWu8rNuky+ewutVs+m+Z2nhpt6STzRVxVIGPIsEI8c3KYKpAtBxo6Lg0ETFekXkINX3/F1zyBJLRFMDQ2a50hZCPbq6nL+SrR4=
+	t=1708098790; cv=none; b=U+ikOd1sAnpBjIjtlHzlu6CcM2dpt23EoiNJTLMValK6fA+DR5wIA8YWRgo9sn3aTMJBpTw0RP/ku+BS2+UhTUhfEJht79700hTuDUaMXVsAq6YngGBu1rLkWLuJENzZDP51vNU625dGP+Rj7G3nX0SiHKA3Ykhk0AK7gpuHF0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708098750; c=relaxed/simple;
-	bh=zQHxIDjjwvENEklHG5+P+nAsCfKvOL33RSYN/au5iDk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JgA+la/Gm5niGzd+4rfm46UFRlhwhw1EZ/jeL6XJQCsa48L9weAlIgYp+rBTg6TYprro/63HtB+sDRCUsh4uQ0hBAmCB+4gd/Drwvbnw7PjAnn4W56pv6ABJT1M79BRENBrpPodkXNInJOsJ93Z/LmuQBq2P5sfYtAOh/ZOFqvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=Zt2zLX7G; arc=none smtp.client-ip=209.85.166.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c457b8ef7cso71362339f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:52:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1708098747; x=1708703547; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4UuLv5UoKgwS5Sbj+Drkana4tgYiAyfKFVJYKCmoJVg=;
-        b=Zt2zLX7GmLt+0ud+VHVzrDHuFsPhQJVRGfOHygy0MPMtwuGJwtHmqcTdCkEGGm0PZ4
-         WplZ9MQ48lleoQv/zaMUa/A/D1KY5q7TMJASI1UVvyrKSG1urR5uA/PJfP4YWMgyIs56
-         2eQd9RQaSmhh+I0cMtXTBAHuQilKOYennelDtajp2eYPzWyMdjGAmICiuPDqWFBxr/6i
-         yYAlG+CjOnqFuP1Jk1uMQu15Ay1ijK1ef4Z4U5PZZ7EWJZW4xuiAcD7pFQYT2vl+L1C2
-         fom7VGpuU2e3JHipj5MIxWY5GHt/DU7Y5QKU9xNZqmUtnC3El+0NDCu3Dp6vZ8SkVMJy
-         4duQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708098747; x=1708703547;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4UuLv5UoKgwS5Sbj+Drkana4tgYiAyfKFVJYKCmoJVg=;
-        b=f9DRN2H4hD9tPu5m8iQG1BKM1730V/RSTL1pi4AyPwlmd+VJWJpD+PyRAOhIh3KTb+
-         DCVDuR5C1aUU3JKiY8iAH30bobRZN2K5Nfswta+FNFLflwTA/hyvpMtjrCZUOaz0BgUd
-         eA0A0KCeSptd1/3CluAipJJFVoD9fG1dAPpaIWdcQgcoOf9+olicv+PC3i9H01FEeYvo
-         TDi8T0/5L+IZ+FB051ezfMbJGq6GqYr/JQ3boBZgb7xFjVaiez0iEG0kYv6SFhAGJM0i
-         AZR21xBMDZvHBaDsOA0PcN7BUl10HY2fC0cx3k18+1c89AFDAcchnDD+L1pn4u9+AQZ9
-         LEQw==
-X-Forwarded-Encrypted: i=1; AJvYcCVZLLffERYf6jrLD6KGR+Ls37KZQlpOw93F9CMFRE9IC6B6VTzmGfPoCabz8QuqIWfEI8VkUQqgVd80u0cvV6vwDixreDuKf0S1or2y
-X-Gm-Message-State: AOJu0Yw+JQ8tXBqLj3wMb6K8q+zntyHWhZ/Te77uDcRktjqB8o3jLdV8
-	RM1vSbN2pHIPK/k18rZBvgFOfhMD6noTLIaMLrBPJGj1+II4bPBhqyOwcVB86Ho=
-X-Google-Smtp-Source: AGHT+IHrUiej7yFWlHnP9s7250iMaB2JeyRPBgFUS7lY1WV3rbY8kPKQiQ+iQejR4JASuqBjKZnwyQ==
-X-Received: by 2002:a05:6602:1302:b0:7c4:5529:5818 with SMTP id h2-20020a056602130200b007c455295818mr5979560iov.4.1708098747464;
-        Fri, 16 Feb 2024 07:52:27 -0800 (PST)
-Received: from [192.168.1.132] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id z26-20020a02ceba000000b0047401a9b8cesm32736jaq.106.2024.02.16.07.52.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 07:52:27 -0800 (PST)
-Message-ID: <f0c51f71-dae8-447f-bbdb-73d2ce607893@davidwei.uk>
-Date: Fri, 16 Feb 2024 08:52:25 -0700
+	s=arc-20240116; t=1708098790; c=relaxed/simple;
+	bh=zLUUTvjdltLauytWMLXk0P21dQJFhX21nlwthpGvqBs=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=gnOqBxAqX4U2exyQwwkGB0DaVrGewJSdFMeFCFeQpO00pHWUZPf5n83FLvo1LFa/Jj8gr3V3gSW4dZA+7QrDvgDb25mcLsGrGFarMV80+V0EUpsNrS8wAeYijDWI858JtCQAg31mC4XiL9enMmVe3hXeVbtCh6drBmtA0n7Jnw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=VT30hQeK; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 82E6224000E;
+	Fri, 16 Feb 2024 15:53:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708098785;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Uet75mnIaE3JwyHsIIMQq6iy2iUMj02Z/O8LfzL/MwQ=;
+	b=VT30hQeKUUP8jWKQdwSRadSL4Wl0n3kJ/0/7c6Tob+Zzeaoa9ZOEIS07fdlzzUR4EW64FD
+	5SRQT8wuQLMDbffNxQUZYWAW2JvOPnFg+St8sO4mVEkiouPRfK/R51I4Je0R/tjZEkUV8Z
+	6KO3KXtSas3PLMmaCBpV4FQ4fvQqYGv7cyt1WVDQovj7c4ybdX3s2epXYHkadPnJmkjZbJ
+	tpEmSJ99BwuTN9+6bFeUu1ekbENka1ksozzQ2ocLlSWcOQuojioDoiX/r9jfy3c1SaOWX1
+	sZyxojPY0x4eLXGFqwG3pKZ68SuIFO6u+Uau5k5Jg85zwG6hN168LmaRtENVbw==
+From: Kory Maincent <kory.maincent@bootlin.com>
+Date: Fri, 16 Feb 2024 16:52:26 +0100
+Subject: [PATCH RFC net-next v8 08/13] ptp: Add phc source and helpers to
+ register specific PTP clock or get information
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/8] net: tcp: tsq: Convert from tasklet to BH workqueue
-Content-Language: en-GB
-To: Eric Dumazet <edumazet@google.com>, Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
- linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com,
- ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com,
- houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org,
- netdev@vger.kernel.org, allen.lkml@gmail.com, kernel-team@meta.com,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- David Wei <davidhwei@meta.com>
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-7-tj@kernel.org> <Zc7zLsEhDzGkCH9m@slm.duckdns.org>
- <CANn89iKDsJPY=QQrTHK0Jw=s=A_G_GzcOA0WsqXaytWAVV3R4Q@mail.gmail.com>
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <CANn89iKDsJPY=QQrTHK0Jw=s=A_G_GzcOA0WsqXaytWAVV3R4Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240216-feature_ptp_netnext-v8-8-510f42f444fb@bootlin.com>
+References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+In-Reply-To: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+To: Florian Fainelli <florian.fainelli@broadcom.com>, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
+ Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
+ Russell King <linux@armlinux.org.uk>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Richard Cochran <richardcochran@gmail.com>, 
+ Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
+ Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
+ Nicolas Ferre <nicolas.ferre@microchip.com>, 
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
+ Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+ Maxime Chevallier <maxime.chevallier@bootlin.com>, 
+ Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
+ Kory Maincent <kory.maincent@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On 2024-02-16 01:23, Eric Dumazet wrote:
-> !-------------------------------------------------------------------|
->   This Message Is From an External Sender
-> 
-> |-------------------------------------------------------------------!
-> 
-> On Fri, Feb 16, 2024 at 6:31 AM Tejun Heo <tj@kernel.org> wrote:
->>
->> Hello,
->>
->> On Mon, Jan 29, 2024 at 11:11:53PM -1000, Tejun Heo wrote:
->>> The only generic interface to execute asynchronously in the BH context is
->>> tasklet; however, it's marked deprecated and has some design flaws. To
->>> replace tasklets, BH workqueue support was recently added. A BH workqueue
->>> behaves similarly to regular workqueues except that the queued work items
->>> are executed in the BH context.
->>>
->>> This patch converts TCP Small Queues implementation from tasklet to BH
->>> workqueue.
->>>
->>> Semantically, this is an equivalent conversion and there shouldn't be any
->>> user-visible behavior changes. While workqueue's queueing and execution
->>> paths are a bit heavier than tasklet's, unless the work item is being queued
->>> every packet, the difference hopefully shouldn't matter.
->>>
->>> My experience with the networking stack is very limited and this patch
->>> definitely needs attention from someone who actually understands networking.
->>
->> On Jakub's recommendation, I asked David Wei to perform production memcache
->> benchmark on the backported conversion patch. There was no discernible
->> difference before and after. Given that this is likely as hot as it gets for
->> the path on a real workloal, the conversions shouldn't hopefully be
->> noticeable in terms of performance impact.
->>
->> Jakub, I'd really appreciate if you could ack. David, would it be okay if I
->> add your Tested-by?
+Prepare for future hardware timestamp selection by adding source and
+corresponding pointers to ptp_clock structure. Additionally, introduce
+helpers for registering specific phydev or netdev PTP clocks, retrieving
+PTP clock information such as hwtstamp source or phydev/netdev pointers,
+and obtaining the ptp_clock structure from the phc index.
 
-Yes, that's fine.
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
 
-> 
-> I presume memcache benchmark is using small RPC ?
+Change in v8:
+- New patch.
+---
+ drivers/ptp/ptp_clock.c          | 71 +++++++++++++++++++++++++++++++++
+ drivers/ptp/ptp_private.h        |  5 +++
+ include/linux/ptp_clock_kernel.h | 84 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 160 insertions(+)
 
-It is not a benchmark but a prod shadow, but yes the requests are small.
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index f374b1e89780..d7cd7e01990e 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -504,6 +504,77 @@ void ptp_cancel_worker_sync(struct ptp_clock *ptp)
+ }
+ EXPORT_SYMBOL(ptp_cancel_worker_sync);
+ 
++struct ptp_clock *netdev_ptp_clock_register(struct ptp_clock_info *info,
++					    struct net_device *dev)
++{
++	struct ptp_clock *ptp;
++
++	ptp = ptp_clock_register(info, &dev->dev);
++	if (IS_ERR(ptp))
++		return ptp;
++
++	ptp->phc_source = HWTSTAMP_SOURCE_NETDEV;
++	ptp->netdev = dev;
++
++	return ptp;
++}
++EXPORT_SYMBOL(netdev_ptp_clock_register);
++
++struct ptp_clock *phydev_ptp_clock_register(struct ptp_clock_info *info,
++					    struct phy_device *phydev)
++{
++	struct ptp_clock *ptp;
++
++	ptp = ptp_clock_register(info, &phydev->mdio.dev);
++	if (IS_ERR(ptp))
++		return ptp;
++
++	ptp->phc_source = HWTSTAMP_SOURCE_PHYLIB;
++	ptp->phydev = phydev;
++
++	return ptp;
++}
++EXPORT_SYMBOL(phydev_ptp_clock_register);
++
++bool ptp_clock_from_phylib(struct ptp_clock *ptp)
++{
++	return ptp->phc_source == HWTSTAMP_SOURCE_PHYLIB;
++}
++EXPORT_SYMBOL(ptp_clock_from_phylib);
++
++bool ptp_clock_from_netdev(struct ptp_clock *ptp)
++{
++	return ptp->phc_source == HWTSTAMP_SOURCE_NETDEV;
++}
++EXPORT_SYMBOL(ptp_clock_from_netdev);
++
++struct net_device *ptp_clock_netdev(struct ptp_clock *ptp)
++{
++	if (ptp->phc_source != HWTSTAMP_SOURCE_NETDEV)
++		return NULL;
++
++	return ptp->netdev;
++}
++EXPORT_SYMBOL(ptp_clock_netdev);
++
++struct phy_device *ptp_clock_phydev(struct ptp_clock *ptp)
++{
++	if (ptp->phc_source != HWTSTAMP_SOURCE_PHYLIB)
++		return NULL;
++
++	return ptp->phydev;
++}
++EXPORT_SYMBOL(ptp_clock_phydev);
++
++struct ptp_clock *ptp_clock_get_by_index(int index)
++{
++	if (index < 0)
++		return NULL;
++
++	return xa_load(&ptp_clocks_map, (unsigned long)index);
++}
++EXPORT_SYMBOL(ptp_clock_get_by_index);
++
+ /* module operations */
+ 
+ static void __exit ptp_exit(void)
+diff --git a/drivers/ptp/ptp_private.h b/drivers/ptp/ptp_private.h
+index 45f9002a5dca..3faecc5b9136 100644
+--- a/drivers/ptp/ptp_private.h
++++ b/drivers/ptp/ptp_private.h
+@@ -41,6 +41,11 @@ struct ptp_clock {
+ 	struct ptp_clock_info *info;
+ 	dev_t devid;
+ 	int index; /* index into clocks.map */
++	enum hwtstamp_source phc_source;
++	union { /* Pointer of the phc_source device */
++		struct net_device *netdev;
++		struct phy_device *phydev;
++	};
+ 	struct pps_device *pps_source;
+ 	long dialed_frequency; /* remembers the frequency adjustment */
+ 	struct list_head tsevqs; /* timestamp fifo list */
+diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
+index 6e4b8206c7d0..174a0b98632b 100644
+--- a/include/linux/ptp_clock_kernel.h
++++ b/include/linux/ptp_clock_kernel.h
+@@ -9,7 +9,9 @@
+ #define _PTP_CLOCK_KERNEL_H_
+ 
+ #include <linux/device.h>
++#include <linux/netdevice.h>
+ #include <linux/pps_kernel.h>
++#include <linux/phy.h>
+ #include <linux/ptp_clock.h>
+ #include <linux/timecounter.h>
+ #include <linux/skbuff.h>
+@@ -340,6 +342,70 @@ extern void ptp_clock_event(struct ptp_clock *ptp,
+ 
+ extern int ptp_clock_index(struct ptp_clock *ptp);
+ 
++/**
++ * netdev_ptp_clock_register() - register a PTP hardware clock driver for
++ *				 a net device
++ *
++ * @info: Structure describing the new clock.
++ * @dev:  Pointer of the net device
++ */
++
++extern struct ptp_clock *
++netdev_ptp_clock_register(struct ptp_clock_info *info,
++			  struct net_device *dev);
++
++/**
++ * phydev_ptp_clock_register() - register a PTP hardware clock driver for
++ *				 a phy device
++ *
++ * @info:   Structure describing the new clock.
++ * @phydev:  Pointer of the phy device
++ */
++
++extern struct ptp_clock *
++phydev_ptp_clock_register(struct ptp_clock_info *info,
++			  struct phy_device *phydev);
++
++/**
++ * ptp_clock_from_phylib() - return true if the PTP clock comes from phylib
++ *
++ * @ptp:    The clock obtained from net/phy_ptp_clock_register().
++ */
++
++bool ptp_clock_from_phylib(struct ptp_clock *ptp);
++
++/**
++ * ptp_clock_from_netdev() - return true if the PTP clock comes from netdev
++ *
++ * @ptp:    The clock obtained from net/phy_ptp_clock_register().
++ */
++
++bool ptp_clock_from_netdev(struct ptp_clock *ptp);
++
++/**
++ * ptp_clock_netdev() - obtain the net_device of PTP clock
++ *
++ * @ptp:    The clock obtained from netdev_ptp_clock_register().
++ */
++
++struct net_device *ptp_clock_netdev(struct ptp_clock *ptp);
++
++/**
++ * ptp_clock_phydev() - obtain the phy_device of a PTP clock
++ *
++ * @ptp:    The clock obtained from phydev_ptp_clock_register().
++ */
++
++struct phy_device *ptp_clock_phydev(struct ptp_clock *ptp);
++
++/**
++ * ptp_clock_get_by_index() - obtain the PTP clock from a given PHC index
++ *
++ * @index:    The device index of a PTP clock.
++ */
++
++struct ptp_clock *ptp_clock_get_by_index(int index);
++
+ /**
+  * ptp_find_pin() - obtain the pin index of a given auxiliary function
+  *
+@@ -405,6 +471,24 @@ static inline void ptp_clock_event(struct ptp_clock *ptp,
+ { }
+ static inline int ptp_clock_index(struct ptp_clock *ptp)
+ { return -1; }
++static inline struct ptp_clock *
++netdev_ptp_clock_register(struct ptp_clock_info *info,
++			  struct net_device *dev)
++{ return NULL; }
++static inline struct ptp_clock *
++phydev_ptp_clock_register(struct ptp_clock_info *info,
++			  struct phy_device *phydev)
++{ return NULL; }
++static inline bool ptp_clock_from_phylib(struct ptp_clock *ptp)
++{ return false; }
++static inline bool ptp_clock_from_netdev(struct ptp_clock *ptp)
++{ return false; }
++static inline struct net_device *ptp_clock_netdev(struct ptp_clock *ptp)
++{ return NULL; }
++static inline struct phy_device *ptp_clock_phydev(struct ptp_clock *ptp);
++{ return NULL; }
++static inline struct ptp_clock *ptp_clock_get_by_index(int index);
++{ return NULL; }
+ static inline int ptp_find_pin(struct ptp_clock *ptp,
+ 			       enum ptp_pin_function func, unsigned int chan)
+ { return -1; }
 
-> 
-> TSQ matters for high BDP, and is very time sensitive.
-> 
-> Things like slow TX completions (firing from napi poll, BH context)
-> can hurt TSQ.
-> 
-> If we add on top of these slow TX completions, an additional work
-> queue overhead, I really am not sure...
-> 
-> I would recommend tests with pfifo_fast qdisc (not FQ which has a
-> special override for TSQ limits)
-> 
-> Eventually we could add in TCP a measure of the time lost because of
-> TSQ, regardless of the kick implementation (tasklet or workqueue).
-> Measuring the delay between when a tcp socket got tcp_wfree approval
-> to deliver more packets, and time it finally delivered these packets
-> could be implemented with a bpftrace program.
+-- 
+2.25.1
+
 
