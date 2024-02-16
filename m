@@ -1,195 +1,169 @@
-Return-Path: <linux-kernel+bounces-68228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C74C6857798
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BEB3F85779B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:26:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F13D1F215B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:25:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D3D61F217A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DE41DDEB;
-	Fri, 16 Feb 2024 08:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5890C1B94C;
+	Fri, 16 Feb 2024 08:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ffjFZC/8"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="osf9rAj/"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2024.outbound.protection.outlook.com [40.92.52.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3097F1B81A
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071683; cv=none; b=Q9mh+ANaAjfouHj3K6ez3814MlLLNsqqIwgd4WGdjvdynBqQbG3R8obz/0AejACRX5ONdnECnLAobFSYriq0gbl+8juGmxIT1aF9QYTh39F1JAQLXGvoFNpEEvZKxyScZvozovufO1dWHTDWQiImaF3CLJDOaDvExm2hFkTqofA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071683; c=relaxed/simple;
-	bh=HsCdI41uNLdj9vWH20xULzyDarTlzF8V7YTORvhNJQ0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=I0BEbEN4bZeohX4jGfaVrgH2vvuYdv4Uag+2FWRPB+I6mtzBnBQkUSTzzELeatiD+bIYIWLtJ5H4brnLzf6Q6tNKptMlGd0XI+zpNfs/P9Uis1VawKiOfPxTHSwqbr52IAC/xOsLQm6zfB4jjmkqZ+/XqLDgpF7fORL1bqL/FR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ffjFZC/8; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708071681;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HsCdI41uNLdj9vWH20xULzyDarTlzF8V7YTORvhNJQ0=;
-	b=ffjFZC/8eXg/IT3tHbexJsqbOxeRoc+iP5J7rqs8IewJ3sA7iDxdYxPRQB1Y288GexD5H6
-	AdH+bMwdzFkY7l4eto9A3hDaA3d3PuhYcRwfJrB4xErNbCUsjXG6bbiHwhLcYjBFki2cdA
-	feN8lzUCx+vvaud+Pqs288BLT62Zycg=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-607-IoSh8ShXPBGmSdqDMlP1Aw-1; Fri, 16 Feb 2024 03:21:19 -0500
-X-MC-Unique: IoSh8ShXPBGmSdqDMlP1Aw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d19ac07c5so249410f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:21:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708071678; x=1708676478;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HsCdI41uNLdj9vWH20xULzyDarTlzF8V7YTORvhNJQ0=;
-        b=YFNE5IGkooSBz/qt4LoH8vLBIhk6vST8xtpFcTxxt0G+SNgdEdjW32OnlY0mxqwSG6
-         qk7q5EjZClOTlw6Yrxpq6zv9GBqfCLnuqKBbwyJOE4c6R01HRlPn6IeTAhRQpG6qW4I9
-         jSlVtt3XRiADcv3x1NGPC7ZGtCEFJLfl7k17C0cWLv24Urz7eUlHfzfIrbsRkfbuBUWw
-         VghAm3D44a+aBrlxNCrTc6UPlicu0hCwSrTr2acJnxLQ/RHyJrsjU1rDuAb7NE9s/QTp
-         HDSmR+dlEY+j1oL3B7Cfu6vmusNg6o/Aq4nGfkFFZsFVt2lR3gVqaO9bzXRm6Aeue/H5
-         4ssQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX/Qi0piifRUpfyomGY7cCbyVjagD0iCpoJiaXMUZyso5I1KgD8gAzmxxIzCaJv7DjyUh5yL3rk1FiMIbh8AVrfDhn6zL620hrjtSaH
-X-Gm-Message-State: AOJu0Yw5itscppbHtetJ9wHQ33xTPnHLqjzT6XoyAztQQ7NpqIjPIOl9
-	KY1XJLYD6clbFEDuhXRQGe1nXZXYsQljCEQCMge5zMsSifmxZp863n1JZkJ5aBekF8Db3zd41XA
-	ZiXDMl7mBrsKYAg2WqEf6xg+Y7JYcTHY/rBzW0BwxvMsM3HQHZ4YWUiM27VjQPQ==
-X-Received: by 2002:a5d:6109:0:b0:33d:228f:f4ab with SMTP id v9-20020a5d6109000000b0033d228ff4abmr105150wrt.15.1708071678170;
-        Fri, 16 Feb 2024 00:21:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGFhNSykPbcaVP9rvuI+Pxyv/DedRPTjhi4bZfskagZIPLeSAgm7zKS8dwtr+tsW9UaRRKMAg==
-X-Received: by 2002:a5d:6109:0:b0:33d:228f:f4ab with SMTP id v9-20020a5d6109000000b0033d228ff4abmr105131wrt.15.1708071677787;
-        Fri, 16 Feb 2024 00:21:17 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id b7-20020a5d6347000000b0033d14455c99sm1468403wrw.101.2024.02.16.00.21.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 00:21:17 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: Doug Anderson <dianders@chromium.org>, neil.armstrong@linaro.org
-Cc: Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
- dri-devel@lists.freedesktop.org, eizan@chromium.org, Ankit Nautiyal
- <ankit.k.nautiyal@intel.com>, Daniel Vetter <daniel@ffwll.ch>, David
- Airlie <airlied@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, Imre
- Deak <imre.deak@intel.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, Sam
- Ravnborg <sam@ravnborg.org>, Stanislav Lisovskiy
- <stanislav.lisovskiy@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/dp: Don't attempt AUX transfers when eDP panels are
- not powered
-In-Reply-To: <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
-References: <20240202141109.1.I24277520ac754ea538c9b14578edc94e1df11b48@changeid>
- <CAJMQK-it9YMod4rHKnACq4O-iaGieK2SN4x5vQ018CghsA631A@mail.gmail.com>
- <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
- <87sf1u58k0.fsf@intel.com>
- <CAD=FV=XQdLm3PcjEd_g_dBJ9QO8zAJtj5nrXS9=cjC80+-Jbfg@mail.gmail.com>
- <cbcd981f-bd5d-477e-8482-d3414be17057@linaro.org>
- <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
-Date: Fri, 16 Feb 2024 09:21:16 +0100
-Message-ID: <87frxskef7.fsf@minerva.mail-host-address-is-not-set>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9946D149DEC;
+	Fri, 16 Feb 2024 08:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.52.24
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708071696; cv=fail; b=RkBKYb7lPw+fXWnMzt8CU6WbfTfxSu+1zp/6S5BaWu2+YksjmFd4tjkB9dVqMBflt3j0TRjrMGpjlKNkCbOeS2K+TrkpOiAE4vGqKgxssIWXoIv5ASGpOeuNODJe1nQRBxgkXPmUoiobwbHtNUFt1rqvA6Z7hCNHld1/M9X50C4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708071696; c=relaxed/simple;
+	bh=h+EABU/BMFSIqvFLoEHKsFnLNQ/tt79BNDh7r0t+FOI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=JOyTKuic+10wnq2T4+kLrDzeU56q+Yh0jva9azh1ntxi5yYKb/iqlWKSFvUImFwA1G0MA93nSyx0He0QRYcnbPEbgxL53HLjvUoT9GLInXoXs5MQfgg+qis3zZLmQyrcwWg+LYkRfwLBEA6ySgA2VoGIZDUlEQfmoR1iFCp9a3Q=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=osf9rAj/; arc=fail smtp.client-ip=40.92.52.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=m6r2LYzCl+yMNjeQs5Ppz5U4PpkSjG6rLPPX5LR3YarcdjdEL/FnIlvRfQ+96T+pwtzY+y5ao5gtqqz9Rqd4gP9IwH46FLjmjCfcyGGca/IVqpvyK48Sq6ZeFgak+XZJykwXLgoT6JRlbI0G9ar1aKiVYdi5LJhxRy9TqjZCHQ6z8sQ9T71Br59ztd/Gw+2tjIVrhfojPq9wi2Tuh/m8OWDQdeMZywdst3J6qVXywpHiX8SFJtUqHvxQQZAe42GpZZK5/vmXB97PIzVYRyz1cFQkARapoQvf8qzNrdc5gWUcf97kpZK6Lqq8mzlhVcTVJ8XpXaclAntlJqc1oFgr1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NYB/Smi3vAzD+C03nKcWOEaIUu3S0P4OK7NSzevmbMo=;
+ b=RF8Mr1v2j4q6ABgRbrGNo+eMZNnKr8mMQFVX/VwLCavQ0Xcavg0/Wgn9zbVSHc72USWrhp5OKG/phCkKVz/v9lmr9pPCx55/BWrYEaMGovLHU0/nCZE+sJRu+FfCWTWEES4dr9JdbfjjALo8rn8sUnG1gpNH8vMlyxyQ7S8WPcXzqJqjFX/xqRdD2wK/fyVnF8+Em2dj8vAmrhEcuTKYf8IpGHKpB1XQTGvdZEF3AsvRlYZ6+GdsJMXZFOfXL7UW/E+O4ZlnozBQG8sdTe5WnTJsu9f9VYgEJMDeK4KLEqrtmBwvysdQnOSW71Rs013UH0Ai3Jfzqgqo6erGSmYN0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NYB/Smi3vAzD+C03nKcWOEaIUu3S0P4OK7NSzevmbMo=;
+ b=osf9rAj/8HaflaWsw9HEWR0FFLrZttXOKrF1AiHpSr1iNsJ1WM5Icw2S+hQwtyFJ14NwpR7rbgU7MzPr4+kSMGwvAAP4Q0BF+sD4irBJnz24AWbgEm9YOSMCbYdUZlsynP7DOBnfzK2m2BtqSElvq0SJzXuFKCuDJshTZSkvjcvCiHVDSlf3afjFBBO6Uup9sTX4fkOhxZEQSFvO2wV+AxcDPz4hvpr5WmX3IAayF4aOM+Dc0DCNcEH0g6mJjBYMqXcVaVpmJPsrql57v8252tOyMfXBMLAPNoOf1GvPmBzRFZ5+YIgOaqobopchAkp+1Py5y5KnWcI0/v2/qkXZZA==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by TYSPR06MB6750.apcprd06.prod.outlook.com (2603:1096:400:479::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Fri, 16 Feb
+ 2024 08:21:28 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1%4]) with mapi id 15.20.7292.026; Fri, 16 Feb 2024
+ 08:21:28 +0000
+Message-ID:
+ <SEZPR06MB695938B228E762B9B53BAF2F964C2@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Fri, 16 Feb 2024 16:21:24 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] net: hisi_femac: remove unused compatible strings
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
+ <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Yang Xiwen <forbidden405@foxmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+ Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240216-net-v1-0-e0ad972cda99@outlook.com>
+ <20240216-net-v1-2-e0ad972cda99@outlook.com>
+ <68c9477a-3940-4024-8c86-aa6106e8a210@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <68c9477a-3940-4024-8c86-aa6106e8a210@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:
+ [LCLz05hA+WKZeVAFFOPAT8Vsav8usiaaHsqQkcT3oDk2VPR+W1z4JEpYDfZ/UqerbPocZZKKj1A=]
+X-ClientProxiedBy: TYCP286CA0002.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:26c::6) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <1d45dfd8-7f2b-4159-a7c3-5d3b4464b825@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|TYSPR06MB6750:EE_
+X-MS-Office365-Filtering-Correlation-Id: 755bf9f6-a5e7-4b5f-05f8-08dc2ec845dd
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	9Sf/yegB8G8ViZbhyCvKJIRieJtXmGc82yL6DzBC7j441XcScmEJqdW/SE7LjtCVq2IcRAJwEcHxq40ay2CmKNdKuZSbITxpmecXlm9w7bd5sNaI/OujZwcJTJgBZMqsGCsR05xeQ+0CVsAMuNRaPtXxY8QNVtdf/uz/Jkeyzg2O9IQGeIrKwHtZn2fwt5Kwa222jmmzY16CBSq0CPaLT1UwN7I1D0UbEubUQkzZfJYLPdOSbg443SL4cMrtqiN2H0dZnAO79whhFH1d7pRSYJ4/tulLXTFZJlHEKPZk5ZtwPSNScC2aQce3KYybZ5wtDdrllE7sxNX6fVRiB1+X6vjzxdSFU6ugTug5dml+ihIuC8VIAYn9z9Sl4wU7yjevSFMSVBBtokqfgUpMwaJ2MyaDh4CaO1iPpVPlDu9/WjHLN7ClSoVfH0AVORFHFV+SEzJencSRDKZz3L6heLRR4FwLcDa6rz8Jt2AKX3MdI1KcHK0JutX4wZci06wTtXCQgy/6HrGfXgYO9mXonWHT6O2Trxs6yM8WyQu28VywlOgOaxzOg+A9ySPCDrVPfo/q
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?M0h2d1VMQzR3NElPUnkyT2JEcjBoOG04Um9JSWE0ZXZySGtMUG14K2hkS01Q?=
+ =?utf-8?B?Z3NqUGIvV01FVTdwTnIzeGYxZWZSdGZTZFdhTnpSZUdqVkxIT3BvSlBIR2dI?=
+ =?utf-8?B?SHE1RTBMc0drZDk5VmZObFBYbEx4VjBjNFpzMFpJdHlSZXpLalVUTHlFRC9P?=
+ =?utf-8?B?V2VDMTkzeDJOOExBaVhad0lKRnlEcUsxTkY5TEU3RUZQN0ZnUDdzQ3F3cGN4?=
+ =?utf-8?B?VEZiVVk3QnhxRCtwN0FDSkU2YWdFN2Nyc0t2aVpoZDNDeXp3NG1jZ1N1aFhP?=
+ =?utf-8?B?R2lsMy9sSDRTTU9UQ01ZUmFCaEU2c3UwRWFKaFg3b1hQbll3MjJlMGxCaUpy?=
+ =?utf-8?B?dGRzSnN6aS8wbVZjQUJPdm4vMlJqTFIrSXdwOGN0OE1NNW9JbWtwQy9CMmNF?=
+ =?utf-8?B?aktJS3FpWWNEckErNHJsMysyZFd3MkFCbUVRTm96SS9tTlhHTE12TzV4OFMw?=
+ =?utf-8?B?eC9OVmJBRmxuK2F0RlVIV2pYWXRPYUJEYkYvWURXRFJaRE9BUVg2YmdnNm5i?=
+ =?utf-8?B?RzNLalA1RFFpZWY3M0tjYlpUUG9ON0dCUXIyQmJURmlXZ1ArUHViUFQ3YUJy?=
+ =?utf-8?B?b0lqaDdrSmtvMGFhTUdCL20wSkltWVozWk1zc1NnOHhoQTRQOG05NDAyN3VF?=
+ =?utf-8?B?M2NJRENUSFlCMzJCOGlFbk9Tbkp4dG91bVZwMnBsRVgxd1E0eE1xR0swUDBJ?=
+ =?utf-8?B?alVvM3N4SHVtS2czeW5MSXR1OURSRUVvL2wxeEh5QkRxZHBLZkUzS1Y3andt?=
+ =?utf-8?B?VXA0LzdpdXJPL0F4dTFZVmhiVWVsaDFwQ2FuMlBYUHdvaTl5ZUdsWFZFcERT?=
+ =?utf-8?B?RTM1Znh4ejdXdDNJeUZFeUNEY0xkOUViUi9yQzFoOGNNZERDeXBUZEFlUDJY?=
+ =?utf-8?B?NGpyZUFXTlNZODlHanhZeWFFVUZBNDNvclBtbUorQlQ4bi9VTzdyenlCNXZE?=
+ =?utf-8?B?OEtDL0xtWU1JcHJ6ajVnb21ZZWNOb1U3dW1LTGc1SUJOM3VrbHZMN0Jaenpq?=
+ =?utf-8?B?U0pDbWhWWVZ6aUhTWThJWHVkZVVLcDVuL1JLUGNtOHQ1RllWbDJXcTA5aEJC?=
+ =?utf-8?B?UXh3QjBwVHZsUGlzU0JOaDh1SDlSdk1nelNvUDh6ZWdXcDIrQWVWMitQbThH?=
+ =?utf-8?B?YWJYdWZFZ2RXaE03SE00YVdDNUd3dm91YWdTZEJOaW1qeVJxcnZaOVFpUnBP?=
+ =?utf-8?B?MzZ0YitzU1FwL21CdjJVUnBtT1NmMWlvTVFXdW4rc1B3L0wrUTZQSzVLbHRH?=
+ =?utf-8?B?Tm1XNDVmY0xOeloyc1ZkZzQ5ZWVUc3JmNG5UOCtyMmh2TUk3QVJmcFhzNWl3?=
+ =?utf-8?B?VTdDMHR2NDBkd3Uxbll3TkE0VC9ZanZhSzVObXlPVFlNb2wzVmgzOTRIS21H?=
+ =?utf-8?B?Nk85ZkYxQXlURkVseGd4dWVxWkhPREd6T1lFTFpXUUdUOEFUSHhoWEdGN3JK?=
+ =?utf-8?B?N2RINVphTmx3SHdVRmlEY1hCNlNkSUUwa2daSnUvUEgvdllzK3BYYkhVSytY?=
+ =?utf-8?B?TjF6MTZnd0orQ3FoQUloNkF4NkE1THh6Y2tpWlVQbksrQXNmSFMrM1M3Q3Fo?=
+ =?utf-8?B?RFNrempZbDJQNnhLZXhNZGZVVTVjNGlDQjVhaFZINWFwdXhwQ1k5c1FPM3Zq?=
+ =?utf-8?B?YW50VzVoVjlOSitBNDZ4bFBoMDE4T1RaMzZkUmcyMUtRb2tBNllrcjNSYUdj?=
+ =?utf-8?B?RS96bnk4T3M1R3dxdnFVL0s1bXdObjFTaXBnVWdPMEdkQTIyWmlFd2dtTFNX?=
+ =?utf-8?Q?RfQcQ4Ms20CmjQ4k2sj3ngiiuucaRb/CUpXDm7j?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 755bf9f6-a5e7-4b5f-05f8-08dc2ec845dd
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 08:21:28.1590
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6750
 
-Doug Anderson <dianders@chromium.org> writes:
-
-Hello Doug,
-
-> Hi,
->
-> On Thu, Feb 15, 2024 at 8:53=E2=80=AFAM Neil Armstrong
-> <neil.armstrong@linaro.org> wrote:
+On 2/16/2024 3:20 PM, Krzysztof Kozlowski wrote:
+> On 16/02/2024 00:48, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
 >>
->> Hi Doug,
->>
->> On 15/02/2024 16:08, Doug Anderson wrote:
->> > Hi,
->> >
->> > On Thu, Feb 15, 2024 at 2:24=E2=80=AFAM Jani Nikula <jani.nikula@intel=
-com> wrote:
->> >>
->> >> On Wed, 14 Feb 2024, Doug Anderson <dianders@chromium.org> wrote:
->> >>> Hi,
->> >>>
->> >>> On Tue, Feb 13, 2024 at 10:25=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromi=
-um.org> wrote:
->> >>>>
->> >>>> On Wed, Feb 14, 2024 at 2:23=E2=80=AFPM Douglas Anderson <dianders@=
-chromium.org> wrote:
->> >>>>>
->> >>>>> If an eDP panel is not powered on then any attempts to talk to it =
-over
->> >>>>> the DP AUX channel will timeout. Unfortunately these attempts may =
-be
->> >>>>> quite slow. Userspace can initiate these attempts either via a
->> >>>>> /dev/drm_dp_auxN device or via the created i2c device.
->> >>>>>
->> >>>>> Making the DP AUX drivers timeout faster is a difficult propositio=
-n.
->> >>>>> In theory we could just poll the panel's HPD line in the AUX trans=
-fer
->> >>>>> function and immediately return an error there. However, this is
->> >>>>> easier said than done. For one thing, there's no hard requirement =
-to
->> >>>>> hook the HPD line up for eDP panels and it's OK to just delay a fi=
-xed
->> >>>>> amount. For another thing, the HPD line may not be fast to probe. =
-On
->> >>>>> parade-ps8640 we need to wait for the bridge chip's firmware to bo=
-ot
->> >>>>> before we can get the HPD line and this is a slow process.
->> >>>>>
-
-[...]
-
+>> These compatible strings are not found in any mainline dts, remove them.
+> That's not a real reason. What about all other users?
+The people who want their devices being supported should post a working 
+dts first. Having found the dts missing is strongly telling me that this 
+SoC(Hi3516) is orphan and EOL already. I can't even find it in git 
+commit logs. I'll argue that the old binding is simply wrong, and does 
+not describe the hardware properly. Who knows? Could anyone tell me if 
+the driver is still working for Hi3516 or not? I'm very willing to keep 
+the backward compatibility if someone can tell me the effort i paid to 
+maintain the old binding really makes sense. But the only things i found 
+in mainline kernel about Hi3516 is an CRG(clock) driver and this femac 
+driver. And it's been 8 years since last update for this SoC.
 >
-> The kernel tree we landed on was the v5.15 tree, which is currently
-> serving all Qualcomm sc7180-based Chromebooks, all Mediatek 8173
-> Chromebooks and all Mediatek 8186 Chromebooks. There are also a pile
-> of x86 Chromebooks running our v5.15 kernel. This code shouldn't
-> affect them because (unless I'm mistaken) they don't use the two
-> affected panel drivers. In any case, I haven't heard any screams from
-> them either. Given my landing plans of "the week of the 26th", this
-> still gives another 1.5 weeks for any screams to reach my ears.
->
-> ...or are you looking for non-ChromeOS test reports? I'm not sure how
-> to encourage those. I suppose sometimes folks at Red Hat end up
-> stumbling over similar panel problems to those of us in ChromeOS.
-> Maybe +Javier would be interested in providing a Tested-by?
+> Best regards,
+> Krzysztof
 >
 
-I do have a SC7180 based HP X2 Chromebook and could test your patch (not
-today but I could do it early next week), although I haven't followed so
-if you could please let me know what exactly do you want me to verify.
-
-AFAIU the problem is that the fwupd daemon tries to scan DP busses even if
-the panel is turned off and that's what takes a lot of time (due retries),
-and your patch makes the driver to bail out immediately ? If that's the
-case, I guess that just starting fwupd daemon with an without your patch
-while the panel is turned off could be a good test ?
-
-> [1] https://crrev.com/c/5277322
-> [2] https://crrev.com/c/5277736
->
-
---=20
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+-- 
+Regards,
+Yang Xiwen
 
 
