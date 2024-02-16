@@ -1,120 +1,124 @@
-Return-Path: <linux-kernel+bounces-68426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3017C857A10
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:13:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97B2A857A0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:12:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6F2D285264
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:13:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC891F21040
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0621CAAD;
-	Fri, 16 Feb 2024 10:13:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b="cCCU8feS"
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B06C1C68A;
+	Fri, 16 Feb 2024 10:12:11 +0000 (UTC)
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B599F1CAAC
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:13:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.149.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E511C292
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708078387; cv=none; b=RzoB0+JUfs+8v9sWGsUjfqFStUXolqJ13eIQTrEgq8Il+Yj17TNOWBn6dR4hMo1unR7RIWG58WQzW2rr++huP1d0Yqj64kPqHflNJsc+nPXcrTlMaA/5ybt7/ylsCJVhdXv6gtLzeOrz8a1JT+THbUxcUEHFze4C1iLysyLPZqI=
+	t=1708078330; cv=none; b=Fi6tJcXbCRg95qjIuHzd2/vqcjklMlTCFAnYCBJKjRvUIRYQvDwKL2gRFbDBWzAbWarpP+X90bWxEuxUHZ/o2Y+gp9L+mUz4/k4zAxJH/MKHqEe9uquRSpJB5zSrfEDhCIc/FSn5OXCzKvISurOPfPdhpu45fL7CwDY+bHHtlQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708078387; c=relaxed/simple;
-	bh=ddSHJRLWu0hndL+TKATWxu/fkQ5Cgt2wZVl4XXmBDmc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jIeGs3dObUk7YcxjBzz6eT4FbE2YTVGELde+nCofyDkOqv4gn+vJDV+2oMF/WUR3qZODlbSdDb0whWpMqqq+9UsSX4hI7cdajuiDgyu8pWo0/rEsm+o/TKDWb5MjauV6Ob4pGwf1Rrkod8jSFFidXialFTGvQwpdOX8LoOUQdIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com; spf=pass smtp.mailfrom=opensource.cirrus.com; dkim=pass (2048-bit key) header.d=cirrus.com header.i=@cirrus.com header.b=cCCU8feS; arc=none smtp.client-ip=67.231.149.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=opensource.cirrus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=opensource.cirrus.com
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-	by mx0a-001ae601.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41G7jo54008245;
-	Fri, 16 Feb 2024 04:12:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding:content-type; s=PODMain02222019; bh=y
-	Bl3sKU+2L8E6Xmqeuy6j40kaWR7Rwcru9wjT8+Wxww=; b=cCCU8feS682LwGXVU
-	IhIxI/WXeHUTfJbWYlekatdSIv9LSdHNPSjZaPs5IouL3/mrjG71XQXkplkPcC+t
-	IkgXebFAcKHC3cVmRZh3fUvEcHMV4rAajVR95R7HBJhUAoX1g3kjDba1blEy1Njk
-	At5AJffR2hPIdDB7cW6NMPVQAqmNcDDY9xOYP7mfdJ14TJ6a8dVHqwkKtCX+7ood
-	4oLP9d78pfl0fBFKgo2bBA80DrvHRYiN9aDNwhruDg0dCzZ0dr7c6Bd7XwDoNuqy
-	GAuaNuQFN4NmuUsiIGCXA2Y9NcyFFsL/WWc+0lQQF7V830IHhpiUpXvFTrWhOup2
-	3KwVw==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-	by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3w67e26w8k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 04:12:34 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
- 2024 10:12:32 +0000
-Received: from ediswmail9.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.40 via Frontend Transport; Fri, 16 Feb 2024 10:12:32 +0000
-Received: from lon-bigdaddy.ad.cirrus.com (unknown [198.61.65.28])
-	by ediswmail9.ad.cirrus.com (Postfix) with ESMTP id 4C923820242;
-	Fri, 16 Feb 2024 10:12:32 +0000 (UTC)
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-To: Mark Brown <broonie@kernel.org>
-CC: Jaroslav Kysela <perex@perex.cz>, <alsa-devel@alsa-project.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        "Vitaly
- Rodionov" <vitalyr@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs42l42: Remove redundant delays in suspend().
-Date: Fri, 16 Feb 2024 10:11:57 +0000
-Message-ID: <20240216101157.23176-1-vitalyr@opensource.cirrus.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1708078330; c=relaxed/simple;
+	bh=03kSx/Xj1N2C9q6WgA/pGs7PiUtVb+PYHpq8O/z+ySU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hFpaix5o9bCHK0FCTgMGJAiyOi66Sr1SgjeQSwRd1ohj7ROWbAXqzmaF7uN2xh6PtxYAT2dU/VXSJ2WNyX9HXru7/zANi2ODrPHqJLAsXbscu+Crjss7kxgDomrPp+J0iLhTTZHIra6wJP4R1dH/mSv7ntqJmL2/yBVV45sDLu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4Tbnm66x0Cz9syV;
+	Fri, 16 Feb 2024 11:12:06 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 7SDVoGdzgC5N; Fri, 16 Feb 2024 11:12:06 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4Tbnm66M6Gz9syQ;
+	Fri, 16 Feb 2024 11:12:06 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id D65798B786;
+	Fri, 16 Feb 2024 11:12:06 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id NtHKeuYaB3Rg; Fri, 16 Feb 2024 11:12:06 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.102])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 862AA8B765;
+	Fri, 16 Feb 2024 11:12:06 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc: Implement set_memory_rox()
+Date: Fri, 16 Feb 2024 11:12:05 +0100
+Message-ID: <dc9a794f82ab62572d7d0be5cb4b8b27920a4f78.1708078316.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708078326; l=1982; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=03kSx/Xj1N2C9q6WgA/pGs7PiUtVb+PYHpq8O/z+ySU=; b=Tto0qP7joTrcp/+S58ahfE8oUF+EO5e/EajrmaQmtTc4EuqNVl/kMkP9wUAefhsa+aLhOM3nz YUaB0qT81cxDSOwmiwyT6PLv5ps1NOksX8As7tsDQp9SOgd1SJ4g/Bi
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: SPHtKxswNvwdYnim-ycZigmdJQrTo97J
-X-Proofpoint-GUID: SPHtKxswNvwdYnim-ycZigmdJQrTo97J
-X-Proofpoint-Spam-Reason: safe
 
-This patch will remove redundant delay and minimise
-total suspend() function call time.
+Same as x86 and s390, add set_memory_rox() to avoid doing
+one pass with set_memory_ro() and a second pass with set_memory_x().
 
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+See commit 60463628c9e0 ("x86/mm: Implement native set_memory_rox()")
+and commit 22e99fa56443 ("s390/mm: implement set_memory_rox()") for
+more information.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- include/sound/cs42l42.h    | 5 ++---
- sound/soc/codecs/cs42l42.c | 1 -
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ arch/powerpc/include/asm/set_memory.h | 7 +++++++
+ arch/powerpc/mm/pageattr.c            | 4 ++++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/include/sound/cs42l42.h b/include/sound/cs42l42.h
-index 3994e933db19..1bd8eee54f66 100644
---- a/include/sound/cs42l42.h
-+++ b/include/sound/cs42l42.h
-@@ -809,8 +809,7 @@
- #define CS42L42_PLL_LOCK_TIMEOUT_US	1250
- #define CS42L42_HP_ADC_EN_TIME_US	20000
- #define CS42L42_PDN_DONE_POLL_US	1000
--#define CS42L42_PDN_DONE_TIMEOUT_US	200000
--#define CS42L42_PDN_DONE_TIME_MS	100
--#define CS42L42_FILT_DISCHARGE_TIME_MS	46
-+#define CS42L42_PDN_DONE_TIMEOUT_US	235000
-+#define CS42L42_PDN_DONE_TIME_MS	65
+diff --git a/arch/powerpc/include/asm/set_memory.h b/arch/powerpc/include/asm/set_memory.h
+index 7ebc807aa8cc..9a025b776a4b 100644
+--- a/arch/powerpc/include/asm/set_memory.h
++++ b/arch/powerpc/include/asm/set_memory.h
+@@ -8,6 +8,7 @@
+ #define SET_MEMORY_X	3
+ #define SET_MEMORY_NP	4	/* Set memory non present */
+ #define SET_MEMORY_P	5	/* Set memory present */
++#define SET_MEMORY_ROX	6
  
- #endif /* __CS42L42_H */
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 2d11c5125f73..60d366e53526 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -2195,7 +2195,6 @@ int cs42l42_suspend(struct device *dev)
- 	/* Discharge FILT+ */
- 	regmap_update_bits(cs42l42->regmap, CS42L42_PWR_CTL2,
- 			   CS42L42_DISCHARGE_FILT_MASK, CS42L42_DISCHARGE_FILT_MASK);
--	msleep(CS42L42_FILT_DISCHARGE_TIME_MS);
+ int change_memory_attr(unsigned long addr, int numpages, long action);
  
- 	regcache_cache_only(cs42l42->regmap, true);
- 	gpiod_set_value_cansleep(cs42l42->reset_gpio, 0);
+@@ -41,4 +42,10 @@ static inline int set_memory_p(unsigned long addr, int numpages)
+ 	return change_memory_attr(addr, numpages, SET_MEMORY_P);
+ }
+ 
++static inline int set_memory_rox(unsigned long addr, int numpages)
++{
++	return change_memory_attr(addr, numpages, SET_MEMORY_ROX);
++}
++#define set_memory_rox set_memory_rox
++
+ #endif
+diff --git a/arch/powerpc/mm/pageattr.c b/arch/powerpc/mm/pageattr.c
+index 6163e484bc6d..421db7c4f2a4 100644
+--- a/arch/powerpc/mm/pageattr.c
++++ b/arch/powerpc/mm/pageattr.c
+@@ -38,6 +38,10 @@ static int change_page_attr(pte_t *ptep, unsigned long addr, void *data)
+ 		/* Don't clear DIRTY bit */
+ 		pte_update_delta(ptep, addr, _PAGE_KERNEL_RW & ~_PAGE_DIRTY, _PAGE_KERNEL_RO);
+ 		break;
++	case SET_MEMORY_ROX:
++		/* Don't clear DIRTY bit */
++		pte_update_delta(ptep, addr, _PAGE_KERNEL_RW & ~_PAGE_DIRTY, _PAGE_KERNEL_ROX);
++		break;
+ 	case SET_MEMORY_RW:
+ 		pte_update_delta(ptep, addr, _PAGE_KERNEL_RO, _PAGE_KERNEL_RW);
+ 		break;
 -- 
-2.40.1
+2.43.0
 
 
