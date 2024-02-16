@@ -1,393 +1,290 @@
-Return-Path: <linux-kernel+bounces-68975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 996828582DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:44:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 225588582E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:45:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BC361F2354B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 907C81F23F8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:45:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18380130ACF;
-	Fri, 16 Feb 2024 16:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FCA130AC9;
+	Fri, 16 Feb 2024 16:45:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="cEjpeyFS"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="odMN4+Dt"
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154AB12FF9D
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:44:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911DD43687
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708101878; cv=none; b=pFeWplrsIpzvjP9eOnMxYd6hDqrsE+EOqjmONKIiG3KKh3gWqV0Pna9W5g/1en7ScaZtIccuTTKL7SWwwWArutxygMY9g5kcn7nztW1K1DVBKJ9RLCEq6FACQV3w4K4EMKNLqN+w7oi0CiCZyfH8uysycnr2656XkARYPjKblz0=
+	t=1708101916; cv=none; b=or8kpMN3UEoS+pG/VLmcnRsrnInpuovr1r0tgPSoMpRTNzvYpq79990G12Hd5yK0zEfK4I7Fc6UctvfEdYjvVgHi0qjb945OSNllVbOS50ZAjFJAFJAKujrmtZZFzPJx3cZm934TxPP5za6mFYLMKbb7nuKFDgZQIDbq7E/EGDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708101878; c=relaxed/simple;
-	bh=MsdgmZ5Drh3S5d2siye8gmy/YW6Lz3bGzj8pyYi4rB4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cFgYoSvB6fm5kDZCj9GzQ0IXgd/4Ed6kFbdcbdtdnnhMtIMKk6GYkkH5ksLFTVK+bUDtuAB/A/d++j/0ZmmrDs9iqurn2lbFaol+AGhrNCSEZQib6ZDjTv1Sag/EafWHl6OuRePH2RVzNz6uJi5euYKT4MzvJZlPERko8cII8kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=cEjpeyFS; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-50e4e36c09cso780368e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:44:35 -0800 (PST)
+	s=arc-20240116; t=1708101916; c=relaxed/simple;
+	bh=KRDASqWMP4FmjtwV9SInKRI/O/iLjYCFWTgDjM85YK0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bgcLnTxlQh5pvguaxbJCl+/aw8xnEAWQMHsPIpnNVPl34xyaIGyslfjlHXq72vqi8sqlbAs6nSk0XKjAq4VgA4X+JLEI48w6kRHBSP2rVqH7h1PM7szxk8yFnDvBC0CjoeAKTVkgO2s9cj+vTSvmxkk1q+O9neH/meFJoAcoWtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=odMN4+Dt; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60777bcfed2so17554607b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:45:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1708101874; x=1708706674; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=76wOtguCiFQWboTMzhB4hnS3UP+WhC0vzMoeMQ3V+XQ=;
-        b=cEjpeyFS+iXFzXFVEXLxHGu3SMD0HruK3eZJfGXx8XRyHJcrhfwT1BaVpEuzJZ9vn1
-         DWM9PpqdTlFAkl8iHBhr86P9gruDzI8NiRm2UYaztRvd/198+Goavo0teBCD8kThxJus
-         kCz912iN3ui0QbJrJ8BsGkUL855cuiPBYIyIE=
+        d=google.com; s=20230601; t=1708101912; x=1708706712; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yqMJBdmCbC/RM9PRo3lm7SAMuIGxpy4kB2I1M6Qh1Sw=;
+        b=odMN4+DtMaBIStE4V0Gyk/UdKuc7ha27bLtVpyKeudQ9H4WmsUbUnmcdYXlqTfrfDn
+         j9AwL5xlt2PQKP7dtoW1QcmMal0BhWC/mDIYq9XqLTtm7EfYEQvCSqgCWpp0ozd6Vqrg
+         i1dx5OlytEq1OancQA2b9D8xXm/I9JPwkS+R+SZQpKobemBHc8DEbuX2szRF/uKCRBaf
+         sXrsyU1dK7oMYLr2haBccjYZ9QD9wISsnJJInmLY+cLGrH9KocGpj0Er0ZlQdW8n/HDP
+         /DFOKd6aiWUU34XSpFPxjfdAOnZ7XoZokv78cq3Mw/hMC/zSho7RbgbfLkxzdqwl7zlS
+         Sd7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708101874; x=1708706674;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=76wOtguCiFQWboTMzhB4hnS3UP+WhC0vzMoeMQ3V+XQ=;
-        b=OZkQtTaiVn6BZ3y7jBUEH82s1neCDOsBfIOtfPgq9Y9pNhy4bxznRIU+xQbZIvN/Lq
-         J80d1tS2Tni0n6tJDnHAEpvkitdLOCaj47HDlTAEJzd8R5h/5W0TPWByzg9r8F0EdUik
-         Tn7Y16LQM6BpDsF6nMYrDYTRsKMF0r/jgVlS6mMjkSEy/sLyQ3kJYTF6u7m0FkGrb706
-         Kp5qWhXjMVVbUyl664XIbe0rp/pPBvucmYIchHYm8Lu3iQnX4b2QUb/JLqDx81k8wBqe
-         Hc3QG/Q78ExRsfyHLLQ/FpZ/pD+Mf5e6mviEIcy8jMXQ0OKHBQA3QNxfWNkwp71zVIXV
-         u+HA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGsPfxJh1gtm5i6liYdwwe6RY20vaBkehNYlpUSNCZVP5k9HexATZBCw+Fwf4XG+Bb4Yheosg/Zs99YzdZqPPNsjve8/fRs12pryW4
-X-Gm-Message-State: AOJu0YwA2x5CUy1V8hXlQRhT0zv7U2wOXsTmzGvqE/UKXrp+EsayStV2
-	zrugCNBNMAMMwRqs4GOj2ePQ1Aze7BGY9IX9u2IubesQg7HnvAMUFX6d7e1ZUbY=
-X-Google-Smtp-Source: AGHT+IEuloFhVFC2o5Kh7YQza+RJRv4NnWpfLQKn44MYcnzGH2WMyJG+wXU911TQAAApZBNb+DUWPw==
-X-Received: by 2002:a19:9156:0:b0:511:5b35:d11c with SMTP id y22-20020a199156000000b005115b35d11cmr3508815lfj.2.1708101873965;
-        Fri, 16 Feb 2024 08:44:33 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v17-20020a05600c445100b00411fdf85d44sm2910563wmn.37.2024.02.16.08.44.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 08:44:33 -0800 (PST)
-Date: Fri, 16 Feb 2024 17:44:31 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: Mario Limonciello <mario.limonciello@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-	"open list:ACPI" <linux-acpi@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Melissa Wen <mwen@igalia.com>, Dave Airlie <airlied@redhat.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-Subject: Re: [PATCH v4 1/3] drm: Add drm_get_acpi_edid() helper
-Message-ID: <Zc-Q73e7Z3ErVC67@phenom.ffwll.local>
-Mail-Followup-To: Jani Nikula <jani.nikula@linux.intel.com>,
-	Mario Limonciello <mario.limonciello@amd.com>,
-	amd-gfx@lists.freedesktop.org,
-	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-	"open list:ACPI" <linux-acpi@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>,
-	Melissa Wen <mwen@igalia.com>, Dave Airlie <airlied@redhat.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-References: <20240207224429.104625-1-mario.limonciello@amd.com>
- <20240207224429.104625-2-mario.limonciello@amd.com>
- <87y1bvb7ns.fsf@intel.com>
- <ZcYHaXNJ8IqbLIra@phenom.ffwll.local>
- <9fa0c1ad-dd7d-4350-aad1-4723450850bd@amd.com>
- <ZcZ1tdXqH90RabvV@phenom.ffwll.local>
- <350ee747-c1bf-4513-aad3-f43b11fcdf0f@amd.com>
- <874jedapmq.fsf@intel.com>
+        d=1e100.net; s=20230601; t=1708101912; x=1708706712;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yqMJBdmCbC/RM9PRo3lm7SAMuIGxpy4kB2I1M6Qh1Sw=;
+        b=dLPmWEvmcYK2QClGsMrB+BiXHz5UXoFwfJIvVynxMOsJ93Ey5dtIzyYSiiYwdVffOf
+         yXkyuii8qzArWXpgsDHwo5DL8jx4Qghk5w2E+8jXwJsbYCZWBdREU+k1KjcikLOjyNwv
+         ZHf+KyOfJsfXAojL0PeKOzf+z1dDnhe7WFhmxqV8JgFiKj4DpcPVu6hpE59FLgzXy+kU
+         A34PMeYYQ4xDdgaWxDcdYuCf5WSOsfip4nWynnODSSXfb6RMH9n3DJSoMxHwecV0WWip
+         Nrln0/jYXREywJ7VgPELTLpRyANnqc9E4F4wqoX/w0VjCvfLl6TdG8Apvecb6Vy8WzA+
+         JGBw==
+X-Forwarded-Encrypted: i=1; AJvYcCXa/k8SYmzCmYbFJ8a71Qy+RqgmLBlHs4AilnW+zuzYiIwdhaw+/vx880sg8ickBeZAe8B3jSwn4WV5I2dxL5w6RA0E+0CoPqM+uluy
+X-Gm-Message-State: AOJu0YwLSfPJ7PObewHij6yz6ujfmsyN2lPSJXOy6yHR5th6WcTxeqDf
+	/40PAdgI7iJLPI9doe6S+d8b53CVhXcAAxIop/kupQz+T8iw4ez2oedgRUoMs7q2tAK2ar5O7A0
+	eX8DmDRTn1DLJsK3V7NR/wu5N+8e7I+zlPdMN
+X-Google-Smtp-Source: AGHT+IG8/ofM2uf/y914CU8c22R1iloHjqFZxLjTIvqCNCo3t1Vtfj5gxB8K/liUcdy0qkkmiNCjnhDlVc5UviII96I=
+X-Received: by 2002:a0d:d489:0:b0:607:d02f:3587 with SMTP id
+ w131-20020a0dd489000000b00607d02f3587mr6663621ywd.4.1708101912180; Fri, 16
+ Feb 2024 08:45:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874jedapmq.fsf@intel.com>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-15-surenb@google.com>
+ <039a817d-20c4-487d-a443-f87e19727305@suse.cz>
+In-Reply-To: <039a817d-20c4-487d-a443-f87e19727305@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 16 Feb 2024 08:44:58 -0800
+Message-ID: <CAJuCfpE_JUmLWJwbiJh1qX-YMCwgVvUthrF30o=sY_YtaVvgjw@mail.gmail.com>
+Subject: Re: [PATCH v3 14/35] lib: introduce support for page allocation tagging
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 12, 2024 at 01:27:57PM +0200, Jani Nikula wrote:
-> On Sat, 10 Feb 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
-> > On 2/9/2024 12:57, Daniel Vetter wrote:
-> >> On Fri, Feb 09, 2024 at 09:34:13AM -0600, Mario Limonciello wrote:
-> >>> On 2/9/2024 05:07, Daniel Vetter wrote:
-> >>>> On Thu, Feb 08, 2024 at 11:57:11AM +0200, Jani Nikula wrote:
-> >>>>> On Wed, 07 Feb 2024, Mario Limonciello <mario.limonciello@amd.com> wrote:
-> >>>>>> Some manufacturers have intentionally put an EDID that differs from
-> >>>>>> the EDID on the internal panel on laptops.  Drivers can call this
-> >>>>>> helper to attempt to fetch the EDID from the BIOS's ACPI _DDC method.
-> >>>>>>
-> >>>>>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> >>>>>> ---
-> >>>>>>    drivers/gpu/drm/Kconfig    |  5 +++
-> >>>>>>    drivers/gpu/drm/drm_edid.c | 77 ++++++++++++++++++++++++++++++++++++++
-> >>>>>>    include/drm/drm_edid.h     |  1 +
-> >>>>>>    3 files changed, 83 insertions(+)
-> >>>>>>
-> >>>>>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-> >>>>>> index 6ec33d36f3a4..ec2bb71e8b36 100644
-> >>>>>> --- a/drivers/gpu/drm/Kconfig
-> >>>>>> +++ b/drivers/gpu/drm/Kconfig
-> >>>>>> @@ -21,6 +21,11 @@ menuconfig DRM
-> >>>>>>    	select KCMP
-> >>>>>>    	select VIDEO_CMDLINE
-> >>>>>>    	select VIDEO_NOMODESET
-> >>>>>> +	select ACPI_VIDEO if ACPI
-> >>>>>> +	select BACKLIGHT_CLASS_DEVICE if ACPI
-> >>>>>> +	select INPUT if ACPI
-> >>>>>> +	select X86_PLATFORM_DEVICES if ACPI && X86
-> >>>>>> +	select ACPI_WMI if ACPI && X86
-> >>>>>
-> >>>>> I think I'll defer to drm maintainers on whether this is okay or
-> >>>>> something to be avoided.
-> >>>>
-> >>>> Uh yeah this is a bit much, and select just messes with everything. Just
-> >>>> #ifdef this in the code with a dummy alternative, if users configure their
-> >>>> kernel without acpi but need it, they get to keep all the pieces.
-> >>>>
-> >>>> Alternatively make a DRM_ACPI_HELPERS symbol, but imo a Kconfig for every
-> >>>> function is also not great. And just using #ifdef in the code also works
-> >>>> for CONFIG_OF, which is exactly the same thing for platforms using dt to
-> >>>> describe hw.
-> >>>>
-> >>>> Also I'd expect ACPI code to already provide dummy functions if ACPI is
-> >>>> provided, so you probably dont even need all that much #ifdef in the code.
-> >>>>
-> >>>> What we defo cant do is select platform/hw stuff just because you enable
-> >>>> CONFIG_DRM.
-> >>>> -Sima
-> >>>
-> >>> The problem was with linking.  I'll experiment with #ifdef for the next
-> >>> version.
-> >> 
-> >> Ah yes, if e.g. acpi is a module but drm is built-in then it will compile,
-> >> but not link.
-> >> 
-> >> You need
-> >> 
-> >> 	depends on (ACPI || ACPI=n)
-> >> 
-> >> for this. Looks a bit funny but works for all combinations.
+On Fri, Feb 16, 2024 at 1:45=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/12/24 22:39, Suren Baghdasaryan wrote:
+> > Introduce helper functions to easily instrument page allocators by
+> > storing a pointer to the allocation tag associated with the code that
+> > allocated the page in a page_ext field.
 > >
-> > Nope; this fails at link time with this combination:
-> >
-> > CONFIG_ACPI=y
-> > CONFIG_ACPI_VIDEO=m
-> > CONFIG_DRM=y
-> >
-> > ld: drivers/gpu/drm/drm_edid.o: in function `drm_do_probe_acpi_edid':
-> > drm_edid.c:(.text+0xd34): undefined reference to `acpi_video_get_edid'
-> > make[5]: *** [scripts/Makefile.vmlinux:37: vmlinux] Error 1
-> >
-> > So the logical solution is to try
-> > 	depends on (ACPI_VIDEO || ACPI_VIDEO=n)
-> >
-> > But that leads me back to the rabbit hole of why I had the selects moved 
-> > to drm instead of drivers in the first place:
-> >
-> > drivers/gpu/drm/Kconfig:8:error: recursive dependency detected!
-> > drivers/gpu/drm/Kconfig:8:      symbol DRM depends on ACPI_VIDEO
-> > drivers/acpi/Kconfig:213:       symbol ACPI_VIDEO depends on 
-> > BACKLIGHT_CLASS_DEVICE
-> > drivers/video/backlight/Kconfig:136:    symbol BACKLIGHT_CLASS_DEVICE is 
-> > selected by DRM_RADEON
-> > drivers/gpu/drm/radeon/Kconfig:3:       symbol DRM_RADEON depends on DRM
-> 
-> Generally speaking the root cause is using "select" instead of "depends
-> on" in the first place. The excessive selects are just band-aid over
-> that root cause. And if you try to convert some but not all the selects
-> to depends ons, you'll get recursive dependencies.
-> 
-> Quoting Documentation/kbuild/kconfig-language.rst:
-> 
->   Note:
-> 	select should be used with care. select will force
-> 	a symbol to a value without visiting the dependencies.
-> 	By abusing select you are able to select a symbol FOO even
-> 	if FOO depends on BAR that is not set.
-> 	In general use select only for non-visible symbols
-> 	(no prompts anywhere) and for symbols with no dependencies.
-> 	That will limit the usefulness but on the other hand avoid
-> 	the illegal configurations all over.
-> 
-> Yeah, we ignore that, and get to keep all the pieces.
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > +
+> > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> > +
+> > +#include <linux/page_ext.h>
+> > +
+> > +extern struct page_ext_operations page_alloc_tagging_ops;
+> > +extern struct page_ext *page_ext_get(struct page *page);
+> > +extern void page_ext_put(struct page_ext *page_ext);
+> > +
+> > +static inline union codetag_ref *codetag_ref_from_page_ext(struct page=
+_ext *page_ext)
+> > +{
+> > +     return (void *)page_ext + page_alloc_tagging_ops.offset;
+> > +}
+> > +
+> > +static inline struct page_ext *page_ext_from_codetag_ref(union codetag=
+_ref *ref)
+> > +{
+> > +     return (void *)ref - page_alloc_tagging_ops.offset;
+> > +}
+> > +
+> > +static inline union codetag_ref *get_page_tag_ref(struct page *page)
+> > +{
+> > +     if (page && mem_alloc_profiling_enabled()) {
+> > +             struct page_ext *page_ext =3D page_ext_get(page);
+> > +
+> > +             if (page_ext)
+> > +                     return codetag_ref_from_page_ext(page_ext);
+>
+> I think when structured like this, you're not getting the full benefits o=
+f
+> static keys, and the compiler probably can't improve that on its own.
+>
+> - page is tested before the static branch is evaluated
+> - when disabled, the result is NULL, and that's again tested in the calle=
+rs
 
-Yeah we need radically fewer select and replace them with depends. The
-idea is that people just magically get the correct kernel config because
-even menuconfig sucks at showing you why you cannot enable a driver.
+Yes, that sounds right. I'll move the static branch check earlier like
+you suggested. Thanks!
 
-But it's really not a good solution to that issue, and we need to stop
-suffering. Reality is that enabling a correct config for complex drivers
-like we have in drm is a bit a black belt art :-/
--Sima
+>
+> > +     }
+> > +     return NULL;
+> > +}
+> > +
+> > +static inline void put_page_tag_ref(union codetag_ref *ref)
+> > +{
+> > +     page_ext_put(page_ext_from_codetag_ref(ref));
+> > +}
+> > +
+> > +static inline void pgalloc_tag_add(struct page *page, struct task_stru=
+ct *task,
+> > +                                unsigned int order)
+> > +{
+> > +     union codetag_ref *ref =3D get_page_tag_ref(page);
+>
+> So the more optimal way would be to test mem_alloc_profiling_enabled() he=
+re
+> as the very first thing before trying to get the ref.
+>
+> > +     if (ref) {
+> > +             alloc_tag_add(ref, task->alloc_tag, PAGE_SIZE << order);
+> > +             put_page_tag_ref(ref);
+> > +     }
+> > +}
+> > +
+> > +static inline void pgalloc_tag_sub(struct page *page, unsigned int ord=
+er)
+> > +{
+> > +     union codetag_ref *ref =3D get_page_tag_ref(page);
+>
+> And same here.
+>
+> > +     if (ref) {
+> > +             alloc_tag_sub(ref, PAGE_SIZE << order);
+> > +             put_page_tag_ref(ref);
+> > +     }
+> > +}
+> > +
+> > +#else /* CONFIG_MEM_ALLOC_PROFILING */
+> > +
+> > +static inline void pgalloc_tag_add(struct page *page, struct task_stru=
+ct *task,
+> > +                                unsigned int order) {}
+> > +static inline void pgalloc_tag_sub(struct page *page, unsigned int ord=
+er) {}
+> > +
+> > +#endif /* CONFIG_MEM_ALLOC_PROFILING */
+> > +
+> > +#endif /* _LINUX_PGALLOC_TAG_H */
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 78d258ca508f..7bbdb0ddb011 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -978,6 +978,7 @@ config MEM_ALLOC_PROFILING
+> >       depends on PROC_FS
+> >       depends on !DEBUG_FORCE_WEAK_PER_CPU
+> >       select CODE_TAGGING
+> > +     select PAGE_EXTENSION
+> >       help
+> >         Track allocation source code and record total allocation size
+> >         initiated at that code location. The mechanism can be used to t=
+rack
+> > diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
+> > index 4fc031f9cefd..2d5226d9262d 100644
+> > --- a/lib/alloc_tag.c
+> > +++ b/lib/alloc_tag.c
+> > @@ -3,6 +3,7 @@
+> >  #include <linux/fs.h>
+> >  #include <linux/gfp.h>
+> >  #include <linux/module.h>
+> > +#include <linux/page_ext.h>
+> >  #include <linux/proc_fs.h>
+> >  #include <linux/seq_buf.h>
+> >  #include <linux/seq_file.h>
+> > @@ -124,6 +125,22 @@ static bool alloc_tag_module_unload(struct codetag=
+_type *cttype,
+> >       return module_unused;
+> >  }
+> >
+> > +static __init bool need_page_alloc_tagging(void)
+> > +{
+> > +     return true;
+>
+> So this means the page_ext memory overead is paid unconditionally once
+> MEM_ALLOC_PROFILING is compile time enabled, even if never enabled during
+> runtime? That makes it rather costly to be suitable for generic distro
+> kernels where the code could be compile time enabled, and runtime enablin=
+g
+> suggested in a debugging/support scenario. It's what we do with page_owne=
+r,
+> debug_pagealloc, slub_debug etc.
+>
+> Ideally we'd have some vmalloc based page_ext flavor for later-than-boot
+> runtime enablement, as we now have for stackdepot. But that could be
+> explored later. For now it would be sufficient to add an early_param boot
+> parameter to control the enablement including page_ext, like page_owner a=
+nd
+> other features do.
 
-> 
-> 
-> BR,
-> Jani.
-> 
-> 
-> >
-> >
-> >> 
-> >> Since this gets mess it might be useful to have a DRM_ACPI_HELPERS Kconfig
-> >> that controls all this.
-> >
-> > How about all those selects that I had in this patch moved to 
-> > DRM_ACPI_HELPERS and keep the patch that drops from all the drivers then?
-> >
-> >> -Sima
-> >> 
-> >>>
-> >>>>
-> >>>>>
-> >>>>>
-> >>>>>>    	help
-> >>>>>>    	  Kernel-level support for the Direct Rendering Infrastructure (DRI)
-> >>>>>>    	  introduced in XFree86 4.0. If you say Y here, you need to select
-> >>>>>> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> >>>>>> index 923c4423151c..c649b4f9fd8e 100644
-> >>>>>> --- a/drivers/gpu/drm/drm_edid.c
-> >>>>>> +++ b/drivers/gpu/drm/drm_edid.c
-> >>>>>> @@ -28,6 +28,7 @@
-> >>>>>>     * DEALINGS IN THE SOFTWARE.
-> >>>>>>     */
-> >>>>>> +#include <acpi/video.h>
-> >>>>>>    #include <linux/bitfield.h>
-> >>>>>>    #include <linux/cec.h>
-> >>>>>>    #include <linux/hdmi.h>
-> >>>>>> @@ -2188,6 +2189,49 @@ drm_do_probe_ddc_edid(void *data, u8 *buf, unsigned int block, size_t len)
-> >>>>>>    	return ret == xfers ? 0 : -1;
-> >>>>>>    }
-> >>>>>> +/**
-> >>>>>> + * drm_do_probe_acpi_edid() - get EDID information via ACPI _DDC
-> >>>>>> + * @data: struct drm_device
-> >>>>>> + * @buf: EDID data buffer to be filled
-> >>>>>> + * @block: 128 byte EDID block to start fetching from
-> >>>>>> + * @len: EDID data buffer length to fetch
-> >>>>>> + *
-> >>>>>> + * Try to fetch EDID information by calling acpi_video_get_edid() function.
-> >>>>>> + *
-> >>>>>> + * Return: 0 on success or error code on failure.
-> >>>>>> + */
-> >>>>>> +static int
-> >>>>>> +drm_do_probe_acpi_edid(void *data, u8 *buf, unsigned int block, size_t len)
-> >>>>>> +{
-> >>>>>> +	struct drm_device *ddev = data;
-> >>>>>> +	struct acpi_device *acpidev = ACPI_COMPANION(ddev->dev);
-> >>>>>> +	unsigned char start = block * EDID_LENGTH;
-> >>>>>> +	void *edid;
-> >>>>>> +	int r;
-> >>>>>> +
-> >>>>>> +	if (!acpidev)
-> >>>>>> +		return -ENODEV;
-> >>>>>> +
-> >>>>>> +	/* fetch the entire edid from BIOS */
-> >>>>>> +	r = acpi_video_get_edid(acpidev, ACPI_VIDEO_DISPLAY_LCD, -1, &edid);
-> >>>>>> +	if (r < 0) {
-> >>>>>> +		DRM_DEBUG_KMS("Failed to get EDID from ACPI: %d\n", r);
-> >>>>>> +		return -EINVAL;
-> >>>>>> +	}
-> >>>>>> +	if (len > r || start > r || start + len > r) {
-> >>>>>> +		r = -EINVAL;
-> >>>>>> +		goto cleanup;
-> >>>>>> +	}
-> >>>>>> +
-> >>>>>> +	memcpy(buf, edid + start, len);
-> >>>>>> +	r = 0;
-> >>>>>> +
-> >>>>>> +cleanup:
-> >>>>>> +	kfree(edid);
-> >>>>>> +
-> >>>>>> +	return r;
-> >>>>>> +}
-> >>>>>> +
-> >>>>>>    static void connector_bad_edid(struct drm_connector *connector,
-> >>>>>>    			       const struct edid *edid, int num_blocks)
-> >>>>>>    {
-> >>>>>> @@ -2643,6 +2687,39 @@ struct edid *drm_get_edid(struct drm_connector *connector,
-> >>>>>>    }
-> >>>>>>    EXPORT_SYMBOL(drm_get_edid);
-> >>>>>> +/**
-> >>>>>> + * drm_get_acpi_edid - get EDID data, if available
-> >>>>>
-> >>>>> I'd prefer all the new EDID API to be named drm_edid_*. Makes a clean
-> >>>>> break from the old API, and is more consistent.
-> >>>>>
-> >>>>> So perhaps drm_edid_read_acpi() to be in line with all the other struct
-> >>>>> drm_edid based EDID reading functions.
-> >>>>>
-> >>>>>> + * @connector: connector we're probing
-> >>>>>> + *
-> >>>>>> + * Use the BIOS to attempt to grab EDID data if possible.
-> >>>>>> + *
-> >>>>>> + * The returned pointer must be freed using drm_edid_free().
-> >>>>>> + *
-> >>>>>> + * Return: Pointer to valid EDID or NULL if we couldn't find any.
-> >>>>>> + */
-> >>>>>> +const struct drm_edid *drm_get_acpi_edid(struct drm_connector *connector)
-> >>>>>> +{
-> >>>>>> +	const struct drm_edid *drm_edid;
-> >>>>>> +
-> >>>>>> +	switch (connector->connector_type) {
-> >>>>>> +	case DRM_MODE_CONNECTOR_LVDS:
-> >>>>>> +	case DRM_MODE_CONNECTOR_eDP:
-> >>>>>> +		break;
-> >>>>>> +	default:
-> >>>>>> +		return NULL;
-> >>>>>> +	}
-> >>>>>> +
-> >>>>>> +	if (connector->force == DRM_FORCE_OFF)
-> >>>>>> +		return NULL;
-> >>>>>> +
-> >>>>>> +	drm_edid = drm_edid_read_custom(connector, drm_do_probe_acpi_edid, connector->dev);
-> >>>>>> +
-> >>>>>> +	/* Note: Do *not* call connector updates here. */
-> >>>>>> +
-> >>>>>> +	return drm_edid;
-> >>>>>> +}
-> >>>>>> +EXPORT_SYMBOL(drm_get_acpi_edid);
-> >>>>>> +
-> >>>>>>    /**
-> >>>>>>     * drm_edid_read_custom - Read EDID data using given EDID block read function
-> >>>>>>     * @connector: Connector to use
-> >>>>>> diff --git a/include/drm/drm_edid.h b/include/drm/drm_edid.h
-> >>>>>> index 7923bc00dc7a..ca41be289fc6 100644
-> >>>>>> --- a/include/drm/drm_edid.h
-> >>>>>> +++ b/include/drm/drm_edid.h
-> >>>>>> @@ -410,6 +410,7 @@ struct edid *drm_do_get_edid(struct drm_connector *connector,
-> >>>>>>    	void *data);
-> >>>>>>    struct edid *drm_get_edid(struct drm_connector *connector,
-> >>>>>>    			  struct i2c_adapter *adapter);
-> >>>>>> +const struct drm_edid *drm_get_acpi_edid(struct drm_connector *connector);
-> >>>>>
-> >>>>> There's a comment
-> >>>>>
-> >>>>> /* Interface based on struct drm_edid */
-> >>>>>
-> >>>>> towards the end of the file, gathering all the new API under it.
-> >>>>>
-> >>>>> Other than that, LGTM,
-> >>>>>
-> >>>>> BR,
-> >>>>> Jani.
-> >>>>>
-> >>>>>>    u32 drm_edid_get_panel_id(struct i2c_adapter *adapter);
-> >>>>>>    struct edid *drm_get_edid_switcheroo(struct drm_connector *connector,
-> >>>>>>    				     struct i2c_adapter *adapter);
-> >>>>>
-> >>>>> -- 
-> >>>>> Jani Nikula, Intel
-> >>>>
-> >>>
-> >> 
-> >
-> 
-> -- 
-> Jani Nikula, Intel
+Sounds reasonable. In v1 of this patchset we used early boot parameter
+but after LSF/MM discussion that was changed to runtime controls.
+Sounds like we would need both here. Should be easy to add.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Allocating/reclaiming dynamically the space for page_ext, slab_ext,
+etc is not trivial and if done would be done separately. I looked into
+it before and listed the encountered issues in the cover letter of v2
+[1], see "things we could not address" section.
+
+[1] https://lore.kernel.org/all/20231024134637.3120277-1-surenb@google.com/
+
+>
+> > +}
+> > +
+> > +static __init void init_page_alloc_tagging(void)
+> > +{
+> > +}
+> > +
+> > +struct page_ext_operations page_alloc_tagging_ops =3D {
+> > +     .size =3D sizeof(union codetag_ref),
+> > +     .need =3D need_page_alloc_tagging,
+> > +     .init =3D init_page_alloc_tagging,
+> > +};
+> > +EXPORT_SYMBOL(page_alloc_tagging_ops);
+>
+>
+> --
+> To unsubscribe from this group and stop receiving emails from it, send an=
+ email to kernel-team+unsubscribe@android.com.
+>
 
