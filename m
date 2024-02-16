@@ -1,267 +1,295 @@
-Return-Path: <linux-kernel+bounces-68655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90632857DE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:42:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1172D857DE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B461F1C24D10
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:42:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DB2C1C22AD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44CC912B175;
-	Fri, 16 Feb 2024 13:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B808412B158;
+	Fri, 16 Feb 2024 13:43:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CnwSHGIs";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="qipQblEm";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Mt5EAkEd";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KSekgtLT"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="yDE/BKBX"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2064.outbound.protection.outlook.com [40.107.223.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEFB1292C0
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708090965; cv=none; b=n7RJ8vLHZkl3LiS247KtJM3GYQjNMqAjblSXkKSu7l9LtqbN3M0OddlODbnwfJmkIiXvYd3k799rra/zI7iZ/j5aR/lMfFB0cknkQtUy4+QwrfO/B/wQWwmbd6BwDX9UzQMtUOH8RI32pUobZ9eRUUwmBgvIZWcrDX5AmDiTxxc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708090965; c=relaxed/simple;
-	bh=dZ7uyX0cOG51833LkJDLHdsQYohwWy62FEueYA6oTbQ=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=n27S8H1RrOFcSZ63o6wLHCvUUqoXW0cfwHnmG07ZNLkZiPlUUxM1WD0kUdzuTHrdpMCb/D0YiTIZsGodfpYlxQ9wx9AWqbju4slrUTWOf3uvS81T9+FtKWfmHyiqmTYL/L0P/3NhOIh3dUZ+GC4NFHszix/mDZxisXVfPcq5ugM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CnwSHGIs; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=qipQblEm; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Mt5EAkEd; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KSekgtLT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7AC1D220B0;
-	Fri, 16 Feb 2024 13:42:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708090960; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oWKVT6MP9Iw/z/Qb4mW3R2ZKCf+JaMkfekuPwkQqq7M=;
-	b=CnwSHGIsJyXgHLtt350E2mUlItnG4ACLlE3Au78hIm8bJd4b3rvA10P6MIgPmqey0Xja4u
-	KjET5JDK7cQJiSJF5v1gpzZtzMe3ZD9uTdg3zHQPuy2N+KIa7Sfv3MfavBmZdy0BkKYJh8
-	NpRrBDgZCLya7MQsKkMBk/34Zp98XXM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708090960;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oWKVT6MP9Iw/z/Qb4mW3R2ZKCf+JaMkfekuPwkQqq7M=;
-	b=qipQblEmzqUh4k9zN7fNor9pvtzrDx7GPfWWIHvF3o/4PlBUCMkPlNfQeGtIgN5QxfwF84
-	mt0AHsQpaExR+3AA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708090958; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oWKVT6MP9Iw/z/Qb4mW3R2ZKCf+JaMkfekuPwkQqq7M=;
-	b=Mt5EAkEdYDNPWwckMAG52AP8TbEC02pFgWG0i8SGI5sGEO5zrWUYRWXZgyT5S2Fpd9cWjm
-	zRHVewPTRQNjCVklt2CbnO/XNdtxm48YkVE6SI37LWKS5cI3Z1c8EALCikh/8xHDshqquQ
-	GisdI8IyoxPOSEIsqIGG6EOGnn4U7Kw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708090958;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oWKVT6MP9Iw/z/Qb4mW3R2ZKCf+JaMkfekuPwkQqq7M=;
-	b=KSekgtLTaBXSYETZ/UbCW9FXoFI/z286dDERw9+FVWTkndVQnCeMKSboHeI9wg0In/Ij5r
-	YuMfWsRaHPUY3eBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2A59F13A39;
-	Fri, 16 Feb 2024 13:42:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ko8ECU5mz2VcKQAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 16 Feb 2024 13:42:38 +0000
-Date: Fri, 16 Feb 2024 14:42:37 +0100
-Message-ID: <87eddcikz6.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>,
-	jasowang@redhat.com,
-	perex@perex.cz,
-	tiwai@suse.com,
-	linux-kernel@vger.kernel.org,
-	alsa-devel@alsa-project.org,
-	virtualization@lists.linux-foundation.org,
-	virtio-dev@lists.oasis-open.org,
-	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
-	coverity-bot <keescook+coverity-bot@chromium.org>
-Subject: Re: [v4 PATCH] ALSA: virtio: Fix "Coverity: virtsnd_kctl_tlv_op(): Uninitialized variables" warning.
-In-Reply-To: <20240216062630-mutt-send-email-mst@kernel.org>
-References: <20240216100643.688590-1-aiswarya.cyriac@opensynergy.com>
-	<20240216062630-mutt-send-email-mst@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3131292E1
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:43:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.64
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708090999; cv=fail; b=KCgDH3Wjsv9uuzlat21TRsMuNrBbkmm2gZvguK3xvtyNedSgfi+4ClUP6y6H4zV9ucj+pCPyjBECr6XPRSvSAVvkYwAd+hvV7HAiPpGba/O7jdU58WC5E0dOJ5nHMBZL94kBEQNVZszMPicQhRtnvG9BXlT+rjrIOhcOonR5iO8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708090999; c=relaxed/simple;
+	bh=wSpKiyWs7znbZpBrURMFjU+BHbVHEPJldPme5e0kHjU=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=d4J0spFg9yM9bOj0Jmkhxiui9uNrBM28ed8gbWURHm8fE3zmSvlgYfjqrrSX0FauEWV+qzhTxmn3vT4JfL1LfzSCZ8wkxXG01PuBHDVH+Ik91xQVLSWK5IPMO8oxv+S4+c3rgq78PegPefujXrarAoLQ9SEo2NO409SH8Q7u1XY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=yDE/BKBX; arc=fail smtp.client-ip=40.107.223.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nRMwm4y8Ti3OmWdp5nxxrn+63doS1aBOjSuVpUSEehM32dVyfY5tJsiuvLndAT/qFEkLR186frV6gY3hE/SiDC3c8ducDqegzwoVK6BSSHWDsZFN+7tME4cLoIuoG1d+oQxkfxddOjrvzlOZB0jcVdmu2BUxTlTWSk/NmeGOwvpnFgr99QVONdy+O7Zfv0yARdDE5MXT2xKnSWBFMkGaPxLrq0ZnGN3pIjl6fKB7fPj9+iX6rnU/UZt9l8FoX2G1T5HFFgVdUAT6yFM2Hhd2dDI8btFvx42xt6JwdFDEc5hwxXrUNVgf2cvz82x3cA64dF8OJdgFR0rxWIwf2ZfGTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/tKQmyDeCfRebiReA7Z+5zzw2sZSzF9AiWaykaE3Bqs=;
+ b=b2X6S04/2nABWrlPyVAahXMdZHHhrc8QfJLrmCcC9V4dqoCADO9z3iyxtUDU8kPheSxeIH1n1/NJe14r/Q9wn90u3NLjisp9cszrcYzWX1Rth3MpbZJEbFNBEi543/QzeuSHgnhRVOTU/OV/kkz2On0SZlmEk/J8NiI4ho8KaCDGCCI4/VNfhPgNFksVVYr+8keEgXbCcN0j2wgMtQ1I+SzYoHM+gr5VFxx9xLQr/6aEGI7y2OD5kmPMDxJOAnWjdr2Z+9ZTuVG3hY7S/4YvZnK4L8RhI+GDht3X9JFGJy3VEEhchgiodCdi9O8chiTLtb8Kqt0NLmSq+9ezElt24A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/tKQmyDeCfRebiReA7Z+5zzw2sZSzF9AiWaykaE3Bqs=;
+ b=yDE/BKBXKr9B0SJ6tokhYtCI8zajI2Rl+u8NOBQ0/Ep0dbw/HgKd4xFu/HoNfzaquiUuis9yYEKNybDSztLNodDU8zXTAS+OTFuP0Kq2VptE5vPFSLzcHZASOuTCbWl5Jw8xI4qvz6HAKM/8mGKlVsIc9IKVDBvWmyo+W5BnLWM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
+ CH3PR12MB7594.namprd12.prod.outlook.com (2603:10b6:610:140::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
+ 2024 13:43:12 +0000
+Received: from DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::3301:dfb9:528a:1fa5]) by DM4PR12MB6280.namprd12.prod.outlook.com
+ ([fe80::3301:dfb9:528a:1fa5%7]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
+ 13:43:12 +0000
+Message-ID: <eaafb036-8815-401a-9c7e-986a85e3b100@amd.com>
+Date: Fri, 16 Feb 2024 08:43:09 -0500
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
+ to eDP connectors
+To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+Cc: amd-gfx@lists.freedesktop.org,
+ Mario Limonciello <mario.limonciello@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
+ Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+ <20240216101936.2e210be2@eldfell>
+Content-Language: en-US
+From: Hamza Mahfooz <hamza.mahfooz@amd.com>
+In-Reply-To: <20240216101936.2e210be2@eldfell>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: YQBPR01CA0002.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::10)
+ To DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Mt5EAkEd;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=KSekgtLT
-X-Spamd-Result: default: False [-0.81 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 TAGGED_RCPT(0.00)[coverity-bot];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: -0.81
-X-Rspamd-Queue-Id: 7AC1D220B0
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|CH3PR12MB7594:EE_
+X-MS-Office365-Filtering-Correlation-Id: c7607c50-5e8e-42f2-4aba-08dc2ef53824
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	hfHeZm8fIVr6XTebqIAMiKOna7PWmPHQeQ8BUm/pKZSn7gJ2UkNzxeF2rs0NT3eKhGDC2c2T/YzdaruQGSnXUsTLuyzEzOf/QVuzYbIpUNeiIF50AfefCrPQJrQn2R3y1YzapN2dIihVoaj8GV3DRnZ1KkwyQ1AqVkaAl5uIugmAWAFO36QmI3Qc6rvoZAVjHYt+L9ffKRUJgoWE5si9EVJ7Km1AzzbhpYiuH7+vd3jgnzyGdWBOJTwb9Ny9Um9HoQ1oI184zpAZU/BfzReyNVKbXYRO3mzoTpiazbbHDKzOwkWLF1FS0PVq5cTGF0PUSHOxkIVYXe9LauhjqrjmalyYqodDQtS0X8FEYjiHo8v1Wp25caq8W9McOA8U7MAKjkdNLE2l9tOssvHi24IF0QpCibz0NPGjYPm4dvo/8o119pHnC5OpcV1ZmQVuNBfpdC+SxGvYa2NT7+rrGYuL37E+w8h4FXtZbQ+MyC/7UdoLr1fupL2hkdp8MLMXWFTeGnP91kvD6z4kuUSN6je8+y+veJ+7FgAq2/SdwCpnWB6d7P3CzG9f63RebVpF6Gnb
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(376002)(396003)(39860400002)(230922051799003)(186009)(451199024)(1800799012)(64100799003)(5660300002)(2906002)(44832011)(31686004)(83380400001)(26005)(8936002)(4326008)(66946007)(8676002)(6666004)(316002)(66556008)(41300700001)(478600001)(66476007)(6916009)(54906003)(2616005)(6486002)(6506007)(53546011)(6512007)(31696002)(86362001)(36756003)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?dHpHd3p3T1RwMHJtU0Qvd1hta2VzOU9kdmhRRmJiWGtaM3NrZjV3c1JwTlE4?=
+ =?utf-8?B?Ukh5R2tRdmRvVitzK2xqallhNmhXSUg0U1k2RFJPbGpGOWR5dDZ5MGlGODhY?=
+ =?utf-8?B?bm1tQU1QcDF3U2c5a3cxUHRWTWo5QkJLMHIwT1hqL2VEa0tRNDBKRTJwYlRt?=
+ =?utf-8?B?M2xiNWEvcEl3OEl6Z0ZlcnBMbkxSVGNJbWJIMkZTMlMzWmVVbDdJanFRbE9H?=
+ =?utf-8?B?UVBzR0NtMTd1RC9jbGFHMHNrMS9XMDlBM3BwamgwdzZRVWZDbkVFK1VCa3gx?=
+ =?utf-8?B?V1oxYWZZODBlVmxQNmpqZnRTaEFhZ0pXTlI3d29vU29odnhnU01mZ0o5SzhY?=
+ =?utf-8?B?b0F5RmtXS0FRSVFJSlVsZllvUndIZ200YmRxQThmNE1vVDBLZmtMVWVDSVZS?=
+ =?utf-8?B?TURrK1FySFgrdjFmR0c0RFFZWHZmTEk2bTQ2eG1mRGpJQVZtVk9WdG91ZnFE?=
+ =?utf-8?B?cW9PVUFxdjVzMVE1b2VDOW5DeDlEUHNlbTFJVFhtWmQvQVl3TEN4M2hJdmI2?=
+ =?utf-8?B?dnRwZlhqWDdTSXUzMFQ1dnVFUGFRTHNTSEozMmxQNUF4MEs3R1NkZ1NOOHRQ?=
+ =?utf-8?B?M0kveGNkSWFDQ0Q4d1RZczMrSXg1UDFhZ2VMbVU4Qzl2Y2t4SVRtNktYOG5E?=
+ =?utf-8?B?MGxLS1BwWm9WQlRveDdmRkozanRtV2k1K3hGTzdDRm5Vc0hhL3VyenhwZjlG?=
+ =?utf-8?B?cXd0RkxmR1gwRVliOGFwaGN1K0hPVzlSSVlLRkdabitFZzR5WDZlM0EzeExq?=
+ =?utf-8?B?TnZaamdnT1FvYkpXem5vcjlpUk5zcmNicHlGSzcxWEY1cGdXUS8ySVBQV3k5?=
+ =?utf-8?B?NFpxV2NGVzBPQkRYSmF1elY3MXZPbm5xOUNsdEVleTlrc0pkUWhqdVpoYStu?=
+ =?utf-8?B?aEMxb0ZRRDhxUnppdGR6UEtoUFdLUXVBUDl4QVhxZ3dqVVY3WUxBYU9vK2pu?=
+ =?utf-8?B?VEErRGZycWtvSnZ0aVpoWitFRVpQZnRxKzNiZ3FpaUpLSU03Z25wZmZGTjhJ?=
+ =?utf-8?B?U2h6UzB3dkt0UktjSVMrdUJTUUlRbjZwOERsZWM2MW9VMGdaZ1BmdWNrQUVN?=
+ =?utf-8?B?bGY2NjJUcnhUVWFyVWV3bk1pdUpRYldmZU9HeWc4cjJtbUpsdjYyRlgzYVZ6?=
+ =?utf-8?B?dmdsd1VRdkFYejF0akl3WWQ2bVNoVUJzRzNoSm5TcHgyWEdWQ2syTU5Vbjdx?=
+ =?utf-8?B?dlV5YmQ3Rjg1ajJJTlpSM1J3RjA0NURiaWFKaFBRVUdndEIzT2FmL3huU0l6?=
+ =?utf-8?B?VjVlM1FYMFJQWjRYK2VLU0trY2ZqUDVzQVkvY29EUjUzZWlDN1lWTjFXajdJ?=
+ =?utf-8?B?YXpCZWRtUjhIbmtBWEdvZVFETjBpOTdUV0xTVHU5eVBEM0lmNkhvRHkvREpN?=
+ =?utf-8?B?VTk3elIxVXdCRmJmQ0pHNlpGdnZGQzRWRTNhMXFndGlGSXJCVHVTUzJLOFlE?=
+ =?utf-8?B?aUVNaDVNdnhuMWVjVDBaYnN3Q2FyRnA2R0xjVFpoYzlBdUxpeGpVb0VBMnV5?=
+ =?utf-8?B?NFZhZWJuMHJHR3lMSWdJSHZvZFJlcWtDKzBXSjF3WUt3MVovNDVKSWk3R3Rk?=
+ =?utf-8?B?WnR6V2VmK1BJQm9TQmxpRnY3bmpubS95MHJQTXlHbi9mMU5YS0UzQUV1NUVa?=
+ =?utf-8?B?VEZJUHFhRHVmYWZvaDZseXFlSTZpViswSUNiUXF0eGdrM3ZTdmNYWVJMZWNx?=
+ =?utf-8?B?ZFVORkVmZHp6bE43VDJONldMYW9PYng1RFEwbXBBanh1TEw2cU9WdVZIUzU3?=
+ =?utf-8?B?VWlDZG5UMTBWVG9wWFJsb0tJWlBYVmxRNlhVbTZBNDFaM3VWRWZ4RXRPOHgr?=
+ =?utf-8?B?RzIvaC9XbHA0VVZGUnFQS1NnUWRNendWNHhJdjJ3TUFxdHZUSENySCt4cHNI?=
+ =?utf-8?B?TGh5VkJnZXdrYVZIVE1jQWw5RjdBWjhSVitFM1kyZ1VlVk5IZVVoU0lSUmpn?=
+ =?utf-8?B?VW5BNGw3UVpvZlFDdDgrdXZKUWEwa2U3aWltaUkzQjZZRVE4NjNDRlNiaVFt?=
+ =?utf-8?B?WHpFNHVPSkY4eXlPb1NqTHEyRjRFVkdJaUpSTXRJeVpCbDVZZWFQck4wRUE5?=
+ =?utf-8?B?ZWlWQXdDa24yOHl3V2pqanV6cjhkcjhmQmduRnU4UzZUWjRkblArTlBwdW9x?=
+ =?utf-8?Q?1hXaVSf5KNbrpnaCvsalr25dh?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7607c50-5e8e-42f2-4aba-08dc2ef53824
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 13:43:12.4973
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fp6wraoGRurCdA44IOBeyYIPY4Giz546I3hqLx01nc5vJPRm5pHB/WuTiEb409mXYYT5C+YrXw9+0VY2pMWyWQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7594
 
-On Fri, 16 Feb 2024 12:27:48 +0100,
-Michael S. Tsirkin wrote:
+On 2/16/24 03:19, Pekka Paalanen wrote:
+> On Fri, 2 Feb 2024 10:28:35 -0500
+> Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
 > 
-> On Fri, Feb 16, 2024 at 11:06:43AM +0100, Aiswarya Cyriac wrote:
-> > This commit fixes the following warning when building virtio_snd driver.
-> > 
-> > "
-> > *** CID 1583619:  Uninitialized variables  (UNINIT)
-> > sound/virtio/virtio_kctl.c:294 in virtsnd_kctl_tlv_op()
-> > 288
-> > 289     		break;
-> > 290     	}
-> > 291
-> > 292     	kfree(tlv);
-> > 293
-> > vvv     CID 1583619:  Uninitialized variables  (UNINIT)
-> > vvv     Using uninitialized value "rc".
-> > 294     	return rc;
-> > 295     }
-> > 296
-> > 297     /**
-> > 298      * virtsnd_kctl_get_enum_items() - Query items for the ENUMERATED element type.
-> > 299      * @snd: VirtIO sound device.
-> > "
-> > 
-> > This warning is caused by the absence of the "default" branch in the
-> > switch-block, and is a false positive because the kernel calls
-> > virtsnd_kctl_tlv_op() only with values for op_flag processed in
-> > this block.
-> > 
-> > Also, this commit unifies the cleanup path for all possible control
-> > paths in the callback function.
-> > 
-> > Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
-> > Signed-off-by: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>
-> > Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
-> > Addresses-Coverity-ID: 1583619 ("Uninitialized variables")
-> > Fixes: d6568e3de42d ("ALSA: virtio: add support for audio controls")
+>> We want programs besides the compositor to be able to enable or disable
+>> panel power saving features.
+> 
+> Could you also explain why, in the commit message, please?
+> 
+> It is unexpected for arbitrary programs to be able to override the KMS
+> client, and certainly new ways to do so should not be added without an
+> excellent justification.
+> 
+> Maybe debugfs would be more appropriate if the purpose is only testing
+> rather than production environments?
+> 
+>> However, since they are currently only
+>> configurable through DRM properties, that isn't possible. So, to remedy
+>> that issue introduce a new "panel_power_savings" sysfs attribute.
+> 
+> When the DRM property was added, what was used as the userspace to
+> prove its workings?
+
+To my knowledge, it is only used by IGT. Also, it is worth noting that
+it is a vendor specific property, so I doubt there are any compositors
+out there that felt motivated enough to use it in any capacity.
+
 > 
 > 
+> Thanks,
+> pq
 > 
-> > ---
-> >  sound/virtio/virtio_kctl.c | 19 +++++++++++++++----
-> >  1 file changed, 15 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/sound/virtio/virtio_kctl.c b/sound/virtio/virtio_kctl.c
-> > index 0c6ac74aca1e..7aa79c05b464 100644
-> > --- a/sound/virtio/virtio_kctl.c
-> > +++ b/sound/virtio/virtio_kctl.c
-> > @@ -253,8 +253,8 @@ static int virtsnd_kctl_tlv_op(struct snd_kcontrol *kcontrol, int op_flag,
-> >  
-> >  	tlv = kzalloc(size, GFP_KERNEL);
-> >  	if (!tlv) {
-> > -		virtsnd_ctl_msg_unref(msg);
-> > -		return -ENOMEM;
-> > +		rc = -ENOMEM;
-> > +		goto on_msg_unref;
-> >  	}
-> >  
-> >  	sg_init_one(&sg, tlv, size);
-> > @@ -281,14 +281,25 @@ static int virtsnd_kctl_tlv_op(struct snd_kcontrol *kcontrol, int op_flag,
-> >  			hdr->hdr.code =
-> >  				cpu_to_le32(VIRTIO_SND_R_CTL_TLV_COMMAND);
-> >  
-> > -		if (copy_from_user(tlv, utlv, size))
-> > +		if (copy_from_user(tlv, utlv, size)) {
-> >  			rc = -EFAULT;
-> > -		else
-> > +			goto on_msg_unref;
-> > +		} else {
-> >  			rc = virtsnd_ctl_msg_send(snd, msg, &sg, NULL, false);
-> > +		}
-> >  
-> >  		break;
-> > +	default:
-> > +		rc = -EINVAL;
-> > +		/* We never get here - we listed all values for op_flag */
-> > +		WARN_ON(1);
-> > +		goto on_msg_unref;
-> >  	}
-> > +	kfree(tlv);
-> > +	return rc;
-> >  
-> > +on_msg_unref:
-> > +	virtsnd_ctl_msg_unref(msg);
-> >  	kfree(tlv);
-> >  
-> >  	return rc;
+>>
+>> Cc: Mario Limonciello <mario.limonciello@amd.com>
+>> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+>> ---
+>> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
+>>      commit when setting the value, call sysfs_remove_group() in
+>>      amdgpu_dm_connector_unregister() and add some documentation.
+>> ---
+>>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
+>>   1 file changed, 76 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> index 8590c9f1dda6..3c62489d03dc 100644
+>> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+>> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
+>>   	return ret;
+>>   }
+>>   
+>> +/**
+>> + * DOC: panel power savings
+>> + *
+>> + * The display manager allows you to set your desired **panel power savings**
+>> + * level (between 0-4, with 0 representing off), e.g. using the following::
+>> + *
+>> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
+>> + *
+>> + * Modifying this value can have implications on color accuracy, so tread
+>> + * carefully.
+>> + */
+>> +
+>> +static ssize_t panel_power_savings_show(struct device *device,
+>> +					struct device_attribute *attr,
+>> +					char *buf)
+>> +{
+>> +	struct drm_connector *connector = dev_get_drvdata(device);
+>> +	struct drm_device *dev = connector->dev;
+>> +	u8 val;
+>> +
+>> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+>> +	val = to_dm_connector_state(connector->state)->abm_level ==
+>> +		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
+>> +		to_dm_connector_state(connector->state)->abm_level;
+>> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
+>> +
+>> +	return sysfs_emit(buf, "%u\n", val);
+>> +}
+>> +
+>> +static ssize_t panel_power_savings_store(struct device *device,
+>> +					 struct device_attribute *attr,
+>> +					 const char *buf, size_t count)
+>> +{
+>> +	struct drm_connector *connector = dev_get_drvdata(device);
+>> +	struct drm_device *dev = connector->dev;
+>> +	long val;
+>> +	int ret;
+>> +
+>> +	ret = kstrtol(buf, 0, &val);
+>> +
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	if (val < 0 || val > 4)
+>> +		return -EINVAL;
+>> +
+>> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+>> +	to_dm_connector_state(connector->state)->abm_level = val ?:
+>> +		ABM_LEVEL_IMMEDIATE_DISABLE;
+>> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
+>> +
+>> +	drm_kms_helper_hotplug_event(dev);
+>> +
+>> +	return count;
+>> +}
+>> +
+>> +static DEVICE_ATTR_RW(panel_power_savings);
+>> +
+>> +static struct attribute *amdgpu_attrs[] = {
+>> +	&dev_attr_panel_power_savings.attr,
+>> +	NULL
+>> +};
+>> +
+>> +static const struct attribute_group amdgpu_group = {
+>> +	.name = "amdgpu",
+>> +	.attrs = amdgpu_attrs
+>> +};
+>> +
+>>   static void amdgpu_dm_connector_unregister(struct drm_connector *connector)
+>>   {
+>>   	struct amdgpu_dm_connector *amdgpu_dm_connector = to_amdgpu_dm_connector(connector);
+>>   
+>> +	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
+>>   	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
+>>   }
+>>   
+>> @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_connector *connector)
+>>   		to_amdgpu_dm_connector(connector);
+>>   	int r;
+>>   
+>> +	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
+>> +		r = sysfs_create_group(&connector->kdev->kobj,
+>> +				       &amdgpu_group);
+>> +		if (r)
+>> +			return r;
+>> +	}
+>> +
+>>   	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
+>>   
+>>   	if ((connector->connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
 > 
-> I don't really like adding code for a false-positive but ALSA
-> maintainers seem to like this. If yes, this seems like as good
-> a way as any to do it.
+-- 
+Hamza
 
-Err, no, you misunderstood the situation.
-
-I took the v1 patch quickly because:
-- It was with Anton's SOB, who is another maintainer of the driver
-- I assumed you lost interest in this driver since you haven't reacted
-  to the previous patches for long time
-- The change there was small and simple enough
-
-Now, it grows unnecessarily large, and yet you complained.  Why should
-I take it, then?
-
-This is a subtle cosmetic issue that isn't worth for wasting too much
-time and energy.  If we want to shut up the compile warning, and this
-is a case where it can't happen, just put the "default:" to the
-existing case.  If you want to be user-friendly, put some comment.
-That's all.  It'll be a one-liner.
-
-OTOH, if we do care and want to catch any potential logical mistake,
-you can put WARN().  But, this doesn't have to go out as an error.
-Simply putting WARN() for the default and going through would work,
-too.
-
-Or we can keep this lengthy changes if we want, too.
-
-So, I really don't mind which way to fix as long as it works correctly
-(and doesn't look too ugly).  Please make agreement among you guys,
-and resubmit if needed.
-
-
-thanks,
-
-Takashi
 
