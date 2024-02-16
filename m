@@ -1,109 +1,138 @@
-Return-Path: <linux-kernel+bounces-69136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 186A98584E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:10:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3510D8584EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:10:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7BC9283007
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:10:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE44028266B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6861350DA;
-	Fri, 16 Feb 2024 18:08:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D5D13540D;
+	Fri, 16 Feb 2024 18:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ciwKum2e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EvFwwYpv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4228C134751;
-	Fri, 16 Feb 2024 18:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17751134751;
+	Fri, 16 Feb 2024 18:09:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708106882; cv=none; b=O0xjz/BBB3eaLx55Dq1hd8OMgECFRGKj5NDOZaa5T9EqV2n0MlhUw2nWVT3CvO2rLQ+cJTSVprRL8bHEMLe7o/GaT050MDQ10NwffQF+0+EOLKoSooWbrzxh+cK2vgG3xSoA8MFdAfNjgN1yx0VznJG19urGtBoVi01uHdXjaNo=
+	t=1708106955; cv=none; b=hnn566D0FsMsLXa8iMxZlc2wsPoHi8qPFZ50iy6IXctIvas3COk7GHT9jwy2utMoXao360oskTXyifjKQJWxBZazKzioSgdGubZKVUR+p6JOtQtJiVgceARIv2MfhkX67JgWOm3tr/RjeAt2LyvfdUUYK26aiDpvPhcg2ck9Y0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708106882; c=relaxed/simple;
-	bh=tV3fUptqP9RE0j5RgKLziKA6wSJoQPcah2pWJdG9ico=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=QzceuQseLKdMuxHOJ6UNBkCRb/c7hmVg34ujyJy4FnZ1tDdiOeWVhDZh1uleUDWshW7OKvExE9St402MbG/eTAMVOII8qpeBgmhSI1fT7AAXfaY6u/eC/gDc2CKUB9iDJ5f7uTiyHgoeTszUbNZwcwhkMCqleJhmip2yJpERvNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ciwKum2e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DB2BC433F1;
-	Fri, 16 Feb 2024 18:07:59 +0000 (UTC)
+	s=arc-20240116; t=1708106955; c=relaxed/simple;
+	bh=gEiW2xpv104Z8gpM4qzqbYKLaODu05bz5fxABQE83wg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UcV8NBb0ot+Fe+b17AEKJGQMLI1U7rC5b4SAd6ZrjoMRyNLZSkaGdSHaboZosv36Y2MscVzS6wkBTgrKCmpdg/QC6+/b8dHAbzisiN3jHJaclMVQ1RBjVujyCQn24VCwrfgSkqJ7VU5Z3A6pJBJig7iXz9BuXpOztA1tY3MH5Jo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EvFwwYpv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E855C433C7;
+	Fri, 16 Feb 2024 18:09:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708106881;
-	bh=tV3fUptqP9RE0j5RgKLziKA6wSJoQPcah2pWJdG9ico=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=ciwKum2eDZJZfLFHWAD49YFnhnK/MAIdrvKaQVYozM80ogQJkncFm5iNkPgVjO2ZH
-	 +NDkG8srPW5uxC5oln1NpZXMkcH+Wp3l3pt0r7TYhylzFU/dHtnrhTvVSuvpzl+2bx
-	 Rh6YQKRmrbcJSpL/WVhsLUJ3X1z6lLKNpC9+GHffxKHze30/qxV6YYPBPZ4MVf6G+c
-	 ZDz5vMWES8XZE2r9oxuPNoja2unPWf0qimIvvZHG+IDKrTCacHf1/3xfYMl8rY3TOb
-	 fq7Q8HQ1APb7KwwQbjV7TMVOcLXXBlji6YcmwipRDwmO2JZQs73i07LbMIi1SvCVLj
-	 jq8SWhi+DLqAA==
-From: Kalle Valo <kvalo@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: Ajay.Kathat@microchip.com,  alexis.lothore@bootlin.com,
-  davidm@egauge.net,  linux-wireless@vger.kernel.org,
-  claudiu.beznea@tuxon.dev,  thomas.petazzoni@bootlin.com,
-  linux-kernel@vger.kernel.org,  devicetree@vger.kernel.org
-Subject: Re: [PATCH RFC] wifi: wilc1000: fix reset line assert/deassert
- polarity
-References: <20240213-wilc_1000_reset_line-v1-1-e01da2b23fed@bootlin.com>
-	<2ff1c701f3443e1c612a81f4077b0280850f57c6.camel@egauge.net>
-	<081bce96-f485-414c-8051-e1c14271f8cc@bootlin.com>
-	<aac398e4-d870-4ba2-8877-b98afecb8d1b@microchip.com>
-	<877cj4o0sv.fsf@kernel.org>
-	<20240216-reckless-freedom-4768ce41e939@spud>
-	<20240216-spinster-decade-e136ac3e72d0@spud>
-Date: Fri, 16 Feb 2024 20:07:58 +0200
-In-Reply-To: <20240216-spinster-decade-e136ac3e72d0@spud> (Conor Dooley's
-	message of "Fri, 16 Feb 2024 16:55:16 +0000")
-Message-ID: <87h6i8cmf5.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=k20201202; t=1708106954;
+	bh=gEiW2xpv104Z8gpM4qzqbYKLaODu05bz5fxABQE83wg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EvFwwYpvsieJvyJnPOWN+cDgxBhuuJu1tT27tiz1r7V9bzV4pv8IcsrOBif/+FOHa
+	 32BxZ4xkZBqPt/SPEEDsCGKZJcmHYrd4k/IP4JVHFjAozrv6MWU2oU0jz+wOQPyJLO
+	 4ZU5MSWR7TpxC8JchbbQnucCTZTVAwL9FIwsF//GHAuBuRIeYuf5O1glp9gPDsnHvE
+	 i6oVVk6S7NGCcBTtbr1+crfaKNQB4F3aIr+8lrqwws2gjns8T4QdY03J3MthQ9a194
+	 u+ETklM29xQz7vd6biVoMvgT3MsvAyJWQ1hErvbGiyHSsFecfvkufz9mf+M9WXxyM3
+	 bXckFaQUeJifg==
+Date: Fri, 16 Feb 2024 12:09:11 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Luca Weiss <luca.weiss@fairphone.com>
+Cc: Stephan Gerhold <stephan@gerhold.net>, Andy Gross <agross@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Thara Gopinath <thara.gopinath@gmail.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Bhupesh Sharma <bhupesh.sharma@linaro.org>, 
+	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm6350: Add Crypto Engine
+Message-ID: <pbjbhnj4opt57xswk7jfg2h2wjdv3onmg4ukxn22tsjjsnknxv@m5gy44kkbvvl>
+References: <20240105-sm6350-qce-v1-0-416e5c7319ac@fairphone.com>
+ <20240105-sm6350-qce-v1-2-416e5c7319ac@fairphone.com>
+ <ZZguvdJTyVgfxm4D@gerhold.net>
+ <CZ6FYZLGWT3K.ZBHYDQ7TDN4B@fairphone.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CZ6FYZLGWT3K.ZBHYDQ7TDN4B@fairphone.com>
 
-Conor Dooley <conor@kernel.org> writes:
+On Fri, Feb 16, 2024 at 11:46:49AM +0100, Luca Weiss wrote:
+> On Fri Jan 5, 2024 at 5:30 PM CET, Stephan Gerhold wrote:
+> > On Fri, Jan 05, 2024 at 05:15:44PM +0100, Luca Weiss wrote:
+> > > Add crypto engine (CE) and CE BAM related nodes and definitions for this
+> > > SoC.
+> > > 
+> > > For reference:
+> > > 
+> > >   [    2.297419] qcrypto 1dfa000.crypto: Crypto device found, version 5.5.1
+> > > 
+> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > > ---
+> > >  arch/arm64/boot/dts/qcom/sm6350.dtsi | 31 +++++++++++++++++++++++++++++++
+> > >  1 file changed, 31 insertions(+)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> > > index 8fd6f4d03490..516aadbb16bb 100644
+> > > --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> > > +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> > > @@ -1212,6 +1212,37 @@ ufs_mem_phy_lanes: phy@1d87400 {
+> > >  			};
+> > >  		};
+> > >  
+> > > +		cryptobam: dma-controller@1dc4000 {
+> > > +			compatible = "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
+> > > +			reg = <0 0x01dc4000 0 0x24000>;
+> > > +			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+> > > +			#dma-cells = <1>;
+> > > +			qcom,ee = <0>;
+> > > +			qcom,controlled-remotely;
+> > > +			num-channels = <16>;
+> > > +			qcom,num-ees = <4>;
+> > > +			iommus = <&apps_smmu 0x432 0x0000>,
+> > > +				 <&apps_smmu 0x438 0x0001>,
+> > > +				 <&apps_smmu 0x43f 0x0000>,
+> > > +				 <&apps_smmu 0x426 0x0011>,
+> > > +				 <&apps_smmu 0x436 0x0011>;
+> >
+> > The last two lines look equivalent to me: 0x436 & ~0x0011 = 0x426.
+> 
+> I don't understand the IOMMU SID + mask really, but I think I've seen
+> somewhere before like here that TZ can be a bit picky with the SIDs?
+> 
+> https://lore.kernel.org/linux-arm-msm/opqdrmyj3y64nqqqmakjydn5rkspizufyeavm7ec7c7ufqz4wk@ey2a7bq3shfj/
+> https://lore.kernel.org/linux-arm-msm/11b5db69-49f5-4d7b-81c9-687d66a5cb0d@linaro.org/
+> 
+> I don't quite want to risk having some obscure use case breaking because
+> we cleaned up the dts ;)
+> 
+> But if you're more sure than me that it won't break, let me know!
+> 
+> >
+> > It's also a bit weird that the mask has one more digit than the stream
+> > ID. And ordered numerically (by stream ID, first number) it would be a
+> > bit easier to read. :-)
+> 
+> Sorting them is no problem, can do that for v2.
+> 
 
->> > So if I'm understanding the situation correctly Microchip's porting
->> > guide[1] doesn't match with kernel.org documentation[2]? I'm not the
->> > expert here but from my point of view the issue is clear: the code needs
->> > to follow kernel.org documentation[2], not external documentation.
->> 
->> My point of view would definitely be that drivers in the mainline kernel
->> absolutely should respect the ABI defined in the dt-binding. What a vendor
->> decides to do in their own tree I suppose is their problem, but I would
->> advocate that vendor kernels would also respect the ABI from mainline.
->> 
->> Looking a bit more closely at the porting guide, it contains other
->> properties that are not present in the dt-binding - undocumented
->> compatibles and a different enable gpio property for example.
->> I guess it (and the vendor version of the driver) never got updated when
->> wilc1000 supported landed in mainline?
->> 
->> > I'll add devicetree list so hopefully people there can comment also,
->> > full patch available in [3].
->> > 
->> > Alexis, if there are no more comments I'm in favor submitting the revert
->> > you mentioned.
->> 
->> From a dt-bindings point of view, the aforementioned revert seems
->> correct and would be
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
->
-> Maybe an R-b is more suitable here, too used to acking trivial patches
-> that are dt related..
+Where you able to do this? I don't see a v2 in my inbox, am I just
+searching poorly?
 
-On the contrary, I think Acked-by is the right thing here and makes it
-easier for Alexis and me. Thanks!
+Regards,
+Bjorn
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+> >
+> > Thanks,
+> > Stephan
+> 
 
