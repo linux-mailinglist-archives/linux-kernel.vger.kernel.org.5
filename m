@@ -1,145 +1,127 @@
-Return-Path: <linux-kernel+bounces-68728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68729-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26260857F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:17:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D51F857F1A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:17:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B3D2B23201
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:17:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63371F27EE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:17:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF75E12C804;
-	Fri, 16 Feb 2024 14:17:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GKEEbkK9"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1BD712CD81;
+	Fri, 16 Feb 2024 14:17:23 +0000 (UTC)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9466959B5F
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4EF812AAD9;
+	Fri, 16 Feb 2024 14:17:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708093032; cv=none; b=XnTTl8cmXIh36oKc/nZI6DBo/KIfSkFwBwU3Lc4YCRFkReBN4iVju7KNSKAJKad9bGUFK1YapV6dDp9+9mjTnJJXDqTGT8hemN71fs4HpxvVve7MZKUHMLC1w0UVBqIZyLsshmgws4c4iTRmXLy+36M48hYfZCkOuob5XBmigko=
+	t=1708093043; cv=none; b=Bte5FLNe0WjHV0sKXnP5AKZmsZffr1oeLNjREMRX1F4NGZZkPIRTfU2abhnuH5eTg0isLlJOw8ii5rniG/pkZOKKgY+CC2kXMB2227ERHQWCaFn8/uFu9/qC1G5UI6pCAqcZJg6/h/b24eNrT3tjSNoWdjGsD0gG/H0yTksAVDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708093032; c=relaxed/simple;
-	bh=bJjqYOrayUg7LNhDqnmCX5b3NZMQbmqnheL2GePnQVM=;
+	s=arc-20240116; t=1708093043; c=relaxed/simple;
+	bh=vnnX13x217W0dtrq5eN5tm48xaIUCso8yaskfIG6//g=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UMXQFqM7wD5hEKMwzg/sMqbNqeJxge1h4FL0fgTDUvrwuFdpZJSquSVfciBwKIOo0VYuH4mLDfliCm7DyqzHiDQOgGmIfXlf8+LZ5gZCCiaf6Mwf7pU71hYbmoDMJGZLcAhyJ8bQHL1N0sHuoJrH19FnwPcB6vwxPr4m9UnbdWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GKEEbkK9; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59a1a03d09aso668171eaf.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:17:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708093029; x=1708697829; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=djeJQZRTsyJDHei5/nJ3LWgazT5GXbZBqY715lqq+eA=;
-        b=GKEEbkK9VwWv4Cw04ld3yLtojVgPxGp3ufhSeSnuDu5/MOI/QTe+X2A2j6yjtEqqIO
-         rumrHYVPxRbgWaKzXDom06RflNgd0PkwWKupb+e19TZnF+ceCdb/Cd1VbV7P/3jKZWO6
-         KNP5Z2YJWPlCXIx5c+6baatBwspml1drdRYlT7dnzTFftVKdIM9pSNyiI4011fHlCEyf
-         rR93fNwd9iyLU6xSGZM+0rZrnbc3GTSGSpnY+qn2l1aD8agE6CCUq/3Pp0YxU9MwgdBY
-         aEK4pBXu3YGzqjL8HuCaH1qkA8F8DBgimsG9dsdjziH/u/Z+0f6aqzps20W55WTF7hru
-         TTPg==
+	 To:Cc:Content-Type; b=W79VJdn/iB8pakyAtprWru0PHG478E+tbQyFgpqwPprOnUt9BNtTwX3EdQLiNt1D25q/k1YNckhphlwfiMxrBKAdQv9HYdvgfzgmPnmJYeFv83sZE+H6bEKYSfuB8/0kP+LV1gf80jr6CW0J+7dobVaFfIc807GWLIdm+3HEXsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcc4de7d901so1750265276.0;
+        Fri, 16 Feb 2024 06:17:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708093029; x=1708697829;
+        d=1e100.net; s=20230601; t=1708093040; x=1708697840;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=djeJQZRTsyJDHei5/nJ3LWgazT5GXbZBqY715lqq+eA=;
-        b=O4Px7Q4xo51BizQzzJ6J5Wg5yux5RjRk/EkTqlIFjr9kMy3beQL+zbdDtnQ/xgHSlT
-         fKelGwh/peyxzxnP5SRLpgNkvKaYMohrJIl+FfvrjEP6nKWSth2+J6gj32J2XL/N1gZI
-         KThFDA3NAuc7ubzRbF0DzAkMO4tvfOAkseeag4r80bfZT34s7Z5BeiUxAR2aHvW0+2cF
-         GH24BaFKuyWveubrBpzwHQc7AWs4GO1fWwHDyUWRmijnYgpU0qrU2+5HbytIq4fp6935
-         MyEW0r8YgccTHX99ea4UYW/Wq6HlO+91h3p7qReHyBAMIX9URf1Y28M91+mbI9gkyYTA
-         fBoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWjzsChH4bVZeKIohiTThnkjsw6E8ijKy/wJ/7ZMaa+2Kng8ScSAxSLgJQCm8p8ymUo09wIOrXPAZdaoC0cRWKf17iZxPhxRf8yWMVo
-X-Gm-Message-State: AOJu0YwAlgxJoEd7aHA3oX0XJ2Yys+NXy1pnNTzFxmvYb+2ikL+pnQlt
-	MRe19yDzsoLyMOw5Vf/ijpyQOZ0rLKrNslH3NVgKKpMP/oSQrO31KkiBWRPOxXzsksU9c+wthKR
-	X8OGAdnfd61KPGUbbufhew3ekpdRtTq57NArJIECnkhby19Ee
-X-Google-Smtp-Source: AGHT+IG5rb+LvzU0RvTj89Jq3rz4xnJ8fRrqfTnrTzCdcn76AuQt0Vyy4ut1QmKC50qc87StmUUWbgGuMAgaavlltoo=
-X-Received: by 2002:a4a:2b52:0:b0:59c:e5c8:bdc5 with SMTP id
- y18-20020a4a2b52000000b0059ce5c8bdc5mr4819721ooe.3.1708093029592; Fri, 16 Feb
- 2024 06:17:09 -0800 (PST)
+        bh=uKVA6eT9vMZObsICtCU8wuFH8FzY1FdTCqpK118q1IE=;
+        b=jeiZubz0wHT7KtCwHje/dmKYMH4ygfyWQ2hf4Y5ugqJkknctK9roCmReGGcybJHxKf
+         nxotCHVm0sUXogIzn4LMQ1TcIDohvGSzIdzavLe5StFUJTAsVD8DDjjW9rG5w//3b5NX
+         VsvXPtLFQBop/nk4X1xU1VqPlhvj7MdJFGs71Ygsn2QvuydiHdZqSt5VixuKobEFbyWw
+         PHxdS3rGYnFAGvtbVP+cCgaQMxkFLq2kPB0K59JyGVo0RftrIero+68w2ytV0AjtD88n
+         Echo95Gqx/UHAmoANz6YSFqOyGYs7jtP0u7VokijH3Rt3cFwTyb49vgEnG+eISC6p84S
+         kV4g==
+X-Forwarded-Encrypted: i=1; AJvYcCVggaW4V9dOKZs7Ytf/+SOuZzD8TKnLNZZYTPJ3bYCWmEiVNkyqUy6shGYXYKkpsTawIMM6Vmsyw38yFkEroAC+Rw7bTEyqffLiW9DLAds6fEv+VmNSClnNXHkxDd5mO6q0GP+5sm9akSZNqii1Of3UO81qct0OeeEnCpgDh/5JFcUjduL1CzQ1BoR+nXpCx5cfOyc8lMG5e86yQB44tgAWHK+zASVs
+X-Gm-Message-State: AOJu0YwUUHFRu7DxLoCUAgJF+AcpXrJjCa9Y6+AYX8SaJoGXFrzX0RvV
+	Gc+VF5H22NGnYfYr6HFM0pPsCy0DoaBNOudmiv5E7LtePRdyxWWrwM459RbMo5k=
+X-Google-Smtp-Source: AGHT+IG/Oru5dUhXk6y8B8iKzzYWbDCIUS8FnmkleBuV6MuMOU6dv7iExXsIBfeg9P1hSsSVNMwHHQ==
+X-Received: by 2002:a25:b048:0:b0:dc7:4859:6f1 with SMTP id e8-20020a25b048000000b00dc7485906f1mr4901047ybj.33.1708093040325;
+        Fri, 16 Feb 2024 06:17:20 -0800 (PST)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id 4-20020a250104000000b00dc7496891f1sm330044ybb.54.2024.02.16.06.17.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 06:17:20 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so2237243276.1;
+        Fri, 16 Feb 2024 06:17:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUAZMpm5+ECPyUxMHqTOGgVvRP0Y/+Gj7KVNwTNrSke0AancPmMddxySziL+Km1qNsCVzX/l4loxRRt8mEakFhaBBLvEI/FjpGRwcymEU1rcQrjIROrppsn73VbCdt3dpBfAfNKb/e5QPx3/Sa/9QaobjrSvyIuHJasp3xf/Io69zMXMIPpDP1KtsgJeZ4ZQthQeiYxZaZbF5E0Uqdd5Td+Xq0c7E1F
+X-Received: by 2002:a25:b904:0:b0:dc7:8c3a:4e42 with SMTP id
+ x4-20020a25b904000000b00dc78c3a4e42mr4580893ybj.30.1708093039976; Fri, 16 Feb
+ 2024 06:17:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213-bus_cleanup-tee-v1-1-77945ae1a172@marliere.net>
-In-Reply-To: <20240213-bus_cleanup-tee-v1-1-77945ae1a172@marliere.net>
-From: Jens Wiklander <jens.wiklander@linaro.org>
-Date: Fri, 16 Feb 2024 15:16:58 +0100
-Message-ID: <CAHUa44H++H2GitFCqEEv6xmYrHyhFDrM-GFogO1VZjs3LGRN+A@mail.gmail.com>
-Subject: Re: [PATCH] tee: make tee_bus_type const
-To: "Ricardo B. Marliere" <ricardo@marliere.net>
-Cc: Sumit Garg <sumit.garg@linaro.org>, op-tee@lists.trustedfirmware.org, 
-	linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com> <20240208124300.2740313-13-claudiu.beznea.uj@bp.renesas.com>
+In-Reply-To: <20240208124300.2740313-13-claudiu.beznea.uj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 16 Feb 2024 15:17:08 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX3=KJ6=qOW__KxWisj7Fguwr=SdP7XGvFD+BKgZbRo9A@mail.gmail.com>
+Message-ID: <CAMuHMdX3=KJ6=qOW__KxWisj7Fguwr=SdP7XGvFD+BKgZbRo9A@mail.gmail.com>
+Subject: Re: [PATCH 12/17] arm64: dts: renesas: rzg3s-smarc-som: Guard the
+ ethernet IRQ GPIOs with proper flags
+To: Claudiu <claudiu.beznea@tuxon.dev>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 3:45=E2=80=AFPM Ricardo B. Marliere
-<ricardo@marliere.net> wrote:
->
-> Since commit d492cc2573a0 ("driver core: device.h: make struct
-> bus_type a const *"), the driver core can properly handle constant
-> struct bus_type, move the tee_bus_type variable to be a constant
-> structure as well, placing it into read-only memory which can not be
-> modified at runtime.
->
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
-> ---
->  drivers/tee/tee_core.c  | 2 +-
->  include/linux/tee_drv.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+Hi Claudiu,
 
-I'm picking up this.
+On Thu, Feb 8, 2024 at 1:44=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
+rote:
+> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>
+> Ethernet IRQ GPIOs are marked as gpio-hog. Thus, these GPIOs are requeste=
+d
+> at probe w/o considering if there are other peripherals that needs them.
+> The Ethernet IRQ GPIOs are shared w/ SDHI2. Selection b/w Ethernet and
+> SDHI2 is done through a hardware switch. To avoid scenarios where one wan=
+ts
+> to boot with SDHI2 support and some SDHI pins are not propertly configure=
+d
+> because of gpio-hog guard Ethernet IRQ GPIO with proper build flag.
+>
+> Fixes: 932ff0c802c6 ("arm64: dts: renesas: rzg3s-smarc-som: Enable the Et=
+hernet interfaces")
+> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Thanks,
-Jens
+Thanks for your patch! (which was well-hidden between non-fixes ;-)
 
->
-> diff --git a/drivers/tee/tee_core.c b/drivers/tee/tee_core.c
-> index 792d6fae4354..e59c20d74b36 100644
-> --- a/drivers/tee/tee_core.c
-> +++ b/drivers/tee/tee_core.c
-> @@ -1226,7 +1226,7 @@ static int tee_client_device_uevent(const struct de=
-vice *dev,
->         return add_uevent_var(env, "MODALIAS=3Dtee:%pUb", dev_id);
->  }
->
-> -struct bus_type tee_bus_type =3D {
-> +const struct bus_type tee_bus_type =3D {
->         .name           =3D "tee",
->         .match          =3D tee_client_device_match,
->         .uevent         =3D tee_client_device_uevent,
-> diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-> index 911ddf92dcee..71632e3c5f18 100644
-> --- a/include/linux/tee_drv.h
-> +++ b/include/linux/tee_drv.h
-> @@ -482,7 +482,7 @@ static inline bool tee_param_is_memref(struct tee_par=
-am *param)
->         }
->  }
->
-> -extern struct bus_type tee_bus_type;
-> +extern const struct bus_type tee_bus_type;
->
->  /**
->   * struct tee_client_device - tee based device
->
-> ---
-> base-commit: 716f4aaa7b48a55c73d632d0657b35342b1fefd7
-> change-id: 20240213-bus_cleanup-tee-c25729bbcd7f
->
-> Best regards,
-> --
-> Ricardo B. Marliere <ricardo@marliere.net>
->
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v6.9.
+
+As Ethernet is enabled by default, I think there is no need to fast-track
+this for v6.8.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
