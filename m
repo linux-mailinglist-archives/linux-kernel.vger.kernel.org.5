@@ -1,295 +1,294 @@
-Return-Path: <linux-kernel+bounces-68380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08F40857975
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:55:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59828857980
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:56:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1E09280DEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:55:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3E2DB24039
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE9725551;
-	Fri, 16 Feb 2024 09:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c9JY2yn4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33C171C2B2;
+	Fri, 16 Feb 2024 09:54:34 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DAE124B39
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833A01BF3A
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:54:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708077126; cv=none; b=JLzVgQcuSWrV/6l/oK1VXABbDXAtDZwwUOQCuu8qthgRFw/1CiAmEXiIhQLc8bf8smPhtAe5kFTNHadqNOP+zHvi3emM/FoQQvw8zVBN7kLSQqZb1TqbWwssJXK5NKy/EleEFrT+2p/iVdr1mIaCv6rTEQupcMpwqprppQ+D6SQ=
+	t=1708077273; cv=none; b=DV0Q1hTLJBe9jzZMXvuiMVbbx0VKgollSKsvDJLJgDEHnVcEOmEwgMPrkM0lDN00aY1w46oTPnXgCXSoeSqWPZcMQ5K851cPjO1io0dz3O8VYf2IxpCtS65qctdN6aIU4i8L6QBCuTkFPtm9O6dScRdRFFEU/E0Q6me8BSLlHPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708077126; c=relaxed/simple;
-	bh=1DmYPShGc1WqUllF/gBgHGJAcAVWQWXf2YSAvLKPay0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Mj0eLrvRRmDrQqSBCsDWTacUoM9CA/5KdRmL3TloFNu8/MiW1S+nsoqfSD4fTn//V2YFyebVg5uJarP/fFwtc6SJAlVO7zBMI/1+8oPb5VZ1qHHKkytZMqfOXsdv+cCR3M4mYyIsNo3L3W8MvO3RxbQ/52CTfR8rbo8abff8tik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c9JY2yn4; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708077124; x=1739613124;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=1DmYPShGc1WqUllF/gBgHGJAcAVWQWXf2YSAvLKPay0=;
-  b=c9JY2yn4aIqQXuMhK47puFQnbOrYO7GPCZliex8X34k7QMZ+ypIMo7xQ
-   HR0ifF53J9uQDmXMJCjl3DINRTTD3QGZW+QzU8RuUGlqmq4E9TebCs+6z
-   mwUhQZjWeEVbMFKG47hq5t4Xo4ESCkfgEv/TfOsUCMiH7ZSNY2r0qqLnA
-   eZoEYiHC1UuLQ3GAfbev2ONpGDdoMuJzPgCEvtMCndAAXVlZpR/OL8Is5
-   lblJKPTF0OfAjd6dyxOMHrWy20s8NnP/7O42TBJT2YKG1O9jmY8zzyrMU
-   NwmnneuZ9RlBuGwGTKo1g6Po2SX8kV6ddKeDtLI9aIRyxDdu7k+apxV36
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="13305122"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="13305122"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:52:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="935815479"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="935815479"
-Received: from pshishpo-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.79])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:51:57 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>,
- dri-devel@lists.freedesktop.org, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Rodrigo Vivi <rodrigo.vivi@intel.com>,
- Joonas Lahtinen <joonas.lahtinen@linux.intel.com>, Tvrtko Ursulin
- <tvrtko.ursulin@linux.intel.com>
-Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>, robdclark@gmail.com,
- freedreno@lists.freedesktop.org, dmitry.baryshkov@linaro.org,
- intel-gfx@lists.freedesktop.org, ville.syrjala@linux.intel.com,
- quic_jesszhan@quicinc.com, linux-kernel@vger.kernel.org,
- intel-xe@lists.freedesktop.org
-Subject: Re: [PATCH v2] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
-In-Reply-To: <20240215190834.3222812-1-quic_abhinavk@quicinc.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240215190834.3222812-1-quic_abhinavk@quicinc.com>
-Date: Fri, 16 Feb 2024 11:51:54 +0200
-Message-ID: <87eddc4tz9.fsf@intel.com>
+	s=arc-20240116; t=1708077273; c=relaxed/simple;
+	bh=cypQJfZF+YtN5CAouGhTasr02apRL8MggF+4hYI1Tg4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=MZtncR7s9jGqrTg/8WZKkCl5qevIgfZwGyaWcsn9U/hYY140GjR+/IGwFPHYQQVo8AFq5+YM7YpCuEQdsv6N5VUcnjRge4Zpf1QSYA5RgMymXWk8JzgP3HxLmiz3WJmSeoE4sFT1eT5zkGilmbkz7dPs9LBk9z0DOO+l4FJ4+M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-365067c1349so7248925ab.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:54:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708077270; x=1708682070;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Cea30lTF2ZmYnQ/V27+tscvJ5hcf6E9js6ZkcIDubIo=;
+        b=HHRe/cSQshF997AI/P7SZoAV0UwN0q7tk3Yfx7czZETMs985Fdf53m/PVmqhBxppVS
+         koYGtZBQgPeQPOdNYMnglHbaVluDLpHI+RUF5oPwqn/wkmis/hLsluAvvh1YCmjntknu
+         uWofvjLVtrVSDNWYXCbvIAuDryqjAO0ZqNH5/3WbBpl503ZDjzFLUMqTlSjqNdj9lB/I
+         jWhInAlN83XDZumHOiM/xyoLKbQyIGW3ajV4c2SlvibYaJWG5tHhXZWThiRvZEYAeiaO
+         mM2SCKJT6D6CU8sF5eKnQc0lq5QRA7R+tgIQyk36s1CUJVVPCwApEOfb36jbkdpGCG8C
+         dYUA==
+X-Forwarded-Encrypted: i=1; AJvYcCVVwFgrFkmIzo7qy2YtuPbY9xJUyx/K8oxVhbYlqWWorl6FTz9dsKcT9fr/SqVHU6WGoR1zCvhBlIzYnp/1Ib3ljS8lsX15QNA7BN5T
+X-Gm-Message-State: AOJu0YyIsBRwZyyl+VXJFVa6hqqLaCq1sOAIo5Yn7ymBb+lSGnCXYBfs
+	iUjr7QlPLeQhf0zxV99I9vDDHRFT/jdvlJQ5En+9XjudiiiqQlJr3ox1JwIsv6QPvYp6wghhDuK
+	qCJMVHnc/CoF+rK+kCN8GM/CV5YMgL6MMOC8mGb1LDxGH5D2zSv+C83o=
+X-Google-Smtp-Source: AGHT+IHz1hrydZMsbNJiumpAX5k6IgtMsH1EHN9/Vx0geWMu2EI3sJw6KvOxb8S9xqeyRTffYTliCZgyFO4qp89Z5JELChJAU18J
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:1aa2:b0:363:7b86:21bd with SMTP id
+ l2-20020a056e021aa200b003637b8621bdmr318533ilv.4.1708077270741; Fri, 16 Feb
+ 2024 01:54:30 -0800 (PST)
+Date: Fri, 16 Feb 2024 01:54:30 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f8bafb06117cba33@google.com>
+Subject: [syzbot] [overlayfs?] KASAN: slab-use-after-free Read in ovl_dentry_update_reval
+From: syzbot <syzbot+316db8a1191938280eb6@syzkaller.appspotmail.com>
+To: amir73il@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 15 Feb 2024, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
-> intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
-> Lets move this to drm_dp_helper to achieve this.
->
-> changes in v2:
-> 	- rebased on top of drm-tip
->
-> Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Hello,
 
-Acked-by: Jani Nikula <jani.nikula@intel.com>
+syzbot found the following issue on:
 
-> ---
->  drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
->  drivers/gpu/drm/i915/display/intel_dp.c | 71 +---------------------
->  include/drm/display/drm_dp_helper.h     |  3 +
->  3 files changed, 83 insertions(+), 69 deletions(-)
->
-> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
-> index 8d6ce46471ae..6c91f400ecb1 100644
-> --- a/drivers/gpu/drm/display/drm_dp_helper.c
-> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
-> @@ -2913,6 +2913,84 @@ void drm_dp_vsc_sdp_log(struct drm_printer *p, const struct drm_dp_vsc_sdp *vsc)
->  }
->  EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
->  
-> +/**
-> + * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
-> + * @vsc: vsc sdp initialized according to its purpose as defined in
-> + *       table 2-118 - table 2-120 in DP 1.4a specification
-> + * @sdp: valid handle to the generic dp_sdp which will be packed
-> + * @size: valid size of the passed sdp handle
-> + *
-> + * Returns length of sdp on success and error code on failure
-> + */
-> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> +			    struct dp_sdp *sdp, size_t size)
-> +{
-> +	size_t length = sizeof(struct dp_sdp);
-> +
-> +	if (size < length)
-> +		return -ENOSPC;
-> +
-> +	memset(sdp, 0, size);
-> +
-> +	/*
-> +	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
-> +	 * VSC SDP Header Bytes
-> +	 */
-> +	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
-> +	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
-> +	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
-> +	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
-> +
-> +	if (vsc->revision == 0x6) {
-> +		sdp->db[0] = 1;
-> +		sdp->db[3] = 1;
-> +	}
-> +
-> +	/*
-> +	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
-> +	 * Format as per DP 1.4a spec and DP 2.0 respectively.
-> +	 */
-> +	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
-> +		goto out;
-> +
-> +	/* VSC SDP Payload for DB16 through DB18 */
-> +	/* Pixel Encoding and Colorimetry Formats  */
-> +	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
-> +	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
-> +
-> +	switch (vsc->bpc) {
-> +	case 6:
-> +		/* 6bpc: 0x0 */
-> +		break;
-> +	case 8:
-> +		sdp->db[17] = 0x1; /* DB17[3:0] */
-> +		break;
-> +	case 10:
-> +		sdp->db[17] = 0x2;
-> +		break;
-> +	case 12:
-> +		sdp->db[17] = 0x3;
-> +		break;
-> +	case 16:
-> +		sdp->db[17] = 0x4;
-> +		break;
-> +	default:
-> +		WARN(1, "Missing case %d\n", vsc->bpc);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* Dynamic Range and Component Bit Depth */
-> +	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
-> +		sdp->db[17] |= 0x80;  /* DB17[7] */
-> +
-> +	/* Content Type */
-> +	sdp->db[18] = vsc->content_type & 0x7;
-> +
-> +out:
-> +	return length;
-> +}
-> +EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
-> +
->  /**
->   * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
->   * @dpcd: DisplayPort configuration data
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index 217196196e50..a9458df475e2 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -4089,73 +4089,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
->  	return false;
->  }
->  
-> -static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> -				     struct dp_sdp *sdp, size_t size)
-> -{
-> -	size_t length = sizeof(struct dp_sdp);
-> -
-> -	if (size < length)
-> -		return -ENOSPC;
-> -
-> -	memset(sdp, 0, size);
-> -
-> -	/*
-> -	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
-> -	 * VSC SDP Header Bytes
-> -	 */
-> -	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
-> -	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
-> -	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
-> -	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
-> -
-> -	if (vsc->revision == 0x6) {
-> -		sdp->db[0] = 1;
-> -		sdp->db[3] = 1;
-> -	}
-> -
-> -	/*
-> -	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
-> -	 * Format as per DP 1.4a spec and DP 2.0 respectively.
-> -	 */
-> -	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
-> -		goto out;
-> -
-> -	/* VSC SDP Payload for DB16 through DB18 */
-> -	/* Pixel Encoding and Colorimetry Formats  */
-> -	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
-> -	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
-> -
-> -	switch (vsc->bpc) {
-> -	case 6:
-> -		/* 6bpc: 0x0 */
-> -		break;
-> -	case 8:
-> -		sdp->db[17] = 0x1; /* DB17[3:0] */
-> -		break;
-> -	case 10:
-> -		sdp->db[17] = 0x2;
-> -		break;
-> -	case 12:
-> -		sdp->db[17] = 0x3;
-> -		break;
-> -	case 16:
-> -		sdp->db[17] = 0x4;
-> -		break;
-> -	default:
-> -		MISSING_CASE(vsc->bpc);
-> -		break;
-> -	}
-> -	/* Dynamic Range and Component Bit Depth */
-> -	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
-> -		sdp->db[17] |= 0x80;  /* DB17[7] */
-> -
-> -	/* Content Type */
-> -	sdp->db[18] = vsc->content_type & 0x7;
-> -
-> -out:
-> -	return length;
-> -}
-> -
->  static ssize_t
->  intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
->  					 const struct hdmi_drm_infoframe *drm_infoframe,
-> @@ -4248,8 +4181,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
->  
->  	switch (type) {
->  	case DP_SDP_VSC:
-> -		len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
-> -					    sizeof(sdp));
-> +		len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
-> +					  sizeof(sdp));
->  		break;
->  	case HDMI_PACKET_TYPE_GAMUT_METADATA:
->  		len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
-> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
-> index d02014a87f12..8474504d4c88 100644
-> --- a/include/drm/display/drm_dp_helper.h
-> +++ b/include/drm/display/drm_dp_helper.h
-> @@ -812,4 +812,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
->  		       int bpp_x16, unsigned long flags);
->  int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
->  
-> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
-> +			    struct dp_sdp *sdp, size_t size);
-> +
->  #endif /* _DRM_DP_HELPER_H_ */
+HEAD commit:    4f5e5092fdbf Merge tag 'net-6.8-rc5' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1143fa78180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=cb86c5ad8597e08a
+dashboard link: https://syzkaller.appspot.com/bug?extid=316db8a1191938280eb6
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
--- 
-Jani Nikula, Intel
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-4f5e5092.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f8b1959c3264/vmlinux-4f5e5092.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4dd38747bfa8/bzImage-4f5e5092.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+316db8a1191938280eb6@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in ovl_dentry_remote fs/overlayfs/util.c:162 [inline]
+BUG: KASAN: slab-use-after-free in ovl_dentry_update_reval+0xd2/0xf0 fs/overlayfs/util.c:167
+Read of size 4 at addr ffff888028839b90 by task syz-executor.1/16906
+
+CPU: 0 PID: 16906 Comm: syz-executor.1 Not tainted 6.8.0-rc4-syzkaller-00180-g4f5e5092fdbf #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:488
+ kasan_report+0xda/0x110 mm/kasan/report.c:601
+ ovl_dentry_remote fs/overlayfs/util.c:162 [inline]
+ ovl_dentry_update_reval+0xd2/0xf0 fs/overlayfs/util.c:167
+ ovl_link_up fs/overlayfs/copy_up.c:610 [inline]
+ ovl_copy_up_one+0x20fa/0x3490 fs/overlayfs/copy_up.c:1170
+ ovl_copy_up_flags+0x18d/0x200 fs/overlayfs/copy_up.c:1223
+ ovl_nlink_start+0x372/0x450 fs/overlayfs/util.c:1153
+ ovl_do_remove+0x171/0xde0 fs/overlayfs/dir.c:893
+ vfs_unlink+0x2fb/0x910 fs/namei.c:4334
+ do_unlinkat+0x5c0/0x750 fs/namei.c:4398
+ __do_sys_unlink fs/namei.c:4446 [inline]
+ __se_sys_unlink fs/namei.c:4444 [inline]
+ __ia32_sys_unlink+0xc7/0x110 fs/namei.c:4444
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x7c/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x33/0x80 arch/x86/entry/common.c:346
+ entry_SYSENTER_compat_after_hwframe+0x7c/0x86
+RIP: 0023:0xf7341579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f5f3b5ac EFLAGS: 00000292 ORIG_RAX: 000000000000000a
+RAX: ffffffffffffffda RBX: 0000000020000200 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
+Allocated by task 16906:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ unpoison_slab_object mm/kasan/common.c:314 [inline]
+ __kasan_slab_alloc+0x89/0x90 mm/kasan/common.c:340
+ kasan_slab_alloc include/linux/kasan.h:201 [inline]
+ slab_post_alloc_hook mm/slub.c:3813 [inline]
+ slab_alloc_node mm/slub.c:3860 [inline]
+ kmem_cache_alloc_lru+0x140/0x700 mm/slub.c:3879
+ __d_alloc+0x35/0x8c0 fs/dcache.c:1624
+ d_alloc+0x4a/0x1e0 fs/dcache.c:1704
+ d_alloc_parallel+0xe9/0x12c0 fs/dcache.c:2462
+ __lookup_slow+0x194/0x460 fs/namei.c:1678
+ lookup_one+0x185/0x1c0 fs/namei.c:2785
+ ovl_lookup_upper fs/overlayfs/overlayfs.h:401 [inline]
+ ovl_link_up fs/overlayfs/copy_up.c:599 [inline]
+ ovl_copy_up_one+0x104e/0x3490 fs/overlayfs/copy_up.c:1170
+ ovl_copy_up_flags+0x18d/0x200 fs/overlayfs/copy_up.c:1223
+ ovl_nlink_start+0x372/0x450 fs/overlayfs/util.c:1153
+ ovl_do_remove+0x171/0xde0 fs/overlayfs/dir.c:893
+ vfs_unlink+0x2fb/0x910 fs/namei.c:4334
+ do_unlinkat+0x5c0/0x750 fs/namei.c:4398
+ __do_sys_unlink fs/namei.c:4446 [inline]
+ __se_sys_unlink fs/namei.c:4444 [inline]
+ __ia32_sys_unlink+0xc7/0x110 fs/namei.c:4444
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x7c/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x33/0x80 arch/x86/entry/common.c:346
+ entry_SYSENTER_compat_after_hwframe+0x7c/0x86
+
+Freed by task 109:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+ kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
+ poison_slab_object mm/kasan/common.c:241 [inline]
+ __kasan_slab_free+0x121/0x1c0 mm/kasan/common.c:257
+ kasan_slab_free include/linux/kasan.h:184 [inline]
+ slab_free_hook mm/slub.c:2121 [inline]
+ slab_free mm/slub.c:4299 [inline]
+ kmem_cache_free+0x129/0x360 mm/slub.c:4363
+ rcu_do_batch kernel/rcu/tree.c:2190 [inline]
+ rcu_core+0x819/0x1680 kernel/rcu/tree.c:2465
+ __do_softirq+0x21c/0x8e7 kernel/softirq.c:553
+
+Last potentially related work creation:
+ kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
+ __kasan_record_aux_stack+0xba/0x110 mm/kasan/generic.c:586
+ __call_rcu_common.constprop.0+0x9a/0x7c0 kernel/rcu/tree.c:2715
+ dentry_free+0xc2/0x160 fs/dcache.c:376
+ __dentry_kill+0x498/0x600 fs/dcache.c:622
+ shrink_kill fs/dcache.c:1048 [inline]
+ shrink_dentry_list+0x140/0x5d0 fs/dcache.c:1075
+ prune_dcache_sb+0xeb/0x150 fs/dcache.c:1156
+ super_cache_scan+0x32a/0x550 fs/super.c:221
+ do_shrink_slab+0x426/0x1120 mm/shrinker.c:435
+ shrink_slab_memcg mm/shrinker.c:548 [inline]
+ shrink_slab+0xa87/0x1310 mm/shrinker.c:626
+ shrink_one+0x493/0x7b0 mm/vmscan.c:4767
+ shrink_many mm/vmscan.c:4828 [inline]
+ lru_gen_shrink_node mm/vmscan.c:4929 [inline]
+ shrink_node+0x21d0/0x3790 mm/vmscan.c:5888
+ kswapd_shrink_node mm/vmscan.c:6693 [inline]
+ balance_pgdat+0x9d2/0x1a90 mm/vmscan.c:6883
+ kswapd+0x5be/0xc00 mm/vmscan.c:7143
+ kthread+0x2c6/0x3b0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+
+The buggy address belongs to the object at ffff888028839b90
+ which belongs to the cache dentry of size 312
+The buggy address is located 0 bytes inside of
+ freed 312-byte region [ffff888028839b90, ffff888028839cc8)
+
+The buggy address belongs to the physical page:
+page:ffffea0000a20e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x28838
+head:ffffea0000a20e00 order:1 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+memcg:ffff888020749431
+ksm flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000840 ffff8880162cf400 ffffea0000a28d00 dead000000000003
+raw: 0000000000000000 0000000080140014 00000001ffffffff ffff888020749431
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 1, migratetype Reclaimable, gfp_mask 0xd20d0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_RECLAIMABLE), pid 4679, tgid 4679 (udevd), ts 34753908780, free_ts 0
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1533
+ prep_new_page mm/page_alloc.c:1540 [inline]
+ get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3311
+ __alloc_pages+0x22f/0x2440 mm/page_alloc.c:4567
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2190 [inline]
+ allocate_slab mm/slub.c:2354 [inline]
+ new_slab+0xcc/0x3a0 mm/slub.c:2407
+ ___slab_alloc+0x4b0/0x1780 mm/slub.c:3540
+ __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3625
+ __slab_alloc_node mm/slub.c:3678 [inline]
+ slab_alloc_node mm/slub.c:3850 [inline]
+ kmem_cache_alloc_lru+0x37b/0x700 mm/slub.c:3879
+ __d_alloc+0x35/0x8c0 fs/dcache.c:1624
+ d_alloc+0x4a/0x1e0 fs/dcache.c:1704
+ lookup_one_qstr_excl+0xcb/0x190 fs/namei.c:1604
+ do_renameat2+0x5ae/0xdc0 fs/namei.c:4986
+ __do_sys_rename fs/namei.c:5083 [inline]
+ __se_sys_rename fs/namei.c:5081 [inline]
+ __x64_sys_rename+0x81/0xa0 fs/namei.c:5081
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6f/0x77
+page_owner free stack trace missing
+
+Memory state around the buggy address:
+ ffff888028839a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ ffff888028839b00: 00 00 00 00 00 00 00 00 fc fc fc fc fc fc fc fc
+>ffff888028839b80: fc fc fa fb fb fb fb fb fb fb fb fb fb fb fb fb
+                         ^
+ ffff888028839c00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888028839c80: fb fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc
+==================================================================
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
