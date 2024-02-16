@@ -1,146 +1,185 @@
-Return-Path: <linux-kernel+bounces-68153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2419D857690
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:09:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D14DF857692
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:09:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4018284F16
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:08:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 011CA1C22771
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:09:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE881C686;
-	Fri, 16 Feb 2024 07:06:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE38214AB7;
+	Fri, 16 Feb 2024 07:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pc07qB4x"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="Y98Li+Km"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209891C2B2
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C5E168B1;
+	Fri, 16 Feb 2024 07:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708067176; cv=none; b=itCXOZ+qzwJOkjWgiyVlcc++qwlwyAULgnyuQXGQ37VK+RYIPok0ELmdPBiteD+wz2mHuB1yTENMOh0Doorfyx8W47prwH+7qWJWsZoIcBMVrwxvwApOB0O681ioOnJd1DnM2mTxdbX2CE+mmLKO0oQFMJlGNiFzMumZPlWtHBM=
+	t=1708067262; cv=none; b=uclZVPyTELGvh/h6Zfg61B87+eMfTNeR215hWwvckYe4fArybhsNCHwXJRXp3x7/SDGGd42pATOpZXnx74ucmyDJk2mlKH81wOSXMxGjP+gcYH8MeDSi7j7Nw5d4sfrJ+pnOgFkK+Sv42Z307ZgrgzpU8kPOYv31EbNJnbsKQnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708067176; c=relaxed/simple;
-	bh=3EdBwoR+7Nrfa5x/e89kDaaHLZR+YpN08+2w1Oy4K+0=;
+	s=arc-20240116; t=1708067262; c=relaxed/simple;
+	bh=8otNHmTYKeey+Dvf9L6LvBTAkUxF49iCfuzPFKJ6b0o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SlWWAdL2K4JOUYZwlAx2V+vjhryiFREp5FRyL0XaVvsJOncUjGZktUb3Kf4jwgPQZbD2DQireTuMlf5yHCXrkeo1YYmTD05xWUh8X7/xt7is1+8OwEVRd0Edo5amMvicrFf/DRlegSMSlYNzKcI683J27aB8HvOp4axPnxcUZ7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Pc07qB4x; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-33d01faf711so390945f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 23:06:14 -0800 (PST)
+	 MIME-Version:Content-Type; b=MFxWx890TELxp2k1rsShflUuPQFgHoUxO1lPjdXS5Zzfb0bI8Cc5N7XqMCM/kUmjFcwhuOw4dddI0mRvkamlz8xboZtMHWqytlr4WAWuu8sj1tSnHP9jJRCJ/JG5UAMZq88ltJR8wF2EeA+ETT08Tkw6oQI8PpyzeSbqO6LekS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=Y98Li+Km; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708067173; x=1708671973; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UQRRPX+blWzvEopmbMKDola2GW+hMdPUAJuHhbzX5L4=;
-        b=Pc07qB4xLVBKV7eAuOLhy5kL5+1CG9FFs9ZO0ie9BRw7LiFVFq64nc1MEjW0QE9bZA
-         TY4cEfAexk1ZaONfNY8HJpOZb4cRiIjQRZHowYkxYvPJUsiQ+wjmNgOEm5q77fkNAnkA
-         Bn6r+UtyN5BwHrDN5mGKG0D7XERbG01FcxyMC2H7AoDGGXPn7D17c+8xQyx9jvSFNNkm
-         wCWrYMt5+E5JzNIziZEopBAUNJd+4OgWWLdXcEpUytwQf3rg13dEnCUesvx27pMsiYDU
-         jUc2kHEAUUO1bCHKGvupk14F/UnVL0vB6hcsJNbMnM9kiX+WjZUEZZ5HmyES4M208aR5
-         /4lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708067173; x=1708671973;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UQRRPX+blWzvEopmbMKDola2GW+hMdPUAJuHhbzX5L4=;
-        b=iWwxV711MzBrWwUd4DW6izk4v3u3mdRX2KzZJtimEhI1kxFz66E3DA53XFUxpSU1Pa
-         ixsT9yurcJP77YwYccjdesuJnGtVnkE8e98ir9O61lXSO1YGnurNRPSsXiTYXicexIak
-         OstIA7rP5zoRPAI572/wHqA+Ht8uo2AgqflAX5I4RGxD7Xnr3j2y4w5jV8EJ2KFW3zQB
-         dKapt4sdLrlxO9M/siL+uRMi86novFRsumJj0dbwH1p++XQ7R+ATuISxJPfDVCj90/Lz
-         Bzh17u48p3vQmrFF/n9eDEzvLNT0nFNB4YclIoXzdLXt2MSiohNq1bc8uD/1R21Cnjja
-         YP9A==
-X-Forwarded-Encrypted: i=1; AJvYcCV4wmjHPuC1TaTyHDMUNOG3uYDUsEOPsO2SbNb5h7n+zDKFWhbYYQlSmcNIJ54tCE7W4f/kp/phaB6esL0TreswWVPj/GKzXU0aGGGT
-X-Gm-Message-State: AOJu0YxJbAIgnzHXBnLPFuTjKlYf/dq1d65m/iPBHOjz9A5gfd7eez7s
-	bh9XsWfdZTCeGfAU3K8SDjM43uw2iVJ7aJ5j4019mvNHXK2LHFgiV2mnzjlKaPg=
-X-Google-Smtp-Source: AGHT+IErqstmVJ3gg7nFuUbDeEkjVZQK9cB6BlztDErH2tYUhPqM2cCZ8/9WxbIirM2WMTjujF6W/w==
-X-Received: by 2002:a5d:508c:0:b0:33d:1f42:ea37 with SMTP id a12-20020a5d508c000000b0033d1f42ea37mr361534wrt.15.1708067173486;
-        Thu, 15 Feb 2024 23:06:13 -0800 (PST)
-Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id k18-20020a5d66d2000000b0033940016d6esm1298839wrw.93.2024.02.15.23.06.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 23:06:12 -0800 (PST)
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-To: broonie@kernel.org,
-	robh@kernel.org,
-	andi.shyti@kernel.org,
-	krzysztof.kozlowski@linaro.org,
-	semen.protsenko@linaro.org,
-	conor+dt@kernel.org
-Cc: alim.akhtar@samsung.com,
-	linux-spi@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	andre.draszik@linaro.org,
-	peter.griffin@linaro.org,
-	kernel-team@android.com,
-	willmcvicker@google.com,
-	devicetree@vger.kernel.org,
-	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v3 12/12] spi: s3c64xx: switch exynos850 to new port config data
-Date: Fri, 16 Feb 2024 07:05:55 +0000
-Message-ID: <20240216070555.2483977-13-tudor.ambarus@linaro.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
-References: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1708067258; x=1739603258;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=WBfhOO5MG89bHmVdv1ErRWoZYXedtmnnpZfysTdIvno=;
+  b=Y98Li+KmI5BVjn3s/So2vSo4fxHdMUTPWIeQuszu/Kq3cMnvVXJQUu2C
+   wAuCKwpiZCg0BN0ukNxVm2392BuECVCWDWpuTNSG/TeA1rKrzVSqNrQMy
+   OgJIyaBj75SOzjHOF6mEYHb5VJEeycehwjibLcBl2KCTgT++BZFuqc5Zv
+   845oliGVs9mFLVe44DERpeO2U4qOMFGukF65hZ9tZ1nx0ie0+Z0xBHNSx
+   hKxa+WuoIEfQRnj4JA3FAtaA2CKCJU0bEEow47aH8/qvZ2APCpNWi5dLu
+   TehfBLbVFYIpZYebSr7R91oNNah3t9gRYP6MquCsBAzhlB4xtdQBEZuf5
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.06,163,1705359600"; 
+   d="scan'208";a="35436739"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 16 Feb 2024 08:07:29 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 56DA7280075;
+	Fri, 16 Feb 2024 08:07:29 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: dmitry.baryshkov@linaro.org, andrzej.hajda@intel.com, neil.armstrong@linaro.org, Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com, vkoul@kernel.org, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, Sandor Yu <Sandor.yu@nxp.com>
+Cc: kernel@pengutronix.de, linux-imx@nxp.com, Sandor.yu@nxp.com, oliver.brown@nxp.com, sam@ravnborg.org
+Subject: Re: [PATCH v13 4/7] drm: bridge: Cadence: Add MHDP8501 DP/HDMI driver
+Date: Fri, 16 Feb 2024 08:07:31 +0100
+Message-ID: <3549548.iIbC2pHGDl@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <5bd01470cf971e2385ecd169c3d5ac659a020973.1707040881.git.Sandor.yu@nxp.com>
+References: <cover.1707040881.git.Sandor.yu@nxp.com> <5bd01470cf971e2385ecd169c3d5ac659a020973.1707040881.git.Sandor.yu@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-Exynos850 has the same version of USI SPI (v2.1) as GS101.
-Drop the fifo_lvl_mask and rx_lvl_offset and switch to the new port
-config data.
+Hi Sandor,
 
-Backward compatibility with DT is not broken because when alises are
-set:
-- the SPI core will set the bus number according to the alias ID
-- the FIFO depth is always the same size for exynos850 (64 bytes) no
-  matter the alias ID number.
+thanks for the update.
 
-Advantages of the change:
-- drop dependency on the OF alias ID.
-- FIFO depth is inferred from the compatible. Exynos850 integrates 3 SPI
-  IPs, all with 64 bytes FIFO depths.
-- use full mask for SPI_STATUS.{RX, TX}_FIFO_LVL fields. Using partial
-  masks is misleading and can hide problems of the driver logic.
+Am Sonntag, 4. Februar 2024, 11:21:49 CET schrieb Sandor Yu:
+> Add a new DRM DisplayPort and HDMI bridge driver for Candence MHDP8501
+> used in i.MX8MQ SOC. MHDP8501 could support HDMI or DisplayPort
+> standards according embedded Firmware running in the uCPU.
+>=20
+> For iMX8MQ SOC, the DisplayPort/HDMI FW was loaded and activated by
+> SOC's ROM code. Bootload binary included respective specific firmware
+> is required.
+>=20
+> Driver will check display connector type and
+> then load the corresponding driver.
+>=20
+> Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+> Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> ---
+> v12->v13:
+> - Explicitly include linux/platform_device.h for cdns-mhdp8501-core.c
+> - Fix build warning
+> - Order bit bpc and color_space in descending shit.
+>=20
+> v11->v12:
+> - Replace DRM_INFO with dev_info or dev_warn.
+> - Replace DRM_ERROR with dev_err.
+> - Return ret when cdns_mhdp_dpcd_read failed in function
+> cdns_dp_aux_transferi(). - Remove unused parmeter in function
+> cdns_dp_get_msa_misc
+>   and use two separate variables for color space and bpc.
+> - Add year 2024 to copyright.
+>=20
+>  drivers/gpu/drm/bridge/cadence/Kconfig        |  16 +
+>  drivers/gpu/drm/bridge/cadence/Makefile       |   2 +
+>  .../drm/bridge/cadence/cdns-mhdp8501-core.c   | 316 ++++++++
+>  .../drm/bridge/cadence/cdns-mhdp8501-core.h   | 365 +++++++++
+>  .../gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c | 699 ++++++++++++++++++
+>  .../drm/bridge/cadence/cdns-mhdp8501-hdmi.c   | 679 +++++++++++++++++
+>  6 files changed, 2077 insertions(+)
+>  create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c
+>  create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.h
+>  create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
+>  create mode 100644 drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
+>=20
+> [snip]
+> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
+> b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c new file mode 100644
+> index 0000000000000..0117cddb85694
+> --- /dev/null
+> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
+> @@ -0,0 +1,699 @@
+> [snip]
+> +
+> +const struct drm_bridge_funcs cdns_dp_bridge_funcs =3D {
+> +	.attach =3D cdns_dp_bridge_attach,
+> +	.detect =3D cdns_dp_bridge_detect,
+> +	.get_edid =3D cdns_dp_bridge_get_edid,
 
-Just compiled tested.
+Please note that with commits d807ad80d811b ("drm/bridge: add ->edid_read h=
+ook=20
+and drm_bridge_edid_read()") and 27b8f91c08d99 ("drm/bridge: remove ->get_e=
+did=20
+callback") the API has slightly changed meanwhile.
 
-Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
----
- drivers/spi/spi-s3c64xx.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> +	.mode_valid =3D cdns_dp_bridge_mode_valid,
+> +	.atomic_enable =3D cdns_dp_bridge_atomic_enable,
+> +	.atomic_disable =3D cdns_dp_bridge_atomic_disable,
+> +	.atomic_duplicate_state =3D drm_atomic_helper_bridge_duplicate_state,
+> +	.atomic_destroy_state =3D drm_atomic_helper_bridge_destroy_state,
+> +	.atomic_reset =3D drm_atomic_helper_bridge_reset,
+> +};
+> diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
+> b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c new file mode 100644
+> index 0000000000000..e6ed13b9f9ca3
+> --- /dev/null
+> +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
+> @@ -0,0 +1,679 @@
+> [snip]
+> +
+> +const struct drm_bridge_funcs cdns_hdmi_bridge_funcs =3D {
+> +	.attach =3D cdns_hdmi_bridge_attach,
+> +	.detect =3D cdns_hdmi_bridge_detect,
+> +	.get_edid =3D cdns_hdmi_bridge_get_edid,
 
-diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 784786407d2e..9fcbe040cb2f 100644
---- a/drivers/spi/spi-s3c64xx.c
-+++ b/drivers/spi/spi-s3c64xx.c
-@@ -1576,10 +1576,9 @@ static const struct s3c64xx_spi_port_config exynos5433_spi_port_config = {
- };
- 
- static const struct s3c64xx_spi_port_config exynos850_spi_port_config = {
--	/* fifo_lvl_mask is deprecated. Use {rx, tx}_fifomask instead. */
--	.fifo_lvl_mask	= { 0x7f, 0x7f, 0x7f },
--	/* rx_lvl_offset is deprecated. Use {rx, tx}_fifomask instead. */
--	.rx_lvl_offset	= 15,
-+	.fifo_depth	= 64,
-+	.rx_fifomask	= S3C64XX_SPI_ST_RX_FIFO_RDY_V2,
-+	.tx_fifomask	= S3C64XX_SPI_ST_TX_FIFO_RDY_V2,
- 	.tx_st_done	= 25,
- 	.clk_div	= 4,
- 	.high_speed	= true,
--- 
-2.44.0.rc0.258.g7320e95886-goog
+Please note that with commits d807ad80d811b ("drm/bridge: add ->edid_read h=
+ook=20
+and drm_bridge_edid_read()") and 27b8f91c08d99 ("drm/bridge: remove ->get_e=
+did=20
+callback") the API has slightly changed meanwhile.
+
+> +	.mode_valid =3D cdns_hdmi_bridge_mode_valid,
+> +	.mode_fixup =3D cdns_hdmi_bridge_mode_fixup,
+> +	.atomic_enable =3D cdns_hdmi_bridge_atomic_enable,
+> +	.atomic_disable =3D cdns_hdmi_bridge_atomic_disable,
+> +	.atomic_duplicate_state =3D drm_atomic_helper_bridge_duplicate_state,
+> +	.atomic_destroy_state =3D drm_atomic_helper_bridge_destroy_state,
+> +	.atomic_reset =3D drm_atomic_helper_bridge_reset,
+> +};
+
+Please rebase your patch series, thanks.
+
+Best regards,
+Alexander
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
 
 
