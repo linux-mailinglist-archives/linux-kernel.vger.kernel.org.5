@@ -1,233 +1,324 @@
-Return-Path: <linux-kernel+bounces-68430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68431-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 497FD857A19
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:16:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F40E857A1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E6341C209C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:16:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F98CB24E35
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4004F208CF;
-	Fri, 16 Feb 2024 10:15:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LpVGkkeB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aPmGard6";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LpVGkkeB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aPmGard6"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C89208D6;
+	Fri, 16 Feb 2024 10:16:33 +0000 (UTC)
+Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC35200BF;
-	Fri, 16 Feb 2024 10:15:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B83208D3
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708078557; cv=none; b=Y9WApQVRDk/08yPruY+BLcIlP3nDN5RnEf1gSRNnooaQ213w/NBBWPhd7ovFTTS2xB48tUrNqqbALKLmyojG9bhfOHm73xyoJEgliOGA5iAXA0Tr0Q3H1wlATzro1SlSHRaCWj09q75F5In66mjkiyRTv6nsYrP11QUCbEChriQ=
+	t=1708078592; cv=none; b=KBp9ia9hJ1WxRHluX1XNpCfjrQfeWnbW6U6pbD/9ogYc56ekmsgIXKUuSxIindVP/vbIzc6Bp7SbiH41/3s6fjM3MJaKNeMSurQwotUBWc8JMSc4Q2NgiZR57+VNjbuUQETFzVd2PYnrxtJF4Hi09G4u4MoYxe7dw8OdD3gx2gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708078557; c=relaxed/simple;
-	bh=YIYxvojQxw6XOlXKkIdL2ea1QJikSQ5k5vlsedIHYp4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B7fT+OUfYqtlqma2yiLAfzSDQeS/9ty3g/XRT73gF11PTx2wIfeMmlqZLP6apcF0LxslNBw1MeEo4xSWUEW0PQxc9WnqwT+zt/kzU8xPRo9+DAomoenRleG72KivrmHODuG4GiESPFrPuv/guRRxJGDHv+PH6Nyb/lEmOZJE9Xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LpVGkkeB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aPmGard6; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LpVGkkeB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aPmGard6; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 76AC721EC9;
-	Fri, 16 Feb 2024 10:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708078550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RwO2sfrBZnb90QrTcYZAEyA1bZtsunbgLx7PRRLi+s4=;
-	b=LpVGkkeBrh50QgIsYxDbL+ccnWdpkp5F/sXSjHRPWlHZ4/P+aHbpbdnBU9tPYTYijHQRo5
-	iFYOs7LIV4rCrj+nDCkb/yB6qcZmYQj9bD0LFEatn1uo1dbxSW/fh2x+BM3W3WNy74A+2A
-	nqm26ZC1nbmEwTqKsVfvgk+46DOhQIk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708078550;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RwO2sfrBZnb90QrTcYZAEyA1bZtsunbgLx7PRRLi+s4=;
-	b=aPmGard6iLZ9Lpa6jmNBfVhUlkN0RZi85t3/p3vBhUwAqdu+BlFLb8ejJeBGGezQhKu1Zt
-	uMz7rBK+9wSXXtCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708078550; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RwO2sfrBZnb90QrTcYZAEyA1bZtsunbgLx7PRRLi+s4=;
-	b=LpVGkkeBrh50QgIsYxDbL+ccnWdpkp5F/sXSjHRPWlHZ4/P+aHbpbdnBU9tPYTYijHQRo5
-	iFYOs7LIV4rCrj+nDCkb/yB6qcZmYQj9bD0LFEatn1uo1dbxSW/fh2x+BM3W3WNy74A+2A
-	nqm26ZC1nbmEwTqKsVfvgk+46DOhQIk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708078550;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RwO2sfrBZnb90QrTcYZAEyA1bZtsunbgLx7PRRLi+s4=;
-	b=aPmGard6iLZ9Lpa6jmNBfVhUlkN0RZi85t3/p3vBhUwAqdu+BlFLb8ejJeBGGezQhKu1Zt
-	uMz7rBK+9wSXXtCA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5DF6C13343;
-	Fri, 16 Feb 2024 10:15:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id +ojoFtY1z2XbBQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Fri, 16 Feb 2024 10:15:50 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 14499A0807; Fri, 16 Feb 2024 11:15:46 +0100 (CET)
-Date: Fri, 16 Feb 2024 11:15:46 +0100
-From: Jan Kara <jack@suse.cz>
-To: "Liam R. Howlett" <Liam.Howlett@Oracle.com>
-Cc: Jan Kara <jack@suse.cz>, Chuck Lever <cel@kernel.org>,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, hughd@google.com,
-	akpm@linux-foundation.org, oliver.sang@intel.com,
-	feng.tang@intel.com, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, maple-tree@lists.infradead.org,
-	linux-mm@kvack.org, lkp@intel.com
-Subject: Re: [PATCH RFC 7/7] libfs: Re-arrange locking in offset_iterate_dir()
-Message-ID: <20240216101546.xjcpzyb3pgf2eqm4@quack3>
-References: <170785993027.11135.8830043889278631735.stgit@91.116.238.104.host.secureserver.net>
- <170786028847.11135.14775608389430603086.stgit@91.116.238.104.host.secureserver.net>
- <20240215131638.cxipaxanhidb3pev@quack3>
- <20240215170008.22eisfyzumn5pw3f@revolver>
- <20240215171622.gsbjbjz6vau3emkh@quack3>
- <20240215210742.grjwdqdypvgrpwih@revolver>
+	s=arc-20240116; t=1708078592; c=relaxed/simple;
+	bh=8DXc+eR4+MDmbwNPaRZNUUgicrihZ6NZ62h5dkNeecM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=okgwig05amOtbOcQSSWEskf1/H2f/g/FmWBAZ4h85gIixbVSYk12lcJV6LNEpPWbiGo9q1dD4Zin5CekimIeFhxPgOEVWpluz3SVQ0cbueDTmsBGgHTakjQPwSOlAmHrEgt/HigXMs7yi54/zNE/zZI4Y21GlN8PnhKuGKOkCCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+	by localhost (Postfix) with ESMTP id 4Tbns91g6Fz9syV;
+	Fri, 16 Feb 2024 11:16:29 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id iKJEwzsnBl-x; Fri, 16 Feb 2024 11:16:29 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+	by pegase1.c-s.fr (Postfix) with ESMTP id 4Tbns90bL7z9syQ;
+	Fri, 16 Feb 2024 11:16:29 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id 10A0A8B786;
+	Fri, 16 Feb 2024 11:16:29 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+	with ESMTP id 5nLgxRzYTWhR; Fri, 16 Feb 2024 11:16:28 +0100 (CET)
+Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.102])
+	by messagerie.si.c-s.fr (Postfix) with ESMTP id A2FCA8B765;
+	Fri, 16 Feb 2024 11:16:28 +0100 (CET)
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH] powerpc: Handle error in mark_rodata_ro() and mark_initmem_nx()
+Date: Fri, 16 Feb 2024 11:16:26 +0100
+Message-ID: <836f75710daef12dfea55f8fb6055d7fdaf716e3.1708078577.git.christophe.leroy@csgroup.eu>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215210742.grjwdqdypvgrpwih@revolver>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708078587; l=7919; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=8DXc+eR4+MDmbwNPaRZNUUgicrihZ6NZ62h5dkNeecM=; b=nB684azzkWBlqDDpVJ+y3tjWrC+3GnSHEEgj9lO6nwuI6NED2GL+evpXtYRygjPLncmFQhmYC U/Mm8GxE9jQBE4AtRBqB3gYB8TzdA82/0axTjdy5j5xAi/owJSdAhgW
+X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+Content-Transfer-Encoding: 8bit
 
-On Thu 15-02-24 16:07:42, Liam R. Howlett wrote:
-> * Jan Kara <jack@suse.cz> [240215 12:16]:
-> > On Thu 15-02-24 12:00:08, Liam R. Howlett wrote:
-> > > * Jan Kara <jack@suse.cz> [240215 08:16]:
-> > > > On Tue 13-02-24 16:38:08, Chuck Lever wrote:
-> > > > > From: Chuck Lever <chuck.lever@oracle.com>
-> > > > > 
-> > > > > Liam says that, unlike with xarray, once the RCU read lock is
-> > > > > released ma_state is not safe to re-use for the next mas_find() call.
-> > > > > But the RCU read lock has to be released on each loop iteration so
-> > > > > that dput() can be called safely.
-> > > > > 
-> > > > > Thus we are forced to walk the offset tree with fresh state for each
-> > > > > directory entry. mt_find() can do this for us, though it might be a
-> > > > > little less efficient than maintaining ma_state locally.
-> > > > > 
-> > > > > Since offset_iterate_dir() doesn't build ma_state locally any more,
-> > > > > there's no longer a strong need for offset_find_next(). Clean up by
-> > > > > rolling these two helpers together.
-> > > > > 
-> > > > > Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> > > > 
-> > > > Well, in general I think even xas_next_entry() is not safe to use how
-> > > > offset_find_next() was using it. Once you drop rcu_read_lock(),
-> > > > xas->xa_node could go stale. But since you're holding inode->i_rwsem when
-> > > > using offset_find_next() you should be protected from concurrent
-> > > > modifications of the mapping (whatever the underlying data structure is) -
-> > > > that's what makes xas_next_entry() safe AFAIU. Isn't that enough for the
-> > > > maple tree? Am I missing something?
-> > > 
-> > > If you are stopping, you should be pausing the iteration.  Although this
-> > > works today, it's not how it should be used because if we make changes
-> > > (ie: compaction requires movement of data), then you may end up with a
-> > > UAF issue.  We'd have no way of knowing you are depending on the tree
-> > > structure to remain consistent.
-> > 
-> > I see. But we have versions of these structures that have locking external
-> > to the structure itself, don't we?
-> 
-> Ah, I do have them - but I don't want to propagate its use as the dream
-> is that it can be removed.
-> 
-> 
-> > Then how do you imagine serializing the
-> > background operations like compaction? As much as I agree your argument is
-> > "theoretically clean", it seems a bit like a trap and there are definitely
-> > xarray users that are going to be broken by this (e.g.
-> > tag_pages_for_writeback())...
-> 
-> I'm not sure I follow the trap logic.  There are locks for the data
-> structure that need to be followed for reading (rcu) and writing
-> (spinlock for the maple tree).  If you don't correctly lock the data
-> structure then you really are setting yourself up for potential issues
-> in the future.
-> 
-> The limitations are outlined in the documentation as to how and when to
-> lock.  I'm not familiar with the xarray users, but it does check for
-> locking with lockdep, but the way this is written bypasses the lockdep
-> checking as the locks are taken and dropped without the proper scope.
-> 
-> If you feel like this is a trap, then maybe we need to figure out a new
-> plan to detect incorrect use?
+mark_rodata_ro() and mark_initmem_nx() use functions that can
+fail like set_memory_nx() and set_memory_ro(), leading to a not
+protected kernel.
 
-OK, I was a bit imprecise. What I wanted to say is that this is a shift in
-the paradigm in the sense that previously, we mostly had (and still have)
-data structure APIs (lists, rb-trees, radix-tree, now xarray) that were
-guaranteeing that unless you call into the function to mutate the data
-structure it stays intact. Now maple trees are shifting more in a direction
-of black-box API where you cannot assume what happens inside. Which is fine
-but then we have e.g. these iterators which do not quite follow this
-black-box design and you have to remember subtle details like calling
-"mas_pause()" before unlocking which is IMHO error-prone. Ideally, users of
-the black-box API shouldn't be exposed to the details of the internal
-locking at all (but then the performance suffers so I understand why you do
-things this way). Second to this ideal variant would be if we could detect
-we unlocked the lock without calling xas_pause() and warn on that. Or maybe
-xas_unlock*() should be calling xas_pause() automagically and we'd have
-similar helpers for RCU to do the magic for you?
+In case of failure, panic.
 
-> Looking through tag_pages_for_writeback(), it does what is necessary to
-> keep a safe state - before it unlocks it calls xas_pause().  We have the
-> same on maple tree; mas_pause().  This will restart the next operation
-> from the root of the tree (the root can also change), to ensure that it
-> is safe.
+Link: https://github.com/KSPP/linux/issues/7
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/mm/book3s32/mmu.c |  7 ++++--
+ arch/powerpc/mm/mmu_decl.h     |  8 +++----
+ arch/powerpc/mm/nohash/8xx.c   | 33 +++++++++++++++++-----------
+ arch/powerpc/mm/nohash/e500.c  | 10 ++++++---
+ arch/powerpc/mm/pgtable_32.c   | 39 ++++++++++++++++++++++++----------
+ 5 files changed, 65 insertions(+), 32 deletions(-)
 
-OK, I've missed the xas_pause(). Thanks for correcting me.
-
-> If you have other examples you think are unsafe then I can have a look
-> at them as well.
-
-I'm currently not aware of any but I'll let you know if I find some.
-Missing xas/mas_pause() seems really easy.
-
-								Honza
+diff --git a/arch/powerpc/mm/book3s32/mmu.c b/arch/powerpc/mm/book3s32/mmu.c
+index 5445587bfe84..100f999871bc 100644
+--- a/arch/powerpc/mm/book3s32/mmu.c
++++ b/arch/powerpc/mm/book3s32/mmu.c
+@@ -193,7 +193,7 @@ static bool is_module_segment(unsigned long addr)
+ 	return true;
+ }
+ 
+-void mmu_mark_initmem_nx(void)
++int mmu_mark_initmem_nx(void)
+ {
+ 	int nb = mmu_has_feature(MMU_FTR_USE_HIGH_BATS) ? 8 : 4;
+ 	int i;
+@@ -230,9 +230,10 @@ void mmu_mark_initmem_nx(void)
+ 
+ 		mtsr(mfsr(i << 28) | 0x10000000, i << 28);
+ 	}
++	return 0;
+ }
+ 
+-void mmu_mark_rodata_ro(void)
++int mmu_mark_rodata_ro(void)
+ {
+ 	int nb = mmu_has_feature(MMU_FTR_USE_HIGH_BATS) ? 8 : 4;
+ 	int i;
+@@ -245,6 +246,8 @@ void mmu_mark_rodata_ro(void)
+ 	}
+ 
+ 	update_bats();
++
++	return 0;
+ }
+ 
+ /*
+diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
+index 72341b9fb552..6107e4944509 100644
+--- a/arch/powerpc/mm/mmu_decl.h
++++ b/arch/powerpc/mm/mmu_decl.h
+@@ -160,11 +160,11 @@ static inline unsigned long p_block_mapped(phys_addr_t pa) { return 0; }
+ #endif
+ 
+ #if defined(CONFIG_PPC_BOOK3S_32) || defined(CONFIG_PPC_8xx) || defined(CONFIG_PPC_E500)
+-void mmu_mark_initmem_nx(void);
+-void mmu_mark_rodata_ro(void);
++int mmu_mark_initmem_nx(void);
++int mmu_mark_rodata_ro(void);
+ #else
+-static inline void mmu_mark_initmem_nx(void) { }
+-static inline void mmu_mark_rodata_ro(void) { }
++static inline int mmu_mark_initmem_nx(void) { return 0; }
++static inline int mmu_mark_rodata_ro(void) { return 0; }
+ #endif
+ 
+ #ifdef CONFIG_PPC_8xx
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index 6be6421086ed..43d4842bb1c7 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -119,23 +119,26 @@ void __init mmu_mapin_immr(void)
+ 				    PAGE_KERNEL_NCG, MMU_PAGE_512K, true);
+ }
+ 
+-static void mmu_mapin_ram_chunk(unsigned long offset, unsigned long top,
+-				pgprot_t prot, bool new)
++static int mmu_mapin_ram_chunk(unsigned long offset, unsigned long top,
++			       pgprot_t prot, bool new)
+ {
+ 	unsigned long v = PAGE_OFFSET + offset;
+ 	unsigned long p = offset;
++	int err = 0;
+ 
+ 	WARN_ON(!IS_ALIGNED(offset, SZ_512K) || !IS_ALIGNED(top, SZ_512K));
+ 
+-	for (; p < ALIGN(p, SZ_8M) && p < top; p += SZ_512K, v += SZ_512K)
+-		__early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
+-	for (; p < ALIGN_DOWN(top, SZ_8M) && p < top; p += SZ_8M, v += SZ_8M)
+-		__early_map_kernel_hugepage(v, p, prot, MMU_PAGE_8M, new);
+-	for (; p < ALIGN_DOWN(top, SZ_512K) && p < top; p += SZ_512K, v += SZ_512K)
+-		__early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
++	for (; p < ALIGN(p, SZ_8M) && p < top && !err; p += SZ_512K, v += SZ_512K)
++		err = __early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
++	for (; p < ALIGN_DOWN(top, SZ_8M) && p < top && !err; p += SZ_8M, v += SZ_8M)
++		err = __early_map_kernel_hugepage(v, p, prot, MMU_PAGE_8M, new);
++	for (; p < ALIGN_DOWN(top, SZ_512K) && p < top && !err; p += SZ_512K, v += SZ_512K)
++		err = __early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
+ 
+ 	if (!new)
+ 		flush_tlb_kernel_range(PAGE_OFFSET + v, PAGE_OFFSET + top);
++
++	return err;
+ }
+ 
+ unsigned long __init mmu_mapin_ram(unsigned long base, unsigned long top)
+@@ -166,27 +169,33 @@ unsigned long __init mmu_mapin_ram(unsigned long base, unsigned long top)
+ 	return top;
+ }
+ 
+-void mmu_mark_initmem_nx(void)
++int mmu_mark_initmem_nx(void)
+ {
+ 	unsigned long etext8 = ALIGN(__pa(_etext), SZ_8M);
+ 	unsigned long sinittext = __pa(_sinittext);
+ 	unsigned long boundary = strict_kernel_rwx_enabled() ? sinittext : etext8;
+ 	unsigned long einittext8 = ALIGN(__pa(_einittext), SZ_8M);
++	int err = 0;
+ 
+ 	if (!debug_pagealloc_enabled_or_kfence())
+-		mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
++		err = mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
+ 
+ 	mmu_pin_tlb(block_mapped_ram, false);
++
++	return err;
+ }
+ 
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+-void mmu_mark_rodata_ro(void)
++int mmu_mark_rodata_ro(void)
+ {
+ 	unsigned long sinittext = __pa(_sinittext);
++	int err;
+ 
+-	mmu_mapin_ram_chunk(0, sinittext, PAGE_KERNEL_ROX, false);
++	err = mmu_mapin_ram_chunk(0, sinittext, PAGE_KERNEL_ROX, false);
+ 	if (IS_ENABLED(CONFIG_PIN_TLB_DATA))
+ 		mmu_pin_tlb(block_mapped_ram, true);
++
++	return err;
+ }
+ #endif
+ 
+diff --git a/arch/powerpc/mm/nohash/e500.c b/arch/powerpc/mm/nohash/e500.c
+index 921c3521ec11..266fb22131fc 100644
+--- a/arch/powerpc/mm/nohash/e500.c
++++ b/arch/powerpc/mm/nohash/e500.c
+@@ -285,19 +285,23 @@ void __init adjust_total_lowmem(void)
+ }
+ 
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+-void mmu_mark_rodata_ro(void)
++int mmu_mark_rodata_ro(void)
+ {
+ 	unsigned long remapped;
+ 
+ 	remapped = map_mem_in_cams(__max_low_memory, CONFIG_LOWMEM_CAM_NUM, false, false);
+ 
+-	WARN_ON(__max_low_memory != remapped);
++	if (WARN_ON(__max_low_memory != remapped))
++		return -EINVAL;
++
++	return 0;
+ }
+ #endif
+ 
+-void mmu_mark_initmem_nx(void)
++int mmu_mark_initmem_nx(void)
+ {
+ 	/* Everything is done in mmu_mark_rodata_ro() */
++	return 0;
+ }
+ 
+ void setup_initial_memory_limit(phys_addr_t first_memblock_base,
+diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
+index 5c02fd08d61e..e94919853ca3 100644
+--- a/arch/powerpc/mm/pgtable_32.c
++++ b/arch/powerpc/mm/pgtable_32.c
+@@ -130,32 +130,41 @@ void __init mapin_ram(void)
+ 	}
+ }
+ 
+-void mark_initmem_nx(void)
++static int __mark_initmem_nx(void)
+ {
+ 	unsigned long numpages = PFN_UP((unsigned long)_einittext) -
+ 				 PFN_DOWN((unsigned long)_sinittext);
++	int err;
+ 
+-	mmu_mark_initmem_nx();
++	err = mmu_mark_initmem_nx();
+ 
+ 	if (!v_block_mapped((unsigned long)_sinittext)) {
+-		set_memory_nx((unsigned long)_sinittext, numpages);
+-		set_memory_rw((unsigned long)_sinittext, numpages);
++		err = set_memory_nx((unsigned long)_sinittext, numpages);
++		if (err)
++			return err;
++		err = set_memory_rw((unsigned long)_sinittext, numpages);
+ 	}
++	return err;
++}
++
++void mark_initmem_nx(void)
++{
++	int err = __mark_initmem_nx();
++
++	if (err)
++		panic("%s() failed, err = %d\n", __func__, err);
+ }
+ 
+ #ifdef CONFIG_STRICT_KERNEL_RWX
+-void mark_rodata_ro(void)
++static int __mark_rodata_ro(void)
+ {
+ 	unsigned long numpages;
+ 
+ 	if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX) && mmu_has_feature(MMU_FTR_HPTE_TABLE))
+ 		pr_warn("This platform has HASH MMU, STRICT_MODULE_RWX won't work\n");
+ 
+-	if (v_block_mapped((unsigned long)_stext + 1)) {
+-		mmu_mark_rodata_ro();
+-		ptdump_check_wx();
+-		return;
+-	}
++	if (v_block_mapped((unsigned long)_stext + 1))
++		return mmu_mark_rodata_ro();
+ 
+ 	/*
+ 	 * mark text and rodata as read only. __end_rodata is set by
+@@ -165,7 +174,15 @@ void mark_rodata_ro(void)
+ 	numpages = PFN_UP((unsigned long)__end_rodata) -
+ 		   PFN_DOWN((unsigned long)_stext);
+ 
+-	set_memory_ro((unsigned long)_stext, numpages);
++	return set_memory_ro((unsigned long)_stext, numpages);
++}
++
++void mark_rodata_ro(void)
++{
++	int err = __mark_rodata_ro();
++
++	if (err)
++		panic("%s() failed, err = %d\n", __func__, err);
+ 
+ 	// mark_initmem_nx() should have already run by now
+ 	ptdump_check_wx();
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.43.0
+
 
