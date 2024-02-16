@@ -1,141 +1,110 @@
-Return-Path: <linux-kernel+bounces-68463-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68464-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C8EB857A85
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:43:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B101C857A89
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9AD9A281799
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:43:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5237B1F248AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D06052F7D;
-	Fri, 16 Feb 2024 10:43:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4288C524B8;
+	Fri, 16 Feb 2024 10:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="GQEAbCVk"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Doj1wFhy"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618DB1EA73;
-	Fri, 16 Feb 2024 10:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAF4A535BE;
+	Fri, 16 Feb 2024 10:43:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708080186; cv=none; b=XpBnHInpwwY/X2YtdZo1t+HgaaKar7PBZToLi0o7UK6iaMVwK7mFAsKcyZNsIfotxiG39b7YiuDYYnAN2o2omlupH6DfK+/JwvN9IuCeWhO+2qkENQGVx+h9ztlQFM99dZ9tv7A1/l36edZKv4mI2hv1IDXA/AsIKqnCQa3FA9E=
+	t=1708080192; cv=none; b=o6DoIXdIBKugqLeMLBTapIJZzNDA21477NQJYQvdO5f2QIxX9dOmHyCWlt8ZpulSsub0mHNAtQ/FHwmdHq5Ej7uElLds9yg6iYor/jFNUS36TjwRY/Xs7Ar1dTH/XsBUjM2mn/g0Fmd7KS+qzdGhoMw7auGY3jwZzFuyu0Jw2MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708080186; c=relaxed/simple;
-	bh=dYt4+bsRVChAZxDRXVRdgR3p1sIvnLqzGOD4N6Srd2I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ijtCfx1V+LFrqQM85KreB1vVhuDAuA6z5mihvX6WkRhDnlFwIrC7fq0LKO1o0hz0Vk7unt7k4Jrn6yJkhvcbJT/JVb4kyF38UeWoONy8bTFah593BW2KaUYxG7TQlKreptnCUaaGebdgc3+gIW+KqmJ11As/0woHz82Nk9Xz01w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=GQEAbCVk; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb.pivistrello.it (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 765BF22533;
-	Fri, 16 Feb 2024 11:42:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1708080180;
-	bh=lILCCVDpv4TSePKRO4sehh2ym0PKUbFZyoHWNmTyAF8=; h=From:To:Subject;
-	b=GQEAbCVkfq1zUI6SODikNg5z3gVzvia8TQ0QbeYQGJJxNBrBm2PfaZBJrwb4D8n67
-	 fxrYYi9tprQzfpxXL/+hs2mECWq8tFriOxLTqRCyeUO2c7AEkXDo2CcxGLIdHDmz4B
-	 6HptLDaSba0lTQiobppeQRdvSsgxZ6iPdXYj4O8Iii04hjNvr9UdkC4ddBj64FWcFd
-	 b1+V7uv2BEXJfQbSTKeGDTgPrdhd7Sry6mq8ndO17g9XR1tExEjkJwGb+anFgacn9v
-	 Ath70p7kw2BQatrYXlBA8R76WArqhU4J4jW24PgYw+aqkEsLxxtm54Mdhb57kVYNXy
-	 MZlgaUTGKIApA==
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>
-Cc: Francesco Dolcini <francesco.dolcini@toradex.com>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	Roland Hieber <rhi@pengutronix.de>,
-	Hiago De Franco <hiagofranco@gmail.com>
-Subject: [PATCH v1] ARM: dts: imx7: remove DSI port endpoints
-Date: Fri, 16 Feb 2024 11:42:55 +0100
-Message-Id: <20240216104255.21052-1-francesco@dolcini.it>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1708080192; c=relaxed/simple;
+	bh=NDGRynr8itqPzytqBynygn6jKjpyhOuuhynu6UE3ZMA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=MYDuu4q7g9YGfKhSeQYlYyn20v/3C4WllPoj648gICr9+HvW5vvodHMRDG2ub+pBBxXxDBpJCUgTVDflNdWSX6QGBn7D0HvrDYq2NtWAlTd3lZllK+OSV1WAYYmRWf6cV5QCEtfpKzntUcz1YGgRRTRH0yyiq9LQUGvGbsoNN/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Doj1wFhy; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 39E471BF203;
+	Fri, 16 Feb 2024 10:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708080182;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hB/XHwobNHN18Xz1hYNZwwfr1UUQv4BZ9ABlvaG/lLY=;
+	b=Doj1wFhyFBqmQV6VY50wGFAmDMdOhlEgNW7YwVrTfkUkB/ojt2RPOLJQoIMSaKGUR+1/Xa
+	SIkHMZsP+S8Nz033lwoSrILNsK94pjdrlI07PVpbrJr45fcr7bLGlXOFEeW3LmnlBqCsms
+	bFjjzpf4NN3YqVv1zRJklEU5I0U9/EedlFOs5FFHerMCFMKYh3edjLeZ0hBp1RBdChk66a
+	t9PeKza2wyGyIFruGiO4lsXC41KrR0E0bX8HlclSzm3UiwAryDEKSugiOnyLioLluZVq+9
+	cOkCTybu6D6IAlH6hhGLxPlF+Bcdl7C6U2iKVpD9NdND5cZyKwGN3Fij38gc8g==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 16 Feb 2024 11:43:00 +0100
+Message-Id: <CZ6FW2H4BPEL.D5W7U5H7THDH@bootlin.com>
+Subject: Re: [PATCH 05/23] gpio: nomadik: extract GPIO platform driver from
+ drivers/pinctrl/nomadik/
+Cc: <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mips@vger.kernel.org>, "Gregory CLEMENT"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Philipp Zabel" <p.zabel@pengutronix.de>, "Linus Walleij"
+ <linus.walleij@linaro.org>, "Bartosz Golaszewski" <brgl@bgdev.pl>, "Rob
+ Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
+ <20240214-mbly-gpio-v1-5-f88c0ccf372b@bootlin.com>
+ <e031566a85ae0da0ee71dffba5d87c6414ef83e1.camel@pengutronix.de>
+In-Reply-To: <e031566a85ae0da0ee71dffba5d87c6414ef83e1.camel@pengutronix.de>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-From: Francesco Dolcini <francesco.dolcini@toradex.com>
+Hello,
 
-This fixes the display not working on colibri imx7, the driver fails to
-load with the following error:
+On Thu Feb 15, 2024 at 11:03 AM CET, Philipp Zabel wrote:
+> On Mi, 2024-02-14 at 17:23 +0100, Th=C3=A9o Lebrun wrote:
+> [...]
+> > diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
+> > new file mode 100644
+> > index 000000000000..e39477e1a58f
+> > --- /dev/null
+> > +++ b/drivers/gpio/gpio-nomadik.c
+> > @@ -0,0 +1,660 @@
+> [...]
+> > +static int nmk_gpio_probe(struct platform_device *dev)
+> > +{
+> [...]
+> > +	ret =3D gpiochip_add_data(chip, nmk_chip);
+>
+> Use devm_gpiochip_add_data() to cleanup on unbind, before nmk_chip goes
+> away. Or make the driver un-unbindable via suppress_bind_attrs. In that
+> case you could drop devm_ prefixes everywhere for consistency.
 
-  mxsfb 30730000.lcdif: error -ENODEV: Cannot connect bridge
+Disabling unbind sounds like the best option. Will do so in next
+revision, in a separate patch to keep this one as close of a copy-paste
+as possible.
 
-NXP i.MX7 LCDIF is connected to both the Parallel LCD Display and to a
-MIPI DSI IP block, currently it's not possible to describe the
-connection to both.
+Thanks,
 
-Remove the port endpoint from the SOC dtsi to prevent regressions, this
-would need to be defined on the board DTS.
-
-Reported-by: Hiago De Franco <hiagofranco@gmail.com>
-Closes: https://lore.kernel.org/r/34yzygh3mbwpqr2re7nxmhyxy3s7qmqy4vhxvoyxnoguktriur@z66m7gvpqlia/
-Fixes: edbbae7fba49 ("ARM: dts: imx7: add MIPI-DSI support")
-Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
----
- arch/arm/boot/dts/nxp/imx/imx7s.dtsi | 26 --------------------------
- 1 file changed, 26 deletions(-)
-
-diff --git a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-index ebf7befcc11e..9c81c6baa2d3 100644
---- a/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-+++ b/arch/arm/boot/dts/nxp/imx/imx7s.dtsi
-@@ -834,16 +834,6 @@ lcdif: lcdif@30730000 {
- 					<&clks IMX7D_LCDIF_PIXEL_ROOT_CLK>;
- 				clock-names = "pix", "axi";
- 				status = "disabled";
--
--				port {
--					#address-cells = <1>;
--					#size-cells = <0>;
--
--					lcdif_out_mipi_dsi: endpoint@0 {
--						reg = <0>;
--						remote-endpoint = <&mipi_dsi_in_lcdif>;
--					};
--				};
- 			};
- 
- 			mipi_csi: mipi-csi@30750000 {
-@@ -895,22 +885,6 @@ mipi_dsi: dsi@30760000 {
- 				samsung,esc-clock-frequency = <20000000>;
- 				samsung,pll-clock-frequency = <24000000>;
- 				status = "disabled";
--
--				ports {
--					#address-cells = <1>;
--					#size-cells = <0>;
--
--					port@0 {
--						reg = <0>;
--						#address-cells = <1>;
--						#size-cells = <0>;
--
--						mipi_dsi_in_lcdif: endpoint@0 {
--							reg = <0>;
--							remote-endpoint = <&lcdif_out_mipi_dsi>;
--						};
--					};
--				};
- 			};
- 		};
- 
--- 
-2.39.2
-
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
