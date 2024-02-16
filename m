@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-67921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909BB85730F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:04:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D929485731F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:09:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52416281FEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:03:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0884C1C20DD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C04981758F;
-	Fri, 16 Feb 2024 00:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58B8B1B80C;
+	Fri, 16 Feb 2024 00:59:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="nPvFm8hW"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VcTIveCh"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77EB114AA8;
-	Fri, 16 Feb 2024 00:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFA31B803;
+	Fri, 16 Feb 2024 00:59:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708045132; cv=none; b=kedOiKEGbB+ds0gYxreCe3CaqE0gGt9SedRaqmVld41NDU9USu/rsMss1w5H9OHBnBNxD8O0K15L82bmrqbJOVCsdJ2MiYGThLgn3DOmDwlUiJoxFcRPDwBQEM8r2jC371YVfQFgRoLlFLnC7aXbTLL7HZ3fmWFJsDJ67GJLD6g=
+	t=1708045177; cv=none; b=cIjXAgpETXHgACYVWIvezKxdKgnvL/dowRihtt1GFcionTx3HacNv5DAJjQZXwVogh4mPYyl1FgjeuwJYTpApT/CAXSdjYybGS5789ELqs5U8FDBXc6UwW+em4s209yksBI2kStFQgymLcYsdAm8uEBhWTeOu/oTk8ElXRRaBCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708045132; c=relaxed/simple;
-	bh=tJk5GPSWzHu5iJyfgh1vvpdf+5NuhobzvsMmLQkBAYY=;
+	s=arc-20240116; t=1708045177; c=relaxed/simple;
+	bh=39A/xiTKQauSSJ8A4yn+0yojQ14leyJe5VSWz1gzLh8=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dC6nfZW8/I3jeHGGLNpzsvCZ5MpBpXlxqUsv4UTi0rY04Wkmj+CngRtUDZMyRsvJwwJpFFwr4DGX0pkeHH/eaPbnKpEuNNL400d1Xu9U4uBljEqwtK1mhjmqkUyUWzIr/0FXL97hT+Zfg0dXVRDU+BPjvPSw4WG2vxXDkiEpfB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=nPvFm8hW; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=OcTLkDU1x0Xjabx3lFpM+0+y3c9lCPwicjIbBbolZFyvzRS3OuNgCdmA76Mn/S03M6cocuwgZI8Fjc4BuF7U4r8EeTwfjJhQH6BDAhmOF1BveNjLVKROFzrdoSuRrI7iNMDTynFFEQd8NtZ2nEg7NnHfpJyKK7En/F2Aowm6vYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VcTIveCh; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41FNwqW6015358;
-	Fri, 16 Feb 2024 00:58:44 GMT
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41G0ltnK019880;
+	Fri, 16 Feb 2024 00:59:30 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=Z3bYhTRiiQvxZ9pfqEtV3Mv1twCj+OvqZpPRG8NMtK4=; b=nP
-	vFm8hWHspqU8oM8GvcBB8xUCtv3ug2Ci2wrPgNP2zVDg5vX35zbesVttsKSrRfth
-	qiuli11oGKetXcT0L3U3N+ZzO2OTajO3wedq39MLq23ptACw8MsOseWp2y/39wK4
-	TnB6lpUVo0WCeKWxmmDLOhhGg6oQG/J9NBDeIq0+9/zCNYEHoAJg06dnXNY9kLuV
-	C5ymQuSNhZOFnAOiZ/LGNn8ELTdZvPs3pIB8NQSO6L6CbOul4IJ5yPD424eIMXiM
-	K5AyY4UD+QtuZXDK4HcxIu5iEbKBqmQHkPZ0miJlPhYft46tOt2Q/+A25qIlLOlI
-	8B2sgwlntR04dqnDe6qA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9435umgv-1
+	qcppdkim1; bh=YBL6RfIICPWsz3SJ2ooj1M90QUk7ahuLlrso6UxkTJE=; b=Vc
+	TIveChnsiIzkGMrr81edteIWPv53EFcXNnUtsQccVUYsQq8WWHUHie5FI49Lihxc
+	XpSLKGpAK6qivrMI4BJSlc5Y7unJbGhLHtyMoWiSdvq0iqP/vSz/Rt3407T5fAnS
+	RloqcZIxHTfsPoC4uWVw28wTXa5DRCUO4c2bdy+GVln13PZcm2tie35O5B0klrdG
+	johSvcjumnxPA8bjVd9zCA2Q7/dKy3LY8ij4xoaB2KhVGVbWz7OvzHWo/WARNd7f
+	TgSkrx1Iznf13Ipc1I3vnFj9eBq0i9Pu1bZQPBkNICCQW8pWLDem9f5J9suk9EBx
+	3jotmovvfsVLCEo3NyTw==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9cudjq3r-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 00:58:44 +0000 (GMT)
+	Fri, 16 Feb 2024 00:59:29 +0000 (GMT)
 Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41G0whwp029565
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41G0wmqG029211
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 00:58:43 GMT
+	Fri, 16 Feb 2024 00:58:48 GMT
 Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
  nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 15 Feb 2024 16:58:38 -0800
+ 15.2.1118.40; Thu, 15 Feb 2024 16:58:43 -0800
 From: Krishna Kurapati <quic_kriskura@quicinc.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Rob Herring
@@ -74,11 +74,10 @@ CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
         Krishna Kurapati
-	<quic_kriskura@quicinc.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v15 5/9] dt-bindings: usb: qcom,dwc3: Add bindings for SC8280 Multiport
-Date: Fri, 16 Feb 2024 06:27:52 +0530
-Message-ID: <20240216005756.762712-6-quic_kriskura@quicinc.com>
+	<quic_kriskura@quicinc.com>
+Subject: [PATCH v15 6/9] usb: dwc3: qcom: Add helper function to request wakeup interrupts
+Date: Fri, 16 Feb 2024 06:27:53 +0530
+Message-ID: <20240216005756.762712-7-quic_kriskura@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240216005756.762712-1-quic_kriskura@quicinc.com>
 References: <20240216005756.762712-1-quic_kriskura@quicinc.com>
@@ -94,95 +93,126 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01a.na.qualcomm.com (10.47.209.196)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VIVEcAwZe5Y-wKlmj02gB6WfqIWllQjP
-X-Proofpoint-ORIG-GUID: VIVEcAwZe5Y-wKlmj02gB6WfqIWllQjP
+X-Proofpoint-GUID: gCIWrzbUwCkicjeNN7KcMdHli-kPupDH
+X-Proofpoint-ORIG-GUID: gCIWrzbUwCkicjeNN7KcMdHli-kPupDH
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-15_24,2024-02-14_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- lowpriorityscore=0 mlxscore=0 suspectscore=0 spamscore=0
- priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0 mlxlogscore=978
- clxscore=1011 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402160006
+ mlxlogscore=852 priorityscore=1501 spamscore=0 suspectscore=0 phishscore=0
+ bulkscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 clxscore=1015
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402160005
 
-Add the compatible string for SC8280 Multiport USB controller from
-Qualcomm.
+The logic for requesting interrupts is duplicated for each interrupt. In
+the upcoming patches that introduces support for multiport, it would be
+better to clean up the duplication before reading mulitport related
+interrupts.
 
-There are 4 power event irq interrupts supported by this controller
-(one for each port of multiport). Added all the 4 as non-optional
-interrupts for SC8280XP-MP
-
-Also each port of multiport has one DP and oen DM IRQ. Add all DP/DM
-IRQ's related to 4 ports of SC8280XP Teritiary controller.
-
-Also added ss phy irq for both SS Ports.
+Refactor interrupt setup call by adding a new helper function for
+requesting the wakeup interrupts. To simplify implementation, make
+the display name same as the interrupt name expected in DT.
 
 Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
 Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 ---
- .../devicetree/bindings/usb/qcom,dwc3.yaml    | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ drivers/usb/dwc3/dwc3-qcom.c | 53 ++++++++++++++++--------------------
+ 1 file changed, 24 insertions(+), 29 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-index 63d150b216c5..53cb05e94433 100644
---- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-+++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-@@ -30,6 +30,7 @@ properties:
-           - qcom,sc7180-dwc3
-           - qcom,sc7280-dwc3
-           - qcom,sc8280xp-dwc3
-+          - qcom,sc8280xp-dwc3-mp
-           - qcom,sdm660-dwc3
-           - qcom,sdm670-dwc3
-           - qcom,sdm845-dwc3
-@@ -282,6 +283,7 @@ allOf:
-           contains:
-             enum:
-               - qcom,sc8280xp-dwc3
-+              - qcom,sc8280xp-dwc3-mp
-               - qcom,x1e80100-dwc3
-     then:
-       properties:
-@@ -470,6 +472,38 @@ allOf:
-             - const: dm_hs_phy_irq
-             - const: ss_phy_irq
+diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+index dbd6a5b2b289..08df29584366 100644
+--- a/drivers/usb/dwc3/dwc3-qcom.c
++++ b/drivers/usb/dwc3/dwc3-qcom.c
+@@ -535,6 +535,22 @@ static int dwc3_qcom_get_irq(struct platform_device *pdev,
+ 	return ret;
+ }
  
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sc8280xp-dwc3-mp
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 18
-+          maxItems: 18
-+        interrupt-names:
-+          items:
-+            - const: pwr_event_1
-+            - const: pwr_event_2
-+            - const: pwr_event_3
-+            - const: pwr_event_4
-+            - const: hs_phy_1
-+            - const: hs_phy_2
-+            - const: hs_phy_3
-+            - const: hs_phy_4
-+            - const: dp_hs_phy_1
-+            - const: dm_hs_phy_1
-+            - const: dp_hs_phy_2
-+            - const: dm_hs_phy_2
-+            - const: dp_hs_phy_3
-+            - const: dm_hs_phy_3
-+            - const: dp_hs_phy_4
-+            - const: dm_hs_phy_4
-+            - const: ss_phy_1
-+            - const: ss_phy_2
++static int dwc3_qcom_request_irq(struct dwc3_qcom *qcom, int irq,
++				 const char *name)
++{
++	int ret;
 +
- additionalProperties: false
++	/* Keep wakeup interrupts disabled until suspend */
++	ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
++					qcom_dwc3_resume_irq,
++					IRQF_ONESHOT | IRQF_NO_AUTOEN,
++					name, qcom);
++	if (ret)
++		dev_err(qcom->dev, "failed to request irq %s: %d\n", name, ret);
++
++	return ret;
++}
++
+ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+ {
+ 	struct dwc3_qcom *qcom = platform_get_drvdata(pdev);
+@@ -545,57 +561,36 @@ static int dwc3_qcom_setup_irq(struct platform_device *pdev)
+ 	irq = dwc3_qcom_get_irq(pdev, "qusb2_phy",
+ 				pdata ? pdata->qusb2_phy_irq_index : -1);
+ 	if (irq > 0) {
+-		/* Keep wakeup interrupts disabled until suspend */
+-		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+-					qcom_dwc3_resume_irq,
+-					IRQF_ONESHOT | IRQF_NO_AUTOEN,
+-					"qcom_dwc3 QUSB2", qcom);
+-		if (ret) {
+-			dev_err(qcom->dev, "qusb2_phy_irq failed: %d\n", ret);
++		ret = dwc3_qcom_request_irq(qcom, irq, "hs_phy_irq");
++		if (ret)
+ 			return ret;
+-		}
+ 		qcom->qusb2_phy_irq = irq;
+ 	}
  
- examples:
+ 	irq = dwc3_qcom_get_irq(pdev, "dp_hs_phy_irq",
+ 				pdata ? pdata->dp_hs_phy_irq_index : -1);
+ 	if (irq > 0) {
+-		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+-					qcom_dwc3_resume_irq,
+-					IRQF_ONESHOT | IRQF_NO_AUTOEN,
+-					"qcom_dwc3 DP_HS", qcom);
+-		if (ret) {
+-			dev_err(qcom->dev, "dp_hs_phy_irq failed: %d\n", ret);
++		ret = dwc3_qcom_request_irq(qcom, irq, "dp_hs_phy_irq");
++		if (ret)
+ 			return ret;
+-		}
+ 		qcom->dp_hs_phy_irq = irq;
+ 	}
+ 
+ 	irq = dwc3_qcom_get_irq(pdev, "dm_hs_phy_irq",
+ 				pdata ? pdata->dm_hs_phy_irq_index : -1);
+ 	if (irq > 0) {
+-		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+-					qcom_dwc3_resume_irq,
+-					IRQF_ONESHOT | IRQF_NO_AUTOEN,
+-					"qcom_dwc3 DM_HS", qcom);
+-		if (ret) {
+-			dev_err(qcom->dev, "dm_hs_phy_irq failed: %d\n", ret);
++		ret = dwc3_qcom_request_irq(qcom, irq, "dm_hs_phy_irq");
++		if (ret)
+ 			return ret;
+-		}
+ 		qcom->dm_hs_phy_irq = irq;
+ 	}
+ 
+ 	irq = dwc3_qcom_get_irq(pdev, "ss_phy_irq",
+ 				pdata ? pdata->ss_phy_irq_index : -1);
+ 	if (irq > 0) {
+-		ret = devm_request_threaded_irq(qcom->dev, irq, NULL,
+-					qcom_dwc3_resume_irq,
+-					IRQF_ONESHOT | IRQF_NO_AUTOEN,
+-					"qcom_dwc3 SS", qcom);
+-		if (ret) {
+-			dev_err(qcom->dev, "ss_phy_irq failed: %d\n", ret);
++		ret = dwc3_qcom_request_irq(qcom, irq, "ss_phy_irq");
++		if (ret)
+ 			return ret;
+-		}
+ 		qcom->ss_phy_irq = irq;
+ 	}
+ 
 -- 
 2.34.1
 
