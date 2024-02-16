@@ -1,120 +1,116 @@
-Return-Path: <linux-kernel+bounces-69372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC01B858830
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:46:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 276B0858831
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:46:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 520C4B22854
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:45:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D08A31F23238
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27B9C146900;
-	Fri, 16 Feb 2024 21:45:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BDCF1482F0;
+	Fri, 16 Feb 2024 21:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gAVIuj6q";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fFG6Fv0u"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TdZbvg5k"
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBBF61353E4;
-	Fri, 16 Feb 2024 21:45:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8326145B03
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:45:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708119949; cv=none; b=R3RpxczHHwLUOpD3NQosoBFrf8Jk7KyuZzsvDJWwqqIab0wdibgxZzalWmzPRCct8RBCB6ghBW4+GZ6JYa+KnK9auIrpFugJ+DO1+XHmk0qJ73YiHoHjOsH7MNupGSG5lkwc9DHlhw9uQFLolsC85ovb2+9NT5FYPwVOqXvLJ9s=
+	t=1708119957; cv=none; b=MX8og+tL6ByCBPvHLoX03ViOl5QHF+Is4nCVgf3ZxF2ApdtKK+VIewUa2Ifgenz7y9UGahaJ7M1AgWEWH+Mdhg9cmyOAxO8+Vieo8t/gm3dzrwEuQFBV3ltlg45GLACrqukoIG/SYWJqFo/AfMsDCrc7Tnd2gLPPBPpUe3P2mFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708119949; c=relaxed/simple;
-	bh=Mk0nxUw+sq35db+ZT9456aN5/fkc1vmq/3qOwOy1K4M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZiV6IaFQQN58flB8b+3uvKPRkEuR5LCj8O9oaFejo0HKsEhaQgmY2Mb5LeQakRQxXOyjSk3rs5Hm/2s9kyVr9asOuvAgAk0W1lE68g0cZL5jl9O2yyFelTiblgz2qkvxQR9Q4NFPF3VMfqc8O8S0FK0LQmdSmbR1nOgLvb4+syw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gAVIuj6q; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fFG6Fv0u; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708119946;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=etwgo5N1QWBMtShX9v3D2p+zgcQeVtP2GzdDLktsQC8=;
-	b=gAVIuj6qniijsqgHgtIzLeiQgR3BMvBcoIEPyBGKmP+zphoPaMN3uCeMQpVzwLe3/RiFEp
-	UZhZ5x70uxt5E4tB9R53WM/x6VohRsdB+2PV9HUuN338zr24EjVEzEprL/6ZSu7opblo0+
-	bLUvyUMTnCW134TEkRLD0Us7i04zR17Ch6fNoYCIgdeppiNZZSbv9baFd0rm760cGZqQWM
-	zNqcQYAwN3jIwAUlLSsmpoGMQzcMg51shu79JgwsKvaxu0RGKMepS+umoWN3/C2dX6gOmj
-	W7fwaHcZveJlqPIfWqx+vzUaT5QAOwfgPig+BVZmQVgZ6+5cP6etJchZaflXXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708119946;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=etwgo5N1QWBMtShX9v3D2p+zgcQeVtP2GzdDLktsQC8=;
-	b=fFG6Fv0uT9s8hVazM4DMd94ET+uX8+bc9eWd1hNGvJMzF+aU064xWN5Hxft0bOsfnGLEs8
-	u0zXOdvBmVkPJ/Cg==
-To: Paolo Bonzini <pbonzini@redhat.com>, Xin Li <xin@zytor.com>, Sean
- Christopherson <seanjc@google.com>, Max Kellermann
- <max.kellermann@ionos.com>
-Cc: hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org, Stephen
- Rothwell <sfr@canb.auug.org.au>, kvm@vger.kernel.org
-Subject: Re: [PATCH] arch/x86/entry_fred: don't set up KVM IRQs if KVM is
- disabled
-In-Reply-To: <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
-References: <20240215133631.136538-1-max.kellermann@ionos.com>
- <Zc5sMmT20kQmjYiq@google.com>
- <a61b113c-613c-41df-80a5-b061889edfdf@zytor.com>
- <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
-Date: Fri, 16 Feb 2024 22:45:45 +0100
-Message-ID: <87ttm8axrq.ffs@tglx>
+	s=arc-20240116; t=1708119957; c=relaxed/simple;
+	bh=sWcb4QWZQerF6dGRRf3Saf0ygsiHNPwWHpaQ0U2ubAU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fX4I3CKclvLx6zvzgu+G6bGjh1p7BOhBMfmN5CEqmkzMeJ2tAyGRr2uFS0orlcIpftJTslluvE3sStNf5kvv8qDKydWUYK+OvwItrEwYReB6NZ2hN/f+WjMHaPEuMuC03u1zEduLoydujOm4JE7GAxPaE3Kj4OoGcC5F5qy3rls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TdZbvg5k; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-59fa37c33dbso433769eaf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:45:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708119954; x=1708724754; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jksvwB5iTFy80QFc8o5j3z92gnehVl2fAGc//WCCKZg=;
+        b=TdZbvg5k1WzoSRChsZ8ZH0hIBJkpubl4faHGJBahsAR4Rn1FbSpuNIqXbeQxN+Lqv3
+         cl5u9EIsM6UTMHn1zhkGC3A8fvhn+6ZBQ0aSS07tZXNk8Ix1XkWGigxhdKpvhSubBrYd
+         irmgEFLSC+x384R3lGCtxIpLBrVn8qbSNCONA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708119954; x=1708724754;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jksvwB5iTFy80QFc8o5j3z92gnehVl2fAGc//WCCKZg=;
+        b=UAPsZyrq1C2wOQsLn/pL34w0vLZTWp7qANxvI+4cYnWJxyhS/qcN4gfISIVhySlVkf
+         g1MWFfP2c6W9z/XPoNmgxxZJgfoHrWDBSDHreTdkiJNAIycnhJ8Iv6w+lTpp24SMF5wo
+         2rydAPt57SEC9jjFGZdEOEKtc7ftPRblYpJx3aQMGnQpFfWPmknJT2jaOQdZa5K66fxy
+         mZb6gr5RBJpNKPhtcaZ/CC4xOdneEsQBalINwvIWBpg0a03BZ6z9Dm9WqhyCRSmgzxJn
+         axROuV3WPSeykq/kWsY9AT+7rzNTD+DlGi1KDrd2G3XS7AMDHAMPp7g5ohQ1J0MnvLvv
+         Ecvg==
+X-Forwarded-Encrypted: i=1; AJvYcCWmG+mtiT4xgzLVIG/lXoPOEwhN4MnTK3dh4scKJrqkxRXelPsexJWhzWlTWOJzKaPzDdKmQgxKnaaL1rpAQlxq6ju7kr99ExO6ml7j
+X-Gm-Message-State: AOJu0Ywhq3ivJhZ68v+g9vjrkYwGJ+9A/EyXcleWS6x62J0aoW1AuG00
+	IIxIF9WqjhAWgonyt9I2s5olbJ4Yld/UGbBmOejU3mKfwwd7i8LTVf7RVzMaMtH3fsQTG542y50
+	=
+X-Google-Smtp-Source: AGHT+IF9+vJFbk3kmtKKuYnkYafkp2Qrd9UzE5RWwOf99PqpIE62RSHCclH6Xu0D7RM+/Fd/EwCtzg==
+X-Received: by 2002:a05:6358:648b:b0:179:2136:9971 with SMTP id g11-20020a056358648b00b0017921369971mr6537867rwh.11.1708119953974;
+        Fri, 16 Feb 2024 13:45:53 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id b11-20020a6567cb000000b005dcbb855530sm296297pgs.76.2024.02.16.13.45.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 13:45:53 -0800 (PST)
+Date: Fri, 16 Feb 2024 13:45:52 -0800
+From: Kees Cook <keescook@chromium.org>
+To: "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fortify: Include more details when reporting overflows
+Message-ID: <202402161343.DC688FDB@keescook>
+References: <20240216203935.work.829-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216203935.work.829-kees@kernel.org>
 
-On Fri, Feb 16 2024 at 07:31, Paolo Bonzini wrote:
-> On 2/16/24 03:10, Xin Li wrote:
+On Fri, Feb 16, 2024 at 12:39:41PM -0800, Kees Cook wrote:
+> When a memcpy() would exceed the length of an entire structure, no
+> detailed WARN would be emitted, making debugging a bit more challenging.
+> Similarly, other buffer overflow reports would have no size information
+> reported.
 >
-> It is intentional that KVM-related things are compiled out completely
-> if !IS_ENABLED(CONFIG_KVM), because then it's also not necessary to
-> have
+> Always warn for memcpy() overflows, but distinguish between the two
+> cases in the message before continuing (warn-only) or blocking the copy
+> (hard-fail). Additionally add size information to existing overflow
+> reports.
+>
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-That's a matter of taste. In both cases _ALL_ KVM related things are
-compiled out.
-
-#ifdeffing out the vector numbers is silly to begin with because these
-vector numbers stay assigned to KVM whether KVM is enabled or not.
-
-And no, I don't think it's a net win to have the #ifdeffery in that
-table. Look at apic_idts[] in arch/x86/kernel/idt.c how this ends up
-looking. It's unreadable gunk.
-
-The few NULL defines in a header file next to the real stuff
-
-#if IS_ENABLED(CONFIG_KVM)
-....
-#else
-# define fred_sysvec_kvm_posted_intr_ipi                NULL
-# define fred_sysvec_kvm_posted_intr_wakeup_ipi         NULL
-# define fred_sysvec_kvm_posted_intr_nested_ipi         NULL
-#endif
-
-are not hurting at all and they are at a place where #ifdeffery is
-required anyway. That's a very common pattern all over the kernel and it
-limits the #ifdef horror to _ONE_ place.
-
-With your change you propagate the #ifdefffery to the multiple and the
-very wrong places for absolutely zero practical value. The resulting
-binary code is exactly the same for the price of tasteless #ifdeffery in
-places where it matters.
-
-Please get rid of this #ifdef in the vector header and don't inflict
-bad taste on everyone.
-
-Thanks,
-
-        tglx
+This will need a v2 ... something in my manipulations is triggering a
+bizarre warning in Clang:
 
 
+./fs/dlm/rcom.c:490:13: error: member reference type 'int' is not a pointer
+  490 |         memcpy(rc->rc_buf, rc_in->rc_buf, sizeof(struct rcom_lock));
+      |                ~~  ^
+./include/linux/fortify-string.h:636:47: note: expanded from macro 'memcpy'
+  636 | #define memcpy(p, q, s)  __fortify_memcpy_chk(p, q, s,                  \
+      |                                               ^
+./include/linux/fortify-string.h:591:20: note: expanded from macro '__fortify_memcpy_chk'
+  591 |         __underlying_##op(p, q, __fortify_size);                        \
+      |                           ^
+
+
+I'll track it down...
+
+--
+Kees Cook
 
