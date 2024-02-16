@@ -1,159 +1,214 @@
-Return-Path: <linux-kernel+bounces-69147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C694F858511
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:25:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36268858516
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:26:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CC961F22E3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:25:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A7FA1C20E42
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:26:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E410E1350E3;
-	Fri, 16 Feb 2024 18:25:35 +0000 (UTC)
-Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 947041350E5;
+	Fri, 16 Feb 2024 18:26:21 +0000 (UTC)
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E25C131722;
-	Fri, 16 Feb 2024 18:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F2811350C8;
+	Fri, 16 Feb 2024 18:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708107935; cv=none; b=LMHQyli+UlLVheAbiqrA+hceCd9s+i+tSbzsaSrXKrXBYrMi5QwckZMylOET8SzGnZh40X7g6S+x12Bul0+HDRG3PX/vam4tlLvALNldngTbKajf+59EelAwy1biBBw/P/oXCC/Sd1CVYBRxSOjKsnceNVLX5g8JF4j0Q0PVG5A=
+	t=1708107981; cv=none; b=uVG2wpS5YlUOdTLRAD97M30NgyCR2H97o7LM0JqE0WuEil+bBGSBfo7te1YXBIpy0N7DGcu1wH8iGO5LLBcauA1GbaOX61uHYXfjo5taH1XJeXvaa1tUKEGipp6KHekkK2TMKUinfzLrK42bhr2G73gknWoEIJWPDnKsIeD8UEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708107935; c=relaxed/simple;
-	bh=kIkgK71iz07GCR0FVYa+wZExsN8ozSUAm/msq7WJ/Pw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u/uFCBe23pCBXvrz2917A21CPxSxhrliBdCS3h6dLRfkcPOZZHhLBaD5Kb7a939VwbPoGR/x4e/O+qtD+bjr9zezflBBDu1M3yGbpmAfcDnHVQEeYDDD5gOVJyVd5HvF9zO79xkRseTT6AJJyNowZgWQdcZ/VloC4H2rJgxaxvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tc0Mj5r3jz9ybwR;
-	Sat, 17 Feb 2024 02:10:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 877641405A1;
-	Sat, 17 Feb 2024 02:25:20 +0800 (CST)
-Received: from [10.45.150.70] (unknown [10.45.150.70])
-	by APP1 (Coremail) with SMTP id LxC2BwC3rhd6qM9ldImiAg--.12363S2;
-	Fri, 16 Feb 2024 19:25:19 +0100 (CET)
-Message-ID: <33a1fae4-d713-4e93-89ff-ff9f377e8391@huaweicloud.com>
-Date: Fri, 16 Feb 2024 19:24:50 +0100
+	s=arc-20240116; t=1708107981; c=relaxed/simple;
+	bh=ENNPYomZv2DOwlCWBS7j/IZHANnF9ek4BFQ20oT9Q/0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hWpO4ISeRGNSsjLbN5g62q/qNYLLpPZExC7EnU7RnvNiTLTCucdrnDCE+jk6sRdZYTE+vI46zXZ4Ra07dorbsrZOG65/b1eJLPXhptcXTyWGfA7n/URyYvbVURng0zY/cxecCqYCFZEjXxr/zfvvwN+aZR+KjuOzJrMheX2REVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e43ba6d74fso107769a34.1;
+        Fri, 16 Feb 2024 10:26:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708107978; x=1708712778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cnCQSP7Q2DGhdaW7uq0lpYyGZnAXczAPeeTaQs//qA0=;
+        b=W5Ex81H8ECPQ/0rJdCwshMtB2uUY05917Dnnc1sAenEw+x1/dkp4/Eedeag9RJqZI9
+         dJBk6NN1lLgRNRfVi6A2z0dyINm3X+Q4A0dEGDVDzogTRPcnEtaPI6eQoyam/OGOm/nF
+         2uCwmrc63Dw5Cn3kQAvPO8tuODL+yhYypDDtK42fxnGDMbPVKHzEl1+W8ozv1i0sdxjI
+         UdyhwceQcNGCjdaJP1C9dBdaMDXgEH5Dkc88oXCOHXa55a/0J3kva5aoKbuO/FoZ1xlO
+         fVAkzTj0oAntII1IJvSZLPfXXNUPlS9PsdmHffnfpCDIyL9T6c7FKnjV3itU6knLgyv7
+         zaHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXftsUBlCYlNF2ye7lfeThpd5ILDEk5ZAOnoJzAA6hCqCVmGdazRNFxdpxHmeefN7oiNPLzboIoSrSKnYhiv7mzcrSi1MYlktxOQUSwh6QmCZOTU84+hI2n/UduV9w5/YYbVA7go974DGlaFXLc9vceJykko4e1L2MeH8Lz4Xay39NwKg==
+X-Gm-Message-State: AOJu0YzNjIdW36r8rNpLnNzxLPxsXV+MudA+4TY9MvRoIQwJ9J2uRATI
+	R1Re2tlOoMqUM1Tg2sZEcdumkOHNUuM6mo5LkFRMwgrFFbYDP926rLnugmIOW7jhYroo7giVkfl
+	v6yA7eYWBMajjvUNvbDnNytXngec=
+X-Google-Smtp-Source: AGHT+IHGoPIufXGdjFuT1fdRsqTEs50AnbfO3rPOiWmKC5D/S2cG2DrVUguekw8ejy/zwhugqqv4i8cPs5Qkd/Dydko=
+X-Received: by 2002:a05:6820:312:b0:59f:8105:3085 with SMTP id
+ l18-20020a056820031200b0059f81053085mr5739812ooe.0.1708107978403; Fri, 16 Feb
+ 2024 10:26:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/8] PGP key parser using SandBox Mode
-To: Jonathan Corbet <corbet@lwn.net>, =?UTF-8?B?UGV0ciBUZXNhxZnDrWs=?=
- <petr@tesarici.cz>, Dave Hansen <dave.hansen@intel.com>
-Cc: Petr Tesarik <petrtesarik@huaweicloud.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
- "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>,
- Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Xin Li <xin3.li@intel.com>, Arnd Bergmann <arnd@arndb.de>,
- Andrew Morton <akpm@linux-foundation.org>,
- Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Kees Cook <keescook@chromium.org>,
- "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
- Pengfei Xu <pengfei.xu@intel.com>, Josh Poimboeuf <jpoimboe@kernel.org>,
- Ze Gao <zegao2021@gmail.com>,
- "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Kai Huang <kai.huang@intel.com>, David Woodhouse <dwmw@amazon.co.uk>,
- Brian Gerst <brgerst@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Joerg Roedel <jroedel@suse.de>, "Mike Rapoport (IBM)" <rppt@kernel.org>,
- Tina Zhang <tina.zhang@intel.com>, Jacob Pan
- <jacob.jun.pan@linux.intel.com>,
- "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>, David Howells
- <dhowells@redhat.com>, Petr Tesarik <petr.tesarik1@huawei-partners.com>,
- jannh@google.com, linux-security-module@vger.kernel.org
-References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com>
- <20240216152435.1575-1-petrtesarik@huaweicloud.com>
- <c65eb8f1-2903-4043-a3ab-945d880043b5@intel.com>
- <20240216170805.0d0decd5@meshulam.tesarici.cz> <87y1bktjdk.fsf@meer.lwn.net>
-Content-Language: en-US
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-In-Reply-To: <87y1bktjdk.fsf@meer.lwn.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:LxC2BwC3rhd6qM9ldImiAg--.12363S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF4UGw18Kw47WrykZr4UXFb_yoW8tFyrpF
-	4YvFZ0yF4DG3Z2ywn7ur1xua48ZwnxXay3ArnFg3yrAwn8ur18A3ySgr4avasrtrsa93y2
-	vryYqFyjka9rA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-	6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
-	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCI
-	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
-	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
-	J73DUUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAPBF1jj5puTQAAsC
+References: <20231226124254.66102-1-mat.jonczyk@o2.pl>
+In-Reply-To: <20231226124254.66102-1-mat.jonczyk@o2.pl>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 16 Feb 2024 19:26:06 +0100
+Message-ID: <CAJZ5v0iHokxYJU0Nx5gT+ay=18uhmnha-bSYk=YUKPROQGZrmw@mail.gmail.com>
+Subject: Re: [PATCH v4] acpi,pci: warn about duplicate IRQ routing entries
+ returned from _PRT
+To: =?UTF-8?Q?Mateusz_Jo=C5=84czyk?= <mat.jonczyk@o2.pl>, 
+	Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Borislav Petkov <bp@suse.de>, 
+	Jean Delvare <jdelvare@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/16/2024 6:21 PM, Jonathan Corbet wrote:
-> Petr Tesařík <petr@tesarici.cz> writes:
-> 
->> On Fri, 16 Feb 2024 07:38:30 -0800
->> Dave Hansen <dave.hansen@intel.com> wrote:
->>> I'm confused by this.  The kernel doesn't (appear to) have a PGP parser
->>> today.  So are you saying that it *should* have one and it's only
->>> feasible if its confined in a sandbox?
->>
->> I'm sorry if this is confusing. Yes, your understanding is correct.
->> This patch series demonstrates that SBM (even in the initial version
->> that was submitted) allows to write a PGP parser which can survive
->> memory safety bugs withoug compromising the rest of the kernel.
-> 
-> So I have a different question: some years ago we added the "usermode
-> blob" feature for just this kind of use case - parsing firewall rules at
-> the time.  It has never been used for that, but it's still there in
-> kernel/usermode_driver.c.  Is there a reason why this existing
-> functionality can't be used for tasks like PGP parsing as well?
+On Tue, Dec 26, 2023 at 1:50=E2=80=AFPM Mateusz Jo=C5=84czyk <mat.jonczyk@o=
+2.pl> wrote:
+>
+> On some platforms, the ACPI _PRT function returns duplicate interrupt
+> routing entries. Linux uses the first matching entry, but sometimes the
+> second matching entry contains the correct interrupt vector.
+>
+> As a debugging aid, print a warning to dmesg if duplicate interrupt
+> routing entries are present. This way, we could check how many models
+> are affected.
+>
+> This happens on a Dell Latitude E6500 laptop with the i2c-i801 Intel
+> SMBus controller. This controller is nonfunctional unless its interrupt
+> usage is disabled (using the "disable_features=3D0x10" module parameter).
+>
+> After investigation, it turned out that the driver was using an
+> incorrect interrupt vector: in lspci output for this device there was:
+>         Interrupt: pin B routed to IRQ 19
+> but after running i2cdetect (without using any i2c-i801 module
+> parameters) the following was logged to dmesg:
+>
+>         [...]
+>         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
+>         i801_smbus 0000:00:1f.3: Transaction timeout
+>         i801_smbus 0000:00:1f.3: Timeout waiting for interrupt!
+>         i801_smbus 0000:00:1f.3: Transaction timeout
+>         irq 17: nobody cared (try booting with the "irqpoll" option)
+>
+> Existence of duplicate entries in a table returned by the _PRT method
+> was confirmed by disassembling the ACPI DSDT table.
+>
+> Windows XP is using IRQ3 (as reported by HWiNFO32 and in the Device
+> Manager), which is neither of the two vectors returned by _PRT.
+> As HWiNFO32 decoded contents of the SPD EEPROMs, the i2c-i801 device is
+> working under Windows. It appears that Windows has reconfigured the
+> chipset independently to use another interrupt vector for the device.
+> This is possible, according to the chipset datasheet [1], page 436 for
+> example (PIRQ[n]_ROUT=E2=80=94PIRQ[A,B,C,D] Routing Control Register).
+>
+> [1] https://www.intel.com/content/dam/doc/datasheet/io-controller-hub-9-d=
+atasheet.pdf
+>
+> Signed-off-by: Mateusz Jo=C5=84czyk <mat.jonczyk@o2.pl>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Cc: Len Brown <lenb@kernel.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Jean Delvare <jdelvare@suse.de>
+> Previously-reviewed-by: Jean Delvare <jdelvare@suse.de>
+> Previously-tested-by: Jean Delvare <jdelvare@suse.de>
+>
+> ---
+> Hello,
+>
+> I'm resurrecting an older patch that was discussed back in January:
+>
+> https://lore.kernel.org/lkml/20230121153314.6109-1-mat.jonczyk@o2.pl/T/#u
+>
+> To consider: should we print a warning or an error in case of duplicate
+> entries? This may not be serious enough to disturb the user with an
+> error message at boot.
+>
+> I'm also looking into modifying the i2c-i801 driver to disable its usage
+> of interrupts if one did not fire.
+>
+> v2: - add a newline at the end of the kernel log message,
+>     - replace: "if (match =3D=3D NULL)" -> "if (!match)"
+>     - patch description tweaks.
+> v3: - fix C style issues pointed by Jean Delvare,
+>     - switch severity from warning to error.
+> v3 RESEND: retested on top of v6.2-rc4
+> v4: - rebase and retest on top of v6.7-rc7
+>     - switch severity back to warning,
+>     - change pr_err() to dev_warn() and simplify the code,
+>     - modify patch description (describe Windows behaviour etc.)
+> ---
+>  drivers/acpi/pci_irq.c | 25 ++++++++++++++++++++++---
+>  1 file changed, 22 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/acpi/pci_irq.c b/drivers/acpi/pci_irq.c
+> index ff30ceca2203..1fcf72e335b0 100644
+> --- a/drivers/acpi/pci_irq.c
+> +++ b/drivers/acpi/pci_irq.c
+> @@ -203,6 +203,8 @@ static int acpi_pci_irq_find_prt_entry(struct pci_dev=
+ *dev,
+>         struct acpi_buffer buffer =3D { ACPI_ALLOCATE_BUFFER, NULL };
+>         struct acpi_pci_routing_table *entry;
+>         acpi_handle handle =3D NULL;
+> +       struct acpi_prt_entry *match =3D NULL;
+> +       const char *match_int_source =3D NULL;
+>
+>         if (dev->bus->bridge)
+>                 handle =3D ACPI_HANDLE(dev->bus->bridge);
+> @@ -219,13 +221,30 @@ static int acpi_pci_irq_find_prt_entry(struct pci_d=
+ev *dev,
+>
+>         entry =3D buffer.pointer;
+>         while (entry && (entry->length > 0)) {
+> -               if (!acpi_pci_irq_check_entry(handle, dev, pin,
+> -                                                entry, entry_ptr))
+> -                       break;
+> +               struct acpi_prt_entry *curr;
+> +
+> +               if (!acpi_pci_irq_check_entry(handle, dev, pin, entry, &c=
+urr)) {
+> +                       if (!match) {
+> +                               match =3D curr;
+> +                               match_int_source =3D entry->source;
+> +                       } else {
+> +                               dev_warn(&dev->dev, FW_BUG
 
-Yes, it was an option I explored last year (briefly talked about it as a 
-BoF at LSS NA 2023).
+dev_info() would be sufficient here IMV.
 
-You are right, there is such feature that seemed to fit well.
+> +                                      "ACPI _PRT returned duplicate IRQ =
+routing entries for INT%c: %s[%d] and %s[%d]\n",
+> +                                      pin_name(curr->pin),
+> +                                      match_int_source, match->index,
+> +                                      entry->source, curr->index);
+> +                               /* We use the first matching entry noneth=
+eless,
+> +                                * for compatibility with older kernels.
+> +                                */
+> +                       }
+> +               }
+> +
+>                 entry =3D (struct acpi_pci_routing_table *)
+>                     ((unsigned long)entry + entry->length);
+>         }
+>
+> +       *entry_ptr =3D match;
+> +
+>         kfree(buffer.pointer);
+>         return 0;
+>  }
+>
+> base-commit: 861deac3b092f37b2c5e6871732f3e11486f7082
+> --
 
-User space blob embedded in a kernel module, so signed. User space 
-process connected only to the kernel through a pipe.
-
-I even went ahead, and created a framework:
-
-https://lore.kernel.org/linux-kernel/20230317145240.363908-1-roberto.sassu@huaweicloud.com/
-
-so that anyone can implement similar use cases.
-
-The further step is: how can I ensure that the process launched by the 
-kernel is not attacked by root (which I assumed to be less powerful than 
-the kernel in a locked-down system).
-
-I handled this in both directions:
-
-- The process launched by the kernel is under a seccomp strict profile,
-   and can only read/write through the pipe created by the kernel (and
-   call few other system calls, such as exit()). Otherwise it is killed.
-   Cannot create any new communication channel.
-
-- I created an LSM that denies any attempt to ptrace/signal to the
-   process launched by the kernel. Jann Horn also suggested to make the
-   process non-swappable.
-
-However, despite these attempts, security people don't feel confident on 
-offloading a kernel workload outside the kernel.
-
-This is why this work started.
-
-Roberto
-
+Bjorn, any concerns regarding this one?
 
