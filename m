@@ -1,110 +1,134 @@
-Return-Path: <linux-kernel+bounces-69245-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69246-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F77F85862C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:28:57 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CE54858630
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B082F1F2220A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:28:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 975ADB24730
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:30:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C66D1369B3;
-	Fri, 16 Feb 2024 19:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C085D137C41;
+	Fri, 16 Feb 2024 19:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="R5coQsS2"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="V1iJodVa"
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EAFE1350C7
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B929135A6E
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:29:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708111730; cv=none; b=VHL7r9tKbdQvjbslGTC8j60N/0EQompy1YRKkalikMTRb+nj9Pb69SteruuzP5TFwnf3bwK2jdRvHt5ALa/BH4c8txHmj0uMtS3hWG6D2Q38TmR2uFn8E0mEkCGOB2F7SzdGYSDtBZY4PnU9+nlk/EGGOcaw+BN9pcuq91sUy+k=
+	t=1708111800; cv=none; b=Dc78mzc7zLULGGvmzh99v7qxJd598prUmZkcZXo/Yeve44usJUR+fwHdCsFCa/eKNdMTvjVgF8HKVCfcod2kPNn2GMrak4/AGl3jz30/0elY0pNmTQle+1e/Nk+mC3r5H9+NTkecF2EKZZJrWtvX4WCDUjShuhZiBqljuoF/q8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708111730; c=relaxed/simple;
-	bh=lTlPLpCMgZP3J5G2JyWCxdrQPIx57yknIxy+xzBAuiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AWlBK3CfQCpUQVTsFRTHSjRGfeNJec6LxrZWJcLiEjxh9ywsKuhK7cjNeqHY6MV8e8KzAq0B5AgbdNZhxDtJ1qOJ82ejcOlF8nqCxixMVdag1IE/f/iEeGlV/xN2P9/yFKUS8f6S2Dq5N102d4/nOaOR9SA8wOieipcW9QF2dL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=R5coQsS2; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d932f6ccfaso21618005ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:28:47 -0800 (PST)
+	s=arc-20240116; t=1708111800; c=relaxed/simple;
+	bh=5CLkz15pA3C0PAyuM4OD/Khdbnbhn8Jnj6R4gv2p/Lg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=h7GIXYucew4MbSyK3cKb3ynyW4jq0VqdGB6c8kqmoMh3Z6Owcwk9yLWYLR9er7BEcV+D5h+hLQkZZN1T4StNJYU8MqMUxKBRnVZKDPSKZAPsFygTUWgcjk88ma0ef8y/ATd7i5NFkDC7NjXsJOIJTR2u1HXHtOpPRAU9cYHXT1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=V1iJodVa; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e2e5824687so531203a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:29:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708111727; x=1708716527; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u8WkqZPPSvCs0Xbxi28cm5IAK+G5lVBNtuRMx7zqp6A=;
-        b=R5coQsS2C1Vv8ORE4KkSAKbL7np+3B8cvptkWAn6ATmF49khFocLjmmzWjUCXVQf3G
-         ZdQ6Wtk/WC1PU1DLBzXClJ9LHH2dfjOtssCJVm2vKJRP36783uvFJcvruU7v6J/5mRZK
-         UHRscOq1hh9o2QadEgfeFLQFCJ8F6J3PiLlzI=
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1708111798; x=1708716598; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cjtHHDVg1EP31BktP6Ck1iG9AHnmh+yzE4yzLtOxWPg=;
+        b=V1iJodVa54Vr8BAocvhUA5kxxu93qf5MjhnBZgy15x1EYltuXb03vhwAhtbCfVr3xL
+         V7msnCAEyj2aelZNqyllKjK9jhmmFwAcVEnulVfcOlMPpwhjVzK3SJeDJJRnT9Y2xKGx
+         rnt+LrJ3KXGZFuuwNSPJSzdeRCdLEJTWix7qGMdx42FCgWJt6fmQDa+z2R8iJwkyLQuA
+         +JGoySpshR1PpZR+7lvhewrtF+TL/DNFLwrkG1HhFoIsCTBl5idFk42qgqe/6+OMwUjL
+         +7o6YchxRB75kcH17F5xsN9du/ZjDojh90ktr7D1/2iJ8pxvc21zYdXT5oDa/YhhIv3B
+         2KQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708111727; x=1708716527;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=u8WkqZPPSvCs0Xbxi28cm5IAK+G5lVBNtuRMx7zqp6A=;
-        b=XjkwOrUfmSIpWZwHZAxO4HIItZr/NZSZOJHB4AEPYGQc65xSJPosUYugAkpQh+vCwL
-         Mwpq5ZhMqGw6HjZDr0lRV3JAGZ20Yqc1D8zbVfIEpprrYXiDz3g37fnqs/haqDAiAVJl
-         cvibhNEoZeNwXin4yt8vMGAXRiPEqAXYPUFeuxZk38rxDmlVNFQiy5UJ4bE0ytiFwCnX
-         Qu2Y2QMTS+f5FgMKYxxIi9uWcw6llSDSuZ1ad+MW+Db5d3xiYYo6AoYNIe9dNc9ZGqfR
-         W6TRPA6fkGXNw+dUddU6YSLdtdbzSe6IO1zlq8dNV6cixmrSIx6/rES9mwqgaDk8rLYs
-         me2w==
-X-Forwarded-Encrypted: i=1; AJvYcCViltNNEpAn6H5eNDgGhUeehHWhJwVQRARNxgeoQPuHH578ik3Lz7j1AR3cTbY44CBCarPSIjYD0USs6IeT/j77+VBTXiYAtJ7W/DD9
-X-Gm-Message-State: AOJu0Ywuc4hUzMVxrGXdwsqVfDn87Vie2qZ38FclV82BnRqE7t5PpXyo
-	9PTA+jxu5Umg5iXuaBDc+jd2xKf3vMIDORsv2olsCZ2PDyXbNlAQQ1s1UM2fmSpv2K7jWqXIqT0
-	=
-X-Google-Smtp-Source: AGHT+IHfhAKa5A+x7ys9ADrXomzy798qL2jSR2XKtHRV7rpOOWmyF9ZLqe3tbjMMeK5txf1tPbVmkQ==
-X-Received: by 2002:a17:902:ce90:b0:1db:c1d4:8151 with SMTP id f16-20020a170902ce9000b001dbc1d48151mr348857plg.49.1708111726925;
-        Fri, 16 Feb 2024 11:28:46 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id e2-20020a170902d38200b001da0a698095sm205675pld.282.2024.02.16.11.28.46
+        d=1e100.net; s=20230601; t=1708111798; x=1708716598;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cjtHHDVg1EP31BktP6Ck1iG9AHnmh+yzE4yzLtOxWPg=;
+        b=Dgb5kKLjNb04ZVUNqSJ0727k+VwVlsmjGo03AC47iR9GUuXlXEnnwLX+Ww7Bqm/WFO
+         NZbDRKGv0spWyvoGEK4Lx1HBkTB8Ws199fxWxZHmu72bHaVyh+nIIbSQdepeGDOgOKc1
+         zKbJfVNZBY5CoTkRrgaHEBQq0PfxV8rqyriAhVD6AT6l1hFjKmZvWbyPxXzeBvn0m6fQ
+         ZcG1JE+eXxCccGMPv5DZCNw+44aIsgJgvUJRPpeFxGH8uKpOmhYCenbO+OG8Qz6yCmuO
+         u2WLO+AgyrwOaa8zOK2Hl36kb1jfrQ31B8FboyZHHk9W9YUP9fwIz4ZrKdDl9c99VWxV
+         isoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX6jo/MaZI6bS6DNGTxuaZOjptufxL3RcrMsxuGBGrclktbdZGtH+qVuFnf0HqzlcgLdOx57blBEgHCBqhbqAFUR7ApX77ineJW/fB5
+X-Gm-Message-State: AOJu0YxG9i+SKBqFGpp9EKHz0i+rjTKw8xZ6Y3OEef/sCrM264QRsa1I
+	mVwrqI8CRvtoxuvb+d/qTcWk0dBSRTzSSVxjucGWvIm12yRRlg2t0eefXrMjNio=
+X-Google-Smtp-Source: AGHT+IFEYuJ0J4q6Ri7W8LG928weSbYRDzhIjrV39IhvTbn+aiKejHqcf79FSbmpyPZyQyd4jTYPuQ==
+X-Received: by 2002:a05:6358:5389:b0:178:dac3:2b99 with SMTP id z9-20020a056358538900b00178dac32b99mr6283861rwe.1.1708111796945;
+        Fri, 16 Feb 2024 11:29:56 -0800 (PST)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:11:3354::7a9])
+        by smtp.gmail.com with ESMTPSA id p6-20020ac84606000000b0042dc7edf2f4sm206963qtn.45.2024.02.16.11.29.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 11:28:46 -0800 (PST)
-Date: Fri, 16 Feb 2024 11:28:46 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, linux-modules@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v2] module: Don't ignore errors from set_memory_XX()
-Message-ID: <202402161128.21EA3F8@keescook>
-References: <21037bf38438a285f5dff9501668f1675bc45989.1708070781.git.christophe.leroy@csgroup.eu>
+        Fri, 16 Feb 2024 11:29:56 -0800 (PST)
+Message-ID: <8d68a49a35799d1686d9b674ce4edfd91c68850b.camel@ndufresne.ca>
+Subject: Re: [PATCH 1/4] clk: rockchip: rst-rk3588: Add BIU reset
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Shreeya Patel
+	 <shreeya.patel@collabora.com>, heiko@sntech.de, mchehab@kernel.org, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de, 
+	jose.abreu@synopsys.com, nelson.costa@synopsys.com, 
+	dmitry.osipenko@collabora.com, sebastian.reichel@collabora.com, 
+	shawn.wen@rock-chips.com
+Cc: kernel@collabora.com, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+	linux-clk@vger.kernel.org, linux-dt@vger.kernel.org, 
+	linux-arm@lists.infradead.org
+Date: Fri, 16 Feb 2024 14:29:55 -0500
+In-Reply-To: <237e690a-2f49-4046-b054-3a878eed6748@linaro.org>
+References: <20240216094922.257674-1-shreeya.patel@collabora.com>
+	 <20240216094922.257674-2-shreeya.patel@collabora.com>
+	 <237e690a-2f49-4046-b054-3a878eed6748@linaro.org>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <21037bf38438a285f5dff9501668f1675bc45989.1708070781.git.christophe.leroy@csgroup.eu>
 
-On Fri, Feb 16, 2024 at 09:14:27AM +0100, Christophe Leroy wrote:
-> set_memory_ro(), set_memory_nx(), set_memory_x() and other helpers
-> can fail and return an error. In that case the memory might not be
-> protected as expected and the module loading has to be aborted to
-> avoid security issues.
-> 
-> Check return value of all calls to set_memory_XX() and handle
-> error if any.
-> 
-> Add a check to not call set_memory_XX() on NULL pointers as some
-> architectures may not like it allthough numpages is always 0 in that
-> case. This also avoid a useless call to set_vm_flush_reset_perms().
-> 
-> Link: https://github.com/KSPP/linux/issues/7
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Le vendredi 16 f=C3=A9vrier 2024 =C3=A0 11:03 +0100, Krzysztof Kozlowski a =
+=C3=A9crit=C2=A0:
+> On 16/02/2024 10:49, Shreeya Patel wrote:
+> > Export hdmirx_biu soft reset id which is required by the hdmirx control=
+ler.
+> >=20
+> > Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+> > ---
+> >  drivers/clk/rockchip/rst-rk3588.c               | 1 +
+> >  include/dt-bindings/reset/rockchip,rk3588-cru.h | 2 ++
+>=20
+> Please run scripts/checkpatch.pl and fix reported warnings. Some
+> warnings can be ignored, but the code here looks like it needs a fix.
+> Feel free to get in touch if the warning is not clear.
+>=20
+> Please do internal review. The internal Collabora review would tell you:
+> YOU MUST run checkpatch. Then you see errors, so why do you send patch
+> with errors to the mailing list?
 
-Yay! Glad to see this happening. Universal __must_check for set_memory_*()
-starts to appear on the horizon. ;)
+Mistakes helps you learn. Meanwhile, I've triggered our temporary CI which
+hopefully will catch this and some more for a better v2. Shreeya, I don't t=
+hink
+this includes any DT automated checks, this is on you.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+https://gitlab.collabora.com/linux/build-scripts/-/pipelines/85935
 
--- 
-Kees Cook
+>=20
+> Best regards,
+> Krzysztof
+>=20
+>=20
+
 
