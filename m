@@ -1,169 +1,219 @@
-Return-Path: <linux-kernel+bounces-69083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEBB2858443
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:38:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D28D3858446
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:42:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E37761C21339
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:38:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD0C1F221AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128EB132C23;
-	Fri, 16 Feb 2024 17:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38BE132C14;
+	Fri, 16 Feb 2024 17:42:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lqb1t/vD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="HJ9c5A/a"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A4C6132463;
-	Fri, 16 Feb 2024 17:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EED9131726;
+	Fri, 16 Feb 2024 17:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708105062; cv=none; b=OuaqCoBpGTGHUdSohKBRWFkAIwneqX02QP3+tsZ/wN5gZSrEjcq2yVnwz8OkAxRr+A7cmJY1xIj6O6weHPT/xbyLECu8EtRRX1OtrrccpfGQpfUEpDz11wvbjjho1PWN+2OmRA+08YK9fvpFvsUKKGL+WJagnnc/w30CSGZtzZU=
+	t=1708105325; cv=none; b=GC/8v692wj5cDPg1nu1Xruedf4cO4Icr02AX3VXEBaQQzYDvOJ1wm2BwBL3IoA0QHAE6erGYMnk3FL8PIoHJ90Atl1NDafnl0EaAbrSZpyi2wqYk/Rv/LM/CGddA2XJ++oLJZww9FrDyJH0u6mPO0eyW6wg+rffv+XaZqMzlym0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708105062; c=relaxed/simple;
-	bh=QDgGlctVC+QiXow3a/bDwKXWJ0/M+rG8O0JHyczFLdo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l92pVwLTdHbeMyJlHSkdcrMMtrn9VCHMwCxzOU/PZ6NDBFZfRbZeBGtLmdrh7Uacfyrnr5vlmJ6ldiDDYB4sP9O54m0afeGdaajOC58QpyN4HHEQDam6dxwDMJcEtBvVmTgjOM/lTmrtOCVbwk6va4tuHjtKHZj8tFr36KZiwpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lqb1t/vD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95A08C433C7;
-	Fri, 16 Feb 2024 17:37:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708105062;
-	bh=QDgGlctVC+QiXow3a/bDwKXWJ0/M+rG8O0JHyczFLdo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lqb1t/vD3bRl0YjtaMjccyNjyb7OuSOXe1kcFVOIpMtqzAp12qdko2vZXDBuzqQjt
-	 MwN3vww4yIpYbqjGdqUqBN6VnPZyHM5Nh+1vhV1hvF6BwSFk8F51jh926jgdAYFFt1
-	 rO5+IoeYxYga4h9dtUV5O4mKr3rvh7piDaay2v1XyAP8ydxvO6hL/ZgOLCIBLetgHc
-	 14iRBP4v7YgnN6cVGpWy0agIqUXWaJWVXi9HjZFyK7s3ca7ACENyRztzNlgU1Tuw6U
-	 h8lXzS339jhd6er8Lm8JIoZOcwPdWhTWkCZhLXW2/FM+fo2rXjxkynCjINtpfun1zd
-	 00a1smQ9Vj5Eg==
-Date: Fri, 16 Feb 2024 14:37:38 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] perf trace: Disable syscall augmentation with record
-Message-ID: <Zc-dYrNMt3Wsinax@x1>
-References: <20240216172357.65037-1-irogers@google.com>
+	s=arc-20240116; t=1708105325; c=relaxed/simple;
+	bh=/9cb9RQdcGMxMhPScRqyQQCl80IfFyihQcyBQ5diRX0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WC9aG+zReWyPPmiJcBLsSu8NUI+8y90+FBEd69bWfCp5xAIII6aO11K4k1lB06X8AWtPUpUuZI6j9tGde3HGlaWBCFPMM7nvmAKA9sql5Vk2emd3CZwaWf0xXZkdG1OlLkqdMnVs12RIw57JUFuxE50pAOB+umdLCPCugxzCHPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=HJ9c5A/a; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [192.168.7.187] ([71.202.196.111])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 41GHfljD2186336
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Fri, 16 Feb 2024 09:41:48 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 41GHfljD2186336
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1708105309;
+	bh=PvkoMlFqN6dc40XlgsRZqfHDJajklncMTvQ0wgmPzmw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=HJ9c5A/aY/9gRw5yLelSMWMH7B62eLX8Y5VarjHponkTe+HtF7Jh0HZe5GudHa5QG
+	 hFdGb8jbfCouEDOSZ1+UFjeqRw+2b/r32/2p2V3GKx5bMWZEp+OTmcgEWNwIVuhObP
+	 XHkhWo4oXlQcpdSuz6pCiI5IC/CxQZTCOlcyuPPFxnBlBgt15ylwRzWwZkd/vx8nY8
+	 HreXkwhdDLT7ytbESlunA138J9q9Y5jZZosJUaSiQzHE4plWWZNX93D524IH9o+qdU
+	 +lGXp90c2hhStLROzlK6WmAZ2ApDWPXNBBsjZXFBlpFWOny2iQsaeAnLnYat0KEuPD
+	 3VEW86YSGM0ug==
+Message-ID: <1bcbd004-7233-4369-a4ac-7fcb91a97553@zytor.com>
+Date: Fri, 16 Feb 2024 09:41:45 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240216172357.65037-1-irogers@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arch/x86/entry_fred: don't set up KVM IRQs if KVM is
+ disabled
+To: Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Max Kellermann <max.kellermann@ionos.com>
+Cc: hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>, kvm@vger.kernel.org
+References: <20240215133631.136538-1-max.kellermann@ionos.com>
+ <Zc5sMmT20kQmjYiq@google.com>
+ <a61b113c-613c-41df-80a5-b061889edfdf@zytor.com>
+ <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
+Content-Language: en-US
+From: Xin Li <xin@zytor.com>
+Autocrypt: addr=xin@zytor.com; keydata=
+ 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
+ l75w1xInsg==
+In-Reply-To: <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 16, 2024 at 09:23:57AM -0800, Ian Rogers wrote:
-> Syscall augmentation is causing samples not to be written to the
-> perf.data file with "perf trace record". Disabling augmentation is
-> sub-optimal, but it beats having a totally broken perf trace record.
-
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-'perf trace record' needs to be more tested, we need to have a shell
-'perf test' for it, maybe Michael has something on his test suite?
-
-Testing your patch:
-
-root@number:~# perf trace record ls
-anaconda-ks.cfg  bin  perf.all-number-20231219-104854.tar.bz2  perfconfig.off  perf.data  perf.data.baseline  perf.data.old
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.050 MB perf.data (170 samples) ]
-root@number:~# perf evlist -v
-raw_syscalls:sys_enter: type: 2 (PERF_TYPE_TRACEPOINT), size: 136, config: 0x168 (raw_syscalls:sys_enter), { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU|PERIOD|RAW|IDENTIFIER, read_format: ID|LOST, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-raw_syscalls:sys_exit: type: 2 (PERF_TYPE_TRACEPOINT), size: 136, config: 0x167 (raw_syscalls:sys_exit), { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|CPU|PERIOD|RAW|IDENTIFIER, read_format: ID|LOST, disabled: 1, inherit: 1, enable_on_exec: 1, sample_id_all: 1, exclude_guest: 1
-dummy:u: type: 1 (PERF_TYPE_SOFTWARE), size: 136, config: 0x9 (PERF_COUNT_SW_DUMMY), { sample_period, sample_freq }: 1, sample_type: IP|TID|TIME|IDENTIFIER, read_format: ID|LOST, inherit: 1, exclude_kernel: 1, exclude_hv: 1, mmap: 1, comm: 1, task: 1, sample_id_all: 1, exclude_guest: 1, mmap2: 1, comm_exec: 1, ksymbol: 1, bpf_event: 1
-# Tip: use 'perf evlist --trace-fields' to show fields for tracepoint events
-root@number:~# perf script | head -5
-              ls  145954 [021] 64113.916047:  raw_syscalls:sys_exit: NR 59 = 0
-              ls  145954 [021] 64113.916065: raw_syscalls:sys_enter: NR 12 (0, 528, 0, 0, 0, 27)
-              ls  145954 [021] 64113.916065:  raw_syscalls:sys_exit: NR 12 = 94098335809536
-              ls  145954 [021] 64113.916077: raw_syscalls:sys_enter: NR 158 (3001, 7fff9bc13790, 7f4bd6f4b4c0, 1, 3, 800)
-              ls  145954 [021] 64113.916078:  raw_syscalls:sys_exit: NR 158 = -22
-root@number:~# perf trace -i perf.data |& head 
-         ? (         ): ls/145954  ... [continued]: execve())                                           = 0
-     0.018 ( 0.000 ms): ls/145954 brk()                                                                 = 0x5594f9e14000
-     0.030 ( 0.000 ms): ls/145954 arch_prctl(option: 0x3001, arg2: 0x7fff9bc13790)                      = -1 EINVAL (Invalid argument)
-     0.045 ( 0.002 ms): ls/145954 access(filename: 0xd6f5b2c0, mode: R)                                 = -1 ENOENT (No such file or directory)
-     0.050 ( 0.003 ms): ls/145954 openat(dfd: CWD, filename: 0xd6f5a144, flags: RDONLY|CLOEXEC)         = 3
-     0.053 ( 0.001 ms): ls/145954 newfstatat(dfd: 3, filename: 0xd6f5ace8, statbuf: 0x7fff9bc129a0, flag: 4096) = 0
-     0.055 ( 0.004 ms): ls/145954 mmap(len: 78087, prot: READ, flags: PRIVATE, fd: 3)                   = 0x7f4bd6f1c000
-     0.059 ( 0.000 ms): ls/145954 close(fd: 3)                                                          = 0
-     0.066 ( 0.003 ms): ls/145954 openat(dfd: CWD, filename: 0xd6f65fa0, flags: RDONLY|CLOEXEC)         = 3
-     0.068 ( 0.001 ms): ls/145954 read(fd: 3, buf: 0x7fff9bc12b08, count: 832)                          = 832
-root@number:~#
-
-root@number:~# perf trace -v record ls
-Syscall augmentation fails with record, disabling augmentationUsing CPUID GenuineIntel-6-B7-1
-DEBUGINFOD_URLS=
-nr_cblocks: 0
-affinity: SYS
-mmap flush: 1
-comp level: 0
-mmap size 4198400B
-Control descriptor is not initialized
-mmap size 528384B
-anaconda-ks.cfg  bin  perf.all-number-20231219-104854.tar.bz2  perfconfig.off  perf.data  perf.data.baseline  perf.data.old
-[ perf record: Woken up 1 times to write data ]
-failed to write feature CPU_PMU_CAPS
-[ perf record: Captured and wrote 0.050 MB perf.data (170 samples) ]
-root@number:~#
-
-There is a missing newline and we can avoid repeating a term, and I also
-added some extra explanation about "augmentation":
-
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index 192721261098832e..3f77dd3eb70dc37a 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -4865,7 +4865,7 @@ int cmd_trace(int argc, const char **argv)
- 		goto skip_augmentation;
- 
- 	if ((argc >= 1) && (strcmp(argv[0], "record") == 0)) {
--		pr_debug("Syscall augmentation fails with record, disabling augmentation");
-+		pr_debug("Syscall augmentation (reading pointer args using BPF) fails with record, disabling it.\n");
- 		goto skip_augmentation;
- 	}
- 
-I'll see if I come up with the test and a fix that allows augmentation
-to work with 'perf trace record'.
-
-- Arnaldo
-
- 
-> Closes: https://lore.kernel.org/lkml/CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com/
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/builtin-trace.c | 5 +++++
->  1 file changed, 5 insertions(+)
+On 2/15/2024 10:31 PM, Paolo Bonzini wrote:
+> On 2/16/24 03:10, Xin Li wrote:
+>> On 2/15/2024 11:55 AM, Sean Christopherson wrote:
+>>> +Paolo and Stephen
+>>>
+>>> FYI, there's a build failure in -next due to a collision between 
+>>> kvm/next and
+>>> tip/x86/fred.  The above makes everything happy.
+>>>
+>>> On Thu, Feb 15, 2024, Max Kellermann wrote:
+>>>> When KVM is disabled, the POSTED_INTR_* macros do not exist, and the
+>>>> build fails.
+>>>>
+>>>> Fixes: 14619d912b65 ("x86/fred: FRED entry/exit and dispatch code")
+>>>> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+>>>> ---
+>>>>   arch/x86/entry/entry_fred.c | 2 ++
+>>>>   1 file changed, 2 insertions(+)
+>>>>
+>>>> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
+>>>> index ac120cbdaaf2..660b7f7f9a79 100644
+>>>> --- a/arch/x86/entry/entry_fred.c
+>>>> +++ b/arch/x86/entry/entry_fred.c
+>>>> @@ -114,9 +114,11 @@ static idtentry_t 
+>>>> sysvec_table[NR_SYSTEM_VECTORS] __ro_after_init = {
+>>>>       SYSVEC(IRQ_WORK_VECTOR,            irq_work),
+>>>> +#if IS_ENABLED(CONFIG_KVM)
+>>>>       SYSVEC(POSTED_INTR_VECTOR,        kvm_posted_intr_ipi),
+>>>>       SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    kvm_posted_intr_wakeup_ipi),
+>>>>       SYSVEC(POSTED_INTR_NESTED_VECTOR,    kvm_posted_intr_nested_ipi),
+>>>> +#endif
+>>>>   };
+>>>>   static bool fred_setup_done __initdata;
+>>>> -- 
+>>>> 2.39.2
+>>
+>> We want to minimize #ifdeffery (which is why we didn't add any to
+>> sysvec_table[]), would it be better to simply remove "#if 
+>> IS_ENABLED(CONFIG_KVM)" around the the POSTED_INTR_* macros from the
+>> Linux-next tree?
+>>
+>> BTW, kvm_posted_intr_*() are defined to NULL if !IS_ENABLED(CONFIG_KVM).
 > 
-> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-> index 109b8e64fe69..192721261098 100644
-> --- a/tools/perf/builtin-trace.c
-> +++ b/tools/perf/builtin-trace.c
-> @@ -4864,6 +4864,11 @@ int cmd_trace(int argc, const char **argv)
->  	if (!trace.trace_syscalls)
->  		goto skip_augmentation;
->  
-> +	if ((argc >= 1) && (strcmp(argv[0], "record") == 0)) {
-> +		pr_debug("Syscall augmentation fails with record, disabling augmentation");
-> +		goto skip_augmentation;
-> +	}
-> +
->  	trace.skel = augmented_raw_syscalls_bpf__open();
->  	if (!trace.skel) {
->  		pr_debug("Failed to open augmented syscalls BPF skeleton");
-> -- 
-> 2.44.0.rc0.258.g7320e95886-goog
+> It is intentional that KVM-related things are compiled out completely
+> if !IS_ENABLED(CONFIG_KVM), 
+
+In arch/x86/include/asm/irq_vectors.h, most vector definitions are not
+under any #ifdeffery, e.g., THERMAL_APIC_VECTOR not under
+CONFIG_X86_THERMAL_VECTOR and IRQ_WORK_VECTOR not under CONFIG_IRQ_WORK.
+
+We'd better make all of them consistent, and the question is that should
+we add #ifdefs or not.
+
+> because then it's also not necessary to have
 > 
+> # define fred_sysvec_kvm_posted_intr_ipi                NULL
+> # define fred_sysvec_kvm_posted_intr_wakeup_ipi         NULL
+> # define fred_sysvec_kvm_posted_intr_nested_ipi         NULL
+> 
+> in arch/x86/include/asm/idtentry.h. The full conflict resultion is
+> 
+> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
+> index ac120cbdaaf2..660b7f7f9a79 100644
+> --- a/arch/x86/entry/entry_fred.c
+> +++ b/arch/x86/entry/entry_fred.c
+> @@ -114,9 +114,11 @@ static idtentry_t sysvec_table[NR_SYSTEM_VECTORS] 
+> __ro_after_init = {
+> 
+>       SYSVEC(IRQ_WORK_VECTOR,            irq_work),
+> 
+> +#if IS_ENABLED(CONFIG_KVM)
+>       SYSVEC(POSTED_INTR_VECTOR,        kvm_posted_intr_ipi),
+>       SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    kvm_posted_intr_wakeup_ipi),
+>       SYSVEC(POSTED_INTR_NESTED_VECTOR,    kvm_posted_intr_nested_ipi),
+> +#endif
+>   };
+> 
+>   static bool fred_setup_done __initdata;
+> diff --git a/arch/x86/include/asm/idtentry.h 
+> b/arch/x86/include/asm/idtentry.h
+> index 749c7411d2f1..758f6a2838a8 100644
+> --- a/arch/x86/include/asm/idtentry.h
+> +++ b/arch/x86/include/asm/idtentry.h
+> @@ -745,10 +745,6 @@ DECLARE_IDTENTRY_SYSVEC(IRQ_WORK_VECTOR,        
+> sysvec_irq_work);
+>   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_VECTOR,        
+> sysvec_kvm_posted_intr_ipi);
+>   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    
+> sysvec_kvm_posted_intr_wakeup_ipi);
+>   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,    
+> sysvec_kvm_posted_intr_nested_ipi);
+> -#else
+> -# define fred_sysvec_kvm_posted_intr_ipi        NULL
+> -# define fred_sysvec_kvm_posted_intr_wakeup_ipi        NULL
+> -# define fred_sysvec_kvm_posted_intr_nested_ipi        NULL
+>   #endif
+> 
+>   #if IS_ENABLED(CONFIG_HYPERV)
+> 
+> and it seems to be a net improvement to me.  The #ifs match in
+> the .h and .c files, and there are no unnecessary initializers
+> in the sysvec_table.
+> 
+
+I somehow get an impression that the x86 maintainers don't like #ifs in
+the .c files, but I could be just wrong.
+
+Thanks!
+     Xin
+
 
