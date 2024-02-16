@@ -1,124 +1,102 @@
-Return-Path: <linux-kernel+bounces-67929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A34BD85732D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:13:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59332857324
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:10:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C55B71F211C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:13:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BE2B1C21782
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:10:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4401BC27;
-	Fri, 16 Feb 2024 01:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F40DDDC1;
+	Fri, 16 Feb 2024 01:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VwI1BtmZ"
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BCqteF2K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF431B964
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB16E8F55;
+	Fri, 16 Feb 2024 01:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708045264; cv=none; b=K+Fjhd8FFTycC7JYe1gnurJVv7oTpZZ0Wq0JrfwoD1t4ZPsYwCrOIA1GKdt1FOGqLUyvqgAENKNg2JeGQ7cRQ6hPKbbLvR5OPjmN6YD89QGYQgxiPzu/Od3Ylxtvy2EmXHkodaTXGPNNE0XrpGOlhAJgGiGsBFwMH6UtSXg7vTY=
+	t=1708045248; cv=none; b=T35SKdWDwGM7rrhW5yASyNWn57YZqrQBj1dYPVIxXrvBnSn5LoAn2tyXrKRSgU6ombTqz8ClRN1neCe5Gs2pyfJvZAY7M8Mj5/MXzQM6SIe2we6f5KW9IsDyqnSCy88EbEiWjRg330L1n3MTSNLmz3WMvfz748/5B8uMHtQgP1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708045264; c=relaxed/simple;
-	bh=A52H0dqD8kleqE238ieALR6ZBY6GGUNS1919tKqbDeQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DP+sXLRhEbgDICMyLjZcae2UlhEEuC6mNNuFOd078oVstfIF5c/TeOUekgebCPWASvmJkIA+akR9ZB75Z6E49cDYZg5zCbHZj8KB+6MAQS5zXn8slB+LXtKu6ZVMnvli8yGgcjW9bOroEsCSVzTj2ScVa4R0YNZEF+kpSf2Wxbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VwI1BtmZ; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 15 Feb 2024 20:00:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708045258;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BBDDxkjYnEavfD3mPCDXRmZmPfVkLnkDBgf+7vi9zKM=;
-	b=VwI1BtmZHZ8AkEFSDPZcDAbf2+PV4v1WRQyNv3uIXV1rbNjzQt5Leg53FPjWDtQ/KaxbAn
-	GxjPODEgB7rm5NhFMSI3EYn8tBPiHukc5PvTq1vOA+l7XGhliE2x7w1hLnpYG9dWz5RqKW
-	pX+V+s/4pq5j3IaGneZUuQMv6MupngE=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Suren Baghdasaryan <surenb@google.com>, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, 
-	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de, 
-	mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, hughd@google.com, 
-	andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com, 
-	vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com, 
-	ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, 
-	cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-Message-ID: <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-14-surenb@google.com>
- <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
+	s=arc-20240116; t=1708045248; c=relaxed/simple;
+	bh=+dDgnU3ZkrjHe2f8ANYZEXxyh3W3/N5+qFKaHROFQjU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hR6tp7xY4lLeceN5QlLarKBHN0uY/dmNszCK3QwOQD0TnuTgnQhl/Q/duhuOwcop6XRFZxkxoV1++h5MVqq9GUQ5g0NWIhAZJQkc3SRc6WHTRT3a5bVTCU1WBBiCm8NU+qAlewW8ghXiGHaFedNP8SZg3q1tMLE+O126r+gQti4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BCqteF2K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 693EEC433F1;
+	Fri, 16 Feb 2024 01:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708045248;
+	bh=+dDgnU3ZkrjHe2f8ANYZEXxyh3W3/N5+qFKaHROFQjU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BCqteF2KZkBD/XMzhKjjbxKUtvLqdkGNuCWI6A6kWgqy+syTndaIHpsbIhS4pxbAp
+	 UmMEkDDCao9xjdSYkDm918Pe9jerH5dLqNeZecLL9epIYcUVa2Wh9XaqOa8Q0wJChH
+	 LyNbx57nXbkJWKvWX9aYrj3gMnnlnsHnwYGzv5Hs1lHC49ajycJ38Fk/pwZJZJ3uNY
+	 WmSIxelgEKaoYY8p2UUD2trduuEQ49XwsN6zBKl6fh3Nr785Q8CQEGszFEn2+UTMJc
+	 z4vwAs/mm5M+FkBxUtOsZ+CB8h99b4zHz5aX7TXxka3YG+Msx94e84uU2yTu2fVxgY
+	 yVC2AwsLICM9g==
+Date: Thu, 15 Feb 2024 17:00:46 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, Leon Romanovsky
+ <leonro@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko
+ <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
+ <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, David Ahern
+ <dsahern@kernel.org>, Aron Silverton <aron.silverton@oracle.com>,
+ andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <20240215170046.58d565ef@kernel.org>
+In-Reply-To: <Zc22mMN2ovCadgRY@infradead.org>
+References: <20240207072435.14182-1-saeed@kernel.org>
+	<Zcx53N8lQjkpEu94@infradead.org>
+	<20240214074832.713ca16a@kernel.org>
+	<Zc22mMN2ovCadgRY@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 15, 2024 at 04:54:38PM -0800, Andrew Morton wrote:
-> On Mon, 12 Feb 2024 13:38:59 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
+On Wed, 14 Feb 2024 23:00:40 -0800 Christoph Hellwig wrote:
+> On Wed, Feb 14, 2024 at 07:48:32AM -0800, Jakub Kicinski wrote:
+> > Overreach is unfortunate, I'd love to say "please do merge it as part 
+> > of RDMA". You probably don't trust my opinion but Jason admitted himself
+> > this is primarily for RDMA. RDMA is what it is in terms of openness and
+> > all vendors trying to sell their secret magic sauce.  
 > 
-> > +Example output.
-> > +
-> > +::
-> > +
-> > +    > cat /proc/allocinfo
-> > +
-> > +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_page
-> > +     6.08MiB     mm/slab_common.c:950 module:slab_common func:_kmalloc_order
-> > +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:alloc_slab_obj_exts
-> > +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:alloc_pages_exact
-> > +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtable func:__pte_alloc_one
-> 
-> I don't really like the fancy MiB stuff.  Wouldn't it be better to just
-> present the amount of memory in plain old bytes, so people can use sort
-> -n on it?
+> Common.  RDMA has two important open standards, one of them even done
+> in IETF that most open of all standards organizations.
 
-They can use sort -h on it; the string_get_size() patch was specifically
-so that we could make the output compatible with sort -h
+While I don't dispute that there are standards which can be read,
+the practical interoperability of RDMA devices is extremely low.
+By practical I mean having two devices from different vendors
+achieve any reasonable performance talking to each other.
+Even two devices from _the same_ vendor but different generations
+are unlikely to perform.
 
-> And it's easier to tell big-from-small at a glance because
-> big has more digits.
-> 
-> Also, the first thing any sort of downstream processing of this data is
-> going to have to do is to convert the fancified output back into
-> plain-old-bytes.  So why not just emit plain-old-bytes?
-> 
-> If someone wants the fancy output (and nobody does) then that can be
-> done in userspace.
+Given how RDMA is deployed (uniform, greenfield/full replacement)
+this is entirely reasonable from the engineering perspective.
 
-I like simpler, more discoverable tools; e.g. we've got a bunch of
-interesting stuff in scripts/ but it doesn't get used nearly as much -
-not as accessible as cat'ing a file, definitely not going to be
-installed by default.
+But this is a bit of a vicious cycle, vendors have little incentive 
+to interoperate, and primarily focus on adding secret sauce outside of 
+the standard. In fact you're lucky if the vendor didn't bake some
+extension which requires custom switches into the NICs :(
 
-I'm just optimizing for the most common use case. I doubt there's going
-to be nearly as much consumption by tools, and I'm ok with making them
-do the conversion back to bytes if they really need it.
+Compare that to WiFi, which is a level of standardization netdev folks
+are more accustomed to. You can connect a new device from vendor X to 
+a 10 year old AP from vendor Y and it will run with high perf.
+
+Unfortunately because of the AI craze I have some experience
+with RDMA deployments now. Perhaps you have more, perhaps your
+experience differs.
 
