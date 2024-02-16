@@ -1,183 +1,282 @@
-Return-Path: <linux-kernel+bounces-68687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3737857E6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:02:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B052D857E6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2390D1C250C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:02:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0DE93B238BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:02:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE54812C54F;
-	Fri, 16 Feb 2024 14:01:59 +0000 (UTC)
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCBEB12C54C;
+	Fri, 16 Feb 2024 14:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="jyDqzY0N";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Lv0MGNUO";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="LxvnyCHL";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="t+ekt5pV"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1AFE12C528;
-	Fri, 16 Feb 2024 14:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A54D12C541
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708092119; cv=none; b=FdLystb934/hDhLiHWDqUQXp8RoYEo1HXTG80wAqNMyMamoFhL5nODw2ilOmO99OrrR6OZQAijHKFfGU6xEi5hOJbySZ/0y6YgueYbhHDg4jT4VAUpzZKib8GkXesjLVlIOFmNmGG0mYvf6TzKZJZp3f97lolYk8seTWpcLrPtA=
+	t=1708092136; cv=none; b=AYnApWMO4mIBGEXj0dCRvgvG/pE4ncitc7g5zH1joERgKxVcviq00uxgRjvYhOyHpWZdToxhOkgNtsMak0UvDY0oD6S70WDdRKpUyRHaKGUc87hrOSscbC1T6TRwqKpvAZ1+ZMFKTt7XBRqBTh5kyetZGo1a8+C6mC9uddh/MZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708092119; c=relaxed/simple;
-	bh=ioNPgs4X6o405lCujBCduKtsaBUk3vp6xoV7Cks8r6c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RFVRSIEaRyW5mKj8D3kXS1mVuCOzFXw09XNy4wPgFhzGvGuphvcCnhJzSDLlHN7XZTI+xHcrHAIop1mTfNMBWIEz7Mhk0mZkxSWX/wXSImEdJvDeAazvBHRrfPY3yhujynvvq8gxtk/d0TRq28852C8c/XaNt7VdltMfmwJG3TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-607fbb1ae38so6718167b3.3;
-        Fri, 16 Feb 2024 06:01:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708092114; x=1708696914;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eOaw5LTfRS/Q6ec8RSqJC8wq4dxjMLwYAJ+OKRO1F48=;
-        b=d4QGEyRp0cZSwjXPdJqXk6tvnnlSKDynVrC/FpIiHuGq3f396SOkgHhQp+N5taSId6
-         7f2aBP2KZM3uRvFhA7g/soP0D3wZJDJVVLUydRRPBj+iHKAQo0wjKCaRCnQJqI9FBf/i
-         UwvXOFM70hy6w9PHZRUM1jRXGPzdJeGuRLNPFgl2sLQCILrmP+saUCB0l2Q8o8NurszB
-         Z5h47TXRQgCJAWgmTuM4agE7mEyL/bC48gLKApy45GYz77XiEvueBzlKhdZtVsAVy8Bs
-         z9wJOvI7Fsu/OnF9LerbYDVKvo1gPf/ARHUihnlvMRWpH8rjGigTmJSVhsUsY+utWM2a
-         ZzZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWd/unUsXxltZGEn9gXaXnCPsQ3L3xhdASQUrakwYKc7HYNf+yrmrxsQ2g4g7fbhU2zLN9/1QlbPpGzkFJ8wnUOBtxpdzLkaZPnv6R8rvonQ4hlzf7wVaRFceXVLt/de4Mvvd2pFcCbmhP4w6Rzm2Och6oRAD5tJ5mkom5AsEByCCjXIncX6nhI3PxQyEbMSvBQt0u5K+rbz/8OgEPjLRxkfarebZw
-X-Gm-Message-State: AOJu0Yx5/LTlkSoHKq63XaPuLe8YNL2jcEJ/69AxFsOyBmHsov2vuWts
-	KWshsOJp4uTBYci636MBXyeQ5m/YkSwxrx5pqnyKBNnay30xJm5fE7qh5W/sC3o=
-X-Google-Smtp-Source: AGHT+IGc6mN5pO0JJoCfdDeGlyJBRVvC84/9SIMHQ46OUuzn/NQ+pLIlNfQLiwQKs+LxBrn6EwCNCA==
-X-Received: by 2002:a81:b603:0:b0:607:ec66:36bd with SMTP id u3-20020a81b603000000b00607ec6636bdmr3885509ywh.18.1708092113870;
-        Fri, 16 Feb 2024 06:01:53 -0800 (PST)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id n28-20020a81af1c000000b00607fab8965esm278633ywh.32.2024.02.16.06.01.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 06:01:52 -0800 (PST)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dc6e080c1f0so1932578276.2;
-        Fri, 16 Feb 2024 06:01:52 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWoR6N4/T06CvwTvta/WM9/y0qnsz8hM7HuYL2k1jn2S+b/z+6/ioHslaMHZ7HkuSqWWbErkBAWziM/GiyvHxB/K6EOwXBviQgfe+kg8zqAv1G23ccc0qCa0ekb4+ufwC2RJapsoZS074w+RPksItBqR1ST7cGNUyJ2RdQzCSy+ZKEcAPzvWXfDbMEcjzZan4TKG1xRUXIfGKPMHKt2xqX/fu/qeqqg
-X-Received: by 2002:a05:6902:2501:b0:dc6:d7b6:cce9 with SMTP id
- dt1-20020a056902250100b00dc6d7b6cce9mr5776726ybb.57.1708092112512; Fri, 16
- Feb 2024 06:01:52 -0800 (PST)
+	s=arc-20240116; t=1708092136; c=relaxed/simple;
+	bh=tv/orOiraGfFT/LCQPcSh2kGKvQA7D4GbtgfVaTK234=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VOWXx+hvxUb9fZZ8m8JcMfS+f9RFF5T+RCs1WCkih3GL9StQ4DP0WeRdOq2uCWsXp5gL7a1hjkhqlux+Ro+fCHX4B6x2IDE1Q1hX5Nogjww3Y2e0zLzzz/aCZ5N865jUXBAqbqQnnnfYHZ9D8ZbSRTpe6XuoUNsbNFclorGddAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=jyDqzY0N; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Lv0MGNUO; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=LxvnyCHL; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=t+ekt5pV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 001B0220B0;
+	Fri, 16 Feb 2024 14:02:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708092126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DX6t6X+yIdGbLB39W9vftzQkoVtLDPdmu/GnvJ6LhTI=;
+	b=jyDqzY0NLFhPSBRgRykDHCm65D5PNw1PrSg60JuI6O4lXxFmBpMmA/ZJWQYlm72I0WGtAk
+	SjiVzn9KCW1/6DfyRJj2cBFhoWQxIha/P7fd8t0LXiJRE6+d4E0OvdtQUnem5B4a8kE5ZD
+	i9n1VnTMBOeJ+KZ1RDZItC7EfENuej0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708092126;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DX6t6X+yIdGbLB39W9vftzQkoVtLDPdmu/GnvJ6LhTI=;
+	b=Lv0MGNUOHOm4qYvaIOrCMSdTts66FhSCpmhBiJpFrPQeHUDGCBaabNhg2TWWHlSrAwb3Ia
+	dSZ8yQyIY082kBAw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708092124; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DX6t6X+yIdGbLB39W9vftzQkoVtLDPdmu/GnvJ6LhTI=;
+	b=LxvnyCHLnF2BFGpigNMeVm3/+promMiSuC3Vbu/B12dQKN3T0g5Vz+GNKP1WUIjE9n1Vt7
+	OHxBgb4+DPsPG7dQIJa6Th7eD3YdtHpL8hI415UcvRVdEeS+ApkWF2H9TgM0ZucgZKApAw
+	Dm/3lvYBdWo5v49J3EYSDdLx3kgTeZY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708092124;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DX6t6X+yIdGbLB39W9vftzQkoVtLDPdmu/GnvJ6LhTI=;
+	b=t+ekt5pViC8fLjh59BuatpPUvUykK4qjQ+oVpsii7Ccrw3HxrO2k2JpGJW0Dqe16BIBx35
+	WfYno0nra2hbuaAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9972F13A39;
+	Fri, 16 Feb 2024 14:02:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id k1L1I9tqz2VdLgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 16 Feb 2024 14:02:03 +0000
+Date: Fri, 16 Feb 2024 15:02:03 +0100
+Message-ID: <87a5o0ik2s.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>,
+	jasowang@redhat.com,
+	perex@perex.cz,
+	tiwai@suse.com,
+	linux-kernel@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	virtualization@lists.linux-foundation.org,
+	virtio-dev@lists.oasis-open.org,
+	Anton Yakovlev <anton.yakovlev@opensynergy.com>,
+	coverity-bot <keescook+coverity-bot@chromium.org>
+Subject: Re: [v4 PATCH] ALSA: virtio: Fix "Coverity: virtsnd_kctl_tlv_op(): Uninitialized variables" warning.
+In-Reply-To: <20240216084610-mutt-send-email-mst@kernel.org>
+References: <20240216100643.688590-1-aiswarya.cyriac@opensynergy.com>
+	<20240216062630-mutt-send-email-mst@kernel.org>
+	<87eddcikz6.wl-tiwai@suse.de>
+	<20240216084610-mutt-send-email-mst@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com> <20240208124300.2740313-2-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240208124300.2740313-2-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 16 Feb 2024 15:01:40 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUCB3GQxGPxG35rebN2yrKYBnZDzORaEEOuZb3aMgrf6g@mail.gmail.com>
-Message-ID: <CAMuHMdUCB3GQxGPxG35rebN2yrKYBnZDzORaEEOuZb3aMgrf6g@mail.gmail.com>
-Subject: Re: [PATCH 01/17] dt-bindings: clock: r9a07g043-cpg: Add power domain IDs
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=LxvnyCHL;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=t+ekt5pV
+X-Spamd-Result: default: False [-0.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 TAGGED_RCPT(0.00)[coverity-bot];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: -0.81
+X-Rspamd-Queue-Id: 001B0220B0
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Hi Claudiu,
+On Fri, 16 Feb 2024 14:48:10 +0100,
+Michael S. Tsirkin wrote:
+> 
+> On Fri, Feb 16, 2024 at 02:42:37PM +0100, Takashi Iwai wrote:
+> > On Fri, 16 Feb 2024 12:27:48 +0100,
+> > Michael S. Tsirkin wrote:
+> > > 
+> > > On Fri, Feb 16, 2024 at 11:06:43AM +0100, Aiswarya Cyriac wrote:
+> > > > This commit fixes the following warning when building virtio_snd driver.
+> > > > 
+> > > > "
+> > > > *** CID 1583619:  Uninitialized variables  (UNINIT)
+> > > > sound/virtio/virtio_kctl.c:294 in virtsnd_kctl_tlv_op()
+> > > > 288
+> > > > 289     		break;
+> > > > 290     	}
+> > > > 291
+> > > > 292     	kfree(tlv);
+> > > > 293
+> > > > vvv     CID 1583619:  Uninitialized variables  (UNINIT)
+> > > > vvv     Using uninitialized value "rc".
+> > > > 294     	return rc;
+> > > > 295     }
+> > > > 296
+> > > > 297     /**
+> > > > 298      * virtsnd_kctl_get_enum_items() - Query items for the ENUMERATED element type.
+> > > > 299      * @snd: VirtIO sound device.
+> > > > "
+> > > > 
+> > > > This warning is caused by the absence of the "default" branch in the
+> > > > switch-block, and is a false positive because the kernel calls
+> > > > virtsnd_kctl_tlv_op() only with values for op_flag processed in
+> > > > this block.
+> > > > 
+> > > > Also, this commit unifies the cleanup path for all possible control
+> > > > paths in the callback function.
+> > > > 
+> > > > Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+> > > > Signed-off-by: Aiswarya Cyriac <aiswarya.cyriac@opensynergy.com>
+> > > > Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+> > > > Addresses-Coverity-ID: 1583619 ("Uninitialized variables")
+> > > > Fixes: d6568e3de42d ("ALSA: virtio: add support for audio controls")
+> > > 
+> > > 
+> > > 
+> > > > ---
+> > > >  sound/virtio/virtio_kctl.c | 19 +++++++++++++++----
+> > > >  1 file changed, 15 insertions(+), 4 deletions(-)
+> > > > 
+> > > > diff --git a/sound/virtio/virtio_kctl.c b/sound/virtio/virtio_kctl.c
+> > > > index 0c6ac74aca1e..7aa79c05b464 100644
+> > > > --- a/sound/virtio/virtio_kctl.c
+> > > > +++ b/sound/virtio/virtio_kctl.c
+> > > > @@ -253,8 +253,8 @@ static int virtsnd_kctl_tlv_op(struct snd_kcontrol *kcontrol, int op_flag,
+> > > >  
+> > > >  	tlv = kzalloc(size, GFP_KERNEL);
+> > > >  	if (!tlv) {
+> > > > -		virtsnd_ctl_msg_unref(msg);
+> > > > -		return -ENOMEM;
+> > > > +		rc = -ENOMEM;
+> > > > +		goto on_msg_unref;
+> > > >  	}
+> > > >  
+> > > >  	sg_init_one(&sg, tlv, size);
+> > > > @@ -281,14 +281,25 @@ static int virtsnd_kctl_tlv_op(struct snd_kcontrol *kcontrol, int op_flag,
+> > > >  			hdr->hdr.code =
+> > > >  				cpu_to_le32(VIRTIO_SND_R_CTL_TLV_COMMAND);
+> > > >  
+> > > > -		if (copy_from_user(tlv, utlv, size))
+> > > > +		if (copy_from_user(tlv, utlv, size)) {
+> > > >  			rc = -EFAULT;
+> > > > -		else
+> > > > +			goto on_msg_unref;
+> > > > +		} else {
+> > > >  			rc = virtsnd_ctl_msg_send(snd, msg, &sg, NULL, false);
+> > > > +		}
+> > > >  
+> > > >  		break;
+> > > > +	default:
+> > > > +		rc = -EINVAL;
+> > > > +		/* We never get here - we listed all values for op_flag */
+> > > > +		WARN_ON(1);
+> > > > +		goto on_msg_unref;
+> > > >  	}
+> > > > +	kfree(tlv);
+> > > > +	return rc;
+> > > >  
+> > > > +on_msg_unref:
+> > > > +	virtsnd_ctl_msg_unref(msg);
+> > > >  	kfree(tlv);
+> > > >  
+> > > >  	return rc;
+> > > 
+> > > I don't really like adding code for a false-positive but ALSA
+> > > maintainers seem to like this. If yes, this seems like as good
+> > > a way as any to do it.
+> > 
+> > Err, no, you misunderstood the situation.
+> > 
+> > I took the v1 patch quickly because:
+> > - It was with Anton's SOB, who is another maintainer of the driver
+> > - I assumed you lost interest in this driver since you haven't reacted
+> >   to the previous patches for long time
+> > - The change there was small and simple enough
+> > 
+> > Now, it grows unnecessarily large, and yet you complained.  Why should
+> > I take it, then?
+> > 
+> > This is a subtle cosmetic issue that isn't worth for wasting too much
+> > time and energy.  If we want to shut up the compile warning, and this
+> > is a case where it can't happen, just put the "default:" to the
+> > existing case.  If you want to be user-friendly, put some comment.
+> > That's all.  It'll be a one-liner.
+> > 
+> > OTOH, if we do care and want to catch any potential logical mistake,
+> > you can put WARN().  But, this doesn't have to go out as an error.
+> > Simply putting WARN() for the default and going through would work,
+> > too.
+> > 
+> > Or we can keep this lengthy changes if we want, too.
+> > 
+> > So, I really don't mind which way to fix as long as it works correctly
+> > (and doesn't look too ugly).  Please make agreement among you guys,
+> > and resubmit if needed.
+> > 
+> > 
+> > thanks,
+> > 
+> > Takashi
+> 
+> OK sorry about too verbose.  I mean since Anton wants it, I ack this.
+> 
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
 
-On Thu, Feb 8, 2024 at 1:43=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
-rote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add power domain IDs for RZ/G2UL (R9A07G043) SoC.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-
-Thanks for your patch!
-
-> --- a/include/dt-bindings/clock/r9a07g043-cpg.h
-> +++ b/include/dt-bindings/clock/r9a07g043-cpg.h
-> @@ -200,5 +200,53 @@
->  #define R9A07G043_AX45MP_CORE0_RESETN  78      /* RZ/Five Only */
->  #define R9A07G043_IAX45_RESETN         79      /* RZ/Five Only */
->
-> +/* Power domain IDs. */
-> +#define R9A07G043_PD_ALWAYS_ON         0
-> +#define R9A07G043_PD_GIC               1
-
-As this file is shared between RZ/G2UL and RZ/Five, R9A07G043_PD_GIC
-needs an "/* RZ/G2UL Only */" comment
-
-> +#define R9A07G043_PD_IA55              2
-> +#define R9A07G043_PD_MHU               3
-> +#define R9A07G043_PD_CORESIGHT         4
-> +#define R9A07G043_PD_SYC               5
-
-Likewise for the four above.
-
-> +#define R9A07G043_PD_DMAC              6
-> +#define R9A07G043_PD_GTM0              7
-> +#define R9A07G043_PD_GTM1              8
-> +#define R9A07G043_PD_GTM2              9
-> +#define R9A07G043_PD_MTU               10
-> +#define R9A07G043_PD_POE3              11
-> +#define R9A07G043_PD_WDT0              12
-> +#define R9A07G043_PD_SPI               13
-> +#define R9A07G043_PD_SDHI0             14
-> +#define R9A07G043_PD_SDHI1             15
-> +#define R9A07G043_PD_ISU               16
-> +#define R9A07G043_PD_CRU               17
-> +#define R9A07G043_PD_LCDC              18
-
-Likewise for the three above.
-
-> +#define R9A07G043_PD_SSI0              19
-> +#define R9A07G043_PD_SSI1              20
-> +#define R9A07G043_PD_SSI2              21
-> +#define R9A07G043_PD_SSI3              22
-> +#define R9A07G043_PD_SRC               23
-> +#define R9A07G043_PD_USB0              24
-> +#define R9A07G043_PD_USB1              25
-> +#define R9A07G043_PD_USB_PHY           26
-> +#define R9A07G043_PD_ETHER0            27
-> +#define R9A07G043_PD_ETHER1            28
-> +#define R9A07G043_PD_I2C0              29
-> +#define R9A07G043_PD_I2C1              30
-> +#define R9A07G043_PD_I2C2              31
-> +#define R9A07G043_PD_I2C3              32
-> +#define R9A07G043_PD_SCIF0             33
-> +#define R9A07G043_PD_SCIF1             34
-> +#define R9A07G043_PD_SCIF2             35
-> +#define R9A07G043_PD_SCIF3             36
-> +#define R9A07G043_PD_SCIF4             37
-> +#define R9A07G043_PD_SCI0              38
-> +#define R9A07G043_PD_SCI1              39
-> +#define R9A07G043_PD_IRDA              40
-> +#define R9A07G043_PD_RSPI0             41
-> +#define R9A07G043_PD_RSPI1             42
-> +#define R9A07G043_PD_RSPI2             43
-> +#define R9A07G043_PD_CANFD             44
-> +#define R9A07G043_PD_ADC               45
-> +#define R9A07G043_PD_TSU               46
->
->  #endif /* __DT_BINDINGS_CLOCK_R9A07G043_CPG_H__ */
-
-In addition, you need definitions for the modules that are only
-present on RZ/Five, e.g.
-
-    #define R9A07G043_PD_PLIC               47    /* RZ/Five Only */
-
-Gr{oetje,eeting}s,
-
-                        Geert
+Alright, I applied this one.  Thanks!
 
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+Takashi
 
