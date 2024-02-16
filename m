@@ -1,144 +1,92 @@
-Return-Path: <linux-kernel+bounces-68325-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F8728578C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:22:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8518578C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BFF7281C62
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:22:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 818D0B217AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA661B96B;
-	Fri, 16 Feb 2024 09:22:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C58EA1B966;
+	Fri, 16 Feb 2024 09:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QUcAhf7+"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qFpPyopj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vqSY7Xwh"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52F714AA0;
-	Fri, 16 Feb 2024 09:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B360F1B95D
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708075346; cv=none; b=QlYRZ2To9mT083fihakIvmf/OaiadneLQEVTE+KUwN7dfws36O/CsOOdb0P64AV+MVD8NbWn0KUgzm8zoGPrLXslnZFouY8wH3sr2RTVshPSSTb608p7KcfSOGf4LvLbLQ3BTtlE7v8IGEFFP7d+s0KSQd0iQOIskaRmNINgdfs=
+	t=1708075388; cv=none; b=ra+NuklocwXWT1Fn/d9ASKrLNscIYUganAdzfyqacBMLQHKotDHjwzlgDVh4MSRQ4x5PlI5MS5ftCR90/sS/3hyQ+0tfbIK0NNQWdZx4Aob5O8E91sfRCOr8ocNL7eZuaYsilPuvpDYu+XaZ/SuVVZ/D+P1mvh4G6fk+U43tExE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708075346; c=relaxed/simple;
-	bh=oPvDzzQc5vWK+p/SmqjSqNC1Wjp/9w/PnlwOfrdbPXU=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=M/XavO+X1l0buUzHhT1HirRGQO7lh/7LqeUnRN6m07BsovxS1dEySAs3WN84QNnI+6kncxbITxcEnHgHGHgZD1KcV5zLmfGhl574YBYdv3FTt+JHdOf8UFygG8c4OwhOY+h2X/o3qJ26xa4xRTZauJOzG93u/GljIZ6VxfvREho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QUcAhf7+; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708075345; x=1739611345;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=oPvDzzQc5vWK+p/SmqjSqNC1Wjp/9w/PnlwOfrdbPXU=;
-  b=QUcAhf7+uIWOhbeg4Rppu3xvzdsDA2jlRDybBrRqmcoH2HWJgWDpslYs
-   AinGZzaxmTqSTSW8NE4+70AkdbpqkkKVTXSbtZ0/gQDIvYl+1lHQsljTl
-   TuxHMz6JSG9OSgW0ZdE+S6mtHR1WTVzxia/pcZg5j0A85vFdzcjGWuajB
-   7lkwotGVTcgYzhuUxhbsSFl1iKEQ8A7sjF1dVzIzGzw2YT3Mnc4QA5pOS
-   c9XJg3I3AeLO1I2SQrh2IKoOf57LLuuQld9j8i2nPOZohJgwbSiFetDz6
-   /BeMG9Nqqt6Sv1VB7HpllYp8fyiFHPtU+bd2/vRvUv1Kpw6UJYYdDY9n2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2348349"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="2348349"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:22:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="41282469"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.94.248.234])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:22:19 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 16 Feb 2024 11:22:13 +0200 (EET)
-To: "Deucher, Alexander" <Alexander.Deucher@amd.com>
-cc: "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, 
-    Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>, 
-    Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>, 
-    "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, 
-    Jason Gunthorpe <jgg@ziepe.ca>, Leon Romanovsky <leon@kernel.org>, 
-    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-    "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, 
-    "Pan, Xinhui" <Xinhui.Pan@amd.com>, 
-    "Koenig, Christian" <Christian.Koenig@amd.com>, 
-    Lukas Wunner <lukas@wunner.de>
-Subject: RE: [PATCH 1/3] drm/radeon: Use RMW accessors for changing LNKCTL2
-In-Reply-To: <BL1PR12MB51440761895B3DF935840BF0F74D2@BL1PR12MB5144.namprd12.prod.outlook.com>
-Message-ID: <dd2da980-d114-e30e-fa91-79ff9ec353e7@linux.intel.com>
-References: <20240215133155.9198-1-ilpo.jarvinen@linux.intel.com> <20240215133155.9198-2-ilpo.jarvinen@linux.intel.com> <BL1PR12MB51440761895B3DF935840BF0F74D2@BL1PR12MB5144.namprd12.prod.outlook.com>
+	s=arc-20240116; t=1708075388; c=relaxed/simple;
+	bh=svr/tG93+IhRjX3JlqAVKVH56EQboOnBEuSSo7Dfcac=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=pV2xLHOK+YNulNncCbZirYyesbE05XzKzsTB2uI4u1H4fthc1WVcQ8JaN7N8XlB1Aw7QUy1/WqqCUsZjYVNnWdGSxDCTwUsqNu1Mo8XejyWTg6Vd/ySYHnvWaWjy93t9jMB/zMXHECU+Yjcw4XsYKBFT8g430Zk4B7Rs0RaMQ48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qFpPyopj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vqSY7Xwh; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708075384;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=svr/tG93+IhRjX3JlqAVKVH56EQboOnBEuSSo7Dfcac=;
+	b=qFpPyopjiaOKr9Bf6XrK720PVB0dMLOvho+du5tVdDUZ1qft8YwkL2JwBORKgnoIyWW3o2
+	Rvlb2Sp0E0ZOGGNC+mixsuXB+778n4WSo6fBbM1gVrY/0g+igWlzArLL9aI8Yc+Im8WOec
+	M5eLGOCTrAghca1mLE+6KufInx1CIMKCdZgYY68Jwm5lxEwl3lcPVAl8E+BO+8lRG1TgYW
+	2Daj/cao8YTgxXvemqeNIA3xvPmQgJdl22C3VzBz+SdlYGsZO6+i+/IL80Ce+Hv5uqUjGN
+	LAjl2OXjO6vwqN0hjk/wujaSPIrMrjTX4rzT+cw4jCLGlS7KZwyfxtH5Vxoi7Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708075384;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=svr/tG93+IhRjX3JlqAVKVH56EQboOnBEuSSo7Dfcac=;
+	b=vqSY7XwhX8Xmi7zOWwE/1fj3g2KxcOJjLlJBPIBw+ZsZmUWyVuLvRwLYPf9CAexm7fQzTK
+	Zn6X36wlEpDSw5BQ==
+To: Stephen Brennan <stephen.s.brennan@oracle.com>,
+ linux-kernel@vger.kernel.org
+Cc: Petr Mladek <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Sergey Senozhatsky <senozhatsky@chromium.org>, Stephen Brennan
+ <stephen.s.brennan@oracle.com>
+Subject: Re: [PATCH] printk: save loglevel before console_verbose()
+In-Reply-To: <20240216005128.1045812-1-stephen.s.brennan@oracle.com>
+References: <20240216005128.1045812-1-stephen.s.brennan@oracle.com>
+Date: Fri, 16 Feb 2024 10:28:46 +0106
+Message-ID: <87eddcsqzd.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1671545761-1708075333=:1097"
+Content-Type: text/plain
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 2024-02-15, Stephen Brennan <stephen.s.brennan@oracle.com> wrote:
+> In panic() cases, console_verbose() is called, clobbering the
+> console_loglevel value. If the bug which led to the panic related to
+> printk, it can be useful to know the log level prior to the
+> console_verbose() call.
 
---8323328-1671545761-1708075333=:1097
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+I've done a *lot* of printk debugging over the past 6 years and have
+never had a case where this would be useful (or even interesting).
 
-On Thu, 15 Feb 2024, Deucher, Alexander wrote:
+I assume there is some rare and particular scenario you are trying to
+debug. And once you've debugged it, it is no longer useful for you
+either.
 
-> [Public]
->=20
-> > -----Original Message-----
-> > From: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > Sent: Thursday, February 15, 2024 8:32 AM
-> > To: Deucher, Alexander <Alexander.Deucher@amd.com>; amd-
-> > gfx@lists.freedesktop.org; Daniel Vetter <daniel@ffwll.ch>; David Airli=
-e
-> > <airlied@gmail.com>; Dennis Dalessandro
-> > <dennis.dalessandro@cornelisnetworks.com>; dri-
-> > devel@lists.freedesktop.org; Jason Gunthorpe <jgg@ziepe.ca>; Leon
-> > Romanovsky <leon@kernel.org>; linux-kernel@vger.kernel.org; linux-
-> > rdma@vger.kernel.org; Pan, Xinhui <Xinhui.Pan@amd.com>; Koenig, Christi=
-an
-> > <Christian.Koenig@amd.com>
-> > Cc: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>; Lukas Wunner
-> > <lukas@wunner.de>
-> > Subject: [PATCH 1/3] drm/radeon: Use RMW accessors for changing LNKCTL2
-> >
-> > Convert open coded RMW accesses for LNKCTL2 to use
-> > pcie_capability_clear_and_set_word() which makes its easier to understa=
-nd
-> > what the code tries to do.
-> >
-> > LNKCTL2 is not really owned by any driver because it is a collection of=
- control
-> > bits that PCI core might need to touch. RMW accessors already have supp=
-ort
-> > for proper locking for a selected set of registers
-> > (LNKCTL2 is not yet among them but likely will be in the future) to avo=
-id losing
-> > concurrent updates.
-> >
-> > Suggested-by: Lukas Wunner <lukas@wunner.de>
-> > Signed-off-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
->=20
-> The radeon and amdgpu patches are:
-> Acked-by: Alex Deucher <alexander.deucher@amd.com>
->=20
-> Are you looking for me to pick them up or do you want to land them as=20
-> part of some larger change?  Either way is fine with me.=20
+IMHO this does not warrant adding an extra global variable for all Linux
+users.
 
-Hi,
+When Petr gets back from vacation, maybe he will have a different
+opinion.
 
-You please take them, I intentionally took them apart from the BW=20
-controller series so they can go through the usual trees, not along with=20
-the BW controller. (I don't expect the BW controller to be accepted during=
-=20
-this cycle).
-
---=20
- i.
-
---8323328-1671545761-1708075333=:1097--
+John Ogness
 
