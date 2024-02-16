@@ -1,166 +1,186 @@
-Return-Path: <linux-kernel+bounces-68162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF238576B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:18:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED0368576B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:19:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC7D41F2305B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:18:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 182401C22DDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:19:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 128E614AB7;
-	Fri, 16 Feb 2024 07:18:49 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E8A15491;
+	Fri, 16 Feb 2024 07:19:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nY+MSBVz"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ECCC2F44
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:18:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1A217591
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708067928; cv=none; b=D5v5Y/OSumXChn5gTZZg+0LFjVGR9wq64++MOy+qyEeGMinuvYDxyb32Gll67imWqRn5XKqjfIPOse9FW5S+KGsrC4YFWBNC/Uj205sOBZbTPaZnp1SEPMH7r/bOcT1uIHRO56lZro3TXm0d4ln1SYhwkjum014/LmmJ/ajRpEQ=
+	t=1708067965; cv=none; b=e1r8Svy35apIqSXjk1HF8AoL5zb8MBiOhmfG6oT6i1RjwtvB33z6OJRpBrFxoS4uQ7hCSnwWawOIgspxapFP8deGZsj58ud4iTp/aIK27hZKJi2Jl7qwFDnxkqKYEG25Kh7orgMMyLpZeZFhFXoAsdh4srHSviPDWN/MDf8i+NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708067928; c=relaxed/simple;
-	bh=5YYd1mc9oE4gQ6nfD69b18mEEMCG2oT720uDPviPQGk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=K32jw17CSqz+u2gjOlnx4Jwf0wr3qdYvaXMK64k9kQW9KxwA6ZITRhKAMy5B0Yg5Jh0wu8c7Ejs7OYfrcdeKdNo128VqOEsTEKfR8ds4i4uZy1JPkv24ELoK3k1W0kSYkkieYpXMljxJE2MSyr6SHhBp4xp5YzDSHH3JKUKmpB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rasUc-00020h-0H; Fri, 16 Feb 2024 08:18:42 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rasUb-001244-2w; Fri, 16 Feb 2024 08:18:41 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rasUb-005pqX-01;
-	Fri, 16 Feb 2024 08:18:41 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH] regulator: pwm-regulator: Use dev_err_probe() for error paths in .probe()
-Date: Fri, 16 Feb 2024 08:18:30 +0100
-Message-ID: <20240216071829.1513748-2-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708067965; c=relaxed/simple;
+	bh=mPt89Dshg//Ai7O81VpvjN2S+/3YCtZODyxTpurTePQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EdPYYYfP4CSX4YZKaoR0B5a+ayjevHg9CMLAPOJAQgoD90/M7bbCXgL88qX8byD6Gnlg4GVCITPOAaGhIDeOzPd6YqMtdXn4/ggTrvC2pTV0JBpPQp2UHpPh3Mj+oru6BHKCuT/Ff1WvQrEwlunsS1GQXKJEOLGZCGyA9HBGRfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nY+MSBVz; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a26ed1e05c7so231078266b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 23:19:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708067962; x=1708672762; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2UQjShMCN41Ts8SfE/2ISnD/M8GeYJsGe4+v2pFuM7Y=;
+        b=nY+MSBVzSiP3fgwS8t4M1G28eUNk/VF2FNN3IqVeAII2mm+upVwQ3mp4U+hL9t/5Hd
+         e0LmErkOn+SHvcg9O6+jGfWZAZAqnBEh6E+zdA5yOxvvk77tG7EQKdOlMt4mHoGKhrga
+         lDEMxjoY8w2PoNXR6yOTQhIYr7iqK2PymN4Ce3QKRHRiCNxtU1blV/LFRazHWMixsAT6
+         Rno7jKwo+RLxzQjjfOuX/zT4NjJwqu5o9JL5iO0hgg0htNeKJegu/5rNfuknmGi9Jh7S
+         Lahtut4MOGn+6Yk6B2H9NRQbuif1MtTEpZfnhRYvEG1XZrdMG3n7csbE6kjBnF+SDrP7
+         dYUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708067962; x=1708672762;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2UQjShMCN41Ts8SfE/2ISnD/M8GeYJsGe4+v2pFuM7Y=;
+        b=X4ciSoaVmOw/n7H8QBI4s9Fm5Z7cWK2X0wsSGbmhXCSnb9g4Ic7Ey2rwv3nA0Uc0tf
+         xx3KrI9qYn5JMnRPBz5heO7uUbigP4fFYGJGWEdyT0TsD2uQVRoF2tVIkJvkLrmQX+qf
+         XxVAIpZSNCKuJZ7ibwEGj+uThH8sgSojd4fp46cOHwVj+FKmUr1CJQfKDF9dfY3UBlhW
+         3jc8p47YaZT9Q6cwGGuHAavblAUcS5qSZy/LAKt1k3h90zE1VvZ9z4IMVyvhhY6Opxt/
+         ZtbJRiIrkThccSu/BUULB2qCtDvEbDQkP2s2t2+MFVrPTQj0vaGlKhlais6nveuQhjuY
+         f2Fg==
+X-Forwarded-Encrypted: i=1; AJvYcCXwewzSiUGE03Y3lJk/GCqQTpV+8aa+CcWgEyWxDkXl2Y93KJ7WP5SOnyGna/fLEWNIJztZiDEcZ9lJ2HjTzhtubFwb3Eaz1Bjbsb/6
+X-Gm-Message-State: AOJu0YwoOvfU8DawTTf4zeAwqmTMrg8Zxurf+ssFWI+Yu0w3XAzZG0kY
+	6DdLQMXl7obXmRPsnwegnb4CfYvzYCZnzRg6PIFywSwAa2EjKybXW3hqffUCaAs=
+X-Google-Smtp-Source: AGHT+IF9mKdwXKqFaP966IwekhIrHTLvRqdrVw4aqMmn6Oi9e3Y5PM2CIMeGhRTNs05erCsIfxDuGQ==
+X-Received: by 2002:a17:907:9873:b0:a3d:e22d:3d3d with SMTP id ko19-20020a170907987300b00a3de22d3d3dmr423704ejc.60.1708067961915;
+        Thu, 15 Feb 2024 23:19:21 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.207.130])
+        by smtp.gmail.com with ESMTPSA id tl21-20020a170907c31500b00a3dcab6f8dfsm455118ejc.5.2024.02.15.23.19.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 23:19:21 -0800 (PST)
+Message-ID: <263bb77f-b91d-4139-91a5-0ddeda0ece17@linaro.org>
+Date: Fri, 16 Feb 2024 08:19:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] dt-bindings: trivial-devices: Add qca,qca4024
+Content-Language: en-US
+To: frut3k7 <frut3k7@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>, Robert Marko <robimarko@gmail.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
+ Guenter Roeck <linux@roeck-us.net>, Peter Yin <peteryin.openbmc@gmail.com>,
+ Patrick Rudolph <patrick.rudolph@9elements.com>,
+ Michal Simek <michal.simek@amd.com>, Marek Vasut <marex@denx.de>,
+ Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Bjorn Helgaas <bhelgaas@google.com>, Lukas Wunner <lukas@wunner.de>,
+ Fabio Estevam <festevam@denx.de>,
+ Alexander Stein <alexander.stein@ew.tq-group.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-spi@vger.kernel.org
+References: <ZcH9u7Vo2sFERIHJ@finisterre.sirena.org.uk>
+ <20240207224546.44030-1-frut3k7@gmail.com>
+ <20240207224546.44030-2-frut3k7@gmail.com>
+ <cd8c2f79-2307-4ad8-90c7-747d40f14ede@linaro.org>
+ <CAKEyCaAy9U_qQ=pXPYaGetEuuuVuoejxjKPrG92fBFauy1wwuw@mail.gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAKEyCaAy9U_qQ=pXPYaGetEuuuVuoejxjKPrG92fBFauy1wwuw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3378; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=5YYd1mc9oE4gQ6nfD69b18mEEMCG2oT720uDPviPQGk=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlzwxGyClUmA1tGdWbOOkZJ5+vxLG7c/5ZA3CfU b/KKog8kgCJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZc8MRgAKCRCPgPtYfRL+ TgV2B/9xLhveg3237uG5nURdadNydHctCiCuZ9fxi+jMDEK3Oue+rcxZcc8Szd/qvkrUNZJAivU 6ZvNBvup9Z0xHY1vk2+7HuUJQ+1/4scf8dDO9v+RMvwcECH15viq88pzHK3+PVs2rvn+RkIjG7C 5FvQTRiq52bbBiUSwP/uipgpLvljCLSNIEev5QDrA3LKfSKQ1UZkuevp7ReMeSGsNctlMPf8P8q e14fXn6or2l3mrUfgMn0C8DJAVfOayiWzgeJDIRP9dXGpvaY96X1LiqdMtzaIfvv1bZCOvNG6NE bVQy71HdiJm7x8+vT1iluzYUaw6I4PDiARCPB+RSQlPUxvsC
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
 
-One error path already used the dev_err_probe() helper. Make use of it
-in the other error paths, too, for consistent output. This results in a
-more compact source code and symbolic output of the error code.
+On 15/02/2024 23:01, frut3k7 wrote:
+> The device I use has the QCA4024 chip connected via the spi controller:
+>         blsp1_spi4: spi@78b8000 {
+>             compatible = "qcom,spi-qup-v2.2.1";
+>             #address-cells = <1>;
+>             #size-cells = <0>;
+>             reg = <0x78b8000 0x600>;
+>             interrupts = <GIC_SPI 98 IRQ_TYPE_LEVEL_HIGH>;
+>             clocks = <&gcc GCC_BLSP1_QUP4_SPI_APPS_CLK>,
+>                  <&gcc GCC_BLSP1_AHB_CLK>;
+>             clock-names = "core", "iface";
+>             dmas = <&blsp_dma 18>, <&blsp_dma 19>;
+>             dma-names = "tx", "rx";
+>             status = "disabled";
+>         };
+> 
+> and apart from setting the frequency and gpio there is nothing else:
+>         &blsp1_spi4 {
+>             status = "okay";
+> 
+>             pinctrl-0 = <&spi_3_pins &quartz_pins>;
+>             pinctrl-names = "default";
+> 
+>             /* Qualcomm QCA4024 IoT */
+>             iot@3 {
+>                 compatible = "qca,qca4024";
+>                 reg = <0>;
+>                 spi-max-frequency = <24000000>;
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/regulator/pwm-regulator.c | 40 +++++++++++++------------------
- 1 file changed, 17 insertions(+), 23 deletions(-)
+That's your downstream or fork DTS, not hardware description. You could
+have several regulators not listed here, because your downstream has
+always-on, or clocks which are not taken and works due to
+assigned-clocks in other places... Sorry, that's not an argument. Never
+use downstream DTS as proof how hardware looks. It is usually dis-proof,
+that things are certainly missing.
 
-diff --git a/drivers/regulator/pwm-regulator.c b/drivers/regulator/pwm-regulator.c
-index 60cfcd741c2a..7434b6b22d32 100644
---- a/drivers/regulator/pwm-regulator.c
-+++ b/drivers/regulator/pwm-regulator.c
-@@ -271,11 +271,10 @@ static int pwm_regulator_init_table(struct platform_device *pdev,
- 	of_find_property(np, "voltage-table", &length);
- 
- 	if ((length < sizeof(*duty_cycle_table)) ||
--	    (length % sizeof(*duty_cycle_table))) {
--		dev_err(&pdev->dev, "voltage-table length(%d) is invalid\n",
--			length);
--		return -EINVAL;
--	}
-+	    (length % sizeof(*duty_cycle_table)))
-+		return dev_err_probe(&pdev->dev, -EINVAL,
-+				     "voltage-table length(%d) is invalid\n",
-+				     length);
- 
- 	duty_cycle_table = devm_kzalloc(&pdev->dev, length, GFP_KERNEL);
- 	if (!duty_cycle_table)
-@@ -284,10 +283,9 @@ static int pwm_regulator_init_table(struct platform_device *pdev,
- 	ret = of_property_read_u32_array(np, "voltage-table",
- 					 (u32 *)duty_cycle_table,
- 					 length / sizeof(u32));
--	if (ret) {
--		dev_err(&pdev->dev, "Failed to read voltage-table: %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "Failed to read voltage-table\n");
- 
- 	drvdata->state			= -ENOTRECOVERABLE;
- 	drvdata->duty_cycle_table	= duty_cycle_table;
-@@ -359,10 +357,9 @@ static int pwm_regulator_probe(struct platform_device *pdev)
- 	enum gpiod_flags gpio_flags;
- 	int ret;
- 
--	if (!np) {
--		dev_err(&pdev->dev, "Device Tree node missing\n");
--		return -EINVAL;
--	}
-+	if (!np)
-+		return dev_err_probe(&pdev->dev, -EINVAL,
-+				     "Device Tree node missing\n");
- 
- 	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
- 	if (!drvdata)
-@@ -400,8 +397,7 @@ static int pwm_regulator_probe(struct platform_device *pdev)
- 						    gpio_flags);
- 	if (IS_ERR(drvdata->enb_gpio)) {
- 		ret = PTR_ERR(drvdata->enb_gpio);
--		dev_err(&pdev->dev, "Failed to get enable GPIO: %d\n", ret);
--		return ret;
-+		return dev_err_probe(&pdev->dev, ret, "Failed to get enable GPIO\n");
- 	}
- 
- 	ret = pwm_adjust_config(drvdata->pwm);
-@@ -409,19 +405,17 @@ static int pwm_regulator_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	ret = pwm_regulator_init_boot_on(pdev, drvdata, init_data);
--	if (ret) {
--		dev_err(&pdev->dev, "Failed to apply boot_on settings: %d\n",
--			ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "Failed to apply boot_on settings\n");
- 
- 	regulator = devm_regulator_register(&pdev->dev,
- 					    &drvdata->desc, &config);
- 	if (IS_ERR(regulator)) {
- 		ret = PTR_ERR(regulator);
--		dev_err(&pdev->dev, "Failed to register regulator %s: %d\n",
--			drvdata->desc.name, ret);
--		return ret;
-+		return dev_err_probe(&pdev->dev, ret,
-+				     "Failed to register regulator %s\n",
-+				     drvdata->desc.name);
- 	}
- 
- 	return 0;
-
-base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
--- 
-2.43.0
+Best regards,
+Krzysztof
 
 
