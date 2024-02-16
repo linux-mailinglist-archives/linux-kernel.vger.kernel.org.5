@@ -1,85 +1,69 @@
-Return-Path: <linux-kernel+bounces-69145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69146-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4DA085850B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:24:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8A985850E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:25:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14DDF1C215BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:24:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD6F71C20DBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A13221350DE;
-	Fri, 16 Feb 2024 18:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 263761350D8;
+	Fri, 16 Feb 2024 18:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ERjQRRjg"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KSuZsAhf"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B4AA131722;
-	Fri, 16 Feb 2024 18:24:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA3F1350C8
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708107848; cv=none; b=PFXuEOuny1WLafaJwC67g/2guzNYNMyIjV7frtZJ+jHck/kBdVAuzNpUi+GcbBJawPRr+jSN2D8xeW0ihmrH51p4HnMv6Eb0DuRZ+/PBoAkvxqy5PuzemF7crDXtSy2wHNV2ojKCd3Xj/ZUNv0sgxwmwK4sKYb3My1ieRXNLajc=
+	t=1708107915; cv=none; b=pcGLHUmg7I+PrFcKARmPp1jJHuaq5FZfxSU4Lci4skupO8kVveybgg16EMNYMvfI0bnFJxKi34cZ6T2+Co92+atfTcMoU2DxQ+/VGR/rl9ehPKCDtq668MVExlDhQgWnc6PP+SAcZv/CwJSRADlQbgQwCdzY5YSRFdmEHu0hTeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708107848; c=relaxed/simple;
-	bh=SqYPKWDLnuGJK5U2Ewke7cCIfy9hQPIkVCWR4ZEMhwk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lsbUTFKfP6DRcKEOvq7QcN2r/JEQsP2acfnn8QBcrQcgRjwcsB/+rfb3YM71ThOsJN3Na5wHKNYVZ4xol7wVDJ7hbIXwXi4roiaKwPkXfY6V9rm+5ReAxqPBcgAcR+sKpIdmg6KG5fw4ef/cwVfto69LF37vmQNvYSCzLFQTqvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ERjQRRjg; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d0b4ea773eso29564231fa.0;
-        Fri, 16 Feb 2024 10:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708107845; x=1708712645; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cVDKfJQ+tCuSdXhY6TiavPFjaspEvu7Ad4BGUjaCUAE=;
-        b=ERjQRRjgn+x/cAaNSK9JRMsxB2vlBL0NqUMggOC3/t8xAulkX2Oz8vuTV06PC9IRyl
-         sey0Ve5nzE7NUVWp+rrNfxM+fYAQfBoqtFGSi0hrFvRAuzQLhC6jmCek0hz06fF75Wto
-         VbVTEearJco9HJUKdoewMRR9iq53NLQxbUdFnxl5pmfNooEvYvlYf22jbtWAPLWNlpQD
-         P1f4BwZWm7MB4if5CNxtsEXDFYa+ryq8OZG2yNmEVEt+uvhbWZ9Nbnz/m1w8813QD/rM
-         RnQ4ekDO9D40fwydnxLHe1rYkj8nJFTZZfz2LNY1qjOMBb//buOuckiMjZCOSlkrBp0K
-         1MCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708107845; x=1708712645;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cVDKfJQ+tCuSdXhY6TiavPFjaspEvu7Ad4BGUjaCUAE=;
-        b=dPZsbdg3RcrjqswWaLFvZVMo9AjsbdU9WAhiP5KtzzBd4KCtddkpQVi3VgEIcTjHd9
-         GVBW0svlHt780Frj8QaNVeINBcQYn9wzkDha1Rvx58O46hC56KtLMw26DYAOisrhPgnq
-         AAPa+KKmFpTixs1DG0D5PRQthYPlJNI3ekdwjq6MJlvU5CeIl/iAKhela3wGBFunL0v/
-         VZjI8tvCo6dcrEMHN/qLeX1hLTuUAw5XK5w959Tird93I8i7fAz7NOdNSe3kW2bTdOrd
-         sPeUMdZrs8wvbbLo4IwFhYnNbpQVNZF/QuKUfzEvefMjZBYqo1HgPsbbRuZW8hgBVjLr
-         Zr1g==
-X-Forwarded-Encrypted: i=1; AJvYcCWX5A3hrEJnTwL90NLLpO6ggIVAsbOslYdre15l70hv3GX5bm0LEVpKcGPVPAqJ9hHv94RD/ToByzxAg5Pxk/D0llDRySgPPqRgSJWw/+GZwvzu3008j1TwfbHJYQurtUITBr+1
-X-Gm-Message-State: AOJu0YwRggaiRU4qm3P5ISQ/w6skovBIZ9bai3nSXmvVY/KCRaXJb8y5
-	827lPLlUkVRKB9teE4/FXBgWsZo1aCYBCSqxPWoiVQuQre/ZJDnh
-X-Google-Smtp-Source: AGHT+IHz8SLuj0HeZjrA59fbpHxEZQx4CNdTDrSGjiJcc/KB/eOtXjEXu1w0IDtU5LUHJY6IknyBAg==
-X-Received: by 2002:a2e:7202:0:b0:2d0:e730:b7d5 with SMTP id n2-20020a2e7202000000b002d0e730b7d5mr3975909ljc.1.1708107844735;
-        Fri, 16 Feb 2024 10:24:04 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id t25-20020a2e9d19000000b002d100bd4cdbsm40573lji.45.2024.02.16.10.24.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 10:24:04 -0800 (PST)
-Date: Fri, 16 Feb 2024 21:24:01 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: Florian Fainelli <f.fainelli@gmail.com>, 
-	Jesper Nilsson <jesper.nilsson@axis.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, kernel@axis.com
-Subject: Re: [PATCH] net: stmmac: mmc_core: Assign, don't add interrupt
- registers
-Message-ID: <53fctveh4pl3c5wys37c2wcpbsxr7tggw3d3y5eudgrbvr2vdl@fbqc2meg5yv3>
-References: <20240216-stmmac_stats-v1-1-7065fa4613f8@axis.com>
- <61bdd802-abe4-4544-8e48-9493a6bb99c8@gmail.com>
+	s=arc-20240116; t=1708107915; c=relaxed/simple;
+	bh=DOxnNP69L+uOYhHE7iO0B5EICXQp5z0lcE9Ulq5UR+A=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=mKCkP7xL0yofY4czgA3C8g9IhLGTCyKHqOxzLN04yoGbKjhorzBzn87LkhXTaVDWsFyEKxuPEXPyUgzHIOn4CjGqkUVKNW9PGu0Bc7XTqipg5F797iT14iutBPqeJLpV/VVpOgymF9aX+ttDURmqkxY3xcdUQBi8mKgsm0d5YE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KSuZsAhf; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708107913; x=1739643913;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=DOxnNP69L+uOYhHE7iO0B5EICXQp5z0lcE9Ulq5UR+A=;
+  b=KSuZsAhfINYjThu3PE49CSHroNHNlJJlcGJL8mtJ+9lyQufv+2AkrYt6
+   1oqe/+51SkznnnJdTq4++ROsuz+5tFmb5Z99woXpjDXdAE1ocZkah99Fd
+   5cwdJnNad4Yk9coVnECDtKHGWQQILxjA36LgxQAtd6P1gNpskG8WXRwdt
+   xIpdM7EArn9ipHgKJF9eC8P+YEw2BIDMDX7cVNpNZ07E47rr2thQNefc0
+   lpCUIcMH/O0E+WjG6xAlC3N1eGJXM9WCchQnEfrPiKpS7GZ6E7eq0Diu4
+   Y65fUzRXNll9Q/XZtUIZgJTTjy7Hx9Y8Ou0B5Tn9eQFcxV/5xhv3PGB9C
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2118089"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="2118089"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 10:25:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="912402291"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="912402291"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 16 Feb 2024 10:25:11 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rb2tZ-0001Xk-0v;
+	Fri, 16 Feb 2024 18:25:09 +0000
+Date: Sat, 17 Feb 2024 02:24:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: David Howells <dhowells@redhat.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: arch/powerpc/include/asm/cmpxchg.h:241:47: sparse: sparse: cast
+ truncates bits from constant value (8000000000000000 becomes 0)
+Message-ID: <202402170208.0xYZculA-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,66 +72,67 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <61bdd802-abe4-4544-8e48-9493a6bb99c8@gmail.com>
 
-On Fri, Feb 16, 2024 at 09:13:51AM -0800, Florian Fainelli wrote:
-> On 2/16/24 07:24, Jesper Nilsson wrote:
-> > The MMC IPC interrupt status and interrupt mask registers are of
-> > little use as Ethernet statistics, but incrementing counters
-> > based on the current interrupt and interrupt mask registers
-> > makes them worse than useless.
-> > 
-> > For example, if the interrupt mask is set to 0x08420842,
-> > the current code will increment by that amount each iteration,
-> > leading to the following sequence of nonsense:
-> > 
-> > mmc_rx_ipc_intr_mask: 969816526
-> > mmc_rx_ipc_intr_mask: 1108361744
-> > 
-> > Change the increment to a straight assignment to make the
-> > statistics at least nominally useful.
-> > 
-> > Signed-off-by: Jesper Nilsson <jesper.nilsson@axis.com>
-> > ---
-> >   drivers/net/ethernet/stmicro/stmmac/mmc_core.c | 4 ++--
-> >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> > index 6a7c1d325c46..6051a22b3cec 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/mmc_core.c
-> > @@ -280,8 +280,8 @@ static void dwmac_mmc_read(void __iomem *mmcaddr, struct stmmac_counters *mmc)
-> >   	mmc->mmc_rx_vlan_frames_gb += readl(mmcaddr + MMC_RX_VLAN_FRAMES_GB);
-> >   	mmc->mmc_rx_watchdog_error += readl(mmcaddr + MMC_RX_WATCHDOG_ERROR);
-> >   	/* IPC */
-> > -	mmc->mmc_rx_ipc_intr_mask += readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
-> > -	mmc->mmc_rx_ipc_intr += readl(mmcaddr + MMC_RX_IPC_INTR);
-> > +	mmc->mmc_rx_ipc_intr_mask = readl(mmcaddr + MMC_RX_IPC_INTR_MASK);
-> > +	mmc->mmc_rx_ipc_intr = readl(mmcaddr + MMC_RX_IPC_INTR);
-> 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   0f1dd5e91e2ba3990143645faff2bcce2d99778e
+commit: 453924de6212ac159f946b75c6b59918e2e30944 afs: Overhaul invalidation handling to better support RO volumes
+date:   7 weeks ago
+config: powerpc64-randconfig-r111-20240216 (https://download.01.org/0day-ci/archive/20240217/202402170208.0xYZculA-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240217/202402170208.0xYZculA-lkp@intel.com/reproduce)
 
-> So in premise I agree with the patch, that incrementing those is not the
-> right way to go about them. However these registers are currently provided
-> as part of the statistics set, but they should instead be accessed via the
-> register dumping method.
-> 
-> In either case you will get at best a snapshot of those two registers at any
-> given time and I suppose this can help diagnose a stuck RX condition, but
-> not much more than that.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402170208.0xYZculA-lkp@intel.com/
 
-Could you please clarify why do those CSRs state need to be exposed in
-the statistics anyway? Who would need such information really?
-Wouldn't that be better to just drop the
-stmmac_counters::{mmc_rx_ipc_intr_mask,mmc_rx_ipc_intr}
-fields? Is it because of the statistics nodes are a kind of kernel
-ABI? Even in that case I don't see much reason to support something
-that has been absolutely useless so far seeing the nodes currently
-returning basically some random values.
+sparse warnings: (new ones prefixed by >>)
+   fs/afs/callback.c: note: in included file (through arch/powerpc/include/asm/pgtable-be-types.h, arch/powerpc/include/asm/page.h, arch/powerpc/include/asm/mmu.h, ...):
+>> arch/powerpc/include/asm/cmpxchg.h:241:47: sparse: sparse: cast truncates bits from constant value (8000000000000000 becomes 0)
+   arch/powerpc/include/asm/cmpxchg.h:243:48: sparse: sparse: cast truncates bits from constant value (8000000000000000 becomes 0)
+   fs/afs/callback.c:146:22: sparse: sparse: context imbalance in 'afs_lookup_volume_rcu' - different lock contexts for basic block
+--
+   fs/afs/rotate.c: note: in included file (through arch/powerpc/include/asm/pgtable-be-types.h, arch/powerpc/include/asm/page.h, arch/powerpc/include/asm/mmu.h, ...):
+>> arch/powerpc/include/asm/cmpxchg.h:241:47: sparse: sparse: cast truncates bits from constant value (8000000000000000 becomes 0)
+   arch/powerpc/include/asm/cmpxchg.h:243:48: sparse: sparse: cast truncates bits from constant value (8000000000000000 becomes 0)
+   fs/afs/rotate.c:655:42: sparse: sparse: self-comparison always evaluates to true
 
--Serge(y)
+vim +241 arch/powerpc/include/asm/cmpxchg.h
 
-> -- 
-> Florian
-> 
-> 
+ae3a197e3d0bfe David Howells 2012-03-28  235  
+ae3a197e3d0bfe David Howells 2012-03-28  236  static __always_inline unsigned long
+26760fc19a7e66 Boqun Feng    2015-12-15  237  __xchg_relaxed(void *ptr, unsigned long x, unsigned int size)
+ae3a197e3d0bfe David Howells 2012-03-28  238  {
+ae3a197e3d0bfe David Howells 2012-03-28  239  	switch (size) {
+d0563a1297e234 Pan Xinhui    2016-04-27  240  	case 1:
+d0563a1297e234 Pan Xinhui    2016-04-27 @241  		return __xchg_u8_relaxed(ptr, x);
+d0563a1297e234 Pan Xinhui    2016-04-27  242  	case 2:
+d0563a1297e234 Pan Xinhui    2016-04-27  243  		return __xchg_u16_relaxed(ptr, x);
+ae3a197e3d0bfe David Howells 2012-03-28  244  	case 4:
+26760fc19a7e66 Boqun Feng    2015-12-15  245  		return __xchg_u32_relaxed(ptr, x);
+ae3a197e3d0bfe David Howells 2012-03-28  246  #ifdef CONFIG_PPC64
+ae3a197e3d0bfe David Howells 2012-03-28  247  	case 8:
+26760fc19a7e66 Boqun Feng    2015-12-15  248  		return __xchg_u64_relaxed(ptr, x);
+ae3a197e3d0bfe David Howells 2012-03-28  249  #endif
+ae3a197e3d0bfe David Howells 2012-03-28  250  	}
+068550631fbe0b Andrzej Hajda 2023-01-18  251  	BUILD_BUG_ON_MSG(1, "Unsupported size for __xchg_relaxed");
+ae3a197e3d0bfe David Howells 2012-03-28  252  	return x;
+ae3a197e3d0bfe David Howells 2012-03-28  253  }
+9eaa82935dccb7 Mark Rutland  2021-05-25  254  #define arch_xchg_local(ptr,x)						     \
+ae3a197e3d0bfe David Howells 2012-03-28  255    ({									     \
+ae3a197e3d0bfe David Howells 2012-03-28  256       __typeof__(*(ptr)) _x_ = (x);					     \
+26760fc19a7e66 Boqun Feng    2015-12-15  257       (__typeof__(*(ptr))) __xchg_local((ptr),				     \
+26760fc19a7e66 Boqun Feng    2015-12-15  258       		(unsigned long)_x_, sizeof(*(ptr))); 			     \
+ae3a197e3d0bfe David Howells 2012-03-28  259    })
+ae3a197e3d0bfe David Howells 2012-03-28  260  
+
+:::::: The code at line 241 was first introduced by commit
+:::::: d0563a1297e234ed37f6b51c2e9321accebd1839 powerpc: Implement {cmp}xchg for u8 and u16
+
+:::::: TO: Pan Xinhui <xinhui.pan@linux.vnet.ibm.com>
+:::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
