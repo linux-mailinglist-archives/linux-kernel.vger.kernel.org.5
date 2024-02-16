@@ -1,189 +1,120 @@
-Return-Path: <linux-kernel+bounces-68507-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C6B857B63
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:19:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44AD2857B71
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:20:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 318DEB213E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:18:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D49B01F21A6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:20:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD53B59B62;
-	Fri, 16 Feb 2024 11:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60A8C60DEB;
+	Fri, 16 Feb 2024 11:20:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="orxKIWYP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TdR48MJr"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B9F5C901;
-	Fri, 16 Feb 2024 11:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EA15C90F;
+	Fri, 16 Feb 2024 11:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082326; cv=none; b=Mexbe18rsjKiJlQtd7j/oO6JPVPxPEhO9MBPjs6smyOBtt8rpH14UsOzNMkx8gjJLsY6pHn5mq9vJKRWTlu29gOUdKcW5jpa+gXrYtKBb2uSmZPEIR6w2eMXrw7dzi0enSeBtmArNavfzKfcwWjEEo3prRY/2+hx3NZ/veXVS3M=
+	t=1708082412; cv=none; b=VRknWWnQZrGJjrsizwRPLnKJA5E+5YY6hj/oUCY/qyc7zH8OxmpOMQaq4LDp9qxN6gEGYcdDo9orn18gvtdyXokQ2y/Fr60k8JXN0DTRTBjF9vU0lZ29l79CqVPZX/rmoNacxzSR/WqWei2fYdqg9IgbfxmHILeJ4t78MJkW8VA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082326; c=relaxed/simple;
-	bh=S1EkBA52eWhaCecQGNHtZp9xi5qzrdx3y2uZlJXx0L4=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=g9MfyeOVGo5sHhxC0Rqs85fC95qo9aoyF7EZS+IQPjvAjpEtWweIYlFurTP2qGIaSmlHWx1RwQVY0dIFfcLXvoCoGB2CJeumBVgLXWYwl9rBdHyziAa+/PalgFYXF5HrZ4fzFZWCYhsQ3Juoe/qxbBn/SVxNOMPBrd/PQR9qPcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=orxKIWYP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E20CC433C7;
-	Fri, 16 Feb 2024 11:18:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708082326;
-	bh=S1EkBA52eWhaCecQGNHtZp9xi5qzrdx3y2uZlJXx0L4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=orxKIWYP6UjpVOwSkbQiwr3P3yVygztXW3iYoqxagKICMU/E5/BgwSs0K1fkri3c8
-	 pQsVtkNrlkU8XDxks5+LX4of4hAX0fOxzInTofeZOOpdsLHZd5kdFgl0EkpEZAKQ94
-	 ds3GObj+h43xzhR527WpNmrPJGya9oAE5ca5GNNx+5L2neKkg3IX7WGq4d8jWC/YKs
-	 8m7CHsTFjXPzKtye4A+U0OhqzpRDDuWvictq5jrl84c3jF+Rp9re5btlDW89U4a6J1
-	 Ucfsf+R1upYuQJCmlGTog5bd/Wx6Xgoo2UrJsL+CoYuiq0IXUmps+yjEK/eujEl7MC
-	 SF5u87xE+3eug==
-Date: Fri, 16 Feb 2024 11:18:34 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Vasileios Amoiridis <vassilisamir@gmail.com>
-Cc: lars@metafoo.de, ang.iglesiasg@gmail.com,
- andriy.shevchenko@linux.intel.com, 579lpy@gmail.com,
- linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: iio: pressure: Add SPI support for BMP38x and
- BMP390
-Message-ID: <20240216111834.73287ab0@jic23-huawei>
-In-Reply-To: <20240215164332.506736-1-vassilisamir@gmail.com>
-References: <20240215164332.506736-1-vassilisamir@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708082412; c=relaxed/simple;
+	bh=nkaCE6eCvGlgX7kiyuhw3auFPcpQnseOvbNalEBXKM0=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=A4j4tu6ZP20n8YugdqMk8OLqSUoAco7WnGA3/osjHxSwQTA0llk3dUUlFOiGq76ct56BkJ2eelF8t4N4fS/jhSFRU5mjBXsPv9+gL2sag1JEu6SnDOqPunno4cnU7UXGnIptunyE3zUk9RWOvyh/WwOaKj+savu8waH3uIAxWGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TdR48MJr; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3d484a58f6so241698266b.3;
+        Fri, 16 Feb 2024 03:20:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708082409; x=1708687209; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yCznbNgmC/uH8itI3jd4dc5ZdCgsBJRraVYhNu+kzY4=;
+        b=TdR48MJraT6KcWbrFIIlguA5RJGkAEie1G1uhrtzUGIWplkIK8e5HOzoxXmkG0sVxc
+         Efkmc9PBaILzxGcYD6cHA/BN03Da/8edr2n8fh5eJ5R1Lf6Wzg8QLI6EMbkT/7nhKtF1
+         w44cniUGSMG2I0q6QTYo37lcoHx4I0NGD/vLxAAG6huQtghKX/gE0abx5Cw3xyZBANVF
+         AVSxD5G0Voh57FT7k5U90OfZcFgX14aieTLDgV1/CofeHk5Edz5DHcojPJVLqh7XkN9U
+         y6emThfK1/XueffGJWii3YYUMMH8D5z6NJRwXhXA4aWiXCljNUHW4JvJcqvGnzDMpzUD
+         WFmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708082409; x=1708687209;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yCznbNgmC/uH8itI3jd4dc5ZdCgsBJRraVYhNu+kzY4=;
+        b=ZmyATvp8K6dW9dKzfOF2kURi1pO24bcL20ZyYEw8rDta6fPDgb44NsJzLBzSoffwic
+         7eFZJ3BROuJ6Q2vAymX/iHEahcYBl5clbDWEl3GrpTFz6h2OVIoRcJ+TKHqlRxjSaMo7
+         YYeQndbz3rXzqbTlfoIKJgqcBtlUPiNugTrF00BNlrv/Y/nXZd3s1BnYcViVO/tcrmM6
+         FeTPx9rmlKLUuCf2StP+95sWs4xX5xh3b4hK3GJ2groPqWQrE3RPUY4ENCecs/PwId5K
+         7P2GXkktBfCw2G5knn0uPRlsDTVEcTRs8VDmK2QVi0U3Bk4EkJcMwRRDYB2JCZDJcESJ
+         Kbmw==
+X-Forwarded-Encrypted: i=1; AJvYcCVaU2hCUuMumx/UXCtfke0HMBPnP9orwq370KyalGcwK2exnAUZeyZqnI0ewqLHCMBns8PJjSbBkHIbVqLATE083p4+HTCYsOaXyca/JKnLySv7VR2zA6wmRg96Jx8JGFrFXClqiLas3fTtZ7ED5KXuKedV/nJpQeKHrzBOLpIUxZnNbHdu
+X-Gm-Message-State: AOJu0Yzpz9zDug3GICYuUQ6HqO/C+XoDolWdSzxJRbRbC3Rkt/FRUgaB
+	bwUIEPBgZiZSYfHD8WUmIKB5s5pk+ayB9F5F2M7seb62iMaKCBcw
+X-Google-Smtp-Source: AGHT+IHPHegJqbyoyL1SyH5aHZfiqfe2a8Kk/Xmi79pqAV50OjKgbAr67Gj29oOtjPgW56iENz3wwg==
+X-Received: by 2002:a17:906:f250:b0:a3d:51c4:812c with SMTP id gy16-20020a170906f25000b00a3d51c4812cmr3302801ejb.11.1708082409050;
+        Fri, 16 Feb 2024 03:20:09 -0800 (PST)
+Received: from localhost (p200300e41f147f00f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f14:7f00:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id i11-20020a1709063c4b00b00a3dae5dc653sm1097417ejg.157.2024.02.16.03.20.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 03:20:08 -0800 (PST)
+From: Thierry Reding <thierry.reding@gmail.com>
+To: thierry.reding@gmail.com,
+	jonathanh@nvidia.com,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	dmitry.osipenko@collabora.com,
+	ulf.hansson@linaro.org,
+	kkartik@nvidia.com,
+	cai.huoqing@linux.dev,
+	spatra@nvidia.com,
+	linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	Petlozu Pravareshwar <petlozup@nvidia.com>
+Subject: Re: [PATCH V3 1/3] soc/tegra: pmc: Update address mapping sequence for PMC apertures
+Date: Fri, 16 Feb 2024 12:20:07 +0100
+Message-ID: <170808233530.197509.809812872766738307.b4-ty@nvidia.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240211171727.914595-1-petlozup@nvidia.com>
+References: <20240211171727.914595-1-petlozup@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 15 Feb 2024 17:43:32 +0100
-Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
+From: Thierry Reding <treding@nvidia.com>
 
-> According to the datasheet of BMP38x and BMP390 devices, in SPI
-> operation, the first byte that returns after a read operation is
-> garbage and it needs to be dropped and return the rest of the
-> bytes.
 
-Make it clear in the patch title that this is a fix and add a fixes tag.
-
+On Sun, 11 Feb 2024 17:17:25 +0000, Petlozu Pravareshwar wrote:
+> On Tegra SoCs prior to Tegra186, PMC has single address range only.
+> Starting from and after Tegra186, PMC has additional address ranges
+> apart from base address range. Currently in PMC driver, we try to
+> map these additional address ranges on all SoCs and if we fail then
+> we assume that the range is not valid for an SoC. This change makes
+> it more explicit on which address ranges are expected to be present
+> on which SoCs and maps the additional address ranges only on SoCs
+> from and after Tegra186.
 > 
-> Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
-> ---
->  drivers/iio/pressure/bmp280-spi.c | 47 ++++++++++++++++++++++++++++++-
->  drivers/iio/pressure/bmp280.h     |  2 ++
->  2 files changed, 48 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
-> index 433d6fac83c4..c4b4a5d67f94 100644
-> --- a/drivers/iio/pressure/bmp280-spi.c
-> +++ b/drivers/iio/pressure/bmp280-spi.c
-> @@ -35,6 +35,32 @@ static int bmp280_regmap_spi_read(void *context, const void *reg,
->  	return spi_write_then_read(spi, reg, reg_size, val, val_size);
->  }
->  
-> +static int bmp380_regmap_spi_read(void *context, const void *reg,
-> +				  size_t reg_size, void *val, size_t val_size)
-> +{
-> +	struct spi_device *spi = to_spi_device(context);
-> +	u8 ret[BMP380_SPI_MAX_REG_COUNT_READ + 1];
+> [...]
 
-Given you rely on val_size < 3 you should check for that explcitly rather than
-potentially overflowing the buffer.
-ret is not a good naming choice for this variable as it's commonly used for
-integer return values.  Call it read_buf or something like that.
+Applied, thanks!
 
-> +	ssize_t status;
-> +	u8 buf;
-> +
-> +	memcpy(&buf, reg, reg_size);
-> +	buf |= 0x80;
-
-Can you use regmap_bus read_flag_mask for this?  Seems to apply to 
-all devices supported. + that's common for spi regmaps
-
-
-Mind you I note the bmp280_regmap_spi_write() is masking the bit out which seems
-backwards  - all the registers are defined with the bit set for that part
-but not the 380.  Ah well - not part of this fix even if it's odd.
-
-
-> +
-> +	/*
-> +	 * According to the BMP380, BMP388, BMP390 datasheets, for a basic
-> +	 * read operation, after the write is done, 2 bytes are received and
-> +	 * the first one has to be dropped. The 2nd one is the requested
-> +	 * value.
-> +	 */
-> +	status = spi_write_then_read(spi, &buf, 1, ret, val_size + 1);
-> +	if (status)
-> +		return status;
-> +
-> +	memcpy(val, ret + 1, val_size);
-> +
-> +	return 0;
-> +}
-> +
->  static struct regmap_bus bmp280_regmap_bus = {
->  	.write = bmp280_regmap_spi_write,
->  	.read = bmp280_regmap_spi_read,
-> @@ -42,10 +68,18 @@ static struct regmap_bus bmp280_regmap_bus = {
->  	.val_format_endian_default = REGMAP_ENDIAN_BIG,
->  };
->  
-> +static struct regmap_bus bmp380_regmap_bus = {
-> +	.write = bmp280_regmap_spi_write,
-> +	.read = bmp380_regmap_spi_read,
-> +	.reg_format_endian_default = REGMAP_ENDIAN_BIG,
-> +	.val_format_endian_default = REGMAP_ENDIAN_BIG,
-> +};
-> +
->  static int bmp280_spi_probe(struct spi_device *spi)
->  {
->  	const struct spi_device_id *id = spi_get_device_id(spi);
->  	const struct bmp280_chip_info *chip_info;
-> +	struct regmap_bus *bmp_regmap_bus;
->  	struct regmap *regmap;
->  	int ret;
->  
-> @@ -58,8 +92,19 @@ static int bmp280_spi_probe(struct spi_device *spi)
->  
->  	chip_info = spi_get_device_match_data(spi);
->  
-> +	switch (chip_info->chip_id[0]) {
-> +	case BMP380_CHIP_ID:
-> +	case BMP390_CHIP_ID:
-> +		bmp_regmap_bus = &bmp380_regmap_bus;
-> +		break;
-> +	default:
-> +		bmp_regmap_bus = &bmp280_regmap_bus;
-> +		break;
-> +	}
-> +
-> +
->  	regmap = devm_regmap_init(&spi->dev,
-> -				  &bmp280_regmap_bus,
-> +				  bmp_regmap_bus,
->  				  &spi->dev,
->  				  chip_info->regmap_config);
->  	if (IS_ERR(regmap)) {
-> diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.h
-> index 4012387d7956..ca482b7e4295 100644
-> --- a/drivers/iio/pressure/bmp280.h
-> +++ b/drivers/iio/pressure/bmp280.h
-> @@ -191,6 +191,8 @@
->  #define BMP380_TEMP_SKIPPED		0x800000
->  #define BMP380_PRESS_SKIPPED		0x800000
->  
-> +#define BMP380_SPI_MAX_REG_COUNT_READ   3
-This doesn't seem useful as only used in one place.
-> +
->  /* BMP280 specific registers */
->  #define BMP280_REG_HUMIDITY_LSB		0xFE
->  #define BMP280_REG_HUMIDITY_MSB		0xFD
-
+Best regards,
+-- 
+Thierry Reding <treding@nvidia.com>
 
