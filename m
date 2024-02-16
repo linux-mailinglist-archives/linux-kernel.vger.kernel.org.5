@@ -1,216 +1,198 @@
-Return-Path: <linux-kernel+bounces-69383-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69385-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E811858847
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:56:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB94885884C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:00:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15B89289E43
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:56:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05600B250A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6327C1482FE;
-	Fri, 16 Feb 2024 21:56:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3566148307;
+	Fri, 16 Feb 2024 22:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b="UvjVpO7k"
-Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="midR6Xkd"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520D31468FE
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.227.64.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12A1D1482F5
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 22:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708120560; cv=none; b=GePhnXEDNp2cSz1gHVOBbMvoraYbZZWb5ToM7h9868B93bU74r4CKvPUtc9ooiJMT5g1FyfJJuPEo0Bh3czrsPgQkVuyU9ctZ//smUAeqceS0p/LHBnIOEGSGDPhuqlezS2UYklnxjoNXcNNoTdqh1BbT6HOe//+rOnbN15JR+0=
+	t=1708120820; cv=none; b=q4LD9//RmbakGrkSH01IrMMV7QSZF+lEqR02Ljn30ShaF+aF9frmegfCT/FZK7jcxiW6nnWWnuKeeONR5jMvYcS6G+Xu5Wp4nMNR4FS0kthMTiRLzrpOrO+MfYr+dl/xxarWB6z4q3FPUJYTDHc8TVY2/+Afwj/1gGlcJwru8s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708120560; c=relaxed/simple;
-	bh=HtzhTbrig6Q7FsxiULJj6MkqqvnTNQdjjMtBWF11WCU=;
-	h=Date:Message-Id:In-Reply-To:References:Subject:MIME-Version:
-	 Content-Type:From:To:Cc; b=CvOHcQg5Nk5VJt1kIWzC11tJ30/rOikwo5ML5aNUVTogBFgk/ISA16TSgTane7AFT5Q4rYtV4XuScMeGF66TDLk85UE0LsPXLCzvD6ztu5uN7AeM4tFX/IVgdCEagefjNxYdAKZV/Jt8tNGS2fYgdH74ar64QRr0+tADQ0E4Lt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl; spf=pass smtp.mailfrom=rere.qmqm.pl; dkim=pass (2048-bit key) header.d=rere.qmqm.pl header.i=@rere.qmqm.pl header.b=UvjVpO7k; arc=none smtp.client-ip=91.227.64.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=rere.qmqm.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rere.qmqm.pl
-Received: from remote.user (localhost [127.0.0.1])
-	by rere.qmqm.pl (Postfix) with ESMTPSA id 4Tc5N31Y9MzBj;
-	Fri, 16 Feb 2024 22:55:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-	t=1708120547; bh=HtzhTbrig6Q7FsxiULJj6MkqqvnTNQdjjMtBWF11WCU=;
-	h=Date:In-Reply-To:References:Subject:From:To:Cc:From;
-	b=UvjVpO7kHbh1e+/CsN/kZj4Z3jeV5bKfuvUqY+enYSTDUTAgvYVBXwwMdBaMTeJBv
-	 XzHwnr7w6HPdx23p6lfEWYXXawNvPcIfkNTyoYxejTnwMgkBw43KqK+WEKFTBAYmLh
-	 T6ZbpYvGuFoNvUTe7/fLJ0j/P78Ke1TABieofL83eW0zzbP/CCleXAE3yv+f2rBzsc
-	 K15pwVwaMDDmpCKM30FcLuDYr8+edt/0hTa8yq2oUDNPnsMt/76VxbtTmE9tVmTx8L
-	 c6UCmO+JqVRwsGJnW+GyweNqoyi70YklulKtCYpRZxxXha5RNaSFGbhNJ9lwuUD29d
-	 ufC8Pyd47xnkw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.10 at mail
-Date: Fri, 16 Feb 2024 22:55:47 +0100
-Message-Id: <3fa064422ddd6b15d6d572fc0c6e99b94eea1235.1708120036.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <64955b50602fc64e2d3c7d4a92a1f9459e8c7ead.1708120036.git.mirq-linux@rere.qmqm.pl>
-References: <64955b50602fc64e2d3c7d4a92a1f9459e8c7ead.1708120036.git.mirq-linux@rere.qmqm.pl>
-Subject: [PATCH 2/2] sched: add for_each_sched_group() and use everywhere
+	s=arc-20240116; t=1708120820; c=relaxed/simple;
+	bh=J4IIxXtt+OgzD7+kQFH3KhUlKL9XxEev1TjRoQUA3zE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=FeN5tjmyiTHJmNaaSiSR9V3qp99bUjXSrUMXZKPM2MmgZ/fOt1PppJRXscef15fYlixGLTgYTM1BVimDTEaPZgDRqRLu9JrWvRjMC+uztq/6zXOq8kIn66JdPrdI+q8pT/oFsvkq5dArGxOxywIqnjw+BC3Nk/PlZ2ezY7at68Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=midR6Xkd; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708120818; x=1739656818;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=J4IIxXtt+OgzD7+kQFH3KhUlKL9XxEev1TjRoQUA3zE=;
+  b=midR6Xkd23C6bJjHPDlyjVEfX4+Jf2l9Em3AcM3KfvYqL6p5fM5JdkPx
+   CNKIw4MEr5zJAXliugWHz13N+d9mih/AAmWzA+wnEco+C7OODi9HzMUwA
+   BL9ZsYKkSJiANWRrzgFVkJWgL4pDoBQ5I6h3QMEhr5JQ/aF7aLoZ5h2i3
+   usiOJf58GucJH7anc/H3SHghLTQBLvq6DMExM3dhPjDcoYYvx1E2YUPAL
+   gIRP6P718BJCNWMabctZt04RpNRBrDBkQS4qLks7C28TGHaLG9s3tLL+k
+   kxR8wbIfpoY+Ek5Tf6Egn14XUoP+PCVv9u0RCpw779Uy8ZrjnSag+KYi9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2124868"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="2124868"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 14:00:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="4334016"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa008.jf.intel.com with ESMTP; 16 Feb 2024 14:00:14 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rb6Fc-0001du-1L;
+	Fri, 16 Feb 2024 22:00:11 +0000
+Date: Sat, 17 Feb 2024 05:59:50 +0800
+From: kernel test robot <lkp@intel.com>
+To: Shiji Yang <yangshiji66@outlook.com>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Kalle Valo <kvalo@kernel.org>
+Subject: drivers/net/wireless/ralink/rt2x00/rt2800lib.c:10349:13: error:
+ stack frame size (2200) exceeds limit (2048) in 'rt2800_calibration_rt6352'
+Message-ID: <202402170517.CsuVrcjo-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-From:	=?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-To:	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>,
-	Len Brown <len.brown@intel.com>,
-	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Make code iterating over all sched_groups more straightforward.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   683b783c2093e0172738f899ba188bc406b0595f
+commit: cca74bed37af1c8217bcd8282d9b384efdbf73bd wifi: rt2x00: rework MT7620 PA/LNA RF calibration
+date:   4 months ago
+config: x86_64-sof-customedconfig-memory-debug-defconfig (https://download.01.org/0day-ci/archive/20240217/202402170517.CsuVrcjo-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240217/202402170517.CsuVrcjo-lkp@intel.com/reproduce)
 
-Note: There's no point in WARN_ON in init_sched_groups_capacity() if
-we're going to unconditionally dereference a NULL pointer just a few
-instructions later.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402170517.CsuVrcjo-lkp@intel.com/
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- kernel/sched/fair.c     | 13 +++++--------
- kernel/sched/sched.h    |  5 +++++
- kernel/sched/topology.c | 19 ++++++-------------
- 3 files changed, 16 insertions(+), 21 deletions(-)
+All errors (new ones prefixed by >>):
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 7ac9f4b1d955..a8a011f24a6d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9566,15 +9566,13 @@ void update_group_capacity(struct sched_domain *sd, int cpu)
- 		 * span the current group.
- 		 */
- 
--		group = child->groups;
--		do {
-+		for_each_sched_group(child, group) {
- 			struct sched_group_capacity *sgc = group->sgc;
- 
- 			capacity += sgc->capacity;
- 			min_capacity = min(sgc->min_capacity, min_capacity);
- 			max_capacity = max(sgc->max_capacity, max_capacity);
--			group = group->next;
--		} while (group != child->groups);
-+		}
- 	}
- 
- 	sdg->sgc->capacity = capacity;
-@@ -10549,13 +10547,13 @@ static void update_idle_cpu_scan(struct lb_env *env,
- 
- static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sds)
- {
--	struct sched_group *sg = env->sd->groups;
- 	struct sg_lb_stats *local = &sds->local_stat;
- 	struct sg_lb_stats tmp_sgs;
- 	unsigned long sum_util = 0;
-+	struct sched_group *sg;
- 	int sg_status = 0;
- 
--	do {
-+	for_each_sched_group(env->sd, sg) {
- 		struct sg_lb_stats *sgs = &tmp_sgs;
- 		int local_group;
- 
-@@ -10586,8 +10584,7 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
- 		sds->total_capacity += sgs->group_capacity;
- 
- 		sum_util += sgs->group_util;
--		sg = sg->next;
--	} while (sg != env->sd->groups);
-+	}
- 
- 	/*
- 	 * Indicate that the child domain of the busiest group prefers tasks
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 2e5a95486a42..88f3cba60b1e 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1902,6 +1902,11 @@ struct sched_group {
- 	unsigned long		cpumask[];
- };
- 
-+#define for_each_sched_group(sd, sg) \
-+	for ((sg) = NULL; \
-+	     likely((sg)) ? (sg) != (sd)->groups : ((((sg) = (sd)->groups)), 1); \
-+	     (void)((((sg) = (sg)->next)) || ({ BUG(); 0; })))
-+
- static inline struct cpumask *sched_group_span(struct sched_group *sg)
- {
- 	return to_cpumask(sg->cpumask);
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 75b1a18783c2..dce29cf28f32 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -758,17 +758,15 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 		sd = sd->parent;
- 		destroy_sched_domain(tmp);
- 		if (sd) {
--			struct sched_group *sg = sd->groups;
-+			struct sched_group *sg;
- 
- 			/*
- 			 * sched groups hold the flags of the child sched
- 			 * domain for convenience. Clear such flags since
- 			 * the child is being destroyed.
- 			 */
--			do {
-+			for_each_sched_group(sd, sg)
- 				sg->flags = 0;
--				sg = sg->next;
--			} while (sg != sd->groups);
- 
- 			sd->child = NULL;
- 		}
-@@ -1290,12 +1288,10 @@ build_sched_groups(struct sched_domain *sd, int cpu)
-  */
- static void init_sched_groups_capacity(int cpu, struct sched_domain *sd)
- {
--	struct sched_group *sg = sd->groups;
- 	struct cpumask *mask = sched_domains_tmpmask2;
-+	struct sched_group *sg;
- 
--	WARN_ON(!sg);
--
--	do {
-+	for_each_sched_group(sd, sg) {
- 		int cpu, cores = 0, max_cpu = -1;
- 
- 		sg->group_weight = cpumask_weight(sched_group_span(sg));
-@@ -1310,7 +1306,7 @@ static void init_sched_groups_capacity(int cpu, struct sched_domain *sd)
- 		sg->cores = cores;
- 
- 		if (!(sd->flags & SD_ASYM_PACKING))
--			goto next;
-+			continue;
- 
- 		for_each_cpu(cpu, sched_group_span(sg)) {
- 			if (max_cpu < 0)
-@@ -1319,10 +1315,7 @@ static void init_sched_groups_capacity(int cpu, struct sched_domain *sd)
- 				max_cpu = cpu;
- 		}
- 		sg->asym_prefer_cpu = max_cpu;
--
--next:
--		sg = sg->next;
--	} while (sg != sd->groups);
-+	}
- 
- 	if (cpu != group_balance_cpu(sg))
- 		return;
+   drivers/net/wireless/ralink/rt2x00/rt2800lib.c:4108:13: error: stack frame size (5496) exceeds limit (2048) in 'rt2800_config_channel' [-Werror,-Wframe-larger-than]
+    4108 | static void rt2800_config_channel(struct rt2x00_dev *rt2x00dev,
+         |             ^
+   drivers/net/wireless/ralink/rt2x00/rt2800lib.c:7194:13: error: stack frame size (4760) exceeds limit (2048) in 'rt2800_init_bbp' [-Werror,-Wframe-larger-than]
+    7194 | static void rt2800_init_bbp(struct rt2x00_dev *rt2x00dev)
+         |             ^
+   drivers/net/wireless/ralink/rt2x00/rt2800lib.c:10693:13: error: stack frame size (8504) exceeds limit (2048) in 'rt2800_init_rfcsr' [-Werror,-Wframe-larger-than]
+    10693 | static void rt2800_init_rfcsr(struct rt2x00_dev *rt2x00dev)
+          |             ^
+   drivers/net/wireless/ralink/rt2x00/rt2800lib.c:3432:13: error: stack frame size (2264) exceeds limit (2048) in 'rt2800_config_channel_rf55xx' [-Werror,-Wframe-larger-than]
+    3432 | static void rt2800_config_channel_rf55xx(struct rt2x00_dev *rt2x00dev,
+         |             ^
+   drivers/net/wireless/ralink/rt2x00/rt2800lib.c:10425:13: error: stack frame size (6840) exceeds limit (2048) in 'rt2800_init_rfcsr_6352' [-Werror,-Wframe-larger-than]
+    10425 | static void rt2800_init_rfcsr_6352(struct rt2x00_dev *rt2x00dev)
+          |             ^
+>> drivers/net/wireless/ralink/rt2x00/rt2800lib.c:10349:13: error: stack frame size (2200) exceeds limit (2048) in 'rt2800_calibration_rt6352' [-Werror,-Wframe-larger-than]
+    10349 | static void rt2800_calibration_rt6352(struct rt2x00_dev *rt2x00dev)
+          |             ^
+   drivers/net/wireless/ralink/rt2x00/rt2800lib.c:9527:13: error: stack frame size (2648) exceeds limit (2048) in 'rt2800_loft_iq_calibration' [-Werror,-Wframe-larger-than]
+    9527 | static void rt2800_loft_iq_calibration(struct rt2x00_dev *rt2x00dev)
+         |             ^
+   7 errors generated.
+
+
+vim +/rt2800_calibration_rt6352 +10349 drivers/net/wireless/ralink/rt2x00/rt2800lib.c
+
+ 10348	
+ 10349	static void rt2800_calibration_rt6352(struct rt2x00_dev *rt2x00dev)
+ 10350	{
+ 10351		u32 reg;
+ 10352	
+ 10353		if (rt2x00_has_cap_external_pa(rt2x00dev) ||
+ 10354		    rt2x00_has_cap_external_lna_bg(rt2x00dev))
+ 10355			rt2800_restore_rf_bbp_rt6352(rt2x00dev);
+ 10356	
+ 10357		rt2800_r_calibration(rt2x00dev);
+ 10358		rt2800_rf_self_txdc_cal(rt2x00dev);
+ 10359		rt2800_rxdcoc_calibration(rt2x00dev);
+ 10360		rt2800_bw_filter_calibration(rt2x00dev, true);
+ 10361		rt2800_bw_filter_calibration(rt2x00dev, false);
+ 10362		rt2800_loft_iq_calibration(rt2x00dev);
+ 10363	
+ 10364		/* missing DPD calibration for internal PA devices */
+ 10365	
+ 10366		rt2800_rxdcoc_calibration(rt2x00dev);
+ 10367		rt2800_rxiq_calibration(rt2x00dev);
+ 10368	
+ 10369		if (!rt2x00_has_cap_external_pa(rt2x00dev) &&
+ 10370		    !rt2x00_has_cap_external_lna_bg(rt2x00dev))
+ 10371			return;
+ 10372	
+ 10373		if (rt2x00_has_cap_external_pa(rt2x00dev)) {
+ 10374			reg = rt2800_register_read(rt2x00dev, RF_CONTROL3);
+ 10375			reg |= 0x00000101;
+ 10376			rt2800_register_write(rt2x00dev, RF_CONTROL3, reg);
+ 10377	
+ 10378			reg = rt2800_register_read(rt2x00dev, RF_BYPASS3);
+ 10379			reg |= 0x00000101;
+ 10380			rt2800_register_write(rt2x00dev, RF_BYPASS3, reg);
+ 10381		}
+ 10382	
+ 10383		if (rt2x00_has_cap_external_lna_bg(rt2x00dev)) {
+ 10384			rt2800_rfcsr_write_chanreg(rt2x00dev, 14, 0x66);
+ 10385			rt2800_rfcsr_write_chanreg(rt2x00dev, 17, 0x20);
+ 10386			rt2800_rfcsr_write_chanreg(rt2x00dev, 18, 0x42);
+ 10387		}
+ 10388	
+ 10389		if (rt2x00_has_cap_external_pa(rt2x00dev)) {
+ 10390			rt2800_rfcsr_write_chanreg(rt2x00dev, 43, 0x73);
+ 10391			rt2800_rfcsr_write_chanreg(rt2x00dev, 44, 0x73);
+ 10392			rt2800_rfcsr_write_chanreg(rt2x00dev, 45, 0x73);
+ 10393			rt2800_rfcsr_write_chanreg(rt2x00dev, 46, 0x27);
+ 10394			rt2800_rfcsr_write_chanreg(rt2x00dev, 47, 0xc8);
+ 10395			rt2800_rfcsr_write_chanreg(rt2x00dev, 48, 0xa4);
+ 10396			rt2800_rfcsr_write_chanreg(rt2x00dev, 49, 0x05);
+ 10397			rt2800_rfcsr_write_chanreg(rt2x00dev, 54, 0x27);
+ 10398			rt2800_rfcsr_write_chanreg(rt2x00dev, 55, 0xc8);
+ 10399			rt2800_rfcsr_write_chanreg(rt2x00dev, 56, 0xa4);
+ 10400			rt2800_rfcsr_write_chanreg(rt2x00dev, 57, 0x05);
+ 10401			rt2800_rfcsr_write_chanreg(rt2x00dev, 58, 0x27);
+ 10402			rt2800_rfcsr_write_chanreg(rt2x00dev, 59, 0xc8);
+ 10403			rt2800_rfcsr_write_chanreg(rt2x00dev, 60, 0xa4);
+ 10404			rt2800_rfcsr_write_chanreg(rt2x00dev, 61, 0x05);
+ 10405		}
+ 10406	
+ 10407		if (rt2x00_has_cap_external_pa(rt2x00dev))
+ 10408			rt2800_rfcsr_write_dccal(rt2x00dev, 05, 0x00);
+ 10409	
+ 10410		if (rt2x00_has_cap_external_lna_bg(rt2x00dev)) {
+ 10411			rt2800_bbp_write(rt2x00dev, 75, 0x68);
+ 10412			rt2800_bbp_write(rt2x00dev, 76, 0x4c);
+ 10413			rt2800_bbp_write(rt2x00dev, 79, 0x1c);
+ 10414			rt2800_bbp_write(rt2x00dev, 80, 0x0c);
+ 10415			rt2800_bbp_write(rt2x00dev, 82, 0xb6);
+ 10416		}
+ 10417	
+ 10418		if (rt2x00_has_cap_external_pa(rt2x00dev)) {
+ 10419			rt2800_register_write(rt2x00dev, TX0_RF_GAIN_CORRECT, 0x36303636);
+ 10420			rt2800_register_write(rt2x00dev, TX0_RF_GAIN_ATTEN, 0x6c6c6b6c);
+ 10421			rt2800_register_write(rt2x00dev, TX1_RF_GAIN_ATTEN, 0x6c6c6b6c);
+ 10422		}
+ 10423	}
+ 10424	
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
