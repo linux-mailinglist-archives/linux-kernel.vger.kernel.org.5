@@ -1,106 +1,128 @@
-Return-Path: <linux-kernel+bounces-68353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD374857928
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:47:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE8F485792A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:47:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A695F284AEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:46:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BC59B228AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E531BDD5;
-	Fri, 16 Feb 2024 09:46:55 +0000 (UTC)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 532FC1BDE0;
+	Fri, 16 Feb 2024 09:47:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RMRg+Na/"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 508DF1BC20
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:46:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A6C1BF28;
+	Fri, 16 Feb 2024 09:47:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708076814; cv=none; b=k2nvgw269bpH/wZiHa0lQbjg3Sg4LLFNSojZ1JWZdqXOFUTBVO4XpMJoNAVHDHNGPbxsz/BGK+QSlu8d+SK8Kci2FtgG346OFL82LpoBv/ubUlx25IfmtJ9dBD8q2kCu+pcWahTJXnGx+0vnE4l/LJys2dcSef5Zq9KVfG9m/W0=
+	t=1708076840; cv=none; b=rJDWeRKmRns6iZufTzCWg+1uNZBr5yx0qiT8dHj/2mP3cb5UTb/Md/wGyc9gSEA5FHjy8wThNoyV475r8pcjWpkiL8W0rs7P5sgGjsNnZao/lvQuqkHOQgDljqTroyNewsIvgCe0lj18slTmZPVlFvsKGzSWvQ2AU0lh9dYNQlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708076814; c=relaxed/simple;
-	bh=jQSDNvlSvXj1/uFQqCpVwQ2VcEHhnQsmskPJnVBLVQ8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tJzC91aaxjK8tyKyqvgAXO0gGqs0COu4lOGbCmod5S+Ok/HkQx9GNAhyHCOZpKxWD7oFLBgGDPqX38pb3nOYQ9x6gYCyyP8qRsb3plmBxr1zQqq8JLpNWPkiHSch8Arrylm0bUQO6DEF3p7gq+C0hNgx3bEu7TrrFO7sfulLaNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4TbnBr4fvVz9syV;
-	Fri, 16 Feb 2024 10:46:44 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id peyhQNuAFxmK; Fri, 16 Feb 2024 10:46:44 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4TbnBr436jz9syQ;
-	Fri, 16 Feb 2024 10:46:44 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 869688B787;
-	Fri, 16 Feb 2024 10:46:44 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id gWjL-nAXy4fJ; Fri, 16 Feb 2024 10:46:44 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.102])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 065D78B765;
-	Fri, 16 Feb 2024 10:46:43 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc/trace: Restrict hash_fault trace event to HASH MMU
-Date: Fri, 16 Feb 2024 10:46:43 +0100
-Message-ID: <85a86e51b4ab26ce4b592984cc0a0851a3cc9479.1708076780.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708076840; c=relaxed/simple;
+	bh=52oYAJx/bkBj6fjp/OHIlHLzNxTJ69+yLoxIJzbK3lo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ecaFBr6ypoXD4De+CFAzisQfvZn0X6Dy3u4Gg6XNPr2paXiNpv6Ek+9lRWgBW/dvPbVJpVq2mvrzuJSGgePqrT8WTjpLCLEIlMteSWMRH8glGBjkifrZtkpE9ScIAbXloXZTl0GU6qnPQkeTmkQ1BD9O7/16+l3uvVAuEmHqrAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RMRg+Na/; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708076838; x=1739612838;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=52oYAJx/bkBj6fjp/OHIlHLzNxTJ69+yLoxIJzbK3lo=;
+  b=RMRg+Na/hvkTtrd12NOOJrbJyvxdwkNHE6bwGbVaQV0fi5H6AlxtX44d
+   769HrkiD23yMTS0u43/v27Ec98NYkTJcNCf0k9xAWgU7nkcQdVkfQmeKD
+   TfeW+HhLGAlBWSDySJe+kKlufcCZ+nuF+HNo1rtd9FBaDDcdHw3MvOATo
+   0OTXDIJXv4YWjRu2c2p8cKKY6TogvX5XLXpm/RdAYUbNJFUwCJ68Y0RES
+   qwTBPJ2lMYVidi3iRgkYAb3VP637ACqOOMTprlUCvrNcyjz85Njp6KUhf
+   OK9aAgzr0lo18ZIOVEnpoG5/N9enlMkUVn982Xww8aQPCBKyQdcgKhMHh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="6028849"
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="6028849"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:47:17 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="8475072"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.220.122])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:47:16 -0800
+Message-ID: <c4d6a864-f1a6-47f0-ae03-c54556d34bc8@intel.com>
+Date: Fri, 16 Feb 2024 11:47:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708076803; l=1035; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=jQSDNvlSvXj1/uFQqCpVwQ2VcEHhnQsmskPJnVBLVQ8=; b=dli5kkWpxgzKF1Gl+nepuo8w18O4GjGWcq5DVBCZqOiFGyRxV7GaeYH/vja+BiYbK6yV4tdfw zMq65olsweCDR2RGWVw9MXU7+sHsTFNo8ara9svxSgY9uQyJSNwJTqk
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] perf test: Enable Symbols test to work with a current
+ module dso
+Content-Language: en-US
+To: Namhyung Kim <namhyung@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, Ian Rogers <irogers@google.com>
+References: <20240131192416.16387-1-adrian.hunter@intel.com>
+ <CAP-5=fUrTzkAfXoto1P8SnTFApSSdt+mmWHCXSKVrr0kuphE0w@mail.gmail.com>
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <CAP-5=fUrTzkAfXoto1P8SnTFApSSdt+mmWHCXSKVrr0kuphE0w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-'perf list' on powerpc 8xx shows an event named "1:hash_fault".
+On 31/01/24 22:58, Ian Rogers wrote:
+> On Wed, Jan 31, 2024 at 11:24 AM Adrian Hunter <adrian.hunter@intel.com> wrote:
+>>
+>> The test needs a struct machine and creates one for the current host,
+>> but a side-effect is that struct machine has set up kernel maps
+>> including module maps.
+>>
+>> If the 'Symbols' test --dso option specifies a current kernel module,
+>> it will already be present as a kernel dso, and a map with kmaps needs
+>> to be used otherwise there will be a segfault - see below.
+>>
+>> For that case, find the existing map and use that. In that case also,
+>> the dso is split by section into multiple dsos, so test those dsos
+>> also. That in turn, shows up that those dsos have not had overlapping
+>> symbols removed, so the test fails.
+>>
+>> Example:
+>>
+>>   Before:
+>>
+>>     $ perf test -F -v Symbols --dso /lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm-intel.ko
+>>      70: Symbols                                                         :
+>>     --- start ---
+>>     Testing /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
+>>     Segmentation fault (core dumped)
+>>
+>>   After:
+>>
+>>     $ perf test -F -v Symbols --dso /lib/modules/$(uname -r)/kernel/arch/x86/kvm/kvm-intel.ko
+>>      70: Symbols                                                         :
+>>     --- start ---
+>>     Testing /lib/modules/6.7.2-local/kernel/arch/x86/kvm/kvm-intel.ko
+>>     Overlapping symbols:
+>>      41d30-41fbb l vmx_init
+>>      41d30-41fbb g init_module
+>>     ---- end ----
+>>     Symbols: FAILED!
+>>
+>> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+> 
+> Reviewed-by: Ian Rogers <irogers@google.com>
+> 
 
-This event is pointless because trace_hash_fault() is called only
-from mm/book3s64/hash_utils.c
+Thanks Ian!
 
-Only define it when CONFIG_PPC_64S_HASH_MMU is selected.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/trace.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/include/asm/trace.h b/arch/powerpc/include/asm/trace.h
-index 82cc2c6704e6..d9ac3a4f46e1 100644
---- a/arch/powerpc/include/asm/trace.h
-+++ b/arch/powerpc/include/asm/trace.h
-@@ -267,6 +267,7 @@ TRACE_EVENT_FN(opal_exit,
- );
- #endif
- 
-+#ifdef CONFIG_PPC_64S_HASH_MMU
- TRACE_EVENT(hash_fault,
- 
- 	    TP_PROTO(unsigned long addr, unsigned long access, unsigned long trap),
-@@ -286,7 +287,7 @@ TRACE_EVENT(hash_fault,
- 	    TP_printk("hash fault with addr 0x%lx and access = 0x%lx trap = 0x%lx",
- 		      __entry->addr, __entry->access, __entry->trap)
- );
--
-+#endif
- 
- TRACE_EVENT(tlbie,
- 
--- 
-2.43.0
+This patch is still OK.
 
 
