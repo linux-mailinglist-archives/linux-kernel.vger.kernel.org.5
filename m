@@ -1,169 +1,235 @@
-Return-Path: <linux-kernel+bounces-68177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 839E38576DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:34:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F1F18576DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:36:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39193284804
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:34:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C5DB1C217E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:36:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5BA9168DC;
-	Fri, 16 Feb 2024 07:34:00 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D6015E8B
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708068840; cv=none; b=ru0GPkPqkH7wGPlmRidzk5YlLf+bwM735Aijh0FXmUQYa5QSnwpElLPEPd45PqdQLQCJXMKixHicctGE6DEE6MmGYBc/wlIxdOtOzICn9uDpIzHHHhX32zQ2PE5A6gAPxD5scC9dzmHHXkM4QiQ8i5fD6VnHytQ041InQS0QzKA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708068840; c=relaxed/simple;
-	bh=cAH7DMxuXm3UwwG9aeS1vnD0RhVr10jUVfSZVMparjw=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=HnKpub/sw+BS4spwOxJpV7acg0kGwgO8IBwvxWrOX/ZeKqvns2we3vJjJTBmPLwOARIyR6p3Hg5QW7NorJObi3ww2lLoPuiJYlJvmyCskEuDZynFKP/uziHv4AbVouKaTbtDxFWCcv09s8HMGpZbIPWi7rNyTgXlYOB9qp+Kajg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-0a-65cf0fde2f2c
-From: Byungchul Park <byungchul@sk.com>
-To: mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	bristot@redhat.com,
-	vschneid@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	kernel_team@skhynix.com,
-	akpm@linux-foundation.org
-Subject: [PATCH v2] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
-Date: Fri, 16 Feb 2024 16:33:40 +0900
-Message-Id: <20240216073340.55404-1-byungchul@sk.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLLMWRmVeSWpSXmKPExsXC9ZZnke49/vOpBs9fSlrMWb+GzeLS46ts
-	FtNfNrJYPJ2wldnibv9UFovLu+awWdxb85/VYvK7Z4wWlw4sYLI43nuAyWJfxwMmi44j35gt
-	th79zu7A67Fm3hpGj5Z9t9g9Fmwq9di8Qstj06dJ7B53ru1h8zgx4zeLx/t9V9k8Np+u9vi8
-	SS6AK4rLJiU1J7MstUjfLoEr4/X3p4wFJ2Uq+vZMY25gfCPexcjJISFgItF9aS4TjD21bTE7
-	iM0moC5x48ZP5i5GLg4RgTeMEp3LzrCBJJgF8iRa//eBNQgLBEss2LOWBcRmEVCV2HyyixHE
-	5hUwlTj84QkzxFB5idUbDoANkhDYwCaxeMFvVoiEpMTBFTdYJjByL2BkWMUolJlXlpuYmWOi
-	l1GZl1mhl5yfu4kRGIjLav9E72D8dCH4EKMAB6MSD++BP2dThVgTy4orcw8xSnAwK4nwTuo9
-	kyrEm5JYWZValB9fVJqTWnyIUZqDRUmc1+hbeYqQQHpiSWp2ampBahFMlomDU6qBkeG6t7RV
-	z+Lv3zazH5rH8NDrYszfcg9e346DylkSgmFBsUL9R2o5l22qbur+FiKT/WJtTqWcavcpaZZF
-	b8VunJfVuJ6rJqSd4zJZXyNrZ6/b48ivi/0D/6Tue/WibMERQ8X3y20bNrmxM8peW6M84/wT
-	vyfz5BcEv5U/GFaVILaRr7NAcm+uEktxRqKhFnNRcSIA4FVAu0ACAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCLMWRmVeSWpSXmKPExsXC5WfdrHuP/3yqwcWj3BZz1q9hs7j0+Cqb
-	xfSXjSwWTydsZba42z+VxeLw3JOsFpd3zWGzuLfmP6vF5HfPGC0uHVjAZHG89wCTxb6OB0wW
-	HUe+MVtsPfqd3YHPY828NYweLftusXss2FTqsXmFlsemT5PYPe5c28PmcWLGbxaP9/uusnks
-	fvGByWPz6WqPz5vkArijuGxSUnMyy1KL9O0SuDJef3/KWHBSpqJvzzTmBsY34l2MnBwSAiYS
-	U9sWs4PYbALqEjdu/GTuYuTiEBF4wyjRuewMG0iCWSBPovV/HxOILSwQLLFgz1oWEJtFQFVi
-	88kuRhCbV8BU4vCHJ8wQQ+UlVm84wDyBkWMBI8MqRpHMvLLcxMwcU73i7IzKvMwKveT83E2M
-	wLBaVvtn4g7GL5fdDzEKcDAq8fAe+HM2VYg1say4MvcQowQHs5II76TeM6lCvCmJlVWpRfnx
-	RaU5qcWHGKU5WJTEeb3CUxOEBNITS1KzU1MLUotgskwcnFINjNUZnqo/itbvuv1Aeo511C6O
-	i4pX9E2vfo7ekHNjo72qaMARVe4Da5zLNtbPPP7jdMHFTSc9J8hMuNbMs++iudYr3vlf9FYt
-	+7IvRmQGZ9HKKoMG46mWLu47D1eV/D1dfNS0MGX/tTm5Fc3bp3RxBK4XfPV55TY73aDbOyaK
-	TDUu6n9QXLFSRleJpTgj0VCLuag4EQAptKZcJwIAAA==
-X-CFilter-Loop: Reflected
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C506E171AD;
+	Fri, 16 Feb 2024 07:36:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FzZW3yNj";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="kxoTS8zB"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8866414280;
+	Fri, 16 Feb 2024 07:35:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708068961; cv=fail; b=EsHjBySlVb/XuEGA2AeCO+qwg/4KDVmNp+SJdUplsHni3z14swGKH+fnqhG09tCj6rFnevEozL71onzM/SDkPtKv35SK2aq1oIhXmkKxj45aF7HQqhnjL/FE8Tzp8esAayc7TY2f5+cl8Vwh5/ZCm7rqxt8JHI+DbhU+QcUKagU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708068961; c=relaxed/simple;
+	bh=V6+cBnW8p2bb9Ob8Z1Yir8zxn7EWxJsAlQ4ZHKM8klo=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=P89c4JDPQHBgyp0NPBZqJnnUfmrQi7fYTbt08iL0Neo/8gGEKX6OHps0KMYaSLFt+PzEReW/b6x6itOcwb6EGc6VG1z3tz6bSuFDMWJlB7V67N8MBkKOI9fMpy59zV0wXsQdt7LROhXdpm6NKlMjA15+MYjNecgD2s4AuvCoD+s=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FzZW3yNj; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=kxoTS8zB; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41G50DVj021037;
+	Fri, 16 Feb 2024 07:35:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=s+SYZowH0QfNN5ESswaxj3vGvque37rR19VBvozh+Ps=;
+ b=FzZW3yNjgnnRyf0uTLKciBoQWX3kWqLO0F8cANFIHnMQ6RhydduDy+yt+3Mqo+0xvBL7
+ sAJmahemzHesHsIF4dt4fEOBz87DRD1NnHUPVRhGsJQrdgvZI1UyldSHlCY3P0gX++rF
+ RFdro4PcM10cn2UswLsEmaQ+i+k+aazmunexnlEmajUo2ZjRsTd43Usnp9ZQvvWH6uTI
+ 4L98Vv8C2GQZUzNFicAQBxkSop7IRTZfkAlvawqSSXR4WrAAj2a4a+P2GSOLDsGzdkkF
+ gK6GR2sIE+CuS4pd9Nn21nVfCo1o4BkHz8lNfCNn7We8qxPCgn1Jw+BU/QuJh2VgmxM5 LQ== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3w91f04p1e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 16 Feb 2024 07:35:48 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41G6fZtG031332;
+	Fri, 16 Feb 2024 07:35:46 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3w5ykbrk6k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 16 Feb 2024 07:35:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JGBOI8YlQ/wST/sp/BfAGBNn3x5lFi4GwwENSrnBnVBf/RHrkbx6XrHiqsJGJ5cRGXgWo7y9VwiDyYwFhmeUYufirXPafbeMducbqR3FB5EAAtOzlMujm4fbMyMFsLT0r0xO718C8v2EqYov/8zfXQbFH0gPfyo/Grdm4NO86u/+RfI9jCzolFi49VVGUigAr3FK77nsQW8tmEr6w0AYR75O4ssX1AAORzW/gt6/WekAgXhhpSnjLREFq0Mf7apRULWljOhcKxoaBRnFBEQayhXbClpozdWm3VptfVBmUeauzhMjX9d8weuXskT8yd1X6A/p6eu4ECjvUToeodaLsA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s+SYZowH0QfNN5ESswaxj3vGvque37rR19VBvozh+Ps=;
+ b=Ssk6jfA6Wbah7NDqMM1XqtiBgLyhtOnCu+Rdso7sjZBcFpfvrDEmuy9kSl8RnmGVglcceuMNtUOeJ9Obi84wG/i3kfZuZDh0m814TwFl9KQpiSfM373FOAqEysV/XRSpF2wyCTLnUL9XAuXJfQ6PBneFPavhnuTL4HC1Bn12lZGUecqdF3hgWsjzk2gLOYJTXxq7qKLgBl/RnXwxn+myZDaOuih97P6hfa3Afak++Zax97Y/Y4bKoZd8+XU4O+0KFCc7W8AdZGQulNNfQh5YIE5ktJCygczz7/ZyAovDuqIt47YORqYWHIkr/RvjaYi+TK4dg71Bk6AQAPWC+g/CoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s+SYZowH0QfNN5ESswaxj3vGvque37rR19VBvozh+Ps=;
+ b=kxoTS8zBGeO6/QvWNQTpiwp2A4WtWXJxxtTssKfv1iumyzpTa9AmMiwILd3Q/Nsfaic9WX34Ym2RXJ/UZGWYNRuVhYUerzF26T1UvIsXbsscshG/VJkn6dKVejNm0x5PTrSOQttTyZ4U8OGItV9I4i7OExiA/vxNhIV3B0lYj6A=
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com (2603:10b6:510:1c1::7)
+ by BLAPR10MB5043.namprd10.prod.outlook.com (2603:10b6:208:332::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.32; Fri, 16 Feb
+ 2024 07:35:44 +0000
+Received: from PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::f41b:4111:b10e:4fa5]) by PH8PR10MB6290.namprd10.prod.outlook.com
+ ([fe80::f41b:4111:b10e:4fa5%4]) with mapi id 15.20.7292.027; Fri, 16 Feb 2024
+ 07:35:44 +0000
+Message-ID: <3c2801be-acb6-4e6b-95e2-5bebe834c258@oracle.com>
+Date: Fri, 16 Feb 2024 13:05:35 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] VMCI: Fix memcpy() run-time warning in
+ dg_dispatch_as_host()
+Content-Language: en-US
+To: kovalev@altlinux.org, keescook@chromium.org
+Cc: arnd@arndb.de, bryantan@vmware.com, darren.kenny@oracle.com,
+        error27@gmail.com, gregkh@linuxfoundation.org, gustavoars@kernel.org,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pv-drivers@vmware.com, syzkaller@googlegroups.com, vdasa@vmware.com,
+        vegard.nossum@oracle.com, nickel@altlinux.org, oficerovas@altlinux.org,
+        dutyrok@altlinux.org
+References: <20240105164001.2129796-2-harshit.m.mogalapalli@oracle.com>
+ <20240111125330.53853-1-kovalev@altlinux.org>
+From: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
+In-Reply-To: <20240111125330.53853-1-kovalev@altlinux.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0095.apcprd02.prod.outlook.com
+ (2603:1096:4:90::35) To PH8PR10MB6290.namprd10.prod.outlook.com
+ (2603:10b6:510:1c1::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR10MB6290:EE_|BLAPR10MB5043:EE_
+X-MS-Office365-Filtering-Correlation-Id: c67e649c-51f4-4b2b-faf3-08dc2ec1e248
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	A5slfL0FI+cbszOmRPHNb+s2kFbvMSJpH37g7SEXqOyKmLBrtCims56+HHu7uD62eRhvw3p/q1Q6F7Q2wZSJzVoyxAC8estNrlsJsLHXWnF/veMEHqAcgJQTxuzN1qyW0prhErh25Zc193bA8lQlAaXFtJONHK5BPKYC9czlY8knNjeYgGDhv7G4W7WY4dr5fpcG3AfzoH5ZXpjSx8hrAJkBnAGsaAkaUj06BuSIpbbaVeR1EnRK9cyd1+nMM+/ehKQxYwzpsaatqbJdYtUgwwuVbFeN2BoQPuOoRVlrjL4m++X2mL201M6QoqYPdRoNS2IZ4v+lpgKR8fPnsDBWgCgJtWn2voLPVCcL0xQQrScFNVoEFyQ1dAovmik5aKur1Zcv2E1a4Y4+BZR3S/RTzeAKrE3EAYsRgi3C6xCawc7f0LEsyf0kTfdd408+4MrKz6iMKzEUe7qoZnULnCfs+rdHegOm05aFVgMQE+mQw2EDEBRotxYY0bDqo0shjjPqGDtbiZojGkNQj49mwMPwoV0nyLbtBvKV7b0GWeRSGYBcQKb0g++sgLvFzbJ3L/fl
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR10MB6290.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(346002)(376002)(136003)(396003)(230922051799003)(230273577357003)(186009)(451199024)(64100799003)(1800799012)(86362001)(31696002)(36756003)(38100700002)(53546011)(966005)(6486002)(6506007)(478600001)(6666004)(316002)(6512007)(26005)(83380400001)(41300700001)(2616005)(4326008)(66946007)(8676002)(66556008)(66476007)(8936002)(7416002)(31686004)(2906002)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?TzZXMHlrZmp4S0lWNzN2dGpEKzhjd05iUTBZMjhsc0hKcjZGdWwrZ29RQVNj?=
+ =?utf-8?B?b0FUbHJQSHR0QWwvVEhwOXpaalNjODh1OVAxeDI3M0dKbGgramNhREp0aTQ5?=
+ =?utf-8?B?d2VTUUx0dzJKMG1ETFlyU0JGN2c5aUdmMFRNMDV6V1F3cENSMmFZcFZSVnFU?=
+ =?utf-8?B?SDVmYWE4cUNvOUllSHdKRXlYUFRLTzFmN2RyOWlPRyt1VTZTcXdBNWhmSTdP?=
+ =?utf-8?B?eWFJOERMN2pHYi9xcmlrRW1HTzVlYnh5MGYzandVL0lvd01hZXY1YjdQeisr?=
+ =?utf-8?B?UzZORDJXaTJpeS81RDFpUGJYWDYxV0U1NkNQeXRFOG5PcXBBN0szNFUxSkVH?=
+ =?utf-8?B?ZmdjZjFtT0RGUTBTOGhuS0xsMlgwRVJqU1lDdXZETEV1VGtHUkd2N05jcEZH?=
+ =?utf-8?B?ZGFURkFmOUlLWWVNM0RxdkhSNnBmYmkzc0JKaURPVFFnR1g2aVhNcU0xS1Mw?=
+ =?utf-8?B?anZQV213SzE1WW5RbTJMelZsNWlLcUJISFZ2SVhoQzduY3piN2VIK2Z0TnJQ?=
+ =?utf-8?B?NUtMZVh6RmNYbEtvWW5XZSswUXVKRUpRVGlWckVOUzNHRm5zMEtlcCtRbjdT?=
+ =?utf-8?B?TmF1SVBQMjhkUFpnQ094aWxvQ3NrSVRpNURVMWh5WEFEM2FKbkoxYjJnNGl1?=
+ =?utf-8?B?VFBsYlhEWENtNFgvSE9LV0g5L1NpcnhjOHZ2QUlxMmdZU2FrNkdmV2ZMVDRl?=
+ =?utf-8?B?Uk1YcW1qTWRrMitmd1drRlgyMktpMllzemZ3b0lqdUpjQUlhQzFiK3dsMlBv?=
+ =?utf-8?B?bUJvby9zdWJobWtnOS9zUm5TK3BBejVJeUVSQURNZzZ5eXFmeGxRdERraFdq?=
+ =?utf-8?B?NXZFZkhteHdPTjBCOFV6Z3YwN2JJbEEyQ1BISDNkSWVCL041R1RIcGNmbjY0?=
+ =?utf-8?B?SDViZ1lkK3F6VWdzTzRuTmxwSXUyamZPTlZpNlBBUVhINk5WeDNQaXNqeHl3?=
+ =?utf-8?B?eVp0SWFzVDBYQ1NaL2tCanlsTFpzYTdna3lZdkNYQUNRckhZdnh1WWI5dU1E?=
+ =?utf-8?B?Tk01aXVvdVBmMUVENWJEdVovaXVVaWszRktTTXZTVFZKU29SWDRHMFFKOWQ3?=
+ =?utf-8?B?dUtsSktNVTRhbDZHdzMvSTA4OE1mMnRlaXpuTVZoenVuMWs1dWU3SVpFNnVz?=
+ =?utf-8?B?NW4yWTViMjNtRDg4ZXpDSUZUZCtpallMdldoNzFQaGJWcGdIZ3Axd0E0dkNB?=
+ =?utf-8?B?V2hxQ3JiTTlPRVg3N2R2ajNiNnhnang3a3lIUVJDVXVLdmdyb2hpdS93UDk4?=
+ =?utf-8?B?WGhtNEdQbDJMU1Y0NkhISFd1QUphUlVORy90d0NYNDBlSXIrQU5SdTBRMS9s?=
+ =?utf-8?B?OXZXL0p2cW1WOWhvcHpvNStKUzNGeUJNZlphcWNFUGhRTDVEdmVaMEZMVkZz?=
+ =?utf-8?B?L3N6bzUxQm81dXAvYXF6YjhPdjBkdFhaQkZGd2FsRnVQejVBWUsyYVNkS2xq?=
+ =?utf-8?B?UEhtNUE3T2lPWTJtUXY0ZE1Ic1FSWDZ6bEc3QUgxY05GUXJNT01RMkdEU1Q2?=
+ =?utf-8?B?SzFYQ2RkUTNlSmk4NzkvVGx5eFp6WjU1Tk4wY3BnRDNXU2hwdnBaeVgwUk5M?=
+ =?utf-8?B?Q01RT2JZeFVBenlOOHZoNVVYRktOUmN4Qy9tajF2QkI2TjJEdjVZUlFyWmlp?=
+ =?utf-8?B?V3k0bU1QUVF3Y3YwdndoMWVlQjZKaVp4Qkl3MFNmc3JlSHZnRzdPck1LMFRM?=
+ =?utf-8?B?V0V6eXdJLytxQnRhNktrak8zL0xRU2YvcHovVG9oQk1zMktXdW1rNFltaEs5?=
+ =?utf-8?B?T21TTmw2N3dHMVlwUCtKSUFMMzJCUzZRaDNQaEhDOHN4dzVOeUFwS0czVm5H?=
+ =?utf-8?B?cG55cHJETWJxMEd4Q0g2RTlZUEpBQnNWa0o2WGtSWHVBRE5rRm9xQkJFL3Av?=
+ =?utf-8?B?a3puallLOTRSR1ducTlMNjlTaHBuWUorbUd1bjlHM3ZRQmJGbUI1VnFCQzFD?=
+ =?utf-8?B?aVNpSldiRm5aODd0SzdFUnpnNXVpM3NnY29MUnR6eFR5NGEyaTU1MytXcldj?=
+ =?utf-8?B?U1FuMzBrTXkrbUtEekxTRnNVTjdqbGFIWXVWVmwrTWRxdkZ0YWFDcWtoV2NB?=
+ =?utf-8?B?dHBWN3E5WEpvbW4wSU5TVzRJSmx4NnVaMm9pNWk0VXA3ZTc3b2JjOWVpMVZ0?=
+ =?utf-8?B?TXpmbDZHYVkvZ0srbC8zWGxHZEtVVmh2TFhCaGFrWFRNUEM0MFBkY2JPT1po?=
+ =?utf-8?Q?dyVLYulSZsh1vZoLZhAMdxo=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	A4CPR3jKmKKByBZGlmsp0gj+nh0VAdJkzy/fKy7lpox6YJeOdcUSGQTpjw0zpXzPAOYoq7NUIcHevoCg9PD16VDf/LTMO4+PyBbk2q37lFjyUSDtmPooG15/Xa6ulBSzjYh5sOpBIBtT8HNnefDGygazegWDjMuQKlssiH7BZeZz353sbH6vuuhK/FtJjKGrkvm7zNh3IEjawSPM6KnFg8QY/zVdKXaJF+Fb7DNOLBCYCuh0w2aBW+Zhq51SDF+KHgoMNaZAei4GKrV2GIlRVQkIDk7MWXo8ttuTta584ucM0hcTJTZGWR0qYTuIYcOr+LxfXAHfqBo9+ps6PHti8aWksRsziiAz+zVk2mzZQAW83bHlUUJUKPcp2P/mgwS25bedCOdqJ19z8g3HNDNvBi/Njdy1cxsz4xinp1148CPNI8S3eepQHTymK4qKx43gNDtXeI1u6s5Ucs02+qmK63Ci6CWZcgPPmwTjt0C1GdwwVoMKYFNBFAdHfmAyuYVPKezrGllfYIZIu3RmKjo24zqdyLbRaLDdoWqpmcb2TKf6N/wwReYOsSUXZIHJAsdbkmhuEqYdZIFBfTgOqk849DMrBOnYzLC/fGycarg+7VA=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c67e649c-51f4-4b2b-faf3-08dc2ec1e248
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR10MB6290.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 07:35:44.3528
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o6kHaRmDk99th4LW+lja7TRPNbW8HQwpD9l1OZN3dYX2mKcWnKYbQxB/HaE7cMv6dHMEAMfhrb32e8+iJLdlr0C/9ffuQI0u/mpnBVvdc2jIl46tttKUzyMujLuGJP4i
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5043
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_06,2024-02-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
+ adultscore=0 phishscore=0 bulkscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402160060
+X-Proofpoint-ORIG-GUID: 2Ayf1Y0DbW_yNO7KYGgAtocN_mskjr8G
+X-Proofpoint-GUID: 2Ayf1Y0DbW_yNO7KYGgAtocN_mskjr8G
 
-Changes from v1:
-	1. Trim the verbose oops in the commit message. (feedbacked by
-	   Phil Auld)
-	2. Rewrite a comment in code. (feedbacked by Phil Auld)
+Hi Kovalev,
 
---->8---
-From 6830b59db267a31b78f6f09af12ae0e3132b4bca Mon Sep 17 00:00:00 2001
-From: Byungchul Park <byungchul@sk.com>
-Date: Fri, 16 Feb 2024 16:26:23 +0900
-Subject: [PATCH v2] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
+On 11/01/24 6:23 pm, kovalev@altlinux.org wrote:
+> Hello, I was also working on solving this problem
+> https://lore.kernel.org/lkml/20240110104042.31865-1-kovalev@altlinux.org/T/#t.
+> 
+> Please note that there are 2 such places in the code, and by analogy with your
+> version of the changes, including changes in the approach to calculating the
+> size of the allocated memory, additional changes on top of your changes will
+> be as follows:
+> 
+> diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/vmci_datagram.c
+> index ba379cd6d054bd..1a50fcea681bf8 100644
+> --- a/drivers/misc/vmw_vmci/vmci_datagram.c
+> +++ b/drivers/misc/vmw_vmci/vmci_datagram.c
+> @@ -369,8 +369,9 @@ int vmci_datagram_invoke_guest_handler(struct vmci_datagram *dg)
+>          if (dst_entry->run_delayed) {
+>                  struct delayed_datagram_info *dg_info;
+>   
+> -               dg_info = kmalloc(sizeof(*dg_info) + (size_t)dg->payload_size,
+> +               dg_info = kmalloc(struct_size(dg_info, msg_payload, dg->payload_size),
+>                                    GFP_ATOMIC);
+> +
+>                  if (!dg_info) {
+>                          vmci_resource_put(resource);
+>                          return VMCI_ERROR_NO_MEM;
+> @@ -378,7 +379,9 @@ int vmci_datagram_invoke_guest_handler(struct vmci_datagram *dg)
+>   
+>                  dg_info->in_dg_host_queue = false;
+>                  dg_info->entry = dst_entry;
+> -               memcpy(&dg_info->msg, dg, VMCI_DG_SIZE(dg));
+> +               dg_info->msg = *dg;
+> +               memcpy(&dg_info->msg_payload, dg + 1, dg->payload_size);
+> +
+>   
+>                  INIT_WORK(&dg_info->work, dg_delayed_dispatch);
+>                  schedule_work(&dg_info->work);
+I think you need to send a separate patch/patches for this.
 
-While running qemu with a configuration where some CPUs don't have their
-local memory and with a kernel numa balancing on, the following oops has
-been observed. It's because of null pointers of ->zone_pgdat of zones of
-those nodes that are not initialized properly at booting time. So should
-avoid nodes not set N_MEMORY from getting promoted.
+[linux-next]$ git describe
+next-20240216
+[linux-next]$ git log --oneline drivers/misc/vmw_vmci/vmci_datagram.c
+19b070fefd0d VMCI: Fix memcpy() run-time warning in dg_dispatch_as_host()
+e03d4910e6e4 VMCI: Use struct_size() in kmalloc()
 
-> BUG: unable to handle page fault for address: 00000000000033f3
-> #PF: supervisor read access in kernel mode
-> #PF: error_code(0x0000) - not-present page
-> PGD 0 P4D 0
-> Oops: 0000 [#1] PREEMPT SMP NOPTI
-> CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
->    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
-> Code: (omitted)
-> RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
-> RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
-> RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
-> R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
-> R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
-> FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> PKRU: 55555554
-> Call Trace:
->  <TASK>
-> ? __die
-> ? page_fault_oops
-> ? __pte_offset_map_lock
-> ? exc_page_fault
-> ? asm_exc_page_fault
-> ? wakeup_kswapd
-> migrate_misplaced_page
-> __handle_mm_fault
-> handle_mm_fault
-> do_user_addr_fault
-> exc_page_fault
-> asm_exc_page_fault
-> RIP: 0033:0x55b897ba0808
-> Code: (omitted)
-> RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
-> RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
-> RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
-> RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
-> R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-> R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
->  </TASK>
+I see that the two patches I sent are applied by Kees and are in linux-next.
 
-Signed-off-by: Byungchul Park <byungchul@sk.com>
-Reported-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
----
- kernel/sched/fair.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I am thinking if we can reproduce the above WARNING in 
+vmci_datagram_invoke_guest_handler() by modifying the C reproducer 
+generated by Syzkaller for dg_dispatch_as_host()
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index d7a3c63a2171..859ef78ef72b 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -1828,6 +1828,15 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
- 	int dst_nid = cpu_to_node(dst_cpu);
- 	int last_cpupid, this_cpupid;
- 
-+	/*
-+	 * A node of dst_nid might not have its local memory. Promoting
-+	 * a folio to the node is meaningless. What's even worse, oops
-+	 * can be observed by the null pointer of ->zone_pgdat in
-+	 * various points of the code during migration.
-+	 */
-+	if (!node_state(dst_nid, N_MEMORY))
-+		return false;
-+
- 	/*
- 	 * The pages in slow memory node should be migrated according
- 	 * to hot/cold instead of private/shared.
--- 
-2.17.1
-
+Thanks,
+Harshit
 
