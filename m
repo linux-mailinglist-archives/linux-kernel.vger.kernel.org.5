@@ -1,136 +1,266 @@
-Return-Path: <linux-kernel+bounces-68083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0D1E8575C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:54:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F9F88575B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:46:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CE70B21976
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:54:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 43ECD1C21790
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:46:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F219813FF9;
-	Fri, 16 Feb 2024 05:54:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DE1134A4;
+	Fri, 16 Feb 2024 05:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="FIk2/7ny"
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="VikvTVZ4"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6DB134B2
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 05:54:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD3514265
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 05:46:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708062873; cv=none; b=lhnJyieR92Beublm3aEVD4ZbAv0WhPOlt4gN9M4akkQMqkyMLNZUDw7+eyt4AAv2tIaeLN+D3QipI5A8GjpNw/z+gX1bkptxSV96XVnqKN39kOnfKRqNuGbUHoVmd4BgCZN53VQX+rB0i3u2RIpxCkBDIl3FDYdWh/H8YNWoaxw=
+	t=1708062370; cv=none; b=GYGSCoyaRsv1aDn6/5aoAAWQ8o9OC6RvChWhGd/kjvmtZbnnXoAynA7vhTsSw6AVxdvTEyHYRMYrW+ulU1QqNIxEO2lJ45EZ/2LFMYVqoDHQnmXqq169fy8Jir4cYezbMIEq6wUsRj96lTgOi3y2/1oOB3VEGe0uxWapEd8PSK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708062873; c=relaxed/simple;
-	bh=q1gtVAj3lvEe8b98I0528UWfo/5v+mmHvNmP7iA02S0=;
-	h=Mime-Version:Subject:From:To:CC:In-Reply-To:Message-ID:Date:
-	 Content-Type:References; b=qagfdlOUL6fSTnK4zsf2mT8ynAiKH3kiwKiN+38lPA1td8kPuOYhkfIRAbD4omKfcblPZ77tf4hOX9WQ+eXnRKlbDnLxpnt2O3MzW0Gudm3RwNUsQNVIhLU9gSNo2SAXqzf5VUMWKYbP43k3kAVkVJVVN+X9/uT9sOpOYEp7wrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=FIk2/7ny; arc=none smtp.client-ip=203.254.224.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-	by mailout1.samsung.com (KnoxPortal) with ESMTP id 20240216055428epoutp0173e98110c409db9aec9ef5837c8c21c0~0QiEMP5aD3226832268epoutp01b
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 05:54:28 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20240216055428epoutp0173e98110c409db9aec9ef5837c8c21c0~0QiEMP5aD3226832268epoutp01b
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708062868;
-	bh=q1gtVAj3lvEe8b98I0528UWfo/5v+mmHvNmP7iA02S0=;
-	h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-	b=FIk2/7nyuWDMu3XQTesMOFOnCujZ5BveQZ5JTKA5lvjijnPI1i1au2OmHTqGrWORV
-	 fc0+Kr5gqsKMgG+paStP78XKRs8qMtikRo0AK47f0zYA4maf5WCXp58/TBi9OYhQ36
-	 ohNZEvynIRpZOBQWosfRr6lziRKUKmdLdhRcWNq8=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20240216055427epcas5p34f65ef318a454c13df99df12149e1aa7~0QiDdT30g0434004340epcas5p3V;
-	Fri, 16 Feb 2024 05:54:27 +0000 (GMT)
-X-AuditID: b6c32a4b-39fff700000025c8-38-65cef89375a1
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	3B.F9.09672.398FEC56; Fri, 16 Feb 2024 14:54:27 +0900 (KST)
+	s=arc-20240116; t=1708062370; c=relaxed/simple;
+	bh=R0KCav4SBl9GvGgw+8QcoFmIYdIjb1VCg/aRrAEv/Xg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HIdpJIovd8i8Tk+rwY4tt6qcorXXhS6c+u9AZfHHIrXfvE8JzcftEY9c66ttAOhTGQiBu/LvsgRZfEC8uNiv0Vtyot0fJ3n7uB0vLl+BClCVeUOi+0gOck+O+wyahN5DV9XJcM6Fh1P7wjU9L7CD39DHY4SR/8fLmDfH66zoOhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=VikvTVZ4; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a3de5884d68so8250466b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:46:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708062366; x=1708667166; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OkqqhJ7YhNw/r5K4OKJ0M5Gv5GBbPK3jd5hErO5/nXs=;
+        b=VikvTVZ4tiAB2XSnTmh9GOP6Mk6drmf5DfxpJVhC1HAWz0cHDNmPlJWtCI+DXCfFkc
+         9WZ0PQAlVpqEe3+sLRzvC1nhuBhcE1H+x0FVDr9uhDEL+ft+SbQ55l8FH98oiM4RJNUp
+         gqRk/ktsjGRybF4PtF4QqXGcvMe7JGHCktFNM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708062366; x=1708667166;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OkqqhJ7YhNw/r5K4OKJ0M5Gv5GBbPK3jd5hErO5/nXs=;
+        b=GZ9GwVDkBGEjHQIPpIDQ7D1GrvUovMLFizibRojhkq2UMM4x2HP7gkjS6hB8BsnwVp
+         HeWWc3AXKgE8DPBWUJz4GK3ZhXHZBMCuqpDpRaq8fxkR6C1pR2w2OHV1lpa7mjup9nmn
+         igFSbN2FvgN2SiFyAH0GpErpdq51bavPsVm6v7XpLVZu4xboN05w6SakOX0LwLl7RrHH
+         PQgx4PljcktrCEh0FerSODqKFzTRmZa46TwvDyJGCbHX7UqM3YDaS4uE/ECtfRebXf3G
+         PS3D/UZnbdf/YpH/5MydwDplZ1DAMg4AId12TBVjX+tSe8OK4VUjqJiY8PkdjZBHBINh
+         egPg==
+X-Gm-Message-State: AOJu0YxiaL8ENksgD1IYb7Wg1AMN6uw6JsMp+nNw1HvspPlDLSGtcYJl
+	wL1XwhSBDNewk8EJj/Lfg+81DyV1XEdIzJ/ar2Za9f7Eycl3GzqB/zMllqCwkxBTC8jlZORMKQJ
+	NQQ==
+X-Google-Smtp-Source: AGHT+IEAfBeX96elStQQfNqRqIKRlhn52uScuXvRq2XBZQPEm4+LaOS1SWok8rCNDwM99xMhKEgLgQ==
+X-Received: by 2002:a17:906:1d4d:b0:a3d:765:7bdc with SMTP id o13-20020a1709061d4d00b00a3d07657bdcmr2681552ejh.25.1708062365807;
+        Thu, 15 Feb 2024 21:46:05 -0800 (PST)
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com. [209.85.128.51])
+        by smtp.gmail.com with ESMTPSA id qx22-20020a170906fcd600b00a3d76123920sm1205100ejb.223.2024.02.15.21.46.05
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Feb 2024 21:46:05 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4121b1aad00so2305515e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 21:46:05 -0800 (PST)
+X-Received: by 2002:a05:600c:1da6:b0:411:c45a:38fc with SMTP id
+ p38-20020a05600c1da600b00411c45a38fcmr3258760wms.3.1708062364654; Thu, 15 Feb
+ 2024 21:46:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH v3 1/2] ACPI: use %pe for better readability of errors
- while printing
-Reply-To: onkarnath.1@samsung.com
-Sender: Onkarnath <onkarnath.1@samsung.com>
-From: Onkarnath <onkarnath.1@samsung.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: "lenb@kernel.org" <lenb@kernel.org>, "bhelgaas@google.com"
-	<bhelgaas@google.com>, "viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
-	"mingo@redhat.com" <mingo@redhat.com>, "peterz@infradead.org"
-	<peterz@infradead.org>, "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-	"vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-	"dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>, "rostedt@goodmis.org"
-	<rostedt@goodmis.org>, "bsegall@google.com" <bsegall@google.com>,
-	"mgorman@suse.de" <mgorman@suse.de>, "bristot@redhat.com"
-	<bristot@redhat.com>, "vschneid@redhat.com" <vschneid@redhat.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Rohit Thapliyal
-	<r.thapliyal@samsung.com>, Maninder Singh <maninder1.s@samsung.com>,
-	"helgaas@kernel.org" <helgaas@kernel.org>, Stanislaw Gruszka
-	<stanislaw.gruszka@linux.intel.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <CAJZ5v0gBrc0FctEswQj_JMcZRqoswRgXvBRzT++tseUWBgYJWA@mail.gmail.com>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20240216054540epcms5p3b0b3f97fe4ec4a8126549a579e596910@epcms5p3>
-Date: Fri, 16 Feb 2024 11:15:40 +0530
-X-CMS-MailID: 20240216054540epcms5p3b0b3f97fe4ec4a8126549a579e596910
+MIME-Version: 1.0
+References: <0000000000008b96230610c6b3fe@google.com>
+In-Reply-To: <0000000000008b96230610c6b3fe@google.com>
+From: Tomasz Figa <tfiga@chromium.org>
+Date: Fri, 16 Feb 2024 14:45:44 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5Afg2=8wfcQt_+rqJdSEOuWZXfjNE0bzcVN+AnN5EGYng@mail.gmail.com>
+Message-ID: <CAAFQd5Afg2=8wfcQt_+rqJdSEOuWZXfjNE0bzcVN+AnN5EGYng@mail.gmail.com>
+Subject: Re: [syzbot] [usb?] [media?] possible deadlock in vb2_video_unregister_device
+To: syzbot <syzbot+3b1d4b3d5f7a358bf9a9@syzkaller.appspotmail.com>, 
+	Hans Verkuil <hverkuil@xs4all.nl>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	mchehab@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, 
+	linux-usb@vger.kernel.org, m.szyprowski@samsung.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrPKsWRmVeSWpSXmKPExsWy7bCmhu7kH+dSDVr3SlssacqwuPT4KpvF
-	9JeNLBZPJ2xltnh1Zi2bxd3+qSwWOx++ZbNYvq+f0eLyrjlsFmfnHWez+Nx7hNHi8Pw2FovJ
-	754xWlw6sIDJ4njvASaLjfeyLeZ+mcpssa/jAZPFxz0bGC06jnxjttj41cNi69Hv7A5iHmvm
-	rWH0aNl3i91jwaZSj80rtDw2repk87hzbQ+bx7yTgR7v911l8+jbsorRY/Ppao/Pm+QCuKO4
-	bFJSczLLUov07RK4Mra9ky+Yy10xu2caewPjR64uRk4OCQETiX/9C1m7GLk4hAR2M0qc7NjI
-	1MXIwcErICjxd4cwSI2wQLTEtAuHmEFsIQFFif2LJ7JDxLUlDk64DRZnE9CU+LP8KVhcBCi+
-	ZNFVsDizwDQOiebvZhC7eCVmtD9lgbClJbYv38oIYnMKBEp8m9cNFReVuLn6LTuM/f7YfEYI
-	W0Si9d5ZZghbUOLBz92MMHPmfFjHCmEXS8w8cgqqpkbi/t25TBC2ucT6JavAZvIK+Eo83H2H
-	HeRFFgFViQt/nCFKXCQeLj7CBHGytsSyha+ZQUqYgd5av0sfokRWYuqpdVAlfBK9v58wwXy1
-	Yx6MrSrxa8pUuA/v/57LBmF7SHw4vpUdEspnGSVeXVvMOIFRYRYioGch2TwLYfMCRuZVjJKp
-	BcW56anFpgXGeanlesWJucWleel6yfm5mxjBaVLLewfjowcf9A4xMnEwHmKU4GBWEuGd1Hsm
-	VYg3JbGyKrUoP76oNCe1+BCjNAeLkjjv69a5KUIC6YklqdmpqQWpRTBZJg5OqQYmQ8Pzn99e
-	ebtc9MLOmD+/dpzzlbo+r888hpUhniln8SF7d96H3oa6O2d8WcfWdTKhJ2DJ1djJdgUHK765
-	zFlz8edb45sZT55fdhC9cftHNFd/wm7H9Uw6Ns+Yn644FCZ9hd9Aa18j1zmhH886t0+aMzXR
-	0eu4V9LTwyd8f3j6OKwxCd0sJd2m94uVefHNBKmZf8Qcas34hZy3b68Je+/9hK1vWsp7t/0/
-	HwZ85bPj5rG+Z5e0Z9K2PYtnazGL33M96Z6/RnvtGaHbcx+xbWL1m9r6dopB4DRhzv0sVR0z
-	jnHeW2N1e8ftmSUBipNj+Sce7V2isjC/tS3QTFH3drer++MlU5Xba5OlDpce4feuV2Ipzkg0
-	1GIuKk4EAC5E5x4CBAAA
-X-CMS-RootMailID: 20240213074430epcas5p4c520bf2cce121cf5fa970eed429231a8
-References: <CAJZ5v0gBrc0FctEswQj_JMcZRqoswRgXvBRzT++tseUWBgYJWA@mail.gmail.com>
-	<20240213074416.2169929-1-onkarnath.1@samsung.com>
-	<CGME20240213074430epcas5p4c520bf2cce121cf5fa970eed429231a8@epcms5p3>
 
->On Tue, Feb 13, 2024 at 9:20=E2=80=AFAM=20Onkarnarth=20<onkarnath.1=40sams=
-ung.com>=20wrote:=0D=0A>>=0D=0A>>=20From:=20Onkarnath=20<onkarnath.1=40sams=
-ung.com>=0D=0A>>=0D=0A>>=20As=20%pe=20is=20already=20introduced,=20it's=20b=
-etter=20to=20use=20it=20in=20place=20of=20(%ld)=20for=0D=0A>>=20printing=20=
-errors=20in=20logs.=20It=20would=20enhance=20readability=20of=20logs.=0D=0A=
->>=0D=0A>>=20Signed-off-by:=20Maninder=20Singh=20<maninder1.s=40samsung.com=
->=0D=0A>=0D=0A>What=20exactly=20is=20the=20role=20of=20this=20S-o-b?=20=20H=
-as=20the=20person=20helped=20you=20to=0D=0A>develop=20the=20patch=20or=20so=
-mething=20else?=0D=0A>=0D=0A=0D=0AYes=20It=20was=20meant=20for=20Co-develop=
-ed=20tag,=20Because=20We=20are=20working=20collectively=20for=20making=20er=
-rors=20more=20readable=20for=20our=20product=20kernel.(5.4)=0D=0AAnd=20some=
-=20part=20of=20this=20patch=20was=20made=20by=20him.=0D=0A=0D=0AThen=20we=
-=20checked=20that=20it=20is=20also=20suggested=20by=20open=20source=20to=20=
-have=20%pe=20for=20printing=20errors:=0D=0Ahttps://lore.kernel.org/all/9297=
-2476-0b1f-4d0a-9951-af3fc8bc6e65=40suswa.mountain/=0D=0A=0D=0ASo=20I=20prep=
-ared=20same=20changes=20for=20open=20source=20kernel,=20and=20because=20of=
-=20smaller=20patch=20I=20kept=20it=20as=20normal=20signed-off=20tag=20only.=
-=0D=0AIf=20it=20is=20needed=20I=20can=20resend=20with=20Co-developed=20tag.=
-=0D=0A=0D=0AThanks,=0D=0AOnkarnath
+On Wed, Feb 7, 2024 at 5:44=E2=80=AFPM syzbot
+<syzbot+3b1d4b3d5f7a358bf9a9@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    ed5551279c91 Merge 6.8-rc3 into usb-next
+> git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/us=
+b.git usb-testing
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D16940d7be8000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D28a3704ea90ef=
+255
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D3b1d4b3d5f7a358=
+bf9a9
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for D=
+ebian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D14450a38180=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1603629fe8000=
+0
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/10b543a7171a/dis=
+k-ed555127.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/dc10f27643e8/vmlinu=
+x-ed555127.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/bb6389e754b9/b=
+zImage-ed555127.xz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+3b1d4b3d5f7a358bf9a9@syzkaller.appspotmail.com
+>
+> usb 1-1: SerialNumber: syz
+> usb 1-1: config 0 descriptor??
+> usbtv 1-1:0.0: Fushicai USBTV007 Audio-Video Grabber
+> usb 1-1: USB disconnect, device number 2
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> WARNING: possible recursive locking detected
+> 6.8.0-rc3-syzkaller-00047-ged5551279c91 #0 Not tainted
+> --------------------------------------------
+> kworker/0:2/694 is trying to acquire lock:
+> ffff888109f20b70 (&usbtv->vb2q_lock){+.+.}-{3:3}, at: vb2_video_unregiste=
+r_device drivers/media/common/videobuf2/videobuf2-v4l2.c:1269 [inline]
+> ffff888109f20b70 (&usbtv->vb2q_lock){+.+.}-{3:3}, at: vb2_video_unregiste=
+r_device+0x12b/0x2d0 drivers/media/common/videobuf2/videobuf2-v4l2.c:1245
+>
+> but task is already holding lock:
+> ffff888109f20b70 (&usbtv->vb2q_lock){+.+.}-{3:3}, at: usbtv_video_free+0x=
+28/0x70 drivers/media/usb/usbtv/usbtv-video.c:966
+>
+
+Looking at usbtv_video_free [1], it calls
+vb2_video_unregister_device() with the queue mutex locked, which is
+just wrong. I wonder how (and if) it even worked before. Laurent,
+Hans, Mauro, any idea who is maintaining this driver? I don't see a
+matching entry in the MAINTAINERS file.
+
+[1] https://elixir.bootlin.com/linux/v6.8-rc4/source/drivers/media/usb/usbt=
+v/usbtv-video.c#L964
+
+Best regards,
+Tomasz
+
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
+>
+>        CPU0
+>        ----
+>   lock(&usbtv->vb2q_lock);
+>   lock(&usbtv->vb2q_lock);
+>
+>  *** DEADLOCK ***
+>
+>  May be due to missing lock nesting notation
+>
+> 7 locks held by kworker/0:2/694:
+>  #0: ffff888106ad2138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: proces=
+s_one_work+0x789/0x15d0 kernel/workqueue.c:2608
+>  #1: ffffc90001c0fd80 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: =
+process_one_work+0x7eb/0x15d0 kernel/workqueue.c:2609
+>  #2: ffff88810af2f190 (&dev->mutex){....}-{3:3}, at: device_lock include/=
+linux/device.h:990 [inline]
+>  #2: ffff88810af2f190 (&dev->mutex){....}-{3:3}, at: hub_event+0x1be/0x4f=
+40 drivers/usb/core/hub.c:5840
+>  #3: ffff888107799190 (&dev->mutex){....}-{3:3}, at: device_lock include/=
+linux/device.h:990 [inline]
+>  #3: ffff888107799190 (&dev->mutex){....}-{3:3}, at: usb_disconnect+0x10a=
+/0x910 drivers/usb/core/hub.c:2287
+>  #4: ffff88810779a160 (&dev->mutex){....}-{3:3}, at: device_lock include/=
+linux/device.h:990 [inline]
+>  #4: ffff88810779a160 (&dev->mutex){....}-{3:3}, at: __device_driver_lock=
+ drivers/base/dd.c:1095 [inline]
+>  #4: ffff88810779a160 (&dev->mutex){....}-{3:3}, at: device_release_drive=
+r_internal+0xa4/0x610 drivers/base/dd.c:1292
+>  #5: ffff888109f20b70 (&usbtv->vb2q_lock){+.+.}-{3:3}, at: usbtv_video_fr=
+ee+0x28/0x70 drivers/media/usb/usbtv/usbtv-video.c:966
+>  #6: ffff888109f20ae0 (&usbtv->v4l2_lock){+.+.}-{3:3}, at: usbtv_video_fr=
+ee+0x32/0x70 drivers/media/usb/usbtv/usbtv-video.c:967
+>
+> stack backtrace:
+> CPU: 0 PID: 694 Comm: kworker/0:2 Not tainted 6.8.0-rc3-syzkaller-00047-g=
+ed5551279c91 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
+oogle 01/25/2024
+> Workqueue: usb_hub_wq hub_event
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+>  check_deadlock kernel/locking/lockdep.c:3062 [inline]
+>  validate_chain kernel/locking/lockdep.c:3856 [inline]
+>  __lock_acquire+0x210a/0x3b30 kernel/locking/lockdep.c:5137
+>  lock_acquire kernel/locking/lockdep.c:5754 [inline]
+>  lock_acquire+0x1ae/0x520 kernel/locking/lockdep.c:5719
+>  __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+>  __mutex_lock+0x175/0x9d0 kernel/locking/mutex.c:752
+>  vb2_video_unregister_device drivers/media/common/videobuf2/videobuf2-v4l=
+2.c:1269 [inline]
+>  vb2_video_unregister_device+0x12b/0x2d0 drivers/media/common/videobuf2/v=
+ideobuf2-v4l2.c:1245
+>  usbtv_video_free+0x4a/0x70 drivers/media/usb/usbtv/usbtv-video.c:970
+>  usbtv_disconnect+0x5c/0xd0 drivers/media/usb/usbtv/usbtv-core.c:138
+>  usb_unbind_interface+0x1e5/0x960 drivers/usb/core/driver.c:461
+>  device_remove drivers/base/dd.c:569 [inline]
+>  device_remove+0x11f/0x170 drivers/base/dd.c:561
+>  __device_release_driver drivers/base/dd.c:1272 [inline]
+>  device_release_driver_internal+0x44a/0x610 drivers/base/dd.c:1295
+>  bus_remove_device+0x22c/0x420 drivers/base/bus.c:574
+>  device_del+0x39a/0xa50 drivers/base/core.c:3814
+>  usb_disable_device+0x36c/0x7f0 drivers/usb/core/message.c:1416
+>  usb_disconnect+0x2e1/0x910 drivers/usb/core/hub.c:2296
+>  hub_port_connect drivers/usb/core/hub.c:5352 [inline]
+>  hub_port_connect_change drivers/usb/core/hub.c:5652 [inline]
+>  port_event drivers/usb/core/hub.c:5812 [inline]
+>  hub_event+0x1be0/0x4f40 drivers/usb/core/hub.c:5894
+>  process_one_work+0x886/0x15d0 kernel/workqueue.c:2633
+>  process_scheduled_works kernel/workqueue.c:2706 [inline]
+>  worker_thread+0x8b9/0x1290 kernel/workqueue.c:2787
+>  kthread+0x2c6/0x3a0 kernel/kthread.c:388
+>  ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+>  </TASK>
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
 
