@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-68131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D835857648
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:57:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B8E8857649
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:57:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F5AD1C22711
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:57:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D78241F21D2E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A67B1F94C;
-	Fri, 16 Feb 2024 06:54:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1E92030F;
+	Fri, 16 Feb 2024 06:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CD9yVN3+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CJqCV8/y"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B33D11EB4F
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7668200D1
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708066465; cv=none; b=W+hrX6t77Qwut/fZVPMXJlUY7WV4sERYum0DIKQoqEsEmvZ6VUiUspOt1mi46coW5lqVmRgWpu+/r6ieEiBjL6r9XiZCgrSmxzvU172UeuGj/BatLqCGoAx6TQPiffWRh4a7qS14jfVbqczhEqGl2V4J6QlJ6DWbvCtvOnpF/9U=
+	t=1708066468; cv=none; b=AJRv2XCiMqDQb4oC2VWsPb93QW9wCpdTW46P1NILTxZRQJlavPw7KsV+T1Ng5vGXA2xLXyxfQh/bkV8zYuTZzPf/v7YRsuLdajhXEcqx5ZySUxCLFE9+IEr/6cXPPZ3qBT2oZrNqYH928QF/fnUf+GpfhqivAqYbeZ/eQlb00dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708066465; c=relaxed/simple;
-	bh=guZaFSqSf3MqQt8V36466MzszKjuXHWltT0kqFLvhWY=;
+	s=arc-20240116; t=1708066468; c=relaxed/simple;
+	bh=FdrONz3jqnEbBJVqtq1ykjLmdW7prwTBxhfQ4GglgTs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UB8MW+S/9oQm2PPpLid9r7LDW3zExIuCAzDNfMlGX2vNDK/zHg4qSR36OJV3+3GvAC/didU7h0JPKkt/G+OF0XV2SIVQBhyCToSOeI6RU/nH5zWoBgaJIz8fC6Vaa6b3SzfP5PhFKgXFc8vKui65ZKws2mMOkTD78fCRRHEmkLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CD9yVN3+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CF8CC433C7;
-	Fri, 16 Feb 2024 06:54:23 +0000 (UTC)
+	 MIME-Version; b=IWBpmtIIxdiIOtjzH7YLhFmZD3C57Z9YVbBCfbOtzoFspgztEaj/DM5LM4vVKG3FTJ63aAKQLjizYQ3keu2ci3jYFYkVzGhEh8cobcadVM3Ur9UQ4ZkvS3GgnIluMWyYSFP17RG03FXcgcL4t0cApKnyQxSZExovr4fWPX6yRp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CJqCV8/y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39BF0C43390;
+	Fri, 16 Feb 2024 06:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708066465;
-	bh=guZaFSqSf3MqQt8V36466MzszKjuXHWltT0kqFLvhWY=;
+	s=k20201202; t=1708066468;
+	bh=FdrONz3jqnEbBJVqtq1ykjLmdW7prwTBxhfQ4GglgTs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=CD9yVN3+t6Oxc4Su6jO9CPZk5HJwbk1hnn9GS0N9rM148G0KprQN5AW+JnV49jYzM
-	 Vy1se9Y35OI1KnxNf8NkYYyTMb1AP7/PAEe0d8Wt186IepDpbl2ApTLK4CXigB3mTe
-	 5QJDpTfy6FvqP/w7B+wbF/I+v2b50yEclWqyQ1T2L1Dpo59qQu7k7jlI+XRU9br8X3
-	 pco+MMsyC+qsoDJtNAp+Z2Ni5C/FOEqLgZZeB5JC3nuJ80Scwa7ig5Z3fGG1dOrPVb
-	 LHHjT4UoQWO4CxvjoIo6pT1s22I+pGeB/OWDTbqqYM46jxc8cUxRm+LfWLj3Ycs+rG
-	 d6XkQFoG5UK4A==
+	b=CJqCV8/yNzOiPeXngxMZCidOZ2fEeSBe7MNvGGeKcUAZcvCE9A7SQK+hJG4s9kfjw
+	 vXE2Uu77p1raT/HW+nbRV6hkej2H7N6zAg/8ZrC4Sr5o0SmceBZC+XJ46r7StE3KEl
+	 o6x6NeyQnKKBz3pCA/p8VXxhY0h1NeMQaSCF+EAbouvlthpTMewOWOvJSyKRJn/Eor
+	 typPJkEulN5DS6e3TeD/PgzkF0HgWDVUMwZSgSrCVIGg022tGWmbxmLsDqTzuD2rMb
+	 ATAlZwiezvB5qOdZivlJWHAyhb570/hY1KpCUnYsvGhb6ZgQFNCww1uqIAhtzN2ko9
+	 BJG76DnQun4/Q==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: jani.nikula@linux.intel.com
 Cc: linux-kernel@vger.kernel.org,
@@ -48,9 +48,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Rodrigo Vivi <rodrigo.vivi@intel.com>,
 	Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
 	intel-gfx@lists.freedesktop.org
-Subject: [PATCH 17/21] drm/i915: remove intel_gvt_event_info::policy
-Date: Fri, 16 Feb 2024 07:53:22 +0100
-Message-ID: <20240216065326.6910-18-jirislaby@kernel.org>
+Subject: [PATCH 18/21] drm/i915: remove intel_gvt_irq::pending_events
+Date: Fri, 16 Feb 2024 07:53:23 +0100
+Message-ID: <20240216065326.6910-19-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <20240216065326.6910-1-jirislaby@kernel.org>
 References: <20240216065326.6910-1-jirislaby@kernel.org>
@@ -62,7 +62,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-intel_gvt_event_info::policy was never used since its addition in
+intel_gvt_irq::pending_events was never used since its addition in
 commit c8fe6a6811a7 (drm/i915/gvt: vGPU interrupt virtualization.).
 Drop it.
 
@@ -79,17 +79,17 @@ Cc: intel-gfx@lists.freedesktop.org
  1 file changed, 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/i915/gvt/interrupt.h b/drivers/gpu/drm/i915/gvt/interrupt.h
-index e60ad476fe60..b1fd6ed4e34a 100644
+index b1fd6ed4e34a..cd214be98668 100644
 --- a/drivers/gpu/drm/i915/gvt/interrupt.h
 +++ b/drivers/gpu/drm/i915/gvt/interrupt.h
-@@ -177,7 +177,6 @@ enum intel_gvt_irq_type {
- /* per-event information */
- struct intel_gvt_event_info {
- 	int bit;				/* map to register bit */
--	int policy;				/* forwarding policy */
- 	struct intel_gvt_irq_info *info;	/* register info */
- 	gvt_event_virt_handler_t v_handler;	/* for v_event */
+@@ -187,7 +187,6 @@ struct intel_gvt_irq {
+ 	struct intel_gvt_irq_info *info[INTEL_GVT_IRQ_INFO_MAX];
+ 	DECLARE_BITMAP(irq_info_bitmap, INTEL_GVT_IRQ_INFO_MAX);
+ 	struct intel_gvt_event_info events[INTEL_GVT_EVENT_MAX];
+-	DECLARE_BITMAP(pending_events, INTEL_GVT_EVENT_MAX);
+ 	struct intel_gvt_irq_map *irq_map;
  };
+ 
 -- 
 2.43.1
 
