@@ -1,75 +1,60 @@
-Return-Path: <linux-kernel+bounces-68787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C77D85806B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:16:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AA1985806D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:16:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B1AF1F22ABA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:16:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 282611F2114F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:16:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52AEE12F597;
-	Fri, 16 Feb 2024 15:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7368912F5AA;
+	Fri, 16 Feb 2024 15:16:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lN/gFtiX"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BVFv3OwZ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7A30768F2;
-	Fri, 16 Feb 2024 15:15:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE75768F2;
+	Fri, 16 Feb 2024 15:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708096553; cv=none; b=WuAyRAMwx71i7zHYPK4pFBiNomkfcUOqdooE+5zB7D2SdJ3hvTmz8vOMw4WQHYNGIqhS6CRAJXW7j8nev6hmq1R4enpYbVTABFDiOysk0SyqO7SAv7+AX/NAfQheOBECj0g5WDomLtQbAQR0NB8aCeQg2jd8FKEng7uflmu2H/Q=
+	t=1708096563; cv=none; b=EyfpYflT6PyEElQaodxw1YbPPkQmuyPg7Kg8WInfAN4BwNHYvKtMneOpAhpu43L+71/bRHGWkhVqyWSSJAOSkJ+nGsI1nQ5A++srSGJcGJ9HNxHHxn3qFcAhl3o831XJFvZWYnG6a1bUIFgf+3Alby8E1cDpYvRUXQE778K5nuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708096553; c=relaxed/simple;
-	bh=lQHgNf4lZFaXKyQkFvpZd1nX0tMYYIakTZ3wulKXKFg=;
+	s=arc-20240116; t=1708096563; c=relaxed/simple;
+	bh=Gwn9nO1wjwVJg72Yko0kJdLqPjCBrxFUpXmw05lNXGM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SmycuzPYPkwSpJaffE1i7T0yEewtSRTn2KKdaeOJz5UztTmDsUzg/0q3qiDxLgOKsHh7rwHktcPTQGVbrxpvO6P2h7t0mBlUm264omTtISZY7CoDt0ZmpZfiyp0CWZJiwexwOEc135yYNkoLA3osVztpZPhApTLCq2r85ICPbDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lN/gFtiX; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e09493eb8eso2566513b3a.1;
-        Fri, 16 Feb 2024 07:15:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708096551; x=1708701351; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=1fBU0BnRrjjNunok1eRCJ3FzNq+wuPw/Wc45OrLINiQ=;
-        b=lN/gFtiXY9BEMJFkzfBIPVjWI6sCBBu12MQIRt7aF9N2Rd1VRCSxgDDWppqwrFofLn
-         KyCd+2dT7uEIRZfM466A0rPhWbSrVyWKzvzinQM9MTTL26gI+Mtya8oGSwqzgg4rvjMx
-         m06WqxYVhnJyh+Jz+sYLjHpSlj/gJ1bMmZE/FwYg27HrWT+krjFOblT91MR28lb26AS5
-         OTXXyB9sAU4lNCULdGYnc29G44jqh3qsN4e8yxvSgG71Akf6pNdv/cuUqZM46u4kBdHk
-         M9sGOvAK7fMfk8sUhn7/+xcVTdOvdSSatL7MZ3hQmkJ7kMK8tObYDdXGxQ1hvyHmVZQ6
-         cgCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708096551; x=1708701351;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1fBU0BnRrjjNunok1eRCJ3FzNq+wuPw/Wc45OrLINiQ=;
-        b=UY2T3oW/d3YhKOASgbk/YUkaBuqPmQnX6WImUcckU7t+JvYd7Z2FSAq+5QRJnlmRqd
-         756a8DDkD+z+fBfBPkqoWGgsa1FMmmDJ2tNOyvLTFGyVKs1mnCzn6hqaV1X/OkZJnpcG
-         sa4rZ6Livmr9JxtuQVig4T15U/uTPpksaR4rGY6l/I/Y5BiU3Z38yQ5JHYdn2Jnc4qlA
-         X+DJkQDn/dSeAiVU+M1nMysM+yODTbbK/3u1GoSZYedVFiPeCkB20vP3/sgf39rLX9mq
-         +cbK7lm6jQFu9Hd7pR++dEhdbDCjqNEY+dPjvm2X2UJjjpqL/Fn8XjnEWg6X68sVWQYk
-         AW3A==
-X-Forwarded-Encrypted: i=1; AJvYcCWeovT/SpoaH96zSQGYVVwuZKHReitOEpDl8ouSlzT8l4yC7Dod/s2lPq3PjeAbxphORsV7aN3hRNhXEW3iGGJojhdSYJ4BP+nVjhT8
-X-Gm-Message-State: AOJu0Ywp3PCxjwUp0RGTp3frAEZp7RWcslGZQn9Shad/+o2OngEP76Yr
-	lGo+aQfF6DQJi4/dZh05R9x5Hz9gF0rhCAHc+fLtX4t33bJuQElvPHb0WWoL
-X-Google-Smtp-Source: AGHT+IHSOKwPfjsHo155LHe/Nwr9Aw+9Sgs2fzFG+iK7odLLBBFofGw/97uFyN2fYy+tOygfIjWmow==
-X-Received: by 2002:a05:6a21:150a:b0:19e:b477:33a4 with SMTP id nq10-20020a056a21150a00b0019eb47733a4mr7410349pzb.27.1708096550723;
-        Fri, 16 Feb 2024 07:15:50 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i123-20020a62c181000000b006e0e4b9b7e6sm49131pfg.212.2024.02.16.07.15.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 07:15:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <06b53f95-2910-46d5-b968-14718d7e0ac6@roeck-us.net>
-Date: Fri, 16 Feb 2024 07:15:49 -0800
+	 In-Reply-To:Content-Type; b=oZvdwCplA4kKBM7G+GiI3P2/7AJ1BLEUXqBPGC9Y+6WF/DKXWOryr/1EZE9pTinTDXgntYCboktyaEjodVdf3NplSbuoOV5eHnJxJZilWwbQMdwjeOvzRLzHFxVBP/r0X+1cL9tDKwJAJExsfi5K3yfEKGFxN0UaO5jBo7wgbEk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BVFv3OwZ; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708096562; x=1739632562;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Gwn9nO1wjwVJg72Yko0kJdLqPjCBrxFUpXmw05lNXGM=;
+  b=BVFv3OwZN7VbmumGYZmG/OEZC0UEWO8o4Xckd8wRtw/JUjckx5dUBga/
+   s3mpeoo9wXYcnnZueMxQM6NbUZ4E2MWET0rImokfbrpiqep3zOK7gCnYG
+   dTYKgwYvrTjJ2H8fAvEGz1DIkZxJZ94Zzpq+cz42wm2/2uWEHJwYYYbJW
+   gJzMnB41DM7gYq1OFcI46QJs0VVCbp9lN/43PqsVmkuUNuYEcLGjFJtYD
+   J6cuDa8aKn05ZPlQECRru5Kbp7w6heHR1m54nPAswXryapFpMpKLw1pSQ
+   JbYMguGX3sTgqwsbfPlzB5s/1lYm33fklO8/EnZ7LSP/lsKo6U4KgcNds
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2093074"
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="2093074"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 07:16:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="4252126"
+Received: from smidford-mobl.amr.corp.intel.com (HELO [10.209.63.169]) ([10.209.63.169])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 07:16:00 -0800
+Message-ID: <a5bd910b-3148-47ec-9280-561cfe6c16df@intel.com>
+Date: Fri, 16 Feb 2024 07:15:59 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,169 +62,104 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] parisc/unaligned: Rewrite 64-bit inline assembly of
- emulate_ldd()
+Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
 Content-Language: en-US
-To: Helge Deller <deller@gmx.de>
-Cc: linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240216073315.3801833-1-linux@roeck-us.net>
- <1e889ddc-e5ea-41c8-a316-61bae12dfa9c@gmx.de>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <1e889ddc-e5ea-41c8-a316-61bae12dfa9c@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+To: Haitao Huang <haitao.huang@linux.intel.com>, jarkko@kernel.org,
+ dave.hansen@linux.intel.com, tj@kernel.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org, x86@kernel.org,
+ cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+ hpa@zytor.com, sohil.mehta@intel.com, tim.c.chen@linux.intel.com
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-10-haitao.huang@linux.intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240205210638.157741-10-haitao.huang@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 2/16/24 05:48, Helge Deller wrote:
-> On 2/16/24 08:33, Guenter Roeck wrote:
->> Convert to use real temp variables instead of clobbering processor
->> registers.
-> 
-> Thanks for doing this.
-> It was on my todo list since quite some time :-)
-> 
->> This aligns the 64-bit inline assembly code with the 32-bit
->> assembly code which was rewritten with commit 427c1073a2a1
->> ("parisc/unaligned: Rewrite 32-bit inline assembly of emulate_ldd()").
->>
->> While at it, fix comment in 32-bit rewrite code. Temporary variables are
->> now used for both 32-bit and 64-bit code, so move their declarations
->> to the function header.
->>
->> No functional change intended.
->>
->> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->> ---
->> Implemented while analyzing a bug. I am not really sure of it is worth
->> the effort, but I figured that I might as well submit it.
->>
->>   arch/parisc/kernel/unaligned.c | 29 +++++++++++++----------------
->>   1 file changed, 13 insertions(+), 16 deletions(-)
->>
->> diff --git a/arch/parisc/kernel/unaligned.c b/arch/parisc/kernel/unaligned.c
->> index c520e551a165..622c7b549fb8 100644
->> --- a/arch/parisc/kernel/unaligned.c
->> +++ b/arch/parisc/kernel/unaligned.c
->> @@ -169,7 +169,8 @@ static int emulate_ldw(struct pt_regs *regs, int toreg, int flop)
->>   static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
->>   {
->>       unsigned long saddr = regs->ior;
->> -    __u64 val = 0;
->> +    unsigned long shift;
->> +    __u64 val = 0, temp1;
-> 
-> temp1 is ok to be "long".
-> 
->>       ASM_EXCEPTIONTABLE_VAR(ret);
->>
->>       DPRINTF("load " RFMT ":" RFMT " to r%d for 8 bytes\n",
->> @@ -180,25 +181,22 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
->>
->>   #ifdef CONFIG_64BIT
->>       __asm__ __volatile__  (
->> -"    depd,z    %3,60,3,%%r19\n"        /* r19=(ofs&7)*8 */
->> -"    mtsp    %4, %%sr1\n"
->> -"    depd    %%r0,63,3,%3\n"
->> -"1:    ldd    0(%%sr1,%3),%0\n"
->> -"2:    ldd    8(%%sr1,%3),%%r20\n"
->> -"    subi    64,%%r19,%%r19\n"
->> -"    mtsar    %%r19\n"
->> -"    shrpd    %0,%%r20,%%sar,%0\n"
->> +"    depd,z    %4,60,3,%2\n"        /* shift=(ofs&7)*8 */
->> +"    mtsp    %5, %%sr1\n"
->> +"    depd    %%r0,63,3,%4\n"
->> +"1:    ldd    0(%%sr1,%4),%0\n"
->> +"2:    ldd    8(%%sr1,%4),%3\n"
->> +"    subi    64,%2,%2\n"
->> +"    mtsar    %2\n"
->> +"    shrpd    %0,%3,%%sar,%0\n"
->>   "3:    \n"
->>       ASM_EXCEPTIONTABLE_ENTRY_EFAULT(1b, 3b, "%1")
->>       ASM_EXCEPTIONTABLE_ENTRY_EFAULT(2b, 3b, "%1")
->> -    : "=r" (val), "+r" (ret)
->> -    : "0" (val), "r" (saddr), "r" (regs->isr)
->> -    : "r19", "r20" );
->> +    : "+r" (val), "+r" (ret), "=&r" (shift), "=&r" (temp1)
->> +    : "r" (saddr), "r" (regs->isr) );
-> 
-> addr is actually being modified.
-> That's why I moved it into the output registers and
-> shuffled shift and temp1 one backwards, so that the registers
-> are now in the same ordering as on the 32-bit path.
-> 
-> I've pushed the modified patch here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git/commit/?h=for-next&id=a6ea53ce77e9dd6e388d673bdd4d80741f97b914
-> 
-> Please double-check!
-> 
-Confirmed working.
+On 2/5/24 13:06, Haitao Huang wrote:
+> @@ -414,7 +416,7 @@ static void sgx_reclaim_pages_global(void)
+>  void sgx_reclaim_direct(void)
+>  {
+>  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+> -		sgx_reclaim_pages_global();
+> +		sgx_reclaim_pages_global(false);
+>  }
+>  
+>  static int ksgxd(void *p)
+> @@ -437,7 +439,7 @@ static int ksgxd(void *p)
+>  				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
+>  
+>  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
+> -			sgx_reclaim_pages_global();
+> +			sgx_reclaim_pages_global(true);
+>  
+>  		cond_resched();
+>  	}
 
-Thanks,
-Guenter
+First, I'm never a fan of random true/false or 0/1 arguments to
+functions like this.  You end up having to go look at the called
+function to make any sense of it.  You can either do an enum, or some
+construct like this:
 
-> Thanks!
-> Helge
-> 
-> 
->>   #else
->> -    {
->> -    unsigned long shift, temp1;
->>       __asm__ __volatile__  (
->> -"    zdep    %2,29,2,%3\n"        /* r19=(ofs&3)*8 */
->> +"    zdep    %2,29,2,%3\n"        /* shift=(ofs&3)*8 */
->>   "    mtsp    %5, %%sr1\n"
->>   "    dep    %%r0,31,2,%2\n"
->>   "1:    ldw    0(%%sr1,%2),%0\n"
->> @@ -214,7 +212,6 @@ static int emulate_ldd(struct pt_regs *regs, int toreg, int flop)
->>       ASM_EXCEPTIONTABLE_ENTRY_EFAULT(3b, 4b, "%1")
->>       : "+r" (val), "+r" (ret), "+r" (saddr), "=&r" (shift), "=&r" (temp1)
->>       : "r" (regs->isr) );
->> -    }
->>   #endif
->>
->>       DPRINTF("val = 0x%llx\n", val);
-> 
+ 		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES)) {
+			bool indirect = true;
+			sgx_reclaim_pages_global(indirect);
+		}
 
+Yeah, it takes a few more lines but it saves you having to comment the
+thing.
+
+Does this 'indirect' change any behavior other than whether it does a
+search for an mm to find a place to charge the backing storage?  Instead
+of passing a flag around, why not just pass the mm?
+
+This refactoring out of 'indirect' or passing the mm around really wants
+to be in its own patch anyway.
 
