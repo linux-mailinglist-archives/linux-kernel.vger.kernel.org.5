@@ -1,124 +1,255 @@
-Return-Path: <linux-kernel+bounces-68250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D874B8577CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:39:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C6B78577CD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:38:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A439E284F7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D621284F17
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 610671B815;
-	Fri, 16 Feb 2024 08:38:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF34318EBB;
+	Fri, 16 Feb 2024 08:38:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Cog6cQBn"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BBh8MwJa"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F22BB17BBD;
-	Fri, 16 Feb 2024 08:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE9E175BE
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:38:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708072708; cv=none; b=AhK5WkFPGn0hyMZ7MRKl9ju0cMkwZmQTJxMxKG2xz08iwnV3gwTlWQSPxTLm6f9K+N0hc3kIgbWq2RgiQI5EV4Ycl7/OhVSQQNhMVqRdM4ZsXLR0VSc1hpSfkzIwRHK5TaJGv9Q00nVHWBOGNiB4hwAlK2NxsZProSD/Bg9PQ6Y=
+	t=1708072707; cv=none; b=qesTo5oa0bten+k+fb2KeXylhGyJ0GFD6H0Ym3+4yoOlZzqNOb0uAInUI3DVzdkdMoJFyzG1HqC7OT9zPUUimQ18mq/bMn2vv5X6LYNVWsk2lln8hk5mzeJPo3QssovimknlGfybUksGIwf4vyFcUhP02lOCb9eK7CTCNqXS5Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708072708; c=relaxed/simple;
-	bh=HxOuetD/ZDxORTouQxar11u838Ki34k7zzeCS5xykLA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=M3AEWxZYtl3mgdoMs4b7hxHVWskIwtBXF4tazZ4A+VLIBPU0HTGLOBpUyKVoRBTuZ/+R6i3qFnrgXwkesPvJMR5NipNmZscvf4Ieu+OyhycdiRfkLOLkbj4HS8dyNsAi1Lu3Peq7nE/R+Q7uTC0AJyf9tvxBWEZf5eUPln76Nzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Cog6cQBn; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708072708; x=1739608708;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=HxOuetD/ZDxORTouQxar11u838Ki34k7zzeCS5xykLA=;
-  b=Cog6cQBne0fvT97EP9JoAJ7wDz2DrzrjuFy/NM1F1SnRSn14v8wEU8JD
-   6w1nv91347TY/t2Dp3b2ZSKTRGdVIKA62In4ecbOM0pugawpkdsQtxQdN
-   rY2XKVO5SYYgy9eexCWcAzUGWU8+B5MKY9rwjXGBtFAT1C1W8hZ8Y1QsN
-   kWYV/6C9XLhMxuRPU1gFlhjDngnSX37tAlMi3pu8GraS79fDfwB6nqf1+
-   DSTfzrIvYEdA1yfaeTTFhypqlM++Fxu5HGKwn/jybTVv6oGFe1j0Tc1Lm
-   ZYPtAkWVzyh94VTm/oigBMWCKjFemnOkLPxW1CNcKx3wQFEvv1YNiOG0a
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2063360"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="2063360"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 00:38:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="4144870"
-Received: from pshishpo-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.48.79])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 00:38:04 -0800
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
- hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
- dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
- corbet@lwn.net, void@manifault.com, peterz@infradead.org,
- juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
- arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
- masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
- muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
- pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
- dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
- keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
- gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
- penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
- glider@google.com, elver@google.com, dvyukov@google.com,
- shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
- rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
- surenb@google.com, kernel-team@android.com, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
- linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-modules@vger.kernel.org,
- kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/35] Memory allocation profiling
-In-Reply-To: <20240212213922.783301-1-surenb@google.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240212213922.783301-1-surenb@google.com>
-Date: Fri, 16 Feb 2024 10:38:00 +0200
-Message-ID: <87sf1s4xef.fsf@intel.com>
+	s=arc-20240116; t=1708072707; c=relaxed/simple;
+	bh=OwZMmRYZHSUUAGPamSbzE0nq8AnnFt8P11fWjDDOEfg=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=V0Gu5370OTKV2FfQvShjQYLu1q1jioV2lHC/9xb2J0G1Nlo+yY0oZ0/IeO1WRujKHLDpEZDSpdtongCD8BHsIFHWcVeFTvrXOaKCrWhigKpIjczpFrD284G5Rtxn32mxjMaQg3aC/iTm17nrI6IGY+eg+MlV/Bbjp09pxnN4p5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BBh8MwJa; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51182ece518so2119409e87.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:38:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708072703; x=1708677503; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ngo+x1ISyMh3dIrNdqAUb75XtmSi0d4XUY9AETqB4qI=;
+        b=BBh8MwJauIbe9d+1A1B1R4IRNkUlnfX35j+p4fm9zbte+qr/9LUoCBWTzcaOBfwhP8
+         NRKCEd57PmcSM8q7vHjyis4LYj9A3jwTVV8SopkutsHMyvvdItchSYoZH7U8iy+VQCxX
+         0i8ZlnansZ3kSJkpbidCZYnq8IovAMHE7rrXLayerl25SVXIZvgjz1dBfc+LI1dKlUzG
+         9auL3TFhY0I2TnRYBcN7g/K1yXcriHjJLkw/HCX9/l4p3XV495FXVoegq4RxqIl8YvSf
+         PNEB6h11dUStrtL5oZY0Puamq+gVOCEMaxahhxhmMmdUZcRjonflEbT+B09xTkgjgXsW
+         iSXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708072703; x=1708677503;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Ngo+x1ISyMh3dIrNdqAUb75XtmSi0d4XUY9AETqB4qI=;
+        b=UyvLgi0095xP91W32y5Qb4dNqeqbfDzfpylkAaKyuezoPV4L9l7OEINOGzQEIRx4t7
+         +OMhjsmghQ0obSeqWJQZ5LdTfXuAGSm/PY7alh15trLpcjbjttSbsILEz8w5ZgwkXYCd
+         j4fCHbPFa33zPgXzN0OijfNw6Z8xUgGRZlFBp04mzchqglaT4zLn9oTmsjbw+x0CffjX
+         9D215kC1HkL9byBgBdraTEh34oGeGpqJXAyOz9Q4USKA2eGf9KP/aoTmv1u6dHv2qlgj
+         6d8X2CL/iM7NKr9f8AvRNpn0WiyRb6dkoebmyJa4JM+BVr7Y2YOHREodWfbYq/7zMdRi
+         GN8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVZmkyg/HICxjOl268ZVlxc95gloIFRJuLZR6PAC2xrWkDE9MKXU58tQBciIBB0NK0wCdALa2PNEsAUAZS5mLvEoMedFXLMum9c0zZD
+X-Gm-Message-State: AOJu0YwPHC/PSRBIWsuuQaxCUC35hKq+l33KNcZNo+4RgkZKmY8Dm/uh
+	1LMVQbDZCH6AFglLD0b34tibrawLHLDk+ss5JLYH5eQYvPCZSFfIzeW1RFx1eJw=
+X-Google-Smtp-Source: AGHT+IG0IqZfjgZJS4CNZqd7PPymI1uvvJj8A/XLg3FGcA9awMv4M/Z6g5sqhsU4QXf+mbUJCQvbLA==
+X-Received: by 2002:a05:6512:4019:b0:512:8a9b:a960 with SMTP id br25-20020a056512401900b005128a9ba960mr2914808lfb.4.1708072703342;
+        Fri, 16 Feb 2024 00:38:23 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:814e:29c1:3729:78fa? ([2a01:e0a:982:cbb0:814e:29c1:3729:78fa])
+        by smtp.gmail.com with ESMTPSA id ay33-20020a05600c1e2100b004124be777a7sm768741wmb.7.2024.02.16.00.38.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 00:38:22 -0800 (PST)
+Message-ID: <6acd8776-cc59-496a-ad80-47613a8283a3@linaro.org>
+Date: Fri, 16 Feb 2024 09:38:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/dp: Don't attempt AUX transfers when eDP panels are
+ not powered
+Content-Language: en-US, fr
+To: Doug Anderson <dianders@chromium.org>,
+ Javier Martinez Canillas <javierm@redhat.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Johan Hovold <johan+linaro@kernel.org>
+Cc: Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Hsin-Yi Wang <hsinyi@chromium.org>, dri-devel@lists.freedesktop.org,
+ eizan@chromium.org, Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ Heiner Kallweit <hkallweit1@gmail.com>, Imre Deak <imre.deak@intel.com>,
+ Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
+ Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+ linux-kernel@vger.kernel.org
+References: <20240202141109.1.I24277520ac754ea538c9b14578edc94e1df11b48@changeid>
+ <CAJMQK-it9YMod4rHKnACq4O-iaGieK2SN4x5vQ018CghsA631A@mail.gmail.com>
+ <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
+ <87sf1u58k0.fsf@intel.com>
+ <CAD=FV=XQdLm3PcjEd_g_dBJ9QO8zAJtj5nrXS9=cjC80+-Jbfg@mail.gmail.com>
+ <cbcd981f-bd5d-477e-8482-d3414be17057@linaro.org>
+ <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 12 Feb 2024, Suren Baghdasaryan <surenb@google.com> wrote:
-> Memory allocation, v3 and final:
->
-> Overview:
-> Low overhead [1] per-callsite memory allocation profiling. Not just for debug
-> kernels, overhead low enough to be deployed in production.
->
-> We're aiming to get this in the next merge window, for 6.9. The feedback
-> we've gotten has been that even out of tree this patchset has already
-> been useful, and there's a significant amount of other work gated on the
-> code tagging functionality included in this patchset [2].
++ Bjorn
++ Konrad
++ Johan
 
-I wonder if it wouldn't be too much trouble to write at least a brief
-overview document under Documentation/ describing what this is all
-about? Even as follow-up. People seeing the patch series have the
-benefit of the cover letter and the commit messages, but that's hardly
-documentation.
+On 15/02/2024 18:08, Doug Anderson wrote:
+> Hi,
+> 
+> On Thu, Feb 15, 2024 at 8:53 AM Neil Armstrong
+> <neil.armstrong@linaro.org> wrote:
+>>
+>> Hi Doug,
+>>
+>> On 15/02/2024 16:08, Doug Anderson wrote:
+>>> Hi,
+>>>
+>>> On Thu, Feb 15, 2024 at 2:24 AM Jani Nikula <jani.nikula@intel.com> wrote:
+>>>>
+>>>> On Wed, 14 Feb 2024, Doug Anderson <dianders@chromium.org> wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On Tue, Feb 13, 2024 at 10:25 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>>>>>>
+>>>>>> On Wed, Feb 14, 2024 at 2:23 PM Douglas Anderson <dianders@chromium.org> wrote:
+>>>>>>>
+>>>>>>> If an eDP panel is not powered on then any attempts to talk to it over
+>>>>>>> the DP AUX channel will timeout. Unfortunately these attempts may be
+>>>>>>> quite slow. Userspace can initiate these attempts either via a
+>>>>>>> /dev/drm_dp_auxN device or via the created i2c device.
+>>>>>>>
+>>>>>>> Making the DP AUX drivers timeout faster is a difficult proposition.
+>>>>>>> In theory we could just poll the panel's HPD line in the AUX transfer
+>>>>>>> function and immediately return an error there. However, this is
+>>>>>>> easier said than done. For one thing, there's no hard requirement to
+>>>>>>> hook the HPD line up for eDP panels and it's OK to just delay a fixed
+>>>>>>> amount. For another thing, the HPD line may not be fast to probe. On
+>>>>>>> parade-ps8640 we need to wait for the bridge chip's firmware to boot
+>>>>>>> before we can get the HPD line and this is a slow process.
+>>>>>>>
+>>>>>>> The fact that the transfers are taking so long to timeout is causing
+>>>>>>> real problems. The open source fwupd daemon sometimes scans DP busses
+>>>>>>> looking for devices whose firmware need updating. If it happens to
+>>>>>>> scan while a panel is turned off this scan can take a long time. The
+>>>>>>> fwupd daemon could try to be smarter and only scan when eDP panels are
+>>>>>>> turned on, but we can also improve the behavior in the kernel.
+>>>>>>>
+>>>>>>> Let's let eDP panels drivers specify that a panel is turned off and
+>>>>>>> then modify the common AUX transfer code not to attempt a transfer in
+>>>>>>> this case.
+>>>>>>>
+>>>>>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>>>>>>> ---
+>>>>>>
+>>>>>> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+>>>>>
+>>>>> Thanks for the review!
+>>>>>
+>>>>> Given that this touches core DRM code and that I never got
+>>>>> confirmation that Jani's concerns were addressed with my previous
+>>>>> response, I'm still going to wait a little while before applying. I'm
+>>>>> on vacation for most of next week, but if there are no further replies
+>>>>> between now and then I'll plan to apply this to "drm-misc-next" the
+>>>>> week of Feb 26th. If someone else wants to apply this before I do then
+>>>>> I certainly won't object. Jani: if you feel this needs more discussion
+>>>>> or otherwise object to this patch landing then please yell. Likewise
+>>>>> if anyone else in the community wants to throw in their opinion, feel
+>>>>> free.
+>>>>
+>>>> Sorry for dropping the ball after my initial response. I simply have not
+>>>> had the time to look into this.
+>>>>
+>>>> It would be great to get, say, drm-misc maintainer ack on this before
+>>>> merging. It's not fair for me to stall this any longer, I'll trust their
+>>>> judgement.
+>>>>
+>>>> Reasonable?
+>>>
+>>> I'd be more than happy for one of the drm-misc maintainers to Ack.
+>>> I'll move Maxime, Thomas, and Maarten to the "To:" line to see if that
+>>> helps get through their filters.
+>>
+>> I'll like some test reports to be sure it doesn't break anything,
+>> then I'll be happy to give my ack !
+> 
+> Sounds good. I know Eizan (CCed, but also a ChromeOS person) was going
+> to poke at it a bit and seemed willing to provide a Tested-by. I'll
+> let him chime in.
+> 
+> ...but perhaps some better evidence that it's not breaking hardware is
+> that we actually landed this into one (but not all) ChromeOS kernel
+> trees [1] and it's rolled out to at least "beta" channel without
+> anyone screaming. Normally we like things to land upstream before
+> picking, but in this case we needed to land another patch to gather
+> in-field data [2] that would have made the problem even worse.
+> 
+> The kernel tree we landed on was the v5.15 tree, which is currently
+> serving all Qualcomm sc7180-based Chromebooks, all Mediatek 8173
+> Chromebooks and all Mediatek 8186 Chromebooks. There are also a pile
+> of x86 Chromebooks running our v5.15 kernel. This code shouldn't
+> affect them because (unless I'm mistaken) they don't use the two
+> affected panel drivers. In any case, I haven't heard any screams from
+> them either. Given my landing plans of "the week of the 26th", this
+> still gives another 1.5 weeks for any screams to reach my ears.
+> 
+> ...or are you looking for non-ChromeOS test reports? I'm not sure how
+> to encourage those. I suppose sometimes folks at Red Hat end up
+> stumbling over similar panel problems to those of us in ChromeOS.
+> Maybe +Javier would be interested in providing a Tested-by?
 
-We have all these great frameworks and tools but their discoverability
-to kernel developers isn't always all that great.
+Bjorn, Konrad, Johan,
 
-BR,
-Jani.
+Could one of you somehow try this on the X13s or other Laptop using eDP ?
 
+Thanks,
+Neil
 
--- 
-Jani Nikula, Intel
+> 
+> [1] https://crrev.com/c/5277322
+> [2] https://crrev.com/c/5277736
+
 
