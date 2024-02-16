@@ -1,203 +1,222 @@
-Return-Path: <linux-kernel+bounces-68300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DFD2857863
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:04:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAFAB85786E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:05:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AC4828AD3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:04:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DFA691C21A5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985711BC5E;
-	Fri, 16 Feb 2024 09:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BC21B957;
+	Fri, 16 Feb 2024 09:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2RZg1KAp"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KBPpEo2j"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46EF1B972
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 695E814F64;
+	Fri, 16 Feb 2024 09:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708074217; cv=none; b=X2DVsSoegpdDM792saNkLzficpAI4IR4s1swuXCBtYAxBjAwDkOoCS7WNX5zlJkHEjJQBouZwq+xEJ6NWVxWeXwEHFhTn2tuXfZ6Zer2legwn0CBDNQLZDUDoJ7JPRez99kvxFvFugFiGpHpWmCeT7yP4vRVeiO3Ebegat0oVyk=
+	t=1708074307; cv=none; b=GZpJP4qwRHkw193V2UW5q3UFokIm+bwdbkX+bzSJJJs5m1K4+DHw4yS2WB15pzASO3MxI5kZ6qAWSp3/tD63KGOQxWAburYQWWLzkO+y78zbOER7bTfzsIqM5YXOJlfvJH4Q/34jgBp/DA+jihLTLy+A6HYKltTJXtuxs6/AcAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708074217; c=relaxed/simple;
-	bh=dkw5/IVhfZj5zs7Oe1iWKLQE3h839PLLeYTuwMZDLgM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q7NQd3rcrbzDys+vYGwQ33zRhvENT8XZfIDWzahNYrn37zhlToqnOgKfO6gzIW6ymRlS5odIJ1h4/OvhU5gSW9xVnhN27B3yyIgMgqjAWarHLNlj++kmVVWep7NpKwKt/QqNNqj269rgHD6vJoRTyjI4sYWxnF8qMb0DS0kC7SU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2RZg1KAp; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcc86086c9fso1815038276.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:03:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708074215; x=1708679015; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GIsEikU4izdqkDoN+ZKv97zMNiSEQemJahB5wDm74LU=;
-        b=2RZg1KApnj84nHSlLVc2ycT5QOJVaBNgiKZM04mw2rYJ+dHzqmQIvADP5iUlzJ9/yK
-         efgpsIJ9a3h0Wf04i0V99FO+5BESARCJSjnrnF5mRyd3LAPn/N/EV63r7WHu8VAUopFy
-         /xVET4gcr5k9GO4TXksAfX2s2OZjhvzYCtGsxRbCm9+knPX9AHOSlELdDysXodtDIe5Z
-         3yxTO7ETynRqPcuSbbaZSQiXKGac7pDYmxSAX08LkQZwj06a+dMyX0LpgmM3WoZNjD+5
-         LW1GNS5DRJuwXZob9VEhtSKjJy5wHha0aEx5j75PWx5m1ft19/Ke/LgFplw+qS4Wxy8F
-         Vd9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708074215; x=1708679015;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GIsEikU4izdqkDoN+ZKv97zMNiSEQemJahB5wDm74LU=;
-        b=tCPJ8SaZoKQQwgz4eHir/rNTLG8LXlnIN4MuESJcL/JQUEMtyE8km1YJW1N9gmy9LN
-         92bE2hQ1M1UoT1bPJYVMxnw0y7SSMI2cHd9HqGcQXytjcHDXKeeB+JE/vXCsTo9y6eKy
-         rV9fiDqfTsjmI6D8vl15z+wzviT4my65p74ByDUfrKwGy8g+az94XYNFEi80WsuBdrXy
-         n55vjhU8PnfvHkWj3+kjxJVvEzqEFfZ8dkWC4qbhWaId5dXLNf+QtupUVcsQ/UjxHXbo
-         wJMPhdXIzOubc9savdDWDXJt403GfWNb+lltcTcuFct73cO4faHPuPqn9OKqh5Ko5SoC
-         U7GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVJGdwdh6sdGddS01yx66tBQuJp/WrnzmxOOCww/38+ABTq51FebY+jWFMwQ5WtSXgwtdwx0drmbWK9Rp/Mdxoch7xlX4xusPtA+65W
-X-Gm-Message-State: AOJu0YzSipyROcqOhMFL4ju74vJbzg9EiZKqnmwa8V6Qk45PrArLLy9W
-	Xnd8bYVYSucIDWEu7VxC/rTmEhHzdkt6T74v2D+NJyIm7YbsB3YKmJ+xi2eW2/IVlfpQICNs6MU
-	qb5c9FXaN76qCL6ElMGp0LSjtRCLCjc/fHauS
-X-Google-Smtp-Source: AGHT+IE8IHpuOe2beld9vVWKFUEkUtO+/3eNyPe5KrBlxSBI4QdK9EveZ1I5XPH056j0G4IXvvphLveaFK0jjo4oCok=
-X-Received: by 2002:a05:6902:200b:b0:dcb:be59:25e1 with SMTP id
- dh11-20020a056902200b00b00dcbbe5925e1mr5215694ybb.30.1708074214367; Fri, 16
- Feb 2024 01:03:34 -0800 (PST)
+	s=arc-20240116; t=1708074307; c=relaxed/simple;
+	bh=g8hPbA2/gYF/CSzjwdouvtoWbto1dwGMcgtNCz6PS5Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RFMplBOqzR/tkcRdICaewgvYnL64GRYaC04cT45RydtWXVpVrzORKrgE7eCAEGjDXgOYPbXWFlw5Cbe7+ZrljS2M4LdDbGh2CIumNZFKJO8YNZ9c97LeN5FX8/eqCZ8CmnF5UlOuV0T40UDeSa+7e3LuFWkagApIVivZW9OKcKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KBPpEo2j; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708074305; x=1739610305;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=g8hPbA2/gYF/CSzjwdouvtoWbto1dwGMcgtNCz6PS5Y=;
+  b=KBPpEo2j8JJeST/zPxgMcq7nVxBH3jCgg3tzTuBdFKMBHfZ62cpnMh0L
+   b6DfU4HO2KW0/LTFt8n1PuTSWwDq7HObuiJBBnXWrbAHXY6Sxm9D7wNa9
+   fmXp0gg8ZLL5HE4+w45B3BsirVTadgTGnTViJBGKPpNStwz4wIBo2b10M
+   jfj/VpWSWKkphqZ0O5Q9TyyYG85yN+Ag6Y8LfW1lrbarPMz4pQn7lWgWV
+   Ukw1behg1wZRtICvumJQWAHZtWh8jyjBoD/iFML31T5WE3ROVZsaW5xXS
+   f5Btw+ZtOOrhCqwu6cjWyusJE4/BIREHmGlfsxNKJTFxQfB44hj3MAKZh
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="12825802"
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="12825802"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 01:05:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
+   d="scan'208";a="41279178"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa001.jf.intel.com with ESMTP; 16 Feb 2024 01:04:52 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rau9J-00017c-24;
+	Fri, 16 Feb 2024 09:04:49 +0000
+Date: Fri, 16 Feb 2024 17:03:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: Mario Limonciello <mario.limonciello@amd.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Jani Nikula <jani.nikula@linux.intel.com>,
+	Alex Deucher <alexander.deucher@amd.com>,
+	Hans de Goede <hdegoede@redhat.com>,
+	"open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+Cc: Paul Gazzillo <paul@pgazz.com>,
+	Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+	oe-kbuild-all@lists.linux.dev, amd-gfx@lists.freedesktop.org,
+	"open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+	linux-fbdev@vger.kernel.org, nouveau@lists.freedesktop.org,
+	intel-gfx@lists.freedesktop.org,
+	platform-driver-x86@vger.kernel.org, intel-xe@lists.freedesktop.org,
+	linux-renesas-soc@vger.kernel.org,
+	"open list:ACPI" <linux-acpi@vger.kernel.org>,
+	open list <linux-kernel@vger.kernel.org>,
+	Melissa Wen <mwen@igalia.com>,
+	Mark Pearson <mpearson-lenovo@squebb.ca>,
+	Mario Limonciello <mario.limonciello@amd.com>
+Subject: Re: [PATCH v6 1/5] drm: Stop using `select ACPI_VIDEO` in all drivers
+Message-ID: <202402161633.zhmOGq2G-lkp@intel.com>
+References: <20240214215756.6530-2-mario.limonciello@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-14-surenb@google.com>
- <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
- <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
- <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com>
- <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn> <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
-In-Reply-To: <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 16 Feb 2024 01:03:22 -0800
-Message-ID: <CAJuCfpGbZtUEb+Ay_abmOc=Tc4tuTtLVSK4ANpwvwG_VTAD9-Q@mail.gmail.com>
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214215756.6530-2-mario.limonciello@amd.com>
 
-On Fri, Feb 16, 2024 at 1:02=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Thu, Feb 15, 2024 at 5:27=E2=80=AFPM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Thu, Feb 15, 2024 at 08:22:44PM -0500, Pasha Tatashin wrote:
-> > > On Thu, Feb 15, 2024 at 8:00=E2=80=AFPM Kent Overstreet
-> > > <kent.overstreet@linux.dev> wrote:
-> > > >
-> > > > On Thu, Feb 15, 2024 at 04:54:38PM -0800, Andrew Morton wrote:
-> > > > > On Mon, 12 Feb 2024 13:38:59 -0800 Suren Baghdasaryan <surenb@goo=
-gle.com> wrote:
-> > > > >
-> > > > > > +Example output.
-> > > > > > +
-> > > > > > +::
-> > > > > > +
-> > > > > > +    > cat /proc/allocinfo
-> > > > > > +
-> > > > > > +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_pa=
-ge
-> > > > > > +     6.08MiB     mm/slab_common.c:950 module:slab_common func:=
-_kmalloc_order
-> > > > > > +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:a=
-lloc_slab_obj_exts
-> > > > > > +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:a=
-lloc_pages_exact
-> > > > > > +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtab=
-le func:__pte_alloc_one
-> > > > >
-> > > > > I don't really like the fancy MiB stuff.  Wouldn't it be better t=
-o just
-> > > > > present the amount of memory in plain old bytes, so people can us=
-e sort
-> > > > > -n on it?
-> > > >
-> > > > They can use sort -h on it; the string_get_size() patch was specifi=
-cally
-> > > > so that we could make the output compatible with sort -h
-> > > >
-> > > > > And it's easier to tell big-from-small at a glance because
-> > > > > big has more digits.
-> > > > >
-> > > > > Also, the first thing any sort of downstream processing of this d=
-ata is
-> > > > > going to have to do is to convert the fancified output back into
-> > > > > plain-old-bytes.  So why not just emit plain-old-bytes?
-> > > > >
-> > > > > If someone wants the fancy output (and nobody does) then that can=
- be
-> > > > > done in userspace.
-> > > >
-> > > > I like simpler, more discoverable tools; e.g. we've got a bunch of
-> > > > interesting stuff in scripts/ but it doesn't get used nearly as muc=
-h -
-> > > > not as accessible as cat'ing a file, definitely not going to be
-> > > > installed by default.
-> > >
-> > > I also prefer plain bytes instead of MiB. A driver developer that
-> > > wants to verify up-to the byte allocations for a new data structure
-> > > that they added is going to be disappointed by the rounded MiB
-> > > numbers.
-> >
-> > That's a fair point.
-> >
-> > > The data contained in this file is not consumable without at least
-> > > "sort -h -r", so why not just output bytes instead?
-> > >
-> > > There is /proc/slabinfo  and there is a slabtop tool.
-> > > For raw /proc/allocinfo we can create an alloctop tool that would
-> > > parse, sort and show data in human readable format based on various
-> > > criteria.
-> > >
-> > > We should also add at the top of this file "allocinfo - version: 1.0"=
-,
-> > > to allow future extensions (i.e. column for proc name).
-> >
-> > How would we feel about exposing two different versions in /proc? It
-> > should be a pretty minimal addition to .text.
-> >
-> > Personally, I hate trying to count long strings digits by eyeball...
->
-> Maybe something like this work for everyone then?:
+Hi Mario,
 
-s/work/would work
+kernel test robot noticed the following build warnings:
 
-making too many mistakes. time for bed...
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.8-rc4 next-20240216]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->
-> 160432128 (153MiB)     mm/slub.c:1826 module:slub func:alloc_slab_page
+url:    https://github.com/intel-lab-lkp/linux/commits/Mario-Limonciello/drm-Stop-using-select-ACPI_VIDEO-in-all-drivers/20240215-055936
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20240214215756.6530-2-mario.limonciello%40amd.com
+patch subject: [PATCH v6 1/5] drm: Stop using `select ACPI_VIDEO` in all drivers
+config: alpha-kismet-CONFIG_FB_BACKLIGHT-CONFIG_FB_NVIDIA-0-0 (https://download.01.org/0day-ci/archive/20240216/202402161633.zhmOGq2G-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20240216/202402161633.zhmOGq2G-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402161633.zhmOGq2G-lkp@intel.com/
+
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for FB_BACKLIGHT when selected by FB_NVIDIA
+   .config:98:warning: symbol value 'n' invalid for SERIAL_AR933X_NR_UARTS
+   .config:208:warning: symbol value 'n' invalid for USB_GADGET_STORAGE_NUM_BUFFERS
+   .config:244:warning: symbol value 'n' invalid for SATA_MOBILE_LPM_POLICY
+   .config:345:warning: symbol value 'n' invalid for PSTORE_BLK_MAX_REASON
+   .config:427:warning: symbol value 'n' invalid for AIC79XX_DEBUG_MASK
+   .config:432:warning: symbol value 'n' invalid for KFENCE_SAMPLE_INTERVAL
+   .config:620:warning: symbol value 'n' invalid for DRM_XE_JOB_TIMEOUT_MIN
+   .config:652:warning: symbol value 'n' invalid for CRYPTO_DEV_QCE_SW_MAX_LEN
+   .config:687:warning: symbol value 'n' invalid for PANEL_LCD_PIN_E
+   .config:757:warning: symbol value 'n' invalid for PANEL_LCD_CHARSET
+   .config:800:warning: symbol value 'n' invalid for SND_AC97_POWER_SAVE_DEFAULT
+   .config:848:warning: symbol value 'n' invalid for MAGIC_SYSRQ_DEFAULT_ENABLE
+   .config:853:warning: symbol value 'n' invalid for AIC79XX_CMDS_PER_DEVICE
+   .config:865:warning: symbol value 'n' invalid for DRM_I915_MAX_REQUEST_BUSYWAIT
+   .config:896:warning: symbol value 'n' invalid for SND_AT73C213_TARGET_BITRATE
+   .config:907:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MIN
+   .config:913:warning: symbol value 'n' invalid for PANEL_LCD_PIN_SDA
+   .config:915:warning: symbol value 'n' invalid for NET_EMATCH_STACK
+   .config:917:warning: symbol value 'n' invalid for VMCP_CMA_SIZE
+   .config:1149:warning: symbol value 'n' invalid for RCU_CPU_STALL_TIMEOUT
+   .config:1176:warning: symbol value 'n' invalid for MTDRAM_ERASE_SIZE
+   .config:1282:warning: symbol value 'n' invalid for SERIAL_UARTLITE_NR_UARTS
+   .config:1453:warning: symbol value 'n' invalid for LEGACY_PTY_COUNT
+   .config:1591:warning: symbol value 'n' invalid for AIC7XXX_RESET_DELAY_MS
+   .config:1592:warning: symbol value 'n' invalid for WATCHDOG_OPEN_TIMEOUT
+   .config:1710:warning: symbol value 'n' invalid for AIC79XX_RESET_DELAY_MS
+   .config:1757:warning: symbol value 'n' invalid for IBM_EMAC_POLL_WEIGHT
+   .config:1891:warning: symbol value 'n' invalid for DRM_I915_STOP_TIMEOUT
+   .config:2178:warning: symbol value 'n' invalid for RCU_FANOUT_LEAF
+   .config:2192:warning: symbol value 'n' invalid for KCOV_IRQ_AREA_SIZE
+   .config:2327:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MAX
+   .config:2328:warning: symbol value 'n' invalid for PANEL_LCD_BWIDTH
+   .config:2378:warning: symbol value 'n' invalid for MTD_REDBOOT_DIRECTORY_BLOCK
+   .config:2570:warning: symbol value 'n' invalid for PANEL_PARPORT
+   .config:2655:warning: symbol value 'n' invalid for NOUVEAU_DEBUG_DEFAULT
+   .config:2846:warning: symbol value 'n' invalid for KCSAN_REPORT_ONCE_IN_MS
+   .config:2860:warning: symbol value 'n' invalid for SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_NUM
+   .config:2934:warning: symbol value 'n' invalid for XEN_MEMORY_HOTPLUG_LIMIT
+   .config:2944:warning: symbol value 'n' invalid for KCSAN_UDELAY_INTERRUPT
+   .config:2969:warning: symbol value 'n' invalid for PANEL_LCD_PIN_BL
+   .config:2995:warning: symbol value 'n' invalid for INITRAMFS_ROOT_GID
+   .config:3101:warning: symbol value 'n' invalid for ATM_FORE200E_TX_RETRY
+   .config:3142:warning: symbol value 'n' invalid for FB_OMAP2_DSS_MIN_FCK_PER_PCK
+   .config:3223:warning: symbol value 'n' invalid for PSTORE_BLK_CONSOLE_SIZE
+   .config:3344:warning: symbol value 'n' invalid for BOOKE_WDT_DEFAULT_TIMEOUT
+   .config:3426:warning: symbol value 'n' invalid for KCSAN_UDELAY_TASK
+   .config:3481:warning: symbol value 'n' invalid for MMC_BLOCK_MINORS
+   .config:3524:warning: symbol value 'n' invalid for FTRACE_RECORD_RECURSION_SIZE
+   .config:3528:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_SYNC
+   .config:3543:warning: symbol value 'n' invalid for PANEL_PROFILE
+   .config:3648:warning: symbol value 'n' invalid for UCLAMP_BUCKETS_COUNT
+   .config:3770:warning: symbol value 'n' invalid for SERIAL_MCF_BAUDRATE
+   .config:3837:warning: symbol value 'n' invalid for DE2104X_DSL
+   .config:3851:warning: symbol value 'n' invalid for BLK_DEV_RAM_COUNT
+   .config:4005:warning: symbol value 'n' invalid for STACK_MAX_DEFAULT_SIZE_MB
+   .config:4173:warning: symbol value 'n' invalid for CMA_AREAS
+   .config:4233:warning: symbol value 'n' invalid for INPUT_MOUSEDEV_SCREEN_X
+   .config:4254:warning: symbol value 'n' invalid for USBIP_VHCI_HC_PORTS
+   .config:4346:warning: symbol value 'n' invalid for RIONET_RX_SIZE
+   .config:4562:warning: symbol value 'n' invalid for RADIO_TYPHOON_PORT
+   .config:4652:warning: symbol value 'n' invalid for IBM_EMAC_TXB
+   .config:4686:warning: symbol value 'n' invalid for SERIAL_TXX9_NR_UARTS
+   .config:4722:warning: symbol value 'n' invalid for PANEL_LCD_PIN_RW
+   .config:5034:warning: symbol value 'n' invalid for ARCH_MMAP_RND_BITS
+   .config:5118:warning: symbol value 'n' invalid for DRM_I915_FENCE_TIMEOUT
+   .config:5138:warning: symbol value 'n' invalid for TTY_PRINTK_LEVEL
+   .config:5300:warning: symbol value 'n' invalid for MIPS_EJTAG_FDC_KGDB_CHAN
+   .config:5389:warning: symbol value 'n' invalid for SND_MAX_CARDS
+   .config:5394:warning: symbol value 'n' invalid for KDB_DEFAULT_ENABLE
+   .config:5411:warning: symbol value 'n' invalid for SERIAL_ALTERA_UART_MAXPORTS
+   .config:5549:warning: symbol value 'n' invalid for RCU_BOOST_DELAY
+   .config:5552:warning: symbol value 'n' invalid for PPC_EARLY_DEBUG_EHV_BC_HANDLE
+   .config:5667:warning: symbol value 'n' invalid for PANEL_LCD_HWIDTH
+   .config:5700:warning: symbol value 'n' invalid for LOCKDEP_CHAINS_BITS
+   .config:5789:warning: symbol value 'n' invalid for DRM_I915_HEARTBEAT_INTERVAL
+   .config:5797:warning: symbol value 'n' invalid for KCSAN_SKIP_WATCH
+   .config:5821:warning: symbol value 'n' invalid for PSTORE_BLK_KMSG_SIZE
+   .config:5941:warning: symbol value 'n' invalid for CRYPTO_DEV_FSL_CAAM_INTC_TIME_THLD
+   .config:6039:warning: symbol value 'n' invalid for DRM_XE_PREEMPT_TIMEOUT_MAX
+   .config:6118:warning: symbol value 'n' invalid for ARCH_MMAP_RND_COMPAT_BITS
+   .config:6287:warning: symbol value 'n' invalid for RADIO_TRUST_PORT
+   .config:6538:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_MAX_TAGS
+   .config:6653:warning: symbol value 'n' invalid for MTD_UBI_WL_THRESHOLD
+   .config:6663:warning: symbol value 'n' invalid for CMA_SIZE_PERCENTAGE
+   .config:6675:warning: symbol value 'n' invalid for RIONET_TX_SIZE
+   .config:6811:warning: symbol value 'n' invalid for DRM_XE_TIMESLICE_MIN
+   .config:6938:warning: symbol value 'n' invalid for DVB_MAX_ADAPTERS
+   .config:6939:warning: symbol value 'n' invalid for SCSI_NCR53C8XX_MAX_TAGS
+   .config:6951:warning: symbol value 'n' invalid for SCSI_SYM53C8XX_DMA_ADDRESSING_MODE
+   .config:7048:warning: symbol value 'n' invalid for OMAP2_DSS_MIN_FCK_PER_PCK
+   .config:7278:warning: symbol value 'n' invalid for SERIAL_ARC_NR_PORTS
+   .config:7329:warning: symbol value 'n' invalid for IBM_EMAC_RXB
+   .config:7358:warning: symbol value 'n' invalid for ZSMALLOC_CHAIN_SIZE
+   .config:7452:warning: symbol value 'n' invalid for SCSI_MPT3SAS_MAX_SGE
+   .config:7582:warning: symbol value 'n' invalid for PSTORE_DEFAULT_KMSG_BYTES
+   .config:7595:warning: symbol value 'n' invalid for KDB_CONTINUE_CATASTROPHIC
+   .config:7623:warning: symbol value 'n' invalid for LOCKDEP_BITS
+   .config:7629:warning: symbol value 'n' invalid for RCU_FANOUT
+   .config:7707:warning: symbol value 'n' invalid for PANEL_LCD
+   .config:7873:warning: symbol value 'n' invalid for VIDEO_VIVID_MAX_DEVS
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
