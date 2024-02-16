@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-69097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68E885846F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:45:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0F0185845D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:44:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7656F1F2282A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:45:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3F221C2189F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:44:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E0E137C5A;
-	Fri, 16 Feb 2024 17:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0833D1350FB;
+	Fri, 16 Feb 2024 17:42:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fHUoiYCQ"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Xp5tgQzY"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD443135401;
-	Fri, 16 Feb 2024 17:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28628134CC2;
+	Fri, 16 Feb 2024 17:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708105367; cv=none; b=rajEsHaUrCUNbv9s/quzbF3ZNjnNQY3gkT2wkEk4yfHPWhBAQJuFvRCLBAIEu1c5+jaIOUFSRnsPGl7as7h0JbyJgC3NNoLutCxFXvWg2Iz067oOHETvVxqq7Iy6HlLjOmp8TW7ZFuNmdMQmaUVmOkAJjquFsU/Dp7rnT1/4ScU=
+	t=1708105362; cv=none; b=ipyJ+guwm4c6rs0TN2L1yzu69eYqpRTre2zqETNMWHcML5ElXDSSXzx2GR/Y9TZkMLK026PPco//HJidWoq17NWDqI3kuu6FSg6nnFBl+GP67w5BtraDyleynad6Ng4qsAj8jvNrQaWCg5uORCRBswdIj12HyulGDetOPPdZfTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708105367; c=relaxed/simple;
-	bh=zkHzvVhKkqmhHXMYvIXk97BK8Hudfzm2zXC5uewsDi0=;
+	s=arc-20240116; t=1708105362; c=relaxed/simple;
+	bh=F69lXcW+BMK3xWuWKAunG1z8qeZUfL/FLTg148TbGsU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bjp8MLKBTXtRscwP1Q9XWnosAWGDNEkEafd/4x1lW54MXN5Z6D+cJUeXOCGf0y9nt+z2ToCtAZ0I2pjn7E0qxU8AqSza/9k+CvQ/14ZZYgykptE6ydCeRd4QRWRVwtPa+1+HAKAfanTop4DCO2n4HGYzbqt5biWe0Ea6xjECpNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fHUoiYCQ; arc=none smtp.client-ip=217.70.183.199
+	 MIME-Version:Content-Type; b=Q4bEhFtXVDp0KisqZULT9Who5NBmtanL2QgxZPaf6tM7uYFyz1m+dR2sUMEGO5DcNxJyZcL/4hlBJa7+LgTdPbfgl8H9CM9qxblXZRewnDNU0aQkNKpnh/CcRO4vtGbTssvS+Mw+vltK+dbw+v/WVVX4ZzZrT/iYYlj4v4Nw0gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Xp5tgQzY; arc=none smtp.client-ip=217.70.183.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A59B2FF804;
-	Fri, 16 Feb 2024 17:42:36 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id AE232E0011;
+	Fri, 16 Feb 2024 17:42:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708105357;
+	t=1708105358;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lbVsbmHE4CGNjOWLyfslnCmWW1EMalEIZK9eUB8mHKE=;
-	b=fHUoiYCQBX+G8LDk0+TzfxJnaKfFyPj/Oh5JGJSJukX3scl7nF4nswEQbA0F4Hj2EFx6RA
-	MmQT0sW21UFPuArIKFFjjWG+/+U7iLQ+qj7Z9fcOht2Uv8cepjTaV+xy9UYWOlDMy5Ple9
-	4UzRRDexQmOuJHTVv68qpthL8YgCvlY3GKJaklrfPeYDG5wrLH3augQxL1m+C1fXJ1oT/+
-	ZsDYNyb0CJbjZcGnnZkpE9auhJW6cwmR47TJFts1+2MRroKwiWQ9XUSwpK6a1v0bd1Xymo
-	6Uwf1jhLF5W66ah+P85PXrUwa0yFfHCEpgPT7t+T61HY2n7ekfazNHW+RnZAeA==
+	bh=GbsWh/XsZeOFv6yit27z5l5/TqUISO3EzDeBeQy/R68=;
+	b=Xp5tgQzYJ99OznJpxI0Yp7ZbCZoS1DUHjanFiLNS/IC5nW3hJV5hGjLoCNzjaGDP/5uk/y
+	Dmc7ycUf7wGzHJvO2ldJTTOvRN3CeZCt9qzth7QdCOmL1wI7fk9k7r5w6hvVZ0GKMH5dHb
+	39LqXT6nZg9880xf3BvJIDk5uWm4yaynygS8AIyAk4aHkmh2deBHMm++Wnr0oLfwDk3ASP
+	cjUzDBImCrDgP3hjcq9ab8N2enXm1T3T/n4zQMtpTzAVq+zAe0DjVQaK6Mzzclt7Fsw++E
+	/QWmpp3AA9hrpDLeD/UbFCtCEbm8pbdOFqjCIDFUg6Rll8uqtf/di4xWyWCTUg==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -59,11 +59,13 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
 	Serge Semin <fancer.lancer@gmail.com>,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v8 07/14] dt-bindings: mips: cpus: Sort the entries
-Date: Fri, 16 Feb 2024 18:42:16 +0100
-Message-ID: <20240216174227.409400-8-gregory.clement@bootlin.com>
+Subject: [PATCH v8 08/14] dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
+Date: Fri, 16 Feb 2024 18:42:17 +0100
+Message-ID: <20240216174227.409400-9-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240216174227.409400-1-gregory.clement@bootlin.com>
 References: <20240216174227.409400-1-gregory.clement@bootlin.com>
@@ -73,52 +75,34 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-The entries were nearly sorted but there were still some entries at
-the wrong places. Let's fix it.
+The MIPS Warrior I-class I6500 was announced by Imagination
+Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
 
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- Documentation/devicetree/bindings/mips/cpus.yaml | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
-index cf382dea3922c..9bc47868d28b6 100644
+index 9bc47868d28b6..a85137add6689 100644
 --- a/Documentation/devicetree/bindings/mips/cpus.yaml
 +++ b/Documentation/devicetree/bindings/mips/cpus.yaml
-@@ -23,22 +23,22 @@ properties:
+@@ -23,6 +23,7 @@ properties:
        - brcm,bmips4380
        - brcm,bmips5000
        - brcm,bmips5200
--      - ingenic,xburst-mxu1.0
++      - img,i6500
        - ingenic,xburst-fpu1.0-mxu1.1
        - ingenic,xburst-fpu2.0-mxu2.0
-+      - ingenic,xburst-mxu1.0
-       - ingenic,xburst2-fpu2.1-mxu2.1-smt
-       - loongson,gs264
-       - mips,m14Kc
--      - mips,mips4Kc
--      - mips,mips4KEc
--      - mips,mips24Kc
-+      - mips,mips1004Kc
-       - mips,mips24KEc
-+      - mips,mips24Kc
-+      - mips,mips4KEc
-+      - mips,mips4Kc
-       - mips,mips74Kc
--      - mips,mips1004Kc
-       - mti,interaptiv
--      - mti,mips24KEc
-       - mti,mips14KEc
-       - mti,mips14Kc
-+      - mti,mips24KEc
- 
-   reg:
-     maxItems: 1
+       - ingenic,xburst-mxu1.0
 -- 
 2.43.0
 
