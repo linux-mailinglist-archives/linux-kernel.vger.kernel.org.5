@@ -1,164 +1,164 @@
-Return-Path: <linux-kernel+bounces-68997-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 839B4858323
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:57:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24CAC858321
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:57:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E44C2852C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:57:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D31D02810AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AD0130AF6;
-	Fri, 16 Feb 2024 16:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6141E130AF6;
+	Fri, 16 Feb 2024 16:57:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="MbHfdr4v"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="d4aMkHzX"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21ADD5465D
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7FA31E86B
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708102641; cv=none; b=BA8jAuyytYWhLunoQUKk9ktt8Mcd0SWiG+Tl0QCUa1la5TUvyNkFRl44cwJIR3/rYSw23HwZ/qCubD5bexFFSwTBn+yTpl265TQC9nEl6wlPBkCKrnEV5CcuBJpwwuOaxZqWMEWlx12XcFnukIGI3Ds9sHjE6fg73pFx51JwV94=
+	t=1708102631; cv=none; b=C/HepJ0/qRfJ1QmSwc+wchQR2eA9MjouipNwJ2denTNMm3zTDhjtUHUoHmNg3PFA+/aWcl3/AFeCZyNnB94O9eQeOnttY0O1JBycKIsXbf4rft6/StHiosyFxZlDlVREpLdQXNqV3r56dbpxPRCHGEgBKzXnXMvCgj6wvPPc0Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708102641; c=relaxed/simple;
-	bh=3DZuNTpPAV7ON2bNBWe9a6b0uHPgEZJRF58/k9z+cxw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=TKx8hjmuYLvjIIlc533A75ErL1A3O4QVM5HrCaB/KHvWZkQ5vLZdwexHGiDZlu/GQ+mwlo8AFXxLi6twesQHUb+RSWX+FZTSCQM99Q2HynwyDNCUVvmraY2/JfzZ7m2Tp2Xif16PYWWz23/woG6wmgTdTNIxOk+AW0DGUUqiLQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=MbHfdr4v; arc=none smtp.client-ip=209.85.167.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3bc21303a35so770162b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:57:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1708102639; x=1708707439; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a54mBlPJQ0nr4LxEOnQe6E9J05YCJwMg6dbDW6Ogvwk=;
-        b=MbHfdr4vgQepVwmwGbfeCOOejVDfuL16CtfpBS75V2FNL9K5AfW60bjf9xyN8e0mgf
-         c4dHehM+ZTpbC2Xt3NApctFRXrNDvxmOtBtVC086ZMccpVB7bXId+jCgkdm8lfhKrxsA
-         WU0cKMm+D5NPJwigePTRT6YM1/H73P2HzUohY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708102639; x=1708707439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a54mBlPJQ0nr4LxEOnQe6E9J05YCJwMg6dbDW6Ogvwk=;
-        b=CfHE6OCGtXLghQs9Dql4uX18lImWUjpkTdSpsGb88pHnlS+c9vmzAMHBU5MydDIQsb
-         sDwqeW1dWp7RQH/ObNnCo5/ngVKk7Tpnl3GoXct8mIkt3KmWB3507LyJHTe4usqdjQSH
-         F4qztDiJer2PW2EZcebYyn3Y2f7PYT3mVNkeGR578ZMQXdnA4pJFf06p5bK/N9a2EWf0
-         VGnsmrBktzddy0YNXrSk57c2o9jTIGZF/SUiHDy4VJb2olXs7E4toqSl6QbEYJoEplK6
-         y2JxyEh3TZ8GXbkkvSdWqd2l57Hm3/GJFxo4lLQ/Nqt025Vp6OK7PyllD7mr6jsdB3nH
-         Cm+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUT4xplah1Xs6iV4lFdw/mY5Qwq9Rqd9uhgLC2oAXe8KqYFvorF2DTPA/SXx6DB3KgHCB2g310lhmLtqTxgEXzvrdpdrI2ux2rW70f1
-X-Gm-Message-State: AOJu0YxmXKw1pBf9KGH9NO4pXl7N9wLKUUUOD9YyPW+LyK/JkRelna8o
-	X07Kyn1XvMet39lx54lL1QGEAjxFTLBZUXJl9chKy/LQ+LflcJ5cyMe5aDUXQWOU6r+4ausXsZl
-	c6S59iDSCagDw+26ZqR73gXtUxGXAFsGakuA9jQ==
-X-Google-Smtp-Source: AGHT+IFZi9RDzwhwyq7Vgbb6tf8+xOs817Ulf+ClWV8voToU7JWM1HF+f6JVnrAvqqhyZKtEyjz2rl5PGCwyv6GOjVw=
-X-Received: by 2002:a05:6870:b528:b0:21e:3794:9e24 with SMTP id
- v40-20020a056870b52800b0021e37949e24mr5556668oap.3.1708102639106; Fri, 16 Feb
- 2024 08:57:19 -0800 (PST)
+	s=arc-20240116; t=1708102631; c=relaxed/simple;
+	bh=Njb939Xj2TSbF8CTUoe/en9KsOGgfKVWdwwSZxqrTVQ=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JY4NLfGfPfZWzFrlAectwt1mOpKtPvARV4GKqPXVr9FBLNd58ozwPwo5EQ+QF7QNdhuX1ACS4DN0w7W+vjxW7rayOLMZd4LIHOr1OZm0+LzKP7G+/qR7ftaGOGqgauqGlVmsF+xnQ/BY8VUuaTLWlaK1ScT/aeZD1T5Npz7hKoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=d4aMkHzX; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708102630; x=1739638630;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=Njb939Xj2TSbF8CTUoe/en9KsOGgfKVWdwwSZxqrTVQ=;
+  b=d4aMkHzXvYwe/5YYiNazQjDoXJzJizNdzLS/MCgF6Dt6/j0zqaT0rMMT
+   +Vbpr71odfPL3Dtkz67j6RXh2CqBBbfoZtUBiNQsk9uJecsEoPsIqYrvs
+   QVkESHCFFED2lfTxaWl9lG9qYjISX8AOj5PjH2n5eKsQsqrAuKg/MWqiX
+   OQO6LoxhRN7tVo5FMmMC7ZyAKiDkxnq/h86w/2YOGiRs37eNklY+sVuGI
+   t2Z0b26/UZasXBX3aMPKWEk4k35i2REtdFDdHTrMisfcuRi+poyOMU2Pr
+   9t+cI6rg5o20MoPm7u4o5g4YhQDrsB/rs96jJ5wB4QumMmA9b/aLEHBen
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="12780604"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="12780604"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 08:57:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="4167575"
+Received: from sbiswas-mobl1.amr.corp.intel.com (HELO [10.255.230.53]) ([10.255.230.53])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 08:57:08 -0800
+Message-ID: <52d414b85f41a76fc0a7b0082cba95297d9e5874.camel@linux.intel.com>
+Subject: Re: [PATCH v4] mm: swap: async free swap slot cache entries
+From: Tim Chen <tim.c.chen@linux.intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Chris Li <chrisl@kernel.org>, linux-kernel@vger.kernel.org, 
+ linux-mm@kvack.org, Wei Xu <weixugc@google.com>, Yu Zhao
+ <yuzhao@google.com>,  Greg Thelen <gthelen@google.com>, Chun-Tse Shao
+ <ctshao@google.com>, Yosry Ahmed <yosryahmed@google.com>,  Michal Hocko
+ <mhocko@suse.com>, Mel Gorman <mgorman@techsingularity.net>, Huang Ying
+ <ying.huang@intel.com>,  Nhat Pham <nphamcs@gmail.com>, Kairui Song
+ <kasong@tencent.com>, Barry Song <v-songbaohua@oppo.com>
+Date: Fri, 16 Feb 2024 08:57:07 -0800
+In-Reply-To: <20240215201627.5abd1841192feaa262d545ba@linux-foundation.org>
+References: <20240214-async-free-v4-1-6abe0d59f85f@kernel.org>
+	 <20240215161114.6bd444ed839f778eefdf6e0a@linux-foundation.org>
+	 <1b9a69d1ecaac45a228eb2993d5d9b8234a84155.camel@linux.intel.com>
+	 <20240215201627.5abd1841192feaa262d545ba@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240214121435.3813983-1-adrian.larumbe@collabora.com> <ba987da3-b4aa-410c-95ae-434e94793d85@arm.com>
-In-Reply-To: <ba987da3-b4aa-410c-95ae-434e94793d85@arm.com>
-From: Daniel Vetter <daniel@ffwll.ch>
-Date: Fri, 16 Feb 2024 17:57:07 +0100
-Message-ID: <CAKMK7uH=QKSyMgsOYCHMwE7iv6jQZRwUMcKq=HiXsBXBCv5BCQ@mail.gmail.com>
-Subject: Re: [PATCH 0/1] Always record job cycle and timestamp information
-To: Steven Price <steven.price@arm.com>, Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>, 
-	Lionel Landwerlin <lionel.g.landwerlin@linux.intel.com>
-Cc: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>, 
-	Boris Brezillon <boris.brezillon@collabora.com>, Rob Herring <robh@kernel.org>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Feb 14, 2024 at 01:52:05PM +0000, Steven Price wrote:
-> Hi Adri=C3=A1n,
->
-> On 14/02/2024 12:14, Adri=C3=A1n Larumbe wrote:
-> > A driver user expressed interest in being able to access engine usage s=
-tats
-> > through fdinfo when debugfs is not built into their kernel. In the curr=
-ent
-> > implementation, this wasn't possible, because it was assumed even for
-> > inflight jobs enabling the cycle counter and timestamp registers would
-> > incur in additional power consumption, so both were kept disabled until
-> > toggled through debugfs.
-> >
-> > A second read of the TRM made me think otherwise, but this is something
-> > that would be best clarified by someone from ARM's side.
->
-> I'm afraid I can't give a definitive answer. This will probably vary
-> depending on implementation. The command register enables/disables
-> "propagation" of the cycle/timestamp values. This propagation will cost
-> some power (gates are getting toggled) but whether that power is
-> completely in the noise of the GPU as a whole I can't say.
->
-> The out-of-tree kbase driver only enables the counters for jobs
-> explicitly marked (BASE_JD_REQ_PERMON) or due to an explicit connection
-> from a profiler.
->
-> I'd be happier moving the debugfs file to sysfs rather than assuming
-> that the power consumption is small enough for all platforms.
->
-> Ideally we'd have some sort of kernel interface for a profiler to inform
-> the kernel what it is interested in, but I can't immediately see how to
-> make that useful across different drivers. kbase's profiling support is
-> great with our profiling tools, but there's a very strong connection
-> between the two.
+On Thu, 2024-02-15 at 20:16 -0800, Andrew Morton wrote:
+> On Thu, 15 Feb 2024 17:38:38 -0800 Tim Chen <tim.c.chen@linux.intel.com> =
+wrote:
+>=20
+> > > What this description lacks is any description of why anyone cares.=
+=20
+> > >=20
+> > > The patch clearly decreases overall throughput (speed-vs-latency is a
+> > > common tradeoff).
+>=20
+> This, please.
+>=20
+> > > And the "we don't know how to fix this properly so punt it into a
+> > > kernel thread" approach remains lame.  For example, the risk that the
+> > > now-liberated allocator can outpace the async freeing, resulting in
+> > > unlimited object windup.
+> >=20
+> >=20
+> > Andrew,
+> >=20
+> > What you are saying about outpacing asyn free is true for v1 and v2 ver=
+sions of the patch.
+> >=20
+> > But in this latest version, if another reclaim comes in before the asyn=
+c free has kicked in,
+> > we would be freeing the whole cache directly, same as original code, wi=
+thout waiting
+> > for the async free.  It is different from the first version
+> > where you go into the free one at a time mode while waiting for the asy=
+nc free.=C2=A0
+> > That was also my objection to the first two versions as you could be in=
+ this
+> > slow free one at a time mode for a long time.
+> >=20
+> > So now we should not have unlimited object windup.  And we would be doi=
+ng free
+> > in batch of 64, either still in the direct path or in the async path.
+> >=20
+>=20
+> OK, thanks, I didn't read closely enough,
+>=20
+> > If the next swap fault comes in very fast, before the async
+> > free gets a chance to run. It will directly free all the swap
+> > cache in the swap fault the same way as previously.
+>=20
+> And might it be a win to cancel the async_work in this case?
+>=20
+Canceling async_work will matter for the case where we push swap hard,
+and have a better chance of finding async have not yet engaged when
+we need to free additional swap slots.
 
-Yeah I'm not sure whether a magic (worse probably per-driver massively
-different) file in sysfs is needed to enable gpu perf monitoring stats in
-fdinfo.
+Chris' tests so far has been for his use cases where swap is lightly
+loaded.  The scenarios you listed are when=C2=A0
+we push swap hard close to its max throughput.=C2=A0
 
-I get that we do have a bit a gap because the linux perf pmu stuff is
-global, and you want per-process, and there's kinda no per-process support
-for perf stats for devices. But that's probably the direction we want to
-go, not so much fdinfo. At least for hardware performance counters and
-things like that.
+It would help answer your concerns if Chris could also test high swap scena=
+rio.
+Then we can make sure sustainable swap throughput does not regress and
+latency is improved. And check whether it is beneficial to cancel outstandi=
+ng async_work on
+direct free path. I think the pro of canceling the asyn_work is to
+skip an extra lock acquisition on the cache. Though
+there is also some overhead in canceling the work itself.
 
-Iirc the i915 pmu support had some integration for per-process support,
-you might want to chat with Tvrtko for kernel side and Lionel for more
-userspace side. At least if I'm not making a complete mess and my memory
-is vaguely related to reality. Adding them both.
+Tim
 
-Cheers, Sima
+>=20
+> Again, without a clear description of the userspace-visible effects of
+> this problem I am groping in the dark.  My hands blindly landed upon
+> the question: the overall effect here is to leave worst-case latency
+> unaltered, but to decrease average latency.  Does this satisfy the
+> yet-to-be-described requirements?
+>=20
+>=20
+> Also, the V4 patch's quoted quantitative testing results are pasted
+> from the V2 patch's.  V2 was a fundamentally different implementation.=
+=20
+> I think it is fair to say that V4 is "untested", with regard to
+> satisfying its runtime objectives.
+>=20
 
-
->
-> Steve
->
-> > Adri=C3=A1n Larumbe (1):
-> >   drm/panfrost: Always record job cycle and timestamp information
-> >
-> >  drivers/gpu/drm/panfrost/Makefile           |  2 --
-> >  drivers/gpu/drm/panfrost/panfrost_debugfs.c | 21 ------------------
-> >  drivers/gpu/drm/panfrost/panfrost_debugfs.h | 14 ------------
-> >  drivers/gpu/drm/panfrost/panfrost_device.h  |  1 -
-> >  drivers/gpu/drm/panfrost/panfrost_drv.c     |  5 -----
-> >  drivers/gpu/drm/panfrost/panfrost_job.c     | 24 ++++++++-------------
-> >  drivers/gpu/drm/panfrost/panfrost_job.h     |  1 -
-> >  7 files changed, 9 insertions(+), 59 deletions(-)
-> >  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.c
-> >  delete mode 100644 drivers/gpu/drm/panfrost/panfrost_debugfs.h
-> >
-> >
-> > base-commit: 6b1f93ea345947c94bf3a7a6e668a2acfd310918
->
-
---
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
 
