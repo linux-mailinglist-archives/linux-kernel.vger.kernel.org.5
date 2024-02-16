@@ -1,131 +1,156 @@
-Return-Path: <linux-kernel+bounces-68505-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68506-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96BDB857B5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:17:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CFF2857B61
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A6CF1F20F39
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:17:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 492AE2850E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51EB659B6D;
-	Fri, 16 Feb 2024 11:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xnjqB70R"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07B459B42;
-	Fri, 16 Feb 2024 11:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AF259B64;
+	Fri, 16 Feb 2024 11:18:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D4558AA7;
+	Fri, 16 Feb 2024 11:18:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082230; cv=none; b=pr/N3PyBtvZnZBungHjeMgIsuQNT/lWMvrGhxeekkVGfGa1Uq0N3bdh3Wn1AIgjA4q2aM9OgAo4JNq+A/9bPGtlpJQS+xmzRVdvHrOLu5uDbE3D7ucXxYuKBmCYOZphMW4YKeMaF3dZkdQPqhYjtO5ns++Kwdvlr4W1ZGhFnEyk=
+	t=1708082314; cv=none; b=qZraVFBDNPPoeyilQcWYlWiRhlupMk8iBBmqwqnJoGyW9N+OfsykmMokhL4CURsDtIeyfPCCHOX3z6Rgzdec+YGBtblAupILPL4ulQ9/ng4YIQUx4z0edJUOZ3IZ/CQ1SOiYp2WU6xC+oPhVDP/jp03R9867OJHKCaigwDCrIkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082230; c=relaxed/simple;
-	bh=/WroAcfP5qG7Ht8rBeZ30Rehc+ZEdMafXSdz1qut0Qk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K45RLyH1aOHxLhEI3GguC9frUSpT2AauTdgysZCp/kJsV48ZTLr+U5tmJnNeVLiJkYglOjHCsUe08xfRHgA7J6ZGpmEn7MY21l5bMs/1KmCkHqiGvu8r7F0LeWHNSG6tazkZMku5TC+Yg4I6ayylO6Z122fksb6igt8zC2zhXTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xnjqB70R; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41GBGYwO083346;
-	Fri, 16 Feb 2024 05:16:34 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708082194;
-	bh=nDk2WfWJt2aWSEBbueJOkQd7RmDzKK1+hpo9/zydDDU=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=xnjqB70RZei0K4O+rcT6eO2ST3qLKTEhl14fwgXrQ/PjR0cJd047YBlktyZiFMTxN
-	 kaE6WnDRU2uoAy6LBBf/cW5JbWMlYDuJH/sXEI9mWo/1w5XolypGO7ih9/EjTw5e3d
-	 lmijIfCRv+JCRF+uEubu2vehX1u8irFGHmRiYRwA=
-Received: from DFLE104.ent.ti.com (dfle104.ent.ti.com [10.64.6.25])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41GBGYBh004264
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 16 Feb 2024 05:16:34 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 16
- Feb 2024 05:16:34 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 16 Feb 2024 05:16:34 -0600
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41GBGXf7110209;
-	Fri, 16 Feb 2024 05:16:33 -0600
-Date: Fri, 16 Feb 2024 16:46:32 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>,
-        Thomas Richard
-	<thomas.richard@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>, Andy Shevchenko <andy@kernel.org>,
-        Tony
- Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Janusz
- Krzysztofik <jmkrzyszt@gmail.com>,
-        Andi Shyti <andi.shyti@kernel.org>, Peter
- Rosin <peda@axentia.se>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham
- I <kishon@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lorenzo
- Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?=
-	<kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas
-	<bhelgaas@google.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-omap@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-pci@vger.kernel.org>, <gregory.clement@bootlin.com>,
-        <thomas.petazzoni@bootlin.com>, <u-kumar1@ti.com>
-Subject: Re: [PATCH v3 18/18] PCI: j721e: add suspend and resume support
-Message-ID: <8d47e1d0-69a3-475e-8dd8-64514872e026@ti.com>
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-18-5c2e4a3fac1f@bootlin.com>
- <aa791703-81d8-420c-ba35-c8fd08bc3f07@ti.com>
- <CZ6GG6OQUJTX.2OM5TC9YLOAXV@bootlin.com>
+	s=arc-20240116; t=1708082314; c=relaxed/simple;
+	bh=Kq1IJBQVf+kdbuVgTva05BjXKCMAbwrFjoxYlv2wTbI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b4ihqnNA9MDRrksmCJhv+5x+a8XL0D/veQ2Hv5rhEVccH2BGdqn2rPDURry8HL3A3+d0kUOluzv2684Ci9fuSVQgILFlyYc18RUE7i4/2anS6lgiY4ak/Fpwy/mtcTWDRxNZG8rmxxrwOdrm7ClIqa2485O9/4RwvvkTjEkqIJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EDEE1FB;
+	Fri, 16 Feb 2024 03:19:11 -0800 (PST)
+Received: from [192.168.68.110] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABDD73F766;
+	Fri, 16 Feb 2024 03:18:28 -0800 (PST)
+Message-ID: <58a67051-6d61-4d16-b073-266522907e05@arm.com>
+Date: Fri, 16 Feb 2024 11:18:27 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CZ6GG6OQUJTX.2OM5TC9YLOAXV@bootlin.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/filemap: Allow arch to request folio size for exec
+ memory
+Content-Language: en-GB
+To: Dave Chinner <david@fromorbit.com>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@redhat.com>, Barry Song <21cnbao@gmail.com>,
+ John Hubbard <jhubbard@nvidia.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org
+References: <20240215154059.2863126-1-ryan.roberts@arm.com>
+ <Zc6mcDlcnOZIjqGm@dread.disaster.area>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <Zc6mcDlcnOZIjqGm@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On 24/02/16 12:09PM, Théo Lebrun wrote:
-> Hello,
+Hi Dave,
+
+Thanks for taking a look at this! Some comments below...
+
+On 16/02/2024 00:04, Dave Chinner wrote:
+> On Thu, Feb 15, 2024 at 03:40:59PM +0000, Ryan Roberts wrote:
+>> Change the readahead config so that if it is being requested for an
+>> executable mapping, do a synchronous read of an arch-specified size in a
+>> naturally aligned manner.
+>>
+>> On arm64 if memory is physically contiguous and naturally aligned to the
+>> "contpte" size, we can use contpte mappings, which improves utilization
+>> of the TLB. When paired with the "multi-size THP" changes, this works
+>> well to reduce dTLB pressure. However iTLB pressure is still high due to
+>> executable mappings having a low liklihood of being in the required
+>> folio size and mapping alignment, even when the filesystem supports
+>> readahead into large folios (e.g. XFS).
+>>
+>> The reason for the low liklihood is that the current readahead algorithm
+>> starts with an order-2 folio and increases the folio order by 2 every
+>> time the readahead mark is hit. But most executable memory is faulted in
+>> fairly randomly and so the readahead mark is rarely hit and most
+>> executable folios remain order-2.
 > 
-> On Fri Feb 16, 2024 at 11:48 AM CET, Siddharth Vadapalli wrote:
-> > On 24/02/15 04:18PM, Thomas Richard wrote:
-> > > From: Théo Lebrun <theo.lebrun@bootlin.com>
-> > > 
-> > > Add suspend and resume support. Only the rc mode is supported.
-> > > 
-> > > During the suspend stage PERST# is asserted, then deasserted during the
-> > > resume stage.
-> >
-> > Wouldn't this imply that the Endpoint device will be reset and therefore
-> > lose context? Or is it expected that the driver corresponding to the
-> > Endpoint Function in Linux will restore the state on resume, post reset?
+> Yup, this is a bug in the readahead code, and really has nothing to
+> do with executable files, mmap or the architecture.  We don't want
+> some magic new VM_EXEC min folio size per architecture thingy to be
+> set - we just want readahead to do the right thing.
+
+It sounds like we agree that there is a bug but we don't agree on what the bug
+is? My view is that executable segments are accessed in a ~random manner and
+therefore readahead (as currently configured) is not very useful. But data may
+well be accessed more sequentially and therefore readahead is useful. Given both
+data and text can come from the same file, I don't think this can just be a
+mapping setting? (my understanding is that there is one "mapping" for the whole
+file?) So we need to look to VM_EXEC for that decision.
+
 > 
-> This does imply exactly that. Endpoint driver must be able to restore
-> context anyway, as system-wide suspend could mean lost power to PCI RC
-> controller (eg suspend-to-RAM) or PCI rails (dependent on hardware).
+> Indeed, we are already adding a mapping minimum folio order
+> directive to the address space to allow for filesystem block sizes
+> greater than PAGE_SIZE. That's the generic mechanism that this
+> functionality requires. See here:
+> 
+> https://lore.kernel.org/linux-xfs/20240213093713.1753368-5-kernel@pankajraghav.com/
 
-Thank you for confirming.
+Great, I'm vaguely aware of this work, but haven't looked in detail. I'll go
+read it. But from your brief description, IIUC, this applies to the whole file,
+and is a constraint put in place by the filesystem? Applying to the whole file
+may make sense - that means more opportunity for contpte mappings for data pages
+too, although I guess this adds more scope for write amplificaiton because data
+tends to be writable, and text isn't. But for my use case, its not a hard
+constraint, its just a preference which can improve performance. And the
+filesystem is the wrong place to make the decision; its the arch that knows
+about the performacne opportunities with different block mapping sizes.
 
-Regards,
-Siddharth.
+As a side note, concerns have been expressed about the possibility of physical
+memory fragmentation becoming problematic, meaning we degrade back to small
+folios over time with my mTHP work. The intuituon is that if the whole system is
+using a few folio sizes in ~equal quantities then we might be ok, but I don't
+have any data yet. Do you have any data on fragmentation? I guess this could be
+more concerning for your use case?
+
+> 
+> (Probably worth reading some of the other readahead mods in that
+> series and the discussion because readahead needs to ensure that it
+> fill entire high order folios in a single IO to avoid partial folio
+> up-to-date states from partial reads.)
+> 
+> IOWs, it seems to me that we could use this proposed generic mapping
+> min order functionality when mmap() is run and VM_EXEC is set to set
+> the min order to, say, 64kB. Then the readahead code would simply do
+> the right thing, as would all other reads and writes to that
+> mapping.
+
+Ahh yes, hooking into your new logic to set a min order based on VM_EXEC sounds
+perfect...
+
+> 
+> We could trigger this in the ->mmap() method of the filesystem so
+> that filesysetms that can use large folios can turn it on, whilst
+> other filesystems remain blissfully unaware of the functionality.
+> Filesystems could also do smarter things here, too. eg. enable PMD
+> alignment for large mapped files....
+
+..but I don't think the filesystem is the right place. The size preference
+should be driven by arch IMHO.
+
+Thanks,
+Ryan
+
+> 
+> -Dave.
+
 
