@@ -1,102 +1,171 @@
-Return-Path: <linux-kernel+bounces-67927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59332857324
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:10:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C27D7857327
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BE2B1C21782
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:10:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B6C52804E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F40DDDC1;
-	Fri, 16 Feb 2024 01:00:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59261B952;
+	Fri, 16 Feb 2024 01:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BCqteF2K"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N4sqZ5DE"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB16E8F55;
-	Fri, 16 Feb 2024 01:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B34B1B94C;
+	Fri, 16 Feb 2024 01:00:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708045248; cv=none; b=T35SKdWDwGM7rrhW5yASyNWn57YZqrQBj1dYPVIxXrvBnSn5LoAn2tyXrKRSgU6ombTqz8ClRN1neCe5Gs2pyfJvZAY7M8Mj5/MXzQM6SIe2we6f5KW9IsDyqnSCy88EbEiWjRg330L1n3MTSNLmz3WMvfz748/5B8uMHtQgP1s=
+	t=1708045260; cv=none; b=QWOLl7ST9mRbqgt1mwzolNEMkf2dZxmyBTQzSv89fPICMCVBewcjOv/zAOguiwegqQRy+hs7VWZ3kT/Z77x7+xNfTBymo1YqmBFtYhuI2j1Afpf3d7IKtbTJACCqgD/7XjmYm8c1RDO50tJQk6MMOaNgXMQIAxVTxRuYhlQvhvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708045248; c=relaxed/simple;
-	bh=+dDgnU3ZkrjHe2f8ANYZEXxyh3W3/N5+qFKaHROFQjU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hR6tp7xY4lLeceN5QlLarKBHN0uY/dmNszCK3QwOQD0TnuTgnQhl/Q/duhuOwcop6XRFZxkxoV1++h5MVqq9GUQ5g0NWIhAZJQkc3SRc6WHTRT3a5bVTCU1WBBiCm8NU+qAlewW8ghXiGHaFedNP8SZg3q1tMLE+O126r+gQti4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BCqteF2K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 693EEC433F1;
-	Fri, 16 Feb 2024 01:00:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708045248;
-	bh=+dDgnU3ZkrjHe2f8ANYZEXxyh3W3/N5+qFKaHROFQjU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=BCqteF2KZkBD/XMzhKjjbxKUtvLqdkGNuCWI6A6kWgqy+syTndaIHpsbIhS4pxbAp
-	 UmMEkDDCao9xjdSYkDm918Pe9jerH5dLqNeZecLL9epIYcUVa2Wh9XaqOa8Q0wJChH
-	 LyNbx57nXbkJWKvWX9aYrj3gMnnlnsHnwYGzv5Hs1lHC49ajycJ38Fk/pwZJZJ3uNY
-	 WmSIxelgEKaoYY8p2UUD2trduuEQ49XwsN6zBKl6fh3Nr785Q8CQEGszFEn2+UTMJc
-	 z4vwAs/mm5M+FkBxUtOsZ+CB8h99b4zHz5aX7TXxka3YG+Msx94e84uU2yTu2fVxgY
-	 yVC2AwsLICM9g==
-Date: Thu, 15 Feb 2024 17:00:46 -0800
-From: Jakub Kicinski <kuba@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, Leon Romanovsky
- <leonro@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
- <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, David Ahern
- <dsahern@kernel.org>, Aron Silverton <aron.silverton@oracle.com>,
- andrew.gospodarek@broadcom.com, linux-kernel@vger.kernel.org,
- netdev@vger.kernel.org
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240215170046.58d565ef@kernel.org>
-In-Reply-To: <Zc22mMN2ovCadgRY@infradead.org>
-References: <20240207072435.14182-1-saeed@kernel.org>
-	<Zcx53N8lQjkpEu94@infradead.org>
-	<20240214074832.713ca16a@kernel.org>
-	<Zc22mMN2ovCadgRY@infradead.org>
+	s=arc-20240116; t=1708045260; c=relaxed/simple;
+	bh=AmzPTvv5M4opzOrGDol8wAuHPupOVjr12LX5HdJiY0g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OszL+gzW82JSFgrDUsdXp52GIWLH8i9JesIYSomHRlsgfsv9G3btkT4LqYYGAbqMbUib5khobL0wPFacdSXKoxSQAy0yhbt9ogWii0tEl/TPRFyyY78bMdvGIWctdh+CUAQJil4dWdHtrBIX7564kTDErZXevW5IGIg6Sj/dczw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N4sqZ5DE; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d153254b7so157683f8f.0;
+        Thu, 15 Feb 2024 17:00:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708045256; x=1708650056; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=sA/QklIh0ei5Flo8BxEpchDfFmK+iFfJziNsfkxsH4E=;
+        b=N4sqZ5DElB/RAK6xCFsDYOLqTm2RCHJYoTNgzZw2uSGRJMf8A0+r8Pt5kXkNYz2zHC
+         20sSo+uhUzd2nlJHfuisuG6wsG0TDZBIqY+b3ZWGz9Kc+ZZt04BYnGrvyvu0ciM+M9MO
+         tDM6cKJ87v5k0g8T5yMvMDfoljdeaOJPfYFnFld+mXf+ff+zpRZdJ3OSY6eTgYNCjiUX
+         XkgMtIi248rZz1qjvWRXCtgrr5kdS+w35YbYypzbXEHpqGMiGsj1CcsiBmeibEZgAXCR
+         ZMHvtXf9WI56cup7Q/Wwh+zFbhYwE05ycpUWDDa+LJ2RyYEizSUE2f12hCD06QBbpQci
+         A76g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708045256; x=1708650056;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=sA/QklIh0ei5Flo8BxEpchDfFmK+iFfJziNsfkxsH4E=;
+        b=lXbLNxVySB/iK0pwretI7jvQE+ZzpyHp8nSlRMNrpPnBdmYmtlA4/5bSMDa7IDx2j3
+         Bl1o49FEMTzyqDJ5UVEy6swksprIZvzFE9nPLb8YW/hnImCXO0uIqetbFYb4RPAyXl0C
+         H0Lti9DQc3z034PyptaCc6otyuM/THeZVCkzfSu3EE71N5wXjwTwo1sIFJZK5H5A/nh1
+         0nEvNgFQA4Ic+o3v4dxjtRUhsCdmOSyCmXql/PhefN3hxh24Ms+VNhLXmbrmA2t5Wemv
+         HEg6UBzSJLDpoxxI9ER1jtqhrnZNTapSdOFIetPeGFE3qJDFFQEmL12Zq947ZARaw2JZ
+         kvbw==
+X-Forwarded-Encrypted: i=1; AJvYcCXe3ts6tzH5onNB/yx8Qn24p9+qcZCwLGpHvOnBpNzmGPtctyvQ8ifgRaBAZl9dzdId9LLRGvm8PbaolrJX7HZ+eDfYOIPgUuCVUqerCnqWWq5wwzN68C3KZ9qYYPjb1dtanheO
+X-Gm-Message-State: AOJu0YwExE2V42PXACsl5+YN1aZS3CU7MYEjYQkFfn9IaijL/9TFAiyr
+	02X4cgNR3Nyyp1cYQKXvgq9CWJZef2m0slmJrqfBrpPBiOANX7Uz
+X-Google-Smtp-Source: AGHT+IHLdYf0etTI3WWCm+mBFGoOsJwiVWqy35pH8x16+kG3WcTlLbpXpZOTKr6e0lzPmWc7Xz33Sg==
+X-Received: by 2002:adf:fe0b:0:b0:33d:1d45:60a3 with SMTP id n11-20020adffe0b000000b0033d1d4560a3mr83158wrr.44.1708045256264;
+        Thu, 15 Feb 2024 17:00:56 -0800 (PST)
+Received: from skbuf ([188.25.173.195])
+        by smtp.gmail.com with ESMTPSA id x6-20020adff0c6000000b0033cfc035940sm621176wro.34.2024.02.15.17.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 17:00:55 -0800 (PST)
+Date: Fri, 16 Feb 2024 03:00:53 +0200
+From: Vladimir Oltean <olteanv@gmail.com>
+To: arinc.unal@arinc9.com
+Cc: Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+	Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+	Alvin =?utf-8?Q?=C5=A0ipraga?= <ALSI@bang-olufsen.dk>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v2] net: dsa: remove OF-based MDIO bus
+ registration from DSA core
+Message-ID: <20240216010053.asbu75kdi65jjuky@skbuf>
+References: <20240213-for-netnext-dsa-mdio-bus-v2-1-0ff6f4823a9e@arinc9.com>
+ <20240213-for-netnext-dsa-mdio-bus-v2-1-0ff6f4823a9e@arinc9.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240213-for-netnext-dsa-mdio-bus-v2-1-0ff6f4823a9e@arinc9.com>
+ <20240213-for-netnext-dsa-mdio-bus-v2-1-0ff6f4823a9e@arinc9.com>
 
-On Wed, 14 Feb 2024 23:00:40 -0800 Christoph Hellwig wrote:
-> On Wed, Feb 14, 2024 at 07:48:32AM -0800, Jakub Kicinski wrote:
-> > Overreach is unfortunate, I'd love to say "please do merge it as part 
-> > of RDMA". You probably don't trust my opinion but Jason admitted himself
-> > this is primarily for RDMA. RDMA is what it is in terms of openness and
-> > all vendors trying to sell their secret magic sauce.  
+On Tue, Feb 13, 2024 at 10:29:05AM +0300, Arınç ÜNAL via B4 Relay wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> Common.  RDMA has two important open standards, one of them even done
-> in IETF that most open of all standards organizations.
+> The code block under the "!ds->user_mii_bus && ds->ops->phy_read" check
+> under dsa_switch_setup() populates ds->user_mii_bus. The use of
+> ds->user_mii_bus is inappropriate when the MDIO bus of the switch is
+> described on the device tree [1].
+> 
+> For this reason, use this code block only for switches [with MDIO bus]
+> probed on platform_data, and OF which the switch MDIO bus isn't described
+> on the device tree. Therefore, remove OF-based MDIO bus registration as
+> it's useless for these cases.
+> 
+> These subdrivers which control switches [with MDIO bus] probed on OF, will
+> lose the ability to register the MDIO bus OF-based:
+> 
+> drivers/net/dsa/b53/b53_common.c
+> drivers/net/dsa/lan9303-core.c
+> drivers/net/dsa/vitesse-vsc73xx-core.c
+> 
+> These subdrivers let the DSA core driver register the bus:
+> - ds->ops->phy_read() and ds->ops->phy_write() are present.
+> - ds->user_mii_bus is not populated.
+> 
+> The commit fe7324b93222 ("net: dsa: OF-ware slave_mii_bus") which brought
+> OF-based MDIO bus registration on the DSA core driver is reasonably recent
+> and, in this time frame, there have been no device trees in the Linux
+> repository that started describing the MDIO bus, or dt-bindings defining
+> the MDIO bus for the switches these subdrivers control. So I don't expect
+> any devices to be affected.
+> 
+> The logic we encourage is that all subdrivers should register the switch
+> MDIO bus on their own [2]. And, for subdrivers which control switches [with
+> MDIO bus] probed on OF, this logic must be followed to support all cases
+> properly:
+> 
+> No switch MDIO bus defined: Populate ds->user_mii_bus, register the MDIO
+> bus, set the interrupts for PHYs if "interrupt-controller" is defined at
+> the switch node. This case should only be covered for the switches which
+> their dt-bindings documentation didn't document the MDIO bus from the
+> start. This is to keep supporting the device trees that do not describe the
+> MDIO bus on the device tree but the MDIO bus is being used nonetheless.
+> 
+> Switch MDIO bus defined: Don't populate ds->user_mii_bus, register the MDIO
+> bus, set the interrupts for PHYs if ["interrupt-controller" is defined at
+> the switch node and "interrupts" is defined at the PHY nodes under the
+> switch MDIO bus node].
+> 
+> Switch MDIO bus defined but explicitly disabled: If the device tree says
+> status = "disabled" for the MDIO bus, we shouldn't need an MDIO bus at all.
+> Instead, just exit as early as possible and do not call any MDIO API.
+> 
+> After all subdrivers that control switches with MDIO buses are made to
+> register the MDIO buses on their own, we will be able to get rid of
+> dsa_switch_ops :: phy_read() and :: phy_write(), and the code block for
+> registering the MDIO bus on the DSA core driver.
+> 
+> Link: https://lore.kernel.org/netdev/20231213120656.x46fyad6ls7sqyzv@skbuf/ [1]
+> Link: https://lore.kernel.org/netdev/20240103184459.dcbh57wdnlox6w7d@skbuf/ [2]
+> Suggested-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+> Acked-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+> Changes in v2:
+> - Remove mention to drivers/net/dsa/realtek/realtek-mdio.c as it now
+>   registers the MDIO bus OF-based on its own, and now under
+>   drivers/net/dsa/realtek/rtl83xx.c. I've waited until this happened
+>   because if this patch was applied beforehand, there would be no way to
+>   set IRQs on PHYs as the subdriver doesn't do that for the MDIO bus
+>   registered non-OF-based.
+> - Link to v1: https://lore.kernel.org/r/20240122053348.6589-1-arinc.unal@arinc9.com
+> ---
 
-While I don't dispute that there are standards which can be read,
-the practical interoperability of RDMA devices is extremely low.
-By practical I mean having two devices from different vendors
-achieve any reasonable performance talking to each other.
-Even two devices from _the same_ vendor but different generations
-are unlikely to perform.
-
-Given how RDMA is deployed (uniform, greenfield/full replacement)
-this is entirely reasonable from the engineering perspective.
-
-But this is a bit of a vicious cycle, vendors have little incentive 
-to interoperate, and primarily focus on adding secret sauce outside of 
-the standard. In fact you're lucky if the vendor didn't bake some
-extension which requires custom switches into the NICs :(
-
-Compare that to WiFi, which is a level of standardization netdev folks
-are more accustomed to. You can connect a new device from vendor X to 
-a 10 year old AP from vendor Y and it will run with high perf.
-
-Unfortunately because of the AI craze I have some experience
-with RDMA deployments now. Perhaps you have more, perhaps your
-experience differs.
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
