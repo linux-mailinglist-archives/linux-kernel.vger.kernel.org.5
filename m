@@ -1,132 +1,145 @@
-Return-Path: <linux-kernel+bounces-68560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DFF6857C61
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:14:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0841857C6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:18:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D9102855D2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:14:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E07A1F23EB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:18:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49C607869C;
-	Fri, 16 Feb 2024 12:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6716B79930;
+	Fri, 16 Feb 2024 12:17:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gZj84foK"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b="Vp3gMGfo"
+Received: from mail1.fiberby.net (mail1.fiberby.net [193.104.135.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E096678683;
-	Fri, 16 Feb 2024 12:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30C5978B73;
+	Fri, 16 Feb 2024 12:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.104.135.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708085647; cv=none; b=CcAMzpCaUG5ff7Nu115+YMgE3f5vu+xtJtwMKV7MKZDWoV3jSIqiOGRloEUWWElTvj6H7LBEOJTSAyQ3MLaDBjwHijpTZGKhnH4sUKVu0kOpYDD/l6xKdheQdx/j8enRH+RhB+zGGQ3lOzJooW81Hd+GbH4wUTIAUhUwyHX3zj0=
+	t=1708085865; cv=none; b=gq0ZblXmSi60zO0kRqYi/Q3gvyCgkcaqlHEaSdYyJCKDimsCLvaX0ijNyMn5SISdrAauxCBHnqVvXNlqITY/uhbLAPzAUQYE3L7Wqt3XceCWzeBtyJcVlyFK7xLLlbPriqgGpntahGsynEdfh3fVO6GC2A6lPIqjnJGXumBwAJ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708085647; c=relaxed/simple;
-	bh=VMj9NlgrJ7LdeNyUpZVFP+QrFG0xFRbwjelf51j4Cg0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZojJEgdciFI4U6jyJYTKgWm1b2PPMG8EQzxaq42rJmo1cImEV1BMdtxzZvEdpxwDESji3+F49LHR6MpPPZkeYcwCBF+Spqmsy6N/Iah6k7ch2bGPRJi6/Cye1m0+jnXVfdxzFdJ3lJk1jro8KcOksCNMJgS54G0Bf54kIx9leU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gZj84foK; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51299d29e43so228212e87.2;
-        Fri, 16 Feb 2024 04:14:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708085644; x=1708690444; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rkdzbV/rnonmADQ9a6uxn+CDhcEFmPIuKWZMWrb/984=;
-        b=gZj84foKRzwOgXWcFgwxpFVwqrdAg36GQcFdZf+OZRM/LkMMYEeN84kNPy5nAnTMsw
-         mC0WieyknezTL01TNMcmo4R3qFznnu25FQEml4LXjbVfAw0Kieen3o9zujF9Li8ifNWc
-         8E5ynKg5C7qPjQ61a2X1B3D2rP5X8a5S90zAAkaY2Ag9xohfWr4EYJhactsVSZt/07nB
-         L8j9olnEcrJmOeoLR7C1FwgLw/sfPrBh6vr4o9MDMt+bhsHVr6U7Ql4vUuXu4s04aNAk
-         Etm737M5Xe0efpejADAVMA85l8VxACcEfajhdJ5aJksyp0OwXYhfnJ514uKAVRrdN72q
-         vWSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708085644; x=1708690444;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rkdzbV/rnonmADQ9a6uxn+CDhcEFmPIuKWZMWrb/984=;
-        b=Mhudb7XpV/UZQfobfalYPIiVFezSN86JIVm7/2CZFwUDNtvFH67S9cuXbYIgIoQQkX
-         YeaMbvD3eW9aFULl/s4OrMSsBCRSkEW7HoVwaj4oQUJDlDkYBRS18RECGjF7rOGtHdJF
-         b/+96YzAi2oCM35FMPSF4hi65wMK7qyeEU8ywSvfMEUWW9H29VTQ6gsK8NvDMzHN5HsT
-         jTNkFPwaI8FQYMv+hWMjbbW29DDaa3zkPOe03mJnmbcJmlmJCWi+fGJT9fOudLwXXZAz
-         d++U9TzWskKKhqhwBc7AvyFJRWwx69FUogQQ1kAwybwWmh8+vS17pVvn7ZV0CZdv8yUh
-         Adng==
-X-Forwarded-Encrypted: i=1; AJvYcCV5Th4vC1XQGc4gqfhf+C6ZML6iETaBsprPgAzxUlGo+FrZ6V4Amgg6/cBrRz+vW+Q+xbNb3aqGm98p3dxSW/ycHm7Osj6h//ZeMZPaagypZPt9e3JIWTFFnJvm+OaU0YScUVvQ
-X-Gm-Message-State: AOJu0Yx8ocr5mIDFTN58lkEijqWF4mP8tpkcg5tOouHauQ9QMxE14ghu
-	UY6oulT1mYoxmv2PRMeT+IuheK0OU0ZnavM1cUkp99EiKLZ7714O
-X-Google-Smtp-Source: AGHT+IEIvczXhmrH8KtwKdJv05I6jJEI06QF9mOnMKfmFYWHNTB2LlzG04ufZsBv8cvWt0kiV8c8QA==
-X-Received: by 2002:a05:6512:e94:b0:511:9f76:6373 with SMTP id bi20-20020a0565120e9400b005119f766373mr4271833lfb.42.1708085643542;
-        Fri, 16 Feb 2024 04:14:03 -0800 (PST)
-Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
-        by smtp.gmail.com with ESMTPSA id o21-20020a05600c4fd500b00410ab50f70fsm2155981wmq.15.2024.02.16.04.14.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 04:14:03 -0800 (PST)
-Message-ID: <be84a28a6cdf8971a225166b8b4c865e62ee9a9d.camel@gmail.com>
-Subject: Re: [net-next] net: ethernet: adi: adin1110: Reduce the MDIO_TRDONE
- poll interval
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Ciprian Regus <ciprian.regus@analog.com>, linux-kernel@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, Dell Jin
- <dell.jin.code@outlook.com>, Amit Kumar Mahapatra
- <amit.kumar-mahapatra@amd.com>, Yang Yingliang <yangyingliang@huawei.com>, 
- netdev@vger.kernel.org
-Date: Fri, 16 Feb 2024 13:14:02 +0100
-In-Reply-To: <20240216103636.1231815-1-ciprian.regus@analog.com>
-References: <20240216103636.1231815-1-ciprian.regus@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
+	s=arc-20240116; t=1708085865; c=relaxed/simple;
+	bh=0v2HTKd1MhqMMkaLSnmMvrLTyR08S+pwHmoDQiG/cXk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jBZomeD+FijDWBWHv5IaBJDKyUfDDch47iT8D+uFb5S6PCpbO+UuPzKYu6GshCftWt/wt+OtYJmS2Wz6D9J7uRPvxQLwNLx51hFWveYqdGAg7jEMisBnaGElvCjat6r0nZX5c121FlYrQ9pvCANzQjkqZu6EmjlblGTrypiSlCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net; spf=pass smtp.mailfrom=fiberby.net; dkim=pass (2048-bit key) header.d=fiberby.net header.i=@fiberby.net header.b=Vp3gMGfo; arc=none smtp.client-ip=193.104.135.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fiberby.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fiberby.net
+Received: from x201s (193-104-135-243.ip4.fiberby.net [193.104.135.243])
+	by mail1.fiberby.net (Postfix) with ESMTPSA id 9C18F600D4;
+	Fri, 16 Feb 2024 12:17:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fiberby.net;
+	s=202008; t=1708085856;
+	bh=0v2HTKd1MhqMMkaLSnmMvrLTyR08S+pwHmoDQiG/cXk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Vp3gMGfomSCIg29dn+sWT9Om0w471AcpLihb+qJuAr0I7SZzRWqIerOqx9L3H9gei
+	 hVi/roCmn990Zrm/8kXgNUCQzXdffhTk7kpf7XBOJYUt0HMd5eypwVVCvFx4ytz93l
+	 sbLWlHqPJmr1TS3MD4GcUfTm+X77Pg8/lrtXHhVp6rNphemQyAsvKeh12wNvv7gDs9
+	 Qghz+F8XCsPpDUqw7sQvL57JIOKW2iRU+2KlwpIZ0rn5RIzfy3tOBhYKQtOPmKi1oa
+	 Um0UxMg0tKGAsjZ3kWGpZt16OyMv3jOieFsH8QKAb3k7tMK+Ij39CLvIOhF6/D1KYn
+	 rXM4KLXEeUFpw==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by x201s (Postfix) with ESMTP id 0EAF7200224;
+	Fri, 16 Feb 2024 12:17:28 +0000 (UTC)
+Message-ID: <110f8523-4d61-4a1d-ae18-480d89e3c930@fiberby.net>
+Date: Fri, 16 Feb 2024 12:17:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/3] make skip_sw actually skip software
+To: Marcelo Ricardo Leitner <mleitner@redhat.com>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang
+ <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, llu@fiberby.dk
+References: <20240215160458.1727237-1-ast@fiberby.net>
+ <CALnP8ZZYftDYCVFQ18a8+GN8-n_YsWkXOWeCVAoVZFfjLezK2Q@mail.gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Asbj=C3=B8rn_Sloth_T=C3=B8nnesen?= <ast@fiberby.net>
+In-Reply-To: <CALnP8ZZYftDYCVFQ18a8+GN8-n_YsWkXOWeCVAoVZFfjLezK2Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Fri, 2024-02-16 at 12:36 +0200, Ciprian Regus wrote:
-> In order to do a clause 22 access to the PHY registers of the ADIN1110,
-> we have to write the MDIO frame to the ADIN1110_MDIOACC register, and
-> then poll the MDIO_TRDONE bit (for a 1) in the same register. The
-> device will set this bit to 1 once the internal MDIO transaction is
-> done. In practice, this bit takes ~50 - 60 us to be set.
->=20
-> The first attempt to poll the bit is right after the ADIN1110_MDIOACC
-> register is written, so it will always be read as 0. The next check will
-> only be done after 10 ms, which will result in the MDIO transactions
-> taking a long time to complete. Reduce this polling interval to 100 us.
->=20
-> Signed-off-by: Ciprian Regus <ciprian.regus@analog.com>
-> ---
+Hi Marcelo,
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+On 2/15/24 18:00, Marcelo Ricardo Leitner wrote:
+> On Thu, Feb 15, 2024 at 04:04:41PM +0000, Asbjørn Sloth Tønnesen wrote:
+> ...
+>> Since we use TC flower offload for the hottest
+>> prefixes, and leave the long tail to Linux / the CPU.
+>> we therefore need both the hardware and software
+>> datapath to perform well.
+>>
+>> I found that skip_sw rules, are quite expensive
+>> in the kernel datapath, sice they must be evaluated
+>> and matched upon, before the kernel checks the
+>> skip_sw flag.
+>>
+>> This patchset optimizes the case where all rules
+>> are skip_sw.
+> 
+> The talk is interesting. Yet, I don't get how it is set up.
+> How do you use a dedicated block for skip_sw, and then have a
+> catch-all on sw again please?
 
-> =C2=A0drivers/net/ethernet/adi/adin1110.c | 4 ++--
-> =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/net/ethernet/adi/adin1110.c
-> b/drivers/net/ethernet/adi/adin1110.c
-> index d7c274af6d4d..6fca19e6ae67 100644
-> --- a/drivers/net/ethernet/adi/adin1110.c
-> +++ b/drivers/net/ethernet/adi/adin1110.c
-> @@ -467,3 +467,3 @@ static int adin1110_mdio_read(struct mii_bus *bus, in=
-t phy_id,
-> int reg)
-> =C2=A0	ret =3D readx_poll_timeout(adin1110_read_mdio_acc, priv, val,
-> -				 (val & ADIN1110_MDIO_TRDONE), 10000, 30000);
-> +				 (val & ADIN1110_MDIO_TRDONE), 100, 30000);
-> =C2=A0	if (ret < 0)
-> @@ -498,3 +498,3 @@ static int adin1110_mdio_write(struct mii_bus *bus, i=
-nt phy_id,
-> =C2=A0	return readx_poll_timeout(adin1110_read_mdio_acc, priv, val,
-> -				=C2=A0 (val & ADIN1110_MDIO_TRDONE), 10000, 30000);
-> +				=C2=A0 (val & ADIN1110_MDIO_TRDONE), 100, 30000);
-> =C2=A0}
+Bird installs the DFZ Internet routing table into the main kernel table
+for the software datapath.
 
+Bird also installs a subset of routing table into an aux. kernel table.
+
+flower-route then picks up the routes from the aux. kernel table, and
+installs them as TC skip_sw filters.
+
+On these machines we don't have any non-skip_sw TC filters.
+
+Since 2021, we have statically offloaded all inbound traffic, since
+nexthop for our IP space is always the switch next to it, which does
+interior L3 routing. Thereby we could offload ~50% of the packets.
+
+I have put an example of the static script here:
+https://files.fiberby.net/ast/2024/tc_skip_sw/mlx5_static_offload.sh
+
+And `tc filter show dev enp5s0f0np0 ingress` after running the script:
+https://files.fiberby.net/ast/2024/tc_skip_sw/mlx_offload_demo_tc_dump.txt
+
+
+> I'm missing which traffic is being matched against the sw datapath. In
+> theory, you have all the heavy duty filters offloaded, so the sw
+> datapath should be seeing only a few packets, right?
+
+We are an residential ISP, our traffic is therefore residential Internet
+traffic, we run the BGP routers as a router on a stick, the filters therefore
+see both inbound and outbound traffic.
+
+~50% of packets are inbound traffic, our own prefixes are therefore the
+hottest prefixes. Most streaming traffic is handled internally, and is
+therefore not seen on our core routers. We regularly have 5%-10% of all
+outbound traffic going towards the same prefix, and have 50% of outbound
+traffic distributed across just a few prefixes.
+
+We currently only offload our own prefixes, and a select few other known
+high-traffic prefixes.
+
+The goal is to offload the majority of the trafic, but it is still early
+days for flower-route, and I need to implement some smarter chain layout
+first and dynamic filter placement based on hardware counters.
+
+Even when I get flower-route to offload almost all traffic, there will still
+be a long tail of prefixes not in hardware, so the kernel still needs
+to not be pulled down by the offloaded filters.
+
+-- 
+Best regards
+Asbjørn Sloth Tønnesen
+Network Engineer
+Fiberby - AS42541
 
