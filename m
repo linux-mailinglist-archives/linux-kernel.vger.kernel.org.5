@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-69510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07EE6858A65
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:58:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F361858A66
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7222CB27ABE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:58:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1A3F1C22439
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:59:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB4C014A4F7;
-	Fri, 16 Feb 2024 23:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E4891534EB;
+	Fri, 16 Feb 2024 23:55:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ACuy2cBZ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Tk0vz6RX"
 Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 193D114A0B5
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:55:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E2614A4F2
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708127719; cv=none; b=jMGwwby5shnQoNKOg7lhnRnh+dpEPrrzr+1yFzfwYTmgxGLl96pmjrLGnIKNMaymkFIIaivue/NdgZW0/WB14d9BsDCZ6jW3Xqq+mMwtSAAicsbUEkmaEFzBKkikGWQmrZZYJ0I8OstnFFe91KGMEwtZKZ9gbPiZGB/7L4NZA8g=
+	t=1708127722; cv=none; b=qCz/DtSL7v/8fK/xgBzHma2JUfuENJdtb1qLLVaPG9fNhJ6b2O+Xj5bRCABfjN3b31Qj/4mP7EqbgHr+QPgz1cC9ra6RtfFRO3nxsV2XOd6pPKpjUeQ7lPjhXm+ypAeWPL9zINWFQMQjPV/2a3xrfme77KiUphZ90fNP2CKm+Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708127719; c=relaxed/simple;
-	bh=mlDvuBmPP3TrmLBy1TVdW9K7nfBnqAONps2iWBo5bv4=;
+	s=arc-20240116; t=1708127722; c=relaxed/simple;
+	bh=9QHqj0EQvOX6+a6MNptism09KshtnOJS+VQ0pDYpZf8=;
 	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
-	 To:Content-Type; b=GbGGREe5y0p1NeH5DjEB2r6PbarjzeZCrO7tLSMR8r419gsl3Rv946TiQgFu4rE/KgRTJUCRqFKE0C2QLss2gCy7WCbg+uonv6kE0rLkVLAxO79tbOOUShpu8SI/caE4FkHX3de30BWO2hkfPOrYxFhufk/e0Np1lOkGHj2yzEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ACuy2cBZ; arc=none smtp.client-ip=209.85.219.202
+	 To:Content-Type; b=eOTevSDhb8Rk536hXm4L0KBCQ1iW6CQEz0XoIOAAmoJlQsgaAqx0cNMySdOmgUk7KzkigNwnpCSGapdqzD+RdKHQPkxzkvmjzKw7spDUqDEIKUV7cgdI6uTXPR/vYMYdkXtaP7ahOwXQ3hqF7z6FmENRbGl3luxgGLjhvCFD8FA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Tk0vz6RX; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-d9a541b720aso4323355276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:55:17 -0800 (PST)
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf618042daso4283267276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:55:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708127717; x=1708732517; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1708127719; x=1708732519; darn=vger.kernel.org;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5lEV9flhamU87tdGpQxKOQUuN3cEGzsZvh7EhlSuOZU=;
-        b=ACuy2cBZWhiTW9+iKRzz655YFWBTVgzPe+DXgBwi1Ie6wzzjfJJikFzV9VyIzOa04C
-         ThrU24fX5R6o2JIeR613xK/c57JHWCEEJCiS75QExDwZFMnvNvhfzT/yuu6vOwqigEkq
-         h4kjYkhcANSFBveK1PTOYRX5hkzQPl20spH3AQTPNYZZVzJvgQqzM5QNaHjNdmp4yKOP
-         exmPdVqYiV3REVqSmtA/6ndsN3yDkX+bonf3bVGSBIEt6/7dc7arnMjvjZXGuMPejJGo
-         ItGGHEg4x+8NTbP7GG/p6FL7nkG9P8SWKxcLj2EcGoqw7qlfmgQEWqb51QnoM+1W0m3r
-         ttmw==
+        bh=OwHudnCNl5wfpV2IMol1tp79ctLuVP/i5n4Lz8j3mXY=;
+        b=Tk0vz6RXDKQnhcGr+DXY5W/BPJuZhyPUfT2SOUMyg/oXvpHj+Vdv+ABuPQw9kZehBM
+         XIkmBgFT3cf9/Fqwi0+DhwCSqnnHhY82jVdYupN5nV2yEOp5e2XY8bxgApYeKN/f7G9a
+         umFtZlghzhPR3SB322PueKQWg7GlWlPlfp5B2ubjSiCavMTE5WEcinVnDl+/C4h2OSxl
+         Zin/X5QIDBNnE9lhKOjuz/xaeGPsVmLf8iI6gaH93RHqhZ+5K4weHb8ouvtww+04fNDF
+         bndnB+JErGtBPvh6n35SCu5Vk/+j/BXzdmxS6nlF/MI1xJ24EGloLbeDTatxaJk6BA2t
+         AgCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708127717; x=1708732517;
+        d=1e100.net; s=20230601; t=1708127719; x=1708732519;
         h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5lEV9flhamU87tdGpQxKOQUuN3cEGzsZvh7EhlSuOZU=;
-        b=rxw2HQUxKQtVUt6xilEXcfAAw91TZHQ9BY+H5+ubXiP8oZ6POmIKpz4GQtnK/s66I7
-         JOFceKWSn+pHBoQ/uSM7P3EDDP11q9xZN7V/nh4Ovkaln5kQDZznlBx5uAca4pYyEdKu
-         kzK7MSSZ4t7Qbtz0ekYrJK4nZZFNvBag9Wqlw10cg45PxTe/Gba3/AyhdZB5sDYiMZIb
-         Jl2HZYTyszILSDCbbTot1XhnrEzMZGK2Cky/Uen2WE2ASbHuQwVSOSoIBLIW6LVwY/TU
-         DHGIxsDUcTwL160+TIvoo4702dJu/0O9rojoq+JH8Gcj0VfREb09qon+5xPoq1nP8XrD
-         qBJg==
-X-Forwarded-Encrypted: i=1; AJvYcCUanLc9dkwiJMYlvVk7cm3XwhpCqAR99/E0KAckDegiMNmhqkqKO2l2XG7/iYAkuya//4NRqZmJ8VSY+GdVjU0OdazH0s6Q9BHB38WK
-X-Gm-Message-State: AOJu0YzN7c/L6IgveVqvJd79L2qbU5qqqxTjNFUqDJ/ItoebI95pUDsO
-	9L935dJ5n9mSvSp7DBXr/Q4MZPqtbBvlD4l/euc2ojVjE9J1Hb+gScQsTG6sEVMMr8l228l7/yP
-	Wc6PZTQ==
-X-Google-Smtp-Source: AGHT+IEUu7ZIc4xVQBBz95yM/6If+AfmIrGt97iohTygKIEoa3vU8cULrj/7pehsYjAaNFO5DYaZGw3d50RX
+        bh=OwHudnCNl5wfpV2IMol1tp79ctLuVP/i5n4Lz8j3mXY=;
+        b=qEnYx7DWbqxJrQHljExgDIcRBKsHB77W2Yjk3FxLGy+ClioDr3IY7X1TfDDkquUvY+
+         g4jiFRNtWAav9lHWiSkzk2Qv5nnskkDj21DX1tuSJ5E2ZtHWGmzhRkYGL5bgYjmfch9v
+         +xaahaocl3z5bIqvWb6tJmiV7Ka2xJi6l9LY4iVRYz7fuekFM4/JjeB+Sn6KIyLOW+zE
+         Bmolw43rTUAlAFrINt8zhUtqw9GmYLUfUMB85FBBWNEokMfFZZ52FCR9HvFyfHBM6B/i
+         tv6+CJwm7grBsX8Bh0sMeZUNryIrpBk+8RvOgvd65hPx2NU69dgtS0dL69LGlhnnewbv
+         IqvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXJcOjlVuAdd5S2225pgZso57Ail+ImJOkpe+Uojd1p34raEClsRflr+fXAjsCSHNYs/DIzRpqY7TJnDbIRHBjrS9dFDItUyp6nr6Ne
+X-Gm-Message-State: AOJu0YwCZk9SGNqlZ277SxsE60WAMk2fAaaqfv+X0KUeE7AHmrmjmqa7
+	1HTm46ZwzeuPs+vxyhXSy4AKVZpeWSc7c6CBZwTKKw/uvR14CelqSnQ3NdwIttBjtacTo89NgOh
+	boScU/A==
+X-Google-Smtp-Source: AGHT+IG8QRb2Q7jBDqZB4i9cqOAXtHSKaGeMrSsEOLiLdKXk40XnzjXZ0NQyadsz7ftlgTYp32osL3I2Y+06
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:4b5c:352:4272:e34e])
- (user=irogers job=sendgmr) by 2002:a25:b20e:0:b0:dc6:ff54:249f with SMTP id
- i14-20020a25b20e000000b00dc6ff54249fmr1454658ybj.8.1708127717121; Fri, 16 Feb
- 2024 15:55:17 -0800 (PST)
-Date: Fri, 16 Feb 2024 15:51:56 -0800
+ (user=irogers job=sendgmr) by 2002:a05:6902:729:b0:dc2:5273:53f9 with SMTP id
+ l9-20020a056902072900b00dc2527353f9mr224067ybt.1.1708127719606; Fri, 16 Feb
+ 2024 15:55:19 -0800 (PST)
+Date: Fri, 16 Feb 2024 15:51:57 -0800
 In-Reply-To: <20240216235203.229256-1-irogers@google.com>
-Message-Id: <20240216235203.229256-3-irogers@google.com>
+Message-Id: <20240216235203.229256-4-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,7 +74,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240216235203.229256-1-irogers@google.com>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Subject: [PATCH v5 2/8] perf list: Add scandirat compatibility function
+Subject: [PATCH v5 3/8] perf tests: Avoid fork in perf_has_symbol test
 From: Ian Rogers <irogers@google.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
 	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
@@ -89,108 +89,29 @@ To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	llvm@lists.linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-scandirat is used during the printing of tracepoint events but may be
-missing from certain libcs. Add a compatibility implementation that
-uses the symlink of an fd in /proc as a path for the reliably present
-scandir.
+perf test -vv Symbols is used to indentify symbols within the perf
+binary. Add the -F flag so that the test command doesn't fork the test
+before running. This removes a little overhead.
 
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/util/print-events.c | 12 +++---------
- tools/perf/util/util.c         | 19 +++++++++++++++++++
- tools/perf/util/util.h         |  8 ++++++++
- 3 files changed, 30 insertions(+), 9 deletions(-)
+ tools/perf/tests/shell/lib/perf_has_symbol.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/util/print-events.c b/tools/perf/util/print-events.c
-index 9e47712507cc..bf79dd366e2e 100644
---- a/tools/perf/util/print-events.c
-+++ b/tools/perf/util/print-events.c
-@@ -63,6 +63,8 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
+diff --git a/tools/perf/tests/shell/lib/perf_has_symbol.sh b/tools/perf/tests/shell/lib/perf_has_symbol.sh
+index 5d59c32ae3e7..561c93b75d77 100644
+--- a/tools/perf/tests/shell/lib/perf_has_symbol.sh
++++ b/tools/perf/tests/shell/lib/perf_has_symbol.sh
+@@ -3,7 +3,7 @@
+ 
+ perf_has_symbol()
  {
- 	char *events_path = get_tracing_file("events");
- 	int events_fd = open(events_path, O_PATH);
-+	struct dirent **sys_namelist = NULL;
-+	int sys_items;
- 
- 	put_tracing_file(events_path);
- 	if (events_fd < 0) {
-@@ -70,10 +72,7 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
- 		return;
- 	}
- 
--#ifdef HAVE_SCANDIRAT_SUPPORT
--{
--	struct dirent **sys_namelist = NULL;
--	int sys_items = tracing_events__scandir_alphasort(&sys_namelist);
-+	sys_items = tracing_events__scandir_alphasort(&sys_namelist);
- 
- 	for (int i = 0; i < sys_items; i++) {
- 		struct dirent *sys_dirent = sys_namelist[i];
-@@ -130,11 +129,6 @@ void print_tracepoint_events(const struct print_callbacks *print_cb __maybe_unus
- 	}
- 
- 	free(sys_namelist);
--}
--#else
--	printf("\nWARNING: Your libc doesn't have the scandirat function, please ask its maintainers to implement it.\n"
--	       "         As a rough fallback, please do 'ls %s' to see the available tracepoint events.\n", events_path);
--#endif
- 	close(events_fd);
- }
- 
-diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-index c1fd9ba6d697..4f561e5e4162 100644
---- a/tools/perf/util/util.c
-+++ b/tools/perf/util/util.c
-@@ -552,3 +552,22 @@ int sched_getcpu(void)
- 	return -1;
- }
- #endif
-+
-+#ifndef HAVE_SCANDIRAT_SUPPORT
-+int scandirat(int dirfd, const char *dirp,
-+	      struct dirent ***namelist,
-+	      int (*filter)(const struct dirent *),
-+	      int (*compar)(const struct dirent **, const struct dirent **))
-+{
-+	char path[PATH_MAX];
-+	int err, fd = openat(dirfd, dirp, O_PATH);
-+
-+	if (fd < 0)
-+		return fd;
-+
-+	snprintf(path, sizeof(path), "/proc/%d/fd/%d", getpid(), fd);
-+	err = scandir(path, namelist, filter, compar);
-+	close(fd);
-+	return err;
-+}
-+#endif
-diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-index 7c8915d92dca..9966c21aaf04 100644
---- a/tools/perf/util/util.h
-+++ b/tools/perf/util/util.h
-@@ -6,6 +6,7 @@
- /* glibc 2.20 deprecates _BSD_SOURCE in favour of _DEFAULT_SOURCE */
- #define _DEFAULT_SOURCE 1
- 
-+#include <dirent.h>
- #include <fcntl.h>
- #include <stdbool.h>
- #include <stddef.h>
-@@ -56,6 +57,13 @@ int perf_tip(char **strp, const char *dirpath);
- int sched_getcpu(void);
- #endif
- 
-+#ifndef HAVE_SCANDIRAT_SUPPORT
-+int scandirat(int dirfd, const char *dirp,
-+	      struct dirent ***namelist,
-+	      int (*filter)(const struct dirent *),
-+	      int (*compar)(const struct dirent **, const struct dirent **));
-+#endif
-+
- extern bool perf_singlethreaded;
- 
- void perf_set_singlethreaded(void);
+-	if perf test -vv "Symbols" 2>&1 | grep "[[:space:]]$1$"; then
++	if perf test -vv -F "Symbols" 2>&1 | grep "[[:space:]]$1$"; then
+ 		echo "perf does have symbol '$1'"
+ 		return 0
+ 	fi
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
