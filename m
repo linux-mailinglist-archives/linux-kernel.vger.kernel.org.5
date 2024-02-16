@@ -1,73 +1,68 @@
-Return-Path: <linux-kernel+bounces-69466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84FE88589EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:12:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A252A8589EF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 251D81F21D63
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:12:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D51E91C21873
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:12:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DFF214C5AA;
-	Fri, 16 Feb 2024 23:10:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3524F14D430;
+	Fri, 16 Feb 2024 23:11:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kKH5BHyD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WF3Y680+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EC9F14C587;
-	Fri, 16 Feb 2024 23:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7D014C5B1;
+	Fri, 16 Feb 2024 23:10:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708125057; cv=none; b=ZKZ8aA7DggzV5Vc6ymoCJmqIs7cx9K2MCkuZsUzUQwhXyDPKmGYkAvwPx4gI1QhvySxJ8b5JXMvTmMpw8stO6bGZ3g8X9kpo2Kn0Owi8dT+VuiX9383suEH5yUkqvPW45WWWCAKwfcOd+e3u7D2wC8dybbXlOB2IZRcPpyffJA4=
+	t=1708125059; cv=none; b=ZiMVXMdCLvWYSY5VFTqrcvq1nI/cJyKVLpQv/rV2298tNqkSybGZYKYleQVWMEzaRB4vg+MhmG08osLJLKNmEDKpyWk2WztTFGpJJxeiqXN21kPKfi6rieLwUfWHQIErAvmoLnWAUxddAFNd3BNYRoT8ge3sUYRnCSMyfn1XSSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708125057; c=relaxed/simple;
-	bh=kFscJpd4PtsMos7FcDnb8F7Hy9BzwMNBGQNhfikpbx4=;
+	s=arc-20240116; t=1708125059; c=relaxed/simple;
+	bh=htT7sHbL8qUuTypciKRHHCC140E3Pxqzt02b5htuv9g=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dZ3p19p3vf+lpHa+P4vHeGRBbs/m7tZ4wdXBIocYzNw2VS15FjDX/3kFHxuXxvW8/OfR31SNC6F5bP1ewGPhvmct78OV/9Zumilkfi7+aGuqUZgqEdw+cXKkvXvWKElxjkgIbuhtz/yIywSW9Cuhr3HoVL9/w+WDkSZVlyo0NJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kKH5BHyD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51347C433C7;
-	Fri, 16 Feb 2024 23:10:55 +0000 (UTC)
+	 MIME-Version:Content-Type; b=UTH+l1xh60YzGZ5O73+NMUmCT1m1PrF068P85h8JdNaGX6o3Hk56eDFA3W/NBUnaGeoVMlhiZ8MyGQr1ktMeDuJ1flmK2PkLsXtFw36jSUpqL+OoJettO49PASwM36ONze12LqK6EvhaaJP3a7v797H8eWJTzkayJQMugH874GQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WF3Y680+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59729C43143;
+	Fri, 16 Feb 2024 23:10:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708125057;
-	bh=kFscJpd4PtsMos7FcDnb8F7Hy9BzwMNBGQNhfikpbx4=;
+	s=k20201202; t=1708125058;
+	bh=htT7sHbL8qUuTypciKRHHCC140E3Pxqzt02b5htuv9g=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=kKH5BHyDT91jVZ0ealppnCoK5yciKRR/2GfTUnStw5YLAhlMAU7Nf+6Y5PfI3oiIr
-	 fx75y2ZDjTmVJM20qdggTyrWgROO+SnUeG4KJpK7Q9/2S8faBcHWoyLSEWGU8wWrin
-	 nuMlHQa4HnWrHijWy26LWRQITPhROVZb31Nxz1xqk+1fFyoJEQK2cyuheTToQtN2Vb
-	 +dHUxN/04NmCqS37iF1SYkULVu/MWKvHCQ4ManwU1h/JhbDH8XRUqJqwafr+AcAB89
-	 6k2q303xGWixAxDx6L9t1lyT8y/LTzntZynZ0w4szl+XFPovg0Yp+NiS3l7H6cFIsw
-	 aGGiIuB6kZadQ==
+	b=WF3Y680+0Lh+CqETIhq2lRbbVTG/aRjIVZRVn+W7X8k32OgXyLjAYkmm6kYCLeUUz
+	 8yngs1FpBa4m/IDBr6MnPL6IPwVmvMZv8VI98mDA5UQBY3sfjuuK7TGDbXoWLWzaML
+	 O7rf8pn7pqzjYuXFkP8SGkvpLO87tk0fcVkfgzgIyZ1a5JRew91V9ySN1N/qCy0oZ7
+	 Z9F5cuFPYUnA8+rS4iS9QlI4PlZuMbovpj87Y7GIZ5keq8PIFjSkfabZeAs7gpLeD1
+	 T6Jv2lWTILZlOOSPuuBWcFcz+TQbZrffB1CGn+gOb8HBhBHj7SGjrJZEQKaF4s/KlS
+	 Q1fU29zVGAjeg==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>,
-	Jessica Zhang <quic_jesszhan@quicinc.com>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
+To: ~postmarketos/upstreaming@lists.sr.ht,
+	phone-devel@vger.kernel.org,
+	Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
 	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Andy Gross <agross@kernel.org>,
-	Luca Weiss <luca.weiss@fairphone.com>
-Cc: ~postmarketos/upstreaming@lists.sr.ht,
-	phone-devel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
+	Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+	Luca Weiss <luca@z3ntu.xyz>
+Cc: linux-arm-msm@vger.kernel.org,
+	linux-watchdog@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH v3 0/4] Add display support for Fairphone 4
-Date: Fri, 16 Feb 2024 17:10:40 -0600
-Message-ID: <170812504021.18043.10678302937679130651.b4-ty@kernel.org>
+	=?UTF-8?q?Matti=20Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>
+Subject: Re: [PATCH v2] ARM: dts: qcom: msm8226: Add watchdog node
+Date: Fri, 16 Feb 2024 17:10:41 -0600
+Message-ID: <170812504015.18043.2294852608737825089.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240216-fp4-panel-v3-0-a556e4b79640@fairphone.com>
-References: <20240216-fp4-panel-v3-0-a556e4b79640@fairphone.com>
+In-Reply-To: <20240214-msm8226-msm8974-watchdog-v2-1-a6b2f27a7e28@z3ntu.xyz>
+References: <20240214-msm8226-msm8974-watchdog-v2-1-a6b2f27a7e28@z3ntu.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,22 +73,15 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Fri, 16 Feb 2024 11:10:47 +0100, Luca Weiss wrote:
-> Introduce the bindings and panel driver for the LCD panel with the model
-> number 9A-3R063-1102B from DJN which is using the HX83112A driver IC. It
-> is used on the Fairphone 4 smartphone.
-> 
-> Then we can add the panel to the device dts and also enable the GPU.
+On Wed, 14 Feb 2024 22:46:28 +0100, Luca Weiss wrote:
+> Add watchdog for MSM8226 platform.
 > 
 > 
-> [...]
 
 Applied, thanks!
 
-[3/4] arm64: dts: qcom: sm6350: Remove "disabled" state of GMU
-      commit: 2abe4a310cc742332038aed5f9f4a15e65a0bcc1
-[4/4] arm64: dts: qcom: sm7225-fairphone-fp4: Enable display and GPU
-      commit: 891af1aa1ea42514b9a7f42caaa1fa0c32f8e232
+[1/1] ARM: dts: qcom: msm8226: Add watchdog node
+      commit: 9e9c906ede3b7dcf7bf7df61ac712613c7d6c2da
 
 Best regards,
 -- 
