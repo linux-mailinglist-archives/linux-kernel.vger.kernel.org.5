@@ -1,135 +1,179 @@
-Return-Path: <linux-kernel+bounces-68190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7ED3857704
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:52:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8EF48576FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AD7DB2253F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:52:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD7051C21EBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E59D17753;
-	Fri, 16 Feb 2024 07:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B86C17591;
+	Fri, 16 Feb 2024 07:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="psvjRJ16"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="t9/LzMl2";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="eExjU4mE";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="t9/LzMl2";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="eExjU4mE"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529A514AA7;
-	Fri, 16 Feb 2024 07:52:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B6E68833
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708069947; cv=none; b=EWWBYoO03aSTFW5eGQl/t1bPV7dLn3ua0RgAaUjD0xca3Q5UDOnnGShvOA/C0WVLUMYQVvdg+PkGhlAyr/HYS+PbkiSRK3YCQcw8y/lPmyRZBrqK7uDjTzqA1luJVyxV61ZwVHWsQHmlh7vWYHOKgZGy/gp5wHCQt3187hjj5cI=
+	t=1708069884; cv=none; b=ieyRzWQPpv5sZtr+bIvgBZNvtCHyUim+KC3H80pIbThKSrolYUooJqhDJTAfrZRbjFPkJrVo4x8SZjPHtl9UiT3YErMVjAytp62xlWA/GCkqmK8hGmIr4B3Z7vKvYP621RNGOeOTVNprPRrwYRM5kRWjieXlTyHwfiaSYb/G524=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708069947; c=relaxed/simple;
-	bh=Vynf5DoweuXHHLSE4lGddXqNt/Xoy7UcJ0TOB9VRc/E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CzOS56j0mTVZbS5Fas+NbBIaKHFFXv5XOzMqxWoE75vLho3eX/tZnLoGlFog4nUw/w9tVdIiiVslLcX5wrvZeh452YXxl3D6nNYxx3JLIrVzXb/YxwzGk5xtx6upoV+4z41d7XsEmsWAiK0P3kos9d75EO1ZBCEtR5iijHcMXNs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=psvjRJ16; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6DA131C0005;
-	Fri, 16 Feb 2024 07:52:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708069942;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	s=arc-20240116; t=1708069884; c=relaxed/simple;
+	bh=8bF7goS6MKQSsc1bLSN9LL2IR7vzhurIY/xLn8K4R6Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vEZfWumK1bgF4urtiIaD7qEkWFnWJn9C4sz1x47i6SlWde8Ju0ewWLa0E1WbVpufvm44ruozeSrsvAmBP+uokpQXhIxEMxKJiFp50P5hnmQ7H+Ep1ssAK4s2dCHzo8kUg08sP9R1ORs3RfGdJOO8h9OCtCuSKiOyp04TNybp1JE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=t9/LzMl2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=eExjU4mE; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=t9/LzMl2; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=eExjU4mE; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1CE9A21EF8;
+	Fri, 16 Feb 2024 07:51:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708069881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=VVeiECxEmwSLffzbtwy2YG4CyEm4W66/wRiP637DW7E=;
-	b=psvjRJ16HrEu/GqFLLL7wMMfKBPT08MCl4ar0FAhJ0EKI6MP0fdlU9/TMRf2aJcPbYuHTT
-	Y/XaWJ5OWcn2Ggc41n+8jK67j9PIuW99NYEcgM6cqWyWbdDssXoZ47Z7/Z2Iy53x05h9Eb
-	B3p8wByuOej2VhFVfrmVTvV/uJNYxSvZtxPhi08Uq7ysqNY/mn4KsAxzwT0Vnpk33SKyAH
-	9YgXPL9T+KdVxh3hEjjdo9kwWrADnu9szuZSYl+ofMyLx2D0BOytKOrgIrdNHN1q9n9t2b
-	+MsYZsZV4HOyhZnFWK6rQfV+wPw8aelkKg/RHraSCGZQOpQOZcJmL1zXzqpfMA==
-Message-ID: <f1d2c9b0-238d-4b09-8212-62e00a2192b2@bootlin.com>
-Date: Fri, 16 Feb 2024 08:52:17 +0100
+	bh=T3kSRMNvYqoD1Oew8jvkJgmFhy+2180XepdgpQuG9JA=;
+	b=t9/LzMl2CRtI/GwuTpbOZMw4MT6i2J2aZ5B+3sChAPt+vTv+R3FtsRTLN2EYo09OVMTzze
+	uIBGQ0HX65xwCYkD1JIjYGi8O1Miu2w68ujiuyVjMwIAZo3Kub9PiwuXSgkFguaKEZlAic
+	JV6KyavyjYKa6bBzR5dAuhEHbGY7R64=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708069881;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T3kSRMNvYqoD1Oew8jvkJgmFhy+2180XepdgpQuG9JA=;
+	b=eExjU4mE/PaJBmGZBUFFnwsmW/luxQEN4/qZ+UkFMcowV1HFpIpx+pUlRTwK6fioN6Z9mU
+	sXTSABZrHG9yewDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708069881; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T3kSRMNvYqoD1Oew8jvkJgmFhy+2180XepdgpQuG9JA=;
+	b=t9/LzMl2CRtI/GwuTpbOZMw4MT6i2J2aZ5B+3sChAPt+vTv+R3FtsRTLN2EYo09OVMTzze
+	uIBGQ0HX65xwCYkD1JIjYGi8O1Miu2w68ujiuyVjMwIAZo3Kub9PiwuXSgkFguaKEZlAic
+	JV6KyavyjYKa6bBzR5dAuhEHbGY7R64=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708069881;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=T3kSRMNvYqoD1Oew8jvkJgmFhy+2180XepdgpQuG9JA=;
+	b=eExjU4mE/PaJBmGZBUFFnwsmW/luxQEN4/qZ+UkFMcowV1HFpIpx+pUlRTwK6fioN6Z9mU
+	sXTSABZrHG9yewDA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 46E7B13421;
+	Fri, 16 Feb 2024 07:51:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id pN+RDvgTz2WmaQAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Fri, 16 Feb 2024 07:51:20 +0000
+Date: Fri, 16 Feb 2024 08:52:30 +0100
+From: Oscar Salvador <osalvador@suse.de>
+To: Byungchul Park <byungchul@sk.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org
+Subject: Re: [PATCH] sched/numa, mm: do not promote folios to nodes not set
+ N_MEMORY
+Message-ID: <Zc8UPuzii_5gTsrJ@localhost.localdomain>
+References: <20240214035355.18335-1-byungchul@sk.com>
+ <Zc0tFdGAzD9sCzZN@localhost.localdomain>
+ <20240216070754.GB32626@system.software.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/18] mux: add mux_chip_resume() function
-To: Andy Shevchenko <andy@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
- Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
- Aaro Koskinen <aaro.koskinen@iki.fi>,
- Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
- <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
- Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
- Philipp Zabel <p.zabel@pengutronix.de>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
- linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
- linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
- theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-5-5c2e4a3fac1f@bootlin.com>
- <Zc4t82V9czlEqamL@smile.fi.intel.com>
-From: Thomas Richard <thomas.richard@bootlin.com>
-In-Reply-To: <Zc4t82V9czlEqamL@smile.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: thomas.richard@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216070754.GB32626@system.software.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="t9/LzMl2";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=eExjU4mE
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-6.96 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_HI(-3.50)[suse.de:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.95)[94.76%]
+X-Spam-Score: -6.96
+X-Rspamd-Queue-Id: 1CE9A21EF8
+X-Spam-Flag: NO
 
-On 2/15/24 16:29, Andy Shevchenko wrote:
-> On Thu, Feb 15, 2024 at 04:17:50PM +0100, Thomas Richard wrote:
->> The mux_chip_resume() function restores a mux_chip using the cached state
->> of each mux.
+On Fri, Feb 16, 2024 at 04:07:54PM +0900, Byungchul Park wrote:
+> For normal numa nodes, node_data[] is initialized at alloc_node_data(),
+> but it's not for memoryless node. However, the node *gets onlined* at
+> init_cpu_to_node().
 > 
-> ...
-> 
->> +int mux_chip_resume(struct mux_chip *mux_chip)
->> +{
->> +	int global_ret = 0;
->> +	int ret, i;
->> +
->> +	for (i = 0; i < mux_chip->controllers; ++i) {
->> +		struct mux_control *mux = &mux_chip->mux[i];
->> +
->> +		if (mux->cached_state == MUX_CACHE_UNKNOWN)
->> +			continue;
->> +
->> +		ret = mux_control_set(mux, mux->cached_state);
->> +		if (ret < 0) {
->> +			dev_err(&mux_chip->dev, "unable to restore state\n");
->> +			if (!global_ret)
->> +				global_ret = ret;
-> 
-> Hmm... This will record the first error and continue.
+> Let's look at back free_area_init(). free_area_init_node() will be called
+> with node_data[] not set yet, because it's already *onlined*. So
+> ->zone_pgdat cannot be initialized properly in the path you mentioned.
 
-In the v2 we talked about this with Peter Rosin.
+I am might be missing something., so bear with me.
 
-In fact, in the v1 (mux_chip_resume() didn't exists yet, everything was
-done in the mmio driver) I had the same behavior: try to restore all
-muxes and in case of error restore the first one.
+free_area_init() gets called before init_cpu_to_node() does.
+free_area_init_node() gets called on every possible node.
 
-I don't know what is the right solution. I just restored the behavior I
-had in v1.
+free_area_init_node then() does
 
-> 
->> +		}
->> +	}
->> +	return global_ret;
-> 
-> So here, we actually will get stale data in case there are > 1 failures.
+ pg_data_t *pgdat = NODE_DATA(nid);,
 
-Yes, indeed. But we will have an error message for each failure.
+and then we call free_area_init_core().
 
-> 
->> +}
-> 
+free_area_init_core() does
+
+ free_area_init_core() does
+  zone_init_internals()
+
+which ends up doing zone->zone_pgdat = NODE_DATA(nid);
+
+If node_data[] was not set at all, we would already blow up when doing
+the first
+
+  for_each_node()
+    pgdat = NODE_DATA(nid);
+    free_area_init_node(nid);
+
+back in free_area_init().
+
+
 -- 
-Thomas Richard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+Oscar Salvador
+SUSE Labs
 
