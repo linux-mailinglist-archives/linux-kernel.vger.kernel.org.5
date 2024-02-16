@@ -1,134 +1,198 @@
-Return-Path: <linux-kernel+bounces-69023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DEA685837F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:07:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E413858366
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:04:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 70E001C23545
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:07:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1448FB252E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D051350EA;
-	Fri, 16 Feb 2024 17:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BAD131721;
+	Fri, 16 Feb 2024 17:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="yVOfGmgf"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qdH7rwIE"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2917B133994;
-	Fri, 16 Feb 2024 17:05:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94357130AD8
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:04:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103125; cv=none; b=n6D6ALoIy6qxVLKdz76V3FuByE6n2AWrAkhQsrN5HuS5Fzgn24yl8nYLm3LQv3JBS7HWt8J2bCzFWfZNTLCEYDz1n6aV9NmTEUXBNhQnKI34muacYKhpf+4wP9CmDTPSkJRFOP6Nn6j+R6cUEG+8qwiANG8MlXShp09NBIBZPfA=
+	t=1708103063; cv=none; b=sTxaIRwWzBeQH5QAwKE+WX+kKMh9N1HQq7rcttYjRNutILqaFhzXN82PKfatW4KXUjeAJCeuJtEo3dfnsC1It4DGrNY3jAwyopEHgH4mGnrqCkZzp+rVgTFaOsKQmwJd4uFW3YToXrZCHh9uKG1V8/7HEVo+1poP72w4YLW3WbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103125; c=relaxed/simple;
-	bh=x0cgeWgRq1pe/oohivryYMlY5YOEjfyvfHcbCiW1XMI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XzPW5d3Z7ERdgjp/S0hnMAIx3eMVl17Zcvr1A5v6ZrAA0VNJ3piZAnV5G2FwLZyxqg4h3G3P5L+0NnIV6p2dYlhI/ZsZIy7FrXRSXolAOmoqqbgpuE1xDRStlQMvUfZXfnIeacIzj+nfWLS7QYNRy7rimW6nNzcb1vfzr019TQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=yVOfGmgf; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708103118;
-	bh=x0cgeWgRq1pe/oohivryYMlY5YOEjfyvfHcbCiW1XMI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=yVOfGmgfraL06iJ+8UCpf8xLwh84VngZqeSPAIoqmAntiiDpEVFPM+79fu0z8/+T4
-	 FBA1T0eqqbwFPgcyrw3V1kOhILcR4MoyokWnPiGWDVfrVSq7i3tfEreU548+SUw8iz
-	 RJnbhwKR+W9TBNDoDApI/QlTg7MZbpyfKNW8Hqp0tOoqW5Eg/253DErKJEzwSsc+Hu
-	 dOY9/ztofv+SyIGg7YoFyWTr3aNh+BOnHm9MersuNXtqmt3YSImSduqDw9WagGyhrB
-	 HijpFQFVaawLAxrrSVIo4LmHa+XEtOc9HnW9gQrii7lWaaY7UI1KeaMndA3kFZI5WW
-	 /BzB+9B2K9MZw==
-Received: from jupiter.universe (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits))
-	(No client certificate requested)
-	(Authenticated sender: sre)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EF38C37820C1;
-	Fri, 16 Feb 2024 17:05:17 +0000 (UTC)
-Received: by jupiter.universe (Postfix, from userid 1000)
-	id E1F0B4800D6; Fri, 16 Feb 2024 18:05:16 +0100 (CET)
-From: Sebastian Reichel <sebastian.reichel@collabora.com>
-To: Heiko Stuebner <heiko@sntech.de>,
-	Vinod Koul <vkoul@kernel.org>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-rockchip@lists.infradead.org,
-	linux-phy@lists.infradead.org
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Frank Wang <frank.wang@rock-chips.com>,
-	Kever Yang <kever.yang@rock-chips.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
-	kernel@collabora.com
-Subject: [PATCH v3 10/10] arm64: dts: rockchip: add lower USB3 port to rock-5b
-Date: Fri, 16 Feb 2024 18:01:25 +0100
-Message-ID: <20240216170514.75200-11-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240216170514.75200-1-sebastian.reichel@collabora.com>
-References: <20240216170514.75200-1-sebastian.reichel@collabora.com>
+	s=arc-20240116; t=1708103063; c=relaxed/simple;
+	bh=3a7FMORiulYeKmE84zKi/piBb+dkvwU96kx/uVbaQFg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Vo71jfa0M04voWckAlHdO4M7xHXDTsmLArewspkawvKYSZFDfSFQ/RVLPDIQU2bK3D0l3OKyvE1+P+10wRZQ35xvsWjXr1vEo+tqRRi4EZnDejwJIA7Xb98GUKpsc5jI53oZqgfZKYoBJd7mQglaSfKxmxhBBukYynyTL8E0B1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qdH7rwIE; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcc73148611so2506653276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:04:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708103060; x=1708707860; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AONf6Rwt70Y/InxvAsZm9qasH+QAXmnPb6exgsQbAn0=;
+        b=qdH7rwIEutJjohj3+iLQ+MrYMO2JOxTZXt6DXmZHUv4X0WOsHTSDV2pY0udsMdTxtd
+         fofwGxmK4la2Ejmxb14rS2/69OpBaCCYH3oE6YLgqnyflnOj7KwxVInQOUlWoyZNCw6F
+         UtxWHzIoJjDI5gsC5hm7OT61vrKzYu3SvSEcYgPVQOj1ixFQKtyoHh69I2vb7X89nQPC
+         fy49PYaHmgz/BIyi9V2/HaaQPH+gvUWs8wvQODnJ/1Ggx9UG5p0dWyX3Qoj13/abE4KN
+         XZCU5DSADi8rvmwmeeZiyGwGVKBtS5q7JvcvcDqanvdlGVWhPMEzpmPo8p0b43EMG9E+
+         v37g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708103060; x=1708707860;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AONf6Rwt70Y/InxvAsZm9qasH+QAXmnPb6exgsQbAn0=;
+        b=jPljJuBf7vJj1UWUkiCaVJJotoLqU6DPigdAKT2RBAdtTZb4CbUIgvwlsQMhrp1Har
+         LdEcgGOvVqz3s9rcnVuT04X7MPObM3K5zuwit9txmjcwJ2dZPm6lxOGBiSoYOyO+B6Nm
+         p8UvJmabZCGPkeMLdMO+uRxL1I45UF5HvI4OovUXhPVZ97b2VdNgfthThniX/+DBZDg5
+         P5NYqssIp7keY6CANbkDjZjVw5FFdahetODTDvJKdVWrXMXiebFehEsOpm654YdhIu2E
+         vz+0tppOrVO8v/3fJDE7bMJlkzIKvJDvAp8IoUixvLXpgpLFe62mBq0Qa3DKij26Etms
+         v5rA==
+X-Forwarded-Encrypted: i=1; AJvYcCU87LhRsdUHY1slJ0gbjUCFuGoZFIWd7ogI6SXDIsDYluRBcIGzrZhRKFdPXtfZCZBJkGpVbowPUHmTdxPaHVB7EwIz8seulBlyjmv/
+X-Gm-Message-State: AOJu0Yy+9kKw/yxr9CN7aCPkhnX2yuARr/cBx//yHjaH0z2tncDITjI5
+	95vsi0eYBmL/tdW85HlkfNFLJHe32QNAKkWUFCHask7sk77n+DwcEbc97mqLT/5p/DaNfyxVd0j
+	VBYlGoNp2nUEcvNrPkO/93Y6pCs+SqwObTDr2
+X-Google-Smtp-Source: AGHT+IFKsCqKFJOqQT8bKrODn1/sGXg8SwbGnvmT7NLpaIG7hZMAXzI7k8uueS2KJuQc/CnCvGizvtw3FBEC6oUeP1g=
+X-Received: by 2002:a81:71d6:0:b0:604:a75:4274 with SMTP id
+ m205-20020a8171d6000000b006040a754274mr4969437ywc.51.1708103060160; Fri, 16
+ Feb 2024 09:04:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-21-surenb@google.com>
+ <e845a3ee-e6c0-47dd-81e9-ae0fb08886d1@suse.cz>
+In-Reply-To: <e845a3ee-e6c0-47dd-81e9-ae0fb08886d1@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 16 Feb 2024 09:04:06 -0800
+Message-ID: <CAJuCfpGrVM6DieUZPAoxNNx2zfR9cWeC1-7NboatGEQ4qPbckw@mail.gmail.com>
+Subject: Re: [PATCH v3 20/35] lib: add codetag reference into slabobj_ext
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Enable full support (XHCI, EHCI, OHCI) for the lower USB3 port from
-Radxa Rock 5 Model B. The upper one is already supported.
+On Fri, Feb 16, 2024 at 7:36=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/12/24 22:39, Suren Baghdasaryan wrote:
+> > To store code tag for every slab object, a codetag reference is embedde=
+d
+> > into slabobj_ext when CONFIG_MEM_ALLOC_PROFILING=3Dy.
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > ---
+> >  include/linux/memcontrol.h | 5 +++++
+> >  lib/Kconfig.debug          | 1 +
+> >  mm/slab.h                  | 4 ++++
+> >  3 files changed, 10 insertions(+)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index f3584e98b640..2b010316016c 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -1653,7 +1653,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_d=
+ata_t *pgdat, int order,
+> >   * if MEMCG_DATA_OBJEXTS is set.
+> >   */
+> >  struct slabobj_ext {
+> > +#ifdef CONFIG_MEMCG_KMEM
+> >       struct obj_cgroup *objcg;
+> > +#endif
+> > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> > +     union codetag_ref ref;
+> > +#endif
+> >  } __aligned(8);
+>
+> So this means that compiling with CONFIG_MEM_ALLOC_PROFILING will increas=
+e
+> the memory overhead of arrays allocated for CONFIG_MEMCG_KMEM, even if
+> allocation profiling itself is not enabled in runtime? Similar concern to
+> the unconditional page_ext usage, that this would hinder enabling in a
+> general distro kernel.
+>
+> The unused field overhead would be smaller than currently page_ext, but
+> getting rid of it when alloc profiling is not enabled would be more work
+> than introducing an early boot param for the page_ext case. Could be howe=
+ver
+> solved similarly to how page_ext is populated dynamically at runtime.
+> Hopefully it wouldn't add noticeable cpu overhead.
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+Yes, slabobj_ext overhead is much smaller than page_ext one but still
+considerable and it would be harder to eliminate. Boot-time resizing
+of the extension object might be doable but that again would be quite
+complex and better be done as a separate patchset. This is lower on my
+TODO list than page_ext ones since the overhead is order of magnitude
+smaller.
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-index a0e303c3a1dc..149bd44ffd1c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
-@@ -736,6 +736,14 @@ &uart2 {
- 	status = "okay";
- };
- 
-+&u2phy1 {
-+	status = "okay";
-+};
-+
-+&u2phy1_otg {
-+	status = "okay";
-+};
-+
- &u2phy2 {
- 	status = "okay";
- };
-@@ -755,6 +763,10 @@ &u2phy3_host {
- 	status = "okay";
- };
- 
-+&usbdp_phy1 {
-+	status = "okay";
-+};
-+
- &usb_host0_ehci {
- 	status = "okay";
- };
-@@ -771,6 +783,11 @@ &usb_host1_ohci {
- 	status = "okay";
- };
- 
-+&usb_host1_xhci {
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
- &usb_host2_xhci {
- 	status = "okay";
- };
--- 
-2.43.0
-
+>
+> >  static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_ite=
+m idx)
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 7bbdb0ddb011..9ecfcdb54417 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -979,6 +979,7 @@ config MEM_ALLOC_PROFILING
+> >       depends on !DEBUG_FORCE_WEAK_PER_CPU
+> >       select CODE_TAGGING
+> >       select PAGE_EXTENSION
+> > +     select SLAB_OBJ_EXT
+> >       help
+> >         Track allocation source code and record total allocation size
+> >         initiated at that code location. The mechanism can be used to t=
+rack
+> > diff --git a/mm/slab.h b/mm/slab.h
+> > index 77cf7474fe46..224a4b2305fb 100644
+> > --- a/mm/slab.h
+> > +++ b/mm/slab.h
+> > @@ -569,6 +569,10 @@ int alloc_slab_obj_exts(struct slab *slab, struct =
+kmem_cache *s,
+> >
+> >  static inline bool need_slab_obj_ext(void)
+> >  {
+> > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> > +     if (mem_alloc_profiling_enabled())
+> > +             return true;
+> > +#endif
+> >       /*
+> >        * CONFIG_MEMCG_KMEM creates vector of obj_cgroup objects conditi=
+onally
+> >        * inside memcg_slab_post_alloc_hook. No other users for now.
+>
 
