@@ -1,120 +1,97 @@
-Return-Path: <linux-kernel+bounces-68078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B3488575B5
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:42:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A7A48575B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:42:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60FA4287192
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:42:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D579B1C2264F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:42:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94703134A0;
-	Fri, 16 Feb 2024 05:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 997E4134AC;
+	Fri, 16 Feb 2024 05:42:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Dmyb79wm"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VVw0UCQo"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC3C1426F;
-	Fri, 16 Feb 2024 05:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A6F12E63;
+	Fri, 16 Feb 2024 05:42:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708062165; cv=none; b=J0UbFnqP1y1UBW8OppeSip1gHGoCh1DlCKH8Dr5b7oFJ3t9fy2Gin+1fivkR6fA6A8bAUNP3B/Ezi4ywpjQpdjXnXxA8OK338K9A43O2wbgGEqT96h9f4uJctgKikWBsmlgk3/cBAVIMhgKNyoSABIm6D7cNIUAja7JnyCun838=
+	t=1708062157; cv=none; b=ZzDD1iW+s3ktkdWC/fos0Soj4YwqPWoaSkbSiEfcPjif+c3lKxYLd91rkAMvxg/IkTEd1AEmNY0qATtYs3WEH94DakFludnf2GPYXW4yutT3BTzuKxhOGMv00JulozO0HxaURk1X/VtbpnEvM0CbZiwWZ8hljv0dq1yREs1mJQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708062165; c=relaxed/simple;
-	bh=HnWCOkMadNhJGbb1VJOm3PJbn/DjNUj34mzlBEQl6Ug=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rIRh2kltt6j90UjLX+Q7uQwdRg/3f1WUaIAX9AAkzy83ekWH9/UFA4cBIzwzbvvR4GmPwtlZ8uRUk6WEIVeM3Cw9PU6TATgcmSFofIlqXIFFHZjsJLTuY4wiL7BvaFVOxNvEeRmL8MwAWZZBdvL6bOFC/VT5OZG0/7Wdt+5qyY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Dmyb79wm; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41G5gb7O111727;
-	Thu, 15 Feb 2024 23:42:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708062157;
-	bh=7sD7T8y2sbe1Dbnwwio5IHPM4pTPa3PariSat8bPlHA=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=Dmyb79wmUqXTxgu631FQ4/DWfy/6KhFJJXrGkqA0FFG0NnhVBqeHG2vOSlTJa6qcD
-	 uNm9ANKRdCUh0DL5dPKiglzrdKY9FdaPCaGg8KniJpTmTsEjCUnVFQh4jrjTN0UP/d
-	 on9WLl2q5rFu6Oj7IkgxBkq7q6nx1zIb/YqGsgF8=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41G5gbki027275
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 15 Feb 2024 23:42:37 -0600
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
- Feb 2024 23:42:37 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 15 Feb 2024 23:42:37 -0600
-Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41G5gahC040179;
-	Thu, 15 Feb 2024 23:42:36 -0600
-Date: Fri, 16 Feb 2024 11:12:35 +0530
-From: Dhruva Gole <d-gole@ti.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-CC: <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
-        <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH -next] spi: spi-summary.rst: fix underline length
-Message-ID: <20240216054235.bkfyi5mbdz2yyhan@dhruva>
-References: <20240216051637.10920-1-rdunlap@infradead.org>
+	s=arc-20240116; t=1708062157; c=relaxed/simple;
+	bh=cZ33RbXWRl7oeyYH20+M7tDKsle252OAe/cyfg297aE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RgmQMMgmDEVXW1PxHRYpTdD3NSLQ472zuvz5S11/bUtZ8iGkEwXjOotzooPBsGkjoot7NuMkqjVKBECSvPQrY4+w1C925Vy+HlSZFe3fF3OWct9qLRbiwR9dx+8f3+DJsqZaPhMsFsExE1QXfjBa1smmVvdBdp9SwdoNMj9M2L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VVw0UCQo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60732C433F1;
+	Fri, 16 Feb 2024 05:42:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708062157;
+	bh=cZ33RbXWRl7oeyYH20+M7tDKsle252OAe/cyfg297aE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VVw0UCQoAkNFSoG6Wg5/BqtvlTSQRfaG+ZkZ4Gcbj0+b5x2KnR74ib/lPnfYYfNQv
+	 9ofAWa1Fg0WfQLtzVibadFijfwJDV8bnCxK9e4QkAWHktCaixQPt2bKwFwb3KPn5iT
+	 Cnj+7+9uphoOR4lAU4FyOBd+E20pbvWA1tOhhKXzfpvgNQ0NsNlNx5Og25M6fLoIoq
+	 zouKKe7XCB6EOT6mdzOBvU227WB/qoJzZroGpgk+7RNGWi8SHCUfUwpwYQLtxX6fOm
+	 2dqJdQyP3qNRJbCK/nZj0S+JZ0eiCoryqYVqFvXBKYSZUwRgKAuDVBciNGgdpmrVBL
+	 Rr1NpffmUgHOg==
+Date: Thu, 15 Feb 2024 21:42:35 -0800
+From: Josh Poimboeuf <jpoimboe@kernel.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-tip-commits@vger.kernel.org, x86@kernel.org
+Subject: Re: [tip: x86/bugs] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20240216054235.ecpwuni2f3yphhuc@treble>
+References: <20231010171020.462211-4-david.kaplan@amd.com>
+ <170774721951.398.8999401565129728535.tip-bot2@tip-bot2>
+ <20240215032049.GA3944823@dev-arch.thelio-3990X>
+ <20240215155349.GBZc4zjaHn8hj6xOq3@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240216051637.10920-1-rdunlap@infradead.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <20240215155349.GBZc4zjaHn8hj6xOq3@fat_crate.local>
 
-Hi,
-
-On Feb 15, 2024 at 21:16:37 -0800, Randy Dunlap wrote:
-> The change to use "target" requires an underline to be extended by
-> one more character to fix a documentation build warning:
+On Thu, Feb 15, 2024 at 04:53:49PM +0100, Borislav Petkov wrote:
+> I'd tend to look in Josh's direction as to say what would be the right
+> thing to do here and more specifically, where?
 > 
->   Documentation/spi/spi-summary.rst:274: WARNING: Title underline too short.
->   Declare target Devices
->   ^^^^^^^^^^^^^^^^^^^^^
-
-Oops, looks like I missed it.
-
+> We need to run objtool on the vdso objects which are *kernel* code.
+> I.e., that initcall thing. The vdso-image-64.c gets generated by vdso2c
+> and lands in arch/x86/entry/vdso/vdso-image-64.c, that's why objtool
+> hasn't seen it yet.
 > 
-> Fixes: hash ("spi: Update the "master/slave" terminology in documentation")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Dhruva Gole <d-gole@ti.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Cc: linux-spi@vger.kernel.org
-> ---
->  Documentation/spi/spi-summary.rst |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I mean, it is one initcall in the vdso, probably not that important and
+> if its return hasn't been patched, it won't be the end of the world but
+> still...
 > 
-> diff -- a/Documentation/spi/spi-summary.rst b/Documentation/spi/spi-summary.rst
-> --- a/Documentation/spi/spi-summary.rst
-> +++ b/Documentation/spi/spi-summary.rst
-> @@ -271,7 +271,7 @@ an external clock, where another derives
->  settings of some master clock.
->  
->  Declare target Devices
-> -^^^^^^^^^^^^^^^^^^^^^
-> +^^^^^^^^^^^^^^^^^^^^^^
+> In any case, the patch works as advertized! :-)
 
-Good catch,
-Reviewed-by: Dhruva Gole <d-gole@ti.com>
+Right, the good news is this isn't a regression and the warning is
+working as designed.
 
-Mark,
-Will you be just squashing the commits since they're still in next
-or will this be a separate commit? Just curious how fixes work while
-they're still not in any mainline linux tree
+This should tell the build to invoke objtool on that file:
 
--- 
-Best regards,
-Dhruva Gole <d-gole@ti.com>
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index b1b8dd1608f7..92d67379f570 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -36,6 +36,7 @@ UBSAN_SANITIZE_vma.o			:= y
+ KCSAN_SANITIZE_vma.o			:= y
+ OBJECT_FILES_NON_STANDARD_vma.o		:= n
+ OBJECT_FILES_NON_STANDARD_extable.o	:= n
++OBJECT_FILES_NON_STANDARD_vdso-image-64.o := n
+ 
+ # vDSO images to build
+ vdso_img-$(VDSO64-y)		+= 64
 
