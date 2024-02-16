@@ -1,131 +1,140 @@
-Return-Path: <linux-kernel+bounces-69170-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7493C85854D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:34:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34F3858543
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A79E51C20FEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:34:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8930B1F21792
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 596331420B8;
-	Fri, 16 Feb 2024 18:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D1A135A48;
+	Fri, 16 Feb 2024 18:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="RTI3IZt0"
-Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qTNUD52m"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC92013A88C
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 18:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C67741C65;
+	Fri, 16 Feb 2024 18:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708108321; cv=none; b=XdayfiBthx4Jh1CX2fcq8kcw8TrCWcTyvfmb2or0Os8xhQJzPaR08CAudiapJ1tpZ3GENSxHTbVPOoKsFLZ90+F9ncnVbgtD4Znw5x2CAOTuahdtwQh+/VQAoOzzAm+/weV6MgC4HpmCWjTuI3kb+JnF28YlbVhgplzmm6yh2q8=
+	t=1708108306; cv=none; b=bllmPxcUeAqatn5E3eIE/mY66WbCrncmwFbTGt/4awAiibPynb5iWKACfwzjloqK82yGE+Tto//6mLsNqpGDlWs1Ozlf9bghnOGYgaTZIyzxzAhVbtiszw67sJZnQQ+hyYKl4nwE/bKL3Q87scdsxsYdTAgc0fWwWASBh0eYFJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708108321; c=relaxed/simple;
-	bh=o8njkdLQwpeSFKVUbv1Vgg6wMteGEmlFXV/7brtrrq4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mb9xhuBtoiClZH7c0H6DOQk/Zdld1n59kCl8z+DfpiNRnRJxpvOCOcqAXUBJbiEhjW+GLhnJm5Tev1k5AnfCnre99Uyq5GzGZFk0mNws3wbi3EyI630Tpl1ziWGMjxSKBAiMg1bykk01Nb7AdlXcRmTAvsi9Pk/d2PeUUjAHeVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=RTI3IZt0; arc=none smtp.client-ip=209.85.222.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-7872ade6f0aso55512985a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:31:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1708108318; x=1708713118; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yHQc0zFqwpbzybw0LbQrYD8RqgFtXPcRDLH11DqCLn4=;
-        b=RTI3IZt0wq+6/wGYTtp0kX1KgE7ZTrBGCvNgfzdabuTMLsiY9itQArhMd4Cikoz1ez
-         ceKRROrCAzSjh0xtzAFtiQ7821XRu97ZZulp+iJ0U4Ykm0QMomY+SUG5ezJ692/NMXXI
-         frFVKtK/uZgvnfi0rW0z2hyVfaZ40NXxwsKs0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708108318; x=1708713118;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yHQc0zFqwpbzybw0LbQrYD8RqgFtXPcRDLH11DqCLn4=;
-        b=cn4iOX+rB2Dk+aQ2iDPqQZWA+OJLC+FEbgRDplIo370kP2Oy6AI4tnYVxez46bpYYs
-         UIB+IG0vak3ZBN/bbQuWw7QTtFaSONOxcN++/d1c9gaacNCvHpd/APsa0iJV+oaPcZU3
-         hKC2i4iNgM+ZOAYRT0WcjO5FDuOcsq74ljOUfDumkSHQbhdewnQV26SnH8q3BHj2HdQs
-         Udacy6ytLWO6zkfrQENa5/n2XzLs1Nqbl64RiwmxxlY/IXwOHZQRx0Q/RLuJaAqvEMet
-         /N+djVGq43hC4MUyoVCSdtjLDJYgTSdGoqwxJvYsTAQpzCiPCJTjAaND67v2/lcNKRf4
-         fQtQ==
-X-Gm-Message-State: AOJu0YwYWkpLVP4r8s2kai0dg/zXh3PTOTbry8FCZbMdtbFA3L4sD24v
-	iq33UAMx1zTexibELaI7rknMteKaQXbSmtdgPWP8jYCUhj4aPMy8Ht4tDPUJzSsYDHZtzhcx7MX
-	n
-X-Google-Smtp-Source: AGHT+IFBKuy553o0SxY+baIXFsZYeaJKSoNLM3xELgWqh57AsVbOsnUirYjkQQVzjewQhFJtyM+wkw==
-X-Received: by 2002:a0c:f38d:0:b0:68f:1e7c:5f46 with SMTP id i13-20020a0cf38d000000b0068f1e7c5f46mr4946028qvk.45.1708108317858;
-        Fri, 16 Feb 2024 10:31:57 -0800 (PST)
-Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
-        by smtp.gmail.com with ESMTPSA id nd13-20020a056214420d00b0068cdadb5e7esm159722qvb.31.2024.02.16.10.31.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 10:31:57 -0800 (PST)
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To: linux-kernel@vger.kernel.org,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Cc: Suleiman Souhlal <suleiman@google.com>,
-	Youssef Esmat <youssefesmat@google.com>,
-	David Vernet <void@manifault.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	joseph.salisbury@canonical.com,
-	Luca Abeni <luca.abeni@santannapisa.it>,
-	Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-	Vineeth Pillai <vineeth@bitbyteword.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Phil Auld <pauld@redhat.com>,
-	"Joel Fernandes (Google)" <joel@joelfernandes.org>
-Subject: [PATCH 10/10] sched: Fix build error in "sched/rt: Remove default bandwidth control"
-Date: Fri, 16 Feb 2024 13:31:08 -0500
-Message-Id: <20240216183108.1564958-11-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240216183108.1564958-1-joel@joelfernandes.org>
-References: <20240216183108.1564958-1-joel@joelfernandes.org>
+	s=arc-20240116; t=1708108306; c=relaxed/simple;
+	bh=s9cIRkFaKtrccc7vtLJUttfg3iWmA2GqRjx0bO9OYd8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fU/PikZsBP6SN/8k1zfecuPBrOZh6HDaR1Mp6VaIlk+UPZkKWREdDV9Gd7Ll4XjV7ijTUxx8WW9lcYubG3YQtbCsu9LfQEupwiT71r+48/dkB5uZfa4HqVb1KeMkrAvPKAbZtsnp70l8FiyYISwSPDcdNgr/zd0SKaxuoE7XPlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qTNUD52m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2258DC433C7;
+	Fri, 16 Feb 2024 18:31:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708108305;
+	bh=s9cIRkFaKtrccc7vtLJUttfg3iWmA2GqRjx0bO9OYd8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qTNUD52mWWrTFRVL3RFKZTQ4HXBrw8mY1wPxDEkLg0PSOKnV39juO/H8ICq31kwH1
+	 IKxlawS6VlNOP3EW5QmnyXC00lx0TOGC9L+oPwAtz5dEERDVKGzPv+DUX0GwJhugfn
+	 HYMD/ZHG093YVDxSZ32Nj0tYMiZ9FXqU4TEvO4fW0pkvtLnb6Ryot5KRpWJlRGX0IF
+	 RWipJUTEm+YTfUsNsbTkeG2MOXfNF7kCb4Mnfw4JPpPavXsmQBJlgC4DYgD6+pCCJ2
+	 3SSIdurWIBj6174ERkqXYqAIOW7ThXrBXUOEZhB59qqV6HGwRgNW+040qtsUIQ97BW
+	 74KhpymgE4BJg==
+Date: Fri, 16 Feb 2024 12:31:43 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Mukesh Ojha <quic_mojha@quicinc.com>, Mark Brown <broonie@kernel.org>, 
+	konrad.dybcio@linaro.org, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v11 1/4] firmware: qcom: scm: provide a read-modify-write
+ function
+Message-ID: <6lmxlfopjzxbvn5oe6uha2ppdjderuymgq3h3gz2suyb5i2vs6@mpadw4b37s5t>
+References: <1704727654-13999-1-git-send-email-quic_mojha@quicinc.com>
+ <1704727654-13999-2-git-send-email-quic_mojha@quicinc.com>
+ <CACRpkdY7fbFyNNd6GAikxC3+wk0ca8Yn_8__zkp+Q-deJeJ_LQ@mail.gmail.com>
+ <3a17f36a-04bf-04f2-7a22-82b76977b325@quicinc.com>
+ <CACRpkdbnj3W3k=snTx3iadHWU+RNv9GY4B3O4K0hu8TY+DrK=Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdbnj3W3k=snTx3iadHWU+RNv9GY4B3O4K0hu8TY+DrK=Q@mail.gmail.com>
 
-This fixes a build error introduced by  "sched/rt: Remove default
-bandwidth control". The issue happens because a function is unused
-when !CONFIG_SMP. It could be squashed into the original patch.
+On Tue, Jan 09, 2024 at 02:34:10PM +0100, Linus Walleij wrote:
+> On Tue, Jan 9, 2024 at 2:24 PM Mukesh Ojha <quic_mojha@quicinc.com> wrote:
+> > On 1/9/2024 6:44 PM, Linus Walleij wrote:
+> > > On Mon, Jan 8, 2024 at 4:28 PM Mukesh Ojha <quic_mojha@quicinc.com> wrote:
+> > >
+> > >> It was realized by Srinivas K. that there is a need of
+> > >> read-modify-write scm exported function so that it can
+> > >> be used by multiple clients.
+> > >>
+> > >> Let's introduce qcom_scm_io_rmw() which masks out the bits
+> > >> and write the passed value to that bit-offset.
+> > > (...)
+> > >> +int qcom_scm_io_rmw(phys_addr_t addr, unsigned int mask, unsigned int val)
+> > >> +{
+> > >> +       unsigned int old, new;
+> > >> +       int ret;
+> > >> +
+> > >> +       if (!__scm)
+> > >> +               return -EINVAL;
+> > >> +
+> > >> +       spin_lock(&__scm->lock);
+> > >> +       ret = qcom_scm_io_readl(addr, &old);
+> > >> +       if (ret)
+> > >> +               goto unlock;
+> > >> +
+> > >> +       new = (old & ~mask) | (val & mask);
+> > >> +
+> > >> +       ret = qcom_scm_io_writel(addr, new);
+> > >> +unlock:
+> > >> +       spin_unlock(&__scm->lock);
+> > >> +       return ret;
+> > >> +}
+> > >> +EXPORT_SYMBOL_GPL(qcom_scm_io_rmw);
+> > >
+> > > This looks a lot like you are starting to re-invent regmaps
+> > > regmap_update_bits().
+> > >
+> > > If you are starting to realize you need more and more of
+> > > regmap, why not use regmap and its functions?
+> >
+> > I think, this discussion has happened already ..
+> >
+> > https://lore.kernel.org/lkml/CACRpkdb95V5GC81w8fiuLfx_V1DtWYpO33FOfMnArpJeC9SDQA@mail.gmail.com/
+> 
+> That discussion ended with:
+> 
+> [Bjorn]
+> > We'd still need qcom_scm_io_readl() and qcom_scm_io_writel() exported to
+> > implement the new custom regmap implementation - and the struct
+> > regmap_config needed in just pinctrl-msm alone would be larger than the
+> > one function it replaces.
+> 
+> When you add more and more accessors the premise starts to
+> change, and it becomes more and more of a reimplementation.
+> 
+> It may be time to actually fix this.
+> 
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- kernel/sched/rt.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thought I had replied to this already, did we discuss this previously as
+well?
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 37bee56a70f7..d3065fe35c61 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -964,8 +964,10 @@ struct rt_rq *sched_rt_period_rt_rq(struct rt_bandwidth *rt_b, int cpu)
- 	return &cpu_rq(cpu)->rt;
- }
- 
-+#ifdef CONFIG_SMP
- static void __enable_runtime(struct rq *rq) { }
- static void __disable_runtime(struct rq *rq) { }
-+#endif
- 
- #endif /* CONFIG_RT_GROUP_SCHED */
- 
--- 
-2.34.1
+My concern with expressing this as a regmap is that from the provider's
+point of view, the regmap would span the entire 32-bit address space.
+I'm guessing that there's something on the other side limiting what
+subregions are actually accessible for each platform/firmware
+configuration, but I'm not convinced that regmap a good abstraction...
 
+Regards,
+Bjorn
+
+> Yours,
+> Linus Walleij
 
