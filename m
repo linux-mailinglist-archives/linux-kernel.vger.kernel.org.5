@@ -1,118 +1,146 @@
-Return-Path: <linux-kernel+bounces-68769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40071857FD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:56:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17934857FDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F27AA1F242E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4597C1C22378
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:57:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FFDF12F37A;
-	Fri, 16 Feb 2024 14:56:34 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C3012F37D;
+	Fri, 16 Feb 2024 14:57:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ON17NlzR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18D312EBE2;
-	Fri, 16 Feb 2024 14:56:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215061292F4;
+	Fri, 16 Feb 2024 14:57:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095394; cv=none; b=BTN3RffHfCrQ2EGSUjnklWFc2YGKNFJQPij/TeGSF2FXmJhNcSRi7hEZMkTaeLH1tNV5d7jbHqIBDMz1MKoV/igfYNrBcQJzmvfpPH688xVtA2UaDd2+GhZ10zaHDJYBVLQzyWhDovlNEMdWnRXHFgcfrCBbYfpEhr9vEnw4djY=
+	t=1708095456; cv=none; b=eQywxlq7oWvXVG4Vgswb2Nc4DBrXDcc2R1IS8ChARzfGnDVZY35FLGBm+FEgj4coYawRnBUHQmAEcKLiIM2gpV93S3Fl15tJjFrXTvAHPKAjtECGffvyeTJd26iYOa2D6kqT5Q8+GP9+tt5T4RlMkoEJUs0HZl0nd22d6QirsrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095394; c=relaxed/simple;
-	bh=uU5ex5sFczwr9eLJc4HYmer9AHvonlJknY9TibazMSk=;
+	s=arc-20240116; t=1708095456; c=relaxed/simple;
+	bh=bYPWSFzizc6hw98vYyVTqVDrmSgriMmL7bU5ekFvWl0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FUEe5ST1VJg4fNKoBAp9hW+UNHz6mh/ILDm8ly25s8QtbesQpdUlMCPUMKRE9TQdORJWzRPu7FJbrC1UAAHSejuCG4CEUiYJ08FU5mygOulagfHLmJGQDI3r78tULoz7Sj5N8INlKwLgxP1xNFiib4C7am9YRlk01clEeElTsHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2336760"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="2336760"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 06:56:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="912372670"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="912372670"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 06:56:25 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andy@kernel.org>)
-	id 1razdW-000000054ij-1AX9;
-	Fri, 16 Feb 2024 16:56:22 +0200
-Date: Fri, 16 Feb 2024 16:56:22 +0200
-From: Andy Shevchenko <andy@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>
-Cc: Thomas Richard <thomas.richard@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Tony Lindgren <tony@atomide.com>,
-	Haojian Zhuang <haojian.zhuang@linaro.org>,
-	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
-	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
-	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
-	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
-	u-kumar1@ti.com
-Subject: Re: [PATCH v3 08/18] phy: ti: phy-j721e-wiz: split wiz_clock_init()
- function
-Message-ID: <Zc93lnpGK8PGKbb-@smile.fi.intel.com>
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-8-5c2e4a3fac1f@bootlin.com>
- <Zc4xJtLl3zo_YrBC@smile.fi.intel.com>
- <Zc76d4B4hjTC3xum@matsya>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fe0h17EyiSYFJ7/kmQehEdF39iC2Apconl5r+XVWHGh/5hgK1KWLd1D5A22HTxpvuAQgt0fFtA4u2RAASq8e/uLzjOtYgvmBjFkC4RbYTCDDdHBSlZ//xK9i72YFM+Gf/vBytGbQ5ml7+QIYHMbkTc1O4N3jvRj0ToFlOiYud8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ON17NlzR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D25FC433C7;
+	Fri, 16 Feb 2024 14:57:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708095455;
+	bh=bYPWSFzizc6hw98vYyVTqVDrmSgriMmL7bU5ekFvWl0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ON17NlzRcf8XTrWnC+hTMNpCsGM1tAcbZi6+rqehI6NuTCTr+djCCRYLpsETn3VXC
+	 2BKbQzWxuhdpbQALNtUf2xld8nq5g4tO+x57/h0vP8eAN7WbVZOfnng4CBYDmXpNEr
+	 rSoUbLY6R5zQWsdGtMv9prHBcyWVgUuPHBlZJutDnIsvIJyw8KA0OWEDTi4w4hx6Gm
+	 OObeLuQQJU3FkXXNybRgLECXc9lZiNHBcppbA9MTF06VOtFC2Qmirapn/zuRXeHBwo
+	 zYApWHFl6BxJuL9bH5jcESqg3saem/kiO1gM4FohvD+bW+3Mmd49HS6LqU2odBEIQ0
+	 vMZtXxEyWKcNg==
+Date: Fri, 16 Feb 2024 11:57:32 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v1 2/6] perf trace: Ignore thread hashing in summary
+Message-ID: <Zc933IYjWlkMo4D2@x1>
+References: <20240214063708.972376-1-irogers@google.com>
+ <20240214063708.972376-3-irogers@google.com>
+ <Zcz3iSt5k3_74O4J@x1>
+ <CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com>
+ <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com>
+ <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zc76d4B4hjTC3xum@matsya>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
 
-On Fri, Feb 16, 2024 at 11:32:31AM +0530, Vinod Koul wrote:
-> On 15-02-24, 17:43, Andy Shevchenko wrote:
-> > On Thu, Feb 15, 2024 at 04:17:53PM +0100, Thomas Richard wrote:
+On Wed, Feb 14, 2024 at 01:36:46PM -0800, Ian Rogers wrote:
+> On Wed, Feb 14, 2024 at 1:15 PM Ian Rogers <irogers@google.com> wrote:
+> > On Wed, Feb 14, 2024 at 10:27 AM Ian Rogers <irogers@google.com> wrote:
+> > > On Wed, Feb 14, 2024 at 9:25 AM Arnaldo Carvalho de Melo
+> > > <acme@kernel.org> wrote:
+> > > > On Tue, Feb 13, 2024 at 10:37:04PM -0800, Ian Rogers wrote:
+> > > > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
+> > > > > threads") made the iteration of thread tids unordered. The perf trace
+> > > > > --summary output sorts and prints each hash bucket, rather than all
+> > > > > threads globally. Change this behavior by turn all threads into a
+> > > > > list, sort the list by number of trace events then by tids, finally
+> > > > > print the list. This also allows the rbtree in threads to be not
+> > > > > accessed outside of machine.
 
-..
-
-> > (Side note, as this can be done later)
-> > 
-> > >  	if (rate >= 100000000)
-> > 
-> > > +		if (rate >= 100000000)
-> > 
-> > > +	if (rate >= 100000000)
-> > 
-> > I would make local definition and use it, we may get the global one as there
-> > are users.
-> > 
-> > #define HZ_PER_GHZ	1000000000UL
+> > > > Can you please provide a refresh of the output that is changed by your patch?
+> > >
+> > > Hmm.. looks like perf trace record has broken and doesn't produce
+> > > output in newer perfs. It works on 6.5 and so a bisect is necessary.
+> >
+> > Bisect result:
+> > ```
+> > 9925495d96efc14d885ba66c5696f664fe0e663c is the first bad commit
+> > commit 9925495d96efc14d885ba66c5696f664fe0e663c
+> > Author: Ian Rogers <irogers@google.com>
+> > Date:   Thu Sep 14 14:19:45 2023 -0700
+> >
+> >    perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
+> > ...
+> > https://lore.kernel.org/r/20230914211948.814999-3-irogers@google.com
+> > ```
+> >
+> > Now to do the bisect with BUILD_BPF_SKEL=1 on each make.
 > 
-> Better to define as:
-> #define HZ_PER_GHZ 1 * GIGA
+> This looks better (how could I be at fault :-) ):
+> ```
+> 1836480429d173c01664a633b61e525b13d41a2a is the first bad commit
+> commit 1836480429d173c01664a633b61e525b13d41a2a
+> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> Date:   Wed Aug 16 13:53:26 2023 -0300
+> 
+>    perf bpf_skel augmented_raw_syscalls: Cap the socklen parameter
+> using &= sizeof(saddr)
+> ...
+>    Cc: Adrian Hunter <adrian.hunter@intel.com>
+>    Cc: Ian Rogers <irogers@google.com>
+>    Cc: Jiri Olsa <jolsa@kernel.org>
+>    Cc: Namhyung Kim <namhyung@kernel.org>
+>    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> ```
+> No LKML link.
 
-(with parentheses)
+So simple... ;-\
 
-Maybe here, but when it appears in units.h it will be defined as I wrote
-to be aligned with the rest of definitions.
+I've reproduced your steps and got to the same cset while testing on a
+recent distro kernel (6.6.13-200.fc39.x86_64), scratching my head now
+and trying to figure this out.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Wonder if trying to run on an older kernel the problem would appear.
 
+Will try and add a perf test shell entry with a simple:
 
+root@number:~# perf trace record sleep 0.001 && perf script | head | wc -l
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.034 MB perf.data ]
+0
+root@number:~#
+
+Has to be 10 :-)
+
+Thanks,
+
+- Arnaldo
 
