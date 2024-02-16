@@ -1,72 +1,60 @@
-Return-Path: <linux-kernel+bounces-68570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68571-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D5DE857C95
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:30:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 841B5857C96
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:31:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11358B23B18
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:30:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20E681F2547A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3E57F462;
-	Fri, 16 Feb 2024 12:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CISQ0CQc"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9717FBAB;
+	Fri, 16 Feb 2024 12:30:56 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B8407E76A
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7C17F7FB
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 12:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708086649; cv=none; b=nJlCgBSL2MSHUhF5tBG7PWKq2uV7rANFWSi1sQcTDzdLztP1HYeFudewbpwEpX+9zOhCIRYlNYhLPJ35ixqkgnHpS7Qq+GA8brqcs5Xpf9yWxznylID/CUgoHi28BYwTVzLPIi3F90YxMDAEcAki0V7Y/wcAlGZENrFzgyxNs08=
+	t=1708086656; cv=none; b=Lj1pHxO8VBF6HuY1GHWSd1RlmB2M/G/iBwM5cpsVQGfoN/oERR3NXkb6MiE7u8Eq+O+h5Aqw3bQDMPrp53JVaWnYkxQmPJNZY09eC5MbROkWy3bQ47PUPdeGnkjjm/SfV13P8DOYKKu01Q7bPf5K5HMToPKddAquziiRjk9bv2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708086649; c=relaxed/simple;
-	bh=+BVthaD9VjyytlG+lIFukVqy3/6V+9dODatLq0TXa+0=;
+	s=arc-20240116; t=1708086656; c=relaxed/simple;
+	bh=LkCYUVZu3cxw79tfcJ+izPDfRejV/FVLMOZ6EBl0D1k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XMNptbESpcrXtlvQdYvGM5i6bOjKwBJp03rbIe0hCv++QTwmVC6u/nEBqe5ttG2tULWPAV/jDWz6EiUdbdiLmF9qjqmK3KQjjypDu++iFyuDmiLedX4YD8JF34GSI/aeXA+BQRmKv7A67V4mOthONg3Fv04XIME5uj5ma+SPCFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CISQ0CQc; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708086647; x=1739622647;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+BVthaD9VjyytlG+lIFukVqy3/6V+9dODatLq0TXa+0=;
-  b=CISQ0CQc4hib3iqyRZq/fXaKBiFnw2VWgh0GzxFsuPuxYGwyplWqTwkJ
-   IunG8M8yFh+VfxTATgV4BbjpHawP5KyybM9kjFw/L7QPMe1l8K6wUwttt
-   7dQqe0JCJZWQClAe34+7YtX66oLGc8sgF3CI3QFZcDhT7Xe1uAq0aQlsO
-   /jjErJEueRDktKRB0T87kNZJxeGNEKcdOxgVoSP2MjrLCjuWI+MxxhWbi
-   YaK9SswNUBqs/x/1kZIawwSSC22MBE+x2e2xsIb0Zd2A2TRJR77jgQLRk
-   o2t1jbm2/yN4/ATP7jJ0xUKJviHAA/NCT3r8h4qpHqmSagKIlfTGR94OK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="2617715"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="2617715"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 04:30:46 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10985"; a="826573242"
-X-IronPort-AV: E=Sophos;i="6.06,164,1705392000"; 
-   d="scan'208";a="826573242"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 16 Feb 2024 04:30:41 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 6005D2E9; Fri, 16 Feb 2024 14:30:40 +0200 (EET)
-Date: Fri, 16 Feb 2024 14:30:40 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: Liam.Howlett@oracle.com, akpm@linux-foundation.org, debug@rivosinc.com, 
-	broonie@kernel.org, keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com, 
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org, 
-	peterz@infradead.org, hpa@zytor.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/8] mm: Switch mm->get_unmapped_area() to a flag
-Message-ID: <b65wvw4nghmwt4w4xsxoqwgc72efn7qo3s2p4dtatbcbvmxord@jopa2yxxbu6n>
-References: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
- <20240215231332.1556787-2-rick.p.edgecombe@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EzYu6Qzy5PSsVfRUjZiGnWg8wbJv0BlFTBmZEvEyaYd9zwucYhZSNqy/nZNcll6GxUhC5XYWEDaLs9JSEO298MiBj4IU1FVLPVIAAGCMYqrb1fUZ8ihIUYQM7awrGn3JBl4vIeHWW+l+tTOpNJauGnqm/R4FpwMGEwFMUOHXnXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 102C3C43394;
+	Fri, 16 Feb 2024 12:30:50 +0000 (UTC)
+Date: Fri, 16 Feb 2024 12:30:48 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 14/18] arm64/mm: Implement new
+ [get_and_]clear_full_ptes() batch APIs
+Message-ID: <Zc9VeMJpdpJG9LsH@arm.com>
+References: <20240215103205.2607016-1-ryan.roberts@arm.com>
+ <20240215103205.2607016-15-ryan.roberts@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,28 +63,22 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215231332.1556787-2-rick.p.edgecombe@intel.com>
+In-Reply-To: <20240215103205.2607016-15-ryan.roberts@arm.com>
 
-On Thu, Feb 15, 2024 at 03:13:25PM -0800, Rick Edgecombe wrote:
-> diff --git a/include/linux/sched/coredump.h b/include/linux/sched/coredump.h
-> index 02f5090ffea2..428e440424c5 100644
-> --- a/include/linux/sched/coredump.h
-> +++ b/include/linux/sched/coredump.h
-> @@ -74,6 +74,7 @@ static inline int get_dumpable(struct mm_struct *mm)
->  #define MMF_DISABLE_THP_MASK	(1 << MMF_DISABLE_THP)
->  #define MMF_OOM_REAP_QUEUED	25	/* mm was queued for oom_reaper */
->  #define MMF_MULTIPROCESS	26	/* mm is shared between processes */
-> +#define MMF_TOPDOWN		27	/* mm is shared between processes */
->  /*
->   * MMF_HAS_PINNED: Whether this mm has pinned any pages.  This can be either
->   * replaced in the future by mm.pinned_vm when it becomes stable, or grow into
+On Thu, Feb 15, 2024 at 10:32:01AM +0000, Ryan Roberts wrote:
+> Optimize the contpte implementation to fix some of the
+> exit/munmap/dontneed performance regression introduced by the initial
+> contpte commit. Subsequent patches will solve it entirely.
+> 
+> During exit(), munmap() or madvise(MADV_DONTNEED), mappings must be
+> cleared. Previously this was done 1 PTE at a time. But the core-mm
+> supports batched clear via the new [get_and_]clear_full_ptes() APIs. So
+> let's implement those APIs and for fully covered contpte mappings, we no
+> longer need to unfold the contpte. This significantly reduces unfolding
+> operations, reducing the number of tlbis that must be issued.
+> 
+> Tested-by: John Hubbard <jhubbard@nvidia.com>
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 
-Comment has to be updated.
-
-Otherwise, looks good:
-
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 
