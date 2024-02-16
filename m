@@ -1,171 +1,180 @@
-Return-Path: <linux-kernel+bounces-69045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C0718583B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:13:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10ABD8583BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:14:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53E97282611
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:13:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BAE5E28372B
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E4A2135406;
-	Fri, 16 Feb 2024 17:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7542A135A4E;
+	Fri, 16 Feb 2024 17:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b="qjIK0WI6"
-Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C3gPGtm+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8D41353EA
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23948135411
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103494; cv=none; b=DRaYbGrWKxqHuGA+WmMcsacpIqQasfjjT8RDnv3mp4GP6li6U74Gf74itR7ZkWdxS7K79aAMQii0XP0Ewi6mWpfS6nE8iWWssVIAMe2m0QtgkHEpHOP6f7u1u2bdRdEhf7o+3Iz/2vclj7H7zWm6IKiovArlNMOwdq1WyRgHMFo=
+	t=1708103497; cv=none; b=bE0oGWHsXfn7TtEaqhVvOR+1Iw0KVpqviyl2sO+xnrM+BgKCTUcsviEJwhljYWhjCtz/V0skMUAPqnkFZI759Z4+ma3y6mMcmzoRMMx5rDnpBxHlmnsGzWGdGCRV5UvmBxYGQC93y7rBXwVqgUrOROSiAjDxFP55ejwvClnh704=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103494; c=relaxed/simple;
-	bh=xjN1Txz0NRu+aYorD0V/0btXAZTtLNg0c38DLzxV7Y8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fBMSEJPMmgaXaaz2yjXrf9VIgIpaSG7rzfChK2az1dFZtdjw8FpNrZOguNHm6VWmT5sNOBfm1mWDC8oPv2mvUqEMYI7FigvBNf6mEFOlunezPCRwNUc4kUnEl4XUP1lP7hr9Lb77vK0iU9dyzglnbab1YXKMAHxBJjqj61wbLnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org; spf=none smtp.mailfrom=brainfault.org; dkim=pass (2048-bit key) header.d=brainfault-org.20230601.gappssmtp.com header.i=@brainfault-org.20230601.gappssmtp.com header.b=qjIK0WI6; arc=none smtp.client-ip=209.85.166.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=brainfault.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=brainfault.org
-Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3642281e4a6so2703485ab.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:11:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20230601.gappssmtp.com; s=20230601; t=1708103492; x=1708708292; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=havUKwIuQeWK4aYu8DNjs5scwGn6QvvJ9tZ1EDA7AU4=;
-        b=qjIK0WI6BMRxFfvwDqX8CyiSktGjxnchTLXvFuvFM50SO9VGc6oogg2SiMT/WCbSeN
-         uruxBlVZvibuavftiMZgd9ia1yV259xp2iVSXT7Ch5DUE5P+/mAk1WwDrkv9f8xagaD7
-         q+bQfXt7YqjWlG9KVJXhzUZVWlTfiOLQZgd8YV7jtP9TmBSh3roc+IZVCCQ5s4js2CSG
-         ofBoqZtEksQv8CMrKmrqsYj14st/EYQ83jnaqNWzgaT9TM7VHr5gBUSjww7gbifaYc64
-         W52Q8B2JVB9LXV+JFVF/5nnPqMorqB1SjuM2wj1A90xrk59mJOl9NiaT+J8Bde/4VpoJ
-         0+ZQ==
+	s=arc-20240116; t=1708103497; c=relaxed/simple;
+	bh=JGNjC7+UwjY9T7LKlTiK6c8kteezBUyHZKMhIDM1Evg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m5FltuZtEgdSIYXIaXZrrAuRD7Udj3wfZVxJsMdtdPihGWifiqKMQR/pZAyvjzUMfCJytLUotC0rjG5A95Vkd5zit3GUDupxEbDAS1d1rrg5td9qHpREiDfhE5RsclHtyM3IY2Rt2ctLZOKRjzf6zfWCOohHhgaVR43k8OoWEjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C3gPGtm+; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708103495;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MIijY/r8LLfMl6D20rFmwbeRhmzXm+JMQ2A7E38ejDY=;
+	b=C3gPGtm+sb2FuixF0HaBMQzSDAHE+xXXnArPIEnRRH4+KtZGvRAcXZ06b0cZi2KeWCMC7x
+	djQk8AhSnSM1RuHfG8oJHGaOwxviikfRWkxa4katVb3M/M35DvhDdHR2b9QOP/xTYsTO5C
+	ovrMs0HyJIC0KQmEUKt+r3E+VtuzvnA=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-341-M2Rj73FvOBu5iOT_p3gnQg-1; Fri, 16 Feb 2024 12:11:33 -0500
+X-MC-Unique: M2Rj73FvOBu5iOT_p3gnQg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a35a649c608so129559466b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:11:33 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1708103492; x=1708708292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=havUKwIuQeWK4aYu8DNjs5scwGn6QvvJ9tZ1EDA7AU4=;
-        b=G51spBlKiIM2CQThAGEhdyFsebowSAzsWjceqwi3HHIb1QbfXoCpDOPQ7mJacegvUF
-         dZSOdRN8vrL1FbdSl+Zf3A12ToKDsFix5ErZzufKmSm0WLcgLhqpBDZBEHF86feauqPp
-         j9F9yfxVWeJU9Gu+Uj4MxYLWYN4JBdB9t4ZeChG1lBDO5MXruNXquCqGuAAIrAr3pNH/
-         I9ZU1cnsXMaW0JLpRxAs6roIYB2JfDIg7K6s1UjIxQI5NF+mjmBBvnVe0Y3riltMEXB3
-         bf4FJPtoh7aoHv4DXOtRm2Y/KidWbA3sdCksTYtDt9MT6BwRl4/fkaGTw9yQHyLCaWh6
-         JvoA==
-X-Forwarded-Encrypted: i=1; AJvYcCWreKvxy9Me9WIMsgi8uxHJ066w23b243cxO9sMsHimPQJtYsbu/qaeCVkUSgV6YMjC3EBlJBoqPeOQDrn9kVSC+1+YlUcJrFEuz1Nj
-X-Gm-Message-State: AOJu0Yyo5rFZvNHnk68UcI53sw6nt9j1oB/1V4JK+ApmthfNZpRdyuSv
-	AlAf/gqwz87/AlaKCOjwzA8k9nCEYsLGw17vVvQvTGLIYEiBvfh6E6yRY0ZEL+/q+NEcGEEtEh6
-	MHv2bHqnC/Dnd78GZ7rRhYHP5p5VhVWW1nr43qQ==
-X-Google-Smtp-Source: AGHT+IF3UAIIWYzEtaz8JDQbpsYiGjzgT5lx1iMPisr8gmFJym7YV9W/quLrJxzPRfygtku2OzFcTAaXVtDz1/yCGVc=
-X-Received: by 2002:a92:c5a6:0:b0:364:1984:f10f with SMTP id
- r6-20020a92c5a6000000b003641984f10fmr4861690ilt.30.1708103492171; Fri, 16 Feb
- 2024 09:11:32 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MIijY/r8LLfMl6D20rFmwbeRhmzXm+JMQ2A7E38ejDY=;
+        b=ReUiIx6APPOviY53+G/kD/4vsz5sCBYK/LNJVqFuKNdWfmIIzqql1018MMwGVM2LkP
+         DPvVDRh22ZpfR4/19fHwhpp2uHulsAPaAF3PHgUf0RZ95JBEWEG6xoOnk/XmHfUE97Fh
+         aOt5yLwJoKwuTVaUH52uz9jeEuDYWG60+nPF8GkZP1XDOY5sH4CqRNWkp77z6gMOacLQ
+         0wH6GVHAlcDq9J8p+xo1O+XugFf3W4gwmTD+CKzQLyxgPYeogLkJY8ujW4XJKWNM3ITL
+         Qxr3DsXiWRArNaiHF1uoELDDqnF+48oUB86YadcpByFGb6+5MTxCjxOzegyJlLjbziWQ
+         lR6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXzFVF/n+jsxOhy0z5RxOufxMvEdcG8vWAOSi+Q4YyZqa+zWCA6AvYtoLd/Tug0YBjABp3Q7+dEf5BPcRDaaorK1ONTvuOTvgNxwIlt
+X-Gm-Message-State: AOJu0YwkWPx/QOYllp4cPf/fiEdtF2lesoYEcxuHcoBYwmBk/TLHO54c
+	LYulZyHUkAijo8g88znVazMOKI2BJoTqVxvJ6rR1nhxGZhl4z7TKuMrjvPR/O1Pgr5n2c+xVIpG
+	pRkY8UkivhD4Ql//g62ZaXQbkEavnxen0+o2e8lEK6zdxfo/sY8kccnEbqDV8jQ==
+X-Received: by 2002:a17:906:3bd8:b0:a3d:86c0:4689 with SMTP id v24-20020a1709063bd800b00a3d86c04689mr3695498ejf.32.1708103492550;
+        Fri, 16 Feb 2024 09:11:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFpvQYv23/X9db3iCL0o1v5CbF+U8MTR/LKixroenoT99EeMYj3m5SvBXid/pIob2FHWV+Y1A==
+X-Received: by 2002:a17:906:3bd8:b0:a3d:86c0:4689 with SMTP id v24-20020a1709063bd800b00a3d86c04689mr3695480ejf.32.1708103492265;
+        Fri, 16 Feb 2024 09:11:32 -0800 (PST)
+Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id v22-20020a1709061dd600b00a3d8fb05c0csm141614ejh.86.2024.02.16.09.11.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 09:11:31 -0800 (PST)
+Message-ID: <18a49662-3640-49c1-9587-db5cc9d62fbc@redhat.com>
+Date: Fri, 16 Feb 2024 18:11:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <20240127161753.114685-15-apatel@ventanamicro.com> <87jzn4ctks.ffs@tglx>
-In-Reply-To: <87jzn4ctks.ffs@tglx>
-From: Anup Patel <anup@brainfault.org>
-Date: Fri, 16 Feb 2024 22:41:20 +0530
-Message-ID: <CAAhSdy2aeyJBcMVre12jGwU52oP9Z=1emB-bcYxygdR3QhP+6w@mail.gmail.com>
-Subject: Re: [PATCH v12 14/25] irqchip/sifive-plic: Convert PLIC driver into a
- platform driver
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Anup Patel <apatel@ventanamicro.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
-	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] rust: str: add {make,to}_{upper,lower}case() to
+ CString
+Content-Language: en-US
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, benno.lossin@proton.me,
+ bjorn3_gh@protonmail.com, boqun.feng@gmail.com, gary@garyguo.net,
+ linux-kernel@vger.kernel.org, ojeda@kernel.org,
+ rust-for-linux@vger.kernel.org, wedsonaf@gmail.com
+References: <20240214172505.5044-1-dakr@redhat.com>
+ <20240216165320.1820346-1-aliceryhl@google.com>
+From: Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20240216165320.1820346-1-aliceryhl@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 16, 2024 at 9:03=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Sat, Jan 27 2024 at 21:47, Anup Patel wrote:
-> > +     priv->irqdomain =3D irq_domain_create_linear(dev->fwnode, nr_irqs=
- + 1,
-> > +                                                &plic_irqdomain_ops, p=
-riv);
-> > +     if (WARN_ON(!priv->irqdomain))
-> > +             return -ENOMEM;
->
-> While some of the stuff is cleaned up by devm, the error handling in
-> this code looks pretty fragile as it leaves initialized contexts,
-> hardware state, chained handlers etc. around.
+On 2/16/24 17:53, Alice Ryhl wrote:
+>> +    pub fn make_ascii_lowercase(&mut self) {
+>> +        self.0.make_ascii_lowercase();
+>> +    }
+> 
+> It's important to note here that this doesn't remove or introduce NUL
+> bytes.
+> 
+> pub fn make_ascii_lowercase(&mut self) {
+>      // INVARIANT: This doesn't introduce or remove NUL bytes in the c
+>      // string.
+>      self.0.make_ascii_lowercase();
+> }
+> 
+> Ditto for make_ascii_uppercase. (But not the to_* methods.)
+> 
+>> +    /// Returns a copy of this [`CString`] where each character is mapped to its
+>> +    /// ASCII lower case equivalent.
+>> +    ///
+>> +    /// ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
+>> +    /// but non-ASCII letters are unchanged.
+>> +    ///
+>> +    /// To lowercase the value in-place, use [`make_ascii_lowercase`].
+>> +    ///
+>> +    /// [`make_ascii_lowercase`]: str::make_ascii_lowercase
+>> +    pub fn to_ascii_lowercase(&self) -> Result<CString, AllocError> {
+>> +        let mut s = (*self).to_cstring()?;
+>> +
+>> +        s.make_ascii_lowercase();
+>> +
+>> +        return Ok(s);
+>> +    }
+>> +
+>> +    /// Returns a copy of this [`CString`] where each character is mapped to its
+>> +    /// ASCII upper case equivalent.
+>> +    ///
+>> +    /// ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
+>> +    /// but non-ASCII letters are unchanged.
+>> +    ///
+>> +    /// To uppercase the value in-place, use [`make_ascii_uppercase`].
+>> +    ///
+>> +    /// [`make_ascii_uppercase`]: str::make_ascii_uppercase
+>> +    pub fn to_ascii_uppercase(&self) -> Result<CString, AllocError> {
+>> +        let mut s = (*self).to_cstring()?;
+>> +
+>> +        s.make_ascii_uppercase();
+>> +
+>> +        return Ok(s);
+>> +    }
+> 
+> Please move these to `CStr` as well.
 
-Sure, let me try to improve the error handling.
+That would result into two copies if I actually want a CString, wouldn't it?
 
->
-> The question is whether the system can actually boot or work at all if
-> any of this fails.
+Also, what would be the use case? And even if someone wants to have a CStr
+again, couldn't we just deref the resulting CString?
 
-On platforms with PLIC, the PLIC only manages wired interrupts
-whereas IPIs are provided through SBI (firmware interface) so a
-system can actually continue and boot further without PLIC.
+- Danilo
 
-In fact, we do have a synthetic platform (namely QEMU spike)
-where there is no PLIC instance and Linux boots using SBI based
-polling console.
+> 
+>> +impl DerefMut for CString {
+>> +    fn deref_mut(&mut self) -> &mut Self::Target {
+>> +        unsafe { CStr::from_bytes_with_nul_unchecked_mut(&mut *self.buf) }
+>> +    }
+>> +}
+> 
+> Needs a safety comment.
+> 
+> impl DerefMut for CString {
+>      fn deref_mut(&mut self) -> &mut Self::Target {
+>          // SAFETY: A `CString` is always NUL-terminated and contains no
+> 	// other NUL bytes.
+>          unsafe { CStr::from_bytes_with_nul_unchecked_mut(&mut *self.buf) }
+>      }
+> }
+> 
+> Alice
+> 
 
->
-> > +
-> >       /*
-> >        * We can have multiple PLIC instances so setup cpuhp state
-> > -      * and register syscore operations only when context handler
-> > -      * for current/boot CPU is present.
-> > +      * and register syscore operations only after context handlers
-> > +      * of all online CPUs are initialized.
-> >        */
-> > -     handler =3D this_cpu_ptr(&plic_handlers);
-> > -     if (handler->present && !plic_cpuhp_setup_done) {
-> > +     cpuhp_setup =3D true;
-> > +     for_each_online_cpu(cpu) {
-> > +             handler =3D per_cpu_ptr(&plic_handlers, cpu);
-> > +             if (!handler->present) {
-> > +                     cpuhp_setup =3D false;
-> > +                     break;
-> > +             }
-> > +     }
-> > +     if (cpuhp_setup) {
-> >               cpuhp_setup_state(CPUHP_AP_IRQ_SIFIVE_PLIC_STARTING,
-> >                                 "irqchip/sifive/plic:starting",
-> >                                 plic_starting_cpu, plic_dying_cpu);
-> >               register_syscore_ops(&plic_irq_syscore_ops);
-> > -             plic_cpuhp_setup_done =3D true;
->
-> I don't think that removing the setup protection is correct.
->
-> Assume you have maxcpus=3DN on the kernel command line, then the above
-> for_each_online_cpu() loop would result in cpuhp_setup =3D=3D true when t=
-he
-> instances for the not onlined CPUs are set up, no?
-
-A platform can have multiple PLIC instances where each PLIC
-instance targets a subset of HARTs (or CPUs).
-
-Previously (before this patch), we were probing PLIC very early so on
-a platform with multiple PLIC instances, we need to ensure that cpuhp
-setup is done only after PLIC context associated with boot CPU is
-initialized hence the plic_cpuhp_setup_done check.
-
-This patch converts PLIC driver into a platform driver so now PLIC
-instances are probed after all available CPUs are brought-up. In this
-case, the cpuhp setup must be done only after PLIC context of all
-available CPUs are initialized otherwise some of the CPUs crash
-in plic_starting_cpu() due to lack of PLIC context initialization.
-
-Regards,
-Anup
 
