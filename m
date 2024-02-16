@@ -1,219 +1,275 @@
-Return-Path: <linux-kernel+bounces-69084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D28D3858446
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:42:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D92485844F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:42:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CD0C1F221AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:42:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD492284599
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38BE132C14;
-	Fri, 16 Feb 2024 17:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C700F1332A0;
+	Fri, 16 Feb 2024 17:42:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="HJ9c5A/a"
-Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jeusuca6"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EED9131726;
-	Fri, 16 Feb 2024 17:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD02132469;
+	Fri, 16 Feb 2024 17:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708105325; cv=none; b=GC/8v692wj5cDPg1nu1Xruedf4cO4Icr02AX3VXEBaQQzYDvOJ1wm2BwBL3IoA0QHAE6erGYMnk3FL8PIoHJ90Atl1NDafnl0EaAbrSZpyi2wqYk/Rv/LM/CGddA2XJ++oLJZww9FrDyJH0u6mPO0eyW6wg+rffv+XaZqMzlym0=
+	t=1708105356; cv=none; b=Q8ar3FoToSEGf/wsMswnOx6rb2OXdo5Et1C9qq1pRSBxj3KbN84ZczsuI6iqusTTAEKnA8WsZodNyiRoy2xpuIbH3biGsrNA5NTk/f+L7lODjJR9KJCeRYNSrfGisUN49bkN4iDEXQd1st49uYyN0hv+zdW/GxnblCiY0grpc/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708105325; c=relaxed/simple;
-	bh=/9cb9RQdcGMxMhPScRqyQQCl80IfFyihQcyBQ5diRX0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WC9aG+zReWyPPmiJcBLsSu8NUI+8y90+FBEd69bWfCp5xAIII6aO11K4k1lB06X8AWtPUpUuZI6j9tGde3HGlaWBCFPMM7nvmAKA9sql5Vk2emd3CZwaWf0xXZkdG1OlLkqdMnVs12RIw57JUFuxE50pAOB+umdLCPCugxzCHPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=HJ9c5A/a; arc=none smtp.client-ip=198.137.202.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
-Received: from [192.168.7.187] ([71.202.196.111])
-	(authenticated bits=0)
-	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 41GHfljD2186336
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Fri, 16 Feb 2024 09:41:48 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 41GHfljD2186336
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-	s=2024021201; t=1708105309;
-	bh=PvkoMlFqN6dc40XlgsRZqfHDJajklncMTvQ0wgmPzmw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HJ9c5A/aY/9gRw5yLelSMWMH7B62eLX8Y5VarjHponkTe+HtF7Jh0HZe5GudHa5QG
-	 hFdGb8jbfCouEDOSZ1+UFjeqRw+2b/r32/2p2V3GKx5bMWZEp+OTmcgEWNwIVuhObP
-	 XHkhWo4oXlQcpdSuz6pCiI5IC/CxQZTCOlcyuPPFxnBlBgt15ylwRzWwZkd/vx8nY8
-	 HreXkwhdDLT7ytbESlunA138J9q9Y5jZZosJUaSiQzHE4plWWZNX93D524IH9o+qdU
-	 +lGXp90c2hhStLROzlK6WmAZ2ApDWPXNBBsjZXFBlpFWOny2iQsaeAnLnYat0KEuPD
-	 3VEW86YSGM0ug==
-Message-ID: <1bcbd004-7233-4369-a4ac-7fcb91a97553@zytor.com>
-Date: Fri, 16 Feb 2024 09:41:45 -0800
+	s=arc-20240116; t=1708105356; c=relaxed/simple;
+	bh=pj3n+66nyrqpJxlt/wz6otP2MrHyOwNl0PF7mOPzDKo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=io+PHQ+NH40CXDmAsxw2g2mWLYm+nBy4dxQl7uQJCO6R5NZpD++FAzWHmT/Vx51aAzj/xCR5dq5zbdH0YZw940roptoKZrvXa6EE+uq3pxCm7BzbgTy7Cd1EVnwAWAO3NA6Az7O716KOT4mnjTQL755+pO076k4iatqJGmJv24M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jeusuca6; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EAF591C0008;
+	Fri, 16 Feb 2024 17:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708105350;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XbedJ76ICw0mlQWUBA8c408ZHkpOJ+fQpl8uRMxk2gQ=;
+	b=jeusuca6HzhLmnEEUcHVjy4gH7gOzWOtBwuEciIQ9zrXGq8XsKFHqI2dOjhJqpfYFTHY9h
+	Vte9xFs9qYBKDXJ5XINXxDfN4s00g6qvg3daicaY4SRYzqFr69FWcNyGvTLS3Y/LqsDuVV
+	HX0zvLTqNQ3uD1kXKIhFCBw0zfGdJskC9WvFk4N5L5t06HEweGpoHNo0cCCpPGF7MC7h6Q
+	K07ngM9TVuEn6VQwMwY80Z2FwIEANGrs33muYAEQI10RWGO0GW2YEh7lETHOffZIMdYqmz
+	eMxDB0xuaFIljymdnZYvT0rlptVG/9fVxnZBsrDLlwv5NQEPhnxicHljs3pvjA==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Paul Burton <paulburton@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v8 00/14] Add support for the Mobileye EyeQ5 SoC
+Date: Fri, 16 Feb 2024 18:42:09 +0100
+Message-ID: <20240216174227.409400-1-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arch/x86/entry_fred: don't set up KVM IRQs if KVM is
- disabled
-To: Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Max Kellermann <max.kellermann@ionos.com>
-Cc: hpa@zytor.com, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>, kvm@vger.kernel.org
-References: <20240215133631.136538-1-max.kellermann@ionos.com>
- <Zc5sMmT20kQmjYiq@google.com>
- <a61b113c-613c-41df-80a5-b061889edfdf@zytor.com>
- <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
-Content-Language: en-US
-From: Xin Li <xin@zytor.com>
-Autocrypt: addr=xin@zytor.com; keydata=
- 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
- l75w1xInsg==
-In-Reply-To: <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: gregory.clement@bootlin.com
 
-On 2/15/2024 10:31 PM, Paolo Bonzini wrote:
-> On 2/16/24 03:10, Xin Li wrote:
->> On 2/15/2024 11:55 AM, Sean Christopherson wrote:
->>> +Paolo and Stephen
->>>
->>> FYI, there's a build failure in -next due to a collision between 
->>> kvm/next and
->>> tip/x86/fred.  The above makes everything happy.
->>>
->>> On Thu, Feb 15, 2024, Max Kellermann wrote:
->>>> When KVM is disabled, the POSTED_INTR_* macros do not exist, and the
->>>> build fails.
->>>>
->>>> Fixes: 14619d912b65 ("x86/fred: FRED entry/exit and dispatch code")
->>>> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
->>>> ---
->>>>   arch/x86/entry/entry_fred.c | 2 ++
->>>>   1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
->>>> index ac120cbdaaf2..660b7f7f9a79 100644
->>>> --- a/arch/x86/entry/entry_fred.c
->>>> +++ b/arch/x86/entry/entry_fred.c
->>>> @@ -114,9 +114,11 @@ static idtentry_t 
->>>> sysvec_table[NR_SYSTEM_VECTORS] __ro_after_init = {
->>>>       SYSVEC(IRQ_WORK_VECTOR,            irq_work),
->>>> +#if IS_ENABLED(CONFIG_KVM)
->>>>       SYSVEC(POSTED_INTR_VECTOR,        kvm_posted_intr_ipi),
->>>>       SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    kvm_posted_intr_wakeup_ipi),
->>>>       SYSVEC(POSTED_INTR_NESTED_VECTOR,    kvm_posted_intr_nested_ipi),
->>>> +#endif
->>>>   };
->>>>   static bool fred_setup_done __initdata;
->>>> -- 
->>>> 2.39.2
->>
->> We want to minimize #ifdeffery (which is why we didn't add any to
->> sysvec_table[]), would it be better to simply remove "#if 
->> IS_ENABLED(CONFIG_KVM)" around the the POSTED_INTR_* macros from the
->> Linux-next tree?
->>
->> BTW, kvm_posted_intr_*() are defined to NULL if !IS_ENABLED(CONFIG_KVM).
-> 
-> It is intentional that KVM-related things are compiled out completely
-> if !IS_ENABLED(CONFIG_KVM), 
+Hello,
 
-In arch/x86/include/asm/irq_vectors.h, most vector definitions are not
-under any #ifdeffery, e.g., THERMAL_APIC_VECTOR not under
-CONFIG_X86_THERMAL_VECTOR and IRQ_WORK_VECTOR not under CONFIG_IRQ_WORK.
+The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
+and features multiple controllers such as the classic UART, I2C, SPI,
+as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
+Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
+Security Module, Functional Safety Hardware, and MJPEG encoder.
 
-We'd better make all of them consistent, and the question is that should
-we add #ifdefs or not.
+One peculiarity of this SoC is that the physical address of the DDDR
+exceeds 32 bits. Given that the architecture is 64 bits, this is not
+an issue, but it requires some changes in how the mips64 is currently
+managed during boot.
 
-> because then it's also not necessary to have
-> 
-> # define fred_sysvec_kvm_posted_intr_ipi                NULL
-> # define fred_sysvec_kvm_posted_intr_wakeup_ipi         NULL
-> # define fred_sysvec_kvm_posted_intr_nested_ipi         NULL
-> 
-> in arch/x86/include/asm/idtentry.h. The full conflict resultion is
-> 
-> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
-> index ac120cbdaaf2..660b7f7f9a79 100644
-> --- a/arch/x86/entry/entry_fred.c
-> +++ b/arch/x86/entry/entry_fred.c
-> @@ -114,9 +114,11 @@ static idtentry_t sysvec_table[NR_SYSTEM_VECTORS] 
-> __ro_after_init = {
-> 
->       SYSVEC(IRQ_WORK_VECTOR,            irq_work),
-> 
-> +#if IS_ENABLED(CONFIG_KVM)
->       SYSVEC(POSTED_INTR_VECTOR,        kvm_posted_intr_ipi),
->       SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    kvm_posted_intr_wakeup_ipi),
->       SYSVEC(POSTED_INTR_NESTED_VECTOR,    kvm_posted_intr_nested_ipi),
-> +#endif
->   };
-> 
->   static bool fred_setup_done __initdata;
-> diff --git a/arch/x86/include/asm/idtentry.h 
-> b/arch/x86/include/asm/idtentry.h
-> index 749c7411d2f1..758f6a2838a8 100644
-> --- a/arch/x86/include/asm/idtentry.h
-> +++ b/arch/x86/include/asm/idtentry.h
-> @@ -745,10 +745,6 @@ DECLARE_IDTENTRY_SYSVEC(IRQ_WORK_VECTOR,        
-> sysvec_irq_work);
->   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_VECTOR,        
-> sysvec_kvm_posted_intr_ipi);
->   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,    
-> sysvec_kvm_posted_intr_wakeup_ipi);
->   DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,    
-> sysvec_kvm_posted_intr_nested_ipi);
-> -#else
-> -# define fred_sysvec_kvm_posted_intr_ipi        NULL
-> -# define fred_sysvec_kvm_posted_intr_wakeup_ipi        NULL
-> -# define fred_sysvec_kvm_posted_intr_nested_ipi        NULL
->   #endif
-> 
->   #if IS_ENABLED(CONFIG_HYPERV)
-> 
-> and it seems to be a net improvement to me.  The #ifs match in
-> the .h and .c files, and there are no unnecessary initializers
-> in the sysvec_table.
-> 
+In this eighth version, I rebased the series onto the one sent by
+Jixuan to unify register numbering macros for uasm. I also addressed
+the comments from Thomas Bogendoerfer, especially regarding the use of
+cache memory to copy the vectors.
 
-I somehow get an impression that the x86 maintainers don't like #ifs in
-the .c files, but I could be just wrong.
+To build and test the kernel, we need to run the following commands:
 
-Thanks!
-     Xin
+make eyeq5_defconfig
+make vmlinuz.itb
+
+Changelog:
+
+ v7 -> v8
+
+    - Based on https://lore.kernel.org/linux-mips/20240209-regname-v1-0-2125efa016ef@flygoat.com/
+
+    - In patch 1 rename KSEGX_SIZE into CSEGX_SIZE.
+
+    - In patch 3, move extern declaration into smp-cps.h, use register
+      definition from Jixuan series and use cache address for copying
+      vector.
+
+   - Add Reviewed-by tag from Jiaxun Yang to patch 12 and 13.
+
+ v6 -> v7
+
+    - Added reviewed tags from Jiaxun Yang on patches 4 and 11.
+
+    - Removed patch "dt-bindings: mfd: syscon: Document EyeQ5 OLB" as
+      it is not used in this series.
+
+    - Removed OLB node as it was not needed yet.
+
+    - Fixed memory node and removed bootargs in dts on patch 11.
+
+    - Modified the configuration selection as suggested by Jiaxun in
+      patch 13.
+
+ v5 -> v6:
+
+    - From series v5, patches 1 ("MIPS: Export higher/highest
+    relocation functions in uasm") and 3 ("MIPS: genex: Fix
+    except_vec_vi for kernel in XKPHYS)" have been removed as "MIPS:
+    Allow vectored interrupt handler to reside everywhere for 64bit"
+    and "MIPS: Remove unused shadow GPR support from vector irq setup"
+    address the same requirement.
+
+    - From series v5, patches 8 to 12 have been removed as they are
+    not mandatory to support EyeQ5 SoCs.
+
+    - The 1st patch of series v6 ("MIPS: spaces: Define a couple of
+    handy macros") has been modified to add the extra macros
+    CKSEG[01]ADDR_OR_64BIT.
+
+    - Patch 3 ("MIPS: Allows relocation exception vectors everywhere")
+    is a merge of patches 6 ("MIPS: Refactor mips_cps_core_entry
+    implementation) and 7 ("MIPS: Fix cache issue with
+    mips_cps_core_entry") from series v5. It has been rewritten to
+    reduce the diff stat; the 64-bit fixes have been moved to patch 5
+    ("MIPS: cps-vec: Use macros for 64-bit access").
+
+    - Patch 13 ("MIPS: Share generic kernel code with other
+    architecture)" is a new one allowing separate platform support in
+    the patch ("MIPS: Add support for Mobileye EyeQ5").
+
+ v4 -> v5:
+
+   - Improve commit messages for patch 3, 5, 12 and 13.
+
+   - Fix style in patch 9
+
+   - Really enable SPARSMEM and use correct address in
+     board-eyeq5.config in patch 21
+
+ v3 -> v4:
+
+ - Fix build warning in "MIPS: Get rid of CONFIG_NO_EXCEPT_FILL":
+   check that we are in 64bit mode before using KSEG0 that exist only
+   in this mode.
+
+ - Modify "MIPS: spaces: Define a couple of handy macros" to be
+   buildable in 32bit mode.
+
+ - Use correct format specifier to print address in "MIPS: traps: Give
+   more explanations if ebase doesn't belong to KSEG0"
+
+ - In "MIPS: generic: Add support for Mobileye EyeQ5",remove
+   CONFIG_ZBOOT_LOAD_ADDRESS from board-eyeq5.config, (as well as
+   CONFIG_USE_XKPHYS that does not exist anymore) and add
+   CONFIG_SPARSEMEM_MANUAL to enable SPARSMEM.
+
+v2 -> v3
+
+ - Added more reviewed-by and acked-by tags
+
+ - Fix sorting for cpus entries in
+
+ - Fix indentation issue in Documentation/devicetree/bindings/mips/mobileye.yaml
+
+ v1 -> v2
+
+ - Added reviewed-by and acked-by tags
+
+ - Fix typos reported
+
+ - In patch 15 use 'img' vendor string instead of mti
+
+ - In patch 16 modify licence
+
+ - In patch 17 give more explanations about the block usage.
+
+ - In patch 18, remove _ in node names, don't use anymore
+   CONFIG_BUILTIN_DTB in Makefile, remove macro, modify licence.
+
+ - In patch 19 remove most of the bootargs and only keeps earlycon. I
+   also split the memory in 2 part in the device tree.
+
+ - Integrate the series from Jiaxun Yang
+   https://lore.kernel.org/linux-mips/20231027221106.405666-1-jiaxun.yang@flygoat.com/
+
+  They are patches 2 to 6 and 8 to 12
+
+  Then I added patch 7 to fix the cache issue visible on the Mobileye
+  platform, I also add patch 13 to improve warning message when ebase
+  doesn't belong to KSEG0
+
+Regards,
+
+Gregory
+
+Gregory CLEMENT (12):
+  MIPS: spaces: Define a couple of handy macros
+  MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
+  MIPS: cps-vec: Use macros for 64bits access
+  dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
+  dt-bindings: mips: cpus: Sort the entries
+  dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
+  dt-bindings: mips: Add bindings for Mobileye SoCs
+  MIPS: mobileye: Add EyeQ5 dtsi
+  MIPS: mobileye: Add EPM5 device tree
+  MIPS: Share generic kernel code with other architecture
+  MIPS: Add support for Mobileye EyeQ5
+  MAINTAINERS: Add entry for Mobileye MIPS SoCs
+
+Jiaxun Yang (2):
+  MIPS: Fix set_uncached_handler for ebase in XKPHYS
+  MIPS: Allows relocation exception vectors everywhere
+
+ .../devicetree/bindings/mips/cpus.yaml        |  13 +-
+ .../devicetree/bindings/mips/mobileye.yaml    |  32 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ MAINTAINERS                                   |  12 +
+ arch/mips/Kbuild                              |   1 +
+ arch/mips/Kbuild.platforms                    |   1 +
+ arch/mips/Kconfig                             |  57 ++++
+ arch/mips/boot/dts/Makefile                   |   1 +
+ arch/mips/boot/dts/mobileye/Makefile          |   4 +
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts    |  23 ++
+ .../boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 292 ++++++++++++++++++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi        | 124 ++++++++
+ arch/mips/configs/eyeq5_defconfig             | 108 +++++++
+ arch/mips/generic/Makefile                    |   6 +-
+ arch/mips/include/asm/addrspace.h             |   5 +
+ arch/mips/include/asm/mach-generic/spaces.h   |   4 +
+ arch/mips/include/asm/mips-cm.h               |   1 +
+ arch/mips/include/asm/smp-cps.h               |   9 +-
+ arch/mips/kernel/cps-vec.S                    |  54 +---
+ arch/mips/kernel/smp-cps.c                    | 141 +++++++--
+ arch/mips/kernel/traps.c                      |   7 +-
+ arch/mips/mobileye/Makefile                   |   1 +
+ arch/mips/mobileye/Platform                   |  16 +
+ arch/mips/mobileye/board-epm5.its.S           |  24 ++
+ arch/mips/mobileye/vmlinux.its.S              |  32 ++
+ 25 files changed, 890 insertions(+), 80 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
+ create mode 100644 arch/mips/boot/dts/mobileye/Makefile
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
+ create mode 100644 arch/mips/configs/eyeq5_defconfig
+ create mode 100644 arch/mips/mobileye/Makefile
+ create mode 100644 arch/mips/mobileye/Platform
+ create mode 100644 arch/mips/mobileye/board-epm5.its.S
+ create mode 100644 arch/mips/mobileye/vmlinux.its.S
+
+-- 
+2.43.0
 
 
