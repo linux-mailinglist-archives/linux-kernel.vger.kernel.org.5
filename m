@@ -1,290 +1,98 @@
-Return-Path: <linux-kernel+bounces-68977-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68978-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225588582E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:45:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 241C68582E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:45:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 907C81F23F8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:45:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D39E4284DC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34FCA130AC9;
-	Fri, 16 Feb 2024 16:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F8E130AF1;
+	Fri, 16 Feb 2024 16:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="odMN4+Dt"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="V7TXH/54"
+Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911DD43687
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:45:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C57043687;
+	Fri, 16 Feb 2024 16:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708101916; cv=none; b=or8kpMN3UEoS+pG/VLmcnRsrnInpuovr1r0tgPSoMpRTNzvYpq79990G12Hd5yK0zEfK4I7Fc6UctvfEdYjvVgHi0qjb945OSNllVbOS50ZAjFJAFJAKujrmtZZFzPJx3cZm934TxPP5za6mFYLMKbb7nuKFDgZQIDbq7E/EGDs=
+	t=1708101934; cv=none; b=OLsnIP/gnfq2Fo+zMHznEXMMGBGo9EYhNXWVqOESMq5fjyaPqhyp/2kknRJYASRAhsGIvdNAV6T3/bTk0iutyfiSnkUp/3A/OTvzR2bLmBOYz3NZWB4sREBW1ue/dE1GEBV3YRGnBI4Xit25eKTrDTJ+aX6B4kL4CN7eEAKNSsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708101916; c=relaxed/simple;
-	bh=KRDASqWMP4FmjtwV9SInKRI/O/iLjYCFWTgDjM85YK0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bgcLnTxlQh5pvguaxbJCl+/aw8xnEAWQMHsPIpnNVPl34xyaIGyslfjlHXq72vqi8sqlbAs6nSk0XKjAq4VgA4X+JLEI48w6kRHBSP2rVqH7h1PM7szxk8yFnDvBC0CjoeAKTVkgO2s9cj+vTSvmxkk1q+O9neH/meFJoAcoWtI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=odMN4+Dt; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60777bcfed2so17554607b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708101912; x=1708706712; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yqMJBdmCbC/RM9PRo3lm7SAMuIGxpy4kB2I1M6Qh1Sw=;
-        b=odMN4+DtMaBIStE4V0Gyk/UdKuc7ha27bLtVpyKeudQ9H4WmsUbUnmcdYXlqTfrfDn
-         j9AwL5xlt2PQKP7dtoW1QcmMal0BhWC/mDIYq9XqLTtm7EfYEQvCSqgCWpp0ozd6Vqrg
-         i1dx5OlytEq1OancQA2b9D8xXm/I9JPwkS+R+SZQpKobemBHc8DEbuX2szRF/uKCRBaf
-         sXrsyU1dK7oMYLr2haBccjYZ9QD9wISsnJJInmLY+cLGrH9KocGpj0Er0ZlQdW8n/HDP
-         /DFOKd6aiWUU34XSpFPxjfdAOnZ7XoZokv78cq3Mw/hMC/zSho7RbgbfLkxzdqwl7zlS
-         Sd7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708101912; x=1708706712;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yqMJBdmCbC/RM9PRo3lm7SAMuIGxpy4kB2I1M6Qh1Sw=;
-        b=dLPmWEvmcYK2QClGsMrB+BiXHz5UXoFwfJIvVynxMOsJ93Ey5dtIzyYSiiYwdVffOf
-         yXkyuii8qzArWXpgsDHwo5DL8jx4Qghk5w2E+8jXwJsbYCZWBdREU+k1KjcikLOjyNwv
-         ZHf+KyOfJsfXAojL0PeKOzf+z1dDnhe7WFhmxqV8JgFiKj4DpcPVu6hpE59FLgzXy+kU
-         A34PMeYYQ4xDdgaWxDcdYuCf5WSOsfip4nWynnODSSXfb6RMH9n3DJSoMxHwecV0WWip
-         Nrln0/jYXREywJ7VgPELTLpRyANnqc9E4F4wqoX/w0VjCvfLl6TdG8Apvecb6Vy8WzA+
-         JGBw==
-X-Forwarded-Encrypted: i=1; AJvYcCXa/k8SYmzCmYbFJ8a71Qy+RqgmLBlHs4AilnW+zuzYiIwdhaw+/vx880sg8ickBeZAe8B3jSwn4WV5I2dxL5w6RA0E+0CoPqM+uluy
-X-Gm-Message-State: AOJu0YwLSfPJ7PObewHij6yz6ujfmsyN2lPSJXOy6yHR5th6WcTxeqDf
-	/40PAdgI7iJLPI9doe6S+d8b53CVhXcAAxIop/kupQz+T8iw4ez2oedgRUoMs7q2tAK2ar5O7A0
-	eX8DmDRTn1DLJsK3V7NR/wu5N+8e7I+zlPdMN
-X-Google-Smtp-Source: AGHT+IG8/ofM2uf/y914CU8c22R1iloHjqFZxLjTIvqCNCo3t1Vtfj5gxB8K/liUcdy0qkkmiNCjnhDlVc5UviII96I=
-X-Received: by 2002:a0d:d489:0:b0:607:d02f:3587 with SMTP id
- w131-20020a0dd489000000b00607d02f3587mr6663621ywd.4.1708101912180; Fri, 16
- Feb 2024 08:45:12 -0800 (PST)
+	s=arc-20240116; t=1708101934; c=relaxed/simple;
+	bh=CsOn+DhgFeqCNSRreHl5oS9hryCOkL21maWnWfjiYWo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GA+Ic6gtaXvjkYgJVkTqxQMskUK40kGobERSkwbdLHyceb1CyWnZJp0dGBRnHB6I+/LU7SA7cZLtleIMQvPLkxmesRZgtCqiIX4jEi6aCGH7P3o+uTrwywQzzzp11g6R5m7PlpX2q3Wkaj+mairfuU6zHuWTcka0tTzy5hUVo58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=V7TXH/54; arc=none smtp.client-ip=94.231.106.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
+Received: from localhost (localhost [127.0.0.1])
+	by smtp.simply.com (Simply.com) with ESMTP id 4TbyV15ms2z681Y;
+	Fri, 16 Feb 2024 17:45:29 +0100 (CET)
+Received: from [10.10.15.23] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(Client did not present a certificate)
+	by smtp.simply.com (Simply.com) with ESMTPSA id 4TbyTv1h07z67p1;
+	Fri, 16 Feb 2024 17:45:21 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
+	s=unoeuro; t=1708101929;
+	bh=Z0ojgdZAly+cJwqhDwzJMVcnx8Yr0Z18PaNMP45RmHE=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=V7TXH/54ebxbS7izH3f/05iFUczZ7LrR4qYpAWGVhAnMGh1Amjz/ACzNf1j51kncU
+	 qlMR1pUNoT67s3JVOHL6GAfNYA5Koz+IKQA+3lPHcsyZlaigz2IjIUpKUnLnwW8HvF
+	 ZSOEKpQPJq9s9NJK5732Zs3gVNb+qVHqGesklTK8=
+Message-ID: <bbab8a40-ba76-42f5-8f8f-2259ce70e14e@gaisler.com>
+Date: Fri, 16 Feb 2024 17:45:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-15-surenb@google.com>
- <039a817d-20c4-487d-a443-f87e19727305@suse.cz>
-In-Reply-To: <039a817d-20c4-487d-a443-f87e19727305@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 16 Feb 2024 08:44:58 -0800
-Message-ID: <CAJuCfpE_JUmLWJwbiJh1qX-YMCwgVvUthrF30o=sY_YtaVvgjw@mail.gmail.com>
-Subject: Re: [PATCH v3 14/35] lib: introduce support for page allocation tagging
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] sparc: leon: grpci1: Use
+ devm_platform_ioremap_resource() in grpci1_of_probe()
+Content-Language: en-US
+To: Markus Elfring <Markus.Elfring@web.de>, sparclinux@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+ Rob Herring <robh@kernel.org>, Sam Ravnborg <sam@ravnborg.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <4fc017e4-c695-40d3-aed4-cbf34d44e6fa@web.de>
+ <e4585b03-3629-4bd7-a349-f5471ebd8685@web.de>
+From: Andreas Larsson <andreas@gaisler.com>
+In-Reply-To: <e4585b03-3629-4bd7-a349-f5471ebd8685@web.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 16, 2024 at 1:45=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 2/12/24 22:39, Suren Baghdasaryan wrote:
-> > Introduce helper functions to easily instrument page allocators by
-> > storing a pointer to the allocation tag associated with the code that
-> > allocated the page in a page_ext field.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > +
-> > +#ifdef CONFIG_MEM_ALLOC_PROFILING
-> > +
-> > +#include <linux/page_ext.h>
-> > +
-> > +extern struct page_ext_operations page_alloc_tagging_ops;
-> > +extern struct page_ext *page_ext_get(struct page *page);
-> > +extern void page_ext_put(struct page_ext *page_ext);
-> > +
-> > +static inline union codetag_ref *codetag_ref_from_page_ext(struct page=
-_ext *page_ext)
-> > +{
-> > +     return (void *)page_ext + page_alloc_tagging_ops.offset;
-> > +}
-> > +
-> > +static inline struct page_ext *page_ext_from_codetag_ref(union codetag=
-_ref *ref)
-> > +{
-> > +     return (void *)ref - page_alloc_tagging_ops.offset;
-> > +}
-> > +
-> > +static inline union codetag_ref *get_page_tag_ref(struct page *page)
-> > +{
-> > +     if (page && mem_alloc_profiling_enabled()) {
-> > +             struct page_ext *page_ext =3D page_ext_get(page);
-> > +
-> > +             if (page_ext)
-> > +                     return codetag_ref_from_page_ext(page_ext);
->
-> I think when structured like this, you're not getting the full benefits o=
-f
-> static keys, and the compiler probably can't improve that on its own.
->
-> - page is tested before the static branch is evaluated
-> - when disabled, the result is NULL, and that's again tested in the calle=
-rs
+On 2024-02-06 16:40, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Tue, 6 Feb 2024 16:30:15 +0100
+> 
+> A wrapper function is available since the commit 7945f929f1a77a1c8887a97ca07f87626858ff42
 
-Yes, that sounds right. I'll move the static branch check earlier like
-you suggested. Thanks!
+This line is needlessly long. Could you wrap it or shorten the SHA-1 ID?
+You don't need more than the first 12 characters of the SHA-1 ID.
 
->
-> > +     }
-> > +     return NULL;
-> > +}
-> > +
-> > +static inline void put_page_tag_ref(union codetag_ref *ref)
-> > +{
-> > +     page_ext_put(page_ext_from_codetag_ref(ref));
-> > +}
-> > +
-> > +static inline void pgalloc_tag_add(struct page *page, struct task_stru=
-ct *task,
-> > +                                unsigned int order)
-> > +{
-> > +     union codetag_ref *ref =3D get_page_tag_ref(page);
->
-> So the more optimal way would be to test mem_alloc_profiling_enabled() he=
-re
-> as the very first thing before trying to get the ref.
->
-> > +     if (ref) {
-> > +             alloc_tag_add(ref, task->alloc_tag, PAGE_SIZE << order);
-> > +             put_page_tag_ref(ref);
-> > +     }
-> > +}
-> > +
-> > +static inline void pgalloc_tag_sub(struct page *page, unsigned int ord=
-er)
-> > +{
-> > +     union codetag_ref *ref =3D get_page_tag_ref(page);
->
-> And same here.
->
-> > +     if (ref) {
-> > +             alloc_tag_sub(ref, PAGE_SIZE << order);
-> > +             put_page_tag_ref(ref);
-> > +     }
-> > +}
-> > +
-> > +#else /* CONFIG_MEM_ALLOC_PROFILING */
-> > +
-> > +static inline void pgalloc_tag_add(struct page *page, struct task_stru=
-ct *task,
-> > +                                unsigned int order) {}
-> > +static inline void pgalloc_tag_sub(struct page *page, unsigned int ord=
-er) {}
-> > +
-> > +#endif /* CONFIG_MEM_ALLOC_PROFILING */
-> > +
-> > +#endif /* _LINUX_PGALLOC_TAG_H */
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 78d258ca508f..7bbdb0ddb011 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -978,6 +978,7 @@ config MEM_ALLOC_PROFILING
-> >       depends on PROC_FS
-> >       depends on !DEBUG_FORCE_WEAK_PER_CPU
-> >       select CODE_TAGGING
-> > +     select PAGE_EXTENSION
-> >       help
-> >         Track allocation source code and record total allocation size
-> >         initiated at that code location. The mechanism can be used to t=
-rack
-> > diff --git a/lib/alloc_tag.c b/lib/alloc_tag.c
-> > index 4fc031f9cefd..2d5226d9262d 100644
-> > --- a/lib/alloc_tag.c
-> > +++ b/lib/alloc_tag.c
-> > @@ -3,6 +3,7 @@
-> >  #include <linux/fs.h>
-> >  #include <linux/gfp.h>
-> >  #include <linux/module.h>
-> > +#include <linux/page_ext.h>
-> >  #include <linux/proc_fs.h>
-> >  #include <linux/seq_buf.h>
-> >  #include <linux/seq_file.h>
-> > @@ -124,6 +125,22 @@ static bool alloc_tag_module_unload(struct codetag=
-_type *cttype,
-> >       return module_unused;
-> >  }
-> >
-> > +static __init bool need_page_alloc_tagging(void)
-> > +{
-> > +     return true;
->
-> So this means the page_ext memory overead is paid unconditionally once
-> MEM_ALLOC_PROFILING is compile time enabled, even if never enabled during
-> runtime? That makes it rather costly to be suitable for generic distro
-> kernels where the code could be compile time enabled, and runtime enablin=
-g
-> suggested in a debugging/support scenario. It's what we do with page_owne=
-r,
-> debug_pagealloc, slub_debug etc.
->
-> Ideally we'd have some vmalloc based page_ext flavor for later-than-boot
-> runtime enablement, as we now have for stackdepot. But that could be
-> explored later. For now it would be sufficient to add an early_param boot
-> parameter to control the enablement including page_ext, like page_owner a=
-nd
-> other features do.
+> ("drivers: provide devm_platform_ioremap_resource()").
+> 
+> * Thus reuse existing functionality instead of keeping duplicate source code.
 
-Sounds reasonable. In v1 of this patchset we used early boot parameter
-but after LSF/MM discussion that was changed to runtime controls.
-Sounds like we would need both here. Should be easy to add.
+The same goes for this one. Please keep the width of the commit
+description within 75 characters.
+ 
+> * Delete a local variable which became unnecessary with this refactoring.
+> 
+> 
+> This issue was transformed by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-Allocating/reclaiming dynamically the space for page_ext, slab_ext,
-etc is not trivial and if done would be done separately. I looked into
-it before and listed the encountered issues in the cover letter of v2
-[1], see "things we could not address" section.
+Apart from that the patch looks good.
 
-[1] https://lore.kernel.org/all/20231024134637.3120277-1-surenb@google.com/
-
->
-> > +}
-> > +
-> > +static __init void init_page_alloc_tagging(void)
-> > +{
-> > +}
-> > +
-> > +struct page_ext_operations page_alloc_tagging_ops =3D {
-> > +     .size =3D sizeof(union codetag_ref),
-> > +     .need =3D need_page_alloc_tagging,
-> > +     .init =3D init_page_alloc_tagging,
-> > +};
-> > +EXPORT_SYMBOL(page_alloc_tagging_ops);
->
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+Thanks,
+Andreas
 
