@@ -1,152 +1,171 @@
-Return-Path: <linux-kernel+bounces-69259-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69260-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31346858651
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:44:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8B45858655
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 20:45:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C70561F24710
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:44:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59976B221C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:45:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAE971369B0;
-	Fri, 16 Feb 2024 19:44:46 +0000 (UTC)
-Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF382137C4A;
+	Fri, 16 Feb 2024 19:45:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OSthxwfz"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 957A4133439
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0351E131E5C;
+	Fri, 16 Feb 2024 19:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708112686; cv=none; b=gWEP+mrPJpb7paHRBvHMutQS+UlqBAvtJY7mXKVZHPYXoqR+Ue9TKwJ/aiNBAeggOtpMK7+PFYcv8P0KsENVzYzKRiOQBRhv+LFj7FBiY7WXeLmmf/p8nmaDjZIyLw8Mi0eN6g9kFeSOS0Mbq/oVxZJyBstC3fZM8RWh64j03hw=
+	t=1708112728; cv=none; b=Be0DEp+4o67rA32aewCq8sGK3kgTR97Iz3xINGcZkXegYoVGyye9KPCJ6qJc91ZvWGuNIK8kw7JtnUEdcQFVO0WqxRZy2+qXMBs1/fJLWHWhuxXmT2ULwcsEGR4D9i6uj9BybCZ2bzIvYRllOsw/2KCpCeYBx/+QPhclAaH5/uU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708112686; c=relaxed/simple;
-	bh=eR+3kCfvfZgbRZuV/OFCPctWATJWKmCIkivthZQ2kqs=;
+	s=arc-20240116; t=1708112728; c=relaxed/simple;
+	bh=tqwc6T+xaDrSoJ/oKHMoZkMeHNS09xS6tDHD68G0Pqc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HDUaKW0kIDxXRZ+R19Q7H66DjPuj/x6bftrsSt/ta1SC320iVLKDg4882Sy7T5VCuPAuHBDLJtZ6XYXDfC0g+oEbMkpzuUGwc1KuHLdodqcd6G4boLIGSyuVUW0ui/rJoUM1cClX1AyBrAcNsG9WOU7BpP9t8o+baIPd4FwwFBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68f41af71ebso2196776d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 11:44:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708112683; x=1708717483;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NJSnARwUtS7rN3dj4rLBWq8lUzqfSUuTe1dQ5cX/wTc=;
-        b=M7Ej9iEq8za6wgZew35kwyohbqbYyi9s1Ug7AMIJs8CVlHgiL2a2DSiGX5B/W/QPJJ
-         INnQwdMk+oh7FuEuT81b4ecIfXW1tXwQlGc7adMgTF0TOSYp7rIpKfchHbKs9rjiksUz
-         rnUCQYP53iTx61c8Pakj/bOdDlmPb7sbA56opCEbuw7IMxQRQZk3NWWT9oblkeqtipdL
-         49Dy6lEy13qaM6c2yQuZULa5ahCo2T13qteqlz4GVs1zPQ6m81HDm/2KCsxHsU2AzMWV
-         VO+7kYprLSOyxxJzNHiJoBNHEf04Q4i6cYSKzIAnJPEAXWXGVzNCFWe6L/mI5JdPi5sC
-         MKfg==
-X-Forwarded-Encrypted: i=1; AJvYcCWnRx+8Wu7ON7Qr0rbYLjGQzyAnsV9I6ANBdKZbEmPEPbCFArmtJjeiPPIXrHY/5zfOoZz2lsw24FGfTO+JgoxJ1lZpVz8L1kmpKI31
-X-Gm-Message-State: AOJu0YyUnKbycwZWap2FRQNKFj8U4bIwLwAv8fgm7cRgYPu4+dMUddsb
-	lIaKQEtQd46pyb28Mm7zDGu0FvVaMYc9F6t+NB8q3Ht7PfUmLmZVPzLHa1JvOIc=
-X-Google-Smtp-Source: AGHT+IHsiWywxMosiPvKZJqt37VDlQxRzZD6c1/vxsme/jlvolRWLfk2ZvhDvUV0nyMu5JjIh5U+Kg==
-X-Received: by 2002:a0c:cc87:0:b0:68f:3b2e:3c14 with SMTP id f7-20020a0ccc87000000b0068f3b2e3c14mr1764919qvl.3.1708112683371;
-        Fri, 16 Feb 2024 11:44:43 -0800 (PST)
-Received: from maniforge (c-24-1-27-177.hsd1.il.comcast.net. [24.1.27.177])
-        by smtp.gmail.com with ESMTPSA id er19-20020a056214191300b0068f304336f5sm218594qvb.36.2024.02.16.11.44.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 11:44:42 -0800 (PST)
-Date: Fri, 16 Feb 2024 13:44:40 -0600
-From: David Vernet <void@manifault.com>
-To: peterz@infradead.org
-Cc: mingo@redhat.com, linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH v3 0/3] sched/fair: Simplify and optimize
- update_sd_pick_busiest()
-Message-ID: <20240216194440.GA1682@maniforge>
-References: <20240206043921.850302-1-void@manifault.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nqFR0ffJKmuMe1VQFNTuAoNam7vnUPYBQyllp4J0JafhlwVIBUOs49TyTh0AurkD/mizzGe0u7TyKvI78F4pS88v55bteCyZBt7EDM7d+5/GpgtM835/ewViBtazkEq8oPEXBD0bCg5+VX1/b6k3fwXjZgzdhESTdCoXhJwM4B8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OSthxwfz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38F73C433F1;
+	Fri, 16 Feb 2024 19:45:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708112727;
+	bh=tqwc6T+xaDrSoJ/oKHMoZkMeHNS09xS6tDHD68G0Pqc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OSthxwfzP8UF7Asm4mhUGEEh6VIXs5Sbc7/xGMGiTkUWzliJRCbm40YECPFdF+1Pd
+	 7f2dobBHAikc0GSck7Sf1t/5jshXXHzR4krknNNdbij0MF2euTb8+UU5+kJW2nYcZ3
+	 3V7cGC6naFozTVdOWzBzH9WI0f4bp6bkrvIP5CXPrcWLUcTcFvkn/B3Tf7RM6Bfs/O
+	 pf/+QMYMG87HgPq60wb3g8JyuDa2qU0E0LOJY1yncZgxs+jQQntJQlPnQth85qiKGf
+	 Cxa3XY+zfUBSHbRmptaINGY5795Y/3bKrVznUs71qlOhPRo1ABeD0FTcLONf3Ia2oD
+	 AAUm002kTOsjw==
+Date: Fri, 16 Feb 2024 19:45:21 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc: broonie@kernel.org, robh@kernel.org, andi.shyti@kernel.org,
+	krzysztof.kozlowski@linaro.org, semen.protsenko@linaro.org,
+	conor+dt@kernel.org, alim.akhtar@samsung.com,
+	linux-spi@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	andre.draszik@linaro.org, peter.griffin@linaro.org,
+	kernel-team@android.com, willmcvicker@google.com,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 01/12] spi: dt-bindings: introduce FIFO depth
+ properties
+Message-ID: <20240216-malt-alumni-4939546e1e2c@spud>
+References: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
+ <20240216070555.2483977-2-tudor.ambarus@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7AqvWcatbl91sTR2"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="UgE4bvCQW0vdLD16"
 Content-Disposition: inline
-In-Reply-To: <20240206043921.850302-1-void@manifault.com>
-User-Agent: Mutt/2.2.12 (2023-09-09)
+In-Reply-To: <20240216070555.2483977-2-tudor.ambarus@linaro.org>
 
 
---7AqvWcatbl91sTR2
+--UgE4bvCQW0vdLD16
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 05, 2024 at 10:39:18PM -0600, David Vernet wrote:
-> update_sd_pick_busiest() (and its caller) has some room for small
-> optimizations, and some improvements in readability.
-
-Hello Peter, hello Ingo,
-
-Friendly ping. Is there anything else required for this to land?
-
-Thanks,
-David
-
+On Fri, Feb 16, 2024 at 07:05:44AM +0000, Tudor Ambarus wrote:
+> There are SPI IPs that can be configured by the integrator with a
+> specific FIFO depth depending on the system's capabilities. For example,
+> the samsung USI SPI IP can be configured by the integrator with a TX/RX
+> FIFO from 8 byte to 256 bytes.
 >=20
-> - In update_sd_lb_stats(), we're using a goto to skip a single if check.
->   Let's remove the goto and just add another condition to the if.
+> Introduce the ``fifo-depth`` property for such instances of IPs where the
+> same FIFO depth is used for both RX and TX. Introduce ``rx-fifo-depth``
+> and ``tx-fifo-depth`` properties for cases where the RX FIFO depth is
+> different from the TX FIFO depth.
 >=20
-> - In update_sd_pick_busiest(), only update a group_misfit_task group to
->   be the busiest if it has strictly more load than the current busiest
->   task, rather than >=3D the load.
+> Make the dedicated RX/TX properties dependent on each other and mutual
+> exclusive with the other.
 >=20
-> - When comparing the current struct sched_group with the yet-busiest
->   domain in update_sd_pick_busiest(), if the two groups have the same
->   group type, we're currently doing a bit of unnecessary work for any
->   group >=3D group_misfit_task. We're comparing the two groups, and then
->   returning only if false (the group in question is not the busiest).
->   Othewise, we break, do an extra unnecessary conditional check that's
->   vacuously false for any group type > group_fully_busy, and then always
->   return true. This patch series has us instead simply return directly
->   in the switch statement, saving some bytes in load_balance().
->=20
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
+
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
 > ---
+>  .../bindings/spi/spi-controller.yaml          | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
 >=20
-> v1: https://lore.kernel.org/lkml/20240202070216.2238392-1-void@manifault.=
-com/
-> v2: https://lore.kernel.org/all/20240204044618.46100-1-void@manifault.com/
->=20
-> v2 -> v3:
-> - Add Vincent's Reviewed-by tags
-> - Fix stale commit summary sentence (Vincent)
->=20
-> v1 -> v2 changes:
->=20
-> - Split the patch series into separate patches (Valentin)
-> - Update the group_misfit_task busiest check to use strict inequality
->=20
-> David Vernet (3):
->   sched/fair: Remove unnecessary goto in update_sd_lb_stats()
->   sched/fair: Do strict inequality check for busiest misfit task group
->   sched/fair: Simplify some logic in update_sd_pick_busiest()
->=20
->  kernel/sched/fair.c | 19 ++++---------------
->  1 file changed, 4 insertions(+), 15 deletions(-)
->=20
+> diff --git a/Documentation/devicetree/bindings/spi/spi-controller.yaml b/=
+Documentation/devicetree/bindings/spi/spi-controller.yaml
+> index 524f6fe8c27b..093150c0cb87 100644
+> --- a/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> +++ b/Documentation/devicetree/bindings/spi/spi-controller.yaml
+> @@ -69,6 +69,21 @@ properties:
+>           Should be generally avoided and be replaced by
+>           spi-cs-high + ACTIVE_HIGH.
+> =20
+> +  fifo-depth:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Size of the RX and TX data FIFOs in bytes.
+> +
+> +  rx-fifo-depth:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Size of the RX data FIFO in bytes.
+> +
+> +  tx-fifo-depth:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Size of the TX data FIFO in bytes.
+> +
+>    num-cs:
+>      $ref: /schemas/types.yaml#/definitions/uint32
+>      description:
+> @@ -116,6 +131,10 @@ patternProperties:
+>        - compatible
+>        - reg
+> =20
+> +dependencies:
+> +  rx-fifo-depth: [ tx-fifo-depth ]
+> +  tx-fifo-depth: [ rx-fifo-depth ]
+> +
+>  allOf:
+>    - if:
+>        not:
+> @@ -129,6 +148,14 @@ allOf:
+>        properties:
+>          "#address-cells":
+>            const: 0
+> +  - not:
+> +      required:
+> +        - fifo-depth
+> +        - rx-fifo-depth
+> +  - not:
+> +      required:
+> +        - fifo-depth
+> +        - tx-fifo-depth
+> =20
+>  additionalProperties: true
+> =20
 > --=20
-> 2.43.0
+> 2.44.0.rc0.258.g7320e95886-goog
 >=20
 
---7AqvWcatbl91sTR2
+--UgE4bvCQW0vdLD16
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZc+7KAAKCRBZ5LhpZcTz
-ZCswAQD/TPyQ1RCxEAi6CiJf6doJrL7cgg+pRq1u1kUhHr2NZAEAyzfgAeHbVCpl
-SI61fJRXdrf9C8AK62SzYdfVuL+W6wk=
-=3n3j
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc+7UQAKCRB4tDGHoIJi
+0iPGAP42/u4o62bH9auA0cpLbFQfJuRnboyt+bRlmjYajrt1AwEA9cNTkOvx7XFk
+wTlq8tEDLeLBdKNu/omg8lshMNWcsg8=
+=Adys
 -----END PGP SIGNATURE-----
 
---7AqvWcatbl91sTR2--
+--UgE4bvCQW0vdLD16--
 
