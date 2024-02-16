@@ -1,92 +1,81 @@
-Return-Path: <linux-kernel+bounces-67937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA0685734D
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:17:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0270E857354
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 02:18:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16F7CB23DFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:16:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91A031F236A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:18:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF2ED2F0;
-	Fri, 16 Feb 2024 01:16:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5D9DDCA;
+	Fri, 16 Feb 2024 01:18:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fiTTd/46"
-Received: from mail-wr1-f50.google.com (mail-wr1-f50.google.com [209.85.221.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VvLy9G9e"
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA11D267;
-	Fri, 16 Feb 2024 01:16:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BE5EC2ED
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 01:18:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708046212; cv=none; b=DJXL3P8yVaEpwlJ6BJ34O5TNE42NfFhjg5M1yFnVxx9lv3UhU1JJLXsoVagAueVHqLSd4jFcVS8cTeH5M6lAgVUNKvNm4ZNYId6jCUnVOfzd4m9Q8tZ/APqG72Mloi5KaIAoLciNrcAQmjCNrrNiG7PxXvYVUWK9iTPMcVXekSs=
+	t=1708046306; cv=none; b=qmpDJw/qD4J5gypOnJ99WIDDLTPG2U7tRVihYVJBUMsV9ZCsFH2WjWBn1Nhv110ZELtGc1l5o/c9PRzBCI6LhTqBNjwUoC5j0rQsUvE6koDw0wSYCI1AnzdzkCSp5ZkDICnWkwhjQaCmz2JSgiuNCrj93F4q/BzEBPnyOpsayp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708046212; c=relaxed/simple;
-	bh=V+ZtxNTTkmuOF/6gVBMGVUleC+8v+tJPdfpHWcvscao=;
+	s=arc-20240116; t=1708046306; c=relaxed/simple;
+	bh=SImHmNOJ0uQjKIEfS74x0xc8FDTiX10aCgs9NMy9nsY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UPBtXvazQj2yyUL8EngEILbzrZBSschLh6f2c/81L6qWntkzSwovK6u6UKWeLMPIWAFBeYzI1nJ4H2LV5yHO9Eno3qfNaaD1NIRbkzrDNeEREkaF2UvSlH4uqfYPJQDPjbP1PSNboX+aoZXyz+p59hZ+njYIs3BVK5bPsK3EzW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fiTTd/46; arc=none smtp.client-ip=209.85.221.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-3392b12dd21so787804f8f.0;
-        Thu, 15 Feb 2024 17:16:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708046209; x=1708651009; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=V0/5eEMUdgTFVPz51GyIaKKFky9Useu7YxYIgUjehmU=;
-        b=fiTTd/46tjvShtJcJsgg4VMCIF5L9Yk4N/aMZnTAwphzrvxbC+3/WtPTMrXZrlCuPn
-         jX7YH680OEGO3ZMI+x45oDznxenH3SRkOwVxWQckCMPCJmka9O77p+h1QI5ROhPaE66a
-         O3OtotHmWjemOlZLfy2iLWy5nevqq+s/+B+rMySEG5ShW4LWxL2jq3PMCwu43TW9qQKH
-         V5wG6u31jfQNF+peBKuVB2shyC/fF5+et4a5shVytnruNsTCvXfaTIjY+by1JPgxtSkQ
-         h4qFTuUc/tBpBGdhvMwF+Vb4ySLSyIrAeuKbsbNUoqTF08TrGeB7zlaa3Kl8G1hlxpt3
-         D2Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708046209; x=1708651009;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=V0/5eEMUdgTFVPz51GyIaKKFky9Useu7YxYIgUjehmU=;
-        b=PZ3wgHH0eubnnfTDaJHNm53Dj2Esm2HJ5KM6C8jneb+mj8wVmSbdN8oChUsyvn4J7m
-         SGu12t728LEvptchbvwDz7n/qMwJx9UJZtjgoRIDGrSGpWKYBpuZ7Q3RZ/GFqC6y4wNV
-         QBzr7Rqx8U4UCmieaJcxyM2OXhVNUJeH67evemUfh+WBDmxa5XFSdi2IlHvwyF0CNLiQ
-         8G5v3ommnIDeamJnaUUnyrBtOI+v98/nXCVnVTZq4siSihLTdjvF9aHiqrL+X9c4wYcY
-         Ole9mqG9v9nrMqNjK2IbyOW9t8gqYNFXHLoDZJwoLF3sAwsS+EUlL3MIEOaF638cY/6Y
-         kuVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVnh0jvhifEXZ3DeXSa0ZwmCI8aELcQt6uIyx+t0kY3tLohqDlyAhU2s9psg0CTXki6P/4p5+lpraSyfXEuE5Gq6PYQsmT266iz58QcUHDoOiRd+pnodR+gmfQcszqLSisa5kUlxwB5Q5X9Gu6W+fdx6hBJh2l3+UQywxLIzedZgQ==
-X-Gm-Message-State: AOJu0YzYZdqd5QX5EXPVi2cJTTg/85T2onFWnKs5AsshR/jOGcA7lsXO
-	IB2hrDtzuOGsTxR3THG96ru/vVJ+XXBZakUiKx/eYoJN1ASf75Br
-X-Google-Smtp-Source: AGHT+IGpSo3EhfDZ/i5SD4NlrQwI0RJUEWTJXx7zxtcU9xNLdWd1XlQVgaOuhsmEJNL4xG5epTIpmA==
-X-Received: by 2002:adf:ff8c:0:b0:33a:eb5b:f8cd with SMTP id j12-20020adfff8c000000b0033aeb5bf8cdmr2686949wrr.7.1708046208844;
-        Thu, 15 Feb 2024 17:16:48 -0800 (PST)
-Received: from skbuf ([188.25.173.195])
-        by smtp.gmail.com with ESMTPSA id j27-20020adfb31b000000b0033cefb84b16sm645021wrd.52.2024.02.15.17.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Feb 2024 17:16:48 -0800 (PST)
-Date: Fri, 16 Feb 2024 03:16:46 +0200
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/3] net: dsa: realtek: support reset
- controller
-Message-ID: <20240216011646.yri2ecvuetxbgkhp@skbuf>
-References: <20240213-realtek-reset-v3-0-37837e574713@gmail.com>
- <20240213-realtek-reset-v3-3-37837e574713@gmail.com>
- <CACRpkdZELbOmZieZTDLfA81VuThM7h399BWtuQuQ6U7o8Xb7LA@mail.gmail.com>
- <CAJq09z4wgPo=1_OtA6Y-0O4gLJ2nxy1jdf0BDoZwVmL=TkOdUg@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZcZdssCqF8CfSv9ye9xB3noqFfvSyEBG3th84+Sa5QJ9QoX0wGbS7vXYwQ94ZSHXIDcwd9uUKQptICuilPf8mMZtAV2QKDND+sqQhc6P0FM+l8618s5fY2b8VuiIyGRPDgrDPiUoCu6sTuOEtfHRKBvcuNm8Vk+b1aZpMR05Tq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VvLy9G9e; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 15 Feb 2024 20:18:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708046301;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bAMs9Q6+KFAg+NYYq7o0yZrwECRUxYPjpxPWeQP60LM=;
+	b=VvLy9G9ezGuxGOd+eP1RYU4I0249ljs+D9z76x6+dgFg9CGUGAv2/TUEwSPhw6sps6gWmy
+	i2lwoAFKg305ldYV+64iAQFT6IXMszfpijuEy7fIEEMnaOksDPcJWnmhp9kryevhjS0CXB
+	JgOIZ/GAeqjz5/+7AuLvC8lRNIMvI3s=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Vlastimil Babka <vbabka@suse.cz>, 
+	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, akpm@linux-foundation.org, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, 
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, david@redhat.com, 
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, nathan@kernel.org, 
+	dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org, 
+	paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com, 
+	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com, 
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
+	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
+Message-ID: <wcvio3ad2yfsmqs3ogfau4uiz5dqc6aw6ttfnvocub7ebb2ziw@streccxstkmf>
+References: <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
+ <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz>
+ <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
+ <20240215180742.34470209@gandalf.local.home>
+ <jpmlfejxcmxa7vpsuyuzykahr6kz5vjb44ecrzfylw7z4un3g7@ia3judu4xkfp>
+ <20240215192141.03421b85@gandalf.local.home>
+ <uhagqnpumyyqsnf4qj3fxm62i6la47yknuj4ngp6vfi7hqcwsy@lm46eypwe2lp>
+ <20240215193915.2d457718@gandalf.local.home>
+ <a3ha7fchkeugpthmatm5lw7chg6zxkapyimn3qio3pkoipg4tc@3j6xfdfoustw>
+ <20240215201239.30ea2ca8@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,12 +84,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJq09z4wgPo=1_OtA6Y-0O4gLJ2nxy1jdf0BDoZwVmL=TkOdUg@mail.gmail.com>
+In-Reply-To: <20240215201239.30ea2ca8@gandalf.local.home>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Feb 14, 2024 at 07:17:55PM -0300, Luiz Angelo Daros de Luca wrote:
-> > > The reset controller will take precedence over the reset GPIO.
+On Thu, Feb 15, 2024 at 08:12:39PM -0500, Steven Rostedt wrote:
+> On Thu, 15 Feb 2024 19:50:24 -0500
+> Kent Overstreet <kent.overstreet@linux.dev> wrote:
 > 
-> I'll remove the "ifs not null" and let both be called.
+> > > All nice, but where are the benchmarks? This looks like it will have an
+> > > affect on cache and you can talk all you want about how it will not be an
+> > > issue, but without real world benchmarks, it's meaningless. Numbers talk.  
+> > 
+> > Steve, you're being demanding. We provided sufficient benchmarks to show
+> > the overhead is low enough for production, and then I gave you a
+> > detailed breakdown of where our overhead is and where it'll show up. I
+> > think that's reasonable.
+> 
+> It's not unreasonable or demanding to ask for benchmarks. You showed only
+> micro-benchmarks that do not show how cache misses may affect the system.
+> Honestly, it sounds like you did run other benchmarks and didn't like the
+> results and are fighting to not have to produce them. Really, how hard is
+> it? There's lots of benchmarks you can run, like hackbench, stress-ng,
+> dbench. Why is this so difficult for you?
 
-If you do, be sure to update the commit message about it (see first line).
+Woah, this is verging into paranoid conspiracy territory.
+
+No, we haven't done other benchmarks, and if we had we'd be sharing
+them. And if I had more time to spend on performance of this patchset
+that's not where I'd be spending it; the next thing I'd be looking at
+would be assembly output of the hooking code and seeing if I could shave
+that down.
+
+But I already put a ton of work into shaving cycles on this patchset,
+I'm happy with the results, and I have other responsibilities and other
+things I need to be working on.
 
