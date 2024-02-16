@@ -1,302 +1,165 @@
-Return-Path: <linux-kernel+bounces-69173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B24F858557
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:36:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F27C85855D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2ED6B2823F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:36:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1555B1F25C3D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0AC91350ED;
-	Fri, 16 Feb 2024 18:36:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D861350ED;
+	Fri, 16 Feb 2024 18:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MHCeH5sK"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P3igEePE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1C812FB18;
-	Fri, 16 Feb 2024 18:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5EC812FB18;
+	Fri, 16 Feb 2024 18:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708108590; cv=none; b=CtWDzoTtIigL239Jdw8BsW7hot/ArbZPrqwy4cJDkXdD3X9YbLxE8/KQhq8lQulBDi01YZWDsvjIVIaCSR5gJURc065Z8d3mjYjLp2Lhkd/IBayAiySYSxYrOEvT8TGYpS7qwEFoL/ICgWEOGo+mDK8cllP604m2KPOf8AtA1n8=
+	t=1708108757; cv=none; b=N3CQah54tOtbBkgEEpmcVX6os8A7/6OVGNkN5vzbWDJq/vDYYNycTy2hk10wPs53Hh5PO04QmhXlcGgU4OWGrulqfB/E27SzTSF84fz4/oAK4ypSy/NmKvD9LAnGoWsnBEZhGBiZaxzr868btLKKq82ObsqUVnUi+x/w+4gC/TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708108590; c=relaxed/simple;
-	bh=oqTI47UPGm5QWoa3Y+pRZMEWwDd887Y0WmKXcGssIeQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=TskgLHdNNpBORgqQ/Bozy5tXuEeFSk4qRImKj0hs64RDmOAZCzmXxSgOlyRVE4CyrES63/fEF5WopLmubFDQbVWhBMy+rsliPw8uPf4M7Md9xYkvD5VTecEJk4Si8Bvd3qqyYAxlxWzGurn1wt/OCJ1lze8tAofpN13cvy9FDyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MHCeH5sK; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GFClLJ028736;
-	Fri, 16 Feb 2024 18:36:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=7uYGIOhorRfFYM07d6BgQvHbh4+Amx/g8VFcswZ4CBo=; b=MH
-	CeH5sKtgsRKtR8rzMCG5UB4dMAdjZllHcdgEw8zNCOAMzAK3HmFqsP4bgEWpqY3y
-	VoDEg1swJFDAnHRmVww6k8PgGyRBRodMlRRMZ+TdiRT0072XWDNzLZMNv+EKSWu5
-	11cqepzWr1FPaAhyvfZXswRjRk7a7lydtXObLlCBggBr9gOmlAD4UL4jIHluMIWd
-	mkGFBjM1BCgAvzFPUBJNY1LUhzTw1mqIpkKzdAmOX5YWBy6eKliokYHdfm9d3At9
-	qQ/NISeZpyrimGw15Y0WVXr0zNq031T1zps23fyqXE0P+7SAB/wrrKi99D7wgqyE
-	KxSt0oLGL374emRpy2sQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wa03r9j5k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 18:36:15 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GIaED3002325
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 18:36:15 GMT
-Received: from [10.110.31.126] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
- 2024 10:36:10 -0800
-Message-ID: <05998dfc-e7ec-420a-a0a8-c9284368b13c@quicinc.com>
-Date: Fri, 16 Feb 2024 10:36:10 -0800
+	s=arc-20240116; t=1708108757; c=relaxed/simple;
+	bh=c52Bjk2RQnn7DIN2AN3Dt13KP2BKtoclcR7LSa6bwgE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mvSFSnL8ghRMaPF9S80X/yTBB6ZBIaLREwirBHXwbaOQ42gP9GNnw/qOhPvJl8LFtmXnY9lZidqkGOAyt7HolhYw3lty+GpWGECiMlrFWANvcEQKCNOvHCU+bt5d70P7hTqdF3aGUkpdtan4LDNmsSWkq8AemM7hkMusOJZb+Xw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P3igEePE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE102C433F1;
+	Fri, 16 Feb 2024 18:39:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708108756;
+	bh=c52Bjk2RQnn7DIN2AN3Dt13KP2BKtoclcR7LSa6bwgE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P3igEePEy1/PnswfNRWUu+JU7dPo6agq07TwhdbIMZqb7HTGvrfAHN0bZ0mx7pIm6
+	 g+6ojphnhIrXU6rG3tJTPQ3smk4UPoAuhjSV2ZblYRfh6L+EZlQ7wvyzvtM6NE2Rh+
+	 KaWcMyUoA13HOqD/KOLXACONwvaaU6dbUdE6+nb6J2zn5M19HnhDRKwuwej7ZIr2E4
+	 mJuktNaCneKE2AuDh9V+YQQwBu2jNRb8epndhA0vghGllgf7QVvbwODZLNJ0nfixcb
+	 MG5NYM7ptJXaM8mzKlWznplyHTwIe2I1Low0Y71J4A+dvT+3byreoujfIHzXluUpqP
+	 nEqD9/fQwQ4DQ==
+Date: Fri, 16 Feb 2024 12:39:14 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Mukesh Ojha <quic_mojha@quicinc.com>
+Cc: konrad.dybcio@linaro.org, linus.walleij@linaro.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v11 1/4] firmware: qcom: scm: provide a read-modify-write
+ function
+Message-ID: <jyfpwd3jiwwqgbap3vk7uzhumqaj2rt2udiakink7rgxk4k5le@hqclapr7wizu>
+References: <1704727654-13999-1-git-send-email-quic_mojha@quicinc.com>
+ <1704727654-13999-2-git-send-email-quic_mojha@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v1] net: Add skb user timestamp flag to
- distinguish between timestamps
-Content-Language: en-US
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>
-CC: <kernel@quicinc.com>
-References: <20240215215632.2899370-1-quic_abchauha@quicinc.com>
- <65cfa53c89e52_e53c9294ce@willemb.c.googlers.com.notmuch>
-From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <65cfa53c89e52_e53c9294ce@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DpUtYm74WbKAcGQAUJVOKTZdxvW25HUR
-X-Proofpoint-GUID: DpUtYm74WbKAcGQAUJVOKTZdxvW25HUR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_17,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 mlxscore=0 adultscore=0
- priorityscore=1501 clxscore=1011 bulkscore=0 phishscore=0 spamscore=0
- suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402160145
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1704727654-13999-2-git-send-email-quic_mojha@quicinc.com>
 
+On Mon, Jan 08, 2024 at 08:57:31PM +0530, Mukesh Ojha wrote:
+> It was realized by Srinivas K. that there is a need of
 
+"need" is a strong word for this functionality, unless there's some use
+case that I'm missing.
 
-On 2/16/2024 10:11 AM, Willem de Bruijn wrote:
-> Abhishek Chauhan wrote:
->> Bridge driver today has no support to forward the userspace timestamp
->> packets and ends up resetting the timestamp. ETF qdisc checks the
->> packet coming from userspace and encounters to be 0 thereby dropping
->> time sensitive packets. These changes will allow userspace timestamps
->> packets to be forwarded from the bridge to NIC drivers.
->>
->> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
->> ---
->> Note:- I am a little skeptical of using bool inside the skbuff
->> structure as no one today has used bool so far in the struct.
->> (Expecting some comments from upstream for sure) 
->>
->> I am also touching the heart of sk buff so i hope this is reviewed
->> thoroughly. I have crossed checked multiple times on all the ipv4
->> /ipv6 paths where userspace timestamp is populated. I tried as much
->> as possible to cover all the references and made sure i put my changes
->> in place.  
->>
->> Bug description:- If the physical network interface is bridged the 
->> etf packets are dropped since bridge driver before forwarding the packet
->> is setting the userspace timestamp to 0.
->>
->> Bridge driver call stack 
->>
->> [  157.120189] now is set to 1706054553072734733
->> [  157.120194] tx time from SKB is 0 <== SKB when reaches the etf qdisc is 0 
->> [  157.120195] q->last time is 0
->> [  157.120197] CPU: 3 PID: 9206 Comm: a.out Tainted: G        W  OE  X  -------  ---  5.14.0-999.323ES.test.el9.aarch64 #1
->> [  157.120201] Hardware name: Qualcomm SA8775P Ride (DT)
->> [  157.120202] Call trace:
->> [  157.120203]  dump_backtrace+0xb0/0x130
->> [  157.120212]  show_stack+0x1c/0x30
->> [  157.120215]  dump_stack_lvl+0x74/0x8c
->> [  157.120220]  dump_stack+0x14/0x24
->> [  157.120223]  etf_enqueue_timesortedlist+0x114/0x20c [sch_etf]
->> [  157.120230]  dev_qdisc_enqueue+0x2c/0x110
->> [  157.120234]  __dev_xmit_skb+0x114/0x644
->> [  157.120236]  __dev_queue_xmit+0x31c/0x774
->> [  157.120238]  br_dev_queue_push_xmit+0xd4/0x120 [bridge]
->> [  157.120253]  br_forward_finish+0xdc/0xec [bridge]  <== This function is culprit as its making the tstamp as 0
->> [root@ecbldauto-lvarm04-lnx ~]# [  157.120263]  __br_forward+0xd8/0x210 [bridge]
->> [  157.120272]  br_forward+0x12c/0x150 [bridge]
->> [  157.120281]  br_dev_xmit+0x288/0x49c [bridge]
->> [  157.120290]  dev_hard_start_xmit+0xe4/0x2b4
->> [  157.120292]  __dev_queue_xmit+0x6ac/0x774
->> [  157.120294]  neigh_resolve_output+0x128/0x1ec
->> [  157.120297]  ip_finish_output2+0x184/0x54c
->> [  157.120300]  __ip_finish_output+0xa4/0x19c
->> [  157.120302]  ip_finish_output+0x38/0xf0
->> [  157.120303]  ip_output+0x13c/0x1f4
->> [  157.120305]  ip_send_skb+0x54/0x10c
->> [  157.120307]  udp_send_skb+0x128/0x394
->> [  157.120310]  udp_sendmsg+0x7e8/0xa6c
->> [  157.120311]  inet_sendmsg+0x48/0x70
->> [  157.120313]  sock_sendmsg+0x54/0x60
->> [  157.120315]  ____sys_sendmsg+0x1f8/0x254
->> [  157.120316]  ___sys_sendmsg+0x84/0xcc
->> [  157.120318]  __sys_sendmsg+0x60/0xb0
->> [  157.120319]  __arm64_sys_sendmsg+0x28/0x30
->> [  157.120320]  invoke_syscall.constprop.0+0x7c/0xd0
->> [  157.120323]  el0_svc_common.constprop.0+0x140/0x150
->> [  157.120325]  do_el0_svc+0x38/0xa0
->> [  157.120327]  el0_svc+0x38/0x1d0
->> [  157.120329]  el0t_64_sync_handler+0xb4/0x130
->> [  157.120330]  el0t_64_sync+0x17c/0x180
->>
->> After my changes:- 
->> [ 2215.130148] now is set to 1706056610952501031 
->> [ 2215.130154] tx time from SKB is 1706056610953467393 <== Time is forwarded to etf correctly
->> [ 2215.130155] q->last time is 1706056591423364609
->> [ 2215.130158] CPU: 1 PID: 108166 Comm: a.out Tainted: G        W  OE  X  -------  ---  5.14.0-999.323ES.test.el9.aarch64 #1
->> [ 2215.130162] Hardware name: Qualcomm SA8775P Ride (DT) [ 2215.130163] Call trace:
->> [ 2215.130164]  dump_backtrace+0xb0/0x130 
->> [ 2215.130172]  show_stack+0x1c/0x30 [root@ecbldauto-lvarm04-lnx ~]# 
->> [ 2215.130175]  dump_stack_lvl+0x74/0x8c [ 2215.130181]  dump_stack+0x14/0x24 
->> [ 2215.130184]  etf_enqueue_timesortedlist+0x114/0x20c [sch_etf] 
->> [ 2215.130191]  dev_qdisc_enqueue+0x2c/0x110 
->> [ 2215.130197]  __dev_xmit_skb+0x114/0x644 
->> [ 2215.130200]  __dev_queue_xmit+0x31c/0x774 
->> [ 2215.130202]  br_dev_queue_push_xmit+0xd4/0x120 [bridge] 
->> [ 2215.130217]  br_forward_finish+0xe4/0xf0 [bridge] 
->> [ 2215.130226]  __br_forward+0xd8/0x20c [bridge] 
->> [ 2215.130235]  br_forward+0x12c/0x150 [bridge] 
->> [ 2215.130243]  br_dev_xmit+0x288/0x49c [bridge] 
->> [ 2215.130252]  dev_hard_start_xmit+0xe4/0x2b4 
->> [ 2215.130254]  __dev_queue_xmit+0x6ac/0x774 
->> [ 2215.130257]  neigh_hh_output+0xcc/0x140 
->> [ 2215.130260]  ip_finish_output2+0x300/0x54c 
->> [ 2215.130262]  __ip_finish_output+0xa4/0x19c 
->> [ 2215.130263]  ip_finish_output+0x38/0xf0 
->> [ 2215.130265]  ip_output+0x13c/0x1f4 
->> [ 2215.130267]  ip_send_skb+0x54/0x110 
->> [ 2215.130269]  udp_send_skb+0x128/0x394 
->> [ 2215.130271]  udp_sendmsg+0x7e8/0xa6c 
->> [ 2215.130272]  inet_sendmsg+0x48/0x70 
->> [ 2215.130275]  sock_sendmsg+0x54/0x60 
->> [ 2215.130277]  ____sys_sendmsg+0x1f8/0x254 
->> [ 2215.130278]  ___sys_sendmsg+0x84/0xcc 
->> [ 2215.130279]  __sys_sendmsg+0x60/0xb0 
->> [ 2215.130281]  __arm64_sys_sendmsg+0x28/0x30 
->> [ 2215.130282]  invoke_syscall.constprop.0+0x7c/0xd0
->> [ 2215.130285]  el0_svc_common.constprop.0+0x140/0x150
->> [ 2215.130287]  do_el0_svc+0x38/0xa0
->> [ 2215.130289]  el0_svc+0x38/0x1d0
->> [ 2215.130291]  el0t_64_sync_handler+0xb4/0x130 
->> [ 2215.130292]  el0t_64_sync+0x17c/0x180
->>
->>
->>  include/linux/skbuff.h  | 13 +++++++++++++
->>  include/net/inet_sock.h |  1 +
->>  include/net/sock.h      |  1 +
->>  net/core/sock.c         |  1 +
->>  net/ipv4/ip_output.c    |  3 +++
->>  net/ipv4/raw.c          |  1 +
->>  net/ipv6/ip6_output.c   |  2 ++
->>  net/ipv6/raw.c          |  1 +
->>  net/packet/af_packet.c  |  3 +++
->>  9 files changed, 26 insertions(+)
->>
->> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
->> index 2dde34c29203..b098b7d30b56 100644
->> --- a/include/linux/skbuff.h
->> +++ b/include/linux/skbuff.h
->> @@ -744,6 +744,7 @@ typedef unsigned char *sk_buff_data_t;
->>   *	@tstamp: Time we arrived/left
->>   *	@skb_mstamp_ns: (aka @tstamp) earliest departure time; start point
->>   *		for retransmit timer
->> + *	@user_delivery_time: states that timestamp was populated from userspace
->>   *	@rbnode: RB tree node, alternative to next/prev for netem/tcp
->>   *	@list: queue head
->>   *	@ll_node: anchor in an llist (eg socket defer_list)
->> @@ -879,6 +880,8 @@ struct sk_buff {
->>  		ktime_t		tstamp;
->>  		u64		skb_mstamp_ns; /* earliest departure time */
->>  	};
->> +	/* States that time is from userspace */
->> +	bool            user_delivery_time;
->>  	/*
->>  	 * This is the control buffer. It is free to use for every
->>  	 * layer. Please put your private variables there. If you
->> @@ -4208,6 +4211,16 @@ static inline void skb_clear_tstamp(struct sk_buff *skb)
->>  	if (skb->mono_delivery_time)
->>  		return;
->>  
->> +	/* When userspace timestamp packets are forwarded via bridge
->> +	 * the br_forward_finish clears the tstamp and the tstamp
->> +	 * from the userspace is lost. Hence the check for user
->> +	 * delivery time. With the below check now tc-etf qdisc will
->> +	 * not end up dropping the packets if the packet is forwarded via
->> +	 * bridge interface.
->> +	 */
->> +	if (skb->user_delivery_time)
->> +		return;
->> +
->>  	skb->tstamp = 0;
->>  }
->>  
->> diff --git a/include/net/inet_sock.h b/include/net/inet_sock.h
->> index d94c242eb3ed..e7523545a493 100644
->> --- a/include/net/inet_sock.h
->> +++ b/include/net/inet_sock.h
->> @@ -175,6 +175,7 @@ struct inet_cork {
->>  	__u16			gso_size;
->>  	u64			transmit_time;
->>  	u32			mark;
->> +	bool			user_delivery_time;
->>  };
+> read-modify-write scm exported function so that it can
+> be used by multiple clients.
 > 
-> There's no need for a cork member, as by definition the fields in this
-> struct are coming from userspace.
+> Let's introduce qcom_scm_io_rmw() which masks out the bits
+> and write the passed value to that bit-offset.
 > 
-> There is a very high bar to adding new fields to sk_buff, because it
-> is used by many paths and would be enormous if stuck with fields for
-> every intersection between a pair of features.
+> Suggested-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
+> Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com> # IPQ9574 and IPQ5332
+> ---
+>  drivers/firmware/qcom/qcom_scm.c       | 26 ++++++++++++++++++++++++++
+>  include/linux/firmware/qcom/qcom_scm.h |  1 +
+>  2 files changed, 27 insertions(+)
 > 
-> The goal here is for the bridge to disambiguate earliest delivery time
-> timestamps from which? From those looped through ip forwarding? Why
-> does the bridge zero the tstamp field at all? That might help finding
-> a reasonable implementation.
+> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
+> index 520de9b5633a..25549178a30f 100644
+> --- a/drivers/firmware/qcom/qcom_scm.c
+> +++ b/drivers/firmware/qcom/qcom_scm.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/of_irq.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/spinlock.h>
+>  #include <linux/reset-controller.h>
+>  #include <linux/types.h>
+>  
+> @@ -41,6 +42,8 @@ struct qcom_scm {
+>  	int scm_vote_count;
+>  
+>  	u64 dload_mode_addr;
+> +	/* Atomic context only */
+> +	spinlock_t lock;
+>  };
+>  
+>  struct qcom_scm_current_perm_info {
+> @@ -481,6 +484,28 @@ static int qcom_scm_disable_sdi(void)
+>  	return ret ? : res.result[0];
+>  }
+>  
+> +int qcom_scm_io_rmw(phys_addr_t addr, unsigned int mask, unsigned int val)
+> +{
+> +	unsigned int old, new;
+> +	int ret;
+> +
+> +	if (!__scm)
+> +		return -EINVAL;
+> +
+> +	spin_lock(&__scm->lock);
+
+Please express that this lock is just for create mutual exclusion
+between rmw operations, nothing else.
+
+Also please make a statement why this is desirable and/or needed.
+
+Regards,
+Bjorn
+
+> +	ret = qcom_scm_io_readl(addr, &old);
+> +	if (ret)
+> +		goto unlock;
+> +
+> +	new = (old & ~mask) | (val & mask);
+> +
+> +	ret = qcom_scm_io_writel(addr, new);
+> +unlock:
+> +	spin_unlock(&__scm->lock);
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_scm_io_rmw);
+> +
+>  static int __qcom_scm_set_dload_mode(struct device *dev, bool enable)
+>  {
+>  	struct qcom_scm_desc desc = {
+> @@ -1824,6 +1849,7 @@ static int qcom_scm_probe(struct platform_device *pdev)
+>  		return ret;
+>  
+>  	mutex_init(&scm->scm_bw_lock);
+> +	spin_lock_init(&scm->lock);
+>  
+>  	scm->path = devm_of_icc_get(&pdev->dev, NULL);
+>  	if (IS_ERR(scm->path))
+> diff --git a/include/linux/firmware/qcom/qcom_scm.h b/include/linux/firmware/qcom/qcom_scm.h
+> index ccaf28846054..3a8bb2e603b3 100644
+> --- a/include/linux/firmware/qcom/qcom_scm.h
+> +++ b/include/linux/firmware/qcom/qcom_scm.h
+> @@ -82,6 +82,7 @@ bool qcom_scm_pas_supported(u32 peripheral);
+>  
+>  int qcom_scm_io_readl(phys_addr_t addr, unsigned int *val);
+>  int qcom_scm_io_writel(phys_addr_t addr, unsigned int val);
+> +int qcom_scm_io_rmw(phys_addr_t addr, unsigned int mask, unsigned int val);
+>  
+>  bool qcom_scm_restore_sec_cfg_available(void);
+>  int qcom_scm_restore_sec_cfg(u32 device_id, u32 spare);
+> -- 
+> 2.7.4
 > 
-> We have run in the issue of labeling the value of skb->tstamp before.
-> With redirect and looping it is definitely subtle.
-
-Thanks for your comments Willem,
-
-There is a clear explanation of why this is needed as part of the below link 
-https://patchwork.kernel.org/project/netdevbpf/patch/20220302195525.3480280-1-kafai@fb.com/
-
-From the above link Martin KaFai Lau has mentioned and i quote. 
-
-"In the future, another bit (e.g. skb->user_delivery_time) can be added
-for the SCM_TXTIME where the clock base is tracked by sk->sk_clockid."
-
-Bridge driver from what i understand should not alter the skb if its the forwarding path. 
-
-Please correct me if i am wrong here. 
-
-
-
 
