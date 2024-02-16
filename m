@@ -1,125 +1,121 @@
-Return-Path: <linux-kernel+bounces-68343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAFDD857901
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:39:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D6208578F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC2371C2246C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:39:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2182B23AFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8643F1CD23;
-	Fri, 16 Feb 2024 09:38:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2B71BC41;
+	Fri, 16 Feb 2024 09:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="kzsImYzU"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b="mOrfbXlS"
+Received: from mailbox.box.xen0n.name (mail.xen0n.name [115.28.160.31])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119401CA9E
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:38:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF441BDC9;
+	Fri, 16 Feb 2024 09:38:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.28.160.31
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708076300; cv=none; b=Wl+qUG9nyFhElqkypb4LvWOOqdE6cneve4Uwa7jWIhgOrYIYHPOZZJu3njSnqVArK/oOh6i0eJcKPWhzkU1Bo9xUIPP7GiFfi+Vw2KsyXY18SWXSnsy2f7xdb95E/vSdaRDlAGRKkXkW4ZIOLSh0dmqEYa2f0Ym1QmFdhzs7gqg=
+	t=1708076286; cv=none; b=Oz9qNlzq6D/oply0gxTtNE5c32b8x24jdQE9il/rHYGkO63GuJ+AGO4MfL1y4i40Qrn5a+23FEyysBhvJo9inMDhfBQOueAwvMGC9B+eVwzgemEDRuEZUbQy4vYWcrGYxqcf2+mTSZx4v/33cdmkSygQiBCgzavX53DBtYhHUO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708076300; c=relaxed/simple;
-	bh=YztRVAMrWM4QMn+3khyc9Qi6zHLT7tuCgUnaeHsjBWA=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eXv9cAWqDG+0CejLidkg/JdiBwAwdwxLJ1ct50IuRDVUsEZKcebpqSo5Qc0x9M0Z6d00L/MtnSojDMINuTBE6Pjq9gy1eRJrmbiOTTPGwN7GFzHXdw4lXTUG1u3hi3yodUhwNIIt5kENa1D0zkVLy8IxKO3DdtYEfpXxA7oxB8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=kzsImYzU; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1708076299; x=1739612299;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=YztRVAMrWM4QMn+3khyc9Qi6zHLT7tuCgUnaeHsjBWA=;
-  b=kzsImYzUbBZoYiwXC+9uy0pp1ZuZk/d9GIdSdbtUNdSQNZd0fT3WXEej
-   0dIftEaEeDM02t4G2Bnk6UWEFNvdiVziMFEUic4HLK0hFuuiO9y7mhMAY
-   tesxCYOF43VtetgGl9F6X03EbmFVREzaBS0NrUC/IMlrSdfFfNaZa6kcH
-   l8Vqy0cBE2pPNOSB1HqKiJDe46EZbk9nNa02pVo4SNfIaDqRQEiGrAcg3
-   0unVnNhGKiYcwQCeIslJtxvyIutR6GIbs+JjT1EEymDw3LG5tYcFeKFBp
-   DkNnjOOct8UWQMEivyxrxrxlnnl4B5TX2O0d+nWAY25jgl1w+R0RGEVLr
-   Q==;
-X-CSE-ConnectionGUID: Z3dkU+2hRsuPUT2NteERjg==
-X-CSE-MsgGUID: 2bUyP5NgQWuU9FhmhwOPQA==
-X-IronPort-AV: E=Sophos;i="6.06,164,1705388400"; 
-   d="asc'?scan'208";a="16346714"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Feb 2024 02:38:17 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 16 Feb 2024 02:38:07 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex02.mchp-main.com (10.10.85.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35 via Frontend
- Transport; Fri, 16 Feb 2024 02:38:05 -0700
-Date: Fri, 16 Feb 2024 09:37:24 +0000
-From: Conor Dooley <conor.dooley@microchip.com>
-To: Samuel Holland <samuel.holland@sifive.com>
-CC: Conor Dooley <conor@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>, Paul
- Walmsley <paul.walmsley@sifive.com>, Greentime Hu <greentime.hu@sifive.com>,
-	<linux-riscv@lists.infradead.org>, Green Wan <green.wan@sifive.com>, Albert
- Ou <aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Update SiFive driver maintainers
-Message-ID: <20240216-exit-pointer-43dc427bf4df@wendy>
-References: <20240215234941.1663791-1-samuel.holland@sifive.com>
+	s=arc-20240116; t=1708076286; c=relaxed/simple;
+	bh=S4hpCs8mNTdKHxWWEnw+nDGq+xcgWq2m0IKCw72/mp8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TESluJq5zW9xYHUSP2v9VWz/zXgT/Y/o143o6MV1TAjx2HcN2IdU4IWI5tn1HWLszs9FcMCCMvJF3XvaF8F1jmOIWyw42b7yBd+xhZDf7WkJ/V9ShxpDFkxSzbUC+Qn+bTh+GuXlmIImm7odU7k4GAd9eheHxg9ZxaaBdUTjp1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name; spf=pass smtp.mailfrom=xen0n.name; dkim=pass (1024-bit key) header.d=xen0n.name header.i=@xen0n.name header.b=mOrfbXlS; arc=none smtp.client-ip=115.28.160.31
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xen0n.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xen0n.name
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xen0n.name; s=mail;
+	t=1708076281; bh=S4hpCs8mNTdKHxWWEnw+nDGq+xcgWq2m0IKCw72/mp8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=mOrfbXlSvKtZhwLbSLbBGTKJ/5vsHngfqKWqP/KaeMxMBwuu2ncaG8cc1IUopw162
+	 3IgsuChX7PaksEF3Uf7S3rSjyZ0JN2jMtOzvnfUyXdsv3zHdtjkE0NuDeJPfjT7YS8
+	 lzAJILesZ/KCskGt4d2GAnz13wBs1VyjUf5cWHgc=
+Received: from ld50.lan (unknown [IPv6:240e:388:8d00:6500:cda4:aa27:b0f6:1748])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 1240360114;
+	Fri, 16 Feb 2024 17:38:00 +0800 (CST)
+From: WANG Xuerui <kernel@xen0n.name>
+To: Paolo Bonzini <pbonzini@redhat.com>,
+	Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>,
+	kvm@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	WANG Xuerui <git@xen0n.name>
+Subject: [PATCH RESEND for-6.8 v3 0/3] KVM: LoongArch: Fix wrong CPUCFG ID handling
+Date: Fri, 16 Feb 2024 17:37:56 +0800
+Message-ID: <20240216093759.3038760-1-kernel@xen0n.name>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mYkzGwyutxXcaTiN"
-Content-Disposition: inline
-In-Reply-To: <20240215234941.1663791-1-samuel.holland@sifive.com>
+Content-Transfer-Encoding: 8bit
 
---mYkzGwyutxXcaTiN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: WANG Xuerui <git@xen0n.name>
 
-On Thu, Feb 15, 2024 at 03:49:11PM -0800, Samuel Holland wrote:
-> Add myself as a maintainer for the various SiFive drivers, since I have
-> been performing cleanup activity on these drivers and reviewing patches
-> to them for a while now. Remove Palmer as a maintainer, as he is focused
-> on overall RISC-V architecture support.
->=20
-> Collapse some duplicate entries into the main SiFive drivers entry:
->  - Conor is already maintainer of standalone cache drivers as a whole,
->    and these files are also covered by the "sifive" file name regex.
+Hi,
 
-And the binding isn't affected since I get all binding patches anyway.
+(Sorry for the noise; in the previous revision the patch 1 contained a
+syntax error. I've also added a Fixes: tag for the KVM LASX support
+commit while at it.)
 
->  - Paul's git tree has not been updated since 2018, and all file names
->    matching the "fu540" pattern also match the "sifive" pattern.
->  - Green has not been active on the LKML for a couple of years.
->=20
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+While trying to add loongarch to the Rust kvm-bindings crate, I
+accidentally discovered faulty logic in the handling of CPUCFG IDs
+("leaves" for those more familiar with x86), that could result in
+incorrectly accepting every possible int for the ID; fortunately it is
+6.8 material that hasn't seen a release yet, so a fix is possible.
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+The first patch contains the fix, while the rest are general
+drive-by refactoring and comment cleanups.
 
-Thanks for doing this :)
+Although it is currently the Chinese holiday season, Huacai told me
+over IM that he's able to test the series and handle the upstreaming, so
+going through the loongarch tree seems to be the way forward for the
+series.
 
-Cheers,
-Conor.
+v3 changes:
 
---mYkzGwyutxXcaTiN
-Content-Type: application/pgp-signature; name="signature.asc"
+- Fixed the validation by accepting every CPUCFG IDs from 0 to 20
+  inclusive, instead of only 2; this was a misunderstanding of mine
+  regarding the userland. (currently the only known user, the QEMU
+  target/loongarch KVM code, expects to be able to set all these 21
+  CPUCFG leaves, even though 7~15 are undefined according to the
+  LoongArch reference manual.) This also had the effect of squashing the
+  first 2 patches.
+- Made the _kvm_get_cpucfg_mask return a mask in all valid cases,
+  allowing the mask check to be lifted out of the CPUCFG2 case.
+- Swapped the "LoongArch:" and "KVM:" tags because right now the patches
+  are likely to reach mainline through the loongarch tree, and having
+  the "LoongArch:" prefix first is the convention here.
 
------BEGIN PGP SIGNATURE-----
+v2 changes:
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZc8s1AAKCRB4tDGHoIJi
-0s1nAQCTZODj0RTvd44DM0Y7k+8LPG3mmMncetbaGsTQ8IvxWwEAqbfS75MldlXS
-KFexxnGBuPQaptsVig9ZWd2+H8Ei0AM=
-=Zecr
------END PGP SIGNATURE-----
+- Squashed the v1 patches 4 and 5 according to Huacai's review
+- Reworded comments according to Huacai's suggestion
+- Use WARN_ON_ONCE (instead of BUG) to replace unreachable() for not
+  crashing the kernel (per checkpatch.pl suggestion)
 
---mYkzGwyutxXcaTiN--
+WANG Xuerui (3):
+  LoongArch: KVM: Fix input validation of _kvm_get_cpucfg and
+    kvm_check_cpucfg
+  LoongArch: KVM: Rename _kvm_get_cpucfg to _kvm_get_cpucfg_mask
+  LoongArch: KVM: Streamline kvm_check_cpucfg and improve comments
+
+ arch/loongarch/kvm/vcpu.c | 81 ++++++++++++++++++---------------------
+ 1 file changed, 38 insertions(+), 43 deletions(-)
+
+-- 
+2.43.0
+
 
