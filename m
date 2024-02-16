@@ -1,91 +1,80 @@
-Return-Path: <linux-kernel+bounces-67887-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67888-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E94485725E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:17:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45095857261
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:18:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B30291F25A74
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:17:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 978BB28795F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49BD23201;
-	Fri, 16 Feb 2024 00:17:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E9D4437;
+	Fri, 16 Feb 2024 00:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="FJ0tJps7"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRVAiIaM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDE738F;
-	Fri, 16 Feb 2024 00:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C9628F1;
+	Fri, 16 Feb 2024 00:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708042669; cv=none; b=exIhDTGxGr4Xx/W18Y8pi8TDcXWz9oHayGGR/LfQyRn9uWQlzyR2/kVfHeVWoDNnERvnUrnNc0n7KoleZg4AH9Rufy3zVazqPGwVrx78oDni7oG9XPlub7mKBS27FdURrjhTqQ0c05TFY6VOgBulgNv7Z1IxcV11W1PeLgOvE+4=
+	t=1708042684; cv=none; b=Y+aOZ0dS0SliFQ4/tO85fMcbvoyfJ1p7QZohRf3/prvClhlR+NZlGGNAnisMZ0o+XRbT6GpYxQooXX+q3UhrDTx1f5is5IhbTnR7DM95AYzE32GgWtCoJW6lIfo8nofXbmugSDrOC5QeuOCwiXQUk36ECGOOVZiutDzMPWzv0F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708042669; c=relaxed/simple;
-	bh=3j2RKb1cfZg8huWyT0jq17tIjyXftXmjC2TfUGqyH84=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=PP0/ZIdCNI8I0QvMFtLS9DCIKD+1F2hLQcMSIeDqBqCE6nwdawt3DqSCWF4jX8WCuxKPWAg4rKJ36SbitdJXPGN6qdPiledQqQpBpKNSvaAvmNg/cukufMMmQAzn/XuoYpZILvub+Sf5owXry06WfR8RCYqTLM48J1oh4ZjNnzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=FJ0tJps7; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp14-2-94-146.adl-apt-pir-bras31.tpg.internode.on.net [14.2.94.146])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 6723A2009E;
-	Fri, 16 Feb 2024 08:17:40 +0800 (AWST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1708042663;
-	bh=M/FMdOoy6aMi24ewH9zofBlYD2XprYoCM/TIf5gAcDs=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=FJ0tJps7wyvVhd0rHdmK6uxliQ0CUy4f9kT74A8di+dS9mdD0ArR8eYYFpEQmCdth
-	 fafxPWzJFeAX/6bnRGiN7g8WhLvPSruR56WBGzKAA1mJhCK3Qr70xQIXtPlWx08qs8
-	 UfLu0Ey5I80K8CIiXnlWyHht6/FN9vRA0sVNHQqmoNGS/1o/VE2LAI3Njne8HfMAVP
-	 3M2tRNYOkcLJDIC+ILqoZMvIRemcqlIR3T383SSpcE9MiekObZzIt9h5LhyF9vTArh
-	 VqQkIMggtgHSesl1AbNYK4sF3n6UCSAxyAhjuV9yi8NpYuIoM5mkRwqmnUfLZNIkVj
-	 TYXYTlStNVtzw==
-Message-ID: <ae876e697ba16ba2925ec217c6b4e3d8ffea4ab3.camel@codeconstruct.com.au>
-Subject: Re: [PATCH] mmc: host: replace 1st argument to struct device * for
- mmc_of_parse_clk_phase()
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: forbidden405@outlook.com, Ulf Hansson <ulf.hansson@linaro.org>, Adrian
-	Hunter <adrian.hunter@intel.com>, Joel Stanley <joel@jms.id.au>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org, 
-	linux-arm-kernel@lists.infradead.org
-Date: Fri, 16 Feb 2024 10:47:36 +1030
-In-Reply-To: <20240215-mmc_phase-v1-1-f27644ee13e4@outlook.com>
-References: <20240215-mmc_phase-v1-1-f27644ee13e4@outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+	s=arc-20240116; t=1708042684; c=relaxed/simple;
+	bh=4PbgQsfGQ3x3R7D6HGJW1HkpIAtBaVUF/26+mLivtJw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=X+QfkdvjySatCw9FZdc081cjUpFm39wDVqqNvtH98rfFgLNwzG/EqQP3rcg2d1bQAxDDEdfAfRndKeFllIGADPrZRY7k+PkNUfKU2JF5cXlOSdHSGq51JABf4tUPTClcKSgznnkki29UT54sa8KOYIFe0RIMTKUOP3SQLYnrY58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRVAiIaM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5477C433C7;
+	Fri, 16 Feb 2024 00:18:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708042684;
+	bh=4PbgQsfGQ3x3R7D6HGJW1HkpIAtBaVUF/26+mLivtJw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nRVAiIaM0fl19nBK+PivSO4b9I0/DsU1tb56IZkDp3wFnNNFjbTuE6fk3QlKjWCY7
+	 7OII8D0Vhn5Vqa2HGcQHnvznDrzNGJxTchQtTkO7gpQIRLI7uJjnw8J+EZG8juLLBo
+	 cRD7IzpBCNPwYH4wAOOS02RxE1lVWlHa6zahuD1PO6K+DSHcRvsm/MshUAqoXX1aa1
+	 rGqvc0EdIZ3FMHoyDXFT6xBBXwkaTarDB0s2X8xm9WV+vCT8zwnqtIStZkId7FFpIg
+	 x/P90r6wR5Nd6A3IOPI/252STNJVRaqTXDRWi/iS48/CFVR+4T4qA4eAYnzSHLORyo
+	 st2J7UtkRaklA==
+Date: Thu, 15 Feb 2024 16:18:02 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: Rand Deeb <rand.sec96@gmail.com>
+Cc: "David S . Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, deeb.rand@confident.ru,
+ lvc-project@linuxtesting.org, voskresenski.stanislav@confident.ru
+Subject: Re: [PATCH] dl2k: Fix potential NULL pointer dereference in
+ receive_packet()
+Message-ID: <20240215161802.73c0ece3@kernel.org>
+In-Reply-To: <CAN8dotmVcmpqxO0SyPvit20Ny-tU3OMHr0LLoXRQ3bpPTS5WqA@mail.gmail.com>
+References: <20240213200900.41722-1-rand.sec96@gmail.com>
+	<20240214170203.5bf20e2d@kernel.org>
+	<CAN8dotmVcmpqxO0SyPvit20Ny-tU3OMHr0LLoXRQ3bpPTS5WqA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2024-02-15 at 19:03 +0800, Yang Xiwen via B4 Relay wrote:
-> From: Yang Xiwen <forbidden405@outlook.com>
->=20
-> Parsing dt usaully happens very early, sometimes even bofore struct
-> mmc_host is allocated (e.g. dw_mci_probe() and dw_mci_parse_dt() in
-> dw_mmc.c). Looking at the source of mmc_of_parse_clk_phase(), it's
-> actually not mandatory to have a initialized mmc_host first, instead we
-> can pass struct device * to it directly.
->=20
-> Also fix the only current user (sdhci-of-aspeed.c).
->=20
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
-> ---
->  drivers/mmc/core/host.c            | 4 +---
->  drivers/mmc/host/sdhci-of-aspeed.c | 2 +-
+On Fri, 16 Feb 2024 02:32:54 +0300 Rand Deeb wrote:
+> Regarding your comment on using `(!skb)` instead of `(skb == NULL)`, I
+> understand that `(!skb)` is more common and is also recommended by `
+> checkpatch.pl`. However, I chose to keep the original code style and logic
+> to maintain consistency and avoid confusion, especially for other
+> developers who might be familiar with the existing format. The same
+> applies to the `printk` statement. In the same function, there is an exact
+> block of code used; should I fix it too?
 
-So I think I wrote the mmc_of_parse_clk_phase() prototype with `struct
-mmc_host *` simply because mmc_of_parse() took `struct mmc_host *`.
+Don't worry about surrounding code if it's written in a clearly
+outdated style.
 
-I'll defer to Ulf for whether what you're proposing is desirable, but
-in terms of the impact on the Aspeed driver it seems okay.
-
-Acked-by: Andrew Jeffery <andrew@codeconstruct.com.au>
+If the style is different intentionally, that's different, but
+for old code using more modern style helps bring the code base
+forward little by little.
 
