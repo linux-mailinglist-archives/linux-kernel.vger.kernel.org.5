@@ -1,261 +1,168 @@
-Return-Path: <linux-kernel+bounces-68222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF05685777C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:22:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D6C3857781
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3FBF1C20B57
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:22:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 297421F24630
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:22:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAD961B969;
-	Fri, 16 Feb 2024 08:15:06 +0000 (UTC)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ACF71BDE0;
+	Fri, 16 Feb 2024 08:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="g7XQOp1V"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEC01B805;
-	Fri, 16 Feb 2024 08:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FB91BF20;
+	Fri, 16 Feb 2024 08:16:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071306; cv=none; b=P7hdsEZ1TM/W8jLnJhX+XpZK0lIndZ3/KqSkVOidjbATztw+HpF2UGfpLXPnG7uxVs/MwNRy/EVrXMCTj8Gbzy3ol1C1BaAg/ZZlhM52Nv4Vmye1Ut8d1Yp5dqGfQ+DqYfEEkaMYQi4MMUHIjY0kKToIfAvixVBC0UwN49PSvpc=
+	t=1708071397; cv=none; b=qIZjzk1iL20QbsAz8dPObrvQ1qot6ZMlKN/yn/c/G+r5oVKsBw/MICTBM6IBqjm3Ov6u8lrervWZHRYwfn27V9gZgNb2kZz+/TEgN3Ekj950flJ5+qQKbfJ4jgtTGekfSiRYPTM3wckN2PooZpqWMZ1YfaIXM4OOvFkRBau+xKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071306; c=relaxed/simple;
-	bh=9GN9iBufDM+/oHP89fEYbJjbEjzPtGj8kAlRejRoEWg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fyzYXKJ06v2eu214Gc1gh1/rw1b9QI0VconqyM/YOopKxhkjvEsy0u+7HhOD3sVUUikNxQPQgWgY3WuYjPOi0mgwKZhYsohvHrT518FH794bvyS+j9qm41huA6Sef9rVGogAkU9VZHq3YaD88UdmE4BCiJCInKZ56C7ui4hM+xQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4Tbl8q6gv6z9tBG;
-	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id UWwJpXI0bjU3; Fri, 16 Feb 2024 09:14:51 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4Tbl8q633Lz9t0b;
-	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id CB3308B786;
-	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id WuF13jiKnWvS; Fri, 16 Feb 2024 09:14:51 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.102])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 52ADA8B765;
-	Fri, 16 Feb 2024 09:14:51 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Luis Chamberlain <mcgrof@kernel.org>,
-	linux-modules@vger.kernel.org
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-kernel@vger.kernel.org,
-	Kees Cook <keescook@chromium.org>,
-	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Mark Rutland <mark.rutland@arm.com>
-Subject: [PATCH v2] module: Don't ignore errors from set_memory_XX()
-Date: Fri, 16 Feb 2024 09:14:27 +0100
-Message-ID: <21037bf38438a285f5dff9501668f1675bc45989.1708070781.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708071397; c=relaxed/simple;
+	bh=5XdTlNehqM/sgq2HTlmk7xbui8YbhbJ2Xu7diK2eQgc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=SKM1RB+yi/Ly183xjUu1iNPc2l74jNe8FSj6CAOnOmxaszn0F6wpoYQuf/N8ioVZzwVNeWBpHVGHC5Tz5u4ZCpqn8yMXvrEqWm5Gs5PjsEd5tcl0H60iBFawKSGAXwXapHzru2XMeh19/EFzGJ3W8yt1P7lvnhP4gVdgyvTsPZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=g7XQOp1V; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41G4qAqA017067;
+	Fri, 16 Feb 2024 09:15:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=G1rNROgGvt1dOvmHW2gd/e43IyoMcL9+m98W7EBpcp8=; b=g7
+	XQOp1V+nIPlReI6SJT6CMuBGL7H2SuhaHJXnu9v9hpIwRFnQ5w7gLygZ0kZR4CHQ
+	X6S8FImz+672szwKEBZOBm9275chzKyc3VsWdntR4AQ3LABXzR5EDAheT0gUSaQ6
+	rXaO21iDo+5/NIcrlj2jV7k22rdQi9334C7IMnl9BhPTVkOZI9t2kT4988KkwLHL
+	qIJ7MvdcXG0lEVEn3r7dETK7PG7tWVi3nVk6mGjG2S2u/dzAG1H5YmXnU2KOzh3B
+	CVrUr0XSfPeXo85C1+ynoeJRV+rEVa5aHiDIJJL3kXzTrK8/jt+XZWFkTYVoeWV1
+	60nZs6ljjf1xEQSrVXeg==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wa12arjdr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Feb 2024 09:15:55 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id CD92840044;
+	Fri, 16 Feb 2024 09:15:50 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 041FC2248C0;
+	Fri, 16 Feb 2024 09:15:06 +0100 (CET)
+Received: from [10.201.22.200] (10.201.22.200) by SHFDAG1NODE3.st.com
+ (10.75.129.71) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 16 Feb
+ 2024 09:15:05 +0100
+Message-ID: <7d5af347-749a-43e3-8321-445569f5b78c@foss.st.com>
+Date: Fri, 16 Feb 2024 09:15:04 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708071268; l=6327; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=9GN9iBufDM+/oHP89fEYbJjbEjzPtGj8kAlRejRoEWg=; b=P3K6GlVBRBPXlxEvy+H6K/9xCzTD9h8+3DfVm6efkKz4SvieMaKF0/Xdr3B//ZCDOUWES9Nu4 EFuABmForTxC7yh5vGIiI6aREv22Jix23WCiyGo4JRXUYwDzWjrxPH7
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 06/12] memory: stm32-fmc2-ebi: add RIF support
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>
+References: <20240212174822.77734-1-christophe.kerello@foss.st.com>
+ <20240212174822.77734-7-christophe.kerello@foss.st.com>
+ <989661f0-f539-43c3-a332-13c0e99ed7b9@linaro.org>
+ <edbb5e6e-44c0-426b-9c97-87ea1eee1b4c@foss.st.com>
+ <1e1ae38b-7f8c-44ba-9970-0929aaaa28a8@linaro.org>
+ <a1badd8b-041b-495d-81cb-b264c687de80@foss.st.com>
+ <9c36b6e5-262d-48b1-971c-b03d9edf7789@linaro.org>
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+In-Reply-To: <9c36b6e5-262d-48b1-971c-b03d9edf7789@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-16_06,2024-02-14_01,2023-05-22_02
 
-set_memory_ro(), set_memory_nx(), set_memory_x() and other helpers
-can fail and return an error. In that case the memory might not be
-protected as expected and the module loading has to be aborted to
-avoid security issues.
 
-Check return value of all calls to set_memory_XX() and handle
-error if any.
 
-Add a check to not call set_memory_XX() on NULL pointers as some
-architectures may not like it allthough numpages is always 0 in that
-case. This also avoid a useless call to set_vm_flush_reset_perms().
+On 2/15/24 19:56, Krzysztof Kozlowski wrote:
+> On 15/02/2024 10:00, Christophe Kerello wrote:
+>>
+>>
+>> On 2/14/24 11:07, Krzysztof Kozlowski wrote:
+>>> On 13/02/2024 14:15, Christophe Kerello wrote:
+>>>>>> +
+>>>>>> +	if (ebi->majrev < FMC2_VERR_MAJREV_2)
+>>>>>> +		return 0;
+>>>>>> +
+>>>>>> +	if (resource >= FMC2_MAX_RESOURCES)
+>>>>>> +		return -EINVAL;
+>>>>>> +
+>>>>>> +	regmap_read(ebi->regmap, FMC2_SECCFGR, &seccfgr);
+>>>>
+>>>> Hi Krzysztof,
+>>>>
+>>>>>
+>>>>> No checking of read value?
+>>>>>
+>>>>
+>>>> No, it should never failed.
+>>>
+>>> And you tested that neither smatch, sparse nor Coverity report here
+>>> warnings?
+>>>
+>>
+>> Hi Krzysztof,
+>>
+>> There is a lot of driver in the Kernel that are using same
+>> implementation, and I am surprised to not have had this comment 4 years
+>> ago when the driver was introduced.
+> 
+> Really? Care to give some pointers? Heh, I don't know what to respond to
+> it. Either you say that my comment is incorrect or you say that it's
+> okay to sneak poor code if no one notices? We can argue on the first,
+> whether my comment is reasonable or not. But if you claim that previous
+> poor choice of code is argument of bringing more of such poor choices,
+> then we are done here. It's the oldest argument: someone did it that
+> way, so I can do the same. Nope.
+> 
+>>
+>> So, how should I proceed? Shall I initialize all local variables used by
+>> regmap_read? Or shall I check the return value of regmap_read?
+>> And, as there is a lot of regmap_read call in this driver, shall I fix
+>> them in a separate patch?
+> 
+> regmap operations, depending on the regmap used, can fail. Most of the
+> errors are result of static configuration, e.g. alignment, regmap in
+> cache mode etc. Then certain regmap implementations can produce errors,
+> which is not a static condition but dynamic.
+> 
+> You have neither error checking nor value initialization. You risk here
+> to have quite tricky to find, unnoticeable bugs, if there any mistake
+> leading to regmap errors.
+> 
+> Indeed neither smatch nor sparse report this as error currently, but
+> maybe that's their limitation?
+> 
 
-Link: https://github.com/KSPP/linux/issues/7
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
-v2:
-- Bail out early from module_set_memory() when address is NULL.
-- Properly clear bug list when module_set_memory() fails in complete_formation().
+Hi Krzysztof,
 
-This patch applies on top of modules/modules-next branch
----
- kernel/module/internal.h   |  6 ++---
- kernel/module/main.c       | 20 ++++++++++++---
- kernel/module/strict_rwx.c | 51 +++++++++++++++++++++++++++-----------
- 3 files changed, 55 insertions(+), 22 deletions(-)
+I will check the return value of regmap_read API.
 
-diff --git a/kernel/module/internal.h b/kernel/module/internal.h
-index 4f1b98f011da..2ebece8a789f 100644
---- a/kernel/module/internal.h
-+++ b/kernel/module/internal.h
-@@ -322,9 +322,9 @@ static inline struct module *mod_find(unsigned long addr, struct mod_tree_root *
- }
- #endif /* CONFIG_MODULES_TREE_LOOKUP */
- 
--void module_enable_rodata_ro(const struct module *mod, bool after_init);
--void module_enable_data_nx(const struct module *mod);
--void module_enable_text_rox(const struct module *mod);
-+int module_enable_rodata_ro(const struct module *mod, bool after_init);
-+int module_enable_data_nx(const struct module *mod);
-+int module_enable_text_rox(const struct module *mod);
- int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
- 				char *secstrings, struct module *mod);
- 
-diff --git a/kernel/module/main.c b/kernel/module/main.c
-index a9a4a4885102..689def7676c4 100644
---- a/kernel/module/main.c
-+++ b/kernel/module/main.c
-@@ -2571,7 +2571,9 @@ static noinline int do_init_module(struct module *mod)
- 	/* Switch to core kallsyms now init is done: kallsyms may be walking! */
- 	rcu_assign_pointer(mod->kallsyms, &mod->core_kallsyms);
- #endif
--	module_enable_rodata_ro(mod, true);
-+	ret = module_enable_rodata_ro(mod, true);
-+	if (ret)
-+		goto fail_mutex_unlock;
- 	mod_tree_remove_init(mod);
- 	module_arch_freeing_init(mod);
- 	for_class_mod_mem_type(type, init) {
-@@ -2609,6 +2611,8 @@ static noinline int do_init_module(struct module *mod)
- 
- 	return 0;
- 
-+fail_mutex_unlock:
-+	mutex_unlock(&module_mutex);
- fail_free_freeinit:
- 	kfree(freeinit);
- fail:
-@@ -2736,9 +2740,15 @@ static int complete_formation(struct module *mod, struct load_info *info)
- 	module_bug_finalize(info->hdr, info->sechdrs, mod);
- 	module_cfi_finalize(info->hdr, info->sechdrs, mod);
- 
--	module_enable_rodata_ro(mod, false);
--	module_enable_data_nx(mod);
--	module_enable_text_rox(mod);
-+	err = module_enable_rodata_ro(mod, false);
-+	if (err)
-+		goto out_strict_rwx;
-+	err = module_enable_data_nx(mod);
-+	if (err)
-+		goto out_strict_rwx;
-+	err = module_enable_text_rox(mod);
-+	if (err)
-+		goto out_strict_rwx;
- 
- 	/*
- 	 * Mark state as coming so strong_try_module_get() ignores us,
-@@ -2749,6 +2759,8 @@ static int complete_formation(struct module *mod, struct load_info *info)
- 
- 	return 0;
- 
-+out_strict_rwx:
-+	module_bug_cleanup(mod);
- out:
- 	mutex_unlock(&module_mutex);
- 	return err;
-diff --git a/kernel/module/strict_rwx.c b/kernel/module/strict_rwx.c
-index b36d93983465..c45caa4690e5 100644
---- a/kernel/module/strict_rwx.c
-+++ b/kernel/module/strict_rwx.c
-@@ -11,13 +11,16 @@
- #include <linux/set_memory.h>
- #include "internal.h"
- 
--static void module_set_memory(const struct module *mod, enum mod_mem_type type,
--			      int (*set_memory)(unsigned long start, int num_pages))
-+static int module_set_memory(const struct module *mod, enum mod_mem_type type,
-+			     int (*set_memory)(unsigned long start, int num_pages))
- {
- 	const struct module_memory *mod_mem = &mod->mem[type];
- 
-+	if (!mod_mem->base)
-+		return 0;
-+
- 	set_vm_flush_reset_perms(mod_mem->base);
--	set_memory((unsigned long)mod_mem->base, mod_mem->size >> PAGE_SHIFT);
-+	return set_memory((unsigned long)mod_mem->base, mod_mem->size >> PAGE_SHIFT);
- }
- 
- /*
-@@ -26,35 +29,53 @@ static void module_set_memory(const struct module *mod, enum mod_mem_type type,
-  * CONFIG_STRICT_MODULE_RWX because they are needed regardless of whether we
-  * are strict.
-  */
--void module_enable_text_rox(const struct module *mod)
-+int module_enable_text_rox(const struct module *mod)
- {
- 	for_class_mod_mem_type(type, text) {
-+		int ret;
-+
- 		if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
--			module_set_memory(mod, type, set_memory_rox);
-+			ret = module_set_memory(mod, type, set_memory_rox);
- 		else
--			module_set_memory(mod, type, set_memory_x);
-+			ret = module_set_memory(mod, type, set_memory_x);
-+		if (ret)
-+			return ret;
- 	}
-+	return 0;
- }
- 
--void module_enable_rodata_ro(const struct module *mod, bool after_init)
-+int module_enable_rodata_ro(const struct module *mod, bool after_init)
- {
-+	int ret;
-+
- 	if (!IS_ENABLED(CONFIG_STRICT_MODULE_RWX) || !rodata_enabled)
--		return;
-+		return 0;
- 
--	module_set_memory(mod, MOD_RODATA, set_memory_ro);
--	module_set_memory(mod, MOD_INIT_RODATA, set_memory_ro);
-+	ret = module_set_memory(mod, MOD_RODATA, set_memory_ro);
-+	if (ret)
-+		return ret;
-+	ret = module_set_memory(mod, MOD_INIT_RODATA, set_memory_ro);
-+	if (ret)
-+		return ret;
- 
- 	if (after_init)
--		module_set_memory(mod, MOD_RO_AFTER_INIT, set_memory_ro);
-+		return module_set_memory(mod, MOD_RO_AFTER_INIT, set_memory_ro);
-+
-+	return 0;
- }
- 
--void module_enable_data_nx(const struct module *mod)
-+int module_enable_data_nx(const struct module *mod)
- {
- 	if (!IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
--		return;
-+		return 0;
- 
--	for_class_mod_mem_type(type, data)
--		module_set_memory(mod, type, set_memory_nx);
-+	for_class_mod_mem_type(type, data) {
-+		int ret = module_set_memory(mod, type, set_memory_nx);
-+
-+		if (ret)
-+			return ret;
-+	}
-+	return 0;
- }
- 
- int module_enforce_rwx_sections(Elf_Ehdr *hdr, Elf_Shdr *sechdrs,
--- 
-2.43.0
+Regards,
+Christophe Kerello.
 
+> 
+> Best regards,
+> Krzysztof
+> 
 
