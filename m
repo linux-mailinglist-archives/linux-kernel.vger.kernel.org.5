@@ -1,255 +1,189 @@
-Return-Path: <linux-kernel+bounces-68249-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C6B78577CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:38:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D57128577D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:41:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D621284F17
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:38:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F1D128386C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF34318EBB;
-	Fri, 16 Feb 2024 08:38:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49A511AACA;
+	Fri, 16 Feb 2024 08:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BBh8MwJa"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="HFtmRluR"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2057.outbound.protection.outlook.com [40.92.53.57])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE9E175BE
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708072707; cv=none; b=qesTo5oa0bten+k+fb2KeXylhGyJ0GFD6H0Ym3+4yoOlZzqNOb0uAInUI3DVzdkdMoJFyzG1HqC7OT9zPUUimQ18mq/bMn2vv5X6LYNVWsk2lln8hk5mzeJPo3QssovimknlGfybUksGIwf4vyFcUhP02lOCb9eK7CTCNqXS5Qg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708072707; c=relaxed/simple;
-	bh=OwZMmRYZHSUUAGPamSbzE0nq8AnnFt8P11fWjDDOEfg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=V0Gu5370OTKV2FfQvShjQYLu1q1jioV2lHC/9xb2J0G1Nlo+yY0oZ0/IeO1WRujKHLDpEZDSpdtongCD8BHsIFHWcVeFTvrXOaKCrWhigKpIjczpFrD284G5Rtxn32mxjMaQg3aC/iTm17nrI6IGY+eg+MlV/Bbjp09pxnN4p5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BBh8MwJa; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51182ece518so2119409e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:38:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708072703; x=1708677503; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ngo+x1ISyMh3dIrNdqAUb75XtmSi0d4XUY9AETqB4qI=;
-        b=BBh8MwJauIbe9d+1A1B1R4IRNkUlnfX35j+p4fm9zbte+qr/9LUoCBWTzcaOBfwhP8
-         NRKCEd57PmcSM8q7vHjyis4LYj9A3jwTVV8SopkutsHMyvvdItchSYoZH7U8iy+VQCxX
-         0i8ZlnansZ3kSJkpbidCZYnq8IovAMHE7rrXLayerl25SVXIZvgjz1dBfc+LI1dKlUzG
-         9auL3TFhY0I2TnRYBcN7g/K1yXcriHjJLkw/HCX9/l4p3XV495FXVoegq4RxqIl8YvSf
-         PNEB6h11dUStrtL5oZY0Puamq+gVOCEMaxahhxhmMmdUZcRjonflEbT+B09xTkgjgXsW
-         iSXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708072703; x=1708677503;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Ngo+x1ISyMh3dIrNdqAUb75XtmSi0d4XUY9AETqB4qI=;
-        b=UyvLgi0095xP91W32y5Qb4dNqeqbfDzfpylkAaKyuezoPV4L9l7OEINOGzQEIRx4t7
-         +OMhjsmghQ0obSeqWJQZ5LdTfXuAGSm/PY7alh15trLpcjbjttSbsILEz8w5ZgwkXYCd
-         j4fCHbPFa33zPgXzN0OijfNw6Z8xUgGRZlFBp04mzchqglaT4zLn9oTmsjbw+x0CffjX
-         9D215kC1HkL9byBgBdraTEh34oGeGpqJXAyOz9Q4USKA2eGf9KP/aoTmv1u6dHv2qlgj
-         6d8X2CL/iM7NKr9f8AvRNpn0WiyRb6dkoebmyJa4JM+BVr7Y2YOHREodWfbYq/7zMdRi
-         GN8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVZmkyg/HICxjOl268ZVlxc95gloIFRJuLZR6PAC2xrWkDE9MKXU58tQBciIBB0NK0wCdALa2PNEsAUAZS5mLvEoMedFXLMum9c0zZD
-X-Gm-Message-State: AOJu0YwPHC/PSRBIWsuuQaxCUC35hKq+l33KNcZNo+4RgkZKmY8Dm/uh
-	1LMVQbDZCH6AFglLD0b34tibrawLHLDk+ss5JLYH5eQYvPCZSFfIzeW1RFx1eJw=
-X-Google-Smtp-Source: AGHT+IG0IqZfjgZJS4CNZqd7PPymI1uvvJj8A/XLg3FGcA9awMv4M/Z6g5sqhsU4QXf+mbUJCQvbLA==
-X-Received: by 2002:a05:6512:4019:b0:512:8a9b:a960 with SMTP id br25-20020a056512401900b005128a9ba960mr2914808lfb.4.1708072703342;
-        Fri, 16 Feb 2024 00:38:23 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:814e:29c1:3729:78fa? ([2a01:e0a:982:cbb0:814e:29c1:3729:78fa])
-        by smtp.gmail.com with ESMTPSA id ay33-20020a05600c1e2100b004124be777a7sm768741wmb.7.2024.02.16.00.38.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 00:38:22 -0800 (PST)
-Message-ID: <6acd8776-cc59-496a-ad80-47613a8283a3@linaro.org>
-Date: Fri, 16 Feb 2024 09:38:21 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 628F01BDD0;
+	Fri, 16 Feb 2024 08:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708072774; cv=fail; b=DiHDxkW4eXhtYp9jD8Pi7R7ZPPkLBNeJLEON5DoI6vbZM5PzMARnGs7o7GMA5qXw5gCW47P4eFpPQVZFBeoDXPCkgRDM/bvFXZDIOkOB5NdkV5WkPOFWH6IyrwJu8S/u9NBXwW/Pz5T/xJVGTHqj90IY2kLc43UmNRt+hZUVxgY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708072774; c=relaxed/simple;
+	bh=d8JVWNX0ggsY6msLg3Iica0QwhgvRxHXBgj/N/+MFkM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Q1+UJzF9BtOGHUG/QbkCEdj+lY5fvCXXVpNOyaBxC7afiDDSqg3NFjclrVp0JUND4dnAsvDMkZI8QzAk7Fpwa+tGz/A2Z6W6Ioz+yXKfx9n5eAlICWmhSTg5zc4z1cDM1L+ofjHNGs6iZio5TawH/PUmEfzhkwsFrPNh6vsNJd8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=HFtmRluR; arc=fail smtp.client-ip=40.92.53.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TwAl3i5XRs6EOP9fuBRYblgDE8WzQ21g2nI9O+R361jZ+z2RGFEs7NNK4OcgUoxN8Gq7imZmhIdvOFRi21X6drsyCwTSYERxFgjP+vN8Jl7/n+LCSvC94vIomZjTXg/NPeBTBwmZ//Dwc3u9SB31XE7f347W3wBseC6FIPVw1yKzCFF9rAVgYK8+s74X9ovNLshMVYs2ZUU6UE132bG1MH9nlHMo4XYiUSyiTANvtNn7VaCPuc+IGS2mTooKrG1mRK77I0IZkmwhDXQQWJMjUiGlCePVCUnIyszZrqYA1uH4whLPA7qLR7oghKPXnOOdRxR+VHLDHkvsCJrUSugo0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZJG8XHS6OmFsv0RjzV4LyVJrVHZrj+PlftQRijh0jSc=;
+ b=h8v5CremqV4aYDyT2PAzpExUxbXQFDcdp8cOz81FO8vUdyOIqcW0ePlqJPRHmj2kpfRnu6ZKFkO8nCTF9yNoLjL7SW6cU2Lj/Uslso19BVqLU/wpZmiub9Uzm2Uz3W8+0acyEUeBBpcohMZPhXKPbY8/o03GIXmKTasxTu6OqMPwWj3dELHwHjv5ziwXcLKFnv3FSSe4Tauf0HaztB/dxQc6JbDHs27WBd0k7roUDcBI7uSQez2v3PAjbZ3zmuYzXwHOLuG9KkcEwgG+BGNpVIfPp706GzrpVIMHkm97lkKOdVCZ54llHAh3MMO6Y4xdMmP//+jHZIOsLbJIhjVtaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZJG8XHS6OmFsv0RjzV4LyVJrVHZrj+PlftQRijh0jSc=;
+ b=HFtmRluRFRulcu7v9YLK7yuNWMJoxlr5vEeU3WqK2UZ9wf509qBOXYgtNJ3LW3dLZadPo5i9ygOnaKxdO56z04m+ifEn8ilwfSn/73z1zbmQFHVQ7vlNguXWFSx0nUrkDz8uwKlbw/wufIooPUPn2F2gPSwwyO6pbOV3Euy6Gt/E6h6ub9921iWzzOxPRvCtM2HSYYM7dz0SCOr4KMdhKFBhIDKKppDuhIPjE6QJToWVw+8glw8SOvS8d0jS3fQ+osgaTd/G9obsETi0C0sYoFrYxqd0I4Yv+mbhFVhf0MovI+UEiRmjiQUDMQ0TAWnN2qibmim/VxSrnOMz3Io3WQ==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by TYSPR06MB6441.apcprd06.prod.outlook.com (2603:1096:400:482::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Fri, 16 Feb
+ 2024 08:39:27 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1%4]) with mapi id 15.20.7292.026; Fri, 16 Feb 2024
+ 08:39:27 +0000
+Message-ID:
+ <SEZPR06MB6959592677F8F2C79BC2FBB7964C2@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Fri, 16 Feb 2024 16:39:25 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/6] net: hisi_femac: remove unused compatible strings
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Yisen Zhuang <yisen.zhuang@huawei.com>, Salil Mehta
+ <salil.mehta@huawei.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Yang Xiwen <forbidden405@foxmail.com>,
+ Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+ Russell King <linux@armlinux.org.uk>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240216-net-v1-0-e0ad972cda99@outlook.com>
+ <20240216-net-v1-2-e0ad972cda99@outlook.com>
+ <68c9477a-3940-4024-8c86-aa6106e8a210@linaro.org>
+ <SEZPR06MB695938B228E762B9B53BAF2F964C2@SEZPR06MB6959.apcprd06.prod.outlook.com>
+ <d77faffc-5bde-41f1-b6a2-ddd665c3ee08@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <d77faffc-5bde-41f1-b6a2-ddd665c3ee08@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:
+ [aguYaheUdooiePObLZYS+j+UBB328r4eaULICheFwojzgSqjP0r6rrcc4DzwIpyfyn60rSr5HpA=]
+X-ClientProxiedBy: TYCPR01CA0151.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b1::7) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <edc6a7b6-a52d-4ec1-ba90-31dc1f8d6023@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH] drm/dp: Don't attempt AUX transfers when eDP panels are
- not powered
-Content-Language: en-US, fr
-To: Doug Anderson <dianders@chromium.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Johan Hovold <johan+linaro@kernel.org>
-Cc: Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Hsin-Yi Wang <hsinyi@chromium.org>, dri-devel@lists.freedesktop.org,
- eizan@chromium.org, Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
- Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Imre Deak <imre.deak@intel.com>,
- Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>,
- Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
- linux-kernel@vger.kernel.org
-References: <20240202141109.1.I24277520ac754ea538c9b14578edc94e1df11b48@changeid>
- <CAJMQK-it9YMod4rHKnACq4O-iaGieK2SN4x5vQ018CghsA631A@mail.gmail.com>
- <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
- <87sf1u58k0.fsf@intel.com>
- <CAD=FV=XQdLm3PcjEd_g_dBJ9QO8zAJtj5nrXS9=cjC80+-Jbfg@mail.gmail.com>
- <cbcd981f-bd5d-477e-8482-d3414be17057@linaro.org>
- <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|TYSPR06MB6441:EE_
+X-MS-Office365-Filtering-Correlation-Id: ec7cbe2a-6942-4750-a8b5-08dc2ecac8ce
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	CDEfKGcTINjIobgrQuHgCxzOE44wChpdLrQagt8fqSy60QPyrkh2FgGsVhByXZupZaNhmp9hMbg04i+JEtkfz5MBw+MvF5P610/FMGvwJYrf5JWRx1XtwT2xpvqdX47pweR7/nZuQsV3+wUMNz4d5FHma/J32EwzfOBrXv5RkMA0sY0L+GxokHdQEaFMNAd0nRlqXhRfglZiWVInNbb/RgbxVtwK5JaLvF9rmlzUM21e8e4MZgEQkeDLurXqvHwPd/Rq/ikKEMHjytIdD+B7ykPO4e3o3Vk7yZ5KtzYIKAxxviqQb8tEq7u06BJhv97r8b1NC8k/VKZKaoIOlaTQ7fmi9Filw/+nRu60O9ZMkgWmFPeUkVFLdhPRjbC3zroGg5jNMR4qrJrIs0xyGnUu7W/D1pE342wt6Uj+IstGS/mqcahidVVu8MiDU+QvjdsAsrPjXpEDm+2tTBZfBs04VwUoSFt2NVhQ/JhgPD18A0n0CThDOp6rBvm8yyg8HF8emtmuuZB58DWq5k0jqYWCswJPXqu15jGgTjVBotGoNMwHU+0CKby5lNgZOt2rk3BE
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RlNXeCsrR2J2VUU1ZzJrZkZwZE9Eck1JT2FVUTB6VjNiUEgzRjZzUnRadTFw?=
+ =?utf-8?B?dENKcXJWZWoyNW85NU5OY3p1MURnOG1Va2w5ME1xa0w2UGwxL1AyT0crdWh1?=
+ =?utf-8?B?ZnVMNnJWVG02WE9tL3Iwdzhkb1FocUpvQUtNdVZ0TlpMT1ZDUHpBQXNhVkNB?=
+ =?utf-8?B?MmxlM2FudVpTZkk3R3BLbWJ1VVFMbDFYL3JwbSs0azhQMDNMTVFrTnc1bjVy?=
+ =?utf-8?B?U2o3MHY2VHdCRWhEMFRjVVJuYlZxNXpheERPckxaMXlhQkprZHU5anJuWUtv?=
+ =?utf-8?B?VW83cWtQWHlwbU9FTTZzbUFsTU1wY0lSVUFhOG5uZ0RCemw0bXh3U3d1eU1G?=
+ =?utf-8?B?Vnp5VC8waGJnMjhTbzFXUVJMV0lMU3FVOGdwZk5rbGh6L0N6TDhFZHg5VVB2?=
+ =?utf-8?B?ZExwQlRUV3oyKzgvNnNBa29TTHBQS3pRZ3JUL1M5djdkQ1kwZ2RRa2NBQm9I?=
+ =?utf-8?B?dmU0V3BVMGZnTXFscmRBaXBPelRWT2dNYmRmK1lVRXVSTDFwb3Fsc1NXVktu?=
+ =?utf-8?B?dW11a2lmbkJCbHhtR3VZOHE2K051TGFzVEIrN1JEN25LMStYQ3c2RFZBMkVC?=
+ =?utf-8?B?dEhCbGVtYVVQelc3R2h0cmtoSnZOaWVTbnc5MWJVTkRXSWZTT2VyK3NUdVJj?=
+ =?utf-8?B?YWd6Zzd6YktXbFZEbDBGdUhzaHREK0JyckZMR1M5UjZ1MTF3M3AzZEFPQkpU?=
+ =?utf-8?B?YmZET29mLy9XZkZGMHh0czk4SzVmWitxdmhUTFRVS2JLOU5HVHdGTklQOXBF?=
+ =?utf-8?B?NU0vUGd6S01KU2dHWHV4Y3R1ZTBVSTZKdDNOellWTUhEVnpHNWt6RWtYOTRr?=
+ =?utf-8?B?MkYraHM2eURhR3k2ODUyUjNQT1doYVoxWWFGbmF5amp2VHN3MlNvWEM0LzdJ?=
+ =?utf-8?B?YUw1R080RjEwTWErZk1TYzZaQ1ZIeXFkcXQyS2Q2S0JwS2UrUkc0V29HSUNw?=
+ =?utf-8?B?ZVMzQWFRNWFHdXV1ZUtBeG9aaVN6Q1NkSkhWeW5iWHRiKzJvZ25Na0NrOG1L?=
+ =?utf-8?B?ZDh6Y2kyNU1GbFViOGQvTEFmbjJlZi83UTh3WUVwUGJZRFZBNVQydHhiNlBp?=
+ =?utf-8?B?WWcwd2pLbVVteTZydmFYYkJtT3FtQ203Zlg4UFVDaEhmalFreG4yTGFqSm8y?=
+ =?utf-8?B?L3ZVMnFLU0pMQzk0SnM0Vk54eDMxSU44aHB1Y09ralRXL2dJZU1KdStFazBP?=
+ =?utf-8?B?eVRHWUVTcVdTOVgwekxPaEFHRExvcEg2VUtNelZ6Tzh2WW82NThLSHBjQWlL?=
+ =?utf-8?B?TnBEaDdjOGVzTlgzcFNNUThyTG1qSncyUWpDMlBsNmpXNVBVcnVKNCtaUjg5?=
+ =?utf-8?B?ekNwNzVYMGt5YTUzV3BXM2JuWFpDUzhleW5JcDA1K3dTYlBrdTE2OTF4OFpz?=
+ =?utf-8?B?bG9VZjk0ZENQTldZcS8zdWF0eFVCemlrSThVWGovMFJXUGJ1VWVXajhuUVVy?=
+ =?utf-8?B?Vkd0U1FJUEp1WWlXQ3g5Tm5GOS84MVd1NU80UHp3VFNBWmJZdFJ6cnAyWE9U?=
+ =?utf-8?B?SXlsQ0NnaXYweWx6NlJ3aEdlMmk4aFdJOWNrbHd1bTIvQzZXV0FmRVcxWmwx?=
+ =?utf-8?B?M0E1bHdObWY4UU9QaTQ0ZFlDdWNNLzVMRzRUVTR2Wkh1VGwrOXVzVFlZNzNj?=
+ =?utf-8?B?MlhEamhsaVBNR2w4aHRLalcwVyt3Q28ydW95c25za2Z3WjNXQnpEZFRhNk9U?=
+ =?utf-8?B?S2oraDV3dGJhazJmZFdReU5GVWVTNkdHSjVjSU1xSDVFR3RmSW5wN1lycEgv?=
+ =?utf-8?Q?pRbo/C1h4lPio6WLLFovyYU9MzAOhNZGZ8TvVKi?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec7cbe2a-6942-4750-a8b5-08dc2ecac8ce
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 08:39:26.8609
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB6441
 
-+ Bjorn
-+ Konrad
-+ Johan
-
-On 15/02/2024 18:08, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Feb 15, 2024 at 8:53 AM Neil Armstrong
-> <neil.armstrong@linaro.org> wrote:
->>
->> Hi Doug,
->>
->> On 15/02/2024 16:08, Doug Anderson wrote:
->>> Hi,
->>>
->>> On Thu, Feb 15, 2024 at 2:24 AM Jani Nikula <jani.nikula@intel.com> wrote:
+On 2/16/2024 4:26 PM, Krzysztof Kozlowski wrote:
+> On 16/02/2024 09:21, Yang Xiwen wrote:
+>> On 2/16/2024 3:20 PM, Krzysztof Kozlowski wrote:
+>>> On 16/02/2024 00:48, Yang Xiwen via B4 Relay wrote:
+>>>> From: Yang Xiwen <forbidden405@outlook.com>
 >>>>
->>>> On Wed, 14 Feb 2024, Doug Anderson <dianders@chromium.org> wrote:
->>>>> Hi,
->>>>>
->>>>> On Tue, Feb 13, 2024 at 10:25 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->>>>>>
->>>>>> On Wed, Feb 14, 2024 at 2:23 PM Douglas Anderson <dianders@chromium.org> wrote:
->>>>>>>
->>>>>>> If an eDP panel is not powered on then any attempts to talk to it over
->>>>>>> the DP AUX channel will timeout. Unfortunately these attempts may be
->>>>>>> quite slow. Userspace can initiate these attempts either via a
->>>>>>> /dev/drm_dp_auxN device or via the created i2c device.
->>>>>>>
->>>>>>> Making the DP AUX drivers timeout faster is a difficult proposition.
->>>>>>> In theory we could just poll the panel's HPD line in the AUX transfer
->>>>>>> function and immediately return an error there. However, this is
->>>>>>> easier said than done. For one thing, there's no hard requirement to
->>>>>>> hook the HPD line up for eDP panels and it's OK to just delay a fixed
->>>>>>> amount. For another thing, the HPD line may not be fast to probe. On
->>>>>>> parade-ps8640 we need to wait for the bridge chip's firmware to boot
->>>>>>> before we can get the HPD line and this is a slow process.
->>>>>>>
->>>>>>> The fact that the transfers are taking so long to timeout is causing
->>>>>>> real problems. The open source fwupd daemon sometimes scans DP busses
->>>>>>> looking for devices whose firmware need updating. If it happens to
->>>>>>> scan while a panel is turned off this scan can take a long time. The
->>>>>>> fwupd daemon could try to be smarter and only scan when eDP panels are
->>>>>>> turned on, but we can also improve the behavior in the kernel.
->>>>>>>
->>>>>>> Let's let eDP panels drivers specify that a panel is turned off and
->>>>>>> then modify the common AUX transfer code not to attempt a transfer in
->>>>>>> this case.
->>>>>>>
->>>>>>> Signed-off-by: Douglas Anderson <dianders@chromium.org>
->>>>>>> ---
->>>>>>
->>>>>> Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
->>>>>
->>>>> Thanks for the review!
->>>>>
->>>>> Given that this touches core DRM code and that I never got
->>>>> confirmation that Jani's concerns were addressed with my previous
->>>>> response, I'm still going to wait a little while before applying. I'm
->>>>> on vacation for most of next week, but if there are no further replies
->>>>> between now and then I'll plan to apply this to "drm-misc-next" the
->>>>> week of Feb 26th. If someone else wants to apply this before I do then
->>>>> I certainly won't object. Jani: if you feel this needs more discussion
->>>>> or otherwise object to this patch landing then please yell. Likewise
->>>>> if anyone else in the community wants to throw in their opinion, feel
->>>>> free.
->>>>
->>>> Sorry for dropping the ball after my initial response. I simply have not
->>>> had the time to look into this.
->>>>
->>>> It would be great to get, say, drm-misc maintainer ack on this before
->>>> merging. It's not fair for me to stall this any longer, I'll trust their
->>>> judgement.
->>>>
->>>> Reasonable?
->>>
->>> I'd be more than happy for one of the drm-misc maintainers to Ack.
->>> I'll move Maxime, Thomas, and Maarten to the "To:" line to see if that
->>> helps get through their filters.
->>
->> I'll like some test reports to be sure it doesn't break anything,
->> then I'll be happy to give my ack !
-> 
-> Sounds good. I know Eizan (CCed, but also a ChromeOS person) was going
-> to poke at it a bit and seemed willing to provide a Tested-by. I'll
-> let him chime in.
-> 
-> ...but perhaps some better evidence that it's not breaking hardware is
-> that we actually landed this into one (but not all) ChromeOS kernel
-> trees [1] and it's rolled out to at least "beta" channel without
-> anyone screaming. Normally we like things to land upstream before
-> picking, but in this case we needed to land another patch to gather
-> in-field data [2] that would have made the problem even worse.
-> 
-> The kernel tree we landed on was the v5.15 tree, which is currently
-> serving all Qualcomm sc7180-based Chromebooks, all Mediatek 8173
-> Chromebooks and all Mediatek 8186 Chromebooks. There are also a pile
-> of x86 Chromebooks running our v5.15 kernel. This code shouldn't
-> affect them because (unless I'm mistaken) they don't use the two
-> affected panel drivers. In any case, I haven't heard any screams from
-> them either. Given my landing plans of "the week of the 26th", this
-> still gives another 1.5 weeks for any screams to reach my ears.
-> 
-> ...or are you looking for non-ChromeOS test reports? I'm not sure how
-> to encourage those. I suppose sometimes folks at Red Hat end up
-> stumbling over similar panel problems to those of us in ChromeOS.
-> Maybe +Javier would be interested in providing a Tested-by?
+>>>> These compatible strings are not found in any mainline dts, remove them.
+>>> That's not a real reason. What about all other users?
+>> The people who want their devices being supported should post a working
+>> dts first. Having found the dts missing is strongly telling me that this
+> Considering how poor HiSilicon contributions were - in numbers and
+> quality - that's kind of expected. :(
+>
+>
+>> SoC(Hi3516) is orphan and EOL already. I can't even find it in git
+>> commit logs. I'll argue that the old binding is simply wrong, and does
+>> not describe the hardware properly. Who knows? Could anyone tell me if
+>> the driver is still working for Hi3516 or not? I'm very willing to keep
+>> the backward compatibility if someone can tell me the effort i paid to
+>> maintain the old binding really makes sense. But the only things i found
+>> in mainline kernel about Hi3516 is an CRG(clock) driver and this femac
+>> driver. And it's been 8 years since last update for this SoC.
+> OK, that's fine with me, but please add parts of this explanation to the
+> commit msg (SoC is EOL, driver looks buggy and might not even work,
+> platform was upstreamed 8 years ago and no maintenance work happened on
+> it, thus it looks abandoned etc.).
 
-Bjorn, Konrad, Johan,
+For me, it's a bit lucky to find a (partially) working driver in 
+mainline. It'll take me even more time if no mainline driver is 
+available. In fact, i wrote the driver for mainline u-boot from scratch 
+and it has been merged. So it's good to have this binding accepted 
+unmodified, or i'll have to modify u-boot side driver code to keep them 
+sync.
 
-Could one of you somehow try this on the X13s or other Laptop using eDP ?
+>
+> Best regards,
+> Krzysztof
+>
 
-Thanks,
-Neil
-
-> 
-> [1] https://crrev.com/c/5277322
-> [2] https://crrev.com/c/5277736
+-- 
+Regards,
+Yang Xiwen
 
 
