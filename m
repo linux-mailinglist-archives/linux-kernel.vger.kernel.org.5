@@ -1,271 +1,219 @@
-Return-Path: <linux-kernel+bounces-68942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FBA9858236
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:13:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0892585823C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:17:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A70E81F22C84
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:13:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B41732849BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:17:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C9E312FB37;
-	Fri, 16 Feb 2024 16:13:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3721912FB31;
+	Fri, 16 Feb 2024 16:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="BGr+sj5u"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2044.outbound.protection.outlook.com [40.107.243.44])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="THHLRs8N"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9123912F5A9
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:13:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.44
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708100031; cv=fail; b=vAOmJ8E6hafZGUxwIka5nweY3wAoDIdtYCvqkjEh4KeTazvMbWA3z/BpixX8sCr+wX8N2iVew4okjIiThqZxzmhtzeJ/LmJif0oJEbYvPtR+0vVIG1av1KOIv/m2U2AHgx94ptnrXWfeSbDG0cdsywK8B7gF+YvSlyBKI51AKpI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708100031; c=relaxed/simple;
-	bh=9h7L4Z850jVg1KjionmaGxKJ+9FN5kXNjVbCSwSF+G8=;
-	h=Message-ID:Date:Subject:From:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=BcEVjo8iryqgabfVMxJGbbNJIq5WxzPvDrqUc59WDr/qgglZiMB3se8sOWfZSVsR2vVcfS/6LqusO0zeXCSs8v+zSiNR0UsJD+2jFYufaFwhggI/5UxacIbimFBXcQ1i9ZANfI7zKOilPHJ1K3KA+aVta1lnGHaKQCgICXltx9I=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=BGr+sj5u; arc=fail smtp.client-ip=40.107.243.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EJhZETIh2m+VfBcEiDcsrNbcvR9Ms1gsxQWcROCDG3I43MOQJYNxq2kmXjAxBb4CcXSYaPovdLOXDPNJpuFgRhFv/IgcVK3lJpWt6D04BCm0grJJDlm4EvsRPNy8Uf1Jppf7jGMXcNDMU/31zbfRmIP/fpimM0VYUyAFkSJCEBVOz/LT8SNpYAB5J1g55eK5Eua2OhF5eIdCosgWWh4Uk96PeL4aRU5Sv6XAPr1wznx4p6EaAKHKSoCRd0w9XKqY0fqNQNU8QJDi5uuqjTU+ySihWRrKMzy9gGYilTlLv2NIQZwfDxXp10d6s+W9l+hJo7isrx2WZfz8rVq4hFUm/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FFQ/bj6GQDTICITZ6xjvVphNMCXiOGVFxgnXgd2q9dE=;
- b=PB3ZNqvt/D2ETD2OIiqj6LPrUlUYIYcj2rM+TnyNWhU06HeLHeIoqhoGYUexfi6n/ZMh3B4O07Xni1LiboC/glyDUjPmumtYWS24c1Zd4FQSVSkM9Yckubm5ft4iHRgtpVJtSArwVRKn1jpheYiFNDSqNuzk6NzBV/h6JP8NmnVdDK8v9Kend/6ty7rZzzIVU/mdC2QqPgdHLsOEXN5y3nIIE8xfNOU+NZqLw2+qM5EmsVNoN066cFo+Eq0MmA3wt39lRB13jxicuAvGM9txiIcBaV9zSkmgGB57h8GZuWn/dxMlY0+0BTElbQ1nQQMQF16vlpADlCpSJmmsn2LedQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FFQ/bj6GQDTICITZ6xjvVphNMCXiOGVFxgnXgd2q9dE=;
- b=BGr+sj5uKah0Afdox3BUVYONBt53tS2K+COEbfChSx4bxcLC3Rk5MNjD7LmAWVvRrpa7qL6wTCf/HY3yIn2XUyF04BS0gHXRjklhnQPKQ4NxtW7/Sq//KeY/RHY0ggD2JybLtV/xebJLF+M15ntFFMKNZtJoLL03lqjYiETVUHY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by PH8PR12MB7025.namprd12.prod.outlook.com (2603:10b6:510:1bc::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.15; Fri, 16 Feb
- 2024 16:13:44 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::3f6b:792d:4233:f994]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::3f6b:792d:4233:f994%6]) with mapi id 15.20.7316.012; Fri, 16 Feb 2024
- 16:13:44 +0000
-Message-ID: <d30e50bf-5b8e-47cb-8abf-e474f8490c99@amd.com>
-Date: Fri, 16 Feb 2024 11:13:40 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
- to eDP connectors
-Content-Language: en-US
-From: Harry Wentland <harry.wentland@amd.com>
-To: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-Cc: Hamza Mahfooz <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org,
- Mario Limonciello <mario.limonciello@amd.com>, Leo Li <sunpeng.li@amd.com>,
- Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Alex Deucher <alexander.deucher@amd.com>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
- Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
- <20240216101936.2e210be2@eldfell>
- <82280a39-4e1d-41ee-82fb-758ceed953e4@amd.com>
- <20240216174242.15d07657@eldfell>
- <a25a6205-c43f-40ab-bb79-8199a8290912@amd.com>
-In-Reply-To: <a25a6205-c43f-40ab-bb79-8199a8290912@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR01CA0023.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::31)
- To CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9210228E23
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:17:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708100228; cv=none; b=O9vgS2Fw45QF8JISyWGAweK2CmQrgmZPdtqgRMS/8XV8TkWzKXxhs5ptXyqi8SdB0N4Qa1k5dAHmStf3MjLPH3z5Oiy9hJjcdu3q01QC5MWGz8OJJcHAjiOLMlw4ZttJAnI1bmfg4p5hkdIJbJhF/4nkQDdyaRrLlo2IIl488BQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708100228; c=relaxed/simple;
+	bh=4wQ9xEhcqjXCYBLgPpJSEIssZci3ilI2sZ3GH8xRJOQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mQ5xgO79QAWfVgQT4fjU71i7XviTjolPYNkjycynV/sR4syqncfslLpGcBo9WHru34DZi+eWCr8yeFs4Y5zO3n1thc9PuTkFrcGq5he/tOMk8JhC4ob1+OFF1FNvSNWie0kITUEOJLxmcqmvYpC7cjvYrOCAcpHBXYFiszQ2Pdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=THHLRs8N; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708100225;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=c6+7atygW7QOnkGJLSuMLDIxvn9DIzwdT1QSyiTLJNA=;
+	b=THHLRs8NcYzyKlEFk8vjjPu9AYE7hwphwlrOq3F3snVvWK3Z/2Mq7w3CU2Q4j0ApoO7fQC
+	ab5oS3fEveHRnGS6ETwzOP2pYlFwmjA8Smc1VkmpVeU1bdHOpI0/hIPEuh43M/UuS0Os8L
+	2x8E91YzI//3qZMJYtE4tc1YaWh5hOI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-34-WKso7JfbMkSTlk3ap3tTSA-1; Fri, 16 Feb 2024 11:17:04 -0500
+X-MC-Unique: WKso7JfbMkSTlk3ap3tTSA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-411ac839dc5so11511615e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:17:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708100223; x=1708705023;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c6+7atygW7QOnkGJLSuMLDIxvn9DIzwdT1QSyiTLJNA=;
+        b=W8BnPmcwd9t6DtnfAsVG7Z4IXqesI18ThxaUWkdbc0O1L9sjYyfofRM9x+GQOCCyTw
+         TZJoSWNmub71MvTX/UFEul6Cad1fM2u9UaAvd4W2WlNQQ76BdTljWzB8acBaiPga2YyG
+         5yZhqgPHfKldJq0Uyot1KawmutAEFmQCt0lBtnPMOLxRSJySNbP63ddLHM+HYn3Gr7DB
+         Bc3byoc4xOp1ZYG5463TPc2wv5ktF2lgSTGY01vhMoXBNsOJeKhVWGMUhye482a8pqUl
+         /I3nCuLPyFY0ljGzbPnS1KzCrOka/4QmXoXQt9i93O1bsXLnlCs7H/XWIp0Oe0n/qmil
+         PiDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUAy+DYp+vkLy/PWOsXB6ZhWmL/NDwQXdClpTt3EX+vL/LMeUMgIgiQzeAidll+2J/80JfqHu44nwJFNR5zwUSRkzjUaNCKZmL+BQuc
+X-Gm-Message-State: AOJu0Yyh8whyJT4JRaUowF5SzgiCyV+5+84l2tYbBt9EqoIffx8kPrnj
+	WnSGG0JbL0n1G78PYX5c9ylvhuLNqRYGEXV19BVqa/QiC6ClgGtBa8KZrYUvL9UKzeC8BSaEvmB
+	WcbuJIrXwdHKDGn6TLEUnx7zDqnpZFALWz+zzyo2glIIKmLEELnlQwtkXLScxHw==
+X-Received: by 2002:a05:600c:1c1e:b0:412:1615:7343 with SMTP id j30-20020a05600c1c1e00b0041216157343mr4367152wms.5.1708100222917;
+        Fri, 16 Feb 2024 08:17:02 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFY2ktOfjymj6X1+czeKaqGXtMp53zw558F+DnAgKuEALM2JWjcOjKlnalz2uom4G6GaaT7Tw==
+X-Received: by 2002:a05:600c:1c1e:b0:412:1615:7343 with SMTP id j30-20020a05600c1c1e00b0041216157343mr4366088wms.5.1708100192759;
+        Fri, 16 Feb 2024 08:16:32 -0800 (PST)
+Received: from ?IPV6:2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e? (p200300d82f3c3f007177eb0cd3d24b0e.dip0.t-ipconnect.de. [2003:d8:2f3c:3f00:7177:eb0c:d3d2:4b0e])
+        by smtp.gmail.com with ESMTPSA id e25-20020a05600c219900b0040fe4b733f4sm2719927wme.26.2024.02.16.08.16.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 08:16:32 -0800 (PST)
+Message-ID: <6ad329f6-6e1b-411b-a5d7-be1c8fd89d96@redhat.com>
+Date: Fri, 16 Feb 2024 17:16:31 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|PH8PR12MB7025:EE_
-X-MS-Office365-Filtering-Correlation-Id: b4193c45-8e1e-4c18-56c9-08dc2f0a3fb6
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	+d48l5cySRbOcFFHE3uKhn5D6hENyX0LoUFZKoDMbqiVtOn7s+9LKVgY9w3th5pfWejhYVlvMpOy6DSZr3o/vHFDADqkWowkYnCK83AaTczj8K0uClkX0BIG5sWtTgi3IFRKeGAgkxiPYeyGA4wy7PaQ2DHUKBGNwqpuZo6vrqUGySVQNXSW8w2YX4t5p30d9JLvqggRNWy532TjJaLmlJwfadzoc9RBBr9ZyJ6COcmblqel1yUsvhIvDFWGrDnwraOK3I9w9dWnuY1Ig0InbYqakj0KH7tykmYt4N5eqF53kCTCboYIvJtvo1VAEVWQdqmxBYx35SuX9s4UjoOWE4RAMYPJF42OFpAhkNQAdpHirfnN83IFAspv+7UcbK9Ta56QSnGbjIERbfl9zLYXOYe3aDh9CiyqJv4lcnKqrHeXdimVVR10aXAH9KdavivGEaZyR4+ONtSu4PD8p5eqdFQD4KJ/JaDkTRVsMAbjTHL/Cfby/LvO83aHWLei48GvcsrTBuog9ZticZr5lT/n/jWBo2dqtV2thLENCf4M0GQ=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(396003)(39860400002)(136003)(230922051799003)(64100799003)(451199024)(1800799012)(186009)(8676002)(66946007)(5660300002)(44832011)(31686004)(8936002)(2906002)(66556008)(66476007)(6916009)(4326008)(54906003)(316002)(6666004)(6512007)(6506007)(966005)(478600001)(53546011)(41300700001)(6486002)(83380400001)(86362001)(36756003)(38100700002)(2616005)(26005)(31696002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MGloNldJTHdSQ3J3S3JLaVZZdUl3QWtZRFhickxncnBiOWZ1a0xNMHA0L2ZB?=
- =?utf-8?B?T1BXMTVCQ1paWjladlJLUVNpeDh1UVNqeit4OWZKR2ptVFJyOTF6RnRLV1o2?=
- =?utf-8?B?eEI4UTcyL0pyT3FqNGovbjRJY2NnMlBGR3dnb3NuV1d4Mm9Kb2VhRDBZRWkw?=
- =?utf-8?B?OWVzdVdob1FZa2RMZzZlZzBiWEJhYWxmdXNQWHhGa25wYk9FQzhOOTBhSWEy?=
- =?utf-8?B?RHpONFdtaXlXa2xmUHBVWWtrQlpkOTFZRHNBZFZGZ1hxVS9XdDhJcUZqUkFi?=
- =?utf-8?B?a0VMZU5BNkg1M3JDeEtqU1pYTC9mTDBzaUVKSHV6MGwyMFBkTStvV1k4ZnZY?=
- =?utf-8?B?NVpIcmM0aUZDKzROQWlVYVVJcGhJUlFBcWZpWC8vb21xUnVGcW1iZHFDaHZz?=
- =?utf-8?B?VE96MjVhYTd2UVh6UTlrb00yZUk3WXN6MEtGa1A0RGRDeVRBRHpObTd4ODNR?=
- =?utf-8?B?SmRZWmxNQ1E4cmtFWjh3R3JrNUNpSU9VemdGS3QvaTlvWVFZR3N3TTJFYzh3?=
- =?utf-8?B?L0ZweWpqK09icThFR1NNY0NISWxaZjhqUUUrTVZYTUxUWFRGRllMZitabGND?=
- =?utf-8?B?K3FheGhkQXgwdjJYSUVXaWhnR1BBaS9DUm1iWnQrVXZnOEVGVDNkb0x6VjBY?=
- =?utf-8?B?bitSN3hRbFo4dnVOSzkvT0dnS2FsYzR2S2x1U3FsMG9aeTZlSWxFVkxpSVFB?=
- =?utf-8?B?ZkVhUGRHcmo5VC81MTZza2YwcVBibmJkd1d2MXNZbzYyT29UUktCUzBOVXh4?=
- =?utf-8?B?bG1LeWg5dnVYMzRZNnN5Q2xWT1diZGlKdENyMVZjbDdXNUpQcHYvcVU1THMw?=
- =?utf-8?B?MXJEU0Yvd29DOTZBRDYxRnhybDNjSnJPRCtybmdRcXkzZnZmUGFZOUVmT2d6?=
- =?utf-8?B?OHJzNHZUY3lGRUdJaHp4ek92RXJkenlRMjNIS290VEY5NGZYWmR6QzJVbDhL?=
- =?utf-8?B?RkNFb3Z4NWR1WWVvUjYrditjOHNVSFhyQ2IwQXZjSlRnblkvbU01QzdwM3Fx?=
- =?utf-8?B?WkhtRDJncTFmREFxTWlhV3hyU1o1dC9kTVRHcW5XOUdoT1EvMWhuZ1VxdDM3?=
- =?utf-8?B?dFo1ZStCTVY4dmFaeXFnaUMvOTVSUXV4Wk4rZFNVekJHSG5UVEpxNVovUWZ6?=
- =?utf-8?B?b0NlaE5xOEg0YUdIbmxmWVhGdW1wWi9Kb1I4TFB6anh6eWw0ZEpyaUVhS01t?=
- =?utf-8?B?VmtZcjhacDFHUG9sR3oyTGFXS2YxZ2VoeThwREM1ZUZJZW1iTkV3Wk8rOHV1?=
- =?utf-8?B?dUlpK1lHSDROWWgxb3VqTzJudFhTUlMwRWI0S2hwR0NIS1lGNUxZcmdUS1M5?=
- =?utf-8?B?b0V4NVZ3a01taCtHTjR1Z3dxMEM2Tjg5L2hQMm9xNG1mSmpOcGl0amdWaEVu?=
- =?utf-8?B?dDBvbmovdnBvUGJqUUowRWJHcmFDcVF6OFArRkFTVGM4NU8wWklOT0phWkdq?=
- =?utf-8?B?UU5CdUpQR3h1M25RbXlYb05Ea1FRTVlMOW5YeDZreDNjMlZHRm93KzRlK0JV?=
- =?utf-8?B?akxudVVIenFweCtZWDJNaFAzSEdSQ21aQWRTR0ZYSlp2ekhsWkcrVjMrOHdG?=
- =?utf-8?B?Z3FzK0M3aE9GWHQzcHNpNEtNRnN1eVRDK3FxS0ExOUJrQ2hkWS94QmNvbWM3?=
- =?utf-8?B?clNwQ2I5RzlvM0Q4Y1FaR05RbnIwVU1Id21GeEZYZHlaYkZGc2dxSk81eUVD?=
- =?utf-8?B?dHdOS0JaRVZXbzI0VnVhZ3o5SUU5YTVuN2VWclRLUEpSTXliYzNvZHFRaXp1?=
- =?utf-8?B?Y0JGakRHRytWZG42eitFQUJsNXRNQ0lmbkRWN1B1WGJuT1RWZDJrVWxxWmFC?=
- =?utf-8?B?YklUS3ZyQTVSQ252YVlyVkFpYllMYkZxYUQ4RnNTV3E0dm1xUzQrRWN5VnBV?=
- =?utf-8?B?cVZWSWlUVm1jTG9jOEIrbUpZc2wrUWtYT1hvWmM0YnNOYzJya0tJS1d5NlA4?=
- =?utf-8?B?dkNZQTNmazhaTklLVjFaZ3labm9tVWdkMWhXL1RJQTVxRlI5eWxyVmRLM1dx?=
- =?utf-8?B?NlRLSUdwcS84V1JKbWtTS1VLbVV0S0dmRlp6QlJmTmdGMVFhQVF3ZUlweU9F?=
- =?utf-8?B?cEV1SWIxRTk1NEZ6ZHhwQXRHbEpXeDh5anRDSHZoZWdGTm1ScytlRUZZbzYw?=
- =?utf-8?Q?SH1rn+PVDFxluKz41u03pnwwn?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4193c45-8e1e-4c18-56c9-08dc2f0a3fb6
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 16:13:44.6385
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8h0HCLhdFv433QKt3nhTZFUATlZPzFQoXbc4iMUgcQ2KjFjbWW0AC8rdJ5zntZIlaRRB/8CNDBQ5+Oc7PMNF/g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7025
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/swap: fix race when skipping swapcache
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ "Huang, Ying" <ying.huang@intel.com>, Chris Li <chrisl@kernel.org>,
+ Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>,
+ Hugh Dickins <hughd@google.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>,
+ Yosry Ahmed <yosryahmed@google.com>, stable@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240206182559.32264-1-ryncsn@gmail.com>
+ <1d259a51-46e6-4d3b-9455-38dbcc17b168@redhat.com>
+ <CAMgjq7Cy3njsQzGi5Wa_JaM4NaO4eDGO5D8cY+KEB0ERd_JrGw@mail.gmail.com>
+ <4c651673-132f-4cd8-997e-175f586fd2e6@redhat.com>
+ <CAMgjq7CtLrzkO0kBEsqRDyu+GoGbzdgii3_dj7pfo-3-maQU8A@mail.gmail.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <CAMgjq7CtLrzkO0kBEsqRDyu+GoGbzdgii3_dj7pfo-3-maQU8A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+>> (4) relock the folio. (we do that already, might not want to fail)
+>>
+>> (4) take the PTE lock. If the PTE did not change, turn it into a present
+>> PTE entry. Otherwise, cleanup.
+> 
+> Very interesting idea!
+> 
+> I'm just not sure what actual benefit it brings. The only concern
+> about reusing swapcache_prepare so far is repeated page faults that
+> may hurt performance or statistics, this issue is basically gone after
+> adding a schedule().
 
+I think you know that slapping in random schedule() calls is not a 
+proper way to wait for an event to happen :) It's pretty much 
+unpredictable how long the schedule() will take and if there even is 
+anything to schedule to!
 
-On 2024-02-16 11:11, Harry Wentland wrote:
+With what I propose, just like with page migration, you really do wait 
+for the event (page read and unlocked, only the PTE has to be updated) 
+to happen before you try anything else.
+
+Now, the difference is most likely that the case here happens much less 
+frequently than page migration. Still, you could have all threads 
+faulting one the same page and all would do the same dance here.
+
 > 
-> 
-> On 2024-02-16 10:42, Pekka Paalanen wrote:
->> On Fri, 16 Feb 2024 09:33:47 -0500
->> Harry Wentland <harry.wentland@amd.com> wrote:
->>
->>> On 2024-02-16 03:19, Pekka Paalanen wrote:
->>>> On Fri, 2 Feb 2024 10:28:35 -0500
->>>> Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
->>>>   
->>>>> We want programs besides the compositor to be able to enable or disable
->>>>> panel power saving features.  
->>>>
->>>> Could you also explain why, in the commit message, please?
->>>>
->>>> It is unexpected for arbitrary programs to be able to override the KMS
->>>> client, and certainly new ways to do so should not be added without an
->>>> excellent justification.
->>>>
->>>> Maybe debugfs would be more appropriate if the purpose is only testing
->>>> rather than production environments?
->>>>   
->>>>> However, since they are currently only
->>>>> configurable through DRM properties, that isn't possible. So, to remedy
->>>>> that issue introduce a new "panel_power_savings" sysfs attribute.  
->>>>
->>>> When the DRM property was added, what was used as the userspace to
->>>> prove its workings?
->>>>   
->>>
->>> I don't think there ever was a userspace implementation and doubt any
->>> exists today. Part of that is on me. In hindsight, the KMS prop should
->>> have never gone upstream.
->>>
->>> I suggest we drop the KMS prop entirely.
->>
->> Sounds good. What about the sysfs thing? Should it be a debugfs thing
->> instead, assuming the below question will be resolved?
->>
-> 
-> 
-> It's intended to be used by the power profiles daemon (PPD). I don't think
-> debugfs is the right choice. See
-> https://gitlab.freedesktop.org/upower/power-profiles-daemon/-/commit/41ed5d33a82b0ceb7b6d473551eb2aa62cade6bc
-> 
->>> As for the color accuracy topic, I think it is important that compositors
->>> can have full control over that if needed, while it's also important
->>> for HW vendors to optimize for power when absolute color accuracy is not
->>> needed. An average end-user writing code or working on their slides
->>> would rather have a longer battery life than a perfectly color-accurate
->>> display. We should probably think of a solution that can support both
->>> use-cases.
->>
->> I agree. Maybe this pondering should start from "how would it work from
->> end user perspective"?
->>
->> "Automatically" is probably be most desirable answer. Some kind of
-> 
-> I agree
-> 
->> desktop settings with options like "save power at the expense of image
->> quality":
->> - always
->> - not if watching movies/gaming
->> - on battery
->> - on battery, unless I'm watching movies/gaming
->> - never
->>
-> 
-> It's interesting that you split out movies/gaming, specifically. AMD's
-> ABM algorithm seems to have considered movies in particular when
-> evaluating the power/fidelity trade-off.
-> 
-> I wouldn't think consumer media is very particular about a specific
-> color fidelity (despite what HDR specs try to make you believe). Where
-> color fidelity would matter to me is when I'd want to edit pictures or
-> video.
-> 
-> The "abm_level" property that we expose is really just that, a setting
-> for the strength of the power-savings effect, with 0 being off and 4 being
-> maximum strength and power saving, at the expense of fidelity.
-> 
-> Mario's work is to let the PPD control it and set the ABM levels based on
-> the selected power profile:
-> 0 - Performance
-> 1 - Balance
-> 3 - Power
-> 
-> And I believe we've looked at disabling ABM (setting it to 0) automatically
-> if we know we're on AC power.
-> 
->> Or maybe there already is something like that, and it only needs to be
->> plumbed through?
->>
->> Which would point towards KMS clients needing to control it, which
->> means a generic KMS prop rather than vendor specific?
->>
->> Or should the desktop compositor be talking to some daemon instead of
->> KMS for this? Maybe they already are?
->>
-> 
-> I think the intention is for the PPD to be that daemon. Mario can elaborate.
+> We can't drop all the operations around swap cache and map anyway. It
+> doesn't know if it should skip the swapcache until swapcache lookup
+> and swap count look up are all done. So I think it can be done more
+> naturally here with a special value, making things simpler, robust,
+> and improving performance a bit more.
 > 
 
-Some more details and screenshots on how the PPD is expected to work and look:
-https://linuxconfig.org/how-to-manage-power-profiles-over-d-bus-with-power-profiles-daemon-on-linux
+The issue will always be that someone can zap the PTE concurrently, 
+which would free up the swap cache. With what I propose, that cannot 
+happen in the sync swapin case we are discussing here.
 
-Harry
+If someone where to zap the PTE in the meantime, it would only remove 
+the special non-swap entry, indicating to swapin code that concurrent 
+zapping happened. The swapin code would handle the swapcache freeing 
+instead, after finishing reading the content.
 
-> Harry
+So the swapcache would not get freed concurrently anymore if I am not wrong.
+
+At least the theory, I didn't prototype it yet.
+
+> And in another series [1] I'm working on making shmem make use of
+> cache bypassed swapin as well, following this approach I'll have to
+> implement another shmem map based synchronization too.
 > 
->>
->> Thanks,
->> pq
-> 
+
+I'd have to look further into that, if something like that could 
+similarly apply to shmem. But yes, it's no using PTEs, so a PTE-based 
+sync mechanism does definitely not apply..
+
+> After all it's only a rare race, I think a simpler solution might be better.
+
+I'm not sure that simpler means better here. Simpler might be better for 
+a backport, though.
+
+The "use schedule() to wait" looks odd, maybe it's a common primitive 
+that I simply didn't stumble over yet. (I doubt it but it could be possible)
+
+-- 
+Cheers,
+
+David / dhildenb
 
 
