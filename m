@@ -1,126 +1,133 @@
-Return-Path: <linux-kernel+bounces-69029-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69032-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C291585838C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:09:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3640858395
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDA781C21C24
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:09:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 327EA1F242FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:10:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72BA130E3A;
-	Fri, 16 Feb 2024 17:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5639131E3D;
+	Fri, 16 Feb 2024 17:09:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="hOkJCiC8"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="S/cM9C8s"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C50B130E27
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:07:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5CFF12BF07;
+	Fri, 16 Feb 2024 17:09:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708103263; cv=none; b=M5Mc+g3p1rYcgArW+C6BTJHnLO7QTuNteodJZOS9WteUibhwtR86JXJsIzbFW14AUVjlrsNBq+p9ThcqFXBA2nyRMk7bKiQg9yGj8hTKmfnOk/BYJ+QvHWnUkr/J4SFGlCD5IRt0iKWZLOmkJm/cYhL9F4Av3rTDNLufl7FV1rE=
+	t=1708103387; cv=none; b=ayd1u/CFbkOkjHy3RrIxgn4E5dZhwvDhpQOs2PfGoWtoh7IeeQB0Hht/ez1bm3V0rKYk8D0iZrgWAzzsH1GXtnqqBVslsyYLrN5YYtKl92WGOGvbt9BTAIh622+2FRc/9mM2yS2d20QwsR7pL+m+PWRE/gLfal9gSyQOfvmCIYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708103263; c=relaxed/simple;
-	bh=hv233QVBwAsUo0Zdqwhyq2yzmCK3uyGXUq9pEROZ7lI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hIs03Qzz/Y9GLtm6nIk26l/ETasvvAkgyCzZ22K4wKekSSrZ0I/WuJMpdj+XxX9hUjQ6vNgX+HWhyo6c8RB3r4MY2cTyBNzt7LAa0a9P+qVMljyXtE944kWvXcL3yle20UJsVxCccpNi1XyXhk4QasGNzLZ0lVlryZWeOYOm/Eg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=hOkJCiC8; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33cd856478cso596838f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:07:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1708103259; x=1708708059; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ijTea4rY9Z92lLGWfWJZg4eI/pmK/TMqoH5QWxKStbU=;
-        b=hOkJCiC81bNLbwNUNAvGojRAzgIYTMFUdnAN5uI3aXrHqHGJPE5JnCzot210fHqXjQ
-         AkHe1FC1ohcAeTCVfjh7t6HcH9PpMj4uLwe1jX3HlEstozgwPpQLxzy02gEhnCy5ddbA
-         vU4wUFWPaH3otzh8hQkr+9QmSNG7m9+gVRGDk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708103259; x=1708708059;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ijTea4rY9Z92lLGWfWJZg4eI/pmK/TMqoH5QWxKStbU=;
-        b=L2lehgU6cvo17QNbJ+w7usj9D5MmJAEIFtXBd1FplQVeWf7fjzgzujBbAxq7LaS4/H
-         JL2ifZoIY16jJvoEbRBQUwu6E2aQApfKHXZww2v1rkaYn7MomK564uyVtMO1f77Yof/S
-         ZM2FYK/W5mCP8/zMQxnLk1dfwu58NJZYuZ76j49r8rgkIZcB1qygLC6VCdBFXl756faI
-         pz/r5mzBjXIaQ4bFUnQAb8YnzbYtXGIuiQj7A6olu/ANHVWjJflQdPhvO3isO1c4PoGH
-         xi+EaegZvFkQB+9Nri1TtDULZHn24I9Wdoej4nN//j7QPiketeglimTsjfZnzFGiel+r
-         SIgg==
-X-Forwarded-Encrypted: i=1; AJvYcCX7XSlerriv20CV5G3E78Mf4QkKbqbziae1JoExRtbUS46zOV5ciWJIalIQz7Yyaw/WqbSGlH853q/p/OTli8fi6lmaQcLSyJFL5CcR
-X-Gm-Message-State: AOJu0YzAlbA69t/lROfPu+/uuP6RblpUzF1UaDe4pSm3gYFz/VABfN+E
-	LTIQ7RdNVQZChWeZr6VPamEHo3dy4Q5JrQ4ox4jo8QbSg36aAzeGs1KsKpezC4M=
-X-Google-Smtp-Source: AGHT+IHUqALZqMVn2fADheMNqneRMmQ3MvAb+MA7p/LnwiMi9nfwmdjzZU7ByFi7IURD8OofvvbuPQ==
-X-Received: by 2002:a05:6000:803:b0:33d:1d45:c658 with SMTP id bt3-20020a056000080300b0033d1d45c658mr1572596wrb.6.1708103259500;
-        Fri, 16 Feb 2024 09:07:39 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id e14-20020a5d4e8e000000b0033cdf1f15e8sm2702656wru.16.2024.02.16.09.07.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 09:07:38 -0800 (PST)
-Date: Fri, 16 Feb 2024 18:07:36 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
-Cc: airlied@redhat.com, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] char/agp: remove agp_bridge_data::type
-Message-ID: <Zc-WWH8_UNBCOlri@phenom.ffwll.local>
-Mail-Followup-To: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	airlied@redhat.com, linux-kernel@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-References: <20240213111511.25187-1-jirislaby@kernel.org>
+	s=arc-20240116; t=1708103387; c=relaxed/simple;
+	bh=eHCvsvK7FzSYW+2FVZi4jYh9j3AL+F2oTzbeXUur3NY=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=KQemAojXEZKFP2DQQSEf0l+WvtTESC9Q936wxiIi+o3Iw/PxCAf3JiANyMI3fEqfi5zlY4rNVEyW+UclEEgEPinzNLcIKbk9udjI5FTjbbcuaiSgbMKSGZ8IVAn9WVQq5gTX/pZ3Mf8X+qMm6ZDXQ59SAleEVJQjAhLG+5xeOuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=S/cM9C8s; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 41GH8CxZ2177841
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Fri, 16 Feb 2024 09:08:13 -0800
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 41GH8CxZ2177841
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1708103295;
+	bh=yE41dwzByXf5KF23clNh/IHW7SK625SXni353rbEmD4=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=S/cM9C8syGe2Gd1h7OZtWYEh86Htb1CAw+qb17ipbI17JAYuVgsA8u2DTTv/rAvEg
+	 Hh3YNClUsDhVj/OpgIJCurvaZEZJsRy6YeLUEcQYyLufeGrtYAgkm726jqbutPEOPk
+	 7GJD+X5wbOD3TJeqJ8tH9cQixad1uN/kyfxDYNUTLk+BD77p+xEg+u3g0qyH8DtIcn
+	 AitqPQz9BL0FEaYCQQ5McbLSUydiErVHqy5yaqmSPpnuaEOvWo55Qiqr0Ax1C1rRgj
+	 9uMyJnSY7Ysel8VBdKp8JW9V+0Q6R5IhJDKMNn4ddndgudhXvZ8APOJ+O6+2LBuCdz
+	 vrndxYarlkWRA==
+Date: Fri, 16 Feb 2024 09:08:09 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Petr Tesarik <petrtesarik@huaweicloud.com>
+CC: Dave Hansen <dave.hansen@intel.com>,
+        =?UTF-8?Q?Petr_Tesa=C5=99=C3=ADk?= <petr@tesarici.cz>,
+        Jonathan Corbet <corbet@lwn.net>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, Xin Li <xin3.li@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>, Ze Gao <zegao2021@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Kai Huang <kai.huang@intel.com>, David Woodhouse <dwmw@amazon.co.uk>,
+        Brian Gerst <brgerst@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Joerg Roedel <jroedel@suse.de>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>,
+        Tina Zhang <tina.zhang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Subject: Re: [RFC 6/8] KEYS: PGP data parser
+User-Agent: K-9 Mail for Android
+In-Reply-To: <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+References: <fb4a40c7-af9a-406a-95ab-406595f3ffe5@intel.com> <20240216152435.1575-1-petrtesarik@huaweicloud.com> <20240216152435.1575-7-petrtesarik@huaweicloud.com> <Zc-Q5pVHjngq9lpX@casper.infradead.org> <5916fa3ac3d0ce2ade71e7ed1c9eb6923e374c1f.camel@huaweicloud.com>
+Message-ID: <EC53BCED-0D4C-4561-9041-584378326DD5@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213111511.25187-1-jirislaby@kernel.org>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 13, 2024 at 12:15:11PM +0100, Jiri Slaby (SUSE) wrote:
-> agp_bridge_data::type is unused (and I cannot find when was used last).
-> 
-> Therefore, remove it.
-> 
-> Found by https://github.com/jirislaby/clang-struct.
-> 
-> Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-> Cc: David Airlie <airlied@redhat.com>
-> Cc: dri-devel@lists.freedesktop.org
+On February 16, 2024 8:53:01 AM PST, Roberto Sassu <roberto=2Esassu@huaweic=
+loud=2Ecom> wrote:
+>On Fri, 2024-02-16 at 16:44 +0000, Matthew Wilcox wrote:
+>> On Fri, Feb 16, 2024 at 04:24:33PM +0100, Petr Tesarik wrote:
+>> > From: David Howells <dhowells@redhat=2Ecom>
+>> >=20
+>> > Implement a PGP data parser for the crypto key type to use when
+>> > instantiating a key=2E
+>> >=20
+>> > This parser attempts to parse the instantiation data as a PGP packet
+>> > sequence (RFC 4880) and if it parses okay, attempts to extract a publ=
+ic-key
+>> > algorithm key or subkey from it=2E
+>>=20
+>> I don't understand why we want to do this in-kernel instead of in
+>> userspace and then pass in the actual key=2E
+>
+>Sigh, this is a long discussion=2E
+>
+>PGP keys would be used as a system-wide trust anchor to verify RPM
+>package headers, which already contain file digests that can be used as
+>reference values for kernel-enforced integrity appraisal=2E
+>
+>With the assumptions that:
+>
+>- In a locked-down system the kernel has more privileges than root
+>- The kernel cannot offload this task to an user space process due to
+>  insufficient isolation
+>
+>the only available option is to do it in the kernel (that is what I got
+>as suggestion)=2E
+>
+>Roberto
+>
+>
 
-Thanks, pushed to drm-misc-next.
--Sima
-
-> ---
->  drivers/char/agp/agp.h | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/char/agp/agp.h b/drivers/char/agp/agp.h
-> index 5c36ab85f80b..67d7be800a7c 100644
-> --- a/drivers/char/agp/agp.h
-> +++ b/drivers/char/agp/agp.h
-> @@ -138,7 +138,6 @@ struct agp_bridge_data {
->  	unsigned long gart_bus_addr;
->  	unsigned long gatt_bus_addr;
->  	u32 mode;
-> -	enum chipset_type type;
->  	unsigned long *key_list;
->  	atomic_t current_memory_agp;
->  	atomic_t agp_in_use;
-> -- 
-> 2.43.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Ok, at least one of those assumptions is false, and *definitely* this appr=
+oach seems to be a solution in search of a problem=2E
 
