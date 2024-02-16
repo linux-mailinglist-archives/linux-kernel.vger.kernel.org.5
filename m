@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-68930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB035858208
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:00:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C180385820D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:00:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3854B1F23923
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:00:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 24505B245E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A18C130AF6;
-	Fri, 16 Feb 2024 15:59:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 845FE130E3A;
+	Fri, 16 Feb 2024 15:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pTznbEsU"
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2086.outbound.protection.outlook.com [40.107.94.86])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2wlDKT0W"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2047.outbound.protection.outlook.com [40.107.212.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69D9012FF90;
-	Fri, 16 Feb 2024 15:59:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.86
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D83130E35;
+	Fri, 16 Feb 2024 15:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.47
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708099166; cv=fail; b=DWYdNBQaMEGQekS42PkxeHNO0kkFh9xOnF7n8YbGsjWxQ7qXR6wLS0SAsXj+cjH8bvAbVF3CKFIFg+DeQdhHBYYuq2+k1U+Yrx7PEJll+HarlEHCYgBP5Bsd0HAYwAwAhJOF9ItOFTimjNSz+8eNZqalutIOhn4hoRkE2N/8eAg=
+	t=1708099173; cv=fail; b=i3ccNHk3uTrP+VFgm1lgxS6JCpVTzRyi8K1wjsiBsGyfEtwFh4HqJduaHHwf35CFtWEzO+B3Cjkvkk4GpWkGguOKxB49z1AAl0YebyZimXynXqbHzZtUgIdiaZyTmPFsQsrXAO/uO/KriXTw87MCTz8/iOzXuJWmN5eRncYi3fE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708099166; c=relaxed/simple;
-	bh=CLPqcEuSEwe/JMc8QMTIYbsYEHbqDZIOOg505KWB3MU=;
+	s=arc-20240116; t=1708099173; c=relaxed/simple;
+	bh=xT8NlFVtOGFcr79QF3zrrDavvwpKSOU3P5vVmCACa0I=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pZfZbctoRmAImfAPsfB3SmtJb96Fhig5a6AZ8Gmg5JNF8wnVEcAGyZPKo4DjIV0m7elol5zFhU/iSneGStmp+cKq6VyQDBJsZO0lIJcE3MxykTdkd8LXoNmr/vgub9JTTbC7hbtIJsJOWqVhbiRyv9tWYEQPVZVPcZmIXOiSAsg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pTznbEsU; arc=fail smtp.client-ip=40.107.94.86
+	 MIME-Version:Content-Type; b=NlDyrSA8kAZTHRsr9fgmJBBPXMivtd6SB5X/uFUeS+UKmqTf4fnSOfiFyZPaBuql4bmL0T7XUZE1qhHGgwBsREj3ihbcVsQ7iWJQ789pO3eD2YD5IUkJOjzyb6ovOoiUIV4uFSmkQawdBv8X0wOzkXE601drtjuEsp8snu7wp7g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2wlDKT0W; arc=fail smtp.client-ip=40.107.212.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=M87pRpV0B8QMcs2PvSVj/fPE0mjpU27vl7alQPz4+XNcjxQv7Dw9cROd4nzz8XUP1OCB3B3tNQm05nTScOByGcNh8+QSO4p2hBjCNV6VC9mpDFXonKIRNGwcwq0d54iBKkzhaIoEJ+dyBFi5W+viaUllzqfsvz9kbTifJ08M6F0MhLe0F+6RqtmJ/sTPSgS9UN0j3LQTlV4xU7b2gqp5yYFa0ghk6Zbxts0QRqPT9s9GHXX9EKbCPdRxRn1Wzq3yieERNHnPiWSXQEDYZiVNWForbggtChHSP6iClxpdxSd/3xJTp52gAqtse84IpbSZB3JF2Mjqbngoeo6Y5yZWtQ==
+ b=V5YHX7qVK0hYLmS6QeYhwetABhLtIODUG1/wZxwAsZihL6p/jqu71hUUgI2qcoohAB/JXEFBvOPZBzBYtMsD69ZmqEGJdq1Qpt7dDqZ0opx6SKrKvwiCQW+cz5Y1n6+FkCl5S1U8neLcbQu+F1fUwWQIEgjhu+ShuVYYkyvYbNoks9szGhSBQxN46/KSV4IjZjPd0zGvYDKwPsmf9rBWP9H2bR3S0ti09BpiAUVDbbRTpbSOW5DhqaiCkl/po/nroNXIY4yRRlQRI6Zqt1cJ+6dRm0R71olmlSNkO2e2+XifYGMHiNqrDX/N+K2tp6KVEb8bgqIcob/sVUt0/lig9w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vfkqwAv3FL0K7sD92UB4NyE/TsQVmg6YJzWfKKQ+sgk=;
- b=Ew4lRHvibpbWlxe7D22ffCwb7Ywn44NvYBU41ab3uAILH5pLHNFfpMfI2rE6rdkEfl30qU5H7apJL0snt8Kw+3wCdkV0z/fjTSiKR3lPIl+iFMoKOOlAjonKHegj8ucnQQU4sG/Z38bF9WZFd0IQGr/DPZ52LUmzi3ET/I99fCh2HzOAT4mMUOhaCVndP5Pa8lHSm5uR+hrZdTsWiu6r0fXIC+uMja4h8VV9JG/72Q2/ii4QtTDwZ0VnVOOcj+Uozzgx86fxAEMDH0ZDB1f9lWsTYnciDmYmYS/fP+akmHb3rVHN6XExg8S1unG20VqgW3Mlm4OTNVj1r7+cSWrvUg==
+ bh=MMA5ww+Vthzpaafo/2MpAeQwyh9GXBcUrwCXzLoyik0=;
+ b=De5eDxM9q4ana0e1v7ISiWJf6ate0Ni4Y9jMEEJymGdCHpKRDBlLckZgU8/K9TtYXjxlX3RwFQTaJrjKpAJv0rXstj2A4xTZ9RCeJR8gPt1jlAYYQA+zt2cITE1hDZkyTGaAmjsTAF1IgBsZUY5C/A1Gih/LHdkpvWVf/DldVnKYVGouSESeXn9MpAudNsY3/4/TQZfKc9911VxxhPSTf+Y//M2BwrQa9URppjLIfXFM256KQ6LsqylqKwk7Y0SpWM3mk9WgrsqfV2j4Vzz+ZHfL9Xw+L3djJ4iCiQOL1Rah+jaa+oyaoY2KYuacJxTTwUEQDF+9e1f11QWx/jb30g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
  (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
  dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vfkqwAv3FL0K7sD92UB4NyE/TsQVmg6YJzWfKKQ+sgk=;
- b=pTznbEsUaYNLrJCuN0c5Mw1LwZqwYgmjOL/gI89KHOoHygBE5kjDVD89KoS6RW43txMoDvYZaELzHAXiMYgbtHJsMUSmrZ6mNeIsvJha62PcC+GlXmTD0JarrG8y5V2mSR4U2HtCa3P1DcRaKZ74yVRQdFBRTDbqeBTqh55kr2o=
-Received: from SN6PR08CA0006.namprd08.prod.outlook.com (2603:10b6:805:66::19)
- by SA0PR12MB4381.namprd12.prod.outlook.com (2603:10b6:806:70::14) with
+ bh=MMA5ww+Vthzpaafo/2MpAeQwyh9GXBcUrwCXzLoyik0=;
+ b=2wlDKT0W7HEKuADNTtJ5Pm6zs/Ew8D7qpQwVlXRGho0IzZZK8M8C6IGR88vXhmZy/qGkxde1ZeSBRIfiLslaw/19Hlg2i+jpGuSCeUIvTOxREbA55A96oDkwjxTnM41Uw/tGANqD/WkmIvALogh8f26+JBKUcDRhmvwEeCyC/qo=
+Received: from DM6PR12CA0025.namprd12.prod.outlook.com (2603:10b6:5:1c0::38)
+ by IA1PR12MB7709.namprd12.prod.outlook.com (2603:10b6:208:423::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.14; Fri, 16 Feb
- 2024 15:59:22 +0000
-Received: from SN1PEPF000252A4.namprd05.prod.outlook.com
- (2603:10b6:805:66:cafe::9d) by SN6PR08CA0006.outlook.office365.com
- (2603:10b6:805:66::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.39 via Frontend
- Transport; Fri, 16 Feb 2024 15:59:22 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.12; Fri, 16 Feb
+ 2024 15:59:28 +0000
+Received: from SN1PEPF0002529E.namprd05.prod.outlook.com
+ (2603:10b6:5:1c0:cafe::80) by DM6PR12CA0025.outlook.office365.com
+ (2603:10b6:5:1c0::38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26 via Frontend
+ Transport; Fri, 16 Feb 2024 15:59:27 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -62,26 +62,26 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SN1PEPF000252A4.mail.protection.outlook.com (10.167.242.11) with Microsoft
+ SN1PEPF0002529E.mail.protection.outlook.com (10.167.242.5) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Fri, 16 Feb 2024 15:59:22 +0000
+ 15.20.7292.25 via Frontend Transport; Fri, 16 Feb 2024 15:59:27 +0000
 Received: from rric.localdomain (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 16 Feb
- 2024 09:59:18 -0600
+ 2024 09:59:24 -0600
 From: Robert Richter <rrichter@amd.com>
 To: Alison Schofield <alison.schofield@intel.com>, Vishal Verma
 	<vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, Dan Williams
 	<dan.j.williams@intel.com>, Jonathan Cameron <Jonathan.Cameron@huawei.com>,
 	Dave Jiang <dave.jiang@intel.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>
-CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Rafael J.
- Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Robert Richter
-	<rrichter@amd.com>, Lukas Wunner <lukas@wunner.de>, Fan Ni
-	<nifan.cxl@gmail.com>
-Subject: [PATCH v4 2/3] cxl/pci: Get rid of pointer arithmetic reading CDAT table
-Date: Fri, 16 Feb 2024 16:58:43 +0100
-Message-ID: <20240216155844.406996-3-rrichter@amd.com>
+	"Rafael J. Wysocki" <rafael@kernel.org>, Jonathan Cameron
+	<jonathan.cameron@huawei.com>, Andrew Morton <akpm@linux-foundation.org>
+CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Len Brown
+	<lenb@kernel.org>, Robert Richter <rrichter@amd.com>,
+	<linux-acpi@vger.kernel.org>
+Subject: [PATCH v4 3/3] lib/firmware_table: Provide buffer length argument to cdat_table_parse()
+Date: Fri, 16 Feb 2024 16:58:44 +0100
+Message-ID: <20240216155844.406996-4-rrichter@amd.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240216155844.406996-1-rrichter@amd.com>
 References: <20240216155844.406996-1-rrichter@amd.com>
@@ -97,233 +97,213 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN1PEPF000252A4:EE_|SA0PR12MB4381:EE_
-X-MS-Office365-Filtering-Correlation-Id: a88d9eee-c16c-4cf7-cebe-08dc2f083deb
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002529E:EE_|IA1PR12MB7709:EE_
+X-MS-Office365-Filtering-Correlation-Id: 970c60b1-5c60-4b0e-bc1b-08dc2f0840fc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	fANoFWGsyZgi9H0XfeuJDAGmAan0QhUVQ4j61TvMlHF7K4kPl6EbJ/ASpGPjS/a/vDu3qRx4lMnBpZOycs1jyvISTzTqnps+vfgGqWvgRMrRDo+r/vSPubbXzQk7T6YQj0ygykWkMhTClZuWqxVobL0tZFzxu6HS1cfioP55NVbXD5SMA6QO95Q6O88Fb4hIhgveV9n8QvcnU5gWdeTDV8wZd88zOyIJUuw5REJ5Ae1hiVrZoYUU4ryyPAxB1S7trVeELvs2SeVXVokblI70s46ewJSYaV2xDaVHLLTRJpPm1/qKSihIa5HNKn0XdWjm4LxJgt74l5JAW0/R6j1jSUAcMY5Ne29ipGR1IWf79XE17FDB3L+rThPENVtWTZQC7I8iTHK2AjKLie5uXDmteWYj4jlOYqh3CVFENoVcFFPZp+Q0GK4q/QdEt2vkRRAX84e0bWCSB0O+Q2Euh+Mvt0H+qn+UyzL+o16/iCaf6/QzT5hnhppaEKNEysvkJkPnCzDFsukb4RjM4V3RI/1IGbV9KbTF0OkJ11lXxb0ZwJuRpJ4CL0A8YaaJMKcwIkBszueGGRYxJuxs/gV3wEISk/l0xlTsLbTG7u57Cm2XPE9Kiravozn45uT2yZn6sejYR+VxKHfbkp/GOmxHcZterA==
+	oukcXJ7rE765rDhO/io7mOLTRB5N7f1J2JRQKoTDZfSdSn1PxIXCZWKkqQJTgSiVzRsdqdeCAVY3udxckZHtlDxeykBHmLP1w02VXCfUdvbmbuoXsi9YBne1D6TfYqO6D5IEt4XfO76j4Lh6pdkicWHjibD+gNZaeebb6FC8ZVsBcFOklYDgi54V6D3DN8IAa5/aID4AS1C6ilwcLaGXSFHj6nHPq9/pZIzXm3L5UPaKs9sUJBlLCfDv7YbDIihflj4WmlIsjL7JbrnEuYOeoNBRovhddLqFCvXYzXkLOuwa1amiSJ5I0UJ8KD2goVlUBTFATGFehkUIgSyfWzjEqn7ko2HHzuOCPWZ1ugz5ZhxYiyD3MqKleUi2W0oAHCJy7bXqUuShpqP42Qk1ijzFjuEuNs5WnWcWowP++AO4onH+sZ9EtgSfsSEL3kUcrYg7ptewenlgozp2cK6vpDdl/NjLaPMLR0HNTMwXluYXz51kwVlAH5qMt8QZj2KByNO/M17CYQHfoSa9hxahRcWZXB1i3ayAU0PzgmWuJnA6779QrycxvrkKHSgFzrldg6anyYqwG0pZtKt63j7bhLu88ysKxt5CIVNZlO6aLaeGbQ7thjcHP9NTOJ0rg7L98lfhuYSFD9LmuK8IZpkhLaI0msmqfYyPcxfLL2FVz1A2NMo=
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(346002)(376002)(39860400002)(396003)(230922051799003)(186009)(36860700004)(1800799012)(451199024)(82310400011)(64100799003)(46966006)(40470700004)(81166007)(356005)(36756003)(82740400003)(8676002)(8936002)(70586007)(70206006)(83380400001)(336012)(2906002)(426003)(16526019)(26005)(1076003)(4326008)(41300700001)(2616005)(316002)(6666004)(54906003)(110136005)(7416002)(5660300002)(478600001);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(136003)(376002)(230922051799003)(451199024)(1800799012)(82310400011)(186009)(64100799003)(36860700004)(46966006)(40470700004)(356005)(81166007)(36756003)(82740400003)(83380400001)(8676002)(5660300002)(2906002)(7416002)(70586007)(70206006)(316002)(8936002)(6666004)(110136005)(4326008)(41300700001)(921011)(336012)(478600001)(426003)(54906003)(2616005)(1076003)(16526019)(26005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 15:59:22.4094
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 15:59:27.5691
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a88d9eee-c16c-4cf7-cebe-08dc2f083deb
+X-MS-Exchange-CrossTenant-Network-Message-Id: 970c60b1-5c60-4b0e-bc1b-08dc2f0840fc
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	SN1PEPF000252A4.namprd05.prod.outlook.com
+	SN1PEPF0002529E.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4381
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB7709
 
-Reading the CDAT table using DOE requires a Table Access Response
-Header in addition to the CDAT entry. In current implementation this
-has caused offsets with sizeof(__le32) to the actual buffers. This led
-to hardly readable code and even bugs. E.g., see fix of devm_kfree()
-in read_cdat_data():
+There exist card implementations with a CDAT table using a fixed size
+buffer, but with entries filled in that do not fill the whole table
+length size. Then, the last entry in the CDAT table may not mark the
+end of the CDAT table buffer specified by the length field in the CDAT
+header. It can be shorter with trailing unused (zero'ed) data. The
+actual table length is determined while reading all CDAT entries of
+the table with DOE.
 
- c65efe3685f5 cxl/cdat: Free correct buffer on checksum error
+If the table is greater than expected (containing zero'ed trailing
+data), the CDAT parser fails with:
 
-Rework code to avoid calculations with sizeof(__le32). Introduce
-struct cdat_doe_rsp for this which contains the Table Access Response
-Header and a variable payload size for various data structures
-afterwards to access the CDAT table and its CDAT Data Structures
-without recalculating buffer offsets.
+ [   48.691717] Malformed DSMAS table length: (24:0)
+ [   48.702084] [CDAT:0x00] Invalid zero length
+ [   48.711460] cxl_port endpoint1: Failed to parse CDAT: -22
 
-Cc: Lukas Wunner <lukas@wunner.de>
-Cc: Fan Ni <nifan.cxl@gmail.com>
+In addition, a check of the table buffer length is missing to prevent
+an out-of-bound access then parsing the CDAT table.
+
+Hardening code against device returning borked table. Fix that by
+providing an optional buffer length argument to
+acpi_parse_entries_array() that can be used by cdat_table_parse() to
+propagate the buffer size down to its users to check the buffer
+length. This also prevents a possible out-of-bound access mentioned.
+
+Add a check to warn about a malformed CDAT table length.
+
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Len Brown <lenb@kernel.org>
+Signed-off-by: Robert Richter <rrichter@amd.com>
 Reviewed-by: Dave Jiang <dave.jiang@intel.com>
 Signed-off-by: Robert Richter <rrichter@amd.com>
 ---
- drivers/cxl/core/pci.c | 77 ++++++++++++++++++++++--------------------
- drivers/cxl/cxlpci.h   | 24 +++++++++++++
- 2 files changed, 65 insertions(+), 36 deletions(-)
+ drivers/acpi/tables.c    |  2 +-
+ drivers/cxl/core/cdat.c  |  6 +++---
+ drivers/cxl/core/pci.c   |  8 +++++++-
+ include/linux/fw_table.h |  4 +++-
+ lib/fw_table.c           | 15 ++++++++++-----
+ 5 files changed, 24 insertions(+), 11 deletions(-)
 
+diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+index b07f7d091d13..b976e5fc3fbc 100644
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -253,7 +253,7 @@ int __init_or_acpilib acpi_table_parse_entries_array(
+ 
+ 	count = acpi_parse_entries_array(id, table_size,
+ 					 (union fw_table_header *)table_header,
+-					 proc, proc_num, max_entries);
++					 0, proc, proc_num, max_entries);
+ 
+ 	acpi_put_table(table_header);
+ 	return count;
+diff --git a/drivers/cxl/core/cdat.c b/drivers/cxl/core/cdat.c
+index 6fe11546889f..012d8f2a7945 100644
+--- a/drivers/cxl/core/cdat.c
++++ b/drivers/cxl/core/cdat.c
+@@ -149,13 +149,13 @@ static int cxl_cdat_endpoint_process(struct cxl_port *port,
+ 	int rc;
+ 
+ 	rc = cdat_table_parse(ACPI_CDAT_TYPE_DSMAS, cdat_dsmas_handler,
+-			      dsmas_xa, port->cdat.table);
++			      dsmas_xa, port->cdat.table, port->cdat.length);
+ 	rc = cdat_table_parse_output(rc);
+ 	if (rc)
+ 		return rc;
+ 
+ 	rc = cdat_table_parse(ACPI_CDAT_TYPE_DSLBIS, cdat_dslbis_handler,
+-			      dsmas_xa, port->cdat.table);
++			      dsmas_xa, port->cdat.table, port->cdat.length);
+ 	return cdat_table_parse_output(rc);
+ }
+ 
+@@ -511,7 +511,7 @@ void cxl_switch_parse_cdat(struct cxl_port *port)
+ 		return;
+ 
+ 	rc = cdat_table_parse(ACPI_CDAT_TYPE_SSLBIS, cdat_sslbis_handler,
+-			      port, port->cdat.table);
++			      port, port->cdat.table, port->cdat.length);
+ 	rc = cdat_table_parse_output(rc);
+ 	if (rc)
+ 		dev_dbg(&port->dev, "Failed to parse SSLBIS: %d\n", rc);
 diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-index 39366ce94985..763c39456228 100644
+index 763c39456228..a0e7ed5ae25f 100644
 --- a/drivers/cxl/core/pci.c
 +++ b/drivers/cxl/core/pci.c
-@@ -544,55 +544,57 @@ static int cxl_cdat_get_length(struct device *dev,
- 
- static int cxl_cdat_read_table(struct device *dev,
- 			       struct pci_doe_mb *doe_mb,
--			       void *cdat_table, size_t *cdat_length)
-+			       struct cdat_doe_rsp *rsp, size_t *length)
- {
--	size_t length = *cdat_length + sizeof(__le32);
--	__le32 *data = cdat_table;
--	int entry_handle = 0;
-+	size_t received, remaining = *length;
-+	unsigned int entry_handle = 0;
-+	union cdat_data *data;
- 	__le32 saved_dw = 0;
- 
- 	do {
- 		__le32 request = CDAT_DOE_REQ(entry_handle);
--		struct cdat_entry_header *entry;
--		size_t entry_dw;
- 		int rc;
- 
- 		rc = pci_doe(doe_mb, PCI_DVSEC_VENDOR_ID_CXL,
- 			     CXL_DOE_PROTOCOL_TABLE_ACCESS,
- 			     &request, sizeof(request),
--			     data, length);
-+			     rsp, sizeof(*rsp) + remaining);
- 		if (rc < 0) {
- 			dev_err(dev, "DOE failed: %d", rc);
- 			return rc;
- 		}
- 
--		/* 1 DW Table Access Response Header + CDAT entry */
--		entry = (struct cdat_entry_header *)(data + 1);
--		if ((entry_handle == 0 &&
--		     rc != sizeof(__le32) + sizeof(struct cdat_header)) ||
--		    (entry_handle > 0 &&
--		     (rc < sizeof(__le32) + sizeof(*entry) ||
--		      rc != sizeof(__le32) + le16_to_cpu(entry->length))))
-+		if (rc < sizeof(*rsp))
- 			return -EIO;
- 
-+		data = (union cdat_data *)rsp->data;
-+		received = rc - sizeof(*rsp);
-+
-+		if (entry_handle == 0) {
-+			if (received != sizeof(data->header))
-+				return -EIO;
-+		} else {
-+			if (received < sizeof(data->entry) ||
-+			    received != le16_to_cpu(data->entry.length))
-+				return -EIO;
-+		}
-+
- 		/* Get the CXL table access header entry handle */
- 		entry_handle = FIELD_GET(CXL_DOE_TABLE_ACCESS_ENTRY_HANDLE,
--					 le32_to_cpu(data[0]));
--		entry_dw = rc / sizeof(__le32);
--		/* Skip Header */
--		entry_dw -= 1;
-+					 le32_to_cpu(rsp->doe_header));
-+
- 		/*
- 		 * Table Access Response Header overwrote the last DW of
- 		 * previous entry, so restore that DW
- 		 */
--		*data = saved_dw;
--		length -= entry_dw * sizeof(__le32);
--		data += entry_dw;
--		saved_dw = *data;
-+		rsp->doe_header = saved_dw;
-+		remaining -= received;
-+		rsp = (void *)rsp + received;
-+		saved_dw = rsp->doe_header;
- 	} while (entry_handle != CXL_DOE_TABLE_ACCESS_LAST_ENTRY);
- 
- 	/* Length in CDAT header may exceed concatenation of CDAT entries */
--	*cdat_length -= length - sizeof(__le32);
-+	*length -= remaining;
- 
- 	return 0;
- }
-@@ -620,8 +622,8 @@ void read_cdat_data(struct cxl_port *port)
- 	struct pci_doe_mb *doe_mb;
+@@ -623,7 +623,7 @@ void read_cdat_data(struct cxl_port *port)
  	struct pci_dev *pdev = NULL;
  	struct cxl_memdev *cxlmd;
--	size_t cdat_length;
--	void *cdat_table, *cdat_buf;
-+	struct cdat_doe_rsp *buf;
-+	size_t length;
+ 	struct cdat_doe_rsp *buf;
+-	size_t length;
++	size_t table_length, length;
  	int rc;
  
  	if (is_cxl_memdev(uport)) {
-@@ -647,30 +649,33 @@ void read_cdat_data(struct cxl_port *port)
+@@ -662,10 +662,16 @@ void read_cdat_data(struct cxl_port *port)
+ 	if (!buf)
+ 		goto err;
  
- 	port->cdat_available = true;
- 
--	if (cxl_cdat_get_length(dev, doe_mb, &cdat_length)) {
-+	if (cxl_cdat_get_length(dev, doe_mb, &length)) {
- 		dev_dbg(dev, "No CDAT length\n");
- 		return;
- 	}
- 
--	cdat_buf = devm_kzalloc(dev, cdat_length + sizeof(__le32), GFP_KERNEL);
--	if (!cdat_buf)
--		return;
-+	/*
-+	 * The begin of the CDAT buffer needs space for additional 4
-+	 * bytes for the DOE header. Table data starts afterwards.
-+	 */
-+	buf = devm_kzalloc(dev, sizeof(*buf) + length, GFP_KERNEL);
-+	if (!buf)
-+		goto err;
- 
--	rc = cxl_cdat_read_table(dev, doe_mb, cdat_buf, &cdat_length);
-+	rc = cxl_cdat_read_table(dev, doe_mb, buf, &length);
++	table_length = length;
++
+ 	rc = cxl_cdat_read_table(dev, doe_mb, buf, &length);
  	if (rc)
  		goto err;
  
--	cdat_table = cdat_buf + sizeof(__le32);
--	if (cdat_checksum(cdat_table, cdat_length))
-+	if (cdat_checksum(buf->data, length))
++	if (table_length != length)
++		dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
++			table_length, length);
++
+ 	if (cdat_checksum(buf->data, length))
  		goto err;
  
--	port->cdat.table = cdat_table;
--	port->cdat.length = cdat_length;
--	return;
-+	port->cdat.table = buf->data;
-+	port->cdat.length = length;
+diff --git a/include/linux/fw_table.h b/include/linux/fw_table.h
+index 95421860397a..3ff4c277296f 100644
+--- a/include/linux/fw_table.h
++++ b/include/linux/fw_table.h
+@@ -40,12 +40,14 @@ union acpi_subtable_headers {
  
-+	return;
- err:
- 	/* Don't leave table data allocated on error */
--	devm_kfree(dev, cdat_buf);
-+	devm_kfree(dev, buf);
- 	dev_err(dev, "Failed to read/validate CDAT.\n");
+ int acpi_parse_entries_array(char *id, unsigned long table_size,
+ 			     union fw_table_header *table_header,
++			     unsigned long max_length,
+ 			     struct acpi_subtable_proc *proc,
+ 			     int proc_num, unsigned int max_entries);
+ 
+ int cdat_table_parse(enum acpi_cdat_type type,
+ 		     acpi_tbl_entry_handler_arg handler_arg, void *arg,
+-		     struct acpi_table_cdat *table_header);
++		     struct acpi_table_cdat *table_header,
++		     unsigned long length);
+ 
+ /* CXL is the only non-ACPI consumer of the FIRMWARE_TABLE library */
+ #if IS_ENABLED(CONFIG_ACPI) && !IS_ENABLED(CONFIG_CXL_BUS)
+diff --git a/lib/fw_table.c b/lib/fw_table.c
+index c3569d2ba503..16291814450e 100644
+--- a/lib/fw_table.c
++++ b/lib/fw_table.c
+@@ -127,6 +127,7 @@ static __init_or_fwtbl_lib int call_handler(struct acpi_subtable_proc *proc,
+  *
+  * @id: table id (for debugging purposes)
+  * @table_size: size of the root table
++ * @max_length: maximum size of the table (ignore if 0)
+  * @table_header: where does the table start?
+  * @proc: array of acpi_subtable_proc struct containing entry id
+  *        and associated handler with it
+@@ -148,18 +149,21 @@ static __init_or_fwtbl_lib int call_handler(struct acpi_subtable_proc *proc,
+ int __init_or_fwtbl_lib
+ acpi_parse_entries_array(char *id, unsigned long table_size,
+ 			 union fw_table_header *table_header,
++			 unsigned long max_length,
+ 			 struct acpi_subtable_proc *proc,
+ 			 int proc_num, unsigned int max_entries)
+ {
+-	unsigned long table_end, subtable_len, entry_len;
++	unsigned long table_len, table_end, subtable_len, entry_len;
+ 	struct acpi_subtable_entry entry;
+ 	enum acpi_subtable_type type;
+ 	int count = 0;
+ 	int i;
+ 
+ 	type = acpi_get_subtable_type(id);
+-	table_end = (unsigned long)table_header +
+-		    acpi_table_get_length(type, table_header);
++	table_len = acpi_table_get_length(type, table_header);
++	if (max_length && max_length < table_len)
++		table_len = max_length;
++	table_end = (unsigned long)table_header + table_len;
+ 
+ 	/* Parse all entries looking for a match. */
+ 
+@@ -208,7 +212,8 @@ int __init_or_fwtbl_lib
+ cdat_table_parse(enum acpi_cdat_type type,
+ 		 acpi_tbl_entry_handler_arg handler_arg,
+ 		 void *arg,
+-		 struct acpi_table_cdat *table_header)
++		 struct acpi_table_cdat *table_header,
++		 unsigned long length)
+ {
+ 	struct acpi_subtable_proc proc = {
+ 		.id		= type,
+@@ -222,6 +227,6 @@ cdat_table_parse(enum acpi_cdat_type type,
+ 	return acpi_parse_entries_array(ACPI_SIG_CDAT,
+ 					sizeof(struct acpi_table_cdat),
+ 					(union fw_table_header *)table_header,
+-					&proc, 1, 0);
++					length, &proc, 1, 0);
  }
- EXPORT_SYMBOL_NS_GPL(read_cdat_data, CXL);
-diff --git a/drivers/cxl/cxlpci.h b/drivers/cxl/cxlpci.h
-index 711b05d9a370..93992a1c8eec 100644
---- a/drivers/cxl/cxlpci.h
-+++ b/drivers/cxl/cxlpci.h
-@@ -71,6 +71,15 @@ enum cxl_regloc_type {
- 	CXL_REGLOC_RBI_TYPES
- };
- 
-+/*
-+ * Table Access DOE, CDAT Read Entry Response
-+ *
-+ * Spec refs:
-+ *
-+ * CXL 3.1 8.1.11, Table 8-14: Read Entry Response
-+ * CDAT Specification 1.03: 2 CDAT Data Structures
-+ */
-+
- struct cdat_header {
- 	__le32 length;
- 	u8 revision;
-@@ -85,6 +94,21 @@ struct cdat_entry_header {
- 	__le16 length;
- } __packed;
- 
-+/*
-+ * The DOE CDAT read response contains a CDAT read entry (either the
-+ * CDAT header or a structure).
-+ */
-+union cdat_data {
-+	struct cdat_header header;
-+	struct cdat_entry_header entry;
-+} __packed;
-+
-+/* There is an additional CDAT response header of 4 bytes. */
-+struct cdat_doe_rsp {
-+	__le32 doe_header;
-+	u8 data[];
-+} __packed;
-+
- /*
-  * CXL v3.0 6.2.3 Table 6-4
-  * The table indicates that if PCIe Flit Mode is set, then CXL is in 256B flits
+ EXPORT_SYMBOL_FWTBL_LIB(cdat_table_parse);
 -- 
 2.39.2
 
