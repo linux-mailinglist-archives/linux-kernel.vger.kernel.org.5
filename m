@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-68147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1E185767A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:07:45 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0B685767F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:07:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C02C9B225E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:07:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C2CD1F2144F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9C31BC2D;
-	Fri, 16 Feb 2024 07:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5392C14F65;
+	Fri, 16 Feb 2024 07:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nbZDNiHr"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RY078VYN"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4A71B28D
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4079B1B80C
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:06:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708067171; cv=none; b=nEHJ0bp98P19sypC0xC1Iro3ishpMkkU63druqWnJ1ndhxIpC3rKJ9pEyGSZNa4XOUVu4dU4Nu+7ToRxCKJi/fJu+fGsKiGJod3cXAR+23rdhibi5ouNhHHOo9+5mnc9x46tM29MOezpwE2MASof5Hu3/fINhDGIVnYnwR+qN7o=
+	t=1708067172; cv=none; b=hUBrR6tQLBcD4H7ro1wJLN5cOIc+88vzjgu2YgepN9LGZK+ylyUMpN+OE5a7WLdTgI7TuMUhGnHwbaOpkWkdZ/Gez03WcX5y06PJlUu5sGzvdGrkHmApcBBGpDy3/8OA/4wmW2GL464EyeT9qgD6PcTVwLnBYkyct+2XUV0bQ7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708067171; c=relaxed/simple;
-	bh=20H7Hn9r4pQjhyhiiMcQlcmQ8QYArnsE20vA7b79kLk=;
+	s=arc-20240116; t=1708067172; c=relaxed/simple;
+	bh=Q12iQnFdG2iZ85QopCuTAOBD4Ofa9upNXT0gtIFtD/A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mb+d6FJQ+YLfXkRTQ2b5LFO3AxK8a0P+p5UmGNQ4n5cVIK7JjD4g4VwmDdGozNNedPoVJTCyrVgKMCKR7pnlrHSd8D7VKgbgtI0QtRJTLg5mfFjA54V97SupOnMt/EP0EU1f1n5f/QyE9lfGgEhva8sMD7ENQb5r2vl1C1BpqEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nbZDNiHr; arc=none smtp.client-ip=209.85.128.49
+	 MIME-Version; b=uHcsY2ky0pSWZQXc8ToiwqgXC7RJy/XG/hAMxxNk+sNvxVGJ0Ct+e5YXzu5yoHzSNqtwvEhSInRNNEU4OC1OHNTUvzOPa844L5zU94lqrpPr8C6++TtpqhT64EBPsA9qNXTp1dJ7Mns+QbSpezVwIG3JeGBRohl7xvyJB3ejjJw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RY078VYN; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-412191ed8aaso10663785e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 23:06:09 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33cd57b7eabso762626f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 23:06:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708067167; x=1708671967; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708067168; x=1708671968; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5Le6XNl1MSpW8ND9xafZ+XDYHu2w9i8pp90k+8toYjg=;
-        b=nbZDNiHrS8PFUiMDVZz9lgYKiYzGyehGCFo4ZtXzvpEKEKn8hHaOp2TTOSmmw9FP5v
-         STj6bvz+ns/tmtGdLTy3w0SvSTCGZ43sa/2YW2PltUAa2oi5OXJnGT9TZey2Pyzks06n
-         T/9uLEPGKXZCPOGyA7c8zP+wjHXOfrpjJPmS2IRPSJ28f5PAZJX9NUR5qc0pYnw1KjU0
-         +s+jAd4Gq+uzja36Nl1Qfvx2Wz2aUNWlBoeegGRsgRVWXpP5oDpMV+YB6x8lfzyWFh2Q
-         oPKJE11F25gMYlLtP32AqsGAlRaqqLCLOYg0u8YcgjsWnUfCJIPWEZkl9R0CBH4Yusp2
-         O45Q==
+        bh=D6DI6oxyBGAOnmgH57nVgi2YtxfkZy7vqtRyT86aOak=;
+        b=RY078VYNjo9FRPbhZpQFDaXaDRBwAJFC2FjTsr51EbNVwFbYxstosOhzie+rHs5zMu
+         jQnfg7eeINjlEZP3DCKiaHtuqy432YeESeXiQrwH68fqileR+OnYPwHiF4OQRrjbv4n/
+         x7oNG6x+5cqTIZ+j3tlfJuNb8Aa77noPULgvJzHu1Mgs1UsJXTJ4492psh4WK/g3meD0
+         bc8R7yfG60wmUd1GfZ3C6wvQsY7uT6FVDf4eF51dzZ9Xvinme/RC7+hPDOAQ4JEWsVEw
+         2uKzWwonKbH3OHoBksufj7bM5oKYhaWJP42q4OpuXCk+f2Tl/lOfUa7eh6FXCjOLY9we
+         zzgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708067167; x=1708671967;
+        d=1e100.net; s=20230601; t=1708067168; x=1708671968;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5Le6XNl1MSpW8ND9xafZ+XDYHu2w9i8pp90k+8toYjg=;
-        b=eAGpy+Yif0fzrxdvDC6j1BWK1M/ropt8gfeLK8xq8sf9e1XGw5T3wYKSQdwok3+6/n
-         vyo9PsP66/2IFFgAGwVDEwVVWFSmKRAWJ5i49kQ52/gzU/E8WDSmkh/f1jpTnhZCszrx
-         vW7A0EnUAXVaiDLfdgjBSO8CJ832uFAIPwD94WlLblADJ0vQJCPU2VPWNroh+0MGFAz4
-         JAGObsiWTScOu2fUryoYWj3RRvm6MDTG+blAxfqj56XLqtFr9iLpj2NaXTNLp9Lhd8Ho
-         XtwUTxJuya06tU4dUI28z4CiZt8jeAGOInN2OOjAdH74KnBodez/Hcx8QZc5iZo7IV0T
-         hS8g==
-X-Forwarded-Encrypted: i=1; AJvYcCXDjozaL73To8Zi5linY9rm/QeHbyE00u5WrBKDAujsONtxuRbd7lJF/mZfTD2u7xmqtjKjsAJtT/tox/TNUyGjlFcH6qagAgi9OV0q
-X-Gm-Message-State: AOJu0YyW8CwJ7s7hRrroigV2G4JAvpD8kvaK4k0SsvKxB/qs8EOS9ohr
-	SYN2GxtJBCKS3KJNfLGkcIdLhGJ4VlfTzAUP123NYcfcR/SmeeyyNAbbYi1FCWE=
-X-Google-Smtp-Source: AGHT+IGkiLaE+HZu8zlPglHiZL4OI53GAHWVvXP9fkAiSIGe1ORL1wzzW6K7wetMNBb2aYy3bf9WWw==
-X-Received: by 2002:a5d:4a49:0:b0:33d:11a2:42 with SMTP id v9-20020a5d4a49000000b0033d11a20042mr1761501wrs.47.1708067167573;
-        Thu, 15 Feb 2024 23:06:07 -0800 (PST)
+        bh=D6DI6oxyBGAOnmgH57nVgi2YtxfkZy7vqtRyT86aOak=;
+        b=l2ZgePspmIb+8jrN8mkdLGVT3JFE9Hjs+pFRH3NUmqveppLDUBJ3t3aEO9L5vrVd5t
+         BskCtUKm6rKk9OtVszMFxze59Dxts4Q82Ta37As6SVLP1nwRMni6NBuQCFr7id7OTfiL
+         3kfG1SPDmA8HqS+tPBTaPM5h7t668A5HyOSNbo1Oa77pxDnBuShyBOnKp5K66kgLMZtS
+         CkszEPmQwGzx6tSQsQ9erwRbO8P+OaHwp95LQDHfqHSq1gjiT4YsXFpiF7iOV/MdpvSY
+         r2/KkAlFD2u16ZLLjywBn1TyrAVRGHrnzX5tab+X/E2454Dwe7sus3gM4d+9r+ehz1nU
+         bjdA==
+X-Forwarded-Encrypted: i=1; AJvYcCVWF/uPFtlJiWWXw4h700PkWjDUBe0YrrB4t06VL7UERRavWf8E2QIeruR1wac9tUkqKSBLjIsTcyjdRUtjuEwHggt7seHpJBgzAbju
+X-Gm-Message-State: AOJu0YxwlR3ReINWQYFkJsQTjDJ+cA9fF2htKOLLd8tj6/EbUtZLq0X3
+	wF8VA5YsSHodQUBzlqGd5kAjCVDHoVKFeFDKfrqboUAyvxsFToW59Setk1bNZvg=
+X-Google-Smtp-Source: AGHT+IElxq2xk6aiqP+v7vVmB9Rn+o8tE/AamjN56/HIJFwjBwNBu23xznmMSINpOQWx94t5lmSSfA==
+X-Received: by 2002:a5d:6190:0:b0:33c:f968:e243 with SMTP id j16-20020a5d6190000000b0033cf968e243mr2968421wru.43.1708067168666;
+        Thu, 15 Feb 2024 23:06:08 -0800 (PST)
 Received: from ta2.c.googlers.com.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id k18-20020a5d66d2000000b0033940016d6esm1298839wrw.93.2024.02.15.23.06.06
+        by smtp.gmail.com with ESMTPSA id k18-20020a5d66d2000000b0033940016d6esm1298839wrw.93.2024.02.15.23.06.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Thu, 15 Feb 2024 23:06:07 -0800 (PST)
 From: Tudor Ambarus <tudor.ambarus@linaro.org>
@@ -84,9 +84,9 @@ Cc: alim.akhtar@samsung.com,
 	willmcvicker@google.com,
 	devicetree@vger.kernel.org,
 	Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: [PATCH v3 07/12] spi: s3c64xx: let the SPI core determine the bus number
-Date: Fri, 16 Feb 2024 07:05:50 +0000
-Message-ID: <20240216070555.2483977-8-tudor.ambarus@linaro.org>
+Subject: [PATCH v3 08/12] spi: s3c64xx: introduce s3c64xx_spi_set_port_id()
+Date: Fri, 16 Feb 2024 07:05:51 +0000
+Message-ID: <20240216070555.2483977-9-tudor.ambarus@linaro.org>
 X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 In-Reply-To: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
 References: <20240216070555.2483977-1-tudor.ambarus@linaro.org>
@@ -98,38 +98,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Let the core determine the bus number, either by getting the alias ID
-(as the driver forces now), or by allocating a dynamic bus number when
-the alias is absent. Prepare the driver to allow dt aliases to be
-absent.
+Prepare driver to get rid of the of alias ID dependency. Split the
+port_id logic into a dedicated method.
 
 Signed-off-by: Tudor Ambarus <tudor.ambarus@linaro.org>
 ---
- drivers/spi/spi-s3c64xx.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/spi/spi-s3c64xx.c | 37 +++++++++++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/spi/spi-s3c64xx.c b/drivers/spi/spi-s3c64xx.c
-index 68f95c04d092..ac47755beb02 100644
+index ac47755beb02..40de325bd094 100644
 --- a/drivers/spi/spi-s3c64xx.c
 +++ b/drivers/spi/spi-s3c64xx.c
-@@ -1279,7 +1279,7 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
- 	sdd->rx_dma.direction = DMA_DEV_TO_MEM;
+@@ -1200,6 +1200,27 @@ static inline const struct s3c64xx_spi_port_config *s3c64xx_spi_get_port_config(
+ 	return (const struct s3c64xx_spi_port_config *)platform_get_device_id(pdev)->driver_data;
+ }
  
- 	host->dev.of_node = pdev->dev.of_node;
--	host->bus_num = sdd->port_id;
-+	host->bus_num = -1;
- 	host->setup = s3c64xx_spi_setup;
- 	host->cleanup = s3c64xx_spi_cleanup;
- 	host->prepare_transfer_hardware = s3c64xx_spi_prepare_transfer;
-@@ -1360,7 +1360,7 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
- 	}
++static int s3c64xx_spi_set_port_id(struct platform_device *pdev,
++				   struct s3c64xx_spi_driver_data *sdd)
++{
++	int ret;
++
++	if (pdev->dev.of_node) {
++		ret = of_alias_get_id(pdev->dev.of_node, "spi");
++		if (ret < 0)
++			return dev_err_probe(&pdev->dev, ret,
++					     "Failed to get alias id\n");
++		sdd->port_id = ret;
++	} else {
++		if (pdev->id < 0)
++			return dev_err_probe(&pdev->dev, -EINVAL,
++					     "Negative platform ID is not allowed\n");
++		sdd->port_id = pdev->id;
++	}
++
++	return 0;
++}
++
+ static void s3c64xx_spi_set_fifomask(struct s3c64xx_spi_driver_data *sdd)
+ {
+ 	const struct s3c64xx_spi_port_config *port_conf = sdd->port_conf;
+@@ -1252,18 +1273,10 @@ static int s3c64xx_spi_probe(struct platform_device *pdev)
+ 	sdd->host = host;
+ 	sdd->cntrlr_info = sci;
+ 	sdd->pdev = pdev;
+-	if (pdev->dev.of_node) {
+-		ret = of_alias_get_id(pdev->dev.of_node, "spi");
+-		if (ret < 0)
+-			return dev_err_probe(&pdev->dev, ret,
+-					     "Failed to get alias id\n");
+-		sdd->port_id = ret;
+-	} else {
+-		if (pdev->id < 0)
+-			return dev_err_probe(&pdev->dev, -EINVAL,
+-					     "Negative platform ID is not allowed\n");
+-		sdd->port_id = pdev->id;
+-	}
++
++	ret = s3c64xx_spi_set_port_id(pdev, sdd);
++	if (ret)
++		return ret;
  
- 	dev_dbg(&pdev->dev, "Samsung SoC SPI Driver loaded for Bus SPI-%d with %d Targets attached\n",
--					sdd->port_id, host->num_chipselect);
-+		host->bus_num, host->num_chipselect);
- 	dev_dbg(&pdev->dev, "\tIOmem=[%pR]\tFIFO %dbytes\n",
- 		mem_res, sdd->fifo_depth);
- 
+ 	if (sdd->port_conf->fifo_depth)
+ 		sdd->fifo_depth = sdd->port_conf->fifo_depth;
 -- 
 2.44.0.rc0.258.g7320e95886-goog
 
