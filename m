@@ -1,121 +1,113 @@
-Return-Path: <linux-kernel+bounces-69066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E233785840C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:23:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5640085840D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:24:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96FE31F29F09
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:23:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA3F31F29EDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:24:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C865B131E30;
-	Fri, 16 Feb 2024 17:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C797131E30;
+	Fri, 16 Feb 2024 17:24:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="BzmQcEEM"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="b+C/aKHU"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44402130E4F;
-	Fri, 16 Feb 2024 17:23:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B831130E39
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708104201; cv=none; b=DWKsacoi7av8G1TGffLxuRkMBxIcq+glo+gJp0Qn+eELO3vMkDq8BxO+6WOyl4bMEH1/JyCVKd/WoDsmacwVl2Ur/FAkaUsrIFjc9/qlLHmW5cBa2lgJjCkzjF9bAPZZL/7tuNnUmQNahU++rJe7m+YUqBS/ShLJ9xNqQCp9jvI=
+	t=1708104243; cv=none; b=jdDmsptNxWZtP1tIb3C3DPZXD4uS8WVpurPyZ1sGjlHthIBih80XIXh3nSwS16ESl1qoc7KyBudIx8NfxWhHiXNSEDw7Dk/H8u9tEmAQ8TweJq2XdJTrtuyr4UNZcmLPX4cX8WOsK/6h/FTikuvqm/HEr2/xv0A8/IDHi+FgOKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708104201; c=relaxed/simple;
-	bh=C+UdeynDOGq0mrHveglMdaqWxl9GfAv8DWBDN7EsUJw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XTn+zH+nrUVip97RaLYkjcQh/8D+v7wQvAhlK0aLNWE99+nXZ3AHpZHxBnVuaDtsdr5EGtsjEytrTM4rMsLMblYKL0J8W5iq/ZJ0wUFn3Dcp/VjGyUU+GB2reClMo6ozqIEhlsmkyLalN5Ts8EjUaEA8gY4MbceoGvDx30A+gsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=BzmQcEEM; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1304B2000E;
-	Fri, 16 Feb 2024 17:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1708104189;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RimLjOdN8rzQMpG0ae9IdH673ga5rpJ5Vs6DdQd0/gQ=;
-	b=BzmQcEEMGCl+P5qGARHIVL1y4ADNuv8bQFuLLYUM4/lqqGfcpNFu8HWyOQ2A2GzE8/tujf
-	UdWhRocg/l4UUe5et5gtQBAgVrF+9ZwquMbxcE3A9fXfYokgnN2lO5n7jn9cmkJkNt5Bfj
-	Z3XEQF/p7R0XqIXTdm/O19LvG6YZkAXU8wtvI50pIW6S6P4He/7ayaQRFdsujG4PnqNC1w
-	9yDN2fWfqEQMQ/6KvImzgcEwtU9GeYgWcau+2qsYZVfxPvi2xhBRpBoHq+PWUgOF++yFwO
-	Mnt+zGFq4nDdn50+Gz6cOWfWNFE4Uj3bgAALObqxxiPVojQVFESnzXTA+GzbSg==
-Message-ID: <c8393e61-7c44-4aca-acce-10b5f6b34fdd@arinc9.com>
-Date: Fri, 16 Feb 2024 20:23:01 +0300
+	s=arc-20240116; t=1708104243; c=relaxed/simple;
+	bh=GrGGaI96hLQeFLK9l61R0YyUjHIsjanXspc3Z3zFwKg=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=I2jGYF95AHroqallUt9bJzwNnLC2GEeYdHIIWn+kT5IF9UMwfx7IiFusJPURvXm/mnh/eWSLAopw/lwU3opPCz8yBTGrJR0zt7uqqwCC1FK8Be/FMTgEgEV+YbAsTdv+WwHIcKGm03LRiliLP65EtgEtZQZ3Z4ADgyVStxhLOpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=b+C/aKHU; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60802b0afd2so4783777b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 09:24:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708104241; x=1708709041; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9Sl1b2bCt2ETIANL315ip+LCb468TguLwgWryRSpCdA=;
+        b=b+C/aKHU42+tAw1dpVxjDPflc9At6XxPCj8S6g17Aw+l+fk3EARVsF9PSNr2UrildO
+         R9smrNRUAXoFNBf0RrzUzwTG4Juj3yaseCu7xsnSjU9YFy7HzHpgtuONhgRQBqrRHyw0
+         K3cLSvpdry9TAMG4GjxMH9iwwY5tshF+Gt4OtqhYrxz5vhGmlOHBNbtuEAni9oZICp6/
+         fbpAqcEZ+DAiLgQBaukPQ3+jWm9Eh1iXmcKU5aoFoOEYrj+zH6P0ABAbyVL3eY7ioztI
+         IqtPI9QzdtdEd/nKOzigrr0FmiXaehfzJEQboewGeTGYniXc8BJtRaOMprLMh7qbATCU
+         CVOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708104241; x=1708709041;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9Sl1b2bCt2ETIANL315ip+LCb468TguLwgWryRSpCdA=;
+        b=Zm7z98a6Gu0qGHfRMj/vS9u1Kh+PFLZRds2Vzp7Kfjm5qxo3ZGc1hOY3poNY23+OWv
+         AaDaUn1eU5Bh8JETNbQ3eC0pwcLHVkele1Hs/UDCZvS88Gd6AQB77ttg3zCtz35cbfEN
+         5x85n7kWAK3x5LEWwcgjeIVMjIP6YfbaBghPzwhoVO2+J0KBZPyeg30W+l2G459ojISx
+         sN0v9G71JI1qOHlF5VFjXzXm2j2gULAPQ/0pep7b1KxYMeB09pCQv7Oy7JgXdbPhuRiN
+         SRvh29Gnh02XL7V1o14MB0WrXB0FjMvkElrGYahy4YnTN0SwVP9Y+o/+ZJBeYtFe3OCe
+         dMHg==
+X-Forwarded-Encrypted: i=1; AJvYcCX4jD4UIbYClBQVoCGJFoVmzSR2vB1IPKL/x8RU1AZxywfJgOIx5oEs9GfhACZjuNB/UPPGlQ6gkMQcMgwujQV3TjLRCRg07rCJJNPY
+X-Gm-Message-State: AOJu0YxUAISaUhSjEUtjGpBlQ/iAbdr7d/5zz/xY6bCT5N2uvCpXgiwG
+	ThOQa0yeTDS7Bt5XO/CmzzoCPd9I5WkS/JSJF/ezS7OnjUjCZ2dGd9nG0t0ZjfZeUNl2e+p7srP
+	Ay9jzzQ==
+X-Google-Smtp-Source: AGHT+IFqWeRYKSVcwa0vhgyD6jQU0oUmzZBrtVi6OdlKkHk9O5GXukUJnGWRIfC3D8Gq6rWn1TtS28ALGLoc
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:fe4:7382:151a:2e90])
+ (user=irogers job=sendgmr) by 2002:a81:4316:0:b0:607:f42f:70e1 with SMTP id
+ q22-20020a814316000000b00607f42f70e1mr529438ywa.4.1708104241244; Fri, 16 Feb
+ 2024 09:24:01 -0800 (PST)
+Date: Fri, 16 Feb 2024 09:23:57 -0800
+Message-Id: <20240216172357.65037-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH netnext 8/8] net: dsa: mt7530: simplify link operations
- and force link down on all ports
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Daniel Golle <daniel@makrotopia.org>, DENG Qingfang <dqfext@gmail.com>,
- Sean Wang <sean.wang@mediatek.com>, Andrew Lunn <andrew@lunn.ch>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240208-for-netnext-mt7530-improvements-3-v1-0-d7c1cfd502ca@arinc9.com>
- <20240208-for-netnext-mt7530-improvements-3-v1-8-d7c1cfd502ca@arinc9.com>
- <Zc+ConfebmQdpCOF@shell.armlinux.org.uk>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <Zc+ConfebmQdpCOF@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+Subject: [PATCH v1] perf trace: Disable syscall augmentation with record
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 16.02.2024 18:43, Russell King (Oracle) wrote:
-> On Thu, Feb 08, 2024 at 08:51:36AM +0300, Arınç ÜNAL via B4 Relay wrote:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> Currently, the link operations for switch MACs are scattered across
->> port_enable, port_disable, phylink_mac_config, phylink_mac_link_up, and
->> phylink_mac_link_down.
->>
->> port_enable and port_disable clears the link settings. Move that to
->> mt7530_setup() and mt7531_setup_common() which set up the switches. This
->> way, the link settings are cleared on all ports at setup, and then only
->> once with phylink_mac_link_down() when a link goes down.
->>
->> Enable force mode at setup to apply the force part of the link settings.
->> This ensures that only active ports will have their link up.
-> 
-> I think we may have a different interpretation of what phylink's
-> mac_link_down() and mac_link_up() are supposed to be doing here.
-> Of course, you have read the documentation of these methods so are
-> fully aware of what they're supposed to do. So you are aware that
-> when inband mode is being used, forcing the link down may be
-> counter-productive depending on how the hardware works.
+Syscall augmentation is causing samples not to be written to the
+perf.data file with "perf trace record". Disabling augmentation is
+sub-optimal, but it beats having a totally broken perf trace record.
 
-No, I haven't read the documentation [1] until your response here. My patch
-here doesn't touch mt753x_phylink_mac_link_down(), it is already the case
-with the driver that falls short of not forcing link down when inband mode
-is being used.
+Closes: https://lore.kernel.org/lkml/CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com/
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/builtin-trace.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-That said, what I explain on the patch log does not properly describe the
-driver behaviour. This should explain it correctly:
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 109b8e64fe69..192721261098 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -4864,6 +4864,11 @@ int cmd_trace(int argc, const char **argv)
+ 	if (!trace.trace_syscalls)
+ 		goto skip_augmentation;
+ 
++	if ((argc >= 1) && (strcmp(argv[0], "record") == 0)) {
++		pr_debug("Syscall augmentation fails with record, disabling augmentation");
++		goto skip_augmentation;
++	}
++
+ 	trace.skel = augmented_raw_syscalls_bpf__open();
+ 	if (!trace.skel) {
+ 		pr_debug("Failed to open augmented syscalls BPF skeleton");
+-- 
+2.44.0.rc0.258.g7320e95886-goog
 
-Enable force mode at setup to apply the force part of the link settings.
-This ensures that the ports that were never active will have their link
-down.
-
-I could, in the future, study this thoroughly to make the driver fully
-conform to the documentation.
-
-[1] https://docs.kernel.org/networking/kapi.html#phylink
-
-Arınç
 
