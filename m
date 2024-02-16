@@ -1,207 +1,198 @@
-Return-Path: <linux-kernel+bounces-69112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7A7C8584C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:03:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A748584C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:03:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86E042846AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:03:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FF01284254
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A600134CCE;
-	Fri, 16 Feb 2024 18:03:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99180134CFE;
+	Fri, 16 Feb 2024 18:03:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k1/VMbVE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iv7mNiWr"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8DF134758;
-	Fri, 16 Feb 2024 18:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708106590; cv=fail; b=ltIfa7GxNwFC0CP1nv/A2ylKFIuJ9e5OokAB33IfH8ys6KI6iPjcRyPQeFogdKr2I9ZGadpAF7Sl4cBQjeSRfIa5q2ZdqjmEB5Sz2KDiz/nfRXu1ba+079gAIhu6dUNIoFMhyR15CORY5v9qwOyFx6j6M2VdazDGsFSVFEnYVSQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708106590; c=relaxed/simple;
-	bh=KcMi2+DbNUggq2nuXIgFmbulGOWMs1DwiBqPaKUvaxw=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=TyzpUTs3jzIYUPZF+2461ECT1Y5yDiD2A5y9/A1r8v6WvlXMdgtkJxdQYM2rmjwGlJu/qKAGWI3d+rZzymU3+2KUc+Epvt567bqpGOx6dn9cB0ZHnXadPDOShPiOBuCdDLYzO1KKt9HC6WWF+RqmJL9WV7Q8C6dvJv5hOSAU774=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k1/VMbVE; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708106588; x=1739642588;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=KcMi2+DbNUggq2nuXIgFmbulGOWMs1DwiBqPaKUvaxw=;
-  b=k1/VMbVEQwIYRjwAEtKW6OaLyN3dvqgt2/FKPgc06zO4Aeb0bWhAIsuo
-   A4BykO53+5kornG5FVTU5uVDkjJML9S15t0WTw6DHAt1mbJTwc4sGyIP0
-   BVSIXX5vryMEXHyI8oDl6X9Zp9POi2EsRj7ohDn2uJca+8+X+ZYbpuhvs
-   DMpGtShnFljqkjy5eXAjUsur84ItSJi71xAhrYi/ZnlbEfoiVX3TllrK7
-   m9LpsfDOSdNOrMnVIJRfO3+BwG2YzAGSfHXlrd49EC0muTh8dDuonipBy
-   QMOnN9ZlIJni6JjgUvSVohPZNFQWJIopQ6/fevYhGr2iS4i4SfBp+1ayr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2396088"
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="2396088"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 10:03:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="8531501"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Feb 2024 10:03:05 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 16 Feb 2024 10:03:04 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 16 Feb 2024 10:03:04 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 16 Feb 2024 10:03:03 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IPkqEN27MOXP2nfyKA2I1k74r1w0U/nLUxKwCdNjNRR1EGSQseZpQtDDNkJF84KSsELwZkIaPtCgjL5Og4sQYsyNOXICPs4D0oG0bZQPRQZ9O4h+dE+woTNptAPngu3blXn5p9OA/QWqhifDT+WnY/R82Oyzd20QmqD/76Ompf5ymXq0qnTunGIzBz5sPcWywBkwxVtOoue+j1vskSfLYcRUADIRsQbPwLyIehu0eZs1nVwoEGI+vln0gOuL+4BzElPahLfeMv0oU/d+GwSCOvWAag+cAP1lvI4jfXtJbEP5M7YJJVpKIxtbnzN14KL1ffXXKBFv05uHQBGqpPR9Lg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pPLClx77s5yZBHsCx+gi0xpC1myMimMhYgKcWIMeVZk=;
- b=fJgG/jxOlDRKdDLjdtWElHJ/8a271mfmZCrfrk6FegHspNoWf783wSLZqMCN0yhX4got8WNSeHokmZ0drg5yEYNO006WW162jz/gUAjWgfaGtiqEIbzNF+6p2NsQ2Gp/WlYDyuxTJaL0EiG5pARp3lpvHb8/cEas7i6vzgAtGCKXlbugH6B0imSn3L7uLUitu/6zGlw3GF9XGGVVhrF9Qj50ShknllGkqoRtfJvJo+F0nPuLa7VBEPzBIMNG7U7d+LiBeXrK+1d9Vdbz2rlEOyH98/qUdNmCPNwFu4smIKG6DpxMtv9eG5MVNaFmoAmzFVpg8vghLQQKobiGjH33/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by SJ0PR11MB5647.namprd11.prod.outlook.com (2603:10b6:a03:3af::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Fri, 16 Feb
- 2024 18:02:54 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6257:f90:c7dd:f0b2%4]) with mapi id 15.20.7270.036; Fri, 16 Feb 2024
- 18:02:54 +0000
-Date: Fri, 16 Feb 2024 10:02:51 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: Robert Richter <rrichter@amd.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Jonathan Cameron <jonathan.cameron@huawei.com>, Dave Jiang
-	<dave.jiang@intel.com>, Alison Schofield <alison.schofield@intel.com>,
-	"Vishal Verma" <vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>,
-	"Dan Williams" <dan.j.williams@intel.com>
-CC: Robert Richter <rrichter@amd.com>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] cxl/pci: Fix disabling memory if DVSEC CXL Range does
- not match a CFMWS window
-Message-ID: <65cfa34b741ea_5c762946@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20240216160113.407141-1-rrichter@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240216160113.407141-1-rrichter@amd.com>
-X-ClientProxiedBy: MW4PR03CA0245.namprd03.prod.outlook.com
- (2603:10b6:303:b4::10) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 113F91339B1;
+	Fri, 16 Feb 2024 18:03:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708106623; cv=none; b=apKYCRSDKUl3j8pFw6MctWWjf5q3tfiGWbQxS6+7VSeNGelppo3GXf2XfEfa18/lYWf0IpukdihQ/IY5C8zm/x6MLkBS/HQAQ6z+acyXYHkSP/q9fnk6xeOfvJjWXpaSa4EujWgcsDXrGull/wCEmzhh6ADanItXEupfs939P0U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708106623; c=relaxed/simple;
+	bh=k4JUf4tEgF+ZTNcSICdK73ztE/zkp6cdsdcD3cdcRXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KCYKsln1HPCfEdJjhq9RVKjib4v7KjWvFn7gFiy03SyDT97QWGGDEM4xirwy5RUlNsyXZxE8faBzf5GpCkxj3zGfm67S9BZNpIjq7g/rnThioSCIffKnHmGfjGz7sB3y2Ow79r0xuPiIgiok1cfRzvyzaUPwnFmf/OTdA+iDIj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iv7mNiWr; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5128d914604so2009210e87.3;
+        Fri, 16 Feb 2024 10:03:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708106620; x=1708711420; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Jrmz6zDR44TvQ+brUsRRWaHMMl1NQ48wtumgFrZ6enM=;
+        b=iv7mNiWrl3jQ8JeslfOSK5FGJBcixm6ddRK3x7Nb0JvjrkOmqVW+Cv21RLJfHEJMPg
+         kdJinQ9IElkinkFbYrFE9snoRFoYTmuvlQU22CMwWsm7LRmY4hciIaIgp8ySYJ1Oh2d4
+         omotI6hmw/6SbTQUSZ2cq94herdWYaH8sp9/ojGy2WBKSGNI7ScBbw1GHoXZybcCMrTB
+         xehraXJUudsqEUEMT+EwQPaC0cdG02+r+effPUKmlL/qSFLNcpU7XDm59IJQFcdnWJKJ
+         mN5hbHnTjjpzjuzwcYqhJNSczuLk6ZRlVotlfW67937Z79/nymo81erDztIrIuPHyM36
+         VCqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708106620; x=1708711420;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Jrmz6zDR44TvQ+brUsRRWaHMMl1NQ48wtumgFrZ6enM=;
+        b=icUjZoyqW8abKlRvn4K/ZtvRTXzJJ9rYOPL8kzvPnL8lFFSh2J+jvMKrnS/IzPIi4L
+         8tnjzSsq0gik6Q4Z2prOjr26iAD0MN5i/gPQGDFuNiC1HxkNjB3eXoTg7Xc0G7Kcbr+H
+         tzBaj1FC9aLraLwXKl7xk/U2gjeB0tnCrYHgH306p8rpRLnyLre6POaPAf2TgzaiKX/3
+         xCNgEJFV0uD4AFaF/w6BZMFgklNP5PGM3/oL9+2Ci6q5NO1csGv6zkHzcndaCtcXxzpA
+         LzkC31qKE0r/YYIJ9DOK8sBv4fyTJBjJ11sznbHY3m+NyQz/5RjDKDZPdo4cF7VvKwPo
+         7BMg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/JqDJr6y6ob0CLhhFNwjIg0Ey7O0rjttIimCx9EDLRASuv9c35pbsSbSwZl69X7W8tvVydL84WWNuL68xvvzzbRf+PAVFaMRiPaKQmUJ6cC3bDYCrB/DFx/WePtAygRnI0+1C8gHY
+X-Gm-Message-State: AOJu0YyAvJ5bfWI+er5D4ZRiD9UA2uyYW/KL/WhKR32YTvAKT7ycB/TA
+	5ablxrA5flL9g3U7nHq25NvevAW+kRR5bAt1IsZVOGDfEE6hZ8ayP1TTHjCB
+X-Google-Smtp-Source: AGHT+IE+spxlqHoj7KaTR0bQ6pFqc8Ygq6HcrnDGJ5st4jPvcMkE0nfK4WOkmZDMuGs4q42SUxRhLA==
+X-Received: by 2002:a05:6512:201a:b0:511:ae2c:8991 with SMTP id a26-20020a056512201a00b00511ae2c8991mr3343020lfb.40.1708106619661;
+        Fri, 16 Feb 2024 10:03:39 -0800 (PST)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id d6-20020ac24c86000000b005128cf5b323sm30941lfl.251.2024.02.16.10.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 10:03:39 -0800 (PST)
+Date: Fri, 16 Feb 2024 21:03:36 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, 
+	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>, linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] spi: dw: Drop default number of CS setting
+Message-ID: <eestmqctjaqdrugnjy23pybblzvncrbez77tc6l7fdqmfkf6rz@q44jazumavjq>
+References: <20240215180102.13887-1-fancer.lancer@gmail.com>
+ <20240215180102.13887-4-fancer.lancer@gmail.com>
+ <Zc5mxyTjq6X_QRsQ@smile.fi.intel.com>
+ <4sbbhf4ltdwrmj7rrr6f7lnjbdxrwfjoutmcgsh2c44jy5fxzj@xgqdscqdnkkv>
+ <CAHp75VeK0kb40Ma9WjMAGQE9Y5O1OdeuNhQwDvYCaLHbvj+60Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SJ0PR11MB5647:EE_
-X-MS-Office365-Filtering-Correlation-Id: b4690caa-b14c-4159-28f0-08dc2f197f7e
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aEZGoWf0dDvhTujjzUPpwugmX84GIZLMIBGAbhZBz29TPyqsXpvj0sRPZTJxe9wYJ+8s220NiZ+g5z1nJR+bm33HchKUiJJvsAfPRdX+3FQpEoQVnCbmVFgWzrA6m3Uloawuap95ao7odlsTW/iwvQZ20r32wRxLhUzzNzS3UH0wDrPFCShwp+HVqn5HKBy0Yf3LKBmWgCHEOQBMiJDgk/yEU8s69j0WwtgbLLnJ8KWafWC992FmYDDn6YAjSOK6DD1Rp9KRFn78NfBYhpsUQ7OymoY7PCQGKiHI1CwI5dU36pHPgN3CyP0bfD1ZNbQu4feVq9qYDPVBcjI5b04cuq0p1e3Ar4+8A/8IkZjJQ3RwkU+nXQq/oq2ZnMxs2lw3ZX1FKEawXk9m7nyrrcHcLk6oiROk3v90k8Bni8+f7lWf45Wt67+cG4gkN4GjKBEzRLKki/QpWEhX/we6AQsUtNwPiObesq+FhoLthqvKpwSmFItrvGEq1Rn2TcPRDuARNyIR2noneLJ/06f75nO5Fo4hWCiK8HHp6zLo6K1YQUZYOXabKwV6VXcBslmXtXvJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(39860400002)(136003)(346002)(230922051799003)(1800799012)(64100799003)(186009)(451199024)(38100700002)(66476007)(86362001)(82960400001)(66556008)(66946007)(83380400001)(316002)(2906002)(8676002)(26005)(8936002)(4326008)(41300700001)(478600001)(110136005)(6666004)(5660300002)(6506007)(9686003)(6512007)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?SVR9tCwt9Bo53VeWciH1EIr80WRsLxdHZBE2lvnTLrjKmea0c3E4qJ8x6+Ha?=
- =?us-ascii?Q?Dsv35Ndj+ArkHMB0aBGFI0X3djU+pQKzh4SqYGowrmaSAbU67bhXU8BIFcBb?=
- =?us-ascii?Q?lGhl0s7e+JcDjwnBdtrsEpaoAhh2B5iZWDKCpSqRW1eJyBMN8nxgMpcwD8VB?=
- =?us-ascii?Q?q+NMjwlyKz3y6gXM8DgoFENq+hkQhYUKONR0PlT+2mBXU+TSpBq1gmaLMmMz?=
- =?us-ascii?Q?vtGIUsLHKHbHcG/gd+IedQlz5uLv8XNjd4quxfB5i7Hv5h05EwtN/GhhooiP?=
- =?us-ascii?Q?V893Fz43ya4n7/ukP+TUj+Fy5F2XdQvjOWsO6+lReueb4xAoIgCAxlmqvqb0?=
- =?us-ascii?Q?h/SP5m8EcynPi25e1T/HY2aTIp4zYlGaTY3+V9uVZUH13zOKXCLiH+5U2ZAO?=
- =?us-ascii?Q?oJDg19SGtfBf9YptymFjB2r30oQMGRMiVYkCCXdfNJW+G+Scc5ADF23Axka6?=
- =?us-ascii?Q?POlbgtRv18VfOegF5v40O6p+O7e+tNV/FNQTBA1IjTnW8CJoA895fo68ics/?=
- =?us-ascii?Q?vKUvZc0/eDne6Chlrn27f3BoxEEa2EUMgNkrqpSSJUHCcYVLziBzXGikGPYq?=
- =?us-ascii?Q?cPjSepVGaT0opg9k461SFLzm40jTfjRUhbCSKxuTkrL9fhdqCXbVsOH5Es2t?=
- =?us-ascii?Q?gJun6pQ2Bo3AZEEF73sJN75eTQl3dnWjaZSC3KXAGFvBJTW/1aoEuRJYkehF?=
- =?us-ascii?Q?anRpTSZ7+Kz2m8Kj13BnWwcNfKQqoz9ne4Kh98uzATLmxWy1p+JsEB9wLnNl?=
- =?us-ascii?Q?nuE9ikkgOGye/i27HxOMTEXDZm1Gag1D6lqeiWFfvA8qSsiGMkQR8zJp+d5C?=
- =?us-ascii?Q?8d7wGe/hfOIzVxyF47BQafNwBlFOS8jYXkolruC/3uiCnjW3uOYwMEDzXPkx?=
- =?us-ascii?Q?LvT3zmku1W9b4DDW3Jq6piyxW5/8fCXyxGrSktOQVl/Vu5mE0+xcFKY5ic0V?=
- =?us-ascii?Q?J1ACfFjxPcUJnQKSRIFfnFa3mRj3Hckyj2e5Rk9sU9lNd+Pa3+7ubRUI53iz?=
- =?us-ascii?Q?0j05MYZjYc/PNiOhqe0XC9H/3m7HouCsX1vt/En3VDfUFS4aec15KquUrvGt?=
- =?us-ascii?Q?fG3NGZEjR5VRyI2edZfXdnb9fBenuGSac67ZuLoGzPvtcSRzdVQPChrl5PxM?=
- =?us-ascii?Q?9iZhWAZYrYrfTmXT5kBeRHDDw2W6mozoaHpQ+Oddtq+IDYUmoKZYJjaHmW8n?=
- =?us-ascii?Q?dhbECSbF7vVOOE0jNqiB1/EnxPV5fNl17m423whfaZpgtt1fIRvKcs9f4jAN?=
- =?us-ascii?Q?em8R1b9K1Vx0fjIbp0C3hDrZRtxal/TlzBvfIQpi1QrLraR8KcI7G9PdF98g?=
- =?us-ascii?Q?aXwGwGefJqkkp13AYD3JGg1KZNvsP8HezS9kbvE2xLp9aWo+we4NI+X1g10f?=
- =?us-ascii?Q?lJc4URZHJNMvWSZnpwF0WqbHMpWLa3+3HORQf3Z+0czCG/NFPGjEWzWZ8H57?=
- =?us-ascii?Q?ARu9R4nhA71boi7f8Ijpd/aP+7cIo1eaK+OWD/Sh2Y/k8B2ivLMy5KRUkhmD?=
- =?us-ascii?Q?gIzW5lxDvQtIJrS88Hu2DVTGwTnYljQLykWwB2G67B0cxeeLPsZOupGPbA2g?=
- =?us-ascii?Q?tlkrTpEiPgBDkiOQsOFVbgiWhLU36q7cPTjvkxllj3UPEx64jv5PJMaFP9Ev?=
- =?us-ascii?Q?QA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4690caa-b14c-4159-28f0-08dc2f197f7e
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Feb 2024 18:02:54.1473
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m8GdcUJvhAbcSNArxR9m933Ke36RF4yx6DV/e20YWCBpn5lzwuD42tghQbR+46pdZe5oGFPXt1peX9YZvfcucCXkKv8ixlzD3hZ6QFWQc9o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5647
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VeK0kb40Ma9WjMAGQE9Y5O1OdeuNhQwDvYCaLHbvj+60Q@mail.gmail.com>
 
-Robert Richter wrote:
-> The Linux CXL subsystem is built on the assumption that HPA == SPA.
-> That is, the host physical address (HPA) the HDM decoder registers are
-> programmed with are system physical addresses (SPA).
+On Fri, Feb 16, 2024 at 07:00:28PM +0200, Andy Shevchenko wrote:
+> On Fri, Feb 16, 2024 at 5:36 PM Serge Semin <fancer.lancer@gmail.com> wrote:
+> > On Thu, Feb 15, 2024 at 09:32:23PM +0200, Andy Shevchenko wrote:
+> > > On Thu, Feb 15, 2024 at 09:00:48PM +0300, Serge Semin wrote:
+> > > > DW APB/AHB SSI core now supports the procedure which automatically
+> > > > determines the number of native CS. Thus there is no longer point in
+> > > > defaulting to four CS if platform doesn't specify the real number.
 > 
-> During HDM decoder setup, the DVSEC CXL range registers (cxl-3.1,
-> 8.1.3.8) are checked if the memory is enabled and the CXL range is in
-> a HPA window that is described in a CFMWS structure of the CXL host
-> bridge (cxl-3.1, 9.18.1.3).
-> 
-> Now, if the HPA is not an SPA, the CXL range does not match a CFMWS
-> window and the CXL memory range will be disabled then. The HDM decoder
-> stops working which causes system memory being disabled and further a
-> system hang during HDM decoder initialization, typically when a CXL
-> enabled kernel boots.
-> 
-> Prevent a system hang and do not disable the HDM decoder if the
-> decoder's CXL range is not found in a CFMWS window.
-> 
-> Note the change only fixes a hardware hang, but does not implement
-> HPA/SPA translation. Support for this can be added in a follow on
-> patch series.
-> 
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-> ---
->  drivers/cxl/core/pci.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-> index a0e7ed5ae25f..18616ca873e5 100644
-> --- a/drivers/cxl/core/pci.c
-> +++ b/drivers/cxl/core/pci.c
-> @@ -478,8 +478,8 @@ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
->  	}
->  
->  	if (!allowed) {
-> -		cxl_set_mem_enable(cxlds, 0);
-> -		info->mem_enabled = 0;
-> +		dev_err(dev, "Range register decodes outside platform defined CXL ranges.\n");
-> +		return -ENXIO;
->  	}
+> the platform
 
-This looks good to me.
+Ok. Thanks.
+
+> 
+> 
+> ...
+> 
+> > > > -   num_cs = 4;
+> > >
+> > > Simply update the default here?
+> > >
+> > > > -   device_property_read_u32(&pdev->dev, "num-cs", &num_cs);
+> >
+> > Do you suggest to simply:
+> >
+> > --- a/drivers/spi/spi-dw-mmio.c
+> > +++ b/drivers/spi/spi-dw-mmio.c
+> > @@ -364,8 +364,9 @@ static int dw_spi_mmio_probe(struct platform_device *pdev)
+> >                                      &dws->reg_io_width))
+> >                 dws->reg_io_width = 4;
+> >
+> > -       num_cs = 4;
+> > +       num_cs = 0;
+> >
+> >         device_property_read_u32(&pdev->dev, "num-cs", &num_cs);
+> >
+> > ?
+> 
+> Either this or do
+> 
+> num_cs = dw_spi_get_num_cs_from_hw(...);
+
+This is supposed to be generically done in
+dw_spi_add_host()->dw_spi_hw_init() together with some other
+auto-detections.
+
+> 
+> What would work better WRT hardware?
+
+I'd stick with defaulting the dws->num_cs to zero here.
+
+> 
+> ...
+> 
+> > My idea was to make the statement looking closer to what is
+> > implemented for "reg-io-width" property. An alternative to what you
+> > suggest and to my patch can be converting the dw_spi::num_cs type to
+> > u32 and pass it to the device_property_read_u32() method directly:
+> 
+> ...patch...
+> 
+> > What do you think? Would that be better?
+> 
+
+> I like the change, but again, are you sure it won't break any setups?
+
+Well, I thought about this for quite some time. Here are the possible
+options:
+1. If "num-cs" property is specified, then nothing is changed. The
+actual number of native chip-selects will be read from there.
+2. If "num-cs" property isn't specified, then the auto-detection
+procedure will be attempted. Here are some considerations in this
+regard:
+   2.1 defaulting to "4" hasn't been correct in the first place
+       because by default the IP-core is synthesized with a single
+       native CS line. So auto-detection would be more portable than
+       guessing with a constant value.
+   2.2 If some IP-cores have all SER bits writable then we'll just
+       get to detect more than there are actual chip-selects. No
+       regression in this case.
+   2.3 If some IP-cores don't support the SER bits being
+       simultaneously set then it violates what is described in the
+       HW manuals - broadcasting is supposed to be supported by all DW
+       SSI devices (currently I've got DW APB SSI v3.10a, v3.22a,
+       v3.22b, v4.02a, v4.03a and DW AHB SSI 1.01a databooks
+       confirming that).
+   2.4 In case of 2.3 at least one chip-select shall be auto-detected
+       unless the SER register doesn't permit an invalid value being
+       written, which is also an undocumented case.
+   2.5. In case of 2.3 and 2.4 either "num-cs" property or a
+        platform-specific compatible string is supposed to be
+        specified since the device isn't generic DW APB/AHB SSI.
+        But if such device is discovered we'll see what could be done
+        then.
+
+So AFAICS the probability to break some setup shall be rather small.
+
+> If yes, go for this!
+
+Ok. Thanks.
+
+-Serge(y)
+
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
 
