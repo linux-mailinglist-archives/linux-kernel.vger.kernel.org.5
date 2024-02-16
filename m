@@ -1,134 +1,135 @@
-Return-Path: <linux-kernel+bounces-68191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 094CB857706
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:53:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7ED3857704
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:52:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B9721C21E99
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:53:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8AD7DB2253F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:52:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93199175BE;
-	Fri, 16 Feb 2024 07:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E59D17753;
+	Fri, 16 Feb 2024 07:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=okanakyuz.com header.i=@okanakyuz.com header.b="TRTefXCL"
-Received: from weasel.tulip.relay.mailchannels.net (weasel.tulip.relay.mailchannels.net [23.83.218.247])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="psvjRJ16"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277CB1758E
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:53:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.247
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708070007; cv=pass; b=cQ5hEg2bCxX3Np/rptZmwb8wfN3kq9i3Xj9s8Il/Di5zwe+fZD6IdPtWbcrpgh3YxQ30D1d8X7+6O+KZjceQfmbnzqLWhOqqjKODIy/4f2L6pucw0p7k1YoybfJfoa54WDajdBQL0fTUKmQY9X95bsSLyPTsTvoUqTtyOxa4k38=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708070007; c=relaxed/simple;
-	bh=PezQPniDwrxOS1sZ6Z9vu2b1Y/jy/gMt+PRn3CnoUHM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pcnm/eyGRDncXk/UOH9EtdvmpUl5rNURl/T2WUP3Jv4qkYk2LNgS8QI5RcdVwA8LdoErcP0aH46MvQsFASjnF3S7XpeyCWv659rDg93Cl9U94u7AciSw+mVQxVIK+m9Kgl1ORxOYX6261xm4801wW1OzONpcdJbnDhdeQzfJWSw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=okanakyuz.com; spf=none smtp.mailfrom=okanakyuz.com; dkim=pass (2048-bit key) header.d=okanakyuz.com header.i=@okanakyuz.com header.b=TRTefXCL; arc=pass smtp.client-ip=23.83.218.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=okanakyuz.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=okanakyuz.com
-X-Sender-Id: hostingeremail|x-authuser|okanakyuz@okanakyuz.com
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id A8844141105
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:53:18 +0000 (UTC)
-Received: from nl-srv-smtpout1.hostinger.io (unknown [127.0.0.6])
-	(Authenticated sender: hostingeremail)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 4A7E8141193
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:53:17 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1708069997; a=rsa-sha256;
-	cv=none;
-	b=5QConbt3OCwl+6teJu7XNZTygIktU496c+lG90MeeDkypkZxMPeBshxHD2cGZT9EI1sbdJ
-	skNOk8k0ZJgOJgPN/tv8Y2SqEDh6sbtaaqDRSIUHgj9wnZmLc+ZDQ3jQZ8awA5ZJUaV4k5
-	/NbREib/n0e5EpYcfdazvvgUURl+URxUK5lm9A0Dj6kxvbJw+ShaiT6XFvPsvmY8uZojpt
-	zYJhuRWQdzY+a4SvKb5exGtT9Fzq72+Ci8exPR74Vf8mooveJFT5t2FBCwDm1Fag/yH5HU
-	zClHnxuK+PTEaJpk0V+grJ577WCoOYKQEL/HrUCiDspV8g9s1pPmWItiDR6weA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1708069997;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 529A514AA7;
+	Fri, 16 Feb 2024 07:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708069947; cv=none; b=EWWBYoO03aSTFW5eGQl/t1bPV7dLn3ua0RgAaUjD0xca3Q5UDOnnGShvOA/C0WVLUMYQVvdg+PkGhlAyr/HYS+PbkiSRK3YCQcw8y/lPmyRZBrqK7uDjTzqA1luJVyxV61ZwVHWsQHmlh7vWYHOKgZGy/gp5wHCQt3187hjj5cI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708069947; c=relaxed/simple;
+	bh=Vynf5DoweuXHHLSE4lGddXqNt/Xoy7UcJ0TOB9VRc/E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CzOS56j0mTVZbS5Fas+NbBIaKHFFXv5XOzMqxWoE75vLho3eX/tZnLoGlFog4nUw/w9tVdIiiVslLcX5wrvZeh452YXxl3D6nNYxx3JLIrVzXb/YxwzGk5xtx6upoV+4z41d7XsEmsWAiK0P3kos9d75EO1ZBCEtR5iijHcMXNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=psvjRJ16; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 6DA131C0005;
+	Fri, 16 Feb 2024 07:52:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708069942;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:dkim-signature;
-	bh=8cmGCBCZUEA+TV3yv1pZQqP0Eu0Q4AFcXv53Tf+4EVA=;
-	b=FMR35+bEHjuXDTmBb5koRU7EJootvOOUTZ2CZA4+GoXCU2cYVN9nmd5j0dJ/yiK+01UkVk
-	HVS6FjzokGOFXxFgiOQ1gyI6xMSQW/i5mzKG6bAIDwhJchpVcBBp+mXg7edbfZjY2mWKoQ
-	1Pk4ELddkuWsaPuMpNCFQUTGqFOrze+yOWpdCPT3N/2PD65x8lrdXpponUj9zffZMzuIya
-	xI/csWeYyNA2TLB4AEo+D34L8Hwv+irahqxAqP4J+WnIJlZoPGpcjUtNWQif00S7fEZMMr
-	drrdMa+DP7bm/VmvnmaCqAznuMuzRx6+wRdCto6qhr33mLAh+4cZbhBMYJJskg==
-ARC-Authentication-Results: i=1;
-	rspamd-55b4bfd7cb-q6zv8;
-	auth=pass smtp.auth=hostingeremail smtp.mailfrom=okanakyuz@okanakyuz.com
-X-Sender-Id: hostingeremail|x-authuser|okanakyuz@okanakyuz.com
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: hostingeremail|x-authuser|okanakyuz@okanakyuz.com
-X-MailChannels-Auth-Id: hostingeremail
-X-Supply-Skirt: 0d5b788836bc1297_1708069998360_1092149339
-X-MC-Loop-Signature: 1708069998360:2392319591
-X-MC-Ingress-Time: 1708069998360
-Received: from nl-srv-smtpout1.hostinger.io (nl-srv-smtpout1.hostinger.io
- [145.14.150.87])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.126.181.84 (trex/6.9.2);
-	Fri, 16 Feb 2024 07:53:18 +0000
-From: Okan Akyuz <okanakyuz@okanakyuz.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=okanakyuz.com;
-	s=hostingermail-a; t=1708069995;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8cmGCBCZUEA+TV3yv1pZQqP0Eu0Q4AFcXv53Tf+4EVA=;
-	b=TRTefXCLsMTfrTsBtc/J/itLJ2XMJM0yAN7TpWEAYP+9h5q4fHEoR0oNFxJUaNbL2PeYHH
-	fxzx2+8th6lE6FtTFJfGZTHYwcvZpbC+GfVZWsRtZzphEA/JiByXUKnta4b/vpHi1o7Bcp
-	KNJcxb0iVqveglNWjNOGmC0J6J88FxI6jPcADaY4M4KGqAWo4d1i4JhuA4v70gudL+Ih75
-	i8XhOw5ChZQu5Kie0RPsapLWf0PTX7EmzSIFXEnFUB9ZfPxpqcE7L7mRMkotw5Its1IVMY
-	19jwVNSzDCMw5ome6Y0BKJlS7y6bGTGXiN0nWQE64mt+cgGjhQVw9ndosqOa+Q==
-To: jdelvare@suse.com,
-	linux@roeck-us.net,
-	corbet@lwn.net
-Cc: linux-hwmon@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	okanakyuz@okanakyuz.com
-Subject: [PATCH] Update broken Datasheet URL
-Date: Fri, 16 Feb 2024 10:52:12 +0300
-Message-ID: <20240216075212.69118-1-okanakyuz@okanakyuz.com>
-X-Mailer: git-send-email 2.43.0
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VVeiECxEmwSLffzbtwy2YG4CyEm4W66/wRiP637DW7E=;
+	b=psvjRJ16HrEu/GqFLLL7wMMfKBPT08MCl4ar0FAhJ0EKI6MP0fdlU9/TMRf2aJcPbYuHTT
+	Y/XaWJ5OWcn2Ggc41n+8jK67j9PIuW99NYEcgM6cqWyWbdDssXoZ47Z7/Z2Iy53x05h9Eb
+	B3p8wByuOej2VhFVfrmVTvV/uJNYxSvZtxPhi08Uq7ysqNY/mn4KsAxzwT0Vnpk33SKyAH
+	9YgXPL9T+KdVxh3hEjjdo9kwWrADnu9szuZSYl+ofMyLx2D0BOytKOrgIrdNHN1q9n9t2b
+	+MsYZsZV4HOyhZnFWK6rQfV+wPw8aelkKg/RHraSCGZQOpQOZcJmL1zXzqpfMA==
+Message-ID: <f1d2c9b0-238d-4b09-8212-62e00a2192b2@bootlin.com>
+Date: Fri, 16 Feb 2024 08:52:17 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-Analysis: v=2.4 cv=DIOJ4TNb c=1 sm=1 tr=0 ts=65cf146b a=geHYaF3j5ifCImHjKwHHfg==:117 a=geHYaF3j5ifCImHjKwHHfg==:17 a=-tA9vPf7AAAA:8 a=UXzzSC1OAAAA:8 a=gAnH3GRIAAAA:8 a=GDfwrwm8OuJMyJXZuzcA:9 a=vtdtr2SZiqPAgdHKmkdM:22 a=NXyddzfXndtU_1loVILY:22 a=oVHKYsEdi7-vN-J5QA_j:22
-X-CM-Envelope: MS4xfBJ5/lmWxDk8XyjpN88LEIZVKZvTv/g7W8OexkmoDW7V+K8eHde8XNgYKiWZCNI0JgCyugfhGhOOUkUczW5LYsB7fOWVD3aM+0Pwg1qqN05XCEi8NIjK YNcZUVBJ6NX58Fz1761dAM/SAj40PNyzid8tady3ZNxLmuE2grzZGDUxPFIWjl3vN1iZMxNQGWQkgiI2HiCTbhuNZV8PUN1URjLwucqngczsdn4W3zrUShRi nQo0NzIIyEPG9Wu6KCezx83n4dVQSwdEhW+h/weYocfLPqYntaNFceRh+UxxqZo6IqVXMm2HWz5JGZYS8L18UijlT7Lb8YUq0impiRJSLTdbzuBosicmXnx5 f+ecEu/sYaRqgAs8arQX1f4oYBPubsFpakbigwsDmUrWPN8Ak9+BvFtNxz34LUn76YPalOUcTK3HNnxuWq4DlhKR+mbk/A==
-X-AuthUser: okanakyuz@okanakyuz.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 05/18] mux: add mux_chip_resume() function
+To: Andy Shevchenko <andy@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+ Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
+ Haojian Zhuang <haojian.zhuang@linaro.org>, Vignesh R <vigneshr@ti.com>,
+ Aaro Koskinen <aaro.koskinen@iki.fi>,
+ Janusz Krzysztofik <jmkrzyszt@gmail.com>, Andi Shyti
+ <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Philipp Zabel <p.zabel@pengutronix.de>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+ linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+ linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+ theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com, u-kumar1@ti.com
+References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
+ <20240102-j7200-pcie-s2r-v3-5-5c2e4a3fac1f@bootlin.com>
+ <Zc4t82V9czlEqamL@smile.fi.intel.com>
+From: Thomas Richard <thomas.richard@bootlin.com>
+In-Reply-To: <Zc4t82V9czlEqamL@smile.fi.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: thomas.richard@bootlin.com
 
-The URL for the document in version 19-4039 Rev1 has changed. Updated
-the URL reflect the conrect location of the datasheet for the same
-version.
+On 2/15/24 16:29, Andy Shevchenko wrote:
+> On Thu, Feb 15, 2024 at 04:17:50PM +0100, Thomas Richard wrote:
+>> The mux_chip_resume() function restores a mux_chip using the cached state
+>> of each mux.
+> 
+> ...
+> 
+>> +int mux_chip_resume(struct mux_chip *mux_chip)
+>> +{
+>> +	int global_ret = 0;
+>> +	int ret, i;
+>> +
+>> +	for (i = 0; i < mux_chip->controllers; ++i) {
+>> +		struct mux_control *mux = &mux_chip->mux[i];
+>> +
+>> +		if (mux->cached_state == MUX_CACHE_UNKNOWN)
+>> +			continue;
+>> +
+>> +		ret = mux_control_set(mux, mux->cached_state);
+>> +		if (ret < 0) {
+>> +			dev_err(&mux_chip->dev, "unable to restore state\n");
+>> +			if (!global_ret)
+>> +				global_ret = ret;
+> 
+> Hmm... This will record the first error and continue.
 
-Signed-off-by: Okan Akyuz <okanakyuz@okanakyuz.com>
----
- Documentation/hwmon/max6620.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In the v2 we talked about this with Peter Rosin.
 
-diff --git a/Documentation/hwmon/max6620.rst b/Documentation/hwmon/max6620.rst
-index 84c1c44d3de4..d70173bf0242 100644
---- a/Documentation/hwmon/max6620.rst
-+++ b/Documentation/hwmon/max6620.rst
-@@ -11,7 +11,7 @@ Supported chips:
- 
-     Addresses scanned: none
- 
--    Datasheet: http://pdfserv.maxim-ic.com/en/ds/MAX6620.pdf
-+    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/max6620.pdf
- 
- Authors:
-     - L\. Grunenberg <contact@lgrunenberg.de>
+In fact, in the v1 (mux_chip_resume() didn't exists yet, everything was
+done in the mmio driver) I had the same behavior: try to restore all
+muxes and in case of error restore the first one.
+
+I don't know what is the right solution. I just restored the behavior I
+had in v1.
+
+> 
+>> +		}
+>> +	}
+>> +	return global_ret;
+> 
+> So here, we actually will get stale data in case there are > 1 failures.
+
+Yes, indeed. But we will have an error message for each failure.
+
+> 
+>> +}
+> 
 -- 
-2.43.0
+Thomas Richard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
 
