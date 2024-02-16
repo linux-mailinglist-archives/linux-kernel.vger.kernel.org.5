@@ -1,186 +1,181 @@
-Return-Path: <linux-kernel+bounces-68137-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92A37857652
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:58:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B7F857656
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 07:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 490452813C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:58:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7ED4A1F24058
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 828A614AA8;
-	Fri, 16 Feb 2024 06:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697D614012;
+	Fri, 16 Feb 2024 06:58:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="iHbupFZB";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="mEJ7sJ2c"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="BlrJsITI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31767FC01;
-	Fri, 16 Feb 2024 06:58:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708066701; cv=fail; b=mQVFTXVRuXnuvONXl6vM47/EB80UsVQQ6HinNIETKLzKY+FAC+jTYNbwRvR3/jZUPHVX39mDxHUuoAphM8Zf7b5H31lW7b8MZr7S85fhHVEtmKTAvC8C+L5l5MaAW4hIN65ugdZzEoPNhh+wuqAYZy44Rwcgpt5DDcXp0OTIy8M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708066701; c=relaxed/simple;
-	bh=CC7t/Gk05SL9/dacteDGMwdajomf9PfHBUJ4VGHlywE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Gy/IPH5UuYkapsSR16NxOTH4WPmUi+VA9iyVMzrQ8tEYzgmpj+9n1dsKwcUOhxyrMWV91HhcBbrL1mU97PLmFZpA3xVyOvqsmgoTeXCAMdMy5G5ORviL+Bvwjel+gjCg8I1rZa4bgwfr+3BEqL6d3KROmTM91Ng08fifJtjkpqw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=iHbupFZB; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=mEJ7sJ2c; arc=fail smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1708066699; x=1739602699;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=CC7t/Gk05SL9/dacteDGMwdajomf9PfHBUJ4VGHlywE=;
-  b=iHbupFZBFYDLhq2vshOfNVZB8dqA9tklIrWrW1JWp40C3J5gSJNJHASY
-   Xti6vTVJHjyXHKqI0K0ggixUKlt4iAf0OOyp5FnHpEfcIym3vAqJCJbM8
-   qRF6HGqpF+w48lynf3D+6qp313zcDF9rvxx2ba6tP53yIiRuUPglkyR+V
-   bLT6rTVNBEo11C1ib3VyZTOZpDpaUWUSMswpXUMY4fcqdxq/sMbG/3u7L
-   wFGcSE2WKZN6gu6icSQ+tvgDbSXCJHfzEnGxvX0MeIO+z0uWNVa1qB6h3
-   pMgSWZdNZmJz5dB9YXT4gGYHXy/9+NX3oGur6XNzbDy2/tEQIG1RR/An1
-   g==;
-X-CSE-ConnectionGUID: PzXjFMCCSIacsRETbMjO9Q==
-X-CSE-MsgGUID: NSpveMM3QI2/ofg+eN9n0A==
-X-IronPort-AV: E=Sophos;i="6.06,163,1705388400"; 
-   d="scan'208";a="183606321"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Feb 2024 23:58:17 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 15 Feb 2024 23:58:12 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 15 Feb 2024 23:58:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GbhZbUpiJJcCwMoX9zIUh5U8wD6N8dQVdo8aL9FMkB3U/cUM/KP6JXEK4Dw5e8QSc+Vcc3jdClT54UN2dXWqiNp+nmdskeM6ZZ14WBbOJ7YUO5uUmFiYSBXOFpTKFaXVD+eU8xt6XLj+SSRk82h5yfCq9UNKerRt5VI3hSyqTmVG2y+fB1grXykyOFBUH/55ORRWry6LRep59Zmgl/hzfXNahshYdPTiUpy6Yu8q4N0srbwcgE5YppjnLk3gh2M7oHRCB8JwtN/GEYrWXwcIIBANRjACnfkPBVHwxKmPpJwXerSbAEb+qOvSF5eK6m5JWFoPnCaLp1BXkIVwAdA7Hg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CC7t/Gk05SL9/dacteDGMwdajomf9PfHBUJ4VGHlywE=;
- b=jzhy+vIJCnNxzUN9OBjMNlmmh+84t//1IiTy4fyNPGdImyYsuO1dmhGaPebEu3gDIRvJlae+Ez4Ybf1JDVgRpPKkEm05s2Xpa5vqow/zFG/qwYomXh1OnmOG0ThVGE2HGK7ZcIx8PnFivCDiGcA3RQZgVyt3mnBAtc0Pj3OLYEnYsOwjNT+IBRtlEULahWh6cAYneWiCpQ1Ff87nxCkAWJ4NgzTAjksjWW0Ns1hAFPqIwzXsQtrqTaHRU1b3SYMN4o0TQv6W+XggJdqTE7g5RDyohnRwVfEtwWVoW8DumUXLB7VirH09bH1WfGz0TzuO+VeVt94JypUeUy/IqhsBQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CC7t/Gk05SL9/dacteDGMwdajomf9PfHBUJ4VGHlywE=;
- b=mEJ7sJ2c6PEU/QNixwTjItEKIY3A14zzKQ081ekUMB5qJqEf5jfJD7UDSh5ary/txgxb6JrkpRZX5hXPMFsmSV7ChuCqXRK2W/nZOgbknXIukITUyudLOw8YPQYFWyIeX/R6KN2txFQAsXPdRJ1wzuKKe15lHW4ozl+ozE9gkxXMSR3FpUTgLtJfUNazRFew7mTsWT7kgSNz5m+kKTtcu5dIelNw32EjuF7g575Yzx8DzL1sTj4v3arfpRwjlrbg4/2bTuMxtsO40k6IJrqmS2nvvP7VDIG7M3t553uxAl6O/BVUN7hLOofTmpZD5tYzZdSBCePpJwyh9N4ScHE7wQ==
-Received: from PH8PR11MB6804.namprd11.prod.outlook.com (2603:10b6:510:1bc::6)
- by DS0PR11MB8761.namprd11.prod.outlook.com (2603:10b6:8:1a1::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Fri, 16 Feb
- 2024 06:58:10 +0000
-Received: from PH8PR11MB6804.namprd11.prod.outlook.com
- ([fe80::f267:b0f5:662:b562]) by PH8PR11MB6804.namprd11.prod.outlook.com
- ([fe80::f267:b0f5:662:b562%4]) with mapi id 15.20.7270.036; Fri, 16 Feb 2024
- 06:58:10 +0000
-From: <Mihai.Sain@microchip.com>
-To: <conor@kernel.org>
-CC: <claudiu.beznea@tuxon.dev>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<Nicolas.Ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-	<andre.przywara@arm.com>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<Cristian.Birsan@microchip.com>
-Subject: RE: [PATCH v3 2/3] ARM: dts: microchip: sama7g5: Add flexcom 10 node
-Thread-Topic: [PATCH v3 2/3] ARM: dts: microchip: sama7g5: Add flexcom 10 node
-Thread-Index: AQHaX++hqXMnmAeGjEig5SQwnML2drELoc4AgADpUQA=
-Date: Fri, 16 Feb 2024 06:58:10 +0000
-Message-ID: <PH8PR11MB6804E9353A8EEBD2B829D8B3824C2@PH8PR11MB6804.namprd11.prod.outlook.com>
-References: <20240215091524.14732-1-mihai.sain@microchip.com>
- <20240215091524.14732-3-mihai.sain@microchip.com>
- <20240215-lustily-flick-69cb48b123c3@spud>
-In-Reply-To: <20240215-lustily-flick-69cb48b123c3@spud>
-Accept-Language: en-GB, en-US, ro-RO
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microchip.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH8PR11MB6804:EE_|DS0PR11MB8761:EE_
-x-ms-office365-filtering-correlation-id: aadb11a3-ba87-42f0-2fd2-08dc2ebca33f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 5FsusZv2PSoUcgQinRO0dYxUFUgQWYMJpr29W2QBwU3gA6Kbv79QMoOST2v2SU8LPvfQaH2rWwi+r4/QwCmT+FWDDmQgSV+pXMQw9Hwh7Y/1KlzLYVQhUbGW7ECdzNRbacSUIevfrDI/VgnPqLC5kqNF1Bza1gdKGOeQTx927hniTAm/EwZmnAf+lOT1HAwBYLPiMSfCWzd7Ik9uKu5g/ionjy6Kt76ENmm8ahUcqMtjnezo3o2eu16u2IUvNw+r2RK1TpeuSuKrKe4sGCBuDPQaclr4iCEY78hiQtcnoumj9c9kNoGPFoDeoYshyRWSAzmfs7TYYibXLH1aNLew1cvddoQgmsMgwjMQxwI6XsH22GMef7Q6oWKRcbvTzTNIolWKy4LFgrPAkOtOEAo+KzIRj6BQFtItiM+RwDwmjSiyiq4ohjTWztE5p9mR4ttM6yVZAXzOV2zOw/sD36iZ+qKG6+MIGCFgUrhoOUpmI9LAJf8Ju4KVUPk9V/KPa1tG8aIc8+ElqO+kqY1X3wh6MIZHm5BH69BkwW0Idg6VATXG3cyb0el8UluuE4C6a1eGw8L2ozZG/Df2BcN87yM7vlXcdS7QSq0crGCJHOCC6gg+dUJU4kAFk0qN9MCTEFYOWx/rJzjd9ee8ZT1XvMMETw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6804.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(136003)(39860400002)(376002)(396003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(86362001)(33656002)(122000001)(966005)(9686003)(6506007)(7696005)(478600001)(316002)(41300700001)(54906003)(71200400001)(26005)(107886003)(38070700009)(38100700002)(64756008)(66446008)(2906002)(66476007)(8676002)(4326008)(6916009)(66556008)(8936002)(4744005)(52536014)(7416002)(5660300002)(55016003)(66946007)(76116006);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eTJIVFR3WURDK3Rmc0twUEN3VVZZMkRnS2NuMENLeHkrcFZ1YnlsbndxN1Rs?=
- =?utf-8?B?aDlHRFc5RmlCdW1DNVlmRytnQXRkK3lORG5Nckw0VnBvWWxRazNOeGlLRitI?=
- =?utf-8?B?V3FoUnEyVmlSaDh3UnBNRkpZNm9EeVhzQkVBcEFvcDNZR24rR2N4MC9sRFdY?=
- =?utf-8?B?c0puT1h2eGdleWhsZXZ1MUc4bHdsSFltZWtsK1Z1aFRKdU4rUEFLMDhnL3VZ?=
- =?utf-8?B?b1VQOHh5UmhmREpQVkkzZ3NxcFdrcnJaNWJ1a2x1bGZHc0JvYnZ3cGo4Ulpa?=
- =?utf-8?B?UnJZaDNDSEZqRU5Qc2ZFV0pOWVVUUHRmSEJiNmxUL3ZNZ2t0bGtyejhaL0Ft?=
- =?utf-8?B?QzB3S2NwUWFKZWRlVHZBcnc4dWtCSEFPc3NneXZuY0YwQlg0SG02NDVMTHBm?=
- =?utf-8?B?MklFQzZ4MkdOY1BnL1ErQWpMMEhDQlZCVW40emp0M2lMelBnV0FYcHJlSHZo?=
- =?utf-8?B?K0RCNUxwWFFGWGtWZlgvSHpvMmRuQlhpZzRxM1hZaE95S05ua1lRVlh6L1Fh?=
- =?utf-8?B?RHFpNlUveWRlQXNMcEZJb3BNVXRBR3Z5ZERIUWtkSEZEVTNkbW1zNmdIeXYz?=
- =?utf-8?B?cE9XWElBV1dNS1Uxd1R3TGNIOW5ZZ1JrNGFRYWFjdGZWdWFMWWpiaklacU15?=
- =?utf-8?B?Q1l5QkNPdVRESk1UOFZXckJvcXJ0ZTQ2b1Vod2J2V09VN1pYTmQzZy91bHFM?=
- =?utf-8?B?M2RoejRSRkJ5RndDdzRxY3dMTkNmQlZHR3dOMStUOVlXdjRsVC9hSTY1VEQ2?=
- =?utf-8?B?VkhzUUl5MTBHU3Y2VXNwckxzcnVjVUtacGR6YXJFbTcva3BoNGt4MnNPNTFj?=
- =?utf-8?B?bUhEVW1UMFQralRKaDVJT05Pd2NiWjRhMWY1bHNXZXBKMWRxMy9EbDN5T0I4?=
- =?utf-8?B?OFhVT1ZROWpFUGw5VmtVSm9FdTRYd0ptc0pBenJSZXd3NEpqLzdxMkExU21l?=
- =?utf-8?B?UzlYKytTK0FENyt5bGlDRlpqSnlFTlg4RU13OVpMb3BzY0laRzdXdElhYmgx?=
- =?utf-8?B?b1ovaVdpcDdoZ0gwWkJ1Y3FWOUQ5WmtoYVE2N1lkVzhxNC9PYjVxdlR3MnNj?=
- =?utf-8?B?SFNjaDdDNkt6OXJXdmlyVXZNVk9ubzN2Yk5haU9TRmpMN0pQRVZyeC9pR2Mr?=
- =?utf-8?B?c05UNWxRZHJyNmpnLzJkUXo4amZOc0hSL2RrZU9yYVl5ZTFBN05hdmZGZEU5?=
- =?utf-8?B?SXVQZS9nd3FmNTEzaUgrNXpCbEpqYTZSMjF3TlU5NmJBL1NZaFUvNk93dnNB?=
- =?utf-8?B?MEdlYTN2WHNUZVozMWI5QklDNlYvY0grdDNaaHJMMkN4UnY2am9hTytOSDJF?=
- =?utf-8?B?b0g5dEoxUVQzRUhhS3NES3NIK2ZuSDFzdGNrMlc5TlVmMXNPbzhOaTRGTSs0?=
- =?utf-8?B?UWtXT0c1QUxUejFNUlZKalkvUDExMkFmekdLOXJZRHcvMm92UWtkSkRTai9N?=
- =?utf-8?B?NDRrUi8yc1V2ZjV1R1JvWVZCVHQ3S2ZaSnNieGNYSkVaZ0NZR1ltN0hCR1Bm?=
- =?utf-8?B?VmZ6ajhyT1lpVkJzekVseFdvc0RUZHg5MlpZeWdCekxoczlNditJZEYvUmJ4?=
- =?utf-8?B?VXJWNnRzRDlvS0Y0dVRNVkl1SXMybTJXNmJTa0RTVlRxZk9FRTlWMzlSdjRz?=
- =?utf-8?B?Z0tCeWdtcUI5L25Zb1dXSVhHOG10VWEzeWlXWUJINmRHdlh5RHU3M3hhTFVR?=
- =?utf-8?B?eEE3a1o3eGdqaDZMV2VhbFAwU2VtVGZrdnlhMjIrdXhpalgxTE5JSjJtUlVw?=
- =?utf-8?B?UXZrdlFCZk5aR01IaGMvU1VXazY1elFLb3IrY3dDNFQ5dVVzem9KcGYraUE4?=
- =?utf-8?B?d0IzSjdQSDdJVGZ2THg5OStUVEQveGNRT0VTZmhmWXh3eVhIZDlZbFF5OElj?=
- =?utf-8?B?d2pNMDlqenBOem9SN2wrWVZPUHRiNDB3WDVKNGZOT0lOeGZLK1FqTnlML0tz?=
- =?utf-8?B?eTYxUU1GeVRMUzZhbXJPZGptejZtRFBncm0zUk1yZnpnclp5b1NQR2JPQTRJ?=
- =?utf-8?B?T3BKdE05TFgvNmVkNFJaWGpPL25wcUQweloxcjVSUFBTZGNNV1VSZ3lTamRX?=
- =?utf-8?B?QnJIUDVxVURGZjF1d1oxUHFPb1B1NjlqWWl6T2wzV3E3akV3Y0RVcWFNOEFk?=
- =?utf-8?Q?Q9LGAmokgYInLpdA9VEPH0Dm9?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82D8179AE
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708066737; cv=none; b=e1qUhKh8psF1XUUIOA9iwurWM9NTz4bbAnZ+dAU6xyrlqSB0p/KWMTvy1OrSTXvMu2B/3Ro/qb+qwmfaTPkPA5A22mMVMa6KRjCWF6v/ZiC5LkVN3BNg8w2cMyE5T2WSnkcvO/gRstWr1th71sTng1+QUQWu2CL49V+vdX/8iyo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708066737; c=relaxed/simple;
+	bh=YROb+eaJNu6/59TKOvdKSLmQg7w+kXyN6IwLF2JJH4s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g03S8/ZeWoOBniL40JezqyLPCnvJJVxCkNvfeFvUzumr5Hso3W3vklg0nWWAYkVJf8/Fobl++XxknFKm89k1oceULMFX3+/zUefQj6z8FmvTdGigm2asROcDq6ZZ+KIRj4mW3zOe/I/cruRCSVWWp7FhAexoaPDXo5xNTR1/wOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=BlrJsITI; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708066734;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BNMvTmeWJ1ziFBp7Mx8IpeakAHCa+fvWpYKZaRcTpWg=;
+	b=BlrJsITIvMgsXd9YFdy2p2nydycBakcFo90DKTq+I3KNLnJibmzGRTzgDobwz9Hkl+wF2+
+	9nMTb4Oy3zqbJPnElF0Ti0b/8zn4KgiEz8cmpv8xIUOhG0h0I3wvMc08BoV4XMkj9d2JnR
+	v8yaYufstArdEL8xZ1ed0Y1FD3M0ue4=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-73-J0ULQjgoPsaJiJdwdGEroQ-1; Fri, 16 Feb 2024 01:58:52 -0500
+X-MC-Unique: J0ULQjgoPsaJiJdwdGEroQ-1
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6e2f3e38f55so1719891a34.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 22:58:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708066732; x=1708671532;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BNMvTmeWJ1ziFBp7Mx8IpeakAHCa+fvWpYKZaRcTpWg=;
+        b=PQ94xLD0v+bj6f80Xk6+1ext0QYWidQM/0nccYmlLc3GLm8/PMIIarEEotCq8/j1h4
+         afX7ZWi5SzdB2P212S0r8WEnzjAnVFE9SrQpsZUv/lOfBRqoUpjZMZCMNmohpSKO0wWk
+         l6mtUXBmHG2V2+5wzDgtzbtgL9WC3jgmZraHp/AAZIhff8e9nQg4QZN7dELCYWq4EyJF
+         eM29WQTRr5Yj1s9DMG9yQ4D/t1gxtXjFxBzKp2iv7Rcf8k+lRJOGUF5+HYJcyzAhUxYP
+         ciXuIKgSq91RlTjo3pyjaO1V64zpScWq65DzDoMwIcOkCLr7s2GDCSPhkWe2BlHzo8nC
+         dqlw==
+X-Forwarded-Encrypted: i=1; AJvYcCV8d1AKXVjav1sczL0E4vg2paAkMP/yej7B4deWToE0WCIoil08SSTE/2+b8v6nN2FJ0Bze5lU3fKSf4zI6DgSpSEEXbb4MA8eKFnSu
+X-Gm-Message-State: AOJu0YzorcPdcaEvAydnG/KOBo1R2ECNZWVyYIbpS0WR9Q93aJJbFkgr
+	BY7faOZODFIR1hyNO6oMd+LePwg60uz+n2uwJhZCPugi7uOfV3hxTSpvxby+LaJ5Vg64S0YWU9x
+	LIpjbRMmFATqmAxd30mqb/zcvdYt7mYnw9Po4OSBrX+3oskjplLpxNtwZAUta2lwVMFrrR+9H1G
+	n0rcfKKhlXZBV6eZSwWXoGIKgvKK4Au3ejApep
+X-Received: by 2002:a05:6358:d04c:b0:178:7c7b:77bd with SMTP id jb12-20020a056358d04c00b001787c7b77bdmr4796303rwb.27.1708066732243;
+        Thu, 15 Feb 2024 22:58:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEIS1mWsDcddpPxFekpeD1h3hjt8dIDVsyUqaSy4AgJ7AmFMXEA/DB1AOZvjCvNo30ZSH6kg0YD0Di4qNWMKJg=
+X-Received: by 2002:a05:6358:d04c:b0:178:7c7b:77bd with SMTP id
+ jb12-20020a056358d04c00b001787c7b77bdmr4796292rwb.27.1708066731962; Thu, 15
+ Feb 2024 22:58:51 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6804.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aadb11a3-ba87-42f0-2fd2-08dc2ebca33f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Feb 2024 06:58:10.6724
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: C8ZVSjWXcskNVao7JNASMkIKTey8VWUWL8rWxkTe38+OV27rxj4852e9XlVppd0rAdP8DY+CKiSJJ++47sYRbR7xyOl3zUafVDIVD2yZpNI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB8761
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com> <20240201092559.910982-2-yukuai1@huaweicloud.com>
+In-Reply-To: <20240201092559.910982-2-yukuai1@huaweicloud.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Fri, 16 Feb 2024 14:58:40 +0800
+Message-ID: <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in md_check_recovery()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com, 
+	agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org, 
+	yukuai3@huawei.com, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com, 
+	akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm0vYm9vdC9kdHMvbWljcm9jaGlwL3NhbWE3ZzUuZHRzaSBi
-L2FyY2gvYXJtL2Jvb3QvZHRzL21pY3JvY2hpcC9zYW1hN2c1LmR0c2kNCj4gaW5kZXggMjY5ZTBh
-M2NhMjY5Li5jMDMwYjMxODk4NWEgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL21p
-Y3JvY2hpcC9zYW1hN2c1LmR0c2kNCj4gKysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvbWljcm9jaGlw
-L3NhbWE3ZzUuZHRzaQ0KPiBAQCAtOTU4LDYgKzk1OCwzMCBAQCBpMmM5OiBpMmNANjAwIHsNCj4g
-IAkJCX07DQo+ICAJCX07DQo+ICANCj4gKwkJZmx4MTA6IGZsZXhjb21AZTI4MjAwMDAgew0KPiAr
-CQkJY29tcGF0aWJsZSA9ICJhdG1lbCxzYW1hNWQyLWZsZXhjb20iOw0KDQpNeSBjb21tZW50IGhl
-cmUgd2FzIGlnbm9yZWQ6DQpodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyNDAyMTQtcm9i
-ZS1wcmVnbmFuY3ktYTFiMDU2YzlmZTE0QHNwdWQvDQoNClRoZSBTQU1BN0c1IGhhcyB0aGUgc2Ft
-ZSBmbGV4Y29tIGNvbnRyb2xsZXIgYXMgU0FNQTVEMiBNUFUuDQoNCmh0dHBzOi8vZ2l0aHViLmNv
-bS90b3J2YWxkcy9saW51eC9ibG9iL21hc3Rlci9kcml2ZXJzL21mZC9hdG1lbC1mbGV4Y29tLmMj
-TDgzDQpodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvYmxvYi9tYXN0ZXIvRG9jdW1l
-bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL21mZC9hdG1lbC1mbGV4Y29tLnR4dCNMOA0K
+On Thu, Feb 1, 2024 at 5:30=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
+ote:
+>
+> From: Yu Kuai <yukuai3@huawei.com>
+>
+> mddev_suspend() never stop sync_thread, hence it doesn't make sense to
+> ignore suspended array in md_check_recovery(), which might cause
+> sync_thread can't be unregistered.
+>
+> After commit f52f5c71f3d4 ("md: fix stopping sync thread"), following
+> hang can be triggered by test shell/integrity-caching.sh:
+
+Hi Kuai
+
+After applying this patch, it's still stuck at mddev_suspend. Maybe
+the deadlock can be fixed by other patches from the patch set. But
+this patch can't fix this issue. If so, the comment is not right.
+
+>
+> 1) suspend the array:
+> raid_postsuspend
+>  mddev_suspend
+>
+> 2) stop the array:
+> raid_dtr
+>  md_stop
+>   __md_stop_writes
+>    stop_sync_thread
+>     set_bit(MD_RECOVERY_INTR, &mddev->recovery);
+>     md_wakeup_thread_directly(mddev->sync_thread);
+>     wait_event(..., !test_bit(MD_RECOVERY_RUNNING, &mddev->recovery))
+>
+> 3) sync thread done:
+> md_do_sync
+>  set_bit(MD_RECOVERY_DONE, &mddev->recovery);
+>  md_wakeup_thread(mddev->thread);
+>
+> 4) daemon thread can't unregister sync thread:
+> md_check_recovery
+>  if (mddev->suspended)
+>    return; -> return directly
+>  md_read_sync_thread
+>  clear_bit(MD_RECOVERY_RUNNING, &mddev->recovery);
+>  -> MD_RECOVERY_RUNNING can't be cleared, hence step 2 hang;
+
+I add some debug logs when stopping dmraid with lvremove command. The
+step you mentioned are sequential but not async. The process is :
+dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(raid_pos=
+tsuspend)
+-> dm_table_destroy(raid_dtr). It looks like mddev_suspend is waiting
+for active_io to be zero.
+
+Best Regards
+Xiao
+
+> This problem is not just related to dm-raid, fix it by ignoring
+> suspended array in md_check_recovery(). And follow up patches will
+> improve dm-raid better to frozen sync thread during suspend.
+>
+> Reported-by: Mikulas Patocka <mpatocka@redhat.com>
+> Closes: https://lore.kernel.org/all/8fb335e-6d2c-dbb5-d7-ded8db5145a@redh=
+at.com/
+> Fixes: 68866e425be2 ("MD: no sync IO while suspended")
+> Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>  drivers/md/md.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 2266358d8074..07b80278eaa5 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -9469,9 +9469,6 @@ static void md_start_sync(struct work_struct *ws)
+>   */
+>  void md_check_recovery(struct mddev *mddev)
+>  {
+> -       if (READ_ONCE(mddev->suspended))
+> -               return;
+> -
+>         if (mddev->bitmap)
+>                 md_bitmap_daemon_work(mddev);
+>
+> --
+> 2.39.2
+>
+
 
