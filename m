@@ -1,440 +1,329 @@
-Return-Path: <linux-kernel+bounces-68397-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D15308579AC
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:00:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47683857961
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:53:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42530B26597
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:00:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD968B25281
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4DB2D638;
-	Fri, 16 Feb 2024 09:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC431BF3A;
+	Fri, 16 Feb 2024 09:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="iz7Ye9Sp"
-Received: from mout.web.de (mout.web.de [212.227.15.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NDS4mTov"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26429286AD;
-	Fri, 16 Feb 2024 09:56:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89D71BF35;
+	Fri, 16 Feb 2024 09:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708077384; cv=none; b=l4mcqAfyIaeOgBeYvvaecSEmwfrk/MrwOBw14IjFetPpYpwvPv+7aUlaO8khPp2/NKV1fElmTaG9dUXKYd/OLqJur8f38ZGiJ3Jxq/I9+RMN7mcg8ohIVYNSDXk1BA16CocJF+dHU4FyQHeCMycPGD7lMaSlbo3lau/rjcKyySY=
+	t=1708077075; cv=none; b=l2JTeW1Zd911puentyApnvgc0AYbISn9xDgytzLgwwbqk0B7FpcQd0KumaaN3FVVLVTvvneS48mnzJQL/WoMcJppeOnR/d48RXGLtYusLsJ5/yG9SZbqz09UvH2LpXmzXdfDUvdkJavyU9RSUL3Mx16SGNJlnUg8LmJ4+eV2AVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708077384; c=relaxed/simple;
-	bh=j4WYdlH2C0SjARdDRBqYCOTeUj3v1ffV3fGDsF0zbRM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=XNapF43S3x151vAJrJFk25i8YCAhPgE8kMVTLICXWdE3oQCFh8aza4kf+byPhbtO0lxUbKsZmKHRDZcOVqEQNSD5qRlQBML1OstcAguoaBSoaz3mhbJaKnBbqjoGYFNC82cQ06wXOwH5IqnVQD1hPfKltm4eMataWxcAIVPcjX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=iz7Ye9Sp; arc=none smtp.client-ip=212.227.15.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-	t=1708077374; x=1708682174; i=markus.elfring@web.de;
-	bh=j4WYdlH2C0SjARdDRBqYCOTeUj3v1ffV3fGDsF0zbRM=;
-	h=X-UI-Sender-Class:Date:From:Subject:To:Cc;
-	b=iz7Ye9SpWpUmC8Hr0DfRZV7pfVRPEplG1eviG2cAguU9yzhnKMfeMJqYas+fgrJc
-	 YIwxsqmLKUnyLLJWLKTroau9eidgH2X53s593F1Uu8Yzp9W9jY6dqCiAuap33WCCl
-	 hCIRHZIbJY+mOf+n1ZRbYRGMCLp5+gfDO8cmN7rdWknneqmjQxxowx2WU6U4eby6K
-	 conea6e0xQRH7mI2wfx2q0lc8atcryD1tIbRprmqcKdnM0aae4BtK6L3Z1MXI7UXF
-	 YV/BHu3pC2xu2PS8pTYjNuhi5MbcEkv3DbIqNr5EzAJUcpNQbK+eku2EV5BjUDZ0c
-	 jcj1HklLGP1lWe9h8A==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.80.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MeDMR-1qzvHw2FUN-00bHl6; Fri, 16
- Feb 2024 10:50:43 +0100
-Message-ID: <4b50017b-d3f6-45c8-b4a0-6943c7a7e54e@web.de>
-Date: Fri, 16 Feb 2024 10:50:27 +0100
+	s=arc-20240116; t=1708077075; c=relaxed/simple;
+	bh=AO1Wioodok2yf+QhQ+JekjTF9j2rg/6jELEXU64mFBQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Czgc3Ca2dl838JStNRBc9FvXv8SqjzjGLBQsDA/kRPzFP0PUDR+r9cy1QQH4fzIbr3nzgW5b4EwEiq+/p1/v0b2B+fH41jqkLPgTNPCAGTnhimupVkGDlEl+eHcLJQe3Z54n7bA9YJlxXPlQzfSvWiL6sMkX8dvBZ4fBJGtm/vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NDS4mTov; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e1126f57f1so1067845b3a.2;
+        Fri, 16 Feb 2024 01:51:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708077073; x=1708681873; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2vHnI5LSLRE33MfHS1ReUQs4VrL3VJWSAdI/Ri9+mw=;
+        b=NDS4mTovYFqW/sTz5q/yf2WlN6T8OapOnVWdOVH7Ge8Z9qflFXu81dC0y6iDOigZLe
+         Yt7qPbgGPFCZWyVs1NHDCzGmZGN2qF2MvJl4bErbgjTTv8eO4H3MuO31HPg3CvhQkH0I
+         dR/xwgpyvLjI/BblxGUkbfj/UZwKpat0yRNArDxrRW0uMLi/hbWXUedBHU00J8j32p0r
+         FCTpzwBsYtjwq3AGsM0QMElK/QJ93UqD+0NoEr79f9BwqHf/ozCyr1H5ZtESw+sQ/xWU
+         Vt4KvvJ0FPdDlZ+Dwsk95IgWot5BG4ivTAls2K/dAZjwWY7cfq5dgNm+8hqREjGOzVc6
+         8R7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708077073; x=1708681873;
+        h=content-transfer-encoding:mime-version:reply-to:message-id:date
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y2vHnI5LSLRE33MfHS1ReUQs4VrL3VJWSAdI/Ri9+mw=;
+        b=CFheSX1X5ZNQG60YRzgdbkI/0BNo+ybY0w82RIlc0XzKP59lFpn4ofIEwro/7aCrDa
+         w5SE4Zr9XK1qbPzZAfJfU9tGuS/4/dd6L05ZAfuR2D/xqCLFbNS04NAK4ZBSZoJwuBnM
+         zN7Bf9u8UeeUeLrcMZOj5YNJe9eKlOkHQYSzFhXAxhtqHknq7GYXdwD1tB85DxMzesg5
+         s10vc4X1jvzZT/cqhj2LN+3ByeqIiZUm3DrcH1zlaH6/AzEGM28/i83uEgvqFdLpl3Z6
+         rdJEv222yyqahtpQ3j+wvYScVg7kkpVLpO0OCBznJPUSEupqiAiENs7NCqGz3lZe1x/Z
+         nyQA==
+X-Forwarded-Encrypted: i=1; AJvYcCVNoW09ORab1c5yeN/xczsQk/ulNi36izGYJMSSR2+Cijg5T8w5j3OjZqVk+vlPBs9w/vmAFtVJtQDIDOBFTlj/VdEevc5XRiLBx1BvbaW/IZU4LGmq8nTuQLAcpxq+mepijpD9
+X-Gm-Message-State: AOJu0YyIRR6tG9+mHhV/vikbrtrgh2cfljtznlBkcmtxTVqFa8DGuKLc
+	BkKfks6yROcaCiEWoy1eQXTafZdpbTTkC+LWOIy+UxTQWiK6a24H
+X-Google-Smtp-Source: AGHT+IFTwCs2pTznLZJ82SbUjDhcvlz/NrKzcAMR4Y7uIhuLCFXev6otDwqhGTvJK3KFyyKrVECpbA==
+X-Received: by 2002:a05:6a00:1a8d:b0:6e0:84d4:e009 with SMTP id e13-20020a056a001a8d00b006e084d4e009mr4803464pfv.21.1708077072936;
+        Fri, 16 Feb 2024 01:51:12 -0800 (PST)
+Received: from KASONG-MB2.tencent.com ([1.203.117.232])
+        by smtp.gmail.com with ESMTPSA id fc16-20020a056a002e1000b006e13bf2b955sm898709pfb.113.2024.02.16.01.51.08
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Fri, 16 Feb 2024 01:51:12 -0800 (PST)
+From: Kairui Song <ryncsn@gmail.com>
+To: linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	"Huang, Ying" <ying.huang@intel.com>,
+	Chris Li <chrisl@kernel.org>,
+	Minchan Kim <minchan@kernel.org>,
+	Yu Zhao <yuzhao@google.com>,
+	Barry Song <v-songbaohua@oppo.com>,
+	SeongJae Park <sj@kernel.org>,
+	Hugh Dickins <hughd@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Michal Hocko <mhocko@suse.com>,
+	Yosry Ahmed <yosryahmed@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	stable@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kairui Song <kasong@tencent.com>
+Subject: [PATCH v3] mm/swap: fix race when skipping swapcache
+Date: Fri, 16 Feb 2024 17:51:05 +0800
+Message-ID: <20240216095105.14502-1-ryncsn@gmail.com>
+X-Mailer: git-send-email 2.43.0
+Reply-To: Kairui Song <kasong@tencent.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-Subject: [PATCH] iwlwifi: Use common error handling code in five functions
-To: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org,
- Alon Giladi <alon.giladi@intel.com>,
- Anjaneyulu <pagadala.yesu.anjaneyulu@intel.com>,
- Dan Carpenter <dan.carpenter@linaro.org>,
- Gregory Greenman <gregory.greenman@intel.com>,
- Johannes Berg <johannes.berg@intel.com>, Kalle Valo <kvalo@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zvhrmtS8gAA7vSSneY/0kkuoyoordAd2oZO5xDRTNtWRPJ9Bgst
- FP6XSfiSD2jPijpx55JA1LIGpzQQCW9InIoK3jmo5+L/RQAofH2z06KGdfmKNFJBHJhd05t
- JdWVS8xWuTTl3wRD39QSO3P5Bag2bSdTCceMFdey7On9C6aqNFeEj+Aw7DtjwiObXmmhE0i
- 4Z0AaWv0J/X2b5KDFU//A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:bd9dY07eXD4=;f8/5w3QpeIlF3MwRUI2u101cWY0
- a9wLnhH7YB9ZRp7KQmHdTvH/hmiURFLnaJkPBUfjBm/qF/00JMBSCeaYJAzw8nANyt0P0g4ZI
- bkp4pGY/RjwjH+TI3jZROIr9cIX4xyRdW/3cOukpjHtAJ+mO5XjzJAkOU+sgV8DCiIzhdvJH7
- IDMMQBrQVHqHbI6GOA8FeykFnB/5OJE9VhpQ+DGMv+W/j7mDYWQcdzCRHhTXNP5r3lg5P7zF1
- /Qp0V6Aiz5TukKV/NW1EryQ0hEB82RB5/cL1VANVhIARmyHMrski5HvFr8V+McKO0xTcJOGkI
- uyw2BvRA0aoCi2psITq06gqTyPR+kuXNI5Q2QkcgNaLmYYZSu/5qdDqDj3ICEqtL1rCXJlSFH
- SuRy9rlwO44MmRTYlK9ZxNWLZGHON4GAeUvhOgp0/+gbGVPpCy4As9B+pvaC3Gaoy+WDIy03+
- 2yFlFVjLBGFQbaAF8gxV/d7CIFxA5MbXch1gEnX5OGTdt29RB3CW93nEE2wdWw2NEQj00B5pl
- CwtqUraLsYctWOA6Hy7ikHNREqIuMsaCi7hnIrpV94asTO9owmAmHqSTE/vD7Ljn+cxOGTSWg
- JELXdclpDOTz6rxHCuDOoeVSTDGCLGDRYHeuk9la347hSQAsQN3uwjIQfFhiT4cm9FwjKVG/y
- nsVP1F2yLgBuWSY7vXB1G8E1r5Z6GXiQ1HlhI+jOB365GPRpdaI1l3XQdWufNZU4rS6JPP/pm
- EdkYPRkC1XhzuEGtctlLSr7GlCdl40iGif3g8QtJkQcW8iFYjn5UgxeOnDj2VkKIEX6Wa02Ba
- AyZJGJRmVswx434xE8toyJyzvNm/f40SP1B2wsvsLFIsA=
+Content-Transfer-Encoding: 8bit
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 16 Feb 2024 10:22:20 +0100
+From: Kairui Song <kasong@tencent.com>
 
-The error code =E2=80=9C-EINVAL=E2=80=9D was set before the statement =E2=
-=80=9Cgoto out_free=E2=80=9D
-multiple times in some function implementations.
-Add jump targets so that a bit of exception handling can be better reused
-at the end of these functions.
+When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
+swapin the same entry at the same time, they get different pages (A, B).
+Before one thread (T0) finishes the swapin and installs page (A)
+to the PTE, another thread (T1) could finish swapin of page (B),
+swap_free the entry, then swap out the possibly modified page
+reusing the same entry. It breaks the pte_same check in (T0) because
+PTE value is unchanged, causing ABA problem. Thread (T0) will
+install a stalled page (A) into the PTE and cause data corruption.
 
-This issue was transformed by using the Coccinelle software.
+One possible callstack is like this:
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
-=2D--
- drivers/net/wireless/intel/iwlwifi/fw/acpi.c | 130 +++++++++----------
- 1 file changed, 58 insertions(+), 72 deletions(-)
+CPU0                                 CPU1
+----                                 ----
+do_swap_page()                       do_swap_page() with same entry
+<direct swapin path>                 <direct swapin path>
+<alloc page A>                       <alloc page B>
+swap_read_folio() <- read to page A  swap_read_folio() <- read to page B
+<slow on later locks or interrupt>   <finished swapin first>
+..                                  set_pte_at()
+                                     swap_free() <- entry is free
+                                     <write to page B, now page A stalled>
+                                     <swap out page B to same swap entry>
+pte_same() <- Check pass, PTE seems
+              unchanged, but page A
+              is stalled!
+swap_free() <- page B content lost!
+set_pte_at() <- staled page A installed!
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c b/drivers/net/wi=
-reless/intel/iwlwifi/fw/acpi.c
-index 4caf2e25a297..0d7a2f2eab07 100644
-=2D-- a/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-+++ b/drivers/net/wireless/intel/iwlwifi/fw/acpi.c
-@@ -285,8 +285,7 @@ int iwl_acpi_get_tas_table(struct iwl_fw_runtime *fwrt=
-,
- 		wifi_pkg->package.elements[1].type =3D=3D ACPI_TYPE_INTEGER) {
- 		enabled =3D !!wifi_pkg->package.elements[1].integer.value;
- 	} else {
--		ret =3D -EINVAL;
--		goto out_free;
-+		goto out_e_inval;
+And besides, for ZRAM, swap_free() allows the swap device to discard
+the entry content, so even if page (B) is not modified, if
+swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+it may also cause data loss.
+
+To fix this, reuse swapcache_prepare which will pin the swap entry using
+the cache flag, and allow only one thread to pin it. Release the pin
+after PT unlocked. Racers will simply wait since it's a rare and very
+short event. A schedule() call is added to avoid wasting too much CPU
+or adding too much noise to perf statistics
+
+Other methods like increasing the swap count don't seem to be a good
+idea after some tests, that will cause racers to fall back to use the
+swap cache again. Parallel swapin using different methods leads to
+a much more complex scenario.
+
+Reproducer:
+
+This race issue can be triggered easily using a well constructed
+reproducer and patched brd (with a delay in read path) [1]:
+
+With latest 6.8 mainline, race caused data loss can be observed easily:
+$ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+  Polulating 32MB of memory region...
+  Keep swapping out...
+  Starting round 0...
+  Spawning 65536 workers...
+  32746 workers spawned, wait for done...
+  Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
+  Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
+  Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
+  Round 0 Failed, 15 data loss!
+
+This reproducer spawns multiple threads sharing the same memory region
+using a small swap device. Every two threads updates mapped pages one by
+one in opposite direction trying to create a race, with one dedicated
+thread keep swapping out the data out using madvise.
+
+The reproducer created a reproduce rate of about once every 5 minutes,
+so the race should be totally possible in production.
+
+After this patch, I ran the reproducer for over a few hundred rounds
+and no data loss observed.
+
+Performance overhead is minimal, microbenchmark swapin 10G from 32G
+zram:
+
+Before:     10934698 us
+After:      11157121 us
+Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+
+Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronous device")
+Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stress-race [1]
+Reported-by: "Huang, Ying" <ying.huang@intel.com>
+Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.ccr.corp.intel.com/
+Signed-off-by: Kairui Song <kasong@tencent.com>
+Cc: stable@vger.kernel.org
+
+---
+Update from V2:
+- Add a schedule() if raced to prevent repeated page faults wasting CPU
+  and add noise to perf statistics.
+- Use a bool to state the special case instead of reusing existing
+  variables fixing error handling [Minchan Kim].
+
+V2: https://lore.kernel.org/all/20240206182559.32264-1-ryncsn@gmail.com/
+
+Update from V1:
+- Add some words on ZRAM case, it will discard swap content on swap_free so the race window is a bit different but cure is the same. [Barry Song]
+- Update comments make it cleaner [Huang, Ying]
+- Add a function place holder to fix CONFIG_SWAP=n built [SeongJae Park]
+- Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO instead of "direct swapin path" [Yu Zhao]
+- Update commit message.
+- Collect Review and Acks.
+
+V1: https://lore.kernel.org/all/20240205110959.4021-1-ryncsn@gmail.com/
+
+ include/linux/swap.h |  5 +++++
+ mm/memory.c          | 20 ++++++++++++++++++++
+ mm/swap.h            |  5 +++++
+ mm/swapfile.c        | 13 +++++++++++++
+ 4 files changed, 43 insertions(+)
+
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 4db00ddad261..8d28f6091a32 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
+ 	return 0;
+ }
+ 
++static inline int swapcache_prepare(swp_entry_t swp)
++{
++	return 0;
++}
++
+ static inline void swap_free(swp_entry_t swp)
+ {
+ }
+diff --git a/mm/memory.c b/mm/memory.c
+index 7e1f4849463a..7059230d0a54 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3799,6 +3799,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	struct page *page;
+ 	struct swap_info_struct *si = NULL;
+ 	rmap_t rmap_flags = RMAP_NONE;
++	bool need_clear_cache = false;
+ 	bool exclusive = false;
+ 	swp_entry_t entry;
+ 	pte_t pte;
+@@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	if (!folio) {
+ 		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+ 		    __swap_count(entry) == 1) {
++			/*
++			 * Prevent parallel swapin from proceeding with
++			 * the cache flag. Otherwise, another thread may
++			 * finish swapin first, free the entry, and swapout
++			 * reusing the same entry. It's undetectable as
++			 * pte_same() returns true due to entry reuse.
++			 */
++			if (swapcache_prepare(entry)) {
++				/* Relax a bit to prevent rapid repeated page faults */
++				schedule();
++				goto out;
++			}
++			need_clear_cache = true;
++
+ 			/* skip swapcache */
+ 			folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+ 						vma, vmf->address, false);
+@@ -4117,6 +4132,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 	if (vmf->pte)
+ 		pte_unmap_unlock(vmf->pte, vmf->ptl);
+ out:
++	/* Clear the swap cache pin for direct swapin after PTL unlock */
++	if (need_clear_cache)
++		swapcache_clear(si, entry);
+ 	if (si)
+ 		put_swap_device(si);
+ 	return ret;
+@@ -4131,6 +4149,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+ 		folio_unlock(swapcache);
+ 		folio_put(swapcache);
  	}
-
- 	if (!enabled) {
-@@ -301,8 +300,7 @@ int iwl_acpi_get_tas_table(struct iwl_fw_runtime *fwrt=
-,
- 	    IWL_WTAS_BLACK_LIST_MAX) {
- 		IWL_DEBUG_RADIO(fwrt, "TAS invalid array size %llu\n",
- 				wifi_pkg->package.elements[2].integer.value);
--		ret =3D -EINVAL;
--		goto out_free;
-+		goto out_e_inval;
- 	}
- 	block_list_size =3D wifi_pkg->package.elements[2].integer.value;
- 	tas_data->block_list_size =3D cpu_to_le32(block_list_size);
-@@ -316,8 +314,7 @@ int iwl_acpi_get_tas_table(struct iwl_fw_runtime *fwrt=
-,
- 		    ACPI_TYPE_INTEGER) {
- 			IWL_DEBUG_RADIO(fwrt,
- 					"TAS invalid array elem %d\n", 3 + i);
--			ret =3D -EINVAL;
--			goto out_free;
-+			goto out_e_inval;
- 		}
-
- 		country =3D wifi_pkg->package.elements[3 + i].integer.value;
-@@ -329,6 +326,10 @@ int iwl_acpi_get_tas_table(struct iwl_fw_runtime *fwr=
-t,
- out_free:
- 	kfree(data);
++	if (need_clear_cache)
++		swapcache_clear(si, entry);
+ 	if (si)
+ 		put_swap_device(si);
  	return ret;
-+
-+out_e_inval:
-+	ret =3D -EINVAL;
-+	goto out_free;
+diff --git a/mm/swap.h b/mm/swap.h
+index 758c46ca671e..fc2f6ade7f80 100644
+--- a/mm/swap.h
++++ b/mm/swap.h
+@@ -41,6 +41,7 @@ void __delete_from_swap_cache(struct folio *folio,
+ void delete_from_swap_cache(struct folio *folio);
+ void clear_shadow_from_swap_cache(int type, unsigned long begin,
+ 				  unsigned long end);
++void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
+ struct folio *swap_cache_get_folio(swp_entry_t entry,
+ 		struct vm_area_struct *vma, unsigned long addr);
+ struct folio *filemap_get_incore_folio(struct address_space *mapping,
+@@ -97,6 +98,10 @@ static inline int swap_writepage(struct page *p, struct writeback_control *wbc)
+ 	return 0;
  }
-
- int iwl_acpi_get_mcc(struct iwl_fw_runtime *fwrt, char *mcc)
-@@ -474,10 +475,8 @@ int iwl_acpi_get_wrds_table(struct iwl_fw_runtime *fw=
-rt)
- 					 ACPI_WRDS_WIFI_DATA_SIZE_REV2,
- 					 &tbl_rev);
- 	if (!IS_ERR(wifi_pkg)) {
--		if (tbl_rev !=3D 2) {
--			ret =3D -EINVAL;
--			goto out_free;
--		}
-+		if (tbl_rev !=3D 2)
-+			goto out_e_inval;
-
- 		num_chains =3D ACPI_SAR_NUM_CHAINS_REV2;
- 		num_sub_bands =3D ACPI_SAR_NUM_SUB_BANDS_REV2;
-@@ -490,10 +489,8 @@ int iwl_acpi_get_wrds_table(struct iwl_fw_runtime *fw=
-rt)
- 					 ACPI_WRDS_WIFI_DATA_SIZE_REV1,
- 					 &tbl_rev);
- 	if (!IS_ERR(wifi_pkg)) {
--		if (tbl_rev !=3D 1) {
--			ret =3D -EINVAL;
--			goto out_free;
--		}
-+		if (tbl_rev !=3D 1)
-+			goto out_e_inval;
-
- 		num_chains =3D ACPI_SAR_NUM_CHAINS_REV1;
- 		num_sub_bands =3D ACPI_SAR_NUM_SUB_BANDS_REV1;
-@@ -506,10 +503,8 @@ int iwl_acpi_get_wrds_table(struct iwl_fw_runtime *fw=
-rt)
- 					 ACPI_WRDS_WIFI_DATA_SIZE_REV0,
- 					 &tbl_rev);
- 	if (!IS_ERR(wifi_pkg)) {
--		if (tbl_rev !=3D 0) {
--			ret =3D -EINVAL;
--			goto out_free;
--		}
-+		if (tbl_rev !=3D 0)
-+			goto out_e_inval;
-
- 		num_chains =3D ACPI_SAR_NUM_CHAINS_REV0;
- 		num_sub_bands =3D ACPI_SAR_NUM_SUB_BANDS_REV0;
-@@ -521,10 +516,8 @@ int iwl_acpi_get_wrds_table(struct iwl_fw_runtime *fw=
-rt)
- 	goto out_free;
-
- read_table:
--	if (wifi_pkg->package.elements[1].type !=3D ACPI_TYPE_INTEGER) {
--		ret =3D -EINVAL;
--		goto out_free;
--	}
-+	if (wifi_pkg->package.elements[1].type !=3D ACPI_TYPE_INTEGER)
-+		goto out_e_inval;
-
- 	IWL_DEBUG_RADIO(fwrt, "Reading WRDS tbl_rev=3D%d\n", tbl_rev);
-
-@@ -543,6 +536,10 @@ int iwl_acpi_get_wrds_table(struct iwl_fw_runtime *fw=
-rt)
- out_free:
- 	kfree(data);
- 	return ret;
+ 
++static inline void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
++{
++}
 +
-+out_e_inval:
-+	ret =3D -EINVAL;
-+	goto out_free;
+ static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
+ 		struct vm_area_struct *vma, unsigned long addr)
+ {
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 556ff7347d5f..746aa9da5302 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -3365,6 +3365,19 @@ int swapcache_prepare(swp_entry_t entry)
+ 	return __swap_duplicate(entry, SWAP_HAS_CACHE);
  }
-
- int iwl_acpi_get_ewrd_table(struct iwl_fw_runtime *fwrt)
-@@ -562,10 +559,8 @@ int iwl_acpi_get_ewrd_table(struct iwl_fw_runtime *fw=
-rt)
- 					 ACPI_EWRD_WIFI_DATA_SIZE_REV2,
- 					 &tbl_rev);
- 	if (!IS_ERR(wifi_pkg)) {
--		if (tbl_rev !=3D 2) {
--			ret =3D -EINVAL;
--			goto out_free;
--		}
-+		if (tbl_rev !=3D 2)
-+			goto out_e_inval;
-
- 		num_chains =3D ACPI_SAR_NUM_CHAINS_REV2;
- 		num_sub_bands =3D ACPI_SAR_NUM_SUB_BANDS_REV2;
-@@ -578,10 +573,8 @@ int iwl_acpi_get_ewrd_table(struct iwl_fw_runtime *fw=
-rt)
- 					 ACPI_EWRD_WIFI_DATA_SIZE_REV1,
- 					 &tbl_rev);
- 	if (!IS_ERR(wifi_pkg)) {
--		if (tbl_rev !=3D 1) {
--			ret =3D -EINVAL;
--			goto out_free;
--		}
-+		if (tbl_rev !=3D 1)
-+			goto out_e_inval;
-
- 		num_chains =3D ACPI_SAR_NUM_CHAINS_REV1;
- 		num_sub_bands =3D ACPI_SAR_NUM_SUB_BANDS_REV1;
-@@ -594,10 +587,8 @@ int iwl_acpi_get_ewrd_table(struct iwl_fw_runtime *fw=
-rt)
- 					 ACPI_EWRD_WIFI_DATA_SIZE_REV0,
- 					 &tbl_rev);
- 	if (!IS_ERR(wifi_pkg)) {
--		if (tbl_rev !=3D 0) {
--			ret =3D -EINVAL;
--			goto out_free;
--		}
-+		if (tbl_rev !=3D 0)
-+			goto out_e_inval;
-
- 		num_chains =3D ACPI_SAR_NUM_CHAINS_REV0;
- 		num_sub_bands =3D ACPI_SAR_NUM_SUB_BANDS_REV0;
-@@ -610,10 +601,8 @@ int iwl_acpi_get_ewrd_table(struct iwl_fw_runtime *fw=
-rt)
-
- read_table:
- 	if (wifi_pkg->package.elements[1].type !=3D ACPI_TYPE_INTEGER ||
--	    wifi_pkg->package.elements[2].type !=3D ACPI_TYPE_INTEGER) {
--		ret =3D -EINVAL;
--		goto out_free;
--	}
-+	    wifi_pkg->package.elements[2].type !=3D ACPI_TYPE_INTEGER)
-+		goto out_e_inval;
-
- 	enabled =3D !!(wifi_pkg->package.elements[1].integer.value);
- 	n_profiles =3D wifi_pkg->package.elements[2].integer.value;
-@@ -623,10 +612,8 @@ int iwl_acpi_get_ewrd_table(struct iwl_fw_runtime *fw=
-rt)
- 	 * from index 1, so the maximum value allowed here is
- 	 * ACPI_SAR_PROFILES_NUM - 1.
- 	 */
--	if (n_profiles >=3D BIOS_SAR_MAX_PROFILE_NUM) {
--		ret =3D -EINVAL;
--		goto out_free;
--	}
-+	if (n_profiles >=3D BIOS_SAR_MAX_PROFILE_NUM)
-+		goto out_e_inval;
-
- 	/* the tables start at element 3 */
- 	pos =3D 3;
-@@ -651,6 +638,10 @@ int iwl_acpi_get_ewrd_table(struct iwl_fw_runtime *fw=
-rt)
- out_free:
- 	kfree(data);
- 	return ret;
+ 
++void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
++{
++	struct swap_cluster_info *ci;
++	unsigned long offset = swp_offset(entry);
++	unsigned char usage;
 +
-+out_e_inval:
-+	ret =3D -EINVAL;
-+	goto out_free;
- }
-
- int iwl_acpi_get_wgds_table(struct iwl_fw_runtime *fwrt)
-@@ -724,10 +715,9 @@ int iwl_acpi_get_wgds_table(struct iwl_fw_runtime *fw=
-rt)
- 				entry =3D &wifi_pkg->package.elements[entry_idx];
- 				entry_idx++;
- 				if (entry->type !=3D ACPI_TYPE_INTEGER ||
--				    entry->integer.value > num_profiles) {
--					ret =3D -EINVAL;
--					goto out_free;
--				}
-+				    entry->integer.value > num_profiles)
-+					goto out_e_inval;
++	ci = lock_cluster_or_swap_info(si, offset);
++	usage = __swap_entry_free_locked(si, offset, SWAP_HAS_CACHE);
++	unlock_cluster_or_swap_info(si, ci);
++	if (!usage)
++		free_swap_slot(entry);
++}
 +
- 				num_profiles =3D entry->integer.value;
-
- 				/*
-@@ -736,10 +726,8 @@ int iwl_acpi_get_wgds_table(struct iwl_fw_runtime *fw=
-rt)
- 				 * looking up in ACPI
- 				 */
- 				if (wifi_pkg->package.count !=3D
--				    hdr_size + profile_size * num_profiles) {
--					ret =3D -EINVAL;
--					goto out_free;
--				}
-+				    hdr_size + profile_size * num_profiles)
-+					goto out_e_inval;
- 			}
- 			goto read_table;
- 		}
-@@ -769,10 +757,8 @@ int iwl_acpi_get_wgds_table(struct iwl_fw_runtime *fw=
-rt)
- 				entry =3D &wifi_pkg->package.elements[entry_idx];
- 				entry_idx++;
- 				if (entry->type !=3D ACPI_TYPE_INTEGER ||
--				    entry->integer.value > U8_MAX) {
--					ret =3D -EINVAL;
--					goto out_free;
--				}
-+				    entry->integer.value > U8_MAX)
-+					goto out_e_inval;
-
- 				fwrt->geo_profiles[i].bands[j].max =3D
- 					entry->integer.value;
-@@ -787,10 +773,8 @@ int iwl_acpi_get_wgds_table(struct iwl_fw_runtime *fw=
-rt)
- 					entry =3D &wifi_pkg->package.elements[entry_idx];
- 					entry_idx++;
- 					if (entry->type !=3D ACPI_TYPE_INTEGER ||
--					    entry->integer.value > U8_MAX) {
--						ret =3D -EINVAL;
--						goto out_free;
--					}
-+					    entry->integer.value > U8_MAX)
-+						goto out_e_inval;
-
- 					fwrt->geo_profiles[i].bands[j].chains[k] =3D
- 						entry->integer.value;
-@@ -805,6 +789,10 @@ int iwl_acpi_get_wgds_table(struct iwl_fw_runtime *fw=
-rt)
- out_free:
- 	kfree(data);
- 	return ret;
-+
-+out_e_inval:
-+	ret =3D -EINVAL;
-+	goto out_free;
- }
-
- int iwl_acpi_get_ppag_table(struct iwl_fw_runtime *fwrt)
-@@ -829,8 +817,7 @@ int iwl_acpi_get_ppag_table(struct iwl_fw_runtime *fwr=
-t)
- 					tbl_rev);
- 			goto read_table;
- 		} else {
--			ret =3D -EINVAL;
--			goto out_free;
-+			goto out_e_inval;
- 		}
- 	}
-
-@@ -839,10 +826,9 @@ int iwl_acpi_get_ppag_table(struct iwl_fw_runtime *fw=
-rt)
- 			ACPI_PPAG_WIFI_DATA_SIZE_V1, &tbl_rev);
-
- 	if (!IS_ERR(wifi_pkg)) {
--		if (tbl_rev !=3D 0) {
--			ret =3D -EINVAL;
--			goto out_free;
--		}
-+		if (tbl_rev !=3D 0)
-+			goto out_e_inval;
-+
- 		num_sub_bands =3D IWL_NUM_SUB_BANDS_V1;
- 		IWL_DEBUG_RADIO(fwrt, "Reading PPAG table v1 (tbl_rev=3D0)\n");
- 		goto read_table;
-@@ -855,10 +841,8 @@ int iwl_acpi_get_ppag_table(struct iwl_fw_runtime *fw=
-rt)
- 	fwrt->ppag_ver =3D tbl_rev;
- 	flags =3D &wifi_pkg->package.elements[1];
-
--	if (flags->type !=3D ACPI_TYPE_INTEGER) {
--		ret =3D -EINVAL;
--		goto out_free;
--	}
-+	if (flags->type !=3D ACPI_TYPE_INTEGER)
-+		goto out_e_inval;
-
- 	fwrt->ppag_flags =3D iwl_bios_get_ppag_flags(flags->integer.value,
- 						   fwrt->ppag_ver);
-@@ -873,10 +857,8 @@ int iwl_acpi_get_ppag_table(struct iwl_fw_runtime *fw=
-rt)
- 			union acpi_object *ent;
-
- 			ent =3D &wifi_pkg->package.elements[idx++];
--			if (ent->type !=3D ACPI_TYPE_INTEGER) {
--				ret =3D -EINVAL;
--				goto out_free;
--			}
-+			if (ent->type !=3D ACPI_TYPE_INTEGER)
-+				goto out_e_inval;
-
- 			fwrt->ppag_chains[i].subbands[j] =3D ent->integer.value;
- 		}
-@@ -887,6 +869,10 @@ int iwl_acpi_get_ppag_table(struct iwl_fw_runtime *fw=
-rt)
- out_free:
- 	kfree(data);
- 	return ret;
-+
-+out_e_inval:
-+	ret =3D -EINVAL;
-+	goto out_free;
- }
-
- void iwl_acpi_get_phy_filters(struct iwl_fw_runtime *fwrt,
-=2D-
+ struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+ {
+ 	return swap_type_to_swap_info(swp_type(entry));
+-- 
 2.43.0
 
 
