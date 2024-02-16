@@ -1,143 +1,229 @@
-Return-Path: <linux-kernel+bounces-68302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB0E1857875
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8B0085787A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:06:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 628ECB22C2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:05:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04DA7B2355C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:06:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CD41B94D;
-	Fri, 16 Feb 2024 09:05:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EA21BDDB;
+	Fri, 16 Feb 2024 09:05:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ga1ELh13"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="NfhGZJqI"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30581BC20;
-	Fri, 16 Feb 2024 09:05:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650351B978;
+	Fri, 16 Feb 2024 09:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708074323; cv=none; b=I5gD+qJL6fl+jJRUt9k2S+qedBhIwiTVAGPyxgJxsuLtE8ea3aNFFD1IFmD6OctpvDupAildxquIKmAJ37uJ9YIul4ni14YF8Xri/iBesfpIxIWHUqd51CGuRCX6V2JirYKMh+MCwMkTysMuZmqEqblBxTlXrTELXXUyKyRhWEs=
+	t=1708074333; cv=none; b=V1dfyeb8CYRHYvno07OVku+bXyMIPC7Xz0kxNvtSKZ6farirWm7zm3xEZTxKxo7Zvh+Yru2f95n2SqNL6K1dbi60PLDlm0I1C2HFilyuX0HPDqAO8GvDlvIoiBBA3q/lSXRc4hcRhAfm7Rh9OT73FvkpaaLs5oRxjLPNHT9mnuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708074323; c=relaxed/simple;
-	bh=KKzuGXf/3m5GUFN2wQqWlaT/zKCh0DST4P6XXk09AyE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ksqHlq7h6Xxt0mb7UGXirK3SvBBldlQtAO/cjw/xqnN0Eq8cK34LTjY/yQ1jbp2RDIjXDvhFkSWYJ2CKiwNUPLrQd4cBlE26iX7RD7HoqnDGQFEMGeT87jWwF7zsnfeprsXS/52PHAz19S7LRtLBbKSQ6XRFkqijBahdX5YcEPE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Ga1ELh13; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41G94eJE042556;
-	Fri, 16 Feb 2024 03:04:40 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708074280;
-	bh=qKnEBzEkahRZQGyLlG5caVJAX0ujkHEkHCnhmcHnJss=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=Ga1ELh13Fmc4SCWCtqOcJOvkxzdlZcoRb+2I2ZtdsBOn+CHXoQZBCTZqXQO27M3GE
-	 m+QAAFnGAOnJiRL3AGE3v/YrTKt/Tddb7d18CVJad8VrRKNSSCBFxqe1xJTGhfaXX1
-	 N+K101UbOoQH2ziHXxgx59QU6QLKo1rC7coWs7q8=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41G94ecD023131
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 16 Feb 2024 03:04:40 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 16
- Feb 2024 03:04:40 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 16 Feb 2024 03:04:40 -0600
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41G94drM059981;
-	Fri, 16 Feb 2024 03:04:40 -0600
-Date: Fri, 16 Feb 2024 14:34:39 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Vinod Koul <vkoul@kernel.org>
-CC: Andy Shevchenko <andy@kernel.org>,
-        Thomas Richard
-	<thomas.richard@bootlin.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>, Tony Lindgren <tony@atomide.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Vignesh R <vigneshr@ti.com>, Aaro
- Koskinen <aaro.koskinen@iki.fi>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
-        Kishon
- Vijay Abraham I <kishon@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof
- =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-omap@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <linux-pci@vger.kernel.org>, <gregory.clement@bootlin.com>,
-        <theo.lebrun@bootlin.com>, <thomas.petazzoni@bootlin.com>,
-        <u-kumar1@ti.com>, <s-vadapalli@ti.com>
-Subject: Re: [PATCH v3 08/18] phy: ti: phy-j721e-wiz: split wiz_clock_init()
- function
-Message-ID: <14429802-b4d8-4a3e-88ea-a9fc55d2251c@ti.com>
-References: <20240102-j7200-pcie-s2r-v3-0-5c2e4a3fac1f@bootlin.com>
- <20240102-j7200-pcie-s2r-v3-8-5c2e4a3fac1f@bootlin.com>
- <Zc4xJtLl3zo_YrBC@smile.fi.intel.com>
- <Zc76d4B4hjTC3xum@matsya>
+	s=arc-20240116; t=1708074333; c=relaxed/simple;
+	bh=b3i9lcb0CgqU/Tao29pcsoyVFjxM+a2TkJlbTzzBGVE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SYIRxG9aIpiiIwJlgr+boVBAxBZd8cq422enOEPAQDxdXkeqSm4kCPQfHDmsyR+AlsS/I74L1UwHbR+NJ3p6uVUQBM72TCBgVAGJnAIPtWfmhf3IhejY06BEwpnJ8EYXXxdud27LwfEfeuGL9l3D6dmqZ3YCLpejkpWHQTCfK1w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=NfhGZJqI; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1708074330; x=1739610330;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=9vIOGZfDhKu9DGx5o5UYxS0vQjX/6Zu979oLg6n9Etg=;
+  b=NfhGZJqIdAixnWZJbLGuVmX0Ds3WOiW7B06rQtC2uF+MFvZ9rcDKkeP3
+   dT4UhbSibnZyyZ6xHK2Bb07boZVXa1AFGzqLb/Kv7Pq2aLJLM/gyr9muu
+   aHv0hwzF/AeWhz8yc5hwQE4DvAPvRCYvnuNBKt+b8hMy7Siuu+2hbrCyX
+   x6KGt6vkYYgNy4CL1yNH7mwDWphe34GEXgz8K5GU26oGOi6pj/2Pn2+0v
+   fKa2naKzpUmXxJiMgp6HYU6gQvHRGaO75JjOegLyuKUuv157oQ2gCHXRY
+   1kJIX6fvVR2w95Vpjl/teLCAwiN7eypmPik1JEBfKdGlBcjsabnJ4C+Ac
+   w==;
+X-IronPort-AV: E=Sophos;i="6.06,164,1705359600"; 
+   d="scan'208";a="35440531"
+Received: from vtuxmail01.tq-net.de ([10.115.0.20])
+  by mx1.tq-group.com with ESMTP; 16 Feb 2024 10:05:25 +0100
+Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 1BAE5280075;
+	Fri, 16 Feb 2024 10:05:25 +0100 (CET)
+From: Alexander Stein <alexander.stein@ew.tq-group.com>
+To: linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
+Cc: marex@denx.de, frieder.schrempf@kontron.de, Lucas Stach <l.stach@pengutronix.de>, Adam Ford <aford173@gmail.com>, Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, Philipp Zabel <p.zabel@pengutronix.de>, Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+  Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Liu Ying <victor.liu@nxp.com>, Ulf Hansson <ulf.hansson@linaro.org>, dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-phy@lists.infradead.org, linux-pm@vger.kernel.org, Adam Ford <aford173@gmail.com>
+Subject: Re: [PATCH V8 09/12] dt-bindings: display: imx: add binding for i.MX8MP HDMI TX
+Date: Fri, 16 Feb 2024 10:05:26 +0100
+Message-ID: <5916132.MhkbZ0Pkbq@steina-w>
+Organization: TQ-Systems GmbH
+In-Reply-To: <20240203165307.7806-10-aford173@gmail.com>
+References: <20240203165307.7806-1-aford173@gmail.com> <20240203165307.7806-10-aford173@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <Zc76d4B4hjTC3xum@matsya>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-On 24/02/16 11:32AM, Vinod Koul wrote:
-> On 15-02-24, 17:43, Andy Shevchenko wrote:
-> > On Thu, Feb 15, 2024 at 04:17:53PM +0100, Thomas Richard wrote:
-> > > The wiz_clock_init() function mixes probe and hardware configuration.
-> > > Rename the wiz_clock_init() to wiz_clock_probe() and move the hardware
-> > > configuration part in a new function named wiz_clock_init().
-> > > 
-> > > This hardware configuration sequence must be called during the resume
-> > > stage of the driver.
-> > 
-> > ...
-> > 
-> > (Side note, as this can be done later)
-> > 
-> > >  	if (rate >= 100000000)
-> > 
-> > > +		if (rate >= 100000000)
-> > 
-> > > +	if (rate >= 100000000)
-> > 
-> > I would make local definition and use it, we may get the global one as there
-> > are users.
-> > 
-> > #define HZ_PER_GHZ	1000000000UL
-> 
-> Better to define as:
-> #define HZ_PER_GHZ 1 * GIGA
+Hi all,
 
-The variable "rate" is being compared against 100 MHz and not 1 GHz.
-The driver already has the following macros defined:
-#define REF_CLK_19_2MHZ         19200000
-#define REF_CLK_25MHZ           25000000
-#define REF_CLK_100MHZ          100000000
-#define REF_CLK_156_25MHZ       156250000
+Am Samstag, 3. Februar 2024, 17:52:49 CET schrieb Adam Ford:
+> From: Lucas Stach <l.stach@pengutronix.de>
+>=20
+> The HDMI TX controller on the i.MX8MP SoC is a Synopsys designware IP
+> core with a little bit of SoC integration around it.
+>=20
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+>=20
+> ---
+> V3:  Change name and location to better idenfity as a bridge and
+>      HDMI 2.0a transmitter
+>=20
+>      Fix typos and feedback from Rob and added ports.
+> ---
+>  .../display/bridge/fsl,imx8mp-hdmi-tx.yaml    | 102 ++++++++++++++++++
+>  1 file changed, 102 insertions(+)
+>  create mode 100644
+> Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.yaml
+>=20
+> diff --git
+> a/Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.yaml
+> b/Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.yaml
+> new file mode 100644
+> index 000000000000..3791c9f4ebab
+> --- /dev/null
+> +++
+> b/Documentation/devicetree/bindings/display/bridge/fsl,imx8mp-hdmi-tx.yaml
+> @@ -0,0 +1,102 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/bridge/fsl,imx8mp-hdmi-tx.yam=
+l#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Freescale i.MX8MP DWC HDMI TX Encoder
+> +
+> +maintainers:
+> +  - Lucas Stach <l.stach@pengutronix.de>
+> +
+> +description:
+> +  The i.MX8MP HDMI transmitter is a Synopsys DesignWare
+> +  HDMI 2.0a TX controller IP.
+> +
+> +allOf:
+> +  - $ref: /schemas/display/bridge/synopsys,dw-hdmi.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - fsl,imx8mp-hdmi-tx
+> +
+> +  reg-io-width:
+> +    const: 1
+> +
+> +  clocks:
+> +    maxItems: 4
+> +
+> +  clock-names:
+> +    items:
+> +      - const: iahb
+> +      - const: isfr
+> +      - const: cec
+> +      - const: pix
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  ports:
+> +    $ref: /schemas/graph.yaml#/properties/ports
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: Parallel RGB input port
+> +
+> +      port@1:
+> +        $ref: /schemas/graph.yaml#/properties/port
+> +        description: HDMI output port
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
 
-So would it be acceptable to change it to:
-	if (rate >= REF_CLK_100MHZ)
-instead?
+Is this really correct that port@1 is required? AFAICS this host already=20
+supports HPD and DDC by itself, so there is no need for a dedicated HDMI=20
+connector.
+With the current state of the drivers this output port is completely ignore=
+d=20
+anyway. Yet it works for a lot of people.
 
-Regards,
-Siddharth.
+Best regards,
+Alexander
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +  - interrupts
+> +  - power-domains
+> +  - ports
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/imx8mp-clock.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/power/imx8mp-power.h>
+> +
+> +    hdmi@32fd8000 {
+> +        compatible =3D "fsl,imx8mp-hdmi-tx";
+> +        reg =3D <0x32fd8000 0x7eff>;
+> +        interrupts =3D <0 IRQ_TYPE_LEVEL_HIGH>;
+> +        clocks =3D <&clk IMX8MP_CLK_HDMI_APB>,
+> +                 <&clk IMX8MP_CLK_HDMI_REF_266M>,
+> +                 <&clk IMX8MP_CLK_32K>,
+> +                 <&hdmi_tx_phy>;
+> +        clock-names =3D "iahb", "isfr", "cec", "pix";
+> +        power-domains =3D <&hdmi_blk_ctrl IMX8MP_HDMIBLK_PD_HDMI_TX>;
+> +        reg-io-width =3D <1>;
+> +        ports {
+> +           #address-cells =3D <1>;
+> +           #size-cells =3D <0>;
+> +           port@0 {
+> +             reg =3D <0>;
+> +
+> +             hdmi_tx_from_pvi: endpoint {
+> +               remote-endpoint =3D <&pvi_to_hdmi_tx>;
+> +             };
+> +          };
+> +
+> +          port@1 {
+> +            reg =3D <1>;
+> +              hdmi_tx_out: endpoint {
+> +                remote-endpoint =3D <&hdmi0_con>;
+> +              };
+> +          };
+> +        };
+> +    };
+
+
+=2D-=20
+TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht M=FCnchen, HRB 105018
+Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+http://www.tq-group.com/
+
+
 
