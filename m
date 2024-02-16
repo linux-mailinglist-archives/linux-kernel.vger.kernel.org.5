@@ -1,116 +1,258 @@
-Return-Path: <linux-kernel+bounces-68225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70BA4857786
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:23:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D30C857794
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:25:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B9FEB2205B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:23:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB2B128547C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2671BDE1;
-	Fri, 16 Feb 2024 08:19:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D8E1D54F;
+	Fri, 16 Feb 2024 08:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KWpVj+lj"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="bXDEcl+Y"
+Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 269991798E;
-	Fri, 16 Feb 2024 08:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2725B1D546
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071564; cv=none; b=RtyYDyhegc/w2sdrTkZuJxiy50u+aCMJkNyD+kS032rT8h5uJRclVtou2YfvshiY3fN8dxOu5Qa2wQI0FgCAF0BSXxgBUguP2yxG61rEJKtAcdjcufrnYL8RUwhAErFgJ07dBBk5an0lQmgbYoVqC6vT6NwJnyfck1wtr5RlUEs=
+	t=1708071596; cv=none; b=YJbtzW0RfwXCoHRr352SuxWFw2KsQtreM2WwoqiaZFJP4dh1GNyLqfzyzjX8uhzLMbVsu30VoUrFZqqBl9Hnefqgk1yu9JwGpJxzDSTgMjm8dAMyRRuryMtNKVEcm5soC1tQRwe985DkIbqy6PVLFLaJUaLilUmPdkQDFo5foyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071564; c=relaxed/simple;
-	bh=8ZH4X7IkAgYh1aAOxTz7Kvex+GWC3Fv0EXF6Y70Bd4w=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=qW2NRpCZiU3UnyP/ccvNLrA2WjSzGqTe3s+MVs5Vi1KlWNoxoNE/V/amzEN/v4pY01Yw+EZ+BAGQPHPbGrx5SWtdptYevVQ5x+2OYWCNA/rtOQCuo6ohdv2wUu3uR9aRDbv8XsKS0gB0QdkRZX/III5HAl+BGPnCzOLM4Dvat48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KWpVj+lj; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3566c0309fso209572266b.1;
-        Fri, 16 Feb 2024 00:19:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708071561; x=1708676361; darn=vger.kernel.org;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vkcZNtVWFcpaYRh5KBkVLspCvZTJEh/dDf70Iu1sYYo=;
-        b=KWpVj+ljcvwFrQ31N3APbWWfn+AHBNhKl8xtNODtNCuqDbATzYDskiyhG9ggvxfUvo
-         lAL1YTTMlcGM/3vBlO7F24Zz2+zzD5ntSHq0vqmJykmJuToO6UevPKLIrjmtSCPoEwUW
-         QmJg/IA8kyYb14EZb/nkB8neqLC2eZ7OZm2Q8f2yWjhpMv2wwlC5HyA9GlkNJ+YAzgPD
-         lIyzWUuADnnHNjSAD8CeqkMF/npgn+2lWViJlPA51G8Gvfya63TL+uDL7+DfRulk2Rb8
-         0pwPYWiosydQSLTEMA2+yiH9LSLbVkYXlmPeoDab43yrpShfR65aSJTv1KLMgT8cz+6C
-         rDdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708071561; x=1708676361;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vkcZNtVWFcpaYRh5KBkVLspCvZTJEh/dDf70Iu1sYYo=;
-        b=LS8MNuMzEmB+KApaMuyi5vH+AiuwCtQxSJ8pDPYgKpJz8xdm/4tpEuHIC0oF/kJAg7
-         Yz3sAMLdiKVqd0Xc38Q/Z0avq6U8PNDGJ71w1s8sDUEtIuXGPbZ0MW1ttViswRoi37D/
-         uBTOdT060jsm0OYcxSNSiKZ3w0Ar1v+cmqGbZCJIkxeX92oxnYlDFQBcz41hoMDDzfb9
-         0XTKB1FlDXnEvdLbegHVHZ4cjUAR0FjZXkWD8bPpZJZgbi7gpN1Gw7fMnJUNgRUEx+Zx
-         zodgLBYVlsmixd0Lw+Pge2xEX3izdVkkZp9ZtIVlff7pmSrapnu1syoaz+zsOVlGWbNh
-         XVJg==
-X-Forwarded-Encrypted: i=1; AJvYcCWA9TTlGlrNUO/pfW6LgpuF3CGnQ8xw+C+xHVgQGsNXyFMG9BOSB1cIwh0C5dtkU54joqp+sbaEbF+peOEqu3O5wp3IcCa56CD9AABUs6nB9+Q48PtU3Mk5LaRkOLQz0tOYXQ5zF1LQNiwx7Yk=
-X-Gm-Message-State: AOJu0YylrR+37XeuDMndBIMgf1pwf0V1JLaIKfiRMY+mpGXt1zOcXbDJ
-	H0z3ZbMhVg4mkFKHCuC7m89WoaKHuuLZE2sxuRzXPBCCeEQElv/0
-X-Google-Smtp-Source: AGHT+IFXSBfbEqhz1EqCn2tCMy8Z7/w/zHz7KZ1UE8gVdsg6Mxzu1Z26+TLjMUeJRJmfDryyxt9c1A==
-X-Received: by 2002:a17:906:261a:b0:a3d:4e12:c0c1 with SMTP id h26-20020a170906261a00b00a3d4e12c0c1mr2585282ejc.39.1708071561103;
-        Fri, 16 Feb 2024 00:19:21 -0800 (PST)
-Received: from felia.fritz.box ([2a02:810d:7e40:14b0:e91e:623:d202:a9b3])
-        by smtp.gmail.com with ESMTPSA id um9-20020a170906cf8900b00a3be730d63fsm1332888ejb.13.2024.02.16.00.19.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 00:19:20 -0800 (PST)
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To: Kent Overstreet <kent.overstreet@linux.dev>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	linux-bcachefs@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MAINTAINERS: repair file entries in THREAD WITH FILE
-Date: Fri, 16 Feb 2024 09:19:17 +0100
-Message-Id: <20240216081917.16302-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1708071596; c=relaxed/simple;
+	bh=uGpKEecCmfuEyzbj6dA7yDBuDlpAYE7i+nfn0lZLzFs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dPApxzsf84oLRjQKazWdHAD5aBuenzh+pu4hLVzI5DwBBcxo2lyw9ophMlOJJ2AXcIiooNVG/etTH4Ppu5KzgS1Qi6izKvV+DwPZX3Um6PG2qBS88SiTpsFT8MwICsiiaEeOn056fEx6amQUzoModH78P611PFFCGm5Z0laf+qQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=bXDEcl+Y; arc=none smtp.client-ip=77.240.19.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
+	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=SwArZZWoMGaUCC+AgKvruw60znKf1jRE+TFnKaPirqQ=; b=bXDEcl+YuVId6rnVYekHhMzP3m
+	8VFTkcifS/od+wIoEWEZmqojntpPTVvKkyPo/o6Ct9sDh7TXU28ldRbXwmrVoiJ/ELzBp8eKhR3p7
+	kxss9xDt1E1B6oKtymfcp3oh36SLnfh04pA94ai2xmrQPRqlxLT47gaW6CttbAzuty6YYjsUMsqxu
+	VkvJMYkf7XdvLUS4u77ltc72S42TOxLAqGeQO03Vf1FM8pQ9R2wMcvUuHCGwJSEKxl3pz9LCkOPZe
+	5Zl2xs9kwZUu7go8VrYgbYjEuWpH2tfm+EoV3HK/bm57WzBYE57KnTwdg8kVEE6GpmfDjlkTnJn4y
+	QsEbgJvQ==;
+Received: from [194.136.85.206] (port=48728 helo=eldfell)
+	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <pekka.paalanen@haloniitty.fi>)
+	id 1ratRf-0004TR-1u;
+	Fri, 16 Feb 2024 10:19:43 +0200
+Date: Fri, 16 Feb 2024 10:19:36 +0200
+From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+To: Hamza Mahfooz <hamza.mahfooz@amd.com>
+Cc: <amd-gfx@lists.freedesktop.org>, Mario Limonciello
+ <mario.limonciello@amd.com>, Harry Wentland <harry.wentland@amd.com>, Leo
+ Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, "Alex
+ Deucher" <alexander.deucher@amd.com>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Alex Hung
+ <alex.hung@amd.com>, Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, <dri-devel@lists.freedesktop.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
+ to eDP connectors
+Message-ID: <20240216101936.2e210be2@eldfell>
+In-Reply-To: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/N0j5fPzI_9+T2QzPPLs30WV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - whm50.louhi.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - haloniitty.fi
+X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
+X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 
-Commit ead021e0fe5b ("thread_with_file: Lift from bcachefs") adds the
-section THREAD WITH FILE with file entries to the relevant header files
-thread_with_file.h and thread_with_file_types.h in include/linux/.
+--Sig_/N0j5fPzI_9+T2QzPPLs30WV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The commit however unintentionally refers to files with a .c extension, but
-the header files are of course with .h extension. Fortunately, the script
-'./scripts/get_maintainer.pl --self-test=patterns' notices that.
+On Fri, 2 Feb 2024 10:28:35 -0500
+Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
 
-Adjust the file entries to use the right extension.
+> We want programs besides the compositor to be able to enable or disable
+> panel power saving features.
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Could you also explain why, in the commit message, please?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 37bcf01bf1d1..d881bddabf17 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22025,8 +22025,8 @@ M:	Kent Overstreet <kent.overstreet@linux.dev>
- M:	Darrick J. Wong <djwong@kernel.org>
- L:	linux-bcachefs@vger.kernel.org
- S:	Maintained
--F:	include/linux/thread_with_file.c
--F:	include/linux/thread_with_file_types.c
-+F:	include/linux/thread_with_file.h
-+F:	include/linux/thread_with_file_types.h
- F:	lib/thread_with_file.c
- 
- THUNDERBOLT DMA TRAFFIC TEST DRIVER
--- 
-2.17.1
+It is unexpected for arbitrary programs to be able to override the KMS
+client, and certainly new ways to do so should not be added without an
+excellent justification.
 
+Maybe debugfs would be more appropriate if the purpose is only testing
+rather than production environments?
+
+> However, since they are currently only
+> configurable through DRM properties, that isn't possible. So, to remedy
+> that issue introduce a new "panel_power_savings" sysfs attribute.
+
+When the DRM property was added, what was used as the userspace to
+prove its workings?
+
+
+Thanks,
+pq
+
+>=20
+> Cc: Mario Limonciello <mario.limonciello@amd.com>
+> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
+> ---
+> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
+>     commit when setting the value, call sysfs_remove_group() in
+>     amdgpu_dm_connector_unregister() and add some documentation.
+> ---
+>  .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+>=20
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/=
+gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 8590c9f1dda6..3c62489d03dc 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struc=
+t drm_connector *connector,
+>  	return ret;
+>  }
+> =20
+> +/**
+> + * DOC: panel power savings
+> + *
+> + * The display manager allows you to set your desired **panel power savi=
+ngs**
+> + * level (between 0-4, with 0 representing off), e.g. using the followin=
+g::
+> + *
+> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
+> + *
+> + * Modifying this value can have implications on color accuracy, so tread
+> + * carefully.
+> + */
+> +
+> +static ssize_t panel_power_savings_show(struct device *device,
+> +					struct device_attribute *attr,
+> +					char *buf)
+> +{
+> +	struct drm_connector *connector =3D dev_get_drvdata(device);
+> +	struct drm_device *dev =3D connector->dev;
+> +	u8 val;
+> +
+> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+> +	val =3D to_dm_connector_state(connector->state)->abm_level =3D=3D
+> +		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
+> +		to_dm_connector_state(connector->state)->abm_level;
+> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
+> +
+> +	return sysfs_emit(buf, "%u\n", val);
+> +}
+> +
+> +static ssize_t panel_power_savings_store(struct device *device,
+> +					 struct device_attribute *attr,
+> +					 const char *buf, size_t count)
+> +{
+> +	struct drm_connector *connector =3D dev_get_drvdata(device);
+> +	struct drm_device *dev =3D connector->dev;
+> +	long val;
+> +	int ret;
+> +
+> +	ret =3D kstrtol(buf, 0, &val);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val < 0 || val > 4)
+> +		return -EINVAL;
+> +
+> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+> +	to_dm_connector_state(connector->state)->abm_level =3D val ?:
+> +		ABM_LEVEL_IMMEDIATE_DISABLE;
+> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
+> +
+> +	drm_kms_helper_hotplug_event(dev);
+> +
+> +	return count;
+> +}
+> +
+> +static DEVICE_ATTR_RW(panel_power_savings);
+> +
+> +static struct attribute *amdgpu_attrs[] =3D {
+> +	&dev_attr_panel_power_savings.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group amdgpu_group =3D {
+> +	.name =3D "amdgpu",
+> +	.attrs =3D amdgpu_attrs
+> +};
+> +
+>  static void amdgpu_dm_connector_unregister(struct drm_connector *connect=
+or)
+>  {
+>  	struct amdgpu_dm_connector *amdgpu_dm_connector =3D to_amdgpu_dm_connec=
+tor(connector);
+> =20
+> +	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
+>  	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
+>  }
+> =20
+> @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_conne=
+ctor *connector)
+>  		to_amdgpu_dm_connector(connector);
+>  	int r;
+> =20
+> +	if (connector->connector_type =3D=3D DRM_MODE_CONNECTOR_eDP) {
+> +		r =3D sysfs_create_group(&connector->kdev->kobj,
+> +				       &amdgpu_group);
+> +		if (r)
+> +			return r;
+> +	}
+> +
+>  	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
+> =20
+>  	if ((connector->connector_type =3D=3D DRM_MODE_CONNECTOR_DisplayPort) ||
+
+
+--Sig_/N0j5fPzI_9+T2QzPPLs30WV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXPGpgACgkQI1/ltBGq
+qqc/7hAAlGiJifPdESkeAkI4ecEIa/VhPtuaQOWtX9tA2Lv+8u5VMhA0YyAn2ql2
+dYiw24Gu1A1b69qvyUvKzQPbhBX80PT9LEfzysYMpjCVZMv/9VlvANNZaQUojoYV
+a9+ETsbiugKUxWLgj8q7a522nPTfqZ4Hg0X0wlt31qQ9eRQDZv8v2z+x6FvEn70V
+R3C3Pi2NXCjYkqG3F+n9fcN2JDUSFFFrIZuwPJIi4MO8PWUNk47a+nyxOVKmAI/E
+MwoGilxW7pm/B7W1A1FfKo/FS+G8KhWchNB70nsE+x1fxEOLd0YypFH8fIlT86T5
+rkUNueHG73/do6FEdx5TOB//stiSnG7RRSJA2xOYd2iwPZB5VdQ/v9YB9EyW2zun
+ba9Ne51RpmT1VDBxrknWZV/wCtoRiMzRAXl4YPLlXkYZtWids7+OzJR9R2oDGw13
+8k0lgfgvV3cWFtEXpNXdcL1ErTOeow8/vmST2BTPVhuDw04pdU0RsQriV8ZygEwz
+cXmpEgkfpn/Ay8Ppe5l0Jw0IuSGRW90Sf4hmd7SQ5klLB/lV4CxLAF+xtoMDbzfP
+Ok8485dWkxEntrpGLvR/LcLXRyLuRIAFD5znUbKlBKCWQcPn8l+4gt93S2e9jiWV
+bU3eKOG1TEAOgW7hSD/yWeFQr5ceYxERSdPaMn2rN6pp2X5NiGw=
+=N/D3
+-----END PGP SIGNATURE-----
+
+--Sig_/N0j5fPzI_9+T2QzPPLs30WV--
 
