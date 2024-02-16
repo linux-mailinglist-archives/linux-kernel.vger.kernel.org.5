@@ -1,110 +1,116 @@
-Return-Path: <linux-kernel+bounces-68052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E210585755B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:40:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A32857565
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:43:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0242284B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:40:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 128111C2159F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 04:43:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2F8E10A34;
-	Fri, 16 Feb 2024 04:40:11 +0000 (UTC)
-Received: from r3-21.sinamail.sina.com.cn (r3-21.sinamail.sina.com.cn [202.108.3.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73A48134A0;
+	Fri, 16 Feb 2024 04:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="QBYbynhN"
+Received: from mail-qv1-f49.google.com (mail-qv1-f49.google.com [209.85.219.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4397476
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 04:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.108.3.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98FD10961
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 04:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708058411; cv=none; b=J6B/vlyr3DrKD8Y60VfMTIqXKzHzHYCoCiNI0/W3H16+xyAYO+TKfIehmej+q/4Vs3Ymznm0Q3TeStO2nMKSqFYL2Hb0hrLZjJmyV4fInC6XBcCi2b+JwjB+iEYSib8MFS7gMwVqPnQ58YwV7n4GQP5272VjpxsFA0tYOB9ofVk=
+	t=1708058620; cv=none; b=uuI83r7fPhzKeh0A4roMQAwCngEHIWpyNPOhpBi0sxGsZkqLAMTOfNmwoChdrST9F6nSfMEAUf1VJtm9Zm1piLhD6jIhEOLd5GUIdYRtwgRdOVUtZPMurqtQbXu4J1yk8IwRWOspNZ+zTNNQE374ra02EkVXNHdUW+nMqPawmMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708058411; c=relaxed/simple;
-	bh=vDsdmX04xYR/ZsrLeCRVmexAxmdlflhNdPC7th2GmoI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fxLPvG9AAjzk+ecueqpejkSz+NQvUAj7MqZJGtde1SQrSvluqVSZcias10ZG0nDFTz6DS+WbStnk6TKe+MgKqGEJIA2gwDkl15aqmsdASvtVwNmhBU1d8k4DXalG5W3D0cphavOk11e+y/PBidS7nhfUfS3CcboHBbT/YD5QyOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=202.108.3.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([114.249.59.61])
-	by sina.com (10.182.253.23) with ESMTP
-	id 65CEE5DD00002E06; Fri, 16 Feb 2024 12:34:39 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 7718657864875
-X-SMAIL-UIID: 7211912AF5AB4416B16F9F67BA944DE9-20240216-123439-1
-From: Hillf Danton <hdanton@sina.com>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Sven van Ashbrook <svenva@chromium.org>,
-	Karthikeyan Ramasubramanian <kramasub@chromium.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Brian Geffon <bgeffon@google.com>,
-	linux-sound@vger.kernel.org,
-	Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Subject: Re: [PATCH v1] ALSA: memalloc: Fix indefinite hang in non-iommu case
-Date: Fri, 16 Feb 2024 12:34:24 +0800
-Message-ID: <20240216043426.1218-1-hdanton@sina.com>
-In-Reply-To: <875xypk6d6.wl-tiwai@suse.de>
-References: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid> <20240215034528.240-1-hdanton@sina.com> <87h6iaf7di.wl-tiwai@suse.de> <CAG-rBigFG-U-sKY77CvzghGzs+1Xm3YXzBF6N4ti0+h6UdAb8Q@mail.gmail.com>
+	s=arc-20240116; t=1708058620; c=relaxed/simple;
+	bh=waeuX8RtjIW86KprZNCOqRp/iiUFgtT5YVoezffu7hk=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=MtkhLd6iZ374okYUBp9zk0y2wRUJcqeST+3Ny03KU3pxpu34UCOpdilT6qEAqKS2dZT1zI6YFv5nvi/Lm1H+scPlpN+HAz48zL44r99jSg6258EwQo+XJfNfh2T6ibwsqQrXausz2N+QHGzu/+LjPWIVVM4o1vkhSX1yJZHKAzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=QBYbynhN; arc=none smtp.client-ip=209.85.219.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-68f2a6fdeffso4893396d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 20:43:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1708058617; x=1708663417; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hzH2XjdwcrudKK0By8Y9Nwkfc0y204g7SCh9Xtz36uI=;
+        b=QBYbynhNm8tm4vtdLyIvMt4Z2Zw06EGImgeGy0UxZw8I8v3PH1UoZU15fXXsza7pr3
+         0DiSaO4AgoLH864p9y6EK/IUAzWOkbDxO1zpB0L6ZlRLiTFvRe3/ZAGMR4NT3r2KSvUT
+         DuUYIK3JZ6eYl3E6XGDdycU8Mvi8ClRnqREG/QRHmW/PtTw91XI3RmZPnajFuGUcTFlZ
+         /Z9ogEJgRdSq8/YY1IA/W+QhWM890BLLr1IUSou+ADEvV+tq4Cc8fW600rXRkiRlhQv4
+         uDXs6dgWvdheOELMLWtwzXTmzysYMq5aQT9or6Aq/Ap74n22SX8wBxDlI5DpsM8/4Faq
+         b5Xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708058617; x=1708663417;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hzH2XjdwcrudKK0By8Y9Nwkfc0y204g7SCh9Xtz36uI=;
+        b=eGp4VLM+gtWjCo1fQ7zgIws1mFYkXClM6A2K3fcAp/D82UOY621k8FWCFVsxhnmcMk
+         4mEVF2dC7gJJDPwAVmFUD+UqtraewPJxlvC/0GrhAgmMNyJ9uH3ZZhZCbH9KfX3idQ+T
+         DAq9wn2c6wgSnhpzMAp3BLwWiWCy/xVy87ZlqienzLBQKyNFmXIserCi47ZrJRoXFJ5p
+         x/wqv5b0d5kLCugrFXMXvjqIXCIuWVf9I2YYMnSpqhdh6L1QzyRFvLbOFQsekroczMw/
+         IIFwWHSqutFTq7eWm0/cLT84FXhhrVtpCaxLuYi5yTVu5w3YyN72csapf0rPeF4EunQN
+         kvtA==
+X-Gm-Message-State: AOJu0Yx6xbbi+37nsCzAzSuJm0cgflIhiQ699zgLdTOdQYv31RYpR76A
+	+mq2biXy3pIO2ptPjzXQIoqE3P1FiJrIVA2tt3nKdp9/0ConPnXf2sl+cwH20w==
+X-Google-Smtp-Source: AGHT+IH4Re2re96Bj4x8lZKg32bzmDSpm8k6SPGJJSdEF1RKaSe7UJnZBT4cDAJ/C8/g+lnnFGrBLg==
+X-Received: by 2002:a05:6214:23ce:b0:68d:129e:f5c1 with SMTP id hr14-20020a05621423ce00b0068d129ef5c1mr4407697qvb.45.1708058617658;
+        Thu, 15 Feb 2024 20:43:37 -0800 (PST)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id og8-20020a056214428800b0068c4b445991sm1367791qvb.67.2024.02.15.20.43.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Feb 2024 20:43:37 -0800 (PST)
+Date: Thu, 15 Feb 2024 23:43:36 -0500
+Message-ID: <2cdfefc8661d0a82c28250fc22a93a47@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
 Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>, viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com, jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, eric.snowberg@oracle.com, dhowells@redhat.com, jarkko@kernel.org, stephen.smalley.work@gmail.com, omosnace@redhat.com, casey@schaufler-ca.com, shuah@kernel.org, mic@digikod.net
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org, linux-integrity@vger.kernel.org, keyrings@vger.kernel.org, selinux@vger.kernel.org, linux-kselftest@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v10 0/25] security: Move IMA and EVM to the LSM
+ infrastructure
+References: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20240215103113.2369171-1-roberto.sassu@huaweicloud.com>
 
-On Thu, 15 Feb 2024 18:03:01 +0100 Takashi Iwai <tiwai@suse.de> wrote:
+On Feb 15, 2024 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
 > 
-> So it sounds like that we should go back for __GFP_NORETRY in general
-> for non-zero order allocations, not only the call you changed, as
-> __GFP_RETRY_MAYFAIL doesn't guarantee the stuck.
+> IMA and EVM are not effectively LSMs, especially due to the fact that in
+> the past they could not provide a security blob while there is another LSM
+> active.
 > 
-> How about the changes like below?
+> That changed in the recent years, the LSM stacking feature now makes it
+> possible to stack together multiple LSMs, and allows them to provide a
+> security blob for most kernel objects. While the LSM stacking feature has
+> some limitations being worked out, it is already suitable to make IMA and
+> EVM as LSMs.
 > 
-> +/* default GFP bits for our allocations */
-> +static gfp_t default_gfp(size_t size)
-> +{
-> +	/* don't allocate intensively for high-order pages */
-> +	if (size > PAGE_SIZE)
-> +		return GFP_KERNEL | __GFP_NOWARN | __GFP_NORETRY;
-> +	else
-> +		return GFP_KERNEL | __GFP_NOWARN | __GFP_RETRY_MAYFAIL;
-> +}
+> The main purpose of this patch set is to remove IMA and EVM function calls,
+> hardcoded in the LSM infrastructure and other places in the kernel, and to
+> register them as LSM hook implementations, so that those functions are
+> called by the LSM infrastructure like other regular LSMs.
 
-Looks like an overdose because both __GFP_NORETRY and __GFP_RETRY_MAYFAIL
-are checked in __alloc_pages_slowpath().
+As discussed earlier, I've just merged this into the lsm/dev tree; a big
+thank you to Roberto for working on this and to all helped along the way
+with reviews, testing, etc.  I've wanted to see IMA/EVM integrated as
+proper LSMs for a while and I'm very happy to finally see it happening.
 
---- x/sound/core/memalloc.c
-+++ y/sound/core/memalloc.c
-@@ -540,13 +540,20 @@ static void *snd_dma_noncontig_alloc(str
- {
- 	struct sg_table *sgt;
- 	void *p;
-+	gfp_t gfp = DEFAULT_GFP;
- 
- #ifdef CONFIG_SND_DMA_SGBUF
- 	if (cpu_feature_enabled(X86_FEATURE_XENPV))
- 		return snd_dma_sg_fallback_alloc(dmab, size);
-+	/*
-+	 * Given fallback, quit allocation in case of PAGE_ALLOC_COSTLY_ORDER with
-+	 * lower orders handled by page allocator
-+	 */
-+	if (!get_dma_ops(dmab->dev.dev))
-+		gfp &= ~__GFP_RETRY_MAYFAIL;
- #endif
--	sgt = dma_alloc_noncontiguous(dmab->dev.dev, size, dmab->dev.dir,
--				      DEFAULT_GFP, 0);
-+	sgt = dma_alloc_noncontiguous(dmab->dev.dev, size, dmab->dev.dir, gfp, 0);
-+
- #ifdef CONFIG_SND_DMA_SGBUF
- 	if (!sgt && !get_dma_ops(dmab->dev.dev))
- 		return snd_dma_sg_fallback_alloc(dmab, size);
+Mimi, Roberto, I'm going to hold off on merging anything into the lsm/dev
+tree for a few days in case you decide you would prefer to take these
+patches yourselves.  If I don't hear anything from the two of you, I'll
+plan to send these to Linus during the next merge window.
+
+--
+paul-moore.com
 
