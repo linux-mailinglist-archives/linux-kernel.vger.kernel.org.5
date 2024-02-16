@@ -1,156 +1,158 @@
-Return-Path: <linux-kernel+bounces-68913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 573148581D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:54:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C15338581C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:52:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A2BD1C220A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:54:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61F27B22E03
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E36E9131E3D;
-	Fri, 16 Feb 2024 15:53:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B370E12FB30;
+	Fri, 16 Feb 2024 15:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="mieHUj3Y"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="Zt2zLX7G"
+Received: from mail-io1-f44.google.com (mail-io1-f44.google.com [209.85.166.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5398812FB20;
-	Fri, 16 Feb 2024 15:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CF912F5AE
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:52:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708098789; cv=none; b=ULIekHSlH6nA+DRf7ygfRM8b0tvJqKa2/x2UVczKQKhJL1SOg6UF+g7YdkxCiMqRDIwKS3T9gmTu28L/B7fb0K5/ikqtZzIPHbu3xsEuRDz7z9+RJirm/ZW7SxuV4XeJIks7vCh29siiN9JOj1mQM80/FcGRZFhTNXABym6yJu4=
+	t=1708098750; cv=none; b=XiN7DCaeBCb2wIf6rskoQvn4xNABn+5ZDOCzPI0FMhZl6e6pdsFspzb/WeUgMNCqojlK2UNWxoWu8rNuky+ewutVs+m+Z2nhpt6STzRVxVIGPIsEI8c3KYKpAtBxo6Lg0ETFekXkINX3/F1zyBJLRFMDQ2a50hZCPbq6nL+SrR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708098789; c=relaxed/simple;
-	bh=t9DftvwHYXJXtsEXtK9HBnIXPvK2VHYobKs97PldUo8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=UMQ2teGnqMHwKv/SNIrGIPWT2iMzfqNiruGSftc6T/rcymdTNn0qLb411RR+5M7L+PKYbqd0gHOb9tJV8DEH9QhopQOtAPD8D3cw5dK+OgRKvaLAfYVPvMtABnaWGWhBU8mxc/r2jR+r4IpUnm2KakMgfy4VUmDHKiu6xGX8aB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=mieHUj3Y; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4FD14240009;
-	Fri, 16 Feb 2024 15:53:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708098784;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vt7pqaInPUQVg2cWblp5rRamZytG6+i7+g/PwgWu1us=;
-	b=mieHUj3YhUhot+FdrhYmScxvoYrgALn4DfVvCOcXfkplzuNveM1LvjHs57EdccaZT709XZ
-	E2lGk6VjEhKeagsqIzdOQMl3+imVIYwDJJvEu9mmE/1Pq87HGrfEwBnRE5LOSHBVE9wGhl
-	z7ExsFhJGD3mqd02ktVRhUROHjD7ev+ApB0su38cm5ETyukfeviqgmcJjLrVsb1vuPDVHk
-	E+aNtIoKF7dsijNDta7qhn79IvW7piwajqUQsfTQGDmifIfhttOXp9ednNOswrwsrjh5lC
-	F5qMTORSNuOpn2OmgLjvoFdmEvnfhLBK6L7r2AVtOeRPWgaXSa91rOAy/dbWNA==
-From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Fri, 16 Feb 2024 16:52:25 +0100
-Subject: [PATCH RFC net-next v8 07/13] ptp: Move from simple ida to xarray
+	s=arc-20240116; t=1708098750; c=relaxed/simple;
+	bh=zQHxIDjjwvENEklHG5+P+nAsCfKvOL33RSYN/au5iDk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JgA+la/Gm5niGzd+4rfm46UFRlhwhw1EZ/jeL6XJQCsa48L9weAlIgYp+rBTg6TYprro/63HtB+sDRCUsh4uQ0hBAmCB+4gd/Drwvbnw7PjAnn4W56pv6ABJT1M79BRENBrpPodkXNInJOsJ93Z/LmuQBq2P5sfYtAOh/ZOFqvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=Zt2zLX7G; arc=none smtp.client-ip=209.85.166.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
+Received: by mail-io1-f44.google.com with SMTP id ca18e2360f4ac-7c457b8ef7cso71362339f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:52:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1708098747; x=1708703547; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4UuLv5UoKgwS5Sbj+Drkana4tgYiAyfKFVJYKCmoJVg=;
+        b=Zt2zLX7GmLt+0ud+VHVzrDHuFsPhQJVRGfOHygy0MPMtwuGJwtHmqcTdCkEGGm0PZ4
+         WplZ9MQ48lleoQv/zaMUa/A/D1KY5q7TMJASI1UVvyrKSG1urR5uA/PJfP4YWMgyIs56
+         2eQd9RQaSmhh+I0cMtXTBAHuQilKOYennelDtajp2eYPzWyMdjGAmICiuPDqWFBxr/6i
+         yYAlG+CjOnqFuP1Jk1uMQu15Ay1ijK1ef4Z4U5PZZ7EWJZW4xuiAcD7pFQYT2vl+L1C2
+         fom7VGpuU2e3JHipj5MIxWY5GHt/DU7Y5QKU9xNZqmUtnC3El+0NDCu3Dp6vZ8SkVMJy
+         4duQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708098747; x=1708703547;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4UuLv5UoKgwS5Sbj+Drkana4tgYiAyfKFVJYKCmoJVg=;
+        b=f9DRN2H4hD9tPu5m8iQG1BKM1730V/RSTL1pi4AyPwlmd+VJWJpD+PyRAOhIh3KTb+
+         DCVDuR5C1aUU3JKiY8iAH30bobRZN2K5Nfswta+FNFLflwTA/hyvpMtjrCZUOaz0BgUd
+         eA0A0KCeSptd1/3CluAipJJFVoD9fG1dAPpaIWdcQgcoOf9+olicv+PC3i9H01FEeYvo
+         TDi8T0/5L+IZ+FB051ezfMbJGq6GqYr/JQ3boBZgb7xFjVaiez0iEG0kYv6SFhAGJM0i
+         AZR21xBMDZvHBaDsOA0PcN7BUl10HY2fC0cx3k18+1c89AFDAcchnDD+L1pn4u9+AQZ9
+         LEQw==
+X-Forwarded-Encrypted: i=1; AJvYcCVZLLffERYf6jrLD6KGR+Ls37KZQlpOw93F9CMFRE9IC6B6VTzmGfPoCabz8QuqIWfEI8VkUQqgVd80u0cvV6vwDixreDuKf0S1or2y
+X-Gm-Message-State: AOJu0Yw+JQ8tXBqLj3wMb6K8q+zntyHWhZ/Te77uDcRktjqB8o3jLdV8
+	RM1vSbN2pHIPK/k18rZBvgFOfhMD6noTLIaMLrBPJGj1+II4bPBhqyOwcVB86Ho=
+X-Google-Smtp-Source: AGHT+IHrUiej7yFWlHnP9s7250iMaB2JeyRPBgFUS7lY1WV3rbY8kPKQiQ+iQejR4JASuqBjKZnwyQ==
+X-Received: by 2002:a05:6602:1302:b0:7c4:5529:5818 with SMTP id h2-20020a056602130200b007c455295818mr5979560iov.4.1708098747464;
+        Fri, 16 Feb 2024 07:52:27 -0800 (PST)
+Received: from [192.168.1.132] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id z26-20020a02ceba000000b0047401a9b8cesm32736jaq.106.2024.02.16.07.52.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 07:52:27 -0800 (PST)
+Message-ID: <f0c51f71-dae8-447f-bbdb-73d2ce607893@davidwei.uk>
+Date: Fri, 16 Feb 2024 08:52:25 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240216-feature_ptp_netnext-v8-7-510f42f444fb@bootlin.com>
-References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
-In-Reply-To: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
- Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
- Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
- Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: kory.maincent@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/8] net: tcp: tsq: Convert from tasklet to BH workqueue
+Content-Language: en-GB
+To: Eric Dumazet <edumazet@google.com>, Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mpatocka@redhat.com,
+ linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com,
+ ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com,
+ houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org,
+ netdev@vger.kernel.org, allen.lkml@gmail.com, kernel-team@meta.com,
+ "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ David Wei <davidhwei@meta.com>
+References: <20240130091300.2968534-1-tj@kernel.org>
+ <20240130091300.2968534-7-tj@kernel.org> <Zc7zLsEhDzGkCH9m@slm.duckdns.org>
+ <CANn89iKDsJPY=QQrTHK0Jw=s=A_G_GzcOA0WsqXaytWAVV3R4Q@mail.gmail.com>
+From: David Wei <dw@davidwei.uk>
+In-Reply-To: <CANn89iKDsJPY=QQrTHK0Jw=s=A_G_GzcOA0WsqXaytWAVV3R4Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Move from simple ida to xarray for storing and loading the ptp_clock
-pointer. This prepares support for future hardware timestamp selection by
-being able to link the ptp clock index to its pointer.
+On 2024-02-16 01:23, Eric Dumazet wrote:
+> !-------------------------------------------------------------------|
+>   This Message Is From an External Sender
+> 
+> |-------------------------------------------------------------------!
+> 
+> On Fri, Feb 16, 2024 at 6:31 AM Tejun Heo <tj@kernel.org> wrote:
+>>
+>> Hello,
+>>
+>> On Mon, Jan 29, 2024 at 11:11:53PM -1000, Tejun Heo wrote:
+>>> The only generic interface to execute asynchronously in the BH context is
+>>> tasklet; however, it's marked deprecated and has some design flaws. To
+>>> replace tasklets, BH workqueue support was recently added. A BH workqueue
+>>> behaves similarly to regular workqueues except that the queued work items
+>>> are executed in the BH context.
+>>>
+>>> This patch converts TCP Small Queues implementation from tasklet to BH
+>>> workqueue.
+>>>
+>>> Semantically, this is an equivalent conversion and there shouldn't be any
+>>> user-visible behavior changes. While workqueue's queueing and execution
+>>> paths are a bit heavier than tasklet's, unless the work item is being queued
+>>> every packet, the difference hopefully shouldn't matter.
+>>>
+>>> My experience with the networking stack is very limited and this patch
+>>> definitely needs attention from someone who actually understands networking.
+>>
+>> On Jakub's recommendation, I asked David Wei to perform production memcache
+>> benchmark on the backported conversion patch. There was no discernible
+>> difference before and after. Given that this is likely as hot as it gets for
+>> the path on a real workloal, the conversions shouldn't hopefully be
+>> noticeable in terms of performance impact.
+>>
+>> Jakub, I'd really appreciate if you could ack. David, would it be okay if I
+>> add your Tested-by?
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+Yes, that's fine.
 
-Changes in v8:
-- New patch
----
- drivers/ptp/ptp_clock.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+> 
+> I presume memcache benchmark is using small RPC ?
 
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index 3aaf1a3430c5..f374b1e89780 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -31,7 +31,7 @@ struct class *ptp_class;
- 
- static dev_t ptp_devt;
- 
--static DEFINE_IDA(ptp_clocks_map);
-+static DEFINE_XARRAY_FLAGS(ptp_clocks_map, XA_FLAGS_LOCK_IRQ | XA_FLAGS_ALLOC);
- 
- /* time stamp event queue operations */
- 
-@@ -201,7 +201,7 @@ static void ptp_clock_release(struct device *dev)
- 	bitmap_free(tsevq->mask);
- 	kfree(tsevq);
- 	debugfs_remove(ptp->debugfs_root);
--	ida_free(&ptp_clocks_map, ptp->index);
-+	xa_erase(&ptp_clocks_map, ptp->index);
- 	kfree(ptp);
- }
- 
-@@ -246,11 +246,10 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	if (ptp == NULL)
- 		goto no_memory;
- 
--	index = ida_alloc_max(&ptp_clocks_map, MINORMASK, GFP_KERNEL);
--	if (index < 0) {
--		err = index;
-+	err = xa_alloc(&ptp_clocks_map, &index, ptp, xa_limit_31b,
-+		       GFP_KERNEL);
-+	if (err)
- 		goto no_slot;
--	}
- 
- 	ptp->clock.ops = ptp_clock_ops;
- 	ptp->info = info;
-@@ -378,7 +377,7 @@ struct ptp_clock *ptp_clock_register(struct ptp_clock_info *info,
- 	list_del(&queue->qlist);
- 	kfree(queue);
- no_memory_queue:
--	ida_free(&ptp_clocks_map, index);
-+	xa_erase(&ptp_clocks_map, index);
- no_slot:
- 	kfree(ptp);
- no_memory:
-@@ -511,7 +510,7 @@ static void __exit ptp_exit(void)
- {
- 	class_destroy(ptp_class);
- 	unregister_chrdev_region(ptp_devt, MINORMASK + 1);
--	ida_destroy(&ptp_clocks_map);
-+	xa_destroy(&ptp_clocks_map);
- }
- 
- static int __init ptp_init(void)
+It is not a benchmark but a prod shadow, but yes the requests are small.
 
--- 
-2.25.1
-
+> 
+> TSQ matters for high BDP, and is very time sensitive.
+> 
+> Things like slow TX completions (firing from napi poll, BH context)
+> can hurt TSQ.
+> 
+> If we add on top of these slow TX completions, an additional work
+> queue overhead, I really am not sure...
+> 
+> I would recommend tests with pfifo_fast qdisc (not FQ which has a
+> special override for TSQ limits)
+> 
+> Eventually we could add in TCP a measure of the time lost because of
+> TSQ, regardless of the kick implementation (tasklet or workqueue).
+> Measuring the delay between when a tcp socket got tcp_wfree approval
+> to deliver more packets, and time it finally delivered these packets
+> could be implemented with a bpftrace program.
 
