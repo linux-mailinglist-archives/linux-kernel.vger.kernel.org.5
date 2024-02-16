@@ -1,146 +1,134 @@
-Return-Path: <linux-kernel+bounces-68770-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17934857FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:57:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67D68857FE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:58:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4597C1C22378
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:57:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A07B1C22823
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C3012F37D;
-	Fri, 16 Feb 2024 14:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3DC12F370;
+	Fri, 16 Feb 2024 14:58:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ON17NlzR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b="S3H2/R8G"
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215061292F4;
-	Fri, 16 Feb 2024 14:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C0312C7FB
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:58:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=85.214.62.61
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708095456; cv=none; b=eQywxlq7oWvXVG4Vgswb2Nc4DBrXDcc2R1IS8ChARzfGnDVZY35FLGBm+FEgj4coYawRnBUHQmAEcKLiIM2gpV93S3Fl15tJjFrXTvAHPKAjtECGffvyeTJd26iYOa2D6kqT5Q8+GP9+tt5T4RlMkoEJUs0HZl0nd22d6QirsrU=
+	t=1708095486; cv=none; b=pRlkuZSScMNStZigdAwULyxN1NYEZfz9VkWEEKEFJ5k/gJz0y48m4jZEbendsloZM8zEhr71ONOKHxchHl6T1gUDfsxFf/YDM+CKZcr5Wm6GiizUL+s0dBxNYXsdpPxK0dbs9dvSCIvHplZ+XWgX9MCok9RvQgvCQ55UFKEFGLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708095456; c=relaxed/simple;
-	bh=bYPWSFzizc6hw98vYyVTqVDrmSgriMmL7bU5ekFvWl0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fe0h17EyiSYFJ7/kmQehEdF39iC2Apconl5r+XVWHGh/5hgK1KWLd1D5A22HTxpvuAQgt0fFtA4u2RAASq8e/uLzjOtYgvmBjFkC4RbYTCDDdHBSlZ//xK9i72YFM+Gf/vBytGbQ5ml7+QIYHMbkTc1O4N3jvRj0ToFlOiYud8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ON17NlzR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D25FC433C7;
-	Fri, 16 Feb 2024 14:57:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708095455;
-	bh=bYPWSFzizc6hw98vYyVTqVDrmSgriMmL7bU5ekFvWl0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ON17NlzRcf8XTrWnC+hTMNpCsGM1tAcbZi6+rqehI6NuTCTr+djCCRYLpsETn3VXC
-	 2BKbQzWxuhdpbQALNtUf2xld8nq5g4tO+x57/h0vP8eAN7WbVZOfnng4CBYDmXpNEr
-	 rSoUbLY6R5zQWsdGtMv9prHBcyWVgUuPHBlZJutDnIsvIJyw8KA0OWEDTi4w4hx6Gm
-	 OObeLuQQJU3FkXXNybRgLECXc9lZiNHBcppbA9MTF06VOtFC2Qmirapn/zuRXeHBwo
-	 zYApWHFl6BxJuL9bH5jcESqg3saem/kiO1gM4FohvD+bW+3Mmd49HS6LqU2odBEIQ0
-	 vMZtXxEyWKcNg==
-Date: Fri, 16 Feb 2024 11:57:32 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	Yang Jihong <yangjihong1@huawei.com>, linux-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v1 2/6] perf trace: Ignore thread hashing in summary
-Message-ID: <Zc933IYjWlkMo4D2@x1>
-References: <20240214063708.972376-1-irogers@google.com>
- <20240214063708.972376-3-irogers@google.com>
- <Zcz3iSt5k3_74O4J@x1>
- <CAP-5=fV9Gd1Teak+EOcUSxe13KqSyfZyPNagK97GbLiOQRgGaw@mail.gmail.com>
- <CAP-5=fXb95JmfGygEKNhjqBMDAQdkQPcTE-gR0MNaDvHw=c-qQ@mail.gmail.com>
- <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
+	s=arc-20240116; t=1708095486; c=relaxed/simple;
+	bh=iUbtcZIktnPBX01vvnY17Z/26Ffxt6Vt5I+EALt3LMY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jYRPXhGDvWgjgU/84YiZlGFbch3CF6tB2CFWf2alI8HJ2V1BDCcjVaS1UVJ2tHlsBWwmDRtpHil0kgSvqsS0vTFULaiKXhVzgRzlNkB7e2ScorUKk7HY/SUvaXYoUEVSZFDyUccNp+UHr8vfmV7qrN6MyW2QRGLmYR4CBSILi/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de; spf=pass smtp.mailfrom=denx.de; dkim=pass (2048-bit key) header.d=denx.de header.i=@denx.de header.b=S3H2/R8G; arc=none smtp.client-ip=85.214.62.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=denx.de
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
+	(No client certificate requested)
+	(Authenticated sender: marex@denx.de)
+	by phobos.denx.de (Postfix) with ESMTPSA id BA05087E28;
+	Fri, 16 Feb 2024 15:57:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+	s=phobos-20191101; t=1708095482;
+	bh=X3NbXL/gGHd/P6iqK+xeE/pRyvyOvGn9pk40pfqJSe8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=S3H2/R8GcAq1+/JXttv9uuc1Q8rCYjVr7aJWZ1L5G/m7LupsNCEMGBA1XGXvWuyvV
+	 Ol4UaoIrAo/slESxhd5vktlCDMaeZ122eTo/DXFkfw/h3OHfRHX9qhkn3RT4YjVhGG
+	 otrbJhdDl8LuYwJ/9niJdjioT8lVennzJBXlC5M8c6u/kMd3DuWBfrTD3Fggf26sqh
+	 MFGFaJdvSMPzu89BZBXPA+YCQF2QVTFQLW61QROaTgysg43qSQv6pO0rrICl29h4Dg
+	 fsq8jRbdMRkX8c4y4ME7Z+FMbsD0XPOMsn5D1SXNu501QW5PIXRnIkaRwBOFebzwVU
+	 WrdzX4vbpyKWA==
+Message-ID: <bc96c6b5-a7f8-4ef3-a89b-bf577943f11c@denx.de>
+Date: Fri, 16 Feb 2024 15:57:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAP-5=fWweUBP_-SHfoADswizMER6axNw89JyG7Fo_qiC883fNw@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] drm/bridge: tc358767: Fix
+ DRM_BRIDGE_ATTACH_NO_CONNECTOR case
+Content-Language: en-US
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+ Alexander Stein <alexander.stein@ew.tq-group.com>,
+ Aradhya Bhatia <a-bhatia1@ti.com>, Andrzej Hajda <andrzej.hajda@intel.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Sam Ravnborg <sam@ravnborg.org>, dri-devel@lists.freedesktop.org,
+ Jan Kiszka <jan.kiszka@siemens.com>
+Cc: linux-kernel@vger.kernel.org
+References: <20231108-tc358767-v2-0-25c5f70a2159@ideasonboard.com>
+ <f6af46e0-aadb-450a-9349-eec1337ea870@ti.com>
+ <2f3bb86b-6f8c-4807-985e-344a0c47864c@siemens.com>
+ <3277848.aeNJFYEL58@steina-w>
+ <b2052bc9-b2da-489b-9e5b-3c9b4f6c1c99@ideasonboard.com>
+From: Marek Vasut <marex@denx.de>
+In-Reply-To: <b2052bc9-b2da-489b-9e5b-3c9b4f6c1c99@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 
-On Wed, Feb 14, 2024 at 01:36:46PM -0800, Ian Rogers wrote:
-> On Wed, Feb 14, 2024 at 1:15 PM Ian Rogers <irogers@google.com> wrote:
-> > On Wed, Feb 14, 2024 at 10:27 AM Ian Rogers <irogers@google.com> wrote:
-> > > On Wed, Feb 14, 2024 at 9:25 AM Arnaldo Carvalho de Melo
-> > > <acme@kernel.org> wrote:
-> > > > On Tue, Feb 13, 2024 at 10:37:04PM -0800, Ian Rogers wrote:
-> > > > > Commit 91e467bc568f ("perf machine: Use hashtable for machine
-> > > > > threads") made the iteration of thread tids unordered. The perf trace
-> > > > > --summary output sorts and prints each hash bucket, rather than all
-> > > > > threads globally. Change this behavior by turn all threads into a
-> > > > > list, sort the list by number of trace events then by tids, finally
-> > > > > print the list. This also allows the rbtree in threads to be not
-> > > > > accessed outside of machine.
-
-> > > > Can you please provide a refresh of the output that is changed by your patch?
-> > >
-> > > Hmm.. looks like perf trace record has broken and doesn't produce
-> > > output in newer perfs. It works on 6.5 and so a bisect is necessary.
-> >
-> > Bisect result:
-> > ```
-> > 9925495d96efc14d885ba66c5696f664fe0e663c is the first bad commit
-> > commit 9925495d96efc14d885ba66c5696f664fe0e663c
-> > Author: Ian Rogers <irogers@google.com>
-> > Date:   Thu Sep 14 14:19:45 2023 -0700
-> >
-> >    perf build: Default BUILD_BPF_SKEL, warn/disable for missing deps
-> > ...
-> > https://lore.kernel.org/r/20230914211948.814999-3-irogers@google.com
-> > ```
-> >
-> > Now to do the bisect with BUILD_BPF_SKEL=1 on each make.
+On 2/16/24 10:10, Tomi Valkeinen wrote:
+> On 15/02/2024 11:03, Alexander Stein wrote:
+>> Hi everyone,
+>>
+>> Am Donnerstag, 15. Februar 2024, 09:53:54 CET schrieb Jan Kiszka:
+>>> On 11.12.23 09:07, Aradhya Bhatia wrote:
+>>>> On 06/12/23 17:41, Tomi Valkeinen wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 08/11/2023 14:45, Alexander Stein wrote:
+>>>>>> Hi Tomi,
+>>>>>>
+>>>>>> Am Mittwoch, 8. November 2023, 12:27:21 CET schrieb Tomi Valkeinen:
+>>>>>>> These two patches are needed to make tc358767 work in the
+>>>>>>> DRM_BRIDGE_ATTACH_NO_CONNECTOR case, at least when using a DP
+>>>>>>> connector.
+>>>>>>>
+>>>>>>> I have tested this with TI AM654 EVM with a tc358767 add-on card
+>>>>>>> connected to a DP monitor.
+>>>>>>
+>>>>>> Just a question regarding the usage of this DSI-DP bridge.
+>>>>>> What is the state of the DSI lanes after the DSI host has been
+>>>>>> initialized,
+>>>>>> but before calling atomic_pre_enable? AFAIK this bridge requires 
+>>>>>> LP-11
+>>>>>> on DSI
+>>>>>> at any time for accessing the AUX channel.
+>>>>
+>>>> + Marek
+>>>>
+>>>> Marek, Alexander,
+>>>>
+>>>> A quick grep tells me that you have added devicetree for tc358767 in 
+>>>> DSI
+>>>> to (e)DP mode on other platforms. Could you please test these patches
+>>>> and report if you find any issue?
+>>
+>> Sorry, I can't provide any feedback here. I've yet to setup the DSI-DP
+>> correctly.
 > 
-> This looks better (how could I be at fault :-) ):
-> ```
-> 1836480429d173c01664a633b61e525b13d41a2a is the first bad commit
-> commit 1836480429d173c01664a633b61e525b13d41a2a
-> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Date:   Wed Aug 16 13:53:26 2023 -0300
+> Ok. Does anyone have a worry that these patches make the situation worse 
+> for the DSI case than it was before? Afaics, if the DSI lanes are not 
+> set up early enough by the DSI host, the driver would break with and 
+> without these patches.
 > 
->    perf bpf_skel augmented_raw_syscalls: Cap the socklen parameter
-> using &= sizeof(saddr)
-> ...
->    Cc: Adrian Hunter <adrian.hunter@intel.com>
->    Cc: Ian Rogers <irogers@google.com>
->    Cc: Jiri Olsa <jolsa@kernel.org>
->    Cc: Namhyung Kim <namhyung@kernel.org>
->    Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-> ```
-> No LKML link.
+> These do fix the driver for DRM_BRIDGE_ATTACH_NO_CONNECTOR and DPI, so 
+> I'd like to merge these unless these cause a regression with the DSI case.
 
-So simple... ;-\
-
-I've reproduced your steps and got to the same cset while testing on a
-recent distro kernel (6.6.13-200.fc39.x86_64), scratching my head now
-and trying to figure this out.
-
-Wonder if trying to run on an older kernel the problem would appear.
-
-Will try and add a perf test shell entry with a simple:
-
-root@number:~# perf trace record sleep 0.001 && perf script | head | wc -l
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.034 MB perf.data ]
-0
-root@number:~#
-
-Has to be 10 :-)
-
-Thanks,
-
-- Arnaldo
+1/2 looks good to me, go ahead and apply .
 
