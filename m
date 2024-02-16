@@ -1,166 +1,175 @@
-Return-Path: <linux-kernel+bounces-68217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 891EC857769
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:20:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D63785776A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:20:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2698B2351E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:20:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1949B239E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:20:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3651208BB;
-	Fri, 16 Feb 2024 08:09:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 939001AACA;
+	Fri, 16 Feb 2024 08:10:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VUTlP9Wl"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S0ASr/SL"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13881AACA
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648BA17732
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708070990; cv=none; b=SpwsPGFUyQ5SQ1B/NvltG0YzpnPPLZuZNDpOP28QnJq3uiNKp6q8tigy4lOw7SRcpk6GprTxVNxpifkeWcGjr5BBrtGZA0x6UYbWHdWcuw4EPzPgdVb3bOg+Pd/ATplSyhh9jOpsPnLFrFVwbkarkdcJ28tqDJ7zALeSaicb99o=
+	t=1708071025; cv=none; b=JOZ2VqB0l3C7AuxJa5yIeE2jd1zxgvbd40f7T5n1dmwDw39zQ2hBITxsxIptWoOBzlu7b7aas4roKbJPz1/tjCuTbN069kWP7evOv1xQy1dlJgE0c9DBBN2qsRLyJrCioEBxS6F3Shy2ZmJMP4tdaSJJlRqtnuslDMIShcmuroY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708070990; c=relaxed/simple;
-	bh=Bi/WNp7PeLyqEslHVaOjoC4gFVwkPAgURekl3x1Bwr8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u5CF90+mNNL0FnM5e+81EfLmXSiE1m7ribq3hkY9awU+DJCj27mAFfiV/oBSozrRTJlCUYLVBryDArRurIqjKFYU7f1HNpvBWA5sE7PH7T12INs4LvBfUQYrzND2pvdiTnz8ZajnJTqwHWj2jZ31mFy/jb8qHOI6Mi+2PAiyo5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VUTlP9Wl; arc=none smtp.client-ip=209.85.218.54
+	s=arc-20240116; t=1708071025; c=relaxed/simple;
+	bh=0uydNOdWxU499+hAnc9/iQNbM8NCAF4AuCCa9QpChxk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jCgDuYxtfGl3Y8xHaNBkKI49fXWKplbpKKbkRhzCuVhV3m4Xt5u1zVQ1rnp/anJpcz0b3+rjBPR1Nm0PwKEqDBFodgUat0M9d075YDLqgf89mo0XyqxzaohyoE0jMBpkQj3KODyt20rz5wDq/amoqErxbpknI3hW83ySP0HMTFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S0ASr/SL; arc=none smtp.client-ip=209.85.215.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a36126ee41eso229410266b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:09:47 -0800 (PST)
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso1617280a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:10:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708070986; x=1708675786; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WwCRdKBm5GucB6Cv2dQydvaWuqeC0A8WDAYf7dCeUrY=;
-        b=VUTlP9WlvsIN0jANsI2mKTn9yPtKztdzBZ79t4WQqkUN+kQFRhoBdnP4nL7b38YrYQ
-         NYaLVtMBpzzE8GtBudbKSBXKrTkvpMcF5+wdNLEaaIn3jsAT5ct2qQwlXIhuE31/t9H7
-         1954EJc5NeMlBkEtzBragP/fxGiUxYpdOgA0i78jBwaIASrjuKPaw0B+xiSmr3kez+97
-         QO7iAC27z5EfFSjzJRxHyzDjVePXGoQGAXJHUNJvNyKIi6c93ojQr6Wk3VKU7H6NmSi6
-         ZCVZbpCo+oDXYCwbPs7/28n9Pv8SCKV+/jHKyzeGQO6qTIyV6ZoPFRF2MK7RzLY1SjD8
-         B+Lw==
+        d=linaro.org; s=google; t=1708071023; x=1708675823; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=FIMHZLHgidom8xzo0JtT7bpMHA+BcXdFvKux27+zxKg=;
+        b=S0ASr/SLEpJDapQlzFwaAUSzO4DqsJmn84GeQGRpBI8BeT4xE9v96pvgSCkax7brPi
+         PMM+Qw6u/XjcSYmwWGN/0Xm0sqQDuWtd83/l7nL+CsDiTOFrtmF/LIQ6ZpaWdMYgcwjD
+         qvtHgG9RbRDX8f5Yd0gu1tPiTgj+3VlvUyDCcK4LSxjWO4oUHe8JWbaBhyiavOOcilVY
+         IiVii/wyQJRL/s2pmEl4FUlOf4BL8IoeH/XjV+xeWUrRRYbmjFUoO/WQfzFUqBYBWMGF
+         +757jS3Ha7xq5Tj9xwttqOVXXufcL0Lp+JV5TrdoKqdE4U7myhsKQCBUhjdbdX6Rg6n2
+         FzYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708070986; x=1708675786;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WwCRdKBm5GucB6Cv2dQydvaWuqeC0A8WDAYf7dCeUrY=;
-        b=c/sMeRaWJU6y0UNIJpok7tySbqKaV6tYxTm791GH9ySa+pzoscj1ZGpcciVimXgqpb
-         51Gp0JQi8zXWfEmXAUlPb14twg+qQEcs7KbdrNNRaplXl0W09qbDn8cqe0y+TLP3D8lY
-         qeHYLc9ndxGBpZtBPSxPUGoglfXe2f6rYDicWQb/Rf5p4ppEgap1qyI7sx1WlxjgrPHk
-         Nr09LNo960h29/g+iR6p0tr+9IVKpAUOuc8WNJPtVI/PXzupQWk379g/8zKbgaqTUFlG
-         s19t3C7lVeaR17wFMT5S1wx0JfVVmOL3kpB0tyQKtH8gmkt8fNOchVW7gFsT2w3keJgQ
-         epQg==
-X-Gm-Message-State: AOJu0Yz+dhgGVZEAifOjWEBIUG0Z6U6qkzgcpFfKDq2KXpEl+MasRIUu
-	IC8QoJ6RNvBcwwWvXnsZSv0BqKMlb2uHbb55zmhJ0iYhHeyH1o+wAkWwGJ2C+Us=
-X-Google-Smtp-Source: AGHT+IFz2bvWcXxlIMraJJQvlsrXOxXIyT8bn5rY+xsBdXgA0UtwBANanCurUKYMaAsHX3rEOV7Pmw==
-X-Received: by 2002:a17:906:a897:b0:a3d:e54d:7d97 with SMTP id ha23-20020a170906a89700b00a3de54d7d97mr454036ejb.75.1708070986061;
-        Fri, 16 Feb 2024 00:09:46 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id s15-20020a17090699cf00b00a3bd8a34b1bsm1319130ejn.164.2024.02.16.00.09.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 00:09:45 -0800 (PST)
-Message-ID: <3600c556-ccb3-40a8-9c53-a718a97468ae@linaro.org>
-Date: Fri, 16 Feb 2024 09:09:44 +0100
+        d=1e100.net; s=20230601; t=1708071023; x=1708675823;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FIMHZLHgidom8xzo0JtT7bpMHA+BcXdFvKux27+zxKg=;
+        b=Ku3nAwHoAqxsTR3cKvuY8pDv7IvV2klKNF1lz/AUSLiESFApDx/wfpY1mB/6FV21UR
+         hrQCPo9gXaVUyn9dNnkaUH56jdVbExB7XFnGY8iJEwe53TtLNIV9M2hQq6HJLUx85xyZ
+         xDTVlPZv93X4MZ0QcPPoYq4o4d2tQRjtfGSVslQc7WKfdL8VdaQpK4CC10V+pCqWD0pD
+         Pn7762cpIVdcPnpcvkajLedQxmnV5vRTqb3Sk9HtTY/x1SVS9IAu3VhOo8nCuMQhDfcD
+         uuPvcTncaWsmtfINw/bLTLcestN315/IoGflXGK9SB2/0AoU02Moqtzm57PxsSdl3ezD
+         3VHw==
+X-Forwarded-Encrypted: i=1; AJvYcCWOrTThk4JlhSHLg6Td5razsVFsW7SSgf0xCplElkY7Ty0bdDkVCamxZxhfdQiYKnDlARbP5Ewd2J2fEpn5uXJv7Yh6E355LJ+4iSLj
+X-Gm-Message-State: AOJu0Yx6uuWqMxkvoYHPIbtylvKJutZu8mzmLn63BhlqCE7Ov6F5BxgS
+	Y3ava/2+zikyRHAWHBmvIU+74fXEU8/u6UitI1wyfmnPfOyy0FUPe8Q/MO+dlU09thNH7xoIlef
+	ve51jI9OYSG7GyV2GvA3i8QyxLpQxX0AlEftY2amfsyoU4la+
+X-Google-Smtp-Source: AGHT+IEA3fqIoDaQ25VyAh6A9qdU6NnwReaS2v0dhLKfI8uGBigq12wwATXweFxw1oPtdit7dobAjVX5Vbv9szvUA+c=
+X-Received: by 2002:a05:6a21:670b:b0:19c:9b7b:66a with SMTP id
+ wh11-20020a056a21670b00b0019c9b7b066amr4587380pzb.49.1708071023666; Fri, 16
+ Feb 2024 00:10:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/33] fsi: aspeed: Add AST2700 support
-Content-Language: en-US
-To: Eddie James <eajames@linux.ibm.com>, linux-fsi@lists.ozlabs.org
-Cc: linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
- linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
- andi.shyti@kernel.org, alistair@popple.id.au, joel@jms.id.au, jk@ozlabs.org,
- sboyd@kernel.org, mturquette@baylibre.com, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-References: <20240215220759.976998-1-eajames@linux.ibm.com>
- <20240215220759.976998-11-eajames@linux.ibm.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240215220759.976998-11-eajames@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240216061433.535522-1-sshegde@linux.ibm.com>
+In-Reply-To: <20240216061433.535522-1-sshegde@linux.ibm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 16 Feb 2024 09:10:12 +0100
+Message-ID: <CAKfTPtCFx3-0N+53u3Y5so1n8Zjw57c_fxf=09_Y9NTCP-zH1g@mail.gmail.com>
+Subject: Re: [PATCH] sched: remove duplicate ifdefs
+To: Shrikanth Hegde <sshegde@linux.ibm.com>
+Cc: mingo@kernel.org, peterz@infradead.org, sshegde@linux.vnet.ibm.com, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 15/02/2024 23:07, Eddie James wrote:
-> AST2700 requires a few bits set differently in the OPB retry
-> counter register, so add some match data and set the register
-> accordingly.
-> 
-> Signed-off-by: Eddie James <eajames@linux.ibm.com>
+On Fri, 16 Feb 2024 at 07:14, Shrikanth Hegde <sshegde@linux.ibm.com> wrote:
+>
+> when a ifdef is used in the below manner, second one could be considered as
+> duplicate.
+>
+> ifdef DEFINE_A
+> ...code block...
+> ifdef DEFINE_A       <-- This is a duplicate.
+> ...code block...
+> endif
+> else
+> ifndef DEFINE_A     <-- This is also duplicate.
+> ...code block...
+> endif
+> endif
+> More details about the script and methods used to find these code
+> patterns are in cover letter of [1]
+>
+> In the scheduler code, there are two places where above pattern can be
+> observed.
+> Hunk1: Code is under check of CONFIG_UCLAMP_TASK in kernel/sched/core.c
+> from line 1353. Hence the same check at line 1795 is duplicate.
+> Hunk2: Minor update of comment.
+> Hunk3: Code is already under the check of CONFIG_SMP in
+> kernel/sched/fair.c from line 8591. Hence the same check in line 10185
+> is a duplicate.
+>
+> No functional change is intended here. It only aims to improve code
+> readability.
+>
+> [1]:https://lore.kernel.org/all/20240118080326.13137-1-sshegde@linux.ibm.com/
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.ibm.com>
+
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+
 > ---
->  drivers/fsi/fsi-master-aspeed.c | 28 +++++++++++++++++++++++++---
-
-
-> +
->  static const struct of_device_id fsi_master_aspeed_match[] = {
-> -	{ .compatible = "aspeed,ast2600-fsi-master" },
-> +	{
-> +		.compatible = "aspeed,ast2600-fsi-master",
-> +		.data = &fsi_master_ast2600_data,
-> +	},
-> +	{
-> +		.compatible = "aspeed,ast2700-fsi-master",
-
-Undocumented. Really, you do not have checkpatch in IBM?
-
-Please run scripts/checkpatch.pl and fix reported warnings. Some
-warnings can be ignored, but the code here looks like it needs a fix.
-Feel free to get in touch if the warning is not clear.
-
-
-Best regards,
-Krzysztof
-
+> Changes since v2:
+> - Dropped RFC tag.
+> - Split the patches into individual from the series.
+> - Added more context to each Hunk for review.
+>
+>  kernel/sched/core.c | 4 +---
+>  kernel/sched/fair.c | 2 --
+>  2 files changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 9116bcc90346..a76c7095f736 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1792,7 +1792,6 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css);
+>  #endif
+>
+>  #ifdef CONFIG_SYSCTL
+> -#ifdef CONFIG_UCLAMP_TASK
+>  #ifdef CONFIG_UCLAMP_TASK_GROUP
+>  static void uclamp_update_root_tg(void)
+>  {
+> @@ -1898,7 +1897,6 @@ static int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+>         return result;
+>  }
+>  #endif
+> -#endif
+>
+>  static int uclamp_validate(struct task_struct *p,
+>                            const struct sched_attr *attr)
+> @@ -2065,7 +2063,7 @@ static void __init init_uclamp(void)
+>         }
+>  }
+>
+> -#else /* CONFIG_UCLAMP_TASK */
+> +#else /* !CONFIG_UCLAMP_TASK */
+>  static inline void uclamp_rq_inc(struct rq *rq, struct task_struct *p) { }
+>  static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p) { }
+>  static inline int uclamp_validate(struct task_struct *p,
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 533547e3c90a..8e30e2bb77a0 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10182,10 +10182,8 @@ static int idle_cpu_without(int cpu, struct task_struct *p)
+>          * be computed and tested before calling idle_cpu_without().
+>          */
+>
+> -#ifdef CONFIG_SMP
+>         if (rq->ttwu_pending)
+>                 return 0;
+> -#endif
+>
+>         return 1;
+>  }
+> --
+> 2.39.3
+>
 
