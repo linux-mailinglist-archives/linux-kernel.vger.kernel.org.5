@@ -1,198 +1,204 @@
-Return-Path: <linux-kernel+bounces-68984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AB58582FB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:51:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A7A3858306
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2F92B22832
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:51:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CE8DF1F23B27
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:52:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C576C130AFE;
-	Fri, 16 Feb 2024 16:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9827E130E3A;
+	Fri, 16 Feb 2024 16:52:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u7vQAp4C";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u7vQAp4C"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gfwPmBXr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5f+K6CWT";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gfwPmBXr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5f+K6CWT"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FE8C12F36A;
-	Fri, 16 Feb 2024 16:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB1A9130AF3;
+	Fri, 16 Feb 2024 16:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708102289; cv=none; b=li5XtKXvQ5o9T8nZ22qXOqW47GeVM+LTab37WNC6BQ3oUuZK4smS6cBqZGdID4o35AXD/bh6nq6+FaE4gPnjA2DOjYBIbZR97QrGIZGXBZvWuusUejB0xFaF094Ql1NbcnIcOrHDRVsBbdHWI6DFIKFZHh7QhRYpE4lkDFdcyyc=
+	t=1708102359; cv=none; b=DHtA1kru24YwhFK9ceHmYjXWaaPt8LAgGnCe2tRakXv9QVM8h3e9sHE0DypEmyki4oSBktSC8tcN+NM9ZlSyz3hLdE47Mt5wyLNWdpo7eoquWnhg5cN62XlmOkAVwy1oocgbF9g9mfr9wWlWYZg7FzauSpgvrZk0dzpZ0xPg0x0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708102289; c=relaxed/simple;
-	bh=GFdZ9x5VnyQk2XmemYZ+RhJwyg2qNpV8wiYTo3qSBFc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PeotcInXT4MWm0P9N2jhG0z//Bccr97v61zRR3PeXdDghq4ymZBLHEQRyyCyFGaPwOOi98NgDDOdUNy/9weC202xi0FYrm9FnGyaFOsZnlbiRudwS+wacFGYr/oOO6z20VmO+sVFakkLdTcWa4utONcOknliLcwa2h/WGo2PyNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u7vQAp4C; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u7vQAp4C; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1708102359; c=relaxed/simple;
+	bh=YSlN9L1xkLAZYRMT2oJ0+KPZ6eaebeEort6iIFJ4aAE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lKbdWH4a4WuByEaYbz957ZgniC6jjw4mAiJrAFEQAjBmrP+QTTuAjRJR2qPRH+Zg4g5QZsfoBgG/lJuxGu35WAU8bo7f3I25IQ5JW2XFPL5gY2UPBhcm7pCFNP3YmwJHjgdngwAccpNFD4TrD4J0NuuCMncn3xVUOLsAn5M7cWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gfwPmBXr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5f+K6CWT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gfwPmBXr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5f+K6CWT; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 59E4C1FB76;
-	Fri, 16 Feb 2024 16:51:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708102283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 252FA22043;
+	Fri, 16 Feb 2024 16:52:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708102355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=F6kQvlK/L7iuReKt8M8eM35S1Vrh5nJKRZ/vQtmta6k=;
-	b=u7vQAp4CkLoRxaZTYE7BDD3PqS4k9gTykTFSu4hXaUkUQKtXHba1yT8p8XZWQtAnYUtFHC
-	vaboM5s/oSXVvBzx2RbAPT9AzHThsw1G0q3sE/On/nDZp9EI9D2gPnQ4MzvRGpQHN/Y00y
-	Qks5UC4qaRtZHhafStqtbmthpldqme8=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708102283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=bjFfGHq1FbZX5RctuoEE2JMZaFbk7fCFrSUdFxCZeQM=;
+	b=gfwPmBXrOQkJAnTdNzEhnp/agnnibHhiJyUDTlS4Yi2VTrb3IA69570I2qH2Dq9w9OCfye
+	yxYnEP6Hf7Oajb/o/H05S6+hQ2i066X961IWR6LbLJpDuXhvlbopXi1xyNUt+JxndXS1DO
+	d8CrJL6LkZAY2JIdSC+pPSU1KutC/Mo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708102355;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=F6kQvlK/L7iuReKt8M8eM35S1Vrh5nJKRZ/vQtmta6k=;
-	b=u7vQAp4CkLoRxaZTYE7BDD3PqS4k9gTykTFSu4hXaUkUQKtXHba1yT8p8XZWQtAnYUtFHC
-	vaboM5s/oSXVvBzx2RbAPT9AzHThsw1G0q3sE/On/nDZp9EI9D2gPnQ4MzvRGpQHN/Y00y
-	Qks5UC4qaRtZHhafStqtbmthpldqme8=
+	bh=bjFfGHq1FbZX5RctuoEE2JMZaFbk7fCFrSUdFxCZeQM=;
+	b=5f+K6CWTzCWeRCrTYtcPXe4eP2DBGf5KgTKiEmuqzNp5dQdmJ2kvIE73z2E2Dv5//S9pZn
+	3WOa8WiEGgu+8kCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708102355; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bjFfGHq1FbZX5RctuoEE2JMZaFbk7fCFrSUdFxCZeQM=;
+	b=gfwPmBXrOQkJAnTdNzEhnp/agnnibHhiJyUDTlS4Yi2VTrb3IA69570I2qH2Dq9w9OCfye
+	yxYnEP6Hf7Oajb/o/H05S6+hQ2i066X961IWR6LbLJpDuXhvlbopXi1xyNUt+JxndXS1DO
+	d8CrJL6LkZAY2JIdSC+pPSU1KutC/Mo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708102355;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bjFfGHq1FbZX5RctuoEE2JMZaFbk7fCFrSUdFxCZeQM=;
+	b=5f+K6CWTzCWeRCrTYtcPXe4eP2DBGf5KgTKiEmuqzNp5dQdmJ2kvIE73z2E2Dv5//S9pZn
+	3WOa8WiEGgu+8kCw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 410BE1398D;
-	Fri, 16 Feb 2024 16:51:23 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C8D71398D;
+	Fri, 16 Feb 2024 16:52:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id R4gXDouSz2W5VAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Fri, 16 Feb 2024 16:51:23 +0000
-Date: Fri, 16 Feb 2024 17:51:22 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, security@kernel.org,
-	Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>,
-	Lee Jones <lee@kernel.org>
-Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE process
-Message-ID: <Zc-SihxiTxhDcCuK@tiehlicka>
-References: <2024021430-blanching-spotter-c7c8@gregkh>
- <Zc5PycMenLBYECAn@tiehlicka>
- <2024021518-stature-frightful-e7fc@gregkh>
- <Zc5ZpB6jsuTKmhv5@tiehlicka>
- <2024021646-procedure-faceted-ea87@gregkh>
- <Zc9hBJuca3f_5KHx@tiehlicka>
- <2024021620-retrieval-lethargic-eeca@gregkh>
+	id rjARHtKSz2X4VAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 16 Feb 2024 16:52:34 +0000
+Message-ID: <a27189a9-b0fc-4705-bdd5-3ee0a5c23dd5@suse.cz>
+Date: Fri, 16 Feb 2024 17:52:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024021620-retrieval-lethargic-eeca@gregkh>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=u7vQAp4C
-X-Spamd-Result: default: False [-2.81 / 50.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 22/35] mm/slab: enable slab allocation tagging for
+ kmalloc and friends
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+ void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+ catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, tglx@linutronix.de,
+ mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org,
+ peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org,
+ masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+ muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+ pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+ dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+ keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+ gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+ penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+ glider@google.com, elver@google.com, dvyukov@google.com,
+ shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
+ rientjes@google.com, minchan@google.com, kaleshsingh@google.com,
+ kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-23-surenb@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240212213922.783301-23-surenb@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.96 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 XM_UA_NO_VERSION(0.01)[];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 TAGGED_RCPT(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-0.45)[78.97%];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[9];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCPT_COUNT_GT_50(0.00)[73];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 59E4C1FB76
+	 SUSPICIOUS_RECIPS(1.50)[]
 X-Spam-Level: 
-X-Spam-Score: -2.81
 X-Spam-Flag: NO
+X-Spam-Score: 0.96
 
-On Fri 16-02-24 16:34:57, Greg KH wrote:
-> On Fri, Feb 16, 2024 at 02:20:04PM +0100, Michal Hocko wrote:
-> > > Right now
-> > > we are fixing lots and lots of things and no one notices as their
-> > > "traditional" path of only looking at CVEs for the kernel is totally
-> > > incorrect.
-> > 
-> > Right, there are quite a lot of people who consider CVE fixes much more
-> > important than regular fixes. Their reasoning might be completely
-> > misleading but there might be very good reasons to stick to minimalistic
-> > approach, e.g. to reduce risk of regressions.
-> > 
-> > I believe it is perfectly fair to say that whoever relies on stable
-> > kernels support needs to update to the latest stable kernel version to
-> > be covered by security and functional fixes. On the other hand I do not
-> > think it is an improvement to the process to swamp CVE database with any
-> > random fixes without a proper evaluation. If the kernel community
-> > doesn't believe in the CVE process then fair enough, just do not assign
-> > them unless you want to explicitly call out fixes with a high impact
-> > security implications. Having fewer good quality CVEs would definitely
-> > improve the process.
+On 2/12/24 22:39, Suren Baghdasaryan wrote:
+> Redefine kmalloc, krealloc, kzalloc, kcalloc, etc. to record allocations
+> and deallocations done by these functions.
 > 
-> As you know, it's almost impossible to determine if a fix is "high
-> impact" or not, given that we have no idea what anyone's use case is for
-> the kernel.  We have documented proof of single-byte-buffer-overflows
-> resulting in complete system takeovers, and the same for very tiny
-> use-after-free issues, and the same for tiny "overflow a USB string
-> buffer" issues, and so on.
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 
-Right, generally speaking this is not an easy task. It requires a lot of
-diligence actually. Sometimes there is no clear cut and that is _fine_.
-The CVE system cannot ever be bullet proof and mark every single
-security related fix (really you can be creating new security problems
-just by backporting upstream fixes into stable trees).
 
-But that is not really all that important, the main thing/question is
-whether it can be _useful_. If you simply assign CVE to any fix in
-stable you end up with thousands of CVEs and I really fail to see any
-practical benefit from that. Well, unless you want to DoS the system and
-its consumers. Who do you expect to be the user/consumer of those CVE
-numbers? You have already said that community supported stable kernels
-mandate the latest version to be used. Those users do not need to know
-there is $BIG_NUMBER of CVEs in them.
+> -}
+> +#define kvmalloc(_size, _flags)			kvmalloc_node(_size, _flags, NUMA_NO_NODE)
+> +#define kvzalloc(_size, _flags)			kvmalloc(_size, _flags|__GFP_ZERO)
+>  
+> -static inline __alloc_size(1, 2) void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
 
-If you want to mark a specific class of fixes with CVE because they are
-known to be used for exploits then fine! That is something actually
-useful. If you allow users to explicitly mark a fix as security relevant
-because of XYZ argument then really great!
+This has __alloc_size(1, 2)
 
-> So as always, we need to treat "a bug is a bug is a bug" and when
-> looking at the bug fix, if it resolves something that is known to be
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> a vulnerability (again, as defined by CVE themselves), then we need to
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> mark it as such.
+> -{
+> -	size_t bytes;
+> -
+> -	if (unlikely(check_mul_overflow(n, size, &bytes)))
+> -		return NULL;
+> +#define kvzalloc_node(_size, _flags, _node)	kvmalloc_node(_size, _flags|__GFP_ZERO, _node)
+>  
+> -	return kvmalloc(bytes, flags);
+> -}
+> +#define kvmalloc_array(_n, _size, _flags)						\
+> +({											\
+> +	size_t _bytes;									\
+> +											\
+> +	!check_mul_overflow(_n, _size, &_bytes) ? kvmalloc(_bytes, _flags) : NULL;	\
+> +})
 
-I am completely with you on that! That is quite far away from what the
-documentation says AFAICS.
- 
-> If you find that we are marking things as a CVE thatt you do not feel
-> should be marked as such, please let us know and we will be glad to
-> discuss it on a case-by-case basis.
+But with the calculation now done in a macro, that's gone?
 
-I've been through that exercise with the CVE process over years many
-times. It has always been a pain because you were not talking to domain
-experts who could evaluate the reasoning behind the dispute. I consider
-the new process of a clearly defined dispute process a big improvement!
-But if the real practice would be thousands of CVEs created for any
-stable backport then this will DoS many existing CVE consumers.
+> -static inline __alloc_size(1, 2) void *kvcalloc(size_t n, size_t size, gfp_t flags)
 
-All that being said. I do agree that taking control of CVEs and making
-that kernel community thing is a good thing! But I really fail to
-understand how increasing the number of CVEs by nominating all/most
-stable fixes is going to help anybody or improve the existing process.
+Same here...
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+> -{
+> -	return kvmalloc_array(n, size, flags | __GFP_ZERO);
+> -}
+> +#define kvcalloc(_n, _size, _flags)		kvmalloc_array(_n, _size, _flags|__GFP_ZERO)
+
+.. transitively?
+
+But that's for Kees to review, I'm just not sure if he missed it or it's fine.
 
