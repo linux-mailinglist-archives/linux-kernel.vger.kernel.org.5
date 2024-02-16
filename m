@@ -1,177 +1,189 @@
-Return-Path: <linux-kernel+bounces-68508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18D46857B68
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:19:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 90C6B857B63
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:19:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F068B20943
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:19:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 318DEB213E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79F491C291;
-	Fri, 16 Feb 2024 11:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD53B59B62;
+	Fri, 16 Feb 2024 11:18:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="THn4oTjP"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="orxKIWYP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C6859B52;
-	Fri, 16 Feb 2024 11:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B9F5C901;
+	Fri, 16 Feb 2024 11:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708082356; cv=none; b=ldIgVSQRxmESyxG2IbWUidrTj0Y08eKCW/bk9uj/CB1Jsb5wVNqRyXZxWqBiQCwLLBO2ypekA4iWQI3sYQ6V8uyMlDih2Ci+QrpJYACU1x1ndOStfB7VZcjQ9jnSeREVVOzfnkFPiB8fBCieqDfrM1oOSfIJfR11pjwNjnrJRUY=
+	t=1708082326; cv=none; b=Mexbe18rsjKiJlQtd7j/oO6JPVPxPEhO9MBPjs6smyOBtt8rpH14UsOzNMkx8gjJLsY6pHn5mq9vJKRWTlu29gOUdKcW5jpa+gXrYtKBb2uSmZPEIR6w2eMXrw7dzi0enSeBtmArNavfzKfcwWjEEo3prRY/2+hx3NZ/veXVS3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708082356; c=relaxed/simple;
-	bh=iB6CRq25HlENFqGrsPH7JLQFt2BIJPW9dYbbZFCQLYM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eyksR+miaHg7VqhhnaHIdCff3UtyrNgJP76vSGpz7BTVmdc6A1Ndyu5M/DuAnQKzT3cDoiAVAJ9fvmKd/GQbOCx8IiK/Nb/W82OOsolpS0YLznpXexPHYMeGctdJnth49/IVtfmYcUf7EOIVmQQhrvLrNhrIjEGJ0AWPhc4Ppik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=THn4oTjP; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41G5xJRE030155;
-	Fri, 16 Feb 2024 11:18:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=RLtP2rJDNQHP8tWz4lIqKNUcxLZ6TvPXZeB9bvCF4fQ=; b=TH
-	n4oTjP3tc20wz+n0TBL6RQMqy/7dny+3Pf1mureOcsPx+H+bsNHbPT48mA20xP80
-	p3joSG8cTD0NtSQwCnlGXI/8w/i20OO8+pqk3yWtUQ6vJRLbBEnSuPpyqU/fWwW/
-	dJPEOUf5AjLkQeN8I4KL7trWcB1ZRG8+PH9EKgOdxf+J8XIWtspP1orHFRA/ncV7
-	t3xqtk2FzbfBFyhbyI6J5egkDnur5ELbgg3XhQrPeglFmvKLRiAGm8+NcB8KW7+H
-	zZeimwcpQDQkd/4n3GEEcrTEfKNOiWOb2vxUI9rwRlQxXB5xoaO4sUXdxXsyHj+O
-	WI7n9nkj5r430KUJiDlA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wa03r8qt0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 11:18:47 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GBIk7K022931
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 11:18:46 GMT
-Received: from [10.218.16.59] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
- 2024 03:18:34 -0800
-Message-ID: <e491ec4a-f79b-4063-bd24-bbf3644ce486@quicinc.com>
-Date: Fri, 16 Feb 2024 16:48:31 +0530
+	s=arc-20240116; t=1708082326; c=relaxed/simple;
+	bh=S1EkBA52eWhaCecQGNHtZp9xi5qzrdx3y2uZlJXx0L4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=g9MfyeOVGo5sHhxC0Rqs85fC95qo9aoyF7EZS+IQPjvAjpEtWweIYlFurTP2qGIaSmlHWx1RwQVY0dIFfcLXvoCoGB2CJeumBVgLXWYwl9rBdHyziAa+/PalgFYXF5HrZ4fzFZWCYhsQ3Juoe/qxbBn/SVxNOMPBrd/PQR9qPcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=orxKIWYP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E20CC433C7;
+	Fri, 16 Feb 2024 11:18:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708082326;
+	bh=S1EkBA52eWhaCecQGNHtZp9xi5qzrdx3y2uZlJXx0L4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=orxKIWYP6UjpVOwSkbQiwr3P3yVygztXW3iYoqxagKICMU/E5/BgwSs0K1fkri3c8
+	 pQsVtkNrlkU8XDxks5+LX4of4hAX0fOxzInTofeZOOpdsLHZd5kdFgl0EkpEZAKQ94
+	 ds3GObj+h43xzhR527WpNmrPJGya9oAE5ca5GNNx+5L2neKkg3IX7WGq4d8jWC/YKs
+	 8m7CHsTFjXPzKtye4A+U0OhqzpRDDuWvictq5jrl84c3jF+Rp9re5btlDW89U4a6J1
+	 Ucfsf+R1upYuQJCmlGTog5bd/Wx6Xgoo2UrJsL+CoYuiq0IXUmps+yjEK/eujEl7MC
+	 SF5u87xE+3eug==
+Date: Fri, 16 Feb 2024 11:18:34 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: lars@metafoo.de, ang.iglesiasg@gmail.com,
+ andriy.shevchenko@linux.intel.com, 579lpy@gmail.com,
+ linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: iio: pressure: Add SPI support for BMP38x and
+ BMP390
+Message-ID: <20240216111834.73287ab0@jic23-huawei>
+In-Reply-To: <20240215164332.506736-1-vassilisamir@gmail.com>
+References: <20240215164332.506736-1-vassilisamir@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] dt-bindings: iio: adc: Add support for QCOM PMIC5
- Gen3 ADC
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, <jic23@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <daniel.lezcano@linaro.org>,
-        <lars@metafoo.de>, <luca@z3ntu.xyz>, <marijn.suijten@somainline.org>,
-        <agross@kernel.org>, <sboyd@kernel.org>, <rafael@kernel.org>,
-        <rui.zhang@intel.com>, <lukasz.luba@arm.com>,
-        <linus.walleij@linaro.org>, <quic_subbaram@quicinc.com>,
-        <quic_collinsd@quicinc.com>, <quic_amelende@quicinc.com>,
-        <quic_kamalw@quicinc.com>, <kernel@quicinc.com>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-msm-owner@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>
-References: <20231231171237.3322376-1-quic_jprakash@quicinc.com>
- <20231231171237.3322376-3-quic_jprakash@quicinc.com>
- <3f812ffa-ec33-448e-b72a-ce698618a8c1@linaro.org>
- <13f2b558-a50d-44d3-85de-38e230212732@quicinc.com>
- <CAA8EJppsn2zsAXem-m=9U8izhtAZmVe62xS5qdkwJmFTqV30gA@mail.gmail.com>
-From: Jishnu Prakash <quic_jprakash@quicinc.com>
-In-Reply-To: <CAA8EJppsn2zsAXem-m=9U8izhtAZmVe62xS5qdkwJmFTqV30gA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 3loeRtsLeLAhQLMDXOPPD-VezXsdvBWc
-X-Proofpoint-GUID: 3loeRtsLeLAhQLMDXOPPD-VezXsdvBWc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_09,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=908 lowpriorityscore=0 mlxscore=0 adultscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0 spamscore=0
- suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2401310000 definitions=main-2402160091
 
-Hi Dmitry,
+On Thu, 15 Feb 2024 17:43:32 +0100
+Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
 
-On 2/16/2024 4:18 PM, Dmitry Baryshkov wrote:
-> Hi Jishnu,
-> 
-> 
-> On Fri, 16 Feb 2024 at 12:39, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
-> 
-> Please disable sending HTML emails in your email client. It is
-> generally frowned upon, it complicates replying, it breaks quotations,
-> etc.
+> According to the datasheet of BMP38x and BMP390 devices, in SPI
+> operation, the first byte that returns after a read operation is
+> garbage and it needs to be dropped and return the rest of the
+> bytes.
 
-Sorry, I'm not sure how that happened, but I have fixed it now.
+Make it clear in the patch title that this is a fix and add a fixes tag.
 
 > 
->>
->> Hi Krzysztof,
->>
->> On 1/4/2024 1:48 PM, Krzysztof Kozlowski wrote:
->>
->> On 31/12/2023 18:12, Jishnu Prakash wrote:
->>
->> For the PMIC5-Gen3 type PMICs, ADC peripheral is present in HW for the
->> following PMICs: PMK8550, PM8550, PM8550B and PM8550VX PMICs.
->>
-
-
->> +
->>
->> +      qcom,adc-tm:
->> +        description: |
->> +            Indicates if ADC_TM monitoring is done on this channel.
->> +            Defined for compatible property "qcom,spmi-adc5-gen3".
+> Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
+> ---
+>  drivers/iio/pressure/bmp280-spi.c | 47 ++++++++++++++++++++++++++++++-
+>  drivers/iio/pressure/bmp280.h     |  2 ++
+>  2 files changed, 48 insertions(+), 1 deletion(-)
 > 
-> You are describing qcom,spmi-adc5-gen3, are you not? So this phrase
-> adds nothing.
+> diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
+> index 433d6fac83c4..c4b4a5d67f94 100644
+> --- a/drivers/iio/pressure/bmp280-spi.c
+> +++ b/drivers/iio/pressure/bmp280-spi.c
+> @@ -35,6 +35,32 @@ static int bmp280_regmap_spi_read(void *context, const void *reg,
+>  	return spi_write_then_read(spi, reg, reg_size, val, val_size);
+>  }
+>  
+> +static int bmp380_regmap_spi_read(void *context, const void *reg,
+> +				  size_t reg_size, void *val, size_t val_size)
+> +{
+> +	struct spi_device *spi = to_spi_device(context);
+> +	u8 ret[BMP380_SPI_MAX_REG_COUNT_READ + 1];
 
-Yes, I'll remove this.
+Given you rely on val_size < 3 you should check for that explcitly rather than
+potentially overflowing the buffer.
+ret is not a good naming choice for this variable as it's commonly used for
+integer return values.  Call it read_buf or something like that.
 
-> 
->> +            This is the same functionality as in the existing QCOM ADC_TM
->> +            device, documented at devicetree/bindings/thermal/qcom-spmi-adc-tm5.yaml.
->> +        type: boolean
->> +
->>
->> Why do you duplicate entire vadc file? Why it cannot be part of that
->> file? Oh wait, it was in v2.
->>
->> You now duplicated a lot of property definitions without clear reason.
->> If this is intention, then you need to put them in common schema.
->>
->>
->> Many of the properties used for earlier QCOM VADC devices will be used for this device too.....do you mean I can add a new schema file (named something like qcom,vadc.yaml) and move common properties into it (like qcom,hw-settle-time, qcom,decimation, etc) from this file and qcom,spmi-vadc.yaml?
->>
->> Can I do it in the same patch or should it be a separate patch coming before this one ?
-> 
-> I'd say, separate patch. Move first, extend later.
+> +	ssize_t status;
+> +	u8 buf;
+> +
+> +	memcpy(&buf, reg, reg_size);
+> +	buf |= 0x80;
 
-OK, I'll make it this way if no one else has any objections.
+Can you use regmap_bus read_flag_mask for this?  Seems to apply to 
+all devices supported. + that's common for spi regmaps
 
-Thanks,
-Jishnu
 
-> 
->>
->>
->>
+Mind you I note the bmp280_regmap_spi_write() is masking the bit out which seems
+backwards  - all the registers are defined with the bit set for that part
+but not the 380.  Ah well - not part of this fix even if it's odd.
+
+
+> +
+> +	/*
+> +	 * According to the BMP380, BMP388, BMP390 datasheets, for a basic
+> +	 * read operation, after the write is done, 2 bytes are received and
+> +	 * the first one has to be dropped. The 2nd one is the requested
+> +	 * value.
+> +	 */
+> +	status = spi_write_then_read(spi, &buf, 1, ret, val_size + 1);
+> +	if (status)
+> +		return status;
+> +
+> +	memcpy(val, ret + 1, val_size);
+> +
+> +	return 0;
+> +}
+> +
+>  static struct regmap_bus bmp280_regmap_bus = {
+>  	.write = bmp280_regmap_spi_write,
+>  	.read = bmp280_regmap_spi_read,
+> @@ -42,10 +68,18 @@ static struct regmap_bus bmp280_regmap_bus = {
+>  	.val_format_endian_default = REGMAP_ENDIAN_BIG,
+>  };
+>  
+> +static struct regmap_bus bmp380_regmap_bus = {
+> +	.write = bmp280_regmap_spi_write,
+> +	.read = bmp380_regmap_spi_read,
+> +	.reg_format_endian_default = REGMAP_ENDIAN_BIG,
+> +	.val_format_endian_default = REGMAP_ENDIAN_BIG,
+> +};
+> +
+>  static int bmp280_spi_probe(struct spi_device *spi)
+>  {
+>  	const struct spi_device_id *id = spi_get_device_id(spi);
+>  	const struct bmp280_chip_info *chip_info;
+> +	struct regmap_bus *bmp_regmap_bus;
+>  	struct regmap *regmap;
+>  	int ret;
+>  
+> @@ -58,8 +92,19 @@ static int bmp280_spi_probe(struct spi_device *spi)
+>  
+>  	chip_info = spi_get_device_match_data(spi);
+>  
+> +	switch (chip_info->chip_id[0]) {
+> +	case BMP380_CHIP_ID:
+> +	case BMP390_CHIP_ID:
+> +		bmp_regmap_bus = &bmp380_regmap_bus;
+> +		break;
+> +	default:
+> +		bmp_regmap_bus = &bmp280_regmap_bus;
+> +		break;
+> +	}
+> +
+> +
+>  	regmap = devm_regmap_init(&spi->dev,
+> -				  &bmp280_regmap_bus,
+> +				  bmp_regmap_bus,
+>  				  &spi->dev,
+>  				  chip_info->regmap_config);
+>  	if (IS_ERR(regmap)) {
+> diff --git a/drivers/iio/pressure/bmp280.h b/drivers/iio/pressure/bmp280.h
+> index 4012387d7956..ca482b7e4295 100644
+> --- a/drivers/iio/pressure/bmp280.h
+> +++ b/drivers/iio/pressure/bmp280.h
+> @@ -191,6 +191,8 @@
+>  #define BMP380_TEMP_SKIPPED		0x800000
+>  #define BMP380_PRESS_SKIPPED		0x800000
+>  
+> +#define BMP380_SPI_MAX_REG_COUNT_READ   3
+This doesn't seem useful as only used in one place.
+> +
+>  /* BMP280 specific registers */
+>  #define BMP280_REG_HUMIDITY_LSB		0xFE
+>  #define BMP280_REG_HUMIDITY_MSB		0xFD
+
 
