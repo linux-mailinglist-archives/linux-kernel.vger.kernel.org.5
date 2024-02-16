@@ -1,146 +1,94 @@
-Return-Path: <linux-kernel+bounces-68752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C67F857F8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:41:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00886857F8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD58C1F26689
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:41:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 843A228D0E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706EA12FB0B;
-	Fri, 16 Feb 2024 14:40:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDA2A12FB30;
+	Fri, 16 Feb 2024 14:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="W49GTaCy"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IhdiNTts"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8090B12F585
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:40:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4ED12FB1D
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 14:40:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708094443; cv=none; b=ZhmsAjouxAm+KOjbJjBFm6Uo123VHuQ/hoTEQo7O21noN9cyA3wFUff/mjZb54+afTDYGNWzfWhfxYqQUx4UhUBeRlcNeQeyQrypcwM80j51ft08mx+gjAGjaWOClGIa0J5RI9q7euxSYH9tzZOFJ/xd4Izn5SWtkMSzyff2KfU=
+	t=1708094446; cv=none; b=dRXbN5xBcuutGWvlBiZXCtdwa8UVuWR6NxpSJJPMqxKgEAgNoJXVokLzSiUDsEaR1Wcb9XQCkUmK+NdjY1widxKZjOWCNxqMBabOZsYwUHdo4Qh65fFMxk35uWsVYI7Fvb04JltmB0WxXMJAaWlxaCcMXVNNPrCRNVNTGiL0cgY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708094443; c=relaxed/simple;
-	bh=pD34V4Xis6XvSKzWyAyrm6YM5UjXrZYGLUr4MspUCqE=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=UpfwWrAOnXsQWdTxnjOGsaXEQMDfNrIkgM4ZROLteU/7E9dzmqPvEqe7tzNhdgmN3Fh4B+GV25p7pRkgxnR0koWoxlab0xXk9nrAkMlLGyA04695fd8ctHI7AHv5Fqj7qw1HkkVbb54gqqucs8GLARuOyI1F6YPyQYzbbQvVIMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=W49GTaCy; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3d159220c7so118248666b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 06:40:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708094439; x=1708699239; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ddHRp/a7ql2hO4wtU3P1Kr5z86y1yTWMkn8d+hM85z0=;
-        b=W49GTaCyJs11FwPkJ+dUvl8jE2fMAalodGP6ajU/LhFoLdb+Y1eKZ88yYH30g+//gN
-         XjOjsWtW5MqSrgpb72vRmcY8RXXCj0ET3rRtEKZahhg5Xbq1BKXSeAObBVpjqSel0F8l
-         miuw52CGK9EjBkxYqP4ZNJCn0BPq02EmRadZ5qoqVdkIV0MOrJoY5y1ArluR6aHSP6KM
-         QpUb5SC61Ds9K5yanjidGNDbYeHFjS42Sd4POQ2HOQ+a4BNbXkMAGR7MSWeiyNCt9Hpp
-         IqnLIjgGVV73epu2PL7OtbL4j86Ycpw0lYq5074zysRTYjDMIWFTiacVg/Bi9QVNzye3
-         Vf2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708094439; x=1708699239;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ddHRp/a7ql2hO4wtU3P1Kr5z86y1yTWMkn8d+hM85z0=;
-        b=nTwzYCPFKKLbGXdy5QI4codMu8A6jRzpDpS7A32CT6Noq0KRcmwDeBU6TGjIDSyog2
-         VT56mczcjaovsiPPtO/b8yTSuE2UgoPfrJfdHGlkGWPUId1DxKNuS0JulxrjRy0/pQbi
-         +1I43Uc4QeyzwTZ1K4cMwZCu5DdK8+I0qX98fK5Xsp8gK+S9IuqGwEu6POeU8xCroFa/
-         LoxELaWKqYhAPIYmsAPstcBiB0Tcv3fJ/FJ9MCIJzBWvEKjiEOCBtwfB+OUvrgr+ActJ
-         iVN/VrEsUss+2s/RxFZUzrmTxIrDk27PaMkfK2clgZ2Y/nX6CbGJBmhqV37YBPu/qzCS
-         SeJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUKetP5R+tVs6p8SEMq4C+LoNA+EkVK3ZrFAgCIdJOYeHcPnmJf5L+5igfzgrhCpDMdodEPHoNDqlugIhqZGp/5RWAm6q3nflOQpURV
-X-Gm-Message-State: AOJu0YzjASfKl6DeyiMvoAbQD5pEa5wzbwef/Ea6ZNlF7qUFxmhrwYan
-	FooRJjtMdcKRm7xdYDw1gBoW7VFw2toOjjIz80VlhzT0GB4MZphk19Dcn/WAVno=
-X-Google-Smtp-Source: AGHT+IFjUr0pwHx7I9NJd2MhgZLwiZF/Q3I4EAlN6VBXxRxf0gB7BEu6U93gT2kjFbtxE6rZ4t4ByQ==
-X-Received: by 2002:a17:906:d7bb:b0:a3d:704:d688 with SMTP id pk27-20020a170906d7bb00b00a3d0704d688mr3675983ejb.47.1708094438802;
-        Fri, 16 Feb 2024 06:40:38 -0800 (PST)
-Received: from krzk-bin.. ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id a8-20020a170906670800b00a3ce3c5b2a4sm1592942ejp.195.2024.02.16.06.40.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 06:40:38 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Hector Martin <marcan@marcan.st>,
-	Sven Peter <sven@svenpeter.dev>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>,
-	Rob Clark <robdclark@gmail.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Yong Wu <yong.wu@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Orson Zhai <orsonzhai@gmail.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Chunyan Zhang <zhang.lyra@gmail.com>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Krishna Reddy <vdumpa@nvidia.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	asahi@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-sunxi@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	virtualization@lists.linux.dev
-Subject: [PATCH 4/4] iommu: re-use local fwnode variable in iommu_ops_from_fwnode()
-Date: Fri, 16 Feb 2024 15:40:27 +0100
-Message-Id: <20240216144027.185959-4-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240216144027.185959-1-krzysztof.kozlowski@linaro.org>
-References: <20240216144027.185959-1-krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1708094446; c=relaxed/simple;
+	bh=KyiJUwVp3WSEgIu/ScrsxW/jzrNSeVWnnoNAptYeyQs=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FPISCdPdA71rg7E0j1wNgCkuiccGeej4JEgf36ezUCHS4eFiOqwmdDwcL84AHbC7j5/ZfrnHT/z/lyljAtVyHGTFmfHhG57hs8oh+iF1r9LJ/ToIiAuyUXyMIDziZ2fjQDRUYabI7IpIlVQ2mAerxq9uD42JEEx85SLxBOS7hAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IhdiNTts; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A2FFC43390;
+	Fri, 16 Feb 2024 14:40:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708094445;
+	bh=KyiJUwVp3WSEgIu/ScrsxW/jzrNSeVWnnoNAptYeyQs=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=IhdiNTtsz3SKvL19GUeYPjoehtyOuqzU7hczruIP/3RBlL3Oepr99tz1cXNVXJA1N
+	 Ko49fBOBtABQ0vtXPYgj9P7VNIy58wmUXvYnAk8rGpMPQyqrGcG6Oec6HOgYbZHp5W
+	 PSXTaZvuzZZ5k8kGM7uNSTOtYP29EM29RbUh44o9OdE5h3QnFFAy2ze4EMETfv/q4u
+	 2CpJsE5q1jle6jdkLSUiKEFspSkPVjZVHFTF01ZXGXGNzQQP7hpHQVMwL8zpYoqEC4
+	 lpixbVYwvp3cUUUVxRJeVFlQ9BNLPyxDg6d4XtWJXb/o1Vkq3kPTttJsP8wdYML1Uq
+	 O/XDWyUBbdjCQ==
+Date: Fri, 16 Feb 2024 15:40:40 +0100
+From: Alexey Gladkov <legion@kernel.org>
+To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [RFC PATCH v1 0/5] VT: Add ability to get font requirements
+Message-ID: <Zc9z6P_Iyw2zboSZ@example.org>
+References: <cover.1708011391.git.legion@kernel.org>
+ <d7743747-1ec2-4557-9f2f-4cffd77284b3@kernel.org>
+ <Zc9ijvUofv4PCLw_@example.org>
+ <20240216134522.s6d22mljxyfd3fsx@begin>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240216134522.s6d22mljxyfd3fsx@begin>
 
-iommu_ops_from_fwnode() stores &iommu_spec->np->fwnode in local
-variable, so use it to simplify the code (iommu_spec is not changed
-between these dereferences).
+On Fri, Feb 16, 2024 at 02:45:22PM +0100, Samuel Thibault wrote:
+> Alexey Gladkov, le ven. 16 févr. 2024 14:26:38 +0100, a ecrit:
+> > On Fri, Feb 16, 2024 at 08:21:38AM +0100, Jiri Slaby wrote:
+> > > On 15. 02. 24, 16:37, Alexey Gladkov wrote:
+> > > > We now have KD_FONT_OP_SET_TALL, but in fact such large fonts cannot be
+> > > > loaded. No console driver supports tall fonts.
+> > > 
+> > > I thought fbcon can, no? If not, we should likely remove all the 
+> > > KD_FONT_OP_SET_TALL checks here and there.
+> > 
+> > I thought so too until kbd users started trying to use such fonts. A month
+> > after adding KD_FONT_OP_SET_TALL, support for large fonts was turned off
+> > in fbcon:
+> > 
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=2b09d5d364986f724f17001ccfe4126b9b43a0be
+> > 
+> > But I don't think we need to remove KD_FONT_OP_SET_TALL completely. Maybe
+> > support for large fonts can be fixed.
+> 
+> Some users *need* it to be fixed, because they need large fonts to be
+> able to read their screen.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/iommu/of_iommu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I totally understand that. That's why I don't think it's necessary to
+remove or block SET_TALL. And that's also why I added you to the thread.
 
-diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-index 719652b60840..3afe0b48a48d 100644
---- a/drivers/iommu/of_iommu.c
-+++ b/drivers/iommu/of_iommu.c
-@@ -29,7 +29,7 @@ static int of_iommu_xlate(struct device *dev,
- 	    !of_device_is_available(iommu_spec->np))
- 		return -ENODEV;
- 
--	ret = iommu_fwspec_init(dev, &iommu_spec->np->fwnode, ops);
-+	ret = iommu_fwspec_init(dev, fwnode, ops);
- 	if (ret)
- 		return ret;
- 	/*
 -- 
-2.34.1
+Rgrds, legion
 
 
