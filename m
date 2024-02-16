@@ -1,112 +1,154 @@
-Return-Path: <linux-kernel+bounces-69398-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FFA85886F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:20:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD2685886D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:20:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 49D05288F7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:20:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D96032894E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3928D148305;
-	Fri, 16 Feb 2024 22:20:42 +0000 (UTC)
-Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8CF013957E;
+	Fri, 16 Feb 2024 22:20:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="orfjmu27"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE5A1482FC;
-	Fri, 16 Feb 2024 22:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09078146007;
+	Fri, 16 Feb 2024 22:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708122041; cv=none; b=oYeu7HQM+Hl7GA5KZNyLlrVR0lD60QpvXqGDTW7zv80uctcaF9CffeyhzJY/CdbOdH1y/K+LipfrR0qTZkWLDd33bjL1b7Fijso3QjbtjoIydLBpdUkwJn5RcA7GYVYHBVmQM1psy0b2f9AeB8dcZdLygxgT2hHx/7gayMbDTKM=
+	t=1708122028; cv=none; b=f+R51lvo7AtBfv9aA12STH0V2XrsakpKoPlHvCmgb95d7JD/2hUC89A+fM08Gbt3F3vPrdHVQp3cEdtuVYTQRSCprEwTRsSRHFrftY3JXR+sJnhyxfqUBdQzEaxt5JSK/9MmaIX3kBzOzbhbtLNZ0VyUDNe+orcmhltbSmPVvHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708122041; c=relaxed/simple;
-	bh=msPNsztnskSmyeaJgNI4jRF+Vl1VLSTD1gWXdq5dqVY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kLrWdpA0Rqx2ws1hJYhu+yiLfebHt9cMqQzHH65oEe4BOxB6w1lIkO5zyHZuEqnObw4hht1KXsKyIsDhgnq0FUxACEcHmG0uam7eC9ieh6+jXPEOvaPp+u93oDegiw9gNogVtMbD+N37+9AX/Y0pe/cH7EzwNFpiph6/kkfejrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
-Received: from [192.168.44.133] (unknown [185.238.219.92])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pmenzel)
-	by mx.molgen.mpg.de (Postfix) with ESMTPSA id F26D061E5FE01;
-	Fri, 16 Feb 2024 23:20:13 +0100 (CET)
-Message-ID: <512bdab4-1779-4407-aa7b-57d1af015fc1@molgen.mpg.de>
-Date: Fri, 16 Feb 2024 23:20:11 +0100
+	s=arc-20240116; t=1708122028; c=relaxed/simple;
+	bh=2Xx8Z5pTwI2JW5qD969uln16RftePq1Ha6Tf8/kMnL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=THNZ13up/mkRyxymdEvF8vH8cXb2x++jnZI5rG0rf9OAz0jLm0/nfw9X5DN2esU2tFVUYsW9GzhUk9HJIDzRfr60EKt9I+5fyND3q7EnoGf1cYtL7CrdSRn2qsBWjHO0KfXE+427joJg6Iit6Y8K1jVRE2IHKrPbnVSDKbr5x6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=orfjmu27; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F1984C433C7;
+	Fri, 16 Feb 2024 22:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708122027;
+	bh=2Xx8Z5pTwI2JW5qD969uln16RftePq1Ha6Tf8/kMnL4=;
+	h=Date:From:To:Cc:Subject:From;
+	b=orfjmu27b7csWhaDNboaStMb/nFRea8q/SSJhSGYaj4d78xi192uOHccp9i9RyYUN
+	 zml5QwcrVnM80FLSzzUT4a21P4+mRk1DvteGM7mwKL/k5U9r48ndZYLFg0ZU5RSl4a
+	 T/3Wwua1Vwo2XJE8rczRjRl2vRPn1uY+iJd3CHKSDPKetJOILiuDGDSrOdGDvabzJ7
+	 6N8V+2AfFNyG6j77GM4OXMVVNJRiWZNf/VorhXQ+9GNMOcRE0E58QMQAwUVxZ0wloU
+	 Ptf9R7IpGvHKXgAiOgmQd1MncFjSQspDmQEuKBthtzQs7aIEIHsN39HdOggHP4o+Dd
+	 68LN31jyF0Omw==
+Date: Fri, 16 Feb 2024 19:20:23 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH 1/1 v2] perf augmented_raw_syscalls.bpf: Move 'struct
+ timespec64' to vmlinux.h
+Message-ID: <Zc_fp6CgDClPhS_O@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?Q?Re=3A_init=5Ftis=28=29_takes_50_ms_on_Dell_XPS_13_9360_?=
- =?UTF-8?Q?=E2=80=93_almost_10_=25_of_whole_time_until_initrd?=
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>, Peter Huewe <peterhuewe@gmx.de>
-Cc: linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0eba23c7-f62a-4a85-a383-60dec9d198f9@molgen.mpg.de>
- <CZ6UFX5R09DD.EWDFS24L16G1@seitikki>
-From: Paul Menzel <pmenzel@molgen.mpg.de>
-In-Reply-To: <CZ6UFX5R09DD.EWDFS24L16G1@seitikki>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Dear Jarkko,
+If we instead decide to generate vmlinux.h from BTF info, it will be
+there:
 
+  $ pahole timespec64
+  struct timespec64 {
+  	time64_t                   tv_sec;               /*     0     8 */
+  	long int                   tv_nsec;              /*     8     8 */
 
-Thank you for your reply.
+  	/* size: 16, cachelines: 1, members: 2 */
+  	/* last cacheline: 16 bytes */
+  };
 
-Am 16.02.24 um 23:07 schrieb Jarkko Sakkinen:
-> On Wed Feb 14, 2024 at 3:10 PM UTC, Paul Menzel wrote:
+  $
 
->> Trying to optimize the boot time of Linux on the Dell XPS 13 9360,
->> probing of MSFT0101:00 takes 52 ms, making `init_tis()` taking almost 10
->> % alone until starting the initrd:
->>
->>       [    0.000000] Linux version 6.8.0-rc4 (build@bohemianrhapsody.molgen.mpg.de) (gcc (Debian 13.2.0-13) 13.2.0,
->> GNU ld (GNU Binutils for Debian) 2.42) #20 SMP PREEMPT_DYNAMIC Mon Feb 12 09:40:49 CET 2024
->>       […]
->>       [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 06/02/2022
->>       […]
->>       [    0.320057] calling  init_tis+0x0/0x100 @ 1
->>       [    0.332190] tpm_tis MSFT0101:00: 2.0 TPM (device-id 0xFE, rev-id 4)
->>       [    0.372164] probe of MSFT0101:00 returned 0 after 52101 usecs
->>       [    0.372186] initcall init_tis+0x0/0x100 returned 0 after 52127 usecs
->>       […]
->>       [    0.588643] Freeing unused decrypted memory: 2036K
->>       [    0.589068] Freeing unused kernel image (initmem) memory: 3976K
->>       [    0.606115] Write protecting the kernel read-only data: 22528k
->>       [    0.606527] Freeing unused kernel image (rodata/data gap) memory: 276K
->>       [    0.652327] x86/mm: Checked W+X mappings: passed, no W+X pages found.
->>       [    0.652329] x86/mm: Checking user space page tables
->>       [    0.695968] x86/mm: Checked W+X mappings: passed, no W+X pages found.
->>       [    0.696104] Run /init as init process
->>       […]
->>
->> For users, where boot time is most important, can this be moved out of
->> the hot path somehow?
-> 
-> It can't be IRQ probing as IRQ's are *disabled* by default. So we can
-> disclose that.
-> 
-> I think the delay is caused by tpm2_probe(), which is called by
-> tpm_tis_core_init(). It sends an idempotent TPM2 command to the TPM
-> chip to know whether it is TPM 1.x or TPM2 chip.
-> 
-> That detection is definitely required.
-> 
-> Even some other subsystems in the kernel require to know the correct
-> TPM version, like hwrng and IMA.
-Understood. The TPM in my laptop does not change, so could this be 
-cached, or does a Linux CLI paramater exist, that I can specify the version?
+pahole manages to find it from /sys/kernel/btf/vmlinux, that is
+generated from the kernel types.
 
+With this linux/bpf.h doesn't need to be included, as its already in the
+minimalistic tools/perf/util/bpf_skel/vmlinux/vmlinux.h file or what we
+need comes when generating a vmlinux.h file from BTF info, i.e. when
+using GEN_VMLINUX_H=1, as noticed by Namyung in a build break before
+removing linux/bpf.h.
 
-Kind regards,
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Cc: Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Link: https://lore.kernel.org/lkml/Zc-gAKByhLBV_X59@x1
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
 
-Paul
+v2: Remove linux/bpf.h as explained in the commit log message.
+
+---
+ .../util/bpf_skel/augmented_raw_syscalls.bpf.c    | 15 +--------------
+ tools/perf/util/bpf_skel/vmlinux/vmlinux.h        |  7 +++++++
+ 2 files changed, 8 insertions(+), 14 deletions(-)
+
+diff --git a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+index baecffbece14fb68..0acbd74e8c760956 100644
+--- a/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
++++ b/tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
+@@ -6,7 +6,7 @@
+  * payload expected by the 'perf trace' beautifiers.
+  */
+ 
+-#include <linux/bpf.h>
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <linux/limits.h>
+ 
+@@ -22,19 +22,6 @@
+ 
+ #define MAX_CPUS  4096
+ 
+-// FIXME: These should come from system headers
+-#ifndef bool
+-typedef char bool;
+-#endif
+-typedef int pid_t;
+-typedef long long int __s64;
+-typedef __s64 time64_t;
+-
+-struct timespec64 {
+-	time64_t	tv_sec;
+-	long int	tv_nsec;
+-};
+-
+ /* bpf-output associated map */
+ struct __augmented_syscalls__ {
+ 	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+diff --git a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+index ab84a6e1da5eedb3..e9028235d7717b59 100644
+--- a/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
++++ b/tools/perf/util/bpf_skel/vmlinux/vmlinux.h
+@@ -20,6 +20,13 @@ typedef __s64 s64;
+ 
+ typedef int pid_t;
+ 
++typedef __s64 time64_t;
++
++struct timespec64 {
++        time64_t        tv_sec;
++        long int        tv_nsec;
++};
++
+ enum cgroup_subsys_id {
+ 	perf_event_cgrp_id  = 8,
+ };
+-- 
+2.43.0
+
 
