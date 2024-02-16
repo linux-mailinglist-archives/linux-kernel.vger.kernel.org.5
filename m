@@ -1,106 +1,145 @@
-Return-Path: <linux-kernel+bounces-69482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CB40858A27
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2E3B858A25
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 028B71F22E52
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:30:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9493C1F22ACF
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 23:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3365714900A;
-	Fri, 16 Feb 2024 23:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113D41487F9;
+	Fri, 16 Feb 2024 23:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V2bFIjdJ"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FgYNol8o"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2411487D6;
-	Fri, 16 Feb 2024 23:30:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD81014831D
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 23:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708126210; cv=none; b=KubILkXCcJrBr3eC0lZKrnE33k/7FJdWAgvNVk01G3JNbEAy/L0dUXSYBa3GotFgnKYygUCdL951iZIAE2NKltUrp3uBJhrGYBqy2bVFhdGgKiil3qhmv31fD2VdO34Z685deDM6wDMsZsrMALazcvCoOhTzemDECpoctPXW1w0=
+	t=1708126209; cv=none; b=XCP8dD5yJIL+/oxhSqMF2J/Xszej8ZkZLUJkE7GZvEwWH/1glx0aPIRVXb/v6geCUL9IfYZpPGyLlzyKOGjASfYbCxaM7xOJEzbp3ACK3FCpWyf80fTh5sYZnypsrcn+mGjhdjDFgfcIrYhx+iOMDzQZlpsD0HzlGMxAXvw41Lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708126210; c=relaxed/simple;
-	bh=FMVWaPEG1nX3jE+CDbdrHVeNP4wVjb/A2lK/tKqysmw=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Q3be95nbKAz2Nw+CjaQtTUgYADQRkThEg4GwOq4xwPEaYJdQ0YqZVE8BV3crADPnRjg9TSngVm9mOLAvh98V6BrQKrt0k1ozQYi4rS6mRgLzrnZGApRIQEgNdhM3pr+MkcoP2bdCa8s+Ew8vhS4Rcfq1v48MZAMpjU5gLu82l8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V2bFIjdJ; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1d7232dcb3eso9868805ad.2;
-        Fri, 16 Feb 2024 15:30:08 -0800 (PST)
+	s=arc-20240116; t=1708126209; c=relaxed/simple;
+	bh=N8SWEam9A1kUZnQAkUusNza4SpfF9G3Tl7KB3Dv0a+E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FyDwLRYMr6RVQpANTAVJQYbbKN58xoXrsk0LErUCFua+mUQmwxAPU6M0+qJvSEMOmxKIZDcx9xWB1oEHWpx1zHcwKBmtxxZrG1ZaCWcqyAXbu3KyEw/q4UGkntRFiIyRMXEejpf8XdkA/bYK/U7ePP0KqnDhBu2NKoiJRRg0O2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FgYNol8o; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5ce6b5e3c4eso952333a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:30:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708126208; x=1708731008; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=E0rm8oJW/XJYG6K14YhQ3ephozjzMlAvikt0W/eKgk8=;
-        b=V2bFIjdJXTa82sy5ct7qxx7308kt/RBCmvKSccHePrVK3wUjn4OSMoDSctQlz6snHD
-         gtncmo/z6AtdSucc3+EdDMq3fWJ3lXkO33HJbzH8KBP0KwTvLWvj4kgdZ1e2dCQQJDdH
-         6rKvduHIQS+hzTOFCfD37y7DbBKb24s3K06/gdLwKrp5n2dCmSmJjJS/lUGSN9loAKmX
-         MTvQyf9I9hO8rsOvefu3mMyN7Pc2P+jqcJ6xaOM60Yf3brvURdNFQDVxxdQ9YGAhn0j6
-         iDu6aewjTaULiwxJSLdIChROpsq7cVyuc/jmjz8z6AuPOCFP3KfCwaDKd18louUq6rAi
-         R1+Q==
+        d=chromium.org; s=google; t=1708126207; x=1708731007; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=q0M9H+uKm2YFk/vFzLDf9keBJtUyzrYL6KC8P62658M=;
+        b=FgYNol8oVtCGDGTyPNtvffjaXBJo3IhIdi2Pj3vouNzKG+PwAlnukfH0AqBs46Xim3
+         AqQErSj00ToeNkb7jJVeYq6qqNp9o82mLJyRBvv3Hm/xKhhKQ3J0SvCEgbKOw89nS21r
+         Gbn+1XGfFKp/DDqocOZ3r51M5IN9EdGWB69nw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708126208; x=1708731008;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E0rm8oJW/XJYG6K14YhQ3ephozjzMlAvikt0W/eKgk8=;
-        b=ALek6IdXzS5ngz3PgRTJ5LsUFyF3qEZEHlnMNc5QYHr9zk2aCTk/Dl40Fu6Urh2s/x
-         W3z8ztM3yAhX9qFQox026hClj/kmDU95BWKePsBoFxCrz7AzQdACPedcseNoKDqHBeBy
-         kBBW7h7zqCc2qlKpJSgWbHmksqBo0xW+A7RvM0Vr5RRimJTD6xWEV/WZXkwut96P/ylf
-         2B2Ulsyw5KYNyvKnYRyxNJQfn24NldYUpWpxyE7lN4tJJvwgH3JIJZyFBs0kLojAouKS
-         F0fOAYpVEfynsW0lJ3YEK0Vb8o2/7gXiXs7tssGBsfWdKOra7ouBHilS8PHHuiRX9t7K
-         C2gw==
-X-Forwarded-Encrypted: i=1; AJvYcCVoqmSwqguPSNoNoH/x1vwrcjR4ji3LGkZnFi2bedmEZBq0wB2SrQu9ygrWqtKItuWvrh8NeybnQlRGBRLfJMgRYr7cvzcu4Nv1jDI+
-X-Gm-Message-State: AOJu0YzoPClki+EGYJ3aC4hBkMQAritJpsX3b29DNHzM87Y5OKnMh54Q
-	A2ZeIgvBKTRj2xCErR34Gd8SsfRz3Z571CCDfooX0L3QBwnv+yx7pjYCTJN9a6hOUUfqoc4indo
-	JdZufU9+yeZ5/gcgtL4DvY+Qicj5g4CVATqU=
-X-Google-Smtp-Source: AGHT+IG8NGWNkQaKqUI/eMg10+AC0G35IgZ/oydeFaacpUBCAryssRpS62z0cOhEkKKKzCRnv4hh3ESYt2AbMmLkZIc=
-X-Received: by 2002:a17:90a:ce8c:b0:299:56ee:6946 with SMTP id
- g12-20020a17090ace8c00b0029956ee6946mr165826pju.32.1708126208110; Fri, 16 Feb
- 2024 15:30:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708126207; x=1708731007;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q0M9H+uKm2YFk/vFzLDf9keBJtUyzrYL6KC8P62658M=;
+        b=WMFl47oHh0ss6nboKo/70Y14+ZJhz8xAOoDU2afSMmZ002ZbLBoEsJ/vwGOprPmahz
+         T+ULTPJdXCsn9IgXDyyUiff8OfA8OFhJpw1GMBtWPj+c7R58HWe6UdBpx+QCmO78n0fi
+         fHL7uPdSVTvzzF197PA9209USTFtvr7U7koK8WqncvqzSDxIt4gPnNkpWnrpvDNNH3+M
+         QaLbHLiENDm7ZuAhbNZoNBsFqDrSznD4UruH7FTgsX7+twna5LtqDJeOaHDTdgfz1fz1
+         XBWUjErhehb1zG11HLQOnlYlx0BsL6OKXPVp+WtWQ3Fbb6HH2YZnEJYeaIfVEx057u0L
+         8UPg==
+X-Forwarded-Encrypted: i=1; AJvYcCXmz1ey29NdO1ORbDzMTxStBqvdkQV40Xn9z5O44+kpeHK5H50+R/Q31Lv2g0IdFuLAyEVLsVBfqVPdCjnkYwRGnoOKwFZagSPUhQ/Y
+X-Gm-Message-State: AOJu0YxEty1ChbsMiSrHKHo071N1T505rSzozj+indo7xM2ihtd+prw6
+	w1MjApxksKCER1dRBC52AVT8D8bPmaWrse/6ThzVuERWut8ar0bXMghDCTNXIw==
+X-Google-Smtp-Source: AGHT+IHLDngRzVnt3PaLTBd99dKYJp4xFnvTjecToZpLjHNMXyYWqFfP0n9Z2AGZ2Gv8wIpZON41YA==
+X-Received: by 2002:a05:6a20:c78e:b0:1a0:762c:7c9f with SMTP id hk14-20020a056a20c78e00b001a0762c7c9fmr7240423pzb.36.1708126207106;
+        Fri, 16 Feb 2024 15:30:07 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id du5-20020a056a002b4500b006e0a55790easm466312pfb.216.2024.02.16.15.30.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 15:30:06 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Christian Benvenuti <benve@cisco.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	Satish Kharat <satishkh@cisco.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+	netdev@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH] enic: Avoid false positive under FORTIFY_SOURCE
+Date: Fri, 16 Feb 2024 15:30:05 -0800
+Message-Id: <20240216233004.work.012-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: noman pouigt <variksla@gmail.com>
-Date: Fri, 16 Feb 2024 15:29:56 -0800
-Message-ID: <CAES_P+_0tWVtn+tyUi1TvkWi4rA-ZBj8e7_pnJd1h_J3S3Cn8Q@mail.gmail.com>
-Subject: Audio dsp recovery using remoteproc
-To: linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1636; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=N8SWEam9A1kUZnQAkUusNza4SpfF9G3Tl7KB3Dv0a+E=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlz+/98DESvFGFikq/0c5rAXVNW2jvDZ5ZdvQsL
+ mU7EaKbFGCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZc/v/QAKCRCJcvTf3G3A
+ Ji9aD/wJ76bdgoqZWSC+dTOnrSCAtpdSTGT0TYNd0E5WDFwXtv/ju5qL2URM/kXi0qw4A/nJ8HT
+ mQmgTScQTSQHancdPF/ow4o0623XWG8Lhi7zX4Aga7ArrngyLmoMUVzLbEc5r2t4tAL5uM/3mG5
+ yRboorFeOmWeG/gKm2+DKeslq4o0kk7kiDrHHqqix4W05WJqOkEyhBxl3UGRt/Inxn2QasEIgv3
+ Q4qmhn+J+zNJUDB/Cw97dZ1AYd+ILfULWCj5ewdLF148SSXa7bMSaJtuciASjVS3bifRJWhL/Kr
+ dksz0Kcj2/K3BFeJzLF0I6A4VYMq13vcSAFf6C8pCLPphpgma4+gzVGE/K42gCUkxf1osxLV1Ni
+ 0XKZMLZudf6fcM4vVpruc6Yq0LctwFZoOcdtNjGo44QjUw3SxYorBUlrjB0nZIKTpSiIiTyZerZ
+ yGt4KFEe9KE1QWLBK0dZNuF5xuJD6TRbZxcYW3gnd0d8hntPyda3gjWtglmWRXdKLD6SprT3uve
+ J+VAEUd5UbRXrGSUaLxUZwe7IcYwwlcSLeh4JsEa3hMR3euf+97r66AJ2f5U0LN4pcM/MaPN5Tx
+ 0kq1INBYqjbjZe0/PrjlMJh3uvs4vr1gY8PwL+8jomC+wBvbpSSL9FYP82hH1QHUId3b9yZHMC4
+ FUU3ziy zehgYZ+g==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-mailbox to dsp_1 is currently modeling platform pcm driver.
-mailbox to dsp_2 is also doing the same.
+FORTIFY_SOURCE has been ignoring 0-sized destinations while the kernel
+code base has been converted to flexible arrays. In order to enforce
+the 0-sized destinations (e.g. with __counted_by), the remaining 0-sized
+destinations need to be handled. Unfortunately, struct vic_provinfo
+resists full conversion, as it contains a flexible array of flexible
+arrays, which is only possible with the 0-sized fake flexible array.
 
-Platform driver callbacks cause IPC to be sent to dsp's.
-Lifecycle of two dsp's are managed by separate remoteproc
-drivers. Single sound card is exposed.
+Use unsafe_memcpy() to avoid future false positives under
+CONFIG_FORTIFY_SOURCE.
 
-Separate watchdog interrupts from the corresponding dsp's
-are connected to remoteproc to manage crashing of the
-individual dsp's. How can I restart both the dsp when either
-of them crashes using the kernel device model? Remoteproc
-driver currently only restarts the crashed dsp instead of restarting
-both the dsp. It is needed to bring up the hardware in a consistent
-state as both the dsp's are connected to a common hardware.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Cc: Christian Benvenuti <benve@cisco.com>
+Cc: Satish Kharat <satishkh@cisco.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Eric Dumazet <edumazet@google.com>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Cc: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Cc: netdev@vger.kernel.org
+---
+ drivers/net/ethernet/cisco/enic/vnic_vic.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I thought of making a virtual parent remoteproc device
-and then managing individual dsp as a subdevice of that parent device
-but remoteproc device node is associated with the individual elf file i.e.
-it can manage only a single dsp.
+diff --git a/drivers/net/ethernet/cisco/enic/vnic_vic.c b/drivers/net/ethernet/cisco/enic/vnic_vic.c
+index 20fcb20b42ed..66b577835338 100644
+--- a/drivers/net/ethernet/cisco/enic/vnic_vic.c
++++ b/drivers/net/ethernet/cisco/enic/vnic_vic.c
+@@ -49,7 +49,8 @@ int vic_provinfo_add_tlv(struct vic_provinfo *vp, u16 type, u16 length,
+ 
+ 	tlv->type = htons(type);
+ 	tlv->length = htons(length);
+-	memcpy(tlv->value, value, length);
++	unsafe_memcpy(tlv->value, value, length,
++		      /* Flexible array of flexible arrays */);
+ 
+ 	vp->num_tlvs = htonl(ntohl(vp->num_tlvs) + 1);
+ 	vp->length = htonl(ntohl(vp->length) +
+-- 
+2.34.1
 
-How can I model remoteproc drivers using linux device model so that when either
-of them crashes both the dsp's get reloaded by the remoteproc framework.
-
-           MailBox ---- DSP_1 ---
-         |                                    |
-Linux                                      ------ common_hw -> speaker/mic
-          |                                    |
-            MailBox ---- DSP_2 ---
 
