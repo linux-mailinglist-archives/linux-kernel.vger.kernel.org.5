@@ -1,128 +1,109 @@
-Return-Path: <linux-kernel+bounces-67912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-67913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3168C8572E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:55:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E03B28572F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 01:57:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 642C31C21E3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:55:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1FA5281280
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 00:56:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB1D13AE2;
-	Fri, 16 Feb 2024 00:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1E0D268;
+	Fri, 16 Feb 2024 00:54:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="oprrFOsq"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="KYXR1+er"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CEC0134A4
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5B89445;
+	Fri, 16 Feb 2024 00:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708044737; cv=none; b=q3HmGgAid4to/KIyZJNx2GwP+KzzKKDc4Grc56ZSVibJrTv5Ja2feQI3325L8763HKXTIRu066gPnrnf0XsKeTkS2EfF0L8Bz8qE6mlSlo5yXTH5WVKau2U7JxvkoNOJu63Kgtn+ouirPBs+Wr/PGjnUEOcfGchZ8uUzF6F2uvA=
+	t=1708044882; cv=none; b=TbGu90giDw3o4acrkNtvDyuvhPPjc3RNJ5fDV58/4LhztENJbWhqvaRadEvJatkABgGLaOjZDX8UtO9JSlG51S1zwRkzJL9zEmqfqJ30PUn8j+qRO2WUpIGaYMZO2sbPrVrgN9v3EaeTvhgjqO3FZUZCsoHJGlXEkNRDlB2yKiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708044737; c=relaxed/simple;
-	bh=2xy53qgS2iJInA/5BDMVhpj6cwRaWAAd3dI3MMe55Gw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qMdE7SKwaDDDDZa/yIDpbSP7t0QJqSJ0afqZG2fEM3W4jBY6zIkv891zhJUX2XpITLYC8UkS2SQh5HBrVDvls/KVsQssw22QcFTJtT+fR7Igh6f2DTCaY1U8rttFzxb6HLqRe+fy0Rhj/NnnIgXizDIYwcra5k0wRWF16Jb+Sic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=oprrFOsq; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbd1d4904dso1580259276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 15 Feb 2024 16:52:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1708044734; x=1708649534; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2xy53qgS2iJInA/5BDMVhpj6cwRaWAAd3dI3MMe55Gw=;
-        b=oprrFOsqJykOmX8zng1ggw/imPDsjP6LsR952+nWuOFcMP55GT6qRXSMZ7iao+wvx3
-         WyWo8YOFsZFcykfBc1fpkddIvOIefHY1ew5KhnSwVRbl0cuQLLSe2hdNkrClwNbFQdVz
-         ZLLHM901XdhT4Wg0hIMGbVvRCJ7bKVT3BqIkl0n5fsUs2C3jqqmp3uhy74PniTQ/fnB4
-         09z3O1C7oi7SXImOFm4B0yvnXfwRFQgvrfLhybhp6hzEyv9sucLkYc3h2hQ7+5nYH3RQ
-         xYNOPi4ApnHeUeQNFx/EtYkBrvJMgwZCb+L5Hneoiu4xvljcPp8wH4LVfLea0q6ClKQx
-         pMkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708044734; x=1708649534;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2xy53qgS2iJInA/5BDMVhpj6cwRaWAAd3dI3MMe55Gw=;
-        b=D4+zcUuKSuW/lbWMAnQ/U6HWg2LlA+FVOrL2v64GPuEV3e4Gaw8m5KUjdsPEh9AT7j
-         GsaB0/cZtLDTq1ZTs9oMrJ+zT9G5oNsTdaTtrqmlPVU1zQL6vljTL3R10E2abRNxRss1
-         sk6z0fvOgQIx8/coEFdo5EHyuGZaHHVIGMmevA6gKH8oZoaDtN++j2H6mV4Dr6Lvl5eb
-         1gEZdParCfAHjKaMkAUSd3Ny7efNMKedI9XcCYz5ZolljKs7q4FLXAwvrg5uJed29yMG
-         h7hemrzl6DwPlV4uDgJn4iRNNvzmoyXd3Al/q9WrZ/XvBLjDyWLYSOislcBr9ihZZFDF
-         pYaA==
-X-Forwarded-Encrypted: i=1; AJvYcCXlpiWfhZNZSmm1Vw/sWztKrM6zMg/b7JBVJI3zVu+vbm3nxkS3KDRzTDHzGLoA/r3YOddSbrF8ob2cq/MrwQWfUektSCtswSvoC4cZ
-X-Gm-Message-State: AOJu0Yy/qnfvcSUaAsiGOCC9GXk618zD4NV/Ob7Y1o9SJFLGg4edtGo+
-	ZLZBgaZFC3m4ixVRpDcfOjmQf8Ru0/ghqasWfCHFnHgqnYOlbLif3NOoFTvet3B9Jvd5Nxry8TV
-	8vpttpnI3xOFA7ZrkMSkNMinupN4/xwZQjpuIIg==
-X-Google-Smtp-Source: AGHT+IF9ZHlLR5v29XCimN/Xs8jNPLkvB/7wYRz01k7De6cwDyVRO4dJIc/6HTgOV7JHuNofEVjinUHjv2Bb5KdehIA=
-X-Received: by 2002:a25:ae85:0:b0:dc7:4671:8ae8 with SMTP id
- b5-20020a25ae85000000b00dc746718ae8mr2779603ybj.65.1708044734239; Thu, 15 Feb
- 2024 16:52:14 -0800 (PST)
+	s=arc-20240116; t=1708044882; c=relaxed/simple;
+	bh=ZIEOMXwsk6UMZSFSW/RNZRCFWY8oX4WOTkp26Ser0Og=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=GA8lakSEqejppXhcUxfAg4xo+67t84NGGfXJUHW42AvOr8fzSrEqyNuwLniJ8p7TZrrB3tFQOJab4bQdyP0xUPs1voLJYGZlsHJq/Yp6A1PGLXzL9JDbBgkkQ8D5k4c36l8cY2+rDbt/lXVFip0n+OFCqJ3sieDDJWBVALPZFac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=KYXR1+er; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAA5BC433F1;
+	Fri, 16 Feb 2024 00:54:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708044881;
+	bh=ZIEOMXwsk6UMZSFSW/RNZRCFWY8oX4WOTkp26Ser0Og=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=KYXR1+er6CkT6dVj5BHoTm5sdpzXInSUFDjwd/A/Yjb7LGJBkBRSRWj5hWf4h9LKS
+	 C+G7d4aLzLoAak5aMT/1pDhdwp5e2TSMBrg/VJtTWmvU2Yy7hQLmAYDDo5TkqKMuWM
+	 2DEbMt/kOf0QnfRdomb4IRyy3uv3wiqCnc9MsNuo=
+Date: Thu, 15 Feb 2024 16:54:38 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, vbabka@suse.cz,
+ hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
+ dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
+ corbet@lwn.net, void@manifault.com, peterz@infradead.org,
+ juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+ arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
+ rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
+ yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
+ hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
+ ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
+ ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, shakeelb@google.com,
+ songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
+ allocation profiling
+Message-Id: <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
+In-Reply-To: <20240212213922.783301-14-surenb@google.com>
+References: <20240212213922.783301-1-surenb@google.com>
+	<20240212213922.783301-14-surenb@google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240214225741.403783-1-souravpanda@google.com>
- <20240214225741.403783-2-souravpanda@google.com> <20240215161441.c8a2350a61f6929c0dbe9e7b@linux-foundation.org>
- <CAJuCfpHF=yxV9+=pUo+5DwSjvF=r2y7A9_8LHsUGUSoP7EUNXA@mail.gmail.com>
-In-Reply-To: <CAJuCfpHF=yxV9+=pUo+5DwSjvF=r2y7A9_8LHsUGUSoP7EUNXA@mail.gmail.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Thu, 15 Feb 2024 19:51:37 -0500
-Message-ID: <CA+CK2bDH9E_nHs4FVYxuOUcddL_asOTTXHJd1FuVmGfEGNeZXw@mail.gmail.com>
-Subject: Re: [PATCH v8 1/1] mm: report per-page metadata information
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Sourav Panda <souravpanda@google.com>, corbet@lwn.net, 
-	gregkh@linuxfoundation.org, rafael@kernel.org, mike.kravetz@oracle.com, 
-	muchun.song@linux.dev, rppt@kernel.org, david@redhat.com, 
-	rdunlap@infradead.org, chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, 
-	tomas.mudrunka@gmail.com, bhelgaas@google.com, ivan@cloudflare.com, 
-	yosryahmed@google.com, hannes@cmpxchg.org, shakeelb@google.com, 
-	kirill.shutemov@linux.intel.com, wangkefeng.wang@huawei.com, 
-	adobriyan@gmail.com, vbabka@suse.cz, Liam.Howlett@oracle.com, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-mm@kvack.org, willy@infradead.org, 
-	weixugc@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Feb 15, 2024 at 7:40=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Thu, Feb 15, 2024 at 4:14=E2=80=AFPM Andrew Morton <akpm@linux-foundat=
-ion.org> wrote:
-> >
-> > On Wed, 14 Feb 2024 14:57:40 -0800 Sourav Panda <souravpanda@google.com=
-> wrote:
-> >
-> > > Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
-> > > to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
-> > > to /proc/meminfo. This information can be used by users to see how
-> > > much memory is being used by per-page metadata, which can vary
-> > > depending on build configuration, machine architecture, and system
-> > > use.
-> >
-> > Would this information be available by the proposed memory
-> > allocation profiling?
->
-> Well, not without jumping through the hoops. You would need to find
-> the places in the source code where all this matadata is allocated and
-> find the appropriate records inside /proc/allocinfo file.
+On Mon, 12 Feb 2024 13:38:59 -0800 Suren Baghdasaryan <surenb@google.com> wrote:
 
-Another difference is that memory allocation profiling does not report
-memblock allocated memory, this patch reports the amount of per-page
-metadata allocated by the memblock allocator in addition to various
-paths that are used to allocate per-page metdata after the buddy
-allocator is initialized. Also, the memory profiling has page_ext
-overhead, so it is not practical to unconditionally enable it
-throughout the fleet.
+> +Example output.
+> +
+> +::
+> +
+> +    > cat /proc/allocinfo
+> +
+> +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_page
+> +     6.08MiB     mm/slab_common.c:950 module:slab_common func:_kmalloc_order
+> +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:alloc_slab_obj_exts
+> +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:alloc_pages_exact
+> +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtable func:__pte_alloc_one
 
-Pasha
+I don't really like the fancy MiB stuff.  Wouldn't it be better to just
+present the amount of memory in plain old bytes, so people can use sort
+-n on it?  And it's easier to tell big-from-small at a glance because
+big has more digits.
+
+Also, the first thing any sort of downstream processing of this data is
+going to have to do is to convert the fancified output back into
+plain-old-bytes.  So why not just emit plain-old-bytes?
+
+If someone wants the fancy output (and nobody does) then that can be
+done in userspace.
 
