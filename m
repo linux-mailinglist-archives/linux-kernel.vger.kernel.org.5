@@ -1,115 +1,215 @@
-Return-Path: <linux-kernel+bounces-68632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F2FF857D8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:20:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2B9857D8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 14:20:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206951F24D61
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:20:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CED411C24A2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 13:20:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38423129A99;
-	Fri, 16 Feb 2024 13:20:25 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0380F12A179;
+	Fri, 16 Feb 2024 13:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G3FFUq3M";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="G3FFUq3M"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4433E1E4A0
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6259C129A83;
+	Fri, 16 Feb 2024 13:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708089624; cv=none; b=K3LOyXN2aGwW/pVG60SL0BlsN9udLiQQMaiIbz7HRIHpHCF/fRl746zXT9xwEtbEWnpYdQNkjGOkqklOUzvHovMUS/39t4TWWdsv9rYGP5d+Kcft5PWyVl6GVo9j6WhmM4KVBtoAb3qThHCtAUQk6j4/lUsf2Us3Urg/4Vk3rEE=
+	t=1708089628; cv=none; b=PD5WEpoGpjb3A6zfvAwhjuLfCzQWaEFDGF+4oB220NqRHF0zq1HvFoZ5OjLz92GR/smwTgeSJZIELSzfSChaBggMSUIJcVW6rKarI0PXOARyb+A7VcxABjLz91JMPWgCeqbZ+cvx2Irfa5DZHZ/mt5KWQlSwx74AzI57Isb6v+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708089624; c=relaxed/simple;
-	bh=LfHmheaX1gxHX3QcScZ7NgVdpG8pZqo68GDkffkktKk=;
+	s=arc-20240116; t=1708089628; c=relaxed/simple;
+	bh=bJxg4Z7FZbLOZZEzBBNCpqMXlISUCHT2PafwJQHPV2s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WS9kYBhUp8NflRBqehfxYAitclOCqZlHEMu9iwegsh92KAMcQ9bghU9rXFyyEYIAVwCea0q4Gxg/J/w2aNHXpLh9mnL+VjriyyeoXowmDj57Tv//jwVWFG3s6vKIGwqCA22+W+vwWkPOyoogJ2YRR4jnd4f5ApcwtyeK3GfaVWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1ray8H-0001hG-1V; Fri, 16 Feb 2024 14:20:01 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1ray8E-0015MK-Us; Fri, 16 Feb 2024 14:19:58 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
+	 Content-Type:Content-Disposition:In-Reply-To; b=h8pPMV1zEZ/QSckvheNSt1cTnLTmHBuvflyYnkMo8u54Xnok4I+7xzLkJByQgkfqmVHJ94DM5mxo/aGspTBYZe/2fndX5lk4C32k1MAwStxoxAV331MsqfQla61VRvqeh0ijyOQNeoL5Gz4fGmArkvYaETS/Cb4IjU7wnbCMdWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G3FFUq3M; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=G3FFUq3M; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7DF97290405;
-	Fri, 16 Feb 2024 13:19:58 +0000 (UTC)
-Date: Fri, 16 Feb 2024 14:19:57 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Goud, Srinivas" <srinivas.goud@amd.com>
-Cc: Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>, 
-	Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>, Wolfgang Grandegger <wg@grandegger.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, "Simek, Michal" <michal.simek@amd.com>, 
-	"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: RE: [PATCH v8 0/3] Add ECC feature support to Tx and Rx FIFOs
- for Xilinx CAN Controller.
-Message-ID: <20240216-grapple-unwind-ee92af7b4b1d-mkl@pengutronix.de>
-References: <20240213-xilinx_ecc-v8-0-8d75f8b80771@pengutronix.de>
- <PH8PR12MB6675AAAC5D7A86D2CAA382D6E14D2@PH8PR12MB6675.namprd12.prod.outlook.com>
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1C99121D75;
+	Fri, 16 Feb 2024 13:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708089605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=36yloTmQWTT4NjPbsklvFkRb4a1ADP6dUkZlqZAF7HA=;
+	b=G3FFUq3MzI5thvxz6QmPZtj4k34Gk8Fh0LPitbrt6vA8S6P4N7reW9EKEhHoFL0iHIJwiC
+	j4pj82wNjB5pzCtNeUojXupLrs16udIbvWNQS8Ta7usebQPUv4BtdWQ0zFjat2AwTt0wDZ
+	Fj7A3Ao4gDLqKY/42UbTJwEz6+yYBTc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708089605; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=36yloTmQWTT4NjPbsklvFkRb4a1ADP6dUkZlqZAF7HA=;
+	b=G3FFUq3MzI5thvxz6QmPZtj4k34Gk8Fh0LPitbrt6vA8S6P4N7reW9EKEhHoFL0iHIJwiC
+	j4pj82wNjB5pzCtNeUojXupLrs16udIbvWNQS8Ta7usebQPUv4BtdWQ0zFjat2AwTt0wDZ
+	Fj7A3Ao4gDLqKY/42UbTJwEz6+yYBTc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 02B6B13A39;
+	Fri, 16 Feb 2024 13:20:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bUnmOQRhz2X5IwAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Fri, 16 Feb 2024 13:20:04 +0000
+Date: Fri, 16 Feb 2024 14:20:04 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: corbet@lwn.net, workflows@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, security@kernel.org,
+	Kees Cook <keescook@chromium.org>, Sasha Levin <sashal@kernel.org>,
+	Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH v3] Documentation: Document the Linux Kernel CVE process
+Message-ID: <Zc9hBJuca3f_5KHx@tiehlicka>
+References: <2024021430-blanching-spotter-c7c8@gregkh>
+ <Zc5PycMenLBYECAn@tiehlicka>
+ <2024021518-stature-frightful-e7fc@gregkh>
+ <Zc5ZpB6jsuTKmhv5@tiehlicka>
+ <2024021646-procedure-faceted-ea87@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vnqlg3uvjn2uzdnc"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <PH8PR12MB6675AAAC5D7A86D2CAA382D6E14D2@PH8PR12MB6675.namprd12.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <2024021646-procedure-faceted-ea87@gregkh>
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=G3FFUq3M
+X-Spamd-Result: default: False [-4.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DWL_DNSWL_MED(-2.00)[suse.com:dkim];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 1C99121D75
+X-Spam-Level: 
+X-Spam-Score: -4.81
+X-Spam-Flag: NO
 
+On Fri 16-02-24 12:25:46, Greg KH wrote:
+> On Thu, Feb 15, 2024 at 07:36:20PM +0100, Michal Hocko wrote:
+> > On Thu 15-02-24 19:20:09, Greg KH wrote:
+> > > On Thu, Feb 15, 2024 at 06:54:17PM +0100, Michal Hocko wrote:
+> > > > On Wed 14-02-24 09:00:30, Greg KH wrote:
+> > > > [...]
+> > > > > +Process
+> > > > > +-------
+> > > > > +
+> > > > > +As part of the normal stable release process, kernel changes that are
+> > > > > +potentially security issues are identified by the developers responsible
+> > > > > +for CVE number assignments and have CVE numbers automatically assigned
+> > > > > +to them.  These assignments are published on the linux-cve-announce
+> > > > > +mailing list as announcements on a frequent basis.
+> > > > > +
+> > > > > +Note, due to the layer at which the Linux kernel is in a system, almost
+> > > > > +any bug might be exploitable to compromise the security of the kernel,
+> > > > > +but the possibility of exploitation is often not evident when the bug is
+> > > > > +fixed.  Because of this, the CVE assignment team is overly cautious and
+> > > > > +assign CVE numbers to any bugfix that they identify.  This
+> > > > > +explains the seemingly large number of CVEs that are issued by the Linux
+> > > > > +kernel team.
+> > > > 
+> > > > Does the process focus only on assigning CVE numbers to a given upstream
+> > > > commit(s) withou any specifics of the actual security threat covered by
+> > > > the said CVE?
+> > > 
+> > > Outside of the git commit text, no, we are not going to be adding
+> > > anything additional to the report, UNLESS someone wants to add
+> > > additional text to it, and then we will be glad to update a CVE entry
+> > > with the additional information.
+> > 
+> > OK, so what is the point of having CVE assigned to such a commit without
+> > any addional information which is already referenced by the kernel sha?
+> > What is the actual added value of that CVE?
+> 
+> It provides the proper signal to others that "hey, this is a
+> vulnerability that you might want to take if it affects you".
 
---vnqlg3uvjn2uzdnc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+OK, but stating that something is a vulnerability fix requires a proper
+analysis and this is a non trivial work. The wording here indicates that
+most of the fixes will gain their CVE. The existing process really sucks
+because there are just too many CVEs which really do not have any
+security implications but it seems that the new process is not going to
+address that because it will likely generate even more CVEs.
 
-On 15.02.2024 13:59:33, Goud, Srinivas wrote:
-> Thanks, tested with v8 changes, it is working fine.
+> Right now
+> we are fixing lots and lots of things and no one notices as their
+> "traditional" path of only looking at CVEs for the kernel is totally
+> incorrect.
 
-Thanks for testing,
-Marc
+Right, there are quite a lot of people who consider CVE fixes much more
+important than regular fixes. Their reasoning might be completely
+misleading but there might be very good reasons to stick to minimalistic
+approach, e.g. to reduce risk of regressions.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+I believe it is perfectly fair to say that whoever relies on stable
+kernels support needs to update to the latest stable kernel version to
+be covered by security and functional fixes. On the other hand I do not
+think it is an improvement to the process to swamp CVE database with any
+random fixes without a proper evaluation. If the kernel community
+doesn't believe in the CVE process then fair enough, just do not assign
+them unless you want to explicitly call out fixes with a high impact
+security implications. Having fewer good quality CVEs would definitely
+improve the process.
 
---vnqlg3uvjn2uzdnc
-Content-Type: application/pgp-signature; name="signature.asc"
+> > > Here's an example of what the CVE announcement is going to look like for
+> > > a "test" that we have been doing for our scripts
+> > > 	https://lore.kernel.org/linux-cve-announce/2024021353-drainage-unstuffed-a7c0@gregkh/T/#u
+> > 
+> > Thanks this gave me some idea. One worrying part is
+> > : Please note that only supported kernel versions have fixes applied to
+> > : them.  For a full list of currently supported kernel versions, please
+> > : see https://www.kernel.org/
+> > 
+> > >From the above it is not really clear "supported by _whom_". Because I
+> > am pretty sure there are _fully_ supported kernels outside of that list
+> > which are actively maintained.
+> 
+> Very true, how about this wording change:
+> 	For a full list of currently supported kernel versions by the
+> 	kernel developer community, please see https://www.kernel.org/
+> 
+> I added "by the kernel developer community", is that ok?
 
------BEGIN PGP SIGNATURE-----
+That sound much better!
+ 
+> And as you're here, I have no objection to adding the vulnerable/fixes
+> info from various distros that are curently based on these same
+> kernel.org versions if you wish to provide them to me.
 
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXPYPsACgkQKDiiPnot
-vG8xrggAlIv4YXPwzJA/DC6whBfwx82iIe0vk+luYLVA0uU0cbq4EdorElh0G0lr
-HUY/IaeZ8f3tMbKUozl9YKOmhdZNEtRvmej8XV/vNUT++lc1J//tVmgXOBNl+6F0
-SR1zS9a3xBQ0h7ouuLkfHLDcybxZK4ImEcBmj0s7oRnvTruZ5ZpfoxJZmv1toGb5
-YFk1r7KCh7IzvW3D/u+/lgIYkEA3Gk5ie9D5s/TuhmGmeiEd5u+LmoIOg/F4zPY+
-ISMoTWfEZniC6Y9QR3Rsb+XDvammBVCPglFX8Okz3fkLko8s8Cik/GbF17BLNMic
-MqWJu8mCGml9zQDFbhWqb78FQFY+sQ==
-=v4VS
------END PGP SIGNATURE-----
-
---vnqlg3uvjn2uzdnc--
+I cannot speak for distro kernels in general. I can tell you that we at
+Suse do not base our product kernels on stable trees and we
+carefully evaluate backports we commit to support. 
+-- 
+Michal Hocko
+SUSE Labs
 
