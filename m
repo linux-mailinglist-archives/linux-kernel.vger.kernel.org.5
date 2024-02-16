@@ -1,41 +1,41 @@
-Return-Path: <linux-kernel+bounces-69206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E858585C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:50:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00F518585C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 19:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43A141F249BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:50:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0EAE2889D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:51:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52CD31369B4;
-	Fri, 16 Feb 2024 18:50:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765A51384AC;
+	Fri, 16 Feb 2024 18:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="vfW7/1tH"
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="QN4IOHq7"
 Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA531350E8;
-	Fri, 16 Feb 2024 18:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF121339B1;
+	Fri, 16 Feb 2024 18:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708109421; cv=none; b=PUjtRcgDtjnCTLOVRMtwx8aVbR7fAIFyxBIp40PSbSlYp3VPpaSKtUGLgRzSJ/c8cu60fE0U91p856oEriprk9Xb+JsjX+736Oj6s1MV2iXUMhDZl9NjX1VMn48XFVa7ZXQTRJ8HHp8TPA0VnpgRpx1jfVM8a2OXERKl5CW3bP4=
+	t=1708109422; cv=none; b=WXAoS4JymXo1vtbfchtUeRDpN1fpZ9Tbqi6uu6xCo4f6Mn6LELdY7Uy9uqzLDMewbpOll56+A/zEKYL9nKJH0DstAvat3q9rD44Ifz4VQhKyIU5k/gALfcMr6aBu7C2VzSjD+DpNK3JOFnnoLdcKKN+PHvUqcjrcPKIPJ0i2ep8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708109421; c=relaxed/simple;
-	bh=0doP8NnUjaTfFjdMWPvwgVTOH9eAL0HI3FuMS2w8NvY=;
+	s=arc-20240116; t=1708109422; c=relaxed/simple;
+	bh=MzFWAiynKIMfBbcmFyJFSn3s5kPBd8miZrCSWWhxnWw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JP3b3caxayUOtJeIhbZR705n0smeL5JBe8gtUTPatPELv16s8QR4j4booWmRVFNuMgC9KOiSPTXOXcq4j2ub71U0QuWBm4rFqeG97QmiLM1fgs+CQxxv5u93eQZcrM+rVLv6YLlxnxy10HIpKOOsyDt3sM4119lWzyHOYeZYjA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=vfW7/1tH; arc=none smtp.client-ip=195.181.215.36
+	 MIME-Version:Content-Type; b=O6DwL2KuEhgWfI9ZdfQCk40S1au0GhxjHJQPJvdAQtmEMXFTnZy+lBY6T5HfQiEUjaS/KHr4Av0UBQvMp2XIfojUOCVG5RlNsY+ca8w1hkB7+6U97UaGOUgmG/6pbhN9t7KDBGqQWJPkb882HoBe+VnbSb2Ajn7jWmUw6zDDdes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=QN4IOHq7; arc=none smtp.client-ip=195.181.215.36
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708109416; bh=0doP8NnUjaTfFjdMWPvwgVTOH9eAL0HI3FuMS2w8NvY=;
+	t=1708109416; bh=MzFWAiynKIMfBbcmFyJFSn3s5kPBd8miZrCSWWhxnWw=;
 	h=From:To:Cc:Subject:Date:References:From;
-	b=vfW7/1tHEvRH5pJC4NO7TkAiymKpscLom2BWRN4PH8aNGa37o2pejToqou6XGaopw
-	 /BH8hziympJPHgegWPyLKSt5udPV06rv92q5DMai5GOSwq5mdRcU1BLEq4/QptfLfB
-	 8gxwp/lAzXex45m8smUWiqXDuoLUPU97O8yodP+Y=
+	b=QN4IOHq7BlavFvAkl+8X+T0McgyiMLgH9xVxteDKFHXdf1rY9BA3lOF72pfWweGN2
+	 oS3uNWJkohj802NTT10VZuaRT6SckI6gj+evmsE7TqL+wFtQT+yH/yIbyLzgabinOX
+	 b5a+zYKmQcch11L2NwB2q91OsOEtQZ8WsGLl2vdY=
 From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
 To: Jonathan Cameron <jic23@kernel.org>,
 	Lars-Peter Clausen <lars@metafoo.de>,
@@ -50,10 +50,10 @@ Cc: Icenowy Zheng <icenowy@aosc.io>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	=?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v3 1/4] dt-bindings: vendor-prefix: Add prefix for Voltafield
-Date: Fri, 16 Feb 2024 19:49:59 +0100
-Message-ID: <20240216185008.1370618-2-megi@xff.cz>
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v3 2/4] dt-bindings: iio: magnetometer: Add Voltafield AF8133J
+Date: Fri, 16 Feb 2024 19:50:00 +0100
+Message-ID: <20240216185008.1370618-3-megi@xff.cz>
 In-Reply-To: <20240216185008.1370618-1-megi@xff.cz>
 References: <20240216185008.1370618-1-megi@xff.cz>
 Precedence: bulk
@@ -67,30 +67,89 @@ Content-Transfer-Encoding: 8bit
 
 From: Icenowy Zheng <icenowy@aosc.io>
 
-Voltafile Technology Corp. is a company that produces MEMS sensors.
+Voltafield AF8133J is a simple magnetometer sensor produced by Voltafield
+Technology Corp, with dual power supplies (one for core and one for I/O)
+and active-low reset pin.
 
-Add a DT vendor prefix for it.
+The sensor has configurable range 1.2 - 2.2 mT and a software controlled
+standby mode.
+
+Add a device tree binding for it.
 
 Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
 Signed-off-by: Ondřej Jirman <megi@xff.cz>
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ .../iio/magnetometer/voltafield,af8133j.yaml  | 60 +++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/magnetometer/voltafield,af8133j.yaml
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 1a0dc04f1db4..82e9f64c90ff 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -1534,6 +1534,8 @@ patternProperties:
-     description: VoCore Studio
-   "^voipac,.*":
-     description: Voipac Technologies s.r.o.
-+  "^voltafield,.*":
-+    description: Voltafield Technology Corp.
-   "^vot,.*":
-     description: Vision Optical Technology Co., Ltd.
-   "^vxt,.*":
+diff --git a/Documentation/devicetree/bindings/iio/magnetometer/voltafield,af8133j.yaml b/Documentation/devicetree/bindings/iio/magnetometer/voltafield,af8133j.yaml
+new file mode 100644
+index 000000000000..b6ab01a6914a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/magnetometer/voltafield,af8133j.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/magnetometer/voltafield,af8133j.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Voltafield AF8133J magnetometer sensor
++
++maintainers:
++  - Ondřej Jirman <megi@xff.cz>
++
++properties:
++  compatible:
++    const: voltafield,af8133j
++
++  reg:
++    maxItems: 1
++
++  reset-gpios:
++    description:
++      A signal for active low reset input of the sensor. (optional; if not
++      used, software reset over I2C will be used instead)
++
++  avdd-supply:
++    description:
++      A regulator that provides AVDD power (Working power, usually 3.3V) to
++      the sensor.
++
++  dvdd-supply:
++    description:
++      A regulator that provides DVDD power (Digital IO power, 1.8V - AVDD)
++      to the sensor.
++
++  mount-matrix:
++    description: An optional 3x3 mounting rotation matrix.
++
++required:
++  - compatible
++  - reg
++  - avdd-supply
++  - dvdd-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/gpio/gpio.h>
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        magnetometer@1c {
++            compatible = "voltafield,af8133j";
++            reg = <0x1c>;
++            avdd-supply = <&reg_dldo1>;
++            dvdd-supply = <&reg_dldo1>;
++            reset-gpios = <&pio 1 1 GPIO_ACTIVE_LOW>;
++        };
++    };
 -- 
 2.43.0
 
