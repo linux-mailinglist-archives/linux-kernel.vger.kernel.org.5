@@ -1,51 +1,52 @@
-Return-Path: <linux-kernel+bounces-68532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A419857BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:38:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988C9857BDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:38:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 505DB1F260C1
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3491B281BBB
 	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:38:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB257866E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D4B78672;
 	Fri, 16 Feb 2024 11:37:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nE6qel9i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R8nhCM3H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1345A768F4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 226897765E;
 	Fri, 16 Feb 2024 11:37:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708083475; cv=none; b=Cr2f3WAhDKjZQ5DEBP57fNgoLCl5UT9zX1Tp07apos8o1iccVyjg/VF6JAjDZ00XslrEexj4DDjMkj3eKyq2aqN0ZxyNjG9SOl6/WikN45hwviNVIImoND0vXCZqiOO/CTwc8wS7C/vPRIC7ZWqtBZsqalnkYh73NAGcFcFHJTU=
+	t=1708083475; cv=none; b=swA95ZrsZxKfaUOTY4uwmF7LZS/EzppnLZ/13dp+YozoCtLgSgzPdTBTSG8b3/YLy8o1CtaMwkHFxe4IiTjT0iJBmeO2Wqlp/hyMiElZ1Eago8lS2AqQtpO5lDLvnpBlZXDXRg26dIFq6R3/GEk1qGLrvL03wXkdmnDpvkYqVPY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708083475; c=relaxed/simple;
-	bh=xQgenU1RuH/1sl6zVXoRINQqPjQc+AObioNdVhirHEo=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=gpw+aQHdpPsdIxzKVvk1czY5ZbW9P9F+8E9zbmsBltVdKutFDh3x+r2ITztYpFlJxA4/yXyVDZtWIDfuLrVhTOxG0r0MrD7RAmDfX8F/XFvnhYfeFQPDey0yqttNUTQS/KeFuyr50fB8ZNdq71uXtNPY/O8GBSpL+MGbI+MRsv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nE6qel9i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 90B78C433F1;
+	bh=Ee3XDJNpfdTjv5LyZOoehAGlyXESSiYI284+s3xfG5o=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=gPujHCea5SJ89ronpHomvAvsW5QBxwyMV/A4CCc2oFj4Ivg0OqSDoZE//+VhWgcs3w/LYHIhs6+Sb4wUxapmPZ1DYWEueKJpP+2lmZJCqHtA6h97gwKWiXU1W1dOvLaN+yMDzZ/S7bYsHViYLKiTQlhcaUoaBE5ExrON1TLWsRE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R8nhCM3H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A133DC433C7;
 	Fri, 16 Feb 2024 11:37:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708083474;
-	bh=xQgenU1RuH/1sl6zVXoRINQqPjQc+AObioNdVhirHEo=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=nE6qel9igDEND7NN6yL/ahcCE4OXVOXTr7PkE6K3heACD2JUsMY8KL1KtPk4Na0Nn
-	 QSGHJsUEc56GYy2cmnFYwjATjTHAJO3aFQX1N2//SWicP6MLQghAbIR4kuidNWBjKo
-	 dAXTjjHKfDVNPIEzum69AIWfNVNUqLl6Dvd3x9rFYMLJp5cA7XhA3BR+tJzpJUJQN0
-	 OgUDnRXPL71DUyi4PlNJlipZUePYl1/xABXyoZpT1pb4Jd/Nl88zN15OVdpgIRo+fR
-	 jSTsHaQkCMTdsLElXvCyeX9bZBEWyFqA9ynOVl/c6GSMicq8tPK9hh1qVnmbNRJuia
-	 a0keoFzX2y3BA==
+	bh=Ee3XDJNpfdTjv5LyZOoehAGlyXESSiYI284+s3xfG5o=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=R8nhCM3HTWkTUwzHZpCaT/xGQ2lX912f1MteTk+kvEWGykOfWx+LebFpNdUSAJH4i
+	 b4KYo8FA3WT1+aDGZirS7OCDlJAq0TC7Z7Qr0Ry7oB+9c6qAWkjEQr7cPLclN/vslk
+	 h14LJD81SpzFIdB5wYShtpiqtqH5ImRqS6DiaMRKttO5nYbP6Bd9EGXrzUAW7aXH+q
+	 5JC6BTm0pGi2K9LHNlEB/AKJWTsToVzq71r5hEhdT/ty6z1tWNXKGa5KPQivmCG/8R
+	 XaZQntGAoDQO/fL2wWAF10veWla5iIR76YSC30iHRVqj9PmdP5kzR5my9WveRBgZjX
+	 B8Rj9icpqlP2g==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7727DC48260;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85967C48BF3;
 	Fri, 16 Feb 2024 11:37:54 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Subject: [PATCH RFC 0/4] clk: hisilicon: add support for Hi3798MV200
-Date: Fri, 16 Feb 2024 19:37:50 +0800
-Message-Id: <20240216-clk-mv200-v1-0-a29ace29e636@outlook.com>
+Date: Fri, 16 Feb 2024 19:37:51 +0800
+Subject: [PATCH RFC 1/4] dt-binding: clock: histb-clock: Add missing common
+ clock and Hi3798MV200 specific clock definition
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,9 +55,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAA5Jz2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDI0Mz3eScbN3cMiMDA93kZIvkxFRjS7PUVAMloPqCotS0zAqwWdFKQW7
- OSrG1tQBqPn+cYAAAAA==
+Message-Id: <20240216-clk-mv200-v1-1-a29ace29e636@outlook.com>
+References: <20240216-clk-mv200-v1-0-a29ace29e636@outlook.com>
+In-Reply-To: <20240216-clk-mv200-v1-0-a29ace29e636@outlook.com>
 To: Michael Turquette <mturquette@baylibre.com>, 
  Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
@@ -65,11 +66,11 @@ Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Yang Xiwen <forbidden405@outlook.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708083473; l=1516;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708083473; l=1498;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=xQgenU1RuH/1sl6zVXoRINQqPjQc+AObioNdVhirHEo=;
- b=97nMuwfwFk2N77rE/E+Z7xVKb7FuduTDlsPB/TDm/akUScmHkujGzAXrn8iw7+wSwLWbtovKE
- od9wqcKgyCICPE5pxHE76StiuaspaYhWRMxG4x5xUGGuKp0E+BzuDy1
+ bh=tAwhkwf2RTqZatW50V1J+QSR6rpA9D5O9tBXY261zlg=;
+ b=iDRutFD2DFwCa0WQEGfH2onaWJKNPNlOX1lDKu3ofXpRVSfd0kfpOrwvenhJkrUfKfiFmlAKF
+ wMx+9hDBmW0AkPs5SNNdiyYnuGIehYApTQeP1Q95nEqqj4M14RmWty9
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -77,36 +78,52 @@ X-Endpoint-Received:
 X-Original-From: Yang Xiwen <forbidden405@outlook.com>
 Reply-To: <forbidden405@outlook.com>
 
-This SoC is similar to Hi3798CV200 with a few more clocks in CRG module.
+From: Yang Xiwen <forbidden405@outlook.com>
 
-Note this driver is still ongoing, many clocks are not registered in the
-driver now. Feedback is welcomed, especially from HiSilicon people.
+According to the datasheet, some clocks are missing, add their
+definitions first.
+
+Some aliases for hi3798mv200 are also introduced.
 
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
-Yang Xiwen (4):
-      dt-binding: clock: histb-clock: Add missing common clock and Hi3798MV200 specific clock definition
-      clk: hisilicon: add CRG driver for Hi3798MV200 SoC
-      dt-binding: clock: merge all hisilicon clock bindings to hisilicon,clock-reset-generator
-      dt-binding: clock: hisilicon,clock-reset-controller: add Hi3798MV200 SoC support
+ include/dt-bindings/clock/histb-clock.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
- .../devicetree/bindings/clock/hi3660-clock.txt     |  47 ---
- .../devicetree/bindings/clock/hi3670-clock.txt     |  43 ---
- .../devicetree/bindings/clock/hi6220-clock.txt     |  52 ---
- .../devicetree/bindings/clock/hisi-crg.txt         |  50 ---
- .../clock/hisilicon,clock-reset-generator.yaml     | 175 +++++++++
- .../clock/hisilicon,hi3559av100-clock.yaml         |  59 ---
- drivers/clk/hisilicon/Kconfig                      |   8 +
- drivers/clk/hisilicon/Makefile                     |   1 +
- drivers/clk/hisilicon/crg-hi3798mv200.c            | 428 +++++++++++++++++++++
- include/dt-bindings/clock/histb-clock.h            |  21 +
- 10 files changed, 633 insertions(+), 251 deletions(-)
----
-base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
-change-id: 20240216-clk-mv200-cc8cae396ee0
+diff --git a/include/dt-bindings/clock/histb-clock.h b/include/dt-bindings/clock/histb-clock.h
+index e64e5770ada6..68a53053586a 100644
+--- a/include/dt-bindings/clock/histb-clock.h
++++ b/include/dt-bindings/clock/histb-clock.h
+@@ -58,6 +58,27 @@
+ #define HISTB_USB3_UTMI_CLK1		48
+ #define HISTB_USB3_PIPE_CLK1		49
+ #define HISTB_USB3_SUSPEND_CLK1		50
++#define HISTB_SDIO1_BIU_CLK		51
++#define HISTB_SDIO1_CIU_CLK		52
++#define HISTB_SDIO1_DRV_CLK		53
++#define HISTB_SDIO1_SAMPLE_CLK		54
++#define HISTB_ETH0_PHY_CLK		55
++#define HISTB_ETH1_PHY_CLK		56
++#define HISTB_WDG0_CLK			57
++#define HISTB_USB2_UTMI0_CLK		HISTB_USB2_UTMI_CLK
++#define HISTB_USB2_UTMI1_CLK		58
++#define HISTB_USB3_REF_CLK		59
++#define HISTB_USB3_GM_CLK		60
++#define HISTB_USB3_GS_CLK		61
++
++/* Hi3798MV200 specific clocks */
++
++// reuse clocks of histb
++#define HI3798MV200_GMAC_CLK		HISTB_ETH0_MAC_CLK
++#define HI3798MV200_GMACIF_CLK		HISTB_ETH0_MACIF_CLK
++#define HI3798MV200_FEMAC_CLK		HISTB_ETH1_MAC_CLK
++#define HI3798MV200_FEMACIF_CLK		HISTB_ETH1_MACIF_CLK
++#define HI3798MV200_FEPHY_CLK		HISTB_ETH1_PHY_CLK
+ 
+ /* clocks provided by mcu CRG */
+ #define HISTB_MCE_CLK			1
 
-Best regards,
 -- 
-Yang Xiwen <forbidden405@outlook.com>
+2.43.0
 
 
