@@ -1,182 +1,135 @@
-Return-Path: <linux-kernel+bounces-68922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2138C8581F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:57:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2965F8581C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 16:53:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C168B254E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:57:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D360C1F2288D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 15:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A5D1369A1;
-	Fri, 16 Feb 2024 15:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8F512FF9D;
+	Fri, 16 Feb 2024 15:52:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U72O1Mzd"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hvc00JVY"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896411350CC;
-	Fri, 16 Feb 2024 15:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E41E712FB07
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 15:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708098795; cv=none; b=MV/oj3X6EkswvswqKAgFSzufZMt+wzmMoUSktqTPFRbY2F0RTbWzNS3AW38o5k58+YQM84QCliB4E3vfCoQWKvB250Zg05heomzpjSv+MCvksykEUIOLX2Rf0RO5ma4/WG7w3qhiZiyn7PHJhLX5vkZ/NZyQJbiBIWmmyJXX8UU=
+	t=1708098757; cv=none; b=T7dCK46hElTcMM/U9xUkuJdS+lxWiOwLl62LSRsCFMP+V+KB4FGumtkE9oEOeqrWkfp2KEhD1iL8nv8jWxVlu0GT4HK2xGRPpGJetIf/trle8v6UZnNaO+J/zZMAArQ3mK9Ry2vB3A9K0w66FmuSp1Mh9lF0or7tEg2wTWG50tE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708098795; c=relaxed/simple;
-	bh=mxBFK4Fb71lyE8xT3cEVQg0kPCMLh4VSthxx6LrQ+zs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=EcYcDAHoIza8vTGxN9oAiT/G5C7lX3leUmfMvACwNXZzmM51rtfKspojuOfxYhydOebXpytlqLT4jNGEDhF0c80ddrAY8mHU5AugEHqaEAeHcNSidXBT1z8zA2UoN1+KCdz3H9Z2tyof7/J5i87RNLhSWUPhZgK+ESeErzYvI2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U72O1Mzd; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id D1B35240014;
-	Fri, 16 Feb 2024 15:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708098791;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hrBO2wzt0J4arvEYzmCu+K7sTUcd+qHj9mVz8SibBag=;
-	b=U72O1MzdaaSHoWqTPgTIH721SmoYlSoYg2d9SFUS6k6i6ZfPCN/QdxB6fxw2Zzj2UXCeen
-	IzaF3/1jgZ7eeULzsawMjo2jaT2mzNyCTGjN0kEQrIdmOnb7VaHiE/No0KjFwXVqUlAXWm
-	j9JQSZ44jnJ8Zax7vUOsO7yosbeLOs4i4j0kRV8PnvI0OUuykB/vXwCqlViK30nR778S9m
-	yNOne0ScrADlRW8lbt3iRkiln+mRu/j0orwYpJTpd+VIlMbyM2XHsg4F41L9Vhnzmlgg4G
-	pMGR9PgdQ41HifmBIaXzY233i3/Wm1NU1ynQo8HRtUlOmMQU8p+df2bZDPrHcQ==
-From: Kory Maincent <kory.maincent@bootlin.com>
-Date: Fri, 16 Feb 2024 16:52:31 +0100
-Subject: [PATCH RFC net-next v8 13/13] netlink: specs: tsinfo: Enhance
- netlink attributes and add a set command
+	s=arc-20240116; t=1708098757; c=relaxed/simple;
+	bh=Twfvqn5z2TPQUG3mCx7eOkQhXIYHDRrgU1d+jAxcuDQ=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=KeKzU1cpleEiHa25W0hxVsaNe+YnCqd2mDTcxtpMBB9dt7HhkCmuzGB5nV2FYFKMSYwSRM2L/OcYZKsS8KsTsWWFdUG2WZfVPiP/yTZl71eM+RUG4k4eN7rYKVQB0tQlHQC8Ld6DcJun99BdbgZr9O/iJ2gwyUqew2DWcjqSA9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hvc00JVY; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5dcbb769a71so1552758a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 07:52:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708098754; x=1708703554; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=vdWqN4twnny7sh0kB73t0EmMejLUnVRIUmMC6P4B0Co=;
+        b=hvc00JVY9QTiNJqrNSc9ww1n6V66a9ToFhqNn+QVc2hFHv9CJ6kl7fuFuU91Wpo9V5
+         AOCQ23wjPxaSVZ9fbzmTAfUlNhiX6nzvr6qmqmlarf1sT2G9/M8ahxG0T4/HOX1pwKyt
+         Ax1X4TNQfp8gFyCudeWba74kxXywGXaUm2sZN3k7Hu7zf+wOVlrIYKPj/ewPyq3Mrzoa
+         58i6se1eDpBM+th90UaVbSHE68Fci2xO4ngxX5kOopyDQkfNbH1yXd91RfyN3apqurfX
+         daI5BHm9rXCiweNWm7SUN4yth5rOCv4esCUEdSJahGAgEn+ejMzNp19HOI/jVYYEH7Ed
+         08pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708098754; x=1708703554;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vdWqN4twnny7sh0kB73t0EmMejLUnVRIUmMC6P4B0Co=;
+        b=eChAi6kXcFYp+wsKnLd/bJSgU0YgFPkfW90eLEyW2FhMOk2xSemPhGSkuqls9neien
+         0Cv5KXgwwNn3SfZ0fXxMpRMD5ayWG0pPlAG1rezPjOUG0tVxl7ReMY35ws4wbO6r7V2K
+         GlZREvrTMybP2WOY2z9CaRvserrzlUDJoUykyHTXI9hYxZ8+XKRTMSOunKwj7FwUGPIJ
+         kRDZUls1YMwHoZseim8npwaJlbIpfB4/5sSW6ywrs1lEq5zPTKPfY84zfIGBshbIVHN5
+         D155iUmrV/Ojv3ZvXPRiohZJrkIHTHYI77Pa5RjCteN509EvPQWtJrN7mEII55Lo6sCL
+         1OTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXdAcMjFjUA4CT8TQwQmZTdUONERPAm9zUHDJd3wBsJhMAw68bVbGL64J7M+KfpqhKH9IOdc4Zjb4oCN3nNm39yzDCc0eCzaZNBDA7p
+X-Gm-Message-State: AOJu0YwTQUft6cuUHCUemz+ClcWAqCgEm2ANc+yqTF8qT90LWP/DKGxz
+	nFbLG+pxpXCZu1ObjAMxwKIpOPjs6N5ibb4DV88fnEppOtVQ4ioLyPQV2xKAe9YzujQBr7s5mFG
+	/Fg==
+X-Google-Smtp-Source: AGHT+IHdTJArPS4Wa/fITdXprcQUHngTC0JP272as27E3u1351Uiji0GihlmCXFNyvIDmjcngg5SUcACTOg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a02:a09:b0:5dc:23a4:3a with SMTP id
+ cm9-20020a056a020a0900b005dc23a4003amr13383pgb.7.1708098754138; Fri, 16 Feb
+ 2024 07:52:34 -0800 (PST)
+Date: Fri, 16 Feb 2024 07:52:32 -0800
+In-Reply-To: <df6ad8b9-4e53-4357-ab17-e9af62342849@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240216-feature_ptp_netnext-v8-13-510f42f444fb@bootlin.com>
-References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
-In-Reply-To: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, 
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, 
- Russell King <linux@armlinux.org.uk>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Richard Cochran <richardcochran@gmail.com>, 
- Radu Pirea <radu-nicolae.pirea@oss.nxp.com>, 
- Jay Vosburgh <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, 
- Nicolas Ferre <nicolas.ferre@microchip.com>, 
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Jonathan Corbet <corbet@lwn.net>, 
- Horatiu Vultur <horatiu.vultur@microchip.com>, UNGLinuxDriver@microchip.com, 
- Simon Horman <horms@kernel.org>, Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- Maxime Chevallier <maxime.chevallier@bootlin.com>, 
- Rahul Rameshbabu <rrameshbabu@nvidia.com>, 
- Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: kory.maincent@bootlin.com
+Mime-Version: 1.0
+References: <20240215152916.1158-1-paul@xen.org> <20240215152916.1158-22-paul@xen.org>
+ <23e7ec31a67a73fe94b2b04dbca26ea5ca1ea238.camel@infradead.org> <df6ad8b9-4e53-4357-ab17-e9af62342849@xen.org>
+Message-ID: <Zc-EwMoijOo7w49N@google.com>
+Subject: Re: [PATCH v13 21/21] KVM: pfncache: rework __kvm_gpc_refresh() to
+ fix locking issues
+From: Sean Christopherson <seanjc@google.com>
+To: paul@xen.org
+Cc: David Woodhouse <dwmw2@infradead.org>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
+	David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>, kvm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-Add new attributed to tsinfo allowing to get the tsinfo and the hwtstamp
-from a phc provider (composed by a phc index and a phc qualifier) on a
-netdevice's link.
-Add simultaneously a set command to be able to set hwtstamp configuration
-for a specified phc provider.
+On Fri, Feb 16, 2024, Paul Durrant wrote:
+> On 16/02/2024 13:04, David Woodhouse wrote:
+> > On Thu, 2024-02-15 at 15:29 +0000, Paul Durrant wrote:
+> > > From: David Woodhouse <dwmw@amazon.co.uk>
+> > > 
+> > > This function can race with kvm_gpc_deactivate(), which does not take
+> > > the ->refresh_lock. This means kvm_gpc_deactivate() can wipe the ->pfn
+> > > and ->khva fields, and unmap the latter, while hva_to_pfn_retry() has
+> > > temporarily dropped its write lock on gpc->lock.
+> > 
+> > Let's drop this from your series for now, as it's contentious.
+> > 
+> > Sean didn't like calling it a 'fix', which I had conceded and reworked
+> > the commit message. It was on the list somewhere, and also in
+> > https://git.infradead.org/users/dwmw2/linux.git/commitdiff/f19755000a7
+> > 
+> > I *also* think we should do this simpler one:
+> > https://git.infradead.org/users/dwmw2/linux.git/commitdiff/cc69506d19a
+> > ... which almost makes the first one unnecessary, but I think we should
+> > do it *anyway* because the rwlock abuse it fixes is kind of awful.
+> > 
+> > And while we still can't actually *identify* the race condition that
+> > led to a dereference of a NULL gpc->khva while holding the read lock
+> > and gpc->valid and gpc->active both being true... I'll eat my hat if
+> > cleaning up and simplifying the locking (and making it self-contained)
+> > *doesn't* fix it.
 
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+Heh, I'm not taking that bet.
 
-Changes in v8:
-- New patch
----
- Documentation/netlink/specs/ethtool.yaml | 35 +++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+> > But either way, it isn't really part of your series. The only reason it
+> > was tacked on the end was because it would have merge conflicts with
+> > your series, which had been outstanding for months already.
+> > 
+> > So drop this one, and I'll work this bit out with Sean afterwards.
 
-diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-index 197208f419dc..cfe48f8d6283 100644
---- a/Documentation/netlink/specs/ethtool.yaml
-+++ b/Documentation/netlink/specs/ethtool.yaml
-@@ -559,6 +559,15 @@ attribute-sets:
-       -
-         name: tx-lpi-timer
-         type: u32
-+  -
-+    name: tsinfo-hwtst-provider
-+    attributes:
-+      -
-+        name: index
-+        type: u32
-+      -
-+        name: qualifier
-+        type: u32
-   -
-     name: tsinfo
-     attributes:
-@@ -581,6 +590,13 @@ attribute-sets:
-       -
-         name: phc-index
-         type: u32
-+      -
-+        name: hwtst-provider
-+        type: nest
-+        nested-attributes: tsinfo-hwtst-provider
-+      -
-+        name: hwtst-flags
-+        type: u32
-   -
-     name: cable-result
-     attributes:
-@@ -1373,7 +1389,7 @@ operations:
-       notify: eee-get
-     -
-       name: tsinfo-get
--      doc: Get tsinfo params.
-+      doc: Get tsinfo params or hwtstamp config.
- 
-       attribute-set: tsinfo
- 
-@@ -1381,6 +1397,7 @@ operations:
-         request:
-           attributes:
-             - header
-+            - hwtst-provider
-         reply:
-           attributes:
-             - header
-@@ -1388,6 +1405,8 @@ operations:
-             - tx-types
-             - rx-filters
-             - phc-index
-+            - hwtst-provider
-+            - hwtst-flags
-       dump: *tsinfo-get-op
-     -
-       name: cable-test-act
-@@ -1693,3 +1712,17 @@ operations:
-       name: mm-ntf
-       doc: Notification for change in MAC Merge configuration.
-       notify: mm-get
-+    -
-+      name: tsinfo-set
-+      doc: Set hwtstamp.
-+
-+      attribute-set: tsinfo
-+
-+      do:
-+        request:
-+          attributes:
-+            - header
-+            - tx-types
-+            - rx-filters
-+            - hwtst-provider
-+            - hwtst-flags
+FWIW, I'm not opposed to overhauling the gpc locking, I agree it's a mess.  I just
+want to proceed slower than I would for a fix, it's a lot to digest.
 
--- 
-2.25.1
+> Ok. Sean, I assume that since this is the last patch in the series it's
+> superfluous for me to post a v14 just for this?
 
+Correct, definitely no need for a new version.
 
