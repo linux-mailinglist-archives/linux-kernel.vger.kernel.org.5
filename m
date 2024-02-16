@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-69095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC54A858468
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:44:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D68E885846F
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 18:45:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 924611F2276F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:44:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7656F1F2282A
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 17:45:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE65813664A;
-	Fri, 16 Feb 2024 17:42:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8E0E137C5A;
+	Fri, 16 Feb 2024 17:42:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U5AM+IIy"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fHUoiYCQ"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE42454BD3;
-	Fri, 16 Feb 2024 17:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD443135401;
+	Fri, 16 Feb 2024 17:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708105366; cv=none; b=ms/5KwQM5CqOrHOK+cXYIwD0H+FAtRDcL0NXFXgDejpnxbX+MLaf///ZYouKumlV2t6w3YAt16MoX8uuuoEwBEphOChvo7VEqPbhLhAFY+q4k02vN63eL7FI1Esi19LWzO7ZcxAfg4mw/zBMk6jP4T5pfe/tLXSkxoV0GGlX+4Q=
+	t=1708105367; cv=none; b=rajEsHaUrCUNbv9s/quzbF3ZNjnNQY3gkT2wkEk4yfHPWhBAQJuFvRCLBAIEu1c5+jaIOUFSRnsPGl7as7h0JbyJgC3NNoLutCxFXvWg2Iz067oOHETvVxqq7Iy6HlLjOmp8TW7ZFuNmdMQmaUVmOkAJjquFsU/Dp7rnT1/4ScU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708105366; c=relaxed/simple;
-	bh=ixMcKFY+IUbSdpEbmhiHUnPBLE8f92Qaft2wepBV4zg=;
+	s=arc-20240116; t=1708105367; c=relaxed/simple;
+	bh=zkHzvVhKkqmhHXMYvIXk97BK8Hudfzm2zXC5uewsDi0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cz5eqmWhqzMp9TEfFFj9/XRWaPUBsl3Rmmq82qp8CaTFmffxQWwShpVez/+vstXzwoF8SAsU9utisWE7rkQtqphqK6TdSIWlOJVhALg+cquNBJGdXFMewATB1L6MIIVff4b+a5ieHd3Kp2ogxnE0yPGz1VKjXnrUVzTmKs1t2ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U5AM+IIy; arc=none smtp.client-ip=217.70.183.195
+	 MIME-Version; b=bjp8MLKBTXtRscwP1Q9XWnosAWGDNEkEafd/4x1lW54MXN5Z6D+cJUeXOCGf0y9nt+z2ToCtAZ0I2pjn7E0qxU8AqSza/9k+CvQ/14ZZYgykptE6ydCeRd4QRWRVwtPa+1+HAKAfanTop4DCO2n4HGYzbqt5biWe0Ea6xjECpNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fHUoiYCQ; arc=none smtp.client-ip=217.70.183.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9749360006;
-	Fri, 16 Feb 2024 17:42:35 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A59B2FF804;
+	Fri, 16 Feb 2024 17:42:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708105356;
+	t=1708105357;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GD5dmA3icQ0aFc9IWzxUyFJ8W/NRInrfQ2B2LPqfRyo=;
-	b=U5AM+IIy6md4avJJAAMXfYrFomYfUJ2NYz0D2DlzvrKlAEhC1mtZzsWbfK7eTTe5xqo1e5
-	I9NqxdAk5lA0mwfZhopG+b310YVrQX690Zt43Kq28oYAjEVRu7lo6zMS6/+BmDeRYeTSsK
-	gPFkyl1+sbyFCAxZzMHRwvXB/LAQj6dJkhHSkV7EQGVgvxnN5GBUgrqG/sTt08uefgJ0ge
-	+gkHCMzF3ua+yjZmcIHsChfLoTvP+KELgBl/7XmhMxCdJJ5sfyV47r1eduQmajjohAhhqJ
-	JofoBINFJBMrA8/FWUBGCWaTZqRrdbOG1eTvHTiymN2SZojFtWGAhWhR1g5Vig==
+	bh=lbVsbmHE4CGNjOWLyfslnCmWW1EMalEIZK9eUB8mHKE=;
+	b=fHUoiYCQBX+G8LDk0+TzfxJnaKfFyPj/Oh5JGJSJukX3scl7nF4nswEQbA0F4Hj2EFx6RA
+	MmQT0sW21UFPuArIKFFjjWG+/+U7iLQ+qj7Z9fcOht2Uv8cepjTaV+xy9UYWOlDMy5Ple9
+	4UzRRDexQmOuJHTVv68qpthL8YgCvlY3GKJaklrfPeYDG5wrLH3augQxL1m+C1fXJ1oT/+
+	ZsDYNyb0CJbjZcGnnZkpE9auhJW6cwmR47TJFts1+2MRroKwiWQ9XUSwpK6a1v0bd1Xymo
+	6Uwf1jhLF5W66ah+P85PXrUwa0yFfHCEpgPT7t+T61HY2n7ekfazNHW+RnZAeA==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -59,11 +59,11 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH v8 06/14] dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
-Date: Fri, 16 Feb 2024 18:42:15 +0100
-Message-ID: <20240216174227.409400-7-gregory.clement@bootlin.com>
+	Serge Semin <fancer.lancer@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v8 07/14] dt-bindings: mips: cpus: Sort the entries
+Date: Fri, 16 Feb 2024 18:42:16 +0100
+Message-ID: <20240216174227.409400-8-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240216174227.409400-1-gregory.clement@bootlin.com>
 References: <20240216174227.409400-1-gregory.clement@bootlin.com>
@@ -73,34 +73,52 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-Mobileye Vision Technologies Ltd. is a company developing autonomous
-driving technologies and advanced driver-assistance systems (ADAS)
-including cameras, computer chips and software.
+The entries were nearly sorted but there were still some entries at
+the wrong places. Let's fix it.
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/mips/cpus.yaml | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index 1a0dc04f1db47..fb088d9c6f5b2 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -911,6 +911,8 @@ patternProperties:
-     description: Miyoo
-   "^mntre,.*":
-     description: MNT Research GmbH
-+  "^mobileye,.*":
-+    description: Mobileye Vision Technologies Ltd.
-   "^modtronix,.*":
-     description: Modtronix Engineering
-   "^moortec,.*":
+diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
+index cf382dea3922c..9bc47868d28b6 100644
+--- a/Documentation/devicetree/bindings/mips/cpus.yaml
++++ b/Documentation/devicetree/bindings/mips/cpus.yaml
+@@ -23,22 +23,22 @@ properties:
+       - brcm,bmips4380
+       - brcm,bmips5000
+       - brcm,bmips5200
+-      - ingenic,xburst-mxu1.0
+       - ingenic,xburst-fpu1.0-mxu1.1
+       - ingenic,xburst-fpu2.0-mxu2.0
++      - ingenic,xburst-mxu1.0
+       - ingenic,xburst2-fpu2.1-mxu2.1-smt
+       - loongson,gs264
+       - mips,m14Kc
+-      - mips,mips4Kc
+-      - mips,mips4KEc
+-      - mips,mips24Kc
++      - mips,mips1004Kc
+       - mips,mips24KEc
++      - mips,mips24Kc
++      - mips,mips4KEc
++      - mips,mips4Kc
+       - mips,mips74Kc
+-      - mips,mips1004Kc
+       - mti,interaptiv
+-      - mti,mips24KEc
+       - mti,mips14KEc
+       - mti,mips14Kc
++      - mti,mips24KEc
+ 
+   reg:
+     maxItems: 1
 -- 
 2.43.0
 
