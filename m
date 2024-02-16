@@ -1,291 +1,195 @@
-Return-Path: <linux-kernel+bounces-68227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87045857797
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:25:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C74C6857798
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:25:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A532C1C228F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:25:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F13D1F215B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 08:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D971B27D;
-	Fri, 16 Feb 2024 08:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DE41DDEB;
+	Fri, 16 Feb 2024 08:21:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qLTEdWL2"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ffjFZC/8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3392418B1B
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3097F1B81A
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 08:21:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708071679; cv=none; b=jkP5KAMWf5P3QIoeny7YymNiQeuPoDldi5QLM9oT04sy90gOHbuJZyEsZcLyNJm32JClRQHMk/n1UqeGrC/n27QyBBqGJoKe/nvj3gTS84Nse2ziHaA1e8JNSlmOaYi5GaCGww5pl9usLnl0ABqhHaoni98xCgK37h98wFdoKjI=
+	t=1708071683; cv=none; b=Q9mh+ANaAjfouHj3K6ez3814MlLLNsqqIwgd4WGdjvdynBqQbG3R8obz/0AejACRX5ONdnECnLAobFSYriq0gbl+8juGmxIT1aF9QYTh39F1JAQLXGvoFNpEEvZKxyScZvozovufO1dWHTDWQiImaF3CLJDOaDvExm2hFkTqofA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708071679; c=relaxed/simple;
-	bh=wNvH8irpVIRGBM1PyLQ/DV1p5gcS7Gn8xxWO4Z4gyY0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IS9tmtoCp4JyxC3ueskC8DKXocxafnfnVlPaUHX/uGuNh+W5SgKWhi1CZGsWfBP3Dw4Me0QdG8q1xq7gjWli1ePTs1mpAwW4FvWg/7tiA3J5nFa4Hm1WkVlgB7v2mP/zcZ7S78TvqczisHjHYCo/GNTU/3wpDn5BOhGer7OiNA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qLTEdWL2; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-563cc707c7cso1882952a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:21:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708071675; x=1708676475; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BHQjCM3MJVOw9z8k4SHGf+NLiuXZ/198hcpHesrOvd0=;
-        b=qLTEdWL20yhzYw2xKZlYoRiugT/xod3sb4H3NkxRm+AISOyY6fzKZrlwRaSxp8WSby
-         NovXtneJhWHlxzr/RZgaalYZcaRfS7wN0qLll+7Ncj7KclX/nMI2qTRwAqRHi1SaLUox
-         aow/ulXMR84VY01oVOXxf7bqEbTjxW9sPsITBI2CYdLcbQFKUy5Jis0tSNT/iYgi+MFJ
-         OLz6Asf+yJcHjOVEHPJy58Skf7DKnjQmtQ+mwtJvWecWZREnZpdZPRNbHo7cJHlGY1Bc
-         HFiLzMU65qPxgT9s09J5sEDmELNW9lXScSdetwB/vM130yBmXjx4r6gWug5UBarqJhJt
-         5xgw==
+	s=arc-20240116; t=1708071683; c=relaxed/simple;
+	bh=HsCdI41uNLdj9vWH20xULzyDarTlzF8V7YTORvhNJQ0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=I0BEbEN4bZeohX4jGfaVrgH2vvuYdv4Uag+2FWRPB+I6mtzBnBQkUSTzzELeatiD+bIYIWLtJ5H4brnLzf6Q6tNKptMlGd0XI+zpNfs/P9Uis1VawKiOfPxTHSwqbr52IAC/xOsLQm6zfB4jjmkqZ+/XqLDgpF7fORL1bqL/FR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ffjFZC/8; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708071681;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HsCdI41uNLdj9vWH20xULzyDarTlzF8V7YTORvhNJQ0=;
+	b=ffjFZC/8eXg/IT3tHbexJsqbOxeRoc+iP5J7rqs8IewJ3sA7iDxdYxPRQB1Y288GexD5H6
+	AdH+bMwdzFkY7l4eto9A3hDaA3d3PuhYcRwfJrB4xErNbCUsjXG6bbiHwhLcYjBFki2cdA
+	feN8lzUCx+vvaud+Pqs288BLT62Zycg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-607-IoSh8ShXPBGmSdqDMlP1Aw-1; Fri, 16 Feb 2024 03:21:19 -0500
+X-MC-Unique: IoSh8ShXPBGmSdqDMlP1Aw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-33d19ac07c5so249410f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 00:21:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708071675; x=1708676475;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BHQjCM3MJVOw9z8k4SHGf+NLiuXZ/198hcpHesrOvd0=;
-        b=j2GEwsA/F/XjeyY8FXvUFp+Y1zeQ4uqBI99j4AxYHTta5SpLY8sMzWmYQj2urtrSHS
-         eIu5CYhJm+fud9PkXfg6+g7AXRJgl/W2k/9VzHNEXnPh0AJcS2ZUblt0jwF4O7ZmsUEA
-         KGsPLvArAG6mbc7dKbZV3GAeikKxD3QTrt721VrpAcdYglVov6G/tvs8PkRz7QOVFnMD
-         XSqnByiOZPWxULtFe/ooO9vfKDtp3xlNCQrlWYEZY9WQ2Ye3Zno+2QAaAU5VouHP1Zye
-         AH0a8a/XAaEIkLD2Syjm31GJUvLsLwNZ6hdoGiEO5GLDRoIScHOgQ2pbG9sQzZ73p8Mn
-         e2UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwaJ4oF/QmuderWBBkZPcXj95AB1ZYs1YqX4rdYEIQhKc+HlnF7HIVj7IS/mUCz3SQrD7e+HbLH46z4Cjbb8lOelyUnePpAdH013Kp
-X-Gm-Message-State: AOJu0Yx3+N0Vmh39PqRcsN1FMdJHhPFmC5//NbW8brgbPATpwyqjmT3q
-	fmDQsXcihHFi5H52BtD8m9cd7I877SOO1ht8S97WiD77sKwwaZGFThWoAdT3Tj4=
-X-Google-Smtp-Source: AGHT+IH1Jfr/rQ1P5UV32a4Ha00bRrmflv3srEDsiA+9qsOqq+vnNMHgHuIPfy/dNY4jLcDdbsJGoQ==
-X-Received: by 2002:a05:6402:500f:b0:561:fc2:bec0 with SMTP id p15-20020a056402500f00b005610fc2bec0mr7425286eda.4.1708071675397;
-        Fri, 16 Feb 2024 00:21:15 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id j22-20020aa7c0d6000000b0055f0b3ec5d8sm1287138edp.36.2024.02.16.00.21.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 16 Feb 2024 00:21:14 -0800 (PST)
-Message-ID: <36450b1e-7a80-4d6b-9046-9a57b7c845e2@linaro.org>
-Date: Fri, 16 Feb 2024 09:21:13 +0100
+        d=1e100.net; s=20230601; t=1708071678; x=1708676478;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HsCdI41uNLdj9vWH20xULzyDarTlzF8V7YTORvhNJQ0=;
+        b=YFNE5IGkooSBz/qt4LoH8vLBIhk6vST8xtpFcTxxt0G+SNgdEdjW32OnlY0mxqwSG6
+         qk7q5EjZClOTlw6Yrxpq6zv9GBqfCLnuqKBbwyJOE4c6R01HRlPn6IeTAhRQpG6qW4I9
+         jSlVtt3XRiADcv3x1NGPC7ZGtCEFJLfl7k17C0cWLv24Urz7eUlHfzfIrbsRkfbuBUWw
+         VghAm3D44a+aBrlxNCrTc6UPlicu0hCwSrTr2acJnxLQ/RHyJrsjU1rDuAb7NE9s/QTp
+         HDSmR+dlEY+j1oL3B7Cfu6vmusNg6o/Aq4nGfkFFZsFVt2lR3gVqaO9bzXRm6Aeue/H5
+         4ssQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX/Qi0piifRUpfyomGY7cCbyVjagD0iCpoJiaXMUZyso5I1KgD8gAzmxxIzCaJv7DjyUh5yL3rk1FiMIbh8AVrfDhn6zL620hrjtSaH
+X-Gm-Message-State: AOJu0Yw5itscppbHtetJ9wHQ33xTPnHLqjzT6XoyAztQQ7NpqIjPIOl9
+	KY1XJLYD6clbFEDuhXRQGe1nXZXYsQljCEQCMge5zMsSifmxZp863n1JZkJ5aBekF8Db3zd41XA
+	ZiXDMl7mBrsKYAg2WqEf6xg+Y7JYcTHY/rBzW0BwxvMsM3HQHZ4YWUiM27VjQPQ==
+X-Received: by 2002:a5d:6109:0:b0:33d:228f:f4ab with SMTP id v9-20020a5d6109000000b0033d228ff4abmr105150wrt.15.1708071678170;
+        Fri, 16 Feb 2024 00:21:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGFhNSykPbcaVP9rvuI+Pxyv/DedRPTjhi4bZfskagZIPLeSAgm7zKS8dwtr+tsW9UaRRKMAg==
+X-Received: by 2002:a5d:6109:0:b0:33d:228f:f4ab with SMTP id v9-20020a5d6109000000b0033d228ff4abmr105131wrt.15.1708071677787;
+        Fri, 16 Feb 2024 00:21:17 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id b7-20020a5d6347000000b0033d14455c99sm1468403wrw.101.2024.02.16.00.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 00:21:17 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Doug Anderson <dianders@chromium.org>, neil.armstrong@linaro.org
+Cc: Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Maarten Lankhorst
+ <maarten.lankhorst@linux.intel.com>, Hsin-Yi Wang <hsinyi@chromium.org>,
+ dri-devel@lists.freedesktop.org, eizan@chromium.org, Ankit Nautiyal
+ <ankit.k.nautiyal@intel.com>, Daniel Vetter <daniel@ffwll.ch>, David
+ Airlie <airlied@gmail.com>, Heiner Kallweit <hkallweit1@gmail.com>, Imre
+ Deak <imre.deak@intel.com>, Jessica Zhang <quic_jesszhan@quicinc.com>, Sam
+ Ravnborg <sam@ravnborg.org>, Stanislav Lisovskiy
+ <stanislav.lisovskiy@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/dp: Don't attempt AUX transfers when eDP panels are
+ not powered
+In-Reply-To: <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
+References: <20240202141109.1.I24277520ac754ea538c9b14578edc94e1df11b48@changeid>
+ <CAJMQK-it9YMod4rHKnACq4O-iaGieK2SN4x5vQ018CghsA631A@mail.gmail.com>
+ <CAD=FV=VfuFrK1cSKA0maMzT5dxzKEzADqrd69fZKXuAGrU2rmA@mail.gmail.com>
+ <87sf1u58k0.fsf@intel.com>
+ <CAD=FV=XQdLm3PcjEd_g_dBJ9QO8zAJtj5nrXS9=cjC80+-Jbfg@mail.gmail.com>
+ <cbcd981f-bd5d-477e-8482-d3414be17057@linaro.org>
+ <CAD=FV=UtakQZ6OEKwERW5gNeAfS88EqkuQAHkrQoN=SicDG1JA@mail.gmail.com>
+Date: Fri, 16 Feb 2024 09:21:16 +0100
+Message-ID: <87frxskef7.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] dt-bindings: mmc: dw-mshc-hi3798cv200: rename to
- dw-mshc-histb
-Content-Language: en-US
-To: forbidden405@outlook.com, Ulf Hansson <ulf.hansson@linaro.org>,
- Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Igor Opaniuk <igor.opaniuk@linaro.org>,
- tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240216-b4-mmc-hi3798mv200-v1-0-7d46db845ae6@outlook.com>
- <20240216-b4-mmc-hi3798mv200-v1-3-7d46db845ae6@outlook.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240216-b4-mmc-hi3798mv200-v1-3-7d46db845ae6@outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 15/02/2024 18:46, Yang Xiwen via B4 Relay wrote:
-> From: Yang Xiwen <forbidden405@outlook.com>
-> 
-> Add binding for Hi3798MV200 DWMMC specific extension.
-> 
-> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
-> ---
->  ...hi3798cv200-dw-mshc.yaml => histb-dw-mshc.yaml} | 60 +++++++++++++++++++---
->  1 file changed, 52 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
-> similarity index 57%
-> rename from Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml
-> rename to Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
-> index 5db99cd94b90..d2f5b7bb7a58 100644
-> --- a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.yaml
-> +++ b/Documentation/devicetree/bindings/mmc/histb-dw-mshc.yaml
-> @@ -1,11 +1,11 @@
->  # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->  %YAML 1.2
->  ---
-> -$id: http://devicetree.org/schemas/mmc/hi3798cv200-dw-mshc.yaml#
-> +$id: http://devicetree.org/schemas/mmc/histb-dw-mshc.yaml#
+Doug Anderson <dianders@chromium.org> writes:
 
-Really, one wrong filename into another...
+Hello Doug,
 
->  $schema: http://devicetree.org/meta-schemas/core.yaml#
->  
->  title:
-> -  Hisilicon Hi3798CV200 SoC specific extensions to the Synopsys DWMMC controller
-> +  Hisilicon HiSTB SoCs specific extensions to the Synopsys DWMMC controller
->  
->  maintainers:
->    - Yang Xiwen <forbidden405@outlook.com>
-> @@ -14,16 +14,14 @@ description:
->    The Synopsys designware mobile storage host controller is used to interface
->    a SoC with storage medium such as eMMC or SD/MMC cards. This file documents
->    differences between the core Synopsys dw mshc controller properties described
-> -  by synopsys-dw-mshc.txt and the properties used by the Hisilicon Hi3798CV200
-> -  specific extensions to the Synopsys Designware Mobile Storage Host Controller.
+> Hi,
+>
+> On Thu, Feb 15, 2024 at 8:53=E2=80=AFAM Neil Armstrong
+> <neil.armstrong@linaro.org> wrote:
+>>
+>> Hi Doug,
+>>
+>> On 15/02/2024 16:08, Doug Anderson wrote:
+>> > Hi,
+>> >
+>> > On Thu, Feb 15, 2024 at 2:24=E2=80=AFAM Jani Nikula <jani.nikula@intel=
+com> wrote:
+>> >>
+>> >> On Wed, 14 Feb 2024, Doug Anderson <dianders@chromium.org> wrote:
+>> >>> Hi,
+>> >>>
+>> >>> On Tue, Feb 13, 2024 at 10:25=E2=80=AFPM Hsin-Yi Wang <hsinyi@chromi=
+um.org> wrote:
+>> >>>>
+>> >>>> On Wed, Feb 14, 2024 at 2:23=E2=80=AFPM Douglas Anderson <dianders@=
+chromium.org> wrote:
+>> >>>>>
+>> >>>>> If an eDP panel is not powered on then any attempts to talk to it =
+over
+>> >>>>> the DP AUX channel will timeout. Unfortunately these attempts may =
+be
+>> >>>>> quite slow. Userspace can initiate these attempts either via a
+>> >>>>> /dev/drm_dp_auxN device or via the created i2c device.
+>> >>>>>
+>> >>>>> Making the DP AUX drivers timeout faster is a difficult propositio=
+n.
+>> >>>>> In theory we could just poll the panel's HPD line in the AUX trans=
+fer
+>> >>>>> function and immediately return an error there. However, this is
+>> >>>>> easier said than done. For one thing, there's no hard requirement =
+to
+>> >>>>> hook the HPD line up for eDP panels and it's OK to just delay a fi=
+xed
+>> >>>>> amount. For another thing, the HPD line may not be fast to probe. =
+On
+>> >>>>> parade-ps8640 we need to wait for the bridge chip's firmware to bo=
+ot
+>> >>>>> before we can get the HPD line and this is a slow process.
+>> >>>>>
 
-Just drop this sentence in previous/conversion patch. It's useless.
+[...]
 
-> -
-> -allOf:
-> -  - $ref: synopsys-dw-mshc-common.yaml#
+>
+> The kernel tree we landed on was the v5.15 tree, which is currently
+> serving all Qualcomm sc7180-based Chromebooks, all Mediatek 8173
+> Chromebooks and all Mediatek 8186 Chromebooks. There are also a pile
+> of x86 Chromebooks running our v5.15 kernel. This code shouldn't
+> affect them because (unless I'm mistaken) they don't use the two
+> affected panel drivers. In any case, I haven't heard any screams from
+> them either. Given my landing plans of "the week of the 26th", this
+> still gives another 1.5 weeks for any screams to reach my ears.
+>
+> ...or are you looking for non-ChromeOS test reports? I'm not sure how
+> to encourage those. I suppose sometimes folks at Red Hat end up
+> stumbling over similar panel problems to those of us in ChromeOS.
+> Maybe +Javier would be interested in providing a Tested-by?
+>
 
-Put it in correct place in the first time. Don't needlessly shuffle the
-code right after previous patch.
+I do have a SC7180 based HP X2 Chromebook and could test your patch (not
+today but I could do it early next week), although I haven't followed so
+if you could please let me know what exactly do you want me to verify.
 
+AFAIU the problem is that the fwupd daemon tries to scan DP busses even if
+the panel is turned off and that's what takes a lot of time (due retries),
+and your patch makes the driver to bail out immediately ? If that's the
+case, I guess that just starting fwupd daemon with an without your patch
+while the panel is turned off could be a good test ?
 
-> +  by synopsys-dw-mshc.txt and the properties used by the Hisilicon HiSTB specific
-> +  extensions to the Synopsys Designware Mobile Storage Host Controller.
->  
->  properties:
->    compatible:
->      enum:
->        - hisilicon,hi3798cv200-dw-mshc
-> +      - hisilicon,hi3798mv200-dw-mshc
->  
->    reg:
->      maxItems: 1
-> @@ -48,6 +46,12 @@ properties:
->        control the clock phases, "ciu-sample" is required for tuning
->        high speed modes.
->  
-> +  hisilicon,sap-dll-reg:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      A phandle points to the sample delay-locked-loop(DLL)
-> +      syscon node, used for tuning.
+> [1] https://crrev.com/c/5277322
+> [2] https://crrev.com/c/5277736
+>
 
-Does hi3798cv200 have it?
-
-> +
->  required:
->    - compatible
->    - reg
-> @@ -55,13 +59,25 @@ required:
->    - clocks
->    - clock-names
->  
-> +allOf:
-> +  - $ref: synopsys-dw-mshc-common.yaml#
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: hisilicon,hi3798mv200-dw-mshc
-> +    then:
-> +      required:
-> +        - hisilicon,sap-dll-reg
-> +
->  unevaluatedProperties: false
->  
->  examples:
->    - |
->      #include <dt-bindings/clock/histb-clock.h>
->      #include <dt-bindings/interrupt-controller/arm-gic.h>
-> -    emmc: mmc@9830000 {
-> +    mmc@9830000 {
-
-???
-
->        compatible = "hisilicon,hi3798cv200-dw-mshc";
->        reg = <0x9830000 0x10000>;
->        interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -84,3 +100,31 @@ examples:
->        bus-width = <8>;
->        status = "okay";
->      };
-> +  - |
-> +    #include <dt-bindings/clock/histb-clock.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    mmc@9830000 {
-> +      compatible = "hisilicon,hi3798mv200-dw-mshc";
-
-No need for new example.
-
-> +      reg = <0x9830000 0x10000>;
-> +      interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-> +      clocks = <&crg HISTB_MMC_CIU_CLK>,
-> +               <&crg HISTB_MMC_BIU_CLK>,
-> +               <&crg HISTB_MMC_SAMPLE_CLK>,
-> +               <&crg HISTB_MMC_DRV_CLK>;
-> +      clock-names = "ciu", "biu", "ciu-sample", "ciu-drive";
-> +      resets = <&crg 0xa0 4>;
-> +      reset-names = "reset";
-> +      pinctrl-names = "default";
-> +      pinctrl-0 = <&emmc_pins>;
-> +      fifo-depth = <256>;
-> +      clock-frequency = <50000000>;
-> +      max-frequency = <150000000>;
-> +      cap-mmc-highspeed;
-> +      mmc-ddr-1_8v;
-> +      mmc-hs200-1_8v;
-> +      mmc-hs400-1_8v;
-> +      non-removable;
-> +      bus-width = <8>;
-> +      hisilicon,sap-dll-reg = <&emmc_sap_dll_reg>;
-> +      status = "okay";
-
-No, really...
-
-> +    };
-> 
-
+--=20
 Best regards,
-Krzysztof
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
 
