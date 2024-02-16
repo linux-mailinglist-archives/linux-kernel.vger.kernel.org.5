@@ -1,346 +1,125 @@
-Return-Path: <linux-kernel+bounces-68541-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68542-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 681CC857BFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:45:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73AC3857C08
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 12:47:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 748071C23D9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:45:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 149FE1F239E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A22E978662;
-	Fri, 16 Feb 2024 11:45:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VjhKYgWT"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 165017866C;
+	Fri, 16 Feb 2024 11:47:09 +0000 (UTC)
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0921453385;
-	Fri, 16 Feb 2024 11:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 873F9768FE;
+	Fri, 16 Feb 2024 11:47:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708083911; cv=none; b=PiY1yb7qUdHZgT9kfghzTR5O0OqLCNampft4ThuVI8svPFFcM6v1GdN+UtrRVbk8pUkOSq9bU8iVfgf7T7SG7s9KS2mZuizIrMpyQAElrcWWmpEDsPtJp6selFT5Qq4MrbC0AGt2ls0lEraken5PY3j1NybbWESK52BHVJMZ80E=
+	t=1708084028; cv=none; b=Q7mvDmWHiPIdiNkQOQVS2/iZGuC2+phZwmRQY8ku0D9iFcsXng4HXyjkLAmsf5eqcTgx5gXOjILEJzS2Rry2dr70omvZmX66J66cCh+V3axb9ZG8j5pjZGOkE6EG+AiFOVzfIJ2wcw4/dnpFhJLMsfit0i3XXPw+82aFdpCD3vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708083911; c=relaxed/simple;
-	bh=mRBF7+w/UhoTbou2jml16IOzj0jHowaNlat8Mii96JE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=ZH4GQ9Gig+ih8fR0M/dHx7SG+C9nZ9ljs9FFhkFQIqzKjLiqP0fzCAL53RCxoEWeRTD6BwR6QYKDsh/GXqnSDBUccvV9smN8YxG8LgZv1Bgwn4pIwv5bRr5kzg5pA79C18q4a1h/6Ljl/7CF0T6EVDrwg/gqJtJvdeVD2WiscSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VjhKYgWT; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GAdI1K010032;
-	Fri, 16 Feb 2024 11:44:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=FbhITBTJkpzDUA0S3Nn4DWF06crj1C5mUCjUAsD57SM=; b=Vj
-	hKYgWTGzzZoGTVdITxb6Fh6bhs+rCnYlqXoA6ENJYt3Ah3xSHrRBNyFD2NQ1IFH7
-	K7MZqhUuuTFm1u/FIjd3yNZAZQ0dDYV9np/BelPIIA6vZKYixBvYWUppNTpV1bW6
-	IqZE5sxg8rB6rA4vjyVuP8Ar2mOG9nbmjF8YVsrv6nE2AbkopcaeWWM4g+n9Nt6s
-	ZRQnAl1/9TLSyDogrMR9ZQiey6hNGT7MEa/Jnght1uCuBdvq5buwRcyfU/XmLQJP
-	5nG8MiCHcyoOfFhBSi4pM1ltuvHP7F0sqeXrXnr61b6vEP8cxMuaPcTB8dmNsd4s
-	eR3/eUqfJ0JjiAjh2TBA==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9qbc1wg6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 11:44:45 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41GBiio2011674
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Feb 2024 11:44:44 GMT
-Received: from [10.218.16.59] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
- 2024 03:44:33 -0800
-Message-ID: <5dc98cf8-3146-400c-be2a-b0a1ec2368f7@quicinc.com>
-Date: Fri, 16 Feb 2024 17:14:33 +0530
+	s=arc-20240116; t=1708084028; c=relaxed/simple;
+	bh=brDqgu+veoHirwdkbKDf0308k8BngHj6rCKvWtbcL88=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cxQAmC7f554DimfYKOs39as31NRbkTtH/zdd4CkoGkng1pyBpj5sq171Vw5QnFEZF/aj9jFZvQvZj8M+ZT1/VM2ZQVpU7Z4kj9syYaLaKrLT4xmQXLgHs9559/lsDyKoEQSkd/IkpC3BPfA+rAjEbqxIf0AVqfC41u6HU0yC8xQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60782336a3aso4026707b3.2;
+        Fri, 16 Feb 2024 03:47:06 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708084023; x=1708688823;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lQ7tnAKFUkQOj4UEtgJN4h/6u4fraBJnTp0nHjLT6cQ=;
+        b=NuY6vEBgIG9KmAvbppjbFS0iSNqaQQuVcW03ilk952q3G+5H6TS4CO8yqNT+u2VI3E
+         h5kFZnwj4sGOtsD9dNyv6WnwGuIZ07vhSEItHlkLX/CJ5I7nNM5nr7aqOE7AIrPuAqOC
+         1XKFJGCT9qFDXTARisTu6nFk66N8wRk4wkySY+ND1QJ+zysyGX3J38J/IVVYv6j8tDfi
+         20wx1KqsCZMH8efFLpHr0WMGjRPEmFHaPIP49HMqDmw0yfzSwYltd8oc2VmrF/wI1e2F
+         oGUAg/tdv0NPahRl0wLeEigZJKPOf03+kjnEqL8vFXOmQHKuG40xd8+bpGSJZFNvTZGM
+         LlYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUFzZ3g4WANKqtZZ9VlC7Jw/knLzFtY2VvPmEZNYbXXKPIK29Y8K2BD7BUsP+QXhKjLrNpKOR3XekjYlWQTBtSTMDqAEHdImF5IBY7jb0EIwuk276tqtUSsiYUK4dENO0BYX7/Z5tkyge9b9DM9jVgKGtN/6DMzcTjH6akhagdPVeRougKNRrc8ZhDepS2FEzk5dbEwTBKOqvh6petdRxzoDOnsASXDFRbb3wgTKDD3Acb5XhavvM4+B2NtdscptyH7AGGnweHO5QhSJ5zKhrKdEgMhqRLokglysst9E5w+RpAtXTBBCpXvz1I+rRprqc8bGJJBv+NbvFNzC6gQgVZm8tqBAbztCMNas0zOz0UkwdDDzdkdSrssNvIodA==
+X-Gm-Message-State: AOJu0Yy1PyopLybDwhsRhRNyhHoX7zLqkA7Fxhoch1PliJvUdKRss3Jo
+	5/dGVbJYGclu5g8Cgj+j7RgnUcW/JtnAUin0pzp9oJDY8PoNag4WzIlf3cFysgk=
+X-Google-Smtp-Source: AGHT+IGOZo23mSGj2qVG09ybbc13KqERNgE2Z8Lel0v6H8fWWUPfJQWUuJf9NEMeSLF+la3qPj88JQ==
+X-Received: by 2002:a81:4c8c:0:b0:607:8196:9d69 with SMTP id z134-20020a814c8c000000b0060781969d69mr4522995ywa.30.1708084023056;
+        Fri, 16 Feb 2024 03:47:03 -0800 (PST)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
+        by smtp.gmail.com with ESMTPSA id a125-20020a818a83000000b006040f198d3esm301001ywg.142.2024.02.16.03.47.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 03:47:01 -0800 (PST)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc71031680so609771276.2;
+        Fri, 16 Feb 2024 03:47:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX/33bHJ5WVDjuKg1h+K20HSFSmfoX0dje+Pdcke0G/yQOK9V0feprsSCKA1DfHeklL/Md53BZThhNi7KlefgL6OgBrBR3FWnNtPQ7QIZqprCc8UUjHH8if981HtunXUuEJu9HW12LvxQAxlh9H1gsyW8N6P906LUOaOkbuYSoI15GHqAhh/ny2zVu5VbToppT3ptxf5vmGpiPPnOXps/H9FUkUjH/pO7nThOnAMurKIZ+rTdWWgOxyXjr3swevrnkFK1Tne6+bGd4fNJCye27zGkM12CRl9rBM6E+cLly2ijj83hChsBpJ7DvDvy762C5JyHgc9UOieLPUd5+eKl7GtgZGvnAxKRaMCBCV6ksn7c38M2sdlkpOOvDXVA==
+X-Received: by 2002:a5b:708:0:b0:dc6:cc35:35e9 with SMTP id
+ g8-20020a5b0708000000b00dc6cc3535e9mr4412013ybq.35.1708084021189; Fri, 16 Feb
+ 2024 03:47:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/3] iio: adc: Add support for QCOM PMIC5 Gen3 ADC
-Content-Language: en-US
-To: Jonathan Cameron <jic23@kernel.org>
-CC: <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <lee@kernel.org>,
-        <andriy.shevchenko@linux.intel.com>, <daniel.lezcano@linaro.org>,
-        <dmitry.baryshkov@linaro.org>, <lars@metafoo.de>, <luca@z3ntu.xyz>,
-        <marijn.suijten@somainline.org>, <agross@kernel.org>,
-        <sboyd@kernel.org>, <rafael@kernel.org>, <rui.zhang@intel.com>,
-        <lukasz.luba@arm.com>, <linus.walleij@linaro.org>,
-        <quic_subbaram@quicinc.com>, <quic_collinsd@quicinc.com>,
-        <quic_amelende@quicinc.com>, <quic_kamalw@quicinc.com>,
-        <kernel@quicinc.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-arm-msm-owner@vger.kernel.org>,
-        <linux-iio@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <cros-qcom-dts-watchers@chromium.org>
-References: <20231231171237.3322376-1-quic_jprakash@quicinc.com>
- <20231231171237.3322376-4-quic_jprakash@quicinc.com>
- <20240101175453.5807483a@jic23-huawei>
-From: Jishnu Prakash <quic_jprakash@quicinc.com>
-In-Reply-To: <20240101175453.5807483a@jic23-huawei>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 9Y1DnBZcC0CSA59oL9H_9bwEqTanH5RT
-X-Proofpoint-ORIG-GUID: 9Y1DnBZcC0CSA59oL9H_9bwEqTanH5RT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-16_09,2024-02-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxlogscore=999
- spamscore=0 adultscore=0 impostorscore=0 suspectscore=0 bulkscore=0
- malwarescore=0 phishscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402160094
+References: <20240208163710.512733-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240208163710.512733-1-krzysztof.kozlowski@linaro.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 16 Feb 2024 12:46:48 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXzObEqExtJZpUpXLfCWB5fW9ZhekbbotcxcMrN+uj0Ag@mail.gmail.com>
+Message-ID: <CAMuHMdXzObEqExtJZpUpXLfCWB5fW9ZhekbbotcxcMrN+uj0Ag@mail.gmail.com>
+Subject: Re: [PATCH] clk: constify the of_phandle_args argument of of_clk_provider
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Sudeep Holla <sudeep.holla@arm.com>, Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>, 
+	Nishanth Menon <nm@ti.com>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Thierry Reding <thierry.reding@gmail.com>, 
+	Jonathan Hunter <jonathanh@nvidia.com>, Linus Walleij <linus.walleij@linaro.org>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Russell King <linux@armlinux.org.uk>, 
+	Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>, 
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-clk@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	patches@opensource.cirrus.com, linux-stm32@st-md-mailman.stormreply.com, 
+	NXP Linux Team <linux-imx@nxp.com>, linux-amlogic@lists.infradead.org, 
+	linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-tegra@vger.kernel.org, linux-omap@vger.kernel.org, 
+	linux-media@vger.kernel.org, linux-phy@lists.infradead.org, 
+	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Jonathan,
+On Thu, Feb 8, 2024 at 5:37=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> None of the implementations of the get() and get_hw() callbacks of
+> "struct of_clk_provider" modify the contents of received of_phandle_args
+> pointer.  They treat it as read-only variable used to find the clock to
+> return.  Make obvious that implementations are not supposed to modify
+> the of_phandle_args, by making it a pointer to const.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-(Resending this mail for tracking on mailing lists, as it got rejected 
-from lists the first time due to HTML)
+>  drivers/clk/renesas/r9a06g032-clocks.c        |  2 +-
+>  drivers/clk/renesas/renesas-cpg-mssr.c        |  2 +-
+>  drivers/clk/renesas/rzg2l-cpg.c               |  2 +-
 
-On 1/1/2024 11:24 PM, Jonathan Cameron wrote:
-> On Sun, 31 Dec 2023 22:42:37 +0530
-> Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
-> 
->> The ADC architecture on PMIC5 Gen3 is similar to that on PMIC5 Gen2,
->> with all SW communication to ADC going through PMK8550 which
->> communicates with other PMICs through PBS.
->>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+Gr{oetje,eeting}s,
 
->> +
->> +	for (i = 0; i < adc->nchannels; i++) {
->> +		bool upper_set = false, lower_set = false;
->> +		int temp, offset;
->> +		u16 code = 0;
->> +
->> +		chan_prop = &adc->chan_props[i];
->> +		offset = chan_prop->tm_chan_index;
->> +
->> +		if (!chan_prop->adc_tm)
->> +			continue;
->> +
->> +		mutex_lock(&adc->lock);
->> +		if (chan_prop->sdam_index != sdam_index) {
-> 
-> Perhaps factor this block out as indent already high and adding scoped_guard would
-> make it worse.
+                        Geert
 
-I don't think I can completely factor it out, as we need to update 
-several local variables here (sdam_index, tm_status, buf, also chan_prop 
-above), but I'll try to reduce it as much as possible.
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-> 
->> +			sdam_index = chan_prop->sdam_index;
->> +			ret = adc5_gen3_read(adc, sdam_index, ADC5_GEN3_TM_HIGH_STS,
->> +					tm_status, 2);
->> +			if (ret) {
->> +				dev_err(adc->dev, "adc read TM status failed with %d\n", ret);
->> +				goto out;
->> +			}
-
-
->> +
->> +static void adc5_gen3_disable(void *data)
->> +{
->> +	struct adc5_chip *adc = data;
->> +	int i;
->> +
->> +	if (adc->n_tm_channels)
->> +		cancel_work_sync(&adc->tm_handler_work);
-> If this is required before the place where a simple
-> devm_request_irq() will result in the irqs being cleaned up
-> them register this callback earlier to avoid problems there.
-> 
-
-On checking again, it looks like I can just use devm_request_irq() and 
-avoid having to free irqs explicitly here and elsewhere. I'll  still 
-need to call cancel_work_sync() and I think you have also asked me to 
-keep this call in another comment below. I have another question for it 
-below.
-
->> +
->> +	for (i = 0; i < adc->num_sdams; i++)
->> +		free_irq(adc->base[i].irq, adc);
->> +
->> +	mutex_lock(&adc->lock);
->> +	/* Disable all available TM channels */
->> +	for (i = 0; i < adc->nchannels; i++) {
->> +		if (!adc->chan_props[i].adc_tm)
->> +			continue;
->> +		adc5_gen3_poll_wait_hs(adc, adc->chan_props[i].sdam_index);
->> +		_adc_tm5_gen3_disable_channel(&adc->chan_props[i]);
->> +	}
->> +
->> +	mutex_unlock(&adc->lock);
->> +}
-> 
-
-
->> +
->> +	prop->hw_settle_time = VADC_DEF_HW_SETTLE_TIME;
-> 
-> I'd prefer to see you has through the value that maps to this after qcom_adc5_hw_settle_time_from_dt
-> so then you can just set a default in value and call the rest of the code unconditionally.
-> Same for the cases that follow.
-
-I can remove the return check for fwnode_property_read_u32() as you 
-suggested, but I think we still need to keep the return check for 
-qcom_adc5_hw_settle_time_from_dt(), to check in case values unsupported 
-in this ADC HW are set in DT. Same for the other properties.
-
-> 
->> +	ret = fwnode_property_read_u32(fwnode, "qcom,hw-settle-time", &value);
->> +	if (!ret) {
->> +		ret = qcom_adc5_hw_settle_time_from_dt(value,
->> +						data->hw_settle_1);
->> +		if (ret < 0)
->> +			return dev_err_probe(dev, ret, "%#x invalid hw-settle-time %d us\n",
->> +				chan, value);
->> +		prop->hw_settle_time = ret;
->> +	}
->> +
-
-
->> +
->> +	chan_props = adc->chan_props;
->> +	adc->n_tm_channels = 0;
->> +	iio_chan = adc->iio_chans;
->> +	adc->data = device_get_match_data(adc->dev);
->> +	if (!adc->data)
->> +		adc->data = &adc5_gen3_data_pmic;
-> 
-> Why do you need a default?  Add a comment so we remember the reasoning.
-
-On second thought, this may not be needed, I'll remove this.
-
-> 
-> 
->> +
->> +	device_for_each_child_node(adc->dev, child) {
->> +		ret = adc5_gen3_get_fw_channel_data(adc, chan_props, child, adc->data);
->> +		if (ret < 0) {
-
-
->> +
->> +		ret = platform_get_irq_byname(pdev, adc->base[i].irq_name);
->> +		if (ret < 0) {
->> +			kfree(reg);
->> +			dev_err(dev, "Getting IRQ %d by name failed, ret = %d\n",
->> +					adc->base[i].irq, ret);
->> +			goto err_irq;
->> +		}
->> +		adc->base[i].irq = ret;
->> +
->> +		ret = request_irq(adc->base[i].irq, adc5_gen3_isr, 0, adc->base[i].irq_name, adc);
-> 
-> Don't mix devm and non dev calls.  And don't group up multiple things in one devm callback
-> as it almost always leads to bugs where for example only some irqs are allocated.
-
-I can replace request_irq() with devm_request_irq(). But when you say 
-not to group up multiple things in one devm callback, do you mean the 
-devm_add_action() callback I added below or something else right here?
-
-
-
-> 
->> +		if (ret < 0) {
->> +			kfree(reg);
->> +			dev_err(dev, "Failed to request SDAM%d irq, ret = %d\n", i, ret);
->> +			goto err_irq;
->> +		}
->> +	}
->> +	kfree(reg);
-> 
-> I would factor out this code and allocation of reg so you can easily use scope
-> based cleanup (see linux/cleanup.h) to avoid the kfree(reg) entries that
-> make for awkward code flow.
-> 
-
-The kfrees are not really needed, I'll just use devm_kcalloc to allocate 
-memory for the "reg" variable. With this and devm_request_irq, I think a 
-scoped guard would not be needed here.
-
-
-> 
-> 
->> +
->> +	ret = devm_add_action(dev, adc5_gen3_disable, adc);
-> As above, this action does multiple things. Also use devm_add_action_or_reset() to cleanup
-> if the devm registration fails without needing to do it manually.
-
-I'll change it to devm_add_action_or_reset(), but do you mean I should 
-call devm_add_action_or_reset() twice to register two separate callbacks 
-instead of just adc5_gen3_disable? Like one for calling 
-cancel_work_sync() alone and the other for the loop where we disable all 
-TM channels?
-
-
-> 
->> +	if (ret < 0) {
->> +		dev_err(dev, "failed to register adc disablement devm action, %d\n", ret);
->> +		goto err_irq;
->> +	}
->> +
-
-
->> +
->> +	if (adc->n_tm_channels)
->> +		INIT_WORK(&adc->tm_handler_work, tm_handler_work);
-> 
-> Until this init work seems unlikely you should be calling the cancel
-> work in gen3_disable()
-
-We are already calling cancel_work_sync() in adc5_gen3_disable....is 
-there any change needed?
-
-
-I'll address all your other comments in the next patchset.
-
-
-Thanks,
-
-Jishnu
-
-> 
-> 
->> +
->> +	indio_dev->name = pdev->name;
->> +	indio_dev->modes = INDIO_DIRECT_MODE;
->> +	indio_dev->info = &adc5_gen3_info;
->> +	indio_dev->channels = adc->iio_chans;
->> +	indio_dev->num_channels = adc->nchannels;
->> +
->> +	ret = devm_iio_device_register(dev, indio_dev);
->> +	if (!ret)
->> +		return 0;
-> Please keep error conditions as the out of line path.
-> 
-> 	if (ret)
-> 		goto err_irq;
-> 
-> 	return 0;
-> 
-> 
->> +
->> +err_irq:
->> +	for (i = 0; i < adc->num_sdams; i++)
->> +		free_irq(adc->base[i].irq, adc);
-> 
-> Already freed by a devm cleanup handler.
-> 
->> +
->> +	return ret;
->> +}
-> 
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
