@@ -1,114 +1,156 @@
-Return-Path: <linux-kernel+bounces-69368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0089A858811
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:36:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7782185881D
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 22:38:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31C6F1C220BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:36:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 041C21F21651
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 21:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B0D145FF9;
-	Fri, 16 Feb 2024 21:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5A1D14601E;
+	Fri, 16 Feb 2024 21:38:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H53vjPWh"
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jz/5jP5i"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9921F136658
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E7A136658;
+	Fri, 16 Feb 2024 21:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708119372; cv=none; b=Cgr+5lU95T6T7sPUh5D4OmlyfvhkgKLgif5rJVG6BxH2YSKazay2WSY0bh842BYERbZKtf9ewuDxBgnu8gi1Lpz7e9Uk6Gfs58G0tCK3dUnB+4HUkzOwg6JiLN4mmhDdPx+qkfgltBqVNfyz4siBN1QascnPiZBLFHKaWJ/d2b4=
+	t=1708119521; cv=none; b=OEPEleSo96R/2QlSSz4EUVDEYe3UIvU4a+GJKEqE6jtbkxSD/0A0loutrPla7IW74Up+mZp3A8t6NPWaMAmDsZyLsOgoLm2Of1bgZI+rGtPjRU23f9mm7PsA8SAhU2VWsoNZCkZlAA5F9B+HUrrgtX9iHpFnwKzUyVetcXKyZ1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708119372; c=relaxed/simple;
-	bh=llCryPeZKPC3peuANCsMad6kJTIc/2KpAtyMnpKsZmk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=GLuo23B6e2Cm3wmIWG4ZLYaN8NLxUFLbk4hWryQzz3wVkRahVrFrM16YwtCFAyEQ+witB4RZY2HpXNE+X8CQ/i5KhscluNhU+BcM26Nnzyj/ra1XK3ocmlfABEUYbx+rX7/I2yzpw7brQyY4GuC8yKYPqIjn97Cbn6YK1nBUlu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H53vjPWh; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e0eacc5078so2102444b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 13:36:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708119369; x=1708724169; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=E6p8O4oRNFst+6Ab9och+HD3OoVinOBFShK5KI2dZR0=;
-        b=H53vjPWhdwkVEfzFibyvH6QI87ZQbhT6nrppakPc/XmbuPqlqO8At+62ZGKfyCoWwe
-         ijoxE1PCfx4iqNC7GrQEd/jW6QU4WBKscakVczwaxjzMvlkzEXDgFid8i/j8PE5w6u8t
-         0ZK3wJtFaW3L9lW5vGGZXEiUp8959DfVPcZ46SuaZj2NsxGl1IEBsu+R+x6K82fXl6QE
-         oKnE/j15GbWhiuRL60uIqoQXfjCe/Dm9CpIascrbZe7h8fiojQgJoq0cIad2S1Yv6DaL
-         i4SwvSyfX4TzOnDOQhMWNacuLsL3y+BqjzzBm6su4/JmBs5x4JagmA2p6k7nDr7MqCR+
-         JfWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708119369; x=1708724169;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E6p8O4oRNFst+6Ab9och+HD3OoVinOBFShK5KI2dZR0=;
-        b=QzU3vcrpZ88/TKd5adltymJ6skb0pUpBeYB37kVpEGGxd2h3p7R+LxiU1jVmAZuBc7
-         aaFekyhT1ryJG1TyjzjAqQoN/VIw5pxsOmWK4QvCYOYg85lKHY7JbmjWOTk8AkgvhTjB
-         OBd9KtwEPoK8CCMxHLaaVByhPJqnxLl3qRnjAiFHgWTE6XxEB5M4C8auSZWR3i1kljlz
-         6h3QTu5fuC51lKBdTJO6RZg3Wrw/DOPvyJ6WzqDBXDj57hGeFhFekwqxAYYo7a5og3Su
-         hZ8ZYt4wpwvcPi8W12K9yDsAIdKAdjJxo1hx5+kJb20XukfVklPYUCGX8yiQyw92t27L
-         xsbw==
-X-Forwarded-Encrypted: i=1; AJvYcCUXCGr5Mf76aufJoMuovWcvxM14KuWaQB+VHnMDKbeVcIVzlegqVxtuYGU0LE8sdl7+7yDUU8IRjhn5wBM3JNiK5oIhTympngbL4Fox
-X-Gm-Message-State: AOJu0YxdipPYjKG97BwtsNe//DRgTae+iuu24J3Q0AzRR2ceIUL3oVln
-	Ok87RNBl1p3lVLiIzDXRNZCIDAfAQSoCupRiRrCn8BFbqmW6l299
-X-Google-Smtp-Source: AGHT+IHEotwD+0xdqSOtDq+hRutYhBX0++jVH5wG9sRTK7XnnDuSClVa2bzgjhOCrfiOJC9lrHp8OA==
-X-Received: by 2002:a05:6a00:178c:b0:6e0:51d7:5805 with SMTP id s12-20020a056a00178c00b006e051d75805mr8878362pfg.1.1708119368753;
-        Fri, 16 Feb 2024 13:36:08 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id x40-20020a056a0018a800b006e0503f467bsm405938pfh.39.2024.02.16.13.36.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 13:36:08 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 16 Feb 2024 11:36:07 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] workqueue fixes for v6.8-rc4
-Message-ID: <Zc_VR5qdSuLcmL3Y@slm.duckdns.org>
+	s=arc-20240116; t=1708119521; c=relaxed/simple;
+	bh=/03tnYSZHlsXQ79nRDv6eIA74CKPn0RoZElqyfXPpq0=;
+	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
+	 Message-ID:In-Reply-To; b=XcjYOwpRjByC6M/G+Lvbsivsmg4kbUIOMB1eIC4Hpk2TvlxtH9kEUVQDk3qjqHi3UIhc20oRRPcP/1DfDDETXYhCrFpNMIXok5env5LEMFily/nOFDr+AgQIgm5dFiGlRHqmdFZpTroggnjhxmFBCqOsXqJPgPz4bZ+H5cFgoZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jz/5jP5i; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708119519; x=1739655519;
+  h=to:cc:subject:references:date:mime-version:
+   content-transfer-encoding:from:message-id:in-reply-to;
+  bh=/03tnYSZHlsXQ79nRDv6eIA74CKPn0RoZElqyfXPpq0=;
+  b=Jz/5jP5iADifMxbcEZmEZdFyVbIzuNWzuy9EjyDW70qfNvE+z9UPNxzI
+   9Rfg1AwdWwC3QKwnJU+e+k7Bn1UWs23y8WzNeO0VnUjS7YKmAY3nGv/p9
+   NardYOQxoE0C1IDdVA/9ndaXGOIVo6FeMQp+ssuz4WJMMNAbZPOQ2EHVf
+   xeIKpLi8BXChUHbFt5LSnZYuYF+3QYTkG3WWFpBwRULXH1AQ06zPkLwlu
+   zJRCHaskskgh79qF2SB24SYlu5gBbRoILO+3nCV0PEN2Ksfmd0e+2X/93
+   nm+B75CqFS4nOb1eFzcIMyYYGJXZDwFIGiLDx7/N9TmMKNXpKQdvfhvsr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="13657967"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="13657967"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 13:38:38 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="8548746"
+Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 16 Feb 2024 13:38:34 -0800
+Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
+To: jarkko@kernel.org, dave.hansen@linux.intel.com, tj@kernel.org,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+ x86@kernel.org, cgroups@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, hpa@zytor.com, sohil.mehta@intel.com,
+ tim.c.chen@linux.intel.com, "Dave Hansen" <dave.hansen@intel.com>
+Cc: zhiquan1.li@intel.com, kristen@linux.intel.com, seanjc@google.com,
+ zhanb@microsoft.com, anakrish@microsoft.com, mikko.ylinen@linux.intel.com,
+ yangjie@microsoft.com, chrisyan@microsoft.com
+Subject: Re: [PATCH v9 09/15] x86/sgx: Charge mem_cgroup for per-cgroup
+ reclamation
+References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
+ <20240205210638.157741-10-haitao.huang@linux.intel.com>
+ <a5bd910b-3148-47ec-9280-561cfe6c16df@intel.com>
+Date: Fri, 16 Feb 2024 15:38:32 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+From: "Haitao Huang" <haitao.huang@linux.intel.com>
+Organization: Intel
+Message-ID: <op.2i87qioawjvjmi@hhuan26-mobl.amr.corp.intel.com>
+In-Reply-To: <a5bd910b-3148-47ec-9280-561cfe6c16df@intel.com>
+User-Agent: Opera Mail/1.0 (Win32)
 
-The following changes since commit 052d534373b7ed33712a63d5e17b2b6cdbce84fd:
+On Fri, 16 Feb 2024 09:15:59 -0600, Dave Hansen <dave.hansen@intel.com>  
+wrote:
 
-  Merge tag 'exfat-for-6.8-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/linkinjeon/exfat (2024-01-12 18:05:56 -0800)
+> On 2/5/24 13:06, Haitao Huang wrote:
+>> @@ -414,7 +416,7 @@ static void sgx_reclaim_pages_global(void)
+>>  void sgx_reclaim_direct(void)
+>>  {
+>>  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
+>> -		sgx_reclaim_pages_global();
+>> +		sgx_reclaim_pages_global(false);
+>>  }
+>>
+>>  static int ksgxd(void *p)
+>> @@ -437,7 +439,7 @@ static int ksgxd(void *p)
+>>  				     sgx_should_reclaim(SGX_NR_HIGH_PAGES));
+>>
+>>  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES))
+>> -			sgx_reclaim_pages_global();
+>> +			sgx_reclaim_pages_global(true);
+>>
+>>  		cond_resched();
+>>  	}
+>
+> First, I'm never a fan of random true/false or 0/1 arguments to
+> functions like this.  You end up having to go look at the called
+> function to make any sense of it.  You can either do an enum, or some
+> construct like this:
+>
+>  		if (sgx_should_reclaim(SGX_NR_HIGH_PAGES)) {
+> 			bool indirect = true;
+> 			sgx_reclaim_pages_global(indirect);
+> 		}
+>
+> Yeah, it takes a few more lines but it saves you having to comment the
+> thing.
+>
+> Does this 'indirect' change any behavior other than whether it does a
+> search for an mm to find a place to charge the backing storage?
 
-are available in the Git repository at:
+No.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/ tags/wq-for-6.8-rc4-fixes
+> Instead of passing a flag around, why not just pass the mm?
+>
+There is no need to pass in mm. We could just check if current->mm == NULL  
+for the need of doing the search in the enclave mm list.
 
-for you to fetch changes up to aac8a59537dfc704ff344f1aacfd143c089ee20f:
+But you had a concern [1] that the purpose was not clear hence suggested  
+current_is_ksgxd().
 
-  Revert "workqueue: Override implicit ordered attribute in workqueue_apply_unbound_cpumask()" (2024-02-05 15:49:06 -1000)
+Would it be OK if we replace current_is_ksgxd() with (current->flags &  
+PF_KTHREAD)? That would express the real intent of checking if calling  
+context is not in a user context.
 
-----------------------------------------------------------------
-workqueue: Fixes for v6.8-rc4
+> This refactoring out of 'indirect' or passing the mm around really wants
+> to be in its own patch anyway.
+>
+Looks like I could do:
+1) refactoring of 'indirect' value/enum suggested above. This seems the  
+most straightforward without depending on any assumptions of other kernel  
+code.
+2) replace  current_is_ksgxd() with current->mm == NULL. This assumes  
+kthreads has no mm.
+3) replace current_is_ksgxd() with current->flags & PF_KTHREAD. This is  
+direct use of the flag PF_KTHREAD, so it should be better than #2?
 
-Just one patch to revert ca10d851b9ad ("workqueue: Override implicit ordered
-attribute in workqueue_apply_unbound_cpumask()"). This could break ordering
-guarantee for ordered workqueues. The problem that the commit tried to
-resolve partially - making ordered workqueues follow unbound cpumask - is
-fully solved in wq/for-6.9 branch.
+Any preference or further thoughts?
 
-----------------------------------------------------------------
-Tejun Heo (1):
-      Revert "workqueue: Override implicit ordered attribute in workqueue_apply_unbound_cpumask()"
+Thanks
+Haitao
 
- kernel/workqueue.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
---
-tejun
+[1]  
+https://lore.kernel.org/linux-sgx/9c269c70-35fe-a1a4-34c9-b1e62ab3bb3b@intel.com/
 
