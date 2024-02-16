@@ -1,114 +1,122 @@
-Return-Path: <linux-kernel+bounces-68440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68441-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5D15857A3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:25:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F311857A41
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91BC5B22853
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:25:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 592DA1C22093
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58A0324B4A;
-	Fri, 16 Feb 2024 10:25:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3A32C197;
+	Fri, 16 Feb 2024 10:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UM/aahXc"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JStXjQwk"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD25324B50
-	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6042E28DDB;
+	Fri, 16 Feb 2024 10:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708079103; cv=none; b=G/D9pIvWvZmTOXzY3GgQtz7R4BtfTGt8Wzb5uiVfrSJHTmCyufp+L+lU4t9hSY26PHliFrepZX471iq8iYBjgwC4/L8jCSrgr0qZ+UcylcoH5tQKyN+Os5HiwBuY2U12fwFf4F6MhX/qyo+f+jUp07XNG2PfCw4w3tHi4Vq3W4k=
+	t=1708079172; cv=none; b=QL//gJDRwG8NAUU76Pr+pig4jOq/mqom2W0htnZldxluq323/z3HA601bGlgqlvm4LHym76CumXYTaz/xj1caxh1pe9U4QynP0UWV0l8NHzcEgmPTIDP8Qik4vmX5SkryMa7tL1xHRPygBt7LJM6AYkWhCGE94iH5MXZlxzyCmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708079103; c=relaxed/simple;
-	bh=RdNpeE3d+oW3k9ivrv9Mt8CvCnEdyMVqc1Bql/ZN4PY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eZglw1tBSUvqs6ZfLjazJePdb6dBFUovU1WTpaDBbwX2xjIgn3Bpa4/P91km3zzyaH2niE9TAvTsOcLKlsdQP22NV3GIU611zhM/AvVFxPoit4PULtFml6DjZPaXWboEeQudYQGJ336nGzhSo4UGSUi21AIlMDmBFWjsQx3o6+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UM/aahXc; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51182ece518so2231855e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 02:25:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708079100; x=1708683900; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9uwpxzD7wxs4tMFhIUi84X6jUwWhqp/NQm+0nfPH8IA=;
-        b=UM/aahXciZlLYHfxTdI9OXA3DvoKrpnvGJ1K2CBDNzfkVbUzRr672q7PDqvjfln/Np
-         RZ1BF1TRjybdeVqknWBojcrxTk59vfeax6KTnwviSqDiTUlV3hEE/4DYfRClQSKz6ZyU
-         5EdOnL3y4a8A0AqCm2mo9NtVx/85+p9k8PU9wQWbka37NqtG6D2Xr5JUvwUjCACKLNkK
-         C36Ch0/nfsK9P0QuOZ8aahLP2uwQ1ZHZKe/H3VT2S8ePK48VFevHITFKJCs8/sFcoUxN
-         QANUvkyX0fSwILlSTZb8MFBxjQA9k0Iyp2JpgBFz3Mcu0DW4dVAsuYd8TuYx3kxMTNcN
-         IalA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708079100; x=1708683900;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9uwpxzD7wxs4tMFhIUi84X6jUwWhqp/NQm+0nfPH8IA=;
-        b=fVLjYnhP661iNGw2AQbDaIgGmGTuHHN6Gkl5dw87eBAK4VJA3fDXV2Hetp5EY35fu+
-         FXhg19fEOcAmR14Ioy7OWXKCz4ZaDxwBqsJr6jUTXPf228KQLHiALSCZjtrs6f4MnvAZ
-         zZCOmd1nE54IsrQjpaQ0vNHeNF4N570JRWAbnk7C9B6giRBggquN6YdS+prQn5ysddIf
-         nC9moCw4R4qWrPmKr7sjDbLeuZq59YvGBdgzAtALJ6jYgOLJasSAV2N5ARawBu6GUxec
-         3Gue68uu14VsfhhXOrY5CmC3GttoslPEizzNcB3tPSuWKCBYZGqTLUSkakVRV/9ngUIF
-         Q0Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCU8K/6HRnldy9Ij2PqDTDkokVBN/0cEkmer4vuifGtxpi7EwGpLzHOCB6PgEHuRL0Le/pDk7g/A460Zdk3N5JyIEK2XC7NIcOYh6qZM
-X-Gm-Message-State: AOJu0YxzD7nTQIipBvTqy2egYFUE2qtjHqLYQ8d7WrAhTxetTj2tF/aX
-	QL735j+iZPRpwOd1Z7ab3u7wBU+K3ch8TeS+ugvoolqYfC8EObm5eouiEJa0O/P8sPL8wEdhHI5
-	2
-X-Google-Smtp-Source: AGHT+IGoZm/xp1G/OD/8Sl4FoiC95cUmkntuMFrDr7Qmfp/kfCwUeNUTxLGICD5tmQBANj3SLO1Z1Q==
-X-Received: by 2002:a17:906:7196:b0:a3c:7fcc:3967 with SMTP id h22-20020a170906719600b00a3c7fcc3967mr3430139ejk.40.1708079078897;
-        Fri, 16 Feb 2024 02:24:38 -0800 (PST)
-Received: from krzk-bin.. ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id hw12-20020a170907a0cc00b00a3d5d8ff745sm1438580ejc.144.2024.02.16.02.24.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 02:24:38 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	linux-arm-msm@vger.kernel.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Subject: [PATCH] pinctrl: qcom: sm8650-lpass-lpi: correct Kconfig name
-Date: Fri, 16 Feb 2024 11:24:35 +0100
-Message-Id: <20240216102435.89867-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708079172; c=relaxed/simple;
+	bh=+pkZefiPmfNLRzzUaA7n5y6qDHZMRJRXzHgd4nb5GWI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=nw/bjA+16XiDCQIbECPFzNwqW97PjD29kba0yVRYar/4dYF5A2FzJrghQJGL672mCQwHyIYCW+AZKzOrinlmeqK69QRmKSN6/4QtTKGlVC5HZ9m+Hidhv0YMks53QnG9i3qCIQyrHapYZ3it6axIyfLHtZszKCRsZwOgSUQDP5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JStXjQwk; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C30BCFF808;
+	Fri, 16 Feb 2024 10:26:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708079167;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+pkZefiPmfNLRzzUaA7n5y6qDHZMRJRXzHgd4nb5GWI=;
+	b=JStXjQwkH8ZEt3ydGXVRwZp6IkCy5Zb/CKP5zP2BZwV1waZcrgBbRQ1po2x6JlAl4Itmei
+	e24H/RGyChLjiA1UQe8aWbD06HYzzIK2PmACcN2dS4hdovnrnjX+il83nu9n/1/Fj0EUNr
+	DuEQ6s7HjJya1vYAA1KXYWWQW6cY9eRNTBZXPiT+rmisBFEcJWmE+e4+6GQ4P36zFAce/0
+	10oc8yiNhMWpISFBt273Za7EdagZ38B71U8e9xztbG20jWbgAQEUTiKVRUGc6CE3orTQBk
+	A921fyqr3AuzC2aRVrmIH7KoatrVo2RMPzF+QGpzuX0suvp5/oViWbtnjXYtqw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 16 Feb 2024 11:26:05 +0100
+Message-Id: <CZ6FJ3Z78VWO.242BXKNE6RCUV@bootlin.com>
+Cc: <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Linus Walleij"
+ <linus.walleij@linaro.org>, "Andi Shyti" <andi.shyti@kernel.org>, "Rob
+ Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 13/13] MIPS: mobileye: eyeq5: add resets to I2C
+ controllers
+X-Mailer: aerc 0.15.2
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-13-19a336e91dca@bootlin.com>
+ <42b7e3bb-a152-4ded-91f3-fb8043a7f413@linaro.org>
+ <CZ6DTGBC02P7.1RHCB4E64N88A@bootlin.com>
+ <c478bb6f-49b8-4251-99e9-46b4c9510953@linaro.org>
+In-Reply-To: <c478bb6f-49b8-4251-99e9-46b4c9510953@linaro.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Use proper model name in SM8650 LPASS pin controller Kconfig entry.
+Hello,
 
-Cc: <stable@vger.kernel.org>
-Fixes: c4e47673853f ("pinctrl: qcom: sm8650-lpass-lpi: add SM8650 LPASS")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/pinctrl/qcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri Feb 16, 2024 at 10:17 AM CET, Krzysztof Kozlowski wrote:
+> On 16/02/2024 10:05, Th=C3=A9o Lebrun wrote:
+> > Hello,
+> >=20
+> > On Fri Feb 16, 2024 at 8:59 AM CET, Krzysztof Kozlowski wrote:
+> >> On 15/02/2024 17:52, Th=C3=A9o Lebrun wrote:
+> >>> Add resets properties to each I2C controller. This depends on the
+> >>> reset-eyeq5 platform reset controller driver.
+> >>>
+> >>> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+> >>> ---
+> >>
+> >> This should be squashed with previous patch adding i2c controllers.
+> >> Don't add incomplete nodes just to fix them in next patch.
+> >=20
+> > The goal was to isolate reset phandles to a single patch. The series
+>
+> That was what you did, not the goal. If that's the goal, then it is
+> clearly wrong.
+>
+> > with this patch dropped works because resets in their default state are
+> > deasserted, so this isn't a fix. And it allows testing the series on
+> > hardware with only the base platform series, which I found useful.
+>
+> Series or half-of-series? Anyway, commits must be logical chunks, so one
+> chunk is to add I2C controllers, not "part of I2C controllers". DTS is
+> also independent of drivers (and it will go via different trees!), so
+> whatever dependency you think of, it does not exist.
 
-diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-index e0f2829c15d6..24619e80b2cc 100644
---- a/drivers/pinctrl/qcom/Kconfig
-+++ b/drivers/pinctrl/qcom/Kconfig
-@@ -125,7 +125,7 @@ config PINCTRL_SM8550_LPASS_LPI
- 	  platform.
- 
- config PINCTRL_SM8650_LPASS_LPI
--	tristate "Qualcomm Technologies Inc SM8550 LPASS LPI pin controller driver"
-+	tristate "Qualcomm Technologies Inc SM8650 LPASS LPI pin controller driver"
- 	depends on ARM64 || COMPILE_TEST
- 	depends on PINCTRL_LPASS_LPI
- 	help
--- 
-2.34.1
+My reasoning was focused on my point-of-view as a contributor and tester
+of the series. Your explanation makes sense; I had never thought this
+through from the maintainer's POV.
 
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
