@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-68387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B418585798E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:57:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB31B857990
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:58:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8FF01C20B3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:57:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71A211F20F73
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 09:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C903200C9;
-	Fri, 16 Feb 2024 09:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3BC920DF0;
+	Fri, 16 Feb 2024 09:55:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="dY9h2Y2b"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="EFPd4Hz1"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E121F93E;
-	Fri, 16 Feb 2024 09:55:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A45B620DCC;
+	Fri, 16 Feb 2024 09:55:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708077339; cv=none; b=cMDoPtDiq5F12dC+BW5IeEqHaaNtuWCh9Cql5t/syzgkmIHppwaQkh6SmF0DNR6VS9uhQ8IcWo36asgvT/6L0HIRCDmjHtbK0kWNozMUi/Qj1bwtoSCCZc1gm5cj5dWWAYcyAZsJtMtBB8z9ttxKs51Lf2vJXOsKuCGxE/UfN80=
+	t=1708077346; cv=none; b=RFXv+7Nps/Q1F9Ha1mGY2n7VBSYaYN+RivcbPCpEV6Q4TH+ebkD2m02W+aI+Kb5dk1gzSZAD+s5QMp+wYLR1A25815FD9o5imEqNJNEEGS9bwFRB9owCEWCV58bmcLl5iWW2UdRPNtQVja6hjVF9ie//49BEJ7cV1HgyoD0lpnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708077339; c=relaxed/simple;
-	bh=8U+d6hL24MZGPZFxK9bYc4RDQf5dPvWZOf7qapIJo0I=;
+	s=arc-20240116; t=1708077346; c=relaxed/simple;
+	bh=+W3iDB8WTozj1nqYH1DK/H9GSSjDUiV71a1AKS5P110=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=I6G1b4X429xNBb1we02SGEtrrKiY1mv+JHK9MHWDcaycIiRo/5eMBwahGvSfYj/E1wwerqCGTkiwFtughT/j7gM2dKikFaze8M4sKKcoKS1ZAPZGJnA4JBw168EdM90d9BaFoDsvAsWOO6Ji7cFw7crsk8cas7Icr9rsndFgUJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=dY9h2Y2b; arc=none smtp.client-ip=213.167.242.64
+	 MIME-Version; b=YYGkJKUVa13Xnqj7Zw2kd4UnukHoMs1JAAnBp2FxnGmdvrUJNwkhDsPvlrGC5IvcFUrB0nuODIHMCLx2jV64p8YhwAlZnvxsgG0n6paPebheeZN0f2/BSrwnDvYDwcVoPHD4AgHk1OhnhNbqu8QYCc9N0eZgoRxgjnxnOXDhp7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=EFPd4Hz1; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from pyrite.hamster-moth.ts.net (h175-177-049-156.catv02.itscom.jp [175.177.49.156])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 04DA5D4A;
-	Fri, 16 Feb 2024 10:55:27 +0100 (CET)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 455CC6B3;
+	Fri, 16 Feb 2024 10:55:33 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708077332;
-	bh=8U+d6hL24MZGPZFxK9bYc4RDQf5dPvWZOf7qapIJo0I=;
+	s=mail; t=1708077338;
+	bh=+W3iDB8WTozj1nqYH1DK/H9GSSjDUiV71a1AKS5P110=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dY9h2Y2bHKE5aKn51aImxQVGxPzKk7tXWlmJ4aQqYxeu+hH02clk3UUO9nfXA9SSK
-	 4Vaze+gj20sZ76Sk5NZoeCDtwuRWtsGGiVR8xwcYSxalOXOiDFoqFLyMbngLkivNPY
-	 xSmvqoT1wBmwOt3I49jeOUkRZWYqumlGxeWzTgLw=
+	b=EFPd4Hz167Z6n9h4GJX/56gSHTCjQoYr8ejI5V8F0EupmAC2a6YIiC2Lp51WdAylt
+	 NTgVjRd4nxV2V61M/JT0jNTADPv4if63qXrzFtNg84TUn5Al0KAMGOz5hMGyHoErwu
+	 an9fE3TLqF5JTZaW2L2c21T5B1iE4Ukdsa61m4C0=
 From: Paul Elder <paul.elder@ideasonboard.com>
 To: linux-media@vger.kernel.org,
 	linux-rockchip@lists.infradead.org,
@@ -50,15 +50,20 @@ Cc: kieran.bingham@ideasonboard.com,
 	aford173@gmail.com,
 	Paul Elder <paul.elder@ideasonboard.com>,
 	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	Rob Herring <robh@kernel.org>,
 	Alexander Stein <alexander.stein@ew.tq-group.com>,
 	Dafna Hirschfeld <dafna@fastmail.com>,
 	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
 	Heiko Stuebner <heiko@sntech.de>,
+	Helen Koike <helen.koike@collabora.com>,
 	linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC support),
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v12 04/12] media: rkisp1: Support devices lacking dual crop
-Date: Fri, 16 Feb 2024 18:54:50 +0900
-Message-Id: <20240216095458.2919694-5-paul.elder@ideasonboard.com>
+Subject: [PATCH v12 05/12] dt-bindings: media: rkisp1: Add i.MX8MP ISP to compatible
+Date: Fri, 16 Feb 2024 18:54:51 +0900
+Message-Id: <20240216095458.2919694-6-paul.elder@ideasonboard.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240216095458.2919694-1-paul.elder@ideasonboard.com>
 References: <20240216095458.2919694-1-paul.elder@ideasonboard.com>
@@ -70,113 +75,101 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some versions of the ISP supported by the rkisp1 driver, such as the ISP
-in the i.MX8MP, lack the dual crop registers and don't support cropping
-at the resizer input. They instead rely on cropping in the Image
-Stabilization module, at the output of the ISP, to modify the resizer
-input size and implement digital zoom.
+The i.MX8MP ISP is compatbile with the rkisp1 driver. Add it to the list
+of compatible strings. While at it, expand on the description of the
+clocks to make it clear which clock in the i.MX8MP ISP they map to,
+based on the names from the datasheet.
 
-Add a dual crop feature flag to distinguish the versions of the ISP that
-support dual crop from those that don't, and make sure that the sink
-crop is set to the sink format when dual crop is not supported.
-
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
 Tested-by: Adam Ford <aford173@gmail.com>
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
-Changes in v12:
-- Remove mention of moving resizer input crop to image stabilizer from
-  commit message
-- Make sure the sink crop is set to the sink format when dual crop is
-  not supported
----
- .../media/platform/rockchip/rkisp1/rkisp1-common.h    |  2 ++
- drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c   |  6 ++++--
- .../media/platform/rockchip/rkisp1/rkisp1-resizer.c   | 11 +++++++----
- 3 files changed, 13 insertions(+), 6 deletions(-)
+Changes since v1:
 
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-index f7c251f79aa9..219d4a2547aa 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-@@ -112,6 +112,7 @@ enum rkisp1_isp_pad {
-  * @RKISP1_FEATURE_MIPI_CSI2: The ISP has an internal MIPI CSI-2 receiver
-  * @RKISP1_FEATURE_MAIN_STRIDE: The ISP supports configurable stride on the main path
-  * @RKISP1_FEATURE_SELF_PATH: The ISP has a self path
-+ * @RKISP1_FEATURE_DUAL_CROP: The ISP has the dual crop block at the resizer input
-  *
-  * The ISP features are stored in a bitmask in &rkisp1_info.features and allow
-  * the driver to implement support for features present in some ISP versions
-@@ -121,6 +122,7 @@ enum rkisp1_feature {
- 	RKISP1_FEATURE_MIPI_CSI2 = BIT(0),
- 	RKISP1_FEATURE_MAIN_STRIDE = BIT(1),
- 	RKISP1_FEATURE_SELF_PATH = BIT(2),
-+	RKISP1_FEATURE_DUAL_CROP = BIT(3),
- };
+- Add fsl,blk-ctrl property
+- Make iommus, phys and phy-names conditional on compatible
+---
+ .../bindings/media/rockchip-isp1.yaml         | 37 ++++++++++++++++---
+ 1 file changed, 31 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+index afcaa427d48b..6be00aca4181 100644
+--- a/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
++++ b/Documentation/devicetree/bindings/media/rockchip-isp1.yaml
+@@ -16,6 +16,7 @@ description: |
+ properties:
+   compatible:
+     enum:
++      - fsl,imx8mp-isp
+       - rockchip,px30-cif-isp
+       - rockchip,rk3399-cif-isp
  
- #define rkisp1_has_feature(rkisp1, feature) \
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-index f48a21985b18..2e40c376cab5 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-dev.c
-@@ -507,7 +507,8 @@ static const struct rkisp1_info px30_isp_info = {
- 	.isr_size = ARRAY_SIZE(px30_isp_isrs),
- 	.isp_ver = RKISP1_V12,
- 	.features = RKISP1_FEATURE_MIPI_CSI2
--		  | RKISP1_FEATURE_SELF_PATH,
-+		  | RKISP1_FEATURE_SELF_PATH
-+		  | RKISP1_FEATURE_DUAL_CROP,
- };
+@@ -36,9 +37,9 @@ properties:
+     minItems: 3
+     items:
+       # isp0 and isp1
+-      - description: ISP clock
+-      - description: ISP AXI clock
+-      - description: ISP AHB clock
++      - description: ISP clock (for imx8mp, clk)
++      - description: ISP AXI clock (for imx8mp, m_hclk)
++      - description: ISP AHB clock (for imx8mp, hclk)
+       # only for isp1
+       - description: ISP Pixel clock
  
- static const char * const rk3399_isp_clks[] = {
-@@ -527,7 +528,8 @@ static const struct rkisp1_info rk3399_isp_info = {
- 	.isr_size = ARRAY_SIZE(rk3399_isp_isrs),
- 	.isp_ver = RKISP1_V10,
- 	.features = RKISP1_FEATURE_MIPI_CSI2
--		  | RKISP1_FEATURE_SELF_PATH,
-+		  | RKISP1_FEATURE_SELF_PATH
-+		  | RKISP1_FEATURE_DUAL_CROP,
- };
+@@ -52,6 +53,13 @@ properties:
+       # only for isp1
+       - const: pclk
  
- static const struct of_device_id rkisp1_of_match[] = {
-diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
-index dd77a31e6014..755d319b568e 100644
---- a/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
-+++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-resizer.c
-@@ -447,8 +447,9 @@ static void rkisp1_rsz_set_sink_crop(struct rkisp1_resizer *rsz,
- 	/* Not crop for MP bayer raw data */
- 	mbus_info = rkisp1_mbus_info_get_by_code(sink_fmt->code);
++  fsl,blk-ctrl:
++    $ref: /schemas/types.yaml#/definitions/phandle-array
++    maxItems: 1
++    description:
++      A phandle to the media block control for the ISP, followed by a cell
++      containing the index of the gasket.
++
+   iommus:
+     maxItems: 1
  
--	if (rsz->id == RKISP1_MAINPATH &&
--	    mbus_info->pixel_enc == V4L2_PIXEL_ENC_BAYER) {
-+	if ((rsz->id == RKISP1_MAINPATH &&
-+	     mbus_info->pixel_enc == V4L2_PIXEL_ENC_BAYER) ||
-+	    !rkisp1_has_feature(rsz->rkisp1, DUAL_CROP)) {
- 		sink_crop->left = 0;
- 		sink_crop->top = 0;
- 		sink_crop->width = sink_fmt->width;
-@@ -635,7 +636,8 @@ static int rkisp1_rsz_s_stream(struct v4l2_subdev *sd, int enable)
- 	struct v4l2_subdev_state *sd_state;
+@@ -113,9 +121,6 @@ required:
+   - interrupts
+   - clocks
+   - clock-names
+-  - iommus
+-  - phys
+-  - phy-names
+   - power-domains
+   - ports
  
- 	if (!enable) {
--		rkisp1_dcrop_disable(rsz, RKISP1_SHADOW_REGS_ASYNC);
-+		if (rkisp1_has_feature(rkisp1, DUAL_CROP))
-+			rkisp1_dcrop_disable(rsz, RKISP1_SHADOW_REGS_ASYNC);
- 		rkisp1_rsz_disable(rsz, RKISP1_SHADOW_REGS_ASYNC);
- 		return 0;
- 	}
-@@ -646,7 +648,8 @@ static int rkisp1_rsz_s_stream(struct v4l2_subdev *sd, int enable)
- 	sd_state = v4l2_subdev_lock_and_get_active_state(sd);
+@@ -143,6 +148,26 @@ allOf:
+       required:
+         - interrupt-names
  
- 	rkisp1_rsz_config(rsz, sd_state, when);
--	rkisp1_dcrop_config(rsz, sd_state);
-+	if (rkisp1_has_feature(rkisp1, DUAL_CROP))
-+		rkisp1_dcrop_config(rsz, sd_state);
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: fsl,imx8mp-isp
++    then:
++      properties:
++        iommus: false
++        phys: false
++        phy-names: false
++      required:
++        - fsl,blk-ctrl
++    else:
++      properties:
++        fsl,blk-ctrl: false
++      required:
++        - iommus
++        - phys
++        - phy-names
++
+ additionalProperties: false
  
- 	v4l2_subdev_unlock_state(sd_state);
- 
+ examples:
 -- 
 2.39.2
 
