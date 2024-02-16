@@ -1,95 +1,120 @@
-Return-Path: <linux-kernel+bounces-68076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3F668575AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:40:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B3488575B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 06:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34B8D285A36
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:40:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60FA4287192
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 05:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAB74134BD;
-	Fri, 16 Feb 2024 05:40:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94703134A0;
+	Fri, 16 Feb 2024 05:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ftaC8Y/L"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Dmyb79wm"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92B912E74;
-	Fri, 16 Feb 2024 05:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC3C1426F;
+	Fri, 16 Feb 2024 05:42:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708062026; cv=none; b=UcJBqGHoozNLMKEsJwv6MtStUHA8AufmJ3FQkoVa67nOvJZ1Y2vG8e6HN9chCFLYMruyVBzrFRhNAPaDEpd5a9f4h4ial8cV+NFVf8bayfCcFwPB9A2XN+fPOsKjUNLyFhJ6CEBgHvKPbQ4JseHxD/rBDAXrhlPaNbuKihUye9s=
+	t=1708062165; cv=none; b=J0UbFnqP1y1UBW8OppeSip1gHGoCh1DlCKH8Dr5b7oFJ3t9fy2Gin+1fivkR6fA6A8bAUNP3B/Ezi4ywpjQpdjXnXxA8OK338K9A43O2wbgGEqT96h9f4uJctgKikWBsmlgk3/cBAVIMhgKNyoSABIm6D7cNIUAja7JnyCun838=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708062026; c=relaxed/simple;
-	bh=e0btg/nEkxmcE3ZWPeSYCuKrkKskM0N98V08CLYKCUc=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=h/jpNeHV33A2nAGlRLJ7oYL7pSarV8ySAmT5kJtX5BmTOb0Fov+e4bPQAR4hHNUXBkXZ7qAIyfJ4J2W6EZJW2sG/DEbw533W5vjOy809hv9DRpSJiTMybBSmqdOw4k8/ejxyZqnLsIeYcRdgwuKyNF6c3IpMoU6qPxqNU/wS/Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ftaC8Y/L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4A4A5C43390;
-	Fri, 16 Feb 2024 05:40:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708062025;
-	bh=e0btg/nEkxmcE3ZWPeSYCuKrkKskM0N98V08CLYKCUc=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=ftaC8Y/L2MJLrxO8K3x9aCi1OcVZ7Q3iLr6Rkcoz9fyF61af8gnvcl+a2X7qUQ9QL
-	 tESdu5xDv0nFdcLSw3RpAxY6LEwZe71uwHyXmDBDIvPCexy1MuqRLF3c31PW1U27I0
-	 wpImsG8oxt4Ybc3i3qC8/zLkyU+wn1mKbtnWNZW8K2zhH6JlVBbStKzdNXoc/TlRf3
-	 oYj9K5iTV8Q2MkMozU3l1JdrqrDRTGmRkV3gVoKOlGUmjOqaJ4zHAU8VzYCMYb+J4J
-	 vun+yNgo6izH2PIIQi5X7ZXSEhnhutak5KqeWMLZa4J8mRkHEHoIfN4/obVUFx/9h8
-	 TPg+JqJdiCwtA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 26666D8C97D;
-	Fri, 16 Feb 2024 05:40:25 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708062165; c=relaxed/simple;
+	bh=HnWCOkMadNhJGbb1VJOm3PJbn/DjNUj34mzlBEQl6Ug=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rIRh2kltt6j90UjLX+Q7uQwdRg/3f1WUaIAX9AAkzy83ekWH9/UFA4cBIzwzbvvR4GmPwtlZ8uRUk6WEIVeM3Cw9PU6TATgcmSFofIlqXIFFHZjsJLTuY4wiL7BvaFVOxNvEeRmL8MwAWZZBdvL6bOFC/VT5OZG0/7Wdt+5qyY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Dmyb79wm; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41G5gb7O111727;
+	Thu, 15 Feb 2024 23:42:37 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708062157;
+	bh=7sD7T8y2sbe1Dbnwwio5IHPM4pTPa3PariSat8bPlHA=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=Dmyb79wmUqXTxgu631FQ4/DWfy/6KhFJJXrGkqA0FFG0NnhVBqeHG2vOSlTJa6qcD
+	 uNm9ANKRdCUh0DL5dPKiglzrdKY9FdaPCaGg8KniJpTmTsEjCUnVFQh4jrjTN0UP/d
+	 on9WLl2q5rFu6Oj7IkgxBkq7q6nx1zIb/YqGsgF8=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41G5gbki027275
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 15 Feb 2024 23:42:37 -0600
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 15
+ Feb 2024 23:42:37 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 15 Feb 2024 23:42:37 -0600
+Received: from localhost (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41G5gahC040179;
+	Thu, 15 Feb 2024 23:42:36 -0600
+Date: Fri, 16 Feb 2024 11:12:35 +0530
+From: Dhruva Gole <d-gole@ti.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+CC: <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>,
+        <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH -next] spi: spi-summary.rst: fix underline length
+Message-ID: <20240216054235.bkfyi5mbdz2yyhan@dhruva>
+References: <20240216051637.10920-1-rdunlap@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2] net: dsa: remove OF-based MDIO bus
- registration from DSA core
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170806202514.18199.5277727035517778240.git-patchwork-notify@kernel.org>
-Date: Fri, 16 Feb 2024 05:40:25 +0000
-References: <20240213-for-netnext-dsa-mdio-bus-v2-1-0ff6f4823a9e@arinc9.com>
-In-Reply-To: <20240213-for-netnext-dsa-mdio-bus-v2-1-0ff6f4823a9e@arinc9.com>
-To: =?utf-8?b?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXkgPGRldm51bGwrYXJpbmMudW5hbC5h?=@codeaurora.org,
-	=?utf-8?b?cmluYzkuY29tQGtlcm5lbC5vcmc+?=@codeaurora.org
-Cc: andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- mithat.guner@xeront.com, erkin.bozoglu@xeront.com, luizluca@gmail.com,
- ALSI@bang-olufsen.dk, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- arinc.unal@arinc9.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240216051637.10920-1-rdunlap@infradead.org>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hello:
+Hi,
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue, 13 Feb 2024 10:29:05 +0300 you wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Feb 15, 2024 at 21:16:37 -0800, Randy Dunlap wrote:
+> The change to use "target" requires an underline to be extended by
+> one more character to fix a documentation build warning:
 > 
-> The code block under the "!ds->user_mii_bus && ds->ops->phy_read" check
-> under dsa_switch_setup() populates ds->user_mii_bus. The use of
-> ds->user_mii_bus is inappropriate when the MDIO bus of the switch is
-> described on the device tree [1].
+>   Documentation/spi/spi-summary.rst:274: WARNING: Title underline too short.
+>   Declare target Devices
+>   ^^^^^^^^^^^^^^^^^^^^^
+
+Oops, looks like I missed it.
+
 > 
-> [...]
+> Fixes: hash ("spi: Update the "master/slave" terminology in documentation")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Dhruva Gole <d-gole@ti.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: linux-spi@vger.kernel.org
+> ---
+>  Documentation/spi/spi-summary.rst |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff -- a/Documentation/spi/spi-summary.rst b/Documentation/spi/spi-summary.rst
+> --- a/Documentation/spi/spi-summary.rst
+> +++ b/Documentation/spi/spi-summary.rst
+> @@ -271,7 +271,7 @@ an external clock, where another derives
+>  settings of some master clock.
+>  
+>  Declare target Devices
+> -^^^^^^^^^^^^^^^^^^^^^
+> +^^^^^^^^^^^^^^^^^^^^^^
 
-Here is the summary with links:
-  - [net-next,v2] net: dsa: remove OF-based MDIO bus registration from DSA core
-    https://git.kernel.org/netdev/net-next/c/ae94dc25fd73
+Good catch,
+Reviewed-by: Dhruva Gole <d-gole@ti.com>
 
-You are awesome, thank you!
+Mark,
+Will you be just squashing the commits since they're still in next
+or will this be a separate commit? Just curious how fixes work while
+they're still not in any mainline linux tree
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Best regards,
+Dhruva Gole <d-gole@ti.com>
 
