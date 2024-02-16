@@ -1,511 +1,228 @@
-Return-Path: <linux-kernel+bounces-68444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-68446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13C8B857A4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:29:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70819857A4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 11:30:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE75028837C
-	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:29:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA7F0B242F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 16 Feb 2024 10:30:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6982C1A3;
-	Fri, 16 Feb 2024 10:28:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3373F2C1B6;
+	Fri, 16 Feb 2024 10:30:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="bokedZ5L"
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RGagwFqq"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624412C860;
-	Fri, 16 Feb 2024 10:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8912728E22
+	for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 10:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708079323; cv=none; b=rmQIVfLkgks8sW3wQS3ldKvcgH5o1ua1jgvQvVQZNQcq6voZAwa5ZpKe6btwhf8PzewczCigOXqn2AjoIsKYEp6autAullSGshK+WAVD+UFoHILatMK+XS5KBOJV9BBHFHYqpc/ndxb/UNdsn4dHLzL1MVQ2k7OvOqsCIWPDDWg=
+	t=1708079402; cv=none; b=k8lLJMTPfRrmiFQ+lXv/To0oO+zka09OysY+/S1N4TO+67Z45bldRMxKU92Cxaa8e/CWdE0JFkja+EBLjxZRbVoMrKw9/YTmEP18xWY3BawuE6a4JDw0FTpAovcy/+cohJsVrAhzJdvREZLBZ9Ooog8lSmkJtdequoqIjfum5Ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708079323; c=relaxed/simple;
-	bh=32pqVwO+RqnwFfeQjxXXUN1e/1XXDkQ0T1CtIpBLZps=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bfzjgisc/oOClIZ/n0NHCbAhUvTEW+mWzYfF+RlQCw8iA95g6Isejjgqo60rpZAqHaC2ZY4k/tK2GwW4d9IgUAs4ZHwbeFXRzEnRJGd3xkQoJY2nxQu1LJEpOryOTDFMA/ig86vs4q5TB3eO3b3eUtmWrdEvcFyhlBM8sZhLtxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=bokedZ5L; arc=none smtp.client-ip=93.104.207.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+	s=arc-20240116; t=1708079402; c=relaxed/simple;
+	bh=iS1gdFeYewTybvUGauLe0Pp6QDy5Vte0Bxj561I1+QY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Lr1yUxDB+g7AzT2TSyLucPcD8Y4VyQ2wGzrxNNcHBH6tdtcv6v6k/PFt7erx8vQnkGZg0XLr/qJbp4jQHvQzh18ND4gINi8Xx5JI9oSCOWhO/dAdj6Lz/LLrq8IP2ZYhoeN8ezsLivFvkM6LXacNWpeHdBZbwIIhp7+PvMhZmqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RGagwFqq; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-33aeb088324so973819f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 02:30:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1708079320; x=1739615320;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=MB/nN9a0T/r1EBacRJA4wapz9QQsMCAXdIXZIw6yqkc=;
-  b=bokedZ5LEAuB7WNDt8rwuV2fT2hZuD+WY8jw0viP+lxudc0CuIK4Vq1K
-   oZvWpoYxPbQOVqEIjg1Epl8ZT7o3e5oGSXG6nQgH439b+AoiKAH19CYzy
-   hFRl2DLZAtp4p/diTZ0ngUNXpd4bknvS5ESIvFXFvZWc5q0G23jHQQFzD
-   z7cyliDoGvBKmvbnpAv7mbdnjdMKpy/mXiyWCvVCd6iqeA/24sPdD0XjS
-   tXbWckNb1oU8O+tO5Au2MDM3TsSm8XDNlpoTrYber2e2DrjtXddR1mt8y
-   NdBA+dgdzHCRGkMseABkTSUtFxN2ZzOf1Vjalk2yz9p06yQNSomzaVaRR
-   w==;
-X-IronPort-AV: E=Sophos;i="6.06,164,1705359600"; 
-   d="scan'208";a="35443367"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 16 Feb 2024 11:28:36 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.25])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 6E28B280075;
-	Fri, 16 Feb 2024 11:28:34 +0100 (CET)
-From: Alexander Stein <alexander.stein@ew.tq-group.com>
-To: linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org, Paul Elder <paul.elder@ideasonboard.com>
-Cc: kieran.bingham@ideasonboard.com, tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com, aford173@gmail.com, Paul Elder <paul.elder@ideasonboard.com>, Dafna Hirschfeld <dafna@fastmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Heiko Stuebner <heiko@sntech.de>, "moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 11/12] media: rkisp1: Fix endianness on raw streams on i.MX8MP
-Date: Fri, 16 Feb 2024 11:28:36 +0100
-Message-ID: <1980499.usQuhbGJ8B@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20240216095458.2919694-12-paul.elder@ideasonboard.com>
-References: <20240216095458.2919694-1-paul.elder@ideasonboard.com> <20240216095458.2919694-12-paul.elder@ideasonboard.com>
+        d=gmail.com; s=20230601; t=1708079399; x=1708684199; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GKevrJOYIycMmtJhAGuLF6g1H2Kc16hvAKk7YFtZO5A=;
+        b=RGagwFqqjzoC9zqMvvWZaCAXkYHMxrYfsJ4tpxHt4w/srHGczq7ElOZL7eK8nf9zpL
+         9BNn+EHpphIBdT2TsJ8I3pAzVaZlQg0poeAKLSkAllxCkzGywOUUCbLfJ1cO3f98/h/p
+         BTuMWzSfSEXur/BiZ1Uv6XPFbUD7c2u0AWxiyuDrV6Pf7MwKbeOl1O6pXsAM6Mw8mx5t
+         cmgIBU0lWDTiyvjnpVLIhBvR3TZ4gMUwEn9wENiLPmslEmivGv7cJA67+pbu/sNSYE59
+         Ku8BmZ60z4wCtXkkfUjeTX4MAh+TByYywlVf9JuEycvQZw6OC/aPnNylQtikELDPTPbB
+         nmYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708079399; x=1708684199;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GKevrJOYIycMmtJhAGuLF6g1H2Kc16hvAKk7YFtZO5A=;
+        b=TiS2lFR8uIHROljQ5UPhQevbwNl6VfgHW1SOfSCOtdglztTtovjOLMJ0Vl2ac1wo/+
+         Pgq++iQd3I/6ZSdzsssVCmXkD/J8TIRwFLIcjYvl3UYSOaTavzRg+TuGXH24iYGcs0K9
+         pqxeGDvnccVRi2NbOgEWrC7oaLJ9f675d3VjenQqT9IY85KUEvuwukmG8izxop6wUE3o
+         Wz1+qkobMhTWUEAAlqXhE0yQ37/8Y+EWCAqfnWYG5H5CnuAibrFxKiuurLVNLwNauO/i
+         Tl8Rg3VAOivvNKTyQpT94KKD8++7kdNUf/8q4Oc3pMbY1HRWwHbIX72Ff4G9q8G6O8+y
+         kJxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPAIAnBrabRxgpFZT6N+Jioz6BWBF4Ihm5x74cDDogWeiVzSuW+5ZUegPK/NoU1XzUgAs2hIsh5tF3xLxYiIR5oJlf76ilu4KKIRZd
+X-Gm-Message-State: AOJu0YxhCSvaS6E7X6ihjrvHkFFAMBaQjrlDEnKzra8QhdlhaX/Ge8aE
+	dqvsMiw5dZfpghACIuq+uTloQL5zNKAE3hgKu4R6TPXPKvYAVqEn
+X-Google-Smtp-Source: AGHT+IGX25jBo8lBEAOfpYHIMUzW49tCJpni1AVlTfEoZVCupl+SQQH/VCfYoINBpYmPXgMDyXyBFg==
+X-Received: by 2002:a5d:6190:0:b0:33c:e206:3517 with SMTP id j16-20020a5d6190000000b0033ce2063517mr3800297wru.43.1708079398403;
+        Fri, 16 Feb 2024 02:29:58 -0800 (PST)
+Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id x11-20020adff64b000000b0033d157bb26esm1800611wrp.32.2024.02.16.02.29.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Feb 2024 02:29:57 -0800 (PST)
+Message-ID: <446bb875-7849-43b0-bb8e-be706aa3c666@gmail.com>
+Date: Fri, 16 Feb 2024 11:29:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
+ to eDP connectors
+Content-Language: en-US
+To: Hamza Mahfooz <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org
+Cc: Mario Limonciello <mario.limonciello@amd.com>,
+ Harry Wentland <harry.wentland@amd.com>, Leo Li <sunpeng.li@amd.com>,
+ Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ "Pan, Xinhui" <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Alex Hung <alex.hung@amd.com>,
+ Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi Paul,
+Am 02.02.24 um 16:28 schrieb Hamza Mahfooz:
+> We want programs besides the compositor to be able to enable or disable
+> panel power saving features.
 
-thanks for updating this.
+Well I don't know the full background, but that is usually a no-go.
 
-Am Freitag, 16. Februar 2024, 10:54:57 CET schrieb Paul Elder:
-> The i.MX8MP has extra register fields in the memory interface control
-> register for setting the output format, which work with the output
-> alignment format register for byte-swapping and LSB/MSB alignment.
->=20
-> With processed and 8-bit raw streams, it doesn't cause any problems to
-> not set these, but with raw streams of higher bit depth the endianness
-> is swapped and the data is not aligned properly.
->=20
-> Add support for settings these registers and plumb them in to fix this.
->=20
-> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
+> However, since they are currently only
+> configurable through DRM properties, that isn't possible.
+
+Maybe I'm repeating others, but I wanted to point it out explicitly: 
+This is intentional and not that easily changeable.
+
+If it's a common DRM property, e.g. something standardized among all 
+drivers, then amdgpu is not allowed to circumvent that.
+
+Regards,
+Christian.
+
+>   So, to remedy
+> that issue introduce a new "panel_power_savings" sysfs attribute.
+>
+> Cc: Mario Limonciello <mario.limonciello@amd.com>
+> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
 > ---
-> Changes in v12:
-> - replace MP_OUTPUT_FORMAT feature flag with MAIN_STRIDE
->=20
-> New in v6
+> v2: hide ABM_LEVEL_IMMEDIATE_DISABLE in the read case, force an atomic
+>      commit when setting the value, call sysfs_remove_group() in
+>      amdgpu_dm_connector_unregister() and add some documentation.
 > ---
->  .../platform/rockchip/rkisp1/rkisp1-capture.c | 93 ++++++++++++++-----
->  .../platform/rockchip/rkisp1/rkisp1-regs.h    |  8 ++
->  2 files changed, 78 insertions(+), 23 deletions(-)
->=20
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c index
-> 64b1d1104e20..28a99b31581b 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-capture.c
-> @@ -48,16 +48,20 @@ enum rkisp1_plane {
->   * @fmt_type: helper filed for pixel format
->   * @uv_swap: if cb cr swapped, for yuv
->   * @yc_swap: if y and cb/cr swapped, for yuv
-> + * @byte_swap: if byte pairs are swapped, for raw
->   * @write_format: defines how YCbCr self picture data is written to memo=
-ry
-> - * @output_format: defines sp output format
-> + * @output_format_mp: defines mp output format
-> + * @output_format_sp: defines sp output format
->   * @mbus: the mbus code on the src resizer pad that matches the pixel
-> format */
->  struct rkisp1_capture_fmt_cfg {
->  	u32 fourcc;
->  	u32 uv_swap : 1;
->  	u32 yc_swap : 1;
-> +	u32 byte_swap : 1;
->  	u32 write_format;
-> -	u32 output_format;
-> +	u32 output_format_mp;
-> +	u32 output_format_sp;
->  	u32 mbus;
->  };
->=20
-> @@ -96,42 +100,50 @@ static const struct rkisp1_capture_fmt_cfg
-> rkisp1_mp_fmts[] =3D { .fourcc =3D V4L2_PIX_FMT_YUYV,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUVINT,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_UYVY,
->  		.uv_swap =3D 0,
->  		.yc_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUVINT,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YUV422P,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV16,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV61,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV16M,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV61M,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YVU422M,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	},
->  	/* yuv400 */
-> @@ -139,6 +151,7 @@ static const struct rkisp1_capture_fmt_cfg
-> rkisp1_mp_fmts[] =3D { .fourcc =3D V4L2_PIX_FMT_GREY,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV400,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	},
->  	/* yuv420 */
-> @@ -146,81 +159,107 @@ static const struct rkisp1_capture_fmt_cfg
-> rkisp1_mp_fmts[] =3D { .fourcc =3D V4L2_PIX_FMT_NV21,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV12,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV21M,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV12M,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_SPLA,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YUV420,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YVU420,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	},
->  	/* raw */
->  	{
->  		.fourcc =3D V4L2_PIX_FMT_SRGGB8,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW8,
->  		.mbus =3D MEDIA_BUS_FMT_SRGGB8_1X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SGRBG8,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW8,
->  		.mbus =3D MEDIA_BUS_FMT_SGRBG8_1X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SGBRG8,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW8,
->  		.mbus =3D MEDIA_BUS_FMT_SGBRG8_1X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SBGGR8,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_YUV_PLA_OR_RAW8,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW8,
->  		.mbus =3D MEDIA_BUS_FMT_SBGGR8_1X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SRGGB10,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW10,
->  		.mbus =3D MEDIA_BUS_FMT_SRGGB10_1X10,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SGRBG10,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW10,
->  		.mbus =3D MEDIA_BUS_FMT_SGRBG10_1X10,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SGBRG10,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW10,
->  		.mbus =3D MEDIA_BUS_FMT_SGBRG10_1X10,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SBGGR10,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW10,
->  		.mbus =3D MEDIA_BUS_FMT_SBGGR10_1X10,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SRGGB12,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW12,
->  		.mbus =3D MEDIA_BUS_FMT_SRGGB12_1X12,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SGRBG12,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW12,
->  		.mbus =3D MEDIA_BUS_FMT_SGRBG12_1X12,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SGBRG12,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW12,
->  		.mbus =3D MEDIA_BUS_FMT_SGBRG12_1X12,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_SBGGR12,
-> +		.byte_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_MP_WRITE_RAW12,
-> +		.output_format_mp =3D RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW12,
->  		.mbus =3D MEDIA_BUS_FMT_SBGGR12_1X12,
->  	},
->  };
-> @@ -235,50 +274,50 @@ static const struct rkisp1_capture_fmt_cfg
-> rkisp1_sp_fmts[] =3D { .fourcc =3D V4L2_PIX_FMT_YUYV,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_INT,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_UYVY,
->  		.uv_swap =3D 0,
->  		.yc_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_INT,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YUV422P,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_PLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV16,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV61,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV16M,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV61M,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YVU422M,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_PLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	},
->  	/* yuv400 */
-> @@ -286,19 +325,19 @@ static const struct rkisp1_capture_fmt_cfg
-> rkisp1_sp_fmts[] =3D { .fourcc =3D V4L2_PIX_FMT_GREY,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_PLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV422,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	},
->  	/* rgb */
->  	{
->  		.fourcc =3D V4L2_PIX_FMT_XBGR32,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_PLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_RGB888,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_RGB888,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_RGB565,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_PLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_RGB565,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_RGB565,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_2X8,
->  	},
->  	/* yuv420 */
-> @@ -306,37 +345,37 @@ static const struct rkisp1_capture_fmt_cfg
-> rkisp1_sp_fmts[] =3D { .fourcc =3D V4L2_PIX_FMT_NV21,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV12,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV21M,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_NV12M,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_SPLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YUV420,
->  		.uv_swap =3D 0,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_PLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	}, {
->  		.fourcc =3D V4L2_PIX_FMT_YVU420,
->  		.uv_swap =3D 1,
->  		.write_format =3D RKISP1_MI_CTRL_SP_WRITE_PLA,
-> -		.output_format =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
-> +		.output_format_sp =3D RKISP1_MI_CTRL_SP_OUTPUT_YUV420,
->  		.mbus =3D MEDIA_BUS_FMT_YUYV8_1_5X8,
->  	},
->  };
-> @@ -484,10 +523,12 @@ static void rkisp1_mp_config(struct rkisp1_capture
-> *cap) */
->  	if (rkisp1_has_feature(rkisp1, MAIN_STRIDE)) {
->  		reg =3D rkisp1_read(rkisp1,=20
-RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT);
-> -		if (cap->pix.cfg->yc_swap)
-> +		if (cap->pix.cfg->yc_swap || cap->pix.cfg->byte_swap)
->  			reg |=3D=20
-RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_BYTES;
->  		else
->  			reg &=3D=20
-~RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_BYTE_SWAP_BYTES;
+>   .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 76 +++++++++++++++++++
+>   1 file changed, 76 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> index 8590c9f1dda6..3c62489d03dc 100644
+> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> @@ -6436,10 +6436,79 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
+>   	return ret;
+>   }
+>   
+> +/**
+> + * DOC: panel power savings
+> + *
+> + * The display manager allows you to set your desired **panel power savings**
+> + * level (between 0-4, with 0 representing off), e.g. using the following::
+> + *
+> + *   # echo 3 > /sys/class/drm/card0-eDP-1/amdgpu/panel_power_savings
+> + *
+> + * Modifying this value can have implications on color accuracy, so tread
+> + * carefully.
+> + */
 > +
-> +		reg |=3D RKISP1_CIF_OUTPUT_ALIGN_FORMAT_MP_LSB_ALIGNMENT;
->  		rkisp1_write(rkisp1, RKISP1_CIF_MI_OUTPUT_ALIGN_FORMAT,=20
-reg);
->  	}
->=20
-> @@ -554,7 +595,7 @@ static void rkisp1_sp_config(struct rkisp1_capture *c=
-ap)
-> mi_ctrl &=3D ~RKISP1_MI_CTRL_SP_FMT_MASK;
->  	mi_ctrl |=3D cap->pix.cfg->write_format |
->  		   RKISP1_MI_CTRL_SP_INPUT_YUV422 |
-> -		   cap->pix.cfg->output_format |
-> +		   cap->pix.cfg->output_format_sp |
->  		   RKISP1_CIF_MI_SP_AUTOUPDATE_ENABLE;
->  	rkisp1_write(rkisp1, RKISP1_CIF_MI_CTRL, mi_ctrl);
->  }
-> @@ -946,6 +987,7 @@ static void rkisp1_cap_stream_enable(struct
-> rkisp1_capture *cap) struct rkisp1_device *rkisp1 =3D cap->rkisp1;
->  	struct rkisp1_capture *other =3D &rkisp1->capture_devs[cap->id ^ 1];
->  	bool has_self_path =3D rkisp1_has_feature(rkisp1, SELF_PATH);
-> +	u32 reg;
->=20
->  	cap->ops->set_data_path(cap);
->  	cap->ops->config(cap);
-> @@ -965,8 +1007,13 @@ static void rkisp1_cap_stream_enable(struct
-> rkisp1_capture *cap) */
->  	if (!has_self_path || !other->is_streaming) {
->  		/* force cfg update */
-> -		rkisp1_write(rkisp1, RKISP1_CIF_MI_INIT,
-> -			     RKISP1_CIF_MI_INIT_SOFT_UPD);
-> +		reg =3D rkisp1_read(rkisp1, RKISP1_CIF_MI_INIT);
+> +static ssize_t panel_power_savings_show(struct device *device,
+> +					struct device_attribute *attr,
+> +					char *buf)
+> +{
+> +	struct drm_connector *connector = dev_get_drvdata(device);
+> +	struct drm_device *dev = connector->dev;
+> +	u8 val;
 > +
-> +		if (rkisp1_has_feature(rkisp1, MAIN_STRIDE))
-> +			reg |=3D cap->pix.cfg->output_format_mp;
-
-I don't have any documents regarding that ISP, but shouldn't you clear the=
-=20
-bits for output_format_mp before OR'ing the new ones on top?
-
-Best regards,
-Alexander
-
+> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+> +	val = to_dm_connector_state(connector->state)->abm_level ==
+> +		ABM_LEVEL_IMMEDIATE_DISABLE ? 0 :
+> +		to_dm_connector_state(connector->state)->abm_level;
+> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
 > +
-> +		reg |=3D RKISP1_CIF_MI_INIT_SOFT_UPD;
-> +		rkisp1_write(rkisp1, RKISP1_CIF_MI_INIT, reg);
->  		rkisp1_set_next_buf(cap);
->  	}
->  	spin_unlock_irq(&cap->buf.lock);
-> diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-> b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h index
-> 3b19c8411360..762243016f05 100644
-> --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-> +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-regs.h
-> @@ -144,6 +144,14 @@
->  /* MI_INIT */
->  #define RKISP1_CIF_MI_INIT_SKIP				BIT(2)
->  #define RKISP1_CIF_MI_INIT_SOFT_UPD			BIT(4)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV400		(0 << 5)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV420		(1 << 5)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV422		(2 << 5)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_YUV444		(3 << 5)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW12		(4 << 5)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW8		(5 << 5)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_JPEG		(6 << 5)
-> +#define RKISP1_CIF_MI_INIT_MP_OUTPUT_RAW10		(7 << 5)
->=20
->  /* MI_CTRL_SHD */
->  #define RKISP1_CIF_MI_CTRL_SHD_MP_IN_ENABLED		BIT(0)
-
-
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
+> +	return sysfs_emit(buf, "%u\n", val);
+> +}
+> +
+> +static ssize_t panel_power_savings_store(struct device *device,
+> +					 struct device_attribute *attr,
+> +					 const char *buf, size_t count)
+> +{
+> +	struct drm_connector *connector = dev_get_drvdata(device);
+> +	struct drm_device *dev = connector->dev;
+> +	long val;
+> +	int ret;
+> +
+> +	ret = kstrtol(buf, 0, &val);
+> +
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (val < 0 || val > 4)
+> +		return -EINVAL;
+> +
+> +	drm_modeset_lock(&dev->mode_config.connection_mutex, NULL);
+> +	to_dm_connector_state(connector->state)->abm_level = val ?:
+> +		ABM_LEVEL_IMMEDIATE_DISABLE;
+> +	drm_modeset_unlock(&dev->mode_config.connection_mutex);
+> +
+> +	drm_kms_helper_hotplug_event(dev);
+> +
+> +	return count;
+> +}
+> +
+> +static DEVICE_ATTR_RW(panel_power_savings);
+> +
+> +static struct attribute *amdgpu_attrs[] = {
+> +	&dev_attr_panel_power_savings.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group amdgpu_group = {
+> +	.name = "amdgpu",
+> +	.attrs = amdgpu_attrs
+> +};
+> +
+>   static void amdgpu_dm_connector_unregister(struct drm_connector *connector)
+>   {
+>   	struct amdgpu_dm_connector *amdgpu_dm_connector = to_amdgpu_dm_connector(connector);
+>   
+> +	sysfs_remove_group(&connector->kdev->kobj, &amdgpu_group);
+>   	drm_dp_aux_unregister(&amdgpu_dm_connector->dm_dp_aux.aux);
+>   }
+>   
+> @@ -6541,6 +6610,13 @@ amdgpu_dm_connector_late_register(struct drm_connector *connector)
+>   		to_amdgpu_dm_connector(connector);
+>   	int r;
+>   
+> +	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
+> +		r = sysfs_create_group(&connector->kdev->kobj,
+> +				       &amdgpu_group);
+> +		if (r)
+> +			return r;
+> +	}
+> +
+>   	amdgpu_dm_register_backlight_device(amdgpu_dm_connector);
+>   
+>   	if ((connector->connector_type == DRM_MODE_CONNECTOR_DisplayPort) ||
 
 
