@@ -1,289 +1,298 @@
-Return-Path: <linux-kernel+bounces-69797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A247858EAF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:24:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C15858EB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:25:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA863282E7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:24:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A174B21AB5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:24:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2282E1E89A;
-	Sat, 17 Feb 2024 10:24:23 +0000 (UTC)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 591B11F955;
+	Sat, 17 Feb 2024 10:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="M0SqRdso"
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01olkn2030.outbound.protection.outlook.com [40.92.53.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37D281E;
-	Sat, 17 Feb 2024 10:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708165462; cv=none; b=B5KKg1JED7k/GMm2WoR4sI+n4eokVsSxnbUYyM6/6HGHd6kZ0jFGEJtEJJCXEMDd6Zj5XG4t0mykuCRFjbK2ztSKc372mhC8x6uFkWalL3A8vNGuqMT60JzNEpmrerGZIQ5v7tz7fg01/2YVE1do+tLhJgZqG0ysMUDV6TiYzes=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708165462; c=relaxed/simple;
-	bh=Mz+g/1CVM2PJP2Uq812BuwnoZ/L5UEO66m09oWnr1QU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WQvBrvQrcHcfdKG+B11wOFv56JfwN/roY/yA1i+GU2GinoUBe/TyC3VERDWNcQibMqvK63GVPMQltX7591HPV7/7tMM+HT8PsSowWU9TeFL41COtYrE/0M4b0q+7T1GC8av+Z07R00+hk45f1TJstcKMwjJ1XsyVh7VJqSTrJV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4TcPzb6CXPz9v73;
-	Sat, 17 Feb 2024 11:24:11 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 6KspJ0V2-DIb; Sat, 17 Feb 2024 11:24:11 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4TcPzb5FtVz9v6y;
-	Sat, 17 Feb 2024 11:24:11 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id A5B908B76E;
-	Sat, 17 Feb 2024 11:24:11 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id rrFoO8lLqJVF; Sat, 17 Feb 2024 11:24:11 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (unknown [192.168.232.2])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EB7E8B763;
-	Sat, 17 Feb 2024 11:24:10 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kees Cook <keescook@chromium.org>,
-	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
-Subject: [PATCH bpf-next] bpf: Check return from set_memory_rox() and friends
-Date: Sat, 17 Feb 2024 11:24:07 +0100
-Message-ID: <63322c8e8454de9b240583de58cd730bc97bb789.1708165016.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.43.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE42F1EB54;
+	Sat, 17 Feb 2024 10:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.53.30
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708165490; cv=fail; b=Z3hsXFrTr4ABOipMxgzNynzz3rqtssm2kRbp76wrbAsR4t+d1sGXmifp536DZAjD6XyulK4KLYHR3c4yXgc1uTNicLrnJHbwfflhwHHQOLczL+YV1igqQxCleGuqyhxwlya9afwjWGYrDO/BbTo5dBWV/Q5GQOd8AQ2fDSZXeFU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708165490; c=relaxed/simple;
+	bh=jcUDDkE0Bavd9CWy1Fz/1KDcDMtfYuGPELarqvA47+I=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=kQEjwe9gUluLreBAgwQ4yYC3RfrvAMDKPfZkF2LUCISEMKn2GQ8OPBaTQoWNnFKpo7nox4grOs3f05Oe3V/9dCW74BsN7pA9AkOwnAdKc3nB7of1hvxafV8OkfWoY1t3hIG5Rt3psA4kvrzSI1O7K8Fh2zGQ4ibPtoErwNqQEE4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=M0SqRdso; arc=fail smtp.client-ip=40.92.53.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nel80BYR4dB77SyBKlngF0I48thx001NRk3AjBkKa/VlgMoPRgYrqd47J7/VJXXyo1UfWoqihBJ1S9jkO5AzCDWgwvcGypQI6314G2biLNNjqHlgQ9K/Yelmfv80dOkjv4ro62suiwBITL1ZYblFzmyADm7nS6Z52uB7lnJplyhtVvSA9nsve9Na2R/9To2zTKLTx1m8jdwOOVbuBmEgCzLzyAQrq0oilxz5iI7Cy/yvV9WF2uaS1zS7wFnyVfSFryV9mMdB4luqKGzUQprvE3hXiXdC5MmKu0iOaRBUsHq4k6vlFBRGiIzDSF4WJVE6jRPT6Ftaj6G2YCv2yLMaTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AGCy3TFRCrrMh3gg7fPZ0RdE7hHs3ZjVmoJqD36i1Mk=;
+ b=Uu1r+iiGBw6FiElODbo3b+5uhJGG1MqPxQEdUxu+q8rThfp//B6ziDXdE8KyJS8kyZvAEAhGJmMcu0snnQY7q0fHNH0AON6CMs23JMfbjNMYP2OWk4QkcgLI2ux8bioMBrwS0uOijUMxNH2DwBp6d3J4e0EzLx6iuDsGdIUftaou6aM3CUqtTomSPdIHV9EviSDbV2zyBW9wR2BbnF0ARas9LGQkirczB8l+t1EDWZIOOLsa9wJ9qTPyFEq3TJhScqAURc1S7AvJjr60wNzTTFH6ANPVnYmp7Isu675GewtLWMAHR/cMIrh0dCUFKcT/W1dbprXTsIUWdA/kGe6/Jw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AGCy3TFRCrrMh3gg7fPZ0RdE7hHs3ZjVmoJqD36i1Mk=;
+ b=M0SqRdsoRaXPhBgOLS+DdE6/lfRvtoOZ2ae0gz3GSNFZgH/isw4cHpSABKYUsKp5+bHOOu3TrLK9HJv+15248jezUSksJdfKuaUbnAv0UqE7rkLLUKio/w885dx5oTuO+bTuFuLbgWbwJQgA4IzFcTVWZKG8fQ5sxSAZLfltRCQIEivl2W6Xyq5XaMjz46UVVQR8vM+sOIjETw4VIEGHR2eGc51kuJa3z0cUhzk//fi5eBsjav/pVLeWnMcF83VvF5ZhrD3G/+NuioHK2Tw1d094sKR6RcYFTAoT8ciiGoxYTSjaCPy77d2xul7oF2yKMD1tyRqAxw9m4S9CP6eInQ==
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
+ by TYSPR06MB7453.apcprd06.prod.outlook.com (2603:1096:405:9e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.32; Sat, 17 Feb
+ 2024 10:24:43 +0000
+Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1]) by SEZPR06MB6959.apcprd06.prod.outlook.com
+ ([fe80::9a6b:d813:8f4b:cba1%4]) with mapi id 15.20.7292.029; Sat, 17 Feb 2024
+ 10:24:42 +0000
+Message-ID:
+ <SEZPR06MB69593B898A42192D134B01A896532@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Date: Sat, 17 Feb 2024 18:24:37 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/4] dt-binding: phy: hisi-inno-usb2: convert to YAML
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Jiancheng Xue <xuejiancheng@hisilicon.com>,
+ Pengcheng Li <lpc.li@hisilicon.com>, Shawn Guo <shawn.guo@linaro.org>
+Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+ David Yang <mmyangfl@gmail.com>
+References: <20240216-inno-phy-v1-0-1ab912f0533f@outlook.com>
+ <20240216-inno-phy-v1-1-1ab912f0533f@outlook.com>
+ <63b3eff6-49eb-46f3-a6d9-878eddf6de53@linaro.org>
+From: Yang Xiwen <forbidden405@outlook.com>
+In-Reply-To: <63b3eff6-49eb-46f3-a6d9-878eddf6de53@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:
+ [lWi/r41few19Dt5tQd6V+L54nd1Bq0rnksVvzUKwvKyT61qH+fuwO4Hcva5B8DyLCceX6AZ8DnI=]
+X-ClientProxiedBy: TYAPR01CA0206.jpnprd01.prod.outlook.com
+ (2603:1096:404:29::26) To SEZPR06MB6959.apcprd06.prod.outlook.com
+ (2603:1096:101:1ed::14)
+X-Microsoft-Original-Message-ID:
+ <192aece0-b577-47fb-a8d7-0837204c5501@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708165448; l=6853; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=Mz+g/1CVM2PJP2Uq812BuwnoZ/L5UEO66m09oWnr1QU=; b=YEQ3YCkk7J/1zGFK/ZSlyru0s4KexlE0XcLFVWKXeuTKMVK6q0ZK4DS5AuxlH0/h+hGSMoxRU O7BYxxTK8QeAcyh9SKokVb9ivVqn208+RoHx3eOdpBoZRkSdtyz6u2w
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|TYSPR06MB7453:EE_
+X-MS-Office365-Filtering-Correlation-Id: 897d49e2-e78f-418e-5980-08dc2fa2a7bd
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	g371cUkJvfrjUZpsKGONc6ls6aE4dJoeJpUbTV99yPWFaptr8I8zjILkfq+fVuHsF0yug8PSK30ghWCWyacH+XdaCkOUl7SE55YxjFzAYgkge4XUOqeZtErqfA/bnIVZEs0sQ41ob+biYvnsy/rrrCBhytawBSUuV0CnbBKMOyVQFkVzEMlaO/3/M7K7S2vJCORAOKbg3jzDXaqe4CKNLlOOyymMfdspUb6vSM5X3JboXz+60yf48vnBSns1wVpHTvSTusTyt40PJYvVRws0xih14TCjXzri+1y82yQmcU0OwM2LUSqzYaHxDwK7iyPjgWy/wVdNX1C9Wy7W/246eXXysdMI5wIyx3XQzveDrp8tDYh8PlrVSvoke/oqZK6KcVk28jXc8FcyZeZtLwIqnCtfPvnKHxTqljNRZwoAt+YGjoem+XORu1NusAIKWqTq6iZv/b+DzPrtmU8TKO/2U0PN7zfi2zUsQHZAmz84rA1n68P73jzCLIQcEvtBWh4iPQM+m1bAn/ubmkMg4uTKVI7HI/wBxxRJWtzbnh+kwUM10/GsCjPje6Ok9PPHI3+pMFL6U9Ew50tqJ3I5ztw1QOP++1AEhZ1PK7/fJhxsnD6BiAtuj9weT/UP4P6LFctSkzGOP9lctyTBUr/KyDBXbQ==
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZEVvLzU3Wi9DQVlMcWp1a09XT3lVU2Fuc2pEV2hBTUhaQ1ErYzlRc05nOGZt?=
+ =?utf-8?B?NnllT2RsaG9ZMkVMWFVlQUdTQ0EzcWpZK0g1NU5LQnNJMXVrQ1NzSjZBa0NS?=
+ =?utf-8?B?QktxQ2EvZU9HekI3ZjI5Wi9UTzhwMU1hNXk4YXN5V1JkV3d3WlZjR3pJSmtE?=
+ =?utf-8?B?cEE3TlFudFZ2cmRSL1RMOFM2NzV4RzMwc1V0Y0l2OUtxWU43S1FuSkIxQWwv?=
+ =?utf-8?B?NUgyQStGaUMyL2tIY0svZnhtSVRIOURadlBQK3VoeCt0VXhzSy9td1R1TE85?=
+ =?utf-8?B?S2dUay9WazJ4ekM2NVlkcVZsMzZGUHRrUXJYZDV5bGloaStJV3dYaTJVOHVs?=
+ =?utf-8?B?cTJSNWxWbWtaeFZqdFZRSjdBMkFoMk5QUEFST3cwVXZpRjNsb2VjcklBaGZF?=
+ =?utf-8?B?WHl4SXNGK2EwUlpMVVVEWi9iRm16UFFnYlZ2TVRFMW9nV041REFsZHlJclNy?=
+ =?utf-8?B?d3VaVGhxSUJVS3J5M2JzSmZnSTBMUUltU3lJMHlIUkVCd0NxWTJSRHRkNHk1?=
+ =?utf-8?B?a1l1SWJqVnRDdDRJQXhsZ1pmVWlpajZmZENIVGNreUliQURnN0NiZVFvcWwy?=
+ =?utf-8?B?L0tZZklZTEI1aU13YkZ1T0o3TVkzNW4yWjk1VjNqNE5FMkIwMy9NMmdudDJi?=
+ =?utf-8?B?SUQvZXJ6ei9jME9laDBIK1MyMHo0cGVlcHVzelRQTW9kMkN1dU52clRRWno4?=
+ =?utf-8?B?NzZEZmJQREdqSHVuYTBCM294M2ZYTlkxNjg4QUk4VXRmTHJ2SEJWdFczWkhz?=
+ =?utf-8?B?akxyUG0xTVFFZm5WaTVISmlCZ0hOcndlK3R5b1pmZGtUa085MnE5cmJQbnJ5?=
+ =?utf-8?B?ZmZzdVBMT0czcEpFdUE4dTFjVU1tbXlXeSt4YlJ6VTltUVJyR3J1NGVPWDdn?=
+ =?utf-8?B?Tzg0cVFDZU1Nb0M5WFVZNjRzN3BWWXlycTAwMThIZzVFRms2cG10dVE3dytW?=
+ =?utf-8?B?TzlrdmNzWDNPdkFic05BNTB2OUplVkpmN0l1WmJ2dEF1ZlZHM2NEWnprZG5x?=
+ =?utf-8?B?V3JhY3FvS3M1U0NPWWFsaXdzUEZxRnN2Y3BweWlWSEJVdkJJem01WWJWYm81?=
+ =?utf-8?B?enRwRnZjYWo0OTIvYnQ4V2t5TC8zM0krT2M0ZWhlY1gxMFBiYjFXRFZzaXM1?=
+ =?utf-8?B?ME9DWTI3K1hoaitHYTlzNytoc21xRFp5UFhwQUw0ZXpwK1NUYmxMbDhra2U4?=
+ =?utf-8?B?SStBS2JVNjZoQWs2UFg0dXNMU0d2TXhGQUMydi84cEVGZGFOOGVTSDhPT2xK?=
+ =?utf-8?B?Y1lESGJOenFUVVl4S01sNmVFY25BMmkvUDZibFV1RFc3TVh1VnFjVHAwNW5q?=
+ =?utf-8?B?M2dJbiszMUVVUVdaSjV5TGJlN2ZMcVJrT2o2N0NHODZJWEJEQnNjUjhHUTJE?=
+ =?utf-8?B?MlJRb0E4Zk41dldQRzZIUUdZbVlQQm1ubWRlSEMwb0lPVWRVVHB5Tloxbzk5?=
+ =?utf-8?B?TFJqQkRrT09RVStpOWptM1BJMWpxaCswd2QyK2FKNjNpTGxyazlvWFZ6MHFw?=
+ =?utf-8?B?aWplY01ENitBM0E3Y0J4WXN4ckE4SFhOZGFENW9nblJTeElOS1lVai84TnVU?=
+ =?utf-8?B?bGlZRGVCRHlRbzZFbDRNeFhueXJ3NHZRNXZMY3JORXRWWWs4Ymxsc1c0M0FS?=
+ =?utf-8?B?TGt1eHBzQVhRamU0VGsrYnpiSy9VVDlxYndtYzV3ZXZSNlNkT2IzRXZybHlC?=
+ =?utf-8?B?eDFLVWJvdGlJWHk4dlp1aWYyZmtwSlppQ2ZFL2VHU2NCTVFqcVJDcS9hZG5H?=
+ =?utf-8?Q?gK5vpqK0vhzKE6dLYWu2pVTSXlsanG9mMr1AOF1?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 897d49e2-e78f-418e-5980-08dc2fa2a7bd
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2024 10:24:42.7184
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR06MB7453
 
-arch_protect_bpf_trampoline() and alloc_new_pack() call
-set_memory_rox() which can fail, leading to unprotected memory.
+On 2/17/2024 6:14 PM, Krzysztof Kozlowski wrote:
+> On 16/02/2024 16:21, Yang Xiwen via B4 Relay wrote:
+>> From: Yang Xiwen <forbidden405@outlook.com>
+>>
+>> Also rename to hisilicon,inno-usb2-phy.yaml and add this name to
+>> compatible lists.
+> Please use subject prefixes matching the subsystem. You can get them for
+> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+> your patch is touching.
+Will fix in next version
+>
+>> Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+>> ---
+>>   .../bindings/phy/hisilicon,inno-usb2-phy.yaml      | 115 +++++++++++++++++++++
+>>   .../devicetree/bindings/phy/phy-hisi-inno-usb2.txt |  71 -------------
+>>   2 files changed, 115 insertions(+), 71 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/hisilicon,inno-usb2-phy.yaml b/Documentation/devicetree/bindings/phy/hisilicon,inno-usb2-phy.yaml
+>> new file mode 100644
+>> index 000000000000..73256eee10f9
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/phy/hisilicon,inno-usb2-phy.yaml
+>> @@ -0,0 +1,115 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/phy/hisilicon,inno-usb2-phy.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: HiSilicon HiSTB SoCs INNO USB2 PHY device
+>> +
+>> +maintainers:
+>> +  - Yang Xiwen <forbidden405@outlook.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    minItems: 1
+> No, why? Compatibles must be fixed/constrained.
+>
+>> +    items:
+>> +      - enum:
+>> +          - hisilicon,hi3798cv200-usb2-phy
+>> +          - hisilicon,hi3798mv100-usb2-phy
+> This wasn't here before. Not explained in commit msg.
+The commit 3940ffc65492 ("phy: hisilicon: Add inno-usb2-phy driver for 
+Hi3798MV100") does not have dt-binding change commit along with. Will 
+explain this in commit log.
+>
+>> +      - const: hisilicon,inno-usb2-phy
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +    description: |
+> Do not need '|' unless you need to preserve formatting.
+>
+>> +      Should be the address space for PHY configuration register in peripheral
+>> +      controller, e.g. PERI_USB0 for USB 2.0 PHY01 on Hi3798CV200 SoC.
+>> +      Or direct MMIO address space.
+>> +
+>> +  '#address-cells':
+>> +    const: 1
+>> +
+>> +  '#size-cells':
+>> +    const: 0
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +    description: reference clock
+>> +
+>> +  resets:
+>> +    maxItems: 1
+>> +
+>> +patternProperties:
+>> +  'phy@[0-9a-f]+':
+>> +    type: object
+>> +    additionalProperties: false
+>> +    description: individual ports provided by INNO PHY
+>> +
+>> +    properties:
+>> +      reg:
+>> +        maxItems: 1
+>> +
+>> +      '#phy-cells':
+>> +        const: 0
+>> +
+>> +      resets:
+>> +        maxItems: 1
+>> +
+>> +    required: [reg, '#phy-cells', resets]
+> One item per line. Look at other bindings or example-schema.
+>
+>> +
+>> +required:
+>> +  - compatible
+>> +  - clocks
+>> +  - reg
+>> +  - '#address-cells'
+>> +  - '#size-cells'
+>> +  - resets
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/clock/histb-clock.h>
+>> +
+>> +    peripheral-controller@8a20000 {
+>> +        compatible = "hisilicon,hi3798cv200-perictrl", "syscon", "simple-mfd";
+>> +        reg = <0x8a20000 0x1000>;
+>> +        #address-cells = <1>;
+>> +        #size-cells = <1>;
+>> +        ranges = <0x0 0x8a20000 0x1000>;
+> Drop the node, not related to this binding. If this binding is supposed
+> to be part of other device in case of MFD devices or some tightly
+> coupled ones, then could be included in the example there.
+For CV200, this binding is supposed to be always inside the perictrl 
+device. The PHY address space are accessed from a bus implemented by 
+perictrl.
+>
+>> +
+>> +        usb2-phy@120 {
+>> +            compatible = "hisilicon,hi3798cv200-usb2-phy";
+>> +            reg = <0x120 0x4>;
+>> +            clocks = <&crg HISTB_USB2_PHY1_REF_CLK>;
+>> +            resets = <&crg 0xbc 4>;
+>> +            #address-cells = <1>;
+>> +            #size-cells = <0>;
+>> +
+>> +            phy@0 {
+>> +                reg = <0>;
+>> +                #phy-cells = <0>;
+>> +                resets = <&crg 0xbc 8>;
+>> +            };
+>> +
+>> +            phy@1 {
+>> +                reg = <1>;
+>> +                #phy-cells = <0>;
+>> +                resets = <&crg 0xbc 9>;
+>> +            };
+>> +        };
+>> +
+>> +        usb2-phy@124 {
+>> +            compatible = "hisilicon,hi3798cv200-usb2-phy";
+> You can keep only one example, because they are basically the same.
+Will remove
+>
+>
+> Best regards,
+> Krzysztof
+>
 
-Take into account return from set_memory_XX() functions and add
-__must_check flag to arch_protect_bpf_trampoline().
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/x86/net/bpf_jit_comp.c    |  6 ++++--
- include/linux/bpf.h            |  4 ++--
- kernel/bpf/bpf_struct_ops.c    |  9 +++++++--
- kernel/bpf/core.c              | 25 +++++++++++++++++++------
- kernel/bpf/trampoline.c        | 18 ++++++++++++------
- net/bpf/bpf_dummy_struct_ops.c |  4 +++-
- 6 files changed, 47 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 919f647c740f..db05e0ba9f68 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -2780,12 +2780,14 @@ void arch_free_bpf_trampoline(void *image, unsigned int size)
- 	bpf_prog_pack_free(image, size);
- }
- 
--void arch_protect_bpf_trampoline(void *image, unsigned int size)
-+int arch_protect_bpf_trampoline(void *image, unsigned int size)
- {
-+	return 0;
- }
- 
--void arch_unprotect_bpf_trampoline(void *image, unsigned int size)
-+int arch_unprotect_bpf_trampoline(void *image, unsigned int size)
- {
-+	return 0;
- }
- 
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index e30100597d0a..169847ed1f8d 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1112,8 +1112,8 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 				void *func_addr);
- void *arch_alloc_bpf_trampoline(unsigned int size);
- void arch_free_bpf_trampoline(void *image, unsigned int size);
--void arch_protect_bpf_trampoline(void *image, unsigned int size);
--void arch_unprotect_bpf_trampoline(void *image, unsigned int size);
-+int __must_check arch_protect_bpf_trampoline(void *image, unsigned int size);
-+int arch_unprotect_bpf_trampoline(void *image, unsigned int size);
- int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 			     struct bpf_tramp_links *tlinks, void *func_addr);
- 
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 02068bd0e4d9..7638a735f48f 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -522,7 +522,9 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 			if (err)
- 				goto reset_unlock;
- 		}
--		arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
-+		err = arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
-+		if (err)
-+			goto reset_unlock;
- 		/* Let bpf_link handle registration & unregistration.
- 		 *
- 		 * Pair with smp_load_acquire() during lookup_elem().
-@@ -531,7 +533,10 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 		goto unlock;
- 	}
- 
--	arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
-+	err = arch_protect_bpf_trampoline(st_map->image, PAGE_SIZE);
-+	if (err)
-+		goto reset_unlock;
-+
- 	err = st_ops->reg(kdata);
- 	if (likely(!err)) {
- 		/* This refcnt increment on the map here after
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index ea6843be2616..23ce17da3bf7 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -898,23 +898,30 @@ static LIST_HEAD(pack_list);
- static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_insns)
- {
- 	struct bpf_prog_pack *pack;
-+	int err;
- 
- 	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)),
- 		       GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
- 	pack->ptr = bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
--	if (!pack->ptr) {
--		kfree(pack);
--		return NULL;
--	}
-+	if (!pack->ptr)
-+		goto out;
- 	bpf_fill_ill_insns(pack->ptr, BPF_PROG_PACK_SIZE);
- 	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
- 	list_add_tail(&pack->list, &pack_list);
- 
- 	set_vm_flush_reset_perms(pack->ptr);
--	set_memory_rox((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-+	err = set_memory_rox((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-+	if (err)
-+		goto out_free;
- 	return pack;
-+
-+out_free:
-+	bpf_jit_free_exec(pack->ptr);
-+out:
-+	kfree(pack);
-+	return NULL;
- }
- 
- void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
-@@ -929,9 +936,15 @@ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
- 		size = round_up(size, PAGE_SIZE);
- 		ptr = bpf_jit_alloc_exec(size);
- 		if (ptr) {
-+			int err;
-+
- 			bpf_fill_ill_insns(ptr, size);
- 			set_vm_flush_reset_perms(ptr);
--			set_memory_rox((unsigned long)ptr, size / PAGE_SIZE);
-+			err = set_memory_rox((unsigned long)ptr, size / PAGE_SIZE);
-+			if (err) {
-+				bpf_jit_free_exec(ptr);
-+				ptr = NULL;
-+			}
- 		}
- 		goto out;
- 	}
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index d382f5ebe06c..6e64ac9083b6 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -456,7 +456,9 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 	if (err < 0)
- 		goto out_free;
- 
--	arch_protect_bpf_trampoline(im->image, im->size);
-+	err = arch_protect_bpf_trampoline(im->image, im->size);
-+	if (err)
-+		goto out_free;
- 
- 	WARN_ON(tr->cur_image && total == 0);
- 	if (tr->cur_image)
-@@ -1072,17 +1074,21 @@ void __weak arch_free_bpf_trampoline(void *image, unsigned int size)
- 	bpf_jit_free_exec(image);
- }
- 
--void __weak arch_protect_bpf_trampoline(void *image, unsigned int size)
-+int __weak arch_protect_bpf_trampoline(void *image, unsigned int size)
- {
- 	WARN_ON_ONCE(size > PAGE_SIZE);
--	set_memory_rox((long)image, 1);
-+	return set_memory_rox((long)image, 1);
- }
- 
--void __weak arch_unprotect_bpf_trampoline(void *image, unsigned int size)
-+int __weak arch_unprotect_bpf_trampoline(void *image, unsigned int size)
- {
-+	int err;
- 	WARN_ON_ONCE(size > PAGE_SIZE);
--	set_memory_nx((long)image, 1);
--	set_memory_rw((long)image, 1);
-+
-+	err = set_memory_nx((long)image, 1);
-+	if (err)
-+		return err;
-+	return set_memory_rw((long)image, 1);
- }
- 
- int __weak arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
-index 8906f7bdf4a9..6d49a00fba4d 100644
---- a/net/bpf/bpf_dummy_struct_ops.c
-+++ b/net/bpf/bpf_dummy_struct_ops.c
-@@ -129,7 +129,9 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	if (err < 0)
- 		goto out;
- 
--	arch_protect_bpf_trampoline(image, PAGE_SIZE);
-+	err = arch_protect_bpf_trampoline(image, PAGE_SIZE);
-+	if (err)
-+		goto out;
- 	prog_ret = dummy_ops_call_op(image, args);
- 
- 	err = dummy_ops_copy_args(args);
 -- 
-2.43.0
+Regards,
+Yang Xiwen
 
 
