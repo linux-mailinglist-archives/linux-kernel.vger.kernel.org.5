@@ -1,154 +1,110 @@
-Return-Path: <linux-kernel+bounces-69949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47DE98590AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:54:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4D808590B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:54:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED041282D1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:54:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 305ACB21AC7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B917CF0E;
-	Sat, 17 Feb 2024 15:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58BD7CF12;
+	Sat, 17 Feb 2024 15:54:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AHw1PLJv"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NDSOL2VX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67B27B3CC;
-	Sat, 17 Feb 2024 15:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47E77C6D2;
+	Sat, 17 Feb 2024 15:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708185246; cv=none; b=LGREmAXrKkQ+75xEzivUm5btR12zkHtyvDLzx5uRbkBh4TN49y1TttazhMr9fBaqidrPI5d9hQJrhdXyShQhCdagr6p0jzG0BS4ij+ERzuRstZh/lHrJccdQ80CmdLCM4ftxuyYD8WGaKZ6DQMzTFE5mvi9N0Cm6MJc3suC03F0=
+	t=1708185279; cv=none; b=mZVSIwpMcChpHkrJ3vuFwF5I4IL7myz6yvjVwHPZekYiUUWjkUCzvKxTeUCG5hK+52rENM1CVo2j8vRsZN4/qYyUuz5w0HueqiRr0Z9g/4h+79XijC++JISGLbMmwGShXwjpgVcScy11n1bnDFmMUXjVF8mhmG5BwRO1FWZS57s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708185246; c=relaxed/simple;
-	bh=yG8vscJnWU0ovGCkwuzXNoGwaH1DWcjjYwxNQHJgFCo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=hFJfgpD67KMUoLrxPkjXoH0dl0HRd9zJVp5hAyBQlimnwpM7Y5Yrf7d9wqBdG6dPo91aCJwfYf2eJT7yrh74m3GhlaTJcKam+NkBfQ7gHNUv7yPHupXnKAViwrazTwm7rYA83umLEQyoMKFSvJ9whC7hGaUKn+nTvMluFHn93rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AHw1PLJv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0C5C433C7;
-	Sat, 17 Feb 2024 15:54:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708185246;
-	bh=yG8vscJnWU0ovGCkwuzXNoGwaH1DWcjjYwxNQHJgFCo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AHw1PLJvhfjZhLGK5KHkBIVj+9XeG0/PyI3CH36/yDz5FeAFPcjq87whLIvrbE6rj
-	 bwQOUkRIBYocELBbTrPp8Ys47/5ZB1h2vZPYOytZCoxea+gVWR4qlBj6CCvW9JmwGc
-	 NhVPtYg43u+MX8Axj7Kby5CBdNL2KHEmsrxCi05hW22h7TpFh2MPu12ReyBJvTDG/M
-	 5ff3BAlKcPp8Ya5WVMwFX8iv2hWxLr6rI4hpMf2tpmooememXcUqzpCAk5qInxOfBD
-	 /ztSkHZnSJAAWlkpXvvgtAQcu/t4Ad48T536TuTATHL5XK4CbCEtOrak10v/jT0+c3
-	 EJPC4KNSqf0Ww==
-Date: Sun, 18 Feb 2024 00:53:59 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
- <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
- <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
- Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
- Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
- <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 20/36] function_graph: Improve push operation for
- several interrupts
-Message-Id: <20240218005359.7072c27c99bcfe426e2126b6@kernel.org>
-In-Reply-To: <20240215095739.41a2fac7@gandalf.local.home>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723227198.502590.10431025573751489041.stgit@devnote2>
-	<20240215095739.41a2fac7@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708185279; c=relaxed/simple;
+	bh=AI0oIAcgHf1kU8VmTSbDLh+67tm7qZdcxn90MyeuyUQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B8KDIGDrhL8nf/zx+VQTSUuh7N2GuvHnuEuPY66Jr/X57iYPNR7FywAoNY6XruKYx93gb1QYOHxvjdD3m7bss3cnu8eiuJkeEhGI5sVEGUheCJL4qR0YDLnMBhLHIs7AG3npzzdgu25+1BFnZ50tVdWlKLEdjE+BweaW31k3eZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NDSOL2VX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9246C433F1;
+	Sat, 17 Feb 2024 15:54:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708185278;
+	bh=AI0oIAcgHf1kU8VmTSbDLh+67tm7qZdcxn90MyeuyUQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=NDSOL2VX2fSLI0VVwkEpb2uSWpyMrOuWblfWsjeZlStlfoKMV+EkdueEg+1oEBZre
+	 nTRvQ8YJrcSrdd0kgGFw8txsaYvqg4Kb2IK+QQiI63a8WymaDEQVSaxxMKxSiLQljA
+	 9CP0RV73d+uWhOYaxZfPNbiAY84nJdjbEqksZOYM=
+Date: Sat, 17 Feb 2024 16:54:35 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Badhri Jagan Sridharan <badhri@google.com>,
+	=?iso-8859-1?Q?G=E1bor?= Stefanik <netrolller.3d@gmail.com>,
+	rdbabiera@google.com, amitsd@google.com, linux-usb@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tpcm: Fix issues with power being removed
+ during reset
+Message-ID: <2024021704-reattach-wiring-7405@gregkh>
+References: <20240212-usb-fix-renegade-v1-1-22c43c88d635@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240212-usb-fix-renegade-v1-1-22c43c88d635@kernel.org>
 
-On Thu, 15 Feb 2024 09:57:39 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Wed,  7 Feb 2024 00:11:12 +0900
-> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+On Mon, Feb 12, 2024 at 06:42:13PM +0000, Mark Brown wrote:
+> Since the merge of b717dfbf73e8 ("Revert "usb: typec: tcpm: fix
+> cc role at port reset"") into mainline the LibreTech Renegade
+> Elite/Firefly has died during boot, the main symptom observed in testing
+> is a sudden stop in console output.  Gábor Stefanik identified in review
+> that the patch would cause power to be removed from devices without
+> batteries (like this board), observing that while the patch is correct
+> according to the spec this appears to be an oversight in the spec.
 > 
-> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > Improve push and data reserve operation on the shadow stack for
-> > several sequencial interrupts.
-> > 
-> > To push a ret_stack or data entry on the shadow stack, we need to
-> > prepare an index (offset) entry before updating the stack pointer
-> > (curr_ret_stack) so that unwinder from interrupts can find the
-> > next return address from the shadow stack. Currently we do write index,
-> > update the curr_ret_stack, and rewrite it again. But that is not enough
-> > for the case if two interrupts happens and the first one breaks it.
-> > For example,
-> > 
-> >  1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
-> >  2. interrupt comes.
-> >     2.1. push new index and ret addr on ret_stack.
-> >     2.2. pop it. (corrupt entries on new_index - 1)
-> >  3. return from interrupt.
-> >  4. update curr_ret_stack = new_index
-> >  5. interrupt comes again.
-> >     5.1. unwind <------ may not work.
+> Given that the change makes previously working systems unusable let's
+> revert it, there was some discussion of identifying systems that have
+> alternative power and implementing the standards conforming behaviour in
+> only that case.
 > 
-> I'm curious if you saw this happen?
+> Fixes: b717dfbf73e8 ("Revert "usb: typec: tcpm: fix cc role at port reset"")
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> That is, did you trigger this or only noticed it by inspection?
-
-I just noticed this scenario while explaining why we write the same value
-twice to Jiri.
-
-https://lore.kernel.org/all/20231220004540.0af568c69ecaf9170430a383@kernel.org/
-
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index f7d7daa60c8d..a0978ed1a257 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -4876,7 +4876,8 @@ static void run_state_machine(struct tcpm_port *port)
+>  		break;
+>  	case PORT_RESET:
+>  		tcpm_reset_port(port);
+> -		tcpm_set_cc(port, TYPEC_CC_OPEN);
+> +		tcpm_set_cc(port, tcpm_default_state(port) == SNK_UNATTACHED ?
+> +			    TYPEC_CC_RD : tcpm_rp_cc(port));
+>  		tcpm_set_state(port, PORT_RESET_WAIT_OFF,
+>  			       PD_T_ERROR_RECOVERY);
+>  		break;
 > 
-> This code is already quite complex, I would like to simplify it more before
-> we try to fix rare race conditions that only affect the unwinder.
-> 
-> Let's hold off on this change.
 
-OK, then drop this until someone hits the actual problem, maybe that
-should be rare case.
+Dueling reverts, fun!
 
-Thank you,
+:(
 
-> 
-> -- Steve
-> 
-> 
-> > 
-> > To avoid this issue, this introduces a new rsrv_ret_stack stack
-> > reservation pointer and a new push code (slow path) to commit
-> > previous reserved code forcibly.
-> > 
-> >  0. update rsrv_ret_stack = new_index.
-> >  1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
-> >  2. interrupt comes.
-> >     2.0. if rsrv_ret_stack != curr_ret_stack, add reserved index
-> >         entry on ret_stack[rsrv_ret_stack - 1] to point the previous
-> > 	ret_stack pointed by ret_stack[curr_ret_stack - 1]. and
-> > 	update curr_ret_stack = rsrv_ret_stack.
-> >     2.1. push new index and ret addr on ret_stack.
-> >     2.2. pop it. (corrupt entries on new_index - 1)
-> >  3. return from interrupt.
-> >  4. update curr_ret_stack = new_index
-> >  5. interrupt comes again.
-> >     5.1. unwind works, because curr_ret_stack points the previously
-> >         saved ret_stack.
-> >     5.2. this can do push/pop operations too.
-> > 6. return from interrupt.
-> > 7. rewrite reserved index entry at ret_stack[new_index] again.
-> > 
-> > This maybe a bit heavier but safer.
-> > 
-> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Badhri, can you either ack this, or submit your proposed change so as to
+get this back working again?
 
+thanks,
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+greg k-h
 
