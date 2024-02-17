@@ -1,367 +1,229 @@
-Return-Path: <linux-kernel+bounces-69699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3658858D6E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:04:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7CC858D68
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 06:55:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B29B6283846
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 06:04:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C1C11F2220E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:55:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B881CD03;
-	Sat, 17 Feb 2024 06:04:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF471CAA8;
+	Sat, 17 Feb 2024 05:55:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=altimeter.info header.i=@altimeter.info header.b="w2HDsiqh"
-Received: from hognose1.porkbun.com (hognose1.porkbun.com [35.82.102.206])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uQ1ZkXyf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317481CAAC;
-	Sat, 17 Feb 2024 06:04:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.82.102.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82D61CD03;
+	Sat, 17 Feb 2024 05:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708149881; cv=none; b=dJXW/FlCCRpkexeU2sKaQbrEBdrP5Mh/ZWaIyYzITrswKk8iS0cK/7Hpen9mnx9xPabPofHMjOvxBp3s+y5Uk//SG/HfAQT3dc6AREl2l1IP3r4HAzYsIiBV6raJ0SZ/gK3Cmo7uX5XKVB1+pSTW5gQH8G4GGpw4s4AtCC8Op5Y=
+	t=1708149312; cv=none; b=PjnZaCIMakIAmRIML+qQTyfz/eKscBoF4z+sq3TKqiZ7RDGjYRSP9hBY6G2KS/X5F/SIa4so3YixHrUEzUdjWtfkTv3x0bO7M2u1UZ5tzG6kCVB4rEoXQDuVGxf7X2ii/YQ+lSBfFDIvBMEd4RGcw8QfYf5vZvvSIMVXE+QgGVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708149881; c=relaxed/simple;
-	bh=8Jo3+1fbXUjvAXRUG/kCX6FortRRxMk/ITjxwuFyDfw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=eLJR3+YDQ3J+A97fa4eenfzqTZvFkhk9R3672uCs65gPJFQCTaBeGkKfmqEfbZQiCo5BiTwYjvwRL20JYX+aS07hjaViCAepYfCkjzk+mMnKKUAqYG0hUc+mqZZJ382PYX7PW6KOkPHOkBBxAZI7dmTuADTpdd7xH+7w2W17E/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=altimeter.info; spf=pass smtp.mailfrom=altimeter.info; dkim=pass (1024-bit key) header.d=altimeter.info header.i=@altimeter.info header.b=w2HDsiqh; arc=none smtp.client-ip=35.82.102.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=altimeter.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altimeter.info
-Received: from lxl-9drxzh3.na.joby.aero (c-73-162-2-38.hsd1.ca.comcast.net [73.162.2.38])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(Client did not present a certificate)
-	(Authenticated sender: linux-kernel@altimeter.info)
-	by hognose1.porkbun.com (Postfix) with ESMTPSA id 2591B4486D;
-	Sat, 17 Feb 2024 05:54:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=altimeter.info;
-	s=default; t=1708149291;
-	bh=NEVBh6mOSjcsgykdJd+GkKPLBxuCjxP6gniCvpJhqx0=;
-	h=Date:From:To:Cc:Subject;
-	b=w2HDsiqhxJ/nvHAYljjEj3/51RC2dzdB5Qsnv4wbTPkc9X0ZzSm/mhAXht1S5FPbV
-	 GJR0evMWMoITqCZCoINTeILIyM5ngoiNh49bk2yDfTAFCMgjqJiot0EHEXOP2TXHEK
-	 an30HFBApCeaP7xeUdur0BWLG9chXY5SXOcqqrI4=
-Date: Fri, 16 Feb 2024 21:54:47 -0800
-From: Ivan Gorinov <linux-kernel@altimeter.info>
-To: Jiri Kosina <jikos@kernel.org>
-Cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] Input: WinWing Orion2 throttle support
-Message-ID: <20240216215447.426ca3e7@lxl-9drxzh3.na.joby.aero>
-Organization: altimeter.info
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708149312; c=relaxed/simple;
+	bh=zRUd7yREBkG9fojxxpCwFR+ZH4UPtylxuQpNSInrd68=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HNa4zHUtq7dmRe/2OikHNdlzktRz1XnMPd2pdMJdhG1FO2+EUz4PLhD0nbNABOopGh/acX82VVu6H4XhiQ/T893EokADftqk7smeUngD+s809xA02qAN+npncmULMXBf8qXUz/2bT5AcXgsX7IYN4mKhFuDbCQ61HT8qWbiC8ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uQ1ZkXyf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D62C433F1;
+	Sat, 17 Feb 2024 05:55:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708149311;
+	bh=zRUd7yREBkG9fojxxpCwFR+ZH4UPtylxuQpNSInrd68=;
+	h=From:To:Cc:Subject:Date:From;
+	b=uQ1ZkXyfKjkIl/6pdVqjIvudxuvRkWyWIwOXR/WWo0YsF6v6M7SJL+fae1/uDSQvs
+	 WZDiQ9uHCPFPVQxZyB7d/x5mwp2AVUDTeGlCP+3h6eSe1Y0LucWaoQU8sxuAx+OGm/
+	 RqFMmNTyWTq4odftpgr/xigJNpCUYM7A9KU2q7l4BmKEL3xO1uJjUfpjS21xkFctgf
+	 PeUSlVnTzhYcLwV6hRQGwUYL3lXbFbnf7Jis5Ppuae7pYtZKz5cGsM1s/QmfG1S0OJ
+	 oR2C/CTzB9yTT2Dv4aj/4rX/pv6zkS47Rjo9K4iVtavrKTpLv55g4o2VaRBg+VXXXX
+	 Bcrq0zmq1DyPw==
+From: Masahiro Yamada <masahiroy@kernel.org>
+To: linux-kbuild@vger.kernel.org
+Cc: Masahiro Yamada <masahiroy@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH 1/2] kbuild: change tool coverage variables to take the path relative to $(obj)
+Date: Sat, 17 Feb 2024 14:55:03 +0900
+Message-Id: <20240217055504.2059803-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-WinWing Orion2 throttle works with Linux out of box,
-but the kernel sees only 16 of 47 buttons on the throttle base.
+Commit 54b8ae66ae1a ("kbuild: change *FLAGS_<basetarget>.o to take the
+path relative to $(obj)") changed the syntax of per-file compiler flags.
 
-This module enables all buttons, and also adds LED controls.
+The situation is the same for the following variables:
 
-Button numbers 0 .. 63 on Orion2 are reserved for throttle grip;
-the throttle base buttons have numbers 64 .. 110.
+  OBJECT_FILES_NON_STANDARD_<basetarget>.o
+  GCOV_PROFILE_<basetarget>.o
+  KASAN_SANITIZE_<basetarget>.o
+  KMSAN_SANITIZE_<basetarget>.o
+  KMSAN_ENABLE_CHECKS_<basetarget>.o
+  UBSAN_SANITIZE_<basetarget>.o
+  KCOV_INSTRUMENT_<basetarget>.o
+  KCSAN_SANITIZE_<basetarget>.o
+  KCSAN_INSTRUMENT_BARRIERS_<basetarget>.o
 
-Linux kernel HID subsystem only supports up to 80 buttons.
+The <basetarget> is the filename of the target with its directory and
+suffix stripped.
 
-Remap throttle base buttons to numbers 32 .. 78,
-reserving only numbers 0 .. 31 for buttons on the grip handle.
+This syntax comes into a trouble when two files with the same basename
+appear in one Makefile, for example:
 
-Changes since v2:
-   - Fixed automatic line wraps added by mail client
+  obj-y += dir1/foo.o
+  obj-y += dir2/foo.o
+  OBJECT_FILES_NON_STANDARD_foo.o := y
 
-Changes since v1:
-   - Fixed formatting of descriptor byte array;
-   - Using product codes of Winwing grips in config.
+OBJECT_FILES_NON_STANDARD_foo.o is applied to both dir1/foo.o and
+dir2/foo.o. This syntax is not flexbile enough to handle cases where
+one of them is a standard object, but the other is not.
 
-Signed-off-by: Ivan Gorinov <ivan.gorinov@jobyaviation.com>
+It is more sensible to use the relative path to the Makefile, like this:
+
+  obj-y += dir1/foo.o
+  OBJECT_FILES_NON_STANDARD_dir1/foo.o := y
+  obj-y += dir2/foo.o
+  OBJECT_FILES_NON_STANDARD_dir2/foo.o := y
+
+To maintain the current behavior, I made adjustments to two Makefiles:
+
+ - arch/x86/entry/vdso/Makefile, which compiles vclock_gettime.o and
+   vdso32/vclock_gettime.o
+
+ - arch/x86/kvm/Makefile, which compiles vmx/vmenter.o and svm/vmenter.o
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/hid/Kconfig       |  16 +++
- drivers/hid/Makefile      |   1 +
- drivers/hid/hid-winwing.c | 229 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 246 insertions(+)
- create mode 100644 drivers/hid/hid-winwing.c
 
-diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-index 4c682c650704..08446c89eff6 100644
---- a/drivers/hid/Kconfig
-+++ b/drivers/hid/Kconfig
-@@ -1236,6 +1236,22 @@ config HID_WIIMOTE
- 	To compile this driver as a module, choose M here: the
- 	module will be called hid-wiimote.
+ arch/x86/entry/vdso/Makefile |  2 ++
+ arch/x86/kvm/Makefile        |  3 ++-
+ scripts/Makefile.build       |  2 +-
+ scripts/Makefile.lib         | 16 ++++++++--------
+ 4 files changed, 13 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
+index 7a97b17f28b7..148adfdb2325 100644
+--- a/arch/x86/entry/vdso/Makefile
++++ b/arch/x86/entry/vdso/Makefile
+@@ -9,7 +9,9 @@ include $(srctree)/lib/vdso/Makefile
+ # Sanitizer runtimes are unavailable and cannot be linked here.
+ KASAN_SANITIZE			:= n
+ KMSAN_SANITIZE_vclock_gettime.o := n
++KMSAN_SANITIZE_vdso32/vclock_gettime.o	:= n
+ KMSAN_SANITIZE_vgetcpu.o	:= n
++KMSAN_SANITIZE_vdso32/vgetcpu.o	:= n
  
-+config HID_WINWING
-+	tristate "WinWing Orion2 throttle support"
-+	depends on USB_HID
-+	depends on NEW_LEDS
-+	depends on LEDS_CLASS
-+	help
-+	  Support for WinWing Orion2 throttle base with the following grips:
-+
-+	    * TGRIP-16EX
-+	    * TGRIP-18
-+
-+	  This driver enables all buttons and switches on the throttle base.
-+
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called hid-winwing.
-+
- config HID_XINMO
- 	tristate "Xin-Mo non-fully compliant devices"
- 	help
-diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
-index 082a728eac60..ce71b53ea6c5 100644
---- a/drivers/hid/Makefile
-+++ b/drivers/hid/Makefile
-@@ -150,6 +150,7 @@ wacom-objs			:= wacom_wac.o wacom_sys.o
- obj-$(CONFIG_HID_WACOM)		+= wacom.o
- obj-$(CONFIG_HID_WALTOP)	+= hid-waltop.o
- obj-$(CONFIG_HID_WIIMOTE)	+= hid-wiimote.o
-+obj-$(CONFIG_HID_WINWING)	+= hid-winwing.o
- obj-$(CONFIG_HID_SENSOR_HUB)	+= hid-sensor-hub.o
- obj-$(CONFIG_HID_SENSOR_CUSTOM_SENSOR)	+= hid-sensor-custom.o
+ UBSAN_SANITIZE			:= n
+ KCSAN_SANITIZE			:= n
+diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+index 475b5fa917a6..a88bb14266b6 100644
+--- a/arch/x86/kvm/Makefile
++++ b/arch/x86/kvm/Makefile
+@@ -4,7 +4,8 @@ ccflags-y += -I $(srctree)/arch/x86/kvm
+ ccflags-$(CONFIG_KVM_WERROR) += -Werror
  
-diff --git a/drivers/hid/hid-winwing.c b/drivers/hid/hid-winwing.c
-new file mode 100644
-index 000000000000..d895c82a541d
---- /dev/null
-+++ b/drivers/hid/hid-winwing.c
-@@ -0,0 +1,229 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * HID driver for WinWing Orion 2 throttle
-+ *
-+ * Copyright (c) 2023 Ivan Gorinov
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/hid.h>
-+#include <linux/hidraw.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+
-+#define MAX_REPORT 16
-+
-+struct winwing_led {
-+	struct led_classdev cdev;
-+	struct hid_device *hdev;
-+	int number;
-+};
-+
-+struct winwing_led_info {
-+	int number;
-+	int max_brightness;
-+	const char *led_name;
-+};
-+
-+static struct winwing_led_info led_info[3] = {
-+	{ 0, 255, "backlight" },
-+	{ 1, 1, "a-a" },
-+	{ 2, 1, "a-g" },
-+};
-+
-+struct winwing_drv_data {
-+	struct hid_device *hdev;
-+	__u8 *report_buf;
-+	struct mutex lock;
-+	unsigned int num_leds;
-+	struct winwing_led leds[];
-+};
-+
-+static int winwing_led_write(struct led_classdev *cdev,
-+		enum led_brightness br)
-+{
-+	struct winwing_led *led = (struct winwing_led *) cdev;
-+	struct winwing_drv_data *data = hid_get_drvdata(led->hdev);
-+	__u8 *buf = data->report_buf;
-+	int ret;
-+
-+	mutex_lock(&data->lock);
-+
-+	buf[0] = 0x02;
-+	buf[1] = 0x60;
-+	buf[2] = 0xbe;
-+	buf[3] = 0x00;
-+	buf[4] = 0x00;
-+	buf[5] = 0x03;
-+	buf[6] = 0x49;
-+	buf[7] = led->number;
-+	buf[8] = br;
-+	buf[9] = 0x00;
-+	buf[10] = 0;
-+	buf[11] = 0;
-+	buf[12] = 0;
-+	buf[13] = 0;
-+
-+	ret = hid_hw_output_report(led->hdev, buf, 14);
-+
-+	mutex_unlock(&data->lock);
-+
-+	return ret;
-+}
-+
-+static int winwing_init_led(struct hid_device *hdev,
-+		struct input_dev *input)
-+{
-+	struct winwing_drv_data *data;
-+	struct winwing_led *led;
-+	int ret;
-+	int i;
-+
-+	size_t data_size = struct_size(data, leds, 3);
-+
-+	data = devm_kzalloc(&hdev->dev, data_size, GFP_KERNEL);
-+
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->report_buf = devm_kmalloc(&hdev->dev, MAX_REPORT, GFP_KERNEL);
-+
-+	if (!data->report_buf)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < 3; i += 1) {
-+		struct winwing_led_info *info = &led_info[i];
-+
-+		led = &data->leds[i];
-+		led->hdev = hdev;
-+		led->number = info->number;
-+		led->cdev.max_brightness = info->max_brightness;
-+		led->cdev.brightness_set_blocking = winwing_led_write;
-+		led->cdev.flags = LED_HW_PLUGGABLE;
-+		led->cdev.name = devm_kasprintf(&hdev->dev, GFP_KERNEL,
-+						"%s::%s",
-+						dev_name(&input->dev),
-+						info->led_name);
-+
-+		ret = devm_led_classdev_register(&hdev->dev, &led->cdev);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	hid_set_drvdata(hdev, data);
-+
-+	return ret;
-+}
-+
-+static int winwing_probe(struct hid_device *hdev,
-+		const struct hid_device_id *id)
-+{
-+	unsigned int minor;
-+	int ret;
-+
-+	ret = hid_parse(hdev);
-+	if (ret) {
-+		hid_err(hdev, "parse failed\n");
-+		return ret;
-+	}
-+
-+	ret = hid_hw_start(hdev, HID_CONNECT_DEFAULT);
-+	if (ret) {
-+		hid_err(hdev, "hw start failed\n");
-+		return ret;
-+	}
-+
-+	minor = ((struct hidraw *) hdev->hidraw)->minor;
-+
-+	return 0;
-+}
-+
-+static int winwing_input_configured(struct hid_device *hdev,
-+		struct hid_input *hidinput)
-+{
-+	int ret;
-+
-+	ret = winwing_init_led(hdev, hidinput->input);
-+
-+	if (ret)
-+		hid_err(hdev, "led init failed\n");
-+
-+	return ret;
-+}
-+
-+static __u8 original_rdesc_buttons[] = {
-+	0x05, 0x09, 0x19, 0x01, 0x29, 0x6F,
-+	0x15, 0x00, 0x25, 0x01, 0x35, 0x00,
-+	0x45, 0x01, 0x75, 0x01, 0x95, 0x6F,
-+	0x81, 0x02, 0x75, 0x01, 0x95, 0x01,
-+	0x81, 0x01
-+};
-+
-+/*
-+ * HID report descriptor shows 111 buttons, which exceeds maximum
-+ * number of buttons (80) supported by Linux kernel HID subsystem.
-+ *
-+ * This module skips numbers 32-63, unused on some throttle grips.
-+ */
-+
-+static __u8 *winwing_report_fixup(struct hid_device *hdev, __u8 *rdesc,
-+		unsigned int *rsize)
-+{
-+	int sig_length = sizeof(original_rdesc_buttons);
-+	int unused_button_numbers = 32;
-+
-+	if (*rsize < 34)
-+		return rdesc;
-+
-+	if (memcmp(rdesc + 8, original_rdesc_buttons, sig_length) == 0) {
-+
-+		/* Usage Maximum */
-+		rdesc[13] -= unused_button_numbers;
-+
-+		/*  Report Count for buttons */
-+		rdesc[25] -= unused_button_numbers;
-+
-+		/*  Report Count for padding [HID1_11, 6.2.2.9] */
-+		rdesc[31] += unused_button_numbers;
-+
-+		hid_info(hdev, "winwing descriptor fixed\n");
-+	}
-+
-+	return rdesc;
-+}
-+
-+static int winwing_raw_event(struct hid_device *hdev,
-+		struct hid_report *report, u8 *raw_data, int size)
-+{
-+	if (size >= 15) {
-+		/* Skip buttons 32 .. 63 */
-+		memmove(raw_data + 5, raw_data + 9, 6);
-+
-+		/* Clear the padding */
-+		memset(raw_data + 11, 0, 4);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct hid_device_id winwing_devices[] = {
-+	{ HID_USB_DEVICE(0x4098, 0xbe62) },  /* TGRIP-18 */
-+	{ HID_USB_DEVICE(0x4098, 0xbe68) },  /* TGRIP-16EX */
-+	{}
-+};
-+
-+MODULE_DEVICE_TABLE(hid, winwing_devices);
-+
-+static struct hid_driver winwing_driver = {
-+	.name = "winwing",
-+	.id_table = winwing_devices,
-+	.probe = winwing_probe,
-+	.input_configured = winwing_input_configured,
-+	.report_fixup = winwing_report_fixup,
-+	.raw_event = winwing_raw_event,
-+};
-+module_hid_driver(winwing_driver);
-+
-+MODULE_LICENSE("GPL");
+ ifeq ($(CONFIG_FRAME_POINTER),y)
+-OBJECT_FILES_NON_STANDARD_vmenter.o := y
++OBJECT_FILES_NON_STANDARD_vmx/vmenter.o := y
++OBJECT_FILES_NON_STANDARD_svm/vmenter.o := y
+ endif
+ 
+ include $(srctree)/virt/kvm/Makefile.kvm
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index 4971f54c855e..256db2a0e984 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -214,7 +214,7 @@ endif # CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
+ # 'OBJECT_FILES_NON_STANDARD_foo.o := 'y': skip objtool checking for a file
+ # 'OBJECT_FILES_NON_STANDARD_foo.o := 'n': override directory skip for a file
+ 
+-is-standard-object = $(if $(filter-out y%, $(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n),y)
++is-standard-object = $(if $(filter-out y%, $(OBJECT_FILES_NON_STANDARD_$(target-stem).o)$(OBJECT_FILES_NON_STANDARD)n),y)
+ 
+ $(obj)/%.o: objtool-enabled = $(if $(is-standard-object),$(if $(delay-objtool),$(is-single-obj-m),y))
+ 
+diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+index b35d39022a30..328c0d77ed48 100644
+--- a/scripts/Makefile.lib
++++ b/scripts/Makefile.lib
+@@ -154,7 +154,7 @@ _cpp_flags     = $(KBUILD_CPPFLAGS) $(cppflags-y) $(CPPFLAGS_$(target-stem).lds)
+ #
+ ifeq ($(CONFIG_GCOV_KERNEL),y)
+ _c_flags += $(if $(patsubst n%,, \
+-		$(GCOV_PROFILE_$(basetarget).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
++		$(GCOV_PROFILE_$(target-stem).o)$(GCOV_PROFILE)$(CONFIG_GCOV_PROFILE_ALL)), \
+ 		$(CFLAGS_GCOV))
+ endif
+ 
+@@ -165,29 +165,29 @@ endif
+ ifeq ($(CONFIG_KASAN),y)
+ ifneq ($(CONFIG_KASAN_HW_TAGS),y)
+ _c_flags += $(if $(patsubst n%,, \
+-		$(KASAN_SANITIZE_$(basetarget).o)$(KASAN_SANITIZE)y), \
++		$(KASAN_SANITIZE_$(target-stem).o)$(KASAN_SANITIZE)y), \
+ 		$(CFLAGS_KASAN), $(CFLAGS_KASAN_NOSANITIZE))
+ endif
+ endif
+ 
+ ifeq ($(CONFIG_KMSAN),y)
+ _c_flags += $(if $(patsubst n%,, \
+-		$(KMSAN_SANITIZE_$(basetarget).o)$(KMSAN_SANITIZE)y), \
++		$(KMSAN_SANITIZE_$(target-stem).o)$(KMSAN_SANITIZE)y), \
+ 		$(CFLAGS_KMSAN))
+ _c_flags += $(if $(patsubst n%,, \
+-		$(KMSAN_ENABLE_CHECKS_$(basetarget).o)$(KMSAN_ENABLE_CHECKS)y), \
++		$(KMSAN_ENABLE_CHECKS_$(target-stem).o)$(KMSAN_ENABLE_CHECKS)y), \
+ 		, -mllvm -msan-disable-checks=1)
+ endif
+ 
+ ifeq ($(CONFIG_UBSAN),y)
+ _c_flags += $(if $(patsubst n%,, \
+-		$(UBSAN_SANITIZE_$(basetarget).o)$(UBSAN_SANITIZE)$(CONFIG_UBSAN_SANITIZE_ALL)), \
++		$(UBSAN_SANITIZE_$(target-stem).o)$(UBSAN_SANITIZE)$(CONFIG_UBSAN_SANITIZE_ALL)), \
+ 		$(CFLAGS_UBSAN))
+ endif
+ 
+ ifeq ($(CONFIG_KCOV),y)
+ _c_flags += $(if $(patsubst n%,, \
+-	$(KCOV_INSTRUMENT_$(basetarget).o)$(KCOV_INSTRUMENT)$(CONFIG_KCOV_INSTRUMENT_ALL)), \
++	$(KCOV_INSTRUMENT_$(target-stem).o)$(KCOV_INSTRUMENT)$(CONFIG_KCOV_INSTRUMENT_ALL)), \
+ 	$(CFLAGS_KCOV))
+ endif
+ 
+@@ -197,12 +197,12 @@ endif
+ #
+ ifeq ($(CONFIG_KCSAN),y)
+ _c_flags += $(if $(patsubst n%,, \
+-	$(KCSAN_SANITIZE_$(basetarget).o)$(KCSAN_SANITIZE)y), \
++	$(KCSAN_SANITIZE_$(target-stem).o)$(KCSAN_SANITIZE)y), \
+ 	$(CFLAGS_KCSAN))
+ # Some uninstrumented files provide implied barriers required to avoid false
+ # positives: set KCSAN_INSTRUMENT_BARRIERS for barrier instrumentation only.
+ _c_flags += $(if $(patsubst n%,, \
+-	$(KCSAN_INSTRUMENT_BARRIERS_$(basetarget).o)$(KCSAN_INSTRUMENT_BARRIERS)n), \
++	$(KCSAN_INSTRUMENT_BARRIERS_$(target-stem).o)$(KCSAN_INSTRUMENT_BARRIERS)n), \
+ 	-D__KCSAN_INSTRUMENT_BARRIERS__)
+ endif
+ 
 -- 
-2.25.1
+2.40.1
 
 
