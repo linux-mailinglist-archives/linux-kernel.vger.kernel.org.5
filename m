@@ -1,117 +1,115 @@
-Return-Path: <linux-kernel+bounces-70110-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 719F785932F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:45:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04BA6859332
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:48:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F05411F22371
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:45:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B44412826A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41317CF32;
-	Sat, 17 Feb 2024 22:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kzRoPuDU"
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADB57E59E;
+	Sat, 17 Feb 2024 22:48:07 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E277E6D1A8
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 22:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770501CF96
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 22:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.85.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708209908; cv=none; b=kzp6wm3L7M+dqnzSktsGVisRMiem0aOmalqfgqUwR3SwXtOXVgIOWzaBmzQWMG7DL3GZIxWL2DmmOO5dm4rzPKZm5xQu+Haro7UczkdNsoKCfw3rkPE/WIRiUp32m8TmjJ5J2gq/FBKmntVd6dzBP+sxVz6QdW3CgSBUIUuv51Y=
+	t=1708210087; cv=none; b=fETC1dJeb0Fd/IFwQX1IPD3plNjmyQ7b2aGeQVF5C60gTnQq49ugAZxBKuOzLNeiREKWp/sKt/lpfTpItpR3+UCo8wBuRe6tOxmg8RfVKUxan4RgFLOeNoxBQ423ydhPy4LSQhdatLbzkGc4wQCceccNfTxsj7HRWfwSz7MFRVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708209908; c=relaxed/simple;
-	bh=urM+nLCqAhqOanY4utAYiFvmTeBTP9vM1GuLdCAu7dU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nom6Xy89Ht5owEMHrBIoEb30MuxC6F7FRnfrYPLz3g+zubI8ip9kxqplfLJKJjcqaE0DMAoPiTgfz765gHU9jqCqTaItudRR7dmwMfMga3RLlDF2qORqUlTPJCgy7TvT+bbUQUXkQ5utFjAbQ3wPYxU6Ft3kJnVL5esCjqi8KMw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kzRoPuDU; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso1721936a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 14:45:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708209905; x=1708814705; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6zYveub7yYw/4yOK4qfAyNaSqjm09WW1iA3q80zNNrI=;
-        b=kzRoPuDU1k7WdDDWHWFIgd4yz75FvLnn0aJYYAL3SndOZpcv77XLMTIQHNuPvOVqat
-         7BW2yeWSAjm6YhG6dGfoN+Nvg3BpRWI50TU4gzN1WhHL9xk2ALAZZ+XWx2CEJGyT/XPS
-         Aiu1M30MDTXYfHh2xiIWjTJnyBDOVUQLOqN1U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708209905; x=1708814705;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6zYveub7yYw/4yOK4qfAyNaSqjm09WW1iA3q80zNNrI=;
-        b=L2V1I7ZO+Fi5xOQwLNXykVoikX7gaWtgASYeIT3Hykk1ciuUMK4oc+tN+A/WUssz2A
-         mfxvSKLmD4p6YRYsGAcBDHgivKkwSQxPJWwtwGbAI3GN1/CAlNcb+4hDkhPCnCy4SNVK
-         vHXlYUtsU9+wl64lGM4+yMzjmvV00hN3t9vZnEQJwgVqAkhvMtbNjqjcQ6BZlxxFIPLR
-         r4bQ88dT6/bGLMDgH3bFpkBUZiFE0A0eqmnt7JCFEdnKk6ei+Bx/aFizZllchh6n/QpK
-         ZeYH4T8s7CC5HGcjgHedc7Dqzhew6S/w1kkdHGqcXZrpxJLUtqe93UvAeOU6ElVHWC82
-         UhuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWc7KwO3QGQAZlB8BYS4Gx99DXmDHNYAE3rn0Zqx1IK0SMYhgTXauO0pczBMA+46ZTTMEXDnfLdA76CBFLNlsIk/gwLbP/badETbjKN
-X-Gm-Message-State: AOJu0YyMGrGJ+1s7I3iHk3ie74BAx92DuvBVf4qk0rrd6HZ5zF+oAFJx
-	UATePAXBqnWF9EvZY3ZZ1JqUM4Poh2oS0iSAt5O10V/qt5SPi4Q956wCwjredQ==
-X-Google-Smtp-Source: AGHT+IGfBwCI/zJRAfkI3/3guXIHn5ScNJfsMg7yf6ZXenaRb2Xqpg5ydDYfgeE6X+Dq0UeBGs5IJw==
-X-Received: by 2002:a05:6a20:9c97:b0:19e:bca3:213f with SMTP id mj23-20020a056a209c9700b0019ebca3213fmr11331029pzb.52.1708209905129;
-        Sat, 17 Feb 2024 14:45:05 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id w3-20020a17090a528300b002990d91d31dsm2270321pjh.15.2024.02.17.14.45.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 14:45:04 -0800 (PST)
-Date: Sat, 17 Feb 2024 14:45:03 -0800
-From: Kees Cook <keescook@chromium.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Check return from set_memory_rox() and
- friends
-Message-ID: <202402171444.C121486@keescook>
-References: <63322c8e8454de9b240583de58cd730bc97bb789.1708165016.git.christophe.leroy@csgroup.eu>
+	s=arc-20240116; t=1708210087; c=relaxed/simple;
+	bh=Oxo9xfWWrylqVF9wdIJ15x+712dCbCjyWGNGN7jK96E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=Ysub0lt0MSBBYQswqUTju+qrIrdQYC1Ul4sw7BZEdFdjqcSG/b/cBUBeMw5trdlI7Y+Ydq53/f54scwy2sjnkP8GQYi8cXHZcE/smvKWiBn6/e9Ga6/ZlpHvEOITSJxBfD8QBlAN1Bl8x5iPt1AWuIHKVLBKEmh40pK3qlk5C58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.85.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-200-m7FAOtyeN7C0BBLLhnGudQ-1; Sat, 17 Feb 2024 22:47:54 +0000
+X-MC-Unique: m7FAOtyeN7C0BBLLhnGudQ-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sat, 17 Feb
+ 2024 22:47:31 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sat, 17 Feb 2024 22:47:31 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Charlie Jenkins' <charlie@rivosinc.com>, Helge Deller <deller@kernel.org>
+CC: Guenter Roeck <linux@roeck-us.net>, Helge Deller <deller@gmx.de>, "James E
+ . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+	"linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Palmer Dabbelt
+	<palmer@rivosinc.com>
+Subject: RE: [PATCH] parisc: Fix csum_ipv6_magic on 64-bit systems
+Thread-Topic: [PATCH] parisc: Fix csum_ipv6_magic on 64-bit systems
+Thread-Index: AQHaYU1uf9SPNwTrtE2tFbsnOFUZorEPGrIQ
+Date: Sat, 17 Feb 2024 22:47:31 +0000
+Message-ID: <8c5a811655004999ba187e69fe2d5fbf@AcuMS.aculab.com>
+References: <20240213234631.940055-1-linux@roeck-us.net>
+ <Zc9XW-TxQKp84vMt@p100> <ZdAhQHFXUF7wEWea@ghost>
+In-Reply-To: <ZdAhQHFXUF7wEWea@ghost>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <63322c8e8454de9b240583de58cd730bc97bb789.1708165016.git.christophe.leroy@csgroup.eu>
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 17, 2024 at 11:24:07AM +0100, Christophe Leroy wrote:
-> arch_protect_bpf_trampoline() and alloc_new_pack() call
-> set_memory_rox() which can fail, leading to unprotected memory.
-> 
-> Take into account return from set_memory_XX() functions and add
-> __must_check flag to arch_protect_bpf_trampoline().
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+..
+> We can do better than this! By inspection this looks like a performance
+> regression. The generic version of csum_fold in
+> include/asm-generic/checksum.h is better than this so should be used
+> instead.
 
-Thanks for doing this! This seems to hit all the right error paths that
-I can see.
+Yes, that got changed for 6.8-rc1 (I pretty much suggested the patch)
+but hadn't noticed Linus has applied it.
+That C version is (probably) not worse than any of the asm versions
+except sparc32 - which has a carry flag but rotate.
+(It is better than the x86-64 asm one.)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+..
+> This doesn't leverage add with carry well. This causes the code size of t=
+his
+> to be dramatically larger than the original assembly, which I assume
+> nicely correlates to an increased execution time.
 
--- 
-Kees Cook
+It is pretty much impossible to do add with carry from C.
+So an asm adc block is pretty much always going to win.
+
+For csum_partial and short to moderate length buffers
+on x86 it is hard to beat 10: adc, adc, dec, jnz 10b
+which (on modern intel cpu at least) does 8 bytes/clock.
+You can get 12 bytes/clock but it only really wins for 256+ bytes.
+(See the current x86-64 version.)
+
+For cpu without a carry flag it is likely that a common C
+function will be pretty much optimal on all architectures.
+(Or maybe a couple of implementations based the actual
+cpu implementation - not the architecture.)
+
+Mostly I don't think you can beat 4 instructions/word, but they
+will pipeline so with multi-issue you might get a read/clock.=20
+Arm's barrel shifter might give 3: v + *p; x +=3D v, y +=3D v >> 32.
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
+
 
