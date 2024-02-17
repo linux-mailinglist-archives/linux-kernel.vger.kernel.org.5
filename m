@@ -1,53 +1,104 @@
-Return-Path: <linux-kernel+bounces-69522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF95F858A86
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:08:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEDCF858A8A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:09:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D153282A41
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:08:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FAFFB28D23
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:09:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E28B149DEF;
-	Sat, 17 Feb 2024 00:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3FED26A;
+	Sat, 17 Feb 2024 00:08:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R0gLWjb+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="FAXamuuN"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FE0173;
-	Sat, 17 Feb 2024 00:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F9623D68
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708128481; cv=none; b=MhEfG0AQ8gAC+fbcFy8Qqs998WrKUZXIgXULsBob6XtNMzi1sgFL1itURVuz3BIWWWrel5Wheud0JWIs0KYIWblvsdyxyNMQfCfIv0nlWyQQsTHFUly8QD4oEhPhlWQXIOm8ZJrFqkjn9oz4sEhlhJpVMqDzZl8HkfkJ5QlJPZ4=
+	t=1708128530; cv=none; b=Kff4BaauPN380w+hUU7FSG5MPndyEaI7L7hYsihxg9VIZP/iPEYJhdpYUwzQJSpnDb129W5hYh5UxRXctUOZGOqeJypD+yZQ+iROlqxFRTc7tcVagodAzbcBdwmIBjfSuUdDHTe9ovZFWvbhvMEzXosxvF/Hdg0968LKgXifbfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708128481; c=relaxed/simple;
-	bh=9F5kBkR+QD3RmrjVjEGCYqMELge2iCuTz8j5HrnXFRA=;
+	s=arc-20240116; t=1708128530; c=relaxed/simple;
+	bh=plU6YhEkyhkbfKgfjHrx3qjSg7IHeMnpyb2DBIHN9Rs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Jnb+L3Y4iDYS4I6b1tQ9MtgAM9e0a+MP5n91jqXjPTENGIzHapbhxAu4YJSONl7lKEmm8rqu+F8nQs0d1NOUUbeX6h1WcmD5DRdZJGkNNBJH6lA5qk++mP4NSfhP/TY+Cbl468zYo/6ZRK8qvbR/kCXAvt11J/bIZ7e4r1mSGNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R0gLWjb+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B68AC433C7;
-	Sat, 17 Feb 2024 00:08:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708128481;
-	bh=9F5kBkR+QD3RmrjVjEGCYqMELge2iCuTz8j5HrnXFRA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=R0gLWjb+FDPxs1UMz1jUt5NMr+iSpu9SkvJC+xuB18X9VFCkWKMdr4aToDfwxk8D7
-	 rrjG4s9uO0be7A/t9cdH+lcxY9E+vgqSccWa87tVU4UN00xA4lszstIsOQ/sapgvgs
-	 Vox2FK7TV1EnOyDtv6/GPBhh3kUNQOcPwDmHNVxMlVMZKtm2niuhIXi5mTNJ84VN55
-	 qfDoL9TPl288IO+0ZhadsSZD+wzboDW4Q+JfINR683Uw4XiwKwXAW9HfvIq+RHm5tc
-	 //2evRp21wsRu3tgGui20PJfUSXQ0DM8CvIohZHUb5A5kq+YZey+ZvKjpedqqzDEx9
-	 AFPoSo4cIMkDQ==
-Date: Fri, 16 Feb 2024 17:07:59 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Petr Pavlu <petr.pavlu@suse.com>
-Cc: masahiroy@kernel.org, nicolas@fjasle.eu, mark.rutland@arm.com,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kbuild: Use -fmin-function-alignment when available
-Message-ID: <20240217000759.GA3808452@dev-arch.thelio-3990X>
-References: <20240215151642.8970-1-petr.pavlu@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LbDyQLKLT6LjnDclhaLZArborw8NK1DSr1wYfuzjQVD0PZ8jVeE8MurNnohajNCUnEJqbOKeFNNvkGIOrhOLCnrqZEkdQxHnROgMVmtigb5clxsEvCRk81jujXvnSShgGbvgEH3z3i5z4Cq06PHAvPtWkC9aRcT2hywW+DTVF04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=FAXamuuN; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6d9f94b9186so2159587b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:08:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708128528; x=1708733328; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=S1txfacIBFBZ/O4tjcxs+bfhiTiZyaDvYXwzko6DwYw=;
+        b=FAXamuuNv/zQzAsTiczfELCzSiTGSx1i/N2NTp0zupFLDQsEIxjlp36niuZ2AP+LXG
+         uwz2r7+1poIRzYwVXiE5dopiurRDvewCRlMU4JDMQz2+foC3MvDRrVkWlpAZZy83/LUv
+         Teb8jXfQwKklL/wDFlt/TtF/74WCF3iwL7PHw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708128528; x=1708733328;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S1txfacIBFBZ/O4tjcxs+bfhiTiZyaDvYXwzko6DwYw=;
+        b=HNrWUp2918JSr61tE4/dGSaB9IEDn+JGjjz7sQVxpOD/GbqUVeENiD0zKK1xN8PTtv
+         +ugp3eYp8Em0TB0oEWEpmcRZ8tMhqEL3trbxNjQFL69/Jm9Sb8LEmAnxHyqMxuJ8d0Ww
+         Fi/H8R2HcflG9FLvUv2Dm3dS1ZJv5UgrpvlDWckTA+RevbAC2n4K7a2pVW3TnMcASu93
+         9t8PHRji1nOxDZuu90jhvexqE3EkcjGhmntUZsI5YNWkVgaoPqp9yRR91ytwO5nq1qG/
+         ZTggyddQdTLLA7cDqHub+k2UaBYCbwywIbjJ6vYB35MrNbt33gyJBFJJdL8v1B6t05i6
+         eMQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVdgTCymEu2sEaFosQnELd+Xtco8/Ct+5J39iCLq4GAk0q0P3se+eVXtKfuKBp/7WlVEMNZ92pEdAcfigxJpeab+9luiTHvqv77zjLV
+X-Gm-Message-State: AOJu0YyGswTk/7g4KaoHHb3ObKy1w2jBTfTjT0s2wXbjzp9oInXZ+XC+
+	M6F+7GVWJxT6XJny2of04S85yItZHIi74B7xMMGpqhKGeKtEMyW4MGcZcLvt+Q==
+X-Google-Smtp-Source: AGHT+IF+QQ/9SK4sTlRF7CviXNWL9OdNoE9iSFRsOXGRftVqcaAIHIRUQhIt4OYE39Err1qxKn5GJw==
+X-Received: by 2002:a05:6a21:3183:b0:19e:a9e6:c05 with SMTP id za3-20020a056a21318300b0019ea9e60c05mr7276163pzb.43.1708128527870;
+        Fri, 16 Feb 2024 16:08:47 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id z3-20020aa79903000000b006e094bf05f4sm487826pff.213.2024.02.16.16.08.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 16:08:47 -0800 (PST)
+Date: Fri, 16 Feb 2024 16:08:46 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+	mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+	willy@infradead.org, liam.howlett@oracle.com, corbet@lwn.net,
+	void@manifault.com, peterz@infradead.org, juri.lelli@redhat.com,
+	catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de,
+	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, peterx@redhat.com, david@redhat.com,
+	axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org,
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+	ndesaulniers@google.com, vvvvvv@google.com,
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+	vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+	elver@google.com, dvyukov@google.com, shakeelb@google.com,
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
+ allocation profiling
+Message-ID: <202402161607.0208EB45C@keescook>
+References: <20240212213922.783301-1-surenb@google.com>
+ <20240212213922.783301-14-surenb@google.com>
+ <202402121433.5CC66F34B@keescook>
+ <lvrwtp73y2upktswswekhhilrp2i742tmhcxi2c4gayyn24qd2@hdktbg3qutgb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,124 +107,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215151642.8970-1-petr.pavlu@suse.com>
+In-Reply-To: <lvrwtp73y2upktswswekhhilrp2i742tmhcxi2c4gayyn24qd2@hdktbg3qutgb>
 
-On Thu, Feb 15, 2024 at 04:16:42PM +0100, Petr Pavlu wrote:
-> GCC recently added option -fmin-function-alignment, which should appear
-> in GCC 14. Unlike -falign-functions, this option causes all functions to
-> be aligned at the specified value, including the cold ones.
+On Fri, Feb 16, 2024 at 06:26:06PM -0500, Kent Overstreet wrote:
+> On Mon, Feb 12, 2024 at 02:40:12PM -0800, Kees Cook wrote:
+> > On Mon, Feb 12, 2024 at 01:38:59PM -0800, Suren Baghdasaryan wrote:
+> > > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > > index ffe8f618ab86..da68a10517c8 100644
+> > > --- a/include/linux/sched.h
+> > > +++ b/include/linux/sched.h
+> > > @@ -770,6 +770,10 @@ struct task_struct {
+> > >  	unsigned int			flags;
+> > >  	unsigned int			ptrace;
+> > >  
+> > > +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> > > +	struct alloc_tag		*alloc_tag;
+> > > +#endif
+> > 
+> > Normally scheduling is very sensitive to having anything early in
+> > task_struct. I would suggest moving this the CONFIG_SCHED_CORE ifdef
+> > area.
 > 
-> Detect availability of -fmin-function-alignment and use it instead of
-> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
-> and make the workarounds for the broken function alignment conditional
-> on this setting.
-> 
-> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
+> This is even hotter than the scheduler members; we actually do want it
+> up front.
 
-Thanks, this looks good to me from a Kbuild perspective.
+It is? I would imagine the scheduler would touch stuff more than the
+allocator, but whatever works. :)
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
-> 
-> Changes since v1 [1]:
-> - Check the availability of -fmin-function-alignment only in one place.
-> 
-> [1] https://lore.kernel.org/linux-kbuild/20240212145355.1050-1-petr.pavlu@suse.com/
-> 
->  Makefile                       |  7 +++++++
->  arch/Kconfig                   | 12 ++++++++++++
->  include/linux/compiler_types.h | 10 +++++-----
->  kernel/exit.c                  |  5 ++++-
->  4 files changed, 28 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 7e0b2ad98905..6f20ab5e2e44 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -974,8 +974,15 @@ export CC_FLAGS_CFI
->  endif
->  
->  ifneq ($(CONFIG_FUNCTION_ALIGNMENT),0)
-> +# Set the minimal function alignment. Use the newer GCC option
-> +# -fmin-function-alignment if it is available, or fall back to -falign-funtions.
-> +# See also CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT.
-> +ifdef CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT
-> +KBUILD_CFLAGS += -fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT)
-> +else
->  KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
->  endif
-> +endif
->  
->  # arch Makefile may override CC so keep this after arch Makefile is included
->  NOSTDINC_FLAGS += -nostdinc
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index a5af0edd3eb8..bd6c6335efac 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1507,4 +1507,16 @@ config FUNCTION_ALIGNMENT
->  	default 4 if FUNCTION_ALIGNMENT_4B
->  	default 0
->  
-> +config CC_HAS_MIN_FUNCTION_ALIGNMENT
-> +	# Detect availability of the GCC option -fmin-function-alignment which
-> +	# guarantees minimal alignment for all functions, unlike
-> +	# -falign-functions which the compiler ignores for cold functions.
-> +	def_bool $(cc-option, -fmin-function-alignment=8)
-> +
-> +config CC_HAS_SANE_FUNCTION_ALIGNMENT
-> +	# Set if the guaranteed alignment with -fmin-function-alignment is
-> +	# available or extra care is required in the kernel. Clang provides
-> +	# strict alignment always, even with -falign-functions.
-> +	def_bool CC_HAS_MIN_FUNCTION_ALIGNMENT || CC_IS_CLANG
-> +
->  endmenu
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 663d8791c871..f0152165e83c 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -99,17 +99,17 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
->   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html#index-cold-label-attribute
->   *
->   * When -falign-functions=N is in use, we must avoid the cold attribute as
-> - * contemporary versions of GCC drop the alignment for cold functions. Worse,
-> - * GCC can implicitly mark callees of cold functions as cold themselves, so
-> - * it's not sufficient to add __function_aligned here as that will not ensure
-> - * that callees are correctly aligned.
-> + * GCC drops the alignment for cold functions. Worse, GCC can implicitly mark
-> + * callees of cold functions as cold themselves, so it's not sufficient to add
-> + * __function_aligned here as that will not ensure that callees are correctly
-> + * aligned.
->   *
->   * See:
->   *
->   *   https://lore.kernel.org/lkml/Y77%2FqVgvaJidFpYt@FVFF77S0Q05N
->   *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c9
->   */
-> -#if !defined(CONFIG_CC_IS_GCC) || (CONFIG_FUNCTION_ALIGNMENT == 0)
-> +#if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || (CONFIG_FUNCTION_ALIGNMENT == 0)
->  #define __cold				__attribute__((__cold__))
->  #else
->  #define __cold
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index dfb963d2f862..5a6fed4ad3df 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -1920,7 +1920,10 @@ EXPORT_SYMBOL(thread_group_exited);
->   *
->   * See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c11
->   */
-> -__weak __function_aligned void abort(void)
-> +#ifndef CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
-> +__function_aligned
-> +#endif
-> +__weak void abort(void)
->  {
->  	BUG();
->  
-> 
-> base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
-> -- 
-> 2.35.3
-> 
+-- 
+Kees Cook
 
