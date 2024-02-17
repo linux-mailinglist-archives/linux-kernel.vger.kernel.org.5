@@ -1,191 +1,138 @@
-Return-Path: <linux-kernel+bounces-69646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3579858CBF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:29:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3C6A858CC1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:31:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6E481C21B7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:29:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 81B13B211F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D40F1D522;
-	Sat, 17 Feb 2024 01:28:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5A3171A4;
+	Sat, 17 Feb 2024 01:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T+stnbu8"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="aXfdGNXK"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930521CD1F;
-	Sat, 17 Feb 2024 01:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73350149E06
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 01:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708133291; cv=none; b=cb3qYWaFTahpJxShmiELn/k1Q50AEN+QgH8aywRU+cZ2WyXG/yjJXU8KZJEJ6gyjZpzVisPtAVg6lmLfq14mLp3zWqlPxgymHAB/Pia5FMLhcjCEgi7hlviz13M1mhvViR8okgGSq5X9aUoE7LTyjehklsbx6uGM7AV9WLfBXko=
+	t=1708133481; cv=none; b=bf27Cnhy24ATZgF/rSRjSmVJ+OqRNiuXXo02qXnauPKGnPVmj4Vq2C+yplylnwWKhEemE1B8XG7pmL3QT5DDKpEVK9+ULF0PwdWdvvVYK4f1NBvj4nywMpwMRb7ZtOdhfPJjz34z8m0LDm3Tzq1rMVhuGQ4XAQvLZGhaEydMQe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708133291; c=relaxed/simple;
-	bh=KLY1+2mGq3H9diWHchRwxDC5ACzJHAgMPqkliWw0HYE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FeFsxln59LthlOtK5mn2FHdwSCGtg/1zVmajFkWNnB376sNRq/zij2BlgJk93hpVAyNrHb7+vMbF28sQPdfewp5MvlCH3A0HbaV22kk1t5ZPFqQ3bd2WSGpJMLINheVv7a3lPkIBK74kq5hHVjjT4kEck+qfOOe9Sqc0S28LLW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T+stnbu8; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso1353037276.0;
-        Fri, 16 Feb 2024 17:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708133288; x=1708738088; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=T5Wf+uCUWSLEUPm4v8/DfTpOrC7IR1g418bIMiGKo4M=;
-        b=T+stnbu8W7xsXBaJXXb5IZCo+ZKzT0/hgW2KW/n0IXmzvJTlvXAt4tbeItEsPJ5lQl
-         CnwoLlKGDIt4tY3nXQW4TeZAl17otodsn8hZpe99QJVNcBScvghsVPk86kClrMX7/Lh1
-         rzFVrnHjZViROBcdKs53jVj8h31pX1mhM29IfBC5LSgYQryCBFy1TZGop/NOcdplQD1u
-         jNl5jB9n0VtFZNAyQGJE4owG5XTO4IsVMBKgSJQaAKQCdqH/RTqEAbzGuU4s4H70llyK
-         ZDt581xJ9k0Vy+ZecbMkOzmI9Pjh55bLwb6TfSG/Y5yQk2m1JNk3ys9XbFNZ+7Vz7ytk
-         NGmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708133288; x=1708738088;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:feedback-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=T5Wf+uCUWSLEUPm4v8/DfTpOrC7IR1g418bIMiGKo4M=;
-        b=H2/eyaXay2yfiCOf+fKt66L3wwUlQl/1S9lF47ZPVEkDs2amuOCSEAyRnOCjsRQ1hX
-         KDmnbOcAfQghDqWAdzE098ZtnLh4oQLuRl2GlgqWsk8sqxGWjauTUO+mfZ+KWzoCVQ4R
-         L/6u6gM4HOtcDKcep8JSl0wKcfgt0ryHw5INqvQ+HaG3ci/eZHCaUN5uvHf9AEtJnfF8
-         v3SMyLdxkjuuStvuiSX1xDT/UDBHrakDNxUFflhbXgApKDB57xEbkg184/VggcVxVM/h
-         DTwd15Q9owOhinp5VsCuW/peuwmN0KQCRdIrYIxEKYEUeLCCtp9yj3kyT5W+Wdk2l3u3
-         VTSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXWOrXkpdP2sFHkBKnIPnst0rCIGJ4B81h4D9roQ7bkkvnPzb3gGggAQ2N9dxqVuvLZSBHY1LWGhiQpw5/BBrGq7IyR
-X-Gm-Message-State: AOJu0Yy9x9esI6FGLGIL58KYTcpM3R4RAm/6DChjHw75JKB2VI5DMvSQ
-	5L0z4Ss6mdpfl6GIHnfKA5nqs9OrIyjpgJoDxwGUQCVSh4vZl1o/
-X-Google-Smtp-Source: AGHT+IHvCIAW1gUWuC6BiNrjm09BPqEzDCK19XkJ9Kl/trYg2RlHpnciPFlp4sSmM9ye2ba4YkOZig==
-X-Received: by 2002:a5b:708:0:b0:dc6:cc35:35e9 with SMTP id g8-20020a5b0708000000b00dc6cc3535e9mr6286134ybq.35.1708133288319;
-        Fri, 16 Feb 2024 17:28:08 -0800 (PST)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id y23-20020a37e317000000b00785e016ec39sm442118qki.42.2024.02.16.17.28.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 17:28:07 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 849BE1200043;
-	Fri, 16 Feb 2024 20:28:07 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 16 Feb 2024 20:28:07 -0500
-X-ME-Sender: <xms:pwvQZR3TU7NX90Escm2Wc81OnPAVBmPtY17kLpb9sqQyUzuPlxXTAQ>
-    <xme:pwvQZYEND7eoElyELQWacULDsW_IdItKrmCLKb-PZs9gNoD73fgBb3q2VuIi_yq8n
-    QlNl4iEzRX-d9J4Pw>
-X-ME-Received: <xmr:pwvQZR7-1r9Pp5i15pt3p35dH-XGn_EuUe73LXRf5pEKzS1ob30WpA0iloU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdefgdefgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvfevufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepgeeljeeitdehvdehgefgjeevfeejjeekgfevffeiueejhfeuiefggeeuheeg
-    gefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:pwvQZe2SZGNfVOGlbIKPm07fh9SxzwgbYllrC5wJOBD8042eVAtw7Q>
-    <xmx:pwvQZUFBk-KS6ck-wbYemB2kETPrPC7xSbaC4E_wwb1oJZon-w32-Q>
-    <xmx:pwvQZf_KJcwlLfLjx4LH1THNpg8K1JOEGaMfKjRpalDO9PQPIz-vLQ>
-    <xmx:pwvQZaFo3aA0PbOxASC96s6nG54heAFL3BRH6YLeYkd8ccLSP5QiMgDYk3w>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 16 Feb 2024 20:28:07 -0500 (EST)
-From: Boqun Feng <boqun.feng@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org
-Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: [PATCH v2 6/6] rcu-tasks: Maintain real-time response in rcu_tasks_postscan()
-Date: Fri, 16 Feb 2024 17:27:41 -0800
-Message-ID: <20240217012745.3446231-7-boqun.feng@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240217012745.3446231-1-boqun.feng@gmail.com>
-References: <20240217012745.3446231-1-boqun.feng@gmail.com>
+	s=arc-20240116; t=1708133481; c=relaxed/simple;
+	bh=FxZTiOnH28ta9w4qyeQlCyVM9g7hAjeN2oBcrxtUBCs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EVIcHLuuq56xEsHCstE6ombnazyxAJ0FPKYbHbEMMcxv34LMPje4eqN8GCmKC7CJ70aflm5k1sFuc+6PWY2jkVlv7jTG7Zt45mM5IB+UpqYxK0LFLPp+Cba29INXv/HUWZLfmQADOcAtBn8omXKeJ5+WlJH24B53JVI4XjSRiuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=aXfdGNXK; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=NVv3jtwrIr3uSH0TL3zX4hdOSOGZmVK7PYBdingjYrw=; b=aXfdGNXKG9dBi+YSFnau8+kxeZ
+	pWjB04/AIlIJuH1vgHrQiuIF0ptiyg9HYMTQnktakyIMRR7eMOsOlpP3ClweoDmzY9MVAduKVcjS+
+	QlOhK+7J1svCzQ86p4C9rz2L9PIcc7cFOTy1WUTMJDA5aQG7kfNxv8meLZCQk5u6oqC/tl1CSnW9G
+	GEdDP8+OebsSHv6n8h7VEC1SmakH5N/iCL9SlDReZ7qSZR3fGeonOmeogyjtk47K7eYM6Zwa1HZPH
+	7czHGcfpc09dfl5OpBQufNOEsMWNH9Ifwm1XsYWr1IGKGD2dUwVM2uk0Bfq0CsFXO2/5Cu0w+Genj
+	N4kN1IrA==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rb9Xl-00000004Pfk-0nYR;
+	Sat, 17 Feb 2024 01:31:06 +0000
+Message-ID: <745e156e-c3ec-427f-98ad-bfc7d3cfd846@infradead.org>
+Date: Fri, 16 Feb 2024 17:31:03 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/tests/drm_buddy: avoid 64-bit calculation
+Content-Language: en-US
+To: Arnd Bergmann <arnd@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ David Gow <davidgow@google.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mcanal@igalia.com>, Matthew Auld <matthew.auld@intel.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240216202442.2493031-1-arnd@kernel.org>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240216202442.2493031-1-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The current code will scan the entirety of each per-CPU list of exiting
-tasks in ->rtp_exit_list with interrupts disabled.  This is normally just
-fine, because each CPU typically won't have very many tasks in this state.
-However, if a large number of tasks block late in do_exit(), these lists
-could be arbitrarily long.  Low probability, perhaps, but it really
-could happen.
 
-This commit therefore occasionally re-enables interrupts while traversing
-these lists, inserting a dummy element to hold the current place in the
-list.  In kernels built with CONFIG_PREEMPT_RT=y, this re-enabling happens
-after each list element is processed, otherwise every one-to-two jiffies.
+On 2/16/24 12:24, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The newly added drm_test_buddy_alloc_contiguous() test fails to link on
+> 32-bit targets because of inadvertent 64-bit calculations:
+> 
+> ERROR: modpost: "__aeabi_uldivmod" [drivers/gpu/drm/tests/drm_buddy_test.ko] undefined!
+> ERROR: modpost: "__aeabi_ldivmod" [drivers/gpu/drm/tests/drm_buddy_test.ko] undefined!
+> 
+>>From what I can tell, the numbers cannot possibly overflow a 32-bit size,
+> so use different types for these.
+> 
+> I noticed that the function has another possible flaw in that is mixes
+> what it calls pages with 4KB units. This is a big confusing at best,
+> or possibly broken when built on machines with larger pages.
+> 
+> Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Siewior <bigeasy@linutronix.de>
-Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
----
- kernel/rcu/tasks.h | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-index 4dc355b2ac22..866743e0796f 100644
---- a/kernel/rcu/tasks.h
-+++ b/kernel/rcu/tasks.h
-@@ -971,13 +971,32 @@ static void rcu_tasks_postscan(struct list_head *hop)
- 	 */
- 
- 	for_each_possible_cpu(cpu) {
-+		unsigned long j = jiffies + 1;
- 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
- 		struct task_struct *t;
-+		struct task_struct *t1;
-+		struct list_head tmp;
- 
- 		raw_spin_lock_irq_rcu_node(rtpcp);
--		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list)
-+		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
- 			if (list_empty(&t->rcu_tasks_holdout_list))
- 				rcu_tasks_pertask(t, hop);
-+
-+			// RT kernels need frequent pauses, otherwise
-+			// pause at least once per pair of jiffies.
-+			if (!IS_ENABLED(CONFIG_PREEMPT_RT) && time_before(jiffies, j))
-+				continue;
-+
-+			// Keep our place in the list while pausing.
-+			// Nothing else traverses this list, so adding a
-+			// bare list_head is OK.
-+			list_add(&tmp, &t->rcu_tasks_exit_list);
-+			raw_spin_unlock_irq_rcu_node(rtpcp);
-+			cond_resched(); // For CONFIG_PREEMPT=n kernels
-+			raw_spin_lock_irq_rcu_node(rtpcp);
-+			list_del(&tmp);
-+			j = jiffies + 1;
-+		}
- 		raw_spin_unlock_irq_rcu_node(rtpcp);
- 	}
- 
+Thanks.
+
+> ---
+>  drivers/gpu/drm/tests/drm_buddy_test.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/tests/drm_buddy_test.c b/drivers/gpu/drm/tests/drm_buddy_test.c
+> index fee6bec757d1..50a5f98cd5bd 100644
+> --- a/drivers/gpu/drm/tests/drm_buddy_test.c
+> +++ b/drivers/gpu/drm/tests/drm_buddy_test.c
+> @@ -21,7 +21,8 @@ static inline u64 get_size(int order, u64 chunk_size)
+>  
+>  static void drm_test_buddy_alloc_contiguous(struct kunit *test)
+>  {
+> -	u64 mm_size, ps = SZ_4K, i, n_pages, total;
+> +	u64 mm_size, total;
+> +	u32 i, ps = SZ_4K, n_pages;
+>  	struct drm_buddy_block *block;
+>  	struct drm_buddy mm;
+>  	LIST_HEAD(left);
+> @@ -29,7 +30,8 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
+>  	LIST_HEAD(right);
+>  	LIST_HEAD(allocated);
+>  
+> -	mm_size = 16 * 3 * SZ_4K;
+> +	n_pages = 16 * 3;
+> +	mm_size = n_pages * SZ_4K;
+>  
+>  	KUNIT_EXPECT_FALSE(test, drm_buddy_init(&mm, mm_size, ps));
+>  
+> @@ -42,7 +44,6 @@ static void drm_test_buddy_alloc_contiguous(struct kunit *test)
+>  	 */
+>  
+>  	i = 0;
+> -	n_pages = mm_size / ps;
+>  	do {
+>  		struct list_head *list;
+>  		int slot = i % 3;
+
 -- 
-2.43.0
-
+#Randy
 
