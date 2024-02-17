@@ -1,148 +1,198 @@
-Return-Path: <linux-kernel+bounces-69956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9406F8590C6
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:10:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 248348590B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:58:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44BC1282E1D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:10:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A8A1B216CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:57:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72D617CF1F;
-	Sat, 17 Feb 2024 16:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 824DF7CF12;
+	Sat, 17 Feb 2024 15:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TnOKWYAv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dIbL+x5d"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C88657BE;
-	Sat, 17 Feb 2024 16:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2081D7A726;
+	Sat, 17 Feb 2024 15:57:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708186217; cv=none; b=QhHKaVPBxf8A5SR5fE7k62dR7MnuvT1sbcyH+etIivWPOkF6zxxm0w2bev00mqpjlTf/EkPLh5+u70pH1R3tjuvSRpNr09fF3xEEwL6MQy4xVx/1Qi5uPSUVTXLvxRB6UCgsBS0yf7c7KHu7zDIMVkGaaya3WmFK7TaRw8ELUqM=
+	t=1708185468; cv=none; b=rrzd2WlJLRqCByKATXu+Xi8vEoIdG72kb/f8pTXVgLj+U7IBY99xhRJgcPQ29PwUrMvj3Y36u77Rp7ySIaBAKCAKwbXvRBY6w0XoTYeKsUg3zxddy6pdnckZZ/sGHtmWYhYE9Jbw9uXN3fg9a2XR0J/puKDxFTQCA0inLMdg2Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708186217; c=relaxed/simple;
-	bh=jnnuiG2JA3w1jL3b+rX0XgYDDbHfBnfPxf8SR5AXRDY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UK61wsiE08w+SIfzPg7VTZbqbVRLd8Gt43qfDWq2lQPJ4LyvZgmXwF0VP1xvu4B2j4jtxTHMjEyjIJDGiE53tz2LGZKtEab5izCoSGr74Lk5/qHLm4G2GU4dIbR3iOdhWCsq98eOQW7LtaDLCxt8rw2kLYo7Fubc4+4cqpy0HWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TnOKWYAv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BDA1C433C7;
-	Sat, 17 Feb 2024 16:10:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708186217;
-	bh=jnnuiG2JA3w1jL3b+rX0XgYDDbHfBnfPxf8SR5AXRDY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TnOKWYAvQgSl1jOt4DM2iJrH5X+Js5+PgWiKEnVlYkyFEcOmM+JKmfznrRVZwfyAK
-	 Oz3vZ/1OxKpjQaq/rW8w7wN3lEo97vJ9Ct+nfw7s/n8hlesL5z+Kgt5rl5WOZJBa+7
-	 7OLLZkb8L7JcqOFLv9w9YrYEAHeGHESslkwOidqQ0Kt2bX9UgaHCdfvLRucOPe58ms
-	 hhVS9SS2ZtbpMdwVXAE3KqsjIGxuDsBqj1VbEUlSukdW4Yy13JwqCbER2u1cuowApX
-	 AaXOwd9KR6JoD3Yi94cQSlP/4PipDzfjUm35sjSGTVR2l1AXW2lR2BEFuGvRg+foEK
-	 NuotaXNE7WJDQ==
-Date: Sat, 17 Feb 2024 23:57:14 +0800
-From: Jisheng Zhang <jszhang@kernel.org>
-To: AnnanLiu <annan.liu.xdu@outlook.com>
-Cc: chao.wei@sophgo.com, unicorn_wang@outlook.com, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] riscv: dts: sophgo: add watchdog dt node for CV1800
-Message-ID: <ZdDXWkibFjKvXJPe@xhacker>
-References: <DM6PR20MB2316366FC9ADCBC7B6E9C289AB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
+	s=arc-20240116; t=1708185468; c=relaxed/simple;
+	bh=sJvJQ7glnVIPixzKtNg1y7ASTR+ZQ9wALqEaOySziDs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jisusFMx5gBbgB6KYjXrPnrkOOKf3RTcEr/OgmsqcN2IMrtp02vgsIU5l7bREOqcOnOVG651sjxAfOGP4ZIL9qF7JG1jlGjQkBIMcGrZ5CdX8sFWORTBLVUG437+K0keQLg40MYk+Vxgqw+mS9apU6LqNPTbsQQq/NuJG40P2g0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dIbL+x5d; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dba177c596so13914535ad.0;
+        Sat, 17 Feb 2024 07:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708185466; x=1708790266; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=7Sa186WciMV73gYAssqnn0qnbEOPG+Q9oPUwWeX7nw8=;
+        b=dIbL+x5dFGCo09cZINrDehENk3DCjrZWPSzNBbC+8j1n+PP8TGCBk3tU78V6X/Eh6W
+         iR0yXtBjC/2/wFY9h4rS8Rz72QWrn5t53nLvcpiXufhxGw+b/C959b9eNzV3SKSZhwyW
+         ZcUqxylYE/Nnwe5jbyQtVvKs3PIETFsxkNHVJZJPu+6PepHsUtcXyJvSNH6T4Z46q7VP
+         IwkOU6MiWaG8vGPtk2Zlp9FB8eqsJjX6VEJIv3WC3UxmKtB1k0o7og6bPjKadSANiVjV
+         YZEfjeA7sveTuxsuSiVm4munQVZMDBevPll0ZElXAvkTPeUst7vi0fY3LXV/gGH8bDbV
+         PcCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708185466; x=1708790266;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7Sa186WciMV73gYAssqnn0qnbEOPG+Q9oPUwWeX7nw8=;
+        b=SrLu1140UF0RxtBKSnRkOtxDZBjcSMVw25/qhKKjE1lk0XhtuxujHtM9PV6sw0KI4i
+         dZ6Z251OHI8W5454aiwRBC6YSoZSHGyTj7+EHS3j6iBAbIzVb7G8y6x+hj5u1HfZRYf+
+         b8DtaO0/gc/di9Y6N3rvyJG37FD3mXPtPrbf4DTOf/hvn0f81lTsrRZlAeiSvhYX2Bt3
+         DJ5mcZgFoO9BMkH2kSGMuDOjprCruD1nBnBvlrb8KE82gYH/yakl/hMoXa6RsnSTcDWh
+         wSXiuVSBCL4uZP+j5SIonVko/CyWJYTKdTutBQ7dGdrGRICXnQAm01315jbJ4/OkLMnO
+         c/Mw==
+X-Forwarded-Encrypted: i=1; AJvYcCXJ1xt/VUg2EQmY2mW5PBuJjGYs/dp0qLQdPSqWXPhc1nIZbUBUqR0lk4rf9ta0bKU+4Yb9rQg0bFmkZfn3P4LDaq0ttN3w3fCz3/aZ4GUJxAJhGpOncxO32QCVSBF7louqWdBckLOLn0pHpkI30wXXpN5pNKSNCrk4z8fzeWmyTqZlkN/5
+X-Gm-Message-State: AOJu0YzhcmYE8uCHGty22KIBKFmIp+MLC01/zZb1lmSOfw1nASZ/VNz5
+	jdGeC9if6VFJssFnof6Y3ErW7skkdGwLzR7ljY+nwr5noNZIChgu0mYQ7pIw
+X-Google-Smtp-Source: AGHT+IFwPoTHyIrGWndglyQnnTe+dSWndXMKNjxwYEgxN+EWmafDTurRB6H8eo0a9rlTXoCecNW4pA==
+X-Received: by 2002:a17:902:d501:b0:1da:18e0:29c6 with SMTP id b1-20020a170902d50100b001da18e029c6mr11243812plg.33.1708185466261;
+        Sat, 17 Feb 2024 07:57:46 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s4-20020a17090330c400b001db9cb62f7bsm1610809plc.153.2024.02.17.07.57.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 07:57:45 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <9cc60b90-329b-4065-a3c8-74c208964d45@roeck-us.net>
+Date: Sat, 17 Feb 2024 07:57:43 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DM6PR20MB2316366FC9ADCBC7B6E9C289AB7A2@DM6PR20MB2316.namprd20.prod.outlook.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] dt-bindings: hwmon: tda38640: Add interrupt &
+ regulator properties
+Content-Language: en-US
+To: Conor Dooley <conor@kernel.org>
+Cc: Naresh Solanki <naresh.solanki@9elements.com>,
+ Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, mazziesaccount@gmail.com,
+ linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240214092504.1237402-1-naresh.solanki@9elements.com>
+ <20240214-trinity-delouse-6dcd0b046895@spud>
+ <0f1665e5-bae1-4a17-a976-cc225a28dad3@roeck-us.net>
+ <20240214-dimly-wife-5b6239d4adec@spud>
+ <b306a27e-505e-43d4-aaf8-ab31284a3396@roeck-us.net>
+ <20240215-wildfire-dotted-a561e86a6054@spud>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
+ RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
+ nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
+ 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
+ gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
+ IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
+ kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
+ VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
+ jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
+ BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
+ ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
+ CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
+ nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
+ hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
+ c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
+ 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
+ GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
+ sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
+ Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
+ HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
+ BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
+ l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
+ 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
+ pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
+ J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
+ pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
+ 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
+ ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
+ I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
+ nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
+ HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
+ JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
+ J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
+ cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
+ wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
+ hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
+ nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
+ QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
+ trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
+ WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
+ HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240215-wildfire-dotted-a561e86a6054@spud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jan 25, 2024 at 05:46:40PM +0800, AnnanLiu wrote:
-> Add the watchdog device tree node to cv1800 SoC.
+On 2/15/24 03:48, Conor Dooley wrote:
+> On Wed, Feb 14, 2024 at 05:17:04PM -0800, Guenter Roeck wrote:
+>> On 2/14/24 11:55, Conor Dooley wrote:
+>> [ ... ]
+>>>>> Why "vout0" if there's only one output? Is it called that in the
+>>>>> documentation? I had a quick check but only saw it called "vout".
+>>>>> Are there other related devices that would have multiple regulators
+>>>>> that might end up sharing the binding?
+>>>>>
+>>>>
+>>>> Primarily because that is what the PMBus core generates for the driver
+>>>> because no one including me was aware that this is unacceptable
+>>>> for single-output drivers.
+>>>
+>>> Is it unacceptable? If you're implying that I am saying it is, that's
+>>> not what I was doing here - I'm just wondering why it was chosen.
+>>> Numbering when there's only one seems odd, so I was just looking for the
+>>> rationale.
+>>>
+>>
+>> Given the tendency of corporate speak (aka "this was a good attempt" for
+>> a complete screwup), and since this did come up before, I did interpret
+>> it along that line. My apologies if that was not the idea.
 > 
-> Signed-off-by: AnnanLiu <annan.liu.xdu@outlook.com>
-> ---
-> This patch depends on the clk driver and reset driver.
-> Clk driver link:
-> https://lore.kernel.org/all/IA1PR20MB49539CDAD9A268CBF6CA184BBB9FA@IA1PR20MB4953.namprd20.prod.outlook.com/
-> Reset driver link:
-> https://lore.kernel.org/all/20231113005503.2423-1-jszhang@kernel.org/
+> I'm not gonna go and decree that "vout0" is unacceptable, if it was
+> called that in documentation that I had missed or was convention, I was
+> just gonna say "okay, that sounds reasonable to me".
+> 
 
-I will update reset series soon
+"convention" only if lack of awareness how regulators are supposed to be named
+is a convention.
 
+>> Still, I really don't know how to resolve this for existing PMBus drivers
+>> which do register "vout0" even if there is only a single output regulator.
 > 
-> Changes since v1:
-> - Change the name of the watchdog from watchdog0 to watchdog.
-> - Change the status of watchdog.
-> v1 link:
-> https://lore.kernel.org/all/DM6PR20MB23160B8499CC2BFDAE6FCACDAB9EA@DM6PR20MB2316.namprd20.prod.outlook.com/
+> I had a quick look at that series, none of the devices that I checked
+> out there seem to have documented regulators at all. Some of the devices
+> were only documented in trivial-devices.yaml. Relying on the naming of
+> undocumented child nodes is a bug in those drivers & I guess nobody cares
+> about dtbs_check complaints for those platforms. The example that was
+> linked in the other thread doesn't even use a valid compatible :(
+> 	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/aspeed/aspeed-bmc-delta-ahe50dc.dts?id=8d3dea210042f54b952b481838c1e7dfc4ec751d#n21
+> I guess it uses the i2c device ids to probe on that platform, or have
+> I missed something there?
 > 
-> 
->  arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts |  4 ++++
->  arch/riscv/boot/dts/sophgo/cv1800b.dtsi          | 16 ++++++++++++++++
->  2 files changed, 20 insertions(+)
-> 
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> index 3af9e34b3bc7..75469161bfff 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-> @@ -36,3 +36,7 @@ &osc {
->  &uart0 {
->  	status = "okay";
->  };
-> +
-> +&watchdog {
-> +	status = "okay";
-> +};
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> index aec6401a467b..03ca32cd37b6 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: (GPL-2.0 OR MIT)
->  /*
->   * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> + * Copyright (C) 2024 Annan Liu <annan.liu.xdu@outlook.com>
 
-No, I don't think every commit author needs to add this line.
+I think that is correct. If I recall correctly, the I2C subsystem no longer
+searches for compatible drivers by only looking at the device id in the
+compatible node, so I guess one has to list "lm25066" instead of "ti,lm25066"
+as compatible to get a match in the i2c subsystem. That is of course
+completely wrong.
 
->   */
->  
->  #include <dt-bindings/interrupt-controller/irq.h>
-> @@ -103,6 +104,21 @@ uart4: serial@41c0000 {
->  			status = "disabled";
->  		};
->  
-> +		watchdog: watchdog@3010000{
-> +			compatible = "snps,dw-wdt";
-> +			reg = <0x3010000 0x100>;
-> +			interrupts = <58 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&pclk>;
-> +			resets = <&rst RST_WDT>;
-> +			status = "disabled";
-> +		};
-> +
-> +		pclk: pclk {
+Guenter
 
-what's this clk?
-> +			#clock-cells = <0>;
-> +			compatible = "fixed-clock";
-> +			clock-frequency = <25000000>;
-> +		};
-> +
->  		plic: interrupt-controller@70000000 {
->  			compatible = "sophgo,cv1800b-plic", "thead,c900-plic";
->  			reg = <0x70000000 0x4000000>;
-> -- 
-> 2.34.1
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
