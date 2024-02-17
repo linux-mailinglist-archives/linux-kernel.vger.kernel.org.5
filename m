@@ -1,170 +1,193 @@
-Return-Path: <linux-kernel+bounces-69936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9505485907F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:26:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB9C859084
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:30:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43D17282A45
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:26:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D7311F21273
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:30:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B037C6EB;
-	Sat, 17 Feb 2024 15:25:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5129C7C6D5;
+	Sat, 17 Feb 2024 15:30:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oDOBkAbt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z9rtdNYd"
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FDCC69DE6;
-	Sat, 17 Feb 2024 15:25:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DFA7A735;
+	Sat, 17 Feb 2024 15:30:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708183557; cv=none; b=ZIPu000IJEo170QBR4IFkklQZll7Fa2zvRhmIpB4rPHFD2lWdN37JGT2pDsa12+OhJq+De32UEldBC3peefpT823jguku6S/avtOhzyoRINd/iOyjf0JKbmr30dVf4gtUQ0mY3bpUhveYCdDLwy39IOx/7CfVmnvIATy3g1xJ9w=
+	t=1708183840; cv=none; b=YrzFlF0ShscfGVPSp/4MrB0QIGug+0Y0e+j3+20L9Ljzm34xkHG3chGlp5mIjHhu15WJY26YX1jnHaV7dw86WXNsqaYnKHKO/Nic4Nt5DDooqSgJqOIO4tq2ojNVP4DpGoRvGNhf6/sdyKj/KZ4iBDEe4aqS6ETz9cMNBy6uZN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708183557; c=relaxed/simple;
-	bh=bWSYvvO2IqnPnE4jdJtpaD30hy778JveY74K8PjLF/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P55PKAlOsigFu9qqbuYZZfBOQ4fPu05RQk71hYllZLcP3q5DrNiV5NzQt9QntkXE1dhjPqQXriPeCdbiU43LwfgY5bWtHuujxAG63tD5K3RGhjPq7pENSlT7GuWW/lSoO0w0HZ62CelGnZKsfA8wVlEES8GrJ04ZoJU/EFZl38Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oDOBkAbt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 118DFC433F1;
-	Sat, 17 Feb 2024 15:25:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708183556;
-	bh=bWSYvvO2IqnPnE4jdJtpaD30hy778JveY74K8PjLF/o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oDOBkAbtvGbq7DXCQ0hwEpPoTMxxZHeT3FyxwmkS2Jy5blwcPrVMfUkIQ3bwx/Gus
-	 H3vcCYEB5ZQPuao69WEdC0Ckza5VituxgF8EpfwKFZbuErRxqgskepgd4pMGaQYOLl
-	 2CHJbdAPsQFz7KvSc0mxq6pLIq0cyoj+q4pXMnPc=
-Date: Sat, 17 Feb 2024 16:25:54 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: srinivas.kandagatla@linaro.org, mathias.nyman@intel.com, perex@perex.cz,
-	conor+dt@kernel.org, corbet@lwn.net, lgirdwood@gmail.com,
-	andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	Thinh.Nguyen@synopsys.com, broonie@kernel.org, bgoswami@quicinc.com,
-	tiwai@suse.com, robh+dt@kernel.org, konrad.dybcio@linaro.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
-	alsa-devel@alsa-project.org
-Subject: Re: [PATCH v17 00/51] Introduce QC USB SND audio offloading support
-Message-ID: <2024021754-unengaged-saggy-6ab1@gregkh>
-References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
+	s=arc-20240116; t=1708183840; c=relaxed/simple;
+	bh=xWFXeLRYbXI1C7vjCdpGuFnAyI509AAFl9bEpkjVRHs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iGoDppaoqYAVxKtnWJTeZmAhDB7QpZQUZLw318O7hK1S7q5FVFMt5Uy7835xgKdrTOS2tem/vTM1f2GVpSM65H5anRTi/nT50losNDrglVskz9vt1lOxI6LVujEgRm216anygRdNyJsjN7E1b/KKWP+IN9nd3coyEvKqPeRO9DQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z9rtdNYd; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e10e50179bso2156164b3a.1;
+        Sat, 17 Feb 2024 07:30:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708183838; x=1708788638; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=/v4hnO8ad2NTkb2Hz0EjoGr665rx76mpWxWfADMMFXc=;
+        b=Z9rtdNYdzU6oENK1R+ft6/JSZWV95S+0T2c7PlLlm6lOxVIgOOTANVNep3mMVeMYYb
+         +AtzRWTyVdc+KDnyeSRBCP4xolCtUOZzExvrOuBYoh+ldXqMECClXIyQhRzncbkIueTB
+         Bb+Y1ysXZg50la17/g/mnrWj0gbqsB/t7XHu+D3VZSL306PgVKchk0Zh4i/rLNMf0+Ic
+         GxfPHsZSJ/OsrOU6DGxHNkgiRgTiJNh5yyjNO/wR8jfa80ncQPsd9fE/zAFch5buxtuq
+         RgAMT+ZdFDjZRYF9DcGDRml6dMdXfHsz9iQDT4piivC5bLhVU9ITbbHGAkBzce/ZWvqw
+         11mA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708183838; x=1708788638;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/v4hnO8ad2NTkb2Hz0EjoGr665rx76mpWxWfADMMFXc=;
+        b=eSqAcprZqOgdsV57hRnkZPig3eCbqfNhAkeB5FqCLrcR9GNYXb7pdAHqQsLRuw9klg
+         E0ax2GWGd+m2H/O38JiMZYSgh4oj8J0xK22jpUNlulWUlK52+ZElOIrGWv7cSiuXSEJM
+         dsQqJtzc2zkBmB76zpyxTQHx86cp3w3wqGCdiaNOhwSkEpjgH/d58NNg6jyFJQ0ViXq0
+         1bbHskimWGEospDwAuyaLOe5p4HvW3I10Waza/uvCxWmtcuI83OlJytYXwUBtGW8FmDR
+         6A8/DdXQTDXXJtR7z2CMsTmTAU3NSCImNJRG530Fb1nu+ZT1PD0kIsrWDQ7h+l7vxlx6
+         65Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCWLrDEISOFfQ+jX+upCup4515CFEiBWxNIDgokC2awmxikKc2L9a+4i75vIR0lBokupQxBc1B0mx8XEP4LPcTwGIoiRP1TZxkDFGV88eGk1HuqLVKZ/w6ntHCNy28+gTwfowpE8GsnmTQ==
+X-Gm-Message-State: AOJu0Yypuck8jvHjQ025EErNJdgIDxp4bhXmYZ+1A25ch8EBjQ/gMBwC
+	0o+Y9SYX1kZqayccf6F3C+QeW5kvtqcA2WIKiE+d4N/Zi8dHTMO+CCqDKsLv
+X-Google-Smtp-Source: AGHT+IH69XRACphPV7/6YbHJMq/zbVdKzN3Qjd8Ys3Bh0mYdDKo86CXpSRI95dEZ7waIlg7J8+odIA==
+X-Received: by 2002:a05:6a00:4bb5:b0:6e0:39eb:4458 with SMTP id kt21-20020a056a004bb500b006e039eb4458mr7718253pfb.13.1708183837840;
+        Sat, 17 Feb 2024 07:30:37 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o23-20020a056a001b5700b006e14626ee94sm1781778pfv.155.2024.02.17.07.30.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 07:30:37 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <85307d34-bb60-41ea-b478-c821dbd2b51b@roeck-us.net>
+Date: Sat, 17 Feb 2024 07:30:35 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240217001017.29969-1-quic_wcheng@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: hwmon: add common properties with label
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Jean Delvare <jdelvare@suse.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>
+References: <20240216-dt-bindings-hwmon-common-v1-0-3c2c24ff1260@linaro.org>
+ <20240216-dt-bindings-hwmon-common-v1-1-3c2c24ff1260@linaro.org>
+ <f0f523c3-7b1c-404a-89c3-0c7345001676@roeck-us.net>
+ <b21d351f-68be-4bca-a327-c35591c55610@linaro.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <b21d351f-68be-4bca-a327-c35591c55610@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 16, 2024 at 04:09:26PM -0800, Wesley Cheng wrote:
-> Several Qualcomm based chipsets can support USB audio offloading to a
-> dedicated audio DSP, which can take over issuing transfers to the USB
-> host controller.  The intention is to reduce the load on the main
-> processors in the SoC, and allow them to be placed into lower power modes.
-> There are several parts to this design:
->   1. Adding ASoC binding layer
->   2. Create a USB backend for Q6DSP
->   3. Introduce XHCI interrupter support
->   4. Create vendor ops for the USB SND driver
+On 2/17/24 00:21, Krzysztof Kozlowski wrote:
+> On 16/02/2024 18:11, Guenter Roeck wrote:
+>> On 2/15/24 23:55, Krzysztof Kozlowski wrote:
+>>> Linux hwmon core code parses "label" property for each device, so add a
+>>> common schema for that.
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>>   From hwmon perspective:
+>>
+>> Acked-by: Guenter Roeck <linux@roeck-us.net>
+>>
+>>> ---
+>>>    .../devicetree/bindings/hwmon/hwmon-common.yaml          | 16 ++++++++++++++++
+>>>    1 file changed, 16 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/hwmon/hwmon-common.yaml b/Documentation/devicetree/bindings/hwmon/hwmon-common.yaml
+>>> new file mode 100644
+>>> index 000000000000..d83f4180f622
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/hwmon/hwmon-common.yaml
+>>> @@ -0,0 +1,16 @@
+>>> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/hwmon/hwmon-common.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Hardware Monitoring Devices Common Properties
+>>> +
+>>> +maintainers:
+>>> +  - Guenter Roeck <linux@roeck-us.net>
+>>> +
+>>> +properties:
+>>> +  label:
+>>> +    description: A descriptive name for this device.
+>>> +
+>>
+>> Would it make sense to also add shunt-resistor-micro-ohms ?
 > 
->       USB                          |            ASoC
-> --------------------------------------------------------------------
->                                    |  _________________________
->                                    | |sm8250 platform card     |
->                                    | |_________________________|
->                                    |         |           |
->                                    |      ___V____   ____V____
->                                    |     |Q6USB   | |Q6AFE    |  
->                                    |     |"codec" | |"cpu"    |
->                                    |     |________| |_________|
->                                    |         ^  ^        ^
->                                    |         |  |________|
->                                    |      ___V____    |
->                                    |     |SOC-USB |   |
->    ________       ________               |        |   |
->   |USB SND |<--->|QC offld|<------------>|________|   |
->   |(card.c)|     |        |<----------                |
->   |________|     |________|___     | |                |
->       ^               ^       |    | |    ____________V_________
->       |               |       |    | |   |APR/GLINK             |
->    __ V_______________V_____  |    | |   |______________________|
->   |USB SND (endpoint.c)     | |    | |              ^
->   |_________________________| |    | |              |
->               ^               |    | |   ___________V___________
->               |               |    | |->|audio DSP              |
->    ___________V_____________  |    |    |_______________________|
->   |XHCI HCD                 |<-    |
->   |_________________________|      |
+> It's not present on many devices, I think, so it is also not parsed by
+> hwmon core. I plan to add above $ref to hwmon-common to each hwmon
+> binding, so this would mean all of them will get shunt-resistor. I would
+> not add it, but I also don't mind if I am overruled.
 > 
-> 
-> Adding ASoC binding layer:
-> soc-usb: Intention is to treat a USB port similar to a headphone jack.
-> The port is always present on the device, but cable/pin status can be
-> enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
-> communicate with USB SND.
-> 
-> Create a USB backend for Q6DSP:
-> q6usb: Basic backend driver that will be responsible for maintaining the
-> resources needed to initiate a playback stream using the Q6DSP.  Will
-> be the entity that checks to make sure the connected USB audio device
-> supports the requested PCM format.  If it does not, the PCM open call will
-> fail, and userpsace ALSA can take action accordingly.
-> 
-> Introduce XHCI interrupter support:
-> XHCI HCD supports multiple interrupters, which allows for events to be routed
-> to different event rings.  This is determined by "Interrupter Target" field
-> specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
-> 
-> Events in the offloading case will be routed to an event ring that is assigned
-> to the audio DSP.
-> 
-> Create vendor ops for the USB SND driver:
-> qc_audio_offload: This particular driver has several components associated
-> with it:
-> - QMI stream request handler
-> - XHCI interrupter and resource management
-> - audio DSP memory management
-> 
-> When the audio DSP wants to enable a playback stream, the request is first
-> received by the ASoC platform sound card.  Depending on the selected route,
-> ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
-> will send an AFE port start command (with enabling the USB playback path), and
-> the audio DSP will handle the request accordingly.
-> 
-> Part of the AFE USB port start handling will have an exchange of control
-> messages using the QMI protocol.  The qc_audio_offload driver will populate the
-> buffer information:
-> - Event ring base address
-> - EP transfer ring base address
-> 
-> and pass it along to the audio DSP.  All endpoint management will now be handed
-> over to the DSP, and the main processor is not involved in transfers.
-> 
-> Overall, implementing this feature will still expose separate sound card and PCM
-> devices for both the platorm card and USB audio device:
->  0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
->                       SM8250-MTP-WCD9380-WSA8810-VA-DMIC
->  1 [Audio          ]: USB-Audio - USB Audio
->                       Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
-> 
-> This is to ensure that userspace ALSA entities can decide which route to take
-> when executing the audio playback.  In the above, if card#1 is selected, then
-> USB audio data will take the legacy path over the USB PCM drivers, etc...
-> 
-> This feature was validated using:
-> - tinymix: set/enable the multimedia path to route to USB backend
-> - tinyplay: issue playback on platform card
 
-I've applied patches 1-10 and the 2 dts changes here, as those all had
-acks from the relevant maintainers already.
+No problem, I just don't know how such common rules are supposed
+to be understood. Thanks a lot for the clarification.
 
-thanks,
+Thanks,
+Guenter
 
-greg k-h
+
 
