@@ -1,117 +1,217 @@
-Return-Path: <linux-kernel+bounces-70112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB17C859334
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:54:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C4C385938E
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12EEC1C21329
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:54:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30575B2188C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBC708002D;
-	Sat, 17 Feb 2024 22:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050CB6D1A8;
+	Sat, 17 Feb 2024 23:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EesV0WHy"
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ldZBVex4"
+Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C33A8D53E
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 22:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6624B7F7F6;
+	Sat, 17 Feb 2024 23:11:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708210466; cv=none; b=aBLKjlQj5tnmJMoU84uBJjyFPJ7UNq9e/AtJp0A0YYH2tUC8kxtGNAKBF8IfiZ7ZPtIz/SFulteUAZgQJFqwv2eH29ZTfrQ1tvIoLCT8ohyzBOYDkklRazVl05T5KxJfTHSDnVa49QDtbB5W4GUgD7G9aBPifeQR6NDAzw3RtMA=
+	t=1708211510; cv=none; b=Hif5VlGJwidLGe5BmevWLK2Y6/T+BQayoe2I+7HXZepE97HOGNGoQEXkGR8Iih8gOF6AhZiPJtOhrCe8myvQUFxJcm3uRk/99mwD/Sm5VJvivOL0FIg7cjWJ61XhG7ZHWp1WnDmmV/vQ45Y2JX/7euXu+F5hWFaL7FAydpoDdr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708210466; c=relaxed/simple;
-	bh=XDhHzhFUoSKCvf5U3d80vjaOp0eV3L/3tHjpvCtq624=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tXgkw0F03yRwU+DuW9DkPFsjFZsVAXjerxCeOF8rUiw9a6MgFJpSXKtPe2nTd3s7xG73SPSLs1OPj67f0FREM/SWnUV0UNOMczxgXNQ8btlQunWR9GUeUK7U2yy+KdXuh9y9CBj9APgY2o11uFI6UdrFx6ofc3DVrRU1dJPZd5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EesV0WHy; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 17 Feb 2024 17:54:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708210462;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J+S6PW8NMbxHlN/D+9fN8tZavb8MoLjIhahjYs7L4uw=;
-	b=EesV0WHycikgvD8TxICWEfkLtoqeLrZqOy4/34fNhukFudlieIFFENmw971agb4Zbje4Xi
-	4W8o9av7r7YyoAlwLgZZgnrQmDNYprREuX9yB2/bFP+cI6f3tL8gNGQCiE5qioPnwZnebn
-	dvev4aPMUnSF4sBOIpI/xDiNwgI4FLk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	lsf-pc@lists.linux-foundation.org
-Subject: Re: [LSF TOPIC] beyond uidmapping, & towards a better security model
-Message-ID: <7gcfxbtwrylgamcbcnft37atyo34vqvbkxr2fp3k26le7vblob@ncqr7dopb2qk>
-References: <tixdzlcmitz2kvyamswcpnydeypunkify5aifsmfihpecvat7d@pmgcepiilpi6>
- <ZdEzwTrJV-aQ1CqV@casper.infradead.org>
+	s=arc-20240116; t=1708211510; c=relaxed/simple;
+	bh=PuY7CoHelqqxMR2WY2gwHQsUwUn4HmGDxqITqw8g0+4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aJeCbAdf5E8JvlYBR2Xpi0m7CGr6516S38yOWe+Mmzp+pPu+80o5hJ6XksX/6LaqpaVpqOAH6AVgb8qloCGx12yUkCKtpaiPgSdKzRBG5f756VnD4oy5f2JfQLS4zoRM4J26kJH6wgc9Cn1xIHMZMUp7DNDcNWNIChi8rqPbFQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ldZBVex4; arc=none smtp.client-ip=209.85.167.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c031776e0cso1468688b6e.0;
+        Sat, 17 Feb 2024 15:11:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708211506; x=1708816306; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UTpDENxTy13x+lQaGg96zVTVcyV5n3Aze00u7CsdzkA=;
+        b=ldZBVex4xOVTGVHt8Z4VWYxNKFpqcGvpDqBm4aDLFeMx3aQ5gW3ehPML6Dt8n1UgGA
+         /I4LGRwgKgNaCSlt9EocLzq96dqkh0VgK7pLr7Yr/4G4BTS/kba3mlJ8ivFYK4x/epY7
+         YZ5YuFaap743pt0Hm0r9L0yKeur3pKoc9/VgsKR81C3MKCRpv/qaNLplTaOUF7ATcvI5
+         rDYKLxXgIptyhZ37gO4Keq9gZ6gMHuAmUyJq3vZHVA3ih69ClYQv53qMiFJ2mbpQRHJ2
+         /x0fnmDRElJECGwJjXvSOLgicK/9a/5GTWqsf8XPTF26Jf4ZSZeqeygTvxkUpy22iT3W
+         FihA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708211506; x=1708816306;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UTpDENxTy13x+lQaGg96zVTVcyV5n3Aze00u7CsdzkA=;
+        b=nnkSiiKJBEOoOp06390xSP0xAJe5tKU5xBzlmJRbVqRzTj27HLHN7r2xxF/OggcJW3
+         elpGs7IBnwpDlGd5HPwDOv7CdoUYQnE8HeM6NuPavLHirg7doXYWj3J1Rjw9X/l6loEe
+         bSTqE4TUdvhTrMC57oYlnmTd+YtfpVr8wIdrLImvbBJIwvza7TYRuLcasDU22S7UyU0q
+         muTjR0vHP81l38p5j9cfeddFYiznZsDvnanUnHiLFNd9xRbS2aAVBL6GTIokbl8FbtZz
+         ghTVj26MbFx4RdfzXYHRH1Y+6GgeD8YjYzoTRw+FTl3Wr1mL2KFevbcNhj4AKUibHhcW
+         sdWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ5jgFo5El8BxCBSm7o+WjrO/QS+fdMM4Pk0LhsNK2/x34mMaZ0vH/8xtVKKjXrcGANr1wqj7lLtwl3UyYJDnr/lAiLE4Itnel6NSX5aUEdklOZPmaYLyfizyrqcOsa5Lxd+z+OszCqFxq9B/2m8E/WQBJdlQG1ltwF3EiVnNve9uocUc=
+X-Gm-Message-State: AOJu0Yy4K1dsML1EqPkOZmX2Ekv11MdcOMMsC86eCjQ8eyNa6UnFUWx4
+	2dNpRqAH7U9DAYnLeQ+4I5Qlvpqe9ELRoNSYOOt4l1x5ueJp3MLN
+X-Google-Smtp-Source: AGHT+IH3xtn5XaR26I2MvrkXUFytQJ/WmPbjn4uLt2QfC/qqbLozRjGEDlCdRW6MKpu235MF0H5fQw==
+X-Received: by 2002:a05:6808:2e87:b0:3c1:41fc:d012 with SMTP id gt7-20020a0568082e8700b003c141fcd012mr7150189oib.34.1708211506366;
+        Sat, 17 Feb 2024 15:11:46 -0800 (PST)
+Received: from localhost.localdomain ([174.95.13.129])
+        by smtp.gmail.com with ESMTPSA id lu8-20020a0562145a0800b0068cc837fa1asm1503506qvb.53.2024.02.17.15.11.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 15:11:45 -0800 (PST)
+From: Abdel Alkuor <alkuor@gmail.com>
+To: Pavel Machek <pavel@ucw.cz>,
+	Lee Jones <lee@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Abdel Alkuor <alkuor@gmail.com>,
+	=?UTF-8?q?Andr=C3=A9=20Apitzsch?= <git@apitzsch.eu>,
+	Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+	ChiYuan Huang <cy_huang@richtek.com>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Jean-Jacques Hiblot <jjhiblot@traphandler.com>
+Cc: ChiaEn Wu <chiaen_wu@richtek.com>,
+	Alice Chen <alice_chen@richtek.com>,
+	linux-leds@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: leds: Add NCP5623 multi-LED Controller
+Date: Sat, 17 Feb 2024 18:09:19 -0500
+Message-Id: <20240217230956.630522-1-alkuor@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdEzwTrJV-aQ1CqV@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 17, 2024 at 10:31:29PM +0000, Matthew Wilcox wrote:
-> On Sat, Feb 17, 2024 at 03:56:40PM -0500, Kent Overstreet wrote:
-> > AKA - integer identifiers considered harmful
-> 
-> Sure, but how far are you willing to take this?  You've recently been
-> complaining about inode numbers:
-> https://lore.kernel.org/linux-fsdevel/20231211233231.oiazgkqs7yahruuw@moria.home.lan/
-> 
-> > The solution (originally from plan9, of course) is - UIDs shouldn't be
-> > numbers, they should be strings; and additionally, the strings should be
-> > paths.
-> > 
-> > Then, if 'alice' is a user, 'alice.foo' and 'alice.bar' would be
-> > subusers, created by alice without any privileged operations or mucking
-> > with outside system state, and 'alice' would be superuser w.r.t.
-> > 'alice.foo' and 'alice.bar'.
-> 
-> Waitwaitwait.  You start out saying "they are paths" and then you use
-> '.' as the path separator.  I mean, I come from a tradition that *does*
-> use '.' as the path separator (RISC OS, from Acorn DFS, which I believe
-> was influenced by the Phoenix command interpreter), but Unix tends to
-> use / as the separator.
+NCP5623 is DC-DC multi-LED controller which can be used for RGB
+illumination or backlight LCD display.
 
-To me, / indicates that it's a filesystem object, which these are not.
-Languages tend to use : as the path separator for object namespacing -
-heirarchical paths, but not filesystem paths.
+Signed-off-by: Abdel Alkuor <alkuor@gmail.com>
+---
+Changes in v2:
+ - Fix commit subject prefix
+ - drop | from the main description
+ - Use const in address reg
+ - Remove LEDs reg description
+ - Link to v1: https://lore.kernel.org/linux-kernel/20240208130115.GM689448@google.com/T/
 
-> One of the critical things about plan9 that means you have to think
-> hard before transposing its ideas to Linux is that it doesn't have suid
-> programs.  So if I create willy/root, it's essential that a program
-> which is suid only becomes suid with respect to other programs inside
-> willy's domain.  And it doesn't just apply to filesystem things, but
-> "can I send signals" and dozens of other things.  So there's a lot
-> to be fleshed out here.
+ .../bindings/leds/onnn,ncp5623.yaml           | 96 +++++++++++++++++++
+ 1 file changed, 96 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/leds/onnn,ncp5623.yaml
 
-My proposal is that a user is superuser only over direct sub-users; so
-in your example, willy.root would only be superuser over willy.root.*;
-it's just your normal willy user that's superuser over all your
-sub-users.
+diff --git a/Documentation/devicetree/bindings/leds/onnn,ncp5623.yaml b/Documentation/devicetree/bindings/leds/onnn,ncp5623.yaml
+new file mode 100644
+index 000000000000..9c9f3a682ba2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/leds/onnn,ncp5623.yaml
+@@ -0,0 +1,96 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/leds/onnn,ncp5623.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ON Semiconductor NCP5623 multi-LED Driver
++
++maintainers:
++  - Abdel Alkuor <alkuor@gmail.com>
++
++description:
++  NCP5623 Triple Output I2C Controlled LED Driver.
++  https://www.onsemi.com/pdf/datasheet/ncp5623-d.pdf
++
++properties:
++  compatible:
++    enum:
++      - onnn,ncp5623
++
++  reg:
++    const: 0x38
++
++  multi-led:
++    type: object
++    $ref: leds-class-multicolor.yaml#
++    unevaluatedProperties: false
++
++    properties:
++      "#address-cells":
++        const: 1
++
++      "#size-cells":
++        const: 0
++
++    patternProperties:
++      "^led@[0-2]$":
++        type: object
++        $ref: common.yaml#
++        unevaluatedProperties: false
++
++        properties:
++          reg:
++            minimum: 0
++            maximum: 2
++
++        required:
++          - reg
++          - color
++
++    required:
++      - "#address-cells"
++      - "#size-cells"
++
++required:
++  - compatible
++  - reg
++  - multi-led
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/leds/common.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        led-controller@38 {
++            compatible = "onnn,ncp5623";
++            reg = <0x38>;
++
++            multi-led {
++                color = <LED_COLOR_ID_RGB>;
++
++                #address-cells = <1>;
++                #size-cells = <0>;
++
++                led@0 {
++                    reg = <0>;
++                    color = <LED_COLOR_ID_RED>;
++                };
++
++                led@1 {
++                    reg = <1>;
++                    color = <LED_COLOR_ID_GREEN>;
++                };
++
++                led@2 {
++                    reg = <2>;
++                    color = <LED_COLOR_ID_BLUE>;
++                };
++            };
++        };
++    };
+-- 
+2.34.1
 
-That means that our 'root' user doesn't fit with this scheme - the
-superuser over the whole system would be the "" user.
-
-Or perhaps we just map our existing users to be sub-users of root?
-
-root
-root.willy
-root.kent?
-
-User namespacing in this scheme just becomes "prepend this username when
-leaving the namespace", so this might actually work; bit odd in that in
-this scheme there's nothing implicitly special about the 'root'
-username, so that becomes a (mild) wart... easily addressed with
-capabilities, though.
 
