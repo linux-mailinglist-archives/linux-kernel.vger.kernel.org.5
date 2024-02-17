@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-69536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A61858AF0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:15:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 348F6858B94
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:21:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F40A4B2A33D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E520D28C131
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B46153E2B;
-	Sat, 17 Feb 2024 00:11:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C09679DBD;
+	Sat, 17 Feb 2024 00:11:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="k5Yb1TGo"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="a/dAGA8C"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9EAC1B945;
-	Sat, 17 Feb 2024 00:10:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A76E46AF;
+	Sat, 17 Feb 2024 00:11:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708128656; cv=none; b=Nd2eUtgsTaPXZExIeT6zmX4CscmDzLAizkp3dA6+0zfNzfLONfqw33acw1lRwxSeHOFbWrxFgYG/Ef4nqvItRMKNtXxMLQjBUuZquQQecDQf4etnJKuEPPis1smMgzrKCIEXMptkarY4ZCgjIKoETZ1Hx4Q9K+5pHTZBOpz6EHk=
+	t=1708128663; cv=none; b=h3TVWGmIHq4e1+7PWLotRqf3n9QUFU00tF4LBLvUiPi1JXQUFAw/tbzjA4GyhpgFzcAjI77tH0FJi030XYFR9GmgBtquMgwcsmTD0/L+D4yalKUDU40/CwP3zsXvDGHueo21yzdupAx3Ub5Mhgobl+3LLEd28HKd9nl4ttar63U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708128656; c=relaxed/simple;
-	bh=hs4hOMRK/AhgI6g/f560aidScIAqcjT9ZAylJA9+NLg=;
+	s=arc-20240116; t=1708128663; c=relaxed/simple;
+	bh=u1nuq17zD0xhgBZbYsuMjFfbINv/RaVLoPTPOjJ2BuQ=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kpyawjqB4SO2h/ThR/EwzAhKguPjGl7WVXvKvz/6Yi++ZIph2ytdF3plgwdCwkXFprb+tLU9y3uiMS70G6en6x083gTVTU+lE7IV+l/f2dk+0fgBxkP8WBGH1C8ef4mki9enx92SlCLSnvKsQwd+oaUJJ37IABXCCh7O3iMq258=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=k5Yb1TGo; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=sZKfJ1EoZpQ4QOKZZkg6LJfvMVE4JGah1f5Ei5cRL92Ef4U2M6kqRWy/0WbQ89IOVzbpGfBfcWors8JCGh62g/rcWCrh/mQ0iAFFwD55jiN5UBjvDZXCg5+5qS+ySDXtgL1VB9TbplbGDmdR3ic7wgNg5mFxydtrdoTui0x1/Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=a/dAGA8C; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GNxGqq008114;
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41GNRSE7012486;
 	Sat, 17 Feb 2024 00:10:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=qcppdkim1; bh=C5LVq8sSKytjkg0b0teZ
-	7jvmVQi6C7MSy2MGsv4DU1M=; b=k5Yb1TGoqCVYddEmHrTsj0Zgz+qI9Fv5IOBa
-	+FP7Sk7Npm6QsGYdQ6usn5cKRRvBElyK8PCda+++IP8nBDQ+CEWteEwuEKlTDteJ
-	XBBYr2VJZbf88l38u50vMSlOR/4BLtCECj6h5PIWEtEvjXztiZymtw3lvv7nGTjk
-	UcTFaHbhaBDHYcxzmOjK8agnpfZzZhrJY2N9zLiAVfeqY0fBFXaVhi2D5K2WYfrt
-	McDcAeP8xlGYZRQUpnjZoR52rTUH5wrvsTPQyZrERIkg8lM6sL1iHYT7AkNwRhof
-	VsN47xh0jwdHcHnopxfW7nof9yBAwKhcHIBqmV3VW3Pe9VMqNA==
+	:mime-version:content-type; s=qcppdkim1; bh=cPeqWAOHiC/DRr2Pu2t5
+	FImj3arw3vFei7pmew6OZTU=; b=a/dAGA8Cl6+05XOz8YGOGpByzLT1QDdT3CSR
+	0OJjuJmzv0TKRCaKmmrWZ6Gmk8ujy1bqtnvlqvCdbFQ8GmiFS6GwrkSn0fveLgkY
+	fU67QSaMs+8Y6slypT4hIFp1TOv5o6FQd6JNuiwkfLXWQ0g6LA+VW9GwQEDW4ddk
+	yQw/EebciP/L5BbOn//L9Js6gegAwwVV6temau3+9tNSviHnDCyTYPECjTLLQzf8
+	eaP0Y2vNqktp0HDVyKINCtrRCpkCv6sg9+5u0nDckK2bnmakEJSFRmrkmRxB2yb9
+	jxUW1YFj5nLCCk5whkhIk2wNLIuxjK6hJcYKYb9sjXwryVGkWA==
 Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3w9wxf2cmy-1
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wa61nhek0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Sat, 17 Feb 2024 00:10:31 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41H0AUou017193
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41H0AUE8017196
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Sat, 17 Feb 2024 00:10:30 GMT
 Received: from hu-wcheng-lv.qualcomm.com (10.49.16.6) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 16 Feb 2024 16:10:29 -0800
+ 15.2.1118.40; Fri, 16 Feb 2024 16:10:30 -0800
 From: Wesley Cheng <quic_wcheng@quicinc.com>
 To: <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
         <perex@perex.cz>, <conor+dt@kernel.org>, <corbet@lwn.net>,
@@ -68,9 +68,9 @@ CC: <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <alsa-devel@alsa-project.org>,
         Mathias Nyman <mathias.nyman@linux.intel.com>,
         Wesley Cheng <quic_wcheng@quicinc.com>
-Subject: [PATCH v17 01/51] xhci: Add interrupt pending autoclear flag to each interrupter
-Date: Fri, 16 Feb 2024 16:09:27 -0800
-Message-ID: <20240217001017.29969-2-quic_wcheng@quicinc.com>
+Subject: [PATCH v17 02/51] xhci: Add helper to set an interrupters interrupt moderation interval
+Date: Fri, 16 Feb 2024 16:09:28 -0800
+Message-ID: <20240217001017.29969-3-quic_wcheng@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240217001017.29969-1-quic_wcheng@quicinc.com>
 References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
@@ -85,106 +85,83 @@ X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: R4mFVp93FtM6leMTFkKZcNw6zT1Q9nsW
-X-Proofpoint-ORIG-GUID: R4mFVp93FtM6leMTFkKZcNw6zT1Q9nsW
+X-Proofpoint-GUID: gdIcMei1LT9tAKqEBMIekUwgF8QMAxEj
+X-Proofpoint-ORIG-GUID: gdIcMei1LT9tAKqEBMIekUwgF8QMAxEj
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-02-16_23,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=866
- lowpriorityscore=0 priorityscore=1501 mlxscore=0 clxscore=1015
- impostorscore=0 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402160189
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 mlxscore=0
+ clxscore=1015 bulkscore=0 phishscore=0 lowpriorityscore=0 malwarescore=0
+ adultscore=0 spamscore=0 suspectscore=0 priorityscore=1501 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402160189
 
 From: Mathias Nyman <mathias.nyman@linux.intel.com>
 
-Each interrupter has an interrupt pending (IP) bit that should be cleared
-in the interrupt handler. This is done automatically for systems using
-MSI/MSI-X interrupts.
+Add a helper to set the interrupt moderation interval for an interrupter.
+Each interrupter can have its own moderation value.
 
-Secondary interrupters used by audio offload may not actually trigger
-MSI/MSI-X messages, so driver may need to clear the IP bit manually for
-these, even if the primary interrupter IP is cleared automatically.
+Hardware has a 16bit register for the moderation value, each step is 250ns.
 
-Add an ip_autoclear flag to each interrupter that driver can configure
-when requesting an interrupt for that xHC interrupter, and move
-the interrupt pending clearing code to its own helper function.
-Use this ip_autoclear flag instead of the current hcd->msi_enabled
-to check if IP flag is cleared by software.
+Helper function imod_interval argument is in nanoseconds.
 
-[Moved ip_autoclear into xhci and set based on msi_enabled -wcheng]
+Values from 0 to 16383750 (250 x 0xffff) are accepted.
+0 means no interrupt throttling.
 
 Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
 Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
 ---
- drivers/usb/host/xhci-ring.c | 21 +++++++++++++++------
- drivers/usb/host/xhci.c      |  3 +++
- drivers/usb/host/xhci.h      |  1 +
- 3 files changed, 19 insertions(+), 6 deletions(-)
+ drivers/usb/host/xhci.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-ring.c b/drivers/usb/host/xhci-ring.c
-index f0d8a607ff21..3d9ec78bfb9f 100644
---- a/drivers/usb/host/xhci-ring.c
-+++ b/drivers/usb/host/xhci-ring.c
-@@ -3063,6 +3063,19 @@ static void xhci_update_erst_dequeue(struct xhci_hcd *xhci,
- 	xhci_write_64(xhci, temp_64, &ir->ir_set->erst_dequeue);
- }
- 
-+/* Clear the interrupt pending bit for a specific interrupter. */
-+static void xhci_clear_interrupt_pending(struct xhci_hcd *xhci,
-+					 struct xhci_interrupter *ir)
-+{
-+	if (!ir->ip_autoclear) {
-+		u32 irq_pending;
-+
-+		irq_pending = readl(&ir->ir_set->irq_pending);
-+		irq_pending |= IMAN_IP;
-+		writel(irq_pending, &ir->ir_set->irq_pending);
-+	}
-+}
-+
- /*
-  * xHCI spec says we can get an interrupt, and if the HC has an error condition,
-  * we might get bad data out of the event ring.  Section 4.10.2.7 has a list of
-@@ -3112,12 +3125,8 @@ irqreturn_t xhci_irq(struct usb_hcd *hcd)
- 
- 	/* This is the handler of the primary interrupter */
- 	ir = xhci->interrupters[0];
--	if (!hcd->msi_enabled) {
--		u32 irq_pending;
--		irq_pending = readl(&ir->ir_set->irq_pending);
--		irq_pending |= IMAN_IP;
--		writel(irq_pending, &ir->ir_set->irq_pending);
--	}
-+
-+	xhci_clear_interrupt_pending(xhci, ir);
- 
- 	if (xhci->xhc_state & XHCI_STATE_DYING ||
- 	    xhci->xhc_state & XHCI_STATE_HALTED) {
 diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index c057c42c36f4..0886829d53e5 100644
+index 0886829d53e5..b405b8236134 100644
 --- a/drivers/usb/host/xhci.c
 +++ b/drivers/usb/host/xhci.c
-@@ -538,6 +538,9 @@ int xhci_run(struct usb_hcd *hcd)
- 	 */
+@@ -346,6 +346,23 @@ static int xhci_disable_interrupter(struct xhci_interrupter *ir)
+ 	return 0;
+ }
  
- 	hcd->uses_new_polling = 1;
-+	if (hcd->msi_enabled)
-+		ir->ip_autoclear = true;
++/* interrupt moderation interval imod_interval in nanoseconds */
++static int xhci_set_interrupter_moderation(struct xhci_interrupter *ir,
++					   u32 imod_interval)
++{
++	u32 imod;
 +
- 	if (!usb_hcd_is_primary_hcd(hcd))
- 		return xhci_run_finished(xhci);
++	if (!ir || !ir->ir_set || imod_interval > U16_MAX * 250)
++		return -EINVAL;
++
++	imod = readl(&ir->ir_set->irq_control);
++	imod &= ~ER_IRQ_INTERVAL_MASK;
++	imod |= (imod_interval / 250) & ER_IRQ_INTERVAL_MASK;
++	writel(imod, &ir->ir_set->irq_control);
++
++	return 0;
++}
++
+ static void compliance_mode_recovery(struct timer_list *t)
+ {
+ 	struct xhci_hcd *xhci;
+@@ -528,7 +545,6 @@ static int xhci_run_finished(struct xhci_hcd *xhci)
+  */
+ int xhci_run(struct usb_hcd *hcd)
+ {
+-	u32 temp;
+ 	u64 temp_64;
+ 	int ret;
+ 	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+@@ -551,12 +567,7 @@ int xhci_run(struct usb_hcd *hcd)
+ 	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+ 			"ERST deq = 64'h%0lx", (long unsigned int) temp_64);
  
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 32d27134cc48..36c3ba64da51 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1432,6 +1432,7 @@ struct xhci_interrupter {
- 	struct xhci_erst	erst;
- 	struct xhci_intr_reg __iomem *ir_set;
- 	unsigned int		intr_num;
-+	bool			ip_autoclear;
- 	/* For interrupter registers save and restore over suspend/resume */
- 	u32	s3_irq_pending;
- 	u32	s3_irq_control;
+-	xhci_dbg_trace(xhci, trace_xhci_dbg_init,
+-			"// Set the interrupt modulation register");
+-	temp = readl(&ir->ir_set->irq_control);
+-	temp &= ~ER_IRQ_INTERVAL_MASK;
+-	temp |= (xhci->imod_interval / 250) & ER_IRQ_INTERVAL_MASK;
+-	writel(temp, &ir->ir_set->irq_control);
++	xhci_set_interrupter_moderation(ir, xhci->imod_interval);
+ 
+ 	if (xhci->quirks & XHCI_NEC_HOST) {
+ 		struct xhci_command *command;
 
