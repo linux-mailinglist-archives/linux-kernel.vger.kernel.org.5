@@ -1,81 +1,83 @@
-Return-Path: <linux-kernel+bounces-69807-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 042DD858ECE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:45:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCE63858ECC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD567281C9B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:45:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9288A282587
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD854F5E6;
-	Sat, 17 Feb 2024 10:44:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5700A4EB46;
+	Sat, 17 Feb 2024 10:44:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gCfLW60F"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fl809rY3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BD64EB4B;
-	Sat, 17 Feb 2024 10:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D11487AB;
+	Sat, 17 Feb 2024 10:44:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708166682; cv=none; b=eceiAY5rnw6eTQC3Q4BsWYbxvHBU5R9EzZ0oM+fv8LOMXir6wlQd0urnnSxd5O42Lv31iuo2JdRw+XynrxR5n1PAOzpYpOsd+2iZTwermPYbKRA6fuqHKyh7U/jKvyqTdzSJNzSo/EI6dryHc/HBu4GJp5/kuoYRy+fixyuFcYk=
+	t=1708166679; cv=none; b=tZScvtX/ZU5jgrwySYj994XWYMo0CezVsyFAGXJI3Tqd7kuYx9Y7j50mFmGECxIUTspC/IvN0FZhz9IGAg93IVdTiqJAtEQ0nA/v+wZ4L+sGIFoTVQfWYkH1ptKKeuO9aULaoB10z7A7Phx9tTFJWNubiDHaDOT2dlHpe/sgVu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708166682; c=relaxed/simple;
-	bh=2ifbzFAXWssrFO5luB1vG3zFui4ZRF6yEfmf37hguT4=;
+	s=arc-20240116; t=1708166679; c=relaxed/simple;
+	bh=UW55rgsealtfBDuAKlBBXNYCymhoMGrmgrz1zNjUoQ8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EWVUcc/+6kWeMuR4QIF55Qu+s7MuiW6546sR3C9gGjK0gwLOKwTMbFd0FLIxtd2xj4fwF1Ttv6n9W9IEUH9B9Z6rvIEbr2iEGSNYD54kBoAv7uRMJFqiYrSZehizPt8Bnt0MJZsm0wQ+mSfinyeao9ETLdUJbl/SHPB+0ZFHeb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gCfLW60F; arc=none smtp.client-ip=192.198.163.18
+	 Content-Type:Content-Disposition:In-Reply-To; b=l5XG3JCPu5PaVjMyDS1OZlJ1/esLVhPjNeF6iJ0zAbdeOqL9uh4GT0xvnCHeDLqxB9xdUrJSexhQYD8gdKo/TOiGMxqCZ821Krco8CpsX0OSDY37xfLTUjidzgyCXBMM5PqfAk4FpgcaSw8COFe8j7pZBqcTVvQxtAjtXAUght0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fl809rY3; arc=none smtp.client-ip=198.175.65.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708166680; x=1739702680;
+  t=1708166678; x=1739702678;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=2ifbzFAXWssrFO5luB1vG3zFui4ZRF6yEfmf37hguT4=;
-  b=gCfLW60F2swbzHP3G6scQ7KchgYEbxYHpO+vY6DDVsAQFffn6+VxX/o7
-   1lyPsIi9833q2XyDqvZglmf4fquxb5smCqQI4xliH6CM3GU6kVeSrDlMK
-   cjy7Is7KQ0uSTCbkevPLyWEMUuCI3whWvrmQJdt5QUMq8uLuP5dP7Ysre
-   Y5UqC8IlE/4XR8j74V95AQhMvyCiYD9ahPPlCVfk7EUMUn9ITHGUfVRem
-   iEjQ6Zw0IB4PmD9xmAsfamBEUtVMNxth5ZPr/TjfnfSmMjj+pN+T0mMyS
-   LormpwkJd2WM880Y4/i/Ci6HIXr0vnfn2QnAiOzvOBuPu5NeLIstLGD/N
+  bh=UW55rgsealtfBDuAKlBBXNYCymhoMGrmgrz1zNjUoQ8=;
+  b=Fl809rY3pFMFAA3JSTxd8ha8UzTAEyUlLO11bbU3DOKyECA8HQuPMgM6
+   CgCAodTiZ5Hgq8nzErbLkZPt6jE2cLKvO6gz5b9wNhdbiyMJHe5C/l8Gl
+   ZYhJGGs1wYd+KcSUww85psIWbC/qTGdLnDubUXoJ3mZZog3N5HYdC6kyZ
+   5l73nRxIa4D9RQ+FvL6JcF83ZFyPKfyvlemam5dymZ0bqhRxfB//NU/PD
+   vEPfIkvMeWjAytq3mKn8JhacNr6JX4rSVg7MXmxvejTBPRk+DexkrDIpR
+   JFIMeTPcnKNSN8stABD37OO+DR1N2BORPOCflG6EIGShTD52GNGNL5zny
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2170737"
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2200104"
 X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
-   d="scan'208";a="2170737"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 02:44:40 -0800
+   d="scan'208";a="2200104"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 02:44:37 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="935983314"
 X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
-   d="scan'208";a="935983314"
+   d="scan'208";a="8676121"
 Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Feb 2024 02:44:36 -0800
+  by fmviesa004.fm.intel.com with ESMTP; 17 Feb 2024 02:44:33 -0800
 Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1rbIBK-00023C-2e;
-	Sat, 17 Feb 2024 10:44:32 +0000
-Date: Sat, 17 Feb 2024 18:43:36 +0800
+	id 1rbIBE-00023A-05;
+	Sat, 17 Feb 2024 10:44:26 +0000
+Date: Sat, 17 Feb 2024 18:43:37 +0800
 From: kernel test robot <lkp@intel.com>
-To: Florian Fainelli <florian.fainelli@broadcom.com>,
-	netdev@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Doug Berger <opendmb@gmail.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, linux-kernel@vger.kernel.org,
-	Justin Chen <justin.chen@broadcom.com>
-Subject: Re: [PATCH net-next 1/3] net: mdio: mdio-bcm-unimac: Manage clock
- around I/O accesses
-Message-ID: <202402171801.J560K7Fo-lkp@intel.com>
-References: <20240216184237.259954-2-florian.fainelli@broadcom.com>
+To: Robert Richter <rrichter@amd.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Len Brown <lenb@kernel.org>, Robert Richter <rrichter@amd.com>,
+	linux-acpi@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] lib/firmware_table: Provide buffer length
+ argument to cdat_table_parse()
+Message-ID: <202402171817.i0WShbft-lkp@intel.com>
+References: <20240216155844.406996-4-rrichter@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,128 +86,164 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240216184237.259954-2-florian.fainelli@broadcom.com>
+In-Reply-To: <20240216155844.406996-4-rrichter@amd.com>
 
-Hi Florian,
+Hi Robert,
 
 kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on net-next/main]
+[auto build test WARNING on 6be99530c92c6b8ff7a01903edc42393575ad63b]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Florian-Fainelli/net-mdio-mdio-bcm-unimac-Manage-clock-around-I-O-accesses/20240217-024738
-base:   net-next/main
-patch link:    https://lore.kernel.org/r/20240216184237.259954-2-florian.fainelli%40broadcom.com
-patch subject: [PATCH net-next 1/3] net: mdio: mdio-bcm-unimac: Manage clock around I/O accesses
-config: arm-defconfig (https://download.01.org/0day-ci/archive/20240217/202402171801.J560K7Fo-lkp@intel.com/config)
-compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240217/202402171801.J560K7Fo-lkp@intel.com/reproduce)
+url:    https://github.com/intel-lab-lkp/linux/commits/Robert-Richter/cxl-pci-Rename-DOE-mailbox-handle-to-doe_mb/20240217-000206
+base:   6be99530c92c6b8ff7a01903edc42393575ad63b
+patch link:    https://lore.kernel.org/r/20240216155844.406996-4-rrichter%40amd.com
+patch subject: [PATCH v4 3/3] lib/firmware_table: Provide buffer length argument to cdat_table_parse()
+config: arc-allyesconfig (https://download.01.org/0day-ci/archive/20240217/202402171817.i0WShbft-lkp@intel.com/config)
+compiler: arceb-elf-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240217/202402171817.i0WShbft-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402171801.J560K7Fo-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402171817.i0WShbft-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
->> drivers/net/mdio/mdio-bcm-unimac.c:286:6: warning: variable 'ret' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
-           if (IS_ERR(priv->clk))
-               ^~~~~~~~~~~~~~~~~
-   drivers/net/mdio/mdio-bcm-unimac.c:313:9: note: uninitialized use occurs here
-           return ret;
-                  ^~~
-   drivers/net/mdio/mdio-bcm-unimac.c:286:2: note: remove the 'if' if its condition is always false
-           if (IS_ERR(priv->clk))
-           ^~~~~~~~~~~~~~~~~~~~~~
-   drivers/net/mdio/mdio-bcm-unimac.c:243:9: note: initialize the variable 'ret' to silence this warning
-           int ret;
-                  ^
-                   = 0
-   1 warning generated.
+   In file included from include/linux/device.h:15,
+                    from drivers/cxl/core/pci.c:5:
+   drivers/cxl/core/pci.c: In function 'read_cdat_data':
+>> drivers/cxl/core/pci.c:672:31: warning: format '%lu' expects argument of type 'long unsigned int', but argument 3 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+     672 |                 dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
+         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:146:61: note: in expansion of macro 'dev_fmt'
+     146 |         dev_printk_index_wrap(_dev_warn, KERN_WARNING, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                             ^~~~~~~
+   drivers/cxl/core/pci.c:672:17: note: in expansion of macro 'dev_warn'
+     672 |                 dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
+         |                 ^~~~~~~~
+   drivers/cxl/core/pci.c:672:63: note: format string is defined here
+     672 |                 dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
+         |                                                             ~~^
+         |                                                               |
+         |                                                               long unsigned int
+         |                                                             %u
+   drivers/cxl/core/pci.c:672:31: warning: format '%lu' expects argument of type 'long unsigned int', but argument 4 has type 'size_t' {aka 'unsigned int'} [-Wformat=]
+     672 |                 dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
+         |                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/dev_printk.h:110:30: note: in definition of macro 'dev_printk_index_wrap'
+     110 |                 _p_func(dev, fmt, ##__VA_ARGS__);                       \
+         |                              ^~~
+   include/linux/dev_printk.h:146:61: note: in expansion of macro 'dev_fmt'
+     146 |         dev_printk_index_wrap(_dev_warn, KERN_WARNING, dev, dev_fmt(fmt), ##__VA_ARGS__)
+         |                                                             ^~~~~~~
+   drivers/cxl/core/pci.c:672:17: note: in expansion of macro 'dev_warn'
+     672 |                 dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
+         |                 ^~~~~~~~
+   drivers/cxl/core/pci.c:672:67: note: format string is defined here
+     672 |                 dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
+         |                                                                 ~~^
+         |                                                                   |
+         |                                                                   long unsigned int
+         |                                                                 %u
+   during RTL pass: mach
+   drivers/cxl/core/pci.c: In function 'match_add_dports':
+   drivers/cxl/core/pci.c:68:1: internal compiler error: in arc_ifcvt, at config/arc/arc.cc:9703
+      68 | }
+         | ^
+   0x5b78c1 arc_ifcvt
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/config/arc/arc.cc:9703
+   0xe431b4 arc_reorg
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/config/arc/arc.cc:8552
+   0xaed299 execute
+   	/tmp/build-crosstools-gcc-13.2.0-binutils-2.41/gcc/gcc-13.2.0/gcc/reorg.cc:3927
+   Please submit a full bug report, with preprocessed source (by using -freport-bug).
+   Please include the complete backtrace with any bug report.
+   See <https://gcc.gnu.org/bugs/> for instructions.
 
 
-vim +286 drivers/net/mdio/mdio-bcm-unimac.c
+vim +672 drivers/cxl/core/pci.c
 
-   235	
-   236	static int unimac_mdio_probe(struct platform_device *pdev)
-   237	{
-   238		struct unimac_mdio_pdata *pdata = pdev->dev.platform_data;
-   239		struct unimac_mdio_priv *priv;
-   240		struct device_node *np;
-   241		struct mii_bus *bus;
-   242		struct resource *r;
-   243		int ret;
-   244	
-   245		np = pdev->dev.of_node;
-   246	
-   247		priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-   248		if (!priv)
-   249			return -ENOMEM;
-   250	
-   251		r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-   252		if (!r)
-   253			return -EINVAL;
-   254	
-   255		/* Just ioremap, as this MDIO block is usually integrated into an
-   256		 * Ethernet MAC controller register range
-   257		 */
-   258		priv->base = devm_ioremap(&pdev->dev, r->start, resource_size(r));
-   259		if (!priv->base) {
-   260			dev_err(&pdev->dev, "failed to remap register\n");
-   261			return -ENOMEM;
-   262		}
-   263	
-   264		if (of_property_read_u32(np, "clock-frequency", &priv->clk_freq))
-   265			priv->clk_freq = 0;
-   266	
-   267		priv->mii_bus = mdiobus_alloc();
-   268		if (!priv->mii_bus)
-   269			return -ENOMEM;
-   270	
-   271		bus = priv->mii_bus;
-   272		bus->priv = priv;
-   273		if (pdata) {
-   274			bus->name = pdata->bus_name;
-   275			priv->wait_func = pdata->wait_func;
-   276			priv->wait_func_data = pdata->wait_func_data;
-   277			bus->phy_mask = ~pdata->phy_mask;
-   278			priv->clk = pdata->clk;
-   279		} else {
-   280			bus->name = "unimac MII bus";
-   281			priv->wait_func_data = priv;
-   282			priv->wait_func = unimac_mdio_poll;
-   283			priv->clk = devm_clk_get_optional(&pdev->dev, NULL);
-   284		}
-   285	
- > 286		if (IS_ERR(priv->clk))
-   287			goto out_mdio_free;
-   288	
-   289		bus->parent = &pdev->dev;
-   290		bus->read = unimac_mdio_read;
-   291		bus->write = unimac_mdio_write;
-   292		bus->reset = unimac_mdio_reset;
-   293		snprintf(bus->id, MII_BUS_ID_SIZE, "%s-%d", pdev->name, pdev->id);
-   294	
-   295		ret = unimac_mdio_clk_set(priv);
-   296		if (ret)
-   297			goto out_mdio_free;
-   298	
-   299		ret = of_mdiobus_register(bus, np);
-   300		if (ret) {
-   301			dev_err(&pdev->dev, "MDIO bus registration failed\n");
-   302			goto out_mdio_free;
-   303		}
-   304	
-   305		platform_set_drvdata(pdev, priv);
-   306	
-   307		dev_info(&pdev->dev, "Broadcom UniMAC MDIO bus\n");
-   308	
-   309		return 0;
-   310	
-   311	out_mdio_free:
-   312		mdiobus_free(bus);
-   313		return ret;
-   314	}
-   315	
+   611	
+   612	/**
+   613	 * read_cdat_data - Read the CDAT data on this port
+   614	 * @port: Port to read data from
+   615	 *
+   616	 * This call will sleep waiting for responses from the DOE mailbox.
+   617	 */
+   618	void read_cdat_data(struct cxl_port *port)
+   619	{
+   620		struct device *uport = port->uport_dev;
+   621		struct device *dev = &port->dev;
+   622		struct pci_doe_mb *doe_mb;
+   623		struct pci_dev *pdev = NULL;
+   624		struct cxl_memdev *cxlmd;
+   625		struct cdat_doe_rsp *buf;
+   626		size_t table_length, length;
+   627		int rc;
+   628	
+   629		if (is_cxl_memdev(uport)) {
+   630			struct device *host;
+   631	
+   632			cxlmd = to_cxl_memdev(uport);
+   633			host = cxlmd->dev.parent;
+   634			if (dev_is_pci(host))
+   635				pdev = to_pci_dev(host);
+   636		} else if (dev_is_pci(uport)) {
+   637			pdev = to_pci_dev(uport);
+   638		}
+   639	
+   640		if (!pdev)
+   641			return;
+   642	
+   643		doe_mb = pci_find_doe_mailbox(pdev, PCI_DVSEC_VENDOR_ID_CXL,
+   644					      CXL_DOE_PROTOCOL_TABLE_ACCESS);
+   645		if (!doe_mb) {
+   646			dev_dbg(dev, "No CDAT mailbox\n");
+   647			return;
+   648		}
+   649	
+   650		port->cdat_available = true;
+   651	
+   652		if (cxl_cdat_get_length(dev, doe_mb, &length)) {
+   653			dev_dbg(dev, "No CDAT length\n");
+   654			return;
+   655		}
+   656	
+   657		/*
+   658		 * The begin of the CDAT buffer needs space for additional 4
+   659		 * bytes for the DOE header. Table data starts afterwards.
+   660		 */
+   661		buf = devm_kzalloc(dev, sizeof(*buf) + length, GFP_KERNEL);
+   662		if (!buf)
+   663			goto err;
+   664	
+   665		table_length = length;
+   666	
+   667		rc = cxl_cdat_read_table(dev, doe_mb, buf, &length);
+   668		if (rc)
+   669			goto err;
+   670	
+   671		if (table_length != length)
+ > 672			dev_warn(dev, "Malformed CDAT table length (%lu:%lu), discarding trailing data\n",
+   673				table_length, length);
+   674	
+   675		if (cdat_checksum(buf->data, length))
+   676			goto err;
+   677	
+   678		port->cdat.table = buf->data;
+   679		port->cdat.length = length;
+   680	
+   681		return;
+   682	err:
+   683		/* Don't leave table data allocated on error */
+   684		devm_kfree(dev, buf);
+   685		dev_err(dev, "Failed to read/validate CDAT.\n");
+   686	}
+   687	EXPORT_SYMBOL_NS_GPL(read_cdat_data, CXL);
+   688	
 
 -- 
 0-DAY CI Kernel Test Service
