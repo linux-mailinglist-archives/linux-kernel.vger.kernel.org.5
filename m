@@ -1,136 +1,108 @@
-Return-Path: <linux-kernel+bounces-70077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 541D28592CC
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:43:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 622BB8592D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EA16284108
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:43:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02A9B1F216A5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:47:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D447880037;
-	Sat, 17 Feb 2024 20:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 781EB7FBCE;
+	Sat, 17 Feb 2024 20:47:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BAecfohW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YpmdmJiK"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1D26A024;
-	Sat, 17 Feb 2024 20:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5E4149DF6;
+	Sat, 17 Feb 2024 20:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708202615; cv=none; b=RtcrNlToqbkMeh5eli83DuISnQXC16truZveGemxttsoyQwGjnoCJraY9aZlNKXz9N9kt/7TjAMRofC92WdpmZqNr0QOOhuvn9PAFZKzlj0pM8jn0Rvvix3vwa/bkNffWTw24/L4Yr8lej34AAR+d55IJVSDoF5+MdlODhUYeSg=
+	t=1708202859; cv=none; b=MCCHJlPkV+Oe/puMKpz6X6hoa/PMAkvsy1Q/5eHdTImctbFpIyyEKl0/utIgZ5TlOWEEUAnZ3SHZH29docd5g8hh6epkNoiuXSUTgyN2szZ8xupu0dx0U6+7f9KCRzhFoIj28DekdTSbbjb+mGljL61rZxVey9QJMmSQFefIpMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708202615; c=relaxed/simple;
-	bh=E6LVY0jyOMzyQvE2PHS8poQ7j8DUOqfa7MfcV3PR2qg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B2N9rM4GuUlHGw+bToZMgj9r8XDe2w4mfBzp7CbWCPhe08W18IacNmz+SIoJnD2SgnI4Sp52TJVnXZPr15AlXLXRwj3qPAk527huunPXvVdI38pXnTO4xLpBNL8sb/fnvmzEkN64f3KX9tLrPFriSgV0q2Cz8+/dt/4rjaRtznY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BAecfohW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E08B4C433F1;
-	Sat, 17 Feb 2024 20:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708202614;
-	bh=E6LVY0jyOMzyQvE2PHS8poQ7j8DUOqfa7MfcV3PR2qg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BAecfohW+IJqaLkNGE7g8xML4Qs2FKZsau7yveR8TiJ6L3WA76boZ0oXP0914cfWB
-	 uRs0x5kDLFokHV5Cp5HtR0Msj3By0u1iIuTzFn74parSYqAQkBIzwglt6mSlppgWyy
-	 nB548ZQd+sF3xdChKxGAaXDAALtbxnANx3WhMvz8nZmvATSjOep/ocJMCS6i6PDjnK
-	 KXiqtTk+vXLRbVEESgl/RzZNh46pql8L2FJ2BJzpCtqn1SwkYL1HCPvnRpHrlhV9lJ
-	 e30LjKoHTXHWnfq5BKfqAB96du/na1YhLfvkFLMa4ppJEp14/HhdqYxv4OMdKerGyC
-	 Te1x7q1SX0iKA==
-Date: Sat, 17 Feb 2024 20:43:31 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saravana Kannan <saravanak@google.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v5 03/18] dt-bindings: regulator: describe the PMU module
- of the QCA6390 package
-Message-ID: <ZdEac8I5aI9YLq6A@finisterre.sirena.org.uk>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-4-brgl@bgdev.pl>
- <ZdDVNbjv60G9YUNy@finisterre.sirena.org.uk>
- <CAMRc=Mf9Sro4kM_Jn8_v=cyO5PxCp6AnBdeS9XspqVDGKdA_Dg@mail.gmail.com>
+	s=arc-20240116; t=1708202859; c=relaxed/simple;
+	bh=VLAWQJKgpC7eOnZs+bz0cG5pyAkhbQHhV22m9xfvfQc=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type:To:CC; b=LrBXTzPo4D7aUpqPn+f3QUTHTGFjQ4zipTvStAlEHn05i44pyfLe8KYNYOhsBUsNJ1MEKUQlTIDH5HY21mzxtb6KGXSz9X7a0UrUVRVJyM5rOn8ftcZcYEoGOXk87IjizsKq1UnrgL5VaAsF5QNHAvzGgcplCn+SuxSj8itn9hM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YpmdmJiK; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41HKdKBC018686;
+	Sat, 17 Feb 2024 20:47:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:subject:date:message-id:mime-version:content-type
+	:content-transfer-encoding:to:cc; s=qcppdkim1; bh=tGSb+OxlOFLfZg
+	DrZvbPGEeFo5YrukPOxyq2xmqLWS4=; b=YpmdmJiKqRPvd6FZFHo2rgnl6ds6I6
+	Xg/V0ClPNNCSDtk9FT41NCkGi2JTIst28be5pepIkjlSm25KSdE2JvbbQN08vhcJ
+	N2w+Bpqva8YXWMsqEjb9SLr8POvMg+xPLxmtuRWuM9iJZXbJv5tVvbjC5POftMFs
+	cw8q9K4FDL6Q+VhlwCRuaDr9/6phE04SSxSUWXuOV8ce7RfvVjkuRsZejIEQ7YHk
+	s28h1Gq/aVsiwsbR90q6dKulk+MGvm5joNS+TeYePkYwRY4QywArk2Ua+kpzQ+xp
+	NiDnBYoyHn24L5bOqE102RDRVuDfE+ghaKqqcsZjaDxY2gltvHWX2/LA==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wanys0v7p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 20:47:32 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41HKlVp7014388
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 20:47:31 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 17 Feb
+ 2024 12:47:31 -0800
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+Subject: [PATCH 0/2] wifi: make several MAINTAINERS updates for
+ ath10k/ath11k/ath12k
+Date: Sat, 17 Feb 2024 12:47:00 -0800
+Message-ID: <20240217-update-maintainer-v1-0-1426cf7a8bb1@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4JPKTS4lZXvnOqCl"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=Mf9Sro4kM_Jn8_v=cyO5PxCp6AnBdeS9XspqVDGKdA_Dg@mail.gmail.com>
-X-Cookie: You might have mail.
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEQb0WUC/x2MQQqAIBAAvyJ7TlCLzL4SHSzX2kMWWhGEf086z
+ GEOMy8kjIQJevZCxJsS7aGIrBjMqw0LcnLFQQnVCCU1vw5nT+SbpXAWMHLjTT2ZzohWWyjdEdH
+ T8z+HMecPm4udXmMAAAA=
+To: Kalle Valo <kvalo@kernel.org>
+CC: <ath10k@lists.infradead.org>, <ath11k@lists.infradead.org>,
+        <ath12k@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Jeff
+ Johnson" <quic_jjohnson@quicinc.com>,
+        Bartosz Golaszewski
+	<bartosz.golaszewski@linaro.org>
+X-Mailer: b4 0.13.0
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 5Azelj6IIp0FVcM-dcRXAL0D1pUO9bgh
+X-Proofpoint-GUID: 5Azelj6IIp0FVcM-dcRXAL0D1pUO9bgh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-17_19,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ phishscore=0 impostorscore=0 mlxscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 adultscore=0 mlxlogscore=274 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
+ definitions=main-2402170172
 
 
---4JPKTS4lZXvnOqCl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+---
+Jeff Johnson (2):
+      MAINTAINERS: update Jeff Johnson e-mail address
+      MAINTAINERS: Add N: ath1*k entries to match .yaml files
 
-On Sat, Feb 17, 2024 at 07:32:16PM +0100, Bartosz Golaszewski wrote:
-> On Sat, Feb 17, 2024 at 4:48=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
-rote:
+ MAINTAINERS | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+---
+base-commit: 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5
+change-id: 20240217-update-maintainer-9f93b989067a
 
-> > Please submit patches using subject lines reflecting the style for the
-> > subsystem, this makes it easier for people to identify relevant patches.
-> > Look at what existing commits in the area you're changing are doing and
-> > make sure your subject lines visually resemble what they're doing.
-> > There's no need to resubmit to fix this alone.
-
-> This is quite vague, could you elaborate? I have no idea what is wrong
-> with this patch.
-
-The subject line does not look like the subject line for a regulator
-patch rendering it almost invisible in my inbox.  As you will see if you
-follow the above suggestion and look at other commits to the same area
-you should see that subject lines should start regulator:.
-
---4JPKTS4lZXvnOqCl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXRGnIACgkQJNaLcl1U
-h9Cz7Qf+L7vTsGPGjWXms+ypHuuzrseRY+5tqVWHSXyldocHF3sZ+8P7xcqUzAKl
-OSLoaJD1RINGVTJodBoPBZ8w+8cJW5rYqn2m9fx/cRr+0bS96WUsrGD9HYTkz7VC
-QsORvLoiq2VYhEOaT4dRZxEXAEMgu8wfJ1tpZSFciws/lfvNBcIY0EjI0Nud1tND
-HIXvt3iwCGm0lW+ppB93ZjOZiw4vMMJchH0R3piJ9l4EKvrMGiDYdNb1H2YuINzS
-zq3lBvkkKTsY7oNfocA683WAe7N2l4d4MhUcm0TP4Be2BzuT9nvgZNRFWK/fa90r
-vaY0Cs9mXiyitePpzt2YKY//+qSyLw==
-=9A+9
------END PGP SIGNATURE-----
-
---4JPKTS4lZXvnOqCl--
 
