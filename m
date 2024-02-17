@@ -1,43 +1,43 @@
-Return-Path: <linux-kernel+bounces-69721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAD80858DB7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:41:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 925B0858DB8
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:42:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B39D1C210A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:41:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 066DE282933
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20A821CF99;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1581CFB9;
 	Sat, 17 Feb 2024 07:41:33 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E141C2A6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F32831CAB5;
 	Sat, 17 Feb 2024 07:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708155692; cv=none; b=k1ZCTQxADJK5NqQf7Uu4atWS0VNF8yoZkHQclOKTmxkMDdc7184t0zL/8JLk46MZfUXn+dAaQ5cvVq4IlHFlASJVvSqCRwSFPd6+N/L5VnkXHWYk3V7CkSPwHnZKCy+42mBUwEkNOaDzuQnH3O9UmquCSjGinLzHP/SWymSSleA=
+	t=1708155692; cv=none; b=uSs9qwpzFnyYh4pSj3pv0FOawK1Bxj6nCCWeJZovxUsA/cLRTngNbrPC0TIRak3dehA4W762oxqfOGCo12iuZf0gUl/CvXCS1BMTMRZgMMdVHyk8KX6pUepdwqCfiU946ziY/fk+eGaDpoIjnq7nL039gwu8YDYwaSZkYyVAa5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708155692; c=relaxed/simple;
-	bh=xnUfh5tNvpXi9BR+N3yxZpocjCbyoo7Gh9VK7eqqUzI=;
+	bh=ta1KYqK1TaJ9nUhobs6EBjNfT5lITc8ZsH9QoBs0S+s=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dtbTlHjDuqwACtb1RuwJIIX0wH+VkjXL3ahxeoRwwzZp6iy1xWloWtf2FjqVn4qnBXhbHzTcIo1OvtAkkiQ/61SQGYvwAly5qQkaaGJaFMsM9oa9xVEZ+5Nv8ws23XKA0YrtCKXgptuGSaMFLix1tnNmjHJmpDXG/bR46GGyeeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+	 MIME-Version:Content-Type; b=m5u5pRFV+WH/YkbferT31csMxeQ18oBRNZbheTo4PiWmAv4rRw6wbeA4KySKNtdxZ6YDr6PDIF3zhp7sOYqtVCfsoxIqlEb8tdj2NaQMvxM1d3T0IiN3z0buMvQOD8RX67fSUFpbMrDFyHIqoCfVW3rsswyagxZ9rlc7oQWxDvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TcLKP0CWlz1Q90Y;
-	Sat, 17 Feb 2024 15:39:21 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TcLMC2sSHz1vtgL;
+	Sat, 17 Feb 2024 15:40:55 +0800 (CST)
 Received: from kwepemd100002.china.huawei.com (unknown [7.221.188.184])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8C39B18001B;
-	Sat, 17 Feb 2024 15:41:26 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id C0AEA1A0178;
+	Sat, 17 Feb 2024 15:41:27 +0800 (CST)
 Received: from M910t.huawei.com (10.110.54.157) by
  kwepemd100002.china.huawei.com (7.221.188.184) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Sat, 17 Feb 2024 15:41:25 +0800
+ 15.2.1258.28; Sat, 17 Feb 2024 15:41:26 +0800
 From: Changbin Du <changbin.du@huawei.com>
 To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -48,9 +48,9 @@ CC: Mark Rutland <mark.rutland@arm.com>, Alexander Shishkin
 	<linux-perf-users@vger.kernel.org>, Andi Kleen <ak@linux.intel.com>, Thomas
  Richter <tmricht@linux.ibm.com>, <changbin.du@gmail.com>, Changbin Du
 	<changbin.du@huawei.com>
-Subject: [PATCH v8 1/5] perf: build: introduce the libcapstone
-Date: Sat, 17 Feb 2024 15:40:42 +0800
-Message-ID: <20240217074046.4100789-2-changbin.du@huawei.com>
+Subject: [PATCH v8 2/5] perf: util: use capstone disasm engine to show assembly instructions
+Date: Sat, 17 Feb 2024 15:40:43 +0800
+Message-ID: <20240217074046.4100789-3-changbin.du@huawei.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240217074046.4100789-1-changbin.du@huawei.com>
 References: <20240217074046.4100789-1-changbin.du@huawei.com>
@@ -65,196 +65,256 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  kwepemd100002.china.huawei.com (7.221.188.184)
 
-Later we will use libcapstone to disassemble instructions of samples.
+Currently, the instructions of samples are shown as raw hex strings
+which are hard to read. x86 has a special option '--xed' to disassemble
+the hex string via intel XED tool.
+
+Here we use capstone as our disassembler engine to give more friendly
+instructions. We select libcapstone because capstone can provide more
+insn details. Perf will fallback to raw instructions if libcapstone is
+not available.
+
+The advantages compared to XED tool:
+ * Support arm, arm64, x86-32, x86_64 (more could be supported),
+   xed only for x86_64.
+ * Immediate address operands are shown as symbol+offs.
 
 Signed-off-by: Changbin Du <changbin.du@huawei.com>
 
 ---
+v4:
+  - fix conflicting header bpf.h problem, aka, capstone/bpf.h and
+    uapi/linux/bpf.h. (Namhyung Kim, Adrian Hunter)
 v3:
-  - display with perf version --build-options. (Adrian Hunter)
-  - exclude libcapstone from make_minimal.
+  - show warning msg if libcapstone is not available.
 v2:
-  - change tools/perf/tests/make also.
+  - line up the output by preceding two tabs. (Adrian Hunter)
+  - removed the tailing space. (Adrian Hunter)
+  - forward declaration for perf_sample, thread, machine. (Adrian Hunter)
+  - other trivial fixes (Adrian Hunter)
 ---
- tools/build/Makefile.feature           |  2 ++
- tools/build/feature/Makefile           |  4 ++++
- tools/build/feature/test-all.c         |  4 ++++
- tools/build/feature/test-libcapstone.c | 11 +++++++++++
- tools/perf/Makefile.config             | 21 +++++++++++++++++++++
- tools/perf/Makefile.perf               |  3 +++
- tools/perf/builtin-version.c           |  1 +
- tools/perf/tests/make                  |  4 +++-
- 8 files changed, 49 insertions(+), 1 deletion(-)
- create mode 100644 tools/build/feature/test-libcapstone.c
+ tools/perf/builtin-script.c  |   8 +--
+ tools/perf/util/Build        |   1 +
+ tools/perf/util/print_insn.c | 135 +++++++++++++++++++++++++++++++++++
+ tools/perf/util/print_insn.h |  16 +++++
+ tools/perf/util/thread.h     |   1 -
+ 5 files changed, 155 insertions(+), 6 deletions(-)
+ create mode 100644 tools/perf/util/print_insn.c
+ create mode 100644 tools/perf/util/print_insn.h
 
-diff --git a/tools/build/Makefile.feature b/tools/build/Makefile.feature
-index 64df118376df..1e2ab148d5db 100644
---- a/tools/build/Makefile.feature
-+++ b/tools/build/Makefile.feature
-@@ -87,6 +87,7 @@ FEATURE_TESTS_EXTRA :=                  \
-          gtk2-infobar                   \
-          hello                          \
-          libbabeltrace                  \
-+         libcapstone                    \
-          libbfd-liberty                 \
-          libbfd-liberty-z               \
-          libopencsd                     \
-@@ -134,6 +135,7 @@ FEATURE_DISPLAY ?=              \
-          libcrypto              \
-          libunwind              \
-          libdw-dwarf-unwind     \
-+         libcapstone            \
-          zlib                   \
-          lzma                   \
-          get_cpuid              \
-diff --git a/tools/build/feature/Makefile b/tools/build/feature/Makefile
-index 37722e509eb9..ed54cef450f5 100644
---- a/tools/build/feature/Makefile
-+++ b/tools/build/feature/Makefile
-@@ -54,6 +54,7 @@ FILES=                                          \
-          test-timerfd.bin                       \
-          test-libdw-dwarf-unwind.bin            \
-          test-libbabeltrace.bin                 \
-+         test-libcapstone.bin			\
-          test-compile-32.bin                    \
-          test-compile-x32.bin                   \
-          test-zlib.bin                          \
-@@ -286,6 +287,9 @@ $(OUTPUT)test-libdw-dwarf-unwind.bin:
- $(OUTPUT)test-libbabeltrace.bin:
- 	$(BUILD) # -lbabeltrace provided by $(FEATURE_CHECK_LDFLAGS-libbabeltrace)
- 
-+$(OUTPUT)test-libcapstone.bin:
-+	$(BUILD) # -lcapstone provided by $(FEATURE_CHECK_LDFLAGS-libcapstone)
-+
- $(OUTPUT)test-compile-32.bin:
- 	$(CC) -m32 -o $@ test-compile.c
- 
-diff --git a/tools/build/feature/test-all.c b/tools/build/feature/test-all.c
-index 6f4bf386a3b5..dd0a18c2ef8f 100644
---- a/tools/build/feature/test-all.c
-+++ b/tools/build/feature/test-all.c
-@@ -134,6 +134,10 @@
- #undef main
- #endif
- 
-+#define main main_test_libcapstone
-+# include "test-libcapstone.c"
-+#undef main
-+
- #define main main_test_lzma
- # include "test-lzma.c"
- #undef main
-diff --git a/tools/build/feature/test-libcapstone.c b/tools/build/feature/test-libcapstone.c
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index b1f57401ff23..4817a37f16e2 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -34,6 +34,7 @@
+ #include "util/event.h"
+ #include "ui/ui.h"
+ #include "print_binary.h"
++#include "print_insn.h"
+ #include "archinsn.h"
+ #include <linux/bitmap.h>
+ #include <linux/kernel.h>
+@@ -1511,11 +1512,8 @@ static int perf_sample__fprintf_insn(struct perf_sample *sample,
+ 	if (PRINT_FIELD(INSNLEN))
+ 		printed += fprintf(fp, " ilen: %d", sample->insn_len);
+ 	if (PRINT_FIELD(INSN) && sample->insn_len) {
+-		int i;
+-
+-		printed += fprintf(fp, " insn:");
+-		for (i = 0; i < sample->insn_len; i++)
+-			printed += fprintf(fp, " %02x", (unsigned char)sample->insn[i]);
++		printed += fprintf(fp, " insn: ");
++		printed += sample__fprintf_insn_raw(sample, fp);
+ 	}
+ 	if (PRINT_FIELD(BRSTACKINSN) || PRINT_FIELD(BRSTACKINSNLEN))
+ 		printed += perf_sample__fprintf_brstackinsn(sample, thread, attr, machine, fp);
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 8027f450fa3e..2cbeeb79b6ef 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -32,6 +32,7 @@ perf-y += perf_regs.o
+ perf-y += perf-regs-arch/
+ perf-y += path.o
+ perf-y += print_binary.o
++perf-y += print_insn.o
+ perf-y += rlimit.o
+ perf-y += argv_split.o
+ perf-y += rbtree.o
+diff --git a/tools/perf/util/print_insn.c b/tools/perf/util/print_insn.c
 new file mode 100644
-index 000000000000..fbe8dba189e9
+index 000000000000..459e0e93d7b1
 --- /dev/null
-+++ b/tools/build/feature/test-libcapstone.c
-@@ -0,0 +1,11 @@
++++ b/tools/perf/util/print_insn.c
+@@ -0,0 +1,135 @@
 +// SPDX-License-Identifier: GPL-2.0
++/*
++ * Instruction binary disassembler based on capstone.
++ *
++ * Author(s): Changbin Du <changbin.du@huawei.com>
++ */
++#include <string.h>
++#include <stdbool.h>
++#include "debug.h"
++#include "sample.h"
++#include "symbol.h"
++#include "machine.h"
++#include "thread.h"
++#include "print_insn.h"
 +
++size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp)
++{
++	int printed = 0;
++
++	for (int i = 0; i < sample->insn_len; i++) {
++		printed += fprintf(fp, "%02x", (unsigned char)sample->insn[i]);
++		if (sample->insn_len - i > 1)
++			printed += fprintf(fp, " ");
++	}
++	return printed;
++}
++
++#ifdef HAVE_LIBCAPSTONE_SUPPORT
 +#include <capstone/capstone.h>
 +
-+int main(void)
++static int capstone_init(struct machine *machine, csh *cs_handle)
 +{
-+	csh handle;
++	cs_arch arch;
++	cs_mode mode;
 +
-+	cs_open(CS_ARCH_X86, CS_MODE_64, &handle);
++	if (machine__is(machine, "x86_64")) {
++		arch = CS_ARCH_X86;
++		mode = CS_MODE_64;
++	} else if (machine__normalized_is(machine, "x86")) {
++		arch = CS_ARCH_X86;
++		mode = CS_MODE_32;
++	} else if (machine__normalized_is(machine, "arm64")) {
++		arch = CS_ARCH_ARM64;
++		mode = CS_MODE_ARM;
++	} else if (machine__normalized_is(machine, "arm")) {
++		arch = CS_ARCH_ARM;
++		mode = CS_MODE_ARM + CS_MODE_V8;
++	} else if (machine__normalized_is(machine, "s390")) {
++		arch = CS_ARCH_SYSZ;
++		mode = CS_MODE_BIG_ENDIAN;
++	} else {
++		return -1;
++	}
++
++	if (cs_open(arch, mode, cs_handle) != CS_ERR_OK) {
++		pr_warning_once("cs_open failed\n");
++		return -1;
++	}
++
++	if (machine__normalized_is(machine, "x86")) {
++		cs_option(*cs_handle, CS_OPT_SYNTAX, CS_OPT_SYNTAX_ATT);
++		/*
++		 * Resolving address operands to symbols is implemented
++		 * on x86 by investigating instruction details.
++		 */
++		cs_option(*cs_handle, CS_OPT_DETAIL, CS_OPT_ON);
++	}
++
 +	return 0;
 +}
-diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
-index aa55850fbc21..3e1072c59757 100644
---- a/tools/perf/Makefile.config
-+++ b/tools/perf/Makefile.config
-@@ -191,6 +191,15 @@ endif
- FEATURE_CHECK_CFLAGS-libbabeltrace := $(LIBBABELTRACE_CFLAGS)
- FEATURE_CHECK_LDFLAGS-libbabeltrace := $(LIBBABELTRACE_LDFLAGS) -lbabeltrace-ctf
- 
-+# for linking with debug library, run like:
-+# make DEBUG=1 LIBCAPSTONE_DIR=/opt/capstone/
-+ifdef LIBCAPSTONE_DIR
-+  LIBCAPSTONE_CFLAGS  := -I$(LIBCAPSTONE_DIR)/include
-+  LIBCAPSTONE_LDFLAGS := -L$(LIBCAPSTONE_DIR)/
-+endif
-+FEATURE_CHECK_CFLAGS-libcapstone := $(LIBCAPSTONE_CFLAGS)
-+FEATURE_CHECK_LDFLAGS-libcapstone := $(LIBCAPSTONE_LDFLAGS) -lcapstone
 +
- ifdef LIBZSTD_DIR
-   LIBZSTD_CFLAGS  := -I$(LIBZSTD_DIR)/lib
-   LIBZSTD_LDFLAGS := -L$(LIBZSTD_DIR)/lib
-@@ -1094,6 +1103,18 @@ ifndef NO_LIBBABELTRACE
-   endif
- endif
- 
-+ifndef NO_CAPSTONE
-+  $(call feature_check,libcapstone)
-+  ifeq ($(feature-libcapstone), 1)
-+    CFLAGS += -DHAVE_LIBCAPSTONE_SUPPORT $(LIBCAPSTONE_CFLAGS)
-+    LDFLAGS += $(LICAPSTONE_LDFLAGS)
-+    EXTLIBS += -lcapstone
-+    $(call detected,CONFIG_LIBCAPSTONE)
-+  else
-+    msg := $(warning No libcapstone found, disables disasm engine support for 'perf script', please install libcapstone-dev/capstone-devel);
-+  endif
-+endif
++static size_t print_insn_x86(struct perf_sample *sample, struct thread *thread,
++			     cs_insn *insn, FILE *fp)
++{
++	struct addr_location al;
++	size_t printed = 0;
 +
- ifndef NO_AUXTRACE
-   ifeq ($(SRCARCH),x86)
-     ifeq ($(feature-get_cpuid), 0)
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index f8774a9b1377..c2134cf456ef 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -84,6 +84,9 @@ include ../scripts/utilities.mak
- # Define NO_LIBBABELTRACE if you do not want libbabeltrace support
- # for CTF data format.
- #
-+# Define NO_CAPSTONE if you do not want libcapstone support
-+# for disasm engine.
-+#
- # Define NO_LZMA if you do not want to support compressed (xz) kernel modules
- #
- # Define NO_AUXTRACE if you do not want AUX area tracing support
-diff --git a/tools/perf/builtin-version.c b/tools/perf/builtin-version.c
-index ac20c2b9bbc2..afd409130238 100644
---- a/tools/perf/builtin-version.c
-+++ b/tools/perf/builtin-version.c
-@@ -73,6 +73,7 @@ static void library_status(void)
- 	STATUS(HAVE_LIBCRYPTO_SUPPORT, libcrypto);
- 	STATUS(HAVE_LIBUNWIND_SUPPORT, libunwind);
- 	STATUS(HAVE_DWARF_SUPPORT, libdw-dwarf-unwind);
-+	STATUS(HAVE_LIBCAPSTONE_SUPPORT, libcapstone);
- 	STATUS(HAVE_ZLIB_SUPPORT, zlib);
- 	STATUS(HAVE_LZMA_SUPPORT, lzma);
- 	STATUS(HAVE_AUXTRACE_SUPPORT, get_cpuid);
-diff --git a/tools/perf/tests/make b/tools/perf/tests/make
-index 8a4da7eb637a..a1f8adf85367 100644
---- a/tools/perf/tests/make
-+++ b/tools/perf/tests/make
-@@ -83,6 +83,7 @@ make_no_libelf      := NO_LIBELF=1
- make_no_libunwind   := NO_LIBUNWIND=1
- make_no_libdw_dwarf_unwind := NO_LIBDW_DWARF_UNWIND=1
- make_no_backtrace   := NO_BACKTRACE=1
-+make_no_libcapstone := NO_CAPSTONE=1
- make_no_libnuma     := NO_LIBNUMA=1
- make_no_libaudit    := NO_LIBAUDIT=1
- make_no_libbionic   := NO_LIBBIONIC=1
-@@ -122,7 +123,7 @@ make_minimal        += NO_DEMANGLE=1 NO_LIBELF=1 NO_LIBUNWIND=1 NO_BACKTRACE=1
- make_minimal        += NO_LIBNUMA=1 NO_LIBAUDIT=1 NO_LIBBIONIC=1
- make_minimal        += NO_LIBDW_DWARF_UNWIND=1 NO_AUXTRACE=1 NO_LIBBPF=1
- make_minimal        += NO_LIBCRYPTO=1 NO_SDT=1 NO_JVMTI=1 NO_LIBZSTD=1
--make_minimal        += NO_LIBCAP=1 NO_SYSCALL_TABLE=1
-+make_minimal        += NO_LIBCAP=1 NO_SYSCALL_TABLE=1 NO_CAPSTONE=1
++	if (insn->detail && insn->detail->x86.op_count == 1) {
++		cs_x86_op *op = &insn->detail->x86.operands[0];
++
++		addr_location__init(&al);
++		if (op->type == X86_OP_IMM &&
++		    thread__find_symbol(thread, sample->cpumode, op->imm, &al)) {
++			printed += fprintf(fp, "%s ", insn[0].mnemonic);
++			printed += symbol__fprintf_symname_offs(al.sym, &al, fp);
++			addr_location__exit(&al);
++			return printed;
++		}
++		addr_location__exit(&al);
++	}
++
++	printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
++	return printed;
++}
++
++size_t sample__fprintf_insn_asm(struct perf_sample *sample, struct thread *thread,
++				struct machine *machine, FILE *fp)
++{
++	csh cs_handle;
++	cs_insn *insn;
++	size_t count;
++	size_t printed = 0;
++	int ret;
++
++	/* TODO: Try to initiate capstone only once but need a proper place. */
++	ret = capstone_init(machine, &cs_handle);
++	if (ret < 0) {
++		/* fallback */
++		return sample__fprintf_insn_raw(sample, fp);
++	}
++
++	count = cs_disasm(cs_handle, (uint8_t *)sample->insn, sample->insn_len,
++			  sample->ip, 1, &insn);
++	if (count > 0) {
++		if (machine__normalized_is(machine, "x86"))
++			printed += print_insn_x86(sample, thread, &insn[0], fp);
++		else
++			printed += fprintf(fp, "%s %s", insn[0].mnemonic, insn[0].op_str);
++		cs_free(insn, count);
++	} else {
++		printed += fprintf(fp, "illegal instruction");
++	}
++
++	cs_close(&cs_handle);
++	return printed;
++}
++#else
++size_t sample__fprintf_insn_asm(struct perf_sample *sample __maybe_unused,
++				struct thread *thread __maybe_unused,
++				struct machine *machine __maybe_unused,
++				FILE *fp __maybe_unused)
++{
++	return 0;
++}
++#endif
+diff --git a/tools/perf/util/print_insn.h b/tools/perf/util/print_insn.h
+new file mode 100644
+index 000000000000..465bdcfcc2fd
+--- /dev/null
++++ b/tools/perf/util/print_insn.h
+@@ -0,0 +1,16 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef PERF_PRINT_INSN_H
++#define PERF_PRINT_INSN_H
++
++#include <stddef.h>
++#include <stdio.h>
++
++struct perf_sample;
++struct thread;
++struct machine;
++
++size_t sample__fprintf_insn_asm(struct perf_sample *sample, struct thread *thread,
++				struct machine *machine, FILE *fp);
++size_t sample__fprintf_insn_raw(struct perf_sample *sample, FILE *fp);
++
++#endif /* PERF_PRINT_INSN_H */
+diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
+index 0df775b5c110..df344262eaee 100644
+--- a/tools/perf/util/thread.h
++++ b/tools/perf/util/thread.h
+@@ -13,7 +13,6 @@
+ #include <strlist.h>
+ #include <intlist.h>
+ #include "rwsem.h"
+-#include "event.h"
+ #include "callchain.h"
+ #include <internal/rc_check.h>
  
- # $(run) contains all available tests
- run := make_pure
-@@ -152,6 +153,7 @@ run += make_no_libelf
- run += make_no_libunwind
- run += make_no_libdw_dwarf_unwind
- run += make_no_backtrace
-+run += make_no_libcapstone
- run += make_no_libnuma
- run += make_no_libaudit
- run += make_no_libbionic
 -- 
 2.25.1
 
