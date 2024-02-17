@@ -1,102 +1,108 @@
-Return-Path: <linux-kernel+bounces-69980-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69981-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7E5A859137
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:55:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96EB1859139
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:55:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 557D81F21F3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:55:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C8BD1F22308
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723FC7D409;
-	Sat, 17 Feb 2024 16:55:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD3A77E0EC;
+	Sat, 17 Feb 2024 16:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ovp3k6H4"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MjRBOOk1"
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D614C7C6E9;
-	Sat, 17 Feb 2024 16:55:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE3FD7D40F;
+	Sat, 17 Feb 2024 16:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708188919; cv=none; b=bBaiQJIL6QLJ2qa5oeYw66ISTWiDWumDtbAFYdwRX6OhSwzHkB5l3EA2FYXT00LNzp7+qc3EuT/rc0F7uL93ieNVj6KBQ8uZOGMCnTrZx9q82kgjsm2KmSZNIrNHTTTQoBU3VHLqHqUDEnwDAdF6Z+MSHGYIUTjqe5ea8XRgySU=
+	t=1708188922; cv=none; b=XSM+PgpP4TNlzEInKXvy8vuZhuc5EzRd6Z4paB4xZGutUqxAmHR4+hqKbrSWapPXzyRR5TwucabzICqOFs8gIacnIahymai3eq4ZGPqWHZoNDctQUh9EcLlaFvesn007MiSxgAPftDq9MXhGBUo3YECW2JnwSBWP6QCH7WRvdPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708188919; c=relaxed/simple;
-	bh=9L2T4+ZtlySPqPq61kCkir5tdMgnFhFQm65A1odzNBc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ucv3dj4f+yqwrBpwKbRI/XPn6sBbtmUlE8hm8E87gbI/FFSu+L9EuwU7BQcFxJJpJDZqi5sNEJnXrHfR86vJIpgKO2UKKvgz2UWdpOaDvhglN93j1/RtuJ6kC9LXQFtHjToL2oQqaizLKf2+j+SFOFnPcl+UwHviaT7ZyrzIRjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ovp3k6H4; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-	Content-ID:Content-Description:In-Reply-To:References;
-	bh=90UgQsfpfMEcSbHyuDqe399P7Sh3mwMtRxPA2Xv0GXk=; b=Ovp3k6H4sMeZcN6JyPzh8Sr48Y
-	Z1inXKVevV0YOiRW9CyzvzqnUNsWFHaSG9krgd/0KteqWx/RIK7FR0e47IbjS7RezgJLkpFDeFK+l
-	RLELOfSE5tNxX/tZYqLl8UmubOlsXn2citQZTcaD5nTO7aEOw/845Fi7Vu0XIGN259yZW+bDaEUVw
-	Ea8dOKYWDykwVrwLK4CAN+CGfiYZUM+lzgA3RG1Ql1aSwyhAARl+FcQVISPke1bb5rlL01es8wREc
-	T/iRWxi15PW7Y4v8706ON0HZLIZMgaVH1+3GEz7N60UJytm1nRNK7b/TotwuNauYK/CuQ+weDQ42v
-	FKYpcu6Q==;
-Received: from [50.53.50.0] (helo=bombadil.infradead.org)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rbNy6-000000062ab-2BsN;
-	Sat, 17 Feb 2024 16:55:14 +0000
-From: Randy Dunlap <rdunlap@infradead.org>
-To: linux-kernel@vger.kernel.org
-Cc: Randy Dunlap <rdunlap@infradead.org>,
-	Bagas Sanjaya <bagasdotme@gmail.com>,
-	Robert Elliott <elliott@hpe.com>,
-	Christoph Biedl <bugzilla.kernel.bpeb@manchmal.in-ulm.de>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org
-Subject: [PATCH] crypto: fix CRYPTO_JITTERENTROPY help text
-Date: Sat, 17 Feb 2024 08:55:13 -0800
-Message-ID: <20240217165513.24061-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.43.1
+	s=arc-20240116; t=1708188922; c=relaxed/simple;
+	bh=8ebv9RjHbb+ATx+/pj6wfe0MacLYUX4hb804VnXVpeM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dEPeF3n6edPCQz5lALDq11MlgcoTaFa23ri6AeQ6PzTgKBl57mL/cVkM487uO2ovM/2XKgZ2YkvJXWEW+UK24va6kPZjkWND8D6A5o8ly91ZE7J+WQoYgBuwnCEpFNRnxy0as0cmzh7r0xKIUhGPijcOiJGFMB8HeSDBUxdI1U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MjRBOOk1; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e2f6c7e623so330162a34.1;
+        Sat, 17 Feb 2024 08:55:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708188920; x=1708793720; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6N7H1dJxAdgtz17OJV7h2M/b32+Y0VMenOKk4p0Y73M=;
+        b=MjRBOOk1SyjRJHuLMgabToRrfnSCyTLy1MpfS0nW5E12NVu+tbEYSF8mQ8MnPptGgq
+         kJagE7BHVpvfK2ZHVgDs23B9OzGIhhpyWTxadzF+lA3hYdKVw1BpQ1KD39+LDP6GU+nI
+         q48UAlu6wHXCXGZgcUZjYtv8o6tO2K2qRea8W7PaIddQPvTLC6JqVRqJmJ7d4KUEmqtb
+         SnvzjtHY0kwW+j60VXre+sssf1IIJwvCgkszdKMm8+6N4MFp6QubYeAP2aUKaaHc0R08
+         1BCSjayJUccSq1KDYuo//tlTTqxC/qOicyd0P07lg10qiOizPengQReDS99nipzafs7g
+         kHbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708188920; x=1708793720;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6N7H1dJxAdgtz17OJV7h2M/b32+Y0VMenOKk4p0Y73M=;
+        b=iNBdTjHe64v+sBh9iCTXvdRllX0PoR6d/u+Lu8XmC9f4zadeA4dNdy0BcvDvwlup6q
+         ynoOorRCW/+TYpKYqPgcG0LoPf9HeEBy/mJu0AEiZ0MHCt+OpdybRy47caluSmqqO3mi
+         EfG5F0GYRUZsQTMz08ULu9YHacTV42GMcI+W15lRMWJEn+wZXtVrsV/NgVdGFuU6EEpb
+         peMub4Eeu7mDQwy4SOqKFNBtdQxsdh3bedyW5J2T2oMWsUv6VhpwxcEKuGXbHJvtgeGT
+         c4AAXGOqTxJLZED7CHUcp8PaKzjtNDmxojCF+U5C99mLqA2y/1/AQX20+fIgMNb1cl6n
+         ii9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXNWWHm0UhA1ZbCBkLGvjj9wjCmu9jZcRVSR2sL2d+hxfC/O1eQ2/0qoEKzAbnk7fzsCqAf0ClNRyff44Ihf55SRK35FhUtnTGnhtMU2vBHSJ1ZDEDg9gxsCt/S6qFjQDA1TuUm
+X-Gm-Message-State: AOJu0YziBmLUpyNC3w89xCls7N/ZeovenI1BKRmUIALmdQUHi755K0tL
+	OTN7m/leOHqoasf5+8fCDzu4j9Rb4ZPX7yoXn6Oi2sIMeIijF+P/
+X-Google-Smtp-Source: AGHT+IGbFFkZ2PWjmMxaXxYBlH/e83lIN7wTMd/FjXj5Co/BgIFwbdfXGResrmYNGntMpaORY52b2w==
+X-Received: by 2002:a05:6359:4595:b0:178:686b:900e with SMTP id no21-20020a056359459500b00178686b900emr5562703rwb.3.1708188919682;
+        Sat, 17 Feb 2024 08:55:19 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2600:1700:2430:6f6f:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id i13-20020a25f20d000000b00dcc620f4139sm771059ybe.14.2024.02.17.08.55.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 08:55:19 -0800 (PST)
+Date: Sat, 17 Feb 2024 08:55:16 -0800
+From: Richard Cochran <richardcochran@gmail.com>
+To: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Cc: intel-wired-lan@lists.osuosl.org, sasha.neftin@intel.com,
+	kurt@linutronix.de, anthony.l.nguyen@intel.com,
+	jesse.brandeburg@intel.com, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jeff Kirsher <jeffrey.t.kirsher@intel.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [iwl-net v1 2/2] igb: Fix missing time sync events
+Message-ID: <ZdDk9AHE8svlNbbl@hoboy.vegasvil.org>
+References: <20240217010455.58258-1-vinicius.gomes@intel.com>
+ <20240217010455.58258-3-vinicius.gomes@intel.com>
+ <ZdDLI4o1Bll1xvH6@hoboy.vegasvil.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdDLI4o1Bll1xvH6@hoboy.vegasvil.org>
 
-Correct various small problems in the help text:
-a. change 2 spaces to ", "
-b. finish an incomplete sentence
-c. change non-working URL to working URL
+On Sat, Feb 17, 2024 at 07:05:07AM -0800, Richard Cochran wrote:
 
-Fixes: a9a98d49da52 ("crypto: Kconfig - simplify compression/RNG entries")
-Closes: https://bugzilla.kernel.org/show_bug.cgi?id=218458
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Bagas Sanjaya <bagasdotme@gmail.com>
-Cc: Robert Elliott <elliott@hpe.com>
-Cc: Christoph Biedl <bugzilla.kernel.bpeb@manchmal.in-ulm.de>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: linux-crypto@vger.kernel.org
----
- crypto/Kconfig |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+> Does setting ICR.Time_Sync[TXTS] also clear ICR.Time_Sync[RXTS] ?
+> 
+> That is what you seem to be saying.
 
-diff -- a/crypto/Kconfig b/crypto/Kconfig
---- a/crypto/Kconfig
-+++ b/crypto/Kconfig
-@@ -1269,10 +1269,11 @@ config CRYPTO_JITTERENTROPY
+Okay, so you really mean that if the _same_ bit becomes set between
+the read and the acknowledgment, then that event will be missed,
+right?
+
+In that case, thank you for fixing this more than nine year old bug!
+
+Acked-by: Richard Cochran <richardcochran@gmail.com>
+
  
- 	  A non-physical non-deterministic ("true") RNG (e.g., an entropy source
- 	  compliant with NIST SP800-90B) intended to provide a seed to a
--	  deterministic RNG (e.g.  per NIST SP800-90C).
-+	  deterministic RNG (e.g., per NIST SP800-90C).
- 	  This RNG does not perform any cryptographic whitening of the generated
-+	  random numbers.
- 
--	  See https://www.chronox.de/jent.html
-+	  See https://www.chronox.de/jent/
- 
- if CRYPTO_JITTERENTROPY
- if CRYPTO_FIPS && EXPERT
 
