@@ -1,140 +1,186 @@
-Return-Path: <linux-kernel+bounces-70115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A55859392
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:15:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDAE859395
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:19:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5711428375A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:15:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1D4C283857
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:19:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B0C98002D;
-	Sat, 17 Feb 2024 23:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C86568002D;
+	Sat, 17 Feb 2024 23:19:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Wa8sVmJB"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qyCPmg0m"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4FE36D1AC
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 23:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 277197F7D5
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 23:19:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708211716; cv=none; b=dhwlBEDI0eL/5a8eMKeM/zkM1nK2UMgvvRd0S/Z1cBU1ko/SJx3lSDpxA4SdAIPyflLScdxkSBlZGeTYZtZQVL3gtr9MV+eGwKCLgIclLbiD0/69t4+VZWU+DrcqpiSzsQm5wVRwWIXOXTSF+r/r5awii3YDFw8wlZq1NZhcn2Q=
+	t=1708211970; cv=none; b=WpKRTe28KPEhXq67N9a6aoPmaqa6MiHmGYvYrSPOBBudqvKFMKaRI3IGEtx47s18rO43GE0j6xiDA49X9oCGRc2eBcK1ZUCmMhrPBFcdvZ9ZgWA/q7nEsbW+Gydd2bAIOGdGYI4CJCP4N4xKEQGdo4bqqZjU2U86Gb4FzFu0qkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708211716; c=relaxed/simple;
-	bh=NLPW/g6W/p0zXhNLx5jc+mTvewtUjS2JPEu4Nb74JIw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SkxP5hwBy/zMsk52QNbS44PGyvNzaoKaCKquTfr1Oiq5eGUereUVfDxb8WPLjr8ADZpv0HkVmUYqF/1EPumeWlH9aT1p8xd8tawMgFrWIO3aJ0r5VVUmmdyZMqBuSL+yFVbTDUH2ds0FKQMuelc3h3dEObF2VyR09PIl1OhG1zE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Wa8sVmJB; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51147d0abd1so3528812e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:15:14 -0800 (PST)
+	s=arc-20240116; t=1708211970; c=relaxed/simple;
+	bh=ejFiyX5Y48GnsTRzZkDDmJYg7BZGDQ2NC6dM2wKl7xA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u0L1/w/V6mG7z/glft8to7S19IQ6XiOSeRXNECtu2rCcefuVH4wqVXCX/QvFtgQotv1isWol9v95PhkkdLIY/LWNjeh9xnjrX+s3oJGQKxmzWpcDIwAYjN7YaELM0naC/BoMETjqSVHQLv1WCEroc+xXhc/NYaoUliDtU9mMOa0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qyCPmg0m; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4125ea5d913so3508685e9.2
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:19:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708211713; x=1708816513; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lJvonYTzCl7xp2PkiG/jmRrw2+4vNhq8HjWyw9v0bD0=;
-        b=Wa8sVmJBjuajbwUqpHo2GZwev5oVjsR8AKkQmscnv1+kesBTEdLowLAjRX1393N22F
-         F+RYuzvoQef2xEce8FlNl90YCx6e5mPptox/nDSqjUOay31f6OMqACGJbXq7jN9nsqo4
-         xDaE5pgIKVVNUfifdOmDsgcK95UKTZuVHWTppR+ifbE+QlyEpFBSwB2bfRulm7NVaSsh
-         1MMnsZJlXQKYfO0vEQ8JIIYqqCghVVlYu7Plr1UC65uKex2HX2zEnWINoMvMixNQDE9j
-         n+g6s5D+ZweGZVX5lJme+7X4Wqjp213OdQG5xVSfOkXc6iA+T5bRoTxSIUAvYoIxvsyy
-         aSuQ==
+        d=linaro.org; s=google; t=1708211966; x=1708816766; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=y+8yVef0IxB64BgBgbXrUUDMOo31nuSoxBJ3jXfRWXc=;
+        b=qyCPmg0mEod9eXWUZspM0W5jpYQR0oWfSgr1T9sTu2LIdiMqxzirkkA9SuDuvcPB60
+         cIdwKANZDvNQK6yUTQ8y5SGcYdbQJEI5KwF35h7K4arhzxePViW7LS8yQGm4Gm/KWHLv
+         SQtZLIFSJvNZHH4qfdRy7qc32zm6Ms14rlf3OeZLCQ+bgklBlN296KZ9XNohzduCFE65
+         +gfi2vo23GN1tWxYOc5iqJ/fotRPzWQbjaXsDrZD/b88FhtBzg80+X4fX5eENzOv0U5S
+         z4FQ0uNodKmhsYu1XtA4/mV6CIirNg5p+ZgQaM3ThwaceaWaTbP2gp8PkpeaPFloGf+L
+         P6/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708211713; x=1708816513;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lJvonYTzCl7xp2PkiG/jmRrw2+4vNhq8HjWyw9v0bD0=;
-        b=Wt8Yu+jmd5LsSdJobIVajLWYTwoGhjv0aaUJjLInwuAbHbBbBnTqKVexkw+PioHQq0
-         gLrD9P8vjiXevqYFddi0XD+YrA0j71BzfNm8ixKB1lD/X+5As71xsK/flHAQLnkBsztd
-         n/jhsb7/WO/NvOOqAH+2xCt8GYrXVhdHeaz9ooh1/uT0Pe+kWuNCBfTfGBv2ZHSs3iDR
-         Fp2/TWhz4/igsenxwSe2y+xhF1HEFSfiPVKJYGfWOL9SKgAYISHjn1IA51RnGIxHTxOs
-         Sq7QyCWO0RyklDTTYZqaYRT+CPAFJV8BuGJB9MItg3iohVxvCWVc/Q+0TCkIrtRJ/0V1
-         G1Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCVkUu/RU6BNp6BArR46gNkXH/wpUoWduzfneOkZuk+0eRWxITEFACXahYwNfrkMFSJO1+qVqWnojuGUowmBawgkAaQ3inwXcfFJbt7N
-X-Gm-Message-State: AOJu0YwoqqyRO/v9ufVzyscrb0yiktZKhWOThJEZZHJsTjRq+DXg5syc
-	N5ytO0JFfSUUK55tHxZW6WZFoMbJjFCIdhsyPC7erfiL3W49/+tDxGbQvhUd0Z/Vv7IyDoLkibQ
-	+qUFCQdXzKEDqNYc/wIVbKjNdPWn0vWGUYMsM
-X-Google-Smtp-Source: AGHT+IHpwwwxmZeH8i63HKX9Y9eDBXBqmFtWnPfRe4unf/ap00AxwwGeRckJWtJzJckk4sKjPna8wKb0Sjv41t0PLBQ=
-X-Received: by 2002:a05:6512:104f:b0:512:b03c:426 with SMTP id
- c15-20020a056512104f00b00512b03c0426mr698lfb.30.1708211712560; Sat, 17 Feb
- 2024 15:15:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708211966; x=1708816766;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y+8yVef0IxB64BgBgbXrUUDMOo31nuSoxBJ3jXfRWXc=;
+        b=mcWgiSX72UqdjuV5QChdFkDXKeUUqS+TegARhdkGylDhOkeQWWnUQH/wa55teHV3cU
+         R+1b1ls1VBlogTDHO/42d9amYgDrsVottQ+0pci6fMPZZRzzDTE86kXPIpNXrgXpkw6u
+         bL8HoRMc+0KJt5hIxkJVqgvQwfCz9brF+bMjG8dAmkuC8nkfnvxUlMalkbphTchBQnrM
+         MsJ2I0DbVlh84CxC2fem7CGgdjiikGO/57AYhbdGjUdImd0NHevAj+7dtYowNvQwmuh4
+         ERNg/UQIbo/dm8PPw7hCBkRFx4MIckNqZRNJ/psiyq9Rx4GSjm8A4DT4ADmCvGkPfygG
+         yM5A==
+X-Forwarded-Encrypted: i=1; AJvYcCWcl/X8/KLtMob4s1nbiskHS49I7nlQv0gG0sefiZK+dpWKhWV2lajA5BaZV8y86Z5inmAWGqIk/MEJREBjVYI63AdByVOq7R4FPe38
+X-Gm-Message-State: AOJu0YwI2xi2gREn1+YH4F3WaJvtkP1Zd2U7AGYHe/McxZZb2ZU3b+wa
+	u3VXrtvZUOruNjikr+wBZLLD3uioCBabc2bdEC1K1sdw8u2Gd1EOjsEKyuiqr50=
+X-Google-Smtp-Source: AGHT+IFIgryvjSckfWJopkzQi2nT6qNNleKaF5g/1YrgsTnAmR6iQLoojiH8dVcMtnSFefOzTONvrw==
+X-Received: by 2002:a05:600c:4706:b0:410:27e7:4c5 with SMTP id v6-20020a05600c470600b0041027e704c5mr6983198wmo.29.1708211966397;
+        Sat, 17 Feb 2024 15:19:26 -0800 (PST)
+Received: from [192.168.232.204] (31-187-2-26.dynamic.upc.ie. [31.187.2.26])
+        by smtp.gmail.com with ESMTPSA id fs14-20020a05600c3f8e00b00411a595d56bsm6402650wmb.14.2024.02.17.15.19.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 15:19:25 -0800 (PST)
+Message-ID: <6bf11ccd-ff08-369b-913f-277c189afb76@linaro.org>
+Date: Sat, 17 Feb 2024 23:19:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217053642.79558-1-21cnbao@gmail.com> <ZdB0-fnlSyGgH2cQ@google.com>
- <CAGsJ_4xo9Z4zxgDUZAzbCZ83Y1QYXZxRKbTNU_4xDP0+eP0V=w@mail.gmail.com>
-In-Reply-To: <CAGsJ_4xo9Z4zxgDUZAzbCZ83Y1QYXZxRKbTNU_4xDP0+eP0V=w@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Sat, 17 Feb 2024 15:14:34 -0800
-Message-ID: <CAJD7tkbHrMzi0z0SzQJj32cDrx4tyH5=_o41GM6JGf9DjahkYg@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: zswap: increase reject_compress_poor but not
- reject_compress_fail if compression returns ENOSPC
-To: Barry Song <21cnbao@gmail.com>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, linux-mm@kvack.org, 
-	nphamcs@gmail.com, zhouchengming@bytedance.com, senozhatsky@chromium.org, 
-	linux-kernel@vger.kernel.org, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm6150: define USB-C related blocks
+To: Danila Tikhonov <danila@jiaxyga.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ gregkh@linuxfoundation.org, quic_wcheng@quicinc.com
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240217163201.32989-1-danila@jiaxyga.com>
+ <20240217163201.32989-4-danila@jiaxyga.com>
+Content-Language: en-US
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <20240217163201.32989-4-danila@jiaxyga.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, Feb 17, 2024 at 2:19=E2=80=AFAM Barry Song <21cnbao@gmail.com> wrot=
-e:
->
-> On Sat, Feb 17, 2024 at 4:57=E2=80=AFPM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > On Sat, Feb 17, 2024 at 06:36:42PM +1300, Barry Song wrote:
-> > > From: Barry Song <v-songbaohua@oppo.com>
-> > >
-> > > We used to rely on the returned -ENOSPC of zpool_malloc() to increase
-> > > reject_compress_poor. But the code wouldn't get to there after commit
-> > > 744e1885922a ("crypto: scomp - fix req->dst buffer overflow") as the
-> > > new code will goto out immediately after the special compression case
-> > > happens. So there might be no longer a chance to execute zpool_malloc
-> > > now. We are incorrectly increasing zswap_reject_compress_fail instead=
-.
-> > > Thus, we need to fix the counters handling right after compressions
-> > > return ENOSPC. This patch also centralizes the counters handling for
-> > > all of compress_poor, compress_fail and alloc_fail.
-> > >
-> > > Fixes: 744e1885922a ("crypto: scomp - fix req->dst buffer overflow")
-> > > Cc: Chengming Zhou <zhouchengming@bytedance.com>
-> > > Cc: Nhat Pham <nphamcs@gmail.com>
-> > > Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-> > > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > > ---
-> > >  -v2:
-> > >  * correct the fixes target according to Yosry, Chengming, Nhat's
-> > >    comments;
-> > >  * centralize the counters handling according to Yosry's comment
-> >
-> > Yet Yosry is not CC'd :P
->
-> terribly sorry. I thought you were in my git send-email list ... but you
-> were not...
+On 17/02/2024 16:32, Danila Tikhonov wrote:
+> Define VBUS regulator and the Type-C handling block as present on the
+> Quacomm PM6150 PMIC.
+> 
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 
-No problem, I caught it on linux-mm anyway :)
+> +		pm6150_typec: typec@1500 {
+> +			compatible = "qcom,pm6150-typec,
+> +				      qcom,pm8150b-typec";
+> +			reg = <0x1500>, <0x1700>;
+> +			interrupts = <0x0 0x15 0x00 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x15 0x01 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x15 0x02 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x15 0x03 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x15 0x04 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x15 0x05 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x15 0x06 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x15 0x07 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x00 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x01 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x02 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x03 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x04 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x05 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x06 IRQ_TYPE_EDGE_RISING>,
+> +				     <0x0 0x17 0x07 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "or-rid-detect-change",
+> +					  "vpd-detect",
+> +					  "cc-state-change",
+> +					  "vconn-oc",
+> +					  "vbus-change",
+> +					  "attach-detach",
+> +					  "legacy-cable-detect",
+> +					  "try-snk-src-detect",
+> +					  "sig-tx",
+> +					  "sig-rx",
+> +					  "msg-tx",
+> +					  "msg-rx",
+> +					  "msg-tx-failed",
+> +					  "msg-tx-discarded",
+> +					  "msg-rx-discarded",
+> +					  "fr-swap";
+> +			status = "disabled";
+> +		};
 
->
-> >
-> > The patch LGTM, but it won't apply on top of mm-unstable given the
-> > amount of zswap refactoring there. I would rebase on top of mm-unstable
-> > if I were you (and if you did, add mm-unstable in the subject prefix).
->
-> This patch has a "fixes" tag, so I assume it should be also in 6.8?
+Should all of these be rising ? Looks incorrect to me.
 
-Hmm that's up to Andrew. This fixes debug counters so it's not
-critical. On the other hand, it will conflict with the cleanup series
-in his tree and he'll have to rebase and fix the conflicts (which
-aren't a lot, but could still be annoying). Personally I think this
-can wait till v6.9, but if Andrew doesn't have a problem taking it for
-v6.8 that's fine too.
+Please review: arch/arm64/boot/dts/qcom/pm8150b.dtsi
+
+pm8150b_typec: typec@1500 {
+         compatible = "qcom,pm8150b-typec";
+         status = "disabled";
+         reg = <0x1500>,
+               <0x1700>;
+
+	interrupts = <0x2 0x15 0x00 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x15 0x01 IRQ_TYPE_EDGE_BOTH>,
+		     <0x2 0x15 0x02 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x15 0x03 IRQ_TYPE_EDGE_BOTH>,
+		     <0x2 0x15 0x04 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x15 0x05 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x15 0x06 IRQ_TYPE_EDGE_BOTH>,
+		     <0x2 0x15 0x07 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x00 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x01 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x02 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x03 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x04 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x05 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x06 IRQ_TYPE_EDGE_RISING>,
+		     <0x2 0x17 0x07 IRQ_TYPE_EDGE_RISING>;
+
+		interrupt-names = "or-rid-detect-change",
+				  "vpd-detect",
+				  "cc-state-change",
+				  "vconn-oc",
+				  "vbus-change",
+				  "attach-detach",
+				  "legacy-cable-detect",
+				  "try-snk-src-detect",
+				  "sig-tx",
+				  "sig-rx",
+				  "msg-tx",
+				  "msg-rx",
+				  "msg-tx-failed",
+				  "msg-tx-discarded",
+				  "msg-rx-discarded",
+				  "fr-swap";
+}
+
+---
+bod
 
