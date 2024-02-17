@@ -1,50 +1,49 @@
-Return-Path: <linux-kernel+bounces-69931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205D485906C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:14:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8524285906D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:14:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9CF1CB211DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:14:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FD181F221E0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:14:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A757C6C3;
-	Sat, 17 Feb 2024 15:14:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CE67C0BD;
+	Sat, 17 Feb 2024 15:14:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="nGuvFxj3"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="eHD9vhL2"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1887C0BB
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:14:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE55B7C0A7
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708182861; cv=none; b=H+ryhkp4W3pz4DT0Ck69L1Gpz5j5e/WRFr+RIw2is2mjnaX1/wZNisyMlscArGn070YvU+Qg8Bl5nAlGKc+a3FVChNfYIW3nrd/Oxk56TBgSwt8Utr7fNBYohT3STs5a9F81NZxgBN6M3/jV0ke+0CrC06AjbzCgQbdUEld1gxI=
+	t=1708182880; cv=none; b=CqdkelSVjvUBl4lhyq+p56g24AyjLAjQGwoAXFDaXkp3gYIb18kuNAJUKBlumVVaMjuImnAT2G8X4vB1vGi4m8cH7uLZclnQf9rD/eoqYAITYPuWkcUIIGD9x1MqJZzIQrMeKYTMeIdGIFsRczKNznlo2t+7l73VwniM36lt+3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708182861; c=relaxed/simple;
-	bh=fGzK/EtpRxV8Keho3Vn2ZVp4gCcxZ3TdoV5kAVx1bUU=;
+	s=arc-20240116; t=1708182880; c=relaxed/simple;
+	bh=XrwzlzkwkeqLkklx5L24R2ZN1JisgI1/EvrjQXWqmnQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=gtoNi2kAdolcYoU5uZqrkeHgE871+RcpxkTIvwPSPCISk6ZBa/aCo7h6A6SDBram0jGsWbzyXARM2zqYRcb++6V5l6mZprsWj9ea0dBGeWdRQ868ztWyV4B5oZYfEMeG2rH2jYqdCUMZ5zu2tgCtsY1ZMtcKdUcbrDYgEpsyYvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=nGuvFxj3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19270C433C7;
-	Sat, 17 Feb 2024 15:14:19 +0000 (UTC)
+	 Content-Disposition; b=N7uaMikgbVbJ/r/U34GsGcNpyMsCXhCtaElu6JqbJhQfNRksouClWaYiyT9Fx7S0jU0UW18lCsEHP8XjM4UBIhSmJomE9HcQM7ByMsgJTP8lp7V+5TzzL6AuurhCAA0c/wu8XRx1JsHV3zRRrRblACVqxWxTflBI1bMj2BY3Vto=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=eHD9vhL2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E02AEC433C7;
+	Sat, 17 Feb 2024 15:14:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708182860;
-	bh=fGzK/EtpRxV8Keho3Vn2ZVp4gCcxZ3TdoV5kAVx1bUU=;
+	s=korg; t=1708182880;
+	bh=XrwzlzkwkeqLkklx5L24R2ZN1JisgI1/EvrjQXWqmnQ=;
 	h=Date:From:To:Cc:Subject:From;
-	b=nGuvFxj3Gew/C5CY0x/uDUZ/874de9QLFR3YRescGr1EWCJacdqSvLp4rTxcWXrfl
-	 R8FLeAId6LcYyLz3IcBn5teD+TxBbG7tqzCxAArZK+jueNxA/DkicB1nGMVbZrLHcB
-	 8eVyLafqCa7h7dyButkHvMzTTvkUeAcH0Zt2MCdk=
-Date: Sat, 17 Feb 2024 16:14:17 +0100
+	b=eHD9vhL2VurKeQlzj9TIEAYanvwvc3cXU2R95RydI4bB/Ll3fLrwiCCJHXYmbg902
+	 m/SanCFrQ+QBD3NW+60DhV2WfpGBSAvEjCYG6v3EmAaRmZs4wsIj4lCGwh5/bP+VHB
+	 3WQqdoq8QpDR6mrEf7BA6TM1l3uQW/eocy11c2Jw=
+Date: Sat, 17 Feb 2024 16:14:37 +0100
 From: Greg KH <gregkh@linuxfoundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
-	Saravana Kannan <saravanak@google.com>
-Subject: [GIT PULL] Driver core fixes for 6.8-rc5
-Message-ID: <ZdDNSRgtgUoosT7Q@kroah.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 6.8-rc5
+Message-ID: <ZdDNXWXBNNY5lc4B@kroah.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,60 +53,114 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
+The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
 
-  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
+  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-6.8-rc5
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-6.8-rc5
 
-for you to fetch changes up to 5928d411557ec5d53832cdd39fc443704a3e5b77:
+for you to fetch changes up to e20f378d993b1034eebe3ae78e67f3ed10e75356:
 
-  Documentation: Document the Linux Kernel CVE process (2024-02-17 14:46:39 +0100)
+  nvmem: include bit index in cell sysfs file name (2024-02-14 16:28:16 +0100)
 
 ----------------------------------------------------------------
-Driver core fixes for 6.8-rc5
+Char/Misc changes for 6.8-rc5
 
-Here are some driver core fixes, a kobject fix, and a documentation
-update for 6.8-rc5.  In detail these changes are:
-  - devlink fixes for reported issues with 6.8-rc1
-  - topology scheduling regression fix that has been reported by many
-  - kobject loosening of checks change in -rc1 is now reverted as some
-    codepaths seemed to need the checks
-  - documentation update for the CVE process.  Has been reviewed by
-    many, the last minute change to the document was to bring the .rst
-    format back into the the new style rules, the contents did not
-    change.
+Here is a small set of char/misc and IIO driver fixes for 6.8-rc5
 
-All of these, except for the documentation update, have been in
-linux-next for over a week.  The documentation update has been reviewed
-for weeks by a group of developers, and in public for a week and the
-wording has stabilized for now.  If future changes are needed, we can do
-so before 6.8-final is out (or anytime after that.)
+Included in here are:
+  - lots of iio driver fixes for reported issues
+  - nvmem device naming fixup for reported problem
+  - interconnect driver fixes for reported issues
+
+All of these have been in linux-next for a while with no reported the
+issues (the nvmem patch was included in a different branch in linux-next
+before sent to me for inclusion here.)
 
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ----------------------------------------------------------------
+Arnd Bergmann (1):
+      nvmem: include bit index in cell sysfs file name
+
+Cosmin Tanislav (2):
+      iio: adc: ad4130: zero-initialize clock init data
+      iio: adc: ad4130: only set GPIO_CTRL if pin is unused
+
+Dan Carpenter (1):
+      iio: adc: ad7091r8: Fix error code in ad7091r8_gpio_setup()
+
+David Schiller (1):
+      staging: iio: ad5933: fix type mismatch regression
+
+Dimitri Fedrau (1):
+      iio: humidity: hdc3020: fix temperature offset
+
+Dinghao Liu (1):
+      iio: core: fix memleak in iio_device_register_sysfs
+
 Greg Kroah-Hartman (2):
-      Revert "kobject: Remove redundant checks for whether ktype is NULL"
-      Documentation: Document the Linux Kernel CVE process
+      Merge tag 'icc-6.8-rc4' of git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc into char-misc-linus
+      Merge tag 'iio-fixes-for-6.8a' of http://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into char-misc-linus
 
-Saravana Kannan (3):
-      driver core: Fix device_link_flag_is_sync_state_only()
-      driver core: fw_devlink: Improve detection of overlapping cycles
-      driver core: fw_devlink: Improve logs for cycle detection
+Javier Carrasco (1):
+      iio: move LIGHT_UVA and LIGHT_UVB to the end of iio_modifier
 
-Vincent Guittot (1):
-      topology: Set capacity_freq_ref in all cases
+Jonathan Cameron (1):
+      iio: humidity: hdc3020: Add Makefile, Kconfig and MAINTAINERS entry
 
- Documentation/process/cve.rst           | 121 ++++++++++++++++++++++++++++++++
- Documentation/process/index.rst         |   1 +
- Documentation/process/security-bugs.rst |   5 +-
- MAINTAINERS                             |   5 ++
- drivers/base/arch_topology.c            |  13 ++--
- drivers/base/core.c                     |  26 +++++--
- lib/kobject.c                           |  24 ++++---
- 7 files changed, 169 insertions(+), 26 deletions(-)
- create mode 100644 Documentation/process/cve.rst
+Konrad Dybcio (2):
+      interconnect: qcom: sc8180x: Mark CO0 BCM keepalive
+      interconnect: qcom: sm8550: Enable sync_state
+
+Mario Limonciello (1):
+      iio: accel: bma400: Fix a compilation problem
+
+Mike Tipton (2):
+      interconnect: qcom: sm8650: Use correct ACV enable_mask
+      interconnect: qcom: x1e80100: Add missing ACV enable_mask
+
+Nuno Sa (3):
+      iio: imu: adis: ensure proper DMA alignment
+      iio: adc: ad_sigma_delta: ensure proper DMA alignment
+      iio: commom: st_sensors: ensure proper DMA alignment
+
+Randy Dunlap (1):
+      iio: imu: bno055: serdev requires REGMAP
+
+Sam Protsenko (1):
+      iio: pressure: bmp280: Add missing bmp085 to SPI id table
+
+Srinivas Pandruvada (1):
+      iio: hid-sensor-als: Return 0 for HID_USAGE_SENSOR_TIME_TIMESTAMP
+
+zhili.liu (1):
+      iio: magnetometer: rm3100: add boundary check for the value read from RM3100_REG_TMRC
+
+ Documentation/ABI/testing/sysfs-nvmem-cells     | 16 ++++++++--------
+ MAINTAINERS                                     |  8 ++++++++
+ drivers/iio/accel/Kconfig                       |  2 ++
+ drivers/iio/adc/ad4130.c                        | 12 ++++++++----
+ drivers/iio/adc/ad7091r8.c                      |  2 +-
+ drivers/iio/humidity/Kconfig                    | 12 ++++++++++++
+ drivers/iio/humidity/Makefile                   |  1 +
+ drivers/iio/humidity/hdc3020.c                  |  2 +-
+ drivers/iio/imu/bno055/Kconfig                  |  1 +
+ drivers/iio/industrialio-core.c                 |  5 ++++-
+ drivers/iio/light/hid-sensor-als.c              |  1 +
+ drivers/iio/magnetometer/rm3100-core.c          | 10 ++++++++--
+ drivers/iio/pressure/bmp280-spi.c               |  1 +
+ drivers/interconnect/qcom/sc8180x.c             |  1 +
+ drivers/interconnect/qcom/sm8550.c              |  1 +
+ drivers/interconnect/qcom/sm8650.c              |  2 +-
+ drivers/interconnect/qcom/x1e80100.c            |  1 +
+ drivers/nvmem/core.c                            |  5 +++--
+ drivers/staging/iio/impedance-analyzer/ad5933.c |  2 +-
+ include/linux/iio/adc/ad_sigma_delta.h          |  4 +++-
+ include/linux/iio/common/st_sensors.h           |  4 ++--
+ include/linux/iio/imu/adis.h                    |  3 ++-
+ include/uapi/linux/iio/types.h                  |  4 ++--
+ 23 files changed, 73 insertions(+), 27 deletions(-)
 
