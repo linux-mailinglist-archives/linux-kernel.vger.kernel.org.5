@@ -1,164 +1,189 @@
-Return-Path: <linux-kernel+bounces-69665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28507858D07
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 04:03:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB98F858D08
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 04:04:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B9C81C21464
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 03:03:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3D2E1C21325
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 03:04:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9A31BC5C;
-	Sat, 17 Feb 2024 03:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="McLXvosS"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F7918E25
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 03:03:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D00F51BDC4;
+	Sat, 17 Feb 2024 03:04:43 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB4E14F70;
+	Sat, 17 Feb 2024 03:04:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708139002; cv=none; b=LseCm2wESxbTfFe65AwCoeSJIZBgL7mEP2NorX4ntp+T3oKV6gMGrcfKS9GPHYRtrjchOhN2PN3U0syoQjNLvWYboWGysaaA3YmlB7nFmtqvGfGKnJ5voejHoB9ij/q5lj/i/8sadVUYTUQfV6HeRD3IMOm62/qWRC2jCfNsVIE=
+	t=1708139083; cv=none; b=WSH0E3cfh3n36MKGGFkzko1C0UbhlWi5MZP3LfNHZI2/ZbuxmElBWkJ2VE3lpYtX095KwgnjH6YEx5XHEteNSCiNQLyNldyZbxW3pDTmnkf0x9LBb8mHgMECkInPGivzCvQTpixz/PKhbI99bevleY/kq4sZeZb7lES1F2R66lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708139002; c=relaxed/simple;
-	bh=xpvnUQORiMZ/oAeyo85a9kbOqGl2fDmjOk2texpVn8I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X7fU6IuCNz6mbKDIbCuQuvi99HKHCjDuuXWDZzKDVlBXuWvTkvQGF2ujNNFVglIIdDs5gMLsKqltUfUskrERSamn/PBZgE6A4rIKmJWfWQg4ZAZCtp7K3eZj0qWL1XxWRz6Nf+LuANJpXKWUjPdlWpwAZKq3KJRvUDfk6A2vGzc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=McLXvosS; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5c229dabbb6so1551159a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 19:03:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708139000; x=1708743800; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9E8QSOafC61clD8Eej3Har3OU/+oWCjszElG8x74Hj8=;
-        b=McLXvosSYm2MWVUEK/eacWgTkwXq1xzXKmxqORZBZPBuc3Ea19jdw3dDdgY4rnRJc+
-         Lg8YS/ydevC1hc4f3uEOa4b87WlgZw4yJO/MSqSdFhnjwhspJEgP/FkxIIXw+iicBmkf
-         QKnB14duiBoR5bPq8YbixNjN9g6iGJXuq0h1I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708139000; x=1708743800;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9E8QSOafC61clD8Eej3Har3OU/+oWCjszElG8x74Hj8=;
-        b=cAnu4zX6GF3CB142xqUz6oRs2Cu31LwcbvfsJWXJQOCvdR806aIO5kak/IoB7d1TRT
-         n2BWfUcvBD7ndrzXtx/Af5lWV8OPLZL0+kiqJEYjkaWoDzF6eHyNFDOpMEvtkc+ENLgV
-         j77EZHOlFGvlm+Gs/mbefCc32EkkI7Cwtnst8tO35ME5vayTZY4IXdZhT8eDV6c8O5fg
-         NGrs7VXOAM9z8BN2rK0s+cjXuDaiayFCncGo9TnpYZOcVfFy1baBz46fSAe91hii4GDV
-         KybLybfu9WjjK9otvc1B4lcoUcqw3v6ANvcmLy10A5ZifZptGgDnST3oDNFZVDMoOyHd
-         zoGg==
-X-Forwarded-Encrypted: i=1; AJvYcCUkba/B9yS/Mtq5FFUqOjMWwLmtloL7QDBYddgIz8RbHgQR4ubynjiL05YCbeey2PHhthwnCxum1QLXuPtUxC8jdHlYMIhJvygBf1T1
-X-Gm-Message-State: AOJu0YxbEZKwt4iApAk7qeZc9BVC1lJeN4/QBKAnavQAvYt9gdKA7k0J
-	tGEyTodHXeLYiiZblfhV229ir/wMeIn/ruPpdrLzKwRwFcPGHF0rfjPNg64DTw==
-X-Google-Smtp-Source: AGHT+IGk3vr0O8poIMmGJlhPEiEvPKSSXAAztZELBQ+98gW6sIlAiN+nPC+62bRu84NsZRY0YVzpBw==
-X-Received: by 2002:a17:902:f54a:b0:1db:55cc:d222 with SMTP id h10-20020a170902f54a00b001db55ccd222mr9000388plf.4.1708139000004;
-        Fri, 16 Feb 2024 19:03:20 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id kq13-20020a170903284d00b001db5c8202a4sm525497plb.59.2024.02.16.19.03.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 19:03:19 -0800 (PST)
-Date: Fri, 16 Feb 2024 19:03:18 -0800
-From: Kees Cook <keescook@chromium.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] bpf: Replace bpf_lpm_trie_key 0-length array with
- flexible array
-Message-ID: <202402161902.FCFFEC322@keescook>
-References: <20240216235536.it.234-kees@kernel.org>
- <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
+	s=arc-20240116; t=1708139083; c=relaxed/simple;
+	bh=0IxgJN7KNQuoucanQanncHLPgZXjr8o5pny+hYclB+E=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=owB+O689KnRTkzNcXIHho42hYNt3aYFsPQ3y8QcpjjeWxcnaTl4ODTFNsTSzPlkzSXx9mMkE3cToqeKFjuiJuyoCiSQ8rXllRSWfqyfh1cDxGmmsBr+xXDfbDCS0Yc9TIBReV+Mharw2sNcjF6Duc+nk/zqm3V/C9w7LvS6chtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8BxHOvmIdBlK_ENAA--.27430S3;
+	Sat, 17 Feb 2024 11:03:02 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxXs3iIdBl0do4AA--.10286S3;
+	Sat, 17 Feb 2024 11:03:01 +0800 (CST)
+Subject: Re: [PATCH for-6.8 v3 1/3] LoongArch: KVM: Fix input validation of
+ _kvm_get_cpucfg and kvm_check_cpucfg
+To: WANG Xuerui <kernel@xen0n.name>, Paolo Bonzini <pbonzini@redhat.com>,
+ Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, kvm@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+ WANG Xuerui <git@xen0n.name>
+References: <20240216085822.3032984-1-kernel@xen0n.name>
+ <20240216085822.3032984-2-kernel@xen0n.name>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <412ea29b-7a53-1f91-1cdb-5a256e74826b@loongson.cn>
+Date: Sat, 17 Feb 2024 11:03:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
+In-Reply-To: <20240216085822.3032984-2-kernel@xen0n.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8BxXs3iIdBl0do4AA--.10286S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxXr15Ary3uw4DGFWDWrWrXrc_yoW5Cw4rpF
+	W3XF43WrWUKr4xA3s3tw1kGr45Zr4DKrsrXF9Yka4kZF47Ar4rJr4rKFZavry3C3s3Jr4I
+	qF4UJa1S9an0yacCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AK
+	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzV
+	AYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
+	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+	wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+	4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUU
+	UUU==
 
-On Fri, Feb 16, 2024 at 06:27:08PM -0600, Gustavo A. R. Silva wrote:
-> 
-> 
-> On 2/16/24 17:55, Kees Cook wrote:
-> > Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-> > flexible array. Found with GCC 13:
-> > 
-> > ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
-> >    207 |                                        *(__be16 *)&key->data[i]);
-> >        |                                                   ^~~~~~~~~~~~~
-> > ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
-> >    102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-> >        |                                                      ^
-> > ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
-> >     97 | #define be16_to_cpu __be16_to_cpu
-> >        |                     ^~~~~~~~~~~~~
-> > ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
-> >    206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-> > ^
-> >        |                            ^~~~~~~~~~~
-> > In file included from ../include/linux/bpf.h:7:
-> > ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
-> >     82 |         __u8    data[0];        /* Arbitrary size */
-> >        |                 ^~~~
-> > 
-> > And found at run-time under CONFIG_FORTIFY_SOURCE:
-> > 
-> >    UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
-> >    index 0 is out of range for type '__u8 [*]'
-> > 
-> > This includes fixing the selftest which was incorrectly using a
-> > variable length struct as a header, identified earlier[1]. Avoid this
-> > by just explicitly including the prefixlen member instead of struct
-> > bpf_lpm_trie_key.
-> > 
-> > Note that it is not possible to simply remove the "data" member, as it
-> > is referenced by userspace
-> > 
-> > cilium:
-> >          struct egress_gw_policy_key in_key = {
-> >                  .lpm_key = { 32 + 24, {} },
-> >                  .saddr   = CLIENT_IP,
-> >                  .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
-> >          };
-> > 
-> > systemd:
-> > 	ipv6_map_fd = bpf_map_new(
-> > 			BPF_MAP_TYPE_LPM_TRIE,
-> > 			offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
-> > 			sizeof(uint64_t),
-> > 			...
-> > 
-> > The only risk to UAPI would be if sizeof() were used directly on the
-> > data member, which it does not seem to be. It is only used as a static
-> > initializer destination and to find its location via offsetof().
-> > 
-> > Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
-> > Reported-by: Mark Rutland <mark.rutland@arm.com>
-> > Closes: https://paste.debian.net/hidden/ca500597/
-> 
-> mmh... this URL expires: 2024-05-15
+Hi Xuerui,
 
-Yup, but that's why I included the run-time splat above too. :)
+Good catch, and thank for your patch.
 
--- 
-Kees Cook
+On 2024/2/16 下午4:58, WANG Xuerui wrote:
+> From: WANG Xuerui <git@xen0n.name>
+> 
+> The range check for the CPUCFG ID is wrong (should have been a ||
+> instead of &&); it is conceptually simpler to just express the check
+> as another case of the switch statement on the ID. As it turns out to be
+> the case, the userland (currently only the QEMU/KVM target code) expects
+> to set CPUCFG IDs 0 to 20 inclusive, but only CPUCFG2 values are being
+> validated.
+> 
+> Furthermore, the juggling of the temp return value is unnecessary,
+> because it is semantically equivalent and more readable to just
+> return at every switch case's end. This is done too to avoid potential
+> bugs in the future related to the unwanted complexity.
+> 
+> Also, the return value of _kvm_get_cpucfg is meant to be checked, but
+> this was not done, so bad CPUCFG IDs wrongly fall back to the default
+> case and 0 is incorrectly returned; check the return value to fix the
+> UAPI behavior.
+> 
+> While at it, also remove the redundant range check in kvm_check_cpucfg,
+> because out-of-range CPUCFG IDs are already rejected by the -EINVAL
+> as returned by _kvm_get_cpucfg.
+> 
+> Fixes: db1ecca22edf ("LoongArch: KVM: Add LSX (128bit SIMD) support")
+> Signed-off-by: WANG Xuerui <git@xen0n.name>
+> ---
+>   arch/loongarch/kvm/vcpu.c | 33 +++++++++++++++------------------
+>   1 file changed, 15 insertions(+), 18 deletions(-)
+> 
+> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+> index 27701991886d..56da0881fc94 100644
+> --- a/arch/loongarch/kvm/vcpu.c
+> +++ b/arch/loongarch/kvm/vcpu.c
+> @@ -300,11 +300,6 @@ static int _kvm_setcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 val)
+>   
+>   static int _kvm_get_cpucfg(int id, u64 *v)
+>   {
+> -	int ret = 0;
+> -
+> -	if (id < 0 && id >= KVM_MAX_CPUCFG_REGS)
+> -		return -EINVAL;
+> -
+yes, it had better be removed since the same thing is done in function 
+kvm_check_cpucfg().
+
+>   	switch (id) {
+>   	case 2:
+>   		/* Return CPUCFG2 features which have been supported by KVM */
+> @@ -324,31 +319,33 @@ static int _kvm_get_cpucfg(int id, u64 *v)
+>   		if (cpu_has_lasx)
+>   			*v |= CPUCFG2_LASX;
+>   
+> -		break;
+> +		return 0;
+> +	case 0 ... 1:
+> +	case 3 ... KVM_MAX_CPUCFG_REGS - 1:
+> +		/* no restrictions on other CPUCFG IDs' values */
+> +		*v = U64_MAX;
+> +		return 0;
+how about something like this?
+	default:
+		/* no restrictions on other CPUCFG IDs' values */
+		*v = U64_MAX;
+		return 0;
+
+Regards
+Bibo Mao
+>   	default:
+> -		ret = -EINVAL;
+> -		break;
+> +		return -EINVAL;
+>   	}
+> -	return ret;
+>   }
+>   
+>   static int kvm_check_cpucfg(int id, u64 val)
+>   {
+> -	u64 mask;
+> -	int ret = 0;
+> -
+> -	if (id < 0 && id >= KVM_MAX_CPUCFG_REGS)
+> -		return -EINVAL;
+> +	u64 mask = 0;
+> +	int ret;
+>   
+> -	if (_kvm_get_cpucfg(id, &mask))
+> +	ret = _kvm_get_cpucfg(id, &mask);
+> +	if (ret)
+>   		return ret;
+>   
+> +	if (val & ~mask)
+> +		/* Unsupported features should not be set */
+> +		return -EINVAL;
+> +
+>   	switch (id) {
+>   	case 2:
+>   		/* CPUCFG2 features checking */
+> -		if (val & ~mask)
+> -			/* The unsupported features should not be set */
+> -			ret = -EINVAL;
+>   		else if (!(val & CPUCFG2_LLFTP))
+>   			/* The LLFTP must be set, as guest must has a constant timer */
+>   			ret = -EINVAL;
+> 
+
 
