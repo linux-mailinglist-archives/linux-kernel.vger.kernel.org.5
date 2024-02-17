@@ -1,110 +1,101 @@
-Return-Path: <linux-kernel+bounces-69950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4D808590B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:54:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7BE78590B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:56:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 305ACB21AC7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:54:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03DEB1C20BC3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58BD7CF12;
-	Sat, 17 Feb 2024 15:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946F67CF00;
+	Sat, 17 Feb 2024 15:56:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NDSOL2VX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ac74+6eX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47E77C6D2;
-	Sat, 17 Feb 2024 15:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4B7A7CF08;
+	Sat, 17 Feb 2024 15:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708185279; cv=none; b=mZVSIwpMcChpHkrJ3vuFwF5I4IL7myz6yvjVwHPZekYiUUWjkUCzvKxTeUCG5hK+52rENM1CVo2j8vRsZN4/qYyUuz5w0HueqiRr0Z9g/4h+79XijC++JISGLbMmwGShXwjpgVcScy11n1bnDFmMUXjVF8mhmG5BwRO1FWZS57s=
+	t=1708185387; cv=none; b=W9BYdanY7QeEZnC3mFEk91kVlm1zOlq//sds/yImYSZp+TXpt+WgNG2CipX9mYdpA3GE/BFWjaxfq8JiZDw7yTeXwaUdo4QX8T15HefUi+K6pmMJ+PWx362jLcBvRqPWF9QKz04/xCjmemzcppewQ5mzX2orkMTSY512teFHpL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708185279; c=relaxed/simple;
-	bh=AI0oIAcgHf1kU8VmTSbDLh+67tm7qZdcxn90MyeuyUQ=;
+	s=arc-20240116; t=1708185387; c=relaxed/simple;
+	bh=J/W77O68aesAwbF/+MNHZ67Vbe47hRGcJRILMJWoA5s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B8KDIGDrhL8nf/zx+VQTSUuh7N2GuvHnuEuPY66Jr/X57iYPNR7FywAoNY6XruKYx93gb1QYOHxvjdD3m7bss3cnu8eiuJkeEhGI5sVEGUheCJL4qR0YDLnMBhLHIs7AG3npzzdgu25+1BFnZ50tVdWlKLEdjE+BweaW31k3eZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NDSOL2VX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9246C433F1;
-	Sat, 17 Feb 2024 15:54:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708185278;
-	bh=AI0oIAcgHf1kU8VmTSbDLh+67tm7qZdcxn90MyeuyUQ=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=FK6bsscjbeldJO6e+MZ3govYqBS0XrGNrB7V4R4m8sWgIdChLvm3krb0XicxRq9UBlYcg/ol0DyPczcQvQXfj2GE/PQi74VhuO8Jh158IJER2SlMzLptcYebSCcpuPGkyq2gunjyWDuWYaN4Omlsr8+PFGL1zc8or9zcJ0JsOFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ac74+6eX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A079DC433F1;
+	Sat, 17 Feb 2024 15:56:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708185387;
+	bh=J/W77O68aesAwbF/+MNHZ67Vbe47hRGcJRILMJWoA5s=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NDSOL2VX2fSLI0VVwkEpb2uSWpyMrOuWblfWsjeZlStlfoKMV+EkdueEg+1oEBZre
-	 nTRvQ8YJrcSrdd0kgGFw8txsaYvqg4Kb2IK+QQiI63a8WymaDEQVSaxxMKxSiLQljA
-	 9CP0RV73d+uWhOYaxZfPNbiAY84nJdjbEqksZOYM=
-Date: Sat, 17 Feb 2024 16:54:35 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Mark Brown <broonie@kernel.org>
-Cc: Guenter Roeck <linux@roeck-us.net>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Badhri Jagan Sridharan <badhri@google.com>,
-	=?iso-8859-1?Q?G=E1bor?= Stefanik <netrolller.3d@gmail.com>,
-	rdbabiera@google.com, amitsd@google.com, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: tpcm: Fix issues with power being removed
- during reset
-Message-ID: <2024021704-reattach-wiring-7405@gregkh>
-References: <20240212-usb-fix-renegade-v1-1-22c43c88d635@kernel.org>
+	b=ac74+6eX8BYX+Dhc5pD9bHerYX+LucQy55Ok8Yv9288W36kEIIFwo7rOdcZ9wYXrc
+	 uGyB0npROCKeS4y8eEM8xPsOIQ/kv5ICHN5cYn7082kYOnOsD+cCcCKcOcLymiDGpC
+	 kAa9Uy9b9kqUJnWMafnWiHgWsL2NRxDGGGHXSrR4cZqW4F7hrwLBeIhIFRXbH+hzxF
+	 DL0JPR73Dt3/zkkZ41KyLcgUEJm+3/7qo1CwwOqJL+qPOLCR6lKc9Fu3D15cQCz5jZ
+	 2uGGzMihoqljFxBOdoB7Van/EqW7D+FHhSQjlV+lOhnmJDB2aiSer0QfJe1/8SwQyM
+	 TcC9iKmCmLiag==
+Date: Sat, 17 Feb 2024 15:56:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	stable@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, linux-sound@vger.kernel.org,
+	alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [REGRESSION] Acp5x probing regression introduced between kernel
+ 6.7.2 -> 6.7.4
+Message-ID: <ZdDXJyXiZ++KiNqW@finisterre.sirena.org.uk>
+References: <CAD_nV8BG0t7US=+C28kQOR==712MPfZ9m-fuKksgoZCgrEByCw@mail.gmail.com>
+ <7a0cd63f-8a83-4dc5-8763-63dcdae8d68a@leemhuis.info>
+ <878r3qxcyr.wl-tiwai@suse.de>
+ <871q9hwz2w.wl-tiwai@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EkTQCU0JljxhlDH4"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240212-usb-fix-renegade-v1-1-22c43c88d635@kernel.org>
+In-Reply-To: <871q9hwz2w.wl-tiwai@suse.de>
+X-Cookie: You might have mail.
 
-On Mon, Feb 12, 2024 at 06:42:13PM +0000, Mark Brown wrote:
-> Since the merge of b717dfbf73e8 ("Revert "usb: typec: tcpm: fix
-> cc role at port reset"") into mainline the LibreTech Renegade
-> Elite/Firefly has died during boot, the main symptom observed in testing
-> is a sudden stop in console output.  Gábor Stefanik identified in review
-> that the patch would cause power to be removed from devices without
-> batteries (like this board), observing that while the patch is correct
-> according to the spec this appears to be an oversight in the spec.
-> 
-> Given that the change makes previously working systems unusable let's
-> revert it, there was some discussion of identifying systems that have
-> alternative power and implementing the standards conforming behaviour in
-> only that case.
-> 
-> Fixes: b717dfbf73e8 ("Revert "usb: typec: tcpm: fix cc role at port reset"")
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index f7d7daa60c8d..a0978ed1a257 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -4876,7 +4876,8 @@ static void run_state_machine(struct tcpm_port *port)
->  		break;
->  	case PORT_RESET:
->  		tcpm_reset_port(port);
-> -		tcpm_set_cc(port, TYPEC_CC_OPEN);
-> +		tcpm_set_cc(port, tcpm_default_state(port) == SNK_UNATTACHED ?
-> +			    TYPEC_CC_RD : tcpm_rp_cc(port));
->  		tcpm_set_state(port, PORT_RESET_WAIT_OFF,
->  			       PD_T_ERROR_RECOVERY);
->  		break;
-> 
 
-Dueling reverts, fun!
+--EkTQCU0JljxhlDH4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-:(
+On Mon, Feb 12, 2024 at 03:12:55PM +0100, Takashi Iwai wrote:
+> Takashi Iwai wrote:
 
-Badhri, can you either ack this, or submit your proposed change so as to
-get this back working again?
+> > Interestingly, the system seems working with 6.8-rc3, so some piece
+> > might be missing.  Or simply reverting this patch should fix.
 
-thanks,
+> In the bugzilla entry, the reporter confirmed that the revert of the
+> commit 4b6986b170f2f2 fixed the problem.
 
-greg k-h
+Any news on a patch for this?  Venkata?
+
+--EkTQCU0JljxhlDH4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXQ1yQACgkQJNaLcl1U
+h9BUtQf/ZTV0mTlTBMNEuSC6v8A3J/2uVLXmPGUfRoOBtLanWtBDSdmXXZEDT3Uw
+RGgirO7JuUNcj0tEqF2SODNkXiqEsyNBA/elDDAOxsmuQV9BeziXaVHlBcfFbGDf
+yvx7CEWLCdQKucDV/nuxnD5oYsZ48MAN9B4S2L8ePY38UbTHkawnCae+6ObKoQk6
+DLYcTzd96CxjCnkHJGSDZGW5xxRUk4/rBnnttKdW4isOoNbEykwyVbcr5ZWTDuao
+UEUgX4WdPGWc1XqoLHCRUU+nEA7mgCoAz0QMd8FSpZ8lA8lAG8ziizYS3PY4Btsx
+Y+ngUaN9Ph2VYj+hiGLzhKX3MWlbjg==
+=CGP9
+-----END PGP SIGNATURE-----
+
+--EkTQCU0JljxhlDH4--
 
