@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-70002-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27F57859194
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:10:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BCA785919D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D8864282706
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:10:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 787521C20DA4
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF3D47E0E9;
-	Sat, 17 Feb 2024 18:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34C417FBB2;
+	Sat, 17 Feb 2024 18:09:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="GeWsZXvz"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="lgZxLCzS"
 Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599C97E580;
-	Sat, 17 Feb 2024 18:09:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BD4F7F461;
+	Sat, 17 Feb 2024 18:09:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708193370; cv=none; b=G2pGUldnrSoxfGoGRmybxyuxPkSFxIa1pHS7w7VbQ3CkGyah+rrmRQNefFbJwJ1bqOW6IK4lTfC3J2/GZaKidPar5A6J8WTtHjf/uf7D9se/k6wW1YpDiCUUg2GGi1F/y2boD5VpSqg2h+l0FY4Sp1S8I5RonvQfX03j6Mc/OJs=
+	t=1708193374; cv=none; b=TLaiWMALTP5slfSPn8Fo/y1ERrX0gQ3Psucd7iqEKywL5X/r93ZTIwZZtb7RbduHAiMH0V9jYn4QVNuDhsUGXHixr1pXwbpoxBTJupO3erhlxcOnCgGUgmgFNF74vf+1RToXVaxvnme3BXyCv3lNhEnoTdtCQPqm6A9GjeGIAyE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708193370; c=relaxed/simple;
-	bh=jBShEoehGOiH3XARbTLV/6y5l6NHG5lC8OunACxocoE=;
+	s=arc-20240116; t=1708193374; c=relaxed/simple;
+	bh=nLsygJVJCduLk95szsdKOpEa7GzGsR0GfRGWNH5oTU4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=XXQzKJ85ZaW3dt5/ICJizhzftpbl9/8M6PyplZ5YQxxK4lP6MUHSlYvsSpH/T+v+V9OMY6DPQ7EKYgeGZaUi5gLTXROvC3u3Jal4aNk8rK7rkLp1wFL0TTqhaGJx3FX1SNhQcmCwpivnxyRG3ETnTvm5s2/UaPrA1BQWGTOrm/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=GeWsZXvz; arc=none smtp.client-ip=156.67.10.101
+	 In-Reply-To:To:Cc; b=HF2Gcy+x+p6S4LtF6p9vu5kJa1hRBsSmWhpjJ3egkUUVin2Gg9vZkRmuCEoLpPexk+BrgQSLW+G2Y9gV/y8xS3GPFWyTKeOLtdFFtg4fmz/E2H2ABzLvyY2DyJ1knkn106HgcXvhAhEJcOm9fy845LH1mqaacc+3L98lPiy7les=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=lgZxLCzS; arc=none smtp.client-ip=156.67.10.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
@@ -35,19 +35,19 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
 	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:From:
 	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
 	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=aFRnThzSsM1GB0U7YhBosyITi6QEbbLLMwyncP4eReU=; b=Ge
-	WsZXvzoyXc6KytUoTSElPJ81kUgrOBxVQMMXwq/hJZ5AXQLyE7SCZLntg8sAeW6AXesLM1E45iXaB
-	BTDz+Nx1ZdAznhc4az/tOjzyD+vIGkWsG5SZ3V51fgel3mWJO/yc2M3luzHDlujROrPQvuwWBnW+G
-	W5Hy0PRH7sSpwzE=;
+	In-Reply-To:References; bh=SOMOZ6/FJXknA8+mFiIFxymCAEzF7Pi03pmztEUsl68=; b=lg
+	ZxLCzSqzEiN4nvNhIqKb6czIezJYgdiYghZBH0CaAZ4tgZd6O5kWymLV++SU62cQIX3cmuuBh/F81
+	q5Sa9JN/82qNEsbO4udyDK7o+gHPWHpK3011idwIhkZv0GAZuJoSMgdyhI5fybJIHBs5BhiY+y/Wm
+	qhLHCOE36QswYaM=;
 Received: from c-76-156-36-110.hsd1.mn.comcast.net ([76.156.36.110] helo=thinkpad.home.lunn.ch)
 	by vps0.lunn.ch with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <andrew@lunn.ch>)
-	id 1rbP83-0084hf-Pd; Sat, 17 Feb 2024 19:09:36 +0100
+	id 1rbP87-0084hf-2I; Sat, 17 Feb 2024 19:09:39 +0100
 From: Andrew Lunn <andrew@lunn.ch>
-Date: Sat, 17 Feb 2024 12:08:26 -0600
-Subject: [PATCH net-next v3 5/8] net: intel: i40e/igc: Remove setting
- Autoneg in EEE capabilities
+Date: Sat, 17 Feb 2024 12:08:27 -0600
+Subject: [PATCH net-next v3 6/8] net: intel: e1000e: Use linkmode helpers
+ for EEE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,7 +56,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240217-keee-u32-cleanup-v3-5-fcf6b62a0c7f@lunn.ch>
+Message-Id: <20240217-keee-u32-cleanup-v3-6-fcf6b62a0c7f@lunn.ch>
 References: <20240217-keee-u32-cleanup-v3-0-fcf6b62a0c7f@lunn.ch>
 In-Reply-To: <20240217-keee-u32-cleanup-v3-0-fcf6b62a0c7f@lunn.ch>
 To: "David S. Miller" <davem@davemloft.net>, 
@@ -67,90 +67,87 @@ To: "David S. Miller" <davem@davemloft.net>,
  Tony Nguyen <anthony.l.nguyen@intel.com>
 Cc: linux-usb@vger.kernel.org, netdev@vger.kernel.org, 
  linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
- Andrew Lunn <andrew@lunn.ch>, Jacob Keller <jacob.e.keller@intel.com>
+ Andrew Lunn <andrew@lunn.ch>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2711; i=andrew@lunn.ch;
- h=from:subject:message-id; bh=jBShEoehGOiH3XARbTLV/6y5l6NHG5lC8OunACxocoE=;
- b=owEBbQKS/ZANAwAKAea/DcumaUyEAcsmYgBl0PY7k7SN/4S228ROAzg7ZuMLyNMUmBTSrVMwB
- alKMwysKQqJAjMEAAEKAB0WIQRh+xAly1MmORb54bfmvw3LpmlMhAUCZdD2OwAKCRDmvw3LpmlM
- hIAMD/9/if2OuCb4y445VS2/pfmVOV65uM3dKPOUIpYfYE4pqnEqNUHN09yJtOtOgAPCn+7nPsQ
- 78NihovKh+pxO3ScOCoKfGkzcz6j3rRx9DX5yU2Mz7xGZh/AYfDDeKj2I9Pzl+UqGDIllEUscbn
- zExhnK3Gb0B+HGFIqF74KgN8AzoOenG8VLz7MXBe7v1/gzl/ZRXOQXA9lxokuotfV0UNl2nhrwC
- QW+hQcvwSY5qFu+u9kwqld+pfIGnFdn8TmflpUlD4MFXnaivCLZxVk2H1Bl0I9BwIL7v+IOKD+R
- HYPwoBO+NwFZZEq60YZGG66ciN5vlB6OEEv73u/AROr01D9OlwBJLlTSY/fctnk3Zaaer5Fcu4g
- s+a+p3Z2JEuA+1Jc5PqulsOLRBsfULx/EPPSnoMdpYnko7IgWMs1b/Qg61XPp3/ne7xYnXpKnUt
- HwLlKSoGp4/iTiejU5oZuf7MfKpj3ROHHr7lSBBMdLpH1dhGccG0El1naxVPpQsV9PnHp4Wf6tv
- 30ZIMHfvXtMPIYFQDk6eKQtYZSEetgZk3CoLj4Ks0CeAfRnhgjuh5hfUUY8MJyKai8Zm3EfqU9D
- JHThBufm38cB/4OpIoUPWl6VeJUPr+4cP26J2SKGhc5rDfH7v7ysyCtrhA3BBGuqjWCYobqcyU6
- YWMovgekCvgh2/g==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2663; i=andrew@lunn.ch;
+ h=from:subject:message-id; bh=nLsygJVJCduLk95szsdKOpEa7GzGsR0GfRGWNH5oTU4=;
+ b=owEBbQKS/ZANAwAKAea/DcumaUyEAcsmYgBl0PY7GEK/s8u6Wc0Cu2THTjAxHAyzvWlxPU5JN
+ 0P439nErQqJAjMEAAEKAB0WIQRh+xAly1MmORb54bfmvw3LpmlMhAUCZdD2OwAKCRDmvw3LpmlM
+ hDf3D/9Tqgzm33tJDXQ8k+RUMPeKw9daJDllil9l16SUwN72TllnIemNI4grngazAtyT0BFBsLQ
+ bDRIf9Hd2fOB4qPTwW6LmGs8zF1F7pii4j/r+8Ul8meJVN5FkfPrwSKu6nnhnuNXSoanKs+OJiS
+ 3eg+gXOdasnyvQEXIiptt46oYpqXCIxstK9ZiDRLCenxsdVc/HUG2Jl3Ahy2fa+bsFxgeacNA7K
+ 1cM/+14TT+wvWYrN9wnIWYUW8B3Ihh5OdR/O5zpjjN7Kt5vqgwem/ikWuMYTfevQQizHyKmX/cr
+ Li8/WLL1/BEvBUO0GR3C9LjAUMGuSyMX1Ga+VeN3umBA+TXE+rzwNf2DB8X9UuhnM+GaanqoJS/
+ K0JPhE53HQAv/mnCNDN0gxSc+C4XtmvxKeZ6zzp52UGWDfLaG2fbzgmAiS/6lRHSOfw01mBLfhp
+ SJHMLzqavE9sYW/wq5EwSxIGEjZrPD9ygH9YuitFWZyJOMMlUA6BzG6Gz45tDWT8T4W+ML5X1DB
+ lmOBJ5fZd30TddR0nCXycxlx1D3DCHGx9vh8u9lfdEP0cMDYA3najmw0ItBQwadmC5uEQc+4sju
+ BA8ubZMHrK9u+Wodl1kmBwA+u06auzSqcUIs1C7Os8So6UNuZCN4iMdwM+IpXoPcgryVcEmw10W
+ fpIFNtmkMClfEOA==
 X-Developer-Key: i=andrew@lunn.ch; a=openpgp;
  fpr=61FB1025CB53263916F9E1B7E6BF0DCBA6694C84
 
-Energy Efficient Ethernet should always be negotiated with the link
-peer. Don't include SUPPORTED_Autoneg in the results of get_eee() for
-supported, advertised or lp_advertised, since it is
-assumed. Additionally, ethtool(1) ignores the set bit, and no other
-driver sets this.
+Make use of the existing linkmode helpers for converting PHY EEE
+register values into links modes, now that ethtool_keee uses link
+modes, rather than u32 values.
 
-Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
 Signed-off-by: Andrew Lunn <andrew@lunn.ch>
 ---
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 7 +------
- drivers/net/ethernet/intel/igc/igc_ethtool.c   | 4 ----
- 2 files changed, 1 insertion(+), 10 deletions(-)
+ drivers/net/ethernet/intel/e1000e/ethtool.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index 1b5473358e1a..42e7e6cdaa6d 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -5664,16 +5664,12 @@ static int i40e_get_eee(struct net_device *netdev, struct ethtool_keee *edata)
- 	if (phy_cfg.eee_capability == 0)
- 		return -EOPNOTSUPP;
+diff --git a/drivers/net/ethernet/intel/e1000e/ethtool.c b/drivers/net/ethernet/intel/e1000e/ethtool.c
+index ff243ae71b78..dc553c51d79a 100644
+--- a/drivers/net/ethernet/intel/e1000e/ethtool.c
++++ b/drivers/net/ethernet/intel/e1000e/ethtool.c
+@@ -2223,16 +2223,16 @@ static int e1000e_get_eee(struct net_device *netdev, struct ethtool_keee *edata)
+ 	ret_val = e1000_read_emi_reg_locked(hw, cap_addr, &phy_data);
+ 	if (ret_val)
+ 		goto release;
+-	edata->supported_u32 = mmd_eee_cap_to_ethtool_sup_t(phy_data);
++	mii_eee_cap1_mod_linkmode_t(edata->supported, phy_data);
  
--	edata->supported_u32 = SUPPORTED_Autoneg;
--	edata->lp_advertised_u32 = edata->supported_u32;
--
- 	/* Get current configuration */
- 	status = i40e_aq_get_phy_capabilities(hw, false, false, &phy_cfg, NULL);
- 	if (status)
- 		return -EAGAIN;
+ 	/* EEE Advertised */
+-	edata->advertised_u32 = mmd_eee_adv_to_ethtool_adv_t(adapter->eee_advert);
++	mii_eee_cap1_mod_linkmode_t(edata->advertised, adapter->eee_advert);
  
--	edata->advertised_u32 = phy_cfg.eee_capability ? SUPPORTED_Autoneg : 0U;
--	edata->eee_enabled = !!edata->advertised_u32;
-+	edata->eee_enabled = !!phy_cfg.eee_capability;
- 	edata->tx_lpi_enabled = pf->stats.tx_lpi_status;
+ 	/* EEE Link Partner Advertised */
+ 	ret_val = e1000_read_emi_reg_locked(hw, lpa_addr, &phy_data);
+ 	if (ret_val)
+ 		goto release;
+-	edata->lp_advertised_u32 = mmd_eee_adv_to_ethtool_adv_t(phy_data);
++	mii_eee_cap1_mod_linkmode_t(edata->lp_advertised, phy_data);
  
- 	edata->eee_active = pf->stats.tx_lpi_status && pf->stats.rx_lpi_status;
-@@ -5691,7 +5687,6 @@ static int i40e_is_eee_param_supported(struct net_device *netdev,
- 		u32 value;
- 		const char *name;
- 	} param[] = {
--		{edata->advertised_u32 & ~SUPPORTED_Autoneg, "advertise"},
- 		{edata->tx_lpi_timer, "tx-timer"},
- 		{edata->tx_lpi_enabled != pf->stats.tx_lpi_status, "tx-lpi"}
- 	};
-diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-index 47c797dd2cd9..ac92d10a3e97 100644
---- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
-+++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-@@ -1634,7 +1634,6 @@ static int igc_ethtool_get_eee(struct net_device *netdev,
- 			mmd_eee_adv_to_ethtool_adv_t(adapter->eee_advert);
+ 	/* EEE PCS Status */
+ 	ret_val = e1000_read_emi_reg_locked(hw, pcs_stat_addr, &phy_data);
+@@ -2265,6 +2265,8 @@ static int e1000e_get_eee(struct net_device *netdev, struct ethtool_keee *edata)
+ static int e1000e_set_eee(struct net_device *netdev, struct ethtool_keee *edata)
+ {
+ 	struct e1000_adapter *adapter = netdev_priv(netdev);
++	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported) = {};
++	__ETHTOOL_DECLARE_LINK_MODE_MASK(tmp) = {};
+ 	struct e1000_hw *hw = &adapter->hw;
+ 	struct ethtool_keee eee_curr;
+ 	s32 ret_val;
+@@ -2283,12 +2285,17 @@ static int e1000e_set_eee(struct net_device *netdev, struct ethtool_keee *edata)
+ 		return -EINVAL;
+ 	}
  
- 	*edata = adapter->eee;
--	edata->supported_u32 = SUPPORTED_Autoneg;
+-	if (edata->advertised_u32 & ~(ADVERTISE_100_FULL | ADVERTISE_1000_FULL)) {
++	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
++			 supported);
++	linkmode_set_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
++			 supported);
++
++	if (linkmode_andnot(tmp, edata->advertised, supported)) {
+ 		e_err("EEE advertisement supports only 100TX and/or 1000T full-duplex\n");
+ 		return -EINVAL;
+ 	}
  
- 	eeer = rd32(IGC_EEER);
+-	adapter->eee_advert = ethtool_adv_to_mmd_eee_adv_t(edata->advertised_u32);
++	adapter->eee_advert = linkmode_to_mii_eee_cap1_t(edata->advertised);
  
-@@ -1647,9 +1646,6 @@ static int igc_ethtool_get_eee(struct net_device *netdev,
+ 	hw->dev_spec.ich8lan.eee_disable = !edata->eee_enabled;
  
- 	edata->eee_enabled = hw->dev_spec._base.eee_enable;
- 
--	edata->advertised_u32 = SUPPORTED_Autoneg;
--	edata->lp_advertised_u32 = SUPPORTED_Autoneg;
--
- 	/* Report correct negotiated EEE status for devices that
- 	 * wrongly report EEE at half-duplex
- 	 */
 
 -- 
 2.43.0
