@@ -1,159 +1,205 @@
-Return-Path: <linux-kernel+bounces-69767-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22724858E3D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 65EF5858E4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E0891C2119C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:00:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89E551C21294
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE331D525;
-	Sat, 17 Feb 2024 09:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HmbcUuGE"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27EBA1D543;
+	Sat, 17 Feb 2024 09:14:46 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98E011CFA7
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 09:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007511CFA8;
+	Sat, 17 Feb 2024 09:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708160451; cv=none; b=tgBlMe3AIrdfX+HAxWd6tvfylCfR9s7YX58vLFK9fgh5zHpkpy/a3sIWM7QpFX8I9leb3dfl9ATSnpKnz4xwKb5JDgj30Oath2FIoitBj999PQ5K2T28c7sIOqvpd/GbBRdvZQfWIVrca87iFTIcHBHPJ9oXKOgAeUoLG5GAuWs=
+	t=1708161285; cv=none; b=oSQBApvlLaPUsxCkdsomDhce0QbqRSwEN9X18RnCW3mxEiuBTKWcj5LqnhMT0+ZOcbO752u2Q631gq3kC3hYrebLst3kAxpSkzvtk+8j/F1zkKwxxgQuhjDUxL/R3Yg4teN8r7DqwwEyLPB5FalKh6BeM8WY1JTGbXUCGBZ6m0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708160451; c=relaxed/simple;
-	bh=85m9mFXdiU+sh7IE5Sj3DSmPH8OLVJBOUZpyG3YO9to=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EKfwsoQFlo50PYKPuzssrRLhy4jH85sUlDVNE90JNOF+eLBj4txHwpp6DFG43wc/APYQa50y6ESjg8e0M7V0zZt2qr02+c1QV1XTXSanO+5ol9Rt55rdXvndql8SKXucKVnxVa2x62O0TvMsEKRFEr6IE8FasR7v3i9ECJdz+R0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HmbcUuGE; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5600c43caddso3417780a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 01:00:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708160444; x=1708765244; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GKzBi+LFAgyEuEjfDoXiyvKz1ydBsUvzpk3PjBvnaVg=;
-        b=HmbcUuGEbGwEiLaXDRR2v/8t14fVKlGS4433wvilY9vOaTSvrhqAKB1hxYDgtfGG5t
-         9gVpfno2gTqbZrC+t+bnLaeWfKRtAFJuIPWOZ6ZvLFgaF2VEOCC8N2NKWQVYR6zHdEqO
-         9U/MVwTfeSrvSLd6itRn5tviadV4jl1apcxLTtQC9CM0wPgwlHpBbeA9zFORfdMJEBco
-         cfEqQKbcggAtmlEReErxtcLSTlWsqrUp+z9ulcm73cZBFDunrREZd+YCUH0f8lwwFIUb
-         /Jg79uyAfw/BhvS0fL6mNc+6/6AqYSbFMxfqJSGzavcwS0sFEyKTi+iBw2OvxmUUzgJl
-         OLVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708160444; x=1708765244;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GKzBi+LFAgyEuEjfDoXiyvKz1ydBsUvzpk3PjBvnaVg=;
-        b=SQyqd5oRVByJ68Sdy/yq1icJ+GByUuYZKQ+yTp/+MQpHradQOxOMU/EcRAmXBLjonC
-         McNvGT3HTX18h9tTN8XBIXX3wrLkLcLwOHmUJVyg/mA35pJaWOc+gF04+SQETjGwQrYo
-         gsjQfKvsew98xRixIN9z33KVz/3SbTl1zlRkWs4HbmTqB4W+JUSLhqgg5+wV7ybE4Rva
-         gdm9Q96rD42i2b2salfMB3lTwYlSyREXSUHVojruOeWgdBTGokcZEIGLxG0JMl7EMnLM
-         s1MIQoBNjGTbuLw4GSoaeJ+PzF0aSV1SGEJGPGYHuwwCxVRyTZ9JMahd9yZQ52NkOBIj
-         1kNg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6cSmcWYmNToaE1ndhcmZXtZAzueUAmFMMVwcn6Rf9xxkvCaSl89e097ahs9D6/7OYU4hFthsmxjKzeJMmAUYlmEjt1YwgZ+gJzFeT
-X-Gm-Message-State: AOJu0Yz2R7FxogMsGxJTTcmFOG6w7NQM0GkRshtbzSYAfFhC0TTBtVqh
-	UNGKhDwubeGHVyNXGXGz8I9apXJ7rObuKPPmQ+5K5Ou2xEREVnUh4kUndfbLE30=
-X-Google-Smtp-Source: AGHT+IEiIbXlJy7R34XiyyLCOxObbvRZ1l18Ghqcpq828SJHnmVu4XPlASav1BKQaKrbmgxgqnoETQ==
-X-Received: by 2002:aa7:d6d6:0:b0:564:3939:8153 with SMTP id x22-20020aa7d6d6000000b0056439398153mr10637edr.28.1708160443777;
-        Sat, 17 Feb 2024 01:00:43 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id e9-20020a50ec89000000b00563e425da56sm711139edr.85.2024.02.17.01.00.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Feb 2024 01:00:43 -0800 (PST)
-Message-ID: <eeb2331d-10e6-4902-91ba-85896a8f0ee1@linaro.org>
-Date: Sat, 17 Feb 2024 10:00:41 +0100
+	s=arc-20240116; t=1708161285; c=relaxed/simple;
+	bh=1hnntFnpL+B0bxwjndXaJRsgWy/yqq6rJPou9nkkkT8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=TypI47SLhxH3rSi+RncWAsVn8+vNwEYbidaWXH32eAE8eitpMMys0wc+m+Eb8p9YuwFZyeMalERQ0fG7u2rLMPXFwSTUCnfXIRn0by2luQF76VCyAKYX+m2ABFn+s3B9Hdztb10CvYxUGv9JmaKTZsgHO+WqISJ/gQcHb0OScQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TcN1c56fMz4f3jHj;
+	Sat, 17 Feb 2024 16:55:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 855A61A09F9;
+	Sat, 17 Feb 2024 16:55:53 +0800 (CST)
+Received: from [10.174.176.34] (unknown [10.174.176.34])
+	by APP1 (Coremail) with SMTP id cCh0CgBHZQ6XdNBl_ygdEQ--.60286S3;
+	Sat, 17 Feb 2024 16:55:53 +0800 (CST)
+Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
+ write operation
+To: Christoph Hellwig <hch@infradead.org>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
+ adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+ djwong@kernel.org, willy@infradead.org, zokeefe@google.com,
+ yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+ wangkefeng.wang@huawei.com
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+ <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
+ <ZcsCP4h-ExNOcdD6@infradead.org>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <74ab3c3e-3daf-5374-75e5-bcb25ffdb527@huaweicloud.com>
+Date: Sat, 17 Feb 2024 16:55:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/6] dt-bindings: cache: Document the
- sifive,perfmon-counters property
+In-Reply-To: <ZcsCP4h-ExNOcdD6@infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To: Samuel Holland <samuel.holland@sifive.com>, Will Deacon
- <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Eric Lin <eric.lin@sifive.com>, Conor Dooley <conor@kernel.org>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
- linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- linux-arm-kernel@lists.infradead.org
-References: <20240216000837.1868917-1-samuel.holland@sifive.com>
- <20240216000837.1868917-2-samuel.holland@sifive.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240216000837.1868917-2-samuel.holland@sifive.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgBHZQ6XdNBl_ygdEQ--.60286S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxur4UGw45Cw47Gr4xtr48tFb_yoWruw1rpr
+	yq93yDCFs3tF17Wr1kJFZ8XryYka4rKrW2kryxGw43ZFnIyr9rKF1rGa4Yv3Z8J3sxAr4f
+	JF4kAa4kWF1UAr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU13rcDUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 16/02/2024 01:08, Samuel Holland wrote:
-> The SiFive Composable Cache controller contains an optional PMU with a
-> configurable number of event counters. Document a property which
+On 2024/2/13 13:46, Christoph Hellwig wrote:
+> Wouldn't it make more sense to just move the size manipulation to the
+> write-only code?  An untested version of that is below.  With this
 
-Configurable in what context? By chip designers or by OS? Why this
-cannot be deduced from the compatible?
+Sorry for the late reply and thanks for your suggestion, The reason why
+I introduced this new helper iomap_write_end_simple() is I don't want to
+open code __iomap_put_folio() in each caller since corresponding to
+iomap_write_begin(), it's the responsibility for iomap_write_end_*() to
+put and unlock folio, so I'd like to keep it in iomap_write_end_*().
+But I don't feel strongly about it, it's also fine by me to just move
+the size manipulation to the write-only code if you think it's better.
 
-> describes the number of available counters.
+> the naming of the status variable becomes even more confusing than
+> it already is, maybe we need to do a cleanup of the *_write_end
+> calling conventions as it always returns the passed in copied value
+> or 0.
+
+Indeed, it becomes more confused and deserve a cleanup.
+
+Thanks,
+Yi.
+
 > 
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
-> 
->  Documentation/devicetree/bindings/cache/sifive,ccache0.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 3dab060aed6d7b..8401a9ca702fc0 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
+>  		size_t copied, struct folio *folio)
+>  {
+>  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
+> -	loff_t old_size = iter->inode->i_size;
+> -	size_t ret;
+> -
+> -	if (srcmap->type == IOMAP_INLINE) {
+> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
+> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
+> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
+> -				copied, &folio->page, NULL);
+> -	} else {
+> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
+> -	}
+> -
+> -	/*
+> -	 * Update the in-memory inode size after copying the data into the page
+> -	 * cache.  It's up to the file system to write the updated size to disk,
+> -	 * preferably after I/O completion so that no stale data is exposed.
+> -	 */
+> -	if (pos + ret > old_size) {
+> -		i_size_write(iter->inode, pos + ret);
+> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+> -	}
+> -	__iomap_put_folio(iter, pos, ret, folio);
 >  
-
-Best regards,
-Krzysztof
+> -	if (old_size < pos)
+> -		pagecache_isize_extended(iter->inode, old_size, pos);
+> -	if (ret < len)
+> -		iomap_write_failed(iter->inode, pos + ret, len - ret);
+> -	return ret;
+> +	if (srcmap->type == IOMAP_INLINE)
+> +		return iomap_write_end_inline(iter, folio, pos, copied);
+> +	if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
+> +		return block_write_end(NULL, iter->inode->i_mapping, pos, len,
+> +					copied, &folio->page, NULL);
+> +	return __iomap_write_end(iter->inode, pos, len, copied, folio);
+>  }
+>  
+>  static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+> @@ -918,6 +897,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  
+>  	do {
+>  		struct folio *folio;
+> +		loff_t old_size;
+>  		size_t offset;		/* Offset into folio */
+>  		size_t bytes;		/* Bytes to write to folio */
+>  		size_t copied;		/* Bytes copied from user */
+> @@ -964,7 +944,24 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
+>  
+>  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
+>  		status = iomap_write_end(iter, pos, bytes, copied, folio);
+> +		/*
+> +		 * Update the in-memory inode size after copying the data into
+> +		 * the page cache.  It's up to the file system to write the
+> +		 * updated size to disk, preferably after I/O completion so that
+> +		 * no stale data is exposed.
+> +		 */
+> +		old_size = iter->inode->i_size;
+> +		if (pos + status > old_size) {
+> +			i_size_write(iter->inode, pos + status);
+> +			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
+> +		}
+> +		__iomap_put_folio(iter, pos, status, folio);
+>  
+> +		if (old_size < pos)
+> +			pagecache_isize_extended(iter->inode, old_size, pos);
+> +		if (status < bytes)
+> +			iomap_write_failed(iter->inode, pos + status,
+> +						bytes - status);
+>  		if (unlikely(copied != status))
+>  			iov_iter_revert(i, copied - status);
+>  
+> @@ -1334,6 +1331,7 @@ static loff_t iomap_unshare_iter(struct iomap_iter *iter)
+>  			bytes = folio_size(folio) - offset;
+>  
+>  		bytes = iomap_write_end(iter, pos, bytes, bytes, folio);
+> +		__iomap_put_folio(iter, pos, bytes, folio);
+>  		if (WARN_ON_ONCE(bytes == 0))
+>  			return -EIO;
+>  
+> @@ -1398,6 +1396,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+>  		folio_mark_accessed(folio);
+>  
+>  		bytes = iomap_write_end(iter, pos, bytes, bytes, folio);
+> +		__iomap_put_folio(iter, pos, bytes, folio);
+>  		if (WARN_ON_ONCE(bytes == 0))
+>  			return -EIO;
+>  
+> 
 
 
