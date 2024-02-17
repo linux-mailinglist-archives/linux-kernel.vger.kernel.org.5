@@ -1,301 +1,164 @@
-Return-Path: <linux-kernel+bounces-70104-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70105-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88AB685931D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:04:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ECC6859320
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:10:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2FF4B21281
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:04:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1743AB21205
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C77880636;
-	Sat, 17 Feb 2024 22:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F154880043;
+	Sat, 17 Feb 2024 22:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X8F7nG4p"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="c6TUOfad"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4874180619;
-	Sat, 17 Feb 2024 22:03:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C7E7CF0D;
+	Sat, 17 Feb 2024 22:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708207431; cv=none; b=inNEmacYaxZsyHCt7wgyWROPTbUJvrX5NwgU53sw+tmB1xpvRRYbavRFF8iMJI3gaqlKXSXeJ0GRYz1+vW1lf46WHNb6N2Xkeuzenw4SLxvMca4vBR1MoYNhnt1ZZO/+T7F05vJ7U3gx8GS+2d2E8rbPqNOS0fWBJ/+zJVXk7GU=
+	t=1708207820; cv=none; b=kF06D0hdMoE8dS5krrpg9tqhkFXDpPH72KPxQoZSWXYgCRasNfT2tAE2ZiI1xo3Xoc2mXzhOSIwTFvQYnvhiMs234afh540+P+BvCOr7vFM+qcNz1Dg3d4Isr87/t3HY64X61U2PK8E4MWpH8yu2IbBdvHr9dlT4L3z/OEnAUoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708207431; c=relaxed/simple;
-	bh=bJMbBwrT+WhkUJ3j7dNm7o0p5T2uQRQJ2CSbo+C+NWQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KwN08UwrDDTTQRAIvCOIshElefS/BwqlQB+14sD8qyGUhQI3/7y6BNjeD/SoPrFRG14xPQl0xRdppgv70B4UZvdnYnGJjEK7QNwe081+tOxJ62BEQ+kAGrvtxp8F0BWERz620dMQGdI7TPhaUCU531FHYDF2Ghs65K3MiOj4X+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X8F7nG4p; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso20164941fa.2;
-        Sat, 17 Feb 2024 14:03:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708207427; x=1708812227; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1aApdOnqEiLTFDlM0DEkECZ6pJ/nXDPDXWmDBeJDbWs=;
-        b=X8F7nG4pAN6O1sdFAKgH+AaZZro9wdWTQpRnyj8smMzFfTgM9bJtV2GVNrk1y6cI/Y
-         CB3AINfNPrmYkgUI4dH6bBWKePFxhJnxGMkTHb4rGrb91meFJDdjk2io7+1GCHQ6hyKx
-         61BVg325hswiopee78kCrUmxYfkGJMXkduZ0BXcVZDzaK58izk6hoq1p08iiQorTJUh7
-         /jTEg72C8cQtsSC6EbApQOsGXUxzjHe+ch5v6Zaf6pDftcH35Guloj+Pxbe9YIsK6RV2
-         uEqm/QWdFPGMignw1fLezn9AT2YckGvrs8iY43lcQazEmTu2Vpst5aOZHcU2fUo5qlIv
-         wsjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708207427; x=1708812227;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1aApdOnqEiLTFDlM0DEkECZ6pJ/nXDPDXWmDBeJDbWs=;
-        b=sMBm9hBXc1R9+3/b51ECe6nDk01mXjy9P78gz+F/IHNRhTETbSApoeW3we1cMwSdqI
-         c/VBR7mJOlvVHePrdkDZP9QvD2CNMtF5oh+fQzEg4RzC39C49pBB21hMU7XoZW1rAb0l
-         n15Apltil49JHMLqYYe92LoBBft/K93kco2+fzfbMB02yjG0FpRPUyowY7vbv/8CiHm9
-         6YPDRRk++WN8qxKikxbhB6ouCJ6l/SonODhz4F8IFwwhjfDsPOzIk18eEnqqiwCktqO9
-         qLqZoEAkdbXbw+1GJivdB8SVrPicViCwf3bmtJ01rDMQv/lBN+AiovjYCjomHngvvarL
-         /i9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUI0D8sRW6AuV0kh+Tm+44bfNrydMumBI+caOXzi+9SwIqUBAjmpEpFsPvFnLKGAYLhp6OhQ27lSP9384b1shtDFXbG2otybZGsiKwVOWI8sHnybckKakPJu2x4YDZCqWdHbv3BYpiEKYviBjObNyz9UTz3SZkrnOqkExqkZkthAWdtxpVW
-X-Gm-Message-State: AOJu0YyQ0X0HVPbelpc/pkR2h6gIruaRgQWDOFlxRnRE4V6mbN+QEeMh
-	acdNO3N3OZb2umuWfLJzNzb7nW/x3yMD7VKQ5q+Ahpv5cIsJf5u1
-X-Google-Smtp-Source: AGHT+IHCMtS6+6PY3+RlRsAimgdxCMlkqh+ql4ZMQZgYBOGjXLhDbbfZ95KmDdtHrQy8+heZyfcoQg==
-X-Received: by 2002:a05:6512:3450:b0:512:9dee:44fe with SMTP id j16-20020a056512345000b005129dee44femr1911524lfr.26.1708207426996;
-        Sat, 17 Feb 2024 14:03:46 -0800 (PST)
-Received: from localhost.localdomain ([2a05:3580:f312:6c01:1b8f:2a1b:d18:1951])
-        by smtp.gmail.com with ESMTPSA id p19-20020a056512313300b00511936e2d61sm363836lfd.56.2024.02.17.14.03.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 14:03:46 -0800 (PST)
-From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
-To: Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Alain Volmat <alain.volmat@foss.st.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-media@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>,
-	Pavel Machek <pavel@ucw.cz>,
-	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
-	Andrey Skvortsov <andrej.skvortzov@gmail.com>
-Subject: [PATCH 2/2] media: gc2145: implement basic dvp bus support
-Date: Sun, 18 Feb 2024 01:03:08 +0300
-Message-ID: <20240217220308.594883-3-andrej.skvortzov@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240217220308.594883-1-andrej.skvortzov@gmail.com>
-References: <20240217220308.594883-1-andrej.skvortzov@gmail.com>
+	s=arc-20240116; t=1708207820; c=relaxed/simple;
+	bh=mYKwzXe2ZRGlF20vDTg03J91yT8nqSlhzoN8Ylq1xjE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hMTwvWUAlrwm7iTaWOTSGiinBjgFnBqdB8QG6D6E+y4dBLmt0MFPkDDMa9oMdC2Rhj5xvAIy7dc5o1VtC2ZjdDkLeKVycpz2aWgT+kYvlLkqfo1ZBChlWckJNTSqbBZslQj4/oPtBfp+sKM9+06PdisfN1KpByjXFhnEkwGi+pE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=c6TUOfad; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=dBMEFj+vUqAqgSWaC9a7/Khmdxlt5g8WjS7g/9NczGU=; b=c6TUOfadK4NqEjqMqSb5/Ek+Gq
+	CSL/AFvP1Zq8sMM+xK7J2+sqWrkksPZNvHspX8F9efTEIbztyWQz+li5nMENrtD09dqVHeJWQ04Rz
+	ssNHCK2YCkMFw5ibUxERy7+Cj8czdLNeGHVtpgVtXS4Lemr7UrpjeJW9UD5U3D8sXrKc=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rbSsp-0085e9-VR; Sat, 17 Feb 2024 23:10:07 +0100
+Date: Sat, 17 Feb 2024 23:10:07 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc: Kory Maincent <kory.maincent@bootlin.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+	Jay Vosburgh <j.vosburgh@gmail.com>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH RFC net-next v8 04/13] net: Change the API of PHY default
+ timestamp to MAC
+Message-ID: <9e2ce7a0-e938-4f5f-aae9-cfee3a066628@lunn.ch>
+References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+ <20240216-feature_ptp_netnext-v8-4-510f42f444fb@bootlin.com>
+ <87jzn4gtlv.fsf@nvidia.com>
+ <b8926fe5-81ef-40ea-9e87-5e84b368b745@lunn.ch>
+ <87o7cebx9z.fsf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87o7cebx9z.fsf@nvidia.com>
 
-Tested on PinePhone with libcamera-based GNOME screenshot.
+> > Could you give some examples? It seems odd to me, the application
+> > wants a less accurate timestamp?
+> >
+> > Is it more about overheads? A MAC timestamp might be less costly than
+> > a PHY timestamp?
+> 
+> It's a combination of both though I think primarily about line rate.
+> This point is somewhat carried over from the previous discussions on
+> this patch series in the last revision.
 
-Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
----
- drivers/media/i2c/gc2145.c | 117 ++++++++++++++++++++++++++++---------
- 1 file changed, 90 insertions(+), 27 deletions(-)
+Sorry, i've not been keeping up with the discussion. That could also
+mean whatever i say below is total nonsense!
 
-diff --git a/drivers/media/i2c/gc2145.c b/drivers/media/i2c/gc2145.c
-index bef7b0e056a8..9a70b8d504e1 100644
---- a/drivers/media/i2c/gc2145.c
-+++ b/drivers/media/i2c/gc2145.c
-@@ -39,6 +39,10 @@
- #define GC2145_REG_ANALOG_MODE1	CCI_REG8(0x17)
- #define GC2145_REG_OUTPUT_FMT	CCI_REG8(0x84)
- #define GC2145_REG_SYNC_MODE	CCI_REG8(0x86)
-+#define GC2145_SYNC_MODE_VSYNC_POL	BIT(0)
-+#define GC2145_SYNC_MODE_HSYNC_POL	BIT(1)
-+#define GC2145_SYNC_MODE_OPCLK_POL	BIT(2)
-+#define GC2145_SYNC_MODE_OPCLK_GATE	BIT(3)
- #define GC2145_SYNC_MODE_COL_SWITCH	BIT(4)
- #define GC2145_SYNC_MODE_ROW_SWITCH	BIT(5)
- #define GC2145_REG_BYPASS_MODE	CCI_REG8(0x89)
-@@ -53,6 +57,12 @@
- #define GC2145_REG_GLOBAL_GAIN	CCI_REG8(0xb0)
- #define GC2145_REG_CHIP_ID	CCI_REG16(0xf0)
- #define GC2145_REG_PAD_IO	CCI_REG8(0xf2)
-+#define GC2145_REG_PLL_MODE1	CCI_REG8(0xf7)
-+#define GC2145_REG_PLL_MODE2	CCI_REG8(0xf8)
-+#define GC2145_REG_CM_MODE	CCI_REG8(0xf9)
-+#define GC2145_REG_CLK_DIV_MODE	CCI_REG8(0xfa)
-+#define GC2145_REG_ANALOG_PWC	CCI_REG8(0xfc)
-+#define GC2145_REG_PAD_IO	CCI_REG8(0xf2)
- #define GC2145_REG_PAGE_SELECT	CCI_REG8(0xfe)
- /* Page 3 */
- #define GC2145_REG_DPHY_ANALOG_MODE1	CCI_REG8(0x01)
-@@ -598,6 +608,7 @@ struct gc2145 {
- 	struct v4l2_subdev sd;
- 	struct media_pad pad;
- 
-+	struct v4l2_fwnode_endpoint ep; /* the parsed DT endpoint info */
- 	struct regmap *regmap;
- 	struct clk *xclk;
- 
-@@ -612,6 +623,11 @@ struct gc2145 {
- 	const struct gc2145_mode *mode;
- };
- 
-+static inline bool gc2145_is_csi2(const struct gc2145 *gc2145)
-+{
-+	return gc2145->ep.bus_type == V4L2_MBUS_CSI2_DPHY;
-+}
-+
- static inline struct gc2145 *to_gc2145(struct v4l2_subdev *_sd)
- {
- 	return container_of(_sd, struct gc2145, sd);
-@@ -773,6 +789,38 @@ static int gc2145_set_pad_format(struct v4l2_subdev *sd,
- 	return 0;
- }
- 
-+static int gc2145_config_dvp_mode(struct gc2145 *gc2145,
-+				   const struct gc2145_format *gc2145_format)
-+{
-+	int ret = 0;
-+	u64 sync_mode;
-+	int flags;
-+
-+	flags = gc2145->ep.bus.parallel.flags;
-+
-+	ret = cci_read(gc2145->regmap, GC2145_REG_SYNC_MODE, &sync_mode, NULL);
-+	if (ret)
-+		return ret;
-+
-+	sync_mode &= ~(GC2145_SYNC_MODE_VSYNC_POL |
-+		       GC2145_SYNC_MODE_HSYNC_POL |
-+		       GC2145_SYNC_MODE_OPCLK_POL);
-+
-+	if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
-+		sync_mode |= GC2145_SYNC_MODE_VSYNC_POL;
-+
-+	if (flags & V4L2_MBUS_HSYNC_ACTIVE_LOW)
-+		sync_mode |= GC2145_SYNC_MODE_HSYNC_POL;
-+
-+	if (flags & V4L2_MBUS_PCLK_SAMPLE_FALLING)
-+		sync_mode |= GC2145_SYNC_MODE_OPCLK_POL;
-+
-+	cci_write(gc2145->regmap, GC2145_REG_SYNC_MODE, sync_mode, &ret);
-+	cci_write(gc2145->regmap, GC2145_REG_PAD_IO, 0x0f, &ret);
-+
-+	return ret;
-+}
-+
- static const struct cci_reg_sequence gc2145_common_mipi_regs[] = {
- 	{GC2145_REG_PAGE_SELECT, 0x03},
- 	{GC2145_REG_DPHY_ANALOG_MODE1, GC2145_DPHY_MODE_PHY_CLK_EN |
-@@ -895,10 +943,13 @@ static int gc2145_start_streaming(struct gc2145 *gc2145,
- 		goto err_rpm_put;
- 	}
- 
--	/* Perform MIPI specific configuration */
--	ret = gc2145_config_mipi_mode(gc2145, gc2145_format);
-+	/* Perform interface specific configuration */
-+	if (gc2145_is_csi2(gc2145))
-+		ret = gc2145_config_mipi_mode(gc2145, gc2145_format);
-+	else
-+		ret = gc2145_config_dvp_mode(gc2145, gc2145_format);
- 	if (ret) {
--		dev_err(&client->dev, "%s failed to write mipi conf\n",
-+		dev_err(&client->dev, "%s failed to write interface conf\n",
- 			__func__);
- 		goto err_rpm_put;
- 	}
-@@ -924,6 +975,9 @@ static void gc2145_stop_streaming(struct gc2145 *gc2145)
- 			GC2145_CSI2_MODE_EN | GC2145_CSI2_MODE_MIPI_EN, 0,
- 			&ret);
- 	cci_write(gc2145->regmap, GC2145_REG_PAGE_SELECT, 0x00, &ret);
-+
-+	/* Disable dvp streaming */
-+	cci_write(gc2145->regmap, GC2145_REG_PAD_IO, 0x00, &ret);
- 	if (ret)
- 		dev_err(&client->dev, "%s failed to write regs\n", __func__);
- 
-@@ -1233,9 +1287,8 @@ static int gc2145_init_controls(struct gc2145 *gc2145)
- static int gc2145_check_hwcfg(struct device *dev)
- {
- 	struct fwnode_handle *endpoint;
--	struct v4l2_fwnode_endpoint ep_cfg = {
--		.bus_type = V4L2_MBUS_CSI2_DPHY
--	};
-+	struct v4l2_subdev *sd = dev_get_drvdata(dev);
-+	struct gc2145 *gc2145 = to_gc2145(sd);
- 	int ret;
- 
- 	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
-@@ -1244,36 +1297,46 @@ static int gc2145_check_hwcfg(struct device *dev)
- 		return -EINVAL;
- 	}
- 
--	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &ep_cfg);
-+	ret = v4l2_fwnode_endpoint_parse(endpoint, &gc2145->ep);
- 	fwnode_handle_put(endpoint);
- 	if (ret)
- 		return ret;
- 
--	/* Check the number of MIPI CSI2 data lanes */
--	if (ep_cfg.bus.mipi_csi2.num_data_lanes != 2) {
--		dev_err(dev, "only 2 data lanes are currently supported\n");
--		ret = -EINVAL;
--		goto out;
--	}
-+	switch (gc2145->ep.bus_type) {
-+	case V4L2_MBUS_CSI2_DPHY:
-+		/* Check the link frequency set in device tree */
-+		if (!gc2145->ep.nr_of_link_frequencies) {
-+			dev_err(dev, "link-frequencies property not found in DT\n");
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		/* Check the number of MIPI CSI2 data lanes */
-+		if (gc2145->ep.bus.mipi_csi2.num_data_lanes != 2) {
-+			dev_err(dev, "only 2 data lanes are currently supported\n");
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (gc2145->ep.nr_of_link_frequencies != 3 ||
-+			gc2145->ep.link_frequencies[0] != GC2145_640_480_LINKFREQ ||
-+			gc2145->ep.link_frequencies[1] != GC2145_1280_720_LINKFREQ ||
-+			gc2145->ep.link_frequencies[2] != GC2145_1600_1200_LINKFREQ) {
-+			dev_err(dev, "Invalid link-frequencies provided\n");
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+		break;
- 
--	/* Check the link frequency set in device tree */
--	if (!ep_cfg.nr_of_link_frequencies) {
--		dev_err(dev, "link-frequency property not found in DT\n");
-+	case V4L2_MBUS_PARALLEL:
-+		break;
-+	default:
-+		dev_err(dev, "unsupported bus type %u\n",
-+			gc2145->ep.bus_type);
- 		ret = -EINVAL;
- 		goto out;
- 	}
--
--	if (ep_cfg.nr_of_link_frequencies != 3 ||
--	    ep_cfg.link_frequencies[0] != GC2145_640_480_LINKFREQ ||
--	    ep_cfg.link_frequencies[1] != GC2145_1280_720_LINKFREQ ||
--	    ep_cfg.link_frequencies[2] != GC2145_1600_1200_LINKFREQ) {
--		dev_err(dev, "Invalid link-frequencies provided\n");
--		ret = -EINVAL;
--	}
--
- out:
--	v4l2_fwnode_endpoint_free(&ep_cfg);
--
- 	return ret;
- }
- 
--- 
-2.43.0
+> I assume the device in question
+> here cannot timestamp at the PHY at a high rate.
+> 
+>   https://lore.kernel.org/netdev/20231120093723.4d88fb2a@kernel.org/
+> 
+> >
+> > Or is the application not actually doing PTP, it does not care about
+> > the time of the packet on the wire, but it is more about media access
+> > control? Maybe the applications you are talking about are misusing the
+> > PTP API for something its not intended?
+> 
+> So hardware timestamping is not a PTP specific API or application right?
 
+Well, we have drivers/ptp. The IOCTL numbers are all PTP_XXXX. It
+seems like the subsystem started life in order to support PTP. It is
+not unusual for a subsystem to gain extra capabilities, and maybe PTP
+timestamps can be used in a more general way than the PTP
+protocol.
+
+> It's purely a socket option that is not tied to PTP (unless I am missing
+> something here).
+> 
+>   https://docs.kernel.org/networking/timestamping.html#timestamp-generation
+> 
+> So you could use this information for other applications like congestion
+> control where you do not want to limit the line rate using the PHY
+> timestamping mechanism.
+
+I think the key API point here is, you need to separate PTP stamping
+from other sorts of stamping. PTP stamping generally works better at
+the lowest point. So PTP stamping could be PHY stamping. If the PHY
+does not support PTP, or its implementation is poor, PTP stamping can
+be performed at the MAC. There are plenty of MACs which support that.
+So we need an API to configure where PTP stamping is performed.
+
+I expect the socket option is more generic. It is more about, give me
+a time stamp at a specific point in the stack. It is probably not
+being used by PTP, it could be used for flow control, etc. We probably
+need an API to configure that SOF_TIMESTAMPING_RX_HARDWARE actually
+means. It could be the PHY time stamp, maybe the MAC timestamp. Same
+for SOF_TIMESTAMPING_TX_HARDWARE, it could be the MAC, could be the
+PHY. But whatever they mean, i expect they are separate PTP.
+
+> In mlx5, we only steering PTP traffic to our PHY timestamping mechanism
+> through a traffic matching logic.
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/tree/drivers/net/ethernet/mellanox/mlx5/core/en/ptp.h?id=a6e0cb150c514efba4aaba4069927de43d80bb59#n71
+> 
+> This is because we do not want to PHY/port timestamp timing related
+> applications such as congestion control. I think it makes sense for
+> specialized timestamping applications to instead use the ethtool ioctl
+> to reconfigure using the PHY timestamps if the device is capable of PHY
+> timestamping. (So have the change be in userspace application tools like
+> linuxptp where precise but low <relative> rate timestamp information is
+> ideal).
+
+I would expect linuxptp is only interested in the PTP timestamp. It
+might be interested where the stamp is coming from, PHY or MAC, but it
+probably does not care too much, it just assumes the time stamp is
+good for PTP. But i would expect linuxptp has no interest in what the
+generic socket options are doing.
+
+    Andrew
 
