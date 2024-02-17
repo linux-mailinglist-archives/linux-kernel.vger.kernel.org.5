@@ -1,77 +1,76 @@
-Return-Path: <linux-kernel+bounces-70062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 736A4859290
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:17:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59F36859296
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:17:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 98C67B22F68
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:17:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 113CE286A38
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:17:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333BF823BB;
-	Sat, 17 Feb 2024 20:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3278287C;
+	Sat, 17 Feb 2024 20:13:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="AEPsU/lk"
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="CoZRJa6w"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098F381AD1;
-	Sat, 17 Feb 2024 20:13:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C919823CA;
+	Sat, 17 Feb 2024 20:13:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708200812; cv=none; b=lTJ68Zw/bJ7DlVpcWWwM3rsHCsCaARIapq2FlW46deSfORKC2No/i4yjS4UO5jQuwSrtoeILGR6P0ZVajdMpqCz/jgEJtBuIYJTjPZTYYE8zNgJdxdPij/gHcZin2ShTP9Plu7rOzREmeXSDtoiN9ty58U2GIPjepGQ98YpFHXg=
+	t=1708200815; cv=none; b=KtP8y4UxWE+RSTfXLP76wShFE9NgrUwqpWF5By8834XAXzxZyRteZeSmPTd5bfArm2s5hXYM8jguMJTCw6xnkl2d9ZmmiTayCW/jcoFg3p4W+z3fHBnvAC7xWfH+x643fEsj2g7K9xO9xGpDzd6URPJKLJvL5ri21B+M7S46ujk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708200812; c=relaxed/simple;
-	bh=jckpWHmanpSHMnPw7HQu4VFxOjRCXzlNGUWz/0ZTJeo=;
+	s=arc-20240116; t=1708200815; c=relaxed/simple;
+	bh=w71Wbcz7FmwZv+zc0blwnBWeOoYM4g6wH5JSNctbpo8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CqdOGHEKLjrt46aYJux59g8B+in4CYVL3JV1dCmoXSok+/KdfBxOUNCTZGqJjbwcTkzRVWahg2rSQL8NIH4ZTlpgRV0LgWt+0OF114AZSp89go4E+tvBsv0EN55ZbWLpP7EnQfBQeRA9/Bq/v9ol96ETEfTrztqjgSM6Vo3AOxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=AEPsU/lk; arc=none smtp.client-ip=209.85.216.44
+	 In-Reply-To:To:Cc; b=rjWxOzkpUECAcdBbhciwFfhb83FjSJbIp6lxEZ8RyG/pawWjinjxvUDT4ef/DNWLVXw09FCw/gMaNwCZyONNvdo2perp1MALbmaW+EiuYKww1s589lizmcadqPV59yUUW8dZClDHnOaMc0iqHN0hbVPnWbTBOOEKvkrkMZs1PuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=CoZRJa6w; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-290d59df3f0so2594297a91.2;
-        Sat, 17 Feb 2024 12:13:30 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e104a8e3f7so2623723b3a.1;
+        Sat, 17 Feb 2024 12:13:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708200810; x=1708805610;
+        d=1e100.net; s=20230601; t=1708200814; x=1708805614;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:dkim-signature:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xrOIV6/f3vZV0RT8ynNTPeBVRF+ik/O4GVtwFdY3Oyg=;
-        b=wLSZgbve0H7TLeVoJ32yiPKWqIXNRIMB+610QNtIfsAHEwbb7GLirCP3+w0BJD8b40
-         9CJ4zsLupmuVmlhUMlgzmAKgd6EcETWP1MXvydhUCODs+Ubnc7Y6Xvee+BhnU/nKUPyD
-         NG1cQ9/7ePYgknKAdIS8tNCk/PIeKFK06LgQF/Rx49BJ6hCM9E7LwwFm5bpIMu5TB3Fq
-         pc+kbJZXRIfSVLIAbgSsH1zOa8Fx8JWFdFJT1mgCWgMsc4vIktgRfLlEXBnvWIx88O/e
-         rsFTBW/XOl0D/aavQKilPtvWCK654e/jRDT1nyc7ZGsTgurIFNbeEg106Iyq54CHRFqA
-         LnSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbMQTmd3r1tMWttaSaSLLc/jGfa0kBnwH0CrlsV3cDK/S1glPPJCJVSfNwbfXG6SlUfBqa/w0zgobWfmClgEgol8b/0vkex/ip297zc/NxU4ZABnjCaO4hRamN6wBOGyYOEnu9N+PF7NDiI2+Wq2VFqTo/GujP8JblkFZKoQ9Py4g1
-X-Gm-Message-State: AOJu0YxwMQ2XzjFoiT0EmZfqnaswhCUidJhbG7PJhjDsj74HCFzqOiBz
-	fuEsYa/ePJeX0eiQ706LNd3W+LkZLfoqTcI0vPMVVJnbHunlPvCF
-X-Google-Smtp-Source: AGHT+IHNI4aTrKzu/exZ5IH5/eCHtxL8hDAZoK8faGROygZc23MMA8HJ0xHAJA5VeRP382zhxD892g==
-X-Received: by 2002:a17:902:d504:b0:1db:cf64:732b with SMTP id b4-20020a170902d50400b001dbcf64732bmr2255775plg.21.1708200810472;
-        Sat, 17 Feb 2024 12:13:30 -0800 (PST)
+        bh=eLlN75gM6cSLXL0namU4YIlalW5Vi0mlHQZ3MHBhLI4=;
+        b=fPyALyfMFb2vJBpQaOQGTAuxDXSDm3XBnWZIPQpCbUWhVRFv/Ij2tfRneFALI/MrMa
+         LJV30g4l2VcrVrQ8uNOI1pLWZmNR/HYW4gJsTfOgXl4NsV9uTh3kJj4usnCEKgwsigLS
+         wOD+xTELHoe6e6tVZR8TrJzXFZRUQYyCRRyi/Y8QqJzGQfvWNUatJYBsU0xynyl/Vaw0
+         K00SXCkeJnUvArvnGeVAkq+NmbapiMQ7Cv2kvstlWOPBFb/uooCe7vJfXiuxzK/bettt
+         GGGA98aqD6pwlaL/e9Qa3WA8UCmP7Rnu+LIQIrINYsvpNpwb57wAZLMkXK7KkNholjhz
+         vgYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXiHlpQktA9ngw85tOFRtTFFo14fRQiqEUSAqPlzufRxQu1UJ57ydpZhSWs7JFdxNbWQ+RjxL/cfpAeIpGklE3fOWNoQq4EC5TwZI0K/pK9ltIevE9MZ002yH+zshC0ludkTiRvJ2uukQVt3D31Oe+Gd2LHMRaArSwUMdoQnvv1FdPG
+X-Gm-Message-State: AOJu0YwqL3B9quDFeWcXIzV8JEpI0G9nhb8lKDgJ2bTDJ9zlbQ0OOZ3i
+	94i8kI/ExUc+CBYFMpR9F7AiymIjRTibDuMzZ5UhLm8weblivuLH
+X-Google-Smtp-Source: AGHT+IETR8osEA01neyaUCatTxOdrg5wlbF2nxUD8OZZ8J5MVq8bPdspXda+OFm9Wsq/uoC1CkXsTQ==
+X-Received: by 2002:aa7:8703:0:b0:6e3:84cb:3d51 with SMTP id b3-20020aa78703000000b006e384cb3d51mr1500974pfo.33.1708200813620;
+        Sat, 17 Feb 2024 12:13:33 -0800 (PST)
 Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id u10-20020a170903304a00b001d7222d8caasm1819993pla.50.2024.02.17.12.13.29
+        by smtp.gmail.com with ESMTPSA id v9-20020aa78089000000b006e13a88d52esm2024077pff.61.2024.02.17.12.13.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 12:13:30 -0800 (PST)
+        Sat, 17 Feb 2024 12:13:33 -0800 (PST)
 From: "Ricardo B. Marliere" <ricardo@marliere.net>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708200809;
+	s=2024; t=1708200812;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xrOIV6/f3vZV0RT8ynNTPeBVRF+ik/O4GVtwFdY3Oyg=;
-	b=AEPsU/lktqn3QfPkZuEQm1XN26hyVbHsQy2EgjvgwjwYINSHoYjBxSs6VAbGYuAse+jkho
-	nC/6oIOwksA5vNNR63Px7gPiyBOVN39R364ExTjAUoDLHzy45hKqh3MUdoo5YUYI/ZMWU/
-	sIrsG7p2/vGA7i7HCh+At+PqUbwnZAmYg1NNaT9X2NRcONmDkaGHFcY8RLKEmXcnXRdqFZ
-	/iG78rVfrlgohqqZV9JOIMyQpxjfdsWjZHt1rp3gBssaGKtOmJpksnkSVyOdav8gnRno09
-	tacQqRgf0/ntW8i7N3ZSPdQ5uF1eJ84LMXvvY9SWQcAMlbhc2EjGLefH/yocAw==
+	bh=eLlN75gM6cSLXL0namU4YIlalW5Vi0mlHQZ3MHBhLI4=;
+	b=CoZRJa6wPSrOMvSIpcKXRjMZvP8gNtwSvdc0gg5MRcDWy68yiY2a+GaHOh4MbVa/8prsRc
+	2ywLRY5zMey7LTXsfG7Dfrg0PuY4+BGFZtil2N7S561byE0ZLUHLI5DwZS7/xxeTtVxG8e
+	OiG6kIi1hMAf2iPrjJ+zUgAXP78Fjtffq+8eVm4JZ6aTsW3bZXoO0FrguQxbX7mcOy7aSf
+	J5BSr7EK++BMpAI7rDwO3fsBkF4WjjAdN6hjdauBvJ8BOv0txhmCCbJlLlG64vBt5r42uG
+	Lmk/7rcUa/XRx1Tfs5WI4Us4LcZLxKdZb8JND0cFtwATOnHzlisxm/cB//LFEw==
 Authentication-Results: ORIGINATING;
 	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sat, 17 Feb 2024 17:13:33 -0300
-Subject: [PATCH 11/12] net: wwan: core: constify the struct device_type
- usage
+Date: Sat, 17 Feb 2024 17:13:34 -0300
+Subject: [PATCH 12/12] net: hso: constify the struct device_type usage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,7 +79,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240217-device_cleanup-net-v1-11-1eb31fb689f7@marliere.net>
+Message-Id: <20240217-device_cleanup-net-v1-12-1eb31fb689f7@marliere.net>
 References: <20240217-device_cleanup-net-v1-0-1eb31fb689f7@marliere.net>
 In-Reply-To: <20240217-device_cleanup-net-v1-0-1eb31fb689f7@marliere.net>
 To: Oliver Neukum <oneukum@suse.com>, 
@@ -96,47 +95,47 @@ Cc: netdev@vger.kernel.org, linux-usb@vger.kernel.org,
  linux-kernel@vger.kernel.org, bridge@lists.linux.dev, 
  linux-ppp@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
  "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1014; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=jckpWHmanpSHMnPw7HQu4VFxOjRCXzlNGUWz/0ZTJeo=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl0RNth7ayQciNaopWilyJn+5++vrrozSI/AGf2
- LmjjU+2+ReJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdETbQAKCRDJC4p8Y4ZY
- pvQUD/9eIcYw88bFShKSfY20/NUwqHxGY+WcJStJhCBjIXXQwTk3eCT9KVJ0xwG0N3tF5kYz3Xl
- QSlbOE6MLsb4fXgUTkADqWhPK3nWR8JdoQbMGRet3W37oK1kNkucG7iNPHPD6HLX2gq/kmNIj9y
- /1hMOur7RKkt28HNKThkE9bDYtpg1AlNEVKn1C3rzCGd9la+DadlzsMhytSdrWaj2UPApUFW0ZU
- V8h5vmyy2+48oX7xlL47839rTZ0hEbnjSPPXBElgDdgtatCmS7M8JVl0NWQyHJEEfXqinfFSJuu
- hwUq1OJ3CAUK0OXPZmVJ0O0HGJ3zaM0hANsIbv5WBfsulXuyDX+aVRbzj7F/2yDcubeo0UDIZ/f
- T4wvopAoGYBXU/dbWKtH71h5xB9/7qVbQNIT4MxnSWQ2F6bP+yKVgNjwOdZLIZTh66ugT8g55jb
- Y6CJzOtZn1i3ywzG1NS9DLb7xH/OuDRHum8iakV5jChkg5GTVnb8Rbhb34X6K0MwV5IPIZ7ty6K
- nnBcmmn9DAOYphgAGwlHAtisVEDWyL+E1zDdGHMzYgMbPaUlh4HXKkJmKN3XP6r0Pwlxc16Ahqh
- 4k+gDQ+xNrnjKCCTwFHSA6w5Nt5k6VrsQNusqQVDLsuKYYf16rPeHyA72lJiKCyrySAc7asdE6y
- HVX6bd5XxFV5mXQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=848; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=w71Wbcz7FmwZv+zc0blwnBWeOoYM4g6wH5JSNctbpo8=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl0RNuu2dyMd0Dn82mZJ0uYEioT0ekZ6c+ZBXf0
+ tJ9Asq8mHeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdETbgAKCRDJC4p8Y4ZY
+ pkD4D/41UqCiVB/yP7feFrZ2WeO+O//tY1R6qezrJnX86aj43FGYbFyljHIpvyNHnnbMW2EX+wj
+ dCy+bKz4luNffXMSQHX4ddVDqjpd6/VzlEC8O9/3PaijK5gbyjs6oM1bSSKD5TAA19f6k89+OA3
+ mSFgkjwJRGSAH5tbn+zBjX0xRF/gaJn/rZ7+0ZTnW59ELApDiCdDBWxN1yG1RF9TB5E5uBykiok
+ YmMvVC04WSuxJspHCWaZt1PZ4U2jFjg+Nw9+00ZmrnzYppqu7BCtmzB7PFeBThDK7lImtGB/8AQ
+ OVjGXzCJXO3J/XRODHoAiEU0rhpx6InOgEG2o+o5OSt3TNDySGshVGqzMd8Yn7D4HWn/2KIlhwB
+ bX3TFOKsD77AR5aexms8wG/Fs4sNE8JkDPrkVwx91DHFlDTefZAdmL5ck3XSlRWQE5H/DcpHWZw
+ IWlocKvOMvNX3o8EZ0A+0YR44Eak9DcCrRhtjsmNEciBvAQAYW/8iB6ZJ7Pa1Yg/YgfkZVvqKE6
+ +rPTvMSWmt4bZROlHkSWJdAH0xzHC4UBmz+8jSE0MxukTx8qXfEIaOInczSJ2+InLSYLNi5YfmN
+ Yh4g4ZzIA4y7GI0LDHH948xVVCD2SI6se+4PCuTjPee2BCSR87K7JADdBMqmunFEnUCmZMfn+ZK
+ BMODrTGSqLQ8R0A==
 X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
  fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
 Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-core can properly handle constant struct device_type. Move the wwan_type
+core can properly handle constant struct device_type. Move the hso_type
 variable to be a constant structure as well, placing it into read-only
 memory which can not be modified at runtime.
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 ---
- drivers/net/wwan/wwan_core.c | 2 +-
+ drivers/net/usb/hso.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wwan/wwan_core.c b/drivers/net/wwan/wwan_core.c
-index 2ed20b20e7fc..b0030f3ed0f0 100644
---- a/drivers/net/wwan/wwan_core.c
-+++ b/drivers/net/wwan/wwan_core.c
-@@ -920,7 +920,7 @@ static int wwan_rtnl_validate(struct nlattr *tb[], struct nlattr *data[],
- 	return 0;
+diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+index f088ea2ba6f3..1aeb36119d3f 100644
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -2465,7 +2465,7 @@ static void hso_create_rfkill(struct hso_device *hso_dev,
+ 	}
  }
  
--static struct device_type wwan_type = { .name = "wwan" };
-+static const struct device_type wwan_type = { .name = "wwan" };
+-static struct device_type hso_type = {
++static const struct device_type hso_type = {
+ 	.name	= "wwan",
+ };
  
- static struct net_device *wwan_rtnl_alloc(struct nlattr *tb[],
- 					  const char *ifname,
 
 -- 
 2.43.0
