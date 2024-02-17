@@ -1,348 +1,93 @@
-Return-Path: <linux-kernel+bounces-69606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68D7A858C4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:03:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCF4A858C0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:58:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D4001C21158
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:03:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5013F282CD2
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:58:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996402555D;
-	Sat, 17 Feb 2024 00:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD00C8C7;
+	Sat, 17 Feb 2024 00:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="YFP5sTYC"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d2cNRsCX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44BDD224C9
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 232BBEC4;
+	Sat, 17 Feb 2024 00:58:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708131529; cv=none; b=Q5gJvpFcCaHW/14W4SiyXhqe9G0UnNsqIxgXE8kxAFvwbVmATczntz6J+RLZ/km0DzFqHaRD2DZJjbywj7Prb/39N4329bfICT5kJEBqIV2ywjYEe+9iXiMEndQgsekzc1X5e5GWZJcunV755xNUXnZVzWS8M2goHE+evxjlm6Q=
+	t=1708131491; cv=none; b=khjOfwl9LdMm+ZnHpyYsK+Hzo9g4xwpA4vr2H4LVkAMqwL4CeUnu/KucIFeOMLaRWOldkQ9aEDwDe8wFdhXADECh6tqxOVeUvIjyQG0+c2BJin1kxB8nN8F2URZ6OfnkNal/OgMVthGob39meqLOS6DB5T1oc/1zl+0VdEDj4pc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708131529; c=relaxed/simple;
-	bh=xGRjYApXgZ4WfYQCTXY8koBTsbYbevNMvM6kYRo0L74=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Y5+27mBFyEHd2MXevVcCYrmp9nuVNV1n8S4b5dhzidZD9Mk8SeQQa+lKcaC9xdszL7zY7MkiPelZodYif7A2Ize6ayoCbwkWgRbkXFUCjjdEBq2IIwedl4eedkAvCTAph0hbDdLsmvtX2ZMwujnf+C16LNed4gn0e5FRFm8iZKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=YFP5sTYC; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bed9fb159fso105291839f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:58:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708131525; x=1708736325; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JIGj4g715G6yohgyO/4Q0tCiDPX2tJrcO1/uwFaLqes=;
-        b=YFP5sTYCgJ3FdKs7hPjdkQuOFfKGwQgufq1cYmQJE5uHSoBKoTMOYvehtZ1yvm1bPj
-         sIMT622KNZQoNmLbL4pHn94Y5g7ClotgMs0NUCNT3O7FbH0KI9uqG7sPyNUUoIS8Hv6W
-         I2E7BNBRxljocM+lmFglT1MFr34gp17pJOoSZcxpu798oGFHH76Pqh7cYJVlTqigCwph
-         GauRzk9iKM7hMDJQRa6gfVwpUnuUEMtfp9t353QEyD5QECSM0QhS4WJ7YGohfqNZWBg5
-         nOXYfVXixIK3fbqDcFyWVLaN/YUcDzkcEKhCdWr9QQ2VgS7Le4930yocOdzVTEc+oeUa
-         WQUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708131525; x=1708736325;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JIGj4g715G6yohgyO/4Q0tCiDPX2tJrcO1/uwFaLqes=;
-        b=NKxGHPtd8vGjvQlrCAY9k82gCV8hl4D0O7/bV+vmAlmf0kuQyKZK/d7gmB4/2Woq2c
-         CNyO/ksZQK7IgSRCuHnvSyASJcyCfeDqRo6ENqoK6luZutlYXzvb615CxWNQURU4NdNy
-         6nGxegW+ClBI5AYY0TV2pEdZVlBT2PQ4PK4C29SAnZ4UgK0Fuhm9YZ1GddHmpNT8xTGl
-         1X6Ndlkq4PuYkYpew/nqzX2aLYbaYdWKOj6Gh6TS9OpnOdeXZaeJTgCRAn11YET6/l+9
-         W0sLkOQ6RSSO18FnKDs3zHu2P7B0318jMgmZ2YmC2HTT/0Ksny7caOb+RUoNaQ5bd+0d
-         nrfg==
-X-Gm-Message-State: AOJu0YwP39YuK32zsUrjABxOwfDMZlnqfQjxCTnZMDBhO4SubGaydbao
-	x6qTXyadJVqpBW+0zHj0nFhMu/XeS7qnoxnaXbzQp3t/KjiEMOkXyVohA7Hn04Y5gVGq7z3r1hi
-	n
-X-Google-Smtp-Source: AGHT+IF+X2u5pVrDfJiSLKIz3PkBfnEp1Eo29CwD/FNCbs9zzOknJEUhVT4g49rCOyNlyB3Z65pvKw==
-X-Received: by 2002:a92:d081:0:b0:365:156:bb86 with SMTP id h1-20020a92d081000000b003650156bb86mr4612456ilh.2.1708131525473;
-        Fri, 16 Feb 2024 16:58:45 -0800 (PST)
-Received: from atishp.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id d188-20020a6336c5000000b005dc89957e06sm487655pga.71.2024.02.16.16.58.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 16:58:45 -0800 (PST)
-From: Atish Patra <atishp@rivosinc.com>
-To: linux-kernel@vger.kernel.org
-Cc: Atish Patra <atishp@rivosinc.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Anup Patel <anup@brainfault.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Christian Brauner <brauner@kernel.org>,
-	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
-	Conor Dooley <conor@kernel.org>,
-	devicetree@vger.kernel.org,
-	Evan Green <evan@rivosinc.com>,
-	Guo Ren <guoren@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Ian Rogers <irogers@google.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	James Clark <james.clark@arm.com>,
-	Jing Zhang <renyu.zj@linux.alibaba.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	kvm-riscv@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
-	linux-doc@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	Mark Rutland <mark.rutland@arm.com>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Samuel Holland <samuel.holland@sifive.com>,
-	Weilin Wang <weilin.wang@intel.com>,
+	s=arc-20240116; t=1708131491; c=relaxed/simple;
+	bh=st9IJTbuIeN6geAWo0rMLtW6KVa2BYhiVgsh8RSz23U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FlCmD285WqCR1WuoFvnEZ8URd+hc060+nJqSbEwUxBXZrcYsc53gWmYMVviEbgl8aOpZjeRclRuhnXsztaAfQpir0gF4MM8274JFwWyhxLshc7FWNhuU23LTTKGNJa3SaYs/zEBizp/hUXyz7QulWQG13afFIldL7KVGMjB+PoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d2cNRsCX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49501C433C7;
+	Sat, 17 Feb 2024 00:58:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708131490;
+	bh=st9IJTbuIeN6geAWo0rMLtW6KVa2BYhiVgsh8RSz23U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=d2cNRsCXD9uvuApuY0do1aoftfYTU2jRvbREhHqXc6xzvOVGT/ADD7YXMeXQWbtXd
+	 YeEBcyBF2HPYgMLPt3zzrzUwEXlc1BP7nW7db08E1MJRdn5QwCeiSiAF7EI6gMm6fU
+	 PhLVBUBrgUzYmcv4BH3UEQGeYAIQPS87CyMKBnrOVF1Y5Gxce4UhQh7UcSsTVOj5Td
+	 WLtzduAMd6mcQ9rfmTLGgXb34cWHhA26PkOu1If2n3x0toqz6twOA3AysSbn3zR3DT
+	 CW983RkEqg9lKR/MdFECIhE6xtH3jy2gb4OmgAjyfSA4mX1rrtSTl2WvyWR7RdRE55
+	 OT9w61bJck4XA==
+Date: Sat, 17 Feb 2024 08:58:06 +0800
+From: Tzung-Bi Shih <tzungbi@kernel.org>
+To: =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado <nfraprado@collabora.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Brian Norris <briannorris@chromium.org>,
+	Julius Werner <jwerner@chromium.org>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
-	kaiwenxue1@gmail.com,
-	Yang Jihong <yangjihong1@huawei.com>
-Subject: [PATCH RFC 12/20] RISC-V: perf: Modify the counter discovery mechanism
-Date: Fri, 16 Feb 2024 16:57:30 -0800
-Message-Id: <20240217005738.3744121-13-atishp@rivosinc.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240217005738.3744121-1-atishp@rivosinc.com>
-References: <20240217005738.3744121-1-atishp@rivosinc.com>
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	kernel@collabora.com, chrome-platform@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 0/4] Allow coreboot modules to autoload and enable
+ cbmem in the arm64 defconfig
+Message-ID: <ZdAEno9gIwjmI0lN@google.com>
+References: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240212-coreboot-mod-defconfig-v4-0-d14172676f6d@collabora.com>
 
-If both counter delegation and SBI PMU is present, the counter
-delegation will be used for hardware pmu counters while the SBI PMU
-will be used for firmware counters. Thus, the driver has to probe
-the counters info via SBI PMU to distinguish the firmware counters.
+On Mon, Feb 12, 2024 at 09:50:04AM -0500, Nícolas F. R. A. Prado wrote:
+> This series adds the missing pieces to the coreboot bus and the module
+> alias generation to allow coreboot modules to be automatically loaded
+> when matching devices are detected.
+> 
+> The configs for cbmem coreboot entries are then enabled in the arm64
+> defconfig, as modules, to allow reading logs from coreboot on arm64
+> Chromebooks, which is useful for debugging the boot process.
+> 
+> [...]
 
-The hybrid scheme also requires improvements of the informational
-logging messages to indicate the user about underlying interface
-used for each use case.
+Applied, thanks!
 
-Signed-off-by: Atish Patra <atishp@rivosinc.com>
----
- drivers/perf/riscv_pmu_dev.c | 120 ++++++++++++++++++++++++++---------
- 1 file changed, 90 insertions(+), 30 deletions(-)
-
-diff --git a/drivers/perf/riscv_pmu_dev.c b/drivers/perf/riscv_pmu_dev.c
-index 3d27bd65f140..dfc0ddee9da4 100644
---- a/drivers/perf/riscv_pmu_dev.c
-+++ b/drivers/perf/riscv_pmu_dev.c
-@@ -35,6 +35,11 @@
- PMU_FORMAT_ATTR(event, "config:0-47");
- PMU_FORMAT_ATTR(firmware, "config:63");
- 
-+static DEFINE_STATIC_KEY_FALSE(riscv_pmu_sbi_available);
-+static DEFINE_STATIC_KEY_FALSE(riscv_pmu_cdeleg_available);
-+static bool cdeleg_available;
-+static bool sbi_available;
-+
- static struct attribute *riscv_arch_formats_attr[] = {
- 	&format_attr_event.attr,
- 	&format_attr_firmware.attr,
-@@ -56,7 +61,8 @@ static int sysctl_perf_user_access __read_mostly = SYSCTL_USER_ACCESS;
- 
- /*
-  * This structure is SBI specific but counter delegation also require counter
-- * width, csr mapping. Reuse it for now.
-+ * width, csr mapping. Reuse it for now we can have firmware counters for
-+ * platfroms with counter delegation support.
-  * RISC-V doesn't have heterogeneous harts yet. This need to be part of
-  * per_cpu in case of harts with different pmu counters
-  */
-@@ -67,6 +73,8 @@ static unsigned int riscv_pmu_irq;
- 
- /* Cache the available counters in a bitmask */
- static unsigned long cmask;
-+/* Cache the available firmware counters in another bitmask */
-+static unsigned long firmware_cmask;
- 
- struct sbi_pmu_event_data {
- 	union {
-@@ -575,35 +583,49 @@ static int rvpmu_sbi_find_num_ctrs(void)
- 		return sbi_err_map_linux_errno(ret.error);
- }
- 
--static int rvpmu_sbi_get_ctrinfo(int nctr, unsigned long *mask)
-+static int rvpmu_deleg_find_ctrs(void)
-+{
-+	/* TODO */
-+	return -1;
-+}
-+
-+static int rvpmu_sbi_get_ctrinfo(int nsbi_ctr, int ndeleg_ctr)
- {
- 	struct sbiret ret;
--	int i, num_hw_ctr = 0, num_fw_ctr = 0;
-+	int i, num_hw_ctr = 0, num_fw_ctr = 0, num_ctr = 0;
- 	union sbi_pmu_ctr_info cinfo;
- 
--	pmu_ctr_list = kcalloc(nctr, sizeof(*pmu_ctr_list), GFP_KERNEL);
--	if (!pmu_ctr_list)
--		return -ENOMEM;
--
--	for (i = 0; i < nctr; i++) {
-+	for (i = 0; i < nsbi_ctr; i++) {
- 		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_GET_INFO, i, 0, 0, 0, 0, 0);
- 		if (ret.error)
- 			/* The logical counter ids are not expected to be contiguous */
- 			continue;
- 
--		*mask |= BIT(i);
--
- 		cinfo.value = ret.value;
- 		if (cinfo.type == SBI_PMU_CTR_TYPE_FW)
- 			num_fw_ctr++;
--		else
-+
-+		if (!cdeleg_available) {
- 			num_hw_ctr++;
--		pmu_ctr_list[i].value = cinfo.value;
-+			cmask |= BIT(i);
-+			pmu_ctr_list[i].value = cinfo.value;
-+		} else if (cinfo.type == SBI_PMU_CTR_TYPE_FW) {
-+			/* Track firmware counters in a different mask */
-+			firmware_cmask |= BIT(i);
-+			pmu_ctr_list[i].value = cinfo.value;
-+		}
-+
- 	}
- 
--	pr_info("%d firmware and %d hardware counters\n", num_fw_ctr, num_hw_ctr);
-+	if (cdeleg_available) {
-+		pr_info("%d firmware and %d hardware counters\n", num_fw_ctr, ndeleg_ctr);
-+		num_ctr = num_fw_ctr + ndeleg_ctr;
-+	} else {
-+		pr_info("%d firmware and %d hardware counters\n", num_fw_ctr, num_hw_ctr);
-+		num_ctr = nsbi_ctr;
-+	}
- 
--	return 0;
-+	return num_ctr;
- }
- 
- static inline void rvpmu_sbi_stop_all(struct riscv_pmu *pmu)
-@@ -775,16 +797,33 @@ static void rvpmu_ctr_stop(struct perf_event *event, unsigned long flag)
- 	/* TODO: Counter delegation implementation */
- }
- 
--static int rvpmu_find_num_ctrs(void)
-+static int rvpmu_find_ctrs(void)
- {
--	return rvpmu_sbi_find_num_ctrs();
--	/* TODO: Counter delegation implementation */
--}
-+	int num_sbi_counters = 0, num_deleg_counters = 0, num_counters = 0;
- 
--static int rvpmu_get_ctrinfo(int nctr, unsigned long *mask)
--{
--	return rvpmu_sbi_get_ctrinfo(nctr, mask);
--	/* TODO: Counter delegation implementation */
-+	/*
-+	 * We don't know how many firmware counters available. Just allocate
-+	 * for maximum counters driver can support. The default is 64 anyways.
-+	 */
-+	pmu_ctr_list = kcalloc(RISCV_MAX_COUNTERS, sizeof(*pmu_ctr_list),
-+			       GFP_KERNEL);
-+	if (!pmu_ctr_list)
-+		return -ENOMEM;
-+
-+	if (cdeleg_available)
-+		num_deleg_counters = rvpmu_deleg_find_ctrs();
-+
-+	/* This is required for firmware counters even if the above is true */
-+	if (sbi_available)
-+		num_sbi_counters = rvpmu_sbi_find_num_ctrs();
-+
-+	if (num_sbi_counters >= RISCV_MAX_COUNTERS || num_deleg_counters >= RISCV_MAX_COUNTERS)
-+		return -ENOSPC;
-+
-+	/* cache all the information about counters now */
-+	num_counters = rvpmu_sbi_get_ctrinfo(num_sbi_counters, num_deleg_counters);
-+
-+	return num_counters;
- }
- 
- static int rvpmu_event_map(struct perf_event *event, u64 *econfig)
-@@ -1069,12 +1108,21 @@ static int rvpmu_device_probe(struct platform_device *pdev)
- 	int ret = -ENODEV;
- 	int num_counters;
- 
--	pr_info("SBI PMU extension is available\n");
-+	if (cdeleg_available) {
-+		pr_info("hpmcounters will use the counter delegation ISA extension\n");
-+		if (sbi_available)
-+			pr_info("Firmware counters will be use SBI PMU extension\n");
-+		else
-+			pr_info("Firmware counters will be not available as SBI PMU extension is not present\n");
-+	} else if (sbi_available) {
-+		pr_info("Both hpmcounters and firmware counters will use SBI PMU extension\n");
-+	}
-+
- 	pmu = riscv_pmu_alloc();
- 	if (!pmu)
- 		return -ENOMEM;
- 
--	num_counters = rvpmu_find_num_ctrs();
-+	num_counters = rvpmu_find_ctrs();
- 	if (num_counters < 0) {
- 		pr_err("SBI PMU extension doesn't provide any counters\n");
- 		goto out_free;
-@@ -1086,9 +1134,6 @@ static int rvpmu_device_probe(struct platform_device *pdev)
- 		pr_info("SBI returned more than maximum number of counters. Limiting the number of counters to %d\n", num_counters);
- 	}
- 
--	/* cache all the information about counters now */
--	if (rvpmu_get_ctrinfo(num_counters, &cmask))
--		goto out_free;
- 
- 	ret = rvpmu_setup_irqs(pmu, pdev);
- 	if (ret < 0) {
-@@ -1147,11 +1192,26 @@ static int __init rvpmu_devinit(void)
- 	int ret;
- 	struct platform_device *pdev;
- 
--	if (sbi_spec_version < sbi_mk_version(0, 3) ||
--	    !sbi_probe_extension(SBI_EXT_PMU)) {
--		return 0;
-+	if (sbi_spec_version >= sbi_mk_version(0, 3) &&
-+	    sbi_probe_extension(SBI_EXT_PMU)) {
-+		static_branch_enable(&riscv_pmu_sbi_available);
-+		sbi_available = true;
-+	}
-+
-+	/*
-+	 * We need all three extensions to be present to access the counters
-+	 * in S-mode via Supervisor Counter delegation.
-+	 */
-+	if (riscv_isa_extension_available(NULL, SSCCFG) &&
-+	    riscv_isa_extension_available(NULL, SMCDELEG) &&
-+	    riscv_isa_extension_available(NULL, SSCSRIND)) {
-+		static_branch_enable(&riscv_pmu_cdeleg_available);
-+		cdeleg_available = true;
- 	}
- 
-+	if (!(sbi_available || cdeleg_available))
-+		return 0;
-+
- 	ret = cpuhp_setup_state_multi(CPUHP_AP_PERF_RISCV_STARTING,
- 				      "perf/riscv/pmu:starting",
- 				      rvpmu_starting_cpu, rvpmu_dying_cpu);
--- 
-2.34.1
-
+[1/4] firmware: coreboot: Generate modalias uevent for devices
+      commit: c2b28f6806d2a26a8d46c0f02d4852bf9904929d
+[2/4] firmware: coreboot: Generate aliases for coreboot modules
+      commit: f1cebae1dbf85f9de65c13a2d9f5cc3be7e51dc4
+[3/4] firmware: coreboot: Replace tag with id table in driver struct
+      commit: 8a0a62941a042612f7487f6c4ff291f9054ff214
 
