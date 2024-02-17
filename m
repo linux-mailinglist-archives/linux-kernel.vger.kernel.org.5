@@ -1,88 +1,121 @@
-Return-Path: <linux-kernel+bounces-69740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70CBE858DE4
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE70858DE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:12:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A3E3E1C2107D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:13:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 795C01C211C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EB91CD28;
-	Sat, 17 Feb 2024 08:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NSQ1PPzE"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 604BB1CD38;
+	Sat, 17 Feb 2024 08:12:40 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74B9B1CABA
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 08:13:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 318041CF8A;
+	Sat, 17 Feb 2024 08:12:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708157634; cv=none; b=Zcc+6LIepd9+siFgPH8ajNLzRmbgPUXqH4+jY/IAyfn6IPuB5RUJa1OzPCGlNKDLzoGy02pSAuhc9MW2PumY3+7fYVjtouAkoE3bqRZndIz3tgcG73OEYZLiSMS8wbwKup5kPzTf9Y2LY4hK6p0wcdeupA6/pH9Qn3yBKrB22X0=
+	t=1708157559; cv=none; b=aK2pPwTyGgVez/Loi3ngkpdrrv1QKzADH/QdQ++nlka5EtkpWi6YBr/FRu3uSJqjOQmoWaAFxZMYCkSnwTfDCwANCiKZN/1BpQb8S4JrJV3kGGFFlK+xC/7IjuS3OnfBmYeF2rseMZz9MpNIEWHhD9YofpB8ya2xIjYobe2j5RM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708157634; c=relaxed/simple;
-	bh=CEV0GAwlNnqfAjykp4IK9n4NFhtb0MDhdCn646Civqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d/dq5ZTLiXp7d1pKyp4kWTYO3eO3xgSvK/XOrMcLF4mCjzCkfRJP5Wh2f4OV7IGHt/+B3IrSCr5o+FigGny2RNC3WvpnzknN0YmyFFsJ4KbxxQtHYSCZNrU6n+WyPdUQTUIgFyhLJciRbdS9yqz3IHZLu/zpBOwBngUF/XZlbkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NSQ1PPzE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99053C433F1;
-	Sat, 17 Feb 2024 08:13:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708157634;
-	bh=CEV0GAwlNnqfAjykp4IK9n4NFhtb0MDhdCn646Civqg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NSQ1PPzEcOFaYuZ7KxU23OKA1QrgG1M18oGywN4ZSEs06HkZsd6g53VFH9knGq5pH
-	 oAuiTiOyaJkzqGrhaV4BNEKM7B30FC6Yj40nSIlpe/v2WcSAYOALExqGYIWHHe3CsJ
-	 Gil+WN7oXxfv2nbiSDKFbnJGymJQJBVAMtAjynpU=
-Date: Sat, 17 Feb 2024 09:13:50 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Vamsi Attunuru <vattunuru@marvell.com>
-Cc: arnd@arndb.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] misc: mrvl-cn10k-dpi: add Octeon CN10K dpi driver
-Message-ID: <2024021713-corrode-landline-e186@gregkh>
-References: <MW4PR18MB5244844411A57790287068E5A64E2@MW4PR18MB5244.namprd18.prod.outlook.com>
- <20240216103225.1255684-1-vattunuru@marvell.com>
+	s=arc-20240116; t=1708157559; c=relaxed/simple;
+	bh=76RXlR/msdWs4e9OX1WpKtSooLAmtPygvVwdSqDyayY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HN0JeeQaKl3Osrv43WiGyRW/9NNbuofw+SSsbMpqQbpqPTUNGSUnEdsuDGgGBO2TokqPtX5FWjFlVci827zGKfOiVtDe6TRB/LaS77kHxuDE5RhYpMKYaLIHnq53fO6vRBuLSZg8JBN8D12sUOVMuuw3QkfNgLG/Gu8Qv+U/VbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TcM2D44glz1xnkR;
+	Sat, 17 Feb 2024 16:11:16 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id BC3AA18001B;
+	Sat, 17 Feb 2024 16:12:34 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sat, 17 Feb
+ 2024 16:12:34 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <netfs@lists.linux.dev>
+CC: <dhowells@redhat.com>, <jlayton@kernel.org>, <linux-cachefs@redhat.com>,
+	<linux-erofs@lists.ozlabs.org>, <linux-fsdevel@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <libaokun1@huawei.com>,
+	<stable@vger.kernel.org>
+Subject: [PATCH RESEND] cachefiles: fix memory leak in cachefiles_add_cache()
+Date: Sat, 17 Feb 2024 16:14:31 +0800
+Message-ID: <20240217081431.796809-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240216103225.1255684-1-vattunuru@marvell.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Fri, Feb 16, 2024 at 02:32:25AM -0800, Vamsi Attunuru wrote:
-> Adds a driver for Marvell CN10K DPI(DMA Engine) device's physical function
-> which initializes DPI DMA hardware's global configuration and enables
-> hardware mailbox channels between physical function (PF) and it's virtual
-> functions (VF). VF device drivers (User space drivers) use this hw mailbox
-> to communicate any required device configuration on it's respective VF
-> device. Accordingly, this DPI PF driver provision the VF device resources.
-> 
-> At the hardware level, the DPI physical function (PF) acts as a management
-> interface to setup the VF device resources, VF devices are only provisioned
-> to handle or control the actual DMA Engine's data transfer capabilities.
-> 
-> Signed-off-by: Vamsi Attunuru <vattunuru@marvell.com>
-> ---
-> 
-> Changes V1 -> V2:
-> - Fixed return values and busy-wait loops
-> - Merged .h file into .c file
-> - Fixed directory structure
-> - Removed module params
-> - Registered the device as misc device
+The following memory leak was reported after unbinding /dev/cachefiles:
 
-Why register as a misc device if you don't actually use it at all?  That
-feels pointless and extra code and confusion for everyone as you have
-created a device node in the system that will just fail all operations
-made on it.
+==================================================================
+unreferenced object 0xffff9b674176e3c0 (size 192):
+  comm "cachefilesd2", pid 680, jiffies 4294881224
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace (crc ea38a44b):
+    [<ffffffff8eb8a1a5>] kmem_cache_alloc+0x2d5/0x370
+    [<ffffffff8e917f86>] prepare_creds+0x26/0x2e0
+    [<ffffffffc002eeef>] cachefiles_determine_cache_security+0x1f/0x120
+    [<ffffffffc00243ec>] cachefiles_add_cache+0x13c/0x3a0
+    [<ffffffffc0025216>] cachefiles_daemon_write+0x146/0x1c0
+    [<ffffffff8ebc4a3b>] vfs_write+0xcb/0x520
+    [<ffffffff8ebc5069>] ksys_write+0x69/0xf0
+    [<ffffffff8f6d4662>] do_syscall_64+0x72/0x140
+    [<ffffffff8f8000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+==================================================================
 
-confused,
+Put the reference count of cache_cred in cachefiles_daemon_unbind() to
+fix the problem. And also put cache_cred in cachefiles_add_cache() error
+branch to avoid memory leaks.
 
-greg k-h
+Fixes: 9ae326a69004 ("CacheFiles: A cache that backs onto a mounted filesystem")
+CC: stable@vger.kernel.org
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/cachefiles/cache.c  | 2 ++
+ fs/cachefiles/daemon.c | 1 +
+ 2 files changed, 3 insertions(+)
+
+diff --git a/fs/cachefiles/cache.c b/fs/cachefiles/cache.c
+index 7077f72e6f47..f449f7340aad 100644
+--- a/fs/cachefiles/cache.c
++++ b/fs/cachefiles/cache.c
+@@ -168,6 +168,8 @@ int cachefiles_add_cache(struct cachefiles_cache *cache)
+ 	dput(root);
+ error_open_root:
+ 	cachefiles_end_secure(cache, saved_cred);
++	put_cred(cache->cache_cred);
++	cache->cache_cred = NULL;
+ error_getsec:
+ 	fscache_relinquish_cache(cache_cookie);
+ 	cache->cache = NULL;
+diff --git a/fs/cachefiles/daemon.c b/fs/cachefiles/daemon.c
+index 3f24905f4066..6465e2574230 100644
+--- a/fs/cachefiles/daemon.c
++++ b/fs/cachefiles/daemon.c
+@@ -816,6 +816,7 @@ static void cachefiles_daemon_unbind(struct cachefiles_cache *cache)
+ 	cachefiles_put_directory(cache->graveyard);
+ 	cachefiles_put_directory(cache->store);
+ 	mntput(cache->mnt);
++	put_cred(cache->cache_cred);
+ 
+ 	kfree(cache->rootdirname);
+ 	kfree(cache->secctx);
+-- 
+2.31.1
+
 
