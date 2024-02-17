@@ -1,111 +1,136 @@
-Return-Path: <linux-kernel+bounces-69578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2DE4858BC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:28:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BFE2858BCF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:29:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5DF9B28DCCD
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:28:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBB66B2942A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E141CFA9;
-	Sat, 17 Feb 2024 00:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="kM47tac2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ccsuv/5J"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E54341D529;
+	Sat, 17 Feb 2024 00:25:23 +0000 (UTC)
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3761BDE2;
-	Sat, 17 Feb 2024 00:12:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43975C8B;
+	Sat, 17 Feb 2024 00:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708128723; cv=none; b=kWJ0a1w3ZAZBwGZ4orz+VVx/ariyTGBIPZy9X/5CY+0IqnlKf3CmKyVYvvQ3fgCs1jGb2fApyHTMTMCebuwCOQ7XAd0X0KTmPo/JYsfifUbc4kyvdwmHKr2DfPk3qcXt6Kqzgoh/AgThqnAjmxiIUfg15yXbx+nZHyP6RdWQKms=
+	t=1708129523; cv=none; b=LGwNf2IBYNlrC2JNDVAcvBD3zfCfQEu1o407kxAi9I6jkKWTVQCJbzSFXccur6cNibqlqb586zbGvX00d3FWXoED+XQD6mnbjZxThCanFYdlsMej7muaznQHe1SvBxx37WelKDRCusdRmq/QuE7vARY3TAayyriWNLSp5VplRTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708128723; c=relaxed/simple;
-	bh=7TY4SOAXACsFpYBoNNjLUSxormDZl9LeJNgnCLp1+I0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IoeA4v3kc1zAGP6PuSxXVi/1xmaE2ZALgdoQhSMHvUipAYVA2wik88CpPJRSJF/NkBSHej7bga+DZ7Az78vGKhHaUaHiRp1w8cgjqSMyVsrASulnyUPu4cfA51nKhnHFuphowVT7vurkKzRGdjZy+FcOUK5NWc/l6ZFNNA0Bhdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=kM47tac2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ccsuv/5J; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708128719;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=65mpTtubsRd6s2h7zWbq5V8suzGVtnfFye4A7aeK54Y=;
-	b=kM47tac2iW0fyKCkD6YGnFShxT51FkrUqhQSpn2eC17GCHRbN2OgRk9O/YKU4rrp+wbqFV
-	xi4fqp3qdAI0GJc28crILf/PVSbu/pzJ2eavuU9ZTPr/+xjMyADX8GmLa3EouMWFqnPt4E
-	PcxzHT+W9SMPKRNnCBy4zWmYO/Wjsz/BFY8NPuGSWEBCVpbuAtlgzhF86pFFAvZMgX43Sf
-	i93jhWJ86ckh7lunc7/VK5q/RAqiUQnNM9VixQ6i/dM9nc0D8yvfriYAKnmkkf9o6NzcGA
-	PeqkGc7wQ9upm8RLiCenlVBvVWtJK/rsn8B/0Zyg5SitaXyYN6j5QxNfomzLCA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708128719;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=65mpTtubsRd6s2h7zWbq5V8suzGVtnfFye4A7aeK54Y=;
-	b=ccsuv/5J2436MlsTHh3uaZ7gPYWWE5Saexy/tQcGu/ZznHmz8NuRyvo1CipKE3d/5X46H0
-	GUEY29ybsum0JQBA==
-To: Max Kellermann <max.kellermann@ionos.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Xin Li <xin@zytor.com>, Sean
- Christopherson <seanjc@google.com>, hpa@zytor.com, x86@kernel.org,
- linux-kernel@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>,
- kvm@vger.kernel.org
-Subject: Re: [PATCH] arch/x86/entry_fred: don't set up KVM IRQs if KVM is
- disabled
-In-Reply-To: <CAKPOu+9sbWwZhbexQHwqZ6nMfg6dau7oYEzzgQ5qx+JiEcdmXQ@mail.gmail.com>
-References: <20240215133631.136538-1-max.kellermann@ionos.com>
- <Zc5sMmT20kQmjYiq@google.com>
- <a61b113c-613c-41df-80a5-b061889edfdf@zytor.com>
- <5a332064-0a26-4bb9-8a3e-c99604d2d919@redhat.com> <87ttm8axrq.ffs@tglx>
- <CAKPOu+9sbWwZhbexQHwqZ6nMfg6dau7oYEzzgQ5qx+JiEcdmXQ@mail.gmail.com>
-Date: Sat, 17 Feb 2024 01:11:58 +0100
-Message-ID: <87il2oar01.ffs@tglx>
+	s=arc-20240116; t=1708129523; c=relaxed/simple;
+	bh=TB3RsJQOiyTR8tEs8xp9ZVxkFZri+g+5FS8M54/Voa0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=f3YRCYAahlryNjFtsBpOqpCg9bdVXQgRsqWgEpsrPoR5gMIM+8luAYOpeC2XaUPmX9Yqm6XYCHhcR/HQpy0FbnSZVqv8MtBwPdeD1NHKXQeGS0BcYRLm15co/KhgKvOZvkKgFROxspS6jnMjpWq7NdRG91oWYni4ceh8Ew2ck9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so2087790a12.0;
+        Fri, 16 Feb 2024 16:25:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708129521; x=1708734321;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gV3LRreLb1kZqKq2G0q5vBMXGxsObp5N7fG6tA3C6K8=;
+        b=KOGv5NFOj4lVtbUwt6FmRVE099GCSoVBvp5B47tiZ8sbfP+u/GBhnuOSmjNGPhOC00
+         WBAzX8LC+Nii9s0Y339H0K8MURKLZS3lGLBsi2gC0mj/PaDEBYzIlo6zzwtXdml/gPIp
+         fJO0e6BW1Vlx8AiYe5Tn7VPSmA5Gf3olK3lMYwxjQyfIhuetAZucCv1ipIdNy1X7Db16
+         FpsJ1czLwH0pcp0uihfMuD9y1OCjpMP/W1BMiHAWylLs7uAgoIfsAi6l/MtLG7LEAAEm
+         OdfcczUKqUphdm4eabjE2VliQHEbexdHXQA0U729RsOP6htb/W3uRJx143kWQfXEPy2G
+         AOrA==
+X-Forwarded-Encrypted: i=1; AJvYcCU6cMKPk9gOhyOg8gxRfJBiye+tRXsh7z/ZheAslzddFcrZmgccVtAkF7wa22ZNAoyK51g1fy2OZtx8ptqT9m/kXFswLnPHdEznOywrSaccehpcWXmhUfZIkI5OTlwprI5XVHaaEfy2jVFRh33YBHSD8u2YtN0ApbiC0hd+0xM+gexRuA==
+X-Gm-Message-State: AOJu0YzlAinW5BC3uba+kVeS2PYJ81cDBAy3FCWrPYXdtoy2lKhtMzsA
+	S15MfAFavF2CoJfSGqtsJ1n5Ynljam8wghJHIU+1VpPHdSZZWQ8xfAySmITdgs4p9U5RB9Mv8Jq
+	gP5ryyJNT98j6vZG0LoCaPt433Ws=
+X-Google-Smtp-Source: AGHT+IEgpCI0dTfACZVpuBHoCKGcTgiO+7b7Q9T9pTbKkzbsQbncP1/gmAFLhNBzmL85pp+qTwVtCNOZYq6nrUHrEq4=
+X-Received: by 2002:a05:6a21:1706:b0:19c:6a60:b433 with SMTP id
+ nv6-20020a056a21170600b0019c6a60b433mr6463168pzb.3.1708129520906; Fri, 16 Feb
+ 2024 16:25:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240202234057.2085863-1-irogers@google.com> <20240202234057.2085863-3-irogers@google.com>
+In-Reply-To: <20240202234057.2085863-3-irogers@google.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 16 Feb 2024 16:25:09 -0800
+Message-ID: <CAM9d7ci3VO7reyxPc8WOczdoyYYCUshxCJDMZ7wPpHknCubNXQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/8] libperf cpumap: Ensure empty cpumap is NULL from alloc
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
+	Leo Yan <leo.yan@linaro.org>, John Garry <john.g.garry@oracle.com>, 
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 17 2024 at 00:00, Max Kellermann wrote:
-> On Fri, Feb 16, 2024 at 10:45=E2=80=AFPM Thomas Gleixner <tglx@linutronix=
-de> wrote:
->> #ifdeffing out the vector numbers is silly to begin with because these
->> vector numbers stay assigned to KVM whether KVM is enabled or not.
+On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wrot=
+e:
 >
-> There could be one non-silly use of this: if the macros are not
-> defined in absence of the feature, any use of it will lead to a
-> compiler error, which is good, because it may reveal certain kinds of
-> bugs.
+> Potential corner cases could cause a cpumap to be allocated with size
+> 0, but an empty cpumap should be represented as NULL. Add a path in
+> perf_cpu_map__alloc to ensure this.
+>
+> Suggested-by: James Clark <james.clark@arm.com>
+> Closes: https://lore.kernel.org/lkml/2cd09e7c-eb88-6726-6169-647dcd0a8101=
+@arm.com/
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/lib/perf/cpumap.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> index ba49552952c5..cae799ad44e1 100644
+> --- a/tools/lib/perf/cpumap.c
+> +++ b/tools/lib/perf/cpumap.c
+> @@ -18,9 +18,13 @@ void perf_cpu_map__set_nr(struct perf_cpu_map *map, in=
+t nr_cpus)
+>
+>  struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
+>  {
+> -       RC_STRUCT(perf_cpu_map) *cpus =3D malloc(sizeof(*cpus) + sizeof(s=
+truct perf_cpu) * nr_cpus);
+> +       RC_STRUCT(perf_cpu_map) *cpus;
+>         struct perf_cpu_map *result;
+>
+> +       if (nr_cpus =3D=3D 0)
+> +               return NULL;
 
-I generally agree with this sentiment, but for constants like those in
-the case at hand I really draw the line.
-
-> (Though I agree that this isn't worth the code ugliness. I prefer to
-> avoid the preprocessor whenever possible. I hate how much the kernel
-> uses macros instead of inline functions.)
-
-No argument about that. I'm urging people to use inlines instead of
-macros where ever possible, but there are things which can only solved
-by macros.
-
-I'm well aware that I wrote some of the more ugly ones myself. Though
-the end justifies the means. If the ugly macro from hell which you
-verify once safes you from the horrors of copy & pasta error hell then
-they are making the code better and there are plenty of options to make
-them reasonably (type) safe if done right.
+But allocation failure also returns NULL.  Then callers should check
+what's the expected result.
 
 Thanks,
+Namhyung
 
-        tglx
+> +
+> +       cpus =3D malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cpus=
+);
+>         if (ADD_RC_CHK(result, cpus)) {
+>                 cpus->nr =3D nr_cpus;
+>                 refcount_set(&cpus->refcnt, 1);
+> --
+> 2.43.0.594.gd9cf4e227d-goog
+>
 
