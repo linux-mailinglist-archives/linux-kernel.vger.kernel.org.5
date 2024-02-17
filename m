@@ -1,179 +1,115 @@
-Return-Path: <linux-kernel+bounces-70044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5E4B859238
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:58:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9A1B85923C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:02:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C29C280F8B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:58:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DC0228362B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B257E58C;
-	Sat, 17 Feb 2024 19:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 083167E597;
+	Sat, 17 Feb 2024 20:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dNM0/DH1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="ye5BlsKB";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hMOXv2el"
+Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944D81C282;
-	Sat, 17 Feb 2024 19:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B5361C282;
+	Sat, 17 Feb 2024 20:02:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708199925; cv=none; b=o1Ri+kjT5FSRipmZvgnsy0xWL1x6NwPRKUTKaQhDI3PkwSY+UZpVG+7kkGMgohCIii1OHveCwALJqBGG0qR5z68muVqVFZi8y0qpQ0b6dDqahOoHoWwoGia5ozHMSFDtOt17oE4UpD8+0LG/BJjcDJlvEhaK781Irf/yyi0Qf50=
+	t=1708200146; cv=none; b=SK9AD0PmBpbLPhaEmzHQlb3XKfgle1Zm+b1CschcTtwkYJvJ3D0KnPTr4HMvDJdRuX5c+7hGS1hDAjLGydRLy9R1ua8Ba3m0ACgRE6Y7yyA0XACHHwU2KGf7B/Ng6LkSX4n4MnHEQiye/Fymngvx7s5ap2lt58DKaTMFmiPYo3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708199925; c=relaxed/simple;
-	bh=kr77AtVMqS/g0XUszwpsQ/nIr7wANyKOpwUEUT5u+vw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dam0XDrZtYQm2i3HLmEFhaVsvN5f+tamplqYqYAAZqKfJm2F2LS2yqhvMp4zIo6EECPtMVq0z+BDvaGu1UFEuHt+ivh9lfE+6sawmEueAZ2M4JfU/+3R2QOBfizP03z7tAdTWKx2kYjWd/xOoscXGIirXq7Nf1pSM3h/Gm9T3F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dNM0/DH1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E87EBC433F1;
-	Sat, 17 Feb 2024 19:58:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708199925;
-	bh=kr77AtVMqS/g0XUszwpsQ/nIr7wANyKOpwUEUT5u+vw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dNM0/DH1qT0LZJ9f3Lxvw/QaFrwV1IPcB1ryw9buPDBGdYrArrba2+Z9mUy6S/H+m
-	 sOevE5KO5i5F0OmowtlnEv7pdHVryv7S+w/PblMYJmXR7VfMIIP/UCucDO5tLlZWV5
-	 qB/ROzTdFAZGh2JEgQOCDBP9vGDsuZKoh3wgslqP1j+l0W7Hv+7nqBHE1V9B6YQVcJ
-	 fCFLz9g6plC1tQ2wSP7UuAtOykO9asiGOgETMmYBbKj60/XAC9Tx8r9a8zMbFo32YH
-	 qoxQU/ivRLIur6Lnnsc/YlmSfU7RumgQJcngus8B9b0xQmM3t2UWvK/1Znnvsoiuhf
-	 /ndDd/g1STGkA==
-Date: Sat, 17 Feb 2024 13:58:41 -0600
-From: Bjorn Andersson <andersson@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Andy Gross <agross@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Guru Das Srinagesh <quic_gurus@quicinc.com>, 
-	Andrew Halaney <ahalaney@redhat.com>, Maximilian Luz <luzmaximilian@gmail.com>, 
-	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v7 00/12] arm64: qcom: add and enable SHM Bridge support
-Message-ID: <htsty5siakcu2nxxapiuq7pgs27tjwkb3yxgmfs3bonsl6kylw@joa2viypstoa>
-References: <20240205182810.58382-1-brgl@bgdev.pl>
+	s=arc-20240116; t=1708200146; c=relaxed/simple;
+	bh=7MOz0MScJRu+tSbU72jT7a6ptOpNL3TAgXB8d49JokU=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=b2jLmw1mf5Utdn/+6Up0yHpBMkEZNZ33fzpNaZoJWCj9AiFaZ2sLXYKwB41lSCuXSXySTuODS/UYu5figavp4rx3+gS4mIegsenx81LTtrsxsTaQGoynFkDed4XI3x3mBELowDfAs8MkfdFNcx8VP3xiEX6DX5abLMlJH7sO71Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=ye5BlsKB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hMOXv2el; arc=none smtp.client-ip=103.168.172.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 7563D11400B7;
+	Sat, 17 Feb 2024 15:02:22 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sat, 17 Feb 2024 15:02:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1708200142; x=1708286542; bh=1+SYOhK00Z
+	m93ip2u19mSc/B1jEApIvrcfSGbkUvudY=; b=ye5BlsKB/iNlGmZiGSlHNwHg9h
+	UyAonqhZ+Qc8sd9zrCLR9Mq4wqCkBB3lCgSI1m9fiiq4Vru45acoh5bcB3aDkolz
+	qgRkFkQGaEapy60f0lFTCLEcCnQt8s5BbUffMKOMYobjeXeNB08PgjJvQK0l7HRF
+	jcpuWFfCVaBjE0tcBniKHy6m6aXRyNnwmc//+dx9z6YXjL23Lz+G5W15PeNRYn9S
+	hNZnbHAeKR34lyMokOX2F7zlhzeS0PAh6+OrbasiAr2FvtxKcXSv4yb8/46Qjgx0
+	gGBF5UQQ5u5FbHXmBUIvvf8gtine8vSzjc/2EzMlYhbzKQO+KfkoXTaQ+raQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708200142; x=1708286542; bh=1+SYOhK00Zm93ip2u19mSc/B1jEA
+	pIvrcfSGbkUvudY=; b=hMOXv2elUcq6Pp3ihr74CwnBA63mkvBW9e0VNP3XXN5i
+	VQhDudxvDD8/sYa0Kbz6JywUMpcE7jFRjK0OmCQhr14Zq1qqYv/c+6rcNucH9OWE
+	va25oe7jYxJbHdZ1vrDIRFej5uDf+WiO0blk4485giynpyy6jMcskwJzWNigLUg3
+	5PsJUd67v92kAP+wdbz1D82KOHVnWwcOwueRkloluWWnvuvlCZbngWLWtO5kNqWd
+	Rec+bvCgme99QAAug4zwYkA2NVzyolUcvL69jh0qIOS3NoB0DSmaOAXqmxRDoZ69
+	qlCUGiSbbaDRjEob3YQogZbOY9fUk+Va6b4Hm+Ld/w==
+X-ME-Sender: <xms:zhDRZX5kIycYmLyvjNh51F0MiNckyHsGpKjRXLUlhPyB9mAf_2miVw>
+    <xme:zhDRZc4ZeaZ9IrxYfwoKs7vgd9lvXwSDyfTGkxtIvDxOeLz2JpwPfoH1rN2zHxDbh
+    2DkloZOC1lJEAHOwi8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeggddufeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:zhDRZedoBxQXphd2NBQvlTKcZNqt4FL18EwWc1uMXP9g6yxyIv53zA>
+    <xmx:zhDRZYKgPns7bJNnJBUHrnsdy44jSSzttQqE4J4DKgmfy4Ly-d0wtg>
+    <xmx:zhDRZbLn-q2z6xWC6SwIAK0_k16XFIEfOgnjxRBiamL2xTXggA1jMQ>
+    <xmx:zhDRZYEzMS2kV3OyIyHDCb6ZRulzVRtEPP_8iDOcK7zrS1O_Xw4Ylw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 38AF0B6008F; Sat, 17 Feb 2024 15:02:22 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205182810.58382-1-brgl@bgdev.pl>
+Message-Id: <9fd866a5-ea3e-4896-803d-27b4aa08c0df@app.fastmail.com>
+In-Reply-To: <20240217192042.GA372205@darkstar.musicnaut.iki.fi>
+References: <20240217192042.GA372205@darkstar.musicnaut.iki.fi>
+Date: Sat, 17 Feb 2024 21:01:51 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Aaro Koskinen" <aaro.koskinen@iki.fi>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Linux-OMAP <linux-omap@vger.kernel.org>
+Subject: Re: [PATCH] usb: gadget: omap_udc: fix USB gadget regression on Palm TE
+Content-Type: text/plain
 
-On Mon, Feb 05, 2024 at 07:27:58PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> We've established the need for using separate secured memory pools for
-> SCM and QSEECOM
+On Sat, Feb 17, 2024, at 20:20, Aaro Koskinen wrote:
+> When upgrading from 6.1 LTS to 6.6 LTS, I noticed the ethernet gadget
+> stopped working on Palm TE.
+>
+> Commit 8825acd7cc8a ("ARM: omap1: remove dead code") deleted Palm TE from
+> machine_without_vbus_sense(), although the board is still used. Fix that.
+>
+> Fixes: 8825acd7cc8a ("ARM: omap1: remove dead code")
+> Signed-off-by: Aaro Koskinen <aaro.koskinen@iki.fi>
 
-Where has this need been established, what is the actual problem you're
-solving with this series?
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 
-Does SCM and QSEECOM, as it's implemented in the kernel today, not work
-satisfactory?
+Sorry about that, I must have used the wrong regex while
+searching for these while removing a lot of the other
+palm variants.
 
-> as well as the upcoming scminvoke driver.
-> 
-
-Is smcinvoke driver upstreaming blocked by not transitioning the scm
-driver to a "secure memory pool"?
-
-Is this happening now, or do we need to merge this series when that day
-comes?
-
-> It's also become clear that in order to be future-proof, the new
-> allocator must be an abstraction layer of a higher level as the SHM
-> Bridge will not be the only memory protection mechanism that we'll see
-> upstream. Hence the rename to TrustZone Memory rather than SCM Memory
-> allocator.
-> 
-> Also to that end: the new allocator is its own module now and provides a
-> Kconfig choice menu for selecting the mode of operation (currently
-> default and SHM Bridge).
-> 
-> Tested on sm8550 and sa8775p with the Inline Crypto Engine and
-> remoteproc.
-> 
-
-It's reasonable to assume from mentioning of this (and Andrew's t-b),
-that the patchset has only been tested on recent platforms that indeed
-does implement shmbridge. Can you please share the list of other
-platforms that you've tested this on, and can you please get someone
-from IPQ to also give their r-b or t-b?
-
-Regards,
-Bjorn
-
-> v6 -> v7:
-> - fix a Kconfig issue: TZMEM must select GENERIC_ALLOCATOR
-> 
-> v5 -> v6:
-> Fixed two issues reported by autobuilders:
-> - add a fix for memory leaks in the qseecom driver as the first patch for
->   easier backporting to the v6.6.y branch
-> - explicitly cast the bus address stored in a variable of type dma_addr_t
->   to phys_addr_t expected by the genpool API
-> 
-> v4 -> v5:
-> - fix the return value from qcom_tzmem_init() if SHM Bridge is not supported
-> - remove a comment that's no longer useful
-> - collect tags
-> 
-> v3 -> v4:
-> - include linux/sizes.h for SZ_X macros
-> - use dedicated RCU APIs to dereference radix tree slots
-> - fix kerneldocs
-> - fix the comment in patch 14/15: it's the hypervisor, not the TrustZone
->   that creates the SHM bridge
-> 
-> v2 -> v3:
-> - restore pool management and use separate pools for different users
-> - don't use the new allocator in qcom_scm_pas_init_image() as the
->   TrustZone will create an SHM bridge for us here
-> - rewrite the entire series again for most part
-> 
-> v1 -> v2:
-> - too many changes to list, it's a complete rewrite as explained above
-> 
-> Bartosz Golaszewski (12):
->   firmware: qcom: add a dedicated TrustZone buffer allocator
->   firmware: qcom: scm: enable the TZ mem allocator
->   firmware: qcom: scm: smc: switch to using the SCM allocator
->   firmware: qcom: scm: make qcom_scm_assign_mem() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_ice_set_key() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_lmh_dcvsh() use the TZ allocator
->   firmware: qcom: scm: make qcom_scm_qseecom_app_get_id() use the TZ
->     allocator
->   firmware: qcom: qseecom: convert to using the TZ allocator
->   firmware: qcom: scm: add support for SHM bridge operations
->   firmware: qcom: tzmem: enable SHM Bridge support
->   firmware: qcom: scm: clarify the comment in qcom_scm_pas_init_image()
->   arm64: defconfig: enable SHM Bridge support for the TZ memory
->     allocator
-> 
->  MAINTAINERS                                   |   8 +
->  arch/arm64/configs/defconfig                  |   1 +
->  drivers/firmware/qcom/Kconfig                 |  31 ++
->  drivers/firmware/qcom/Makefile                |   1 +
->  .../firmware/qcom/qcom_qseecom_uefisecapp.c   | 281 +++++---------
->  drivers/firmware/qcom/qcom_scm-smc.c          |  30 +-
->  drivers/firmware/qcom/qcom_scm.c              | 179 +++++----
->  drivers/firmware/qcom/qcom_scm.h              |   6 +
->  drivers/firmware/qcom/qcom_tzmem.c            | 365 ++++++++++++++++++
->  drivers/firmware/qcom/qcom_tzmem.h            |  13 +
->  include/linux/firmware/qcom/qcom_qseecom.h    |   4 +-
->  include/linux/firmware/qcom/qcom_scm.h        |   6 +
->  include/linux/firmware/qcom/qcom_tzmem.h      |  28 ++
->  13 files changed, 685 insertions(+), 268 deletions(-)
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.c
->  create mode 100644 drivers/firmware/qcom/qcom_tzmem.h
->  create mode 100644 include/linux/firmware/qcom/qcom_tzmem.h
-> 
-> -- 
-> 2.40.1
-> 
+     Arnd
 
