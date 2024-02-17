@@ -1,137 +1,226 @@
-Return-Path: <linux-kernel+bounces-69873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69874-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE81B858FB2
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FA07858FB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E7DD1F21BC3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:36:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC7A01F21ECB
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C22E17AE54;
-	Sat, 17 Feb 2024 13:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72E7C7AE58;
+	Sat, 17 Feb 2024 13:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IzDXgvhj"
-Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iB7aCVxG"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC8AB3DBBB;
-	Sat, 17 Feb 2024 13:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C15EC2E403
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 13:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708176954; cv=none; b=MlSZrFC9njHlswEQkAFy9msuB/TyBpz+67dio/TEM/uQ+42cs91maW9dDirKPFMNeCKWBYwIGcj4Bnk0WQxgtFSgEClakckfVK2iBPxq70n3JOevu3Pjgw9tJ9ZoKyYzrFo+SHSVtx/2NawR+BRosqao1TNxMsPzT+zalhFAUzo=
+	t=1708177174; cv=none; b=IzlTAL5q9pZIuj29ffWP8gm6k76KxpO6kEofVnATYemekbtjWMtBXJY07CV+iZi0RmrWeAJUqfMyzSKR4MHPWuc7GHYcuuZbeSaxQu6rocJ80b1O3s/Z6GvvOUmYS4VKq8WYR6gw04G4l1v5u1RNPajSOSZAOzTlsBVXTRLHghs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708176954; c=relaxed/simple;
-	bh=tMZnD9BAREbxBr4MCZ1qYFNYWYWzjxmzqnVxHd8u8/g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VTV8bKf/vM3nLIwJZBddwRE0f0VHzjDxcONBJAy6wrixXHGo5hQxyN7O8cO3lvmV7TbRZFTGm1vMogbHkKJc74hDtqKIW3cMTCpnBKVKegRJr0LiDl8J5tO0fLkGZG7dKUTotipCg6DD3j22TDInP6RuN9bEEKWExZfqC7vnFOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IzDXgvhj; arc=none smtp.client-ip=209.85.166.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-364f8246c8cso7294115ab.2;
-        Sat, 17 Feb 2024 05:35:52 -0800 (PST)
+	s=arc-20240116; t=1708177174; c=relaxed/simple;
+	bh=K04iPTyjk1j8inm6nlrW91sxz8ftcLlQT0VDbyibynU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UJfIdfIBAjlT2r3JPixcU+K0q1hE3p3JotHZ33PD7KuP/Q6LzipvudJY+dxfy8I+xKebC36g039nAaE7/UP44V2N9IS1mg3urEd1fiQ+fVFrYOzisXnft5TS5nsFPEhR4e+ZRPUSRAXGRaZw8AjYr3sOYqcsU/vNYTnnh/ZnxHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iB7aCVxG; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5610cc8cc1aso3122077a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 05:39:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708176952; x=1708781752; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=E/J9bJiu5lsGMJF4n5pm6X5Bisri8OV7G/jXa46CjfA=;
-        b=IzDXgvhj7EVlND7HMzpiWdIt8xinzQb9YYoPL4+7NZKdX2x74IN4sHVuwAx5NB2h6s
-         yYb0vH9QnODd3Nk/GRnMctoVOFxpbPOjfnH/pMy3wMgY1Qpq8TYwQo8S0pD5JZPafkWy
-         gwQcn6k6AHECaOhZlRoGT1QHrkuy4ZMTMUe2/vesfI56g8vb8bmJXr4JtuEu90K5V4f6
-         lgvpMjwxn+cwMoK6m9L6DO73ZA9mMHtIhYC6Gwo/P1Jo6IClabhcreyB0OQVvNPCKVKu
-         e5HQWrEMfWPyA0OCws/FxCfr3mBF9wtSLVd5/ArbuJZkgbOthDJZkCOaurEuGl6EKfTP
-         UFAg==
+        d=linaro.org; s=google; t=1708177171; x=1708781971; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Dd2SDGlkT7ET69Q/kzxiym8LVvJt2afawRbhHuf81jQ=;
+        b=iB7aCVxG7LefOGRLKYny09c/J+3h69Mu0Fbbe3fO/gO7uo++1OD2SkFJ2B7NefAStG
+         HO3ixdaiOP6wHBagcVYP6YdlzFcpGhBqzu2hi2ZJvmcH2bHVZH2vCrOLJm9vIRu/oPF1
+         UrH8YLuSdHEgCSM4Z3smKU+WwE9mt2RzMNq3lDs1zn6yNQkXbymc9qRLGzLl9qotUKI5
+         mw/9nfNqZ90LwPjMtzQWVZ+bBsFs/qtvjuGgSIT/9THqtgVil+H8hGD/KXcKV7mCX543
+         sr+HH1vwwgQBLoSH8jcqj3uhnTxO4UjQa8/uvWbFDWkhfZJSDpPb4sx5PpJ68QUiC02M
+         dH5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708176952; x=1708781752;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E/J9bJiu5lsGMJF4n5pm6X5Bisri8OV7G/jXa46CjfA=;
-        b=CB9VlG3LO+Sz6C0gp/mdIzBi8tPhycFWgZsAKVIulMB76ie1Q+DR6J8XGgwHDqaGbK
-         EvBe7h8y3SWLSkU2oaNHeQNeBHTmcfS+fEQ/5a1LRED0ESI3XOCWGSiU/gVk8C1HOQGa
-         rTwyGXs0Er83VtpQrJQtIjpGPw/32NdWrdbFFgQ55TwmfMdwHwFI6T+sCBMfBOzBgsSH
-         L/+1KwkxJJMzwOiA+W3UxnsoWlW9ZIBWfBTJHWFsKB2XgmnJJLqv7/LN2uVC07rqVcrj
-         J2NqDzQ1GP3rInJ+WS1G4PyTpxGV//TA+eOzm3Bk+v/0qJWS6YXnjkaW5MycirlSAAcm
-         8YXg==
-X-Forwarded-Encrypted: i=1; AJvYcCW3LsMSItfY1Aj5PReJUhTc368AMHEYVOSo5KnkdPEOxk5yFcMg7nS6T1ObW8HosmRFsA8tjrOQvpS/6ikaP/61ZLMsR0yNC6f0Q0YpAYQ6T19hPN3XdFkt/aeCJ0oLEq3zaYzIZSnasn6xVje+iEISPrGz
-X-Gm-Message-State: AOJu0YyOhikqJvNT6k/CEyoZ/dwc7txQnAUYbrIZ07Ko8o3O9+PhJU6y
-	vAbkgF3cSGKFD6aljKBoR6RvKbThR+LedeFnYfykdruG6rgnTkoA
-X-Google-Smtp-Source: AGHT+IHZXTphS6lUO3v3Cxz6zH3LI4Uyifv9yT0TaokhpM0X+PsXxz1RS8lb2OiQOsyGwEOer3Rsfw==
-X-Received: by 2002:a05:6e02:184e:b0:365:1dc5:9cae with SMTP id b14-20020a056e02184e00b003651dc59caemr1450043ilv.9.1708176951614;
-        Sat, 17 Feb 2024 05:35:51 -0800 (PST)
-Received: from pairface.. ([111.18.146.226])
-        by smtp.gmail.com with ESMTPSA id 32-20020a631260000000b005d3bae243bbsm1583617pgs.4.2024.02.17.05.35.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 05:35:51 -0800 (PST)
-From: Pairman Guo <pairmanxlr@gmail.com>
-To: paul@paul-moore.com
-Cc: jmorris@namei.org,
-	serge@hallyn.com,
-	linux-security-module@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Pairman Guo <pairmanxlr@gmail.com>
-Subject: [PATCH] LSM: Fix typos in security/security.c comment headers
-Date: Sat, 17 Feb 2024 21:35:04 +0800
-Message-ID: <20240217133504.4534-1-pairmanxlr@gmail.com>
-X-Mailer: git-send-email 2.43.2
+        d=1e100.net; s=20230601; t=1708177171; x=1708781971;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dd2SDGlkT7ET69Q/kzxiym8LVvJt2afawRbhHuf81jQ=;
+        b=sMwMTCj5aSNz1ormjptC8rufcytw5SJa/74jRMmZEyboAyO9gXZQus4kjp7rzfSv76
+         hYbOvDpY8ESGKsnEp1u7K76pNVADZ26YIyy1LinDq2RLbS58abTYoIAyS3qh3MGfvmDC
+         OY9NTv7i4SyhqKL/cARYuqBQhT7kARCW5P/rjdd/Q0R0P7r/0oIyKgf8awNDYHeKOqhL
+         sdW4UwuYR6oqNUgT15VLSx+4zEHvRbwTQ9vuLNkMcgnk9Cv2D7KWCCOM7fgVQjyZhgE5
+         MJl+uag5K9vL37soo06gRf63xdqrnESfxpC9PC1YfyEfPYlxFN5h1BcQK5divAT0VKIK
+         DbTg==
+X-Forwarded-Encrypted: i=1; AJvYcCU6wb8VnCI5C9fQmsbfTn5Sqin0jykOqPBrM359wazL78v/QJpF0akSW9HK4a8+ebuRJCyDn2U333EF8PLmDu8UOd5Pn32peiDJ8wpn
+X-Gm-Message-State: AOJu0Yy3V89QGt4FnO/gjzGseLq112ctjWDIDtosVRd3lHOy9Uk/wClt
+	4eN9AJvpk+ZabSEWLts9+C1q30DSeuARXoLk31/yEVhf45+Rsqby3oBnCbp09Sg=
+X-Google-Smtp-Source: AGHT+IEdWMbHPDe+GqpY6IsOXazyfzhxTJX9qYAfUknm6i+SUZziPyO8qS2bK4wJLF3BKrODJWncbA==
+X-Received: by 2002:a05:6402:8c7:b0:563:f606:3b3f with SMTP id d7-20020a05640208c700b00563f6063b3fmr2623534edz.5.1708177171054;
+        Sat, 17 Feb 2024 05:39:31 -0800 (PST)
+Received: from [192.168.0.22] ([78.10.207.130])
+        by smtp.gmail.com with ESMTPSA id bf2-20020a0564021a4200b00562149c7bf4sm892560edb.48.2024.02.17.05.39.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 05:39:30 -0800 (PST)
+Message-ID: <712f8904-4b63-4a3b-8135-f17f41bbb501@linaro.org>
+Date: Sat, 17 Feb 2024 14:39:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 1/4] dt-binding: phy: hisi-inno-usb2: convert to YAML
+To: Yang Xiwen <forbidden405@outlook.com>, Vinod Koul <vkoul@kernel.org>,
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Jiancheng Xue <xuejiancheng@hisilicon.com>,
+ Pengcheng Li <lpc.li@hisilicon.com>, Shawn Guo <shawn.guo@linaro.org>
+Cc: linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kishon Vijay Abraham I <kishon@ti.com>,
+ David Yang <mmyangfl@gmail.com>
+References: <20240216-inno-phy-v1-0-1ab912f0533f@outlook.com>
+ <20240216-inno-phy-v1-1-1ab912f0533f@outlook.com>
+ <63b3eff6-49eb-46f3-a6d9-878eddf6de53@linaro.org>
+ <SEZPR06MB69593B898A42192D134B01A896532@SEZPR06MB6959.apcprd06.prod.outlook.com>
+ <dfecd473-dcc1-4977-901d-6c7bb615bc97@linaro.org>
+ <SEZPR06MB695983231D04A2E1947AF61896532@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <SEZPR06MB695983231D04A2E1947AF61896532@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-This commit fixes several typos in comment headers in security/security.c
-where "Check is" should be "Check if".
+On 17/02/2024 11:54, Yang Xiwen wrote:
+> On 2/17/2024 6:29 PM, Krzysztof Kozlowski wrote:
+>> On 17/02/2024 11:24, Yang Xiwen wrote:
+>>
+>>>>> +
+>>>>> +examples:
+>>>>> +  - |
+>>>>> +    #include <dt-bindings/clock/histb-clock.h>
+>>>>> +
+>>>>> +    peripheral-controller@8a20000 {
+>>>>> +        compatible = "hisilicon,hi3798cv200-perictrl", "syscon", "simple-mfd";
+>>>>> +        reg = <0x8a20000 0x1000>;
+>>>>> +        #address-cells = <1>;
+>>>>> +        #size-cells = <1>;
+>>>>> +        ranges = <0x0 0x8a20000 0x1000>;
+>>>> Drop the node, not related to this binding. If this binding is supposed
+>>>> to be part of other device in case of MFD devices or some tightly
+>>>> coupled ones, then could be included in the example there.
+>>> For CV200, this binding is supposed to be always inside the perictrl
+>>> device. The PHY address space are accessed from a bus implemented by
+>>> perictrl.
+>> Every node is supposes to be somewhere in something, so with this logic
+>> you would start from soc@. What's wrong in putting it in parent schema?
+> 
+> When the ports reg property only has an dummy address (no size), it must 
+> be inside the perictrl node, accessed from the bus implemented by perictrl.
+> 
+> But when the ports has its own MMIO address space (mv200), it should be 
+> located under a simple-bus node instead.
+> 
+> So it's either:
+> 
+> perictrl@8a20000 {
+> 
+>      usb2-phy@120: {
+> 
+>          reg = <0x120 0x4>; // this is the register that controls writes 
+> and reads to the phy, implemented by perictrl. (just like SPI/I2C)
+> 
+>          phy@0: {
+> 
+>              reg = <0>; // the reg is used as an index
+> 
+>          };
+> 
+>      };
+> 
+> };
+> 
+> or:
+> 
+> soc@0 {
+> 
+>      usb2-phy@f9865000 { // MMIO
+> 
+>          reg = <0xf9865000 0x1000>
+> 
+>          port0@0 {
+> 
+>              reg = <0x0 0x400>; // used as MMIO address space
+> 
+>          };
+> 
+>      };
+> 
+> };
+> 
+> So here is why i include perictrl node in the example. If the ports are 
+> not mmio, the phy must be under a perictrl node. Or if the ports has its 
+> own address space, it should not be under a perictrl node, but rather an 
+> simple-bus node.
 
-Signed-off-by: Pairman Guo <pairmanxlr@gmail.com>
----
- security/security.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+I don't understand why you keep insisting and discussing this. You are
+adding other compatibles to this schema example, which usually we try to
+avoid. You entirely ignored my comment above and pasted DTS which is no
+related to the topic we discuss here. I did not question whether this
+can be or cannot be in some node.
 
-diff --git a/security/security.c b/security/security.c
-index 7035ee35a..0bd3e9df4 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2904,7 +2904,7 @@ int security_file_send_sigiotask(struct task_struct *tsk,
- }
- 
- /**
-- * security_file_receive() - Check is receiving a file via IPC is allowed
-+ * security_file_receive() - Check if receiving a file via IPC is allowed
-  * @file: file being received
-  *
-  * This hook allows security modules to control the ability of a process to
-@@ -3114,7 +3114,7 @@ int security_kernel_create_files_as(struct cred *new, struct inode *inode)
- }
- 
- /**
-- * security_kernel_module_request() - Check is loading a module is allowed
-+ * security_kernel_module_request() - Check if loading a module is allowed
-  * @kmod_name: module name
-  *
-  * Ability to trigger the kernel to automatically upcall to userspace for
-@@ -4114,7 +4114,7 @@ int security_netlink_send(struct sock *sk, struct sk_buff *skb)
- }
- 
- /**
-- * security_ismaclabel() - Check is the named attribute is a MAC label
-+ * security_ismaclabel() - Check if the named attribute is a MAC label
-  * @name: full extended attribute name
-  *
-  * Check if the extended attribute specified by @name represents a MAC label.
-@@ -4487,7 +4487,7 @@ int security_socket_accept(struct socket *sock, struct socket *newsock)
- }
- 
- /**
-- * security_socket_sendmsg() - Check is sending a message is allowed
-+ * security_socket_sendmsg() - Check if sending a message is allowed
-  * @sock: sending socket
-  * @msg: message to send
-  * @size: size of message
--- 
-2.43.2
+Best regards,
+Krzysztof
 
 
