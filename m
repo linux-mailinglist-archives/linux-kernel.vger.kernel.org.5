@@ -1,107 +1,139 @@
-Return-Path: <linux-kernel+bounces-69586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA232858BE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:30:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F504858BE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:31:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5291928A251
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:30:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E38E61F21E94
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A233199DC;
-	Sat, 17 Feb 2024 00:28:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF97BA55;
+	Sat, 17 Feb 2024 00:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ErEZfRI/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KG2n4k1A"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D37011CAB
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DD94C8F;
+	Sat, 17 Feb 2024 00:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708129722; cv=none; b=LWRbC+RZNUSUyKrYp5l/rCfa7qSJK4qjvJsYriKbDetVad2S1JLmCEJAxSiDnXQJ9s4Ud2dB76OvZo0MmumdC5Azr7uCF+WbsBEr2GLjQ47PcAcF6JM/3asB7b1GrKuXEfb6cAoTc9o99Esz/+M+keYH4EpcG9kDg0AmFbRHAXU=
+	t=1708129905; cv=none; b=eGX7k76LuvgMR16OTPFQkIWAkU1+y38Zw2rctbRR0Jx3vsC0nuKp68Xul6jzsqvXKFvSeEbNaK1liwLCnny84GcB/naU+iOCD+H+rJPahIYu7SY/UX2hytTW2cLZP3uDwbkLl5uiFWmT2uANtXPYlt5NYUVyF8Poz1sf4Rx9GuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708129722; c=relaxed/simple;
-	bh=R40QHWBwT3Y9mpARpyccgf8Kq8e1WntO9rP9mLvye4k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PKGj5uC4+oiaukQanmf0PIrKxUtpw4j5N7sWIgSNkqma3nk1dBh21YLvL43ev1DrMvVLyrT9NsyTF45XuWZh5KVarD0bBU1en5V89Zq9xYomyRSS/kD9nuJYeg2CepdLZqsawqO/MVuBnlmgtWqsYwJYPZdzsr13V3P33b6wY6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ErEZfRI/; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708129720; x=1739665720;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=R40QHWBwT3Y9mpARpyccgf8Kq8e1WntO9rP9mLvye4k=;
-  b=ErEZfRI/1bsOUui10sMRQEMJ0zQS9NaSROw+NoQqW2VlK7hd5iaTtCnB
-   Sm4PJ+eFgRgJkFmBUKuSlfvku6PIb5gxBMkubAfvmyR+jVUh/9dL7t3Tw
-   rkIpaG3Y5LSkcxrUF02MFAZmR3bCP9rJHHJWI2p5sqgGsl/0KSwx60Yzo
-   Agh/QYSg6cg1Fu6IILB8nMDrcwdfNlA/FUypQCKqybyR6q9JviuE20sXl
-   g4pscT/wAu84qvL75ijS0WWlGMTYMftGcBe6Dyvwl9j6A3IH9ziaYqnIU
-   CcqIBERXfDeELhvsg/KYxIo4kW+6DSdKoXz9Nh4y012jZ5sDM3t56YCpr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="19696922"
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="19696922"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 16:28:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="34771143"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 16:28:38 -0800
-Date: Fri, 16 Feb 2024 16:28:36 -0800
-From: Tony Luck <tony.luck@intel.com>
-To: James Morse <james.morse@arm.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	shameerali.kolothum.thodi@huawei.com,
-	D Scott Phillips OS <scott@os.amperecomputing.com>,
-	carl@os.amperecomputing.com, lcherian@marvell.com,
-	bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
-	baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
-	Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
-	dfustini@baylibre.com, amitsinght@marvell.com,
-	David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v9 00/24] x86/resctrl: monitored closid+rmid together,
- separate arch/fs locking
-Message-ID: <Zc_9tPkfvqRkedrb@agluck-desk3>
-References: <20240213184438.16675-1-james.morse@arm.com>
+	s=arc-20240116; t=1708129905; c=relaxed/simple;
+	bh=J0wf0BwhyChpIzZH00msGosof2qX1pIKtcd0rpw6oGU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=qSbUzBTNBD0+EzmIu51vIfiOAcNEoWXqKFNLc3I4qKZ2zrs2228TnglZ0Q0ntINSxSVu7nGsicgP7kJTfh8omToyzY+5owhzMlqYXwuScrFWSHUIfNcAOvwIiQExlFJSEfqToEGd6ntWAw3YBt1yBimK+6f85xKeO7HJRci6G+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KG2n4k1A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7941C433C7;
+	Sat, 17 Feb 2024 00:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708129904;
+	bh=J0wf0BwhyChpIzZH00msGosof2qX1pIKtcd0rpw6oGU=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=KG2n4k1A9ocUdjbNIyx8ykEEvtCUYwyCAVplGH6C8TEfjTNsksN7YNZscUbmYQHBr
+	 H2owTBWAI76L+Pd1HnsIytrljiADjoJqKkWijP90HEc9mfBT6hm+wH9YryyfF5r145
+	 Q9n9w6C6XVrCPdIHCfSV+zvwIyRh5b8U3PEY4HTdjjJsd6wZsaAENoXgAw+/vEqcm1
+	 l07ex6a9P3JR8Y0OX1G/W2CZlA/5MmpH3WtWhbQkSUMhxGW6XZvMPZWeT1EKRQ/6oV
+	 LFRwoi5GNOWkztebJiVthMpAuJZ1h5r0XppmRepmItT9E1kx2z3dAIiHGJqm+HF2q0
+	 i+5epM5IYJyOg==
+From: SeongJae Park <sj@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: SeongJae Park <sj@kernel.org>,
+	shuah@kernel.org,
+	"Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Vijaikumar_Kanagarajan@mentor.com,
+	brauner@kernel.org,
+	jlayton@kernel.org,
+	jack@suse.cz
+Subject: Re: [PATCH] selftests/mqueue: Set timeout to 100 seconds
+Date: Fri, 16 Feb 2024 16:31:42 -0800
+Message-Id: <20240217003142.86297-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <202402161600.BF1D110BB@keescook>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240213184438.16675-1-james.morse@arm.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 13, 2024 at 06:44:14PM +0000, James Morse wrote:
-> Hello!
+On Fri, 16 Feb 2024 16:01:20 -0800 Kees Cook <keescook@chromium.org> wrote:
+
+> On Wed, Feb 14, 2024 at 05:13:09PM -0800, SeongJae Park wrote:
+> > A gentle reminder.
+> > 
+> > 
+> > Thanks,
+> > SJ
+> > 
+> > On Fri, 9 Feb 2024 09:42:43 -0800 SeongJae Park <sj@kernel.org> wrote:
+> > 
+> > > On Fri, 9 Feb 2024 10:30:38 +0000 "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com> wrote:
+> > > 
+> > > > On 08/02/2024 21:29, SeongJae Park wrote:
+> > > > > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> > > > > 
+> > > > > 
+> > > > > 
+> > > > > While mq_perf_tests runs with the default kselftest timeout limit, which
+> > > > > is 45 seconds, the test takes about 60 seconds to complete on i3.metal
+> > > > > AWS instances.  Hence, the test always times out.  Increase the timeout
+> > > > > to 100 seconds.
+> > > > > 
+> > > > > Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
+> > > > > Cc: <stable@vger.kernel.org> # 5.4.x
+> > > > > Signed-off-by: SeongJae Park <sj@kernel.org>
+> > > > > ---
+> > > > >   tools/testing/selftests/mqueue/setting | 1 +
+> > > > >   1 file changed, 1 insertion(+)
+> > > > >   create mode 100644 tools/testing/selftests/mqueue/setting
+> > > > > 
+> > > > > diff --git a/tools/testing/selftests/mqueue/setting b/tools/testing/selftests/mqueue/setting
+> > > > > new file mode 100644
+> > > > > index 000000000000..54dc12287839
+> > > > > --- /dev/null
+> > > > > +++ b/tools/testing/selftests/mqueue/setting
+> > > > > @@ -0,0 +1 @@
+> > > > > +timeout=100
+> > > > > --
+> > > > > 2.39.2
+> > > > > 
+> > > > >
+> > > > 
+> > > > Added Vijai Kumar to CC
+> > > > 
+> > > > This looks similar to [PATCH] kselftest: mqueue: increase timeout 
+> > > > https://lore.kernel.org/lkml/20220622085911.2292509-1-Vijaikumar_Kanagarajan@mentor.com/T/#r12820aede6bba015b70ae33323e29ae27d5b69c7 
+> > > > which was increasing the timeout to 180 however it's not clear why this 
+> > > > hasn't been merged yet.
 > 
-> It's been back and forth for whether this series should be rebased onto Tony's
-> SNC series. This version isn't, its based on tip/x86/cache.
-> (I have the rebased-and-tested versions if anyone needs them)
+> Should it be 100 or 180?
 
-In case James' patches go first, I took a crack at basing my SNC series
-on top of his patches (specifically the mpam/monitors_and_locking/v9
-branch of git://git.kernel.org/pub/scm/linux/kernel/git/morse/linux.git).
+As mentioned on the previous mail[1], either values are good to me :)
 
-Result is here:
+[1] https://lore.kernel.org/r/20240215011309.73168-1-sj@kernel.org
 
-git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git
-Branch: james_then_snc
+> Either way:
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-The end result of which ought to be pretty similar to the
-"rebased-and-tested" versions that James mentions above.
+Thank you!
 
--Tony
+
+Thanks,
+SJ
+
+> 
+> -- 
+> Kees Cook
+> 
 
