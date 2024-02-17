@@ -1,141 +1,181 @@
-Return-Path: <linux-kernel+bounces-69519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98B2D858A74
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:01:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC4A858A80
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:05:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28884B28759
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:01:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B88DAB24A32
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12ADCD534;
-	Sat, 17 Feb 2024 00:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7493F3D71;
+	Sat, 17 Feb 2024 00:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LM4JPYap"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="kkbger9l"
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CE9C9440
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6819802
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:04:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708128085; cv=none; b=p+IKEjWUsrUpxli88Gt3Fg0qcGwjN/6PI43nLn42/AvpomG26PXm4XbfQXZZqtFRLpqv0YO0MJxxJ2f1aHZHGX/i71NU1mIDnGghxpcaanHLMfkVmfkx9IQZLz8GJBCXQKVEcjJvPX2PXa8oNanlIHmHE/yV7FPJmjy6il54vPQ=
+	t=1708128290; cv=none; b=jaONmkYf+RWAJmfK3xdbh+x1Y0OzR5QmjTtysG0ljzgbkBrxKgAvUtSS8qWDLrAxWfU5ZcF+SiLxUNYckJUvslaffcK+dsDBKX0P/dKoQmq8oW3JU0o8DxgwxjtvdVG2wAA1AcK2qZ/M9Kdc+VM5uAP6MYC0c/vpaCGEP/XI2Us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708128085; c=relaxed/simple;
-	bh=twJMaz5hQjLxWg2D2ZOlTmtBY3tmgwGEsmcoi1okmMs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o77JEPbpIvKdCempAKfu8GBA+hdpGJXxsVZBg+fc+KdyWXl2gu+s/NCpUIQ7Vz5YOx6snuVTD01AuPWqgUz3kbp9efw9388SnNftA/1Qw6Oo54FhBPggYEcF8EJHEob8fmqXfwGkNyHBqfofsIvjRtC82dbUwIvG8uXClQ3RfSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LM4JPYap; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d7881b1843so23208915ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:01:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708128082; x=1708732882; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rcCKG3D7AvePSxZeCEt+RshRF5ENt/rXD6pLatkDrQk=;
-        b=LM4JPYap5xEEAOR9XDel1FAmTlNGnZShmaFs1bN2ehNMF0bD4X9662RPDljC4eYh4Z
-         xtFMhgF3uCmt/7fBPRgCx1tyo/pcwcS2SM7RwQsCzwMBdRK9wlewow07mlZjOZvqZE/9
-         +pjQw+lrEPHGCTzY3sFx//uiFCfBgGwscuyZw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708128082; x=1708732882;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rcCKG3D7AvePSxZeCEt+RshRF5ENt/rXD6pLatkDrQk=;
-        b=HIgxJQ38vSXR2SGRNdc8XTXMOSnvvt7tR0u6OXvlOHbKJ7jK/r6DzeiwYVPhe1xcrR
-         G856tbaI3SiEp78sVuiGf7d9RI0RzEzXZseeuWdb0hnXtKJAC77eGxvcMKbsTyiWcznA
-         3Dgwmfziu1DJfh0nHHR7fWd7EqUsUu+lUAPf51uHJSJove2uD51v9oQBacD7jcripYOF
-         s9s4dkcQaxfvB7cMKZa26FZXDVaaYpvATuXalpd2aQNghlGi7tbnlpNsTxHrO3Y6N2Cc
-         RCrTOf+QAjdFueZ0K4bgchz0D0l8mgcy49MjSo24IdaVmn/aQbxqKxyqXJYpRJCp81N+
-         JJfg==
-X-Forwarded-Encrypted: i=1; AJvYcCVULatRPvImQJi+6USs4AzFnsmzpqo8hj+agPcx3ITrgP5Kpsw2yQBNf/cAC3h+sVWuI4UGWlmjpiLCDPSIs0FvyrXfuFWo0KhWzIpm
-X-Gm-Message-State: AOJu0Yw7rIIbl0uHR19CZB9g2DGoWXFxNfIUpEc7lOp2R+MaFdhtv78P
-	Obtc0qYMn0F6m/MQPZxjIiMPc5pbajJqSFNSuluWeak2L8H045DH3Ydkad/2NlK8P8YUJrgtpoM
-	=
-X-Google-Smtp-Source: AGHT+IHZC4htSp/S1o8/xuNw5MoOCc264ogO2hnLmdjTYKiML02zOzt6m83Am38ZfpxtzNSuqYdmUw==
-X-Received: by 2002:a17:903:22c4:b0:1db:82fc:8b55 with SMTP id y4-20020a17090322c400b001db82fc8b55mr8278333plg.56.1708128081792;
-        Fri, 16 Feb 2024 16:01:21 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id u12-20020a170903308c00b001da11733477sm408091plc.75.2024.02.16.16.01.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 16:01:21 -0800 (PST)
-Date: Fri, 16 Feb 2024 16:01:20 -0800
-From: Kees Cook <keescook@chromium.org>
-To: SeongJae Park <sj@kernel.org>
-Cc: shuah@kernel.org, "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Vijaikumar_Kanagarajan@mentor.com,
-	brauner@kernel.org, jlayton@kernel.org, jack@suse.cz
-Subject: Re: [PATCH] selftests/mqueue: Set timeout to 100 seconds
-Message-ID: <202402161600.BF1D110BB@keescook>
-References: <20240209174243.74220-1-sj@kernel.org>
- <20240215011309.73168-1-sj@kernel.org>
+	s=arc-20240116; t=1708128290; c=relaxed/simple;
+	bh=3nKxXv+a13aom4LTOZ3NnsV2RrerkFayOaft5ppMDkw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pdDTlDgpPrHaDQUXTpOC65ya4Ay536lImPrNY6W7kAkqZP8hvxD4C5BS9xZxL/WYRalOlMY9s9i6dudgLjM8NoGH9aMJDN7Q+iVd+MQeQZ9a0d7pk9/0XV63BgRA61z6MUf3Q9isNqx+pDvsUJrlEBlEVS/fbYXJBerxMcGuRuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=kkbger9l; arc=none smtp.client-ip=44.202.169.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
+Received: from eig-obgw-5003a.ext.cloudfilter.net ([10.0.29.159])
+	by cmsmtp with ESMTPS
+	id b7YGr4e3eTHHub8CArZrPo; Sat, 17 Feb 2024 00:04:42 +0000
+Received: from gator4166.hostgator.com ([108.167.133.22])
+	by cmsmtp with ESMTPS
+	id b8C8rVHzIgqgEb8C9rFacO; Sat, 17 Feb 2024 00:04:41 +0000
+X-Authority-Analysis: v=2.4 cv=bYHIU/PB c=1 sm=1 tr=0 ts=65cff819
+ a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
+ a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
+ a=cm27Pg_UAAAA:8 a=VwQbUJbxAAAA:8 a=A7XncKjpAAAA:8 a=pGLkceISAAAA:8
+ a=J1Y8HTJGAAAA:8 a=1XWaLZrsAAAA:8 a=20KFwNOVAAAA:8 a=S3e1UlYFMFTUAia5eQoA:9
+ a=QEXdDO2ut3YA:10 a=xmb-EsYY8bH0VWELuYED:22 a=AjGcO6oz07-iQ99wixmX:22
+ a=R9rPLQDAdC6-Ub70kJmZ:22 a=y1Q9-5lHfBjTkpIzbSAN:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=ljkmbjR1wZVH0YMxK1quNarSuTzJMheeVQqhKZsr5SM=; b=kkbger9lKaj723jXWSInOx6/G1
+	E347snhH6PKIcvwa+H9yyCmJJg7R2tWkSxbUzcXyNN/j5tpWsy1YzhPTyJhgTwFkjwR0Co5vH0YH4
+	yPKOUK+A1WEA8e+i2tBGYn4DS/fjcjnZATu0H3KhZY/9Wq3VXlEPu8/6lgpXTEC7Jb6b1ldoLl2IQ
+	FUIuaQ0WBVrFBtagt2SljBfVkeYWYIrTlY6Srdd0TdPW5vDUukrw8nrpCidSpaxF3bRspvbLiNpPq
+	ls6fdqgqkISKEnXZZh3hcZxxJtpJ38UF8oNSOdfxScOuwuTUnsYuMNJ6AriiEFB1qgcXYD4ES6hF0
+	w6einTVA==;
+Received: from [201.172.172.225] (port=49674 helo=[192.168.15.10])
+	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96.2)
+	(envelope-from <gustavo@embeddedor.com>)
+	id 1rb8C7-002dlw-0R;
+	Fri, 16 Feb 2024 18:04:39 -0600
+Message-ID: <9ed28341-8bf7-4b6a-ba9a-6cfe07dc5964@embeddedor.com>
+Date: Fri, 16 Feb 2024 18:04:14 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215011309.73168-1-sj@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: sched: Annotate struct tc_pedit with __counted_by
+To: Kees Cook <keescook@chromium.org>, Jakub Kicinski <kuba@kernel.org>
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang
+ <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Paolo Abeni <pabeni@redhat.com>, "Gustavo A. R. Silva"
+ <gustavoars@kernel.org>, netdev@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+References: <20240216232744.work.514-kees@kernel.org>
+Content-Language: en-US
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+In-Reply-To: <20240216232744.work.514-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 201.172.172.225
+X-Source-L: No
+X-Exim-ID: 1rb8C7-002dlw-0R
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:49674
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 2
+X-Org: HG=hgshared;ORG=hostgator;
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfCVq46oP8SNec+SF81E9o/+RmDiZKVQqrZj9ZI8o6SwsrS1HJLmcsAKDpc50L4L6ZV7xGXDC9DfKA/YNnM/Zz6nqwsApOd+s9yugA0X/RA4WEY7nqkyo
+ qILELFkHigfN/xhDRP6d6VVcd59hE4aaUF0oOfOtSwa3VlhwXyLzPtzeSYFw239WUY8GEaAcm/TJH7BuhhOyAfEFAOt9ysL7wex+f966ZKAvTzGY5KcZmivp
 
-On Wed, Feb 14, 2024 at 05:13:09PM -0800, SeongJae Park wrote:
-> A gentle reminder.
-> 
-> 
-> Thanks,
-> SJ
-> 
-> On Fri, 9 Feb 2024 09:42:43 -0800 SeongJae Park <sj@kernel.org> wrote:
-> 
-> > On Fri, 9 Feb 2024 10:30:38 +0000 "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com> wrote:
-> > 
-> > > On 08/02/2024 21:29, SeongJae Park wrote:
-> > > > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> > > > 
-> > > > 
-> > > > 
-> > > > While mq_perf_tests runs with the default kselftest timeout limit, which
-> > > > is 45 seconds, the test takes about 60 seconds to complete on i3.metal
-> > > > AWS instances.  Hence, the test always times out.  Increase the timeout
-> > > > to 100 seconds.
-> > > > 
-> > > > Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
-> > > > Cc: <stable@vger.kernel.org> # 5.4.x
-> > > > Signed-off-by: SeongJae Park <sj@kernel.org>
-> > > > ---
-> > > >   tools/testing/selftests/mqueue/setting | 1 +
-> > > >   1 file changed, 1 insertion(+)
-> > > >   create mode 100644 tools/testing/selftests/mqueue/setting
-> > > > 
-> > > > diff --git a/tools/testing/selftests/mqueue/setting b/tools/testing/selftests/mqueue/setting
-> > > > new file mode 100644
-> > > > index 000000000000..54dc12287839
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/mqueue/setting
-> > > > @@ -0,0 +1 @@
-> > > > +timeout=100
-> > > > --
-> > > > 2.39.2
-> > > > 
-> > > >
-> > > 
-> > > Added Vijai Kumar to CC
-> > > 
-> > > This looks similar to [PATCH] kselftest: mqueue: increase timeout 
-> > > https://lore.kernel.org/lkml/20220622085911.2292509-1-Vijaikumar_Kanagarajan@mentor.com/T/#r12820aede6bba015b70ae33323e29ae27d5b69c7 
-> > > which was increasing the timeout to 180 however it's not clear why this 
-> > > hasn't been merged yet.
 
-Should it be 100 or 180? Either way:
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+On 2/16/24 17:27, Kees Cook wrote:
+> Prepare for the coming implementation by GCC and Clang of the __counted_by
+> attribute. Flexible array members annotated with __counted_by can have
+> their accesses bounds-checked at run-time checking via CONFIG_UBSAN_BOUNDS
+> (for array indexing) and CONFIG_FORTIFY_SOURCE (for strcpy/memcpy-family
+> functions).
+> 
+> As found with Coccinelle[1], add __counted_by for struct tc_pedit.
+> Additionally, since the element count member must be set before accessing
+> the annotated flexible array member, move its initialization earlier.
+> 
+> Link: https://github.com/kees/kernel-tools/blob/trunk/coccinelle/examples/counted_by.cocci [1]
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Cc: Jamal Hadi Salim <jhs@mojatatu.com>
+> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+> Cc: Jiri Pirko <jiri@resnulli.us>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Eric Dumazet <edumazet@google.com>
+> Cc: Paolo Abeni <pabeni@redhat.com>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: netdev@vger.kernel.org
+> Cc: linux-hardening@vger.kernel.org
 
--- 
-Kees Cook
+`opt->nkeys` updated before `memcpy()`, looks good to me:
+
+Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Thanks!
+--
+Gustavo
+
+> ---
+>   include/uapi/linux/tc_act/tc_pedit.h | 2 +-
+>   net/sched/act_pedit.c                | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/uapi/linux/tc_act/tc_pedit.h b/include/uapi/linux/tc_act/tc_pedit.h
+> index f3e61b04fa01..f5cab7fc96ab 100644
+> --- a/include/uapi/linux/tc_act/tc_pedit.h
+> +++ b/include/uapi/linux/tc_act/tc_pedit.h
+> @@ -62,7 +62,7 @@ struct tc_pedit_sel {
+>   	tc_gen;
+>   	unsigned char           nkeys;
+>   	unsigned char           flags;
+> -	struct tc_pedit_key     keys[0];
+> +	struct tc_pedit_key     keys[] __counted_by(nkeys);
+>   };
+>   
+>   #define tc_pedit tc_pedit_sel
+> diff --git a/net/sched/act_pedit.c b/net/sched/act_pedit.c
+> index 2ef22969f274..21e863d2898c 100644
+> --- a/net/sched/act_pedit.c
+> +++ b/net/sched/act_pedit.c
+> @@ -515,11 +515,11 @@ static int tcf_pedit_dump(struct sk_buff *skb, struct tc_action *a,
+>   		spin_unlock_bh(&p->tcf_lock);
+>   		return -ENOBUFS;
+>   	}
+> +	opt->nkeys = parms->tcfp_nkeys;
+>   
+>   	memcpy(opt->keys, parms->tcfp_keys,
+>   	       flex_array_size(opt, keys, parms->tcfp_nkeys));
+>   	opt->index = p->tcf_index;
+> -	opt->nkeys = parms->tcfp_nkeys;
+>   	opt->flags = parms->tcfp_flags;
+>   	opt->action = p->tcf_action;
+>   	opt->refcnt = refcount_read(&p->tcf_refcnt) - ref;
 
