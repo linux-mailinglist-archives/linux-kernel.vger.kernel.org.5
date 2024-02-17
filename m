@@ -1,145 +1,89 @@
-Return-Path: <linux-kernel+bounces-69917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69918-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84F46859034
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:56:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E3E485903A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA43A1C21653
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:56:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D23A7B21FE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE36A7C6C4;
-	Sat, 17 Feb 2024 14:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O/YHpuC2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EE87C0B1;
+	Sat, 17 Feb 2024 15:01:07 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCD617C0B1;
-	Sat, 17 Feb 2024 14:55:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCC97B3E4
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708181721; cv=none; b=jecpJpKWBQGMv2uX0l4MbT/PR98VA8bwL/TRbosatgJ/r2l5yp8/HWI0Ja49vr8Cb+AwNFi/pWnFSkaiKHZV1vyXngEPSVy9ZKlyf5rxtUGmY3miO6SW4smo9r0YeuWrJmJTTTqGEKXC+jr4i2rFkLiWaX5sAyEuXq4Yy0mU9Yw=
+	t=1708182067; cv=none; b=V0qGQiu2+KRwtfScK0AvJ/cwFG1o3soDANkr/QzKVDj/1wxWck7gIhHdhRaxKT4n6FCTeW6/dmiVfo+1oxkmZ7AFUhNunKZWvr3eFGgcW7nPIyBf5BHoGwxD8Qs6keh5enQPrb56g96NYBZH9QDWYX+cZAED4+yfC4ujLZiuhA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708181721; c=relaxed/simple;
-	bh=eicC/VhgBa2S/q5nFbRXbBaIGih0GgZsqXc1V3c08P4=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=aqNtn0VwSvOV6PJqk65loQH0z9F/1DL5Ns9TiljGwvB9TXkypBZNkEF+1OmZyyOpqE3nQg6tbQfZlNZ5IPr7tS9Yv6p6cZT+qpBAhALSmk8b+5Hu2JqoJ8cPb87klLM1q1ZFYrRpARGZONrOtLu6QEFeuZrdr0pTyo5PLKdTWx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O/YHpuC2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36CFFC433C7;
-	Sat, 17 Feb 2024 14:55:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708181720;
-	bh=eicC/VhgBa2S/q5nFbRXbBaIGih0GgZsqXc1V3c08P4=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=O/YHpuC2kz2pEhoUuVZ2WKjf/xjV7sQJFEkPbfkWo1i3eGjc+4J2Z6xxmuQu6mfLE
-	 bLg8T3invvo9JBAw52oj3l5YsJFVyxAoFrJ7z6AZa6K3/2+O6tuvj8DyU133t/uOZE
-	 oks60FNg1cDNgZTuu9h4YQhQpDvesSAnrNwJi30mWjqXa2HZbM6KMBjB/FZP9N4QC6
-	 6tp5NLsoh2ANFl7NVO01G08vPZhr67O7xwx8rTZkPmIbjTBkQFQ2u3rFp544/fGkoT
-	 bastFFM9vBhTBNgI54dxvQG+9V9Vh+h23lguaXhQfqlDUET8p5uCHbZV+Gqakkh+9H
-	 kfJR1/9mxSzFg==
-Date: Sat, 17 Feb 2024 08:55:19 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1708182067; c=relaxed/simple;
+	bh=v3qPHREL8y4lhPH+JqjQ41slZwMMdqVh6lqLROLzu/Y=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=s3UKfG2BPVukAgqaBOiv8TwijN1waT24SsHFwfi48G3IhqVC5YvrVxbhnrTsurfFTIM4v+UIvHGl2C2sJUKq+ib2yS/2VrqvL+S1rJiCm725nstmr112uhggkzfsASKvxH/A5im1k6yTj9zGo39RePGh1p4Mg1V1zvTG9dnlxq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3652275e581so374005ab.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 07:01:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708182065; x=1708786865;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MwNQueuYmB/11gbOG3QeCQx8po7ZygrhAL8Ov/WqAlE=;
+        b=ejBcBUBPwHRelCHbaovQgkZvKZ10a96uVF1YXe9H+oMjM8HAywgz6CL+LGyTwxd7Uf
+         u+6UhI8ScjSr0mo7plwmJT52pwOVyC/9p6YtRmCvA7iCzVgeroKB/4FqaqKGRnO4hMQd
+         R7zbs4toiNZoskJn4Dw4BmhkP6jRndxjLsX+diicbkldRrcjQS0h+g7ooRHy9lFQB3ul
+         diQ7+GXScBdq++YL5Xue0Qs+HquMEand4S6IrPPxgthmLDNytLsgnl1morPcCTr40u/S
+         rFOFy6mobSuVkWRhnIw4Sx/MGdL27YcD3KZcYfgcqMrSGuPVWkum+LiIpDzCqS8Ob6Yc
+         AQbg==
+X-Forwarded-Encrypted: i=1; AJvYcCUuBPkUnB3rvJrLZuCU30cBlBZnfC23Wp4qH8sq3B0IFjaQE7amUt2RA49+iNSMeNUrZ0QJUWln1ft/Y0ano4q+sZXpxpSQiWg7+0Kx
+X-Gm-Message-State: AOJu0YwSJ//fa7qLL7lUlH7PYVLTwh9qyfkduYtcVKs74FV+pxccezvS
+	MzJFfrkNII4LIm3n45DquuYrsepZr595SYA8XbTR/Y8ZYR7cgP96Zo1iFCzG8KXfrAzEuOR0K7r
+	sR/GQ0A/kgUyv0CfJFv37qzfv5TeSUdZODWHM/U1mdVqape3Zzlo458Y=
+X-Google-Smtp-Source: AGHT+IEBdhWTaosc/BZRU1Ig+P68HanPIcYAdDVfh8P0PrL8wce8QOLRvgTXLmzncxBxXxBJXjNeF/KiKPKPxtq3e5BT7OxP6ZGq
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Steven Niu <steven.niu.uj@renesas.com>
-Cc: krzysztof.kozlowski+dt@linaro.org, zbigniew.lukwinski@linux.intel.com, 
- linux-i3c@lists.infradead.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, robh+dt@kernel.org, 
- alexandre.belloni@bootlin.com, conor+dt@kernel.org
-In-Reply-To: <20240217131412.4145506-1-steven.niu.uj@renesas.com>
-References: <20240217131412.4145506-1-steven.niu.uj@renesas.com>
-Message-Id: <170818171799.2302911.16070158638236981943.robh@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: i3c-hub: Add Renesas RG3MxxB12A1 I3C
- HUB
+X-Received: by 2002:a05:6e02:154f:b0:363:9252:ed47 with SMTP id
+ j15-20020a056e02154f00b003639252ed47mr647629ilu.1.1708182064966; Sat, 17 Feb
+ 2024 07:01:04 -0800 (PST)
+Date: Sat, 17 Feb 2024 07:01:04 -0800
+In-Reply-To: <CAMj1kXHQYuv2H5XA+abgj+Mw8xyxsoHARx2w-tT7jRrDLQ=EVg@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000031b790061195214f@google.com>
+Subject: Re: [syzbot] [arm?] [crypto?] KASAN: invalid-access Read in neon_aes_ctr_encrypt
+From: syzbot <syzbot+f1ceaa1a09ab891e1934@syzkaller.appspotmail.com>
+To: ardb@kernel.org, catalin.marinas@arm.com, davem@davemloft.net, 
+	herbert@gondor.apana.org.au, linux-arm-kernel@lists.infradead.org, 
+	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, will@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
-On Sat, 17 Feb 2024 21:14:11 +0800, Steven Niu wrote:
-> Document the Renesas RG3MxxB12A1 I3C HUB.
-> 
-> Signed-off-by: Steven Niu <steven.niu.uj@renesas.com>
-> ---
->  .../devicetree/bindings/i3c/i3c-hub.yaml      | 400 ++++++++++++++++++
->  1 file changed, 400 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/i3c/i3c-hub.yaml
-> 
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Reported-and-tested-by: syzbot+f1ceaa1a09ab891e1934@syzkaller.appspotmail.com
 
-yamllint warnings/errors:
+Tested on:
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.yaml: id: missing type definition
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.yaml: id-cp1: missing type definition
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.yaml: target-reg: missing type definition
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:18.28-60.11: Warning (unit_address_vs_reg): /example-0/i3c-master@d040000: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:22.19-59.13: Warning (unit_address_vs_reg): /example-0/i3c-master@d040000/hub@0,0: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:38.27-42.15: Warning (unit_address_vs_reg): /example-0/i3c-master@d040000/hub@0,0/target-port@0: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:43.27-50.15: Warning (unit_address_vs_reg): /example-0/i3c-master@d040000/hub@0,0/target-port@1: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:46.26-49.17: Warning (unit_address_vs_reg): /example-0/i3c-master@d040000/hub@0,0/target-port@1/backend@0,0: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:51.27-54.15: Warning (unit_address_vs_reg): /example-0/i3c-master@d040000/hub@0,0/target-port@2: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:55.27-58.15: Warning (unit_address_vs_reg): /example-0/i3c-master@d040000/hub@0,0/target-port@3: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:78.28-124.11: Warning (unit_address_vs_reg): /example-1/i3c-master@d040000: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:102.27-106.15: Warning (unit_address_vs_reg): /example-1/i3c-master@d040000/hub@70,3C000000100/target-port@0: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:107.27-114.15: Warning (unit_address_vs_reg): /example-1/i3c-master@d040000/hub@70,3C000000100/target-port@1: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:110.26-113.17: Warning (unit_address_vs_reg): /example-1/i3c-master@d040000/hub@70,3C000000100/target-port@1/backend@0,0: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:115.27-118.15: Warning (unit_address_vs_reg): /example-1/i3c-master@d040000/hub@70,3C000000100/target-port@2: node has a unit name, but no reg or ranges property
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dts:119.27-122.15: Warning (unit_address_vs_reg): /example-1/i3c-master@d040000/hub@70,3C000000100/target-port@3: node has a unit name, but no reg or ranges property
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: i3c-master@d040000: #address-cells:0:0: 3 was expected
-	from schema $id: http://devicetree.org/schemas/i3c/i3c.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: i3c-master@d040000: hub@0,0: 'reg' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: $nodename:0: 'hub@0,0' does not match '^i3c-master@[0-9a-f]+$'
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: '#address-cells' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: '#size-cells' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@0: 'compatible' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@0: 'reg' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@1: 'compatible' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@1: 'reg' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@2: 'compatible' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@2: 'reg' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@3: 'compatible' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: hub@0,0: target-port@3: 'reg' is a required property
-	from schema $id: http://devicetree.org/schemas/i3c/i3c-hub.yaml#
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: /example-0/i3c-master@d040000/hub@0,0/target-port@1/backend@0,0: failed to match any schema with compatible: ['slave-mqueue']
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: i3c-master@d040000: #address-cells:0:0: 3 was expected
-	from schema $id: http://devicetree.org/schemas/i3c/i3c.yaml#
-Documentation/devicetree/bindings/i3c/i3c-hub.example.dtb: /example-1/i3c-master@d040000/hub@70,3C000000100/target-port@1/backend@0,0: failed to match any schema with compatible: ['slave-mqueue']
+commit:         67e0a702 crypto: arm64/neonbs - fix out-of-bounds acce..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git neon-aes-ctr-fix
+console output: https://syzkaller.appspot.com/x/log.txt?x=122f4464180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b4dde08ba7d52a4b
+dashboard link: https://syzkaller.appspot.com/bug?extid=f1ceaa1a09ab891e1934
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240217131412.4145506-1-steven.niu.uj@renesas.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Note: no patches were applied.
+Note: testing is done by a robot and is best-effort only.
 
