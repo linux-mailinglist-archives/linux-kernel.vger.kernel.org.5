@@ -1,150 +1,163 @@
-Return-Path: <linux-kernel+bounces-70011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D4538591B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:25:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A7198591B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 097A72827C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:25:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE23A1C20A89
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8257E0FC;
-	Sat, 17 Feb 2024 18:24:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590E27E10C;
+	Sat, 17 Feb 2024 18:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7oYL8QK"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="q+ZTbwOW"
+Received: from mail-ua1-f53.google.com (mail-ua1-f53.google.com [209.85.222.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCBD18020;
-	Sat, 17 Feb 2024 18:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5911E4A8
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 18:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708194295; cv=none; b=ads6MVebHcnjB3F1gHhKgyJ6KToIrKPiT8ryBvA0wSwvXN95v5fHhF6V8LeydC8S6W5muQSgUNuRY9u0nXTU4Y6X7wAIeF9z8qnCTE06MbwEOBq6ihZLzFVQXx/U+eZ8STxUOxmRMFmUkD1mJg5452BTDBmyT+ufwhHf2kY3DcU=
+	t=1708194658; cv=none; b=mE+2cfa6sotrKgWzagR3yIvRaaGOVpYdBIcZ5bjoNXpZOxe4rLidaw+nGWQ8u0k9BzGcmApdz1HBWzjTWzrDjg3106QTBMuynWf049LQfNL4uxMRT8iU8K0NmvrtDhUtjCFt1/oEuX4oklSrc7GKAFuwI5QakW9cEHwf3+hQulE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708194295; c=relaxed/simple;
-	bh=a5WT5IeOuUFaQli0pcNNQu3rMzv2/AxArXbYGvAi414=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S6NJCQwKkUPdqxX0YtndgTE8XC0WHtuGqYCBdQZWYs/NlxO+7DVYFsC333cUUnViPxDglDZpPyY0ajGwEY8BGM4SjxAAY2V9ue95qQLpfksI2f6BhBvF0ofpNoKGcBgYOGaK8nAE8T9RPQ1vBF0CEh/akL3hXJnRxiD480bwT7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7oYL8QK; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-59a8b9b327aso1053878eaf.2;
-        Sat, 17 Feb 2024 10:24:53 -0800 (PST)
+	s=arc-20240116; t=1708194658; c=relaxed/simple;
+	bh=xTu4CwC01bOUIpKw1wk4DHay8JL9daGjNYWi0BvJoFk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=s2poYF6qlhfeMYYcQqgOZbifGs96TvRVX1jcnyGjiCGY3lQOtp+thntBIbReEfRmzNIaOCiCdA+nFmjl9DYugHAYFT3gJNlgzMjtZuJgKPDZ0Y7i6m0VUwoSP89rdPc+LqRYqgUw5yBqB5RLBbplSSjeXNoqfxn5EUOYPNg1TeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=q+ZTbwOW; arc=none smtp.client-ip=209.85.222.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f53.google.com with SMTP id a1e0cc1a2514c-7d2e1a0337bso1130992241.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 10:30:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708194292; x=1708799092; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=pLC9zRflijwVfQm/uk7oxrDMVV/Oz+zmQyj9vEq5EFA=;
-        b=W7oYL8QKKlqUmHa4ej4ddDi0WPTyRajRO+1RerOTUVFooQddFHQxC7oD++9E3OTtJF
-         eEOqohDTTSMi+/0lz7Gc4UwIRCUn9lwdL1HtzuTPApuvSZ3/FO6coXSLs5w1JrNL8Jp/
-         pRGan91ttcyVZp1ugAq974FI13C7QnevjHfYGFatn6qqEtIp2SmtME4onx7rMa+rGv1r
-         3IkFTX72YrrSzptFG/ckrpmNvNtJKcipF5N1v4HMq8QoWXzwlQXVjs98552cVynW9g9N
-         GvOW04GCXNJfIZDR5YKQp9h4T0Oy4qWWajnVpL62GPuvGkky8WsSRavdkMqTnIfnkIjr
-         HvdA==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708194655; x=1708799455; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JeWu4dlZldb0QpDIIyWPdxjS/RZoRXziwmFM0VAD7xY=;
+        b=q+ZTbwOWLrtB7LLK3P+2bWMpv7DfIvhgi/2egNQ4e52dlt56kAs4JbMUWCIypEPg3u
+         jaPViUylF4qtQbcTBTyT70G9+UdrSLhxKL21A/9s6yJsxSRyq8xTATGcF88R6HEN/kSI
+         FEcX1CQfyK4WEt+SUb+cFk+6mPzCSgU0ZIWA/kkH614YOW0bApp+lbnisuRUJID+UlaS
+         oOt0Z2o/J2lyYUVPrLC0B6EbShI40Z+7a/Fx8TFCEz+8kcxXF+2Zmg6PaMWL2HnIyTdI
+         P5Fq871GtTT8Z3hp9dz0flsuvXqyvv2rjvK5Pq1zsVljnHdz9MUClSO7sH1Y4x9CWtmk
+         ubmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708194292; x=1708799092;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pLC9zRflijwVfQm/uk7oxrDMVV/Oz+zmQyj9vEq5EFA=;
-        b=fTsAw+Uu+dGq6NXul9OdGgb5jF3WA5tVLEpi4y0ytC75f+SGRtfIhJi5VnqnpAd+lU
-         2Hg90678zFSr0nTnD9wLWI0K3IwSo7J0UFI8hfBdMlm/vTyJ8n8+MU2WI9eg6py11Q/Y
-         lst3E8l/zeGlycbPwe/L6Qhn+SxLAFh/gymEzLdKfIRG4J8rQEzYZpfAY5Up+8rGZ2Ev
-         TLnKp7htph68spkRllPzk7Xtowssuo3BCjSb3ubgZoMQ7Icsgane7xuP9iLA3vD0aG2/
-         F426zwil4Vylyh7T0hbGkN8hV1eL76juuM/a+a87Re4IWCd1JR4zqC/g9awDX6ufaLlX
-         6fdw==
-X-Forwarded-Encrypted: i=1; AJvYcCW1aVn5QjNgV396X3yuAf83IINyUDvGbrFID3BgtNeinqPG/DL7FKSt93mnK6TS1/90HRXKaYRPHl8jl0DU9IPuYz3UnFZScXsbv9N0T1EVnBqlcIYGMz7fQmMYf7SK4m4oEgwWP0bWe+8=
-X-Gm-Message-State: AOJu0YwdYN/4RxkyC19/bSal45CTUcDs1J44qmB9Ee/V9yEbJ3bd+qhV
-	KC9W5qZUvT3hMGoJGSIHIXSAuTDlSIXk2ZituktBkPp7cNiLu7vg
-X-Google-Smtp-Source: AGHT+IHV62nHA3tDgJ+tJsmk8h6u9uo7pOzTcAcpbR3XQjFBnhXLWh8fNK2kWQvL1a797/zgPLXpCg==
-X-Received: by 2002:a05:6358:8087:b0:178:7986:a586 with SMTP id a7-20020a056358808700b001787986a586mr10183644rwk.5.1708194292499;
-        Sat, 17 Feb 2024 10:24:52 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id fd3-20020a056a002e8300b006e0dd50b0d0sm1959349pfb.8.2024.02.17.10.24.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Feb 2024 10:24:51 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <718f0dd9-121a-4885-8976-aaafa7c44f2d@roeck-us.net>
-Date: Sat, 17 Feb 2024 10:24:50 -0800
+        d=1e100.net; s=20230601; t=1708194655; x=1708799455;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JeWu4dlZldb0QpDIIyWPdxjS/RZoRXziwmFM0VAD7xY=;
+        b=S718U8DcU1Za9oL8fdgiZOVNfya3lOl7R+Tp7k13RnVmH+0yDs4iAWdzBWmLLLFQKu
+         rR9vRtX8ytjOPJ9aJ4HXXQFhjvx33ldAYEOPEj00zZ1+/0G3El+aAWZrLr8ns97VheQX
+         WRGWeRv5fliMDRo2vtYUNq1t1MQL1I5sYNe9mDMiiJW6r1PnX/4qrY120KCw96PzSiEt
+         P1gxV/iRJZS0l9VMDABvCiVuftltUEd3q1CpzUPg1Doiefoy73EbPgGafsyJ998ZOAa0
+         oZgNVgQVlNDE8tiNfI5C2e1TWvxUJ+uQ1axdgSDt6qO816mOtKn2hooqToPmSRVryOjw
+         HlNg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/PCVgW59iWks3KPxwKE6cmWF+4vueHrYjRRw0zbByTKutR0Bxe7gvifaZaWIG3Iy40gJIfVm5MlwpwINnlQ4Ii0jPNiOKLxq0OzSI
+X-Gm-Message-State: AOJu0YxPM9fsyv7thgBHlwV+sHBH3kko7a1/0n6NBG26s2oq1V3buV3N
+	7YZmPe7N5P9zJlV+7973y6GOzbNYIDiiJpf2Xq1X+Ws2JexT36NItCKXE7uVXXLYsK/58Q0Ms7y
+	CWsBRRy5lA3R0eXXALLBnhlaocImKv7PAbJnY3Q==
+X-Google-Smtp-Source: AGHT+IEGwogzVe3juwTbP5wzSPlB4FZp7n7jPtu9uTl+n1AS2iy9ckNua2af79j+lFRcSQmRv5yllrZrWuBKxrsF4JY=
+X-Received: by 2002:a05:6102:3a08:b0:46e:c752:16e7 with SMTP id
+ b8-20020a0561023a0800b0046ec75216e7mr8759486vsu.24.1708194655651; Sat, 17 Feb
+ 2024 10:30:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] hwmon: (aquacomputer_d5next) Set fan to direct PWM mode
- when writing value
-Content-Language: en-US
-To: Aleksa Savic <savicaleksa83@gmail.com>, linux-hwmon@vger.kernel.org
-Cc: Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
- linux-kernel@vger.kernel.org
-References: <20240217181536.344386-1-savicaleksa83@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240217181536.344386-1-savicaleksa83@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-7-brgl@bgdev.pl>
+ <87cysvd2er.fsf@kernel.org>
+In-Reply-To: <87cysvd2er.fsf@kernel.org>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Sat, 17 Feb 2024 19:30:44 +0100
+Message-ID: <CAMRc=Md10bNPswsLqdCmqzEmD+QmyZ+Eb4SUWknH-j5kK-speQ@mail.gmail.com>
+Subject: Re: [PATCH v5 06/18] dt-bindings: new: wireless: describe the ath12k
+ PCI module
+To: Kalle Valo <kvalo@kernel.org>
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Mark Brown <broonie@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
+	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/17/24 10:15, Aleksa Savic wrote:
-> When setting a PWM value for a fan channel, ensure that the device
-> is actually in direct PWM value mode, as it could be in PID, curve or
-> fan following mode from previous user configurations. The byte
-> signifying the channel mode is just behind the offset for the value.
-> Otherwise, setting PWM speed might result in a no-op from the point
-> of the user.
-> 
+On Sat, Feb 17, 2024 at 7:35=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrote=
+:
+>
+> Bartosz Golaszewski <brgl@bgdev.pl> writes:
+>
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Add device-tree bindings for the ATH12K module found in the WCN7850
+> > package.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> > ---
+> >  .../net/wireless/qcom,ath12k-pci.yaml         | 103 ++++++++++++++++++
+> >  1 file changed, 103 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom=
+,ath12k-pci.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath12k=
+-pci.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath12k-pci.=
+yaml
+> > new file mode 100644
+> > index 000000000000..063c576b99a0
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath12k-pci.ya=
+ml
+> > @@ -0,0 +1,103 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright (c) 2024 Linaro Limited
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/net/wireless/qcom,ath12k-pci.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Qualcomm Technologies ath12k wireless devices (PCIe)
+> > +
+> > +maintainers:
+> > +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> Jeff and me are the ath12k driver maintainers so shouldn't we listed
+> here as well?
+>
 
-You can require that a device is in manual mode when setting pwm
-modes, and return an error if it isn't. However, changing the mode
-to manual automatically when a pwm value is written is not acceptable.
+Sure will do. I also noticed the subject is wrong, should have been
+"net" not "new".
 
-Guenter
+Also, Jeff is not showing up for ath12k bindings in get_maintainer.pl.
+You could consider adding an N: ath12k entry to MAINTAINERS.
 
+Bartosz
+
+> Jeff, this reminds me that we should add you to qcom,ath10k.yaml,
+> qcom,ath11k-pci.yaml and qcom,ath11k.yaml as maintainer.
+>
+> --
+> https://patchwork.kernel.org/project/linux-wireless/list/
+>
+> https://wireless.wiki.kernel.org/en/developers/documentation/submittingpa=
+tches
 
