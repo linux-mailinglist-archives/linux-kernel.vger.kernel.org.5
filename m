@@ -1,216 +1,122 @@
-Return-Path: <linux-kernel+bounces-69799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54386858EB5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:27:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B70C6858EB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:28:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06702282E45
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:27:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E888C1C20EEA
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:28:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72A12C85A;
-	Sat, 17 Feb 2024 10:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6586C2CCD6;
+	Sat, 17 Feb 2024 10:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="o0Ek3M1m"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="tYWLhEQh"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D95C2C85C
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 10:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A449D2C6A4;
+	Sat, 17 Feb 2024 10:28:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708165668; cv=none; b=JdFltgzWm4jpkqRPTJ0AfOPuL0+kHuwN8qKzxOt1TgrjA9n6OBYaKDAG4a1ipVkDOiv3tkINCiF8bIVpX2kD/Q0P8thf6TKwmjymJhWJWHEjfZMnx9T1KZBSQ+ZuUVhvn0pQt79d/lBYtx9f8qvSk8DNJkIjT0kimhH+LmQhHkY=
+	t=1708165724; cv=none; b=LdzMbAJ7BPVKWCBdQiak2wJBFjW6nniFCg5dAk3Nhix8j8Edy09B/K2Rb/mtj9NGl5nL6l+Dz5GgHmFjOTqfYzr6UvlRqfNvm9M8RUW7q96WG8K+6Skb/NtLA3R4hCgWV1Nq8dI5aQ5ocoXtDGtw+HIJ5ntpzcLDglInKpT026g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708165668; c=relaxed/simple;
-	bh=ITgI8wtXqvIXeUHgFXHCH7Z/ODX/Zp0/cZW85LaK3GI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NDWxIUjhjmDsV6s19yKqEbYcG85pFzwbIBYCGkP7mWnSqet2oaGfyta2jB/wUCVqVQZj1DPbZE+GdE/HuRxUXmZcluP4KV+hn6iy6QV9HjYMuTrpC2GIZXaWsrJLdDa2zJCxkMXq4uvnP8QLixHhQPBrHi6WwkTO/oqXLL1rNvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=o0Ek3M1m; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-55f0b2c79cdso4559413a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 02:27:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708165665; x=1708770465; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=J6wGmVKMUMPFGBDWK1cKr8wVY2QYEjHS28FhJFBjkZo=;
-        b=o0Ek3M1m68etsdzvk9nT6q76Gygz7bD1sFX8TBbLf/OQrmFDrUMYH7GYlrDSzHJ396
-         3kHr86Hxt7lU+1qyI3rWdOrhl6LTf+uU/Qx0SHGUFePhGgRMkUy29D3cMNH7EAdDKj3h
-         DihlqJzYIT56uXcZoXBM8dPXOEs28SEtWwOhufLqzaC1bPZSyQLHftgoY9jGNO+KLAOZ
-         jdyqPeQm4upNhiz1LNnt0TUlJCU4V/zaZJd8GTrZ8OiFePknW7edfQhrIE5Y768wz/W+
-         akjvtsEv6Oip4D5AyRmshu51QU/+l+wOjRPY7mONPx3KMkrPxfmNLi4ICkK3bSWVKetg
-         z4VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708165665; x=1708770465;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J6wGmVKMUMPFGBDWK1cKr8wVY2QYEjHS28FhJFBjkZo=;
-        b=viEC9CDXu3m/xSTOK27tRqG8tmqHJJBRXWCXLRZyOpshT3i6v78IbHYx2YH3ouP28V
-         xLpdgpczcb2NKDwEmzxGx38kAWwZ+P/CueB/TZfgvBMK5FvS+eJHBTPkAjDthtD4YJPn
-         8lwkK3k2s1kSHbcTTYf7Mk/0yjlF324FEUcMv4Lhl6RzocxT0D6yf0Dn/RfC7B31Cjsj
-         3ah7+IsrrJW243qYUZlrGd77WLEC0HruavFZ46oAO59GCnxdC4TTX6pF/Y/tFCLEAdyN
-         hatNDOrxseUsoep5KTdwxImlNFvawKQ5E2YHLYiUDYKvG+q0PNzlvmVJXo9wNEdtIi6x
-         6Aag==
-X-Forwarded-Encrypted: i=1; AJvYcCWvrqZLtBhfR6eiYIQEAl0CNWGyJD5q5URoVpMWH57T8+hUBRs6S26e6ndYQH2jNiubdHNaikB3GGB/bnrERwsj+3a/GGRo+uCCLebU
-X-Gm-Message-State: AOJu0YyYrav0Ke4jjFNyNj/ImxHq1xTG+2Ru4g+YaodMEhULv3e0QIAY
-	1bf9gDlynbxdZq5J1Ir3ERrGVLeQvQuFixWoHCF0E/vJ0bIQgpZcIXJbbdE91uQ=
-X-Google-Smtp-Source: AGHT+IHUeBCCNfOTMT200Z74Cnghv39yumCat7MUHrvWHRWyM9YqqunSXXsBmoxV7HCdaoMCmKKnOg==
-X-Received: by 2002:aa7:d0d6:0:b0:564:1884:76be with SMTP id u22-20020aa7d0d6000000b00564188476bemr994258edo.39.1708165665403;
-        Sat, 17 Feb 2024 02:27:45 -0800 (PST)
-Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id y5-20020aa7d505000000b0056200715130sm777637edq.54.2024.02.17.02.27.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Feb 2024 02:27:44 -0800 (PST)
-Message-ID: <b7fcb71a-e3bf-4f50-89d6-caff9f3303dc@linaro.org>
-Date: Sat, 17 Feb 2024 11:27:43 +0100
+	s=arc-20240116; t=1708165724; c=relaxed/simple;
+	bh=sDT0IZg/T72E+ZZXyLdjzueUeralMw/ejE2pyoF2J1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EvDKL/R60SGwPbTv0H2P+6MLtQl6QF5RG1L3fKZUGTMjb+02NzM52QWRlEevxYANQR3npiyMawk0oYzjYpYyLLTDMIImpJl978zwxAhTeH+dCMakk4z4+XZD2cnE341Kye4O/zcMEkTyg36WMfIoX9slMBJ1BH/HsPN2ZSpujDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=tYWLhEQh; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=zW6/SWxGJHOFLV38kHr7ZjS0MYE8Rz8g0t7ofw+Cuo8=; b=tYWLhEQhTmPqy7/y0Sb//DKRCG
+	PXCxOnCm00wXSxEHj8mpcRlVyUSIjbT4fp1GyW357yq3YM5ib91HHpY0qH6P21EQFoDllZphCzEVC
+	013abUoqZ8VPLUBODiRsK1PSHCIpsEm1N0VkH1ahkdj1+5HljScGM6g2SqC2OcVaRs9hPuyNO/5H2
+	Haxf/38GIBK5LL7aEGPdzLXszuyyF5H7bSGm2iR2+Aw2EgeGMb/BXL0Ct2146ikCAjW4UAiVBE20O
+	lhmZ6lPNg3H6bMudelIGsl44Lg0YjgpAhjHrfdG2+wP/+yvmPqWQlMhR4hCtV9OW1fl/La4Kwipvj
+	kmR56c2A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:53314)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rbHvj-0007CE-1N;
+	Sat, 17 Feb 2024 10:28:23 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rbHvg-0006Ry-IO; Sat, 17 Feb 2024 10:28:20 +0000
+Date: Sat, 17 Feb 2024 10:28:20 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Sergio Palumbo <palumbo.ser@outlook.it>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: sfp: add quirk for OEM DFP-34X-2C2 GPON
+ ONU SFP
+Message-ID: <ZdCKRIJfRWkDCs/n@shell.armlinux.org.uk>
+References: <f8cf41f2-4a90-4ef5-b214-906319bd82d4@outlook.it>
+ <AS1PR03MB818911164FB76698446CFEDC82472@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZcI+7grKa33oLtwc@shell.armlinux.org.uk>
+ <AS1PR03MB818926990092981B0E09E60B82442@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZcSZtLSWd09xqc10@shell.armlinux.org.uk>
+ <AS1PR03MB8189A24B92030AA8F011C7B582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZcTzMgxmA6WOoiA/@shell.armlinux.org.uk>
+ <AS1PR03MB81891A5F3C8B1A7542746CB582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
+ <ZcUBP3g0XNMG/aU2@shell.armlinux.org.uk>
+ <AS1PR03MB8189ADFF1A475AE7DB281BE782532@AS1PR03MB8189.eurprd03.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] dt-bindings: Add post-init-supplier property
-Content-Language: en-US
-To: Saravana Kannan <saravanak@google.com>, Conor Dooley <conor@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
- Frank Rowand <frowand.list@gmail.com>, Len Brown <lenb@kernel.org>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Daniel Scally <djrscally@gmail.com>,
- Heikki Krogerus <heikki.krogerus@linux.intel.com>,
- Sakari Ailus <sakari.ailus@linux.intel.com>, kernel-team@android.com,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
-References: <20240212213147.489377-1-saravanak@google.com>
- <20240212213147.489377-4-saravanak@google.com>
- <20240214-stable-anytime-b51b898d87af@spud>
- <CAGETcx-tBjfaLQqmGW=ap2N5FLK_gvTzxskA6sVsr_SUEpvomA@mail.gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CAGETcx-tBjfaLQqmGW=ap2N5FLK_gvTzxskA6sVsr_SUEpvomA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AS1PR03MB8189ADFF1A475AE7DB281BE782532@AS1PR03MB8189.eurprd03.prod.outlook.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 15/02/2024 00:32, Saravana Kannan wrote:
-> 
-> Good point. Done.
-> 
->>> +    # One or more suppliers can be marked as post initialization supplier
->>> +    description:
->>> +      List of phandles to suppliers that are not needed for initializing or
->>> +      resuming this device.
->>> +    $ref: /schemas/types.yaml#/definitions/phandle-array
->>> +      items:
->>> +        maxItems: 1
->>
->> Rob's bot rightfully complains here about invalid syntax.
-> 
-> I added these two lines based on Rob's feedback. Is the indentation
-> that's wrong?
-> 
-> Yeah, I'm trying to run the dts checker, but I haven't be able to get
-> it to work on my end. See my email to Rob on the v1 series about this.
-> 
-> $ make DT_CHECKER_FLAGS=-m dt_binding_check
-> 
-> The best I could get out of it is a bunch of error reports on other
-> files and then:
-> ...
-> <snip>/Documentation/devicetree/bindings/post-init-suppliers.yaml:
-> ignoring, error parsing file
-> ...
-> 
-> I also tried to use DT_SCHEMA_FILES so I can only test this one file,
-> but that wasn't working either:
+On Sat, Feb 17, 2024 at 11:13:14AM +0100, Sergio Palumbo wrote:
+> [   15.459629] sfp sfp-1: module OEM              DFP-34X-2C2      rev      sn XPONxxxxxxxx     dc 230912
+> [   15.469121] mtk_soc_eth 15100000.ethernet eth1: requesting link mode inband/2500base-x with support 0000000,00000200,0000e440
+> [   15.509967] sfp sfp-2: module                                   rev 1.0  sn 2307210038       dc 230721
+> [   15.519434] mt7530-mdio mdio-bus:1f sfp2: requesting link mode inband/2500base-x with support 0000000,00000000,0000e440
+> [   24.360320] mt7530-mdio mdio-bus:1f sfp2: configuring for inband/2500base-x link mode
+> [   24.368145] mt7530-mdio mdio-bus:1f sfp2: major config 2500base-x
+> [   24.374258] mt7530-mdio mdio-bus:1f sfp2: phylink_mac_config: mode=inband/2500base-x/Unknown/Unknown adv=0000000,00000000,0000e440 pause=04 link=0 an=1
+> [   24.389679] br-lan: port 5(sfp2) entered blocking state
+> [   24.394948] br-lan: port 5(sfp2) entered disabled state
+> [   24.402405] device sfp2 entered promiscuous mode
 
-I see the errors immediately during testing, no special arguments needed:
+This shows that the interface has been configured for 2500base-X.
+However, there is no link report.
 
-crosc64_dt_binding_check post-init-supplier.yaml
-make[1]: Entering directory '/home/krzk/dev/linux/linux/out'
-  LINT    Documentation/devicetree/bindings
-  DTEX    Documentation/devicetree/bindings/post-init-supplier.example.dts
-./Documentation/devicetree/bindings/post-init-supplier.yaml:84:12:
-[error] syntax error: mapping values are not allowed here (syntax)
-  CHKDT   Documentation/devicetree/bindings/processed-schema.json
-./Documentation/devicetree/bindings/post-init-supplier.yaml:84:12:
-mapping values are not allowed in this context
-make[3]: *** [../Documentation/devicetree/bindings/Makefile:26:
-Documentation/devicetree/bindings/post-init-supplier.example.dts] Error 1
-make[3]: *** Deleting file
-'Documentation/devicetree/bindings/post-init-supplier.example.dts'
-make[3]: *** Waiting for unfinished jobs....
-./Documentation/devicetree/bindings/post-init-supplier.yaml:84:12:
-mapping values are not allowed in this context
-  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
-/home/krzk/dev/linux/linux/Documentation/devicetree/bindings/post-init-supplier.yaml:
-ignoring, error parsing file
-make[2]: *** [/home/krzk/dev/linux/linux/Makefile:1424:
-dt_binding_check] Error 2
-make[1]: *** [/home/krzk/dev/linux/linux/Makefile:240: __sub-make] Error 2
-make[1]: Leaving directory '/home/krzk/dev/linux/linux/out'
-make: *** [Makefile:240: __sub-make] Error 2
+> A stated by you the system is still connecting at 2500base-X even if the
+> module is set for 1000base-X, as far as I can see, without any error.
 
+Right, because, as I've said many times, the kernel has *no* idea that
+the module internals has been configured to operate at 1000base-X.
 
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+> My assumption that the module could have forced the speed down to
+> 1000base-X was completely wrong.
 
-I assume you develop on some older trees, because both next and v6.8-rc1
-work... or standard issues: old dtschema, old yamllint.
+Correct - considering that I wrote all this code, it is insulting to
+have to go to this extent to get the point across.
 
-I am afraid you do it for some old Android kernel... :(
+So now that we have agreement that the kernel is trying to use
+2500base-X, you now need to get off your high horse and accept that
+it isn't working because there is _no_ _link_ with the module.
 
-Best regards,
-Krzysztof
+In other words, you need to accept that I'm right and you're wrong.
 
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
