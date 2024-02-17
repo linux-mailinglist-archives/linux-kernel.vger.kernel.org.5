@@ -1,81 +1,52 @@
-Return-Path: <linux-kernel+bounces-69732-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69733-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57428858DCE
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:54:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63F69858DD1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:59:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89DE31C210F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:54:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCBBAB2113F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244031CD2F;
-	Sat, 17 Feb 2024 07:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D42A1CD20;
+	Sat, 17 Feb 2024 07:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IllW6X7i"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="VNRUKafk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011FC149E08;
-	Sat, 17 Feb 2024 07:54:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865BD1CABA;
+	Sat, 17 Feb 2024 07:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708156480; cv=none; b=evatu/ZQQR84rZPRocXU4KeCToj51wkPvAzsQ0PrtsHmkj+vGxaUXEQ4+C388NCy7ebuVABE5b+hYg+s2LfVan54skf6Nxema8pn5GX+TnAvH9/suW2flgqfgBeAjh68tu930pKG66aQFh4v6AwNLix6vbQnquAYUsmiJF8H2iE=
+	t=1708156751; cv=none; b=RiCho7pOCooT7r2ckM8INgU3lHKlYizaL0uv03r5ZWvd6eraGa9tq8RmejeBkQPDTAZuXZu4rM5Xer8finIDWHKsW4k/SOJn7JL3z6wftdAShAYfSn2GWAeRlSacyVFxJaauB9boxbxqRxiujTASFObZTxDHpqAP997GhtGUm2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708156480; c=relaxed/simple;
-	bh=Wzz5SmshZSlav/lHAXs6G/IAqLV2Qmvclb48zyontW8=;
+	s=arc-20240116; t=1708156751; c=relaxed/simple;
+	bh=Fj0dXMKY5VCd6XyOaiCGaCBR8SMIRKG0Efhdh2fkTK8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dIzXojK10PJCbl/+KPK+WqoDfpLyh8qUgAp26ZJeMwm4LZculqfeb3Rt3a10f/r71wXEy04wZGU1QkDr7EcR8r2CFjLPSg0N7FrRGO7WjkAiyMUdhDVjp8wavB7wW8YhfhcDZOiFsdL5GjIvTIi/NYvIvZSXmzGCcbiy1/YL3RA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IllW6X7i; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708156478; x=1739692478;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Wzz5SmshZSlav/lHAXs6G/IAqLV2Qmvclb48zyontW8=;
-  b=IllW6X7iLeBFH5S6OpUMqyxwnke4UKEQ1VRkqddR/BknrkbIXL1h498f
-   EI3BsV86elT0W5LCwBoUSJIeK/AYIBijoH/S33HS1YxR+VT7gREkblYJM
-   ofeJv2GjP5eIlGNxWwKUKR5xF3X8jBdTjgwHJjgu5Y84y8aOGx6/T9ItE
-   yPUjaSTMa5MVRxZgl3uQnvknE7OZREyrK3psi4BOXaHFGHdtTKNSuK9/Q
-   mP5WuUbhXLqjpdiZXpaTQ7J7K5SR4Z5FI7GrhiK/RlSRvoBvc0NLknXXo
-   dxN1xoL5bhAAMipjmjkoKoWaNiBHW4psFeIrcrBfeABaXOCoN2gwDZ+WD
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="6066336"
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="6066336"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 23:54:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="4017642"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 16 Feb 2024 23:54:31 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rbFWn-0001w0-02;
-	Sat, 17 Feb 2024 07:54:29 +0000
-Date: Sat, 17 Feb 2024 15:53:29 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ross Philipson <ross.philipson@oracle.com>,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
-	linux-efi@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ross.philipson@oracle.com,
-	dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
-	ardb@kernel.org, mjg59@srcf.ucam.org,
-	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
-	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
-	nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
-	davem@davemloft.net, kanth.ghatraju@oracle.com,
-	trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH v8 14/15] x86: Secure Launch late initcall platform module
-Message-ID: <202402171536.dNnLrhB1-lkp@intel.com>
-References: <20240214221847.2066632-15-ross.philipson@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=q8T9za5KGcXpPdksQnasXQ9patgnU8yPVI1HvmCuuQUxzITa0NGhTb+z6OxRkiyj+Y1U1HTIcH1rgbkUeqLeBNi68j/OmbCFnMlODipR/D4cOwYxvFq1BRdRuOcrJcEEBQSaQcFAiCQavQ/cfN0WXw4fSJiRuvvFxDL8RAqsyCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=VNRUKafk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98CF8C433C7;
+	Sat, 17 Feb 2024 07:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708156751;
+	bh=Fj0dXMKY5VCd6XyOaiCGaCBR8SMIRKG0Efhdh2fkTK8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VNRUKafkMlqK1ALUoWMV41GexY+YTKn8UgxvIO7IcAfx06acn55JBiWLU7Qu3bP4H
+	 5dIoXV8k0IA4LnxY0KfS+1ZEjYV+Ff5eutejVehiq5QiiPVL25OUnyibLKsK5BoAB2
+	 Jb9SxXlM3HIGjiI48yzRhehIRidTS/2l2g7uYGBk=
+Date: Sat, 17 Feb 2024 08:59:07 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: "Moritz C. Weber" <mo.c.weber@gmail.com>
+Cc: florian.fainelli@broadcom.com, linux-staging@lists.linux.dev,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Staging: vc04_services: bcm2835-camera: fixed several
+ brace coding style checks
+Message-ID: <2024021727-maritime-barterer-f536@gregkh>
+References: <20240215220647.4096-1-mo.c.weber@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,67 +55,49 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240214221847.2066632-15-ross.philipson@oracle.com>
+In-Reply-To: <20240215220647.4096-1-mo.c.weber@gmail.com>
 
-Hi Ross,
+On Thu, Feb 15, 2024 at 11:06:47PM +0100, Moritz C. Weber wrote:
+> Fixed coding style checks raised by checkpatch
+> 
+> Signed-off-by: Moritz C. Weber <mo.c.weber@gmail.com>
+> ---
+>  .../bcm2835-camera/bcm2835-camera.c           | 62 +++++++++----------
+>  1 file changed, 29 insertions(+), 33 deletions(-)
 
-kernel test robot noticed the following build errors:
+Hi,
 
-[auto build test ERROR on char-misc/char-misc-testing]
-[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master herbert-crypto-2.6/master linus/master v6.8-rc4 next-20240216]
-[cannot apply to tip/x86/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ross-Philipson/x86-boot-Place-kernel_info-at-a-fixed-offset/20240215-064712
-base:   char-misc/char-misc-testing
-patch link:    https://lore.kernel.org/r/20240214221847.2066632-15-ross.philipson%40oracle.com
-patch subject: [PATCH v8 14/15] x86: Secure Launch late initcall platform module
-config: x86_64-randconfig-r061-20240216 (https://download.01.org/0day-ci/archive/20240217/202402171536.dNnLrhB1-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240217/202402171536.dNnLrhB1-lkp@intel.com/reproduce)
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402171536.dNnLrhB1-lkp@intel.com/
+- Your patch did many different things all at once, making it difficult
+  to review.  All Linux kernel patches need to only do one thing at a
+  time.  If you need to do multiple things (such as clean up all coding
+  style issues in a file/driver), do it in a sequence of patches, each
+  one doing only one thing.  This will make it easier to review the
+  patches to ensure that they are correct, and to help alleviate any
+  merge issues that larger patches can cause.
 
-All errors (new ones prefixed by >>):
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/process/submitting-patches.rst for what is needed in
+  order to properly describe the change.
 
-   arch/x86/kernel/slmodule.c: In function 'slaunch_pcr_extend':
->> arch/x86/kernel/slmodule.c:471:14: error: implicit declaration of function 'tpm_preferred_locality' [-Werror=implicit-function-declaration]
-     471 |         if (!tpm_preferred_locality(tpm, 2))
-         |              ^~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
+thanks,
 
-vim +/tpm_preferred_locality +471 arch/x86/kernel/slmodule.c
-
-   461	
-   462	static void slaunch_pcr_extend(void __iomem *txt)
-   463	{
-   464		struct tpm_chip *tpm;
-   465	
-   466		tpm = tpm_default_chip();
-   467		if (!tpm)
-   468			slaunch_txt_reset(txt, "Could not get default TPM chip\n",
-   469					  SL_ERROR_TPM_INIT);
-   470	
- > 471		if (!tpm_preferred_locality(tpm, 2))
-   472			slaunch_txt_reset(txt, "Could not set TPM chip locality 2\n",
-   473					  SL_ERROR_TPM_INIT);
-   474	
-   475		if (evtlog20)
-   476			slaunch_tpm20_extend(tpm, txt);
-   477		else
-   478			slaunch_tpm12_extend(tpm, txt);
-   479	
-   480		tpm_preferred_locality(tpm, 0);
-   481	}
-   482	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+greg k-h's patch email bot
 
