@@ -1,154 +1,130 @@
-Return-Path: <linux-kernel+bounces-69804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E461858EC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:37:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 273F4858EC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B963B21919
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:37:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70DC6282A7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FB64B5B1;
-	Sat, 17 Feb 2024 10:36:53 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FAD4E1A3;
+	Sat, 17 Feb 2024 10:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DPIfn2oy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A842561C;
-	Sat, 17 Feb 2024 10:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7305B1078D;
+	Sat, 17 Feb 2024 10:43:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708166212; cv=none; b=gwpMI5zfYDzZek3v3zH8SbKHdsi6OiE/xifvETBfTPjGVGvcYQBLpHAIhOcq/Euvn0g03jm2nX78mnmygviEbkQ9ZpQzYYOK5y3qBWVbDo6iBlPaYtPvX6bdl9yXzw6VG9LwSEa1Ec4jqy1F7q7CnhcKsWHE2XnDXQWWxyErkmY=
+	t=1708166599; cv=none; b=DqbEJM1xocubMSV1OFGuBr3twsieGtNfbNUMHdIzuRMQ8wcZNFBQz9xXR7xyw+1kxLx5LCvVfGyNqxAZA4uh20S9m71v/xeFYyAnI67CQWVjBr9CPorg5juWlb/2+n1QB+RtzxutSbvjv8FrxMg9LZ4qWkUkSUta5IJM6m5oG8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708166212; c=relaxed/simple;
-	bh=ZVR8hDHjpLVM5b5FKvHzG7fTS1EYfdQFOAaGI1+undQ=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=BOdwSKdu+Bj8fVWF33Ui+r8iTIUlnpZFyspO6sGzplktvdDi9n5Szx93aa8HNFk++YGK31KrX8abtaiyfwcQuv1di1OMBzFLWaVPUbQdJdcXYZdBlrjRp+RlRFpyAPDw1tahqSY6MId40XY2fiHV4SVUbcL5gKXA308CMZevn80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from hamburger.collabora.co.uk (hamburger.collabora.co.uk [IPv6:2a01:4f8:1c1b:c794::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 2999A3780A0B;
-	Sat, 17 Feb 2024 10:36:47 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <c8cb8fd4-a67d-4982-b1f8-6fedbb7e9a4f@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240216094922.257674-1-shreeya.patel@collabora.com>
- <20240216094922.257674-2-shreeya.patel@collabora.com>
- <237e690a-2f49-4046-b054-3a878eed6748@linaro.org>
- <30d2-65cf5980-3-2ec9f500@242931553>
- <0c2f4d92-afa9-46f1-844e-994bd45924ef@linaro.org>
- <1b9-65d08800-3-19290580@120474537> <c8cb8fd4-a67d-4982-b1f8-6fedbb7e9a4f@linaro.org>
-Date: Sat, 17 Feb 2024 10:36:46 +0000
-Cc: heiko@sntech.de, mchehab@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de, jose.abreu@synopsys.com, nelson.costa@synopsys.com, dmitry.osipenko@collabora.com, sebastian.reichel@collabora.com, shawn.wen@rock-chips.com, kernel@collabora.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org, linux-dt@vger.kernel.org, linux-arm@lists.infradead.org
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1708166599; c=relaxed/simple;
+	bh=HIy5sPMU9DHH+BFlRRjzwudwVw7t66cdgcOhFZZZ5H8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TF4iQ+pZT5c+dp+3maJP8FC8jhtdA/HXVE7yTFl2isZap6ERjVwCh6WGzoobddacpuFsx4r+nH4rz7XxBzLbJ1Su2IRjMHn55jNDYMyh9p3XJ+su5fJdxuyzSh+OwgLVdx6XyhJZKoICCfklsCHuYIA6Jl7dHDZgsn7zzoviTjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DPIfn2oy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6010DC433C7;
+	Sat, 17 Feb 2024 10:43:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708166599;
+	bh=HIy5sPMU9DHH+BFlRRjzwudwVw7t66cdgcOhFZZZ5H8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DPIfn2oymuRzJAmPhNCXqwj3+kIXG/rda9ZYzZ7RU+zxrV1I92iTgA7a3dHB/OKuK
+	 sZH5vCk3ai/DEDGuTDNXAWiQVsKVqAS7p8SKhiSJQwKFfHoMyShLN05McWhSYjLZ+a
+	 x/XLUPqRdFqtWkX65h8KJ/z7L+SYel7HDW5UfwwM792kZDJlkEfOGwBkrHtSWf1loK
+	 bPaSbI9ylR8Hg+2bswYJAtMbemK4XtW6VmWu1Jgnq10Uk8VGeIsHX9o4iVf55zprVL
+	 mPXx7ipGWOXbgYb315O5+e7pIIYSf9XQpvWefoFlywPAyTW/sCmesiClenav87dXR5
+	 o1zIGwZAjNVZg==
+From: Arnd Bergmann <arnd@kernel.org>
+To: Ivan Orlov <ivan.orlov0322@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Naresh Kamboju <naresh.kamboju@linaro.org>,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] ALSA: core: fix buffer overflow in test_format_fill_silence()
+Date: Sat, 17 Feb 2024 11:42:38 +0100
+Message-Id: <20240217104311.3749655-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <1aae-65d08c00-1-625abd00@109408603>
-Subject: =?utf-8?q?Re=3A?= [PATCH 1/4] =?utf-8?q?clk=3A?==?utf-8?q?_rockchip=3A?=
- =?utf-8?q?_rst-rk3588=3A?= Add BIU reset
-User-Agent: SOGoMail 5.9.1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Saturday, February 17, 2024 15:50 IST, Krzysztof Kozlowski <krzyszto=
-f.kozlowski@linaro.org> wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> On 17/02/2024 11:18, Shreeya Patel wrote:
-> > On Saturday, February 17, 2024 13:47 IST, Krzysztof Kozlowski <krzy=
-sztof.kozlowski@linaro.org> wrote:
-> >=20
-> >> On 16/02/2024 13:48, Shreeya Patel wrote:
-> >>> On Friday, February 16, 2024 15:33 IST, Krzysztof Kozlowski <krzy=
-sztof.kozlowski@linaro.org> wrote:
-> >>>
-> >>>> On 16/02/2024 10:49, Shreeya Patel wrote:
-> >>>>> Export hdmirx=5Fbiu soft reset id which is required by the hdmi=
-rx controller.
-> >>>>>
-> >>>>> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> >>>>> ---
-> >>>>>  drivers/clk/rockchip/rst-rk3588.c               | 1 +
-> >>>>>  include/dt-bindings/reset/rockchip,rk3588-cru.h | 2 ++
-> >>>>
-> >>>> Please run scripts/checkpatch.pl and fix reported warnings. Some
-> >>>> warnings can be ignored, but the code here looks like it needs a=
- fix.
-> >>>> Feel free to get in touch if the warning is not clear.
-> >>>>
-> >>>> Please do internal review. The internal Collabora review would t=
-ell you:
-> >>>> YOU MUST run checkpatch. Then you see errors, so why do you send=
- patch
-> >>>> with errors to the mailing list?
-> >>>>
-> >>>
-> >>> I am sorry but what errors are you talking about?
-> >>> I don't see any errors reported by checkpatch :-
-> >>>
-> >>> shreeya@shreeya:~/collabora/rd/rockchip/torvalds$ ./scripts/check=
-patch.pl hdmirx/0001-clk-rockchip-rst-rk3588-Add-BIU-reset.patch
-> >>> WARNING: DT binding docs and includes should be a separate patch.=
- See: Documentation/devicetree/bindings/submitting-patches.rst
-> >>
-> >> Here.
-> >>
-> >>>
-> >>> total: 0 errors, 1 warnings, 13 lines checked
-> >>>
-> >>> NOTE: For some of the reported defects, checkpatch may be able to
-> >>>       mechanically convert to the typical style using --fix or --=
-fix-inplace.
-> >>>
-> >>> hdmirx-v1-1602/0001-clk-rockchip-rst-rk3588-Add-BIU-reset.patch h=
-as style problems, please review.
-> >>>
-> >>> I see the above warning but that looks like a false positive to m=
-e.
-> >>
-> >> Why for your patch it would be false positive and for all others w=
-ould not?
-> >>
-> >=20
-> > OK, now I see what you meant. Since we are touching the include fil=
-e and C file together, this warning was generated.
-> > It was a bit confusing to interpret this as the warning also talks =
-about Documentation which we didn't touch at all.
->=20
-> Really, no documentation touching? Care to check the full path of the
-> files you are changing?
->=20
+KASAN caught a buffer overflow with the hardcoded 2048 byte buffer
+size, when 2080 bytes are written to it:
 
-Well, I meant the dt-binding doc for rst-rk3588
+ BUG: KASAN: slab-out-of-bounds in snd_pcm_format_set_silence+0x3bc/0x3e4
+ Write of size 8 at addr ffff0000c8149800 by task kunit_try_catch/1297
 
->=20
-> >=20
-> > Anyway, I will create two separate patches for this in v2.
->=20
-> I think rules cannot be clearer:
-> https://elixir.bootlin.com/linux/v6.8-rc4/source/Documentation/device=
-tree/bindings/submitting-patches.rst#L13
->=20
+ CPU: 0 PID: 1297 Comm: kunit_try_catch Tainted: G N 6.8.0-rc4-next-20240216 #1
+ Hardware name: linux,dummy-virt (DT)
+ Call trace:
+  kasan_report+0x78/0xc0
+  __asan_report_store_n_noabort+0x1c/0x28
+  snd_pcm_format_set_silence+0x3bc/0x3e4
+  _test_fill_silence+0xdc/0x298
+  test_format_fill_silence+0x110/0x228
+  kunit_try_run_case+0x144/0x3bc
+  kunit_generic_run_threadfn_adapter+0x50/0x94
+  kthread+0x330/0x3e8
+  ret_from_fork+0x10/0x20
 
-right, it was my mistake and I think after this nice and kind feedback,=
- I'll never make the same one again :)
+ Allocated by task 1297:
+  __kmalloc+0x17c/0x2f0
+  kunit_kmalloc_array+0x2c/0x78
+  test_format_fill_silence+0xcc/0x228
+  kunit_try_run_case+0x144/0x3bc
+  kunit_generic_run_threadfn_adapter+0x50/0x94
+  kthread+0x330/0x3e8
+  ret_from_fork+0x10/0x20
 
-Thanks,
-Shreeya Patel
+Replace the incorrect size with the correct length of 260 64-bit samples.
 
->=20
-> Best regards,
-> Krzysztof
->=20
-> =5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
-> This list is managed by https://mailman.collabora.com
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Suggested-by: Ivan Orlov <ivan.orlov0322@gmail.com>
+Fixes: 3e39acf56ede ("ALSA: core: Add sound core KUnit test")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+v2: use a named constant as suggested by Ivan Orlov
+---
+ sound/core/sound_kunit.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/core/sound_kunit.c b/sound/core/sound_kunit.c
+index 5d5a7bf88de4..4212c4a20697 100644
+--- a/sound/core/sound_kunit.c
++++ b/sound/core/sound_kunit.c
+@@ -8,7 +8,8 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ 
+-#define SILENCE_BUFFER_SIZE 2048
++#define SILENCE_BUFFER_MAX_FRAMES 260
++#define SILENCE_BUFFER_SIZE (sizeof(u64) * SILENCE_BUFFER_MAX_FRAMES)
+ #define SILENCE(...) { __VA_ARGS__ }
+ #define DEFINE_FORMAT(fmt, pbits, wd, endianness, signd, silence_arr) {		\
+ 	.format = SNDRV_PCM_FORMAT_##fmt, .physical_bits = pbits,		\
+@@ -165,7 +166,7 @@ static void _test_fill_silence(struct kunit *test, struct snd_format_test_data *
+ 
+ static void test_format_fill_silence(struct kunit *test)
+ {
+-	u32 buf_samples[] = { 10, 20, 32, 64, 129, 260 };
++	u32 buf_samples[] = { 10, 20, 32, 64, 129, SILENCE_BUFFER_MAX_FRAMES };
+ 	u8 *buffer;
+ 	u32 i, j;
+ 
+-- 
+2.39.2
 
 
