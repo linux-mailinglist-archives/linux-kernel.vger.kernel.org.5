@@ -1,112 +1,78 @@
-Return-Path: <linux-kernel+bounces-70034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D48085921A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:34:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF04685921D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:40:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE6BF282743
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:34:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DFCB1C215D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 528E37E57E;
-	Sat, 17 Feb 2024 19:34:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="koCjUDST"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D9B7E589;
+	Sat, 17 Feb 2024 19:40:18 +0000 (UTC)
+Received: from relay.hostedemail.com (smtprelay0017.hostedemail.com [216.40.44.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2977C6C4;
-	Sat, 17 Feb 2024 19:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D22CD7E577;
+	Sat, 17 Feb 2024 19:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708198490; cv=none; b=LQLyL9jqN72N9RHhz7K+94XE0muLcMfpa4OYIFUKO5o9s1CGqOPKSzMHsFIdQ24PMAPQqWQUTQGeKTb5JPx5aB/+CTPusvQUK/+srr8gHwdGtcIg3XoFbVCo2uLYjwEhH1SqKcd6d6aMW90RC9YkWYj7wyMjy+Q3VHFtvDxuBjQ=
+	t=1708198818; cv=none; b=s/KUxOp1J7wsyWRXvc3NhW3kVEvBTLzm90Is+LsovVZhOCv6f0xyBW3tMsrPIiNc8zmHI6pPMF+sH7MLGi+oE6/V2X6xuYc71r7NVnRtyZ5tfXMiJIJ0nO8jshh0buAqBJ//50B+7p+/nk0ODPs2/mJfWY6ychI3rZjsIl5Dhv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708198490; c=relaxed/simple;
-	bh=GDFM2rZjlq+HPVr5razRyWgRuOojfXjQpD41VCj6WJY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qMke5kKguqIarzNZ7W/ACj5/4xVTZlUULjoYU7qcp4pbSDrdkEE079ssd0MOZxLHv54A9w+iL7SAYeSu3Tk32sO3+nl46biaj+KtnHI0/IXTV8JLh79k0wWigwoPO33hxYl5As6dStnvlA3xPDzYIOaKSTpmBVVmSOL6g5BVHk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=koCjUDST; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708198486; bh=GDFM2rZjlq+HPVr5razRyWgRuOojfXjQpD41VCj6WJY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=koCjUDSTKjRT3baQHGvj+LqngJ9+yqKbWdCO+vXaVwYn6hV/KgPGObAmwnk5sQluq
-	 6iRuz4k3AF54CcMNRhSX+gC/HMCJR+xyIJ3vMOb+uLv0DId1tI3lQ+qEeZ0+xFdxSO
-	 2lhUMqp1AWmtA4BcN5zsLg9LtWJLooreCPzePf6k=
-From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
-To: linux-kernel@vger.kernel.org
-Cc: Ondrej Jirman <megi@xff.cz>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	linux-clk@vger.kernel.org (open list:COMMON CLK FRAMEWORK),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/Rockchip SoC support),
-	linux-rockchip@lists.infradead.org (open list:ARM/Rockchip SoC support)
-Subject: [PATCH] clk: rk3399: Allow to set rate of clk_i2s0_frac's parent
-Date: Sat, 17 Feb 2024 20:34:38 +0100
-Message-ID: <20240217193439.1762213-1-megi@xff.cz>
+	s=arc-20240116; t=1708198818; c=relaxed/simple;
+	bh=J2ytfZaYSAZQyO8x+e3VhJmlyC3h1laCCKwfpuUERQc=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=gh1D/w/jpx6GgKtKnA5RmSJfo5m4zWLXr33U0tLxcAgVhZ3wfWczfOHIXk79p3F51XV1Xg8HZl510eGcDtWufxua7EWCcuFC/5G+6X21aTIIept/7xFDCrHkHdtQKqaeHWi2z5N6to1E2c6NB2csLcNw78ZQuhcDlDGPV17cEYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com; spf=pass smtp.mailfrom=perches.com; arc=none smtp.client-ip=216.40.44.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=perches.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=perches.com
+Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
+	by unirelay09.hostedemail.com (Postfix) with ESMTP id BB95980326;
+	Sat, 17 Feb 2024 19:40:09 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 6F6B01A;
+	Sat, 17 Feb 2024 19:40:07 +0000 (UTC)
+Message-ID: <7658242ceef838cc553cb3bbb63ede20d1bf9cb5.camel@perches.com>
+Subject: broadcom: brcmfmac, alloc without null test
+From: Joe Perches <joe@perches.com>
+To: Arend van Spriel <arend.vanspriel@broadcom.com>
+Cc: Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org, 
+	brcm80211@lists.linux.dev, brcm80211-dev-list.pdl@broadcom.com, LKML
+	 <linux-kernel@vger.kernel.org>
+Date: Sat, 17 Feb 2024 11:40:06 -0800
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Stat-Signature: otkpsbwgsgz9cbsycrxaiy1huqbpt47z
+X-Rspamd-Server: rspamout07
+X-Rspamd-Queue-Id: 6F6B01A
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/0TOWJG50euXH/Y2/XmM/8hmtHbmXurDY=
+X-HE-Tag: 1708198807-741751
+X-HE-Meta: U2FsdGVkX1/XB7jer+wcyMGzLnQLgoWpYpVv5i9TuUVNqk4/ULH990HmWOgvHIw0rMyC68L0cVRGmiRbaYixVYJXY7ffNEfIrC8nX5bIcULM5qFE60Fbo+tDGD5VqkoZpOqNnrfSloZ3EP77X4xngZzOLasDZBSijvOphot0ffQuWSOWc2pautGfNknY6ncNejCdUb0hngLYygflM1AmPWGA12fpcSsYIkvk+CJ+kuP6s25rV0GZzrGZuZR+XE2FY6mooee56bWaD5LcoL3/WaO8X6IOscS/YPGOpSZoDSfMmVrw4u5OelvZlD2FLHsx
 
-From: Ondrej Jirman <megi@xff.cz>
+There's a missing NULL alloc test here:
 
-Otherwise when when clk_i2s0 muxes to clk_i2s0_div which requires
-setting high divider value on clk_i2s0_div, and then muxes back to
-clk_i2s0_frac, clk_i2s0_frac would have no way to change the
-clk_i2s0_div's divider ratio back to 1 so that it can satisfy the
-condition for m/n > 20 for fractional division to work correctly.
+It doesn't appear obvious what a proper fix is.
 
-Bug is reproducible by playing 44.1k audio, then 48k audio, and then
-44.1k audio again. This results in clk_i2s0_div being set to 49 and
-clk_i2s0_frac not being able to cope with such a low input clock rate
-and audio playing extremely slowly.
-
-The identical issue is on i2s1 and i2s2 clocks, too.
-
-Signed-off-by: Ondrej Jirman <megi@xff.cz>
----
- drivers/clk/rockchip/clk-rk3399.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/clk/rockchip/clk-rk3399.c b/drivers/clk/rockchip/clk-rk3399.c
-index 5efac2ca3048..a17996acd065 100644
---- a/drivers/clk/rockchip/clk-rk3399.c
-+++ b/drivers/clk/rockchip/clk-rk3399.c
-@@ -597,7 +597,7 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
- 	COMPOSITE(0, "clk_i2s0_div", mux_pll_src_cpll_gpll_p, 0,
- 			RK3399_CLKSEL_CON(28), 7, 1, MFLAGS, 0, 7, DFLAGS,
- 			RK3399_CLKGATE_CON(8), 3, GFLAGS),
--	COMPOSITE_FRACMUX(0, "clk_i2s0_frac", "clk_i2s0_div", 0,
-+	COMPOSITE_FRACMUX(0, "clk_i2s0_frac", "clk_i2s0_div", CLK_SET_RATE_PARENT,
- 			RK3399_CLKSEL_CON(96), 0,
- 			RK3399_CLKGATE_CON(8), 4, GFLAGS,
- 			&rk3399_i2s0_fracmux),
-@@ -607,7 +607,7 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
- 	COMPOSITE(0, "clk_i2s1_div", mux_pll_src_cpll_gpll_p, 0,
- 			RK3399_CLKSEL_CON(29), 7, 1, MFLAGS, 0, 7, DFLAGS,
- 			RK3399_CLKGATE_CON(8), 6, GFLAGS),
--	COMPOSITE_FRACMUX(0, "clk_i2s1_frac", "clk_i2s1_div", 0,
-+	COMPOSITE_FRACMUX(0, "clk_i2s1_frac", "clk_i2s1_div", CLK_SET_RATE_PARENT,
- 			RK3399_CLKSEL_CON(97), 0,
- 			RK3399_CLKGATE_CON(8), 7, GFLAGS,
- 			&rk3399_i2s1_fracmux),
-@@ -617,7 +617,7 @@ static struct rockchip_clk_branch rk3399_clk_branches[] __initdata = {
- 	COMPOSITE(0, "clk_i2s2_div", mux_pll_src_cpll_gpll_p, 0,
- 			RK3399_CLKSEL_CON(30), 7, 1, MFLAGS, 0, 7, DFLAGS,
- 			RK3399_CLKGATE_CON(8), 9, GFLAGS),
--	COMPOSITE_FRACMUX(0, "clk_i2s2_frac", "clk_i2s2_div", 0,
-+	COMPOSITE_FRACMUX(0, "clk_i2s2_frac", "clk_i2s2_div", CLK_SET_RATE_PARENT,
- 			RK3399_CLKSEL_CON(98), 0,
- 			RK3399_CLKGATE_CON(8), 10, GFLAGS,
- 			&rk3399_i2s2_fracmux),
--- 
-2.43.0
+diff -u -p ./drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c /t=
+mp/nothing/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+--- ./drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ /tmp/nothing/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.=
+c
+@@ -4308,7 +4308,6 @@ brcmf_pmksa_v3_op(struct brcmf_if *ifp,
+ 	int ret;
+=20
+ 	pmk_op =3D kzalloc(sizeof(*pmk_op), GFP_KERNEL);
+-	pmk_op->version =3D cpu_to_le16(BRCMF_PMKSA_VER_3);
+=20
+ 	if (!pmksa) {
+ 		/* Flush operation, operate on entire list */
 
 
