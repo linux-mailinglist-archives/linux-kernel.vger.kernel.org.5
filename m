@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-69679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69680-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3253858D37
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:51:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DB4D858D39
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:51:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 114681C21228
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 04:51:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39EE028289F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 04:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9371F1C2B2;
-	Sat, 17 Feb 2024 04:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6FC1CAB1;
+	Sat, 17 Feb 2024 04:51:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EWnLD0yh"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lyUDzjsZ"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FC2933CA;
-	Sat, 17 Feb 2024 04:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00081CAA1;
+	Sat, 17 Feb 2024 04:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708145483; cv=none; b=Ibn4WBu4v/8Mj7sUPd8fjc+9ZYtHFNeYr5uu220Ch2qoQH/KPQpCKPRmNGillP8JiDRiRnmD+QOx2kMZXV/RNNMegoAqBhjzOPNthkjGcUkZOSBSdKmTf4c5Gy8veKwkA0s6+EZEQjqk73AJL+kUfRXvFbPpCkXgU/V9fRU9CaY=
+	t=1708145490; cv=none; b=OMBmIFGJgiIJRi8FUDYuMcNZ71NZtBATTDWhcw9bELds8JBWreiQUwzIq3nu64i9RvesQif9MfqWU4ZCv05GK2HcjVSie6IywQmN6e6y0Qvys5ANV+9ogBWUpn+KG3/T8nHZihcU2tioQBwRNHufxQaIvuzv3/c5q2RSFkQf3qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708145483; c=relaxed/simple;
-	bh=Qw6R8pfDRKknVO5RFsZ9GZFCMdOkP05AOnLES1xLe3A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Xu8wuxzQFC0dBaEc0MmYuLssLEFlm/30rna3jW0tB+0A5o3sBBOr5+osLzKSRSGdzr6LnEWRd74ptk4DespuWYAltYXEO826cgEW+YRmmIMlfNFd8IjD0bd8jWtImGoYw8hTxWGspx/YAumTmStuPJiChzpyMZhyCS+RiZStHzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EWnLD0yh; arc=none smtp.client-ip=209.85.160.46
+	s=arc-20240116; t=1708145490; c=relaxed/simple;
+	bh=Ew9zGK8bj2uKG63OPEEIKUoe5Q8XkSHHeHR+1OENHDY=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ga+53xREkGOwewq40piUCrZNsqagl1c9+feEdWHn0X4XrnHLBLbtElHKEOAuZGGeYBfH9yTazd6EjiuUOSiGZF2fTfGcm0RGT7tYH89tygO7gpqEP8BYoY6d7R++UikAM/jXAWgU1kohaeB3occwAzIj92/k6kBzpFlH00SXzzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lyUDzjsZ; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21e085b9e61so1473034fac.1;
-        Fri, 16 Feb 2024 20:51:22 -0800 (PST)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so1646083a12.1;
+        Fri, 16 Feb 2024 20:51:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708145481; x=1708750281; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=MNOBgtxjdzfRlEyGVe+9BRmZDkEvX9p4KtMFsgHAFh4=;
-        b=EWnLD0yh+WYeJd0EVu4O8VUBNSgYyFJdpyICgKGtFwUJmEc24srpnRV1zNoVjDdMUe
-         kiAvjKps3zqbuB9+W24ZcJbaie5F4vo/uwI1phvFAp2ih/d/CQqa9LwKASw4N+l9Zd/K
-         dDpNA3Rf+dYasUydBulTO0ShQV3xu6f5Uiuur0bulJLqW3LsOBdKcq2jeRwzxVwyDhwH
-         AgDHq6+QrtCQeQZT/33Vk3rkGRrAnkOcZ2tM1RtfJwqX1cSh91mYzBYYvfLA8h+J0KLU
-         4eFHRRlYMsy9neFh+CW+Xh3ulFDWGv++1dkY3I7ptyphD8n74p895TiyESFnw2Zm8ttt
-         sCJg==
+        d=gmail.com; s=20230601; t=1708145488; x=1708750288; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lBwGphqaBGgnqVopSLPzNP3HsID/sdo6yu3ftKGqOG4=;
+        b=lyUDzjsZ4AraNAd8lELDST4SeqlNvDThJ9p/Ea9CZaadbnWAonEmlvVKXVVd0jWNhE
+         ieVily6OX9jMZLBgdSprUIrezOWEtakIhowbbsOv9aT1bA/oEWXmXzuDvB5/CTbpKGT0
+         JMj+phAJYH2834ZYC9wYr37Rs87oGFCciKsBZm35kNIt+I3eMtISzCHISotxUL+81tw6
+         6g/p15hwZBEczxFUmPOBIIyyJfgtDt9yytu+/eX2VyPaXlGxOGPRmGH8dP6ABTE+LVX2
+         i1TMVvD21d/y1On/hmqbGOz4TtVPngwIz/yBSxiIc42EoJKcCqRPLeJ5sOYo2oK5KKHr
+         Aukg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708145481; x=1708750281;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MNOBgtxjdzfRlEyGVe+9BRmZDkEvX9p4KtMFsgHAFh4=;
-        b=bejGHx0Gd0Gno7E0UhUdGhCyO8PQsQu/Ln/UOWMCWU2aUh7Lgn3/fCiTv45jn4NGUw
-         HHKIJfQjotwGM/yVuDlJnW9e+JkhHad1F+S2tru730H/A1MI+U2FIEppV1GW8WwxGgX+
-         PA+pfaGiWglXvDVULNpmJaB8OIcksD9RX2y8j3b/9qZ33zzxeoqFf3bOlmC7OckpwWNr
-         S1MV7yz7QkDIo18yqX4jfQZdDQ7ba8Zj8BOwHwJJqmPph+UHdommW6Tw0pNqKp4N99np
-         pEHE03LHDlE2dHyRsAHkh8x8GA8+Cl1Em8hIvHRJdHwmkQUVp0WFgd1V0dmIxMVannat
-         EJyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+/EI1nX1PlTXocXAUQ+/eh7oCr5/ftb9yZ3SFpb7EnbKBfcJ1BaX4+1tx224Iz5n9y2PKBGJVDdlE6mSOpo/GPfWm/IS0qFcXfSDsiSdUjbDnF4FRWM9aCHaT6gh2mB2E3fTuIe0U3fSL
-X-Gm-Message-State: AOJu0Yy7OvmuuoOCdrlIobZ30rXh8NYU2wx8a4tkPB3jl7zz0vO4GZB6
-	0RkeGDTNGn3zDW00p9zxbMQT9rFwyAMF5Mn1MyyNfjfUXGKSXsFr
-X-Google-Smtp-Source: AGHT+IFgDSQJ8AJcEw2iGomSXji4WMGKVF3I6ZMj2AHljsVZsd9dVexoTSkScldRN6Oa7jw2L7sdGw==
-X-Received: by 2002:a05:6870:56a1:b0:218:51dd:d4a6 with SMTP id p33-20020a05687056a100b0021851ddd4a6mr6971333oao.43.1708145481312;
-        Fri, 16 Feb 2024 20:51:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708145488; x=1708750288;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lBwGphqaBGgnqVopSLPzNP3HsID/sdo6yu3ftKGqOG4=;
+        b=Cnv2qX7iWhPHBPNuFVIazNWoRAQiIVG6hIDDPPwNVVS6u1Ws0L6NH7iYOVXGyBJ2E/
+         Xph6ib+snvSBlhaMpf+Ikjjs3FRXqHYv57N+8Rl40AsHWlXKTHvF37rjuJF1PIP4VvMR
+         OuuInqcsFdSk+4XyygLeusl9gb+vGQlFrieeThZkf1qp32XwporuNzsffuUTzhffDR+M
+         Pgll5DL2Y6LdMwsvPj3DtvVDxRGlOSJgSlyo29zSuhx0chbmpaAHRa1viCheWtGnHI8x
+         3UyEyNt9ng8gN0h7dkwhyUMU2K43MYgYfRVDb5o3mres00InW7+9B+mMVwcFn5vAxWay
+         cp0g==
+X-Forwarded-Encrypted: i=1; AJvYcCUC7k1LjFYUyOKyev/D74/fTGqWcHoH/ZSjhAarbIk6IkXqOA48mXRn8D+Ent6f8JEokvqbjKLrzCpai5m2xPqGBUqHWigqKTLSlLyJSd5DRUQ6u60G/xhBRuv/4zzr+7qJL43e3vWFK+NV
+X-Gm-Message-State: AOJu0Yx+0j5Gu0ROH0ZbEbWAoteGngi0LEkOsX+97H9t1nqy271cGDBv
+	IUnuY+oaVVgQjzaRwxdfoAkbRWiImUbNhlRddT+MwihvsPiauUR6
+X-Google-Smtp-Source: AGHT+IHDHukVZC3Tl6VbSP7cvk6J3RQAkpvZafO4xOt+DersUqDTPAn7tJNGZjo9EuDadh2/3wlOaA==
+X-Received: by 2002:a05:6a00:80b:b0:6e0:71bd:3322 with SMTP id m11-20020a056a00080b00b006e071bd3322mr9708070pfk.10.1708145487782;
+        Fri, 16 Feb 2024 20:51:27 -0800 (PST)
 Received: from barry-desktop.hub ([2407:7000:8942:5500:e82e:22f2:1bdb:989f])
-        by smtp.gmail.com with ESMTPSA id n14-20020a635c4e000000b005dc2ca5b667sm610703pgm.10.2024.02.16.20.51.15
+        by smtp.gmail.com with ESMTPSA id n14-20020a635c4e000000b005dc2ca5b667sm610703pgm.10.2024.02.16.20.51.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 20:51:20 -0800 (PST)
+        Fri, 16 Feb 2024 20:51:27 -0800 (PST)
 From: Barry Song <21cnbao@gmail.com>
 To: akpm@linux-foundation.org,
 	davem@davemloft.net,
@@ -81,10 +83,12 @@ Cc: chriscli@google.com,
 	sjenning@redhat.com,
 	vitaly.wool@konsulko.com,
 	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH v3 0/3] mm/zswap & crypto/compress: remove a couple of memcpy
-Date: Sat, 17 Feb 2024 17:50:59 +1300
-Message-Id: <20240217045102.55339-1-21cnbao@gmail.com>
+Subject: [PATCH v3 1/3] crypto: introduce acomp_is_sleepable to expose if comp drivers might sleep
+Date: Sat, 17 Feb 2024 17:51:00 +1300
+Message-Id: <20240217045102.55339-2-21cnbao@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240217045102.55339-1-21cnbao@gmail.com>
+References: <20240217045102.55339-1-21cnbao@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -95,43 +99,67 @@ Content-Transfer-Encoding: 8bit
 
 From: Barry Song <v-songbaohua@oppo.com>
 
-The patchset removes a couple of memcpy in zswap and crypto
-to improve zswap's performance.
+Almost all CPU-based compressors/decompressors are actually synchronous
+though they support acomp APIs. While some hardware has hardware-based
+accelerators to offload CPU's work such as hisilicon and intel/qat/,
+their drivers are working in async mode.
+Letting acomp's users know exactly if the acomp is really async will
+help users know if the compression and decompression procedure can
+sleep.
+Generally speaking, async and sleepable are semantically similar but
+not equal. But for compress drivers, they are actually equal at least
+due to the below facts.
+Firstly, scompress drivers - crypto/deflate.c, lz4.c, zstd.c, lzo.c
+etc have no sleep. Secondly, zRAM has been using these scompress
+drivers for years in atomic contexts, and never worried those drivers
+going to sleep.
 
-Thanks for Chengming Zhou's test and perf data.
-Quote from Chengming,
- I just tested these three patches on my server, found improvement in the
- kernel build testcase on a tmpfs with zswap (lz4 + zsmalloc) enabled.
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ crypto/acompress.c         | 8 ++++++++
+ include/crypto/acompress.h | 9 +++++++++
+ 2 files changed, 17 insertions(+)
+
+diff --git a/crypto/acompress.c b/crypto/acompress.c
+index 1c682810a484..fa15df394a4c 100644
+--- a/crypto/acompress.c
++++ b/crypto/acompress.c
+@@ -152,6 +152,14 @@ struct crypto_acomp *crypto_alloc_acomp_node(const char *alg_name, u32 type,
+ }
+ EXPORT_SYMBOL_GPL(crypto_alloc_acomp_node);
  
-         mm-stable 501a06fe8e4c  patched
- real    1m38.028s               1m32.317s
- user    19m11.482s              18m39.439s
- sys     19m26.445s              17m5.646s
-
-
--v3:
-  * collect Acked-by of Yosry, Reviewed-by of Chengming
-  * enhance commit message with respect to Yosry's comment
-
-Hi Andrew, Herbert,
-
-As zswap is the direct use of this patchset and zswap benefits from
-this series, It is probably better for this patchset to go through
-Andrew's mm tree than Herbert's crypto tree if there is no objection
-from Herbert.
-
-Barry Song (3):
-  crypto: introduce acomp_is_sleepable to expose if comp drivers might
-    sleep
-  mm/zswap: remove the memcpy if acomp is not sleepable
-  crypto: scompress: remove memcpy if sg_nents is 1
-
- crypto/acompress.c         |  8 ++++++++
- crypto/scompress.c         | 36 +++++++++++++++++++++++++++++-------
- include/crypto/acompress.h |  9 +++++++++
- mm/zswap.c                 |  6 ++++--
- 4 files changed, 50 insertions(+), 9 deletions(-)
-
++bool acomp_is_sleepable(struct crypto_acomp *acomp)
++{
++	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp);
++
++	return tfm->__crt_alg->cra_type == &crypto_acomp_type;
++}
++EXPORT_SYMBOL_GPL(acomp_is_sleepable);
++
+ struct acomp_req *acomp_request_alloc(struct crypto_acomp *acomp)
+ {
+ 	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp);
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index 574cffc90730..88ca33532313 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -204,6 +204,15 @@ struct acomp_req *acomp_request_alloc(struct crypto_acomp *tfm);
+  */
+ void acomp_request_free(struct acomp_req *req);
+ 
++/**
++ * acomp_is_sleepable() -- check if an acomp is sleepable
++ *
++ * @tfm:	ACOMPRESS tfm handle allocated with crypto_alloc_acomp()
++ *
++ * Return:	true if the acomp is sleepable, otherwise, false
++ */
++bool acomp_is_sleepable(struct crypto_acomp *tfm);
++
+ /**
+  * acomp_request_set_callback() -- Sets an asynchronous callback
+  *
 -- 
 2.34.1
 
