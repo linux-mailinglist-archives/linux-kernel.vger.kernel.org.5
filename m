@@ -1,119 +1,76 @@
-Return-Path: <linux-kernel+bounces-69838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69839-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF13858F58
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:35:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84797858F59
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:38:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3A3EB217F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:35:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B08D31C2196D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0A67A703;
-	Sat, 17 Feb 2024 12:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jI4RXhH/"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF927A723;
+	Sat, 17 Feb 2024 12:38:31 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8A3171A4
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 12:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAE0171A4
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 12:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708173332; cv=none; b=ZZLQhRDUKlVy2jFZdT3Vnh36vQE9VtnhMVlv9seB2KdQuIB30vzbalLfZd9HLr9Mu74GiT84Q5rsSbpTqVQ5e65bvZu7Gwsj2T7yEskQLVA8hr9Ckq8KMTZ39XQqMwmIi5FquMPxBnAxJ+Cgs8KZhrItj1q4VzHLM0WhY8Uclhw=
+	t=1708173511; cv=none; b=Z7NJqlJirBWgnkXlt33Ucplsn12omvQzmo9ydrh1Y+taw3YuaI16j8afDkFBEXs3BJ65LUmafyq2fh7oUWp/vcRL504haf4rCUZDx44fhFr6+r1wQQL/edoKKx1QU4BQQybmGLOOGCvbt1VrdfCWobGepBdSWn+j1BdtX+EvC30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708173332; c=relaxed/simple;
-	bh=dxYmYjvFhU5nWz52Hqun3yHSuCsp6TLZ1/ueI0sBGp0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A8xDyVcrf5K6aAXUeq5KAejzXQTF0/fyoICXDKVVwEYIiRl/d0w+eZfNGgyr4pWCfhaQkhpoUJTxEvxsr6nawsmmEPl0Icrj0LrESduI5NOxIqBBgYCmCYsdlMmBWxcLyzQpewsGHjOcX6tURv3ZibEsdmAKNR6lA2cnMN81LgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jI4RXhH/; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708173329; x=1739709329;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=dxYmYjvFhU5nWz52Hqun3yHSuCsp6TLZ1/ueI0sBGp0=;
-  b=jI4RXhH/rSLE9f6ESarxlMnPg80Sk3PcDOmcR47BkQhOX0gVCBOa2yXg
-   9Uspd9IKXJJvc/isWM06YRoUCvmefr6Wl3QUPApI2V+yrMFNWoDD7Hy8F
-   nAiAl1bdDyH9VoNpowJPi9mCDUg9KhoVywXfFwpBF1RyNeHSHRqomMwP3
-   kkVx178Dh24ypJeXmUm+kF6uoQJgTTbw6cW+cu5cOMkF177VwVGndYQRx
-   Ylieg2PGpKIe3rQMpBxvXLku/aBL93/LgTQ5ZcicJlrqtfREp5DCKMTdB
-   xld06M86JyaVX6RnoSoI9bwXA+6LfclNmjvMV2fmYZ89luRNoU01R9BQy
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="12925712"
-X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
-   d="scan'208";a="12925712"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 04:35:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="935994551"
-X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
-   d="scan'208";a="935994551"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 17 Feb 2024 04:35:24 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id AFA0C2E9; Sat, 17 Feb 2024 14:35:23 +0200 (EET)
-Date: Sat, 17 Feb 2024 14:35:23 +0200
-From: "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "debug@rivosinc.com" <debug@rivosinc.com>, 
-	"luto@kernel.org" <luto@kernel.org>, "x86@kernel.org" <x86@kernel.org>, 
-	"Liam.Howlett@oracle.com" <Liam.Howlett@oracle.com>, "broonie@kernel.org" <broonie@kernel.org>, 
-	"keescook@chromium.org" <keescook@chromium.org>, "bp@alien8.de" <bp@alien8.de>, 
-	"mingo@redhat.com" <mingo@redhat.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"peterz@infradead.org" <peterz@infradead.org>, "hpa@zytor.com" <hpa@zytor.com>, 
-	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 3/8] mm: Use get_unmapped_area_vmflags()
-Message-ID: <35rzsyepg3wx5vjsyd5n5pix2c5oo6pibzfmdvlfbpmf2mvvgy@icrlxlydgs6z>
-References: <20240215231332.1556787-1-rick.p.edgecombe@intel.com>
- <20240215231332.1556787-4-rick.p.edgecombe@intel.com>
- <gs2yekj24y5jedpvpwvsfdhnr23epkpcatmwhcmyaerke7ooon@55dgxhlf5llq>
- <6d034d561dcab4300a7eb66e34e2a03aaf17ea79.camel@intel.com>
+	s=arc-20240116; t=1708173511; c=relaxed/simple;
+	bh=ZVaZWsNg6z12Mh5dCOKwS6qVkESFRBc4tEOsrxXFBNw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=H+fM+11YZesPhPXfHS8o7NqM09Zi1B4GnWepErhmNgrtyaJcBUGdvGf12NHPzKyHVmV6MJj9gp+ns2binZs4ZY1QqfCVsYgrHz/Ectxw20PpOUGNex0RkoVs0dMMjse66on9ZD3GGZz6PPbNziUffZ98HnVp/5lutiUNhuP0urQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3651a2610d8so3996635ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 04:38:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708173509; x=1708778309;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZVaZWsNg6z12Mh5dCOKwS6qVkESFRBc4tEOsrxXFBNw=;
+        b=gbGCnQBL+/JJJHAdUjpklTPvHEvHqHHTfEFL8pvGzEe1bUgM2N5V0uL2F0J9Bz6nqZ
+         bhJnGbe5l2XdKMp6hnJZ9o9aft5QCAWkODcKxBpJEMUCoRk7bjyV47u9MeHda/hIq4tI
+         +UjPje7q9dLAiILpd9eqLRVIRByFWfhYZUZGgIkB9YP+HXWhpJhccP9o9QQucDasBLpJ
+         WjlXrRaYzsJ9bbaKECGmwpE+HdzmCkFcVlIq/VL93qt6ncWJwOyJJGK5mA9FMZSVQGYA
+         VbYeUhXP0zEb3W+FWRnqBzfUyuKDFLWZW3P/y7jvUOxx+bsma48eFOEhIz/5/KUe+Vvf
+         o00A==
+X-Gm-Message-State: AOJu0YwBI9WHvvA+RRtzls7Z+15td0NtO6ExvHWOq+zzY3PZUt2CU7yj
+	EJ+Q85GeIFtUPP3C8cs3ReuG2hA9MUMDgE69OzT1zYHUC6I0Ue5n+wgntG14d3z0WXGDAUfTdzj
+	lmpZZCe0YWmhIUxwXAWWv4Ef/ucR+cVt3+9wcsye7NcIeeCwrdaFawkqfRg==
+X-Google-Smtp-Source: AGHT+IHXrJiGK45m2vIQP4dn6UuUSA3prwLLxqDcr4T8HgnnNU3m83ov63kLBW5Oih9XB/Xl7x7We5tMxISrD1cxEVTE93uC5Vhl
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6d034d561dcab4300a7eb66e34e2a03aaf17ea79.camel@intel.com>
+X-Received: by 2002:a05:6e02:1749:b0:363:bc56:765a with SMTP id
+ y9-20020a056e02174900b00363bc56765amr541768ill.0.1708173509355; Sat, 17 Feb
+ 2024 04:38:29 -0800 (PST)
+Date: Sat, 17 Feb 2024 04:38:29 -0800
+In-Reply-To: <000000000000635bfa0607ed5cdc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003d73360611932395@google.com>
+Subject: Re: [syzbot] WARNING in __nf_unregister_net_hook
+From: syzbot <syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Feb 16, 2024 at 10:15:05PM +0000, Edgecombe, Rick P wrote:
-> On Fri, 2024-02-16 at 14:56 +0200, Kirill A. Shutemov wrote:
-> > > +unsigned long
-> > > +get_unmapped_area(struct file *file, unsigned long addr, unsigned
-> > > long len,
-> > > +               unsigned long pgoff, unsigned long flags)
-> > > +{
-> > > +       return __get_unmapped_area(file, addr, len, pgoff, flags,
-> > > 0);
-> > > +}
-> > >   EXPORT_SYMBOL(get_unmapped_area);
-> > 
-> > Any reason it is not a static inline function in the header file?
-> 
-> get_unmapped_area() doesn't seem to be referenced from any modules. I
-> don't think it needs to be exported actually. Maybe it used to be?
-> 
-> It could be a static inline it seems. Why are you thinking it would be
-> better?
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
 
-That's just what I would do for legacy interface wrapper for new function
-interface. And save a function call for caller (it shouldn't matter in
-this case, but still).
+***
 
-> I think maybe get_unmapped_area() should stay as is, static-inline
-> wise, but remove the export, and the newly added __get_unmapped_area()
-> should be made static. Does it sound reasonable?
+Subject: WARNING in __nf_unregister_net_hook
+Author: fw@strlen.de
 
-Up to you.
-
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+#syz test: https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git main
 
