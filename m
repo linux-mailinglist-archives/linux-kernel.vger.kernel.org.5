@@ -1,121 +1,183 @@
-Return-Path: <linux-kernel+bounces-69659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2C3F858CE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:47:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A776858CED
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 03:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 796411F25709
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:47:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99EF91F2326D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3371D54F;
-	Sat, 17 Feb 2024 01:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797191B7EA;
+	Sat, 17 Feb 2024 02:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vg95R0lh"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GDTCI+eu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8780A1D537
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 01:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACB018AF6
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 02:02:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708134389; cv=none; b=AikoZGe0p66v1DkT78Dvduqpi/SCWSa+sDKDkVD4IIMlrWCm0GAkJ/Enj8aRyNw5OGeTsBDSA1caeT/p/X8/beaF95xwJYPPaIgNQSJjvVKZHYx4gsP6waDXcihVwV22sbD95+wsQIKGWQZdWxcx990Np5t70xXniq9STsa01fg=
+	t=1708135353; cv=none; b=YrjNwpaE2XMxrfWe4SGwqpMUTIr4VmmEK9zDStlKf30aJORklUPsTl8n+cAe1vFvrE8nZlm8TSRGxz9UlWyg0D4wNGyP30iltBMk+3+Le9jXvFfBkwYpFJw40HOAHIlOM9ZfIPtaUkPXgxe2ng2k9wau62Opl3EF8TtwU8zn6SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708134389; c=relaxed/simple;
-	bh=ebtkhZa9f8zdVomsb1q0aUWFOJmg84ZTw+4BmJGHN5o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FglB0aD7xmGXhuPe0VWsk4G9Yx3w8V/RYpEOUyLz0oCk5QaHBvywWJBiXs6DiUBNOaYpn328OEqEXDEeiTvysY3bIQgWpJlbbaKoUUFHynqgesNQFqTi1bLrR1gEVFnOpFGi0991z9cP71MAgu6TcqImPFjKk3EL4d1Odrf+M6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=vg95R0lh; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=mW+9H2smD/H8mX4e4XCousTPiUmSsQuKkNGqqdye5Xc=; b=vg95R0lhtgCX+vYR15NytJy+b9
-	r3nz1FWWKApJrUTauGa8jOWlzpPIOhVOSN4RHVGpjmJL3HvEe2tBaVgErc465JYhyY/kJFfoBiQ6R
-	hsf6GTqtXE1dOML2oFnpsFrVQ1UV4mA+/69nO5gdb4m+v/y5A+4+TdWE2QGt5Y76gkCdw3x/J//v9
-	uq40SCU/iV3/zrxNwAih0nN/s31irTgcJ3lDdhCLi8Dk/PUANTwhhOl62hg2N2IvYtJHOxjpP0y4R
-	DKOKrplXvg2WiTJ8yO1qWtO7UlFm8WEdAXKwtmiKQCil0Oe3GVmzHztsSb8Sji8dqvlJbOTBzr5LD
-	U4Kj51oA==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rb9mY-00000004R4o-2H6Q;
-	Sat, 17 Feb 2024 01:46:22 +0000
-Message-ID: <158119e5-43e2-43bb-879a-f83ed6057007@infradead.org>
-Date: Fri, 16 Feb 2024 17:46:21 -0800
+	s=arc-20240116; t=1708135353; c=relaxed/simple;
+	bh=6m3nmNT9VIiU5z38TY2SR1N1XIg/6P2hZWXY89MbczI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=EWX08L/aEQSxNBVFSECT5IuQg6jvruFt4XY2VhzK2t+Q8RtW52M79RIb0trAlQSQhY55+J4LLwObsqeNdE71J0G9Rn++eZyeWudXAcXFNFBDxYptWLu2k1q5P+2iaybq/QvzOaAE/PaPWM6/bIOom3moL0Pzh9yT6Ghhjz1jZ2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GDTCI+eu; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708135352; x=1739671352;
+  h=date:from:to:cc:subject:message-id;
+  bh=6m3nmNT9VIiU5z38TY2SR1N1XIg/6P2hZWXY89MbczI=;
+  b=GDTCI+euGzl6v4LvVzff0X2sIsNajLi/o9udlN4CN0c4T2YrTFkK/3s0
+   kq1uVeCJHUhznHBGZ4U9pyNpe9rAt3cZGAzFuXVWLUIfDvKVoe/SxZBrd
+   dvAeh8CtfGbXSdZZQb4NjpaRdBBzbU30slo1sEfA7EXQphoSqvfGSPH5K
+   v4C07CjV7Js3uZ5JY5XbtHkHNnfj0a/bNHQKMAkD/kTuWwDZYJruHZP00
+   msr2bZOFxysnyC1WhKwPbl0shL0xraEOF1a9rhlXHGx0oDSGGfXJlm04n
+   6UHZlpM5Xs6o6LC9ce3Tt1rTThEZCqrryM2ZprTl0D8qb/MLZQ2RbvbEx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="12833705"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="12833705"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 18:02:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="912466739"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="912466739"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 16 Feb 2024 18:02:29 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rbA26-0001km-1y;
+	Sat, 17 Feb 2024 02:02:26 +0000
+Date: Sat, 17 Feb 2024 10:02:18 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ 03ceaf678d444e67fb9c1a372458ba869aa37a60
+Message-ID: <202402171016.uVxzBXq9-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/fred: fix building without CONFIG_KVM
-Content-Language: en-US
-To: Arnd Bergmann <arnd@kernel.org>, Xin Li <xin@zytor.com>,
- "H. Peter Anvin" <hpa@zytor.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, Andy Lutomirski <luto@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-References: <20240216202527.2493264-1-arnd@kernel.org>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240216202527.2493264-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+branch HEAD: 03ceaf678d444e67fb9c1a372458ba869aa37a60  x86/CPU/AMD: Do the common init on future Zens too
 
+elapsed time: 794m
 
-On 2/16/24 12:25, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Some constants are only defined if KVM is enabled:
-> 
-> arch/x86/entry/entry_fred.c:117:9: error: use of undeclared identifier 'POSTED_INTR_VECTOR'
->   117 |         SYSVEC(POSTED_INTR_VECTOR,              kvm_posted_intr_ipi),
->       |                ^
-> arch/x86/entry/entry_fred.c:118:9: error: use of undeclared identifier 'POSTED_INTR_WAKEUP_VECTOR'
->   118 |         SYSVEC(POSTED_INTR_WAKEUP_VECTOR,       kvm_posted_intr_wakeup_ipi),
->       |                ^
-> arch/x86/entry/entry_fred.c:119:9: error: use of undeclared identifier 'POSTED_INTR_NESTED_VECTOR'
->   119 |         SYSVEC(POSTED_INTR_NESTED_VECTOR,       kvm_posted_intr_nested_ipi),
->       |                ^
-> 
-> Hiding the references behind the same preprocessor conditional is
-> probably the best fix here.
-> 
-> Fixes: 14619d912b65 ("x86/fred: FRED entry/exit and dispatch code")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+configs tested: 94
+configs skipped: 134
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks.
-
-> ---
->  arch/x86/entry/entry_fred.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/x86/entry/entry_fred.c b/arch/x86/entry/entry_fred.c
-> index ac120cbdaaf2..660b7f7f9a79 100644
-> --- a/arch/x86/entry/entry_fred.c
-> +++ b/arch/x86/entry/entry_fred.c
-> @@ -114,9 +114,11 @@ static idtentry_t sysvec_table[NR_SYSTEM_VECTORS] __ro_after_init = {
->  
->  	SYSVEC(IRQ_WORK_VECTOR,			irq_work),
->  
-> +#if IS_ENABLED(CONFIG_KVM)
->  	SYSVEC(POSTED_INTR_VECTOR,		kvm_posted_intr_ipi),
->  	SYSVEC(POSTED_INTR_WAKEUP_VECTOR,	kvm_posted_intr_wakeup_ipi),
->  	SYSVEC(POSTED_INTR_NESTED_VECTOR,	kvm_posted_intr_nested_ipi),
-> +#endif
->  };
->  
->  static bool fred_setup_done __initdata;
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                      axs103_smp_defconfig   gcc  
+arc                                 defconfig   gcc  
+arm                           stm32_defconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                                defconfig   gcc  
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240216   gcc  
+i386         buildonly-randconfig-001-20240217   gcc  
+i386         buildonly-randconfig-002-20240216   clang
+i386         buildonly-randconfig-003-20240216   clang
+i386         buildonly-randconfig-003-20240217   gcc  
+i386         buildonly-randconfig-004-20240216   gcc  
+i386         buildonly-randconfig-004-20240217   gcc  
+i386         buildonly-randconfig-005-20240216   gcc  
+i386         buildonly-randconfig-005-20240217   gcc  
+i386         buildonly-randconfig-006-20240216   clang
+i386                                defconfig   clang
+i386                  randconfig-001-20240216   clang
+i386                  randconfig-001-20240217   gcc  
+i386                  randconfig-002-20240216   clang
+i386                  randconfig-002-20240217   gcc  
+i386                  randconfig-003-20240216   gcc  
+i386                  randconfig-004-20240216   clang
+i386                  randconfig-004-20240217   gcc  
+i386                  randconfig-005-20240216   gcc  
+i386                  randconfig-005-20240217   gcc  
+i386                  randconfig-006-20240216   clang
+i386                  randconfig-011-20240216   gcc  
+i386                  randconfig-011-20240217   gcc  
+i386                  randconfig-012-20240216   gcc  
+i386                  randconfig-012-20240217   gcc  
+i386                  randconfig-013-20240216   gcc  
+i386                  randconfig-014-20240216   clang
+i386                  randconfig-015-20240216   gcc  
+i386                  randconfig-016-20240216   gcc  
+i386                  randconfig-016-20240217   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                           virt_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     kmeter1_defconfig   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+sh                                allnoconfig   gcc  
+sh                                  defconfig   gcc  
+sh                         ecovec24_defconfig   gcc  
+sh                        edosk7705_defconfig   gcc  
+sh                            migor_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                             defconfig   gcc  
+um                               allyesconfig   gcc  
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
 
 -- 
-#Randy
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
