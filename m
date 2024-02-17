@@ -1,244 +1,205 @@
-Return-Path: <linux-kernel+bounces-70092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF8D98592EF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:19:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 236AB8592F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:27:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 660801F22075
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:19:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 480121C211A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E567F7F4;
-	Sat, 17 Feb 2024 21:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 228787F7F6;
+	Sat, 17 Feb 2024 21:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b="fRjUtNWb"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="ZpwmHTgL"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFA9B1CF83
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 21:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708204746; cv=none; b=r9CRdKj1BNlpHk4l4DsKQuAQ+j2277bd0mP9hQPVhKKjhdrxb+PnOv96KjLbqyzG75yr7LnoYRy+ZaZ8CkLhNsB2rFyFnR6aueP8c0QMgK+ZBciuyqYCHMaObTUYObI1RdPllFvVduzxwS/DzyVOQc+pUQ9N7RytZsT2AI4IGHQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708204746; c=relaxed/simple;
-	bh=jqmSZE/6hIL7tHTUq7XBmsqEMOHIxcazTD9D7B73dnA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GNyuUoF+iwMeH4QNbDejV4xFVijm2yo35Rba/HxdwFxOu1nq1a9kw8NEP/4DUh8i9Um7v0mO3p6EGXKFE61kxkyl4JcULHowPt+bf3Ml/hLqN2eQQcfceQQQbVtUJA32JHkhDKBFU71GcjJGiexyjsM44Gj/Y+A1NnPk4WWGxws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org; spf=pass smtp.mailfrom=ieee.org; dkim=pass (1024-bit key) header.d=ieee.org header.i=@ieee.org header.b=fRjUtNWb; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ieee.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ieee.org
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7875adf71b1so25395085a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 13:19:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google; t=1708204742; x=1708809542; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jsUAb6vb40+XemerMiSmb6ZuxYzXcwGlQ49c+yrXOkw=;
-        b=fRjUtNWbyUcxuRIkCB0gXWYH6TIvfHCtO29QgX3+Ws+ceUgFRqNzEYiutvsEmoBBYM
-         ypJp25oScrs8hIJBClbEkerQf+Um4HRE0GUZ+JrpN8Pzx8C4G5JwFfJKXVuZvVFP+MIG
-         f+tCQxLCGwwjS0d5d8xqHaIMgDw958TM+cDl0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708204742; x=1708809542;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jsUAb6vb40+XemerMiSmb6ZuxYzXcwGlQ49c+yrXOkw=;
-        b=mY0Q7HP5SARybM2M17gjFStZl+uNi2xJOTmHmj7QDIPtGrcflOQWWc8YmY1AaVBZpH
-         /3IuKreSd/8Hjeb5HJxU/IdvNRlX8KMTve0s1Kt/AqncJPP+yiUtYmbK2jWESBvJ0Y3+
-         zUmSv7T/N39nzpt+24V4Z+PHz92sCKnjJqNXKB/isbVtLgj1d/rq7l2zi9qTrHUhtVtZ
-         lQhphKyFEnlbCkkhOVQQKuoRIPYnYP+NlFGp5URF4a06FWtJh/jyWJB71EjrSFGvNy2T
-         4+Gt6sgF8JO9HAF2jfS2liLpR6WPqvb05ibqbPMQ7qNlycncgANfS+mbVqtVMtRj637X
-         X1Ag==
-X-Forwarded-Encrypted: i=1; AJvYcCVB3J1YZ0cGQRuwQwBairV+zOCiEnRoAImjj0ZvbawZGEnfQMeQfA5R70jSwQWXdhCd28EnY2+TKVFnFemGkMXLBVtLc5Nf7M1u3tV/
-X-Gm-Message-State: AOJu0Yw4Ure37w2yCWbOA7cHabt82vpUJbs/PdF9mOk3M/QGiilhTUtn
-	l/bLFmXclvG/0F7jaJFC3+S58N75Cgh9Rx6f3iQNAIg5QJY65mSZWTdekP0L5A==
-X-Google-Smtp-Source: AGHT+IGP14v6oCCtMP0+vugRbMd2i51vK0hqWp5NBXjAY0xKJajqQMGwjum2Jn2GI6G56nWQ9lc40Q==
-X-Received: by 2002:a05:620a:46ab:b0:787:538c:58cb with SMTP id bq43-20020a05620a46ab00b00787538c58cbmr4663545qkb.28.1708204741830;
-        Sat, 17 Feb 2024 13:19:01 -0800 (PST)
-Received: from [10.211.55.3] (c-98-61-227-136.hsd1.mn.comcast.net. [98.61.227.136])
-        by smtp.googlemail.com with ESMTPSA id c3-20020a05620a11a300b00785d7f634bcsm1116200qkk.8.2024.02.17.13.19.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Feb 2024 13:19:01 -0800 (PST)
-Message-ID: <02cf87a3-4e92-4f6d-98f6-dfc0e198d462@ieee.org>
-Date: Sat, 17 Feb 2024 15:18:59 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0507C7C083;
+	Sat, 17 Feb 2024 21:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.40
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708205272; cv=fail; b=kl6po2kk83mMn7uJLVgE1FXgqH+aNf0/JPfHOTw8BbSby4iEamLk1WUepzQB9/WoBBh6B17rZM7rYdsNqU73sefJiFOjK+M8YPB/za0DvxJWAtffQ9tCFHg7bTYhFfOUrKcxW2yiRLQeQpZP67GEwoQp6GuFN8c9DHnQxSIsTIM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708205272; c=relaxed/simple;
+	bh=O/sH2HBlZYptmobJjDGliVtAd2l0If+dFNq1tFy0zxU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=IfWqJyaDg/dTXBDTXtOLjZYMn8yqKbQLeDaVsrO0dlwIYrBKP6MlTVXOObpuZJzRy00ahDn2OlNedUJs2ogPb5bFOM4OKa/5vzxP6r1aTIYE3JMjSSfUen6KCFlzdHq8K4VxNujfFi1v1gP0zLgz7izgTnTxJqRNnOJDEJT38xc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=ZpwmHTgL; arc=fail smtp.client-ip=40.107.236.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nnWFkjuNwu/jEgahTAkXyOmeDIuWZYWEQVtRIMqrqf1Qx7k50osZ8xtWnSy8COPMv12Ox3PIuBTLpx69zk5f6T1E6/XuoIJYzUfjFoj+8BMdxE+yQMIddTjD1CvjVodwU63wl/4lSyLWsJK0PBvjP8UpD+B3fNDdRhjBAs+a9lGG2mRpiPBGnUNHbcW7Js0D1ti53jbVhEq0w2cNr5ob3uMevl3JO+uATfgHXZz/mRxB0EFlY1uU+bh/I8pyMdnkPusowLpSba7M1IR3XU8xDy7o6cLMTFIzCOhPLbZMJtG0DosmqvIX4cuu7eacJKOTUYwuK+zIG8Ahbt+gDBdNfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=cI+FOK9ocK1z2jnw1KRC7DDotKVVzkIzXoWsNgWD/YY=;
+ b=I1AyXIF6PWLAQ5HjFWgV0Diip5DcdSiNh0KaWuMVXv2Gsmmwjj+jAGRi5L2q4JCpFjkrGbdYl43ExwzigYiM8CFAkBBhCtGjwGbqxuFggNrYSDQvAMDJ03wzx5y7IDeQwCbT+/z6ZNhfF57orwSR5bhmdRRmhxv4LTM/+xJHYO7C4LFjZ7tk8ODfpCwvJbxVguSqEatJjzbcZV1uJCYmXTyjx7xGuPqsBUeyzV2EbG2fZD40kecJYrYerKntMYx0V09Ch/BehBKrRmHhnxmW84QDY8QhrWXUmPk5n8YRH8d9wquKvjgIuFKpiUkd//6FnUJnPaWFyDKnM0oIPzwbzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cI+FOK9ocK1z2jnw1KRC7DDotKVVzkIzXoWsNgWD/YY=;
+ b=ZpwmHTgLXp9KN7duPb3GZ/2rXb48RQbHBV1bEOshc9Oo+Z14i0djYXeDxD3w++DMBXIGAhYtStkGqZawniBznZioj1DANsEqtIrOusllVDTXjVf2tgoB5f3FWN6Nv9Mc/offvSrwN7ELhaIp/OYdbpSUl6qTV+poUvriH7tjGPg=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
+ by PH7PR12MB5974.namprd12.prod.outlook.com (2603:10b6:510:1d9::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.12; Sat, 17 Feb
+ 2024 21:27:46 +0000
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::9d:17f1:8b3b:1958]) by CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::9d:17f1:8b3b:1958%4]) with mapi id 15.20.7316.012; Sat, 17 Feb 2024
+ 21:27:46 +0000
+Date: Sat, 17 Feb 2024 22:27:40 +0100
+From: Robert Richter <rrichter@amd.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Cameron <jonathan.cameron@huawei.com>,
+	Dave Jiang <dave.jiang@intel.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Ira Weiny <ira.weiny@intel.com>, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cxl/pci: Fix disabling memory if DVSEC CXL Range does
+ not match a CFMWS window
+Message-ID: <ZdEkzBbm7aqcghAl@rric.localdomain>
+References: <20240216160113.407141-1-rrichter@amd.com>
+ <65d034a22e258_29b129484@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <65d034a22e258_29b129484@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+X-ClientProxiedBy: FR5P281CA0057.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f0::15) To CYYPR12MB8750.namprd12.prod.outlook.com
+ (2603:10b6:930:be::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] greybus: audio: apbridgea: Remove flexible array from
- struct audio_apbridgea_hdr
-Content-Language: en-US
-To: Erick Archer <erick.archer@gmx.com>,
- Vaibhav Agarwal <vaibhav.sr@gmail.com>, Mark Greer <mgreer@animalcreek.com>,
- Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Kees Cook <keescook@chromium.org>
-Cc: greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20240217154758.7965-1-erick.archer@gmx.com>
-From: Alex Elder <elder@ieee.org>
-In-Reply-To: <20240217154758.7965-1-erick.archer@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|PH7PR12MB5974:EE_
+X-MS-Office365-Filtering-Correlation-Id: 05da3396-9050-494a-7ce3-08dc2fff48a4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	sMDEsu7BGDGFJBj5YpzY0s3KJzEcvvc41PmjBw5ubqAXrwv/A/Nr6Qda6fhU4BUWfD1i6xChUlKNPKI/co18TonZuWzc7eJAjDbO4CkkC8nz8+tlRR+ZwZH5dkA724JY00n+ro1Qr8gqb9gkA8gLQuXOqjo0048VFbLt9T0lKV0igB8Vi/6cdVjIf1fggm3VnhZmECuKW1Inq2B1MbslJoDM/GsXcJMyA8rXQbTVQmzY6qOJ2ZOsIJNUHzJ7obVjGwZ+KjgAqhevWCmVXaYbPHaVaiNxZMnjnpwiOFAY10ksJlQnh5NHaOGsig9o69VAADwmEsAwmcKMF4I+s8z41ZbT/hIizX6l3r1x90QstgI3TGhyo2DQGoZtTREB7m8YolH+2bSxSVlrHaRistvSHm13JziC2JZqhGHtiJzKMB3KUQHKe7sNfFQRvfhKJGcEGpSRVckvIbRamqTFTDL1mdnYBtUczUvN4F+a+xkgZrHZI+z+SQulMC+8pA+hWWqMBwwPAZJWiSvRs3EGUfukkR172MI+iE6h6maXVL4CHrIAJs7LD5eO+kNZTJ2+vgbb
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(39860400002)(136003)(376002)(396003)(230922051799003)(64100799003)(1800799012)(451199024)(186009)(66946007)(8936002)(8676002)(66556008)(66476007)(38100700002)(4326008)(5660300002)(6916009)(2906002)(83380400001)(41300700001)(26005)(53546011)(6666004)(54906003)(316002)(478600001)(9686003)(6506007)(6512007)(6486002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?iHd6bzeExtYfKicYX9/81Aky0nvJyUbSiCl5UEy2o+bHEMgzXhev7wJsZKx4?=
+ =?us-ascii?Q?YMaTZpw5sVz+aYmRQEYVU/8u8BNGyth/uqp7Z3nreAHPJuUZ24hwsR8dda90?=
+ =?us-ascii?Q?pRZndKt47/fw8E45lVNvszXhslMN98KJoI9OK1xdiPSlUMS1lbeMFgZDFTay?=
+ =?us-ascii?Q?M/7UIEqZn8cWeydb7AJ3q9v69YUm4VDSFg/t0WY/lZl0z/x90Pnnp36LfeBo?=
+ =?us-ascii?Q?tE6IOud3jx2Mql3SXtUAzdJEDQfGAvoCJQOT1iblOTZS4i/56oQKqXSVNQVb?=
+ =?us-ascii?Q?uNXGP2p6oAITxws5OZbdAH9V4A5pX9okzVWlKwvTAzPDYHcAflyX9S+H/49p?=
+ =?us-ascii?Q?6O4qjQrFXdzVS9DpEdIdC+tYXGaJ1yMFbenLyUcPhbgMa/6BJFMsIn2Ffq17?=
+ =?us-ascii?Q?ylhSFd2f9wTzw4oLE7qfsTmZsm7+3OBOelWwbfWTHWyYkMeOovCWSuBfvwLy?=
+ =?us-ascii?Q?qMA7XhEwRjdSJk4BOAYQkZIQjEbUGaW/CxtH68NShRZBp5XMFc08D/REtrei?=
+ =?us-ascii?Q?fW//tBzB/GbP9QXF24S+Do2kLgTF36/fOuF5NASh6vUs4bHlIZ693h7eR/iD?=
+ =?us-ascii?Q?gqucEnjaoqei+UQYkaNL28LMD8N06kGqjuT8D11FhDYXD4iZejC1u9OyBibH?=
+ =?us-ascii?Q?rq71HomtG60xyDFdO5/YD1IszL525KeKXsL3Q8p0XATwZ5UcKxPywC3/KW8k?=
+ =?us-ascii?Q?VBW8QomqBBrF9XFstAFiy5cx04ImuUOtDfYzNEudrj55bz3EOOlzfnh0Eb7c?=
+ =?us-ascii?Q?LzXSQZCbzjyjD9Rr1K39ukCzQ3wdhdLQAjMt2aNooL0AoVn8DwKqE/JBxrp2?=
+ =?us-ascii?Q?RBVmEzokxcojEmwplH4eonoChAHjuGYybV80XAMH6TUZFzC/F8W/JoTXG5B9?=
+ =?us-ascii?Q?ur0LFQNDj1xwk9ZbuGCPei8AOll4jXKgnORoxlpB2jZ68R9o/wjzd6rPrs6E?=
+ =?us-ascii?Q?hu9wsHc+OngHS5QWixo+QQBbFIN1B5uf/rimrw6KxBNeoKZm0GfOsoO4btUG?=
+ =?us-ascii?Q?K+QmynPX5XkXehp/hCudbFk1pvThs6ejD7wbkX711gjyS32YDQz/TmQTKU2q?=
+ =?us-ascii?Q?hJG6Y4YL6IglJbKVy5FMnPmS5ailZfX6wj+QGycG13X0av+NHriTZoMBSa8b?=
+ =?us-ascii?Q?xwqK8JLnEQMK6S0MCQELr3mr++9TR+PJfZpgAdZ96NCQsCLcxqxDpjiEjSs2?=
+ =?us-ascii?Q?jLqtg4k7bSNhWbKoOI4IkC1PlW6p9AkHKD+WulPNZ7DE+2ZmGuY3OOgMb7iT?=
+ =?us-ascii?Q?K/f7XLzqU3+bCG63POyIN6tvHqht+liv1n/FWkXTHnZX25pQ30vXMmMQzT0M?=
+ =?us-ascii?Q?PM7yPnh/U5zeGp1COFAKPWuNmQAwI+VXq8jOAaYjLqw5uBhD1m5xSBwOSqq+?=
+ =?us-ascii?Q?rr1EZ54Hh0MXGnFHMjiFAq7DxaOQcvP3VPZffCXGFz6+MK7mJKOGCelI1yvY?=
+ =?us-ascii?Q?5Zg0zzLloqRDmDVDDmPZmRpfMnyKKwW1JXjrZM+/9Gr5c+0THnvpgbL72fdV?=
+ =?us-ascii?Q?bMqgoXdpQJrZJoqjhQPJWNBkaX1AULfIXhiSrebMNfuPZW8FHVXWdMOfK0/b?=
+ =?us-ascii?Q?tiezDv13QyK5oLpba9OTTClb86Y9GHRxHhpR7I8i?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 05da3396-9050-494a-7ce3-08dc2fff48a4
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2024 21:27:46.3023
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LBn4HdZUKVFiMUoC9E/Frmn57unQoCkLKHwibXMoPsmZmpC9b5pxwRC2TnoKEDf8x+FMRQ4F1tozX8sZTkD5ug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5974
 
-On 2/17/24 9:47 AM, Erick Archer wrote:
-> When a struct containing a flexible array is included in another struct,
-> and there is a member after the struct-with-flex-array, there is a
-> possibility of memory overlap. These cases must be audited [1]. See:
+On 16.02.24 20:22:58, Dan Williams wrote:
+> Robert Richter wrote:
+> > The Linux CXL subsystem is built on the assumption that HPA == SPA.
+> > That is, the host physical address (HPA) the HDM decoder registers are
+> > programmed with are system physical addresses (SPA).
+> > 
+> > During HDM decoder setup, the DVSEC CXL range registers (cxl-3.1,
+> > 8.1.3.8) are checked if the memory is enabled and the CXL range is in
+> > a HPA window that is described in a CFMWS structure of the CXL host
+> > bridge (cxl-3.1, 9.18.1.3).
+> > 
+> > Now, if the HPA is not an SPA, the CXL range does not match a CFMWS
+> > window and the CXL memory range will be disabled then. The HDM decoder
+> > stops working which causes system memory being disabled and further a
+> > system hang during HDM decoder initialization, typically when a CXL
+> > enabled kernel boots.
+> > 
+> > Prevent a system hang and do not disable the HDM decoder if the
+> > decoder's CXL range is not found in a CFMWS window.
+> > 
+> > Note the change only fixes a hardware hang, but does not implement
+> > HPA/SPA translation. Support for this can be added in a follow on
+> > patch series.
+> > 
+> > Signed-off-by: Robert Richter <rrichter@amd.com>
+> > ---
+> >  drivers/cxl/core/pci.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
+> > index a0e7ed5ae25f..18616ca873e5 100644
+> > --- a/drivers/cxl/core/pci.c
+> > +++ b/drivers/cxl/core/pci.c
+> > @@ -478,8 +478,8 @@ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
+> >  	}
+> >  
+> >  	if (!allowed) {
+> > -		cxl_set_mem_enable(cxlds, 0);
+> > -		info->mem_enabled = 0;
+> > +		dev_err(dev, "Range register decodes outside platform defined CXL ranges.\n");
+> > +		return -ENXIO;
 > 
-> struct inner {
-> 	...
-> 	int flex[];
-> };
+> While testing I found this needs the following fixup:
 > 
-> struct outer {
-> 	...
-> 	struct inner header;
-> 	int overlap;
-> 	...
-> };
-> 
-> This is the scenario for the "struct audio_apbridgea_hdr" structure
-> that is included in the following "struct audio_apbridgea_*_request"
-> structures:
+> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
+> index e24ffae8135f..e9e6c81ce034 100644
+> --- a/drivers/cxl/core/pci.c
+> +++ b/drivers/cxl/core/pci.c
+> @@ -477,7 +477,7 @@ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
+>                 allowed++;
+>         }
+>  
+> -       if (!allowed) {
+> +       if (!allowed && info->mem_enabled) {
+>                 dev_err(dev, "Range register decodes outside platform defined CXL ranges.\n");
+>                 return -ENXIO;
+>         }
 
-Yeah this was not a very good way to define these header
-structures, but I'm glad to hear the flexible array at the
-end was never used.  I don't know why it was there; maybe
-it's an artifact from some other information that got removed.
+The change looks correct to me, thanks for fixing.
 
-If the code compiles with your change, it ought to be fine.
-(It compiles for me.)
-
-It would be good for Vaibhav or Mark to comment though, maybe
-they can provide some context.
-
-
-> 
-> struct audio_apbridgea_set_config_request
-> struct audio_apbridgea_register_cport_request
-> struct audio_apbridgea_unregister_cport_request
-> struct audio_apbridgea_set_tx_data_size_request
-> struct audio_apbridgea_prepare_tx_request
-> struct audio_apbridgea_start_tx_request
-> struct audio_apbridgea_stop_tx_request
-> struct audio_apbridgea_shutdown_tx_request
-> struct audio_apbridgea_set_rx_data_size_request
-> struct audio_apbridgea_prepare_rx_request
-> struct audio_apbridgea_start_rx_request
-> struct audio_apbridgea_stop_rx_request
-> struct audio_apbridgea_shutdown_rx_request
-> 
-> The pattern is like the one shown below:
-> 
-> struct audio_apbridgea_hdr {
-> 	...
-> 	__u8 data[];
-> } __packed;
-> 
-> struct audio_apbridgea_*_request {
-> 	struct audio_apbridgea_hdr hdr;
-> 	...
-> } __packed;
-> 
-> In this case, the trailing flexible array can be removed because it is
-> never used.
-> 
-> Link: https://github.com/KSPP/linux/issues/202 [1]
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
-> ---
-> Hi everyone,
-> 
-> I'm not sure this patch is correct. My concerns are:
-> 
-> The "struct audio_apbridgea_hdr" structure is used as a first member in
-> all the "struct audio_apbridgea_*_request" structures. And these last
-> structures are used in the "gb_audio_apbridgea_*(...)" functions. These
-> functions fill the "request" structure and always use:
-> 
-> 	gb_hd_output(connection->hd, &req, sizeof(req),
-> 		     GB_APB_REQUEST_AUDIO_CONTROL, true);
-> 
-> Then, the "gb_hd_output(struct gb_host_device *hd, ...)" function calls:
-> 
-> 	hd->driver->output(hd, req, size, cmd, async);
-> 
-> The first parameter to this function is of type:
-> 
-> 	struct gb_host_device {
-> 		...
-> 		const struct gb_hd_driver *driver;
-> 		...
-> 	};
-> 
-> And the "gb_hd_driver" structure is defined as:
-> 
-> 	struct gb_hd_driver {
-> 		...
-> 		int (*output)(struct gb_host_device *hd, void *req, u16 size, u8 cmd,
-> 			      bool async);
-> 	};
-> 
-> Therefore, my question is:
-> Where is the "output" function pointer set? I think I'm missing something.
-
-I think it will be drivers/greybus/es2.c:output().
-
-But in any case, the output function will know nothing about
-the structure of the request, so I think it's unrelated to
-the change you're proposing.
-
-Johan can confirm this.
-
-I'd like to hear from these others, but otherwise this change
-looks good to me.
-
-Reviewed-by: Alex Elder <elder@linaro.org>
+-Robert
 
 > 
-> I have search for another greybus drivers and I have found that, for
-> example, the "es2_ap_driver" (drivers/greybus/es2.c) sets the "output"
-> member in:
 > 
-> 	static struct gb_hd_driver es2_driver = {
-> 		...
-> 		.output	= output,
-> 	};
+> ...i.e. Linux should only give up if it does not understand an active
+> decode region.
 > 
-> I think that the flexible array that I have removed should be used in
-> the function assigned to the "output" function pointer. But I am not
-> able to find this function.
-> 
-> A bit of light on this would be greatly appreciated.
-> 
-> Thanks,
-> Erick
-> ---
->   drivers/staging/greybus/audio_apbridgea.h | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_apbridgea.h b/drivers/staging/greybus/audio_apbridgea.h
-> index efec0f815efd..ab707d310129 100644
-> --- a/drivers/staging/greybus/audio_apbridgea.h
-> +++ b/drivers/staging/greybus/audio_apbridgea.h
-> @@ -65,7 +65,6 @@
->   struct audio_apbridgea_hdr {
->   	__u8	type;
->   	__le16	i2s_port;
-> -	__u8	data[];
->   } __packed;
-> 
->   struct audio_apbridgea_set_config_request {
-> --
-> 2.25.1
-> 
-
+> Now this SPA/HPA mismatch will still cause problems later in region
+> creation flow, but that's a separate issue.
 
