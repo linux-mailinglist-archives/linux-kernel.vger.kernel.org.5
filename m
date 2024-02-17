@@ -1,135 +1,275 @@
-Return-Path: <linux-kernel+bounces-69850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69851-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17ABD858F74
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:55:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBBB4858F76
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:55:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5C1128265B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:55:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D87461C20A96
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6605A7A727;
-	Sat, 17 Feb 2024 12:55:05 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AB5A7A733;
+	Sat, 17 Feb 2024 12:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="TStBeQOw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B7169DE7
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 12:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1B41CF94;
+	Sat, 17 Feb 2024 12:55:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708174505; cv=none; b=CwaAHmG8iA74TGd210QZla9VxqEapHkopBa73S+ei1yIoA6J99cNDOKXe867Z50FsdSlC3CdDPUI813K80K2tYpp3BfRXGzijz7bTmwU7R7noQyWbNbirwRFqOhsV+0Tfq2/QjbuqOl1WlfyMPbp5GSTxIZTqemm1FgXD6gFWTI=
+	t=1708174539; cv=none; b=hb14pAPONdQDjuzSco+x+zgu2jmH9VgEq5Vv61coE8C30QU37IF165CIVsgbB91twKjBmpWnAPjDuKPGyfMfRTky5BdUEP5jQJDQfGElQ+pcmAo2qSqtdIRL1laXWeB33wK7BmFgIoWrV+ugotyy49vh+x61vcoWsH8U0Gw2G+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708174505; c=relaxed/simple;
-	bh=CYtMto8XYycvZCbk3XnCFVxTQmf1n0ubNpWj/EYG6h8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=jtyLtSmMSSFYoklzZoxrR+idXhPEznJJAhPNEyohCePOHGgSTaN1DBhXQhT7Rz+di/UjUOWHS3t/xcckCHP9aZAkRBAIzvxIUyso5ZV9FFTRHkYKvsnnC7CNdI8jZEEso4/xiKCILS8ZL0mYR49d/G8Z5m37x5Nn6COV8PXi1lU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363ca646a1dso25913365ab.0
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 04:55:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708174502; x=1708779302;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gkAaRPRurr4hEp1GccFhPyoVGIjWvN5phI/7QkRky9g=;
-        b=AAdlaQF487ODjKCa7G3k9CyFTb8QEbw32E/9kNiIWueP7NKHiS6TiwtbEC1wikc7zg
-         GcdGZqkjnRaP6ZWvU4aGcYEgY9iCZ2zJkMKUFWPgy0MIoH06GujD33sSaexlV9sPxY75
-         ZmxguAqt3MbSCdPfWLKsV4npVh1w/p7mJic3bbAgm9HbJKQlBqi5ct0ZONIbdUzSaEc1
-         9Gvuh9j10zNbOuR+zGNcUSY2z1R5J0uTHCCb1nEolWKCr935JlwRL/REubI3ztgeGqOc
-         VMx2qoum6aqHHdeuFR6o/avSLpcQWa9OXzsqHAh/J35+Zwn77Weh+/OoJO9Pp/hgSPeX
-         cEPA==
-X-Forwarded-Encrypted: i=1; AJvYcCVq8GQTrvK4RSbJ//jRidrBgLkJIZHTlHq9YipkN4wg/F9NkELEfSeXtDG22ddXyFK4KLXNTbOpx7htj/zarIq7DjVqvL7Srm4ZSEOQ
-X-Gm-Message-State: AOJu0YzkHPQq0rpO/8JeNcAZBhuUFAqdaDxAhwhHbCtVco3uS6NYczHZ
-	qAZ8GMUdcFWuetNByO0uBdMiOpdlKYowB4wY68TbCet/13TGtX/TsmztYtKexRw3l/dZX3peh2U
-	HfjaASDzxTmJXd521ixGtMudKIB20a/MqJXDcBMeu9P7ceKQ7o9HTyaQ=
-X-Google-Smtp-Source: AGHT+IFiqjFj+zPCUG2T48b/neQ8dLcnSdT56/gx3HSf5R7Lj52xO3g16VUKkT6Jeotsnyaqh82O5szRY6WelL83+ZM0nIICCXD5
+	s=arc-20240116; t=1708174539; c=relaxed/simple;
+	bh=sbzC8sqteUeYbdvjl9u+wROGz1hPoLJs3Fz24vf5bP8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=refL6MYS0vbTNBSyGK0LnQ0Mj0uAcDJF0To3DQblATCsrxXSigNUex24JnFcA1BTa79yHkePDb2VxkYnXDtkIeQjKkQjOck/PoJpnlJ6j0KWRaXKmLPAFbKBTljv7lOJ2Ny34PHU4r0Xax4c8dJQ98gklmGEH1gAFtkGc7n31Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=TStBeQOw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1056DC433F1;
+	Sat, 17 Feb 2024 12:55:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708174538;
+	bh=sbzC8sqteUeYbdvjl9u+wROGz1hPoLJs3Fz24vf5bP8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=TStBeQOwHK09rHoWU2GMcVIqx6ONy4459POlt2cePz23YAqzvrjFNEDLlU6MVqdUP
+	 3tUsl51lnAxW7MB4FbFC02bfSEiaT74NFNp4riNH9Cz7+Z3YXQmZLwXqKuL+1R7Um/
+	 JriPGHpxQIBgOauEzC1yT5wvKrQA6PANk+LGmDNo=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: corbet@lwn.net,
+	workflows@vger.kernel.org
+Cc: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	security@kernel.org,
+	linux@leemhuis.info,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+	Sasha Levin <sashal@kernel.org>,
+	Lee Jones <lee@kernel.org>
+Subject: [PATCH v5] Documentation: Document the Linux Kernel CVE process
+Date: Sat, 17 Feb 2024 13:55:31 +0100
+Message-ID: <2024021731-essence-sadness-28fd@gregkh>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd8f:0:b0:361:a872:157a with SMTP id
- r15-20020a92cd8f000000b00361a872157amr623901ilb.6.1708174502670; Sat, 17 Feb
- 2024 04:55:02 -0800 (PST)
-Date: Sat, 17 Feb 2024 04:55:02 -0800
-In-Reply-To: <20240217123828.GA31625@breakpoint.cc>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000723bee0611935ee4@google.com>
-Subject: Re: [syzbot] [netfilter?] WARNING in __nf_unregister_net_hook (6)
-From: syzbot <syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com>
-To: fw@strlen.de, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Lines: 205
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9768; i=gregkh@linuxfoundation.org; h=from:subject:message-id; bh=sbzC8sqteUeYbdvjl9u+wROGz1hPoLJs3Fz24vf5bP8=; b=owGbwMvMwCRo6H6F97bub03G02pJDKkX1hzh+yK3nFfp/JnOpuZLIY84E9zPPm4W26ahP6H9m ePhVffndcSyMAgyMciKKbJ82cZzdH/FIUUvQ9vTMHNYmUCGMHBxCsBE1ooxzI/nmKxvP7uq9Opn WUWW+N8fDx14XcowT6+qx3r3/RX9Obet46wltOtU9ZdfAAA=
+X-Developer-Key: i=gregkh@linuxfoundation.org; a=openpgp; fpr=F4B60CC5BF78C2214A313DCB3147D40DDB2DFB29
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+The Linux kernel project now has the ability to assign CVEs to fixed
+issues, so document the process and how individual developers can get a
+CVE if one is not automatically assigned for their fixes.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in __nf_unregister_net_hook
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Lee Jones <lee@kernel.org>
+---
+v5: change the .rst header formatting as per the documented way.
+v4: Add MAINTAINER entry
+    Lots of tiny wording changes based on many reviews
+    Collected some Reviewed-by: tags
+    Fixed documenation build by properly referencing the security
+    process documentation file.
+v3: fix up wording in security-bugs.rst based on the changes to the cve
+    assignment process from v1, thanks to a private reviewer for
+    pointing that out.
+v2: Grammer fixes based on review from Randy
+    Updated paragraph about how CVE identifiers will be assigned
+    (automatically when added to stable trees, or ask us for one
+    directly before that happens if so desired)
+ Documentation/process/cve.rst           | 121 ++++++++++++++++++++++++
+ Documentation/process/index.rst         |   1 +
+ Documentation/process/security-bugs.rst |   5 +-
+ MAINTAINERS                             |   5 +
+ 4 files changed, 129 insertions(+), 3 deletions(-)
+ create mode 100644 Documentation/process/cve.rst
 
-------------[ cut here ]------------
-hook not found, pf 2 num 1
-WARNING: CPU: 1 PID: 5828 at net/netfilter/core.c:517 __nf_unregister_net_hook+0x1de/0x670 net/netfilter/core.c:517
-Modules linked in:
-CPU: 1 PID: 5828 Comm: syz-executor.3 Not tainted 6.8.0-rc3-syzkaller-00211-g84443741faab #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:__nf_unregister_net_hook+0x1de/0x670 net/netfilter/core.c:517
-Code: 14 02 4c 89 f8 83 e0 07 83 c0 03 38 d0 7c 08 84 d2 0f 85 7a 04 00 00 8b 53 1c 48 c7 c7 a0 ab ab 8b 8b 74 24 04 e8 b2 64 c6 f8 <0f> 0b e9 ec 00 00 00 e8 f6 f9 00 f9 48 89 e8 48 c1 e0 04 49 8d 7c
-RSP: 0018:ffffc90003c272b0 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: ffff88807dd4da00 RCX: ffffffff814d93f9
-RDX: ffff88802c4c9dc0 RSI: ffffffff814d9406 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff8880699cad90
-R13: ffff8880648246f8 R14: ffff888064824660 R15: ffff88807dd4da1c
-FS:  00007f51415d46c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f51415b3d58 CR3: 000000007fa81000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- nf_unregister_net_hook+0xd5/0x110 net/netfilter/core.c:539
- __nf_tables_unregister_hook net/netfilter/nf_tables_api.c:362 [inline]
- __nf_tables_unregister_hook+0x1a0/0x220 net/netfilter/nf_tables_api.c:341
- nf_tables_unregister_hook net/netfilter/nf_tables_api.c:369 [inline]
- nf_tables_commit+0x3cdb/0x5ae0 net/netfilter/nf_tables_api.c:10174
- nfnetlink_rcv_batch+0xf3b/0x2510 net/netfilter/nfnetlink.c:569
- nfnetlink_rcv_skb_batch net/netfilter/nfnetlink.c:639 [inline]
- nfnetlink_rcv+0x3bf/0x430 net/netfilter/nfnetlink.c:657
- netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
- netlink_unicast+0x53b/0x810 net/netlink/af_netlink.c:1367
- netlink_sendmsg+0x8b7/0xd70 net/netlink/af_netlink.c:1908
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0xd5/0x180 net/socket.c:745
- ____sys_sendmsg+0x6ac/0x940 net/socket.c:2584
- ___sys_sendmsg+0x135/0x1d0 net/socket.c:2638
- __sys_sendmsg+0x117/0x1e0 net/socket.c:2667
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x78/0x1c0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f514087cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f51415d40c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007f514099c050 RCX: 00007f514087cae9
-RDX: 0000000000000000 RSI: 000000002000c2c0 RDI: 0000000000000004
-RBP: 00007f51408c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f514099c050 R15: 00007ffd31c3ba48
- </TASK>
+diff --git a/Documentation/process/cve.rst b/Documentation/process/cve.rst
+new file mode 100644
+index 000000000000..5e2753eff729
+--- /dev/null
++++ b/Documentation/process/cve.rst
+@@ -0,0 +1,121 @@
++====
++CVEs
++====
++
++Common Vulnerabilities and Exposure (CVE®) numbers were developed as an
++unambiguous way to identify, define, and catalog publicly disclosed
++security vulnerabilities.  Over time, their usefulness has declined with
++regards to the kernel project, and CVE numbers were very often assigned
++in inappropriate ways and for inappropriate reasons.  Because of this,
++the kernel development community has tended to avoid them.  However, the
++combination of continuing pressure to assign CVEs and other forms of
++security identifiers, and ongoing abuses by individuals and companies
++outside of the kernel community has made it clear that the kernel
++community should have control over those assignments.
++
++The Linux kernel developer team does have the ability to assign CVEs for
++potential Linux kernel security issues.  This assignment is independent
++of the :doc:`normal Linux kernel security bug reporting
++process<../process/security-bugs>`.
++
++A list of all assigned CVEs for the Linux kernel can be found in the
++archives of the linux-cve mailing list, as seen on
++https://lore.kernel.org/linux-cve-announce/.  To get notice of the
++assigned CVEs, please `subscribe
++<https://subspace.kernel.org/subscribing.html>`_ to that mailing list.
++
++Process
++=======
++
++As part of the normal stable release process, kernel changes that are
++potentially security issues are identified by the developers responsible
++for CVE number assignments and have CVE numbers automatically assigned
++to them.  These assignments are published on the linux-cve-announce
++mailing list as announcements on a frequent basis.
++
++Note, due to the layer at which the Linux kernel is in a system, almost
++any bug might be exploitable to compromise the security of the kernel,
++but the possibility of exploitation is often not evident when the bug is
++fixed.  Because of this, the CVE assignment team is overly cautious and
++assign CVE numbers to any bugfix that they identify.  This
++explains the seemingly large number of CVEs that are issued by the Linux
++kernel team.
++
++If the CVE assignment team misses a specific fix that any user feels
++should have a CVE assigned to it, please email them at <cve@kernel.org>
++and the team there will work with you on it.  Note that no potential
++security issues should be sent to this alias, it is ONLY for assignment
++of CVEs for fixes that are already in released kernel trees.  If you
++feel you have found an unfixed security issue, please follow the
++:doc:`normal Linux kernel security bug reporting
++process<../process/security-bugs>`.
++
++No CVEs will be automatically assigned for unfixed security issues in
++the Linux kernel; assignment will only automatically happen after a fix
++is available and applied to a stable kernel tree, and it will be tracked
++that way by the git commit id of the original fix.  If anyone wishes to
++have a CVE assigned before an issue is resolved with a commit, please
++contact the kernel CVE assignment team at <cve@kernel.org> to get an
++identifier assigned from their batch of reserved identifiers.
++
++No CVEs will be assigned for any issue found in a version of the kernel
++that is not currently being actively supported by the Stable/LTS kernel
++team.  A list of the currently supported kernel branches can be found at
++https://kernel.org/releases.html
++
++Disputes of assigned CVEs
++=========================
++
++The authority to dispute or modify an assigned CVE for a specific kernel
++change lies solely with the maintainers of the relevant subsystem
++affected.  This principle ensures a high degree of accuracy and
++accountability in vulnerability reporting.  Only those individuals with
++deep expertise and intimate knowledge of the subsystem can effectively
++assess the validity and scope of a reported vulnerability and determine
++its appropriate CVE designation.  Any attempt to modify or dispute a CVE
++outside of this designated authority could lead to confusion, inaccurate
++reporting, and ultimately, compromised systems.
++
++Invalid CVEs
++============
++
++If a security issue is found in a Linux kernel that is only supported by
++a Linux distribution due to the changes that have been made by that
++distribution, or due to the distribution supporting a kernel version
++that is no longer one of the kernel.org supported releases, then a CVE
++can not be assigned by the Linux kernel CVE team, and must be asked for
++from that Linux distribution itself.
++
++Any CVE that is assigned against the Linux kernel for an actively
++supported kernel version, by any group other than the kernel assignment
++CVE team should not be treated as a valid CVE.  Please notify the
++kernel CVE assignment team at <cve@kernel.org> so that they can work to
++invalidate such entries through the CNA remediation process.
++
++Applicability of specific CVEs
++==============================
++
++As the Linux kernel can be used in many different ways, with many
++different ways of accessing it by external users, or no access at all,
++the applicability of any specific CVE is up to the user of Linux to
++determine, it is not up to the CVE assignment team.  Please do not
++contact us to attempt to determine the applicability of any specific
++CVE.
++
++Also, as the source tree is so large, and any one system only uses a
++small subset of the source tree, any users of Linux should be aware that
++large numbers of assigned CVEs are not relevant for their systems.
++
++In short, we do not know your use case, and we do not know what portions
++of the kernel that you use, so there is no way for us to determine if a
++specific CVE is relevant for your system.
++
++As always, it is best to take all released kernel changes, as they are
++tested together in a unified whole by many community members, and not as
++individual cherry-picked changes.  Also note that for many bugs, the
++solution to the overall problem is not found in a single change, but by
++the sum of many fixes on top of each other.  Ideally CVEs will be
++assigned to all fixes for all issues, but sometimes we will fail to
++notice fixes, therefore assume that some changes without a CVE assigned
++might be relevant to take.
++
+diff --git a/Documentation/process/index.rst b/Documentation/process/index.rst
+index 6cb732dfcc72..de9cbb7bd7eb 100644
+--- a/Documentation/process/index.rst
++++ b/Documentation/process/index.rst
+@@ -81,6 +81,7 @@ of special classes of bugs: regressions and security problems.
+ 
+    handling-regressions
+    security-bugs
++   cve
+    embargoed-hardware-issues
+ 
+ Maintainer information
+diff --git a/Documentation/process/security-bugs.rst b/Documentation/process/security-bugs.rst
+index 692a3ba56cca..56c560a00b37 100644
+--- a/Documentation/process/security-bugs.rst
++++ b/Documentation/process/security-bugs.rst
+@@ -99,9 +99,8 @@ CVE assignment
+ The security team does not assign CVEs, nor do we require them for
+ reports or fixes, as this can needlessly complicate the process and may
+ delay the bug handling.  If a reporter wishes to have a CVE identifier
+-assigned, they should find one by themselves, for example by contacting
+-MITRE directly.  However under no circumstances will a patch inclusion
+-be delayed to wait for a CVE identifier to arrive.
++assigned for a confirmed issue, they can contact the :doc:`kernel CVE
++assignment team<../process/cve>` to obtain one.
+ 
+ Non-disclosure agreements
+ -------------------------
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 73d898383e51..4d05ac516ded 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5610,6 +5610,11 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/can/ctu,ctucanfd.yaml
+ F:	drivers/net/can/ctucanfd/
+ 
++CVE ASSIGNMENT CONTACT
++M:	CVE Assignment Team <cve@kernel.org>
++S:	Maintained
++F:	Documentation/process/cve.rst
++
+ CW1200 WLAN driver
+ S:	Orphan
+ F:	drivers/net/wireless/st/cw1200/
+-- 
+2.43.1
 
-
-Tested on:
-
-commit:         84443741 netfilter: nf_tables: fix bidirectional offlo..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netfilter/nf.git main
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a08ae8180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=52f6b87f61a6b59c
-dashboard link: https://syzkaller.appspot.com/bug?extid=de4025c006ec68ac56fc
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
 
