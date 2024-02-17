@@ -1,127 +1,179 @@
-Return-Path: <linux-kernel+bounces-69622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E598858C7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:07:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BBD2858C81
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:08:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B4082832FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:07:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5024D1F21549
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:08:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 066461D541;
-	Sat, 17 Feb 2024 01:04:15 +0000 (UTC)
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACC21BF20;
+	Sat, 17 Feb 2024 01:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bldAiIvn"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B33C1B80F;
-	Sat, 17 Feb 2024 01:04:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750CF1D6A7;
+	Sat, 17 Feb 2024 01:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708131854; cv=none; b=pCu+rKMVl+Z/OxgFSwfbRdsPG1UMmWH9xCvktTpC6X4z9UDX70k/swEg+4w8/ohbtITFW1LFjVE950/GH8ltTHbB5TqJiOq0wIgN7akvv2uJ5b8ohlixPzfg+AuW1Ta3iVr9kjHS82G06k/Rkcuyil3WZfXz1140pYBT+Pbk/wc=
+	t=1708131927; cv=none; b=DI+ERv1r0tY6goXOYSjx99shn8fbIO2Xa/Yp/JghKltun16gzLjxURfr6CUMH6GRyecU4/3dqEObC5BI70kSkUxRHMyRKE3wZ1eg0SBlL7ySW9D+tIPWvvD2Agt1WbVrZqkS7roZxso3rsIPFBqi8xa91UvdR8Ri4OmVT8ubU2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708131854; c=relaxed/simple;
-	bh=fDxclCaSupPXRNu51PlBmR/SJ4Ajiu5GVSt0QfQMLFM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c8zCk28hbe0ycYz1wJBL3SMwE0e9Tu4VFDzVkI+LruxHVYZPTe+3O4++rE82aGRJram/Zk12CVLcotoU85eOf/QbsHUXiIjpxN5JNV2O+21xNn8gFGODhpNPpgwMoqpJ2n2DMgxCV2B2zstXtUpW/UECAqNCF4qaVmYhbqYe3vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-290d59df3f0so2108091a91.2;
-        Fri, 16 Feb 2024 17:04:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708131852; x=1708736652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SFIQ3pkHQmdaVe39SLDFjOJN8P18A7ehY0Fp/CyADS4=;
-        b=tQaT5wIWA+u4s+YuCNT5CpmLEu68TEw4LTfpXUvIQjMfoc8MEfNOPRlaLafoDkU3J1
-         +343bICmiVib4AysgOpRsf/QsG3jjpcc7s9FH3wZF4xupXG8wqQe5xVR6e4LA8RTYyWr
-         ui3kcjRF8ntrXjdABwOF+1s5G0dsxC8Pg+btX+3pzyj14sDJe0XLoSStE9VUgYT1Lbgj
-         kfCJi5cWMv5W40g/GrGgsqOdLZ8NrJgfxt2thA3kWmX3jcN8jgOSmWh+C7po+6VM50be
-         Qa3qcE6EppJAMvTNa+dy0HGx7i2n3Q9D04zEg3P1E6q21Kaqt9cMXqiMgUBsFze56OVG
-         CrQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVkQW1iyvJbFa+xFmV2uTUJmQ7pZ+sTR6ynadEB8+a9/YFp/sKnvCwLRHvzgpecRd1rSnZZ70d5P+rvD8cTt8sc7yzf8MiuiHYJus+xBLZ4cN51wFWJu3O0/x3ohcxUzcYj5nYkFEpRahP+hMWwjsEEZsR3gy5GGq0fSbFztKKbTIIewA==
-X-Gm-Message-State: AOJu0YyDShfc22Lu6Wp1zRFZ+TEu0ut+xwRitF6Y0K1oMWacR1pNL2NT
-	qMDMKSl1wIOfgfQ1WiYQNbDhesNP+Tq96rq1Og/W5uZaXbSosN8UquTV3dB8EvgnzsBCvi3kye9
-	6S6JEej6K+t+At6YeYuVk7/NGgEw=
-X-Google-Smtp-Source: AGHT+IGoh7lmz+EcIMtg0X0XRqi8GKL9cy+mqlpDSRzny2NjPCRXV3K1Q1CBF5lzqtp5Qc+dmZEV+9b+bOGmUHY2hgw=
-X-Received: by 2002:a17:90b:14c:b0:298:e3aa:c2e0 with SMTP id
- em12-20020a17090b014c00b00298e3aac2e0mr5940601pjb.13.1708131852153; Fri, 16
- Feb 2024 17:04:12 -0800 (PST)
+	s=arc-20240116; t=1708131927; c=relaxed/simple;
+	bh=ivnHudNctr+yr4ZcagAZOnpK2Hrl418Jm+Umryp/9E8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=M36VeiwPOmxwtgrq1tGefzVcaOb+UqNmN0tR3YyoFByxf6AIEpVqsn+zPDaOp7L0X45C25hC8mdEauGsBljXbGSs8l4oQvhI1NLu7C31bwMoqjhcNRxb8sBS+Y7SxOeE2Jzaq7afMJh8hXOuwwPM3m9Hw1DD9sCyBST9WOYE84w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bldAiIvn; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708131926; x=1739667926;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ivnHudNctr+yr4ZcagAZOnpK2Hrl418Jm+Umryp/9E8=;
+  b=bldAiIvnJ3lZQi3R9fhmzxJAJTdkcajBaNT1j5WVohGgTLoPuYGhoBfl
+   TFWTiZop696HXnoHb72T2TBqHzKeyUxcn2cBJWKaz5lbK3Ao7DubmJPTo
+   1yakYiiXQtN5OSqHGQeknp/FhNs6rhlY7Uvxj2lenE1n1u/2UiYN9lPgB
+   73xLLp4yb5U6ImIH7zOBA1jH9okxiAaXa3LmFKm2by/U1v0VYFR8UPQRC
+   0PmbGdhy1hgCEdmML+RGySCykAl1+S9yt6rrJuMHOihE1IrVvbvKYApr2
+   RLMq3IcRwzsy+EoPYu7aI1O0f+ZcCWUmPKvPI/zkkfzdvEVgQyQez5v13
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="13671711"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="13671711"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 17:05:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="3953427"
+Received: from unknown (HELO vcostago-mobl3.lan) ([10.125.18.63])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 17:05:22 -0800
+From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To: intel-wired-lan@lists.osuosl.org
+Cc: sasha.neftin@intel.com,
+	richardcochran@gmail.com,
+	kurt@linutronix.de,
+	anthony.l.nguyen@intel.com,
+	jesse.brandeburg@intel.com,
+	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [iwl-net v1 1/2] igc: Fix missing time sync events
+Date: Fri, 16 Feb 2024 17:04:53 -0800
+Message-ID: <20240217010455.58258-2-vinicius.gomes@intel.com>
+X-Mailer: git-send-email 2.43.2
+In-Reply-To: <20240217010455.58258-1-vinicius.gomes@intel.com>
+References: <20240217010455.58258-1-vinicius.gomes@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202234057.2085863-1-irogers@google.com> <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
-In-Reply-To: <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 16 Feb 2024 17:04:01 -0800
-Message-ID: <CAM9d7ciPYMd4zckrcgnPtradZ_bvaNOHji1tkkYQu_TTF5=eYw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] Clean up libperf cpumap's empty function
-To: Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	James Clark <james.clark@arm.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
-	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	Leo Yan <leo.yan@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 2:03=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
-te:
->
-> On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
-ote:
-> >
-> > Rename and clean up the use of libperf CPU map functions particularly
-> > focussing on perf_cpu_map__empty that may return true for maps
-> > containing CPUs but also with an "any CPU"/dummy value.
-> >
-> > perf_cpu_map__nr is also troubling in that iterating an empty CPU map
-> > will yield the "any CPU"/dummy value. Reduce the appearance of some
-> > calls to this by using the perf_cpu_map__for_each_cpu macro.
-> >
-> > v3: Address handling of "any" is arm-spe/cs-etm patch.
-> > v2: 6 patches were merged by Arnaldo. New patch added ensure empty
-> >     maps are allocated as NULL (suggested by James Clark). Hopefully a
-> >     fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
-> >
-> > Ian Rogers (8):
-> >   libperf cpumap: Add any, empty and min helpers
-> >   libperf cpumap: Ensure empty cpumap is NULL from alloc
-> >   perf arm-spe/cs-etm: Directly iterate CPU maps
-> >   perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is_empty
-> >     use
-> >   perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
-> >   perf arm64 header: Remove unnecessary CPU map get and put
-> >   perf stat: Remove duplicate cpus_map_matched function
-> >   perf cpumap: Use perf_cpu_map__for_each_cpu when possible
->
-> Ping. Thanks,
-> Ian
+Fix "double" clearing of interrupts, which can cause external events
+or timestamps to be missed.
 
-Adrian and James, are you ok with this now?
+The IGC_TSIRC Time Sync Interrupt Cause register can be cleared in two
+ways, by either reading it or by writing '1' into the specific cause
+bit. This is documented in section 8.16.1.
 
-Thanks,
-Namhyung
+The following flow was used:
+ 1. read IGC_TSIRC into 'tsicr';
+ 2. handle the interrupts present in 'tsirc' and mark them in 'ack';
+ 3. write 'ack' into IGC_TSICR;
+
+As both (1) and (3) will clear the interrupt cause, if an interrupt
+happens between (1) and (3) it will be ignored, causing events to be
+missed.
+
+Remove the extra clear in (3).
+
+Fixes: 2c344ae24501 ("igc: Add support for TX timestamping")
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index ba8d3fe186ae..39b6a8d64de3 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -5302,25 +5302,22 @@ igc_features_check(struct sk_buff *skb, struct net_device *dev,
+ 
+ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ {
+-	u32 ack, tsauxc, sec, nsec, tsicr;
+ 	struct igc_hw *hw = &adapter->hw;
++	u32 tsauxc, sec, nsec, tsicr;
+ 	struct ptp_clock_event event;
+ 	struct timespec64 ts;
+ 
+ 	tsicr = rd32(IGC_TSICR);
+-	ack = 0;
+ 
+ 	if (tsicr & IGC_TSICR_SYS_WRAP) {
+ 		event.type = PTP_CLOCK_PPS;
+ 		if (adapter->ptp_caps.pps)
+ 			ptp_clock_event(adapter->ptp_clock, &event);
+-		ack |= IGC_TSICR_SYS_WRAP;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_TXTS) {
+ 		/* retrieve hardware timestamp */
+ 		igc_ptp_tx_tstamp_event(adapter);
+-		ack |= IGC_TSICR_TXTS;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_TT0) {
+@@ -5334,7 +5331,6 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		wr32(IGC_TSAUXC, tsauxc);
+ 		adapter->perout[0].start = ts;
+ 		spin_unlock(&adapter->tmreg_lock);
+-		ack |= IGC_TSICR_TT0;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_TT1) {
+@@ -5348,7 +5344,6 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		wr32(IGC_TSAUXC, tsauxc);
+ 		adapter->perout[1].start = ts;
+ 		spin_unlock(&adapter->tmreg_lock);
+-		ack |= IGC_TSICR_TT1;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_AUTT0) {
+@@ -5358,7 +5353,6 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		event.index = 0;
+ 		event.timestamp = sec * NSEC_PER_SEC + nsec;
+ 		ptp_clock_event(adapter->ptp_clock, &event);
+-		ack |= IGC_TSICR_AUTT0;
+ 	}
+ 
+ 	if (tsicr & IGC_TSICR_AUTT1) {
+@@ -5368,11 +5362,7 @@ static void igc_tsync_interrupt(struct igc_adapter *adapter)
+ 		event.index = 1;
+ 		event.timestamp = sec * NSEC_PER_SEC + nsec;
+ 		ptp_clock_event(adapter->ptp_clock, &event);
+-		ack |= IGC_TSICR_AUTT1;
+ 	}
+-
+-	/* acknowledge the interrupts */
+-	wr32(IGC_TSICR, ack);
+ }
+ 
+ /**
+-- 
+2.43.2
+
 
