@@ -1,204 +1,298 @@
-Return-Path: <linux-kernel+bounces-69787-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69788-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14AC6858E8C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:04:01 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D987858E94
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391A61C21119
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:04:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CBE1B21775
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:08:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CC01EF15;
-	Sat, 17 Feb 2024 10:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 848011DDFC;
+	Sat, 17 Feb 2024 10:08:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rUTVc7hK"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="TurgWrWS";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nBmFB/jt";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="TurgWrWS";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="nBmFB/jt"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097551DFFD
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 10:03:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6566F1C15;
+	Sat, 17 Feb 2024 10:08:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708164195; cv=none; b=oT8wqcUGJPra355cdDd81WcHnnCeReP0xPekHFf3PvFu78Bs84sqcXWeW4F3dhuVh1w7lBf7w7uBfTKSHTA9hOmvlRs+RavRmCFFIlyFAK8NDBzYacX1XNtIn/9B18OgOp7RCJrms5VXLl8IpIUk4tUHH0xOU1kAaDgW1YeSEmg=
+	t=1708164504; cv=none; b=Mb5uroxbVDJ7KGC04EaDZfy7iWGMt1j3AHUOvPYgwZrPGrdPdUJ6BgGVi41KlG1LmlRMJmi597MNIeZpwVD4LqvfGsmHbDwyWrnPgOY8psmh1UlHmTlgbbZOzzJa2+QohNZ6dHuSQ+xGt2SyYwTqfHrjDZq6NnkaoxqGoAVuxiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708164195; c=relaxed/simple;
-	bh=A+8Z4F2C+Jafe+RXMmROAWtPHvoM9Qp4Vx4sW0hunfg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tFY/UD89+xfgm2Vkqi6P3J43dPD9zLwkK4Dsz4NR8eU42m0uhqS2Q/DN31CErK/anH+iWPnqYHlJ7I3b1i3DKo4NqTEAi9FeeLY7S3VXSEdUArxHnL6PcgtHJcttfsGkieopRwLJLvgsGvHj9UlL/jigVIPCsF9CPpROho7k/WM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rUTVc7hK; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3d0d26182dso308727466b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 02:03:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708164188; x=1708768988; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9YKX8C3qTGETErqkeCa13vk3aSbkZKOlK79FCs1RlfM=;
-        b=rUTVc7hKJTdknUxy8QRv5PMaU1rwGqMJQjWX1GhFqg3v1Pt6yFd4PsD12WPZby20wF
-         BYV9+FqGYD3keqKdva41RfCg9cSiRuuoa1NUJwA/Cxta2kY8Ygt0ufrqATpC9eAl+nTQ
-         5wMLAfPA7vKqOjFYc3mjtUp8t00NgVdS+qJI4mXxnO/6S5GNhAk+OpR0sZXGOtTblbzD
-         rAlOVwIrmT4artZVY+C+LcyLmNV4bCaju9Ne8SYTTeuzlmg/JF+0mwq9J4rU99tcHs2V
-         pZzWQFIrCS1YOBhEZ2qmLPruVyDeFrtI9rcgv5zRMld0ND8MbA7zRDDe+QbIiDUaAhGV
-         dAsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708164188; x=1708768988;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9YKX8C3qTGETErqkeCa13vk3aSbkZKOlK79FCs1RlfM=;
-        b=r7gk9gV26DV9l4U0isuYYPOCuJsZ9y0L7kj2ndDYW/+6qRRU+Q0Rj/KplQeOXA+0qI
-         sLthnApZiQvLvtTRUxZCGW3CWl/RoLwBI/qQHZvyye4h1TpsUQg/OAcfjVn6Zt0zneuH
-         bEFk6vX/mawKuKAynhcLcabVqoQBSpZ+FLW7XC7kzebeAGlxGINbMK6yvtcXigKHfDtV
-         qKyToid4KWJfl+VTqFEHv+tXbEDgC1kXboB27TqKOE9a/pufukBP70H/6Iydwhl4w31Y
-         MLmpgvyRsRp1B2oUwbHGtGfV0q1qFONC8BFr17Lv01bMOBDtCJe0V7I8T3jn2SgrupFe
-         X19Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV7Qjt4cJAdS9P/37yqQdlqzas6AuhXy1Hfe8VKXRb/GgLxW0ipeFt0cJTo0vzj07M2Sjv86/qbxcy2Oc52XT0bwNJ36MtG3CMbLtqP
-X-Gm-Message-State: AOJu0YxseORV8Cx6c2p3qfOaj0Nove/b5q07VERS1KK1vwOzdOzyXhmq
-	TvskWe8YpNC3886hFw4nPtAdXI3H9RHbwTVXeUZ+daq85w7+oEHBatYgcN3vrYk=
-X-Google-Smtp-Source: AGHT+IEB7coatVc1HZNyq1lKyqGs5tBMkLSGt/qgM6tjFvuATdq9Q/ZJKE3BoDsFElc7NBbg6Vl5JA==
-X-Received: by 2002:a17:906:3d2:b0:a3c:e8f6:a399 with SMTP id c18-20020a17090603d200b00a3ce8f6a399mr4796446eja.29.1708164188372;
-        Sat, 17 Feb 2024 02:03:08 -0800 (PST)
-Received: from krzk-bin.. ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id fj6-20020a1709069c8600b00a3cfe376116sm844862ejc.57.2024.02.17.02.03.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 02:03:07 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [RESEND PATCH net-next] net: wan: framer: constify of_phandle_args in xlate
-Date: Sat, 17 Feb 2024 11:03:06 +0100
-Message-Id: <20240217100306.86740-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708164504; c=relaxed/simple;
+	bh=5yOrl7ejMhiYLXAozx5kVTkg0b8+HpBur90WSH3AXco=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=J1S0VvDmU3efaQF1DysTJ/UXLYsIQIAhiLuTiqtR5Ral7p9rRhk8DFu4N0wfRkZeFsgrHEyqxw0Xacq0JEQ7JEWv8W7R4+EOf7/qVRdWGt0CsXaqkiK6SJY5OICKNaUMxq5Vrq/YKKyQ4KRt7UEQwhALwpS1Dm/kh7wu1Zictrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=TurgWrWS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nBmFB/jt; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=TurgWrWS; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=nBmFB/jt; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4E5B91F7B9;
+	Sat, 17 Feb 2024 10:08:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708164500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rRWhyrNas2ODukH8hQrcMU98AhP1T7F4SpR72WFtrc4=;
+	b=TurgWrWSWcb/osb//n0APh3TG7biuluETL6+NAmXRJdiEywHbYvYtQkP5moBy39K9ZTb+a
+	lwNW1R8tUrJsHHp7mUGG9RTvhMsN1jJ7C3RnF0Sl5zdJP+l9l4UyM6YBwPfGLoXx4yUjbu
+	+3Nh266T0ViYlUg9REBTXCvMR+RjK6U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708164500;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rRWhyrNas2ODukH8hQrcMU98AhP1T7F4SpR72WFtrc4=;
+	b=nBmFB/jt4FpRyUSvQfBP4fDZWAnf/yFyC00wcyQogqtxiKJktLn7+U5D+xjFkyVUJT0QF/
+	u3MXX+2LHXy7V9BA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708164500; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rRWhyrNas2ODukH8hQrcMU98AhP1T7F4SpR72WFtrc4=;
+	b=TurgWrWSWcb/osb//n0APh3TG7biuluETL6+NAmXRJdiEywHbYvYtQkP5moBy39K9ZTb+a
+	lwNW1R8tUrJsHHp7mUGG9RTvhMsN1jJ7C3RnF0Sl5zdJP+l9l4UyM6YBwPfGLoXx4yUjbu
+	+3Nh266T0ViYlUg9REBTXCvMR+RjK6U=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708164500;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rRWhyrNas2ODukH8hQrcMU98AhP1T7F4SpR72WFtrc4=;
+	b=nBmFB/jt4FpRyUSvQfBP4fDZWAnf/yFyC00wcyQogqtxiKJktLn7+U5D+xjFkyVUJT0QF/
+	u3MXX+2LHXy7V9BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A05C21370C;
+	Sat, 17 Feb 2024 10:08:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id U3N8JZOF0GV+JgAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Sat, 17 Feb 2024 10:08:19 +0000
+Date: Sat, 17 Feb 2024 11:08:19 +0100
+Message-ID: <87y1bjpfn0.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: <srinivas.kandagatla@linaro.org>,
+	<mathias.nyman@intel.com>,
+	<perex@perex.cz>,
+	<conor+dt@kernel.org>,
+	<corbet@lwn.net>,
+	<lgirdwood@gmail.com>,
+	<andersson@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>,
+	<gregkh@linuxfoundation.org>,
+	<Thinh.Nguyen@synopsys.com>,
+	<broonie@kernel.org>,
+	<bgoswami@quicinc.com>,
+	<tiwai@suse.com>,
+	<robh+dt@kernel.org>,
+	<konrad.dybcio@linaro.org>,
+	<linux-kernel@vger.kernel.org>,
+	<devicetree@vger.kernel.org>,
+	<linux-sound@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>,
+	<linux-arm-msm@vger.kernel.org>,
+	<linux-doc@vger.kernel.org>,
+	<alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v14 32/53] ALSA: usb-audio: Check for support for requested audio format
+In-Reply-To: <7f0c4f85-5a63-4643-8553-e3f5d6af67ec@quicinc.com>
+References: <20240208231406.27397-1-quic_wcheng@quicinc.com>
+	<20240208231406.27397-33-quic_wcheng@quicinc.com>
+	<87v86x2a27.wl-tiwai@suse.de>
+	<cb3b7857-dc6c-80db-4fa7-6772a856f328@quicinc.com>
+	<7f0c4f85-5a63-4643-8553-e3f5d6af67ec@quicinc.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=TurgWrWS;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="nBmFB/jt"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[dt];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[23];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,quicinc.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linaro.org,intel.com,perex.cz,kernel.org,lwn.net,gmail.com,linuxfoundation.org,synopsys.com,quicinc.com,suse.com,vger.kernel.org,alsa-project.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -4.01
+X-Rspamd-Queue-Id: 4E5B91F7B9
+X-Spam-Flag: NO
 
-The xlate callbacks are supposed to translate of_phandle_args to proper
-provider without modifying the of_phandle_args.  Make the argument
-pointer to const for code safety and readability.
+On Sat, 17 Feb 2024 00:42:18 +0100,
+Wesley Cheng wrote:
+> 
+> Hi Takashi,
+> 
+> On 2/9/2024 1:34 PM, Wesley Cheng wrote:
+> > Hi Takashi,
+> > 
+> > On 2/9/2024 2:42 AM, Takashi Iwai wrote:
+> >> On Fri, 09 Feb 2024 00:13:45 +0100,
+> >> Wesley Cheng wrote:
+> >>> 
+> >>> Allow for checks on a specific USB audio device to see if a
+> >>> requested PCM
+> >>> format is supported.  This is needed for support when playback is
+> >>> initiated by the ASoC USB backend path.
+> >>> 
+> >>> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
+> >>> ---
+> >>>   sound/usb/card.c | 31 +++++++++++++++++++++++++++++++
+> >>>   sound/usb/card.h | 11 +++++++++++
+> >>>   2 files changed, 42 insertions(+)
+> >>> 
+> >>> diff --git a/sound/usb/card.c b/sound/usb/card.c
+> >>> index 7dc8007ba839..1ad99a462038 100644
+> >>> --- a/sound/usb/card.c
+> >>> +++ b/sound/usb/card.c
+> >>> @@ -155,6 +155,37 @@ int snd_usb_unregister_platform_ops(void)
+> >>>   }
+> >>>   EXPORT_SYMBOL_GPL(snd_usb_unregister_platform_ops);
+> >>> +/*
+> >>> + * Checks to see if requested audio profile, i.e sample rate, # of
+> >>> + * channels, etc... is supported by the substream associated to the
+> >>> + * USB audio device.
+> >>> + */
+> >>> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> >>> +            struct snd_pcm_hw_params *params, int direction)
+> >>> +{
+> >>> +    struct snd_usb_audio *chip;
+> >>> +    struct snd_usb_substream *subs;
+> >>> +    struct snd_usb_stream *as;
+> >>> +
+> >>> +    /*
+> >>> +     * Register mutex is held when populating and clearing usb_chip
+> >>> +     * array.
+> >>> +     */
+> >>> +    guard(mutex)(&register_mutex);
+> >>> +    chip = usb_chip[card_idx];
+> >>> +
+> >>> +    if (chip && enable[card_idx]) {
+> >>> +        list_for_each_entry(as, &chip->pcm_list, list) {
+> >>> +            subs = &as->substream[direction];
+> >>> +            if (snd_usb_find_substream_format(subs, params))
+> >>> +                return as;
+> >>> +        }
+> >>> +    }
+> >>> +
+> >>> +    return NULL;
+> >>> +}
+> >>> +EXPORT_SYMBOL_GPL(snd_usb_find_suppported_substream);
+> >>> +
+> >>>   /*
+> >>>    * disconnect streams
+> >>>    * called from usb_audio_disconnect()
+> >>> diff --git a/sound/usb/card.h b/sound/usb/card.h
+> >>> index 02e4ea898db5..ed4a664e24e5 100644
+> >>> --- a/sound/usb/card.h
+> >>> +++ b/sound/usb/card.h
+> >>> @@ -217,4 +217,15 @@ struct snd_usb_platform_ops {
+> >>>   int snd_usb_register_platform_ops(struct snd_usb_platform_ops *ops);
+> >>>   int snd_usb_unregister_platform_ops(void);
+> >>> +
+> >>> +#if IS_ENABLED(CONFIG_SND_USB_AUDIO)
+> >>> +struct snd_usb_stream *snd_usb_find_suppported_substream(int card_idx,
+> >>> +            struct snd_pcm_hw_params *params, int direction);
+> >>> +#else
+> >>> +static struct snd_usb_stream
+> >>> *snd_usb_find_suppported_substream(int card_idx,
+> >>> +            struct snd_pcm_hw_params *params, int direction)
+> >>> +{
+> >>> +    return NULL;
+> >>> +}
+> >>> +#endif /* IS_ENABLED(CONFIG_SND_USB_AUDIO) */
+> >> 
+> >> The usefulness of ifdef guard here is doubtful, IMO.  This header is
+> >> only for USB-audio driver enablement, and not seen as generic
+> >> helpers.  So, just add the new function declarations without dummy
+> >> definitions.
+> >> 
+> > 
+> > Got it, will remove it.  We also have a dependency in place for the
+> > qc_audio_offload driver and SND USB AUDIO in the Kconfig.
+> > 
+> 
+> Looking at this again after trying some mixed Kconfig settings.  These
+> declarations aren't specific for USB-audio.  They are helpers that are
+> exposed to soc usb, so that it can do some basic verification with soc
+> usb before allowing the enable stream to continue.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- drivers/net/wan/framer/framer-core.c   |  9 +++++----
- include/linux/framer/framer-provider.h | 14 +++++++-------
- 2 files changed, 12 insertions(+), 11 deletions(-)
+Then rather the question is why snd-soc-usb calls those functions
+*unconditionally*.  No matter whether we have dependencies in Kconfig,
+calling the function means that the callee shall be drug when the
+corresponding code is running.
 
-diff --git a/drivers/net/wan/framer/framer-core.c b/drivers/net/wan/framer/framer-core.c
-index c04dc88bda6c..33b358b99f70 100644
---- a/drivers/net/wan/framer/framer-core.c
-+++ b/drivers/net/wan/framer/framer-core.c
-@@ -384,7 +384,7 @@ static struct framer_provider *framer_provider_of_lookup(const struct device_nod
- 	return ERR_PTR(-EPROBE_DEFER);
- }
- 
--static struct framer *framer_of_get_from_provider(struct of_phandle_args *args)
-+static struct framer *framer_of_get_from_provider(const struct of_phandle_args *args)
- {
- 	struct framer_provider *framer_provider;
- 	struct framer *framer;
-@@ -735,7 +735,8 @@ EXPORT_SYMBOL_GPL(devm_framer_create);
-  * should provide a custom of_xlate function that reads the *args* and returns
-  * the appropriate framer.
-  */
--struct framer *framer_provider_simple_of_xlate(struct device *dev, struct of_phandle_args *args)
-+struct framer *framer_provider_simple_of_xlate(struct device *dev,
-+					       const struct of_phandle_args *args)
- {
- 	struct class_dev_iter iter;
- 	struct framer *framer;
-@@ -768,7 +769,7 @@ EXPORT_SYMBOL_GPL(framer_provider_simple_of_xlate);
- struct framer_provider *
- __framer_provider_of_register(struct device *dev, struct module *owner,
- 			      struct framer *(*of_xlate)(struct device *dev,
--							 struct of_phandle_args *args))
-+							 const struct of_phandle_args *args))
- {
- 	struct framer_provider *framer_provider;
- 
-@@ -830,7 +831,7 @@ static void devm_framer_provider_of_unregister(struct device *dev, void *res)
- struct framer_provider *
- __devm_framer_provider_of_register(struct device *dev, struct module *owner,
- 				   struct framer *(*of_xlate)(struct device *dev,
--							      struct of_phandle_args *args))
-+							      const struct of_phandle_args *args))
- {
- 	struct framer_provider **ptr, *framer_provider;
- 
-diff --git a/include/linux/framer/framer-provider.h b/include/linux/framer/framer-provider.h
-index 782cd5fc83d5..f6fd2dd92591 100644
---- a/include/linux/framer/framer-provider.h
-+++ b/include/linux/framer/framer-provider.h
-@@ -93,7 +93,7 @@ struct framer_provider {
- 	struct module		*owner;
- 	struct list_head	list;
- 	struct framer * (*of_xlate)(struct device *dev,
--				    struct of_phandle_args *args);
-+				    const struct of_phandle_args *args);
- };
- 
- static inline void framer_set_drvdata(struct framer *framer, void *data)
-@@ -118,19 +118,19 @@ struct framer *devm_framer_create(struct device *dev, struct device_node *node,
- 				  const struct framer_ops *ops);
- 
- struct framer *framer_provider_simple_of_xlate(struct device *dev,
--					       struct of_phandle_args *args);
-+					       const struct of_phandle_args *args);
- 
- struct framer_provider *
- __framer_provider_of_register(struct device *dev, struct module *owner,
- 			      struct framer *(*of_xlate)(struct device *dev,
--							 struct of_phandle_args *args));
-+							 const struct of_phandle_args *args));
- 
- void framer_provider_of_unregister(struct framer_provider *framer_provider);
- 
- struct framer_provider *
- __devm_framer_provider_of_register(struct device *dev, struct module *owner,
- 				   struct framer *(*of_xlate)(struct device *dev,
--							      struct of_phandle_args *args));
-+							      const struct of_phandle_args *args));
- 
- void framer_notify_status_change(struct framer *framer);
- 
-@@ -154,7 +154,7 @@ static inline struct framer *devm_framer_create(struct device *dev, struct devic
- }
- 
- static inline struct framer *framer_provider_simple_of_xlate(struct device *dev,
--							     struct of_phandle_args *args)
-+							     const struct of_phandle_args *args)
- {
- 	return ERR_PTR(-ENOSYS);
- }
-@@ -162,7 +162,7 @@ static inline struct framer *framer_provider_simple_of_xlate(struct device *dev,
- static inline struct framer_provider *
- __framer_provider_of_register(struct device *dev, struct module *owner,
- 			      struct framer *(*of_xlate)(struct device *dev,
--							 struct of_phandle_args *args))
-+							 const struct of_phandle_args *args))
- {
- 	return ERR_PTR(-ENOSYS);
- }
-@@ -174,7 +174,7 @@ void framer_provider_of_unregister(struct framer_provider *framer_provider)
- static inline struct framer_provider *
- __devm_framer_provider_of_register(struct device *dev, struct module *owner,
- 				   struct framer *(*of_xlate)(struct device *dev,
--							      struct of_phandle_args *args))
-+							      const struct of_phandle_args *args))
- {
- 	return ERR_PTR(-ENOSYS);
- }
--- 
-2.34.1
+If it were generic core API stuff such as power-management or ACPI,
+it'd make sense to define dummy functions without the enablement, as
+many code may have optional calls.  If the API is enabled, it's anyway
+in the core.  If not, it's optional.  That'll be fine.
 
+OTOH, the stuff you're calling certainly belongs to snd-usb-audio.
+Even if the call is really optional, it means that you'll have a hard
+dependency when snd-usb-audio is built, no matter whether you need or
+not.
+
+> Since the ASoC
+> layer doesn't have insight on what audio profiles are supported by the
+> usb device, this API will ensure that the request profile is
+> supported.
+>
+> Issues are seen when we disable SND USB audio config and enable the
+> ASoC parts.
+
+If snd-usb-audio is disabled, what snd-soc-usb would serve at all?
+Does it still make sense to keep it enabled? 
+That said, the statement above (building snd-soc-usb without
+snd-usb-audio) looks already dubious; isn't it better to have a proper
+dependency in Kconfig, instead?
+
+
+thanks,
+
+Takashi
 
