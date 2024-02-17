@@ -1,205 +1,181 @@
-Return-Path: <linux-kernel+bounces-70047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20FBD859244
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:03:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D77585924C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC531283604
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:03:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 71EB81C21740
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3907E780;
-	Sat, 17 Feb 2024 20:03:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007977E765;
+	Sat, 17 Feb 2024 20:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="F/IiSYaa"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JEomp9Ix"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C1EF7E581;
-	Sat, 17 Feb 2024 20:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 792D17E596;
+	Sat, 17 Feb 2024 20:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708200192; cv=none; b=K10fpkDzqVFxeYJYvMxeiSabHM75TRCmLEkVZlv6InuQTfxY05tG0hdjPY1LZokHitHMI+GHAgW50WOHaon8z1zv+gN+ZYPu6WWGqapkg8A6LfYqmq4kDW95VcNiNuQkwNLmD7evJzQtKLyd1+Y0+favkVnz51ydikqOCLlNKD0=
+	t=1708200463; cv=none; b=oIj5G6StB+M+d69nBOrXy1pbbTUek23WKi8LOxx1fwut7sowujdKl5vqGyFDEjuFfRT4APF7Y7C5tzL1eUEoTWXJ0ECe3fZavtFtSJOkt6lZknQXi5+MA+1WbmXpxlNVDPktxy33czxQsHiGg624pXzs+RtjhVRWUwCsqbaBQ8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708200192; c=relaxed/simple;
-	bh=657CVr7tfJs38s/e+riEk+9HfKOiiqg4XsfObmLlsco=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=l3rTffRrH3mP3lQT7BN/mQI+FNK3ryN6LVucpCly5s3+t2fHPV7o75woVcxQq7MbezM+FyuFnf3E+g3s6aNcH9dfvial6+sZpUo07BjjL6HabMKXTTcDc3QpPMAlELcIt0/1MJ0yM3ZuK3s8a/otg2wt6jgfsh2sPHTegKIM5vI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=F/IiSYaa; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41HK0vqP012879;
-	Sat, 17 Feb 2024 20:02:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=RoEi4O8xbtRc7rlAK2bkzLD3VTDSIZBvlHQgm7CqB4I=; b=F/
-	IiSYaa+61kDkR/B1A+0O7XDmgL0DNBQNJKTlCHeMOvoOFIE2v16kcwvpzZD2FDoY
-	1B2W/7ud5ob6R5TJx7sfnOWfgsNFFKjiD3pP4A7YdbRwDSpvcEuiLnX2eU8nYoVk
-	UfwyyBvfb1b+Rab/85w+j7C6QvvhPg2JArFJcR+8rO3L3ZiaDpLFdjo6ZbqEJVv4
-	EBBOFO2gevblf9AvkswAaGeLWI15bhn3t1n73BMxVfMBDIi6hkZqqUjWfLM+fu3a
-	wGlgNO1rHDqCziYU2VtpNTgUCAMIwsFSw+AsJNuUmG2gr4yImxcVQE8exIv43XQc
-	YA5vBVdhJMNgqYVaQ5Xg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wam4q0yny-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 17 Feb 2024 20:02:39 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41HK2cCk026372
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 17 Feb 2024 20:02:38 GMT
-Received: from [10.110.11.212] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 17 Feb
- 2024 12:02:36 -0800
-Message-ID: <c084edd6-22cf-49a4-9dac-75163a1f4088@quicinc.com>
-Date: Sat, 17 Feb 2024 12:02:35 -0800
+	s=arc-20240116; t=1708200463; c=relaxed/simple;
+	bh=/69HW9NzBJsJX+iI5iUdtA0unbwpwPW5fq7scXx+J5o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hn54m8xYm6TG0AQ6/Bfvocg0znUmtQOyzxIpnZQdDdPi/N+8V+7Os9iVJCK9nEiXgpO9H7qcc+JRo17e6EE8r96x+hY7dUlBeNAj8CB8GTg7AmjpS24HQJt8OGBaltf0jjeK8k7aTkxA5yctZgsR7P4fz+17OIGSbNYb3Ql5h38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JEomp9Ix; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708200461; x=1739736461;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/69HW9NzBJsJX+iI5iUdtA0unbwpwPW5fq7scXx+J5o=;
+  b=JEomp9IxilrusFwFmY5Gvs+SI/7xj3nq73bwW/4turY6J1iDtecBAbeW
+   Fjm0ytzMzUHgkeQdUc3fJVwa5yvEuWymRGQH1HZnmB4uixZv9o3GCiaif
+   c3Bz4U5utU5gO/vdg+4gr0QDj9C3lVboAgI9JUQIo6gFThkdLBqfqikuf
+   LqFMHUUKR/xK9evTiovBjxrEGVs8VmHzMRCSS3tL4VPQHqKPYgE6Lk0ug
+   OzsEz2AAjrjZC37uhuuWGfqtukgH5jkAsZvJKLhSvN11KvZ0/ky9xde/I
+   fszQgpUhTnLntvYafdYBkMCR7R59pSzcPe8ctxmnJIyZ9M0IwZ2d5ejNv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="2180177"
+X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
+   d="scan'208";a="2180177"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 12:07:41 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
+   d="scan'208";a="8727084"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa003.fm.intel.com with ESMTP; 17 Feb 2024 12:07:35 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rbQyC-0002Te-24;
+	Sat, 17 Feb 2024 20:07:32 +0000
+Date: Sun, 18 Feb 2024 04:06:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ross Philipson <ross.philipson@oracle.com>,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
+	linux-efi@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, ross.philipson@oracle.com,
+	dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+	ardb@kernel.org, mjg59@srcf.ucam.org,
+	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
+	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
+	nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
+	davem@davemloft.net, kanth.ghatraju@oracle.com,
+	trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH v8 15/15] x86: EFI stub DRTM launch support for Secure
+ Launch
+Message-ID: <202402180324.a3PqEegg-lkp@intel.com>
+References: <20240214221847.2066632-16-ross.philipson@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 06/18] dt-bindings: new: wireless: describe the ath12k
- PCI module
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Kalle Valo <kvalo@kernel.org>
-CC: Marcel Holtmann <marcel@holtmann.org>,
-        Luiz Augusto von Dentz
-	<luiz.dentz@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric
- Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
-	<broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon
-	<will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-        Saravana Kannan
-	<saravanak@google.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd
- Bergmann <arnd@arndb.de>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Marek
- Szyprowski <m.szyprowski@samsung.com>,
-        Alex Elder <elder@linaro.org>,
-        Srini
- Kandagatla <srinivas.kandagatla@linaro.org>,
-        Greg Kroah-Hartman
-	<gregkh@linuxfoundation.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Manivannan
- Sadhasivam <mani@kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Dmitry
- Baryshkov <dmitry.baryshkov@linaro.org>,
-        <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-wireless@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>,
-        Bartosz Golaszewski
-	<bartosz.golaszewski@linaro.org>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-7-brgl@bgdev.pl> <87cysvd2er.fsf@kernel.org>
- <CAMRc=Md10bNPswsLqdCmqzEmD+QmyZ+Eb4SUWknH-j5kK-speQ@mail.gmail.com>
-Content-Language: en-US
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <CAMRc=Md10bNPswsLqdCmqzEmD+QmyZ+Eb4SUWknH-j5kK-speQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: cfNhiVdKuQrXnHOS8wjzgI2PKgKw5PcM
-X-Proofpoint-GUID: cfNhiVdKuQrXnHOS8wjzgI2PKgKw5PcM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-17_18,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 malwarescore=0 clxscore=1011 suspectscore=0 bulkscore=0
- spamscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402170165
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214221847.2066632-16-ross.philipson@oracle.com>
 
-On 2/17/2024 10:30 AM, Bartosz Golaszewski wrote:
-> On Sat, Feb 17, 2024 at 7:35 AM Kalle Valo <kvalo@kernel.org> wrote:
->>
->> Bartosz Golaszewski <brgl@bgdev.pl> writes:
->>
->>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>
->>> Add device-tree bindings for the ATH12K module found in the WCN7850
->>> package.
->>>
->>> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>> ---
->>>  .../net/wireless/qcom,ath12k-pci.yaml         | 103 ++++++++++++++++++
->>>  1 file changed, 103 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath12k-pci.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath12k-pci.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath12k-pci.yaml
->>> new file mode 100644
->>> index 000000000000..063c576b99a0
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath12k-pci.yaml
->>> @@ -0,0 +1,103 @@
->>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>> +# Copyright (c) 2024 Linaro Limited
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/net/wireless/qcom,ath12k-pci.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Qualcomm Technologies ath12k wireless devices (PCIe)
->>> +
->>> +maintainers:
->>> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>
->> Jeff and me are the ath12k driver maintainers so shouldn't we listed
->> here as well?
->>
-> 
-> Sure will do. I also noticed the subject is wrong, should have been
-> "net" not "new".
-> 
-> Also, Jeff is not showing up for ath12k bindings in get_maintainer.pl.
-> You could consider adding an N: ath12k entry to MAINTAINERS.
-> 
-> Bartosz
-> 
->> Jeff, this reminds me that we should add you to qcom,ath10k.yaml,
->> qcom,ath11k-pci.yaml and qcom,ath11k.yaml as maintainer.
+Hi Ross,
 
-OK, I'll update those files.
+kernel test robot noticed the following build errors:
 
-And looking at MAINTAINERS, in ath10 we have an explicit path:
-F:	Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+[auto build test ERROR on char-misc/char-misc-testing]
+[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master herbert-crypto-2.6/master linus/master v6.8-rc4 next-20240216]
+[cannot apply to tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-And in ath11k we have an explicit path:
-F:	Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+url:    https://github.com/intel-lab-lkp/linux/commits/Ross-Philipson/x86-boot-Place-kernel_info-at-a-fixed-offset/20240215-064712
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/20240214221847.2066632-16-ross.philipson%40oracle.com
+patch subject: [PATCH v8 15/15] x86: EFI stub DRTM launch support for Secure Launch
+config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20240218/202402180324.a3PqEegg-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240218/202402180324.a3PqEegg-lkp@intel.com/reproduce)
 
-However the ath11k entry is missing:
-Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402180324.a3PqEegg-lkp@intel.com/
 
-So it looks like I have a few patches:
-- update my entries in MAINTAINERS to use my @kernel.org e-mail
-- add myself to the existing *ath1*k*.yaml files as a maintainer
-- update MAINTAINERS to replace F: *.yaml with N: ath1*k to match any
-related files, including the YAML files
+All errors (new ones prefixed by >>):
 
-/jeff
+   In function 'efi_secure_launch',
+       inlined from 'efi_stub_entry' at drivers/firmware/efi/libstub/x86-stub.c:990:2:
+>> drivers/firmware/efi/libstub/x86-stub.c:861:9: error: inconsistent operand constraints in an 'asm'
+     861 |         asm volatile ("jmp *%%rax"
+         |         ^~~
+
+
+vim +/asm +861 drivers/firmware/efi/libstub/x86-stub.c
+
+   813	
+   814	static void efi_secure_launch(struct boot_params *boot_params)
+   815	{
+   816		struct slr_entry_uefi_config *uefi_config;
+   817		struct slr_uefi_cfg_entry *uefi_entry;
+   818		struct slr_entry_dl_info *dlinfo;
+   819		efi_guid_t guid = SLR_TABLE_GUID;
+   820		struct slr_table *slrt;
+   821		u64 memmap_hi;
+   822		void *table;
+   823		u8 buf[64] = {0};
+   824	
+   825		table = get_efi_config_table(guid);
+   826	
+   827		/*
+   828		 * The presence of this table indicated a Secure Launch
+   829		 * is being requested.
+   830		 */
+   831		if (!table)
+   832			return;
+   833	
+   834		slrt = (struct slr_table *)table;
+   835	
+   836		if (slrt->magic != SLR_TABLE_MAGIC)
+   837			return;
+   838	
+   839		/* Add config information to measure the UEFI memory map */
+   840		uefi_config = (struct slr_entry_uefi_config *)buf;
+   841		uefi_config->hdr.tag = SLR_ENTRY_UEFI_CONFIG;
+   842		uefi_config->hdr.size = sizeof(*uefi_config) + sizeof(*uefi_entry);
+   843		uefi_config->revision = SLR_UEFI_CONFIG_REVISION;
+   844		uefi_config->nr_entries = 1;
+   845		uefi_entry = (struct slr_uefi_cfg_entry *)(buf + sizeof(*uefi_config));
+   846		uefi_entry->pcr = 18;
+   847		uefi_entry->cfg = boot_params->efi_info.efi_memmap;
+   848		memmap_hi = boot_params->efi_info.efi_memmap_hi;
+   849		uefi_entry->cfg |= memmap_hi << 32;
+   850		uefi_entry->size = boot_params->efi_info.efi_memmap_size;
+   851		memcpy(&uefi_entry->evt_info[0], "Measured UEFI memory map",
+   852			strlen("Measured UEFI memory map"));
+   853	
+   854		if (slr_add_entry(slrt, (struct slr_entry_hdr *)uefi_config))
+   855			return;
+   856	
+   857		/* Jump through DL stub to initiate Secure Launch */
+   858		dlinfo = (struct slr_entry_dl_info *)
+   859			slr_next_entry_by_tag(slrt, NULL, SLR_ENTRY_DL_INFO);
+   860	
+ > 861		asm volatile ("jmp *%%rax"
+   862			      : : "a" (dlinfo->dl_handler), "D" (&dlinfo->bl_context));
+   863	}
+   864	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
