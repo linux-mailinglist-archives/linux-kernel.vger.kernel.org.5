@@ -1,114 +1,82 @@
-Return-Path: <linux-kernel+bounces-69729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69731-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3AFD858DC5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:45:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECFAA858DC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:49:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D67A7B21AD9
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A96A3282638
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:49:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 795C81CD26;
-	Sat, 17 Feb 2024 07:45:18 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CE3A1CD32;
+	Sat, 17 Feb 2024 07:49:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="R7aAMdwT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB9931CD07;
-	Sat, 17 Feb 2024 07:45:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3227B149E08;
+	Sat, 17 Feb 2024 07:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708155918; cv=none; b=lSO3iVF1VWe2qNr/j8OGhmvkp7NPoRxtWPYgV9v4nn2ihEVW+ZKveWvazyprAxGYvJyHlC6hXHNdFniTHwUClpyOMc0/XyDp0XZ6sR3Ub4Y0KO+1XQGCCLHWf3YAsoAG8c45Hhuoxq4KzbFUydXX3Q7OA/FGIxZc/rQ816Z+YR4=
+	t=1708156176; cv=none; b=rCvkLKHafH6KPi/gwu7S1UB7brsHLfSN2N9CLKTGpENnSWG7T6k46+N4Y3UofCCv7BQPAG0lgPEFc0A8x3S0t5ZyR9SkS1F97Hd9CI9++jyckmDlZl3HDf+5hnSvP9v8ffEf1g2TGEvyI15r6Sc0R6WoHExzYOAD//eFGVg9y7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708155918; c=relaxed/simple;
-	bh=kOFa+40cClPoausTzw1T0175OF2d0Y2d43JTpoBOkqQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=u4DE4UVXFmhyTSvMnirI2DYAOmPYAass2aF40qwx6zc6xE41yVqmt+Gm7Tr9cnkGbgET/JCqA2Yk4lca80kOSvKJqt5YLVYw6WpmG4NPgxPS6c2ADDJgIuEvYHs7FJAuFk1Nz8d758HOA0ONvjQHMN4SQdjALgk+ixhMOqFimF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TcLPn3TPWz1gylJ;
-	Sat, 17 Feb 2024 15:43:09 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8304C140485;
-	Sat, 17 Feb 2024 15:45:14 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 17 Feb 2024 15:45:13 +0800
-Message-ID: <e867978a-f64f-fe32-2671-aeaa34e75b0e@huawei.com>
-Date: Sat, 17 Feb 2024 15:45:13 +0800
+	s=arc-20240116; t=1708156176; c=relaxed/simple;
+	bh=xA0BMgVgYSGSfjkjE5RXNiB5SaRQ7Z5mUofy+cyyg20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p6O8H2H+ToaOMkie1HwxSzJKpQy4/UV3aSmkxZ65yZ5YzyQV/QRUbG4nRWG+GBuirvGpcfvKZuk15GgH5oSOomlfxYstdmAO/e3Clr9EbwcvEGhQGOrT7dfLvho0sX4NueDCDvprBxqJdw9jgm3E2kXm0JzLgE/Tq2oU3vfb13w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=R7aAMdwT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07E30C433F1;
+	Sat, 17 Feb 2024 07:49:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708156175;
+	bh=xA0BMgVgYSGSfjkjE5RXNiB5SaRQ7Z5mUofy+cyyg20=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R7aAMdwTrTwek3wpcqcU9S4FFPWfRV3+2dl07WzErYgBUGoLhYewEoBPC5sowjZ1M
+	 uv0XSoycpOCGmdpT6ukdeJmrNiPnDNLVHcOjsI9pIYQqe01blTcr9CA49nflxEmRIO
+	 oYsjKJkqeUhfU5fQ00NZ2XCTLlV155Q7UXNkoZno=
+Date: Sat, 17 Feb 2024 08:49:32 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Boqun Feng <boqun.feng@gmail.com>
+Cc: linux-arm-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC] efi: Add ACPI_MEMORY_NVS into the linear map
+Message-ID: <2024021718-dwindling-oval-8183@gregkh>
+References: <20240215225116.3435953-1-boqun.feng@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 7/7] ext4: set the type of max_zeroout to unsigned int to
- avoid overflow
-Content-Language: en-US
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
-	<yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
-References: <20240126085716.1363019-1-libaokun1@huawei.com>
- <20240126085716.1363019-8-libaokun1@huawei.com>
- <20240213163807.lodqvvw24namiu7g@quack3>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240213163807.lodqvvw24namiu7g@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240215225116.3435953-1-boqun.feng@gmail.com>
 
-On 2024/2/14 0:38, Jan Kara wrote:
-> On Fri 26-01-24 16:57:16, Baokun Li wrote:
->> The max_zeroout is of type int and the s_extent_max_zeroout_kb is of
->> type uint, and the s_extent_max_zeroout_kb can be freely modified via
->> the sysfs interface. When the block size is 1024, max_zeroout may
->> overflow, so declare it as unsigned int to avoid overflow.
->>
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->> ---
->>   fs/ext4/extents.c | 6 ++----
->>   1 file changed, 2 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index 01299b55a567..8653b13e8248 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -3425,10 +3425,8 @@ static int ext4_ext_convert_to_initialized(handle_t *handle,
->>   	struct ext4_extent zero_ex1, zero_ex2;
->>   	struct ext4_extent *ex, *abut_ex;
->>   	ext4_lblk_t ee_block, eof_block;
->> -	unsigned int ee_len, depth, map_len = map->m_len;
->> -	int allocated = 0, max_zeroout = 0;
->> -	int err = 0;
->> -	int split_flag = EXT4_EXT_DATA_VALID2;
->> +	unsigned int ee_len, depth, map_len = map->m_len, max_zeroout = 0;
->> +	int err = 0, allocated = 0, split_flag = EXT4_EXT_DATA_VALID2;
-> Honestly, I prefer if we keep unrelated variables on different lines,
-> especially when they have initializers. I find the code more readable that
-> way. So in this case:
->
-> 	int err = 0;
-> 	int split_flag = EXT4_EXT_DATA_VALID2;
-> 	int allocated = 0;
-> 	unsigned int max_zeroout = 0;
->
-> But otherwise the fix looks good!
->
-> 								Honza
-Totally agree! I will replace it in the next version.
+On Thu, Feb 15, 2024 at 02:51:06PM -0800, Boqun Feng wrote:
+> Currently ACPI_MEMORY_NVS is omitted from the linear map, which causes
+> a trouble with the following firmware memory region setup:
+> 
+> 	[..] efi:   0x0000dfd62000-0x0000dfd83fff [ACPI Reclaim|...]
+> 	[..] efi:   0x0000dfd84000-0x0000dfd87fff [ACPI Mem NVS|...]
+> 
+> , on ARM64 with 64k page size, the whole 0x0000dfd80000-0x0000dfd8ffff
+> range will be omitted from the the linear map due to 64k round-up. And
+> a page fault happens when trying to access the ACPI_RECLAIM_MEMORY:
+> 
+> 	[...] Unable to handle kernel paging request at virtual address ffff0000dfd80000
+> 
+> To fix this, add ACPI_MEMORY_NVS into the linear map.
+> 
+> Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> Cc: stable@vger.kernel.org # 5.15+
 
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+What commit id does this fix?  Can you include that as well?
+
+thanks,
+
+greg k-h
 
