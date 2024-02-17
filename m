@@ -1,106 +1,110 @@
-Return-Path: <linux-kernel+bounces-69943-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69958-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44305859097
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:42:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EB698590CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:12:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0109F282EB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:42:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 719161C20FFE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:12:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFCC7C6F6;
-	Sat, 17 Feb 2024 15:42:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BABE7CF27;
+	Sat, 17 Feb 2024 16:12:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="vrU7z599"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b="kPggfQVX"
+Received: from mx.treblig.org (mx.treblig.org [46.235.229.95])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7401E7C6D5;
-	Sat, 17 Feb 2024 15:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 011B77C0B6;
+	Sat, 17 Feb 2024 16:12:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.229.95
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708184561; cv=none; b=iIyPp8kMOOBgTV63eO1JkiRiQXDa0YN39JkNoaBx45OIf1ckhmm+mOkqXKZlEOiem9whgw2EeLANwUbMtpzuclarV3Vh0CbppFPTpFiKkJaUY9EzN66fdiXDANzyaNLWlru6oToh6b+1axI433NeeTrnPow4exeS0WoakZjCdk4=
+	t=1708186325; cv=none; b=nWzGNzIe3gDmi14uXrkBbKNAvARspowjruMhraW/KLW0fCloF5ylNGqYgNhxo8/rZai4IgjXxwJmv2Ezlfl2rq+iQtQaDn/8+eXgGk4XoF3eznBeazKxqe399oB3J8pQuLHxyzYp2KwxgfsUHUhEtEinJ7p83RYGSCEGQ6ekGbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708184561; c=relaxed/simple;
-	bh=ChToIvP8lVT0GtyxDw2yhEJ2NTIdng8y9ELThsMetr0=;
+	s=arc-20240116; t=1708186325; c=relaxed/simple;
+	bh=4zjzjqsCerJ94HPCxsMpNDuinRLjJ6fT0fdLNFwRI/w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YhCLcNVXbaoH/wll3nnffH1n8EPH+2TFaviVYphO93nEVIY44vdc+C0zzeCkrBoedteCn3GOc+r7KpCKmgDsMAVG0wail7rOzhkfyaayrtPAkSg15toa8BM3KVAA4UNsyyaqZccUc7lZ+Q5q6E2VGeThv6Cv+NcrJk/4XRiKudw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=vrU7z599; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=hyTsVZvPOhq79PS84Thyf/yoHFQO7m0i8y9DG0PSI5A=; b=vrU7z599BWlAkeDTdgyyKpXP67
-	nT8ayE66/TNIPNHA8wAzS3p5JtjmKE6Q7RkssnMcZnX03PKWZADdX0R0TUbuWECa4FZipDOwZYtPG
-	mIht76gwd9FOoQCUxCkuAPI3/YOVX2YiMtGnutwusbLEM258WET++ekmvatW/IWGQ/Sw=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rbMps-0084H5-7o; Sat, 17 Feb 2024 16:42:40 +0100
-Date: Sat, 17 Feb 2024 16:42:40 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Ciprian Regus <ciprian.regus@analog.com>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Simon Horman <horms@kernel.org>,
-	Dell Jin <dell.jin.code@outlook.com>,
-	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
-	Yang Yingliang <yangyingliang@huawei.com>, netdev@vger.kernel.org
-Subject: Re: [net-next] net: ethernet: adi: adin1110: Reduce the MDIO_TRDONE
- poll interval
-Message-ID: <b3c8d287-3715-4c03-be3e-e94253f6d2ac@lunn.ch>
-References: <20240216103636.1231815-1-ciprian.regus@analog.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=n7GGNvsW08w6IDetn4br9qnlkFpsy3RUqpUO9lgFZvonScWY5YEZoBKlr45mOeG082WCwxEuLMZ6+PjyZt6G8tz1paC6Tm7r+Fcxqk1RJAp5fWXbKR8dF3XF8ZEqzmAwnS1xd0fOQqjEWi90PHlMrt6qcP9FZPQx9DMqcLqav5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org; spf=pass smtp.mailfrom=treblig.org; dkim=pass (2048-bit key) header.d=treblig.org header.i=@treblig.org header.b=kPggfQVX; arc=none smtp.client-ip=46.235.229.95
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=treblig.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=treblig.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=treblig.org
+	; s=bytemarkmx; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID
+	:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID
+	:Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:
+	Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe
+	:List-Post:List-Owner:List-Archive;
+	bh=QOvkX/he/X3w7IIYy+vxewdPTV36nbUL1+0KsqgC1Ks=; b=kPggfQVXpWgIIWwY/gXTSMy+1c
+	wp9lE807QC1UO/xX/WmrcGGZXwEr5FseYQtRphj75GVv3x8t13JCayvBXoI7VPA3TCWva5wMDd3M6
+	v+r0GtNwm+HgZGVMxYLyxJ+sYL4vT08gMIMXAMR8lOLsKafC8feBYMUmY+0IK5G5htF1R4il2gYLX
+	KzOZqsfWe7hERxpgdY6mW5MgniswHiN4qofNAarJ6N5w5o9Pg4RJH7gVT/tDgozZbP1/NlCFiSHa5
+	wntWO4yam3SmEsIwOxSmAadY8HaJiscrj7rOXdsLU41VveBqov2726vj73EszvbFt86MCn4BH6YYR
+	jlsjAGWA==;
+Received: from dg by mx.treblig.org with local (Exim 4.96)
+	(envelope-from <dg@treblig.org>)
+	id 1rbMqt-007xwA-3A;
+	Sat, 17 Feb 2024 15:43:43 +0000
+Date: Sat, 17 Feb 2024 15:43:43 +0000
+From: "Dr. David Alan Gilbert" <linux@treblig.org>
+To: Andreas Larsson <andreas@gaisler.com>
+Cc: davem@davemloft.net, sam@ravnborg.org, benh@kernel.crashing.org,
+	akpm@linux-foundation.org, sparclinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org, mpe@ellerman.id.au,
+	glaubitz@physik.fu-berlin.de
+Subject: Re: [PATCH v3] sparc: Use shared font data
+Message-ID: <ZdDUL8q8U1QGZsLu@gallifrey>
+References: <20230807010914.799713-1-linux@treblig.org>
+ <86dbf602-7c2c-426e-8e7d-b91572357b3b@gaisler.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240216103636.1231815-1-ciprian.regus@analog.com>
+In-Reply-To: <86dbf602-7c2c-426e-8e7d-b91572357b3b@gaisler.com>
+X-Chocolate: 70 percent or better cocoa solids preferably
+X-Operating-System: Linux/6.1.0-17-amd64 (x86_64)
+X-Uptime: 15:43:26 up 45 days, 18:33,  1 user,  load average: 0.00, 0.00, 0.00
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-On Fri, Feb 16, 2024 at 12:36:32PM +0200, Ciprian Regus wrote:
-> In order to do a clause 22 access to the PHY registers of the ADIN1110,
-> we have to write the MDIO frame to the ADIN1110_MDIOACC register, and
-> then poll the MDIO_TRDONE bit (for a 1) in the same register. The
-> device will set this bit to 1 once the internal MDIO transaction is
-> done. In practice, this bit takes ~50 - 60 us to be set.
+* Andreas Larsson (andreas@gaisler.com) wrote:
+> On 2023-08-07 03:09, linux@treblig.org wrote:
+> > From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> > 
+> > sparc has a 'btext' font used for the console which is almost identical
+> > to the shared font_sun8x16, so use it rather than duplicating the data.
+> > 
+> > They were actually identical until about a decade ago when
+> >    commit bcfbeecea11c ("drivers: console: font_: Change a glyph from
+> >                         "broken bar" to "vertical line"")
+> > 
+> > which changed the | in the shared font to be a solid
+> > bar rather than a broken bar.  That's the only difference.
+> > 
+> > This was originally spotted by PMD which noticed that PPC does
+> > the same thing with the same data, and they also share a bunch
+> > of functions to manipulate the data.
+> > 
+> > Tested very lightly with a boot without FS in qemu.
+> > 
+> > Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
 > 
-> The first attempt to poll the bit is right after the ADIN1110_MDIOACC
-> register is written, so it will always be read as 0. The next check will
-> only be done after 10 ms, which will result in the MDIO transactions
-> taking a long time to complete. Reduce this polling interval to 100 us.
-> 
-> Signed-off-by: Ciprian Regus <ciprian.regus@analog.com>
-> ---
->  drivers/net/ethernet/adi/adin1110.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/adi/adin1110.c b/drivers/net/ethernet/adi/adin1110.c
-> index d7c274af6d4d..6fca19e6ae67 100644
-> --- a/drivers/net/ethernet/adi/adin1110.c
-> +++ b/drivers/net/ethernet/adi/adin1110.c
-> @@ -467,3 +467,3 @@ static int adin1110_mdio_read(struct mii_bus *bus, int phy_id, int reg)
->  	ret = readx_poll_timeout(adin1110_read_mdio_acc, priv, val,
-> -				 (val & ADIN1110_MDIO_TRDONE), 10000, 30000);
-> +				 (val & ADIN1110_MDIO_TRDONE), 100, 30000);
->  	if (ret < 0)
-> @@ -498,3 +498,3 @@ static int adin1110_mdio_write(struct mii_bus *bus, int phy_id,
->  	return readx_poll_timeout(adin1110_read_mdio_acc, priv, val,
-> -				  (val & ADIN1110_MDIO_TRDONE), 10000, 30000);
-> +				  (val & ADIN1110_MDIO_TRDONE), 100, 30000);
+> Applied to my for-next branch.
 
-The kernel can have trouble sleeping for such short times. It might
-make sense to swap to the _atomic version which spins rather than
-sleeps. If you are just reading a few PHY registers every so often, it
-might not be worth it. But if you have an Ethernet switch and need to
-access a lot of registers, it could make it a bit faster.
+Thanks!
 
-       Andrew
+Dave
+
+> Thanks,
+> Andreas
+> 
+-- 
+ -----Open up your eyes, open up your mind, open up your code -------   
+/ Dr. David Alan Gilbert    |       Running GNU/Linux       | Happy  \ 
+\        dave @ treblig.org |                               | In Hex /
+ \ _________________________|_____ http://www.treblig.org   |_______/
 
