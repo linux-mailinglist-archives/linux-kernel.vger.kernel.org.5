@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-69752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31268858E13
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:26:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4CB858E17
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55F401C21246
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:26:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DAD91F22046
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 098F71CF9A;
-	Sat, 17 Feb 2024 08:26:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9A41CF99;
+	Sat, 17 Feb 2024 08:28:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ed2fSRlI"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yo+HOmEy"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819FC1CA9B
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 08:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40181CD20
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 08:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708158383; cv=none; b=KWzEzlJvYxBXje4B867EDlvKLXhdFhzLvOwO/4QehuQCR403UZpHIuWEDjZNP6byZhEhkv/NYnSj/T3HnR4cQysGRrBqurs1CTElblSOoeyfrkrxhutqSrkZ5R++wiIfGrJhdxR1YdR7ikTenGnZlaCcgOQtNPpJoOk+CznMT78=
+	t=1708158499; cv=none; b=d1/9BeTlYx+n/cy0DVAQ86lu5iTO2pGRXhRjqdXSa53VlJMOUq+7Tnu4WnbALoNhkr4iS71mQOEplZxGvHFLU+kZ3TWCRZM0wsBXxPunmWfJuG4XAikzJmo6hglU6JVFaulefT3ckbKcjZSRf/C+UyVbzvnve8ye0ypQh4RzUj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708158383; c=relaxed/simple;
-	bh=gx6a5edxbT5bsU+TGBXVp/954ZAEGJsMFBWLUR/YTOU=;
+	s=arc-20240116; t=1708158499; c=relaxed/simple;
+	bh=fIxF4TYSDzMXrsN9oTg4mUN922eJ8cblIlUE7A2PSCU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MCxNbOieebgKvaix9E3CUMy7iHFsTXUSi5744JxlrxQ4kf06d6ITe6Lm/btY/O+Q8t0vHZZ3hKE5X8bFZgV8vEqiobx9lt9dr4nmpYQoVd9Sgoc1jumfuYeT/Y+aVIqA47vknJjVhdJdfBhYoudBcLkhytYh+9s0Zod/UUyRekk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ed2fSRlI; arc=none smtp.client-ip=209.85.218.48
+	 In-Reply-To:Content-Type; b=HoaQPbLEatc/j8kEccFurw4fHh0Lg/NepuUcMGNYRkJXQkxw00aLE3bniQyBWH9WgJzLHRJ6GPF3mcasbN+tZkMhMV6R+myAZUWdtLuR3dgQ3Gs61g2VMcTEDNjGbae4GDQvSr2olkNq1pCj2STTMCo2Ns3aQJBHmOx3aILj8OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yo+HOmEy; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a3cc2f9621aso276783166b.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:26:21 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-564188400edso501070a12.0
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:28:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708158380; x=1708763180; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708158496; x=1708763296; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=NgqfRlrvI7npTmu7xUZp6/bC7Hy4iB4qMNQqRvwmnc0=;
-        b=ed2fSRlIQ9pGcNY7w4fCmZiV60kAwy4CvyBEQtmWZ5rntG3ut9icoV09Pu/2UiZ14c
-         vSrrqLp3EljB76eS1ORPcFkkNLNpIYasBU5c2iPLT9SM7scG83AACfKJSNwcx8HgUkr5
-         hS/veXxolba0yMpnixRl6mAC90AUPzA1LcDzRRFJhD6df9A38l7kGf0pcekslMTMDSt2
-         jmPcr4gZn/JxfdUTt88OE5GC+VXb2WorXkuRHL1siBkL/s1qw+FnN7yKlgySCojtZiIl
-         V07WOFNmTLJrJSK3lWQ8Rqw/DAQDHNTgy/gBUlj2j3LkjYctFMSPaGw1dSAw/vkDzuVE
-         IJ5w==
+        bh=GnJB9+tNFtDOIThyu1yRvFoihAcunlS/UkM0G6MsB+Y=;
+        b=Yo+HOmEysZRyhscGwysSHoPPSh94APrsCcHT8KW8n7Dgp+R2lk/KkbhIce3nL+YEFr
+         awqPYe8eajCFrD2zQNVrkYUfFr/Ao3Fkm3d1G0lYDMLrh2ga1wrT/XmPmhE/rmXj9pCo
+         b6WyPVy+puUHhzWjRsTeQHvCxB10V/xwjZW03uroEtE2V1fEJkhWNBn09pSY4N1Qg5uX
+         JRcM18y1EWMY9ajGZGgXbVIM6NLeFfJ8LmU2EE8zde7OI+F+lBi9YhqSb6igyW/k6mE8
+         lJqfACQSNZbMGae1hbipJ593mK46eCd9T7b56GhqWWDdezQicRR3dhBOKTJhbuDXsh2U
+         FcXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708158380; x=1708763180;
+        d=1e100.net; s=20230601; t=1708158496; x=1708763296;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NgqfRlrvI7npTmu7xUZp6/bC7Hy4iB4qMNQqRvwmnc0=;
-        b=ktupY9nA7kC29lawMekLhyoB7Xx2JIBl6zgCGYiuWDblwGHR9CQ1Jxu5MRbMNz91Jy
-         XUX8JSkF+stzSlQuveKdKUnaxZjtO38qaPCvauAy9o/3CoiXFsx/Hp5zA/DENfZ28qLq
-         wWqhggrz6/p1DdH6Hy7TgsY5CzxEIHC35nOzAKATc5sMtu2YK60WTW0SYXCplXQNJqOx
-         /dVadDco2zyDjjuY3gr/zt4lnWBL7CLFAqAdxZyr+rw3gdHPDpX0XC4tzPRm3Fa8jfYE
-         a+ODaeAObqCC0aXKp8uEZUDI+mFgs9Mibql4KWUcP41yoIvGI1VavVfaX1NcrOHvdUxw
-         sp2A==
-X-Forwarded-Encrypted: i=1; AJvYcCVs8nAaDSeDXeKtu9lcu7z3qEa5ceX757/xev86JPu2Am+0/Hh/rn9d4J4tUDrJBdlZAAHuwJixo2VjAjPypoiieS3bp5MrnQ66fG3q
-X-Gm-Message-State: AOJu0Ywu70W7XlDPv25bnOcjeC4LRAO/ETPsVeEWN0286iI9cz1ceeCb
-	VGwnqqxJ9Wx5qLaUFtwOgM6nw5byk3Jd+Zin6T1uwOELNuDXTHUbIHgKgmJ66GM=
-X-Google-Smtp-Source: AGHT+IHXM0ahWqSQ1c/R+HKkC1o1a+c9pA3X4VQztftU731Lcc4H4jfnC9a//q0eaq43fHbSK2TOWA==
-X-Received: by 2002:a17:906:ae54:b0:a3d:bccb:a202 with SMTP id lf20-20020a170906ae5400b00a3dbccba202mr3541215ejb.40.1708158379852;
-        Sat, 17 Feb 2024 00:26:19 -0800 (PST)
+        bh=GnJB9+tNFtDOIThyu1yRvFoihAcunlS/UkM0G6MsB+Y=;
+        b=J4u/SCz1zr2Hi8R9xSYRo52A8yJ/zoWJ8bPU0K6UZXA+QtkBq1enWbBjGkr9vnY6W7
+         JBcb+cQHPTJVKXDh4hlyojZw6EZ2Wrak2NIfq2nC5DaXPMp0c0CHBqexEuRwc6zJ2U94
+         DG7OuQXdvqP3KOUI+LcFQeurvYbuEHJcEG8tLd+fiqkS54Qkm3iYs2QKP8qPMI+Oq05k
+         SfOau5+pp6jhsuBWRcKD8paUvYj/XQ9tHyboG+v0tBp/M1agbU+BvBk54P9nG7lQWwGt
+         tAbKgNYBbydXy0gT93tX6fJRWwUE2QepwEj6HlGzzcYX4ycuDtATb5gyqJGUsfMU0TIM
+         SyCg==
+X-Forwarded-Encrypted: i=1; AJvYcCXCcx5TPeWBvl0XNQ2iUIk5dQVz3PthrBtmvEVbSiCp909MfcONwTElKeE2mb+8xAmel6R8L4uVxqFv2kUKJI4nLnxqRZEKPh0/uFtf
+X-Gm-Message-State: AOJu0YyzaMbfd14lB6zntF7fg98s+Vd7axvrfJqtm0ix9SADn7x8E9wB
+	H8DyOetjtOke6TEuVHfirpR44H1H99SdG5fv7DEGhrxnM/iKG0RhQzbkgw6bp/A=
+X-Google-Smtp-Source: AGHT+IH7IH1nMDlDu8cL67YnZs0Jvw7wxj0GDmtBH72UC6u/miDG7FHG/+YuVLwA7jKIIWKtKhq9MQ==
+X-Received: by 2002:a05:6402:387:b0:564:770:542 with SMTP id o7-20020a056402038700b0056407700542mr1646200edv.21.1708158496062;
+        Sat, 17 Feb 2024 00:28:16 -0800 (PST)
 Received: from [192.168.0.22] ([78.10.207.130])
-        by smtp.gmail.com with ESMTPSA id cu3-20020a170906ba8300b00a3d014fa12esm763079ejd.196.2024.02.17.00.26.18
+        by smtp.gmail.com with ESMTPSA id b17-20020aa7d491000000b00563ffa219b5sm694923edr.97.2024.02.17.00.28.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 17 Feb 2024 00:26:19 -0800 (PST)
-Message-ID: <ebcfd49d-f810-4d9b-8cba-b55071fc7fa6@linaro.org>
-Date: Sat, 17 Feb 2024 09:26:18 +0100
+        Sat, 17 Feb 2024 00:28:15 -0800 (PST)
+Message-ID: <9584fd2d-97bd-4e1d-8f33-2c48c8c89aa0@linaro.org>
+Date: Sat, 17 Feb 2024 09:28:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,22 +75,17 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: rtc: zynqmp: Describe power-domains property
+Subject: Re: [PATCH] arm64: dts: sm8650: Add msi-map-mask for PCIe nodes
 Content-Language: en-US
-To: Michal Simek <michal.simek@amd.com>, linux-kernel@vger.kernel.org,
- monstr@monstr.eu, michal.simek@xilinx.com, git@xilinx.com
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Conor Dooley <conor+dt@kernel.org>,
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh@kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "moderated list:ARM/ZYNQ ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" <linux-rtc@vger.kernel.org>
-References: <94726c90ff519185767475f672d70311472ea925.1708073513.git.michal.simek@amd.com>
- <5a81f16b-8ece-4263-b424-4dd6cd6e386f@linaro.org>
- <ed59671f-6e0b-45a2-bae7-38f7b4b7e625@amd.com>
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240216-sm8550-msi-map-fix-v1-1-b66d83ce48b7@linaro.org>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -136,33 +131,25 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ed59671f-6e0b-45a2-bae7-38f7b4b7e625@amd.com>
+In-Reply-To: <20240216-sm8550-msi-map-fix-v1-1-b66d83ce48b7@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 16/02/2024 10:42, Michal Simek wrote:
+On 16/02/2024 18:05, Manivannan Sadhasivam wrote:
+> "msi-map-mask" is a required property for all Qcom PCIe controllers as it
+> would allow all PCIe devices under a bus to share the same MSI identifier.
 > 
+> Without this property, each device has to use a separate MSI identifier
+> which is not possible due to platform limitations.
 > 
-> On 2/16/24 10:19, Krzysztof Kozlowski wrote:
->> On 16/02/2024 09:51, Michal Simek wrote:
->>> RTC has its own power domain on Xilinx Versal SOC that's why describe it as
->>> optional property.
->>>
->>> Signed-off-by: Michal Simek <michal.simek@amd.com>
->>> ---
->>>
->>>   Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml | 3 +++
->>>   1 file changed, 3 insertions(+)
->>>
->>
->> But Versal is not described in this binding, is it? I see only one
->> compatible.
+> Currently, this is not an issue since only one device is connected to the
+> bus on boards making use of this SoC.
 > 
-> It is the same IP only as is on zynqmp with own power rail.
+> Fixes: a33a532b3b1e ("arm64: dts: qcom: sm8650: Use GIC-ITS for PCIe0 and PCIe1")
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Then you should have separate compatible, because they are not
-identical. It would also allow you to narrow the domains to versal and
-also require it (on versal).
+
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
