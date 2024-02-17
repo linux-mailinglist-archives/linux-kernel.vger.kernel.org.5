@@ -1,139 +1,163 @@
-Return-Path: <linux-kernel+bounces-69587-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69588-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F504858BE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:31:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E3C858C0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:52:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E38E61F21E94
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:31:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 158FD1C208B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:52:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF97BA55;
-	Sat, 17 Feb 2024 00:31:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D5CDDBE;
+	Sat, 17 Feb 2024 00:52:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KG2n4k1A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pVfEHcpu"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DD94C8F;
-	Sat, 17 Feb 2024 00:31:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DFA94C70
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:52:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708129905; cv=none; b=eGX7k76LuvgMR16OTPFQkIWAkU1+y38Zw2rctbRR0Jx3vsC0nuKp68Xul6jzsqvXKFvSeEbNaK1liwLCnny84GcB/naU+iOCD+H+rJPahIYu7SY/UX2hytTW2cLZP3uDwbkLl5uiFWmT2uANtXPYlt5NYUVyF8Poz1sf4Rx9GuU=
+	t=1708131167; cv=none; b=qJJXA64E2DUrAvGoWxrZQap1LtnUghyR23aIaMndECH1ZMxrzTIYcQPjgIHf22rqqPG0+kSPucPOP6SIIHeqm220JNIhEwmTifHxpYBn0qST4mgMb6Kwc08E0bMffC8tVSzIv6l1t+Sf2cNjifWk++jDDXZ7XpSYArcUS1dmLUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708129905; c=relaxed/simple;
-	bh=J0wf0BwhyChpIzZH00msGosof2qX1pIKtcd0rpw6oGU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=qSbUzBTNBD0+EzmIu51vIfiOAcNEoWXqKFNLc3I4qKZ2zrs2228TnglZ0Q0ntINSxSVu7nGsicgP7kJTfh8omToyzY+5owhzMlqYXwuScrFWSHUIfNcAOvwIiQExlFJSEfqToEGd6ntWAw3YBt1yBimK+6f85xKeO7HJRci6G+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KG2n4k1A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7941C433C7;
-	Sat, 17 Feb 2024 00:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708129904;
-	bh=J0wf0BwhyChpIzZH00msGosof2qX1pIKtcd0rpw6oGU=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KG2n4k1A9ocUdjbNIyx8ykEEvtCUYwyCAVplGH6C8TEfjTNsksN7YNZscUbmYQHBr
-	 H2owTBWAI76L+Pd1HnsIytrljiADjoJqKkWijP90HEc9mfBT6hm+wH9YryyfF5r145
-	 Q9n9w6C6XVrCPdIHCfSV+zvwIyRh5b8U3PEY4HTdjjJsd6wZsaAENoXgAw+/vEqcm1
-	 l07ex6a9P3JR8Y0OX1G/W2CZlA/5MmpH3WtWhbQkSUMhxGW6XZvMPZWeT1EKRQ/6oV
-	 LFRwoi5GNOWkztebJiVthMpAuJZ1h5r0XppmRepmItT9E1kx2z3dAIiHGJqm+HF2q0
-	 i+5epM5IYJyOg==
-From: SeongJae Park <sj@kernel.org>
-To: Kees Cook <keescook@chromium.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	shuah@kernel.org,
-	"Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Vijaikumar_Kanagarajan@mentor.com,
-	brauner@kernel.org,
-	jlayton@kernel.org,
-	jack@suse.cz
-Subject: Re: [PATCH] selftests/mqueue: Set timeout to 100 seconds
-Date: Fri, 16 Feb 2024 16:31:42 -0800
-Message-Id: <20240217003142.86297-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <202402161600.BF1D110BB@keescook>
-References: 
+	s=arc-20240116; t=1708131167; c=relaxed/simple;
+	bh=xMjUVfiyxmaguXvZrW6crG3aoQIwn8QnYYLwV+KSSWA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EjGmt6tnmNmPIty9/m3B8ZoHPOF7x3NWlqYTS5qgT3hbzAKGKRyQte7NMhyoInW1j0+YJew0lFANwVnbMs973BhqU2HMMqArzqmTRUlXUBootETy6t8SMeLK4BiLIn+C4nj9y8mrjI7FyQqG+b2xHrd+64ufbAQ3fBmL3JQ/8Z0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pVfEHcpu; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1db61f7ebcbso39465ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:52:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708131165; x=1708735965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zvr57WXSGKgreDl2S3+cS6Q3DlJ9MFO+tZDONyxR8WE=;
+        b=pVfEHcpu9cuLDlTbA+B73bEzwdSAI33O59xw1XUAjm+2D2RkU9FhRwtiOCZjT6ONmO
+         ITGz9nCbcps+KSWsv8DUSqlo1PfN4HqtS9FswiKLIw4aPZELISMRKWHQvz2tC8mpvvsw
+         0giSomXQOEjZQYjpkEE8wOT2VVrl0dGT5MZn4XxAolJpH1PdZRvtj2A40rMh7B4889RC
+         UuiaKXm0GX2v+KNcFb/ERPMvQCxHJTH5+l8t+Oz1pq5j5Acsl6aMzFwnRE7gvyYORY9Z
+         8qp1BeVLyJh427UCoeqPgWrZk0MzF6GaTaqJJvxmhyLRi2rk8HPXtN+7iZkjiXxYxSjC
+         TBBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708131165; x=1708735965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zvr57WXSGKgreDl2S3+cS6Q3DlJ9MFO+tZDONyxR8WE=;
+        b=L4wyw6TqYHozxQGnP5tc3dYbg/D+KoZv1yKheb5fbqpRXfEKFcL8i2vTaEW8GuUwRH
+         xD7GLbmp3Vp/gAhMVOcLcjn8ZsJ//3lJkNF0Zdvw9PaBbvYMBa/8ySltO5/ZlJHaq1co
+         nWxMWbWzXXH6L/sIeJRsveYexX5tRUjJYa8dujVmCykGDz8RJQeFX8s2TyDOsr7vgjPe
+         1owknLUJlhGvXlD5whoOg/pD0+K4yIrtF1cQedTOJhyWP61zPa9e4W/18QYrqkzp5EkG
+         Ta+xAGl9DegQ2BIS38qNnugSHuhsta70mdiLm1O+5zmG08S/RDkuVeTkzbpIqhRysE+p
+         EfzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW2ckfV9dvhOQQB3iXpbrCBqMJlBgAHzG9ufTdVpJM+oh2FxqAykxE/lEpA9BoVi4pxxwJqwWzRo15M8Zax1Lrgas8XQkoYR8e/jEWX
+X-Gm-Message-State: AOJu0Yy+fFY7s1296jbpI291NZURnw7TkmXs/FVspB1uKKHIcm1RhYCQ
+	dsoJZcDgdXwQjsSdNHid5RT2ImRn2EMdUZ0LmTBtu5pYcCtZbIFwE1Llm/xdDWcINLAYQmMJxiY
+	6gCRt/3+x3IKK/2oZ+LXoSZBpnp7r9QoY+Zwf
+X-Google-Smtp-Source: AGHT+IE3HGUrOS/cMjy3dK83NQcHQ7z42RJxNSfu2ZjNKxNaIs4MfqHN+ZrLaeTNVN7unFneCe3UnNRtF7B+qxo7VzY=
+X-Received: by 2002:a17:902:c70c:b0:1d8:eac9:bbfc with SMTP id
+ p12-20020a170902c70c00b001d8eac9bbfcmr98349plp.15.1708131164390; Fri, 16 Feb
+ 2024 16:52:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240202234057.2085863-1-irogers@google.com> <20240202234057.2085863-3-irogers@google.com>
+ <CAM9d7ci3VO7reyxPc8WOczdoyYYCUshxCJDMZ7wPpHknCubNXQ@mail.gmail.com>
+In-Reply-To: <CAM9d7ci3VO7reyxPc8WOczdoyYYCUshxCJDMZ7wPpHknCubNXQ@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 16 Feb 2024 16:52:31 -0800
+Message-ID: <CAP-5=fVNLoes2VaCcqrueiDLBZAZNthSJVD17z77cnyE7wF7ag@mail.gmail.com>
+Subject: Re: [PATCH v3 2/8] libperf cpumap: Ensure empty cpumap is NULL from alloc
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
+	Leo Yan <leo.yan@linaro.org>, John Garry <john.g.garry@oracle.com>, 
+	Will Deacon <will@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 16 Feb 2024 16:01:20 -0800 Kees Cook <keescook@chromium.org> wrote:
+On Fri, Feb 16, 2024 at 4:25=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > Potential corner cases could cause a cpumap to be allocated with size
+> > 0, but an empty cpumap should be represented as NULL. Add a path in
+> > perf_cpu_map__alloc to ensure this.
+> >
+> > Suggested-by: James Clark <james.clark@arm.com>
+> > Closes: https://lore.kernel.org/lkml/2cd09e7c-eb88-6726-6169-647dcd0a81=
+01@arm.com/
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/lib/perf/cpumap.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+> > index ba49552952c5..cae799ad44e1 100644
+> > --- a/tools/lib/perf/cpumap.c
+> > +++ b/tools/lib/perf/cpumap.c
+> > @@ -18,9 +18,13 @@ void perf_cpu_map__set_nr(struct perf_cpu_map *map, =
+int nr_cpus)
+> >
+> >  struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
+> >  {
+> > -       RC_STRUCT(perf_cpu_map) *cpus =3D malloc(sizeof(*cpus) + sizeof=
+(struct perf_cpu) * nr_cpus);
+> > +       RC_STRUCT(perf_cpu_map) *cpus;
+> >         struct perf_cpu_map *result;
+> >
+> > +       if (nr_cpus =3D=3D 0)
+> > +               return NULL;
+>
+> But allocation failure also returns NULL.  Then callers should check
+> what's the expected result.
 
-> On Wed, Feb 14, 2024 at 05:13:09PM -0800, SeongJae Park wrote:
-> > A gentle reminder.
-> > 
-> > 
-> > Thanks,
-> > SJ
-> > 
-> > On Fri, 9 Feb 2024 09:42:43 -0800 SeongJae Park <sj@kernel.org> wrote:
-> > 
-> > > On Fri, 9 Feb 2024 10:30:38 +0000 "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com> wrote:
-> > > 
-> > > > On 08/02/2024 21:29, SeongJae Park wrote:
-> > > > > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > > While mq_perf_tests runs with the default kselftest timeout limit, which
-> > > > > is 45 seconds, the test takes about 60 seconds to complete on i3.metal
-> > > > > AWS instances.  Hence, the test always times out.  Increase the timeout
-> > > > > to 100 seconds.
-> > > > > 
-> > > > > Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
-> > > > > Cc: <stable@vger.kernel.org> # 5.4.x
-> > > > > Signed-off-by: SeongJae Park <sj@kernel.org>
-> > > > > ---
-> > > > >   tools/testing/selftests/mqueue/setting | 1 +
-> > > > >   1 file changed, 1 insertion(+)
-> > > > >   create mode 100644 tools/testing/selftests/mqueue/setting
-> > > > > 
-> > > > > diff --git a/tools/testing/selftests/mqueue/setting b/tools/testing/selftests/mqueue/setting
-> > > > > new file mode 100644
-> > > > > index 000000000000..54dc12287839
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/selftests/mqueue/setting
-> > > > > @@ -0,0 +1 @@
-> > > > > +timeout=100
-> > > > > --
-> > > > > 2.39.2
-> > > > > 
-> > > > >
-> > > > 
-> > > > Added Vijai Kumar to CC
-> > > > 
-> > > > This looks similar to [PATCH] kselftest: mqueue: increase timeout 
-> > > > https://lore.kernel.org/lkml/20220622085911.2292509-1-Vijaikumar_Kanagarajan@mentor.com/T/#r12820aede6bba015b70ae33323e29ae27d5b69c7 
-> > > > which was increasing the timeout to 180 however it's not clear why this 
-> > > > hasn't been merged yet.
-> 
-> Should it be 100 or 180?
-
-As mentioned on the previous mail[1], either values are good to me :)
-
-[1] https://lore.kernel.org/r/20240215011309.73168-1-sj@kernel.org
-
-> Either way:
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-
-Thank you!
-
+Right, we don't have a habit of just aborting on memory allocation
+errors. In the case that NULL is returned it is assumed that an empty
+CPU map is appropriate. Adding checks throughout the code base that an
+empty CPU map is only returned when 0 is given is beyond the scope of
+this patch set.
 
 Thanks,
-SJ
+Ian
 
-> 
-> -- 
-> Kees Cook
-> 
+> Thanks,
+> Namhyung
+>
+> > +
+> > +       cpus =3D malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cp=
+us);
+> >         if (ADD_RC_CHK(result, cpus)) {
+> >                 cpus->nr =3D nr_cpus;
+> >                 refcount_set(&cpus->refcnt, 1);
+> > --
+> > 2.43.0.594.gd9cf4e227d-goog
+> >
 
