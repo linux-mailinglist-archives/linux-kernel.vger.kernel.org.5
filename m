@@ -1,51 +1,60 @@
-Return-Path: <linux-kernel+bounces-69941-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB6E5859090
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:42:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44305859097
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:42:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C04521C213F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:42:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0109F282EB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:42:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22197C6D2;
-	Sat, 17 Feb 2024 15:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFCC7C6F6;
+	Sat, 17 Feb 2024 15:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="lwHhs3gF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="vrU7z599"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 292037B3E8
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7401E7C6D5;
+	Sat, 17 Feb 2024 15:42:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708184535; cv=none; b=cB7VqzP31F0TdK4p9uCwRX5oe94NXt0ARNe01cKEiu+dRp2Zwrpcg+hXZph2PjBxGOHczkH97YkGntkg59hqlJDjty+v4NQ2m7ql8A4ejdm/MNLJtqse+yOQG8zCXFlUy36D0XOTXrkk5bzoukxfOvMqvTLbvRCvKJqfC6b1vnA=
+	t=1708184561; cv=none; b=iIyPp8kMOOBgTV63eO1JkiRiQXDa0YN39JkNoaBx45OIf1ckhmm+mOkqXKZlEOiem9whgw2EeLANwUbMtpzuclarV3Vh0CbppFPTpFiKkJaUY9EzN66fdiXDANzyaNLWlru6oToh6b+1axI433NeeTrnPow4exeS0WoakZjCdk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708184535; c=relaxed/simple;
-	bh=dWSfIWGZQDjbdl5zINyK6G7jsTcPEdrq5dv0jPqVMMA=;
+	s=arc-20240116; t=1708184561; c=relaxed/simple;
+	bh=ChToIvP8lVT0GtyxDw2yhEJ2NTIdng8y9ELThsMetr0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fVDhZZen/81zpmIyHGQ6mb8JGlvyzBBtmKGdgYjQWVDjGvCVyJdi0tsrgbLv7QUJR/qblhWxkYSnKiHEYgxHpaT5vtA55cW3VAEXvoGu69LL7VN/ZU6y9JTnDVm3CVWHX6A9gFgtbykzfxtEFF+60w5J7WHWroqRcihBN4rmpqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=lwHhs3gF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 361AFC433F1;
-	Sat, 17 Feb 2024 15:42:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708184534;
-	bh=dWSfIWGZQDjbdl5zINyK6G7jsTcPEdrq5dv0jPqVMMA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=lwHhs3gF6gwcd7HquiLw6hobQyaXq8/IT35uQGKr9IyG/JdanlsvBh18yqiVRZqUY
-	 286C8WIvI8I96knEP/ZbwOtoBQuFBVDtOYy5M47seXQevuI6XcDgd/Wu58JFEc8Mia
-	 Q3Pg7OWPL5OnLCO9zngYEwv94ECCmgZianicG8aI=
-Date: Sat, 17 Feb 2024 16:42:11 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH] MAINTAINERS: Drop myself as maintainer of TYPEC port
- controller drivers
-Message-ID: <2024021735-fascism-shield-04f5@gregkh>
-References: <20240215202039.1982539-1-linux@roeck-us.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=YhCLcNVXbaoH/wll3nnffH1n8EPH+2TFaviVYphO93nEVIY44vdc+C0zzeCkrBoedteCn3GOc+r7KpCKmgDsMAVG0wail7rOzhkfyaayrtPAkSg15toa8BM3KVAA4UNsyyaqZccUc7lZ+Q5q6E2VGeThv6Cv+NcrJk/4XRiKudw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=vrU7z599; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=hyTsVZvPOhq79PS84Thyf/yoHFQO7m0i8y9DG0PSI5A=; b=vrU7z599BWlAkeDTdgyyKpXP67
+	nT8ayE66/TNIPNHA8wAzS3p5JtjmKE6Q7RkssnMcZnX03PKWZADdX0R0TUbuWECa4FZipDOwZYtPG
+	mIht76gwd9FOoQCUxCkuAPI3/YOVX2YiMtGnutwusbLEM258WET++ekmvatW/IWGQ/Sw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rbMps-0084H5-7o; Sat, 17 Feb 2024 16:42:40 +0100
+Date: Sat, 17 Feb 2024 16:42:40 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Ciprian Regus <ciprian.regus@analog.com>
+Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>,
+	Dell Jin <dell.jin.code@outlook.com>,
+	Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>,
+	Yang Yingliang <yangyingliang@huawei.com>, netdev@vger.kernel.org
+Subject: Re: [net-next] net: ethernet: adi: adin1110: Reduce the MDIO_TRDONE
+ poll interval
+Message-ID: <b3c8d287-3715-4c03-be3e-e94253f6d2ac@lunn.ch>
+References: <20240216103636.1231815-1-ciprian.regus@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,43 +63,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240215202039.1982539-1-linux@roeck-us.net>
+In-Reply-To: <20240216103636.1231815-1-ciprian.regus@analog.com>
 
-On Thu, Feb 15, 2024 at 12:20:39PM -0800, Guenter Roeck wrote:
-> I am no longer involved in Type-C development and not really current on its
-> status and progress. Recently I have been doing more damage than good.
-> It is time to go.
+On Fri, Feb 16, 2024 at 12:36:32PM +0200, Ciprian Regus wrote:
+> In order to do a clause 22 access to the PHY registers of the ADIN1110,
+> we have to write the MDIO frame to the ADIN1110_MDIOACC register, and
+> then poll the MDIO_TRDONE bit (for a 1) in the same register. The
+> device will set this bit to 1 once the internal MDIO transaction is
+> done. In practice, this bit takes ~50 - 60 us to be set.
 > 
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> The first attempt to poll the bit is right after the ADIN1110_MDIOACC
+> register is written, so it will always be read as 0. The next check will
+> only be done after 10 ms, which will result in the MDIO transactions
+> taking a long time to complete. Reduce this polling interval to 100 us.
+> 
+> Signed-off-by: Ciprian Regus <ciprian.regus@analog.com>
 > ---
->  MAINTAINERS | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  drivers/net/ethernet/adi/adin1110.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 73d898383e51..ae3283f9eceb 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -22864,9 +22864,8 @@ S:	Maintained
->  F:	drivers/usb/typec/mux/pi3usb30532.c
->  
->  USB TYPEC PORT CONTROLLER DRIVERS
-> -M:	Guenter Roeck <linux@roeck-us.net>
->  L:	linux-usb@vger.kernel.org
-> -S:	Maintained
-> +S:	Orphan
->  F:	drivers/usb/typec/tcpm/
->  
->  USB UHCI DRIVER
-> -- 
-> 2.39.2
-> 
+> diff --git a/drivers/net/ethernet/adi/adin1110.c b/drivers/net/ethernet/adi/adin1110.c
+> index d7c274af6d4d..6fca19e6ae67 100644
+> --- a/drivers/net/ethernet/adi/adin1110.c
+> +++ b/drivers/net/ethernet/adi/adin1110.c
+> @@ -467,3 +467,3 @@ static int adin1110_mdio_read(struct mii_bus *bus, int phy_id, int reg)
+>  	ret = readx_poll_timeout(adin1110_read_mdio_acc, priv, val,
+> -				 (val & ADIN1110_MDIO_TRDONE), 10000, 30000);
+> +				 (val & ADIN1110_MDIO_TRDONE), 100, 30000);
+>  	if (ret < 0)
+> @@ -498,3 +498,3 @@ static int adin1110_mdio_write(struct mii_bus *bus, int phy_id,
+>  	return readx_poll_timeout(adin1110_read_mdio_acc, priv, val,
+> -				  (val & ADIN1110_MDIO_TRDONE), 10000, 30000);
+> +				  (val & ADIN1110_MDIO_TRDONE), 100, 30000);
 
-Many thanks for all the help you provided here over the years, it is
-much appreciated!
+The kernel can have trouble sleeping for such short times. It might
+make sense to swap to the _atomic version which spins rather than
+sleeps. If you are just reading a few PHY registers every so often, it
+might not be worth it. But if you have an Ethernet switch and need to
+access a lot of registers, it could make it a bit faster.
 
-I'll go queue this up after -rc5 is out, thanks.
-
-greg k-h
+       Andrew
 
