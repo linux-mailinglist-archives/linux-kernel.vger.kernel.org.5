@@ -1,148 +1,93 @@
-Return-Path: <linux-kernel+bounces-69859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 670AD858F8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:01:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 440AD858F93
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:05:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98C9A1C20E11
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:01:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01833283511
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6EC7B3D7;
-	Sat, 17 Feb 2024 13:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLfIPVlK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292437A73E;
+	Sat, 17 Feb 2024 13:05:05 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5197AE4E;
-	Sat, 17 Feb 2024 13:01:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55EE32E403
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 13:05:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708174882; cv=none; b=sfourq+fz414pnKQg2DG/rhYxYbdVPMBJwzIYXoev8gNIUSPPnp3r/5UIrsbXK9WYkgl7QwPh2dXSdPvoI2jODOzwrqWXq70b/qeRTmx+0DX99hIzyNXqXWbYYIpGQW/GNLS4j/H9nHoxRDMc7t0/vaARj0LP8j0zkNv5h7N5yk=
+	t=1708175104; cv=none; b=DSylIHHwaxiCaiCZjCjhhFnaeRH1OyjheCzp+IhVRbzt6TuqAZa7tOKdY1QhNLXOf+drdY9pmG/tWnKITPntuTGaRvLNl4h5udqYjHlDqbh2sHzh8vAcZYapqMZ+Ns2SuJZVDNoEJOVmjEbWo8AFbdO9GHOntnmRAH9jLTWmiQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708174882; c=relaxed/simple;
-	bh=a0Rnun53xamkzRBY9WJl2kq9P3bR/nz0WyszTolKlyk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=C60jj24jx3XT4yACSFAbD1OU9HMddKsogZlVhYz1KF3suTTpA+8iVApwqCecGhLTqNFimULxDrF7Peh6+m6cLrCqSpj4cXSIxy+rqP5f93uCbCgjYJ2+h0eauyQhT5RldkekBamBgg5c317P+uBgBU/jfy13FEw5+XAvtOacd8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLfIPVlK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B1A23C43601;
-	Sat, 17 Feb 2024 13:01:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708174881;
-	bh=a0Rnun53xamkzRBY9WJl2kq9P3bR/nz0WyszTolKlyk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=MLfIPVlKDb60KRKjOhhOMWVMRX4pusZQ7YBCRYsoVhYfYDf38ZFiXesEKD9gSif0U
-	 M6Ac3ijQy5hFcL8bwv99BAWL3kc9fMQ4/MpzcKx/hQ7h7yj6zIJJ+JtLLfCd6BS3DJ
-	 3K+3auWfgB7YzngLpMSb1hp/7M5pWthbpm+RzkpVh1MuEY/h5uJxUjI1tT8pYsWMQ4
-	 QwBi4ehNe0Fm9aBKp9DcvypGjqc/jQdPDPyKIXcgyJwVO3NCe4/ZjQBbo746l3+Vxm
-	 HUjWkGW+DE/3wunb/n+b0k6aotO9lKZlSqZ4Q/XPzrxc1sJjOYfSCJ+RYB7UYLu523
-	 nXe8Yle4Cg2Rw==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97657C54764;
-	Sat, 17 Feb 2024 13:01:21 +0000 (UTC)
-From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Sat, 17 Feb 2024 21:00:57 +0800
-Subject: [PATCH v4 4/4] dt-bindings: mmc: hisilicon,hi3798cv200-dw-mshc:
- rename to hisilicon,hi3798-dw-mshc
+	s=arc-20240116; t=1708175104; c=relaxed/simple;
+	bh=3nrOran+3E/6VsB078+tXDWuibeDv+JF7NmZjhbKaME=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=myca/iXiWR095iGTd9Iub2xZfBfyScg8TbnVnnAzF0+HETeg81VYukOYAfmQTNER2uLo/azUDlCE1Q8dP4V59PJSXImiMHHQi/vGi2EWbRh+XWUlLNbxJlMYFCgAPVn4q5VauuQh5QFN8PZIV3dbi4XjDBvsJ6GANWsAg94Dies=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-365116383bdso8192005ab.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 05:05:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708175102; x=1708779902;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FThBQXYga9w1cWMyp/yRXDDAEE94fJrZ4ihdn0r8aIQ=;
+        b=Mud0fLVkLydXtyckXb/xGYv0+Be+dBvcA8vZ8Ef8XVRa2J3vTN4S+PHOCRdLLwwlzV
+         bJTwpoXFTW3SKnvB6Fdm8yN6HHz7XZw69X57gDeJ7g80g1Gol/XpAXTKIBs4pqn6Q5CD
+         cd24FLFTQv7U7qmO0IiV6+fNYfqK6pSbOxBdGOlsylLP9lppUsubabm+J7xhl281n2w/
+         +jiK2tC6cHYmwCOjKuuHex/H+mDDmH442TCpPd8sXBn/nrN7w1nR1cbOLsz/n4wpCCli
+         TyLvB4yffD98so7VPk3mfYfjSUra5hC9quQpb/31Um+XCf0Alz7GwloL58JwnIIJefE4
+         mGig==
+X-Forwarded-Encrypted: i=1; AJvYcCW3NZirrZBlWbEo27asLLljyJRT+HnE5iM6jWce4pUY3uM07D4cKI7pL3+cuUtLsBYK7pFbZA451qtajcm5OLOw95rhhsMKJ1ZtRN4+
+X-Gm-Message-State: AOJu0YwrtSVCTIG9uQg79e/d9fGRA4y8CwVxNyWnPOuw87ncIvZOP1BG
+	L9wZoinnPj5N6yZqO9JzSMbPg4fIwNQvJlJsqgUtKaX+6KAfurKMaW/8MjJpccga0OBkpbS9tDO
+	y6AheyHui3RnarsEr1sq/jGxBF1zUIKeXpEZACVKSYEJKfz2e64W666A=
+X-Google-Smtp-Source: AGHT+IEX9WITVv4GtTYdnW4Gcm9u1rwfgoZb080R3rLYEmMo/IgaR6FjIYJegvp5dLVSAfB3thDnrcKX+MYpjj+ledVz59058AXK
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240217-b4-mmc-hi3798mv200-v4-4-0fdd9bd48532@outlook.com>
-References: <20240217-b4-mmc-hi3798mv200-v4-0-0fdd9bd48532@outlook.com>
-In-Reply-To: <20240217-b4-mmc-hi3798mv200-v4-0-0fdd9bd48532@outlook.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>, 
- Jaehoon Chung <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>
-Cc: Igor Opaniuk <igor.opaniuk@linaro.org>, 
- tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>, 
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708174876; l=1929;
- i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=UhNvYRHLXQw+Q46M6kTVm5H9HZIII379G5nTtWehYUE=;
- b=f+IL42Ls385Vj/Qf19jgGJe7gzOt6DV1rUWoN9fUDz4F1kvCeQ0aB5taB+NkzftWKGR8IoLaQ
- qaGDiAx5knCAm7Fx5kZhEk95FMFTHPgDK7UFVIoULaWGdzuHbvUIcWz
-X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
- pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
-X-Endpoint-Received:
- by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
-X-Original-From: Yang Xiwen <forbidden405@outlook.com>
-Reply-To: <forbidden405@outlook.com>
+X-Received: by 2002:a05:6e02:388c:b0:363:a059:670b with SMTP id
+ cn12-20020a056e02388c00b00363a059670bmr436688ilb.4.1708175102569; Sat, 17 Feb
+ 2024 05:05:02 -0800 (PST)
+Date: Sat, 17 Feb 2024 05:05:02 -0800
+In-Reply-To: <00000000000046238c05f69776ab@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000033f84e06119382d7@google.com>
+Subject: Re: [syzbot] [ntfs3?] kernel BUG in ntfs_end_buffer_async_read
+From: syzbot <syzbot+72ba5fe5556d82ad118b@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, anton@tuxera.com, 
+	axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, linkinjeon@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: Yang Xiwen <forbidden405@outlook.com>
+syzbot suspects this issue was fixed by commit:
 
-Add binding and an extra property for Hi3798MV200 DWMMC specific extension.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
----
- .../bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+    fs: Block writes to mounted block devices
 
-diff --git a/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
-index f3dc973cb490..d635bf3a5596 100644
---- a/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
-+++ b/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/mmc/hisilicon,hi3798cv200-dw-mshc.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Hisilicon Hi3798CV200 SoC specific extensions to the Synopsys DWMMC controller
-+title: Hisilicon HiSTB SoCs specific extensions to the Synopsys DWMMC controller
- 
- maintainers:
-   - Yang Xiwen <forbidden405@outlook.com>
-@@ -13,6 +13,7 @@ properties:
-   compatible:
-     enum:
-       - hisilicon,hi3798cv200-dw-mshc
-+      - hisilicon,hi3798mv200-dw-mshc
- 
-   reg:
-     maxItems: 1
-@@ -34,6 +35,12 @@ properties:
-       - const: ciu-sample
-       - const: ciu-drive
- 
-+  hisilicon,sap-dll-reg:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      A phandle points to the sample delay-locked-loop(DLL)
-+      syscon node, used for tuning.
-+
- required:
-   - compatible
-   - reg
-@@ -44,6 +51,18 @@ required:
- allOf:
-   - $ref: synopsys-dw-mshc-common.yaml#
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: hisilicon,hi3798mv200-dw-mshc
-+    then:
-+      required:
-+        - hisilicon,sap-dll-reg
-+    else:
-+      properties:
-+        hisilicon,sap-dll-reg: false
-+
- unevaluatedProperties: false
- 
- examples:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14016cf8180000
+start commit:   dfab92f27c60 Merge tag 'nfs-for-6.5-1' of git://git.linux-..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=71a52faf60231bc7
+dashboard link: https://syzkaller.appspot.com/bug?extid=72ba5fe5556d82ad118b
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c987eca80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=144a738f280000
 
--- 
-2.43.0
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
