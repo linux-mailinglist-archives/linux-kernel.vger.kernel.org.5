@@ -1,103 +1,180 @@
-Return-Path: <linux-kernel+bounces-69715-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69716-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49390858DA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:32:25 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EA40858DB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:32:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3F3D2830DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:32:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41936B21BDB
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:32:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797601CF99;
-	Sat, 17 Feb 2024 07:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF9E17727;
+	Sat, 17 Feb 2024 07:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="PuMWz8ZT"
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FCF31CAB8
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 07:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.19
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="REo/RTBu"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8320E1D553;
+	Sat, 17 Feb 2024 07:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708155122; cv=none; b=FpWPKO6AK/qucmH1lEKsql72PrYl0COrhtS3S8Km8g9xLgcnlXYLDA1NSuyKvg2EI3CgnEKh+PI4u4Rs4CiDMgEL7rZ++7P5HuqU0sNZg+JeHNDVyPQrJnJGmmfDBA4ikzmgP/0kWUgdQzb6+JxiaksB00iGCEuQVuYL6wPkIVU=
+	t=1708155151; cv=none; b=g6TfllgdtKm2+Ri6/xuYx8cL2duM3/uxQVCSsxIMVwzmJkRgQh23nwoGNNosgD1o235iEhRnV/qaWPqmS0bC0/VPmpm4qPh8NSCBRFKFaPejjTLLNxabJaQNlrNlIGxmrB8U5NrlHlReryZ4LMrzJAWq2qyKKuGuwSvXP4IZlvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708155122; c=relaxed/simple;
-	bh=3wE0OY454mubqM9kqU3kHG80CJKYun5q3sKzkDVg2vs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QdpjQe1rFbc3hTB26BTEGsdJE9XEjg5j1o6xvZjojeK/ivj7gZOuPA+MXvZbZIv+Wy2nujPC1VkZXM3MxtQSXeDAvBPrQDbtHnE25KK3WJLnJ8LdmeSnMZ8H13OisBBJK/f3PoiLo14G9L1Dbp8ekuFsPGRg01VW30PJDWffiD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=PuMWz8ZT; arc=none smtp.client-ip=80.12.242.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([92.140.202.140])
-	by smtp.orange.fr with ESMTPA
-	id bF9rr7RBlRhCJbF9tr0LVY; Sat, 17 Feb 2024 08:30:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1708155049;
-	bh=5vKyutSF5vbJeBYhO1altd+rC0SgjetnS/HWHgINoOs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=PuMWz8ZTELKEI8vMRbQe6sW8sB9UIkS8KOjwo8ppSOudEaxa0Lgmi5UFIpWeQIVYT
-	 Hg8au41CCBRXki8wWZso2guY1wUC/4Mpf9rpSHiDTqjE6ojSzFGiVYeurLICDSeOfK
-	 E1V27m6vMF9Y8tKWjykO3djjzhW9CCLiZv23uFgbmH15+Wp+kmzYATvvcH1vDXlGt0
-	 RP2krzxKEzp5Q+T8aY0w85zPLl6bRvtFMKobcgCoPOdU7R8lTydn4Dbr63omIqg8yb
-	 b/ySRMCSRFaOeD5yl6/hYQuMj6ITg227LEOy9bZmYLlFwrQTnHW288nsF53SWkgXvd
-	 J1wZeKzEafSaA==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 17 Feb 2024 08:30:49 +0100
-X-ME-IP: 92.140.202.140
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-bluetooth@vger.kernel.org
-Subject: [PATCH 2/2] Bluetooth: btbcm: Use devm_kstrdup()
-Date: Sat, 17 Feb 2024 08:30:42 +0100
-Message-ID: <272fb12e9392c0bc6fead23931f98ea45bf6fc69.1708154999.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <79b9c9d9f86b4c573f0d3f2dac0a6fc9e6024058.1708154999.git.christophe.jaillet@wanadoo.fr>
-References: <79b9c9d9f86b4c573f0d3f2dac0a6fc9e6024058.1708154999.git.christophe.jaillet@wanadoo.fr>
+	s=arc-20240116; t=1708155151; c=relaxed/simple;
+	bh=ccjuSqOZPclsskdcJMYR2Q3/YUCIG6fCIeDpqvIsxfk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Dp6HhaM4hSFh/ngBt70MLqMO0UB7oCoVPAOn8PWtNbCUuw/eTJshvvOg6p+ftDFbuX0zNDYivXS1FOsy6yNlcinU3NEFAQzy5VAC5qFnCiB87Rz1tVDGB55FsCOwrcOTZ97ZkQ12M3V2HHzDw1sWUCwq/V9A4gGg4kAgZL1X3NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=REo/RTBu; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708155150; x=1739691150;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ccjuSqOZPclsskdcJMYR2Q3/YUCIG6fCIeDpqvIsxfk=;
+  b=REo/RTBuEGbVtXwGOb7X+qBJRmwHfW5pQaELEGkcAzXcyprypdGk3a12
+   m8/PbyBtrW7Tv10B9HA4OUWmOASZ/BRQ89Pr1wqSW7b/ElYHuYj0VXMeG
+   CQj+TfqsHF9bAgvKzvLeUji99p1z/3kOtlo2VYSaZ7PgvaUJXDe/x0OLA
+   vz6h8yxeMWRQs323kLYdim2DEIZj8F85AnN6Yw2VLbbPIiM04aFPXw8XZ
+   Z5JLGcOPQKJE6zNnE7Ux4dR3MHLDGHJSonHtM70rDJ2WaU2NbYXM1k6Vm
+   nUdQGmK14ysc4QbtAJiBU+ZlTgAHf2xPeZpsME+6PYtBdQD2HmHaROR1w
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2433567"
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="2433567"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 23:32:29 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
+   d="scan'208";a="8656739"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by fmviesa004.fm.intel.com with ESMTP; 16 Feb 2024 23:32:23 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rbFBN-0001vY-01;
+	Sat, 17 Feb 2024 07:32:21 +0000
+Date: Sat, 17 Feb 2024 15:31:26 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ross Philipson <ross.philipson@oracle.com>,
+	linux-kernel@vger.kernel.org, x86@kernel.org,
+	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
+	linux-efi@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, ross.philipson@oracle.com,
+	dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
+	ardb@kernel.org, mjg59@srcf.ucam.org,
+	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
+	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
+	nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
+	davem@davemloft.net, kanth.ghatraju@oracle.com,
+	trenchboot-devel@googlegroups.com
+Subject: Re: [PATCH v8 15/15] x86: EFI stub DRTM launch support for Secure
+ Launch
+Message-ID: <202402171503.kLhNHtkM-lkp@intel.com>
+References: <20240214221847.2066632-16-ross.philipson@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240214221847.2066632-16-ross.philipson@oracle.com>
 
-Use devm_kstrdup() instead of hand-writing it.
-It is less verbose.
+Hi Ross,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/bluetooth/btbcm.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+kernel test robot noticed the following build errors:
 
-diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
-index 01d2343b4978..f9a7c790d7e2 100644
---- a/drivers/bluetooth/btbcm.c
-+++ b/drivers/bluetooth/btbcm.c
-@@ -544,7 +544,6 @@ static const char *btbcm_get_board_name(struct device *dev)
- 	struct device_node *root;
- 	char *board_type;
- 	const char *tmp;
--	int len;
- 
- 	root = of_find_node_by_path("/");
- 	if (!root)
-@@ -554,9 +553,7 @@ static const char *btbcm_get_board_name(struct device *dev)
- 		return NULL;
- 
- 	/* get rid of any '/' in the compatible string */
--	len = strlen(tmp) + 1;
--	board_type = devm_kzalloc(dev, len, GFP_KERNEL);
--	strscpy(board_type, tmp, len);
-+	board_type = devm_kstrdup(dev, tmp, GFP_KERNEL);
- 	strreplace(board_type, '/', '-');
- 	of_node_put(root);
- 
+[auto build test ERROR on char-misc/char-misc-testing]
+[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master herbert-crypto-2.6/master linus/master v6.8-rc4 next-20240216]
+[cannot apply to tip/x86/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Ross-Philipson/x86-boot-Place-kernel_info-at-a-fixed-offset/20240215-064712
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/20240214221847.2066632-16-ross.philipson%40oracle.com
+patch subject: [PATCH v8 15/15] x86: EFI stub DRTM launch support for Secure Launch
+config: i386-randconfig-052-20240215 (https://download.01.org/0day-ci/archive/20240217/202402171503.kLhNHtkM-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240217/202402171503.kLhNHtkM-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402171503.kLhNHtkM-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> drivers/firmware/efi/libstub/x86-stub.c:862:18: error: invalid input size for constraint 'a'
+     862 |                       : : "a" (dlinfo->dl_handler), "D" (&dlinfo->bl_context));
+         |                                ^
+   1 error generated.
+
+
+vim +/a +862 drivers/firmware/efi/libstub/x86-stub.c
+
+   813	
+   814	static void efi_secure_launch(struct boot_params *boot_params)
+   815	{
+   816		struct slr_entry_uefi_config *uefi_config;
+   817		struct slr_uefi_cfg_entry *uefi_entry;
+   818		struct slr_entry_dl_info *dlinfo;
+   819		efi_guid_t guid = SLR_TABLE_GUID;
+   820		struct slr_table *slrt;
+   821		u64 memmap_hi;
+   822		void *table;
+   823		u8 buf[64] = {0};
+   824	
+   825		table = get_efi_config_table(guid);
+   826	
+   827		/*
+   828		 * The presence of this table indicated a Secure Launch
+   829		 * is being requested.
+   830		 */
+   831		if (!table)
+   832			return;
+   833	
+   834		slrt = (struct slr_table *)table;
+   835	
+   836		if (slrt->magic != SLR_TABLE_MAGIC)
+   837			return;
+   838	
+   839		/* Add config information to measure the UEFI memory map */
+   840		uefi_config = (struct slr_entry_uefi_config *)buf;
+   841		uefi_config->hdr.tag = SLR_ENTRY_UEFI_CONFIG;
+   842		uefi_config->hdr.size = sizeof(*uefi_config) + sizeof(*uefi_entry);
+   843		uefi_config->revision = SLR_UEFI_CONFIG_REVISION;
+   844		uefi_config->nr_entries = 1;
+   845		uefi_entry = (struct slr_uefi_cfg_entry *)(buf + sizeof(*uefi_config));
+   846		uefi_entry->pcr = 18;
+   847		uefi_entry->cfg = boot_params->efi_info.efi_memmap;
+   848		memmap_hi = boot_params->efi_info.efi_memmap_hi;
+   849		uefi_entry->cfg |= memmap_hi << 32;
+   850		uefi_entry->size = boot_params->efi_info.efi_memmap_size;
+   851		memcpy(&uefi_entry->evt_info[0], "Measured UEFI memory map",
+   852			strlen("Measured UEFI memory map"));
+   853	
+   854		if (slr_add_entry(slrt, (struct slr_entry_hdr *)uefi_config))
+   855			return;
+   856	
+   857		/* Jump through DL stub to initiate Secure Launch */
+   858		dlinfo = (struct slr_entry_dl_info *)
+   859			slr_next_entry_by_tag(slrt, NULL, SLR_ENTRY_DL_INFO);
+   860	
+   861		asm volatile ("jmp *%%rax"
+ > 862			      : : "a" (dlinfo->dl_handler), "D" (&dlinfo->bl_context));
+   863	}
+   864	
+
 -- 
-2.43.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
