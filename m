@@ -1,100 +1,95 @@
-Return-Path: <linux-kernel+bounces-69960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCF828590D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:20:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90B4A8590DA
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:21:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 385762827A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:20:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3E3B1C20DCE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3077D3E0;
-	Sat, 17 Feb 2024 16:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E4A7CF2D;
+	Sat, 17 Feb 2024 16:20:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WN1jiU2y"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="YIfeNqHX"
+Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787B77C6DB;
-	Sat, 17 Feb 2024 16:20:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C477CF0C;
+	Sat, 17 Feb 2024 16:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708186829; cv=none; b=ZDzaJpuz06o+W+wDO6TlpsyvaOklLLq3WcWxe514/vTY+rrNkEteTCUQPqJjwmPwqNgVE62MJ5Dz6YmnFXBnrLeT2+gIbaq2On6wGWxCA9+ZiVmgHgmHP+LvXkrnyuFIScZ3O88Yi6TFMcxwr1QKGeg5qUzNBnnWR80mouwtArE=
+	t=1708186840; cv=none; b=gprqEi4BxBuM8eCV4svnRnSe/ZE7Iv8pzplW0xRGSIfYxKhMNty3Jeio+5i9/Kgqn42mmDyJeFdM5qNQ9FsC7IdBD5OrP+h06ekt/P0Evf4N1YvYXk/zvNmB9+jli0nAwe0tPLd0evifIdGN6cfWKuCQcwGA1O+p86KGEwuyLdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708186829; c=relaxed/simple;
-	bh=pinq5hJ41Wz3DzVBX9u6x2N9ZPrqhuJR0IdquEK3YuI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RUhPwHc85xvh48HQsWrvGtimbVOzXqTGfMFvUyvPilZDa9zS2em1pV9P9qbdnx4dAIzYajxdj/j6dzO2GQGC0YdM+PV4Yd3pHPSrSgUxsuZwG9niYOnARXNVaVidZK1TuUngt8Iu6jJPsOBjxzksstZWBXPDiM4Ij1C2X4kuimM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WN1jiU2y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 853C5C433C7;
-	Sat, 17 Feb 2024 16:20:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708186829;
-	bh=pinq5hJ41Wz3DzVBX9u6x2N9ZPrqhuJR0IdquEK3YuI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WN1jiU2yBqMjqJfbIuz2kzJlq7oSN/6cZY1QrbEXNDMckrfF3fiEkJwk88/arbiKd
-	 4z3bqFXNKrHdtFFJUUTxDJ2M0B3sTfZ9t8/rTBMrjnaInQI9xvgfPdGep/q9sQXimK
-	 h2XkRSCiqtvjIB7xzzBQZajg9cxpcWlXTRCZ4OexvTYWVzUVf1mqZNHnf0dwSfnUJ/
-	 MQq40GF95Vo5TADjaFozy+wh5QR7b2MA4A31lHJEp5sxtkrTsHEHiqbqSF6zb+HGpT
-	 CwVhHBd9pBjcqI2FAjNfHKWIqxkVDxKdd7AtB4iZoZHACH7nI/yNRYRoibFtpBo2/b
-	 SSb9eiAk6KSzg==
-Date: Sat, 17 Feb 2024 16:20:14 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: David Lechner <dlechner@baylibre.com>
-Cc: linux-iio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
- <conor+dt@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>,
- Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org, Stefan Popa <stefan.popa@analog.com>,
- devicetree@vger.kernel.org, Julien Stephan <jstephan@baylibre.com>
-Subject: Re: [PATCH v4 2/2] iio: adc: ad7380: new driver for AD7380 ADCs
-Message-ID: <20240217162014.17033d64@jic23-huawei>
-In-Reply-To: <CAMknhBGg0hHXrd3K92tgHHTnfbk7dLAMvtTSZff1P-C3=9nFaw@mail.gmail.com>
-References: <20240110-ad7380-mainline-v4-0-93a1d96b50fa@baylibre.com>
-	<20240110-ad7380-mainline-v4-2-93a1d96b50fa@baylibre.com>
-	<CAMknhBGg0hHXrd3K92tgHHTnfbk7dLAMvtTSZff1P-C3=9nFaw@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708186840; c=relaxed/simple;
+	bh=RMZ/XWlCqeCx+75CqNA5sIFLnWQchRr9VYsbdrIqm8Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mjQ336eqUlcQ74ZJkAd4r1xeVRA0YdgM7vUO0FT/E2dbi41m6c+EOG4YvyQM+RH/4/ACVOpzEwCFBjGxoaSqYEjRexVGaVqqAQ1VxOdgQZc7w3ZmvRx6nuCKJuYTVoFpAJHn8roXRTi/9vWKgmYi+q5/CZb7Y6lNiMcRWG/n5Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=YIfeNqHX; arc=none smtp.client-ip=195.181.215.36
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
+	t=1708186834; bh=RMZ/XWlCqeCx+75CqNA5sIFLnWQchRr9VYsbdrIqm8Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=YIfeNqHXk/5q7NU9A7y1Pv7CWXn4HoF6uIM+QUJCPS7MOGeWDPu1MWi2QquItbGob
+	 bzmUlzFCCggh4tMNC9HUo+6w+T8Ji7+utFe46Dci8cYJYCDfG5FWAMe7qBJUfb9w8c
+	 SsxGtHLv0Z92T7GIfvSaSnP7TBw2dvZa6FNs3Y54=
+From: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>
+To: linux-kernel@vger.kernel.org
+Cc: Ondrej Jirman <megi@xff.cz>,
+	stable@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Xu Yang <xu.yang_2@nxp.com>,
+	linux-usb@vger.kernel.org (open list:USB TYPEC PORT CONTROLLER DRIVERS)
+Subject: [PATCH] Revert "usb: typec: tcpm: reset counter when enter into unattached state after try role"
+Date: Sat, 17 Feb 2024 17:20:21 +0100
+Message-ID: <20240217162023.1719738-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, 16 Feb 2024 14:34:01 -0600
-David Lechner <dlechner@baylibre.com> wrote:
+From: Ondrej Jirman <megi@xff.cz>
 
-> On Wed, Jan 10, 2024 at 2:29=E2=80=AFPM David Lechner <dlechner@baylibre.=
-com> wrote:
-> >
-> > This adds a new driver for the AD7380 family ADCs.
-> >
-> > The driver currently implements basic support for the AD7380, AD7381,
-> > AD7383, and AD7384 2-channel differential ADCs. Support for additional
-> > single-ended and 4-channel chips that use the same register map as well
-> > as additional features of the chip will be added in future patches.
-> > =20
->=20
-> Hi Jonathan,
->=20
-> We have some additional features to add to this driver we are working
-> on that look like they might affect userspace. Can we hold off on
-> sending this one to Greg for 6.9? That way we will have more time to
-> sort that out without having to worry about breaking userspace.
+The reverted commit makes the state machine only ever go from SRC_ATTACH_WAIT
+to SNK_TRY in endless loop when toggling. After revert it goes to SRC_ATTACHED
+after initially trying SNK_TRY earlier, as it should for toggling to ever detect
+the power source mode and the port is again able to provide power to attached
+power sinks.
 
-Ok. Hopefully rebasing my tree won't cause others too many downstream
-problems. Generally I only do this if there is an invalid tag or similar
-that must be fixed.  There is normally a window of a weekish
-between me picking it up and pushing out for linux-next to pick up and
-hopefully issues like this get spotted in that window.
-Ah well, sometimes things don't work out how we would like them to.
+This reverts commit 2d6d80127006ae3da26b1f21a65eccf957f2d1e5.
 
-Dropped the 3 patches (original driver and a fix) from the togreg branch.
+Cc: stable@vger.kernel.org
+Fixes: 2d6d80127006 ("usb: typec: tcpm: reset counter when enter into unattached state after try role")
+Signed-of-by: Ondrej Jirman <megi@xff.cz>
+---
+ drivers/usb/typec/tcpm/tcpm.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-Jonathan
+See https://lore.kernel.org/all/odggrbbgjpardze76qiv57mw6tllisyu5sbrta37iadjzwamcv@qr3ubwnlzqqt/
+for more.
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index f7d7daa60c8d..295ae7eb912c 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -3743,9 +3743,6 @@ static void tcpm_detach(struct tcpm_port *port)
+ 	if (tcpm_port_is_disconnected(port))
+ 		port->hard_reset_count = 0;
+ 
+-	port->try_src_count = 0;
+-	port->try_snk_count = 0;
+-
+ 	if (!port->attached)
+ 		return;
+ 
+-- 
+2.43.0
+
 
