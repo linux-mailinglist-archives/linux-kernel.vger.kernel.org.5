@@ -1,146 +1,152 @@
-Return-Path: <linux-kernel+bounces-69694-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7B76858D63
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 06:42:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28B29858D65
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 06:53:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D2D41C21167
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:42:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8BCB52834AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEFD1CA9B;
-	Sat, 17 Feb 2024 05:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08F701CAA4;
+	Sat, 17 Feb 2024 05:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="K3G6Op5s"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jsGZ3Lum"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CAC149DE0
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 05:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7959F23D0;
+	Sat, 17 Feb 2024 05:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708148564; cv=none; b=tTuRJu9IaBVA8gFs1vhe+2vLJNTtzhMt5xKHX1OeUe0KhNFPhzj/OfBn5K8FaTDimVhQtU339Q2y+27KzVhpwbdTZ2Aw4QVgZmNTD6NCOFl3ZHxytvvEsMBZ2v3xK5bJ1w9zefpHM4CV5rp6Hltt6FxcWeJnDOIlM1yREEzLhI8=
+	t=1708149213; cv=none; b=tZljfwliuAmfQivT09ICGlB+B2i7EGYagMINZZH8Ye8wvXBnrx/hdEsskzMtbxfqkA1hclZhp5/dcYwXfmRxxc+IyTSjvFUHAakD90Fu+eCvylL925/iIg5e5GLB7V4w4hHTJZWc6z3tJcDgi0nPAbUJZTtF9WEJm68wzBQ4uG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708148564; c=relaxed/simple;
-	bh=Q2XJqDi+VWb+RWFjBl96LehTOOg8v5aVoczUYhI4x1E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FoW0ZCn9aS2qnnCvwZ2kHj/KejGu1kQpoefi+RI2KxFUBTIvy0soPjSaPl3sIkRUcNwH3o7pRPN8GAcns28avVZWxTccH9A58lJEjFz/F4fmjZBBBoje1vdCAhA6ovETDGlkLbhwJkipR5ScrdkV1UEITSD0KBYTjBVuIR3H3Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=K3G6Op5s; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-511ac32fe38so4066255e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:42:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1708148561; x=1708753361; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q2XJqDi+VWb+RWFjBl96LehTOOg8v5aVoczUYhI4x1E=;
-        b=K3G6Op5sje0wQ/2M8WNZ5+PUz2OXrBG5Tms28bIyeb2v4GJVfJ4KyZ9MP1ACdYQVuK
-         NXK9XHOMf7mzge/ec2Bt0Pnj+mGTicMQiwDK1BpuN4sea8rn8CUi/Lgz8mcd5dEVcWP6
-         FcDPKWIL1d++2ihJoIcKsY1E72LfOPWSCEmRGrR5SzovEY+nQrD6okhGK1oe5Vp59Vwb
-         KXbXL+12Bk85ythDrC8xuANCdnV4b2O51jW2vWYSqixnBZ1o62U+Jsx9UH5OLCf8jYZd
-         6HzRl5Y3c8TtHIscZ8B0QKnPwRPfg6ZnQIAw9cxZvE4SLc992z36RZKEOqP7PZ5VSZjl
-         DJ3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708148561; x=1708753361;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Q2XJqDi+VWb+RWFjBl96LehTOOg8v5aVoczUYhI4x1E=;
-        b=lR2+LdU3m4KYN0Rhe5NTNQNvp2dkcbxPjgSqhA42BoUX9EXF7Be4UTnipLPLrN6jq4
-         jfNC2e31cC2b787zdjDxaHL5rVT6uAqA0WMcT5Zn7ygOHWJXdy3MJGkk9Rhloz0MOyBV
-         scbvqW6rLo8m1/hEuBnWhg4IdRNiXMdiMGK3GAh2jrniYKBmotLFLKlEmby/j5XdI50L
-         afYO/XUS24f7TyH5vjZTyK5/qfNcyOdGuSJOgvw0XLllZxZzP1e/JB1UbNqLuAUAVVgw
-         GLHd1Fz7Dn2bNBY4m6nB5TMpLM8QD3pgy5U3gt1HnwDcNipVGe8lGBY9ngMXCKo+2ZXP
-         rYnw==
-X-Forwarded-Encrypted: i=1; AJvYcCV0Q3onxixUOIMSS7vwO8ssOw6+74WMg+tsixtZpJr8wxUqZPBGHXVj0FfjaFCM8qFLOR1xcxaGoZ0MYlvA3P1EKOvrhCezPDLGsMrI
-X-Gm-Message-State: AOJu0YzLOn/PaI60GSA5mXmDnzy/MFZP5Y2qFA7mKbuz4HpT7/WN2+/P
-	HQqKziCAvf4gDKByH+D3RxBeyu6UzHEtS9j3wKqflAPDaIJVC076u6Lcw1SvlPcT68IE/3NVqt3
-	7hN7yz5mXqoNEN+twIG6ji1+Lkkmly4Flm2GiLg==
-X-Google-Smtp-Source: AGHT+IGNn3qXE8Q2rV0AbEGEYH7CRDHvt7ZbR9eJEmA9ut7fgUgx1eQcMY50Tzh0dWXfbhyTfzgBRj3nELnm/DfNA7E=
-X-Received: by 2002:a05:6512:526:b0:511:96d0:5ae1 with SMTP id
- o6-20020a056512052600b0051196d05ae1mr5084453lfc.40.1708148560820; Fri, 16 Feb
- 2024 21:42:40 -0800 (PST)
+	s=arc-20240116; t=1708149213; c=relaxed/simple;
+	bh=J97O+8s7zLrg4/007e5d7/fK2OrxoqmwttL4iP9Zm9g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=U5HRWDzsF+5+dgGAZEr3SkLy5sLz5hPVzQ2feOBu7LB+dTy0R0pfXpJRnBaatEhkD2UP4ToktYfzo/YWRcBn8gz5zTDS2P/5GXcc5D5I9QtNIm2uC6XAqWsYs+nZdOZJURb5YuSahD+g6RTUq7xNMNK6Gvd1HIl4Hy4Z1Y9s2FU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jsGZ3Lum; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41H5rSt1006585;
+	Sat, 17 Feb 2024 05:53:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=XOzeWI9vZsx3HRpuXAkLJFYxgRaUp8c1O6F9yf9gJFI=; b=js
+	GZ3LumrrUvDqo5kk5yi1w99j0Klt2WZx7ZzygbuSKTdbwLlyfNg8/Lqom5XauIkh
+	WGlsDEeUxysPklVXJ9DTsUACcmUBogPVJX5miLT3EnSWw0Vzc3K9UUiSdUAeUt2F
+	MaoiDXlvKlZymonVse+rQFGdvtj8w5SAueaWc6lzh3o418nwsyd8ge3Myku5XRD8
+	mKULwU2YwAMay7adLmQ6RaefE99tCudZBDBBSNfLBExhjcHvLX4FgQywtz367Uyk
+	fBmWdiotw6ocktavY1uv+Okw8LQMBw3pNRUNlSSy2fikSEUVyMGRh4jUbYAwqUgK
+	47y0VenroHo2w3aaxLTQ==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wamd505pr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 05:53:27 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41H5rQmJ001810
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 05:53:27 GMT
+Received: from [10.216.0.128] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 16 Feb
+ 2024 21:53:23 -0800
+Message-ID: <0870fec7-e47d-40d5-a782-d2fc638c3b05@quicinc.com>
+Date: Sat, 17 Feb 2024 11:23:19 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <20240127161753.114685-15-apatel@ventanamicro.com> <87jzn4ctks.ffs@tglx>
- <CAAhSdy2aeyJBcMVre12jGwU52oP9Z=1emB-bcYxygdR3QhP+6w@mail.gmail.com> <878r3kcg7e.ffs@tglx>
-In-Reply-To: <878r3kcg7e.ffs@tglx>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Sat, 17 Feb 2024 11:12:29 +0530
-Message-ID: <CAK9=C2WWBrUae2hduUBwuxd8=23_KO3-x1fF=BaTtxJMHVyFrg@mail.gmail.com>
-Subject: Re: [PATCH v12 14/25] irqchip/sifive-plic: Convert PLIC driver into a
- platform driver
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Anup Patel <anup@brainfault.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
-	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
-	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb-storage: Add US_FL_FIX_INQUIRY quirk for Intenso
+ Twist Line USB 3.2
+Content-Language: en-US
+To: Alan Stern <stern@rowland.harvard.edu>
+CC: <tern@rowland.harvard.edu>, <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_wcheng@quicinc.com>,
+        <quic_jackp@quicinc.com>
+References: <20240214111721.18346-1-quic_selvaras@quicinc.com>
+ <39cd8789-7764-4904-8cb9-21f239b3c04c@rowland.harvard.edu>
+From: Selvarasu Ganesan <quic_selvaras@quicinc.com>
+In-Reply-To: <39cd8789-7764-4904-8cb9-21f239b3c04c@rowland.harvard.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: AmRIWnTJhhN0nEY74VTqZbAjN3BHrEnw
+X-Proofpoint-GUID: AmRIWnTJhhN0nEY74VTqZbAjN3BHrEnw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-17_02,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=885 mlxscore=0 suspectscore=0 bulkscore=0
+ spamscore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402170042
 
-On Sat, Feb 17, 2024 at 1:52=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Fri, Feb 16 2024 at 22:41, Anup Patel wrote:
-> > On Fri, Feb 16, 2024 at 9:03=E2=80=AFPM Thomas Gleixner <tglx@linutroni=
-x.de> wrote:
-> >> I don't think that removing the setup protection is correct.
-> >>
-> >> Assume you have maxcpus=3DN on the kernel command line, then the above
-> >> for_each_online_cpu() loop would result in cpuhp_setup =3D=3D true whe=
-n the
-> >> instances for the not onlined CPUs are set up, no?
-> >
-> > A platform can have multiple PLIC instances where each PLIC
-> > instance targets a subset of HARTs (or CPUs).
-> >
-> > Previously (before this patch), we were probing PLIC very early so on
-> > a platform with multiple PLIC instances, we need to ensure that cpuhp
-> > setup is done only after PLIC context associated with boot CPU is
-> > initialized hence the plic_cpuhp_setup_done check.
-> >
-> > This patch converts PLIC driver into a platform driver so now PLIC
-> > instances are probed after all available CPUs are brought-up. In this
-> > case, the cpuhp setup must be done only after PLIC context of all
-> > available CPUs are initialized otherwise some of the CPUs crash
-> > in plic_starting_cpu() due to lack of PLIC context initialization.
->
-> You're missing the point.
->
-> Assume you have 8 CPUs and 2 PLIC instances one for CPU0-3 and one for
-> CPU4-7.
->
-> Add "maxcpus=3D4" on the kernel command line, then only the first 4 CPUs
-> are brought up.
->
-> So at probe time cpu_online_mask has bit 0,1,2,3 set.
->
-> When the first PLIC it probed the loop which checks the context for each
-> online CPU will not clear cpuhp_setup and the hotplug state is installed.
->
-> Now the second PLIC is probed (the one for the offline CPUs 4-7) and the
-> loop will again not clear cpuhp_setup and it tries to install the state
-> again, no?
+Hi Alan,
 
-Ahh, yes. Good catch.
+On 2/14/2024 8:34 PM, Alan Stern wrote:
+> On Wed, Feb 14, 2024 at 03:17:21AM -0800, Selvarasu Ganesan wrote:
+>> The Intenso Twist Line USB 3.2 flash drive fails to respond to the
+>> INQUIRY data stage request for a 36 bulk in request from the host. This
+>> commit adds the US_FL_FIX_INQUIRY flag to fake the INQUIRY command for
+>> this device, preventing a storage enumeration failure.
+>>
+>> USBMON log:
+>> ffffff8a3ee06a00 3192811972 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+>> ffffff8a3ee06a00 3192862051 C Ci:2:009:0 -2 0
+>> ffffff8a3ee06a00 3192862185 S Ci:2:009:0 s c0 33 0000 0000 0002 2 <
+>> ffffff8a3ee06a00 3192912299 C Ci:2:009:0 -2 0
+>> ffffff8a3ee06e00 3193040068 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+>> ffffff8a3ee06e00 3193040214 C Ci:2:003:0 0 4 = 880b0700
+>> ffffff8a3ee06e00 3193040279 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+>> ffffff8a3ee06e00 3193040427 C Ci:2:002:0 0 4 = 00010000
+>> ffffff8a3ee06e00 3193040470 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+>> ffffff8a3ee06e00 3193040672 C Ci:2:002:0 0 4 = 03050000
+>> ffffff892b309500 3193824092 S Ci:2:009:0 s a1 fe 0000 0000 0001 1 <
+>> ffffff892b309500 3193824715 C Ci:2:009:0 0 1 = 00
+>> ffffff892b309500 3193825060 S Bo:2:009:2 -115 31 = 55534243 01000000 24000000 80000612 00000024 00000000 00000000 000000
+>> ffffff892b309500 3193825150 C Bo:2:009:2 0 31 >
+>> ffffff8b8419d400 3193825737 S Bi:2:009:1 -115 36 <
+>> ffffff8a3ee06400 3194040175 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+>> ffffff8a3ee06400 3194040372 C Ci:2:003:0 0 4 = 880b0700
+>> ffffff89bee5b100 3194040591 S Ci:2:002:0 s a3 00 0000 0003 0004 4 <
+>> ffffff89bee5b100 3194040681 C Ci:2:002:0 0 4 = 00010000
+>> ffffff89bee5b100 3194040999 S Ci:2:002:0 s a3 00 0000 0004 0004 4 <
+>> ffffff89bee5b100 3194041083 C Ci:2:002:0 0 4 = 03050000
+>> ffffff8a3ee06a00 3195040349 S Ci:2:003:0 s c1 04 0930 bf80 0004 4 <
+> 
+> This is very surprising.  A mass-storage device that doesn't respond to
+> INQUIRY commands won't work with Windows or Mac OSX.  Have you tried
+> testing the device with those operating systems to see what they send
+> and how it responds?
+> 
+> Alan Stern
 
-For the "maxcpus" in kernel command-line, we can't rely on the
-cpu_online_mask. I will preserve the plic_cpuhp_setup_done
-check in the next revision.
+Thanks for your review comments.
+To reconfirm, we have tested this device with Windows and its working
+fine. We noticed that the INQUIRY command only fails when this device is
+connected to our DUT via a USB2.0 hub.
+We also tested various Intensio mass storage devices and observed the
+same behavior.
+We have confirmed that there are no issues with our DUT setup as we have
+tested different mass storage devices (such as Kingston usb3.2, Samsung
+ssd 3.2) and they are working fine. We also observed responses for the
+INQUIRY command for other working mass storage devcies.
+We suspect that this issue is specific to Intensio devices when used
+with a USB2.0 hub on a Linux host. We are still investigating this issue
+on other hosts using an external hub.
 
-Regards,
-Anup
+Thanks,
+Selva
 
