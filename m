@@ -1,102 +1,165 @@
-Return-Path: <linux-kernel+bounces-70050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F17FD859253
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:11:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6689859258
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:13:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 927661F22548
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:11:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D90FA1C217CE
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3EC7E775;
-	Sat, 17 Feb 2024 20:10:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6B6F7E779;
+	Sat, 17 Feb 2024 20:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gGO7GNDq"
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="PpgtROzV"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B517E57F
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 20:10:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6101C2AD;
+	Sat, 17 Feb 2024 20:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708200656; cv=none; b=XyVH2z3t9uxPkB6fqFdhPB6K6AZda6KYfhpwuW4ldT9vXt0P84bo6ICmVdLdpYvr+cnlNOAXMLpI75HGVK9PLkSM7yT2fsW5KneFqCiya+p5xtF2o1HLSxvE+6jwfiLIRdZmDng1FUfyVgePMdWzSyjwFknKAOimt2ALVCSlV+I=
+	t=1708200779; cv=none; b=XUEFsSkdf6cI2AVXhVTmpQPvUgMhx56VLIwQeKJiVHHKl+fbLKxL19s29x/yOKQs2CFJsU5u3f8C9FmfzYebBKBA4LuxSomZkb1WsuXcaBuWkpC12bS/RHsHPsJ7ovN/ddLV0wTJ3ivUInzfo/G7PJK0ZKVx898sJC00gvIkz4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708200656; c=relaxed/simple;
-	bh=wB+2n2OlbNVznmHH3958W1/Y0ptvHF46QhQK8nlpYXI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T5ZJRWyq9Ada1Mqklibs5Nw2954KB2/JD1gvRANzbIbTN/pVstXi+4ATRHADIXrwpaz3qoxwOY6W+0dRKiTy4qPEz9ZERyAauxKRLWZgBd35OJFqR3tLpoWzDK7rSQ+V11ZRb8x6D/CJXM0+SJqAvzCYaHV/p5j0tykwm3lek7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gGO7GNDq; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 17 Feb 2024 15:10:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708200652;
+	s=arc-20240116; t=1708200779; c=relaxed/simple;
+	bh=8IktCrsRC+hlS8Myl1fdnPGp6EP8hC9J1haMpC61SOg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EJ+LqCsJx3KvHsmvKequ1sCmeBzhrxZH8MTPy7O5Oj05Il79TRBa/6WXOpsuq4hyjKar+Q1i5ugjm7M2evcWh4udsV9GdneS8dLHoMsA/myTQbSCbafKZeOPBGG0nZ5zwhxa0KLxhFi4AsgRQ9t1ZuHPc/gdpXyMgnewUfO+DYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=PpgtROzV; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5ce2aada130so2720515a12.1;
+        Sat, 17 Feb 2024 12:12:56 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708200776; x=1708805576;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:dkim-signature:from:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=g/RyA0owvp8Vb/My3RmXXVsAxzzWZv+QMQ3rufBIEHU=;
+        b=wVFIYjYjXy8jcCfU1qmxLy0OF7PL8oWsQOT6Ba2DtDGsZWUzJwvJ6meq178cVxdb+6
+         sbdxIWsV2hc3Qw0A/RjNTr9zw470f0W9di4X0RZqAXfAW2Egffmo7TqlJMtlGJ5k1umV
+         fhX4nUprpvIibOtYv3pJoWuxDbjSdrgxhNkgcNMtOpcudjLF9CkkA1z7O3okeo27mjOB
+         inX2V8aPN6t7CCSv33eVofbWeZd6u+JFSV2ht7yK3Q78UN8IDITzH3gS+Xddj4xC0S++
+         A4YdnjIQn/a6cYAMVj8rAcrSRC0F36ZAh9Fc3o9PNS91pfHEkhCGE4OIV0TGObLIHVie
+         UTgg==
+X-Forwarded-Encrypted: i=1; AJvYcCX47UD7CdwHhVtIeOGrVAEbmeJEY14Cnn4IplSbYdnkEtfRT2FLKkgSrXQXtLP0lKq9ibBB8V8aUf98FFwRnbsfnxuyjPehPgAFxoMQWcAED6n8Nq7t8RFhDclHznMjqjpSPxoNuOz1pRNTFF5Njx3Ug3kWV9hZfw6iAV1lnB0SEIdE
+X-Gm-Message-State: AOJu0Ywp66kfAX6daFExA52VxrWdfecTWMJCF5FiJM89pnB8zZZ9u5cU
+	2YQuZrl0B1ORS5cK2mdm2Ds0ta0/K++reXdF0Xl6TdINi35oRkr9
+X-Google-Smtp-Source: AGHT+IFFR+WvQ7e0onQtY4dZ6AcQhZ1Rlt02QSaKR9uAScQLp0C1KkbgTsK80QpcwvYKNme/Donw/A==
+X-Received: by 2002:a05:6a00:1822:b0:6e0:3939:60dc with SMTP id y34-20020a056a00182200b006e0393960dcmr10299722pfa.23.1708200775782;
+        Sat, 17 Feb 2024 12:12:55 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id p4-20020aa78604000000b006e363ca24dcsm1281725pfn.67.2024.02.17.12.12.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 12:12:55 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1708200773;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=widJLyBLNbG/fhM0WxQtdV2j/zClvMMmMBAQpE7WaPU=;
-	b=gGO7GNDqIxdgdChvsHxJoX0H1hXq26ayiT7Ei/TdMYyI3nUHK6ItsXbU/7douzGFOQsAHY
-	NmYghcBXPJdv0W56oMV1zCamid/c14FAO0l9z8pEMsHeKGS9dhe1NJ4B/5CtylAyfpuBtj
-	+dEsV2MtkcyjIzBgmL9YTRWvBlSbrX0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: Suren Baghdasaryan <surenb@google.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org, 
-	roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, arnd@arndb.de, 
-	tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com, x86@kernel.org, 
-	peterx@redhat.com, david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, dennis@kernel.org, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, yosryahmed@google.com, 
-	yuzhao@google.com, dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, minchan@google.com, 
-	kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-Message-ID: <fejelroz2s7fnjakqp4fuqhukqf7uwjofu36hdyz33nhg2gnjr@hji5t6wlgznh>
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-14-surenb@google.com>
- <20240215165438.cd4f849b291c9689a19ba505@linux-foundation.org>
- <wdj72247rptlp4g7dzpvgrt3aupbvinskx3abxnhrxh32bmxvt@pm3d3k6rn7pm>
- <CA+CK2bBod-1FtrWQH89OUhf0QMvTar1btTsE0wfROwiCumA8tg@mail.gmail.com>
- <iqynyf7tiei5xgpxiifzsnj4z6gpazujrisdsrjagt2c6agdfd@th3rlagul4nn>
- <CAJuCfpHxaCQ_sy0u88EcdkgsV-GX3AbhCaiaRW-DWYFvZK1=Ew@mail.gmail.com>
- <CA+CK2bCsW34RQtKhrp=1=3opMcfB=NSsLTnpwSejkULvo7CbTw@mail.gmail.com>
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=g/RyA0owvp8Vb/My3RmXXVsAxzzWZv+QMQ3rufBIEHU=;
+	b=PpgtROzVu4fxgbA384MRbpgF+FeUxvP8j69pOojHuzqDCqIqQWZAAotSr6WCDaghpufBWq
+	CtcU/JmiMs83KsjNV+6Pc/65LIZYHZXMmu3coO35DMVT/Xfhn8/qAJ18pq1f7OS6J14WIy
+	RJj41euKpj9DjqAjPwn/iGhlI4c2ITpRFw3obJnCCAI5C1hxFMYVGFhZx2Lll2HsFiiffd
+	PIOYWf08hcY7hCciMc4vKtBzJPdq9TyrBZjCo54PbUwAKxiTLLURggX58EPJPO6eeByLzT
+	+WlALkmmx9l1mDlB/SxmRZto8d1GKF57eNnkfcU0QASkZ6I7u81GBsT8nNZheA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Subject: [PATCH 00/12] net: constify struct device_type usage
+Date: Sat, 17 Feb 2024 17:13:22 -0300
+Message-Id: <20240217-device_cleanup-net-v1-0-1eb31fb689f7@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+CK2bCsW34RQtKhrp=1=3opMcfB=NSsLTnpwSejkULvo7CbTw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGMT0WUC/x2MWwqAIBAAryL7naDSQ7tKRIhttRAWWhGId0/6H
+ JiZBBEDYYSeJQj4UKTDF5AVA7dZvyKnuTAooWqhZMfnIjmc3I7W3yf3eHHdadMK00jTaijhGXC
+ h958OY84fnVJAZGQAAAA=
+To: Oliver Neukum <oneukum@suse.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, Roopa Prabhu <roopa@nvidia.com>, 
+ Nikolay Aleksandrov <razor@blackwall.org>, 
+ Loic Poulain <loic.poulain@linaro.org>, 
+ Sergey Ryazanov <ryazanov.s.a@gmail.com>, 
+ Johannes Berg <johannes@sipsolutions.net>
+Cc: netdev@vger.kernel.org, linux-usb@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, bridge@lists.linux.dev, 
+ linux-ppp@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2050; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=8IktCrsRC+hlS8Myl1fdnPGp6EP8hC9J1haMpC61SOg=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl0RNrpk7BX+VmqEEeJxcyIwSF9ZeHvTQLW5p1V
+ ealPQCKRLOJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdETawAKCRDJC4p8Y4ZY
+ plYsD/wLcDBrNqH7PMKSjPkDtyu9739Mvkq+1uT348a8e82LOWBnOdKK6q+DkjgyUHodP2kqFyB
+ q+OBZevG9xCq7m5Nbu5mjwu6pALcRTrny9S5Zk0cLWMSZAIXYTvexzFW5CLi4XUHeqR3Qwq8c+U
+ GetCdNHd/HNgOyqW/L9kd5s1ivpxGffSeBzNg3WhrWajErwBAHboUc1HJ17FD8tPSTcPAvUwl97
+ Wl0auf0nme1Niz+WyayZv9iRtZut21l+tVeMH+HqWYjh36SKvkrU/p2hPzR8syuDHLvk+j0T2q2
+ IVg4PE18HskT1IoRQ5s+9D85b5zqVuU7e2k/eRrxkMJVG08tcmnxOYZ0eKzYEBQMrXECyqlS4ty
+ It1ohBySWA58CT7b0XC4jduQ1APoExAel6JvYgMVP0U/IQ+1dRGVX7o6mRjpj9vdGlXisYNIya6
+ RnkAPo4SFGuLWYUSta0O1rRUbVzh9ZkOs1A3usrujPywEvrT7ylTOwEpnlr2FL8RAZn9udVV08m
+ MA99oSDSBPqtqIWk7/Z5cdlaOBZwEmytINyYUaX4CV5SHFWtO7K3wjojXMityKLq3iabpjm10z9
+ ZdzdzWwgoD1HhvD8cAUC1WCU/j/owgoaFbXHZaDAaKrEhWTlTpKlw0t3s4AdKkMWmyU+iYreHuV
+ MtNhqyvaf91HA/g==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Fri, Feb 16, 2024 at 12:18:09PM -0500, Pasha Tatashin wrote:
-> > > Personally, I hate trying to count long strings digits by eyeball...
-> >
-> > Maybe something like this work for everyone then?:
-> >
-> > 160432128 (153MiB)     mm/slub.c:1826 module:slub func:alloc_slab_page
-> 
-> That would be even harder to parse.
-> 
-> This one liner should converts bytes to human readable size:
-> sort -rn /proc/allocinfo | numfmt --to=iec
+This is a simple and straight forward cleanup series that makes all device
+types in the net subsystem constants. This has been possible since 2011 [1]
+but not all occurrences were cleaned. I have been sweeping the tree to fix
+them all.
 
-I like this, it doesn't print out that godawful kibibytes crap
+I was not sure if I should send these squashed, but there are quite a few
+changes so I decided to send them separately. Please let me know if that is
+not desirable.
+
+---
+[1] https://lore.kernel.org/all/1305850262-9575-5-git-send-email-gregkh@suse.de/
+
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+
+---
+Ricardo B. Marliere (12):
+      net: usbnet: constify the struct device_type usage
+      net: dsa: constify the struct device_type usage
+      net: bridge: constify the struct device_type usage
+      net: vxlan: constify the struct device_type usage
+      net: ppp: constify the struct device_type usage
+      net: geneve: constify the struct device_type usage
+      net: hsr: constify the struct device_type usage
+      net: l2tp: constify the struct device_type usage
+      net: vlan: constify the struct device_type usage
+      net: netdevsim: constify the struct device_type usage
+      net: wwan: core: constify the struct device_type usage
+      net: hso: constify the struct device_type usage
+
+ drivers/net/geneve.c           | 2 +-
+ drivers/net/netdevsim/bus.c    | 2 +-
+ drivers/net/ppp/ppp_generic.c  | 2 +-
+ drivers/net/usb/hso.c          | 2 +-
+ drivers/net/usb/usbnet.c       | 4 ++--
+ drivers/net/vxlan/vxlan_core.c | 2 +-
+ drivers/net/wwan/wwan_core.c   | 2 +-
+ net/8021q/vlan_dev.c           | 2 +-
+ net/bridge/br_device.c         | 2 +-
+ net/dsa/user.c                 | 2 +-
+ net/hsr/hsr_device.c           | 2 +-
+ net/l2tp/l2tp_eth.c            | 2 +-
+ 12 files changed, 13 insertions(+), 13 deletions(-)
+---
+base-commit: a6e0cb150c514efba4aaba4069927de43d80bb59
+change-id: 20240217-device_cleanup-net-878960951968
+
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
