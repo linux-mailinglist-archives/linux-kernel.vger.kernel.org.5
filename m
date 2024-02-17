@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-69605-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB3A6858C48
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:02:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C770E858C4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:03:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4579F1F21ACC
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:02:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C1E2B2215B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FFD623748;
-	Sat, 17 Feb 2024 00:58:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E83B250EC;
+	Sat, 17 Feb 2024 00:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ab1s7a8Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V1LRIars"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41A731B80F;
-	Sat, 17 Feb 2024 00:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A2FB21100;
+	Sat, 17 Feb 2024 00:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708131528; cv=none; b=qOvYOpeYqJWT2ZzLAQcAiyA18b1hfma/ykMpZlkTCv9WLOJ4aQq7ASccP6ZTo/ON3euxNAtraJQzA1VgZGsiph5bqjspyFYEkqJLqiupZTClz7W7sztnfIwxvNx3iJOy8vF3VBhV8JvGO0/7BAYpeIWKMQUG7QE3bTzVo2yuc0g=
+	t=1708131529; cv=none; b=hlXFef9vtaGwaHb+MzVsLh4qGhp8uY8ebLN2PovHLzML85VPkbXBmfHyl5Cm+QG66YOmFUBorjZ6Hkt182uHuxPuEj38KsdOqfgZuuL68ShC0k7+efpujktK26hcRnel1c2WvJ7mX3Ji5k1tI2+Q8St6j+Ot0FXh85thKknMrWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708131528; c=relaxed/simple;
-	bh=ZF7Ys29G8g/k6D1jFHkNld6ID7JrPCUQzMebjrLS5cc=;
+	s=arc-20240116; t=1708131529; c=relaxed/simple;
+	bh=PHukevGUaPQZ0Um8hgVXJLMqOMYMR4EFewceSXfTR20=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=DLm5Y1xswx8lGGuvCA+3gmcRW5S1hBfGm2vTcj3Lq/8bMJRLk/q0hPn1r1vAj29Ek/gjgNTXexeUf3dHXElir4EKBBjgDFQl5jMsfCX8Dhm5h/cggINih7NxLatYaRs+vC1YRD8rjED2m3VlxFQc3Ut0vR+8kdv0/VSheFc/6sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ab1s7a8Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A969C43394;
-	Sat, 17 Feb 2024 00:58:47 +0000 (UTC)
+	 MIME-Version; b=L4nTWxQXHhMxY7ywXPaJCC0lnFRFYNWYoa06puRvABJRvIRxsI5hu5q2u7IUhqW5e/cj7lTxYsBLOXXf11RXMJj6J8JHQLkWE3Evo01U+Nb18fVQcFfcQciJJnpdcm5XnKtrrt8pLPE43G6cRc91uo2yeRqnZKMObhvBrf27PPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V1LRIars; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3E7F1C43390;
+	Sat, 17 Feb 2024 00:58:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708131528;
-	bh=ZF7Ys29G8g/k6D1jFHkNld6ID7JrPCUQzMebjrLS5cc=;
+	bh=PHukevGUaPQZ0Um8hgVXJLMqOMYMR4EFewceSXfTR20=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ab1s7a8ZVMd65Gov613sVFUA9Z1HOsB0ADjuIBE2ac+9N/3GFt/fZ3Jh3yqR3KlAU
-	 ZBCbYFIJ/7sYSlVdaUALdwiw7n5Vz70vwWf/AMYu6WrYE30mAQ5MznaR6kRP2y/VwZ
-	 eApMMw8nps4ukwaCWHjwmqguvLzL6Z7xRQBAmFLZfPLPv5aG9wQAYvZvMcvBsKcOTQ
-	 go4PJwvFy2JnFHrjrtignzt40wD0jMQVyWcqbkCYt37sb71r90hFvv3Ib8T5u9ZP9w
-	 P1SYlEYr2cLkqkL8Q/QYAVJOpFM2r/ZPc5tslHjzZIMxnD2DQGrKbNzR5QMRQkwm0G
-	 TEa6NN702cKYQ==
+	b=V1LRIarsi4JEdp5awudjc8ZjiK4TTDFQvBacB7HgvC9og6SplSDfSj8p9vx7Nj1vU
+	 MXt6mtUIt/A3GuCr60Kt4C+LT1P/BFtsSq+1sFP5SzhpblfgpDJHEx1coctwHfxF4Y
+	 1aflAnUaAPr8y286nDAaC2Bx03T5qXXnXP06wYAtuL//9xKsm8/mbH/ZdM2H3zWRAm
+	 4fW0ZDYAO0hI2FGOwq5MynjPnqmI6ulZsgjSumQuTmBN1vesW0pIRAvRFhu216FWyw
+	 w0N6B3qOo/dajkSf/2tCIL8phQRnHhfS9cwp+sb++optf0lUc91VHsTIbSMYg2mbVc
+	 vi47D6ILa3s6g==
 From: SeongJae Park <sj@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: SeongJae Park <sj@kernel.org>,
@@ -48,9 +48,9 @@ Cc: SeongJae Park <sj@kernel.org>,
 	linux-mm@kvack.org,
 	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/5] Docs/mm/damon: move the list of DAMOS actions to design doc
-Date: Fri, 16 Feb 2024 16:58:39 -0800
-Message-Id: <20240217005842.87348-3-sj@kernel.org>
+Subject: [PATCH 3/5] Docs/mm/damon: move DAMON operation sets list from the usage to the design document
+Date: Fri, 16 Feb 2024 16:58:40 -0800
+Message-Id: <20240217005842.87348-4-sj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240217005842.87348-1-sj@kernel.org>
 References: <20240217005842.87348-1-sj@kernel.org>
@@ -62,121 +62,85 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-DAMOS operation actions are explained nearly twice on the DAMON usage
-document, once for the sysfs interface, and then again for the debugfs
-interface.  Duplication is bad.  Also it would better to keep this kind
-of concept level details in design document and keep the usage document
-small and focus on only the usage.  Move the list to design document and
-update usage document to reference it.
+The list of DAMON operation sets and their explanation, which may better
+to be on design document, is written on the usage document.  Move the
+detail to design document and make the usage document only reference the
+design document.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- Documentation/admin-guide/mm/damon/usage.rst | 47 ++++++--------------
- Documentation/mm/damon/design.rst            | 26 +++++++++--
- 2 files changed, 36 insertions(+), 37 deletions(-)
+ Documentation/admin-guide/mm/damon/usage.rst | 19 +++++++------------
+ Documentation/mm/damon/design.rst            | 12 ++++++++++--
+ 2 files changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
-index 58c34e66b31b..0335d584956b 100644
+index 0335d584956b..be0924f47a42 100644
 --- a/Documentation/admin-guide/mm/damon/usage.rst
 +++ b/Documentation/admin-guide/mm/damon/usage.rst
-@@ -302,27 +302,8 @@ In each scheme directory, five directories (``access_pattern``, ``quotas``,
+@@ -180,19 +180,14 @@ In each context directory, two files (``avail_operations`` and ``operations``)
+ and three directories (``monitoring_attrs``, ``targets``, and ``schemes``)
+ exist.
  
- The ``action`` file is for setting and getting the scheme's :ref:`action
- <damon_design_damos_action>`.  The keywords that can be written to and read
--from the file and their meaning are as below.
+-DAMON supports multiple types of monitoring operations, including those for
+-virtual address space and the physical address space.  You can get the list of
+-available monitoring operations set on the currently running kernel by reading
++DAMON supports multiple types of :ref:`monitoring operations
++<damon_design_confiurable_operations_set>`, including those for virtual address
++space and the physical address space.  You can get the list of available
++monitoring operations set on the currently running kernel by reading
+ ``avail_operations`` file.  Based on the kernel configuration, the file will
+-list some or all of below keywords.
 -
--Note that support of each action depends on the running DAMON operations set
--:ref:`implementation <sysfs_context>`.
+- - vaddr: Monitor virtual address spaces of specific processes
+- - fvaddr: Monitor fixed virtual address ranges
+- - paddr: Monitor the physical address space of the system
 -
-- - ``willneed``: Call ``madvise()`` for the region with ``MADV_WILLNEED``.
--   Supported by ``vaddr`` and ``fvaddr`` operations set.
-- - ``cold``: Call ``madvise()`` for the region with ``MADV_COLD``.
--   Supported by ``vaddr`` and ``fvaddr`` operations set.
-- - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT``.
--   Supported by ``vaddr``, ``fvaddr`` and ``paddr`` operations set.
-- - ``hugepage``: Call ``madvise()`` for the region with ``MADV_HUGEPAGE``.
--   Supported by ``vaddr`` and ``fvaddr`` operations set.
-- - ``nohugepage``: Call ``madvise()`` for the region with ``MADV_NOHUGEPAGE``.
--   Supported by ``vaddr`` and ``fvaddr`` operations set.
-- - ``lru_prio``: Prioritize the region on its LRU lists.
--   Supported by ``paddr`` operations set.
-- - ``lru_deprio``: Deprioritize the region on its LRU lists.
--   Supported by ``paddr`` operations set.
-- - ``stat``: Do nothing but count the statistics.
--   Supported by all operations sets.
-+from the file and their meaning are same to those of the list on
-+:ref:`design doc <damon_design_damos_action>`.
+-Please refer to :ref:`regions sysfs directory <sysfs_regions>` for detailed
+-differences between the operations sets in terms of the monitoring target
+-regions.
++list different available operation sets.  Please refer to the :ref:`design
++<damon_operations_set>` for the list of all available operation sets and their
++brief explanations.
  
- The ``apply_interval_us`` file is for setting and getting the scheme's
- :ref:`apply_interval <damon_design_damos>` in microseconds.
-@@ -763,19 +744,17 @@ Action
- ~~~~~~
- 
- The ``<action>`` is a predefined integer for memory management :ref:`actions
--<damon_design_damos_action>`.  The supported numbers and their meanings are as
--below.
--
-- - 0: Call ``madvise()`` for the region with ``MADV_WILLNEED``.  Ignored if
--   ``target`` is ``paddr``.
-- - 1: Call ``madvise()`` for the region with ``MADV_COLD``.  Ignored if
--   ``target`` is ``paddr``.
-- - 2: Call ``madvise()`` for the region with ``MADV_PAGEOUT``.
-- - 3: Call ``madvise()`` for the region with ``MADV_HUGEPAGE``.  Ignored if
--   ``target`` is ``paddr``.
-- - 4: Call ``madvise()`` for the region with ``MADV_NOHUGEPAGE``.  Ignored if
--   ``target`` is ``paddr``.
-- - 5: Do nothing but count the statistics
-+<damon_design_damos_action>`.  The mapping between the ``<action>`` values and
-+the memory management actions is as below.  For the detailed meaning of the
-+action and DAMON operations set supporting each action, please refer to the
-+list on :ref:`design doc <damon_design_damos_action>`.
-+
-+ - 0: ``willneed``
-+ - 1: ``cold``
-+ - 2: ``pageout``
-+ - 3: ``hugepage``
-+ - 4: ``nohugepage``
-+ - 5: ``stat``
- 
- Quota
- ~~~~~
+ You can set and get what type of monitoring operations DAMON will use for the
+ context by writing one of the keywords listed in ``avail_operations`` file and
 diff --git a/Documentation/mm/damon/design.rst b/Documentation/mm/damon/design.rst
-index 1bb69524a62e..9f16c4e62e72 100644
+index 9f16c4e62e72..6abf976dd71f 100644
 --- a/Documentation/mm/damon/design.rst
 +++ b/Documentation/mm/damon/design.rst
-@@ -294,9 +294,29 @@ not mandated to support all actions of the list.  Hence, the availability of
- specific DAMOS action depends on what operations set is selected to be used
- together.
+@@ -31,6 +31,8 @@ DAMON subsystem is configured with three layers including
+   interfaces for the user space, on top of the core layer.
  
--Applying an action to a region is considered as changing the region's
--characteristics.  Hence, DAMOS resets the age of regions when an action is
--applied to those.
-+The list of the supported actions, their meaning, and DAMON operations sets
-+that supports each action are as below.
+ 
++.. _damon_design_configurable_operations_set:
 +
-+ - ``willneed``: Call ``madvise()`` for the region with ``MADV_WILLNEED``.
-+   Supported by ``vaddr`` and ``fvaddr`` operations set.
-+ - ``cold``: Call ``madvise()`` for the region with ``MADV_COLD``.
-+   Supported by ``vaddr`` and ``fvaddr`` operations set.
-+ - ``pageout``: Call ``madvise()`` for the region with ``MADV_PAGEOUT``.
-+   Supported by ``vaddr``, ``fvaddr`` and ``paddr`` operations set.
-+ - ``hugepage``: Call ``madvise()`` for the region with ``MADV_HUGEPAGE``.
-+   Supported by ``vaddr`` and ``fvaddr`` operations set.
-+ - ``nohugepage``: Call ``madvise()`` for the region with ``MADV_NOHUGEPAGE``.
-+   Supported by ``vaddr`` and ``fvaddr`` operations set.
-+ - ``lru_prio``: Prioritize the region on its LRU lists.
-+   Supported by ``paddr`` operations set.
-+ - ``lru_deprio``: Deprioritize the region on its LRU lists.
-+   Supported by ``paddr`` operations set.
-+ - ``stat``: Do nothing but count the statistics.
-+   Supported by all operations sets.
+ Configurable Operations Set
+ ---------------------------
+ 
+@@ -63,6 +65,8 @@ modules that built on top of the core layer using the API, which can be easily
+ used by the user space end users.
+ 
+ 
++.. _damon_operations_set:
 +
-+Applying the actions except ``stat`` to a region is considered as changing the
-+region's characteristics.  Hence, DAMOS resets the age of regions when any such
-+actions are applied to those.
+ Operations Set Layer
+ ====================
+ 
+@@ -71,8 +75,12 @@ The monitoring operations are defined in two parts:
+ 1. Identification of the monitoring target address range for the address space.
+ 2. Access check of specific address range in the target space.
+ 
+-DAMON currently provides the implementations of the operations for the physical
+-and virtual address spaces. Below two subsections describe how those work.
++DAMON currently provides below three operation sets.  Below two subsections
++describe how those work.
++
++ - vaddr: Monitor virtual address spaces of specific processes
++ - fvaddr: Monitor fixed virtual address ranges
++ - paddr: Monitor the physical address space of the system
  
  
- .. _damon_design_damos_access_pattern:
+ VMA-based Target Address Range Construction
 -- 
 2.39.2
 
