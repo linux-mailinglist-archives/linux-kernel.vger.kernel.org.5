@@ -1,120 +1,127 @@
-Return-Path: <linux-kernel+bounces-69910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69911-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63EE1859023
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:43:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B2FD859026
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:49:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EFAC1C212E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:43:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BA0028266E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:49:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1740F7C080;
-	Sat, 17 Feb 2024 14:43:23 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3585B7C0AF;
+	Sat, 17 Feb 2024 14:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HrCK03ru"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45176149E03
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 14:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D916069E03;
+	Sat, 17 Feb 2024 14:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708181002; cv=none; b=u9+omqYngX4XtQ/G68DPusR1wygjW+WeLOOdiID05Xr+dmoQZbJEqwM9WP9IMjC4oGfa4Hh8sshT1NT4SfL4azIdGcczw43tq74cW5wU7dwz3AeGtiY8v06pRKJVthk/r1C5dXRcRNiF05sLsZ470hoP56Y0Zsd6pZp+PiHOiWg=
+	t=1708181389; cv=none; b=S5xKCvniynOhgrmFEg8kpQXTAQ7dCoJL866ZOa4Q1yVgElC25SLbyAMiLqXpiPrxPzFJoZngM7ckD84By/ANkvPN2IbMUjWENbBdw9TrkancF4QrejYxRlosJmSS54fAs1FNGcgGV2mZN+hXbRToK+H7VRhK8DHwtMQ+S1W8v2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708181002; c=relaxed/simple;
-	bh=TZ0y3aVpF7C8KltuvmbMmwIVNNDanpPi2S/HXQ/ocSg=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=aUJObxwqQxt2yLa0y1QpMFawUNcS7Pj8HtaNQn8b9mhB0mhjYgbfJsIlVfDF3l++cBKjR1aHypkpiJmMwH35k+451wVtC+lQSVwuJnxh6DIop+rz3cTgqwEWxar/gsXvugOClQjkFE2Z/aKZjSrg51wkSHoQp5plIlg3K25wxvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-365032b8456so15537135ab.2
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 06:43:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708181000; x=1708785800;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yxgwFaGmbKW0ehKsu3OuuZK9A0Cvn9rXai+nVeD7el0=;
-        b=acIqiDKwX6GgZmcbhYMsoEthEsAVIruT7/hNPX/7oCwoKJcfhZU8kR7INQWXeNajbp
-         mxV1fZ9XGolWlsOWtA9fObAgzErO9gYjv2ZGR90CvlYSmC7OAojIB5Zk3ceNXOlu/TDt
-         CRUXCtudkMJQsm1WRRMBER1NeIxaFt2gNcvsrPQ/kTL8S3PZLULFtWFI9rcUn9mb0iFp
-         vQ9b6KWfBAvRT/HVI0dI65DetRyEu6yUrrevPDpAr/p1xSWZnf1+soqzmB4wvHCyXN0t
-         hQcBs7IUBpHlTjitDIKOTXuZly5H5Iq9VIUga2ZDnYu0XmQde8RKt0ywven8WvEz+D3V
-         J1iA==
-X-Forwarded-Encrypted: i=1; AJvYcCXSjbqtM9M4RSJyG0KVK+kmzYRbYpLYW/cLmnOcA6jqVwheRCiJVw/ECaNYJo+6NdFMwj7YX7NtOASBMM7HrLKKLxO62u4FvzfdrJeP
-X-Gm-Message-State: AOJu0YxDk/YuLqahS8SnCVpdW9vKE8+y/+o5Au5gq+ZW7dtmRZ6aEo61
-	vf2zzh+A6ugBNUbpS4DHeI7HzSs5XcnEveC6r9mafgKO6VL7/Y6TyetMBP/pH4LXbtwuwfOJh6x
-	CerP1Lu1xqQGDMwff2L5ZNdOCURfl5UCYiC1Ia9Zse/nhPgYFKS78gbk=
-X-Google-Smtp-Source: AGHT+IEXudJDz0MH8FXd1pGgCXpaAHIRzjRJSsYg6KQ6WpCUKtpUNoBRASEYMQ8w7x89DyTfq6RJ/YDIaU3sKSuIUZx8y3p63EZg
+	s=arc-20240116; t=1708181389; c=relaxed/simple;
+	bh=otsEbdPdtjFAM/AizCCrQI4l4jZouA2uDT+VnoJXyhY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZBBslrKu28w4286p6oSmzhf4YwdoSkXma30lMvB9RfeOPXDD9QR1u9h/TRinPR35WYszyd9cuGPrNcm01t51FlDujyASEwExqKFIg9xy9HdHEgtjrEp2jBTaIoNwE5je8dZws7n59VGiTYPKK1KfBfToyG03RxWhn53THAENX68=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HrCK03ru; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708181388; x=1739717388;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=otsEbdPdtjFAM/AizCCrQI4l4jZouA2uDT+VnoJXyhY=;
+  b=HrCK03ru+pk+aJwbKhipB2QrHsainsqxTYFSdWXVZP5b8WTOgljLMyy9
+   hkXrFPhoPUk7P6DNmZbV/dzTdWG8ckFc38c+ZqObcSwPoMH+5zqsyXAO7
+   PgADDkwFBDslC/LFjlpVgy+n2kl3Xvnk7hbJDGEJvL85m+Qhx5bA4RPac
+   rNJ6fT65NgfdYfXkD7BgmcvRz5ge/vax/yz09uT29IKjF/uhoZWjH5a8Z
+   Bbr1PuNG/Ho+u51ME4BtQc45pd+wAS2+Cac0r5XEC7zc+Jvl90DHnovlH
+   dCZw1BR2UYD5XPDRNTKjSXCg//9jeGNXbDREvdyixb5iLsyeAIt0Wc6ZS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="19725340"
+X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
+   d="scan'208";a="19725340"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 06:49:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
+   d="scan'208";a="4058262"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa009.fm.intel.com with ESMTP; 17 Feb 2024 06:49:44 -0800
+Date: Sat, 17 Feb 2024 22:45:54 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>,
+	Friedrich Weber <f.weber@proxmox.com>,
+	Kai Huang <kai.huang@intel.com>,
+	Yuan Yao <yuan.yao@linux.intel.com>,
+	Yu Zhang <yu.c.zhang@linux.intel.com>,
+	Chao Peng <chao.p.peng@linux.intel.com>,
+	Fuad Tabba <tabba@google.com>, Michael Roth <michael.roth@amd.com>,
+	Isaku Yamahata <isaku.yamahata@intel.com>,
+	David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH v4 1/4] KVM: x86/mmu: Retry fault before acquiring
+ mmu_lock if mapping is changing
+Message-ID: <ZdDGooxx/a+sAzmq@yilunxu-OptiPlex-7050>
+References: <20240209222858.396696-1-seanjc@google.com>
+ <20240209222858.396696-2-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c89:b0:363:c3d9:c10 with SMTP id
- w9-20020a056e021c8900b00363c3d90c10mr581820ill.0.1708181000518; Sat, 17 Feb
- 2024 06:43:20 -0800 (PST)
-Date: Sat, 17 Feb 2024 06:43:20 -0800
-In-Reply-To: <CAHpthZojFipy1QVY=61vbBD6s6QdJdoNmQdTo90a=JixHA-V5g@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bf86ff061194e1ba@google.com>
-Subject: Re: [PATCH] net: Fix kernel-infoleak in __skb_datagram_iter (2)
-From: syzbot <syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com>
-To: ryasuoka@redhat.com
-Cc: ryasuoka@redhat.com, syzkaller-bugs@googlegroups.com, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209222858.396696-2-seanjc@google.com>
 
-> #syz test git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>  static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
+>  			   unsigned int access)
+>  {
+> +	struct kvm_memory_slot *slot = fault->slot;
+>  	int ret;
+>  
+>  	fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
+>  	smp_rmb();
+>  
+> +	/*
+> +	 * Check for a relevant mmu_notifier invalidation event before getting
+> +	 * the pfn from the primary MMU, and before acquiring mmu_lock.
+> +	 *
+> +	 * For mmu_lock, if there is an in-progress invalidation and the kernel
+> +	 * allows preemption, the invalidation task may drop mmu_lock and yield
+> +	 * in response to mmu_lock being contended, which is *very* counter-
+> +	 * productive as this vCPU can't actually make forward progress until
+> +	 * the invalidation completes.
+> +	 *
+> +	 * Retrying now can also avoid unnessary lock contention in the primary
+> +	 * MMU, as the primary MMU doesn't necessarily hold a single lock for
+> +	 * the duration of the invalidation, i.e. faulting in a conflicting pfn
+> +	 * can cause the invalidation to take longer by holding locks that are
+> +	 * needed to complete the invalidation.
+> +	 *
+> +	 * Do the pre-check even for non-preemtible kernels, i.e. even if KVM
+> +	 * will never yield mmu_lock in response to contention, as this vCPU is
+> +	 * *guaranteed* to need to retry, i.e. waiting until mmu_lock is held
+> +	 * to detect retry guarantees the worst case latency for the vCPU.
+> +	 */
+> +	if (!slot &&
 
-want either no args or 2 args (repo, branch), got 1
+typo?   if (slot &&
 
-> 9f8413c4a66f
->
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 27998f73183e..c7bf1c38b292 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -2532,6 +2532,11 @@ static inline unsigned char
-> *skb_tail_pointer(const struct sk_buff *skb)
->   return skb->head + skb->tail;
->  }
->
-> +static inline unsigned int skb_tail_offset(const struct sk_buff *skb)
-> +{
-> + return skb->tail;
-> +}
+Thanks,
+Yilun
+
+> +	    mmu_invalidate_retry_gfn_unsafe(vcpu->kvm, fault->mmu_seq, fault->gfn))
+> +		return RET_PF_RETRY;
 > +
->  static inline void skb_reset_tail_pointer(struct sk_buff *skb)
->  {
->   skb->tail = skb->data - skb->head;
-> @@ -2549,6 +2554,11 @@ static inline unsigned char
-> *skb_tail_pointer(const struct sk_buff *skb)
->   return skb->tail;
->  }
->
-> +static inline unsigned int skb_tail_offset(const struct sk_buff *skb)
-> +{
-> + return skb->tail - skb->head;
-> +}
-> +
->  static inline void skb_reset_tail_pointer(struct sk_buff *skb)
->  {
->   skb->tail = skb->data;
-> diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-> index eb086b06d60d..f11bb308f1ed 100644
-> --- a/net/netlink/af_netlink.c
-> +++ b/net/netlink/af_netlink.c
-> @@ -167,7 +167,7 @@ static inline u32 netlink_group_mask(u32 group)
->  static struct sk_buff *netlink_to_full_skb(const struct sk_buff *skb,
->      gfp_t gfp_mask)
->  {
-> - unsigned int len = skb_end_offset(skb);
-> + unsigned int len = skb_tail_offset(skb);
->   struct sk_buff *new;
->
->   new = alloc_skb(len, gfp_mask);
->
+>  	ret = __kvm_faultin_pfn(vcpu, fault);
+>  	if (ret != RET_PF_CONTINUE)
+>  		return ret;
 
