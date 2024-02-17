@@ -1,149 +1,124 @@
-Return-Path: <linux-kernel+bounces-69843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69844-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE53D858F61
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:51:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03074858F6F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:52:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A03DB216A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:51:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9831C1F22C08
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856F37A72D;
-	Sat, 17 Feb 2024 12:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A217AE74;
+	Sat, 17 Feb 2024 12:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DMG5e6QS"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NCJqqLOL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED93657B6;
-	Sat, 17 Feb 2024 12:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED1997A724;
+	Sat, 17 Feb 2024 12:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708174297; cv=none; b=Ck9pUXeFRAUKW1ldphvJKe5dfdpyjSap/yPfnxdzTq3cFd/tbQoezzDZf2ODsM12F9pCsHthgCUsDpA50sCjxkzFfSb2tRxtM5pqGg5NVqtTyzRFrVkLm+bjfj3t4yLOVn0O7X4MxuxMDzHM49Pi+H1zm8QhIGxfpXbvrnoJJUo=
+	t=1708174337; cv=none; b=RN4Y/PyTz+LyPeveOowWJ73o0j9DFwCot5VregBYyYw/QdI0dNlA80WbJZrFgT5pTCbs3HLmqMABETEvGS+U4nddmAwafeHdeiPq9QrCL9yxPx3jZoBQGSA/thbs5nutD8tQfyqNRclMbsV4oulUZjWxAhBTC/mA5orohLjzOZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708174297; c=relaxed/simple;
-	bh=dOMpZYdm6byi7dSGtTU7CXpz9fL2H66oVNawiZq9BTw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xhw6FfYZxC7XiaHLSb6mMR51DE/ziK/tXJmoThtAfueKMppC1p9JOkddYc8xH0UB7Kc07QTNBVDW+UrS6GhcXgJox8rfCjImi3YMgOUYSOZsHwf6snCI9sgGegLjBQCByN3Yo/N9ZMT2dUcDwXvoHZb+SVRRjBq6LmpJjsc13bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DMG5e6QS; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 40C1F40E01A9;
-	Sat, 17 Feb 2024 12:51:31 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id 0hlCv3lIl4HE; Sat, 17 Feb 2024 12:51:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708174288; bh=qo3uSORLj3aVIspHnZOOPPN2BG8DeKw0xfrzHn1JOsE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DMG5e6QSKeR9ubDYe2s0ZoiU51BCQvwIEuO4RCuRvQTeQ8TmKrZw5+z0J5aEFgswY
-	 dZB3Su8kRvsIYCLw1goi1lxlw6+XoLZtp9ebursTnwYRZDBmK6MHhFZwyrvaLbOCkY
-	 HOMZ81djkewhE8iCb1UTKOyl3n523ot7waAzw4wPFGGazCMtJm/BYWisD714CnvEoC
-	 jpv8QnvEsk0+TqoGEx5In9rBjZfucgWjYMKfShUM6qSJP6tYXHHUSOhg8u1xTn+TIe
-	 tQmZmiQgUNXNt54NgYCf+Nf0/wrlcI4CxHH0EBevuyQljR2U1pxFcTUCNU6gp+a/SV
-	 ry1dzpYHJexsOcX35pmggxd4d33+M7MfHqB+IU91Cm4A1vOYMd+NH3zAZOe1fUoNr7
-	 mwlT4BEmTe9n9NCUWR+WKjPvK+xO1xUVMIAq4PNqx774FWt2SsnnM33FYnDZN67fiH
-	 +JI6MkFtLSW8AXNjhY5aO/A+V4FU7WVTxX6P9HsFAxhGArFhushX1uBzCACkY+pfSV
-	 HjVBhjZAzsliTvBpnfQSatzLe6mx38Oj5YTXDQfbZLXRZ12nsIONnKJ7dUtkEeNLkE
-	 BM7/ooFdvOW1t2Du6u4bcg3yrmfN4sTGUW0leRQnLfBWqLyJPmSmTQgTHeHVn31o7j
-	 DsztjJPMNkNsAcDM3brtS7E0=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 969AB40E00B2;
-	Sat, 17 Feb 2024 12:51:10 +0000 (UTC)
-Date: Sat, 17 Feb 2024 13:51:02 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ard Biesheuvel <ardb+git@google.com>
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	Kevin Loughlin <kevinloughlin@google.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	Dionna Glaze <dionnaglaze@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
-	linux-arch@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH v4 02/11] x86/startup_64: Replace pointer fixups with
- RIP-relative references
-Message-ID: <20240217125102.GSZdCrtgI-DnHA8DpK@fat_crate.local>
-References: <20240213124143.1484862-13-ardb+git@google.com>
- <20240213124143.1484862-15-ardb+git@google.com>
+	s=arc-20240116; t=1708174337; c=relaxed/simple;
+	bh=26asYT9Pch/6BET0RjGLiuk5j1AaaNkgzH3IDcRoKJQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Mj/lw19FwlE7wcBmgeX10JzlCrgDawvJz7gQq/cHnK8odFnJEyQyS7QY1FXh8HQAm6FSV1/F5AWonlygyc5cRtxDt7DO9R5xwC0vcrV4+iiWuCS5ZSByssk/+1YUqSoDbtUY4hJ4HA69ib+SFDqZD24fiWH3SYpr/04NTtxEKe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NCJqqLOL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 84096C433F1;
+	Sat, 17 Feb 2024 12:52:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708174336;
+	bh=26asYT9Pch/6BET0RjGLiuk5j1AaaNkgzH3IDcRoKJQ=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=NCJqqLOLQ+zfr4eotRtrCXoVtGCykND8YYaIX8cBLA5s/LJMlrocZ+2I5FCeBdu8o
+	 2NnAN3FjI8nV6hZeoKikXERVLY2dCVLNUqrZnDjYZIdQa+TH9HjcWO6KZ2Zu5DD5cQ
+	 gEHVARtWFJ6ZyNhbdtfZ9FH7N3G+gbH6bE75JTzF3qLBKFHQycOXOcc9jZFr72IsD+
+	 npZiGmMaa2PEsFQspDp6HTdsaH5vvXN/hkwrzH98x8/Pt2Mpr3LreumBxaQv7C/y8d
+	 VJq2yjJrorwHLBnZtznSkpe8oAd6GQZc26RMNe7tjxXhEQMFZ+41sIEIdEFnHfty1I
+	 qaQeBJmNwlZ2g==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68F20C48BC3;
+	Sat, 17 Feb 2024 12:52:16 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH RFC v2 0/5] clk: hisilicon: add support for Hi3798MV200
+Date: Sat, 17 Feb 2024 20:52:05 +0800
+Message-Id: <20240217-clk-mv200-v2-0-b782e4eb66f7@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240213124143.1484862-15-ardb+git@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPWr0GUC/22MywrCMBBFf6XM2kgylWBcCQU/wK10EcbRhj4iS
+ Q1Kyb8bsnZ57j2cDSIHxxFOzQaBk4vOLwVw1wANdnmycPfCgBIPEpUWNI1iTiilIDqS5dZoZgn
+ FfwV+uE9t3eB66aAv4+Di6sO39pOq159UUkIKi8YSo2Hd6rN/r5P34578DH3O+QeVpxlfqQAAA
+ A==
+To: Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: David Yang <mmyangfl@gmail.com>, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708174332; l=2029;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=26asYT9Pch/6BET0RjGLiuk5j1AaaNkgzH3IDcRoKJQ=;
+ b=nAb9AVMdHX/f2z6emI9t8+7+o1w6aec07MJGqfIwL1KkyGN24rLI+xipHXWAwSujd6wAkehaT
+ LmxTY8U6EHqAw16+re/9sQioCZs9wNFOYgI4J4DnapxnjZuWOEZIpl8
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-On Tue, Feb 13, 2024 at 01:41:46PM +0100, Ard Biesheuvel wrote:
-> @@ -201,25 +201,19 @@ unsigned long __head __startup_64(unsigned long physaddr,
->  	load_delta += sme_get_me_mask();
->  
->  	/* Fixup the physical addresses in the page table */
-> -
-> -	pgd = fixup_pointer(early_top_pgt, physaddr);
-> -	p = pgd + pgd_index(__START_KERNEL_map);
-> -	if (la57)
-> -		*p = (unsigned long)level4_kernel_pgt;
-> -	else
-> -		*p = (unsigned long)level3_kernel_pgt;
-> -	*p += _PAGE_TABLE_NOENC - __START_KERNEL_map + load_delta;
-> -
->  	if (la57) {
-> -		p4d = fixup_pointer(level4_kernel_pgt, physaddr);
-> -		p4d[511] += load_delta;
-> +		p4d = (p4dval_t *)&RIP_REL_REF(level4_kernel_pgt);
-> +		p4d[MAX_PTRS_PER_P4D - 1] += load_delta;
->  	}
->  
-> -	pud = fixup_pointer(level3_kernel_pgt, physaddr);
-> -	pud[510] += load_delta;
-> -	pud[511] += load_delta;
-> +	pud = &RIP_REL_REF(level3_kernel_pgt)->pud;
-> +	pud[PTRS_PER_PUD - 2] += load_delta;
-> +	pud[PTRS_PER_PUD - 1] += load_delta;
-> +
-> +	pgd = &RIP_REL_REF(early_top_pgt)->pgd;
+This SoC is similar to Hi3798CV200 with a few more clocks in CRG module.
 
-Let's do the pgd assignment above, where it was so that we have that
-natural order of p4d -> pgd -> pud ->pmd etc manipulations.
+Note this driver is still ongoing, many clocks are not registered in the
+driver now. Feedback is welcomed, especially from HiSilicon people.
 
-> +	pgd[PTRS_PER_PGD - 1] = (pgdval_t)(la57 ? p4d : pud) | _PAGE_TABLE_NOENC;
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+---
+Changes in v2:
+- s/dt-binding/dt-bindings in commit logs: (Krzysztof Kozlowski)
+- fix bot error by adding "hisilicon,hisi-sdmmc-dll" to syscon.yaml (Rob
+  Herring)
+- hi3798mv200-crg: assign fixed rate parents to some gates
+- hi3798mv200-crg: s/ETH/FEMAC, add GMAC ctrl clock
+- Link to v1: https://lore.kernel.org/r/20240216-clk-mv200-v1-0-a29ace29e636@outlook.com
 
-I see what you mean with pgd_index(__START_KERNEL_map) always being 511
-but this:
+---
+Yang Xiwen (5):
+      dt-bindings: clock: histb-clock: Add missing common clock and Hi3798MV200 specific clock definition
+      clk: hisilicon: add CRG driver for Hi3798MV200 SoC
+      dt-bindings: clock: merge all hisilicon clock bindings to hisilicon,clock-reset-generator
+      dt-bindings: mfd: syscon: Add hisilicon,sdmmc-sap-dll compatible
+      dt-bindings: clock: hisilicon,clock-reset-controller: add Hi3798MV200 SoC support
 
-	pgd[pgd_index(__START_KERNEL_map)] = (pgdval_t)(la57 ? p4d : pud) | _PAGE_TABLE_NOENC;
+ .../devicetree/bindings/clock/hi3660-clock.txt     |  47 ---
+ .../devicetree/bindings/clock/hi3670-clock.txt     |  43 --
+ .../devicetree/bindings/clock/hi6220-clock.txt     |  52 ---
+ .../devicetree/bindings/clock/hisi-crg.txt         |  50 ---
+ .../clock/hisilicon,clock-reset-generator.yaml     | 175 +++++++++
+ .../clock/hisilicon,hi3559av100-clock.yaml         |  59 ---
+ Documentation/devicetree/bindings/mfd/syscon.yaml  |   1 +
+ drivers/clk/hisilicon/Kconfig                      |   8 +
+ drivers/clk/hisilicon/Makefile                     |   1 +
+ drivers/clk/hisilicon/crg-hi3798mv200.c            | 436 +++++++++++++++++++++
+ include/dt-bindings/clock/histb-clock.h            |  21 +
+ 11 files changed, 642 insertions(+), 251 deletions(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240216-clk-mv200-cc8cae396ee0
 
-says exactly what gets mapped there in the pagetable while
-
-	PTRS_PER_PGD - 1
-
-makes me wonder what's that last pud supposed to map.
-
-Other than that, my gut feeling right now is, this would need extensive
-testing so that we make sure there's no fallout from it.
-
-Thx.
-
+Best regards,
 -- 
-Regards/Gruss,
-    Boris.
+Yang Xiwen <forbidden405@outlook.com>
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
