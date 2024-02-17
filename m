@@ -1,78 +1,78 @@
-Return-Path: <linux-kernel+bounces-70117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3176885939A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:23:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86CFA85939E
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:28:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCB841F21D52
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:23:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 158A22830B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A3CA80051;
-	Sat, 17 Feb 2024 23:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9114980059;
+	Sat, 17 Feb 2024 23:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S52fd1MV"
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U+qTCYj2"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53F17E567;
-	Sat, 17 Feb 2024 23:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A627E59E;
+	Sat, 17 Feb 2024 23:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708212176; cv=none; b=e6QDhNq+j0lRzBSTrBZ8adFhtoTLVTvqGFRyboGQIqmJlFIoL6J4yLf1DYr4TF2pnBcvQ0cRnJbXNttauJgyDl/ZZ1yngaSn9x4KFfUPVQoTB6lS2lGdck+0ffRZ7prWy7U/+6YE5gfbezJBS+1hLRr6fY0/5ua0YCENoqyZdXo=
+	t=1708212479; cv=none; b=lC16T0Ji+id8c0yST1E5/lzG55cagAY7UcLtdUaajU45XBqmhw9g21fTpsB2VCWWLKdT4NStuOrlQAtQCxvmuJPnDF1/IZwH3Id4P2fe3ePcx9bjpWOS+2/3airL3VBYNTF0wV/XMYf5AYN4grEUZ7685vGfAE1nXR6lpiotZMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708212176; c=relaxed/simple;
-	bh=a+QvVBjsGmqPcbi3qCCaAJe48zdumCLnTL6lnP3CrXo=;
+	s=arc-20240116; t=1708212479; c=relaxed/simple;
+	bh=7UuNb3p0WlJLKXoD3Rm8wPRkK7OMhKHV4Rs9IWYizhk=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R6tOMRRKd4PBOVzcpY+m/5sMFrYA6EbhkL10gp7VFaYytWlg4t/+fGo0U8QzDk73ogSVsTU3jzbKDj+lVzOeACqHn5XP2zhvRTS2u+KjhEBB8uV7+P6b50yQgVx8hoOBz04WD+iMG/GLpwhlO8xUmWC7c3HDr3UYLOsQQIOE5+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S52fd1MV; arc=none smtp.client-ip=209.85.167.182
+	 Content-Type:Content-Disposition:In-Reply-To; b=hHZJ2SKk2bcwEYSlILIb1PGyEkA1qv68RudJ9/mh7RVBoMQ7uUX+mM0J+PDsic5pEnjqLxlquaYCxw1aGA2MuGaAaMbeQKAPAhaqENuKs/O5f8EyOHbooSOf5roYjtiws+G67ewC3iPNnOc4O8R2OByc56DV7J7gR5vPGGTvkrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U+qTCYj2; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3bbc649c275so1720958b6e.0;
-        Sat, 17 Feb 2024 15:22:54 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d01faf711so1742659f8f.1;
+        Sat, 17 Feb 2024 15:27:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708212174; x=1708816974; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708212476; x=1708817276; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=cbH9uymS/8c7/s6JqpxYO8BrELFkxi0FtyBb1T3F1as=;
-        b=S52fd1MVOILXemrpWPEJMFq8Q36eBLd/0k3ncgIyxnnJE+gXl+FJNJYnTAuuVuhf7D
-         QKR3P+3QtgXYpjTaQZpOlaRlkPp+w9yPzOWr088AtzQB3O0kMcppPjYCZ6lbKMpSzaAe
-         OPbFEgzeiA9CPK5IjUiXdyi/8FvArIS+G2XQ5RLFoW+2JyyWqeOAEBFbpJN6n0C/q/XM
-         pTWh+LCq0+SaAyo1DzcTJGIQgQECCTczl9Yh019KlC86DJoUtZ+LyAm+Taj9qabr7RX/
-         AQA6qtXoymnSys897laaAHjLc+wQEiNt9f3CFFP5I94/lwHVqhSniAlgqFjk4kQzOGbH
-         Bjvw==
+        bh=yMrVfGL8XXE/jIciEU8DHBE7OsIbpwslFPo8E5272EE=;
+        b=U+qTCYj2byQ6isLC0E2qhUWxtcQbRTnJUc94OyxglkpwSIJvaM3diMHMrS+PQ7HF2G
+         VfDBi0Z9FCKDW6jH5b0cGbFd4sN7tYCBxYv63v0/OrsnAQZhFO1hlVpLiHBWlKq0wP0H
+         eDJadabVpyFQ57kAoBCLz7QnqWGonKLHQO+m4Rj300ZIvQqSkE0o7bPuPtadhnLOtwlE
+         znzX7DJVViRgDHjSIIuq5XEXpqh/v1sb1hvDk6mfJ7BbfInlmM4Z+eZHuYDU4vzZhPB7
+         TRY1bkQ5warxxDq7p6B/YxIB53jAi7BrkQDslurSNUNz8xCGwQMuR81phMIK2FnPPfGJ
+         0ucA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708212174; x=1708816974;
+        d=1e100.net; s=20230601; t=1708212476; x=1708817276;
         h=in-reply-to:content-disposition:mime-version:references:subject:cc
          :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=cbH9uymS/8c7/s6JqpxYO8BrELFkxi0FtyBb1T3F1as=;
-        b=hVOTA2pEdaXeEGWikLHPKTCmk0tf/q9VYEGVgXo9zriIK7iW/dIQjUlr9JJyLUWgjk
-         Mkskoe4chjuuy1lmMVMeSPqAdUi5VKssBMdfdloxZ/6DAULYNJtxBSJZvtK/lYLRQR1b
-         eVWf5iQVFHpYQED43mwWsa0q9yZXwdbeiAmjAMlGH3WkdG7sT7b89uApBxMTUQyoMzPK
-         Je4SHoCf+2Zg6hFsnmVbZ+5llmYJOdjuVSGkPE8tfD1ICOS0mdKx3BxylP8hKAbaCXaf
-         j20LJzexqobaAd89ipY7UStTIVxY4aL5khe5T8hXY2W3nZHk5NgMrDZw88hK1Ku91h3k
-         BxHA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMhH6+MroJUWpcw1jBtBGnV1Tq17p2EOPLCsfsofTzHxq4DP5+Q/K/SffZFpDVDZ6PQQM84om4xDN4w4Y0dgCOfuWLiW9ZpS/4N/vOkix/6owiChGz3Iiwo5Lv49Ogogtv/T4taFYaLsMF26PLAoBcB/PJ1lpFfin98RgINGZ5ogFd8l79QlnpeS7OQZgTinKfU3fG4fWCgP/p/HRMrwN7x1Mi
-X-Gm-Message-State: AOJu0YyHbH3dbSHMt9ooDamFz6+ebOl5fRKXzKb3Hr3OluH8tNHbT12H
-	CPKqlHsZ4GrRGe7Kq+MsT+AHybn85vU8hJUem/EO2qBSzsNlm0kn
-X-Google-Smtp-Source: AGHT+IGQKGBOkmuDc5gI2jIBVXWXAkHQ3X9wz3V5z8Dx1FdEbbwkWxIBFI2JRf0mUeEdUoy2E0VubQ==
-X-Received: by 2002:a05:6808:2a4f:b0:3c0:3b90:ae1f with SMTP id fa15-20020a0568082a4f00b003c03b90ae1fmr7196758oib.49.1708212173842;
-        Sat, 17 Feb 2024 15:22:53 -0800 (PST)
+        bh=yMrVfGL8XXE/jIciEU8DHBE7OsIbpwslFPo8E5272EE=;
+        b=qWYy0cUuBA33qf79UdUcFWMy5B8tSpnkrIVAE7VCFWusWCMwpacwji8tWiaMN/0E0y
+         xtgAHcmwZjkSA2edLc73OPTz2p4qJzqL8XIUTdPT5NsWfi0Ub6Xm4nIR9VAp8VWeM2fV
+         WETgXO2Oam/9CpXK2Tj1nqUc0xThd+BiujezF3yCU+SUmSNrJRkNQudTEG9I7gKO0k6B
+         2rviItQTFScbnny58w01KbyAcnb+H1FJceLiRmDy+Vfo/IymIGJgtgTqfk5rzZqiKf0J
+         /bld7/2B8+nQzuB8c9R0PsNbY7SvdTjy3dp3gXHz/vlEZXuUXVO+1OiYFNlXNAYFqwW/
+         dZ8w==
+X-Forwarded-Encrypted: i=1; AJvYcCW/qPLyVk1wE+fhgCI72bQ0ulh8Xxz5tFVaf3aqD+j7nXuVm4r+rTXdvubHFL8uY0oUdJZvy0zPEiSRIkuVFHOhQvKGisrXFHNjSR1W6TGULvtNoQ2n8clUmoGuwnGlVB04sWjn7Bpc1stF2mkF9OtxXKzbCJgkpMMdTXjk358OD2SeTfya8saBezhu1zZb9PYtpHP62m1Ih498XArps51VXxda
+X-Gm-Message-State: AOJu0YxBxetytNYNuxhzJovQvf2iRFD76ESzJobvLb4MNGsJ1h22WIHe
+	GNYeYvbXCSTXgZrfvuDINuH0Olyw53XNM3kDNtSwN2Q73hEMAYB3fLTmvnnKOgfoVw==
+X-Google-Smtp-Source: AGHT+IG06jEr4fsAxNzMuyQQWttNohqo0lQwW0nhEwlH4qFAtb/RroN/efm+DbY1uKKfB0jPXgmHPQ==
+X-Received: by 2002:a5d:588f:0:b0:33d:2b3d:a02e with SMTP id n15-20020a5d588f000000b0033d2b3da02emr2093502wrf.46.1708212476161;
+        Sat, 17 Feb 2024 15:27:56 -0800 (PST)
 Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id qm12-20020a056214568c00b0068c88a31f1bsm1518837qvb.89.2024.02.17.15.22.46
+        by smtp.gmail.com with ESMTPSA id m2-20020a5d6a02000000b0033d071c0477sm5962470wru.59.2024.02.17.15.27.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 15:22:53 -0800 (PST)
-Message-ID: <65d13fcd.050a0220.88fe3.665f@mx.google.com>
-X-Google-Original-Message-ID: <ZdE_xfQcwQ6hninK@Ansuel-XPS.>
-Date: Sun, 18 Feb 2024 00:22:45 +0100
+        Sat, 17 Feb 2024 15:27:55 -0800 (PST)
+Message-ID: <65d140fb.5d0a0220.81be3.7138@mx.google.com>
+X-Google-Original-Message-ID: <ZdFA-ehmbYzM3DvW@Ansuel-XPS.>
+Date: Sun, 18 Feb 2024 00:27:53 +0100
 From: Christian Marangi <ansuelsmth@gmail.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Andrew Lunn <andrew@lunn.ch>
 Cc: Michael Hennerich <michael.hennerich@analog.com>,
-	Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
@@ -108,6 +108,7 @@ Cc: Michael Hennerich <michael.hennerich@analog.com>,
 	Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	Robert Marko <robimarko@gmail.com>,
+	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
 	Vladimir Oltean <vladimir.oltean@nxp.com>,
 	David Epping <david.epping@missinglinkelectronics.com>,
 	Harini Katakam <harini.katakam@amd.com>,
@@ -119,7 +120,7 @@ Cc: Michael Hennerich <michael.hennerich@analog.com>,
 Subject: Re: [net-next RFC PATCH 0/3] net: phy: detach PHY driver OPs from
  phy_driver struct
 References: <20240217194116.8565-1-ansuelsmth@gmail.com>
- <ZdEOpB1oVDE8+Qhq@shell.armlinux.org.uk>
+ <a804e21d-fe1d-41e8-90fd-64b260c9bcc7@lunn.ch>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -128,9 +129,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZdEOpB1oVDE8+Qhq@shell.armlinux.org.uk>
+In-Reply-To: <a804e21d-fe1d-41e8-90fd-64b260c9bcc7@lunn.ch>
 
-On Sat, Feb 17, 2024 at 07:53:08PM +0000, Russell King (Oracle) wrote:
+On Sat, Feb 17, 2024 at 11:21:44PM +0100, Andrew Lunn wrote:
 > On Sat, Feb 17, 2024 at 08:41:11PM +0100, Christian Marangi wrote:
 > > Posting as RFC due to the massive change to a fundamental struct.
 > > 
@@ -150,40 +151,35 @@ On Sat, Feb 17, 2024 at 07:53:08PM +0000, Russell King (Oracle) wrote:
 > > adding tabs as this would have resulted in a massive patch.
 > > Also to have patch bisectable, this change has to be in one go
 > > hence I had to use this trick to reduce patch delta.
-> > 
-> > Other solution to this problem were to introduce additional
-> > variables to phy_driver struct but that would have resulted
-> > in having 2 different way to do the same thing and that is not O.K.
-> > 
-> > I took care to compile-test all the PHY, only exception is the unique
-> > RUST driver, where I still have to learn that funny language and
-> > I didn't had time to update it, so that is the only driver that
-> > I think require some fixup.
-> > 
-> > I posted 2 example that would benefits from this change, but I can
-> > find much more in other PHY driver.
 > 
-> Would it make more sense instead of this big churn, to instead
-> introduce into struct phy_driver:
+> To me, this makes the code look ugly. I also expect many text editors
+> which understand indentation will be unhappy, saying the indentation is
+> wrong.
+>
+
+Yes, it was done to limit the patch delta, if I had to account for the
+tab for each new section we would be in the order of 2000+ changes I
+think.
+
+> >  64 files changed, 737 insertions(+), 291 deletions(-)
 > 
-> 	struct mdio_device_id	*ids;
+> These statistics are not good. If you had deleted more lines than you
+> added, then maybe it might be an O.K. idea.
 > 
-> which would then allow a phy_driver structure to be matched by
-> several device IDs?
+> Sometimes KISS is best.
+>
 
-Yes that was an alternative idea, but is it good to then have 2 way to
-declare PHY ID?
+Well IMHO these stats are a bit flawed, the additional code is really
+just extra check if ops is defined and the new .ops variable in each
+phy_driver.
 
-Also the name should be changed... Maybe an array of a struct PHY_ID,
-name that ends with a sentinel?
+If you check patch 2 and 3 you can already see some code is removed.
+Also while minimal the final .o produced results in bcm7xxx going from
+53kb to 45kb and the aquantia driver from 48kb to 45kb.
 
-> 
-> We then would not need to touch any of the existing drivers initially,
-> and a later cleanup could be to identify those where all the ops are
-> the same for several phy_driver structures, and convert them over.
-
-We have many PHY that already have macro to define the same OPs and
-change only name PHY ID and mask.
+I understand that this major rework might be too much, so I think the
+only way to handle this is with introducing support for declaring
+multiple PHY ID for one phy_driver struct.
 
 -- 
 	Ansuel
