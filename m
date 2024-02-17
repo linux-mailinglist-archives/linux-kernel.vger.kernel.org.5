@@ -1,180 +1,139 @@
-Return-Path: <linux-kernel+bounces-69716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EA40858DB1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:32:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31F77858DB3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 08:33:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41936B21BDB
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:32:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CE582830C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 07:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FF9E17727;
-	Sat, 17 Feb 2024 07:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397BB1D527;
+	Sat, 17 Feb 2024 07:32:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="REo/RTBu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="HixjXUQy"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8320E1D553;
-	Sat, 17 Feb 2024 07:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AC71CD2A
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 07:32:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708155151; cv=none; b=g6TfllgdtKm2+Ri6/xuYx8cL2duM3/uxQVCSsxIMVwzmJkRgQh23nwoGNNosgD1o235iEhRnV/qaWPqmS0bC0/VPmpm4qPh8NSCBRFKFaPejjTLLNxabJaQNlrNlIGxmrB8U5NrlHlReryZ4LMrzJAWq2qyKKuGuwSvXP4IZlvg=
+	t=1708155162; cv=none; b=Hq4Bb5vQmVrJfiMw+apWoU/FgxY+VhWPhob3ZyVJEjUYlTgN384A7svL3gQM9jBf4dxw1I7EylcDQOvSmriaaEPT8nHuHo1lKPOpZbJfPWLw6srfOXLLJ1ilHpsikvS2AP3lW3C2ipDGVaQ/XzjeH8enCja/VkZRDAkx1YF65Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708155151; c=relaxed/simple;
-	bh=ccjuSqOZPclsskdcJMYR2Q3/YUCIG6fCIeDpqvIsxfk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dp6HhaM4hSFh/ngBt70MLqMO0UB7oCoVPAOn8PWtNbCUuw/eTJshvvOg6p+ftDFbuX0zNDYivXS1FOsy6yNlcinU3NEFAQzy5VAC5qFnCiB87Rz1tVDGB55FsCOwrcOTZ97ZkQ12M3V2HHzDw1sWUCwq/V9A4gGg4kAgZL1X3NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=REo/RTBu; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708155150; x=1739691150;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ccjuSqOZPclsskdcJMYR2Q3/YUCIG6fCIeDpqvIsxfk=;
-  b=REo/RTBuEGbVtXwGOb7X+qBJRmwHfW5pQaELEGkcAzXcyprypdGk3a12
-   m8/PbyBtrW7Tv10B9HA4OUWmOASZ/BRQ89Pr1wqSW7b/ElYHuYj0VXMeG
-   CQj+TfqsHF9bAgvKzvLeUji99p1z/3kOtlo2VYSaZ7PgvaUJXDe/x0OLA
-   vz6h8yxeMWRQs323kLYdim2DEIZj8F85AnN6Yw2VLbbPIiM04aFPXw8XZ
-   Z5JLGcOPQKJE6zNnE7Ux4dR3MHLDGHJSonHtM70rDJ2WaU2NbYXM1k6Vm
-   nUdQGmK14ysc4QbtAJiBU+ZlTgAHf2xPeZpsME+6PYtBdQD2HmHaROR1w
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="2433567"
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="2433567"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 23:32:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="8656739"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by fmviesa004.fm.intel.com with ESMTP; 16 Feb 2024 23:32:23 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rbFBN-0001vY-01;
-	Sat, 17 Feb 2024 07:32:21 +0000
-Date: Sat, 17 Feb 2024 15:31:26 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ross Philipson <ross.philipson@oracle.com>,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	linux-integrity@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-crypto@vger.kernel.org, kexec@lists.infradead.org,
-	linux-efi@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, ross.philipson@oracle.com,
-	dpsmith@apertussolutions.com, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, hpa@zytor.com, dave.hansen@linux.intel.com,
-	ardb@kernel.org, mjg59@srcf.ucam.org,
-	James.Bottomley@hansenpartnership.com, peterhuewe@gmx.de,
-	jarkko@kernel.org, jgg@ziepe.ca, luto@amacapital.net,
-	nivedita@alum.mit.edu, herbert@gondor.apana.org.au,
-	davem@davemloft.net, kanth.ghatraju@oracle.com,
-	trenchboot-devel@googlegroups.com
-Subject: Re: [PATCH v8 15/15] x86: EFI stub DRTM launch support for Secure
- Launch
-Message-ID: <202402171503.kLhNHtkM-lkp@intel.com>
-References: <20240214221847.2066632-16-ross.philipson@oracle.com>
+	s=arc-20240116; t=1708155162; c=relaxed/simple;
+	bh=syzmM7eUW3w//SDCJMEcCcBIvXx2NkPHU3sbMpurQzU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=l9EjVtrs054TPLDoG0WAb8tWBLDf7jKmbvK8SzjvXCkOt2KoAcbcRsw+YSCYUrzeCNSHd/l46rYJwlPsgUYkxnJVBaumpNqiXi3aHS7mKmla43BuNDeoZkgimyIdN3Ljo7cN994YSUXXNuA2Qq5pnAw3sivs67BIYotiPPmg9jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=HixjXUQy; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41H7AiHE020961;
+	Sat, 17 Feb 2024 07:31:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=JMT3nuMNp6lUin7O78tqTAkdQ8dhNushNKvFxaKIJGA=;
+ b=HixjXUQyKmHu24W/4DHsxhCHLYc/8h9qS3qNDFTbYmNNTm2gYc+dMzVk8q5zHTSdSkVl
+ uSN5Bg/Hui39aiOklBpz/fC+NIchMhpNqMWXimJsGInUlpxwDm7D4b8buwKg8P3luPvT
+ 6o9dO60g8+2Tc+hiKeChPN02e/Ximz3hR1kCJmqLGdOHUGzk4ex1qFt97nIatHyEqh9r
+ 6KnEpPibprbboseZ2E0PKOG6kddssOV2LvOSlkNukyyZQATJN6Uz+Jt/3E3Vh3dlseeh
+ 4R8E5haMZ1gBoqm2SUYNbsvUA23BHFs+JAFQ573JVnVQjIVxS4mIVseyU2PFEZ7MqPdg 1g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3waq8h0s0g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 07:31:46 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41H7U7ia027144;
+	Sat, 17 Feb 2024 07:31:45 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3waq8h0ryy-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 07:31:45 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41H623IR004247;
+	Sat, 17 Feb 2024 07:31:44 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w6kv10tun-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 07:31:43 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41H7Vdn423986786
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 17 Feb 2024 07:31:42 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D65542004E;
+	Sat, 17 Feb 2024 07:31:39 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B043420040;
+	Sat, 17 Feb 2024 07:31:36 +0000 (GMT)
+Received: from ltczz402-lp1.aus.stglabs.ibm.com (unknown [9.53.171.174])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sat, 17 Feb 2024 07:31:36 +0000 (GMT)
+From: Donet Tom <donettom@linux.ibm.com>
+To: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc: Aneesh Kumar <aneesh.kumar@kernel.org>, Huang Ying <ying.huang@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Mel Gorman <mgorman@suse.de>, Ben Widawsky <ben.widawsky@intel.com>,
+        Feng Tang <feng.tang@intel.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+        Rik van Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: [PATCH 1/3] mm/mempolicy: Use the already fetched local variable
+Date: Sat, 17 Feb 2024 01:31:33 -0600
+Message-Id: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214221847.2066632-16-ross.philipson@oracle.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DMqtCxbRPBcpizXWL_iXGokDYCRMYDlh
+X-Proofpoint-ORIG-GUID: ALbNl9CNixSrLoK-j4d-SrAX7YQwG9Md
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-17_04,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 suspectscore=0 spamscore=0 mlxlogscore=999
+ malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402170058
 
-Hi Ross,
+Avoid doing a per cpu read and use the local variable thisnid. IMHO
+this also makes the code more readable.
 
-kernel test robot noticed the following build errors:
+Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+Signed-off-by: Donet Tom <donettom@linux.ibm.com>
+---
+ mm/mempolicy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[auto build test ERROR on char-misc/char-misc-testing]
-[also build test ERROR on char-misc/char-misc-next char-misc/char-misc-linus herbert-cryptodev-2.6/master herbert-crypto-2.6/master linus/master v6.8-rc4 next-20240216]
-[cannot apply to tip/x86/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ross-Philipson/x86-boot-Place-kernel_info-at-a-fixed-offset/20240215-064712
-base:   char-misc/char-misc-testing
-patch link:    https://lore.kernel.org/r/20240214221847.2066632-16-ross.philipson%40oracle.com
-patch subject: [PATCH v8 15/15] x86: EFI stub DRTM launch support for Secure Launch
-config: i386-randconfig-052-20240215 (https://download.01.org/0day-ci/archive/20240217/202402171503.kLhNHtkM-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240217/202402171503.kLhNHtkM-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402171503.kLhNHtkM-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/firmware/efi/libstub/x86-stub.c:862:18: error: invalid input size for constraint 'a'
-     862 |                       : : "a" (dlinfo->dl_handler), "D" (&dlinfo->bl_context));
-         |                                ^
-   1 error generated.
-
-
-vim +/a +862 drivers/firmware/efi/libstub/x86-stub.c
-
-   813	
-   814	static void efi_secure_launch(struct boot_params *boot_params)
-   815	{
-   816		struct slr_entry_uefi_config *uefi_config;
-   817		struct slr_uefi_cfg_entry *uefi_entry;
-   818		struct slr_entry_dl_info *dlinfo;
-   819		efi_guid_t guid = SLR_TABLE_GUID;
-   820		struct slr_table *slrt;
-   821		u64 memmap_hi;
-   822		void *table;
-   823		u8 buf[64] = {0};
-   824	
-   825		table = get_efi_config_table(guid);
-   826	
-   827		/*
-   828		 * The presence of this table indicated a Secure Launch
-   829		 * is being requested.
-   830		 */
-   831		if (!table)
-   832			return;
-   833	
-   834		slrt = (struct slr_table *)table;
-   835	
-   836		if (slrt->magic != SLR_TABLE_MAGIC)
-   837			return;
-   838	
-   839		/* Add config information to measure the UEFI memory map */
-   840		uefi_config = (struct slr_entry_uefi_config *)buf;
-   841		uefi_config->hdr.tag = SLR_ENTRY_UEFI_CONFIG;
-   842		uefi_config->hdr.size = sizeof(*uefi_config) + sizeof(*uefi_entry);
-   843		uefi_config->revision = SLR_UEFI_CONFIG_REVISION;
-   844		uefi_config->nr_entries = 1;
-   845		uefi_entry = (struct slr_uefi_cfg_entry *)(buf + sizeof(*uefi_config));
-   846		uefi_entry->pcr = 18;
-   847		uefi_entry->cfg = boot_params->efi_info.efi_memmap;
-   848		memmap_hi = boot_params->efi_info.efi_memmap_hi;
-   849		uefi_entry->cfg |= memmap_hi << 32;
-   850		uefi_entry->size = boot_params->efi_info.efi_memmap_size;
-   851		memcpy(&uefi_entry->evt_info[0], "Measured UEFI memory map",
-   852			strlen("Measured UEFI memory map"));
-   853	
-   854		if (slr_add_entry(slrt, (struct slr_entry_hdr *)uefi_config))
-   855			return;
-   856	
-   857		/* Jump through DL stub to initiate Secure Launch */
-   858		dlinfo = (struct slr_entry_dl_info *)
-   859			slr_next_entry_by_tag(slrt, NULL, SLR_ENTRY_DL_INFO);
-   860	
-   861		asm volatile ("jmp *%%rax"
- > 862			      : : "a" (dlinfo->dl_handler), "D" (&dlinfo->bl_context));
-   863	}
-   864	
-
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index 10a590ee1c89..8478574c000c 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -2526,7 +2526,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
+ 		if (node_isset(curnid, pol->nodes))
+ 			goto out;
+ 		z = first_zones_zonelist(
+-				node_zonelist(numa_node_id(), GFP_HIGHUSER),
++				node_zonelist(thisnid, GFP_HIGHUSER),
+ 				gfp_zone(GFP_HIGHUSER),
+ 				&pol->nodes);
+ 		polnid = zone_to_nid(z->zone);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
 
