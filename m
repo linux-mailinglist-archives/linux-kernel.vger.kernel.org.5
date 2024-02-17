@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-69681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94ED3858D3B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:51:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F631858D3D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6CCE1C21294
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 04:51:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED3E72828D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 04:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 924771CD2F;
-	Sat, 17 Feb 2024 04:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3E701CFBF;
+	Sat, 17 Feb 2024 04:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E+pVfu5D"
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GhD1c8DO"
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C1D1CD0B;
-	Sat, 17 Feb 2024 04:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CC9B1CF8B;
+	Sat, 17 Feb 2024 04:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708145496; cv=none; b=Q9w/gnEr3yPcTwxio7VtV+PYZ1CNUHhdPPWf7TT8JwpOtQDMhXA9VHy7/Ih1527DKJd4aMS8ld705cf5pR3Rh1JAJc9NqKrEiNcR+WJ6HK6F+tW/SQ/QC+OsJqbx9q+8Ap6MzXh7JZmVhw3CSUU9m9VtI7nKqV0n1ZitKjgv2sY=
+	t=1708145503; cv=none; b=A08wxn7k5odK9mWA0Zpm4XCJrlYQlMs3geU3Yes+c8gggnaPi+uc+O00cVjxrPsLb4DcWV2rnofXL0WXLB8N8HfvARQ2wb6Rdc6B4PlfGkdp63ppvfWyKIe+6+IdNshLHuuT3g+4Sbawn8ZeiNxsVlvtT2RMhGiIA1p4DwMdQUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708145496; c=relaxed/simple;
-	bh=RaujQfpbxxDx841ddUw9WtlW0oC4ty8/luxjiNzGCf4=;
+	s=arc-20240116; t=1708145503; c=relaxed/simple;
+	bh=OXsYoToIjgeSRYAs9X9E0bo5WCdOjPMMPVgmJGURH78=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=r8P2GRzR02SQ9VH4MMYdLC2qHnB1C6QkpWl6fEGZNQxxboJCfGhcQZet49Jb+D9aTrPJWoPgebAPs7YDOSBNCDRfaJgzV4MC/4w5xY/iHDMrPk9M+w/Qwmk4UHAkg718piHYuD4UReEbBrKxfBEIF5CgPE3I5+7CHaQseeKAgpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E+pVfu5D; arc=none smtp.client-ip=209.85.161.49
+	 MIME-Version; b=kCEQojNmjLnpL671iBNqw9ABIKqpozRsEV+tVE/Q4LtYWLqSHGk/X6uHkD3WyPPIL9gakE5Tgtf7ydLO0P8NYc9lB3i3TdTPpjB7lWcI/YwRRdlBDT4G+kIw3maKI9UbNxqD5CZ22kXamFGxoYDqgL16jAZCZzaTHXxpqJ76+UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GhD1c8DO; arc=none smtp.client-ip=209.85.166.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-598699c0f1eso980948eaf.2;
-        Fri, 16 Feb 2024 20:51:35 -0800 (PST)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7bf7e37dc60so145971739f.3;
+        Fri, 16 Feb 2024 20:51:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708145494; x=1708750294; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708145500; x=1708750300; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=evwrpqE1Hiz2u5sFXh0svc6RdlbtMXnztqrxU8YZhPQ=;
-        b=E+pVfu5D0HJFR4naP45XBuYDA2xqPtKQiR7CktDgUyEkEpy9oLTOtxJM+47IdknSlT
-         JFKPd7r74MEXUB9KrNtg+I2nL/V0BesK//sW9dpBWWsD6RCKi6qAeIIkTrM0hZJp/vlx
-         FLQ3dO86wGDeIzVgyaGIzgcofUwY3+sVAh9LJupuM9Uj/0eR+o4t7d72Oa10TZRPTl07
-         Kfxd081WMU8xw8A65AVUknUWMxxG5KUv04s1/wgm53wp0YRKVLOnl00k6W0e6xLUHBAu
-         /a5O1FASb8zDyGw04j4VSgPX1Pnnjh5rpLLBonDbgI1IZ6t/QKfUllp4ihtRJAqlHagT
-         d9Uw==
+        bh=kW/qQndLj7MYeSMYgAPMliKXg25U647vW1M3U8+Bgew=;
+        b=GhD1c8DOfSx/cvZLwz0Xk2k2Et3ZwFV169yH93IYF0UPQWfZdf8zNSH4tse5ipK53w
+         PKgh/Y4f5q9CrylOtc6a+ot+k76IzBr7Pr1BBYQGGEhDOyUNP9+kJryEF+PB7nAeB0YU
+         1XPpJFiz+JJL/EEKUE5ZQ4cHrH7FgEDOnkI8XeOob610Ms1B4a91eTJMKeSJ3Wu3iDxe
+         uFQ9r1Tu66qq01zgid2EFxz7bAaQIFYjxAIb3EY/TrwZYvDeVtROdbayCuvM0cstN3wi
+         Rk4pX4yvEKMW4EuSvF+pvd5CBrt5P+VqvZzEmdIVWOVA+hNoBbjdfnYskS9i/dy7qCiV
+         6tPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708145494; x=1708750294;
+        d=1e100.net; s=20230601; t=1708145500; x=1708750300;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=evwrpqE1Hiz2u5sFXh0svc6RdlbtMXnztqrxU8YZhPQ=;
-        b=sF2AIadDbPibjy8j5RphFzOPoAZfOdbEc4pakgWhC1d8LvrUY/O45F83c5qeeBfeWo
-         LUizVVSpd8lmc01/FnNms+EH+HbNrIuFoF8+Hx61Uj1v96AaB3/1UaacNOXtWBf3r0d4
-         XzfZ6UQubYJ8rnsU7C6aw2VfiDN4dSJ774JVsfk4GN8HsYzI/ao7v7U7SvQsJjCc22/B
-         Frui2R9BYrWeB0zBP1tiQ5BQgxRaVE3B1IjEUCJ34LxgHqpGewIqn29o16de55fOq/Ma
-         F/FwDLNvXQPGMymfbqpnNskamocIZOY2GDySytYIIOUEn+tp0x4CSLtLC5AZfdz6TPrP
-         x41A==
-X-Forwarded-Encrypted: i=1; AJvYcCUNhLY7e0lu85wdyLpebscElEzq1selaBC5UeIpPMNaUtrwpkS/+SoKIgChPkzKi6StUzS0cTFFHzVY7INKQC4ZgGxmhdYre/3Y+6223SM2XSKGWIbZMWpoznE9Zak6+RIvAa3p1uBkcFT1
-X-Gm-Message-State: AOJu0Yy/Kf5VoWP4fij/grGw9EJUT/vTc4TsCzGRJCnRxYqsXag3ox7i
-	Dp+BL1p/1yziSvfXsXCNKeDf/whN5OAkmPyleVTbWuZY1q2MH9tt
-X-Google-Smtp-Source: AGHT+IGXBcB2jEgts68yjl1/2gfApQFlQtEQ7ti8tGvcpljUmlNkpP8SfC6UTw1pnxGbgjKEotNTBA==
-X-Received: by 2002:a05:6358:3a04:b0:178:f895:5978 with SMTP id g4-20020a0563583a0400b00178f8955978mr9891587rwe.10.1708145494362;
-        Fri, 16 Feb 2024 20:51:34 -0800 (PST)
+        bh=kW/qQndLj7MYeSMYgAPMliKXg25U647vW1M3U8+Bgew=;
+        b=eEkoOAZ4HiQCxgEs6ZCh6W4CIsFtC45qdbB2RUoSrBZawozVhrDAgH2p08nHtCiqLM
+         l7CyI3Mmb4+FVR/El+yWQ+TFKLo1/saHdl8UMA2gDIk7N3PoFK7NDA+j/lDhpRIevn35
+         tF/p6zKCO/XpKv4/g1M9ZcLwMd8TkSK0BRE4G4YRwIUc53mTtwgH+2ikP2eLR3cHv48M
+         y23t52HCqxYAbbia1YYAJUqgvbcVJpZH5rPsLfB6Z2IiXOUx3XmyTTMDpFDlib2mKgY3
+         3b2hn72EDMPcdtTwZkhngdmNZBB4FCAqoVgyQ97bvERgiT7UTeQJIQjsNPBnAiTjaGXi
+         kebw==
+X-Forwarded-Encrypted: i=1; AJvYcCUoPilh/j3il++8x/aM5Jx/3oEK63zsBP7p9x3ZA7XqZ8mS9dhAArvT+viR872gUeD1WZVW0fqqVH0KYmGcGJDej6L1uhS5jJnS0/hvlcsc4mnIADc5+/7s4Gr0Eajgl4njYoxMxlYkCMkc
+X-Gm-Message-State: AOJu0YwmO9H0cM0ovuKrS5RA65sDrh+8QGuKeyOoEyZSjeg/6nH07OLh
+	cKTAyojN1zDThOQ1ynxUCQFau2RmX0SkgLSsGdDt+Mz/L+ttbsX0
+X-Google-Smtp-Source: AGHT+IEOW4DS9BP7Ysw7VmEnIq9KlLgS920AXTvAFRO+XZXAmVk4YcCGu0RWQu1NKlAdLNbOmorNFg==
+X-Received: by 2002:a05:6e02:13e2:b0:363:c63a:7975 with SMTP id w2-20020a056e0213e200b00363c63a7975mr6639713ilj.24.1708145500701;
+        Fri, 16 Feb 2024 20:51:40 -0800 (PST)
 Received: from barry-desktop.hub ([2407:7000:8942:5500:e82e:22f2:1bdb:989f])
-        by smtp.gmail.com with ESMTPSA id n14-20020a635c4e000000b005dc2ca5b667sm610703pgm.10.2024.02.16.20.51.28
+        by smtp.gmail.com with ESMTPSA id n14-20020a635c4e000000b005dc2ca5b667sm610703pgm.10.2024.02.16.20.51.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 20:51:34 -0800 (PST)
+        Fri, 16 Feb 2024 20:51:40 -0800 (PST)
 From: Barry Song <21cnbao@gmail.com>
 To: akpm@linux-foundation.org,
 	davem@davemloft.net,
@@ -83,9 +83,9 @@ Cc: chriscli@google.com,
 	sjenning@redhat.com,
 	vitaly.wool@konsulko.com,
 	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH v3 2/3] mm/zswap: remove the memcpy if acomp is not sleepable
-Date: Sat, 17 Feb 2024 17:51:01 +1300
-Message-Id: <20240217045102.55339-3-21cnbao@gmail.com>
+Subject: [PATCH v3 3/3] crypto: scompress: remove memcpy if sg_nents is 1
+Date: Sat, 17 Feb 2024 17:51:02 +1300
+Message-Id: <20240217045102.55339-4-21cnbao@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240217045102.55339-1-21cnbao@gmail.com>
 References: <20240217045102.55339-1-21cnbao@gmail.com>
@@ -99,57 +99,81 @@ Content-Transfer-Encoding: 8bit
 
 From: Barry Song <v-songbaohua@oppo.com>
 
-Most compressors are actually CPU-based and won't sleep during
-compression and decompression. We should remove the redundant
-memcpy for them.
+while sg_nents is 1 which is always true for the current kernel
+as the only user - zswap is the case, we should remove two big
+memcpy.
 
 Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-Acked-by: Yosry Ahmed <yosryahmed@google.com>
-Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
 ---
- mm/zswap.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ crypto/scompress.c | 36 +++++++++++++++++++++++++++++-------
+ 1 file changed, 29 insertions(+), 7 deletions(-)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 350dd2fc8159..6319d2281020 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -168,6 +168,7 @@ struct crypto_acomp_ctx {
- 	struct crypto_wait wait;
- 	u8 *buffer;
- 	struct mutex mutex;
-+	bool is_sleepable;
- };
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index b108a30a7600..50a487eac792 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -117,6 +117,7 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 	struct crypto_scomp *scomp = *tfm_ctx;
+ 	void **ctx = acomp_request_ctx(req);
+ 	struct scomp_scratch *scratch;
++	void *src, *dst;
+ 	unsigned int dlen;
+ 	int ret;
  
- /*
-@@ -716,6 +717,7 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 		goto acomp_fail;
+@@ -134,13 +135,25 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 	scratch = raw_cpu_ptr(&scomp_scratch);
+ 	spin_lock(&scratch->lock);
+ 
+-	scatterwalk_map_and_copy(scratch->src, req->src, 0, req->slen, 0);
++	if (sg_nents(req->src) == 1) {
++		src = kmap_local_page(sg_page(req->src)) + req->src->offset;
++	} else {
++		scatterwalk_map_and_copy(scratch->src, req->src, 0,
++					 req->slen, 0);
++		src = scratch->src;
++	}
++
++	if (req->dst && sg_nents(req->dst) == 1)
++		dst = kmap_local_page(sg_page(req->dst)) + req->dst->offset;
++	else
++		dst = scratch->dst;
++
+ 	if (dir)
+-		ret = crypto_scomp_compress(scomp, scratch->src, req->slen,
+-					    scratch->dst, &req->dlen, *ctx);
++		ret = crypto_scomp_compress(scomp, src, req->slen,
++					    dst, &req->dlen, *ctx);
+ 	else
+-		ret = crypto_scomp_decompress(scomp, scratch->src, req->slen,
+-					      scratch->dst, &req->dlen, *ctx);
++		ret = crypto_scomp_decompress(scomp, src, req->slen,
++					      dst, &req->dlen, *ctx);
+ 	if (!ret) {
+ 		if (!req->dst) {
+ 			req->dst = sgl_alloc(req->dlen, GFP_ATOMIC, NULL);
+@@ -152,10 +165,19 @@ static int scomp_acomp_comp_decomp(struct acomp_req *req, int dir)
+ 			ret = -ENOSPC;
+ 			goto out;
+ 		}
+-		scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->dlen,
+-					 1);
++		if (dst == scratch->dst) {
++			scatterwalk_map_and_copy(scratch->dst, req->dst, 0,
++						 req->dlen, 1);
++		} else {
++			flush_dcache_page(sg_page(req->dst));
++		}
  	}
- 	acomp_ctx->acomp = acomp;
-+	acomp_ctx->is_sleepable = acomp_is_sleepable(acomp);
- 
- 	req = acomp_request_alloc(acomp_ctx->acomp);
- 	if (!req) {
-@@ -1368,7 +1370,7 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
- 	mutex_lock(&acomp_ctx->mutex);
- 
- 	src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
--	if (!zpool_can_sleep_mapped(zpool)) {
-+	if (acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool)) {
- 		memcpy(acomp_ctx->buffer, src, entry->length);
- 		src = acomp_ctx->buffer;
- 		zpool_unmap_handle(zpool, entry->handle);
-@@ -1382,7 +1384,7 @@ static void __zswap_load(struct zswap_entry *entry, struct page *page)
- 	BUG_ON(acomp_ctx->req->dlen != PAGE_SIZE);
- 	mutex_unlock(&acomp_ctx->mutex);
- 
--	if (zpool_can_sleep_mapped(zpool))
-+	if (!acomp_ctx->is_sleepable || zpool_can_sleep_mapped(zpool))
- 		zpool_unmap_handle(zpool, entry->handle);
+ out:
++	if (src != scratch->src)
++		kunmap_local(src);
++	if (dst != scratch->dst)
++		kunmap_local(dst);
++
+ 	spin_unlock(&scratch->lock);
+ 	return ret;
  }
- 
 -- 
 2.34.1
 
