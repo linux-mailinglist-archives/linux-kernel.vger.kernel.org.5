@@ -1,79 +1,57 @@
-Return-Path: <linux-kernel+bounces-69624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FCF4858C83
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:08:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD996858C89
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E70511F21AB5
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:08:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86FEC2832FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93651DDEB;
-	Sat, 17 Feb 2024 01:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C41BF1C2BC;
+	Sat, 17 Feb 2024 01:05:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RL7ndm6V"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PcUiJwYx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0F114F61;
-	Sat, 17 Feb 2024 01:05:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01B5F1E888;
+	Sat, 17 Feb 2024 01:05:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708131929; cv=none; b=jqpiSLC3dJkY0paoHT4LioPYtJxuFo+EX55VxPyWUgaOzXYJhoQLazI5oIleUkbNVk64IdBTLgrR9X0eDcZs03U33Q/MHKvL2BJhZ/Y18EFL8rndCFk1jUR2CTsQyDPHZr4JO4NyXh4rLOOfLqinEsFaqkE2FUFAVMqXfUhTCz0=
+	t=1708131959; cv=none; b=X3mhtLV9DicOtsCl1qFojyMzRPe+l8IgBmlqEoKc6a4UAEjpx2nwCLrSPSeyvlIOilsEADoo+FZzoCEYU56rw7Y0W2J16yhZdZWszrSx/j64pn3ztdF2gleH599OVMN8JuhS3d1DtJfqDsLgoh0VqIX477T+9raA+6rC3n2m8vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708131929; c=relaxed/simple;
-	bh=3gIhMRxOTlYjhdMs6F0CktjFPYvv26wJULWvOFObDFc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A/zG0qeIJ6kgFmfhOpdYwCe5L7bQQDgxfW9rEl8g61y+AwQKiOk+QL5Ak7fsHG0YmN5Zn8HZa7+VIjXE/Bm/pWY/fi9F8WF+HaztUz6oue5jHX6zDlng/dJLIrqXr7RfgXh81ZjBoH+hqGWaxz6/qT9S+fGbDSToixwAhN9t4fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RL7ndm6V; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708131928; x=1739667928;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=3gIhMRxOTlYjhdMs6F0CktjFPYvv26wJULWvOFObDFc=;
-  b=RL7ndm6V0Yq88zMVQfVlJeRmPx6sxHSvANYABbOqp5YYvzBVntbcjbth
-   4BtDqSzjqO+gYwbBtCKyzGor2My3IgFGcPJW7BsTJatVj/KpxL637/GTC
-   yuS9pHm6KicFxA5dHMfJgSAcqVCCWy8GU023zAoQSHKKcS796hfJEe1gF
-   ldjgcRY/wD4aARedGGJTDlr+Jz1rPOFR622jciHHo568tl08Zf3RM052a
-   zh/F9yIOHN6KbCev961aCk/Ws4cdqJOk0mUlw5zS1HcL7rQg+JM3KWHCJ
-   1gdfKUfPBuLjmdkY2ak8sWRzZz05jBLnnjpG07seDMxuhJBHeHI5rKRug
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10986"; a="13671717"
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="13671717"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 17:05:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,165,1705392000"; 
-   d="scan'208";a="3953433"
-Received: from unknown (HELO vcostago-mobl3.lan) ([10.125.18.63])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Feb 2024 17:05:23 -0800
-From: Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To: intel-wired-lan@lists.osuosl.org
-Cc: sasha.neftin@intel.com,
-	richardcochran@gmail.com,
-	kurt@linutronix.de,
-	anthony.l.nguyen@intel.com,
-	jesse.brandeburg@intel.com,
-	Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [iwl-net v1 2/2] igb: Fix missing time sync events
-Date: Fri, 16 Feb 2024 17:04:54 -0800
-Message-ID: <20240217010455.58258-3-vinicius.gomes@intel.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240217010455.58258-1-vinicius.gomes@intel.com>
-References: <20240217010455.58258-1-vinicius.gomes@intel.com>
+	s=arc-20240116; t=1708131959; c=relaxed/simple;
+	bh=XYeu3I7lleinGqco1HjcUCLcHTbSZ73GuzXfX4TQXmw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KpunLh9qDg9prUu9TcGfqVkZOjPvV/H3VcZiYoslcXO6rupLBDchYsS5kb0yJlkDfkAvD2HK4wxcOr6fIJT+eNlnOET4uolVsDlrJps8F3vWKrYxAenYyCxogPkjUxyQ48b8bakELNBXw5QxkuxnnE3F3M/dPXwiovnZGbnv8Vc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PcUiJwYx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEBD9C433F1;
+	Sat, 17 Feb 2024 01:05:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708131958;
+	bh=XYeu3I7lleinGqco1HjcUCLcHTbSZ73GuzXfX4TQXmw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PcUiJwYxnDE+rKcJSARsAYYXXhQqmiAGSPyBcn7kTAHoHf57qbuk/sAnm/DM0k35g
+	 KAkza6Ctke1ZP6ZRs5/oWZxbQc1jDBKLfFGtETphQj5EFJl5Q9RTA6cYsGFN7pOD8i
+	 rgX1jH/pHSb9Y8Q07vQncUARwWo4LJBV/ifU7Ibpb4vZquazg8/JtiBQaHIXChTqaP
+	 +lr5cjiofJD1UAMz7Ru12iOankJ6GV1XA5neOb2wOgScXFdh1tBdXN+L0FbbYeRNCz
+	 eu+0avQ1ADa/7W94e/Oci8lyLQzL6PLOWlW9tvRBnZXBMGqA7u+kkjIpDBfKCP80xK
+	 6pu2BIHAFzxNQ==
+From: Stephen Boyd <sboyd@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	linux-um@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	kunit-dev@googlegroups.com,
+	linux-kselftest@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH v4 0/7] of: populate of_root node if bootloader doesn't
+Date: Fri, 16 Feb 2024 17:05:49 -0800
+Message-ID: <20240217010557.2381548-1-sboyd@kernel.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,85 +60,75 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix "double" clearing of interrupts, which can cause external events
-or timestamps to be missed.
+Arch maintainers, please ack/review patches.
 
-The E1000_TSIRC Time Sync Interrupt Cause register can be cleared in two
-ways, by either reading it or by writing '1' into the specific cause
-bit. This is documented in section 8.16.1.
+This is a resend of a series from Frank last year[1]. I worked in Rob's
+review comments to unconditionally call unflatten_device_tree() and
+fixup/audit calls to of_have_populated_dt() so that behavior doesn't
+change.
 
-The following flow was used:
-    1. read E1000_TSIRC into 'tsicr';
-    2. handle the interrupts present into 'tsirc' and mark them in 'ack';
-    3. write 'ack' into E1000_TSICR;
+I need this series so I can add DT based tests in the clk framework.
+Either I can merge it through the clk tree once everyone is happy, or
+Rob can merge it through the DT tree and provide some branch so I can
+base clk patches on it.
 
-As both (1) and (3) will clear the interrupt cause, if an interrupt
-happens between (1) and (3) it will be ignored, causing events to be
-missed.
+Changes from v3 (https://lore.kernel.org/r/20240202195909.3458162-1-sboyd@kernel.org):
+ * Made OF_UNITTEST depend on OF_EARLY_FLATREE
+ * Made OF_EARLY_FLATREE depend on absence of arches that don't call
+   unflatten_device_tree()
+ * Added of_ prefix to dtb_ prefixed KUnit tests
+ * Picked up tags
 
-Remove the extra clear in (3).
+Changes from v2 (https://lore.kernel.org/r/20240130004508.1700335-1-sboyd@kernel.org):
+ * Reorder patches to have OF changes largely first
+ * No longer modify initial_boot_params if ACPI=y
+ * Put arm64 patch back to v1
 
-Fixes: 00c65578b47b ("igb: enable internal PPS for the i210")
-Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
----
- drivers/net/ethernet/intel/igb/igb_main.c | 23 +++++------------------
- 1 file changed, 5 insertions(+), 18 deletions(-)
+Changes from v1 (https://lore.kernel.org/r/20240112200750.4062441-1-sboyd@kernel.org):
+ * x86 patch included
+ * arm64 knocks out initial dtb if acpi is in use
+ * keep Kconfig hidden but def_bool enabled otherwise
 
-diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
-index cebb44f51d5f..7662c42e35c1 100644
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -6985,44 +6985,31 @@ static void igb_extts(struct igb_adapter *adapter, int tsintr_tt)
- static void igb_tsync_interrupt(struct igb_adapter *adapter)
- {
- 	struct e1000_hw *hw = &adapter->hw;
--	u32 ack = 0, tsicr = rd32(E1000_TSICR);
-+	u32 tsicr = rd32(E1000_TSICR);
- 	struct ptp_clock_event event;
- 
- 	if (tsicr & TSINTR_SYS_WRAP) {
- 		event.type = PTP_CLOCK_PPS;
- 		if (adapter->ptp_caps.pps)
- 			ptp_clock_event(adapter->ptp_clock, &event);
--		ack |= TSINTR_SYS_WRAP;
- 	}
- 
- 	if (tsicr & E1000_TSICR_TXTS) {
- 		/* retrieve hardware timestamp */
- 		schedule_work(&adapter->ptp_tx_work);
--		ack |= E1000_TSICR_TXTS;
- 	}
- 
--	if (tsicr & TSINTR_TT0) {
-+	if (tsicr & TSINTR_TT0)
- 		igb_perout(adapter, 0);
--		ack |= TSINTR_TT0;
--	}
- 
--	if (tsicr & TSINTR_TT1) {
-+	if (tsicr & TSINTR_TT1)
- 		igb_perout(adapter, 1);
--		ack |= TSINTR_TT1;
--	}
- 
--	if (tsicr & TSINTR_AUTT0) {
-+	if (tsicr & TSINTR_AUTT0)
- 		igb_extts(adapter, 0);
--		ack |= TSINTR_AUTT0;
--	}
- 
--	if (tsicr & TSINTR_AUTT1) {
-+	if (tsicr & TSINTR_AUTT1)
- 		igb_extts(adapter, 1);
--		ack |= TSINTR_AUTT1;
--	}
--
--	/* acknowledge the interrupts */
--	wr32(E1000_TSICR, ack);
- }
- 
- static irqreturn_t igb_msix_other(int irq, void *data)
+Changes from Frank's series[1]:
+ * Add a DTB loaded kunit test
+ * Make of_have_populated_dt() return false if the DTB isn't from the
+   bootloader
+ * Architecture calls made unconditional so that a root node is always
+   made
+
+Frank Rowand (2):
+  of: Create of_root if no dtb provided by firmware
+  of: unittest: treat missing of_root as error instead of fixing up
+
+Stephen Boyd (5):
+  of: Always unflatten in unflatten_and_copy_device_tree()
+  um: Unconditionally call unflatten_device_tree()
+  x86/of: Unconditionally call unflatten_and_copy_device_tree()
+  arm64: Unconditionally call unflatten_device_tree()
+  of: Add KUnit test to confirm DTB is loaded
+
+ arch/arm64/kernel/setup.c    |  3 +-
+ arch/um/kernel/dtb.c         | 14 ++++----
+ arch/x86/kernel/devicetree.c | 24 +++++++-------
+ drivers/of/.kunitconfig      |  3 ++
+ drivers/of/Kconfig           | 14 ++++++--
+ drivers/of/Makefile          |  4 ++-
+ drivers/of/empty_root.dts    |  6 ++++
+ drivers/of/fdt.c             | 64 +++++++++++++++++++++++++++---------
+ drivers/of/of_test.c         | 57 ++++++++++++++++++++++++++++++++
+ drivers/of/platform.c        |  3 --
+ drivers/of/unittest.c        | 16 +++------
+ include/linux/of.h           | 25 ++++++++------
+ 12 files changed, 168 insertions(+), 65 deletions(-)
+ create mode 100644 drivers/of/.kunitconfig
+ create mode 100644 drivers/of/empty_root.dts
+ create mode 100644 drivers/of/of_test.c
+
+[1] https://lore.kernel.org/r/20230317053415.2254616-1-frowand.list@gmail.com
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
 -- 
-2.43.2
+https://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git/
+https://git.kernel.org/pub/scm/linux/kernel/git/sboyd/spmi.git
 
 
