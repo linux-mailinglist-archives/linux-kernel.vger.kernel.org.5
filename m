@@ -1,103 +1,127 @@
-Return-Path: <linux-kernel+bounces-69638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2857E858CAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:15:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E598858C7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCF9F1F22578
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:15:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B4082832FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:07:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A429171D1;
-	Sat, 17 Feb 2024 01:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pU9NiicI"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 066461D541;
+	Sat, 17 Feb 2024 01:04:15 +0000 (UTC)
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B1B3DDA9
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 01:15:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B33C1B80F;
+	Sat, 17 Feb 2024 01:04:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708132521; cv=none; b=HQHzcOjHigsa710qU+jwJDGdvchwApQ9BsVRpkdmjL0HldBv4c4TXkpv8LJz/mgwjDjjgbdqhhgqztM946nHXtLUXqjZl8SB2Q6U89ZLp+vUlN/ZwxdDhFxNT2ncbEQsYxJrXrZ1HpP/QF4zy28mdzSCpn1+/4Ewx5/s1y6xXUE=
+	t=1708131854; cv=none; b=pCu+rKMVl+Z/OxgFSwfbRdsPG1UMmWH9xCvktTpC6X4z9UDX70k/swEg+4w8/ohbtITFW1LFjVE950/GH8ltTHbB5TqJiOq0wIgN7akvv2uJ5b8ohlixPzfg+AuW1Ta3iVr9kjHS82G06k/Rkcuyil3WZfXz1140pYBT+Pbk/wc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708132521; c=relaxed/simple;
-	bh=ZLpzPkaQVf3vPQXMg5o0TPQW1auuMvt5zHLMK/s9MLQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=HLTfCAFiqNuKfvxXC8K8MG5NoguMdui1uQTgXqzShOIa0YKF3M0eMKCoN3flHz8Wos6nEiRbpaxzBhV3qVO2ULOEIl9S/wxr34u7NevB/UFiW81Tznne8Nlhu/7IdW+oqXWIBagZgYhjczuxR4ac6hG7yVlK7HB6ZjLmdWs+xoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pU9NiicI; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5dca5c631ffso2893879a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:15:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708132519; x=1708737319; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4LBEMe2qsSCAfEzNdzegJHhWuWUWp8q/u+78ScdPwFM=;
-        b=pU9NiicIBS/T1qFm818l485nxSBrpnbAiJA4YrTD6ZDPVsvhJeEuqMD7BLUGMbZpGm
-         y4FL1d1wV3g+FaDt4dtGuuBiaIynd3SE5ZQ6P0uiBlKiUSDs4LLy1BpXuc1FL+EB8f5+
-         tNvWy6G2OYDleJGksPV7lBuL8VYzOIGjNKrYy67XyOGGoAD36SCVZESWbr4uK18BJQj5
-         o2w43D3/OWWpxVdd1eK5BHf4vZIhPfvlGyLYe2B3IcqZwaLah1AYqfRJJCl1VbQZjtxa
-         MXFpbmlKhW/SUfBmmGhyOo/EBALXobo+nYxcmKJODIRcVPYrkpAV0xj+ZQDfG4rnu+P+
-         cGXg==
+	s=arc-20240116; t=1708131854; c=relaxed/simple;
+	bh=fDxclCaSupPXRNu51PlBmR/SJ4Ajiu5GVSt0QfQMLFM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c8zCk28hbe0ycYz1wJBL3SMwE0e9Tu4VFDzVkI+LruxHVYZPTe+3O4++rE82aGRJram/Zk12CVLcotoU85eOf/QbsHUXiIjpxN5JNV2O+21xNn8gFGODhpNPpgwMoqpJ2n2DMgxCV2B2zstXtUpW/UECAqNCF4qaVmYhbqYe3vo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-290d59df3f0so2108091a91.2;
+        Fri, 16 Feb 2024 17:04:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708132519; x=1708737319;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4LBEMe2qsSCAfEzNdzegJHhWuWUWp8q/u+78ScdPwFM=;
-        b=PHi2PRySjFK3FjU3Td2Pvh70t9WD40ESZ/XUeVXKJwgdDa04dRg0xduL/VcS3bl2Hk
-         ykqBwd5KR9h+yEyl2e2Hej8w3l9yrirsMriP2IVaEfHmaDJ1xVgSGQW7i3Fx5gghKAul
-         XTqT8PBcM6ErwYcpyfJyl3iaTMp9g6jxC3Fy8A1Pa4g2QTkNTHX/1XrBHA/F6SviII5t
-         BmxI1DIWDyQ0w40LuwxF6sTOEH6Leo8Y4nTAejKSgAR45AYHC/WsnK7qcWP3SgYzqt5B
-         qFxe8qAzgjKQFNeYFcqCoB5enfrWohsTemdEsuauVZzdsA7PwdEQLDAK2HT5yxwvTNsw
-         IGKg==
-X-Forwarded-Encrypted: i=1; AJvYcCWrXz2l56PYd4D/YmeR4wE9UEoiQQdmiDAOx4z+ydPVyqObdpgqm1dfxdZkvXcF3t3DPAzt9U2pwQRHLwvRWcwl2w1fsPd1oy1F4ifl
-X-Gm-Message-State: AOJu0YyP+fQSUQTlMN5LUUJ97E+YZEq2pz9EROUVUC2jTqDlFuptCnPH
-	BwUZybuaibP7rx7iAniH+rxor/C+UzSvQzbN4W+TOwgpAJB2jxjS9Mm5p0PRrpVcG/WP6ywmvQL
-	MYA==
-X-Google-Smtp-Source: AGHT+IFVkQ9NvXY6j/sr7qRJV7g3L2FAzP7Bjq0b5BlAdMognqEtCrekhuZo7id9NSWv8WxOXOoIKWFJ+jA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d4c2:b0:1db:7d2a:8cc3 with SMTP id
- o2-20020a170902d4c200b001db7d2a8cc3mr281265plg.6.1708132519505; Fri, 16 Feb
- 2024 17:15:19 -0800 (PST)
-Date: Fri, 16 Feb 2024 17:02:29 -0800
-In-Reply-To: <20240215010004.1456078-1-seanjc@google.com>
+        d=1e100.net; s=20230601; t=1708131852; x=1708736652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SFIQ3pkHQmdaVe39SLDFjOJN8P18A7ehY0Fp/CyADS4=;
+        b=tQaT5wIWA+u4s+YuCNT5CpmLEu68TEw4LTfpXUvIQjMfoc8MEfNOPRlaLafoDkU3J1
+         +343bICmiVib4AysgOpRsf/QsG3jjpcc7s9FH3wZF4xupXG8wqQe5xVR6e4LA8RTYyWr
+         ui3kcjRF8ntrXjdABwOF+1s5G0dsxC8Pg+btX+3pzyj14sDJe0XLoSStE9VUgYT1Lbgj
+         kfCJi5cWMv5W40g/GrGgsqOdLZ8NrJgfxt2thA3kWmX3jcN8jgOSmWh+C7po+6VM50be
+         Qa3qcE6EppJAMvTNa+dy0HGx7i2n3Q9D04zEg3P1E6q21Kaqt9cMXqiMgUBsFze56OVG
+         CrQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVkQW1iyvJbFa+xFmV2uTUJmQ7pZ+sTR6ynadEB8+a9/YFp/sKnvCwLRHvzgpecRd1rSnZZ70d5P+rvD8cTt8sc7yzf8MiuiHYJus+xBLZ4cN51wFWJu3O0/x3ohcxUzcYj5nYkFEpRahP+hMWwjsEEZsR3gy5GGq0fSbFztKKbTIIewA==
+X-Gm-Message-State: AOJu0YyDShfc22Lu6Wp1zRFZ+TEu0ut+xwRitF6Y0K1oMWacR1pNL2NT
+	qMDMKSl1wIOfgfQ1WiYQNbDhesNP+Tq96rq1Og/W5uZaXbSosN8UquTV3dB8EvgnzsBCvi3kye9
+	6S6JEej6K+t+At6YeYuVk7/NGgEw=
+X-Google-Smtp-Source: AGHT+IGoh7lmz+EcIMtg0X0XRqi8GKL9cy+mqlpDSRzny2NjPCRXV3K1Q1CBF5lzqtp5Qc+dmZEV+9b+bOGmUHY2hgw=
+X-Received: by 2002:a17:90b:14c:b0:298:e3aa:c2e0 with SMTP id
+ em12-20020a17090b014c00b00298e3aac2e0mr5940601pjb.13.1708131852153; Fri, 16
+ Feb 2024 17:04:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240215010004.1456078-1-seanjc@google.com>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-Message-ID: <170813138426.2064122.1636080722842815115.b4-ty@google.com>
-Subject: Re: [PATCH 0/2] KVM: x86: Fix dirty logging of emulated atomics
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	David Matlack <dmatlack@google.com>, Pasha Tatashin <tatashin@google.com>, 
-	Michael Krebs <mkrebs@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20240202234057.2085863-1-irogers@google.com> <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 16 Feb 2024 17:04:01 -0800
+Message-ID: <CAM9d7ciPYMd4zckrcgnPtradZ_bvaNOHji1tkkYQu_TTF5=eYw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] Clean up libperf cpumap's empty function
+To: Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	James Clark <james.clark@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
+	Leo Yan <leo.yan@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 14 Feb 2024 17:00:02 -0800, Sean Christopherson wrote:
-> Fix a bug in KVM's emulator where the target page of an atomic write isn't
-> marked dirty, and enhance the dirty_log_test selftest to serve as
-> a regression test by conditionally doing forced emulation of guest writes.
-> 
-> Note, the selftest depends on several patches that are sitting in
-> `kvm-x86 pmu`, so I'll likely take the selftest through that branch (eww).
-> 
-> [...]
+On Wed, Feb 14, 2024 at 2:03=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.com> wr=
+ote:
+> >
+> > Rename and clean up the use of libperf CPU map functions particularly
+> > focussing on perf_cpu_map__empty that may return true for maps
+> > containing CPUs but also with an "any CPU"/dummy value.
+> >
+> > perf_cpu_map__nr is also troubling in that iterating an empty CPU map
+> > will yield the "any CPU"/dummy value. Reduce the appearance of some
+> > calls to this by using the perf_cpu_map__for_each_cpu macro.
+> >
+> > v3: Address handling of "any" is arm-spe/cs-etm patch.
+> > v2: 6 patches were merged by Arnaldo. New patch added ensure empty
+> >     maps are allocated as NULL (suggested by James Clark). Hopefully a
+> >     fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
+> >
+> > Ian Rogers (8):
+> >   libperf cpumap: Add any, empty and min helpers
+> >   libperf cpumap: Ensure empty cpumap is NULL from alloc
+> >   perf arm-spe/cs-etm: Directly iterate CPU maps
+> >   perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is_empty
+> >     use
+> >   perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
+> >   perf arm64 header: Remove unnecessary CPU map get and put
+> >   perf stat: Remove duplicate cpus_map_matched function
+> >   perf cpumap: Use perf_cpu_map__for_each_cpu when possible
+>
+> Ping. Thanks,
+> Ian
 
-Applied the fix itself to kvm-x86 fixes, I'll follow up with a heftier version
-of the selftest patch for 6.9.
+Adrian and James, are you ok with this now?
 
-[1/2] KVM: x86: Mark target gfn of emulated atomic instruction as dirty
-      https://github.com/kvm-x86/linux/commit/910c57dfa4d1
-
---
-https://github.com/kvm-x86/linux/tree/next
+Thanks,
+Namhyung
 
