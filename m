@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-69858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC6C8858F91
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:01:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 670AD858F8F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:01:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2BC11B21EA3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:01:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98C9A1C20E11
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:01:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067507B3D5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6EC7B3D7;
 	Sat, 17 Feb 2024 13:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZueS9SS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MLfIPVlK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA837A73A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5197AE4E;
 	Sat, 17 Feb 2024 13:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708174882; cv=none; b=DwYls3mK3RRG8dIrMS7ykLAms9HygOjxbyKHfmCPmE/7Z3nwzFQLWyR7seayGJez8pWf8YIG6AaprywlPO7QJSWU4jpNYGIc4nPHtv4VelKzAg5YLdAYztVUXJmWJWgehok8n+5zEXB5YnOgOxRd56UHsHHLQM3WnKwArd07hZE=
+	t=1708174882; cv=none; b=sfourq+fz414pnKQg2DG/rhYxYbdVPMBJwzIYXoev8gNIUSPPnp3r/5UIrsbXK9WYkgl7QwPh2dXSdPvoI2jODOzwrqWXq70b/qeRTmx+0DX99hIzyNXqXWbYYIpGQW/GNLS4j/H9nHoxRDMc7t0/vaARj0LP8j0zkNv5h7N5yk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708174882; c=relaxed/simple;
-	bh=ZAX9Em2I3TtnHcZcltf0TchJ6NPlrQE8PyBaCkDKCT0=;
+	bh=a0Rnun53xamkzRBY9WJl2kq9P3bR/nz0WyszTolKlyk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=I0XFIA2JNr4gAnfWzLhgJmtuAsqn1Lo2DKoYmBuOI40oSfBlmEzfXMe5faJsJYasQZchlRKn/ten2WEQOz2ziYzWzgkmBsIUdQnmxPYSRYDGZ0g1JWg5nNTj4OZXItI/oMl9juFZ3r/A1E/T6D5SjpWHHqI4XUQZvO4wEQnedhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZueS9SS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A58D5C43394;
+	 In-Reply-To:To:Cc; b=C60jj24jx3XT4yACSFAbD1OU9HMddKsogZlVhYz1KF3suTTpA+8iVApwqCecGhLTqNFimULxDrF7Peh6+m6cLrCqSpj4cXSIxy+rqP5f93uCbCgjYJ2+h0eauyQhT5RldkekBamBgg5c317P+uBgBU/jfy13FEw5+XAvtOacd8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MLfIPVlK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B1A23C43601;
 	Sat, 17 Feb 2024 13:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708174881;
-	bh=ZAX9Em2I3TtnHcZcltf0TchJ6NPlrQE8PyBaCkDKCT0=;
+	bh=a0Rnun53xamkzRBY9WJl2kq9P3bR/nz0WyszTolKlyk=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=WZueS9SS2pr3d2SQlDx7zGR2e5lKIQ6SqFK3dlCbExrAiYgG8YyE7B92UzMkPbUHA
-	 mpQAdf+s/UXDgviAvbx147zfIJhGSACsopMqs8tWmWoVktrT2WXM3mFZ3+cRelzn/O
-	 hObmaD0cUWieje6qXkOeN4/5UdNGSuMnc5zawvj1nUFx4gRWYKZx7CC8ri3LaNgGf6
-	 5XN74tpmqZCotmLIYMZL5ElrFmbavSmAYFhPsOxATelxb0Hd7po5S0f62aJehQLrh/
-	 Utis8qEBDxzeFzY5gnTYS2bhJQax4hnFv2D5ejmkbARxpcsoI/8N5Hk4ToLyD9Rihz
-	 4S6uWTQ7u6nCw==
+	b=MLfIPVlKDb60KRKjOhhOMWVMRX4pusZQ7YBCRYsoVhYfYDf38ZFiXesEKD9gSif0U
+	 M6Ac3ijQy5hFcL8bwv99BAWL3kc9fMQ4/MpzcKx/hQ7h7yj6zIJJ+JtLLfCd6BS3DJ
+	 3K+3auWfgB7YzngLpMSb1hp/7M5pWthbpm+RzkpVh1MuEY/h5uJxUjI1tT8pYsWMQ4
+	 QwBi4ehNe0Fm9aBKp9DcvypGjqc/jQdPDPyKIXcgyJwVO3NCe4/ZjQBbo746l3+Vxm
+	 HUjWkGW+DE/3wunb/n+b0k6aotO9lKZlSqZ4Q/XPzrxc1sJjOYfSCJ+RYB7UYLu523
+	 nXe8Yle4Cg2Rw==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E985C54766;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 97657C54764;
 	Sat, 17 Feb 2024 13:01:21 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Sat, 17 Feb 2024 21:00:56 +0800
-Subject: [PATCH v4 3/4] dt-bindings: mmc: dw-mshc-hi3798cv200: convert to
- YAML
+Date: Sat, 17 Feb 2024 21:00:57 +0800
+Subject: [PATCH v4 4/4] dt-bindings: mmc: hisilicon,hi3798cv200-dw-mshc:
+ rename to hisilicon,hi3798-dw-mshc
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +55,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240217-b4-mmc-hi3798mv200-v4-3-0fdd9bd48532@outlook.com>
+Message-Id: <20240217-b4-mmc-hi3798mv200-v4-4-0fdd9bd48532@outlook.com>
 References: <20240217-b4-mmc-hi3798mv200-v4-0-0fdd9bd48532@outlook.com>
 In-Reply-To: <20240217-b4-mmc-hi3798mv200-v4-0-0fdd9bd48532@outlook.com>
 To: Ulf Hansson <ulf.hansson@linaro.org>, 
@@ -65,14 +65,13 @@ To: Ulf Hansson <ulf.hansson@linaro.org>,
 Cc: Igor Opaniuk <igor.opaniuk@linaro.org>, 
  tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>, 
  linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org, 
- devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+ devicetree@vger.kernel.org, Yang Xiwen <forbidden405@outlook.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708174876; l=4709;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708174876; l=1929;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=z5/cBD8zJzGgT2WFAWSZ2rRYPe9PGIgRVLWNL1lYtXo=;
- b=3/y8yFfax0Z8i0ogUexGcigrwWgsMQl5uH6jU/k+dW4L1ySMvgIZWa0msJ7KVjz4sN6a5gpim
- Eworul8TuAaBYJVlrk2o95GaEGeJ03Mkh3UlbgZ5hyxWjw0M7LDOXsX
+ bh=UhNvYRHLXQw+Q46M6kTVm5H9HZIII379G5nTtWehYUE=;
+ b=f+IL42Ls385Vj/Qf19jgGJe7gzOt6DV1rUWoN9fUDz4F1kvCeQ0aB5taB+NkzftWKGR8IoLaQ
+ qaGDiAx5knCAm7Fx5kZhEk95FMFTHPgDK7UFVIoULaWGdzuHbvUIcWz
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -82,143 +81,66 @@ Reply-To: <forbidden405@outlook.com>
 
 From: Yang Xiwen <forbidden405@outlook.com>
 
-convert the legacy txt binding to modern YAML and rename to
-hisilicon,hi3798cv200-dw-mshc.yaml. No semantic change.
+Add binding and an extra property for Hi3798MV200 DWMMC specific extension.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
 ---
- .../bindings/mmc/hi3798cv200-dw-mshc.txt           | 40 ------------
- .../mmc/hisilicon,hi3798cv200-dw-mshc.yaml         | 75 ++++++++++++++++++++++
- 2 files changed, 75 insertions(+), 40 deletions(-)
+ .../bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml | 21 ++++++++++++++++++++-
+ 1 file changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.txt b/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.txt
-deleted file mode 100644
-index a0693b7145f2..000000000000
---- a/Documentation/devicetree/bindings/mmc/hi3798cv200-dw-mshc.txt
-+++ /dev/null
-@@ -1,40 +0,0 @@
--* Hisilicon Hi3798CV200 specific extensions to the Synopsys Designware Mobile
--  Storage Host Controller
--
--Read synopsys-dw-mshc.txt for more details
--
--The Synopsys designware mobile storage host controller is used to interface
--a SoC with storage medium such as eMMC or SD/MMC cards. This file documents
--differences between the core Synopsys dw mshc controller properties described
--by synopsys-dw-mshc.txt and the properties used by the Hisilicon Hi3798CV200
--specific extensions to the Synopsys Designware Mobile Storage Host Controller.
--
--Required Properties:
--- compatible: Should contain "hisilicon,hi3798cv200-dw-mshc".
--- clocks: A list of phandle + clock-specifier pairs for the clocks listed
--  in clock-names.
--- clock-names: Should contain the following:
--	"ciu" - The ciu clock described in synopsys-dw-mshc.txt.
--	"biu" - The biu clock described in synopsys-dw-mshc.txt.
--	"ciu-sample" - Hi3798CV200 extended phase clock for ciu sampling.
--	"ciu-drive"  - Hi3798CV200 extended phase clock for ciu driving.
--
--Example:
--
--	emmc: mmc@9830000 {
--		compatible = "hisilicon,hi3798cv200-dw-mshc";
--		reg = <0x9830000 0x10000>;
--		interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
--		clocks = <&crg HISTB_MMC_CIU_CLK>,
--			 <&crg HISTB_MMC_BIU_CLK>,
--			 <&crg HISTB_MMC_SAMPLE_CLK>,
--			 <&crg HISTB_MMC_DRV_CLK>;
--		clock-names = "ciu", "biu", "ciu-sample", "ciu-drive";
--		fifo-depth = <256>;
--		clock-frequency = <200000000>;
--		cap-mmc-highspeed;
--		mmc-ddr-1_8v;
--		mmc-hs200-1_8v;
--		non-removable;
--		bus-width = <8>;
--	};
 diff --git a/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
-new file mode 100644
-index 000000000000..f3dc973cb490
---- /dev/null
+index f3dc973cb490..d635bf3a5596 100644
+--- a/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
 +++ b/Documentation/devicetree/bindings/mmc/hisilicon,hi3798cv200-dw-mshc.yaml
-@@ -0,0 +1,75 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/mmc/hisilicon,hi3798cv200-dw-mshc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+@@ -4,7 +4,7 @@
+ $id: http://devicetree.org/schemas/mmc/hisilicon,hi3798cv200-dw-mshc.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Hisilicon Hi3798CV200 SoC specific extensions to the Synopsys DWMMC controller
++title: Hisilicon HiSTB SoCs specific extensions to the Synopsys DWMMC controller
+ 
+ maintainers:
+   - Yang Xiwen <forbidden405@outlook.com>
+@@ -13,6 +13,7 @@ properties:
+   compatible:
+     enum:
+       - hisilicon,hi3798cv200-dw-mshc
++      - hisilicon,hi3798mv200-dw-mshc
+ 
+   reg:
+     maxItems: 1
+@@ -34,6 +35,12 @@ properties:
+       - const: ciu-sample
+       - const: ciu-drive
+ 
++  hisilicon,sap-dll-reg:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description:
++      A phandle points to the sample delay-locked-loop(DLL)
++      syscon node, used for tuning.
 +
-+title: Hisilicon Hi3798CV200 SoC specific extensions to the Synopsys DWMMC controller
+ required:
+   - compatible
+   - reg
+@@ -44,6 +51,18 @@ required:
+ allOf:
+   - $ref: synopsys-dw-mshc-common.yaml#
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: hisilicon,hi3798mv200-dw-mshc
++    then:
++      required:
++        - hisilicon,sap-dll-reg
++    else:
++      properties:
++        hisilicon,sap-dll-reg: false
 +
-+maintainers:
-+  - Yang Xiwen <forbidden405@outlook.com>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - hisilicon,hi3798cv200-dw-mshc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: bus interface unit clock
-+      - description: card interface unit clock
-+      - description: card input sample phase clock
-+      - description: controller output drive phase clock
-+
-+  clock-names:
-+    items:
-+      - const: ciu
-+      - const: biu
-+      - const: ciu-sample
-+      - const: ciu-drive
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - $ref: synopsys-dw-mshc-common.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/histb-clock.h>
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    mmc@9830000 {
-+        compatible = "hisilicon,hi3798cv200-dw-mshc";
-+        reg = <0x9830000 0x10000>;
-+        interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&crg HISTB_MMC_CIU_CLK>,
-+                 <&crg HISTB_MMC_BIU_CLK>,
-+                 <&crg HISTB_MMC_SAMPLE_CLK>,
-+                 <&crg HISTB_MMC_DRV_CLK>;
-+        clock-names = "ciu", "biu", "ciu-sample", "ciu-drive";
-+        resets = <&crg 0xa0 4>;
-+        reset-names = "reset";
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&emmc_pins_1 &emmc_pins_2
-+                     &emmc_pins_3 &emmc_pins_4>;
-+        fifo-depth = <256>;
-+        clock-frequency = <200000000>;
-+        cap-mmc-highspeed;
-+        mmc-ddr-1_8v;
-+        mmc-hs200-1_8v;
-+        non-removable;
-+        bus-width = <8>;
-+    };
+ unevaluatedProperties: false
+ 
+ examples:
 
 -- 
 2.43.0
