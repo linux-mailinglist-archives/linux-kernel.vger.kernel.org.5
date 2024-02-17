@@ -1,342 +1,314 @@
-Return-Path: <linux-kernel+bounces-69589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69591-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F0F8858C0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:56:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B96B1858C13
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:58:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2330282B91
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:56:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7095F282EB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 00:58:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B27BA55;
-	Sat, 17 Feb 2024 00:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39461B27D;
+	Sat, 17 Feb 2024 00:58:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JVS2r22t"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="OPrkRoIE"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F93D149E08
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:56:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D4D14F7F
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 00:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708131365; cv=none; b=ad5vYvBGcbhXfHttAiC/n7BH72zol5R59eXsBnpZrrYNtObkwjOuSoj6HEZECEGfF020QlXCHZSc0sa4J/bS6uQm5PsWhIhS/5lCebExOCc1AVgTk+IduwIHGu450Q9dl1TdeijrNyM45bj2qboy27ZJiQlzTCO1wL55fGAclas=
+	t=1708131497; cv=none; b=b0PZX1pAOPParDb1dH1gIPRpVRWtK6Nsr3hF31s9g5GbJmkd7Peal+7X1iXYeTY7adCinv/I2bLfhj0Kj2moZjtWmsyiwXzMLFLgEu3i6DvtSUN5dbn1QHN14+HcRhiKoKy/+c9CwVzy4T+uk91ooxyoLFqFUUBpIe30sybRyo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708131365; c=relaxed/simple;
-	bh=IQvKkppJnpp7En7ryfZlp1k7EhW923PR3EO+Gd8lOCA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eNVciMg8OyzPIsN3ncCeq2eCzV59FK/AsZwlQacoxZakSjh4I06m3l2/nKrk3yU3F27Ay8d/O57Td+ke121tYPo3nNKl6Uko4+7wGGMhRnGkASzeYjeb0ksQB/AjGP+TK6/FRHQS4UAKSN+3lZmBNm0aeEDz6V0mNssj0fysAkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JVS2r22t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B07ABC433C7;
-	Sat, 17 Feb 2024 00:56:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708131364;
-	bh=IQvKkppJnpp7En7ryfZlp1k7EhW923PR3EO+Gd8lOCA=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=JVS2r22tB1slrc7lIgeucvLE0h0TbbicM1KW/2nRQaBMjkdrX5mDYlBZonX0YHuLr
-	 ul/9Ld1GdDOukhLrUx3yGwShqZuh/bqNUE7hA1n1ROelaw5L2aEOSC3a0ngKBOGYiL
-	 JpYGiqp+fDhjYwlyy1a8+8uwc3hlbVi7tov5OAYmwsKUH4CUNCv1PMnvTnVwk2wT+t
-	 kKLcxgKqZ7CILcPjqsY1OOe+YwNQguqHyizkxlS19AEIj1L4b3J14oSMSXmawZyI8G
-	 HEVazkUzbL9bciSyuDBLM7aptUcz75REVqeyfo4ZJUJd/2JMbjHChTjtnbD54i9QAd
-	 Q/6K4mRxBn1PA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 31C99CE0FF5; Fri, 16 Feb 2024 16:55:59 -0800 (PST)
-Date: Fri, 16 Feb 2024 16:55:59 -0800
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Ankur Arora <ankur.a.arora@oracle.com>
-Cc: linux-kernel@vger.kernel.org, tglx@linutronix.de, peterz@infradead.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	luto@kernel.org, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, willy@infradead.org, mgorman@suse.de,
-	jpoimboe@kernel.org, mark.rutland@arm.com, jgross@suse.com,
-	andrew.cooper3@citrix.com, bristot@kernel.org,
-	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
-	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-	krypton@ulrich-teichert.org, rostedt@goodmis.org,
-	David.Laight@aculab.com, richard@nod.at, jon.grimm@amd.com,
-	bharata@amd.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
-Subject: Re: [PATCH 00/30] PREEMPT_AUTO: support lazy rescheduling
-Message-ID: <0be4df28-99be-41a3-9e24-2b7cfc740b4a@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
- <a7e785f8-d4c3-4b1b-9abe-36ac0b971e44@paulmck-laptop>
- <87le7mpjpr.fsf@oracle.com>
- <4e070ae0-29dc-41ee-aee6-0d3670304825@paulmck-laptop>
- <0d4a4eec-ce91-48da-91b6-1708a97edaeb@paulmck-laptop>
- <871q9dmndg.fsf@oracle.com>
- <9916c73f-510c-47a6-a9b4-ea6b438e82c0@paulmck-laptop>
- <87le7lkzj6.fsf@oracle.com>
- <4bc4ea06-e3e9-4d22-bacf-71cae0ba673d@paulmck-laptop>
+	s=arc-20240116; t=1708131497; c=relaxed/simple;
+	bh=T/rm/p4zZLrZ8lUQrOICPzaapq/vW9EgZQVSXWVG5rw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=uf7a6PB+AzqK968XuaHtEypqnQ9ggpzkDiahmEG1+TFF6e8XrZIjnroI7aWKntMyPxk1xMcgL28yfUbwohjicslawVVHVnIVD3bT0jGLNBKbWwQQB+r7YJCejiRk7gLOknQ18SOjXXaEAkiOE8IbkKK9gcuA/uwocwnMlJy1Cc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=OPrkRoIE; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-58e256505f7so1021744eaf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 16:58:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1708131494; x=1708736294; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IzVo2l1UeODXlFr9ZspobMSeOz6FqRsDzZRtwqz0aks=;
+        b=OPrkRoIEKkCbQ4YuvXA/KDHVjR4g1oj2QRLXipeRksevCbLgIO8J+1WlN6T4pSgHYZ
+         Vi5gZH+89WqV3vpAHcshLk+4WPfIL5JHvq9c8Lkn2vrVDswj7d2Mzg777l276+8f02+h
+         CU6JPhzNg1Odohqi3nnEA/lPJjbKdzhn4gdmweF2UyeFFdtvpwjfiAo2LWp/H9sWy7GK
+         1S7PlaO2dqils+OSU6wOKKkgClBy2xxr2oyglgKUcbTajrX1SmpmwIzc4JkaXeciUByZ
+         BSPc9GBZw/q6CU8UIMIGh5s+5EDQ/7IKSyAyYj/Dtn+eAjWaAQUJGVuatk57oqfD/VL0
+         hQ8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708131494; x=1708736294;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IzVo2l1UeODXlFr9ZspobMSeOz6FqRsDzZRtwqz0aks=;
+        b=UYQx5shg8yPcns9CxB0JT5uJvdjUkcOixUHq1T37ca+/1GcwFdLgxc8kO/eOCU8Qao
+         cT1miRZOUOV+gIh4jOpdDvTJTtqg+SAYt0JH4FneDykzZmHxyJPLyc1uxzUjHzbq+KoW
+         IvC4GKlepsp2B9Anp5VzQUrvpiInd1PXo+K+ZqWhbp+TPGlgkWbQU9MS/HvIf4tuyn8v
+         +EZErxaysI+nGwJfZXNJwQ4maJ3EFx9RgJXYIJyKJ2AkI2HA2s2SB/9VIe+CPfgZ8Cge
+         jzzI32MWR6xWUW9q1KOXpZUPktWEWsNlEDCBFZ3nLZPj4S34VSNyybpfhGOS+xIqiwBr
+         qf7g==
+X-Gm-Message-State: AOJu0Yw0b4IZyhEMBZoWU0LFh7BmlTTzoykbotw30odSMb00It/EhP3C
+	nFhFxwkOysU7mUXxf/zz6sDAspOtpZyx8SBuvt+9uTI66xmQ3SJ0IutsmQJPyK7lNLuBg+RmP74
+	Y
+X-Google-Smtp-Source: AGHT+IF2qj5VG2aWGKmy+Z/F9xqjxzKMZfdoF+ZXES4kZiPGRVxWB31P4WLI9MkML3OCwmckEUxPAA==
+X-Received: by 2002:a05:6358:659b:b0:178:fd13:d6e4 with SMTP id x27-20020a056358659b00b00178fd13d6e4mr7493295rwh.25.1708131493668;
+        Fri, 16 Feb 2024 16:58:13 -0800 (PST)
+Received: from atishp.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id d188-20020a6336c5000000b005dc89957e06sm487655pga.71.2024.02.16.16.58.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Feb 2024 16:58:13 -0800 (PST)
+From: Atish Patra <atishp@rivosinc.com>
+To: linux-kernel@vger.kernel.org
+Cc: Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Anup Patel <anup@brainfault.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Christian Brauner <brauner@kernel.org>,
+	=?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
+	Conor Dooley <conor@kernel.org>,
+	devicetree@vger.kernel.org,
+	Evan Green <evan@rivosinc.com>,
+	Guo Ren <guoren@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Ian Rogers <irogers@google.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	James Clark <james.clark@arm.com>,
+	Jing Zhang <renyu.zj@linux.alibaba.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+	John Garry <john.g.garry@oracle.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	kvm-riscv@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+	linux-doc@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Samuel Holland <samuel.holland@sifive.com>,
+	Weilin Wang <weilin.wang@intel.com>,
+	Will Deacon <will@kernel.org>,
+	kaiwenxue1@gmail.com,
+	Yang Jihong <yangjihong1@huawei.com>
+Subject: [PATCH RFC 00/20] Add Counter delegation ISA extension support 
+Date: Fri, 16 Feb 2024 16:57:18 -0800
+Message-Id: <20240217005738.3744121-1-atishp@rivosinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4bc4ea06-e3e9-4d22-bacf-71cae0ba673d@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 06:59:25PM -0800, Paul E. McKenney wrote:
-> On Thu, Feb 15, 2024 at 04:45:17PM -0800, Ankur Arora wrote:
-> > 
-> > Paul E. McKenney <paulmck@kernel.org> writes:
-> > 
-> > > On Thu, Feb 15, 2024 at 01:24:59PM -0800, Ankur Arora wrote:
-> > >>
-> > >> Paul E. McKenney <paulmck@kernel.org> writes:
-> > >>
-> > >> > On Wed, Feb 14, 2024 at 07:45:18PM -0800, Paul E. McKenney wrote:
-> > >> >> On Wed, Feb 14, 2024 at 06:03:28PM -0800, Ankur Arora wrote:
-> > >> >> >
-> > >> >> > Paul E. McKenney <paulmck@kernel.org> writes:
-> > >> >> >
-> > >> >> > > On Mon, Feb 12, 2024 at 09:55:24PM -0800, Ankur Arora wrote:
-> > >> >> > >> Hi,
-> > >> >> > >>
-> > >> >> > >> This series adds a new scheduling model PREEMPT_AUTO, which like
-> > >> >> > >> PREEMPT_DYNAMIC allows dynamic switching between a none/voluntary/full
-> > >> >> > >> preemption model. However, unlike PREEMPT_DYNAMIC, it doesn't depend
-> > >> >> > >> on explicit preemption points for the voluntary models.
-> > >> >> > >>
-> > >> >> > >> The series is based on Thomas' original proposal which he outlined
-> > >> >> > >> in [1], [2] and in his PoC [3].
-> > >> >> > >>
-> > >> >> > >> An earlier RFC version is at [4].
-> > >> >> > >
-> > >> >> > > This uncovered a couple of latent bugs in RCU due to its having been
-> > >> >> > > a good long time since anyone built a !SMP preemptible kernel with
-> > >> >> > > non-preemptible RCU.  I have a couple of fixes queued on -rcu [1], most
-> > >> >> > > likely for the merge window after next, but let me know if you need
-> > >> >> > > them sooner.
-> > >> >> >
-> > >> >> > Thanks. As you can probably tell, I skipped out on !SMP in my testing.
-> > >> >> > But, the attached diff should tide me over until the fixes are in.
-> > >> >>
-> > >> >> That was indeed my guess.  ;-)
-> > >> >>
-> > >> >> > > I am also seeing OOM conditions during rcutorture testing of callback
-> > >> >> > > flooding, but I am still looking into this.
-> > >> >> >
-> > >> >> > That's on the PREEMPT_AUTO && PREEMPT_VOLUNTARY configuration?
-> > >> >>
-> > >> >> On two of the PREEMPT_AUTO && PREEMPT_NONE configurations, but only on
-> > >> >> two of them thus far.  I am running a longer test to see if this might
-> > >> >> be just luck.  If not, I look to see what rcutorture scenarios TREE10
-> > >> >> and TRACE01 have in common.
-> > >> >
-> > >> > And still TRACE01 and TREE10 are hitting OOMs, still not seeing what
-> > >> > sets them apart.  I also hit a grace-period hang in TREE04, which does
-> > >> > CONFIG_PREEMPT_VOLUNTARY=y along with CONFIG_PREEMPT_AUTO=y.  Something
-> > >> > to dig into more.
-> > >>
-> > >> So, the only PREEMPT_VOLUNTARY=y configuration is TREE04. I wonder
-> > >> if you would continue to hit the TREE04 hang with CONFIG_PREEMTP_NONE=y
-> > >> as well?
-> > >> (Just in the interest of minimizing configurations.)
-> > >
-> > > I would be happy to, but in the spirit of full disclosure...
-> > >
-> > > First, I have seen that failure only once, which is not enough to
-> > > conclude that it has much to do with TREE04.  It might simply be low
-> > > probability, so that TREE04 simply was unlucky enough to hit it first.
-> > > In contrast, I have sufficient data to be reasonably confident that the
-> > > callback-flooding OOMs really do have something to do with the TRACE01 and
-> > > TREE10 scenarios, even though I am not yet seeing what these two scenarios
-> > > have in common that they don't also have in common with other scenarios.
-> > > But what is life without a bit of mystery?  ;-)
-> > 
-> > :).
-> > 
-> > > Second, please see the attached tarball, which contains .csv files showing
-> > > Kconfig options and kernel boot parameters for the various torture tests.
-> > > The portions of the filenames preceding the "config.csv" correspond to
-> > > the directories in tools/testing/selftests/rcutorture/configs.
-> > 
-> > So, at least some of the HZ_FULL=y tests don't run into problems.
-> > 
-> > > Third, there are additional scenarios hand-crafted by the script at
-> > > tools/testing/selftests/rcutorture/bin/torture.sh.  Thus far, none of
-> > > them have triggered, other than via the newly increased difficulty
-> > > of configurating a tracing-free kernel with which to test, but they
-> > > can still be useful in ruling out particular Kconfig options or kernel
-> > > boot parameters being related to a given issue.
-> > >
-> > > But please do take a look at the .csv files and let me know what
-> > > adjustments would be appropriate given the failure information.
-> > 
-> > Nothing stands out just yet. Let me start a run here and see if
-> > that gives me some ideas.
-> 
-> Sounds good, thank you!
-> 
-> > I'm guessing the splats don't give any useful information or
-> > you would have attached them ;).
-> 
-> My plan is to extract what can be extracted from the overnight run
-> that I just started.  Just in case the fixes have any effect on things,
-> unlikely though that might be given those fixes and the runs that failed.
+This series adds the counter delegation extension support. It is based on
+very early PoC work done by Kevin Xue and mostly rewritten after that.
+The counter delegation ISA extension(Smcdeleg/Ssccfg) actually depends
+on multiple ISA extensions.
 
-And I only got no failures from either TREE10 or TRACE01 on last night's
-run.  I merged your series on top of v6.8-rc4 with the -rcu tree's
-dev branch, the latter to get the RCU fixes.  But this means that last
-night's results are not really comparable to earlier results.
+1. S[m|s]csrind : The indirect CSR extension[1] which defines additional
+   5 ([M|S|VS]IREG2-[M|S|VS]IREG6) register to address size limitation of
+   RISC-V CSR address space.
+2. Smstateen: The stateen bit[60] controls the access to the registers
+   indirectly via the above indirect registers.
+3. Smcdeleg/Ssccfg: The counter delegation extensions[2]
 
-I did get a few TREE09 failures, but I get those anyway.  I took it
-apart below for you because I got confused and thought that it was a
-TREE10 failure.  So just in case you were curious what one of these
-looks like and because I am too lazy to delete it.  ;-)
+The counter delegation extension allows Supervisor mode to program the
+hpmevent and hpmcounters directly without needing the assistance from the
+M-mode via SBI calls. This results in a faster perf profiling and very
+few traps. This extension also introduces a scountinhibit CSR which allows
+to stop/start any counter directly from the S-mode. As the counter
+delegation extension potentially can have more than 100 CSRs, the specification
+leverages the indirect CSR extension to save the precious CSR address range.
 
-So from the viewpoint of moderate rcutorture testing, this series
-looks good.  Woo hoo!!!
+Due to the dependency of these extensions, the following extensions must be
+enabled in qemu to use the counter delegation feature in S-mode.
 
-We did uncover a separate issue with Tasks RCU, which I will report on
-in more detail separately.  However, this issue does not (repeat, *not*)
-affect lazy preemption as such, but instead any attempt to remove all
-of the cond_resched() invocations.
+"smstateen=true,sscofpmf=true,ssccfg=true,smcdeleg=true,smcsrind=true,sscsrind=true"
 
-My next step is to try this on bare metal on a system configured as
-is the fleet.  But good progress for a week!!!
+When we access the counters directly in S-mode, we also need to solve the
+following problems.
 
-							Thanx, Paul
+1. Event to counter mapping
+2. Event encoding discovery
 
-------------------------------------------------------------------------
+The RISC-V ISA doesn't define any standard either for event encoding or the
+event to counter mapping rules.
 
-[ 3458.875819] rcu_torture_fwd_prog: Starting forward-progress test 0
-[ 3458.877155] rcu_torture_fwd_prog_cr: Starting forward-progress test 0
+Until now, the SBI PMU implementation relies on device tree binding[3] to
+discover the event to counter mapping in RISC-V platform in the firmware. The
+SBI PMU specification[4] defines event encoding for standard perf events as well.
+Thus, the kernel can query the appropriate counter for an given event from the
+firmware.
 
-	This says that rcutorture is starting a callback-flood
-	forward-progress test.
+However, the kernel doesn't need any firmware interaction for hardware
+counters if counter delegation is available in the hardware. Thus, the driver
+needs to discover the above mappings/encodings by itself without any assistance
+from firmware. One of the options considered was to extend the PMU DT parsing
+support to kernel as well. However, that requires additional support in ACPI
+based system. It also needs more infrastructure in the virtualization as well.
 
-[ 3459.252546] rcu-torture: rtc: 00000000ec445089 ver: 298757 tfle: 0 rta: 298758 rtaf: 0 rtf: 298747 rtmbe: 0 rtmbkf: 0/0 rtbe: 0 rtbke: 0 rtbf: 0 rtb: 0 nt: 895741 barrier: 27715/27716:0 read-exits: 3984 nocb-toggles: 0:0
-[ 3459.261545] rcu-torture: Reader Pipe:  363878289 159521 0 0 0 0 0 0 0 0 0
-[ 3459.263883] rcu-torture: Reader Batch:  363126419 911391 0 0 0 0 0 0 0 0 0
-[ 3459.267544] rcu-torture: Free-Block Circulation:  298757 298756 298754 298753 298752 298751 298750 298749 298748 298747 0
+This patch series solves the above problem #1 by extending the perf tool in a
+way so that event json file can specify the counter constraints of each event
+and that can be passed to the driver to choose the best counter for a given
+event. The perf stat metric series[5] from Weilin already extend the perf tool
+to parse "Counter" property to specify the hardware counter restriction.
+I have included the patch from Weilin in this series for verification purposes
+only. I will rebase as that series evolves.
 
-	These lines are just statistics that rcutorture prints out
-	periodically.  Thus far, nothing bad happened.	This is one of a
-	few SMP scenarios that does not do CPU hotplug.  But the TRACE01
-	scenario does do CPU hotplug, so not likely a determining factor.
-	Another difference is that TREE10 is the only scenario with more
-	than 16 CPUs, but then again, TRACE01 has only five.
+This series extends that support by converting comma separated string to a
+bitmap. The counter constraint bitmap is passed to the perf driver via
+newly introduced "counterid_mask" property set in "config2". Even though, this
+is a generic perf tool change, this should not affect any other architecture
+if "counterid_mask" is not mapped. 
 
-[ 3459.733109] ------------[ cut here ]------------
-[ 3459.734165] rcutorture_oom_notify invoked upon OOM during forward-progress testing.
-[ 3459.735828] WARNING: CPU: 0 PID: 43 at kernel/rcu/rcutorture.c:2874 rcutorture_oom_notify+0x3e/0x1d0
+@Weilin: Please let me know if there is a better way to solve the problem I
+described. 
 
-	Now something bad happened.  RCU was unable to keep up with the
-	callback flood.  Given that users can create callback floods
-	with close(open()) loops, this is not good.
+The problem #2 is solved by defining a architecture specific override function
+that will replace the perf standard event encoding with an encoding specified
+in the json file with the same event name. The alternate solution considered
+was to specify the encodings in the driver. However, these encodings are vendor
+specific in absence of an ISA guidelines and will become unmanageable with
+so many RISC-V vendors touching the driver for their encoding. 
 
-[ 3459.737761] Modules linked in:
-[ 3459.738408] CPU: 0 PID: 43 Comm: rcu_torture_fwd Not tainted 6.8.0-rc4-00096-g40c2642e6f24 #8252
-[ 3459.740295] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-[ 3459.742651] RIP: 0010:rcutorture_oom_notify+0x3e/0x1d0
-[ 3459.743821] Code: e8 37 48 c2 00 48 8b 1d f8 b4 dc 01 48 85 db 0f 84 80 01 00 00 90 48 c7 c6 40 f5 e0 92 48 c7 c7 10 52 23 93 e8 d3 b9 f9 ff 90 <0f> 0b 90 90 8b 35 f8 c0 66 01 85 f6 7e 40 45 31 ed 4d 63 e5 41 83
-[ 3459.747935] RSP: 0018:ffffabbb0015bb30 EFLAGS: 00010282
-[ 3459.749061] RAX: 0000000000000000 RBX: ffff9485812ae000 RCX: 00000000ffffdfff
-[ 3459.750601] RDX: 0000000000000000 RSI: 00000000ffffffea RDI: 0000000000000001
-[ 3459.752026] RBP: ffffabbb0015bb98 R08: ffffffff93539388 R09: 00000000ffffdfff
-[ 3459.753616] R10: ffffffff934593a0 R11: ffffffff935093a0 R12: 0000000000000000
-[ 3459.755134] R13: ffffabbb0015bb98 R14: ffffffff93547da0 R15: 00000000ffffffff
-[ 3459.756695] FS:  0000000000000000(0000) GS:ffffffff9344f000(0000) knlGS:0000000000000000
-[ 3459.758443] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 3459.759672] CR2: 0000000000600298 CR3: 0000000001958000 CR4: 00000000000006f0
-[ 3459.761253] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 3459.762748] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 3459.764472] Call Trace:
-[ 3459.765003]  <TASK>
-[ 3459.765483]  ? __warn+0x61/0xe0
-[ 3459.766176]  ? rcutorture_oom_notify+0x3e/0x1d0
-[ 3459.767154]  ? report_bug+0x174/0x180
-[ 3459.767942]  ? handle_bug+0x3d/0x70
-[ 3459.768715]  ? exc_invalid_op+0x18/0x70
-[ 3459.769561]  ? asm_exc_invalid_op+0x1a/0x20
-[ 3459.770494]  ? rcutorture_oom_notify+0x3e/0x1d0
-[ 3459.771501]  blocking_notifier_call_chain+0x5c/0x80
-[ 3459.772553]  out_of_memory+0x236/0x4b0
-[ 3459.773365]  __alloc_pages+0x9ca/0xb10
-[ 3459.774233]  ? set_next_entity+0x8b/0x150
-[ 3459.775107]  new_slab+0x382/0x430
-[ 3459.776454]  ___slab_alloc+0x23c/0x8c0
-[ 3459.777315]  ? preempt_schedule_irq+0x32/0x50
-[ 3459.778319]  ? rcu_torture_fwd_prog+0x6bf/0x970
-[ 3459.779291]  ? rcu_torture_fwd_prog+0x6bf/0x970
-[ 3459.780264]  ? rcu_torture_fwd_prog+0x6bf/0x970
-[ 3459.781244]  kmalloc_trace+0x179/0x1a0
-[ 3459.784651]  rcu_torture_fwd_prog+0x6bf/0x970
-[ 3459.785529]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
-[ 3459.786617]  ? kthread+0xc3/0xf0
-[ 3459.787352]  ? __pfx_rcu_torture_fwd_prog+0x10/0x10
-[ 3459.788417]  kthread+0xc3/0xf0
-[ 3459.789101]  ? __pfx_kthread+0x10/0x10
-[ 3459.789906]  ret_from_fork+0x2f/0x50
-[ 3459.790708]  ? __pfx_kthread+0x10/0x10
-[ 3459.791523]  ret_from_fork_asm+0x1a/0x30
-[ 3459.792359]  </TASK>
-[ 3459.792835] ---[ end trace 0000000000000000 ]---
+The override is only required when counter delegation is available in the
+platform which is detected at the runtime. The SBI PMU (current implementation)
+doesn't require any override as it defines the standard event encoding. The
+hwprobe syscall defined for RISC-V is used for this detection in this series.
+A sysfs based property can be explored to do the same but we may require
+hwprobe in future given the churn of extensions in RISC-V. That's why, I went
+with hwprobe. Let me know if anybody thinks that's a bad idea. 
 
-	Standard rcutorture stack trace for this failure mode.
+The perf tool also hook allows RISC-V ISA platform vendors to define their
+encoding for any standard perf or ISA event. I have tried to cover all the use
+cases that I am aware of (stat, record, top). Please let me know if I have
+missed any particular use case where architecture hook must be invoked. I am
+also open to any other idea to solve the above said problem.
 
-[ 3459.793849] rcu_torture_fwd_cb_hist: Callback-invocation histogram 0 (duration 913 jiffies): 1s/10: 0:1 2s/10: 719677:32517 3s/10: 646965:0
+PATCH organization:
+PATCH 1 is from the perf metric series[5]
+PATCH 2-5 defines and implements the indirect CSR extension.
+PATCH 6-10 defines the other required ISA extensions.
+PATCH 11 just an overall restructure of the RISC-V PMU driver.
+PATCH 12-14 implements the counter delegation extension and new perf tool
+plumbings to solve #1 and #2.
+PATCH 15-16 improves the perf tool support to solve #1 and #2.
+PATCH 17 adds a perf json file for qemu virt machine.
+PATCH 18-20 adds hwprobe mechanism to enable perf to detect if platform supports
+delegation extensions.
 
-	So the whole thing lasted less than a second (913 jiffies).
-	Each element of the histogram is 100 milliseconds worth.  Nothing
-	came through during the first 100 ms (not surprising), and one
-	grace period elapsed (also not surprising).  A lot of callbacks
-	came through in the second 100 ms (also not surprising), but there
-	were some tens of thousand grace periods (extremely surprising).
-	The third 100 ms got a lot of callbacks but no grace periods
-	(not surprising).
+There is no change in process to run perf stat/record and will continue to work
+as it is as long as the relevant extensions have been enabled in Qemu.
 
-	Huh.  This started at t=3458.877155 and we got the OOM at
-	t=3459.733109, which roughly matches the reported time.
+However, the perf tool needs to be recompiled with as it requires new kenrel
+headers.
 
-[ 3459.796413] rcu: rcu_fwd_progress_check: GP age 737 jiffies
+The Qemu patches can be found here:
+https://github.com/atishp04/qemu/tree/counter_delegation_rfc
 
-	The callback flood does seem to have stalled grace periods,
-	though not by all *that* much.
+The opensbi patch can be found here:
+https://github.com/atishp04/opensbi/tree/counter_delegation_v1
 
-[ 3459.799402] rcu: rcu_preempt: wait state: RCU_GP_WAIT_FQS(5) ->state: 0x402 ->rt_priority 0 delta ->gp_start 740 ->gp_activity 0 ->gp_req_activity 747 ->gp_wake_time 68 ->gp_wake_seq 5535689 ->gp_seq 5535689 ->gp_seq_needed 5535696 ->gp_max 713 ->gp_flags 0x0
+The Linux kernel patches can be found here:
+https://github.com/atishp04/linux/tree/counter_delegation_rfc
 
-	The RCU grace-period kthread is in its loop looking for
-	quiescent states, and is executing normally ("->gp_activity 0",
-	as opposed to some huge number indicating that the kthread was
-	never awakened).
+[1] https://github.com/riscv/riscv-indirect-csr-access
+[2] https://github.com/riscv/riscv-smcdeleg-ssccfg
+[3] https://www.kernel.org/doc/Documentation/devicetree/bindings/perf/riscv%2Cpmu.yaml
+[4] https://github.com/riscv-non-isa/riscv-sbi-doc/blob/master/src/ext-pmu.adoc
+[5] https://lore.kernel.org/all/20240209031441.943012-4-weilin.wang@intel.com/
 
-[ 3459.804267] rcu:     rcu_node 0:0 ->gp_seq 5535689 ->gp_seq_needed 5535696 ->qsmask 0x0 ...G ->n_boosts 0
+Atish Patra (17):
+RISC-V: Add Sxcsrind ISA extension definition and parsing
+dt-bindings: riscv: add Sxcsrind ISA extension description
+RISC-V: Define indirect CSR access helpers
+RISC-V: Add Ssccfg ISA extension definition and parsing
+dt-bindings: riscv: add Ssccfg ISA extension description
+RISC-V: Add Smcntrpmf extension parsing
+dt-bindings: riscv: add Smcntrpmf ISA extension description
+RISC-V: perf: Restructure the SBI PMU code
+RISC-V: perf: Modify the counter discovery mechanism
+RISC-V: perf: Implement supervisor counter delegation support
+RISC-V: perf: Use config2 for event to counter mapping
+tools/perf: Add arch hooks to override perf standard events
+tools/perf: Pass the Counter constraint values in the pmu events
+perf: Add json file for virt machine supported events
+tools arch uapi: Sync the uinstd.h header file for RISC-V
+RISC-V: Add hwprobe support for Counter delegation extensions
+tools/perf: Detect if platform supports counter delegation
 
-	The "->qsmask 0x0" says that all CPUs have provided a quiescent
-	state, but the "G" indicates that the normal grace period is
-	blocked by some task preempted within an RCU read-side critical
-	section.  This output is strange because a 56-CPU scenario should
-	have considerably more output.
+Kaiwen Xue (2):
+RISC-V: Add Sxcsrind ISA extension CSR definitions
+RISC-V: Add Sscfg extension CSR definition
 
-	Plus this means that this cannot possibly be TREE10 because that
-	scenario is non-preemptible, so there cannot be grace periods
-	waiting for quiescent states on anything but CPUs.
+Weilin Wang (1):
+perf pmu-events: Add functions in jevent.py to parse counter and event
+info for hardware aware grouping
 
-	This happens from time to time because TREE09 runs on a single
-	CPU, and has preemption enabled, but not RCU priority boosting.
-	And this output is quite appropriate for a single-CPU scenario.
+Documentation/arch/riscv/hwprobe.rst          |  10 +
+../devicetree/bindings/riscv/extensions.yaml |  34 +
+MAINTAINERS                                   |   4 +-
+arch/riscv/include/asm/csr.h                  |  47 ++
+arch/riscv/include/asm/csr_ind.h              |  42 ++
+arch/riscv/include/asm/hwcap.h                |   5 +
+arch/riscv/include/asm/sbi.h                  |   2 +-
+arch/riscv/include/uapi/asm/hwprobe.h         |   4 +
+arch/riscv/kernel/cpufeature.c                |   5 +
+arch/riscv/kernel/sys_hwprobe.c               |   3 +
+arch/riscv/kvm/vcpu_pmu.c                     |   2 +-
+drivers/perf/Kconfig                          |  16 +-
+drivers/perf/Makefile                         |   4 +-
+../perf/{riscv_pmu.c => riscv_pmu_common.c}  |   0
+../perf/{riscv_pmu_sbi.c => riscv_pmu_dev.c} | 654 ++++++++++++++----
+include/linux/perf/riscv_pmu.h                |  13 +-
+tools/arch/riscv/include/uapi/asm/unistd.h    |  14 +-
+tools/perf/arch/riscv/util/Build              |   2 +
+tools/perf/arch/riscv/util/evlist.c           |  60 ++
+tools/perf/arch/riscv/util/pmu.c              |  41 ++
+tools/perf/arch/riscv/util/pmu.h              |  11 +
+tools/perf/builtin-record.c                   |   3 +
+tools/perf/builtin-stat.c                     |   2 +
+tools/perf/builtin-top.c                      |   3 +
+../pmu-events/arch/riscv/arch-standard.json  |  10 +
+tools/perf/pmu-events/arch/riscv/mapfile.csv  |   1 +
+../pmu-events/arch/riscv/qemu/virt/cpu.json  |  30 +
+../arch/riscv/qemu/virt/firmware.json        |  68 ++
+tools/perf/pmu-events/jevents.py              | 186 ++++-
+tools/perf/pmu-events/pmu-events.h            |  25 +-
+tools/perf/util/evlist.c                      |   6 +
+tools/perf/util/evlist.h                      |   6 +
+32 files changed, 1167 insertions(+), 146 deletions(-)
+create mode 100644 arch/riscv/include/asm/csr_ind.h
+rename drivers/perf/{riscv_pmu.c => riscv_pmu_common.c} (100%)
+rename drivers/perf/{riscv_pmu_sbi.c => riscv_pmu_dev.c} (61%)
+create mode 100644 tools/perf/arch/riscv/util/evlist.c
+create mode 100644 tools/perf/arch/riscv/util/pmu.c
+create mode 100644 tools/perf/arch/riscv/util/pmu.h
+create mode 100644 tools/perf/pmu-events/arch/riscv/arch-standard.json
+create mode 100644 tools/perf/pmu-events/arch/riscv/qemu/virt/cpu.json
+create mode 100644 tools/perf/pmu-events/arch/riscv/qemu/virt/firmware.json
 
-	I probably should enable RCU priority boosting on this scenario.
-	I would also need it to be pretty fast off the mark, because we
-	OOMed about 700 milliseconds into the grace period.
-
-	But that has nothing to do with lazy preemption!
-
-[ 3459.806271] rcu:     cpu 0 ->gp_seq_needed 5535692
-[ 3459.807139] rcu: RCU callbacks invoked since boot: 65398010
-[ 3459.808374] rcu: rcu_fwd_progress_check: callbacks 0: 7484262
-[ 3459.809640] rcutorture_oom_notify: Freed 1 RCU callbacks.
-[ 3460.616268] rcutorture_oom_notify: Freed 7484253 RCU callbacks.
-[ 3460.619551] rcutorture_oom_notify: Freed 0 RCU callbacks.
-[ 3460.620740] rcutorture_oom_notify returning after OOM processing.
-[ 3460.622719] rcu_torture_fwd_prog_cr: Waiting for CBs: rcu_barrier+0x0/0x2c0() 0
-[ 3461.678556] rcu_torture_fwd_prog_nr: Starting forward-progress test 0
-[ 3461.684546] rcu_torture_fwd_prog_nr: Waiting for CBs: rcu_barrier+0x0/0x2c0() 0
+--
+2.34.1
 
 
