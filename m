@@ -1,188 +1,150 @@
-Return-Path: <linux-kernel+bounces-70010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E6AF8591B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:22:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D4538591B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:25:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA0771F21A83
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:22:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 097A72827C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA8F7E0E7;
-	Sat, 17 Feb 2024 18:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8257E0FC;
+	Sat, 17 Feb 2024 18:24:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RPq12BBf"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W7oYL8QK"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E9A7E107;
-	Sat, 17 Feb 2024 18:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCBD18020;
+	Sat, 17 Feb 2024 18:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708194169; cv=none; b=SXQJ06x+1S42W/mWe+CXj48/GuAn0xkBfvypejNFcas3YnDHHipyBdCALvqILbwWEXHykS/osFLYf6VfwkjxU+6betX9T+VLkRYqW8UCTLZmktp3Oex/+akpWv68WHJaG8zWFA67E3lbPzdZMLq0nBRgOrn3AZjSeWeM1tl0pqs=
+	t=1708194295; cv=none; b=ads6MVebHcnjB3F1gHhKgyJ6KToIrKPiT8ryBvA0wSwvXN95v5fHhF6V8LeydC8S6W5muQSgUNuRY9u0nXTU4Y6X7wAIeF9z8qnCTE06MbwEOBq6ihZLzFVQXx/U+eZ8STxUOxmRMFmUkD1mJg5452BTDBmyT+ufwhHf2kY3DcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708194169; c=relaxed/simple;
-	bh=8oifpfarV9J6Wvv+SArdQLyLIPIXjJtvpilJDp3o5xY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=d2OUUaeCf/mgXr+wagj5VNjMo2sYWQbXHnADSJb81g9uoxZu7x4nvK3Y3OkEdH9wl921YdAccP2Cp8/+Hm//pGb+vxzIEnM4MtjrGxT/GGUqE+oilfYoBlChs9yOkyS2dtcof7vuBm9EWdwvaAkGw7eTHSNiNkg2jjDpzGLznDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RPq12BBf; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1708194295; c=relaxed/simple;
+	bh=a5WT5IeOuUFaQli0pcNNQu3rMzv2/AxArXbYGvAi414=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S6NJCQwKkUPdqxX0YtndgTE8XC0WHtuGqYCBdQZWYs/NlxO+7DVYFsC333cUUnViPxDglDZpPyY0ajGwEY8BGM4SjxAAY2V9ue95qQLpfksI2f6BhBvF0ofpNoKGcBgYOGaK8nAE8T9RPQ1vBF0CEh/akL3hXJnRxiD480bwT7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W7oYL8QK; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5120ecfd75cso4267917e87.0;
-        Sat, 17 Feb 2024 10:22:45 -0800 (PST)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-59a8b9b327aso1053878eaf.2;
+        Sat, 17 Feb 2024 10:24:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708194164; x=1708798964; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dovcf13yx7y8WE/3o6ZxD6mwwUIJXyS5E3nGvyjgRKw=;
-        b=RPq12BBf3Drt8NYv1CSOm1tP8T5jG5T1noI7UpOfVjIA7zgvCFEg0NYaytHaone9e/
-         1EFoa5Mk/Eqa6pG1epXTuAPQZC9Ugla0nteCqpqR+tqtyDY+0YOREOGTGUeAvJUqeIZH
-         mMk0FyFWmuoyI0gBNSnfnBiEFkcZNcrXGLJ8J5IWJt0IiUewFxdJo9/7yrvgq9IMzLyt
-         2YivJcE1/Wu4PxkRGRDU3AeXhz21+uVcC89B+rTYBkvJcvntwMcRmHh5VrurDfA2SjiM
-         Q9uabP4OZHja2roIajH7JYQruKdH9IMUDLdK+gDKmFxsdmSPi0X1Uj97DRcyRqyaqlyI
-         ZGgA==
+        d=gmail.com; s=20230601; t=1708194292; x=1708799092; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=pLC9zRflijwVfQm/uk7oxrDMVV/Oz+zmQyj9vEq5EFA=;
+        b=W7oYL8QKKlqUmHa4ej4ddDi0WPTyRajRO+1RerOTUVFooQddFHQxC7oD++9E3OTtJF
+         eEOqohDTTSMi+/0lz7Gc4UwIRCUn9lwdL1HtzuTPApuvSZ3/FO6coXSLs5w1JrNL8Jp/
+         pRGan91ttcyVZp1ugAq974FI13C7QnevjHfYGFatn6qqEtIp2SmtME4onx7rMa+rGv1r
+         3IkFTX72YrrSzptFG/ckrpmNvNtJKcipF5N1v4HMq8QoWXzwlQXVjs98552cVynW9g9N
+         GvOW04GCXNJfIZDR5YKQp9h4T0Oy4qWWajnVpL62GPuvGkky8WsSRavdkMqTnIfnkIjr
+         HvdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708194164; x=1708798964;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1708194292; x=1708799092;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Dovcf13yx7y8WE/3o6ZxD6mwwUIJXyS5E3nGvyjgRKw=;
-        b=xUZD8gr3cl2XPFGIHYrbQxA92IBdWQTU3N3lnLJgIz5/iM8KFz+R28xGMNWZ2ySeal
-         ct0gk5rvQJ7WeVn+SdkQmJzoTmbWiRHLXFhn+cIte2L3W+uH9pOL3YRJ/cAQBfAAmOdy
-         wyBuvR2fLIvwJtgBJE0nwbwdGv5r8ipNvZNCKvxZecKIj6bJvVwknJ1ggSgjUBS4JNOv
-         RN3dWEBSJrqHVNPx6iewAR4eeoPgr01qgBKT47/SIu6NM03Fp1HQT3NEid3uooqImnFU
-         rb62CnONCefVtejkxaxrpy3ZV47v0tuzjt3QVzVETKwr3y4bJO1As0/6GU4mFaj/qWjb
-         mUdw==
-X-Forwarded-Encrypted: i=1; AJvYcCW5mn+RWSGUme6+h1HRTkwFGlrIKEaHfNMSDS7gEdPeUqivhIH2jAb0RqFCX/f0oFDkB9/IZZMoD8zDLdNXXHWIjkGxTUF+LwC+o96Nu/V/tqNOByTHW4qk5ChNulTDDUCNWAvcAslTyIwzgWM3IzzN6GtCHA/niH6WS/3JBkZD7TbAWpTF7WQG1jEu
-X-Gm-Message-State: AOJu0YyDsaqqQvnyVLbK171efDGgECejl6xzv9qSSUgBakpZ5MNYhcZC
-	ovhnagdbV/w7kRlNWHBvvQij0/o+vGAlrcUo6qMTvNsUkcHQJAdEytUUVByj
-X-Google-Smtp-Source: AGHT+IFA9gLy0VjL49HWtcm3DCshExQ/nRE0roMCJYdiHrnptZHlUeEpYO5V+0rz/0w1MwdGSnujaQ==
-X-Received: by 2002:a19:6904:0:b0:511:6b24:ba46 with SMTP id e4-20020a196904000000b005116b24ba46mr4771705lfc.34.1708194163841;
-        Sat, 17 Feb 2024 10:22:43 -0800 (PST)
-Received: from hex.my.domain (83.8.201.110.ipv4.supernova.orange.pl. [83.8.201.110])
-        by smtp.gmail.com with ESMTPSA id p4-20020a05640243c400b00560c6ff443esm1058750edc.66.2024.02.17.10.22.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 10:22:43 -0800 (PST)
-From: Artur Weber <aweber.kernel@gmail.com>
-Date: Sat, 17 Feb 2024 19:22:40 +0100
-Subject: [PATCH] ARM: dts: exynos4412-*: decrease memory to account for
- unusable region
+        bh=pLC9zRflijwVfQm/uk7oxrDMVV/Oz+zmQyj9vEq5EFA=;
+        b=fTsAw+Uu+dGq6NXul9OdGgb5jF3WA5tVLEpi4y0ytC75f+SGRtfIhJi5VnqnpAd+lU
+         2Hg90678zFSr0nTnD9wLWI0K3IwSo7J0UFI8hfBdMlm/vTyJ8n8+MU2WI9eg6py11Q/Y
+         lst3E8l/zeGlycbPwe/L6Qhn+SxLAFh/gymEzLdKfIRG4J8rQEzYZpfAY5Up+8rGZ2Ev
+         TLnKp7htph68spkRllPzk7Xtowssuo3BCjSb3ubgZoMQ7Icsgane7xuP9iLA3vD0aG2/
+         F426zwil4Vylyh7T0hbGkN8hV1eL76juuM/a+a87Re4IWCd1JR4zqC/g9awDX6ufaLlX
+         6fdw==
+X-Forwarded-Encrypted: i=1; AJvYcCW1aVn5QjNgV396X3yuAf83IINyUDvGbrFID3BgtNeinqPG/DL7FKSt93mnK6TS1/90HRXKaYRPHl8jl0DU9IPuYz3UnFZScXsbv9N0T1EVnBqlcIYGMz7fQmMYf7SK4m4oEgwWP0bWe+8=
+X-Gm-Message-State: AOJu0YwdYN/4RxkyC19/bSal45CTUcDs1J44qmB9Ee/V9yEbJ3bd+qhV
+	KC9W5qZUvT3hMGoJGSIHIXSAuTDlSIXk2ZituktBkPp7cNiLu7vg
+X-Google-Smtp-Source: AGHT+IHV62nHA3tDgJ+tJsmk8h6u9uo7pOzTcAcpbR3XQjFBnhXLWh8fNK2kWQvL1a797/zgPLXpCg==
+X-Received: by 2002:a05:6358:8087:b0:178:7986:a586 with SMTP id a7-20020a056358808700b001787986a586mr10183644rwk.5.1708194292499;
+        Sat, 17 Feb 2024 10:24:52 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id fd3-20020a056a002e8300b006e0dd50b0d0sm1959349pfb.8.2024.02.17.10.24.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 10:24:51 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <718f0dd9-121a-4885-8976-aaafa7c44f2d@roeck-us.net>
+Date: Sat, 17 Feb 2024 10:24:50 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] hwmon: (aquacomputer_d5next) Set fan to direct PWM mode
+ when writing value
+Content-Language: en-US
+To: Aleksa Savic <savicaleksa83@gmail.com>, linux-hwmon@vger.kernel.org
+Cc: Jack Doan <me@jackdoan.com>, Jean Delvare <jdelvare@suse.com>,
+ linux-kernel@vger.kernel.org
+References: <20240217181536.344386-1-savicaleksa83@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240217181536.344386-1-savicaleksa83@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240217-exynos4-memsize-fix-v1-1-7858e9c5f844@gmail.com>
-X-B4-Tracking: v=1; b=H4sIAG/50GUC/x2MSwqAMBDFriKzdkCLH/Qq4kLbp87CKh0QP3h3i
- 8sEkocUQaDUJg8FHKKy+Qh5mpBdBj+DxUUmk5kiM3nNOC+/acErVpUbPMnJzlo3Nhjr0lUUyz0
- g6v/a9e/7AfbELrllAAAA
-To: Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>
-Cc: Henrik Grimler <henrik@grimler.se>, 
- =?utf-8?q?Martin_J=C3=BCcker?= <martin.juecker@gmail.com>, 
- Jack Knightly <J__A__K@hotmail.com>, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, replicant@osuosl.org, 
- Artur Weber <aweber.kernel@gmail.com>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708194162; l=3075;
- i=aweber.kernel@gmail.com; s=20231030; h=from:subject:message-id;
- bh=8oifpfarV9J6Wvv+SArdQLyLIPIXjJtvpilJDp3o5xY=;
- b=1fLMVp+k6r+NLxpjwtkrkl5xzZEBvgwcASiLsLI04vAxZIDYv6RqkfRVLBWBFQDbaxpvTZw9P
- OdR5+rinfu0DgUKACC2D5z46VIwXk2ph+yL1jjbWGUtfdQubndboTyS
-X-Developer-Key: i=aweber.kernel@gmail.com; a=ed25519;
- pk=RhDBfWbJEHqDibXbhNEBAnc9FMkyznGxX/hwfhL8bv8=
 
-The last 4 MiB of RAM on those devices is likely used by trustzone
-firmware, and is unusable under Linux. Change the device tree memory
-node accordingly.
+On 2/17/24 10:15, Aleksa Savic wrote:
+> When setting a PWM value for a fan channel, ensure that the device
+> is actually in direct PWM value mode, as it could be in PID, curve or
+> fan following mode from previous user configurations. The byte
+> signifying the channel mode is just behind the offset for the value.
+> Otherwise, setting PWM speed might result in a no-op from the point
+> of the user.
+> 
 
-The proprietary bootloader (S-BOOT) passes these memory ranges through
-ATAG_MEM; this change allows us to have the correct memory ranges
-without relying on ATAG_MEM.
+You can require that a device is in manual mode when setting pwm
+modes, and return an error if it isn't. However, changing the mode
+to manual automatically when a pwm value is written is not acceptable.
 
-Tested-by: Henrik Grimler <henrik@grimler.se> # i9300, i9305
-Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
----
-
-This follows a similar fix implemented for the exynos5420-based
-Galaxy Tab boards:
-https://lore.kernel.org/all/20240130-galaxy-tab-s-cleanup-v1-3-d4e17857241d@grimler.se/
-..which in turn is inspired by another fix applied to exynos5422
-Odroid devices, 6591a02e17e6 ("ARM: dts: reduce total RAM by 22 MiB
-for exynos5422-odroidxu3"):
-https://lore.kernel.org/all/1421842972-25807-1-git-send-email-m.szyprowski@samsung.com/
----
- arch/arm/boot/dts/samsung/exynos4412-i9300.dts   | 2 +-
- arch/arm/boot/dts/samsung/exynos4412-i9305.dts   | 2 +-
- arch/arm/boot/dts/samsung/exynos4412-n710x.dts   | 2 +-
- arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-i9300.dts b/arch/arm/boot/dts/samsung/exynos4412-i9300.dts
-index 61aca5798f38..b79d456e976d 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-i9300.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-i9300.dts
-@@ -18,7 +18,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x40000000>;
-+		reg = <0x40000000 0x3fc00000>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-i9305.dts b/arch/arm/boot/dts/samsung/exynos4412-i9305.dts
-index 77083f1a8273..1048ef5d9bc3 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-i9305.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-i9305.dts
-@@ -11,7 +11,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x80000000>;
-+		reg = <0x40000000 0x7fc00000>;
- 	};
- };
- 
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-n710x.dts b/arch/arm/boot/dts/samsung/exynos4412-n710x.dts
-index 0a151437fc73..eee1000dea92 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-n710x.dts
-+++ b/arch/arm/boot/dts/samsung/exynos4412-n710x.dts
-@@ -9,7 +9,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x80000000>;
-+		reg = <0x40000000 0x7fc00000>;
- 	};
- 
- 	/* bootargs are passed in by bootloader */
-diff --git a/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi b/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi
-index 0b89d5682f85..95fc63295860 100644
---- a/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi
-+++ b/arch/arm/boot/dts/samsung/exynos4412-p4note.dtsi
-@@ -23,7 +23,7 @@ / {
- 
- 	memory@40000000 {
- 		device_type = "memory";
--		reg = <0x40000000 0x80000000>;
-+		reg = <0x40000000 0x7fc00000>;
- 	};
- 
- 	aliases {
-
----
-base-commit: 0f1dd5e91e2ba3990143645faff2bcce2d99778e
-change-id: 20240217-exynos4-memsize-fix-dccdb9eb75d6
-
-Best regards,
--- 
-Artur Weber <aweber.kernel@gmail.com>
+Guenter
 
 
