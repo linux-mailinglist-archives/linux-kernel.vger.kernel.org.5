@@ -1,102 +1,149 @@
-Return-Path: <linux-kernel+bounces-69842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69843-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BC20858F5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:42:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE53D858F61
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:51:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 852362824DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:42:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A03DB216A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A927A72A;
-	Sat, 17 Feb 2024 12:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856F37A72D;
+	Sat, 17 Feb 2024 12:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cZm6w3+q"
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="DMG5e6QS"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1041487B4;
-	Sat, 17 Feb 2024 12:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED93657B6;
+	Sat, 17 Feb 2024 12:51:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708173750; cv=none; b=YH/c6khnjc7oUMHWfnsZ9UCSMIgEwS+cq1GPoBN+IGTHp/WL6w2Afs3KeU2Evqz4flsP4yAwkAXm25ynkBi70UCZT2t7ZnVlGRP8+FsVxPEvTV+UNX/9bECuvHahB2UrdA+uZb8LQA1cVHfYpczpTMMs6Reh0amM3sVZKaRpPw0=
+	t=1708174297; cv=none; b=Ck9pUXeFRAUKW1ldphvJKe5dfdpyjSap/yPfnxdzTq3cFd/tbQoezzDZf2ODsM12F9pCsHthgCUsDpA50sCjxkzFfSb2tRxtM5pqGg5NVqtTyzRFrVkLm+bjfj3t4yLOVn0O7X4MxuxMDzHM49Pi+H1zm8QhIGxfpXbvrnoJJUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708173750; c=relaxed/simple;
-	bh=b3g8uEPS+3Ef3BYg2KSNVRp2AFWIwoooI5Kly5xpPZY=;
+	s=arc-20240116; t=1708174297; c=relaxed/simple;
+	bh=dOMpZYdm6byi7dSGtTU7CXpz9fL2H66oVNawiZq9BTw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gPWnayKCFyzURg3oNbI7pXyHB8bP3Uwjk0lSqaK2yRL60UBM+2+KjwL4WaFL8hdji6o5WuydHBkqwRzkP+4tvNfrfIagm2WFH8W2N6Njh/QuQJ1k/pLudkRMMlQFiDlo7QYaIVWZCFYJbtm/U6BqDG2M0v4ngb6AdZQJjk9VaYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cZm6w3+q; arc=none smtp.client-ip=217.70.183.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 64E86FF802;
-	Sat, 17 Feb 2024 12:42:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708173745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZQgQFC20iCOwYcRfjCRWjcJxj6kdRvb0sW/GpMA0iJA=;
-	b=cZm6w3+q/UHjIT1yNRcAtWgateZy+3L53YEsxa8c0kbbAEj7aWy5AFrxj6rry5XSn9IF1M
-	sT+b48pGm6Dbwqf7PWGXGB9DYyA8rgLo4Z6HcP3sO/cREYR0dfOL7IKM6jvRQHdZUQDLX8
-	dGvaU1z+9dq+Tdm0/WBz2I9WWXpSW8yE2NA8JLFV4oY0StaAUa8ZKw8Bi7lf1VpSEA6Gat
-	JJ3VGzSFbxSM5jVo5yPLcXMayJ++a4QX1PSgmntwv9QmTKJxOdD5lXyEufGFe0tT3Or9aH
-	VLy8fnI6yzSpUVkK3fUTy08Ni3w0cq4IbSrs3qkZJ27zPKvMZn2wxvPryuteOA==
-Date: Sat, 17 Feb 2024 13:42:23 +0100
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Jeremy Kerr <jk@codeconstruct.com.au>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	=?utf-8?Q?Przemys=C5=82aw?= Gaj <pgaj@cadence.com>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Conor Culhane <conor.culhane@silvaco.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Boris Brezillon <bbrezillon@kernel.org>,
-	Nicolas Pitre <npitre@baylibre.com>, linux-i3c@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: i3c: drop "master" node name suffix
-Message-ID: <2024021712422352187ad4@mail.local>
-References: <20240117075618.81932-1-krzysztof.kozlowski@linaro.org>
- <00d6a0d5-6787-4777-8fb2-dcad4304a724@linaro.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xhw6FfYZxC7XiaHLSb6mMR51DE/ziK/tXJmoThtAfueKMppC1p9JOkddYc8xH0UB7Kc07QTNBVDW+UrS6GhcXgJox8rfCjImi3YMgOUYSOZsHwf6snCI9sgGegLjBQCByN3Yo/N9ZMT2dUcDwXvoHZb+SVRRjBq6LmpJjsc13bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=DMG5e6QS; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 40C1F40E01A9;
+	Sat, 17 Feb 2024 12:51:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id 0hlCv3lIl4HE; Sat, 17 Feb 2024 12:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1708174288; bh=qo3uSORLj3aVIspHnZOOPPN2BG8DeKw0xfrzHn1JOsE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DMG5e6QSKeR9ubDYe2s0ZoiU51BCQvwIEuO4RCuRvQTeQ8TmKrZw5+z0J5aEFgswY
+	 dZB3Su8kRvsIYCLw1goi1lxlw6+XoLZtp9ebursTnwYRZDBmK6MHhFZwyrvaLbOCkY
+	 HOMZ81djkewhE8iCb1UTKOyl3n523ot7waAzw4wPFGGazCMtJm/BYWisD714CnvEoC
+	 jpv8QnvEsk0+TqoGEx5In9rBjZfucgWjYMKfShUM6qSJP6tYXHHUSOhg8u1xTn+TIe
+	 tQmZmiQgUNXNt54NgYCf+Nf0/wrlcI4CxHH0EBevuyQljR2U1pxFcTUCNU6gp+a/SV
+	 ry1dzpYHJexsOcX35pmggxd4d33+M7MfHqB+IU91Cm4A1vOYMd+NH3zAZOe1fUoNr7
+	 mwlT4BEmTe9n9NCUWR+WKjPvK+xO1xUVMIAq4PNqx774FWt2SsnnM33FYnDZN67fiH
+	 +JI6MkFtLSW8AXNjhY5aO/A+V4FU7WVTxX6P9HsFAxhGArFhushX1uBzCACkY+pfSV
+	 HjVBhjZAzsliTvBpnfQSatzLe6mx38Oj5YTXDQfbZLXRZ12nsIONnKJ7dUtkEeNLkE
+	 BM7/ooFdvOW1t2Du6u4bcg3yrmfN4sTGUW0leRQnLfBWqLyJPmSmTQgTHeHVn31o7j
+	 DsztjJPMNkNsAcDM3brtS7E0=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 969AB40E00B2;
+	Sat, 17 Feb 2024 12:51:10 +0000 (UTC)
+Date: Sat, 17 Feb 2024 13:51:02 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ard Biesheuvel <ardb+git@google.com>
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Kevin Loughlin <kevinloughlin@google.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>,
+	Dionna Glaze <dionnaglaze@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>,
+	linux-arch@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH v4 02/11] x86/startup_64: Replace pointer fixups with
+ RIP-relative references
+Message-ID: <20240217125102.GSZdCrtgI-DnHA8DpK@fat_crate.local>
+References: <20240213124143.1484862-13-ardb+git@google.com>
+ <20240213124143.1484862-15-ardb+git@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <00d6a0d5-6787-4777-8fb2-dcad4304a724@linaro.org>
-X-GND-Sasl: alexandre.belloni@bootlin.com
+In-Reply-To: <20240213124143.1484862-15-ardb+git@google.com>
 
-On 16/02/2024 12:26:12+0100, Krzysztof Kozlowski wrote:
-> On 17/01/2024 08:56, Krzysztof Kozlowski wrote:
-> > Drop the requirement of "-master" suffix in node names because:
-> > 1. "Master" word is discouraged and MIPI Alliance renamed it to
-> >    "Controller".
-> > 2. Some devices can operate in Controller (Master) or Target mode, thus
-> >    the name is not accurate in such cases.
-> > 3. Other buses, like I2C controllers, use simple "i2c".
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > ---
-> 
-> Rob, can you pick this one up? It seems Alexandre did not take it.
-> 
+On Tue, Feb 13, 2024 at 01:41:46PM +0100, Ard Biesheuvel wrote:
+> @@ -201,25 +201,19 @@ unsigned long __head __startup_64(unsigned long physaddr,
+>  	load_delta += sme_get_me_mask();
+>  
+>  	/* Fixup the physical addresses in the page table */
+> -
+> -	pgd = fixup_pointer(early_top_pgt, physaddr);
+> -	p = pgd + pgd_index(__START_KERNEL_map);
+> -	if (la57)
+> -		*p = (unsigned long)level4_kernel_pgt;
+> -	else
+> -		*p = (unsigned long)level3_kernel_pgt;
+> -	*p += _PAGE_TABLE_NOENC - __START_KERNEL_map + load_delta;
+> -
+>  	if (la57) {
+> -		p4d = fixup_pointer(level4_kernel_pgt, physaddr);
+> -		p4d[511] += load_delta;
+> +		p4d = (p4dval_t *)&RIP_REL_REF(level4_kernel_pgt);
+> +		p4d[MAX_PTRS_PER_P4D - 1] += load_delta;
+>  	}
+>  
+> -	pud = fixup_pointer(level3_kernel_pgt, physaddr);
+> -	pud[510] += load_delta;
+> -	pud[511] += load_delta;
+> +	pud = &RIP_REL_REF(level3_kernel_pgt)->pud;
+> +	pud[PTRS_PER_PUD - 2] += load_delta;
+> +	pud[PTRS_PER_PUD - 1] += load_delta;
+> +
+> +	pgd = &RIP_REL_REF(early_top_pgt)->pgd;
 
-I'll take it but I don't think it is super urgent.
+Let's do the pgd assignment above, where it was so that we have that
+natural order of p4d -> pgd -> pud ->pmd etc manipulations.
+
+> +	pgd[PTRS_PER_PGD - 1] = (pgdval_t)(la57 ? p4d : pud) | _PAGE_TABLE_NOENC;
+
+I see what you mean with pgd_index(__START_KERNEL_map) always being 511
+but this:
+
+	pgd[pgd_index(__START_KERNEL_map)] = (pgdval_t)(la57 ? p4d : pud) | _PAGE_TABLE_NOENC;
+
+says exactly what gets mapped there in the pagetable while
+
+	PTRS_PER_PGD - 1
+
+makes me wonder what's that last pud supposed to map.
+
+Other than that, my gut feeling right now is, this would need extensive
+testing so that we make sure there's no fallout from it.
+
+Thx.
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
