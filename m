@@ -1,188 +1,151 @@
-Return-Path: <linux-kernel+bounces-69826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B2DC858F17
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:29:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5609D858F1F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:40:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFEB8282D93
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:29:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 832841C20E60
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:40:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E094664BE;
-	Sat, 17 Feb 2024 11:29:08 +0000 (UTC)
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2042.outbound.protection.outlook.com [40.92.89.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7465969DE8;
+	Sat, 17 Feb 2024 11:39:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vKD+yCmb"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA96248CE4;
-	Sat, 17 Feb 2024 11:29:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.89.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708169347; cv=fail; b=htSjyVm3Ik253KNEtAB96W03jVS8FrU79Ts6kkyOU04Hyrb0FauHft58sJADciU+6tjGHK4LL2/rM1tv76viSDEAlfGOZmp5UivwsKsq7zNk2iGmFe4AR0Rw5Vhc/m9lWYRaRlmMbRQIe7A2+jp3ONKsp7JvnHDovOkMYpSi5q8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708169347; c=relaxed/simple;
-	bh=8+L5Iszgcy6YWvDRYQGyuIx8ZKaxQYBAUT1r2kfUO8A=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=r3YKWmFxYo0M3Aivm5wRpslSd5BZ/ZIRcBkyJQR8V8dD4/TdCgpBqda97/ZZLajHyBkOPgirPNaTrzHcSvk+14DtAurTYFgoHjWVd+De0tKJtGn9lF6OWvWHiE7P2hq/D/KGRki6FPE84EYPR2qeq708No+vgc3A/BYXCM325GQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.it; spf=pass smtp.mailfrom=outlook.it; arc=fail smtp.client-ip=40.92.89.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.it
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hXo6pILvqbABr+ia0xRYfCZv2Qv5jmPN+3jKRs3Oa9ZT/6iCFDkg2d/xpbn/BkTa9uKxXq6w2DmicNU/tMysMjon2zu7RhlFbNqFgUWgQtx3AjpQN2/Oup/Fwy7fZ3/SRGu7FptpxiZYsmUJzggsgDn4heN6Yhk6gN1Br5iWPfvB7pWAOmvXn95hpX7dnDuGuBlHfx3uRB01kO6CWMlKgSKHdmFBzHVgU9DBsqpG0KKthCghlUKlGaR/47Qnsku8LDTjfgYHu9PCgmLa1xYlKRnuDv/qLV3NfvRhSrBqOm16I3UU/5qGWvRg4VoNGsjTuYQ27WHmjsNmvHmBZlc85Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=oeZ+DU0lCyAyl7LGuispgQqDRkpzAu13l7l1kLmBsPc=;
- b=TuZl1AqSAr88bkoFOmwjG24/DodD4dcdmuQXkUVh0oDA+87CC+mHtxaTEp1hIGZKLU5Oh6gOJbjoF1TLdqFa11SMFZmeOnPQZQgM1x049UBHz9yRoonoUCbSgiA9fUxebaGqBEXuN/g9cEBAN3YNqfet1X96a29DhltkWWrpAiL+TYVCpQxIVEwzDFb8r4lhwXxazisSmpPMVhH7dHF4/VYcFtxk5osIQfqHoy4r3c+ybGKNSzT1WNI1jiNDjqdpK+SgKRjDK09bEWUIYXYslrUQefWpBiK8IgOvznOjAv1t8NbrNew1Ce/TuunpooEA92KCr8rulvBUOIS6tUcfLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from AS1PR03MB8189.eurprd03.prod.outlook.com (2603:10a6:20b:47d::10)
- by AM9PR03MB6787.eurprd03.prod.outlook.com (2603:10a6:20b:286::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26; Sat, 17 Feb
- 2024 11:29:02 +0000
-Received: from AS1PR03MB8189.eurprd03.prod.outlook.com
- ([fe80::ffb3:3ff8:6ea9:52b5]) by AS1PR03MB8189.eurprd03.prod.outlook.com
- ([fe80::ffb3:3ff8:6ea9:52b5%5]) with mapi id 15.20.7292.026; Sat, 17 Feb 2024
- 11:29:02 +0000
-Message-ID:
- <AS1PR03MB81899BBE44CCD9DE416115EE82532@AS1PR03MB8189.eurprd03.prod.outlook.com>
-Date: Sat, 17 Feb 2024 12:28:59 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next] net: sfp: add quirk for OEM DFP-34X-2C2 GPON ONU
- SFP
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <f8cf41f2-4a90-4ef5-b214-906319bd82d4@outlook.it>
- <AS1PR03MB818911164FB76698446CFEDC82472@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZcI+7grKa33oLtwc@shell.armlinux.org.uk>
- <AS1PR03MB818926990092981B0E09E60B82442@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZcSZtLSWd09xqc10@shell.armlinux.org.uk>
- <AS1PR03MB8189A24B92030AA8F011C7B582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZcTzMgxmA6WOoiA/@shell.armlinux.org.uk>
- <AS1PR03MB81891A5F3C8B1A7542746CB582442@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZcUBP3g0XNMG/aU2@shell.armlinux.org.uk>
- <AS1PR03MB8189ADFF1A475AE7DB281BE782532@AS1PR03MB8189.eurprd03.prod.outlook.com>
- <ZdCKRIJfRWkDCs/n@shell.armlinux.org.uk>
-Content-Language: it
-From: Sergio Palumbo <palumbo.ser@outlook.it>
-In-Reply-To: <ZdCKRIJfRWkDCs/n@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [IZAtXmCW3TiQWbbl/YFfesnMzJdg/mOqtoTBxj9YF8wttLjt6vVTHBYcslmHYNpN]
-X-ClientProxiedBy: MI1P293CA0024.ITAP293.PROD.OUTLOOK.COM (2603:10a6:290:3::6)
- To AS1PR03MB8189.eurprd03.prod.outlook.com (2603:10a6:20b:47d::10)
-X-Microsoft-Original-Message-ID:
- <c706e1ff-63ca-483c-8859-3549eaef5576@outlook.it>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E46069DE1
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 11:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708169992; cv=none; b=o1t2lt6JUukibyQRa93NHXSWEKtCHGF+8L6RoLAATMo89vhui3A7xu8znZGAHdEzqaZN7Zx/L7Qut23AbP/PTIT3I/bpV6tcg8ms8mp4ZXjimtvmuloKXM/fWrDPckPpiZVpDBY3tuf3H6ora8bUA58FOSP1cRMXUGO4Cutg6JY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708169992; c=relaxed/simple;
+	bh=vPvQg6T8DzaSAL66/xyHZth0xHwP9DWPS25PuK6+Z4Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MGWoV7Z3LffjwmOpWlKQgca8WQRiLiH3YOYuWCJZ8vgTomFqYr1wfvM6HK76W8CNjTUfB5wUzgPp1bcHJN29Vdg2gzzFGNfhlBEBIuAmX7LcO9hdBbhs5OvEYjKCC7iJP6QKJrmtX5ier9X8RMcKmdZU3w886DlX/4urgny1ig8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vKD+yCmb; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso2493707a12.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 03:39:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708169989; x=1708774789; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1C+Hkp9mF5Xdg3l0hgYcA9Z6irk/GvuEVb1RZfBg7lc=;
+        b=vKD+yCmbfxdngJtvVUYRvZxTNKXUoDYUBhmggjcFOcg88P6/fsifJIShS1Mh6qfRBn
+         742BIR1Yo2vEojK8rN13RhOnMBdRT8v1bUc76HRizQKFphMrOjn2m5C50BeWFc/qOWRg
+         31Eg5sF/uuHNFOG0ORuW7l1tpkkPr7WmIbwPC4ruHZO/5xsS4bu7qR+bRlZK+yxYAJQf
+         0nddt/nYoMPwCzOlZM/Xtq77fHnYPNMyl6vMx6Gz0qh1Oc1mYERNjvzN5SRB1MRL6AbX
+         t0FXXNBCcf2XYrY5CDJYtBPiLWTYwnYPMD0F2IdNmoffvVUxCXYxInRJ3PtxDTK1PsxD
+         fsNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708169989; x=1708774789;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1C+Hkp9mF5Xdg3l0hgYcA9Z6irk/GvuEVb1RZfBg7lc=;
+        b=smP6dyDYDWXL/t678GLcxsTYcisBRmCkGnY+CYMJO8VX/UTqPEAG4wxgKZgq9N7Jiw
+         bl52YBhii2Iy03193jzlfbNXLc5lR+rLscHAZtBm75OGP/HqxQBjsGzE/yyFrEG5rQS2
+         ME9kZOoljGphmo2KL/u5ZdhDBbnTcxZgBG/cDChAyDuVXqnJCcCYEsOyiAJTZT9ihXjm
+         Ilq6Qs+MpYPcy/VAv4qSMhslOqc5+fl582HJ6lu9Z4ljPrPJwoDS6UZj6VCrnNUEZ0Tr
+         IYS+VIYitxuKjBF/1az+LcYiWR9h3W4kEzSrpNIpNR94at8JZsA3Dx/vl102gVOz3K3c
+         +Htg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3mLyn2/4kcMRvYA/iOLizbAeqM7IqOcF5Rv0DkWJJZWI3iJFcQwAsFLO1ce4HSw+6g6oit87xW9UI73RBHzeFFbrgR/kmQs03XaCr
+X-Gm-Message-State: AOJu0YzyJrHUktaVujLngRSNuNLIQODCV7CLOh5IYedeeGh/wfeZhhS9
+	/59TxMKMdvUdcFDsYqCtsJT7qjVvrsKq0YAip3AcK1eg3+oH0xN6SmcpiCi1sZw=
+X-Google-Smtp-Source: AGHT+IHC8q9jk1V+NICBbpC1WNnMyrhtKdpmvofzMtMFylRK1DYfLGy8RvSLVqogHDYFEu79JIpj6g==
+X-Received: by 2002:aa7:d313:0:b0:564:2fbb:a869 with SMTP id p19-20020aa7d313000000b005642fbba869mr524179edq.38.1708169989449;
+        Sat, 17 Feb 2024 03:39:49 -0800 (PST)
+Received: from linaro.org ([188.24.162.93])
+        by smtp.gmail.com with ESMTPSA id ek23-20020a056402371700b0055edfb81384sm803108edb.60.2024.02.17.03.39.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 03:39:48 -0800 (PST)
+Date: Sat, 17 Feb 2024 13:39:46 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Sean Paul <sean@poorly.run>, Maxime Ripard <mripard@kernel.org>,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	freedreno@lists.freedesktop.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	David Airlie <airlied@gmail.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Rob Clark <robdclark@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Subject: Re: [PATCH v3 2/4] dt-bindings: display/msm: Document MDSS on
+ X1E80100
+Message-ID: <ZdCbAjnga8HCMdYf@linaro.org>
+References: <20240216-x1e80100-display-v3-0-28b1c33ac8c0@linaro.org>
+ <20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org>
+ <170810832158.3497594.1997532394027797497.robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS1PR03MB8189:EE_|AM9PR03MB6787:EE_
-X-MS-Office365-Filtering-Correlation-Id: 08cbd3c1-efe9-484c-0c2d-08dc2faba40f
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	eQm29of0R3NFCBq6PKeUni4wva7mR+MVz3TFc0N4Y+EZyjHuikaIO40E1jJNSe3jF6BJaZGZEZjrVCBr0NqOf1yhWala7akShLGF1USNMBNovzL8slVI3x4wjT8S25Jr/yhk3MpAumMvLpEbzVBLHU5t+UJSl8KFQoeMZoc5yi0bj5tnStu2TfbubHmn1XyAHCEYQ4uXLyhG1sJpkTMYzHU1wWCPre5AR51ihl+yRFw5AEa70qqV3/EyOi4DA98KzmvgzKrcXSTt+p8JyLEjmD48ew61hCPf4m/te3N2Z9pGdqj5wdkE1lzNrgPhi4p3znU90MXu++6/uRdUYMhSWH16lrqJeEfa6CC5CpEUw/cJcCDOUpH6iTJSet0Z2apFLil/yaf47bFOkXyFyAwX8W1ecXrZYxIkAHK/+yCI58tnK6JCbcoy5Qrvou19K97CskerHltv2CPzZXInHNdQ118ToIJEZhF4Iu6Af5MuopwpRaX9zN+Ld0MA5nfFwryCdcx0isXEsTbEhlYf1pt7yZAJikLW/VbREE3HggBhrK54qtY0hCm0iZLR+wY4jb5X
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?K256MDM3UEFYY1JwRnRSZXJFeHo5OXh6NUxWRXN6L2REZUg4T0FlaUdFSDEr?=
- =?utf-8?B?SytXNkpCdHc3R1dvNUhJd0FQbVlXLzdUOXV2RXd0N1NGRndnYjR0bCtrSVk4?=
- =?utf-8?B?emk5MlZLZDdUVFZlc2NZb3VQNTJwenFVZ1prTzgzRHpUVUI2OXhzSlJkRFhB?=
- =?utf-8?B?dVFIRUF4YVd6UDVhc2pDWTR6VUVjNTYrcHRCazNOTzdCU21IMERJbklmL1hB?=
- =?utf-8?B?WVdnYWpQSG1sU3krd0VJMVFpcTlYQXF0ZW9IK0hMM29ZQllUc091NGJYY1Jl?=
- =?utf-8?B?WENGelV0blNJMWk2WU9selMwdHpheFNVcGtncFl0REd4dDQvb0ltY2ZaQW9J?=
- =?utf-8?B?ZEdWcHBhYXJRcUVmTlBSUi9QTzNiMnpZVnEzZUEzRUFHVXd4YXRCWWl3L2tn?=
- =?utf-8?B?MEpsdDhIRDFia2tkZGJlTUpCWTYvdVhCb2FRcTBPcVo4UFVuQ2xIRnBsM0F6?=
- =?utf-8?B?WVR2c09CS0djZGZhY0tiYmJReHl1VVRaUFdvNHJla1UzSXh0b0x4dUFsTHZ4?=
- =?utf-8?B?UnNvOGIrdzk5RHFBTUQweXY0SVBmTUN3RXNETmtIWTBNTFEwbU5lQ1FzUUhz?=
- =?utf-8?B?eCtvbm5oUWhqdHpzT2RzZDJXdmdtaFNaQTljZmEyL29vOEJCT2g3ZmNrWEtW?=
- =?utf-8?B?NWZ1bWNrL3N4ZnJqRm0yTlZYZmg0N2FMTmp1cml1eVQ2b1VvaFFULzlrbjh5?=
- =?utf-8?B?QmtOZ1dHV1IrZkJjL3lqMXgxU1hsbGd4MU40ZmxtRUdpSGlFVUpodzJCeDNj?=
- =?utf-8?B?UFBhU1N1LzNyRVJabExpMFB5cDB2RmQ1V01DV0QweExUNGcrR0FtVm5yWlRD?=
- =?utf-8?B?clFPQStZRm5WS0lmR2RzSzV6Y21VSkd5QjVjYUs3aUlNb2pVYUVmTkFlUjV1?=
- =?utf-8?B?QzVWR1g1UWFvV1pDeTVMYlpaeUtYRkFlbE1xL1l2d2dGUENGd1ppNlllRlQr?=
- =?utf-8?B?Nmd1SEgvejRHQmZ1MVMwVVQ3TUhWT1NVa2RiV3R2MkM0eU9lcVVtS09zS2kx?=
- =?utf-8?B?SU5zZ3UzQ2E1KzVjYkpOU0g1YVI4RTNmbFZydlBPSEptRS9DWlRYamtHK2tI?=
- =?utf-8?B?MmVLL2RCWWw3RE0rY25COEhUOHRHVDk5V3E3ZjJ3N0EzQnBYME42VUhnNzdK?=
- =?utf-8?B?VldxSFA5Z09aclhwS0tUSjRwVFFTTUMwcTYyRlVtVjNjeG9mTTVNOHIwRHlQ?=
- =?utf-8?B?TEhMdjNabmJYNnpXenlCNjYxangyZmI2REdVWksxTGEvaUwvazZtYitjM0pi?=
- =?utf-8?B?enJSK3ZSeXRNY1ZDVUFlRm1sb2s3ekpka2RZWDFxY2d2cmk2ZTMvckdMWitw?=
- =?utf-8?B?VnhzV2dUaVFhV3VyemhOYk9UTmVwNURRQWdXbGVuOFM5Rk8yMFdhaXcxTHox?=
- =?utf-8?B?SmJiUVZ2S1NPNTVZRVVEMUFRS3d0TnZ3UndBVHRGQW16RmZKakhuM0g0RmdK?=
- =?utf-8?B?L1VuV3VVOXI5aGJRenFwWWc1cFRLR2xIbWRBSzZSVHczQUliaDRvWEpDRCtL?=
- =?utf-8?B?d09PVEZOdjRMODNxSEhjeWJSQlNjd3c2Q3o4VkE5eGltT1U1ejdsanpSUEhl?=
- =?utf-8?B?b3YwTTBvcFoyR3FlaWxtSkpyU2YySDlCN3JyV2gvVzJRVmc3NUdKOXpsL1JZ?=
- =?utf-8?B?RElHRzNwN1c4MjVCU3IvRUhIN2EvcTgyMlZRS1FXeGw3MzhQQmE4WHIydkJI?=
- =?utf-8?B?NDJ2ZDB0WUYvN3pDT3o4S3VyNXFkRTNpb2U2dWVqT1pTMXNydjBQSWpTZ20r?=
- =?utf-8?Q?NMGytwdOXcnG/T/0OeN1cio8Xlscsxn0+QPZnDk?=
-X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-76d7b.templateTenant
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08cbd3c1-efe9-484c-0c2d-08dc2faba40f
-X-MS-Exchange-CrossTenant-AuthSource: AS1PR03MB8189.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Feb 2024 11:29:01.9892
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB6787
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170810832158.3497594.1997532394027797497.robh@kernel.org>
 
-Hello Russell,
-I never wanted to discuss your skills and I bag your pardon if this was 
-your perception.
-My skills are not so high and my horse is not so high (probably lower 
-than a pony).
-My intention was simply to give the possibility to other users to get 
-the module working at the higher speed in order to support internet 
-connections at 2500 kb without recompling the system with a patch.
-If this is not possible I can accept it without problems and I bag your 
-pardon again for the waste of time this can have generated.
-I thank you for the time you spent with me (I learned a lot) and for the 
-great job you and the net-dev group are doing for the linux community.
-Best regards
+On 24-02-16 12:32:02, Rob Herring wrote:
+> 
+> On Fri, 16 Feb 2024 19:01:06 +0200, Abel Vesa wrote:
+> > Document the MDSS hardware found on the Qualcomm X1E80100 platform.
+> > 
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > ---
+> >  .../bindings/display/msm/qcom,x1e80100-mdss.yaml   | 253 +++++++++++++++++++++
+> >  1 file changed, 253 insertions(+)
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dts:24:18: fatal error: dt-bindings/clock/qcom,x1e80100-dispcc.h: No such file or directory
+>    24 |         #include <dt-bindings/clock/qcom,x1e80100-dispcc.h>
+>       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> compilation terminated.
+> make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dtb] Error 1
+> make[2]: *** Waiting for unfinished jobs....
+> make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
+> make: *** [Makefile:240: __sub-make] Error 2
+> 
 
-Sergio Palumbo
+These bindings headers are already in -next.
 
-
-
-Il 17/02/2024 11:28, Russell King (Oracle) ha scritto:
-> On Sat, Feb 17, 2024 at 11:13:14AM +0100, Sergio Palumbo wrote:
->> [   15.459629] sfp sfp-1: module OEM              DFP-34X-2C2      rev      sn XPONxxxxxxxx     dc 230912
->> [   15.469121] mtk_soc_eth 15100000.ethernet eth1: requesting link mode inband/2500base-x with support 0000000,00000200,0000e440
->> [   15.509967] sfp sfp-2: module                                   rev 1.0  sn 2307210038       dc 230721
->> [   15.519434] mt7530-mdio mdio-bus:1f sfp2: requesting link mode inband/2500base-x with support 0000000,00000000,0000e440
->> [   24.360320] mt7530-mdio mdio-bus:1f sfp2: configuring for inband/2500base-x link mode
->> [   24.368145] mt7530-mdio mdio-bus:1f sfp2: major config 2500base-x
->> [   24.374258] mt7530-mdio mdio-bus:1f sfp2: phylink_mac_config: mode=inband/2500base-x/Unknown/Unknown adv=0000000,00000000,0000e440 pause=04 link=0 an=1
->> [   24.389679] br-lan: port 5(sfp2) entered blocking state
->> [   24.394948] br-lan: port 5(sfp2) entered disabled state
->> [   24.402405] device sfp2 entered promiscuous mode
-> This shows that the interface has been configured for 2500base-X.
-> However, there is no link report.
->
->> A stated by you the system is still connecting at 2500base-X even if the
->> module is set for 1000base-X, as far as I can see, without any error.
-> Right, because, as I've said many times, the kernel has *no* idea that
-> the module internals has been configured to operate at 1000base-X.
->
->> My assumption that the module could have forced the speed down to
->> 1000base-X was completely wrong.
-> Correct - considering that I wrote all this code, it is insulting to
-> have to go to this extent to get the point across.
->
-> So now that we have agreement that the kernel is trying to use
-> 2500base-X, you now need to get off your high horse and accept that
-> it isn't working because there is _no_ _link_ with the module.
->
-> In other words, you need to accept that I'm right and you're wrong.
->
-
+> doc reference errors (make refcheckdocs):
+> 
+> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org
+> 
+> The base for the series is generally the latest rc1. A different dependency
+> should be noted in *this* patch.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit after running the above command yourself. Note
+> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+> your schema. However, it must be unset to test all examples with your schema.
+> 
 
