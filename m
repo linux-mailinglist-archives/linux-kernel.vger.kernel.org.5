@@ -1,67 +1,63 @@
-Return-Path: <linux-kernel+bounces-69933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87C13859071
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:15:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21974859074
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:21:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43873284511
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:15:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC65A1F21B19
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:21:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7E47C6CA;
-	Sat, 17 Feb 2024 15:14:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A0C7C6CC;
+	Sat, 17 Feb 2024 15:21:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nE7HsySo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="xYa2WbGj"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0208069D3A;
-	Sat, 17 Feb 2024 15:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206EF7C08E;
+	Sat, 17 Feb 2024 15:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708182899; cv=none; b=uEf5iz4n5y7iCAp351uv3j937AaV/2w9VVe2Ejv/6w77FKM18422msLmPgcnbXxrr+/OdXu2kZG1wdBO1DDDyzwVguaUXk7ywL4zx6vMXqN2oqmt2WMNrInhRPIxpKbf7YhmCw3CU8Zp0s9bUDm64+heYnOzcEvc0OD2ZfFOkzM=
+	t=1708183268; cv=none; b=CPDGWFZU9Tinyvk5D+M7EiTGjFfoqayGRvLXYT8UTaKTK4uAB3l0+3hTGeYNI+Xm/bOUipG52bLQaUZxbEkUKkz5v4U6lfm1b78XRNOkEG0dGMXxGq+8fB2s9ff5PNG+2tSn5rcfsQ+SUI45fot5TD52jsyDt6jhVHBFA+Hnrd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708182899; c=relaxed/simple;
-	bh=TLjN2HulsLngOJVgAuYf4Pn7GqZqS3+GGjKKcBZ0KkM=;
+	s=arc-20240116; t=1708183268; c=relaxed/simple;
+	bh=WuZxqs6937g1zwRym9vbzWJK0sKCJMSfEkaZRvnSlcs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mx0MJapr8LikmlWF1q4/Ii20oUVGyVWNMzOhekuj5THVrNfVyEsUHqjZhE7d0ezOgbHe/6HnDglsnj3pIMwsCu4abtRbUg/qu/2sjnVdxXP9MC6H05bcj/8PmuTJQlpYyi6qSODPS/O3kIoUNzmQO6pebex9+Wmhl+eh+8HxEPs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nE7HsySo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E663C433F1;
-	Sat, 17 Feb 2024 15:14:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708182898;
-	bh=TLjN2HulsLngOJVgAuYf4Pn7GqZqS3+GGjKKcBZ0KkM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nE7HsySov90y/vHtMCfJXd23d7y6KBAtm1F4lITB4vg8MBRjnFV0snYu57pS04AHo
-	 /4GtJZiH7KWwW1kKACjE3hCQSRcfwb9zXVHDpI9D753TxbzIaK4lhFJEtHxBG9n5Cs
-	 zc5SamBHZXw6g1u5F2JyYpiKNIpsG/XcMtmnzbbiaXsAvHrHx1xsXxqGhXmv+soR+O
-	 DNBUfMQUqod4rzw4eInf23Mt96swC3oHpbUFe0NtdiEwXmXh0vKjPofCQQYpgqhI33
-	 lmJj0Mc8dg1t7sOVpEAJzbgnyeeIJ1dL8sGY9i04DZT1pGS/3sw8gjbjI7tLYyIGVx
-	 6b//0l8cHdAsQ==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rbMP4-000000001bL-1zG3;
-	Sat, 17 Feb 2024 16:14:58 +0100
-Date: Sat, 17 Feb 2024 16:14:58 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Kuogee Hsieh <quic_khsieh@quicinc.com>, Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org, regressions@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: drm/msm: DisplayPort regressions in 6.8-rc1
-Message-ID: <ZdDNcrf4KpflGeYQ@hovoldconsulting.com>
-References: <ZctVmLK4zTwcpW3A@hovoldconsulting.com>
- <343710b1-f0f4-5c05-70e6-3c221cdc9580@quicinc.com>
- <ZczFhVjHIm55JTfO@hovoldconsulting.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=e8nsgbhpT6XUR9zgADM2EjNHrkrftw8G1UMdPxzo+TK67qLUWlHDZUykPd0xdKfHIuaERjPFR/8nOWR+EBt2xuSmqWLjmFBvwEmzENqzkQNInAQZvCLrdKXIPYOFPUyLBjHgoQh0P/yChsoqO8euT7hE2iUeRuUjf9sjx8DWUlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=xYa2WbGj; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=BlAL3Ogiky64AxQUBh37Q3N615bOBJULteBDI6SCcjw=; b=xYa2WbGjgRR1fdXXI5P68ukVP4
+	/4I1/nGhDlj0nWZ4TAOljc4INpRzCWjL0wrPA9IOmORiIFV7JCCvFr/+bGbbvbZ3IGtKEmr8+Z0mH
+	o/UihEoeBnfEr3Hged5ORKf+XoTXm83GH2Lk1FZaB+ACVH04h5+nxWwBJ/f9CwA+cBgY=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rbMV3-0084EE-6A; Sat, 17 Feb 2024 16:21:09 +0100
+Date: Sat, 17 Feb 2024 16:21:09 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Florian Fainelli <florian.fainelli@broadcom.com>
+Cc: netdev@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	open list <linux-kernel@vger.kernel.org>,
+	Justin Chen <justin.chen@broadcom.com>
+Subject: Re: [PATCH net-next 2/3] net: bcmgenet: Pass "main" clock down to
+ the MDIO driver
+Message-ID: <eb59097d-7ecf-4b7a-bc15-66a740b212da@lunn.ch>
+References: <20240216184237.259954-1-florian.fainelli@broadcom.com>
+ <20240216184237.259954-3-florian.fainelli@broadcom.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,50 +66,17 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZczFhVjHIm55JTfO@hovoldconsulting.com>
+In-Reply-To: <20240216184237.259954-3-florian.fainelli@broadcom.com>
 
-On Wed, Feb 14, 2024 at 02:52:06PM +0100, Johan Hovold wrote:
-> On Tue, Feb 13, 2024 at 10:00:13AM -0800, Abhinav Kumar wrote:
-> 
-> > I do agree that pm runtime eDP driver got merged that time but I think 
-> > the issue is either a combination of that along with DRM aux bridge 
-> > https://patchwork.freedesktop.org/series/122584/ OR just the latter as 
-> > even that went in around the same time.
-> 
-> Yes, indeed there was a lot of changes that went into the MSM drm driver
-> in 6.8-rc1 and since I have not tried to debug this myself I can't say
-> for sure which change or changes that triggered this regression (or
-> possibly regressions).
-> 
-> The fact that the USB-C/DP PHY appears to be involved
-> (/soc@0/phy@88eb000) could indeed point to the series you mentioned.
-> 
-> > Thats why perhaps this issue was not seen with the chromebooks we tested 
-> > on as they do not use pmic_glink (aux bridge).
-> > 
-> > So we will need to debug this on sc8280xp specifically or an equivalent 
-> > device which uses aux bridge.
-> 
-> I've hit the NULL-pointer deference three times now in the last few days
-> on the sc8280xp CRD. But since it doesn't trigger on every boot it seems
-> you need to go back to the series that could potentially have caused
-> this regression and review them again. There's clearly something quite
-> broken here.
+On Fri, Feb 16, 2024 at 10:42:36AM -0800, Florian Fainelli wrote:
+> GENET has historically had to create a MDIO platform device for its
+> controller and pass some auxiliary data to it, like a MDIO completion
+> callback. Now we also pass the "main" clock to allow for the MDIO bus
+> controller to manage that clock adequately around I/O accesses.
 
-Since Dmitry had trouble reproducing this issue I took a closer look at
-the DRM aux bridge series that Abhinav pointed and was able to track
-down the bridge regressions and come up with a reproducer. I just posted
-a series fixing this here:
+I guess this code comes from before the times of DT? I would normally
+expect to see a clock added to the DT node for the MDIO bus. But if
+there is no node, because it is not in DT....
 
-	https://lore.kernel.org/lkml/20240217150228.5788-1-johan+linaro@kernel.org/
-
-As I mentioned in the cover letter, I am still seeing intermittent hard
-resets around the time that the DRM subsystem is initialising, which
-suggests that we may be dealing with two separate DRM regressions here
-however.
-
-If the hard resets are triggered by something like unclocked hardware,
-perhaps that bit could this be related to the runtime PM rework?
-
-Johan
+      Andrew
 
