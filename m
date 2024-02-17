@@ -1,238 +1,125 @@
-Return-Path: <linux-kernel+bounces-69938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 272D2859087
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:31:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D361859089
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:33:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C404B2130A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:31:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1869E1F217E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:33:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6C47C6E7;
-	Sat, 17 Feb 2024 15:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A2937C6E0;
+	Sat, 17 Feb 2024 15:32:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aa7SyuE5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="wkSTvW3v"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF39D7C6D6
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E8E81E;
+	Sat, 17 Feb 2024 15:32:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708183889; cv=none; b=dn3CH25eg7IolcyMX2Fs2nCqTOsxiTxLZNZt/PwQaLraD6I053XRDsB/9HIxbIjLxdEPAJooa+JqLeSdkDL3qk7T2pCtub7B/dkQvrNVTlbG/tKrcSkSgda6SeyVvRhapYfoJmlFf2eQXB2BzyO5KvWMoVcuyf/JybyQ7Xs6SlU=
+	t=1708183977; cv=none; b=YgUyw0M8mJrZ3gQxYVDtYhJzS2kTVRbjBupDjq0Heipff3+XMq1qrkftGD/xxwdBmRlNpPIng4IHR0OZYc4ApdyY6g5Q+EEXA0PH8QqM0DXjOzVa9kmifvOQZNi6wQAxoCc2Gb+OYr7O5owJtM5iQ22iGp2i+9+A32HwjB2TzZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708183889; c=relaxed/simple;
-	bh=8xsLiIJ5Ym20LCEmuZf43yisN1nCebfb03VvvY1yPYo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=BSSly/xt8rrNylVpy4oix1/bTzYpnGlCdB5IfgheQ4mwzDBhVwT4PB+rsYsBGCLpyZxR5xjslrCPc7dvwk5bQ+gytYuQX0/ptexlCnalo7XtpnsMj2rw7885myrgl4RR1i8NS1DMI4DlVAMcuQ0NsTZtWnkORJa8mi+keJjg1LY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aa7SyuE5; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708183886; x=1739719886;
-  h=date:from:to:cc:subject:message-id;
-  bh=8xsLiIJ5Ym20LCEmuZf43yisN1nCebfb03VvvY1yPYo=;
-  b=aa7SyuE5gIVzmGMz6PUoiScAdfZTtIzW+7qL1FaHSoAmGekbCFOwQkBR
-   ne/HTknVhDG3r4OBAaUgWaEGwHCUZue1CEf1cdyuBYiQNAmNuKf7yjUIk
-   mdod+1AepnP9QP8fWxp2pgkDOSSs72bURkHV9kk8PYAMtswNwX+qtiOsb
-   2Sb30mmjK5VgezGTrFajf63R/qLuHsleUHSG84sdVrGShmY79J0hU0nD9
-   RwwLxdSfSTa6Cs+AtjvFf4BD9hkYJS7QDSpfR5LpaYvvsQ3wNgb1Bn+i3
-   25a6Jr/Fwomur9xtqqSK+GP+FyWaNknzwb5k7lb3zzsMawx6DeV69O+BI
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="12854160"
-X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
-   d="scan'208";a="12854160"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 07:31:26 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,166,1705392000"; 
-   d="scan'208";a="8758407"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa003.jf.intel.com with ESMTP; 17 Feb 2024 07:31:25 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rbMeg-0002CK-1V;
-	Sat, 17 Feb 2024 15:31:10 +0000
-Date: Sat, 17 Feb 2024 23:30:51 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/apic] BUILD SUCCESS
- 89b0f15f408f7c4ee98c1ec4c3224852fcbc3274
-Message-ID: <202402172349.Xt8i3IvD-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1708183977; c=relaxed/simple;
+	bh=kRaAD7ZRFG9PP56SlAHdcep6YLhDgh49V/QqkUID8g0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HjsNoNYfVY2bm6UZFSuUZEq5oISrqBAsP8NLXQFpMG3KsEOHij5NzdpKZLBlueZ/jNvXAAStxUKVNtfiq5SmD4SuM8cS+aYCABsx68qXfE3J9cqHkn9kfau1tf5+Vw5ATNDHDHMgUeP1wKRyp7LTWgHhP+EzJmfOyBteZVO6hUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=wkSTvW3v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB478C433C7;
+	Sat, 17 Feb 2024 15:32:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708183977;
+	bh=kRaAD7ZRFG9PP56SlAHdcep6YLhDgh49V/QqkUID8g0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=wkSTvW3vAxn8uz2A65Zq8BjynWM/uMOTjc7NTclLAzqdUoHEYDY3Y25TQ/umRRcpl
+	 mU/D+1a1xnw/+HhdDac6kC5LrIDYJTHYe/j0XfnPZZdGKsm1NT22bkeqooWxfE49Gt
+	 2wvFag7sW46qoBVFTPZ6XMQAuzrqw6GvVsO6kRaM=
+Date: Sat, 17 Feb 2024 16:32:54 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
+Cc: linux-usb@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "usb: typec: tcpm: reset counter when enter into
+ unattached state after try role"
+Message-ID: <2024021739-self-pencil-b932@gregkh>
+References: <20240215193352.1026707-1-megi@xff.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240215193352.1026707-1-megi@xff.cz>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/apic
-branch HEAD: 89b0f15f408f7c4ee98c1ec4c3224852fcbc3274  x86/cpu/topology: Get rid of cpuinfo::x86_max_cores
+On Thu, Feb 15, 2024 at 08:33:50PM +0100, Ondřej Jirman wrote:
+> From: Ondrej Jirman <megi@xff.cz>
+> 
+> The reverted commit makes the state machine only ever go from SRC_ATTACH_WAIT
+> to SNK_TRY in endless loop when toggling. After revert it goes to SRC_ATTACHED
+> after initially trying SNK_TRY earlier, as it should for toggling to ever detect
+> the power source mode and the port is again able to provide power to attached
+> power sinks.
+> 
+> This reverts commit 2d6d80127006ae3da26b1f21a65eccf957f2d1e5.
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> See https://lore.kernel.org/all/odggrbbgjpardze76qiv57mw6tllisyu5sbrta37iadjzwamcv@qr3ubwnlzqqt/
+> for more.
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index f7d7daa60c8d..295ae7eb912c 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -3743,9 +3743,6 @@ static void tcpm_detach(struct tcpm_port *port)
+>  	if (tcpm_port_is_disconnected(port))
+>  		port->hard_reset_count = 0;
+>  
+> -	port->try_src_count = 0;
+> -	port->try_snk_count = 0;
+> -
+>  	if (!port->attached)
+>  		return;
+>  
+> -- 
+> 2.43.0
+> 
+> 
 
-elapsed time: 1452m
+Hi,
 
-configs tested: 150
-configs skipped: 3
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                      axs103_smp_defconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                             pxa_defconfig   gcc  
-arm                         s5pv210_defconfig   gcc  
-arm                           stm32_defconfig   gcc  
-arm                           tegra_defconfig   gcc  
-arm                           u8500_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240217   gcc  
-i386         buildonly-randconfig-002-20240217   clang
-i386         buildonly-randconfig-003-20240217   gcc  
-i386         buildonly-randconfig-004-20240217   gcc  
-i386         buildonly-randconfig-005-20240217   gcc  
-i386         buildonly-randconfig-006-20240217   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240217   gcc  
-i386                  randconfig-002-20240217   gcc  
-i386                  randconfig-003-20240217   clang
-i386                  randconfig-004-20240217   gcc  
-i386                  randconfig-005-20240217   gcc  
-i386                  randconfig-006-20240217   clang
-i386                  randconfig-011-20240217   gcc  
-i386                  randconfig-012-20240217   gcc  
-i386                  randconfig-013-20240217   clang
-i386                  randconfig-014-20240217   clang
-i386                  randconfig-015-20240217   clang
-i386                  randconfig-016-20240217   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                          amiga_defconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                       m5475evb_defconfig   gcc  
-m68k                           virt_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                       bmips_be_defconfig   gcc  
-mips                  decstation_64_defconfig   gcc  
-mips                           ip27_defconfig   gcc  
-mips                    maltaup_xpa_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         alldefconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc                    or1ksim_defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        fsp2_defconfig   gcc  
-powerpc                        icon_defconfig   gcc  
-powerpc                     kmeter1_defconfig   gcc  
-powerpc                     ppa8548_defconfig   gcc  
-powerpc                         ps3_defconfig   gcc  
-powerpc                     tqm5200_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                         ecovec24_defconfig   gcc  
-sh                        edosk7705_defconfig   gcc  
-sh                            migor_defconfig   gcc  
-sh                          sdk7780_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sh                            shmin_defconfig   gcc  
-sh                              ul2_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240217   gcc  
-x86_64       buildonly-randconfig-003-20240217   gcc  
-x86_64       buildonly-randconfig-004-20240217   gcc  
-x86_64       buildonly-randconfig-006-20240217   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240217   gcc  
-x86_64                randconfig-011-20240217   gcc  
-x86_64                randconfig-012-20240217   gcc  
-x86_64                randconfig-014-20240217   gcc  
-x86_64                randconfig-015-20240217   gcc  
-x86_64                randconfig-071-20240217   gcc  
-x86_64                randconfig-072-20240217   gcc  
-x86_64                randconfig-073-20240217   gcc  
-x86_64                randconfig-075-20240217   gcc  
-x86_64                randconfig-076-20240217   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+- Your patch does not have a Signed-off-by: line.  Please read the
+  kernel file, Documentation/process/submitting-patches.rst and resend
+  it after adding that line.  Note, the line needs to be in the body of
+  the email, before the patch, not at the bottom of the patch or in the
+  email signature.
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
 
