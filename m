@@ -1,137 +1,136 @@
-Return-Path: <linux-kernel+bounces-70076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD0FC8592BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:35:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 541D28592CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:43:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65E3F28348D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:35:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EA16284108
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:43:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68ADE7F464;
-	Sat, 17 Feb 2024 20:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D447880037;
+	Sat, 17 Feb 2024 20:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o/ZaQpbK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BAecfohW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7565436A6;
-	Sat, 17 Feb 2024 20:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1D26A024;
+	Sat, 17 Feb 2024 20:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708202112; cv=none; b=suy8T7tmrokS+YcGJDiDGnE2q2VvPPbkRQHLDsRxrGjj9LPy041J7N6XmEDSeuG7MAHd1lcX0jAX3Bo2XTxAogl9dcyot9YYvzc0d4ZZXUNt78NwschjtUfBXhKpo4p+w2oGMoDel7lkoRkFGiKLRz8ypOAX1nQ//9YTsXliLHM=
+	t=1708202615; cv=none; b=RtcrNlToqbkMeh5eli83DuISnQXC16truZveGemxttsoyQwGjnoCJraY9aZlNKXz9N9kt/7TjAMRofC92WdpmZqNr0QOOhuvn9PAFZKzlj0pM8jn0Rvvix3vwa/bkNffWTw24/L4Yr8lej34AAR+d55IJVSDoF5+MdlODhUYeSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708202112; c=relaxed/simple;
-	bh=lN8jemn949tn1fSt6HujRxLyBpIYuMpqclzbVBpro4g=;
+	s=arc-20240116; t=1708202615; c=relaxed/simple;
+	bh=E6LVY0jyOMzyQvE2PHS8poQ7j8DUOqfa7MfcV3PR2qg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tcdGQVUy06wIO6M23nbTAvs2keI94u5p+8EqiwSPsEw4mOGUXt9DVQLI6r4JmvuKNy8fKu72CTyzaRsn5l8U6kMKveWlki8bzGwkqL1yhgLRV9grG+rFtYrCoT6cUTjehL1zbJ7z7tfIdWOn3XSfY57YMz8IInv02zUL4ThAHgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o/ZaQpbK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FA7BC433C7;
-	Sat, 17 Feb 2024 20:35:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=B2N9rM4GuUlHGw+bToZMgj9r8XDe2w4mfBzp7CbWCPhe08W18IacNmz+SIoJnD2SgnI4Sp52TJVnXZPr15AlXLXRwj3qPAk527huunPXvVdI38pXnTO4xLpBNL8sb/fnvmzEkN64f3KX9tLrPFriSgV0q2Cz8+/dt/4rjaRtznY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BAecfohW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E08B4C433F1;
+	Sat, 17 Feb 2024 20:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708202112;
-	bh=lN8jemn949tn1fSt6HujRxLyBpIYuMpqclzbVBpro4g=;
+	s=k20201202; t=1708202614;
+	bh=E6LVY0jyOMzyQvE2PHS8poQ7j8DUOqfa7MfcV3PR2qg=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o/ZaQpbKqCBenTEpC679IwGfz1VIvTkgidljZW0vQRh634FS1iE/4c9Guyum/ZrKP
-	 dequtXOiJ4Nbn20idl4xwtTB0wmq9iqVSENBQKju/oKXxoFgQX8/nlFo/lN5KAWHq1
-	 Z7yYSEWsVt0ykeq/kf/VCcBX6F8fDMxGbIIq768cEUBsCnhWNsMPMI6D6VMWaoqKir
-	 gVYkojOtJbe+VW9Nc6ux8zjXX3iR/f6j/pM+DsVw/6gnS3jw5jC6gXqDKS532UwEXY
-	 wdrGJmrjh24R5XVssK9cajeGYnTL6CMW39hexvfERAxFRZYj80zSN1xUD1PAfgHptk
-	 uWnthW/fW+PZA==
-Date: Sat, 17 Feb 2024 20:35:06 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Stanislav Jakubek <stano.jakubek@gmail.com>
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Rob Herring <robh+dt@kernel.org>,
+	b=BAecfohW+IJqaLkNGE7g8xML4Qs2FKZsau7yveR8TiJ6L3WA76boZ0oXP0914cfWB
+	 uRs0x5kDLFokHV5Cp5HtR0Msj3By0u1iIuTzFn74parSYqAQkBIzwglt6mSlppgWyy
+	 nB548ZQd+sF3xdChKxGAaXDAALtbxnANx3WhMvz8nZmvATSjOep/ocJMCS6i6PDjnK
+	 KXiqtTk+vXLRbVEESgl/RzZNh46pql8L2FJ2BJzpCtqn1SwkYL1HCPvnRpHrlhV9lJ
+	 e30LjKoHTXHWnfq5BKfqAB96du/na1YhLfvkFLMa4ppJEp14/HhdqYxv4OMdKerGyC
+	 Te1x7q1SX0iKA==
+Date: Sat, 17 Feb 2024 20:43:31 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	bcm-kernel-feedback-list@broadcom.com,
-	linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: watchdog: drop obsolete brcm,bcm2835-pm-wdt
- bindings
-Message-ID: <20240217-unbroken-scanner-ae1e97b02d5a@spud>
-References: <ZdC/624d1c8O3NRG@standask-GA-A55M-S2HP>
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v5 03/18] dt-bindings: regulator: describe the PMU module
+ of the QCA6390 package
+Message-ID: <ZdEac8I5aI9YLq6A@finisterre.sirena.org.uk>
+References: <20240216203215.40870-1-brgl@bgdev.pl>
+ <20240216203215.40870-4-brgl@bgdev.pl>
+ <ZdDVNbjv60G9YUNy@finisterre.sirena.org.uk>
+ <CAMRc=Mf9Sro4kM_Jn8_v=cyO5PxCp6AnBdeS9XspqVDGKdA_Dg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7dSGml3en2apojE8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4JPKTS4lZXvnOqCl"
 Content-Disposition: inline
-In-Reply-To: <ZdC/624d1c8O3NRG@standask-GA-A55M-S2HP>
+In-Reply-To: <CAMRc=Mf9Sro4kM_Jn8_v=cyO5PxCp6AnBdeS9XspqVDGKdA_Dg@mail.gmail.com>
+X-Cookie: You might have mail.
 
 
---7dSGml3en2apojE8
-Content-Type: text/plain; charset=us-ascii
+--4JPKTS4lZXvnOqCl
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 17, 2024 at 03:17:15PM +0100, Stanislav Jakubek wrote:
-> These bindings are already (better) described in soc/bcm/brcm,bcm2835-pm.
-> Drop these obsolete bindings.
->=20
-> Signed-off-by: Stanislav Jakubek <stano.jakubek@gmail.com>
+On Sat, Feb 17, 2024 at 07:32:16PM +0100, Bartosz Golaszewski wrote:
+> On Sat, Feb 17, 2024 at 4:48=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
+rote:
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> > Please submit patches using subject lines reflecting the style for the
+> > subsystem, this makes it easier for people to identify relevant patches.
+> > Look at what existing commits in the area you're changing are doing and
+> > make sure your subject lines visually resemble what they're doing.
+> > There's no need to resubmit to fix this alone.
 
-Cheers,
-Conor.
+> This is quite vague, could you elaborate? I have no idea what is wrong
+> with this patch.
 
-> ---
->  .../bindings/watchdog/brcm,bcm2835-pm-wdog.txt | 18 ------------------
->  1 file changed, 18 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/watchdog/brcm,bcm28=
-35-pm-wdog.txt
->=20
-> diff --git a/Documentation/devicetree/bindings/watchdog/brcm,bcm2835-pm-w=
-dog.txt b/Documentation/devicetree/bindings/watchdog/brcm,bcm2835-pm-wdog.t=
-xt
-> deleted file mode 100644
-> index f801d71de1cd..000000000000
-> --- a/Documentation/devicetree/bindings/watchdog/brcm,bcm2835-pm-wdog.txt
-> +++ /dev/null
-> @@ -1,18 +0,0 @@
-> -BCM2835 Watchdog timer
-> -
-> -Required properties:
-> -
-> -- compatible : should be "brcm,bcm2835-pm-wdt"
-> -- reg : Specifies base physical address and size of the registers.
-> -
-> -Optional properties:
-> -
-> -- timeout-sec   : Contains the watchdog timeout in seconds
-> -
-> -Example:
-> -
-> -watchdog {
-> -	compatible =3D "brcm,bcm2835-pm-wdt";
-> -	reg =3D <0x7e100000 0x28>;
-> -	timeout-sec =3D <10>;
-> -};
-> --=20
-> 2.34.1
->=20
+The subject line does not look like the subject line for a regulator
+patch rendering it almost invisible in my inbox.  As you will see if you
+follow the above suggestion and look at other commits to the same area
+you should see that subject lines should start regulator:.
 
---7dSGml3en2apojE8
+--4JPKTS4lZXvnOqCl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZdEYegAKCRB4tDGHoIJi
-0pDtAQD++HW96qI2wAr71D7yUlTXn5HeQJvcaQNRsjnD3M3DXAD/RuUYeBE0JNaR
-n4dJSIHFEViCCSBleYNqlYkFsmKqgAc=
-=cMHI
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXRGnIACgkQJNaLcl1U
+h9Cz7Qf+L7vTsGPGjWXms+ypHuuzrseRY+5tqVWHSXyldocHF3sZ+8P7xcqUzAKl
+OSLoaJD1RINGVTJodBoPBZ8w+8cJW5rYqn2m9fx/cRr+0bS96WUsrGD9HYTkz7VC
+QsORvLoiq2VYhEOaT4dRZxEXAEMgu8wfJ1tpZSFciws/lfvNBcIY0EjI0Nud1tND
+HIXvt3iwCGm0lW+ppB93ZjOZiw4vMMJchH0R3piJ9l4EKvrMGiDYdNb1H2YuINzS
+zq3lBvkkKTsY7oNfocA683WAe7N2l4d4MhUcm0TP4Be2BzuT9nvgZNRFWK/fa90r
+vaY0Cs9mXiyitePpzt2YKY//+qSyLw==
+=9A+9
 -----END PGP SIGNATURE-----
 
---7dSGml3en2apojE8--
+--4JPKTS4lZXvnOqCl--
 
