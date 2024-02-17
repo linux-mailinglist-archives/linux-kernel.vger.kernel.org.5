@@ -1,184 +1,146 @@
-Return-Path: <linux-kernel+bounces-69692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69694-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F3B858D57
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 06:37:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7B76858D63
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 06:42:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBBFA1F21D73
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:37:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D2D41C21167
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 05:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5111C6A0;
-	Sat, 17 Feb 2024 05:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEFD1CA9B;
+	Sat, 17 Feb 2024 05:42:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hhJj8n1O"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="K3G6Op5s"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822E5149E0B
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 05:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CAC149DE0
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 05:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708148219; cv=none; b=d1VhydrRfkSMblgaJeywGLFqpJCk2YubEAfea9r6yPl+I8g+hU93KvietIEBYn+G/A3j3WkbcPBtZfXFJdQRjFBRMi7Ximfq7RDmirKHgAobhpf51g+t0brCCjF1BwYIVXXsmD0VB3nn8fjhbZ2ljhzdTYzDCmcU2L7qAeutJIw=
+	t=1708148564; cv=none; b=tTuRJu9IaBVA8gFs1vhe+2vLJNTtzhMt5xKHX1OeUe0KhNFPhzj/OfBn5K8FaTDimVhQtU339Q2y+27KzVhpwbdTZ2Aw4QVgZmNTD6NCOFl3ZHxytvvEsMBZ2v3xK5bJ1w9zefpHM4CV5rp6Hltt6FxcWeJnDOIlM1yREEzLhI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708148219; c=relaxed/simple;
-	bh=I0rH/AzGKnIIcT7lLmWH05RQnkNtY+vk5eDC9ZMYQDg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JIxN2egilL9oJvXBFvsAkaIU7CWahIsG5Dwhr0t2w6kdbL85t9LbgRlekg/cIy6sSIo2UjfwO3rDNemSLaj0zDcfLo2qVdmdiUXSpiBh21vFH1aUY/lQNEEqMkNHXLWWvdf3F3yx2PAPUqdUbONuiHGR+IyC4ayh46+VBKwnDWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hhJj8n1O; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1d918008b99so23430195ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:36:57 -0800 (PST)
+	s=arc-20240116; t=1708148564; c=relaxed/simple;
+	bh=Q2XJqDi+VWb+RWFjBl96LehTOOg8v5aVoczUYhI4x1E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FoW0ZCn9aS2qnnCvwZ2kHj/KejGu1kQpoefi+RI2KxFUBTIvy0soPjSaPl3sIkRUcNwH3o7pRPN8GAcns28avVZWxTccH9A58lJEjFz/F4fmjZBBBoje1vdCAhA6ovETDGlkLbhwJkipR5ScrdkV1UEITSD0KBYTjBVuIR3H3Ss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=K3G6Op5s; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-511ac32fe38so4066255e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 21:42:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708148217; x=1708753017; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lCLVx9kxWQaFnG1OpMOPtJ5A7Khl6+OxNkxfvJDWGlc=;
-        b=hhJj8n1OMced4nuv98oo3BOejI91EY6ZgM+H92sHlPsrRZPsXlnyuv1ZJNpDHnmFcH
-         BtBQq3HUZ5VCeiVKLsURAhRYKiMNpBicN0crLEJ3PQBezgW98b4tPyoY3T+bmztFz0uk
-         k0OCyePxqaawTtF+h+rLs08rSFuEAPk/+WHqWVhp+t8pGcBsaGsoSfBQ6Erzoqe27IBo
-         OFan16T1kn9PgUHK96Tqf3zjdYw9sHd6zHpRQKdl0kZwFN+nw8TYAhyzhmLsaupOnseT
-         nSpucO0g4KP7tSC+Opx2S6kzm3A/sx8IcJ+ygkKbvOtmhQSmBuYdjjYUKqVltKVsDJX+
-         +SAQ==
+        d=ventanamicro.com; s=google; t=1708148561; x=1708753361; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q2XJqDi+VWb+RWFjBl96LehTOOg8v5aVoczUYhI4x1E=;
+        b=K3G6Op5sje0wQ/2M8WNZ5+PUz2OXrBG5Tms28bIyeb2v4GJVfJ4KyZ9MP1ACdYQVuK
+         NXK9XHOMf7mzge/ec2Bt0Pnj+mGTicMQiwDK1BpuN4sea8rn8CUi/Lgz8mcd5dEVcWP6
+         FcDPKWIL1d++2ihJoIcKsY1E72LfOPWSCEmRGrR5SzovEY+nQrD6okhGK1oe5Vp59Vwb
+         KXbXL+12Bk85ythDrC8xuANCdnV4b2O51jW2vWYSqixnBZ1o62U+Jsx9UH5OLCf8jYZd
+         6HzRl5Y3c8TtHIscZ8B0QKnPwRPfg6ZnQIAw9cxZvE4SLc992z36RZKEOqP7PZ5VSZjl
+         DJ3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708148217; x=1708753017;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lCLVx9kxWQaFnG1OpMOPtJ5A7Khl6+OxNkxfvJDWGlc=;
-        b=mnZnSqr8kRYzJQjw8HJhqDmuhmkIt6kSAlgwjD1bfbv00s2YtXLC15T58aboYYYWtw
-         IuksAFLeKcCU3hheSccDCuyi3VvBIEXrGRQY3huBZrqFppNvBWdLQTXiVNJmEoEAvmuj
-         cDs0Hsw9imfYDZIxpb648SfOHWv20+4LXJBHblpmVX+XaOyCkyXTV26WFI7iEr+iCL6a
-         d0g3fYxeGV0LdutCvL/e/S3ThOHQ3gkFIpteBXF1htN5vbYLmfDKmoThtWMPDR+6B9Ma
-         lzdb4Mn3swT77qDdIRUK/SLBjw1EJA2KYrH8xNudz4RnupymQzETEsE5OXrLBT0RoEuJ
-         UyZA==
-X-Forwarded-Encrypted: i=1; AJvYcCV9LOhFXp9V/QPoJ7kWAWPwBaXXSC4d99CUsLvlzaV4zs35jLcXZEmNyWvW3d2KwjCNmXynKpJebzzc5cQAumycRQ4ae6mokrmpvLFo
-X-Gm-Message-State: AOJu0Yyti3yOzbf8le0B87GxvxxVZ/+/iQWVslpmn2NlXY/SdH9LIw/S
-	evYbBnXxQ0HZaDnZN86VqY3kauRU9bJ5ZpZTA92cA5jduc8syWno
-X-Google-Smtp-Source: AGHT+IH5+jSNUQZJD7pveaLpbnf27JozpiZW+iIpVps6y29SNJKVQ4jrWmBgLkB5IZKAir6i+qLx2g==
-X-Received: by 2002:a17:902:ea0d:b0:1d9:5f11:d018 with SMTP id s13-20020a170902ea0d00b001d95f11d018mr8459194plg.1.1708148216595;
-        Fri, 16 Feb 2024 21:36:56 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:e82e:22f2:1bdb:989f])
-        by smtp.gmail.com with ESMTPSA id w3-20020a170903310300b001db3d365082sm694251plc.265.2024.02.16.21.36.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Feb 2024 21:36:56 -0800 (PST)
-From: Barry Song <21cnbao@gmail.com>
-To: akpm@linux-foundation.org,
-	hannes@cmpxchg.org,
-	linux-mm@kvack.org
-Cc: nphamcs@gmail.com,
-	zhouchengming@bytedance.com,
-	senozhatsky@chromium.org,
-	linux-kernel@vger.kernel.org,
-	Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH v2] mm: zswap: increase reject_compress_poor but not reject_compress_fail if compression returns ENOSPC
-Date: Sat, 17 Feb 2024 18:36:42 +1300
-Message-Id: <20240217053642.79558-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1708148561; x=1708753361;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Q2XJqDi+VWb+RWFjBl96LehTOOg8v5aVoczUYhI4x1E=;
+        b=lR2+LdU3m4KYN0Rhe5NTNQNvp2dkcbxPjgSqhA42BoUX9EXF7Be4UTnipLPLrN6jq4
+         jfNC2e31cC2b787zdjDxaHL5rVT6uAqA0WMcT5Zn7ygOHWJXdy3MJGkk9Rhloz0MOyBV
+         scbvqW6rLo8m1/hEuBnWhg4IdRNiXMdiMGK3GAh2jrniYKBmotLFLKlEmby/j5XdI50L
+         afYO/XUS24f7TyH5vjZTyK5/qfNcyOdGuSJOgvw0XLllZxZzP1e/JB1UbNqLuAUAVVgw
+         GLHd1Fz7Dn2bNBY4m6nB5TMpLM8QD3pgy5U3gt1HnwDcNipVGe8lGBY9ngMXCKo+2ZXP
+         rYnw==
+X-Forwarded-Encrypted: i=1; AJvYcCV0Q3onxixUOIMSS7vwO8ssOw6+74WMg+tsixtZpJr8wxUqZPBGHXVj0FfjaFCM8qFLOR1xcxaGoZ0MYlvA3P1EKOvrhCezPDLGsMrI
+X-Gm-Message-State: AOJu0YzLOn/PaI60GSA5mXmDnzy/MFZP5Y2qFA7mKbuz4HpT7/WN2+/P
+	HQqKziCAvf4gDKByH+D3RxBeyu6UzHEtS9j3wKqflAPDaIJVC076u6Lcw1SvlPcT68IE/3NVqt3
+	7hN7yz5mXqoNEN+twIG6ji1+Lkkmly4Flm2GiLg==
+X-Google-Smtp-Source: AGHT+IGNn3qXE8Q2rV0AbEGEYH7CRDHvt7ZbR9eJEmA9ut7fgUgx1eQcMY50Tzh0dWXfbhyTfzgBRj3nELnm/DfNA7E=
+X-Received: by 2002:a05:6512:526:b0:511:96d0:5ae1 with SMTP id
+ o6-20020a056512052600b0051196d05ae1mr5084453lfc.40.1708148560820; Fri, 16 Feb
+ 2024 21:42:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <20240127161753.114685-15-apatel@ventanamicro.com> <87jzn4ctks.ffs@tglx>
+ <CAAhSdy2aeyJBcMVre12jGwU52oP9Z=1emB-bcYxygdR3QhP+6w@mail.gmail.com> <878r3kcg7e.ffs@tglx>
+In-Reply-To: <878r3kcg7e.ffs@tglx>
+From: Anup Patel <apatel@ventanamicro.com>
+Date: Sat, 17 Feb 2024 11:12:29 +0530
+Message-ID: <CAK9=C2WWBrUae2hduUBwuxd8=23_KO3-x1fF=BaTtxJMHVyFrg@mail.gmail.com>
+Subject: Re: [PATCH v12 14/25] irqchip/sifive-plic: Convert PLIC driver into a
+ platform driver
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Anup Patel <anup@brainfault.org>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
+	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
+	linux-riscv@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Barry Song <v-songbaohua@oppo.com>
+On Sat, Feb 17, 2024 at 1:52=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Fri, Feb 16 2024 at 22:41, Anup Patel wrote:
+> > On Fri, Feb 16, 2024 at 9:03=E2=80=AFPM Thomas Gleixner <tglx@linutroni=
+x.de> wrote:
+> >> I don't think that removing the setup protection is correct.
+> >>
+> >> Assume you have maxcpus=3DN on the kernel command line, then the above
+> >> for_each_online_cpu() loop would result in cpuhp_setup =3D=3D true whe=
+n the
+> >> instances for the not onlined CPUs are set up, no?
+> >
+> > A platform can have multiple PLIC instances where each PLIC
+> > instance targets a subset of HARTs (or CPUs).
+> >
+> > Previously (before this patch), we were probing PLIC very early so on
+> > a platform with multiple PLIC instances, we need to ensure that cpuhp
+> > setup is done only after PLIC context associated with boot CPU is
+> > initialized hence the plic_cpuhp_setup_done check.
+> >
+> > This patch converts PLIC driver into a platform driver so now PLIC
+> > instances are probed after all available CPUs are brought-up. In this
+> > case, the cpuhp setup must be done only after PLIC context of all
+> > available CPUs are initialized otherwise some of the CPUs crash
+> > in plic_starting_cpu() due to lack of PLIC context initialization.
+>
+> You're missing the point.
+>
+> Assume you have 8 CPUs and 2 PLIC instances one for CPU0-3 and one for
+> CPU4-7.
+>
+> Add "maxcpus=3D4" on the kernel command line, then only the first 4 CPUs
+> are brought up.
+>
+> So at probe time cpu_online_mask has bit 0,1,2,3 set.
+>
+> When the first PLIC it probed the loop which checks the context for each
+> online CPU will not clear cpuhp_setup and the hotplug state is installed.
+>
+> Now the second PLIC is probed (the one for the offline CPUs 4-7) and the
+> loop will again not clear cpuhp_setup and it tries to install the state
+> again, no?
 
-We used to rely on the returned -ENOSPC of zpool_malloc() to increase
-reject_compress_poor. But the code wouldn't get to there after commit
-744e1885922a ("crypto: scomp - fix req->dst buffer overflow") as the
-new code will goto out immediately after the special compression case
-happens. So there might be no longer a chance to execute zpool_malloc
-now. We are incorrectly increasing zswap_reject_compress_fail instead.
-Thus, we need to fix the counters handling right after compressions
-return ENOSPC. This patch also centralizes the counters handling for
-all of compress_poor, compress_fail and alloc_fail.
+Ahh, yes. Good catch.
 
-Fixes: 744e1885922a ("crypto: scomp - fix req->dst buffer overflow")
-Cc: Chengming Zhou <zhouchengming@bytedance.com>
-Cc: Nhat Pham <nphamcs@gmail.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- -v2: 
- * correct the fixes target according to Yosry, Chengming, Nhat's
-   comments;
- * centralize the counters handling according to Yosry's comment
+For the "maxcpus" in kernel command-line, we can't rely on the
+cpu_online_mask. I will preserve the plic_cpuhp_setup_done
+check in the next revision.
 
- mm/zswap.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 350dd2fc8159..47cf07d56362 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1498,6 +1498,7 @@ bool zswap_store(struct folio *folio)
- 	struct zswap_tree *tree = zswap_trees[type];
- 	struct zswap_entry *entry, *dupentry;
- 	struct scatterlist input, output;
-+	int comp_ret = 0, alloc_ret = 0;
- 	struct crypto_acomp_ctx *acomp_ctx;
- 	struct obj_cgroup *objcg = NULL;
- 	struct mem_cgroup *memcg = NULL;
-@@ -1508,7 +1509,6 @@ bool zswap_store(struct folio *folio)
- 	char *buf;
- 	u8 *src, *dst;
- 	gfp_t gfp;
--	int ret;
- 
- 	VM_WARN_ON_ONCE(!folio_test_locked(folio));
- 	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
-@@ -1621,28 +1621,20 @@ bool zswap_store(struct folio *folio)
- 	 * but in different threads running on different cpu, we have different
- 	 * acomp instance, so multiple threads can do (de)compression in parallel.
- 	 */
--	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
-+	comp_ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
- 	dlen = acomp_ctx->req->dlen;
- 
--	if (ret) {
--		zswap_reject_compress_fail++;
-+	if (comp_ret)
- 		goto put_dstmem;
--	}
- 
- 	/* store */
- 	zpool = zswap_find_zpool(entry);
- 	gfp = __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLAIM;
- 	if (zpool_malloc_support_movable(zpool))
- 		gfp |= __GFP_HIGHMEM | __GFP_MOVABLE;
--	ret = zpool_malloc(zpool, dlen, gfp, &handle);
--	if (ret == -ENOSPC) {
--		zswap_reject_compress_poor++;
--		goto put_dstmem;
--	}
--	if (ret) {
--		zswap_reject_alloc_fail++;
-+	alloc_ret = zpool_malloc(zpool, dlen, gfp, &handle);
-+	if (alloc_ret)
- 		goto put_dstmem;
--	}
- 	buf = zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
- 	memcpy(buf, dst, dlen);
- 	zpool_unmap_handle(zpool, handle);
-@@ -1689,6 +1681,13 @@ bool zswap_store(struct folio *folio)
- 	return true;
- 
- put_dstmem:
-+	if (comp_ret == -ENOSPC || alloc_ret == -ENOSPC)
-+		zswap_reject_compress_poor++;
-+	else if (comp_ret)
-+		zswap_reject_compress_fail++;
-+	else if (alloc_ret)
-+		zswap_reject_alloc_fail++;
-+
- 	mutex_unlock(&acomp_ctx->mutex);
- put_pool:
- 	zswap_pool_put(entry->pool);
--- 
-2.34.1
-
+Regards,
+Anup
 
