@@ -1,101 +1,123 @@
-Return-Path: <linux-kernel+bounces-69982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 148E485913F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:57:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DD61859146
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C462A283021
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:56:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DC7D1F221D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:07:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF2FD7D41D;
-	Sat, 17 Feb 2024 16:56:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6127A7D417;
+	Sat, 17 Feb 2024 17:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="i5lDGlZv"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="r8rhlLNO"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B91E01D681;
-	Sat, 17 Feb 2024 16:56:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6971E515;
+	Sat, 17 Feb 2024 17:07:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708189011; cv=none; b=t6OYMLcJZa4/eeHC2qchsmdcHpOS9zTB4ZRU+jbP5uPFlkDjZ/RswGFBfHl+MBU/bW1fdAwZAN4CZYL81eXZ0ceZdG6H8ZSmIdowcPDvollizqEruQs2+iuCKKWSscWtCh76Gq/1+gPPsl8Q8cAPeE35A4VNImeZfoeX8gcjpeA=
+	t=1708189661; cv=none; b=T7mdOhMfVboUTiwGUSz+zUin/QerKLcsY3/zeFnmSKjJMEC3dtakad5lbbBzYQtiRr5a08q9rHaljzrzHWxSiOblqegvtvEGUZuiOkMkm7UD7rQfYmYqN5+ye1Pn0IyiKFYliAvX5upXOyRN+19PW6NeNZoowh0Q1b8p6ztR0fY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708189011; c=relaxed/simple;
-	bh=vtmXWJQTR268I6elGXGKji5aKARKWQW9ZTVxDl8jpeU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oC/sBT+QXFP9X7GSJkxgWCuYhOzMvaOFMrlIorTIm6rG9ZhaHzm4rM0CyqHoFr7eclnf8H+LBUzuhJejg9pu+6leKUTs27pnWzsQgxVxHniqCdVWRQDBWdsd7HWsWeTDVM2/eYjK97cGBwELhVngnbctdNaFnvdX2kUh96fkmmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=i5lDGlZv; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=qd91KUgzbRfv5CXyfjyN+hHquWgLzp7zTWKp3UEEcTg=; b=i5lDGlZv5FdNZ1Ckf6vz+JUgQS
-	BB+GB8c8sugSGZHevFFC9r7kp4+bqTQYD7U6NJxjdXMIJ7xqF/2n16yS1ss/4n8RZSFf+VsBOfBgX
-	b2cVpEI18XZ97m2+oyc6hdyVv513B6abddzVsV/zujha6xH5+fpdgNmz4cwmZE7jtnxds6tgm74RD
-	iVhCr4LQAzBQ0qpsnVAFZ6YYp6jk6cZkB5Bn3xY2JYPECjtn9b9rM5PTGkL2C4Y9zLDWtKmrth40u
-	yUX4zMa5etynd0U8zD29W/tBgYpD+Ho9pJnUWO0xR31D6rSg1uUqRzm2hxH1Sdl5BWnPSJmznS4/L
-	v2DnwhBA==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rbNzd-000000062mg-0xap;
-	Sat, 17 Feb 2024 16:56:49 +0000
-Message-ID: <8992c7f0-b0b1-4bbb-b5a3-2906159e2e24@infradead.org>
-Date: Sat, 17 Feb 2024 08:56:48 -0800
+	s=arc-20240116; t=1708189661; c=relaxed/simple;
+	bh=P7I4J4DdTmbjWZu4aPEcn7nHHUmnnyqGemw9zvzq0QE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cGw2ln+/1GEi8rqyFLzFOLRfECl2uy0rrH+XInavUXxqSDfIJ8DuAJLZDS+uAE+YLHNscmqb8iICrtgTBW1pGnK9JiyuwLz3/PWcIe4pXTrXZxyz7DaxRY4BaPKElBHu2LSNexFAmXW6RHhYLIiDNrJzC7g0tE1RJyX+uI2jZDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=r8rhlLNO; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=GRWtM/ktgdCwvK0hR9nKaqw64qBDSz1jmEq5mVbyKEI=; b=r8rhlLNO/6AsRMW9Zz9sSPI1in
+	X85y7Wf6RkjfunwAJY5tc8qcYWnXOm36cfDJOK73KUO8Ke/FKjLRhKm5+yJePUl0hi0wN+fMH30Y7
+	a0G/rEr7JEyNyx1aUeIrYTgC5bG5UOpx80RLwapFYOKc1X6p0WBitYkafxeD2Kc0Ha54=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rbO9z-0084Zo-Cv; Sat, 17 Feb 2024 18:07:31 +0100
+Date: Sat, 17 Feb 2024 18:07:31 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc: Kory Maincent <kory.maincent@bootlin.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+	Jay Vosburgh <j.vosburgh@gmail.com>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH RFC net-next v8 04/13] net: Change the API of PHY default
+ timestamp to MAC
+Message-ID: <b8926fe5-81ef-40ea-9e87-5e84b368b745@lunn.ch>
+References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+ <20240216-feature_ptp_netnext-v8-4-510f42f444fb@bootlin.com>
+ <87jzn4gtlv.fsf@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: CONFIG_JITTERENTROPY needs more explanation?
-Content-Language: en-US
-To: Bagas Sanjaya <bagasdotme@gmail.com>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Crypto <linux-crypto@vger.kernel.org>
-Cc: Robert Elliott <elliott@hpe.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
- Christoph Biedl <bugzilla.kernel.bpeb@manchmal.in-ulm.de>
-References: <ZcJBk_NQvLzwzprn@archie.me>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <ZcJBk_NQvLzwzprn@archie.me>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87jzn4gtlv.fsf@nvidia.com>
 
+On Fri, Feb 16, 2024 at 10:09:36AM -0800, Rahul Rameshbabu wrote:
+> 
+> On Fri, 16 Feb, 2024 16:52:22 +0100 Kory Maincent <kory.maincent@bootlin.com> wrote:
+> > Change the API to select MAC default time stamping instead of the PHY.
+> > Indeed the PHY is closer to the wire therefore theoretically it has less
+> > delay than the MAC timestamping but the reality is different. Due to lower
+> > time stamping clock frequency, latency in the MDIO bus and no PHC hardware
+> > synchronization between different PHY, the PHY PTP is often less precise
+> > than the MAC. The exception is for PHY designed specially for PTP case but
+> > these devices are not very widespread. For not breaking the compatibility
+> > default_timestamp flag has been introduced in phy_device that is set by
+> > the phy driver to know we are using the old API behavior.
+> >
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > ---
+> 
+> Overall, I agree with the motivation and reasoning behind the patch. It
+> takes dedicated effort to build a good phy timestamping mechanism, so
+> this approach is good. I do have a question though. In this patch if we
+> set the phy as the default timestamp mechanism, does that mean for even
+> non-PTP applications, the phy will be used for timestamping when
+> hardware timestamping is enabled? If so, I think this might need some
+> thought because there are timing applications in general when a
+> timestamp closest to the MAC layer would be best.
 
+Could you give some examples? It seems odd to me, the application
+wants a less accurate timestamp?
 
-On 2/6/24 06:26, Bagas Sanjaya wrote:
-> Hi,
-> 
-> On Bugzilla,  Christoph Biedl <bugzilla.kernel.bpeb@manchmal.in-ulm.de>
-> wrote a question on CRYPTO_JITTERENTROPY description [1]:
-> 
->> The desciption of the CRYPTO_JITTERENTROPY kernel option in crypto/Kconfig has an incomplete sentence:
->>
->> | This RNG does not perform any cryptographic whitening of the generated
->> |
->> | See https://www.chronox.de/jent.html
->>
->> This was introduced in a9a98d49da52 ("crypto: Kconfig - simplify compression/RNG entries") - please fix when convenient.
-> 
-> Can you explain why the Kconfig description says so?
-> 
-> Thanks.
-> 
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=218458
-> 
+Is it more about overheads? A MAC timestamp might be less costly than
+a PHY timestamp?
 
-Hi,
-Fixup patch has been posted.
-Thanks for the report.
+Or is the application not actually doing PTP, it does not care about
+the time of the packet on the wire, but it is more about media access
+control? Maybe the applications you are talking about are misusing the
+PTP API for something its not intended?
 
-Subject: should be CRYPTO_JITTERENTRY.
-
--- 
-#Randy
+    Andrew
 
