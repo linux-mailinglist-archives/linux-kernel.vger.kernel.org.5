@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-70103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4E3085931A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:04:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88AB685931D
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 23:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55A021F21C9B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:04:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F2FF4B21281
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AB0B8060D;
-	Sat, 17 Feb 2024 22:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C77880636;
+	Sat, 17 Feb 2024 22:03:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I9twV0LV"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X8F7nG4p"
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E708A8005B;
-	Sat, 17 Feb 2024 22:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4874180619;
+	Sat, 17 Feb 2024 22:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708207427; cv=none; b=JhihOtlD2ZKNlp+DeLCJx3AcwNH2gbZayBdSbF/S3dLJb5Z+3smugv9EuoC4yDfDQxwE9zUblF8DdqWrkYg1mN6iSZUsadETcWxK86dqrdPvT5z8eLl8C85lWygLmpvqqr2P/e7Q7vPH/L8Pqi1CZJmwscPVYiA3XuWpLj/I/z8=
+	t=1708207431; cv=none; b=inNEmacYaxZsyHCt7wgyWROPTbUJvrX5NwgU53sw+tmB1xpvRRYbavRFF8iMJI3gaqlKXSXeJ0GRYz1+vW1lf46WHNb6N2Xkeuzenw4SLxvMca4vBR1MoYNhnt1ZZO/+T7F05vJ7U3gx8GS+2d2E8rbPqNOS0fWBJ/+zJVXk7GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708207427; c=relaxed/simple;
-	bh=tuNHywPBJTYXwQUVEt7KzPYJvhBz5lRqgPaGOkUzsEA=;
+	s=arc-20240116; t=1708207431; c=relaxed/simple;
+	bh=bJMbBwrT+WhkUJ3j7dNm7o0p5T2uQRQJ2CSbo+C+NWQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IKdnHX0xeF0C4OKk7t/yPpT1PIx+2PQO2aEUTonBq+DDDnLsTszTMAsPuP6bkRZYGEHMnvSdpYsXTCnmP/deH+Lo/lch9B4ju4pWGH8kpbMvZK8DOWylG9OeNzEU9UkiHACdoPiPSC8M05eBW9xlq5P4nniES2oECL70hfRYU3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I9twV0LV; arc=none smtp.client-ip=209.85.167.46
+	 MIME-Version; b=KwN08UwrDDTTQRAIvCOIshElefS/BwqlQB+14sD8qyGUhQI3/7y6BNjeD/SoPrFRG14xPQl0xRdppgv70B4UZvdnYnGJjEK7QNwe081+tOxJ62BEQ+kAGrvtxp8F0BWERz620dMQGdI7TPhaUCU531FHYDF2Ghs65K3MiOj4X+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X8F7nG4p; arc=none smtp.client-ip=209.85.208.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-51197ca63f5so2642328e87.1;
-        Sat, 17 Feb 2024 14:03:45 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso20164941fa.2;
+        Sat, 17 Feb 2024 14:03:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708207424; x=1708812224; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708207427; x=1708812227; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5M1YSE81QKZG/kSHWWVAPeSPQl4ZwhZA94VajK9D/Zg=;
-        b=I9twV0LVppLuO/a70Q0UdoHLE7cmqGjG2ZjIAycWSalyiIfmV67DrqeWqTn4rT+gym
-         p5dJYWecHDxPzycV66P7KEbg8d16D+z+ol6sO/p89eqzkq8Mg5eBAjj1d34OmABIz70U
-         CjZBUrOlKVZx1gwcB5u16gDyUXmOY0+dWlvrhX7mut1MCRzArqHUkVq7ahAf/P9qTmot
-         01WTnF8Hjn8YH9aQuAUPcMlQpkEt5reHO5u+cWcc2nwAGZN5ECtDeUl4SSutT7pjg9Cc
-         uc99yDldcCAYLvNPng2aDA7D7EpSHn2zQZwss1QTd1uC5WBok/8Djs5sqMNfOjObR8l9
-         fsMQ==
+        bh=1aApdOnqEiLTFDlM0DEkECZ6pJ/nXDPDXWmDBeJDbWs=;
+        b=X8F7nG4pAN6O1sdFAKgH+AaZZro9wdWTQpRnyj8smMzFfTgM9bJtV2GVNrk1y6cI/Y
+         CB3AINfNPrmYkgUI4dH6bBWKePFxhJnxGMkTHb4rGrb91meFJDdjk2io7+1GCHQ6hyKx
+         61BVg325hswiopee78kCrUmxYfkGJMXkduZ0BXcVZDzaK58izk6hoq1p08iiQorTJUh7
+         /jTEg72C8cQtsSC6EbApQOsGXUxzjHe+ch5v6Zaf6pDftcH35Guloj+Pxbe9YIsK6RV2
+         uEqm/QWdFPGMignw1fLezn9AT2YckGvrs8iY43lcQazEmTu2Vpst5aOZHcU2fUo5qlIv
+         wsjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708207424; x=1708812224;
+        d=1e100.net; s=20230601; t=1708207427; x=1708812227;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5M1YSE81QKZG/kSHWWVAPeSPQl4ZwhZA94VajK9D/Zg=;
-        b=j/fnBLoDm9vDDdrqFJN8t7UQH1j5j2TK7YWb+VxZWl717Bal/rGhFc2uVYAJcX3RpE
-         aNdVhr8J0ehSUtqKLUt2YsKwTMIzGy5J2/W1k1THyE3hGXxKglDknyfHYH4YTgLew5wR
-         BhCQqwqN/ZUv6fSAUmrpJPI8aCnqVmDUzWHFi+gpwmeg2Ar/Bg5Pk2cXyJSMMIhQ1WPf
-         s+GquaEM3zfc9Gds4Jdo/wF3XF73fpxh/Dn/4JpKif8Te2kU8DCCzxxTs0ysUNnJ/Mvb
-         cpj2tiaSKjFKmVXk09vDaG2H7wn8SoDVCpL5QzXU2mS78e6tL7fGYEF+FYbG2Ycg6va4
-         hwgA==
-X-Forwarded-Encrypted: i=1; AJvYcCUARu30ATJDnmX72eEKvbo2Wd9knWJyWruwvaQr+tldhoNnNmTgDwmF3pWuah0j4Wi9xtAup3pMy1d84Zs7NFzKbJhK2q3gUnj4pph6ebZr2jqMZ5YYieyqF5dD9SAvdqXFcM2sYyXUl/gqdZDqmtlzOEi9Lq93Ndwy+kPy2OrvonoaMvr0
-X-Gm-Message-State: AOJu0YxVjn59yh47cf1r3/krcq1zu/fGxza8BuAKeVILW2mSURnw24Mz
-	XHMIePArPqc28av70pLEGN4WyXiem4kdKPM5tn7fi6UxmO8aqwoJ
-X-Google-Smtp-Source: AGHT+IGFzBxhuTnyefK/t9xRQxJ56QQoT+sGJAbGtIJMIUSdRGvwgWiUdfR5iKFRcAYMA0DTKFcknQ==
-X-Received: by 2002:a19:7407:0:b0:512:9e9f:2f1d with SMTP id v7-20020a197407000000b005129e9f2f1dmr2099232lfe.58.1708207423888;
-        Sat, 17 Feb 2024 14:03:43 -0800 (PST)
+        bh=1aApdOnqEiLTFDlM0DEkECZ6pJ/nXDPDXWmDBeJDbWs=;
+        b=sMBm9hBXc1R9+3/b51ECe6nDk01mXjy9P78gz+F/IHNRhTETbSApoeW3we1cMwSdqI
+         c/VBR7mJOlvVHePrdkDZP9QvD2CNMtF5oh+fQzEg4RzC39C49pBB21hMU7XoZW1rAb0l
+         n15Apltil49JHMLqYYe92LoBBft/K93kco2+fzfbMB02yjG0FpRPUyowY7vbv/8CiHm9
+         6YPDRRk++WN8qxKikxbhB6ouCJ6l/SonODhz4F8IFwwhjfDsPOzIk18eEnqqiwCktqO9
+         qLqZoEAkdbXbw+1GJivdB8SVrPicViCwf3bmtJ01rDMQv/lBN+AiovjYCjomHngvvarL
+         /i9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUI0D8sRW6AuV0kh+Tm+44bfNrydMumBI+caOXzi+9SwIqUBAjmpEpFsPvFnLKGAYLhp6OhQ27lSP9384b1shtDFXbG2otybZGsiKwVOWI8sHnybckKakPJu2x4YDZCqWdHbv3BYpiEKYviBjObNyz9UTz3SZkrnOqkExqkZkthAWdtxpVW
+X-Gm-Message-State: AOJu0YyQ0X0HVPbelpc/pkR2h6gIruaRgQWDOFlxRnRE4V6mbN+QEeMh
+	acdNO3N3OZb2umuWfLJzNzb7nW/x3yMD7VKQ5q+Ahpv5cIsJf5u1
+X-Google-Smtp-Source: AGHT+IHCMtS6+6PY3+RlRsAimgdxCMlkqh+ql4ZMQZgYBOGjXLhDbbfZ95KmDdtHrQy8+heZyfcoQg==
+X-Received: by 2002:a05:6512:3450:b0:512:9dee:44fe with SMTP id j16-20020a056512345000b005129dee44femr1911524lfr.26.1708207426996;
+        Sat, 17 Feb 2024 14:03:46 -0800 (PST)
 Received: from localhost.localdomain ([2a05:3580:f312:6c01:1b8f:2a1b:d18:1951])
-        by smtp.gmail.com with ESMTPSA id p19-20020a056512313300b00511936e2d61sm363836lfd.56.2024.02.17.14.03.43
+        by smtp.gmail.com with ESMTPSA id p19-20020a056512313300b00511936e2d61sm363836lfd.56.2024.02.17.14.03.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 14:03:43 -0800 (PST)
+        Sat, 17 Feb 2024 14:03:46 -0800 (PST)
 From: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 To: Sakari Ailus <sakari.ailus@linux.intel.com>,
 	Alain Volmat <alain.volmat@foss.st.com>,
@@ -80,9 +80,9 @@ Cc: =?UTF-8?q?Ond=C5=99ej=20Jirman?= <megi@xff.cz>,
 	Pavel Machek <pavel@ucw.cz>,
 	Arnaud Ferraris <arnaud.ferraris@collabora.com>,
 	Andrey Skvortsov <andrej.skvortzov@gmail.com>
-Subject: [PATCH 1/2] dt-bindings: media: i2c: add galaxycore,gc2145 DVP bus support
-Date: Sun, 18 Feb 2024 01:03:07 +0300
-Message-ID: <20240217220308.594883-2-andrej.skvortzov@gmail.com>
+Subject: [PATCH 2/2] media: gc2145: implement basic dvp bus support
+Date: Sun, 18 Feb 2024 01:03:08 +0300
+Message-ID: <20240217220308.594883-3-andrej.skvortzov@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240217220308.594883-1-andrej.skvortzov@gmail.com>
 References: <20240217220308.594883-1-andrej.skvortzov@gmail.com>
@@ -94,65 +94,207 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Don't require link-frequencies like it's done for ov5640, that
-supports both CSI-2 and DVP. And v4l2_fwnode_endpoint_alloc_parse
-ignores link-frequencies property for DVP endpoint. It's used only for
-CSI-2 endpoints
+Tested on PinePhone with libcamera-based GNOME screenshot.
 
 Signed-off-by: Andrey Skvortsov <andrej.skvortzov@gmail.com>
 ---
- .../bindings/media/i2c/galaxycore,gc2145.yaml | 33 +++++++++++++++++--
- 1 file changed, 30 insertions(+), 3 deletions(-)
+ drivers/media/i2c/gc2145.c | 117 ++++++++++++++++++++++++++++---------
+ 1 file changed, 90 insertions(+), 27 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-index 1726ecca4c77..fb376b9d0f2a 100644
---- a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-+++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
-@@ -61,9 +61,6 @@ properties:
-         properties:
-           link-frequencies: true
+diff --git a/drivers/media/i2c/gc2145.c b/drivers/media/i2c/gc2145.c
+index bef7b0e056a8..9a70b8d504e1 100644
+--- a/drivers/media/i2c/gc2145.c
++++ b/drivers/media/i2c/gc2145.c
+@@ -39,6 +39,10 @@
+ #define GC2145_REG_ANALOG_MODE1	CCI_REG8(0x17)
+ #define GC2145_REG_OUTPUT_FMT	CCI_REG8(0x84)
+ #define GC2145_REG_SYNC_MODE	CCI_REG8(0x86)
++#define GC2145_SYNC_MODE_VSYNC_POL	BIT(0)
++#define GC2145_SYNC_MODE_HSYNC_POL	BIT(1)
++#define GC2145_SYNC_MODE_OPCLK_POL	BIT(2)
++#define GC2145_SYNC_MODE_OPCLK_GATE	BIT(3)
+ #define GC2145_SYNC_MODE_COL_SWITCH	BIT(4)
+ #define GC2145_SYNC_MODE_ROW_SWITCH	BIT(5)
+ #define GC2145_REG_BYPASS_MODE	CCI_REG8(0x89)
+@@ -53,6 +57,12 @@
+ #define GC2145_REG_GLOBAL_GAIN	CCI_REG8(0xb0)
+ #define GC2145_REG_CHIP_ID	CCI_REG16(0xf0)
+ #define GC2145_REG_PAD_IO	CCI_REG8(0xf2)
++#define GC2145_REG_PLL_MODE1	CCI_REG8(0xf7)
++#define GC2145_REG_PLL_MODE2	CCI_REG8(0xf8)
++#define GC2145_REG_CM_MODE	CCI_REG8(0xf9)
++#define GC2145_REG_CLK_DIV_MODE	CCI_REG8(0xfa)
++#define GC2145_REG_ANALOG_PWC	CCI_REG8(0xfc)
++#define GC2145_REG_PAD_IO	CCI_REG8(0xf2)
+ #define GC2145_REG_PAGE_SELECT	CCI_REG8(0xfe)
+ /* Page 3 */
+ #define GC2145_REG_DPHY_ANALOG_MODE1	CCI_REG8(0x01)
+@@ -598,6 +608,7 @@ struct gc2145 {
+ 	struct v4l2_subdev sd;
+ 	struct media_pad pad;
  
--        required:
--          - link-frequencies
++	struct v4l2_fwnode_endpoint ep; /* the parsed DT endpoint info */
+ 	struct regmap *regmap;
+ 	struct clk *xclk;
+ 
+@@ -612,6 +623,11 @@ struct gc2145 {
+ 	const struct gc2145_mode *mode;
+ };
+ 
++static inline bool gc2145_is_csi2(const struct gc2145 *gc2145)
++{
++	return gc2145->ep.bus_type == V4L2_MBUS_CSI2_DPHY;
++}
++
+ static inline struct gc2145 *to_gc2145(struct v4l2_subdev *_sd)
+ {
+ 	return container_of(_sd, struct gc2145, sd);
+@@ -773,6 +789,38 @@ static int gc2145_set_pad_format(struct v4l2_subdev *sd,
+ 	return 0;
+ }
+ 
++static int gc2145_config_dvp_mode(struct gc2145 *gc2145,
++				   const struct gc2145_format *gc2145_format)
++{
++	int ret = 0;
++	u64 sync_mode;
++	int flags;
++
++	flags = gc2145->ep.bus.parallel.flags;
++
++	ret = cci_read(gc2145->regmap, GC2145_REG_SYNC_MODE, &sync_mode, NULL);
++	if (ret)
++		return ret;
++
++	sync_mode &= ~(GC2145_SYNC_MODE_VSYNC_POL |
++		       GC2145_SYNC_MODE_HSYNC_POL |
++		       GC2145_SYNC_MODE_OPCLK_POL);
++
++	if (flags & V4L2_MBUS_VSYNC_ACTIVE_LOW)
++		sync_mode |= GC2145_SYNC_MODE_VSYNC_POL;
++
++	if (flags & V4L2_MBUS_HSYNC_ACTIVE_LOW)
++		sync_mode |= GC2145_SYNC_MODE_HSYNC_POL;
++
++	if (flags & V4L2_MBUS_PCLK_SAMPLE_FALLING)
++		sync_mode |= GC2145_SYNC_MODE_OPCLK_POL;
++
++	cci_write(gc2145->regmap, GC2145_REG_SYNC_MODE, sync_mode, &ret);
++	cci_write(gc2145->regmap, GC2145_REG_PAD_IO, 0x0f, &ret);
++
++	return ret;
++}
++
+ static const struct cci_reg_sequence gc2145_common_mipi_regs[] = {
+ 	{GC2145_REG_PAGE_SELECT, 0x03},
+ 	{GC2145_REG_DPHY_ANALOG_MODE1, GC2145_DPHY_MODE_PHY_CLK_EN |
+@@ -895,10 +943,13 @@ static int gc2145_start_streaming(struct gc2145 *gc2145,
+ 		goto err_rpm_put;
+ 	}
+ 
+-	/* Perform MIPI specific configuration */
+-	ret = gc2145_config_mipi_mode(gc2145, gc2145_format);
++	/* Perform interface specific configuration */
++	if (gc2145_is_csi2(gc2145))
++		ret = gc2145_config_mipi_mode(gc2145, gc2145_format);
++	else
++		ret = gc2145_config_dvp_mode(gc2145, gc2145_format);
+ 	if (ret) {
+-		dev_err(&client->dev, "%s failed to write mipi conf\n",
++		dev_err(&client->dev, "%s failed to write interface conf\n",
+ 			__func__);
+ 		goto err_rpm_put;
+ 	}
+@@ -924,6 +975,9 @@ static void gc2145_stop_streaming(struct gc2145 *gc2145)
+ 			GC2145_CSI2_MODE_EN | GC2145_CSI2_MODE_MIPI_EN, 0,
+ 			&ret);
+ 	cci_write(gc2145->regmap, GC2145_REG_PAGE_SELECT, 0x00, &ret);
++
++	/* Disable dvp streaming */
++	cci_write(gc2145->regmap, GC2145_REG_PAD_IO, 0x00, &ret);
+ 	if (ret)
+ 		dev_err(&client->dev, "%s failed to write regs\n", __func__);
+ 
+@@ -1233,9 +1287,8 @@ static int gc2145_init_controls(struct gc2145 *gc2145)
+ static int gc2145_check_hwcfg(struct device *dev)
+ {
+ 	struct fwnode_handle *endpoint;
+-	struct v4l2_fwnode_endpoint ep_cfg = {
+-		.bus_type = V4L2_MBUS_CSI2_DPHY
+-	};
++	struct v4l2_subdev *sd = dev_get_drvdata(dev);
++	struct gc2145 *gc2145 = to_gc2145(sd);
+ 	int ret;
+ 
+ 	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
+@@ -1244,36 +1297,46 @@ static int gc2145_check_hwcfg(struct device *dev)
+ 		return -EINVAL;
+ 	}
+ 
+-	ret = v4l2_fwnode_endpoint_alloc_parse(endpoint, &ep_cfg);
++	ret = v4l2_fwnode_endpoint_parse(endpoint, &gc2145->ep);
+ 	fwnode_handle_put(endpoint);
+ 	if (ret)
+ 		return ret;
+ 
+-	/* Check the number of MIPI CSI2 data lanes */
+-	if (ep_cfg.bus.mipi_csi2.num_data_lanes != 2) {
+-		dev_err(dev, "only 2 data lanes are currently supported\n");
+-		ret = -EINVAL;
+-		goto out;
+-	}
++	switch (gc2145->ep.bus_type) {
++	case V4L2_MBUS_CSI2_DPHY:
++		/* Check the link frequency set in device tree */
++		if (!gc2145->ep.nr_of_link_frequencies) {
++			dev_err(dev, "link-frequencies property not found in DT\n");
++			ret = -EINVAL;
++			goto out;
++		}
++
++		/* Check the number of MIPI CSI2 data lanes */
++		if (gc2145->ep.bus.mipi_csi2.num_data_lanes != 2) {
++			dev_err(dev, "only 2 data lanes are currently supported\n");
++			ret = -EINVAL;
++			goto out;
++		}
++
++		if (gc2145->ep.nr_of_link_frequencies != 3 ||
++			gc2145->ep.link_frequencies[0] != GC2145_640_480_LINKFREQ ||
++			gc2145->ep.link_frequencies[1] != GC2145_1280_720_LINKFREQ ||
++			gc2145->ep.link_frequencies[2] != GC2145_1600_1200_LINKFREQ) {
++			dev_err(dev, "Invalid link-frequencies provided\n");
++			ret = -EINVAL;
++			goto out;
++		}
++		break;
+ 
+-	/* Check the link frequency set in device tree */
+-	if (!ep_cfg.nr_of_link_frequencies) {
+-		dev_err(dev, "link-frequency property not found in DT\n");
++	case V4L2_MBUS_PARALLEL:
++		break;
++	default:
++		dev_err(dev, "unsupported bus type %u\n",
++			gc2145->ep.bus_type);
+ 		ret = -EINVAL;
+ 		goto out;
+ 	}
 -
-     required:
-       - endpoint
+-	if (ep_cfg.nr_of_link_frequencies != 3 ||
+-	    ep_cfg.link_frequencies[0] != GC2145_640_480_LINKFREQ ||
+-	    ep_cfg.link_frequencies[1] != GC2145_1280_720_LINKFREQ ||
+-	    ep_cfg.link_frequencies[2] != GC2145_1600_1200_LINKFREQ) {
+-		dev_err(dev, "Invalid link-frequencies provided\n");
+-		ret = -EINVAL;
+-	}
+-
+ out:
+-	v4l2_fwnode_endpoint_free(&ep_cfg);
+-
+ 	return ret;
+ }
  
-@@ -110,4 +107,34 @@ examples:
-         };
-     };
- 
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        camera@3c {
-+            compatible = "galaxycore,gc2145";
-+            reg = <0x3c>;
-+            clocks = <&clk_ext_camera>;
-+            iovdd-supply = <&scmi_v3v3_sw>;
-+            avdd-supply = <&scmi_v3v3_sw>;
-+            dvdd-supply = <&scmi_v3v3_sw>;
-+            powerdown-gpios = <&mcp23017 3 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
-+            reset-gpios = <&mcp23017 4 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
-+
-+            port {
-+                endpoint {
-+                    remote-endpoint = <&parallel_from_gc2145>;
-+                    bus-width = <8>;
-+                    hsync-active = <1>;
-+                    vsync-active = <1>;
-+                    data-active = <1>;
-+                    pclk-sample = <1>;
-+                };
-+            };
-+        };
-+    };
-+
- ...
 -- 
 2.43.0
 
