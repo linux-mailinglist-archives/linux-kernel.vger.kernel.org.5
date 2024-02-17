@@ -1,89 +1,92 @@
-Return-Path: <linux-kernel+bounces-69918-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E3E485903A
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:01:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1653685903F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:02:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D23A7B21FE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:01:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6515283099
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:02:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63EE87C0B1;
-	Sat, 17 Feb 2024 15:01:07 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D217C0AC;
+	Sat, 17 Feb 2024 15:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="DbaWaxEy"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CCC97B3E4
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:01:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 471FC69DE6
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 15:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708182067; cv=none; b=V0qGQiu2+KRwtfScK0AvJ/cwFG1o3soDANkr/QzKVDj/1wxWck7gIhHdhRaxKT4n6FCTeW6/dmiVfo+1oxkmZ7AFUhNunKZWvr3eFGgcW7nPIyBf5BHoGwxD8Qs6keh5enQPrb56g96NYBZH9QDWYX+cZAED4+yfC4ujLZiuhA4=
+	t=1708182155; cv=none; b=NHu3pPt7baTbQJvuk6bZiuFEBJ90jpp8MZ9o80e6glfQh+HXN6pYeNN6mFXikpuspKQ6hLZfR/ZW5h+IDEJSN6dhj/g7Xa8YufgBPwuJ+D/DK2evFndmqHTlzwHRIsOcu5uAPLku8d5YHoeGal4R7HRgZLV137qRPLIrAN3ROVg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708182067; c=relaxed/simple;
-	bh=v3qPHREL8y4lhPH+JqjQ41slZwMMdqVh6lqLROLzu/Y=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=s3UKfG2BPVukAgqaBOiv8TwijN1waT24SsHFwfi48G3IhqVC5YvrVxbhnrTsurfFTIM4v+UIvHGl2C2sJUKq+ib2yS/2VrqvL+S1rJiCm725nstmr112uhggkzfsASKvxH/A5im1k6yTj9zGo39RePGh1p4Mg1V1zvTG9dnlxq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3652275e581so374005ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 07:01:05 -0800 (PST)
+	s=arc-20240116; t=1708182155; c=relaxed/simple;
+	bh=ILCeUUqi0K9sqscq3X9d3q8gBc3poPrNqIRw6KjseAA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bp4DGDPnlepMgvbU3Po99W1F+ubuXDfHidwh6T7pWIAPEo2SpURMaCzYuUsifARdjPD5BdLonxYGoXvGUJgNO+rqz38q+96VURFKpR52yUvZI7LvSUlYnDnJOQVlxjW5GfOwJHVbb6P73jr6jxRDnya49cSY32HN8lf6b8HJEdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=DbaWaxEy; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d1094b5568so39543381fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 07:02:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1708182151; x=1708786951; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ILCeUUqi0K9sqscq3X9d3q8gBc3poPrNqIRw6KjseAA=;
+        b=DbaWaxEykx5SWamSgjEVvxykzZOcw6ITzGZ8d9aLvXikhAW7iGiplMkiWqRqBAG4LG
+         SfAb3ik5+3/g5av+O2ytLZjnxo/mngS7q0YSV6ivAuLjLH9s+ggUZqhJ3iAZHNZmJ8F8
+         Ip1r0NkxAn2PXOzlNd0SWH3JUVPux1WRaSU8k3g2wa75KCrBmUPXq28F7QLyI2ON7yMv
+         0vk9xUpPuvb51/v1Zt/+/jCbM7G2VdzQMM0n9BcTj7Gzz+1P0CRuG5r6LH1o2GMA3c9R
+         25uyLToNLUh5o4Dx1ucGPwUSAzItphKf5W4Xyyi4aE7ecQU0/VYYE/fVuGnqoBAWpFjN
+         qlIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708182065; x=1708786865;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MwNQueuYmB/11gbOG3QeCQx8po7ZygrhAL8Ov/WqAlE=;
-        b=ejBcBUBPwHRelCHbaovQgkZvKZ10a96uVF1YXe9H+oMjM8HAywgz6CL+LGyTwxd7Uf
-         u+6UhI8ScjSr0mo7plwmJT52pwOVyC/9p6YtRmCvA7iCzVgeroKB/4FqaqKGRnO4hMQd
-         R7zbs4toiNZoskJn4Dw4BmhkP6jRndxjLsX+diicbkldRrcjQS0h+g7ooRHy9lFQB3ul
-         diQ7+GXScBdq++YL5Xue0Qs+HquMEand4S6IrPPxgthmLDNytLsgnl1morPcCTr40u/S
-         rFOFy6mobSuVkWRhnIw4Sx/MGdL27YcD3KZcYfgcqMrSGuPVWkum+LiIpDzCqS8Ob6Yc
-         AQbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUuBPkUnB3rvJrLZuCU30cBlBZnfC23Wp4qH8sq3B0IFjaQE7amUt2RA49+iNSMeNUrZ0QJUWln1ft/Y0ano4q+sZXpxpSQiWg7+0Kx
-X-Gm-Message-State: AOJu0YwSJ//fa7qLL7lUlH7PYVLTwh9qyfkduYtcVKs74FV+pxccezvS
-	MzJFfrkNII4LIm3n45DquuYrsepZr595SYA8XbTR/Y8ZYR7cgP96Zo1iFCzG8KXfrAzEuOR0K7r
-	sR/GQ0A/kgUyv0CfJFv37qzfv5TeSUdZODWHM/U1mdVqape3Zzlo458Y=
-X-Google-Smtp-Source: AGHT+IEBdhWTaosc/BZRU1Ig+P68HanPIcYAdDVfh8P0PrL8wce8QOLRvgTXLmzncxBxXxBJXjNeF/KiKPKPxtq3e5BT7OxP6ZGq
+        d=1e100.net; s=20230601; t=1708182151; x=1708786951;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ILCeUUqi0K9sqscq3X9d3q8gBc3poPrNqIRw6KjseAA=;
+        b=Uzv0bRWPH3MTZIN8YH7kjdutC0YPdz11E3n+5RKNEZpYq8LDbQBYFImC2DU3P86G+M
+         BQ6wdpACfgalD7RpQe31hOFPNoB3O2ilVMxwT6LmIy8GGoWbu2uGRN/1zxXmbRnZW4Pj
+         q/Ivf79+v64FttNqxGwl4qQ7ljd6vbK9bc3rwlMeL0BEjssXfeBOOB/CUuc7rbPoR3AJ
+         nYDKrDboLpH3luV5m324vyUHg3yZbVlQl2CNjK/dXcDFeX2FIxpL6o6JjpB2nEYxnhoR
+         qBUvr2WOCeSabed0QQFqr0hUySsrdaspkrDiP2ga/B/IQhe+zcSk+W7y6ti1kcUBQ72X
+         XwJg==
+X-Forwarded-Encrypted: i=1; AJvYcCX7wmto/tgJE83weOWQTQ/j/T/dr5ocp/gPu2CBmTMrG9V84/Pk+7+4V5Iw4eXTocbfsdLE9YsZCi6Ea8f9SI02bhutxhTVKyYDnCEO
+X-Gm-Message-State: AOJu0YxR1H9xV8c46uwfayAgSJeqQuK303LjK9XYystOJcTsfojepCSV
+	oDiR1/XcEKJQez9s0MxXiB88yG0yScTFd9oPiiXxg0d/GSWAU+QxbKbe5zjE6JZqzImM9i94y7q
+	YuoPo7h4YB41EYnzS56KbAxOOclEdMWEfbrVVRXtwqvuYiAaW
+X-Google-Smtp-Source: AGHT+IHIvT6p5SFDjLypooegrTTShaNlCq7WSa8iZzwV/mIUJGxt4t+vltDqbecDjgqMkCpNSHz69ELYR0ozXioW7I8=
+X-Received: by 2002:a05:651c:2123:b0:2d2:2e8b:6eb5 with SMTP id
+ a35-20020a05651c212300b002d22e8b6eb5mr825990ljq.40.1708182151371; Sat, 17 Feb
+ 2024 07:02:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:154f:b0:363:9252:ed47 with SMTP id
- j15-20020a056e02154f00b003639252ed47mr647629ilu.1.1708182064966; Sat, 17 Feb
- 2024 07:01:04 -0800 (PST)
-Date: Sat, 17 Feb 2024 07:01:04 -0800
-In-Reply-To: <CAMj1kXHQYuv2H5XA+abgj+Mw8xyxsoHARx2w-tT7jRrDLQ=EVg@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000031b790061195214f@google.com>
-Subject: Re: [syzbot] [arm?] [crypto?] KASAN: invalid-access Read in neon_aes_ctr_encrypt
-From: syzbot <syzbot+f1ceaa1a09ab891e1934@syzkaller.appspotmail.com>
-To: ardb@kernel.org, catalin.marinas@arm.com, davem@davemloft.net, 
-	herbert@gondor.apana.org.au, linux-arm-kernel@lists.infradead.org, 
-	linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, will@kernel.org
+References: <20240215141321.899675-1-max.kellermann@ionos.com> <CAK7LNAT772pZEV09nEYTLOyU_og73zPkKjjL54e8yor-tnnHtw@mail.gmail.com>
+In-Reply-To: <CAK7LNAT772pZEV09nEYTLOyU_og73zPkKjjL54e8yor-tnnHtw@mail.gmail.com>
+From: Max Kellermann <max.kellermann@ionos.com>
+Date: Sat, 17 Feb 2024 16:02:20 +0100
+Message-ID: <CAKPOu+8OTqBzuX5vdg9FR2hSSpem26BugYc2h2QY9Bh5vSRuGA@mail.gmail.com>
+Subject: Re: [PATCH] scripts/mod/modpost: fix null pointer dereference
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: nathan@kernel.org, nicolas@fjasle.eu, linux-kbuild@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Sat, Feb 17, 2024 at 1:24=E2=80=AFPM Masahiro Yamada <masahiroy@kernel.o=
+rg> wrote:
+> Can you describe the steps to reproduce it?
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
-
-Reported-and-tested-by: syzbot+f1ceaa1a09ab891e1934@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         67e0a702 crypto: arm64/neonbs - fix out-of-bounds acce..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git neon-aes-ctr-fix
-console output: https://syzkaller.appspot.com/x/log.txt?x=122f4464180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b4dde08ba7d52a4b
-dashboard link: https://syzkaller.appspot.com/bug?extid=f1ceaa1a09ab891e1934
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+This crash occurred while I was testing an (unrelated) patch set with
+"randconfig" in a loop. Unfortunately, I don't have that config
+anymore, sorry.
 
