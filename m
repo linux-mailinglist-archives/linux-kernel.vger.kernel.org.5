@@ -1,129 +1,154 @@
-Return-Path: <linux-kernel+bounces-69947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69949-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9365D8590AA
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:48:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DE98590AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:54:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52CED1F21951
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:48:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED041282D1B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEED17CF23;
-	Sat, 17 Feb 2024 15:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B917CF0E;
+	Sat, 17 Feb 2024 15:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oai0G6qL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AHw1PLJv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFF777A735;
-	Sat, 17 Feb 2024 15:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A67B27B3CC;
+	Sat, 17 Feb 2024 15:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708184889; cv=none; b=WxGTzcF5oDs5kh3oEuN3IgqSCMeEhMQMN1nKGlo45W4gbwIFhdcwTRTXPRpQnWzX6BcGIG5HI4ulzWqzcsd9UFfEJzueZhS8dTXuJmF6T/Pm6jDgIxLO1wrkCvhsRNvNLarrNd/Ml9frqbAwEpMx28PeEnTb7qj3wLl6sUviGB4=
+	t=1708185246; cv=none; b=LGREmAXrKkQ+75xEzivUm5btR12zkHtyvDLzx5uRbkBh4TN49y1TttazhMr9fBaqidrPI5d9hQJrhdXyShQhCdagr6p0jzG0BS4ij+ERzuRstZh/lHrJccdQ80CmdLCM4ftxuyYD8WGaKZ6DQMzTFE5mvi9N0Cm6MJc3suC03F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708184889; c=relaxed/simple;
-	bh=n957lHva6zeenMJ+yyB11NqmI51yboi14R4UBuEZ4d4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=untcMPs61c7k1lphGrXn8VbBVg9kAPZIfDIYolFyKww7uwOzwx3RKw05QOVaAlAKZdsUUGZKTlph3jnDS9qvGZ5DQGMQE4eeDwIfuxAW/n7jXSkHscrB1GdeVN5oq3F1pYKL/JYiEEQ6MKlgGjoftEe5YrZDOM6Jxj1qml3VIXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oai0G6qL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF36CC433F1;
-	Sat, 17 Feb 2024 15:48:07 +0000 (UTC)
+	s=arc-20240116; t=1708185246; c=relaxed/simple;
+	bh=yG8vscJnWU0ovGCkwuzXNoGwaH1DWcjjYwxNQHJgFCo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=hFJfgpD67KMUoLrxPkjXoH0dl0HRd9zJVp5hAyBQlimnwpM7Y5Yrf7d9wqBdG6dPo91aCJwfYf2eJT7yrh74m3GhlaTJcKam+NkBfQ7gHNUv7yPHupXnKAViwrazTwm7rYA83umLEQyoMKFSvJ9whC7hGaUKn+nTvMluFHn93rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AHw1PLJv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE0C5C433C7;
+	Sat, 17 Feb 2024 15:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708184888;
-	bh=n957lHva6zeenMJ+yyB11NqmI51yboi14R4UBuEZ4d4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oai0G6qLzbylNPvS6aAPc55ThgalhgPu1SYKajhqffmpQesjJ2OqsAP/JoGNo3voU
-	 TkrvaUuRD2SqntuJ/K01y5d1cfIh36BRU+bkXQuUhLqzj96BRf0TatZ/fIrmiHQBfy
-	 wbMriDgDmlonGvNa5Az+exOwOL+XPPfFp0HKXkzfMTjkjZ8WwpTEqHcf10aTAm5TR1
-	 Axyh29QvnrtErk40PPetNMIw+oj/HTCOjcH+PZHOTdLngCU2zbuqnsd5ZAYgaps59q
-	 PvIb4F6sN53mvYvb7dnp8pd86GrjiYbn0psSCl9KANB/lgGL9B553RwT3SLIshZL/e
-	 JlF0JcX0camYA==
-Date: Sat, 17 Feb 2024 15:48:05 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saravana Kannan <saravanak@google.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v5 03/18] dt-bindings: regulator: describe the PMU module
- of the QCA6390 package
-Message-ID: <ZdDVNbjv60G9YUNy@finisterre.sirena.org.uk>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-4-brgl@bgdev.pl>
+	s=k20201202; t=1708185246;
+	bh=yG8vscJnWU0ovGCkwuzXNoGwaH1DWcjjYwxNQHJgFCo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AHw1PLJvhfjZhLGK5KHkBIVj+9XeG0/PyI3CH36/yDz5FeAFPcjq87whLIvrbE6rj
+	 bwQOUkRIBYocELBbTrPp8Ys47/5ZB1h2vZPYOytZCoxea+gVWR4qlBj6CCvW9JmwGc
+	 NhVPtYg43u+MX8Axj7Kby5CBdNL2KHEmsrxCi05hW22h7TpFh2MPu12ReyBJvTDG/M
+	 5ff3BAlKcPp8Ya5WVMwFX8iv2hWxLr6rI4hpMf2tpmooememXcUqzpCAk5qInxOfBD
+	 /ztSkHZnSJAAWlkpXvvgtAQcu/t4Ad48T536TuTATHL5XK4CbCEtOrak10v/jT0+c3
+	 EJPC4KNSqf0Ww==
+Date: Sun, 18 Feb 2024 00:53:59 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 20/36] function_graph: Improve push operation for
+ several interrupts
+Message-Id: <20240218005359.7072c27c99bcfe426e2126b6@kernel.org>
+In-Reply-To: <20240215095739.41a2fac7@gandalf.local.home>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723227198.502590.10431025573751489041.stgit@devnote2>
+	<20240215095739.41a2fac7@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XBBFEBnxsUybHGMW"
-Content-Disposition: inline
-In-Reply-To: <20240216203215.40870-4-brgl@bgdev.pl>
-X-Cookie: You might have mail.
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Thu, 15 Feb 2024 09:57:39 -0500
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Wed,  7 Feb 2024 00:11:12 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > Improve push and data reserve operation on the shadow stack for
+> > several sequencial interrupts.
+> > 
+> > To push a ret_stack or data entry on the shadow stack, we need to
+> > prepare an index (offset) entry before updating the stack pointer
+> > (curr_ret_stack) so that unwinder from interrupts can find the
+> > next return address from the shadow stack. Currently we do write index,
+> > update the curr_ret_stack, and rewrite it again. But that is not enough
+> > for the case if two interrupts happens and the first one breaks it.
+> > For example,
+> > 
+> >  1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
+> >  2. interrupt comes.
+> >     2.1. push new index and ret addr on ret_stack.
+> >     2.2. pop it. (corrupt entries on new_index - 1)
+> >  3. return from interrupt.
+> >  4. update curr_ret_stack = new_index
+> >  5. interrupt comes again.
+> >     5.1. unwind <------ may not work.
+> 
+> I'm curious if you saw this happen?
+> 
+> That is, did you trigger this or only noticed it by inspection?
+
+I just noticed this scenario while explaining why we write the same value
+twice to Jiri.
+
+https://lore.kernel.org/all/20231220004540.0af568c69ecaf9170430a383@kernel.org/
+
+> 
+> This code is already quite complex, I would like to simplify it more before
+> we try to fix rare race conditions that only affect the unwinder.
+> 
+> Let's hold off on this change.
+
+OK, then drop this until someone hits the actual problem, maybe that
+should be rare case.
+
+Thank you,
+
+> 
+> -- Steve
+> 
+> 
+> > 
+> > To avoid this issue, this introduces a new rsrv_ret_stack stack
+> > reservation pointer and a new push code (slow path) to commit
+> > previous reserved code forcibly.
+> > 
+> >  0. update rsrv_ret_stack = new_index.
+> >  1. write reserved index entry at ret_stack[new_index - 1] and ret addr.
+> >  2. interrupt comes.
+> >     2.0. if rsrv_ret_stack != curr_ret_stack, add reserved index
+> >         entry on ret_stack[rsrv_ret_stack - 1] to point the previous
+> > 	ret_stack pointed by ret_stack[curr_ret_stack - 1]. and
+> > 	update curr_ret_stack = rsrv_ret_stack.
+> >     2.1. push new index and ret addr on ret_stack.
+> >     2.2. pop it. (corrupt entries on new_index - 1)
+> >  3. return from interrupt.
+> >  4. update curr_ret_stack = new_index
+> >  5. interrupt comes again.
+> >     5.1. unwind works, because curr_ret_stack points the previously
+> >         saved ret_stack.
+> >     5.2. this can do push/pop operations too.
+> > 6. return from interrupt.
+> > 7. rewrite reserved index entry at ret_stack[new_index] again.
+> > 
+> > This maybe a bit heavier but safer.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
 
---XBBFEBnxsUybHGMW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Feb 16, 2024 at 09:32:00PM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->=20
-> The QCA6390 package contains discreet modules for WLAN and Bluetooth. They
-> are powered by the Power Management Unit (PMU) that takes inputs from the
-> host and provides LDO outputs. This document describes this module.
-
-Please submit patches using subject lines reflecting the style for the
-subsystem, this makes it easier for people to identify relevant patches.
-Look at what existing commits in the area you're changing are doing and
-make sure your subject lines visually resemble what they're doing.
-There's no need to resubmit to fix this alone.
-
---XBBFEBnxsUybHGMW
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXQ1TQACgkQJNaLcl1U
-h9BBnwf+JhH7AG76SVpXm/3RKzqDWuvpMu1DUot/+e5n8hK2kqMFn55zOAN2HEwL
-bZLO+MD8fXjFjLXZQ+4K8xdooNenzvCyvfYuxE8RoyThkbheKCY+m8aQLTlik/R3
-euRIOevSUYqQhYY1q5z5bgAEC6RwQi0sAHYATTbhqBjNi/MogEbXje1VBfStNYEb
-tKWS7Yi/GPw22IXDH8PYurLmAXp9k65N8ajJX7pMcALn/uUvPQZT77TVLjZ4M9yp
-a+0SiBJypHB9nTzWsA89yCH97/kWFYzAoE54vUxuQB4N6l0XgDyTyQIzIJfuNg0F
-h5HG2zP3ZTX/v/CVQjc3Vp4maV3F5Q==
-=r2fB
------END PGP SIGNATURE-----
-
---XBBFEBnxsUybHGMW--
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
