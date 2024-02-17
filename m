@@ -1,123 +1,102 @@
-Return-Path: <linux-kernel+bounces-69841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E91B7858F5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:40:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC20858F5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 13:42:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E47401C20C7C
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:40:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 852362824DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:42:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A25177A703;
-	Sat, 17 Feb 2024 12:40:51 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A927A72A;
+	Sat, 17 Feb 2024 12:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cZm6w3+q"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0821171A4
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 12:40:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1041487B4;
+	Sat, 17 Feb 2024 12:42:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708173651; cv=none; b=i7x1n33adSQ/yO1qiUXQja9ws68P5MWn0Go3bIaUAO3EBO1E9ztI9t3/1Bm+EG5jPZ/CTl1/U8G3FvT7I8Ebc8fYtsDK4EOHByipJPzx/1rbh4xTfGYAEDVS801OaUPmLo3d+zmQ+o++s9vqMgOBjX9xy98BQNY+jyN4e11Yeq4=
+	t=1708173750; cv=none; b=YH/c6khnjc7oUMHWfnsZ9UCSMIgEwS+cq1GPoBN+IGTHp/WL6w2Afs3KeU2Evqz4flsP4yAwkAXm25ynkBi70UCZT2t7ZnVlGRP8+FsVxPEvTV+UNX/9bECuvHahB2UrdA+uZb8LQA1cVHfYpczpTMMs6Reh0amM3sVZKaRpPw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708173651; c=relaxed/simple;
-	bh=UJyTW58T2Za8+AowX11R9N2e6wKVvQ2V+ZNj9tq5F3g=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=l2DcEU+O+JbqwZEnRL97ryAx8U6rOcaOsCdIeiKMtW+hxKgY3VYVky5HUlEWJ0hMsGfquaNvrdUnhgsrALR1mqyF1gjJnJeVmmcM3+Q3mdI0J0ISmpQJd5/30oJX2JEbY2BHYAk7+5kLtfc9gwba8W5y88dGHkhtbFBVmTdSVTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c4a0dc9f57so215985239f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 04:40:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708173649; x=1708778449;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/xK11ukSB+KWoNheD43b92AitRf3mUztha3gB0OXgiM=;
-        b=BHahBO0haL2KWi20FzgX3E2i7ngqK68vPSuMv4WRpjRg6b5Lqm+pQVLgJZzDFHvpFW
-         evNyq6Ysyl+dli0R0hcWPDkhWGjD2K7jbrcO1MMnOpgVzGILIIgwiHf/prMhW1Sm/QGm
-         QlzeRpZISen5PmZPAIRDLkDMaJX0QoiEPxIN92Ma20jonsaYgVLGhEjCng2lBVWSU13P
-         /7XsV43WzLLyHEUXUklToRrT3SmbmtN4PdOOgprdbxGIYcsV9vedcHLChfMP1c9vEk9v
-         FVDj8mjkfesA+bggzjkG+HmSzk05sL/lw1FZQLz60FXolvqBojQ7xoMaIqH1IKJ5BNOg
-         bQKw==
-X-Gm-Message-State: AOJu0YzBNyRT+ni7rlc39cYBp87odTTPRloGLbq/yO2+ndBzW7Sr/z5B
-	hUhJhsWWgL94C8YQvNVALEiWYMNfe8x0CWtrntYBFBU4nMF98mzAz9/csAuCSp46YWsgOAJU9Xn
-	Tz6EvbINnER9XiOPwGamBAEgQ2y/LtSSsZmdaaF2wTRBEURV60vbvPDhMqA==
-X-Google-Smtp-Source: AGHT+IE1+hNTwaLc+//ElkGVddMsjSwGKgUPYuolUoRRz2QkYEDwOvig08XxmWtsm/Oe4u97A/xBbdM43hxagpSP3d8QbDZGFM1Z
+	s=arc-20240116; t=1708173750; c=relaxed/simple;
+	bh=b3g8uEPS+3Ef3BYg2KSNVRp2AFWIwoooI5Kly5xpPZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPWnayKCFyzURg3oNbI7pXyHB8bP3Uwjk0lSqaK2yRL60UBM+2+KjwL4WaFL8hdji6o5WuydHBkqwRzkP+4tvNfrfIagm2WFH8W2N6Njh/QuQJ1k/pLudkRMMlQFiDlo7QYaIVWZCFYJbtm/U6BqDG2M0v4ngb6AdZQJjk9VaYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cZm6w3+q; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 64E86FF802;
+	Sat, 17 Feb 2024 12:42:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708173745;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ZQgQFC20iCOwYcRfjCRWjcJxj6kdRvb0sW/GpMA0iJA=;
+	b=cZm6w3+q/UHjIT1yNRcAtWgateZy+3L53YEsxa8c0kbbAEj7aWy5AFrxj6rry5XSn9IF1M
+	sT+b48pGm6Dbwqf7PWGXGB9DYyA8rgLo4Z6HcP3sO/cREYR0dfOL7IKM6jvRQHdZUQDLX8
+	dGvaU1z+9dq+Tdm0/WBz2I9WWXpSW8yE2NA8JLFV4oY0StaAUa8ZKw8Bi7lf1VpSEA6Gat
+	JJ3VGzSFbxSM5jVo5yPLcXMayJ++a4QX1PSgmntwv9QmTKJxOdD5lXyEufGFe0tT3Or9aH
+	VLy8fnI6yzSpUVkK3fUTy08Ni3w0cq4IbSrs3qkZJ27zPKvMZn2wxvPryuteOA==
+Date: Sat, 17 Feb 2024 13:42:23 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Jeremy Kerr <jk@codeconstruct.com.au>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	=?utf-8?Q?Przemys=C5=82aw?= Gaj <pgaj@cadence.com>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Conor Culhane <conor.culhane@silvaco.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Boris Brezillon <bbrezillon@kernel.org>,
+	Nicolas Pitre <npitre@baylibre.com>, linux-i3c@lists.infradead.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: i3c: drop "master" node name suffix
+Message-ID: <2024021712422352187ad4@mail.local>
+References: <20240117075618.81932-1-krzysztof.kozlowski@linaro.org>
+ <00d6a0d5-6787-4777-8fb2-dcad4304a724@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4911:b0:471:52c3:4661 with SMTP id
- cx17-20020a056638491100b0047152c34661mr167308jab.5.1708173649048; Sat, 17 Feb
- 2024 04:40:49 -0800 (PST)
-Date: Sat, 17 Feb 2024 04:40:49 -0800
-In-Reply-To: <0000000000002cf4690610660f71@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000090fef10611932b01@google.com>
-Subject: Re: [syzbot] Re: [PATCH] net: Fix kernel-infoleak in
- __skb_datagram_iter (2)
-From: syzbot <syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00d6a0d5-6787-4777-8fb2-dcad4304a724@linaro.org>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On 16/02/2024 12:26:12+0100, Krzysztof Kozlowski wrote:
+> On 17/01/2024 08:56, Krzysztof Kozlowski wrote:
+> > Drop the requirement of "-master" suffix in node names because:
+> > 1. "Master" word is discouraged and MIPI Alliance renamed it to
+> >    "Controller".
+> > 2. Some devices can operate in Controller (Master) or Target mode, thus
+> >    the name is not accurate in such cases.
+> > 3. Other buses, like I2C controllers, use simple "i2c".
+> > 
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > ---
+> 
+> Rob, can you pick this one up? It seems Alexandre did not take it.
+> 
 
-***
+I'll take it but I don't think it is super urgent.
 
-Subject: Re: [PATCH] net: Fix kernel-infoleak in __skb_datagram_iter (2)
-Author: ryasuoka@redhat.com
-
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-master
-
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-index 2dde34c29203..540df9a6a9b3 100644
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -2542,6 +2542,11 @@ static inline unsigned char
-*skb_tail_pointer(const struct sk_buff *skb)
-        return skb->head + skb->tail;
- }
-
-+static inline unsigned int skb_tail_offset(const struct sk_buff *skb)
-+{
-+       return skb->tail;
-+}
-+
- static inline void skb_reset_tail_pointer(struct sk_buff *skb)
- {
-        skb->tail = skb->data - skb->head;
-@@ -2559,6 +2564,11 @@ static inline unsigned char
-*skb_tail_pointer(const struct sk_buff *skb)
-        return skb->tail;
- }
-
-+static inline unsigned int skb_tail_offset(const struct sk_buff *skb)
-+{
-+       return skb->tail - skb->head;
-+}
-+
- static inline void skb_reset_tail_pointer(struct sk_buff *skb)
- {
-        skb->tail = skb->data;
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index 9c962347cf85..d1b8e02c7e44 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -167,7 +167,7 @@ static inline u32 netlink_group_mask(u32 group)
- static struct sk_buff *netlink_to_full_skb(const struct sk_buff *skb,
-                                           gfp_t gfp_mask)
- {
--       unsigned int len = skb_end_offset(skb);
-+       unsigned int len = skb_tail_offset(skb);
-        struct sk_buff *new;
-
-        new = alloc_skb(len, gfp_mask);
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
