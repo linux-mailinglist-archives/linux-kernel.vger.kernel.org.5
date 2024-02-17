@@ -1,111 +1,108 @@
-Return-Path: <linux-kernel+bounces-70066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6182585929D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:23:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BB3F85929E
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:24:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E4D02823F9
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:23:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D08A81F22C63
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 20:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 023607E776;
-	Sat, 17 Feb 2024 20:23:34 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438EF7EF1C;
+	Sat, 17 Feb 2024 20:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kF6WuRqj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285167E0F1
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 20:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F3047EF04;
+	Sat, 17 Feb 2024 20:23:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708201413; cv=none; b=H7ZU6Bq6WRwSgyk9BKXCXGz0RDitTeVo2YS7RcpXUzODAtXwWgZI167n06phz7ZqrH/bGkDVOCjXd1aTciRcu8ODx/kOR9g7EUi7wwY7xQizv1fX1RZkGscFOiNhoV4EpVidLSI/FhtEaOwsH1vgxv5LwiNl0FHTcCxDVsrs2NE=
+	t=1708201415; cv=none; b=ES+JFhR8ofJwvdGAhyOUTtQLgA95vSRY5+i+BiXoWT51PLko21dHPMmq6bC9+3YK8ZsqNoE8T1zmtM2NgxnGifiMkIeT1fxdRV2b5gHxfvgBGlx/DC7FihOkTCz6b8DKFUbnmFy207sdcvJWG5+i0mEjT/t7seeF7AimhNSAL5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708201413; c=relaxed/simple;
-	bh=kTAW1sktnLSWVrfYyqrvD64LyUs+9wYb1l8LNe5URCk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=T/MB2mskhvwRZpu6TdRY61+18sh4DzEDGhBeUXxQzdFnwGa8gcMTpisgGLtmFQta8FNNS0EA0VGpy9Fw6HQFJaGJIRuDWD8Bedx7FhMZIhjKX9o/ZMVmudpDEPDwBD3HjZ6uIwPv/qUmFwLgDOhaeNY60EPBtBAn9hfulVSb91g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3651fd50053so3908685ab.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 12:23:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708201411; x=1708806211;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4fjjujJTwfLMMDU/prSg+dryb+l7luMm98htia3vVZ8=;
-        b=OLsw2Oj5GGXTG8b9f6DkSQhLshsfKYBany3YJCO1LLc1sJfz3QxEx57eex+UkS+RXu
-         fvAfVMUAU7VPQR8L1UMpfAlSwRNPZInN5Xr+Lomkb9XOdtRPRGpWneNqLlLnZStTBO8t
-         b/Sk+vmz0KLJXOTHGyFlEIKCCD4PN3WMWjCI7sJsqZhPzDHiShIqHipniRBEYY6JXAuS
-         6gnAA2azAdGDQrxU0cC+5NLHoFbNRgTrsI3WR15hE4Tv2LFzG+oHnz4sI4xg28LSOHkz
-         DuOpM34g5SLT9vSleQGZndVO9nAv17zGbuhfOVt2DKr62c5gMy+7DY/veE7nnyACugqh
-         05HA==
-X-Gm-Message-State: AOJu0YxOtixvp1Ry+GrVLhGsRg3L3JwG6BenpmY/Ra0UWMkndbB5hcc+
-	teRs0tLIgJkX7deLocYawPwc0FzMmuY3yjEzbnnM8k8TwsraMAmd7IqVEb0/TUMsDCJW6n1Qi/k
-	k3qs9kGBEgvHQjj15dFzKDHpKE6EPvIbsdUdGC9Ft1CerJjDbOjXmaNUv7Q==
-X-Google-Smtp-Source: AGHT+IGVI1n37rrJOz7vV/PPbsmPalkkm8mIuPxhRUf8PoRpJHoAWdLeh99JrE8UqjZDHDFe7rqaHkuhIBKULBsYrB2oLZYwAB5C
+	s=arc-20240116; t=1708201415; c=relaxed/simple;
+	bh=4t7dPPQMhWfJU3cAARNkKz1sCE8G4qlxADkwZj7St1g=;
+	h=Subject:From:To:Cc:Date:Message-ID:MIME-Version:Content-Type; b=GMFHCXTM4glqPw0Nuh9+jhmKiz5CBNS5yuqLEc2d/acsnv0+KSMniDnAxz8m1+O3G7OLo07tSI1QTqdmItPGWcOdhmO9on+lSZqtTzwOwAD9AcLw4zJUjVJfthq2xrpyY77iuGQF/dH6RhPPIxAGHvraWMg4Og5U8K1DWVuNNrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kF6WuRqj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDD9AC433B2;
+	Sat, 17 Feb 2024 20:23:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708201415;
+	bh=4t7dPPQMhWfJU3cAARNkKz1sCE8G4qlxADkwZj7St1g=;
+	h=Subject:From:To:Cc:Date:From;
+	b=kF6WuRqjYC+NyxUMjH+o0NK2IbDxcQ3Y5fMeNaTVtxzFzw+uUMRpYEHgQXDKXOw2u
+	 dvrSiD8vdsg7LhDEZZYOxxuh7OS5yIcrcIlCKoE/AyHzNzk/Wf9Ji1HOs61XVXeVom
+	 ER/P+PqNvv7CFlIX9FJsyJKzrxaKEgrjWCZOTStruBQ+csnfkHVsRDoMsFkb0/rQAM
+	 DsrDqNFlVaFHRMVF0ZPcwXpQIP7mEeYTvm0kKv3bC/NJ83SJ5es0o/uiOHRV0BBysv
+	 SROfMZPQtkSrhi1OJ52lBACQxatd+qQ/P8m868HacGOMsYbmaunkCKOZd79wkFgaNF
+	 vR2r60ruFPdmw==
+Subject: [PATCH v2 0/6] Use Maple Trees for simple_offset utilities
+From: Chuck Lever <cel@kernel.org>
+To: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+ hughd@google.com, akpm@linux-foundation.org, Liam.Howlett@oracle.com,
+ oliver.sang@intel.com, feng.tang@intel.com
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ maple-tree@lists.infradead.org, linux-mm@kvack.org, lkp@intel.com
+Date: Sat, 17 Feb 2024 15:23:32 -0500
+Message-ID: 
+ <170820083431.6328.16233178852085891453.stgit@91.116.238.104.host.secureserver.net>
+User-Agent: StGit/1.5
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:188c:b0:365:21f4:7030 with SMTP id
- o12-20020a056e02188c00b0036521f47030mr96607ilu.4.1708201411412; Sat, 17 Feb
- 2024 12:23:31 -0800 (PST)
-Date: Sat, 17 Feb 2024 12:23:31 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000550c79061199a23f@google.com>
-Subject: [syzbot] Monthly mm report (Feb 2024)
-From: syzbot <syzbot+lista19928a035a1d33d70b5@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-Hello mm maintainers/developers,
+In an effort to address slab fragmentation issues reported a few
+months ago, I've replaced the use of xarrays for the directory
+offset map in "simple" file systems (including tmpfs).
 
-This is a 31-day syzbot report for the mm subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/mm
+Thanks to Liam Howlett for helping me get this working with Maple
+Trees.
 
-During the period, 8 new issues were detected and 0 were fixed.
-In total, 40 issues are still open and 224 have been fixed so far.
+I don't have the facilities to re-run the performance tests that
+identified the original regression. Oliver, Feng, can you please
+pass this series to the kernel robot?
 
-Some of the still happening issues:
+These patches are also available from:
 
-Ref  Crashes Repro Title
-<1>  135391  Yes   KMSAN: uninit-value in virtqueue_add (4)
-                   https://syzkaller.appspot.com/bug?extid=d7521c1e3841ed075a42
-<2>  7366    Yes   WARNING in ext4_dirty_folio
-                   https://syzkaller.appspot.com/bug?extid=ecab51a4a5b9f26eeaa1
-<3>  689     Yes   KCSAN: data-race in generic_fillattr / shmem_mknod (2)
-                   https://syzkaller.appspot.com/bug?extid=702361cf7e3d95758761
-<4>  645     Yes   BUG: bad usercopy in fpa_set
-                   https://syzkaller.appspot.com/bug?extid=cb76c2983557a07cdb14
-<5>  632     No    KCSAN: data-race in generic_fillattr / shmem_unlink (3)
-                   https://syzkaller.appspot.com/bug?extid=f682b67a78ce05867e78
-<6>  626     Yes   possible deadlock in filemap_fault
-                   https://syzkaller.appspot.com/bug?extid=7736960b837908f3a81d
-<7>  200     No    KCSAN: data-race in __filemap_remove_folio / folio_mapping (2)
-                   https://syzkaller.appspot.com/bug?extid=606f94dfeaaa45124c90
-<8>  73      Yes   WARNING in __kfence_free (3)
-                   https://syzkaller.appspot.com/bug?extid=59f37b0ab4c558a5357c
-<9>  36      Yes   BUG: unable to handle kernel paging request in list_lru_add
-                   https://syzkaller.appspot.com/bug?extid=2403e3909382fbdeaf6c
-<10> 33      Yes   BUG: unable to handle kernel NULL pointer dereference in __kmap_local_page_prot
-                   https://syzkaller.appspot.com/bug?extid=b18872ea9631b5dcef3b
+https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git
+
+in the "simple-offset-maple" branch.
+
+Changes since RFC:
+- Rewrote and moved "Re-arrange locking" to the front of the series
+- Squashed the "so_ctx" clean-ups into the other patches
+- Clarified some patch descriptions
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Chuck Lever (5):
+      libfs: Re-arrange locking in offset_iterate_dir()
+      libfs: Define a minimum directory offset
+      libfs: Add simple_offset_empty()
+      maple_tree: Add mtree_alloc_cyclic()
+      libfs: Convert simple directory offsets to use a Maple Tree
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+Liam R. Howlett (1):
+      test_maple_tree: testing the cyclic allocation
 
-You may send multiple commands in a single email message.
+
+ fs/libfs.c                 | 96 ++++++++++++++++++++++++++------------
+ include/linux/fs.h         |  6 ++-
+ include/linux/maple_tree.h |  7 +++
+ lib/maple_tree.c           | 93 ++++++++++++++++++++++++++++++++++++
+ lib/test_maple_tree.c      | 44 +++++++++++++++++
+ mm/shmem.c                 |  4 +-
+ 6 files changed, 215 insertions(+), 35 deletions(-)
+
+--
+Chuck Lever
+
 
