@@ -1,135 +1,176 @@
-Return-Path: <linux-kernel+bounces-70007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DAAB8591A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:12:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B208591A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 19:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE6FF28174D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:12:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B55BC1F2174F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 18:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D8880052;
-	Sat, 17 Feb 2024 18:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E1D37E0F6;
+	Sat, 17 Feb 2024 18:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="h+uWf32b"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GjYf0qo3"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F1D80038;
-	Sat, 17 Feb 2024 18:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB011BF26;
+	Sat, 17 Feb 2024 18:16:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708193379; cv=none; b=PxMj/WYZ1VEVqWv1aImTVx9K8+1EnsQXFcnyZKM3MLYiDh71//XAyMOtTpgEAhrAbMxPfKRMmo4/s+FmytXIyBOdFqU5j0CdkGKZrnrKRysxZYGaFZRIoziNElwdk50flXFllF5+gLUGTEfscHHhhjUNXmb80ql7F20STIPPazA=
+	t=1708193790; cv=none; b=ZVR3oL3nOVHTSt/Yf1iOS+B+IV3F1ZbCfaqfJyFRPtjVxAy4gdHFgUDzOAQRoPPPcuYjOYWjVe50tqUEtQdmWSBY32fxaRaN94pLKXkWz6pBnr+UHpYnAe4uksOjU3KFZCdqFhyL86Cbxwt8axihwzDUUHzJO7f7D1NweHEocw0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708193379; c=relaxed/simple;
-	bh=JUBlNHQ9KEInXfv/Ts82d6LWLEYOujFvKhAve8sOAdY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=i5AtO0D1x/2y0QbUXc3Hro4HdjNEmTM8mA/X80en1JbQlV2Ydxkn+L6zrLTSpY6Hl4QxNAkdOSqYYZ7xnYF82zJ9GWyUDYS+7sotmF81sAsXpzvBM3PjGC7Wnu2WdviNoEysUp/qauLzm0d7QCiPeITt8BQsr3o0VMzqZHIIdsc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=h+uWf32b; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=VwM8omFAb/USTaaRR/I+p2JFbh5V/UtXkfhHiw9cl4I=; b=h+
-	uWf32bDXfJHQJlMFbKO6z40qckTpR053ZZDrThpza8HPRCmYD5+qyuRiRGDdmFlLv8TlW8ISUbj6l
-	boeUJRLC17kMIxYbNl8R5RR3C0kThhxypeYpnT0A5tY+DOel5jDpbWI0BrBzZ/v2tEPqfPj3jiOSD
-	M5wzXybhUhJhe5Q=;
-Received: from c-76-156-36-110.hsd1.mn.comcast.net ([76.156.36.110] helo=thinkpad.home.lunn.ch)
-	by vps0.lunn.ch with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rbP8D-0084hf-KD; Sat, 17 Feb 2024 19:09:45 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-Date: Sat, 17 Feb 2024 12:08:29 -0600
-Subject: [PATCH net-next v3 8/8] net: intel: igc: Use linkmode helpers for
- EEE
+	s=arc-20240116; t=1708193790; c=relaxed/simple;
+	bh=6JaMbzvXElJKDwMGGagRTinlOMD9SEMyT0dM0G4N6hQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sDH2PhpUf9ggpR6FbYIjTBMr47a00FyMbi8dfVXde07cVuD0EhbCwemy0K3bKA7aqXfLmehHAVk1z3XBDGzFRLCLMys6vyfZ8rviqYSF2QRbUy9dUN0dY5jdz4LsiFhsH0rC7v6UU1hcZhic4AFicIfjYF2Qj3kykcUIDvKCEtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GjYf0qo3; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-512a9ae6c02so385591e87.2;
+        Sat, 17 Feb 2024 10:16:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708193786; x=1708798586; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=28MpLj21qVTEK8TjTKOL0nGG31w9h8k1TshcjliBdBE=;
+        b=GjYf0qo3L7/z2F7pLdi8RetaJM5rQlT8M/XYCU0XK1yqTWnV8UXrf1NudX0Zn4eNie
+         PbbEysebXwZZPoSUqBrkHv0h9lDjmd673oEmuE7llTKpmRUyu3IdJ9+a4CcNbc3RIwG9
+         McyEchW8IrX+hWlGf21Qi00h8KKgf01G1x4ypDy9wngeThbnatpJwc4B8vMTt08sc4yV
+         PTPRps82PtP/HMqWe03AUDUchjqTps3osOpH6Yna92uA1PMEUqkaQiXSSM3nTXTV4SWy
+         UjwMAkmXfaILWWZMwBVgOdnnsCQITtRw9nGloecD4e5oQfLZ8S5QYUX2b9fvnaOGphtE
+         pc0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708193786; x=1708798586;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=28MpLj21qVTEK8TjTKOL0nGG31w9h8k1TshcjliBdBE=;
+        b=GQ7G0idwo/Gzpo9joHT22WvpnL+sQTE7ynekp0w5acXEsgapTt4mxPqinnz8d9UwPC
+         bcYWQbKWCljNtDu+AzYRmWLUylefIvYjWnC2R5xxU+039squQt2qLKMMpeyf/gasouJD
+         E4oZPw0Oj9b9sQcUiyD9kYh2wPywV6uaoqN5z9I3XQUCwEwntF0jKWE01YXKt9a02PPN
+         68K3VhVFW9TxpF6ph4U5XR+jfRDOtNhvI+AiG2cw7Lq7h0VFQs98sdvm7UZ/B75y3cyi
+         Rrb4lK4iUOn5puoWdofE7dXPuN4dGgs6vE3WEXWp/fWr0mF/6ZW/TxUpwzRh0o8M8m1F
+         7Rdw==
+X-Forwarded-Encrypted: i=1; AJvYcCXlB8K6KBOrVNBEBQ37m+QP8NuMu7FY595+bOqE5I98tstNjqA7UNG6zjWApywOOkVXlX5nmkdfu8WCStAkBNNQK6KDinDA6GQOkSym
+X-Gm-Message-State: AOJu0YzREuwX2ayyxRI7TrnyW5oBbeIOSiR0Y840sVHzu5iy6s8NvFuJ
+	w0AnJkIhtShjq4KryqqTOk4seBXqBWbBzoCW+2V63Tvu+YJLZzbH/4qBHvPFGOw=
+X-Google-Smtp-Source: AGHT+IEaOxKBNZXkZNUKkJAzouFxIWaavAx+PVrcoxuddO7HkCkEK8NjX0517n9qztZ0mKLKKz/AHg==
+X-Received: by 2002:a19:4318:0:b0:511:69b3:a47e with SMTP id q24-20020a194318000000b0051169b3a47emr4742170lfa.52.1708193785977;
+        Sat, 17 Feb 2024 10:16:25 -0800 (PST)
+Received: from fedora.. (cable-178-148-234-71.dynamic.sbb.rs. [178.148.234.71])
+        by smtp.gmail.com with ESMTPSA id fg11-20020a056402548b00b00564168e6674sm923545edb.51.2024.02.17.10.16.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 10:16:25 -0800 (PST)
+From: Aleksa Savic <savicaleksa83@gmail.com>
+To: linux-hwmon@vger.kernel.org
+Cc: Aleksa Savic <savicaleksa83@gmail.com>,
+	Jack Doan <me@jackdoan.com>,
+	Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] hwmon: (aquacomputer_d5next) Set fan to direct PWM mode when writing value
+Date: Sat, 17 Feb 2024 19:15:36 +0100
+Message-ID: <20240217181536.344386-1-savicaleksa83@gmail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240217-keee-u32-cleanup-v3-8-fcf6b62a0c7f@lunn.ch>
-References: <20240217-keee-u32-cleanup-v3-0-fcf6b62a0c7f@lunn.ch>
-In-Reply-To: <20240217-keee-u32-cleanup-v3-0-fcf6b62a0c7f@lunn.ch>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Ariel Elior <aelior@marvell.com>, 
- Manish Chopra <manishc@marvell.com>, 
- Jesse Brandeburg <jesse.brandeburg@intel.com>, 
- Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: linux-usb@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
- Andrew Lunn <andrew@lunn.ch>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1638; i=andrew@lunn.ch;
- h=from:subject:message-id; bh=JUBlNHQ9KEInXfv/Ts82d6LWLEYOujFvKhAve8sOAdY=;
- b=owEBbQKS/ZANAwAKAea/DcumaUyEAcsmYgBl0PY8QswMZXFgclyrmiaG6Mz5z1C9NpM6VoMTr
- 6lMSfGhKCqJAjMEAAEKAB0WIQRh+xAly1MmORb54bfmvw3LpmlMhAUCZdD2PAAKCRDmvw3LpmlM
- hOLjEADIAYAUBqeIHdM2i1gNP2BQ6NHP0THsFP5kUpdF+K1kenJv0qXrOFtwSiazeWwckU8rDDa
- iU7BFilBn0lFc8ts4/NhsGYy6xlEsCk8k7aRc9OzEnsQMm/YzEutyHJ273avPL+41R8aMG9/e7+
- TazrzAWDTXwBi1VPIQlb38Oim45OPghmPCAIfbd287xo/AFoQjT5jeITBBO/WE3/Y6LolrMLxK5
- YXcWxlJaL7J1r1wKMp6U99icOY6tid1XdxZ7J3Ue5jiPmZxsDgSeIzT4VRaYbfJ+NpjuL+sdrqT
- Hh1FImogd5Ebu0vwkSB6fTt32/FR8+w2R4WFYkqNP8esEDlWabLkPFwBP00S5icCAz3KvdodWet
- G7PyjZPBC9CP+w2CIYs3FOL4G2JlTDRnqb0as5Oyx1Zn9FGQucl17WqV7nA5itVuOxFT8KS53d/
- ysLkTQL6B8GetPqlskK1uSTbFkYDFKknZPsvtD3Uq20RjywJ4ILmEIWcNLGh04XhZAjAlZQr8Yd
- 63V0Gmq+nmEWZ3bE/vZrbf8382A9gzYMNjq4T5tlo2fApr1jj2T38h25dr1gfERwjaG9qkh6Cnl
- lvhAvXj9DyYwb0ZWcOSAqGLl5tyXkIZ8Y3Ip3U4Jp2CaMCalhsJ1nL7f4yNdOpBQgVfh1EfssjZ
- rghfWW6fjwdPtCQ==
-X-Developer-Key: i=andrew@lunn.ch; a=openpgp;
- fpr=61FB1025CB53263916F9E1B7E6BF0DCBA6694C84
+Content-Transfer-Encoding: 8bit
 
-Make use of the existing linkmode helpers for converting PHY EEE
-register values into links modes, now that ethtool_keee uses link
-modes, rather than u32 values.
+When setting a PWM value for a fan channel, ensure that the device
+is actually in direct PWM value mode, as it could be in PID, curve or
+fan following mode from previous user configurations. The byte
+signifying the channel mode is just behind the offset for the value.
+Otherwise, setting PWM speed might result in a no-op from the point
+of the user.
 
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+Fixes: 752b927951ea ("hwmon: (aquacomputer_d5next) Add support for Aquacomputer Octo")
+Signed-off-by: Aleksa Savic <savicaleksa83@gmail.com>
 ---
- drivers/net/ethernet/intel/igc/igc_ethtool.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ drivers/hwmon/aquacomputer_d5next.c | 29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-index ac92d10a3e97..1a64f1ca6ca8 100644
---- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
-+++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-@@ -1630,8 +1630,8 @@ static int igc_ethtool_get_eee(struct net_device *netdev,
- 	u32 eeer;
+diff --git a/drivers/hwmon/aquacomputer_d5next.c b/drivers/hwmon/aquacomputer_d5next.c
+index 2efe97f8d003..809fbbd087f4 100644
+--- a/drivers/hwmon/aquacomputer_d5next.c
++++ b/drivers/hwmon/aquacomputer_d5next.c
+@@ -111,6 +111,9 @@ static u8 aquaero_secondary_ctrl_report[] = {
+ #define AQC_FAN_POWER_OFFSET		0x06
+ #define AQC_FAN_SPEED_OFFSET		0x08
  
- 	if (hw->dev_spec._base.eee_enable)
--		edata->advertised_u32 =
--			mmd_eee_adv_to_ethtool_adv_t(adapter->eee_advert);
-+		mii_eee_cap1_mod_linkmode_t(edata->advertised,
-+					    adapter->eee_advert);
- 
- 	*edata = adapter->eee;
- 
-@@ -1653,7 +1653,7 @@ static int igc_ethtool_get_eee(struct net_device *netdev,
- 		edata->eee_enabled = false;
- 		edata->eee_active = false;
- 		edata->tx_lpi_enabled = false;
--		edata->advertised_u32 &= ~edata->advertised_u32;
-+		linkmode_zero(edata->advertised);
- 	}
- 
- 	return 0;
-@@ -1695,7 +1695,8 @@ static int igc_ethtool_set_eee(struct net_device *netdev,
- 		return -EINVAL;
- 	}
- 
--	adapter->eee_advert = ethtool_adv_to_mmd_eee_adv_t(edata->advertised_u32);
-+	adapter->eee_advert = linkmode_to_mii_eee_cap1_t(edata->advertised);
++/* Report offsets for fan control */
++#define AQC_FAN_CTRL_PWM_OFFSET		1
 +
- 	if (hw->dev_spec._base.eee_enable != edata->eee_enabled) {
- 		hw->dev_spec._base.eee_enable = edata->eee_enabled;
- 		adapter->flags |= IGC_FLAG_EEE;
-
+ /* Specs of the Aquaero fan controllers */
+ #define AQUAERO_SERIAL_START			0x07
+ #define AQUAERO_FIRMWARE_VERSION		0x0B
+@@ -160,7 +163,7 @@ static u16 d5next_sensor_fan_offsets[] = { D5NEXT_PUMP_OFFSET, D5NEXT_FAN_OFFSET
+ 
+ /* Control report offsets for the D5 Next pump */
+ #define D5NEXT_TEMP_CTRL_OFFSET		0x2D	/* Temperature sensor offsets location */
+-static u16 d5next_ctrl_fan_offsets[] = { 0x97, 0x42 };	/* Pump and fan speed (from 0-100%) */
++static u16 d5next_ctrl_fan_offsets[] = { 0x96, 0x41 };	/* Pump and fan speed (from 0-100%) */
+ 
+ /* Specs of the Aquastream Ultimate pump */
+ /* Pump does not follow the standard structure, so only consider the fan */
+@@ -213,7 +216,7 @@ static u16 octo_sensor_fan_offsets[] = { 0x7D, 0x8A, 0x97, 0xA4, 0xB1, 0xBE, 0xC
+ /* Control report offsets for the Octo */
+ #define OCTO_TEMP_CTRL_OFFSET		0xA
+ /* Fan speed offsets (0-100%) */
+-static u16 octo_ctrl_fan_offsets[] = { 0x5B, 0xB0, 0x105, 0x15A, 0x1AF, 0x204, 0x259, 0x2AE };
++static u16 octo_ctrl_fan_offsets[] = { 0x5A, 0xAF, 0x104, 0x159, 0x1AE, 0x203, 0x258, 0x2AD };
+ 
+ /* Specs of Quadro fan controller */
+ #define QUADRO_NUM_FANS			4
+@@ -232,7 +235,7 @@ static u16 quadro_sensor_fan_offsets[] = { 0x70, 0x7D, 0x8A, 0x97 };
+ /* Control report offsets for the Quadro */
+ #define QUADRO_TEMP_CTRL_OFFSET		0xA
+ #define QUADRO_FLOW_PULSES_CTRL_OFFSET	0x6
+-static u16 quadro_ctrl_fan_offsets[] = { 0x37, 0x8c, 0xe1, 0x136 }; /* Fan speed offsets (0-100%) */
++static u16 quadro_ctrl_fan_offsets[] = { 0x36, 0x8b, 0xe0, 0x135 }; /* Fan speed offsets (0-100%) */
+ 
+ /* Specs of High Flow Next flow sensor */
+ #define HIGHFLOWNEXT_NUM_SENSORS	2
+@@ -1094,8 +1097,9 @@ static int aqc_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
+ 			*val = aqc_percent_to_pwm(*val);
+ 			break;
+ 		default:
+-			ret = aqc_get_ctrl_val(priv, priv->fan_ctrl_offsets[channel],
+-					       val, AQC_BE16);
++			ret = aqc_get_ctrl_val(priv,
++					       priv->fan_ctrl_offsets[channel] +
++					       AQC_FAN_CTRL_PWM_OFFSET, val, AQC_BE16);
+ 			if (ret < 0)
+ 				return ret;
+ 
+@@ -1233,8 +1237,19 @@ static int aqc_write(struct device *dev, enum hwmon_sensor_types type, u32 attr,
+ 					return ret;
+ 				break;
+ 			default:
+-				ret = aqc_set_ctrl_val(priv, priv->fan_ctrl_offsets[channel],
+-						       pwm_value, AQC_BE16);
++				/* Set fan controller to direct PWM mode */
++				ctrl_values_offsets[0] = priv->fan_ctrl_offsets[channel];
++				ctrl_values[0] = 0;	/* Use direct PWM mode */
++				ctrl_values_types[0] = AQC_8;
++
++				/* Set the PWM value */
++				ctrl_values_offsets[1] =
++				    priv->fan_ctrl_offsets[channel] + AQC_FAN_CTRL_PWM_OFFSET;
++				ctrl_values[1] = pwm_value;
++				ctrl_values_types[1] = AQC_BE16;
++
++				ret = aqc_set_ctrl_vals(priv, ctrl_values_offsets, ctrl_values,
++							ctrl_values_types, 2);
+ 				if (ret < 0)
+ 					return ret;
+ 				break;
 -- 
 2.43.0
 
