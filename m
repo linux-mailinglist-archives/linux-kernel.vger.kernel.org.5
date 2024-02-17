@@ -1,181 +1,132 @@
-Return-Path: <linux-kernel+bounces-69650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69652-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C133F858CC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:35:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52792858CD5
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 02:36:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 323F41F23954
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:35:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 080CC1F2394A
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 01:36:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7556C18E25;
-	Sat, 17 Feb 2024 01:35:29 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B316C1B285;
+	Sat, 17 Feb 2024 01:36:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p9iLCs5I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B593D68
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 01:35:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E381E1AAB1;
+	Sat, 17 Feb 2024 01:36:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708133729; cv=none; b=LR78IY41PIHiBU05fU79HbfZ4mw1NwT0AsZ3ZN1YYAnx7nMN1YMGv5/m5hnR+Sq79saa5NZk58YJZmvq1WtN3WC48KtxDPydyyJIoeTQf6A3kC4truMWolvlcNlJyPgv013ArsNSJThs7VBmght/uqbC/G6AfBt1ndd5RkfKy58=
+	t=1708133801; cv=none; b=DQjBWB+9duT3W7ZemcGhfkc2gxYBFf3SIxfMz05+syPkWWdAMrNrcJGJDF0pXEjvUTD8rwxZO1/tt5ShPEPYp742cl92jKiX+/7yzkAdubVw0UTzYXvAKQQ3iR+VhfuUrd4wzmsN25oAhAxmuc8/7hnp4JwuIVqmlAt9aLHdpa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708133729; c=relaxed/simple;
-	bh=IEuFfjywNldRNgW+0Ea0aCdtJBWExVI5YnvceJ8eHGQ=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pqjIb3aT6GvcH4c9rmZ72YdPdc17/SB/weMnVhdQaoM9Ziktl9AFbWfvlV6UCxnSyA+OKJDV9326kcyiLEoa3rvKY4sYs8VUWrRD+n9SQeCMhnrbRF6lq82M5biQX+iLN6sUht0ZgJ8ukd/sEsasvSyB1VLRDJofST8icuTYNzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-364f7286deaso12625895ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 16 Feb 2024 17:35:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708133726; x=1708738526;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rXCsIGoqOw5tNh5U7A+hJMtNMmu1TmiTgiAyYxTtY3c=;
-        b=iBxpH2ugKyrFg0gbuQanU7fWTlgtFpEf1ud3AmBG8wwQWq7n+01UXBosRcYHlHnuEQ
-         CrI7FT9n1fCO467t8WhIwyXg//lU8gNUZ10MZwkZkomMvmY8J8WykGI3N6XHPR15M2H6
-         Lyqtv7vzAinobQkN0Vt5XnIxNJfygTCetCif1Eg5DR+MTTWrvBvINUe03CHx62cGZdWj
-         QBYQva6iUDLIZaTG5rn50AuyyzY1FqTlYJglJ9nqyv/PMb40gbkv2tTwdTJRwV/JfSnt
-         m9jUmIIPy4d8oP6xfyMFyppS4mMLacpxpUE996TRnxRpaXMOO4Zh5Yjrff9/hqMm4oZX
-         fvBA==
-X-Forwarded-Encrypted: i=1; AJvYcCWrki9m4MlR0aAPvhyU/cbfvJrTg0k6DVN2chL6eAWPVLUTV6puSb8iS48sfkpCvSDaNt9QUDPdr3k+zw1nAs7E1akd+CU1s/dfrAYt
-X-Gm-Message-State: AOJu0YxTDsnK3DQK1dNvAzxjy0MZURsN6pJ0SQqMX7/oTBoGlKjN+wz9
-	nFU6Wj0u/FSIQcOwHQad2F0OsfFAKPR6Jg+NtABtVhyfT2mK+n5HzBhdjHB7LKJKgcRaS+20Eq2
-	zYyw4AoEXee7Sqm2HIHXhD219IVbYeVcgaXyY+k3GfY3v7Wnr8BNxEBM=
-X-Google-Smtp-Source: AGHT+IHd7SEsOb3PgOVPG1aQE5VO1v7haBKCXwSaSoaIJgBEL/bRINUGfIBb9kqS2FvKBH3N4nB7CyhtB9Srs6g1hBxwOa2CxOn4
+	s=arc-20240116; t=1708133801; c=relaxed/simple;
+	bh=DTCpAO4XHgQ7XYEX4RWkTVGsLXOrpf2SdYe7zEkHOCM=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=LKBBjeRnlGNWcVVqlJhN+3M6wcrayHaLiHmiHpYvdpP99Y0+aiNQ/PXoShGizuwTgAd3QUgsBvjZn2TOrJ0PG0Zc4ydwgtfzWK01tHEuciCgezC2jpf58yAMa5wVqx5C3k8AVcPT6JabLVMoD4jie9NfQ4QXRX1gfKtTdAjwlp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p9iLCs5I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98898C433F1;
+	Sat, 17 Feb 2024 01:36:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708133800;
+	bh=DTCpAO4XHgQ7XYEX4RWkTVGsLXOrpf2SdYe7zEkHOCM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=p9iLCs5IcyTmVVn11UfzCP01EVK7zi3wpMp626MSyjlqK8zoAmgYzK8fEmv8Z1lRO
+	 0YUya8h6MkBLj2FNYnyYU2uQdZceqNbktGmyTYjWSZ44wE6Ufgh4fVsV7JRGY/qnjF
+	 PlwI2vN+R3q8zPzhPXHN5aPbAxvkvpHeb2Vg9rqJ0VtGMwU/QdgS0QoPfGRb9GHD7u
+	 GEULx2opWMGGI11SjbObp56jkw1dAcSFb10UgaXg6mm/c80g3CH17Llw95+CT6k8Lc
+	 vjImilbpVTWQjRSz2YTHhUmOCgNfo+eOGWbcCOn4G/OkVrOXFC0BWHr6h4yZRuNXLG
+	 +PwTPkgw5Vvtw==
+Date: Fri, 16 Feb 2024 17:36:38 -0800
+From: Jakub Kicinski <kuba@kernel.org>
+To: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
+ <corbet@lwn.net>, Luis Chamberlain <mcgrof@kernel.org>, Russ Weight
+ <russ.weight@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown
+ <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, devicetree@vger.kernel.org, Dent Project
+ <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v4 05/17] net: pse-pd: Introduce PSE types
+ enumeration
+Message-ID: <20240216173638.4bb12af2@kernel.org>
+In-Reply-To: <20240216104211.2c11d1cc@kmaincent-XPS-13-7390>
+References: <20240215-feature_poe-v4-0-35bb4c23266c@bootlin.com>
+	<20240215-feature_poe-v4-5-35bb4c23266c@bootlin.com>
+	<20240215105846.6dd48886@kernel.org>
+	<20240216104211.2c11d1cc@kmaincent-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:160d:b0:363:df76:4a1f with SMTP id
- t13-20020a056e02160d00b00363df764a1fmr503151ilu.2.1708133726494; Fri, 16 Feb
- 2024 17:35:26 -0800 (PST)
-Date: Fri, 16 Feb 2024 17:35:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ff2c3f061189df71@google.com>
-Subject: [syzbot] [arm?] [crypto?] KASAN: invalid-access Read in neon_aes_ctr_encrypt
-From: syzbot <syzbot+f1ceaa1a09ab891e1934@syzkaller.appspotmail.com>
-To: catalin.marinas@arm.com, davem@davemloft.net, herbert@gondor.apana.org.au, 
-	linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Fri, 16 Feb 2024 10:42:11 +0100 K=C3=B6ry Maincent wrote:
+> > On Thu, 15 Feb 2024 17:02:46 +0100 Kory Maincent wrote: =20
+> > > Introduce an enumeration to define PSE types (C33 or PoDL),
+> > > utilizing a bitfield for potential future support of both types.
+> > > Include 'pse_get_types' helper for external access to PSE type info. =
+  =20
+> >=20
+> > I haven't read the series, just noticed this breaks the build:
+> >=20
+> > error: ../include/uapi/linux/pse.h: missing "WITH Linux-syscall-note" f=
+or
+> > SPDX-License-Identifier =20
+>=20
+> By curiosity how do you get that error?=20
+> Is it with C=3D1? I didn't faced it with W=3D1.
+> C=3D1 is broken for several architecture like arm64, indeed I forgot to r=
+un it.
 
-syzbot found the following issue on:
+Not 100% sure, TBH, I suspect it's somehow enabled by allmodconfig.
+I don't think it's a C=3D1 thing because our clang build doesn't do C=3D1
+and it also hit it.
 
-HEAD commit:    c664e16bb1ba Merge tag 'docs-6.8-fixes2' of git://git.lwn...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13e83cc8180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b4dde08ba7d52a4b
-dashboard link: https://syzkaller.appspot.com/bug?extid=f1ceaa1a09ab891e1934
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13fff792180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15cbe4dc180000
+> > but why the separate header? Is it going to be used in other parts of
+> > uAPI than just in ethtool? =20
+>=20
+> We might use it in pse core if capabilities between PoE and PoDL differ b=
+ut I
+> am not sure about it.
+> Do you prefer to move it to ethtool header and add prefix ETHTOOL_ to the=
+ enum
+> values?
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-c664e16b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/864da5a66121/vmlinux-c664e16b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/044de3e4ddc5/Image-c664e16b.gz.xz
+I don't know enough to have an opinion :) Whatever you end up doing,
+it's probably worth documenting the reason for the choice in the commit
+message?
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f1ceaa1a09ab891e1934@syzkaller.appspotmail.com
+> > > This patch is sponsored by Dent Project <dentproject@linuxfoundation.=
+org>   =20
+> >=20
+> > side-note: no objections to the line but for accounting purposes
+> > (i.e. when we generate development stats) we use the Author / From
+> > line exclusively. So it'd be easier to compute stats of things funded
+> > by Dent if you used:
+> >=20
+> > From: Kory Maincent (Dent Project) <kory.maincent@bootlin.com>
+> >=20
+> > but that's entirely up to you :) =20
+>=20
+> Does adding the line side to the SOB in the commit message is sufficient =
+or
+> should I modify the git send email config?
 
-==================================================================
-BUG: KASAN: invalid-access in neon_aes_ctr_encrypt+0x15c/0x1ec arch/arm64/crypto/aes-modes.S:599
-Read at addr fcff000006797ff1 by task syz-executor675/3149
-Pointer tag: [fc], memory tag: [fe]
-
-CPU: 1 PID: 3149 Comm: syz-executor675 Not tainted 6.8.0-rc4-syzkaller-00005-gc664e16bb1ba #0
-Hardware name: linux,dummy-virt (DT)
-Call trace:
- dump_backtrace+0x94/0xec arch/arm64/kernel/stacktrace.c:291
- show_stack+0x18/0x24 arch/arm64/kernel/stacktrace.c:298
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x48/0x60 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x108/0x618 mm/kasan/report.c:488
- kasan_report+0x88/0xac mm/kasan/report.c:601
- report_tag_fault arch/arm64/mm/fault.c:334 [inline]
- do_tag_recovery arch/arm64/mm/fault.c:346 [inline]
- __do_kernel_fault+0x17c/0x1e8 arch/arm64/mm/fault.c:393
- do_bad_area arch/arm64/mm/fault.c:493 [inline]
- do_tag_check_fault+0x78/0x8c arch/arm64/mm/fault.c:772
- do_mem_abort+0x44/0x94 arch/arm64/mm/fault.c:848
- el1_abort+0x40/0x60 arch/arm64/kernel/entry-common.c:398
- el1h_64_sync_handler+0xd8/0xe4 arch/arm64/kernel/entry-common.c:458
- el1h_64_sync+0x64/0x68 arch/arm64/kernel/entry.S:593
- neon_aes_ctr_encrypt+0x15c/0x1ec arch/arm64/crypto/aes-modes.S:599
- ctr_encrypt+0xfc/0x144 arch/arm64/crypto/aes-neonbs-glue.c:230
- crypto_skcipher_decrypt+0x4c/0x60 crypto/skcipher.c:695
- _skcipher_recvmsg crypto/algif_skcipher.c:199 [inline]
- skcipher_recvmsg+0x39c/0x46c crypto/algif_skcipher.c:221
- sock_recvmsg_nosec net/socket.c:1046 [inline]
- sock_recvmsg net/socket.c:1068 [inline]
- sock_recvmsg net/socket.c:1064 [inline]
- sock_read_iter+0xec/0x118 net/socket.c:1138
- call_read_iter include/linux/fs.h:2079 [inline]
- new_sync_read fs/read_write.c:395 [inline]
- vfs_read+0x2cc/0x304 fs/read_write.c:476
- ksys_read+0xe8/0x104 fs/read_write.c:619
- __do_sys_read fs/read_write.c:629 [inline]
- __se_sys_read fs/read_write.c:627 [inline]
- __arm64_sys_read+0x1c/0x28 fs/read_write.c:627
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x48/0x114 arch/arm64/kernel/syscall.c:51
- el0_svc_common.constprop.0+0x40/0xe0 arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x1c/0x28 arch/arm64/kernel/syscall.c:155
- el0_svc+0x34/0xd8 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x19c/0x1a0 arch/arm64/kernel/entry.S:598
-
-The buggy address belongs to the physical page:
-page:0000000060acabc6 refcount:0 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x46797
-flags: 0x1ffc28000000000(node=0|zone=0|lastcpupid=0x7ff|kasantag=0xa)
-page_type: 0xffffffff()
-raw: 01ffc28000000000 fffffc0000168bc8 fffffc0000199e08 0000000000000000
-raw: 0000000000000000 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff000006797d00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
- ffff000006797e00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
->ffff000006797f00: fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe fe
-                                                                ^
- ffff000006798000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff000006798100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+I think you can sed -i s/// the patches? When the From in the email
+file doesn't match your git config IIUC git will include the from line
+in the body and pick it up from them. IOW it will work. The scripts look
+at git author so s-o-b won't do much.
 
