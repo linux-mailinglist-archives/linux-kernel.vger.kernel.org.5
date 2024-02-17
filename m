@@ -1,207 +1,156 @@
-Return-Path: <linux-kernel+bounces-69957-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C20F8590C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:10:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 871A38590D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 17:14:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20D11B21768
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:10:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E7F81C20ECC
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8C97C6DB;
-	Sat, 17 Feb 2024 16:10:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E1AC7CF28;
+	Sat, 17 Feb 2024 16:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IEuCh4Nf"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dIo5BNdV"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5933A657BE;
-	Sat, 17 Feb 2024 16:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6CA657BE;
+	Sat, 17 Feb 2024 16:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708186241; cv=none; b=fzbU2zMFceSJxpxb5OvkfcBygEtU/77TJjOF3+K2MBE6UCi0aA5BxCiCVh8V6pUF2QTDgORMs2MDyTgpwrR7ihH3xeMNxcE06mxCOqDCjbiIJ4NEz6Ibes69hCe4wgdnLaeWeab2+LQZe6co+iGcpelgHctFMNU5fU8yrKbfqnU=
+	t=1708186470; cv=none; b=LZfA+eslsk52J3+ly/Fm07+djm2BVS/34Q9P4VJBDCfW+noObzhfH0oM6WaUi0dqCcPW4IipJXd4pNtBRxfunKuLdiOjR24MpWtSFLjKrlD4pFzEiyZAsgGxvmv03rlViV1eYmi8NbipM1zYPJVzC7ZtgVM+cJwOG1JoJSmszJ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708186241; c=relaxed/simple;
-	bh=TlkPr8Bk0hf2IBX145DAXLzNeJEF5v5nNXWhGlopdeg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oyacWll+AztLVviHR4Tlrbf8OFbmGTDf9WQTrczKvpiHq1rvwhVdFrPCnurcDt+OttiuW7ed3jfo3BzilzDWZlmtKoN2sYDeY7AQA1nOYQk8dvXvA8s+rR2JPOIaPU3bsj3rd6P7+U5QeTJpoS4UY45Y6lYc6QjWgFOKlz+RYCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IEuCh4Nf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB484C43141;
-	Sat, 17 Feb 2024 16:10:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708186240;
-	bh=TlkPr8Bk0hf2IBX145DAXLzNeJEF5v5nNXWhGlopdeg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IEuCh4NfdXj8D9T+ivVhOSJXFtOo1eSUw9VluA4qAnNuPhJ7WZz5uIBkLB/BY+CjA
-	 UuHWkzHSznovLMMJ6PRqpbAdhRjFw3TQZV0p19dr9hu0YyuEbCtLnE1fIHbDiGtbwL
-	 bTAIqmxUn+PDZt6r3jRYi2O2+MgaJjH2E2ehsZ+wQk5PWoyN7VIoSNL4mWjlYe3NLc
-	 4b/gpfYIhrWMOs7SCxTkN92ufgJSWJjcqPTLGlkH8Kotjixl77NXc0ZBW8b/q/GTcr
-	 XFqIzI6gvDEkWRwWYSccyU+xS24jHMja8AdB4KyPXsQwF9f02NHrwfXobGUpSpq11/
-	 qZHc5GDQDFATw==
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512a85806fcso350422e87.2;
-        Sat, 17 Feb 2024 08:10:40 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCW8LAzhxBTx0ZaV8UZzQmB2VNP4HWgcOazXAkchNg9y6WL01wYd17LKJNmx5EWKyJoVKOdC79xzihRkeTFQP17R/UuEgEbeCCfkwfSMuQTMLZwCC1yznT3wbWARqszvtUpCKyuzVdnfmQ==
-X-Gm-Message-State: AOJu0YwNbGoJmxwEHgHvdPzEYsja4sXicYkvPLy1i97ynXJ1t84/Bp3H
-	rMfd2H+lViJxF2YGQgphMWvTY8/J3f4oNCAcN8suahhJK4x47MqbfB6P1REQuAmX3ik6R3Qchuq
-	CZax6d2yspXj4dtbgZ/DaZp1spNg=
-X-Google-Smtp-Source: AGHT+IEkM5KquFSZuoXI9HJdzRKh1TBNPNCqh9yXAqz+KOdwPKpXcP6oFJ0S0iwmstSAif+Mj7dmJ+/lxUjVPsDvfA8=
-X-Received: by 2002:a05:6512:3fa:b0:511:46df:7ef4 with SMTP id
- n26-20020a05651203fa00b0051146df7ef4mr4459789lfq.22.1708186238813; Sat, 17
- Feb 2024 08:10:38 -0800 (PST)
+	s=arc-20240116; t=1708186470; c=relaxed/simple;
+	bh=G2p0livAcyW2LTB5Os9d6SwDvJ1//AQfYmCMEb5Xrno=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=felxkYYp4bEM9GEafRLG6lUj611qtjIS93RjjEhvmBZDnMf7ePLOJmmRfVfNesSfAJsTbaSkfS6/bMf3Eqc8EZArdvAuYDEUH4DX1/V92ao/igcf0YeO3GfQZ6Tc+QFM4+bOvLl8dEMSRArWP0T0TMTG60mHetm7BPZMe7Jkvg0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dIo5BNdV; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6de3141f041so2352715b3a.0;
+        Sat, 17 Feb 2024 08:14:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708186468; x=1708791268; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=oNtngiDudxbbUoL2vHS3wnOs232/nEEFptvV1V/0F+0=;
+        b=dIo5BNdVzP/0eVzPPJbrctLUZG8CqsAbLtNQ/WfRpsTwHdLFVepDhCl0D6mbBO+0ZM
+         rTIyEPHwGTGYCbrMD3gNB+kxy8hvb+bM84NJg1dWl4rHqW1QRlOS5Jdv6H8N68WiJ3+N
+         7Jeh+0siM4AahPSxWZ/VhF37gWyNHkDSiKIAFtlhic2IuCIMjyKO3FXIRNCphvgUwK3Y
+         dGdpRzpcqA98CQ1yZjEwFedT6sS7ePGzpjoH2SSqx9+LPjt5mt8zRs6BpvQop2W0gqxY
+         N/wCf55TGUnBcNltu86Q0XApTgCh4pc8uuN68nfj6URDmiWh5/dBS2nAoCmR+jKfqahw
+         DR+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708186468; x=1708791268;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oNtngiDudxbbUoL2vHS3wnOs232/nEEFptvV1V/0F+0=;
+        b=dgZDT3EBMSV6TOS5I/9KazWatAsrSg9Paqhkgdw0Qimvc8jB7oVS/i3o25wHdHAbKu
+         XU9ZJzeNLN4iu3kNUY6xTK96UgHfCNYZLtwPInHPhCOlXGQ3fwJFmt6izTMN08O1yz8g
+         VyhvJKqv6MYuanZFwV3y0k4DE2vYwab8+69+qFZFhDILlz3TimKuWv5OgnqxrOLPvCTa
+         lYZPTWakyU/K/MtF/8x6/ndipf8nt+2GrWtT/NXcXkrG59DKG1aZzfVbc+Fhy85ePBpP
+         SIQOEfojulS3qEtzHojJFU5AaOYsFtEi3s8qP8HX9UjXKF3rwiO1yHCGqEFytHhlHZ5o
+         RKsg==
+X-Forwarded-Encrypted: i=1; AJvYcCVs38Ys4fhE5cRTcof88KITF8bwVx4fn9NIdFpLgtQZy7SoEwD1CbkikZaxVXXLuc+Oe4dO+rMbP/v3BKqg4/beQAYF4fJZf5Qh0Xioh1lc+NiJae0tk7mYrpogSubrlCQx2+CS1V9O
+X-Gm-Message-State: AOJu0Yy4BrLA2f4QVyQsjj6wehv4yUl6su14y00WWVwmsj2ViHHX6b19
+	OtxKM/udlPqEo3eyxZeFLF0e70NkIJ9YirlGLDnTE2iebbTdzq7ReWEIW6EQ
+X-Google-Smtp-Source: AGHT+IGkE4RrTABwIs5pPfqRvF3xw8OA5V2sumNTmJAEYyirQI1d4SUJGVGmZxcslMuJLKD58ToBQQ==
+X-Received: by 2002:a05:6a21:7897:b0:19e:cb4a:4b08 with SMTP id bf23-20020a056a21789700b0019ecb4a4b08mr8343782pzc.33.1708186468156;
+        Sat, 17 Feb 2024 08:14:28 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id t63-20020a628142000000b006e3af7c719csm586333pfd.53.2024.02.17.08.14.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Feb 2024 08:14:27 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <26c856a1-9186-4d92-9b7e-ca59632f4a92@roeck-us.net>
+Date: Sat, 17 Feb 2024 08:14:26 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213124143.1484862-13-ardb+git@google.com>
- <20240213124143.1484862-15-ardb+git@google.com> <20240217125102.GSZdCrtgI-DnHA8DpK@fat_crate.local>
- <CAMj1kXEcTfvRcNh_VDhj5QxzMhD9rFhVmeAfuSF7vm1c_4_iHg@mail.gmail.com>
-In-Reply-To: <CAMj1kXEcTfvRcNh_VDhj5QxzMhD9rFhVmeAfuSF7vm1c_4_iHg@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Sat, 17 Feb 2024 17:10:27 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFkX2hwt7Z-_xMveC-RHrxmXWcrneVH66HsjBcXOLAH0g@mail.gmail.com>
-Message-ID: <CAMj1kXFkX2hwt7Z-_xMveC-RHrxmXWcrneVH66HsjBcXOLAH0g@mail.gmail.com>
-Subject: Re: [PATCH v4 02/11] x86/startup_64: Replace pointer fixups with
- RIP-relative references
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Revert "usb: typec: tcpm: reset counter when enter into
+ unattached state after try role"
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megi@xff.cz>, linux-usb@vger.kernel.org,
+ Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240215193352.1026707-1-megi@xff.cz>
+ <2024021739-self-pencil-b932@gregkh>
+ <ratkc4fo3mqwuzsbxsiwq54jclnarnjl3x7ts64elx6hguvbay@ihelujsnzd6i>
+ <2024021724-festivity-divisible-0b32@gregkh>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <2024021724-festivity-divisible-0b32@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, 17 Feb 2024 at 14:58, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Sat, 17 Feb 2024 at 13:51, Borislav Petkov <bp@alien8.de> wrote:
-> >
-> > On Tue, Feb 13, 2024 at 01:41:46PM +0100, Ard Biesheuvel wrote:
-> > > @@ -201,25 +201,19 @@ unsigned long __head __startup_64(unsigned long physaddr,
-> > >       load_delta += sme_get_me_mask();
-> > >
-> > >       /* Fixup the physical addresses in the page table */
-> > > -
-> > > -     pgd = fixup_pointer(early_top_pgt, physaddr);
-> > > -     p = pgd + pgd_index(__START_KERNEL_map);
-> > > -     if (la57)
-> > > -             *p = (unsigned long)level4_kernel_pgt;
-> > > -     else
-> > > -             *p = (unsigned long)level3_kernel_pgt;
-> > > -     *p += _PAGE_TABLE_NOENC - __START_KERNEL_map + load_delta;
-> > > -
-> > >       if (la57) {
-> > > -             p4d = fixup_pointer(level4_kernel_pgt, physaddr);
-> > > -             p4d[511] += load_delta;
-> > > +             p4d = (p4dval_t *)&RIP_REL_REF(level4_kernel_pgt);
-> > > +             p4d[MAX_PTRS_PER_P4D - 1] += load_delta;
-> > >       }
-> > >
-> > > -     pud = fixup_pointer(level3_kernel_pgt, physaddr);
-> > > -     pud[510] += load_delta;
-> > > -     pud[511] += load_delta;
-> > > +     pud = &RIP_REL_REF(level3_kernel_pgt)->pud;
-> > > +     pud[PTRS_PER_PUD - 2] += load_delta;
-> > > +     pud[PTRS_PER_PUD - 1] += load_delta;
-> > > +
-> > > +     pgd = &RIP_REL_REF(early_top_pgt)->pgd;
-> >
-> > Let's do the pgd assignment above, where it was so that we have that
-> > natural order of p4d -> pgd -> pud ->pmd etc manipulations.
-> >
->
-> pud and p4d need to be assigned first, unless we want to keep taking
-> the addresses of level4_kernel_pgt and level3_kernel_pgt twice as
-> before.
->
-> > > +     pgd[PTRS_PER_PGD - 1] = (pgdval_t)(la57 ? p4d : pud) | _PAGE_TABLE_NOENC;
-> >
-> > I see what you mean with pgd_index(__START_KERNEL_map) always being 511
-> > but this:
-> >
-> >         pgd[pgd_index(__START_KERNEL_map)] = (pgdval_t)(la57 ? p4d : pud) | _PAGE_TABLE_NOENC;
-> >
-> > says exactly what gets mapped there in the pagetable while
-> >
-> >         PTRS_PER_PGD - 1
-> >
-> > makes me wonder what's that last pud supposed to map.
-> >
->
-> Fair enough. But the same applies to p4d[] and pud[].
->
-> > Other than that, my gut feeling right now is, this would need extensive
-> > testing so that we make sure there's no fallout from it.
-> >
->
-> More testing is always good, but I am not particularly nervous about
-> these changes.
->
-> I could split this up into 3+ patches so we could bisect any resulting
-> issues more effectively.
+On 2/17/24 08:03, Greg Kroah-Hartman wrote:
 
-Maybe this is better?
+>> It's a mechanically generated revert of upstream patch. It has no authorship.
+>> I did not write it, machine did. :)
+>>
+>> But I can add a sign off for the commit message I made:
+>>
+>> Signed-of-by: Ondrej Jirman <megi@xff.cz>
+> 
+> You have to do so.
+> 
 
---- a/arch/x86/kernel/head64.c
-+++ b/arch/x86/kernel/head64.c
-@@ -165,14 +165,14 @@
-  * doesn't have to generate PC-relative relocations when accessing globals from
-  * that function. Clang actually does not generate them, which leads to
-  * boot-time crashes. To work around this problem, every global pointer must
-- * be adjusted using fixup_pointer().
-+ * be accessed using RIP_REL_REF().
-  */
- unsigned long __head __startup_64(unsigned long physaddr,
-                                  struct boot_params *bp)
- {
-        pmd_t (*early_pgts)[PTRS_PER_PMD] = RIP_REL_REF(early_dynamic_pgts);
--       unsigned long load_delta, *p;
-        unsigned long pgtable_flags;
-+       unsigned long load_delta;
-        pgdval_t *pgd;
-        p4dval_t *p4d;
-        pudval_t *pud;
-@@ -202,17 +202,14 @@ unsigned long __head __startup_64(unsigned long physaddr,
+It is not a valid argument to start with. "git revert" has
+a "-s" option to sign reverts for that very purpose.
 
-        /* Fixup the physical addresses in the page table */
+Guenter
 
--       pgd = fixup_pointer(early_top_pgt, physaddr);
--       p = pgd + pgd_index(__START_KERNEL_map);
--       if (la57)
--               *p = (unsigned long)level4_kernel_pgt;
--       else
--               *p = (unsigned long)level3_kernel_pgt;
--       *p += _PAGE_TABLE_NOENC - __START_KERNEL_map + load_delta;
-+       pgd = &RIP_REL_REF(early_top_pgt)->pgd;
-+       pgd[pgd_index(__START_KERNEL_map)] += load_delta;
-
-        if (la57) {
--               p4d = fixup_pointer(level4_kernel_pgt, physaddr);
--               p4d[511] += load_delta;
-+               p4d = (p4dval_t *)&RIP_REL_REF(level4_kernel_pgt);
-+               p4d[MAX_PTRS_PER_P4D - 1] += load_delta;
-+
-+               pgd[pgd_index(__START_KERNEL_map)] = (pgdval_t)p4d |
-_PAGE_TABLE_NOENC;
-        }
-
-        RIP_REL_REF(level3_kernel_pgt)[PTRS_PER_PUD - 2].pud += load_delta;
-diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
-index 3cac98c61066..fb2a98c29094 100644
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -653,7 +653,8 @@ SYM_CODE_END(vc_no_ghcb)
-        .balign 4
-
- SYM_DATA_START_PTI_ALIGNED(early_top_pgt)
--       .fill   512,8,0
-+       .fill   511,8,0
-+       .quad   level3_kernel_pgt - __START_KERNEL_map + _PAGE_TABLE_NOENC
-        .fill   PTI_USER_PGD_FILL,8,0
- SYM_DATA_END(early_top_pgt)
 
