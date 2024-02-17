@@ -1,151 +1,136 @@
-Return-Path: <linux-kernel+bounces-69827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5609D858F1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:40:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B84B858F2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 12:45:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 832841C20E60
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:40:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 883751F226F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 11:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7465969DE8;
-	Sat, 17 Feb 2024 11:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BECE69DF5;
+	Sat, 17 Feb 2024 11:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vKD+yCmb"
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="GpxFqwiU"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E46069DE1
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 11:39:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D293E69DE7
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 11:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708169992; cv=none; b=o1t2lt6JUukibyQRa93NHXSWEKtCHGF+8L6RoLAATMo89vhui3A7xu8znZGAHdEzqaZN7Zx/L7Qut23AbP/PTIT3I/bpV6tcg8ms8mp4ZXjimtvmuloKXM/fWrDPckPpiZVpDBY3tuf3H6ora8bUA58FOSP1cRMXUGO4Cutg6JY=
+	t=1708170330; cv=none; b=cDvBvFOjlpiUoXedaLdYsdu6UEzeJHsRfwVFptS9yvT7Yce/fRcxyD9B2rgDN6xwVAd3qJhIviizFQqkB0kDi7GiOwMb+Be/GOLU9VGuL4kbUX42x19xjVi12S6maZ3KZ9vD2PCQxy4+mURJ59PTOW1sEV6ASW9txD04RHqvMfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708169992; c=relaxed/simple;
-	bh=vPvQg6T8DzaSAL66/xyHZth0xHwP9DWPS25PuK6+Z4Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MGWoV7Z3LffjwmOpWlKQgca8WQRiLiH3YOYuWCJZ8vgTomFqYr1wfvM6HK76W8CNjTUfB5wUzgPp1bcHJN29Vdg2gzzFGNfhlBEBIuAmX7LcO9hdBbhs5OvEYjKCC7iJP6QKJrmtX5ier9X8RMcKmdZU3w886DlX/4urgny1ig8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vKD+yCmb; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso2493707a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 03:39:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708169989; x=1708774789; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=1C+Hkp9mF5Xdg3l0hgYcA9Z6irk/GvuEVb1RZfBg7lc=;
-        b=vKD+yCmbfxdngJtvVUYRvZxTNKXUoDYUBhmggjcFOcg88P6/fsifJIShS1Mh6qfRBn
-         742BIR1Yo2vEojK8rN13RhOnMBdRT8v1bUc76HRizQKFphMrOjn2m5C50BeWFc/qOWRg
-         31Eg5sF/uuHNFOG0ORuW7l1tpkkPr7WmIbwPC4ruHZO/5xsS4bu7qR+bRlZK+yxYAJQf
-         0nddt/nYoMPwCzOlZM/Xtq77fHnYPNMyl6vMx6Gz0qh1Oc1mYERNjvzN5SRB1MRL6AbX
-         t0FXXNBCcf2XYrY5CDJYtBPiLWTYwnYPMD0F2IdNmoffvVUxCXYxInRJ3PtxDTK1PsxD
-         fsNQ==
+	s=arc-20240116; t=1708170330; c=relaxed/simple;
+	bh=v9icTgsg3xm4DV/7J3o8nPQ107m2PfBcWQvGK1OONZg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Y9ZFCioYfyO+EFipEgz9Mj4uY6Xu2otd6mIr9RuwyxXDXCWBa5rSELZdIbgqYOiwmUoUX7x5Frl3M8MmOm/XOD1Csh/NYGMZ7QsRBKnwlHrMx43xeRGUZbOW5/zhXA1CGxNQpz4wG2swBqk46s/OVE03f+1QVfjuoonG3OWV+Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=GpxFqwiU; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c132695f1bso2122392b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 03:45:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708169989; x=1708774789;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1708170327; x=1708775127;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1C+Hkp9mF5Xdg3l0hgYcA9Z6irk/GvuEVb1RZfBg7lc=;
-        b=smP6dyDYDWXL/t678GLcxsTYcisBRmCkGnY+CYMJO8VX/UTqPEAG4wxgKZgq9N7Jiw
-         bl52YBhii2Iy03193jzlfbNXLc5lR+rLscHAZtBm75OGP/HqxQBjsGzE/yyFrEG5rQS2
-         ME9kZOoljGphmo2KL/u5ZdhDBbnTcxZgBG/cDChAyDuVXqnJCcCYEsOyiAJTZT9ihXjm
-         Ilq6Qs+MpYPcy/VAv4qSMhslOqc5+fl582HJ6lu9Z4ljPrPJwoDS6UZj6VCrnNUEZ0Tr
-         IYS+VIYitxuKjBF/1az+LcYiWR9h3W4kEzSrpNIpNR94at8JZsA3Dx/vl102gVOz3K3c
-         +Htg==
-X-Forwarded-Encrypted: i=1; AJvYcCU3mLyn2/4kcMRvYA/iOLizbAeqM7IqOcF5Rv0DkWJJZWI3iJFcQwAsFLO1ce4HSw+6g6oit87xW9UI73RBHzeFFbrgR/kmQs03XaCr
-X-Gm-Message-State: AOJu0YzyJrHUktaVujLngRSNuNLIQODCV7CLOh5IYedeeGh/wfeZhhS9
-	/59TxMKMdvUdcFDsYqCtsJT7qjVvrsKq0YAip3AcK1eg3+oH0xN6SmcpiCi1sZw=
-X-Google-Smtp-Source: AGHT+IHC8q9jk1V+NICBbpC1WNnMyrhtKdpmvofzMtMFylRK1DYfLGy8RvSLVqogHDYFEu79JIpj6g==
-X-Received: by 2002:aa7:d313:0:b0:564:2fbb:a869 with SMTP id p19-20020aa7d313000000b005642fbba869mr524179edq.38.1708169989449;
-        Sat, 17 Feb 2024 03:39:49 -0800 (PST)
-Received: from linaro.org ([188.24.162.93])
-        by smtp.gmail.com with ESMTPSA id ek23-20020a056402371700b0055edfb81384sm803108edb.60.2024.02.17.03.39.47
+        bh=lag4XHeCZet1+vKhZAhtGBsbBX5d4Oil7LYE5l7I2AI=;
+        b=DqSaSsDy/X7yEXOuoA6YB5ctOfeebSIiWBz5yHrfDXUAmJ7WM7PrxAsZCWXAf8jbgu
+         rjr8Z2OtCucz0EcS+HInGJpSAI9+y67LbXF0zwEMRE77hj9YTNxPCXpzdeUrPkWi8+9v
+         EpuHhGrWnh6pH96DS7hbt4ZGh8ojbWs6mkYTT12SzReLCqoXTzD7rR7iOJ5DfojVbpRR
+         jB3eBjSwg5Fuca7k63Akg9kzm4NwkLcHsrNzkzhlbIoPQ38QbdtLerfeKFjkWIqx7uSD
+         hpxhaM2MZt2l59n0KNykh+1DJ2Ahok2DL0mruX0XhVYony7q3UerNJqv1rFSR2Dw43XB
+         H03g==
+X-Forwarded-Encrypted: i=1; AJvYcCWsxGlqlIy/1KhkDNVCVzFlarzkJxsZX/2v0mA+MDDOY1AV9ca7aet+nSOPSPPjhh1slXRzG4iQBps6dWfRiZ6mSW8/+eoJJrya2c+l
+X-Gm-Message-State: AOJu0YwiRg1Uu0OnTJNHCgRqjh5zlCFtcGBXavGeV1hLblecTVoDOHjd
+	vCEgSgJCe1tYBFwZNoSQj8qs6cQtTL3cG9kRuynHv30/oVDk/zXv+kjMnwMW
+X-Google-Smtp-Source: AGHT+IFxg3uML7ydnKRltDjN+A/0mgFdrm7SKBEKuhS0wsyfYTKtmMQCzg66ccY6BjEQd8zkEi9y3Q==
+X-Received: by 2002:a05:6808:10d3:b0:3c0:b3f3:c30f with SMTP id s19-20020a05680810d300b003c0b3f3c30fmr8762322ois.9.1708170326735;
+        Sat, 17 Feb 2024 03:45:26 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id r30-20020aa79ede000000b006d638fd230bsm1530032pfq.93.2024.02.17.03.45.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 03:39:48 -0800 (PST)
-Date: Sat, 17 Feb 2024 13:39:46 +0200
-From: Abel Vesa <abel.vesa@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Sean Paul <sean@poorly.run>, Maxime Ripard <mripard@kernel.org>,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	Rob Herring <robh+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	freedreno@lists.freedesktop.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	David Airlie <airlied@gmail.com>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	Rob Clark <robdclark@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: Re: [PATCH v3 2/4] dt-bindings: display/msm: Document MDSS on
- X1E80100
-Message-ID: <ZdCbAjnga8HCMdYf@linaro.org>
-References: <20240216-x1e80100-display-v3-0-28b1c33ac8c0@linaro.org>
- <20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org>
- <170810832158.3497594.1997532394027797497.robh@kernel.org>
+        Sat, 17 Feb 2024 03:45:25 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1708170324;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=lag4XHeCZet1+vKhZAhtGBsbBX5d4Oil7LYE5l7I2AI=;
+	b=GpxFqwiUqaYKdzHW+NM2sHPb3FU8d+wpm7hIoX/2Fm9KY1ocbza2LcOs3Qt3cuECbH4Mkz
+	r5Pw+1FpUx7C0OLmlVzMHTlQfW9yl6/6fHuClTriJYDESmwQARqx/G9Or35EPoZM5IsAJR
+	gL28siywENHUq7x4zYLGIz5x/pkFUjp9A4hvxntQkNF8qagUhwhBW5G7O6WYZH0l1PuU0T
+	AOZY2aWP9zsIHO9JB7QBMIZmk+5xSEyDiiJoZdRjm2t3oo9HV6UNCkkQZ7naW14lf74/0Z
+	DrsOmuCpcntbT0ONjpss0AlzlR9bu10b7yWleUBVDChRam1SuEzReYAwmFpWhg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Sat, 17 Feb 2024 08:45:56 -0300
+Subject: [PATCH] staging: gdm724x: constantify the struct device_type usage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <170810832158.3497594.1997532394027797497.robh@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240217-device_cleanup-staging-v1-1-286479d9a3f0@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAHOc0GUC/x2MQQqAIBAAvxJ7Tigxor4SEbK72kJYaEUQ/j3pO
+ DAzLySOwgnG6oXItyTZQ4G2rgBXGzwrocKgG20a3faKioS84MY2XIdKp/USvHLUEyOS7QYDJT4
+ iO3n+8TTn/AE88dzUaAAAAA==
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1012; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=v9icTgsg3xm4DV/7J3o8nPQ107m2PfBcWQvGK1OONZg=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl0Jx9OrJCr8/dOtOY4V0TamFGZqLauiaU31iNk
+ zl42IhR8qeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdCcfQAKCRDJC4p8Y4ZY
+ pvVPEACWNV+xonBSaB6VMk16zpdP3pglb+12BZvoH24HcJEHWbZMidwwlA4Gg9YzKRB0ymg7mz6
+ MKW0vXWUjNJ872AVuUY0rs7uhZmNH5DpBBHtT2aPPPZFq4ihiSsFcBdcWyEm9nHi5zS9qVlbKcm
+ tvU4mF4WtMqYj9HEcoW0piKnOqzDqUPq4OUnjtdhNTypr5HKwnWoo2OC+BhceE0wy0JjlGjQEjY
+ qp6YZEthUxGYW0WmilTP5cjVFhh/QU55UCwqV1y4RBBXURBwJfwPN3Cnl761cYI+26DMARCY3b6
+ yg6m/73tOCNxJCU0D9bKGPAijeBDHE11drwSgd2jX6RT+/55T0fSWM/PkDltdP4PZaznaeWZtPT
+ izF9I/f49aPwb04vWuCRYK1a/flytLJ2PnBTIqd5XoibuNXenycIH0oQ06WDe3sQyPuHVXrmdpl
+ E+Ejr7HvTH3P2jBACEYS5nBqyQTT/l9sZd+myGTyKRsq2cJFl6XRjw7grUDBouEr+/CmR86bfOI
+ sJMeDl1X+Yy2W+MVcWdYz7spzSjIGO+hTsJOKW7eADBrjW8sEbkT9t+tIWhvLfh2XG4E9u1p4cC
+ Z0/ZdpbztZdh3Miq7FXB78Ts0nU7Tv1YQBe4IHg8aIlPtnsqQdp7VZQBK+rivZcRsn8nq4Py6Dj
+ 0k/rVJLEDpJUwwg==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On 24-02-16 12:32:02, Rob Herring wrote:
-> 
-> On Fri, 16 Feb 2024 19:01:06 +0200, Abel Vesa wrote:
-> > Document the MDSS hardware found on the Qualcomm X1E80100 platform.
-> > 
-> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> > ---
-> >  .../bindings/display/msm/qcom,x1e80100-mdss.yaml   | 253 +++++++++++++++++++++
-> >  1 file changed, 253 insertions(+)
-> > 
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dts:24:18: fatal error: dt-bindings/clock/qcom,x1e80100-dispcc.h: No such file or directory
->    24 |         #include <dt-bindings/clock/qcom,x1e80100-dispcc.h>
->       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> compilation terminated.
-> make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dtb] Error 1
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-> make: *** [Makefile:240: __sub-make] Error 2
-> 
+Since commit aed65af1cc2f ("drivers: make device_type const"), the
+driver core can properly handle constant struct device_type. Move the
+wwan_type variable to be a constant structure as well, placing it into
+read-only memory which can not be modified at runtime.
 
-These bindings headers are already in -next.
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/staging/gdm724x/gdm_lte.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> doc reference errors (make refcheckdocs):
-> 
-> See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org
-> 
-> The base for the series is generally the latest rc1. A different dependency
-> should be noted in *this* patch.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit after running the above command yourself. Note
-> that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-> your schema. However, it must be unset to test all examples with your schema.
-> 
+diff --git a/drivers/staging/gdm724x/gdm_lte.c b/drivers/staging/gdm724x/gdm_lte.c
+index 5703a9ddb6d0..eb754b231429 100644
+--- a/drivers/staging/gdm724x/gdm_lte.c
++++ b/drivers/staging/gdm724x/gdm_lte.c
+@@ -43,7 +43,7 @@ static struct {
+ 	struct sock *sock;
+ } lte_event;
+ 
+-static struct device_type wwan_type = {
++static const struct device_type wwan_type = {
+ 	.name   = "wwan",
+ };
+ 
+
+---
+base-commit: ce54e9342124ededf0a00ed4e8a8aee535bfbf00
+change-id: 20240217-device_cleanup-staging-fd7deccda594
+
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
