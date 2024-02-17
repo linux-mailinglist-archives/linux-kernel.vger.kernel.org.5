@@ -1,139 +1,123 @@
-Return-Path: <linux-kernel+bounces-69919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58B1185903D
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 16:01:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07DC0859028
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:51:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F6161F21916
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 15:01:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1CF0283120
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 14:51:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5594E7C0BB;
-	Sat, 17 Feb 2024 15:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CtrUsh6b"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6697C0A4;
+	Sat, 17 Feb 2024 14:51:10 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744257B3D0;
-	Sat, 17 Feb 2024 15:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B020F69E03
+	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 14:51:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708182084; cv=none; b=hX2EO9niyacKZhh6gwaZ6pGAYdt0ESrwSxWAkfvnQtF0kSeDIl7Q/g28VyKQhRQ8FATaVRdIFOhnMshjqShb3LnHy8851dr2dYFS0tjUXNnmx1goAhwq91umhXyOJqADk4FxoqTtWNb1ecOA+8uY2rLTYl7EYgxxPQukry8xmGU=
+	t=1708181470; cv=none; b=X4NZez7fDpopcruiJIFd342sNOVgtOo3+vmoJ14BSbuSD5LDKPoKsWu+kr4N4QEjdK2jGqqThLK4D+vie6rwSx/Q6+9lx2+aLqB6KGNgLPYA+dByzve9yEYmaKNKZRCAeE914JUxx8CIuphbPAjZWkCkvJ4okYyM8IXkdMZasgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708182084; c=relaxed/simple;
-	bh=IojVOTkkmUgO8R4R5BC+JvxU3MusAnoRWz5cmE/Gqjc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ROUHKwGG1uS7o5CcSzRkLZJni/Ly4zwLMsv7lflI9CxMqQZ3sYR9gBye91pM3SE3A2QwVlai3F2nNnQgBRllIilkPVBUttQyxGOsRw/XlfsYNO+EyrRLwMuLA6MLRTrWT0j9MmzSyavFXQI/PAJaqKKCGF21+kJ2EI8IRfpDgv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CtrUsh6b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AD4EC433F1;
-	Sat, 17 Feb 2024 15:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708182083;
-	bh=IojVOTkkmUgO8R4R5BC+JvxU3MusAnoRWz5cmE/Gqjc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CtrUsh6bwVqhdBGdyOuDk0xtJef3k8N8vCn7a3CH5JXonVHQxfPDLMFYZdVsQDVWk
-	 +bjGkaUhzstRRxhqn8KOlfclvoHzFFGzo67TuaoxpU8lmWHjta9QxHjyN8o/C3jf0y
-	 PjMVYo4N6IeVR9dOnA/e47OtlC4ClvurnxM7fFTS6D0nfUzgLPukjzTlGm1O7ag76A
-	 lhj0tWdeUNi2x9yXHIeHYzB/mKh4DraVWbyGjO4sUL83gBliNF7T4BXhGmXzHVrEli
-	 ZU4VJRgjOqQiF9rXK/MXwDUC8+TcX1EnGeGiIYuYkoK0ndebkMu2qVS/x4TZ/z42ey
-	 OkyO12z0GoLKQ==
-From: Jisheng Zhang <jszhang@kernel.org>
-To: Ulf Hansson <ulf.hansson@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>
-Cc: linux-mmc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org
-Subject: [PATCH RFC] riscv: dts: sophgo: add sdcard support for milkv duo
-Date: Sat, 17 Feb 2024 22:48:26 +0800
-Message-ID: <20240217144826.3944-1-jszhang@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708181470; c=relaxed/simple;
+	bh=cJyGmbL/M2P2FaQNjfB8qOun1MkvJL88mCvWOiDQvk4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=sD71w44GVKJXknoukvVLVWGmRiKAMshuvSwEqwLF/YEooDMIy2MqtSQQ07Da2237MYRDqplwuNgSP249vE25OHyiNjxTzMD9XVKfhwPlbrecHIEtLV0aoPw3MNIxus0CnyWcbKRcQsVvoxWST0UetRyRdZUFsx21V4YM4FGfyWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363dfc1a546so27320345ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 06:51:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708181468; x=1708786268;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fXwBazE1XSTv1CcPSfbL565M8WUrifKU9hE49H2OgVI=;
+        b=Of/eRP35sMIvb5+mFlqQBemlBj96NRiRwCe73phIH8O8hE9/KiusA81bYfTqrZVATD
+         qWCQqMxD4mUFwYsT/56GivlQ0dcFPsGMghVXjHVLr6pOKnmQd/rkJ0n8ASYjKmHUYlVx
+         bTUEZaBwlyKUdv3mG4UTEVzEYV6ZtSKWn/5w4DVswxkQviMQZOypbntXb+mDAsTWMcWA
+         BCy4q8UiuKkRZTku7DrsFahCJjV5H5i440Fjod+bBXs+3YVzYXOJDpBRWFxbZVVs5TY8
+         z+K4SST4Vtb9+9aAEDcmB5Yv902laqEDw/wb3BP9gp6aYLC9avhqezq2tvLmYTk4SKJq
+         Gkow==
+X-Gm-Message-State: AOJu0YwcGb8Sc0sd4uW1wdzdpLIOCwfYERpEuiTtDr2YqKa24KhNE/dP
+	R6H64aQ6YAgPQNCXe+vRJPaG/iA6m62A4XGt6PCEzzJI9enRheg/JMM2FStqR4vkSPbZCUb7iNI
+	DCFe/+pVqKH4dsDK2nou9fHbctKOBC9IPiPSnWm6+qIymutWoCBzltqs53A==
+X-Google-Smtp-Source: AGHT+IE1K2NgFIIbui6miofg6AnSukOL4SNTaJAtLvEfHhFfGClL4G7VVticxwd7uRpmLCEXVcZsv6urhGgk6pr2fnEi38k4lEuM
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:cd8b:0:b0:363:cc38:db22 with SMTP id
+ r11-20020a92cd8b000000b00363cc38db22mr575563ilb.3.1708181467879; Sat, 17 Feb
+ 2024 06:51:07 -0800 (PST)
+Date: Sat, 17 Feb 2024 06:51:07 -0800
+In-Reply-To: <0000000000002cf4690610660f71@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009adee2061194fdf2@google.com>
+Subject: Re: [syzbot] Re: [PATCH] net: Fix kernel-infoleak in
+ __skb_datagram_iter (2)
+From: syzbot <syzbot+34ad5fab48f7bf510349@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Add sdhci dt node in SoC dtsi and enable it in milkv duo dts.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
----
-Since cv1800b's clk support isn't in, this patch uses fixed dummy clk
-and just RFC, I will send formal patch after clk support is ready.
+***
 
- .../riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts |  8 ++++++++
- arch/riscv/boot/dts/sophgo/cv18xx.dtsi          | 17 +++++++++++++++++
- 2 files changed, 25 insertions(+)
+Subject: Re: [PATCH] net: Fix kernel-infoleak in __skb_datagram_iter (2)
+Author: ryasuoka@redhat.com
 
-diff --git a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-index 3af9e34b3bc7..94e64ddce8fa 100644
---- a/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-+++ b/arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts
-@@ -33,6 +33,14 @@ &osc {
- 	clock-frequency = <25000000>;
- };
- 
-+&sdhci0 {
-+	status = "okay";
-+	bus-width = <4>;
-+	no-1-8-v;
-+	no-mmc;
-+	no-sdio;
-+};
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+9f8413c4a66f
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 27998f73183e..c7bf1c38b292 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -2532,6 +2532,11 @@ static inline unsigned char
+*skb_tail_pointer(const struct sk_buff *skb)
+  return skb->head + skb->tail;
+ }
+
++static inline unsigned int skb_tail_offset(const struct sk_buff *skb)
++{
++ return skb->tail;
++}
 +
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
-index 2d6f4a4b1e58..405f4ba18392 100644
---- a/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/cv18xx.dtsi
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
-  */
- 
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- 
- / {
-@@ -45,6 +46,13 @@ osc: oscillator {
- 		#clock-cells = <0>;
- 	};
- 
-+	sdhci_clk: sdhci-clock {
-+		compatible = "fixed-clock";
-+		clock-frequency = <375000000>;
-+		clock-output-names = "sdhci_clk";
-+		#clock-cells = <0>;
-+	};
+ static inline void skb_reset_tail_pointer(struct sk_buff *skb)
+ {
+  skb->tail = skb->data - skb->head;
+@@ -2549,6 +2554,11 @@ static inline unsigned char
+*skb_tail_pointer(const struct sk_buff *skb)
+  return skb->tail;
+ }
+
++static inline unsigned int skb_tail_offset(const struct sk_buff *skb)
++{
++ return skb->tail - skb->head;
++}
 +
- 	soc {
- 		compatible = "simple-bus";
- 		interrupt-parent = <&plic>;
-@@ -175,6 +183,15 @@ uart4: serial@41c0000 {
- 			status = "disabled";
- 		};
- 
-+		sdhci0: mmc@4310000 {
-+			compatible = "sophgo,cv1800b-dwcmshc";
-+			reg = <0x4310000 0x1000>;
-+			interrupts = <36 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&sdhci_clk>;
-+			clock-names = "core";
-+			status = "disabled";
-+		};
-+
- 		plic: interrupt-controller@70000000 {
- 			reg = <0x70000000 0x4000000>;
- 			interrupts-extended = <&cpu0_intc 11>, <&cpu0_intc 9>;
--- 
-2.43.0
+ static inline void skb_reset_tail_pointer(struct sk_buff *skb)
+ {
+  skb->tail = skb->data;
+diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
+index eb086b06d60d..f11bb308f1ed 100644
+--- a/net/netlink/af_netlink.c
++++ b/net/netlink/af_netlink.c
+@@ -167,7 +167,7 @@ static inline u32 netlink_group_mask(u32 group)
+ static struct sk_buff *netlink_to_full_skb(const struct sk_buff *skb,
+     gfp_t gfp_mask)
+ {
+- unsigned int len = skb_end_offset(skb);
++ unsigned int len = skb_tail_offset(skb);
+  struct sk_buff *new;
+
+  new = alloc_skb(len, gfp_mask);
 
 
