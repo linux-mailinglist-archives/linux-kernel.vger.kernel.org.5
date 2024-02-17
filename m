@@ -1,115 +1,150 @@
-Return-Path: <linux-kernel+bounces-70095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0F0A8592F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:30:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B6F78592FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 22:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4027D1F22340
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:30:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EC9428449F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 21:31:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F1B7FBCB;
-	Sat, 17 Feb 2024 21:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9CF80037;
+	Sat, 17 Feb 2024 21:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=telus.net header.i=@telus.net header.b="eI7TuNtg"
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kb7PIdjw"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21FF1D6A4
-	for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 21:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFF57E760;
+	Sat, 17 Feb 2024 21:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708205417; cv=none; b=E7i3OjleJxc9LTzk1bJzqjWgZ5ld19BOFphM8/3f5JbDyXp5LXmNpMJif5LA/uXGXS3Y9x/44zV7Iyfjsd9n/YAK8uE5oPFj9L5RdYFPRJgh46angFo4rBp2nKG6+O9s8D3luKeOxNJn4iUpQ256klYf2aMOmqtfCaRgGZauwY8=
+	t=1708205459; cv=none; b=YHj4yXlwSwu1rAWk1hPFO8JYEe2mSUHsIDTsCgpe/pdx46lJSBr2sGtaa/ce0fqortD0oURHhbU+tRcpjsI1JqTIKfS/eQZ1UgcFOZ/7IA0gHHGBuueDoEI0MuBALT3VXeEq6ToLkP6XjaStalr6V0o0eU4dlJmMZ+xjgk9Q8mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708205417; c=relaxed/simple;
-	bh=oHOAKuTy7J71OhteqliHHPUc4sWlt3H4+04j1XqQTGg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tV/VzShUlU+/BzhYR6dT/DYg6LXG+fqfIqTjLj7BY+RGI8T7y0V7jC8MzyVqjRSVw5yYT3/HRQuf7Zg0RSKtP26wpGNJszoqg3af7Zl2SiMaFvByIKTZKRSo3Utc7EjDvT/fjvlg0DwsMjd3mVQMZkrbkf3PKK0qFA4OF36iSrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=telus.net; spf=pass smtp.mailfrom=telus.net; dkim=pass (2048-bit key) header.d=telus.net header.i=@telus.net header.b=eI7TuNtg; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=telus.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=telus.net
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e2fb9263a6so580007a34.1
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 13:30:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google; t=1708205415; x=1708810215; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=O2TjNiYVkyOnt5bo8I4KiLztzjuw78NyYvMLjikMof0=;
-        b=eI7TuNtgEx7EeRlZ6+A6ndoN5Rt3ObQbScF+xb2faOkiIkPec17KMIpgOibgKfnb/A
-         5OvILmB0I7kRbscJa1/JNPUZshEl4tgyKU7WXDJj21IMEMrPQmFcPsh/G5FDoVaB+FqW
-         /YaG2vzeiWUHJu+jOlY+oFAqNVwwIxBbANlJ5QSwRuGZTIbNZLka5NXFsXauISXpU1Kz
-         RrHfLCOVG5UyaEhHy4qBybdav1l/nlqPbb4WDZqHIgEl2TfD0AEI+FJhTSFVWC8PJTDE
-         HJC//Am+NdlXZJde62EvnbogEOy301ZRn/vIxPn+tCFSLMIgf5uAmjFTZUyXoOhsoSBU
-         8Byw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708205415; x=1708810215;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=O2TjNiYVkyOnt5bo8I4KiLztzjuw78NyYvMLjikMof0=;
-        b=rCmXE1qdgcxmXSn1sxdws1ywa1YtrwJxmWVbx1zWTGNrnNIrivv9rbiJ1G7TuPdJyl
-         lp3xVxgrnp/VU4R1aqzZ2KpQeqDJFrQlkCwUOPKeDkmd75acIgCZVelO143spFMa6fOX
-         WFlz75/OXwk4Uozg62q3mcl4O1ynb5KADmnODS+dfLah9cEps73LX/d+V7jtaQ0Otrr4
-         S6CPyQ+qhKR9QK/WlahdLa43IRfX3FV4MU50GwaO3E0p1C0q5vLqUXKm0inePhedgREe
-         i33WdqGPzK8W2sNhLM8dkbbtLLZwu4S+bSsVmejBRCxiVEHQW/5SIjOnHlhhxxCIBI1E
-         bMBA==
-X-Gm-Message-State: AOJu0YxKc4Fv6/C4IX/b3M0xmpkvwmM9DFCA0i+ZzWsk318JI/gMAdFj
-	bg3cRM9yazh6mD+tRV2xqzuCyfVC1kB1tm9WZP5GjU1sAq5S5FtYgd3pl9mBeek=
-X-Google-Smtp-Source: AGHT+IGW4XDSRQnU5TqrVNGjd8jmkPOXe9/UfYHAlOzGyGXigM5epRQtoQ/vkhh8yDpNAprzFP48aA==
-X-Received: by 2002:a05:6830:1b6d:b0:6e4:41bb:b30 with SMTP id d13-20020a0568301b6d00b006e441bb0b30mr2472025ote.19.1708205414732;
-        Sat, 17 Feb 2024 13:30:14 -0800 (PST)
-Received: from s19.smythies.com (s66-183-142-209.bc.hsia.telus.net. [66.183.142.209])
-        by smtp.gmail.com with ESMTPSA id bn16-20020a056a00325000b006e0cfe94fc5sm2090721pfb.107.2024.02.17.13.30.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 13:30:14 -0800 (PST)
-From: Doug Smythies <dsmythies@telus.net>
-To: srinivas.pandruvada@linux.intel.com,
-	rafael@kernel.org,
-	lenb@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	vincent.guittot@linaro.org,
-	dsmythies@telus.net
-Subject: [PATCH] cpufreq: intel_pstate: fix pstate limits enforcement for adjust_perf call back
-Date: Sat, 17 Feb 2024 13:30:10 -0800
-Message-Id: <20240217213010.2466-1-dsmythies@telus.net>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708205459; c=relaxed/simple;
+	bh=czOliQ0OxjGx6AeLHhquochMzRqKg9PUNsJjQq3EbPU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=EkUpwxA8RKRbEL0XlDl92yxRxC339UDUqw+6kxOcbZIhh4pSQV+ny2LAnZ8l41FQk/vVZIh83lhist6LNIMDlp2K+3Q5pDQJRZrR/nS5o0dpzRKKKPfIkM4oyMuPPgHksD4IjbBfk+dyxoBUlXtsYs2myMHVQT/RJs9uZyd/ShE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kb7PIdjw; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41HLTsDW019092;
+	Sat, 17 Feb 2024 21:30:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=60n
+	ZSbuMq1De8FlLK4k1D6fMOSTbtJSL1lSZrb1xVfY=; b=kb7PIdjwaeYF+nIcIEL
+	HBsBUVwWVtHHpwS+WOPgd/B/LGaEYxfJb9rbEIz3XWUBRVmg7VmnVKR6UdFz8uTL
+	aQLoUL3lM5ZqN00tabMahHpHwe5K+QutL0wt+vQvRmMIqMzxyVZFeDagxSQun62S
+	nBoMPgNeYNllVq3hnONEdKcYZu+1Ut4+Xy2AXmOxyD9UebqBSIYjyMmFwyWcM/Aj
+	WSqyRUa/zH5d1HOpbNTzG5J68fxqv5eDMKh7S4+MtqaPXgPY+8JnC4TrovvCJVOc
+	27wgxpbGTnWj0YUjBhWTkNmmsnFkOHxUa4nrY3g75si3Y8dbNf9VHZpQ/xtrmtBO
+	l5g==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wam4q11y9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 21:30:45 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41HLUiow016969
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 17 Feb 2024 21:30:44 GMT
+Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sat, 17 Feb
+ 2024 13:30:44 -0800
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+Date: Sat, 17 Feb 2024 13:30:43 -0800
+Subject: [PATCH] dt-bindings: net: wireless: qcom: Update maintainers
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240217-ath1xk-maintainer-v1-1-9f7ff5fb6bf4@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAIIl0WUC/x2MQQqAIBAAvyJ7TlCJzL4SHSTXXCILlQikvycd5
+ jCHmQoZE2GGiVVIeFOmMzaRHYM12LghJ9cclFC9UFJzW4J8dn5YiqWBiQ/Gr9brUXpnoHVXQk/
+ P/5yX9/0AjyxS9GMAAAA=
+To: Kalle Valo <kvalo@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        "Paolo
+ Abeni" <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: Jeff Johnson <jjohnson@kernel.org>, <ath10k@lists.infradead.org>,
+        <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ath11k@lists.infradead.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
+X-Mailer: b4 0.13.0
+X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: rozfTO-K88W-M-tEmD9hjBJvAWSV-ZPx
+X-Proofpoint-GUID: rozfTO-K88W-M-tEmD9hjBJvAWSV-ZPx
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-17_20,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 clxscore=1011 suspectscore=0 bulkscore=0
+ spamscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ mlxlogscore=643 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402170178
 
-There is a loophole in pstate limit clamping for the intel_cpufreq CPU
-frequency scaling driver (intel_pstate in passive mode), schedutil CPU
-frequency scaling governor, HWP (HardWare Pstate) control enabled, when
-the adjust_perf call back path is used.
+Add Jeff Johnson as a maintainer of the qcom,ath1*k.yaml files.
 
-Fix it.
-
-Signed-off-by: Doug Smythies <dsmythies@telus.net>
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 ---
- drivers/cpufreq/intel_pstate.c | 3 +++
- 1 file changed, 3 insertions(+)
+ Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml     | 1 +
+ Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml | 1 +
+ Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml     | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index ca94e60e705a..79619227ea51 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2987,6 +2987,9 @@ static void intel_cpufreq_adjust_perf(unsigned int cpunum,
- 	if (min_pstate < cpu->min_perf_ratio)
- 		min_pstate = cpu->min_perf_ratio;
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+index 7758a55dd328..9b3ef4bc3732 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.yaml
+@@ -8,6 +8,7 @@ title: Qualcomm Technologies ath10k wireless devices
  
-+	if (min_pstate > cpu->max_perf_ratio)
-+		min_pstate = cpu->max_perf_ratio;
-+
- 	max_pstate = min(cap_pstate, cpu->max_perf_ratio);
- 	if (max_pstate < min_pstate)
- 		max_pstate = min_pstate;
--- 
-2.25.1
+ maintainers:
+   - Kalle Valo <kvalo@kernel.org>
++  - Jeff Johnson <jjohnson@kernel.org>
+ 
+ description:
+   Qualcomm Technologies, Inc. IEEE 802.11ac devices.
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
+index 817f02a8b481..41d023797d7d 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k-pci.yaml
+@@ -9,6 +9,7 @@ title: Qualcomm Technologies ath11k wireless devices (PCIe)
+ 
+ maintainers:
+   - Kalle Valo <kvalo@kernel.org>
++  - Jeff Johnson <jjohnson@kernel.org>
+ 
+ description: |
+   Qualcomm Technologies IEEE 802.11ax PCIe devices
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+index 7d5f982a3d09..672282cdfc2f 100644
+--- a/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath11k.yaml
+@@ -9,6 +9,7 @@ title: Qualcomm Technologies ath11k wireless devices
+ 
+ maintainers:
+   - Kalle Valo <kvalo@kernel.org>
++  - Jeff Johnson <jjohnson@kernel.org>
+ 
+ description: |
+   These are dt entries for Qualcomm Technologies, Inc. IEEE 802.11ax
+
+---
+base-commit: 3ab6aff5793c3c7bdf6535d9b0024544a4abbdd5
+change-id: 20240217-ath1xk-maintainer-69fcaf781fd9
 
 
