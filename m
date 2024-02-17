@@ -1,205 +1,120 @@
-Return-Path: <linux-kernel+bounces-69771-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-69768-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65EF5858E4B
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:14:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D645E858E3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 10:08:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89E551C21294
-	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:14:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD9561F219FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 17 Feb 2024 09:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27EBA1D543;
-	Sat, 17 Feb 2024 09:14:46 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190C81D528;
+	Sat, 17 Feb 2024 09:08:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kH0Yw64O"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007511CFA8;
-	Sat, 17 Feb 2024 09:14:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4332213AE2;
+	Sat, 17 Feb 2024 09:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708161285; cv=none; b=oSQBApvlLaPUsxCkdsomDhce0QbqRSwEN9X18RnCW3mxEiuBTKWcj5LqnhMT0+ZOcbO752u2Q631gq3kC3hYrebLst3kAxpSkzvtk+8j/F1zkKwxxgQuhjDUxL/R3Yg4teN8r7DqwwEyLPB5FalKh6BeM8WY1JTGbXUCGBZ6m0A=
+	t=1708160893; cv=none; b=gpim1JKGvDj4M87EATS9OtL46k2D5spBTG9m8e/Gte7+WOJjgPyZf8NsmXnjdcjN71p9S0rOEYM+OGgAZpR8jVY3x7jWgB6GbMC/ZmLqIFWE3mATswoL/YyXUs/sDF3OTD2kcAHqCMG09tG8wVF1p7EGlDy2XwlXRbgERYjraVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708161285; c=relaxed/simple;
-	bh=1hnntFnpL+B0bxwjndXaJRsgWy/yqq6rJPou9nkkkT8=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=TypI47SLhxH3rSi+RncWAsVn8+vNwEYbidaWXH32eAE8eitpMMys0wc+m+Eb8p9YuwFZyeMalERQ0fG7u2rLMPXFwSTUCnfXIRn0by2luQF76VCyAKYX+m2ABFn+s3B9Hdztb10CvYxUGv9JmaKTZsgHO+WqISJ/gQcHb0OScQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TcN1c56fMz4f3jHj;
-	Sat, 17 Feb 2024 16:55:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 855A61A09F9;
-	Sat, 17 Feb 2024 16:55:53 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgBHZQ6XdNBl_ygdEQ--.60286S3;
-	Sat, 17 Feb 2024 16:55:53 +0800 (CST)
-Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
- write operation
-To: Christoph Hellwig <hch@infradead.org>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
- djwong@kernel.org, willy@infradead.org, zokeefe@google.com,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
- wangkefeng.wang@huawei.com
-References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
- <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
- <ZcsCP4h-ExNOcdD6@infradead.org>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <74ab3c3e-3daf-5374-75e5-bcb25ffdb527@huaweicloud.com>
-Date: Sat, 17 Feb 2024 16:55:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1708160893; c=relaxed/simple;
+	bh=oBeLX5tgQL4xanUHIVI7PWJf0sy/YCEOyZM8/vqF40w=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EoY+g+qtZK7S+PmJzEzlyDG+5bJjUA6d7ZniJwQzpvV7/1KUtKQyhKXoCzxFCsfbNNkkjr2Fiv9hVDo4yn5fMWAXcB0kriruWRPBXyaMJeipnmYLK/NtZRIuh6uicE4X+nVDRXNP0/A3E2e7Z7AwEenC/kiEvMI5fzxZ3xafyy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kH0Yw64O; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B5CEC433C7;
+	Sat, 17 Feb 2024 09:08:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708160892;
+	bh=oBeLX5tgQL4xanUHIVI7PWJf0sy/YCEOyZM8/vqF40w=;
+	h=Date:From:To:Cc:Subject:From;
+	b=kH0Yw64OtjlHvTkHUab3A7Je0ztw5Bc14ixMm5TFUUzgBHy6BCTvJaQza/m/38DN8
+	 bF6vZ5J8F+yhqxI9Z31QMnLX9OLfbgmUfEQpicOSMRqkmUfevDkSzLW4e0PWNQm3cH
+	 ynufnJgTsuQwf1Xha4aAFzUkSIFkxyb8psu7lsWTNg1xWO5xyr9q1o8j+UUw4l4gQd
+	 KwzQUJDMO1GDzPvUmHPmmC81pxPDtLNwud08nbUaNw1I2iQNrgRuJlCvAH3qeE3JF5
+	 n/e1kSYqXOsWJDv8XqiYgoGZjDdOGeweeA9Gdp+fb1nJtHDgq5ixAtOYChxe6jN+Eq
+	 IHOwiTgfPK0fg==
+Date: Sat, 17 Feb 2024 10:08:08 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Andrew Morton
+ <akpm@linux-foundation.org>, Linux Media Mailing List
+ <linux-media@vger.kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL for v6.8-rc5] media fixes
+Message-ID: <20240217100808.58ef40b6@coco.lan>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZcsCP4h-ExNOcdD6@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBHZQ6XdNBl_ygdEQ--.60286S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxur4UGw45Cw47Gr4xtr48tFb_yoWruw1rpr
-	yq93yDCFs3tF17Wr1kJFZ8XryYka4rKrW2kryxGw43ZFnIyr9rKF1rGa4Yv3Z8J3sxAr4f
-	JF4kAa4kWF1UAr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
-	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
-	7IU13rcDUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/2/13 13:46, Christoph Hellwig wrote:
-> Wouldn't it make more sense to just move the size manipulation to the
-> write-only code?  An untested version of that is below.  With this
+Hi Linus,
 
-Sorry for the late reply and thanks for your suggestion, The reason why
-I introduced this new helper iomap_write_end_simple() is I don't want to
-open code __iomap_put_folio() in each caller since corresponding to
-iomap_write_begin(), it's the responsibility for iomap_write_end_*() to
-put and unlock folio, so I'd like to keep it in iomap_write_end_*().
-But I don't feel strongly about it, it's also fine by me to just move
-the size manipulation to the write-only code if you think it's better.
+Please pull from:
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.8-4
 
-> the naming of the status variable becomes even more confusing than
-> it already is, maybe we need to do a cleanup of the *_write_end
-> calling conventions as it always returns the passed in copied value
-> or 0.
+For:
 
-Indeed, it becomes more confused and deserve a cleanup.
+- a regression fix at rkisp1 shared IRQ logic;
+- a breakage fix on atomisp due to a kAPI change;
+- a permission fix for remote controller BPF support;
+- a memleak on ir_toy driver;
+- a Kconfig dependency on pwm-ir-rx.
 
-Thanks,
-Yi.
+The following changes since commit b32431b753217d8d45b018443b1a7aac215921fb:
 
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 3dab060aed6d7b..8401a9ca702fc0 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->  		size_t copied, struct folio *folio)
->  {
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
-> -	loff_t old_size = iter->inode->i_size;
-> -	size_t ret;
-> -
-> -	if (srcmap->type == IOMAP_INLINE) {
-> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
-> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
-> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
-> -				copied, &folio->page, NULL);
-> -	} else {
-> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
-> -	}
-> -
-> -	/*
-> -	 * Update the in-memory inode size after copying the data into the page
-> -	 * cache.  It's up to the file system to write the updated size to disk,
-> -	 * preferably after I/O completion so that no stale data is exposed.
-> -	 */
-> -	if (pos + ret > old_size) {
-> -		i_size_write(iter->inode, pos + ret);
-> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-> -	}
-> -	__iomap_put_folio(iter, pos, ret, folio);
->  
-> -	if (old_size < pos)
-> -		pagecache_isize_extended(iter->inode, old_size, pos);
-> -	if (ret < len)
-> -		iomap_write_failed(iter->inode, pos + ret, len - ret);
-> -	return ret;
-> +	if (srcmap->type == IOMAP_INLINE)
-> +		return iomap_write_end_inline(iter, folio, pos, copied);
-> +	if (srcmap->flags & IOMAP_F_BUFFER_HEAD)
-> +		return block_write_end(NULL, iter->inode->i_mapping, pos, len,
-> +					copied, &folio->page, NULL);
-> +	return __iomap_write_end(iter->inode, pos, len, copied, folio);
->  }
->  
->  static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
-> @@ -918,6 +897,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  
->  	do {
->  		struct folio *folio;
-> +		loff_t old_size;
->  		size_t offset;		/* Offset into folio */
->  		size_t bytes;		/* Bytes to write to folio */
->  		size_t copied;		/* Bytes copied from user */
-> @@ -964,7 +944,24 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  
->  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
->  		status = iomap_write_end(iter, pos, bytes, copied, folio);
-> +		/*
-> +		 * Update the in-memory inode size after copying the data into
-> +		 * the page cache.  It's up to the file system to write the
-> +		 * updated size to disk, preferably after I/O completion so that
-> +		 * no stale data is exposed.
-> +		 */
-> +		old_size = iter->inode->i_size;
-> +		if (pos + status > old_size) {
-> +			i_size_write(iter->inode, pos + status);
-> +			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-> +		}
-> +		__iomap_put_folio(iter, pos, status, folio);
->  
-> +		if (old_size < pos)
-> +			pagecache_isize_extended(iter->inode, old_size, pos);
-> +		if (status < bytes)
-> +			iomap_write_failed(iter->inode, pos + status,
-> +						bytes - status);
->  		if (unlikely(copied != status))
->  			iov_iter_revert(i, copied - status);
->  
-> @@ -1334,6 +1331,7 @@ static loff_t iomap_unshare_iter(struct iomap_iter *iter)
->  			bytes = folio_size(folio) - offset;
->  
->  		bytes = iomap_write_end(iter, pos, bytes, bytes, folio);
-> +		__iomap_put_folio(iter, pos, bytes, folio);
->  		if (WARN_ON_ONCE(bytes == 0))
->  			return -EIO;
->  
-> @@ -1398,6 +1396,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
->  		folio_mark_accessed(folio);
->  
->  		bytes = iomap_write_end(iter, pos, bytes, bytes, folio);
-> +		__iomap_put_folio(iter, pos, bytes, folio);
->  		if (WARN_ON_ONCE(bytes == 0))
->  			return -EIO;
->  
-> 
+  media: vb2: refactor setting flags and caps, fix missing cap (2024-01-24 17:27:51 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v6.8-4
+
+for you to fetch changes up to 346c84e281a963437b9fe9dfcd92c531630289de:
+
+  media: pwm-ir-tx: Depend on CONFIG_HIGH_RES_TIMERS (2024-02-01 13:49:39 +0100)
+
+----------------------------------------------------------------
+media fixes for v6.8-rc5
+
+----------------------------------------------------------------
+Hans de Goede (1):
+      media: atomisp: Adjust for v4l2_subdev_state handling changes in 6.8
+
+Sean Young (2):
+      media: rc: bpf attach/detach requires write permission
+      media: pwm-ir-tx: Depend on CONFIG_HIGH_RES_TIMERS
+
+Tomi Valkeinen (2):
+      media: Revert "media: rkisp1: Drop IRQF_SHARED"
+      media:  : Fix IRQ handling due to shared interrupts
+
+Zhipeng Lu (1):
+      media: ir_toy: fix a memleak in irtoy_tx
+
+ .../platform/rockchip/rkisp1/rkisp1-capture.c      |  3 ++
+ .../media/platform/rockchip/rkisp1/rkisp1-common.h |  2 +
+ .../media/platform/rockchip/rkisp1/rkisp1-csi.c    |  3 ++
+ .../media/platform/rockchip/rkisp1/rkisp1-dev.c    | 24 ++++++++-
+ .../media/platform/rockchip/rkisp1/rkisp1-isp.c    |  3 ++
+ drivers/media/rc/Kconfig                           |  1 +
+ drivers/media/rc/bpf-lirc.c                        |  6 +--
+ drivers/media/rc/ir_toy.c                          |  2 +
+ drivers/media/rc/lirc_dev.c                        |  5 +-
+ drivers/media/rc/rc-core-priv.h                    |  2 +-
+ drivers/staging/media/atomisp/pci/atomisp_cmd.c    | 58 ++++++++++++---------
+ .../staging/media/atomisp/pci/atomisp_internal.h   |  4 +-
+ drivers/staging/media/atomisp/pci/atomisp_ioctl.c  | 52 +++++++++++--------
+ drivers/staging/media/atomisp/pci/atomisp_v4l2.c   | 59 ++++++++++++++++------
+ 14 files changed, 156 insertions(+), 68 deletions(-)
 
 
