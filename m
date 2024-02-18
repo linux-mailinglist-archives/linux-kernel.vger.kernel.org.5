@@ -1,76 +1,75 @@
-Return-Path: <linux-kernel+bounces-70263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63025859561
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:59:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7F39859563
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:59:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 540F21C213DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:59:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C0B428234F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:59:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B851DA26;
-	Sun, 18 Feb 2024 07:58:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4523A1EA7F;
+	Sun, 18 Feb 2024 07:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fWEGKRi1"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M4PraJEV"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD93CEAE4;
-	Sun, 18 Feb 2024 07:58:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806B61D6AA;
+	Sun, 18 Feb 2024 07:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708243096; cv=none; b=UPRb95FKOsAfgvrP99d6PpA0W0nvFR8oGZLQFpjtG/C2Aq7ccyW0OrXfbhAb6pYXHjmFZmZ7u7t5aroMBM6c89dj20JH+Uo7V7iN/H3px+IthdJTurHkFCbvvRRNRulPqmISLJNfFBYJe1v8moQdQh/COi1/tKYwnOD/ZG5DlWQ=
+	t=1708243099; cv=none; b=c5qHyhqP385oCTUO61mhU7/XZGETWNy6pOVKZoAFkQKg7kUK3D2+XiL6awlKZ/SGTfG8W0Z9AXHYgW721zFdRSRsJ2uY6jgB7ftuBVhhXI+Q8JBHZ1JAYA/em6k4we3/bhIOCA9ZSrGiwocR1zGYJDGKZepi/8GAqSYcE4/F99M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708243096; c=relaxed/simple;
-	bh=FMn1k2LeUHLqPOJ5MrimW8W5ba6/IZNZUrZdnQzwtTM=;
+	s=arc-20240116; t=1708243099; c=relaxed/simple;
+	bh=APHd53FETp7bMcTra6Q2uekzr3ZPbBpRLKIx89mhIt0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IKj6wqYfrtbbLVkRG+vq0O1tr1Nzx3U2LZYrBv0jbOWFZs5uF24AiPIaw3i5IIi5zsAvamYZGGCnkPUrkNp88OLgpQTIq5ep4WoE2hkFyes37WWCFUkW1RlnGZqmEgOQxgfmJ+tCJ1ilArKYxkG1ttsduylm7oBwCnY7WCVg+hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fWEGKRi1; arc=none smtp.client-ip=209.85.167.45
+	 MIME-Version; b=eZ/e7+Dee9zoNaHk8ZPO5x/hYjMpBOgoL5A2Nb3v1CdBB2nldtytkN73/wRa/AlxseQubBQQC1NDa1ogdkUViSZQoXbPdc7zEv5mSJ0tdC5DC4hkcs5UTwmHOIK/oUZcTKKUugz3IpvYg+bagoPqjn/fNvp1ySwkJHZ7ONoZuxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M4PraJEV; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-512b0cfd79dso152310e87.0;
-        Sat, 17 Feb 2024 23:58:14 -0800 (PST)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3e891b5e4eso464166b.0;
+        Sat, 17 Feb 2024 23:58:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708243093; x=1708847893; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708243096; x=1708847896; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U3SacVFogZ0VIPM9NhlkFSdJIVFVokdqjKp32uGKAe8=;
-        b=fWEGKRi1q8OGvHNRqB+kggoRChaOb6zA7/4L4Fc0TyxVMpC1ZD8v2aZeKHNOWHhefO
-         em1Tg3aUqlzp21zB/9qdrh5ZM1gkgE+HKIF1ksEmU2PYGp+ye8WAX8zMcjFzkXlSL3Nx
-         nepo+seJNNU4OLhTHPFzIhjCSd9YtcTdPEA1kh6yFhydT76YYinoNIKju43kq7XUFsQ+
-         4UaKSqTxH6F7VyQZx07ql6onoWjuYXULlk1LaswOTGCkXUK7sXm8mqxn0yPLnYy+OSo2
-         IOpyede2+lYtPLkt8hvmb1ucyDRJkUKpEzRnZMrRSEr2pj17kKUn/PiUSjxDssQW2jdX
-         eO4g==
+        bh=YOctRdMaVKvlxxQLiZyj1BX0A6EczB9hIAIpTNelg5c=;
+        b=M4PraJEVWQgyuWlkuy1OQoDmH3owV1mSElK3KLwNNgpUi0HruzXUJpZQb91MhyBQUY
+         bRFUIVSFZvUTZFAY0yKXDD4oZuZNfdSiPJKUA5731AVeXEEIst7e08yPA2Bi0UjShUfX
+         XOaBjNgwJ0+vtKw3cLB00CNLY8LslWsWiB9CoHZD/VIptdqEr3mzcXQXzrSSsbMPVxih
+         itsz5Mfnztw9xIgAnFvqB6kmEpcO2wWXizRS0Y2w90khYwVqAkHqFQFZEwFAgsIkQMD1
+         xStmL4xbZZdJoBIvSz4zocxmOSgE1c06uP0d8srNsbLIWLjBeLuooFcxzc2FfTrB+Va+
+         RGEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708243093; x=1708847893;
+        d=1e100.net; s=20230601; t=1708243096; x=1708847896;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U3SacVFogZ0VIPM9NhlkFSdJIVFVokdqjKp32uGKAe8=;
-        b=sUm5x/dbJ2N6Ey5CS5gUILOqoU/k0CVoIIv/Xx4QyNClPQrEu5VSgnosq1q5NCADKO
-         x2+NN8mN/ZSYtQ5UdRaD3PxLihn9IPJ2+xxdmNf0mfch/ewGrhjXfLXNCttMAa5w82zi
-         9hIlfNzFy5QTAo7wBNKWB+l7svWtj+Vj+Pb4HqvT+y3ar7VccMnHkZVTtfebkOrOy4dh
-         QUMmWyR9pYnEYuNx7Fo9tGeLwgy/Ki6B3v2lUSZNNU5P9fTj9kL2PLEsmYsMuh1nRT1d
-         qfhp905WgprHPnlB9sY4W1kM0BO0D+q8UWRcJScN3W/PcH9IGiv4owtb1rXmkWxO6qCN
-         8BYg==
-X-Forwarded-Encrypted: i=1; AJvYcCXqqDEk/kOoYM3zARruDfvWkgxScFNWv5CwfxGmzr4RK+8tcgb7P5FRIQr9xzFl3c+9iZtsRaySCoUuhmBOoQa15Wx8hZrTSQ1V2OceUK9oFj/zziucIIpXp3g+mQPjJD8fWanP
-X-Gm-Message-State: AOJu0YyaXfUZURC87WamU70tIt73NFy4QxEduVfZiYhAyW1K6SrlZQs9
-	yqsoXySWoh7NJznbY68GT4fWs/Bx5cTukl2JoL+OI36UZeVcxyrI
-X-Google-Smtp-Source: AGHT+IFT+tP26QEl1DNh6jGTSx0kKYi8WzvR6x28sJ/iDw7W/UG5aH2mamznyqD4a+nm7ryQovBGRA==
-X-Received: by 2002:a19:7618:0:b0:512:44c9:fb76 with SMTP id c24-20020a197618000000b0051244c9fb76mr5528232lff.22.1708243092792;
-        Sat, 17 Feb 2024 23:58:12 -0800 (PST)
+        bh=YOctRdMaVKvlxxQLiZyj1BX0A6EczB9hIAIpTNelg5c=;
+        b=EGq4MCzQb7lcHUpnBl1kby/h89V9KOkGNzZ52DvuBUEbWPtplgXDyWwyHKLWWrR0pl
+         7PviYcXQWHkLd4pY6nwUifCfXXXgRe2VkAq7aihxb4dXMi11hBKFbm4bGCtrg5i+EHom
+         /dSPsmaq/4gk2yjTFrxx4E0DP550e+s7594HrYVyOkezhJPa245LPPuqjAcDhmttv2Tt
+         jDiOxWinI+cxufM+OqJvALV8PZpg4WA1eoMord55vkujkL68jwB77lJYW6oryCnY+Xoe
+         YxKz0+V/JO48OZVl3jTgiu+/yI81zXXsST3nKtlgex4H0dwd/JpwFdYoGa4+eMWJUhtm
+         /6jQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVD1kEHi8bHkJSRv3RxKtdH3IXqxa7FjkqNpb0Lyr1j70n2Mwyl6mrqrClCn8mTeJobRZtlDABLSRnuDPAW2Jl6U8A/p4Qi3vwmrTusarO8td9J0ITuP4EugEj4jggjKapLZbqc
+X-Gm-Message-State: AOJu0YwSS/c/Ij3RMZoEJUNFvC7YAu17S6DH4lKlcTmH5r1Gnd8B5dpN
+	oKlMLV5QfyzohlmkOu7KmnQmN4798UqdmGWWIHGWX69VMWwrcm+X
+X-Google-Smtp-Source: AGHT+IEis5Td4gJlGqzyMPzrBgl03RLfsaeHUTC7vGBI5Adt7nStq6043pikjkxr9EssV3LXjPxuYg==
+X-Received: by 2002:a17:906:af0f:b0:a3d:dfa:7a92 with SMTP id lx15-20020a170906af0f00b00a3d0dfa7a92mr6592739ejb.36.1708243095819;
+        Sat, 17 Feb 2024 23:58:15 -0800 (PST)
 Received: from debian.fritz.box ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id jj12-20020a170907984c00b00a3e64bcd2c1sm458732ejc.142.2024.02.17.23.58.11
+        by smtp.gmail.com with ESMTPSA id jj12-20020a170907984c00b00a3e64bcd2c1sm458732ejc.142.2024.02.17.23.58.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 23:58:12 -0800 (PST)
+        Sat, 17 Feb 2024 23:58:15 -0800 (PST)
 From: Dimitri Fedrau <dima.fedrau@gmail.com>
 To: 
 Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
 	Andrew Lunn <andrew@lunn.ch>,
-	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
 	Russell King <linux@armlinux.org.uk>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -80,9 +79,9 @@ Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
 	Stefan Eichenberger <eichest@gmail.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 net-next 05/14] net: phy: marvell-88q2xxx: add driver for the Marvell 88Q2220 PHY
-Date: Sun, 18 Feb 2024 08:57:42 +0100
-Message-Id: <20240218075753.18067-6-dima.fedrau@gmail.com>
+Subject: [PATCH v7 net-next 06/14] net: phy: marvell-88q2xxx: add interrupt support for link detection
+Date: Sun, 18 Feb 2024 08:57:43 +0100
+Message-Id: <20240218075753.18067-7-dima.fedrau@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240218075753.18067-1-dima.fedrau@gmail.com>
 References: <20240218075753.18067-1-dima.fedrau@gmail.com>
@@ -94,317 +93,196 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a driver for the Marvell 88Q2220. This driver allows to detect the
-link, switch between 100BASE-T1 and 1000BASE-T1 and switch between
-master and slave mode. Autonegotiation is supported.
+Added .config_intr and .handle_interrupt callbacks. Whenever the link
+goes up or down an interrupt will be triggered. Interrupts are configured
+separately for 100/1000BASET1.
 
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Tested-by: Gregor Herburger <gregor.herburger@ew.tq-group.com>
 Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 ---
- drivers/net/phy/marvell-88q2xxx.c | 210 +++++++++++++++++++++++++++++-
- include/linux/marvell_phy.h       |   1 +
- 2 files changed, 205 insertions(+), 6 deletions(-)
+ drivers/net/phy/marvell-88q2xxx.c | 123 +++++++++++++++++++++++++++++-
+ 1 file changed, 119 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/phy/marvell-88q2xxx.c b/drivers/net/phy/marvell-88q2xxx.c
-index dcebb4643aff..9829facde253 100644
+index 9829facde253..7c7517af346b 100644
 --- a/drivers/net/phy/marvell-88q2xxx.c
 +++ b/drivers/net/phy/marvell-88q2xxx.c
-@@ -1,11 +1,17 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-  * Marvell 88Q2XXX automotive 100BASE-T1/1000BASE-T1 PHY driver
-+ *
-+ * Derived from Marvell Q222x API
-+ *
-+ * Copyright (C) 2024 Liebherr-Electronics and Drives GmbH
-  */
- #include <linux/ethtool_netlink.h>
- #include <linux/marvell_phy.h>
- #include <linux/phy.h>
+@@ -24,6 +24,19 @@
+ #define MDIO_MMD_AN_MV_STAT2_100BT1		0x2000
+ #define MDIO_MMD_AN_MV_STAT2_1000BT1		0x4000
  
-+#define PHY_ID_88Q2220_REVB0	(MARVELL_PHY_ID_88Q2220 | 0x1)
++#define MDIO_MMD_PCS_MV_INT_EN			32784
++#define MDIO_MMD_PCS_MV_INT_EN_LINK_UP		0x0040
++#define MDIO_MMD_PCS_MV_INT_EN_LINK_DOWN	0x0080
++#define MDIO_MMD_PCS_MV_INT_EN_100BT1		0x1000
 +
- #define MDIO_MMD_AN_MV_STAT			32769
- #define MDIO_MMD_AN_MV_STAT_ANEG		0x0100
- #define MDIO_MMD_AN_MV_STAT_LOCAL_RX		0x1000
-@@ -13,6 +19,11 @@
- #define MDIO_MMD_AN_MV_STAT_LOCAL_MASTER	0x4000
- #define MDIO_MMD_AN_MV_STAT_MS_CONF_FAULT	0x8000
- 
-+#define MDIO_MMD_AN_MV_STAT2			32794
-+#define MDIO_MMD_AN_MV_STAT2_AN_RESOLVED	0x0800
-+#define MDIO_MMD_AN_MV_STAT2_100BT1		0x2000
-+#define MDIO_MMD_AN_MV_STAT2_1000BT1		0x4000
++#define MDIO_MMD_PCS_MV_GPIO_INT_STAT			32785
++#define MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_UP		0x0040
++#define MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_DOWN		0x0080
++#define MDIO_MMD_PCS_MV_GPIO_INT_STAT_100BT1_GEN	0x1000
++
++#define MDIO_MMD_PCS_MV_GPIO_INT_CTRL			32787
++#define MDIO_MMD_PCS_MV_GPIO_INT_CTRL_TRI_DIS		0x0800
 +
  #define MDIO_MMD_PCS_MV_100BT1_STAT1			33032
  #define MDIO_MMD_PCS_MV_100BT1_STAT1_IDLE_ERROR		0x00ff
  #define MDIO_MMD_PCS_MV_100BT1_STAT1_JABBER		0x0100
-@@ -29,6 +40,42 @@
+@@ -38,6 +51,12 @@
+ #define MDIO_MMD_PCS_MV_100BT1_STAT2_LINK	0x0004
+ #define MDIO_MMD_PCS_MV_100BT1_STAT2_ANGE	0x0008
  
++#define MDIO_MMD_PCS_MV_100BT1_INT_EN			33042
++#define MDIO_MMD_PCS_MV_100BT1_INT_EN_LINKEVENT		0x0400
++
++#define MDIO_MMD_PCS_MV_COPPER_INT_STAT			33043
++#define MDIO_MMD_PCS_MV_COPPER_INT_STAT_LINKEVENT	0x0400
++
  #define MDIO_MMD_PCS_MV_RX_STAT			33328
  
-+struct mmd_val {
-+	int devad;
-+	u32 regnum;
-+	u16 val;
-+};
-+
-+static const struct mmd_val mv88q222x_revb0_init_seq0[] = {
-+	{ MDIO_MMD_PCS, 0x8033, 0x6801 },
-+	{ MDIO_MMD_AN, MDIO_AN_T1_CTRL, 0x0 },
-+	{ MDIO_MMD_PMAPMD, MDIO_CTRL1,
-+	  MDIO_CTRL1_LPOWER | MDIO_PMA_CTRL1_SPEED1000 },
-+	{ MDIO_MMD_PCS, 0xfe1b, 0x48 },
-+	{ MDIO_MMD_PCS, 0xffe4, 0x6b6 },
-+	{ MDIO_MMD_PMAPMD, MDIO_CTRL1, 0x0 },
-+	{ MDIO_MMD_PCS, MDIO_CTRL1, 0x0 },
-+};
-+
-+static const struct mmd_val mv88q222x_revb0_init_seq1[] = {
-+	{ MDIO_MMD_PCS, 0xfe79, 0x0 },
-+	{ MDIO_MMD_PCS, 0xfe07, 0x125a },
-+	{ MDIO_MMD_PCS, 0xfe09, 0x1288 },
-+	{ MDIO_MMD_PCS, 0xfe08, 0x2588 },
-+	{ MDIO_MMD_PCS, 0xfe11, 0x1105 },
-+	{ MDIO_MMD_PCS, 0xfe72, 0x042c },
-+	{ MDIO_MMD_PCS, 0xfbba, 0xcb2 },
-+	{ MDIO_MMD_PCS, 0xfbbb, 0xc4a },
-+	{ MDIO_MMD_AN, 0x8032, 0x2020 },
-+	{ MDIO_MMD_AN, 0x8031, 0xa28 },
-+	{ MDIO_MMD_AN, 0x8031, 0xc28 },
-+	{ MDIO_MMD_PCS, 0xffdb, 0xfc10 },
-+	{ MDIO_MMD_PCS, 0xfe1b, 0x58 },
-+	{ MDIO_MMD_PCS, 0xfe79, 0x4 },
-+	{ MDIO_MMD_PCS, 0xfe5f, 0xe8 },
-+	{ MDIO_MMD_PCS, 0xfe05, 0x755c },
-+};
-+
- static int mv88q2xxx_soft_reset(struct phy_device *phydev)
- {
- 	int ret;
-@@ -125,24 +172,90 @@ static int mv88q2xxx_read_link_100m(struct phy_device *phydev)
+ struct mmd_val {
+@@ -99,13 +118,15 @@ static int mv88q2xxx_read_link_gbit(struct phy_device *phydev)
  
- static int mv88q2xxx_read_link(struct phy_device *phydev)
- {
--	int ret;
--
- 	/* The 88Q2XXX PHYs do not have the PMA/PMD status register available,
- 	 * therefore we need to read the link status from the vendor specific
- 	 * registers depending on the speed.
+ 	/* Read vendor specific Auto-Negotiation status register to get local
+ 	 * and remote receiver status according to software initialization
+-	 * guide.
++	 * guide. However, when not in polling mode the local and remote
++	 * receiver status are not evaluated due to the Marvell 88Q2xxx APIs.
  	 */
-+
- 	if (phydev->speed == SPEED_1000)
--		ret = mv88q2xxx_read_link_gbit(phydev);
-+		return mv88q2xxx_read_link_gbit(phydev);
-+	else if (phydev->speed == SPEED_100)
-+		return mv88q2xxx_read_link_100m(phydev);
-+
-+	phydev->link = false;
-+	return 0;
-+}
-+
-+static int mv88q2xxx_read_master_slave_state(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	phydev->master_slave_state = MASTER_SLAVE_STATE_UNKNOWN;
-+	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_MMD_AN_MV_STAT);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (ret & MDIO_MMD_AN_MV_STAT_LOCAL_MASTER)
-+		phydev->master_slave_state = MASTER_SLAVE_STATE_MASTER;
- 	else
--		ret = mv88q2xxx_read_link_100m(phydev);
-+		phydev->master_slave_state = MASTER_SLAVE_STATE_SLAVE;
- 
--	return ret;
-+	return 0;
-+}
-+
-+static int mv88q2xxx_read_aneg_speed(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	phydev->speed = SPEED_UNKNOWN;
-+	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_MMD_AN_MV_STAT2);
-+	if (ret < 0)
-+		return ret;
-+
-+	if (!(ret & MDIO_MMD_AN_MV_STAT2_AN_RESOLVED))
-+		return 0;
-+
-+	if (ret & MDIO_MMD_AN_MV_STAT2_100BT1)
-+		phydev->speed = SPEED_100;
-+	else if (ret & MDIO_MMD_AN_MV_STAT2_1000BT1)
-+		phydev->speed = SPEED_1000;
-+
-+	return 0;
- }
- 
- static int mv88q2xxx_read_status(struct phy_device *phydev)
- {
- 	int ret;
- 
-+	if (phydev->autoneg == AUTONEG_ENABLE) {
-+		/* We have to get the negotiated speed first, otherwise we are
-+		 * not able to read the link.
-+		 */
-+		ret = mv88q2xxx_read_aneg_speed(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = mv88q2xxx_read_link(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = genphy_c45_read_lpa(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = genphy_c45_baset1_read_status(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		ret = mv88q2xxx_read_master_slave_state(phydev);
-+		if (ret < 0)
-+			return ret;
-+
-+		phy_resolve_aneg_linkmode(phydev);
-+
-+		return 0;
-+	}
-+
- 	ret = mv88q2xxx_read_link(phydev);
- 	if (ret < 0)
+ 	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_MMD_AN_MV_STAT);
+ 	if (ret < 0) {
  		return ret;
-@@ -171,7 +284,9 @@ static int mv88q2xxx_get_features(struct phy_device *phydev)
- 	 * sequence provided by Marvell. Disable it for now until a proper
- 	 * workaround is found or a new PHY revision is released.
+-	} else if ((ret & MDIO_MMD_AN_MV_STAT_LOCAL_RX) &&
+-		   (ret & MDIO_MMD_AN_MV_STAT_REMOTE_RX)) {
++	} else if (((ret & MDIO_MMD_AN_MV_STAT_LOCAL_RX) &&
++		   (ret & MDIO_MMD_AN_MV_STAT_REMOTE_RX)) ||
++		   !phy_polling_mode(phydev)) {
+ 		/* The link state is latched low so that momentary link
+ 		 * drops can be detected. Do not double-read the status
+ 		 * in polling mode to detect such short link drops except
+@@ -145,7 +166,18 @@ static int mv88q2xxx_read_link_100m(struct phy_device *phydev)
+ 	 * the link was already down. In case we are not polling,
+ 	 * we always read the realtime status.
  	 */
--	linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, phydev->supported);
-+	if (phydev->drv->phy_id == MARVELL_PHY_ID_88Q2110)
-+		linkmode_clear_bit(ETHTOOL_LINK_MODE_Autoneg_BIT,
-+				   phydev->supported);
- 
- 	return 0;
- }
-@@ -241,6 +356,75 @@ static int mv88q2xxx_get_sqi_max(struct phy_device *phydev)
+-	if (!phy_polling_mode(phydev) || !phydev->link) {
++	if (!phy_polling_mode(phydev)) {
++		phydev->link = false;
++		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
++				   MDIO_MMD_PCS_MV_100BT1_STAT2);
++		if (ret < 0)
++			return ret;
++
++		if (ret & MDIO_MMD_PCS_MV_100BT1_STAT2_LINK)
++			phydev->link = true;
++
++		return 0;
++	} else if (!phydev->link) {
+ 		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
+ 				   MDIO_MMD_PCS_MV_100BT1_STAT1);
+ 		if (ret < 0)
+@@ -356,6 +388,79 @@ static int mv88q2xxx_get_sqi_max(struct phy_device *phydev)
  	return 15;
  }
  
-+static int mv88q222x_soft_reset(struct phy_device *phydev)
++static int mv88q2xxx_config_intr(struct phy_device *phydev)
 +{
 +	int ret;
 +
-+	/* Enable RESET of DCL */
-+	if (phydev->autoneg == AUTONEG_ENABLE || phydev->speed == SPEED_1000) {
-+		ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe1b, 0x48);
++	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
++		/* Enable interrupts for 1000BASE-T1 link up and down events
++		 * and enable general interrupts for 100BASE-T1.
++		 */
++		ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
++				    MDIO_MMD_PCS_MV_INT_EN,
++				    MDIO_MMD_PCS_MV_INT_EN_LINK_UP |
++				    MDIO_MMD_PCS_MV_INT_EN_LINK_DOWN |
++				    MDIO_MMD_PCS_MV_INT_EN_100BT1);
 +		if (ret < 0)
 +			return ret;
++
++		/* Enable interrupts for 100BASE-T1 link events */
++		return phy_write_mmd(phydev, MDIO_MMD_PCS,
++				     MDIO_MMD_PCS_MV_100BT1_INT_EN,
++				     MDIO_MMD_PCS_MV_100BT1_INT_EN_LINKEVENT);
++	} else {
++		ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
++				    MDIO_MMD_PCS_MV_INT_EN, 0);
++		if (ret < 0)
++			return ret;
++
++		return phy_write_mmd(phydev, MDIO_MMD_PCS,
++				     MDIO_MMD_PCS_MV_100BT1_INT_EN, 0);
 +	}
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, MDIO_PCS_1000BT1_CTRL,
-+			    MDIO_PCS_1000BT1_CTRL_RESET);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_mmd(phydev, MDIO_MMD_PCS, 0xffe4, 0xc);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Disable RESET of DCL */
-+	if (phydev->autoneg == AUTONEG_ENABLE || phydev->speed == SPEED_1000)
-+		return phy_write_mmd(phydev, MDIO_MMD_PCS, 0xfe1b, 0x58);
-+
-+	return 0;
 +}
 +
-+static int mv88q222x_config_aneg(struct phy_device *phydev)
++static irqreturn_t mv88q2xxx_handle_interrupt(struct phy_device *phydev)
 +{
-+	int ret;
++	bool trigger_machine = false;
++	int irq;
 +
-+	ret = genphy_c45_config_aneg(phydev);
-+	if (ret)
-+		return ret;
-+
-+	return mv88q222x_soft_reset(phydev);
-+}
-+
-+static int mv88q222x_revb0_config_init(struct phy_device *phydev)
-+{
-+	int ret, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(mv88q222x_revb0_init_seq0); i++) {
-+		ret = phy_write_mmd(phydev, mv88q222x_revb0_init_seq0[i].devad,
-+				    mv88q222x_revb0_init_seq0[i].regnum,
-+				    mv88q222x_revb0_init_seq0[i].val);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	usleep_range(5000, 10000);
-+
-+	for (i = 0; i < ARRAY_SIZE(mv88q222x_revb0_init_seq1); i++) {
-+		ret = phy_write_mmd(phydev, mv88q222x_revb0_init_seq1[i].devad,
-+				    mv88q222x_revb0_init_seq1[i].regnum,
-+				    mv88q222x_revb0_init_seq1[i].val);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* The 88Q2XXX PHYs do have the extended ability register available, but
-+	 * register MDIO_PMA_EXTABLE where they should signalize it does not
-+	 * work according to specification. Therefore, we force it here.
++	/* Before we can acknowledge the 100BT1 general interrupt, that is in
++	 * the 1000BT1 interrupt status register, we have to acknowledge any
++	 * interrupts that are related to it. Therefore we read first the 100BT1
++	 * interrupt status register, followed by reading the 1000BT1 interrupt
++	 * status register.
 +	 */
-+	phydev->pma_extable = MDIO_PMA_EXTABLE_BT1;
 +
-+	return 0;
++	irq = phy_read_mmd(phydev, MDIO_MMD_PCS,
++			   MDIO_MMD_PCS_MV_COPPER_INT_STAT);
++	if (irq < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	/* Check link status for 100BT1 */
++	if (irq & MDIO_MMD_PCS_MV_COPPER_INT_STAT_LINKEVENT)
++		trigger_machine = true;
++
++	irq = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_MMD_PCS_MV_GPIO_INT_STAT);
++	if (irq < 0) {
++		phy_error(phydev);
++		return IRQ_NONE;
++	}
++
++	/* Check link status for 1000BT1 */
++	if ((irq & MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_UP) ||
++	    (irq & MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_DOWN))
++		trigger_machine = true;
++
++	if (!trigger_machine)
++		return IRQ_NONE;
++
++	phy_trigger_machine(phydev);
++
++	return IRQ_HANDLED;
 +}
 +
- static struct phy_driver mv88q2xxx_driver[] = {
- 	{
- 		.phy_id			= MARVELL_PHY_ID_88Q2110,
-@@ -255,12 +439,26 @@ static struct phy_driver mv88q2xxx_driver[] = {
+ static int mv88q222x_soft_reset(struct phy_device *phydev)
+ {
+ 	int ret;
+@@ -422,6 +527,14 @@ static int mv88q222x_revb0_config_init(struct phy_device *phydev)
+ 	 */
+ 	phydev->pma_extable = MDIO_PMA_EXTABLE_BT1;
+ 
++	/* Configure interrupt with default settings, output is driven low for
++	 * active interrupt and high for inactive.
++	 */
++	if (phy_interrupt_is_valid(phydev))
++		return phy_set_bits_mmd(phydev, MDIO_MMD_PCS,
++					MDIO_MMD_PCS_MV_GPIO_INT_CTRL,
++					MDIO_MMD_PCS_MV_GPIO_INT_CTRL_TRI_DIS);
++
+ 	return 0;
+ }
+ 
+@@ -448,6 +561,8 @@ static struct phy_driver mv88q2xxx_driver[] = {
+ 		.config_init		= mv88q222x_revb0_config_init,
+ 		.read_status		= mv88q2xxx_read_status,
+ 		.soft_reset		= mv88q222x_soft_reset,
++		.config_intr		= mv88q2xxx_config_intr,
++		.handle_interrupt	= mv88q2xxx_handle_interrupt,
+ 		.set_loopback		= genphy_c45_loopback,
  		.get_sqi		= mv88q2xxx_get_sqi,
  		.get_sqi_max		= mv88q2xxx_get_sqi_max,
- 	},
-+	{
-+		PHY_ID_MATCH_EXACT(PHY_ID_88Q2220_REVB0),
-+		.name			= "mv88q2220",
-+		.get_features		= mv88q2xxx_get_features,
-+		.config_aneg		= mv88q222x_config_aneg,
-+		.aneg_done		= genphy_c45_aneg_done,
-+		.config_init		= mv88q222x_revb0_config_init,
-+		.read_status		= mv88q2xxx_read_status,
-+		.soft_reset		= mv88q222x_soft_reset,
-+		.set_loopback		= genphy_c45_loopback,
-+		.get_sqi		= mv88q2xxx_get_sqi,
-+		.get_sqi_max		= mv88q2xxx_get_sqi_max,
-+	},
- };
- 
- module_phy_driver(mv88q2xxx_driver);
- 
- static struct mdio_device_id __maybe_unused mv88q2xxx_tbl[] = {
- 	{ MARVELL_PHY_ID_88Q2110, MARVELL_PHY_ID_MASK },
-+	{ PHY_ID_MATCH_EXACT(PHY_ID_88Q2220_REVB0), },
- 	{ /*sentinel*/ }
- };
- MODULE_DEVICE_TABLE(mdio, mv88q2xxx_tbl);
-diff --git a/include/linux/marvell_phy.h b/include/linux/marvell_phy.h
-index 9b54c4f0677f..693eba9869e4 100644
---- a/include/linux/marvell_phy.h
-+++ b/include/linux/marvell_phy.h
-@@ -26,6 +26,7 @@
- #define MARVELL_PHY_ID_88E2110		0x002b09b0
- #define MARVELL_PHY_ID_88X2222		0x01410f10
- #define MARVELL_PHY_ID_88Q2110		0x002b0980
-+#define MARVELL_PHY_ID_88Q2220		0x002b0b20
- 
- /* Marvel 88E1111 in Finisar SFP module with modified PHY ID */
- #define MARVELL_PHY_ID_88E1111_FINISAR	0x01ff0cc0
 -- 
 2.39.2
 
