@@ -1,91 +1,72 @@
-Return-Path: <linux-kernel+bounces-70332-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70333-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66DAF859630
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:20:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E7EB859631
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05E721F22CAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:20:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 715CC2831D3
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:22:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C6E2D602;
-	Sun, 18 Feb 2024 10:20:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hfftHt4s"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9975E2D04F;
-	Sun, 18 Feb 2024 10:20:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38AD83714E;
+	Sun, 18 Feb 2024 10:22:45 +0000 (UTC)
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 243C01B7F2
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 10:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708251624; cv=none; b=Xe0XPyLs9yle7xTR6Iak0oUnLR1W9bycbs3hOfqzLaxZTgCmCNo9kRtRWQDW9fYGSFhZsXySUAV+g9DLHIM9Et4XIeI4d6kGXyNHvKJIYQNOkUHhERDA9UQFqyMmASED8NHiWmrAo5uH9k6XJODCXzqL/hjUGMjy47nWug19tIg=
+	t=1708251764; cv=none; b=m3t+ZmQ8PNgThSo/dzajX5vM9LetqyiBm8a0jiwCecVJU54jpYWu91e0AiPQXg8SUz18BOKu6iqWTfyj8s6wQFnHIblxtwb2K4wAk+g3NGjGPdGiV5gKdm0liiM7Uqs9gBI22zXDaHe7ve1O/bnfeH03NH5NyFxaQMCmovGXlTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708251624; c=relaxed/simple;
-	bh=8Se2Hd4Gvt/E/8QXweutrEJnGJKs9TJImInulpwzzN8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gwITg8oc+aju3RhUkeDhGbo45YADGj0nBbtHWafWnrmL6a3tIFLLeU0ZgeDWCcsAVkHE6ziR0GeEj5/SGOBjzukS/A0lmDyNUmseWaVoU+faBG0pBwfoFXYdr/KwJev+B5vQLBoG1VLMIOHFH3RxaFOuu5fpOfGaoLYZA2o4NRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hfftHt4s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E9C45C43390;
-	Sun, 18 Feb 2024 10:20:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708251624;
-	bh=8Se2Hd4Gvt/E/8QXweutrEJnGJKs9TJImInulpwzzN8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=hfftHt4s5smySC244T5S8zYH6DXTp5b76Tz4Ucg4swTuR/enYeX0QxbnRQimj44CJ
-	 L+d5W3MZcRfDKgqE3VuYgJR3ExtU0dqAFKuD0gCvc0U/Zu1VrBqYH39LjyuwWlA4i+
-	 BoWgM+4R0i5/IouvvOor2Cool11OK20PmBQSdPHXuQTtKc738oUV6gLisyqDxarMC4
-	 ekUsl8uOTz0K5TGnbM4ppq2fQAEXQU1+DtRPyjMaIf64o9umdGFgRJ/3yxYYfq4q9L
-	 oMhfTWZb85TgCo+16r+50GMbILy+gjDwO0uhcHAcd05IOJl7heJTYPx507oPTt1ASV
-	 KZTqU70lWejTw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D19CFDC99F1;
-	Sun, 18 Feb 2024 10:20:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708251764; c=relaxed/simple;
+	bh=gnuJ8aBOF5KQ/U+nEFYhni6Lx6+TUwWlZzTwjXaN4ZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gn0vrNuNDFj5iJmZErMLgWJVFBahiCxopkm27MHkA5lnNJWPBXPQpSDioXGgOAUbUF/gjY2lAti/eOsBfRBDicB5+4lSeGMuhdoLg705m6WmUg8IBl9lgejP5fCn3XWCXv9Uhq3u5wN8vvrQn86WKzeGZjuBVn8XvRiz+6OpGV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
+Received: (from willy@localhost)
+	by pcw.home.local (8.15.2/8.15.2/Submit) id 41IAMbtZ032424;
+	Sun, 18 Feb 2024 11:22:37 +0100
+Date: Sun, 18 Feb 2024 11:22:37 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Rodrigo Campos <rodrigo@sdfg.com.ar>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] tools/nolibc: Fix strlcat() return code and size
+ usage
+Message-ID: <20240218102237.GB32375@1wt.eu>
+References: <20240129141516.198636-1-rodrigo@sdfg.com.ar>
+ <20240129141516.198636-3-rodrigo@sdfg.com.ar>
+ <20240211104817.GA19364@1wt.eu>
+ <10b97cd3-5690-40b2-aa8e-3fea5dd4275f@sdfg.com.ar>
+ <197c0910-f1e5-4e55-81a3-59cb2069a1d7@sdfg.com.ar>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: bql: allow the config to be disabled
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170825162385.18347.10398309297353590491.git-patchwork-notify@kernel.org>
-Date: Sun, 18 Feb 2024 10:20:23 +0000
-References: <20240215170508.3402883-1-leitao@debian.org>
-In-Reply-To: <20240215170508.3402883-1-leitao@debian.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
- edumazet@google.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- horms@kernel.org, therbert@google.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <197c0910-f1e5-4e55-81a3-59cb2069a1d7@sdfg.com.ar>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Hello:
-
-This patch was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Thu, 15 Feb 2024 09:05:07 -0800 you wrote:
-> It is impossible to disable BQL individually today, since there is no
-> prompt for the Kconfig entry, so, the BQL is always enabled if SYSFS is
-> enabled.
+On Wed, Feb 14, 2024 at 07:03:10PM -0300, Rodrigo Campos wrote:
+> On 2/14/24 16:34, Rodrigo Campos wrote:
+> > size_t strlcat_rata(char *dst, const char *src, size_t size)
+> > {
+> > 	const char *orig_src = src;
+> > 	size_t len = 0;
+> > 	for (;len < size; len++) {
+> > 		if (dst[len] == '\0')
+> > 			break;
+> > 	}
 > 
-> Create a prompt entry for BQL, so, it could be enabled or disabled at
-> build time independently of SYSFS.
-> 
-> [...]
+> If you think about it, this is strnlen() and what follows is strncat().
 
-Here is the summary with links:
-  - [net-next] net: bql: allow the config to be disabled
-    https://git.kernel.org/netdev/net-next/c/ea7f3cfaa588
+I agree, I just didn't remember we had strnlen() nor strncat().
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Willy
 
