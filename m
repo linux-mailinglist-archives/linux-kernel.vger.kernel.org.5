@@ -1,235 +1,111 @@
-Return-Path: <linux-kernel+bounces-70456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C54E859817
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:11:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 313DC85981D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:14:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41E06282A43
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:10:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F951F21446
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD15A74E36;
-	Sun, 18 Feb 2024 17:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FF66EB76;
+	Sun, 18 Feb 2024 17:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="joiWyt3w"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="feXa9mrL"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878BA74E16;
-	Sun, 18 Feb 2024 17:07:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37B66EB59
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708276071; cv=none; b=nY8XlV0a4R8FtZYFCIbrb2rw8C6WDY6iGpnwoXUA5YIv1CGF93Z63JZJxj2B6K3kW5zXUXrpCAnalmDyeVe9Leqfcmk/mysPNNorp25ukTPNRG2DaE/A1npgQRHPdqxvoNDpRpgMQSDg2FPr06RbQLRMdB2QtmL9Ps7MDC4eiq4=
+	t=1708276456; cv=none; b=OE0y+C1Iujdy273c48zsO3mf3VlrWy8Opk+UdoGOHFht3ecjKZQrmLmUn51drhKLlgXtlENzED2d7HHCKU4c+HG8kZNVFjnVjic+fpGXs3wERhJaO9DBdC0NyhLtU3SPIUWprfhauWU2DmeorEiJwKv5f1boTWNoO+FqbeF62x0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708276071; c=relaxed/simple;
-	bh=RuYxKjCx1KM7jfq1OwKbVsYU1FZNAf3c6Gkohmi02zY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=GD+nAXUsapvWqfUrgFzl1e2xk5PE0FZX1iyOopFm4yaECj9w6Z27A6XCfbhba7XeGypSraHLkta1vJan/ONX5/u2FPwktPmv7I7ff4ITRuz7NW7Z1qY2nYcEHrU1p/H2+ntBqAh3Lc4IihmvOYzBJ0vuet2xWYsDWA1y1cs5CIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=joiWyt3w; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-	In-Reply-To:References; bh=K1/H/lO2Y/ArsDeyXeOvrW6auZKE79iZc+y+GzqiREI=; b=jo
-	iWyt3wNQkr0ba9NPQR49VGysSetZVYZl/Z3LSOWJ58Zi725VzyYwtoLdURcMQbR6gS0S9aDaKdLnR
-	zVUCRJPldpVlHgwlfMSB+g1dtn/SnH5h5jGh6HUJIhlbdMefBGTxfBXIPrm0zEz6t5c5xifrGZxOX
-	6lg+9b1oTRUq0m8=;
-Received: from c-76-156-36-110.hsd1.mn.comcast.net ([76.156.36.110] helo=thinkpad.home.lunn.ch)
-	by vps0.lunn.ch with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rbke2-0088HX-1c; Sun, 18 Feb 2024 18:08:02 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-Date: Sun, 18 Feb 2024 11:07:06 -0600
-Subject: [PATCH net-next v4 9/9] net: ethtool: eee: Remove legacy _u32 from
- keee
+	s=arc-20240116; t=1708276456; c=relaxed/simple;
+	bh=ik6LFU2g/Xtu20Bggy3zuFPBkfuHDKfMzcQaypec6kw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=q6/HdJZzH/cVSzGIK5EC8kDK1ejIF6YjqPF5lZNBliJ4vUgTLoomYO432Mm2rFzbITylWt8sKZYiPM2Dk+jYML9aicGNzLHtV1mH9ZCn6C01O2TmC2Tn6nkAUxqod5o7x6GNgUXhBEl/t6W7jdg1h6c/pjwYvH/0CrTaT59lFow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=feXa9mrL; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5611e54a92dso4746561a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 09:14:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708276452; x=1708881252; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5PgXy1mNzNznf4vOrmS/GojRXSRWqYAQYz0rl4V8+Nk=;
+        b=feXa9mrLcYwE+fLSIUZ5Va4emMDsZt8o/8+K80JNtmSnjfr/Ng2d8f6qijflkKgRGc
+         S/IvXY+zV2dRBNhU5QWCzZehlTcYFjQnAbqPzYZnpCFYTuE3bRuAC15q6aR3PvIVll0y
+         7HlmNtrd1+Bpf0WzL85JGFMlObVXVRVP1IJiYqv8JvhLUEsJm0ZoCl/enstIAIETWarD
+         /2r/59P1ra2EFx3NUX1AzS3iP1DZovYLJW/fZMwi2sYPGehGQEt85UmHkaikG191Cfe0
+         fVqTRsgyfAPPbLsqbhDQMgwXWSrE/bOjDh00xQRKOJJQWhgJczD+YgR3AwVNn2H42LxH
+         34wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708276452; x=1708881252;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5PgXy1mNzNznf4vOrmS/GojRXSRWqYAQYz0rl4V8+Nk=;
+        b=U7ggxiFqWIMZn4LdA+g2gq65KYPi7XX8jhGbrfxb6WJj5M6FYfYx37ePeN5YdUtjro
+         iabtX5SrFoNtyxFSBcwqAdBMfYw6wY0MWFJfybOb4pxquPykLCTd4PkVom/ZBEvr4sGS
+         OZ818Pc0XqCXG0Ges6UzEkQ1L+VRQd7mteaYlFiDaT2ijCgfa1saYRDUwwbVosfrdndA
+         1yD63hwhNtNSgPSqg41mVeA7thqv2cgOgpQAMLAfF5NmDUnCLDyskLNvIDTQzeMIQ5p5
+         NNNnfS4JAuWC6xAJ8sckLRN8SofrccI4wDMnbB1FcXmWk/auTwIfu2m3bvGHJ6CcV1gK
+         ewvA==
+X-Forwarded-Encrypted: i=1; AJvYcCVrVLo5aWj7534Jo7yYi2jeDoH2ioaY9+rY3r8nUjKWMlfxwFcuXV+rzwNbHqSHnHIobVE2C015ettwul6JAbtpSKGdWQPHjxoZ9OFI
+X-Gm-Message-State: AOJu0YxyubWBp4U4owi5+MtszreJUcCC5FSrNu1rPT0v+JVz2kteSAol
+	uEth8pE1h3nHIB92xIBqzDa7GP/iZxMe3RwVXtHs9F5fCyjQ1QNWuXn7nFVluXo=
+X-Google-Smtp-Source: AGHT+IEfeVD9FTs1tbP21ChidSSSzh6e4y/Zb+Eco3tgIv7H2djxYDlNAVeZed/uf0Qg3ajMvLhDXA==
+X-Received: by 2002:a17:906:40d2:b0:a3d:d0fa:e2dc with SMTP id a18-20020a17090640d200b00a3dd0fae2dcmr5267607ejk.55.1708276452087;
+        Sun, 18 Feb 2024 09:14:12 -0800 (PST)
+Received: from ?IPV6:2001:1c06:2302:5600:366d:ca8f:f3af:381? (2001-1c06-2302-5600-366d-ca8f-f3af-0381.cable.dynamic.v6.ziggo.nl. [2001:1c06:2302:5600:366d:ca8f:f3af:381])
+        by smtp.gmail.com with ESMTPSA id ha1-20020a170906a88100b00a381ca0e589sm2085309ejb.22.2024.02.18.09.14.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Feb 2024 09:14:11 -0800 (PST)
+Message-ID: <44c669a0-3722-4a58-be78-0c91f0573ca1@linaro.org>
+Date: Sun, 18 Feb 2024 17:14:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm6150: define USB-C related blocks
+Content-Language: en-US
+To: Danila Tikhonov <danila@jiaxyga.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
+ robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ gregkh@linuxfoundation.org, quic_wcheng@quicinc.com
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-usb@vger.kernel.org
+References: <20240217163201.32989-1-danila@jiaxyga.com>
+ <20240217163201.32989-4-danila@jiaxyga.com>
+ <6bf11ccd-ff08-369b-913f-277c189afb76@linaro.org>
+ <b0b732b8-456a-4021-8277-cd51f01ead17@jiaxyga.com>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <b0b732b8-456a-4021-8277-cd51f01ead17@jiaxyga.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240218-keee-u32-cleanup-v4-9-71f13b7c3e60@lunn.ch>
-References: <20240218-keee-u32-cleanup-v4-0-71f13b7c3e60@lunn.ch>
-In-Reply-To: <20240218-keee-u32-cleanup-v4-0-71f13b7c3e60@lunn.ch>
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, Ariel Elior <aelior@marvell.com>, 
- Manish Chopra <manishc@marvell.com>, 
- Jesse Brandeburg <jesse.brandeburg@intel.com>, 
- Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: linux-usb@vger.kernel.org, netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org, 
- Andrew Lunn <andrew@lunn.ch>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=5127; i=andrew@lunn.ch;
- h=from:subject:message-id; bh=RuYxKjCx1KM7jfq1OwKbVsYU1FZNAf3c6Gkohmi02zY=;
- b=owEBbQKS/ZANAwAKAea/DcumaUyEAcsmYgBl0jlBT9FVJM6jr1aNdxTyfnA2A/SCXlRGYnR35
- FjwQd/txRKJAjMEAAEKAB0WIQRh+xAly1MmORb54bfmvw3LpmlMhAUCZdI5QQAKCRDmvw3LpmlM
- hEmiD/45OjbJdmoKPe3LT4Pn6JzQpmCkgG+uMi3Q8A+XS780OsviI9D2SJBTB9tUt9bS9mBq6CB
- b24ihU5CFCSOgNYlaAjJ7V3HQvueqM1YQRhxtVrcY9dgxZqbMqdS1jM5kEA/atcffWugNjIpd9l
- sB4GvqWhsEFZVLofmmIf+g2pl1E4yGcR4E9PNsOm3hDxRPs7Y0044FEvCMeM1FaF9q8jGUb4eAY
- v1nh72ooROoPtZ0O9JSaSCTdoNrLxjLOD6Iod/1PBrkmn37qc0O6QEh26JFgCKTVgn5Hs7Ubi69
- Gt3fg6po+8nmeiL59eD155DwuyTqBLhoSs9vdonNpCuNhQBVtUU48esETVMGmShvbfKJo+NGV1x
- S5SeO5VE6ZrUGozQgl1lbANIzYRv9RjmChOh2WNK9aU329h2Pcm3YdkRgs+eB3sDUx2kixOZN2Q
- HrqPyMinxjko/SRQnr5G3RymMvvM2iGUSClC5iblmsiDlrc6dOgfdbuGjtOA4R/dfmS4JU9mGfC
- 2/P1LtxwPhpUYuLNQ8bP76NxN7Ox/sViWTiKs32UznzzZFQBeJNaTbiYCfIZ2Y6ul02AUHPupxO
- nCMK8OJbrS6VBrk0FRPJhgH/2OgrtRrNkb9L+I+LIror0v4DVw+lsopECstrrnryFvbYo/WadhE
- o2ewBq29LTRAYuQ==
-X-Developer-Key: i=andrew@lunn.ch; a=openpgp;
- fpr=61FB1025CB53263916F9E1B7E6BF0DCBA6694C84
 
-All MAC drivers have been converted to use the link mode members of
-keee. So remove the _u32 values, and the code in the ethtool core to
-convert the legacy _u32 values to link modes.
+On 18/02/2024 8:05 a.m., Danila Tikhonov wrote:
+> I know that some interrupts have both for PM8150B, but for PM6150 all 
+> interrupts are rising.
+> Please look at the downstream kernel:
+> https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/blob/187022f2721d584ac4ec92c0ac1af77da487521d/arch/arm64/boot/dts/qcom/pm6150.dtsi#L319
+> https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/blob/187022f2721d584ac4ec92c0ac1af77da487521d/arch/arm64/boot/dts/qcom/pm8150b.dtsi#L292
+> 
 
-Signed-off-by: Andrew Lunn <andrew@lunn.ch>
+
+Please take a look here, I think the same logic should apply to your 
+patchset.
+
+https://www.spinics.net/lists/devicetree/msg665558.html
+
 ---
- include/linux/ethtool.h |  3 ---
- net/ethtool/eee.c       | 31 ++++---------------------------
- net/ethtool/ioctl.c     | 29 ++++++++++-------------------
- 3 files changed, 14 insertions(+), 49 deletions(-)
-
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index b90c33607594..9901e563f706 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -226,9 +226,6 @@ struct ethtool_keee {
- 	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
- 	__ETHTOOL_DECLARE_LINK_MODE_MASK(advertised);
- 	__ETHTOOL_DECLARE_LINK_MODE_MASK(lp_advertised);
--	u32	supported_u32;
--	u32	advertised_u32;
--	u32	lp_advertised_u32;
- 	u32	tx_lpi_timer;
- 	bool	tx_lpi_enabled;
- 	bool	eee_active;
-diff --git a/net/ethtool/eee.c b/net/ethtool/eee.c
-index db6faa18fe41..bf398973eb8a 100644
---- a/net/ethtool/eee.c
-+++ b/net/ethtool/eee.c
-@@ -4,9 +4,6 @@
- #include "common.h"
- #include "bitset.h"
- 
--#define EEE_MODES_COUNT \
--	(sizeof_field(struct ethtool_keee, supported_u32) * BITS_PER_BYTE)
--
- struct eee_req_info {
- 	struct ethnl_req_info		base;
- };
-@@ -41,15 +38,6 @@ static int eee_prepare_data(const struct ethnl_req_info *req_base,
- 	ret = dev->ethtool_ops->get_eee(dev, eee);
- 	ethnl_ops_complete(dev);
- 
--	if (!ret && !ethtool_eee_use_linkmodes(eee)) {
--		ethtool_convert_legacy_u32_to_link_mode(eee->supported,
--							eee->supported_u32);
--		ethtool_convert_legacy_u32_to_link_mode(eee->advertised,
--							eee->advertised_u32);
--		ethtool_convert_legacy_u32_to_link_mode(eee->lp_advertised,
--							eee->lp_advertised_u32);
--	}
--
- 	return ret;
- }
- 
-@@ -62,11 +50,6 @@ static int eee_reply_size(const struct ethnl_req_info *req_base,
- 	int len = 0;
- 	int ret;
- 
--	BUILD_BUG_ON(sizeof(eee->advertised_u32) * BITS_PER_BYTE !=
--		     EEE_MODES_COUNT);
--	BUILD_BUG_ON(sizeof(eee->lp_advertised_u32) * BITS_PER_BYTE !=
--		     EEE_MODES_COUNT);
--
- 	/* MODES_OURS */
- 	ret = ethnl_bitset_size(eee->advertised, eee->supported,
- 				__ETHTOOL_LINK_MODE_MASK_NBITS,
-@@ -154,16 +137,10 @@ ethnl_set_eee(struct ethnl_req_info *req_info, struct genl_info *info)
- 	if (ret < 0)
- 		return ret;
- 
--	if (ethtool_eee_use_linkmodes(&eee)) {
--		ret = ethnl_update_bitset(eee.advertised,
--					  __ETHTOOL_LINK_MODE_MASK_NBITS,
--					  tb[ETHTOOL_A_EEE_MODES_OURS],
--					  link_mode_names, info->extack, &mod);
--	} else {
--		ret = ethnl_update_bitset32(&eee.advertised_u32, EEE_MODES_COUNT,
--					    tb[ETHTOOL_A_EEE_MODES_OURS],
--					    link_mode_names, info->extack, &mod);
--	}
-+	ret = ethnl_update_bitset(eee.advertised,
-+				  __ETHTOOL_LINK_MODE_MASK_NBITS,
-+				  tb[ETHTOOL_A_EEE_MODES_OURS],
-+				  link_mode_names, info->extack, &mod);
- 	if (ret < 0)
- 		return ret;
- 	ethnl_update_bool(&eee.eee_enabled, tb[ETHTOOL_A_EEE_ENABLED], &mod);
-diff --git a/net/ethtool/ioctl.c b/net/ethtool/ioctl.c
-index 1763e8b697e1..5464f237d8dd 100644
---- a/net/ethtool/ioctl.c
-+++ b/net/ethtool/ioctl.c
-@@ -1513,9 +1513,6 @@ static void eee_to_keee(struct ethtool_keee *keee,
- {
- 	memset(keee, 0, sizeof(*keee));
- 
--	keee->supported_u32 = eee->supported;
--	keee->advertised_u32 = eee->advertised;
--	keee->lp_advertised_u32 = eee->lp_advertised;
- 	keee->eee_active = eee->eee_active;
- 	keee->eee_enabled = eee->eee_enabled;
- 	keee->tx_lpi_enabled = eee->tx_lpi_enabled;
-@@ -1532,6 +1529,8 @@ static void eee_to_keee(struct ethtool_keee *keee,
- static void keee_to_eee(struct ethtool_eee *eee,
- 			const struct ethtool_keee *keee)
- {
-+	bool overflow;
-+
- 	memset(eee, 0, sizeof(*eee));
- 
- 	eee->eee_active = keee->eee_active;
-@@ -1539,22 +1538,14 @@ static void keee_to_eee(struct ethtool_eee *eee,
- 	eee->tx_lpi_enabled = keee->tx_lpi_enabled;
- 	eee->tx_lpi_timer = keee->tx_lpi_timer;
- 
--	if (ethtool_eee_use_linkmodes(keee)) {
--		bool overflow;
--
--		overflow = !ethtool_convert_link_mode_to_legacy_u32(&eee->supported,
--								    keee->supported);
--		ethtool_convert_link_mode_to_legacy_u32(&eee->advertised,
--							keee->advertised);
--		ethtool_convert_link_mode_to_legacy_u32(&eee->lp_advertised,
--							keee->lp_advertised);
--		if (overflow)
--			pr_warn("Ethtool ioctl interface doesn't support passing EEE linkmodes beyond bit 32\n");
--	} else {
--		eee->supported = keee->supported_u32;
--		eee->advertised = keee->advertised_u32;
--		eee->lp_advertised = keee->lp_advertised_u32;
--	}
-+	overflow = !ethtool_convert_link_mode_to_legacy_u32(&eee->supported,
-+							    keee->supported);
-+	ethtool_convert_link_mode_to_legacy_u32(&eee->advertised,
-+						keee->advertised);
-+	ethtool_convert_link_mode_to_legacy_u32(&eee->lp_advertised,
-+						keee->lp_advertised);
-+	if (overflow)
-+		pr_warn("Ethtool ioctl interface doesn't support passing EEE linkmodes beyond bit 32\n");
- }
- 
- static int ethtool_get_eee(struct net_device *dev, char __user *useraddr)
-
--- 
-2.43.0
-
+bod
 
