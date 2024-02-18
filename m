@@ -1,110 +1,138 @@
-Return-Path: <linux-kernel+bounces-70540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A8C58598FC
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:11:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8248598FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:13:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D33331F229FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:10:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1BCC1C20F1F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:13:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801F973167;
-	Sun, 18 Feb 2024 19:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Adi8QjoG"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634CE71B24;
+	Sun, 18 Feb 2024 19:13:01 +0000 (UTC)
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407EF6F511
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 19:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BD091D696;
+	Sun, 18 Feb 2024 19:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708283432; cv=none; b=PK5Db7uQ1vu68vj58B9whp7Ldyg1Ju5Sq/H4owmtx3sfdxN90K9omcBtp2xrUzQzvq4nmJcGtN5s6LxW8YpYpMMUPcSnhPG+kcS5Us+8HD118+ptUFJDFejingAvdiJaZ2crODqn4gqrMYYfos1n2he4daDs4BU20UUzmhZE2aM=
+	t=1708283581; cv=none; b=gsiv0VJAG4RCsysNDJFVqXx5ffkInEi7JYXaZrGWOq3VXNmDdroURF9D5q6LR4pHZlwbjaIw1Aq/CUeeBcddNGcGkVOis6keE+ZmLzius+mCT6fpuH3ylO67amektZwh/3QJPP2GHvuJH3c7iqqEMivQBAPr0CtU24Obgt7SusM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708283432; c=relaxed/simple;
-	bh=C+4nxFZBqNlqit0yXwEnwf8ZCrqFiLqFqZe2842sj7s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PcMBPxW89oUSGjRF7amKcbzhGmgF8O5arewfSxrKZZ8tJxaMz0/VUqkl5c6OOEW/uOex7iAq4y/WbacuzcQ/Ld8VJ5qLWAvwQwWHkXYfmW4Ei9tPgDGk/M1MJ0DV6Z+fiH4B3zX44xpG3m3sAF60bmz6ErA1XKAfR/1pKdyEFdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Adi8QjoG; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=mzw3JFNrqj9QCCSMwfJzzL23wHmF4f7t1d4OEg6cGmg=; b=Adi8QjoGmsLvn81xZIEjpyOIDV
-	XRnuflwjaEw5tDUro/Dkq42Vdm9RjhUYDlI+O/GqYxMMN1gcJOQJdl0SAe9uVVIG5LWrp+7fqL41H
-	41hsu+g2vVS62HuPk9XDb1i0MECFzpqvseTqWuT9kUFBhc3JUT39F2xkMLpho6FIz98zX7553RuOd
-	s5bAmnPo6BbuSzQQjYHxV6GEbXFus5AZZ5JtB+i4FCDQINCbKrwiHtzG+FIjHi4OBMPXwuW8ukxZK
-	CLUQ2dq4xQ7Lnvx4lFWrywMvIsbrkET/w4lIYBJtS0ycNnPnE79ckCkpposNN5dU1zQ1KDWCHSv5h
-	K8AK1Y3g==;
-Received: from [50.53.50.0] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rbmYX-00000008Hko-0kXt;
-	Sun, 18 Feb 2024 19:10:29 +0000
-Message-ID: <ae677f7e-0694-4af0-8f43-df839444aca8@infradead.org>
-Date: Sun, 18 Feb 2024 11:10:28 -0800
+	s=arc-20240116; t=1708283581; c=relaxed/simple;
+	bh=zO/LuEh8ruW5c8elMQENCvHE5l8w1EYu5MI98z83Z88=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IchtMZp5E/kqOvmknycNQKCmkPraO/B0gMFAxrYecqOYbZ0jGdpAqSP1P6qZdcIJy646A+M3if4TyFdtb36sa/B4TycPc5y1IrQIlilMcRUjB37UsZb5SpnwzrLtnVGCUCnyGD2L2w56BRsXjv/RvYy3S/rDdlr98krSUX4WLZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id DA44B1C006B; Sun, 18 Feb 2024 20:12:56 +0100 (CET)
+Date: Sun, 18 Feb 2024 20:12:56 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	Kentaro Takeda <takedakn@nttdata.co.jp>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Eric Biederman <ebiederm@xmission.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, surenb@google.com,
+	michael.christie@oracle.com, mst@redhat.com, mjguzik@gmail.com,
+	npiggin@gmail.com, zhangpeng.00@bytedance.com, hca@linux.ibm.com
+Subject: Re: [PATCH AUTOSEL 5.10 7/8] exec: Distinguish in_execve from in_exec
+Message-ID: <ZdJWuMifIiNnrLbZ@duo.ucw.cz>
+References: <20240202184156.541981-1-sashal@kernel.org>
+ <20240202184156.541981-7-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH printk v2 10/26] printk: nbcon: Fix kerneldoc for enums
-Content-Language: en-US
-To: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
- Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240218185726.1994771-1-john.ogness@linutronix.de>
- <20240218185726.1994771-11-john.ogness@linutronix.de>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240218185726.1994771-11-john.ogness@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="RWb6j82WY1Y0XPxm"
+Content-Disposition: inline
+In-Reply-To: <20240202184156.541981-7-sashal@kernel.org>
 
 
+--RWb6j82WY1Y0XPxm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 2/18/24 10:57, John Ogness wrote:
-> Kerneldoc requires enums to be specified as such. Otherwise it is
-> interpreted as function documentation.
-> 
-> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Hi!
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+> From: Kees Cook <keescook@chromium.org>
+>=20
+> [ Upstream commit 90383cc07895183c75a0db2460301c2ffd912359 ]
+>=20
+> Just to help distinguish the fs->in_exec flag from the current->in_execve
+> flag, add comments in check_unsafe_exec() and copy_fs() for more
+> context. Also note that in_execve is only used by TOMOYO now.
 
-Thanks.
+These are just a whitespace changes, we should not need them.
 
-> ---
->  include/linux/console.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/console.h b/include/linux/console.h
-> index 5c55faa013e8..d8922282efa1 100644
-> --- a/include/linux/console.h
-> +++ b/include/linux/console.h
-> @@ -130,7 +130,7 @@ static inline int con_debug_leave(void)
->   */
->  
->  /**
-> - * cons_flags - General console flags
-> + * enum cons_flags - General console flags
->   * @CON_PRINTBUFFER:	Used by newly registered consoles to avoid duplicate
->   *			output of messages that were already shown by boot
->   *			consoles or read by userspace via syslog() syscall.
-> @@ -211,7 +211,7 @@ struct nbcon_state {
->  static_assert(sizeof(struct nbcon_state) <= sizeof(int));
->  
->  /**
-> - * nbcon_prio - console owner priority for nbcon consoles
-> + * enum nbcon_prio - console owner priority for nbcon consoles
->   * @NBCON_PRIO_NONE:		Unused
->   * @NBCON_PRIO_NORMAL:		Normal (non-emergency) usage
->   * @NBCON_PRIO_EMERGENCY:	Emergency output (WARN/OOPS...)
+Best regards,
+								Pavel
 
--- 
-#Randy
+> +++ b/fs/exec.c
+> @@ -1565,6 +1565,7 @@ static void check_unsafe_exec(struct linux_binprm *=
+bprm)
+>  	}
+>  	rcu_read_unlock();
+> =20
+> +	/* "users" and "in_exec" locked for copy_fs() */
+>  	if (p->fs->users > n_fs)
+>  		bprm->unsafe |=3D LSM_UNSAFE_SHARE;
+>  	else
+> diff --git a/include/linux/sched.h b/include/linux/sched.h
+> index aa015416c569..65cfe85de8d5 100644
+> --- a/include/linux/sched.h
+> +++ b/include/linux/sched.h
+> @@ -806,7 +806,7 @@ struct task_struct {
+>  	 */
+>  	unsigned			sched_remote_wakeup:1;
+> =20
+> -	/* Bit to tell LSMs we're in execve(): */
+> +	/* Bit to tell TOMOYO we're in execve(): */
+>  	unsigned			in_execve:1;
+>  	unsigned			in_iowait:1;
+>  #ifndef TIF_RESTORE_SIGMASK
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 633b0af1d1a7..906dbaf25058 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -1452,6 +1452,7 @@ static int copy_fs(unsigned long clone_flags, struc=
+t task_struct *tsk)
+>  	if (clone_flags & CLONE_FS) {
+>  		/* tsk->fs is already what we want */
+>  		spin_lock(&fs->lock);
+> +		/* "users" and "in_exec" locked for check_unsafe_exec() */
+>  		if (fs->in_exec) {
+>  			spin_unlock(&fs->lock);
+>  			return -EAGAIN;
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--RWb6j82WY1Y0XPxm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdJWuAAKCRAw5/Bqldv6
+8vEZAKCsYpt/9YYcVItFN4Cb+Qx3eGNUzACePikZNygBi7iNKiPV0JHUidFNPlk=
+=Wlsl
+-----END PGP SIGNATURE-----
+
+--RWb6j82WY1Y0XPxm--
 
