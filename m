@@ -1,307 +1,840 @@
-Return-Path: <linux-kernel+bounces-70278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F737859585
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:07:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20C2B859586
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:07:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A89831C20B4B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:07:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD325281F89
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5E01078D;
-	Sun, 18 Feb 2024 08:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA17712B75;
+	Sun, 18 Feb 2024 08:07:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="inpPsbN5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HjCzW61k"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910AE2903
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 08:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92771CA78;
+	Sun, 18 Feb 2024 08:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708243643; cv=none; b=PoKBJ9P6hLhTyrIrqQ6f/DPwSvqp40ugVWZ9zbExTOisKccA2Lx/Py5Jc1oeW0BVWDs/eJ9Ev1elMSPUdwZcolT5i8HEPyVU1M8119+32InEkQBWM6/+2PC2P7EANg/A7+5sVmG7StuE5QZIPRIvs1gtETXowa86/nPzbktoBEI=
+	t=1708243644; cv=none; b=HzgG3H6VJojPUKrFOdYKWKQuuH9mklJOlr1DVuL7Xubfyf1mOEiJN+MzCgThoFWHrfD+8PAcgrdwGfGUALqLpZMYDhc76Ep8B9R6tmU33fne39GOVkLK9/xLt3WGx/420NaayGpV2LX9GZFVjligDI+J+MvkPU//wLYIQmVfNr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708243643; c=relaxed/simple;
-	bh=DdZAQ6O4mU4Dgqwya3Gydo+92TRLusgyQd9na6dhnsQ=;
+	s=arc-20240116; t=1708243644; c=relaxed/simple;
+	bh=qBeVKzb72J1xobvuoXrXCUE855yvOtPpmPkLSwbzaYw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SBO6IhcAlapKns/tBaTYJ8/aSws3PwqndTi73M1NRmQyrdbtPc5B+/nr1kULToubfQki1znaF0wRoNdS7CRs19xVbwO0ZEkVpzBx3y+5BwtTflZUMIBCC5IHawKSAJ4D+vMl2CVGR89Vqvh/DXQzxyYYEJJvHmdTD4RXR/9K8g8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=inpPsbN5; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708243640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5Jtfh06HICiZjq82VG1z1ScLpR7A6O8tDUT6Uaocrgg=;
-	b=inpPsbN5c1IBKL3k4iW5e2JrAziE/+yA/AnVuJw+5/6BSvXW2rvjnwb7gNKo8XYtGAj8Yv
-	t4GT6/fIPBUgAdt0+U/76AdUz1e3EGTEJ0dYRMcxdg38ykwouF5l8Kqy/8vCwyMpqS4f4M
-	Mbc+NHlANvE7RAeR7i/0iAziPscqHYA=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-80-_vvx-bmGPv6ZreYsKwELsg-1; Sun, 18 Feb 2024 03:07:15 -0500
-X-MC-Unique: _vvx-bmGPv6ZreYsKwELsg-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d4212b6871so26133455ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 00:07:15 -0800 (PST)
+	 To:Cc:Content-Type; b=QXg+MPuGzJNhBaWIGv0RHu+avURqwdMG9eQzir9UJHC1MsCjtO3sb7Ij2uqcgUGG912P/Z3CoQ2L4kTySFWHaJ2wj9PXEvlV4CvnV2oew+3MYfPDN0MRPhgL+nWGGGA6mOnUyhMoEhIjMwLauJegwm7JBrbmnaEYHffycznIZVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HjCzW61k; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563f675be29so2169799a12.0;
+        Sun, 18 Feb 2024 00:07:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708243640; x=1708848440; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WPd2Ozs1UFSW3dfR30Gq70n3L3wHsM8hGINffyFot20=;
+        b=HjCzW61kjHXv8YarQXADeU/kB95tmOoY7wS3ul5HOlbtkd0JRJrWdF5tmH5bcTWqOO
+         3CYwnVvMmh3XxqBXVlC21UeqXRXcpWk29Rr8OF/HC4gKlkAcxK9u+qjoGzG5SpaErPTE
+         evRqbPC6CfOpMDqHMAG1lcBTN9mKrEbq9jaefGoDhv1rCxuHR/CEkBbGlWQ3mc2U2wb6
+         vOOMev0e/ZzWShE9SuXkdkhAFkM8Owhj7sWT9mjKDWgirvqpsf9/e2Yy73kxIm79nOIK
+         jI6pB7vWBIo+y5PHMC2T0ce8BJCRMBF5WUkcielQckDtdWNftiViZVrPAmLbIWrAnIaT
+         E76A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708243634; x=1708848434;
+        d=1e100.net; s=20230601; t=1708243640; x=1708848440;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5Jtfh06HICiZjq82VG1z1ScLpR7A6O8tDUT6Uaocrgg=;
-        b=qpxQUPQyqzge1n8uqSq/qtYmAhYkfqHjMGtL45fsmmz1+atVTBljqyCk6A8V42RlM0
-         npSpPmPfrm6FuMKvw5TfRyk47y5OOjfArRh5bE3oaQ9jr65W+vO9xScOfSVarMrGR6P8
-         IWKsbksSqRVvWjTojANQ1/e/GjQEcHv73iQhw3sSUvDehh1qGm8AOdYUxGHrSZs6H0EM
-         /IZ/lXM7bvVymBbu2tITZRFx2A96+6x7Ib0j5gf3ceqkaDsaWUuLccuUvmt47BDwP/Ro
-         LLhkO3KnmLF17VOkbBndmfjB14Olc4Dcwmda671p4xShCAmvNy1rnX5T1vLdLW+fFV0W
-         o4Zw==
-X-Forwarded-Encrypted: i=1; AJvYcCXQROkU3plZHC8hSG66764lhJHX1wNZZjDnSuhK6pffufuLlWvxfluhJh22HxU0XoHae9Z+6Icmp3iU/VNjm8zzSIbFoMskVeTbHm+F
-X-Gm-Message-State: AOJu0Yw5/V98N/dbCORCehSk6+pR+HR9z57YlPeO56Js9FHkz9Kren+0
-	gVf6OUhykCW07hIIsLqNF54RgtogR70UGymIgj2uYLnI15Fqx4yEA3+6XfW9FJ1dYJ2ouK5jeqU
-	fEDbq1+OfQaMItGjIA92FdL2AiY43KSH6PwPd+RZmK0B8HFTy+Qfz+02aTwogYoQ6AmU4Vg7VYK
-	jWOKHUKNtnYaHDh+TAKyPKmshCt2H8BU1kCPbm
-X-Received: by 2002:a17:902:f54a:b0:1db:579a:9fda with SMTP id h10-20020a170902f54a00b001db579a9fdamr12147573plf.61.1708243634366;
-        Sun, 18 Feb 2024 00:07:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHEYJq2UrivG1TuOO3YvaqUJDyMbQhvJyfjOV2g5r9qvL9XxPqvvp7JAKz5Ku9oGvgmpO3Sdn6fv6+tlM29m+A=
-X-Received: by 2002:a17:902:f54a:b0:1db:579a:9fda with SMTP id
- h10-20020a170902f54a00b001db579a9fdamr12147561plf.61.1708243634082; Sun, 18
- Feb 2024 00:07:14 -0800 (PST)
+        bh=WPd2Ozs1UFSW3dfR30Gq70n3L3wHsM8hGINffyFot20=;
+        b=HMpaUmDapVgyVWEMFs3biiHN7LfmHE7y6wH+Kq5AAbLq31ltvl7Z1iQ1ywQTiClZgP
+         wIGc+4Milfiwp9qkPSDsu8xvWbZ+Kv3q7PruaVaKd1DCPQZ/Sd3gMldOzIoOZIkVlIaL
+         BGMj2uPcFOsHV2hFs3Bj5kQsuQ+JFL09N6zAMGM4nKP3y5U1MN3YtBKVcZ8Lklw6GWEa
+         QxhENnoe1/5Jrv5nQPL4CoxR0LXD9g+7R617eleR9k5tLVE3kdnA+ezcXNIXooS9Xjn+
+         WVdf3qQnKq29L1sd+eFINMzcg04zmBEJfSt2ZXRSmyqpZ701n7ZwgCv2BL08k6j7O4EW
+         WMmw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5iu1dG3FxksJtC5pYjdpZk4iEewroZtjyHU3t6h9K4imXmfNZPcli8hkeunaQfnPPfXJQUVWn37KA5T6iyT8wHTqWicl0iWtuXGexAK0z5UJt0NtakoFJuVAci2qLGRJXBlM8ZM5HMw==
+X-Gm-Message-State: AOJu0YwCojhh9lo5vGa3yUriE4Hbw4+ZweUowsfGx9SwNTQWduVcI9fl
+	w1ZY4Va4jQlOZNKwdzZgBJdsN3gF4jtBN7EEovQfHGgKiwToPI7zbPwhGyem7f0g0yu0K7l8Y/f
+	7siN5SqJO6SctNsJ1aoWBcuMgX2Y=
+X-Google-Smtp-Source: AGHT+IGC6yQExWCZnxucJaGQPlEbsayihGwvBao0t+rL7IPB/OWHYUqB0tHffs0OsyhqSKLN/xjeN/F1N8HMgqEfmRA=
+X-Received: by 2002:a05:6402:2d2:b0:564:3854:f466 with SMTP id
+ b18-20020a05640202d200b005643854f466mr1304921edx.34.1708243639444; Sun, 18
+ Feb 2024 00:07:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <20240201092559.910982-2-yukuai1@huaweicloud.com> <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
- <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com> <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
- <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com> <CALTww28bUzmQASme3XOz0CY=o86f1EUU23ENmnf42UVyuGzQ4Q@mail.gmail.com>
- <c1195efd-dd83-317e-3067-cd4891ae013e@huaweicloud.com> <CALTww2-7tTMdf_XZ60pNKH_QCq3OUX2P==VPXZo3f-dHzVhmnw@mail.gmail.com>
- <2fa01c30-2ee7-7c01-6833-bf74142e6d7c@huaweicloud.com> <CALTww2-HngEJ9z9cYZ0=kcfuKMpziH3utSgk_8u3dxc553ZNeg@mail.gmail.com>
- <5480b350-efe3-2be7-cf3b-3a62bb0e012b@huaweicloud.com>
-In-Reply-To: <5480b350-efe3-2be7-cf3b-3a62bb0e012b@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Sun, 18 Feb 2024 16:07:02 +0800
-Message-ID: <CALTww2-_uvkB7M=_J_6DgW1kfzW2rpQgp0vyKt7EYvON41adGw@mail.gmail.com>
-Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in md_check_recovery()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com, 
-	agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org, 
-	neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org, 
-	linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com, 
-	"yukuai (C)" <yukuai3@huawei.com>, Jonathan Brassow <jbrassow@redhat.com>
+References: <20240218065407.652213-1-zhangzj@rock-chips.com>
+In-Reply-To: <20240218065407.652213-1-zhangzj@rock-chips.com>
+From: Weizhao Ouyang <o451686892@gmail.com>
+Date: Sun, 18 Feb 2024 16:07:08 +0800
+Message-ID: <CAHk0Hov1dryZmwxo40wnzExtHPSRxHOmU_0T3BPDXVZ8k75JZw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] arm64: dts: rockchip: Add devicetree support for
+ TB-RK3588X board
+To: Elon Zhang <zhangzj@rock-chips.com>
+Cc: heiko@sntech.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	conor+dt@kernel.org, weizhao.ouyang@arm.com, linux-kernel@vger.kernel.org, 
+	linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	devicetree@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 18, 2024 at 2:22=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> Hi,
->
-> =E5=9C=A8 2024/02/18 13:07, Xiao Ni =E5=86=99=E9=81=93:
-> > On Sun, Feb 18, 2024 at 11:24=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.c=
-om> wrote:
-> >>
-> >> Hi,
-> >>
-> >> =E5=9C=A8 2024/02/18 11:15, Xiao Ni =E5=86=99=E9=81=93:
-> >>> On Sun, Feb 18, 2024 at 10:34=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud=
-com> wrote:
-> >>>>
-> >>>> Hi,
-> >>>>
-> >>>> =E5=9C=A8 2024/02/18 10:27, Xiao Ni =E5=86=99=E9=81=93:
-> >>>>> On Sun, Feb 18, 2024 at 9:46=E2=80=AFAM Yu Kuai <yukuai1@huaweiclou=
-d.com> wrote:
-> >>>>>>
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> =E5=9C=A8 2024/02/18 9:33, Xiao Ni =E5=86=99=E9=81=93:
-> >>>>>>> The deadlock problem mentioned in this patch should not be right?
-> >>>>>>
-> >>>>>> No, I think it's right. Looks like you are expecting other problem=
-s,
-> >>>>>> like mentioned in patch 6, to be fixed by this patch.
-> >>>>>
-> >>>>> Hi Kuai
-> >>>>>
-> >>>>> Could you explain why step1 and step2 from this comment can happen
-> >>>>> simultaneously? From the log, the process should be
-> >>>>> The process is :
-> >>>>> dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(=
-raid_postsuspend)
-> >>>>> -> dm_table_destroy(raid_dtr).
-> >>>>> After suspending the array, it calls raid_dtr. So these two functio=
-ns
-> >>>>> can't happen simultaneously.
-> >>>>
-> >>>> You're removing the target directly, however, dm can suspend the dis=
-k
-> >>>> directly, you can simplily:
-> >>>>
-> >>>> 1) dmsetup suspend xxx
-> >>>> 2) dmsetup remove xxx
-> >>>
-> >>> For dm-raid, the design of suspend stops sync thread first and then i=
-t
-> >>> calls mddev_suspend to suspend array. So I'm curious why the sync
-> >>> thread can still exit when array is suspended. I know the reason now.
-> >>> Because before f52f5c71f (md: fix stopping sync thread), the process
-> >>> is raid_postsuspend->md_stop_writes->__md_stop_writes
-> >>> (__md_stop_writes sets MD_RECOVERY_FROZEN). In patch f52f5c71f, it
-> >>> doesn't set MD_RECOVERY_FROZEN in __md_stop_writes anymore.
-> >>>
-> >>> The process changes to
-> >>> 1. raid_postsuspend->md_stop_writes->__md_stop_writes->stop_sync_thre=
-ad
-> >>> (wait until MD_RECOVERY_RUNNING clears)
-> >>> 2. md thread -> md_check_recovery -> unregister_sync_thread ->
-> >>> md_reap_sync_thread (clears MD_RECOVERY_RUNNING, stop_sync_thread
-> >>> returns, md_reap_sync_thread sets MD_RECOVERY_NEEDED)
-> >>> 3. raid_postsuspend->mddev_suspend
-> >>> 4. md sync thread starts again because __md_stop_writes doesn't set
-> >>> MD_RECOVERY_FROZEN.
-> >>> It's the reason why we can see sync thread still happens when raid is=
- suspended.
-> >>>
-> >>> So the patch fix this problem should:
-> >>
-> >> As I said, this is really a different problem from this patch, and it =
-is
-> >> fixed seperately by patch 9. Please take a look at that patch.
-> >
-> > I think we're talking about the same problem. In patch07 it has a new
-> > api md_frozen_sync_thread. It sets MD_RECOVERY_FROZEN before
-> > stop_sync_thread. This is right. If we use this api in
-> > raid_postsuspend, sync thread can't restart. So the deadlock can't
-> > happen anymore?
->
-> We are not talking about the same problem at all. This patch just fix a
-> simple problem in md/raid(not dm-raid). And the deadlock can also be
-> triggered for md/raid the same.
->
-> - mddev_suspend() doesn't handle sync_thread at all;
-> - md_check_recovery() ignore suspended array;
->
-> Please keep in mind this patch just fix the above case. The deadlock in
-> dm-raid is just an example of problems caused by this. Fix the deadlock
-> other way doesn't mean this case is fine.
+Hi Elon,
 
-Because this patch set is used to fix dm raid deadlocks. But this
-patch changes logic, it looks like more a feature - "we can start/stop
-sync thread when array is suspended". Because this patch is added many
-years ago and dm raid works well. If we change this, there is
-possibilities to introduce new problems. Now we should try to walk
-slowly.
+On Sun, Feb 18, 2024 at 2:54=E2=80=AFPM Elon Zhang <zhangzj@rock-chips.com>=
+ wrote:
+>
+> Add board file for Rockchip Toybrick TB-RK3588X board.
+>
+> Specification:
+>         Rockchip Rk3588 SoC
+>         4x ARM Cortex-A76, 4x ARM Cortex-A55
+>         8/16GB Memory LPDDR4x
+>         Mali G610MC4 GPU
+>         2=C3=97 MIPI-CSI0 Connector
+>         1x 2Lanes PCIe3.0 Connector
+>         1x SATA3.0 Connector
+>         32GB eMMC Module
+>         2x USB 2.0, 2x USB 3.0
+>         1x HDMI Output, 1x HDMI Input
+>         2x Ethernet Port
+>
+> Functions work normally:
+>         [1] USB2.0 Host
+>         [2] Ethernet0 with PHY RTL8211F
+>
+> More information can be obtained from the following websites:
+>         [1] https://t.rock-chips.com/en/wiki/EN/tb-rk3588x_en/index.html
+>         [2] http://t.rock-chips.com/
+>
+> Signed-off-by: Elon Zhang <zhangzj@rock-chips.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>  .../boot/dts/rockchip/rk3588-toybrick-x0.dts  | 672 ++++++++++++++++++
+>  2 files changed, 673 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3588-toybrick-x0.dts
+>
+> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/=
+rockchip/Makefile
+> index a7b30e11beaf..e0722b6e2d99 100644
+> --- a/arch/arm64/boot/dts/rockchip/Makefile
+> +++ b/arch/arm64/boot/dts/rockchip/Makefile
+> @@ -110,6 +110,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588-nanopc-t6.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588-orangepi-5-plus.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588-quartzpro64.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588-rock-5b.dtb
+> +dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588-toybrick-x0.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588-turing-rk1.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588s-coolpi-4b.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) +=3D rk3588s-indiedroid-nova.dtb
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3588-toybrick-x0.dts b/arch/a=
+rm64/boot/dts/rockchip/rk3588-toybrick-x0.dts
+> new file mode 100644
+> index 000000000000..ef7e5ee75021
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/rockchip/rk3588-toybrick-x0.dts
+> @@ -0,0 +1,672 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
 
-And is it a deadlock? After resume, the sync thread can be
-started/stopped again. Could you explain the deadlock more?
+Do we need to update the copyright?
 
->
-> >
-> > And patch01 is breaking one logic which seems right:
-> >
-> > commit 68866e425be2ef2664aa5c691bb3ab789736acf5
-> > Author: Jonathan Brassow <jbrassow@f14.redhat.com>
-> > Date:   Wed Jun 8 15:10:08 2011 +1000
-> >
-> >      MD: no sync IO while suspended
-> >
-> >      Disallow resync I/O while the RAID array is suspended.
-> >
-> > We're trying to fix deadlock problems. But it's not good to fix a
-> > problem by breaking an existing rule.
->
-> The existing rule itself is problematic. Above patch doesn't do well.
->
-> It's just a simple problem here, should sync thread also stop in
-> mddev_suspend? If you want do do this, you can submit a patch, in the
-> right way, we'll see how this will work.
+> + *
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/pinctrl/rockchip.h>
+> +#include "rk3588.dtsi"
+> +
+> +/ {
+> +       model =3D "Rockchip Toybrick TB-RK3588X Board";
+> +       compatible =3D "rockchip,rk3588-toybrick-x0", "rockchip,rk3588";
 
-I don't want to change the logic of mddev_suspend. mddev_suspend is
-only used to suspend array. Cc Jon who is the author of this patch.
->
-> - keep this patch to remove checking of suspended array;
-> - set MD_RECOVERY_FORZEN and stop sync thread in mddev_suspend,
-> 'reconfig_mutex' will be needed again, and lots of callers need to be
-> checked.
->
-> Thanks,
-> Kuai
->
-> >
-> > Regards
-> > Xiao
-> >
-> >
-> >>
-> >> Thanks,
-> >> Kuai
-> >>
-> >>>
-> >>> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> >>> index 9e41a9aaba8b..666761466f02 100644
-> >>> --- a/drivers/md/md.c
-> >>> +++ b/drivers/md/md.c
-> >>> @@ -6315,6 +6315,7 @@ static void md_clean(struct mddev *mddev)
-> >>>
-> >>>    static void __md_stop_writes(struct mddev *mddev)
-> >>>    {
-> >>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-> >>>           stop_sync_thread(mddev, true, false);
-> >>>           del_timer_sync(&mddev->safemode_timer);
-> >>>
-> >>> Like other places which call stop_sync_thread, it needs to set the
-> >>> MD_RECOVERY_FROZEN bit.
-> >>>
-> >>> Regards
-> >>> Xiao
-> >>>
-> >>>>
-> >>>> Please also take a look at other patches, why step 1) can't stop syn=
-c
-> >>>> thread.
-> >>>>
-> >>>> Thanks,
-> >>>> Kuai
-> >>>>
-> >>>>>
-> >>>>>
-> >>>>>>
-> >>>>>> Noted that this patch just fix one case that MD_RECOVERY_RUNNING c=
-an't
-> >>>>>> be cleared, I you are testing this patch alone, please make sure t=
-hat
-> >>>>>> you still triggered the exactly same case:
-> >>>>>>
-> >>>>>> - MD_RCOVERY_RUNNING can't be cleared while array is suspended.
-> >>>>>
-> >>>>> I'm not testing this patch. I want to understand the patch well. So=
- I
-> >>>>> need to understand the issue first. I can't understand how this
-> >>>>> deadlock (step1,step2) happens.
-> >>>>>
-> >>>>> Regards
-> >>>>> Xiao
-> >>>>>>
-> >>>>>> Thanks,
-> >>>>>> Kuai
-> >>>>>>
-> >>>>>
-> >>>>> .
-> >>>>>
-> >>>>
-> >>>
-> >>> .
-> >>>
-> >>
-> >
-> > .
-> >
+"rockchip,rk3588-toybrick-x0" needs to be synchronized in
+"Documentation/devicetree/bindings/arm/rockchip.yaml".
+
+> +
+> +       aliases {
+> +               mmc0 =3D &sdhci;
+> +               serial2 =3D &uart2;
+> +       };
+> +
+> +       chosen {
+> +               stdout-path =3D "serial2:1500000n8";
+> +       };
+> +
+> +       adc-keys {
+> +               compatible =3D "adc-keys";
+> +               io-channels =3D <&saradc 1>;
+> +               io-channel-names =3D "buttons";
+> +               keyup-threshold-microvolt =3D <1800000>;
+> +               poll-interval =3D <100>;
+> +
+> +               button-vol-up {
+> +                       label =3D "Volume Up";
+> +                       linux,code =3D <KEY_VOLUMEUP>;
+> +                       press-threshold-microvolt =3D <17000>;
+> +               };
+> +
+> +               button-vol-down {
+> +                       label =3D "Volume Down";
+> +                       linux,code =3D <KEY_VOLUMEDOWN>;
+> +                       press-threshold-microvolt =3D <417000>;
+> +               };
+> +
+> +               button-menu {
+> +                       label =3D "Menu";
+> +                       linux,code =3D <KEY_MENU>;
+> +                       press-threshold-microvolt =3D <890000>;
+> +               };
+> +
+> +               button-escape {
+> +                       label =3D "Escape";
+> +                       linux,code =3D <KEY_ESC>;
+> +                       press-threshold-microvolt =3D <1235000>;
+> +               };
+> +       };
+> +
+> +       backlight: backlight {
+> +               compatible =3D "pwm-backlight";
+> +               power-supply =3D <&vcc12v_dcin>;
+> +               pwms =3D <&pwm2 0 25000 0>;
+> +       };
+> +
+> +       pcie20_avdd0v85: pcie20-avdd0v85-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "pcie20_avdd0v85";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <850000>;
+> +               regulator-max-microvolt =3D <850000>;
+> +               vin-supply =3D <&vdd_0v85_s0>;
+> +       };
+> +
+> +       pcie20_avdd1v8: pcie20-avdd1v8-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "pcie20_avdd1v8";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <1800000>;
+> +               regulator-max-microvolt =3D <1800000>;
+> +               vin-supply =3D <&avcc_1v8_s0>;
+> +       };
+> +
+> +       pcie30_avdd0v75: pcie30-avdd0v75-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "pcie30_avdd0v75";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <750000>;
+> +               regulator-max-microvolt =3D <750000>;
+> +               vin-supply =3D <&avdd_0v75_s0>;
+> +       };
+> +
+> +       pcie30_avdd1v8: pcie30-avdd1v8-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "pcie30_avdd1v8";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <1800000>;
+> +               regulator-max-microvolt =3D <1800000>;
+> +               vin-supply =3D <&avcc_1v8_s0>;
+> +       };
+> +
+> +       vcc12v_dcin: vcc12v-dcin-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "vcc12v_dcin";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <12000000>;
+> +               regulator-max-microvolt =3D <12000000>;
+> +       };
+> +
+> +       vcc5v0_host: vcc5v0-host-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "vcc5v0_host";
+> +               regulator-boot-on;
+> +               regulator-always-on;
+> +               regulator-min-microvolt =3D <5000000>;
+> +               regulator-max-microvolt =3D <5000000>;
+> +               enable-active-high;
+> +               gpio =3D <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
+> +               pinctrl-names =3D "default";
+> +               pinctrl-0 =3D <&vcc5v0_host_en>;
+> +               vin-supply =3D <&vcc5v0_usb>;
+> +       };
+> +
+> +       vcc5v0_sys: vcc5v0-sys-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "vcc5v0_sys";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <5000000>;
+> +               regulator-max-microvolt =3D <5000000>;
+> +               vin-supply =3D <&vcc12v_dcin>;
+> +       };
+> +
+> +       vcc5v0_usbdcin: vcc5v0-usbdcin-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "vcc5v0_usbdcin";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <5000000>;
+> +               regulator-max-microvolt =3D <5000000>;
+> +               vin-supply =3D <&vcc12v_dcin>;
+> +       };
+> +
+> +       vcc5v0_usb: vcc5v0-usb-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "vcc5v0_usb";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <5000000>;
+> +               regulator-max-microvolt =3D <5000000>;
+> +               vin-supply =3D <&vcc5v0_usbdcin>;
+> +       };
+> +
+> +       vcc_1v1_nldo_s3: vcc-1v1-nldo-s3-regulator {
+> +               compatible =3D "regulator-fixed";
+> +               regulator-name =3D "vcc_1v1_nldo_s3";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <1100000>;
+> +               regulator-max-microvolt =3D <1100000>;
+> +               vin-supply =3D <&vcc5v0_sys>;
+> +       };
+> +};
+> +
+> +&combphy0_ps {
+> +       status =3D "okay";
+> +};
+> +
+> +&combphy2_psu {
+> +       status =3D "okay";
+> +};
+> +
+> +&cpu_b0 {
+> +       cpu-supply =3D <&vdd_cpu_big0_s0>;
+> +};
+> +
+> +&cpu_b1 {
+> +       cpu-supply =3D <&vdd_cpu_big0_s0>;
+> +};
+> +
+> +&cpu_b2 {
+> +       cpu-supply =3D <&vdd_cpu_big1_s0>;
+> +};
+> +
+> +&cpu_b3 {
+> +       cpu-supply =3D <&vdd_cpu_big1_s0>;
+> +};
+> +
+> +&cpu_l0 {
+> +       cpu-supply =3D <&vdd_cpu_lit_s0>;
+> +};
+> +
+> +&cpu_l1 {
+> +       cpu-supply =3D <&vdd_cpu_lit_s0>;
+> +};
+> +
+> +&cpu_l2 {
+> +       cpu-supply =3D <&vdd_cpu_lit_s0>;
+> +};
+> +
+> +&cpu_l3 {
+> +       cpu-supply =3D <&vdd_cpu_lit_s0>;
+> +};
+> +
+> +&gmac0 {
+> +       clock_in_out =3D "output";
+> +       phy-handle =3D <&rgmii_phy>;
+> +       phy-mode =3D "rgmii-rxid";
+> +       pinctrl-0 =3D <&gmac0_miim
+> +                    &gmac0_tx_bus2
+> +                    &gmac0_rx_bus2
+> +                    &gmac0_rgmii_clk
+> +                    &gmac0_rgmii_bus>;
+> +       pinctrl-names =3D "default";
+> +       rx_delay =3D <0x00>;
+> +       tx_delay =3D <0x43>;
+> +       status =3D "okay";
+> +};
+> +
+> +&i2c0 {
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&i2c0m2_xfer>;
+> +       status =3D "okay";
+> +
+> +       vdd_cpu_big0_s0: regulator@42 {
+> +               compatible =3D "rockchip,rk8602";
+> +               reg =3D <0x42>;
+> +               fcs,suspend-voltage-selector =3D <1>;
+> +               regulator-name =3D "vdd_cpu_big0_s0";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <550000>;
+> +               regulator-max-microvolt =3D <1050000>;
+> +               regulator-ramp-delay =3D <2300>;
+> +               vin-supply =3D <&vcc5v0_sys>;
+> +
+> +               regulator-state-mem {
+> +                       regulator-off-in-suspend;
+> +               };
+> +       };
+> +
+> +       vdd_cpu_big1_s0: regulator@43 {
+> +               compatible =3D "rockchip,rk8603", "rockchip,rk8602";
+> +               reg =3D <0x43>;
+> +               fcs,suspend-voltage-selector =3D <1>;
+> +               regulator-name =3D "vdd_cpu_big1_s0";
+> +               regulator-always-on;
+> +               regulator-boot-on;
+> +               regulator-min-microvolt =3D <550000>;
+> +               regulator-max-microvolt =3D <1050000>;
+> +               regulator-ramp-delay =3D <2300>;
+> +               vin-supply =3D <&vcc5v0_sys>;
+> +
+> +               regulator-state-mem {
+> +                       regulator-off-in-suspend;
+> +               };
+> +       };
+> +};
+> +
+> +&i2c2 {
+> +       status =3D "okay";
+> +
+> +       hym8563: rtc@51 {
+> +               compatible =3D "haoyu,hym8563";
+> +               reg =3D <0x51>;
+> +               #clock-cells =3D <0>;
+> +               clock-output-names =3D "hym8563";
+> +               pinctrl-names =3D "default";
+> +               pinctrl-0 =3D <&hym8563_int>;
+> +               interrupt-parent =3D <&gpio0>;
+> +               interrupts =3D <RK_PD4 IRQ_TYPE_LEVEL_LOW>;
+> +               wakeup-source;
+> +       };
+> +};
+> +
+> +&mdio0 {
+> +       rgmii_phy: ethernet-phy@1 {
+> +               /* RTL8211F */
+> +               compatible =3D "ethernet-phy-id001c.c916";
+> +               reg =3D <0x1>;
+> +               pinctrl-names =3D "default";
+> +               pinctrl-0 =3D <&rtl8211f_rst>;
+> +               reset-assert-us =3D <20000>;
+> +               reset-deassert-us =3D <100000>;
+> +               reset-gpios =3D <&gpio4 RK_PB3 GPIO_ACTIVE_LOW>;
+> +       };
+> +};
+> +
+> +&pinctrl {
+> +       rtl8211f {
+> +               rtl8211f_rst: rtl8211f-rst {
+> +                       rockchip,pins =3D <4 RK_PB3 RK_FUNC_GPIO &pcfg_pu=
+ll_none>;
+> +               };
+> +
+> +       };
+> +
+> +       hym8563 {
+> +               hym8563_int: hym8563-int {
+> +                       rockchip,pins =3D <0 RK_PD4 RK_FUNC_GPIO &pcfg_pu=
+ll_up>;
+> +               };
+> +       };
+> +
+> +       usb {
+> +               vcc5v0_host_en: vcc5v0-host-en {
+> +                       rockchip,pins =3D <4 RK_PB0 RK_FUNC_GPIO &pcfg_pu=
+ll_none>;
+> +               };
+> +       };
+> +};
+> +
+> +&pwm2 {
+> +       status =3D "okay";
+> +};
+> +
+> +&saradc {
+> +       vref-supply =3D <&vcc_1v8_s0>;
+> +       status =3D "okay";
+> +};
+> +
+> +&sdhci {
+> +       bus-width =3D <8>;
+> +       no-sdio;
+> +       no-sd;
+> +       non-removable;
+> +       mmc-hs400-1_8v;
+> +       mmc-hs400-enhanced-strobe;
+> +       status =3D "okay";
+> +};
+> +
+> +&spi2 {
+> +       status =3D "okay";
+> +       assigned-clocks =3D <&cru CLK_SPI2>;
+> +       assigned-clock-rates =3D <200000000>;
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&spi2m2_cs0 &spi2m2_pins>;
+> +       num-cs =3D <1>;
+> +
+> +       pmic@0 {
+> +               compatible =3D "rockchip,rk806";
+> +               spi-max-frequency =3D <1000000>;
+> +               reg =3D <0x0>;
+> +
+> +               interrupt-parent =3D <&gpio0>;
+> +               interrupts =3D <7 IRQ_TYPE_LEVEL_LOW>;
+> +
+> +               pinctrl-names =3D "default";
+> +               pinctrl-0 =3D <&pmic_pins>, <&rk806_dvs1_null>,
+> +                           <&rk806_dvs2_null>, <&rk806_dvs3_null>;
+> +
+> +               system-power-controller;
+> +
+> +               vcc1-supply =3D <&vcc5v0_sys>;
+> +               vcc2-supply =3D <&vcc5v0_sys>;
+> +               vcc3-supply =3D <&vcc5v0_sys>;
+> +               vcc4-supply =3D <&vcc5v0_sys>;
+> +               vcc5-supply =3D <&vcc5v0_sys>;
+> +               vcc6-supply =3D <&vcc5v0_sys>;
+> +               vcc7-supply =3D <&vcc5v0_sys>;
+> +               vcc8-supply =3D <&vcc5v0_sys>;
+> +               vcc9-supply =3D <&vcc5v0_sys>;
+> +               vcc10-supply =3D <&vcc5v0_sys>;
+> +               vcc11-supply =3D <&vcc_2v0_pldo_s3>;
+> +               vcc12-supply =3D <&vcc5v0_sys>;
+> +               vcc13-supply =3D <&vcc_1v1_nldo_s3>;
+> +               vcc14-supply =3D <&vcc_1v1_nldo_s3>;
+> +               vcca-supply =3D <&vcc5v0_sys>;
+> +
+> +               gpio-controller;
+> +               #gpio-cells =3D <2>;
+> +
+> +               rk806_dvs1_null: dvs1-null-pins {
+> +                       pins =3D "gpio_pwrctrl1";
+> +                       function =3D "pin_fun0";
+> +               };
+> +
+> +               rk806_dvs2_null: dvs2-null-pins {
+> +                       pins =3D "gpio_pwrctrl2";
+> +                       function =3D "pin_fun0";
+> +               };
+> +
+> +               rk806_dvs3_null: dvs3-null-pins {
+> +                       pins =3D "gpio_pwrctrl3";
+> +                       function =3D "pin_fun0";
+> +               };
+> +
+> +               regulators {
+> +                       vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <550000>;
+> +                               regulator-max-microvolt =3D <950000>;
+> +                               regulator-ramp-delay =3D <12500>;
+> +                               regulator-name =3D "vdd_gpu_s0";
+> +                               regulator-enable-ramp-delay =3D <400>;
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vdd_cpu_lit_s0: vdd_cpu_lit_mem_s0: dcdc-reg2 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <550000>;
+> +                               regulator-max-microvolt =3D <950000>;
+> +                               regulator-ramp-delay =3D <12500>;
+> +                               regulator-name =3D "vdd_cpu_lit_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vdd_log_s0: dcdc-reg3 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <675000>;
+> +                               regulator-max-microvolt =3D <750000>;
+> +                               regulator-ramp-delay =3D <12500>;
+> +                               regulator-name =3D "vdd_log_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+750000>;
+> +                               };
+> +                       };
+> +
+> +                       vdd_vdenc_s0: vdd_vdenc_mem_s0: dcdc-reg4 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <550000>;
+> +                               regulator-max-microvolt =3D <950000>;
+> +                               regulator-init-microvolt =3D <750000>;
+> +                               regulator-ramp-delay =3D <12500>;
+> +                               regulator-name =3D "vdd_vdenc_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vdd_ddr_s0: dcdc-reg5 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <675000>;
+> +                               regulator-max-microvolt =3D <900000>;
+> +                               regulator-ramp-delay =3D <12500>;
+> +                               regulator-name =3D "vdd_ddr_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+850000>;
+> +                               };
+> +                       };
+> +
+> +                       vdd2_ddr_s3: dcdc-reg6 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-name =3D "vdd2_ddr_s3";
+> +                               regulator-state-mem {
+> +                                       regulator-on-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vcc_2v0_pldo_s3: dcdc-reg7 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <2000000>;
+> +                               regulator-max-microvolt =3D <2000000>;
+> +                               regulator-name =3D "vdd_2v0_pldo_s3";
+> +                               regulator-state-mem {
+> +                                       regulator-on-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+2000000>;
+> +                               };
+> +                       };
+> +
+> +                       vcc_3v3_s3: dcdc-reg8 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <3300000>;
+> +                               regulator-max-microvolt =3D <3300000>;
+> +                               regulator-name =3D "vcc_3v3_s3";
+> +                               regulator-state-mem {
+> +                                       regulator-on-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+3300000>;
+> +                               };
+> +                       };
+> +
+> +                       vddq_ddr_s0: dcdc-reg9 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-name =3D "vddq_ddr_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vcc_1v8_s3: dcdc-reg10 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <1800000>;
+> +                               regulator-max-microvolt =3D <1800000>;
+> +                               regulator-name =3D "vcc_1v8_s3";
+> +                               regulator-state-mem {
+> +                                       regulator-on-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+1800000>;
+> +                               };
+> +                       };
+> +
+> +                       avcc_1v8_s0: pldo-reg1 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <1800000>;
+> +                               regulator-max-microvolt =3D <1800000>;
+> +                               regulator-name =3D "avcc_1v8_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vcc_1v8_s0: pldo-reg2 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <1800000>;
+> +                               regulator-max-microvolt =3D <1800000>;
+> +                               regulator-name =3D "vcc_1v8_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+1800000>;
+> +                               };
+> +                       };
+> +
+> +                       avdd_1v2_s0: pldo-reg3 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <1200000>;
+> +                               regulator-max-microvolt =3D <1200000>;
+> +                               regulator-name =3D "avdd_1v2_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vcc_3v3_s0: pldo-reg4 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <3300000>;
+> +                               regulator-max-microvolt =3D <3300000>;
+> +                               regulator-name =3D "vcc_3v3_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vccio_sd_s0: pldo-reg5 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <1800000>;
+> +                               regulator-max-microvolt =3D <3300000>;
+> +                               regulator-name =3D "vccio_sd_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       pldo6_s3: pldo-reg6 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <1800000>;
+> +                               regulator-max-microvolt =3D <1800000>;
+> +                               regulator-name =3D "pldo6_s3";
+> +                               regulator-state-mem {
+> +                                       regulator-on-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+1800000>;
+> +                               };
+> +                       };
+> +
+> +                       vdd_0v75_s3: nldo-reg1 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <750000>;
+> +                               regulator-max-microvolt =3D <750000>;
+> +                               regulator-name =3D "vdd_0v75_s3";
+> +                               regulator-state-mem {
+> +                                       regulator-on-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+750000>;
+> +                               };
+> +                       };
+> +
+> +                       vdd_ddr_pll_s0: nldo-reg2 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <850000>;
+> +                               regulator-max-microvolt =3D <850000>;
+> +                               regulator-name =3D "vdd_ddr_pll_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                                       regulator-suspend-microvolt =3D <=
+850000>;
+> +                               };
+> +                       };
+> +
+> +                       avdd_0v75_s0: nldo-reg3 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <837500>;
+> +                               regulator-max-microvolt =3D <837500>;
+> +                               regulator-name =3D "avdd_0v75_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vdd_0v85_s0: nldo-reg4 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <850000>;
+> +                               regulator-max-microvolt =3D <850000>;
+> +                               regulator-name =3D "vdd_0v85_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +
+> +                       vdd_0v75_s0: nldo-reg5 {
+> +                               regulator-always-on;
+> +                               regulator-boot-on;
+> +                               regulator-min-microvolt =3D <750000>;
+> +                               regulator-max-microvolt =3D <750000>;
+> +                               regulator-name =3D "vdd_0v75_s0";
+> +                               regulator-state-mem {
+> +                                       regulator-off-in-suspend;
+> +                               };
+> +                       };
+> +               };
+> +       };
+> +};
+> +
+> +&u2phy2 {
+> +       status =3D "okay";
+> +};
+> +
+> +&u2phy2_host {
+> +       phy-supply =3D <&vcc5v0_host>;
+> +       status =3D "okay";
+> +};
+> +
+> +&u2phy3 {
+> +       status =3D "okay";
+> +};
+> +
+> +&u2phy3_host {
+> +       phy-supply =3D <&vcc5v0_host>;
+> +       status =3D "okay";
+> +};
+> +
+> +&uart2 {
+> +       pinctrl-0 =3D <&uart2m0_xfer>;
+> +       status =3D "okay";
+> +};
+> +
+> +&usb_host0_ehci {
+> +       status =3D "okay";
+> +};
+> +
+> +&usb_host0_ohci {
+> +       status =3D "okay";
+> +};
+> +
+> +&usb_host1_ehci {
+> +       status =3D "okay";
+> +};
+> +
+> +&usb_host1_ohci {
+> +       status =3D "okay";
+> +};
+> --
+> 2.34.1
 >
 
+BR,
+Weizhao
 
