@@ -1,106 +1,101 @@
-Return-Path: <linux-kernel+bounces-70551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D539859915
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:34:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBF62859917
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:35:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D63B01F21B20
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:34:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AD301C21072
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:35:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD6271B2E;
-	Sun, 18 Feb 2024 19:34:14 +0000 (UTC)
-Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [49.12.208.134])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE1DF71B3B;
+	Sun, 18 Feb 2024 19:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="Hlrl7vMg"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C6F1E86F
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 19:34:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.208.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9832383A3;
+	Sun, 18 Feb 2024 19:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708284854; cv=none; b=nDwYsrXjBy4hZghpCPXyMGMpq5aw3HWRgc44216oBQBOwg2z5K+1BBAq9dOwL23DZhx4zM+2AnpIP2XhTAUsMKoP2w3SWQdvkOg1dLaaEJMIQNcuItjRvZG70MruLAo+qwXH6xOHmrm7EndenZ6C/77Vqd+uzDTfmCw6/ExlB4w=
+	t=1708284947; cv=none; b=if+EdiR1Ps6P0fS8hXBd3d68Fw0tbOhr6PoRzejWSuMuD6bfkIA9ASeM6Ywp0Y1zlBmMWyXQLH6yvY8TtX+PIkff/q1vKJaW+IKms6/hRGOkSf84g66IBkvOoYq578imITWsv86UbBaqiRbKKRAyGLyCuBPy2yAvHvnLkFgk4Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708284854; c=relaxed/simple;
-	bh=Yj9qMMPZ19LtDe2elg6koYFa60SHjf7b/xK1dI0ZI5s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rXWaT5C6KqczdT2hoGZhiEU+vGgMcqaY/41Akf8A81JTUujCLnuBZIw01etx0yuuk5e12bmHb8+wn2o7eYL6Qi8eLgd4OEeGURUP3fPsTK763yB7Eu+wIEgqE4fBqu5P/oCZjqOuZ5lz+ClGpUPO1CceQ4Iciln1RjC+8nJQdSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar; spf=pass smtp.mailfrom=sdfg.com.ar; arc=none smtp.client-ip=49.12.208.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sdfg.com.ar
-Received: from [192.168.0.26]
-	by sdfg.com.ar (chasquid) with ESMTPSA
-	tls TLS_AES_128_GCM_SHA256
-	(over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
-	; Sun, 18 Feb 2024 19:34:01 +0000
-Message-ID: <428e1561-3219-4567-90df-7130013f3468@sdfg.com.ar>
-Date: Sun, 18 Feb 2024 16:33:59 -0300
+	s=arc-20240116; t=1708284947; c=relaxed/simple;
+	bh=iCJNjC0YeEXkUS/DQGwV/OAvF2cLq0aBfrb0k5dMU/k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r1HcDnoK9drlgcwWixcNsUF9lBI8OQ2+BWXkHwVR3gNjrPoFBUqnjOuVwd3MIbkrOOans0V5MZSi4DbP4IavRzMiG6U5+x5VEOnB6pLbLaTu8A9rAU1j5nx91MLeiMF1uhQgTW/Ik5e+u6eiEvW6d4Vfe1lnXJMQSAA2obJFj7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=Hlrl7vMg; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=kP93Q1m5tjAZqLrYzqmBsZVmIXS8VDSyfvhf3lGrLcU=; b=Hlrl7vMgSWjf0d4k1EPg0rzsf9
+	k/CQwX5IZgggyzwf2/FmkA+8o5WBQ7JfSPeAelJAi7WpAY8qCQOjvXsjKkux/n9xb4iHyB8j4kqQk
+	41Q9CoWV57SuNTDLy5SNenxvo2FC2FYqOhAauY2wc3/WzOB/wJWlSvwuNu8BQKksa7oN4IA5BjHr1
+	I2NZB/JKvLpiLVyWoj2qn1UtEZRBOZo0p9sI2eoETn0oOFQ+lBagpuqSLhkOmO0OqOGOwj7cWKvck
+	+IHXXUj88j7XT5t1yEUQ9e5WKkmsBU2OpP17yIqoqVplBuQqMyR9e7smKOp8r9/6RCrzYqsYQVV7o
+	dpPDMwjQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58462)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rbmwm-0003TZ-06;
+	Sun, 18 Feb 2024 19:35:32 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rbmwk-0007ec-Hp; Sun, 18 Feb 2024 19:35:30 +0000
+Date: Sun, 18 Feb 2024 19:35:30 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Christian Marangi <ansuelsmth@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Robert Marko <robimarko@gmail.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
+	Nipun Gupta <nipun.gupta@amd.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Puneet Gupta <puneet.gupta@amd.com>,
+	Abhijit Gangurde <abhijit.gangurde@amd.com>,
+	Umang Jain <umang.jain@ideasonboard.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [net-next RFC PATCH 2/6] net: phy: fill phy_id with C45 PHY
+Message-ID: <ZdJcArE5/hXb1xFe@shell.armlinux.org.uk>
+References: <20240218190034.15447-1-ansuelsmth@gmail.com>
+ <20240218190034.15447-3-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/4] tools/nolibc: Fix strlcat() return code and size
- usage
-Content-Language: en-US
-To: Willy Tarreau <w@1wt.eu>
-Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
- linux-kernel@vger.kernel.org
-References: <20240129141516.198636-1-rodrigo@sdfg.com.ar>
- <20240129141516.198636-3-rodrigo@sdfg.com.ar> <20240211104817.GA19364@1wt.eu>
- <10b97cd3-5690-40b2-aa8e-3fea5dd4275f@sdfg.com.ar>
- <20240218102003.GA32375@1wt.eu>
-From: Rodrigo Campos <rodrigo@sdfg.com.ar>
-In-Reply-To: <20240218102003.GA32375@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218190034.15447-3-ansuelsmth@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 2/18/24 07:20, Willy Tarreau wrote:
-> Hi Rodrigo,
-> 
-> 
-> OK this looks good to me.
+On Sun, Feb 18, 2024 at 08:00:28PM +0100, Christian Marangi wrote:
+> With C45 PHYs that provide PHY ID in C45 Package regs, PHY device
+> .phy_id is not filled.
 
-I'll use that version in the next send then, thanks!
+Intentionally so. Clause 45 PHYs don't have a single ID. Marvell
+88X3310 is a case in point - there are at least two different vendor
+IDs in this PHY.
 
-> I think your test on src != orig_src is not
-> trivial and that testing instead if (len < size) would be better, and
-> possibly even shorter.
+Trying to squash Clause 45 PHY IDs down to a single identifier is
+not sensible.
 
-Fixed that, thanks.
-
->> Note the "if size < len, then len=size", I couldn't get rid of it because we
->> need to account for the smaller size of dst if we don't get passed it for
->> the return code.
-> 
-> Please no, again as I mentioned earlier, it's wrong to use strlen(dst) in
-> this case: the only situation where we'd accept size < len is if dst is
-> already not zero-terminated, which means that strlen() cannot be used, or
-> you'd need strnlen() for that, I'm just seeing that we have it, I thought
-> we didn't.
-
-Right, sorry.
-
->> What do you think? Can you make them shorter?
-> 
-> I don't want to enter that activity again this week-end ;-)  It's sufficient
-> here.
-
-haha, fair :)
-
->> If you like one of these, I can repost with the improved tests too.
-> 
-> Yeah please check the few points above for your version, make sure to
-> clean it up according to the kernel's coding style (empty line after
-> variable declaration, */ on the next line for the multi-line comment
-> etc) and that's fine.
-
-Will do
-
-
-
-Best,
-Rodrigo
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
