@@ -1,59 +1,47 @@
-Return-Path: <linux-kernel+bounces-70222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A31E5859500
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:29:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55019859509
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21DC3B224F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:29:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07766283B5C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21DD06AA1;
-	Sun, 18 Feb 2024 06:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ASlvnVdl"
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12AE75394;
-	Sun, 18 Feb 2024 06:29:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BE5746B;
+	Sun, 18 Feb 2024 06:33:15 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25DB538A;
+	Sun, 18 Feb 2024 06:33:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708237751; cv=none; b=AInXRKrwc8E7hR1F2XYtgweiUlGAxDS81ll4Q/T0V/Lu+hEPDou2sDhSTbk7l5VdAtMGB1Y3B1pcuqlTcbZCVE/WJvhANpzMioqUQLuaSHZ3S5DMrN7U05N6ew/3Mh3YoLoZj3b9mikZj7BrBZWhWt1tV6jubBQotjVqr1RZUhw=
+	t=1708237994; cv=none; b=syz1ouq4yUJbJer5esP9wyDhbZnuRBtx0W8yAPGOP6jrcrDhNUg0b875HNxcWRirXDgNGrMMh3eg6yQ7hs/ZLvKrh2LKLZvuJEwKfkvLL5KbP5RnicYLIlLcphP7sCOfjWP6C2cf2teYidiNzv3uIzEeAxO7llQvaBBZypyVxcI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708237751; c=relaxed/simple;
-	bh=RFrTruxCePpCvvUZ9JG4MkT85f7C9D0dY59j2MbiQ3A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LqS5ej56ZlJDse8xRz+HS2LbudVqk2MfYY53v06PNeFCXW1r6afbinn4FFlWRgvyg6W5hRQ3593+jc6RSaKhR2jBQctQHMyigvPiSiw8RN9Pd8Y/I27Gyta2G+C7ebThJT5i4Mhsy2EFgxuyk0+5GFv6OUMH/VqnQcJ8qT6UMng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ASlvnVdl; arc=none smtp.client-ip=220.197.31.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=649G+
-	c2moUST3OyqTYL+YtM4w/uIcFil9PTAbL3lI2s=; b=ASlvnVdlWCbBWDsr44RhW
-	OLhDzL8kXxTPD3XsxOZUVNLE7QYTgdiRxuGY/kNlLzCXyb36WrOgbvBCspRviDdE
-	jK8a07B+0uJx+U+tMVO8VinC3W7dXqIJ9Ja2Ze5h6Eu9VssMI+7lFhxxZ9+XGkJ9
-	gxTewDgNiz0gTsLLlYXMI4=
-Received: from localhost.localdomain (unknown [39.144.138.207])
-	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id _____wD3X1V3o9FlTGBpCw--.34987S3;
-	Sun, 18 Feb 2024 14:28:12 +0800 (CST)
-From: Xing Tong Wu <xingtong_wu@163.com>
-To: lee@kernel.org
-Cc: Pavel Machek <pavel@ucw.cz>,
-	Hans de Goede <hdegoede@redhat.com>,
-	linux-leds@vger.kernel.org,
+	s=arc-20240116; t=1708237994; c=relaxed/simple;
+	bh=Ou67CknKNFvkJHA5VHdGs4weGL65WHqLtM05EXx8+gc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lPEJFNdLNJfjqa97Eorv0f/P4yx3C/Pd46enUazO4O1l+gUCY5fOERwXv+eyT35I5lCmnJIFxEWpM6UAdVrKVcVK0xh/3/614BsKMOA6CCMRMFApkypaVVi5wO6sg/h/hZaloF3+sL3o+1URGYoXGSD4PKQzMBxMBLNCGcrwhGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.2.5.213])
+	by gateway (Coremail) with SMTP id _____8CxSPCfpNFlNxIOAA--.38546S3;
+	Sun, 18 Feb 2024 14:33:03 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.2.5.213])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c6epNFlyos6AA--.18718S2;
+	Sun, 18 Feb 2024 14:33:02 +0800 (CST)
+From: Bibo Mao <maobibo@loongson.cn>
+To: Huacai Chen <chenhuacai@kernel.org>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>
+Cc: WANG Xuerui <kernel@xen0n.name>,
+	loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
-	Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-	Xing Tong Wu <xingtong.wu@siemens.com>,
-	Tobias Schaffner <tobias.schaffner@siemens.com>,
-	Henning Schild <henning@hennsch.de>
-Subject: [RESEND PATCH v2 1/1] leds: simatic-ipc-leds-gpio: add support for module BX-59A
-Date: Sun, 18 Feb 2024 14:28:06 +0800
-Message-Id: <20240218062806.3932-2-xingtong_wu@163.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240218062806.3932-1-xingtong_wu@163.com>
-References: <20240208120901.GL689448@google.com>
- <20240218062806.3932-1-xingtong_wu@163.com>
+	kvm@vger.kernel.org
+Subject: [PATCH v3] LoongArch: KVM: Add software breakpoint support
+Date: Sun, 18 Feb 2024 14:33:02 +0800
+Message-Id: <20240218063302.218019-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,121 +49,219 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3X1V3o9FlTGBpCw--.34987S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXr1kurWUJw15Xryrur4DArb_yoWrZr4xpF
-	nxJa9YkFW5Xr1Dtr13GFW7Zas3uw4xKr97trZrGa90g3Wjvr10gFnrAFW3XFZ5J3yDuFnx
-	GF1rtFyj9r4kAwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j7fHUUUUUU=
-X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/xtbB0h2I0GWXwEKJ6gAAsE
+X-CM-TRANSID:AQAAf8Cx_c6epNFlyos6AA--.18718S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3Gw43GF1fCw1rWr45tFW8AFc_yoWxuF1DpF
+	9rArs5Gr4rKrZ3C340yr4Dur13Xa93Gr1Iqa42v3ySyF1Yq34rJrWkKr98AFy5Jw4rXa4I
+	q3Z3Kw1YvFn8t3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UUUUU==
 
-From: Xing Tong Wu <xingtong.wu@siemens.com>
+When VM runs in kvm mode, system will not exit to host mode if
+executing general software breakpoint instruction such as INSN_BREAK,
+trap exception happens in guest mode rather than host mode. In order to
+debug guest kernel on host side, one mechanism should be used to let vm
+exit to host mode.
 
-This is used for the Siemens Simatic IPC BX-59A, which has its LEDs
-connected to GPIOs provided by the Nuvoton NCT6126D
+Here hypercall instruction with special code is used for software
+breakpoint usage, vm exists to host mode and kvm hypervisor identifies the
+special hypercall code and sets exit_reason with KVM_EXIT_DEBUG, and then
+let qemu handle it.
 
-Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
+Idea comes from ppc kvm, one api KVM_REG_LOONGARCH_DEBUG_INST is added to
+get hypercall code. VMM needs get sw breakpoint instruction with this api
+and set the corresponding sw break point for guest kernel.
+
+Since it needs hypercall instruction emulation handling, and it is
+dependent on this patchset:
+https://lore.kernel.org/all/20240201031950.3225626-1-maobibo@loongson.cn/
+
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 ---
- .../leds/simple/simatic-ipc-leds-gpio-core.c  |  1 +
- .../simple/simatic-ipc-leds-gpio-f7188x.c     | 53 ++++++++++++++++---
- 2 files changed, 48 insertions(+), 6 deletions(-)
+Changes in v3:
+1. Add api KVM_REG_LOONGARCH_DEBUG_INST to get sw breakpoint instruction
+for vmm.
+2. Check vcpu::guest_debug with value KVM_GUESTDBG_USE_SW_BP only, since
+another value KVM_GUESTDBG_ENABLE will be set if it is not zero.
 
-diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-index 667ba1bc3a30..85003fd7f1aa 100644
---- a/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-core.c
-@@ -56,6 +56,7 @@ int simatic_ipc_leds_gpio_probe(struct platform_device *pdev,
- 	case SIMATIC_IPC_DEVICE_127E:
- 	case SIMATIC_IPC_DEVICE_227G:
- 	case SIMATIC_IPC_DEVICE_BX_21A:
-+	case SIMATIC_IPC_DEVICE_BX_59A:
+Changes in v2:
+1. Add checking for hypercall code KVM_HC_SWDBG, it is effective only if
+KVM_GUESTDBG_USE_SW_BP and KVM_GUESTDBG_ENABLE is set.
+---
+ arch/loongarch/include/asm/inst.h     |  1 +
+ arch/loongarch/include/asm/kvm_host.h |  2 ++
+ arch/loongarch/include/asm/kvm_para.h |  2 ++
+ arch/loongarch/include/uapi/asm/kvm.h |  4 ++++
+ arch/loongarch/kvm/exit.c             | 16 ++++++++++++++--
+ arch/loongarch/kvm/vcpu.c             | 13 ++++++++++++-
+ arch/loongarch/kvm/vm.c               |  1 +
+ 7 files changed, 36 insertions(+), 3 deletions(-)
+
+diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
+index ad120f924905..c3993fd88aba 100644
+--- a/arch/loongarch/include/asm/inst.h
++++ b/arch/loongarch/include/asm/inst.h
+@@ -12,6 +12,7 @@
+ 
+ #define INSN_NOP		0x03400000
+ #define INSN_BREAK		0x002a0000
++#define INSN_HVCL		0x002b8000
+ 
+ #define ADDR_IMMMASK_LU52ID	0xFFF0000000000000
+ #define ADDR_IMMMASK_LU32ID	0x000FFFFF00000000
+diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
+index 1bf927e2bfac..ef4f1195d9fa 100644
+--- a/arch/loongarch/include/asm/kvm_host.h
++++ b/arch/loongarch/include/asm/kvm_host.h
+@@ -31,6 +31,8 @@
+ 
+ #define KVM_HALT_POLL_NS_DEFAULT	500000
+ 
++#define KVM_GUESTDBG_VALID_MASK		(KVM_GUESTDBG_ENABLE | \
++			KVM_GUESTDBG_USE_SW_BP | KVM_GUESTDBG_SINGLESTEP)
+ struct kvm_vm_stat {
+ 	struct kvm_vm_stat_generic generic;
+ 	u64 pages;
+diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
+index a25a84e372b9..c44412feabb3 100644
+--- a/arch/loongarch/include/asm/kvm_para.h
++++ b/arch/loongarch/include/asm/kvm_para.h
+@@ -10,8 +10,10 @@
+ #define HYPERCALL_CODE(vendor, code)	((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
+ 
+ #define KVM_HC_CODE_SERVICE		0
++#define KVM_HC_CODE_SWDBG		1
+ #define KVM_HC_SERVICE			HYPERCALL_CODE(HYPERVISOR_KVM, KVM_HC_CODE_SERVICE)
+ #define  KVM_HC_FUNC_IPI		1
++#define KVM_HC_SWDBG			HYPERCALL_CODE(HYPERVISOR_KVM, KVM_HC_CODE_SWDBG)
+ 
+ /*
+  * LoongArch hypcall return code
+diff --git a/arch/loongarch/include/uapi/asm/kvm.h b/arch/loongarch/include/uapi/asm/kvm.h
+index 923d0bd38294..4cec8c16013c 100644
+--- a/arch/loongarch/include/uapi/asm/kvm.h
++++ b/arch/loongarch/include/uapi/asm/kvm.h
+@@ -15,10 +15,12 @@
+  */
+ 
+ #define __KVM_HAVE_READONLY_MEM
++#define __KVM_HAVE_GUEST_DEBUG
+ 
+ #define KVM_COALESCED_MMIO_PAGE_OFFSET	1
+ #define KVM_DIRTY_LOG_PAGE_OFFSET	64
+ 
++#define KVM_GUESTDBG_USE_SW_BP		0x00010000
+ /*
+  * for KVM_GET_REGS and KVM_SET_REGS
+  */
+@@ -74,6 +76,8 @@ struct kvm_fpu {
+ 
+ #define KVM_REG_LOONGARCH_COUNTER	(KVM_REG_LOONGARCH_KVM | KVM_REG_SIZE_U64 | 1)
+ #define KVM_REG_LOONGARCH_VCPU_RESET	(KVM_REG_LOONGARCH_KVM | KVM_REG_SIZE_U64 | 2)
++/* Debugging: Special instruction for software breakpoint */
++#define KVM_REG_LOONGARCH_DEBUG_INST	(KVM_REG_LOONGARCH_KVM | KVM_REG_SIZE_U64 | 3)
+ 
+ #define LOONGARCH_REG_SHIFT		3
+ #define LOONGARCH_REG_64(TYPE, REG)	(TYPE | KVM_REG_SIZE_U64 | (REG << LOONGARCH_REG_SHIFT))
+diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+index 189b70bad825..2a79d40ea2b2 100644
+--- a/arch/loongarch/kvm/exit.c
++++ b/arch/loongarch/kvm/exit.c
+@@ -758,23 +758,35 @@ static int kvm_handle_hypcall(struct kvm_vcpu *vcpu)
+ {
+ 	larch_inst inst;
+ 	unsigned int code;
++	int ret;
+ 
+ 	inst.word = vcpu->arch.badi;
+ 	code = inst.reg0i15_format.immediate;
+-	update_pc(&vcpu->arch);
++	ret = RESUME_GUEST;
+ 
+ 	switch (code) {
+ 	case KVM_HC_SERVICE:
+ 		vcpu->stat.hvcl_exits++;
+ 		kvm_handle_pv_hcall(vcpu);
  		break;
++	case KVM_HC_SWDBG:
++		/* KVM_HC_SWDBG only in effective when SW_BP is enabled */
++		if (vcpu->guest_debug & KVM_GUESTDBG_USE_SW_BP) {
++			vcpu->run->exit_reason = KVM_EXIT_DEBUG;
++			ret = RESUME_HOST;
++		} else
++			vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
++		break;
  	default:
- 		return -ENODEV;
-diff --git a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-index c7c3a1f986e6..2d6910328769 100644
---- a/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-+++ b/drivers/leds/simple/simatic-ipc-leds-gpio-f7188x.c
-@@ -17,7 +17,12 @@
+ 		/* Treat it as noop intruction, only set return value */
+ 		vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
+ 		break;
+ 	}
  
- #include "simatic-ipc-leds-gpio.h"
- 
--static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
-+struct simatic_ipc_led_tables {
-+	struct gpiod_lookup_table *led_lookup_table;
-+	struct gpiod_lookup_table *led_lookup_table_extra;
-+};
+-	return RESUME_GUEST;
++	if (ret == RESUME_GUEST)
++		update_pc(&vcpu->arch);
 +
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_227g = {
- 	.dev_id = "leds-gpio",
- 	.table = {
- 		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-@@ -30,7 +35,7 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table = {
- 	},
- };
- 
--static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra_227g = {
- 	.dev_id = NULL, /* Filled during initialization */
- 	.table = {
- 		GPIO_LOOKUP_IDX("gpio-f7188x-3", 6, NULL, 6, GPIO_ACTIVE_HIGH),
-@@ -39,16 +44,52 @@ static struct gpiod_lookup_table simatic_ipc_led_gpio_table_extra = {
- 	},
- };
- 
-+static struct gpiod_lookup_table simatic_ipc_led_gpio_table_bx_59a = {
-+	.dev_id = "leds-gpio",
-+	.table = {
-+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 0, NULL, 0, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-2", 3, NULL, 1, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 3, NULL, 2, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-5", 2, NULL, 3, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 7, NULL, 4, GPIO_ACTIVE_LOW),
-+		GPIO_LOOKUP_IDX("gpio-f7188x-7", 4, NULL, 5, GPIO_ACTIVE_LOW),
-+		{} /* Terminating entry */
-+	}
-+};
-+
- static int simatic_ipc_leds_gpio_f7188x_probe(struct platform_device *pdev)
- {
--	return simatic_ipc_leds_gpio_probe(pdev, &simatic_ipc_led_gpio_table,
--					   &simatic_ipc_led_gpio_table_extra);
-+	const struct simatic_ipc_platform *plat = pdev->dev.platform_data;
-+	struct simatic_ipc_led_tables *led_tables;
-+
-+	led_tables = devm_kzalloc(&pdev->dev, sizeof(*led_tables), GFP_KERNEL);
-+	if (!led_tables)
-+		return -ENOMEM;
-+
-+	switch (plat->devmode) {
-+	case SIMATIC_IPC_DEVICE_227G:
-+		led_tables->led_lookup_table = &simatic_ipc_led_gpio_table_227g;
-+		led_tables->led_lookup_table_extra = &simatic_ipc_led_gpio_table_extra_227g;
-+		break;
-+	case SIMATIC_IPC_DEVICE_BX_59A:
-+		led_tables->led_lookup_table = &simatic_ipc_led_gpio_table_bx_59a;
-+		break;
-+	default:
-+		return -ENODEV;
-+	}
-+
-+	dev_set_drvdata(&pdev->dev, led_tables);
-+	return simatic_ipc_leds_gpio_probe(pdev, led_tables->led_lookup_table,
-+					   led_tables->led_lookup_table_extra);
++	return ret;
  }
  
- static void simatic_ipc_leds_gpio_f7188x_remove(struct platform_device *pdev)
+ /*
+diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+index 80e05ba9b48d..273ac10eaba5 100644
+--- a/arch/loongarch/kvm/vcpu.c
++++ b/arch/loongarch/kvm/vcpu.c
+@@ -248,7 +248,15 @@ int kvm_arch_vcpu_ioctl_set_mpstate(struct kvm_vcpu *vcpu,
+ int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
+ 					struct kvm_guest_debug *dbg)
  {
--	simatic_ipc_leds_gpio_remove(pdev, &simatic_ipc_led_gpio_table,
--				     &simatic_ipc_led_gpio_table_extra);
-+	struct simatic_ipc_led_tables *led_tables;
+-	return -EINVAL;
++	if (dbg->control & ~KVM_GUESTDBG_VALID_MASK)
++		return -EINVAL;
 +
-+	led_tables = dev_get_drvdata(&pdev->dev);
-+	simatic_ipc_leds_gpio_remove(pdev, led_tables->led_lookup_table,
-+				     led_tables->led_lookup_table_extra);
++	if (dbg->control & KVM_GUESTDBG_ENABLE)
++		vcpu->guest_debug = dbg->control;
++	else
++		vcpu->guest_debug = 0;
++
++	return 0;
  }
  
- static struct platform_driver simatic_ipc_led_gpio_driver = {
+ static int _kvm_getcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 *val)
+@@ -482,6 +490,9 @@ static int kvm_get_one_reg(struct kvm_vcpu *vcpu,
+ 		case KVM_REG_LOONGARCH_COUNTER:
+ 			*v = drdtime() + vcpu->kvm->arch.time_offset;
+ 			break;
++		case KVM_REG_LOONGARCH_DEBUG_INST:
++			*v = INSN_HVCL + KVM_HC_SWDBG;
++			break;
+ 		default:
+ 			ret = -EINVAL;
+ 			break;
+diff --git a/arch/loongarch/kvm/vm.c b/arch/loongarch/kvm/vm.c
+index 6fd5916ebef3..44fb18118442 100644
+--- a/arch/loongarch/kvm/vm.c
++++ b/arch/loongarch/kvm/vm.c
+@@ -77,6 +77,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 	case KVM_CAP_IMMEDIATE_EXIT:
+ 	case KVM_CAP_IOEVENTFD:
+ 	case KVM_CAP_MP_STATE:
++	case KVM_CAP_SET_GUEST_DEBUG:
+ 		r = 1;
+ 		break;
+ 	case KVM_CAP_NR_VCPUS:
+
+base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
 -- 
-2.25.1
+2.39.3
 
 
