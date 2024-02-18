@@ -1,173 +1,108 @@
-Return-Path: <linux-kernel+bounces-70393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 318C6859702
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 14:00:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A344859706
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 14:02:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4302B281F5F
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 13:00:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FE37B2115F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 13:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF86A6BFA1;
-	Sun, 18 Feb 2024 13:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE3E6BB5D;
+	Sun, 18 Feb 2024 13:02:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jaeR2EcQ"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="JhVbExaK"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F814EB41
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 13:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2143A4EB41
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 13:01:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708261243; cv=none; b=YYNZb1yOXmTzR1dVuzXyn3d325pWwhUYo5IbGIjAWYUKPyZ2TO2gZx3ukCzox1OHzZOy2lGVwtTdCOuBfyC73HJ2HsWDlkVjfMvevr42kO8eOZiXTbya16W3bTjaWJRNvC0kbFsHTzcGFVWySs9gG6iTH2PyzMQZo6NiqcSMzPM=
+	t=1708261319; cv=none; b=EG+Q52nx+fvLvfs6AauUBb5hVMvXcaMUcsdNIzzWOpwqC9tBI/7k2rj//Nxc0Iw59XMh+sM8FZgk1jbDB1Xv1ziTEu841LbnVgng3pkuC+qAVaBprra35CQAm6E2Dq9MuBWpycn4XJYRvu+zwUd9Z829jkrfth0X9IDcuK6xirI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708261243; c=relaxed/simple;
-	bh=8OEULQsbJfHqfkXaJy2htFuiEY9YhAYuhxxZlhozNTQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oZi7p1Zg93lMzcKzl4a2PXUcXojbSEz3V9+Zqdc8lwFpoZH8Iet/k7WoTDcNQkNRMA83RfNDqchELhCV0MRxVN0A4RKMBOMWkhcGwOMQxsq9mquZrCG9UOQPrFcA55xAGfjzXP2QjNk7GEPZwKDGkoGKxPSRdK+AhRmxew44/xg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jaeR2EcQ; arc=none smtp.client-ip=209.85.216.43
+	s=arc-20240116; t=1708261319; c=relaxed/simple;
+	bh=CArwFe0qu0rUAkzUEv7P8qSaBIOWCLLpZlpvdXeYt0g=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=kpgt4itUl8O82QZf2xzMpUiJJcnJwVbb/ohkYM/VrS8MPuW0s5BbNT+VtUoHPcJEvF6jOhWUNUzu3OEB7IkUSmQUVyOUZ3WOWyWBE9jeVBxZ8D2zNcFKyrBKG4caBR7PmXG2vAWUs2b8Cxg7rd4uV6qf+0j/e1mFjFtp2Z4NOxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=JhVbExaK; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2866b15b013so993726a91.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 05:00:40 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2866b15b013so994141a91.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 05:01:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708261240; x=1708866040; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RodByd/HG8871Mn03XNPX9N8h91R/e6bdUV6nucU/s0=;
-        b=jaeR2EcQ0f5a9YEbXLM2S3PBeD6qUrOzBLPfLvJIyCrUKvJsRNPRAorn07isKcJaSk
-         rEZtRHw/3E18xowGleJuM3z+sHblj0kAzRDBMfhoRQS0EIPpagv9pKhToYmX5zjuC0Sv
-         Ulrx0cJosMpltzYOlmjJJ6cG7u88fzha6zCVG5/VJssUAHloSD51ggXN4t4CNVQCOaV2
-         d4DexksgWMvu+pwOwRdgTXEcig/nHtXixLgPBJGa8ZLOCl+3CKQeMLXhV3TUdBoaGd96
-         c2MyaKRnqAyDttrcLGFHI1SVrY3U2mJdrSjggoDLR8gGLAXc7F/lrmvZKyMsw4eWZWKZ
-         5Heg==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708261317; x=1708866117; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iIYyy/W1tr/0bAEhThJxXh8k4ZWLMBlLPwt2pJ+jp6Y=;
+        b=JhVbExaKZAiiOrbb7iq5oKT+m7TBI48oaaFxNzw5jUtVohmspPtBQEtdabTwMWaWXK
+         xxhsWqfEuWeab9foLvASxXZxlnsbOuRePBQVlfRdlJsm07Y8v2mbct2j2O/3YO0+M91W
+         fAY8AqC6yjSvJ8rUrkXCMMsWTVHdGE3gUCTMdW4M5MQ1NkSZaRZ3oPnbkRYK1scD5fpk
+         jSXDckj0opFoK4QV088xAW2wiLTiTrpNnwIZXoV6o5+HTfHf2W7L7bY1C+Bpj2e4kypA
+         syWWSNbMYvyvOMXk7vYO6/fyBJbm4agCqTHbtWiR/YdjXbH3WOwTtgz52yU+WdY8Z5xJ
+         uKGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708261240; x=1708866040;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RodByd/HG8871Mn03XNPX9N8h91R/e6bdUV6nucU/s0=;
-        b=RDfGaPJeZuNw8z3C41uWrnkg2DR3G0ewt5+SDPRChxFvJKnIYoWtDNI0yc/pELTgu0
-         iXI50gBUrC8WUebMBoWoNMX7rFVM/SuQZapDLPdtitawzUiFtzN7kUaRvmljPdjlPjRh
-         ATCiC8OVB7tcDvHe8+q+UPRb/3g4IryFBQTyzV8XIhV2HHuXJElTbzOyd+PueFMRy+6Y
-         6MRxZ6681mydiIl1cEBxYdU/3lG4gLivxVlFA96QBvdOKQOPQKCgOJW34xRfUY/xcO7u
-         R4vzKQXqSt1Dm1yxQHebDxfdpgRTIkMYVS0uBeFatBebQBocexeD8ltzAkgOr/KCQbfb
-         APuA==
-X-Forwarded-Encrypted: i=1; AJvYcCV7gYgY/DGZfastUCRwRSE1ayXA9of1NSe+iim55SHM0flOTU9yovgvxwW/qAzUu6RmMV8M53MamYJ/EmJpgMmXmeIQeBhrlNWWSJpF
-X-Gm-Message-State: AOJu0YyxMmODGlY0uNLuvH/PEAhtcGCqu3hrZ1Pv7TaTN2/XSGJ3oPUh
-	WLZYtuV0lxvUEXg1Mhlo58SxEVGJXVOSr6RcCkLYDQaldwPNqA5WjxrW6DxAwfE=
-X-Google-Smtp-Source: AGHT+IF/9MngS1gHDj2UfEL3koN32okEsAusVWjfdNuL59cquLXw8MkmbJVoODuiE5/zseUhcHfANA==
-X-Received: by 2002:a05:6a21:999c:b0:1a0:9abd:2801 with SMTP id ve28-20020a056a21999c00b001a09abd2801mr3451853pzb.3.1708261239954;
-        Sun, 18 Feb 2024 05:00:39 -0800 (PST)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id 18-20020a631052000000b005d553239b16sm2906268pgq.20.2024.02.18.05.00.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 05:00:39 -0800 (PST)
-Message-ID: <aba32b4b-9fb3-4d84-bdc0-633d34cf1234@kernel.dk>
-Date: Sun, 18 Feb 2024 06:00:38 -0700
+        d=1e100.net; s=20230601; t=1708261317; x=1708866117;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iIYyy/W1tr/0bAEhThJxXh8k4ZWLMBlLPwt2pJ+jp6Y=;
+        b=m9VRgVfIx/+FMMRejDhkVAMRPXszr55lkQi/vHQ2CxyudqZfKYR4NMFEDwkk4MY5aE
+         NrQwjFxpNPMdT45tkl06TerTanEUgQVinjZhltrmfjcRLTE2vdJipp1/vJ8kf5Cr6zew
+         Gj0nl+8Wdw3OkmfreWAnRd+LSnprGuf5EOgL5Xy64PzM5C4mvtDgaAJy/jVkns7TC/g8
+         yRINvG+sN5yKEb5gT8ERvWX/8msdwcNLjPmDaYMafkTqYEZZ6uDXco0qzXKIASkzJODc
+         zW5ctJ8noINWwMHlpSNjDe8+3B9HSgCreqc9BZaYRX616oGw71Fi2BqmVwO/ZuHIbJWO
+         qL3A==
+X-Forwarded-Encrypted: i=1; AJvYcCXyc+SMQEdr92J3V0MlM2oUOIW7nGV0ffBG8ZhlAP3GyJ/5edf47iQr51sU2j2jreR6IdT62yhw6LwibPALpn1gObY0KZbZOP6UDrnP
+X-Gm-Message-State: AOJu0Yyo99SNgkWxiEheOUS/GDnhtN+o8xgLvGH7zuH+zM9fIkIZOPNN
+	A0Vjt1MwxdcbfKat6lRk2FymywVCa2M5zHn+z3SakZH0345Q4k26rsqHqHtWwjo=
+X-Google-Smtp-Source: AGHT+IFOVa6oJdPekL8bCPtPXjepHYdheq4ZXbm6St90f/I+EkgW0h8RafEA/oyz36xEGT9oV83dCg==
+X-Received: by 2002:a17:902:bb81:b0:1d8:ca3a:9d2a with SMTP id m1-20020a170902bb8100b001d8ca3a9d2amr10414358pls.4.1708261317334;
+        Sun, 18 Feb 2024 05:01:57 -0800 (PST)
+Received: from [127.0.0.1] ([198.8.77.194])
+        by smtp.gmail.com with ESMTPSA id kn14-20020a170903078e00b001d9a91af8a4sm2685725plb.28.2024.02.18.05.01.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 05:01:56 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Josef Bacik <josef@toxicpanda.com>, Kees Cook <keescook@chromium.org>
+Cc: Navid Emamdoost <navid.emamdoost@gmail.com>, 
+ Michal Kubecek <mkubecek@suse.cz>, linux-kernel@vger.kernel.org, 
+ linux-block@vger.kernel.org, nbd@other.debian.org, 
+ linux-hardening@vger.kernel.org
+In-Reply-To: <20240218042534.it.206-kees@kernel.org>
+References: <20240218042534.it.206-kees@kernel.org>
+Subject: Re: [PATCH v4] nbd: null check for nla_nest_start
+Message-Id: <170826131614.3482432.1638173744340292313.b4-ty@kernel.dk>
+Date: Sun, 18 Feb 2024 06:01:56 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] liburing: add script for statistics sqpoll running time.
-Content-Language: en-US
-To: Xiaobing Li <xiaobing.li@samsung.com>
-Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
- io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
- joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
- ruyi.zhang@samsung.com
-References: <20240206024014.11412-1-xiaobing.li@samsung.com>
- <CGME20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef@epcas5p2.samsung.com>
- <20240218055953.38903-1-xiaobing.li@samsung.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240218055953.38903-1-xiaobing.li@samsung.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.5-dev-2aabd
 
-On 2/17/24 10:59 PM, Xiaobing Li wrote:
-> On 2/6/24 10:40 AM, Xiaobing Li wrote:
->> diff --git a/test/sqtimeshow.sh b/test/sqtimeshow.sh
->> new file mode 100644
->> index 0000000..e85fd2f
->> --- /dev/null
->> +++ b/test/sqtimeshow.sh
->> @@ -0,0 +1,61 @@
->> +#!/usr/bin/env bash
->> +
->> +UPLINE=$(tput cuu1)
->> +
->> +function set_header() {
->> +    printf "\033[47;30m%-15s %-15s %-15s %-15s \033[0m\n" PID WorkTime\(us\) TotalTime\(us\) COMMAND
->> +}
->> +
->> +function get_time() {
->> +    pid=$1
->> +    item=$2
->> +    proc_file="/proc/$pid/fdinfo/6"
->> +    if [ ! -e $proc_file ]; then
->> +        return
->> +    fi
->> +    content=$(cat ${proc_file} | grep ${item} | awk -F" " '{print $2}')
->> +    echo ${content%us}
->> +}
->> +
->> +function show_util() {
->> +    index=0
->> +    while true
->> +    do
->> +        data=$(top -H -b -n 1 | grep iou-sqp)
->> +        if [ -z "${data}" ]; then
->> +            echo "no sq thread is running."
->> +            exit
->> +        fi 
->> +        index=0
->> +        num=$(echo $data | tr -cd R |wc -c)
->> +        arr=($data)
->> +        len=$((${#arr[@]} / ${num}))
->> +        i=0
->> +        while [ ${i} -lt ${num} ]
->> +        do
->> +            pid=${arr[${i} * ${len}]}
->> +            name=${arr[${i} * ${len} + len - 1]}
->> +            work_time=$(get_time $pid "SqWorkTime")
->> +            total_time=$(get_time $pid "SqTotalTime")
->> +            printf "%-15s %-15s %-15s %-15s\n" ${pid} ${work_time} ${total_time} ${name}
->> +            ((i++))
->> +        done
->> +        sleep 2
->> +        update=$UPLINE
->> +        for j in $(seq 1 ${num}); do
->> +            update=$update$UPLINE
->> +        done
->> +        if [ ! -z "$(top -H -b -n 1 | grep iou-sqp)" ]; then
->> +            echo "$update"
->> +        fi
->> +    done
->> +}
->> +
->> +function main() {
->> +    # set header
->> +    set_header
->> +    # show util
->> +    show_util
->> +}
->> +
->> +main
->  
-> Hi, Jens and Pavel
-> This patch is to add a script that displays the statistics of the 
-> sqpoll thread to the terminal.
 
-No objections to this one, but it will not get applied until the kernel
-side is sorted out.
+On Sat, 17 Feb 2024 20:25:38 -0800, Kees Cook wrote:
+> nla_nest_start() may fail and return NULL. Insert a check and set errno
+> based on other call sites within the same source code.
+> 
+> 
 
+Applied, thanks!
+
+[1/1] nbd: null check for nla_nest_start
+      commit: 31edf4bbe0ba27fd03ac7d87eb2ee3d2a231af6d
+
+Best regards,
 -- 
 Jens Axboe
+
+
 
 
