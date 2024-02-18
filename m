@@ -1,144 +1,149 @@
-Return-Path: <linux-kernel+bounces-70624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6BE4859A35
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:45:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B4B0859A36
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:48:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA1471C209A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:45:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C9D3B20CEC
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A325F7428C;
-	Sun, 18 Feb 2024 23:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669B973199;
+	Sun, 18 Feb 2024 23:48:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="Ad6yUwTs"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="TSvrrvi6"
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFE4568A;
-	Sun, 18 Feb 2024 23:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4591EA80
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:48:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708299898; cv=none; b=W2+/8dpm2vOMiG0oUbHyEnwu1wnv/QlbupheHLgAhOPf7PD1x+tPubqJzWzgoluVs+/snmSZAtwUUN/nrif9XcJszQbXTm+rn4Uitn6CHR4sdDBLI79WTNLN87rcdBUf86T1L2BQu/u/9NhFXyajgrYTNUPJiCygGZplXVgNnTA=
+	t=1708300122; cv=none; b=AfA+I6FPES7DKKpMQbxUkA9jr+I4haZ+U8ojVuUl3m/1r3u/zZp6M/j60iXeH6pPONdXizCERf4Kd90IEYWL7VKGhEyD7jogorrbk0AAqHT9vcAwYxwA6p3DPVhUH4LqKGEQ9wSKxRtC4XnTL2IcuzgArby7XhpcDPk2Ck9t3jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708299898; c=relaxed/simple;
-	bh=LhCl34C9hj/Y8w39M4PNhKCSJEojxdK1Ro+Y8hrc2Dw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=ihgLQf1CKq27/a49R5evAD8/Z2dP3oyOZ1b69adFRJu4NcyFc36uCuSCTC+sxWDbfr+SlWXvvgN/74KUZMsPu5g1YSeDUYqMyTExHp9O81XlOpY2IKQimgatOhGChTzTFCx1ASZ5FvAK/QRiHbb5H6zQzIbAXF8598Di2NwSZrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=Ad6yUwTs; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708299892;
-	bh=WFT8QfbCVr4EX+FVsMZB/8KLZUlyEl2vXdvcq9T3a2U=;
-	h=Date:From:To:Cc:Subject:From;
-	b=Ad6yUwTsiYgGVOn7U4f5/phoBJOG+1+j/OwIDdhD2eqBrQdDKsIeW8u/L3GMpH2XX
-	 Rz0O0imp0UHz5wnELKXCdsOp4ajcOKTX3vOZ/hVOvF31Q8QzdbWSg+1JGPzj680MHt
-	 G3jzFt6D+EFOCHvUuOsAcM4jaq4ZcZXXqy/dz54M9vYkeLaBnNCRWP51P3oCAJf2ES
-	 1h1AZMzR8Lw8+TXz6oaIQvume8W0VaP3yazEOT7fUiVDfHJfO9XnKTYcz7CPqIrA8y
-	 XSj+aqVaKGEKTjI/XfdUnZIExywE3z9s7QD/NG1w0hGjSGaLafLT/BP5ORImpwl4oc
-	 b6op0e2WH+TJw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TdMj02pbXz4wc7;
-	Mon, 19 Feb 2024 10:44:52 +1100 (AEDT)
-Date: Mon, 19 Feb 2024 10:44:50 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Chuck Lever <chuck.lever@oracle.com>, Dai Ngo <dai.ngo@oracle.com>, Jeff
- Layton <jlayton@kernel.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the vfs-brauner tree
-Message-ID: <20240219104450.4d258995@canb.auug.org.au>
+	s=arc-20240116; t=1708300122; c=relaxed/simple;
+	bh=91KRah/PoGNYtgM5YwsRijswQsDKqxRoDaI1dQOtKvk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sg08ycl6R926pd62OVBKOR5suadO31yQvJ58BdU+TdD3Q1498zhFymt+rLuN/p2Fe3zzWqOzeSxMIPDlr4WQ5O61UoS1CFanSJgFjVF2SrCSkK70LPgfnpdk7F6WkSZeMVwzjetkBE1AiAtoxcQfZ/yDJIML8sYlMNRE/Wdp3J8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=TSvrrvi6; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4126104e28eso6548985e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:48:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708300119; x=1708904919; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=buA/UKLNcQ5kdyPMEKml7ordtlaWTbAGzP/8x7nK568=;
+        b=TSvrrvi6gWA2/K8T84UHJtHu90E1pXt9AbTtCqrgqXScNBiUGZin5IFAmqotIvSxGb
+         19rOf027a7N7OdO8FgUM52c0uMwLuypLEZlZ8YSnHF3/iGeDqI7doJf1QD8S0R6XVNta
+         mBAcS8+zXiAw+P1xpShZRuW7v9HYs9aa5p0JiXejCOTYPlcLNHubDUj7q6aFND1rUcYd
+         v0DN6PKbzyp/p3zYj/1teixrrzwGreVcrmjo6eUCxuMR0IZEXn9Nzd30V4hvUOtQZVvX
+         7zdRJGUWJ0AahFG8epVmbNez/BNH4wiFsCvTNIIldM6XvkXTqXgsYCccQDvfoBTXj2jP
+         kxfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708300119; x=1708904919;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=buA/UKLNcQ5kdyPMEKml7ordtlaWTbAGzP/8x7nK568=;
+        b=HXNojsGpli/anTrm9wQexXnbJwTlxclLy6PLJsbcXSTHBhPQDmiaU0MBmgm3NKCt+w
+         NFEYhk3ycSC2PGGx7eUtnTgihcxyi2bDOaIxNXEDCrj0aeiyHxmeRwc52+Loh3tow8o8
+         sfBLYSIM+OSK+4Uyvwx3/1qV+Bpl4HfqzSCanLoVKi28k20+cwUGunzLAr4od7xCPXsb
+         J5eb7pbFm6G6aSf9/wiRTyst4BgzK3/ugCUdz21kXnaU7tamHjGlqmOPir3MbPyW0e+u
+         i1veYVV1ASU2FoKpAuti/ForuUkSxVj0dzFKgxFaoLj/kAzHI5iAzqmqRzIQ3hgWMn6c
+         11oQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWEtH9iiMliSN8sLKfNr1ElpewVFbq+bKUvLWtZ7RIuYTWuqTAG0OsOCex7/8jsNG1LgzD717GGiveHdVTW8gDrb8C6zyrqrT/XtidE
+X-Gm-Message-State: AOJu0YxRpzUwj58E2NTVw7NCcsXCMVjEKY4ODj130+g8fntEfVKnB+I/
+	Ul+3rxIU5V0sWXQbkEpKElpklUoh3HXesNOFk43xl/AOOv5SYmL4hVZKYfvyZSc=
+X-Google-Smtp-Source: AGHT+IEMnbMNjC4B0Pso0FCy4uKJFZWuQJrqcCZS1B/SG+nzfSMdDR0Xv3aZlRG+CEHH5v3gSGfFjA==
+X-Received: by 2002:a05:600c:4fc9:b0:412:5652:2875 with SMTP id o9-20020a05600c4fc900b0041256522875mr4798821wmq.17.1708300118765;
+        Sun, 18 Feb 2024 15:48:38 -0800 (PST)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id l5-20020a05600c4f0500b0041253692606sm7871460wmq.17.2024.02.18.15.48.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Feb 2024 15:48:38 -0800 (PST)
+Message-ID: <5f6229ac-1390-41b5-af91-53799641d3b2@linaro.org>
+Date: Mon, 19 Feb 2024 00:48:37 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/1Cq8K.VyR_cYtpA2rtC1AAV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] clocksource/drivers/arm_global_timer: Fix maximum
+ prescaler value
+Content-Language: en-US
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: tglx@linutronix.de, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, andrea.merello@gmail.com,
+ patrice.chotard@foss.st.com, linux-amlogic@lists.infradead.org
+References: <20240218174138.1942418-1-martin.blumenstingl@googlemail.com>
+ <20240218174138.1942418-2-martin.blumenstingl@googlemail.com>
+ <ec0b3dfb-3ce2-43f2-9cd4-042c3aca4cf7@linaro.org>
+ <CAFBinCC0BbahEMeW9CYC+hKk0CBQ9a+CqNrOv3c92D8hDtQHdQ@mail.gmail.com>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <CAFBinCC0BbahEMeW9CYC+hKk0CBQ9a+CqNrOv3c92D8hDtQHdQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
---Sig_/1Cq8K.VyR_cYtpA2rtC1AAV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 19/02/2024 00:18, Martin Blumenstingl wrote:
+> Hi Daniel,
+> 
+> On Sun, Feb 18, 2024 at 11:59 PM Daniel Lezcano
+> <daniel.lezcano@linaro.org> wrote:
+> [...]
+>>>    #define GT_CONTROL_PRESCALER_SHIFT      8
+>>> -#define GT_CONTROL_PRESCALER_MAX        0xF
+>>> +#define GT_CONTROL_PRESCALER_MAX        0xFF
+>>>    #define GT_CONTROL_PRESCALER_MASK       (GT_CONTROL_PRESCALER_MAX << \
+>>>                                         GT_CONTROL_PRESCALER_SHIFT
+>>
+>> Good catch!
+>>
+>> IMO the initial confusion is coming from the shift and the mask size.
+>>
+>> But should GT_CONTROL_PRESCALER_MAX be 256 ? so (0xFF + 1)
+> It depends on what we consider "max" to be:
+> - the register value
+> - the actual number that's used in the calculation formula
+> 
+> If we ignore the usage of GT_CONTROL_PRESCALER_MAX within
+> GT_CONTROL_PRESCALER_MASK then there's only one occurrence left, which
+> decrements the calculated value right before comparing it against
+> GT_CONTROL_PRESCALER_MAX.
+> This means: the remaining driver currently considers
+> GT_CONTROL_PRESCALER_MAX to be the maximum value that can be written
+> to the register, having converted the value from the calculation
+> formula to register value beforehand.
+> 
+>> The following may be less confusing:
+>>
+>> #define GT_CONTROL_PRESCALER_SHIFT      8
+>> #define GT_CONTROL_PRESCALER_MASK       GENMASK(15,8)
+>> #define GT_CONTROL_PRESCALER_MAX        (GT_CONTROL_PRESCALER_MASK >> \
+>>                                           GT_CONTROL_PRESCALER_SHIFT) + 1
+> If you're interested then I'll work on a follow-up patch to clean up
+> the prescaler macros (using FIELD_PREP, FIELD_GET and GENMASK would
+> simplify things IMO).
 
-Hi all,
+Yes, cleanups are welcome
 
-After merging the vfs-brauner tree, today's linux-next build (powerpc
-ppc64_defconfig) failed like this:
+> I think that this patch is still good as-is since it's small and can
+> be backported easily (if someone wants to do that).
 
-fs/nfsd/nfs4state.c: In function 'nfsd4_deleg_getattr_conflict':
-fs/nfsd/nfs4state.c:8845:32: error: 'struct file_lease' has no member named=
- 'fl_owner'
- 8845 |                         dp =3D fl->fl_owner;
-      |                                ^~
+Ok, I'm fine with that
 
-Caused by commits
 
-  a69ce85ec9af ("filelock: split common fields into struct file_lock_core")
-  282c30f320ba ("filelock: remove temporary compatibility macros")
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-interacting with commit
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
 
-  b9b89fb3e0b6 ("NFSD: handle GETATTR conflict with write delegation")
-
-from the nfsd tree.
-
-I have applied the following merge resolution patch.
-
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Date: Mon, 19 Feb 2024 10:38:26 +1100
-Subject: [PATCH] fixup for "filelock: split common fields into struct
- file_lock_core"
-
-interacting with "NFSD: handle GETATTR conflict with write delegation"
-
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- fs/nfsd/nfs4state.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index 3545125c8b73..71bb0ee57cf8 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -8842,7 +8842,7 @@ nfsd4_deleg_getattr_conflict(struct svc_rqst *rqstp, =
-struct inode *inode,
- 			}
- break_lease:
- 			nfsd_stats_wdeleg_getattr_inc(nn);
--			dp =3D fl->fl_owner;
-+			dp =3D fl->c.flc_owner;
- 			ncf =3D &dp->dl_cb_fattr;
- 			nfs4_cb_getattr(&dp->dl_cb_fattr);
- 			spin_unlock(&ctx->flc_lock);
---=20
-2.43.0
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/1Cq8K.VyR_cYtpA2rtC1AAV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXSlnIACgkQAVBC80lX
-0GwNGAf/Rwy5pN54PVBC7Npq/Yn+Sp60o4LwqP/7EvqgbU4QW8Di0G76K4iLOnAN
-o0Mhrfkir35BE43xhN794Ugj9wniGzBVS6denihoF2zdD22WI4D53EluPSa5ivSH
-oKt6IPwe6P+JXj+Pueuz7ihyI+V6dAwsUSKVKhAn6vTrylaJ9QRQgtOAUGEuvA9n
-E3+Omo4LMjn7zhOY4VQPu8J7Hx3nA+DtcxqkQUaU7b6N3ZmBZMhoX9VEl1Dj/Gp1
-DeEF1MX/dEvfE3z8SclZyiXZdQSr9UAZtPYeDj4CfY92WT0AfobBVgb+LIhvGCk3
-eHhjM+v229GK/usHXNGh9G9c9bO4Pw==
-=WMsd
------END PGP SIGNATURE-----
-
---Sig_/1Cq8K.VyR_cYtpA2rtC1AAV--
 
