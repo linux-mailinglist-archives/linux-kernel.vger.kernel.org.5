@@ -1,131 +1,176 @@
-Return-Path: <linux-kernel+bounces-70596-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70597-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F7728599A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:57:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BA838599A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:04:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6AF728174B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 21:57:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A89B5B20CEA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:04:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED6E2745CB;
-	Sun, 18 Feb 2024 21:57:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1000A1E86E;
+	Sun, 18 Feb 2024 22:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="0fGCbgr6"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BpiAHHfg"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB6B7318D
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 21:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8576A6F07C
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 22:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708293434; cv=none; b=fT58rjL6g2g/LRYqBfEZy0Xh8vJN65zary6sxzXD+Jhs+kn0+4ijUOoYgxB1PApguJlPpUIQj5ieu0PHQBB/Z0fb1cdYwPeCDu8dKqTqcvcuo5AjumhSWbt2A8PlLeADgmom+e5FrS7U54XlGclzpFt5zUgAATUVL+YkggtUZiI=
+	t=1708293849; cv=none; b=bv09yr2yMPLOWdcoiflySOLmGPl1IR1n5hsibfXdQQwznAGs512jlz//FLDEB2lvBYam4+G7a5brvvO2zCdJKgE7hYanWDPvp71qwgQAECSU8dMt9ycbGh5Dy3RoYX30TkiaLmzUQ/Bnqdzs2V8doxgFKNmxKyvgXVogzHQSiZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708293434; c=relaxed/simple;
-	bh=qFFnYcQKuHjjtVyuFyTWh18ZDZIzroX9DFS+VvYuBbE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XAmvEkxTqn5tCyaB4qsVAxguC8H/fZ7Jxm1KfYNQobAow9EQQLWqqt+l6KgQaQt1srCRGP0I8ldTKOc4LmYZg3ROlKRgrHUzI+qt33YHT4by0vqvWnsSfTXtR9luEzPOXxxf6WWUQz43dUMHm7KE5vur4FUf3BPhUe3OZLkUheM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=0fGCbgr6; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c0a36077a5so2371296b6e.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 13:57:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708293431; x=1708898231; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7EJCFpj5Mq/l10cEhu/JuTwYp/22JDItkGAyCOUOiCA=;
-        b=0fGCbgr6Hqu5b8i8aNauvc1zxXHTe6mQbcpLxzSzMHh7++tLtlnSlGqUuwv7uwaS6f
-         l5hXUuZ7UfhVWF3t9AtbIl6gHEn8JY2kUqgZn5TNq9XZ7bi1d+bW4s2rFFdXBcqXxvCU
-         SxTvHRry8EaGjjBuKGkMtHa6Dj221+0+qgSqD4d/FVxWUfL7GURC+80KtBDQlt4kdVuf
-         1D3rBGB1LMAEoJg4zeQTJQJ41rGW3JGQZ7L0pNDUojguTL3iax/zfMINSmYmGbxMvVia
-         O+U3HzJf1EwdJRXJ0O3ncgNMHtNeA517eqgs45xVdY62Ev3F2q0bObo6N2VBGagIP4Hw
-         x+RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708293431; x=1708898231;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7EJCFpj5Mq/l10cEhu/JuTwYp/22JDItkGAyCOUOiCA=;
-        b=gQXpWRuw5KgGSfF4FTaqfZMFq5BWqYr9uH3erL9CQZlNOgVCPL/HUj4ON9kpyMUNps
-         mjWZvcuOVSltjZvrjN4KLqN0flAOlsMoXTr9kMS+Je2N9OmzN4Z48SOLat8JIXfcPhXx
-         78z+KbX7x8GMJYA4L5VoOSPacM5pfiW1AYWVPv8Jt089w9WOik3/uW140tk7xSkVwrUd
-         k5YqKR5BWWKFoLqeQ754o6KLXKyVdxe/WGAa0pHJK4LI0nymlBap5D34XQlaulEf8Xnh
-         g24vNE8msHA3cTnQuKQ2YzIDKiT/56pokCrSTqdnaIpPRtSN75p04dIQTHtH9nAzMscO
-         nW5g==
-X-Forwarded-Encrypted: i=1; AJvYcCXTxk/GbF6OR2zNJRHsySKu4yBHcQC1cYZxEEBXFW5U7wCjUXwattytOpwIVA1atno5mhWC3XwVKLOLCKSt8Tc2Pr59HDZxVoirbFYv
-X-Gm-Message-State: AOJu0YwSdQsXyLEzaM8q2vm3GY603hc+m7XVfkc4RrmEa3AM86FciwZv
-	JKWL/m6yxeOkde+9yLpH9/S5lEBw35x5X8AW53KqSEfD+c4Uxlrz4V87qr5yoRE=
-X-Google-Smtp-Source: AGHT+IGHAd+EyyInpg/WIK5cXqp7bRUhKcmUIeqJqAnPgoTw25mUzovlZAYpWU5B3BmWer+kFxWViw==
-X-Received: by 2002:a05:6808:228e:b0:3c0:32c6:4e88 with SMTP id bo14-20020a056808228e00b003c032c64e88mr13167868oib.9.1708293431093;
-        Sun, 18 Feb 2024 13:57:11 -0800 (PST)
-Received: from [192.168.0.142] (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id a22-20020aca1a16000000b003bff3512781sm657610oia.50.2024.02.18.13.57.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 13:57:10 -0800 (PST)
-Message-ID: <10b08086-ddfe-449c-97a3-22875d00025f@baylibre.com>
-Date: Sun, 18 Feb 2024 15:57:09 -0600
+	s=arc-20240116; t=1708293849; c=relaxed/simple;
+	bh=cuSyQRH7bwhvjr0XgDK18ejsQwITuzTRYw+briicG0k=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=IUJE4459A4ADQpfahalofNPnkWY7w3f20Xc8Ko6QdrMBYNrtlAxP1eJq2bRUR/hHeOlJxVv5fN32xTbBh978cl/HTXri9OlXX/jh4HsMllkNpNlW+sCwJf4srwhBDk1bf+FIGDleITpKZf23tLrtQI5JfXijfFWnrAb+43au5PA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BpiAHHfg; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708293848; x=1739829848;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=cuSyQRH7bwhvjr0XgDK18ejsQwITuzTRYw+briicG0k=;
+  b=BpiAHHfgANwbLVnc4ptCygqcWgZmJnU4Ad55Xk18CKg+o3XNFd30cwRF
+   1DztKJzpmM/sAvjAeb5+NB5dv8P02X8f5N2L9AnGMdYG/CqzUXvvhoqcF
+   yMjbwVPtDoke54WCanN7JYBXvyE2o5U+fQ0ON5JTOWuLISnKPuKTgLHef
+   xo5K+T1geQAJ+rqugj+D6MbLDmWBAyoCB/aM2sZ9xs/T+6W6TWoO43CRa
+   V8Oun4puEp568uNAos9+4eVFaU8BjQNL+YG1goNwoG5xZ10Lbi4FkNs7r
+   Pv8M128A0g7ZoxwtunkvPW3Px6wUv6m1BBU1RX3G4q5jy7ku5A41QnnTj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2226678"
+X-IronPort-AV: E=Sophos;i="6.06,169,1705392000"; 
+   d="scan'208";a="2226678"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 14:04:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,169,1705392000"; 
+   d="scan'208";a="9008214"
+Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
+  by orviesa004.jf.intel.com with ESMTP; 18 Feb 2024 14:04:05 -0800
+Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rbpGI-0003KC-1e;
+	Sun, 18 Feb 2024 22:03:53 +0000
+Date: Mon, 19 Feb 2024 06:01:08 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/hwtracing/intel_th/core.c:812: warning: Function parameter
+ or member 'ndevres' not described in 'intel_th_alloc'
+Message-ID: <202402190552.9D7I1cA3-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/2] iio: adc: ad7380: new driver for AD7380 ADCs
-Content-Language: en-US
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: linux-iio@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Michael Hennerich <michael.hennerich@analog.com>,
- =?UTF-8?Q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- linux-kernel@vger.kernel.org, Stefan Popa <stefan.popa@analog.com>,
- devicetree@vger.kernel.org, Julien Stephan <jstephan@baylibre.com>
-References: <20240110-ad7380-mainline-v4-0-93a1d96b50fa@baylibre.com>
- <20240110-ad7380-mainline-v4-2-93a1d96b50fa@baylibre.com>
- <CAMknhBGg0hHXrd3K92tgHHTnfbk7dLAMvtTSZff1P-C3=9nFaw@mail.gmail.com>
- <20240217162014.17033d64@jic23-huawei>
-From: David Lechner <dlechner@baylibre.com>
-In-Reply-To: <20240217162014.17033d64@jic23-huawei>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 2/17/24 10:20 AM, Jonathan Cameron wrote:
-> On Fri, 16 Feb 2024 14:34:01 -0600
-> David Lechner <dlechner@baylibre.com> wrote:
-> 
->> On Wed, Jan 10, 2024 at 2:29 PM David Lechner <dlechner@baylibre.com> wrote:
->>>
->>> This adds a new driver for the AD7380 family ADCs.
->>>
->>> The driver currently implements basic support for the AD7380, AD7381,
->>> AD7383, and AD7384 2-channel differential ADCs. Support for additional
->>> single-ended and 4-channel chips that use the same register map as well
->>> as additional features of the chip will be added in future patches.
->>>  
->>
->> Hi Jonathan,
->>
->> We have some additional features to add to this driver we are working
->> on that look like they might affect userspace. Can we hold off on
->> sending this one to Greg for 6.9? That way we will have more time to
->> sort that out without having to worry about breaking userspace.
-> 
-> Ok. Hopefully rebasing my tree won't cause others too many downstream
-> problems. Generally I only do this if there is an invalid tag or similar
-> that must be fixed.  There is normally a window of a weekish
-> between me picking it up and pushing out for linux-next to pick up and
-> hopefully issues like this get spotted in that window.
-> Ah well, sometimes things don't work out how we would like them to.
-> 
-> Dropped the 3 patches (original driver and a fix) from the togreg branch.
-> 
+Hi Alexander,
 
-Thanks. I will keep the the one week window in mind if we have similar cases in the future.
+FYI, the error/warning still remains.
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   6c160f16be5df1f66f6afe186c961ad446d7f94b
+commit: db73a059de00eed721f13051c0d6ff3e7de90fe8 intel_th: Rework resource passing between glue layers and core
+date:   4 years, 10 months ago
+config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20240219/202402190552.9D7I1cA3-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402190552.9D7I1cA3-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202402190552.9D7I1cA3-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/hwtracing/intel_th/core.c:812: warning: Function parameter or member 'drvdata' not described in 'intel_th_alloc'
+>> drivers/hwtracing/intel_th/core.c:812: warning: Function parameter or member 'ndevres' not described in 'intel_th_alloc'
+
+
+vim +812 drivers/hwtracing/intel_th/core.c
+
+39f4034693b7c7 Alexander Shishkin 2015-09-22  802  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  803  /**
+39f4034693b7c7 Alexander Shishkin 2015-09-22  804   * intel_th_alloc() - allocate a new Intel TH device and its subdevices
+39f4034693b7c7 Alexander Shishkin 2015-09-22  805   * @dev:	parent device
+db73a059de00ee Alexander Shishkin 2019-05-03  806   * @devres:	resources indexed by th_mmio_idx
+39f4034693b7c7 Alexander Shishkin 2015-09-22  807   * @irq:	irq number
+39f4034693b7c7 Alexander Shishkin 2015-09-22  808   */
+39f4034693b7c7 Alexander Shishkin 2015-09-22  809  struct intel_th *
+3321371b5d6484 Alexander Shishkin 2017-08-18  810  intel_th_alloc(struct device *dev, struct intel_th_drvdata *drvdata,
+3321371b5d6484 Alexander Shishkin 2017-08-18  811  	       struct resource *devres, unsigned int ndevres, int irq)
+39f4034693b7c7 Alexander Shishkin 2015-09-22 @812  {
+39f4034693b7c7 Alexander Shishkin 2015-09-22  813  	struct intel_th *th;
+661b0df8489a35 Alexander Shishkin 2017-08-23  814  	int err, r;
+661b0df8489a35 Alexander Shishkin 2017-08-23  815  
+db73a059de00ee Alexander Shishkin 2019-05-03  816  	if (ndevres < TH_MMIO_END)
+db73a059de00ee Alexander Shishkin 2019-05-03  817  		return ERR_PTR(-EINVAL);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  818  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  819  	th = kzalloc(sizeof(*th), GFP_KERNEL);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  820  	if (!th)
+39f4034693b7c7 Alexander Shishkin 2015-09-22  821  		return ERR_PTR(-ENOMEM);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  822  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  823  	th->id = ida_simple_get(&intel_th_ida, 0, 0, GFP_KERNEL);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  824  	if (th->id < 0) {
+39f4034693b7c7 Alexander Shishkin 2015-09-22  825  		err = th->id;
+39f4034693b7c7 Alexander Shishkin 2015-09-22  826  		goto err_alloc;
+39f4034693b7c7 Alexander Shishkin 2015-09-22  827  	}
+39f4034693b7c7 Alexander Shishkin 2015-09-22  828  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  829  	th->major = __register_chrdev(0, 0, TH_POSSIBLE_OUTPUTS,
+39f4034693b7c7 Alexander Shishkin 2015-09-22  830  				      "intel_th/output", &intel_th_output_fops);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  831  	if (th->major < 0) {
+39f4034693b7c7 Alexander Shishkin 2015-09-22  832  		err = th->major;
+39f4034693b7c7 Alexander Shishkin 2015-09-22  833  		goto err_ida;
+39f4034693b7c7 Alexander Shishkin 2015-09-22  834  	}
+39f4034693b7c7 Alexander Shishkin 2015-09-22  835  	th->dev = dev;
+3321371b5d6484 Alexander Shishkin 2017-08-18  836  	th->drvdata = drvdata;
+39f4034693b7c7 Alexander Shishkin 2015-09-22  837  
+db73a059de00ee Alexander Shishkin 2019-05-03  838  	for (r = 0; r < ndevres; r++)
+db73a059de00ee Alexander Shishkin 2019-05-03  839  		th->resource[r] = devres[r];
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  840  	th->num_resources = ndevres;
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  841  	th->irq = irq;
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  842  
+d7b1787161b78a Alexander Shishkin 2016-02-15  843  	dev_set_drvdata(dev, th);
+d7b1787161b78a Alexander Shishkin 2016-02-15  844  
+142dfeb2020960 Alexander Shishkin 2016-06-22  845  	pm_runtime_no_callbacks(dev);
+142dfeb2020960 Alexander Shishkin 2016-06-22  846  	pm_runtime_put(dev);
+142dfeb2020960 Alexander Shishkin 2016-06-22  847  	pm_runtime_allow(dev);
+142dfeb2020960 Alexander Shishkin 2016-06-22  848  
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  849  	err = intel_th_populate(th);
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  850  	if (err) {
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  851  		/* free the subdevices and undo everything */
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  852  		intel_th_free(th);
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  853  		return ERR_PTR(err);
+a753bfcfdb1f31 Alexander Shishkin 2017-08-10  854  	}
+39f4034693b7c7 Alexander Shishkin 2015-09-22  855  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  856  	return th;
+39f4034693b7c7 Alexander Shishkin 2015-09-22  857  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  858  err_ida:
+39f4034693b7c7 Alexander Shishkin 2015-09-22  859  	ida_simple_remove(&intel_th_ida, th->id);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  860  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  861  err_alloc:
+39f4034693b7c7 Alexander Shishkin 2015-09-22  862  	kfree(th);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  863  
+39f4034693b7c7 Alexander Shishkin 2015-09-22  864  	return ERR_PTR(err);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  865  }
+39f4034693b7c7 Alexander Shishkin 2015-09-22  866  EXPORT_SYMBOL_GPL(intel_th_alloc);
+39f4034693b7c7 Alexander Shishkin 2015-09-22  867  
+
+:::::: The code at line 812 was first introduced by commit
+:::::: 39f4034693b7c7bd1fe4cb58c93259d600f55561 intel_th: Add driver infrastructure for Intel(R) Trace Hub devices
+
+:::::: TO: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
