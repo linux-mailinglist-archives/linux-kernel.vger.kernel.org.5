@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-70264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7F39859563
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:59:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A3C859565
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C0B428234F
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:59:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29491282835
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4523A1EA7F;
-	Sun, 18 Feb 2024 07:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEDB1EB3B;
+	Sun, 18 Feb 2024 07:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M4PraJEV"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UF+J06eR"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806B61D6AA;
-	Sun, 18 Feb 2024 07:58:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E829F9F0;
+	Sun, 18 Feb 2024 07:58:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708243099; cv=none; b=c5qHyhqP385oCTUO61mhU7/XZGETWNy6pOVKZoAFkQKg7kUK3D2+XiL6awlKZ/SGTfG8W0Z9AXHYgW721zFdRSRsJ2uY6jgB7ftuBVhhXI+Q8JBHZ1JAYA/em6k4we3/bhIOCA9ZSrGiwocR1zGYJDGKZepi/8GAqSYcE4/F99M=
+	t=1708243102; cv=none; b=TfzoCs8D1HxfXDt5iQtL7dp8+sInSUXtgwIsXx0qZE0+tz58rD8gLu71prO1C2B24uaxjKsoVezFhmV6zkMyyjLsXnX3NCbSoq9zPy7FA240QWO2rnx4VFpO4QE5lIojA9udpY7nmqGFQJFczaCSWWm9T5lUpcER/GD6TA2UXBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708243099; c=relaxed/simple;
-	bh=APHd53FETp7bMcTra6Q2uekzr3ZPbBpRLKIx89mhIt0=;
+	s=arc-20240116; t=1708243102; c=relaxed/simple;
+	bh=gF3/8s9rdHbLqFLOpYOvq2ihfs6x9vepRDOvp4fgqQw=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eZ/e7+Dee9zoNaHk8ZPO5x/hYjMpBOgoL5A2Nb3v1CdBB2nldtytkN73/wRa/AlxseQubBQQC1NDa1ogdkUViSZQoXbPdc7zEv5mSJ0tdC5DC4hkcs5UTwmHOIK/oUZcTKKUugz3IpvYg+bagoPqjn/fNvp1ySwkJHZ7ONoZuxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M4PraJEV; arc=none smtp.client-ip=209.85.218.44
+	 MIME-Version; b=AWxrtK8q0NUtqSQp4jkQxUgPJw5JfbU76qnt4L8yiX+KnQ+IgTWvWWKQEP490/mAy70nkQy6cNWR6v9wyUmGS9rc0g7g/+v4ZRwrqNkNdAVN1T4YXw3KrKiacPhFmryhwq3ub6h+F3hjvGN8wTSRkGvK35ZACwNxl+pQ6hdnhts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UF+J06eR; arc=none smtp.client-ip=209.85.218.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a3e891b5e4eso464166b.0;
-        Sat, 17 Feb 2024 23:58:17 -0800 (PST)
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a3e706f50beso21174466b.0;
+        Sat, 17 Feb 2024 23:58:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708243096; x=1708847896; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708243098; x=1708847898; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YOctRdMaVKvlxxQLiZyj1BX0A6EczB9hIAIpTNelg5c=;
-        b=M4PraJEVWQgyuWlkuy1OQoDmH3owV1mSElK3KLwNNgpUi0HruzXUJpZQb91MhyBQUY
-         bRFUIVSFZvUTZFAY0yKXDD4oZuZNfdSiPJKUA5731AVeXEEIst7e08yPA2Bi0UjShUfX
-         XOaBjNgwJ0+vtKw3cLB00CNLY8LslWsWiB9CoHZD/VIptdqEr3mzcXQXzrSSsbMPVxih
-         itsz5Mfnztw9xIgAnFvqB6kmEpcO2wWXizRS0Y2w90khYwVqAkHqFQFZEwFAgsIkQMD1
-         xStmL4xbZZdJoBIvSz4zocxmOSgE1c06uP0d8srNsbLIWLjBeLuooFcxzc2FfTrB+Va+
-         RGEA==
+        bh=zhBVbpbbNuAZsJD1zsfWWGeNA5wuPbJ+/FGELo9o7pw=;
+        b=UF+J06eRuTKEybgI3F7Q6T0axVSufvnzJRa66G4WNugpSHoo+6tT8FAKniDhsMC7Jr
+         MnS3MqrtkAoEmAeCXKFccW7sxSnkbjB6hLWZUTO8B5KqX1qbkI3Hy1kQ32YGIxjIYXow
+         Xmynojjjrbh4hBJGjWshUZ+px7aFlhhKxFMcEFi4pzgvSAXHcGydT4tWZqPujYzAkzr5
+         ScSbpZ86yNPuI4z3Dm6wKjP3ykMbL9+X2jX3ld0Oo+awtWb2N3OqyPWaYFDHFgCCSakJ
+         svOHM2FE04aZSjq+EAIB75MXtg4Gw1qTbglQbTg3kZnNiPeOUO8oJsAXN3GS33kCEGZj
+         LMgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708243096; x=1708847896;
+        d=1e100.net; s=20230601; t=1708243098; x=1708847898;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YOctRdMaVKvlxxQLiZyj1BX0A6EczB9hIAIpTNelg5c=;
-        b=EGq4MCzQb7lcHUpnBl1kby/h89V9KOkGNzZ52DvuBUEbWPtplgXDyWwyHKLWWrR0pl
-         7PviYcXQWHkLd4pY6nwUifCfXXXgRe2VkAq7aihxb4dXMi11hBKFbm4bGCtrg5i+EHom
-         /dSPsmaq/4gk2yjTFrxx4E0DP550e+s7594HrYVyOkezhJPa245LPPuqjAcDhmttv2Tt
-         jDiOxWinI+cxufM+OqJvALV8PZpg4WA1eoMord55vkujkL68jwB77lJYW6oryCnY+Xoe
-         YxKz0+V/JO48OZVl3jTgiu+/yI81zXXsST3nKtlgex4H0dwd/JpwFdYoGa4+eMWJUhtm
-         /6jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVD1kEHi8bHkJSRv3RxKtdH3IXqxa7FjkqNpb0Lyr1j70n2Mwyl6mrqrClCn8mTeJobRZtlDABLSRnuDPAW2Jl6U8A/p4Qi3vwmrTusarO8td9J0ITuP4EugEj4jggjKapLZbqc
-X-Gm-Message-State: AOJu0YwSS/c/Ij3RMZoEJUNFvC7YAu17S6DH4lKlcTmH5r1Gnd8B5dpN
-	oKlMLV5QfyzohlmkOu7KmnQmN4798UqdmGWWIHGWX69VMWwrcm+X
-X-Google-Smtp-Source: AGHT+IEis5Td4gJlGqzyMPzrBgl03RLfsaeHUTC7vGBI5Adt7nStq6043pikjkxr9EssV3LXjPxuYg==
-X-Received: by 2002:a17:906:af0f:b0:a3d:dfa:7a92 with SMTP id lx15-20020a170906af0f00b00a3d0dfa7a92mr6592739ejb.36.1708243095819;
-        Sat, 17 Feb 2024 23:58:15 -0800 (PST)
+        bh=zhBVbpbbNuAZsJD1zsfWWGeNA5wuPbJ+/FGELo9o7pw=;
+        b=ag5tKA7+i0fl2PMkWs9knMwKGPn1HTCRvjc8qB9V0nKobo+Ioxb/wi3AZllTZ3dP99
+         HWgXoMI9R/61Ll+6Cy9aihs1cdoF5av9WrTS3Lwe3BO5nRZrXEyJhvqApsYAZ2uH94tp
+         VuT7Op1A6knBWjECxhNVxGic7/bTt/Kby3pxLsKrCo2d32ecY/PC6zy3ObstQJmbo6RW
+         izEU97JOHTH0qRt2ztPh/k7H2g2dm0/tENhF+g6ZEG4D95dgqBiHC1kfc7e7IEawfRv8
+         ye0pWvbcaTRm++xMNjuO/jo5rCdO238gMORtbCa+huYc/cHUkORijj0FPBVhptaHHp/U
+         zPMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWLqwBM/UzSinJbgB6nntMu45wsHX8tFks/DjiuP22XMdjO66+eiIBvP/leCXviaJrTMZIy0GyhjSbPpgid9SRwANxWVAgwfJ+UkFRxqGWzpzea2+OReGsEYw9cs8uLOkdzcPJX
+X-Gm-Message-State: AOJu0Yw3OVlFyu8dGAQgCmWQe2EgEhfn/vEyE7qVGV8QhgDAesGD6Byy
+	iTWne7nqnKoyBbGct70y+UhNsf5yktTNdV1w1fNoIhRzw04g21+A
+X-Google-Smtp-Source: AGHT+IG3FzcKr25nULijxUuqWGKsk13wSncNCW4A+KbfHbPk6ScXYFTqGgsHTrQrUHFjXkamhq4aLQ==
+X-Received: by 2002:a17:906:3786:b0:a3e:3bc2:bdf with SMTP id n6-20020a170906378600b00a3e3bc20bdfmr1391538ejc.60.1708243098705;
+        Sat, 17 Feb 2024 23:58:18 -0800 (PST)
 Received: from debian.fritz.box ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id jj12-20020a170907984c00b00a3e64bcd2c1sm458732ejc.142.2024.02.17.23.58.14
+        by smtp.gmail.com with ESMTPSA id jj12-20020a170907984c00b00a3e64bcd2c1sm458732ejc.142.2024.02.17.23.58.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 23:58:15 -0800 (PST)
+        Sat, 17 Feb 2024 23:58:18 -0800 (PST)
 From: Dimitri Fedrau <dima.fedrau@gmail.com>
 To: 
 Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
@@ -79,9 +79,9 @@ Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
 	Stefan Eichenberger <eichest@gmail.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 net-next 06/14] net: phy: marvell-88q2xxx: add interrupt support for link detection
-Date: Sun, 18 Feb 2024 08:57:43 +0100
-Message-Id: <20240218075753.18067-7-dima.fedrau@gmail.com>
+Subject: [PATCH v7 net-next 07/14] net: phy: marvell-88q2xxx: add suspend / resume ops
+Date: Sun, 18 Feb 2024 08:57:44 +0100
+Message-Id: <20240218075753.18067-8-dima.fedrau@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240218075753.18067-1-dima.fedrau@gmail.com>
 References: <20240218075753.18067-1-dima.fedrau@gmail.com>
@@ -93,196 +93,66 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Added .config_intr and .handle_interrupt callbacks. Whenever the link
-goes up or down an interrupt will be triggered. Interrupts are configured
-separately for 100/1000BASET1.
+Add suspend/resume ops for Marvell 88Q2xxx devices.
 
 Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
 ---
- drivers/net/phy/marvell-88q2xxx.c | 123 +++++++++++++++++++++++++++++-
- 1 file changed, 119 insertions(+), 4 deletions(-)
+ drivers/net/phy/marvell-88q2xxx.c | 34 +++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
 diff --git a/drivers/net/phy/marvell-88q2xxx.c b/drivers/net/phy/marvell-88q2xxx.c
-index 9829facde253..7c7517af346b 100644
+index 7c7517af346b..8b8275552014 100644
 --- a/drivers/net/phy/marvell-88q2xxx.c
 +++ b/drivers/net/phy/marvell-88q2xxx.c
-@@ -24,6 +24,19 @@
- #define MDIO_MMD_AN_MV_STAT2_100BT1		0x2000
- #define MDIO_MMD_AN_MV_STAT2_1000BT1		0x4000
- 
-+#define MDIO_MMD_PCS_MV_INT_EN			32784
-+#define MDIO_MMD_PCS_MV_INT_EN_LINK_UP		0x0040
-+#define MDIO_MMD_PCS_MV_INT_EN_LINK_DOWN	0x0080
-+#define MDIO_MMD_PCS_MV_INT_EN_100BT1		0x1000
-+
-+#define MDIO_MMD_PCS_MV_GPIO_INT_STAT			32785
-+#define MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_UP		0x0040
-+#define MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_DOWN		0x0080
-+#define MDIO_MMD_PCS_MV_GPIO_INT_STAT_100BT1_GEN	0x1000
-+
-+#define MDIO_MMD_PCS_MV_GPIO_INT_CTRL			32787
-+#define MDIO_MMD_PCS_MV_GPIO_INT_CTRL_TRI_DIS		0x0800
-+
- #define MDIO_MMD_PCS_MV_100BT1_STAT1			33032
- #define MDIO_MMD_PCS_MV_100BT1_STAT1_IDLE_ERROR		0x00ff
- #define MDIO_MMD_PCS_MV_100BT1_STAT1_JABBER		0x0100
-@@ -38,6 +51,12 @@
- #define MDIO_MMD_PCS_MV_100BT1_STAT2_LINK	0x0004
- #define MDIO_MMD_PCS_MV_100BT1_STAT2_ANGE	0x0008
- 
-+#define MDIO_MMD_PCS_MV_100BT1_INT_EN			33042
-+#define MDIO_MMD_PCS_MV_100BT1_INT_EN_LINKEVENT		0x0400
-+
-+#define MDIO_MMD_PCS_MV_COPPER_INT_STAT			33043
-+#define MDIO_MMD_PCS_MV_COPPER_INT_STAT_LINKEVENT	0x0400
-+
- #define MDIO_MMD_PCS_MV_RX_STAT			33328
- 
- struct mmd_val {
-@@ -99,13 +118,15 @@ static int mv88q2xxx_read_link_gbit(struct phy_device *phydev)
- 
- 	/* Read vendor specific Auto-Negotiation status register to get local
- 	 * and remote receiver status according to software initialization
--	 * guide.
-+	 * guide. However, when not in polling mode the local and remote
-+	 * receiver status are not evaluated due to the Marvell 88Q2xxx APIs.
- 	 */
- 	ret = phy_read_mmd(phydev, MDIO_MMD_AN, MDIO_MMD_AN_MV_STAT);
- 	if (ret < 0) {
- 		return ret;
--	} else if ((ret & MDIO_MMD_AN_MV_STAT_LOCAL_RX) &&
--		   (ret & MDIO_MMD_AN_MV_STAT_REMOTE_RX)) {
-+	} else if (((ret & MDIO_MMD_AN_MV_STAT_LOCAL_RX) &&
-+		   (ret & MDIO_MMD_AN_MV_STAT_REMOTE_RX)) ||
-+		   !phy_polling_mode(phydev)) {
- 		/* The link state is latched low so that momentary link
- 		 * drops can be detected. Do not double-read the status
- 		 * in polling mode to detect such short link drops except
-@@ -145,7 +166,18 @@ static int mv88q2xxx_read_link_100m(struct phy_device *phydev)
- 	 * the link was already down. In case we are not polling,
- 	 * we always read the realtime status.
- 	 */
--	if (!phy_polling_mode(phydev) || !phydev->link) {
-+	if (!phy_polling_mode(phydev)) {
-+		phydev->link = false;
-+		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
-+				   MDIO_MMD_PCS_MV_100BT1_STAT2);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (ret & MDIO_MMD_PCS_MV_100BT1_STAT2_LINK)
-+			phydev->link = true;
-+
-+		return 0;
-+	} else if (!phydev->link) {
- 		ret = phy_read_mmd(phydev, MDIO_MMD_PCS,
- 				   MDIO_MMD_PCS_MV_100BT1_STAT1);
- 		if (ret < 0)
-@@ -356,6 +388,79 @@ static int mv88q2xxx_get_sqi_max(struct phy_device *phydev)
- 	return 15;
+@@ -461,6 +461,38 @@ static irqreturn_t mv88q2xxx_handle_interrupt(struct phy_device *phydev)
+ 	return IRQ_HANDLED;
  }
  
-+static int mv88q2xxx_config_intr(struct phy_device *phydev)
++static int mv88q2xxx_suspend(struct phy_device *phydev)
 +{
 +	int ret;
 +
-+	if (phydev->interrupts == PHY_INTERRUPT_ENABLED) {
-+		/* Enable interrupts for 1000BASE-T1 link up and down events
-+		 * and enable general interrupts for 100BASE-T1.
-+		 */
-+		ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
-+				    MDIO_MMD_PCS_MV_INT_EN,
-+				    MDIO_MMD_PCS_MV_INT_EN_LINK_UP |
-+				    MDIO_MMD_PCS_MV_INT_EN_LINK_DOWN |
-+				    MDIO_MMD_PCS_MV_INT_EN_100BT1);
-+		if (ret < 0)
++	/* Disable PHY interrupts */
++	if (phy_interrupt_is_valid(phydev)) {
++		phydev->interrupts = PHY_INTERRUPT_DISABLED;
++		ret = mv88q2xxx_config_intr(phydev);
++		if (ret)
 +			return ret;
-+
-+		/* Enable interrupts for 100BASE-T1 link events */
-+		return phy_write_mmd(phydev, MDIO_MMD_PCS,
-+				     MDIO_MMD_PCS_MV_100BT1_INT_EN,
-+				     MDIO_MMD_PCS_MV_100BT1_INT_EN_LINKEVENT);
-+	} else {
-+		ret = phy_write_mmd(phydev, MDIO_MMD_PCS,
-+				    MDIO_MMD_PCS_MV_INT_EN, 0);
-+		if (ret < 0)
-+			return ret;
-+
-+		return phy_write_mmd(phydev, MDIO_MMD_PCS,
-+				     MDIO_MMD_PCS_MV_100BT1_INT_EN, 0);
 +	}
++
++	return phy_set_bits_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1,
++				MDIO_CTRL1_LPOWER);
 +}
 +
-+static irqreturn_t mv88q2xxx_handle_interrupt(struct phy_device *phydev)
++static int mv88q2xxx_resume(struct phy_device *phydev)
 +{
-+	bool trigger_machine = false;
-+	int irq;
++	int ret;
 +
-+	/* Before we can acknowledge the 100BT1 general interrupt, that is in
-+	 * the 1000BT1 interrupt status register, we have to acknowledge any
-+	 * interrupts that are related to it. Therefore we read first the 100BT1
-+	 * interrupt status register, followed by reading the 1000BT1 interrupt
-+	 * status register.
-+	 */
-+
-+	irq = phy_read_mmd(phydev, MDIO_MMD_PCS,
-+			   MDIO_MMD_PCS_MV_COPPER_INT_STAT);
-+	if (irq < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
++	/* Enable PHY interrupts */
++	if (phy_interrupt_is_valid(phydev)) {
++		phydev->interrupts = PHY_INTERRUPT_ENABLED;
++		ret = mv88q2xxx_config_intr(phydev);
++		if (ret)
++			return ret;
 +	}
 +
-+	/* Check link status for 100BT1 */
-+	if (irq & MDIO_MMD_PCS_MV_COPPER_INT_STAT_LINKEVENT)
-+		trigger_machine = true;
-+
-+	irq = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_MMD_PCS_MV_GPIO_INT_STAT);
-+	if (irq < 0) {
-+		phy_error(phydev);
-+		return IRQ_NONE;
-+	}
-+
-+	/* Check link status for 1000BT1 */
-+	if ((irq & MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_UP) ||
-+	    (irq & MDIO_MMD_PCS_MV_GPIO_INT_STAT_LINK_DOWN))
-+		trigger_machine = true;
-+
-+	if (!trigger_machine)
-+		return IRQ_NONE;
-+
-+	phy_trigger_machine(phydev);
-+
-+	return IRQ_HANDLED;
++	return phy_clear_bits_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1,
++				  MDIO_CTRL1_LPOWER);
 +}
 +
  static int mv88q222x_soft_reset(struct phy_device *phydev)
  {
  	int ret;
-@@ -422,6 +527,14 @@ static int mv88q222x_revb0_config_init(struct phy_device *phydev)
- 	 */
- 	phydev->pma_extable = MDIO_PMA_EXTABLE_BT1;
- 
-+	/* Configure interrupt with default settings, output is driven low for
-+	 * active interrupt and high for inactive.
-+	 */
-+	if (phy_interrupt_is_valid(phydev))
-+		return phy_set_bits_mmd(phydev, MDIO_MMD_PCS,
-+					MDIO_MMD_PCS_MV_GPIO_INT_CTRL,
-+					MDIO_MMD_PCS_MV_GPIO_INT_CTRL_TRI_DIS);
-+
- 	return 0;
- }
- 
-@@ -448,6 +561,8 @@ static struct phy_driver mv88q2xxx_driver[] = {
- 		.config_init		= mv88q222x_revb0_config_init,
- 		.read_status		= mv88q2xxx_read_status,
- 		.soft_reset		= mv88q222x_soft_reset,
-+		.config_intr		= mv88q2xxx_config_intr,
-+		.handle_interrupt	= mv88q2xxx_handle_interrupt,
+@@ -566,6 +598,8 @@ static struct phy_driver mv88q2xxx_driver[] = {
  		.set_loopback		= genphy_c45_loopback,
  		.get_sqi		= mv88q2xxx_get_sqi,
  		.get_sqi_max		= mv88q2xxx_get_sqi_max,
++		.suspend		= mv88q2xxx_suspend,
++		.resume			= mv88q2xxx_resume,
+ 	},
+ };
+ 
 -- 
 2.39.2
 
