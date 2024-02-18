@@ -1,200 +1,307 @@
-Return-Path: <linux-kernel+bounces-70277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ADD7859581
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:06:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F737859585
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8600A1C20ADF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:06:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A89831C20B4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFBE107AA;
-	Sun, 18 Feb 2024 08:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5E01078D;
+	Sun, 18 Feb 2024 08:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="zP9sEU4b";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b="GUExKSB3"
-Received: from fallback20.i.mail.ru (fallback20.i.mail.ru [79.137.243.76])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="inpPsbN5"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0597312E61;
-	Sun, 18 Feb 2024 08:06:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910AE2903
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 08:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708243577; cv=none; b=IwNcvMkcFkQmAwqW3um+bFnVKbCYUYDxX8NGSDWW/Rpcw1P9P2KKWOl7TdOeI5/YoPSP+MLkzXuUa4FhG2K2IGrhPM+awywPSuRnMUqXqA1zKMkVyUrDtoDh/1Ka2HVaksQ4s9kO37d8XQ7Lv3HsHY5uZA9bSutv3hvSgsfpnhM=
+	t=1708243643; cv=none; b=PoKBJ9P6hLhTyrIrqQ6f/DPwSvqp40ugVWZ9zbExTOisKccA2Lx/Py5Jc1oeW0BVWDs/eJ9Ev1elMSPUdwZcolT5i8HEPyVU1M8119+32InEkQBWM6/+2PC2P7EANg/A7+5sVmG7StuE5QZIPRIvs1gtETXowa86/nPzbktoBEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708243577; c=relaxed/simple;
-	bh=zbKNbENFN/OnjMU8rFgLiYkxYbjk2LCM2f7LHLfAxj8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C8sXXu9/am1kaou5HW2LHbDoKcNWbMIItlkjloV4NNucB4/GQ5xk00F+9L/vIKtuuaKrqfgWcfyZq3I0n6NQzQlWVRvS/5KXoLamwNp1nkil/ZkmXRo1YQD32nefFGDkGi4MUnP3uzLQwKIou95p6Jn/MWniO+4Bb8sJcKmy89I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com; spf=pass smtp.mailfrom=jiaxyga.com; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=zP9sEU4b; dkim=pass (1024-bit key) header.d=jiaxyga.com header.i=@jiaxyga.com header.b=GUExKSB3; arc=none smtp.client-ip=79.137.243.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jiaxyga.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jiaxyga.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com; s=mailru;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=fAe17WryL73RB+0sTl7z/tWEaSPh34cycckfhNlErMg=;
-	t=1708243573;x=1708333573; 
-	b=zP9sEU4bABQi24Ex0q70FS9F247yq3CC+GTtWrG5/olLcuJW55wJIE4gCnGFFtL5FQaluY4WA4+qbiargoGQvtwD3yvuDOti8aKEdRSLPD6QS0m+mMoI37BMhvaop0VnHKAzHplWFIQaP3qDeNfGgbXYjyVbixqPMwyiDJqAUlA=;
-Received: from [10.12.4.8] (port=35750 helo=smtp35.i.mail.ru)
-	by fallback20.i.mail.ru with esmtp (envelope-from <danila@jiaxyga.com>)
-	id 1rbcBZ-00D7N6-7I; Sun, 18 Feb 2024 11:06:05 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=jiaxyga.com
-	; s=mailru; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:From:Sender:Reply-To:To
-	:Cc:Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	List-Id:List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
-	List-Archive:X-Cloud-Ids:Disposition-Notification-To;
-	bh=fAe17WryL73RB+0sTl7z/tWEaSPh34cycckfhNlErMg=; t=1708243565; x=1708333565; 
-	b=GUExKSB3uWG4gifDWJMCcZzxNsDQyD3pAdGrCsmLiuDnMMMzboWLcIdu746IY4wOjysz/p6IKCN
-	ZITSsPe8G37VmYBFo9evmugaLQb5aUfp4tsYtud0PjxjNaJM9d2Y7VunS2XnGBvMXQY1BQcK1rpZR
-	bbW7kSn7u283vczHWjA=;
-Received: by smtp35.i.mail.ru with esmtpa (envelope-from <danila@jiaxyga.com>)
-	id 1rbcBH-0000000FcS4-1nT7; Sun, 18 Feb 2024 11:05:48 +0300
-Message-ID: <b0b732b8-456a-4021-8277-cd51f01ead17@jiaxyga.com>
-Date: Sun, 18 Feb 2024 11:05:21 +0300
+	s=arc-20240116; t=1708243643; c=relaxed/simple;
+	bh=DdZAQ6O4mU4Dgqwya3Gydo+92TRLusgyQd9na6dhnsQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SBO6IhcAlapKns/tBaTYJ8/aSws3PwqndTi73M1NRmQyrdbtPc5B+/nr1kULToubfQki1znaF0wRoNdS7CRs19xVbwO0ZEkVpzBx3y+5BwtTflZUMIBCC5IHawKSAJ4D+vMl2CVGR89Vqvh/DXQzxyYYEJJvHmdTD4RXR/9K8g8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=inpPsbN5; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708243640;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5Jtfh06HICiZjq82VG1z1ScLpR7A6O8tDUT6Uaocrgg=;
+	b=inpPsbN5c1IBKL3k4iW5e2JrAziE/+yA/AnVuJw+5/6BSvXW2rvjnwb7gNKo8XYtGAj8Yv
+	t4GT6/fIPBUgAdt0+U/76AdUz1e3EGTEJ0dYRMcxdg38ykwouF5l8Kqy/8vCwyMpqS4f4M
+	Mbc+NHlANvE7RAeR7i/0iAziPscqHYA=
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
+ [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-80-_vvx-bmGPv6ZreYsKwELsg-1; Sun, 18 Feb 2024 03:07:15 -0500
+X-MC-Unique: _vvx-bmGPv6ZreYsKwELsg-1
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1d4212b6871so26133455ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 00:07:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708243634; x=1708848434;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5Jtfh06HICiZjq82VG1z1ScLpR7A6O8tDUT6Uaocrgg=;
+        b=qpxQUPQyqzge1n8uqSq/qtYmAhYkfqHjMGtL45fsmmz1+atVTBljqyCk6A8V42RlM0
+         npSpPmPfrm6FuMKvw5TfRyk47y5OOjfArRh5bE3oaQ9jr65W+vO9xScOfSVarMrGR6P8
+         IWKsbksSqRVvWjTojANQ1/e/GjQEcHv73iQhw3sSUvDehh1qGm8AOdYUxGHrSZs6H0EM
+         /IZ/lXM7bvVymBbu2tITZRFx2A96+6x7Ib0j5gf3ceqkaDsaWUuLccuUvmt47BDwP/Ro
+         LLhkO3KnmLF17VOkbBndmfjB14Olc4Dcwmda671p4xShCAmvNy1rnX5T1vLdLW+fFV0W
+         o4Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCXQROkU3plZHC8hSG66764lhJHX1wNZZjDnSuhK6pffufuLlWvxfluhJh22HxU0XoHae9Z+6Icmp3iU/VNjm8zzSIbFoMskVeTbHm+F
+X-Gm-Message-State: AOJu0Yw5/V98N/dbCORCehSk6+pR+HR9z57YlPeO56Js9FHkz9Kren+0
+	gVf6OUhykCW07hIIsLqNF54RgtogR70UGymIgj2uYLnI15Fqx4yEA3+6XfW9FJ1dYJ2ouK5jeqU
+	fEDbq1+OfQaMItGjIA92FdL2AiY43KSH6PwPd+RZmK0B8HFTy+Qfz+02aTwogYoQ6AmU4Vg7VYK
+	jWOKHUKNtnYaHDh+TAKyPKmshCt2H8BU1kCPbm
+X-Received: by 2002:a17:902:f54a:b0:1db:579a:9fda with SMTP id h10-20020a170902f54a00b001db579a9fdamr12147573plf.61.1708243634366;
+        Sun, 18 Feb 2024 00:07:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHEYJq2UrivG1TuOO3YvaqUJDyMbQhvJyfjOV2g5r9qvL9XxPqvvp7JAKz5Ku9oGvgmpO3Sdn6fv6+tlM29m+A=
+X-Received: by 2002:a17:902:f54a:b0:1db:579a:9fda with SMTP id
+ h10-20020a170902f54a00b001db579a9fdamr12147561plf.61.1708243634082; Sun, 18
+ Feb 2024 00:07:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm6150: define USB-C related blocks
-Content-Language: en-US
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>, andersson@kernel.org,
- konrad.dybcio@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- gregkh@linuxfoundation.org, quic_wcheng@quicinc.com
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-usb@vger.kernel.org, danila@jiaxyga.com
-References: <20240217163201.32989-1-danila@jiaxyga.com>
- <20240217163201.32989-4-danila@jiaxyga.com>
- <6bf11ccd-ff08-369b-913f-277c189afb76@linaro.org>
-From: Danila Tikhonov <danila@jiaxyga.com>
-In-Reply-To: <6bf11ccd-ff08-369b-913f-277c189afb76@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Mailru-Src: smtp
-X-4EC0790: 10
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 4F1203BC0FB41BD9001F8F2F6BAD2021F4B2298ADA324AF81BB1825BF5AE0A1600894C459B0CD1B9C5D8C186BDEC901D8E0B8F4C4390A0A6D797543978E9DD59B427ADE3CF5787D5CE06B70447BA4CE8
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7F9D3BE5B596754B8C2099A533E45F2D0395957E7521B51C2CFCAF695D4D8E9FCEA1F7E6F0F101C6778DA827A17800CE77633BACAB33B95088F08D7030A58E5AD1A62830130A00468AEEEE3FBA3A834EE7353EFBB553375664F31EC67F06AD94B38E25929FDAC290C7432EB4E4AC1A54B2A3D379F6A05D0CB389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C0DCF4F0DC832992758941B15DA834481FCF19DD082D7633A0EF3E4896CB9E6436389733CBF5DBD5E9D5E8D9A59859A8B6BAA8CD687FCDB2EBCC7F00164DA146DA6F5DAA56C3B73B237318B6A418E8EAB8D32BA5DBAC0009BE9E8FC8737B5C22498BFD6B1B042489AC3AA81AA40904B5D9CF19DD082D7633A0C84D3B47A649675F3AA81AA40904B5D98AA50765F79006372D13D82DB4E1BCE9EC76A7562686271ED91E3A1F190DE8FD2E808ACE2090B5E14AD6D5ED66289B5278DA827A17800CE754F43A495B1ACFC12EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE7325B7099C10CC3D7731C566533BA786AA5CC5B56E945C8DA
-X-C1DE0DAB: 0D63561A33F958A5C7C3FE977A4F061B5002B1117B3ED6967ED4914A5D9C2BAFC66B2B37046EC955823CB91A9FED034534781492E4B8EEAD3CCD70CEBBF18A22BDAD6C7F3747799A
-X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF3FED46C3ACD6F73ED3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFA4DAB5E10157C3A32689DEF3F2745BF1CFE96C77343EE50FE8DC3B222CB7337F8DB4AB58792EC0EC34E84B500378195F43C5EF13D2DD4106429CF131A738E00D2EA3BB66D8629B7F457F7985AD47CF5C02C26D483E81D6BE72B480F99247062FEE42F474E8A1C6FD34D382445848F2F3
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj3ZJ49a6yxutXuoGjqiO27Q==
-X-Mailru-Sender: 9EB879F2C80682A09F26F806C7394981E693FEBE5FC77AFAF7A6B01B8567BB20533548DF75F671C6F06B934CBD06DDCB2C62728BC403A049225EC17F3711B6CF1A6F2E8989E84EC137BFB0221605B344978139F6FA5A77F05FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 6242723A09DB00B4A77971E4CF73965D9E271BDE2CCB4C0C7AB8ED82C1DDBC5A049FFFDB7839CE9E8F5A60B08382AFE35CBC31FB6670A0722AAA73FD5854DA906FB50257FD98370E
-X-7FA49CB5: 0D63561A33F958A5A08FF61CF9D8C74F55D7C90D4B06AD703D055AAF7A6EEE438941B15DA834481FA18204E546F3947C4CB6874B0BCFF0B8F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F79006370D8CD50B7E84063A389733CBF5DBD5E9B5C8C57E37DE458BD96E472CDF7238E0725E5C173C3A84C3C16BB147ABCEB83B35872C767BF85DA2F004C90652538430E4A6367B16DE6309
-X-87b9d050: 1
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj3ZJ49a6yxusC26qdUNZ9Tg==
-X-Mailru-MI: 8000000000000800
-X-Mras: Ok
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <20240201092559.910982-2-yukuai1@huaweicloud.com> <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
+ <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com> <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
+ <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com> <CALTww28bUzmQASme3XOz0CY=o86f1EUU23ENmnf42UVyuGzQ4Q@mail.gmail.com>
+ <c1195efd-dd83-317e-3067-cd4891ae013e@huaweicloud.com> <CALTww2-7tTMdf_XZ60pNKH_QCq3OUX2P==VPXZo3f-dHzVhmnw@mail.gmail.com>
+ <2fa01c30-2ee7-7c01-6833-bf74142e6d7c@huaweicloud.com> <CALTww2-HngEJ9z9cYZ0=kcfuKMpziH3utSgk_8u3dxc553ZNeg@mail.gmail.com>
+ <5480b350-efe3-2be7-cf3b-3a62bb0e012b@huaweicloud.com>
+In-Reply-To: <5480b350-efe3-2be7-cf3b-3a62bb0e012b@huaweicloud.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Sun, 18 Feb 2024 16:07:02 +0800
+Message-ID: <CALTww2-_uvkB7M=_J_6DgW1kfzW2rpQgp0vyKt7EYvON41adGw@mail.gmail.com>
+Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in md_check_recovery()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com, 
+	agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org, 
+	neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org, 
+	linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com, 
+	"yukuai (C)" <yukuai3@huawei.com>, Jonathan Brassow <jbrassow@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I know that some interrupts have both for PM8150B, but for PM6150 all 
-interrupts are rising.
-Please look at the downstream kernel:
-https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/blob/187022f2721d584ac4ec92c0ac1af77da487521d/arch/arm64/boot/dts/qcom/pm6150.dtsi#L319
-https://git.codelinaro.org/clo/la/kernel/msm-4.14/-/blob/187022f2721d584ac4ec92c0ac1af77da487521d/arch/arm64/boot/dts/qcom/pm8150b.dtsi#L292
+On Sun, Feb 18, 2024 at 2:22=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
+>
+> Hi,
+>
+> =E5=9C=A8 2024/02/18 13:07, Xiao Ni =E5=86=99=E9=81=93:
+> > On Sun, Feb 18, 2024 at 11:24=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.c=
+om> wrote:
+> >>
+> >> Hi,
+> >>
+> >> =E5=9C=A8 2024/02/18 11:15, Xiao Ni =E5=86=99=E9=81=93:
+> >>> On Sun, Feb 18, 2024 at 10:34=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud=
+com> wrote:
+> >>>>
+> >>>> Hi,
+> >>>>
+> >>>> =E5=9C=A8 2024/02/18 10:27, Xiao Ni =E5=86=99=E9=81=93:
+> >>>>> On Sun, Feb 18, 2024 at 9:46=E2=80=AFAM Yu Kuai <yukuai1@huaweiclou=
+d.com> wrote:
+> >>>>>>
+> >>>>>> Hi,
+> >>>>>>
+> >>>>>> =E5=9C=A8 2024/02/18 9:33, Xiao Ni =E5=86=99=E9=81=93:
+> >>>>>>> The deadlock problem mentioned in this patch should not be right?
+> >>>>>>
+> >>>>>> No, I think it's right. Looks like you are expecting other problem=
+s,
+> >>>>>> like mentioned in patch 6, to be fixed by this patch.
+> >>>>>
+> >>>>> Hi Kuai
+> >>>>>
+> >>>>> Could you explain why step1 and step2 from this comment can happen
+> >>>>> simultaneously? From the log, the process should be
+> >>>>> The process is :
+> >>>>> dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(=
+raid_postsuspend)
+> >>>>> -> dm_table_destroy(raid_dtr).
+> >>>>> After suspending the array, it calls raid_dtr. So these two functio=
+ns
+> >>>>> can't happen simultaneously.
+> >>>>
+> >>>> You're removing the target directly, however, dm can suspend the dis=
+k
+> >>>> directly, you can simplily:
+> >>>>
+> >>>> 1) dmsetup suspend xxx
+> >>>> 2) dmsetup remove xxx
+> >>>
+> >>> For dm-raid, the design of suspend stops sync thread first and then i=
+t
+> >>> calls mddev_suspend to suspend array. So I'm curious why the sync
+> >>> thread can still exit when array is suspended. I know the reason now.
+> >>> Because before f52f5c71f (md: fix stopping sync thread), the process
+> >>> is raid_postsuspend->md_stop_writes->__md_stop_writes
+> >>> (__md_stop_writes sets MD_RECOVERY_FROZEN). In patch f52f5c71f, it
+> >>> doesn't set MD_RECOVERY_FROZEN in __md_stop_writes anymore.
+> >>>
+> >>> The process changes to
+> >>> 1. raid_postsuspend->md_stop_writes->__md_stop_writes->stop_sync_thre=
+ad
+> >>> (wait until MD_RECOVERY_RUNNING clears)
+> >>> 2. md thread -> md_check_recovery -> unregister_sync_thread ->
+> >>> md_reap_sync_thread (clears MD_RECOVERY_RUNNING, stop_sync_thread
+> >>> returns, md_reap_sync_thread sets MD_RECOVERY_NEEDED)
+> >>> 3. raid_postsuspend->mddev_suspend
+> >>> 4. md sync thread starts again because __md_stop_writes doesn't set
+> >>> MD_RECOVERY_FROZEN.
+> >>> It's the reason why we can see sync thread still happens when raid is=
+ suspended.
+> >>>
+> >>> So the patch fix this problem should:
+> >>
+> >> As I said, this is really a different problem from this patch, and it =
+is
+> >> fixed seperately by patch 9. Please take a look at that patch.
+> >
+> > I think we're talking about the same problem. In patch07 it has a new
+> > api md_frozen_sync_thread. It sets MD_RECOVERY_FROZEN before
+> > stop_sync_thread. This is right. If we use this api in
+> > raid_postsuspend, sync thread can't restart. So the deadlock can't
+> > happen anymore?
+>
+> We are not talking about the same problem at all. This patch just fix a
+> simple problem in md/raid(not dm-raid). And the deadlock can also be
+> triggered for md/raid the same.
+>
+> - mddev_suspend() doesn't handle sync_thread at all;
+> - md_check_recovery() ignore suspended array;
+>
+> Please keep in mind this patch just fix the above case. The deadlock in
+> dm-raid is just an example of problems caused by this. Fix the deadlock
+> other way doesn't mean this case is fine.
 
----
-Best wishes
-Danila
+Because this patch set is used to fix dm raid deadlocks. But this
+patch changes logic, it looks like more a feature - "we can start/stop
+sync thread when array is suspended". Because this patch is added many
+years ago and dm raid works well. If we change this, there is
+possibilities to introduce new problems. Now we should try to walk
+slowly.
 
-On 2/18/24 02:19, Bryan O'Donoghue wrote:
-> On 17/02/2024 16:32, Danila Tikhonov wrote:
->> Define VBUS regulator and the Type-C handling block as present on the
->> Quacomm PM6150 PMIC.
->>
->> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
+And is it a deadlock? After resume, the sync thread can be
+started/stopped again. Could you explain the deadlock more?
+
 >
->> +        pm6150_typec: typec@1500 {
->> +            compatible = "qcom,pm6150-typec,
->> +                      qcom,pm8150b-typec";
->> +            reg = <0x1500>, <0x1700>;
->> +            interrupts = <0x0 0x15 0x00 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x15 0x01 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x15 0x02 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x15 0x03 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x15 0x04 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x15 0x05 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x15 0x06 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x15 0x07 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x00 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x01 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x02 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x03 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x04 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x05 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x06 IRQ_TYPE_EDGE_RISING>,
->> +                     <0x0 0x17 0x07 IRQ_TYPE_EDGE_RISING>;
->> +            interrupt-names = "or-rid-detect-change",
->> +                      "vpd-detect",
->> +                      "cc-state-change",
->> +                      "vconn-oc",
->> +                      "vbus-change",
->> +                      "attach-detach",
->> +                      "legacy-cable-detect",
->> +                      "try-snk-src-detect",
->> +                      "sig-tx",
->> +                      "sig-rx",
->> +                      "msg-tx",
->> +                      "msg-rx",
->> +                      "msg-tx-failed",
->> +                      "msg-tx-discarded",
->> +                      "msg-rx-discarded",
->> +                      "fr-swap";
->> +            status = "disabled";
->> +        };
+> >
+> > And patch01 is breaking one logic which seems right:
+> >
+> > commit 68866e425be2ef2664aa5c691bb3ab789736acf5
+> > Author: Jonathan Brassow <jbrassow@f14.redhat.com>
+> > Date:   Wed Jun 8 15:10:08 2011 +1000
+> >
+> >      MD: no sync IO while suspended
+> >
+> >      Disallow resync I/O while the RAID array is suspended.
+> >
+> > We're trying to fix deadlock problems. But it's not good to fix a
+> > problem by breaking an existing rule.
 >
-> Should all of these be rising ? Looks incorrect to me.
+> The existing rule itself is problematic. Above patch doesn't do well.
 >
-> Please review: arch/arm64/boot/dts/qcom/pm8150b.dtsi
+> It's just a simple problem here, should sync thread also stop in
+> mddev_suspend? If you want do do this, you can submit a patch, in the
+> right way, we'll see how this will work.
+
+I don't want to change the logic of mddev_suspend. mddev_suspend is
+only used to suspend array. Cc Jon who is the author of this patch.
 >
-> pm8150b_typec: typec@1500 {
->         compatible = "qcom,pm8150b-typec";
->         status = "disabled";
->         reg = <0x1500>,
->               <0x1700>;
+> - keep this patch to remove checking of suspended array;
+> - set MD_RECOVERY_FORZEN and stop sync thread in mddev_suspend,
+> 'reconfig_mutex' will be needed again, and lots of callers need to be
+> checked.
 >
->     interrupts = <0x2 0x15 0x00 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x15 0x01 IRQ_TYPE_EDGE_BOTH>,
->              <0x2 0x15 0x02 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x15 0x03 IRQ_TYPE_EDGE_BOTH>,
->              <0x2 0x15 0x04 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x15 0x05 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x15 0x06 IRQ_TYPE_EDGE_BOTH>,
->              <0x2 0x15 0x07 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x00 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x01 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x02 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x03 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x04 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x05 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x06 IRQ_TYPE_EDGE_RISING>,
->              <0x2 0x17 0x07 IRQ_TYPE_EDGE_RISING>;
+> Thanks,
+> Kuai
 >
->         interrupt-names = "or-rid-detect-change",
->                   "vpd-detect",
->                   "cc-state-change",
->                   "vconn-oc",
->                   "vbus-change",
->                   "attach-detach",
->                   "legacy-cable-detect",
->                   "try-snk-src-detect",
->                   "sig-tx",
->                   "sig-rx",
->                   "msg-tx",
->                   "msg-rx",
->                   "msg-tx-failed",
->                   "msg-tx-discarded",
->                   "msg-rx-discarded",
->                   "fr-swap";
-> }
+> >
+> > Regards
+> > Xiao
+> >
+> >
+> >>
+> >> Thanks,
+> >> Kuai
+> >>
+> >>>
+> >>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> >>> index 9e41a9aaba8b..666761466f02 100644
+> >>> --- a/drivers/md/md.c
+> >>> +++ b/drivers/md/md.c
+> >>> @@ -6315,6 +6315,7 @@ static void md_clean(struct mddev *mddev)
+> >>>
+> >>>    static void __md_stop_writes(struct mddev *mddev)
+> >>>    {
+> >>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+> >>>           stop_sync_thread(mddev, true, false);
+> >>>           del_timer_sync(&mddev->safemode_timer);
+> >>>
+> >>> Like other places which call stop_sync_thread, it needs to set the
+> >>> MD_RECOVERY_FROZEN bit.
+> >>>
+> >>> Regards
+> >>> Xiao
+> >>>
+> >>>>
+> >>>> Please also take a look at other patches, why step 1) can't stop syn=
+c
+> >>>> thread.
+> >>>>
+> >>>> Thanks,
+> >>>> Kuai
+> >>>>
+> >>>>>
+> >>>>>
+> >>>>>>
+> >>>>>> Noted that this patch just fix one case that MD_RECOVERY_RUNNING c=
+an't
+> >>>>>> be cleared, I you are testing this patch alone, please make sure t=
+hat
+> >>>>>> you still triggered the exactly same case:
+> >>>>>>
+> >>>>>> - MD_RCOVERY_RUNNING can't be cleared while array is suspended.
+> >>>>>
+> >>>>> I'm not testing this patch. I want to understand the patch well. So=
+ I
+> >>>>> need to understand the issue first. I can't understand how this
+> >>>>> deadlock (step1,step2) happens.
+> >>>>>
+> >>>>> Regards
+> >>>>> Xiao
+> >>>>>>
+> >>>>>> Thanks,
+> >>>>>> Kuai
+> >>>>>>
+> >>>>>
+> >>>>> .
+> >>>>>
+> >>>>
+> >>>
+> >>> .
+> >>>
+> >>
+> >
+> > .
+> >
 >
-> ---
-> bod
 
 
