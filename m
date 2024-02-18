@@ -1,110 +1,200 @@
-Return-Path: <linux-kernel+bounces-70253-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70252-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D2C3859547
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:45:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D7F6859546
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:45:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FE901C21390
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:45:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 372C81C20A51
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:45:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA4BE544;
-	Sun, 18 Feb 2024 07:45:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 270B7D52D;
+	Sun, 18 Feb 2024 07:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nXLL0McN"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OzY6l413";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zoqJA3fA";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OzY6l413";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="zoqJA3fA"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1330A746B
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 939F27470
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708242330; cv=none; b=ktzPDSGpCXc15YK0n41FkspGkeQtWl9Lcu+kDOyo5XZUKG3wh1OfaTLxI5nscxUOD3GozTRHIgWYpzm0jYKpHUUwT+Fn0mnRKIfVxfvWJpt80me/UwbwoWlHqDA7/gWhxezc0o2PXMZO9BZtIBzaRklP1FjOtYcGalHDtHyJ3Jk=
+	t=1708242311; cv=none; b=iExjbJh6bImpVWg10Zi+ygbkiM7XIdYjVUqyCssXHKHhASVkcKn2CElBSMiDycLnCc/eK8Jy8ZeuM99fgVOXSfABDvlunLChAs2CoPk81AZ8Yr55LZXRx9MBlAO6GVhl2yFdyS/JVFPaSU7rjlIhRsLXrVAWgjXPTPQLJf5m6TU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708242330; c=relaxed/simple;
-	bh=ftV4kdXCrIriQxTbvh2OAHv7Gk37s4RDaZuoclRtX6c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TCeJ5vbm+pCIf7nllwF4SEbHeUz+HJ9Ogv84R7vLA8P13E58ycJJHjlRPxnlXGCW6ZGTIjwOQkUhUXrlfW02WaMQbLbdR03Y3qL82NZajq9LgCMMfNqC9fIwxuwe9jExGNNf3M2t+NrlAT78hgdF+WHKAmjOjkJ3xT6OFeIt2pI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nXLL0McN; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708242329; x=1739778329;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=ftV4kdXCrIriQxTbvh2OAHv7Gk37s4RDaZuoclRtX6c=;
-  b=nXLL0McNiQpDdzJrNERFgt6wxvlI5HURJ3WNy69YYM6ySlIXXEx8m/Bb
-   2NC/xn/MUWdPp5LgVj1p284+NzTeIX9RB0sXs8WplEVchAVnFfjnB/edo
-   agsF80ja+HN3jyuht76w1G4gwCwJyOB3vobUkqMOwDx/DLZr87Gmu09qS
-   GKRma2D+/M9neW0/pt/9OwTla2UtHU3AgiOOvefaaRUGcAGAIghKZA66T
-   xyJg2Ex5THerpucMtUCZ5O8Q2+V604qhDt4OUWl4Q8WiQjHsr6w2bphpB
-   GwNixgl0vJgqSxlXJRrVdc8tB4vSX490o7KB4JD+5rjM6BHfGPKkp1LP6
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="2195669"
-X-IronPort-AV: E=Sophos;i="6.06,168,1705392000"; 
-   d="scan'208";a="2195669"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 23:45:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="936092066"
-X-IronPort-AV: E=Sophos;i="6.06,168,1705392000"; 
-   d="scan'208";a="936092066"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 23:45:25 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: liqiang <liqiang64@huawei.com>
-Cc: <akpm@linux-foundation.org>,  <paulmck@linux.vnet.ibm.com>,
-  <neilb@suse.de>,  <chuck.lever@oracle.com>,
-  <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH] llist: Make llist_del_first return only the
- first node
-In-Reply-To: <20240218065750.1241-1-liqiang64@huawei.com> (liqiang's message
-	of "Sun, 18 Feb 2024 14:57:50 +0800")
-References: <20240218065750.1241-1-liqiang64@huawei.com>
-Date: Sun, 18 Feb 2024 15:43:30 +0800
-Message-ID: <875xymtdy5.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708242311; c=relaxed/simple;
+	bh=Rz4BsMjV7ldBGPlX4IskfMs6om3XDfI7hFwAe52EV0M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nGVzzV84dhXkP7oC0WOwGvX4XGi9yn8BcegIcNUetySx1nvbB2QfbKq67BBv5QBM1iMnx1yU/cdJ503YUsHdyugQyIBczSB5ZXGMBN5Fx+PNFXf5+0ZwZAXCj9fWMzwB5pSfP0D2B7heqpssPUhgoANSWcKISUEZKN4jXxTFo7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OzY6l413; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zoqJA3fA; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OzY6l413; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=zoqJA3fA; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7FC111FBF2;
+	Sun, 18 Feb 2024 07:45:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708242305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evZe4gckZRBHDhEto05F1VL+BEBk5Sw8m/1sqWCtavg=;
+	b=OzY6l413AqV4NamRaozr+xOUFtfEXlLQ7MgbOxFYE5nHINtEwheLgKGD3oxK+tWA/LWMfP
+	+sB/ewyB2QysnXjnaIgGaEtlMk2BqbpQL6zsXVBKxaw3LX9a/w24zYzbZXXFtnvWDdRTbJ
+	hKd3aPSXYtZfTiYhBDBxTdWpfc6xt6g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708242305;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evZe4gckZRBHDhEto05F1VL+BEBk5Sw8m/1sqWCtavg=;
+	b=zoqJA3fAcIDCyvFIG4LK3eK8/G6U9OLxJxCQtkTiOaBRI5QRS6DFGpFV3SJKEZow1TP6cv
+	3CXhsc8JAs9Pe9DA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708242305; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evZe4gckZRBHDhEto05F1VL+BEBk5Sw8m/1sqWCtavg=;
+	b=OzY6l413AqV4NamRaozr+xOUFtfEXlLQ7MgbOxFYE5nHINtEwheLgKGD3oxK+tWA/LWMfP
+	+sB/ewyB2QysnXjnaIgGaEtlMk2BqbpQL6zsXVBKxaw3LX9a/w24zYzbZXXFtnvWDdRTbJ
+	hKd3aPSXYtZfTiYhBDBxTdWpfc6xt6g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708242305;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=evZe4gckZRBHDhEto05F1VL+BEBk5Sw8m/1sqWCtavg=;
+	b=zoqJA3fAcIDCyvFIG4LK3eK8/G6U9OLxJxCQtkTiOaBRI5QRS6DFGpFV3SJKEZow1TP6cv
+	3CXhsc8JAs9Pe9DA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A447413343;
+	Sun, 18 Feb 2024 07:45:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 1QK8JIC10WUaVQAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Sun, 18 Feb 2024 07:45:04 +0000
+Date: Sun, 18 Feb 2024 08:46:16 +0100
+From: Oscar Salvador <osalvador@suse.de>
+To: Byungchul Park <byungchul@sk.com>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org
+Subject: Re: [PATCH v3] sched/numa, mm: do not promote folios to nodes not
+ set N_MEMORY
+Message-ID: <ZdG1yO29WTyRiw8Q@localhost.localdomain>
+References: <20240216114045.24828-1-byungchul@sk.com>
+ <Zc9oXOwGMGGE4bBh@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zc9oXOwGMGGE4bBh@localhost.localdomain>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [-3.10 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.10
 
-liqiang <liqiang64@huawei.com> writes:
+On Fri, Feb 16, 2024 at 02:51:24PM +0100, Oscar Salvador wrote:
+> On Fri, Feb 16, 2024 at 08:40:45PM +0900, Byungchul Park wrote:
+> > From 150af2f78e19217a1d03e47e3ee5279684590fb4 Mon Sep 17 00:00:00 2001
+> > From: Byungchul Park <byungchul@sk.com>
+> > Date: Fri, 16 Feb 2024 20:18:10 +0900
+> > Subject: [PATCH v3] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
+> 
+> "do not try to promote folios to memoryless nodes"
 
-> Set the next of the returned node of llist_del_first
-> to NULL, which can prevent subsequent nodes in llist
-> from being exposed, and is more consistent with the
-> logic of this interface.
->
-> Signed-off-by: liqiang <liqiang64@huawei.com>
-> ---
->  lib/llist.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/lib/llist.c b/lib/llist.c
-> index f21d0cf..c33fff5 100644
-> --- a/lib/llist.c
-> +++ b/lib/llist.c
-> @@ -61,6 +61,7 @@ struct llist_node *llist_del_first(struct llist_head *head)
->  		next = READ_ONCE(entry->next);
->  	} while (!try_cmpxchg(&head->first, &entry, next));
->  
-> +	entry->next = NULL;
->  	return entry;
->  }
->  EXPORT_SYMBOL_GPL(llist_del_first);
+Thinking some more, promote might be misleading, just something like
+"do not try to migrate memory to memoryless nodes".
 
-This isn't needed for functionality correctness.  Many users of llist
-ask for performance.  So, it may be better to let the users to decide
-whether to set entry->next to NULL.
+As this is not a bug fix but an optimization, as we will fail anyways
+in migrate_misplaced_folio() when migrate_balanced_pgdat() notices that
+we do not have any memory on that code.
 
---
-Best Regards,
-Huang, Ying
+With the other comments addressed:
+
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+> 
+> because AFAICS we are just trying.
+> Even if should_numa_migrate_memory() returns true, I assume that we will
+> fail somewhere down the chain e.g: migrate_pages() when we see that this
+> node does not any memory, right?
+> 
+> > A numa node might not have its local memory but CPUs. Promoting a folio
+> > to the node's local memory is nonsense. So avoid nodes not set N_MEMORY
+> > from getting promoted.
+> 
+> If you talk about memoryless nodes everybody gets it better IMHO.
+> "Memoryless nodes do not have any memory to migrate to, so stop trying it."
+> 
+> 
+> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+> > ---
+> >  kernel/sched/fair.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index d7a3c63a2171..7ed9ef3c0134 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -1828,6 +1828,13 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+> >  	int dst_nid = cpu_to_node(dst_cpu);
+> >  	int last_cpupid, this_cpupid;
+> >  
+> > +	/*
+> > +	 * A node of dst_nid might not have its local memory. Promoting
+> > +	 * a folio to the node is meaningless.
+> > +	 */
+> > +	if (!node_state(dst_nid, N_MEMORY))
+> > +		return false;
+> 
+> "Cannot migrate to memoryless nodes"
+> 
+> seems shorter and more clear.
+> 
+> So, what happens when we return true here? will we fail at
+> migrate_pages() I guess? That is quite down the road so I guess
+> this check can save us some time.
+> 
+> 
+> -- 
+> Oscar Salvador
+> SUSE Labs
+> 
+
+-- 
+Oscar Salvador
+SUSE Labs
 
