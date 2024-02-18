@@ -1,105 +1,94 @@
-Return-Path: <linux-kernel+bounces-70591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23F93859989
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:28:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65CB085998A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4AC8281837
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 21:28:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30CBE1C209C8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 21:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE53E73197;
-	Sun, 18 Feb 2024 21:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6147F74271;
+	Sun, 18 Feb 2024 21:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="JMLE6tbd"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Nbp/Ink4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D168C1A;
-	Sun, 18 Feb 2024 21:27:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C68573175
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 21:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708291678; cv=none; b=An/ql5W20wqtO7ael4MolDQwPpe1P/mVnr+aJrQqcTy4mQUWYoHg2qFECKBL/SYr5Ui2WeffZ2VbrUDMMejroei4K7zLGPlugcA+ijPMQgI8vIoqTbvDYr/tFTgf6otphMSIQlWlqSttKEDSPHbIHAGJzx6X/yIAcZfWCehAeA4=
+	t=1708292333; cv=none; b=PlZM/UngM4tuZArtdusBWM9el5tvzk55Mad+YPKt2RHMwfBA1lgd1W2pGhIJt0a1L9ye3+Ra/ZM2PTTMqjx8QehyxjzwAbyIsivr2qhJkYbFdPCWuCT9zCDE51tliiOtJOpKSonwotsulK1qqQo4l2+WT8LMkQpaBE8isJgiWyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708291678; c=relaxed/simple;
-	bh=OPHzCChXykMA73GkRePvk0d0AJhN+uHaO7FqyWOmV+w=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=tTZuMBxdpEKVnVwmBb9VW0sfTpyZzc9Zl9oGDxGRVsm7FzPu/LuxL3RqGclBQ7UyNn0TOyMcdqAP+qGDh+53BgI97VyUsDh+BMn8uRwhYLTTCfHXI/KGv5OFbpPvHDBBCxf8fX1kBtfd5OA2ek/jaU5ttFxRdtwDUbN4NEIw320=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=JMLE6tbd; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1708291673;
-	bh=EgVI5G4bRL1PptC+CCzYjyD83vqd6m2SyVn+vr/2vbM=;
-	h=Date:From:To:Cc:Subject:From;
-	b=JMLE6tbdDwQHSZXjSqvhLFkr8um0HfxKBuHHPU4TqW5nShajKT/6e7WnY40fAqZg5
-	 nAhJQzcI7QJ8UBsSE6ula2RvtOcypq+UnwP02TRHFEe7J4+8Sa0JYmAobWW1ShwHsP
-	 L7ttrlG1DPoqnDwwN72BverIQMWS2GN7OYui/nEtEhN/UZBMtYuy4rgZkH7khXtLM8
-	 pV5vf0VjQUg3cW5r6hAumThnnJQPfLJSuxiv+rsHYEyW4BnD5ovnFuqhZJ/IMIkQbd
-	 VoxQdEX+0xUVPpvINK9xwFN92boTAPpPexDAOxDFb6SxIZQXMi7PSnu6We6mhqBfFJ
-	 rehyXQAGRQWeA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TdJfw0dNYz4wbr;
-	Mon, 19 Feb 2024 08:27:52 +1100 (AEDT)
-Date: Mon, 19 Feb 2024 08:27:51 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, "Steven Rostedt
- (Google)" <rostedt@goodmis.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the mm-monmm-unstable branch of the
- mm tree
-Message-ID: <20240219082751.4b6e3686@canb.auug.org.au>
+	s=arc-20240116; t=1708292333; c=relaxed/simple;
+	bh=KKc8FE2bdtNuk4G8An0mXCAzt6JMeCEm+SY5mrD71fU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=s9r+FUc8WaMuboNIxip2tUB2u2UYFMW3P0vbrC553DwQi1+1ds5tGfkmBiJdPqxFTBdAErsM83/4bOF394O1XGkUGR0M/Btd/o2RwUiDB6OVHzAquhXeIO2zTYT5WtvLExgAoxQeEFQQIQZ9FquKM5YhWZwpeOK/gXAVQH0rjbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Nbp/Ink4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 695DAC433C7;
+	Sun, 18 Feb 2024 21:38:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708292333;
+	bh=KKc8FE2bdtNuk4G8An0mXCAzt6JMeCEm+SY5mrD71fU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Nbp/Ink4ziA5vhwf0sUWh7CGnF72TQNaoyWHagIaLFeTUecm9hccCnqqciGQhjWKO
+	 di5+uSUjSAvJEgiscCFr9wkhUdICeUCPnH0cecv0Xc1vrompSDxzq+IV/O95Vb0SGi
+	 F3AkUjQkxE8izaOhvNFZiBan40lDCpm4Nnog/IGI=
+Date: Sun, 18 Feb 2024 13:38:51 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Donet Tom <donettom@linux.ibm.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, Aneesh Kumar
+ <aneesh.kumar@kernel.org>, Huang Ying <ying.huang@intel.com>, Dave Hansen
+ <dave.hansen@linux.intel.com>, Mel Gorman <mgorman@suse.de>, Ben Widawsky
+ <ben.widawsky@intel.com>, Feng Tang <feng.tang@intel.com>, Michal Hocko
+ <mhocko@kernel.org>, Andrea Arcangeli <aarcange@redhat.com>, Peter Zijlstra
+ <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Rik van Riel
+ <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox
+ <willy@infradead.org>, Mike Kravetz <mike.kravetz@oracle.com>, Vlastimil
+ Babka <vbabka@suse.cz>, Dan Williams <dan.j.williams@intel.com>, Hugh
+ Dickins <hughd@google.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, Suren
+ Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH 1/3] mm/mempolicy: Use the already fetched local
+ variable
+Message-Id: <20240218133851.22c22b55460e866a099be5ce@linux-foundation.org>
+In-Reply-To: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
+References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/W0Mb+/T7Ea8Q_pceunI0.PL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/W0Mb+/T7Ea8Q_pceunI0.PL
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+On Sat, 17 Feb 2024 01:31:33 -0600 Donet Tom <donettom@linux.ibm.com> wrote:
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+> Avoid doing a per cpu read and use the local variable thisnid. IMHO
+> this also makes the code more readable.
+> 
+> ...
+>
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -2526,7 +2526,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
+>  		if (node_isset(curnid, pol->nodes))
+>  			goto out;
+>  		z = first_zones_zonelist(
+> -				node_zonelist(numa_node_id(), GFP_HIGHUSER),
+> +				node_zonelist(thisnid, GFP_HIGHUSER),
+>  				gfp_zone(GFP_HIGHUSER),
+>  				&pol->nodes);
+>  		polnid = zone_to_nid(z->zone);
 
-  f3c4e7699cf4 ("seq_buf: fix kernel documentation")
+	int thisnid = cpu_to_node(thiscpu);
 
-This is commit
+Is there any dofference between numa_node_id() and
+cpu_to_node(raw_smp_processor_id())?  And it it explicable that we're
+using one here and not the other?
 
-  6efe4d187969 ("seq_buf: Fix kernel documentation")
-
-in Linus' tree.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/W0Mb+/T7Ea8Q_pceunI0.PL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXSdlcACgkQAVBC80lX
-0Gx6FQgAhXDuz/SgbZpLPrl9ZRgFJSPUNaY2ALrXGMSD1WpPe0d7bLlyxqTAO6wy
-g8fMPhrjRYUAI/rXhOpWzgwR2IqkkxLpDMrvtW35qAqRVR3SiJI3fTG6jcgTEiz6
-NfuZOCl4BLG8dp0T9igZSsu82M/f2L6frl9DEIWZ74rDvUe+c/oS+0b2yaX95NrQ
-njdFdLcLHoJGL5HYu2ACkU0ooGTjTvcv3wmRgVo7dhgz/ZorBOOVrMqyte2ax2mI
-Jm3FyrpqO+2nUY7QQGGYCu3bXnYujtVs+wpXdjfBVNt0aof05JQcqLfGQ2yDSdvT
-yla6WW3qogWg3AEcfTSrlJcog0Dk8g==
-=ByhA
------END PGP SIGNATURE-----
-
---Sig_/W0Mb+/T7Ea8Q_pceunI0.PL--
 
