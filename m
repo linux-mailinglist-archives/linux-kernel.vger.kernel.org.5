@@ -1,137 +1,157 @@
-Return-Path: <linux-kernel+bounces-70469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43B2785985B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:53:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 955EC85985E
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:59:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84BD1F219F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:53:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FAA1281312
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:59:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1296EB78;
-	Sun, 18 Feb 2024 17:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146306F06C;
+	Sun, 18 Feb 2024 17:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ifWmXuqy"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Hz3mcp9q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D2BE57E
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335E329401;
+	Sun, 18 Feb 2024 17:59:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708278814; cv=none; b=MoBfGeiLqooE92AmJamHxLBCpQ0M2HvAd+2HdiV9N6ADJcgmzWzLCC8xPIabdvYU5wt9ZdU5A7LFc/yxLNWPj3Zj8hO47uUyk14kXXWKfAFgK5qEhNrf6jwZKvu/v0yUIEWtZhFCuwtiswDvTGlmI2XSg/mWbZ3saqLRXf8HRAo=
+	t=1708279181; cv=none; b=RfKzqOTrZAsalqpZ0Kl8cZ8Em58HaqcFgGkKDN4BoYMjWiNrEc5gRkhAl19Mws0BMKcs7JqSTBDE1UKOnSBbTrTv0vcKa/4cS3dmGx7GQH2kbLEABG5hlbwpfpP7cxeFpXeHZO0GKQtbIdx2UYg6AAizQne+JiJer5KEfNBM/Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708278814; c=relaxed/simple;
-	bh=8zoV8WXBsR0pcZhHyvtP8YXX7xixf7hY+qk/TnEcFzQ=;
+	s=arc-20240116; t=1708279181; c=relaxed/simple;
+	bh=sGnaOwL737S+kRj7YV7UEO53mnW/ESMniXC/a9CnV8Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kEZOuvXCkWF/TZBZH85AkI0frLbAE2TpxZ4dwlzLIiRpoe/Um2Flm+AStL96lqvfi2V1es1eBHiVMW1Lbd+6XoPE+G490H87RG/Ra9P3yMs2Gyun15P/DzBn7Py7ZA9YnwuxKMrFPk81KxmKUIbgixwNHIaTWcxff9IIAijcDug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ifWmXuqy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708278811;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8zoV8WXBsR0pcZhHyvtP8YXX7xixf7hY+qk/TnEcFzQ=;
-	b=ifWmXuqyUuGXWMXBx16MHXIDeBbKaZDjmc/ZXM4fm3LCwq0bz4slkkhQINOddQ5MFpDCT0
-	sjftbpG7GBlQ4gmiQa1+vgb6obgFx2RZ1+3LcXFo8r1MrukV05O6Rhs54A4glvYANbfBrc
-	tB+OLgkvSH6r1QKjrnOWYhJYU19mKf8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-630-u4q3AoamNcWj4kzj3qtgLQ-1; Sun, 18 Feb 2024 12:53:25 -0500
-X-MC-Unique: u4q3AoamNcWj4kzj3qtgLQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 233FE85A589;
-	Sun, 18 Feb 2024 17:53:25 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.74])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 323E42166B33;
-	Sun, 18 Feb 2024 17:53:22 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun, 18 Feb 2024 18:52:07 +0100 (CET)
-Date: Sun, 18 Feb 2024 18:52:04 +0100
-From: Oleg Nesterov <oleg@redhat.com>
-To: Wen Yang <wenyang.linux@foxmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coredump debugging: add a tracepoint to report the
- coredumping
-Message-ID: <20240218175204.GB24311@redhat.com>
-References: <tencent_5CD40341EC9384E9B7CC127EA5CF2655B408@qq.com>
- <20240217104924.GB10393@redhat.com>
- <tencent_6EFB821C2775D38F99EBFC6C9F7FAB82A809@qq.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EBAo18ljt1bMSxbPUwEZaLAi4nTq7WrjlDrJp+SCGYLQL66pNcht+0npALNLA2yJewCvfQgJtsoouHxpGotNH7RvJ5Aleypbr40JzVeHaOJPypdcKfXxfQv+SB6/Qy7/EsGvTnkK1H/8HTcz0aF0e6wmXuyXnLhI+aZ9gxvxEnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Hz3mcp9q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59104C433C7;
+	Sun, 18 Feb 2024 17:59:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708279180;
+	bh=sGnaOwL737S+kRj7YV7UEO53mnW/ESMniXC/a9CnV8Y=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Hz3mcp9qSGs0/vs+7b46eQwzPMyH7me2NEclwq7Wiz2p9z57WO3U4SDfq9zRiZ+4s
+	 eoHxL1rOcOjw4VzA94cyB8z646+hIPr7LaxxquJl3itnZam2hF6F+0NGjZ82vZArC9
+	 gZoGWHEa9RflQ6vJeet7wg30LHWBfa/PeWrkRZlg=
+Date: Sun, 18 Feb 2024 18:59:37 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] serial: st-asc: don't get/put GPIOs in atomic context
+Message-ID: <2024021851-amniotic-trimester-89af@gregkh>
+References: <20240214092438.10785-1-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tencent_6EFB821C2775D38F99EBFC6C9F7FAB82A809@qq.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+In-Reply-To: <20240214092438.10785-1-brgl@bgdev.pl>
 
-On 02/18, Wen Yang wrote:
->
-> On 2024/2/17 18:49, Oleg Nesterov wrote:
-> >On 02/17, wenyang.linux@foxmail.com wrote:
-> >>From: Wen Yang <wenyang.linux@foxmail.com>
-> >>
-> >>Currently coredump_task_exit() takes some time to wait for the generation
-> >>of the dump file. But if the user-space wants to receive a notification
-> >>as soon as possible it maybe inconvenient.
-> >>
-> >>Add the new trace_sched_process_coredump() into coredump_task_exit(),
-> >>this way a user-space monitor could easily wait for the exits and
-> >>potentially make some preparations in advance.
-> >Can't comment, I never know when the new tracepoint will make sense.
-> >
-> >Stupid question.
-> >Oleg.
->
-> Thanks for your help.
+On Wed, Feb 14, 2024 at 10:24:38AM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> Since commit 1f2bcb8c8ccd ("gpio: protect the descriptor label with
+> SRCU") gpiod_set_consumer_name() calls synchronize_srcu() which led to
+> a "sleeping in atomic context" smatch warning.
+> 
+> This function (along with gpiod_get/put() and all other GPIO APIs apart
+> from gpiod_get/set_value() and gpiod_direction_input/output()) should
+> have never been called with a spinlock taken. We're only fixing this now
+> as GPIOLIB has been rebuilt to use SRCU for access serialization which
+> uncovered this problem.
+> 
+> Move the calls to gpiod_get/put() outside the spinlock critical section.
+> 
+> Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> Closes: https://lore.kernel.org/linux-gpio/deee1438-efc1-47c4-8d80-0ab2cf01d60a@moroto.mountain/
+> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> ---
+>  drivers/tty/serial/st-asc.c | 40 ++++++++++++++++++++-----------------
+>  1 file changed, 22 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/st-asc.c b/drivers/tty/serial/st-asc.c
+> index bbb5595d7e24..52a20277df98 100644
+> --- a/drivers/tty/serial/st-asc.c
+> +++ b/drivers/tty/serial/st-asc.c
+> @@ -467,6 +467,7 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+>  	struct asc_port *ascport = to_asc_port(port);
+>  	struct gpio_desc *gpiod;
+>  	unsigned int baud;
+> +	bool manual_rts;
+>  	u32 ctrl_val;
+>  	tcflag_t cflag;
+>  	unsigned long flags;
+> @@ -517,26 +518,12 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+>  		ctrl_val |= ASC_CTL_CTSENABLE;
+>  
+>  		/* If flow-control selected, stop handling RTS manually */
+> -		if (ascport->rts) {
+> -			devm_gpiod_put(port->dev, ascport->rts);
+> -			ascport->rts = NULL;
+> -
+> -			pinctrl_select_state(ascport->pinctrl,
+> -					     ascport->states[DEFAULT]);
+> -		}
+> +		if (ascport->rts)
+> +			manual_rts = false;
+>  	} else {
+>  		/* If flow-control disabled, it's safe to handle RTS manually */
+> -		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL]) {
+> -			pinctrl_select_state(ascport->pinctrl,
+> -					     ascport->states[NO_HW_FLOWCTRL]);
+> -
+> -			gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
+> -			if (!IS_ERR(gpiod)) {
+> -				gpiod_set_consumer_name(gpiod,
+> -						port->dev->of_node->name);
+> -				ascport->rts = gpiod;
+> -			}
+> -		}
+> +		if (!ascport->rts && ascport->states[NO_HW_FLOWCTRL])
+> +			manual_rts = true;
+>  	}
+>  
+>  	if ((baud < 19200) && !ascport->force_m1) {
+> @@ -595,6 +582,23 @@ static void asc_set_termios(struct uart_port *port, struct ktermios *termios,
+>  	asc_out(port, ASC_CTL, (ctrl_val | ASC_CTL_RUN));
+>  
+>  	uart_port_unlock_irqrestore(port, flags);
+> +
+> +	if (manual_rts) {
+> +		pinctrl_select_state(ascport->pinctrl,
+> +				     ascport->states[NO_HW_FLOWCTRL]);
+> +
+> +		gpiod = devm_gpiod_get(port->dev, "rts", GPIOD_OUT_LOW);
+> +		if (!IS_ERR(gpiod)) {
+> +			gpiod_set_consumer_name(gpiod,
+> +						port->dev->of_node->name);
+> +			ascport->rts = gpiod;
+> +		} else {
+> +			devm_gpiod_put(port->dev, ascport->rts);
+> +			ascport->rts = NULL;
+> +			pinctrl_select_state(ascport->pinctrl,
+> +					     ascport->states[DEFAULT]);
+> +		}
+> +	}
+>  }
 
-Well thanks, but no, I can't help. As I said I can't really comment this
-patch.
+The 0-day bot rightly points out that manual_rts could be uninitialized
+by this change, so I'm dropping it from my tree.  Please fix up and
+resend.
 
-> trace_sched_process_exit() is located after the PF_EXITING flag is set
+thanks,
 
-Yes,
-
-> so it could not be moved to there.
-
-Why? DECLARE_EVENT_CLASS(sched_process_template) doesn't report task->flags.
-
-Again, again, I am not arguing. But I think that the changelog should
-explain why we can't move trace_sched_process_exit() in more details.
-
-> Could we make the following modifications?
-..
->
-> @@ -2866,6 +2866,7 @@ bool get_signal(struct ksignal *ksig)
->                  * Anything else is fatal, maybe with a core dump.
->                  */
->                 current->flags |= PF_SIGNALED;
-> +               trace_sched_process_kill(current);
-
-Another case when I can't comment the intent.
-
-We already have trace_signal_deliver() in get_signal(). I'm afraid you
-need to explain why do you think userspace needs yet another tracepoint.
-
-Oleg.
-
+greg k-h
 
