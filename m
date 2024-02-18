@@ -1,147 +1,133 @@
-Return-Path: <linux-kernel+bounces-70618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C87859A29
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:06:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02384859A2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:19:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 238E71F21202
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:06:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16DD628147C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671456F074;
-	Sun, 18 Feb 2024 23:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC53271B27;
+	Sun, 18 Feb 2024 23:19:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aKouVEAG"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="aRYyalIz"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB16EAD3
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:06:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01D31DFC5
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:19:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708297577; cv=none; b=McQfVRUkECCLqfsafQQ8GS5PkrhviIHiBscs09PSvVsmV+NhfYBDabwA07PZ/qBQe5UUYA7gMTjd3OHfT6jPpYqSwvX1zCPKJWIScGkzMYIikynuPrR+BYDWKanq9FFJiZCvl2A0VjqiWnoFfTUU4VfYoYQzWr8yVDx+hgv1psI=
+	t=1708298348; cv=none; b=lU9lpPbc1ebpwZ9bm5FgaXcIYiAZy8hi77ocoBE3zUl/+I5x5q+a1A6SGNc1WW3krA6fxGFgAS6TL1A7uGrlffwmEBdHZqi1CiekuEStjYTfwUZXoJ472EwomGHhpwpqb0gULgvFz+VHX53lZCn6K8Osarfv7NfcMA5RFpq88/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708297577; c=relaxed/simple;
-	bh=dZBfVvcwyKFXAPZ431/ounbBcYEHNKswoI5m5uhlx9k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gc8SooEwUM43ZP3KeRD0ZV9Rc7TMHXoCyn46uhRq/xdaqVEepwHw4Y6igkK/pFguZj77fVGLaW+rmE3pllAOxXdfTMimJEhCwZfp+h2QXBAS+JNNmPmTP/rS6mBuxcNgC33jL8NhI63s4c6SrOTkYP8xA3t7U/ts41oVGll4SqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aKouVEAG; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41260f946c8so6704475e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:06:15 -0800 (PST)
+	s=arc-20240116; t=1708298348; c=relaxed/simple;
+	bh=EwQRCgra3Pr+8vBzgcMDasWTZwEwdIK/Bjbwxfb/fYw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jRkG/jgs4WZBiuLnLnax3eSx8hzxHqhdKxPCkCW4fbq42b+pV1QOYezW44blh4xov18WksW0LnUOggZq9b54V1yU/2ySmb8o4GSqBOkiu6kqYc/4pYDktC5rrfqK6MqbewIfJzwqnqcMytFmHGVd8Z71RkXsWMaHDR3GUAYEPZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=aRYyalIz; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-299566373d4so600022a91.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:19:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708297574; x=1708902374; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hZYwbs0hT6XgKoPOkjoQHSc7t5jEfrmq2mFVWPjwFrA=;
-        b=aKouVEAGz/0j5as8e8qboJEtpuaQjMcByY5eRXleHnlg8jC+bWcWtRCnB7h93htLVI
-         q8RjIH6MKJ8hSCuclF7HUWnKx8KP7um04C7Jz0q7FFqe9HPi0uxY1DRLPY0at31AR6F+
-         WgmPVurGcB4ZYqbfC4piB40ze0iHrbuRKBFtCS/SuMBcP80fTSj7zuiQit091Shp6iDz
-         lLaA/naeQVrbVFX+kIciIfFBwrMyffJhqRF290yAG3hA33EQhLn/cqQrlKDKCPYYQ35t
-         J93K4QhkfTu/SlrCVSJLEJbfJsXdf4DYTMKZH9SbscSuk9LQuAeSMMp6A6mzpZh2h7S0
-         2BRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708297574; x=1708902374;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=googlemail.com; s=20230601; t=1708298346; x=1708903146; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hZYwbs0hT6XgKoPOkjoQHSc7t5jEfrmq2mFVWPjwFrA=;
-        b=rajr0Owh8Ay96ihM3gd7vlOc50A/2VfN2EcqeNoTdhk2wlPHEhjgaa5CLDTi6gEZGd
-         ZsAnv//f2r65IOxYZCO21QvZvpTIN4/LkD2AhXJ/pVikLiDek0OoRa0mMdpvf3KA0BLD
-         vD/dfnCho/bIeNHRI10wiLPfLKNkxay85Z29FPJKbScQnp4d3oKSyeGL5WYJzL+GZKxz
-         0KZBjKtt3KFLyN32yVFR0byQwcGNbn9TM24ZGYyk6OfQJwjfzFDs3HBaBr32OgsGCp2/
-         rcxMsdH28PH+MvPNU1QDssJoHuvogCP47adub1++g5JSe6kZpEBG+O7NMa/3szdV5eDP
-         f7Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCUX+eldrHWyXQC4BUeBQRhZWR0Kj9P/eMb/GWEjYezD4/tZIfFcDvW75T9ssobToSRsv6CG3aicCKHEMGoNXpuxg8cgmtAwPpD4My3y
-X-Gm-Message-State: AOJu0YyESGgUJMuY1NUpXQsWiH/VRKvhcVuTO7wCzVxgiqWD7ppwP64I
-	iz5MBqU1HNu4VZJ1r9BtFAM434Pr4T9ubxtyLXOZwh64uukk8cW2
-X-Google-Smtp-Source: AGHT+IFfsgFbsxq4soP1Z2GRcSLOZ+0kTntkGcPP34eWmwvFtWvoL+zVmEaUlO+++jirsuRbhXzAsQ==
-X-Received: by 2002:a05:6000:1ac6:b0:33b:1bcc:7ed9 with SMTP id i6-20020a0560001ac600b0033b1bcc7ed9mr7854417wry.44.1708297574149;
-        Sun, 18 Feb 2024 15:06:14 -0800 (PST)
-Received: from localhost (host86-164-109-77.range86-164.btcentralplus.com. [86.164.109.77])
-        by smtp.gmail.com with ESMTPSA id i3-20020a05600011c300b0033cf453f2bbsm8544712wrx.35.2024.02.18.15.06.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 15:06:13 -0800 (PST)
-Date: Sun, 18 Feb 2024 23:03:58 +0000
-From: Lorenzo Stoakes <lstoakes@gmail.com>
-To: Yajun Deng <yajun.deng@linux.dev>
-Cc: akpm@linux-foundation.org, Liam.Howlett@oracle.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, vbabka@suse.cz
-Subject: Re: [PATCH] mm/mmap: Add case 9 in vma_merge()
-Message-ID: <a5cd692e-34e3-4bc1-a8fa-f6bb56f04e8a@lucifer.local>
-References: <20240218085028.3294332-1-yajun.deng@linux.dev>
+        bh=khrQCQyYrMhwWZqymcpDctJEiCRTGl4cp9AfajJt7bg=;
+        b=aRYyalIz40uLgJChTZJ+8rH4+rytr9EOUsoFG6ibeLC1/OpS3WDWI7AzxtjYfytQWD
+         uQLWmdRayJiRoEF6YExOgk+QVSPdzqzrLF3hxfnkQWU+ffK+gJSwHyaRcDkYsi0RSeZF
+         sdOYdxUzYXp9KkkkZYhAgzqDOrJkg49Clqf0QKpLFt1+u2FGVWcQYQkw6OOD75zYCS3c
+         rHoKy+ggGllDzoYJ/ahkU5MRC/fWR4xdsatU4jJKT2c9lXi6D7Gu4vEfT20uYopLZbz3
+         iYRjroPidG2Sze+bTY4+bw59e9LI2ULQCcUqaC0Wz9jhsuqyrS+4OOfuiVkKP7wYZi4s
+         fO9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708298346; x=1708903146;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=khrQCQyYrMhwWZqymcpDctJEiCRTGl4cp9AfajJt7bg=;
+        b=h6Gv3QSGFcgFhLSvJZL56cfmw+GrHBhlaZdRgDvwBLRlt5HmZC49DZx19YLu85cmjx
+         scRF3qz4USHZ/BM0kX2cQ5AUK3FvSUQoB7IqvzJYNaAujk28Nku9AzrwCaVzUSpm7wsx
+         QVIKJsHXmg5yv8HfHJldndWSPqpctTKeLdV1fukhARLiJqDaYNHeBNJLwkPw6KbnwxEL
+         U7d45IbnEkYR1pFFJXj3YUn+SNhSeXI20IG9XtAZtNhptym+FNpMgnK0G66lnRNVd9N1
+         71uKnF1c5625kfkIpjITNFzse5/ZNO7qou7QX7kFtKcaiQT94eZm4+pxn9hAty5l8qs1
+         Y5kg==
+X-Forwarded-Encrypted: i=1; AJvYcCXlf8ok2ZUOaKH0FlCEPrY6e1KVjglqxo5lYXH6Ee7GootOV4XH3CVAWNZdCTLcqNVRW74MbMCFJ/eRKjehdzWbc1vN2AVsA33+UQ7y
+X-Gm-Message-State: AOJu0YybMtlNiwc/UukAqMwIJTotiAmgOGiKaRnCQwFIIg854zQNHgMP
+	MMX6wITn7GEb7m8M/Qt7IB2WJIguLicR+hBWM8Mtm2e2FjA4cXRX1OOEKtSUzULYvnXmOarXEGw
+	1f90VwaICbrULxg+k6NvJYdbfzcQ=
+X-Google-Smtp-Source: AGHT+IG9hxyO5Po/xMncBWm3PvD2MYQZinYkMZ9g9ZM46oBcM/mfmqUXTjmVwwIUaT1GGENi8eKzZPOEFfUrnds8VEs=
+X-Received: by 2002:a17:903:110d:b0:1d8:b51c:6b79 with SMTP id
+ n13-20020a170903110d00b001d8b51c6b79mr12411783plh.7.1708298345011; Sun, 18
+ Feb 2024 15:19:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240218085028.3294332-1-yajun.deng@linux.dev>
+References: <20240218174138.1942418-1-martin.blumenstingl@googlemail.com>
+ <20240218174138.1942418-2-martin.blumenstingl@googlemail.com> <ec0b3dfb-3ce2-43f2-9cd4-042c3aca4cf7@linaro.org>
+In-Reply-To: <ec0b3dfb-3ce2-43f2-9cd4-042c3aca4cf7@linaro.org>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Mon, 19 Feb 2024 00:18:53 +0100
+Message-ID: <CAFBinCC0BbahEMeW9CYC+hKk0CBQ9a+CqNrOv3c92D8hDtQHdQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] clocksource/drivers/arm_global_timer: Fix maximum
+ prescaler value
+To: Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc: tglx@linutronix.de, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, andrea.merello@gmail.com, 
+	patrice.chotard@foss.st.com, linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Feb 18, 2024 at 04:50:28PM +0800, Yajun Deng wrote:
-> If the prev vma exists and the end is less than the end of prev, we
-> can return NULL immediately. This reduces unnecessary operations.
+Hi Daniel,
+
+On Sun, Feb 18, 2024 at 11:59=E2=80=AFPM Daniel Lezcano
+<daniel.lezcano@linaro.org> wrote:
+[...]
+> >   #define GT_CONTROL_PRESCALER_SHIFT      8
+> > -#define GT_CONTROL_PRESCALER_MAX        0xF
+> > +#define GT_CONTROL_PRESCALER_MAX        0xFF
+> >   #define GT_CONTROL_PRESCALER_MASK       (GT_CONTROL_PRESCALER_MAX << =
+\
+> >                                        GT_CONTROL_PRESCALER_SHIFT
 >
-> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
-
-Adding Vlastimil, while get_maintainers.pl might not show it very clearly,
-myself, Vlastimil and Liam often work with vma_merge() so it's handy to cc
-us on these if you can!
-
-> ---
->  mm/mmap.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> Good catch!
 >
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 8f176027583c..b738849321c0 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -827,7 +827,7 @@ can_vma_merge_after(struct vm_area_struct *vma, unsigned long vm_flags,
->   *
->   *     ****             ****                   ****
->   *    PPPPPPNNNNNN    PPPPPPNNNNNN       PPPPPPCCCCCC
-> - *    cannot merge    might become       might become
-> + *    cannot merge 9  might become       might become
-
-While I welcome your interest here :) I am not a fan of the 'case' approach
-to this function as-is and plan to heavily refactor this when I get a chance.
-
-But at any rate, an early-exit situation is not a merge case, merge cases
-describe cases where we _can_ merge, so we can drop this case 9 stuff (this
-is not your fault, it's understandable why you would label this, this
-function is just generally unclear).
-
->   *                    PPNNNNNNNNNN       PPPPPPPPPPCC
->   *    mmap, brk or    case 4 below       case 5 below
->   *    mremap move:
-> @@ -890,6 +890,9 @@ static struct vm_area_struct
->  	if (vm_flags & VM_SPECIAL)
->  		return NULL;
+> IMO the initial confusion is coming from the shift and the mask size.
 >
-> +	if (prev && end < prev->vm_end) /* case 9 */
-> +		return NULL;
-> +
+> But should GT_CONTROL_PRESCALER_MAX be 256 ? so (0xFF + 1)
+It depends on what we consider "max" to be:
+- the register value
+- the actual number that's used in the calculation formula
 
-I need to get back into vma_merge() head space, but I don't actually think
-a caller that's behaving correctly should ever do this. I know the ASCII
-diagram above lists it as a thing that can happen, but I think we
-implicitly avoid this from the way we invoke callers. Either prev == vma as
-per vma_merge_extend(), or the loops that invoke vma_merge_new_vma()
-wouldn't permit this to occur.
+If we ignore the usage of GT_CONTROL_PRESCALER_MAX within
+GT_CONTROL_PRESCALER_MASK then there's only one occurrence left, which
+decrements the calculated value right before comparing it against
+GT_CONTROL_PRESCALER_MAX.
+This means: the remaining driver currently considers
+GT_CONTROL_PRESCALER_MAX to be the maximum value that can be written
+to the register, having converted the value from the calculation
+formula to register value beforehand.
 
-Let me look into it more deeply + reply again a bit later, I mean we could
-perhaps do with asserting this somehow, but I don't think it's useful to do
-an early exit for something that ostensibly _shouldn't_ happen.
-
->  	/* Does the input range span an existing VMA? (cases 5 - 8) */
->  	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
+> The following may be less confusing:
 >
-> --
-> 2.25.1
->
+> #define GT_CONTROL_PRESCALER_SHIFT      8
+> #define GT_CONTROL_PRESCALER_MASK       GENMASK(15,8)
+> #define GT_CONTROL_PRESCALER_MAX        (GT_CONTROL_PRESCALER_MASK >> \
+>                                          GT_CONTROL_PRESCALER_SHIFT) + 1
+If you're interested then I'll work on a follow-up patch to clean up
+the prescaler macros (using FIELD_PREP, FIELD_GET and GENMASK would
+simplify things IMO).
+I think that this patch is still good as-is since it's small and can
+be backported easily (if someone wants to do that).
+
+
+Best regards,
+Martin
 
