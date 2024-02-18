@@ -1,131 +1,139 @@
-Return-Path: <linux-kernel+bounces-70193-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70195-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 272F8859494
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 05:23:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DFFD859497
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 05:25:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59FD21C2169F
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:23:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43C091F22C4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:25:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDB01610C;
-	Sun, 18 Feb 2024 04:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74CC4C6D;
+	Sun, 18 Feb 2024 04:25:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UyEmal1W"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="hAjeusk3"
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0B4C5673
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 04:23:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7179F6112
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 04:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708230187; cv=none; b=Gku3ZKcBz/ZxdkKO4lNrgkvOMlVJUJlegqaIfQfnLgOpQg0KGg53YJTox9ZUGqlJoTXOMDNvjb1l16Fy3OmzW8Zz0TC3iK560SCiRND4WJvcrBSB/4+z7Hbr5EvB/Wozk3eafb6aQwFC5NCiAKI2oITvLhKHQst/IlZT2dY+VWg=
+	t=1708230345; cv=none; b=QFKC3f3JQCMmUGLT6Ds9NwuYLYaTc21G1ezGo0YFcz6HTN7VRAltOvzzFj3/pMZEn08XH7w1g2GEaQ5zpRXSeocmZlbnsf9JegQO73R7DVWD/fq3/KLwhOpD7yly3Gy4ctYeDhesDiUTIguA2G0amRdIJtw+QgzjPGmXEg210lQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708230187; c=relaxed/simple;
-	bh=m/zDbOZHINOQqbUYOBUJpcOJN2RTLiWenKUMEw8YWUA=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=G6KPEmg+vyteEclTAs838zZLaYFj42YdUHdReJTm6ZMbOJTYdH1F9Aqvwj3v871YvraKncozEp0aVjBTURuwtD60qkp+eZuA0if12dJXATIugLd4MLUyGL+DKxVL85Lvp/FUWLq9eIiK0XuijjLwIeNp/sZ1DVI97R/0Lc58oS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UyEmal1W; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708230186; x=1739766186;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=m/zDbOZHINOQqbUYOBUJpcOJN2RTLiWenKUMEw8YWUA=;
-  b=UyEmal1Wcmsq3Z1wUCT811vH09K+BLA02kVDCfog4B9KIDyyRwpwL7cc
-   LJDAQQnvjPc73vuET1fKyCF0kyNKa9s7vZ4rz7GHuFpy4UsegFZlMpBKs
-   CIZrTCzqicmrz+Pz63e/lrnHl3dEKafzioL4QojYy1b+vAwwCnkiWFBB4
-   cP3AeN1jGcQTVzWKMwz6cXbJC6B+M/DFEtD++xd5vyJznS7OKAXFcXy2I
-   8gs4wkDP7oTAh+xStdt36DCm6gQq/i22O1qs/Ntr5w7RWYGIJ7WQIAoFn
-   /p9GH0pI+DzNqNS/jJm8eKPXLJtxwR7Ur+T0vd5mIM6Uq9nVTzQrwEWjd
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="2468823"
-X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
-   d="scan'208";a="2468823"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 20:23:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
-   d="scan'208";a="8863508"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.209.212]) ([10.254.209.212])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 20:23:02 -0800
-Message-ID: <83010db4-d8f7-4ddd-a0dd-9d839ed32232@linux.intel.com>
-Date: Sun, 18 Feb 2024 12:22:59 +0800
+	s=arc-20240116; t=1708230345; c=relaxed/simple;
+	bh=8X2LbBluiP62PhY4yTx2Vm7OR5mhIBYACk5drh7CJDM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=smvrKswXF/AztZozSHdjYkXI7SuVDQQLGNI3y2VmPP0R4sYaGrVkM5nVkNM/d01DtnKGYfYqX/lZ/AHybFuU0symK1CsF0ZPW7QwQGvJwRk6L0z6kPC8Qj/IczVOYlA4MXbA0/X6qR/isFABYgf5dmBh7CTr+b9rg4PvSaxxN14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=hAjeusk3; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-5dca1efad59so3020150a12.2
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 20:25:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708230342; x=1708835142; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=PPPOVToP9KvYFFYAhd+euhiEp/R/1IO3VQIxg89zLZk=;
+        b=hAjeusk3a+b3Tdepb9qBRtSsPMYj6LSe1dil95hBwTw4/eFeSzYzwIz5A11Zj45vMO
+         br/EkBaWN1hyMcgEnDyagfI4Ye7UDtLdUnkZWife3JCcf6xODHgL6woJarTXY1rYcqFa
+         h6LHzIRQa+NRk9a42IvT2WvKrMMbz3+6iKUe4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708230342; x=1708835142;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PPPOVToP9KvYFFYAhd+euhiEp/R/1IO3VQIxg89zLZk=;
+        b=gQ5A9H764GeeyXrMQXWhnRAlt3uhCgmOfOQGkrINnjX2AzSq2qmc56mC9H4Bkxm30L
+         6luBxp5iAxEnd5l+RAx4Vbv+loD9RQKWvVsV7os1R7cKh9qeUKTQHQ2g4Re9qeRDckge
+         JX8BpIv0FdxZhyFTi50U7w9r4ylppVCosKJXdwj7rXEjIJHMBGYmZvTVUD8cQB9u7Srv
+         eQE5RSW54YVPwBibczq6P09QpQmBxfxNi1RL2qoRGwRzIorJP9fwqE5PfcQMcQGBuP1L
+         9ycFIwZHeHJtvK9/2U2DmbRGpU2YhX6J4sGnkEtGUfkYdsWTQZWBQ1QBDLlWZVvpS49h
+         pujA==
+X-Forwarded-Encrypted: i=1; AJvYcCWco7d/+njYEPCpkFB9+vqV3Lbuj3sDWjlg3StSyFKuF9Y6aBBTLtFoFdZ5ZFBrJhR9R3Yp3ZNiPcSl/ggly6ECfAl6sxWoOoK1ERp9
+X-Gm-Message-State: AOJu0YzxiW8V4t3+CMxjymj2irl+ky43K0h4jgOxxx7aohQh0aEgVa5S
+	zf1qb1hy/TOU1QBTdFSt2tGtfd3uedKzxQqKZQmhsrwT5pVGSN+LZ9YoKKDn6g==
+X-Google-Smtp-Source: AGHT+IFjk09QrySxOgBtDCo76+mGw+pZNd0U5JFGwf/tqqImzzxQdPNFpc9iNKIfio5NAiR63Hw3VQ==
+X-Received: by 2002:a17:902:b20b:b0:1db:4b23:f97b with SMTP id t11-20020a170902b20b00b001db4b23f97bmr7487589plr.59.1708230342654;
+        Sat, 17 Feb 2024 20:25:42 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id jc15-20020a17090325cf00b001db54324488sm2142726plb.38.2024.02.17.20.25.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Feb 2024 20:25:41 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	Navid Emamdoost <navid.emamdoost@gmail.com>,
+	Michal Kubecek <mkubecek@suse.cz>,
+	Jens Axboe <axboe@kernel.dk>,
+	linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org,
+	nbd@other.debian.org,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH v4] nbd: null check for nla_nest_start
+Date: Sat, 17 Feb 2024 20:25:38 -0800
+Message-Id: <20240218042534.it.206-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Kevin Tian <kevin.tian@intel.com>, Huang Jiaqing <jiaqing.huang@intel.com>,
- Ethan Zhao <haifeng.zhao@linux.intel.com>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] iommu/vt-d: Use rbtree to track iommu probed devices
-To: Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240215072249.4465-1-baolu.lu@linux.intel.com>
- <20240215072249.4465-2-baolu.lu@linux.intel.com>
- <20240215174708.GC1299735@ziepe.ca>
-Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20240215174708.GC1299735@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1211; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=0R8zCu0X/ARVuSqlyl7fu4di67hYDgO+9WqGqz+HaEc=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl0YbBPe25EqmI5l5nzuL7+soJkeVhsbtCpCkDH
+ ubGmi/BvUiJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZdGGwQAKCRCJcvTf3G3A
+ Jm4SD/4k25Oc6EkBmLy4hVwdpNNdRv+uyAuAXQKD7aOBOpyDpt8qh8Wjxpe+PkBlP8wDVT7g+hi
+ SDxOzbm7NvrlnYL6aF9fyDUz1W2tmTVvVnTJuDOIxdMRT4Z9Eer9IhO+LEXmuY8WevRZrbFgnKl
+ /n+ZC3HYgck0RexH2TJBbMulSVwwh/rgxqbY4NPz19YLMRs1W4k+artJg6buZ9B+VEFT1WYoNU3
+ r33Kr5nru90Yd1QyCEAV28QqD37LynEdBgkUj58fmnzWx5hYluvUR+cSDvtt+ov7Ie5/bcBOoXG
+ lArRTlM6G3GMBDcPWXs8AZ3jJPc3YnyK/N9yvyL0VKqfJQcErqJy2RhCS0PbLZkKjQW1ofg3cm8
+ 3QKhCRRkRDKTCx6FOL7fNT+P5ealU0YBNhatm4gAUl/+9Bn7vTXqWt3NQ8XyPm8TYgf0R3assGN
+ NRnf4P/0HkcKTOIx9w7FC7BA2jMXJJAxXxVUPlFNuznghWXsPQQccfjqxjibsjY7bJBa05ljLo8
+ 7rLaFHTHiVQe8oVL5RR8joZAmlHLGgQjUxLAVm+VoJrP4QMKUOW6wCAGzHWJnFEPupswbmlV/eZ
+ rwitO9926hht8LZtRlvZNm2vco0tFIvBmFgkJ0nO2ZuhY3cWZ9sOA1zf70bgn5re+XXe2oYEpFe
+ Qx6xzOa L6H7WvAw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 
-On 2024/2/16 1:47, Jason Gunthorpe wrote:
-> On Thu, Feb 15, 2024 at 03:22:48PM +0800, Lu Baolu wrote:
->> Use a red-black tree(rbtree) to track devices probed by the driver's
->> probe_device callback. These devices need to be looked up quickly by
->> a source ID when the hardware reports a fault, either recoverable or
->> unrecoverable.
->>
->> Fault reporting paths are critical. Searching a list in this scenario
->> is inefficient, with an algorithm complexity of O(n). An rbtree is a
->> self-balancing binary search tree, offering an average search time
->> complexity of O(log(n)). This significant performance improvement
->> makes rbtrees a better choice.
->>
->> Furthermore, rbtrees are implemented on a per-iommu basis, eliminating
->> the need for global searches and further enhancing efficiency in
->> critical fault paths. The rbtree is protected by a spin lock with
->> interrupts disabled to ensure thread-safe access even within interrupt
->> contexts.
->>
->> Co-developed-by: Huang Jiaqing<jiaqing.huang@intel.com>
->> Signed-off-by: Huang Jiaqing<jiaqing.huang@intel.com>
->> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/iommu.h |  7 +++++
->>   drivers/iommu/intel/dmar.c  |  3 +-
->>   drivers/iommu/intel/iommu.c | 62 +++++++++++++++++++++++++++++++++++--
->>   3 files changed, 69 insertions(+), 3 deletions(-)
-> Reviewed-by: Jason Gunthorpe<jgg@nvidia.com>
-> 
->> +static int device_rbtree_insert(struct intel_iommu *iommu,
->> +				struct device_domain_info *info)
->> +{
->> +	struct rb_node *curr;
->> +	unsigned long flags;
->> +
->> +	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
->> +	curr = rb_find_add(&info->node, &iommu->device_rbtree, device_rid_cmp);
->> +	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
->> +	if (curr)
->> +		dev_warn(info->dev, "device already in rbtree\n");
-> I would suggest
-> 
-> WARN_ON(curr);
-> 
-> Something has gone really wonky at this point, right?
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-Yes. This is not expected, and it is worth a WARN_ON().
+nla_nest_start() may fail and return NULL. Insert a check and set errno
+based on other call sites within the same source code.
 
-Best regards,
-baolu
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
+Fixes: 47d902b90a32 ("nbd: add a status netlink command")
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+v3- https://lore.kernel.org/lkml/20190911164013.27364-1-navid.emamdoost@gmail.com/
+Resending on behalf of the author. This seems to have gotten lost and
+has been getting tracked as CVE-2019-16089 ever since. For example:
+https://ubuntu.com/security/CVE-2019-16089
+---
+ drivers/block/nbd.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
+index 33a8f37bb6a1..b7c332528ed7 100644
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -2433,6 +2433,12 @@ static int nbd_genl_status(struct sk_buff *skb, struct genl_info *info)
+ 	}
+ 
+ 	dev_list = nla_nest_start_noflag(reply, NBD_ATTR_DEVICE_LIST);
++	if (!dev_list) {
++		nlmsg_free(reply);
++		ret = -EMSGSIZE;
++		goto out;
++	}
++
+ 	if (index == -1) {
+ 		ret = idr_for_each(&nbd_index_idr, &status_cb, reply);
+ 		if (ret) {
+-- 
+2.34.1
+
 
