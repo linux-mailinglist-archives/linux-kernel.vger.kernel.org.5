@@ -1,46 +1,60 @@
-Return-Path: <linux-kernel+bounces-70175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E544485945B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:21:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52332859455
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1A90283481
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:21:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF11CB2149A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:17:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544C51879;
-	Sun, 18 Feb 2024 03:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94DC9184F;
+	Sun, 18 Feb 2024 03:17:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="sZvhASvT"
-Received: from out199-10.us.a.mail.aliyun.com (out199-10.us.a.mail.aliyun.com [47.90.199.10])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RVTZYtJA"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FAC15C0;
-	Sun, 18 Feb 2024 03:20:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.199.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAF215C0;
+	Sun, 18 Feb 2024 03:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708226457; cv=none; b=CnvO8MuqdpEoo5v0cRwR70pVAwFrQiu04sGBBtly/5/QSNr9X7AXMpthAnN9rp6rXi2wdercs0ulctwhgG/l0PUkHKa8Uxqm1L1rvky75D+yJMjm7+wiRdZN9fIASg+lCTniSvqsdmAkyYbi5PKHK/Rh6SxXdBvn9pBn+Lh6X8c=
+	t=1708226220; cv=none; b=tyxnUSa5O+cM2AbCx031tKkAN8P1CczwCJtEWzKfibfvETPfRLZE/ppgp3akMey9ZoVFP1PUAfClQJ6/XL2mG+M9bvsLWgM/sbHKpcXJd/zJKIfU2kdJCLOpCxwFJPHnLusNSVInXkv0NAtrtTLg53hb0uj58zXXWX/kwLoMgQ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708226457; c=relaxed/simple;
-	bh=XfZHq5PLl/gGIAJY4T+e1XbJYYy90SoHG1cHEE8y4og=;
+	s=arc-20240116; t=1708226220; c=relaxed/simple;
+	bh=DeGDrMAgGcdQj3OmlPemYT17RoDy097NuhgcWvnkTOw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MW+wEaIc6NZbY5xwmVxSukT8ojTOME1W0Ii5UtCAsK3vGDXuvdPtEwTsI0UspdTHFWr73AKo1jbK/iSGbh6ZgjQ4mGF5gDTkhxXxNG3a0uEjjfppunQgYJ6J7FYexWNHmyVQ3BuUqNLiyBb/vLuX2LQ1wU2WQ9DUuZ28byCx1NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=sZvhASvT; arc=none smtp.client-ip=47.90.199.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708226435; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=cqOsry37fOCW6Y3ou1nZ7EHlwm2eSJbNTtcAmfAvy8w=;
-	b=sZvhASvTaT1ZXVmRBexej/rFkeiSqwgKJhwU1CPYYXxwc2q7ZVDJTp2zLEiulOQ0Y18Bci8pELb2fYWQ4YGjqfZg8Eh/YoaYbX4ZP/0JG/qRIG/ec0suw5t4WF+G/DTKqPqaLF11G4qrWTbzERdaM7E0dJHiEnWfvt/iRIgo8xs=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=jefflexu@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0W0kSJnS_1708226113;
-Received: from 30.221.145.138(mailfrom:jefflexu@linux.alibaba.com fp:SMTPD_---0W0kSJnS_1708226113)
-          by smtp.aliyun-inc.com;
-          Sun, 18 Feb 2024 11:15:13 +0800
-Message-ID: <cee45d07-b885-4b4b-b9b5-d7aeedc2b2e7@linux.alibaba.com>
-Date: Sun, 18 Feb 2024 11:15:12 +0800
+	 In-Reply-To:Content-Type; b=qsWZevX5BjcxZD4wRjlu5p0SeB7c3MRFvLmkaM9aHKuiJ7m1+coEGwAphgwb4PEFHgiwpA93sRtXjFWZHNquS+6SAwxRifyW+E/D0CQHI7NP6I1RfEpLuCdQSCGcL6rWI0w9n0fEagBrN/R1kMRCBxOuJ1zp0EZNDK0pRC6VxUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RVTZYtJA; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708226220; x=1739762220;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=DeGDrMAgGcdQj3OmlPemYT17RoDy097NuhgcWvnkTOw=;
+  b=RVTZYtJAguZcY7TMWhKkUA5q0rbB6uwvaU8qMBIl2cLY+zDsGogirdVR
+   TRgh3hBPyOdHsiU6muZNyMcuE3aUNacJsCLFcXYNt6oa7CTwmp1hD+uMT
+   t01oKqCbV6GjeRmSb6yTSCZICgccoPuCGhhE2dcnnOYCmVBFX50DDu9rp
+   8WPGV9ip7UEYAmnbZxsBfaoc0owON890tmz1wcG9np1g7hhLO9IPo7qMQ
+   ZzU6ah4vl4DEjDfpoUtNLFEfLBUxIzT6ZSBXiyZ6UxAxSwqMlwQTcknNa
+   lYrdLzNPAENPf0eFnLLxvwzBZLyu5PgDU7xhDal6levj5k3Z/YzDX+Ek+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="19749191"
+X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
+   d="scan'208";a="19749191"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 19:16:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
+   d="scan'208";a="8855672"
+Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.20.184]) ([10.93.20.184])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 19:16:56 -0800
+Message-ID: <a0d961d0-179e-481c-a1fa-d7b384a481dd@linux.intel.com>
+Date: Sun, 18 Feb 2024 11:16:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,87 +62,90 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND] cachefiles: fix memory leak in
- cachefiles_add_cache()
-To: Baokun Li <libaokun1@huawei.com>, netfs@lists.linux.dev
-Cc: dhowells@redhat.com, jlayton@kernel.org, linux-cachefs@redhat.com,
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240217081431.796809-1-libaokun1@huawei.com>
+Subject: Re: [PATCH] KVM: selftests: Test top-down slots event
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
+ Jim Mattson <jmattson@google.com>, Jinrong Liang <cloudliang@tencent.com>,
+ Aaron Lewis <aaronlewis@google.com>, Dapeng Mi <dapeng1.mi@intel.com>
+References: <20240201061505.2027804-1-dapeng1.mi@linux.intel.com>
+ <Zbvcx0A-Ln2sP6XA@google.com>
+ <95c3dc22-2d40-46fc-bc4d-8206b002e0a1@linux.intel.com>
+ <Zb0lPSBI_GFGuVex@google.com>
 Content-Language: en-US
-From: Jingbo Xu <jefflexu@linux.alibaba.com>
-In-Reply-To: <20240217081431.796809-1-libaokun1@huawei.com>
-Content-Type: text/plain; charset=UTF-8
+From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
+In-Reply-To: <Zb0lPSBI_GFGuVex@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
+On 2/3/2024 1:24 AM, Sean Christopherson wrote:
+> On Fri, Feb 02, 2024, Dapeng Mi wrote:
+>> On 2/2/2024 2:02 AM, Sean Christopherson wrote:
+>>> On Thu, Feb 01, 2024, Dapeng Mi wrote:
+>>>> Although the fixed counter 3 and the exclusive pseudo slots events is
+>>>> not supported by KVM yet, the architectural slots event is supported by
+>>>> KVM and can be programed on any GP counter. Thus add validation for this
+>>>> architectural slots event.
+>>>>
+>>>> Top-down slots event "counts the total number of available slots for an
+>>>> unhalted logical processor, and increments by machine-width of the
+>>>> narrowest pipeline as employed by the Top-down Microarchitecture
+>>>> Analysis method." So suppose the measured count of slots event would be
+>>>> always larger than 0.
+>>> Please translate that into something non-perf folks can understand.  I know what
+>>> a pipeline slot is, and I know a dictionary's definition of "available" is, but I
+>>> still have no idea what this event actually counts.  In other words, I want a
+>>> precise definition of exactly what constitutes an "available slot", in verbiage
+>>> that anyone with basic understanding of x86 architectures can follow after reading
+>>> the whitepaper[*], which is helpful for understanding the concepts, but doesn't
+>>> crisply explain what this event counts.
+>>>
+>>> Examples of when a slot is available vs. unavailable would be extremely helpful.
+>>>
+>>> [*] https://www.intel.com/content/www/us/en/docs/vtune-profiler/cookbook/2023-0/top-down-microarchitecture-analysis-method.html
+>> Yeah, indeed, 'slots' is not easily understood from its literal meaning. I
+>> also took some time to understand it when I look at this event for the first
+>> time. Simply speaking, slots is an abstract concept which indicates how many
+>> uops (decoded from instructions) can be processed simultaneously (per cycle)
+>> on HW. we assume there is a classic 5-stage pipeline, fetch, decode,
+>> execute, memory access and register writeback. In topdown
+>> micro-architectural analysis method, the former two stages (fetch/decode) is
+>> called front-end and the last three stages are called back-end.
+>>
+>> In modern Intel processors, a complicated instruction could be decoded into
+>> several uops (micro-operations) and so these uops can be processed
+>> simultaneously and then improve the performance. Thus, assume a processor
+>> can decode and dispatch 4 uops in front-end and execute 4 uops in back-end
+>> simultaneously (per-cycle), so we would say this processor has 4 topdown
+>> slots per-cycle. If a slot is spare and can be used to process new uop, we
+>> say it's available, but if a slot is occupied by a uop for several cycles
+>> and not retired (maybe blocked by memory access), we say this slot is stall
+>> and unavailable.
+> In that case, can't the test assert that the count is at least NUM_INSNS_RETIRED?
+> AFAIK, none of the sequences in the measured code can be fused, i.e. the test can
+> assert that every instruction requires at least one uop, and IIUC, actually
+> executing a uop requires an available slot at _some_ time.
 
-On 2/17/24 4:14 PM, Baokun Li wrote:
-> The following memory leak was reported after unbinding /dev/cachefiles:
-> 
-> ==================================================================
-> unreferenced object 0xffff9b674176e3c0 (size 192):
->   comm "cachefilesd2", pid 680, jiffies 4294881224
->   hex dump (first 32 bytes):
->     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace (crc ea38a44b):
->     [<ffffffff8eb8a1a5>] kmem_cache_alloc+0x2d5/0x370
->     [<ffffffff8e917f86>] prepare_creds+0x26/0x2e0
->     [<ffffffffc002eeef>] cachefiles_determine_cache_security+0x1f/0x120
->     [<ffffffffc00243ec>] cachefiles_add_cache+0x13c/0x3a0
->     [<ffffffffc0025216>] cachefiles_daemon_write+0x146/0x1c0
->     [<ffffffff8ebc4a3b>] vfs_write+0xcb/0x520
->     [<ffffffff8ebc5069>] ksys_write+0x69/0xf0
->     [<ffffffff8f6d4662>] do_syscall_64+0x72/0x140
->     [<ffffffff8f8000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> ==================================================================
-> 
-> Put the reference count of cache_cred in cachefiles_daemon_unbind() to
-> fix the problem. And also put cache_cred in cachefiles_add_cache() error
-> branch to avoid memory leaks.
-> 
-> Fixes: 9ae326a69004 ("CacheFiles: A cache that backs onto a mounted filesystem")
-> CC: stable@vger.kernel.org
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-LGTM.
-
-Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+Yeah, looks the instruction sequence can't be marco-fused on x86 
+platforms, the slots count should be equal or larger than 
+NUM_INSNS_RETIRED.
 
 
-> ---
->  fs/cachefiles/cache.c  | 2 ++
->  fs/cachefiles/daemon.c | 1 +
->  2 files changed, 3 insertions(+)
-> 
-> diff --git a/fs/cachefiles/cache.c b/fs/cachefiles/cache.c
-> index 7077f72e6f47..f449f7340aad 100644
-> --- a/fs/cachefiles/cache.c
-> +++ b/fs/cachefiles/cache.c
-> @@ -168,6 +168,8 @@ int cachefiles_add_cache(struct cachefiles_cache *cache)
->  	dput(root);
->  error_open_root:
->  	cachefiles_end_secure(cache, saved_cred);
-> +	put_cred(cache->cache_cred);
-> +	cache->cache_cred = NULL;
->  error_getsec:
->  	fscache_relinquish_cache(cache_cookie);
->  	cache->cache = NULL;
-> diff --git a/fs/cachefiles/daemon.c b/fs/cachefiles/daemon.c
-> index 3f24905f4066..6465e2574230 100644
-> --- a/fs/cachefiles/daemon.c
-> +++ b/fs/cachefiles/daemon.c
-> @@ -816,6 +816,7 @@ static void cachefiles_daemon_unbind(struct cachefiles_cache *cache)
->  	cachefiles_put_directory(cache->graveyard);
->  	cachefiles_put_directory(cache->store);
->  	mntput(cache->mnt);
-> +	put_cred(cache->cache_cred);
->  
->  	kfree(cache->rootdirname);
->  	kfree(cache->secctx);
-
--- 
-Thanks,
-Jingbo
+>
+> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> index ae5f6042f1e8..29609b52f8fa 100644
+> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
+> @@ -119,6 +119,9 @@ static void guest_assert_event_count(uint8_t idx,
+>          case INTEL_ARCH_REFERENCE_CYCLES_INDEX:
+>                  GUEST_ASSERT_NE(count, 0);
+>                  break;
+> +       case INTEL_ARCH_TOPDOWN_SLOTS_INDEX:
+> +               GUEST_ASSERT(count >= NUM_INSNS_RETIRED);
+> +               break;
+>          default:
+>                  break;
+>          }
 
