@@ -1,115 +1,76 @@
-Return-Path: <linux-kernel+bounces-70351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70356-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93CBC859661
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:46:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76965859670
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:52:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5DDD28368D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:46:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C6561F21473
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:52:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01324E1D9;
-	Sun, 18 Feb 2024 10:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C244B4F206;
+	Sun, 18 Feb 2024 10:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="f500oD3n"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="lxo8gYGp"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177814CE0B
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 10:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC8E84EB2B;
+	Sun, 18 Feb 2024 10:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708253203; cv=none; b=OfQq2nqqQiMfe2z6ifj7e3uPKhOH1FVhbQPsX1Mbn63D66148ATau5PaP2np5R6oaqeKtb614CXB/VlBaDQQixJ25YkX8PxIrGGK1DfcktwQKdLyykhgHc2q5ydkRFaJ69MDYwFeCe4XcazM7618hvRd2kfiBqFmXW5ikEbs2fE=
+	t=1708253550; cv=none; b=G86TNkD14gEACOJ6JUPLoR+T+ZVu1txQVaXlh/Ga43iMivn5vrtEjVdma6U8AfSQjpHWdoxwLnYy3xpgefuvli8Xi8yEgkDsOoWQt9mh9fb7pgWf6c9xIAsgBa/ZxbrH9tP1z5sKbuHV5je43SlOZon9KJt7yNEq1VpEQa4yFJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708253203; c=relaxed/simple;
-	bh=Dk0Xc0t8s6eP6flzz/y9hlY/zEgsjcKJwYkWe2VT8es=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=oxzvMDXl4bjUnrINzzB2ap3ifJDKe3m3FsDsji9US1eNThtmE0Xv6cWApa7ouD9WmU1lBpEMKI6aMkLv6Wle2qbctezKPRTN+B4ErNsQwyu3wrN/hWzryLMHktN3r6nNjEi3Kdz5+j2JLohbhxkdUCh9tFqyySohHxDhvP9tzN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=f500oD3n; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D775540E0196;
-	Sun, 18 Feb 2024 10:46:38 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id aTcBDfe8KKcy; Sun, 18 Feb 2024 10:46:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708253196; bh=qZ1a04mQZrioTNEWngpBC0VKL+6QRpXWJ1QqWKbMM9U=;
-	h=Date:From:To:Cc:Subject:From;
-	b=f500oD3nlJsnx6pY0lD48nO0quozdvdJEmz17X/VN0suxaCkkhHMpBAHDZbCmLZ+b
-	 lw+XXiHX8tygUiXeMOTm+tFvf0hRysCKCBVsdJZq/uMhzH6wh1GyDoz4ffkjIZg5oy
-	 QIQaINj14H9vuLQtO7sIcYquow2TNsQbwrE5BBOudmc9Koacavf8EQwPWHbcoLrIvi
-	 KmADhuA2uFRx3UE9qB7jgGvDelAIJh6heB78wVd7QRDaYzCb4I7/AabTzOQMRIeLLQ
-	 WieWKlg+Nh6IyxZXQvNXlyGNkWKvb004V4gRUZ2s5gsIK2HiptGhzlfeaLGUYu7yGg
-	 8bxZHK6vtbA9EUJCUOeSJ+o3hdDptPZdSsgBceHQBVi706UeyUUgmZ0zXdIdiIOovE
-	 7Dg5scSMlAIgQ+F7unUu2Tyy4s1n3b15v8FGCU4Ft2pgXKm+VUWF3DV0RkaIZprc3X
-	 E1mghA2xybUWxtEX4SpdUQ0/Vds7nhRMvwTOWs5k9EAlMd7PHpVLE7Ev9ajKaS6pxY
-	 YSfgMVPVIyfPL8vXzKxg+C1mq14Irt9kX2kDYUMf7ARFcVFrVsPJUdra0qYOef3fLK
-	 V+m/P01o/pj9o7EBqOc+Vg03ev2XDV2JWJxFs3P06eC5DX/4xtu4y/zKWWpldKqwdl
-	 /IYAc0clx9/tfnWBYpeOXfZ4=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9609540E016C;
-	Sun, 18 Feb 2024 10:46:33 +0000 (UTC)
-Date: Sun, 18 Feb 2024 11:46:31 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] x86/urgent for v6.8-rc5
-Message-ID: <20240218104631.GAZdHgB9eMrhITQgyy@fat_crate.local>
+	s=arc-20240116; t=1708253550; c=relaxed/simple;
+	bh=hYKNM0kFY4Gq7Ym7sCk5KLWQaWpDLT8Bshvo4HPFqPQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LYa9HB+erl+rpTR3npOSZAQyJjGEhBYnmiaWLoeHbXRXRZCV8yWdxlljHx5eoVABGAFyVxX1/NlSxLzf6t62cB1P3OgWor3ywqSu7UISuzObaU0ENiSe+Q2PR7oOxPaVmGtK7THcPkZVeuzJ8J5BsWUg0zqZ64bKHu0aym3CCNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=lxo8gYGp; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7F42BE0009;
+	Sun, 18 Feb 2024 10:52:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1708253539;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hYKNM0kFY4Gq7Ym7sCk5KLWQaWpDLT8Bshvo4HPFqPQ=;
+	b=lxo8gYGpE+YJ1RA0OUoL5Jec9z+z036cSl6VSBM9jeRuCVjt6Bn1Xh7DqA7yFmIR8or84z
+	yg4aHamwER0BvHyrJFgkjQ2SW0ntb0/Hkimm9wKip9A4IVBO0Dnfsf3f6DNKUEae52/nxV
+	efmPi+UqMkFxmJSOyt284ty2f8sJC1B/f2p7QwiMtxCcqkE0MlpkcWf4JoozomBC0at90W
+	Dyv690ZxsvLdY7oLfYBelwjGSerF7XBQKk9iWbZrVDgxvjKrBsYv+KSfKXzFkk1fMxtjY2
+	uTnBtMoYNOZsxyhEENmqS+STjkPqjGLTXmeJ6r4CF/wCvgPCe2+LBnh9sLmqpw==
+Message-ID: <5d582382-9a31-4a95-bc81-01d99dde0a6e@arinc9.com>
+Date: Sun, 18 Feb 2024 13:52:13 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: {mt7622,mt7986}: add port@5 as CPU port
+To: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Frank Wunderlich <frank-w@public-files.de>, mithat.guner@xeront.com,
+ erkin.bozoglu@xeront.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20230918074938.79796-1-arinc.unal@arinc9.com>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20230918074938.79796-1-arinc.unal@arinc9.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Hi Linus,
+Matthias, please apply this patch.
 
-please pull a single urgent x86 fix for v6.8-rc5.
-
-Thx.
-
----
-
-The following changes since commit f6a1892585cd19e63c4ef2334e26cd536d5b678d:
-
-  x86/Kconfig: Transmeta Crusoe is CPU family 5, not 6 (2024-02-09 16:28:19 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v6.8_rc5
-
-for you to fetch changes up to d794734c9bbfe22f86686dc2909c25f5ffe1a572:
-
-  x86/mm/ident_map: Use gbpages only where full GB page should be mapped. (2024-02-12 14:53:42 -0800)
-
-----------------------------------------------------------------
-- Use a GB page for identity mapping only when memory of this size is
-  requested so that mapping of reserved regions is prevented which would
-  otherwise lead to system crashes on UV machines
-
-----------------------------------------------------------------
-Steve Wahl (1):
-      x86/mm/ident_map: Use gbpages only where full GB page should be mapped.
-
- arch/x86/mm/ident_map.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
-
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Arınç
 
