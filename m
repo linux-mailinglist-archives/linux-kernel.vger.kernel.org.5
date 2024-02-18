@@ -1,120 +1,118 @@
-Return-Path: <linux-kernel+bounces-70338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 551CD85963E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 01276859646
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:30:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1BDD1F219DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:30:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89C7B1F2221A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:30:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D0DC374F0;
-	Sun, 18 Feb 2024 10:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE353E47F;
+	Sun, 18 Feb 2024 10:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Xxj/ymOb";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BjB60kZ7"
-Received: from wfout1-smtp.messagingengine.com (wfout1-smtp.messagingengine.com [64.147.123.144])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EC9TbaFt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FF70374C2;
-	Sun, 18 Feb 2024 10:29:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA7F383B0;
+	Sun, 18 Feb 2024 10:30:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708252198; cv=none; b=N/soipETMdTEe8ifHvcjqS1IEgTn7SIGWBvs8axvw2xMbuiYDDeMUv9cRCBaJosbJ3GC1bc12Crgk5nJSh9KdIfNh40xkYnIbMzF25brLGSLvdfkYKXqYLTBg5zrtvdvH7g48mcXdQ/sy/UZv4oQp9NLReN1Snkwkytw05Lz/hg=
+	t=1708252226; cv=none; b=U9vtFT8DtMj3XFymEm/SgaTCX7ivVZwOtF9Jjg9SmnqT1wHPLZAeiWqPwdE1A1tOxoSNNfSYSNTwM/IoPKMiu9V3AhToY/+wUj81j8Cr+mhnUW4ui0KFn0TflEfn3s4GEvkGNyDDGcHAa+zJBStIjP6gcqcqpTeHT/PQ1+eG/Uw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708252198; c=relaxed/simple;
-	bh=ufu21DiWxZYY2PtkEJELU0sA98ETiZvyf8lhN/8xhUI=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=CaJHVrqvWQyOUgxjSe5USOCJks4LYZfogmNlZc8BP+oX0oMpcCLj7D6GeNNvkzhCrL8g/9clZ1pX79CEJdHczrJFzioL+y8W0jo5y6Ib7BoWdoTT9e61R/e+DQigJlyiDGvkPrIZpOESutJhG1Z+Ghzr9ufaetMwbvMqjF5TrHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Xxj/ymOb; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=BjB60kZ7; arc=none smtp.client-ip=64.147.123.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id 4903A1C00091;
-	Sun, 18 Feb 2024 05:29:54 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Sun, 18 Feb 2024 05:29:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1708252193; x=1708338593; bh=wvWbnsQkj4
-	q09CebU8XF1EAFsfblqr/+huPfno1vUNs=; b=Xxj/ymOb6AtEOsNK1eV7Ou8FAH
-	O8F5SmLQ0fEZrKGCW3U2dc24m+SkCyu7IG94E2M+1mmZMo/rBi1MzLass+VVfDnr
-	CZmDe1sp0UY7oFBi+OhPKbkC12hGlSKKDlgmBcPYo9lMeRHnhR30tRCrA4SWCXIu
-	n2yZ9ibphH9kViUUtUFh7oOa7euVlO45Ej5pHfNPEZlPujeOp10994kuh1I6tCc8
-	a7Q/BrsP+oSN0+FAWrinWGGBF7eWHIMY6tt6RO5vHL07q5MDUz6OD7ktVUbsm19h
-	Or5gm7ry6NvbyZbjc3+MmyKSpmHMM8Cji6HfC9giMHiO9B7EC0J+TuJ7zlFw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708252193; x=1708338593; bh=wvWbnsQkj4q09CebU8XF1EAFsfbl
-	qr/+huPfno1vUNs=; b=BjB60kZ7OHneALkK3bPs3Ya3upMX9P/TuKg7p5H/0d4a
-	CJjppOxcN6YjW3Hwl7BTLhMR5AYzKeQoYSn8WJF2OOG6ZJJmQzxTq9gfLIs9p5M+
-	P2D+H8VwfFSx+dZT1ryLhBou9un8hcG7p0D798xWn35R8RmSn9oB8LKlmZWDKFSy
-	fVWfBRSzzl2HfaqXvBFU1OcJwfw6XNG0Ao3f7kkDhsmGNSZT9To7SYIPfGctJcyY
-	fbC4PXgE8MHNBNH+OcNUb39nSdRQI5LBP1jb+WgAEttClqxeT7Sc1y8hpYC2DA3i
-	zBokALVHOYMQy+Xw0lQA6IrGTwueMzMreV9QDShhug==
-X-ME-Sender: <xms:INzRZUcAzvqotltzQGr6jtVeWIazlU0sqqjh5EJLD76JtjoAWsEahQ>
-    <xme:INzRZWMEYPlrbfAs2wz9cpTTzqWzLDKZ0WAHXxaiJMdbY6wKgdGg2_hHeSal86R85
-    _rZBbEc9OFtweAXnis>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeigddukecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffheeugeetiefhgeethfejgfdtuefggeejleehjeeutefhfeeggefhkedtkeet
-    ffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:INzRZVgod07_0p87nl5sRB9w63-VEhTrJ4VNLjxUONdSO8toYuzQKw>
-    <xmx:INzRZZ-p_jzUpZ8kdbAY6glw5YmeyIWFngQ6eXzPlpMlh2sKIQdRKg>
-    <xmx:INzRZQvXqkEB6Njib6zYfFe3bOZgC4CWwH38cdF0qVn10dnljgWviQ>
-    <xmx:IdzRZdPFPiSDov-DsahK-l5TKYHo91EzHOca1b2h6hquvhoXpxfop3bWdJY>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id AF6AAB6008D; Sun, 18 Feb 2024 05:29:52 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1708252226; c=relaxed/simple;
+	bh=3+SCX68+BR4ikcTOVUJ8dLGXtBO7YBQJrQoEZ0s5SlQ=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mNvW/yQb+DI2R7RKJjfVGe8sLp9j8l6jCP+4QqG7BPS1KHedZsQG3ZrfszREQkAHH30kveAWyM6ixnFX/wFMsMq+hXCNJkaIcxgLO+82Xyhk+lqyzgMWaAlpZzt7ug1eH2nRQRDoQ97OSkjYoSXqrBdq9PANSju3jj5aWL8TGqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EC9TbaFt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 606EBC43390;
+	Sun, 18 Feb 2024 10:30:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708252226;
+	bh=3+SCX68+BR4ikcTOVUJ8dLGXtBO7YBQJrQoEZ0s5SlQ=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=EC9TbaFtKL2cffq/Tnbi117BoptMRJgSL3M6ne1V4ew7Yk7Xo+gE5//ta/TYWCA8N
+	 I5gyesn/3Dq+YL1+Z20nFZXVwqI2FlC8I3+7tJMb9DKjMAYrdCfdCkgRFAhtBzvMk+
+	 85IDAWpXGd+lRqHSpFj8uiwA7yXutCFyHLJarla05FN6+dzMGNKsEEgTDE9uwEKC8E
+	 KH3pCYQzJosIkkiEQnpWi/tWWHByUXJYtxkSsHhbPokC2gDwG3ZzvBoQuJSmPhlgHi
+	 DIYEQAa5QKskn+DzQcawpP+S94RJJXmpBlOdNDORJf17Bezgb2Z90h9TjHbQpvmw2V
+	 MctjWI6PLI44w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 45BD5DC99F1;
+	Sun, 18 Feb 2024 10:30:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <3a829098-612b-4e5a-bcec-3727acee7ff8@app.fastmail.com>
-In-Reply-To: <ZdHZydVbQ7rIhMYV@tassilo>
-References: <20240216202352.2492798-1-arnd@kernel.org>
- <ZdHZydVbQ7rIhMYV@tassilo>
-Date: Sun, 18 Feb 2024 11:29:32 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Andi Kleen" <ak@linux.intel.com>, "Arnd Bergmann" <arnd@kernel.org>
-Cc: "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Christian Brauner" <brauner@kernel.org>, "Jan Kara" <jack@suse.cz>,
- "Nathan Chancellor" <nathan@kernel.org>,
- "Nick Desaulniers" <ndesaulniers@google.com>,
- "Bill Wendling" <morbo@google.com>, "Justin Stitt" <justinstitt@google.com>,
- "Kees Cook" <keescook@chromium.org>,
- "Andrew Morton" <akpm@linux-foundation.org>, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] fs/select: rework stack allocation hack for clang
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 00/13] mptcp: misc. fixes for v6.8
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <170825222628.22893.6012598424482602231.git-patchwork-notify@kernel.org>
+Date: Sun, 18 Feb 2024 10:30:26 +0000
+References: <20240215-upstream-net-20240215-misc-fixes-v1-0-8c01a55d8f6a@kernel.org>
+In-Reply-To: <20240215-upstream-net-20240215-misc-fixes-v1-0-8c01a55d8f6a@kernel.org>
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, martineau@kernel.org, geliang@kernel.org,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ dcaratti@redhat.com, shuah@kernel.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ tanggeliang@kylinos.cn, stable@vger.kernel.org, borisp@nvidia.com,
+ john.fastabend@gmail.com
 
-On Sun, Feb 18, 2024, at 11:19, Andi Kleen wrote:
-> I suspect given the larger default stack now we could maybe just increase the
-> warning limit too, but that should be fine.
+Hello:
 
-I don't think we have increased the default stack size in decades,
-it's still 8KB on almost all 32-bit architectures (sh, hexagon and m68k
-still allow 4KB stacks, but that's probably broken). I would actually
-like to (optionally) reduce the stack size for 64-bit machines
-from 16KB to 12KB now that it's always vmapped.
+This series was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+On Thu, 15 Feb 2024 19:25:27 +0100 you wrote:
+> This series includes 4 types of fixes:
+> 
+> Patches 1 and 2 force the path-managers not to allocate a new address
+> entry when dealing with the "special" ID 0, reserved to the address of
+> the initial subflow. These patches can be backported up to v5.19 and
+> v5.12 respectively.
+> 
+> [...]
 
-Thanks,
+Here is the summary with links:
+  - [net,01/13] mptcp: add needs_id for userspace appending addr
+    https://git.kernel.org/netdev/net/c/6c347be62ae9
+  - [net,02/13] mptcp: add needs_id for netlink appending addr
+    https://git.kernel.org/netdev/net/c/584f38942626
+  - [net,03/13] mptcp: fix lockless access in subflow ULP diag
+    https://git.kernel.org/netdev/net/c/b8adb69a7d29
+  - [net,04/13] mptcp: fix data races on local_id
+    https://git.kernel.org/netdev/net/c/a7cfe7766370
+  - [net,05/13] mptcp: fix data races on remote_id
+    https://git.kernel.org/netdev/net/c/967d3c27127e
+  - [net,06/13] mptcp: fix duplicate subflow creation
+    https://git.kernel.org/netdev/net/c/045e9d812868
+  - [net,07/13] selftests: mptcp: pm nl: also list skipped tests
+    https://git.kernel.org/netdev/net/c/d2a2547565a9
+  - [net,08/13] selftests: mptcp: pm nl: avoid error msg on older kernels
+    https://git.kernel.org/netdev/net/c/662f084f3396
+  - [net,09/13] selftests: mptcp: diag: fix bash warnings on older kernels
+    https://git.kernel.org/netdev/net/c/694bd45980a6
+  - [net,10/13] selftests: mptcp: simult flows: fix some subtest names
+    https://git.kernel.org/netdev/net/c/4d8e0dde0403
+  - [net,11/13] selftests: mptcp: userspace_pm: unique subtest names
+    https://git.kernel.org/netdev/net/c/2ef0d804c090
+  - [net,12/13] selftests: mptcp: diag: unique 'in use' subtest names
+    https://git.kernel.org/netdev/net/c/645c1dc965ef
+  - [net,13/13] selftests: mptcp: diag: unique 'cestab' subtest names
+    https://git.kernel.org/netdev/net/c/4103d8480866
 
-    Arnd
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
