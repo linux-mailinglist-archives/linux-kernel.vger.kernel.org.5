@@ -1,105 +1,147 @@
-Return-Path: <linux-kernel+bounces-70473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8189859868
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:05:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D3D7859869
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:05:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78D601F21966
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:05:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6EC61F2195C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:05:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778666F06D;
-	Sun, 18 Feb 2024 18:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DE76F079;
+	Sun, 18 Feb 2024 18:05:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b="KU5dTA2c"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xs7qHF3e"
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194DF6EB6F;
-	Sun, 18 Feb 2024 18:04:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDAA6BB4B
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 18:05:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708279500; cv=none; b=nRn9/UMywa12faunoG4dOI94hYPa0G8tSiagW54/7adhkVcYcreLgc/lLx2o60BNNFQbBo7zbp8/t270sWBIDbyrJYsD470JVjaSqGwSBlRm22f7SdY3LJA8oXUWXniM8NXYzA7CPH0yi9yxgsQeiew73P17wi1a7VovnuWCQ4k=
+	t=1708279547; cv=none; b=VCJqVPL/VqPaxxc8xf6DYlVVBrEwXXdy8hBm/bYW7Zlj7cPFbVqhXk7UwxFycAXjOIdYiu/bIRaS5Wc5IxbUqmkEevz+HjKmBkixlW0uVt//qAJ6nSZuifaR4xuaOisja7/elCiRt1kUliGBuuqnDmpUy7AeQYr9ZM48sWtG/g0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708279500; c=relaxed/simple;
-	bh=5MARVPLS4o3q4IKyvSWykCpIJv6thdbgJck2sItVAhY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AXrC7AIJNN0XoLLmuBScN6eNN7llqSkmlMLM+XCSCh1r2StWXKaCM3Ure4ENspsejU1pQNbxhM38UiUCajxosEtDFGpZ/EXOebm1CLJix+P0ZbMTleFnjz5zzKwPYM2TDqcTMj5HW3xfkZQMkuCELJSBjRYjllkjLQkAzA1CqD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b=KU5dTA2c; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-	t=1708279484; x=1708884284; i=hoehnp@gmx.de;
-	bh=5MARVPLS4o3q4IKyvSWykCpIJv6thdbgJck2sItVAhY=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-	b=KU5dTA2czWQndrIsnkL+gWFz7uwBHY6AqYVnCbYhPcE2PJhBJPhWMepY38ds9Rds
-	 M+J3YJR7IXVrMTDUTi8JwcsUgBVuecjIIR7JQITG9a2oY6vadBaMD155PRZzPXi9h
-	 1Jw0hP2n/Da5j0P5jFcUjicvKSO203IL6YyTAvmhBNhuhuUK4GgQVuK7odTFpoQqS
-	 jtTBZetqRh6+7P1QBJyu3BtnLGA+8E2e/nx9xx/fqKKz1JTp7PKcaEgpVv1gqxuAY
-	 aLcXu6BgnXtJDuZDGe6QqH9rmfjZGiEVXcWvxDQAZoI6sMsQUJUabro+D9kPJ96Fi
-	 aABvYmht604SL2px4g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from patrick-dell.fritz.box ([31.18.173.105]) by mail.gmx.net
- (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
- 1MhD6W-1qxlo941FC-00eL5E; Sun, 18 Feb 2024 19:04:44 +0100
-From: =?UTF-8?q?Patrick=20H=C3=B6hn?= <hoehnp@gmx.de>
-To: Jean Delvare <jdelvare@suse.com>,
-	Andi Shyti <andi.shyti@kernel.org>
-Cc: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
-	Paul Menzel <pmenzel@molgen.mpg.de>,
-	=?UTF-8?q?Patrick=20H=C3=B6hn?= <hoehnp@gmx.de>,
-	linux-i2c@vger.kernel.org,
+	s=arc-20240116; t=1708279547; c=relaxed/simple;
+	bh=vWVIcKnpvzocSjV2NV3m3GpLSmyp7ylR5NPlCRCJaZY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mPvz3Q5hCLM1yZ4Rn6zg/E82/eEIEY46/PmjlPqKWqYsF74ai+rzlQ+9LVy19GkApN+PAKkHH6cnS2CgLD1A+J+mXCkXdIrvgIN0pN20cDvt0c4B7dJNpxTERdrLlukdiF7ufih5OqA/tvsE5N2bhbukCkipTacwuXExRIs9XJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xs7qHF3e; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sun, 18 Feb 2024 10:05:37 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708279543;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+NFOvyN6tcyqft/QfMQHusxypN7esItJ9glpfGKgmoY=;
+	b=xs7qHF3exFPWwEGGZCKaakY0hjM+4cJ+uaKTQw5SkevF4h4GyYFP2wyvW5KmX1YzN8yq+b
+	MKzjBUabBpGzC60uFsdnSptqMXgR3OGjle0P1LR2IQAbvdoMyoUHmxpG2tWXdkgxxaeikN
+	zhNDYy7z2s0dz7qt1IKRUMEJv0DzjHg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Zenghui Yu <yuzenghui@huawei.com>, kvmarm@lists.linux.dev,
+	kvm@vger.kernel.org, James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] Add lis3lv02d for Dell Precision M6800
-Date: Sun, 18 Feb 2024 19:03:59 +0100
-Message-ID: <20240218180400.10413-1-hoehnp@gmx.de>
-X-Mailer: git-send-email 2.43.0
+Subject: Re: [PATCH v3 04/10] KVM: arm64: vgic-its: Walk the LPI xarray in
+ vgic_copy_lpi_list()
+Message-ID: <ZdJG8W-TLW8I6O07@linux.dev>
+References: <20240216184153.2714504-1-oliver.upton@linux.dev>
+ <20240216184153.2714504-5-oliver.upton@linux.dev>
+ <beca07ad-833e-ca68-2fe7-a30a2cb9faef@huawei.com>
+ <86frxq3w3g.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Ng78jh5TjUxHmSpsFDhiW+G4LLPyp9kz8OHvXmCGOrQuuwWrnfB
- 9ayyKtIyAKjUzFiV5o+MCgTDyqeYBHM+sdGdXnBFLaNrTgLMlkT2R8/nKWuCRkDABrhSumc
- nPsqdyXE5L1iGBEhQ/QZKFV2qZlYoFaxfBFe7UMBT8XT7bo89qILZ6zTIv1pNGiNUdPhVaZ
- V0ley8fbZhTKJzgsQVXNA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:LmhsTY59fb4=;rahSXbPTZ7niqXbDE9OVLFzSjI1
- 7FmwSMdh10xNuxIYZv9Nmk2p7kiUxntXr/KvY5Hb0Ijp9H/1CYAIY9Gxz1KAayrNYe39QtdRe
- u1FJM2T53sheAvIR34B4et36fnpjdVG7CjWsh8Q43gOZg2DEqLZAP/j63if7t4M4TDRqgcvKr
- jES36OtEqqBzdLNOgU8nAU5q7L0WKWlz9aZE6rejzF777SCbNM7ZH/EqGWj0+3RazIQAYdTDX
- ylXyxC7yKFm4n1EgxtFqsHKhAnuYXMpOXvkuduoQT+2a2aD559UcHZcb7+VpOFA4rg+wcc3ET
- mGqbZ3NYMGjBgUMvm6Vq4VxM61+oW94cloi8phUtVfmzeILUNXVeEqa7DQd6cvFBpJMUaSlfP
- fO1A/n7SvXWBca3kwDjng6Pszdbixx0XaLPJtJsTZ9e/Z3QIQx64uFVIqkj7+rD5HXoqTMtxJ
- skGf3We57AXSGP6sNceh9xErAvAUilRW6Cieug0TSCtb4/qEQ1iilL/WTbIvwcGpp2pObc0lF
- 0Tw/l7WHLx+S0CIEmYxqN1M6IvOSaPvka7GfsVlfiPL2Rh5p9aSuPnBJqX3QlHMIoeCUAz+k0
- xsMzvQutJiK/b3VXAj8HEPTCWCiP196Xxv/GYN4PUHe762Nt7cCYSvIJ7mY3oAkC9c+pHRKod
- k/RqOlovEPaInc/XDlBnlj3lh5nyWhJQKOGyIH13RDB1sJs4ZuSCPa0ZrIsT2SxwB7PE/ooZI
- KVVrxaQkOBTbikcLCY0+k5pdxNk+a7mRU93Yf6HZLzU8FTXOZj8IkfqdMmpX3EZrddlXmVezb
- B9xMtobJMkNDU5xwT1qVXGecxlW/BO/G7wqGI/9BG0jCg=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <86frxq3w3g.wl-maz@kernel.org>
+X-Migadu-Flow: FLOW_OUT
 
-Signed-off-by: Patrick H=C3=B6hn <hoehnp@gmx.de>
-=2D--
- drivers/i2c/busses/i2c-i801.c | 1 +
- 1 file changed, 1 insertion(+)
+On Sun, Feb 18, 2024 at 10:28:19AM +0000, Marc Zyngier wrote:
+> On Sun, 18 Feb 2024 08:46:53 +0000,
+> Zenghui Yu <yuzenghui@huawei.com> wrote:
+> > 
+> > On 2024/2/17 2:41, Oliver Upton wrote:
+> > > Start iterating the LPI xarray in anticipation of removing the LPI
+> > > linked-list.
+> > > 
+> > > Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
+> > > ---
+> > >  arch/arm64/kvm/vgic/vgic-its.c | 7 ++++++-
+> > >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+> > > index fb2d3c356984..9ce2edfadd11 100644
+> > > --- a/arch/arm64/kvm/vgic/vgic-its.c
+> > > +++ b/arch/arm64/kvm/vgic/vgic-its.c
+> > > @@ -335,6 +335,7 @@ static int update_lpi_config(struct kvm *kvm, struct vgic_irq *irq,
+> > >  int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+> > >  {
+> > >  	struct vgic_dist *dist = &kvm->arch.vgic;
+> > > +	XA_STATE(xas, &dist->lpi_xa, GIC_LPI_OFFSET);
+> > >  	struct vgic_irq *irq;
+> > >  	unsigned long flags;
+> > >  	u32 *intids;
+> > > @@ -353,7 +354,9 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+> > >  		return -ENOMEM;
+> > >   	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
+> > > -	list_for_each_entry(irq, &dist->lpi_list_head, lpi_list) {
+> > > +	rcu_read_lock();
+> > > +
+> > > +	xas_for_each(&xas, irq, INTERRUPT_ID_BITS_ITS) {
+> > 
+> > We should use '1 << INTERRUPT_ID_BITS_ITS - 1' to represent the maximum
+> > LPI interrupt ID.
 
-diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
-index 2c36b36d7d51..ba699db27f58 100644
-=2D-- a/drivers/i2c/busses/i2c-i801.c
-+++ b/drivers/i2c/busses/i2c-i801.c
-@@ -1234,6 +1234,7 @@ static const struct {
- 	{ "Vostro V131",        0x1d },
- 	{ "Vostro 5568",        0x29 },
- 	{ "XPS 15 7590",        0x29 },
-+	{ "Precision M6800",    0x29 },
- };
+/facepalm
 
- static void register_dell_lis3lv02d_i2c_device(struct i801_priv *priv)
-=2D-
-2.43.0
+Thanks Zenghui!
 
+> Huh, well caught! I'm not even sure how it works, as that's way
+> smaller than the start of the walk (8192). Probably doesn't.
+> 
+> An alternative would be to use max_lpis_propbaser(), but I'm not sure
+> we always have a valid PROPBASER value set when we start using this
+> function. Worth investigating though.
+
+Given the plans to eventually replace this with xarray marks, I'd vote
+for doing the lazy thing and deciding this at compile time.
+
+I can squash this in when I apply the series if the rest of it isn't
+offensive, otherwise respin with the change.
+
+-- 
+Thanks,
+Oliver
+
+diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+index d84cb7618c59..f6025886071c 100644
+--- a/arch/arm64/kvm/vgic/vgic-its.c
++++ b/arch/arm64/kvm/vgic/vgic-its.c
+@@ -316,6 +316,8 @@ static int update_lpi_config(struct kvm *kvm, struct vgic_irq *irq,
+ 	return 0;
+ }
+ 
++#define GIC_LPI_MAX_INTID	((1 << INTERRUPT_ID_BITS_ITS) - 1)
++
+ /*
+  * Create a snapshot of the current LPIs targeting @vcpu, so that we can
+  * enumerate those LPIs without holding any lock.
+@@ -345,7 +347,7 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+ 	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
+ 	rcu_read_lock();
+ 
+-	xas_for_each(&xas, irq, INTERRUPT_ID_BITS_ITS) {
++	xas_for_each(&xas, irq, GIC_LPI_MAX_INTID) {
+ 		if (i == irq_count)
+ 			break;
+ 		/* We don't need to "get" the IRQ, as we hold the list lock. */
 
