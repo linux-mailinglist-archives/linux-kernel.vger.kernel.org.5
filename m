@@ -1,68 +1,71 @@
-Return-Path: <linux-kernel+bounces-70521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2EC8598D1
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:02:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1A8C8598D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:03:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF3041C2106E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:02:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EA13281FC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:03:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C49226F52E;
-	Sun, 18 Feb 2024 19:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A2671B41;
+	Sun, 18 Feb 2024 19:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J01y7xoj"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EXN1XYGI"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C9726F064;
-	Sun, 18 Feb 2024 19:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E506F09B;
+	Sun, 18 Feb 2024 19:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708282847; cv=none; b=a0nWKNtNjONpj16/eMkk7WShfrMe/vPU7MMmMALLAvhU9CQBt3UpgnUZHWH3/6uzzhzN4bmQLeFs9a7/t5hPXjfWaDJEtqZgAp9Xw7DNzUNshDd/I2y9pBCl1Q9WBClyT22AYOSYuRsS4xCZzRkfu2DZXX34hySNjsPLifrS2RI=
+	t=1708282848; cv=none; b=c/5rzxXeUpGlwb0hlSW5FVt+XTsTGHMP6H2E7d8gRr+h44LDKHrsgpiYl5wC1OkYQkt7mshvOl+mEQfVNf2aLh8NLQCeu6DUkWEYOwRzVab6w3Q0Cu1e2D/UA2MWRTcLdx1DAriV8jaNBC5bVxUgomcZgYLNfXatuj2QSaMyK3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708282847; c=relaxed/simple;
-	bh=+fN+q98VpY8IjI1MBMjHL55COKOUOcO50sgpN3QZVSs=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=jYr0jOZTzQx43qBj8wDwrNvVbH5gI2O0YqmybFkalrS5HPXn8tDVG/sQpGLy0zkH4uLZL/HDa2XCF3D0/b12Z9q7PUgicit33wrG1KiOeXPmuZCMBP8RoC3Z4W8Z1oW/aAs+7IPcUUZK2FG25Kfm5cI9eWcJ4bp1XAOPTJOQZ7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J01y7xoj; arc=none smtp.client-ip=209.85.208.174
+	s=arc-20240116; t=1708282848; c=relaxed/simple;
+	bh=/PV/hiioXn852DS6V+QqGARR5Kr4QVyjX7tUAzXK4v0=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=o3SKSamBO7Xdk+Y5pDiv1d60pPrPayCC/WGKYLX9OcWXZYhcSloZsMkZ3GRGz4SkGlV79/ZDWL76om9n/OVb2qZisqvPc22QxORwP0d1RfMYZJsZcDOPN87SRRRRstQKHhBWmkcCWSpawjbVWQQcYfT76yPsQ8VPiByqPCnLikw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EXN1XYGI; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d23473a563so7926581fa.3;
-        Sun, 18 Feb 2024 11:00:44 -0800 (PST)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d107900457so51332651fa.1;
+        Sun, 18 Feb 2024 11:00:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708282843; x=1708887643; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ugw282irBh1ZorGeTnwJP2X/5ka0Fa/kP4DGUbl7TpM=;
-        b=J01y7xojVtxrP/5K0KvdLRUKoyBhtGhbGuLb7bppXBla9Y9a5FZ6zgdnHumzHUKO1A
-         kqCw8zz6OSQTVFT2d59Ix6/b2xwu9wGG0CBp5fgHJ/FoH+QkuinSNzTpKa9lphIDioxi
-         5YwPhaVhgLFDk1vgqQ0OEx1KH2trfvqpBoeYGQmiSaHKOROGE3vhIyQrugbjPwZwdOgO
-         prvEOMXv2AeothD6BeKxiON0Ix/CDr6kl6E7n4XUr02tDdNZKScrlP5K8W7WvjoiXlra
-         YT+6V8p+QbNtNAhzWeyjdxnJORsOaBmhefNJGyZvJntPPMwtuA6UFtYRoH3tO3h89Wsi
-         jHmg==
+        d=gmail.com; s=20230601; t=1708282845; x=1708887645; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mEYeK8i11QxkJeB25DqEOcldL7O5Xx2ufJLmOFFJoo8=;
+        b=EXN1XYGIJ4DugLviidezJrzLiwm8NCSIxFtm6A5f62c6JqXomxvus29LahGXjhoM2u
+         AoIIyEvGzf3kiltrfr9EHPvpD20ftVYlejq1MWIjwiAEyO7jacaW6xcnhsxzMTxZ/XZR
+         hLHBhRHlWG8Zia6HICPVrfmj/u4ORmOpciq6Zzp6I/go1q3lI2cip5n+lAC/1sGg6eCR
+         8SAzpsQEan2fmPTHgKu1Rb1gpvu1Qu2FbTSj1l7Jax7e5xFSraf0+B6ZFZSudzGzLRkB
+         MDXf2c4JpWqsMxX3zkL/+6ZbJfO3+0V2KDLdBcBEdFUB7ncSHYUZ+NQs0T+09gZX/kaz
+         u2Cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708282843; x=1708887643;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ugw282irBh1ZorGeTnwJP2X/5ka0Fa/kP4DGUbl7TpM=;
-        b=jvN3P1gf8lQItyJ0nI3vWrXH6LHBkAezr4oJiyPduuRdgpd9fSX8fXhnBZoAf+whNU
-         0Uos0NZzseDy0A5G5+7laMsxIn72izYwuoI9VQLJwtrC96MK6JhFR1AlOR3QAIjolZxi
-         eX6ZyZL45c4PFZE+6gS30RA4UDSH4g0GtNd7Y+NcMfVTsnYoQFFyWTY+D55jP+brfns3
-         sWWMJLEpVUV2AbGPU7LhJENWsbhY4kJsbbeDxJxactGqLAzAwIJbYKMxEJyfXSQPWYOX
-         C0enlMERjEE13njH6IaNFKW2H3fw83tJpkmghvKQK9SnK5BkmV62lsr6EFtO1frVN0pt
-         NTpw==
-X-Forwarded-Encrypted: i=1; AJvYcCWIHI9fYgKI+VA/DZSsvZSE0vexqyAto+D4n5yXyY06XG3GBYGOu/piXReTUBYvtC4DJED4OPYpy+NeBbuMgIL/J530Nepkm5gwXKVx5zOswRrwFJ1BaVL3jc3PsthK/6AHU/Bw
-X-Gm-Message-State: AOJu0YywhNpAtsMKEjlG31zu2HNoBpHtPu1pO3kAar0PjdBONKpQWH8Q
-	7Dg2bjfTdgtz7aui1bWKrLW+OxUiSI8snGufiFbvxBlxyn+l0/HI
-X-Google-Smtp-Source: AGHT+IEXLBde9dQZbYJSTmWJ04vcELWmg0GSmWGAhRIDsRgIh0UcSCIsPKOdVOiJlU1cmc68gYElZQ==
-X-Received: by 2002:a2e:9956:0:b0:2d2:3018:6eda with SMTP id r22-20020a2e9956000000b002d230186edamr2274750ljj.39.1708282842871;
-        Sun, 18 Feb 2024 11:00:42 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708282845; x=1708887645;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mEYeK8i11QxkJeB25DqEOcldL7O5Xx2ufJLmOFFJoo8=;
+        b=s13j7zBcwSh5zWrE37kHEv35Y3kO9kxv3pZUHM4BjU1SdPPbuHXF/2q5Nig3tqozBU
+         szjDZWUlGG4MFI0RvkdIP4BOOwgIby49oOG+0vpRRBkK2V1CUEi6exnlMSb+a/ALZlXJ
+         kCpZ3np4fkY1K+e1N4+/giqxXye4uL+rFuMgqAJRU6Kv0yuS+BUsiP5SwSC3y6iTqDkc
+         rL37kkED7aryNVVCHXMWCyO/iz6ibuYVoYmSv3LY8fyYkoXCyFY+yi9K8Om/L9XAjmjL
+         1zqSXBQYmdT9RPSuuic8x4XdVSh2KyQmjCHZA/jaJYVTvyWlL9cAK5JX33KMs06yGavN
+         ftcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWF7S7pffDedlWVoeI+kwuTGX/p1EirrTFwZUIryvvVLfeFegRs3OuSjvliNywJ3XPou3U57XLJOoS7r+zDRyvDDTza0fh8y7wsPY8dhpoLtm/eyOJtx0e9t7izWg33AJnAeo3S
+X-Gm-Message-State: AOJu0YxL2SwGNBUCHemslSWUXhsq+E0+9INKb1Lc0Hd1vazT0Yc2G2cL
+	4mOQ/OuwSYIqjVQzQMOap/wqBN12TA4ovPsusAIvKdTPHqgeSK5y
+X-Google-Smtp-Source: AGHT+IFomZUmY/xUptbNgyWNZcYkhKcd+F9Fm2a3eJ/uTvltvHZxO+epovoQ/+bSm+/MVwZL/j0GGQ==
+X-Received: by 2002:a2e:b60a:0:b0:2d2:31b0:4f64 with SMTP id r10-20020a2eb60a000000b002d231b04f64mr1761364ljn.34.1708282844348;
+        Sun, 18 Feb 2024 11:00:44 -0800 (PST)
 Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id m15-20020a056000008f00b0033b728190c1sm8115762wrx.79.2024.02.18.11.00.41
+        by smtp.googlemail.com with ESMTPSA id m15-20020a056000008f00b0033b728190c1sm8115762wrx.79.2024.02.18.11.00.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 11:00:42 -0800 (PST)
+        Sun, 18 Feb 2024 11:00:43 -0800 (PST)
 From: Christian Marangi <ansuelsmth@gmail.com>
 To: Andrew Lunn <andrew@lunn.ch>,
 	Heiner Kallweit <hkallweit1@gmail.com>,
@@ -85,10 +88,12 @@ To: Andrew Lunn <andrew@lunn.ch>,
 	Umang Jain <umang.jain@ideasonboard.com>,
 	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [net-next RFC PATCH 0/6] net: phy: support multi PHY in phy_driver Was: net: phy: detach PHY driver OPs from phy_driver struct
-Date: Sun, 18 Feb 2024 20:00:26 +0100
-Message-ID: <20240218190034.15447-1-ansuelsmth@gmail.com>
+Subject: [net-next RFC PATCH 1/6] net: phy: add support for defining multiple PHY IDs in PHY driver
+Date: Sun, 18 Feb 2024 20:00:27 +0100
+Message-ID: <20240218190034.15447-2-ansuelsmth@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240218190034.15447-1-ansuelsmth@gmail.com>
+References: <20240218190034.15447-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,53 +102,202 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is an alternative implementation of "net: phy: detach PHY driver OPs
-from phy_driver struct" with the same object in mind.
+Some PHY driver might implement the same OPs for different PHY ID and
+using a mask is not enough to match similar PHYs.
 
-As was pointed out in the previous series, deatching OPs is a way too big
-change (although IMHO needed, but I understand the problem with downstream
-and ugly code). As suggested and was already an idea discussed privately,
-a more easier approach is introduce an alternative way in phy_driver
-struct to declare PHY with the use of an array of IDs.
+To reduce code duplication, add support for defining multiple PHY IDs in
+PHY driver struct.
 
-Some small changes were needed to mod_devicetable to make mdio_device_id
-more suitable for the task.
+Introduce a new variable in phy_driver struct, .ids, where a table array of
+mdio_device_id can be defined to reference multiple PHY IDs (with their
+own masks) supporting the same group of OPs and flags.
 
-This implementation keep the single way to declare PHY ID in phy_driver
-but also indotruce .ids where a table of mdio_device_id can be defined.
-Each entry can optionally have a .name variable to define a more specific
-PHY name (for phydev_info/err.. usage) that if detected will overwrite
-the dev name.
+Introduce a new variable in phy_device, .dev_id, where the matching
+mdio_device_id is stored. PHYs supporting multiple PHYs for one PHY
+driver struct, should use this instead of matching for phy_id.
 
-An example of this name is a phy_driver with a .name "Aquantia 107/102"
-and .ids with single mdio_device_id with "Aquantia 107" and "Aquantia 102"
+Single PHY ID implementation is still supported and dev_id is filled
+with the data from phy_driver in this case.
 
-"Aquantia 107/102" will be used for early PHY driver probe and the more
-specific name will be used as soon as the phydev dev_id is populated.
+Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+---
+ drivers/net/phy/phy_device.c | 94 ++++++++++++++++++++++++++++++------
+ include/linux/phy.h          |  8 ++-
+ 2 files changed, 85 insertions(+), 17 deletions(-)
 
-Aquantia driver is reworked to this implementation and BCM7xxx driver
-table is rewritten to greatly benefits from this implementation.
-
-While at it I also notice a strange problem with detected PHY ID and
-C45 PHYs. Probably i will have to drop it, but including in this series
-just to make someone aware and maybe discuss about it too?
-
-Christian Marangi (6):
-  net: phy: add support for defining multiple PHY IDs in PHY driver
-  net: phy: fill phy_id with C45 PHY
-  mod_devicetable: permit to define a name for an mdio_device_id
-  net: phy: support named mdio_device_id PHY IDs
-  net: phy: aquantia: group common OPs for PHYs where possible
-  net: phy: bcm7xxx: rework phy_driver table to new multiple PHY ID
-    format
-
- drivers/net/phy/aquantia/aquantia_main.c | 170 +++++++++--------------
- drivers/net/phy/bcm7xxx.c                | 140 +++++++++++--------
- drivers/net/phy/phy_device.c             | 104 +++++++++++---
- include/linux/mod_devicetable.h          |   2 +
- include/linux/phy.h                      |   8 +-
- 5 files changed, 243 insertions(+), 181 deletions(-)
-
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index d63dca535746..9b96357e4de8 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -522,12 +522,74 @@ static int phy_scan_fixups(struct phy_device *phydev)
+ 	return 0;
+ }
+ 
++static int phy_driver_match_id(struct phy_driver *phydrv, u32 id,
++			       const struct mdio_device_id **dev_id)
++{
++	const struct mdio_device_id *ids = phydrv->ids;
++
++	/* PHY driver might provide an array of different PHY IDs and
++	 * masks. Walk them if this is the case and compare with ID.
++	 */
++	if (ids) {
++		/* From mdio_device_id struct phy_id_mask MUST
++		 * be used as sentinel.
++		 */
++		while (ids->phy_id_mask) {
++			if (phy_id_compare(id, ids->phy_id, ids->phy_id_mask)) {
++				if (dev_id)
++					*dev_id = ids;
++
++				return 1;
++			}
++
++			ids++;
++		}
++	}
++
++	if (phy_id_compare(id, phydrv->phy_id, phydrv->phy_id_mask))
++		return 1;
++
++	return 0;
++}
++
++/**
++ * phy_driver_match - match a phydriver with a given PHY istance
++ * @phydrv: PHY driver to compare with
++ * @phydev: PHY istance to use for comparison. Either PHY ID will be used or
++ *   with C45 PHY ID is extracted from Package regs.
++ * @dev_id: Pointer where to store pointer to a matchin mdio_device_id.
++ *   mdio_device_id are assumed to be statically allocated for each PHY driver,
++ *   hence the reference to this struct is returned here.
++ *
++ * Returns 1 if matching, 0 otherwise. dev_id can be passed as NULL to skip
++ * referecing a matching mdio_device_id if found.
++ */
++static int phy_driver_match(struct phy_driver *phydrv, struct phy_device *phydev,
++			    const struct mdio_device_id **dev_id)
++{
++	const int num_ids = ARRAY_SIZE(phydev->c45_ids.device_ids);
++	int i;
++
++	if (!phydev->is_c45)
++		return phy_driver_match_id(phydrv, phydev->phy_id,
++					   dev_id);
++
++	for (i = 1; i < num_ids; i++) {
++		if (phydev->c45_ids.device_ids[i] == 0xffffffff)
++			continue;
++
++		if (phy_driver_match_id(phydrv, phydev->c45_ids.device_ids[i],
++					dev_id))
++			return 1;
++	}
++
++	return 0;
++}
++
+ static int phy_bus_match(struct device *dev, struct device_driver *drv)
+ {
+ 	struct phy_device *phydev = to_phy_device(dev);
+ 	struct phy_driver *phydrv = to_phy_driver(drv);
+-	const int num_ids = ARRAY_SIZE(phydev->c45_ids.device_ids);
+-	int i;
+ 
+ 	if (!(phydrv->mdiodrv.flags & MDIO_DEVICE_IS_PHY))
+ 		return 0;
+@@ -535,20 +597,7 @@ static int phy_bus_match(struct device *dev, struct device_driver *drv)
+ 	if (phydrv->match_phy_device)
+ 		return phydrv->match_phy_device(phydev);
+ 
+-	if (phydev->is_c45) {
+-		for (i = 1; i < num_ids; i++) {
+-			if (phydev->c45_ids.device_ids[i] == 0xffffffff)
+-				continue;
+-
+-			if (phy_id_compare(phydev->c45_ids.device_ids[i],
+-					   phydrv->phy_id, phydrv->phy_id_mask))
+-				return 1;
+-		}
+-		return 0;
+-	} else {
+-		return phy_id_compare(phydev->phy_id, phydrv->phy_id,
+-				      phydrv->phy_id_mask);
+-	}
++	return phy_driver_match(phydrv, phydev, NULL);
+ }
+ 
+ static ssize_t
+@@ -3410,9 +3459,22 @@ static int phy_probe(struct device *dev)
+ 	struct phy_device *phydev = to_phy_device(dev);
+ 	struct device_driver *drv = phydev->mdio.dev.driver;
+ 	struct phy_driver *phydrv = to_phy_driver(drv);
++	const struct mdio_device_id *dev_id = NULL;
++	struct mdio_device_id *phy_dev_id;
+ 	int err = 0;
+ 
+ 	phydev->drv = phydrv;
++	phy_dev_id = (struct mdio_device_id *)&phydev->dev_id;
++	/* Fill the mdio_device_id for the PHY istance.
++	 * If PHY driver provide an array of PHYs, search the right one,
++	 * in the other case fill it with the phy_driver data.
++	 */
++	if (phy_driver_match(phydrv, phydev, &dev_id) && dev_id) {
++		memcpy(phy_dev_id, dev_id, sizeof(*dev_id));
++	} else {
++		phy_dev_id->phy_id = phydrv->phy_id;
++		phy_dev_id->phy_id_mask = phydrv->phy_id_mask;
++	}
+ 
+ 	/* Disable the interrupt if the PHY doesn't support it
+ 	 * but the interrupt is still a valid one
+diff --git a/include/linux/phy.h b/include/linux/phy.h
+index c2dda21b39e1..f0313b9e0173 100644
+--- a/include/linux/phy.h
++++ b/include/linux/phy.h
+@@ -547,6 +547,7 @@ struct macsec_ops;
+  * @drv: Pointer to the driver for this PHY instance
+  * @devlink: Create a link between phy dev and mac dev, if the external phy
+  *           used by current mac interface is managed by another mac interface.
++ * @dev_id: The matched device ID for this PHY instance
+  * @phy_id: UID for this device found during discovery
+  * @c45_ids: 802.3-c45 Device Identifiers if is_c45.
+  * @is_c45:  Set to true if this PHY uses clause 45 addressing.
+@@ -645,6 +646,7 @@ struct phy_device {
+ 
+ 	struct device_link *devlink;
+ 
++	const struct mdio_device_id dev_id;
+ 	u32 phy_id;
+ 
+ 	struct phy_c45_device_ids c45_ids;
+@@ -885,6 +887,8 @@ struct phy_led {
+  * struct phy_driver - Driver structure for a particular PHY type
+  *
+  * @mdiodrv: Data common to all MDIO devices
++ * @ids: array of mdio device IDs to match this driver (terminated with
++ *   zero phy_id_mask)
+  * @phy_id: The result of reading the UID registers of this PHY
+  *   type, and ANDing them with the phy_id_mask.  This driver
+  *   only works for PHYs with IDs which match this field
+@@ -906,6 +910,7 @@ struct phy_led {
+  */
+ struct phy_driver {
+ 	struct mdio_driver_common mdiodrv;
++	const struct mdio_device_id *ids;
+ 	u32 phy_id;
+ 	char *name;
+ 	u32 phy_id_mask;
+@@ -1206,7 +1211,8 @@ static inline bool phy_id_compare(u32 id1, u32 id2, u32 mask)
+  */
+ static inline bool phydev_id_compare(struct phy_device *phydev, u32 id)
+ {
+-	return phy_id_compare(id, phydev->phy_id, phydev->drv->phy_id_mask);
++	return phy_id_compare(id, phydev->dev_id.phy_id,
++			      phydev->dev_id.phy_id_mask);
+ }
+ 
+ /* A Structure for boards to register fixups with the PHY Lib */
 -- 
 2.43.0
 
