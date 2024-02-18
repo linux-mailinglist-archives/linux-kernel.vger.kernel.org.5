@@ -1,196 +1,283 @@
-Return-Path: <linux-kernel+bounces-70547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6309985990D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:18:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70670859910
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:25:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4EBC1F2149A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:18:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E61011F2149A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:25:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 237DB745CE;
-	Sun, 18 Feb 2024 19:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896446F53A;
+	Sun, 18 Feb 2024 19:25:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="jxr11Znv"
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mwoENa2L"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A3171B2B;
-	Sun, 18 Feb 2024 19:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B2F36F50D
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 19:25:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708283868; cv=none; b=sPWO6+xAIchFPvGSaTn5+LSaHbNTUGLCypLPvrPvy2WXuOD0S+knwxTxkI5nmwkuYsWcCop2K/9eJYPdLRdtnu4ff58Tp3zg1Ps4/S1IpwoLIpw7nJUNi/Bv16cR1u9RgSeh8m1VxiiEKvm2mhoLlJKk3S5vhnV3OzDps7goXvI=
+	t=1708284333; cv=none; b=r5xvGPxO+ry59mVFLMGWy96Po/9DA+9nbrfLv5BFm97VM1Y7jlG6A430XqUl9ou8WL96bTbZbLwRUBdN72ZRtxuB7+XnmBsXbbXD5Ymn038VOYZE2J0F/NFxEyL46pT1a9fOOjd9a7a26yS8UmVOZBokJ82SJdrD4vwUUnbvmoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708283868; c=relaxed/simple;
-	bh=PlDZ/DQXM/07PMDcTyBhIrDP9W36zYqNuPUo0TzKbvE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pWVhib8L8yiajBboNLyWo3fL4EMuK85PXBbuRTkpAN47pbPGUIYWISB5hVrRoflN0TBSiI09p/zSOcEEr2ovRvLf2DzGc6rkEWpWlUXCqcqZQiNtNDt+h6qWhqkIre3k7923GiL5Jzm/488pfX4zf6+o/5ISYM2cQbTxJA6BCW8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=jxr11Znv; arc=none smtp.client-ip=209.85.161.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-59d7cbf1279so2313273eaf.2;
-        Sun, 18 Feb 2024 11:17:46 -0800 (PST)
+	s=arc-20240116; t=1708284333; c=relaxed/simple;
+	bh=dLiFSjAHanMQtY1W8/0C3wLfJsmyN9sHiwqHYFJZBPY=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=t7neFVQ1oHZzW78oK52MzjacC35DupqGjIHahcQF1oZddO5RJfcPgpILuyzXapB6vBNl2HMIaU5niL4xp151k/U8FBArl+ll5fYio3DxTo72nWPlEg4oqNFph7xThYnOz2r3kbcCjeQgof2J79e6/qv4EgJmwfmmt5HshgE0fmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mwoENa2L; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d89f0ab02bso107615ad.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 11:25:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708284331; x=1708889131; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=B9xYxG+4EJNJj5YE6nXWMmKMGcc6ntgXWEQgOTyX2uY=;
+        b=mwoENa2LxynncblepbU5Rn4YDszPIASj2bpLpENGKLzJjA836YqDhaWJCxRiwdQ6xz
+         b0Fea8eSBSMu3u4/AeYFRfQp+7pHaXWvgnoFTX3C0d5ZYKlr2Rd0/qS4R9yL+fx7ux8F
+         9hYEMynsAUUZrq5JBfL2+Yr7jnN5RTr9Nh1D2gcL317EsxjB8dVnkCgFeSzMnv2kmU4O
+         dQHYK5dc1ulUIf9iMwDwA++LetOA/h9P3r5uswQ2HS0fmMNPY4Q6sSba/VaBvmP2ATwS
+         ZalEHdXZrvmAY1H3PBUr21rA/wJ6dio7hlRz3HU54mbXnT7k4+pN4zhD8zsmV+KU/Yrm
+         LH7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708283866; x=1708888666;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:dkim-signature:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=vQNRYm3ukxsOLCb4b7JJwL+j5XGiWOnosPqQUAzHJIQ=;
-        b=bxyI0iNH9wH7eQpyHy6QXkFsnjLvRT4PtANswm+WQpQ1V8uwxdILlif3/F3yZ45ycY
-         OkCPDKr8ObPY9iAWSBnWgoaPThuPbDKYEmjB3/sT68pA+RF0UwLAQuCr951rzn37a0/r
-         ellZxVEBCGmiomB6E08osLq/XFklXnudoq3sjd8FrBIQMz+OwwOSBMtaMmWV48UakciO
-         vBv7lg8ivBHd/hWT/QnKPRhOVTIz08up/J5EE+QpZV1ecoj658ygrvp6trvZGHWNAen8
-         k36lM0BkG8suyawg75mbxd/aO8RPDsth5WkwCxxx49kkh3UaLdWAZ+9MsQIRZ7X40PTC
-         IIgw==
-X-Forwarded-Encrypted: i=1; AJvYcCVY8w7quQkQxoD2VlJq01A7pm65fHr+cQSEMFw/J7hyZCOAu+prKCz1JgchhVRFDLG9OKoGbaKyTXTFsPl88LUFfv7O43+voyMHw5P/
-X-Gm-Message-State: AOJu0YxzrBZc6S+l1sa8vt9BZBgk5O2n+vVk5FKMufOfISz32C5I6taY
-	RLfNr77FrPa12Fg6pkgBKuF+bW8MnS0l8/3IaorUXyk+QpvtgfEq
-X-Google-Smtp-Source: AGHT+IHNSBDdixhtzL9S51bmQvSdYOHfw8Jh+BFGmARn/5r61F82/KS6NNVeKhUD8UcHzpqeAomupg==
-X-Received: by 2002:a05:6358:63a2:b0:178:b7c0:323f with SMTP id k34-20020a05635863a200b00178b7c0323fmr12456899rwh.19.1708283865667;
-        Sun, 18 Feb 2024 11:17:45 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id p21-20020aa78615000000b006e0949b2548sm2634422pfn.209.2024.02.18.11.17.44
+        d=1e100.net; s=20230601; t=1708284331; x=1708889131;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B9xYxG+4EJNJj5YE6nXWMmKMGcc6ntgXWEQgOTyX2uY=;
+        b=bShJf1XYWMcBRB46674IBsj7Leai2Qam0igDrr95NC31qxAZZ8zHDcQLC7roxE+YsT
+         PBEORXOZO6s5X4m0cSqo3LaZBZBf/N5C+WaRpHYJmWYZyUFqmx09rXo+TN7c5z890DKB
+         +6u9OOoMBVF5TtKcV4xQ5+hhPHR0YclwicV6aUlv2cNs6le/xpLqbEfqKmGqIRFlwwa2
+         Sn+TdoznRXTJ9UWJrcfZKPwgo72vjw4CSDjjVVxTkq8OQj18eJ3kGElqPrjCgtAVSl7l
+         cZiov8yfBISxtj47opL9Vb1ISixmT7TNac65CBEdWSJ89fWOclCD9n6VOdo2RC29re4B
+         zqsg==
+X-Forwarded-Encrypted: i=1; AJvYcCVM5BEonGRKCeXh/R2NGBfoBE9hEx6xRaBNLpTqV5/bti7947GmrgELXvCTSq0xT3prMsif3nTcE3GOKiuKuTn3LsthJrh9FQ3gUBox
+X-Gm-Message-State: AOJu0YxOU21xxxL9MH/i6QO7Cbo8Bpv+GC/sj+xZ9iee3enz7Ay2ITy1
+	7flrtKeoVmdEHw5oP8ZeFx97Is3UicGME7H1rPbyMdtB0XVd7aQE2g5CbS6L6g==
+X-Google-Smtp-Source: AGHT+IH3jgWpu6FG5EYkD52aO3UsfnmkQqySwQcDKAwDMvNX32n1Z7SJTgSQUNvhJSiTOajSCd1OaA==
+X-Received: by 2002:a17:903:25d5:b0:1db:4f08:4b10 with SMTP id jc21-20020a17090325d500b001db4f084b10mr223317plb.21.1708284331153;
+        Sun, 18 Feb 2024 11:25:31 -0800 (PST)
+Received: from [2620:0:1008:15:cd06:f5b0:224e:954a] ([2620:0:1008:15:cd06:f5b0:224e:954a])
+        by smtp.gmail.com with ESMTPSA id cz15-20020a17090ad44f00b0029703476e9bsm3546097pjb.44.2024.02.18.11.25.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 11:17:45 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708283864;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vQNRYm3ukxsOLCb4b7JJwL+j5XGiWOnosPqQUAzHJIQ=;
-	b=jxr11ZnvAo4cR83d6om9WnVVOUns/mfSWeHif+O75tci1hSFO8RfZ8Op/hwvqqh+01nE2/
-	95WQTinlCXTX2v7qbqFfxj33V+g026d9ixsPkn3/+dH552dokspiuT7x/BbhTo6jpcJu4h
-	Dd2LvJDrp8qXO+ZjDWR9NSVTCjYUMweQA6g7jTkZAcFUjXIe04UbSkdIK1OZRkfOtBQ8A+
-	SDM/vGT340u7flzNWJIGYPvSUTeF2jJTi5rEJ9649q7+X71dcdOheRNhIr4ninfFwsE3gz
-	+b85WgFSovQ7OVEz8nPm3248+GYog+GFpLA5tJlO0AUF10nQnCVpUcrCHw4M0g==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Sun, 18 Feb 2024 16:18:12 -0300
-Subject: [PATCH 4/4] usb: core: constify the struct device_type usage
+        Sun, 18 Feb 2024 11:25:30 -0800 (PST)
+Date: Sun, 18 Feb 2024 11:25:29 -0800 (PST)
+From: David Rientjes <rientjes@google.com>
+To: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+cc: cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
+    akpm@linux-foundation.org, vbabka@suse.cz, roman.gushchin@linux.dev, 
+    42.hyeyoo@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] slub: avoid scanning all partial slabs in
+ get_slabinfo()
+In-Reply-To: <20240215211457.32172-1-jianfeng.w.wang@oracle.com>
+Message-ID: <6b58d81f-8e8f-3732-a5d4-40eece75013b@google.com>
+References: <20240215211457.32172-1-jianfeng.w.wang@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240218-device_cleanup-usb-v1-4-77423c4da262@marliere.net>
-References: <20240218-device_cleanup-usb-v1-0-77423c4da262@marliere.net>
-In-Reply-To: <20240218-device_cleanup-usb-v1-0-77423c4da262@marliere.net>
-To: Heikki Krogerus <heikki.krogerus@linux.intel.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3413; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=PlDZ/DQXM/07PMDcTyBhIrDP9W36zYqNuPUo0TzKbvE=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl0lf1mygX1QLxHNFMAm/dvDIotCaFbkuZjMfCB
- AtIDT8fKbeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdJX9QAKCRDJC4p8Y4ZY
- pjfYD/49rP6j1XNXmK3NjDC1kryNy/X232I7AlecWd+LG6BquAUQA1H/l/STXE6NccXSXdK5SOE
- 4Db5GT6YeX2Vh6VF02/wUDXUMqVtdWyq0tyRgUKJ872+T2KFM+jcgMIfyi7Urg7EwTJ029CgYIZ
- dBjZAdLKk1AZr2CzoRUzxPi+dMbE8Ah0qWghMU4Lg67ift1V9FDuApGQaIFKaRiqDDehdptmGaF
- v7aIEwsXbbqOfvbWLcMz4ncJv32fhA0UwxT8qCTUZ3+P1ClXC45ycsJV3X27pfC44Oej7OpUeEc
- lSP4/iryIyy3UqTmmiFFS/g+Ud4eTaJNMKsSL6AY49DcRzywrS5kO/7+SuW7AvecMnTNMs1SLX0
- ktGt8125IK658Bsde2d8lQ9YEeu5OSM118abbTg9lDwKTpbP02kI0iFO7TtA2ISXcOjWf8Nb1cu
- 7jCs+o3AlTcC6kDzNJ4tObqUDuT/czEDRLUDdG8T8xpHCccKVj3tHMwCscP80cuC5E/D1sne/wQ
- /NjjjwJytBmFcsuLTZQaQG1K0GSyM3MBzSdNUVRhhVmrUnsNk30dCmI+QaTfWrgrFvYx8tFaSJE
- Pk0IYISliJNTyIrsBrJfbgq74gAIzXRYXYW/N5PF8bBTa6El1IRuYcq+hJr/gQ1X4PRK6DuPZVJ
- s3Pgt9Q3AEkiH1w==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: text/plain; charset=US-ASCII
 
-Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-core can properly handle constant struct device_type. Move the
-usb_device_type, usb_if_device_type, usb_ep_device_type and
-usb_port_device_type variables to be constant structures as well, placing
-it into read-only memory which can not be modified at runtime.
+On Thu, 15 Feb 2024, Jianfeng Wang wrote:
 
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/usb/core/endpoint.c | 2 +-
- drivers/usb/core/message.c  | 2 +-
- drivers/usb/core/port.c     | 2 +-
- drivers/usb/core/usb.c      | 2 +-
- drivers/usb/core/usb.h      | 8 ++++----
- 5 files changed, 8 insertions(+), 8 deletions(-)
+> When reading "/proc/slabinfo", the kernel needs to report the number of
+> free objects for each kmem_cache. The current implementation relies on
+> count_partial() that counts the number of free objects by scanning each
+> kmem_cache_node's partial slab list and summing free objects from all
+> partial slabs in the list. This process must hold per kmem_cache_node
+> spinlock and disable IRQ. Consequently, it can block slab allocation
+> requests on other CPU cores and cause timeouts for network devices etc.,
+> if the partial slab list is long. In production, even NMI watchdog can
+> be triggered because some slab caches have a long partial list: e.g.,
+> for "buffer_head", the number of partial slabs was observed to be ~1M
+> in one kmem_cache_node. This problem was also observed by several
+> others [1-2] in the past.
+> 
+> The fix is to maintain a counter of free objects for each kmem_cache.
+> Then, in get_slabinfo(), use the counter rather than count_partial()
+> when reporting the number of free objects for a slab cache. per-cpu
+> counter is used to minimize atomic or lock operation.
+> 
+> Benchmark: run hackbench on a dual-socket 72-CPU bare metal machine
+> with 256 GB memory and Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.3 GHz.
+> The command is "hackbench 18 thread 20000". Each group gets 10 runs.
+> 
 
-diff --git a/drivers/usb/core/endpoint.c b/drivers/usb/core/endpoint.c
-index a2530811cf7d..4b38b87a1343 100644
---- a/drivers/usb/core/endpoint.c
-+++ b/drivers/usb/core/endpoint.c
-@@ -141,7 +141,7 @@ static void ep_device_release(struct device *dev)
- 	kfree(ep_dev);
- }
- 
--struct device_type usb_ep_device_type = {
-+const struct device_type usb_ep_device_type = {
- 	.name =		"usb_endpoint",
- 	.release = ep_device_release,
- };
-diff --git a/drivers/usb/core/message.c b/drivers/usb/core/message.c
-index 077dfe48d01c..67316d271596 100644
---- a/drivers/usb/core/message.c
-+++ b/drivers/usb/core/message.c
-@@ -1849,7 +1849,7 @@ static int usb_if_uevent(const struct device *dev, struct kobj_uevent_env *env)
- 	return 0;
- }
- 
--struct device_type usb_if_device_type = {
-+const struct device_type usb_if_device_type = {
- 	.name =		"usb_interface",
- 	.release =	usb_release_interface,
- 	.uevent =	usb_if_uevent,
-diff --git a/drivers/usb/core/port.c b/drivers/usb/core/port.c
-index c628c1abc907..84d36172b040 100644
---- a/drivers/usb/core/port.c
-+++ b/drivers/usb/core/port.c
-@@ -429,7 +429,7 @@ static const struct dev_pm_ops usb_port_pm_ops = {
- #endif
- };
- 
--struct device_type usb_port_device_type = {
-+const struct device_type usb_port_device_type = {
- 	.name =		"usb_port",
- 	.release =	usb_port_device_release,
- 	.pm =		&usb_port_pm_ops,
-diff --git a/drivers/usb/core/usb.c b/drivers/usb/core/usb.c
-index dc8d9228a5e7..a0c432b14b20 100644
---- a/drivers/usb/core/usb.c
-+++ b/drivers/usb/core/usb.c
-@@ -592,7 +592,7 @@ static char *usb_devnode(const struct device *dev,
- 			 usb_dev->bus->busnum, usb_dev->devnum);
- }
- 
--struct device_type usb_device_type = {
-+const struct device_type usb_device_type = {
- 	.name =		"usb_device",
- 	.release =	usb_release_dev,
- 	.uevent =	usb_dev_uevent,
-diff --git a/drivers/usb/core/usb.h b/drivers/usb/core/usb.h
-index bfecb50773b6..b8324ea05b20 100644
---- a/drivers/usb/core/usb.h
-+++ b/drivers/usb/core/usb.h
-@@ -144,10 +144,10 @@ static inline int usb_disable_usb2_hardware_lpm(struct usb_device *udev)
- extern const struct class usbmisc_class;
- extern const struct bus_type usb_bus_type;
- extern struct mutex usb_port_peer_mutex;
--extern struct device_type usb_device_type;
--extern struct device_type usb_if_device_type;
--extern struct device_type usb_ep_device_type;
--extern struct device_type usb_port_device_type;
-+extern const struct device_type usb_device_type;
-+extern const struct device_type usb_if_device_type;
-+extern const struct device_type usb_ep_device_type;
-+extern const struct device_type usb_port_device_type;
- extern struct usb_device_driver usb_generic_driver;
- 
- static inline int is_usb_device(const struct device *dev)
+This seems particularly intrusive for the common path to optimize for 
+reading of /proc/slabinfo, and that's shown in the benchmark result.
 
--- 
-2.43.0
+Could you discuss the /proc/slabinfo usage model a bit?  It's not clear if 
+this is being continuously read, or whether even a single read in 
+isolation is problematic.
 
+That said, optimizing for reading /proc/slabinfo at the cost of runtime 
+performance degradation doesn't sound like the right trade-off.
+
+> Results:
+> - Mainline:
+> 21.0381 +- 0.0325 seconds time elapsed  ( +-  0.15% )
+> - Mainline w/ this patch:
+> 21.1878 +- 0.0239 seconds time elapsed  ( +-  0.11% )
+> 
+> [1] https://lore.kernel.org/linux-mm/
+> alpine.DEB.2.21.2003031602460.1537@www.lameter.com/T/
+> [2] https://lore.kernel.org/lkml/
+> alpine.DEB.2.22.394.2008071258020.55871@www.lameter.com/T/
+> 
+> Signed-off-by: Jianfeng Wang <jianfeng.w.wang@oracle.com>
+> ---
+>  mm/slab.h |  4 ++++
+>  mm/slub.c | 31 +++++++++++++++++++++++++++++--
+>  2 files changed, 33 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 54deeb0428c6..a0e7672ba648 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -11,6 +11,7 @@
+>  #include <linux/memcontrol.h>
+>  #include <linux/kfence.h>
+>  #include <linux/kasan.h>
+> +#include <linux/percpu_counter.h>
+>  
+>  /*
+>   * Internal slab definitions
+> @@ -277,6 +278,9 @@ struct kmem_cache {
+>  	unsigned int red_left_pad;	/* Left redzone padding size */
+>  	const char *name;		/* Name (only for display!) */
+>  	struct list_head list;		/* List of slab caches */
+> +#ifdef CONFIG_SLUB_DEBUG
+> +	struct percpu_counter free_objects;
+> +#endif
+>  #ifdef CONFIG_SYSFS
+>  	struct kobject kobj;		/* For sysfs */
+>  #endif
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 2ef88bbf56a3..44f8ded96574 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -736,6 +736,12 @@ static inline bool slab_update_freelist(struct kmem_cache *s, struct slab *slab,
+>  static unsigned long object_map[BITS_TO_LONGS(MAX_OBJS_PER_PAGE)];
+>  static DEFINE_SPINLOCK(object_map_lock);
+>  
+> +static inline void
+> +__update_kmem_cache_free_objs(struct kmem_cache *s, s64 delta)
+> +{
+> +	percpu_counter_add_batch(&s->free_objects, delta, INT_MAX);
+> +}
+> +
+>  static void __fill_map(unsigned long *obj_map, struct kmem_cache *s,
+>  		       struct slab *slab)
+>  {
+> @@ -1829,6 +1835,9 @@ slab_flags_t kmem_cache_flags(unsigned int object_size,
+>  	return flags | slub_debug_local;
+>  }
+>  #else /* !CONFIG_SLUB_DEBUG */
+> +static inline void
+> +__update_kmem_cache_free_objs(struct kmem_cache *s, s64 delta) {}
+> +
+>  static inline void setup_object_debug(struct kmem_cache *s, void *object) {}
+>  static inline
+>  void setup_slab_debug(struct kmem_cache *s, struct slab *slab, void *addr) {}
+> @@ -2369,6 +2378,7 @@ static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
+>  	slab->inuse = 0;
+>  	slab->frozen = 0;
+>  
+> +	__update_kmem_cache_free_objs(s, slab->objects);
+>  	account_slab(slab, oo_order(oo), s, flags);
+>  
+>  	slab->slab_cache = s;
+> @@ -2445,6 +2455,7 @@ static void free_slab(struct kmem_cache *s, struct slab *slab)
+>  		call_rcu(&slab->rcu_head, rcu_free_slab);
+>  	else
+>  		__free_slab(s, slab);
+> +	__update_kmem_cache_free_objs(s, -slab->objects);
+>  }
+>  
+>  static void discard_slab(struct kmem_cache *s, struct slab *slab)
+> @@ -3859,6 +3870,8 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+>  	 */
+>  	slab_post_alloc_hook(s, objcg, gfpflags, 1, &object, init, orig_size);
+>  
+> +	if (object)
+> +		__update_kmem_cache_free_objs(s, -1);
+>  	return object;
+>  }
+>  
+> @@ -4235,6 +4248,7 @@ static __always_inline void do_slab_free(struct kmem_cache *s,
+>  	unsigned long tid;
+>  	void **freelist;
+>  
+> +	__update_kmem_cache_free_objs(s, cnt);
+>  redo:
+>  	/*
+>  	 * Determine the currently cpus per cpu slab.
+> @@ -4286,6 +4300,7 @@ static void do_slab_free(struct kmem_cache *s,
+>  				struct slab *slab, void *head, void *tail,
+>  				int cnt, unsigned long addr)
+>  {
+> +	__update_kmem_cache_free_objs(s, cnt);
+>  	__slab_free(s, slab, head, tail, cnt, addr);
+>  }
+>  #endif /* CONFIG_SLUB_TINY */
+> @@ -4658,6 +4673,7 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+>  		memcg_slab_alloc_error_hook(s, size, objcg);
+>  	}
+>  
+> +	__update_kmem_cache_free_objs(s, -i);
+>  	return i;
+>  }
+>  EXPORT_SYMBOL(kmem_cache_alloc_bulk);
+> @@ -4899,6 +4915,9 @@ void __kmem_cache_release(struct kmem_cache *s)
+>  	cache_random_seq_destroy(s);
+>  #ifndef CONFIG_SLUB_TINY
+>  	free_percpu(s->cpu_slab);
+> +#endif
+> +#ifdef CONFIG_SLUB_DEBUG
+> +	percpu_counter_destroy(&s->free_objects);
+>  #endif
+>  	free_kmem_cache_nodes(s);
+>  }
+> @@ -5109,6 +5128,14 @@ static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+>  	s->random = get_random_long();
+>  #endif
+>  
+> +#ifdef CONFIG_SLUB_DEBUG
+> +	int ret;
+> +
+> +	ret = percpu_counter_init(&s->free_objects, 0, GFP_KERNEL);
+> +	if (ret)
+> +		return ret;
+> +#endif
+> +
+>  	if (!calculate_sizes(s))
+>  		goto error;
+>  	if (disable_higher_order_debug) {
+> @@ -7100,15 +7127,15 @@ void get_slabinfo(struct kmem_cache *s, struct slabinfo *sinfo)
+>  {
+>  	unsigned long nr_slabs = 0;
+>  	unsigned long nr_objs = 0;
+> -	unsigned long nr_free = 0;
+> +	unsigned long nr_free;
+>  	int node;
+>  	struct kmem_cache_node *n;
+>  
+>  	for_each_kmem_cache_node(s, node, n) {
+>  		nr_slabs += node_nr_slabs(n);
+>  		nr_objs += node_nr_objs(n);
+> -		nr_free += count_partial(n, count_free);
+>  	}
+> +	nr_free = percpu_counter_sum_positive(&s->free_objects);
+>  
+>  	sinfo->active_objs = nr_objs - nr_free;
+>  	sinfo->num_objs = nr_objs;
+> -- 
+> 2.42.1
+> 
+> 
 
