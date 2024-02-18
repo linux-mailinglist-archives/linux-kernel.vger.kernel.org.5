@@ -1,221 +1,106 @@
-Return-Path: <linux-kernel+bounces-70166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D51A85943E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:52:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A059859440
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:53:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 714D61C20C3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:52:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D1EE1C20D5A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:53:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2387F17FF;
-	Sun, 18 Feb 2024 02:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17154C98;
+	Sun, 18 Feb 2024 02:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V5bxRjg5"
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AM7W6DOu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6CE5677;
-	Sun, 18 Feb 2024 02:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B644C61;
+	Sun, 18 Feb 2024 02:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708224756; cv=none; b=SxicewdjO1mJadeTJdrNtUwfc149TEH+Bv82qjG1eHJzFZmue2B4f8qMlW08dCYiedJD2ECXyZHM3XpBdfY14eDNVLiL8Rpptc8aibf7Niywn4npita+2b2z9wZuGeDWhK0DxP28Kh6/wA/wAKKL4SvQsKvZANOSgmUf3EIxm5o=
+	t=1708224815; cv=none; b=E1z04ahW74ws/CmtgnuFlDxzfqloV7QprC4/MibyDh1gPkdhTzlFIH9f0K69Sxu5cVouP+RBoCAJctLapcC/LFNLSihDRXmi/2+gh2uSBkAr45JykkFHBtKDFyf8lsKwkNVdsQHEt1aCRRBg6s331SmO/8Vo8GIKHX+U3ZNu9x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708224756; c=relaxed/simple;
-	bh=FePf3EyOVTsisp4gCWFACVV6RZHdDOhtdVjERgnF8VM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=lfgLZUlpzWKuA3veQYIlsdkW/O3pu9iwhK/EXEO7DVUSr6PrrlAxj+XnFgWHFsOGKO7f+vu+8xHw+OBgg8Akv+9gcfCPKgvKb+rSYAFaLjm9XVFUBlAyTmzWausBYsxtkducNdODLQDK47XXcKTnVMghCUm/guNg5tuKVkJTfMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V5bxRjg5; arc=none smtp.client-ip=209.85.210.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6e2e6b405aaso1149259a34.3;
-        Sat, 17 Feb 2024 18:52:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708224754; x=1708829554; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=l3n19RkNDdq8dbMgQjlCr52ofvg6XvVFhLZ4eyMaEeA=;
-        b=V5bxRjg5icsIEz9KlHXReDIXuom532qoIVtJDvwaqkaq9zgRBIjbAzWkA2bvBFE2QT
-         xg+/XZlnG5pSWCD6vu1UoNhT7ScyUi2PPlvc3K7anWAIVUi/bS6teL1m1WgSe+sj1HF2
-         OqCP1vI1Ej6zZ5zEx6++ixDFKo1uH5dQH8l7t+WnURVleoIHXCtLPLAaXcEJNQUv9NX6
-         tJ1CicPVIbnq6dMkA6hmSJzf2VLePZwvfv2mDdSvcKXoIFozPWwXLVtNiyzmFhmGQp41
-         WRPBihXbHb7ZFNSG3+L3jmlj8S9xF54p/7wY/leXw5RnW0VJGo0R1iEqRM7RdkQw7Kqw
-         wJiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708224754; x=1708829554;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=l3n19RkNDdq8dbMgQjlCr52ofvg6XvVFhLZ4eyMaEeA=;
-        b=ZWUjR9B4E6QtHzED6vpjIeUqIBS+9kkyY4EcudOaNal6/LTzo8YrL6W+mCFCDD03jP
-         qpQz9ssbK4u3SUDopWw/RLNsyt/xIaaniQcDTW85ZE/Tb4k80VYmAbGcf7IBErlLs2g9
-         IoLSGQHF3DwnALnVW/FBh+cstdMih0UZhD0JqMW7Z19kbkWQRxYlraR4cFSYmiKt2R4x
-         h0ufDAUaChdv+kj/XHm3qKPil4VVosSCMvS+K9n7gzjsd9WX/lNH+irW+/R8In40fONt
-         MJNBmKjtEHGVs3CJT+X0O6oL9j4eskWXKiZjzWvulgYZW2ouul3fehUX3Gxbe79HLLzi
-         /a6w==
-X-Forwarded-Encrypted: i=1; AJvYcCWn0ZTZroaNbLhdBc8UDKv1AyMDdzBbJUGj+g8v33YHWg+J4iJW6YD0tNsCfLHPOqmZMNUZx/j+k7/A8sxm0pI3g4bqIQi3DqNF5UxZW6YBtj3IqIpm2N+Hjo5lKbfAbOCG6zZhVpNObYb2tAaZV2OJQHmWBru+nkpKjm8Iux5CVmcFYw==
-X-Gm-Message-State: AOJu0YyhcTO6rDavHCcw72gt9Zb8vE0lwvZ5kSdIZ7bDMEYr1ATjVfUC
-	RTKX83f4QR0HdnxjC4PO8q1zE3Wb1tiVh9zfM8psGGuWIxw7ieHv
-X-Google-Smtp-Source: AGHT+IEeVIqfdYbflCRrTg3/7Jkh/cxWMWj69qHzmn3fE+cLdGKkNtKHAdwy21byuai9OMmNLmxB4w==
-X-Received: by 2002:a9d:6415:0:b0:6e2:e50b:7ac5 with SMTP id h21-20020a9d6415000000b006e2e50b7ac5mr8331462otl.17.1708224753896;
-        Sat, 17 Feb 2024 18:52:33 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id d7-20020a4a9187000000b0059d97d9f75fsm549603ooh.14.2024.02.17.18.52.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 18:52:33 -0800 (PST)
-From: Chen Wang <unicornxw@gmail.com>
-To: aou@eecs.berkeley.edu,
-	chao.wei@sophgo.com,
-	conor@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	mturquette@baylibre.com,
-	palmer@dabbelt.com,
-	paul.walmsley@sifive.com,
-	richardcochran@gmail.com,
-	robh+dt@kernel.org,
-	sboyd@kernel.org,
-	devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	haijiao.liu@sophgo.com,
-	xiaoguang.xing@sophgo.com,
-	guoren@kernel.org,
-	jszhang@kernel.org,
-	inochiama@outlook.com,
-	samuel.holland@sifive.com
-Cc: Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH v10 5/5] riscv: dts: add clock generator for Sophgo SG2042 SoC
-Date: Sun, 18 Feb 2024 10:52:26 +0800
-Message-Id: <dc899c89e5c30e2267965f185b52d6dded4eb1ac.1708223519.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1708223519.git.unicorn_wang@outlook.com>
-References: <cover.1708223519.git.unicorn_wang@outlook.com>
+	s=arc-20240116; t=1708224815; c=relaxed/simple;
+	bh=Z6mSyCCU4tKcRX0vOZ8fMtCaGQGjTOctfFH1c8VECVE=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=hXu6oSP3tr+2cmX1sr46kri+5nwddqaTn69WoISPq0uolGVvuswcee5sVVt4MOnjBADtDAVG8KkBnfi7oyjcLJwYqElFeiaGLFELUEasfvTalZk878x75FhoxUW89WD38zFnJ5ePaohfVySlI6zGMv28cGcC7e4v8YfuYo7V2nM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AM7W6DOu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 951ECC433F1;
+	Sun, 18 Feb 2024 02:53:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708224814;
+	bh=Z6mSyCCU4tKcRX0vOZ8fMtCaGQGjTOctfFH1c8VECVE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AM7W6DOuPWCM8nwpxebXPBIStYkl1tK/Wg4hetT/X071PhOMwYVQPEkERxaH5/tYc
+	 OUwTejTp0QjRbQ4rA1PdgmMmykoapOuLzu7gjdb6y1PctfkjY4shg4sz7Rr6UmO0Hx
+	 gvYASVXqqGF/3S2lGHxKWWTtBzS6PpWphC2O0HMS52RLsLYhIIff1E/BunynmkVmKf
+	 joY+ua8+hAEY4DTcFelL5fM2vUhtzljgip7hPUCXUZoX4wqAUTm4pbr5s8HTBMwwaF
+	 Hn3pJUZ2uOwrSRHMs12Ie98tCU7Fw0PpT0KoURm7FRbMJm/GDJ2pgE0LpoV17x4osM
+	 n2waArNVXvXFA==
+Date: Sun, 18 Feb 2024 11:53:28 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 23/36] function_graph: Add a new exit handler with
+ parent_ip and ftrace_regs
+Message-Id: <20240218115328.c95bfe7001b7260071e6b674@kernel.org>
+In-Reply-To: <20240216175108.79a256a20c89ed1d672c7e14@kernel.org>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723230476.502590.16817817024423790038.stgit@devnote2>
+	<20240215110404.4e8c5a94@gandalf.local.home>
+	<20240216175108.79a256a20c89ed1d672c7e14@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Chen Wang <unicorn_wang@outlook.com>
+On Fri, 16 Feb 2024 17:51:08 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-Add clock generator node to device tree for SG2042, and enable clock for
-uart.
+> > > @@ -798,10 +798,6 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+> > >  
+> > >  	*index += FGRAPH_RET_INDEX;
+> > >  	*ret = ret_stack->ret;
+> > > -	trace->func = ret_stack->func;
+> > > -	trace->calltime = ret_stack->calltime;
+> > > -	trace->overrun = atomic_read(&current->trace_overrun);
+> > > -	trace->depth = current->curr_ret_depth;
+> > 
+> > There's a lot of information stored in the trace structure. Why not pass
+> > that to the new retregfunc?
+> > 
+> > Then you don't need to separate this code out.
+> 
+> Sorry, I couldn't catch what you meant, Would you mean to call
+> ftrace_pop_return_trace() before calling retregfunc()?? because some of the
+> information are found from ret_stack, which is poped from shadow stack.
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- .../boot/dts/sophgo/sg2042-milkv-pioneer.dts  | 12 +++++
- arch/riscv/boot/dts/sophgo/sg2042.dtsi        | 48 +++++++++++++++++++
- 2 files changed, 60 insertions(+)
+Ah, sorry I got what you said. I think this `trace` is not usable for the new
+interface. Most of the information is only used for the function-graph tracer.
+For example, trace->calltime and trace->overrun, trace->depth are used only
+for the function-graph tracer, but not for the other tracers.
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-index 49b4b9c2c101..80cb017974d8 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-+++ b/arch/riscv/boot/dts/sophgo/sg2042-milkv-pioneer.dts
-@@ -14,6 +14,18 @@ chosen {
- 	};
- };
- 
-+&cgi_main {
-+	clock-frequency = <25000000>;
-+};
-+
-+&cgi_dpll0 {
-+	clock-frequency = <25000000>;
-+};
-+
-+&cgi_dpll1 {
-+	clock-frequency = <25000000>;
-+};
-+
- &uart0 {
- 	status = "okay";
- };
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index ead1cc35d88b..e70c43e2ccbe 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -5,6 +5,9 @@
- 
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/clock/sophgo,sg2042-pll.h>
-+#include <dt-bindings/clock/sophgo,sg2042-rpgate.h>
-+#include <dt-bindings/clock/sophgo,sg2042-clkgen.h>
- 
- #include "sg2042-cpus.dtsi"
- 
-@@ -18,12 +21,54 @@ aliases {
- 		serial0 = &uart0;
- 	};
- 
-+	cgi_main: oscillator0 {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi_main";
-+		#clock-cells = <0>;
-+	};
-+
-+	cgi_dpll0: oscillator1 {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi_dpll0";
-+		#clock-cells = <0>;
-+	};
-+
-+	cgi_dpll1: oscillator2 {
-+		compatible = "fixed-clock";
-+		clock-output-names = "cgi_dpll1";
-+		#clock-cells = <0>;
-+	};
-+
- 	soc: soc {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
- 		#size-cells = <2>;
- 		ranges;
- 
-+		pllclk: clock-controller@70300100c0 {
-+			compatible = "sophgo,sg2042-pll";
-+			reg = <0x70 0x300100c0 0x0 0x40>;
-+			clocks = <&cgi_main>, <&cgi_dpll0>, <&cgi_dpll1>;
-+			#clock-cells = <1>;
-+		};
-+
-+		rpgate: clock-controller@7030010368 {
-+			compatible = "sophgo,sg2042-rpgate";
-+			reg = <0x70 0x30010368 0x0 0x98>;
-+			clocks = <&clkgen GATE_CLK_RP_CPU_NORMAL>;
-+			#clock-cells = <1>;
-+		};
-+
-+		clkgen: clock-controller@7030012000 {
-+			compatible = "sophgo,sg2042-clkgen";
-+			reg = <0x70 0x30012000 0x0 0x1000>;
-+			clocks = <&pllclk MPLL_CLK>,
-+				 <&pllclk FPLL_CLK>,
-+				 <&pllclk DPLL0_CLK>,
-+				 <&pllclk DPLL1_CLK>;
-+			#clock-cells = <1>;
-+		};
-+
- 		clint_mswi: interrupt-controller@7094000000 {
- 			compatible = "sophgo,sg2042-aclint-mswi", "thead,c900-aclint-mswi";
- 			reg = <0x00000070 0x94000000 0x00000000 0x00004000>;
-@@ -333,6 +378,9 @@ uart0: serial@7040000000 {
- 			interrupt-parent = <&intc>;
- 			interrupts = <112 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <500000000>;
-+			clocks = <&clkgen GATE_CLK_UART_500M>,
-+				 <&clkgen GATE_CLK_APB_UART>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
+But yeah, this idea is considerable. It also allows us to just update
+entryfunc() and retfunc() to pass fgraph_regs and return address.
+
+Thank you!
+
 -- 
-2.25.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
