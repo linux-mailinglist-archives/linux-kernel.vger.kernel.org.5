@@ -1,267 +1,259 @@
-Return-Path: <linux-kernel+bounces-70228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55019859509
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:33:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8504685950C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07766283B5C
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:33:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA8BA1C21286
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:34:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BE5746B;
-	Sun, 18 Feb 2024 06:33:15 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D25DB538A;
-	Sun, 18 Feb 2024 06:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380F46AC0;
+	Sun, 18 Feb 2024 06:34:14 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A35EAC5;
+	Sun, 18 Feb 2024 06:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708237994; cv=none; b=syz1ouq4yUJbJer5esP9wyDhbZnuRBtx0W8yAPGOP6jrcrDhNUg0b875HNxcWRirXDgNGrMMh3eg6yQ7hs/ZLvKrh2LKLZvuJEwKfkvLL5KbP5RnicYLIlLcphP7sCOfjWP6C2cf2teYidiNzv3uIzEeAxO7llQvaBBZypyVxcI=
+	t=1708238053; cv=none; b=qPRLF/vMXIoTs/7NIGVaxIC1tlQLvd6sbElO9zr2fmli1Cii88s215f3YTlr2WUi+crt/Uf2YHD8BitcTcjWPuuGz92DryzlRpdjto/2vmuy+14Hf7Gqp5N3TuNzdNRJ558wVMEro+4vAbuHPfnnhDkK5WGZlacCVvrer+6cSrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708237994; c=relaxed/simple;
-	bh=Ou67CknKNFvkJHA5VHdGs4weGL65WHqLtM05EXx8+gc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lPEJFNdLNJfjqa97Eorv0f/P4yx3C/Pd46enUazO4O1l+gUCY5fOERwXv+eyT35I5lCmnJIFxEWpM6UAdVrKVcVK0xh/3/614BsKMOA6CCMRMFApkypaVVi5wO6sg/h/hZaloF3+sL3o+1URGYoXGSD4PKQzMBxMBLNCGcrwhGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8CxSPCfpNFlNxIOAA--.38546S3;
-	Sun, 18 Feb 2024 14:33:03 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c6epNFlyos6AA--.18718S2;
-	Sun, 18 Feb 2024 14:33:02 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>
-Cc: WANG Xuerui <kernel@xen0n.name>,
-	loongarch@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Subject: [PATCH v3] LoongArch: KVM: Add software breakpoint support
-Date: Sun, 18 Feb 2024 14:33:02 +0800
-Message-Id: <20240218063302.218019-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1708238053; c=relaxed/simple;
+	bh=7f1xn1gCJBLFzBJg9ICJ3pAtn5BxCirwIB0dE9mDWXc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Gst5pM9hzNyWM4UKleJsLdx48iKpNkkgzAdP9JKua7DDn0j3FvK/6NdHf3A89u+bBRFgO7urJWzJtbjdTwJCgH2lS8mHZpkasLX1SGFHKFIruqRPjyI7lMEUHWABu9VrKUqxRC8KGKB56KZ/tPNKJRifbz/14y/HxpF/EYrCk4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TcwqZ1Zbgz4f3jd3;
+	Sun, 18 Feb 2024 14:34:02 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 140281A0175;
+	Sun, 18 Feb 2024 14:34:07 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g7YpNFl+Ot7EQ--.33296S3;
+	Sun, 18 Feb 2024 14:34:02 +0800 (CST)
+Subject: Re: [PATCH v5 09/14] dm-raid: really frozen sync_thread during
+ suspend
+To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com,
+ agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev,
+ song@kernel.org, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
+ akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <20240201092559.910982-10-yukuai1@huaweicloud.com>
+ <CALTww2_ppGe29wMOsLS45kR4YS6TyCTBswmeKyVE+-H6XmoN+g@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <3c062731-3b74-2b3e-94c8-ffdf940df014@huaweicloud.com>
+Date: Sun, 18 Feb 2024 14:34:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CALTww2_ppGe29wMOsLS45kR4YS6TyCTBswmeKyVE+-H6XmoN+g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8Cx_c6epNFlyos6AA--.18718S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3Gw43GF1fCw1rWr45tFW8AFc_yoWxuF1DpF
-	9rArs5Gr4rKrZ3C340yr4Dur13Xa93Gr1Iqa42v3ySyF1Yq34rJrWkKr98AFy5Jw4rXa4I
-	q3Z3Kw1YvFn8t3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
-	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UUUUU==
+X-CM-TRANSID:cCh0CgAn9g7YpNFl+Ot7EQ--.33296S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw15Cr4fWFyDCFyrZw1rtFb_yoWxGw4Upa
+	y8tFs0yr4UJrW7AFZFv3WvvFWYvw1aqrWjyr93GayrJ3Zakwn3CFy8Kr4UuFWvya4xJ3WF
+	ya1Dt39xCF4DKFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9I14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
+	Zr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
+	IYCTnIWIevJa73UjIFyTuYvjfUF0eHDUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-When VM runs in kvm mode, system will not exit to host mode if
-executing general software breakpoint instruction such as INSN_BREAK,
-trap exception happens in guest mode rather than host mode. In order to
-debug guest kernel on host side, one mechanism should be used to let vm
-exit to host mode.
+Hi,
 
-Here hypercall instruction with special code is used for software
-breakpoint usage, vm exists to host mode and kvm hypervisor identifies the
-special hypercall code and sets exit_reason with KVM_EXIT_DEBUG, and then
-let qemu handle it.
+在 2024/02/18 12:53, Xiao Ni 写道:
+> Hi Kuai
+> 
+> On Thu, Feb 1, 2024 at 5:30 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> From: Yu Kuai <yukuai3@huawei.com>
+>>
+>> 1) The flag MD_RECOVERY_FROZEN doesn't mean that sync thread is frozen,
+>>     it only prevent new sync_thread to start, and it can't stop the
+>>     running sync thread;
+> 
+> Agree with this
+> 
+>> 2) The flag MD_RECOVERY_FROZEN doesn't mean that writes are stopped, use
+>>     it as condition for md_stop_writes() in raid_postsuspend() doesn't
+>>     look correct.
+> 
+> I don't agree with it. __md_stop_writes stops sync thread, so it needs
+> to check this flag. And It looks like the name __md_stop_writes is not
+> right. Does it really stop write io? mddev_suspend should be the
+> function that stop write request. From my understanding,
+> raid_postsuspend does two jobs. One is stopping sync thread. Two is
+> suspending array.
 
-Idea comes from ppc kvm, one api KVM_REG_LOONGARCH_DEBUG_INST is added to
-get hypercall code. VMM needs get sw breakpoint instruction with this api
-and set the corresponding sw break point for guest kernel.
+MD_RECOVERY_FROZEN is not just used in __md_stop_writes(), so I think
+it's not correct to to check this. For example, if MD_RECOVERY_FROZEN is
+set by raid_message(), then __md_stop_writes() will be skipped.
 
-Since it needs hypercall instruction emulation handling, and it is
-dependent on this patchset:
-https://lore.kernel.org/all/20240201031950.3225626-1-maobibo@loongson.cn/
+> 
+>> 3) raid_message can set/clear the flag MD_RECOVERY_FROZEN at anytime,
+>>     and if MD_RECOVERY_FROZEN is cleared while the array is suspended,
+>>     new sync_thread can start unexpected.
+> 
+> md_action_store doesn't check this either. If the array is suspended
+> and MD_RECOVERY_FROZEN is cleared, before patch01, sync thread can't
+> happen. So it looks like patch01 breaks the logic.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
-Changes in v3:
-1. Add api KVM_REG_LOONGARCH_DEBUG_INST to get sw breakpoint instruction
-for vmm.
-2. Check vcpu::guest_debug with value KVM_GUESTDBG_USE_SW_BP only, since
-another value KVM_GUESTDBG_ENABLE will be set if it is not zero.
+The difference is that md/raid doen't need to frozen sync_thread while
+suspending the array for now. And I don't understand at all why sync
+thread can't happed before patch01.
 
-Changes in v2:
-1. Add checking for hypercall code KVM_HC_SWDBG, it is effective only if
-KVM_GUESTDBG_USE_SW_BP and KVM_GUESTDBG_ENABLE is set.
----
- arch/loongarch/include/asm/inst.h     |  1 +
- arch/loongarch/include/asm/kvm_host.h |  2 ++
- arch/loongarch/include/asm/kvm_para.h |  2 ++
- arch/loongarch/include/uapi/asm/kvm.h |  4 ++++
- arch/loongarch/kvm/exit.c             | 16 ++++++++++++++--
- arch/loongarch/kvm/vcpu.c             | 13 ++++++++++++-
- arch/loongarch/kvm/vm.c               |  1 +
- 7 files changed, 36 insertions(+), 3 deletions(-)
+Thanks,
+Kuai
 
-diff --git a/arch/loongarch/include/asm/inst.h b/arch/loongarch/include/asm/inst.h
-index ad120f924905..c3993fd88aba 100644
---- a/arch/loongarch/include/asm/inst.h
-+++ b/arch/loongarch/include/asm/inst.h
-@@ -12,6 +12,7 @@
- 
- #define INSN_NOP		0x03400000
- #define INSN_BREAK		0x002a0000
-+#define INSN_HVCL		0x002b8000
- 
- #define ADDR_IMMMASK_LU52ID	0xFFF0000000000000
- #define ADDR_IMMMASK_LU32ID	0x000FFFFF00000000
-diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
-index 1bf927e2bfac..ef4f1195d9fa 100644
---- a/arch/loongarch/include/asm/kvm_host.h
-+++ b/arch/loongarch/include/asm/kvm_host.h
-@@ -31,6 +31,8 @@
- 
- #define KVM_HALT_POLL_NS_DEFAULT	500000
- 
-+#define KVM_GUESTDBG_VALID_MASK		(KVM_GUESTDBG_ENABLE | \
-+			KVM_GUESTDBG_USE_SW_BP | KVM_GUESTDBG_SINGLESTEP)
- struct kvm_vm_stat {
- 	struct kvm_vm_stat_generic generic;
- 	u64 pages;
-diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
-index a25a84e372b9..c44412feabb3 100644
---- a/arch/loongarch/include/asm/kvm_para.h
-+++ b/arch/loongarch/include/asm/kvm_para.h
-@@ -10,8 +10,10 @@
- #define HYPERCALL_CODE(vendor, code)	((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
- 
- #define KVM_HC_CODE_SERVICE		0
-+#define KVM_HC_CODE_SWDBG		1
- #define KVM_HC_SERVICE			HYPERCALL_CODE(HYPERVISOR_KVM, KVM_HC_CODE_SERVICE)
- #define  KVM_HC_FUNC_IPI		1
-+#define KVM_HC_SWDBG			HYPERCALL_CODE(HYPERVISOR_KVM, KVM_HC_CODE_SWDBG)
- 
- /*
-  * LoongArch hypcall return code
-diff --git a/arch/loongarch/include/uapi/asm/kvm.h b/arch/loongarch/include/uapi/asm/kvm.h
-index 923d0bd38294..4cec8c16013c 100644
---- a/arch/loongarch/include/uapi/asm/kvm.h
-+++ b/arch/loongarch/include/uapi/asm/kvm.h
-@@ -15,10 +15,12 @@
-  */
- 
- #define __KVM_HAVE_READONLY_MEM
-+#define __KVM_HAVE_GUEST_DEBUG
- 
- #define KVM_COALESCED_MMIO_PAGE_OFFSET	1
- #define KVM_DIRTY_LOG_PAGE_OFFSET	64
- 
-+#define KVM_GUESTDBG_USE_SW_BP		0x00010000
- /*
-  * for KVM_GET_REGS and KVM_SET_REGS
-  */
-@@ -74,6 +76,8 @@ struct kvm_fpu {
- 
- #define KVM_REG_LOONGARCH_COUNTER	(KVM_REG_LOONGARCH_KVM | KVM_REG_SIZE_U64 | 1)
- #define KVM_REG_LOONGARCH_VCPU_RESET	(KVM_REG_LOONGARCH_KVM | KVM_REG_SIZE_U64 | 2)
-+/* Debugging: Special instruction for software breakpoint */
-+#define KVM_REG_LOONGARCH_DEBUG_INST	(KVM_REG_LOONGARCH_KVM | KVM_REG_SIZE_U64 | 3)
- 
- #define LOONGARCH_REG_SHIFT		3
- #define LOONGARCH_REG_64(TYPE, REG)	(TYPE | KVM_REG_SIZE_U64 | (REG << LOONGARCH_REG_SHIFT))
-diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-index 189b70bad825..2a79d40ea2b2 100644
---- a/arch/loongarch/kvm/exit.c
-+++ b/arch/loongarch/kvm/exit.c
-@@ -758,23 +758,35 @@ static int kvm_handle_hypcall(struct kvm_vcpu *vcpu)
- {
- 	larch_inst inst;
- 	unsigned int code;
-+	int ret;
- 
- 	inst.word = vcpu->arch.badi;
- 	code = inst.reg0i15_format.immediate;
--	update_pc(&vcpu->arch);
-+	ret = RESUME_GUEST;
- 
- 	switch (code) {
- 	case KVM_HC_SERVICE:
- 		vcpu->stat.hvcl_exits++;
- 		kvm_handle_pv_hcall(vcpu);
- 		break;
-+	case KVM_HC_SWDBG:
-+		/* KVM_HC_SWDBG only in effective when SW_BP is enabled */
-+		if (vcpu->guest_debug & KVM_GUESTDBG_USE_SW_BP) {
-+			vcpu->run->exit_reason = KVM_EXIT_DEBUG;
-+			ret = RESUME_HOST;
-+		} else
-+			vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
-+		break;
- 	default:
- 		/* Treat it as noop intruction, only set return value */
- 		vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
- 		break;
- 	}
- 
--	return RESUME_GUEST;
-+	if (ret == RESUME_GUEST)
-+		update_pc(&vcpu->arch);
-+
-+	return ret;
- }
- 
- /*
-diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-index 80e05ba9b48d..273ac10eaba5 100644
---- a/arch/loongarch/kvm/vcpu.c
-+++ b/arch/loongarch/kvm/vcpu.c
-@@ -248,7 +248,15 @@ int kvm_arch_vcpu_ioctl_set_mpstate(struct kvm_vcpu *vcpu,
- int kvm_arch_vcpu_ioctl_set_guest_debug(struct kvm_vcpu *vcpu,
- 					struct kvm_guest_debug *dbg)
- {
--	return -EINVAL;
-+	if (dbg->control & ~KVM_GUESTDBG_VALID_MASK)
-+		return -EINVAL;
-+
-+	if (dbg->control & KVM_GUESTDBG_ENABLE)
-+		vcpu->guest_debug = dbg->control;
-+	else
-+		vcpu->guest_debug = 0;
-+
-+	return 0;
- }
- 
- static int _kvm_getcsr(struct kvm_vcpu *vcpu, unsigned int id, u64 *val)
-@@ -482,6 +490,9 @@ static int kvm_get_one_reg(struct kvm_vcpu *vcpu,
- 		case KVM_REG_LOONGARCH_COUNTER:
- 			*v = drdtime() + vcpu->kvm->arch.time_offset;
- 			break;
-+		case KVM_REG_LOONGARCH_DEBUG_INST:
-+			*v = INSN_HVCL + KVM_HC_SWDBG;
-+			break;
- 		default:
- 			ret = -EINVAL;
- 			break;
-diff --git a/arch/loongarch/kvm/vm.c b/arch/loongarch/kvm/vm.c
-index 6fd5916ebef3..44fb18118442 100644
---- a/arch/loongarch/kvm/vm.c
-+++ b/arch/loongarch/kvm/vm.c
-@@ -77,6 +77,7 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	case KVM_CAP_IMMEDIATE_EXIT:
- 	case KVM_CAP_IOEVENTFD:
- 	case KVM_CAP_MP_STATE:
-+	case KVM_CAP_SET_GUEST_DEBUG:
- 		r = 1;
- 		break;
- 	case KVM_CAP_NR_VCPUS:
-
-base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
--- 
-2.39.3
+> 
+> Regards
+> Xiao
+> 
+> 
+>>
+>> Fix above problems by using the new helper to suspend the array during
+>> suspend, also disallow raid_message() to change sync_thread status
+>> during suspend.
+>>
+>> Note that after commit f52f5c71f3d4 ("md: fix stopping sync thread"), the
+>> test shell/lvconvert-raid-reshape.sh start to hang in stop_sync_thread(),
+>> and with previous fixes, the test won't hang there anymore, however, the
+>> test will still fail and complain that ext4 is corrupted. And with this
+>> patch, the test won't hang due to stop_sync_thread() or fail due to ext4
+>> is corrupted anymore. However, there is still a deadlock related to
+>> dm-raid456 that will be fixed in following patches.
+>>
+>> Reported-by: Mikulas Patocka <mpatocka@redhat.com>
+>> Closes: https://lore.kernel.org/all/e5e8afe2-e9a8-49a2-5ab0-958d4065c55e@redhat.com/
+>> Fixes: 1af2048a3e87 ("dm raid: fix deadlock caused by premature md_stop_writes()")
+>> Fixes: 9dbd1aa3a81c ("dm raid: add reshaping support to the target")
+>> Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
+>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+>> ---
+>>   drivers/md/dm-raid.c | 38 +++++++++++++++++++++++++++++---------
+>>   1 file changed, 29 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/md/dm-raid.c b/drivers/md/dm-raid.c
+>> index eb009d6bb03a..5ce3c6020b1b 100644
+>> --- a/drivers/md/dm-raid.c
+>> +++ b/drivers/md/dm-raid.c
+>> @@ -3240,11 +3240,12 @@ static int raid_ctr(struct dm_target *ti, unsigned int argc, char **argv)
+>>          rs->md.ro = 1;
+>>          rs->md.in_sync = 1;
+>>
+>> -       /* Keep array frozen until resume. */
+>> -       set_bit(MD_RECOVERY_FROZEN, &rs->md.recovery);
+>> -
+>>          /* Has to be held on running the array */
+>>          mddev_suspend_and_lock_nointr(&rs->md);
+>> +
+>> +       /* Keep array frozen until resume. */
+>> +       md_frozen_sync_thread(&rs->md);
+>> +
+>>          r = md_run(&rs->md);
+>>          rs->md.in_sync = 0; /* Assume already marked dirty */
+>>          if (r) {
+>> @@ -3722,6 +3723,9 @@ static int raid_message(struct dm_target *ti, unsigned int argc, char **argv,
+>>          if (!mddev->pers || !mddev->pers->sync_request)
+>>                  return -EINVAL;
+>>
+>> +       if (test_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags))
+>> +               return -EBUSY;
+>> +
+>>          if (!strcasecmp(argv[0], "frozen"))
+>>                  set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>          else
+>> @@ -3791,15 +3795,31 @@ static void raid_io_hints(struct dm_target *ti, struct queue_limits *limits)
+>>          blk_limits_io_opt(limits, chunk_size_bytes * mddev_data_stripes(rs));
+>>   }
+>>
+>> +static void raid_presuspend(struct dm_target *ti)
+>> +{
+>> +       struct raid_set *rs = ti->private;
+>> +
+>> +       mddev_lock_nointr(&rs->md);
+>> +       md_frozen_sync_thread(&rs->md);
+>> +       mddev_unlock(&rs->md);
+>> +}
+>> +
+>> +static void raid_presuspend_undo(struct dm_target *ti)
+>> +{
+>> +       struct raid_set *rs = ti->private;
+>> +
+>> +       mddev_lock_nointr(&rs->md);
+>> +       md_unfrozen_sync_thread(&rs->md);
+>> +       mddev_unlock(&rs->md);
+>> +}
+>> +
+>>   static void raid_postsuspend(struct dm_target *ti)
+>>   {
+>>          struct raid_set *rs = ti->private;
+>>
+>>          if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
+>>                  /* Writes have to be stopped before suspending to avoid deadlocks. */
+>> -               if (!test_bit(MD_RECOVERY_FROZEN, &rs->md.recovery))
+>> -                       md_stop_writes(&rs->md);
+>> -
+>> +               md_stop_writes(&rs->md);
+>>                  mddev_suspend(&rs->md, false);
+>>          }
+>>   }
+>> @@ -4012,8 +4032,6 @@ static int raid_preresume(struct dm_target *ti)
+>>          }
+>>
+>>          /* Check for any resize/reshape on @rs and adjust/initiate */
+>> -       /* Be prepared for mddev_resume() in raid_resume() */
+>> -       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>          if (mddev->recovery_cp && mddev->recovery_cp < MaxSector) {
+>>                  set_bit(MD_RECOVERY_REQUESTED, &mddev->recovery);
+>>                  mddev->resync_min = mddev->recovery_cp;
+>> @@ -4056,9 +4074,9 @@ static void raid_resume(struct dm_target *ti)
+>>                          rs_set_capacity(rs);
+>>
+>>                  mddev_lock_nointr(mddev);
+>> -               clear_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>                  mddev->ro = 0;
+>>                  mddev->in_sync = 0;
+>> +               md_unfrozen_sync_thread(mddev);
+>>                  mddev_unlock_and_resume(mddev);
+>>          }
+>>   }
+>> @@ -4074,6 +4092,8 @@ static struct target_type raid_target = {
+>>          .message = raid_message,
+>>          .iterate_devices = raid_iterate_devices,
+>>          .io_hints = raid_io_hints,
+>> +       .presuspend = raid_presuspend,
+>> +       .presuspend_undo = raid_presuspend_undo,
+>>          .postsuspend = raid_postsuspend,
+>>          .preresume = raid_preresume,
+>>          .resume = raid_resume,
+>> --
+>> 2.39.2
+>>
+> 
+> .
+> 
 
 
