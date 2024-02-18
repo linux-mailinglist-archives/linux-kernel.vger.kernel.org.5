@@ -1,121 +1,110 @@
-Return-Path: <linux-kernel+bounces-70251-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1461859544
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D2C3859547
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:45:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 657DD1C212A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:35:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FE901C21390
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B199D294;
-	Sun, 18 Feb 2024 07:35:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA4BE544;
+	Sun, 18 Feb 2024 07:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MpsSnz2y"
-Received: from mail-oo1-f66.google.com (mail-oo1-f66.google.com [209.85.161.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nXLL0McN"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A17746B
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1330A746B
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:45:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708241716; cv=none; b=iu4ufSUOQCh6ldQfO+4Uxjfur3uoPN6x5vhIRe8uyQsOTz4fihSTdy0mtD0pJ9/4QXV6YKG/8QrR9fOujvyjqZOZTeE3zF67pv+fhG2LnZndfdtfMkZmqmK43SktWeDwOVdp4MVkHwDr06CrldG5/wZ2ndU7tGKBIXcYRtarLx4=
+	t=1708242330; cv=none; b=ktzPDSGpCXc15YK0n41FkspGkeQtWl9Lcu+kDOyo5XZUKG3wh1OfaTLxI5nscxUOD3GozTRHIgWYpzm0jYKpHUUwT+Fn0mnRKIfVxfvWJpt80me/UwbwoWlHqDA7/gWhxezc0o2PXMZO9BZtIBzaRklP1FjOtYcGalHDtHyJ3Jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708241716; c=relaxed/simple;
-	bh=+a4H/ahmoRNiU1zYapSk7p0IZYFE8bsHkSV8lIN96Pw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=taPYWh0jP/G16EjpxvLD8JUsuYHB6NT2vv0/nSQ+d+Zii9R2ygFeNHdAOgflLHyHlfMNgS9ixMRjCZFbDYnFj1dS0nopDq9UKQiZsZZafKxwaSXlhpfXo9BaypauNh91sxEBl3zkp6rHr7LxnC9aQ5iQOxYjng9K6/vFLQdaRMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MpsSnz2y; arc=none smtp.client-ip=209.85.161.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f66.google.com with SMTP id 006d021491bc7-59f786b2b59so1621984eaf.0
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 23:35:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708241714; x=1708846514; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FGrS/QrK390LGI0LLUrbrIxCWDxFRathI2WV75UnB8M=;
-        b=MpsSnz2yZWEUv2d3O68AijHRWi1N9GQijOP/QUJglV0p3CgRXLa81z626dw/by3hB5
-         B7QxqKT/xP00dgCFvOVK46toLwv1ofpUksgiUMUNF8lyWsxLBCwhJZ3g7k0OjHXn7usD
-         4Hm2ymgGI2FlQRHu5/9fEh4htpibAVYqhZvYBH4C8jMiFrG4OyVIRiqUDBwMaNVMzEvx
-         rseFC7YUN0UZk7d1yTcsE8/xA2sphzXoCCQLuaVrey0c043/98s65OC4Ov2j5ifgkcxC
-         br8ytZSUCJzfKAYHc8kXTAV8IbuK9BWYLKHeaHDwh3pS7o5hQ6LvlZIJoS3x3omX7YU8
-         knaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708241714; x=1708846514;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FGrS/QrK390LGI0LLUrbrIxCWDxFRathI2WV75UnB8M=;
-        b=I99SUfzxsz2h4ays3oa1swHDGb6M4GfUCYDZcxfPVMg08gHQB871fMOwz6QBIytF3l
-         pQrmz44UwuO7atggHO02+zWICMs3wb9lBTG/DeuoIvm+prj61hoJgt+KsbsJJLZhnvfA
-         AYYJ1PTWCkjC+wMN3J0UhousWjX1sZ2Obu7Y9dH1EtcYcKbU72aREFRKSHu28Md0IyFN
-         Q3Npau6teSVdqRRPHhFky4IhtXzRFDo/ZQMZLupUvSIpSWi2JDXir14SrHRuAAQ7xRdH
-         S797h6PTpmMIiM0XRjVOzY5czRdHU9aCI8/T5ZLPjoyj96L+WMQ3mw3sSmN+VyxhmVKf
-         Zezg==
-X-Gm-Message-State: AOJu0YwYqIER8LvdCWHUBR4C/PrJ8GnDIf0iELo1AUW2AZ459zSzNqUp
-	qRfsKTmUP+oUyjQNRqfwsR/dnqUw92t5iXE9BHHTlqV/R3mF47+4
-X-Google-Smtp-Source: AGHT+IFAHmVa6lCwwy26W3zoYicuYsavdriNiHTPPOtGGk0lCsFkAWCMwzwT3RPyDQyQIdySr6xXWg==
-X-Received: by 2002:a05:6358:8427:b0:178:72b5:cf49 with SMTP id b39-20020a056358842700b0017872b5cf49mr10369100rwk.8.1708241714429;
-        Sat, 17 Feb 2024 23:35:14 -0800 (PST)
-Received: from C02FG0GJMD6V.bytedance.net ([139.177.225.229])
-        by smtp.gmail.com with ESMTPSA id sk17-20020a17090b2dd100b002997e87b390sm706675pjb.29.2024.02.17.23.35.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 23:35:14 -0800 (PST)
-From: Guixiong Wei <guixiongwei@gmail.com>
-To: gregkh@linuxfoundation.org,
-	jgross@suse.com,
-	boris.ostrovsky@oracle.com
-Cc: linux-kernel@vger.kernel.org,
-	Guixiong Wei <weiguixiong@bytedance.com>
-Subject: [RESEND RFC] kernel/ksysfs.c: restrict /sys/kernel/notes to root access
-Date: Sun, 18 Feb 2024 15:35:01 +0800
-Message-Id: <20240218073501.54555-1-guixiongwei@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+	s=arc-20240116; t=1708242330; c=relaxed/simple;
+	bh=ftV4kdXCrIriQxTbvh2OAHv7Gk37s4RDaZuoclRtX6c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TCeJ5vbm+pCIf7nllwF4SEbHeUz+HJ9Ogv84R7vLA8P13E58ycJJHjlRPxnlXGCW6ZGTIjwOQkUhUXrlfW02WaMQbLbdR03Y3qL82NZajq9LgCMMfNqC9fIwxuwe9jExGNNf3M2t+NrlAT78hgdF+WHKAmjOjkJ3xT6OFeIt2pI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nXLL0McN; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708242329; x=1739778329;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=ftV4kdXCrIriQxTbvh2OAHv7Gk37s4RDaZuoclRtX6c=;
+  b=nXLL0McNiQpDdzJrNERFgt6wxvlI5HURJ3WNy69YYM6ySlIXXEx8m/Bb
+   2NC/xn/MUWdPp5LgVj1p284+NzTeIX9RB0sXs8WplEVchAVnFfjnB/edo
+   agsF80ja+HN3jyuht76w1G4gwCwJyOB3vobUkqMOwDx/DLZr87Gmu09qS
+   GKRma2D+/M9neW0/pt/9OwTla2UtHU3AgiOOvefaaRUGcAGAIghKZA66T
+   xyJg2Ex5THerpucMtUCZ5O8Q2+V604qhDt4OUWl4Q8WiQjHsr6w2bphpB
+   GwNixgl0vJgqSxlXJRrVdc8tB4vSX490o7KB4JD+5rjM6BHfGPKkp1LP6
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="2195669"
+X-IronPort-AV: E=Sophos;i="6.06,168,1705392000"; 
+   d="scan'208";a="2195669"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 23:45:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="936092066"
+X-IronPort-AV: E=Sophos;i="6.06,168,1705392000"; 
+   d="scan'208";a="936092066"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 23:45:25 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: liqiang <liqiang64@huawei.com>
+Cc: <akpm@linux-foundation.org>,  <paulmck@linux.vnet.ibm.com>,
+  <neilb@suse.de>,  <chuck.lever@oracle.com>,
+  <linux-kernel@vger.kernel.org>
+Subject: Re: [RESEND PATCH] llist: Make llist_del_first return only the
+ first node
+In-Reply-To: <20240218065750.1241-1-liqiang64@huawei.com> (liqiang's message
+	of "Sun, 18 Feb 2024 14:57:50 +0800")
+References: <20240218065750.1241-1-liqiang64@huawei.com>
+Date: Sun, 18 Feb 2024 15:43:30 +0800
+Message-ID: <875xymtdy5.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-From: Guixiong Wei <weiguixiong@bytedance.com>
+liqiang <liqiang64@huawei.com> writes:
 
-Restrict non-privileged user access to /sys/kernel/notes to
-avoid security attack.
+> Set the next of the returned node of llist_del_first
+> to NULL, which can prevent subsequent nodes in llist
+> from being exposed, and is more consistent with the
+> logic of this interface.
+>
+> Signed-off-by: liqiang <liqiang64@huawei.com>
+> ---
+>  lib/llist.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/lib/llist.c b/lib/llist.c
+> index f21d0cf..c33fff5 100644
+> --- a/lib/llist.c
+> +++ b/lib/llist.c
+> @@ -61,6 +61,7 @@ struct llist_node *llist_del_first(struct llist_head *head)
+>  		next = READ_ONCE(entry->next);
+>  	} while (!try_cmpxchg(&head->first, &entry, next));
+>  
+> +	entry->next = NULL;
+>  	return entry;
+>  }
+>  EXPORT_SYMBOL_GPL(llist_del_first);
 
-The non-privileged users have read access to notes. The notes
-expose the load address of startup_xen. This address could be
-used to bypass KASLR.
+This isn't needed for functionality correctness.  Many users of llist
+ask for performance.  So, it may be better to let the users to decide
+whether to set entry->next to NULL.
 
-For example, the startup_xen is built at 0xffffffff82465180 and
-commit_creds is built at 0xffffffff810ad570 which could read from
-the /boot/System.map. And the loaded address of startup_xen is
-0xffffffffbc265180 which read from /sys/kernel/notes. So the loaded
-address of commit_creds is 0xffffffffbc265180 - (0xffffffff82465180
- - 0xffffffff810ad570) = 0xffffffffbaead570.
-
-Signed-off-by: Guixiong Wei <weiguixiong@bytedance.com>
----
- kernel/ksysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
-index b1292a57c2a5..09bc0730239b 100644
---- a/kernel/ksysfs.c
-+++ b/kernel/ksysfs.c
-@@ -199,7 +199,7 @@ static ssize_t notes_read(struct file *filp, struct kobject *kobj,
- static struct bin_attribute notes_attr __ro_after_init  = {
- 	.attr = {
- 		.name = "notes",
--		.mode = S_IRUGO,
-+		.mode = S_IRUSR,
- 	},
- 	.read = &notes_read,
- };
--- 
-2.24.3 (Apple Git-128)
-
+--
+Best Regards,
+Huang, Ying
 
