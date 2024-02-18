@@ -1,261 +1,351 @@
-Return-Path: <linux-kernel+bounces-70467-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3050C859848
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:50:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D73585984E
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BFFB1F215F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:50:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2D7C1C20F5E
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DF3A6F067;
-	Sun, 18 Feb 2024 17:50:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCFB6F06D;
+	Sun, 18 Feb 2024 17:50:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="S1cVHQ0i"
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="Tqsovb1m"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7960C6BB58
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:50:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81D06BB58
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708278611; cv=none; b=ZEOUlxY7NGVen8O9StoDi10bwyeK0BAxSPV/2pK3ymaT9572Emyny+ebgdMuvqtNI6J/AjS1nMpyo2UzTs6d9c4Z9EQZCAK5ukVTAP93VRolZ5sZhW6DJiYXOxEB2lPDhfPbeJ1kM8OBnPN7NRym4d6rc4/8GKSSODz58wqlYbM=
+	t=1708278643; cv=none; b=bnoeeE8Coa/Lvdo7shVZnLOmhe2iGTB5HVJHX+xgPibTlpXIEpn9SHwNwVt5UOzzikALEvl35zUll1by1uZ5yQpYT3x5zU6cyuvJTSACLjbgfJCvGn1AOqcGL4/MMS2WPDAZ+jC7a4JBwQaf8aOrEY5aYuygnL7Q8oxQ4ctsVP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708278611; c=relaxed/simple;
-	bh=ft0qda2TT0VrHbR+goKKn53dFGPgx7HUfMQGw0PLK44=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Cv4+AArJTgpDQ4MuUh/10cZmmzxnxATcZwv6XGq4BxoRSau09Nl6H6nRpNNzmTP5HlQKsL5NqFki2cfoW6smtqzjGFCxnlBlfEdGrSlBNUW1yOLTzy1DGuuaS4pbCL+XOjsk/9ONiZAQvGPIJwe3484jiWMVEw+KGTumfEkW9q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=S1cVHQ0i; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-21e7c3e3cf3so1697668fac.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 09:50:09 -0800 (PST)
+	s=arc-20240116; t=1708278643; c=relaxed/simple;
+	bh=xDfZP8wJP+CnkLvneZNZk+TexK8AnkyFmF4ymPXAd9Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RiGC6/jAFRvllOSqDY7sqZuI8Y0AP0wOn0N76umtAWYMG4ewlfJYkQwOvHlzDWiQUF0lr3fH2rSkVp/u2aD+2Hwc7G4l5CzMw33VYnVDqnGMDtgp0igYmG7y/Ft+vO22OFlqUYui137FHP8RciptPVsV6paL6CaPvNJ+S16WcoU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=Tqsovb1m; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so18019381fa.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 09:50:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708278608; x=1708883408; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QglCmuihZScz0IJGwcmkNekXbZT0Ym+rOpXRMVc9jnk=;
-        b=S1cVHQ0iAEP3eqZs35/i7Ucw9F800/dkX7pF8qqMBaUZMBTs5wH9sPEQvw9jLor5qu
-         p1slzDV8IornG3CSHLOCubPLVT5a5gQAGUKUryUnDazaBk+YuN7X/TyojqPh4SjVzcyM
-         qrBCyf7JDyvH+HB5B3Ods++3TvwyLyX0n9c8f82OoGp3YgCaZJP7fXvPSFh2cMHCNi8d
-         b5Zt9AkGUKdrF4Q+vSCNWzj8UeSQAlBVhlFcUykFnlV9EITUbrNO7AiFKNNc80bRsXMl
-         tZyNnpYxbNLnTHwU1vc2cSylS5K3ri9GF1Z2Fd0x9H3/++vOhZkzIBPcrVp5thEpOR3p
-         V/Tg==
+        d=googlemail.com; s=20230601; t=1708278640; x=1708883440; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yjpbxfuUN8ClVWyejRT9z307tEN2okR2Dj3IppGtU+I=;
+        b=Tqsovb1mXuWjnORTx0WRYQ1RQnV/+NibsQXeBR07E7dihD21VLt5kCq53V5s0jj5lk
+         Lar7upL7oDX6IL3PVpZXplrLibWmczDrR0a7WmXkOk5b6nGAgIe+S8jT2lBbpYTuo3o0
+         Av2R3LL4WQMAuREsgRP0c3bTBxm7z2JvFi+gxuW37XHzHXV3eEZLOxLYB5rVsH3ExWHT
+         pOO1uqXsTd1VA2YfwdjOa8QPdtgBktHW1tx81JFZYvw+awS+JmNoh7EY8dmv3peFIuyK
+         wD203TQKiBRXU3QlmOTDEIw9NroG6ZGVm4ieWIqKyRXScW63G3LQyBJb3DVdBpnbyJCL
+         gKLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708278608; x=1708883408;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QglCmuihZScz0IJGwcmkNekXbZT0Ym+rOpXRMVc9jnk=;
-        b=AWSEku9bXHaCOVNZyECyhKGAhQVoogqZ0Rj7CYutIGTfzB5srZqj10P+I9JdVDZ66G
-         oehm3eG1g6NoWW/gATuVYavGc9Gbn6CopavnXJjFCnmTe38fWxpxp0BL9bruAiafbpwP
-         hXWhEuJEvePevAqhD4HHvtfrTCe1+SC8cwriaOXIEZeQ0ds7+EDhOcUUuKYBR6VW2Mj1
-         NKMLaRjABNUD9NhNEPTVM1Dz22KjGnFKqGPnWFPgic0Kv0H8OM1hZ9FSltOgAWYbs0za
-         wRkvz4xx0hJAZ7G/G2WvMB9ZAJgaG4xxrMCXW5feRo+3U85VUJahk09HSYgDu/DPlNtL
-         3caA==
-X-Forwarded-Encrypted: i=1; AJvYcCWg50F5c1bVImNTlzOS6exFLK5uNcRbNPqTSDX8aKJJEjNRJatnSgWZfv2OswLDd337QKYhFcwWVRD6wU5/ynsy6ac7e3UhagzGmfGB
-X-Gm-Message-State: AOJu0Yx/gnXcSvb/NcOTbQk/lCNcOJRqwV2rIbH7VYVbTmZQKSb2iVwS
-	flXJ0PNEIkg5MbOn2aPSQqFOZ5ZZCLjfPO5ce+PixNVtR1dUi2K9qgtrgbla8ySqk03V+hBo/tw
-	94IeoTNKY4SzyvTNybC0WenOGN2HsAQ1IilXSPw==
-X-Google-Smtp-Source: AGHT+IHI2opoylUZD5RdVXTz05DuUfPUU8QkrYo9wu2ATtpEPBSM99dik/SJL5BNiXl9XCgKXRU/QP71nyRcUoDVt3k=
-X-Received: by 2002:a05:6871:5827:b0:21e:4a2a:f060 with SMTP id
- oj39-20020a056871582700b0021e4a2af060mr9062566oac.13.1708278608334; Sun, 18
- Feb 2024 09:50:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708278640; x=1708883440;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yjpbxfuUN8ClVWyejRT9z307tEN2okR2Dj3IppGtU+I=;
+        b=S/qXJ4g0ICnr0KmkDpvi4QG1RPq+jVUXXLM3BFTKcQLGlrhzhA++d3Uy/cc6uXnyvx
+         YRaCk2W7ujIRJM8GoOdEQsSMRNFjFDMeQWAbF2rVgTVjwKdzDwHp1DJHND3kak9LvIYo
+         S0XSdVnkXMYlXbQJmOZNsvPH2kDCkNM9frG1lwLq10Y1D3mMzIxafWSJPwPzwZ43Ni6e
+         ALDAZTqYv5Y2exKw6ENrm0b2bxHa80kp/TCAA/wZObqZefU4MVdbgUmfU1bUcS8EQut7
+         ejtyf3SFA+W/2gqxMS38XVKj9SdJ52tNU5Auo1SWss6vnOMwSbu08O8fPdnzEnGUmndU
+         aJ5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW3mLJmA9AuO8/kDCfrtxXXxymvHg1MwqJVmY3MG4Kwy3SYW9WivkRT8v8rUow0nLUBXfH18HZyZi1QDwiv2LHle3Ngrb/lg3vFMSXv
+X-Gm-Message-State: AOJu0YycreTAQjY62jY6QjQ0Pr/+51VMKKf1xsgMW6zmAJ535JxzhPoK
+	9wVs6FmaUmx2TUhV0EOzWxA9JmLP+E8/ldAbUhcE2pEt9yUgaB34
+X-Google-Smtp-Source: AGHT+IF+k6EDEC5TlndQFlEFI46CiqTKLip+fjyqgK9pMQUYRRCGzERWQTf0G82WXK5WrbdSBKZ4+A==
+X-Received: by 2002:a2e:854e:0:b0:2d0:9a93:1fe0 with SMTP id u14-20020a2e854e000000b002d09a931fe0mr6234553ljj.11.1708278639558;
+        Sun, 18 Feb 2024 09:50:39 -0800 (PST)
+Received: from localhost.localdomain (dynamic-2a01-0c22-7b37-4900-0000-0000-0000-0e63.c22.pool.telefonica.de. [2a01:c22:7b37:4900::e63])
+        by smtp.googlemail.com with ESMTPSA id ck8-20020a0564021c0800b0056452477a5esm829283edb.24.2024.02.18.09.50.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 09:50:39 -0800 (PST)
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To: dri-devel@lists.freedesktop.org,
+	linux-amlogic@lists.infradead.org
+Cc: neil.armstrong@linaro.org,
+	maarten.lankhorst@linux.intel.com,
+	mripard@kernel.org,
+	tzimmermann@suse.de,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v1] drm/meson: improve encoder probe / initialization error handling
+Date: Sun, 18 Feb 2024 18:50:35 +0100
+Message-ID: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217135255.1128716-1-xiaolei.wang@windriver.com>
- <CAMRc=MdGhfHSWPB0FCHbK+uA0MAZNFstupgm7-Zkw9dbuTmyVQ@mail.gmail.com>
- <CAMRc=Mfb1Vg1qnwE7c95PBroDFySZ6c0b0HgUhyrHFFpCz0Diw@mail.gmail.com> <b50a72ea-1b14-4bd8-831b-468d2aa988fa@windriver.com>
-In-Reply-To: <b50a72ea-1b14-4bd8-831b-468d2aa988fa@windriver.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Sun, 18 Feb 2024 18:49:57 +0100
-Message-ID: <CAMRc=Md8O6i6WwRhOJX+gxP1wXL4Z_Ab3iy+pMnrqMeU0utXhw@mail.gmail.com>
-Subject: Re: [linux-next][PATCH 1/1] gpio: Delete excess allocated label memory
-To: xiaolei wang <xiaolei.wang@windriver.com>
-Cc: linus.walleij@linaro.org, andriy.shevchenko@linux.intel.com, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 18, 2024 at 1:55=E2=80=AFAM xiaolei wang <xiaolei.wang@windrive=
-r.com> wrote:
->
->
-> On 2/18/24 02:52, Bartosz Golaszewski wrote:
-> > CAUTION: This email comes from a non Wind River email account!
-> > Do not click links or open attachments unless you recognize the sender =
-and know the content is safe.
-> >
-> > On Sat, 17 Feb 2024 19:35:43 +0100, Bartosz Golaszewski <brgl@bgdev.pl>=
- said:
-> >> On Sat, Feb 17, 2024 at 2:53=E2=80=AFPM Xiaolei Wang <xiaolei.wang@win=
-driver.com> wrote:
-> >>> The changes in commit 1f2bcb8c8ccd ("gpio: protect the
-> >>> descriptor label with SRCU"), desc_set_label has already
-> >>> allocated memory space for the label, so there is no need
-> >>> to allocate it again. otherwise memory leaks will be
-> >>> introduced.
-> >>>
-> >> No, we *want* to copy it if it's not in .rodata for the same reason we
-> >> introduced SRCU. This may be a valid report but the fix is wrong.
-> >>
-> >>> unreferenced object 0xffff0000c3e4d0c0 (size 32):
-> >>>    comm "kworker/u16:4", pid 60, jiffies 4294894555
-> >>>    hex dump (first 32 bytes):
-> >>>      72 65 67 75 6c 61 74 6f 72 2d 63 61 6e 32 2d 73  regulator-can2-=
-s
-> >>>      74 62 79 00 00 00 ff ff ff ff ff ff eb db ff ff  tby............=
-.
-> >>>    backtrace (crc 2c3a0350):
-> >>>      [<00000000e93c5cf4>] kmemleak_alloc+0x34/0x40
-> >>>      [<0000000097a2657f>] __kmalloc_node_track_caller+0x2c4/0x524
-> >>>      [<000000000dd1c057>] kstrdup+0x4c/0x98
-> >>>      [<00000000b513a96a>] kstrdup_const+0x34/0x40
-> >>>      [<000000008a7f0feb>] gpiod_request_commit+0xdc/0x358
-> >>>      [<00000000fc71ad64>] gpiod_request+0xd8/0x204
-> >>>      [<00000000fa24b091>] gpiod_find_and_request+0x170/0x780
-> >>>      [<0000000086ecf92d>] gpiod_get_index+0x70/0xe0
-> >>>      [<000000004aef97f9>] gpiod_get_optional+0x18/0x30
-> >>>      [<00000000312f1b25>] reg_fixed_voltage_probe+0x58c/0xad8
-> >>>      [<00000000e6f47635>] platform_probe+0xc4/0x198
-> >>>      [<00000000cf78fbdb>] really_probe+0x204/0x5a8
-> >>>      [<00000000e28d05ec>] __driver_probe_device+0x158/0x2c4
-> >>>      [<00000000e4fe452b>] driver_probe_device+0x60/0x18c
-> >>>      [<00000000479fcf5d>] __device_attach_driver+0x168/0x208
-> >>>      [<000000007d389f38>] bus_for_each_drv+0x104/0x190
-> >>>
-> >> Can you post the full kmemleak report for this, please?
-> >>
-> >> Bart
-> >>
-> > Ah, I think I see the problem. Can you test the following diff:
-> >
-> > diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> > index 02be0ba1a402..0fdd4ad242bd 100644
-> > --- a/drivers/gpio/gpiolib.c
-> > +++ b/drivers/gpio/gpiolib.c
-> > @@ -695,10 +695,15 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid);
-> >   static void gpiodev_release(struct device *dev)
-> >   {
-> >          struct gpio_device *gdev =3D to_gpio_device(dev);
-> > +       struct gpio_desc *desc;
-> >          unsigned int i;
-> >
-> > -       for (i =3D 0; i < gdev->ngpio; i++)
-> > -               cleanup_srcu_struct(&gdev->descs[i].srcu);
-> > +       for (i =3D 0; i < gdev->ngpio; i++) {
-> > +               desc =3D &gdev->descs[i];
-> > +
-> > +               kfree_const(desc->label);
-> > +               cleanup_srcu_struct(&desc->srcu);
-> > +       }
-> >
-> >          ida_free(&gpio_ida, gdev->id);
-> >          kfree_const(gdev->label);
-> >
-> > and let me know if it fixes the issue?
-> I tried the following modifications, which did not fix the problem,
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 02be0ba1a402..5940ef88399c 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -695,10 +695,14 @@ EXPORT_SYMBOL_GPL(gpiochip_line_is_valid);
->    static void gpiodev_release(struct device *dev)
->    {
->           struct gpio_device *gdev =3D to_gpio_device(dev);
-> + struct gpio_desc *desc;
->           unsigned int i;
->
-> - for (i =3D 0; i < gdev->ngpio; i++)
-> - cleanup_srcu_struct(&gdev->descs[i].srcu);
-> + for (i =3D 0; i < gdev->ngpio; i++) {
-> + desc =3D &gdev->descs[i];
-> + kfree_const(desc->label);
-> + cleanup_srcu_struct(&desc->srcu);
-> + }
->
->           ida_free(&gpio_ida, gdev->id);
->
->           kfree_const(gdev->label);
->
->
-> unreferenced object 0xffff0000c0e83740 (size 32):
->    comm "kworker/u16:0", pid 10, jiffies 4294894561
->    hex dump (first 32 bytes):
->      72 65 67 75 6c 61 74 6f 72 2d 75 73 64 68 63 32 regulator-usdhc2
->      00 37 e8 c0 00 00 ff ff 00 00 00 00 00 00 00 00 .7..............
->    backtrace (crc 222fadd4):
->      [<00000000cd106dac>] kmemleak_alloc+0x34/0x40
->      [<00000000e084cf5f>] __kmalloc_node_track_caller+0x2c4/0x524
->      [<00000000746173b0>] kstrdup+0x4c/0x98
->      [<00000000f79b3bf4>] kstrdup_const+0x34/0x40
->      [<00000000f47eb728>] gpiod_request_commit+0xdc/0x358
->      [<000000003a6899af>] gpiod_request+0xd8/0x204
->      [<00000000c93118be>] gpiod_find_and_request+0x170/0x780
->      [<00000000660eebdd>] gpiod_get_index+0x70/0xe0
->      [<00000000eb599be3>] gpiod_get_optional+0x18/0x30
->      [<00000000e8b3cfcb>] reg_fixed_voltage_probe+0x58c/0xad8
->      [<000000009737579a>] platform_probe+0xc4/0x198
->      [<00000000405158e3>] really_probe+0x204/0x5a8
->      [<00000000772dd378>] __driver_probe_device+0x158/0x2c4
->      [<00000000ddc25aba>] driver_probe_device+0x60/0x18c
->      [<00000000cc4413ff>] __device_attach_driver+0x168/0x208
->      [<00000000e04f3755>] bus_for_each_drv+0x104/0x190
->
-> I'm a little confused. In the gpiod_request_commit() function, if label
-> is true, we allocate space kstrdup_const() for it, but desc_set_label()
-> will still be called. If label is true, space will be allocated to it
-> again, desc-> label will be pointed to the place where new is allocated,
->
+Rename meson_encoder_{cvbs,dsi,hdmi}_init() to
+meson_encoder_{cvbs,dsi,hdmi}_probe() so it's clear that these functions
+are used at probe time during driver initialization. Also switch all
+error prints inside those functions to use dev_err_probe() for
+consistency.
 
-Ah, right I see it now. I sent a fix, please leave your Tested-by if
-it works. Thanks for the report.
+This makes the code more straight forward to read and makes the error
+prints within those functions consistent (by logging all -EPROBE_DEFER
+with dev_dbg(), while actual errors are logged with dev_err() and get
+the error value printed).
 
-Bart
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+This is meant to be applied on top of my other patch called
+"drm/meson: Don't remove bridges which are created by other drivers" [0]
 
-BTW: This is still not a complete kmemleak report, please next time
-paste the entire thing.
 
-> thanks
->
-> xiaolei
->
-> >
-> > Bart
-> >
-> >>> Fixes: 1f2bcb8c8ccd ("gpio: protect the descriptor label with SRCU")
-> >>> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
-> >>> ---
-> >>>   drivers/gpio/gpiolib.c | 6 ------
-> >>>   1 file changed, 6 deletions(-)
-> >>>
-> >>> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> >>> index 02be0ba1a402..32191547dece 100644
-> >>> --- a/drivers/gpio/gpiolib.c
-> >>> +++ b/drivers/gpio/gpiolib.c
-> >>> @@ -2250,12 +2250,6 @@ static int gpiod_request_commit(struct gpio_de=
-sc *desc, const char *label)
-> >>>          if (test_and_set_bit(FLAG_REQUESTED, &desc->flags))
-> >>>                  return -EBUSY;
-> >>>
-> >>> -       if (label) {
-> >>> -               label =3D kstrdup_const(label, GFP_KERNEL);
-> >>> -               if (!label)
-> >>> -                       return -ENOMEM;
-> >>> -       }
-> >>> -
-> >>>          /* NOTE:  gpio_request() can be called in early boot,
-> >>>           * before IRQs are enabled, for non-sleeping (SOC) GPIOs.
-> >>>           */
-> >>> --
-> >>> 2.25.1
-> >>>
+[0] https://lore.kernel.org/dri-devel/20240215220442.1343152-1-martin.blumenstingl@googlemail.com/
+
+
+ drivers/gpu/drm/meson/meson_drv.c          |  6 +++---
+ drivers/gpu/drm/meson/meson_encoder_cvbs.c | 24 ++++++++++------------
+ drivers/gpu/drm/meson/meson_encoder_cvbs.h |  2 +-
+ drivers/gpu/drm/meson/meson_encoder_dsi.c  | 23 +++++++++------------
+ drivers/gpu/drm/meson/meson_encoder_dsi.h  |  2 +-
+ drivers/gpu/drm/meson/meson_encoder_hdmi.c | 15 +++++++-------
+ drivers/gpu/drm/meson/meson_encoder_hdmi.h |  2 +-
+ 7 files changed, 35 insertions(+), 39 deletions(-)
+
+diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+index cb674966e9ac..17a5cca007e2 100644
+--- a/drivers/gpu/drm/meson/meson_drv.c
++++ b/drivers/gpu/drm/meson/meson_drv.c
+@@ -312,7 +312,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
+ 
+ 	/* Encoder Initialization */
+ 
+-	ret = meson_encoder_cvbs_init(priv);
++	ret = meson_encoder_cvbs_probe(priv);
+ 	if (ret)
+ 		goto exit_afbcd;
+ 
+@@ -326,12 +326,12 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
+ 		}
+ 	}
+ 
+-	ret = meson_encoder_hdmi_init(priv);
++	ret = meson_encoder_hdmi_probe(priv);
+ 	if (ret)
+ 		goto exit_afbcd;
+ 
+ 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A)) {
+-		ret = meson_encoder_dsi_init(priv);
++		ret = meson_encoder_dsi_probe(priv);
+ 		if (ret)
+ 			goto exit_afbcd;
+ 	}
+diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.c b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+index 3407450435e2..d1191de855d9 100644
+--- a/drivers/gpu/drm/meson/meson_encoder_cvbs.c
++++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+@@ -219,7 +219,7 @@ static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
+ 	.atomic_reset = drm_atomic_helper_bridge_reset,
+ };
+ 
+-int meson_encoder_cvbs_init(struct meson_drm *priv)
++int meson_encoder_cvbs_probe(struct meson_drm *priv)
+ {
+ 	struct drm_device *drm = priv->drm;
+ 	struct meson_encoder_cvbs *meson_encoder_cvbs;
+@@ -240,10 +240,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
+ 
+ 	meson_encoder_cvbs->next_bridge = of_drm_find_bridge(remote);
+ 	of_node_put(remote);
+-	if (!meson_encoder_cvbs->next_bridge) {
+-		dev_err(priv->dev, "Failed to find CVBS Connector bridge\n");
+-		return -EPROBE_DEFER;
+-	}
++	if (!meson_encoder_cvbs->next_bridge)
++		return dev_err_probe(priv->dev, -EPROBE_DEFER,
++				     "Failed to find CVBS Connector bridge\n");
+ 
+ 	/* CVBS Encoder Bridge */
+ 	meson_encoder_cvbs->bridge.funcs = &meson_encoder_cvbs_bridge_funcs;
+@@ -259,10 +258,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
+ 	/* Encoder */
+ 	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_cvbs->encoder,
+ 				      DRM_MODE_ENCODER_TVDAC);
+-	if (ret) {
+-		dev_err(priv->dev, "Failed to init CVBS encoder: %d\n", ret);
+-		return ret;
+-	}
++	if (ret)
++		return dev_err_probe(priv->dev, ret,
++				     "Failed to init CVBS encoder\n");
+ 
+ 	meson_encoder_cvbs->encoder.possible_crtcs = BIT(0);
+ 
+@@ -276,10 +274,10 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
+ 
+ 	/* Initialize & attach Bridge Connector */
+ 	connector = drm_bridge_connector_init(priv->drm, &meson_encoder_cvbs->encoder);
+-	if (IS_ERR(connector)) {
+-		dev_err(priv->dev, "Unable to create CVBS bridge connector\n");
+-		return PTR_ERR(connector);
+-	}
++	if (IS_ERR(connector))
++		return dev_err_probe(priv->dev, PTR_ERR(connector),
++				     "Unable to create CVBS bridge connector\n");
++
+ 	drm_connector_attach_encoder(connector, &meson_encoder_cvbs->encoder);
+ 
+ 	priv->encoders[MESON_ENC_CVBS] = meson_encoder_cvbs;
+diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.h b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
+index 09710fec3c66..7b7bc85c03f7 100644
+--- a/drivers/gpu/drm/meson/meson_encoder_cvbs.h
++++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
+@@ -24,7 +24,7 @@ struct meson_cvbs_mode {
+ /* Modes supported by the CVBS output */
+ extern struct meson_cvbs_mode meson_cvbs_modes[MESON_CVBS_MODES_COUNT];
+ 
+-int meson_encoder_cvbs_init(struct meson_drm *priv);
++int meson_encoder_cvbs_probe(struct meson_drm *priv);
+ void meson_encoder_cvbs_remove(struct meson_drm *priv);
+ 
+ #endif /* __MESON_VENC_CVBS_H */
+diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.c b/drivers/gpu/drm/meson/meson_encoder_dsi.c
+index 311b91630fbe..7816902f5907 100644
+--- a/drivers/gpu/drm/meson/meson_encoder_dsi.c
++++ b/drivers/gpu/drm/meson/meson_encoder_dsi.c
+@@ -100,7 +100,7 @@ static const struct drm_bridge_funcs meson_encoder_dsi_bridge_funcs = {
+ 	.atomic_reset = drm_atomic_helper_bridge_reset,
+ };
+ 
+-int meson_encoder_dsi_init(struct meson_drm *priv)
++int meson_encoder_dsi_probe(struct meson_drm *priv)
+ {
+ 	struct meson_encoder_dsi *meson_encoder_dsi;
+ 	struct device_node *remote;
+@@ -118,10 +118,9 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
+ 	}
+ 
+ 	meson_encoder_dsi->next_bridge = of_drm_find_bridge(remote);
+-	if (!meson_encoder_dsi->next_bridge) {
+-		dev_dbg(priv->dev, "Failed to find DSI transceiver bridge\n");
+-		return -EPROBE_DEFER;
+-	}
++	if (!meson_encoder_dsi->next_bridge)
++		return dev_err_probe(priv->dev, -EPROBE_DEFER,
++				     "Failed to find DSI transceiver bridge\n");
+ 
+ 	/* DSI Encoder Bridge */
+ 	meson_encoder_dsi->bridge.funcs = &meson_encoder_dsi_bridge_funcs;
+@@ -135,19 +134,17 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
+ 	/* Encoder */
+ 	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_dsi->encoder,
+ 				      DRM_MODE_ENCODER_DSI);
+-	if (ret) {
+-		dev_err(priv->dev, "Failed to init DSI encoder: %d\n", ret);
+-		return ret;
+-	}
++	if (ret)
++		return dev_err_probe(priv->dev, ret,
++				     "Failed to init DSI encoder\n");
+ 
+ 	meson_encoder_dsi->encoder.possible_crtcs = BIT(0);
+ 
+ 	/* Attach DSI Encoder Bridge to Encoder */
+ 	ret = drm_bridge_attach(&meson_encoder_dsi->encoder, &meson_encoder_dsi->bridge, NULL, 0);
+-	if (ret) {
+-		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
+-		return ret;
+-	}
++	if (ret)
++		return dev_err_probe(priv->dev, ret,
++				     "Failed to attach bridge\n");
+ 
+ 	/*
+ 	 * We should have now in place:
+diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.h b/drivers/gpu/drm/meson/meson_encoder_dsi.h
+index 9277d7015193..85d5b61805f2 100644
+--- a/drivers/gpu/drm/meson/meson_encoder_dsi.h
++++ b/drivers/gpu/drm/meson/meson_encoder_dsi.h
+@@ -7,7 +7,7 @@
+ #ifndef __MESON_ENCODER_DSI_H
+ #define __MESON_ENCODER_DSI_H
+ 
+-int meson_encoder_dsi_init(struct meson_drm *priv);
++int meson_encoder_dsi_probe(struct meson_drm *priv);
+ void meson_encoder_dsi_remove(struct meson_drm *priv);
+ 
+ #endif /* __MESON_ENCODER_DSI_H */
+diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.c b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
+index c4686568c9ca..22e07847a9a7 100644
+--- a/drivers/gpu/drm/meson/meson_encoder_hdmi.c
++++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
+@@ -354,7 +354,7 @@ static const struct drm_bridge_funcs meson_encoder_hdmi_bridge_funcs = {
+ 	.atomic_reset = drm_atomic_helper_bridge_reset,
+ };
+ 
+-int meson_encoder_hdmi_init(struct meson_drm *priv)
++int meson_encoder_hdmi_probe(struct meson_drm *priv)
+ {
+ 	struct meson_encoder_hdmi *meson_encoder_hdmi;
+ 	struct platform_device *pdev;
+@@ -374,8 +374,8 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+ 
+ 	meson_encoder_hdmi->next_bridge = of_drm_find_bridge(remote);
+ 	if (!meson_encoder_hdmi->next_bridge) {
+-		dev_err(priv->dev, "Failed to find HDMI transceiver bridge\n");
+-		ret = -EPROBE_DEFER;
++		ret = dev_err_probe(priv->dev, -EPROBE_DEFER,
++				    "Failed to find HDMI transceiver bridge\n");
+ 		goto err_put_node;
+ 	}
+ 
+@@ -393,7 +393,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+ 	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_hdmi->encoder,
+ 				      DRM_MODE_ENCODER_TMDS);
+ 	if (ret) {
+-		dev_err(priv->dev, "Failed to init HDMI encoder: %d\n", ret);
++		dev_err_probe(priv->dev, ret, "Failed to init HDMI encoder\n");
+ 		goto err_put_node;
+ 	}
+ 
+@@ -403,7 +403,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+ 	ret = drm_bridge_attach(&meson_encoder_hdmi->encoder, &meson_encoder_hdmi->bridge, NULL,
+ 				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+ 	if (ret) {
+-		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
++		dev_err_probe(priv->dev, ret, "Failed to attach bridge\n");
+ 		goto err_put_node;
+ 	}
+ 
+@@ -411,8 +411,9 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+ 	meson_encoder_hdmi->connector = drm_bridge_connector_init(priv->drm,
+ 							&meson_encoder_hdmi->encoder);
+ 	if (IS_ERR(meson_encoder_hdmi->connector)) {
+-		dev_err(priv->dev, "Unable to create HDMI bridge connector\n");
+-		ret = PTR_ERR(meson_encoder_hdmi->connector);
++		ret = dev_err_probe(priv->dev,
++				    PTR_ERR(meson_encoder_hdmi->connector),
++				    "Unable to create HDMI bridge connector\n");
+ 		goto err_put_node;
+ 	}
+ 	drm_connector_attach_encoder(meson_encoder_hdmi->connector,
+diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.h b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
+index a6cd38eb5f71..fd5485875db8 100644
+--- a/drivers/gpu/drm/meson/meson_encoder_hdmi.h
++++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
+@@ -7,7 +7,7 @@
+ #ifndef __MESON_ENCODER_HDMI_H
+ #define __MESON_ENCODER_HDMI_H
+ 
+-int meson_encoder_hdmi_init(struct meson_drm *priv);
++int meson_encoder_hdmi_probe(struct meson_drm *priv);
+ void meson_encoder_hdmi_remove(struct meson_drm *priv);
+ 
+ #endif /* __MESON_ENCODER_HDMI_H */
+-- 
+2.43.2
+
 
