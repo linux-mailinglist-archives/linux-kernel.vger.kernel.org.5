@@ -1,92 +1,147 @@
-Return-Path: <linux-kernel+bounces-70617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4391859A28
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:02:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75C87859A29
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:06:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1B72B20BA0
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:02:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 238E71F21202
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:06:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D6E171B27;
-	Sun, 18 Feb 2024 23:02:06 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 671456F074;
+	Sun, 18 Feb 2024 23:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aKouVEAG"
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79D9612B91
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:02:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB16EAD3
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708297325; cv=none; b=Ho439ERE0aMuQeXEik81xvOL826XHrAdg5m5BH/9i1w2HTRpOCIeYOrD/UQFJqHKWV+V0aW9D3Pm7n/NBo/lHecUv3PMoA5yqYbWRmErKIQsIHXEoTLueahoyWJJMrLPNvb7f6OAa1F0WjcZlv0pIfwNfFfvet/NAmP6bWI5wvE=
+	t=1708297577; cv=none; b=McQfVRUkECCLqfsafQQ8GS5PkrhviIHiBscs09PSvVsmV+NhfYBDabwA07PZ/qBQe5UUYA7gMTjd3OHfT6jPpYqSwvX1zCPKJWIScGkzMYIikynuPrR+BYDWKanq9FFJiZCvl2A0VjqiWnoFfTUU4VfYoYQzWr8yVDx+hgv1psI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708297325; c=relaxed/simple;
-	bh=gx08vrFga24mpJKJ6CkD8XwWwRlSzoVynbkz6tjlUdU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=NFYu411FtI7UBLI46PLXVF221aFzrbIbAX5lqjMt7fS/3Da9a28i33HTZU2sp1yI4RbtsPbc8Trzonzby78urGgdjdxROd6hpBHqyRlAwLECMFnKwroJT12euAcezlrbI5vT6QLDPtlqDY24IaNEggEF4X7kdtm2wCplo+a98gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-36531d770d1so2535315ab.3
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:02:04 -0800 (PST)
+	s=arc-20240116; t=1708297577; c=relaxed/simple;
+	bh=dZBfVvcwyKFXAPZ431/ounbBcYEHNKswoI5m5uhlx9k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gc8SooEwUM43ZP3KeRD0ZV9Rc7TMHXoCyn46uhRq/xdaqVEepwHw4Y6igkK/pFguZj77fVGLaW+rmE3pllAOxXdfTMimJEhCwZfp+h2QXBAS+JNNmPmTP/rS6mBuxcNgC33jL8NhI63s4c6SrOTkYP8xA3t7U/ts41oVGll4SqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aKouVEAG; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41260f946c8so6704475e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:06:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708297574; x=1708902374; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=hZYwbs0hT6XgKoPOkjoQHSc7t5jEfrmq2mFVWPjwFrA=;
+        b=aKouVEAGz/0j5as8e8qboJEtpuaQjMcByY5eRXleHnlg8jC+bWcWtRCnB7h93htLVI
+         q8RjIH6MKJ8hSCuclF7HUWnKx8KP7um04C7Jz0q7FFqe9HPi0uxY1DRLPY0at31AR6F+
+         WgmPVurGcB4ZYqbfC4piB40ze0iHrbuRKBFtCS/SuMBcP80fTSj7zuiQit091Shp6iDz
+         lLaA/naeQVrbVFX+kIciIfFBwrMyffJhqRF290yAG3hA33EQhLn/cqQrlKDKCPYYQ35t
+         J93K4QhkfTu/SlrCVSJLEJbfJsXdf4DYTMKZH9SbscSuk9LQuAeSMMp6A6mzpZh2h7S0
+         2BRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708297323; x=1708902123;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jbqMO01/H/iqr4yf8kLtqB/zmeOqiP/DRUeUMAwyX08=;
-        b=g6qFol8sgNTGp7nKEA2eXQ7GdaNkJEBz4VPDszj5YURuLKjzqowiVz++3/CoXojf8O
-         s3BOcqha61y5exVZuUtv8+4hZaWJAvccIkVTroJ4lQk6bZcq9f43soqNR9jUsGhQ5Eqj
-         EpdkvxYJrMOWNGT5UxfWAoAshyVHSb0Fl6DSZ6RfAOtkRh0SZ4tpFjQmpmZQw6OwPe2b
-         Jc2xt2MoBWYkRZCyP1sePbbUB5b8WNz+5s6cL0/XQBdwhai+1Z6n5EB+qqr7/b372/Im
-         /8z6hIH/5VG6ZrpfSRh5jf4hUftpdwvDhnBPRZL+5xagDGSBh9M9YStX7ibvQrM8EOUn
-         4AvQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVRYap0VDU4gU3L/7RmS6AILnky8Nl2w0e61AhegO8xk/kWy5GXxlcgYIlIy6oXakbfzeeBHBbkzHVGAXG60R/nSvFDfFqWbt9Bg26w
-X-Gm-Message-State: AOJu0YwiES8aojNKQaAK3sEkRg5+pxxcmDKtnzTDtZlp1WQLb0kN1JKG
-	rXo7B7bGwDUInKx5qHVNx5CPuYR/qJmuYBI1JOs6IW9V2sDKx2yvGNcaTBhltoIUIrauUaPY1+3
-	iGdv//07/zMHtajt9XmCvso//c2rVosSnUk7MOuJXGpaX5480tNUjI2Y=
-X-Google-Smtp-Source: AGHT+IESg5nnX2NxCKLcT/j7td4ev2NPLuE2YZ2CwDqs2gyjCZhR5rLABe2T5nq7AHEkvwhfpPGVVoAbHx10tudQ9hnZVE8Tt9ji
+        d=1e100.net; s=20230601; t=1708297574; x=1708902374;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hZYwbs0hT6XgKoPOkjoQHSc7t5jEfrmq2mFVWPjwFrA=;
+        b=rajr0Owh8Ay96ihM3gd7vlOc50A/2VfN2EcqeNoTdhk2wlPHEhjgaa5CLDTi6gEZGd
+         ZsAnv//f2r65IOxYZCO21QvZvpTIN4/LkD2AhXJ/pVikLiDek0OoRa0mMdpvf3KA0BLD
+         vD/dfnCho/bIeNHRI10wiLPfLKNkxay85Z29FPJKbScQnp4d3oKSyeGL5WYJzL+GZKxz
+         0KZBjKtt3KFLyN32yVFR0byQwcGNbn9TM24ZGYyk6OfQJwjfzFDs3HBaBr32OgsGCp2/
+         rcxMsdH28PH+MvPNU1QDssJoHuvogCP47adub1++g5JSe6kZpEBG+O7NMa/3szdV5eDP
+         f7Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUX+eldrHWyXQC4BUeBQRhZWR0Kj9P/eMb/GWEjYezD4/tZIfFcDvW75T9ssobToSRsv6CG3aicCKHEMGoNXpuxg8cgmtAwPpD4My3y
+X-Gm-Message-State: AOJu0YyESGgUJMuY1NUpXQsWiH/VRKvhcVuTO7wCzVxgiqWD7ppwP64I
+	iz5MBqU1HNu4VZJ1r9BtFAM434Pr4T9ubxtyLXOZwh64uukk8cW2
+X-Google-Smtp-Source: AGHT+IFfsgFbsxq4soP1Z2GRcSLOZ+0kTntkGcPP34eWmwvFtWvoL+zVmEaUlO+++jirsuRbhXzAsQ==
+X-Received: by 2002:a05:6000:1ac6:b0:33b:1bcc:7ed9 with SMTP id i6-20020a0560001ac600b0033b1bcc7ed9mr7854417wry.44.1708297574149;
+        Sun, 18 Feb 2024 15:06:14 -0800 (PST)
+Received: from localhost (host86-164-109-77.range86-164.btcentralplus.com. [86.164.109.77])
+        by smtp.gmail.com with ESMTPSA id i3-20020a05600011c300b0033cf453f2bbsm8544712wrx.35.2024.02.18.15.06.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 15:06:13 -0800 (PST)
+Date: Sun, 18 Feb 2024 23:03:58 +0000
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: Yajun Deng <yajun.deng@linux.dev>
+Cc: akpm@linux-foundation.org, Liam.Howlett@oracle.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, vbabka@suse.cz
+Subject: Re: [PATCH] mm/mmap: Add case 9 in vma_merge()
+Message-ID: <a5cd692e-34e3-4bc1-a8fa-f6bb56f04e8a@lucifer.local>
+References: <20240218085028.3294332-1-yajun.deng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d92:b0:365:21f4:701a with SMTP id
- h18-20020a056e021d9200b0036521f4701amr328766ila.4.1708297323738; Sun, 18 Feb
- 2024 15:02:03 -0800 (PST)
-Date: Sun, 18 Feb 2024 15:02:03 -0800
-In-Reply-To: <00000000000081dba605f19d42dd@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000026ff9b0611aff742@google.com>
-Subject: Re: [syzbot] [reiserfs?] kernel BUG in reiserfs_cut_from_item
-From: syzbot <syzbot+b2c969f18c4ab30419f9@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	yijiangshan@kylinos.cn
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218085028.3294332-1-yajun.deng@linux.dev>
 
-syzbot suspects this issue was fixed by commit:
+On Sun, Feb 18, 2024 at 04:50:28PM +0800, Yajun Deng wrote:
+> If the prev vma exists and the end is less than the end of prev, we
+> can return NULL immediately. This reduces unnecessary operations.
+>
+> Signed-off-by: Yajun Deng <yajun.deng@linux.dev>
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Adding Vlastimil, while get_maintainers.pl might not show it very clearly,
+myself, Vlastimil and Liam often work with vma_merge() so it's handy to cc
+us on these if you can!
 
-    fs: Block writes to mounted block devices
+> ---
+>  mm/mmap.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 8f176027583c..b738849321c0 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -827,7 +827,7 @@ can_vma_merge_after(struct vm_area_struct *vma, unsigned long vm_flags,
+>   *
+>   *     ****             ****                   ****
+>   *    PPPPPPNNNNNN    PPPPPPNNNNNN       PPPPPPCCCCCC
+> - *    cannot merge    might become       might become
+> + *    cannot merge 9  might become       might become
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1272f362180000
-start commit:   88603b6dc419 Linux 6.2-rc2
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9babfdc3dd4772d0
-dashboard link: https://syzkaller.appspot.com/bug?extid=b2c969f18c4ab30419f9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14edd048480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13a5c50c480000
+While I welcome your interest here :) I am not a fan of the 'case' approach
+to this function as-is and plan to heavily refactor this when I get a chance.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+But at any rate, an early-exit situation is not a merge case, merge cases
+describe cases where we _can_ merge, so we can drop this case 9 stuff (this
+is not your fault, it's understandable why you would label this, this
+function is just generally unclear).
 
-#syz fix: fs: Block writes to mounted block devices
+>   *                    PPNNNNNNNNNN       PPPPPPPPPPCC
+>   *    mmap, brk or    case 4 below       case 5 below
+>   *    mremap move:
+> @@ -890,6 +890,9 @@ static struct vm_area_struct
+>  	if (vm_flags & VM_SPECIAL)
+>  		return NULL;
+>
+> +	if (prev && end < prev->vm_end) /* case 9 */
+> +		return NULL;
+> +
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+I need to get back into vma_merge() head space, but I don't actually think
+a caller that's behaving correctly should ever do this. I know the ASCII
+diagram above lists it as a thing that can happen, but I think we
+implicitly avoid this from the way we invoke callers. Either prev == vma as
+per vma_merge_extend(), or the loops that invoke vma_merge_new_vma()
+wouldn't permit this to occur.
+
+Let me look into it more deeply + reply again a bit later, I mean we could
+perhaps do with asserting this somehow, but I don't think it's useful to do
+an early exit for something that ostensibly _shouldn't_ happen.
+
+>  	/* Does the input range span an existing VMA? (cases 5 - 8) */
+>  	curr = find_vma_intersection(mm, prev ? prev->vm_end : 0, end);
+>
+> --
+> 2.25.1
+>
 
