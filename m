@@ -1,261 +1,177 @@
-Return-Path: <linux-kernel+bounces-70307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70310-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B6F58595DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:59:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F9868595E7
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:09:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5479E1C21463
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:59:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBB5C1C214B5
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E476125D5;
-	Sun, 18 Feb 2024 08:59:26 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A326F12B86;
+	Sun, 18 Feb 2024 09:09:14 +0000 (UTC)
+Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2105.outbound.protection.partner.outlook.cn [139.219.146.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3A4FC1D;
-	Sun, 18 Feb 2024 08:59:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708246765; cv=none; b=EaBlYstAX6P5pFv7z/gDarPzYTptzD8ECCLQsdXwnFtc1AbiRWUFr8AmAqcpGRM6RYK/2R0/nC/IL3p3ahapNVnI+NwLX1pH3hNn9gNKpGbCPoiK7NkyE945XzmwUfIWNNEKIBabxGZrsppXrVY3MLmXv/wUrCSnTDH55j1nsRQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708246765; c=relaxed/simple;
-	bh=ZZ+H8LVg2IFQHCdjKmyzTCPevikSQnQ+JapriyhXgfo=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=nizIThB1fseORtuwAkjK26nBwC0u45aqyP5RJBrUyYEUh1lmilCEs2oeyIhwwxlhyEC6z/zu2+VIM7H/QOY9y49+h+d85qmBfXJZNPpnuc9sMXOC1cU3UI2jNmJVj3wcEivp6u6uvdNWKWnJuqigNDuoU3psed4wZnrtmEM5De0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Td0376ddLz4f3kKm;
-	Sun, 18 Feb 2024 16:59:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 04FFE1A0CF6;
-	Sun, 18 Feb 2024 16:59:19 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+RHjxtFldH+GEQ--.13072S3;
-	Sun, 18 Feb 2024 16:59:17 +0800 (CST)
-Subject: Re: [PATCH v5 03/14] md: make sure md_do_sync() will set
- MD_RECOVERY_DONE
-To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com,
- agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev,
- song@kernel.org, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
- akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <20240201092559.910982-4-yukuai1@huaweicloud.com>
- <CALTww283nysUDy=jmW4w45GbS6O2nS0XLYX=KEiO2BUp5+cLaA@mail.gmail.com>
- <15f0f260-3a2f-6d9b-e60e-c534a9a4d7d0@huaweicloud.com>
- <CALTww2-jfLXfOSHfBTUk9iMUZfHprmQ56bp2XFPbQaj401nSKg@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <eb7c3bce-54ee-afbc-cea5-1e19c09d14f8@huaweicloud.com>
-Date: Sun, 18 Feb 2024 16:59:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92F97470;
+	Sun, 18 Feb 2024 09:09:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.105
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708247354; cv=fail; b=BioyeOAUjGnmUKFoe1SdwakM3PP/x8t1xmoQZqamISKw0pZ/rHLCDRF25ZKE/uBmcDPxPSnHU8q19Y1u/1zZ3usI4XKb9/lssK/QVbHMZXdYEdW6DP7vnAD7+2cxi/Lmd1jCnTqq49qcDQpZ8RP5uVE4nCNDYa6XUTL5PbWzKJE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708247354; c=relaxed/simple;
+	bh=uIQrkTheVkil3TxjeQbSGR1kNOJGTxNZ7rJs2Q4R7i4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=RorbWqjioYIey32g6tYTir7P4e5ktFE6Uz2bOHidp/6q+wo7ev7CFVE8wnoKkAOxlMzOax/sxZthDlNq8YToRKTltXfF0+dGN/7WfbVjeuI3QUSmdQZP59oQo+ydFsyMa1g70HcfRoTXfDhZbxqwAZTPNePSkA32tvv65ZvQm20=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TgmFVcdMzyICnhbftLtiumaEIqf5X191/LXTmskFfHi/+nJGP7OGX+okP/HxqtFTo4CYHCLWy2hWQZDTmTtLc+OlkvHPD3UIDel+HE2aDCIjwAW2kU76tsrjtc/KqJGurfPl4k4pHHeo0h+aIt8w2K7yB1xMWkrXShZT2q36KKl4oHbmTpwNKHQx3Lzh/Cz8Z+SXAe/PPju3McuxkQgzeOPju6LtOgnwt8PmrT0OpG9QmRbWEUG4bxqJgOKMzMDlWIKT7zAhWUBJWBj+axe0Mkn1fRDn0lBat+a/RcqOGagFRxAw3KRW444rPAA/VbUN6tSX6xTTmULDOH+D0ZD3HQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uIQrkTheVkil3TxjeQbSGR1kNOJGTxNZ7rJs2Q4R7i4=;
+ b=RRy/O5MrmsHF+2NUTRIGpFm888iWHANq0HifotBmIpEPiYdTYB4XzJ7maRgFw1hDOXK5dBl0NgmW/LBXAoJhdYJQoa3nHgsZfNu9QLq1kolqLUpnCGezS5ZcrJ/DJLSaeF7QbL7YM0nJIqwcYFn0YiogCfL+UkJO8evoyH9tkhQSHgntusld4Et2ZbQVrSn7P/HcVAHGJYtQk5TVr1CRd6WCPSjwS6M6gMMYzw6c0kpkYEEDrGZV6cbDjnTozjnpslp7l9ccxEOvzB70A2HWZzq8UTm6nLaFV7DXmhpkiJmiFHqCSpegO1cSdmiDTzg6laRkkxuVr1zYN4Cd71IiIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:25::10) by SHXPR01MB0816.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:27::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.46; Sun, 18 Feb
+ 2024 02:36:05 +0000
+Received: from SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+ ([fe80::b0af:4c9d:2058:a344]) by
+ SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn ([fe80::b0af:4c9d:2058:a344%6])
+ with mapi id 15.20.7249.041; Sun, 18 Feb 2024 02:36:05 +0000
+From: Changhuang Liang <changhuang.liang@starfivetech.com>
+To: Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+CC: Leyfoon Tan <leyfoon.tan@starfivetech.com>, Jack Zhu
+	<jack.zhu@starfivetech.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>
+Subject:
+ =?gb2312?B?u9i4tDogW1BBVENIIHYyIDIvMl0gaXJxY2hpcDogQWRkIFN0YXJGaXZlIGV4?=
+ =?gb2312?Q?ternal_interrupt_controller?=
+Thread-Topic: [PATCH v2 2/2] irqchip: Add StarFive external interrupt
+ controller
+Thread-Index: AQHaU0FmkrIWOb3y5U2swetYFmXGFLEIEG4AgAdrmVA=
+Date: Sun, 18 Feb 2024 02:36:05 +0000
+Message-ID:
+ <SHXPR01MB0671BD046F6E3F3A215414A6F252A@SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn>
+References: <20240130055843.216342-1-changhuang.liang@starfivetech.com>
+ <20240130055843.216342-3-changhuang.liang@starfivetech.com>
+ <87cyt0ivn3.ffs@tglx>
+In-Reply-To: <87cyt0ivn3.ffs@tglx>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SHXPR01MB0671:EE_|SHXPR01MB0816:EE_
+x-ms-office365-filtering-correlation-id: 1d572e35-26d2-46f6-f766-08dc302a5ae1
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ LTooA5c7CgiukLMIp8aAeW3mIFYwBxHq8pDgrVfYXB83MTacszUwGEWnuVb0WhNwv2kKIb2UAUhvZF/Y7Ile3b+1oWRmh7fZMOmKuRwd3Qr2cb94cX63ZrqU0XCxA0uvqVQN7Y97ebeN0AG/8tWUMLw5tt+HLKEjvoJs3fMMbwJxKbkIEntA0hqvl/M0+WD9HCnL53JlH2LvmyOoGRohhyhgppRMLF3wJFlywWT2gRKZV5/l5jxitEEl6iQSY8lkwrcYe+LDYeFEOkTq52WIXqhmntu4Z+sMHTdnnBW7bzJ1tojkSuIRKvTLN/7QpM+7g4lrAsgGm+Un76zp6YGvxoaYg674QgO5Qhbx/Q9e5BCSgkaF8NbpR7fqC6YkaqeF8HFVWQ/SrhahMu1nLmy6Go1xcyuO8ScOZD3oNUOcBrnnKfPFjVE2RwGPBue7GuG2zpOTk+K3cZPUhHUJLcqNz8rNiqZi0fXVBsmqWnsLG4pmmR237Tk8WjammrjvfzupOHqAZzzpAp33EwhzibsGVWfY+0Ohv8JYDlBisvuikCGBMd6OA4MpriwGDlaIa8kf
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(39830400003)(396003)(136003)(230922051799003)(451199024)(1800799012)(186009)(64100799003)(38070700009)(38100700002)(40160700002)(41300700001)(122000001)(224303003)(55016003)(41320700001)(2906002)(7696005)(9686003)(26005)(508600001)(83380400001)(71200400001)(86362001)(33656002)(40180700001)(66946007)(44832011)(5660300002)(54906003)(64756008)(66446008)(110136005)(66476007)(66556008)(76116006)(8936002)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?gb2312?B?bzFBWXN3SGNETFAzQnRaT2xGS1gxVHhpSXhKRnBtTlRpclJMSENuYWZ2Qm1q?=
+ =?gb2312?B?WkUrZE1wWXVlK3pnY21wdXdYeHBPNnNwaEwzamxSenVuSkZMRzF2MXlaeTlK?=
+ =?gb2312?B?amFmNkR0Sk5UMFJqT1hXMlFzQUFBZmNUeUJzR3RqYzdnVmFZci9aSnBCYmhH?=
+ =?gb2312?B?bnMwV2JsTU1UMDBSUDJpRmorTlRISE1kNCswWEZNMlhUU2JURVpHRzFtQ28x?=
+ =?gb2312?B?dFUxODZPbExlUklsRnRhVlEzN0tiRzFCZHhNSW1LVTliN05vT3Ftd0U3d2lI?=
+ =?gb2312?B?a3dtdmhqZGU0UytVQUxSSXR6cGFuc1pBUDBMUlFXNUl2Ti8rT3FibmlyQnBY?=
+ =?gb2312?B?dDUzNFM3RThFMHJTYnBJTk9MN0MrWWJQODlCMXVVU0FkOXZ3K21kbnlIdE1o?=
+ =?gb2312?B?SXZXMXFxVEFBdFU4c0N6cjlKcXdsdEFUMHh4WjF3VlpQUGsrWnhnSnFjODc5?=
+ =?gb2312?B?MDl0TVdydVpmK2c4UXNwR0hsSHRic0hmaVM1bzJsNXFRZFArQWR3akdRYUVU?=
+ =?gb2312?B?TG5FWmIrNmxMeFJwTVM2TUY0VjIvU2JXWUxiMUhVaTFXcmtyTEtrOUFHUEov?=
+ =?gb2312?B?STg3WEZWWlhNNGUvUitiWUNHR1pxTXhxTHJWWDJzUXdKTlZadkg4OWlXdVJs?=
+ =?gb2312?B?OHVGN2M5T25kWSt1Mm0wa2d5dnJ5d2pMNEtteDBFaERHL1EwVk95eVlUc2lx?=
+ =?gb2312?B?cVJUaGdoVHcwekVkbTZKME9MeDJxREJTQXU1ZG1KSEVDTjJBS21ZRzFnaVlW?=
+ =?gb2312?B?VGNsMlA2bjhBcjFSdTNwZEZIaFkwQk9RcWN6UlZ5QVBocWMvd0h2T2VyeTFN?=
+ =?gb2312?B?TUJ0aDVnVlp4MlJOalg1QlBzRlFObTN3cG1ScXJMVGxzSlpxWXlob3FMSzFR?=
+ =?gb2312?B?L0J2ck5EOFZ1aTVycXdmYlJ1OWpWUERPam8zOEFSSUhyMzhOazMwanQyc2NC?=
+ =?gb2312?B?T3F5SUw1QjBLOUNyeEpsQnNiR2h3cmQ0NTZZYVkzVTUwWmMrMHVIQlU4RTBz?=
+ =?gb2312?B?T0Z6SUhOU3gzYUR5MkliNGZ4d2o5dGREc2E3N1RjNFZMUWQ4akptVncvSC81?=
+ =?gb2312?B?cDhteTZLRFErelozcnZlQmxxZmIxZnhZZ2w1VE5vV3RPRG9KeXAwTXB0NnVl?=
+ =?gb2312?B?Q1FjamlUd0NDZEFQVHRhN2tHZkQ5UTlWaGxnZ2JCS0hiS0Z2d0pzUCs2U242?=
+ =?gb2312?B?Sm5IL0RSNzBJQmxKMm1hMmR4Y21COUY4NkVQdUN1R1FMaFRRZkw2QU9IQXNp?=
+ =?gb2312?B?MnZiazBMS3pQSVBZL0xGS0YwMkFXbm5wYXBWVzdkU1V4elhjckNhWkNUMGQx?=
+ =?gb2312?B?ZktvQ1Joby82Z2RhSy80aWlyeVdXcXJxV1pXV0QvOVBGU3Rrek1mOWZOMjlT?=
+ =?gb2312?B?blFiaXA0bHIwRUp4K3lHUGlzWHAwbHZ3YmlYa2VkQmlQWHpKVE8rTlZhVHdu?=
+ =?gb2312?B?dmhXb0lZT0VnblZCTnEveVRmWS9tSkJBY0oreThsTVo3RlQrT05WYWIvSnNM?=
+ =?gb2312?B?RjRncmFWRXNhQTV1R3lMM2VuRnRzV3UrUHBOYlpPbGN6Ty92cSttNk1lUTN2?=
+ =?gb2312?B?YTRMbTlHNmVuS0JWdTN1L3RJMU9vWmo3bkJTVHhFeEQzekZ5WkR3dzVOdUFE?=
+ =?gb2312?B?SmpRdDNGS2thczg4VkNMWnlkRmFjNHMreWdEbkpzREcyb3diYkQ3Qi9Zcy9q?=
+ =?gb2312?B?TXFQem9CV21JakpPVFZnV1g0ZTZWTVNvUHY5NTJpdnB1UDUvNmZmODdIYkVl?=
+ =?gb2312?B?YUpHcXhhN1VXQUNlWk81eGZwYkY0WDJud3o2VHR4eDUwSUhEbWtoakFwZTV3?=
+ =?gb2312?B?NUdGOHhFT1lTSmFIZThWdVFwNnNXb1VBTzkxdGROcFhZamVwN01FalJMUnFW?=
+ =?gb2312?B?emYyVVE5Rzc4MVJBRDFZaUFIZkJWM0VoaVU1TVBWRHNtWk8xanhZQWp5aU9I?=
+ =?gb2312?B?TFRHU0M1Q2pBSStGRTdWZEg3dy9nQUI0NWU2TERXaG9TS0JBRjc0ME52b0R3?=
+ =?gb2312?B?QnpQeE41RmVGMmZwUUFJQlNyVWkwM0pFWTEvb0JVMFVOY1FPZlk1OGx3Smtx?=
+ =?gb2312?B?N05HZHhOQ2lXKzBTb0FDQkJyNmZwNmdUUStsbk1tcjdWb0NLOFpOUE1hRUZB?=
+ =?gb2312?B?T3lOWTIzQXZJOE41R3NoUE1lK0tRMWVkQTJ3T2ZqRFJiV0tkNjBWd2ZYR2Fp?=
+ =?gb2312?B?Unc9PQ==?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALTww2-jfLXfOSHfBTUk9iMUZfHprmQ56bp2XFPbQaj401nSKg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn+RHjxtFldH+GEQ--.13072S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3AFykCFy7Gry8tFW8tryUtrb_yoWxXryrpF
-	W8JF90vr48Zry7ZrZFq3WqqFyFyw1jqryUuFy3W34rAa4DK3WfWFW8CFyUCFWvyF97Jw4j
-	vF45JFZ3uFyYk3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9I14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWr
-	Zr1UMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
-	IYCTnIWIevJa73UjIFyTuYvjfUO73vUUUUU
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+X-OriginatorOrg: starfivetech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SHXPR01MB0671.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d572e35-26d2-46f6-f766-08dc302a5ae1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Feb 2024 02:36:05.1140
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: L+7wNsWJxkFzEehPokHeX925DzIFzYRDzNNyCj2jD8kgRELH0DCwWi4d3LbJ0qlmRQJhic0QlhX12ngVtX/PNTioFUw5Ab3YSOuV1ah4+EYNQ6H/zpVRJSQRFHYVhdW+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SHXPR01MB0816
 
-Hi,
-
-在 2024/02/18 16:41, Xiao Ni 写道:
-> On Sun, Feb 18, 2024 at 2:51 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> Hi,
->>
->> 在 2024/02/18 13:56, Xiao Ni 写道:
->>> On Thu, Feb 1, 2024 at 5:30 PM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>>>
->>>> From: Yu Kuai <yukuai3@huawei.com>
->>>>
->>>> stop_sync_thread() will interrupt md_do_sync(), and md_do_sync() must
->>>> set MD_RECOVERY_DONE, so that follow up md_check_recovery() will
->>>> unregister sync_thread, clear MD_RECOVERY_RUNNING and wake up
->>>> stop_sync_thread().
->>>>
->>>> If MD_RECOVERY_WAIT is set or the array is read-only, md_do_sync() will
->>>> return without setting MD_RECOVERY_DONE, and after commit f52f5c71f3d4
->>>> ("md: fix stopping sync thread"), dm-raid switch from
->>>> md_reap_sync_thread() to stop_sync_thread() to unregister sync_thread
->>>> from md_stop() and md_stop_writes(), causing the test
->>>> shell/lvconvert-raid-reshape.sh hang.
->>>>
->>>> We shouldn't switch back to md_reap_sync_thread() because it's
->>>> problematic in the first place. Fix the problem by making sure
->>>> md_do_sync() will set MD_RECOVERY_DONE.
->>>>
->>>> Reported-by: Mikulas Patocka <mpatocka@redhat.com>
->>>> Closes: https://lore.kernel.org/all/ece2b06f-d647-6613-a534-ff4c9bec1142@redhat.com/
->>>> Fixes: d5d885fd514f ("md: introduce new personality funciton start()")
->>>> Fixes: 5fd6c1dce06e ("[PATCH] md: allow checkpoint of recovery with version-1 superblock")
->>>> Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
->>>> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->>>> ---
->>>>    drivers/md/md.c | 12 ++++++++----
->>>>    1 file changed, 8 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
->>>> index 6906d023f1d6..c65dfd156090 100644
->>>> --- a/drivers/md/md.c
->>>> +++ b/drivers/md/md.c
->>>> @@ -8788,12 +8788,16 @@ void md_do_sync(struct md_thread *thread)
->>>>           int ret;
->>>>
->>>>           /* just incase thread restarts... */
->>>> -       if (test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
->>>> -           test_bit(MD_RECOVERY_WAIT, &mddev->recovery))
->>>> +       if (test_bit(MD_RECOVERY_DONE, &mddev->recovery))
->>>>                   return;
->>>> -       if (!md_is_rdwr(mddev)) {/* never try to sync a read-only array */
->>>> +
->>>> +       if (test_bit(MD_RECOVERY_INTR, &mddev->recovery))
->>>> +               goto skip;
->>>> +
->>>> +       if (test_bit(MD_RECOVERY_WAIT, &mddev->recovery) ||
->>>> +           !md_is_rdwr(mddev)) {/* never try to sync a read-only array */
->>>>                   set_bit(MD_RECOVERY_INTR, &mddev->recovery);
->>>> -               return;
->>>> +               goto skip;
->>>>           }
->>>
->>> Hi all
->>>
->>> I have a question here. The codes above means if MD_RECOVERY_WAIT is
->>> set, it sets MD_RECOVERY_INTR. If so, the sync thread can't happen.
->>> But from the codes in md_start function:
->>>
->>>                   set_bit(MD_RECOVERY_WAIT, &mddev->recovery);
->>>                   md_wakeup_thread(mddev->thread);
->>>                   ret = mddev->pers->start(mddev);
->>>                   clear_bit(MD_RECOVERY_WAIT, &mddev->recovery);
->>>                   md_wakeup_thread(mddev->sync_thread);
->>>
->>> MD_RECOVERY_WAIT means "it'll run sync thread later not interrupt it".
->>> I guess this patch can introduce a new bug for raid5 journal?
->>
->> I'm not sure what kind of problem you're talking about. After patch 4,
->> md_start_sync() should be the only place to register sync_thread, hence
->> md_start() should not see registered sync_thread. Perhaps
->> MD_RECOVERY_WAIT and md_wakeup_thread(mddev->sync_thread) can be removed
->> after patch 4?
-> 
-> Hi Kuai
-> 
-> Before this patch, the process is:
-> 1. set MD_RECOVERY_WAIT
-> 2. start sync thread, sync thread can't run until MD_RECOVERY_WAIT is cleared
-
-Do you take a look at patch 4 and patch 9? sync thread will not start
-before step 4 now.
-> 3. do something
-> 4. clear MD_RECOVERY_WAIT
-> 5. sync thread (md_do_sync) can run
-> 
-> After this patch, step2 returns directly because MD_RECOVERY_INTR is
-> set. By this patch, MD_RECOVERY_WAIT has the same meaning as
-> MD_RECOVERY_INTR.  So this patch breaks one logic.
-
-And nothing is broke here.
-> 
-> MD_RECOVERY_WAIT is introduced by patch
-> d5d885fd514fcebc9da5503c88aa0112df7514ef (md: introduce new
-> personality funciton start()). Then dm raid uses it to delay sync
-> thread too.
-> 
-> Back to the deadlock which this patch tries to fix.
-> The original report is reshape is stuck and can be reproduced easily
-> by these commands:
-> modprobe brd rd_size=34816 rd_nr=5
-> vgcreate test_vg /dev/ram*
-> lvcreate --type raid5 -L 16M -n test_lv test_vg
-> lvconvert -y --stripes 4 /dev/test_vg/test_lv
-> vgremove test_vg -ff
-> 
-
-And can you still reporduce this problem after this patchset?
-
-> The root cause is that dm raid stopped the sync thread directly
-> before. It works even MD_RECOVERY_WAIT is set. Now we stop sync thread
-> asynchronously. Because MD_RECOVERY_WAIT is set, when stopping dm
-> raid, it can't set MD_RECOVERY_DONE in md_do_sync. It's the reason
-> it's stuck at stop_sync_thread. So to fix this deadlock, dm raid
-> should clear MD_RECOVERY_WAIT before stopping the sync thread.
-
-Or are you saying that it's better to fix this problem this way? You
-dind't explain that what's the problem to set MD_RECOVERY_DONE in
-md_so_sync().
-> 
-> dm raid stop process:
-> 1. dm_table_postsuspend_targets -> raid_postsuspend -> md_stop_writes.
-> 2. dm_table_destroy -> raid_dtr
-> 
-> So we need to clear MD_RECOVERY_WAIT before calling md_stop_writes.
-> 
->>
->>>
->>> And to resolve this deadlock, we can use this patch:
->>>
->>> --- a/drivers/md/dm-raid.c
->>> +++ b/drivers/md/dm-raid.c
->>> @@ -3796,8 +3796,10 @@ static void raid_postsuspend(struct dm_target *ti)
->>>           struct raid_set *rs = ti->private;
->>>
->>>           if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
->>> +               if (test_bit(MD_RECOVERY_WAIT, &rs->md.recovery))
->>> +                       clear_bit(MD_RECOVERY_WAIT, &rs->md.recovery);
->>
->> You must make sure md_do_sync() is called after this if sync_thread is
->> already registered, and I don't understand yet how this is guranteed. :(
-> 
-> md_stop_writes -> __md_stop_writes -> stop_sync_thread guarantee this.
-> 
-> Best Regards
-> Xiao
->>
->> Thanks,
->> Kuai
->>
->>>
->>> Regards
->>> Xiao
->>>>
->>>>           if (mddev_is_clustered(mddev)) {
->>>> --
->>>> 2.39.2
->>>>
->>>
->>> .
->>>
->>
-> 
-> .
-> 
-
+SGksIFRob21hcw0KDQpUaGFua3MgZm9yIHlvdXIgY29tbWVudC4NCg0KPiBPbiBNb24sIEphbiAy
+OSAyMDI0IGF0IDIxOjU4LCBDaGFuZ2h1YW5nIExpYW5nIHdyb3RlOg0KWy4uLl0NCj4gPiArc3Rh
+dGljIHZvaWQgc3RhcmZpdmVfaW50Y19tb2Qoc3RydWN0IHN0YXJmaXZlX2lycV9jaGlwICppcnFj
+LCB1MzINCj4gPiArcmVnLCB1MzIgbWFzaywgdTMyIGRhdGEpIHsNCj4gPiArCXUzMiB2YWx1ZTsN
+Cj4gPiArDQo+ID4gKwl2YWx1ZSA9IGlvcmVhZDMyKGlycWMtPmJhc2UgKyByZWcpICYgfm1hc2s7
+DQo+ID4gKwlkYXRhICY9IG1hc2s7DQo+IA0KPiBXaHk/DQo+IA0KDQpJZiBJIHdhbnQgdG8gdXBk
+YXRlIHRoZSByZWcgIEdFTk1BU0soNywgNCkgIHRvIHZhbHVlIDUsIHRoZSBkYXRhIEkgd2lsbCBw
+YXNzIGluIDUgPDwgNA0KDQo+ID4gKwlkYXRhIHw9IHZhbHVlOw0KPiA+ICsJaW93cml0ZTMyKGRh
+dGEsIGlycWMtPmJhc2UgKyByZWcpOw0KPiANCj4gSG93IGlzIHRoaXMgc2VyaWFsaXplZCBhZ2Fp
+bnN0IGNvbmN1cnJlbnQgaW52b2NhdGlvbnMgb2YgdGhpcyBjb2RlIG9uIGRpZmZlcmVudA0KPiBD
+UFVzIGZvciBkaWZmZXJlbnQgaW50ZXJydXB0cz8NCj4gDQo+IEl0J3Mgbm90IGFuZCB0aGlzIHJl
+cXVpcmVzIGEgcmF3X3NwaW5sb2NrIGZvciBwcm90ZWN0aW9uLg0KPiANCg0KV2lsbCB1c2UgcmF3
+X3NwaW5sb2NrLg0KDQo+ID4gK30NCj4gPiArDQo+ID4gK3N0YXRpYyB2b2lkIHN0YXJmaXZlX2lu
+dGNfdW5tYXNrKHN0cnVjdCBpcnFfZGF0YSAqZCkgew0KPiA+ICsJc3RydWN0IHN0YXJmaXZlX2ly
+cV9jaGlwICppcnFjID0gaXJxX2RhdGFfZ2V0X2lycV9jaGlwX2RhdGEoZCk7DQo+ID4gKw0KPiA+
+ICsJc3RhcmZpdmVfaW50Y19tb2QoaXJxYywgU1RBUkZJVkVfSU5UQ19TUkMwX01BU0ssIEJJVChk
+LT5od2lycSksIDApOw0KPiA+ICt9DQo+ID4gKw0KPiA+ICtzdGF0aWMgdm9pZCBzdGFyZml2ZV9p
+bnRjX21hc2soc3RydWN0IGlycV9kYXRhICpkKSB7DQo+ID4gKwlzdHJ1Y3Qgc3RhcmZpdmVfaXJx
+X2NoaXAgKmlycWMgPSBpcnFfZGF0YV9nZXRfaXJxX2NoaXBfZGF0YShkKTsNCj4gPiArDQo+ID4g
+KwlzdGFyZml2ZV9pbnRjX21vZChpcnFjLCBTVEFSRklWRV9JTlRDX1NSQzBfTUFTSywgQklUKGQt
+Pmh3aXJxKSwNCj4gPiArQklUKGQtPmh3aXJxKSk7IH0NCj4gPiArDQpbLi4uXQ0KPiA+ICsJaXJx
+Yy0+cm9vdF9kb21haW4gPSBpcnFfZG9tYWluX2FkZF9saW5lYXIoaW50YywNCj4gU1RBUkZJVkVf
+SU5UQ19TUkNfSVJRX05VTSwNCj4gPiArCQkJCQkJICAmc3RhcmZpdmVfaW50Y19kb21haW5fb3Bz
+LCBpcnFjKTsNCj4gPiArCWlmICghaXJxYy0+cm9vdF9kb21haW4pIHsNCj4gPiArCQlwcl9lcnIo
+IlVuYWJsZSB0byBjcmVhdGUgSVJRIGRvbWFpblxuIik7DQo+ID4gKwkJcmV0ID0gLUVJTlZBTDsN
+Cj4gPiArCQlnb3RvIGVycl9jbGs7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICsJcGFyZW50X2lycSA9
+IG9mX2lycV9nZXQoaW50YywgMCk7DQo+ID4gKwlpZiAocGFyZW50X2lycSA8IDApIHsNCj4gPiAr
+CQlwcl9lcnIoIkZhaWxlZCB0byBnZXQgbWFpbiBJUlE6ICVkXG4iLCBwYXJlbnRfaXJxKTsNCj4g
+PiArCQlyZXQgPSBwYXJlbnRfaXJxOw0KPiA+ICsJCWdvdG8gZXJyX2NsazsNCj4gDQo+IExlYWtz
+IHRoZSBpbnRlcnJ1cHQgZG9tYWluLCBubz8NCj4gDQo+IFRoYW5rcywNCj4gDQoNCldpbGwgdXNl
+IGlycV9kb21haW5fcmVtb3ZlKCkgZnJlZSBkb21haW4uDQoNCnJlZ2FyZHMNCkNoYW5naHVhbmcN
+Cg==
 
