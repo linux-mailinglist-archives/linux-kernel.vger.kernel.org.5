@@ -1,151 +1,120 @@
-Return-Path: <linux-kernel+bounces-70125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34D3C8593B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:44:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C8C58593BD
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA7DE281A0F
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:44:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A351281F45
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C4D817F0;
-	Sun, 18 Feb 2024 00:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T/xwhoLJ"
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151D9A29
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 00:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B666A34;
+	Sun, 18 Feb 2024 00:55:02 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 067DD36E
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 00:54:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708217060; cv=none; b=Ed1pQsTU13CM/TjjejxmfplrXf2EUffvjO14Dr2j2gfjD79BGdYOETWqacgVDBzvsaCohaiJzPw6YCm/LoUEaWOeSJfLbxNyxe17yB+6ZemuWqasJUIYAawssJhHgM9CKZLHcAudM0nA+/sc4qKp7cjdR+SDKxBdlqdtZtOevwc=
+	t=1708217701; cv=none; b=d4B4gYeKpgak0sDYGTV9qBI3Te6HcFpWcG5hoBj+mlU106GFUtCOHDXXgDk1FIp2FALnXuPZWJpGjalWY+N5kIxvbNOLrkOtoXq+NzZpW+eMZR+vUwRuLSuTaaH99VSBYUATq9n++qKUEHx5TTjbZgJhZrjmNJNQll9Uokds5ZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708217060; c=relaxed/simple;
-	bh=eObXZNCrhmMoAtoJx0M+KCXazEG8uiFRYjucowDmnr4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FUdT4WnQ42Nqb3p2qSymItbUjxgGt3GOEuHgFBuuSK0SoW7ddS6B0q6EsXAw9v1QlbUDU9ug/toBu6WHJy4BUrMykoH30YIZGBp6eTBRTi1Wwfpged3Hgj/bMeo070KhGjoYKmPV6bYO8yT0hqiUMSv7aS2T8ct3HPwtS2ULXiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T/xwhoLJ; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-60802b329c4so18457487b3.0
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 16:44:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708217058; x=1708821858; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cFEGcM8EospHG4JmqyUXYLdSoH1Alzf1U0lPv6eqJTM=;
-        b=T/xwhoLJPGVdk1V/HhrRgMZsfbN6nYRAHY5lwofz/l8q5zNjsBdJVXHBeS39CuSKox
-         oqZe9CArJF37hHdFcyB5oiFH4ujlXu4RT29aK9L9rAZCvLrzgxNAndKlFHnw4Em75p+K
-         eE/5z2hTbf2OGDYB0xQNRG48TSeSBUr/9TVi5eFpo8xxObEsGC6nEnrLNaYSUIa+x4oD
-         Fe+W3UaU3cJXUBmqIgQ0Fq9wm5jDazohABpGuT1uZ2A6O+/4Atyt1q0Z3BBgfyWd05Uy
-         yWqNIE2qrm1W/0DpZtWfEZFltW6lBPHP4XgwnjDduBKb5WSU3rF9Np+VyvH5zaXEZ//3
-         viqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708217058; x=1708821858;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cFEGcM8EospHG4JmqyUXYLdSoH1Alzf1U0lPv6eqJTM=;
-        b=ITKtRh8G+ypcBhpiaU6xcOhVDF3z44L5HMcqUytteM85wksmOuEzsmYeaYQVUxyTZe
-         UhSt2Z7qpTVKxJOOs3mei6U0wZAXE5wRLo9S7RBKlAo45qCUavYvOdgkELAEy3DIc5GG
-         xbmsIXhqGV4nuBm8vXsLwvDP5RJpgGGBI94vN5F8SFqh8TRSy/Ky6Ad6fYStR2HYCQOI
-         a4WUkzIRRU66e7TXqWZZMFE0Km0p4nsYFWgne38IOz4t0ANVoIhRXIuDzbOWA/CFMj0z
-         pj5b2mFIc3vc1ui+F2aCsAySZcCsbx+RgzE+PI35VpME/LximCbWt4Yc+BfnNlPl8ZDA
-         e3FQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUEtfjphOEQ61YWnzn2NTIdCgylb+KFiNAyEZMkzOyYWgC2hm5mHgqKGLEIxI2En4fjYiAyfo+ato085eDHf5QUTz1nPs7vFQB+e870
-X-Gm-Message-State: AOJu0Yxr9NeN3GYwfLeRKyIxGV3km9wX4vO/Jri2SvOUZtUX7EgmVbao
-	/gXu3GWo3/9+A/HzGOOGPPGqQLovMyEmQ3Yy8qtJ5ob9rRjDjuU4gKTxZFqoaJV/5Gyq630cLIe
-	5mBEiT1D7g4jCQjHKkCjaFLE7Tl7uZbNRDpRK
-X-Google-Smtp-Source: AGHT+IF0zbur3ZnS0QBbUiRVZnclSCZcw12C5kwuIUJh6ZOEbr9od3x9F9LKEta3pcFjU0rivXF1DW3eH5+/zL6adzk=
-X-Received: by 2002:a81:914a:0:b0:604:f681:a1 with SMTP id i71-20020a81914a000000b00604f68100a1mr9152837ywg.16.1708217057719;
- Sat, 17 Feb 2024 16:44:17 -0800 (PST)
+	s=arc-20240116; t=1708217701; c=relaxed/simple;
+	bh=r2CPKbgVAG+OkQiwRepCBmmOjtywISiSS/RsLdr87LE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=s/HBKXkxpOCTkU09TYhUNoePvrMqJPkQKiyhuBZ8Ib+RrozApYHWZ4Xmp7oan1Pjvmyr0msc8t+dq0eB4wO/MZtpYdAI+6LIQ39BWZRA23qFLAp4Gs2Xq6n1OA3z2xLFKQloi8vL8UnXEgPnpWixU50EnOPUAirb4nMe992FEbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 875ABDA7;
+	Sat, 17 Feb 2024 16:55:39 -0800 (PST)
+Received: from [10.163.45.155] (unknown [10.163.45.155])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5365B3F694;
+	Sat, 17 Feb 2024 16:54:57 -0800 (PST)
+Message-ID: <05487b0c-207f-48c4-9094-6180c948783e@arm.com>
+Date: Sun, 18 Feb 2024 06:24:59 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-19-surenb@google.com>
- <2e26bdf7-a793-4386-bcc1-5b1c7a0405b3@suse.cz> <CAJuCfpGUH9DNEzfDrt5O0z8T2oAfsJ7-RTTN2CGUqwA+m3g6_w@mail.gmail.com>
-In-Reply-To: <CAJuCfpGUH9DNEzfDrt5O0z8T2oAfsJ7-RTTN2CGUqwA+m3g6_w@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Sun, 18 Feb 2024 00:44:05 +0000
-Message-ID: <CAJuCfpFvSOtz7DaYdv=FXRvTvoRbMziXctFXqSpP_u97uNsFSQ@mail.gmail.com>
-Subject: Re: [PATCH v3 18/35] mm: create new codetag references during page splitting
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64/sysreg: Update ID_AA64DFR0_EL1 and ID_DFR0_EL1
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ linux-kernel@vger.kernel.org
+References: <20240215055159.2440898-1-anshuman.khandual@arm.com>
+ <b103244b-7776-48fb-8055-5c003d773087@sirena.org.uk>
+From: Anshuman Khandual <anshuman.khandual@arm.com>
+In-Reply-To: <b103244b-7776-48fb-8055-5c003d773087@sirena.org.uk>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Feb 16, 2024 at 4:46=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
->
-> On Fri, Feb 16, 2024 at 6:33=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> =
-wrote:
-> >
-> > On 2/12/24 22:39, Suren Baghdasaryan wrote:
-> > > When a high-order page is split into smaller ones, each newly split
-> > > page should get its codetag. The original codetag is reused for these
-> > > pages but it's recorded as 0-byte allocation because original codetag
-> > > already accounts for the original high-order allocated page.
-> >
-> > Wouldn't it be possible to adjust the original's accounted size and
-> > redistribute to the split pages for more accuracy?
->
-> I can't recall why I didn't do it that way but I'll try to change and
-> see if something non-obvious comes up. Thanks!
 
-Ok, now I recall what's happening here. alloc_tag_add() effectively
-does two things:
-1. it sets reference to point to the tag (ref->ct =3D &tag->ct)
-2. it increments tag->counters
 
-In pgalloc_tag_split() by calling
-alloc_tag_add(codetag_ref_from_page_ext(page_ext), tag, 0); we
-effectively set the reference from new page_ext to point to the
-original tag but we keep the tag->counters->bytes counter the same
-(incrementing by 0). It still increments tag->counters->calls but I
-think we need that because when freeing individual split pages we will
-be decrementing this counter for each individual page. We allocated
-many pages with one call, then split into smaller pages and will be
-freeing them with multiple calls. We need to balance out the call
-counter during the split.
+On 2/15/24 18:30, Mark Brown wrote:
+> On Thu, Feb 15, 2024 at 11:21:59AM +0530, Anshuman Khandual wrote:
+> 
+>> This just updates ID_DFR0_EL1.CopDbg and ID_AA64DFR0_EL1.DebugVer register
+>> fields as per the definitions based on DDI0601 2023-12.
+> 
+> Just as a general note for non-trival registers it's easier to review if
+> we change one register per patch, it avoids having to re-review the same
+> registers repeatedly and for incremental changes like this it helps with
+> the fact that diff does badly at offering context.
 
-I can refactor the part of alloc_tag_add() that sets the reference
-into a separate alloc_tag_ref_set() and make it set the reference and
-increments tag->counters->calls (with a comment explaining why we need
-this increment here). Then I can call alloc_tag_ref_set() from inside
-alloc_tag_add() and when splitting  pages. I think that will be a bit
-more clear.
+Agreed, and noted.
 
->
-> >
+> 
+>> --- a/arch/arm64/tools/sysreg
+>> +++ b/arch/arm64/tools/sysreg
+>> @@ -231,6 +231,7 @@ Enum	3:0	CopDbg
+>>  	0b1000	Debugv8p2
+>>  	0b1001	Debugv8p4
+>>  	0b1010	Debugv8p8
+>> +	0b1011	Debugv8p9
+>>  EndEnum
+>>  EndSysreg
+> 
+> This is ID_AA64DFR0_EL1 and is missing at least an update to PMSVer.
+> 
+>>  
+>> @@ -1247,6 +1248,7 @@ UnsignedEnum	3:0	DebugVer
+>>  	0b1000	V8P2
+>>  	0b1001	V8P4
+>>  	0b1010	V8P8
+>> +	0b1011	V8P9
+>>  EndEnum
+>>  EndSysreg
+> 
+> This is ID_DFR0_EL1 and is missing an update to at least PerfMon.
+
+Will fold in the following changes i.e for ID_DFR0_EL1 and for
+ID_AA64DFR0_EL1 respectively and then split the patch into two
+- one for each register.
+
+diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
+index cc2914d6ebdc..508224a0e078 100644
+--- a/arch/arm64/tools/sysreg
++++ b/arch/arm64/tools/sysreg
+@@ -200,6 +200,7 @@ UnsignedEnum        27:24   PerfMon
+        0b0110  PMUv3p5
+        0b0111  PMUv3p7
+        0b1000  PMUv3p8
++       0b1001  PMUv3p9
+        0b1111  IMPDEF
+ EndEnum
+ Enum   23:20   MProfDbg
+@@ -1222,6 +1223,7 @@ UnsignedEnum      35:32   PMSVer
+        0b0010  V1P1
+        0b0011  V1P2
+        0b0100  V1P3
++       0b0101  V1P4
+ EndEnum
+ Field  31:28   CTX_CMPs
+ Res0   27:24
 
