@@ -1,119 +1,142 @@
-Return-Path: <linux-kernel+bounces-70341-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C542C859648
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:32:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F5E2859638
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 11:26:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F7922854E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:32:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 403A9B2243D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 10:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C776A4D11D;
-	Sun, 18 Feb 2024 10:32:39 +0000 (UTC)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD1D374CC;
+	Sun, 18 Feb 2024 10:26:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NMqS9LIh"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F07DEAF1;
-	Sun, 18 Feb 2024 10:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.201.40.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25B92CCA4
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 10:26:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708252359; cv=none; b=eSkFK10hNH/axxRa9I7CtVnNDg0O2v/mHEAZ1jVhyyuLiRq/9Ja3rBEUXfjuQ+YzPo2oi/MKL2ER7vJ5S0P9jUa2O0MuTocboNb5cuJ3njvQWA2Nm4fEJ/D4aM/SlmhmYOTmRjBkEA3P5+OQMqfOGn7Un7bH+Apkp+emppErl0I=
+	t=1708252001; cv=none; b=icY/9Rwr7NzYjNvDN9IzMfR//R/Kx/yTXmhSpGzGevfpbD4rcGNhTQKBup4GF/zc7/AFXiFJydRc10XEXF+2xxlQomzhGJMrSMfFbRhlMd2a7daS1PgavWfk7IBs/a6u7a5eQn5MmdZE6MREEJD2yF2vB1Cs/F4YHL+WktYLeEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708252359; c=relaxed/simple;
-	bh=QQ40rigSvgbbHgAfJv6HyWAMqrbMRDPMJB7xB30mk9g=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=ls6isx/aJsICqkYLi+9ys3cMo5JAREPKYi4rwHRoUPqGWDCmdsD+VREFE8voIgUNWWY0yyH9IisIejUHMVLe5ph70h4Yke3+SUkOsnb6SvQViS1DnQ+uDDKB0zhgh3xvJZLKxGnTjsNIDmdQPg2fy/uVu0Cq53Go1Pg6Q5M/rIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at; spf=fail smtp.mailfrom=nod.at; arc=none smtp.client-ip=195.201.40.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=nod.at
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nod.at
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id D2C2D626FB03;
-	Sun, 18 Feb 2024 11:25:56 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-	with ESMTP id zTwMf50YHRo2; Sun, 18 Feb 2024 11:25:56 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by lithops.sigma-star.at (Postfix) with ESMTP id 34C4362348B6;
-	Sun, 18 Feb 2024 11:25:56 +0100 (CET)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-	by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id BNvjYnE6md31; Sun, 18 Feb 2024 11:25:56 +0100 (CET)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-	by lithops.sigma-star.at (Postfix) with ESMTP id ECFFF64507D7;
-	Sun, 18 Feb 2024 11:25:55 +0100 (CET)
-Date: Sun, 18 Feb 2024 11:25:55 +0100 (CET)
-From: Richard Weinberger <richard@nod.at>
-To: chengzhihao1 <chengzhihao1@huawei.com>
-Cc: Martin Kepplinger-Novakovic <martink@posteo.de>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	stable <stable@vger.kernel.org>, patches@lists.linux.dev, 
-	ZhaoLong Wang <wangzhaolong1@huawei.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, 
-	Sasha Levin <sashal@kernel.org>, 
-	linux-mtd <linux-mtd@lists.infradead.org>, 
-	Vignesh Raghavendra <vigneshr@ti.com>, 
-	dpervushin <dpervushin@embeddedalley.com>, 
-	Artem Bityutskiy <Artem.Bityutskiy@nokia.com>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	yi zhang <yi.zhang@huawei.com>, yangerkun <yangerkun@huawei.com>, 
-	Henri Roosen <Henri.Roosen@ginzinger.com>, 
-	Melchior Franz <Melchior.Franz@ginzinger.com>
-Message-ID: <1171523562.70108.1708251955853.JavaMail.zimbra@nod.at>
-In-Reply-To: <a53aacd3-4270-2d80-f14c-8cfd763e4404@huawei.com>
-References: <20240122235719.206965081@linuxfoundation.org> <20240122235721.687806578@linuxfoundation.org> <fdfcc3b6e1a884bb986acf072bcc13611eae8bdd.camel@posteo.de> <a53aacd3-4270-2d80-f14c-8cfd763e4404@huawei.com>
-Subject: Re: [PATCH 5.4 058/194] mtd: Fix gluebi NULL pointer dereference
- caused by ftl notifier
+	s=arc-20240116; t=1708252001; c=relaxed/simple;
+	bh=73xM8HfwtjYvZeQh6N+9c+UZ7gdRDzATR9UR06S7DOs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Br32hJKwFbjCpiu3ss1yHrZgPLtPGj+boc8tthURO0m08k65QJbmwIgLUhdMqGH/6ATwTq2BPYQOKcYnv11WdwCbBR29IuncbNjRvPlGRvEqCpNVUCwvvNcy/vSy8VMgXNT4VjYJOReBjlpFciG94igCj4jjTFAkCWrAyckA8mM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NMqS9LIh; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708251998;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3iL7cm/0gzvphX08YlG1pTdWcKTR7vjKbJ6kYFx0SGQ=;
+	b=NMqS9LIh8lz+mQ5x/T0c9otWlelejywmjnmSFEYwUH2RXT4UFEe34hN/YbyGz8C4xaS3rn
+	HPGKMCyC1WYqUvJvjO7hcjRDLUIYcqBprQNDkmTRsnD4hWgH4d2o0tmFvo2MMXt1OXYYDu
+	D53/kKGlFikzE+EUJDv18aBdTU/8Jw8=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-81-VUWF6pB4NfKmWa5KIfRXKA-1; Sun, 18 Feb 2024 05:26:35 -0500
+X-MC-Unique: VUWF6pB4NfKmWa5KIfRXKA-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a2b068401b4so391042666b.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 02:26:35 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708251994; x=1708856794;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3iL7cm/0gzvphX08YlG1pTdWcKTR7vjKbJ6kYFx0SGQ=;
+        b=SG48PcoYtUsOyWZESX73askl3mCdYUdyzvgNnkQxY+o7t0SSXe2uysXoC0zu1YNIxo
+         4wXaEArPG6LQNMXq/L3D3hLZVqkGPp3EVLKACa7P/8PEifvfaKGUuVYiFJIdkwb0pVOx
+         eLdwxEfEycRYwJ/kmMEl2fKaUOjlpnkqRWpcLzY1EGxhHehflYC5lJRTLj9E3rLDbp1N
+         g6uHGPoTrLWUcAjkaOnRo7aFVk4KgP/rzsFG+yH5mbascT/wFUEl/wC2EWNRmpHmdWWC
+         8H7R8ZAZveieHxNmdqpbwumsojoyW6rmyABaY6Iv2ZZ5Qy0fEjIrldSGoTex1/MxCZMN
+         kQyg==
+X-Forwarded-Encrypted: i=1; AJvYcCWTmIcQ1H5S1e9VDzGIwdtnXo0ScEM+QpA6MufJuBAjyD6Vb3oFqnsBjCSDhc7uJllUozaRvuXzfkoZwAiQYON93uNO+cmSSnrhSgtR
+X-Gm-Message-State: AOJu0YyXpXI+mbupZ/5dCf8kTZ7t5wYhix7IsH13f5mk16iMAQLufgSH
+	cxhLCtr3Zk4CUAjPQTyBWZrMu/f1Ms8/XvU9ciF1YSI1TSCKEBsCz4CAuvcwdlERif+6d+65P+1
+	mBA6eQZH3J01209Dj+jsm/9AuKZvIjpUHnLX5kF69fm3BEuhFNVR/E2qyVGgvaw==
+X-Received: by 2002:a17:906:d293:b0:a3d:df97:47be with SMTP id ay19-20020a170906d29300b00a3ddf9747bemr4945772ejb.1.1708251994454;
+        Sun, 18 Feb 2024 02:26:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH2LPWogWqNaTO56lcudkdC1bbE+GHPBOzFooj4aTxaOOb4vFusuX04kOGUJ+8ZKLqElym9FA==
+X-Received: by 2002:a17:906:d293:b0:a3d:df97:47be with SMTP id ay19-20020a170906d29300b00a3ddf9747bemr4945752ejb.1.1708251994129;
+        Sun, 18 Feb 2024 02:26:34 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id un1-20020a170907cb8100b00a3d5a08ccc1sm1812528ejc.191.2024.02.18.02.26.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Feb 2024 02:26:33 -0800 (PST)
+Message-ID: <f6cced34-087a-4593-b510-a8a728deab97@redhat.com>
+Date: Sun, 18 Feb 2024 11:26:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Topic: Fix gluebi NULL pointer dereference caused by ftl notifier
-Thread-Index: qlWIfU/4hKJxU5rpLtwP8PpFM4piaQ==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/x86/amd/pmf: Fix a suspend hang on Framework 13
+Content-Language: en-US, nl
+To: Mario Limonciello <mario.limonciello@amd.com>, Shyam-sundar.S-k@amd.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ Trolli Schmittlauch <t.schmittlauch@orlives.de>
+References: <20240217005216.113408-1-mario.limonciello@amd.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240217005216.113408-1-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
------ Urspr=C3=BCngliche Mail -----
-> Von: "chengzhihao1" <chengzhihao1@huawei.com>
->> Hi Greg, hi patch-developers,
->>=20
->> wait a second. this already went into v5.4.268 but still: Doesn't this
->> break userspace?
->>=20
->> According to
->> https://lore.kernel.org/lkml/441107100.23734.1697904580252.JavaMail.zimb=
-ra@nod.at/
->> where this solution seems to come from, the behaviour changes: "no
->> mtdblock (hence, also no FTLs) on top of gluebi."
->>=20
->> I fell accross this because of an out-of-tree module that does
->> sys_mount() an mtdblock, so I won't complain about my code specifically
->> :) But doesn't it break mounting, say, jffs2 inside an ubi via
->> mtdblock? If so, is this really something that you want to see
->> backported to old kernels?
->>=20
->> Or differently put: Has this patch been picked up for old stable
->> kernels by scripts or by a human?
->>=20
->> I just want to make sure, and who knows, it might help others too, who
->> would just do a (possibly dangerous?) revert in their trees.
->>=20
->=20
-> This change does affect the mounting(mtdblock based on gluebi) behavior
-> in userspace. It was picked into stable versions because the fixed
-> problem is serious and easy to be reproduced, I guess.
-> A temporary solution is that modify mounting source target in userspace,
-> just replace mtdblock with mtd char device. For example, mount -t jffs2
-> mtd0 /mnt
+Hi,
 
-I don't think this needs backporting to stable. It's not serious because yo=
-u
-still need to be root to setup and trigger such a scenario.
+On 2/17/24 01:52, Mario Limonciello wrote:
+> The buffer is cleared in the suspend handler but used in
+> the delayed work for amd_pmf_get_metrics().
+> 
+> Stop clearing it to fix the hang.
+> 
+> Reported-by: Trolli Schmittlauch <t.schmittlauch@orlives.de>
+> Closes: https://lore.kernel.org/regressions/ed2226ff-257b-4cfd-afd6-bf3be9785474@localhost/
+> Closes: https://community.frame.work/t/kernel-6-8-rc-system-freezes-after-resuming-from-suspend-reproducers-wanted/45381
+> Fixes: 2b3a7f06caaf ("platform/x86/amd/pmf: Change return type of amd_pmf_set_dram_addr()")
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-Thanks,
-//richard
+Ugh, I should have caught this during review. I especially asked
+for the alloc parameter to amd_pmf_set_dram_addr() to be added
+for this. Ah well ...
+
+Thanks, patch looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
+
+
+
+> ---
+>  drivers/platform/x86/amd/pmf/core.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/amd/pmf/core.c b/drivers/platform/x86/amd/pmf/core.c
+> index 853158933510..4f734e049f4a 100644
+> --- a/drivers/platform/x86/amd/pmf/core.c
+> +++ b/drivers/platform/x86/amd/pmf/core.c
+> @@ -299,8 +299,6 @@ static int amd_pmf_suspend_handler(struct device *dev)
+>  	if (pdev->smart_pc_enabled)
+>  		cancel_delayed_work_sync(&pdev->pb_work);
+>  
+> -	kfree(pdev->buf);
+> -
+>  	return 0;
+>  }
+>  
+
 
