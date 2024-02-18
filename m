@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-70392-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70393-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03953859701
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 14:00:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 318C6859702
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 14:00:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B5DF1F21914
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 13:00:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4302B281F5F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 13:00:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2399E6BFAA;
-	Sun, 18 Feb 2024 13:00:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF86A6BFA1;
+	Sun, 18 Feb 2024 13:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="wsUtZUUM"
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="jaeR2EcQ"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AD36D1A7
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 13:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06F814EB41
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 13:00:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708261234; cv=none; b=rbNRjNRw/s/QqXUHJPg9wNrXx0pCEiHcxR0DOGSZ6/Akm6vqxnZn9ZRFDxSLCqtdrUKNYg53Up9wNxga2ImCS2sKBV7R0SPfEPOgR0zHSmo6iFOsGbyZvd6OJ9TdMgLJL37+Bffcs4H0h8tGH55fFiXjcbzW3LGc3fAtRBtcSB8=
+	t=1708261243; cv=none; b=YYNZb1yOXmTzR1dVuzXyn3d325pWwhUYo5IbGIjAWYUKPyZ2TO2gZx3ukCzox1OHzZOy2lGVwtTdCOuBfyC73HJ2HsWDlkVjfMvevr42kO8eOZiXTbya16W3bTjaWJRNvC0kbFsHTzcGFVWySs9gG6iTH2PyzMQZo6NiqcSMzPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708261234; c=relaxed/simple;
-	bh=hRiD6dLKoUyrGjRFujHiRdx70/odMTcB4P8yipX7AkE=;
+	s=arc-20240116; t=1708261243; c=relaxed/simple;
+	bh=8OEULQsbJfHqfkXaJy2htFuiEY9YhAYuhxxZlhozNTQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hYNZL5uyXfRofKe6rV1kLqh4FOrgGWZVYqShX813c/GzrO1mQEaLkmfviMLTF2gKUCikDW912LOirsefuqUsCchaBo8cn6UtzKWXs3uo9P1UVJ/ahe1OkLfOvd9/tAaZlqmFGFal9XniyzR83JHOfJoyyxjWmFWw9M+RAFGDsb4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=wsUtZUUM; arc=none smtp.client-ip=209.85.216.52
+	 In-Reply-To:Content-Type; b=oZi7p1Zg93lMzcKzl4a2PXUcXojbSEz3V9+Zqdc8lwFpoZH8Iet/k7WoTDcNQkNRMA83RfNDqchELhCV0MRxVN0A4RKMBOMWkhcGwOMQxsq9mquZrCG9UOQPrFcA55xAGfjzXP2QjNk7GEPZwKDGkoGKxPSRdK+AhRmxew44/xg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=jaeR2EcQ; arc=none smtp.client-ip=209.85.216.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2866b15b013so993517a91.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 05:00:13 -0800 (PST)
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2866b15b013so993726a91.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 05:00:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708261211; x=1708866011; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1708261240; x=1708866040; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=5DawyGrCFv8MWM89ldx7BIpHWYPaoK4RaQ5rwdaLsT0=;
-        b=wsUtZUUMjTpUb8qpLctVUTL45iv/OHM0cIZj/jyBrT8Wb5vf9n/hpBBeBhfS9/fspA
-         uGfZElHERt7d55UyCgGTcSka0bpl2VMyGxoFyH74CBDik8wFTKsnWeUu8ORqM6gRyG1U
-         lE2fq5lpWh4WPRPQ1oaf8CgpEvRkJptQo5nmmbTdkazHiVXYwJbHm5m7yQgFBVWXcLF0
-         zj/jPF0aZlHka87tRVLWy0ND20no1o6OLS4OT45ehidUdJQXg/1ZEov84kdIf4IlZN1T
-         dRZ44EY4c7GLnUEyRK8HwI+4ijI9An4UgjrKkRr8WKgz3k5XNNDeS1kEtCD+9+8giYP8
-         qhVA==
+        bh=RodByd/HG8871Mn03XNPX9N8h91R/e6bdUV6nucU/s0=;
+        b=jaeR2EcQ0f5a9YEbXLM2S3PBeD6qUrOzBLPfLvJIyCrUKvJsRNPRAorn07isKcJaSk
+         rEZtRHw/3E18xowGleJuM3z+sHblj0kAzRDBMfhoRQS0EIPpagv9pKhToYmX5zjuC0Sv
+         Ulrx0cJosMpltzYOlmjJJ6cG7u88fzha6zCVG5/VJssUAHloSD51ggXN4t4CNVQCOaV2
+         d4DexksgWMvu+pwOwRdgTXEcig/nHtXixLgPBJGa8ZLOCl+3CKQeMLXhV3TUdBoaGd96
+         c2MyaKRnqAyDttrcLGFHI1SVrY3U2mJdrSjggoDLR8gGLAXc7F/lrmvZKyMsw4eWZWKZ
+         5Heg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708261211; x=1708866011;
+        d=1e100.net; s=20230601; t=1708261240; x=1708866040;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5DawyGrCFv8MWM89ldx7BIpHWYPaoK4RaQ5rwdaLsT0=;
-        b=orjcOL4pGO//8lrZ9r1/qDHmetK+aZzHgl/U3ssWduK5J85HOiGqU/SXXOU0Ck4ZwB
-         HROktX7whAJp78ym3h7sDgrikZ3fRfk35wTs+yYWvgT7IPzn4OtSkVJCAqeWlvhno63t
-         xw7CgYxCv4AOD/83y32rl0l+k+EwcCt55JdX7SAaH4EVKwcxBdsSsnQL35NDDhwNPdw3
-         LzslFBdq72O0Mx/alXVP2cnXxAlox/FwziXj8nVlDRimFazMLDIfHrfan3NFc9XFm3U+
-         w85jsvrY+FEfmmaOlagp6wSi7GBflOUIUxTKmJqoHk0b9elDQZ8Zhq0uJerMwn0DxnJ9
-         ePaQ==
-X-Gm-Message-State: AOJu0YwN/U1JvXtrKJ20n+xcx9RMv7l15j/4ZcWqcXWOvLBQ1Rz7/Jvh
-	vv+qH5FtesSpW3m2k5S1E4kfo/Js3najaqHbTF/abg82RIBxi1qYNMtINnLVoiI=
-X-Google-Smtp-Source: AGHT+IGVFIzcZQSKZ28IfoCt8YS0LbF/Ky/GXgEYfked2me8fWHg4mU85AYxlUGNZG6fuYO4ZwYzeg==
-X-Received: by 2002:a05:6a21:1a4:b0:1a0:810e:5f40 with SMTP id le36-20020a056a2101a400b001a0810e5f40mr10357528pzb.4.1708261211014;
-        Sun, 18 Feb 2024 05:00:11 -0800 (PST)
+        bh=RodByd/HG8871Mn03XNPX9N8h91R/e6bdUV6nucU/s0=;
+        b=RDfGaPJeZuNw8z3C41uWrnkg2DR3G0ewt5+SDPRChxFvJKnIYoWtDNI0yc/pELTgu0
+         iXI50gBUrC8WUebMBoWoNMX7rFVM/SuQZapDLPdtitawzUiFtzN7kUaRvmljPdjlPjRh
+         ATCiC8OVB7tcDvHe8+q+UPRb/3g4IryFBQTyzV8XIhV2HHuXJElTbzOyd+PueFMRy+6Y
+         6MRxZ6681mydiIl1cEBxYdU/3lG4gLivxVlFA96QBvdOKQOPQKCgOJW34xRfUY/xcO7u
+         R4vzKQXqSt1Dm1yxQHebDxfdpgRTIkMYVS0uBeFatBebQBocexeD8ltzAkgOr/KCQbfb
+         APuA==
+X-Forwarded-Encrypted: i=1; AJvYcCV7gYgY/DGZfastUCRwRSE1ayXA9of1NSe+iim55SHM0flOTU9yovgvxwW/qAzUu6RmMV8M53MamYJ/EmJpgMmXmeIQeBhrlNWWSJpF
+X-Gm-Message-State: AOJu0YyxMmODGlY0uNLuvH/PEAhtcGCqu3hrZ1Pv7TaTN2/XSGJ3oPUh
+	WLZYtuV0lxvUEXg1Mhlo58SxEVGJXVOSr6RcCkLYDQaldwPNqA5WjxrW6DxAwfE=
+X-Google-Smtp-Source: AGHT+IF/9MngS1gHDj2UfEL3koN32okEsAusVWjfdNuL59cquLXw8MkmbJVoODuiE5/zseUhcHfANA==
+X-Received: by 2002:a05:6a21:999c:b0:1a0:9abd:2801 with SMTP id ve28-20020a056a21999c00b001a09abd2801mr3451853pzb.3.1708261239954;
+        Sun, 18 Feb 2024 05:00:39 -0800 (PST)
 Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id 18-20020a631052000000b005d553239b16sm2906268pgq.20.2024.02.18.05.00.09
+        by smtp.gmail.com with ESMTPSA id 18-20020a631052000000b005d553239b16sm2906268pgq.20.2024.02.18.05.00.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 05:00:10 -0800 (PST)
-Message-ID: <522c03d9-a8ba-459d-9f7c-dfbf461dcf6b@kernel.dk>
-Date: Sun, 18 Feb 2024 06:00:08 -0700
+        Sun, 18 Feb 2024 05:00:39 -0800 (PST)
+Message-ID: <aba32b4b-9fb3-4d84-bdc0-633d34cf1234@kernel.dk>
+Date: Sun, 18 Feb 2024 06:00:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,203 +75,97 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8] io_uring: Statistics of the true utilization of sq
- threads.
+Subject: Re: [PATCH] liburing: add script for statistics sqpoll running time.
 Content-Language: en-US
-To: Xiaobing Li <xiaobing.li@samsung.com>, asml.silence@gmail.com
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
- kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
- kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
- cliang01.li@samsung.com, xue01.he@samsung.com
-References: <CGME20240206024726epcas5p1d90e29244e62ede67813da5fcd582151@epcas5p1.samsung.com>
- <20240206023910.11307-1-xiaobing.li@samsung.com>
+To: Xiaobing Li <xiaobing.li@samsung.com>
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+ io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+ joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+ ruyi.zhang@samsung.com
+References: <20240206024014.11412-1-xiaobing.li@samsung.com>
+ <CGME20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef@epcas5p2.samsung.com>
+ <20240218055953.38903-1-xiaobing.li@samsung.com>
 From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240206023910.11307-1-xiaobing.li@samsung.com>
+In-Reply-To: <20240218055953.38903-1-xiaobing.li@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2/5/24 7:39 PM, Xiaobing Li wrote:
-> Count the running time and actual IO processing time of the sqpoll
-> thread, and output the statistical data to fdinfo.
-> 
-> Variable description:
-> "work_time" in the code represents the sum of the jiffies of the sq
-> thread actually processing IO, that is, how many milliseconds it
-> actually takes to process IO. "total_time" represents the total time
-> that the sq thread has elapsed from the beginning of the loop to the
-> current time point, that is, how many milliseconds it has spent in
-> total.
-> 
-> The test tool is fio, and its parameters are as follows:
-> [global]
-> ioengine=io_uring
-> direct=1
-> group_reporting
-> bs=128k
-> norandommap=1
-> randrepeat=0
-> refill_buffers
-> ramp_time=30s
-> time_based
-> runtime=1m
-> clocksource=clock_gettime
-> overwrite=1
-> log_avg_msec=1000
-> numjobs=1
-> 
-> [disk0]
-> filename=/dev/nvme0n1
-> rw=read
-> iodepth=16
-> hipri
-> sqthread_poll=1
-> 
-> ---
-
-If you put --- in here, then the rest of the commit message disappears.
-The way you format commit messages it to put things you don't want in
-the git log below it... This one should not be here.
-
-> 
-> ---
-> The test results corresponding to different iodepths are as follows:
-
-Same with this one...
-
-> |-----------|-------|-------|-------|------|-------|
-> |   iodepth |   1   |   4   |   8   |  16  |  64   |
-> |-----------|-------|-------|-------|------|-------|
-> |utilization| 2.9%  | 8.8%  | 10.9% | 92.9%| 84.4% |
-> |-----------|-------|-------|-------|------|-------|
-> |    idle   | 97.1% | 91.2% | 89.1% | 7.1% | 15.6% |
-> |-----------|-------|-------|-------|------|-------|
-> 
-> changes?
-> v8:
-
-Here you need it, the changelog should be below the one and only --- you
-put in the commit message.
-
->  - Get the work time of the sqpoll thread through getrusage
-> 
-> v7:
->  - Get the total time of the sqpoll thread through getrusage
->  - The working time of the sqpoll thread is obtained through ktime_get()
-> 
-> v6:
->  - Replace the percentages in the fdinfo output with the actual running
-> time and the time actually processing IO
-> 
-> v5?
->  - list the changes in each iteration.
-> 
-> v4?
->  - Resubmit the patch based on removing sq->lock
-> 
-> v3?
->  - output actual working time as a percentage of total time
->  - detailed description of the meaning of each variable
->  - added test results
-> 
-> v2?
->  - output the total statistical time and work time to fdinfo
-> 
-> v1?
->  - initial version
->  - Statistics of total time and work time
-> 
-> Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
-
-And since your Signed-off-by is here, it also does not go into the
-commit message, which it must.
-
-> index 976e9500f651..18c6f4aa4a48 100644
-> --- a/io_uring/fdinfo.c
-> +++ b/io_uring/fdinfo.c
-> @@ -64,6 +64,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->  	unsigned int sq_shift = 0;
->  	unsigned int sq_entries, cq_entries;
->  	int sq_pid = -1, sq_cpu = -1;
-> +	u64 sq_total_time = 0, sq_work_time = 0;
->  	bool has_lock;
->  	unsigned int i;
+On 2/17/24 10:59 PM, Xiaobing Li wrote:
+> On 2/6/24 10:40 AM, Xiaobing Li wrote:
+>> diff --git a/test/sqtimeshow.sh b/test/sqtimeshow.sh
+>> new file mode 100644
+>> index 0000000..e85fd2f
+>> --- /dev/null
+>> +++ b/test/sqtimeshow.sh
+>> @@ -0,0 +1,61 @@
+>> +#!/usr/bin/env bash
+>> +
+>> +UPLINE=$(tput cuu1)
+>> +
+>> +function set_header() {
+>> +    printf "\033[47;30m%-15s %-15s %-15s %-15s \033[0m\n" PID WorkTime\(us\) TotalTime\(us\) COMMAND
+>> +}
+>> +
+>> +function get_time() {
+>> +    pid=$1
+>> +    item=$2
+>> +    proc_file="/proc/$pid/fdinfo/6"
+>> +    if [ ! -e $proc_file ]; then
+>> +        return
+>> +    fi
+>> +    content=$(cat ${proc_file} | grep ${item} | awk -F" " '{print $2}')
+>> +    echo ${content%us}
+>> +}
+>> +
+>> +function show_util() {
+>> +    index=0
+>> +    while true
+>> +    do
+>> +        data=$(top -H -b -n 1 | grep iou-sqp)
+>> +        if [ -z "${data}" ]; then
+>> +            echo "no sq thread is running."
+>> +            exit
+>> +        fi 
+>> +        index=0
+>> +        num=$(echo $data | tr -cd R |wc -c)
+>> +        arr=($data)
+>> +        len=$((${#arr[@]} / ${num}))
+>> +        i=0
+>> +        while [ ${i} -lt ${num} ]
+>> +        do
+>> +            pid=${arr[${i} * ${len}]}
+>> +            name=${arr[${i} * ${len} + len - 1]}
+>> +            work_time=$(get_time $pid "SqWorkTime")
+>> +            total_time=$(get_time $pid "SqTotalTime")
+>> +            printf "%-15s %-15s %-15s %-15s\n" ${pid} ${work_time} ${total_time} ${name}
+>> +            ((i++))
+>> +        done
+>> +        sleep 2
+>> +        update=$UPLINE
+>> +        for j in $(seq 1 ${num}); do
+>> +            update=$update$UPLINE
+>> +        done
+>> +        if [ ! -z "$(top -H -b -n 1 | grep iou-sqp)" ]; then
+>> +            echo "$update"
+>> +        fi
+>> +    done
+>> +}
+>> +
+>> +function main() {
+>> +    # set header
+>> +    set_header
+>> +    # show util
+>> +    show_util
+>> +}
+>> +
+>> +main
 >  
-> @@ -147,10 +148,17 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
->  
->  		sq_pid = sq->task_pid;
->  		sq_cpu = sq->sq_cpu;
-> +		struct rusage r;
+> Hi, Jens and Pavel
+> This patch is to add a script that displays the statistics of the 
+> sqpoll thread to the terminal.
 
-Here, and in one other spot, you're mixing variable declarations and
-code. Don't do that, they need to be top of that scope and before any
-code.
-
-> diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-> index 65b5dbe3c850..9155fc0b5eee 100644
-> --- a/io_uring/sqpoll.c
-> +++ b/io_uring/sqpoll.c
-> @@ -251,6 +251,9 @@ static int io_sq_thread(void *data)
->  		}
->  
->  		cap_entries = !list_is_singular(&sqd->ctx_list);
-> +		struct rusage start, end;
-> +
-> +		getrusage(current, RUSAGE_SELF, &start);
-
-Ditto, move the variables to the top of the scope.
-
->  		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
->  			int ret = __io_sq_thread(ctx, cap_entries);
->  
-> @@ -260,6 +263,11 @@ static int io_sq_thread(void *data)
->  		if (io_run_task_work())
->  			sqt_spin = true;
->  
-> +		getrusage(current, RUSAGE_SELF, &end);
-> +		if (sqt_spin == true)
-> +			sqd->work_time += (end.ru_stime.tv_sec - start.ru_stime.tv_sec) *
-> +					1000000 + (end.ru_stime.tv_usec - start.ru_stime.tv_usec);
-> +
-
-and this should go in a helper instead. It's trivial code, but the way
-too long lines makes it hard to read. Compare the above to eg:
-
-static void io_sq_update_worktime(struct io_sq_data *sqd, struct rusage *start)
-{
-       struct rusage end;
-
-       getrusage(current, RUSAGE_SELF, &end);
-       end.ru_stime.tv_sec -= start->ru_stime.tv_sec;
-       end_ru_stime.tv_usec -= start->ru_stime.tv_usec;
-
-       sqd->work_time += end.ru_stime.tv_usec + end.ru_stime.tv_sec * 1000000;
-}
-
-which is so much nicer to look at.
-
-We're already doing an sqt_spin == true check right below, here:
-
->  		if (sqt_spin || !time_after(jiffies, timeout)) {
->  			if (sqt_spin)
->  				timeout = jiffies + sqd->sq_thread_idle;
-
-why not just put io_sq_update_worktime(sqd, &start); inside this check?
-
-> diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
-> index 8df37e8c9149..e99f5423a3c3 100644
-> --- a/io_uring/sqpoll.h
-> +++ b/io_uring/sqpoll.h
-> @@ -16,6 +16,7 @@ struct io_sq_data {
->  	pid_t			task_pid;
->  	pid_t			task_tgid;
->  
-> +	u64					work_time;
->  	unsigned long		state;
->  	struct completion	exited;
->  };
-
-Not sure why this addition is indented differently than everything else
-in there?
+No objections to this one, but it will not get applied until the kernel
+side is sorted out.
 
 -- 
 Jens Axboe
