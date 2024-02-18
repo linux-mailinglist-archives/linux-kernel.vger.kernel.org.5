@@ -1,304 +1,182 @@
-Return-Path: <linux-kernel+bounces-70230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C4DB85950E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:38:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9031D859502
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:31:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E64821F22BDE
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:38:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45A12283B4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:31:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 608B16AC0;
-	Sun, 18 Feb 2024 06:37:58 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2878C6AA1;
+	Sun, 18 Feb 2024 06:31:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="gFGnZauS"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2075.outbound.protection.outlook.com [40.107.20.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE9B63A9;
-	Sun, 18 Feb 2024 06:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708238277; cv=none; b=eQ/gc3AQs1Eq5fzaO0BhLTEkOZ67+IBdqT7Xc9qyeojp4mGwoRWrAG405LYk9XXOJK930DtyH6jl9MmfDdO4WCReq3zcT3lm8DmZWhQ1iyNdqDWTyy/OeR/gBe165XyYoUA/j6NlmDso+Loc3wqwhD5N4sygMvq00NrcBYmZUpU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708238277; c=relaxed/simple;
-	bh=oDGPGIWlrRSpzw7S/sn3obUABQ4LSNVkVEB6jQuunk8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=WV6X4XJdql+LF+kbrwEp6oMfKCcz3zWz4O/ov7VPcHyo08GSLTY42bZBiN2kTPvDE/o5IeyYGgJsmIcSqxn7fUJVyjkOAW8uHXzF3fHxbpiaSK9yCIq7VS7yy5h5TtKIB1ZA0a9ppwAtOcQ9MJp3Hd2FvRdkq4bppUNZ8zWK5eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TcwtQ1TG2z1xnM5;
-	Sun, 18 Feb 2024 14:36:30 +0800 (CST)
-Received: from dggpemm500019.china.huawei.com (unknown [7.185.36.180])
-	by mail.maildlp.com (Postfix) with ESMTPS id 627391A0172;
-	Sun, 18 Feb 2024 14:37:49 +0800 (CST)
-Received: from [10.67.108.244] (10.67.108.244) by
- dggpemm500019.china.huawei.com (7.185.36.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 18 Feb 2024 14:37:49 +0800
-Message-ID: <7919005d-ca26-4cae-8c1c-4adea63704ce@huawei.com>
-Date: Sun, 18 Feb 2024 14:37:48 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AF681103;
+	Sun, 18 Feb 2024 06:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.75
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708237863; cv=fail; b=RKeomrxaPIxaSja+NVDpcPfBmy6ORjf238BJT4S3WXCBAfo8Zf7V+kSAs1kEiVExAAWSKrn8JL4l/24QGS2J5v/Gl19tqLdb9uO0yA9zgLBpwFXTqAkztT4+4fkIMVlNN4FjRdU7qlUBbAqAwb0nvznC9eIMu26Xza+XyA7wDUo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708237863; c=relaxed/simple;
+	bh=BdIuzApF0drNHymebM3+MGSL4gdEkAHXeYMtBWQB04k=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=JUck2G3n7cW6sk7In145mv+1kX86Z6OCRHccIN7dsEKPb3z9wo5SmOsQ6qVloT2sxEASc0DWj+xsaogfaBUqa+LJbmsYgb3lu3GVa4UreF/6mtxnaZFMwBPkysHS3MrITnPNCpf3Uq0udWJcKGe8VKSRUUVPvriv1r8y81LheDE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (1024-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=gFGnZauS; arc=fail smtp.client-ip=40.107.20.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FhZ5m9swLMtYJgPsHHXodzHiD/6+YJ7r2vat0J3mUdsAPpP4hqAznerxbbBYs+qli3Ga0T8xi6BBVmz1py0GePf9b/HzGIaC9qHzllDCZDBHaCsI9Q9bwuhHEB0VIZhLQHmHHO4XwMXOn7qq0WA/ySdLVui6k0/93BSjlI/7hWSKjzJt3xDcRFgulVHybw+MQbWOCxRzdmY/lnJHTgwsoPdWNjRyIlVMkighLORCgE4mDlZ/wi7ku5kMITuCs8pwGtndm1KFl657q8BtNXX6iXIt5ojugElc7/nySm43aTjOXXgO5uGpnlRKA8xNRdLqjV7eK05E5gk26PK4TaO5DQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=efWPxUiduYvZWTRpH1Db1WBkLb681SR7mwR31cRerD0=;
+ b=ZBabUdKfr46VzqMpwuthk8kU/zaflQK9s1w2MIsgcAH9R2k/NwJ5AShUw9HDjP+pib95030IS5+uuL3RpES0cPcCaPjfndiQU+pYrhwSB3Xo4ocfIPy++6dvBXWMPsMZl8UiprHFbKbeOHYmjcjtP8oBSfqQvXodax/u1lpnmCZMII1zzrWamkSyY36+lAQOAQmM4rKVDdDIGzkDdGo5cUA3QyWpFpReJ/aG108axqR4pQmG0QHpMI3/P/suj8sbzegWsRidCVBbtNpf7vCDdno5ChPN8FTlT3Gna2JdvxB7qWCfQ0FgBQFux21i5rLYpUCKWMzoUfYMXqlyFHfKDg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=efWPxUiduYvZWTRpH1Db1WBkLb681SR7mwR31cRerD0=;
+ b=gFGnZauSH1LdvRzu1QOPqnqQluk9wOYsfD6NDJC8KP+/voG9PlFD4OBSjN+7oK+rc1wocezYVbv7Buxi+bHFYIA0It4aQllmn8rA05d5TPOgl+sfsaZi8heBvKbnr3KGH2USCiqzCRP0I59wKf9GnyjrxCnRFHjCflicNEaZoqY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by AM9PR04MB8321.eurprd04.prod.outlook.com (2603:10a6:20b:3ed::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.34; Sun, 18 Feb
+ 2024 06:30:52 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::4ac3:3559:4200:38e1]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::4ac3:3559:4200:38e1%4]) with mapi id 15.20.7292.033; Sun, 18 Feb 2024
+ 06:30:51 +0000
+From: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Subject: [PATCH 0/3] arm64: dts: add i.MX95 and EVK board
+Date: Sun, 18 Feb 2024 14:38:50 +0800
+Message-Id: <20240218-imx95-dts-v1-0-2959f89f2018@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAPql0WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDI0ML3czcCktT3ZSSYt3ExFQTY0MzM3PDRHMloPqCotS0zAqwWdGxtbU
+ AHDdgo1sAAAA=
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Li Yang <leoyang.li@nxp.com>, Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, Peng Fan <peng.fan@nxp.com>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708238355; l=1139;
+ i=peng.fan@nxp.com; s=20230812; h=from:subject:message-id;
+ bh=BdIuzApF0drNHymebM3+MGSL4gdEkAHXeYMtBWQB04k=;
+ b=HwUjY56OQHU0Z0z4nzSe0WF3BZulf/bq6VS2oqtvxKe6R749TvE1+lzh+J9A3pYYMb2TfxGTF
+ fFoz1ph+7N2CsmpXaqdtO6Aw1qVvTPVpkhnTobJX8bJdJkL/bpDQADs
+X-Developer-Key: i=peng.fan@nxp.com; a=ed25519;
+ pk=I4sJg7atIT1g63H7bb5lDRGR2gJW14RKDD0wFL8TT1g=
+X-ClientProxiedBy: SG2PR03CA0127.apcprd03.prod.outlook.com
+ (2603:1096:4:91::31) To DU0PR04MB9417.eurprd04.prod.outlook.com
+ (2603:10a6:10:358::11)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/core: Fix small negative period being ignored
-Content-Language: en-US
-To: Adrian Hunter <adrian.hunter@intel.com>
-CC: <mingo@redhat.com>, <acme@kernel.org>, <mark.rutland@arm.com>,
-	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
-	<namhyung@kernel.org>, <irogers@google.com>,
-	<linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<peterz@infradead.org>, <luogengkun2@huawei.com>
-References: <20240116083915.2859302-1-luogengkun2@huawei.com>
- <66cdc5f9-a09a-4841-8fca-252b7c78114b@intel.com>
- <cc68c4f2-564a-4c42-942f-d45e71f3ef7f@huawei.com>
- <f772572f-964b-426f-bd81-722ac77485de@intel.com>
-From: Luo Gengkun <luogengkun2@huawei.com>
-In-Reply-To: <f772572f-964b-426f-bd81-722ac77485de@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500019.china.huawei.com (7.185.36.180)
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR04MB9417:EE_|AM9PR04MB8321:EE_
+X-MS-Office365-Filtering-Correlation-Id: 16a63122-b214-4357-673a-08dc304b265a
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	jvPKb490EMRws+sNyCzpDNJ8nJkssfhtHMnS336I7Q4U09gRT8NS5M/Minwf4cFrKsiOtx8mw7sxNdoZqXcgpevPi4dghy6R/WrHzmzCu9XIUEU1348oXBlzJy3/YxbgEIbsrglcQzY6dYtR2JMFXcIG3XcOTFW7CzRntcFRkVxhGkHHznga5d3jolycNtMweZs5elwGxWydXNLd2srVodHftTJcKhbLaLEJv7BWf+GEk6T1bwb7fJb0y3GW/agcW4XEvfc7ZfHMu+HKeaBPg9Xkek1sQD5JrzypYzTQQFmS6lcyME9N+HEmD/lljqwvo15psUFK7ffxfSkyWqrXI5ApA3UK+j+VffRTOHd1Hman2cGTEEofjSejHbpFY0dfQsuHUB63yiPHss9UxOcd8CTAywPTEUpBxPE6gpyOWcCGeBC0yc6xmfkWY4DqcEf26pREvWEYCZLms40AnqY8ZR5fZG14oO7CX44v+RX/zhCjorhpebUWB+gqRHhfYJUhtA83bqVZybDeHzfe9RgUAsyfV3CrN9b1tsQWteD6R5OiuUzh+uQ/ypajl8E4oebd3E7mTKU1BM2yQWFN4ya+IJZ6sVlkoI7DtWvgLOgRhSuOM80MjI2M4glUrZ3xDptv
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(396003)(346002)(376002)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(38100700002)(2906002)(7416002)(5660300002)(4326008)(8676002)(8936002)(86362001)(41300700001)(316002)(66556008)(66476007)(66946007)(6486002)(6512007)(9686003)(478600001)(110136005)(6506007)(52116002)(83380400001)(38350700005)(36756003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bmRUdUw4ejRiS2VweTZpYXhIeGRjZ2ZKcUJRcGtVUHlLMzFhVmRmSUJmaGpl?=
+ =?utf-8?B?TVVSSDFjUWJ0SnBDUytYM1BnT0VhdHVNRG5VS2xENTRjWU5iR3ZoK1FzaWdi?=
+ =?utf-8?B?WmU1b3pUMkJXWEl5REt1L1FBUSs1b0Njc3AwU3JKMGJ0Vlppa1piL1o0NVhK?=
+ =?utf-8?B?ZWlBL0JHM2ErNWxrRkYzMGFMZnY5YWdmZVptRzYxWlpjY3pYNm12Sm4vMHZv?=
+ =?utf-8?B?dUVJeFR2V25uNGExa1Nmd2xnQ2w4RkdnWjZwbFg5aldWSWg0RVR1cW00RlZV?=
+ =?utf-8?B?ekVSMlVFYzBUL05xM1RyMm1ucVZPR3RXQlBYbmd5U3JIQllveE4xSWxPWHE0?=
+ =?utf-8?B?NHNTOVNQZkRsY2lVVzkzOUJtZEZPT2VBZE00YW4rc0pENGNFdjlNbFZBNXdS?=
+ =?utf-8?B?SlladC94TWp4ajBzNzdGanpqaC9Bb2xObTQxbzlWY0pSTzZaZzc4L21PcmxC?=
+ =?utf-8?B?RTdWRFJjV3FtbnlFTFkvR3daT2tiU3BkMW9vNVlVZkZFb0hqNURvYkRadWp6?=
+ =?utf-8?B?L0pSbk5WSi93VGMyUTNaendlNDFtdnJQZS9sVmJweElvelhlZ2NpVmVqZHN4?=
+ =?utf-8?B?OERoNHNEYkc4RHlvWHZjNm9GUVgxTTB5SDR6bU52SmZOd2F0dTVvWEdaVEpw?=
+ =?utf-8?B?ejR3Qm5LOVQ2NktuZ3RGUFJvRy9rWkZPeldSaDF3ZWF5VHdwT25EWk9pVFgw?=
+ =?utf-8?B?dW1zYlFzc0RqdVE3emdSRCtZYjM4bUZ3eXA4ZkluL0tteG00ZkIwajZhTHEz?=
+ =?utf-8?B?dmZuek1mRm92ZkdXTGVDdmg2QTdac3lZQ0dIZCszMWdPMUJSaEd4VDhuRHZn?=
+ =?utf-8?B?SDlyR2Y3bElROEFzS3lzcTZOejEwMDJHN2FPQ2dHTXRDdDFZU3BpdVJraHd1?=
+ =?utf-8?B?RUFUTklZZ3hYZU5sNXJNd1h5ZStxZ09iY3hselE5cWE5Rlk5a3dwNkpuTFJK?=
+ =?utf-8?B?KzVYamNucjhXMndvQUZxbGdZSEV2cWJ6RStWajlsSGxweDQvM3ZhdWN5R24v?=
+ =?utf-8?B?SHpNeWYvdDRYcERXYXJmVFdxeXJ1YzZ6SDR4UDN0ZXd2aFIyc0ZDUVFiU0Fz?=
+ =?utf-8?B?L3duTm11QjBGTk5sNTNQaUZSOEVEZ0lqL0NSRXJMYkppUDNOTi9Xd2NiUkY1?=
+ =?utf-8?B?akFHcWxib0xsakNiWlVkRUVuTTVJQ3VnYzRIV2dyZUYzckZqdVNMQWtKWDIz?=
+ =?utf-8?B?Yzc5TkpjTGNiNm1GckFZR2JOS0NTaWhMRWloYlNzVWZFZU5wdkZYenJZODJi?=
+ =?utf-8?B?MzVWT2w2R3k4RFBKYTFjZ1ZyS0xCUHJFSENMWTQ2Z1pROWJDMFdVZy9tVXFx?=
+ =?utf-8?B?UlBreHBCRHRQSmUzS0daU1I2R3Q4LytxRU1UbXYrcGpTUm9jV0dLa3NwQkdx?=
+ =?utf-8?B?a2tJN29aazNvaVZ6dGVhVnRtdlpLK0VsT2Y4Vjc1emtWOGNqMUJQdGxKSzJr?=
+ =?utf-8?B?akt1bU5GSVliRkd0SWkvdXZiVmp1S3V5K2xKelZQT0NpWUh5RzJvVTg1SVZE?=
+ =?utf-8?B?YjhlOGREVEk4M3dsbWxnL3pvVnpUZVVqTmlaTXlxZ2VEVDIvcy8rU2hzQkw3?=
+ =?utf-8?B?dzVmV3RncURyL0xNUjFOOWxlTE5xQmdURzJsUnJTZ0NOOFJQNHpXK21hMElL?=
+ =?utf-8?B?VG15aERnNksxWVpSU1Q0VVoxdUI1WXdJRCt5Y3pWT0NSODdQejYxWHk4aDdM?=
+ =?utf-8?B?emVCRkhWUnBzTUFaaE5ZNWd2TktZT2VOVGl5VkhFa3FoeGNHN2ViQm5CdE5M?=
+ =?utf-8?B?SU93bS95K0prVVhhQ2R6S1h2M3lrTG9kazN6SjVubXdneUpuU1hrZzFYUXA0?=
+ =?utf-8?B?ellud2k3WUxOTHk1bVkrNm1YczM4Yzk4OXhpY21qUUhzU2Q0ZkFsZ2NvUzZt?=
+ =?utf-8?B?V2x4bnV3UHgzelhSeWNlemdURlRjb2FnUjBOc1ZVOFlUK0NqNXFQcUwwSE9V?=
+ =?utf-8?B?OHRDempHN1AzR1VPcEs0S1BMSDJXWmNxUmlzZjU2TW1pcDdZSlM1cERwMWln?=
+ =?utf-8?B?RnVNYTVGTXR2V0lwR3JjQWtPSjJzRDVwSGJvTXNJRWZxL3A1Zlk5Q050dmFM?=
+ =?utf-8?B?bWMrQ2gyS0U5RklUTk5zazhGQU04K0tDdDU3UnM0VVRDQ0lUTnJpbFgvMXRI?=
+ =?utf-8?Q?7RuS2GN8DV7Y3iqhN0TK8B494?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16a63122-b214-4357-673a-08dc304b265a
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2024 06:30:51.5325
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QQsngA1tUwh09ufaqXdOvS5Z3Gv2wahBGpH9eq56VhWGAmQDrXFXEJJOBHgRSy5Bb1fQR5fF0K45JUYoa+45cQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8321
 
+Add a minimal i.MX95 dtsi and EVK board dts.
+i.MX95 has a M33 running SCMI firmware, but as of now, the scmi pinctrl
+driver still not ready for i.MX95, so we count on bootloader to
+configure the pinctrl for lpuart and sdhc and it boots well. After pinctrl
+driver ready, we could move to use scmi pinctrl.
 
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+Peng Fan (3):
+      dt-bindings: arm: fsl: add i.MX95 19x19 EVK board
+      arm64: dts: freescale: add i.MX95 basic dtsi
+      arm64: dts: freescale: add i.MX95 19x19 EVK minimal board dts
 
-On 2024/2/5 22:21, Adrian Hunter wrote:
-> On 20/01/24 09:21, Luo Gengkun wrote:
->>
->>
->> 在 2024/1/19 15:36, Adrian Hunter 写道:
->>> On 16/01/24 10:39, Luo Gengkun wrote:
->>>> In perf_adjust_period, we will first calculate period, and then use
->>>> this period to calculate delta. However, when delta is less than 0,
->>>> there will be a deviation compared to when delta is greater than or
->>>> equal to 0. For example, when delta is in the range of [-14,-1], the
->>>> range of delta = delta + 7 is between [-7,6], so the final value of
->>>> delta/8 is 0. Therefore, the impact of -1 and -2 will be ignored.
->>>> This is unacceptable when the target period is very short, because
->>>> we will lose a lot of samples.
->>>>
->>>> Here are some tests and analyzes:
->>>> before:
->>>>     # perf record -e cs -F 1000  ./a.out
->>>>     [ perf record: Woken up 1 times to write data ]
->>>>     [ perf record: Captured and wrote 0.022 MB perf.data (518 samples) ]
->>>>
->>>>     # perf script
->>>>     ...
->>>>     a.out     396   257.956048:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.957891:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.959730:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.961545:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.963355:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.965163:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.966973:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.968785:         23 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     396   257.970593:         23 cs:  ffffffff81f4eeec schedul>
->>>>     ...
->>>>
->>>> after:
->>>>     # perf record -e cs -F 1000  ./a.out
->>>>     [ perf record: Woken up 1 times to write data ]
->>>>     [ perf record: Captured and wrote 0.058 MB perf.data (1466 samples) ]
->>>>
->>>>     # perf script
->>>>     ...
->>>>     a.out     395    59.338813:         11 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.339707:         12 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.340682:         13 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.341751:         13 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.342799:         12 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.343765:         11 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.344651:         11 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.345539:         12 cs:  ffffffff81f4eeec schedul>
->>>>     a.out     395    59.346502:         13 cs:  ffffffff81f4eeec schedul>
->>>>     ...
->>>>
->>>> test.c
->>>>
->>>> int main() {
->>>>           for (int i = 0; i < 20000; i++)
->>>>                   usleep(10);
->>>>
->>>>           return 0;
->>>> }
->>>>
->>>>     # time ./a.out
->>>>     real    0m1.583s
->>>>     user    0m0.040s
->>>>     sys     0m0.298s
->>>>
->>>> The above results were tested on x86-64 qemu with KVM enabled using
->>>> test.c as test program. Ideally, we should have around 1500 samples,
->>>> but the previous algorithm had only about 500, whereas the modified
->>>> algorithm now has about 1400. Further more, the new version shows 1
->>>> sample per 0.001s, while the previous one is 1 sample per 0.002s.This
->>>> indicates that the new algorithm is more sensitive to small negative
->>>> values compared to old algorithm.
->>>>
->>>> Fixes: bd2b5b12849a ("perf_counter: More aggressive frequency adjustment")
->>>> Signed-off-by: Luo Gengkun <luogengkun2@huawei.com>
->>>
->>> It seems better, and the maths makes sense, so:
->>>
->>> Reviewed-by: Adrian Hunter <adrian.hunter@intel.com>
->>>
->>>
->>> But the test case still seems to give unexpected results. Usually:
->>>
->>>     # time taskset --cpu 1 ./test
->>>     real    0m 1.25s
->>>     user    0m 0.03s
->>>     sys     0m 0.00
->>>     # taskset --cpu 0 perf record -F 1000 -e cs -- taskset --cpu 1 ./test
->>>     [ perf record: Woken up 1 times to write data ]
->>>     [ perf record: Captured and wrote 0.051 MB perf.data (1290 samples) ]
->>>
->>> But occasionally:
->>>
->>>     # taskset --cpu 0 perf record -F 1000 -e cs -- taskset --cpu 1 ./test
->>>     [ perf record: Woken up 1 times to write data ]
->>>     [ perf record: Captured and wrote 0.010 MB perf.data (204 samples) ]
->>>     # perf script
->>>     ...
->>>     test   865   265.377846:         16 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.378900:         15 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.379845:         14 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.380770:         14 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.381647:         15 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.382638:         16 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.383647:         16 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.384704:         15 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.385649:         14 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.386578:        152 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.396383:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.406183:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.415839:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.425445:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.435052:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.444708:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.454314:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.463970:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     test   865   265.473577:        154 cs:  ffffffff832e927b schedule+0x2b
->>>     ...
->>>
->>>
->>>
->> It seems that the unexpected results is caused by Timer Interrupts not coming every TICK_NSEC.
->>
->> I guess this is due to system idleness.
-> 
-> It looks like the period is adjusted at the tick only
-> for active tasks, so a task that is asleep a lot, like
-> the test case, could go a number of ticks without being
-> adjusted by perf_adjust_freq_unthr_context().
-> 
->> I tried the patch and it should have fixed the issue.
-> 
-> Maybe also:
-> 
-> @@ -9523,7 +9532,7 @@ __perf_event_account_interrupt(struct perf_event *event, int throttle)
->   
->   		hwc->freq_time_stamp = now;
->   
-> -		if (delta > 0 && delta < 2*TICK_NSEC)
-> +		if (delta > 0 && delta != now)
->   			perf_adjust_period(event, delta, hwc->last_period, true);
->   	}
-> 
-> 
-It seems like it could re-adjust the period increased by the tick. 
-However, this would also introduce some problems. For example, if a task 
-is scheduled out and then scheduled back in, and we use such a delta to 
-calculate the new period, it will introduce more bias because the delta 
-includes the time when the task is not on the CPU. In addition, the 
-impact of the tick adjustment is still present, because the timer 
-interrupt is not always reaching every TICK_NSEC, which means we are 
-sending an incorrect nsec to perf_adjust_period, and therefore the 
-calculated period will become very large.
->>
->> You can give it a try as well.
->>
->> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h index afb028c54f33..2708f1d0692c 100644
->> --- a/include/linux/perf_event.h
->> +++ b/include/linux/perf_event.h
->> @@ -265,6 +265,7 @@ struct hw_perf_event {
->>         * State for freq target events, see __perf_event_overflow() and
->>         * perf_adjust_freq_unthr_context().
->>         */
->> +    u64                freq_tick_stamp;
->>        u64                freq_time_stamp;
->>        u64                freq_count_stamp;
->>    #endif
->> diff --git a/kernel/events/core.c b/kernel/events/core.c index cad50d3439f1..fe0d9b470365 100644
->> --- a/kernel/events/core.c
->> +++ b/kernel/events/core.c
->> @@ -4112,7 +4112,7 @@ perf_adjust_freq_unthr_context(struct
->> perf_event_context *ctx, bool unthrottle)
->>    {
->>        struct perf_event *event;
->>        struct hw_perf_event *hwc;
->> -    u64 now, period = TICK_NSEC;
->> +    u64 now, period, tick_stamp;
->>        s64 delta;
->>
->>        /*
->> @@ -4151,6 +4151,10 @@ perf_adjust_freq_unthr_context(struct
->> perf_event_context *ctx, bool unthrottle)
->>             */
->>            event->pmu->stop(event, PERF_EF_UPDATE);
->>
->> +        tick_stamp = perf_clock();
->> +        period = tick_stamp - hwc->freq_tick_stamp;
->> +        hwc->freq_tick_stamp = tick_stamp;
->> +
->>            now = local64_read(&event->count);
->>            delta = now - hwc->freq_count_stamp;
->>            hwc->freq_count_stamp = now;
->> @@ -4162,8 +4166,14 @@ perf_adjust_freq_unthr_context(struct
->> perf_event_context *ctx, bool unthrottle)
->>             * to perf_adjust_period() to avoid stopping it
->>             * twice.
->>             */
->> -        if (delta > 0)
->> -            perf_adjust_period(event, period, delta, false);
->> +        if (delta > 0) {
->> +            /*
->> +             * we skip first tick adjust period
->> +             */
->> +            if (likely(period != tick_stamp)) {
->> +                perf_adjust_period(event, period, delta, false);
->> +            }
->> +        }
->>
->>            event->pmu->start(event, delta > 0 ? PERF_EF_RELOAD : 0);
->>        next:
->>
->>>> ---
->>>>    kernel/events/core.c | 6 +++++-
->>>>    1 file changed, 5 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/kernel/events/core.c b/kernel/events/core.c
->>>> index 683dc086ef10..cad50d3439f1 100644
->>>> --- a/kernel/events/core.c
->>>> +++ b/kernel/events/core.c
->>>> @@ -4078,7 +4078,11 @@ static void perf_adjust_period(struct perf_event *event, u64 nsec, u64 count, bo
->>>>        period = perf_calculate_period(event, nsec, count);
->>>>          delta = (s64)(period - hwc->sample_period);
->>>> -    delta = (delta + 7) / 8; /* low pass filter */
->>>> +    if (delta >= 0)
->>>> +        delta += 7;
->>>> +    else
->>>> +        delta -= 7;
->>>> +    delta /= 8; /* low pass filter */
->>>>          sample_period = hwc->sample_period + delta;
->>>>    
->>>
-> 
+ Documentation/devicetree/bindings/arm/fsl.yaml    |    6 +
+ arch/arm64/boot/dts/freescale/Makefile            |    1 +
+ arch/arm64/boot/dts/freescale/imx95-19x19-evk.dts |   88 ++
+ arch/arm64/boot/dts/freescale/imx95-clock.h       |  187 ++++
+ arch/arm64/boot/dts/freescale/imx95-power.h       |   55 +
+ arch/arm64/boot/dts/freescale/imx95.dtsi          | 1215 +++++++++++++++++++++
+ 6 files changed, 1552 insertions(+)
+---
+base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
+change-id: 20240218-imx95-dts-aae4316671a7
+
+Best regards,
+-- 
+Peng Fan <peng.fan@nxp.com>
+
 
