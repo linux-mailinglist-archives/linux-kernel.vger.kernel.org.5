@@ -1,109 +1,120 @@
-Return-Path: <linux-kernel+bounces-70489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70490-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA51C85988D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:27:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44C64859890
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76A76281BE3
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:27:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 402AD1C20831
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44006F087;
-	Sun, 18 Feb 2024 18:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5495F5EE6B;
+	Sun, 18 Feb 2024 18:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="mTNVOFjm"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LVvpPZWc"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FDDE57E;
-	Sun, 18 Feb 2024 18:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC721E57E
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 18:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708280854; cv=none; b=cxBqwIduAUl10xuFw+yQRPd3YnOUXs+7O64I0qPJpi5xo2Xx6+ZxlzFa2pU5ExQUW1DL0phWjgNjsW3xsbthipCuHYyKHrhnmTAjXIdo8Uq8l43I3cOpP97nqqnmM67x3eshJ7LTJoV6sN8VG5O39IY0RR9psOn6abV6Vfcu8HE=
+	t=1708281053; cv=none; b=jON9/fXUyDfTnoqbno9oBeexpM1WInosf4WoeqG1RiZzSzy/D1fStCgug6wqSXBl9cR2J9zCl0MEyIOelr29ycT18M1/QJSrUDbia/tuf3SMP1N0yX2YoQLgmIy0T8sU8ks04vqagWP5TDa2/RxZp7FR4gcL6v08Q2WSt4vFaSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708280854; c=relaxed/simple;
-	bh=TUthxYyUEHuO74Lh6HcqiWly+WRYc2MjeEeGfpBGnMo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Of2lJvClYYvDhIY9IVLxCK4Fc9DmMD0WX97cUZZMFqmE0MAX8cpguPW70CELIePmN1rR5WSykrUeBpiWbA08DUUYZCS1JhDHPYyEcAdkmZl29AVXhtrYaCzuaixMfXL80s6YIg73APu3xRZgmPzJjqGb7+RHcrLklvKBkRfJ3qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=mTNVOFjm; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 56E37480;
-	Sun, 18 Feb 2024 19:27:23 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708280843;
-	bh=TUthxYyUEHuO74Lh6HcqiWly+WRYc2MjeEeGfpBGnMo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mTNVOFjmPTAypEwrtMCf4mfuoFWGYhm/p+bkVdAGecv/ly5BRoiqNm2gVA12CKy/I
-	 FMpmOcKcUrCFUrO98AjrdzKRVk3pL/emqygq5TSKt/pv2BXWy7gBsSeExIsYsUZ5i8
-	 GJpekJ7kGDF2fGKXSCruj1okIbfcxIxDO25K+onw=
-Date: Sun, 18 Feb 2024 20:27:33 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Paul Elder <paul.elder@ideasonboard.com>
-Cc: linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-	devicetree@vger.kernel.org, kieran.bingham@ideasonboard.com,
-	tomi.valkeinen@ideasonboard.com, umang.jain@ideasonboard.com,
-	aford173@gmail.com, Dafna Hirschfeld <dafna@fastmail.com>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v12 06/12] media: rkisp1: Add version enum for i.MX8MP ISP
-Message-ID: <20240218182733.GI7120@pendragon.ideasonboard.com>
-References: <20240216095458.2919694-1-paul.elder@ideasonboard.com>
- <20240216095458.2919694-7-paul.elder@ideasonboard.com>
+	s=arc-20240116; t=1708281053; c=relaxed/simple;
+	bh=FCZ5Z+doCgbKmdH968w5rToklrffFSqNnKk6PSCx9jY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=cfwmKFfhWG4kr9jnBZjACoA35sGGd9n2Itz55J2g6CwYtH4MqhxmvBPtcfzd3nNhBowFJCxPmKNmwBg8cQzIJqygxQyuP+S4bW+BZTSsH4MwTkMSdI1mckNlq1b9QgJXNepC2MGgOf0ro+XZ2JH3JBNbaIvk5JLxGEyzzlPItc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LVvpPZWc; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-40fb3b5893eso16663645e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 10:30:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708281050; x=1708885850; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V7FCgCwlRfN6Rmb7d2KV2HK+f4QpGUL2vs+0cArZ3fk=;
+        b=LVvpPZWciAeN8vrpKpI+DViwIffyywBkE3k+AFuBTSfK8ZxF7JhOMMjHtaqmvGwMKL
+         nTqJKr3llCK2CJQhkTbIVYDqn8+fCfuzrItVJrsGieM9sDYOKrebFGd4TCu82GTyIsVZ
+         Q+zcZJ7jIyUAxrSWmNPx7IeRC5BhYD3budhidFA/A1LlWfnLJ8DVFI4xVzIFyiuzDEW5
+         hx3rX3gK6EJ2qBlz3Uo+sADOUV6TlKXPXo6SUcAWIwJeKGSP5jgv+Lvo1IBQwvpCn/uz
+         9Kj/jCyd9ZfcdK2IQCAy+iUupxe3jtfU1U4aKrozYNbumjnT2yl7Ncy1aTglzBVJTh4l
+         1gpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708281050; x=1708885850;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V7FCgCwlRfN6Rmb7d2KV2HK+f4QpGUL2vs+0cArZ3fk=;
+        b=TcBKALDKnO7avJK41ldc7MpcIaSCmn8K+UOjKVfDAJbTJlwaD16Ze9JVWXL2+R1qN5
+         r9VBTQSUO7tX9QoKZz36WImjvPGH0kNwUqA/8od+hSiL4q+HUgD1RZOqJ/qvv/PqL+x1
+         KfWqlPoqWmkue2J2yQDsZc9w2IRP0Rg+sobS4tbrvH04ffJ5SCTGfYPx8tIR7JApbd03
+         rhz2o+FqaoawFH97jwykyhxCQ7fC4FK7gw/Xrs1Wq/76yeOIfdUnIzp9YanqG8mQVDHQ
+         s9rh7Z+NFVtRG+9NjE2Tq4uwzTvcxvay+5E87nbGKhUsDveAdelZYPSzknaa0zPwDqKb
+         uHuA==
+X-Forwarded-Encrypted: i=1; AJvYcCUgE/8t7h2RR5PbwuZltMrRT0EJpoINVWfXoz9Hys76mfRZFoNB7hborhW3/mL2smFMLJqi5bBc7sIoxjclYwpF4yrhfJZPcHjw6cyd
+X-Gm-Message-State: AOJu0Yw2K82D/MdYNI4vkIjADT8TRtWsVfX4KWU2vKdy3RaAiZmTEE+M
+	bMOrp/lkrDSnz/WcZ8IXuG+lRCqNUegJ4EXiWw3HotByzbB7Ui6zKn9/NIyXosaadumd96koe/x
+	+Glk=
+X-Google-Smtp-Source: AGHT+IE2yxBKnqBhnzWTpjKIap5XJovO94zJgJH4oFVjKVM6qkHqdtJLguzXgSdCvSg2WcSKN7H2wA==
+X-Received: by 2002:adf:f187:0:b0:33d:82a:14af with SMTP id h7-20020adff187000000b0033d082a14afmr6003543wro.64.1708281050256;
+        Sun, 18 Feb 2024 10:30:50 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id l5-20020a05600c4f0500b0041253692606sm7111845wmq.17.2024.02.18.10.30.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 10:30:49 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Olof Johansson <olof@lixom.net>,
+	Arnd Bergmann <arnd@arndb.de>,
+	arm@kernel.org,
+	soc@kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL] memory: drivers for v6.9
+Date: Sun, 18 Feb 2024 19:30:46 +0100
+Message-Id: <20240218183046.32721-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240216095458.2919694-7-paul.elder@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Paul,
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-Thank you for the patch.
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-On Fri, Feb 16, 2024 at 06:54:52PM +0900, Paul Elder wrote:
-> Add to the version enum an entry for the i.MX8MP ISP.
-> 
-> Signed-off-by: Paul Elder <paul.elder@ideasonboard.com>
-> ---
-> New in v12:
-> - split out from "media: rkisp1: Add match data for i.MX8MP ISP"
-> - changed the version enum name
-> ---
->  include/uapi/linux/rkisp1-config.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/uapi/linux/rkisp1-config.h b/include/uapi/linux/rkisp1-config.h
-> index 730673ecc63d..2d1c448a6ab8 100644
-> --- a/include/uapi/linux/rkisp1-config.h
-> +++ b/include/uapi/linux/rkisp1-config.h
-> @@ -179,12 +179,14 @@
->   * @RKISP1_V11: declared in the original vendor code, but not used
->   * @RKISP1_V12: used at least in rk3326 and px30
->   * @RKISP1_V13: used at least in rk1808
-> + * @RKISP1_V_IMX8MP: used in at least imx8mp
+are available in the Git repository at:
 
-We need to also update the comments that references version numbers in
-the same file. I'll send a v12.1 as a reply.
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux-mem-ctrl.git tags/memory-controller-drv-6.9
 
->   */
->  enum rkisp1_cif_isp_version {
->  	RKISP1_V10 = 10,
->  	RKISP1_V11,
->  	RKISP1_V12,
->  	RKISP1_V13,
-> +	RKISP1_V_IMX8MP,
->  };
->  
->  enum rkisp1_cif_isp_histogram_mode {
+for you to fetch changes up to 2f542c937c48c2bd5a8ddf180b417fbe7152559f:
 
--- 
-Regards,
+  dt-bindings: memory-controllers: narrow regex for unit address to hex numbers (2024-01-25 12:04:09 +0100)
 
-Laurent Pinchart
+----------------------------------------------------------------
+Memory controller drivers for v6.9
+
+1. TI EMIF: Simplify handling CONFIG_DEBUG_FS, CONFIG_OF and
+   platform_driver_probe().
+2. Narrow regex in Nvidia Tegra20 EMC binding.
+
+----------------------------------------------------------------
+Krzysztof Kozlowski (1):
+      dt-bindings: memory-controllers: narrow regex for unit address to hex numbers
+
+Uwe Kleine-König (3):
+      memory: emif: Simplify code handling CONFIG_DEBUG_FS
+      memory: emif: Simplify code handling CONFIG_OF
+      memory: emif: Drop usage of platform_driver_probe()
+
+ .../memory-controllers/nvidia,tegra20-emc.yaml     |  2 +-
+ drivers/memory/emif.c                              | 65 ++++++++--------------
+ 2 files changed, 25 insertions(+), 42 deletions(-)
 
