@@ -1,53 +1,50 @@
-Return-Path: <linux-kernel+bounces-70247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C29F859535
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:12:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33965859538
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:16:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1D421F21ABD
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:12:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C19A11F21A56
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:16:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC314EAC5;
-	Sun, 18 Feb 2024 07:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E1C63A9;
+	Sun, 18 Feb 2024 07:16:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="oM1LDZdN"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="EuHQTCrE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2166E544;
-	Sun, 18 Feb 2024 07:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99046AB6
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708240322; cv=none; b=tdSdXBiZI6iC1c9X73ElIy2SLLT4ElOe9uk5RZTf7Iu189tB+tJB1BHZH6n7SYQCrfwItUNBRGQBF+F2gK9pQT8yfzF4M0DAvWSD110NXpr/ObSiP3ENtbjj3nupgfuyXtEHmLnBBDFimh6voE7QFb3c38gdgPV40ABHJQ23X0Y=
+	t=1708240595; cv=none; b=ZKKKG7QvAc6bn+UK4tuC2BfuuGFFpj8gyvL/58FBEkIw12DaudY3b0VTbXmn1W4+1ldXF2A563srFSeV6ob+6R9rRULXjREnYuIsi+wzrnzj2MuRrG+Evrur13xujkNpP9k3f0GpVma6BMvPTsZnm+OrniYGxyOutAHrWZbyLPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708240322; c=relaxed/simple;
-	bh=7kz46bBlzsC6VKg//Ry1WVNK/qIqJJJC1HkHxIrtwQ4=;
+	s=arc-20240116; t=1708240595; c=relaxed/simple;
+	bh=NhGvLYry/xX7Eukod5V3Os+Fwg9BvQj479WHho11Ty0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RnEEXH/VFxsW7TgyRYNCBQhtyA3n5eBCXDw9oJexjmff2DMTxxtC2ADyCLJbuaN0gv+m5GM8axNCahQ0LkEBtdz3en8pmhNjrkBCdFMxt4/F9XjZkonPvAAB2B5oVVrKS8H5MqACGH7CPIFtA0MAyKirc1LZJCxAU9TfnuB1zv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=oM1LDZdN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11BECC433F1;
-	Sun, 18 Feb 2024 07:12:00 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=USo6PADVK/qucMANg8//0+YM1Q3BYaiZBS8OzEr3beJ84k/VSMS6JmkO6+F4mODYGzAX1pTcKDe6DSYjFdNOSBfgiNZw624zjG7RH2BF+tD7UPKAEFh6+ZHo1MyeoSmx8ZCbc808QtezAWDbyrzaf0nWloXTahynvOUWUJfUbl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=EuHQTCrE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D74B3C433C7;
+	Sun, 18 Feb 2024 07:16:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708240321;
-	bh=7kz46bBlzsC6VKg//Ry1WVNK/qIqJJJC1HkHxIrtwQ4=;
+	s=korg; t=1708240595;
+	bh=NhGvLYry/xX7Eukod5V3Os+Fwg9BvQj479WHho11Ty0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oM1LDZdN2xbLsX7070H1FVHEemh1N6DarM2Gjm7yMTCj909NRJlfO1qrj+e1ZF+GK
-	 p9J56q1zV0nw/xx/OLYt98sLaUi0MLr1+yp7NTy5rK2ogf0NvuFSAqn3Bz+0bSRFqM
-	 suMOUoutTdh5wENuXL55l8WHGGEHNzLTwvzxvjHE=
-Date: Sun, 18 Feb 2024 08:11:58 +0100
+	b=EuHQTCrEXJn/yRy/QZUEZlvcHuDLGHFTNvnqNroyEEkmvgKKUVvL+7lbVmIbl3nnr
+	 klW8a6mZNFW6Qyyy+P+m+smLxBegabKFGh0Od6vmAWfuMmKQMo44gbZKtBPQLvpWbK
+	 hq5/7oKfDrpkkNHCO63Iz5fdOyaH93mqNxbxVERs=
+Date: Sun, 18 Feb 2024 08:16:32 +0100
 From: Greg KH <gregkh@linuxfoundation.org>
-To: Saurabh Sengar <ssengar@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ssengar@microsoft.com
-Subject: Re: [PATCH 1/6] Drivers: hv: vmbus: Add utility function for
- querying ring size
-Message-ID: <2024021858-cubicle-irregular-d402@gregkh>
-References: <1708193020-14740-1-git-send-email-ssengar@linux.microsoft.com>
- <1708193020-14740-2-git-send-email-ssengar@linux.microsoft.com>
+To: Guixiong Wei <weiguixiong@bytedance.com>
+Cc: roland@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND RFC] kernel/ksysfs.c: restrict /sys/kernel/notes to root
+ access
+Message-ID: <2024021809-colossal-emission-72bf@gregkh>
+References: <CAJe52t-XxSn2rK+wEg1hNAdsPdq+TO-fj3wEYPK_eBH0d-bsSg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,83 +53,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1708193020-14740-2-git-send-email-ssengar@linux.microsoft.com>
+In-Reply-To: <CAJe52t-XxSn2rK+wEg1hNAdsPdq+TO-fj3wEYPK_eBH0d-bsSg@mail.gmail.com>
 
-On Sat, Feb 17, 2024 at 10:03:35AM -0800, Saurabh Sengar wrote:
-> Add a function to query for the preferred ring buffer size of VMBus
-> device.
-
-That says what you did, but not why you did it.
-
+On Sat, Feb 17, 2024 at 10:19:32PM -0800, Guixiong Wei wrote:
+> Restrict non-privileged user access to /sys/kernel/notes to
+> avoid security attack.
 > 
-> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> The non-privileged users have read access to notes. The notes
+> expose the load address of startup_xen. This address could be
+> used to bypass KASLR.
+> 
+> For example, the startup_xen is built at 0xffffffff82465180 and
+> commit_creds is built at 0xffffffff810ad570 which could read from
+> the /boot/System.map. And the loaded address of startup_xen is
+> 0xffffffffbc265180 which read from /sys/kernel/notes. So the loaded
+> address of commit_creds is 0xffffffffbc265180 - (0xffffffff82465180
+> - 0xffffffff810ad570) = 0xffffffffbaead570.
+> 
+> Signed-off-by: Guixiong Wei
 > ---
->  drivers/hv/channel_mgmt.c | 7 +++++--
->  drivers/hv/hyperv_vmbus.h | 5 +++++
->  include/linux/hyperv.h    | 1 +
->  3 files changed, 11 insertions(+), 2 deletions(-)
+> kernel/ksysfs.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-> index 2f4d09ce027a..7ea444d72f9f 100644
-> --- a/drivers/hv/channel_mgmt.c
-> +++ b/drivers/hv/channel_mgmt.c
-> @@ -120,7 +120,8 @@ const struct vmbus_device vmbus_devs[] = {
->  	},
->  
->  	/* File copy */
-> -	{ .dev_type = HV_FCOPY,
-> +	{ .pref_ring_size = 0x4000,
-> +	  .dev_type = HV_FCOPY,
->  	  HV_FCOPY_GUID,
->  	  .perf_device = false,
->  	  .allowed_in_isolated = false,
-> @@ -141,11 +142,13 @@ const struct vmbus_device vmbus_devs[] = {
->  	},
->  
->  	/* Unknown GUID */
-> -	{ .dev_type = HV_UNKNOWN,
-> +	{ .pref_ring_size = 0x11000,
-> +	  .dev_type = HV_UNKNOWN,
+> diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
+> index 1d4bc493b2f4..ccef642dc4c6 100644
+> --- a/kernel/ksysfs.c
+> +++ b/kernel/ksysfs.c
+> @@ -241,7 +241,7 @@ static ssize_t notes_read(struct file *filp, struct
+> kobject *kobj,
+> static struct bin_attribute notes_attr __ro_after_init = {
+> .attr = {
+> .name = "notes",
+> - .mode = S_IRUGO,
+> + .mode = S_IRUSR,
+> },
+> .read = &notes_read,
+> };
+> -- 
+> 2.20.1
 
-Where do these magic numbers for the size come from?
+Hi,
 
->  	  .perf_device = false,
->  	  .allowed_in_isolated = false,
->  	},
->  };
-> +EXPORT_SYMBOL_GPL(vmbus_devs);
->  
->  static const struct {
->  	guid_t guid;
-> diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-> index f6b1e710f805..76ac5185a01a 100644
-> --- a/drivers/hv/hyperv_vmbus.h
-> +++ b/drivers/hv/hyperv_vmbus.h
-> @@ -417,6 +417,11 @@ static inline bool hv_is_perf_channel(struct vmbus_channel *channel)
->  	return vmbus_devs[channel->device_id].perf_device;
->  }
->  
-> +static inline size_t hv_dev_ring_size(struct vmbus_channel *channel)
-> +{
-> +	return vmbus_devs[channel->device_id].pref_ring_size;
-> +}
-> +
->  static inline bool hv_is_allocated_cpu(unsigned int cpu)
->  {
->  	struct vmbus_channel *channel, *sc;
-> diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
-> index 2b00faf98017..5951c7bb5712 100644
-> --- a/include/linux/hyperv.h
-> +++ b/include/linux/hyperv.h
-> @@ -800,6 +800,7 @@ struct vmbus_requestor {
->  #define VMBUS_RQST_RESET (U64_MAX - 3)
->  
->  struct vmbus_device {
-> +	size_t pref_ring_size;
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-No documentation for this?  What is the size in units of?
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
+  and can not be applied.  Please read the file,
+  Documentation/process/email-clients.rst in order to fix this.
+
+- Your patch does not have a Signed-off-by: line.  Please read the
+  kernel file, Documentation/process/submitting-patches.rst and resend
+  it after adding that line.  Note, the line needs to be in the body of
+  the email, before the patch, not at the bottom of the patch or in the
+  email signature.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
 thanks,
 
-greg k-h
+greg k-h's patch email bot
 
