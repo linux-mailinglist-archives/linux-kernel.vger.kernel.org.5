@@ -1,123 +1,105 @@
-Return-Path: <linux-kernel+bounces-70472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 219F9859864
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:01:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8189859868
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:05:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAA351F21287
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:01:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78D601F21966
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78976F07A;
-	Sun, 18 Feb 2024 18:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778666F06D;
+	Sun, 18 Feb 2024 18:05:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="QuM4DklR"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b="KU5dTA2c"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C133129401;
-	Sun, 18 Feb 2024 18:01:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194DF6EB6F;
+	Sun, 18 Feb 2024 18:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708279270; cv=none; b=TrPUwndHvJs+mG0B1Oc4sE2tGMd+HQQ0v2GZIIk5kovWl13ub5oWRrKHU9GqZZ7msnB6AyhZwQvMa5K3I+qgYWuRNbvpq9rDueHSvSxhp4WYIB8eio00sU/tYlUTImv3g+ab8Iup0OTPxuqxj0ZjLi+vqgjlmUMPvPY2jiFfjgo=
+	t=1708279500; cv=none; b=nRn9/UMywa12faunoG4dOI94hYPa0G8tSiagW54/7adhkVcYcreLgc/lLx2o60BNNFQbBo7zbp8/t270sWBIDbyrJYsD470JVjaSqGwSBlRm22f7SdY3LJA8oXUWXniM8NXYzA7CPH0yi9yxgsQeiew73P17wi1a7VovnuWCQ4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708279270; c=relaxed/simple;
-	bh=B+/6lKwrogpWO25ewC/hiNS4xmBE433AT/5hrUIRSAM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fp9wWnB4yTvGhIGYshOgtIDVsxHiW8Od3ALat6F7dJ9LHfdKQ/QGHfhW1AH3N/+4di4a0TJRii1RSG38vwOoSoqXnN0sP9V1LoqGg/PyLC9ErVpAwRtMtJqs250FOoJSBhYHjAcwoicrYj1b8CG0vB6GY5ar8vnHpnlX9OWy8hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=QuM4DklR; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id E86181C006B; Sun, 18 Feb 2024 19:01:05 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1708279265;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=quMoPaWpXWCQDD7AudZDFvu9H4YW7qFIGpmJ794No4I=;
-	b=QuM4DklRVP3x2VtSXyf29BTnTyqHaMVe89Zy3qbgZokmvI9v8S2GDqpbPsK81gWeVWebP0
-	DaYhDiI256UtjI/JCTuwh6pSswonLhipjTCU3El+8RaESDmcy/jvqzL/gzMfuJ6Yizlywv
-	4YoaqF7nHUnpXT/ZM6colI4rN8wprJ8=
-Date: Sun, 18 Feb 2024 19:01:05 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Niklas Cassel <cassel@kernel.org>,
-	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-	lpieralisi@kernel.org, kw@linux.com, linux-pci@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.1 23/28] PCI: dwc: Clean up
- dw_pcie_ep_raise_msi_irq() alignment
-Message-ID: <ZdJF4fpSn/0goBqb@duo.ucw.cz>
-References: <20240213002235.671934-1-sashal@kernel.org>
- <20240213002235.671934-23-sashal@kernel.org>
+	s=arc-20240116; t=1708279500; c=relaxed/simple;
+	bh=5MARVPLS4o3q4IKyvSWykCpIJv6thdbgJck2sItVAhY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AXrC7AIJNN0XoLLmuBScN6eNN7llqSkmlMLM+XCSCh1r2StWXKaCM3Ure4ENspsejU1pQNbxhM38UiUCajxosEtDFGpZ/EXOebm1CLJix+P0ZbMTleFnjz5zzKwPYM2TDqcTMj5HW3xfkZQMkuCELJSBjRYjllkjLQkAzA1CqD0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=hoehnp@gmx.de header.b=KU5dTA2c; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+	t=1708279484; x=1708884284; i=hoehnp@gmx.de;
+	bh=5MARVPLS4o3q4IKyvSWykCpIJv6thdbgJck2sItVAhY=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+	b=KU5dTA2czWQndrIsnkL+gWFz7uwBHY6AqYVnCbYhPcE2PJhBJPhWMepY38ds9Rds
+	 M+J3YJR7IXVrMTDUTi8JwcsUgBVuecjIIR7JQITG9a2oY6vadBaMD155PRZzPXi9h
+	 1Jw0hP2n/Da5j0P5jFcUjicvKSO203IL6YyTAvmhBNhuhuUK4GgQVuK7odTFpoQqS
+	 jtTBZetqRh6+7P1QBJyu3BtnLGA+8E2e/nx9xx/fqKKz1JTp7PKcaEgpVv1gqxuAY
+	 aLcXu6BgnXtJDuZDGe6QqH9rmfjZGiEVXcWvxDQAZoI6sMsQUJUabro+D9kPJ96Fi
+	 aABvYmht604SL2px4g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from patrick-dell.fritz.box ([31.18.173.105]) by mail.gmx.net
+ (mrgmx005 [212.227.17.190]) with ESMTPSA (Nemesis) id
+ 1MhD6W-1qxlo941FC-00eL5E; Sun, 18 Feb 2024 19:04:44 +0100
+From: =?UTF-8?q?Patrick=20H=C3=B6hn?= <hoehnp@gmx.de>
+To: Jean Delvare <jdelvare@suse.com>,
+	Andi Shyti <andi.shyti@kernel.org>
+Cc: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	=?UTF-8?q?Patrick=20H=C3=B6hn?= <hoehnp@gmx.de>,
+	linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] Add lis3lv02d for Dell Precision M6800
+Date: Sun, 18 Feb 2024 19:03:59 +0100
+Message-ID: <20240218180400.10413-1-hoehnp@gmx.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oOSR12Xp1ziJzYR1"
-Content-Disposition: inline
-In-Reply-To: <20240213002235.671934-23-sashal@kernel.org>
-
-
---oOSR12Xp1ziJzYR1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:Ng78jh5TjUxHmSpsFDhiW+G4LLPyp9kz8OHvXmCGOrQuuwWrnfB
+ 9ayyKtIyAKjUzFiV5o+MCgTDyqeYBHM+sdGdXnBFLaNrTgLMlkT2R8/nKWuCRkDABrhSumc
+ nPsqdyXE5L1iGBEhQ/QZKFV2qZlYoFaxfBFe7UMBT8XT7bo89qILZ6zTIv1pNGiNUdPhVaZ
+ V0ley8fbZhTKJzgsQVXNA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:LmhsTY59fb4=;rahSXbPTZ7niqXbDE9OVLFzSjI1
+ 7FmwSMdh10xNuxIYZv9Nmk2p7kiUxntXr/KvY5Hb0Ijp9H/1CYAIY9Gxz1KAayrNYe39QtdRe
+ u1FJM2T53sheAvIR34B4et36fnpjdVG7CjWsh8Q43gOZg2DEqLZAP/j63if7t4M4TDRqgcvKr
+ jES36OtEqqBzdLNOgU8nAU5q7L0WKWlz9aZE6rejzF777SCbNM7ZH/EqGWj0+3RazIQAYdTDX
+ ylXyxC7yKFm4n1EgxtFqsHKhAnuYXMpOXvkuduoQT+2a2aD559UcHZcb7+VpOFA4rg+wcc3ET
+ mGqbZ3NYMGjBgUMvm6Vq4VxM61+oW94cloi8phUtVfmzeILUNXVeEqa7DQd6cvFBpJMUaSlfP
+ fO1A/n7SvXWBca3kwDjng6Pszdbixx0XaLPJtJsTZ9e/Z3QIQx64uFVIqkj7+rD5HXoqTMtxJ
+ skGf3We57AXSGP6sNceh9xErAvAUilRW6Cieug0TSCtb4/qEQ1iilL/WTbIvwcGpp2pObc0lF
+ 0Tw/l7WHLx+S0CIEmYxqN1M6IvOSaPvka7GfsVlfiPL2Rh5p9aSuPnBJqX3QlHMIoeCUAz+k0
+ xsMzvQutJiK/b3VXAj8HEPTCWCiP196Xxv/GYN4PUHe762Nt7cCYSvIJ7mY3oAkC9c+pHRKod
+ k/RqOlovEPaInc/XDlBnlj3lh5nyWhJQKOGyIH13RDB1sJs4ZuSCPa0ZrIsT2SxwB7PE/ooZI
+ KVVrxaQkOBTbikcLCY0+k5pdxNk+a7mRU93Yf6HZLzU8FTXOZj8IkfqdMmpX3EZrddlXmVezb
+ B9xMtobJMkNDU5xwT1qVXGecxlW/BO/G7wqGI/9BG0jCg=
 
-Hi!
+Signed-off-by: Patrick H=C3=B6hn <hoehnp@gmx.de>
+=2D--
+ drivers/i2c/busses/i2c-i801.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> From: Dan Carpenter <dan.carpenter@linaro.org>
->=20
-> [ Upstream commit 67057f48df79a3d73683385f521215146861684b ]
->=20
-> I recently changed the alignment code in dw_pcie_ep_raise_msix_irq().  The
-> code in dw_pcie_ep_raise_msi_irq() is similar, so update it to match, just
-> for consistency.  (No effect on runtime, just a cleanup).
+diff --git a/drivers/i2c/busses/i2c-i801.c b/drivers/i2c/busses/i2c-i801.c
+index 2c36b36d7d51..ba699db27f58 100644
+=2D-- a/drivers/i2c/busses/i2c-i801.c
++++ b/drivers/i2c/busses/i2c-i801.c
+@@ -1234,6 +1234,7 @@ static const struct {
+ 	{ "Vostro V131",        0x1d },
+ 	{ "Vostro 5568",        0x29 },
+ 	{ "XPS 15 7590",        0x29 },
++	{ "Precision M6800",    0x29 },
+ };
 
-Just a cleanup, we don't need it in stable.
+ static void register_dell_lis3lv02d_i2c_device(struct i801_priv *priv)
+=2D-
+2.43.0
 
-Best regards,
-									Pavel
-								=09
-> +++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-> @@ -528,9 +528,10 @@ int dw_pcie_ep_raise_msi_irq(struct dw_pcie_ep *ep, =
-u8 func_no,
->  		reg =3D ep_func->msi_cap + func_offset + PCI_MSI_DATA_32;
->  		msg_data =3D dw_pcie_readw_dbi(pci, reg);
->  	}
-> -	aligned_offset =3D msg_addr_lower & (epc->mem->window.page_size - 1);
-> -	msg_addr =3D ((u64)msg_addr_upper) << 32 |
-> -			(msg_addr_lower & ~aligned_offset);
-> +	msg_addr =3D ((u64)msg_addr_upper) << 32 | msg_addr_lower;
-> +
-> +	aligned_offset =3D msg_addr & (epc->mem->window.page_size - 1);
-> +	msg_addr =3D ALIGN_DOWN(msg_addr, epc->mem->window.page_size);
->  	ret =3D dw_pcie_ep_map_addr(epc, func_no, 0, ep->msi_mem_phys, msg_addr,
->  				  epc->mem->window.page_size);
->  	if (ret)
-
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
-
---oOSR12Xp1ziJzYR1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdJF4QAKCRAw5/Bqldv6
-8vf4AJ4o/jGq/kmWV+QMUeG3I4szSZ4hlgCgiBDLYKaidLZEgsXTlmoz+/hUa8o=
-=pFQ8
------END PGP SIGNATURE-----
-
---oOSR12Xp1ziJzYR1--
 
