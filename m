@@ -1,202 +1,204 @@
-Return-Path: <linux-kernel+bounces-70179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93FCA859464
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:27:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03C7F859460
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:24:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A1E61F21BD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:27:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE3AF2822A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39A3717FF;
-	Sun, 18 Feb 2024 03:27:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VO0JYDhF"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 976605223;
+	Sun, 18 Feb 2024 03:24:43 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C924D15C0;
-	Sun, 18 Feb 2024 03:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D3734C6D;
+	Sun, 18 Feb 2024 03:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708226833; cv=none; b=QVOsAyT3PHLHx1bwvri60Oy0+UahjOB9HR+19nh2wXGo/lVsh7mOEMcNYjro7lc8M2vkf9FWBAPm4CSaxpvSGyL+nzWwYTijnf2L9lLMz4C5hR2WVkl/I89EOKxwWqL9XYEMI1l5tmzC3+4j1WBzUcDRkFK+ATHPSWTW1z2mNq8=
+	t=1708226683; cv=none; b=pHefC7beNVT7HNvcHxws7fOltNSOCCO/PzxXD5cv+LZo/xhYi92YVpBYD1ykfTRqtlwMvbMIRN02NzWw1R26Hiv8IZu3pP1njggBVESCgRXwW99PVKLFOlYDEMCqtwZ4cGGfuw2DZmjQQrIR+AipjddBkZ8bzUNJNkVMXL59ur0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708226833; c=relaxed/simple;
-	bh=kEu7RUHLgNZwfVyNdolqNMnkH+oHU7TrRv26YvjrNkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nXBINZIzHN5ikLwJNVNuVkQK3+3r6y1CVs1Ull7UM0RS6FGFrF78Z8ug1aDqY3qvAbbv2hRnkxWYba3HMnJLiLolOmujVQUQghncK9AEb/dJZ3ekLYm9SxjVKjUzQIEkqVD7spdhOmCIm/TJFy8tDjd+d5n7Aw292Jx7SYoTGcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VO0JYDhF; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708226832; x=1739762832;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=kEu7RUHLgNZwfVyNdolqNMnkH+oHU7TrRv26YvjrNkc=;
-  b=VO0JYDhFjeMRFoD9pQohRBuk0OMGm6GDHiPgj3wS5YjS12lJBWuNvZ7K
-   UMysbcRKhdV8J7ZSK+/gC8pzfWfnr4h13+w0kHs0PVCAo6OvVhffx0OsV
-   sazAAOJx8OINSKyk/WNCbFaoF/sRkF44e7ia8bAa0lW0rY1Bsy8B7GKLj
-   6407V3KbwC/4muxHMGpjWvHKcF4aMsaGENAgnBUtiHuy9N9dfjREYtAWI
-   uD4eylB/3kbjiUTjI8GTMAvWYUdJvOtC8fjxnebWFtPzA+Dj2Gu/sn2ei
-   smMRSg/3f5M7jH9D7BkiIPKN/qdb+htCFiVrmjdFEzBZ1IjGUyirIXHfx
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="2187942"
-X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
-   d="scan'208";a="2187942"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 19:27:11 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
-   d="scan'208";a="27344386"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa002.fm.intel.com with ESMTP; 17 Feb 2024 19:27:09 -0800
-Date: Sun, 18 Feb 2024 11:23:18 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: matthew.gerlach@linux.intel.com
-Cc: hao.wu@intel.com, trix@redhat.com, mdf@kernel.org, yilun.xu@intel.com,
-	linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] fpga: dfl: afu: support Rev 2 of DFL Port feature
-Message-ID: <ZdF4JvYQQL8irnbW@yilunxu-OptiPlex-7050>
-References: <20240125233715.861883-1-matthew.gerlach@linux.intel.com>
- <ZbjHl8ptQG5FdHvC@yilunxu-OptiPlex-7050>
- <alpine.DEB.2.22.394.2401300948590.112016@sj-4150-psse-sw-opae-dev2>
- <Zbnd8W1ciTKeoKc4@yilunxu-OptiPlex-7050>
- <alpine.DEB.2.22.394.2401311610020.112016@sj-4150-psse-sw-opae-dev2>
- <ZcBIjcFJjGKf0qcO@yilunxu-OptiPlex-7050>
- <alpine.DEB.2.22.394.2402051600190.122158@sj-4150-psse-sw-opae-dev2>
+	s=arc-20240116; t=1708226683; c=relaxed/simple;
+	bh=BY05uZrcFu7xtAxk5fCx+bheSiCu/C4nKPg69SmEjJk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=WXi0jOoQRzbnuzZd9sOnS3jx5A/ftdTmjQvEfOS0Mqp7oT50OczRy2pp36OG0yua6hpIS4pbkC6m+1jEfbJBLXGGMte9GEV7gjlTpOd6/GA87nwgTqAXOpDQrNvXyGZBaR4BJ80Bs+lCVxyCzh0b2QGI/VFt1leIbaAinoa5wes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tcrcs4DS9z4f3lWJ;
+	Sun, 18 Feb 2024 11:24:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 978A31A0172;
+	Sun, 18 Feb 2024 11:24:36 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP4 (Coremail) with SMTP id gCh0CgB3fW9yeNFlYqKrEQ--.57206S3;
+	Sun, 18 Feb 2024 11:24:36 +0800 (CST)
+Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in
+ md_check_recovery()
+To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com,
+ agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev,
+ song@kernel.org, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
+ akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <20240201092559.910982-2-yukuai1@huaweicloud.com>
+ <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
+ <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com>
+ <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
+ <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com>
+ <CALTww28bUzmQASme3XOz0CY=o86f1EUU23ENmnf42UVyuGzQ4Q@mail.gmail.com>
+ <c1195efd-dd83-317e-3067-cd4891ae013e@huaweicloud.com>
+ <CALTww2-7tTMdf_XZ60pNKH_QCq3OUX2P==VPXZo3f-dHzVhmnw@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <2fa01c30-2ee7-7c01-6833-bf74142e6d7c@huaweicloud.com>
+Date: Sun, 18 Feb 2024 11:24:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2402051600190.122158@sj-4150-psse-sw-opae-dev2>
+In-Reply-To: <CALTww2-7tTMdf_XZ60pNKH_QCq3OUX2P==VPXZo3f-dHzVhmnw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgB3fW9yeNFlYqKrEQ--.57206S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr1DCr4kXrWktr43uw48JFb_yoW5KrW7pF
+	y0qa10kr4UAryxA3sFva1kXa4Fvw1aqrWUZry3Kr1rCwn29w1rAF40gF45CFyDAFZ3G3ZF
+	vw45ta93Zw1kJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwCFI7km07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+	IEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUOmhFUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Wed, Feb 07, 2024 at 08:40:55AM -0800, matthew.gerlach@linux.intel.com wrote:
-> 
-> 
-> On Mon, 5 Feb 2024, Xu Yilun wrote:
-> 
-> > On Wed, Jan 31, 2024 at 04:26:27PM -0800, matthew.gerlach@linux.intel.com wrote:
-> > > 
-> > > 
-> > > On Wed, 31 Jan 2024, Xu Yilun wrote:
-> > > 
-> > > > On Tue, Jan 30, 2024 at 10:00:16AM -0800, matthew.gerlach@linux.intel.com wrote:
-> > > > > 
-> > > > > 
-> > > > > On Tue, 30 Jan 2024, Xu Yilun wrote:
-> > > > > 
-> > > > > > On Thu, Jan 25, 2024 at 03:37:15PM -0800, Matthew Gerlach wrote:
-> > > > > > > Revision 2 of the Device Feature List (DFL) Port feature
-> > > > > > > adds support for connecting the contents of the port to
-> > > > > > > multiple PCIe Physical Functions (PF).
-> > > > > > > 
-> > > > > > > This new functionality requires changing the port reset
-> > > > > > > behavior during FPGA and software initialization from
-> > > > > > > revision 1 of the port feature. With revision 1, the initial
-> > > > > > > state of the logic inside the port was not guaranteed to
-> > > > > > > be valid until a port reset was performed by software during
-> > > > > > > driver initialization. With revision 2, the initial state
-> > > > > > > of the logic inside the port is guaranteed to be valid,
-> > > > > > > and a port reset is not required during driver initialization.
-> > > > > > > 
-> > > > > > > This change in port reset behavior avoids a potential race
-> > > > > > > condition during PCI enumeration when a port is connected to
-> > > > > > > multiple PFs. Problems can occur if the driver attached to
-> > > > > > > the PF managing the port asserts reset in its probe function
-> > > > > > > when a driver attached to another PF accesses the port in its
-> > > > > > > own probe function. The potential problems include failed or hung
-> > > > > > 
-> > > > > > Only racing during probe functions? I assume any time port_reset()
-> > > > > > would fail TLPs for the other PF. And port_reset() could be triggered
-> > > > > > at runtime by ioctl().
-> > > > > 
-> > > > > Yes, a port_reset() triggered by ioctl could result in failed TLP for the
-> > > > > other PFs. The user space SW performing the ioctl needs to ensure all PFs
-> > > > > involved are properly quiesced before the port_reset is performed.
-> > > > 
-> > > > How would user get an insight into other PF drivers to know everything
-> > > > is quiesced?  I mean do we need driver level management for this?
-> > > 
-> > > Since this is an FPGA, the number of other PFs and the drivers bound to
-> > > those PFs depends on the FPGA image. There would also be user space software
-> > > stacks involved with the other PFs as well. The user would have to ensure
-> > > all the SW stacks and drivers are quiesced as appropriate for the FPGA
-> > 
-> > User may not know everything about the device, they only get part of the
-> > controls that drivers grant. This is still true for vfio + userspace
-> > drivers.
-> 
-> A user performing a port reset would have to know the impact to the specific
-> FPGA image being run in order to ensure all SW stacks are ready for the
-> reset.
+Hi,
 
-We are not going to change the logic of the whole driver model just
-because the device is backed up by an FPGA image.  The *driver* should be
-fully responsible for matched devices.  A HW reset unaware to the
-device driver is not wanted.  Assuming that the userspace could control
-every access to device makes no sense.
+在 2024/02/18 11:15, Xiao Ni 写道:
+> On Sun, Feb 18, 2024 at 10:34 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> Hi,
+>>
+>> 在 2024/02/18 10:27, Xiao Ni 写道:
+>>> On Sun, Feb 18, 2024 at 9:46 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> 在 2024/02/18 9:33, Xiao Ni 写道:
+>>>>> The deadlock problem mentioned in this patch should not be right?
+>>>>
+>>>> No, I think it's right. Looks like you are expecting other problems,
+>>>> like mentioned in patch 6, to be fixed by this patch.
+>>>
+>>> Hi Kuai
+>>>
+>>> Could you explain why step1 and step2 from this comment can happen
+>>> simultaneously? From the log, the process should be
+>>> The process is :
+>>> dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(raid_postsuspend)
+>>> -> dm_table_destroy(raid_dtr).
+>>> After suspending the array, it calls raid_dtr. So these two functions
+>>> can't happen simultaneously.
+>>
+>> You're removing the target directly, however, dm can suspend the disk
+>> directly, you can simplily:
+>>
+>> 1) dmsetup suspend xxx
+>> 2) dmsetup remove xxx
+> 
+> For dm-raid, the design of suspend stops sync thread first and then it
+> calls mddev_suspend to suspend array. So I'm curious why the sync
+> thread can still exit when array is suspended. I know the reason now.
+> Because before f52f5c71f (md: fix stopping sync thread), the process
+> is raid_postsuspend->md_stop_writes->__md_stop_writes
+> (__md_stop_writes sets MD_RECOVERY_FROZEN). In patch f52f5c71f, it
+> doesn't set MD_RECOVERY_FROZEN in __md_stop_writes anymore.
+> 
+> The process changes to
+> 1. raid_postsuspend->md_stop_writes->__md_stop_writes->stop_sync_thread
+> (wait until MD_RECOVERY_RUNNING clears)
+> 2. md thread -> md_check_recovery -> unregister_sync_thread ->
+> md_reap_sync_thread (clears MD_RECOVERY_RUNNING, stop_sync_thread
+> returns, md_reap_sync_thread sets MD_RECOVERY_NEEDED)
+> 3. raid_postsuspend->mddev_suspend
+> 4. md sync thread starts again because __md_stop_writes doesn't set
+> MD_RECOVERY_FROZEN.
+> It's the reason why we can see sync thread still happens when raid is suspended.
+> 
+> So the patch fix this problem should:
 
-For your case, there is no garantee userspace could block every access
-to "other PF" initiated by "other PF" driver.  There is also no
-notification to "other PF" driver that userspace is doing reset to
-"other PF" via "management PF" interface.  "other PF" driver just break
-on reset.
-
-> 
-> > 
-> > > image. I don't think the driver performing the port_reset() can know all the
-> > 
-> > Other PF drivers should know their own components. They should be aware
-> > that their devices are being reset.
-> 
-> The other PF drivers depend on the actual FPGA image being run.
-> 
-> > 
-> > > components to be able to provide any meaningful management.
-> > 
-> > If the reset provider and reset consumer are not in the same driver,
-> > they should interact with each other. IIRC, some reset controller class
-> > works for this purpose.
-> 
-> The other PFs in many cases can present as standard devices with existing
-> drivers like virtio-net or virtio-blk. It does not seem desireable to have
-> to change existing drivers for a particular FPGA implementation
-
-If you have to use a specific method for reset, it is not a standard virtio
-pci device, and you have to make some change.
+As I said, this is really a different problem from this patch, and it is
+fixed seperately by patch 9. Please take a look at that patch.
 
 Thanks,
-Yilun
+Kuai
 
 > 
-> Thanks,
-> Matthew
-> > 
-> > Thanks,
-> > Yilun
-> > 
-> > > 
-> > > Thanks,
-> > > Matthew
-> > > 
-> > > > 
-> > > > Thanks,
-> > > > Yilun
-> > > > 
-> > > > > 
-> > > > > Do you want me to update the commit message with this information?
-> > > > > 
-> > > > > Thanks,
-> > > > > Matthew
-> > > > 
-> > > > 
-> > 
-> > 
+> diff --git a/drivers/md/md.c b/drivers/md/md.c
+> index 9e41a9aaba8b..666761466f02 100644
+> --- a/drivers/md/md.c
+> +++ b/drivers/md/md.c
+> @@ -6315,6 +6315,7 @@ static void md_clean(struct mddev *mddev)
+> 
+>   static void __md_stop_writes(struct mddev *mddev)
+>   {
+> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>          stop_sync_thread(mddev, true, false);
+>          del_timer_sync(&mddev->safemode_timer);
+> 
+> Like other places which call stop_sync_thread, it needs to set the
+> MD_RECOVERY_FROZEN bit.
+> 
+> Regards
+> Xiao
+> 
+>>
+>> Please also take a look at other patches, why step 1) can't stop sync
+>> thread.
+>>
+>> Thanks,
+>> Kuai
+>>
+>>>
+>>>
+>>>>
+>>>> Noted that this patch just fix one case that MD_RECOVERY_RUNNING can't
+>>>> be cleared, I you are testing this patch alone, please make sure that
+>>>> you still triggered the exactly same case:
+>>>>
+>>>> - MD_RCOVERY_RUNNING can't be cleared while array is suspended.
+>>>
+>>> I'm not testing this patch. I want to understand the patch well. So I
+>>> need to understand the issue first. I can't understand how this
+>>> deadlock (step1,step2) happens.
+>>>
+>>> Regards
+>>> Xiao
+>>>>
+>>>> Thanks,
+>>>> Kuai
+>>>>
+>>>
+>>> .
+>>>
+>>
+> 
+> .
+> 
+
 
