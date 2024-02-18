@@ -1,73 +1,51 @@
-Return-Path: <linux-kernel+bounces-70539-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70540-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 793188598FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:10:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A8C58598FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C826EB21031
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:10:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D33331F229FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:10:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A8F86F530;
-	Sun, 18 Feb 2024 19:10:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801F973167;
+	Sun, 18 Feb 2024 19:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="PeOqP6LT"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Adi8QjoG"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5426F51A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 407EF6F511
 	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 19:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708283432; cv=none; b=otj9OfESdB8AQqcbOK0IV6mZpzZEh4bPbRGn03GeEsGxQa9OBeUqYRG1+gcH0E6LqPfeD45zq6YhJQgAGc8xVPqQpXulib8urgLkO2JHvlZ2+Nsx+SX/qzgKw15We3r9DQGzl0cSA4uHsteoLbCL+Zkls67ljZ79LxxuUkSQfv4=
+	t=1708283432; cv=none; b=PK5Db7uQ1vu68vj58B9whp7Ldyg1Ju5Sq/H4owmtx3sfdxN90K9omcBtp2xrUzQzvq4nmJcGtN5s6LxW8YpYpMMUPcSnhPG+kcS5Us+8HD118+ptUFJDFejingAvdiJaZ2crODqn4gqrMYYfos1n2he4daDs4BU20UUzmhZE2aM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708283432; c=relaxed/simple;
-	bh=2OiUQOvcZKm6PUzGnZ1RrYTTFoV1/H907nhnVmgSlG8=;
+	bh=C+4nxFZBqNlqit0yXwEnwf8ZCrqFiLqFqZe2842sj7s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G6D5e3YjBakiZe38i34w39cxsm0z8V6BehaCJBzya6SNcTxCgv8Y/yWj29hNhCvbOITEBZemeXzTKd+5/iGbbGLiCXO7NCP4XwtaV1K11+MPJ+J7B0se4as/bEIxh+PpFCvks42iucPjhWmyAvO7egEbIbxpBfthuOeMP/qWWRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=PeOqP6LT; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso3382876a12.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 11:10:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708283429; x=1708888229; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ah3PVEu8tN1U7WxibGyKTgjBe3AELLyTP3yUvUcDK7E=;
-        b=PeOqP6LTEl3a83ku7rMNhngJiFP7D2M4eN5dENNd9dXGwAL3lDFSt7KxvGt8ZiFwge
-         jB91W2Nk5YxSXZ243KwqhNPIaqL7Nrfnb/dljD/Oh1VC6RdDFaXgMH/T/qMASGIkrkEu
-         cO+ORYoSomxtxjcEWlBuYKqo3VpxmvYqt5H+L17nfm3M794qbvjRr1fD60GevYLJ0/kN
-         b6210WenCgIr83wXBgNFoORIjEM+M1LsnYO+SLO4GbdwPBw0WNGSzh7cUfI/8ZglgSOO
-         qsWNWbLyPp1XgWmUIQQs9XCY41w248B6q85UKzMW0L9WRTCIPoyNWgpLXbxItut8bsLS
-         2U6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708283429; x=1708888229;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ah3PVEu8tN1U7WxibGyKTgjBe3AELLyTP3yUvUcDK7E=;
-        b=KCU5hR4QJprlvFLTnZ9CHoIs/PSSNT/WvHFIg64bevjLRgE98vcLCL5sRtM0i/HBT6
-         teqZiRFyNpIYGsFKNK9fRlPKiy689xXKSjAuW6jradXoaJqica0FRwLtLIkqZQiyOyBu
-         SIyPLx2pEydM701GImfPZbq0uKBav+1AB8XUg0qlWjnu/rK3dJCVeijHDEHmnzU5w6Xg
-         eGtzY65VEpwHlDAJQ8XFJsWNzqk/mhDG1GwbRVceBDki7wlXTpVKkuw1isO9BGeaN+WS
-         OGFnEPdsEfF5lOXTbQ3+hHBMBnn4OebpRoAkAXlg7FvOGz/YHaHbk2PEPAGXej5N9r5H
-         POfw==
-X-Forwarded-Encrypted: i=1; AJvYcCVw/oTyZh79VZAjZEHbcGOTerIfuf1SK2yHfnsQZiFl+mKDXRk8k0I2vEkMZcmTfDVuUxISaSJfsXoK/bcokxn3mbH+Ee7DQXng2Vaj
-X-Gm-Message-State: AOJu0YwAll/RvDCzQjb1692Rm02aQncugEE5H9TQzvj5L6WnMoR+DqIg
-	rIhVZ6DrMAf6u4OHbw1SxHsBL+xE7im9xOIoZ6JKW3bmyapV0iXsrVGD3jE0MqI=
-X-Google-Smtp-Source: AGHT+IHG7EUQ1Lj6VSnjTbKaODUnEDyms7rRXGLPDHhArV02Xl+7l8pWi7wkq1Hz+7C0klZApkVexw==
-X-Received: by 2002:a50:fb84:0:b0:564:2518:adfd with SMTP id e4-20020a50fb84000000b005642518adfdmr3719731edq.10.1708283428977;
-        Sun, 18 Feb 2024 11:10:28 -0800 (PST)
-Received: from ?IPV6:2001:1c06:2302:5600:366d:ca8f:f3af:381? (2001-1c06-2302-5600-366d-ca8f-f3af-0381.cable.dynamic.v6.ziggo.nl. [2001:1c06:2302:5600:366d:ca8f:f3af:381])
-        by smtp.gmail.com with ESMTPSA id p24-20020aa7c898000000b005617a858f21sm1942850eds.93.2024.02.18.11.10.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 11:10:28 -0800 (PST)
-Message-ID: <f4e2cd9f-d8d2-4669-9bbc-57f67a24e734@linaro.org>
-Date: Sun, 18 Feb 2024 19:10:27 +0000
+	 In-Reply-To:Content-Type; b=PcMBPxW89oUSGjRF7amKcbzhGmgF8O5arewfSxrKZZ8tJxaMz0/VUqkl5c6OOEW/uOex7iAq4y/WbacuzcQ/Ld8VJ5qLWAvwQwWHkXYfmW4Ei9tPgDGk/M1MJ0DV6Z+fiH4B3zX44xpG3m3sAF60bmz6ErA1XKAfR/1pKdyEFdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Adi8QjoG; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=mzw3JFNrqj9QCCSMwfJzzL23wHmF4f7t1d4OEg6cGmg=; b=Adi8QjoGmsLvn81xZIEjpyOIDV
+	XRnuflwjaEw5tDUro/Dkq42Vdm9RjhUYDlI+O/GqYxMMN1gcJOQJdl0SAe9uVVIG5LWrp+7fqL41H
+	41hsu+g2vVS62HuPk9XDb1i0MECFzpqvseTqWuT9kUFBhc3JUT39F2xkMLpho6FIz98zX7553RuOd
+	s5bAmnPo6BbuSzQQjYHxV6GEbXFus5AZZ5JtB+i4FCDQINCbKrwiHtzG+FIjHi4OBMPXwuW8ukxZK
+	CLUQ2dq4xQ7Lnvx4lFWrywMvIsbrkET/w4lIYBJtS0ycNnPnE79ckCkpposNN5dU1zQ1KDWCHSv5h
+	K8AK1Y3g==;
+Received: from [50.53.50.0] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rbmYX-00000008Hko-0kXt;
+	Sun, 18 Feb 2024 19:10:29 +0000
+Message-ID: <ae677f7e-0694-4af0-8f43-df839444aca8@infradead.org>
+Date: Sun, 18 Feb 2024 11:10:28 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,51 +53,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] arm64: dts: qcom: pm6150: define USB-C related blocks
+Subject: Re: [PATCH printk v2 10/26] printk: nbcon: Fix kerneldoc for enums
 Content-Language: en-US
-To: Danila Tikhonov <danila@jiaxyga.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, lgirdwood@gmail.com, broonie@kernel.org,
- robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- gregkh@linuxfoundation.org, quic_wcheng@quicinc.com
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20240217163201.32989-1-danila@jiaxyga.com>
- <20240217163201.32989-4-danila@jiaxyga.com>
- <6bf11ccd-ff08-369b-913f-277c189afb76@linaro.org>
- <b0b732b8-456a-4021-8277-cd51f01ead17@jiaxyga.com>
- <44c669a0-3722-4a58-be78-0c91f0573ca1@linaro.org>
- <60728953-bdf0-4a06-a90a-d1191d41962b@jiaxyga.com>
-From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <60728953-bdf0-4a06-a90a-d1191d41962b@jiaxyga.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
+ linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240218185726.1994771-1-john.ogness@linutronix.de>
+ <20240218185726.1994771-11-john.ogness@linutronix.de>
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20240218185726.1994771-11-john.ogness@linutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 18/02/2024 6:52 p.m., Danila Tikhonov wrote:
-> You are referring to Dmitry Baryshkov, as I see. But Dmitry has already 
-> reviewed my patch (message above).
 
-Yes we previously debated and discussed verbatim copy of downstream 
-versus the format we used for 8150b.
 
-The original driver I wrote for tcpm and the dts that went with it 
-derived from 4.19 where the interrupt definition was already right, so 
-in that case copy/paste of downstream is fine.
+On 2/18/24 10:57, John Ogness wrote:
+> Kerneldoc requires enums to be specified as such. Otherwise it is
+> interpreted as function documentation.
+> 
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
 
-However with earlier kernels, 4.14 in this case the signalling isn't right.
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-Please read the discussion and reconsider your patch.
+Thanks.
 
-> So it would be rude to change anything without his knowledge. Let's wait 
-> for his answer
-He'd have to be arguing against his own patch.....
+> ---
+>  include/linux/console.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/console.h b/include/linux/console.h
+> index 5c55faa013e8..d8922282efa1 100644
+> --- a/include/linux/console.h
+> +++ b/include/linux/console.h
+> @@ -130,7 +130,7 @@ static inline int con_debug_leave(void)
+>   */
+>  
+>  /**
+> - * cons_flags - General console flags
+> + * enum cons_flags - General console flags
+>   * @CON_PRINTBUFFER:	Used by newly registered consoles to avoid duplicate
+>   *			output of messages that were already shown by boot
+>   *			consoles or read by userspace via syslog() syscall.
+> @@ -211,7 +211,7 @@ struct nbcon_state {
+>  static_assert(sizeof(struct nbcon_state) <= sizeof(int));
+>  
+>  /**
+> - * nbcon_prio - console owner priority for nbcon consoles
+> + * enum nbcon_prio - console owner priority for nbcon consoles
+>   * @NBCON_PRIO_NONE:		Unused
+>   * @NBCON_PRIO_NORMAL:		Normal (non-emergency) usage
+>   * @NBCON_PRIO_EMERGENCY:	Emergency output (WARN/OOPS...)
 
-One final nag - please use the kernel discussion format of bottom not 
-top posting.
-
-https://git.codelinaro.org/bryan.odonoghue/kernel/-/blob/sc8280xp-v6.8-rc4-camss/Documentation/process/submitting-patches.rst?ref_type=heads
-
----
-bod
-
+-- 
+#Randy
 
