@@ -1,99 +1,73 @@
-Return-Path: <linux-kernel+bounces-70524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 797C98598D8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:03:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFDB58598DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 20:03:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC7E51C21049
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:03:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 946672820CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A78307318D;
-	Sun, 18 Feb 2024 19:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63166745C2;
+	Sun, 18 Feb 2024 19:00:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U6tPhT2/"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="SsweqO13"
+Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6B1571B25;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DE471B2C;
 	Sun, 18 Feb 2024 19:00:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708282850; cv=none; b=Qge6XWbzobzatsXRB5xgOPFdtE3CvtRAnHMlal+Qw9hontgpq0Ry3elRuWfWjq+nZ6EpdXcdZIQqe0xLaHmIncqAOUccw1HtyjEW1JTc4bBQEK30VW4jcN5+Oj2hvg75JS53LyaSWOlFQfxfZjN2WOHqc0tNaZlMxnNN5JjKxfs=
+	t=1708282851; cv=none; b=r490WJ+lZ/c+qhhfifMdy1A2NKDjpk6Emf7N0p/rJUxHVD0v4GF1f2W6c8Ted6fL0EtyH2OKRFSqbhCQ0WSc87UAgIceoJXb6MJL4jAgoYhmOoPi9UFceELiSLjodN10wWEIIXMG1RCazsML2n48ibJZj+G7nu9Q8xLyxGPUyTk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708282850; c=relaxed/simple;
-	bh=2LCv+lgmH0ansXxRDGS7Qz4W8gc7nGFuPp9Acdwiv1k=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b363HgrHhZpujbiCacxtSWlI5rLUkuA8h4i16L8ChjVdWCgZcE4gZ4rRgMBhmbrcHJYgVeuPNJo2ul7L2LYG7Fl3/NjWI+uYKX/GLrQHOf6x2TnnLlryqGjNEwjpABYRTVq9P+uXV9V8RSvFUh99w3Yu7Tn4a4MkgA8wOAiSveU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U6tPhT2/; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-337cc8e72f5so1893782f8f.1;
-        Sun, 18 Feb 2024 11:00:48 -0800 (PST)
+	s=arc-20240116; t=1708282851; c=relaxed/simple;
+	bh=lWAVG+1wXbuRlpa8Gq9CfHlrm0ZU/UKix+hMYpADg/Y=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Rtcf0hFI4AEqEKhA1ttQpSrD9AW6D7K68Yf7ci6kcuXrVpg75+vxAPKE/xuJJ62YDYkutLDYbvRwhzJg+V4gPqJNL8pDS1KJO/Ak78X0sJ9zvdU2TqBjZyHlCKrDiNNhshDV46S0RoQaaox8nQQwwh21fJpaZh+2qTMR7VJ17wc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=SsweqO13; arc=none smtp.client-ip=99.78.197.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708282847; x=1708887647; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gDLjeqjcDDwD7/npT7DJCTwwYCyrxg7kY3LYI6eWDbI=;
-        b=U6tPhT2/93tQ8fCXHSIeV585Y/nToaRCIDbhBi3cy/eHTZaPCxIMWG9StvIy9qwz85
-         ysPsqDVbap9zjNFn2tc03dpKTs8swNI10WXUxGGl12UqNUEmSwrG8dU3Z0CmROvMqK3O
-         xbyGKwauuqCEMh3rqmBRBHOvxKgHx2M6zK/ghbVQArFlN+nGE9rslwO7KEpL8ryFSVlA
-         jIUTBQCCyHxvqtj1ZPWjDtxcaCJPI10LlQPopUiENB7wsvKAvmg4OoN4H7JPHj9fDHDm
-         VGjM4W4nWqnlvZ/X9Hs+cXfXkFtQVB3WUjgTd15Warduqi6WuiVcaW4exVILWHDH3sfx
-         suCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708282847; x=1708887647;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gDLjeqjcDDwD7/npT7DJCTwwYCyrxg7kY3LYI6eWDbI=;
-        b=NlpLjiLlLd2/TUoxtfV9cMNYjMDqF3xfwTwiEo/TaN5gElsKZP7nqkzw2zoQZviJSA
-         Eh19AIet/pbYTiNolotXy77TNxVxvm0iqDBHAxvV/NDcEUXJt975CfbpDaEqsXeM3EXc
-         KHtAbIt+ybUFeIZtHTMz4exei+0b0YHUC+kK9MsFD30sX6VLEIOykLOq/USPgyUFRQ15
-         bOoFMuoqZwlcInupgXRHrvIgs0X2dx4f6fF8EyVJiaZ/nGfu9+kFoc2Sf20bE4qeXJLM
-         IbkvNgyUoImkbsGBVdfQxxGLfnIee083mqXUAEeqoP8H3iRxAN9OAYwc5LTw8tbU3cOD
-         EI8w==
-X-Forwarded-Encrypted: i=1; AJvYcCVq8SbjChIOZnCaDyl9BbymZCKCHwM+xyExn5GRYbldBaug9fyTOFnJkTc+ymhudm0xdFkrF2UC7nxkhyVYaarUJ2vk5ycuc4WbHim6jIZY7lUF9VmFgPQ7WcOdfafwbquFCBZ3
-X-Gm-Message-State: AOJu0Ywg1ufF9M5AHHxua2n9RHaRMVCVxvEAdnONFysitWqC0GfXmSNf
-	sp0CH/+PeA9JLkPDdTKTcRfRnNANDtvmDJ9OtipK9stRv8xRo/V0
-X-Google-Smtp-Source: AGHT+IFxwitGAS6HBiUwRWZSB+cXjxVP0CxCeF7k1rthCH1ddPC6fq9NlS/l2vp7W3J5qozbKlPouw==
-X-Received: by 2002:a05:6000:809:b0:33d:1656:21ff with SMTP id bt9-20020a056000080900b0033d165621ffmr7979799wrb.4.1708282846942;
-        Sun, 18 Feb 2024 11:00:46 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id m15-20020a056000008f00b0033b728190c1sm8115762wrx.79.2024.02.18.11.00.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 11:00:46 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Christian Marangi <ansuelsmth@gmail.com>,
-	Robert Marko <robimarko@gmail.com>,
-	"Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
-	Nipun Gupta <nipun.gupta@amd.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Puneet Gupta <puneet.gupta@amd.com>,
-	Abhijit Gangurde <abhijit.gangurde@amd.com>,
-	Umang Jain <umang.jain@ideasonboard.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [net-next RFC PATCH 3/6] mod_devicetable: permit to define a name for an mdio_device_id
-Date: Sun, 18 Feb 2024 20:00:29 +0100
-Message-ID: <20240218190034.15447-4-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240218190034.15447-1-ansuelsmth@gmail.com>
-References: <20240218190034.15447-1-ansuelsmth@gmail.com>
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1708282850; x=1739818850;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=/TfdBzjved8/fIQhvlk6Ukcg95eILlk4AAmPmct4uHE=;
+  b=SsweqO13Mf8GIU+/mKCNK0qrAApg6fGbhDkUMRtDd4EzdaIKuPCaAq6C
+   jUF9xmdoZALZ6zTHk2vYzZ2nvxqmsQlPAFIpztSMebEWBFFygb5/PnZdZ
+   nvPSr2ar71xTGKShQxf6cVmq0Mr4EM/C1w06Y7KkVAEbPYUw4uWz9eTKQ
+   g=;
+X-IronPort-AV: E=Sophos;i="6.06,169,1705363200"; 
+   d="scan'208";a="274062030"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 19:00:47 +0000
+Received: from EX19MTAUWC001.ant.amazon.com [10.0.21.151:47628]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.63.9:2525] with esmtp (Farcaster)
+ id 6e6ecd30-7f4b-4c26-9456-296c7c15cbb6; Sun, 18 Feb 2024 19:00:45 +0000 (UTC)
+X-Farcaster-Flow-ID: 6e6ecd30-7f4b-4c26-9456-296c7c15cbb6
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWC001.ant.amazon.com (10.250.64.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 18 Feb 2024 19:00:45 +0000
+Received: from 88665a182662.ant.amazon.com (10.106.101.47) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 18 Feb 2024 19:00:42 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <syzbot+ecab4d36f920c3574bf9@syzkaller.appspotmail.com>
+CC: <asml.silence@gmail.com>, <axboe@kernel.dk>, <davem@davemloft.net>,
+	<edumazet@google.com>, <kuba@kernel.org>, <kuniyu@amazon.com>,
+	<linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+	<pabeni@redhat.com>, <syzkaller-bugs@googlegroups.com>
+Subject: [syzbot] [net?] INFO: task hung in unix_stream_sendmsg
+Date: Sun, 18 Feb 2024 11:00:32 -0800
+Message-ID: <20240218190032.39987-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <00000000000073a1b90611a37e67@google.com>
+References: <00000000000073a1b90611a37e67@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,35 +75,182 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D041UWB002.ant.amazon.com (10.13.139.179) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-Permit to optionally define a name for an mdio_device_id. This can be
-used for PHY driver that might define multiple PHY IDs for the same group
-of PHY driver OPs to define different names for each PHY ID and better
-identify the different models at runtime.
+From: syzbot <syzbot+ecab4d36f920c3574bf9@syzkaller.appspotmail.com>
+Date: Sun, 18 Feb 2024 00:09:19 -0800
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    71b605d32017 net: phy: aquantia: add AQR113 PHY ID
+> git tree:       net-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=1107270c180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=970c7b6c80a096da
+> dashboard link: https://syzkaller.appspot.com/bug?extid=ecab4d36f920c3574bf9
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a0522c180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1557b752180000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/4e43093a84c4/disk-71b605d3.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/f0cccd84c6e5/vmlinux-71b605d3.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/581c58b8f080/bzImage-71b605d3.xz
+> 
+> The issue was bisected to:
+> 
+> commit 25236c91b5ab4a26a56ba2e79b8060cf4e047839
+> Author: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Date:   Fri Feb 9 22:04:53 2024 +0000
+> 
+>     af_unix: Fix task hung while purging oob_skb in GC.
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=177f209c180000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=14ff209c180000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10ff209c180000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+ecab4d36f920c3574bf9@syzkaller.appspotmail.com
+> Fixes: 25236c91b5ab ("af_unix: Fix task hung while purging oob_skb in GC.")
+> 
+> INFO: task syz-executor397:5487 blocked for more than 143 seconds.
+>       Not tainted 6.8.0-rc4-syzkaller-01028-g71b605d32017 #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor397 state:D stack:26800 pid:5487  tgid:5487  ppid:5066   flags:0x00004006
+> Call Trace:
+>  <TASK>
+>  context_switch kernel/sched/core.c:5400 [inline]
+>  __schedule+0x17d1/0x49f0 kernel/sched/core.c:6727
+>  __schedule_loop kernel/sched/core.c:6802 [inline]
+>  schedule+0x149/0x260 kernel/sched/core.c:6817
+>  schedule_timeout+0xb0/0x310 kernel/time/timer.c:2159
+>  do_wait_for_common kernel/sched/completion.c:95 [inline]
+>  __wait_for_common kernel/sched/completion.c:116 [inline]
+>  wait_for_common kernel/sched/completion.c:127 [inline]
+>  wait_for_completion+0x354/0x620 kernel/sched/completion.c:148
+>  __flush_work+0x950/0xad0 kernel/workqueue.c:3410
+>  unix_stream_sendmsg+0x1c3/0xe60 net/unix/af_unix.c:2264
+>  sock_sendmsg_nosec net/socket.c:730 [inline]
+>  __sock_sendmsg+0x221/0x270 net/socket.c:745
+>  ____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
+>  ___sys_sendmsg net/socket.c:2638 [inline]
+>  __sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
+>  do_syscall_64+0xf9/0x240
+>  entry_SYSCALL_64_after_hwframe+0x6f/0x77
+> RIP: 0033:0x7f4cfb950b39
+> RSP: 002b:00007ffd1e7e2758 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f4cfb950b39
+> RDX: 0000000000008001 RSI: 00000000200015c0 RDI: 0000000000000004
+> RBP: 000000000001bf72 R08: 0000000000000006 R09: 0000000000000006
+> R10: 0000000000000006 R11: 0000000000000246 R12: 00007ffd1e7e276c
+> R13: 431bde82d7b634db R14: 0000000000000001 R15: 0000000000000001
+>  </TASK>
+> 
+> Showing all locks held in the system:
+> 1 lock held by khungtaskd/29:
+>  #0: ffffffff8e130ae0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+>  #0: ffffffff8e130ae0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+>  #0: ffffffff8e130ae0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
+> 2 locks held by kworker/u4:8/2784:
+> 1 lock held by syslogd/4503:
+>  #0: ffff8880b953c958 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
+> 2 locks held by getty/4822:
+>  #0: ffff8880304f90a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+>  #1: ffffc90002efe2f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b4/0x1e10 drivers/tty/n_tty.c:2201
+> 
+> =============================================
+> 
+> NMI backtrace for cpu 0
+> CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.8.0-rc4-syzkaller-01028-g71b605d32017 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+>  nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
+>  nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
+>  trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+>  check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+>  watchdog+0xfaf/0xff0 kernel/hung_task.c:379
+>  kthread+0x2ef/0x390 kernel/kthread.c:388
+>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+>  </TASK>
+> Sending NMI from CPU 0 to CPUs 1:
+> NMI backtrace for cpu 1
+> CPU: 1 PID: 2784 Comm: kworker/u4:8 Not tainted 6.8.0-rc4-syzkaller-01028-g71b605d32017 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> Workqueue: events_unbound __unix_gc
+> RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
+> Code: 89 fb e8 23 00 00 00 48 8b 3d 84 f5 1a 0c 48 89 de 5b e9 43 26 57 00 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <f3> 0f 1e fa 48 8b 04 24 65 48 8b 0d 90 52 70 7e 65 8b 15 91 52 70
+> RSP: 0018:ffffc9000a17fa78 EFLAGS: 00000287
+> RAX: ffffffff8a0a6108 RBX: ffff88802b6c2640 RCX: ffff88802c0b3b80
+> RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000000
+> RBP: ffffc9000a17fbf0 R08: ffffffff89383f1d R09: 1ffff1100ee5ff84
+> R10: dffffc0000000000 R11: ffffed100ee5ff85 R12: 1ffff110056d84ee
+> R13: ffffc9000a17fae0 R14: 0000000000000000 R15: ffffffff8f47b840
+> FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffef5687ff8 CR3: 0000000029b34000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <NMI>
+>  </NMI>
+>  <TASK>
+>  __unix_gc+0xe69/0xf40 net/unix/garbage.c:343
+>  process_one_work kernel/workqueue.c:2633 [inline]
+>  process_scheduled_works+0x913/0x1420 kernel/workqueue.c:2706
+>  worker_thread+0xa5f/0x1000 kernel/workqueue.c:2787
+>  kthread+0x2ef/0x390 kernel/kthread.c:388
+>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+>  </TASK>
+> INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.061 msecs
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
 
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
- include/linux/mod_devicetable.h | 2 ++
- 1 file changed, 2 insertions(+)
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git 25236c91b5ab4a26a56ba2e79b8060cf4e047839
 
-diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
-index f458469c5ce5..9dc6f0cc26b4 100644
---- a/include/linux/mod_devicetable.h
-+++ b/include/linux/mod_devicetable.h
-@@ -630,10 +630,12 @@ struct platform_device_id {
-  *     for this PHY type
-  * @phy_id_mask: Defines the significant bits of @phy_id.  A value of 0
-  *     is used to terminate an array of struct mdio_device_id.
-+ * @name: Optional Friendly name that identify the PHY device/family.
-  */
- struct mdio_device_id {
- 	__u32 phy_id;
- 	__u32 phy_id_mask;
-+	const char *name;
- };
+diff --git a/net/unix/garbage.c b/net/unix/garbage.c
+index 51acf795f096..3b345b7a228b 100644
+--- a/net/unix/garbage.c
++++ b/net/unix/garbage.c
+@@ -340,13 +340,18 @@ static void __unix_gc(struct work_struct *work)
+ 	__skb_queue_purge(&hitlist);
  
- struct zorro_device_id {
--- 
-2.43.0
-
+ #if IS_ENABLED(CONFIG_AF_UNIX_OOB)
+-	while (!list_empty(&gc_candidates)) {
+-		u = list_entry(gc_candidates.next, struct unix_sock, link);
++	u = list_first_entry_or_null(&gc_candidates, struct unix_sock, link);
++
++	while (u) {
+ 		if (u->oob_skb) {
+ 			struct sk_buff *skb = u->oob_skb;
+ 
+ 			u->oob_skb = NULL;
+ 			kfree_skb(skb);
++
++			u = list_first_entry_or_null(&gc_candidates, struct unix_sock, link);
++		} else {
++			u = list_next_entry(u, link);
+ 		}
+ 	}
+ #endif
 
