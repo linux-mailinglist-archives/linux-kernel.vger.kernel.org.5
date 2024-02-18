@@ -1,504 +1,197 @@
-Return-Path: <linux-kernel+bounces-70611-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70612-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 354F48599CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48B3E8599CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B46851F20F94
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:22:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCD131F21349
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F155B763F3;
-	Sun, 18 Feb 2024 22:21:15 +0000 (UTC)
-Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8667B745EB;
-	Sun, 18 Feb 2024 22:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07FD745F1;
+	Sun, 18 Feb 2024 22:22:20 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFAF74299
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 22:22:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708294874; cv=none; b=rKrzwyjaJRt1PDm8tTfsjCN5CnDohEgGgS/stmqDKMucD6D6XG3PgoALot2a5YaidIEJ39EqHHRdT72DT2GFo6OwjrptfHtKPl6pbTAIB24wJ/w3YNUZFbaZJSHInPViOXq/7axMi9c7MFWYDfpeXr+RuDcNZPjrev0sJ5IZ7vQ=
+	t=1708294940; cv=none; b=J5uqKVwwnAY76m4TPoU+KtAfQFcSilUF5DiHxCGjLIBhVmJcl95A755ua7ayReUUg2O0RM9Qfgs+byXPDttIRJW8RuAjPtDn6dQvgdmwnA1Zk7kJlY5xrguFzmZ9frtNCb6j8i2ywc+MrkHxVCzQpYYzmkmc4O03N07y43AO2K4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708294874; c=relaxed/simple;
-	bh=CKhmIXx5mHmzqsOaPWv1xp25HBv8ABXQGCOtwj7iCO8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kHAcvsJIHW59Suyc625x7lDWGbhvwr7NQsobZi1h0nuebi564KI99OqC5PTDyehqLDA5j3SYaHhJL7wPVkfRSrXXIsOfLlnrPRifet+mXWavKiFK+1bVex5I3ghRB+A//vjwg92J24CYnyUBCW6ebDlngTh5DTPp2RTabNt+sg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
-Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id B2FCA140938; Sun, 18 Feb 2024 23:21:09 +0100 (CET)
-From: "Christian A. Ehrhardt" <lk@c--e.de>
-To: linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Prashanth K <quic_prashk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Saranya Gopal <saranya.gopal@intel.com>,
-	Haotien Hsu <haotienh@nvidia.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Utkarsh Patel <utkarsh.h.patel@intel.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Luca Weiss <luca.weiss@fairphone.com>,
-	Min-Hua Chen <minhuadotchen@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Rajaram Regupathy <rajaram.regupathy@intel.com>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-Subject: [RFC PATCH 6/6] usb: typec: ucsi: Convert a?sync_write to a?sync_cmd
-Date: Sun, 18 Feb 2024 23:20:39 +0100
-Message-Id: <20240218222039.822040-7-lk@c--e.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240218222039.822040-1-lk@c--e.de>
-References: <20240218222039.822040-1-lk@c--e.de>
+	s=arc-20240116; t=1708294940; c=relaxed/simple;
+	bh=hKCkF2Nc02tElu4OZDLKcK7Rpu1cpp/hq4ESd91kik8=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pYSe4gkU5wm9k91A9IY6k6sHT8Bcbs/DM3brDu18JoxoS9XALFigpLQS14Pr9iZFx5FSn0+v/T8NHhDgQXjh/KyKvjghsBUQ/NpphsQm1NZidj/0AkQjkE8gJ1IHkmEBLFZ14cA7gWsssGtEKt8fTIh6cFPBNN2+fFqHckBAzJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-365035aed34so28324035ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 14:22:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708294937; x=1708899737;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZYk1LMO5y6n5tGB1SFVJxfsyQYKQ7bfwvDflpKRAPI=;
+        b=Xdh1tRgKvDrIJ/95EwReLDCdnGOUDXvRAt9s4UZwxRCeaT6oUyFHErZLY30nAVK3Rr
+         jFNJGGdYnOdSpGZtxdZ/VDunkMhJ0mIYEtMhIWKhhgzTevDcLDwXP7SnnQl6KQD2mWzm
+         6cWCijhFxyLz+1PZilO5DUlZCpiWbnqU3ZY51VzXPeEI6QnMOupzBMU5lIJP5Ebtxocu
+         2a2W29dDuJ3WsU12uOee4ELdKBaP4Tt3+VJFEalGx5G4V+rn2/b3VWwyFFtHe1fm7toB
+         qmpovsb8cd8UEFATGr18uBFu1x2OaU545u9wQh4LxzLX7vAbYu8dQS6daWoMkHA79dOk
+         UkLw==
+X-Forwarded-Encrypted: i=1; AJvYcCVkii+w45hRoBtIriAaLkbtMpSuy6U69Zbl8TDhJ4vwuX23gURLb8rSLJCJOw6hWaoTuLJjXwFy4ctCuTcHap4wadDurz1SWyjWq/Qh
+X-Gm-Message-State: AOJu0Yz6ahbMI4s0o4bqqx4wc3d4BZ4sNz0KvExx4WzT8UAj5hAUgrj6
+	pegH9pI54J4V5+z2zzU9b07ubAAJX1yzLWC8d/e+zB7YbLLg28KxRqlCA9T/IML621XM2fngidL
+	qmxK4RiUdgaPQDV0LpA+6uQBLhPdiFYqL+e4AQqLuAcuLJ7FYiBOoxEA=
+X-Google-Smtp-Source: AGHT+IGJnExPV9Xp6gCG90zK3qSJ71JHKUOQY4H1LWGqTi9yZIMSzgcyvwkAvmwc6Dcuj0xwYH9KNyd3az04FZ7sgm6V8a5CwTTn
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:12cb:b0:365:3086:74f7 with SMTP id
+ i11-20020a056e0212cb00b00365308674f7mr89848ilm.4.1708294937599; Sun, 18 Feb
+ 2024 14:22:17 -0800 (PST)
+Date: Sun, 18 Feb 2024 14:22:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ed666a0611af6818@google.com>
+Subject: [syzbot] [net?] [bpf?] BUG: unable to handle kernel NULL pointer
+ dereference in dev_map_hash_update_elem
+From: syzbot <syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
+	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-The ->sync_write an ->async_write callbacks are only used to write to
-the UCSI_CONTROL field and start a command, now.
+Hello,
 
-Rename them accordingly and remove parameters and code that are no
-longer used. While there note that the command passed in from the
-UCSI core is in host byte order but the command sent to UCSI must
-be in little endian byte order.
+syzbot found the following issue on:
 
-Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
+HEAD commit:    7e90b5c295ec Merge tag 'trace-tools-v6.8-rc4' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1460a080180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8ee3942159acc92
+dashboard link: https://syzkaller.appspot.com/bug?extid=8cd36f6b65f3cafd400a
+compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-7e90b5c2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/79d91883bc70/vmlinux-7e90b5c2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0dcf5ad6b94a/zImage-7e90b5c2.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
+
+8<--- cut here ---
+Unable to handle kernel NULL pointer dereference at virtual address 00000014 when read
+[00000014] *pgd=85006003, *pmd=fe2d5003
+Internal error: Oops: 207 [#1] PREEMPT SMP ARM
+Modules linked in:
+CPU: 1 PID: 7433 Comm: syz-executor.1 Not tainted 6.8.0-rc4-syzkaller #0
+Hardware name: ARM-Versatile Express
+PC is at __dev_map_hash_lookup_elem kernel/bpf/devmap.c:269 [inline]
+PC is at __dev_map_hash_update_elem kernel/bpf/devmap.c:972 [inline]
+PC is at dev_map_hash_update_elem+0x90/0x210 kernel/bpf/devmap.c:1010
+LR is at get_lock_parent_ip include/linux/ftrace.h:977 [inline]
+LR is at preempt_latency_start kernel/sched/core.c:5843 [inline]
+LR is at preempt_count_add+0x12c/0x150 kernel/sched/core.c:5868
+pc : [<803e5ed8>]    lr : [<8027b2b4>]    psr: 60000093
+sp : dfaf1da8  ip : dfaf1d68  fp : dfaf1de4
+r10: 00000001  r9 : 84658000  r8 : 84e58110
+r7 : 00000001  r6 : a0000013  r5 : 84e58000  r4 : ffffffff
+r3 : 00000001  r2 : 00000010  r1 : 00000000  r0 : a0000013
+Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
+Control: 30c5387d  Table: 83e1be00  DAC: 00000000
+Register r0 information: non-slab/vmalloc memory
+Register r1 information: NULL pointer
+Register r2 information: zero-size pointer
+Register r3 information: non-paged memory
+Register r4 information: non-paged memory
+Register r5 information: slab kmalloc-cg-512 start 84e58000 pointer offset 0 size 512
+Register r6 information: non-slab/vmalloc memory
+Register r7 information: non-paged memory
+Register r8 information: slab kmalloc-cg-512 start 84e58000 pointer offset 272 size 512
+Register r9 information: slab net_namespace start 84658000 pointer offset 0 size 3264
+Register r10 information: non-paged memory
+Register r11 information: 2-page vmalloc region starting at 0xdfaf0000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
+Register r12 information: 2-page vmalloc region starting at 0xdfaf0000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
+Process syz-executor.1 (pid: 7433, stack limit = 0xdfaf0000)
+Stack: (0xdfaf1da8 to 0xdfaf2000)
+1da0:                   dfaf1dc4 ffffffff 00000000 caa92d0f dfaf1de4 84e58000
+1dc0: 824aeaf0 86a45440 86a45c80 84f14000 00000004 84e58000 dfaf1e14 dfaf1de8
+1de0: 8038c070 803e5e54 00000001 00000000 80883e10 84e580b8 84f14001 84f14000
+1e00: dfaf1ec8 86a45440 dfaf1e6c dfaf1e18 8038cff8 8038be80 00000001 00000000
+1e20: 00000000 00000004 20000280 00000004 00000000 86a45c80 200002c0 00000000
+1e40: dfaf1e6c 00000000 00000020 dfaf1ea0 00000002 200002c0 00000020 00000000
+1e60: dfaf1f8c dfaf1e70 80392a58 8038cdb0 00000000 00000000 20000013 83f0d400
+1e80: dfaf1ee0 dfaf1fb0 dfaf1ea4 dfaf1e98 80883e10 dfaf1ee0 dfaf1fb0 80200288
+1ea0: 200002c0 00000000 00000008 00000000 00000008 8041ad38 00000000 00000000
+1ec0: 00000000 00000000 00000003 00000000 20000240 00000000 20000280 00000000
+1ee0: 00000001 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+1f00: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+1f20: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
+1f40: 00000000 00000000 00000000 00000000 00000000 00000000 80203134 caa92d0f
+1f60: 8261c978 00000000 00000000 0014c2c8 00000182 80200288 83f0d400 00000182
+1f80: dfaf1fa4 dfaf1f90 80394e5c 803927e8 200002c0 00000000 00000000 dfaf1fa8
+1fa0: 80200060 80394e3c 00000000 00000000 00000002 200002c0 00000020 00000000
+1fc0: 00000000 00000000 0014c2c8 00000182 7ec5132e 7ec5132f 003d0f00 76b440fc
+1fe0: 76b43f08 76b43ef8 000167e8 00050bb0 60000010 00000002 00000000 00000000
+Backtrace: 
+[<803e5e48>] (dev_map_hash_update_elem) from [<8038c070>] (bpf_map_update_value+0x1fc/0x2d4 kernel/bpf/syscall.c:202)
+ r10:84e58000 r9:00000004 r8:84f14000 r7:86a45c80 r6:86a45440 r5:824aeaf0
+ r4:84e58000
+[<8038be74>] (bpf_map_update_value) from [<8038cff8>] (map_update_elem+0x254/0x460 kernel/bpf/syscall.c:1553)
+ r8:86a45440 r7:dfaf1ec8 r6:84f14000 r5:84f14001 r4:84e580b8
+[<8038cda4>] (map_update_elem) from [<80392a58>] (__sys_bpf+0x27c/0x2104 kernel/bpf/syscall.c:5445)
+ r10:00000000 r9:00000020 r8:200002c0 r7:00000002 r6:dfaf1ea0 r5:00000020
+ r4:00000000
+[<803927dc>] (__sys_bpf) from [<80394e5c>] (__do_sys_bpf kernel/bpf/syscall.c:5561 [inline])
+[<803927dc>] (__sys_bpf) from [<80394e5c>] (sys_bpf+0x2c/0x48 kernel/bpf/syscall.c:5559)
+ r10:00000182 r9:83f0d400 r8:80200288 r7:00000182 r6:0014c2c8 r5:00000000
+ r4:00000000
+[<80394e30>] (sys_bpf) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:66)
+Exception stack(0xdfaf1fa8 to 0xdfaf1ff0)
+1fa0:                   00000000 00000000 00000002 200002c0 00000020 00000000
+1fc0: 00000000 00000000 0014c2c8 00000182 7ec5132e 7ec5132f 003d0f00 76b440fc
+1fe0: 76b43f08 76b43ef8 000167e8 00050bb0
+Code: e595210c e1a06000 e2433001 e003300a (e7924103) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	e595210c 	ldr	r2, [r5, #268]	@ 0x10c
+   4:	e1a06000 	mov	r6, r0
+   8:	e2433001 	sub	r3, r3, #1
+   c:	e003300a 	and	r3, r3, sl
+* 10:	e7924103 	ldr	r4, [r2, r3, lsl #2] <-- trapping instruction
+
+
 ---
- drivers/usb/typec/ucsi/ucsi.c         | 29 ++++++-------------
- drivers/usb/typec/ucsi/ucsi.h         | 14 ++++-----
- drivers/usb/typec/ucsi/ucsi_acpi.c    | 41 ++++++++++++---------------
- drivers/usb/typec/ucsi/ucsi_ccg.c     | 35 +++++++++++------------
- drivers/usb/typec/ucsi/ucsi_glink.c   | 18 ++++++------
- drivers/usb/typec/ucsi/ucsi_stm32g0.c | 16 +++++------
- 6 files changed, 67 insertions(+), 86 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-index df3fe04cb9cd..5bec98381be6 100644
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -51,22 +51,16 @@ static int ucsi_read_message_in(struct ucsi *ucsi, void *buf,
- 
- static int ucsi_acknowledge_command(struct ucsi *ucsi)
- {
--	u64 ctrl;
-+	u64 cmd = UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
- 
--	ctrl = UCSI_ACK_CC_CI;
--	ctrl |= UCSI_ACK_COMMAND_COMPLETE;
--
--	return ucsi->ops->sync_write(ucsi, UCSI_CONTROL, &ctrl, sizeof(ctrl));
-+	return ucsi->ops->sync_cmd(ucsi, cmd);
- }
- 
- static int ucsi_acknowledge_connector_change(struct ucsi *ucsi)
- {
--	u64 ctrl;
--
--	ctrl = UCSI_ACK_CC_CI;
--	ctrl |= UCSI_ACK_CONNECTOR_CHANGE;
-+	u64 cmd = UCSI_ACK_CC_CI | UCSI_ACK_CONNECTOR_CHANGE;
- 
--	return ucsi->ops->sync_write(ucsi, UCSI_CONTROL, &ctrl, sizeof(ctrl));
-+	return ucsi->ops->sync_cmd(ucsi, cmd);
- }
- 
- static int ucsi_exec_command(struct ucsi *ucsi, u64 command);
-@@ -137,7 +131,7 @@ static int ucsi_exec_command(struct ucsi *ucsi, u64 cmd)
- 	u32 cci;
- 	int ret;
- 
--	ret = ucsi->ops->sync_write(ucsi, UCSI_CONTROL, &cmd, sizeof(cmd));
-+	ret = ucsi->ops->sync_cmd(ucsi, cmd);
- 	if (ret)
- 		return ret;
- 	cci = READ_ONCE(ucsi->cci);
-@@ -1014,15 +1008,13 @@ static int ucsi_reset_connector(struct ucsi_connector *con, bool hard)
- 
- static int ucsi_reset_ppm(struct ucsi *ucsi)
- {
--	u64 command = UCSI_PPM_RESET;
- 	unsigned long tmo;
- 	u32 cci;
- 	int ret;
- 
- 	mutex_lock(&ucsi->ppm_lock);
- 
--	ret = ucsi->ops->async_write(ucsi, UCSI_CONTROL, &command,
--				     sizeof(command));
-+	ret = ucsi->ops->async_cmd(ucsi, UCSI_PPM_RESET);
- 	if (ret < 0)
- 		goto out;
- 
-@@ -1041,9 +1033,7 @@ static int ucsi_reset_ppm(struct ucsi *ucsi)
- 
- 		/* If the PPM is still doing something else, reset it again. */
- 		if (cci & ~UCSI_CCI_RESET_COMPLETE) {
--			ret = ucsi->ops->async_write(ucsi, UCSI_CONTROL,
--						     &command,
--						     sizeof(command));
-+			ret = ucsi->ops->async_cmd(ucsi, UCSI_PPM_RESET);
- 			if (ret < 0)
- 				goto out;
- 		}
-@@ -1549,7 +1539,7 @@ struct ucsi *ucsi_create(struct device *dev, const struct ucsi_operations *ops)
- 	struct ucsi *ucsi;
- 
- 	if (!ops || !ops->poll_cci || !ops->read_data || !ops->write_data ||
--	    !ops->sync_write || !ops->async_write)
-+	    !ops->sync_cmd || !ops->async_cmd)
- 		return ERR_PTR(-EINVAL);
- 
- 	ucsi = kzalloc(sizeof(*ucsi), GFP_KERNEL);
-@@ -1612,7 +1602,6 @@ EXPORT_SYMBOL_GPL(ucsi_register);
-  */
- void ucsi_unregister(struct ucsi *ucsi)
- {
--	u64 cmd = UCSI_SET_NOTIFICATION_ENABLE;
- 	int i;
- 
- 	/* Make sure that we are not in the middle of driver initialization */
-@@ -1620,7 +1609,7 @@ void ucsi_unregister(struct ucsi *ucsi)
- 	cancel_work_sync(&ucsi->resume_work);
- 
- 	/* Disable notifications */
--	ucsi->ops->async_write(ucsi, UCSI_CONTROL, &cmd, sizeof(cmd));
-+	ucsi->ops->async_cmd(ucsi, UCSI_SET_NOTIFICATION_ENABLE);
- 
- 	if (!ucsi->connector)
- 		return;
-diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-index 2ad68124511b..3cce83d1e70c 100644
---- a/drivers/usb/typec/ucsi/ucsi.h
-+++ b/drivers/usb/typec/ucsi/ucsi.h
-@@ -58,22 +58,20 @@ struct dentry;
-  * @poll_cci: Update the cached CCI value from hardware. Required for reset.
-  * @read_data: Read MESSAGE_IN data
-  * @write_data: Write MESSAGE_OUT data
-- * @sync_write: Blocking write operation
-- * @async_write: Non-blocking write operation
-+ * @sync_cmd: Blocking command execution
-+ * @async_cmd: Non-blocking command execution
-  * @update_altmodes: Squashes duplicate DP altmodes
-  *
-- * Read and write routines for UCSI interface. @sync_write must wait for the
-- * Command Completion Event from the PPM before returning, and @async_write must
-+ * Read and write routines for UCSI interface. @sync_cmd must wait for the
-+ * Command Completion Event from the PPM before returning, and @async_cmd must
-  * return immediately after sending the data to the PPM.
-  */
- struct ucsi_operations {
- 	int (*poll_cci)(struct ucsi *ucsi);
- 	int (*read_data)(struct ucsi *ucsi, void *val, size_t val_len);
- 	int (*write_data)(struct ucsi *ucsi, const void *val, size_t val_len);
--	int (*sync_write)(struct ucsi *ucsi, unsigned int offset,
--			  const void *val, size_t val_len);
--	int (*async_write)(struct ucsi *ucsi, unsigned int offset,
--			   const void *val, size_t val_len);
-+	int (*sync_cmd)(struct ucsi *ucsi, u64 cmd);
-+	int (*async_cmd)(struct ucsi *ucsi, u64 cmd);
- 	bool (*update_altmodes)(struct ucsi *ucsi, struct ucsi_altmode *orig,
- 				struct ucsi_altmode *updated);
- };
-diff --git a/drivers/usb/typec/ucsi/ucsi_acpi.c b/drivers/usb/typec/ucsi/ucsi_acpi.c
-index 79b47b433e35..e6f67aa102d2 100644
---- a/drivers/usb/typec/ucsi/ucsi_acpi.c
-+++ b/drivers/usb/typec/ucsi/ucsi_acpi.c
-@@ -77,21 +77,20 @@ static int ucsi_acpi_write_data(struct ucsi *ucsi, const void *val,
- 	return 0;
- }
- 
--static int ucsi_acpi_async_write(struct ucsi *ucsi, unsigned int offset,
--				 const void *val, size_t val_len)
-+static int ucsi_acpi_async_cmd(struct ucsi *ucsi, u64 cmd)
- {
- 	struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
-+	__le64 __cmd = cpu_to_le64(cmd);
- 
--	memcpy(ua->base + offset, val, val_len);
-+	memcpy(ua->base + UCSI_CONTROL, &__cmd, sizeof(__cmd));
- 
- 	return ucsi_acpi_dsm(ua, UCSI_DSM_FUNC_WRITE);
- }
- 
--static int ucsi_acpi_sync_write(struct ucsi *ucsi, unsigned int offset,
--				const void *val, size_t val_len)
-+static int ucsi_acpi_sync_cmd(struct ucsi *ucsi, u64 cmd)
- {
- 	struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
--	bool ack = UCSI_COMMAND(*(u64 *)val) == UCSI_ACK_CC_CI;
-+	bool ack = UCSI_COMMAND(cmd) == UCSI_ACK_CC_CI;
- 	int ret;
- 
- 	if (ack)
-@@ -99,7 +98,7 @@ static int ucsi_acpi_sync_write(struct ucsi *ucsi, unsigned int offset,
- 	else
- 		set_bit(COMMAND_PENDING, &ua->flags);
- 
--	ret = ucsi_acpi_async_write(ucsi, offset, val, val_len);
-+	ret = ucsi_acpi_async_cmd(ucsi, cmd);
- 	if (ret)
- 		goto out_clear_bit;
- 
-@@ -119,8 +118,8 @@ static const struct ucsi_operations ucsi_acpi_ops = {
- 	.poll_cci = ucsi_acpi_poll_cci,
- 	.read_data = ucsi_acpi_read_data,
- 	.write_data = ucsi_acpi_write_data,
--	.sync_write = ucsi_acpi_sync_write,
--	.async_write = ucsi_acpi_async_write
-+	.sync_cmd = ucsi_acpi_sync_cmd,
-+	.async_cmd = ucsi_acpi_async_cmd
- };
- 
- /*
-@@ -131,32 +130,28 @@ static const struct ucsi_operations ucsi_acpi_ops = {
-  * subsequent commands will timeout.
-  */
- static int
--ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
--		     const void *val, size_t val_len)
-+ucsi_dell_sync_cmd(struct ucsi *ucsi, u64 cmd)
- {
- 	struct ucsi_acpi *ua = ucsi_get_drvdata(ucsi);
--	u64 cmd = *(u64 *)val, ack = 0;
-+	u64 ack = 0;
- 	int ret;
- 
- 	if (UCSI_COMMAND(cmd) == UCSI_ACK_CC_CI &&
- 	    cmd & UCSI_ACK_CONNECTOR_CHANGE)
- 		ack = UCSI_ACK_CC_CI | UCSI_ACK_COMMAND_COMPLETE;
- 
--	ret = ucsi_acpi_sync_write(ucsi, offset, val, val_len);
-+	ret = ucsi_acpi_sync_cmd(ucsi, cmd);
- 	if (ret != 0)
- 		return ret;
- 	if (ack == 0)
--		return ret;
-+		return 0;
- 
- 	if (!ua->dell_quirk_probed) {
- 		ua->dell_quirk_probed = true;
- 
--		cmd = UCSI_GET_CAPABILITY;
--		ret = ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &cmd,
--					   sizeof(cmd));
-+		ret = ucsi_acpi_sync_cmd(ucsi, UCSI_GET_CAPABILITY);
- 		if (ret == 0)
--			return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL,
--						    &ack, sizeof(ack));
-+			return ucsi_acpi_sync_cmd(ucsi, ack);
- 		if (ret != -ETIMEDOUT)
- 			return ret;
- 
-@@ -166,17 +161,17 @@ ucsi_dell_sync_write(struct ucsi *ucsi, unsigned int offset,
- 	}
- 
- 	if (!ua->dell_quirk_active)
--		return ret;
-+		return 0;
- 
--	return ucsi_acpi_sync_write(ucsi, UCSI_CONTROL, &ack, sizeof(ack));
-+	return ucsi_acpi_sync_cmd(ucsi, ack);
- }
- 
- static const struct ucsi_operations ucsi_dell_ops = {
- 	.poll_cci = ucsi_acpi_poll_cci,
- 	.read_data = ucsi_acpi_read_data,
- 	.write_data = ucsi_acpi_write_data,
--	.sync_write = ucsi_dell_sync_write,
--	.async_write = ucsi_acpi_async_write
-+	.sync_cmd = ucsi_dell_sync_cmd,
-+	.async_cmd = ucsi_acpi_async_cmd
- };
- 
- static const struct dmi_system_id ucsi_acpi_quirks[] = {
-diff --git a/drivers/usb/typec/ucsi/ucsi_ccg.c b/drivers/usb/typec/ucsi/ucsi_ccg.c
-index d6026f61a0ed..5c60816e608f 100644
---- a/drivers/usb/typec/ucsi/ucsi_ccg.c
-+++ b/drivers/usb/typec/ucsi/ucsi_ccg.c
-@@ -605,23 +605,22 @@ static int ucsi_ccg_write_data(struct ucsi *ucsi, const void *val,
- 	return ccg_write(uc, reg, val, val_len);
- }
- 
--static int ucsi_ccg_async_write(struct ucsi *ucsi, unsigned int offset,
--				const void *val, size_t val_len)
-+static int ucsi_ccg_async_cmd(struct ucsi *ucsi, u64 cmd)
- {
- 	struct ucsi_ccg *uc = ucsi_get_drvdata(ucsi);
--	u16 reg = CCGX_RAB_UCSI_DATA_BLOCK(offset);
-+	u16 reg = CCGX_RAB_UCSI_DATA_BLOCK(UCSI_CONTROL);
-+	__le64 __cmd = cpu_to_le64(cmd);
- 
- 	/*
--	 * UCSI may read CCI instantly after async_write,
-+	 * UCSI may read CCI instantly after async_cmd,
- 	 * clear CCI to avoid caller getting wrong data before we get CCI from ISR
- 	 */
- 	WRITE_ONCE(ucsi->cci, 0);
- 
--	return ccg_write(uc, reg, val, val_len);
-+	return ccg_write(uc, reg, (u8 *)&__cmd, sizeof(__cmd));
- }
- 
--static int ucsi_ccg_sync_write(struct ucsi *ucsi, unsigned int offset,
--			       const void *val, size_t val_len)
-+static int ucsi_ccg_sync_cmd(struct ucsi *ucsi, u64 cmd)
- {
- 	struct ucsi_ccg *uc = ucsi_get_drvdata(ucsi);
- 	struct ucsi_connector *con;
-@@ -632,19 +631,17 @@ static int ucsi_ccg_sync_write(struct ucsi *ucsi, unsigned int offset,
- 	pm_runtime_get_sync(uc->dev);
- 	set_bit(DEV_CMD_PENDING, &uc->flags);
- 
--	if (offset == UCSI_CONTROL && val_len == sizeof(uc->last_cmd_sent)) {
--		uc->last_cmd_sent = *(u64 *)val;
-+	uc->last_cmd_sent = cmd;
- 
--		if (UCSI_COMMAND(uc->last_cmd_sent) == UCSI_SET_NEW_CAM &&
--		    uc->has_multiple_dp) {
--			con_index = (uc->last_cmd_sent >> 16) &
--				    UCSI_CMD_CONNECTOR_MASK;
--			con = &uc->ucsi->connector[con_index - 1];
--			ucsi_ccg_update_set_new_cam_cmd(uc, con, (u64 *)val);
--		}
-+	if (UCSI_COMMAND(uc->last_cmd_sent) == UCSI_SET_NEW_CAM &&
-+	    uc->has_multiple_dp) {
-+		con_index = (uc->last_cmd_sent >> 16) &
-+			    UCSI_CMD_CONNECTOR_MASK;
-+		con = &uc->ucsi->connector[con_index - 1];
-+		ucsi_ccg_update_set_new_cam_cmd(uc, con, &cmd);
- 	}
- 
--	ret = ucsi_ccg_async_write(ucsi, offset, val, val_len);
-+	ret = ucsi_ccg_async_cmd(ucsi, cmd);
- 	if (ret)
- 		goto err_clear_bit;
- 
-@@ -663,8 +660,8 @@ static const struct ucsi_operations ucsi_ccg_ops = {
- 	.poll_cci = ucsi_ccg_poll_cci,
- 	.read_data = ucsi_ccg_read_data,
- 	.write_data = ucsi_ccg_write_data,
--	.sync_write = ucsi_ccg_sync_write,
--	.async_write = ucsi_ccg_async_write,
-+	.sync_cmd = ucsi_ccg_sync_cmd,
-+	.async_cmd = ucsi_ccg_async_cmd,
- 	.update_altmodes = ucsi_ccg_update_altmodes
- };
- 
-diff --git a/drivers/usb/typec/ucsi/ucsi_glink.c b/drivers/usb/typec/ucsi/ucsi_glink.c
-index 9dab1b428ad9..1535877a9a41 100644
---- a/drivers/usb/typec/ucsi/ucsi_glink.c
-+++ b/drivers/usb/typec/ucsi/ucsi_glink.c
-@@ -186,23 +186,24 @@ static int pmic_glink_ucsi_locked_write(struct pmic_glink_ucsi *ucsi, unsigned i
- 	return 0;
- }
- 
--static int pmic_glink_ucsi_async_write(struct ucsi *__ucsi, unsigned int offset,
--				       const void *val, size_t val_len)
-+static int pmic_glink_ucsi_async_cmd(struct ucsi *__ucsi, u64 cmd)
- {
- 	struct pmic_glink_ucsi *ucsi = ucsi_get_drvdata(__ucsi);
-+	__le64 __cmd = cpu_to_le64(cmd);
- 	int ret;
- 
- 	mutex_lock(&ucsi->lock);
--	ret = pmic_glink_ucsi_locked_write(ucsi, offset, val, val_len);
-+	ret = pmic_glink_ucsi_locked_write(ucsi, UCSI_CONTROL,
-+					   &__cmd, sizeof(__cmd));
- 	mutex_unlock(&ucsi->lock);
- 
- 	return ret;
- }
- 
--static int pmic_glink_ucsi_sync_write(struct ucsi *__ucsi, unsigned int offset,
--				      const void *val, size_t val_len)
-+static int pmic_glink_ucsi_sync_cmd(struct ucsi *__ucsi, u64 cmd)
- {
- 	struct pmic_glink_ucsi *ucsi = ucsi_get_drvdata(__ucsi);
-+	__le64 __cmd = cpu_to_le64(cmd);
- 	unsigned long left;
- 	int ret;
- 
-@@ -212,7 +213,8 @@ static int pmic_glink_ucsi_sync_write(struct ucsi *__ucsi, unsigned int offset,
- 	ucsi->sync_val = 0;
- 	reinit_completion(&ucsi->sync_ack);
- 	ucsi->sync_pending = true;
--	ret = pmic_glink_ucsi_locked_write(ucsi, offset, val, val_len);
-+	ret = pmic_glink_ucsi_locked_write(ucsi, UCSI_CONTROL,
-+					   &__cmd, sizeof(__cmd));
- 	mutex_unlock(&ucsi->lock);
- 
- 	left = wait_for_completion_timeout(&ucsi->sync_ack, 5 * HZ);
-@@ -232,8 +234,8 @@ static const struct ucsi_operations pmic_glink_ucsi_ops = {
- 	.poll_cci = pmic_glink_ucsi_poll_cci,
- 	.read_data = pmic_glink_ucsi_read_data,
- 	.write_data = pmic_glink_ucsi_write_data,
--	.sync_write = pmic_glink_ucsi_sync_write,
--	.async_write = pmic_glink_ucsi_async_write
-+	.sync_cmd = pmic_glink_ucsi_sync_cmd,
-+	.async_cmd = pmic_glink_ucsi_async_cmd
- };
- 
- static void pmic_glink_ucsi_read_ack(struct pmic_glink_ucsi *ucsi, const void *data, int len)
-diff --git a/drivers/usb/typec/ucsi/ucsi_stm32g0.c b/drivers/usb/typec/ucsi/ucsi_stm32g0.c
-index d68aca118e41..0847e00163e8 100644
---- a/drivers/usb/typec/ucsi/ucsi_stm32g0.c
-+++ b/drivers/usb/typec/ucsi/ucsi_stm32g0.c
-@@ -421,23 +421,23 @@ static int ucsi_stm32g0_write_data(struct ucsi *ucsi,
- 	return ucsi_stm32g0_write_to_hw(g0, UCSI_MESSAGE_OUT, val, len);
- }
- 
--static int ucsi_stm32g0_async_write(struct ucsi *ucsi, unsigned int offset,
--				    const void *val, size_t len)
-+static int ucsi_stm32g0_async_cmd(struct ucsi *ucsi, u64 cmd)
- {
- 	struct ucsi_stm32g0 *g0 = ucsi_get_drvdata(ucsi);
-+	__le64 __cmd = cpu_to_le64(cmd);
- 
--	return ucsi_stm32g0_write_to_hw(g0, offset, val, len);
-+	return ucsi_stm32g0_write_to_hw(g0, UCSI_CONTROL,
-+					&__cmd, sizeof(__cmd));
- }
- 
--static int ucsi_stm32g0_sync_write(struct ucsi *ucsi, unsigned int offset, const void *val,
--				   size_t len)
-+static int ucsi_stm32g0_sync_cmd(struct ucsi *ucsi, u64 cmd)
- {
- 	struct ucsi_stm32g0 *g0 = ucsi_get_drvdata(ucsi);
- 	int ret;
- 
- 	set_bit(COMMAND_PENDING, &g0->flags);
- 
--	ret = ucsi_stm32g0_async_write(ucsi, offset, val, len);
-+	ret = ucsi_stm32g0_async_cmd(ucsi, cmd);
- 	if (ret)
- 		goto out_clear_bit;
- 
-@@ -480,8 +480,8 @@ static const struct ucsi_operations ucsi_stm32g0_ops = {
- 	.poll_cci = ucsi_stm32g0_poll_cci,
- 	.read_data = ucsi_stm32g0_read_data,
- 	.write_data = ucsi_stm32g0_write_data,
--	.sync_write = ucsi_stm32g0_sync_write,
--	.async_write = ucsi_stm32g0_async_write,
-+	.sync_cmd = ucsi_stm32g0_sync_cmd,
-+	.async_cmd = ucsi_stm32g0_async_cmd,
- };
- 
- static int ucsi_stm32g0_register(struct ucsi *ucsi)
--- 
-2.40.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
