@@ -1,187 +1,208 @@
-Return-Path: <linux-kernel+bounces-70215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E938594EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:56:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7278594ED
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1B451F22C4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 05:56:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DACF5B2202F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:00:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3790D53A7;
-	Sun, 18 Feb 2024 05:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968665673;
+	Sun, 18 Feb 2024 06:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="N86D5dVB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="pSH6/Tby"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4B5E554
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 05:56:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE91F29A0
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 06:00:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708235780; cv=none; b=YI8k7cLOtavsZevyOdDxnqAcYdrt7X+DfC03tQQGNiTaEFf5XJqxxa+ZhzA8YhX6oFbhzBViyEymlMUA2QH5ViCN0NvYXyV0aX6Dy9LhrDBwxUDtAtr8HSkFfqoh4NWFVMzTDMFIwiTVrPkk1jWjpAE4b77e8m6O7tkrf2PiSO8=
+	t=1708236013; cv=none; b=cZG9XEQt6V46nnGrqHM2Uc3nhxNtbaTUYRbBKHKdafheNsV+orrpWd33ZmQm7D1cLZDKLNKaunNv9W3cmxFsNLAkqXwwkLv9ik4NkRD9v8Mlw4fxPyGDofc8SFFhHF0yBKXlmBHP6IZEC4adkHjSLR7feZCn9s4Q3jGyYIk9CBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708235780; c=relaxed/simple;
-	bh=ykciOYIUf3ziL/MfvckOIh5TxEtXF0aoZrWYpsipNEg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AR1IIeQgPPIUPlGj8GUyGLRHsJFxIPcj8Pnhb9ypGwOSb8KhChH18XAWFcRny35n5c6Xg4FD3CMd6tw3ymCryWM6mSKHYjrnwza25FXQgsxh2o7EzWXYJ2raHH3AHZLM9pZZRPKafkbksth01HmdAe/LyPbJ9V5F2RO8HGF9Tss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=N86D5dVB; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708235777;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Can3YssHnCfkpH1KexyMkQMSXqdagr3d1VhL/3Id/+U=;
-	b=N86D5dVBXRiqJ9p8HqnDDgwlJ1uCWuLNEBGP2kJgqh75/iXoVWwOGZuntHlX37bH45sef3
-	sPJPBnFzFEiYe9VrvPcJ9W2yxLsYMBkk9zzXNWtY4/G1LhQr1EwOP4MzU6SYWLLGV1x5u2
-	JGNMVubKwqLaU8FoYkrIW52k/YoQ2S0=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-114-cCXuBVZJNGG7qYFkSO6B-w-1; Sun, 18 Feb 2024 00:56:16 -0500
-X-MC-Unique: cCXuBVZJNGG7qYFkSO6B-w-1
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-59fb255d718so867378eaf.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 21:56:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708235775; x=1708840575;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Can3YssHnCfkpH1KexyMkQMSXqdagr3d1VhL/3Id/+U=;
-        b=eW8oxCdah3EYewQa1YsJKRBbM+F0F8niGr2Gr0LyOifbzTDoDcTbvqk728W/XMizZ6
-         jrBE/I4UbtW2IupO5IMGphy+Xa1XuVAJxzWyl7tlGpH3S2MxkEmN+dFL5Mk6hK+Q21Le
-         sqIiBco6goS8Gda+A276iRwp+HhleSEoD7i1JWRDhlwETua03JgxDEvheo+8NPsUeyL2
-         DO2YFLDcvPcNwgkfRF5LovNmV1ZarA9wAdrgThAAj7+qhWLQzOQHwzJO6EzGOMkqUhPa
-         cYCBvmdRQW37KrqNO2yvmexHR/nxC4uVMI5PmDB2lxcRlAd5sc7MdsjwzgmKrdk6+3Y1
-         8K5A==
-X-Forwarded-Encrypted: i=1; AJvYcCVWBXh+bGmyqqw6xLQPLWN4BhGSJucRCN8N12gi5iQpyoZNcRVwlt/HgrdbbNTcH4GpW6tzXVWQQm20kWufYN4tNE+oH6FBIkhzgca7
-X-Gm-Message-State: AOJu0Ywln5BMGeOQcRFRryYy2D5X9hg9RjvfjU2Sa0dNnNBqmi+rUXRu
-	wDLqjHRCT6PPx+ZPw7pS8yqEFw3nErOQusGgDu4HyYMup65rVlBH7mg7kV7K12UA2VxbkyPwJ6E
-	mEGEJ3xvIAFzvDQw9ogE1jgfJ4qoTnDm1yiDCakwxdXVTXb6idwBtbVKBVvr4xa5l9N9mZJwTu2
-	DHq2pbJGCpAq04CFEqz0HeJm88ltXTpZ2RqHlD
-X-Received: by 2002:a05:6359:4c23:b0:17b:426d:74f3 with SMTP id kj35-20020a0563594c2300b0017b426d74f3mr85572rwc.29.1708235775254;
-        Sat, 17 Feb 2024 21:56:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG1oH3m48AGF5d9LWhpYqM/Ix7rL56PvuuMXgyGuIZ4+ENeuNFaOoxZhB6pcFZriK0iTrvDr5pU0tSWKeTn3pY=
-X-Received: by 2002:a05:6359:4c23:b0:17b:426d:74f3 with SMTP id
- kj35-20020a0563594c2300b0017b426d74f3mr85561rwc.29.1708235774919; Sat, 17 Feb
- 2024 21:56:14 -0800 (PST)
+	s=arc-20240116; t=1708236013; c=relaxed/simple;
+	bh=amJWEKl10w2be7PZ/y173OKtiDmrAL2EwAaeeRH1lAU=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=LdGrzxg40oSykHeEkEjpnlVLCvs1BTKRHf3/htnIkTB/OATg4Eo2SoLb/trm5X1zZTrsR1AlVcqJQfVtGj2OZe+Um+OsHkvtHq6dyMqgxR8Cd8pnDUAe73bPpvd2CO+4R2yyFUDAOGbNlTHKADlK2Af0xMDMu7yg10aUK/A9N3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=pSH6/Tby; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240218060008epoutp03123af63e0f835814847b83c3f196a8db~035l5hgbS3150731507epoutp03V
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 06:00:08 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240218060008epoutp03123af63e0f835814847b83c3f196a8db~035l5hgbS3150731507epoutp03V
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1708236008;
+	bh=KAsYtb5y8XLZHK3OBj1ZIgnxXVZpJOPSieE2Qp4j0M0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=pSH6/TbyQ7XQLx0lxJBVo83xDYkC3Fls8dYJUwhAILYOFXYXfgyfleM49Yna4xHbD
+	 qC/dTYX76YJskKCc/G9e45i5fGRzKWc/jBgMaBjLyOaivMywn7sd7yw6d+xfkJhSyH
+	 rlOhcn0EmIdaqkACfysvSPE+jAoxjjKGyCffu4pw=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+	20240218060008epcas5p323291d178502f193e43e343399781c2a~035lin6Ls0952409524epcas5p3n;
+	Sun, 18 Feb 2024 06:00:08 +0000 (GMT)
+Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.175]) by
+	epsnrtp4.localdomain (Postfix) with ESMTP id 4Tcw4R1Kwrz4x9Pw; Sun, 18 Feb
+	2024 06:00:07 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	33.39.19369.7EC91D56; Sun, 18 Feb 2024 15:00:07 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef~035c6ttXD0050500505epcas5p2j;
+	Sun, 18 Feb 2024 05:59:59 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240218055959epsmtrp2aeea7b72184d819801b7614d0ee39f8b~035c227Qj0692806928epsmtrp2l;
+	Sun, 18 Feb 2024 05:59:59 +0000 (GMT)
+X-AuditID: b6c32a50-c99ff70000004ba9-d1-65d19ce7b519
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	AE.23.07368.FDC91D56; Sun, 18 Feb 2024 14:59:59 +0900 (KST)
+Received: from testpc118124.samsungds.net (unknown [109.105.118.124]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240218055957epsmtip2c63341500d2f8969cf275aa4236fd4bd~035bo7yEW0417604176epsmtip23;
+	Sun, 18 Feb 2024 05:59:57 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: xiaobing.li@samsung.com
+Cc: axboe@kernel.dk, asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com
+Subject: Re: [PATCH] liburing: add script for statistics sqpoll running
+ time.
+Date: Sun, 18 Feb 2024 13:59:53 +0800
+Message-Id: <20240218055953.38903-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240206024014.11412-1-xiaobing.li@samsung.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com> <20240201092559.910982-4-yukuai1@huaweicloud.com>
-In-Reply-To: <20240201092559.910982-4-yukuai1@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Sun, 18 Feb 2024 13:56:03 +0800
-Message-ID: <CALTww283nysUDy=jmW4w45GbS6O2nS0XLYX=KEiO2BUp5+cLaA@mail.gmail.com>
-Subject: Re: [PATCH v5 03/14] md: make sure md_do_sync() will set MD_RECOVERY_DONE
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com, 
-	agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org, 
-	yukuai3@huawei.com, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com, 
-	akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, 
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIJsWRmVeSWpSXmKPExsWy7bCmuu7zORdTDdYeYreYs2obo8Xqu/1s
+	Fu9az7FYHP3/ls3iV/ddRoutX76yWlzeNYfN4tleTosvh7+zW5yd8IHVYuqWHUwWHS2XGR14
+	PHbOusvucflsqUffllWMHp83yQWwRGXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpa
+	mCsp5CXmptoqufgE6Lpl5gAdpqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMCnQ
+	K07MLS7NS9fLSy2xMjQwMDIFKkzIzrg+6S1TwWL+ipX7bzI2MK7m6mLk4JAQMJG48d2gi5GL
+	Q0hgD6PE4yWzWUHiQgKfGCWuRkPEvzFKzPy6AijOCVb/tX8eI0RiL6PEr3enmCCcX4wS7xpP
+	s4FUsQloS1xf1wXWISIgLXF9yyawImaBr4wSU35fZQRJCAv4S/S/vQzWwCKgKvH1/31mEJtX
+	wEZi/53PbBDr5CX2HzzLDHISp4CtxPFOKYgSQYmTM5+wgNjMQCXNW2czQ5S3ckhcnxcJYbtI
+	3PzZxg5hC0u8Or4FypaS+PxuL9T4YokjPd9ZQW6TEGhglJh++ypUkbXEvyt7WED2MgtoSqzf
+	pQ8RlpWYemodE8RePone30+YIOK8EjvmwdiqEqsvPWSBsKUlXjf8hop7SDz5cpUZElgTGCUO
+	HnrLNoFRYRaSf2Yh+WcWwuoFjMyrGKVSC4pz01OTTQsMdfNSy+GRnJyfu4kRnFa1AnYwrt7w
+	V+8QIxMH4yFGCQ5mJRFe96YLqUK8KYmVValF+fFFpTmpxYcYTYEBPpFZSjQ5H5jY80riDU0s
+	DUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYPKbvf1Ai3nUfxEWDftf9j2q
+	gUVtkRfT3t+5e+xZ0zfLqQvvTn+/R63LqD5B8sMq3otuySq6gp58S4v8jN5tfz9pmv/ie+wq
+	/yZeYVvrJZTvNpn7Ds90Vubs+69LIv1tfaWvVXx6+iT7d/DG54JHdzj+0eow2SZ1qX9dUu/G
+	p35s319z8+7MUj67Wzrdt6390IHZOWYfNjnd3vH4T9GuDBaNp+plrVK1dwN8PGUFinzX/5r0
+	Z2s7x/anvX/f3BLkbVfOXF20bH5Hjq+hp6PrlPylJ/MYT4bor9pV73EwT22n1Y93e6qK821m
+	pFZpzNyq1JWdoxPF4Rv1dMrGW4ExuzQmNFVE2cS8W+mVsuh5iRJLcUaioRZzUXEiANeQB5k0
+	BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOLMWRmVeSWpSXmKPExsWy7bCSvO79ORdTDbacY7OYs2obo8Xqu/1s
+	Fu9az7FYHP3/ls3iV/ddRoutX76yWlzeNYfN4tleTosvh7+zW5yd8IHVYuqWHUwWHS2XGR14
+	PHbOusvucflsqUffllWMHp83yQWwRHHZpKTmZJalFunbJXBlXJ/0lqlgMX/Fyv03GRsYV3N1
+	MXJySAiYSHztn8fYxcjFISSwm1Fi4d9n7F2MHEAJaYk/f8ohaoQlVv57zg5R84NRYu+Th8wg
+	CTYBbYnr67pYQWwRoPrrWzYxgdjMAo1MEqvWhYDYwgK+EmtbfoPFWQRUJb7+vw/WyytgI7H/
+	zmc2iAXyEvsPnmUG2cspYCtxvFMKJCwEVDLp5zsWiHJBiZMzn7BAjJeXaN46m3kCo8AsJKlZ
+	SFILGJlWMUqmFhTnpucmGxYY5qWW6xUn5haX5qXrJefnbmIEh72Wxg7Ge/P/6R1iZOJgPMQo
+	wcGsJMLr3nQhVYg3JbGyKrUoP76oNCe1+BCjNAeLkjiv4YzZKUIC6YklqdmpqQWpRTBZJg5O
+	qQYm2+KkDytUPds7ljMGu939lfE5b45shWHwy2l8j6Z6sW5+kLJXwGqhWNe2bf2v3h26eGK7
+	TyHPC+56IZ5Y25fGrPtTFqZv+SU3c5O/5fvQy3enVEq2366xPX7pcbgc8/t6bh6BwjuGH5hN
+	tm7LMjjEcp+ro6Iv80TZc4NNi22lLNb9+V771P714nY7wb82/+7qyKSErE5y9G18crJDd/np
+	bxM/PIpbkXe84GSdo5O4THns3O218v2LDeuVpGuWFN4ujDsYs3eSXaWAGEeu0OOlZX8XFHxT
+	y1WfWa7feEgvsiL9VIvuIk3Rx6fe3JNxvhS1JlPE7/SeunVWSywW614vs+E5d2avsJH6HflU
+	kUwlluKMREMt5qLiRACLTxcl6gIAAA==
+X-CMS-MailID: 20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef
+References: <20240206024014.11412-1-xiaobing.li@samsung.com>
+	<CGME20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef@epcas5p2.samsung.com>
 
-On Thu, Feb 1, 2024 at 5:30=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> wr=
-ote:
->
-> From: Yu Kuai <yukuai3@huawei.com>
->
-> stop_sync_thread() will interrupt md_do_sync(), and md_do_sync() must
-> set MD_RECOVERY_DONE, so that follow up md_check_recovery() will
-> unregister sync_thread, clear MD_RECOVERY_RUNNING and wake up
-> stop_sync_thread().
->
-> If MD_RECOVERY_WAIT is set or the array is read-only, md_do_sync() will
-> return without setting MD_RECOVERY_DONE, and after commit f52f5c71f3d4
-> ("md: fix stopping sync thread"), dm-raid switch from
-> md_reap_sync_thread() to stop_sync_thread() to unregister sync_thread
-> from md_stop() and md_stop_writes(), causing the test
-> shell/lvconvert-raid-reshape.sh hang.
->
-> We shouldn't switch back to md_reap_sync_thread() because it's
-> problematic in the first place. Fix the problem by making sure
-> md_do_sync() will set MD_RECOVERY_DONE.
->
-> Reported-by: Mikulas Patocka <mpatocka@redhat.com>
-> Closes: https://lore.kernel.org/all/ece2b06f-d647-6613-a534-ff4c9bec1142@=
-redhat.com/
-> Fixes: d5d885fd514f ("md: introduce new personality funciton start()")
-> Fixes: 5fd6c1dce06e ("[PATCH] md: allow checkpoint of recovery with versi=
-on-1 superblock")
-> Fixes: f52f5c71f3d4 ("md: fix stopping sync thread")
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-> ---
->  drivers/md/md.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/md/md.c b/drivers/md/md.c
-> index 6906d023f1d6..c65dfd156090 100644
-> --- a/drivers/md/md.c
-> +++ b/drivers/md/md.c
-> @@ -8788,12 +8788,16 @@ void md_do_sync(struct md_thread *thread)
->         int ret;
->
->         /* just incase thread restarts... */
-> -       if (test_bit(MD_RECOVERY_DONE, &mddev->recovery) ||
-> -           test_bit(MD_RECOVERY_WAIT, &mddev->recovery))
-> +       if (test_bit(MD_RECOVERY_DONE, &mddev->recovery))
->                 return;
-> -       if (!md_is_rdwr(mddev)) {/* never try to sync a read-only array *=
-/
-> +
-> +       if (test_bit(MD_RECOVERY_INTR, &mddev->recovery))
-> +               goto skip;
-> +
-> +       if (test_bit(MD_RECOVERY_WAIT, &mddev->recovery) ||
-> +           !md_is_rdwr(mddev)) {/* never try to sync a read-only array *=
-/
->                 set_bit(MD_RECOVERY_INTR, &mddev->recovery);
-> -               return;
-> +               goto skip;
->         }
+On 2/6/24 10:40 AM, Xiaobing Li wrote:
+>diff --git a/test/sqtimeshow.sh b/test/sqtimeshow.sh
+>new file mode 100644
+>index 0000000..e85fd2f
+>--- /dev/null
+>+++ b/test/sqtimeshow.sh
+>@@ -0,0 +1,61 @@
+>+#!/usr/bin/env bash
+>+
+>+UPLINE=$(tput cuu1)
+>+
+>+function set_header() {
+>+    printf "\033[47;30m%-15s %-15s %-15s %-15s \033[0m\n" PID WorkTime\(us\) TotalTime\(us\) COMMAND
+>+}
+>+
+>+function get_time() {
+>+    pid=$1
+>+    item=$2
+>+    proc_file="/proc/$pid/fdinfo/6"
+>+    if [ ! -e $proc_file ]; then
+>+        return
+>+    fi
+>+    content=$(cat ${proc_file} | grep ${item} | awk -F" " '{print $2}')
+>+    echo ${content%us}
+>+}
+>+
+>+function show_util() {
+>+    index=0
+>+    while true
+>+    do
+>+        data=$(top -H -b -n 1 | grep iou-sqp)
+>+        if [ -z "${data}" ]; then
+>+            echo "no sq thread is running."
+>+            exit
+>+        fi 
+>+        index=0
+>+        num=$(echo $data | tr -cd R |wc -c)
+>+        arr=($data)
+>+        len=$((${#arr[@]} / ${num}))
+>+        i=0
+>+        while [ ${i} -lt ${num} ]
+>+        do
+>+            pid=${arr[${i} * ${len}]}
+>+            name=${arr[${i} * ${len} + len - 1]}
+>+            work_time=$(get_time $pid "SqWorkTime")
+>+            total_time=$(get_time $pid "SqTotalTime")
+>+            printf "%-15s %-15s %-15s %-15s\n" ${pid} ${work_time} ${total_time} ${name}
+>+            ((i++))
+>+        done
+>+        sleep 2
+>+        update=$UPLINE
+>+        for j in $(seq 1 ${num}); do
+>+            update=$update$UPLINE
+>+        done
+>+        if [ ! -z "$(top -H -b -n 1 | grep iou-sqp)" ]; then
+>+            echo "$update"
+>+        fi
+>+    done
+>+}
+>+
+>+function main() {
+>+    # set header
+>+    set_header
+>+    # show util
+>+    show_util
+>+}
+>+
+>+main
+ 
+Hi, Jens and Pavel
+This patch is to add a script that displays the statistics of the 
+sqpoll thread to the terminal.
 
-Hi all
-
-I have a question here. The codes above means if MD_RECOVERY_WAIT is
-set, it sets MD_RECOVERY_INTR. If so, the sync thread can't happen.
-But from the codes in md_start function:
-
-                set_bit(MD_RECOVERY_WAIT, &mddev->recovery);
-                md_wakeup_thread(mddev->thread);
-                ret =3D mddev->pers->start(mddev);
-                clear_bit(MD_RECOVERY_WAIT, &mddev->recovery);
-                md_wakeup_thread(mddev->sync_thread);
-
-MD_RECOVERY_WAIT means "it'll run sync thread later not interrupt it".
-I guess this patch can introduce a new bug for raid5 journal?
-
-And to resolve this deadlock, we can use this patch:
-
---- a/drivers/md/dm-raid.c
-+++ b/drivers/md/dm-raid.c
-@@ -3796,8 +3796,10 @@ static void raid_postsuspend(struct dm_target *ti)
-        struct raid_set *rs =3D ti->private;
-
-        if (!test_and_set_bit(RT_FLAG_RS_SUSPENDED, &rs->runtime_flags)) {
-+               if (test_bit(MD_RECOVERY_WAIT, &rs->md.recovery))
-+                       clear_bit(MD_RECOVERY_WAIT, &rs->md.recovery);
-
-Regards
-Xiao
->
->         if (mddev_is_clustered(mddev)) {
-> --
-> 2.39.2
->
-
+--
+Xiaobing Li
 
