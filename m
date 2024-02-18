@@ -1,351 +1,137 @@
-Return-Path: <linux-kernel+bounces-70468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D73585984E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:50:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B2785985B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:53:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2D7C1C20F5E
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:50:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84BD1F219F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:53:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCFB6F06D;
-	Sun, 18 Feb 2024 17:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1296EB78;
+	Sun, 18 Feb 2024 17:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="Tqsovb1m"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ifWmXuqy"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81D06BB58
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D2BE57E
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:53:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708278643; cv=none; b=bnoeeE8Coa/Lvdo7shVZnLOmhe2iGTB5HVJHX+xgPibTlpXIEpn9SHwNwVt5UOzzikALEvl35zUll1by1uZ5yQpYT3x5zU6cyuvJTSACLjbgfJCvGn1AOqcGL4/MMS2WPDAZ+jC7a4JBwQaf8aOrEY5aYuygnL7Q8oxQ4ctsVP8=
+	t=1708278814; cv=none; b=MoBfGeiLqooE92AmJamHxLBCpQ0M2HvAd+2HdiV9N6ADJcgmzWzLCC8xPIabdvYU5wt9ZdU5A7LFc/yxLNWPj3Zj8hO47uUyk14kXXWKfAFgK5qEhNrf6jwZKvu/v0yUIEWtZhFCuwtiswDvTGlmI2XSg/mWbZ3saqLRXf8HRAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708278643; c=relaxed/simple;
-	bh=xDfZP8wJP+CnkLvneZNZk+TexK8AnkyFmF4ymPXAd9Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RiGC6/jAFRvllOSqDY7sqZuI8Y0AP0wOn0N76umtAWYMG4ewlfJYkQwOvHlzDWiQUF0lr3fH2rSkVp/u2aD+2Hwc7G4l5CzMw33VYnVDqnGMDtgp0igYmG7y/Ft+vO22OFlqUYui137FHP8RciptPVsV6paL6CaPvNJ+S16WcoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=Tqsovb1m; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so18019381fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 09:50:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1708278640; x=1708883440; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yjpbxfuUN8ClVWyejRT9z307tEN2okR2Dj3IppGtU+I=;
-        b=Tqsovb1mXuWjnORTx0WRYQ1RQnV/+NibsQXeBR07E7dihD21VLt5kCq53V5s0jj5lk
-         Lar7upL7oDX6IL3PVpZXplrLibWmczDrR0a7WmXkOk5b6nGAgIe+S8jT2lBbpYTuo3o0
-         Av2R3LL4WQMAuREsgRP0c3bTBxm7z2JvFi+gxuW37XHzHXV3eEZLOxLYB5rVsH3ExWHT
-         pOO1uqXsTd1VA2YfwdjOa8QPdtgBktHW1tx81JFZYvw+awS+JmNoh7EY8dmv3peFIuyK
-         wD203TQKiBRXU3QlmOTDEIw9NroG6ZGVm4ieWIqKyRXScW63G3LQyBJb3DVdBpnbyJCL
-         gKLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708278640; x=1708883440;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yjpbxfuUN8ClVWyejRT9z307tEN2okR2Dj3IppGtU+I=;
-        b=S/qXJ4g0ICnr0KmkDpvi4QG1RPq+jVUXXLM3BFTKcQLGlrhzhA++d3Uy/cc6uXnyvx
-         YRaCk2W7ujIRJM8GoOdEQsSMRNFjFDMeQWAbF2rVgTVjwKdzDwHp1DJHND3kak9LvIYo
-         S0XSdVnkXMYlXbQJmOZNsvPH2kDCkNM9frG1lwLq10Y1D3mMzIxafWSJPwPzwZ43Ni6e
-         ALDAZTqYv5Y2exKw6ENrm0b2bxHa80kp/TCAA/wZObqZefU4MVdbgUmfU1bUcS8EQut7
-         ejtyf3SFA+W/2gqxMS38XVKj9SdJ52tNU5Auo1SWss6vnOMwSbu08O8fPdnzEnGUmndU
-         aJ5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW3mLJmA9AuO8/kDCfrtxXXxymvHg1MwqJVmY3MG4Kwy3SYW9WivkRT8v8rUow0nLUBXfH18HZyZi1QDwiv2LHle3Ngrb/lg3vFMSXv
-X-Gm-Message-State: AOJu0YycreTAQjY62jY6QjQ0Pr/+51VMKKf1xsgMW6zmAJ535JxzhPoK
-	9wVs6FmaUmx2TUhV0EOzWxA9JmLP+E8/ldAbUhcE2pEt9yUgaB34
-X-Google-Smtp-Source: AGHT+IF+k6EDEC5TlndQFlEFI46CiqTKLip+fjyqgK9pMQUYRRCGzERWQTf0G82WXK5WrbdSBKZ4+A==
-X-Received: by 2002:a2e:854e:0:b0:2d0:9a93:1fe0 with SMTP id u14-20020a2e854e000000b002d09a931fe0mr6234553ljj.11.1708278639558;
-        Sun, 18 Feb 2024 09:50:39 -0800 (PST)
-Received: from localhost.localdomain (dynamic-2a01-0c22-7b37-4900-0000-0000-0000-0e63.c22.pool.telefonica.de. [2a01:c22:7b37:4900::e63])
-        by smtp.googlemail.com with ESMTPSA id ck8-20020a0564021c0800b0056452477a5esm829283edb.24.2024.02.18.09.50.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 09:50:39 -0800 (PST)
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To: dri-devel@lists.freedesktop.org,
-	linux-amlogic@lists.infradead.org
-Cc: neil.armstrong@linaro.org,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH v1] drm/meson: improve encoder probe / initialization error handling
-Date: Sun, 18 Feb 2024 18:50:35 +0100
-Message-ID: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1708278814; c=relaxed/simple;
+	bh=8zoV8WXBsR0pcZhHyvtP8YXX7xixf7hY+qk/TnEcFzQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kEZOuvXCkWF/TZBZH85AkI0frLbAE2TpxZ4dwlzLIiRpoe/Um2Flm+AStL96lqvfi2V1es1eBHiVMW1Lbd+6XoPE+G490H87RG/Ra9P3yMs2Gyun15P/DzBn7Py7ZA9YnwuxKMrFPk81KxmKUIbgixwNHIaTWcxff9IIAijcDug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ifWmXuqy; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708278811;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8zoV8WXBsR0pcZhHyvtP8YXX7xixf7hY+qk/TnEcFzQ=;
+	b=ifWmXuqyUuGXWMXBx16MHXIDeBbKaZDjmc/ZXM4fm3LCwq0bz4slkkhQINOddQ5MFpDCT0
+	sjftbpG7GBlQ4gmiQa1+vgb6obgFx2RZ1+3LcXFo8r1MrukV05O6Rhs54A4glvYANbfBrc
+	tB+OLgkvSH6r1QKjrnOWYhJYU19mKf8=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-630-u4q3AoamNcWj4kzj3qtgLQ-1; Sun, 18 Feb 2024 12:53:25 -0500
+X-MC-Unique: u4q3AoamNcWj4kzj3qtgLQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 233FE85A589;
+	Sun, 18 Feb 2024 17:53:25 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.74])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 323E42166B33;
+	Sun, 18 Feb 2024 17:53:22 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Sun, 18 Feb 2024 18:52:07 +0100 (CET)
+Date: Sun, 18 Feb 2024 18:52:04 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Mel Gorman <mgorman@techsingularity.net>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coredump debugging: add a tracepoint to report the
+ coredumping
+Message-ID: <20240218175204.GB24311@redhat.com>
+References: <tencent_5CD40341EC9384E9B7CC127EA5CF2655B408@qq.com>
+ <20240217104924.GB10393@redhat.com>
+ <tencent_6EFB821C2775D38F99EBFC6C9F7FAB82A809@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <tencent_6EFB821C2775D38F99EBFC6C9F7FAB82A809@qq.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Rename meson_encoder_{cvbs,dsi,hdmi}_init() to
-meson_encoder_{cvbs,dsi,hdmi}_probe() so it's clear that these functions
-are used at probe time during driver initialization. Also switch all
-error prints inside those functions to use dev_err_probe() for
-consistency.
+On 02/18, Wen Yang wrote:
+>
+> On 2024/2/17 18:49, Oleg Nesterov wrote:
+> >On 02/17, wenyang.linux@foxmail.com wrote:
+> >>From: Wen Yang <wenyang.linux@foxmail.com>
+> >>
+> >>Currently coredump_task_exit() takes some time to wait for the generation
+> >>of the dump file. But if the user-space wants to receive a notification
+> >>as soon as possible it maybe inconvenient.
+> >>
+> >>Add the new trace_sched_process_coredump() into coredump_task_exit(),
+> >>this way a user-space monitor could easily wait for the exits and
+> >>potentially make some preparations in advance.
+> >Can't comment, I never know when the new tracepoint will make sense.
+> >
+> >Stupid question.
+> >Oleg.
+>
+> Thanks for your help.
 
-This makes the code more straight forward to read and makes the error
-prints within those functions consistent (by logging all -EPROBE_DEFER
-with dev_dbg(), while actual errors are logged with dev_err() and get
-the error value printed).
+Well thanks, but no, I can't help. As I said I can't really comment this
+patch.
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
-This is meant to be applied on top of my other patch called
-"drm/meson: Don't remove bridges which are created by other drivers" [0]
+> trace_sched_process_exit() is located after the PF_EXITING flag is set
 
+Yes,
 
-[0] https://lore.kernel.org/dri-devel/20240215220442.1343152-1-martin.blumenstingl@googlemail.com/
+> so it could not be moved to there.
 
+Why? DECLARE_EVENT_CLASS(sched_process_template) doesn't report task->flags.
 
- drivers/gpu/drm/meson/meson_drv.c          |  6 +++---
- drivers/gpu/drm/meson/meson_encoder_cvbs.c | 24 ++++++++++------------
- drivers/gpu/drm/meson/meson_encoder_cvbs.h |  2 +-
- drivers/gpu/drm/meson/meson_encoder_dsi.c  | 23 +++++++++------------
- drivers/gpu/drm/meson/meson_encoder_dsi.h  |  2 +-
- drivers/gpu/drm/meson/meson_encoder_hdmi.c | 15 +++++++-------
- drivers/gpu/drm/meson/meson_encoder_hdmi.h |  2 +-
- 7 files changed, 35 insertions(+), 39 deletions(-)
+Again, again, I am not arguing. But I think that the changelog should
+explain why we can't move trace_sched_process_exit() in more details.
 
-diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
-index cb674966e9ac..17a5cca007e2 100644
---- a/drivers/gpu/drm/meson/meson_drv.c
-+++ b/drivers/gpu/drm/meson/meson_drv.c
-@@ -312,7 +312,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
- 
- 	/* Encoder Initialization */
- 
--	ret = meson_encoder_cvbs_init(priv);
-+	ret = meson_encoder_cvbs_probe(priv);
- 	if (ret)
- 		goto exit_afbcd;
- 
-@@ -326,12 +326,12 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
- 		}
- 	}
- 
--	ret = meson_encoder_hdmi_init(priv);
-+	ret = meson_encoder_hdmi_probe(priv);
- 	if (ret)
- 		goto exit_afbcd;
- 
- 	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A)) {
--		ret = meson_encoder_dsi_init(priv);
-+		ret = meson_encoder_dsi_probe(priv);
- 		if (ret)
- 			goto exit_afbcd;
- 	}
-diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.c b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
-index 3407450435e2..d1191de855d9 100644
---- a/drivers/gpu/drm/meson/meson_encoder_cvbs.c
-+++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
-@@ -219,7 +219,7 @@ static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
- 	.atomic_reset = drm_atomic_helper_bridge_reset,
- };
- 
--int meson_encoder_cvbs_init(struct meson_drm *priv)
-+int meson_encoder_cvbs_probe(struct meson_drm *priv)
- {
- 	struct drm_device *drm = priv->drm;
- 	struct meson_encoder_cvbs *meson_encoder_cvbs;
-@@ -240,10 +240,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
- 
- 	meson_encoder_cvbs->next_bridge = of_drm_find_bridge(remote);
- 	of_node_put(remote);
--	if (!meson_encoder_cvbs->next_bridge) {
--		dev_err(priv->dev, "Failed to find CVBS Connector bridge\n");
--		return -EPROBE_DEFER;
--	}
-+	if (!meson_encoder_cvbs->next_bridge)
-+		return dev_err_probe(priv->dev, -EPROBE_DEFER,
-+				     "Failed to find CVBS Connector bridge\n");
- 
- 	/* CVBS Encoder Bridge */
- 	meson_encoder_cvbs->bridge.funcs = &meson_encoder_cvbs_bridge_funcs;
-@@ -259,10 +258,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
- 	/* Encoder */
- 	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_cvbs->encoder,
- 				      DRM_MODE_ENCODER_TVDAC);
--	if (ret) {
--		dev_err(priv->dev, "Failed to init CVBS encoder: %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(priv->dev, ret,
-+				     "Failed to init CVBS encoder\n");
- 
- 	meson_encoder_cvbs->encoder.possible_crtcs = BIT(0);
- 
-@@ -276,10 +274,10 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
- 
- 	/* Initialize & attach Bridge Connector */
- 	connector = drm_bridge_connector_init(priv->drm, &meson_encoder_cvbs->encoder);
--	if (IS_ERR(connector)) {
--		dev_err(priv->dev, "Unable to create CVBS bridge connector\n");
--		return PTR_ERR(connector);
--	}
-+	if (IS_ERR(connector))
-+		return dev_err_probe(priv->dev, PTR_ERR(connector),
-+				     "Unable to create CVBS bridge connector\n");
-+
- 	drm_connector_attach_encoder(connector, &meson_encoder_cvbs->encoder);
- 
- 	priv->encoders[MESON_ENC_CVBS] = meson_encoder_cvbs;
-diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.h b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
-index 09710fec3c66..7b7bc85c03f7 100644
---- a/drivers/gpu/drm/meson/meson_encoder_cvbs.h
-+++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
-@@ -24,7 +24,7 @@ struct meson_cvbs_mode {
- /* Modes supported by the CVBS output */
- extern struct meson_cvbs_mode meson_cvbs_modes[MESON_CVBS_MODES_COUNT];
- 
--int meson_encoder_cvbs_init(struct meson_drm *priv);
-+int meson_encoder_cvbs_probe(struct meson_drm *priv);
- void meson_encoder_cvbs_remove(struct meson_drm *priv);
- 
- #endif /* __MESON_VENC_CVBS_H */
-diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.c b/drivers/gpu/drm/meson/meson_encoder_dsi.c
-index 311b91630fbe..7816902f5907 100644
---- a/drivers/gpu/drm/meson/meson_encoder_dsi.c
-+++ b/drivers/gpu/drm/meson/meson_encoder_dsi.c
-@@ -100,7 +100,7 @@ static const struct drm_bridge_funcs meson_encoder_dsi_bridge_funcs = {
- 	.atomic_reset = drm_atomic_helper_bridge_reset,
- };
- 
--int meson_encoder_dsi_init(struct meson_drm *priv)
-+int meson_encoder_dsi_probe(struct meson_drm *priv)
- {
- 	struct meson_encoder_dsi *meson_encoder_dsi;
- 	struct device_node *remote;
-@@ -118,10 +118,9 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
- 	}
- 
- 	meson_encoder_dsi->next_bridge = of_drm_find_bridge(remote);
--	if (!meson_encoder_dsi->next_bridge) {
--		dev_dbg(priv->dev, "Failed to find DSI transceiver bridge\n");
--		return -EPROBE_DEFER;
--	}
-+	if (!meson_encoder_dsi->next_bridge)
-+		return dev_err_probe(priv->dev, -EPROBE_DEFER,
-+				     "Failed to find DSI transceiver bridge\n");
- 
- 	/* DSI Encoder Bridge */
- 	meson_encoder_dsi->bridge.funcs = &meson_encoder_dsi_bridge_funcs;
-@@ -135,19 +134,17 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
- 	/* Encoder */
- 	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_dsi->encoder,
- 				      DRM_MODE_ENCODER_DSI);
--	if (ret) {
--		dev_err(priv->dev, "Failed to init DSI encoder: %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(priv->dev, ret,
-+				     "Failed to init DSI encoder\n");
- 
- 	meson_encoder_dsi->encoder.possible_crtcs = BIT(0);
- 
- 	/* Attach DSI Encoder Bridge to Encoder */
- 	ret = drm_bridge_attach(&meson_encoder_dsi->encoder, &meson_encoder_dsi->bridge, NULL, 0);
--	if (ret) {
--		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
--		return ret;
--	}
-+	if (ret)
-+		return dev_err_probe(priv->dev, ret,
-+				     "Failed to attach bridge\n");
- 
- 	/*
- 	 * We should have now in place:
-diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.h b/drivers/gpu/drm/meson/meson_encoder_dsi.h
-index 9277d7015193..85d5b61805f2 100644
---- a/drivers/gpu/drm/meson/meson_encoder_dsi.h
-+++ b/drivers/gpu/drm/meson/meson_encoder_dsi.h
-@@ -7,7 +7,7 @@
- #ifndef __MESON_ENCODER_DSI_H
- #define __MESON_ENCODER_DSI_H
- 
--int meson_encoder_dsi_init(struct meson_drm *priv);
-+int meson_encoder_dsi_probe(struct meson_drm *priv);
- void meson_encoder_dsi_remove(struct meson_drm *priv);
- 
- #endif /* __MESON_ENCODER_DSI_H */
-diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.c b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-index c4686568c9ca..22e07847a9a7 100644
---- a/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-+++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-@@ -354,7 +354,7 @@ static const struct drm_bridge_funcs meson_encoder_hdmi_bridge_funcs = {
- 	.atomic_reset = drm_atomic_helper_bridge_reset,
- };
- 
--int meson_encoder_hdmi_init(struct meson_drm *priv)
-+int meson_encoder_hdmi_probe(struct meson_drm *priv)
- {
- 	struct meson_encoder_hdmi *meson_encoder_hdmi;
- 	struct platform_device *pdev;
-@@ -374,8 +374,8 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
- 
- 	meson_encoder_hdmi->next_bridge = of_drm_find_bridge(remote);
- 	if (!meson_encoder_hdmi->next_bridge) {
--		dev_err(priv->dev, "Failed to find HDMI transceiver bridge\n");
--		ret = -EPROBE_DEFER;
-+		ret = dev_err_probe(priv->dev, -EPROBE_DEFER,
-+				    "Failed to find HDMI transceiver bridge\n");
- 		goto err_put_node;
- 	}
- 
-@@ -393,7 +393,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
- 	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_hdmi->encoder,
- 				      DRM_MODE_ENCODER_TMDS);
- 	if (ret) {
--		dev_err(priv->dev, "Failed to init HDMI encoder: %d\n", ret);
-+		dev_err_probe(priv->dev, ret, "Failed to init HDMI encoder\n");
- 		goto err_put_node;
- 	}
- 
-@@ -403,7 +403,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
- 	ret = drm_bridge_attach(&meson_encoder_hdmi->encoder, &meson_encoder_hdmi->bridge, NULL,
- 				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
- 	if (ret) {
--		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
-+		dev_err_probe(priv->dev, ret, "Failed to attach bridge\n");
- 		goto err_put_node;
- 	}
- 
-@@ -411,8 +411,9 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
- 	meson_encoder_hdmi->connector = drm_bridge_connector_init(priv->drm,
- 							&meson_encoder_hdmi->encoder);
- 	if (IS_ERR(meson_encoder_hdmi->connector)) {
--		dev_err(priv->dev, "Unable to create HDMI bridge connector\n");
--		ret = PTR_ERR(meson_encoder_hdmi->connector);
-+		ret = dev_err_probe(priv->dev,
-+				    PTR_ERR(meson_encoder_hdmi->connector),
-+				    "Unable to create HDMI bridge connector\n");
- 		goto err_put_node;
- 	}
- 	drm_connector_attach_encoder(meson_encoder_hdmi->connector,
-diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.h b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
-index a6cd38eb5f71..fd5485875db8 100644
---- a/drivers/gpu/drm/meson/meson_encoder_hdmi.h
-+++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
-@@ -7,7 +7,7 @@
- #ifndef __MESON_ENCODER_HDMI_H
- #define __MESON_ENCODER_HDMI_H
- 
--int meson_encoder_hdmi_init(struct meson_drm *priv);
-+int meson_encoder_hdmi_probe(struct meson_drm *priv);
- void meson_encoder_hdmi_remove(struct meson_drm *priv);
- 
- #endif /* __MESON_ENCODER_HDMI_H */
--- 
-2.43.2
+> Could we make the following modifications?
+..
+>
+> @@ -2866,6 +2866,7 @@ bool get_signal(struct ksignal *ksig)
+>                  * Anything else is fatal, maybe with a core dump.
+>                  */
+>                 current->flags |= PF_SIGNALED;
+> +               trace_sched_process_kill(current);
+
+Another case when I can't comment the intent.
+
+We already have trace_signal_deliver() in get_signal(). I'm afraid you
+need to explain why do you think userspace needs yet another tracepoint.
+
+Oleg.
 
 
