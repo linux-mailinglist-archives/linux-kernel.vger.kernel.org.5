@@ -1,197 +1,200 @@
-Return-Path: <linux-kernel+bounces-70612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48B3E8599CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:23:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A55438599D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 23:29:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCD131F21349
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:23:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 947081C20C2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07FD745F1;
-	Sun, 18 Feb 2024 22:22:20 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69BA0745E0;
+	Sun, 18 Feb 2024 22:28:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Kkq8occd";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vi14/Cxb";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Kkq8occd";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vi14/Cxb"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFAF74299
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 22:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB37D65BDB;
+	Sun, 18 Feb 2024 22:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708294940; cv=none; b=J5uqKVwwnAY76m4TPoU+KtAfQFcSilUF5DiHxCGjLIBhVmJcl95A755ua7ayReUUg2O0RM9Qfgs+byXPDttIRJW8RuAjPtDn6dQvgdmwnA1Zk7kJlY5xrguFzmZ9frtNCb6j8i2ywc+MrkHxVCzQpYYzmkmc4O03N07y43AO2K4=
+	t=1708295334; cv=none; b=C1Pr1sQVg24t/NtmNGhnXTG2xy5wt/Uhe8CkwkfUPyjOSXXMff789Ks5oHy3smOgwg2rtFd5xK7TkL6T7gCMnlfN8xgH8dU3U0ictJcm5I50cx6I6qrU33OSxaDpjHd0gpbGmTPAbz8+y6zlsfp7PjhZqfv93F1HbQuqzLiOL3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708294940; c=relaxed/simple;
-	bh=hKCkF2Nc02tElu4OZDLKcK7Rpu1cpp/hq4ESd91kik8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=pYSe4gkU5wm9k91A9IY6k6sHT8Bcbs/DM3brDu18JoxoS9XALFigpLQS14Pr9iZFx5FSn0+v/T8NHhDgQXjh/KyKvjghsBUQ/NpphsQm1NZidj/0AkQjkE8gJ1IHkmEBLFZ14cA7gWsssGtEKt8fTIh6cFPBNN2+fFqHckBAzJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-365035aed34so28324035ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 14:22:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708294937; x=1708899737;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3ZYk1LMO5y6n5tGB1SFVJxfsyQYKQ7bfwvDflpKRAPI=;
-        b=Xdh1tRgKvDrIJ/95EwReLDCdnGOUDXvRAt9s4UZwxRCeaT6oUyFHErZLY30nAVK3Rr
-         jFNJGGdYnOdSpGZtxdZ/VDunkMhJ0mIYEtMhIWKhhgzTevDcLDwXP7SnnQl6KQD2mWzm
-         6cWCijhFxyLz+1PZilO5DUlZCpiWbnqU3ZY51VzXPeEI6QnMOupzBMU5lIJP5Ebtxocu
-         2a2W29dDuJ3WsU12uOee4ELdKBaP4Tt3+VJFEalGx5G4V+rn2/b3VWwyFFtHe1fm7toB
-         qmpovsb8cd8UEFATGr18uBFu1x2OaU545u9wQh4LxzLX7vAbYu8dQS6daWoMkHA79dOk
-         UkLw==
-X-Forwarded-Encrypted: i=1; AJvYcCVkii+w45hRoBtIriAaLkbtMpSuy6U69Zbl8TDhJ4vwuX23gURLb8rSLJCJOw6hWaoTuLJjXwFy4ctCuTcHap4wadDurz1SWyjWq/Qh
-X-Gm-Message-State: AOJu0Yz6ahbMI4s0o4bqqx4wc3d4BZ4sNz0KvExx4WzT8UAj5hAUgrj6
-	pegH9pI54J4V5+z2zzU9b07ubAAJX1yzLWC8d/e+zB7YbLLg28KxRqlCA9T/IML621XM2fngidL
-	qmxK4RiUdgaPQDV0LpA+6uQBLhPdiFYqL+e4AQqLuAcuLJ7FYiBOoxEA=
-X-Google-Smtp-Source: AGHT+IGJnExPV9Xp6gCG90zK3qSJ71JHKUOQY4H1LWGqTi9yZIMSzgcyvwkAvmwc6Dcuj0xwYH9KNyd3az04FZ7sgm6V8a5CwTTn
+	s=arc-20240116; t=1708295334; c=relaxed/simple;
+	bh=Uj5Oy4S8z6qdzsmn9DPo/NQUyt0aNfVEjkLbHnv86dM=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=urxBOPaUU92D4/KBPBFq3BHf7KNccH7bfb5MVda6JicDBps2MnKlkxwzgOJYdW1pUlsu+mdc79IQkLs6zsxsPb90fYoB8vbzfcTagwa2bRT1s/rD4k8plEnD3fGR1N6R8hVuGsYqVLmt0t1B/DPKuQjO1ierkpU7xVwSMsxhod0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Kkq8occd; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vi14/Cxb; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Kkq8occd; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=vi14/Cxb; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 51EFA1FCF8;
+	Sun, 18 Feb 2024 22:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708295325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qnG5SiORvKW2Xi5axh412GtTGevEmeL/8o5GMM3myBI=;
+	b=Kkq8occdCxhc04PejF3VcThY0Xjlc9+DV81DPfSuD8rRyELJRYZpW+aJZT9wQ6E+TC1iL5
+	CYVND63yT4HnZKXvuiHCQ0RKGoP+CQpu52aImZkdSdWj66TCNWaJV9foGeJ6cESxdBxIIu
+	qSP9gYWFHEBmSX996wT2hQlquLyWvG4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708295325;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qnG5SiORvKW2Xi5axh412GtTGevEmeL/8o5GMM3myBI=;
+	b=vi14/CxbLmbDle4oFB4QTA2sCtb0zwUM8WI/A2jLwU2S9I/ZUzqpqWX0GWjWbZEWMi1T13
+	EglzsjA0E5ydYSBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1708295325; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qnG5SiORvKW2Xi5axh412GtTGevEmeL/8o5GMM3myBI=;
+	b=Kkq8occdCxhc04PejF3VcThY0Xjlc9+DV81DPfSuD8rRyELJRYZpW+aJZT9wQ6E+TC1iL5
+	CYVND63yT4HnZKXvuiHCQ0RKGoP+CQpu52aImZkdSdWj66TCNWaJV9foGeJ6cESxdBxIIu
+	qSP9gYWFHEBmSX996wT2hQlquLyWvG4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1708295325;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qnG5SiORvKW2Xi5axh412GtTGevEmeL/8o5GMM3myBI=;
+	b=vi14/CxbLmbDle4oFB4QTA2sCtb0zwUM8WI/A2jLwU2S9I/ZUzqpqWX0GWjWbZEWMi1T13
+	EglzsjA0E5ydYSBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5B6E5139D8;
+	Sun, 18 Feb 2024 22:28:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id GIrSBJqE0mWeCAAAD6G6ig
+	(envelope-from <neilb@suse.de>); Sun, 18 Feb 2024 22:28:42 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:12cb:b0:365:3086:74f7 with SMTP id
- i11-20020a056e0212cb00b00365308674f7mr89848ilm.4.1708294937599; Sun, 18 Feb
- 2024 14:22:17 -0800 (PST)
-Date: Sun, 18 Feb 2024 14:22:17 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ed666a0611af6818@google.com>
-Subject: [syzbot] [net?] [bpf?] BUG: unable to handle kernel NULL pointer
- dereference in dev_map_hash_update_elem
-From: syzbot <syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com, hawk@kernel.org, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
-	netdev@vger.kernel.org, sdf@google.com, song@kernel.org, 
-	syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+From: "NeilBrown" <neilb@suse.de>
+To: "Jeff Layton" <jlayton@kernel.org>
+Cc: "Christian Brauner" <brauner@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Alexander Aring" <alex.aring@gmail.com>,
+ "Chuck Lever" <chuck.lever@oracle.com>, "Jan Kara" <jack@suse.cz>,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "kernel test robot" <oliver.sang@intel.com>,
+ "Jeff Layton" <jlayton@kernel.org>
+Subject: Re: [PATCH] filelock: fix deadlock detection in POSIX locking
+In-reply-to: <20240218-flsplit4-v1-1-26454fc090f2@kernel.org>
+References: <20240218-flsplit4-v1-1-26454fc090f2@kernel.org>
+Date: Mon, 19 Feb 2024 09:28:39 +1100
+Message-id: <170829531945.1530.2712558842533100280@noble.neil.brown.name>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spamd-Result: default: False [0.65 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.75)[84.04%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,intel.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,gmail.com,oracle.com,suse.cz,vger.kernel.org,intel.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.65
 
-Hello,
+On Mon, 19 Feb 2024, Jeff Layton wrote:
+> The FL_POSIX check in __locks_insert_block was inadvertantly broken
+> recently and is now inserting only OFD locks instead of only legacy
+> POSIX locks.
+>=20
+> This breaks deadlock detection in POSIX locks, and may also be the root
+> cause of a performance regression noted by the kernel test robot.
+> Restore the proper sense of the test.
+>=20
+> Fixes: b6be3714005c ("filelock: convert __locks_insert_block, conflict and =
+deadlock checks to use file_lock_core")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202402181229.f8147f40-oliver.sang@in=
+tel.com
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+> Disregard what I said earlier about this bug being harmless. It broke
+> deadlock detection in POSIX locks (LTP fcntl17 shows the bug). This
+> patch fixes it. It may be best to squash this into the patch that
+> introduced the regression.
+>=20
+> I'm not certain if this fixes the performance regression that the KTR
+> noticed recently in this patch, but that's what got me looking more
+> closely, so I'll give it credit for reporting this. Hopefully it'll
+> confirm that result for us.
+> ---
+>  fs/locks.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/fs/locks.c b/fs/locks.c
+> index 26d52ef5314a..90c8746874de 100644
+> --- a/fs/locks.c
+> +++ b/fs/locks.c
+> @@ -812,7 +812,7 @@ static void __locks_insert_block(struct file_lock_core =
+*blocker,
+>  	list_add_tail(&waiter->flc_blocked_member,
+>  		      &blocker->flc_blocked_requests);
+> =20
+> -	if ((blocker->flc_flags & (FL_POSIX|FL_OFDLCK)) =3D=3D (FL_POSIX|FL_OFDLC=
+K))
+> +	if ((blocker->flc_flags & (FL_POSIX|FL_OFDLCK)) =3D=3D FL_POSIX)
+>  		locks_insert_global_blocked(waiter);
 
-syzbot found the following issue on:
+I wonder how that happened... sorry I didn't notice it in my review.
 
-HEAD commit:    7e90b5c295ec Merge tag 'trace-tools-v6.8-rc4' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1460a080180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8ee3942159acc92
-dashboard link: https://syzkaller.appspot.com/bug?extid=8cd36f6b65f3cafd400a
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
+Reviewed-by: NeilBrown <neilb@suse.de>
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-7e90b5c2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/79d91883bc70/vmlinux-7e90b5c2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/0dcf5ad6b94a/zImage-7e90b5c2.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8cd36f6b65f3cafd400a@syzkaller.appspotmail.com
-
-8<--- cut here ---
-Unable to handle kernel NULL pointer dereference at virtual address 00000014 when read
-[00000014] *pgd=85006003, *pmd=fe2d5003
-Internal error: Oops: 207 [#1] PREEMPT SMP ARM
-Modules linked in:
-CPU: 1 PID: 7433 Comm: syz-executor.1 Not tainted 6.8.0-rc4-syzkaller #0
-Hardware name: ARM-Versatile Express
-PC is at __dev_map_hash_lookup_elem kernel/bpf/devmap.c:269 [inline]
-PC is at __dev_map_hash_update_elem kernel/bpf/devmap.c:972 [inline]
-PC is at dev_map_hash_update_elem+0x90/0x210 kernel/bpf/devmap.c:1010
-LR is at get_lock_parent_ip include/linux/ftrace.h:977 [inline]
-LR is at preempt_latency_start kernel/sched/core.c:5843 [inline]
-LR is at preempt_count_add+0x12c/0x150 kernel/sched/core.c:5868
-pc : [<803e5ed8>]    lr : [<8027b2b4>]    psr: 60000093
-sp : dfaf1da8  ip : dfaf1d68  fp : dfaf1de4
-r10: 00000001  r9 : 84658000  r8 : 84e58110
-r7 : 00000001  r6 : a0000013  r5 : 84e58000  r4 : ffffffff
-r3 : 00000001  r2 : 00000010  r1 : 00000000  r0 : a0000013
-Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment none
-Control: 30c5387d  Table: 83e1be00  DAC: 00000000
-Register r0 information: non-slab/vmalloc memory
-Register r1 information: NULL pointer
-Register r2 information: zero-size pointer
-Register r3 information: non-paged memory
-Register r4 information: non-paged memory
-Register r5 information: slab kmalloc-cg-512 start 84e58000 pointer offset 0 size 512
-Register r6 information: non-slab/vmalloc memory
-Register r7 information: non-paged memory
-Register r8 information: slab kmalloc-cg-512 start 84e58000 pointer offset 272 size 512
-Register r9 information: slab net_namespace start 84658000 pointer offset 0 size 3264
-Register r10 information: non-paged memory
-Register r11 information: 2-page vmalloc region starting at 0xdfaf0000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
-Register r12 information: 2-page vmalloc region starting at 0xdfaf0000 allocated at kernel_clone+0xac/0x3c8 kernel/fork.c:2902
-Process syz-executor.1 (pid: 7433, stack limit = 0xdfaf0000)
-Stack: (0xdfaf1da8 to 0xdfaf2000)
-1da0:                   dfaf1dc4 ffffffff 00000000 caa92d0f dfaf1de4 84e58000
-1dc0: 824aeaf0 86a45440 86a45c80 84f14000 00000004 84e58000 dfaf1e14 dfaf1de8
-1de0: 8038c070 803e5e54 00000001 00000000 80883e10 84e580b8 84f14001 84f14000
-1e00: dfaf1ec8 86a45440 dfaf1e6c dfaf1e18 8038cff8 8038be80 00000001 00000000
-1e20: 00000000 00000004 20000280 00000004 00000000 86a45c80 200002c0 00000000
-1e40: dfaf1e6c 00000000 00000020 dfaf1ea0 00000002 200002c0 00000020 00000000
-1e60: dfaf1f8c dfaf1e70 80392a58 8038cdb0 00000000 00000000 20000013 83f0d400
-1e80: dfaf1ee0 dfaf1fb0 dfaf1ea4 dfaf1e98 80883e10 dfaf1ee0 dfaf1fb0 80200288
-1ea0: 200002c0 00000000 00000008 00000000 00000008 8041ad38 00000000 00000000
-1ec0: 00000000 00000000 00000003 00000000 20000240 00000000 20000280 00000000
-1ee0: 00000001 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-1f00: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-1f20: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-1f40: 00000000 00000000 00000000 00000000 00000000 00000000 80203134 caa92d0f
-1f60: 8261c978 00000000 00000000 0014c2c8 00000182 80200288 83f0d400 00000182
-1f80: dfaf1fa4 dfaf1f90 80394e5c 803927e8 200002c0 00000000 00000000 dfaf1fa8
-1fa0: 80200060 80394e3c 00000000 00000000 00000002 200002c0 00000020 00000000
-1fc0: 00000000 00000000 0014c2c8 00000182 7ec5132e 7ec5132f 003d0f00 76b440fc
-1fe0: 76b43f08 76b43ef8 000167e8 00050bb0 60000010 00000002 00000000 00000000
-Backtrace: 
-[<803e5e48>] (dev_map_hash_update_elem) from [<8038c070>] (bpf_map_update_value+0x1fc/0x2d4 kernel/bpf/syscall.c:202)
- r10:84e58000 r9:00000004 r8:84f14000 r7:86a45c80 r6:86a45440 r5:824aeaf0
- r4:84e58000
-[<8038be74>] (bpf_map_update_value) from [<8038cff8>] (map_update_elem+0x254/0x460 kernel/bpf/syscall.c:1553)
- r8:86a45440 r7:dfaf1ec8 r6:84f14000 r5:84f14001 r4:84e580b8
-[<8038cda4>] (map_update_elem) from [<80392a58>] (__sys_bpf+0x27c/0x2104 kernel/bpf/syscall.c:5445)
- r10:00000000 r9:00000020 r8:200002c0 r7:00000002 r6:dfaf1ea0 r5:00000020
- r4:00000000
-[<803927dc>] (__sys_bpf) from [<80394e5c>] (__do_sys_bpf kernel/bpf/syscall.c:5561 [inline])
-[<803927dc>] (__sys_bpf) from [<80394e5c>] (sys_bpf+0x2c/0x48 kernel/bpf/syscall.c:5559)
- r10:00000182 r9:83f0d400 r8:80200288 r7:00000182 r6:0014c2c8 r5:00000000
- r4:00000000
-[<80394e30>] (sys_bpf) from [<80200060>] (ret_fast_syscall+0x0/0x1c arch/arm/mm/proc-v7.S:66)
-Exception stack(0xdfaf1fa8 to 0xdfaf1ff0)
-1fa0:                   00000000 00000000 00000002 200002c0 00000020 00000000
-1fc0: 00000000 00000000 0014c2c8 00000182 7ec5132e 7ec5132f 003d0f00 76b440fc
-1fe0: 76b43f08 76b43ef8 000167e8 00050bb0
-Code: e595210c e1a06000 e2433001 e003300a (e7924103) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	e595210c 	ldr	r2, [r5, #268]	@ 0x10c
-   4:	e1a06000 	mov	r6, r0
-   8:	e2433001 	sub	r3, r3, #1
-   c:	e003300a 	and	r3, r3, sl
-* 10:	e7924103 	ldr	r4, [r2, r3, lsl #2] <-- trapping instruction
+Thanks,
+NeilBrown
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> =20
+>  	/* The requests in waiter->flc_blocked are known to conflict with
+>=20
+> ---
+> base-commit: 292fcaa1f937345cb65f3af82a1ee6692c8df9eb
+> change-id: 20240218-flsplit4-e843536f4c11
+>=20
+> Best regards,
+> --=20
+> Jeff Layton <jlayton@kernel.org>
+>=20
+>=20
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
