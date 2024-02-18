@@ -1,195 +1,221 @@
-Return-Path: <linux-kernel+bounces-70426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 801C9859795
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:17:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0DB28597A0
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:20:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECF4E1F2144A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:17:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F1E11C20B1F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44CCE6BFD3;
-	Sun, 18 Feb 2024 15:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 471FF6BFD3;
+	Sun, 18 Feb 2024 15:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b="betw1GS2"
-Received: from vps.xff.cz (vps.xff.cz [195.181.215.36])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Z0XxTgjq"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC611E535
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.181.215.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804AE6BFD8
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708269448; cv=none; b=CBe95rlzXGJOxk5hwn1GIgqy4AhrZPFmUvuRrRSoZkO3I+hKjR5ug4Kp8t954OgbyO0GMNWSCn4J0TsuHIV4ohLWZEdM9fxjPsMATl+TfcVTuX4/aMImhWVgQ68knC9Fg2npFEDe9m231GKxQ4Mch7++60V6MbwDlEYt8i5D4uc=
+	t=1708269588; cv=none; b=CKmAlcWvwEsyENfHifmkJD63I9rQoszoDgfnTfZXniavbux4AVHZ9IImc7mK5YpoDGsALxvrLC3otuXT6nslxKI9jLlkteNc2W4oEYS3VU2hKMsPud2wJ6M7nPJDnhAcdIFNB8wEZPz2JYabTdCO5snNVXONgPNslTZmiKaGLqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708269448; c=relaxed/simple;
-	bh=vgYyrkfy4NvMffwZnA9GbIjwpDwWVz0QVFbKOYEwfJQ=;
+	s=arc-20240116; t=1708269588; c=relaxed/simple;
+	bh=lYFHSwKGcbZg0KftqGMF5GiOnvyk1uaue8OvErSz/MI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a2NGSEeDzzac9MpRoWYNiUPrSdUFGYZ66uPokos4bpvSD37hJFojlM+Uh2W+fy6JmZmcHzLMsNoW6NeONO/EnY+lk/sgneQ2yMQ+8ogKlMPiZ2mOmPrAHRs8VtfeQGM9iOp5FL5J747NrvqbtCEYOpGs4UTrOdxE4qP11z06qFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz; spf=pass smtp.mailfrom=xff.cz; dkim=pass (1024-bit key) header.d=xff.cz header.i=@xff.cz header.b=betw1GS2; arc=none smtp.client-ip=195.181.215.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xff.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xff.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xff.cz; s=mail;
-	t=1708269442; bh=vgYyrkfy4NvMffwZnA9GbIjwpDwWVz0QVFbKOYEwfJQ=;
-	h=Date:From:To:Cc:Subject:X-My-GPG-KeyId:References:From;
-	b=betw1GS2RwS4OjostOe9MAyGZAzRsiDV36jcyw9WQ9jAB+MQ+pbGdaHEsM1Irngqh
-	 uzGfdq/2mOTdrV9ZRyr5tGZyEWVR5dvQAJzZ6q+1hEqP+RbIfet/pSkFiiTn3cwCLk
-	 p7GFEg35DB2UFv/USy8i6Y0HfbeLIg/DKhNUM5iI=
-Date: Sun, 18 Feb 2024 16:17:22 +0100
-From: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>
-To: Andy Yan <andy.yan@rock-chips.com>
-Cc: linux-kernel@vger.kernel.org, Sandy Huang <hjc@rock-chips.com>, 
-	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	"open list:DRM DRIVERS FOR ROCKCHIP" <dri-devel@lists.freedesktop.org>, 
-	"moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>, 
-	"open list:ARM/Rockchip SoC support" <linux-rockchip@lists.infradead.org>
-Subject: Re: [PATCH] drm: rockchip: Don't require MIPI DSI device when it's
- used for ISP
-Message-ID: <bsc3lpdxvhy3ss2uja4do3jwvj43zbs7zhx4bzs2tryrakn7be@pt2qsyvryk73>
-Mail-Followup-To: =?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>, 
-	Andy Yan <andy.yan@rock-chips.com>, linux-kernel@vger.kernel.org, Sandy Huang <hjc@rock-chips.com>, 
-	Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	"open list:DRM DRIVERS FOR ROCKCHIP" <dri-devel@lists.freedesktop.org>, 
-	"moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>, 
-	"open list:ARM/Rockchip SoC support" <linux-rockchip@lists.infradead.org>
-X-My-GPG-KeyId: EBFBDDE11FB918D44D1F56C1F9F0A873BE9777ED
- <https://xff.cz/key.txt>
-References: <20240217183941.1752463-1-megi@xff.cz>
- <4c66c084-5af6-43fb-a256-4746b2e00192@rock-chips.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AwJXLted7GPU07EzaqeT98GaRJHuByy7frj9TydWRjjaeHneUsAKOyqCTz8s6buOgh27NiWuZKqT1b3rh7VqISSDzO5+4zwo0N8vrBIaqLp/ZCmmaf4DtkQTtIlk85QKzP8plBSC10+CrCGspsWFLAoRtC9BXc5eluxvAhzGy60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Z0XxTgjq; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e45c59fc6cso187462b3a.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708269586; x=1708874386; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eiWOUozWnezeYn8cXQvtDvCvh6gTYyUB/9KcoNgO2S8=;
+        b=Z0XxTgjqWyazp15zaW/ZnhQPP/vQUJ16DOZ1Hq0r+BT7AlgmbJ9FONeOG3yHNtb9PL
+         NY72Vj0zKPqaAgRpopK2+aqqkrQfRItybiUPkatXi9wwD13ZxQHcl8NYYoFU5Jp6RHdm
+         c0o9K96cAg54FH5HIBpabLJjAOkt0mQ2F2mQg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708269586; x=1708874386;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eiWOUozWnezeYn8cXQvtDvCvh6gTYyUB/9KcoNgO2S8=;
+        b=kNOe55oEiBdJGDHejR1c6gVPCVAHlXaBb8E8JA2PmCtFolUU4z1Ohe4a3ykr6rk53t
+         Cs0NCPcN60E6G1mP/AvvYjJsapkQvP0uMFmOEOOUAzuMyBYTMtrgMkPo6JCP/4lcg0qi
+         LceqjcG8JXqTIfs4Pffo1HXS6DDD0cld5QZRsG1o+N9aXQyZUO2emBXy6rflC0bJYJC/
+         N5NDNT0W+M4nlAhAmqNHigXIFY8tW8PG2TDsq9cpBFQ+LBbO76lrdfGYop6TqL5VhEfY
+         /c8AgX+SLx0CliXw0gpclfha6WAbsfv4Blqs3GyoW2iJRWNVuKsU/EPsf8gkN/vr0UbP
+         gawA==
+X-Forwarded-Encrypted: i=1; AJvYcCX++j9DcLIo6o59mnYRnS4+JTjNssAh/5JcOoCm/6xGQF5Nav9pYOtCHWAkWlMCGy4Cd8ceeWm32VR9Nv1i28q3T+e+KDDk3pRGZg0C
+X-Gm-Message-State: AOJu0YzV4PnmAoFAfE0PEwXOFeKUtNzYhRNsS3VXE7cEpGybtEPlh7Bl
+	+cfkiYICsWhORdhZufmqQoxNArbubX4Yqy+5ypQ5YUrIZvyEr1jnUyZ/S0+peg==
+X-Google-Smtp-Source: AGHT+IHQkmCTEZjB8VrcrwmYPHm1xqN+oDo5E9U8MtwdiC0lI+BGRPycjpyIHGY52kr+uXWivxarDw==
+X-Received: by 2002:aa7:8202:0:b0:6e1:dbd:e800 with SMTP id k2-20020aa78202000000b006e10dbde800mr9961775pfi.17.1708269585774;
+        Sun, 18 Feb 2024 07:19:45 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id r22-20020aa78456000000b006e24991dd5bsm2894532pfn.98.2024.02.18.07.19.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 07:19:45 -0800 (PST)
+Date: Sun, 18 Feb 2024 07:19:44 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Puranjay Mohan <puranjay12@gmail.com>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Tiezhu Yang <yangtiezhu@loongson.cn>,
+	Hengqi Chen <hengqi.chen@gmail.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+	Paul Burton <paulburton@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Ilya Leoshkevich <iii@linux.ibm.com>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Wang YanQing <udknight@gmail.com>, David Ahern <dsahern@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>, bpf@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org, netdev@vger.kernel.org,
+	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 2/2] bpf: Take return from set_memory_rox() into
+ account with bpf_jit_binary_lock_ro()
+Message-ID: <202402180711.22F5C511E5@keescook>
+References: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
+ <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4c66c084-5af6-43fb-a256-4746b2e00192@rock-chips.com>
+In-Reply-To: <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
 
-Hi Andy,
-
-On Sun, Feb 18, 2024 at 07:14:56PM +0800, Andy Yan wrote:
-> Hi,
+On Sun, Feb 18, 2024 at 11:55:02AM +0100, Christophe Leroy wrote:
+> set_memory_rox() can fail, leaving memory unprotected.
 > 
-> On 2/18/24 02:39, Ondřej Jirman wrote:
-> > From: Ondrej Jirman <megi@xff.cz>
-> > 
-> > On RK3399 one MIPI DSI device can be alternatively used with the ISP1,
-> > to provide RX DPHY. When this is the case (ISP1 is enabled in device
-> > tree), probe success of DRM is tied to probe success of ISP1 connected
-> > camera sensor. This can fail if the user is able to killswitch the camera
-> > power, like on Pinephone Pro.
-> > 
-> > Detect use of MIPI DSI controller by ISP, and don't include it in
-> > component match list in that case.
-> > 
+> Check return and bail out when bpf_jit_binary_lock_ro() returns
+> and error.
 > 
-> Isn't this supposed to be taken care of within the dts?
-> Since DPHY1 should exclusively used by MIPI DSI1 and ISP1, then if
-> a device want to use ISP1, the DSI1 should be disabled in dts.
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> Previous patch introduces a dependency on this patch because it modifies bpf_prog_lock_ro(), but they are independant.
+> It is possible to apply this patch as standalone by handling trivial conflict with unmodified bpf_prog_lock_ro().
+> ---
+>  arch/arm/net/bpf_jit_32.c        | 25 ++++++++++++-------------
+>  arch/arm64/net/bpf_jit_comp.c    | 21 +++++++++++++++------
+>  arch/loongarch/net/bpf_jit.c     | 21 +++++++++++++++------
+>  arch/mips/net/bpf_jit_comp.c     |  3 ++-
+>  arch/parisc/net/bpf_jit_core.c   |  8 +++++++-
+>  arch/s390/net/bpf_jit_comp.c     |  6 +++++-
+>  arch/sparc/net/bpf_jit_comp_64.c |  6 +++++-
+>  arch/x86/net/bpf_jit_comp32.c    |  3 +--
+>  include/linux/filter.h           |  4 ++--
+>  9 files changed, 64 insertions(+), 33 deletions(-)
+> 
+> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
+> index 1d672457d02f..01516f83a95a 100644
+> --- a/arch/arm/net/bpf_jit_32.c
+> +++ b/arch/arm/net/bpf_jit_32.c
+> @@ -2222,28 +2222,21 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  	/* If building the body of the JITed code fails somehow,
+>  	 * we fall back to the interpretation.
+>  	 */
+> -	if (build_body(&ctx) < 0) {
+> -		image_ptr = NULL;
+> -		bpf_jit_binary_free(header);
+> -		prog = orig_prog;
+> -		goto out_imms;
+> -	}
+> +	if (build_body(&ctx) < 0)
+> +		goto out_free;
+>  	build_epilogue(&ctx);
+>  
+>  	/* 3.) Extra pass to validate JITed Code */
+> -	if (validate_code(&ctx)) {
+> -		image_ptr = NULL;
+> -		bpf_jit_binary_free(header);
+> -		prog = orig_prog;
+> -		goto out_imms;
+> -	}
+> +	if (validate_code(&ctx))
+> +		goto out_free;
+>  	flush_icache_range((u32)header, (u32)(ctx.target + ctx.idx));
+>  
+>  	if (bpf_jit_enable > 1)
+>  		/* there are 2 passes here */
+>  		bpf_jit_dump(prog->len, image_size, 2, ctx.target);
+>  
+> -	bpf_jit_binary_lock_ro(header);
+> +	if (bpf_jit_binary_lock_ro(header))
+> +		goto out_free;
+>  	prog->bpf_func = (void *)ctx.target;
+>  	prog->jited = 1;
+>  	prog->jited_len = image_size;
+> @@ -2260,5 +2253,11 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  		bpf_jit_prog_release_other(prog, prog == orig_prog ?
+>  					   tmp : orig_prog);
+>  	return prog;
+> +
+> +out_free:
+> +	image_ptr = NULL;
+> +	bpf_jit_binary_free(header);
+> +	prog = orig_prog;
+> +	goto out_imms;
 
-DSI1 can't be disabled, because it provides PHY device for ISP1 in this
-scenario.
+These gotos give me the creeps, but yes, it does appear to be in the
+style of the existing error handling.
 
-The problem is that in this scenario DRM keeps waiting for DSI1 device,
-despite it just being used for PHY for ISP1 and not as a component for
-rockchip DRM driver.
+> [...]
+> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.c
+> index b18ce19981ec..f2be1dcf3b24 100644
+> --- a/arch/x86/net/bpf_jit_comp32.c
+> +++ b/arch/x86/net/bpf_jit_comp32.c
+> @@ -2600,8 +2600,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+>  	if (bpf_jit_enable > 1)
+>  		bpf_jit_dump(prog->len, proglen, pass + 1, image);
+>  
+> -	if (image) {
+> -		bpf_jit_binary_lock_ro(header);
+> +	if (image && !bpf_jit_binary_lock_ro(header)) {
 
-See:
+I find the "!" kind of hard to read the "inverted" logic (0 is success),
+so if this gets a revision, maybe do "== 0"?:
 
-        isp1: isp1@ff920000 {
-                compatible = "rockchip,rk3399-cif-isp";
-                reg = <0x0 0xff920000 0x0 0x4000>;
-                interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH 0>;
-                clocks = <&cru SCLK_ISP1>,
-                         <&cru ACLK_ISP1_WRAPPER>,
-                         <&cru HCLK_ISP1_WRAPPER>;
-                clock-names = "isp", "aclk", "hclk";
-                iommus = <&isp1_mmu>;
-                phys = <&mipi_dsi1>;  <--------- 
-                phy-names = "dphy";
-                power-domains = <&power RK3399_PD_ISP1>;
-                status = "disabled";
+	if (image && bpf_jit_binary_lock_ro(header) == 0) {
 
-If mipi_dsi1 is disabled, isp1 will never probe.
+But that's just me. So, regardless:
 
-It's a consequence of this special dual use of mipi_dsi1.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-kind regards,
-	o.
-
-> > Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> > ---
-> >   drivers/gpu/drm/rockchip/rockchip_drm_drv.c | 47 +++++++++++++++++++++
-> >   1 file changed, 47 insertions(+)
-> > 
-> > diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> > index ab55d7132550..f47de94ad576 100644
-> > --- a/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> > +++ b/drivers/gpu/drm/rockchip/rockchip_drm_drv.c
-> > @@ -354,6 +354,43 @@ static void rockchip_drm_match_remove(struct device *dev)
-> >   		device_link_del(link);
-> >   }
-> > +/*
-> > + * Check if ISP block linked to a mipi-dsi device via phys phandle is
-> > + * enabled in device tree.
-> > + */
-> > +static bool rockchip_drm_is_mipi1_and_used_by_isp(struct device *dev)
-> > +{
-> > +	struct device_node *np = NULL, *phy_np;
-> > +
-> > +	if (!of_device_is_compatible(dev->of_node, "rockchip,rk3399-mipi-dsi"))
-> > +		return false;
-> > +
-> > +	while (true) {
-> > +		np = of_find_compatible_node(np, NULL, "rockchip,rk3399-cif-isp");
-> > +		if (!np)
-> > +			break;
-> > +
-> > +		if (!of_device_is_available(np)) {
-> > +			of_node_put(np);
-> > +			continue;
-> > +		}
-> > +
-> > +		phy_np = of_parse_phandle(np, "phys", 0);
-> > +		if (!phy_np) {
-> > +			of_node_put(np);
-> > +			continue;
-> > +		}
-> > +
-> > +		of_node_put(phy_np);
-> > +		of_node_put(np);
-> > +
-> > +		if (phy_np == dev->of_node)
-> > +			return true;
-> > +	}
-> > +
-> > +	return false;
-> > +}
-> > +
-> >   static struct component_match *rockchip_drm_match_add(struct device *dev)
-> >   {
-> >   	struct component_match *match = NULL;
-> > @@ -371,6 +408,16 @@ static struct component_match *rockchip_drm_match_add(struct device *dev)
-> >   			if (!d)
-> >   				break;
-> > +			/*
-> > +			 * If mipi1 is connected to ISP, we don't want to wait for mipi1 component,
-> > +			 * because it will not be used by DRM anyway, to not tie success of camera
-> > +			 * driver probe to display pipeline initialization.
-> > +			 */
-> > +			if (rockchip_drm_is_mipi1_and_used_by_isp(d)) {
-> > +				dev_info(d, "used by ISP1, skipping from DRM\n");
-> > +				continue;
-> > +			}
-> > +
-> >   			device_link_add(dev, d, DL_FLAG_STATELESS);
-> >   			component_match_add(dev, &match, component_compare_dev, d);
-> >   		} while (true);
+-- 
+Kees Cook
 
