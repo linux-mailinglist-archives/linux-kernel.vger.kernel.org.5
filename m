@@ -1,78 +1,104 @@
-Return-Path: <linux-kernel+bounces-70129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40CE08593C5
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:05:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E67C38593C9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:14:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3912C1C20BA0
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:05:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FF091F21D9D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA422EBB;
-	Sun, 18 Feb 2024 01:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="geix2cuC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E98D184D;
+	Sun, 18 Feb 2024 01:13:57 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E5F634
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 01:05:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CA8149DED;
+	Sun, 18 Feb 2024 01:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708218305; cv=none; b=b9U2ZRYVvvPVQGrIqQABsSrs91ico7Pj2Yv3jnUCZD4w899WsHJQGbrnjUvsZywN5mEC+umkBwqdhBrATgC5CPz5t2OZh0XGGBFLsq6tDPUr+S+7dnLw/hiCZ+vAHEVAj8kfSKdS+h0xwlGYaaN3YDKmV5e0a8PS583NJIz6eUs=
+	t=1708218836; cv=none; b=kChUMHFAgZuxD39+2QisSxJBqIOi48wHdWiPDH0IOJDTTkhLdUWztYvnfaMxC0CKM0fUvAUuLDpL1QXtOrkZiyi2m/UhcaCDoHrQy0rA6IqnPoG5G3xXTKcQs3vt4Tb7FjTYqQanyumaQN8ajyIyXLqun161gVcBkYDVEasNNLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708218305; c=relaxed/simple;
-	bh=1zMeX2lPq2uHqO30zf3bV0zHNDk+kqy8XXaghomNDJk=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=KM4uVBUu6HD9JOBoYAbYQZxnqa0K3hs5LtG8U4wq3xeXiVAdj7BTMkM+Ac5wul9WXmZADrWW22LNBaLxC3rQwU4ZacBdRkS4DAUdvR3lms5jJlXyXQBvbFBfrD0dsu8uVoS16dHc0kajz025OKlxpZwAgu8UUzQ6oj4LBfS8xIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=geix2cuC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7AB2EC433F1;
-	Sun, 18 Feb 2024 01:05:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708218304;
-	bh=1zMeX2lPq2uHqO30zf3bV0zHNDk+kqy8XXaghomNDJk=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=geix2cuCqSZ39+DQ451YYEMJmi1TZ1KTfkoP2e5cjnHgoQFCsScDvuje1oozrc37W
-	 RvyWGNVWiz3X9xOax/GGsGTKZ6Q4f2WS1xUfGa7ckR7IJuAmmVbRoEZ06yeRT39nL5
-	 Q7sVZXSwlrJWoMmKy3B95yeqBgM4xITgkCKql9ylUrBc/rgcDq2e41MRped9tDCCwH
-	 cq2z0W6v+E1W46FsyytJ2qtPFciTy8259eOYfprVxd92UXVJCcDeUm1L/tXdaTrcMx
-	 BLv3XOPShRidzGCAmuRIncvgocb5kaKJ74iBmEzMpOcKCVJy5Sgz9H8o6LJyP1WcI4
-	 b6LY5upr45gNQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67276DCB6DD;
-	Sun, 18 Feb 2024 01:05:04 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-6.8-3 tag
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <87cysu1vap.fsf@mail.lhotse>
-References: <87cysu1vap.fsf@mail.lhotse>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87cysu1vap.fsf@mail.lhotse>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-3
-X-PR-Tracked-Commit-Id: 0846dd77c8349ec92ca0079c9c71d130f34cb192
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c02197fc9076e7d991c8f6adc11759c5ba52ddc6
-Message-Id: <170821830441.19458.14910563235489562479.pr-tracker-bot@kernel.org>
-Date: Sun, 18 Feb 2024 01:05:04 +0000
-To: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, arnd@arndb.de, david.engraf@sysgo.com, gbatra@linux.ibm.com, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, matthias.schiffer@ew.tq-group.com, nathanl@linux.ibm.com, naveen@kernel.org, rnsastry@linux.ibm.com, sbhat@linux.ibm.com, sshegde@linux.ibm.com, xiaojiangfeng@huawei.com
+	s=arc-20240116; t=1708218836; c=relaxed/simple;
+	bh=BM5fWLHxt+nbnIcaH9/6rApX+O/g3UTPsFa3hJbgNYQ=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=MjRzLnzvXJzzs9scfp+J4YYdIQl0YLkje2zoa6l8/woLf9J7EdzTWeJzxbklvcDjnYqnQufyOaZrbqI6zCdB2TjJeR6t7fotcE636P0NSaJj1AbosZA7WIWtM30skVdOhIr2ovIelsm9BdNYFNlK9pf+uJIjFITQYLuPwbuMDo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TcncM4vSQz1FKTg;
+	Sun, 18 Feb 2024 09:08:51 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id B5AB314040D;
+	Sun, 18 Feb 2024 09:13:39 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 18 Feb 2024 09:13:38 +0800
+Subject: Re: [PATCH] jffs2: print symbolic error name instead of error code
+To: Christian Heusel <christian@heusel.eu>, David Woodhouse
+	<dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>,
+	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC: <kernel-janitors@vger.kernel.org>
+References: <20240211003907.167891-1-christian@heusel.eu>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <e4d00360-bb36-cfe1-5c0c-8e5b1c7bebc0@huawei.com>
+Date: Sun, 18 Feb 2024 09:13:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+In-Reply-To: <20240211003907.167891-1-christian@heusel.eu>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
 
-The pull request you sent on Sun, 18 Feb 2024 11:16:14 +1100:
+ÔÚ 2024/2/11 8:39, Christian Heusel Ð´µÀ:
+> Utilize the %pe print specifier to get the symbolic error name as a
+> string (i.e "-ENOMEM") in the log message instead of the error code to
+> increase its readablility.
+> 
+> This change was suggested in
+> https://lore.kernel.org/all/92972476-0b1f-4d0a-9951-af3fc8bc6e65@suswa.mountain/
+> 
+> Signed-off-by: Christian Heusel <christian@heusel.eu>
+> ---
+>   fs/jffs2/background.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-3
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> 
+> diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+> index 6da92ecaf66d..bb0ee1a59e71 100644
+> --- a/fs/jffs2/background.c
+> +++ b/fs/jffs2/background.c
+> @@ -44,8 +44,8 @@ int jffs2_start_garbage_collect_thread(struct jffs2_sb_info *c)
+> 
+>   	tsk = kthread_run(jffs2_garbage_collect_thread, c, "jffs2_gcd_mtd%d", c->mtd->index);
+>   	if (IS_ERR(tsk)) {
+> -		pr_warn("fork failed for JFFS2 garbage collect thread: %ld\n",
+> -			-PTR_ERR(tsk));
+> +		pr_warn("fork failed for JFFS2 garbage collect thread: %pe\n",
+> +			tsk);
+>   		complete(&c->gc_thread_exit);
+>   		ret = PTR_ERR(tsk);
+>   	} else {
+> --
+> 2.43.1
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> .
+> 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c02197fc9076e7d991c8f6adc11759c5ba52ddc6
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
 
