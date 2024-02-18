@@ -1,83 +1,98 @@
-Return-Path: <linux-kernel+bounces-70589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55150859983
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FAFE859985
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1D0EB20C5B
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 21:22:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23BEAB20C80
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 21:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 196C073175;
-	Sun, 18 Feb 2024 21:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899F773192;
+	Sun, 18 Feb 2024 21:24:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="gh+L60t0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="eCK6XYva"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EE67318E;
-	Sun, 18 Feb 2024 21:21:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 162D84B5C1;
+	Sun, 18 Feb 2024 21:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708291315; cv=none; b=b1Hr0owJ8sgieo9pTGk3lSWUgy0aoRRGZIfTUpMGB6aQZPGp+Euf6m50bjDRtXE/n2L+R516hrrW7tEZr5W8zqzRrTke+kaoi9pvsLPR2tH/CMWlQOvpSSDiCFHF6UcYcvJ4N0sOj1wOXDp9pE08bfN3o3yIeRRPMP4uXO31u1c=
+	t=1708291455; cv=none; b=K5nw5naAs4s3UTCmJETG4WmEKRIjIotI6fMABey5ardK0yk68zRFZuq0+x3tUAHFd3GCVpIkmoZ+Gj7+c7T5Xp/bCuVNrGfD7ZZItgaLE8kxdxXyEBsmtrXHJR4i2g1yF/aiMjioad9ieqBwJGp0KZcnSTFwgfHH0oibAPOQT1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708291315; c=relaxed/simple;
-	bh=nviFZpkKKCzEebEAPc9U0aKPoo1ClU+opQSf18ATb8I=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=gqRjFkKUXOGSRTJSKcDR6+JLq/FgwmrCTMlvU4mLOp8afKZtqMpxQrg1WPym6FI2GveEJ1u8skw9ME5w/YKHEVoaYCwtnLekKNuEQvFXUwNOAk9y/+3riqlSYtrXDKCWqtQOaAqgCMC+x3hryZpSJIlkpYA1dbnO+I3ao0OIth8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=gh+L60t0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D6E5C433F1;
-	Sun, 18 Feb 2024 21:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1708291314;
-	bh=nviFZpkKKCzEebEAPc9U0aKPoo1ClU+opQSf18ATb8I=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=gh+L60t0itXnW1+QDWGY1bz2tANjs2sIwKyWszurYv+kCgTWgx+l9sOyd6OGf8Qe8
-	 dEVr7ppgio4xtfjfwO7E6JXEMVHEnPLKzWjpodug9un77PTxXf2FbItNSKq9XqbYJA
-	 CVPlsZgjd2mbWAyIkBX254z4YeF1hQwPMsn9XYUY=
-Date: Sun, 18 Feb 2024 13:21:53 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Changbin Du <changbin.du@huawei.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, <linux-modules@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, Xiaoyi Su <suxiaoyi@huawei.com>, Eric
- Chanudet <echanude@redhat.com>
-Subject: Re: [PATCH v3] modules: wait do_free_init correctly
-Message-Id: <20240218132153.d93675d0d241f021565a08b6@linux-foundation.org>
-In-Reply-To: <20240217081810.4155871-1-changbin.du@huawei.com>
-References: <20240217081810.4155871-1-changbin.du@huawei.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708291455; c=relaxed/simple;
+	bh=dkuDWU2rpKLPBu6sUlNnSpN7G8NhmP+Q1s4Y0D9IX0c=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Q1qug93lgbRRtBfJtfGZ+sNotCiZWmRuCU4khcPwMv8Tv3xomyO4ALy/02B6Ds7Y/S6m1SKmp0nwUnaPxMD5hdrASOq+aY5kqa7mAjCF8topgCQtlUqVAYmqwaJ5/SPV233kMl74+WMM8OTCsXktImGtKW45u8YV4fmr29QobQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=eCK6XYva; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708291449;
+	bh=uuizwE4pCsH1kdWmspnjb47O4PazP7eoSsZzVwGnZ9Q=;
+	h=Date:From:To:Cc:Subject:From;
+	b=eCK6XYvaH/6CUywp2ZY6JwHHA9SfnGE7OLyFosfwAcl1wwoHJmcfXJZdN3jQB0lWW
+	 BYPs5ewt6JGCvIQtVn89HitPyyk8nYB9+CGIBvyJ8Ro6CwOrBRv2AfHSAaj4cFG3oa
+	 /uh/v8Sny0uwAOM00EOGcAk4k3g0vXBQNLSTRlR0tdDUhkw8mD+Et8G64doX1Ojb34
+	 aM+i8dutwdvBBV2lQDzTFSwjAgGi3yyJusEr5aIxU80VfYA35Y64yUEUcdJ8NHP+O3
+	 BwqXnwZRy19iP7vtpNlTffLjgRAT1WlxooG2QwpbE5oaftpPzLa1jvAwMMPq/pkEwO
+	 YwlNpfzqWPS8A==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TdJZd0vpSz4wcB;
+	Mon, 19 Feb 2024 08:24:09 +1100 (AEDT)
+Date: Mon, 19 Feb 2024 08:23:44 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andi Shyti <andi.shyti@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the i2c-host-fixes tree
+Message-ID: <20240219082344.267d1a2a@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/7rbdQ1+zIH9L6CcET=viwmH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+
+--Sig_/7rbdQ1+zIH9L6CcET=viwmH
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 17 Feb 2024 16:18:10 +0800 Changbin Du <changbin.du@huawei.com> wrote:
+Hi all,
 
-> The synchronization here is just to ensure the module init's been freed
-> before doing W+X checking. But the commit 1a7b7d922081 ("modules: Use
-> vmalloc special flag") moves do_free_init() into a global workqueue
-> instead of call_rcu(). So now rcu_barrier() can not ensure that do_free_init
-> has completed. We should wait it via flush_work().
-> 
-> Without this fix, we still could encounter false positive reports in
-> W+X checking, and the rcu synchronization is unnecessary which can
-> introduce significant delay.
-> 
-> Eric Chanudet reports that the rcu_barrier introduces ~0.1s delay on a
-> PREEMPT_RT kernel.
->   [    0.291444] Freeing unused kernel memory: 5568K
->   [    0.402442] Run /sbin/init as init process
-> 
-> With this fix, the above delay can be eliminated.
+The following commits are also in Linus Torvalds' tree as different
+commits (but the same patches):
 
-Thanks, I'll queue this as a delta, to be folded into the base patch
-prior to upstreaming.
+  32e9b680de4b ("i2c: i2c-qcom-geni: Correct I2C TRE sequence")
+  3fab8a74c71a ("i2c: pasemi: split driver into two separate modules")
+  eb9f7f654f25 ("i2c: i801: Fix block process call transactions")
 
-I added a Tested-by: Eric, if that's OK by him?
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/7rbdQ1+zIH9L6CcET=viwmH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXSdWAACgkQAVBC80lX
+0GzvKAf/anjiRx9S+EyVoBvlLwdgbyl6v2qNx3YLdJW/aAm4yZtjFoQX7W/LwFGS
+acA6NaCDggp9EoN49+J5YYejnEIH7RyAzveoylDJX/5LCLoorEWf1GSp09bY33uB
+KLQ6wHuhtEI8cYtRl5EEbqeNf4D7KdeE08wt1rUM4tEMtVUZXbaXJJaPjuchZht0
+J+MJevlCS9hX7Lqhx5hFqiVMyM33cE6rtHG1YXyyL/do6Npcyj3VqWqYiY9K5giM
+oOx89Q7RmpZt2eoz8ZlRbRfF5DxID8JnITctvOMNvhi1QJ7kmL43nHpgQwgwLByV
+KeS0eWniXs+eeRIJIoyoDmlZ9lumyg==
+=sYFA
+-----END PGP SIGNATURE-----
+
+--Sig_/7rbdQ1+zIH9L6CcET=viwmH--
 
