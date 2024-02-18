@@ -1,303 +1,138 @@
-Return-Path: <linux-kernel+bounces-70151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF0F859408
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:21:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1C3B85940B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578AF1F216EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:21:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 213131C20C40
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E8C646BA;
-	Sun, 18 Feb 2024 02:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 524DB1859;
+	Sun, 18 Feb 2024 02:27:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dy0+oSSo"
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ctvy/73a"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AC91103
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 02:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DE1F1103
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 02:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708222896; cv=none; b=CdHL0mfeoCF809RINTip0BX1w9/M4uVZzUrYzeMlsR7EN/OIZGhOpd1IeyP+Ijt326uXWfFev7CN7ppW+wuOk4stdD/2X1DvKgXQ5DmB+Z0gItKYm5EK8/DP3AfC2x7AwTrXpHSJFXnizzRzBxO1OADmVuu55h1xkcZB/yuFpO8=
+	t=1708223275; cv=none; b=UBdQNb2yl6g3OdQGHMKwRt55SAR4izWMU8PZRerw9yb/6pfUl1oIDLzb/9QqqpwCFHbix0WAkD7FFGOB2jGDfhalzU7y9GKBxY48z9mUKJT6msMSj/jx4t8iPclE9fxkjeA7azFn+8tND0PeOVEPp664te1Q5SbfsQP8D/N+RUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708222896; c=relaxed/simple;
-	bh=sGLQWy2gJ22i5/11EUF6i6TeDZNPTR8RdMNYUPKuXtM=;
+	s=arc-20240116; t=1708223275; c=relaxed/simple;
+	bh=nKsx+TvlDRCfg/EURkIhikZLmq+YLEYvNN++aBLHASQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jufLUhn+OB+yBz0He96TwH85iRYFs48Zr4wHHc53lgT4dhVP2Kq4wg/wNq/wEEOdFPC/ZP1tZH6c08WwG+/2FoZbeSVpwUvkQZUPPAq3hu32tr0nFw6LCw2y1tEqjUcWbtY7ukOu4qQtaXBo56sKQsL1OiSqEVv2ZiDXbyYbmtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dy0+oSSo; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dcc73148611so3718164276.3
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 18:21:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708222892; x=1708827692; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aGwMPlFmMn7i+PsCRsmYPKBrgHwqE0wRHG6PNy5zjw0=;
-        b=Dy0+oSSo/rLVLFYRNniJ8/xLna969/++gNkbWpS6mx2DBrdgoFAbwDKo7xwr5EaXEc
-         BxdvFTlyenLEwcJGQy5hh7gYtHG65bMckXjyD3oskfkiunAoXiTycAClPHN6Wtun9zVN
-         JD+KyRvBXIKOLfDUgllhnEXBged/RY5qcN5ZgvnvDxdQbsTWJEjnfv6/+0yPBPKJ39ld
-         N1sfaXsKEwSAdu7Fcsymy3YO8aLDkEiX+qeJI4YFI7QdKWay0Q6eUnpsUmOCeYLoGYX5
-         jVQMRCoKm1AlRWnExVzMTyMzwdyBte1Oka+Eh+wI18AhcMi56/IQzNmSZ3A6ClUI8o/+
-         c6yg==
+	 To:Cc:Content-Type; b=LiuzPgRdy4+IlVyUMDT6NXVJrYjcdvv3jP+pUDXm3DcySWD5iBCy1AVOWINbar0shehnw57ncrkH2wBgj2doF05+A7xKukKKg0iXQhOQh4/8UXgBih4vglN1+xo29xTaEGKOwidwlIps5kAyFFCUesjMjNRpeMi1Yc3hcxY5gHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ctvy/73a; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708223273;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nKsx+TvlDRCfg/EURkIhikZLmq+YLEYvNN++aBLHASQ=;
+	b=ctvy/73arG1HA38XR+aC6wtD29ePQIEZZcCzpFdQ7DaEtbIXvVjHtxZoZGvxnwKVf8kn2e
+	GkMEjnEux8Pf/0fzc89ag+4HB4L+JCTPGIG60Xn/R6KR+550yu1U3/+xeJLy5wJ/Ty8EJa
+	jn7EGrGqZH9dj+HVOw9ChmszDrz0Nik=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-60-0WtojXbbPsCN9uuhT3NUgw-1; Sat, 17 Feb 2024 21:27:50 -0500
+X-MC-Unique: 0WtojXbbPsCN9uuhT3NUgw-1
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-299678318dbso299549a91.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 18:27:50 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708222892; x=1708827692;
+        d=1e100.net; s=20230601; t=1708223270; x=1708828070;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=aGwMPlFmMn7i+PsCRsmYPKBrgHwqE0wRHG6PNy5zjw0=;
-        b=GMynr4eKChWTtocb8wWbi1bepGXRzpGp8suucMc4nDvDTpFdL9y/C6Uni8JWCR6jlt
-         6E/7IYvqeZpaoLlyc/mAXjL/j6KlW7g/HUG+INHK0mrOA9BHcQDnZuIujYCgtdWgfBuC
-         r2xA1gYVbvqdtfggLDwL+jl+l16L3qP24t7V5N6dU47JgkFOh6Z/+oW3y7q7MmZjBrm0
-         bUAtwDn/78SUD+FPCeFqU3IXq2SD0IZxqZlSSk/ajbKLGG6luLegzrFlGJy/hdkMl4bv
-         p9fVGkQ7N+F1grBo6CUm9Uh3qfhMM/jZ9AdBKG0XBEynxD0VPphDA66dYQot0yBR1Xoj
-         LAFw==
-X-Forwarded-Encrypted: i=1; AJvYcCVV9PfBEnIbcI5jHGKpCS34t18d55wutY5+zZj1zsInJm3OhQjXZ5rwOiymAa9o5BlRUCKDirHSsn+bMFYeahnGu0PGpHq21BHdFzVM
-X-Gm-Message-State: AOJu0YwpNjBvnBvCwrcKy4J5bQaRTNBUc5LrmOFE/udd7DesWn2Fn0wQ
-	0syvHamnNEVjn+Xu97rdW6Vc0sSh7GY2YRCrzMfe29sAXfpqskrCAddNa2b7QXZe0TJdY4xGCvZ
-	GV30cBQpJBfOVdo9CLoyZl33Ef0F5ihZr8pEQ
-X-Google-Smtp-Source: AGHT+IFbcmWP0wuiiRTf0AlfSBMbSNfrD0N8TNtgVp/GNQHvOsL/OfZQsmBKdpZvPdO7G1/QjsP0VpRVVtpV4P/uhdk=
-X-Received: by 2002:a05:6902:268a:b0:dcd:4e54:9420 with SMTP id
- dx10-20020a056902268a00b00dcd4e549420mr9768527ybb.5.1708222891980; Sat, 17
- Feb 2024 18:21:31 -0800 (PST)
+        bh=nKsx+TvlDRCfg/EURkIhikZLmq+YLEYvNN++aBLHASQ=;
+        b=h/fVvbB5qMXPREvg1LxFg98m7kFvNAJY4W2grCOYfT0iSDfp7xJ7XtKRBtQgWm/nrX
+         HB6Udh2uB+GWzRGve8ysTmuLsATj3VI1JfP5enpZpM267G4Y+z/TRPxEcsGwx6c8BdrV
+         wc+TKeODN91h+fpboGpmAh56Y1En78TUvJxc+yfAHKFwKbW7z62Jr9+D3fMVUDbV1AeB
+         sW7TW6yogbMKQA8x5eZpVvjbIh2WvKV3r+iiopQ/DwzO8Uu1RtvqZJt5errS0j2YZvQ0
+         8D1Dj6QuETXBUoaKhVhJKjcbvk36ZEJ5ANI9Ry0E46RJIj0UdUT4pGYi7GzDCvkWz+Oy
+         VOow==
+X-Forwarded-Encrypted: i=1; AJvYcCXEodQj6PP/dtt7OPFdigZ+3O1ZNU2KoJ7J1FybM6o/cyeKUUS7K5ktIrPGrNQFVflZihfzitUAd6vWxJk2l9FYhy/AorfEIhOYLQlO
+X-Gm-Message-State: AOJu0YzqbZb1qyT5mjBnC3+OVaLXDCfTQcCBFo/j7Z742q/N4fBnpiim
+	R/0mnM9YD+04WQnpUwvFv/t2Rv8E0pk5YN6aRENnfupcvSHlkgWhns9TEqRgZz3gCiOuZFCI4A1
+	oPhmblZWWTXUniqVVvFMPqfPQDQF2Giso3SOLkOEBLj3gyXlsQ9q1iOcU33j7L+NdzlNg2vJbHp
+	slB0COb/kgTevD7K7xJLy/EzRXk+HnsCSLhRE5
+X-Received: by 2002:a17:90b:78e:b0:299:3e54:83fe with SMTP id l14-20020a17090b078e00b002993e5483femr3558428pjz.36.1708223269860;
+        Sat, 17 Feb 2024 18:27:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGO+Z325KAFI0GSZHw8iD5qIOQx10QeQ1N76fEOCkdUvi6n8sFtZCH4pi9EU3V0YpRBSBxKSb8bnmRvh9gR8PM=
+X-Received: by 2002:a17:90b:78e:b0:299:3e54:83fe with SMTP id
+ l14-20020a17090b078e00b002993e5483femr3558413pjz.36.1708223269552; Sat, 17
+ Feb 2024 18:27:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-14-surenb@google.com>
- <f92ad1e3-2dde-4db2-9b76-96c6bbc6a208@suse.cz>
-In-Reply-To: <f92ad1e3-2dde-4db2-9b76-96c6bbc6a208@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Sun, 18 Feb 2024 02:21:18 +0000
-Message-ID: <CAJuCfpGemg-aXyiK1fHavdKuW+-9+DM5_4krLAdg+DQh=24Dvg@mail.gmail.com>
-Subject: Re: [PATCH v3 13/35] lib: add allocation tagging support for memory
- allocation profiling
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <20240201092559.910982-2-yukuai1@huaweicloud.com> <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
+ <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com> <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
+ <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com>
+In-Reply-To: <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com>
+From: Xiao Ni <xni@redhat.com>
+Date: Sun, 18 Feb 2024 10:27:38 +0800
+Message-ID: <CALTww28bUzmQASme3XOz0CY=o86f1EUU23ENmnf42UVyuGzQ4Q@mail.gmail.com>
+Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in md_check_recovery()
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com, 
+	agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org, 
+	jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com, akpm@osdl.org, 
+	linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, yi.zhang@huawei.com, 
+	yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 16, 2024 at 8:57=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
+On Sun, Feb 18, 2024 at 9:46=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud.com> w=
+rote:
 >
-> On 2/12/24 22:38, Suren Baghdasaryan wrote:
-> > Introduce CONFIG_MEM_ALLOC_PROFILING which provides definitions to easi=
-ly
-> > instrument memory allocators. It registers an "alloc_tags" codetag type
-> > with /proc/allocinfo interface to output allocation tag information whe=
-n
-> > the feature is enabled.
-> > CONFIG_MEM_ALLOC_PROFILING_DEBUG is provided for debugging the memory
-> > allocation profiling instrumentation.
-> > Memory allocation profiling can be enabled or disabled at runtime using
-> > /proc/sys/vm/mem_profiling sysctl when CONFIG_MEM_ALLOC_PROFILING_DEBUG=
-=3Dn.
-> > CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT enables memory allocation
-> > profiling by default.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
-> > ---
-> >  Documentation/admin-guide/sysctl/vm.rst |  16 +++
-> >  Documentation/filesystems/proc.rst      |  28 +++++
-> >  include/asm-generic/codetag.lds.h       |  14 +++
-> >  include/asm-generic/vmlinux.lds.h       |   3 +
-> >  include/linux/alloc_tag.h               | 133 ++++++++++++++++++++
-> >  include/linux/sched.h                   |  24 ++++
-> >  lib/Kconfig.debug                       |  25 ++++
-> >  lib/Makefile                            |   2 +
-> >  lib/alloc_tag.c                         | 158 ++++++++++++++++++++++++
-> >  scripts/module.lds.S                    |   7 ++
-> >  10 files changed, 410 insertions(+)
-> >  create mode 100644 include/asm-generic/codetag.lds.h
-> >  create mode 100644 include/linux/alloc_tag.h
-> >  create mode 100644 lib/alloc_tag.c
-> >
-> > diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/ad=
-min-guide/sysctl/vm.rst
-> > index c59889de122b..a214719492ea 100644
-> > --- a/Documentation/admin-guide/sysctl/vm.rst
-> > +++ b/Documentation/admin-guide/sysctl/vm.rst
-> > @@ -43,6 +43,7 @@ Currently, these files are in /proc/sys/vm:
-> >  - legacy_va_layout
-> >  - lowmem_reserve_ratio
-> >  - max_map_count
-> > +- mem_profiling         (only if CONFIG_MEM_ALLOC_PROFILING=3Dy)
-> >  - memory_failure_early_kill
-> >  - memory_failure_recovery
-> >  - min_free_kbytes
-> > @@ -425,6 +426,21 @@ e.g., up to one or two maps per allocation.
-> >  The default value is 65530.
-> >
-> >
-> > +mem_profiling
-> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > +
-> > +Enable memory profiling (when CONFIG_MEM_ALLOC_PROFILING=3Dy)
-> > +
-> > +1: Enable memory profiling.
-> > +
-> > +0: Disabld memory profiling.
+> Hi,
 >
->       Disable
+> =E5=9C=A8 2024/02/18 9:33, Xiao Ni =E5=86=99=E9=81=93:
+> > The deadlock problem mentioned in this patch should not be right?
+>
+> No, I think it's right. Looks like you are expecting other problems,
+> like mentioned in patch 6, to be fixed by this patch.
 
-Ack.
+Hi Kuai
+
+Could you explain why step1 and step2 from this comment can happen
+simultaneously? From the log, the process should be
+The process is :
+dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(raid_pos=
+tsuspend)
+-> dm_table_destroy(raid_dtr).
+After suspending the array, it calls raid_dtr. So these two functions
+can't happen simultaneously.
+
 
 >
-> ...
+> Noted that this patch just fix one case that MD_RECOVERY_RUNNING can't
+> be cleared, I you are testing this patch alone, please make sure that
+> you still triggered the exactly same case:
 >
-> > +allocinfo
-> > +~~~~~~~
-> > +
-> > +Provides information about memory allocations at all locations in the =
-code
-> > +base. Each allocation in the code is identified by its source file, li=
-ne
-> > +number, module and the function calling the allocation. The number of =
-bytes
-> > +allocated at each location is reported.
->
-> See, it even says "number of bytes" :)
+> - MD_RCOVERY_RUNNING can't be cleared while array is suspended.
 
-Yes, we are changing the output to bytes.
+I'm not testing this patch. I want to understand the patch well. So I
+need to understand the issue first. I can't understand how this
+deadlock (step1,step2) happens.
 
+Regards
+Xiao
 >
-> > +
-> > +Example output.
-> > +
-> > +::
-> > +
-> > +    > cat /proc/allocinfo
-> > +
-> > +      153MiB     mm/slub.c:1826 module:slub func:alloc_slab_page
+> Thanks,
+> Kuai
 >
-> Is "module" meant in the usual kernel module sense? In that case IIRC is
-> more common to annotate things e.g. [xfs] in case it's really a module, a=
-nd
-> nothing if it's built it, such as slub. Is that "slub" simply derived fro=
-m
-> "mm/slub.c"? Then it's just redundant?
 
-Sounds good. The new example would look like this:
-
-    > sort -rn /proc/allocinfo
-   127664128    31168 mm/page_ext.c:270 func:alloc_page_ext
-    56373248     4737 mm/slub.c:2259 func:alloc_slab_page
-    14880768     3633 mm/readahead.c:247 func:page_cache_ra_unbounded
-    14417920     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
-    13377536      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
-    11718656     2861 mm/filemap.c:1919 func:__filemap_get_folio
-     9192960     2800 kernel/fork.c:307 func:alloc_thread_stack_node
-     4206592        4 net/netfilter/nf_conntrack_core.c:2567
-func:nf_ct_alloc_hashtable
-     4136960     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod]
-func:ctagmod_start
-     3940352      962 mm/memory.c:4214 func:alloc_anon_folio
-     2894464    22613 fs/kernfs/dir.c:615 func:__kernfs_new_node
-     ...
-
-Note that [ctagmod] is the only allocation from a module in this example.
-
->
-> > +     6.08MiB     mm/slab_common.c:950 module:slab_common func:_kmalloc=
-_order
-> > +     5.09MiB     mm/memcontrol.c:2814 module:memcontrol func:alloc_sla=
-b_obj_exts
-> > +     4.54MiB     mm/page_alloc.c:5777 module:page_alloc func:alloc_pag=
-es_exact
-> > +     1.32MiB     include/asm-generic/pgalloc.h:63 module:pgtable func:=
-__pte_alloc_one
-> > +     1.16MiB     fs/xfs/xfs_log_priv.h:700 module:xfs func:xlog_kvmall=
-oc
-> > +     1.00MiB     mm/swap_cgroup.c:48 module:swap_cgroup func:swap_cgro=
-up_prepare
-> > +      734KiB     fs/xfs/kmem.c:20 module:xfs func:kmem_alloc
-> > +      640KiB     kernel/rcu/tree.c:3184 module:tree func:fill_page_cac=
-he_func
-> > +      640KiB     drivers/char/virtio_console.c:452 module:virtio_conso=
-le func:alloc_buf
-> > +      ...
-> > +
-> > +
-> >  meminfo
->
-> ...
->
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 0be2d00c3696..78d258ca508f 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -972,6 +972,31 @@ config CODE_TAGGING
-> >       bool
-> >       select KALLSYMS
-> >
-> > +config MEM_ALLOC_PROFILING
-> > +     bool "Enable memory allocation profiling"
-> > +     default n
-> > +     depends on PROC_FS
-> > +     depends on !DEBUG_FORCE_WEAK_PER_CPU
-> > +     select CODE_TAGGING
-> > +     help
-> > +       Track allocation source code and record total allocation size
-> > +       initiated at that code location. The mechanism can be used to t=
-rack
-> > +       memory leaks with a low performance and memory impact.
-> > +
-> > +config MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-> > +     bool "Enable memory allocation profiling by default"
-> > +     default y
->
-> I'd go with default n as that I'd select for a general distro.
-
-Well, we have MEM_ALLOC_PROFILING=3Dn by default, so if it was switched
-on manually, that is a strong sign that the user wants it enabled IMO.
-So, enabling this switch by default seems logical to me. If a distro
-wants to have the feature compiled in but disabled by default then
-this is perfectly doable, just need to set both options appropriately.
-Does my logic make sense?
-
->
-> > +     depends on MEM_ALLOC_PROFILING
-> > +
-> > +config MEM_ALLOC_PROFILING_DEBUG
-> > +     bool "Memory allocation profiler debugging"
-> > +     default n
-> > +     depends on MEM_ALLOC_PROFILING
-> > +     select MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-> > +     help
-> > +       Adds warnings with helpful error messages for memory allocation
-> > +       profiling.
-> > +
->
 
