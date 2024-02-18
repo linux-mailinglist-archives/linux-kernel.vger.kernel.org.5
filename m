@@ -1,151 +1,111 @@
-Return-Path: <linux-kernel+bounces-70174-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52332859455
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:17:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AB785945D
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:22:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CF11CB2149A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:17:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E8641F2151B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 03:22:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94DC9184F;
-	Sun, 18 Feb 2024 03:17:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DCC1848;
+	Sun, 18 Feb 2024 03:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RVTZYtJA"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bFi7B0eA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAF215C0;
-	Sun, 18 Feb 2024 03:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A65D15C0;
+	Sun, 18 Feb 2024 03:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708226220; cv=none; b=tyxnUSa5O+cM2AbCx031tKkAN8P1CczwCJtEWzKfibfvETPfRLZE/ppgp3akMey9ZoVFP1PUAfClQJ6/XL2mG+M9bvsLWgM/sbHKpcXJd/zJKIfU2kdJCLOpCxwFJPHnLusNSVInXkv0NAtrtTLg53hb0uj58zXXWX/kwLoMgQ8=
+	t=1708226555; cv=none; b=fKUFLYE8QbElSiMgv0I+wCCTF0ibIvNRITLql8Pc8WdgxiMjEoeejDa3S+RFrT1VQQQKRRTWLvW6oLQ/+OlCwc1Q9NPfRWteHUnU5mxEXH8cLftsycbSnHU53iSdIX20Lhz8dTosDY2MEKwD3p5lMb7pb9i9H8b4GEW5B3Riwkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708226220; c=relaxed/simple;
-	bh=DeGDrMAgGcdQj3OmlPemYT17RoDy097NuhgcWvnkTOw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qsWZevX5BjcxZD4wRjlu5p0SeB7c3MRFvLmkaM9aHKuiJ7m1+coEGwAphgwb4PEFHgiwpA93sRtXjFWZHNquS+6SAwxRifyW+E/D0CQHI7NP6I1RfEpLuCdQSCGcL6rWI0w9n0fEagBrN/R1kMRCBxOuJ1zp0EZNDK0pRC6VxUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RVTZYtJA; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708226220; x=1739762220;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=DeGDrMAgGcdQj3OmlPemYT17RoDy097NuhgcWvnkTOw=;
-  b=RVTZYtJAguZcY7TMWhKkUA5q0rbB6uwvaU8qMBIl2cLY+zDsGogirdVR
-   TRgh3hBPyOdHsiU6muZNyMcuE3aUNacJsCLFcXYNt6oa7CTwmp1hD+uMT
-   t01oKqCbV6GjeRmSb6yTSCZICgccoPuCGhhE2dcnnOYCmVBFX50DDu9rp
-   8WPGV9ip7UEYAmnbZxsBfaoc0owON890tmz1wcG9np1g7hhLO9IPo7qMQ
-   ZzU6ah4vl4DEjDfpoUtNLFEfLBUxIzT6ZSBXiyZ6UxAxSwqMlwQTcknNa
-   lYrdLzNPAENPf0eFnLLxvwzBZLyu5PgDU7xhDal6levj5k3Z/YzDX+Ek+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="19749191"
-X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
-   d="scan'208";a="19749191"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 19:16:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,167,1705392000"; 
-   d="scan'208";a="8855672"
-Received: from dapengmi-mobl1.ccr.corp.intel.com (HELO [10.93.20.184]) ([10.93.20.184])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Feb 2024 19:16:56 -0800
-Message-ID: <a0d961d0-179e-481c-a1fa-d7b384a481dd@linux.intel.com>
-Date: Sun, 18 Feb 2024 11:16:53 +0800
+	s=arc-20240116; t=1708226555; c=relaxed/simple;
+	bh=OepOXvUp/jIusLtBhIQ3BEZ3rKiXUEDzMyoiEqL8BII=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WurIVWWN4LufhGr6y3nNlIw/8Fk457pFZUyFgGJfT8+8nyZQvZ+iOAi5XFnQmgTnHBoM/IaIYpjdlXrQub9wp/jsvcjxN9vfk6PuC7I6w9mloLTUq+rZ7b9+loIVFadwRqob/MsMq2wsA1Qlm+yEccTAuEzEIOmDAYaqhrmy0OI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bFi7B0eA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65CA1C433F1;
+	Sun, 18 Feb 2024 03:22:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708226554;
+	bh=OepOXvUp/jIusLtBhIQ3BEZ3rKiXUEDzMyoiEqL8BII=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bFi7B0eA65wcP5VVG9HxWBy2s3gtZf/jc+iKDCbBSXUyrmBKyMk5U9k/UoWXIRIyR
+	 n0EV8KgoZT4D/H1dGyDbh5XIwV3Ib5PHBeEJQDjb/iJexCWW10pBSar1Hd3WhjDQSh
+	 DKpjMbTre8A7ZbVh3fDSoN4o1N4vQH9Yz1roV5fZF23Pq66dzSjksTm9ODf7rZhAjf
+	 HJ1CRFJ3E9a2HI8gn/n56FdIlRtQt8rZQAlhGxXVcwsXLt/KTd2UU6fRUDdKfSFnQ/
+	 vvl6ye3zsI5Uh5+i0XgmXeKOL7bX1k6Wuyv4xqdm2nWMEmupNPiJcomr45WnF38usj
+	 QfuyCryEopmFg==
+Date: Sat, 17 Feb 2024 21:22:31 -0600
+From: Bjorn Andersson <andersson@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Andy Gross <agross@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Guru Das Srinagesh <quic_gurus@quicinc.com>, 
+	Andrew Halaney <ahalaney@redhat.com>, Maximilian Luz <luzmaximilian@gmail.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Deepti Jaggi <quic_djaggi@quicinc.com>
+Subject: Re: [PATCH v7 01/12] firmware: qcom: add a dedicated TrustZone
+ buffer allocator
+Message-ID: <5ppezcfez6tb3xmeevznwefvjjwjefwyzb5r6co4zlo53ht2c2@tdbwgbnxaalt>
+References: <20240205182810.58382-1-brgl@bgdev.pl>
+ <20240205182810.58382-2-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] KVM: selftests: Test top-down slots event
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kan Liang <kan.liang@linux.intel.com>,
- Jim Mattson <jmattson@google.com>, Jinrong Liang <cloudliang@tencent.com>,
- Aaron Lewis <aaronlewis@google.com>, Dapeng Mi <dapeng1.mi@intel.com>
-References: <20240201061505.2027804-1-dapeng1.mi@linux.intel.com>
- <Zbvcx0A-Ln2sP6XA@google.com>
- <95c3dc22-2d40-46fc-bc4d-8206b002e0a1@linux.intel.com>
- <Zb0lPSBI_GFGuVex@google.com>
-Content-Language: en-US
-From: "Mi, Dapeng" <dapeng1.mi@linux.intel.com>
-In-Reply-To: <Zb0lPSBI_GFGuVex@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240205182810.58382-2-brgl@bgdev.pl>
 
+On Mon, Feb 05, 2024 at 07:27:59PM +0100, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+[..]
+> diff --git a/drivers/firmware/qcom/qcom_tzmem.c b/drivers/firmware/qcom/qcom_tzmem.c
+> new file mode 100644
+> index 000000000000..44a062f2abd4
+> --- /dev/null
+> +++ b/drivers/firmware/qcom/qcom_tzmem.c
+> @@ -0,0 +1,302 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
 
-On 2/3/2024 1:24 AM, Sean Christopherson wrote:
-> On Fri, Feb 02, 2024, Dapeng Mi wrote:
->> On 2/2/2024 2:02 AM, Sean Christopherson wrote:
->>> On Thu, Feb 01, 2024, Dapeng Mi wrote:
->>>> Although the fixed counter 3 and the exclusive pseudo slots events is
->>>> not supported by KVM yet, the architectural slots event is supported by
->>>> KVM and can be programed on any GP counter. Thus add validation for this
->>>> architectural slots event.
->>>>
->>>> Top-down slots event "counts the total number of available slots for an
->>>> unhalted logical processor, and increments by machine-width of the
->>>> narrowest pipeline as employed by the Top-down Microarchitecture
->>>> Analysis method." So suppose the measured count of slots event would be
->>>> always larger than 0.
->>> Please translate that into something non-perf folks can understand.  I know what
->>> a pipeline slot is, and I know a dictionary's definition of "available" is, but I
->>> still have no idea what this event actually counts.  In other words, I want a
->>> precise definition of exactly what constitutes an "available slot", in verbiage
->>> that anyone with basic understanding of x86 architectures can follow after reading
->>> the whitepaper[*], which is helpful for understanding the concepts, but doesn't
->>> crisply explain what this event counts.
->>>
->>> Examples of when a slot is available vs. unavailable would be extremely helpful.
->>>
->>> [*] https://www.intel.com/content/www/us/en/docs/vtune-profiler/cookbook/2023-0/top-down-microarchitecture-analysis-method.html
->> Yeah, indeed, 'slots' is not easily understood from its literal meaning. I
->> also took some time to understand it when I look at this event for the first
->> time. Simply speaking, slots is an abstract concept which indicates how many
->> uops (decoded from instructions) can be processed simultaneously (per cycle)
->> on HW. we assume there is a classic 5-stage pipeline, fetch, decode,
->> execute, memory access and register writeback. In topdown
->> micro-architectural analysis method, the former two stages (fetch/decode) is
->> called front-end and the last three stages are called back-end.
->>
->> In modern Intel processors, a complicated instruction could be decoded into
->> several uops (micro-operations) and so these uops can be processed
->> simultaneously and then improve the performance. Thus, assume a processor
->> can decode and dispatch 4 uops in front-end and execute 4 uops in back-end
->> simultaneously (per-cycle), so we would say this processor has 4 topdown
->> slots per-cycle. If a slot is spare and can be used to process new uop, we
->> say it's available, but if a slot is occupied by a uop for several cycles
->> and not retired (maybe blocked by memory access), we say this slot is stall
->> and unavailable.
-> In that case, can't the test assert that the count is at least NUM_INSNS_RETIRED?
-> AFAIK, none of the sequences in the measured code can be fused, i.e. the test can
-> assert that every instruction requires at least one uop, and IIUC, actually
-> executing a uop requires an available slot at _some_ time.
+Could you please confirm that "-or-later" is intended?
 
+> +/*
+> + * Memory allocator for buffers shared with the TrustZone.
+> + *
+> + * Copyright (C) 2023 Linaro Ltd.
+> + */
+[..]
+> +/**
+> + * qcom_tzmem_pool_new() - Create a new TZ memory pool.
+> + * @size: Size of the new pool in bytes.
+> + *
+> + * Create a new pool of memory suitable for sharing with the TrustZone.
+> + *
+> + * Must not be used in atomic context.
 
-Yeah, looks the instruction sequence can't be marco-fused on x86 
-platforms, the slots count should be equal or larger than 
-NUM_INSNS_RETIRED.
+ * Context: Describes whether the function can sleep, what locks it takes,
+ *          releases, or expects to be held. It can extend over multiple
+ *          lines.
 
+> + *
+> + * Returns:
+> + * New memory pool address or ERR_PTR() on error.
 
->
-> diff --git a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> index ae5f6042f1e8..29609b52f8fa 100644
-> --- a/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/pmu_counters_test.c
-> @@ -119,6 +119,9 @@ static void guest_assert_event_count(uint8_t idx,
->          case INTEL_ARCH_REFERENCE_CYCLES_INDEX:
->                  GUEST_ASSERT_NE(count, 0);
->                  break;
-> +       case INTEL_ARCH_TOPDOWN_SLOTS_INDEX:
-> +               GUEST_ASSERT(count >= NUM_INSNS_RETIRED);
-> +               break;
->          default:
->                  break;
->          }
+ * Return: Describe the return value of function_name.
+
+both from:
+https://docs.kernel.org/doc-guide/kernel-doc.html#function-documentation
+
+Regards,
+Bjorn
 
