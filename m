@@ -1,94 +1,86 @@
-Return-Path: <linux-kernel+bounces-70592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65CB085998A
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C2DC85998B
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 22:41:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30CBE1C209C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 21:38:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57FE61C20C2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 21:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6147F74271;
-	Sun, 18 Feb 2024 21:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Nbp/Ink4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006C674295;
+	Sun, 18 Feb 2024 21:41:36 +0000 (UTC)
+Received: from alerce.blitiri.com.ar (alerce.blitiri.com.ar [49.12.208.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C68573175
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 21:38:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3D4EAD7
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 21:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=49.12.208.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708292333; cv=none; b=PlZM/UngM4tuZArtdusBWM9el5tvzk55Mad+YPKt2RHMwfBA1lgd1W2pGhIJt0a1L9ye3+Ra/ZM2PTTMqjx8QehyxjzwAbyIsivr2qhJkYbFdPCWuCT9zCDE51tliiOtJOpKSonwotsulK1qqQo4l2+WT8LMkQpaBE8isJgiWyk=
+	t=1708292495; cv=none; b=orCe1oQIcc9TkeKYElq/CMJEFiQ/T4f2oVOl83Jj786kDl2pVRZuzGUQwWNk+cwKCd2YxtfAYDD53DGul4d1kXA230zhw43XukEYpo8csPG/ZmSR9UguIrOu1JFjNaanAcO52cVtr9AskIDBmRrTIZtZurjJL9VAECY1073D0Ko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708292333; c=relaxed/simple;
-	bh=KKc8FE2bdtNuk4G8An0mXCAzt6JMeCEm+SY5mrD71fU=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=s9r+FUc8WaMuboNIxip2tUB2u2UYFMW3P0vbrC553DwQi1+1ds5tGfkmBiJdPqxFTBdAErsM83/4bOF394O1XGkUGR0M/Btd/o2RwUiDB6OVHzAquhXeIO2zTYT5WtvLExgAoxQeEFQQIQZ9FquKM5YhWZwpeOK/gXAVQH0rjbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Nbp/Ink4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 695DAC433C7;
-	Sun, 18 Feb 2024 21:38:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1708292333;
-	bh=KKc8FE2bdtNuk4G8An0mXCAzt6JMeCEm+SY5mrD71fU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Nbp/Ink4ziA5vhwf0sUWh7CGnF72TQNaoyWHagIaLFeTUecm9hccCnqqciGQhjWKO
-	 di5+uSUjSAvJEgiscCFr9wkhUdICeUCPnH0cecv0Xc1vrompSDxzq+IV/O95Vb0SGi
-	 F3AkUjQkxE8izaOhvNFZiBan40lDCpm4Nnog/IGI=
-Date: Sun, 18 Feb 2024 13:38:51 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Donet Tom <donettom@linux.ibm.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, Aneesh Kumar
- <aneesh.kumar@kernel.org>, Huang Ying <ying.huang@intel.com>, Dave Hansen
- <dave.hansen@linux.intel.com>, Mel Gorman <mgorman@suse.de>, Ben Widawsky
- <ben.widawsky@intel.com>, Feng Tang <feng.tang@intel.com>, Michal Hocko
- <mhocko@kernel.org>, Andrea Arcangeli <aarcange@redhat.com>, Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, Rik van Riel
- <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox
- <willy@infradead.org>, Mike Kravetz <mike.kravetz@oracle.com>, Vlastimil
- Babka <vbabka@suse.cz>, Dan Williams <dan.j.williams@intel.com>, Hugh
- Dickins <hughd@google.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, Suren
- Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 1/3] mm/mempolicy: Use the already fetched local
- variable
-Message-Id: <20240218133851.22c22b55460e866a099be5ce@linux-foundation.org>
-In-Reply-To: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708292495; c=relaxed/simple;
+	bh=rYfS4umXbZLyw3B01TnvMyHbj0ts6WaxoocFw8ZCMUg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZFz9KEC+z4k8fTgM6MucV7U7BlSq5+S097ZDO1Ekc55P3VWnCzjwlJo4WCIoJVD1mTyY51ZgTmYA57C2nxsqyNZW9vcV8W2dJ2bql3H7uIjXrXI+5G5hOwF8DM61ZB2bTMcIdvCQhfCEl6wTeutxsVwpN/rzNrTWFiAcOOgwG/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar; spf=pass smtp.mailfrom=sdfg.com.ar; arc=none smtp.client-ip=49.12.208.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sdfg.com.ar
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sdfg.com.ar
+Received: from [192.168.0.26]
+	by sdfg.com.ar (chasquid) with ESMTPSA
+	tls TLS_AES_128_GCM_SHA256
+	(over submission+TLS, TLS-1.3, envelope from "rodrigo@sdfg.com.ar")
+	; Sun, 18 Feb 2024 21:41:30 +0000
+Message-ID: <a808b0f7-1e41-450d-83d2-2062f931fee2@sdfg.com.ar>
+Date: Sun, 18 Feb 2024 18:41:25 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] selftests/nolibc: Add tests for strlcat() and
+ strlcpy()
+Content-Language: en-US
+To: Willy Tarreau <w@1wt.eu>
+Cc: =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>,
+ linux-kernel@vger.kernel.org
+References: <20240218195110.1386840-1-rodrigo@sdfg.com.ar>
+ <20240218195110.1386840-5-rodrigo@sdfg.com.ar>
+ <2e1378df-ce3d-4f72-bbd6-6ba7654016bc@sdfg.com.ar>
+ <20240218211131.GA5056@1wt.eu>
+From: Rodrigo Campos <rodrigo@sdfg.com.ar>
+In-Reply-To: <20240218211131.GA5056@1wt.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Sat, 17 Feb 2024 01:31:33 -0600 Donet Tom <donettom@linux.ibm.com> wrote:
-
-> Avoid doing a per cpu read and use the local variable thisnid. IMHO
-> this also makes the code more readable.
+On 2/18/24 18:11, Willy Tarreau wrote:
+> On Sun, Feb 18, 2024 at 05:39:03PM -0300, Rodrigo Campos wrote:
+>> On 2/18/24 16:51, Rodrigo Campos wrote:
+>>> diff --git a/tools/testing/selftests/nolibc/nolibc-test.c b/tools/testing/selftests/nolibc/nolibc-test.c
+>>> index 6ba4f8275ac4..d373fc14706c 100644
+>>> --- a/tools/testing/selftests/nolibc/nolibc-test.c
+>>> +++ b/tools/testing/selftests/nolibc/nolibc-test.c
+>>> @@ -600,6 +600,25 @@ int expect_strne(const char *expr, int llen, const char *cmp)
+>>>    /* declare tests based on line numbers. There must be exactly one test per line. */
+>>>    #define CASE_TEST(name) \
+>>> @@ -991,6 +1010,14 @@ int run_stdlib(int min, int max)
+>>>    	for (test = min; test >= 0 && test <= max; test++) {
+>>>    		int llen = 0; /* line length */
+>>> +		/* For functions that take a long buffer, like strlcat()
+>>
+>> Ouch, I didn't leave a "/*\n" for this comment :(
 > 
-> ...
->
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2526,7 +2526,7 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
->  		if (node_isset(curnid, pol->nodes))
->  			goto out;
->  		z = first_zones_zonelist(
-> -				node_zonelist(numa_node_id(), GFP_HIGHUSER),
-> +				node_zonelist(thisnid, GFP_HIGHUSER),
->  				gfp_zone(GFP_HIGHUSER),
->  				&pol->nodes);
->  		polnid = zone_to_nid(z->zone);
+> No worries, if you want I'll address it myself, just let me know, no
+> need to respin a series for this.
 
-	int thisnid = cpu_to_node(thiscpu);
+Please do, thanks! :)
 
-Is there any dofference between numa_node_id() and
-cpu_to_node(raw_smp_processor_id())?  And it it explicable that we're
-using one here and not the other?
 
+
+Best,
+Rodrigo
 
