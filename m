@@ -1,144 +1,307 @@
-Return-Path: <linux-kernel+bounces-70272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EEAF859574
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:01:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D161C859576
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:02:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AB9B28300D
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:01:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0F5951C21416
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB33E225CC;
-	Sun, 18 Feb 2024 07:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E79FF4F1;
+	Sun, 18 Feb 2024 08:02:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L+i+JDPK"
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LRvUw14P"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CA6922325;
-	Sun, 18 Feb 2024 07:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F67EAF1;
+	Sun, 18 Feb 2024 08:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708243123; cv=none; b=fRlKGrV2SvNYNmRdwNuygV2qRTScSPoC7Kfge0x3M3543NpvVZRbKlO0AEKoKW3nQx5JQCc8pu0tEb+VzyKhnpXjmYmqmgIqZPwwixM+isIO0RXcs1Wo/REr0Cg2zcjY/KRfvMaek+qBAdF5OQJWnhEOh6Rk8W4/Kg6VDVDOgrA=
+	t=1708243321; cv=none; b=Wpx4aY7V6pS1Y9BJBsfUm1Z8t+64jS/X92h4/02z4OGRX1/Rflwiq14N2rp34Dkq6PEysZpUF6RmHeBYPuz7nVhcTbq+sx2cA8WD8mG02GdouXRMAmq0OVnFlWzY7wHX3abJaC7uByNcjrOIuzGflI7G16QsGeFk8+OjHUeBDJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708243123; c=relaxed/simple;
-	bh=NKH0ZFPcCFBnqG7yf+u2px5oQxf4WU5hZN0TqksNx/E=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XWGZhbvsBAChB0ZfLfHMOKqe0C6C6gSJkXPdfQCqhVKqLPeyJl8HhyoHs3vXnqQW299jrNTs+96l7/mVoFqVmeI0n7tmQIP4Y0bpP5EpCMBrIIzXjmqDZkfwOsgjtz9i0UTH137w0BxU8FaLB6m/mjDDUJo0TEsVwnSInsFTO18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L+i+JDPK; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3d6d160529so244420866b.0;
-        Sat, 17 Feb 2024 23:58:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708243120; x=1708847920; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=raGAwOephnSsA9G7MZk1sb2g9wF+qqd4XeQDzxVbWtw=;
-        b=L+i+JDPKG/DQj45ZwmH5Q/C3I8fgxbAy/4qOdRzxSyWLkTInaimwvf5Zg2bdYYOXCk
-         4oEAD1APjCSW29NPgdH6e29q64rp6WpWQoQvtGWxgG6qC9yrpcH176eaBDqHL3IcTdjL
-         UvNiByP76KnsJTCQWr+/klCAYtnRYhZXrBec/Dn+Mn4tudUz8EW1dUxffAq5rQTaNBdb
-         anwd7JmEw95Jpq+wnI4J1wVD39Lg1LXtagiinetZ2QKrEjesz8fhn3KpMD0mqDbYXdZt
-         aYu/BjoGpAChM3CzYokP5syQg/4hpUa9tneWPw3+U+2KyoCKF5HVLdIEkNSFauBMM0rG
-         9sYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708243120; x=1708847920;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=raGAwOephnSsA9G7MZk1sb2g9wF+qqd4XeQDzxVbWtw=;
-        b=WuRBuS0CNCH6Uolg4EcbLe6tIJj9UJCU9saHogukchKFEw3QlCXJO9jycTS73bKSyH
-         d3Y/dD/cq3xnjP+vFGB1Px8y3OmYCadD7+ZZfvPLvOIL1X6m0GnFRKZpFwV+yun9P3DP
-         UsxLC78L74e003ymC4K/D6PZi0gA2Bo4NU9ihEg7NnABRQqRgx0T/zoXxfaeSjtbevJe
-         F0tBdzNo5BEYkaYpSI/Z49TCWoqwTVJ4y10uRM+rM/cYTT9+8M5t/fdeqfEzilONc3ep
-         QeFZLC5pwXjbpGz3TrYK0r/pa0AB1323EjgnfUtCnDE2bcY+IdK5RENfC/cCBN7f/FYN
-         KxgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0CZuJImXgh2p51yRL46m3NUW/w1vRMsjpJPzV9XprnYPYz/lZ/5lcarw+mI8wYF/x2hZBa/Txu+ILI5vw/0HPQo62FQqVjV/hVSYuiz0SI4QI1ZVS8to6Z9JyXRGGkSts9CrD
-X-Gm-Message-State: AOJu0Yz4Nyu2o0BWktZyOD6K8VoxI8Q1OiyveHkNf/YplKYK96hiRxSk
-	DnSfk9drs9oZ9gypbpTUHd3FUDhJ8J5IeMh6VXDAXbkP4tSoJ9IJ
-X-Google-Smtp-Source: AGHT+IHEDPtHdS3hJq+jdRNZaHpln8fDc6cfXgK7v1fk7Ak49LJFyjTCVPjb0c+zNEtTZ60qnVPivA==
-X-Received: by 2002:a17:906:1854:b0:a3e:73c8:d383 with SMTP id w20-20020a170906185400b00a3e73c8d383mr473319eje.49.1708243119850;
-        Sat, 17 Feb 2024 23:58:39 -0800 (PST)
-Received: from debian.fritz.box ([93.184.186.109])
-        by smtp.gmail.com with ESMTPSA id jj12-20020a170907984c00b00a3e64bcd2c1sm458732ejc.142.2024.02.17.23.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Feb 2024 23:58:39 -0800 (PST)
-From: Dimitri Fedrau <dima.fedrau@gmail.com>
-To: 
-Cc: Dimitri Fedrau <dima.fedrau@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Stefan Eichenberger <eichest@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v7 net-next 14/14] net: phy: marvell-88q2xxx: move interrupt configuration
-Date: Sun, 18 Feb 2024 08:57:51 +0100
-Message-Id: <20240218075753.18067-15-dima.fedrau@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240218075753.18067-1-dima.fedrau@gmail.com>
-References: <20240218075753.18067-1-dima.fedrau@gmail.com>
+	s=arc-20240116; t=1708243321; c=relaxed/simple;
+	bh=lqXIwndud1ddMp3xILkmsTnX7OTQWZCxIFPe2f0/ln0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ly0qV6BJMkL8rgnU+k4YGhB2dmyjXuyCTHSiCAkLsRA3VU9aGgE3n7vtU3UC1xwfyro9XYNHJzN28/bXS4fNIl2nZjpA1NwcCa+uQizXEnEopWKJKMyTmsZE3f6nEM1rHLbfbC3WgQlqYFPb0+ZzGut4Vy8pRLmfQ68yNe7XFIs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LRvUw14P; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708243319; x=1739779319;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=lqXIwndud1ddMp3xILkmsTnX7OTQWZCxIFPe2f0/ln0=;
+  b=LRvUw14Ps10EP0UWzuq/TuVuZmUfsfNbbWXgwdvNWXN8UTZoKgocPGNL
+   L0MqfK2D51aUzCYZ+8PN0FPSw4yJWnTZo2Vf1i1MZuogRTWnbmYDiKJVY
+   zqNkPsNS8Jgzb5go8ogujSkIlbDrQ00ZbZJmSzghwYERcjA+BO9hojBBe
+   1EMbZaGv1Xq7OjqRWkzP4vZnjpnxJCvpK8x1aet2IfPheQ4H8C9DbPk25
+   aYDFsRwLrvh9YL9mMZKhly7/ASRQ9fPk6DQHqVJM11SSmu1LaVuyeThXn
+   ljd0N/vr9f8s6T09N9sqTMUyGVxATnDdu2p655rT5D9dn9xEv9jbJtk+W
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10987"; a="2445755"
+X-IronPort-AV: E=Sophos;i="6.06,168,1705392000"; 
+   d="scan'208";a="2445755"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 00:01:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,168,1705392000"; 
+   d="scan'208";a="4364943"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 00:01:54 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: Kairui Song <kasong@tencent.com>,  linux-mm@kvack.org,  Andrew Morton
+ <akpm@linux-foundation.org>,  Chris Li <chrisl@kernel.org>,  Minchan Kim
+ <minchan@kernel.org>,  Yu Zhao <yuzhao@google.com>,  Barry Song
+ <v-songbaohua@oppo.com>,  SeongJae Park <sj@kernel.org>,  Hugh Dickins
+ <hughd@google.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
+ <willy@infradead.org>,  Michal Hocko <mhocko@suse.com>,  Yosry Ahmed
+ <yosryahmed@google.com>,  stable@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/swap: fix race when skipping swapcache
+In-Reply-To: <c2f3a1d0-30cf-4680-83bd-08f5d8a54deb@redhat.com> (David
+	Hildenbrand's message of "Fri, 16 Feb 2024 17:53:25 +0100")
+References: <20240216095105.14502-1-ryncsn@gmail.com>
+	<c2f3a1d0-30cf-4680-83bd-08f5d8a54deb@redhat.com>
+Date: Sun, 18 Feb 2024 15:59:59 +0800
+Message-ID: <871q9atd6o.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-Move interrupt configuration from mv88q222x_revb0_config_init to
-mv88q2xxx_config_init. Same register and bits are used for the 88q2xxx
-devices.
+David Hildenbrand <david@redhat.com> writes:
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Stefan Eichenberger <eichest@gmail.com>
-Signed-off-by: Dimitri Fedrau <dima.fedrau@gmail.com>
----
- drivers/net/phy/marvell-88q2xxx.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> On 16.02.24 10:51, Kairui Song wrote:
+>> From: Kairui Song <kasong@tencent.com>
+>> When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more
+>> threads
+>> swapin the same entry at the same time, they get different pages (A, B).
+>> Before one thread (T0) finishes the swapin and installs page (A)
+>> to the PTE, another thread (T1) could finish swapin of page (B),
+>> swap_free the entry, then swap out the possibly modified page
+>> reusing the same entry. It breaks the pte_same check in (T0) because
+>> PTE value is unchanged, causing ABA problem. Thread (T0) will
+>> install a stalled page (A) into the PTE and cause data corruption.
+>> One possible callstack is like this:
+>> CPU0                                 CPU1
+>> ----                                 ----
+>> do_swap_page()                       do_swap_page() with same entry
+>> <direct swapin path>                 <direct swapin path>
+>> <alloc page A>                       <alloc page B>
+>> swap_read_folio() <- read to page A  swap_read_folio() <- read to page B
+>> <slow on later locks or interrupt>   <finished swapin first>
+>> ...                                  set_pte_at()
+>>                                       swap_free() <- entry is free
+>>                                       <write to page B, now page A stalled>
+>>                                       <swap out page B to same swap entry>
+>> pte_same() <- Check pass, PTE seems
+>>                unchanged, but page A
+>>                is stalled!
+>> swap_free() <- page B content lost!
+>> set_pte_at() <- staled page A installed!
+>> And besides, for ZRAM, swap_free() allows the swap device to discard
+>> the entry content, so even if page (B) is not modified, if
+>> swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+>> it may also cause data loss.
+>> To fix this, reuse swapcache_prepare which will pin the swap entry
+>> using
+>> the cache flag, and allow only one thread to pin it. Release the pin
+>> after PT unlocked. Racers will simply wait since it's a rare and very
+>> short event. A schedule() call is added to avoid wasting too much CPU
+>> or adding too much noise to perf statistics
+>> Other methods like increasing the swap count don't seem to be a good
+>> idea after some tests, that will cause racers to fall back to use the
+>> swap cache again. Parallel swapin using different methods leads to
+>> a much more complex scenario.
+>> Reproducer:
+>> This race issue can be triggered easily using a well constructed
+>> reproducer and patched brd (with a delay in read path) [1]:
+>> With latest 6.8 mainline, race caused data loss can be observed
+>> easily:
+>> $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+>>    Polulating 32MB of memory region...
+>>    Keep swapping out...
+>>    Starting round 0...
+>>    Spawning 65536 workers...
+>>    32746 workers spawned, wait for done...
+>>    Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
+>>    Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
+>>    Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
+>>    Round 0 Failed, 15 data loss!
+>> This reproducer spawns multiple threads sharing the same memory
+>> region
+>> using a small swap device. Every two threads updates mapped pages one by
+>> one in opposite direction trying to create a race, with one dedicated
+>> thread keep swapping out the data out using madvise.
+>> The reproducer created a reproduce rate of about once every 5
+>> minutes,
+>> so the race should be totally possible in production.
+>> After this patch, I ran the reproducer for over a few hundred rounds
+>> and no data loss observed.
+>> Performance overhead is minimal, microbenchmark swapin 10G from 32G
+>> zram:
+>> Before:     10934698 us
+>> After:      11157121 us
+>> Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+>> Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of
+>> synchronous device")
+>> Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stress-race [1]
+>> Reported-by: "Huang, Ying" <ying.huang@intel.com>
+>> Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.ccr.corp.intel.com/
+>> Signed-off-by: Kairui Song <kasong@tencent.com>
+>> Cc: stable@vger.kernel.org
+>> ---
+>> Update from V2:
+>> - Add a schedule() if raced to prevent repeated page faults wasting CPU
+>>    and add noise to perf statistics.
+>> - Use a bool to state the special case instead of reusing existing
+>>    variables fixing error handling [Minchan Kim].
+>> V2:
+>> https://lore.kernel.org/all/20240206182559.32264-1-ryncsn@gmail.com/
+>> Update from V1:
+>> - Add some words on ZRAM case, it will discard swap content on swap_free so the race window is a bit different but cure is the same. [Barry Song]
+>> - Update comments make it cleaner [Huang, Ying]
+>> - Add a function place holder to fix CONFIG_SWAP=n built [SeongJae Park]
+>> - Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO instead of "direct swapin path" [Yu Zhao]
+>> - Update commit message.
+>> - Collect Review and Acks.
+>> V1:
+>> https://lore.kernel.org/all/20240205110959.4021-1-ryncsn@gmail.com/
+>>   include/linux/swap.h |  5 +++++
+>>   mm/memory.c          | 20 ++++++++++++++++++++
+>>   mm/swap.h            |  5 +++++
+>>   mm/swapfile.c        | 13 +++++++++++++
+>>   4 files changed, 43 insertions(+)
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 4db00ddad261..8d28f6091a32 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
+>>   	return 0;
+>>   }
+>>   +static inline int swapcache_prepare(swp_entry_t swp)
+>> +{
+>> +	return 0;
+>> +}
+>> +
+>>   static inline void swap_free(swp_entry_t swp)
+>>   {
+>>   }
+>> diff --git a/mm/memory.c b/mm/memory.c
+>> index 7e1f4849463a..7059230d0a54 100644
+>> --- a/mm/memory.c
+>> +++ b/mm/memory.c
+>> @@ -3799,6 +3799,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>   	struct page *page;
+>>   	struct swap_info_struct *si = NULL;
+>>   	rmap_t rmap_flags = RMAP_NONE;
+>> +	bool need_clear_cache = false;
+>>   	bool exclusive = false;
+>>   	swp_entry_t entry;
+>>   	pte_t pte;
+>> @@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>   	if (!folio) {
+>>   		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>>   		    __swap_count(entry) == 1) {
+>> +			/*
+>> +			 * Prevent parallel swapin from proceeding with
+>> +			 * the cache flag. Otherwise, another thread may
+>> +			 * finish swapin first, free the entry, and swapout
+>> +			 * reusing the same entry. It's undetectable as
+>> +			 * pte_same() returns true due to entry reuse.
+>> +			 */
+>> +			if (swapcache_prepare(entry)) {
+>> +				/* Relax a bit to prevent rapid repeated page faults */
+>> +				schedule();
+>> +				goto out;
+>> +			}
+>> +			need_clear_cache = true;
+>> +
+>
+> I took a closer look at __read_swap_cache_async() and it essentially
+> does something similar.
+>
+> Instead of returning, it keeps retrying until it finds that
+> swapcache_prepare() fails for another reason than -EEXISTS (e.g.,
+> freed concurrently) or it finds the entry in the swapcache.
+>
+> So if you would succeed here on a freed+reused swap entry,
+> __read_swap_cache_async() would simply retry.
+>
+> It spells that out:
+>
+> 		/*
+> 		 * We might race against __delete_from_swap_cache(), and
+> 		 * stumble across a swap_map entry whose SWAP_HAS_CACHE
+> 		 * has not yet been cleared.  Or race against another
+> 		 * __read_swap_cache_async(), which has set SWAP_HAS_CACHE
+> 		 * in swap_map, but not yet added its folio to swap cache.
+> 		 */
+>
+> Whereby we could not race against this code here as well where we
+> speculatively set SWAP_HAS_CACHE and might never add something to the swap
+> cache.
+>
+>
+> I'd probably avoid the wrong returns and do something even closer to
+> __read_swap_cache_async().
+>
+> while (true) {
+> 	/*
+> 	 * Fake that we are trying to insert a page into the swapcache, to
+> 	 * serialize against concurrent threads wanting to do the same.
+> 	 * [more from your description]
+> 	 */
+> 	ret = swapcache_prepare(entry);
+> 	if (likely(!ret)
+> 		/*
+> 		 * Move forward with swapin, we'll recheck if the PTE hasn't
+> 		 * changed later.
+> 		 */
+> 		break;
+> 	else if (ret != -EEXIST)
+> 		goto out;
 
-diff --git a/drivers/net/phy/marvell-88q2xxx.c b/drivers/net/phy/marvell-88q2xxx.c
-index 75740f378c66..6b4bd9883304 100644
---- a/drivers/net/phy/marvell-88q2xxx.c
-+++ b/drivers/net/phy/marvell-88q2xxx.c
-@@ -376,6 +376,14 @@ static int mv88q2xxx_config_init(struct phy_device *phydev)
- 	 */
- 	phydev->pma_extable = MDIO_PMA_EXTABLE_BT1;
- 
-+	/* Configure interrupt with default settings, output is driven low for
-+	 * active interrupt and high for inactive.
-+	 */
-+	if (phy_interrupt_is_valid(phydev))
-+		return phy_set_bits_mmd(phydev, MDIO_MMD_PCS,
-+					MDIO_MMD_PCS_MV_GPIO_INT_CTRL,
-+					MDIO_MMD_PCS_MV_GPIO_INT_CTRL_TRI_DIS);
-+
- 	return 0;
- }
- 
-@@ -701,14 +709,6 @@ static int mv88q222x_revb0_config_init(struct phy_device *phydev)
- 			return ret;
- 	}
- 
--	/* Configure interrupt with default settings, output is driven low for
--	 * active interrupt and high for inactive.
--	 */
--	if (phy_interrupt_is_valid(phydev))
--		return phy_set_bits_mmd(phydev, MDIO_MMD_PCS,
--					MDIO_MMD_PCS_MV_GPIO_INT_CTRL,
--					MDIO_MMD_PCS_MV_GPIO_INT_CTRL_TRI_DIS);
--
- 	return mv88q2xxx_config_init(phydev);
- }
- 
--- 
-2.39.2
+The swap entry may be kept in swap cache for long time.  For example, it
+may be read into swap cache via MADV_WILLNEED.
 
+--
+Best Regards,
+Huang, Ying
+
+> 	
+> 	/*
+>          * See __read_swap_cache_async(). We might either have raced against
+>          * another thread, or the entry could have been freed and reused in the
+> 	 * meantime. Make sure that the PTE did not change, to detect freeing.
+> 	 */
+> 	vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd,
+> 				       vmf->address, &vmf->ptl);
+> 	if (!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte))
+> 		goto unlock;
+>
+>
+> 	schedule();
+> }
+>
+>
+>
+> I was skeptical about the schedule(), but __read_swap_cache_async() does it
+> already because there is no better way to wait for the event to happen.
+>
+> With something like above you would no longer depend on the speed of schedule() to
+> determine how often you would retry the fault, which would likely make sense.
+>
+> I do wonder about the schedule() vs. schedule_timeout_uninterruptible(), though.
+> No expert on that area, do you have any idea?
 
