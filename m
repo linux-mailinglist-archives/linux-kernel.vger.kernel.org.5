@@ -1,93 +1,124 @@
-Return-Path: <linux-kernel+bounces-70479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE9DE859875
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:20:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D143E859877
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:21:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CC441F21334
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:20:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CB1828199A
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:21:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68766F07C;
-	Sun, 18 Feb 2024 18:20:06 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77BF10A0D;
+	Sun, 18 Feb 2024 18:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GwBK8K15"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46B510A0D
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 18:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79AE26EB62
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 18:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708280406; cv=none; b=CtHqxJK2RMIVYYVvH1/XXZfRwtp/9wIZLR7voMi7RT4X4pJMpM9UnzaYRcPAkg85W+XB8nCfsQrurrbriUkLUP3h6cDR9Psb9j5gHIFYpKDJ/pArBlXfvk+0dktLA68ByIlb32weN2sHS4cgICiBf5pYM5PpEiKIAkQYxQ2oask=
+	t=1708280509; cv=none; b=gV+iQNx038wVEmlKbq2PKeqdBd/pa2ELjibvjNOBUqSXd7y3dJPstsH7y7AU/pOhuMOSQFRA//g/HxaJlKIcy1HzP4fX5FUfjumOu/x6y/mEcZttV3lQlaRUeL6lYfsc1cNC6xxP/b+HjYu7mLrwuZy5qVO1AFBah3zul04GXJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708280406; c=relaxed/simple;
-	bh=OjZOhk1V36DUvjvKyFQZuCTHYsyk52FnsJ6tpim6bu0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=i0Pm5/LJKxjYeqhXb7edPM5yVwh3G2YOu/FVKuSWAtSirq4FsTg5MCHzzrwzjlgWdSgOfKRrbWXWE80KIAP0XGfdCsvH1uetUtkDGg683GupC0kH5/UQT1VXn/V3NyYiEmflIk6HnXwofDKyBkcXuGjvFTr3Nhj60zfJxTCpk/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3651d2b88aeso8684875ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 10:20:04 -0800 (PST)
+	s=arc-20240116; t=1708280509; c=relaxed/simple;
+	bh=hQBeupgLpMDdeU9/zRWMVh2cHsne/7nzl98ihzuTy0w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=n8y3Z8ei/XSOa7C/q5M8UslBgD4U2bwnzRRoInFbQdKmqHhhW1NRNFUTmYlyflgsJah1zxMbHYWa4ff/vVWYzjyrSS7XC/p7neOND9cvgR6GjmrZxnM/ueIfarqoMFZl8W0NshH9lDbkcU37OSXJwBryIq8r8BanqnuvWDN1aFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GwBK8K15; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41264195d5cso3435265e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 10:21:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708280506; x=1708885306; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=fJfZGgvEn4sXAQA9xUq6oU/7z2TY2Q42B8jeqcmrPMo=;
+        b=GwBK8K15J6f2YQW7PkLypWhkj+YeRw9TU7B9UrWeICsbjIjtxBoLzFTQfGZvLi5Prl
+         wMiB5PyH6ShWStL5t+7z4idZe0MYj2Gnbelkqkamp+iO1W+7O+IXuLVQFRwvnFlHt/MR
+         9MS6tQMngwP67TEZRlv8MDnzQymCQupUXTsdSB4yIB5Oe0GvktbXH6ErEEmtKxp/skmA
+         GFFXGnf52ABvsYTpdEujhMvM2uCJOW3K55Wyz+laSHZ/z6SJxGkpVBoD/9+1fhp4AhZY
+         VfCyNQtaMdir25+XVGEpuFGBmmCW7SjWJXLPBKL4TnuSSa4GqguSkIJfuDgXN2Ur7jEU
+         3fJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708280404; x=1708885204;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ag1C/pfftsxznqlU7qI7nLJfRxsAdzy+OeJxgj8iLpk=;
-        b=eXSUe+WespZSmPdazW1l8dVdGjWKs17jO4wQwZ8g5jhY1PaKiCTQuAe+GV208qyvEH
-         NEquN7v2W51p/sGNrBq9W6uNnrF618EOBts21YTJEjVqVK6w2Mo508onrES7Ez63hOew
-         iFydzOBvSDiyw6Uh+O8IKTeSC2VqLUNj1eF7doyA/Lq5oWTzGExFP6OLzH69CK2kMM/8
-         gQ/V2PcYNMQ7fCaeZRwLzYkBpZMtyRK6p15JFQ8QHS9DrikGB/3DoLEusjYtZfIMeJ/j
-         eoX19bDw11WgJEowwxm3/16tCXEbgxWNg8NmpO61FNGD7Lt79X6ax4c8tfwdsMdpvpnA
-         PmxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXaYep2JjEUgcspGsqggruhI43BL6jg4BiyVM7r7FFFLZRKh770Rhqb8qDnllPHSzirvgDrUXpn+byigwhZiHXMR60dA+4SNWkgXeol
-X-Gm-Message-State: AOJu0YzZx3tHBNQFMKjw5a8MQfDwmBUG1hLdpKVyBoDMoD+psQ0Z0i4f
-	rs0Jwh73kwttkGKxmrADn8fCPza6YWb+0yDPyXVzFGfgH6h96gNQgJAEHSqjSmwdO923qlcONAX
-	CNPxF8dCWS986r7AhVd8qKOP5fygoirtAyx8b5HNucPmcxkfDGyVyrP4=
-X-Google-Smtp-Source: AGHT+IFnDU07sQlq4O12VDuAhS+4piwxVJQKUAR3f4kON13CbyGVPuv0aaJ/5vl8jzwTrJ7Q9uOPC1OLLEvLWeIlnjJyQg1dKDm1
+        d=1e100.net; s=20230601; t=1708280506; x=1708885306;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fJfZGgvEn4sXAQA9xUq6oU/7z2TY2Q42B8jeqcmrPMo=;
+        b=QPzJmPFLlS4Zmdl/LSSzrFxJeSSyPeq+8er8QK62wAQ/5bsQHTkeK7m17hh0Mp1sIk
+         v7eAm5QEPiZ39o5Wx7rosgOVwPO4tGExW/2wn7cb5ldperhjURHNjuJKb6QJK+mqo8pq
+         OWIbqdi4NVbXuV415/utQtQLITd3tVndus4nz4qcVKggRSWlBHkeg4/cnx0Rz+ASUJ5O
+         7KBftC34k7SVekTT384n+I1c817AI1nj+YWwg4CRwMPnOKeC83/6hXb1Q8HFlRY0KDw1
+         p6pHztmuC88O1NW2Xjh/g3ST07kxOIhj6oliIuFHwnZOB2VYHjVlMBoja6jviOJR05dl
+         jtHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXNuL0H3ppXOcC1wo9sojpUUEcEkPonpZEjrNRucTuMYwMSMQ59u77NQasVCs+K0pAJugxz6jNcJH4fOnJOX1OkUKGP9i9fVbTogbDo
+X-Gm-Message-State: AOJu0Yw/sKe/3YsSRZ1r71V5bPCYfngPScppZ1JyB4Q0jt2cwraqo7ae
+	JiYJnnliKZMyK2+JrkjxmhXPhulC16mpVgYe/HalnCssYDGEXZalqLaCrk8YdEU=
+X-Google-Smtp-Source: AGHT+IHWstA3iuzTRuinVksImDMbVN9kjQ+AD7CMW4/fnnmrJ3dPGSb6Kk6Zp/IrLaM7ddA+WGbHeA==
+X-Received: by 2002:a5d:50d2:0:b0:33d:5272:6a8f with SMTP id f18-20020a5d50d2000000b0033d52726a8fmr62048wrt.14.1708280505754;
+        Sun, 18 Feb 2024 10:21:45 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id s3-20020a5d4ec3000000b0033ce06c303csm7867116wrv.40.2024.02.18.10.21.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 10:21:45 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Olof Johansson <olof@lixom.net>,
+	Arnd Bergmann <arnd@arndb.de>,
+	arm@kernel.org,
+	soc@kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Peter Griffin <peter.griffin@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [GIT PULL 1/4] samsung: drivers for v6.9
+Date: Sun, 18 Feb 2024 19:21:38 +0100
+Message-Id: <20240218182141.31213-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca4d:0:b0:365:21f4:7008 with SMTP id
- q13-20020a92ca4d000000b0036521f47008mr336981ilo.4.1708280404175; Sun, 18 Feb
- 2024 10:20:04 -0800 (PST)
-Date: Sun, 18 Feb 2024 10:20:04 -0800
-In-Reply-To: <00000000000056e02f05dfb6e11a@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000aaf29f0611ac0603@google.com>
-Subject: Re: [syzbot] [udf?] KASAN: use-after-free Write in udf_close_lvid
-From: syzbot <syzbot+60864ed35b1073540d57@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, alden.tondettar@gmail.com, axboe@kernel.dk, 
-	brauner@kernel.org, dvyukov@google.com, hch@infradead.org, hdanton@sina.com, 
-	jack@suse.com, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, pali@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
 
-    fs: Block writes to mounted block devices
+are available in the Git repository at:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12c941c2180000
-start commit:   f016f7547aee Merge tag 'gpio-fixes-for-v6.7-rc8' of git://..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f8e72bae38c079e4
-dashboard link: https://syzkaller.appspot.com/bug?extid=60864ed35b1073540d57
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c2caf9e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f518f9e80000
+  https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git tags/samsung-drivers-6.9
 
-If the result looks correct, please mark the issue as fixed by replying with:
+for you to fetch changes up to 97d4b55111efd72926eb92cbd81c5ad8e6a7b3b1:
 
-#syz fix: fs: Block writes to mounted block devices
+  MAINTAINERS: Remove Tomasz from Samsung clock and pinctrl entries (2024-02-07 16:35:26 +0100)
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+----------------------------------------------------------------
+Samsung SoC driver changes for v6.9
+
+1. Add bindings for Google GS101 I2C controller and SYSREG sycon block.
+2. Remove Tomasz Figa from Samsung clock and pinctrl maintainer entries.
+
+----------------------------------------------------------------
+André Draszik (1):
+      dt-bindings: samsung: exynos-sysreg: gs101-peric0/1 require a clock
+
+Tomasz Figa (1):
+      MAINTAINERS: Remove Tomasz from Samsung clock and pinctrl entries
+
+Tudor Ambarus (1):
+      dt-bindings: i2c: exynos5: add google,gs101-hsi2c compatible
+
+ Documentation/devicetree/bindings/i2c/i2c-exynos5.yaml                  | 1 +
+ .../devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml          | 2 ++
+ MAINTAINERS                                                             | 2 --
+ 3 files changed, 3 insertions(+), 2 deletions(-)
 
