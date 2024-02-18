@@ -1,266 +1,139 @@
-Return-Path: <linux-kernel+bounces-70217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E33B8594F2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:22:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E02FA8594F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FF771C211E1
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:22:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F39F81C21142
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8228D611E;
-	Sun, 18 Feb 2024 06:22:19 +0000 (UTC)
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C8D63D0;
+	Sun, 18 Feb 2024 06:23:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="XuRurxUj"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7114E15C9;
-	Sun, 18 Feb 2024 06:22:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C03215673;
+	Sun, 18 Feb 2024 06:23:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708237339; cv=none; b=kT3tH8huh7PHSrPlm/h9km2R5QpmSK05ER5ffn1Y7683CF0LfeMURN8ynR/zzv6Go9ZM8g99XvKu0dVwLincNAxfrQhBO5XVlAESUuyJk6nYDETEiTnjxl+xkLCyfVCUY1SWTesWlh7V11MLshF9N+RWkliQWu/X/IqEVmuN8D8=
+	t=1708237391; cv=none; b=UXdxUc1Dh1a42jmX41SFjesL8ef1yZQ/ITAFLTICSV20mp9QqBO9haBqUSslYcwv82sw9Ezc16/gwP1YFCXBuj1GooCUAdjrbyzFys2mUlLrptYTTzmSHcRmHjecr6imesqdNCS/Xu7WWgB+rOsidQmPADvT9H1JlE4MBgv/dvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708237339; c=relaxed/simple;
-	bh=DELF/Sa212R0lUf3hHPALmBz+5/UQRBsAaWQYXYZETc=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=FOHssHe59p47pufgJFyPTNGBzyU450PgCyQC0mZ6TsoXbUi28brceh4hnUS4K9cM9th4USL5NfGAnR7PeW+inNodKwY6/1n1gLvPr7XxAJDUzj/XOVSIGVhoAHFMtAuEGaisOmh/23CqYZ6CXl3fdkGhcH0LcgT9e5Ga6BSzy7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TcwYm5Yghz4f3jMP;
-	Sun, 18 Feb 2024 14:22:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 9E2801A0D7B;
-	Sun, 18 Feb 2024 14:22:09 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBEPotFlQQ17EQ--.38616S3;
-	Sun, 18 Feb 2024 14:22:09 +0800 (CST)
-Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in
- md_check_recovery()
-To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com,
- agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev,
- song@kernel.org, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
- akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <20240201092559.910982-2-yukuai1@huaweicloud.com>
- <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
- <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com>
- <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
- <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com>
- <CALTww28bUzmQASme3XOz0CY=o86f1EUU23ENmnf42UVyuGzQ4Q@mail.gmail.com>
- <c1195efd-dd83-317e-3067-cd4891ae013e@huaweicloud.com>
- <CALTww2-7tTMdf_XZ60pNKH_QCq3OUX2P==VPXZo3f-dHzVhmnw@mail.gmail.com>
- <2fa01c30-2ee7-7c01-6833-bf74142e6d7c@huaweicloud.com>
- <CALTww2-HngEJ9z9cYZ0=kcfuKMpziH3utSgk_8u3dxc553ZNeg@mail.gmail.com>
-From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <5480b350-efe3-2be7-cf3b-3a62bb0e012b@huaweicloud.com>
-Date: Sun, 18 Feb 2024 14:22:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+	s=arc-20240116; t=1708237391; c=relaxed/simple;
+	bh=TpNmMKu6WpziuYbuJj9ICNiDX2B0lv7+wTrPai/vhQ8=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=lUtjKlhnERTtVYj9WxAYoWQ488u3F4GZTmlAEiT+2IqEtrDu4IWUs6vBN9xFdBPeSb9xry6KCazt2+gJARqJv8HWcKPz5GJtN/rszIoOkNcxQ1icwGxURVELqMJG1Lyigo60ISv1Pg/t+YZlekmH5Qa/1MUPJc2BHpk9X02HA9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=XuRurxUj; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1708237377; bh=gi2NcGCCj6PfFOIK2hkne1naRKBj6Q9hH3RQxbNAwco=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=XuRurxUjTBjoayvJgkymXHdpDJDFeivn+sqlDQt82qXK5nJN0GJEjPBVvk9FZYVSr
+	 9XmCYIKdnQExrjviyOKRSgOddSuS6oMVKBhySRxkmVbkIBX2omceElCtuN9oAkms0H
+	 5yokKijQ0MIU1lBJwMZTK2yi67ydJlJRzyo/hL1s=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id 5B5B06A1; Sun, 18 Feb 2024 14:22:53 +0800
+X-QQ-mid: xmsmtpt1708237373t67boyyzw
+Message-ID: <tencent_8665C99F2EF26EFF0CAF67DF86C592E74606@qq.com>
+X-QQ-XMAILINFO: MOpJcPT3Yy24wX/PWmzIjsZ2p88WhJoar8OjDsb57NIXVmM231PGujqEA5GSG4
+	 UJ37+zIeeQKSm/mamnZMI2kpbtMTGUww+JG6xsg+3fLRGe4B8WyEH43BsQD1nWf0M2A8oq+OHvS3
+	 V2r7TL9m2qNcNPrAE3q+ix3wEgEC9n3fS6+GmSpIpr0ZWm7UxYysTDdYY5ChCsmRM7fyOHjhRPHK
+	 bkgJBbR2TutT5iIO97LJqBAB7aAlniThYY0JzO54B8VpQpn+L5E8Bf7h+hIv57FZ4l+c6UDq1sK8
+	 hNpYO9PX1X+7jU2Kfz4fdtOPvIum+y7rMA1yZGwJkJnceeOTnt6GTEZo18wy4qGiJinAKobzOw4P
+	 lxPvqAUCB2GrD9HdjYzzga3k1/edxGYpF/qSK403qjJhvaeAjNvvQBwJOZla/TSioNPNJrYazSXU
+	 0MMG3Q1zFSFgK9SjNp0Nd/LZYX9ZkP9JKyQ7hvFCNGAuZz3SB5Chi/g8AZ15XU33wzrb6i5f+1fQ
+	 dtr32vCIF17/JhqAKvQa06fbLE9ELcmFX2pWLJETkncCINy76+BkVTrXoDXEC75e/pTC2GX3ST2c
+	 2/6XP8W4bz/cNGzLxu2nkarrBIZ/qFlb8xmFdVwqLyoJtKwkeyud3p3vNCt1ldlz06LLCtmj10QW
+	 P+ck/G0CWR4VrDQHXoOKGo+eR1dJyZHb/old3BL8PQ3jNONGtxYnCsQNsGSMm67mfP4qy6GJL2PV
+	 sHGby0w2zCcMMf9br913dFW1URF8Bto65UttSJz1wD6LorZg04SFNuj7SL7P+ROKmOVNNjSzhTvH
+	 AcP80QaITTUwB1eIFfuK31D8HTZx42rv3oSblBJmCK0CPsfQlJ2eszBDEPFYGwABoTYnPtp/sYrJ
+	 7OMLjDcOpU9xXiKem52/6Tap9YhQR5CfeCJ/o1QjBoxUJzbaGvvQUlDdRTB8Y5dhtRGx1ZazY95h
+	 L9Hadj9CJ6TxqfcHZRqQ==
+X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
+From: Edward Adam Davis <eadavis@qq.com>
+To: greg@kroah.com
+Cc: eadavis@qq.com,
+	isely@pobox.com,
+	linux-kernel@vger.kernel.org,
+	linux-media@vger.kernel.org,
+	linux-usb@vger.kernel.org,
+	mchehab@kernel.org,
+	pvrusb2-owner@isely.net,
+	pvrusb2@isely.net,
+	syzbot+ce750e124675d4599449@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH usb] media/pvrusb2: fix uaf in pvr2_context_set_notify
+Date: Sun, 18 Feb 2024 14:22:54 +0800
+X-OQ-MSGID: <20240218062253.101675-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <2024021716-accent-islamist-6a87@gregkh>
+References: <2024021716-accent-islamist-6a87@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CALTww2-HngEJ9z9cYZ0=kcfuKMpziH3utSgk_8u3dxc553ZNeg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBEPotFlQQ17EQ--.38616S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wr15XF1kGry7AF1ktrW5KFg_yoW7Zr47pr
-	y0qF4UKr4UAr17Ar9Fva1kXFyrtw1jqrWUXry5Gr15GwnIvrn3JFW0qF45CFyDAF93G3ZF
-	vw4UJa4fZr1rJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
-	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcS
-	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi,
+On Sat, 17 Feb 2024 08:41:33 +0100, Greg KH wrote:
+> On Fri, Feb 16, 2024 at 03:30:47PM +0800, Edward Adam Davis wrote:
+> > [Syzbot reported]
+> > BUG: KASAN: slab-use-after-free in pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
+> > Read of size 4 at addr ffff888113aeb0d8 by task kworker/1:1/26
+> > 
+> > CPU: 1 PID: 26 Comm: kworker/1:1 Not tainted 6.8.0-rc1-syzkaller-00046-gf1a27f081c1f #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> > Workqueue: usb_hub_wq hub_event
+> > Call Trace:
+> >  <TASK>
+> >  __dump_stack lib/dump_stack.c:88 [inline]
+> >  dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+> >  print_address_description mm/kasan/report.c:377 [inline]
+> >  print_report+0xc4/0x620 mm/kasan/report.c:488
+> >  kasan_report+0xda/0x110 mm/kasan/report.c:601
+> >  pvr2_context_set_notify+0x2c4/0x310 drivers/media/usb/pvrusb2/pvrusb2-context.c:35
+> >  pvr2_context_notify drivers/media/usb/pvrusb2/pvrusb2-context.c:95 [inline]
+> >  pvr2_context_disconnect+0x94/0xb0 drivers/media/usb/pvrusb2/pvrusb2-context.c:272
+> > 
+> > Freed by task 906:
+> > kasan_save_stack+0x33/0x50 mm/kasan/common.c:47
+> > kasan_save_track+0x14/0x30 mm/kasan/common.c:68
+> > kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
+> > poison_slab_object mm/kasan/common.c:241 [inline]
+> > __kasan_slab_free+0x106/0x1b0 mm/kasan/common.c:257
+> > kasan_slab_free include/linux/kasan.h:184 [inline]
+> > slab_free_hook mm/slub.c:2121 [inline]
+> > slab_free mm/slub.c:4299 [inline]
+> > kfree+0x105/0x340 mm/slub.c:4409
+> > pvr2_context_check drivers/media/usb/pvrusb2/pvrusb2-context.c:137 [inline]
+> > pvr2_context_thread_func+0x69d/0x960 drivers/media/usb/pvrusb2/pvrusb2-context.c:158
+> > 
+> > [Analyze]
+> > Task A set disconnect_flag = !0, which resulted in Task B's condition being met
+> > and releasing mp, leading to this issue.
+> > 
+> > [Fix]
+> > Place the disconnect_flag assignment operation after all code in pvr2_context_disconnect()
+> > to avoid this issue.
+> > 
+> > Reported-and-tested-by: syzbot+ce750e124675d4599449@syzkaller.appspotmail.com
+> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> 
+> What commit id does this fix?
+e5be15c63804 ("V4L/DVB (7711): pvrusb2: Fix race on module unload")
+> 
+> And should it be cc: stable as well?
+I checked the stable git tree and it introduced e5be15c63804. I think we need to
+cc stable.
 
-在 2024/02/18 13:07, Xiao Ni 写道:
-> On Sun, Feb 18, 2024 at 11:24 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>
->> Hi,
->>
->> 在 2024/02/18 11:15, Xiao Ni 写道:
->>> On Sun, Feb 18, 2024 at 10:34 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>>>
->>>> Hi,
->>>>
->>>> 在 2024/02/18 10:27, Xiao Ni 写道:
->>>>> On Sun, Feb 18, 2024 at 9:46 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
->>>>>>
->>>>>> Hi,
->>>>>>
->>>>>> 在 2024/02/18 9:33, Xiao Ni 写道:
->>>>>>> The deadlock problem mentioned in this patch should not be right?
->>>>>>
->>>>>> No, I think it's right. Looks like you are expecting other problems,
->>>>>> like mentioned in patch 6, to be fixed by this patch.
->>>>>
->>>>> Hi Kuai
->>>>>
->>>>> Could you explain why step1 and step2 from this comment can happen
->>>>> simultaneously? From the log, the process should be
->>>>> The process is :
->>>>> dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(raid_postsuspend)
->>>>> -> dm_table_destroy(raid_dtr).
->>>>> After suspending the array, it calls raid_dtr. So these two functions
->>>>> can't happen simultaneously.
->>>>
->>>> You're removing the target directly, however, dm can suspend the disk
->>>> directly, you can simplily:
->>>>
->>>> 1) dmsetup suspend xxx
->>>> 2) dmsetup remove xxx
->>>
->>> For dm-raid, the design of suspend stops sync thread first and then it
->>> calls mddev_suspend to suspend array. So I'm curious why the sync
->>> thread can still exit when array is suspended. I know the reason now.
->>> Because before f52f5c71f (md: fix stopping sync thread), the process
->>> is raid_postsuspend->md_stop_writes->__md_stop_writes
->>> (__md_stop_writes sets MD_RECOVERY_FROZEN). In patch f52f5c71f, it
->>> doesn't set MD_RECOVERY_FROZEN in __md_stop_writes anymore.
->>>
->>> The process changes to
->>> 1. raid_postsuspend->md_stop_writes->__md_stop_writes->stop_sync_thread
->>> (wait until MD_RECOVERY_RUNNING clears)
->>> 2. md thread -> md_check_recovery -> unregister_sync_thread ->
->>> md_reap_sync_thread (clears MD_RECOVERY_RUNNING, stop_sync_thread
->>> returns, md_reap_sync_thread sets MD_RECOVERY_NEEDED)
->>> 3. raid_postsuspend->mddev_suspend
->>> 4. md sync thread starts again because __md_stop_writes doesn't set
->>> MD_RECOVERY_FROZEN.
->>> It's the reason why we can see sync thread still happens when raid is suspended.
->>>
->>> So the patch fix this problem should:
->>
->> As I said, this is really a different problem from this patch, and it is
->> fixed seperately by patch 9. Please take a look at that patch.
-> 
-> I think we're talking about the same problem. In patch07 it has a new
-> api md_frozen_sync_thread. It sets MD_RECOVERY_FROZEN before
-> stop_sync_thread. This is right. If we use this api in
-> raid_postsuspend, sync thread can't restart. So the deadlock can't
-> happen anymore?
-
-We are not talking about the same problem at all. This patch just fix a
-simple problem in md/raid(not dm-raid). And the deadlock can also be
-triggered for md/raid the same.
-
-- mddev_suspend() doesn't handle sync_thread at all;
-- md_check_recovery() ignore suspended array;
-
-Please keep in mind this patch just fix the above case. The deadlock in
-dm-raid is just an example of problems caused by this. Fix the deadlock
-other way doesn't mean this case is fine.
-
-> 
-> And patch01 is breaking one logic which seems right:
-> 
-> commit 68866e425be2ef2664aa5c691bb3ab789736acf5
-> Author: Jonathan Brassow <jbrassow@f14.redhat.com>
-> Date:   Wed Jun 8 15:10:08 2011 +1000
-> 
->      MD: no sync IO while suspended
-> 
->      Disallow resync I/O while the RAID array is suspended.
-> 
-> We're trying to fix deadlock problems. But it's not good to fix a
-> problem by breaking an existing rule.
-
-The existing rule itself is problematic. Above patch doesn't do well.
-
-It's just a simple problem here, should sync thread also stop in
-mddev_suspend? If you want do do this, you can submit a patch, in the
-right way, we'll see how this will work.
-
-- keep this patch to remove checking of suspended array;
-- set MD_RECOVERY_FORZEN and stop sync thread in mddev_suspend,
-'reconfig_mutex' will be needed again, and lots of callers need to be
-checked.
-
-Thanks,
-Kuai
-
-> 
-> Regards
-> Xiao
-> 
-> 
->>
->> Thanks,
->> Kuai
->>
->>>
->>> diff --git a/drivers/md/md.c b/drivers/md/md.c
->>> index 9e41a9aaba8b..666761466f02 100644
->>> --- a/drivers/md/md.c
->>> +++ b/drivers/md/md.c
->>> @@ -6315,6 +6315,7 @@ static void md_clean(struct mddev *mddev)
->>>
->>>    static void __md_stop_writes(struct mddev *mddev)
->>>    {
->>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
->>>           stop_sync_thread(mddev, true, false);
->>>           del_timer_sync(&mddev->safemode_timer);
->>>
->>> Like other places which call stop_sync_thread, it needs to set the
->>> MD_RECOVERY_FROZEN bit.
->>>
->>> Regards
->>> Xiao
->>>
->>>>
->>>> Please also take a look at other patches, why step 1) can't stop sync
->>>> thread.
->>>>
->>>> Thanks,
->>>> Kuai
->>>>
->>>>>
->>>>>
->>>>>>
->>>>>> Noted that this patch just fix one case that MD_RECOVERY_RUNNING can't
->>>>>> be cleared, I you are testing this patch alone, please make sure that
->>>>>> you still triggered the exactly same case:
->>>>>>
->>>>>> - MD_RCOVERY_RUNNING can't be cleared while array is suspended.
->>>>>
->>>>> I'm not testing this patch. I want to understand the patch well. So I
->>>>> need to understand the issue first. I can't understand how this
->>>>> deadlock (step1,step2) happens.
->>>>>
->>>>> Regards
->>>>> Xiao
->>>>>>
->>>>>> Thanks,
->>>>>> Kuai
->>>>>>
->>>>>
->>>>> .
->>>>>
->>>>
->>>
->>> .
->>>
->>
-> 
-> .
-> 
+thanks,
+edward
 
 
