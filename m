@@ -1,253 +1,194 @@
-Return-Path: <linux-kernel+bounces-70120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E98D38593A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:06:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2020D8593A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:16:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C71B1F21CE7
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:06:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8886DB216F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 00:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862627FA;
-	Sun, 18 Feb 2024 00:06:24 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E1237B;
+	Sun, 18 Feb 2024 00:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="LG4x3dES"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE0A195
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 00:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E699736D
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 00:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708214783; cv=none; b=bxPWozG/rxSV1rqABmdk55cNbsHh4I6+ks367OW8SaZUPSdn98PWYwvsKHl2cKYKH3mNIIXMMjqGWVCXDDlqaJEOmc4ld5WULZnZOLOUMVQwquyzcMO1YNlAK3fsqb760mSQhz/pDQ6CETZcJY/pOWkz7D+VvN2ahd4gMetKnBc=
+	t=1708215389; cv=none; b=HUI1EooQs7ErPfDt57tY+GHzZQ89kj/szBdGUErL+CtMA27qES6xJBvsQdECGQMOkfjaGsBlWKTnLOCg9mRHzwy9xbvhel56OWH7A+qhWe4KSHBf3NC4M0izFKimVMf6+hwXNmky2pflr6udnqB2yupwxtL/GrZmkgqJUxPgG7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708214783; c=relaxed/simple;
-	bh=OvEN6CKCQlgrk41az4gi3fjtjd2Fdazk/Xp7dUgQ6r0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=SXPyCx+vKR9Cj7ffQPdRSNg+g+yzLQNUYhqMuOri7q1Ydk1rE8z0YjTZE616SoXUpGHGJBLtCLS632biXj3JRj54iJKNtGyVzucXmiZdVjBzF+HzU+4PBdlQh3BmhBxpMTCoG76w64aJLRSFzW81M5+40obVV4ZY1zh2fCsW8Zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-365256f2efcso2484025ab.0
-        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 16:06:21 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708214781; x=1708819581;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=j7CMKaRMfhFX+v2G9CiAC8fkL6ixX+GdxcXL1z+0VGs=;
-        b=PkKiH//Anng9H9qRVbD3NWn6u5FBu0jVsSj3/gT/qag7NCEy0a/FqGpl3qQ/sJL6sP
-         vJ8auUn3nodiuLMIrhSr0nJIsRoxIcOx5kNTnD6BPGFHI8dFsIey1T56PsdpqPkncwDn
-         bDyLwpwoLO7sHRqSz3M2z98tOaUZltfAvfo3DPOdOx1tmsRurF5v6QCyZMn9NAywoSXF
-         sN68/qJKybKpv5KAcMPABUF8t+6NFG0qZoJCQiHXlo1E3/4TetpHoQFXwvxjVkNgUq3t
-         gjFk8bkHu9qlyMp0tQg4URpBXCgSJaHHF+IlKzEL6TavBvzsu1zBsZlv5xo8ONPQV5oX
-         59fQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVIXGMshAlfJAx1wXuPz8TuHLWgwGYhXUKr/r47P5kGtUDym9B0JLqgVXR40bhag94ez2fo5c8cFAc6BK8eahL4TI4G2DFHURwFropQ
-X-Gm-Message-State: AOJu0YzRQYfEGGp8471Ja7QomMC5bi0RC4wYJCJ6jRgxp1fOCS0zDsxo
-	TjkUeCO81jk8pihQFXArOEhjwHIQ+EZ/w2Bs/3N6xICFuzUngf1PodzkO2om/2TLEkQKh0EwhVU
-	pMklFhhdgLfSBkKxfKk7VCp56FHXlu0WlGdi5p/TyK47q1EBI+9btDNg=
-X-Google-Smtp-Source: AGHT+IF5T/qirDu2nTmZv8Y18h0wnmTMxZZYv7QKYNahp343uFmJal0PeSCH9P9fiRJ5rUzFOeV0IHhW3HD/Yq6EgnqBJda+del0
+	s=arc-20240116; t=1708215389; c=relaxed/simple;
+	bh=UuT32SyYaKCY7zsyInrLw9pJf/lsbvEouRt23HU4e8Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=e8HRSN+DW0X3Pys2ZrMJfDNvNGvDUnRMI5X6yYUJZsPdOIkhf3TTtJD/B/719FlyrHfk3j8DZJp7YzeVifrXaHtCcfonWz8dKQ/STE+qxL+nsIbJz6FeNML1BTzGMPYS9rM5EQ2dNHlabThfikjVAxwh4B1UE+3PT9qTlFEtNFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=LG4x3dES; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1708215378;
+	bh=SdDVeMmt6qwYZT3yLAbV+2fQAihanKI9PnpnYBAS1jE=;
+	h=From:To:Cc:Subject:Date:From;
+	b=LG4x3dES9eOlPN2p3bw8wWtkrR+ILZTxq1KyW46qrJ3fdq9WR4mV/jMgz89Qo83T+
+	 ZaKc+E7VBMXosEOs64iq8RZwmYQ8Ye7pF5bMTHEjTWcy+XImNPl8VDK7ZzGJcLyYRq
+	 wdsKDJXSucROkwnRWIrclrbioms76c6DqarBNS03A8ntdKD7gHCzqjXPwJwFTuJegt
+	 Ip3nkpfzbAk69mUl/8xBedpbTJxeSNks2Y3Mde4jHfZ0UcQp3wfm3tzN7fXD4tsj5I
+	 +NeaiT7w+KVQJpGGp7sNskYh2HZOIA7R/yFZjqbNDa7iHqC+NuCKZQK8iDEp9QzCMV
+	 OmGyI8ZNgYEJw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TcmRg5l0Rz4wc7;
+	Sun, 18 Feb 2024 11:16:15 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: arnd@arndb.de, david.engraf@sysgo.com, gbatra@linux.ibm.com,
+ linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ matthias.schiffer@ew.tq-group.com, nathanl@linux.ibm.com,
+ naveen@kernel.org, rnsastry@linux.ibm.com, sbhat@linux.ibm.com,
+ sshegde@linux.ibm.com, xiaojiangfeng@huawei.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.8-3 tag
+Date: Sun, 18 Feb 2024 11:16:14 +1100
+Message-ID: <87cysu1vap.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b02:b0:365:2290:7785 with SMTP id
- i2-20020a056e021b0200b0036522907785mr127521ilv.0.1708214781278; Sat, 17 Feb
- 2024 16:06:21 -0800 (PST)
-Date: Sat, 17 Feb 2024 16:06:21 -0800
-In-Reply-To: <000000000000a7761e0610c754b2@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003d021006119cbf46@google.com>
-Subject: Re: [syzbot] [jfs?] KASAN: slab-use-after-free Read in jfs_syncpt
-From: syzbot <syzbot+c244f4a09ca85dd2ebc1@syzkaller.appspotmail.com>
-To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 
-syzbot has found a reproducer for the following issue on:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-HEAD commit:    ced590523156 Merge tag 'driver-core-6.8-rc5' of git://git...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ee1872180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=64757d4899f04e1b
-dashboard link: https://syzkaller.appspot.com/bug?extid=c244f4a09ca85dd2ebc1
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=118f3658180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=119df694180000
+Hi Linus,
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-ced59052.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/268f9dfca97a/vmlinux-ced59052.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d95591974e31/bzImage-ced59052.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/c890e5e09b22/mount_0.gz
+Please pull some more powerpc fixes for 6.8.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c244f4a09ca85dd2ebc1@syzkaller.appspotmail.com
+This is a bit of a big batch for rc4, but just due to holiday hangover and
+because I didn't send any fixes last week due to a late revert request. I think
+next week should be back to normal.
 
-==================================================================
-BUG: KASAN: slab-use-after-free in __mutex_waiter_is_first kernel/locking/mutex.c:197 [inline]
-BUG: KASAN: slab-use-after-free in __mutex_lock_common kernel/locking/mutex.c:686 [inline]
-BUG: KASAN: slab-use-after-free in __mutex_lock+0x8f4/0x9d0 kernel/locking/mutex.c:752
-Read of size 8 at addr ffff8880272d2908 by task jfsCommit/131
+cheers
 
-CPU: 3 PID: 131 Comm: jfsCommit Not tainted 6.8.0-rc4-syzkaller-00388-gced590523156 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:488
- kasan_report+0xda/0x110 mm/kasan/report.c:601
- __mutex_waiter_is_first kernel/locking/mutex.c:197 [inline]
- __mutex_lock_common kernel/locking/mutex.c:686 [inline]
- __mutex_lock+0x8f4/0x9d0 kernel/locking/mutex.c:752
- jfs_syncpt+0x2a/0xa0 fs/jfs/jfs_logmgr.c:1039
- txEnd+0x30d/0x5a0 fs/jfs/jfs_txnmgr.c:549
- txLazyCommit fs/jfs/jfs_txnmgr.c:2684 [inline]
- jfs_lazycommit+0x77d/0xb20 fs/jfs/jfs_txnmgr.c:2733
- kthread+0x2c6/0x3b0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
- </TASK>
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
-Allocated by task 5178:
- kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:372 [inline]
- __kasan_kmalloc+0xaa/0xb0 mm/kasan/common.c:389
- kmalloc include/linux/slab.h:590 [inline]
- kzalloc include/linux/slab.h:711 [inline]
- open_inline_log fs/jfs/jfs_logmgr.c:1159 [inline]
- lmLogOpen+0x571/0x1410 fs/jfs/jfs_logmgr.c:1069
- jfs_mount_rw+0x2ea/0x700 fs/jfs/jfs_mount.c:257
- jfs_fill_super+0x9d6/0xd20 fs/jfs/super.c:565
- mount_bdev+0x1e3/0x2d0 fs/super.c:1663
- legacy_get_tree+0x109/0x220 fs/fs_context.c:662
- vfs_get_tree+0x8f/0x380 fs/super.c:1784
- do_new_mount fs/namespace.c:3352 [inline]
- path_mount+0x14ea/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount fs/namespace.c:3875 [inline]
- __x64_sys_mount+0x297/0x320 fs/namespace.c:3875
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
 
-Freed by task 5177:
- kasan_save_stack+0x33/0x60 mm/kasan/common.c:47
- kasan_save_track+0x14/0x30 mm/kasan/common.c:68
- kasan_save_free_info+0x3f/0x60 mm/kasan/generic.c:640
- poison_slab_object mm/kasan/common.c:241 [inline]
- __kasan_slab_free+0x121/0x1c0 mm/kasan/common.c:257
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2121 [inline]
- slab_free mm/slub.c:4299 [inline]
- kfree+0x124/0x370 mm/slub.c:4409
- lmLogClose+0x585/0x710 fs/jfs/jfs_logmgr.c:1461
- jfs_umount+0x2f0/0x440 fs/jfs/jfs_umount.c:114
- jfs_put_super+0x88/0x1d0 fs/jfs/super.c:194
- generic_shutdown_super+0x159/0x3d0 fs/super.c:646
- kill_block_super+0x3b/0x90 fs/super.c:1680
- deactivate_locked_super+0xbe/0x1a0 fs/super.c:477
- deactivate_super+0xde/0x100 fs/super.c:510
- cleanup_mnt+0x222/0x450 fs/namespace.c:1267
- task_work_run+0x14f/0x250 kernel/task_work.c:180
- resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:108 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
- syscall_exit_to_user_mode+0x281/0x2b0 kernel/entry/common.c:212
- do_syscall_64+0xe5/0x270 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
+are available in the git repository at:
 
-The buggy address belongs to the object at ffff8880272d2800
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 264 bytes inside of
- freed 1024-byte region [ffff8880272d2800, ffff8880272d2c00)
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.8-3
 
-The buggy address belongs to the physical page:
-page:ffffea00009cb400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x272d0
-head:ffffea00009cb400 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888014c42dc0 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000080100010 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4910, tgid 4910 (dhcpcd-run-hook), ts 31763109865, free_ts 31737584223
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d4/0x350 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0xa28/0x3780 mm/page_alloc.c:3311
- __alloc_pages+0x22f/0x2440 mm/page_alloc.c:4567
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2190 [inline]
- allocate_slab mm/slub.c:2354 [inline]
- new_slab+0xcc/0x3a0 mm/slub.c:2407
- ___slab_alloc+0x4af/0x19a0 mm/slub.c:3540
- __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3625
- __slab_alloc_node mm/slub.c:3678 [inline]
- slab_alloc_node mm/slub.c:3850 [inline]
- __do_kmalloc_node mm/slub.c:3980 [inline]
- __kmalloc+0x3b8/0x440 mm/slub.c:3994
- kmalloc include/linux/slab.h:594 [inline]
- load_elf_phdrs+0x103/0x210 fs/binfmt_elf.c:526
- load_elf_binary+0x14dc/0x4e40 fs/binfmt_elf.c:955
- search_binary_handler fs/exec.c:1783 [inline]
- exec_binprm fs/exec.c:1825 [inline]
- bprm_execve fs/exec.c:1877 [inline]
- bprm_execve+0x70a/0x1980 fs/exec.c:1853
- do_execveat_common.isra.0+0x5cf/0x750 fs/exec.c:1984
- do_execve fs/exec.c:2058 [inline]
- __do_sys_execve fs/exec.c:2134 [inline]
- __se_sys_execve fs/exec.c:2129 [inline]
- __x64_sys_execve+0x8c/0xb0 fs/exec.c:2129
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-page last free pid 4909 tgid 4909 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2346
- free_unref_page+0x33/0x3c0 mm/page_alloc.c:2486
- qlink_free mm/kasan/quarantine.c:160 [inline]
- qlist_free_all+0x58/0x150 mm/kasan/quarantine.c:176
- kasan_quarantine_reduce+0x192/0x1e0 mm/kasan/quarantine.c:283
- __kasan_slab_alloc+0x69/0x90 mm/kasan/common.c:324
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3813 [inline]
- slab_alloc_node mm/slub.c:3860 [inline]
- kmem_cache_alloc+0x136/0x320 mm/slub.c:3867
- getname_flags.part.0+0x50/0x4f0 fs/namei.c:140
- getname_flags include/linux/audit.h:322 [inline]
- getname+0x90/0xe0 fs/namei.c:219
- do_sys_openat2+0x104/0x1e0 fs/open.c:1398
- do_sys_open fs/open.c:1419 [inline]
- __do_sys_openat fs/open.c:1435 [inline]
- __se_sys_openat fs/open.c:1430 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1430
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd5/0x270 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
+for you to fetch changes up to 0846dd77c8349ec92ca0079c9c71d130f34cb192:
 
-Memory state around the buggy address:
- ffff8880272d2800: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880272d2880: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff8880272d2900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                      ^
- ffff8880272d2980: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff8880272d2a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+  powerpc/iommu: Fix the missing iommu_group_put() during platform domain attach (2024-02-14 23:59:23 +1100)
+
+- ------------------------------------------------------------------
+powerpc fixes for 6.8 #3
+
+ - Fix ftrace bug on boot caused by exit text sections with -fpatchable-function-entry.
+
+ - Fix accuracy of stolen time on pseries since the switch to VIRT_CPU_ACCOUNTING_GEN.
+
+ - Fix a crash in the IOMMU code when doing DLPAR remove.
+
+ - Set pt_regs->link on scv entry to fix BPF stack unwinding.
+
+ - Add missing PPC_FEATURE_BOOKE on 64-bit e5500/e6500, which broke gdb.
+
+ - Fix boot on some 6xx platforms with STRICT_KERNEL_RWX enabled.
+
+ - Fix build failures with KASAN enabled and 32KB stack size.
+
+ - Some other minor fixes.
+
+Thanks to: Arnd Bergmann, Benjamin Gray, Christophe Leroy, David Engraf, Gaurav
+Batra, Jason Gunthorpe, Jiangfeng Xiao, Matthias Schiffer, Nathan Lynch, Naveen
+N Rao, Nicholas Piggin, Nysal Jan K.A, R Nageswara Sastry, Shivaprasad G Bhat,
+Shrikanth Hegde, Spoorthy, Srikar Dronamraju, Venkat Rao Bagalkote.
+
+- ------------------------------------------------------------------
+Arnd Bergmann (2):
+      powerpc: udbg_memcons: mark functions static
+      powerpc: 85xx: mark local functions static
+
+David Engraf (1):
+      powerpc/cputable: Add missing PPC_FEATURE_BOOKE on PPC64 Book-E
+
+Gaurav Batra (1):
+      powerpc/pseries/iommu: Fix iommu initialisation during DLPAR add
+
+Jiangfeng Xiao (1):
+      powerpc/kasan: Fix addr error caused by page alignment
+
+Matthias Schiffer (1):
+      powerpc/6xx: set High BAT Enable flag on G2_LE cores
+
+Michael Ellerman (2):
+      Revert "powerpc/pseries/iommu: Fix iommu initialisation during DLPAR add"
+      powerpc/kasan: Limit KASAN thread size increase to 32KB
+
+Nathan Lynch (1):
+      powerpc/pseries/papr-sysparm: use u8 arrays for payloads
+
+Naveen N Rao (2):
+      powerpc/64: Set task pt_regs->link to the LR value on scv entry
+      powerpc/ftrace: Ignore ftrace locations in exit text sections
+
+R Nageswara Sastry (1):
+      selftests/powerpc/papr_vpd: Check devfd before get_system_loc_code()
+
+Shivaprasad G Bhat (1):
+      powerpc/iommu: Fix the missing iommu_group_put() during platform domain attach
+
+Shrikanth Hegde (1):
+      powerpc/pseries: fix accuracy of stolen time
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ arch/powerpc/include/asm/ftrace.h                   | 10 ++--------
+ arch/powerpc/include/asm/papr-sysparm.h             |  2 +-
+ arch/powerpc/include/asm/reg.h                      |  2 ++
+ arch/powerpc/include/asm/sections.h                 |  1 +
+ arch/powerpc/include/asm/thread_info.h              |  2 +-
+ arch/powerpc/include/uapi/asm/papr-sysparm.h        |  2 +-
+ arch/powerpc/kernel/cpu_setup_6xx.S                 | 20 +++++++++++++++++++-
+ arch/powerpc/kernel/cpu_specs_e500mc.h              |  3 ++-
+ arch/powerpc/kernel/interrupt_64.S                  |  4 ++--
+ arch/powerpc/kernel/iommu.c                         |  4 +++-
+ arch/powerpc/kernel/trace/ftrace.c                  | 12 ++++++++++++
+ arch/powerpc/kernel/trace/ftrace_64_pg.c            |  5 +++++
+ arch/powerpc/kernel/vmlinux.lds.S                   |  2 ++
+ arch/powerpc/mm/kasan/init_32.c                     |  1 +
+ arch/powerpc/platforms/85xx/mpc8536_ds.c            |  2 +-
+ arch/powerpc/platforms/85xx/mvme2500.c              |  2 +-
+ arch/powerpc/platforms/85xx/p1010rdb.c              |  2 +-
+ arch/powerpc/platforms/85xx/p1022_ds.c              |  6 +++---
+ arch/powerpc/platforms/85xx/p1022_rdk.c             |  6 +++---
+ arch/powerpc/platforms/85xx/socrates_fpga_pic.c     |  2 ++
+ arch/powerpc/platforms/85xx/xes_mpc85xx.c           |  2 +-
+ arch/powerpc/platforms/pseries/lpar.c               |  8 ++++++--
+ arch/powerpc/sysdev/udbg_memcons.c                  |  6 +++---
+ tools/testing/selftests/powerpc/papr_vpd/papr_vpd.c |  4 ++--
+ 24 files changed, 77 insertions(+), 33 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmXRS0wACgkQUevqPMjh
+pYBS2hAAuHWg/zSRifvkc10YwFJPMjufaGvN7/H49VPipVDqjEq8OsPWFpTC4WrK
+7giDvvcR9udoNQKX9wismvHAG3zWfmmshGYozpH/+V+/ZNhf3bQAnrpx+cshB1q7
+dhDEAQneNBw9q5EYY7HvXrBcXiuvFoldVOIfIbSx70wRGCHatkZAn8TSY7JVQNLj
+AkbFXqoGk8mTKrL1LIRB5jSUMadXvEzFiXaaz8P9WVrC9lFTmv/o/8VcWu070j4s
+NzTNJZi/ToIRrHPIOiEWjuku/Z61rakBg2XXcZbr6c9mY5BKqsdJ4RSb2sNr+/xw
+DxTZF19M94aqiElAot/asV+amVpcTqz3DZNgX46QNENoGawuilT8SKH2ZdrDNgRX
+vl7FTNLi9UR18kQFG84pNTQXMZEFqtapnbtvLysejfC8FTttPtcLdh9LnZBGxMmU
+l7G3l7T1uisW4lnSrgI4t6d1Kq7vR4/T1TkvgGIEHVufa0R+CXdbppIRzIfokOyd
+p9c4UKjWXypwACqXfhqovg6H7IwUaor1b1sr3Oyd1J8PliTgFL5q6AA2okCdx6uM
+urzRgcqA6++PsZfxQSSPBlmhAAt6UrsUPO4qQa/ZKSuYTIeqX2Ucdn2T/3f7apoN
+Av4ip3vtSdfJ3nQf3DiDYvNIH2TnjTa0PPFQZy7veC7NxhHEjiw=
+=fGhO
+-----END PGP SIGNATURE-----
 
