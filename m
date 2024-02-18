@@ -1,59 +1,57 @@
-Return-Path: <linux-kernel+bounces-70474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D3D7859869
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:05:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1070085986C
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 19:06:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6EC61F2195C
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:05:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 421641C209F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 18:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DE76F079;
-	Sun, 18 Feb 2024 18:05:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D046F073;
+	Sun, 18 Feb 2024 18:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xs7qHF3e"
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="ISdQ4O5u"
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDAA6BB4B
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 18:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624BA1E86B;
+	Sun, 18 Feb 2024 18:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708279547; cv=none; b=VCJqVPL/VqPaxxc8xf6DYlVVBrEwXXdy8hBm/bYW7Zlj7cPFbVqhXk7UwxFycAXjOIdYiu/bIRaS5Wc5IxbUqmkEevz+HjKmBkixlW0uVt//qAJ6nSZuifaR4xuaOisja7/elCiRt1kUliGBuuqnDmpUy7AeQYr9ZM48sWtG/g0=
+	t=1708279582; cv=none; b=l2tBgWxUqWCYDolO1I3b47cjM48SaPBfyGppwFldZDXsT+QEsomSVepnL3Tjq5aCvbB3YfeKpDZ0GuG3jzvcOC5Ju+DH1RSg4L0Ed8phWZ8oTP56+dGJN8r+it0lW3Pj4m09pOKec4CUlXCg4kUxIXGF1qj5vCKBawmJDO4Ru34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708279547; c=relaxed/simple;
-	bh=vWVIcKnpvzocSjV2NV3m3GpLSmyp7ylR5NPlCRCJaZY=;
+	s=arc-20240116; t=1708279582; c=relaxed/simple;
+	bh=u5+y9oI9AVN9aE1l3KrHl3HzVCIh5feOYrt/X/ZQ2sc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mPvz3Q5hCLM1yZ4Rn6zg/E82/eEIEY46/PmjlPqKWqYsF74ai+rzlQ+9LVy19GkApN+PAKkHH6cnS2CgLD1A+J+mXCkXdIrvgIN0pN20cDvt0c4B7dJNpxTERdrLlukdiF7ufih5OqA/tvsE5N2bhbukCkipTacwuXExRIs9XJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xs7qHF3e; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 18 Feb 2024 10:05:37 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708279543;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+NFOvyN6tcyqft/QfMQHusxypN7esItJ9glpfGKgmoY=;
-	b=xs7qHF3exFPWwEGGZCKaakY0hjM+4cJ+uaKTQw5SkevF4h4GyYFP2wyvW5KmX1YzN8yq+b
-	MKzjBUabBpGzC60uFsdnSptqMXgR3OGjle0P1LR2IQAbvdoMyoUHmxpG2tWXdkgxxaeikN
-	zhNDYy7z2s0dz7qt1IKRUMEJv0DzjHg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Oliver Upton <oliver.upton@linux.dev>
-To: Marc Zyngier <maz@kernel.org>
-Cc: Zenghui Yu <yuzenghui@huawei.com>, kvmarm@lists.linux.dev,
-	kvm@vger.kernel.org, James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 04/10] KVM: arm64: vgic-its: Walk the LPI xarray in
- vgic_copy_lpi_list()
-Message-ID: <ZdJG8W-TLW8I6O07@linux.dev>
-References: <20240216184153.2714504-1-oliver.upton@linux.dev>
- <20240216184153.2714504-5-oliver.upton@linux.dev>
- <beca07ad-833e-ca68-2fe7-a30a2cb9faef@huawei.com>
- <86frxq3w3g.wl-maz@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=k5oj7DQuo0b/2dC/TbquyGPSYYlpNP9RJgik+3Giw/I0GXw37xrlQBNGMU73WHapPdFZdEcknqnFH0cohmzKNcCgvXm6cIdXST5lJGfxi6e+UrKbVGO8eMXNhv0n9N5hYEdkrG4zlxDJcZojghDHxymFjKZXs1TxaTeswo8syZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=ISdQ4O5u; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from localhost (unknown [46.242.8.170])
+	by mail.ispras.ru (Postfix) with ESMTPSA id 9D7C140F1DC0;
+	Sun, 18 Feb 2024 18:06:09 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 9D7C140F1DC0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1708279569;
+	bh=KW4P3G5i9vLcFjWHy/0+GdaEaDc/+xMgKKN0udLRMcA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ISdQ4O5udkItjLi90MuDEm24FFFnxmGDgUJDhf57gxOdByqOID23b2mrQmTbx+NAg
+	 QyjHJw27ZblTX5S6Scao06PXWIMhmU5Lae+RQYoDblVWd0bBrzi4X0rs7+4Flie9QS
+	 sXGYOATB4qYmz7SV6Gu8k1aNo0Uy17AIQK6m2a54=
+Date: Sun, 18 Feb 2024 21:06:09 +0300
+From: Fedor Pchelkin <pchelkin@ispras.ru>
+To: Aleksandr Burakov <a.burakov@rosalinux.ru>
+Cc: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
+	linux-nfs@vger.kernel.org, Neil Brown <neilb@suse.de>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	linux-kernel@vger.kernel.org, Tom Talpey <tom@talpey.com>, 
+	Olga Kornievskaia <kolga@netapp.com>, lvc-project@linuxtesting.org
+Subject: Re: [lvc-project] [PATCH] nfsd: fix memory leak in
+ __cld_pipe_inprogress_downcall()
+Message-ID: <d6ac2546-cf4e-43c3-bc41-b62a61141339-pchelkin@ispras.ru>
+References: <20240216134541.31577-1-a.burakov@rosalinux.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,86 +60,51 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <86frxq3w3g.wl-maz@kernel.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20240216134541.31577-1-a.burakov@rosalinux.ru>
 
-On Sun, Feb 18, 2024 at 10:28:19AM +0000, Marc Zyngier wrote:
-> On Sun, 18 Feb 2024 08:46:53 +0000,
-> Zenghui Yu <yuzenghui@huawei.com> wrote:
-> > 
-> > On 2024/2/17 2:41, Oliver Upton wrote:
-> > > Start iterating the LPI xarray in anticipation of removing the LPI
-> > > linked-list.
-> > > 
-> > > Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
-> > > ---
-> > >  arch/arm64/kvm/vgic/vgic-its.c | 7 ++++++-
-> > >  1 file changed, 6 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-> > > index fb2d3c356984..9ce2edfadd11 100644
-> > > --- a/arch/arm64/kvm/vgic/vgic-its.c
-> > > +++ b/arch/arm64/kvm/vgic/vgic-its.c
-> > > @@ -335,6 +335,7 @@ static int update_lpi_config(struct kvm *kvm, struct vgic_irq *irq,
-> > >  int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
-> > >  {
-> > >  	struct vgic_dist *dist = &kvm->arch.vgic;
-> > > +	XA_STATE(xas, &dist->lpi_xa, GIC_LPI_OFFSET);
-> > >  	struct vgic_irq *irq;
-> > >  	unsigned long flags;
-> > >  	u32 *intids;
-> > > @@ -353,7 +354,9 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
-> > >  		return -ENOMEM;
-> > >   	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
-> > > -	list_for_each_entry(irq, &dist->lpi_list_head, lpi_list) {
-> > > +	rcu_read_lock();
-> > > +
-> > > +	xas_for_each(&xas, irq, INTERRUPT_ID_BITS_ITS) {
-> > 
-> > We should use '1 << INTERRUPT_ID_BITS_ITS - 1' to represent the maximum
-> > LPI interrupt ID.
+Hello Aleksandr,
 
-/facepalm
+On 24/02/16 04:45PM, Aleksandr Burakov wrote:
+> Dynamic memory, referenced by 'princhash.data' and 'name.data', 
+> is allocated by calling function 'memdup_user' and lost 
+> at __cld_pipe_inprogress_downcall() function return
 
-Thanks Zenghui!
+It is not actually lost. If nfs4_client_to_reclaim() fails and thus
+returns NULL - this error case is already properly handled.
 
-> Huh, well caught! I'm not even sure how it works, as that's way
-> smaller than the start of the walk (8192). Probably doesn't.
+If nfs4_client_to_reclaim() succeeds then reference to the memory in
+question is passed to crp->cr_name.data and crp->cr_princhash.data
+correspondingly, and crp->cr_strhash entry is added to the list associated
+with nfsd_net. In this case the memory is supposed to be freed by
+nfs4_remove_reclaim_record(). See comment for nfs4_client_to_reclaim().
+
+So I think the patch just introduces a double-free.
+
 > 
-> An alternative would be to use max_lpis_propbaser(), but I'm not sure
-> we always have a valid PROPBASER value set when we start using this
-> function. Worth investigating though.
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Fixes: 11a60d159259 ("nfsd: add a "GetVersion" upcall for nfsdcld")
+> Signed-off-by: Aleksandr Burakov <a.burakov@rosalinux.ru>
+> ---
+>  fs/nfsd/nfs4recover.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/nfsd/nfs4recover.c b/fs/nfsd/nfs4recover.c
+> index 2c060e0b1604..02663484782d 100644
+> --- a/fs/nfsd/nfs4recover.c
+> +++ b/fs/nfsd/nfs4recover.c
+> @@ -850,6 +850,8 @@ __cld_pipe_inprogress_downcall(const struct cld_msg_v2 __user *cmsg,
+>  			kfree(princhash.data);
+>  			return -EFAULT;
+>  		}
+> +		kfree(name.data);
+> +		kfree(princhash.data);
+>  		return nn->client_tracking_ops->msglen;
+>  	}
+>  	return -EFAULT;
+> -- 
+> 2.25.1
 
-Given the plans to eventually replace this with xarray marks, I'd vote
-for doing the lazy thing and deciding this at compile time.
-
-I can squash this in when I apply the series if the rest of it isn't
-offensive, otherwise respin with the change.
-
--- 
-Thanks,
-Oliver
-
-diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
-index d84cb7618c59..f6025886071c 100644
---- a/arch/arm64/kvm/vgic/vgic-its.c
-+++ b/arch/arm64/kvm/vgic/vgic-its.c
-@@ -316,6 +316,8 @@ static int update_lpi_config(struct kvm *kvm, struct vgic_irq *irq,
- 	return 0;
- }
- 
-+#define GIC_LPI_MAX_INTID	((1 << INTERRUPT_ID_BITS_ITS) - 1)
-+
- /*
-  * Create a snapshot of the current LPIs targeting @vcpu, so that we can
-  * enumerate those LPIs without holding any lock.
-@@ -345,7 +347,7 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
- 	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
- 	rcu_read_lock();
- 
--	xas_for_each(&xas, irq, INTERRUPT_ID_BITS_ITS) {
-+	xas_for_each(&xas, irq, GIC_LPI_MAX_INTID) {
- 		if (i == irq_count)
- 			break;
- 		/* We don't need to "get" the IRQ, as we hold the list lock. */
+--
+Fedor
 
