@@ -1,208 +1,266 @@
-Return-Path: <linux-kernel+bounces-70216-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70217-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F7278594ED
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:00:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E33B8594F2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 07:22:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DACF5B2202F
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:00:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FF771C211E1
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 06:22:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 968665673;
-	Sun, 18 Feb 2024 06:00:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="pSH6/Tby"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8228D611E;
+	Sun, 18 Feb 2024 06:22:19 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE91F29A0
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 06:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7114E15C9;
+	Sun, 18 Feb 2024 06:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708236013; cv=none; b=cZG9XEQt6V46nnGrqHM2Uc3nhxNtbaTUYRbBKHKdafheNsV+orrpWd33ZmQm7D1cLZDKLNKaunNv9W3cmxFsNLAkqXwwkLv9ik4NkRD9v8Mlw4fxPyGDofc8SFFhHF0yBKXlmBHP6IZEC4adkHjSLR7feZCn9s4Q3jGyYIk9CBw=
+	t=1708237339; cv=none; b=kT3tH8huh7PHSrPlm/h9km2R5QpmSK05ER5ffn1Y7683CF0LfeMURN8ynR/zzv6Go9ZM8g99XvKu0dVwLincNAxfrQhBO5XVlAESUuyJk6nYDETEiTnjxl+xkLCyfVCUY1SWTesWlh7V11MLshF9N+RWkliQWu/X/IqEVmuN8D8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708236013; c=relaxed/simple;
-	bh=amJWEKl10w2be7PZ/y173OKtiDmrAL2EwAaeeRH1lAU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
-	 Content-Type:References; b=LdGrzxg40oSykHeEkEjpnlVLCvs1BTKRHf3/htnIkTB/OATg4Eo2SoLb/trm5X1zZTrsR1AlVcqJQfVtGj2OZe+Um+OsHkvtHq6dyMqgxR8Cd8pnDUAe73bPpvd2CO+4R2yyFUDAOGbNlTHKADlK2Af0xMDMu7yg10aUK/A9N3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=pSH6/Tby; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240218060008epoutp03123af63e0f835814847b83c3f196a8db~035l5hgbS3150731507epoutp03V
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 06:00:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240218060008epoutp03123af63e0f835814847b83c3f196a8db~035l5hgbS3150731507epoutp03V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708236008;
-	bh=KAsYtb5y8XLZHK3OBj1ZIgnxXVZpJOPSieE2Qp4j0M0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=pSH6/TbyQ7XQLx0lxJBVo83xDYkC3Fls8dYJUwhAILYOFXYXfgyfleM49Yna4xHbD
-	 qC/dTYX76YJskKCc/G9e45i5fGRzKWc/jBgMaBjLyOaivMywn7sd7yw6d+xfkJhSyH
-	 rlOhcn0EmIdaqkACfysvSPE+jAoxjjKGyCffu4pw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20240218060008epcas5p323291d178502f193e43e343399781c2a~035lin6Ls0952409524epcas5p3n;
-	Sun, 18 Feb 2024 06:00:08 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.175]) by
-	epsnrtp4.localdomain (Postfix) with ESMTP id 4Tcw4R1Kwrz4x9Pw; Sun, 18 Feb
-	2024 06:00:07 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-	epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	33.39.19369.7EC91D56; Sun, 18 Feb 2024 15:00:07 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef~035c6ttXD0050500505epcas5p2j;
-	Sun, 18 Feb 2024 05:59:59 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240218055959epsmtrp2aeea7b72184d819801b7614d0ee39f8b~035c227Qj0692806928epsmtrp2l;
-	Sun, 18 Feb 2024 05:59:59 +0000 (GMT)
-X-AuditID: b6c32a50-c99ff70000004ba9-d1-65d19ce7b519
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	AE.23.07368.FDC91D56; Sun, 18 Feb 2024 14:59:59 +0900 (KST)
-Received: from testpc118124.samsungds.net (unknown [109.105.118.124]) by
-	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240218055957epsmtip2c63341500d2f8969cf275aa4236fd4bd~035bo7yEW0417604176epsmtip23;
-	Sun, 18 Feb 2024 05:59:57 +0000 (GMT)
-From: Xiaobing Li <xiaobing.li@samsung.com>
-To: xiaobing.li@samsung.com
-Cc: axboe@kernel.dk, asml.silence@gmail.com, linux-kernel@vger.kernel.org,
-	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
-	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-	ruyi.zhang@samsung.com
-Subject: Re: [PATCH] liburing: add script for statistics sqpoll running
- time.
-Date: Sun, 18 Feb 2024 13:59:53 +0800
-Message-Id: <20240218055953.38903-1-xiaobing.li@samsung.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240206024014.11412-1-xiaobing.li@samsung.com>
+	s=arc-20240116; t=1708237339; c=relaxed/simple;
+	bh=DELF/Sa212R0lUf3hHPALmBz+5/UQRBsAaWQYXYZETc=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=FOHssHe59p47pufgJFyPTNGBzyU450PgCyQC0mZ6TsoXbUi28brceh4hnUS4K9cM9th4USL5NfGAnR7PeW+inNodKwY6/1n1gLvPr7XxAJDUzj/XOVSIGVhoAHFMtAuEGaisOmh/23CqYZ6CXl3fdkGhcH0LcgT9e5Ga6BSzy7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TcwYm5Yghz4f3jMP;
+	Sun, 18 Feb 2024 14:22:04 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 9E2801A0D7B;
+	Sun, 18 Feb 2024 14:22:09 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBEPotFlQQ17EQ--.38616S3;
+	Sun, 18 Feb 2024 14:22:09 +0800 (CST)
+Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in
+ md_check_recovery()
+To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com,
+ agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev,
+ song@kernel.org, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
+ akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <20240201092559.910982-2-yukuai1@huaweicloud.com>
+ <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
+ <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com>
+ <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
+ <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com>
+ <CALTww28bUzmQASme3XOz0CY=o86f1EUU23ENmnf42UVyuGzQ4Q@mail.gmail.com>
+ <c1195efd-dd83-317e-3067-cd4891ae013e@huaweicloud.com>
+ <CALTww2-7tTMdf_XZ60pNKH_QCq3OUX2P==VPXZo3f-dHzVhmnw@mail.gmail.com>
+ <2fa01c30-2ee7-7c01-6833-bf74142e6d7c@huaweicloud.com>
+ <CALTww2-HngEJ9z9cYZ0=kcfuKMpziH3utSgk_8u3dxc553ZNeg@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <5480b350-efe3-2be7-cf3b-3a62bb0e012b@huaweicloud.com>
+Date: Sun, 18 Feb 2024 14:22:07 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <CALTww2-HngEJ9z9cYZ0=kcfuKMpziH3utSgk_8u3dxc553ZNeg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrIJsWRmVeSWpSXmKPExsWy7bCmuu7zORdTDdYeYreYs2obo8Xqu/1s
-	Fu9az7FYHP3/ls3iV/ddRoutX76yWlzeNYfN4tleTosvh7+zW5yd8IHVYuqWHUwWHS2XGR14
-	PHbOusvucflsqUffllWMHp83yQWwRGXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpa
-	mCsp5CXmptoqufgE6Lpl5gAdpqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMCnQ
-	K07MLS7NS9fLSy2xMjQwMDIFKkzIzrg+6S1TwWL+ipX7bzI2MK7m6mLk4JAQMJG48d2gi5GL
-	Q0hgD6PE4yWzWUHiQgKfGCWuRkPEvzFKzPy6AijOCVb/tX8eI0RiL6PEr3enmCCcX4wS7xpP
-	s4FUsQloS1xf1wXWISIgLXF9yyawImaBr4wSU35fZQRJCAv4S/S/vQzWwCKgKvH1/31mEJtX
-	wEZi/53PbBDr5CX2HzzLDHISp4CtxPFOKYgSQYmTM5+wgNjMQCXNW2czQ5S3ckhcnxcJYbtI
-	3PzZxg5hC0u8Or4FypaS+PxuL9T4YokjPd9ZQW6TEGhglJh++ypUkbXEvyt7WED2MgtoSqzf
-	pQ8RlpWYemodE8RePone30+YIOK8EjvmwdiqEqsvPWSBsKUlXjf8hop7SDz5cpUZElgTGCUO
-	HnrLNoFRYRaSf2Yh+WcWwuoFjMyrGKVSC4pz01OTTQsMdfNSy+GRnJyfu4kRnFa1AnYwrt7w
-	V+8QIxMH4yFGCQ5mJRFe96YLqUK8KYmVValF+fFFpTmpxYcYTYEBPpFZSjQ5H5jY80riDU0s
-	DUzMzMxMLI3NDJXEeV+3zk0REkhPLEnNTk0tSC2C6WPi4JRqYPKbvf1Ai3nUfxEWDftf9j2q
-	gUVtkRfT3t+5e+xZ0zfLqQvvTn+/R63LqD5B8sMq3otuySq6gp58S4v8jN5tfz9pmv/ie+wq
-	/yZeYVvrJZTvNpn7Ds90Vubs+69LIv1tfaWvVXx6+iT7d/DG54JHdzj+0eow2SZ1qX9dUu/G
-	p35s319z8+7MUj67Wzrdt6390IHZOWYfNjnd3vH4T9GuDBaNp+plrVK1dwN8PGUFinzX/5r0
-	Z2s7x/anvX/f3BLkbVfOXF20bH5Hjq+hp6PrlPylJ/MYT4bor9pV73EwT22n1Y93e6qK821m
-	pFZpzNyq1JWdoxPF4Rv1dMrGW4ExuzQmNFVE2cS8W+mVsuh5iRJLcUaioRZzUXEiANeQB5k0
-	BAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrOLMWRmVeSWpSXmKPExsWy7bCSvO79ORdTDbacY7OYs2obo8Xqu/1s
-	Fu9az7FYHP3/ls3iV/ddRoutX76yWlzeNYfN4tleTosvh7+zW5yd8IHVYuqWHUwWHS2XGR14
-	PHbOusvucflsqUffllWMHp83yQWwRHHZpKTmZJalFunbJXBlXJ/0lqlgMX/Fyv03GRsYV3N1
-	MXJySAiYSHztn8fYxcjFISSwm1Fi4d9n7F2MHEAJaYk/f8ohaoQlVv57zg5R84NRYu+Th8wg
-	CTYBbYnr67pYQWwRoPrrWzYxgdjMAo1MEqvWhYDYwgK+EmtbfoPFWQRUJb7+vw/WyytgI7H/
-	zmc2iAXyEvsPnmUG2cspYCtxvFMKJCwEVDLp5zsWiHJBiZMzn7BAjJeXaN46m3kCo8AsJKlZ
-	SFILGJlWMUqmFhTnpucmGxYY5qWW6xUn5haX5qXrJefnbmIEh72Wxg7Ge/P/6R1iZOJgPMQo
-	wcGsJMLr3nQhVYg3JbGyKrUoP76oNCe1+BCjNAeLkjiv4YzZKUIC6YklqdmpqQWpRTBZJg5O
-	qQYm2+KkDytUPds7ljMGu939lfE5b45shWHwy2l8j6Z6sW5+kLJXwGqhWNe2bf2v3h26eGK7
-	TyHPC+56IZ5Y25fGrPtTFqZv+SU3c5O/5fvQy3enVEq2366xPX7pcbgc8/t6bh6BwjuGH5hN
-	tm7LMjjEcp+ro6Iv80TZc4NNi22lLNb9+V771P714nY7wb82/+7qyKSErE5y9G18crJDd/np
-	bxM/PIpbkXe84GSdo5O4THns3O218v2LDeuVpGuWFN4ujDsYs3eSXaWAGEeu0OOlZX8XFHxT
-	y1WfWa7feEgvsiL9VIvuIk3Rx6fe3JNxvhS1JlPE7/SeunVWSywW614vs+E5d2avsJH6HflU
-	kUwlluKMREMt5qLiRACLTxcl6gIAAA==
-X-CMS-MailID: 20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef
-References: <20240206024014.11412-1-xiaobing.li@samsung.com>
-	<CGME20240218055959epcas5p2ac436be88fecd625f072c78ff77610ef@epcas5p2.samsung.com>
+X-CM-TRANSID:cCh0CgCXaBEPotFlQQ17EQ--.38616S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr15XF1kGry7AF1ktrW5KFg_yoW7Zr47pr
+	y0qF4UKr4UAr17Ar9Fva1kXFyrtw1jqrWUXry5Gr15GwnIvrn3JFW0qF45CFyDAF93G3ZF
+	vw4UJa4fZr1rJaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcS
+	sGvfC2KfnxnUUI43ZEXa7VUbQVy7UUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On 2/6/24 10:40 AM, Xiaobing Li wrote:
->diff --git a/test/sqtimeshow.sh b/test/sqtimeshow.sh
->new file mode 100644
->index 0000000..e85fd2f
->--- /dev/null
->+++ b/test/sqtimeshow.sh
->@@ -0,0 +1,61 @@
->+#!/usr/bin/env bash
->+
->+UPLINE=$(tput cuu1)
->+
->+function set_header() {
->+    printf "\033[47;30m%-15s %-15s %-15s %-15s \033[0m\n" PID WorkTime\(us\) TotalTime\(us\) COMMAND
->+}
->+
->+function get_time() {
->+    pid=$1
->+    item=$2
->+    proc_file="/proc/$pid/fdinfo/6"
->+    if [ ! -e $proc_file ]; then
->+        return
->+    fi
->+    content=$(cat ${proc_file} | grep ${item} | awk -F" " '{print $2}')
->+    echo ${content%us}
->+}
->+
->+function show_util() {
->+    index=0
->+    while true
->+    do
->+        data=$(top -H -b -n 1 | grep iou-sqp)
->+        if [ -z "${data}" ]; then
->+            echo "no sq thread is running."
->+            exit
->+        fi 
->+        index=0
->+        num=$(echo $data | tr -cd R |wc -c)
->+        arr=($data)
->+        len=$((${#arr[@]} / ${num}))
->+        i=0
->+        while [ ${i} -lt ${num} ]
->+        do
->+            pid=${arr[${i} * ${len}]}
->+            name=${arr[${i} * ${len} + len - 1]}
->+            work_time=$(get_time $pid "SqWorkTime")
->+            total_time=$(get_time $pid "SqTotalTime")
->+            printf "%-15s %-15s %-15s %-15s\n" ${pid} ${work_time} ${total_time} ${name}
->+            ((i++))
->+        done
->+        sleep 2
->+        update=$UPLINE
->+        for j in $(seq 1 ${num}); do
->+            update=$update$UPLINE
->+        done
->+        if [ ! -z "$(top -H -b -n 1 | grep iou-sqp)" ]; then
->+            echo "$update"
->+        fi
->+    done
->+}
->+
->+function main() {
->+    # set header
->+    set_header
->+    # show util
->+    show_util
->+}
->+
->+main
- 
-Hi, Jens and Pavel
-This patch is to add a script that displays the statistics of the 
-sqpoll thread to the terminal.
+Hi,
 
---
-Xiaobing Li
+在 2024/02/18 13:07, Xiao Ni 写道:
+> On Sun, Feb 18, 2024 at 11:24 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>
+>> Hi,
+>>
+>> 在 2024/02/18 11:15, Xiao Ni 写道:
+>>> On Sun, Feb 18, 2024 at 10:34 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> 在 2024/02/18 10:27, Xiao Ni 写道:
+>>>>> On Sun, Feb 18, 2024 at 9:46 AM Yu Kuai <yukuai1@huaweicloud.com> wrote:
+>>>>>>
+>>>>>> Hi,
+>>>>>>
+>>>>>> 在 2024/02/18 9:33, Xiao Ni 写道:
+>>>>>>> The deadlock problem mentioned in this patch should not be right?
+>>>>>>
+>>>>>> No, I think it's right. Looks like you are expecting other problems,
+>>>>>> like mentioned in patch 6, to be fixed by this patch.
+>>>>>
+>>>>> Hi Kuai
+>>>>>
+>>>>> Could you explain why step1 and step2 from this comment can happen
+>>>>> simultaneously? From the log, the process should be
+>>>>> The process is :
+>>>>> dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_targets(raid_postsuspend)
+>>>>> -> dm_table_destroy(raid_dtr).
+>>>>> After suspending the array, it calls raid_dtr. So these two functions
+>>>>> can't happen simultaneously.
+>>>>
+>>>> You're removing the target directly, however, dm can suspend the disk
+>>>> directly, you can simplily:
+>>>>
+>>>> 1) dmsetup suspend xxx
+>>>> 2) dmsetup remove xxx
+>>>
+>>> For dm-raid, the design of suspend stops sync thread first and then it
+>>> calls mddev_suspend to suspend array. So I'm curious why the sync
+>>> thread can still exit when array is suspended. I know the reason now.
+>>> Because before f52f5c71f (md: fix stopping sync thread), the process
+>>> is raid_postsuspend->md_stop_writes->__md_stop_writes
+>>> (__md_stop_writes sets MD_RECOVERY_FROZEN). In patch f52f5c71f, it
+>>> doesn't set MD_RECOVERY_FROZEN in __md_stop_writes anymore.
+>>>
+>>> The process changes to
+>>> 1. raid_postsuspend->md_stop_writes->__md_stop_writes->stop_sync_thread
+>>> (wait until MD_RECOVERY_RUNNING clears)
+>>> 2. md thread -> md_check_recovery -> unregister_sync_thread ->
+>>> md_reap_sync_thread (clears MD_RECOVERY_RUNNING, stop_sync_thread
+>>> returns, md_reap_sync_thread sets MD_RECOVERY_NEEDED)
+>>> 3. raid_postsuspend->mddev_suspend
+>>> 4. md sync thread starts again because __md_stop_writes doesn't set
+>>> MD_RECOVERY_FROZEN.
+>>> It's the reason why we can see sync thread still happens when raid is suspended.
+>>>
+>>> So the patch fix this problem should:
+>>
+>> As I said, this is really a different problem from this patch, and it is
+>> fixed seperately by patch 9. Please take a look at that patch.
+> 
+> I think we're talking about the same problem. In patch07 it has a new
+> api md_frozen_sync_thread. It sets MD_RECOVERY_FROZEN before
+> stop_sync_thread. This is right. If we use this api in
+> raid_postsuspend, sync thread can't restart. So the deadlock can't
+> happen anymore?
+
+We are not talking about the same problem at all. This patch just fix a
+simple problem in md/raid(not dm-raid). And the deadlock can also be
+triggered for md/raid the same.
+
+- mddev_suspend() doesn't handle sync_thread at all;
+- md_check_recovery() ignore suspended array;
+
+Please keep in mind this patch just fix the above case. The deadlock in
+dm-raid is just an example of problems caused by this. Fix the deadlock
+other way doesn't mean this case is fine.
+
+> 
+> And patch01 is breaking one logic which seems right:
+> 
+> commit 68866e425be2ef2664aa5c691bb3ab789736acf5
+> Author: Jonathan Brassow <jbrassow@f14.redhat.com>
+> Date:   Wed Jun 8 15:10:08 2011 +1000
+> 
+>      MD: no sync IO while suspended
+> 
+>      Disallow resync I/O while the RAID array is suspended.
+> 
+> We're trying to fix deadlock problems. But it's not good to fix a
+> problem by breaking an existing rule.
+
+The existing rule itself is problematic. Above patch doesn't do well.
+
+It's just a simple problem here, should sync thread also stop in
+mddev_suspend? If you want do do this, you can submit a patch, in the
+right way, we'll see how this will work.
+
+- keep this patch to remove checking of suspended array;
+- set MD_RECOVERY_FORZEN and stop sync thread in mddev_suspend,
+'reconfig_mutex' will be needed again, and lots of callers need to be
+checked.
+
+Thanks,
+Kuai
+
+> 
+> Regards
+> Xiao
+> 
+> 
+>>
+>> Thanks,
+>> Kuai
+>>
+>>>
+>>> diff --git a/drivers/md/md.c b/drivers/md/md.c
+>>> index 9e41a9aaba8b..666761466f02 100644
+>>> --- a/drivers/md/md.c
+>>> +++ b/drivers/md/md.c
+>>> @@ -6315,6 +6315,7 @@ static void md_clean(struct mddev *mddev)
+>>>
+>>>    static void __md_stop_writes(struct mddev *mddev)
+>>>    {
+>>> +       set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
+>>>           stop_sync_thread(mddev, true, false);
+>>>           del_timer_sync(&mddev->safemode_timer);
+>>>
+>>> Like other places which call stop_sync_thread, it needs to set the
+>>> MD_RECOVERY_FROZEN bit.
+>>>
+>>> Regards
+>>> Xiao
+>>>
+>>>>
+>>>> Please also take a look at other patches, why step 1) can't stop sync
+>>>> thread.
+>>>>
+>>>> Thanks,
+>>>> Kuai
+>>>>
+>>>>>
+>>>>>
+>>>>>>
+>>>>>> Noted that this patch just fix one case that MD_RECOVERY_RUNNING can't
+>>>>>> be cleared, I you are testing this patch alone, please make sure that
+>>>>>> you still triggered the exactly same case:
+>>>>>>
+>>>>>> - MD_RCOVERY_RUNNING can't be cleared while array is suspended.
+>>>>>
+>>>>> I'm not testing this patch. I want to understand the patch well. So I
+>>>>> need to understand the issue first. I can't understand how this
+>>>>> deadlock (step1,step2) happens.
+>>>>>
+>>>>> Regards
+>>>>> Xiao
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Kuai
+>>>>>>
+>>>>>
+>>>>> .
+>>>>>
+>>>>
+>>>
+>>> .
+>>>
+>>
+> 
+> .
+> 
+
 
