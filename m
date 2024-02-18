@@ -1,153 +1,170 @@
-Return-Path: <linux-kernel+bounces-70443-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3AA78597E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 17:55:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F6CD859785
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:06:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4ADEF1F21447
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:55:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 414371C20BC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FCA6EB55;
-	Sun, 18 Feb 2024 16:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76B9E6D1A4;
+	Sun, 18 Feb 2024 15:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="aVUKXxH7"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2069.outbound.protection.outlook.com [40.107.220.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Nok6Eciu"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D8D041C6A;
-	Sun, 18 Feb 2024 16:54:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.69
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708275292; cv=fail; b=QUyzZ0O75A1z1EiPE3CXeuijQkaMEzOElrywpRGsVwnAhHILKS8L6mSoy+IRN3de8jrn3YDOLtZ8/UA0DBFPre0dx9zZP5H4na2/c38LO2xqseSmAA1peyEll7Rv6LIwWd0hnKcCJlYJY8ja8fl2+okD7cX3RWcU4tSyYks8L4Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708275292; c=relaxed/simple;
-	bh=bGN/9FVvEIcPiDkQ7svLThQ9qeb4CY8xEfPHuoNBAcY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qvcGqGeJ3lY4aPjWRWCPKxOXygbI+ISzm4Ckt70M1QwOPkGwCj4YUOAQFSFFjOxLSsxzHhb4noNcvTDwKS1gOy5wY8Mh8gFb0PHPlLXrpnhAqS2HtutRb/tlLBcNV30RlcSduWwnhjw7fT1vFhxdrH4EZY6SWOxq5fOmHZSSUgU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=aVUKXxH7; arc=fail smtp.client-ip=40.107.220.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HS2t2nJAgmnSS17cbbHUGCdPDLh3r3b/G1764GhdSILDZOHN1KKUmxv1gel5twx0uydNzDGWwpsfzsWmw/0/A69MERnhHVyUd8obZufsS2cOGsF5+ocOxkXyqqGJ8eddp+YRcbcuK2AgXzudpGjlnPtzvvmM+CIr12P61lWEr4agtWmkdbrKaZ26apTqsOvyBFeJAUqS8RssBmti5bQX1dQeUkLBwC3GZ/QfPCQB1QzDHrYypkyre5l7KmNvlpdp0MzpWCN29pJKavAUy/l1Ic9mGJMHGUcDzqIck9BAhJt3bjFnF01O43YHz5AujGK+ngyjqWnkHzX3GL+NGnhGtA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CufwQ1S1YYzsvYoDuQshiEChTTu794JZnTdj5Ji+/fE=;
- b=QVRbcQhCpShG9ynrGelpWMEdl81s+yuyNERsgkTnLuw4KWjVLST4Tb/4yi8kpp8NZ8By2QVEzJx/XKHfEfQcqawAI0wYaIiz8WmLMLRNQzFyVBlgSGy3DHImExQ6KM2sis85k3qA8BN6K9WfY+Drss1AKr4HpQ/4w72IJ5UKwFL0c9K56fspgFEL03xsP+TUUUULk8g6IIuu0awh+o0beV/nGHqEf9NysRe74Sr2rpAxWforTullrSYh55PS4lPtIqpHQ/MPTpBfCVu/FVLRzsiC14BF717zcRa9l8qUEPS2gcARyhcKzwXoAkXuC80/UEFXUzfxwMH3sGJJLIr3lQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CufwQ1S1YYzsvYoDuQshiEChTTu794JZnTdj5Ji+/fE=;
- b=aVUKXxH7po/+Ei+JrwZ7aLZX/Bvb7m0X+WZp8GGz16dVcKBXQveUONNgPcojbZKvX3fUrnCrVezWXbwEPeLtmEF/G/iQzk7jJjWxSvzbk5Xx5LkYLg47rDnbOmcCWBkBVWvDE5NIGDXgmtV/IrnkhEoHOJr21sk/ZjgASwOo0CQ=
-Received: from PA7P264CA0368.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:37c::16)
- by MW4PR12MB7335.namprd12.prod.outlook.com (2603:10b6:303:22b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.17; Sun, 18 Feb
- 2024 16:54:48 +0000
-Received: from SA2PEPF000015CB.namprd03.prod.outlook.com
- (2603:10a6:102:37c:cafe::3c) by PA7P264CA0368.outlook.office365.com
- (2603:10a6:102:37c::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38 via Frontend
- Transport; Sun, 18 Feb 2024 16:54:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF000015CB.mail.protection.outlook.com (10.167.241.201) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Sun, 18 Feb 2024 16:54:46 +0000
-Received: from AUS-P9-MLIMONCI.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sun, 18 Feb
- 2024 10:54:45 -0600
-From: Mario Limonciello <mario.limonciello@amd.com>
-To: <Shyam-sundar.S-k@amd.com>, <hdegoede@redhat.com>
-CC: <platform-driver-x86@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	Mario Limonciello <mario.limonciello@amd.com>
-Subject: [PATCH] platform/x86/amd/pmf: Fix a potential race with policy binary sideload
-Date: Fri, 16 Feb 2024 19:56:42 -0600
-Message-ID: <20240217015642.113806-1-mario.limonciello@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 136816BFA5
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708268783; cv=none; b=rCKhmB6oMc5ZE0FNyt0/fBGFIKOnWCi2HJsghLT8WR3nJLyaCk8UA5YGYiqQx283a2C0Uz6vt605PTlkxGKlshLVfEbHw9U6xQeg+5MWtMVZ3pbcCArx7icSclbiIbfIW+WzomWHl5CHOyyxz0ct4yCdjaX4XbDUVbfJF5XxC4E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708268783; c=relaxed/simple;
+	bh=tGxXT1XhuS6erETM7SEYMuB1n/Ny+q6o/Kd1LNyFGkY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jB/Wh4GIQjoBzYYMk2TAB0zdcpsIXpdJa/8xU1iAZWN241v8AddgEEf/asr326pN52HdDtG1opNc1LcNLxB9rdv7EhwbOQMhi4icGtZTdwxf0w/uuQ1C8AqySz2uI2qrKLcrxu+9YDnmH/+noN4TzHy0em/3/XlNE16cF8i977w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Nok6Eciu; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d42e7ab8a9so2551141a12.3
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708268780; x=1708873580; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=weWvwdjLFnP8JZ5vKjO/UijVTnJpQLLncBhysMzZFhc=;
+        b=Nok6EciuTdMz1z1pS6cwicCCDdDOCTlLLo8ABabxLV63CY9iqUxn64wyit7TOT0kaJ
+         QX2hm83AMDkBl2NkOt5cVe4oG7h2l8B+qZVKbsRS73MoqmO7I6RX4K8TrcKX5jtJzLUk
+         tI3z8QSxh8c2UaT8LapZMXo5PsTJA9g3cZCDQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708268780; x=1708873580;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=weWvwdjLFnP8JZ5vKjO/UijVTnJpQLLncBhysMzZFhc=;
+        b=W/4SlwLjTRVuEb87Sa7vE5eosCHtIRfcbiW5AshMdjKxmWsxXqAWl4ctLAnpcscQzJ
+         7zlOPy+k9431BLaZXStd7o4UuNPOB1TmKQMucn6VHC7qK5GHHb3kPg4gmPQ3KTyVYTug
+         9YeMP2ovRZFWtO8hTNr8/Guuw733E43AtC9jkaKebAhJ+cBtwermOjdV0TD9m6FUiOHI
+         r+mpVr52TvL68e78sLTxKUJ6MJZ3dmWWEV+wMdUhGKFErqy+VRjyMKfNCFm5+waXZc+L
+         qIXbaLjcmGV9GLFA2gS5UeIS/7bTfH9CeVSBB6yVD8vZy4RNlv8XNActrt0cOopERyeF
+         SGWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWHEHLdtnim/bkyreFiPWdB411AKmAQ4kglifnkSK6R2fmwe0xRvx1orAImIkqt+RZTW0BTrfpmdZ6uY1ODeiPrJpep76y9qzMb/DZY
+X-Gm-Message-State: AOJu0YxwtuBKcECubDcn5K/CrhkwHUat4HAEuos4x6+r9P2a2y/z0zUd
+	5rzygC+302BxAbm1yQSTQ9SFXSLxXzZaQaKegYcCzJ6cusVbBopepN8eK1ozRQ==
+X-Google-Smtp-Source: AGHT+IG/mO2zX6w/nhGHQ9iPPz8f+kIiHx6ka4l6BoesYRu+P37Fs580FgkZTJG8iwIS84D9OwUWXw==
+X-Received: by 2002:a05:6a00:450e:b0:6e2:9bca:fdc4 with SMTP id cw14-20020a056a00450e00b006e29bcafdc4mr4640585pfb.21.1708268780315;
+        Sun, 18 Feb 2024 07:06:20 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a30-20020aa78e9e000000b006e45fc20539sm598295pfr.123.2024.02.18.07.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 07:06:19 -0800 (PST)
+Date: Sun, 18 Feb 2024 07:06:19 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Take return from set_memory_ro() into
+ account with bpf_prog_lock_ro()
+Message-ID: <202402180701.FA42F70BE2@keescook>
+References: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF000015CB:EE_|MW4PR12MB7335:EE_
-X-MS-Office365-Filtering-Correlation-Id: b2b594b9-760b-48f0-c983-08dc30a24fcf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	+nuEm3IxakJotysx9AD5pL9HvVO3gpST/UF4dRMbIW/doTjmJy3o0knbZvnmEgfix1v32zea5CDkpnJvubs27ld18+ehIgWcbuqW0dppKcWO+Y96fvlns1WVdDpayKHWWcW3TEcP4Yipno+OGVroKExl2dh/E7Db7lj/11rJogcTmEquantrWkAIwaP2dow67/vHkl1fppEqvN+zFqtdl4AyspyGrXHyY4Toy1/olcpVHE0tVnhyhW75051amxSqmD447NLDZ7wTjtDatIaObOkhs2e3CpGTVDBRxumfnRLsJM0zdtBOdzNBCSShf1d3NFXZg9iKXg4fF5HTSwqMcrYnrFFzgR803BUucNKu8b67KADt31QMmYMgY9ZXzZC2cISG9R9VjO7D+ZwklHQWFR/54h5EpAbOB4HmnMIkCqeOeo7U/PpP87v4Jt0ej+fup9G6AG45bBrHv4mifS3eOwIxb2auiwXbwlcXXu1olltFgED1ADEqVN7DZaII7/xo7Q+ESzFs+44+1wBTuJge61JLRyiBn0VYtoCQhlSRjz8/7CrK/BFhLUw/BfDLXFD0X+wzIwj26tXuMcrA6SarkmLAg93XZ4xQHkumQ8T90Mj2gBztxyHS7Qc2r6lE9qkoxkuoIq/1ZYHfnZF3GCO26Q==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(376002)(136003)(230922051799003)(1800799012)(64100799003)(36860700004)(82310400011)(186009)(451199024)(40470700004)(46966006)(54906003)(110136005)(316002)(41300700001)(6666004)(2906002)(70206006)(70586007)(5660300002)(4326008)(8676002)(8936002)(83380400001)(86362001)(44832011)(966005)(478600001)(26005)(7696005)(36756003)(356005)(336012)(426003)(1076003)(16526019)(2616005)(82740400003)(81166007);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2024 16:54:46.0995
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: b2b594b9-760b-48f0-c983-08dc30a24fcf
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF000015CB.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7335
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
 
-The debugfs `update_policy` file is created before
-amd_pmf_start_policy_engine() has completed, and thus there could be
-a possible (albeit unlikely) race between sideloading a policy and the
-BIOS policy getting setup.
+On Sun, Feb 18, 2024 at 11:55:01AM +0100, Christophe Leroy wrote:
+> set_memory_ro() can fail, leaving memory unprotected.
+> 
+> Check its return and take it into account as an error.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+>  include/linux/filter.h | 5 +++--
+>  kernel/bpf/core.c      | 4 +++-
+>  kernel/bpf/verifier.c  | 4 +++-
+>  3 files changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/include/linux/filter.h b/include/linux/filter.h
+> index fee070b9826e..fc0994dc5c72 100644
+> --- a/include/linux/filter.h
+> +++ b/include/linux/filter.h
+> @@ -881,14 +881,15 @@ bpf_ctx_narrow_access_offset(u32 off, u32 size, u32 size_default)
+>  
+>  #define bpf_classic_proglen(fprog) (fprog->len * sizeof(fprog->filter[0]))
+>  
+> -static inline void bpf_prog_lock_ro(struct bpf_prog *fp)
+> +static inline int __must_check bpf_prog_lock_ro(struct bpf_prog *fp)
+>  {
+>  #ifndef CONFIG_BPF_JIT_ALWAYS_ON
+>  	if (!fp->jited) {
+>  		set_vm_flush_reset_perms(fp);
+> -		set_memory_ro((unsigned long)fp, fp->pages);
+> +		return set_memory_ro((unsigned long)fp, fp->pages);
+>  	}
+>  #endif
+> +	return 0;
+>  }
+>  
+>  static inline void bpf_jit_binary_lock_ro(struct bpf_binary_header *hdr)
+> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+> index 71c459a51d9e..c49619ef55d0 100644
+> --- a/kernel/bpf/core.c
+> +++ b/kernel/bpf/core.c
+> @@ -2392,7 +2392,9 @@ struct bpf_prog *bpf_prog_select_runtime(struct bpf_prog *fp, int *err)
+>  	}
+>  
+>  finalize:
+> -	bpf_prog_lock_ro(fp);
+> +	*err = bpf_prog_lock_ro(fp);
+> +	if (*err)
+> +		return fp;
 
-Move the debugfs file creation after all BIOS policy is setup.
+Weird error path, but yes.
 
-Fixes: 10817f28e533 ("platform/x86/amd/pmf: Add capability to sideload of policy binary")
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Closes: https://lore.kernel.org/platform-driver-x86/15df7d02-b0aa-457a-954a-9d280a592843@redhat.com/T/#m2c445f135e5ef9b53184be7fc9df84e15f89d4d9
-Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
----
- drivers/platform/x86/amd/pmf/tee-if.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+>  
+>  	/* The tail call compatibility check can only be done at
+>  	 * this late stage as we need to determine, if we deal
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index c5d68a9d8acc..1f831a6b4bbc 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -19020,7 +19020,9 @@ static int jit_subprogs(struct bpf_verifier_env *env)
+>  	 * bpf_prog_load will add the kallsyms for the main program.
+>  	 */
+>  	for (i = 1; i < env->subprog_cnt; i++) {
+> -		bpf_prog_lock_ro(func[i]);
+> +		err = bpf_prog_lock_ro(func[i]);
+> +		if (err)
+> +			goto out_free;
+>  		bpf_prog_kallsyms_add(func[i]);
+>  	}
 
-diff --git a/drivers/platform/x86/amd/pmf/tee-if.c b/drivers/platform/x86/amd/pmf/tee-if.c
-index 4f74de680654..8527dca9cf56 100644
---- a/drivers/platform/x86/amd/pmf/tee-if.c
-+++ b/drivers/platform/x86/amd/pmf/tee-if.c
-@@ -456,8 +456,6 @@ int amd_pmf_init_smart_pc(struct amd_pmf_dev *dev)
- 	memcpy(dev->policy_buf, dev->policy_base, dev->policy_sz);
- 
- 	amd_pmf_hex_dump_pb(dev);
--	if (pb_side_load)
--		amd_pmf_open_pb(dev, dev->dbgfs_dir);
- 
- 	dev->prev_data = kzalloc(sizeof(*dev->prev_data), GFP_KERNEL);
- 	if (!dev->prev_data)
-@@ -467,6 +465,9 @@ int amd_pmf_init_smart_pc(struct amd_pmf_dev *dev)
- 	if (ret)
- 		goto error;
- 
-+	if (pb_side_load)
-+		amd_pmf_open_pb(dev, dev->dbgfs_dir);
-+
- 	return 0;
- 
- error:
+Just to double-check if memory permissions being correctly restored on
+this error path, I walked back through it and see that it ultimately
+lands on vfree(), which appears to just throw the entire mapping away,
+so I think that's safe. :)
+
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.34.1
-
+Kees Cook
 
