@@ -1,128 +1,244 @@
-Return-Path: <linux-kernel+bounces-70433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 710EE8597AC
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:49:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7041E8597AF
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:51:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A282A1C20859
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:49:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA851281638
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F846D1BA;
-	Sun, 18 Feb 2024 15:49:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540A96D1B8;
+	Sun, 18 Feb 2024 15:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EGSfMZ7S"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="creLgihG"
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300B91E531;
-	Sun, 18 Feb 2024 15:49:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690946BB58
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708271357; cv=none; b=aVgVj5pS8ARTUf57JCgYZ0Yl5OYzmD/Y4wDl/up0FFHVEsHonPJ5RS5DqwS/0QG6kTZkhJWi038lBe/RWDRdKXopzWMTYCQe/rRbpLwZpU4jieHHuC8k++0s11wEfp1Qdjk5HrdNfoxWeITdzLxHTsKo+n5/Vc7OD4LzWALnMhc=
+	t=1708271465; cv=none; b=b0jAyNd9ngjjUv9grd5zOaOh6dSIHqjCKJjiUKhPEv01PcOHcCRJEfXlSR1WBwN09P2NC+7XCu9EiDA+cY8mqVRj0dYgy6RSheJP0IQnYj8+ZzT2jE7JY2Q6oAEZHEvFJC4/FM/r+T308ZVDQalrgyy0adsgmFmy3YLsWq6z7Pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708271357; c=relaxed/simple;
-	bh=8nGoFUXWmyGHOy260pPB+sKZI6HN3nM/YAmZ0KHV6BU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Iz8x3O5UNarZ8jAfSqvao89+Vs+VfRIc/ml8KYKL/8hkgm/f/Iee2DMqbXDeSMNKNiuuuSbYA3HMCnEzAQRIHmdufve16HypNq0wx30aOd7i1RzBGK9Wiabow/bXVfEYv3vq6Y9+T1TJhR/rIH9aKguwHBSvQO0P7rByNdl7FUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EGSfMZ7S; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e45ef0115eso3261b3a.2;
-        Sun, 18 Feb 2024 07:49:16 -0800 (PST)
+	s=arc-20240116; t=1708271465; c=relaxed/simple;
+	bh=0ot/ijTVMDoaDLxuBI4Uj6rskkiPkMT9yVdc7KgsN1g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TMGZddrH+8DFODs8FGbCRsz9Q9EtFGFsKqIUiq7tRoh//BUCc328w3vKpecc2iLi+22d86skWIGS6CVvIsSiNsQzczzyEa2kLpU94ovKTyQuOGiB254iDq27qA5vOrZbb7aAzP84E2Ots39HWdmj4kPvX6sY8lW/++wuMD7OhXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=creLgihG; arc=none smtp.client-ip=209.85.167.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c15bef14c3so11779b6e.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:51:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708271355; x=1708876155; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HygTjwzdRXTfZJXPzKIecTHavlYq9dpN87Z53dyDVe4=;
-        b=EGSfMZ7SvB8t27nVYbXo/+ynnUnDRSxGP2lVn/+OxahHwGg8Yxel6YBJyL7gtEmAFm
-         u4U/M4V9qoqEqZmZyQmypz5h985vsGJaFY2r16MrMUP2je2IW/ONwqTW3ilkSglTSwhw
-         6IY83NWF0yO7z/lYfHtovR6SZReCJ9NxfJLPPMvTsgmo2FmFuAe46jvrZE97M5thPrn3
-         RKZwkjGAP+FM0TPOfoC1KPsfFu6GBvr3puLCja+vNSbEzNK0kMKsF76q2KcL5Q+suKc9
-         FEkPNO3OpyCMIeVmLrQWiv6NgeUZh6L1LBS0x8vj/I+3553+C8Sc4ZBUKnF3mHBOyw8Y
-         E4qw==
+        d=sifive.com; s=google; t=1708271461; x=1708876261; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Idc8kDtuOgl4UHmKMS/zN8wguVju2Qvv8mSJbJg11b8=;
+        b=creLgihGapG02AuPiwadES7xo/RqF7l8ujvIOvyUrTu3v04H822Se02RnkTz2YjBRq
+         be/OWNNnRXb5+gw7pwql1vVl0IhyQupfCNWiutBrUmZWomxHlkmhnqZUirx5jdaACPrP
+         L/Ojq0As4Bw76D/WIbj71H3H/1LXQqnQwHpt3dEkR/cY0WBuKs3Sk7Aixf4LPK3LxNC6
+         Rt7y6zNDtm6WpWR8AUMBzsgE3824htxdhHSRa/xl5OB0WF664sG/TQHPJ0L5SAVRxtz9
+         lL4kiv96PXAP5SL9Q+ZQkr7tlZ0E55Oa4hvuqL0ZoroT9jLhruL2RLyJtIsyEFsSyfWs
+         7iKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708271355; x=1708876155;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HygTjwzdRXTfZJXPzKIecTHavlYq9dpN87Z53dyDVe4=;
-        b=fwbHWC73TdmK2i5QUEfPBQfe6GoXs0asx2qPxQq9KFvL7CcD1g1kOaijMiWp/I8VjR
-         NdfbnzMutJQum24rbg15shbBopTeggOX+irsWc7g4VNSqeHNYTPdmDES8ArUZqFRBG1g
-         A96opjTl4vbDYsBWXTnscfCqcWPwSj7Ze04XUEW7RHGC/a5PS3G6ymBpgLziyoUgZhI2
-         o5mV/szi8w9n0udk+Ckbegn1Xx+WFdvfVbiKPYokSRe13uaBGgbf6vo02mP/YeOLvOCW
-         cI2YmeUP7iPSF/MC6+bXL5PONv5osbsFTmNVZiyjNaCKoSEBaJ7Jg0KPw6ZTdyMl9ptB
-         GdqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVazckTcLtmGQ6iIUPbQDPdfB4U2wsh4k4vLiLXu602rY6DUSaHyM5JiR6PC0/WGpaqxKkqDGhSqr8nRG9os0IAi5i/Xkn1lOoys6M8p2BIBG/bPfEAmikd7qVjafeIN5+p1+s6RwL21ck=
-X-Gm-Message-State: AOJu0Yy10m/mt0WkGVwijxxePhsJ2KWWrJPN2Mjydg5zpB5WD0YGNRHd
-	pW4td105vVg9W2/QBORym1vOmIf9sMTNpz/vI0eULuQI+dWDDEDG4HQv8704
-X-Google-Smtp-Source: AGHT+IGtFTeG1xqdQuslCfg46RlX50lmgmsSXRs+AAF00N8eLRLlV9eHfM6YvKpqSj14RdRN0G6Org==
-X-Received: by 2002:a62:cec2:0:b0:6df:c3b1:1c2e with SMTP id y185-20020a62cec2000000b006dfc3b11c2emr8689930pfg.30.1708271355446;
-        Sun, 18 Feb 2024 07:49:15 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x42-20020a056a0018aa00b006e144bac418sm3149232pfh.74.2024.02.18.07.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 07:49:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sun, 18 Feb 2024 07:49:13 -0800
-From: Guenter Roeck <linux@roeck-us.net>
-To: Marco Pagani <marpagan@redhat.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian Koenig <christian.koenig@amd.com>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: Re: [PATCH v5] drm/test: add a test suite for GEM objects backed by
- shmem
-Message-ID: <a45b796d-5e04-4eac-b5ba-ea6bb3b6131b@roeck-us.net>
-References: <20231130171417.74162-1-marpagan@redhat.com>
+        d=1e100.net; s=20230601; t=1708271461; x=1708876261;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Idc8kDtuOgl4UHmKMS/zN8wguVju2Qvv8mSJbJg11b8=;
+        b=FiwYmbuWHl7h3gDrhE3M8M/Idnso04Q3+RxTyAo3YeokSzFyo5hy5qge7cQS6QxxDq
+         Zlj+QZoy7TOeNl069jLgi0hxdXAGBnObkXFuOMniRNH+QTof4WqeqEanq3qqvK5KQkMO
+         MXbEQG+UolGrSpyNQMrNMJmEy6cGm/34112hbNf7klD+iDtTWFu8GmKS2vj9JzWKRS7U
+         0wQnuD2m1dw1QXUcAKbGKN2M/696AVWAidQ5ujswdv8o7CeylhQnyJHn/iz2M+6ZScr3
+         RJ5rTz1Q22E3m1GRcBUou2puj1Jz4Iq4lggTJz15qRS75GAejLd3QEQ7lZfaU9Oe3zPg
+         9CzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUMRs1aYjsyObz1YwrdZIXPvuX4Me8amnW4LZUo62yKmBMtXGIoTQjZCd+Ze1XH/36Gtv32UfuID0kAAyCwGhgIcWM8Fow/AaK6GoR+
+X-Gm-Message-State: AOJu0YzHNAT3UtWnFbSWZwq5ZSXrFOf8zbbu7X/hy/77QFA57usEhi5o
+	k19Q6SVlkUr+XA4mDZCPetN5xbqpCDhPrDFEip2Ke/7M3sZkjOowwqyCUEhjHAk=
+X-Google-Smtp-Source: AGHT+IGjRnlgLzgomv6lW4SHDhuTS8wreb750yO93dETmAN5zA0BYgY7Hc8/Ofnz0yFKKnfSR5f2mQ==
+X-Received: by 2002:a05:6808:2f17:b0:3c0:39ed:4384 with SMTP id gu23-20020a0568082f1700b003c039ed4384mr14131122oib.20.1708271461437;
+        Sun, 18 Feb 2024 07:51:01 -0800 (PST)
+Received: from [100.64.0.1] ([170.85.8.176])
+        by smtp.gmail.com with ESMTPSA id kr19-20020a0562142b9300b0068f5565ba1asm1262117qvb.88.2024.02.18.07.51.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Feb 2024 07:51:01 -0800 (PST)
+Message-ID: <3c2f1c61-89b4-4103-ac45-a2a541de215e@sifive.com>
+Date: Sun, 18 Feb 2024 09:50:59 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231130171417.74162-1-marpagan@redhat.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/6] dt-bindings: cache: Add SiFive Extensible Cache
+ controller
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Eric Lin <eric.lin@sifive.com>, Conor Dooley <conor@kernel.org>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Paul Walmsley <paul.walmsley@sifive.com>,
+ linux-riscv@lists.infradead.org, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ linux-arm-kernel@lists.infradead.org
+References: <20240216000837.1868917-1-samuel.holland@sifive.com>
+ <20240216000837.1868917-4-samuel.holland@sifive.com>
+ <d655b72e-3094-4b6b-bee8-9677b7c987ce@linaro.org>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <d655b72e-3094-4b6b-bee8-9677b7c987ce@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
+Hi Krzysztof,
 
-On Thu, Nov 30, 2023 at 06:14:16PM +0100, Marco Pagani wrote:
-> This patch introduces an initial KUnit test suite for GEM objects
-> backed by shmem buffers.
+On 2024-02-17 3:09 AM, Krzysztof Kozlowski wrote:
+> On 16/02/2024 01:08, Samuel Holland wrote:
+>> From: Eric Lin <eric.lin@sifive.com>
+>>
+>> Add YAML DT binding documentation for the SiFive Extensible Cache
+>> controller. The Extensible Cache controller interleaves cache blocks
+>> across a number of heterogeneous independently-programmed slices. Each
+>> slice contains an MMIO interface for configuration, cache maintenance,
+>> error reporting, and performance monitoring.
+>>
+>> +allOf:
+>> +  - $ref: /schemas/cache-controller.yaml#
+>> +
+>> +select:
+>> +  properties:
+>> +    compatible:
+>> +      contains:
+>> +        enum:
+>> +          - sifive,extensiblecache0
+>> +
+>> +  required:
+>> +    - compatible
+>> +
+>> +properties:
+>> +  compatible:
+>> +    items:
+>> +      - const: sifive,extensiblecache0
+>> +      - const: cache
+>> +
+>> +  "#address-cells": true
 > 
-> Suggested-by: Javier Martinez Canillas <javierm@redhat.com>
-> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> const or enum: [1, 2], depending on the addressing you need here.
+> 
+>> +  "#size-cells": true
+> 
+> ditto
+> 
+>> +  ranges: true
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  cache-block-size:
+>> +    const: 64
+>> +
+>> +  cache-level: true
+> 
+> 5 is acceptable? I would argue this should be even const.
+> 
+>> +  cache-sets: true
+>> +  cache-size: true
+> 
+> Some constraints on any of these?
 
-When running this in qemu, I get lots of warnings backtraces in the drm
-core.
+Thanks for the feedback. I will add the various constraints in v2, though some
+constraints will be somewhat loose as the topology is highly configurable.
 
-WARNING: CPU: 0 PID: 1341 at drivers/gpu/drm/drm_gem_shmem_helper.c:327
-WARNING: CPU: 0 PID: 1341 at drivers/gpu/drm/drm_gem_shmem_helper.c:173
-WARNING: CPU: 0 PID: 1341 at drivers/gpu/drm/drm_gem_shmem_helper.c:385
-WARNING: CPU: 0 PID: 1341 at drivers/gpu/drm/drm_gem_shmem_helper.c:211
-WARNING: CPU: 0 PID: 1345 at kernel/dma/mapping.c:194
-WARNING: CPU: 0 PID: 1347 at drivers/gpu/drm/drm_gem_shmem_helper.c:429
-WARNING: CPU: 0 PID: 1349 at drivers/gpu/drm/drm_gem_shmem_helper.c:445 
+>> +  cache-unified: true
+>> +
+>> +patternProperties:
+>> +  "^cache-controller@[0-9a-f]+$":
+>> +    type: object
+>> +    additionalProperties: false
+> 
+> What is this object supposed to represent? Add description.
 
-It looks like dma_resv_assert_held() asserts each time it is executed.
-The backtrace in kernel/dma/mapping.c is triggered by
-	if (WARN_ON_ONCE(!dev->dma_mask))
-		return 0;
-in __dma_map_sg_attrs().
+I will add a description in v2.
 
-Is this a possible problem in the test code, or can it be caused by
-some limitations or bugs in the qemu emulation ? If so, do you have any
-thoughts or ideas what those limitations / bugs might be ? 
+This object represents a single slice of the cache. Requests from clients are
+interleaved between cache slices depending on the client, the address, etc.
 
-Thanks,
-Guenter
+Since there is no strong relationship between client (i.e. CPU) and cache slice,
+the next-level-cache property must point to the top-level EC node, not a slice.
+
+>> +    properties:
+>> +      reg:
+>> +        maxItems: 1
+>> +
+>> +      cache-block-size:
+>> +        const: 64
+>> +
+>> +      cache-sets: true
+>> +      cache-size: true
+>> +      cache-unified: true
+> 
+> cache-level
+
+I will add this in v2. It seemed redundant since the value cannot differ between
+slices.
+
+Regards,
+Samuel
+
+>> +
+>> +      sifive,bm-event-counters:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        default: 0
+>> +        description: Number of bucket monitor registers in this slice
+>> +
+>> +      sifive,cache-ways:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        description: Number of ways in this slice (independent of cache size)
+>> +
+>> +      sifive,perfmon-counters:
+>> +        $ref: /schemas/types.yaml#/definitions/uint32
+>> +        default: 0
+>> +        description: Number of PMU counter registers in this slice
+>> +
+>> +    required:
+>> +      - reg
+>> +      - cache-block-size
+>> +      - cache-sets
+>> +      - cache-size
+>> +      - cache-unified
+>> +      - sifive,cache-ways
+>> +
+>> +required:
+>> +  - compatible
+>> +  - ranges
+>> +  - interrupts
+>> +  - cache-block-size
+>> +  - cache-level
+>> +  - cache-sets
+>> +  - cache-size
+>> +  - cache-unified
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    cache-controller@30040000 {
+>> +        compatible = "sifive,extensiblecache0", "cache";
+>> +        ranges = <0x30040000 0x30040000 0x10000>;
+>> +        interrupts = <0x4>;
+> 
+> You use hex as interrupt numbers on your platforms?
+> 
+>> +        cache-block-size = <0x40>;
+>> +        cache-level = <3>;
+>> +        cache-sets = <0x800>;
+> 
+> Best regards,
+> Krzysztof
+> 
+
 
