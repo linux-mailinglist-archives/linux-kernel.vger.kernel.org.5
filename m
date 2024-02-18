@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-70429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D5F38597A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:29:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38AB18597A4
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 16:33:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E93A9B20D91
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:29:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E80972814DD
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:33:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D17606D1A9;
-	Sun, 18 Feb 2024 15:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3766D1AA;
+	Sun, 18 Feb 2024 15:33:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="Fc5/yTsJ"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="gyh2ad55"
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97AFF6BFB1
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:29:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA4D10A0D
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 15:33:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708270156; cv=none; b=XaAWEK83rY5tkUBAsZSWV/+cNgMuNu6Gul7GqOGct9HuUbS/jrOTaUi4RwmjGCZw0qT18+6RSbdmB5nhzIOGA0Pt3kbejD8y4jRNeGyiK6c6Tv5/MHsM27xuJ7EF1lVbW1WOvMxP+ZGkuwnF7ZJXsQSqPRkkVGhBuYd8kvGwjZw=
+	t=1708270404; cv=none; b=qsFTJPTFXUUVN5AoIVxUZLcEJMKdeQVor3Egie97QKiA02nWM6aES5WbKMXeCiFKI9nP6tb8D8+3CMKSRSZhbYao6BBBRoHGRSSIOwaIojRdCQd1mVaKXutpIf2V4SRAfpSu5ou6ki3VD4sxv0HNOUeKrtvUBEbp1ZmFnhbcygM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708270156; c=relaxed/simple;
-	bh=9/2GDui5xVzR13Pfxw4J5DVBexEGAcZ8LxCEuKyJwhg=;
+	s=arc-20240116; t=1708270404; c=relaxed/simple;
+	bh=syDAiHk94O4JKIo1purC9KNq7m5mjo47yfL5tdr8N04=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SzImZmNQxbIGlzoqlXoHQMjfVRZTtyRYlRZGUCnOk1uJ37Ye6iz9BRu/FP45DVnkyzeE0AVyW6E2ILwnDLv231qGoYmvw/lOWU8fkgtWdCSDVLoaS7KaI9ix+Oat9SoK1+dkz7ognQmxe+SYl3vDCAlndzRJuHLUiF6lBtvD4V4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=Fc5/yTsJ; arc=none smtp.client-ip=209.85.219.53
+	 In-Reply-To:Content-Type; b=JDMrkKKvH2GYq83JIfUixR99BofrqueFEh4DNMBSiB6g00mIKlaCQz9BGSt9wM8Dz49R1PpefbIqUsTkRUaW7yE8AOj9ulztJRkFAGouIW0rsSypi7EEH0T7/9dGRMCB+i2xfPXpV53y6yzM84o4P4702XO+OramKKzZDEr3lSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=gyh2ad55; arc=none smtp.client-ip=209.85.167.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6869e87c8d8so16323466d6.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:29:14 -0800 (PST)
+Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c031a077d5so1941447b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 07:33:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1708270153; x=1708874953; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1708270402; x=1708875202; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=sA/SDVQnKOxW6UupKa+w/g4FZh2wW67n4R63yMQWkV0=;
-        b=Fc5/yTsJ3GWa1Cy0OThCksjitqfmFGjb3OoOScWNYngPFKArf8536FR/AxRLkfLCSX
-         cNvnZ2LH2xNt03MO9t3MPSaLZJGLhXqCC0nza2ZROJpjyi4xJTNFfQoP6AYQLKjc0CwY
-         VD9CUGvKYMzjEhoK4vE+UgyIbUiFH22BZhRDCDiUbjHCI5fQoYn16AVo/YN4A4CsX5fA
-         3ETb0/vJUFqwud88BTKelg9axsDOP7Y3sUo65Kqz0PmWdHQNiCSb51EQVSl7GqqccIuS
-         l/EMBqeR4j9iwNG/cZHArOLwiN/gTvNfi5g9XGMaYmm7l12vArled+3seO4R1+9ePICT
-         oobw==
+        bh=a/+WFb/6IHGO7DuuRGtC1ezHX/DnsS05J/35SHyK2KA=;
+        b=gyh2ad55ofvEiaolmxlP42cEAd2tP0hd5xdVjF3gF6bd+CdaWf+KY7NFXY1hd7klvU
+         3+nB1tVbJnqOspRVtOG1hLQlehtnGgk/G//naH5Y5UjfYmJar6UK1EvmrLCBByYuIEwd
+         JvPSv6jnMgVuLo7C+T+3n8fLcJvqVF3U+SWdeUdAfUtSb7v8QpXtHlGq3icHowyTPVlw
+         A0TBsqQhCm6NIH9taVb6P9VVd7ccLbGCzTW5s+7pWSkqXyVhtjA1U9EFlH6R/+cEhOiw
+         pbv1b7wGAOlsX32ayxzWqbXvfYgYLihaC9kMhOW7+f7Ojh/zK/Q8aVJzwBBuHqXfSV7s
+         Xyxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708270153; x=1708874953;
+        d=1e100.net; s=20230601; t=1708270402; x=1708875202;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sA/SDVQnKOxW6UupKa+w/g4FZh2wW67n4R63yMQWkV0=;
-        b=OlQMQVs3rCiryOtmnGNQCOmpD7buvVdXWtVmmA/BHT8iYSvHtZsaZjsZBH4+aJztPn
-         mPIQMklnDbd0Jy/7BvB62TzXoibJXSeVKQPQW9DxitVwaKCoQuY14d/mxZnr4r4hULK3
-         8L2K6I3yJ/+IvDhvzfu1fOH7hwUr30ezy07TY0PT9IBFnoyF0dNdVPKPr47hx/p7VYWx
-         Vr2vMZDU6bgZmGCCxWGr1dGcU2FrdhU+8CXNcxZ1RYfG8p0FOkqkCe/rLch4tPeYJ/IT
-         vrm1VpVBlQOzu9HtWWVyc4BTUVN/dUA9NXVDuvcJKcCXjcXpgBmtoprO5ZmHJ7R3xrDA
-         rSLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWC0+57Nr0Z7slhmSs2T8no4+XkfPuUz/Fu4GTUjMZpu6CciuNE5VXGHME3Ku2cd4L1PrFqXfrsT7YKt6FZwSc/z08tHjwnqUcovhAo
-X-Gm-Message-State: AOJu0YzTs4XkwAR5OAV0TSmmBtJZJ0MtLEfrZiPJUCH1unm6zRJeWWFu
-	+BvxatUT0X19i+oSzs+2iP30ELPQA0D6q6zTCUfnHLInLVnmqA2qO2njwbd0Tfw=
-X-Google-Smtp-Source: AGHT+IFYjEWHXZNGVIdDOUHife0DwAl47pjuT11DGcHdgJFzG89QSi8SN5G0rSimAf7gcq/tXvbxJw==
-X-Received: by 2002:a0c:dd91:0:b0:68e:fcc4:cb22 with SMTP id v17-20020a0cdd91000000b0068efcc4cb22mr10908385qvk.35.1708270153536;
-        Sun, 18 Feb 2024 07:29:13 -0800 (PST)
+        bh=a/+WFb/6IHGO7DuuRGtC1ezHX/DnsS05J/35SHyK2KA=;
+        b=bj1NW45QYYXvKnwvpmXptMpRikR9idDH5nFNTh2cKtLlGjh0zLej88TUc1/t4PbEu9
+         vyGe+zoIofjbSrwTcgxhtXNoGsnRlDj1tKwq0CYdRnYa/8wkXP4rBorzHUMel6JX09N+
+         nmBMf/gSY+DN3fe5g0KURHTi2gOwxz2iXzDCN52fDtnTtVFG96+hOuNiyPd50kf808XS
+         yrhIzgaMk8uG19g8Fzh00iZ8EvLyv+0aMoa492YSzNZmGxzt7zB1TW8sVkHCoUhhvsPE
+         feYsBlmYu8TA3WwjHDN1yxUwf9RJQqDlrPBqLSL6MQVBclxzBne68kWpySGG41dZyaxn
+         wYaw==
+X-Forwarded-Encrypted: i=1; AJvYcCWd1hrJszwvw+SoWVdq6FvsoycXuKFYV+ex/rMdbsDH9WxJ/xahcDILykP2jXtA34CA0+CQyie9ZpU9zwSGnInG/hutE0mYyegCtR41
+X-Gm-Message-State: AOJu0YzjDeBBta5x84gtihm20jWABMbGgEVOZTBbv5fPpzSmp3gIhcgV
+	ytlVj+fEOqszxeeWp64MKraD+TNlSSWMJwse7SQEvqs4AdH3vvVCu3R7cSxITvY=
+X-Google-Smtp-Source: AGHT+IH1iDyN2tzMwmReFoBP6SQJJq7Vr+GdTMJIqYq1jnekXccdpbNnTxJEdOIrHFh2U6cMKFP2kA==
+X-Received: by 2002:a05:6358:7f0e:b0:176:92d1:568f with SMTP id p14-20020a0563587f0e00b0017692d1568fmr9886249rwn.18.1708270401977;
+        Sun, 18 Feb 2024 07:33:21 -0800 (PST)
 Received: from [100.64.0.1] ([170.85.8.176])
-        by smtp.gmail.com with ESMTPSA id lq2-20020a0562145b8200b0068f4659b8d0sm1741150qvb.107.2024.02.18.07.29.12
+        by smtp.gmail.com with ESMTPSA id x19-20020ac87a93000000b0042de2e2195fsm1719582qtr.26.2024.02.18.07.33.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 07:29:13 -0800 (PST)
-Message-ID: <72221da1-4a1a-4947-a202-9de203032f5c@sifive.com>
-Date: Sun, 18 Feb 2024 09:29:11 -0600
+        Sun, 18 Feb 2024 07:33:21 -0800 (PST)
+Message-ID: <a3139d86-f2d3-45c4-9eda-23afbeb3f3c2@sifive.com>
+Date: Sun, 18 Feb 2024 09:33:20 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,8 +75,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/6] dt-bindings: cache: Document the
- sifive,perfmon-counters property
+Subject: Re: [PATCH v1 5/6] dt-bindings: cache: Add SiFive Private L2 Cache
+ controller
 Content-Language: en-US
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
  Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
@@ -87,46 +87,48 @@ Cc: Palmer Dabbelt <palmer@dabbelt.com>, devicetree@vger.kernel.org,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  linux-arm-kernel@lists.infradead.org
 References: <20240216000837.1868917-1-samuel.holland@sifive.com>
- <20240216000837.1868917-2-samuel.holland@sifive.com>
- <eeb2331d-10e6-4902-91ba-85896a8f0ee1@linaro.org>
+ <20240216000837.1868917-6-samuel.holland@sifive.com>
+ <7d7fc53f-1b5d-4f1f-a53f-f0863a79a79c@linaro.org>
 From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <eeb2331d-10e6-4902-91ba-85896a8f0ee1@linaro.org>
+In-Reply-To: <7d7fc53f-1b5d-4f1f-a53f-f0863a79a79c@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 Hi Krzysztof,
 
-On 2024-02-17 3:00 AM, Krzysztof Kozlowski wrote:
+On 2024-02-17 3:12 AM, Krzysztof Kozlowski wrote:
 > On 16/02/2024 01:08, Samuel Holland wrote:
->> The SiFive Composable Cache controller contains an optional PMU with a
->> configurable number of event counters. Document a property which
-> 
-> Configurable in what context? By chip designers or by OS? Why this
-> cannot be deduced from the compatible?
-
-This parameter is configurable by the chip designers.
-
-The information certainly can be deduced from the SoC-specific compatible
-string, but doing so makes the driver only work on that specific list of SoCs.
-When provided via a property, the driver can work without changes on any SoC
-that uses this IP block. (None of the SoCs currently listed in the binding
-contain a PMU, so there is no backward compatibility concern with adding the new
-property.)
-
-My understanding of the purpose of the SoC-specific compatible string is to
-handle eventualities (silicon bugs, integration quirks, etc.), not to
-intentionally limit the driver to a narrow list of hardware.
-
-Regards,
-Samuel
-
->> describes the number of available counters.
+>> From: Eric Lin <eric.lin@sifive.com>
 >>
+>> Add YAML DT binding documentation for the SiFive Private L2 Cache
+>> controller. Some functionality and the corresponding register bits were
+>> removed in the sifive,pl2cache1 version of the hardware, which creates
+>> the unusual situation where the newer hardware's compatible string is
+>> the fallback for the older one.
+>>
+>> Signed-off-by: Eric Lin <eric.lin@sifive.com>
+>> Co-developed-by: Samuel Holland <samuel.holland@sifive.com>
 >> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
 >> ---
 >>
->>  Documentation/devicetree/bindings/cache/sifive,ccache0.yaml | 5 +++++
->>  1 file changed, 5 insertions(+)
->>  
+>> Changes in v1:
+>>  - Add back select: clause to binding
+>>  - Make sifive,pl2cache1 the fallback for sifive,pl2cache0
+>>  - Fix the order of the reg property declaration
+>>  - Document the sifive,perfmon-counters property
+> 
+> This is no v1. Please implement entire feedback from previous v2, v3 or
+> whatever it was and reference old posting or continue the numbering.
+
+The old posting is referenced in the cover letter:
+
+This series is a follow-up to Eric Lin's series "[PATCH v2 0/3] Add
+SiFive Private L2 cache and PMU driver":
+https://lore.kernel.org/linux-riscv/20230720135125.21240-1-eric.lin@sifive.com/
+
+So these changes include implementation of the feedback from that v2.
+
+Regards,
+Samuel
 
 
