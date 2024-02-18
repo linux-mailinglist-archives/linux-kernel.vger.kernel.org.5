@@ -1,79 +1,86 @@
-Return-Path: <linux-kernel+bounces-70405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDECA859753
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:10:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84BF085975F
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 15:18:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C953B20972
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 14:10:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BFAB281C20
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 14:18:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 221F86BFC2;
-	Sun, 18 Feb 2024 14:09:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98906BB47;
+	Sun, 18 Feb 2024 14:18:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="RwTeyYve"
-Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2135.outbound.protection.outlook.com [40.107.241.135])
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="TQzREw6v"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2100.outbound.protection.outlook.com [40.107.7.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6546BFA2;
-	Sun, 18 Feb 2024 14:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 106A731A66;
+	Sun, 18 Feb 2024 14:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.100
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708265390; cv=fail; b=i7AbIDtkDyyWM7e/tys8mlSwhOCHv3Zcbc62qn5kU7in1huk6apd3wF9y1PzAV2XhitV1wCbvJDa3MUsD5HyLJaFzgWNwTpF3bCo5lvzypVlDZ9cTRr4NhZgCHGbEy6dXUuXRBPBg0ljXLjV/7L1/TyJTlxLbQ7dVav1WqSz3xs=
+	t=1708265911; cv=fail; b=uFhXix8MmGX7Ij6aKx/MQJ3llsMwbxqt5nhPEyslZ4pmpKKR9lq1I0DWIzP774r58ITcJfgByyA9JRKKOVlZSnPNMoV6ji185C8aGVWpnZ+Qlm0O7SYkejJH6mGPwCJX81arAujMCUwAi6iwI4gyPA7tGbdwiJ8kboNk0R1aV0g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708265390; c=relaxed/simple;
-	bh=dqB9rrYDTEGwEObPzAbCtE3BBjnnWU+np2E3ITlSDdM=;
-	h=From:Date:Subject:Content-Type:Message-Id:To:Cc:MIME-Version; b=F84v4IIO8Sn4BeKWHYPjsCErxJ8tVJnt50GFpZjEd68i527caRhxERQ4Ys3zKAe5v2nF7gkn9SANoXlNFsZpb6DQKn7E0lKCUXVLVtkZ4J47nIpF5w24Oi9e5CoSxJO8j1joJJSGHoMttzML9EBM5pvzlhehKlwBhosouiJdeBs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=RwTeyYve; arc=fail smtp.client-ip=40.107.241.135
+	s=arc-20240116; t=1708265911; c=relaxed/simple;
+	bh=vjngFS314SyJC0oQX0ALCdxk91gdfSvnbZEBRXF6faE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Isw/FQTJaEf3dZz166/kEQwc7HFQiOfMqkKfLZ5p99t0ijVLkBkFGSamWrwhEzwcaaKfXYl/ejX3oK9s+F8UJSCsNZzwWuRdMaN0Fqu99fH/o2K3PjmOSUpfeNnl+hTcudQquZt0PI9hqcTAsimYlRA8NdBUVAu2rRGZxsnBEiE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=TQzREw6v; arc=fail smtp.client-ip=40.107.7.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AWuJOeplAhmMxe7HrN5+e4t2fY3bXYSu+pTsthPRW2f90rCi2/wVfUTtQbjnbVDwMwd4Ydz+1b8SglsW+1YF8AIIEpApuMlY/DqQVQhgtu5qF/bcML/3VOlSleJ20IEoAe/Dq9CzyxqFVWQPKwjXM43YSeqRuBn6ZfpToH0NlUJZPt1F9+7M44SfLhmYHJPA+yM/q9g50e6+IV+USdspC5T8VGDa0ce5xrSDHMBrI8N2mp62CWtmJqPXDlVqvOw+nQJ4aIIdZSzToDstszEoGv6xcliwwT0a8ZSQf322wcHoP+TS6f1IDpwOxiWP6zOE6JgPacOUSeFLDzd70xfd7w==
+ b=hxT4WDCuk2fPCec3B7GtBsV7h6MzCtOd+JWSanLdupxxrt5cQY3SNeDgXZAGMjxxpHV8Ov58zY2cRuoZCXDZ21aixhaOnevLnL14nmS5DlqPwTA9vAyNK1Geds9lAIxq/Tnyl7f64ZSmBgkOXfwN+SaWYnUnD2LzbEYRCZPmeyW1BKhawP1JNEDQ3sb9mCNKOfycL+/yj5XWMdx0OS9ntURhzJs4f2d2r6Gian3JFsqU+AsM9Fz7HG3UIg3QYvJKkw8bLcHHlb+D/kg3iGeWklLo26983fd3utrbRjZE5xj9K/1gNu0WKSYAZz2hPDrhH3z+iO5ppww9EBWU7RvxXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9nzbn7YSkA7fSnCwjsY9fuI9k2EwfVqVaGPgIDa5NRQ=;
- b=B9wrHnDL/d+rJY+S6tFkds5PMskoIPwIV08GGzYbKMTaHukdSC+mGGBzTy5VUgJyGChrVvcvVZR+7dz6dgk7berLeoeHLueW9XfoJsnSf3RxwCXHtpbFeaFby8sKQxxJjWDV69gPHpyAg7On5BqA/aTVP5NCAxTy5VJs6kXejo6H/1+f/Ia8b+TvWdq9lPZnRBNOZ0SUSKglkQywcBPygeboIYwgcJMz04iwDrBfC1HL412pzhNB4zNKwL4dPJt60M9S4XjCLPh5EWySvHXvSvUvw4s9gzzZ844WNRbhYbnpJs1uSrxtdhjutcyUhZbgg3mJSqY7vb5F33Zf8my4IQ==
+ bh=YYqytJX3ZHzUePq4vFTathQKUcMZ3wz8ccnz12V092o=;
+ b=dqIWe9r7tcOauSQiySOnn3EBnaXRTy5JN2DY6fqnQSQQhlFSUGjexyT6k5EFxnXjARAjA2Cv/7FtLlofKnuyBvCYmD5TVXJNP+Vg0XBGtCE/BplASUdFB7o3JZjXRE+ZNCsLM6lgW53DH+LhD06oXnpVevz6FCBym8W9xyXWkk1yOpIT2UOtPp3j+DYxQWrrr4Iu1t2g3kGIPbijJOMzAhdq0VIYxWwbYBSKwVCa22CMWhli5jkHrFgYe3abOeyN1CfY2dAvSbjaKKsjk6XkWQA7yq+DJtZf5oOrpfIFn8ivzVl8oi5+mEi82SY3kiiWbhKWcX3J/FZ/S81fBhIQ5A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=solid-run.com; dmarc=pass action=none
  header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9nzbn7YSkA7fSnCwjsY9fuI9k2EwfVqVaGPgIDa5NRQ=;
- b=RwTeyYveGerGUiZj2GhliUheo8wGYcNMGUM+ppZFM5DAEFzPgdtUiwOULBdBojSpxlSmNhRlKDlmPziJt//KZzoZV2nhI5fGlECoWEyjZSI9n9RvU0psMZpgR4WVpMoAugrYdXj5q4IUzVRcESfYV5zrDxSujilWopVLbKAqS1w=
+ bh=YYqytJX3ZHzUePq4vFTathQKUcMZ3wz8ccnz12V092o=;
+ b=TQzREw6vq73stTaRKONGmqiQMPqq1e5zpBDxkqz5iV2Xyhbvfy//QKtkx4rTroIfJpDgTECBEUsKFoAInHiyMa3RXke25CkbLAEcu+bf+81TFnoJ9awvXZSeXQJA8DH+QYFrLBu9PPi7vB9nh9+2rUXbpimOekL7uY16CsHFnAU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=solid-run.com;
 Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
- by PR3PR04MB7370.eurprd04.prod.outlook.com (2603:10a6:102:92::5) with
+ by DB9PR04MB9914.eurprd04.prod.outlook.com (2603:10a6:10:4c1::22) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.26; Sun, 18 Feb
- 2024 14:09:44 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.31; Sun, 18 Feb
+ 2024 14:18:26 +0000
 Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
  ([fe80::3b94:f607:ebe1:7d6c]) by AM9PR04MB7586.eurprd04.prod.outlook.com
  ([fe80::3b94:f607:ebe1:7d6c%7]) with mapi id 15.20.7292.033; Sun, 18 Feb 2024
- 14:09:44 +0000
+ 14:18:26 +0000
+Message-ID: <c37af45e-def1-4a97-ae01-e00e5b22eb23@solid-run.com>
+Date: Sun, 18 Feb 2024 15:18:21 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 0/5] arm64: dts: add description for solidrun am642 som
+ and hummingboard evb
+Content-Language: en-US
+To: Vignesh Raghavendra <vigneshr@ti.com>, Nishanth Menon <nm@ti.com>,
+ Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Alessandro Zummo <a.zummo@towertech.it>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Yazan Shhady <yazan.shhady@solid-run.com>,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-rtc@vger.kernel.org,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Suman Anna <s-anna@ti.com>, Grygorii Strashko <grygorii.strashko@ti.com>,
+ MD Danish Anwar <danishanwar@ti.com>, Andrew Davis <afd@ti.com>
+References: <20240211-add-am64-som-v5-0-790ed7121249@solid-run.com>
+ <8aa96c66-d054-4b33-8972-f9faf2e84482@ti.com>
 From: Josua Mayer <josua@solid-run.com>
-Date: Sun, 18 Feb 2024 15:09:10 +0100
-Subject: [PATCH] phy: lynx-28g: use read_poll_timeout when waiting for
- halt/reset bits
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <8aa96c66-d054-4b33-8972-f9faf2e84482@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240218-lynx28g-infinite-loop-v1-1-59cc5cef8367@solid-run.com>
-X-B4-Tracking: v=1; b=H4sIAIUP0mUC/x3MSQqAMAxA0atI1gZqVByuIi4cUg1IKq2IIt7d4
- vIt/n8gsBcO0CYPeD4liNOILE1gWgddGGWOBjJUGMpq3G69qF5Q1IrKwbg5t2NpTWPGgvJqqiC
- 2u2cr1//t+vf9AB0MvvRnAAAA
-To: Ioana Ciornei <ioana.ciornei@nxp.com>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: Jon Nettleton <jon@solid-run.com>, Rabeeh Khoury <rabeeh@solid-run.com>, 
- Yazan Shhady <yazan.shhady@solid-run.com>, netdev@vger.kernel.org, 
- linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
- Josua Mayer <josua@solid-run.com>
-X-Mailer: b4 0.13.0
-X-ClientProxiedBy: TL2P290CA0003.ISRP290.PROD.OUTLOOK.COM
- (2603:1096:950:2::20) To AM9PR04MB7586.eurprd04.prod.outlook.com
+X-ClientProxiedBy: TL0P290CA0011.ISRP290.PROD.OUTLOOK.COM
+ (2603:1096:950:5::13) To AM9PR04MB7586.eurprd04.prod.outlook.com
  (2603:10a6:20b:2d5::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -82,169 +89,104 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|PR3PR04MB7370:EE_
-X-MS-Office365-Filtering-Correlation-Id: b5bf4801-fefb-4bd7-4595-08dc308b41cc
+X-MS-TrafficTypeDiagnostic: AM9PR04MB7586:EE_|DB9PR04MB9914:EE_
+X-MS-Office365-Filtering-Correlation-Id: e8da22c3-bba1-4aff-f4f7-08dc308c78dc
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	c1IJrod52gOlZYKURJ4ptl7EbE7LP43MRuKMdM1NgRH+W1lC63c7D+hQY2QI6HRHh2UijE5DmKxvBTy31IliXt7TEYYxX8/DPSgiypy81tWabBYSr1YKFJPOoRljQEfw2UCBmzeiFpCye6wSUouknZpIj6g/d5E/bnFFQST/yKiZEWli+20P6dYBNJ4R+SA03KUSz2iv0geEKrZH23XELd8eecAA/HeVnOH6IOUExq6zZd1Aho6P1a/gbipuh4EINOOwmk95CrXa/HtqmQcCJk1wMstIxEfnAfCIpYMhIN885IWJi21Tk5EHiRseqwY34KfNI+Dsk+ypY2+cVkuUJFttdHk2QBlnZGp/tkwKgu4QyT1YBV1OGarEFsHzBnZXGS7EckvlI1NZXTaeqUosgWN94q4rDLg0XSdwhq2WW32CNhP8lXSgB8JE+hNCCuN0+HuMVZF5/RQImGvNFaQSI/6lLSzGKw7tJ3vDkQle636a6NnKibrMv5c7hxWYPrTuOO2oDbFhmoa9L8/p4V34C4NuUZrJA8MCS73qlsMQzU7ZM+ZRYureFpzNe7z8KCM9LWucmc4dJlp3hiud1Y0dXF5DOoEhmAYNIPIsboKq/P2s3p7sMHF3/RG087z9qtp9
+	2E2JqsmHOf2pvmKLO8OQq0OA9x0gKrlDlVRC79/pUnyUFQ9LIrL4ebqnuPlpBlbyAj4WZkENf6dxtuCDfCLZGgJzUGtiU+IGMw32o7u1/mKYjL7EdYTT0GQ5IL8lSqD0UWZj+6sxFFCbj0PE+IQ1B9S7O3Rd22iEep7ylc215dSiN16ZxVi0m9foenttfmtVxedztHb46p2WAqpcnHbvyJ0MF7YT1o52Ah/sqy+AvyaD3dzJbtzwRr8nfZf5DSKCcATaTBF3WLdl0fssGGRtTv2MhhH4Y2ZGBYgKhHplIXmhDrRK29XyxDBl5XNX46JOUXf2zrwjP5lCXQWPyAjMobCeukz/r2YVmu1T1cvrFL6JfAVJMQWVhzDNs9X63YuCjY92QIpHFhk0iPZQdXtcTwdvyqm0UtPSwC8RIEjjSrx6onIyyqH5pTPwwR5kk/K2ANgHvmeZHgaGQAT+DRJhB0tAcEYKkoqzocdJNDHpCmC+p+uWkX+UcUs31R9Q3m+vfFi30V3fKr/1VWBZU3CjlPC6f5hXAs+ecJ+E3xy7bIeVOgFup6sC2+zpHfqHdi3z
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(376002)(396003)(39840400004)(136003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(8936002)(8676002)(2906002)(4326008)(5660300002)(38350700005)(54906003)(36756003)(2616005)(83380400001)(107886003)(86362001)(38100700002)(26005)(66556008)(6506007)(110136005)(316002)(66476007)(52116002)(66946007)(6512007)(6486002)(478600001)(6666004)(41300700001);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(366004)(346002)(376002)(396003)(136003)(230922051799003)(64100799003)(451199024)(186009)(1800799012)(478600001)(6512007)(6486002)(31686004)(41300700001)(7416002)(4326008)(8936002)(8676002)(5660300002)(66556008)(2906002)(53546011)(6506007)(316002)(6666004)(110136005)(66946007)(66476007)(54906003)(83380400001)(2616005)(86362001)(31696002)(36756003)(26005)(38100700002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QTQxS3FQOXVLSXpjampHTTRSd1hnU2Z5Q0J1UVBJdEVrcUNuTjg4VFhIakVz?=
- =?utf-8?B?Z1QwNWZPU3pGNE9relZoTmQrd2xBQU9iYzBVYWkzSGJSSUNsUlRvVXpmTG1Q?=
- =?utf-8?B?WWt0bk1TUzI0ck9pT3RjRFBSOTh0RkVja3FXV2Z1UVJ2QzVhWU9kSU45RHYw?=
- =?utf-8?B?dEg1eHRlR2VKL2dlRkpDMTViRVl0UGZxT3FTUlloQU9OL0tiZ1pzcGlvcGhn?=
- =?utf-8?B?a3lFUURseFF3dWpaaXRXREVWMFB0RjExaXFXL0pDNUJkZ3MzVU40NkphQUps?=
- =?utf-8?B?QUE3MWwyTWNrL1g2V0ZLS0tBcCtubG4vcTJsVEYyc0VEWVpRUVpQU1NxTkFP?=
- =?utf-8?B?TW11K3ZVSzZ2d2w5L3hSbFZiNWJFeTlkWWpaSFZKZVp2ckJzMVc4KzE5M080?=
- =?utf-8?B?N2dxYzR3blc2MU5VdzlXWGROWHBuZm5mTHNzbXd2M1dwNU5jVFU2SzlQQlZW?=
- =?utf-8?B?ZkpzeVhlWmhLNFZ5a0tFVWtidTFtWHVkREJJUkJxRHpjN3pCbDVtSGhaR0xE?=
- =?utf-8?B?R1hZSjlUMVJCeGI5RzZuZ2V1WEFiTXE4SG8zQjRBY25Da1U1ZHdkWmRudXdP?=
- =?utf-8?B?b1ppZmY1bmd1eEVVYkFzcHdheW02MUpscXpmYkFySTBRRU1BSEtka1Rkak5T?=
- =?utf-8?B?MHpFb0JOM01RWUFUTUdaNWlEczNXMVBpbHB5WERvdFdOR3h4OW5kTmhJcVZz?=
- =?utf-8?B?RytDQWN4b2U4K3p1bVlBNXFTRDhNQW8yenYrM3FBM1Q4VTFKU1czOFpNUjZR?=
- =?utf-8?B?MUpES25HMi92VjZMbDlEL2I2Y0lDWmhjY016TlZBTE84Wk1mQlNTNjE3MHdk?=
- =?utf-8?B?WWRIQzIxWnlwTDlkVnhnMTNVODNtTFdwaXUxc1NMQlcyUmhubFlHejFMVHBa?=
- =?utf-8?B?anptLytsbEROSFM1MExKUHI5STdnSGFXelBOZ09rSFlWa1hFUU9GNGE2UkpS?=
- =?utf-8?B?bzF4TllpNmZiR2E4SExhaU4wbEVNNmVZR2FMTHFYS0drbEVmcjBiL0I5MmN4?=
- =?utf-8?B?eGs1T2RjN3R6OUExTWkwaW9LNjAzRUtSc0M3bThOYkJ1MzJqRjcvOThCTmdV?=
- =?utf-8?B?MW5GL0twcXlYSjV6WC9Xb2lNUTZMeWFvdWFLSmhMUGo0YWllbzZhMWFSbW03?=
- =?utf-8?B?c2ZwdG1PbVFNL04rR0dadzFhaUdjYWxvTytLbGpPaVRyak5UVXp1WEV3UWUy?=
- =?utf-8?B?STRUTTE1NWxKdnUwU0tWbzR1OVNSaEJTcDJaR2Y2Y3U4VEIwajM1eHFqTzBC?=
- =?utf-8?B?ckluVWtNWDdBandmK3o2ZmJzc2Y3VEpxRlR2Uys0akREM1RUYWhocDNzcTBs?=
- =?utf-8?B?TkdIVEN1YitlZTBwVXRMR3JidXRqL1dLandhd2VUNURjOHBQVExBeW9GaXFt?=
- =?utf-8?B?VlQ2aEJrSFQyWWVFUGx4ZXlzTWpFb1pTMXFOSGpoc1ZZWTJtdkV6OFo1Vjlz?=
- =?utf-8?B?ZG96VVVsUXhBKyt0dlpFbW9WR0xGYXZQeFppb25SU3ZiMVMvWlhORWVSUkxx?=
- =?utf-8?B?MDhJTUQrRU4rOXdpUnEwUDZpL2ZwMGV3b0FLdk5iTktxTmpJL203ZnJDQ0Qx?=
- =?utf-8?B?d0ljZFFtUTFOV2t6cUc0cGNzbFZmVXpta2lmdFJYMS8vQkdWaE96YktxbWV0?=
- =?utf-8?B?djlLNjFkNDRlWU01SXZmbEgvdEg3RElBVlhoWVUxR3Z3SmRXS0dLeldZR3ZV?=
- =?utf-8?B?ckwyYUlJQ1VrdklHUWtnSG9FakZWK2dPcUJHR2NVWGdKS2NpMzRrRzJ4MkJ3?=
- =?utf-8?B?VkZWOHdFWjNHTVlJWTEzWXNJcVRQc0tRbTg5Yno1NXE3VHlaSitzajhpajZh?=
- =?utf-8?B?TW43b0dFVDlrSUZVdzEyY2ozbFFyYWNHVmJXS3lIUlJCYjRnZnd4NldTdy8z?=
- =?utf-8?B?UlFNei9pbE1WNTRRWFFMdEFpVzVVb1p6bkRHdTc2NHpPMFYrdm1kNjNJNFRT?=
- =?utf-8?B?ZVgwN3JKT3NaZGdBa2YrTy9rQTlvdjZJWjVkNlR5N2w3RGRURUVTMmIwcGFG?=
- =?utf-8?B?SjNhMy9qNWlkUXN3WklmaDYzbUIydTNhTyt4Sm50ZEhpZ3ZjUWtIZUxyVFNC?=
- =?utf-8?B?WXI1YVpiL3NITEdyTHVpL3d5YkhpUVhMMllSWGM1SjdFY2E3dVl0NHlWYWRQ?=
- =?utf-8?Q?VO97GOBSIg3uIUhDa+GIZyd45?=
+	=?utf-8?B?VkJFYnVhM0kvc2N1WWFac2V4blhWOEVCcWx5dGRjb0o2eUxPSXl0WnhYa1lT?=
+ =?utf-8?B?cnJNQytWTTFjVlRJdFo0eXBEOFFleWZqdXpiWlU1NG1ockoyYUdwMFdvZFA1?=
+ =?utf-8?B?akd2cUZrZ3llM0wzdktDNGhIZWEwMmdRZGpmNEhJQ0dpcVZVWWRSNURMOUZq?=
+ =?utf-8?B?T1NWaStDYmJnNVlaK05BYWltK005MjkvQVdFYmtoY2pUeEtBemRaS2dHMUhD?=
+ =?utf-8?B?bEpJQmhCa0NqazZLYWZHckx1VlNzUUE3L24rUmo0eVJsejYxcmdQSjFOcjlo?=
+ =?utf-8?B?aThUQnY0Q3VuUzdmR2lnMW1yMnhqOENraFNwUVBFR0RWVnEzbTBzL0pjczBt?=
+ =?utf-8?B?UGFVVEo1bGI3Ymp6dHJ0U2RNVVhIaEJiRWFrT3ZIeEMvbStIeTBDNjd5cTFK?=
+ =?utf-8?B?T1NCY1JSMyt1UEhpSEY3ZWlQa2RqTHQza1UyQXFqejAzbUE0Y09POERIYURL?=
+ =?utf-8?B?NTgwbE83dDBPNjRTTTFjbEEyZ1hrL2ltZitEeGRXNVVaTHljbEVYN2hXY1Ru?=
+ =?utf-8?B?UUY3cEFHajN3MTNYblVucVpDOHlVV1l4TUtuNUczQnNPSWtuTFc0SzBDUGJS?=
+ =?utf-8?B?MHp6RTdtSjF5YS9wUDNJR0dWYVNzMWFnamlIb2JoczU5UTRwQ0s4UWhUaTA1?=
+ =?utf-8?B?WTBPZTl6cDJOcFkyU3gwWFBtTVRvV1g4Zk9kdXBOOUlna2ZmL0syUUpKdlRK?=
+ =?utf-8?B?NHVPbW00MGhBaWh4eU5NR05ESW16UDBXalNBNnBZZVNOVTZBcnpHZ0NPM2dv?=
+ =?utf-8?B?eWN3MzJnejg2S281R3hGZ2cxU21scFR3d3hWY2xjNm45MXNCMFZNYk1oMDg3?=
+ =?utf-8?B?dzFGN0hjY2J4SHZVQ0Q1NmdjOUtsZ25BZThmemJlRTdCUmROS0xLNEgvM3k0?=
+ =?utf-8?B?dDY2Q3R1T3NXaVhHWjh1SUJFYyswQWN6WXhPNkFLdEphWFMwQUlFeHA2Smo3?=
+ =?utf-8?B?VWQ1Y09TZDI4dk55ZWNSejNiM0JPVHpDTlI0OFFTaU93RDFPQ3ZhOW43KzV6?=
+ =?utf-8?B?WC82cDlCUkhOcUV3cWwvelBab2FMeWd0OVU3eDY2dGptYk1xcEJORG9rVWRH?=
+ =?utf-8?B?clFTQjdUN2I5VVAvWUs0alZiT3lGTm5oZ2JmdkhRa0liVk9XaFNvTGZqMFVP?=
+ =?utf-8?B?QjVvS2lpQUVCYTZqOE9yd2dKNkNkNjdSamxiY2Q4UWdUa1k2S0Rxcy9uZlZV?=
+ =?utf-8?B?YkRaelB1Y2laQUNDbmFEdFBxYWNNTEdNcVkyNFl6OFpoK252aU5BNnZMdVFp?=
+ =?utf-8?B?cWJtZXI2OWl0NDBRYXNPbE1mUGZDVGI2WDNwbnJlZVB6OE5oazBseHNDNlRn?=
+ =?utf-8?B?cDR1cWlRdHAxWmwvY3Z0NXlHYUtZOWVKeTJHOUFJd01mR3F2Tm9nRTVpMUVU?=
+ =?utf-8?B?d0I0c1F3ci84enRodDJ6aENOL0pnR2FoUEJhVkVQL0F4clFhV2NQenIrY250?=
+ =?utf-8?B?ZHVvT1dtZ0xGcGFHQUNxNloyL3lxbUZuSGd0K0RHNkkwU1loQWtiUTAxYmxT?=
+ =?utf-8?B?T1FZejRRdDQrM0liTnZWK2pFUTZWQW9nOEJYMFlXKzdtVW1sUHhwaU8wNHVm?=
+ =?utf-8?B?NDZsOWRNOWQ4eVpnaTRMN21kV2toZjhKQW1uYzBoTVN3SGlmTGEyQXpJc3Vh?=
+ =?utf-8?B?amtRYTl4UGhIY1l6ck9zangwa3hGZzFJTXZ5YkU2ODJRcVJvaWVSUVVGUmRG?=
+ =?utf-8?B?eDFkVUZMTms4VzZmTHMxTVk0TU4yZkN1QUxCMjZmUGxSZk0rbkJiMVJmMjVW?=
+ =?utf-8?B?RkNPMkxBWXZtZ3krTUt6MVUvdTZBM1p0NUFDdUlGUnVQUjRHNzdiQWhCeHR6?=
+ =?utf-8?B?TC84VGJCL2wvSFY1M1VKcVpBNE1mQzhkazJISU8zMDJ6UFp4OUFJdTJMbGpa?=
+ =?utf-8?B?eTF1TVBUWW1rR2V4TkNrbEkyT3pDUWdtWVdZN0djQ1RjU1k2c1o4WDZCUmpX?=
+ =?utf-8?B?eUJQbjdzblFNQlhMMWk3Wk1PMXlFeG5EcGxoWFBFZGgyZ3JXVXRZSWl3eHhH?=
+ =?utf-8?B?Qm96ZWJPaWtmSDRxZHV4U3h5RHFTWm5aOGhXcUZxT2g5RnZHYlVVUHBzUzBy?=
+ =?utf-8?B?VXZXbXc2RmF4SnJiellBQjAxWnRoOFc0VmZnR3ZYVEl1MGIzUE5CVUYwVUJZ?=
+ =?utf-8?Q?Tb/f9no7omsyuyP/juX+dLfQM?=
 X-OriginatorOrg: solid-run.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b5bf4801-fefb-4bd7-4595-08dc308b41cc
+X-MS-Exchange-CrossTenant-Network-Message-Id: e8da22c3-bba1-4aff-f4f7-08dc308c78dc
 X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2024 14:09:44.3309
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Feb 2024 14:18:26.3295
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8B0nwtRXH4W2Qzer5izexgZFNeO5KAE1O9yciqI3FQCFbg4IFFAgwFb/mcqz9WUmCLZDavfbwQFyazQDhExeBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR3PR04MB7370
+X-MS-Exchange-CrossTenant-UserPrincipalName: 0AqkbLPXEn0yNNSiSCqwYJeZ4gYbRUG66aea15jObhIpr3nUWv9xl1vDPHs4roAKjiBDjQrUiY3kIj+qDT01jA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB9914
 
-Power-on and -off functions set and wait for self-clearing reset-
-and halt-bits in serdes registers.
-In certain operating conditions these bits may not actually clear.
-
-Replace the infinite while-loops with read_poll_timeout to ensure that
-power_on and power_off will always return even when the bits did not
-clear within a full second.
-
-On timeout print an error message and return error code.
-In this situation the serdes lane has an invalid state,
-without no known recovery procedure.
-
-This fixes an infinite loop / hang during boot observed on a
-misconfigured lx2160a system where serdes #1 PLLS (161MHz) and PLLF
-(100MHz) were mistakenly swapped.
-After reset the PLL's did lock (to wrong rates) but the serdes locked up
-and never cleared either lane-specific or global halt- and reset-bits.
-
-Signed-off-by: Josua Mayer <josua@solid-run.com>
----
- drivers/phy/freescale/phy-fsl-lynx-28g.c | 42 ++++++++++++++++++++++++--------
- 1 file changed, 32 insertions(+), 10 deletions(-)
-
-diff --git a/drivers/phy/freescale/phy-fsl-lynx-28g.c b/drivers/phy/freescale/phy-fsl-lynx-28g.c
-index e2187767ce00..5ae5b47619f8 100644
---- a/drivers/phy/freescale/phy-fsl-lynx-28g.c
-+++ b/drivers/phy/freescale/phy-fsl-lynx-28g.c
-@@ -335,6 +335,7 @@ static int lynx_28g_power_off(struct phy *phy)
- {
- 	struct lynx_28g_lane *lane = phy_get_drvdata(phy);
- 	u32 trstctl, rrstctl;
-+	int err;
- 
- 	if (!lane->powered_up)
- 		return 0;
-@@ -344,11 +345,21 @@ static int lynx_28g_power_off(struct phy *phy)
- 	lynx_28g_lane_rmw(lane, LNaRRSTCTL, HLT_REQ, HLT_REQ);
- 
- 	/* Wait until the halting process is complete */
--	do {
--		trstctl = lynx_28g_lane_read(lane, LNaTRSTCTL);
--		rrstctl = lynx_28g_lane_read(lane, LNaRRSTCTL);
--	} while ((trstctl & LYNX_28G_LNaTRSTCTL_HLT_REQ) ||
--		 (rrstctl & LYNX_28G_LNaRRSTCTL_HLT_REQ));
-+	err = read_poll_timeout(lynx_28g_lane_read, trstctl,
-+				!(trstctl & LYNX_28G_LNaTRSTCTL_HLT_REQ),
-+				10000, 1000000, false, lane, LNaTRSTCTL);
-+	if (err) {
-+		dev_err(&phy->dev, "tx lane halt failed: %d\n", err);
-+		return err;
-+	}
-+
-+	err = read_poll_timeout(lynx_28g_lane_read, rrstctl,
-+				!(rrstctl & LYNX_28G_LNaRRSTCTL_HLT_REQ),
-+				10000, 1000000, false, lane, LNaRRSTCTL);
-+	if (err) {
-+		dev_err(&phy->dev, "tx lane halt failed: %d\n", err);
-+		return err;
-+	}
- 
- 	lane->powered_up = false;
- 
-@@ -359,6 +370,7 @@ static int lynx_28g_power_on(struct phy *phy)
- {
- 	struct lynx_28g_lane *lane = phy_get_drvdata(phy);
- 	u32 trstctl, rrstctl;
-+	int err;
- 
- 	if (lane->powered_up)
- 		return 0;
-@@ -368,11 +380,21 @@ static int lynx_28g_power_on(struct phy *phy)
- 	lynx_28g_lane_rmw(lane, LNaRRSTCTL, RST_REQ, RST_REQ);
- 
- 	/* Wait until the reset sequence is completed */
--	do {
--		trstctl = lynx_28g_lane_read(lane, LNaTRSTCTL);
--		rrstctl = lynx_28g_lane_read(lane, LNaRRSTCTL);
--	} while (!(trstctl & LYNX_28G_LNaTRSTCTL_RST_DONE) ||
--		 !(rrstctl & LYNX_28G_LNaRRSTCTL_RST_DONE));
-+	err = read_poll_timeout(lynx_28g_lane_read, trstctl,
-+				trstctl & LYNX_28G_LNaTRSTCTL_RST_DONE,
-+				10000, 1000000, false, lane, LNaTRSTCTL);
-+	if (err) {
-+		dev_err(&phy->dev, "lane tx reset failed: %d\n", err);
-+		return err;
-+	}
-+
-+	err = read_poll_timeout(lynx_28g_lane_read, rrstctl,
-+				rrstctl & LYNX_28G_LNaRRSTCTL_RST_DONE,
-+				10000, 1000000, false, lane, LNaRRSTCTL);
-+	if (err) {
-+		dev_err(&phy->dev, "lane rx reset failed: %d\n", err);
-+		return err;
-+	}
- 
- 	lane->powered_up = true;
- 
-
----
-base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
-change-id: 20240218-lynx28g-infinite-loop-5f090b4237c7
-
-Best regards,
--- 
-Josua Mayer <josua@solid-run.com>
-
+Am 13.02.24 um 07:12 schrieb Vignesh Raghavendra:
+> Hi
+>
+> [...]
+>
+> On 11/02/24 20:37, Josua Mayer wrote:
+>> ---
+>> Josua Mayer (4):
+>>        dt-bindings: arm: ti: Add bindings for SolidRun AM642 HummingBoard-T
+>
+>>        dt-bindings: rtc: abx80x: convert to yaml
+>>        dt-bindings: iio: humidity: hdc20x0: add optional interrupts property
+>>        dt-bindings: mtd: spi-nor: add optional interrupts property
+> 2/5 needs to go via RTC subsystem tree. Could you split it out into its
+> own series when you respin
+Only rtc, or should I split out the other two as well?
+>
+> Rest will go via TI K3 arch tree.
+>
+>
+>>        arm64: dts: add description for solidrun am642 som and evaluation board
+>>        arm64: dts: ti: hummingboard-t: add overlays for m.2 pci-e and usb-3
+>>
+>> Suman Anna (1):
+>>        arm64: dts: ti: k3-am64-main: Add ICSSG IEP nodes
+>>
+>>   Documentation/devicetree/bindings/arm/ti/k3.yaml   |   7 +
+>>   .../devicetree/bindings/rtc/abracon,abx80x.txt     |  31 --
+>>   .../devicetree/bindings/rtc/abracon,abx80x.yaml    |  79 +++
+>>   arch/arm64/boot/dts/ti/Makefile                    |   7 +
+>>   arch/arm64/boot/dts/ti/k3-am64-main.dtsi           |  24 +
+>>   .../boot/dts/ti/k3-am642-hummingboard-t-pcie.dtso  |  45 ++
+>>   .../boot/dts/ti/k3-am642-hummingboard-t-usb3.dtso  |  44 ++
+>>   arch/arm64/boot/dts/ti/k3-am642-hummingboard-t.dts | 292 ++++++++++
+>>   arch/arm64/boot/dts/ti/k3-am642-sr-som.dtsi        | 594 +++++++++++++++++++++
+>>   9 files changed, 1092 insertions(+), 31 deletions(-)
+>> ---
+>> base-commit: 798d1ee1675be84d5c7eb639480aab33f2c8791e
+>> change-id: 20240101-add-am64-som-51a1ca47edf3
+>>
+>> Sincerely,
 
