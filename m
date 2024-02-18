@@ -1,111 +1,92 @@
-Return-Path: <linux-kernel+bounces-70199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 123EB8594A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 05:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D04A8594A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 05:42:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C096F2843FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:37:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A546284852
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 04:42:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6BE611E;
-	Sun, 18 Feb 2024 04:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FFoCOLO2"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11703522A;
+	Sun, 18 Feb 2024 04:42:05 +0000 (UTC)
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343E553A7;
-	Sun, 18 Feb 2024 04:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EFCD468E
+	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 04:42:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708231041; cv=none; b=KKv0wYSL2YaW8fNoiS+jq/Geab/3rbZoCH2B70d9Cozg+kx+OXrz5sJPjB+GAcVS3XT5hsarLF9ouKsRAJOrQZTy2x+qTJLEbFWqOyTRGRMRlEF9RT4e3yiemGhQ2TFDLdUwIN4qxtdH42SovFkR7qkJtXzL3f99yv3jM6GM9SE=
+	t=1708231324; cv=none; b=O/0n06hG2ovxXiDCvEXBKfsOsgA6kmyVA/aCNlrHTf7yMLeU1E1bEQw/cn1moZQCh4Los8R2MqrArjrHUBDasGmaXuvfkfUCHLa9nO19CHEhwfICAD0tSrk3ubqqu5UXvCEbTOWc7+AZ62qqFCoYxdF6xMO3+Xni395yv/YfRX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708231041; c=relaxed/simple;
-	bh=h3RWMSFzQ43bwF1fjlbqaQGi2ketXLn+Xpm4l+hTDYQ=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=VyZ7ke7swEEgUIpdgpzLOqTGtroRqcMtwP8EG5zFj2cUoirNLM3ZALsqfzoOsbVj8+s+0HW+QkkPO09oIGufQ7hD8UUzLrxV5e2v4kX03f/cRQDkfaOoubB+KPUrssYX63HWT5JjDTpwWsJOtNhv1hyHNH6mg7Skp4gp62vIsbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FFoCOLO2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C32C433F1;
-	Sun, 18 Feb 2024 04:37:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708231040;
-	bh=h3RWMSFzQ43bwF1fjlbqaQGi2ketXLn+Xpm4l+hTDYQ=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=FFoCOLO2nWXkDFaFeqf7iq7bPS6dp4XgkEVvo+CvdSla1wdfuWD7noFAv+b0OyuVu
-	 QikzkxPjJWE5YWA/wyUZ1sMziIkiBVhwQ0gRHbdO6zHhlHpyvihh36mIu9JKfO5SEA
-	 BTUI9faQJE2Hf9RIPbCrmbwS0jUy9IsIbXPb5Nc7V5JzkOuLl7mOZodNdd7NLtTcQR
-	 41xV7GvhgHqblRGyljpZH1t/NAn5/odhhFiTyaag+LDOlQ/ifhAH+sF3Bp9I67bXzm
-	 Re2n1TMz26iQ+8fahRp++IhndRe9sIQxU7HENY7Hk3ah2oVz++gYok+fnQ6tnrZ+d3
-	 G7/xILvay2+OA==
-Date: Sat, 17 Feb 2024 22:37:18 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1708231324; c=relaxed/simple;
+	bh=dPfk3d/IgI4et8CrB7+zM5ARrgakQRE9gXrevq701Rk=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=NPYaS6otM3ZLz4TjO4rchnBLVdP68cJ78Z2RSUEtp8Au8MwNcUdzKrnVQaXOuOenu9VK6iNesCK3dOHumEcYTPgjtdg2IPCiN75z5Cj0UlWTlNwKQrq5iC2ULTAEeljVxG3XiDSPOwbcIMOy3YudIQt2xPa8z5LoaLHyIrBqwm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-365067c1349so20848875ab.3
+        for <linux-kernel@vger.kernel.org>; Sat, 17 Feb 2024 20:42:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708231322; x=1708836122;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Kmjy4yq7SJeeKhzBuewZUYc+eWoeO+NkF0b7ie1wfJA=;
+        b=hlKMp5jckq25HqJrz/8J1kJfFYLL3v1ieNPOFTK10+Vfy0fWM+YQWjtjEZs0bFsDvT
+         wEdEn0OpVWdf724MXt+bXxtIDYIKsynI4h5B4dvq6mWzJoIaVso5w7RnrWY98BXDmdeB
+         jSGejniqd07uJ1Pp4WfN0ps29tLXSADmHTSjx5mwTcAAoZLwnTNhfIoIQAvhKAivsoe8
+         0VOsqqsutZ4cHj/e3BsWjsnWcBldW9eKOOl/J2xCOYt9rfygqwKgmW7cICUURhl6csPB
+         60+k3S4GbPzNuaHSx0fxLWnNSsefG+KxinjgiIlqYufCuoZPcFiNrBWD5fnmtptu03Nh
+         PIcw==
+X-Forwarded-Encrypted: i=1; AJvYcCUiIYGjEYNyzf12g+x40R62AEJUvFgqAD1cA9/8FJf4kQNKWoq7104wtUHvg0vTnfwvPa3g5P7IfvmCL7RQiDHH6fGTKUGWfmkJClBd
+X-Gm-Message-State: AOJu0YwBXzyeRm8E2XNpFeOG5JgKuCBcxsVFto/LyKCproQO2tOKD3qE
+	p4n9mRUtwRyp0aHMPqzPmon1eQ+FV+m5Bvx/nNjEljjPX8LRykVapJ1y9fFMEYcBZv4w4m+z5PI
+	munsfUYvf3x9A8reb8soUDbT+slZvb3i5fB2mK/F9wc9bxOCqxijxDRQ=
+X-Google-Smtp-Source: AGHT+IH8UuBu8FbOSB1H9dYXew9V4/LxafJNnjWpw/jgXH4Ca3AQgXbRaotAwzLPnehrAoL18NmodA0UO8+dZ3Z0olx7/O0s8Su+
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Chen Wang <unicornxw@gmail.com>
-Cc: haijiao.liu@sophgo.com, paul.walmsley@sifive.com, guoren@kernel.org, 
- inochiama@outlook.com, chao.wei@sophgo.com, devicetree@vger.kernel.org, 
- aou@eecs.berkeley.edu, conor@kernel.org, robh+dt@kernel.org, 
- samuel.holland@sifive.com, linux-clk@vger.kernel.org, 
- Chen Wang <unicorn_wang@outlook.com>, jszhang@kernel.org, 
- palmer@dabbelt.com, mturquette@baylibre.com, 
- krzysztof.kozlowski+dt@linaro.org, linux-riscv@lists.infradead.org, 
- sboyd@kernel.org, richardcochran@gmail.com, xiaoguang.xing@sophgo.com, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <0de0c16b9ff02a1b9c0d013ba0a71199e536387a.1708223519.git.unicorn_wang@outlook.com>
-References: <cover.1708223519.git.unicorn_wang@outlook.com>
- <0de0c16b9ff02a1b9c0d013ba0a71199e536387a.1708223519.git.unicorn_wang@outlook.com>
-Message-Id: <170823103463.3760729.17194959615041908023.robh@kernel.org>
-Subject: Re: [PATCH v10 3/5] dt-bindings: clock: sophgo: add clkgen for
- SG2042
+X-Received: by 2002:a05:6e02:1aa2:b0:363:7b86:21bd with SMTP id
+ l2-20020a056e021aa200b003637b8621bdmr715271ilv.4.1708231322355; Sat, 17 Feb
+ 2024 20:42:02 -0800 (PST)
+Date: Sat, 17 Feb 2024 20:42:02 -0800
+In-Reply-To: <000000000000375f00060eb11585@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000029d2820611a09994@google.com>
+Subject: Re: [syzbot] [nilfs?] KASAN: use-after-free Read in nilfs_set_link
+From: syzbot <syzbot+4936b06b07f365af31cc@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
+	konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
+syzbot suspects this issue was fixed by commit:
 
-On Sun, 18 Feb 2024 10:51:37 +0800, Chen Wang wrote:
-> From: Chen Wang <unicorn_wang@outlook.com>
-> 
-> Add bindings for the clock generator of divider/mux and gates working
-> for other subsystem than RP subsystem for Sophgo SG2042.
-> 
-> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> ---
->  .../bindings/clock/sophgo,sg2042-clkgen.yaml  |  49 ++++++++
->  .../dt-bindings/clock/sophgo,sg2042-clkgen.h  | 111 ++++++++++++++++++
->  2 files changed, 160 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/sophgo,sg2042-clkgen.yaml
->  create mode 100644 include/dt-bindings/clock/sophgo,sg2042-clkgen.h
-> 
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+    fs: Block writes to mounted block devices
 
-yamllint warnings/errors:
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10639b34180000
+start commit:   52b1853b080a Merge tag 'i2c-for-6.7-final' of git://git.ke..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
+dashboard link: https://syzkaller.appspot.com/bug?extid=4936b06b07f365af31cc
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d62025e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13c38055e80000
 
-dtschema/dtc warnings/errors:
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fs: Block writes to mounted block devices
 
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/0de0c16b9ff02a1b9c0d013ba0a71199e536387a.1708223519.git.unicorn_wang@outlook.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
