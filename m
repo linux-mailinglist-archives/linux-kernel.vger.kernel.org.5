@@ -1,208 +1,101 @@
-Return-Path: <linux-kernel+bounces-70140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C944F8593E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:40:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA8668593E8
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 02:46:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E79DB215F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:40:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 099081C20CA6
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 01:46:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF1BA34;
-	Sun, 18 Feb 2024 01:40:16 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60601848;
+	Sun, 18 Feb 2024 01:46:36 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4185EBB
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 01:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10488139B;
+	Sun, 18 Feb 2024 01:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708220415; cv=none; b=uCtGH7vdZGtSIcAofwuwknWsvoFMdy5RrbpmPSTyRTL6xFxmrzHnfEn1xX2oro0SSIhHXselDgCVT5/Ae+Ck9jsO9XF3VgXV/Msndorx3NB+Euysb34iRDIK67+CYXH1Wn4GbTFwJI/HR5cHf6gnq3/Gg6XirJu/0sFLLmiapi8=
+	t=1708220796; cv=none; b=ozxPjlZ624F6AoQtZ177bph78ZwlrT9q7pKukH7mAEUjCtKGt1Qrxy/mCqDJft2YrjT7Z4gBNEOXe2+l4MULRX2QbhGvDwl1VrDXfE5jHBnu7fk0S/7ySZC06nQQeEitwLkgftDrFUMgOoZkPzfkIEENbMohYUwVwToxIQxZPb4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708220415; c=relaxed/simple;
-	bh=WNQbxKVFpHm9Lmd2Xka8K18EGXlXYe/WvQMzH4jHjUM=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PpDJrbGa3jnOSOk5vciR9ROVhwKXNR8jVDT8WxmKVneo6TCyHVh6itxXZgRIWyD4aPHISIl7VrwlVHp2+M2pt2DZ/vwQBtsGh7uBGC15mHwxjt6RUFyjI8UcSMXaoj/8uwJ5cDgW/KKY2Z3xh+YbssWeDkh+ZlazkKsO8CX9LFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TcpG41X3cz1gydy;
-	Sun, 18 Feb 2024 09:38:04 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id DBFE11400CC;
-	Sun, 18 Feb 2024 09:40:09 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 18 Feb 2024 09:40:08 +0800
-Subject: Re: [PATCH 2/2] ubifs: fix function pointer cast warnings
-To: Arnd Bergmann <arnd@kernel.org>, Richard Weinberger <richard@nod.at>,
-	Nathan Chancellor <nathan@kernel.org>
-CC: Arnd Bergmann <arnd@arndb.de>, Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
-	<linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<llvm@lists.linux.dev>
-References: <20240213095412.453787-1-arnd@kernel.org>
- <20240213095412.453787-2-arnd@kernel.org>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <0921a996-c579-5760-a6ff-dbd9b9eca057@huawei.com>
-Date: Sun, 18 Feb 2024 09:40:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1708220796; c=relaxed/simple;
+	bh=UWu2/+2dWSlcqdCh6i9R6Wz33B+sYIjP917mKOKeic8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=qQqK5AFdXMex6VbRkNxMKflF+6StxtbewbfJ+WsclRgxY9+6gncECHeCUQs1+BRgehkQstDtQo9Edp1YEcEfpZBueaJGDwVBq5XY5rxyEhxyQHthDK0hRY+qkHg5am5BqGVRqNSQEDTBXhmbifU/txtnzbuuZJpuuxMb8ot15ko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TcpRj410Lz4f3jXS;
+	Sun, 18 Feb 2024 09:46:25 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 673291A0199;
+	Sun, 18 Feb 2024 09:46:30 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g50YdFlQPNmEQ--.14444S3;
+	Sun, 18 Feb 2024 09:46:30 +0800 (CST)
+Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in
+ md_check_recovery()
+To: Xiao Ni <xni@redhat.com>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com,
+ agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev,
+ song@kernel.org, jbrassow@f14.redhat.com, neilb@suse.de, shli@fb.com,
+ akpm@osdl.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
+ <20240201092559.910982-2-yukuai1@huaweicloud.com>
+ <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
+ <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com>
+ <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com>
+Date: Sun, 18 Feb 2024 09:46:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240213095412.453787-2-arnd@kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
+In-Reply-To: <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+X-CM-TRANSID:cCh0CgAX5g50YdFlQPNmEQ--.14444S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYk7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+	Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4II
+	rI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr4
+	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+	wI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOmhFUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-ÔÚ 2024/2/13 17:54, Arnd Bergmann Ð´µÀ:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> ubifs has a number of callback functions for ubifs_lpt_scan_nolock() using
-> two different prototypes, either passing a struct scan_data or
-> a struct ubifs_lp_stats, but the caller expects a void pointer instead.
-> 
-> clang-16 now warns about this:
-> 
-> fs/ubifs/find.c:170:9: error: cast from 'int (*)(struct ubifs_info *, const struct ubifs_lprops *, int, struct scan_data *)' to 'ubifs_lpt_scan_callback' (aka 'int (*)(struct ubifs_info *, const struct ubifs_lprops *, int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->    170 |                                     (ubifs_lpt_scan_callback)scan_for_dirty_cb,
->        |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> fs/ubifs/find.c:449:9: error: cast from 'int (*)(struct ubifs_info *, const struct ubifs_lprops *, int, struct scan_data *)' to 'ubifs_lpt_scan_callback' (aka 'int (*)(struct ubifs_info *, const struct ubifs_lprops *, int, void *)') converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->    449 |                                     (ubifs_lpt_scan_callback)scan_for_free_cb,
->        |                                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Change all of these callback functions to actually take the void * argument
-> that is passed by their caller.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   fs/ubifs/find.c   | 23 ++++++++++++-----------
->   fs/ubifs/lprops.c |  6 +++---
->   2 files changed, 15 insertions(+), 14 deletions(-)
-> 
+Hi,
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> diff --git a/fs/ubifs/find.c b/fs/ubifs/find.c
-> index 1cb79b167a4f..6ebf3c04ac5f 100644
-> --- a/fs/ubifs/find.c
-> +++ b/fs/ubifs/find.c
-> @@ -82,8 +82,9 @@ static int valuable(struct ubifs_info *c, const struct ubifs_lprops *lprops)
->    */
->   static int scan_for_dirty_cb(struct ubifs_info *c,
->   			     const struct ubifs_lprops *lprops, int in_tree,
-> -			     struct scan_data *data)
-> +			     void *arg)
->   {
-> +	struct scan_data *data = arg;
->   	int ret = LPT_SCAN_CONTINUE;
->   
->   	/* Exclude LEBs that are currently in use */
-> @@ -166,8 +167,7 @@ static const struct ubifs_lprops *scan_for_dirty(struct ubifs_info *c,
->   	data.pick_free = pick_free;
->   	data.lnum = -1;
->   	data.exclude_index = exclude_index;
-> -	err = ubifs_lpt_scan_nolock(c, -1, c->lscan_lnum,
-> -				    (ubifs_lpt_scan_callback)scan_for_dirty_cb,
-> +	err = ubifs_lpt_scan_nolock(c, -1, c->lscan_lnum, scan_for_dirty_cb,
->   				    &data);
->   	if (err)
->   		return ERR_PTR(err);
-> @@ -349,8 +349,9 @@ int ubifs_find_dirty_leb(struct ubifs_info *c, struct ubifs_lprops *ret_lp,
->    */
->   static int scan_for_free_cb(struct ubifs_info *c,
->   			    const struct ubifs_lprops *lprops, int in_tree,
-> -			    struct scan_data *data)
-> +			    void *arg)
->   {
-> +	struct scan_data *data = arg;
->   	int ret = LPT_SCAN_CONTINUE;
->   
->   	/* Exclude LEBs that are currently in use */
-> @@ -446,7 +447,7 @@ const struct ubifs_lprops *do_find_free_space(struct ubifs_info *c,
->   	data.pick_free = pick_free;
->   	data.lnum = -1;
->   	err = ubifs_lpt_scan_nolock(c, -1, c->lscan_lnum,
-> -				    (ubifs_lpt_scan_callback)scan_for_free_cb,
-> +				    scan_for_free_cb,
->   				    &data);
->   	if (err)
->   		return ERR_PTR(err);
-> @@ -589,8 +590,9 @@ int ubifs_find_free_space(struct ubifs_info *c, int min_space, int *offs,
->    */
->   static int scan_for_idx_cb(struct ubifs_info *c,
->   			   const struct ubifs_lprops *lprops, int in_tree,
-> -			   struct scan_data *data)
-> +			   void *arg)
->   {
-> +	struct scan_data *data = arg;
->   	int ret = LPT_SCAN_CONTINUE;
->   
->   	/* Exclude LEBs that are currently in use */
-> @@ -625,8 +627,7 @@ static const struct ubifs_lprops *scan_for_leb_for_idx(struct ubifs_info *c)
->   	int err;
->   
->   	data.lnum = -1;
-> -	err = ubifs_lpt_scan_nolock(c, -1, c->lscan_lnum,
-> -				    (ubifs_lpt_scan_callback)scan_for_idx_cb,
-> +	err = ubifs_lpt_scan_nolock(c, -1, c->lscan_lnum, scan_for_idx_cb,
->   				    &data);
->   	if (err)
->   		return ERR_PTR(err);
-> @@ -781,8 +782,9 @@ int ubifs_save_dirty_idx_lnums(struct ubifs_info *c)
->    */
->   static int scan_dirty_idx_cb(struct ubifs_info *c,
->   			   const struct ubifs_lprops *lprops, int in_tree,
-> -			   struct scan_data *data)
-> +			   void *arg)
->   {
-> +	struct scan_data *data = arg;
->   	int ret = LPT_SCAN_CONTINUE;
->   
->   	/* Exclude LEBs that are currently in use */
-> @@ -841,8 +843,7 @@ static int find_dirty_idx_leb(struct ubifs_info *c)
->   	if (c->pnodes_have >= c->pnode_cnt)
->   		/* All pnodes are in memory, so skip scan */
->   		return -ENOSPC;
-> -	err = ubifs_lpt_scan_nolock(c, -1, c->lscan_lnum,
-> -				    (ubifs_lpt_scan_callback)scan_dirty_idx_cb,
-> +	err = ubifs_lpt_scan_nolock(c, -1, c->lscan_lnum, scan_dirty_idx_cb,
->   				    &data);
->   	if (err)
->   		return err;
-> diff --git a/fs/ubifs/lprops.c b/fs/ubifs/lprops.c
-> index 6d6cd85c2b4c..a11c3dab7e16 100644
-> --- a/fs/ubifs/lprops.c
-> +++ b/fs/ubifs/lprops.c
-> @@ -1014,8 +1014,9 @@ void dbg_check_heap(struct ubifs_info *c, struct ubifs_lpt_heap *heap, int cat,
->    */
->   static int scan_check_cb(struct ubifs_info *c,
->   			 const struct ubifs_lprops *lp, int in_tree,
-> -			 struct ubifs_lp_stats *lst)
-> +			 void *arg)
->   {
-> +	struct ubifs_lp_stats *lst = arg;
->   	struct ubifs_scan_leb *sleb;
->   	struct ubifs_scan_node *snod;
->   	int cat, lnum = lp->lnum, is_idx = 0, used = 0, free, dirty, ret;
-> @@ -1269,8 +1270,7 @@ int dbg_check_lprops(struct ubifs_info *c)
->   
->   	memset(&lst, 0, sizeof(struct ubifs_lp_stats));
->   	err = ubifs_lpt_scan_nolock(c, c->main_first, c->leb_cnt - 1,
-> -				    (ubifs_lpt_scan_callback)scan_check_cb,
-> -				    &lst);
-> +				    scan_check_cb, &lst);
->   	if (err && err != -ENOSPC)
->   		goto out;
->   
-> 
+åœ¨ 2024/02/18 9:33, Xiao Ni å†™é“:
+> The deadlock problem mentioned in this patch should not be right?
+
+No, I think it's right. Looks like you are expecting other problems,
+like mentioned in patch 6, to be fixed by this patch.
+
+Noted that this patch just fix one case that MD_RECOVERY_RUNNING can't
+be cleared, I you are testing this patch alone, please make sure that
+you still triggered the exactly same case:
+
+- MD_RCOVERY_RUNNING can't be cleared while array is suspended.
+
+Thanks,
+Kuai
 
 
