@@ -1,88 +1,115 @@
-Return-Path: <linux-kernel+bounces-70298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70299-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D45818595C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:46:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E7C38595C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 09:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 892091F2255C
-	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:46:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 78E4A1C20D33
+	for <lists+linux-kernel@lfdr.de>; Sun, 18 Feb 2024 08:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB7B3125D5;
-	Sun, 18 Feb 2024 08:46:06 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8F6210A34;
+	Sun, 18 Feb 2024 08:47:10 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E8A10A0D
-	for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 08:46:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F5A149E17;
+	Sun, 18 Feb 2024 08:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708245966; cv=none; b=Gpl7U1WeDOrnFpKVaCotu1zd51F4hAN2xlhdmSMlh0BbsWXz2OzZ7f+riRAR4lbsbot97IRFWYbaHUaC5PAxRC0YRNztGnrzrL5kj5l6HAtw1ghHc1m1621VCHHLKQ3UW7gETZU7PAiNBd7KQr6ryPHnvk59ZXRnBkq0TiLQ6oc=
+	t=1708246030; cv=none; b=iWmfsuN8JvvJmX96GKYoxwjx4Y8r5f8Y6YMzoMDA2yBWR4FWqeLQIkcjYQc+CkJJqHVaixia8ZotEkribZWzGSOKYLpjLnISLjbq7U4sZLVCeKyyeG6LpLdrQMUxvtFOT3XSdr7A4UQ2DUfxtKLZk6OwMS+SvFrDGkLAeu3Y3Oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708245966; c=relaxed/simple;
-	bh=IV8cJeH1miOJdHLTbeSju4FAVO5IRLuI8VdeWkYgSaA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=SJ+SGIzywNEzUFIEIng1HM8hOpdrYR8LKGEh//883mXEhxNCcroVQTCn/RGNp2K0qRqRRrGpH3eD8UyYz4i4q9gVvkWfa8MCsZLXWcXbTaZgfBAVJ17XZXEhDeDfDebf9jJOPdOC6giSO9BR9iDbqvqSvunqfAFFzEZrzxB9rCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-365256f2efcso5940715ab.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 00:46:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708245964; x=1708850764;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FvBZmxbpdbv3eTvup8ChoTXHTNy9zOx6bgi37VxLF9k=;
-        b=sKEUopm2B/y1YZ8stkxvt+0qeXQyUzMJWRqVmVy/+G4lh5qcLN0Ng7zRPtaiuAJwtm
-         ebUUI9tR6JRFqUUoP3ocPIKY/Qg+4sKECPvLnFtQfc+arkpFIEuMu9pfCntrnuShRdnW
-         DWeZc5iiJSjxuwGdUB23381LlqfwhIREuBirYCTITpVT7Fdh9KsNfIPnEBdX1eT4kxC5
-         rT9o/65TwBtC5PN92hryWiI7x8FT9iqz4Qe/9X7i+V3nszvriYRQb2N1FGtjWl5Poauy
-         xqD8E/O7or9tRrlhTY4NVk63qRDjVQkQMH/xT7cpJtrOb/jBG82hHB4QvkMplA4Y339s
-         CWlA==
-X-Forwarded-Encrypted: i=1; AJvYcCWQkxdDGIYv5Z7ei6Gk9s/Wsm0MgJ1XyDiwcBITBFgbmgxvfTnKXAUZj5NLcGAjzgE++npkzjaFxcjqg1eVVXjXLd+MXimqk1fvqjgc
-X-Gm-Message-State: AOJu0Yz/DHhSLcop1izrjkttaGqHsSq+vGO+mjUkEran847vzatw+Ch2
-	D7gf+roeVmI18kFB7+CsUcimxUGxg7IHfzeS25PF4Tkolm/uUDvXl7nbuRj1KR4rtFCcKZo9jJv
-	xvqzA8ZHHJQNzUgvKplLUNIf8zjzuLnnwIfreOBu39VIVymK6ncJGRrQ=
-X-Google-Smtp-Source: AGHT+IGhDFB0ZIAdrhCAAdG7WiSqnpmVWvOugcnWwqTxQykW782tMI5Z0ONr1iAFhtMsw+TE9x3iI2YW7a+odXClPrqVeIK5jEST
+	s=arc-20240116; t=1708246030; c=relaxed/simple;
+	bh=r57VIygo4McbMJy7ObYDVyZ9K85AZDXtGaqReM398zI=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=KNLmmNM+IVYL4We/SG9ry1fHNDdzbBAo1G/yHxbTdGU2FNDYc00yRCEc6bozH+5qYqAaqWUfEXqa1BlESzjXj3YC/9xiMlvhpLrJdrnYbW4hjV39It0A0vT5Z+uKlpzAYrwZBHAZw/94k1rqdNLuh+7ig4MCQ8MyEJcA+tFeU7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TczlS4hMQz1xnjr;
+	Sun, 18 Feb 2024 16:45:40 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id E67E51A0172;
+	Sun, 18 Feb 2024 16:46:59 +0800 (CST)
+Received: from [10.174.185.179] (10.174.185.179) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 18 Feb 2024 16:46:58 +0800
+Subject: Re: [PATCH v3 04/10] KVM: arm64: vgic-its: Walk the LPI xarray in
+ vgic_copy_lpi_list()
+To: Oliver Upton <oliver.upton@linux.dev>
+CC: <kvmarm@lists.linux.dev>, <kvm@vger.kernel.org>, Marc Zyngier
+	<maz@kernel.org>, James Morse <james.morse@arm.com>, Suzuki K Poulose
+	<suzuki.poulose@arm.com>, <linux-kernel@vger.kernel.org>
+References: <20240216184153.2714504-1-oliver.upton@linux.dev>
+ <20240216184153.2714504-5-oliver.upton@linux.dev>
+From: Zenghui Yu <yuzenghui@huawei.com>
+Message-ID: <beca07ad-833e-ca68-2fe7-a30a2cb9faef@huawei.com>
+Date: Sun, 18 Feb 2024 16:46:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:ca4d:0:b0:365:21f4:7008 with SMTP id
- q13-20020a92ca4d000000b0036521f47008mr237697ilo.4.1708245964016; Sun, 18 Feb
- 2024 00:46:04 -0800 (PST)
-Date: Sun, 18 Feb 2024 00:46:04 -0800
-In-Reply-To: <20240218084414.1254-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dfd6170611a40107@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in
- hci_conn_drop (2)
-From: syzbot <syzbot+1683f76f1b20b826de67@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20240216184153.2714504-5-oliver.upton@linux.dev>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
-Hello,
+On 2024/2/17 2:41, Oliver Upton wrote:
+> Start iterating the LPI xarray in anticipation of removing the LPI
+> linked-list.
+> 
+> Signed-off-by: Oliver Upton <oliver.upton@linux.dev>
+> ---
+>  arch/arm64/kvm/vgic/vgic-its.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-its.c b/arch/arm64/kvm/vgic/vgic-its.c
+> index fb2d3c356984..9ce2edfadd11 100644
+> --- a/arch/arm64/kvm/vgic/vgic-its.c
+> +++ b/arch/arm64/kvm/vgic/vgic-its.c
+> @@ -335,6 +335,7 @@ static int update_lpi_config(struct kvm *kvm, struct vgic_irq *irq,
+>  int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+>  {
+>  	struct vgic_dist *dist = &kvm->arch.vgic;
+> +	XA_STATE(xas, &dist->lpi_xa, GIC_LPI_OFFSET);
+>  	struct vgic_irq *irq;
+>  	unsigned long flags;
+>  	u32 *intids;
+> @@ -353,7 +354,9 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+>  		return -ENOMEM;
+>  
+>  	raw_spin_lock_irqsave(&dist->lpi_list_lock, flags);
+> -	list_for_each_entry(irq, &dist->lpi_list_head, lpi_list) {
+> +	rcu_read_lock();
+> +
+> +	xas_for_each(&xas, irq, INTERRUPT_ID_BITS_ITS) {
 
-syzbot tried to test the proposed patch but the build/boot failed:
+We should use '1 << INTERRUPT_ID_BITS_ITS - 1' to represent the maximum
+LPI interrupt ID.
 
-failed to checkout kernel repo https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git on commit 2c3b09aac00d: failed to run ["git" "fetch" "--force" "--tags" "fc608f7504e8b3e110eb6e7b798cef357818c5e1" "2c3b09aac00d"]: exit status 128
-fatal: couldn't find remote ref 2c3b09aac00d
+>  		if (i == irq_count)
+>  			break;
+>  		/* We don't need to "get" the IRQ, as we hold the list lock. */
+> @@ -361,6 +364,8 @@ int vgic_copy_lpi_list(struct kvm *kvm, struct kvm_vcpu *vcpu, u32 **intid_ptr)
+>  			continue;
+>  		intids[i++] = irq->intid;
+>  	}
+> +
+> +	rcu_read_unlock();
+>  	raw_spin_unlock_irqrestore(&dist->lpi_list_lock, flags);
+>  
+>  	*intid_ptr = intids;
 
-
-
-Tested on:
-
-commit:         [unknown 
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 2c3b09aac00d
-kernel config:  https://syzkaller.appspot.com/x/.config?x=176d2dcbf8ba7017
-dashboard link: https://syzkaller.appspot.com/bug?extid=1683f76f1b20b826de67
-compiler:       
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1219de58180000
-
+Thanks,
+Zenghui
 
