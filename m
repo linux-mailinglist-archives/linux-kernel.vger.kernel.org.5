@@ -1,107 +1,120 @@
-Return-Path: <linux-kernel+bounces-72072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7769F85AE9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:37:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8723F85AEA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA7221C222E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:37:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41EFC28575F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:37:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B86C59B5B;
-	Mon, 19 Feb 2024 22:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B91956448;
+	Mon, 19 Feb 2024 22:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b="COeQMxXC"
-Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gYDxt3Gf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01FB856B87;
-	Mon, 19 Feb 2024 22:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B341E55E51
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708382131; cv=none; b=lZiN5c1BKAK875eo1iYg+TvWuxiNrkmwy03HvRwK8O1WbsGxZY2LOQG8XzkRxODjcxKxYXJy3TYD78zIc6u06rglzzl9QKs3mJ3YVYo0e0v1qTD6KWC2xtu0p4pQLribNp0WqE6HUiBcT29Q94QhIJFm7syhFqK4VJ9U6zoMF1M=
+	t=1708382231; cv=none; b=Zp+MCmHd6KnBVN+b6vVT+7hanRmOMnGEaGyUdrXbsOHl7zy78uAi6FdZ2UgsngL//zUzFmzjVux/SQqrr9a9tAfiUSytQcFZBhFkDiMBSQS9o5XjctusIE9ta0g43zAR/RovkvRjF91jPq8gG2WqfX/QwBAu3hKR3wfkVwtEFhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708382131; c=relaxed/simple;
-	bh=9kzD+xHSBMYRQ3AfdceDMPo82fl/t6sSn/swEFrNv3k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lem93MFd6ILQGo3lofRYUXS5oLn8XbS6ZHNOJrwpHSZVr0HHZBfbCTUgXukrDvGLwogfK51DrzwddE+8zQlFZw6bt1k7BwJU9PiDBLdlfIt3QsNGEWMD4SkHvviClGPXh9IrbGc8z9DcVr+3n0DbvCpza/wvoT5q4ico41uUd0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net; spf=pass smtp.mailfrom=6tel.net; dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b=COeQMxXC; arc=none smtp.client-ip=178.154.239.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=6tel.net
-Received: from mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:3285:0:640:fd1e:0])
-	by forward502c.mail.yandex.net (Yandex) with ESMTPS id 0E82660F86;
-	Tue, 20 Feb 2024 01:35:28 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id bYZIDNh7RSw0-8uC7ISLC;
-	Tue, 20 Feb 2024 01:35:27 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail;
-	t=1708382127; bh=tjOeEAQ/Gd5EHzC20z6YlhmTnhYEtnY97/66ZuEpgP0=;
-	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=COeQMxXCKQ43K+rRMKwHrtY+skG2ILaQO0qPV65mVLYCvNWCpvJ2KctR6Fg3nqya1
-	 2WF56xkoG1yyKDsK9axNl8ds2BXOAefaR9L5aAcEYXXcsLr12rAWoV0gKIwlri6Uq7
-	 9Pw+J/oLSXKV9OphJ9Bzk93sak6LmJ6+OXbx1ywY=
-Authentication-Results: mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net; dkim=pass header.i=@6tel.net
-From: efectn@6tel.net
-To: linux-rockchip@lists.infradead.org
-Cc: devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	heiko@sntech.de,
-	sebastian.reichel@collabora.com,
-	Muhammed Efe Cetin <efectn@protonmail.com>
-Subject: [PATCH 9/9] arm64: dts: rockchip: Add RTC to Khadas Edge 2
-Date: Tue, 20 Feb 2024 01:34:25 +0300
-Message-ID: <4c4c9140ff36f290ba64ecc8b3e218df6a5ab273.1708381247.git.efectn@protonmail.com>
-X-Mailer: git-send-email 2.43.1
-In-Reply-To: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
-References: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
+	s=arc-20240116; t=1708382231; c=relaxed/simple;
+	bh=BxTAU7ttYJsPF5ccAHvoPkmvx4enzVGfDMz/Fa/Fyn8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NWN3Z+GW0k+oUSSvnuEYr4V5LzE+w98uzunPgUT4Lyl3zzcV9qAXOZ8syfuFp9tMDCNgeEU0nPulG02WfoawCR35Mx8YqLIAAmXSilBIKziIcC3SKYS7LQr7thurSdzijBUkmnEd9rVqktnwhhu33YQXCWDYXNoKBrD5CEudT7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gYDxt3Gf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99311C433C7;
+	Mon, 19 Feb 2024 22:37:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708382231;
+	bh=BxTAU7ttYJsPF5ccAHvoPkmvx4enzVGfDMz/Fa/Fyn8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gYDxt3Gf4kQiiuUJeyuG2QjWgiv6+BKcxmyc/9pv20kQ9o5DExyV1sR+MODENPTQH
+	 zD6Ry+YwypIPULZVbOno76sTZHr4jguF98SpbBXLFhE1peRjFkcYKeQJN4mcCLc3Bo
+	 S14sAeZzT7iCuDg9DlXcsvSFP+UC0oAz4HHjMlsSda7Dg05rNRzb+SK7gIivT0Q18O
+	 Lfkfkt8gECNepOdSKvg3lfmFLCAOeWErPCzbVZQLc6p/1mDCVTQl+4W3kcQ0s+VHQ3
+	 3IygLciHQ7cRW0qXlB2jmBQwpRNr+xTGYvxcc0xDUUi/hWWA/Opa0DVoNd+btFwZEp
+	 biXryqr0iB/gQ==
+Date: Mon, 19 Feb 2024 23:37:07 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>
+Subject: Re: [PATCH v10a] timers: Move marking timer bases idle into
+ tick_nohz_stop_tick()
+Message-ID: <ZdPYEzno3KqIPo4S@localhost.localdomain>
+References: <20240115143743.27827-4-anna-maria@linutronix.de>
+ <20240219085236.10624-1-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240219085236.10624-1-anna-maria@linutronix.de>
 
-From: Muhammed Efe Cetin <efectn@protonmail.com>
+Le Mon, Feb 19, 2024 at 09:52:36AM +0100, Anna-Maria Behnsen a écrit :
+> The timer base is marked idle when get_next_timer_interrupt() is
+> executed. But the decision whether the tick will be stopped and whether the
+> system is able to go idle is done later. When the timer bases is marked
+> idle and a new first timer is enqueued remote an IPI is raised. Even if it
+> is not required because the tick is not stopped and the timer base is
+> evaluated again at the next tick.
+> 
+> To prevent this, the timer base is marked idle in tick_nohz_stop_tick() and
+> get_next_timer_interrupt() is streamlined by only looking for the next timer
+> interrupt. All other work is postponed to timer_base_try_to_set_idle() which is
+> called by tick_nohz_stop_tick(). timer_base_try_to_set_idle() never resets
+> timer_base::is_idle state. This is done when the tick is restarted via
+> tick_nohz_restart_sched_tick().
+> 
+> With this, tick_sched::tick_stopped and timer_base::is_idle are always in
+> sync. So there is no longer the need to execute timer_clear_idle() in
+> tick_nohz_idle_retain_tick(). This was required before, as
+> tick_nohz_next_event() set timer_base::is_idle even if the tick would not be
+> stopped. So timer_clear_idle() is only executed, when timer base is idle. So the
+> check whether timer base is idle, is now no longer required as well.
+> 
+> While at it fix some nearby whitespace damage as well.
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
 
-Khadas Edge 2 has PT7C4363 RTC that compatible with HYM8563.
-The RTC pinctrl is also connected to MCU.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Signed-off-by: Muhammed Efe Cetin <efectn@protonmail.com>
----
- .../arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Just a small detail below that can be fixed in a further patch:
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
-index 767e21b2dc34..2022a174594c 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
-@@ -216,6 +216,18 @@ regulator-state-mem {
- 	};
- };
- 
-+&i2c2 {
-+	status = "okay";
-+
-+	hym8563: rtc@51 {
-+		compatible = "haoyu,hym8563";
-+		reg = <0x51>;
-+		#clock-cells = <0>;
-+		clock-output-names = "hym8563";
-+		wakeup-source;
-+	};
-+};
-+
- &pinctrl {
- 	vdd_sd {
- 		vdd_sd_en: vdd-sd-en {
--- 
-2.43.1
+> @@ -930,6 +947,10 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
+>  	 * scheduler tick in tick_nohz_restart_sched_tick().
+>  	 */
+>  	if (!ts->tick_stopped) {
+> +		/* If the timer base is not idle, retain the tick. */
+> +		if (!timer_idle)
+> +			return;
 
+This happens after tick_do_timer_cpu has been set to TICK_DO_TIMER_NONE. Ideally
+it would be better to do it before. Not that it hurts in practice: another CPU
+or this one will take the duty. But it looks weird to stop halfway.
+
+Thanks!
 
