@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-71644-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A65A85A848
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:10:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE7B585A849
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:10:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 64BD5B23B4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:10:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 149C8B243BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:10:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61E013D0CB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B232B3D3A3;
 	Mon, 19 Feb 2024 16:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b9dH+UhW"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Du7nmEJu"
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1102D3B1B2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294BD3B79D;
 	Mon, 19 Feb 2024 16:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708358996; cv=none; b=jirlHKPcJy6GhAcUnc/Fc021Qu2je12DMsiE5Z3pBuYpTTiQCcNGkxNpz7TZ8DDJaIF8lK2U3c14UIv4J4Nfs074bsnyDkQQ6kHBL0WLuRgA9wz3BhbuCV1hXOTke88HpdyrfA2yy7v3LNeWNLd8hg3Z51dixPOt057PJwQVAf4=
+	t=1708358996; cv=none; b=Na6MmTjHIO28IvstGC6cFxbDUogfcOP8QHTqvOlaICEXULDFG5l1HPjEEJZoN/q6fezXmJIX39a6jio+Jhdq2q+oxJExfQti5Ddtef7NCMMlE+e9FQnLV1XAKXGUzHdc+yYoEfwm+FdXQgpaJoOvdGapkdQumoazhj5MRnmVAEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708358996; c=relaxed/simple;
-	bh=LnFYp2F5S9qzqglmLAYrhKmDTTk5nrJduQ5ic7z0Z3M=;
+	bh=W9dB3rUMqoNAamOHOS2WOxt7HyATzwndZgN7uhrewD8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=IUO5CHTmXrspTXYRHE7F+DJYaqdGWfS75gYCEa4d3Hijnuqr42kSvVkEWyWmVoNK8HhRXIuZoWH/o4ZbqeUb0HH8I1ywhAwoqpV2vQQSerMJtakNreEEa/YcVL3udvMA9h1Asia3p1P97kyysvQgIqPWHlpuILXxSaxyeOaH35Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b9dH+UhW; arc=none smtp.client-ip=209.85.208.178
+	 MIME-Version; b=AJw9Cu7hw2EiRZsgH6Rt7v30V3A/FUoldlua9zR827y0g1oJU96d057T3DOVDPUnvTU7c91KGFMRhLO/TA2Xa3H1bvPEGKbe+MIq/22E6gNCm2/Ar7jECHES7ycpUo9GnS0fll7/I5U3nVKsrnfrNC+i3XMUgXy4vI+JslLiTVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Du7nmEJu; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d208be133bso43547201fa.2;
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4126ac0c32eso3301445e9.1;
         Mon, 19 Feb 2024 08:09:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1708358993; x=1708963793; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5h1gyFepUXpminNkUQmVqPlZQwS+g2zBZirXjStpZCk=;
-        b=b9dH+UhW88G28HbD5AYzeg9Fmm7Sa2aSg9vcA8id3ZTayMErHv+obHtnZXWh05gKj+
-         scw1WTktK+jL2Kkr+Bju8oXYKFtttNoQU3iiG6J9K2BrAhSwdzSFb0qNuRF+i1IE4Feq
-         H5CAyuwr132MDJpMPtfU5wxWgiyvMfqu8pwsGOWVfToiyW2/FG2BI/762vzdxKK/8iCN
-         nZCAnBlE9RAfnJR8w7aQ1CLiLjHSBANpCWYWwL9ttWoaWyZL9xZixDCgiPJ+BpBCVYc+
-         F1BLDcrwcuHioSTSac+ePENi6DITCtLROXEMUjsE+1hl3A9rweOXiReXhC5i6OFp75ys
-         dH1w==
+        bh=Xh9vUfoHPZFnPPcTVso6vUO3bMJmWkfyYVswHNjvUxU=;
+        b=Du7nmEJuUPfY+iSQAsc/JcdIzf7uBi16Y/Tl5VYVARFnn/R7LyqV5QdpqxtT7hZoDt
+         WfS/VoGDzEJMVswns3L68hT2GxdbpRytN+EycOiYr6L4sglwr2XO8iamYfFAOGBzEQb1
+         2HnzHz9cO7mKTZXTW/zruOoy35thyyRUx2c3XTNoYyTcRQQ46rZTzywGtpMzmJtvaroj
+         mfOoywzF4JCw64aYw6Jp5YReWDmVqcvWebjkC6+MJHgTPZKTCMARqBK+GvUCSD3jAGf5
+         CrAw2XbUkewCf5MsSluyAgcGkXIEJjehOaQ2o6V1XqZTas/bTb4U6MPvwmKcN40DcmfD
+         q0yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1708358993; x=1708963793;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=5h1gyFepUXpminNkUQmVqPlZQwS+g2zBZirXjStpZCk=;
-        b=j43ZpvjE0LqjLV08BULd97t9XA2tSHtK0cjI74VzEIRVEcPSwTV/UrBK0K7Mj/uJ/6
-         FgpCBvVKtnaG+k7/p4x0xbgc2YpO2wMuHFDCFJxbaSDrEPuz0AhhmBygvPSL0pEK0ADd
-         5bfkkhGISeq5oAuPpgDhLObDTfwroVKIIppXP5T2hvrXWggo5dsvtJMG6I60KafhQiiW
-         HNkTotlxLytldI3cpc0i3GZ41Fr0vQJOgMJlqIRIGWU4cTZrtvI826B3wyZ3NPd7lIhP
-         Ov+42E6ccunwB6woIjWIeXFRjR1hpUqd1+S+vXXz2+cxOB9ywpkpU0JfgeNVpsdEkY3Y
-         bMow==
-X-Forwarded-Encrypted: i=1; AJvYcCVXyuB6tHggD2Gyz8IHD8DcWwh9uC2tame8vEaX3mVXnHHALKSSmpxJHES55YuQpzAhTc1bNImCzbg1o5n4qurMt8zaoi+NUyagWVbV4j9TYHVIybQ8MrhMZAfL+hnIUX9JnFLpiy//ULndpNUNhW0Jqfh8GyBoLWHWI77eMORhX501Zrdnb+yMfps9
-X-Gm-Message-State: AOJu0YwxOPSdM5C4KfzC1q/ck1UwVTfoXOJlwRxGgaO+BrPz2/5Kfuhh
-	vBgAayKx1KqZi4H5yoP7ySkXwnB0FweqS0bok4QXUzA8Vxm9kOIA
-X-Google-Smtp-Source: AGHT+IHXJ5jdds4R66iOr1SPOl+gYdrMt7Xb0LSwije1srKFZ11JFY5D4isRYUHLrSTGw8YTOqfmOg==
-X-Received: by 2002:a05:651c:b12:b0:2d2:3978:a14 with SMTP id b18-20020a05651c0b1200b002d239780a14mr2846870ljr.34.1708358992385;
-        Mon, 19 Feb 2024 08:09:52 -0800 (PST)
+        bh=Xh9vUfoHPZFnPPcTVso6vUO3bMJmWkfyYVswHNjvUxU=;
+        b=rO9N4+AMvHvlXnQGt9wicbxVlR7sh5kDkXbRE+OWvkPA5wv8oJglNkO/CubNmwkAXf
+         dRlaWbuFtnTma8jGSF6/wBJN5+Z1tpxe/7FuV7QzNV4Z4a/V4KfTOOj2JIP/a6rBxncG
+         QCb81aJbqifu+S06wNWCzl8WsznUZxuugAISVBlDJnVIkpfA7Py2cUw483tySn9ateHo
+         HLdob3XM3j6xDlvg5PiAIdpT+VUPLAdPatrT6h3Y1ScgYLGHj9y82QwzmvGegrevk2h6
+         SMQ2FspeUz25g7ICrIcKCCovEFSXAXKpj6YcNrfKjL8QFByR7oIKgMzl8+HPju+iLWeX
+         1JNA==
+X-Forwarded-Encrypted: i=1; AJvYcCVKYznC4rULt5G1Xky2gQbZwDctwjxHVvYY23DqoiA7+ofmeRiaW449AjfvFL9fi7lFWm9kue2sqzHroMkjYc57X4eDrMqoenyZ4TVCSZngvianKWkyiK19PaVbajo4IDU9X3qYqYISkdJfYctMruuGINAxXzckcg2Hqp6Sb6R0BJpzUNZpXpRiZZsP
+X-Gm-Message-State: AOJu0YzpPK7bz02w11TLPD0+LHpvE1Kw2LIt7t5eUkwf0IzUWZfbITRH
+	c5Jc+0D6XvaZIdggFmTbAR5bw+qatD62kQBmigiOety3D/+7GV/XGSaTTi/Q
+X-Google-Smtp-Source: AGHT+IGwHO1+9bzW+aeUsfuP4YK/bsb8fDl3AXVY3KJdwWdOV6wi0ZHETgfjh87YtN31Ug3+vIUc7g==
+X-Received: by 2002:a05:600c:1396:b0:411:d889:f3cd with SMTP id u22-20020a05600c139600b00411d889f3cdmr8958674wmf.34.1708358993362;
+        Mon, 19 Feb 2024 08:09:53 -0800 (PST)
 Received: from prasmi.home ([2a00:23c8:2500:a01:3c2e:cd45:f50f:f083])
-        by smtp.gmail.com with ESMTPSA id l14-20020a7bc44e000000b00411d1ce4f9dsm11592670wmi.34.2024.02.19.08.09.51
+        by smtp.gmail.com with ESMTPSA id l14-20020a7bc44e000000b00411d1ce4f9dsm11592670wmi.34.2024.02.19.08.09.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 08:09:51 -0800 (PST)
+        Mon, 19 Feb 2024 08:09:52 -0800 (PST)
 From: Prabhakar <prabhakar.csengg@gmail.com>
 X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 To: Magnus Damm <magnus.damm@gmail.com>,
@@ -81,9 +81,9 @@ Cc: linux-arm-kernel@lists.infradead.org,
 	Prabhakar <prabhakar.csengg@gmail.com>,
 	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
 	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 1/4] dt-bindings: soc: renesas: Document Renesas RZ/V2H{P} SoC variants
-Date: Mon, 19 Feb 2024 16:09:09 +0000
-Message-Id: <20240219160912.1206647-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH 2/4] dt-bindings: arm: renesas: Document Renesas RZ/V2H{P} System Controller
+Date: Mon, 19 Feb 2024 16:09:10 +0000
+Message-Id: <20240219160912.1206647-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240219160912.1206647-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 References: <20240219160912.1206647-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
@@ -97,33 +97,87 @@ Content-Transfer-Encoding: 8bit
 
 From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Document Renesas RZ/V2H{P} (R9A09G057) SoC variants.
+Add DT binding documentation for System Controller (SYS) found on
+RZ/V2H{P} ("R9A09G057") SoC's.
+
+SYS block contains the SYS_LSI_DEVID register which can be used to
+retrieve SoC version information.
 
 Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
 ---
- .../devicetree/bindings/soc/renesas/renesas.yaml          | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Note, the reset index in example node will be update once the CPG
+support is upstreamed.
+---
+ .../soc/renesas/renesas,r9a09g057-sys.yaml    | 59 +++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/soc/renesas/renesas,r9a09g057-sys.yaml
 
-diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
-index c1ce4da2dc32..109fbc8d48db 100644
---- a/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
-+++ b/Documentation/devicetree/bindings/soc/renesas/renesas.yaml
-@@ -513,6 +513,14 @@ properties:
-               - renesas,rzv2mevk2   # RZ/V2M Eval Board v2.0
-           - const: renesas,r9a09g011
- 
-+      - description: RZ/V2H{P} (R9A09G057)
-+        items:
-+          - enum:
-+              - renesas,r9a09g057h41 # RZ/V2H
-+              - renesas,r9a09g057h42 # RZ/V2H with Mali-G31 support
-+              - renesas,r9a09g057h44 # RZ/V2HP with Mali-G31 + Mali-C55 support
-+          - const: renesas,r9a09g057
+diff --git a/Documentation/devicetree/bindings/soc/renesas/renesas,r9a09g057-sys.yaml b/Documentation/devicetree/bindings/soc/renesas/renesas,r9a09g057-sys.yaml
+new file mode 100644
+index 000000000000..ba30d7734ee8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/soc/renesas/renesas,r9a09g057-sys.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/soc/renesas/renesas,r9a09g057-sys.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- additionalProperties: true
- 
- ...
++title: Renesas RZ/V2H{P} System Controller (SYS)
++
++maintainers:
++  - Geert Uytterhoeven <geert+renesas@glider.be>
++
++description:
++  The RZ/V2H{P} SYS (System Controller) controls the overall
++  configuration of the LSI and supports the following functions,
++  - Trust zone control
++  - Extend access by specific masters to address beyond 4GB space
++  - GBETH configuration
++  - Control of settings and states of SRAM/PCIe/CM33/CA55/CR8/xSPI/ADC/TSU
++  - LSI version
++  - WDT stop control
++  - General registers
++
++properties:
++  compatible:
++    const: renesas,r9a09g057-sys
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Clock from external oscillator
++
++  resets:
++    items:
++      - description: SYS_0_PRESETN reset signal
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - resets
++
++additionalProperties: false
++
++examples:
++  - |
++    extal_clk: extal-clk {
++        compatible = "fixed-clock";
++        #clock-cells = <0>;
++        clock-frequency = <24000000>;
++    };
++
++    sys: system-controller@10430000 {
++        compatible = "renesas,r9a09g057-sys";
++        reg = <0x10430000 0x10000>;
++        clocks = <&extal_clk>;
++        resets = <&cpg 1>;
++    };
 -- 
 2.34.1
 
