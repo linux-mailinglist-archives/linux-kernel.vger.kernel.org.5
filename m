@@ -1,215 +1,135 @@
-Return-Path: <linux-kernel+bounces-71737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A963385A9A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:06:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BB0285A99E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:06:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38D3D1F24DFF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:06:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB25428754D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFD2B446DA;
-	Mon, 19 Feb 2024 17:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DB214594E;
+	Mon, 19 Feb 2024 17:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FD7s3Hff"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJE1PI/+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 581E444391
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:06:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3FF446AD;
+	Mon, 19 Feb 2024 17:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708362391; cv=none; b=QXRZOZGXutVBBMk64K7JqY/kXZATcYF7QlUmgenthu7hJh4kUscWnpbmWWal7+fYAnaDesIHtMrbjc55x9nJ4/SLPTZnO9+D7H10E9+RWnktgGR73i1xzS8bA+hgfXdP50Wl8qve7tVbjxgAwK3vkLFIH9czFTaOM733t7jrwck=
+	t=1708362380; cv=none; b=Bd/YH6TDVE9yDeFcchWVLVAGuuI8O3t4Dft99n1E/V+YOG0Owq59O+7RgpFDNJw77iJM+sM2sfiOy7GEIpuiUOUfbSBLqrLXVEFuVg7FwViryohmlZvrQckrMwvPhI1YolT5+rRPngTIZ2qDYhC0Jrc7t5XQrpOsVwszoKY3qlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708362391; c=relaxed/simple;
-	bh=fZ2d/O8CXx/zfhB3r9fEfF8ZYXaxYaSpaL7xiQcTgE4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rKVMJqRzpHA6+JC62JfSlSuL2+cHAaY4FkJq0WuvaFrULuBSgUmU1IXRcmdVGz2DjmmSjDd/RLo2Iu2w0Sf9vRv6BxIEggMkfTuavTNzL607vpgVy5H4MhFV1jEab/+8B1f/RPH7eV1U2vwI4h5T+64o9SvHy5DwBAVyNnSt2WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FD7s3Hff; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708362388;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=S21g+iuM5V51KZv+tPhGk9U1eIXrbnWFmHjIoHqqoA8=;
-	b=FD7s3HffRumjvu46w2EKiIuPegsZdnhPngYg5ryhcUBG4j56MGCFYE5yZYighUi6Hl0l30
-	TsTuLbF3hGpilqxRN5Qs2OHrQR1NWdJ3qTVmpVS2KqzFkWC/2WDUDWNHgLpj3wybmzNbWk
-	sFt7YZjYy/ldCAwyTCDiuxmMJBjF2l8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-687-_nrqxU57M7KIOQonqX4PUQ-1; Mon,
- 19 Feb 2024 12:06:17 -0500
-X-MC-Unique: _nrqxU57M7KIOQonqX4PUQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D59C01C0BA43;
-	Mon, 19 Feb 2024 17:06:16 +0000 (UTC)
-Received: from max-p1.redhat.com (unknown [10.39.208.27])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id DE7031C060B3;
-	Mon, 19 Feb 2024 17:06:13 +0000 (UTC)
-From: Maxime Coquelin <maxime.coquelin@redhat.com>
-To: mst@redhat.com,
-	jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com,
-	xieyongji@bytedance.com
-Cc: axboe@kernel.dk,
-	gregkh@linuxfoundation.org,
-	brauner@kernel.org,
-	lstoakes@gmail.com,
-	virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	david.marchand@redhat.com,
-	Maxime Coquelin <maxime.coquelin@redhat.com>
-Subject: [PATCH] vduse: implement DMA sync callbacks
-Date: Mon, 19 Feb 2024 18:06:06 +0100
-Message-ID: <20240219170606.587290-1-maxime.coquelin@redhat.com>
+	s=arc-20240116; t=1708362380; c=relaxed/simple;
+	bh=t+TSvmeYQx4nVmUvJDq+bLSSfN+BKXaCGdPbAufGsFg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uE0bI5CRs9fZdSnSvjHQ/2vU5D92SJu0D9v50pLQAaR6glrSgHKmyAAH2smL892TPkxNWbMYodQydu1bV836SHHU8bHBl90F0Tn0qvLUiEvRQCq9cHYakhPZ+ktUu90+zsv5zHmPh54EsSR16ogvkoacmg24UbMkAk58FIQ5GlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJE1PI/+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A083C43609;
+	Mon, 19 Feb 2024 17:06:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708362380;
+	bh=t+TSvmeYQx4nVmUvJDq+bLSSfN+BKXaCGdPbAufGsFg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=rJE1PI/+3hoO27FdW4q7tsFBt/I0zEuTp5T/LKC61VwsnclDdQ2jxuHpkFNqKk/WS
+	 eba/2NPvoIOLi1278fh7IWUKSKX5/1NDQKIwg3mF344ZaoZPLzt2nEp4TOzaVeqQme
+	 09/xjyJ8yTaiv3eMABoYkNHp31J4AJBIstoYGB6++xZjzEONNaksVmWMJPJsrh2V/T
+	 KR4UR6EpJpkHGuStpgw7oUwRTUMLh+ru1gVMuGyuzgtX5+8SFcpG+oP+vAQhbAawaG
+	 g5Yz3GDofnu59C2hOMvGFiVJ8pNDqooZLz8SrYgXrdreSSgQQZMWLdzXLatCCUNnF0
+	 omnsdHQw48h3w==
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d1094b549cso67536011fa.3;
+        Mon, 19 Feb 2024 09:06:20 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUf4WXQzNv5Df7LBXlCMlc90hlJhuUuJRP95skH7hQ/z5zgoTQ+yctsbXTig87trxjttQ1hE2g3eyy0/36VDxJfNjynA3jF/eZf8BrAxZU82I/JzTK5YYgPEHHmOzmPBzIrHvz0thi3YA==
+X-Gm-Message-State: AOJu0Yy1uJowFDAGM/nOVTZJjj9ZxLNrFwMCsQKPNtOuinDmVBH+L8Ti
+	z58IJ+LlwJzr+pagoGRmk3KnQXdmiIb+1jKbLeONQycU8BZkwZmB/zRweog+C2C7oU8W/YAqEYw
+	0SEhZdw6Z9Nx28dAeSQdtOhb1z0k=
+X-Google-Smtp-Source: AGHT+IH2PehXtcBecdoz6FD+9gOMdsvZTGp/cMIAioAJ8CZAcqtAkx87TjovFZ3twblzIGJe3mOkNVQ3IA3xHKolxwI=
+X-Received: by 2002:ac2:4a91:0:b0:511:a803:7e63 with SMTP id
+ l17-20020ac24a91000000b00511a8037e63mr8154400lfp.54.1708362378413; Mon, 19
+ Feb 2024 09:06:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+References: <20240213124143.1484862-13-ardb+git@google.com>
+ <20240213124143.1484862-20-ardb+git@google.com> <b2e0b647-b5a7-4c66-bb00-7907a2318f58@amd.com>
+In-Reply-To: <b2e0b647-b5a7-4c66-bb00-7907a2318f58@amd.com>
+From: Ard Biesheuvel <ardb@kernel.org>
+Date: Mon, 19 Feb 2024 18:06:07 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXG_sQ-+ULtvE7SqD0DYe3p9=tP8K9VPgfiR-0Z55A9vVw@mail.gmail.com>
+Message-ID: <CAMj1kXG_sQ-+ULtvE7SqD0DYe3p9=tP8K9VPgfiR-0Z55A9vVw@mail.gmail.com>
+Subject: Re: [PATCH v4 07/11] efi/libstub: Add generic support for parsing mem_encrypt=
+To: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
+	Kevin Loughlin <kevinloughlin@google.com>, Dionna Glaze <dionnaglaze@google.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
+	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
+	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
+	llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Since commit 295525e29a5b ("virtio_net: merge dma
-operations when filling mergeable buffers"), VDUSE device
-require support for DMA's .sync_single_for_cpu() operation
-as the memory is non-coherent between the device and CPU
-because of the use of a bounce buffer.
+On Mon, 19 Feb 2024 at 18:00, Tom Lendacky <thomas.lendacky@amd.com> wrote:
+>
+> On 2/13/24 06:41, Ard Biesheuvel wrote:
+> > From: Ard Biesheuvel <ardb@kernel.org>
+> >
+> > Parse the mem_encrypt= command line parameter from the EFI stub if
+> > CONFIG_ARCH_HAS_MEM_ENCRYPT=y, so that it can be passed to the early
+> > boot code by the arch code in the stub.
+> >
+> > This avoids the need for the core kernel to do any string parsing very
+> > early in the boot.
+> >
+> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > ---
+> >   drivers/firmware/efi/libstub/efi-stub-helper.c | 8 ++++++++
+> >   drivers/firmware/efi/libstub/efistub.h         | 2 +-
+> >   2 files changed, 9 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> > index bfa30625f5d0..3dc2f9aaf08d 100644
+> > --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
+> > +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+> > @@ -24,6 +24,8 @@ static bool efi_noinitrd;
+> >   static bool efi_nosoftreserve;
+> >   static bool efi_disable_pci_dma = IS_ENABLED(CONFIG_EFI_DISABLE_PCI_DMA);
+> >
+> > +int efi_mem_encrypt;
+> > +
+> >   bool __pure __efi_soft_reserve_enabled(void)
+> >   {
+> >       return !efi_nosoftreserve;
+> > @@ -75,6 +77,12 @@ efi_status_t efi_parse_options(char const *cmdline)
+> >                       efi_noinitrd = true;
+> >               } else if (IS_ENABLED(CONFIG_X86_64) && !strcmp(param, "no5lvl")) {
+> >                       efi_no5lvl = true;
+> > +             } else if (IS_ENABLED(CONFIG_ARCH_HAS_MEM_ENCRYPT) &&
+> > +                        !strcmp(param, "mem_encrypt") && val) {
+> > +                     if (parse_option_str(val, "on"))
+> > +                             efi_mem_encrypt = 1;
+> > +                     else if (parse_option_str(val, "off"))
+> > +                             efi_mem_encrypt = -1;
+>
+> With CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT having recently been
+> removed, I'm not sure what parsing for mem_encrypt=off does.
+>
+> (Same thing in the next patch.)
+>
 
-This patch implements both .sync_single_for_cpu() and
-sync_single_for_device() callbacks, and also skip bounce
-buffer copies during DMA map and unmap operations if the
-DMA_ATTR_SKIP_CPU_SYNC attribute is set to avoid extra
-copies of the same buffer.
+We have to deal with both mem_encrypt=on and mem_encrypt=off occurring
+on the command line. efi_parse_options() may be called more than once,
+i.e., when there is a default command line baked into the image that
+can be overridden at runtime. So if the baked in one has
+mem_encrypt=on, mem_encrypt=off appearing later should counter that.
 
-Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
----
- drivers/vdpa/vdpa_user/iova_domain.c | 27 ++++++++++++++++++++++++---
- drivers/vdpa/vdpa_user/iova_domain.h |  8 ++++++++
- drivers/vdpa/vdpa_user/vduse_dev.c   | 22 ++++++++++++++++++++++
- 3 files changed, 54 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/vdpa/vdpa_user/iova_domain.c b/drivers/vdpa/vdpa_user/iova_domain.c
-index 5e4a77b9bae6..791d38d6284c 100644
---- a/drivers/vdpa/vdpa_user/iova_domain.c
-+++ b/drivers/vdpa/vdpa_user/iova_domain.c
-@@ -373,6 +373,26 @@ static void vduse_domain_free_iova(struct iova_domain *iovad,
- 	free_iova_fast(iovad, iova >> shift, iova_len);
- }
- 
-+void vduse_domain_sync_single_for_device(struct vduse_iova_domain *domain,
-+				      dma_addr_t dma_addr, size_t size,
-+				      enum dma_data_direction dir)
-+{
-+	read_lock(&domain->bounce_lock);
-+	if (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL)
-+		vduse_domain_bounce(domain, dma_addr, size, DMA_TO_DEVICE);
-+	read_unlock(&domain->bounce_lock);
-+}
-+
-+void vduse_domain_sync_single_for_cpu(struct vduse_iova_domain *domain,
-+				      dma_addr_t dma_addr, size_t size,
-+				      enum dma_data_direction dir)
-+{
-+	read_lock(&domain->bounce_lock);
-+	if (dir == DMA_FROM_DEVICE || dir == DMA_BIDIRECTIONAL)
-+		vduse_domain_bounce(domain, dma_addr, size, DMA_FROM_DEVICE);
-+	read_unlock(&domain->bounce_lock);
-+}
-+
- dma_addr_t vduse_domain_map_page(struct vduse_iova_domain *domain,
- 				 struct page *page, unsigned long offset,
- 				 size_t size, enum dma_data_direction dir,
-@@ -393,7 +413,8 @@ dma_addr_t vduse_domain_map_page(struct vduse_iova_domain *domain,
- 	if (vduse_domain_map_bounce_page(domain, (u64)iova, (u64)size, pa))
- 		goto err_unlock;
- 
--	if (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL)
-+	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-+	    (dir == DMA_TO_DEVICE || dir == DMA_BIDIRECTIONAL))
- 		vduse_domain_bounce(domain, iova, size, DMA_TO_DEVICE);
- 
- 	read_unlock(&domain->bounce_lock);
-@@ -411,9 +432,9 @@ void vduse_domain_unmap_page(struct vduse_iova_domain *domain,
- 			     enum dma_data_direction dir, unsigned long attrs)
- {
- 	struct iova_domain *iovad = &domain->stream_iovad;
--
- 	read_lock(&domain->bounce_lock);
--	if (dir == DMA_FROM_DEVICE || dir == DMA_BIDIRECTIONAL)
-+	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC) &&
-+	    (dir == DMA_FROM_DEVICE || dir == DMA_BIDIRECTIONAL))
- 		vduse_domain_bounce(domain, dma_addr, size, DMA_FROM_DEVICE);
- 
- 	vduse_domain_unmap_bounce_page(domain, (u64)dma_addr, (u64)size);
-diff --git a/drivers/vdpa/vdpa_user/iova_domain.h b/drivers/vdpa/vdpa_user/iova_domain.h
-index 173e979b84a9..f92f22a7267d 100644
---- a/drivers/vdpa/vdpa_user/iova_domain.h
-+++ b/drivers/vdpa/vdpa_user/iova_domain.h
-@@ -44,6 +44,14 @@ int vduse_domain_set_map(struct vduse_iova_domain *domain,
- void vduse_domain_clear_map(struct vduse_iova_domain *domain,
- 			    struct vhost_iotlb *iotlb);
- 
-+void vduse_domain_sync_single_for_device(struct vduse_iova_domain *domain,
-+				      dma_addr_t dma_addr, size_t size,
-+				      enum dma_data_direction dir);
-+
-+void vduse_domain_sync_single_for_cpu(struct vduse_iova_domain *domain,
-+				      dma_addr_t dma_addr, size_t size,
-+				      enum dma_data_direction dir);
-+
- dma_addr_t vduse_domain_map_page(struct vduse_iova_domain *domain,
- 				 struct page *page, unsigned long offset,
- 				 size_t size, enum dma_data_direction dir,
-diff --git a/drivers/vdpa/vdpa_user/vduse_dev.c b/drivers/vdpa/vdpa_user/vduse_dev.c
-index 1d24da79c399..75354ce186a1 100644
---- a/drivers/vdpa/vdpa_user/vduse_dev.c
-+++ b/drivers/vdpa/vdpa_user/vduse_dev.c
-@@ -798,6 +798,26 @@ static const struct vdpa_config_ops vduse_vdpa_config_ops = {
- 	.free			= vduse_vdpa_free,
- };
- 
-+static void vduse_dev_sync_single_for_device(struct device *dev,
-+					     dma_addr_t dma_addr, size_t size,
-+					     enum dma_data_direction dir)
-+{
-+	struct vduse_dev *vdev = dev_to_vduse(dev);
-+	struct vduse_iova_domain *domain = vdev->domain;
-+
-+	vduse_domain_sync_single_for_device(domain, dma_addr, size, dir);
-+}
-+
-+static void vduse_dev_sync_single_for_cpu(struct device *dev,
-+					     dma_addr_t dma_addr, size_t size,
-+					     enum dma_data_direction dir)
-+{
-+	struct vduse_dev *vdev = dev_to_vduse(dev);
-+	struct vduse_iova_domain *domain = vdev->domain;
-+
-+	vduse_domain_sync_single_for_cpu(domain, dma_addr, size, dir);
-+}
-+
- static dma_addr_t vduse_dev_map_page(struct device *dev, struct page *page,
- 				     unsigned long offset, size_t size,
- 				     enum dma_data_direction dir,
-@@ -858,6 +878,8 @@ static size_t vduse_dev_max_mapping_size(struct device *dev)
- }
- 
- static const struct dma_map_ops vduse_dev_dma_ops = {
-+	.sync_single_for_device = vduse_dev_sync_single_for_device,
-+	.sync_single_for_cpu = vduse_dev_sync_single_for_cpu,
- 	.map_page = vduse_dev_map_page,
- 	.unmap_page = vduse_dev_unmap_page,
- 	.alloc = vduse_dev_alloc_coherent,
--- 
-2.43.0
-
+The same applies to the next patch, although the decompressor appears
+to ignore the built-in command line entirely (I made a note of that in
+the commit log)
 
