@@ -1,158 +1,129 @@
-Return-Path: <linux-kernel+bounces-71361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71360-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1EFC85A408
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:01:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE92885A404
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:01:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2207F1C231B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:01:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A44DD2852A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE77360AE;
-	Mon, 19 Feb 2024 13:01:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D11A3611D;
+	Mon, 19 Feb 2024 13:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vdMIpNI5"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ExfjIwt2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436E034CDE
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5DE2D610
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708347681; cv=none; b=O55Jk5B6gbrjoye7COZkg8yvSExp/drj2bxubt2TtmVNoHVJMvtUtb2jVeLvgClUNJfxtmp18pqbCMtJTbrqVwzpYzRSsQXUCgK+a89Psmvl83eHlrjiNtDBeIDD3+Hb122HtwLZ/eDJ2jVvCZtzSw6yLDKf5QM80QxXgPH2cbU=
+	t=1708347655; cv=none; b=NT1NZeHGHpLH/8SdYTB/ZOATjrJ0BJd1LwuDazey4Z3Kq49OnnTImAFfhgnVrrjaxpWTcKmtDFa43dZpsXRsW54YKDFP2368u+we8/5o+nZD7xaQh3KT59jXMlnKtlEA31wex5bW12yekc3slvsCKgvILWewHeLgEuai/sdPrjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708347681; c=relaxed/simple;
-	bh=SFWnjeNwNJD7FjXnCCO4T0U+0JJ5Grb2rBe4WOV7eZo=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=RAnvakUGYELOxZJ8cSe7jiT0/We6eOsTNIkfURxXcKAChqzmApgQFmKE6HOGPmYDT3aHlqAyKFavxu539MUxeXOtRUQt5RkLjt54I+N5fqSqzNIUE8Wnk19bBQIyxb9SUbuKSKfGMprbw8eAeU09l8PSjzWQJeh5Zg1eeVA9u+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vdMIpNI5; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-563dd5bd382so13813a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:01:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708347677; x=1708952477; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SFWnjeNwNJD7FjXnCCO4T0U+0JJ5Grb2rBe4WOV7eZo=;
-        b=vdMIpNI5UgKkksP/9bDuIBo15RfKgf0x1HqIzU+6qwrQOZjhHnaYJ3hMQJK9xCO/8c
-         KN6y8qGMY51qgFDCBgQxn2fT7PlVvQEb5K2G20/0KUVqMy33be/mVgIf1HQa9HYZxNZs
-         VhQsbHt5tlJn1YvlIUVPa/HgV9XerD+4fp1XexoiUNcrBimTKsowDWqjzd3xzxwLd/fC
-         ZkKO3teEoy9PkoYA/U2qzOGaJ2PqsOYYjCdREGxQBB4Z3nRdS41EG9xt0VQaG61iEPn8
-         1tuXi0UBkWm7ve3ALcOFuTolj8V/fKDgbTwQgB0RVv3V8hVh6h5IKJW+97R1oY8aWqKO
-         9thw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708347677; x=1708952477;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SFWnjeNwNJD7FjXnCCO4T0U+0JJ5Grb2rBe4WOV7eZo=;
-        b=myN5YG0Orwd3t3Xx20QfIkb9EoBDmWE5k637xmXU7YiUd7cfOr1rtwZ7hbhV8GJYHz
-         p/Fzgn42+8xbyV53cBByr6QTLSMt8S2v4IJnJz3nAEn9snM+h/zGQ5znB2OpCcUJjgby
-         Drfwe4yl5FjprG1+/sAjcxnsjz/NOTNLW9OTBROGN/Gn3RZ3MEY9DlE7p6asrFTQrJ0C
-         tHPh8SrS7536if+3kCWWRS+swX7NLCCe06bzA9pgHWUrdw+cGreIYRPSS8VFH7neKQT6
-         hCxVBRjwatCoZ+VFK0Hk+nTSwNlNBbzJgT8Gd46GY7KL/8Ka1X/zDOl1rRYlSmuQTNCP
-         PH0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVGGGjqLLbwnPrLqNHij8vrppBhGMk9n1fZLGEk0nyUEF5CKkW/l+HPtiejYZuAVKbOT692USz6F01CSdSyx7RQMPWY0h8GoDasBxQJ
-X-Gm-Message-State: AOJu0YxFn8eFm3UCOW2GZHK/2oAeC5DZmyAHveARGMrhTsZmz6lk6LmR
-	MadRToiloHOHQKvZ40NRNeQUHM/xa0bYlxqFhEihTfqLBqft2MZPDxTSCihiNdPcf6eiNQMXape
-	dGNest2YhC4KAnLGyQ8hbOUdm1+HeYBc3wgBF
-X-Google-Smtp-Source: AGHT+IHpYMU4YqiVSY3dBqpsEMf3rMu/OQbQSacMLTWWiVD1z8BcTgLzcXXaJUJ8TbvcVgng6HSRfBQgZHFTaKuX7r0=
-X-Received: by 2002:a50:9555:0:b0:563:c0e0:667c with SMTP id
- v21-20020a509555000000b00563c0e0667cmr257446eda.0.1708347677401; Mon, 19 Feb
- 2024 05:01:17 -0800 (PST)
+	s=arc-20240116; t=1708347655; c=relaxed/simple;
+	bh=dHWiwi/4MsahdbBRvdAXd0W5GApiDgwNTSRWlu2vpSE=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=pC8ta1as4i7bjjHp59+Ek+4SzTgbLjA746jSVLsR7drRC1AaKn0AJBo1HXy3oCQcIqUeQXEN92EFT8mADwj3TdzYUBmkhZF4iU0HxfY+t9lz5dtEwVRUeGq3c3OEeyGrklxMOlOpoYWdHNBQAok5zrVFbYmOaL1578Hhm9CbIQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ExfjIwt2; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708347652;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TwNcCYcnKDEqL3qwv8hEJSNKkkqFQa2yy0ZaFvuYG/I=;
+	b=ExfjIwt2QCRlfk78fwAcMeEqTz6RE3XGOt7dTQT9J+dczNb9X3AiRgtwrkmoeA1Xatuv5U
+	oeZNfZqnJpxH+9buycmq6zzpRt+2hS+QMGO8YVqLOufSKptdwUqr2zolJkk1dMbp33GuSq
+	7pG2tS+HJwRHGKODBClDGV9GIYPiWsY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-401-EKdDHX6EOFScijXKBRs-bg-1; Mon,
+ 19 Feb 2024 08:00:48 -0500
+X-MC-Unique: EKdDHX6EOFScijXKBRs-bg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 937BD1C05AA6;
+	Mon, 19 Feb 2024 13:00:47 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 14603AC0C;
+	Mon, 19 Feb 2024 13:00:45 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20240217081431.796809-1-libaokun1@huawei.com>
+References: <20240217081431.796809-1-libaokun1@huawei.com>
+To: Christian Brauner <christian@brauner.io>
+Cc: dhowells@redhat.com, netfs@lists.linux.dev, jlayton@kernel.org,
+    Baokun Li <libaokun1@huawei.com>, linux-cachefs@redhat.com,
+    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+    linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH RESEND] cachefiles: fix memory leak in cachefiles_add_cache()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Jann Horn <jannh@google.com>
-Date: Mon, 19 Feb 2024 14:00:39 +0100
-Message-ID: <CAG48ez3RmV6SsVw9oyTXxQXHp3rqtKDk2qwJWo9TGvXCq7Xr-w@mail.gmail.com>
-Subject: [BUG] perf/x86/intel: HitM false-positives on Ice Lake / Tiger Lake
- (I think?)
-To: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>
-Cc: Feng Tang <feng.tang@intel.com>, Andi Kleen <ak@linux.intel.com>, 
-	"the arch/x86 maintainers" <x86@kernel.org>, kernel list <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, "Liang, Kan" <kan.liang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <131232.1708347645.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 19 Feb 2024 13:00:45 +0000
+Message-ID: <131233.1708347645@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Hi!
+Hi Christian,
 
-From what I understand, "perf c2c" shows bogus HitM events on Ice Lake
-(and newer) because Intel added some feature where *clean* cachelines
-can get snoop-forwarded ("cross-core FWD"), and the PMU apparently
-treats this mostly the same as snoop-forwarding of modified cache
-lines (HitM)? On a Tiger Lake CPU, I can see addresses from the kernel
-rodata section in "perf c2c report".
+Could you take this through your VFS tree please?
 
-This is mentioned in the SDM, Volume 3B, section "20.9.7 Load Latency
-Facility", table "Table 20-101. Data Source Encoding for Memory
-Accesses (Ice Lake and Later Microarchitectures)", encoding 07H:
-"XCORE FWD. This request was satisfied by a sibling core where either
-a modified (cross-core HITM) or a non-modified (cross-core FWD)
-cache-line copy was found."
+> The following memory leak was reported after unbinding /dev/cachefiles:
+> =
 
-I don't see anything about this in arch/x86/events/intel/ds.c - if I
-understand correctly, the kernel's PEBS data source decoding assumes
-that 0x07 means "L3 hit, snoop hitm" on these CPUs. I think this needs
-to be adjusted somehow - and maybe it just isn't possible to actually
-distinguish between HitM and cross-core FWD in PEBS events on these
-CPUs (without big-hammer chicken bit trickery)? Maybe someone from
-Intel can clarify?
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> unreferenced object 0xffff9b674176e3c0 (size 192):
+>   comm "cachefilesd2", pid 680, jiffies 4294881224
+>   hex dump (first 32 bytes):
+>     01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>   backtrace (crc ea38a44b):
+>     [<ffffffff8eb8a1a5>] kmem_cache_alloc+0x2d5/0x370
+>     [<ffffffff8e917f86>] prepare_creds+0x26/0x2e0
+>     [<ffffffffc002eeef>] cachefiles_determine_cache_security+0x1f/0x120
+>     [<ffffffffc00243ec>] cachefiles_add_cache+0x13c/0x3a0
+>     [<ffffffffc0025216>] cachefiles_daemon_write+0x146/0x1c0
+>     [<ffffffff8ebc4a3b>] vfs_write+0xcb/0x520
+>     [<ffffffff8ebc5069>] ksys_write+0x69/0xf0
+>     [<ffffffff8f6d4662>] do_syscall_64+0x72/0x140
+>     [<ffffffff8f8000aa>] entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> =
 
-(The SDM describes that E-cores on the newer 12th Gen have more
-precise PEBS encodings that distinguish between "L3 HITM" and "L3
-HITF"; but I guess the P-cores there maybe still don't let you
-distinguish HITM/HITF?)
+> Put the reference count of cache_cred in cachefiles_daemon_unbind() to
+> fix the problem. And also put cache_cred in cachefiles_add_cache() error
+> branch to avoid memory leaks.
+> =
 
+> Fixes: 9ae326a69004 ("CacheFiles: A cache that backs onto a mounted file=
+system")
+> CC: stable@vger.kernel.org
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-I think https://perfmon-events.intel.com/tigerLake.html is also
-outdated, or at least it uses ambiguous grammar: The
-MEM_LOAD_L3_HIT_RETIRED.XSNP_FWD event (EventSel=D2H UMask=04H) is
-documented as "Counts retired load instructions where a cross-core
-snoop hit in another cores caches on this socket, the data was
-forwarded back to the requesting core as the data was modified
-(SNOOP_HITM) or the L3 did not have the data(SNOOP_HIT_WITH_FWD)" -
-from what I understand, a "cross-core FWD" should be a case where the
-L3 does have the data, unless L3 has become non-inclusive on Ice Lake?
+and add:
 
-On a Tiger Lake CPU, I can see this event trigger for the
-sys_call_table, which is located in the rodata region and probably
-shouldn't be containing Modified cache lines:
+Reviewed-by: Jingbo Xu <jefflexu@linux.alibaba.com>
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
+Acked-by: David Howells <dhowells@redhat.com>
 
-# grep -A1 -w sys_call_table /proc/kallsyms
-ffffffff82800280 D sys_call_table
-ffffffff82801100 d vdso_mapping
-# perf record -e mem_load_l3_hit_retired.xsnp_fwd:ppp --all-kernel -c 100 --data
-^C[ perf record: Woken up 11 times to write data ]
-[ perf record: Captured and wrote 22.851 MB perf.data (43176 samples) ]
-# perf script -F event,ip,sym,addr | egrep --color 'ffffffff828002[89abcdef]'
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002d8
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800288
-ffffffff82526275 do_syscall_64
-mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-ffffffff82526275 do_syscall_64
-
-
-(For what it's worth, there is a thread on LKML where "cross-core FWD"
-got mentioned: <https://lore.kernel.org/lkml/b4aaf1ed-124d-1339-3e99-a120f6cc4d28@linux.intel.com/>)
 
