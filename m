@@ -1,178 +1,233 @@
-Return-Path: <linux-kernel+bounces-71323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 004A985A388
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:35:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3317D85A381
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:35:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B6961F2225D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:35:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 581161C238F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE66364AD;
-	Mon, 19 Feb 2024 12:34:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0696E2E65B;
+	Mon, 19 Feb 2024 12:33:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="f7SvxbYa"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PjA+CsTG"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B8DB2E844
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:33:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8066921353;
+	Mon, 19 Feb 2024 12:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708346040; cv=none; b=QrhVb8R4GQMPKHo8mwZabLcWfGSUyjFFx0q2fShddqhUyA4+aLLsizoJKQ/s8o9rSOhDB8JYo62hm+pAQoz73V/3xdEM6yvwuC0GdpY2W1Opz00qBkHHMCs2njyAhQIz/BcStu217YSdjsvGd+2+FEuwHxWTK5x/0/pGONiwRPQ=
+	t=1708346037; cv=none; b=iF52DBvfKn5OIYyNOdleP4P32pIqKXlhzKo9+QOLhCT2963Cc82/KckyUgbZ8Q7h3+BTrUsFJzmhZeVJu4NXOy9V2tV6n0QwdElM0+y19SvL2jS40t38A7W+ue1PohoRkBSuGHY7WeRb6mevzQS1/EhNQdkRJcg/av78OaDVYTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708346040; c=relaxed/simple;
-	bh=EfyswbkjFGsreX6zvvh/xGLIF699ZsioDWGcgzOacl8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l6ZcBjDCoJPCyZzMtkslN8LTgbkFr5Wvty7pa3ddZ4b9APPQXFgcUDwyvimniUZ7xPhZXa7eBzHdBVXRQXDqE9pazBacWkS92aCE1YmJNqMW/H/hRnmVYlCZPK6qsPBNE9XHKqvhqn3EZWtH/tL2F7ej1rJl0q2lnnvmwVSLwQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=f7SvxbYa; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so3769207276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:33:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708346037; x=1708950837; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EfyswbkjFGsreX6zvvh/xGLIF699ZsioDWGcgzOacl8=;
-        b=f7SvxbYapz8Q6xY8ShG4PYzpMxeuML9KOgHMMAP2eVOv40D6nw1X8eNmIB55yscPoR
-         mNFvTfUmZDnvRVHmzmFyYQTyi2rJqWmEHXvNO9AvPv6CJ+kwsfRkYW5QpyPmPx14q6GW
-         m77054HH2xIa260GuwYUAhLtxpWM8ZKs/Xg0kxMQPpZCjggGwl9Ruo0VN+eSuHCxDAbo
-         3ThhqKLAEl81nIq2huqMPtf4tjs37B0b/w+04j+n6oytayQhTKK3kUGoztfMQxk0WHoH
-         s7072BCUVk7BntWRB1B3wlzWQ0f8CvSKaUnFYaSmUlFf5ffvRPPS0gPvoNIpJWdOQt3R
-         Sqnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708346037; x=1708950837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EfyswbkjFGsreX6zvvh/xGLIF699ZsioDWGcgzOacl8=;
-        b=cEUwFqUR4w1Hle210Pa7zPNHp6rumIVHd+O49lTrOZA5xneX9a+PTQ3yQj0QsLwI3B
-         FdW6GX6NFE0hvqt162KqK/JXjXm5BNftZthzrKLVZsTsWhhZV2UDUkrbljyPgbJFfegx
-         rJTWTYO/VjIOaTDj0WYJSO3lpj9OfMRuYhiw7CsJXk4cCy02lsMHM6vMf/RkcXMdjagA
-         KY0+niQfhm6df2WnHp7oSyv6AtERLEwdYVaTz3jqOixvKPq4dPN0F/Yny75H1wgohiLu
-         AaZi0a9mS5eYEfHGzc4BGS/q4N1V/lJDVfKpvfiY4F6yQDAsJQx5gcqnGC5pnmvZSEeM
-         yEEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWr7upnUSP+mwn6Fg6ACxY/sOnZiSJdXn2rxiwGUVBzgqpL3kGH60cfHdtRqWmTwga/nl/Zi3PnyncITjKP5f+QeoY+EHhR66UifWMA
-X-Gm-Message-State: AOJu0Yxv+lLWnqv00RSFwyfGcAhWIlSX0GK3SFPA1DEV7D+f6PD8e+Do
-	jOfPgvWUD8ak6uyadcU8Q8F0lT4lh/mFH6UCDQwqmAZ1PpCEZ8IAHcN/fHfmW7KG+yq74WK8CLb
-	RdOOGRK8RM58YcbJYTliGiyKEgVKWy8fVTJSgiQ==
-X-Google-Smtp-Source: AGHT+IFW8hhd6M3At62V/9wLITSoPMQHLrtCAz5Offi/bXn5seDzbGyDiAZKXHo0tEWEDjfOFoAQhZeOCTlFpOff0gM=
-X-Received: by 2002:a25:adc9:0:b0:dcd:63f8:ba32 with SMTP id
- d9-20020a25adc9000000b00dcd63f8ba32mr10169009ybe.65.1708346037293; Mon, 19
- Feb 2024 04:33:57 -0800 (PST)
+	s=arc-20240116; t=1708346037; c=relaxed/simple;
+	bh=G10sUI3aurqn2NDIrco+NIvnWRizB/yeIM1LjXv9pGY=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=OwpWrD9Z1r3dkQYOWWaq/gGJz6ILbL2A/jTuGewuxDMo93059LUA9YspydKs/8fO8bY4Pvxq7j+i41JIIAqXdYtXIFweYCTn03QyQohKwAoOBJLLeiaX/2UKq0toXEZlzHSq2ZL1wR+Rpr09d13e/lRJlRa3g6QQ+W8LGgS2VWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PjA+CsTG; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708346033;
+	bh=G10sUI3aurqn2NDIrco+NIvnWRizB/yeIM1LjXv9pGY=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=PjA+CsTGolyEnGplhDrYLWwrTU5UFpkDEnmLxa3JHRW68WPj40CMAqBoMnWgB+40t
+	 gMxl0uBjqM5ULJFykVqEtAT0+GV4B72h7rXScdwUv6Vt/sjYm+G/040XjEVOrjs+Fl
+	 7BMoh45ZX/1IMknOjn/amX7ybYRY71N1wnPL2lTEcJmqAhZKUK4MFht59ln7NKSNeY
+	 xZj0Cq4ikCW/p5QNQojCHHL0EYHnd4HILsGXg5puSn+RnhXClBYYC5ha74NwzFTzgZ
+	 Xe3tL9EBbz6MyRXkGkmheGm0KX43wyH98UyHe8HTNMkBnR76sJN13ZZ9GtHKsRzkYw
+	 04i483qnSXbhQ==
+Received: from [100.72.217.37] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C7EFA3780BFE;
+	Mon, 19 Feb 2024 12:33:49 +0000 (UTC)
+Message-ID: <4a7926e3-f8b7-4df8-8deb-0dfae067e732@collabora.com>
+Date: Mon, 19 Feb 2024 17:34:13 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216203215.40870-1-brgl@bgdev.pl> <CAA8EJppt4-L1RyDeG=1SbbzkTDhLkGcmAbZQeY0S6wGnBbFbvw@mail.gmail.com>
- <e4cddd9f-9d76-43b7-9091-413f923d27f2@linaro.org> <CAA8EJpp6+2w65o2Bfcr44tE_ircMoON6hvGgyWfvFuh3HamoSQ@mail.gmail.com>
- <4d2a6f16-bb48-4d4e-b8fd-7e4b14563ffa@linaro.org> <CAA8EJpq=iyOfYzNATRbpqfBaYSdJV1Ao5t2ewLK+wY+vEaFYAQ@mail.gmail.com>
- <CAMRc=Mfnpusf+mb-CB5S8_p7QwVW6owekC5KcQF0qrR=iOQ=oA@mail.gmail.com>
-In-Reply-To: <CAMRc=Mfnpusf+mb-CB5S8_p7QwVW6owekC5KcQF0qrR=iOQ=oA@mail.gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 19 Feb 2024 14:33:46 +0200
-Message-ID: <CAA8EJppY7VTrDz3-FMZh2qHoU+JSGUjCVEi5x=OZgNVxQLm3eQ@mail.gmail.com>
-Subject: Re: [PATCH v5 00/18] power: sequencing: implement the subsystem and
- add first users
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: neil.armstrong@linaro.org, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests/bpf: Move test_dev_cgroup to prog_tests
+Content-Language: en-US
+To: Daniel Borkmann <daniel@iogearbox.net>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>
+References: <20240215120233.308986-1-usama.anjum@collabora.com>
+ <fa73d34f-e371-cc4b-afd1-c680a2edac56@iogearbox.net>
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <fa73d34f-e371-cc4b-afd1-c680a2edac56@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, 19 Feb 2024 at 14:23, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> On Mon, Feb 19, 2024 at 11:26=E2=80=AFAM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
->
-> [snip]
->
-> > > >>>>
-> > > >>>> For WCN7850 we hide the existence of the PMU as modeling it is s=
-imply not
-> > > >>>> necessary. The BT and WLAN devices on the device-tree are repres=
-ented as
-> > > >>>> consuming the inputs (relevant to the functionality of each) of =
-the PMU
-> > > >>>> directly.
-> > > >>>
-> > > >>> We are describing the hardware. From the hardware point of view, =
-there
-> > > >>> is a PMU. I think at some point we would really like to describe =
-all
-> > > >>> Qualcomm/Atheros WiFI+BT units using this PMU approach, including=
- the
-> > > >>> older ath10k units present on RB3 (WCN3990) and db820c (QCA6174).
-> > > >>
-> > > >> While I agree with older WiFi+BT units, I don't think it's needed =
-for
-> > > >> WCN7850 since BT+WiFi are now designed to be fully independent and=
- PMU is
-> > > >> transparent.
-> > > >
-> > > > I don't see any significant difference between WCN6750/WCN6855 and
-> > > > WCN7850 from the PMU / power up point of view. Could you please poi=
-nt
-> > > > me to the difference?
-> > > >
-> > >
-> > > The WCN7850 datasheet clearly states there's not contraint on the WLA=
-N_EN
-> > > and BT_EN ordering and the only requirement is to have all input regu=
-lators
-> > > up before pulling up WLAN_EN and/or BT_EN.
-> > >
-> > > This makes the PMU transparent and BT and WLAN can be described as in=
-dependent.
-> >
-> > From the hardware perspective, there is a PMU. It has several LDOs. So
-> > the device tree should have the same style as the previous
-> > generations.
-> >
->
-> My thinking was this: yes, there is a PMU but describing it has no
-> benefit (unlike QCA6x90). If we do describe, then we'll end up having
-> to use pwrseq here despite it not being needed because now we won't be
-> able to just get regulators from WLAN/BT drivers directly.
->
-> So I also vote for keeping it this way. Let's go into the package
-> detail only if it's required.
+Thank you for review. I'll fix.
 
-The WiFi / BT parts are not powered up by the board regulators. They
-are powered up by the PSU. So we are not describing it in the accurate
-way.
+On 2/16/24 10:25 PM, Daniel Borkmann wrote:
+> Hi Muhammad,
+> 
+> Small nit, pls use $subj: [PATCH bpf-next]
+Sure, I'll update.
 
-Moreover, I think we definitely want to move BT driver to use only the
-pwrseq power up method. Doing it in the other way results in the code
-duplication and possible issues because of the regulator / pwrseq
-taking different code paths.
+> 
+> On 2/15/24 1:01 PM, Muhammad Usama Anjum wrote:
+>> Move test_dev_cgroup to prog_tests to be able to run it with test_progs.
+>> Replace dev_cgroup.bpf.o with skel header file, dev_cgroup.skel.h and
+>> load program from it accourdingly.
+>>
+>>    ./test_progs -t test_dev_cgroup
+>>    mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+>>    64+0 records in
+>>    64+0 records out
+>>    32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
+>>    dd: failed to open '/dev/full': Operation not permitted
+>>    dd: failed to open '/dev/random': Operation not permitted
+>>    #365     test_dev_cgroup:OK
+>>    Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>>
+>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> 
+> BPF CI currently fails this with :
+> 
+> https://github.com/kernel-patches/bpf/actions/runs/7924507406/job/21636353124
+> 
+>   [...]
+>   All error logs:
+>   test_test_dev_cgroup:PASS:skel_open_and_load 0 nsec
+>   test_test_dev_cgroup:PASS:cgroup_setup_and_join 0 nsec
+>   test_test_dev_cgroup:PASS:bpf_attach 0 nsec
+>   test_test_dev_cgroup:PASS:bpf_query 0 nsec
+>   test_test_dev_cgroup:PASS:rm 0 nsec
+>   test_test_dev_cgroup:PASS:mknod 0 nsec
+>   test_test_dev_cgroup:PASS:rm 0 nsec
+>   test_test_dev_cgroup:PASS:rm 0 nsec
+>   test_test_dev_cgroup:FAIL:mknod unexpected mknod on _zero
+>   test_test_dev_cgroup:PASS:rm 0 nsec
+>   test_test_dev_cgroup:PASS:dd 0 nsec
+>   test_test_dev_cgroup:PASS:dd 0 nsec
+>   test_test_dev_cgroup:PASS:dd 0 nsec
+>   (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
+>   #366     test_dev_cgroup:FAIL
+>   Summary: 517/3837 PASSED, 53 SKIPPED, 1 FAILED
+> 
+> You can also use vmtest.sh tool to check locally :
+> 
+>   # ./vmtest.sh -- ./test_progs -t test_dev_cgroup
+It is passing on my side on next-20240207 and next-20240218. I'll test
+again by running all the tests with test_progs. Maybe something else is
+making it fail.
 
+> 
+>> diff --git a/tools/testing/selftests/bpf/prog_tests/test_dev_cgroup.c
+>> b/tools/testing/selftests/bpf/prog_tests/test_dev_cgroup.c
+>> new file mode 100644
+>> index 0000000000000..ee37ce52dec9f
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/bpf/prog_tests/test_dev_cgroup.c
+>> @@ -0,0 +1,67 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/* Copyright (c) 2017 Facebook
+>> + */
+>> +
+>> +#include <test_progs.h>
+>> +#include <time.h>
+>> +#include "cgroup_helpers.h"
+>> +#include "dev_cgroup.skel.h"
+>> +
+>> +#define TEST_CGROUP "/test-bpf-based-device-cgroup/"
+>> +
+>> +void test_test_dev_cgroup(void)
+> 
+> nit: test_dev_cgroup ?
+I was trying not to rename the file. I'll rename the file.
 
---=20
-With best wishes
-Dmitry
+> 
+>> +{
+>> +    int cgroup_fd, err, duration = 0;
+>> +    struct dev_cgroup *skel;
+>> +    __u32 prog_cnt;
+>> +
+>> +    skel = dev_cgroup__open_and_load();
+>> +    if (CHECK(!skel, "skel_open_and_load", "failed\n"))
+>> +        goto cleanup;
+
+> 
+> Nit: please use ASSERT_* macros everywhere, the CHECK() is deprecated.
+I'd not any deprecated notice/comment. I'll use ASSERT_* from now on.
+
+> 
+>> +    cgroup_fd = cgroup_setup_and_join(TEST_CGROUP);
+>> +    if (CHECK(cgroup_fd < 0, "cgroup_setup_and_join", "failed: %d\n",
+>> cgroup_fd))
+>> +        goto cleanup;
+>> +
+>> +    err = bpf_prog_attach(bpf_program__fd(skel->progs.bpf_prog1),
+>> cgroup_fd,
+>> +                  BPF_CGROUP_DEVICE, 0);
+>> +    if (CHECK(err, "bpf_attach", "failed: %d\n", err))
+>> +        goto cleanup;
+>> +
+>> +    err = bpf_prog_query(cgroup_fd, BPF_CGROUP_DEVICE, 0, NULL, NULL,
+>> &prog_cnt);
+>> +    if (CHECK(err || prog_cnt != 1, "bpf_query", "failed: %d %d\n", err,
+>> prog_cnt))
+>> +        goto cleanup;
+>> +
+>> +    /* All operations with /dev/zero and /dev/urandom are allowed,
+>> +     * everything else is forbidden.
+>> +     */
+>> +    CHECK(system("rm -f /tmp/test_dev_cgroup_null"), "rm",
+>> +          "unexpected rm on _null\n");
+>> +    CHECK(!system("mknod /tmp/test_dev_cgroup_null c 1 3"),
+>> +          "mknod", "unexpected mknod on _null\n");
+>> +    CHECK(system("rm -f /tmp/test_dev_cgroup_null"), "rm",
+>> +          "unexpected rm on _null\n");
+>> +
+>> +    /* /dev/zero is whitelisted */
+>> +    CHECK(system("rm -f /tmp/test_dev_cgroup_zero"), "rm",
+>> +          "unexpected rm on _zero\n");
+>> +    CHECK(system("mknod /tmp/test_dev_cgroup_zero c 1 5"),
+>> +          "mknod", "unexpected mknod on _zero\n");
+>> +    CHECK(system("rm -f /tmp/test_dev_cgroup_zero"), "rm",
+>> +          "unexpected rm on _zero\n");
+>> +
+>> +    CHECK(system("dd if=/dev/urandom of=/dev/zero count=64"), "dd",
+>> +          "unexpected dd on /dev/zero\n");
+>> +
+>> +    /* src is allowed, target is forbidden */
+>> +    CHECK(!system("dd if=/dev/urandom of=/dev/full count=64"), "dd",
+>> +          "unexpected dd on /dev/full\n");
+>> +
+>> +    /* src is forbidden, target is allowed */
+>> +    CHECK(!system("dd if=/dev/random of=/dev/zero count=64"), "dd",
+>> +          "unexpected dd on /dev/zero\n");
+>> +
+>> +cleanup:
+>> +    cleanup_cgroup_environment();
+>> +    dev_cgroup__destroy(skel);
+>> +}
+> 
+> Thanks,
+> Daniel
+> 
+
+-- 
+BR,
+Muhammad Usama Anjum
 
