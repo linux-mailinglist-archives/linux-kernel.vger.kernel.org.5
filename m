@@ -1,222 +1,182 @@
-Return-Path: <linux-kernel+bounces-70633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70634-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 206A5859A53
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0732C859A55
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:09:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00A5BB20CC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 01:05:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19483B20CF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 01:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26CC163;
-	Mon, 19 Feb 2024 01:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E019C15C9;
+	Mon, 19 Feb 2024 01:09:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fz+QvxkG"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EfdZCCep"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3F7652
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169D3394
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:09:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708304712; cv=none; b=OUMmLuLLXgNQ9doBv3CrrhbPeuXQndkJJ0vmGwETFPTTnDn2fekCmM45LOJ0U8CtMzMS+x7rvPOuJ6t1UYTy2N2IZxXuNyv/J90qHzoPCYUUUNthTFQt7jCjysmPm5UrhavbwQz0YEljXO2j7Yh4jH8Xv3DsrrB0kOsYYVfYFS0=
+	t=1708304972; cv=none; b=Ob2eexRNo3HtIGQgyW2RlOxK3LVeOq3yvYlyP77a0q/ruC0oeKiyBfefX+WxCZ2Ib1NPsT1sTM/V7t1vbSwiKb9/HgGoyn/5aK+KF9CB2706Mu9pnOP2DNphNXLyYwU0rcArSlH+T6FWSPhAPYgJ1uh55pW0ArzQ2vBqpeAdMlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708304712; c=relaxed/simple;
-	bh=RN/oOnbxOXJRjgABecn+1xhjdfXant7wAu1DO9OYV0M=;
+	s=arc-20240116; t=1708304972; c=relaxed/simple;
+	bh=kPxrv7W2yIJaZMQ1+gJwIp+HhCy5zI4R+ySZbaEIjB4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IvzThXYuoZnprnjNw3C/gRcQIJVy6/mA+xTCM4Y1znhDCcKV7PxfFBMYaJ2MEMpCxZFXOrJfD5pJovWHtADSVrgR6/GYKLvkXQDenXxeFNssDjckkVocEMaJZTnLONMdmHL9yfr9oFWydSCDa5bL3EzCTEK7cd+wnJXzWaWOZrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fz+QvxkG; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso3563798276.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:05:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708304708; x=1708909508; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mIDaOHUmOnFQVc3Wwg+6+LPaeJ2ta81+Eqz5TMzPBys=;
-        b=fz+QvxkGr229b6bOrKWi9XavB8I5cjL/HDA9sjZn+pP0oqOmBxKuzRnbZm2bmE6Nue
-         0X98b9HQ0mJuVpQCJ8NsQDg7bMdv4O6KJJIzE6uqTskf5hlTpRx6+OMe0ARgOY0bFZZP
-         2QfpxR5ErVjv499/jVaEHj6IeV8mVNVWmXWCC4NkPE8oA+lEidFad5YsZfvgtKh3Orr/
-         hP0JbfDr5YYpgdcjnvL68K/qXF24lAuS2EDLWGYZeMwuDeXvtJBb4N5JExgrI8l5DAHr
-         B6lYOoDQJXe0Lhw9wpOcJKkd84rfPiGTDy54w80WJjCEq8y9G66FW8jcJBmU1Nibcmw/
-         qh9w==
+	 To:Cc:Content-Type; b=SvRcX/QiFKAvytaF4lEbzA39n8C4OtgE3NRIa9luv2AUtpufV5QQin4Sc+/lQ3/EKe4NccIPtKYUfGI9W7ce/io+3uq+7GPOMW1qL5kL2EGclC0QrSeVRHpJlwEpPuISJloVMxkHb7+rEf+hkYJ3FiWAnlIPmhtGpWVRi0fCeUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EfdZCCep; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708304968;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8FH/IGXGIzL7Qe7et2w95vW7pDGEVjgey8bcDbORJ2E=;
+	b=EfdZCCepdH+RIe/qlCg/m3IZp88mWb0PvIemUavhiNVu4iupg+ha9M1ROCcZs+0ObGzWpO
+	K/HpuFChipDmPEwAPD5BjoV2uQEOqY531wGmA+GXASJGoQQvncLba8mL3sqDAN+wBKZfhO
+	fNeVLHiTE2RI6kwRRsErvpEcIt4LQOQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-187-DemtSNUPO0KmZX02HTgBVA-1; Sun, 18 Feb 2024 20:09:26 -0500
+X-MC-Unique: DemtSNUPO0KmZX02HTgBVA-1
+Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-5647132e2aeso212432a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:09:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708304708; x=1708909508;
+        d=1e100.net; s=20230601; t=1708304964; x=1708909764;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mIDaOHUmOnFQVc3Wwg+6+LPaeJ2ta81+Eqz5TMzPBys=;
-        b=DOAm9+WjzoDAPIvPiYu9k55SVWaSCLjNYIkhgiXM0Lp+fC8unMyD5qQXHoVQo3I5da
-         lxcczUl7eOcED0uHkO4aYI6tm0QHoKz2bj0tDhfZBYZMqKN3ysmcCXaZfRfKWnuqqfF7
-         TARBVJZeJXC+gaEuWwp9zup693xc+KLc5g9EujQQ9A13mR0k4igsMd1lMcdPbPP1tD0B
-         xYuhi8kex4U6lO21f8A4v1AL4k8fXty9LuU+rhTRmUJzgCfPiK2K+KX+9Kz1c/NzkxQz
-         XsV4ar/XhUEadpo0zqXR4R6HAcsNYNjREWiorHtNdEh2sVjCNn1a6umH3Q1bovy4wYjz
-         +YUA==
-X-Forwarded-Encrypted: i=1; AJvYcCXLNKKvz1W8UV7jcbx+QfbvpAZMKe4FP4GnOjWCU5hq3x8ogpAuSG2TIVCYoajyGlbB3wPFn2Uq7tFtzpY+eQ/qhpcoSGP4d83JopIr
-X-Gm-Message-State: AOJu0Yxvo1lagdT4NoHekkWQIANl4jnFbaZ6PxRX8i2lOVAF/5JZEMvt
-	TqPMc6aTxtpzg2jp861N6GyLitj1FKQwm061F88WY1I8ZYMT+azkyKsEti2y8BBVQkzEWZWDBB0
-	2Zc7PIuXv5u3jIr9HHL2bFSU59UBfqwMhkMef
-X-Google-Smtp-Source: AGHT+IFAFF6IWWYhF0S9T//EmmWIuYGcDfDoGsA7me1Exr/qYPq0aAoDdEWC37Tru9GNL3XObftohrbEHommrFTiK+w=
-X-Received: by 2002:a5b:b43:0:b0:dcc:eb38:199c with SMTP id
- b3-20020a5b0b43000000b00dcceb38199cmr10258615ybr.56.1708304707680; Sun, 18
- Feb 2024 17:05:07 -0800 (PST)
+        bh=8FH/IGXGIzL7Qe7et2w95vW7pDGEVjgey8bcDbORJ2E=;
+        b=YMU7r94kyPpqv2wSdbRrOEBqn9tSh3QdaE3xw2W4YDUlo5MLcRLdKHNBLLAssBU0e8
+         WraXpcjBzvdzie6U75zZxBrcNFOijPxI9g06zcjPwsJZCwDzoaOOHClLLbIHyCOwzM3z
+         GcbVpfvG4Q0+X1IcT0mxrqAY7bev+X6iR8/i6On1PuPleLZ47/UbdSeijL8HduwykKgw
+         Qfgd0/Q3M+jmPJClPMiDy3EQdNrlGTWuIHiMgrI1W9EKbTuHrN/GJaH+zPziAl3ohilg
+         TwwXBmXGBb+cq5yBsMtxMD0yBDQqMpZUqRZFoXUY13eNrCQffvXRiIWDINuulBJ8HmmX
+         xGWw==
+X-Forwarded-Encrypted: i=1; AJvYcCX2vLcxaLZxRLL747cbjC24sMVl592OrclhHqOQsPYWWMRPy7GdpQOPrpgewnr6rs1jFiD2esBAv83kzq+gICqBl2GGeGTPvSBOLt+Q
+X-Gm-Message-State: AOJu0YxyLWxepY8jINDnKciEoLoJpLAqAWFm6kgY5k/O6cOiEtkskPk0
+	UDJarmH7T/dpx0SmoB7PHhmsdv9HAsln31Zhq/DcBFShA1RFEZNalMbYE8fMS6D29oe18PUJxjM
+	hF79YS1Js4cmT0k6vFyEgjWVW1m1L+bPf71Yt31t/ZGOm0JDG3z9TI8m0s8GJ3nMd3pNGq/TZXf
+	+lsPm0IPOhgV4cq0/3CDE6bvPLtoDDB/hqWR2VFu+RmmhWZ+cVbA==
+X-Received: by 2002:a17:906:b785:b0:a3d:6160:fcca with SMTP id dt5-20020a170906b78500b00a3d6160fccamr9138346ejb.69.1708304964561;
+        Sun, 18 Feb 2024 17:09:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH2skZ0uE5cETDN0mtHmDLiYuDbMpFEFyh55kaJoE+fMvltoEYczRmuSuwF6ckMHLeGtM1ZbxIq+RQSU3/YY/M=
+X-Received: by 2002:a17:906:b785:b0:a3d:6160:fcca with SMTP id
+ dt5-20020a170906b78500b00a3d6160fccamr9138336ejb.69.1708304964285; Sun, 18
+ Feb 2024 17:09:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-33-surenb@google.com>
- <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz>
-In-Reply-To: <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 19 Feb 2024 01:04:54 +0000
-Message-ID: <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
-Subject: Re: [PATCH v3 32/35] codetag: debug: skip objext checking when it's
- for objext itself
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
+References: <20240216142502.78095-1-jonah.palmer@oracle.com>
+In-Reply-To: <20240216142502.78095-1-jonah.palmer@oracle.com>
+From: Lei Yang <leiyang@redhat.com>
+Date: Mon, 19 Feb 2024 09:08:47 +0800
+Message-ID: <CAPpAL=zp+VxFUNw5W2jB0ENhYZ4Ts5+gAH7cQu-7LMhFnApqrA@mail.gmail.com>
+Subject: Re: [PATCH v2] vdpa/mlx5: Allow CVQ size changes
+To: Jonah Palmer <jonah.palmer@oracle.com>
+Cc: mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com, 
+	eperezma@redhat.com, si-wei.liu@oracle.com, 
+	virtualization@lists.linux-foundation.org, dtatulea@nvidia.com, 
+	boris.ostrovsky@oracle.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 16, 2024 at 6:39=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 2/12/24 22:39, Suren Baghdasaryan wrote:
-> > objext objects are created with __GFP_NO_OBJ_EXT flag and therefore hav=
-e
-> > no corresponding objext themselves (otherwise we would get an infinite
-> > recursion). When freeing these objects their codetag will be empty and
-> > when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled this will lead to fals=
-e
-> > warnings. Introduce CODETAG_EMPTY special codetag value to mark
-> > allocations which intentionally lack codetag to avoid these warnings.
-> > Set objext codetags to CODETAG_EMPTY before freeing to indicate that
-> > the codetag is expected to be empty.
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > ---
-> >  include/linux/alloc_tag.h | 26 ++++++++++++++++++++++++++
-> >  mm/slab.h                 | 25 +++++++++++++++++++++++++
-> >  mm/slab_common.c          |  1 +
-> >  mm/slub.c                 |  8 ++++++++
-> >  4 files changed, 60 insertions(+)
-> >
-> > diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
-> > index 0a5973c4ad77..1f3207097b03 100644
->
-> ...
->
-> > index c4bd0d5348cb..cf332a839bf4 100644
-> > --- a/mm/slab.h
-> > +++ b/mm/slab.h
-> > @@ -567,6 +567,31 @@ static inline struct slabobj_ext *slab_obj_exts(st=
-ruct slab *slab)
-> >  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
-> >                       gfp_t gfp, bool new_slab);
-> >
-> > +
-> > +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> > +
-> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
-> > +{
-> > +     struct slabobj_ext *slab_exts;
-> > +     struct slab *obj_exts_slab;
-> > +
-> > +     obj_exts_slab =3D virt_to_slab(obj_exts);
-> > +     slab_exts =3D slab_obj_exts(obj_exts_slab);
-> > +     if (slab_exts) {
-> > +             unsigned int offs =3D obj_to_index(obj_exts_slab->slab_ca=
-che,
-> > +                                              obj_exts_slab, obj_exts)=
-;
-> > +             /* codetag should be NULL */
-> > +             WARN_ON(slab_exts[offs].ref.ct);
-> > +             set_codetag_empty(&slab_exts[offs].ref);
-> > +     }
-> > +}
-> > +
-> > +#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
-> > +
-> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
-> > +
-> > +#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
-> > +
->
-> I assume with alloc_slab_obj_exts() moved to slub.c, mark_objexts_empty()
-> could move there too.
+QE tested this patch's V2, qemu no longer print error messages
+"qemu-system-x86_64: Insufficient written data (0)" after
+enable/disable multi queues multi times inside guest. Both "x-svq=3Don
+'' and without it are all test pass.
 
-No, I think mark_objexts_empty() belongs here. This patch introduced
-the function and uses it. Makes sense to me to keep it all together.
+Tested-by: Lei Yang <leiyang@redhat.com>
 
+On Fri, Feb 16, 2024 at 10:25=E2=80=AFPM Jonah Palmer <jonah.palmer@oracle.=
+com> wrote:
 >
-> >  static inline bool need_slab_obj_ext(void)
-> >  {
-> >  #ifdef CONFIG_MEM_ALLOC_PROFILING
-> > diff --git a/mm/slab_common.c b/mm/slab_common.c
-> > index 21b0b9e9cd9e..d5f75d04ced2 100644
-> > --- a/mm/slab_common.c
-> > +++ b/mm/slab_common.c
-> > @@ -242,6 +242,7 @@ int alloc_slab_obj_exts(struct slab *slab, struct k=
-mem_cache *s,
-> >                * assign slabobj_exts in parallel. In this case the exis=
-ting
-> >                * objcg vector should be reused.
-> >                */
-> > +             mark_objexts_empty(vec);
-> >               kfree(vec);
-> >               return 0;
-> >       }
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 4d480784942e..1136ff18b4fe 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -1890,6 +1890,14 @@ static inline void free_slab_obj_exts(struct sla=
-b *slab)
-> >       if (!obj_exts)
-> >               return;
-> >
-> > +     /*
-> > +      * obj_exts was created with __GFP_NO_OBJ_EXT flag, therefore its
-> > +      * corresponding extension will be NULL. alloc_tag_sub() will thr=
-ow a
-> > +      * warning if slab has extensions but the extension of an object =
-is
-> > +      * NULL, therefore replace NULL with CODETAG_EMPTY to indicate th=
-at
-> > +      * the extension for obj_exts is expected to be NULL.
-> > +      */
-> > +     mark_objexts_empty(obj_exts);
-> >       kfree(obj_exts);
-> >       slab->obj_exts =3D 0;
-> >  }
+> The MLX driver was not updating its control virtqueue size at set_vq_num
+> and instead always initialized to MLX5_CVQ_MAX_ENT (16) at
+> setup_cvq_vring.
 >
+> Qemu would try to set the size to 64 by default, however, because the
+> CVQ size always was initialized to 16, an error would be thrown when
+> sending >16 control messages (as used-ring entry 17 is initialized to 0).
+> For example, starting a guest with x-svq=3Don and then executing the
+> following command would produce the error below:
+>
+>  # for i in {1..20}; do ifconfig eth0 hw ether XX:xx:XX:xx:XX:XX; done
+>
+>  qemu-system-x86_64: Insufficient written data (0)
+>  [  435.331223] virtio_net virtio0: Failed to set mac address by vq comma=
+nd.
+>  SIOCSIFHWADDR: Invalid argument
+>
+> Acked-by: Dragos Tatulea <dtatulea@nvidia.com>
+> Acked-by: Eugenio P=C3=A9rez <eperezma@redhat.com>
+> Signed-off-by: Jonah Palmer <jonah.palmer@oracle.com>
+> ---
+>  drivers/vdpa/mlx5/net/mlx5_vnet.c | 13 +++++++++----
+>  1 file changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/ml=
+x5_vnet.c
+> index 778821bab7d9..ecfc16151d61 100644
+> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> @@ -151,8 +151,6 @@ static void teardown_driver(struct mlx5_vdpa_net *nde=
+v);
+>
+>  static bool mlx5_vdpa_debug;
+>
+> -#define MLX5_CVQ_MAX_ENT 16
+> -
+>  #define MLX5_LOG_VIO_FLAG(_feature)                                     =
+                           \
+>         do {                                                             =
+                          \
+>                 if (features & BIT_ULL(_feature))                        =
+                          \
+> @@ -2276,9 +2274,16 @@ static void mlx5_vdpa_set_vq_num(struct vdpa_devic=
+e *vdev, u16 idx, u32 num)
+>         struct mlx5_vdpa_net *ndev =3D to_mlx5_vdpa_ndev(mvdev);
+>         struct mlx5_vdpa_virtqueue *mvq;
+>
+> -       if (!is_index_valid(mvdev, idx) || is_ctrl_vq_idx(mvdev, idx))
+> +       if (!is_index_valid(mvdev, idx))
+>                 return;
+>
+> +        if (is_ctrl_vq_idx(mvdev, idx)) {
+> +                struct mlx5_control_vq *cvq =3D &mvdev->cvq;
+> +
+> +                cvq->vring.vring.num =3D num;
+> +                return;
+> +        }
+> +
+>         mvq =3D &ndev->vqs[idx];
+>         mvq->num_ent =3D num;
+>  }
+> @@ -2963,7 +2968,7 @@ static int setup_cvq_vring(struct mlx5_vdpa_dev *mv=
+dev)
+>                 u16 idx =3D cvq->vring.last_avail_idx;
+>
+>                 err =3D vringh_init_iotlb(&cvq->vring, mvdev->actual_feat=
+ures,
+> -                                       MLX5_CVQ_MAX_ENT, false,
+> +                                       cvq->vring.vring.num, false,
+>                                         (struct vring_desc *)(uintptr_t)c=
+vq->desc_addr,
+>                                         (struct vring_avail *)(uintptr_t)=
+cvq->driver_addr,
+>                                         (struct vring_used *)(uintptr_t)c=
+vq->device_addr);
+> --
+> 2.39.3
+>
+
 
