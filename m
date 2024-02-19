@@ -1,253 +1,167 @@
-Return-Path: <linux-kernel+bounces-71693-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71695-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D5D85A912
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:39:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5715D85A917
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:39:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA9E21F24D1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:39:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DE4428399D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:39:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0E6B3FB21;
-	Mon, 19 Feb 2024 16:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD50E3F9FB;
+	Mon, 19 Feb 2024 16:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="exLjFMX4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3CClvGDE"
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63CAE36118
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7058241C68
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708360763; cv=none; b=Bad904ugyJIqw1Vf6u6sU3Gw3IwKoAEqYDHqL++U/43L5DaP+1q9Hk0Ue9cp10wX673YgW9obkjUFmRmErinOgUOw/1upxhFSLvFjps+ZBjMKLQlGxyZ65YxqHOKhkmxVOANU4e8Mj0bYaGopxhkQhlmq1E8ivsD0aM9ie4BWW0=
+	t=1708360774; cv=none; b=uO9EeT5WM1/GL5qYIIE9dBrggo9yud7etDEZAIpA1T4vnYSyEHQruCFpmFt4fRLR0w1Q+94n5vXeSNentKm4zD2CK+UeF+OX1yjPzXJAYb+lKkwhVNWsoHcuAfFOgr9Z3/nLLzOsq/56YCqcS2sOIlRXKphPFrnv2IOCYETFWWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708360763; c=relaxed/simple;
-	bh=C8EgG7XcdcMV2/sMB+b9Fci+Styb0h0r87nEyY8e7XM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ereidtzTWSRHEknFh5qvfLGCDAsL7utSX6imKYUdaFhh17E8hfKZ6KsLEQ0B+ORXsxREjcEDFgc0j1nwfL68+idwbPCswrhT21+fr056nMCdz6voZzZtQrY9xthc8xnbrQBvayhFjhXywc6j8oAfxz85zXqsiu1ldFArssELYF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=exLjFMX4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708360760;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=okXEMX2Wb0ZGER6a+MgWT/1TkbqrgHTCP6DrA/Jrr/Y=;
-	b=exLjFMX4H44wepi4vZXz7S2AYKpWhezWI6R8YKznhq8I+Juf7pL2CbuKHhgunGURQtCvr3
-	n6vyMKW2+T6jNfpugHzhBZ6IR8PIsV7P6TkSUodcE3lykbU9istsoAtfTlgUllaJ1Y4F6t
-	qoC83B2ckmXSKWvNoVC8EB0mwUkdMgE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-374-tN3I47N4P3S3bntWvgCmtQ-1; Mon, 19 Feb 2024 11:39:19 -0500
-X-MC-Unique: tN3I47N4P3S3bntWvgCmtQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a3e6bc4519fso75573466b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:39:18 -0800 (PST)
+	s=arc-20240116; t=1708360774; c=relaxed/simple;
+	bh=gk6WUuOUYilwjlmi9KvPeSBtjRyvxYITvt3eyTtNzcA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tVCd9gWH5CCnhX7fNopmq/QrvZIoVftBGuUxdctY6L0wEkhaQEto3LsDCutgetnfj061YruZ4eVV9fPy+M1i/fQLQNnCtsiVRHFfFzYJQBhNpquBTj1QyUIFodafK1PkkO7v9Y7IAL7tHq8/+xrs6BXlmFp70BnFmAofueRl4Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3CClvGDE; arc=none smtp.client-ip=209.85.128.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-607fc3e69adso33972047b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:39:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708360771; x=1708965571; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gk6WUuOUYilwjlmi9KvPeSBtjRyvxYITvt3eyTtNzcA=;
+        b=3CClvGDEnSBT9FQnMKdjaqdE6yUjZpF9oBAyA/4knW1if0VFVWxAAX9GjL8thIyf1m
+         TL1aE4z91qgTM7S/e4lyD7oAtMoAg8j2nSERfNcQ/nLAIHy28oP/2WGSIKBt2GFkw4DE
+         yaoJcOuk5H+u8u1Q5LUovgC0vVu2JHXxjkArxYEbyDhamXx3mjhm7TMqt6oH7IQyFPpH
+         19/vmyZ6CPVt/NWAtmqZgkSpj/gmHVU9Y+51/cwdQBd7j0gpr85kDBT/fBSoLJ3+9qNW
+         hXR8UsepoOPcFnyLA0SMfiN+syO6pPwlMW5RgWWt3PijNcmxIUr1eOvtSX9yG34TwGSB
+         vhtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708360758; x=1708965558;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=okXEMX2Wb0ZGER6a+MgWT/1TkbqrgHTCP6DrA/Jrr/Y=;
-        b=jqqk26o2TnHNEZAAcdCOM30UCKXHxB7Qe6Ej55XN7sQ+EF3N+uo85P67AmDPKDf6GL
-         uhOpvKBn7CVh+D2TlWqGn0U8g8mQj7rtVfPFAv3hz84KVshd7/ZtMWDylfAADZkaTBSq
-         tVrX1dcdvyX8fv8r1OJVg/a9BvwsyIzRixjb2qyTlwQHl4DGaXSbEWOVcwv8g1HRZXEe
-         EG2Mf6IaqOPQMzVL8Q6gQ512sr0Zr2yC55o21dov4ZelvZY8ZXwDs9cb2+8/LBXsbGLR
-         GtMp3khXweUcdkY0qer1w2m5qSm4ZZQ6SywClXijZ8bBBJSRs/wJBbTp2ddf45+v3vZw
-         Gmgg==
-X-Forwarded-Encrypted: i=1; AJvYcCWe0artu1uLQRGPqh4ZVoQ62eUpBokcnXjSQHjO3PjusqgJr1a+Cyqeue1weIvexBBMQVq2+CvQrmRMO5DAsKi4KExQAucvPk2vWsg5
-X-Gm-Message-State: AOJu0YyyyHqnWdK707aVZIHQajUoMSjMqPYeaBcRf09kTqsib4aAB5uY
-	qs8+RLNd1nBBefG6YE3O2qcysA2jCnhZmEcmfcatlgSNTYI/P4QEqC7G/EX28Trct/yTLxH8yze
-	r9AweLiQz+xGp91zX0nMJKNaR5vVPIk8/Obhi7HHEgzRiFro/+3SGfjJ9dSSDlw==
-X-Received: by 2002:a17:906:f288:b0:a3d:716e:820a with SMTP id gu8-20020a170906f28800b00a3d716e820amr10426723ejb.28.1708360757866;
-        Mon, 19 Feb 2024 08:39:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE8H4A36zvOv2OU3+pQkw3yUuL31KlBUOh3dF6I/PGJAP0F/ZAr+eyA+TyQROHdWS0FncINcQ==
-X-Received: by 2002:a17:906:f288:b0:a3d:716e:820a with SMTP id gu8-20020a170906f28800b00a3d716e820amr10426703ejb.28.1708360757516;
-        Mon, 19 Feb 2024 08:39:17 -0800 (PST)
-Received: from cassiopeiae.. ([2a02:810d:4b3f:ee94:642:1aff:fe31:a19f])
-        by smtp.gmail.com with ESMTPSA id vu9-20020a170907a64900b00a3e59740f4esm2033586ejc.92.2024.02.19.08.39.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 08:39:17 -0800 (PST)
-From: Danilo Krummrich <dakr@redhat.com>
-To: ojeda@kernel.org,
-	alex.gaynor@gmail.com,
-	wedsonaf@gmail.com,
-	boqun.feng@gmail.com,
-	gary@garyguo.net,
-	bjorn3_gh@protonmail.com,
-	benno.lossin@proton.me,
-	a.hindborg@samsung.com,
-	aliceryhl@google.com
-Cc: rust-for-linux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Danilo Krummrich <dakr@redhat.com>
-Subject: [PATCH v4] rust: str: add {make,to}_{upper,lower}case() to CString
-Date: Mon, 19 Feb 2024 17:39:13 +0100
-Message-ID: <20240219163915.2705-1-dakr@redhat.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1708360771; x=1708965571;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gk6WUuOUYilwjlmi9KvPeSBtjRyvxYITvt3eyTtNzcA=;
+        b=WZm3Sg8e3HYZzYnq++25YPqVI2hBEmuFK/OBz6gcq6UG2ypvQcJrbZYxpb2mtqvjS8
+         EV+uwxI3QR1GH5ziSiMqDIRWodY6Tws+VIx8qtQmH9hbWT+A/nfuLMJcJ6JOY9HseaW1
+         pfLas+WtsRwfE0zZS7KpWNF2v6Fubk+7+abnRMqdJuVmfp/AuRgehDTlK/mFuQh3/8Os
+         vq+UJKZ0SVpGkjlE6JOFCLjSUBmIt1RNQpFLSPZLTJUuNwvb47U0iAnOFWZckHaMxWR7
+         1qByX6mXgec/idoW7jy1Vzx6n7MoUjfF7Qfnx7lZrYJ+5GHderdhKLZJX6Kn/a9tn98t
+         o0mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWqvoUXNi+Ps+E2C13tpKlBHEnkb6dbxXV3tkDGY6gzvRlLZvOOMaqAsq8DLvp6SIy5eMWltzLbKG/5VTxG1lBeYfqRys6D26ndu8HR
+X-Gm-Message-State: AOJu0Ywf3MTXhxMhEX2G/ddNasNMS6KYYpbk8unLziZ7VoAFmeWMYjJZ
+	ty40VWCsZZid6OuphcavxUztbFPLlTQXboAStmz/JLFI+WH6QSXJvwUBp281j/fM5TC51R6pVTH
+	K8B6I2uzUE1Gztq10CM9/t/te6xsrI2OqPwZm
+X-Google-Smtp-Source: AGHT+IHOf7zN6UTEUs94Io+Il570qu2MIlpkBfsEY64np8rj8rUeVxwrc0psYvm2LfbR2YZKvPVrXq7xPmkV6NuOIPU=
+X-Received: by 2002:a0d:db0a:0:b0:608:218b:5494 with SMTP id
+ d10-20020a0ddb0a000000b00608218b5494mr4113497ywe.14.1708360771228; Mon, 19
+ Feb 2024 08:39:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240202233855.1236422-1-tjmercier@google.com>
+ <ZcC7Kgew3GDFNIux@tiehlicka> <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+ <ZcE5n9cTdTGJChmq@tiehlicka> <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
+ <ZcFG2JoXI7i8XzQY@tiehlicka> <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
+ <ZcFQMru5_oATGbuP@tiehlicka> <CABdmKX35GV3VFar0_pNR_vAXLpvxo+APALXMharsXh6TO+0mrQ@mail.gmail.com>
+ <ZcH0wBPvOjqayjAD@tiehlicka> <ZdNFbiH1ufbOTIDx@tiehlicka>
+In-Reply-To: <ZdNFbiH1ufbOTIDx@tiehlicka>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Mon, 19 Feb 2024 08:39:19 -0800
+Message-ID: <CABdmKX0-nWU4P7ZJqOMusRCuhewf+kg1x==U7m52=MaKeRCYWg@mail.gmail.com>
+Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+To: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeelb@google.com>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Efly Young <yangyifei03@kuaishou.com>, 
+	android-mm@google.com, yuzhao@google.com, mkoutny@suse.com, 
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add functions to convert a CString to upper- / lowercase, either
-in-place or by creating a copy of the original CString.
+On Mon, Feb 19, 2024 at 4:11=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrot=
+e:
+>
+> On Tue 06-02-24 09:58:41, Michal Hocko wrote:
+> > On Mon 05-02-24 20:01:40, T.J. Mercier wrote:
+> > > On Mon, Feb 5, 2024 at 1:16=E2=80=AFPM Michal Hocko <mhocko@suse.com>=
+ wrote:
+> > > >
+> > > > On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
+> > > > > On Mon, Feb 5, 2024 at 12:36=E2=80=AFPM Michal Hocko <mhocko@suse=
+com> wrote:
+> > > > [...]
+> > > > > > This of something like
+> > > > > > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
+> > > > > > where timeout acts as a stop gap if the reclaim cannot finish i=
+n
+> > > > > > TIMEOUT.
+> > > > >
+> > > > > Yeah I get the desired behavior, but using sc->nr_reclaimed to ac=
+hieve
+> > > > > it is what's bothering me.
+> > > >
+> > > > I am not really happy about this subtlety. If we have a better way =
+then
+> > > > let's do it. Better in its own patch, though.
+> > > >
+> > > > > It's already wired up that way though, so if you want to make thi=
+s
+> > > > > change now then I can try to test for the difference using really
+> > > > > large reclaim targets.
+> > > >
+> > > > Yes, please. If you want it a separate patch then no objection from=
+ me
+> > > > of course. If you do no like the nr_to_reclaim bailout then maybe w=
+e can
+> > > > go with a simple break out flag in scan_control.
+> > > >
+> > > > Thanks!
+> > >
+> > > It's a bit difficult to test under the too_many_isolated check, so I
+> > > moved the fatal_signal_pending check outside and tried with that.
+> > > Performing full reclaim on the /uid_0 cgroup with a 250ms delay befor=
+e
+> > > SIGKILL, I got an average of 16ms better latency with
+> > > sc->nr_to_reclaim across 20 runs ignoring one 1s outlier with
+> > > SWAP_CLUSTER_MAX.
+> >
+> > This will obviously scale with the number of memcgs in the hierarchy bu=
+t
+> > you are right that too_many_isolated makes the whole fatal_signal_pendi=
+ng
+> > check rather inefficient. I haven't missed that. The reclaim path is
+> > rather convoluted so this will likely be more complex than I
+> > anticipated. I will think about that some more.
+> >
+> > In order to not delay your patch, please repost with suggested updates
+> > to the changelog. This needs addressing IMO but I do not think this is
+> > critical at this stage.
+>
+> Has there been a new version or a proposal to refine the changelog
+> posted?
 
-Naming followes the one from the Rust stdlib, where functions starting
-with 'to' create a copy and functions starting with 'make' perform an
-in-place conversion.
+Hi Michal,
 
-This is required by the Nova project (GSP only Rust successor of
-Nouveau) to convert stringified enum values (representing different GPU
-chipsets) to strings in order to generate the corresponding firmware
-paths. See also [1].
+I updated the commit message in V4 to include a sentence about restart
+cost, and added a line above each reclaim test to note the MGLRU
+config and whether the memcg LRU was used or not.
 
-[1] https://rust-for-linux.zulipchat.com/#narrow/stream/288089-General/topic/String.20manipulation.20in.20kernel.20Rust
+https://lore.kernel.org/all/20240206175251.3364296-1-tjmercier@google.com/
 
-Signed-off-by: Danilo Krummrich <dakr@redhat.com>
----
-Changes in V4:
-  - move to_ascii_{lower,upper}case() to CStr
-  - add a few comments suggested by Alice
-Changes in V3:
-  - add an `impl DerefMut for CString`, such that these functions can be defined
-    for `CStr` as `&mut self` and still be called on a `CString`
-Changes in V2:
-  - expand commit message mentioning the use case
-  - expand function doc comments to match the ones from Rust's stdlib
-  - rename to_* to make_* and add the actual to_* implementations
-
----
- rust/kernel/str.rs | 87 +++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 86 insertions(+), 1 deletion(-)
-
-diff --git a/rust/kernel/str.rs b/rust/kernel/str.rs
-index 7d848b83add4..4dec89455e2d 100644
---- a/rust/kernel/str.rs
-+++ b/rust/kernel/str.rs
-@@ -5,7 +5,7 @@
- use alloc::alloc::AllocError;
- use alloc::vec::Vec;
- use core::fmt::{self, Write};
--use core::ops::{self, Deref, Index};
-+use core::ops::{self, Deref, DerefMut, Index};
- 
- use crate::{
-     bindings,
-@@ -143,6 +143,19 @@ pub const fn from_bytes_with_nul(bytes: &[u8]) -> Result<&Self, CStrConvertError
-         unsafe { core::mem::transmute(bytes) }
-     }
- 
-+    /// Creates a mutable [`CStr`] from a `[u8]` without performing any
-+    /// additional checks.
-+    ///
-+    /// # Safety
-+    ///
-+    /// `bytes` *must* end with a `NUL` byte, and should only have a single
-+    /// `NUL` byte (or the string will be truncated).
-+    #[inline]
-+    pub unsafe fn from_bytes_with_nul_unchecked_mut(bytes: &mut [u8]) -> &mut CStr {
-+        // SAFETY: Properties of `bytes` guaranteed by the safety precondition.
-+        unsafe { &mut *(bytes as *mut [u8] as *mut CStr) }
-+    }
-+
-     /// Returns a C pointer to the string.
-     #[inline]
-     pub const fn as_char_ptr(&self) -> *const core::ffi::c_char {
-@@ -206,6 +219,70 @@ pub unsafe fn as_str_unchecked(&self) -> &str {
-     pub fn to_cstring(&self) -> Result<CString, AllocError> {
-         CString::try_from(self)
-     }
-+
-+    /// Converts this [`CStr`] to its ASCII lower case equivalent in-place.
-+    ///
-+    /// ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To return a new lowercased value without modifying the existing one, use
-+    /// [`to_ascii_lowercase()`].
-+    ///
-+    /// [`to_ascii_lowercase()`]: #method.to_ascii_lowercase
-+    pub fn make_ascii_lowercase(&mut self) {
-+        // INVARIANT: This doesn't introduce or remove NUL bytes in the C
-+        // string.
-+        self.0.make_ascii_lowercase();
-+    }
-+
-+    /// Converts this [`CStr`] to its ASCII upper case equivalent in-place.
-+    ///
-+    /// ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To return a new uppercased value without modifying the existing one, use
-+    /// [`to_ascii_uppercase()`].
-+    ///
-+    /// [`to_ascii_uppercase()`]: #method.to_ascii_uppercase
-+    pub fn make_ascii_uppercase(&mut self) {
-+        // INVARIANT: This doesn't introduce or remove NUL bytes in the C
-+        // string.
-+        self.0.make_ascii_uppercase();
-+    }
-+
-+    /// Returns a copy of this [`CString`] where each character is mapped to its
-+    /// ASCII lower case equivalent.
-+    ///
-+    /// ASCII letters 'A' to 'Z' are mapped to 'a' to 'z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To lowercase the value in-place, use [`make_ascii_lowercase`].
-+    ///
-+    /// [`make_ascii_lowercase`]: str::make_ascii_lowercase
-+    pub fn to_ascii_lowercase(&self) -> Result<CString, AllocError> {
-+        let mut s = self.to_cstring()?;
-+
-+        s.make_ascii_lowercase();
-+
-+        return Ok(s);
-+    }
-+
-+    /// Returns a copy of this [`CString`] where each character is mapped to its
-+    /// ASCII upper case equivalent.
-+    ///
-+    /// ASCII letters 'a' to 'z' are mapped to 'A' to 'Z',
-+    /// but non-ASCII letters are unchanged.
-+    ///
-+    /// To uppercase the value in-place, use [`make_ascii_uppercase`].
-+    ///
-+    /// [`make_ascii_uppercase`]: str::make_ascii_uppercase
-+    pub fn to_ascii_uppercase(&self) -> Result<CString, AllocError> {
-+        let mut s = self.to_cstring()?;
-+
-+        s.make_ascii_uppercase();
-+
-+        return Ok(s);
-+    }
- }
- 
- impl fmt::Display for CStr {
-@@ -593,6 +670,14 @@ fn deref(&self) -> &Self::Target {
-     }
- }
- 
-+impl DerefMut for CString {
-+    fn deref_mut(&mut self) -> &mut Self::Target {
-+        // SAFETY: A `CString` is always NUL-terminated and contains no other
-+        // NUL bytes.
-+        unsafe { CStr::from_bytes_with_nul_unchecked_mut(&mut *self.buf) }
-+    }
-+}
-+
- impl<'a> TryFrom<&'a CStr> for CString {
-     type Error = AllocError;
- 
-
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
--- 
-2.43.0
-
+> --
+> Michal Hocko
+> SUSE Labs
 
