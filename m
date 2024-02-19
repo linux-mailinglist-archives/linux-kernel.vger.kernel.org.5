@@ -1,343 +1,222 @@
-Return-Path: <linux-kernel+bounces-71019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D81F5859F8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:22:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F57D859F9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:22:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E3F428482A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:22:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA8821F217F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:22:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029B023765;
-	Mon, 19 Feb 2024 09:21:21 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C28E22F00;
-	Mon, 19 Feb 2024 09:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F01424A18;
+	Mon, 19 Feb 2024 09:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OVYPHXv2"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E28922F1E
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708334480; cv=none; b=l8mrdujFZ82BMfAHLMsyhmEZ8ugWQ7uQWe+Y/xwqB/FQvKZZzqqHJ5PgK9bfXeyrW3T/jkl5otiWu6SFjuEX1ahg2UW5Ky96lzkb+3wuBGYDUdfv+zFiNid/fLG8q5egmS6i0WfqqSvFGPpV7j91xwNgVH4b+MgsEFmj1xLWH4c=
+	t=1708334553; cv=none; b=I7w6zsMBJFvR7piX9JfFeec3Tl3o6AnOHK0CG0qm3GAo02CY7syMf7lPHGfWC2TAqMyjAhpiYZUAaDwRmDcePywLcfgsfbAk/dUPhoiuN6rmnbFxcQZb9e72hf4hdGvR9yOgZGFHgYxd686D/giDjouSz2UAQV+deXzuCi7R20o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708334480; c=relaxed/simple;
-	bh=1x9WusD5W5xRgz8XHGTSX8YHleR1EtqPX6p44zrthwY=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=fU2RAH8SMH6vaIWHm6I18XuV6qtyf5OTtP+0jEeXmC16lJA8JfZ9pmg1KZ8h4fDNKerM7A3Ik9WTgBZ7f5hCp37ffL3dbV8H5dEz+VA3gSO78q6emfk1bbqLd6jGYoWFXRJeU0+1X3ojv2eirCJQHOLCXzkqfzZ51hmCecFGXhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.20.42.173])
-	by gateway (Coremail) with SMTP id _____8AxeeiJHdNlREsOAA--.18770S3;
-	Mon, 19 Feb 2024 17:21:13 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX8+FHdNlquY7AA--.22027S3;
-	Mon, 19 Feb 2024 17:21:11 +0800 (CST)
-Subject: Re: [PATCH v4 4/6] LoongArch: Add paravirt interface for guest kernel
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
- Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
- linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
- kvm@vger.kernel.org
-References: <20240201031950.3225626-1-maobibo@loongson.cn>
- <20240201031950.3225626-5-maobibo@loongson.cn>
- <CAAhV-H7dXsU+WM172PWi_m8TYpYmzG_SW-vVQcdnOdETUxQ9+w@mail.gmail.com>
- <63f8bd29-c0da-167b-187d-61c56eb081a6@loongson.cn>
- <CAAhV-H6HQHyu=0zyv6FVLRJTkOcmnkLk5h361yGd2igYnuMMng@mail.gmail.com>
-From: maobibo <maobibo@loongson.cn>
-Message-ID: <4dcbd5b2-ba69-e254-b3bb-75a75e5f9215@loongson.cn>
-Date: Mon, 19 Feb 2024 17:21:15 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+	s=arc-20240116; t=1708334553; c=relaxed/simple;
+	bh=jHvPNV9uRImzRG0O9mrSCOyCxKrfITzEMjQ0xEJ075c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ETmHX6SsoMbePGeolOa4EchjVrVbr1LDIMtAjCBJ5LJAFyx9b8Dfec6MzvYPGgy+gRvUqeLK4LqgowARFllDJm5367bXDg6Su3DbcT9LVpM0bZpSqnpjc3w73s3/n5KBgRSIn0wXBEZyFK3OMNgEhaq6ve8V96nSjYv3Am14HRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OVYPHXv2; arc=none smtp.client-ip=209.85.219.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so4369172276.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:22:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708334550; x=1708939350; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qZYTlm/0sq1vUrT38iiUN2NletxitEq6HPMC2WegY44=;
+        b=OVYPHXv2DN1j6gS1Q8BWWCiBctMdiDqRo1MyTcpmRP0F43CEoCDb27ZJN5wjWcN1RU
+         I5Ry4vzaF6qdRIvj6bG+pyvi7ZeM39rpFHeoWDemBLKc+J4s3/rT59fIK0eHJOrF7LAL
+         iSp6lU2N9VbDSrxmIgk/Xh3dmyk2EPSFqTp0l154JUL6/2KdHJtdBAH0zQtstz+x2y+7
+         AlgLx0tv7fT0FSV8VBeoQWjOfwdPRBcb3rus0RfCmPOQZFSCXWSSie5bUXiexe+PEnFA
+         +2NbVm9lB0g5qBODaV1y134p8QQ2Rd7yGY4ePKOqJFzYUb5ptxNd1WOFVFFIIFk1XLhb
+         jn5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708334550; x=1708939350;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qZYTlm/0sq1vUrT38iiUN2NletxitEq6HPMC2WegY44=;
+        b=G5cv0VzHf98fwW2ELFBtpc+mJyHObD3iNXCDkZz+Bf2V4bawkDXx/t6fS6pP5FszS8
+         VQ9jsRgvlZ87kbloJhHEOgdxuU18GkA/G3IryOyO1DiZUNoUt8auF/FjsiaJxSf+9kgF
+         L1Fvvn/qdD8gH6htLD8GCN9cZbVSg+0Kivn0Ex6+NpiGQEJPiwPrc2ecwO2QUl9yOZEA
+         EAX3RGmo6cfDglFQ0Q+VNfmVGTaI4N89ISvWdadbfftngIMPf8rhRUBjmd0YWW9R4pGt
+         YN0eFaL4TZedfuXlsUJwedCbI3BaAJzioYFzDMm+aLkA1d/6zI4XcBR9FNqLbolvGssQ
+         t0Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTCPuRPbyLPUFL26Ntq5OD5zyHjZs+BeJRQhXt3aqPadx0al8+NjF/feDj46Voh3kbweZCGQnLb1rxHLufl4Q6YtDSiYP41Yu6dR0z
+X-Gm-Message-State: AOJu0YyRmOjLi6J8KuSDmBw2tEW1xcCKNFC1XCyTB1Y2fCaK/4KXIYvI
+	ljX4Yy0NK3Z5DfF2dOoshfgQq0keXUfub06vYWdilM1Dxt/oLAMocvmeH4oCxaLQRKE085otHJd
+	uDUHE6ZIdg6RSV0ja9VmjODZm9PgUayOhHPl5DQ==
+X-Google-Smtp-Source: AGHT+IF+LL/RccnNnrVPV95NB7kYrHT+EoXkoik0+2tgdiu93HUqpLdT6cgixvw0en9NUQfCx5Dc17RlNM2cOSkIlm0=
+X-Received: by 2002:a25:b048:0:b0:dc7:4859:6f1 with SMTP id
+ e8-20020a25b048000000b00dc7485906f1mr9761270ybj.33.1708334550133; Mon, 19 Feb
+ 2024 01:22:30 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAAhV-H6HQHyu=0zyv6FVLRJTkOcmnkLk5h361yGd2igYnuMMng@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8AxX8+FHdNlquY7AA--.22027S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3XFW7XF1DZw1xZF1DtF43Jwc_yoWfWFy5pa
-	4DAF4kGa18Gr1fArsFg398WFnxt3s7GF12gF12ga40yrZFvF17Jr18tryj9FykAa1kG3W0
-	qFyrGw4a9F15t3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxYiiDU
-	UUU
+References: <20240216203215.40870-1-brgl@bgdev.pl> <CAA8EJppt4-L1RyDeG=1SbbzkTDhLkGcmAbZQeY0S6wGnBbFbvw@mail.gmail.com>
+ <e4cddd9f-9d76-43b7-9091-413f923d27f2@linaro.org>
+In-Reply-To: <e4cddd9f-9d76-43b7-9091-413f923d27f2@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 19 Feb 2024 11:22:18 +0200
+Message-ID: <CAA8EJpp6+2w65o2Bfcr44tE_ircMoON6hvGgyWfvFuh3HamoSQ@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] power: sequencing: implement the subsystem and
+ add first users
+To: neil.armstrong@linaro.org
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
+On Mon, 19 Feb 2024 at 10:14, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>
+> On 18/02/2024 13:53, Dmitry Baryshkov wrote:
+> > On Fri, 16 Feb 2024 at 22:33, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >>
+> >> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >>
+> >> First, I'd like to apologize for the somewhat chaotic previous iterations
+> >> of this series and improper versioning which was rightfully pointed out
+> >> to me. I figured that the scope changed so much that it didn't make sense
+> >> to consider previous submissions part of the same series as the original
+> >> RFC but others thought otherwise so this one becomes v5 and I'll keep the
+> >> versioning going forward.
+> >>
+> >> This is the summary of the work so far:
+> >>
+> >> v1: Original RFC:
+> >>
+> >> https://lore.kernel.org/lkml/20240104130123.37115-1-brgl@bgdev.pl/T/
+> >>
+> >> v2: First real patch series (should have been PATCH v2) adding what I
+> >>      referred to back then as PCI power sequencing:
+> >>
+> >> https://lore.kernel.org/linux-arm-kernel/2024021413-grumbling-unlivable-c145@gregkh/T/
+> >>
+> >> v3: RFC for the DT representation of the PMU supplying the WLAN and BT
+> >>      modules inside the QCA6391 package (was largely separate from the
+> >>      series but probably should have been called PATCH or RFC v3):
+> >>
+> >> https://lore.kernel.org/all/CAMRc=Mc+GNoi57eTQg71DXkQKjdaoAmCpB=h2ndEpGnmdhVV-Q@mail.gmail.com/T/
+> >>
+> >> v4: Second attempt at the full series with changed scope (introduction of
+> >>      the pwrseq subsystem, should have been RFC v4)
+> >>
+> >> https://lore.kernel.org/lkml/20240201155532.49707-1-brgl@bgdev.pl/T/
+> >>
+> >> ===
+> >>
+> >> With that out of the way, I'd like to get down to explaining the two
+> >> problems I'm trying to solve.
+> >>
+> >> Problem statement #1: Dynamic bus chicken-and-egg problem.
+> >>
+> >> Certain on-board PCI devices need to be powered up before they are can be
+> >> detected but their PCI drivers won't get bound until the device is
+> >> powered-up so enabling the relevant resources in the PCI device driver
+> >> itself is impossible.
+> >>
+> >> Problem statement #2: Sharing inter-dependent resources between devices.
+> >>
+> >> Certain devices that use separate drivers (often on different busses)
+> >> share resources (regulators, clocks, etc.). Typically these resources
+> >> are reference-counted but in some cases there are additional interactions
+> >> between them to consider, for example specific power-up sequence timings.
+> >>
+> >> ===
+> >>
+> >> The reason for tackling both of these problems in a single series is the
+> >> fact the the platform I'm working on - Qualcomm RB5 - deals with both and
+> >> both need to be addressed in order to enable WLAN and Bluetooth support
+> >> upstream.
+> >>
+> >> The on-board WLAN/BT package - QCA6391 - has a Power Management Unit that
+> >> takes inputs from the host and exposes LDO outputs consumed by the BT and
+> >> WLAN modules which can be powered-up and down independently. However
+> >> a delay of 100ms must be respected between enabling the BT- and
+> >> WLAN-enable GPIOs[*].
+> >>
+> >> ===
+> >>
+> >> This series is logically split into several sections. I'll go
+> >> patch-by-patch and explain each step.
+> >>
+> >> Patch 1/18:
+> >>
+> >> This is a commit taken from the list by Jonathan Cameron that adds
+> >> a __free() helper for OF nodes. Not strictly related to the series but
+> >> until said commit ends in next, I need to carry it with this series.
+> >>
+> >> Patch 2/18:
+> >>
+> >> This enables the ath12k PCI module in arm64 defconfig as Qualcomm sm8650
+> >> and sm8550 reference platforms use it in the WCN7850 module.
+> >>
+> >> Patches 3/18-6/18:
+> >>
+> >> These contain all relevant DT bindings changes. We add new documents for
+> >> the QCA6390 PMU and ATH12K devices as well as extend the bindings for the
+> >> Qualcomm Bluetooth and ATH11K modules with regulators used by them in
+> >> QCA6390.
+> >>
+> >> Patches 7/18-9/18:
+> >>
+> >> These contain changes to device-tree sources for the three platforms we
+> >> work with in this series. As the WCN7850 module doesn't require any
+> >> specific timings introducing dependencies between the Bluetooth and WLAN
+> >> modules, while the QCA6390 does, we take two different approaches to how
+> >> me model them in DT.
+> >>
+> >> For WCN7850 we hide the existence of the PMU as modeling it is simply not
+> >> necessary. The BT and WLAN devices on the device-tree are represented as
+> >> consuming the inputs (relevant to the functionality of each) of the PMU
+> >> directly.
+> >
+> > We are describing the hardware. From the hardware point of view, there
+> > is a PMU. I think at some point we would really like to describe all
+> > Qualcomm/Atheros WiFI+BT units using this PMU approach, including the
+> > older ath10k units present on RB3 (WCN3990) and db820c (QCA6174).
+>
+> While I agree with older WiFi+BT units, I don't think it's needed for
+> WCN7850 since BT+WiFi are now designed to be fully independent and PMU is
+> transparent.
 
+I don't see any significant difference between WCN6750/WCN6855 and
+WCN7850 from the PMU / power up point of view. Could you please point
+me to the difference?
 
-On 2024/2/19 下午4:48, Huacai Chen wrote:
-> On Mon, Feb 19, 2024 at 12:11 PM maobibo <maobibo@loongson.cn> wrote:
->>
->>
->>
->> On 2024/2/19 上午10:42, Huacai Chen wrote:
->>> Hi, Bibo,
->>>
->>> On Thu, Feb 1, 2024 at 11:19 AM Bibo Mao <maobibo@loongson.cn> wrote:
->>>>
->>>> The patch adds paravirt interface for guest kernel, function
->>>> pv_guest_initi() firstly checks whether system runs on VM mode. If kernel
->>>> runs on VM mode, it will call function kvm_para_available() to detect
->>>> whether current VMM is KVM hypervisor. And the paravirt function can work
->>>> only if current VMM is KVM hypervisor, since there is only KVM hypervisor
->>>> supported on LoongArch now.
->>>>
->>>> This patch only adds paravirt interface for guest kernel, however there
->>>> is not effective pv functions added here.
->>>>
->>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->>>> ---
->>>>    arch/loongarch/Kconfig                        |  9 ++++
->>>>    arch/loongarch/include/asm/kvm_para.h         |  7 ++++
->>>>    arch/loongarch/include/asm/paravirt.h         | 27 ++++++++++++
->>>>    .../include/asm/paravirt_api_clock.h          |  1 +
->>>>    arch/loongarch/kernel/Makefile                |  1 +
->>>>    arch/loongarch/kernel/paravirt.c              | 41 +++++++++++++++++++
->>>>    arch/loongarch/kernel/setup.c                 |  2 +
->>>>    7 files changed, 88 insertions(+)
->>>>    create mode 100644 arch/loongarch/include/asm/paravirt.h
->>>>    create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
->>>>    create mode 100644 arch/loongarch/kernel/paravirt.c
->>>>
->>>> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
->>>> index 10959e6c3583..817a56dff80f 100644
->>>> --- a/arch/loongarch/Kconfig
->>>> +++ b/arch/loongarch/Kconfig
->>>> @@ -585,6 +585,15 @@ config CPU_HAS_PREFETCH
->>>>           bool
->>>>           default y
->>>>
->>>> +config PARAVIRT
->>>> +       bool "Enable paravirtualization code"
->>>> +       depends on AS_HAS_LVZ_EXTENSION
->>>> +       help
->>>> +          This changes the kernel so it can modify itself when it is run
->>>> +         under a hypervisor, potentially improving performance significantly
->>>> +         over full virtualization.  However, when run without a hypervisor
->>>> +         the kernel is theoretically slower and slightly larger.
->>>> +
->>>>    config ARCH_SUPPORTS_KEXEC
->>>>           def_bool y
->>>>
->>>> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
->>>> index 9425d3b7e486..41200e922a82 100644
->>>> --- a/arch/loongarch/include/asm/kvm_para.h
->>>> +++ b/arch/loongarch/include/asm/kvm_para.h
->>>> @@ -2,6 +2,13 @@
->>>>    #ifndef _ASM_LOONGARCH_KVM_PARA_H
->>>>    #define _ASM_LOONGARCH_KVM_PARA_H
->>>>
->>>> +/*
->>>> + * Hypcall code field
->>>> + */
->>>> +#define HYPERVISOR_KVM                 1
->>>> +#define HYPERVISOR_VENDOR_SHIFT                8
->>>> +#define HYPERCALL_CODE(vendor, code)   ((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
->>>> +
->>>>    /*
->>>>     * LoongArch hypcall return code
->>>>     */
->>>> diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
->>>> new file mode 100644
->>>> index 000000000000..b64813592ba0
->>>> --- /dev/null
->>>> +++ b/arch/loongarch/include/asm/paravirt.h
->>>> @@ -0,0 +1,27 @@
->>>> +/* SPDX-License-Identifier: GPL-2.0 */
->>>> +#ifndef _ASM_LOONGARCH_PARAVIRT_H
->>>> +#define _ASM_LOONGARCH_PARAVIRT_H
->>>> +
->>>> +#ifdef CONFIG_PARAVIRT
->>>> +#include <linux/static_call_types.h>
->>>> +struct static_key;
->>>> +extern struct static_key paravirt_steal_enabled;
->>>> +extern struct static_key paravirt_steal_rq_enabled;
->>>> +
->>>> +u64 dummy_steal_clock(int cpu);
->>>> +DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
->>>> +
->>>> +static inline u64 paravirt_steal_clock(int cpu)
->>>> +{
->>>> +       return static_call(pv_steal_clock)(cpu);
->>>> +}
->>> The steal time code can be removed in this patch, I think.
->>>
->> Originally I want to remove this piece of code, but it fails to compile
->> if CONFIG_PARAVIRT is selected. Here is reference code, function
->> paravirt_steal_clock() must be defined if CONFIG_PARAVIRT is selected.
->>
->> static __always_inline u64 steal_account_process_time(u64 maxtime)
->> {
->> #ifdef CONFIG_PARAVIRT
->>           if (static_key_false(&paravirt_steal_enabled)) {
->>                   u64 steal;
->>
->>                   steal = paravirt_steal_clock(smp_processor_id());
->>                   steal -= this_rq()->prev_steal_time;
->>                   steal = min(steal, maxtime);
->>                   account_steal_time(steal);
->>                   this_rq()->prev_steal_time += steal;
->>
->>                   return steal;
->>           }
->> #endif
->>           return 0;
->> }
-> OK, then keep it.
-> 
->>
->>>> +
->>>> +int pv_guest_init(void);
->>>> +#else
->>>> +static inline int pv_guest_init(void)
->>>> +{
->>>> +       return 0;
->>>> +}
->>>> +
->>>> +#endif // CONFIG_PARAVIRT
->>>> +#endif
->>>> diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h b/arch/loongarch/include/asm/paravirt_api_clock.h
->>>> new file mode 100644
->>>> index 000000000000..65ac7cee0dad
->>>> --- /dev/null
->>>> +++ b/arch/loongarch/include/asm/paravirt_api_clock.h
->>>> @@ -0,0 +1 @@
->>>> +#include <asm/paravirt.h>
->>>> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
->>>> index 3c808c680370..662e6e9de12d 100644
->>>> --- a/arch/loongarch/kernel/Makefile
->>>> +++ b/arch/loongarch/kernel/Makefile
->>>> @@ -48,6 +48,7 @@ obj-$(CONFIG_MODULES)         += module.o module-sections.o
->>>>    obj-$(CONFIG_STACKTRACE)       += stacktrace.o
->>>>
->>>>    obj-$(CONFIG_PROC_FS)          += proc.o
->>>> +obj-$(CONFIG_PARAVIRT)         += paravirt.o
->>>>
->>>>    obj-$(CONFIG_SMP)              += smp.o
->>>>
->>>> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
->>>> new file mode 100644
->>>> index 000000000000..21d01d05791a
->>>> --- /dev/null
->>>> +++ b/arch/loongarch/kernel/paravirt.c
->>>> @@ -0,0 +1,41 @@
->>>> +// SPDX-License-Identifier: GPL-2.0
->>>> +#include <linux/export.h>
->>>> +#include <linux/types.h>
->>>> +#include <linux/jump_label.h>
->>>> +#include <linux/kvm_para.h>
->>>> +#include <asm/paravirt.h>
->>>> +#include <linux/static_call.h>
->>>> +
->>>> +struct static_key paravirt_steal_enabled;
->>>> +struct static_key paravirt_steal_rq_enabled;
->>>> +
->>>> +static u64 native_steal_clock(int cpu)
->>>> +{
->>>> +       return 0;
->>>> +}
->>>> +
->>>> +DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
->>> The steal time code can be removed in this patch, I think.
->> Ditto, the same reason with above.
->>>
->>>> +
->>>> +static bool kvm_para_available(void)
->>>> +{
->>>> +       static int hypervisor_type;
->>>> +       int config;
->>>> +
->>>> +       if (!hypervisor_type) {
->>>> +               config = read_cpucfg(CPUCFG_KVM_SIG);
->>>> +               if (!memcmp(&config, KVM_SIGNATURE, 4))
->>>> +                       hypervisor_type = HYPERVISOR_KVM;
->>>> +       }
->>>> +
->>>> +       return hypervisor_type == HYPERVISOR_KVM;
->>>> +}
->>>> +
->>>> +int __init pv_guest_init(void)
->>>> +{
->>>> +       if (!cpu_has_hypervisor)
->>>> +               return 0;
->>>> +       if (!kvm_para_available())
->>>> +               return 0;
->>>> +
->>>> +       return 1;
->>>> +}
->>>> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
->>>> index edf2bba80130..de5c36dccc49 100644
->>>> --- a/arch/loongarch/kernel/setup.c
->>>> +++ b/arch/loongarch/kernel/setup.c
->>>> @@ -43,6 +43,7 @@
->>>>    #include <asm/efi.h>
->>>>    #include <asm/loongson.h>
->>>>    #include <asm/numa.h>
->>>> +#include <asm/paravirt.h>
->>>>    #include <asm/pgalloc.h>
->>>>    #include <asm/sections.h>
->>>>    #include <asm/setup.h>
->>>> @@ -367,6 +368,7 @@ void __init platform_init(void)
->>>>           pr_info("The BIOS Version: %s\n", b_info.bios_version);
->>>>
->>>>           efi_runtime_init();
->>>> +       pv_guest_init();
->>> I prefer use CONFIG_PARAVIRT here, though you have a dummy version for
->>> !CONFIG_PARAVIRT, I think it is better to let others clearly know that
->>> PARAVIRT is an optional feature.
->> I remember that there is rule that CONFIG_xxx had better be used in
->> header files rather than c code, so that the code looks neat. Am I wrong?
-> That depends on what we want, sometimes we want to hide the details,
-> but sometimes we want to give others a notice.
-I want to keep code clean here :)
-
-> 
-> And there is another problem: if you want to centralize all pv init
-> functions, it is better to use pv_features_init() rather than
-> pv_guest_init(); if you want to give each feature an init function,
-> then we don't need pv_guest_init here, and we can then add a
-> pv_ipi_init() in the last patch.
-Currently I have no idea how to add other pv features like pv 
-stealtimer, I will consider this when adding other pv features. 
-pv_ipi_init/pv_guest_init is both ok for me, pv_ipi_init is better for now.
-
-Regards
-Bibo Mao
-
-> 
-> Huacai
-> 
->>
->> Regards
->> Bibo Mao
->>>
->>> Huacai
->>>
->>>
->>> Huacai
->>>>    }
->>>>
->>>>    static void __init check_kernel_sections_mem(void)
->>>> --
->>>> 2.39.3
->>>>
->>>>
->>
-
+-- 
+With best wishes
+Dmitry
 
