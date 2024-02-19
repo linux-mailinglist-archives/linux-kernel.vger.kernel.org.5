@@ -1,91 +1,130 @@
-Return-Path: <linux-kernel+bounces-71752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71755-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53B2485A9E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:27:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEA1985A9F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:28:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0A8DB289491
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:26:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F4F31F223C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D97A482D1;
-	Mon, 19 Feb 2024 17:26:05 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECF04879C;
+	Mon, 19 Feb 2024 17:26:44 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8CB0482C0
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:26:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58032481C4
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708363565; cv=none; b=g0ESUe/kLGhaOYQBF39lyEi6Hleona+CH7Ln3K88aTQlpPMjnHLQQOqes+scvGX71zScrh1/EoV/mBqikvC+PmiIYInW54BOSMfz08BkNtQSoC/AShr5M2Nsd30WHTG6Z6B9t0XP5IX6ufOOlNi56M8UE+VfkIpm7ZNVhM8TKcQ=
+	t=1708363604; cv=none; b=Qp3JLNigf1CQqGZ9y2Oarthbm694JDj1kErC71jP/qRnCuaI2h+5OgjdHUjk/JEHEkfsf8HSDmDcBrOKCYHzd41vIjha5pN7dAraMwDbP4e+gkMyQ3erm1GwL7b77nVdoxTL6Xy1xOLSuMlrwDjfTT7A4riuL5WtjT50cbiMuaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708363565; c=relaxed/simple;
-	bh=aZmoMCgbUJdjQL0v39nvpibD9TtPYmXNpPVEeyvHuVM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=bZmfpnwquJxw8ODeQm9R7d5PqkruRw72ujuLpm4jakw0BVCbL+M/PK1B8EWnQXq+MJvOQLIIcDXK8QpM/TDQZpp02JgykIalhwHYnphQyyT4UA+ow1FM0RqT9qBx/1rEuKu6+fr5OdVuIvCty3Nm+U18n+Z8s7SwxLh5rgAZPB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-365067c1349so30973465ab.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:26:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708363563; x=1708968363;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ounGnQVyQWCAqb1gZccJxpOSoYs9iqhP6nXF46zXbQ4=;
-        b=sKDTfAR5H6V/zcEL4JAgzAC+17jVYFnK73cHAeivsVDKgIKCV66KZUpKbAbZl03Huw
-         hoYyvMB82NNLCO1dpu8DAugf7gZN6PKZH4TCrYz3Yx8nHZQfxU6fqgqgTKT/gY0u3f75
-         ph7iK8JGHsXBJI9245gGYkOrpCaCTJEDh0YqeKg251aHVsO7BnLxmYn4Dv/Lax0jm9Ea
-         SVdo+zisl+NoCeZzxWHfHRYAed2GCzt+AKV3Cu9uMafsOE4CSNcRW3T1uontGBRN6pga
-         u+7+tfc4GUqn2r1FosY23hwwoIrWS1IqUcRXfLTTQ3vHf16dT8PIg7S7IZfLJ+Bf7ZFs
-         Bl6w==
-X-Forwarded-Encrypted: i=1; AJvYcCX+6YBHHP+cbYvup6HHYYlnyt3iGDEPZt2tOsLoYimzm1oRlGkCD9/WuUB4cLZZwkk1ciqVcV5yF0wcGnFnCCd+XKvcaenjBVebkvqn
-X-Gm-Message-State: AOJu0YxfReX8nHpnPDVnpenmmy8QizYh1RAsY0ue7m/s9/H9sLCUR5Lu
-	zIBuwPJeKp89fRQ2z9FVnMrB8Qtjl0QzTbaWU7vyNs7hVCgvoHeTgS5XL76Aa8EaK6J4fn2IwuL
-	EQ/vm92rW13tAIlwoHkSRs/qWhp4n1l1QEx3MeztLuGPmCMybsBwBTgw=
-X-Google-Smtp-Source: AGHT+IFwUWM05/bAStl8NBq/eDdz5SadddI9IhapVYlljinuyOAxoboUUL051r7seYwMybLrVBTmh8rZFIVe9kEM6QeKRhdZmN6C
+	s=arc-20240116; t=1708363604; c=relaxed/simple;
+	bh=Q25xU1PMIcagmUfGS0YVSM4O2LLHesbt2AkQg2Pad6I=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CHJZDA03pWmtkZ1xxiTcQPmiK/5QkIXEtjuA7kKGXIbzvD7ta/MlD6wxb6k52R8rNLzSoGnk1rrrynhDdBaQhzftYr1CUNjM1itm/xFAkpWS2L/4U8QIbK2a4B60cM1tmzrqKceQsWKer7j+iZAwF8vTD47e9/tlZsbTWaEqnUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7DD3C43390;
+	Mon, 19 Feb 2024 17:26:42 +0000 (UTC)
+Date: Mon, 19 Feb 2024 12:28:25 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: wenyang.linux@foxmail.com, Masami Hiramatsu <mhiramat@kernel.org>, Ingo
+ Molnar <mingo@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Mel Gorman <mgorman@techsingularity.net>,
+ Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coredump debugging: add a tracepoint to report the
+ coredumping
+Message-ID: <20240219122825.31579a1e@gandalf.local.home>
+In-Reply-To: <20240219170038.GA710@redhat.com>
+References: <tencent_5CD40341EC9384E9B7CC127EA5CF2655B408@qq.com>
+	<20240217104924.GB10393@redhat.com>
+	<20240219112926.77ac16f8@gandalf.local.home>
+	<20240219170038.GA710@redhat.com>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d04:b0:365:26e3:6e48 with SMTP id
- i4-20020a056e021d0400b0036526e36e48mr383468ila.0.1708363562962; Mon, 19 Feb
- 2024 09:26:02 -0800 (PST)
-Date: Mon, 19 Feb 2024 09:26:02 -0800
-In-Reply-To: <000000000000fa007305fcd83579@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005159340611bf637e@google.com>
-Subject: Re: [syzbot] [reiserfs?] possible deadlock in do_unlinkat
-From: syzbot <syzbot+ada12d2d935bbc82aa7f@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-syzbot suspects this issue was fixed by commit:
+On Mon, 19 Feb 2024 18:00:38 +0100
+Oleg Nesterov <oleg@redhat.com> wrote:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+> > void __noreturn do_exit(long code)
+> > {
+> > 	struct task_struct *tsk = current;
+> > 	int group_dead;
+> >
+> > [...]
+> > 	acct_collect(code, group_dead);
+> > 	if (group_dead)
+> > 		tty_audit_exit();
+> > 	audit_free(tsk);
+> >
+> > 	tsk->exit_code = code;
+> > 	taskstats_exit(tsk, group_dead);
+> >
+> > 	exit_mm();
+> >
+> > 	if (group_dead)
+> > 		acct_process();
+> > 	trace_sched_process_exit(tsk);
+> >
+> > There's a lot that happens before we trigger the above event.  
+> 
+> and a lot after.
 
-    fs: Block writes to mounted block devices
+True. There really isn't a meaningful location here is there?
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=146e7e94180000
-start commit:   933174ae28ba Merge tag 'spi-fix-v6.4-rc3' of git://git.ker..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7d8067683055e3f5
-dashboard link: https://syzkaller.appspot.com/bug?extid=ada12d2d935bbc82aa7f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=106e6d19280000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13cf84e5280000
+I actually use this tracepoint in my pid tracing.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+The set_ftrace_pid and set_event_pid from /sys/kernel/tracing will add and
+remove PIDs if the options function-fork or event-fork are set respectively.
 
-#syz fix: fs: Block writes to mounted block devices
+I hook to the sched_process_fork tracepoint to add new PIDs if the parent
+pid is already in one of the files, and remove a PID via the
+sched_process_exit function.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Honestly, if anything, it should probably be moved down right next to
+perf_event_exit_task() (I never understood why perf needed its own hooks
+and not just use tracepoints).
+
+> 
+> To me the current placement of trace_sched_process_exit() looks absolutely
+> random.
+
+Agreed.
+
+> 
+> > I could
+> > imagine that there are users expecting those actions to have taken place by
+> > the time the event triggered. Like the "exit_mm()" call, as well as many
+> > others.
+> >
+> > I would be leery of moving that tracepoint.  
+> 
+> And I agree. I am always scared of every user-visible change, simply
+> because it is user-visbible.
+> 
+> If it was not clear, I didn't try to nack this patch. I simply do not know
+> how people use the tracepoints and for what. Apart from debugging.
+> 
+> But if we add the new one into coredump_task_exit(), then we probably want
+> another one in ptrace_event(PTRACE_EVENT_EXIT) ? It too can "take some time"
+> before the exiting task actually exits.
+> 
+> So I think this needs some discussion, and the changelog should probably say
+> more.
+> 
+> In short: I am glad you are here, I leave this to you and Wen ;)
+
+I still would like to have your input too ;-)
+
+-- Steve
 
