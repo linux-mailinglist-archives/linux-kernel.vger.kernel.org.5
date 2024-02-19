@@ -1,93 +1,96 @@
-Return-Path: <linux-kernel+bounces-71257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A838A85A290
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D518385A27E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47D511F214FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:56:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 748111F263E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5865A2CCD6;
-	Mon, 19 Feb 2024 11:56:01 +0000 (UTC)
-Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD7E2D03B;
+	Mon, 19 Feb 2024 11:51:15 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D223A22F00
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:55:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5342C856;
+	Mon, 19 Feb 2024 11:51:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708343760; cv=none; b=MZrCcxweVZ9M1Ivjlpv67DhJ5BNO6zqK94+m1GvR9yP3L1qP4/I4ycr7fM0txaXr5245xTvgYh9AYGtdWSTT+c2TGHuv84qbJIKsbhAmu+4QYkE/nweCIviF58Q4472sT8eCotMEZbtsEXug0fZ2eAenbsGxYzWNRDl40f1SHnw=
+	t=1708343474; cv=none; b=Ks0SuLQZhRiCDqphm/1T+4lGYzLmnXoZB7p4AzR5S2UhQIkkUSr+KSKnX9EmQDouvInPQtTHLwoHW3xJFcaFq0+LGsGD68A0AAZ3MhamwuxMGT+GVlqEsPxebAoDFJn889i8Q9ZZko4GKoxSHk+lnMlsK6AmhhDDaSx7k208UxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708343760; c=relaxed/simple;
-	bh=y0UIklNnKZM5nijJtKykqYX+P5z9/aUxva0HnXWRgDQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Vibpy5ldbmN4HRrwQ6CJKfynxxVFRBfdH0MyO5DFTEN504GbcEVSYF70ShG1v8Cs3DMexovymhaIsJ/QhI3u4CP1+eEYbsRgBKIZC62VOMBvuMVyB7dMHs8GZ898McvuQe92JqhCQZnfGif0ONOrhnuRsRxls/+6g3hACKyr30g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.118.64.82])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65D3407F00006019; Mon, 19 Feb 2024 19:50:28 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 95218145089571
-X-SMAIL-UIID: 22E409DE58DC4221B8DB985F39DC424D-20240219-195028-1
-From: Hillf Danton <hdanton@sina.com>
-To: Chen Yu <yu.c.chen@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Mel Gorman <mgorman@suse.de>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Chen Yu <yu.chen.surf@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] sched/fair: do not scribble cache-hot CPU in select_idle_cpu()
-Date: Mon, 19 Feb 2024 19:50:14 +0800
-Message-Id: <20240219115014.1333-1-hdanton@sina.com>
-In-Reply-To: <35e612eb2851693a52f7ed1ff9be5bc24011136f.1700548379.git.yu.c.chen@intel.com>
-References: <cover.1700548379.git.yu.c.chen@intel.com>
+	s=arc-20240116; t=1708343474; c=relaxed/simple;
+	bh=u8TUJFmzFu3voi1EVgnpbMlRsT1vKI0cpUQEGm899u0=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TeowzFz0hAih1qtF7fngG3hPAJ/ctaZVS8k6nHU93RtZ6k+1SUvLqQ+J1Kd7CXxCxVvYGsWfkIydzArLmCrFix1plnRNiWI+1sMpk/6zVs5Yv3a42MHutihtOtiPIXxP6Gqhgob9pvEK88gKhZJ+X3FzabFp8ezVx+j7MtZx7zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tdgkw3YNlz6K8p6;
+	Mon, 19 Feb 2024 19:47:36 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 997B5140DDF;
+	Mon, 19 Feb 2024 19:51:09 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 19 Feb
+ 2024 11:51:09 +0000
+Date: Mon, 19 Feb 2024 11:51:08 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+CC: Peter Zijlstra <peterz@infradead.org>, Dan Williams
+	<dan.j.williams@intel.com>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>, Dave Jiang
+	<dave.jiang@intel.com>, Ira Weiny <ira.weiny@intel.com>
+Subject: Re: [PATCH 1/3 v5] cleanup: Add cond_guard() to conditional guards
+Message-ID: <20240219115108.00002be2@Huawei.com>
+In-Reply-To: <20240217105904.1912368-2-fabio.maria.de.francesco@linux.intel.com>
+References: <20240217105904.1912368-1-fabio.maria.de.francesco@linux.intel.com>
+	<20240217105904.1912368-2-fabio.maria.de.francesco@linux.intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, 21 Nov 2023 15:40:14 +0800 Chen Yu <yu.c.chen@intel.com>
-> Problem statement:
-> When task p is woken up, the scheduler leverages select_idle_sibling()
-> to find an idle CPU for it. p's previous CPU is usually a preference
-> because it can improve cache locality. However in many cases, the
-> previous CPU has already been taken by other wakees, thus p has to
-> find another idle CPU.
+On Sat, 17 Feb 2024 11:59:02 +0100
+"Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com> wrote:
+
+> Add cond_guard() macro to conditional guards.
 > 
-> Proposal:
-> Introduce the SIS_CACHE. It considers the sleep time of the task for
-> better task placement. Based on the task's short sleeping history,
-> tag p's previous CPU as cache-hot. Later when p is woken up, it can
-> choose its previous CPU in select_idle_sibling(). When other task is
-> woken up, skip this cache-hot idle CPU when possible.
+> cond_guard() is a guard to be used with the conditional variants of locks,
+> like down_read_trylock() or mutex_lock_interruptible().
 > 
-> SIS_CACHE still prefers to choose an idle CPU during task wakeup,
-> the idea is to optimize the idle CPU scan sequence.
+> It takes a statement (or statement-expression) that is passed as its
+> second argument. That statement (or statement-expression) is executed if
+> waiting for a lock is interrupted or if a _trylock() fails in case of
+> contention.
+> 
+> Usage example:
+> 
+> 	cond_guard(mutex_intr, return -EINTR, &mutex);
+> 
+> Consistent with other usage of _guard(), locks are unlocked at the exit of
+> the scope where cond_guard() is called. This macro can be called multiple
+> times in the same scope.
+> 
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Suggested-by: Dan Williams <dan.j.williams@intel.com>
+> Suggested-by: Ira Weiny <ira.weiny@intel.com>
+> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Fabio M. De Francesco <fabio.maria.de.francesco@linux.intel.com>
+Looks good.
 
-Could you specify why the currently selected cpu fails to work in the
-scenario described above?
-
-	/*
-	 * If the previous CPU is cache affine and idle, don't be stupid:
-	 */
-	if (prev != target && cpus_share_cache(prev, target) &&
-	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-	    asym_fits_cpu(task_util, util_min, util_max, prev))
-		return prev;
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
