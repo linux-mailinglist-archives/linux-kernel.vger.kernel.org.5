@@ -1,128 +1,170 @@
-Return-Path: <linux-kernel+bounces-71100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3586885A099
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:11:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB23B85A09A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:11:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF1FE282ABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:11:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 229391F2352B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDBC25605;
-	Mon, 19 Feb 2024 10:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50AF25616;
+	Mon, 19 Feb 2024 10:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="b5IP8oB0"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="Ktb2AKDD"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB0EB22F1E;
-	Mon, 19 Feb 2024 10:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB97725574;
+	Mon, 19 Feb 2024 10:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708337478; cv=none; b=DsjkIssor0774jyx+xJ93e1u3QzSJtl/f+MBAJ985So+Omf6us5CRFp5fi+9wHxi68jiERG9FIkfDY3g6EShjyGWDcQse6/vt4Giq2QcPlZddftNPigVjZAIvoAC76brIjCMaapz7axbJfEllbgmkeywnmA4qaW4lO+VnXcF38A=
+	t=1708337498; cv=none; b=Hq57erwGzYQVmOEovQ0RzcvUdIaFFOialzT/kvBrQ12hObCjD1pXzoxIFyE9RIeo8+F+ZfDJyLbJHqVOVJYJfmRYSkzRdn4B9OSPyMYaefbRtZCVFQi0w5qLzcEGRXdX0Fp/TX0lqZ9WTCOnBk3ByXnBzo6kcfUGD40fLOOdcGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708337478; c=relaxed/simple;
-	bh=nKglCQxaIL9KhzTcv2EpJnB3vJNsx8B6s925upveKuo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RBRBBapwgBUdsh8Pm3gb5cs6LMWr2b2V+AXkaF1mgs3Y/Zm3Eb7bCVpqi7kcsz5ZqI+8Y4JZ5en6ZyEkKTZLiY6u6WgGgg+0Wuvd3dE7RWIKg5GnBNHKmIefG+hBt9P+oQWZ4xaATlPXWePKmWfxgGWPyHsC+dsfmyfa4PU11Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=b5IP8oB0; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 34ead050cf0f11ee9e680517dc993faa-20240219
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=FrRtn58nRdzgiHjxO5LEX/AMpFVMDY48qkJZG+hrISI=;
-	b=b5IP8oB0Z4PMPQbZStwzEWt/qKj8D2T6SxgxjuASMPY4nSOqRE5FqCyp4Biip4wM6Q5KI7hjwNiuSnhNn1LIHgSf976iWemmwoAZjUJzBvkonR4MiQIGC6gHNyJxGf2/aUcsmyQaEJu9at+E4YKhY8uIb/OOSaHCX1KciVVBOPM=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:d6fa4c11-acf9-4f1c-ae0e-dcbd7dee9419,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:95978e80-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 34ead050cf0f11ee9e680517dc993faa-20240219
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
-	(envelope-from <macpaul.lin@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1620944991; Mon, 19 Feb 2024 18:11:11 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Mon, 19 Feb 2024 18:11:10 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Mon, 19 Feb 2024 18:11:04 +0800
-Message-ID: <91b2109d-1bf7-1fa7-ac16-ec1d9aba2f5b@mediatek.com>
-Date: Mon, 19 Feb 2024 18:11:03 +0800
+	s=arc-20240116; t=1708337498; c=relaxed/simple;
+	bh=BMkkhuKdON4JFZpecVwN90mUFXfKmOeyHVVeBOHZJbg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jg+sEYGiDETrqXTzaxUsO/1ECY4Oq925KZfKaUG1bSLpHbWYtEIlFEQO3bAuF2MzB1x8arjwooF2VSLBZFUmZovDLiMxWDztI2jsQjhDu/Pcxh7z1Fn7+gSOb9rhe5WjpojkJc1xb6OAOM37LC6PDT8s/Wx2wzP3yrj3nXsQaSo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=Ktb2AKDD; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pyrite.rasen.tech (h175-177-049-156.catv02.itscom.jp [175.177.49.156])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id A388866F;
+	Mon, 19 Feb 2024 11:11:20 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1708337484;
+	bh=BMkkhuKdON4JFZpecVwN90mUFXfKmOeyHVVeBOHZJbg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Ktb2AKDDnf4Nc5TQ3VpTXsQcoDku1HYDQBbS+0isGB9Udu8nvhda1xBdmctkDrp4a
+	 VmGyqVI11UIIAb/H/tkS11uvD0ZWxB2RA2+XThOuOfpHlaYRiVeXkfIzVgB2vwXmNP
+	 /qa8fXlpP2+Qb9Ym2nVtBiMZa8U+re/XvP7HYPvQ=
+Date: Mon, 19 Feb 2024 19:11:20 +0900
+From: Paul Elder <paul.elder@ideasonboard.com>
+To: Umang Jain <umang.jain@ideasonboard.com>
+Cc: Adam Ford <aford173@gmail.com>,
+	=?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+	linux-kernel@vger.kernel.org, Dafna Hirschfeld <dafna@fastmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	"open list:ROCKCHIP ISP V1 DRIVER" <linux-media@vger.kernel.org>,
+	"open list:ROCKCHIP ISP V1 DRIVER" <linux-rockchip@lists.infradead.org>,
+	"moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] media: rkisp1: Allow higher input resolution
+Message-ID: <ZdMpSLqYVFbU7sF0@pyrite.rasen.tech>
+References: <20240217185202.1754750-1-megi@xff.cz>
+ <20240218205908.GA12766@pendragon.ideasonboard.com>
+ <pftafukuzq7qzbhlvwtmeg3mburnttylgy4246timlghtrdgx4@r6munvmj6oqt>
+ <CAHCN7x+zi3WxnY-mxZFKePs1cS=-DprEmh_CnypJ4XK7xBzjMQ@mail.gmail.com>
+ <b500676e-431f-40fc-868b-9f9bb359a109@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v2 1/2] dt-bindings: phy: mediatek: tphy: add a property
- for force-mode switch
-Content-Language: en-US
-To: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>, Chunfeng
- Yun <chunfeng.yun@mediatek.com>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-	<gregkh@linuxfoundation.org>
-References: <20231211025624.28991-1-chunfeng.yun@mediatek.com>
- <170317895962.712473.102387666807925662.b4-ty@kernel.org>
-From: Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <170317895962.712473.102387666807925662.b4-ty@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b500676e-431f-40fc-868b-9f9bb359a109@ideasonboard.com>
 
-On 12/22/23 01:15, Vinod Koul wrote:
-> 	
+On Mon, Feb 19, 2024 at 02:33:21PM +0530, Umang Jain wrote:
+> Hi All,
 > 
-> External email : Please do not click links or open attachments until you 
-> have verified the sender or the content.
+> On 19/02/24 7:39 am, Adam Ford wrote:
+> > On Sun, Feb 18, 2024 at 3:02 PM Ondřej Jirman <megi@xff.cz> wrote:
+> > > On Sun, Feb 18, 2024 at 10:59:08PM +0200, Laurent Pinchart wrote:
+> > > > Hi Ondrej,
+> > > > 
+> > > > (CC'ing Paul and Umang)
+> > > > 
+> > > > Thank you for the patch.
+> > > > 
+> > > > On Sat, Feb 17, 2024 at 07:51:58PM +0100, Ondřej Jirman wrote:
+> > > > > From: Ondrej Jirman <megi@xff.cz>
+> > > > > 
+> > > > > In BSP driver, it is allowed, and it works in practice. Tested on
+> > > > > Pinephone Pro/RK3399 with IMX258 at full res.
+> > > > Paul, Umang, do I recall correctly that you have a similar change ?
+> > > > Could you review and test this (especially on the i.MX8MP) ?
+> > > It's also a limit from the datasheet, so the change should not be that
+> > > controversial:
+> > > 
+> > >    https://megous.com/dl/tmp/d2b333043ecebaf3.png
+> > > 
+> > > (so that it doesn't sound like I just copied the BSP values)
+> > > 
+> >  From what I see in the i.MX8M Plus reference manual, it has a max
+> > resolution of 4096x3072, so it might be necessary to move this off
 > 
-> On Mon, 11 Dec 2023 10:56:23 +0800, Chunfeng Yun wrote:
->> Due to some old SoCs with shared t-phy between usb3 and pcie only support
->> force-mode switch, and shared and non-shared t-phy may exist at the same
->> time on a SoC, can't use compatible to distinguish between shared and
->> non-shared t-phy, add a property to supported it.
->> Currently, only support switch from default pcie mode to usb3 mode.
->> But now prefer to use "mediatek,syscon-type" on new SoC as far as possible.
->> 
->> [...]
-> 
-> Applied, thanks!
-> 
-> [1/2] dt-bindings: phy: mediatek: tphy: add a property for force-mode switch
->        commit: cc230a4cd8e91f64c90b5494dfd76848197418ed
-> [2/2] phy: mediatek: tphy: add support force phy mode switch
->        commit: 9b27303003f5af0d378f29ccccea57c7d65cc642
-> 
-> Best regards,
-> -- 
-> ~Vinod
-> 
-> 
+> This is what I (and I assume Paul too) have been working with on i.MX8M
+> Plus. So it's the known and tested value of max ISP input from out side.
+> > from a #define into a structure that varies by product family.
 
-Is it possible to cherry-pick these 2 patches to stable branches?
-These 2 patches help fix USB port 1 (xhci1) for board mt8395-genio-1200-evb.
-The following branch has been tested.
-  - linux-6.7.y (6.7.5): apply test, build pass, function tested OK 
-(with corresponded dtb change).
-  - linux-6.6.y (6.6.17): apply test, build pass.
-  - linux-6.1.y (6.1.78): apply test, build pass.
+Yes, this is what needs to be done. Here's what I have in my notes:
 
-Thanks.
-Macpaul Lin
+- The RK3399 TRM says 4416x3312 max input and output on main path, with
+  1920x1080 max output on self path.
+- The PX30 datasheet [1] says 3264x2448 max input and output on main
+  path, with 1920x1080 max output on self path.
+- The RK3288 documentation [2] (under "Camera Interface and Image
+  Processor") says 4416x3312 max input and output on main path, with
+  1920x1080 max output on self path.
+- The i.MX8MP reference manual (the open one) [3] (in table 13-1) says
+  4096x3072 max resolution in single ISP mode
+
+The i.MX8M Plus seems to indeed be limited to 4096x3072, but the TPG is
+capable of generating 4416x3312, and the ISP works fine in bypass (and
+therefore raw) mode, so technically it has different maximum sizes
+depending on the format which makes this more exciting.
+
+In any case, the PX30 (assuming the datasheet is correct) only supports
+up to 3264x2448, so the existing #define is incorrect anyway.
+
+I don't have a PX30 nor an RK3288 so I can't test those, and I haven't
+set up my OV64A40 yet which (I've heard) can be used to test even bigger
+resolutions.
+
+
+Paul
+
+[1] https://opensource.rock-chips.com/images/8/87/Rockchip_PX30_Datasheet_V1.4-20191227.pdf
+[2] https://opensource.rock-chips.com/images/4/49/Rockchip_RK3288_Datasheet_V2.7-20191227.pdf
+[3] (requires login) https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-applications-processors/i-mx-8m-plus-arm-cortex-a53-machine-learning-vision-multimedia-and-industrial-iot:IMX8MPLUS
+
+
+> 
+> Yeah!
+> > 
+> > adam
+> > > regards,
+> > >          o.
+> > > 
+> > > > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
+> > > > > ---
+> > > > >   drivers/media/platform/rockchip/rkisp1/rkisp1-common.h | 4 ++--
+> > > > >   1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> > > > > index 4b6b28c05b89..74098ddbeeb3 100644
+> > > > > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> > > > > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
+> > > > > @@ -33,8 +33,8 @@ struct dentry;
+> > > > >   #define RKISP1_ISP_SD_SINK                 BIT(1)
+> > > > > 
+> > > > >   /* min and max values for the widths and heights of the entities */
+> > > > > -#define RKISP1_ISP_MAX_WIDTH                       4032
+> > > > > -#define RKISP1_ISP_MAX_HEIGHT                      3024
+> > > > > +#define RKISP1_ISP_MAX_WIDTH                       4416
+> > > > > +#define RKISP1_ISP_MAX_HEIGHT                      3312
+> > > > >   #define RKISP1_ISP_MIN_WIDTH                       32
+> > > > >   #define RKISP1_ISP_MIN_HEIGHT                      32
+> > > > > 
+> > > > --
+> > > > Regards,
+> > > > 
+> > > > Laurent Pinchart
+> 
 
