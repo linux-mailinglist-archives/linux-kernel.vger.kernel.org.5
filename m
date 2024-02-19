@@ -1,156 +1,291 @@
-Return-Path: <linux-kernel+bounces-71050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD77F85A002
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:42:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CFB585A003
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:42:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FB4E280C4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:42:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03A5D281222
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD4E724B4A;
-	Mon, 19 Feb 2024 09:42:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FBE3249ED;
+	Mon, 19 Feb 2024 09:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C1APkzwv"
-Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="byXsP7sq"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D8F23741;
-	Mon, 19 Feb 2024 09:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBF32420B
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708335724; cv=none; b=G9toGc3iUm8ueRuDvAc1l2mJyrCK2MxQFCtYY6d9C4cK6BiB5l+pwZ6x04sQoKZcpBPMWmRatduNyAVD2FyREv5lxKgnMq5r0m+eqssLk7HhM6nFH8d0V/RVOJKZtnVeSMsC6nULBSBOnLKvXwUK7ajN3fzJzOlWYBPsmqze/ZE=
+	t=1708335758; cv=none; b=CGQFXxAWRORV40J3E+/RrRGJxxfHTwf/8Q0/Kzr7dGN+OC4iykeCqA8EKtevmG7HLxsVZB3qduE+cdmV0UNGXKDHEptpwGV80veAIPj+b9kp2rko3LSOOBzm8ngO96UE7FWJLmuk+l8LVCgmgpMMnAEYV+sD2arBbMDQM8tF2FE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708335724; c=relaxed/simple;
-	bh=spE386tCgWhvgTdYGVNL2rT5soI42ISiMPpiiaW6FPA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hwl7AbDu9e2Csj9bTcAOTavZ3WJfsaSpWXEi3ZOoka6loHDMC/Gs8EFsAR4K6bw/IAlaF+vI5er0k2dMXIUnex3wjptot5wwsUf4I6Do0TGvaLjdhHeD6bv3q13eOT8N81SFoh6VKKPHtt8bhjkWa8xtLuMqTW4/UTGMxJWgH/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C1APkzwv; arc=none smtp.client-ip=209.85.160.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4280f3ec702so15198281cf.0;
-        Mon, 19 Feb 2024 01:42:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708335721; x=1708940521; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=spE386tCgWhvgTdYGVNL2rT5soI42ISiMPpiiaW6FPA=;
-        b=C1APkzwvSbtgkU49/9VCUyBC98R17T1q51GoqezgPUYxhxFwSe16Kb2v1ZXC3EgTt1
-         V8XLwrzZR5+E2LOF9XHgQz0m/GFHpzKI4EVJ9MLxzwClzVd3Az0Ss4QwWZzJ3b8F/AlP
-         AA67cucPz0n90MnsNDrpEF3CfjmKv9Od4bHdVtn4If/KBYWCcOMTXZ55RIsl8sv6DlXa
-         Y4OKMqido6nJ38pl9UuUOBYw3SPmYMz9PpbOaqKio3G772dlFwx2jotvnE68L+4QHAuM
-         cDGcbvv6om/IZ7eLqsxCAatVsvPnG38T+HstE1rOVk/xlxXouwtMse21ltGl+zHtDyxS
-         po8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708335721; x=1708940521;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=spE386tCgWhvgTdYGVNL2rT5soI42ISiMPpiiaW6FPA=;
-        b=S0OZzxO2gsP2IC7lx1XG7Sacr8dg3mT09jTm5ECbpSGEQDD67SiVojNhKikibj7upf
-         6FwI95ciklk1O99Af8Go+ZonB8BUnWteUZ9hYjwoOvWzVb/Guw5U3yIBiT1EYLNgzuXn
-         4VOU9VrE5Q2VXnyeHFqHhquOLPN/0GC5FZMmus7boVSVpZUfrt/BK9aBXPIFwY61DCSu
-         LgXJs+aNMKMoj/5kRj8sjDplkHxgiBV29QebHNW0V15Y/EwGLX3U6KBdCFMYNJ3Dwd2B
-         RXfZrBzFOSszm1CEy5tEOgD5870nclcj0yvLW6EcwXUGm0WjrpFUe1ZZvwMaz7ivwz8T
-         I8AQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVgAvTZpDxpuPErtYjWowbjPHz/FoBEnnPD1MKZ9PZNg6x3eqEfxSMnBli3CuWmavsm+jGYRdHrtXu62Xw9dIWiOLUfRwqQEMG4Xzel+8DXoKHeDwrCZ7XRk9qx1Bns2aUAhM2yajVo
-X-Gm-Message-State: AOJu0YwqBklmPA2Py3f99X//j5xQ8pj4UzXg6DwBWxqYww8Z49HXS+2A
-	SQy9u0bB9mrgDDXiL5SR+BhX9O5fCG64+SAfzpktebk09/I6IqTPLtANjL115aQNjCcb6YEZb57
-	AmLiJW8HRGbTssfSMKYL8v7pjcY1Kt8YVwFLNh/ei80U=
-X-Google-Smtp-Source: AGHT+IGfXodldzainrkR4+f4nu8asp/vu8X13BCODwMeGf1LNvy2gBqmgH8OGTFP8YhYN53wL8aV0VtCEIkI1GGCz7U=
-X-Received: by 2002:a05:6214:3002:b0:68e:ecdc:1123 with SMTP id
- ke2-20020a056214300200b0068eecdc1123mr13478570qvb.2.1708335721301; Mon, 19
- Feb 2024 01:42:01 -0800 (PST)
+	s=arc-20240116; t=1708335758; c=relaxed/simple;
+	bh=j6dRbHM1rHyKp3gaEVtJQirzEs2zBxOnB0hIBrgRSI0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B05W6et0DIhyRwnKjUmWCUmVJmpEk+Kj1rXgfRzlhpMyUoYZfmieo/Yp/i6shfCj7hSFU9Pq2lY8mGsxbWoDR7arsV2WZnVz8fXSlUrNQtfvKaPEZNXMsPdD0ltOPe5dXMXpi6pHRHCMH34MZZKCWtX89Iy3Mr3v4uEHwAd98wY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=byXsP7sq; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 074BD40E01BB;
+	Mon, 19 Feb 2024 09:42:33 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Z7aAfeFXR0DQ; Mon, 19 Feb 2024 09:42:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1708335750; bh=yCXgwZFpjKx2w5kY7xomV0PW2GNqfaew+W1uSPXnCF4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=byXsP7sqEgRA6vA0qrP+uuhrb2BheSracE32Iz3M4t36f/I47JAJ33EDZfAuGomPL
+	 PX9yfjap9Rb5A62qXIko+E+1MJoUca01dmG6AiLx0md1DTJ4S9EM/g2F7/KkBNY8yb
+	 NpJqxggoYkh/HfNCL22dKnWRouOC5A086MInRnSVJP788k41V2DyR53QmBLSW7Ymmb
+	 WzRYOEES0Gm8DFBUfDyT5MpO99F7yxj5FW/49ofVWosOs8GWkdiNe3Cw332s2UVikd
+	 NNWv0NvQiThs1VKw3IYDjp4xK3MFGguUlF77N6s3Seutoi8xikCcEAqJdvUjZEhnEs
+	 AhYQA2cKQUk0NLN84hK8FzD/QII9UBg/h1URLXXapRdY5+IOCCcUXSp40ndQbQ6iy6
+	 xbN58zCqcuJPoEUVZQBM9BCms/9/7S3GZyA6nxW01TS6hjGrhT3UygOlIgGgNrpxg7
+	 YSA6gFQo5JO181mDdxu+8n5LB6463I7HNdcrmxp9HoMVKpAK9WJg0MszOfTdNLVvI5
+	 vxqC26hVUgKqY+Z4iQDqQYsZ841QecDQz9e1TcLzp7ohkNWhl1Q/nDTSCKF+APrS9B
+	 dZvHfmTtZi2WqVTZt7k2OFfJemaTLxgT/jA5L5Xi0xm5YkPQd8I65B+58CET++w/L4
+	 Uxlq8Tmnxn2BDAQjoUviI/Oo=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2365F40E0196;
+	Mon, 19 Feb 2024 09:42:23 +0000 (UTC)
+Date: Mon, 19 Feb 2024 10:42:16 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Ashish Kalra <ashish.kalra@amd.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Tom Lendacky <thomas.lendacky@amd.com>
+Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	Nikunj A Dadhania <nikunj@amd.com>,
+	Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
+Subject: [PATCH -v2] x86/sev: Dump SEV_STATUS
+Message-ID: <20240219094216.GAZdMieDHKiI8aaP3n@fat_crate.local>
+References: <20240213163311.32130-1-bp@alien8.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABXGCsNnUfCCYVSb_-j-a-cAdONu1r6Fe8p2OtQ5op_wskOfpw@mail.gmail.com>
- <Zb6D/5R8nNrxveAP@cae.in-ulm.de> <Zb/30qOGYAH4j6Mn@cae.in-ulm.de>
- <CABXGCsPu73D+JS9dpvzX78RktK2VOv_xT8vvuVaQ=B6zs2dMNQ@mail.gmail.com>
- <e7b96819-edf7-1f9f-7b01-e2e805c99b33@linux.intel.com> <CABXGCsPjW_Gr4fGBzYSkr_4tsn0fvuT72G-YJYXcb1a4kX=CQw@mail.gmail.com>
- <2d87509a-1515-520c-4b9e-bba4cd4fa2c6@linux.intel.com> <CABXGCsPdXqRG6v97KDGy+o59xc3ayaq3rLj267veC7YcKVp8ww@mail.gmail.com>
- <1126ed0a-bfc1-a752-1b5e-f1339d7a8aa5@linux.intel.com> <CABXGCsN5_O3iKDOyYxtsGTGDA6fw4962CjzXLSnOK3rscELq+Q@mail.gmail.com>
- <a026ecd8-6fba-017d-d673-0d0759a37ed8@linux.intel.com>
-In-Reply-To: <a026ecd8-6fba-017d-d673-0d0759a37ed8@linux.intel.com>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Mon, 19 Feb 2024 14:41:49 +0500
-Message-ID: <CABXGCsOgy8H4GGcNU1jRE+SzRqwnPeNuy_3xBukjwB-bPxeZrQ@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_This_is_the_fourth_time_I=E2=80=99ve_tried_to_find_wha?=
-	=?UTF-8?Q?t_led_to_the_regression_of_outgoing_network_speed_and_each_t?=
-	=?UTF-8?Q?ime_I_find_the_merge_commit_8c94ccc7cd691472461448f98e2372c7?=
-	=?UTF-8?Q?5849406c?=
-To: Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc: "Christian A. Ehrhardt" <lk@c--e.de>, niklas.neronin@linux.intel.com, 
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, Greg KH <gregkh@linuxfoundation.org>, 
-	linux-usb@vger.kernel.org
-Content-Type: multipart/mixed; boundary="000000000000d3795f0611b8e785"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240213163311.32130-1-bp@alien8.de>
 
---000000000000d3795f0611b8e785
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-On Thu, Feb 8, 2024 at 8:42=E2=80=AFPM Mathias Nyman
-<mathias.nyman@linux.intel.com> wrote:
->
-> On 8.2.2024 12.32, Mikhail Gavrilov wrote:
-> > On Thu, Feb 8, 2024 at 2:23=E2=80=AFPM Mathias Nyman
-> > <mathias.nyman@linux.intel.com> wrote:
-> >>
-> >> My guess is that CPU0 spends more time with interrupts disabled than o=
-ther CPUs.
-> >> Either because it's handling interrupts from some other hardware, or r=
-unning
-> >> code that disables interrupts (for example kernel code inside spin_loc=
-k_irq),
-> >> and thus not able to handle network adapter interrupts at the same rat=
-e as CPU23
-> >>
-> >
-> > Can this be fixed?
->
-> Not sure, I'm not that familiar with this area.
-> Maybe running irqbalance could help?
+It is, and will be even more useful in the future, to dump the SEV
+features enabled according to SEV_STATUS. Do so:
 
-I installed irqbalance daemon and nothing changed.
-So who is responsible for irq balancing?
+  [    0.542753] Memory Encryption Features active: AMD SEV SEV-ES SEV-SNP
+  [    0.544425] SEV: Status: SEV SEV-ES SEV-SNP DebugSwap
 
---=20
-Best Regards,
-Mike Gavrilov.
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Nikunj A Dadhania <nikunj@amd.com>
+---
+ arch/x86/boot/compressed/sev.c   |  2 +-
+ arch/x86/include/asm/msr-index.h | 59 +++++++++++++++++++-------------
+ arch/x86/include/asm/sev.h       |  2 ++
+ arch/x86/kernel/sev.c            | 35 +++++++++++++++++++
+ arch/x86/mm/mem_encrypt.c        |  5 +++
+ 5 files changed, 78 insertions(+), 25 deletions(-)
 
---000000000000d3795f0611b8e785
-Content-Type: application/zip; name="measuaments-irqbalance.zip"
-Content-Disposition: attachment; filename="measuaments-irqbalance.zip"
-Content-Transfer-Encoding: base64
-Content-ID: <f_lssqytc90>
-X-Attachment-Id: f_lssqytc90
+diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
+index fffdba4ae806..97561eabfbef 100644
+--- a/arch/x86/boot/compressed/sev.c
++++ b/arch/x86/boot/compressed/sev.c
+@@ -370,7 +370,7 @@ static void enforce_vmpl0(void)
+ 				 MSR_AMD64_SNP_VMPL_SSS |		\
+ 				 MSR_AMD64_SNP_SECURE_TSC |		\
+ 				 MSR_AMD64_SNP_VMGEXIT_PARAM |		\
+-				 MSR_AMD64_SNP_VMSA_REG_PROTECTION |	\
++				 MSR_AMD64_SNP_VMSA_REG_PROT |		\
+ 				 MSR_AMD64_SNP_RESERVED_BIT13 |		\
+ 				 MSR_AMD64_SNP_RESERVED_BIT15 |		\
+ 				 MSR_AMD64_SNP_RESERVED_MASK)
+diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
+index 237c50cc1c72..24c575cdd6b9 100644
+--- a/arch/x86/include/asm/msr-index.h
++++ b/arch/x86/include/asm/msr-index.h
+@@ -605,36 +605,47 @@
+ #define MSR_AMD64_SEV_ES_GHCB		0xc0010130
+ #define MSR_AMD64_SEV			0xc0010131
+ #define MSR_AMD64_SEV_ENABLED_BIT	0
+-#define MSR_AMD64_SEV_ES_ENABLED_BIT	1
+-#define MSR_AMD64_SEV_SNP_ENABLED_BIT	2
+ #define MSR_AMD64_SEV_ENABLED		BIT_ULL(MSR_AMD64_SEV_ENABLED_BIT)
++#define MSR_AMD64_SEV_ES_ENABLED_BIT	1
+ #define MSR_AMD64_SEV_ES_ENABLED	BIT_ULL(MSR_AMD64_SEV_ES_ENABLED_BIT)
++#define MSR_AMD64_SEV_SNP_ENABLED_BIT	2
+ #define MSR_AMD64_SEV_SNP_ENABLED	BIT_ULL(MSR_AMD64_SEV_SNP_ENABLED_BIT)
+-#define MSR_AMD64_RMP_BASE		0xc0010132
+-#define MSR_AMD64_RMP_END		0xc0010133
+-
+-/* SNP feature bits enabled by the hypervisor */
+-#define MSR_AMD64_SNP_VTOM			BIT_ULL(3)
+-#define MSR_AMD64_SNP_REFLECT_VC		BIT_ULL(4)
+-#define MSR_AMD64_SNP_RESTRICTED_INJ		BIT_ULL(5)
+-#define MSR_AMD64_SNP_ALT_INJ			BIT_ULL(6)
+-#define MSR_AMD64_SNP_DEBUG_SWAP		BIT_ULL(7)
+-#define MSR_AMD64_SNP_PREVENT_HOST_IBS		BIT_ULL(8)
+-#define MSR_AMD64_SNP_BTB_ISOLATION		BIT_ULL(9)
+-#define MSR_AMD64_SNP_VMPL_SSS			BIT_ULL(10)
+-#define MSR_AMD64_SNP_SECURE_TSC		BIT_ULL(11)
+-#define MSR_AMD64_SNP_VMGEXIT_PARAM		BIT_ULL(12)
+-#define MSR_AMD64_SNP_IBS_VIRT			BIT_ULL(14)
+-#define MSR_AMD64_SNP_VMSA_REG_PROTECTION	BIT_ULL(16)
+-#define MSR_AMD64_SNP_SMT_PROTECTION		BIT_ULL(17)
+-
+-/* SNP feature bits reserved for future use. */
+-#define MSR_AMD64_SNP_RESERVED_BIT13		BIT_ULL(13)
+-#define MSR_AMD64_SNP_RESERVED_BIT15		BIT_ULL(15)
+-#define MSR_AMD64_SNP_RESERVED_MASK		GENMASK_ULL(63, 18)
++#define MSR_AMD64_SNP_VTOM_BIT		3
++#define MSR_AMD64_SNP_VTOM		BIT_ULL(MSR_AMD64_SNP_VTOM_BIT)
++#define MSR_AMD64_SNP_REFLECT_VC_BIT	4
++#define MSR_AMD64_SNP_REFLECT_VC	BIT_ULL(MSR_AMD64_SNP_REFLECT_VC_BIT)
++#define MSR_AMD64_SNP_RESTRICTED_INJ_BIT 5
++#define MSR_AMD64_SNP_RESTRICTED_INJ	BIT_ULL(MSR_AMD64_SNP_RESTRICTED_INJ_BIT)
++#define MSR_AMD64_SNP_ALT_INJ_BIT	6
++#define MSR_AMD64_SNP_ALT_INJ		BIT_ULL(MSR_AMD64_SNP_ALT_INJ_BIT)
++#define MSR_AMD64_SNP_DEBUG_SWAP_BIT	7
++#define MSR_AMD64_SNP_DEBUG_SWAP	BIT_ULL(MSR_AMD64_SNP_DEBUG_SWAP_BIT)
++#define MSR_AMD64_SNP_PREVENT_HOST_IBS_BIT 8
++#define MSR_AMD64_SNP_PREVENT_HOST_IBS	BIT_ULL(MSR_AMD64_SNP_PREVENT_HOST_IBS_BIT)
++#define MSR_AMD64_SNP_BTB_ISOLATION_BIT	9
++#define MSR_AMD64_SNP_BTB_ISOLATION	BIT_ULL(MSR_AMD64_SNP_BTB_ISOLATION_BIT)
++#define MSR_AMD64_SNP_VMPL_SSS_BIT	10
++#define MSR_AMD64_SNP_VMPL_SSS		BIT_ULL(MSR_AMD64_SNP_VMPL_SSS_BIT)
++#define MSR_AMD64_SNP_SECURE_TSC_BIT	11
++#define MSR_AMD64_SNP_SECURE_TSC	BIT_ULL(MSR_AMD64_SNP_SECURE_TSC_BIT)
++#define MSR_AMD64_SNP_VMGEXIT_PARAM_BIT	12
++#define MSR_AMD64_SNP_VMGEXIT_PARAM	BIT_ULL(MSR_AMD64_SNP_VMGEXIT_PARAM_BIT)
++#define MSR_AMD64_SNP_RESERVED_BIT13	BIT_ULL(13)
++#define MSR_AMD64_SNP_IBS_VIRT_BIT	14
++#define MSR_AMD64_SNP_IBS_VIRT		BIT_ULL(MSR_AMD64_SNP_IBS_VIRT_BIT)
++#define MSR_AMD64_SNP_RESERVED_BIT15	BIT_ULL(15)
++#define MSR_AMD64_SNP_VMSA_REG_PROT_BIT	16
++#define MSR_AMD64_SNP_VMSA_REG_PROT	BIT_ULL(MSR_AMD64_SNP_VMSA_REG_PROT_BIT)
++#define MSR_AMD64_SNP_SMT_PROT_BIT	17
++#define MSR_AMD64_SNP_SMT_PROT		BIT_ULL(MSR_AMD64_SNP_SMT_PROT_BIT)
++#define MSR_AMD64_SNP_RESV_BIT		18
++#define MSR_AMD64_SNP_RESERVED_MASK	GENMASK_ULL(63, MSR_AMD64_SNP_RESV_BIT)
+ 
+ #define MSR_AMD64_VIRT_SPEC_CTRL	0xc001011f
+ 
++#define MSR_AMD64_RMP_BASE		0xc0010132
++#define MSR_AMD64_RMP_END		0xc0010133
++
+ /* AMD Collaborative Processor Performance Control MSRs */
+ #define MSR_AMD_CPPC_CAP1		0xc00102b0
+ #define MSR_AMD_CPPC_ENABLE		0xc00102b1
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index d7b27cb34c2b..10f9f1b259c3 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -229,6 +229,7 @@ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+ u64 snp_get_unsupported_features(u64 status);
+ u64 sev_get_status(void);
+ void kdump_sev_callback(void);
++void sev_show_status(void);
+ #else
+ static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+ static inline void sev_es_ist_exit(void) { }
+@@ -258,6 +259,7 @@ static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
+ static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
+ static inline u64 sev_get_status(void) { return 0; }
+ static inline void kdump_sev_callback(void) { }
++static inline void sev_show_status(void) { }
+ #endif
+ 
+ #ifdef CONFIG_KVM_AMD_SEV
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 1ef7ae806a01..7d242898852f 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -59,6 +59,25 @@
+ #define AP_INIT_CR0_DEFAULT		0x60000010
+ #define AP_INIT_MXCSR_DEFAULT		0x1f80
+ 
++static const char * const sev_status_feat_names[] = {
++	[MSR_AMD64_SEV_ENABLED_BIT]		= "SEV",
++	[MSR_AMD64_SEV_ES_ENABLED_BIT]		= "SEV-ES",
++	[MSR_AMD64_SEV_SNP_ENABLED_BIT]		= "SEV-SNP",
++	[MSR_AMD64_SNP_VTOM_BIT]		= "vTom",
++	[MSR_AMD64_SNP_REFLECT_VC_BIT]		= "ReflectVC",
++	[MSR_AMD64_SNP_RESTRICTED_INJ_BIT]	= "RI",
++	[MSR_AMD64_SNP_ALT_INJ_BIT]		= "AI",
++	[MSR_AMD64_SNP_DEBUG_SWAP_BIT]		= "DebugSwap",
++	[MSR_AMD64_SNP_PREVENT_HOST_IBS_BIT]	= "NoHostIBS",
++	[MSR_AMD64_SNP_BTB_ISOLATION_BIT]	= "BTBIsol",
++	[MSR_AMD64_SNP_VMPL_SSS_BIT]		= "VmplSSS",
++	[MSR_AMD64_SNP_SECURE_TSC_BIT]		= "SecureTSC",
++	[MSR_AMD64_SNP_VMGEXIT_PARAM_BIT]	= "VMGExitParam",
++	[MSR_AMD64_SNP_IBS_VIRT_BIT]		= "IBSVirt",
++	[MSR_AMD64_SNP_VMSA_REG_PROT_BIT]	= "VMSARegProt",
++	[MSR_AMD64_SNP_SMT_PROT_BIT]		= "SMTProt",
++};
++
+ /* For early boot hypervisor communication in SEV-ES enabled guests */
+ static struct ghcb boot_ghcb_page __bss_decrypted __aligned(PAGE_SIZE);
+ 
+@@ -2275,3 +2294,19 @@ void kdump_sev_callback(void)
+ 	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+ 		wbinvd();
+ }
++
++void sev_show_status(void)
++{
++	int i;
++
++	pr_info("Status: ");
++	for (i = 0; i < MSR_AMD64_SNP_RESV_BIT; i++) {
++		if (sev_status & BIT_ULL(i)) {
++			if (!sev_status_feat_names[i])
++				continue;
++
++			pr_cont("%s ", sev_status_feat_names[i]);
++		}
++	}
++	pr_cont("\n");
++}
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index d035bce3a2b0..6f3b3e028718 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -14,6 +14,8 @@
+ #include <linux/mem_encrypt.h>
+ #include <linux/virtio_anchor.h>
+ 
++#include <asm/sev.h>
++
+ /* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
+ bool force_dma_unencrypted(struct device *dev)
+ {
+@@ -74,6 +76,9 @@ static void print_mem_encrypt_feature_info(void)
+ 			pr_cont(" SEV-SNP");
+ 
+ 		pr_cont("\n");
++
++		sev_show_status();
++
+ 		break;
+ 	default:
+ 		pr_cont("Unknown\n");
+-- 
+2.43.0
 
-UEsDBBQACAAIAOB0U1gAAAAAAAAAAIAXAAAaACAAbWVhc3VhbWVudHMtaXJxYmFsYW5jZS50eHRV
-VA0AB7Uh02W1IdNl9SHTZXV4CwABBOgDAAAE6AMAAO1Y3W7bNhS+51OctZebKJL6sS1gwBZnA4w1
-g5F0w4AiGBjqxCEsUxpJJ3VR7HIPsEfckwyS5VJOk63uCqxN+vnCn4/P+Q7JQ4oUn4KSHuLG1irW
-xqO168Y7eA0Liw1E38ETNA1PHXs9nf/EnhAYoLUEygMVgSaBpoFmgeaBjgIdBzoZpGCB8kBFoEmg
-aaBZoHmgo0DHgU5CL0I2EbKJkE2EbCJkEyGbCNlEyCZCNhGyJSFb0mcjAOO06Ls/4rv2tPhMPyCd
-nUbz6Sw6OZv9EjHGWMGwYIx2TizCcoFb134lEFvX/huHqjaltJvoxsHvT6E0l6CN87KqQNvfLmQl
-jULyTDoPK/SylF4Cvmy0lV7XBtQVqmUBrOBJwSYgFzXUBk5qA3wC3+MFCCZSYKIQvBApzE/gS5ZR
-cowNmhKN0ujAoquraywp+fpRgcBcqqXc1eUgfGvVlfao/NoeEP4zWtdW7X1xik3ttK/t5rC4M/0K
-H1txZ9tVpM2iIIOldOiQvxznv+bpOzjuQRScTqiIUnqpUvYOAbdg5c2VLg+fmOkYloQ8t9I4qboH
-xNl6tZJ280irD8B3i5yQ57WXFZT1jalqWYLTr7DYjljvjTvjuDM68FfaQb2EF5v4x/MCNuS4D9Zm
-sdN1BQmzKxqWnW7nDrXN6vAZ8P9BZByWR3F7eutG56iztvtZN5FJ9KjQz5oHgyS/p7jb0yI5XRvT
-zm4/eIZ0h4y9p0pnAbdWCrFsTw53hXl0fi+qNfxLEAGYW2ykbe09ivt78ymDx7w9m4d9qrcXg90q
-2t9I6PvtRh8F+u7uau6U1Y2v0D/k7k4tSt/uKptVpc0SYvQqdhvncVX23/FqXXkdrR1a6qVdoKc3
-0ngXh1GhDu21Vgh//fEnxGtn40pf3JZ5250SEja2gsDDHOd7QMi0XjUVevzi7hetz/cVn8J9BWcs
-2Y3Ex/Om/zDoB7mv0A3aywQiBY3Vq62dVrWSFUQeMogayBhjEM2Bk2ltDCrfbfk1XNXOvxX1FTS1
-9V0MeQGQncNWjE8E5fmYcsoT1vuMcp6C2mpi2UoGr0m+JzQ7PodZu86v985y3eHkEm3340h7K314
-5zpFbwGmN6bsWwLAKGMRp91B2KFqr9NoBidHG48OAHLG4ORCexd3f/YDnowS+GHn0uKNXKsUiYFc
-ntM8yGXZ5CC5VilKhnJjygZyo7tal3J+j1yrFKVDuRFNB3J5dpBcqxRl+3JiKJfeJZewW3IRHPj5
-D9Xfr/uw7ZCkw7aPkjva/gauvWr7R7FkMhyIW1Xfh0WF+hotId3Sg+PaICV/A1BLBwhm+Kv62AMA
-AIAXAABQSwECFAMUAAgACADgdFNYZvir+tgDAACAFwAAGgAgAAAAAAAAAAAApIEAAAAAbWVhc3Vh
-bWVudHMtaXJxYmFsYW5jZS50eHRVVA0AB7Uh02W1IdNl9SHTZXV4CwABBOgDAAAE6AMAAFBLBQYA
-AAAAAQABAGgAAABABAAAAAA=
---000000000000d3795f0611b8e785--
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
