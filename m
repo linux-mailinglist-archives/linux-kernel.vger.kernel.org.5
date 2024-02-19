@@ -1,96 +1,150 @@
-Return-Path: <linux-kernel+bounces-71208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB89C85A1FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:32:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9899685A202
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:33:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 989342815E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:32:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50F64281822
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:33:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE802C1AC;
-	Mon, 19 Feb 2024 11:32:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526242D054;
+	Mon, 19 Feb 2024 11:32:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="r3mVrcyt";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZDtAxRPl"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OcZaLk7Q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A6A846D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:32:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EBF2C85C;
+	Mon, 19 Feb 2024 11:32:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708342328; cv=none; b=rCwR+osHJK82/WpikcJAlB13VhsLZdBdwE9Yi+E2OV7SZSj6wUzd0pxqP+Rhfe0KCdy14yi+5SKBGMe5pj4x3zfoBLFCntZfHudMnqo1UjSfks7H7yBVa5P6+5k6Q+cvWopF7AC4q9GR/VW2A2l8bD2FUWJ8ODBKUN1adYqVF1w=
+	t=1708342359; cv=none; b=Npvjuftp9YPzVg7szaGlmiLPhHG2Hvt4usY51pDXCKz+b/tLrFTheGGuI6ic6nr8nw5nS+7R5479Qqedk4istkc/RxdeD4BVyP+1twLcGltiqYFZh5CiYxref352mS4Vi31S4kghJdAdnXGaRazyuoW49Qfw9zCSPXuo/VVnPTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708342328; c=relaxed/simple;
-	bh=VB+iI+fug3eSv+fm6efC/2HzoubUcnoN5nHFZ5Ilajs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=DRKFeb2E2OoJzaDt3V7Zq3EeaoBpg0qAy7nzmBjGdICN9MBzKcuYDdjqQQopWDkHJto56SlnsywPrl6iwaOF4IQJUwbTZmwlXbSxpUvu/qe18ahyPwrOHC4bbPXv1QVLfQQwYtQWmM/akeXjxDbNwi5QraB5duR1iVKInkXvRAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=r3mVrcyt; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZDtAxRPl; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708342325;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D9GKMP7xsT1loNPYfLVLghc8f51mY65KwFSji6d7V9c=;
-	b=r3mVrcytCIs8QLqrdWr39/DIFhcznwBqlN3h4H9o8F/dC0wT/URiiTyk00llHe23DJ3r/e
-	PVy50mxs2O2Ix72eXn6rlAr9QD+VNvFcZ+0el1nAKiu/YiXky4GvarLmK+Ut0HZlqpNQuu
-	6fQGEL4ykjTQqLFQRnO+nydQIOTXUkGSSJpa1LWWmZHG2Es7DUc2Tf7KszIpSoyxixR28R
-	gnY7uJj+iCWklWIeBuHki9gdU31WCsvKICfBeMCnj65+4PLJ+TDODJZ9o2XSlaiXccDEbC
-	EpjVdw2tG56Fp6tKxS3jrAvnV1HdCc8n/I7V8w3RpGNPP+uViVLEUseg1UWBcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708342325;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=D9GKMP7xsT1loNPYfLVLghc8f51mY65KwFSji6d7V9c=;
-	b=ZDtAxRPl7wR51qRS5OnoEFuZY7Ks2O8U9b2bi+nLIyvPjZmAyNVCX8/T/gdGNmeA92rezm
-	LOdHX7yg3SmDzsAA==
-To: Feng Tang <feng.tang@intel.com>, John Stultz <jstultz@google.com>,
- Stephen Boyd <sboyd@kernel.org>, paulmck@kernel.org, Waiman Long
- <longman@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- linux-kernel@vger.kernel.org
-Cc: Feng Tang <feng.tang@intel.com>, Jin Wang <jin1.wang@intel.com>
-Subject: Re: [PATCH v3] clocksource: Scale the max retry number of watchdog
- read according to CPU numbers
-In-Reply-To: <20240129134505.961208-1-feng.tang@intel.com>
-References: <20240129134505.961208-1-feng.tang@intel.com>
-Date: Mon, 19 Feb 2024 12:32:05 +0100
-Message-ID: <87msrwadvu.ffs@tglx>
+	s=arc-20240116; t=1708342359; c=relaxed/simple;
+	bh=77RHh1S722+4UZIFP/TepDf9R/B6Xzqn2rhn7GF3+uY=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=W6SQL5d7NLRRwy5sdMkYif9+HOYe/UF8czpEXHoPbSH3GRRez/pq+ozornMUsJESEfit1xLlILR4liRocrTDAuCL2pQzQvIjouugHukS3hNeovymprjQsgrt6LoHTAqUyx8qshnvRhPq2r6ASC2MZjt+n1wJtWN8vEi2RM9A63Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OcZaLk7Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2179CC433C7;
+	Mon, 19 Feb 2024 11:32:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708342359;
+	bh=77RHh1S722+4UZIFP/TepDf9R/B6Xzqn2rhn7GF3+uY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=OcZaLk7Qto84dLXIvKqf5aWkOulZTjrfezhfVPPyMzz647fRVKpmQLknKwslN2xnd
+	 lJtCIXetyJOgxFkrGK2e/w7PjUN7EmvQ0Yty2f99mjUDj6qxP+rdfOS9OsWEP2HamV
+	 dD1wJ7+FIt1CaiN8P/Gb772cLhhZrHTrmxUelk7/KFLGKsmWKwlmSvIlb1oCmma8Q0
+	 pnt4QmiiVI4oyBuxyxbNLZnuGkX/yc7gF4xQcrM6yhsxg1PBwVlFjzm82j2Qy3PHGr
+	 sKzmCtQVpx0GEqbg2wCA0uMJbDwUzCrT5+gvsSjL5q4D4XppGCOv+ZN4ngZNEpGajk
+	 8YjjodraKjEBA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rc1sz-004YSJ-4G;
+	Mon, 19 Feb 2024 11:32:37 +0000
+Date: Mon, 19 Feb 2024 11:32:36 +0000
+Message-ID: <86cyss4rl7.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: open list <linux-kernel@vger.kernel.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	lkft-triage@lists.linaro.org,
+	Linux Regressions <regressions@lists.linux.dev>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: next-20240219: arm64: boot failed - gic_of_init
+In-Reply-To: <86edd84wer.wl-maz@kernel.org>
+References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
+	<86edd84wer.wl-maz@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: naresh.kamboju@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lkft-triage@lists.linaro.org, regressions@lists.linux.dev, catalin.marinas@arm.com, arnd@arndb.de, dan.carpenter@linaro.org, anders.roxell@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Mon, Jan 29 2024 at 21:45, Feng Tang wrote:
-> +static inline long clocksource_max_watchdog_read_retries(void)
-> +{
-> +	long max_retries = max_cswd_read_retries;
-> +
-> +	if (max_cswd_read_retries <= 0) {
-> +		/* santity check for user input value */
-> +		if (max_cswd_read_retries != -1)
-> +			pr_warn_once("max_cswd_read_retries was set with an invalid number: %ld\n",
-> +				max_cswd_read_retries);
-> +
-> +		max_retries = ilog2(num_online_cpus()) + 1;
+On Mon, 19 Feb 2024 09:48:28 +0000,
+Marc Zyngier <maz@kernel.org> wrote:
+> 
+> On Mon, 19 Feb 2024 09:42:45 +0000,
+> Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > 
+> > The qemu-arm64 boot failed with linux next-20240219 tag kernel.
+> > 
+> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > 
+> > Boot log:
+> > ---------
+> > <6>[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+> > <1>[    0.000000] Unable to handle kernel paging request at virtual
+> > address ffff80008001ffe8
+> > <1>[    0.000000] Mem abort info:
+> > <1>[    0.000000]   ESR = 0x0000000096000004
+> > <1>[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
+> > <1>[    0.000000]   SET = 0, FnV = 0
+> > <1>[    0.000000]   EA = 0, S1PTW = 0
+> > <1>[    0.000000]   FSC = 0x04: level 0 translation fault
+> > <1>[    0.000000] Data abort info:
+> > <1>[    0.000000]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+> > <1>[    0.000000]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> > <1>[    0.000000]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> > <1>[    0.000000] swapper pgtable: 4k pages, 52-bit VAs, pgdp=0000000042497000
+> > <1>[    0.000000] [ffff80008001ffe8] pgd=10000000439a5003,
+> > p4d=10000001000e3003, pud=10000001000e4003, pmd=10000001000e5003,
+> > pte=006800000800f413
+> > <0>[    0.000000] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+> > <4>[    0.000000] Modules linked in:
+> > <4>[    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
+> > 6.8.0-rc5-next-20240219 #1
+> > <4>[    0.000000] Hardware name: linux,dummy-virt (DT)
+> > <4>[    0.000000] pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT
+> > -SSBS BTYPE=--)
+> > <4>[    0.000000] pc : gic_of_init+0x84/0x3a8
+> > <4>[    0.000000] lr : gic_of_init+0x290/0x3a8
+> > ...
+> > <4>[    0.000000] Call trace:
+> > <4>[    0.000000]  gic_of_init+0x84/0x3a8
+> > <4>[    0.000000]  of_irq_init+0x1d4/0x3d0
+> > <4>[    0.000000]  irqchip_init+0x20/0x50
+> > <4>[    0.000000]  init_IRQ+0xa8/0xc8
+> > <4>[    0.000000]  start_kernel+0x270/0x690
+> > <4>[    0.000000]  __primary_switched+0x80/0x90
+> > <0>[    0.000000] Code: f94017e0 f90007e0 d29ffd00 8b0002c0 (b9400000)
+> > <4>[    0.000000] ---[ end trace 0000000000000000 ]---
+> > <0>[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+> > <0>[    0.000000] ---[ end Kernel panic - not syncing: Attempted to
+> > kill the idle task! ]---
+> > 
+> > Links:
+> >  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/test/gcc-13-lkftconfig-armv8_features/log
+> >  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/tests/
+> 
+> Where is the configuration file? What are the parameters to QEMU?
+> Please consider making this a useful and actionable report.
 
-I'm getting tired of these knobs and the horrors behind them. Why not
-simply doing the obvious:
+For what it is worth, I've just tested both defconfig and my own
+configuration with both 4k (kvmtool, QEMU+KVM and on SynQuacer) and
+16k (kvmtool), without any obvious problem.
 
-       retries = ilog2(num_online_cpus()) + 1;
+So until you come up with more specific details, there isn't much I
+can do.
 
-and remove the knob alltogether?
+	M.
 
-Thanks,
-
-        tglx
+-- 
+Without deviation from the norm, progress is not possible.
 
