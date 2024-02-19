@@ -1,159 +1,149 @@
-Return-Path: <linux-kernel+bounces-71656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C13085A888
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:17:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A132685A895
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:18:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C67571F24C04
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:17:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4268AB21C3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:18:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C120F3CF53;
-	Mon, 19 Feb 2024 16:17:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8213CF7B;
+	Mon, 19 Feb 2024 16:18:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MtsFcuHH"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="dcpdvjf1"
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1EE37704;
-	Mon, 19 Feb 2024 16:17:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AC873B1B2
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359452; cv=none; b=TRVVyBWNLHHvEnlaEasE4BBoXs96JgHzPed6eqfiDDc8qHovGLaYcSTXR1ctLL2NQqHBVOMUs4gIjHnkQEDHCv0yOIN2KH+GC7aEWGRd8ZxDPFCVr5FGH+Qs3kglZTO3qNYPxYk7Hp3q/e1M6qWKtKavBBBQ+J9kr6u4PyeWGjE=
+	t=1708359486; cv=none; b=DufVd1H/m3+yJfmGBBDtRkljhph75N6vtkebxxCiheWTFverOgIzs9B2hwzplbu7JRkrwjDolRF8Oz8QRzEGQOwv5rk3ks5woCYiDRHfdNfPEZ0qmR9goxHJmQzb3w5G7F2t2M2Qcu3DJEm0XoT3K8qmEaz1iHQZBiA+f++AvJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359452; c=relaxed/simple;
-	bh=7FpHqGM9NSQ9oJ8wCMEWcQwBYs8k2HS8Pk/KO1rddLg=;
-	h=Content-Type:Mime-Version:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=me8mWxzfu6HYr3GnkcuzMe/XA7IeUATEVdDIudtFTPMvDUHPbVbFNgeJlVaCRKCBE4Hwicl4xxng8hsP7nE4vifdQXZLXnxIYUpCYBtzFcWf2Fr4GP57L2VX279ZMeDkcGYySfgRSiXE8++kaVopIsm+6usVMsvc0sBV3uu4K98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MtsFcuHH; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a3e4765c86eso217710366b.0;
-        Mon, 19 Feb 2024 08:17:28 -0800 (PST)
+	s=arc-20240116; t=1708359486; c=relaxed/simple;
+	bh=qjzcx+ky+m9LqUCnQsunFaXlJI8F3Ray2e8gmZDQnsY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XsDhUsTB/XJkgsyGDa785Gwbs2z1SxXipxT1fpmbrjp85+uUmpbbbTsyL7htq7L9UHsMTnyOd2DaFeyj34jBe6FR1ETRhDNOF1PlnnD51OXcUSrN9i9h9n5v2NKg5XnYNoMESqgjC7el6gjsIETNMOOO/t7I7md2beQeOqa2sOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=dcpdvjf1; arc=none smtp.client-ip=209.85.160.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-21e7c3e3cf3so2416028fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:18:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708359447; x=1708964247; darn=vger.kernel.org;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LQx0b5ToM23dL9e3ut59o6I7ORybJM20K6cqxVU6TEY=;
-        b=MtsFcuHHWNabD1DlsDqdsA9GaOXlMRas5/qqxjnzTVbadpD7HWVeq4C3NyGgZ6oWk6
-         D36uMiQPnX0Lqm7K1+W2prJB1CujJC1Tp2t5yPOPZ5TmwS0cZHCOGxOiFEfiem0b9tcx
-         hqMpPXgCqY3bbJo0YopJseXsS1ojtN5mApG9fs8UVHWfgXiQDm/pzmKpHOC4qesPhEiv
-         D6kz55xjruvCNbPLkD6xk2vUbNnrCtL4z3JbUav3j02nuWyL8PVs9pI4B1Alrq0DNmQF
-         v4yjEHFYrPRMdiuOlHNrGkSfA71WMSmZ4NXEY8bBm4qiD/pQwXjF0EO3lP/b+CYCy43k
-         puTQ==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708359483; x=1708964283; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dkkKZJCCytTGAljspGkyIipfcm+Bvc2X5TtIBHDj2O0=;
+        b=dcpdvjf1TK+Ev/Mj+ftRw+S4+JCtcDmwlMU8lw+zETf52zeuO0VJI6AVprwjcLhY9Y
+         TvobkL7WVjHzERUl91TIu/CS5I2BpQ9XuCvDdquE+G5UrNj+EaISCqJJ7dynzXL3lSRn
+         zpPaoOFzaSl76JhxqP5eCpQViiWYAaV3hkWD+tCrploWTbzkgPsx9IKEsILoJhkuQKLf
+         aJThTzdVr6cPs+Yl1IGLn/1lzbUBb9HY9UEMMi/5+mvKnWnUmpYVFMC8ccRWNDrlofm5
+         Roe+VhvVlpBva0iokGAhkiMUlPAv2xl5r+RBWIa7xzeNg1AaFVz9Yufnfs/X1kBKwWrw
+         eZjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708359447; x=1708964247;
-        h=in-reply-to:references:subject:cc:to:from:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LQx0b5ToM23dL9e3ut59o6I7ORybJM20K6cqxVU6TEY=;
-        b=gGUTx5O0CY/bQbMqB+tV+5p3PXWy6F0up1AcU+DSADN2UuwTY+uJaYiXcat+kZ4E8m
-         E6xpmYBog79CHEBLuOapETaLWT6nQKnyGsMxoDQZsAMBnLsV+ifg8dQOFjx8e5amUCRe
-         I6AaTOhALoWad2aW6JWI+tZSO4YM8SjwCN+Sx/AY5O8JfJa9GFyrT2DvFS4uoGxW9nK+
-         pngk4qSU9D28S+0AAlRr3mnm3TWX9uO0Q58IBME8LT67QxEnphXftwIe5Bar5TPEk1hi
-         U9TBjgYW0KHumeUxeIde3hiKrW0b0cKh3kTYrRG2VsYN5p0+xA4Dl88T6Cmfk67C7H+V
-         mXWw==
-X-Forwarded-Encrypted: i=1; AJvYcCVysxteD5x52+h3NAmY1lMIjR66bHG1CFc3Np32+5JHKG7OOYmmAUf4wgHbeDnWNOdKUeNHOL3avbuPAa27mZlHlfCyu94jN4/C23CAgwL3gUtkfI3BuoFI7unblr2YHTE11hGOj/EVb6w=
-X-Gm-Message-State: AOJu0YzRT1FRpp9DqgA6hHjaGUxakSq6Lk55rITGEvyp8kGw22b9EWN1
-	g5ymTRZZPMDa7XR9UokZlJdyLa3YrBDmwsselChQ8wevH1awKUsd
-X-Google-Smtp-Source: AGHT+IHz30EtXbUsDHHybZPNs80s80ImweIjNew1u/fXIGZ82mBpPBeMfLVVk7cu9MbgmkwQgY+KIQ==
-X-Received: by 2002:a17:906:a19a:b0:a3d:2a52:380f with SMTP id s26-20020a170906a19a00b00a3d2a52380fmr8275021ejy.72.1708359446972;
-        Mon, 19 Feb 2024 08:17:26 -0800 (PST)
-Received: from localhost (p200300e41f2d4600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f2d:4600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id lu16-20020a170906fad000b00a3d5efc65e0sm1770838ejb.91.2024.02.19.08.17.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 08:17:26 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=e43bc9b7547ba2fb2d75f0caf653f23939e188d8e14bbe063075b337bdb3;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+        d=1e100.net; s=20230601; t=1708359483; x=1708964283;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dkkKZJCCytTGAljspGkyIipfcm+Bvc2X5TtIBHDj2O0=;
+        b=Px+ibADHfECnczMAH5A4d2l8cTUp5fWFrZtQEgzEWXqgyLCZrE/szYTVR0fB4g0X54
+         qUjfLTYFgXGY+1oNQS2WgMkyRt21tWpKMpQ3Xvu783dGI/mkDh+qBEyHURKJaq0rv/K9
+         887VvlilZMDB6Q/mHeJ4S3wOQa+SegVcToc/E6DEydvpvoM//eLXtM12EYdAve4SE2gr
+         am5Q4xBfF6vWO96412Cd3shFdt1ciBsdgGOp9Nf+Gt99VsMHtlkevqvLSRra9SWsgi7f
+         MHkej6YPzsexEB0y3Putgp4vP2DIYohVRyOq4XkBGMG4SWO6ZoZ5Z1DESR5OUUoTfcaq
+         B8gg==
+X-Forwarded-Encrypted: i=1; AJvYcCV+5BNspCKjKRFwLuKxfyOfJEULGmktZR7fGL7a4bGFfmlKQILPMIH1aUCU+pzdTAc3oxH5vmWnaz42xxkhiu+BBW3tbxAHxO0g3ZlX
+X-Gm-Message-State: AOJu0YweDTEQqP58V66v5oaI7HKg2Ek2aCUb1wsX0f/ECoAQzWDudRaa
+	LwINz0wGJHJbHq8x52VCkI8y/M2vw0GTQeYCJ3g+YwJCUS2Vu106iPQhYbJLzOHJG6IbJiUZnWF
+	sxKKbkaReHrhJETFq8+FXH5FvWxnyWSKpZ4gMLw==
+X-Google-Smtp-Source: AGHT+IG5pyvJ8VZ6IeRCjDQVoO+8UramCL2g0nrYiEFGzvjye6ON6eV4Qtkb+srU6g6Hef9hGKjITtSXzU2gX9D/suw=
+X-Received: by 2002:a05:6871:79a:b0:219:3054:3ea5 with SMTP id
+ o26-20020a056871079a00b0021930543ea5mr12969383oap.45.1708359483560; Mon, 19
+ Feb 2024 08:18:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Mon, 19 Feb 2024 17:17:26 +0100
-Message-Id: <CZ96VR54894Z.TIAQI1OXCH2Z@gmail.com>
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Pohsun Su" <pohsuns@nvidia.com>, <daniel.lezcano@linaro.org>,
- <tglx@linutronix.de>, <jonathanh@nvidia.com>
-Cc: <sumitg@nvidia.com>, <linux-kernel@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] clocksource/drivers/timer-tegra186: fix watchdog
- self-pinging.
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240216210258.24855-1-pohsuns@nvidia.com>
- <20240216210258.24855-3-pohsuns@nvidia.com>
-In-Reply-To: <20240216210258.24855-3-pohsuns@nvidia.com>
-
---e43bc9b7547ba2fb2d75f0caf653f23939e188d8e14bbe063075b337bdb3
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com> <20240214-mbly-gpio-v1-17-f88c0ccf372b@bootlin.com>
+In-Reply-To: <20240214-mbly-gpio-v1-17-f88c0ccf372b@bootlin.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 19 Feb 2024 17:17:52 +0100
+Message-ID: <CAMRc=Me=SiS5oScmm8jMNsed_2smN4p6s+xPnkTzjHM_hPPULQ@mail.gmail.com>
+Subject: Re: [PATCH 17/23] gpio: nomadik: handle variadic GPIO count
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
 
-On Fri Feb 16, 2024 at 10:02 PM CET, Pohsun Su wrote:
-> This change removes watchdog self-pinging behavior.
+On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
+in.com> wrote:
 >
-> The timer irq handler is triggered due to the 1st expiration,
-> the handler disables and enables watchdog but also implicitly
-> clears the expiration count so the count can only be 0 or 1.
+> Read the "ngpios" device-tree property to determine the number of GPIOs
+> for a bank. If not available, fallback to NMK_GPIO_PER_CHIP ie 32 ie
+> the current behavior.
 >
-> Since this watchdog supports opened, configured, or pinged by
-> systemd, We remove this behavior or the watchdog may not bark
-> when systemd crashes since the 5th expiration never comes.
+> The IP block always supports 32 GPIOs, but platforms can expose a lesser
+> amount. The Mobileye EyeQ5 is in this case; one bank is 29 GPIOs and
+> the other is 23.
 >
-> Signed-off-by: Pohsun Su <pohsuns@nvidia.com>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 > ---
->  drivers/clocksource/timer-tegra186.c | 27 ++-------------------------
->  1 file changed, 2 insertions(+), 25 deletions(-)
+>  drivers/gpio/gpio-nomadik.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/clocksource/timer-tegra186.c b/drivers/clocksource/t=
-imer-tegra186.c
-> index 8f516366da86..acff97da138a 100644
-> --- a/drivers/clocksource/timer-tegra186.c
-> +++ b/drivers/clocksource/timer-tegra186.c
-> @@ -175,7 +175,8 @@ static void tegra186_wdt_enable(struct tegra186_wdt *=
-wdt)
->  		value |=3D WDTCR_PERIOD(1);
-> =20
->  		/* enable local interrupt for WDT petting */
-> -		value |=3D WDTCR_LOCAL_INT_ENABLE;
-> +		if (0)
-> +			value |=3D WDTCR_LOCAL_INT_ENABLE;
+> diff --git a/drivers/gpio/gpio-nomadik.c b/drivers/gpio/gpio-nomadik.c
+> index 5b1e3b3efcff..02b53c58adf7 100644
+> --- a/drivers/gpio/gpio-nomadik.c
+> +++ b/drivers/gpio/gpio-nomadik.c
+> @@ -490,7 +490,7 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct d=
+evice_node *np,
+>         struct resource *res;
+>         struct clk *clk;
+>         void __iomem *base;
+> -       u32 id;
+> +       u32 id, ngpio;
+>
+>         gpio_pdev =3D of_find_device_by_node(np);
+>         if (!gpio_pdev) {
+> @@ -518,10 +518,15 @@ struct nmk_gpio_chip *nmk_gpio_populate_chip(struct=
+ device_node *np,
+>                 return ERR_PTR(-ENOMEM);
+>         }
+>
+> +       if (of_property_read_u32(np, "ngpios", &ngpio)) {
 
-We probably shouldn't proliferate this scheme. In retrospect I should've
-removed the two other similar blocks back when I submitted the driver at
-the time since they don't really serve a purpose. The intention at the
-time was to keep them there and eventually replace the condition with
-something that could actually be toggled, but it's been almost four
-years and this hasn't happened, so I suspect that we just don't need it
-at all. So perhaps you could remove this line along with the comment in
-this patch and then add another patch that removes the other unused bits
-so that we don't carry around stuff that we just never use.
+As commented elsewhere - please try to use device_property_read_u32().
 
-Thierry
+Bart
 
---e43bc9b7547ba2fb2d75f0caf653f23939e188d8e14bbe063075b337bdb3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXTfxYACgkQ3SOs138+
-s6FFEg/7BXMzLKa4WV2MSGtBdio1idtwClBrHumI9gexB9N8RX7Cfcjq/SS7KAge
-X9q5BpU9wfis60LnMFmfYZGXa2ml5CsjzNY0qf8t8z++eTfvFcfICMpL0ObW0kIA
-ZXDpyFCGlOXEA/KD+OJT2p9HokwwfJYm1yTfvQYvDom3S45RYYP+E1nF8ouH6DCm
-V08ynrpLmm3dnI5YTBP+M4PvwsRFKCNyV3dgio6t0SaVj60vGnMNISq/kn/2T5bi
-01+H/usbwsWNkOM3BnXjlPqMkjugN/LfktB8a/YCeR6bLrQAi1bgBojmEOwbkueJ
-FKxVmwpPZ9ZUboa1+3xMPuGJ+uH45yCCHj4F8PrL8VMhhIrOcjIIsSwhjT54PVED
-k0Ge1PhY22oAFWXuMytB/CM9sXIhvp5ZBwaH4KeFll8rIJmdB/15HrPVaowYojT5
-hehtorUpcYwF315sTzZ9pxaGEsMGaDWkO06YGxp5/DskgUAyhdi8wI1XwV1jCcHO
-Q0VJbKooCrrzCPOa41k8BBOH9YRv3QTw9JpfCL09/fFtejJAeEm+EJWwPw05NVjr
-9Vac+0EQ/FeNVo8d8/QSMoAaEYwES4PN/U2Ye92qB6/4zzny7Ao6JLutSJfx6bwD
-S7/VWP11vM4eCheAy4vBhrbxBsFFSMJpKfA+FA3RpK4VfGXj4Mk=
-=18jf
------END PGP SIGNATURE-----
-
---e43bc9b7547ba2fb2d75f0caf653f23939e188d8e14bbe063075b337bdb3--
+> +               ngpio =3D NMK_GPIO_PER_CHIP;
+> +               dev_dbg(&pdev->dev, "populate: using default ngpio (%d)\n=
+", ngpio);
+> +       }
+> +
+>         nmk_chip->bank =3D id;
+>         chip =3D &nmk_chip->chip;
+>         chip->base =3D -1;
+> -       chip->ngpio =3D NMK_GPIO_PER_CHIP;
+> +       chip->ngpio =3D ngpio;
+>         chip->label =3D dev_name(&gpio_pdev->dev);
+>         chip->parent =3D &gpio_pdev->dev;
+>
+>
+> --
+> 2.43.1
+>
 
