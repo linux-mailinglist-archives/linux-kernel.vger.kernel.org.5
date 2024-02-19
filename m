@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-71702-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBE9985A942
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:46:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9C8585A943
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A301B22B43
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:46:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E4091F253AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:47:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7F0446AD;
-	Mon, 19 Feb 2024 16:46:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF45A446D1;
+	Mon, 19 Feb 2024 16:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LZaxrqb4"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KEyuVUvp"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C9A41742;
-	Mon, 19 Feb 2024 16:46:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C2341C83;
+	Mon, 19 Feb 2024 16:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708361176; cv=none; b=AN/1snnucMobjs4kw5b7YQ11IgI7QOLhaO+zZBDOks7suN3YXQ1NGu9/BUMYMWOmTTcMYmAVY0QblLV50ecNx5JflWCVWpWcUnSeREtO1Kno2nG9KbyJ1lgaOygAWnajfjy+1eBwhlaimdGwSztQ2yCQdxUsUO6vnngCcBJeW98=
+	t=1708361177; cv=none; b=LDYCVwd86XQdTIlCCVggUOVAgIanCuJQrX3zVEaQarLJgI2Zksqu7w0IvZV+gQIzS5XcmgzVD49rlt7KTCB8UL6ANURpjJ4XfoJhjPxzjJ3kbux/gsUQ8mdOI48gEZbBuEN9Ax+WrLvO6yOfihpBIzIGI7G95WpJ7TNtsLusmHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708361176; c=relaxed/simple;
-	bh=IeG2i2FspVCYQp8ErTOsHim7wlCXVIRVr+QfG27vnVo=;
+	s=arc-20240116; t=1708361177; c=relaxed/simple;
+	bh=OpywkGjlXr/F1fc4QFUmendfbRWwwx4aY6lDCERPsGk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=CiK+yBqaubuQfUWNLFPGPNDmGfwGfb0pY3V0wu98H+dJnX4ccAqV1sC0MTz34OenPxJSKcZdN5lRgC+YTpjJLQu32S38DTtEfb/VtUfgvZYlhF7aR/fU67hzflKq+VSXqGqN2fwUQybLKkMHg9C7L19dNyOvimgATSQ0Ps+//AA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LZaxrqb4; arc=none smtp.client-ip=209.85.218.49
+	 In-Reply-To:To:Cc; b=bEehgQ9q10JtGSd9jmQklTjQD7SnY/HzkIouEmDMLLwDPHHsaRxDGfB0EoWI4aa14u0Lt2MDKwfOdxdzjbDWLpUbY4vAqCXVekHWJk3Wdsd+uvRm+76L5pPHVmGIWnKEqRZzRE1GYp4oV749RxiVDMNfJb69g0FeXt475fZS9xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KEyuVUvp; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3ee69976c9so7739566b.0;
-        Mon, 19 Feb 2024 08:46:14 -0800 (PST)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-563b7b3e3ecso5415306a12.0;
+        Mon, 19 Feb 2024 08:46:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708361172; x=1708965972; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1708361174; x=1708965974; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=hvQx/ZWr1fmONRjsP3PMsf6y/RwS/zsUlWEFNTxP3t4=;
-        b=LZaxrqb4EpeWpmfy8bfbQEZvYBKZj7tAzhRjmuCd21gIwiDgDBLN5ZawdLOwWfxEaF
-         xcUDemf/9c/07plGzkQUvjP977KI/OUEAm72kemPkOIa96CJXjbQKOIHVx4+xvNVpXG5
-         /RwSnd1EurqOfVTWdI6fq24CZVzM95VIcuBfmh4bZNfELI/3jf0J5HrNPHvU5qiPV9vN
-         rwLf4vgOQKfEsmsBtt+S9PWXpZA4hTbkEuwbc4ekzs8f2hDwb/Tx1vVQIR1xAtmid1uu
-         aAzHorftyf4sFDVOYckWsdET5wqL/83QiCo15P/qKYvrOVfhQLDBiTUVGxvXhvR1D6Z1
-         KyXw==
+        bh=RNjiIU+MnMIcoYvV35lNchbg525xkgaHmjWjHQnrgAI=;
+        b=KEyuVUvpd1wGnyN2IWL7e6I5l5sibMk4mOWe3HraY2EX94/9trbBFd15aJlyz9iXiX
+         N7rUfzKHF4YGqXS7RzeaZyIuucPtlGmUaw/Vz5JRM1ttUdSu6r/MXdTjAYlNSDy9CI6+
+         +tuV2cn5GNOvN7BBcBw5k5OG3ho1DOfvphbnjsA7SIXOlu9S4TxRzAxBzq5QXWoG3cMS
+         21NvFUxNFgADIDR4BUyfpRfTuo+S/bsDn/OdAACgUhRN8IcOCrHUmyAuucs51kGdgKdW
+         UM8pVRq1gam/GKRZmeKk844m/g9UQZvCwavdkkxPyQTzgVj9Vw4gZjKrd6fmdJ4ZD3PJ
+         zEAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708361172; x=1708965972;
+        d=1e100.net; s=20230601; t=1708361174; x=1708965974;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hvQx/ZWr1fmONRjsP3PMsf6y/RwS/zsUlWEFNTxP3t4=;
-        b=Rnifg00310f29xiLlyx98XwCfmhFh3RduOeKieC0dtFh2UOp2yhkFLQs43uVRh6lMB
-         ib1BFsVYB3EhLXcCJl0a57/NgfPuDwew4mPGsticBqxjJgDKwIOVkX8si92nwzZ2wPOo
-         Wvg6opndR2OSxX6M0dhbXJ02cxK36uaY9NsyKvbQGBiElAhbM9CgBDb2kc4xIXbEBBQ/
-         KrJbe3qrq73cJWkjYYIqEmmDAVal83ko4XpPVaDw/3Aa6/FnqvfH5x3e8CQQ3mzxaRvR
-         w61KiS7Z+PndyUey4UbGl2xjxW6PdXzKzVUcjoCVTriSNugbVDm19uoT86i+DP9tDvZk
-         F6Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCWu6s7cYKBuuB7Jk61psE63ehEEO2DoreOxusW09MkCp5l5CM7Zuefx7gfGwIh4WfdsSxUlhqpGFTp17zLTPYuHoTKc5TvTh6yW+4nUzRGtiNXF/Tg204aX/v5Rou+N48GMdnvrW7ME9v9TBu9NN1yZhKQ9Z3NAMuRYAFeEXHDr48I=
-X-Gm-Message-State: AOJu0YzEillG/xks6UX6aUNjfC3DdFv79kBJ5cnRX2LXgETYuaIOvv7b
-	Um+UCnCePZHzIUyNPmlauZZaFNVCGm9o0e5T36gqO8rG7ME6h6dO
-X-Google-Smtp-Source: AGHT+IGMrTXFePHwGK0f6Gfcanrxom7RdEshhcX0lXB5XyndiBsQwJpHCJ0fUqxOBqv59BYd5yg1Cw==
-X-Received: by 2002:a17:906:8c4:b0:a3d:b6c2:fc58 with SMTP id o4-20020a17090608c400b00a3db6c2fc58mr7225638eje.2.1708361172613;
-        Mon, 19 Feb 2024 08:46:12 -0800 (PST)
+        bh=RNjiIU+MnMIcoYvV35lNchbg525xkgaHmjWjHQnrgAI=;
+        b=AvEooShGgEeYHb+TOqx9lJleuskIr260qni3mKumESLRzJiYQFAsXUhO+pFLzsL3w3
+         XZ8EIDUW+USqngNQwbNoj0/0XZiom12Obd2u8EgJ+LUhsO02VAZV6+jMEjtNmAWI2Edw
+         IIsuXRUGq/Ry4GuUL3rzKdpA2Iqyq9W8qF3nDNWdAfTjOovX8bp331MQ5A61SUhg9W4Q
+         t8t3Ovix8Fr+7Jve35b3ob0GRJJfMnPZQG6Ik9Gk9cktOEitq33KvgMeHeyo4+GnlpEz
+         uxoPqE7H+N4L6tZaXt1GSOYAy5FrHPXvEiy4M1kijQ3pTiQS7P6qOVDU+LbFJT7tBhri
+         T8wA==
+X-Forwarded-Encrypted: i=1; AJvYcCXfFYLn/hCXtqAZHq0HLYY8+B/YUK8Se08Ym7gxX1kt+Dx+SzlFZS6+LHlc9PkSek0VHOO7v+OV7Vdgu5hHRfx7PV299rWQ9PeKBR6bb8lZFEtxty/1PiPztNFMttek9Bj79h7Yli0VbrnZQaBQSR6CSSdNBEcGfdWSjHiYACGidbA=
+X-Gm-Message-State: AOJu0YxrMueonpo8ymn6DakC+hNXesCt2SnecBRbLbRadjLJoKzatv9V
+	RvBPUcNWeHxGM2zJwnbIFT4Kmzfq/j61FrAFRMm74iXQ54uhzunj
+X-Google-Smtp-Source: AGHT+IFeILrgwOmdxu67ncHUZUE4nXhvuhlNOkspzkSZnFXnnQtvp7fWPgo27EPTD8QyCHtOOaECPw==
+X-Received: by 2002:a05:6402:2696:b0:564:15b:9f57 with SMTP id w22-20020a056402269600b00564015b9f57mr5925624edd.11.1708361173701;
+        Mon, 19 Feb 2024 08:46:13 -0800 (PST)
 Received: from localhost (p200300e41f2d4600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f2d:4600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id qo3-20020a170907874300b00a3e4efbfdacsm2186128ejc.225.2024.02.19.08.46.11
+        by smtp.gmail.com with ESMTPSA id fd11-20020a056402388b00b0056104738371sm2837765edb.65.2024.02.19.08.46.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 08:46:11 -0800 (PST)
+        Mon, 19 Feb 2024 08:46:13 -0800 (PST)
 From: Thierry Reding <thierry.reding@gmail.com>
-Date: Mon, 19 Feb 2024 17:46:05 +0100
-Subject: [PATCH net-next v3 2/3] net: stmmac: Allow drivers to provide a
- default AXI configuration
+Date: Mon, 19 Feb 2024 17:46:06 +0100
+Subject: [PATCH net-next v3 3/3] net: stmmac: Configure AXI on Tegra234
+ MGBE
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-stmmac-axi-config-v3-2-fca7f046e6ee@nvidia.com>
+Message-Id: <20240219-stmmac-axi-config-v3-3-fca7f046e6ee@nvidia.com>
 References: <20240219-stmmac-axi-config-v3-0-fca7f046e6ee@nvidia.com>
 In-Reply-To: <20240219-stmmac-axi-config-v3-0-fca7f046e6ee@nvidia.com>
 To: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
@@ -90,148 +90,61 @@ Cc: Serge Semit <fancer.lancer@gmail.com>, netdev@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
  linux-tegra@vger.kernel.org, Thierry Reding <treding@nvidia.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4527; i=treding@nvidia.com;
- h=from:subject:message-id; bh=LdiFXY9cbeHxsNR8EpusW5e+abDEIKHDPw46DFX7qbE=;
- b=owEBbQKS/ZANAwAIAd0jrNd/PrOhAcsmYgBl04XQc+VvRHCQa0rFZHSQK8YQYoyBj0+ZspjNm
- wiF3N9H2gWJAjMEAAEIAB0WIQSI6sMIAUnM98CNyJ/dI6zXfz6zoQUCZdOF0AAKCRDdI6zXfz6z
- oefgD/oDiQVayaGBy3gD68Lgg02XvmyihQ7dQxJr9YR0oiGoOk2gp3rjgUYIzlzCKv72+CHcRSn
- Z2tjumF8g1yKw1DNsAjbldFLiUldaSd1yJxvjB5Mnj+XPAcZU2T82LC7k9e9dP1R0MZhxL63858
- Pkl5ItL3P0HnUJlDTCQYio9QKe0FZa3KoN+YXGp2bOnJzAsmOM/0NHXps/j0Z36V5oKtcc51Qo0
- wLQJivZTpduN7INxBHyVK0MZaGkQOJ3PY++gT78AwujJDbeSd3lXd6esYCesHqVUx6hqMD3t0tG
- iIeYMqzS6sEbYeJVSnO5vawV0yIjitoReFbU/FDLpEQl8rBWNMEI5bRCu7iZjiVULTjvGq6iha2
- e+ExUKqPuN2ShbmnMKPzPHHzfIkG3bqYNuCYuF5+6t+nL7WagNr96PpXvX980dYJGp2W8CiKned
- NbqyN8fITO8FuydmB5Gt+C5igUVCj9ZUN9pd9R6eHLBIEP7sZgkyomnaGK1IqnDpAjWOPGLvCPx
- ptpGh0Z/ZrBlxQsqup77PUdIjQbcvtV7EXLDiY+XSIIJvguDFoskjse27vsMvoc0toj0QtfnCE2
- IMYg87AbH+uXWUqSQjALEgnuzf3o4+SdWnvNIlczWvIGvmTs6V/4mw0nrABpYNNQpMcxXd0j5Ik
- 6FVsTp7wlqeiJ6Q==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1341; i=treding@nvidia.com;
+ h=from:subject:message-id; bh=FahNwLbVWpd8t2eBaIzLF59MdYIoMLjB5FhApvU3UBw=;
+ b=owEBbQKS/ZANAwAIAd0jrNd/PrOhAcsmYgBl04XQ/0uAEXnL2R0DFCkdbK7AgOwWu4oUXANiH
+ 26R0FoU+QeJAjMEAAEIAB0WIQSI6sMIAUnM98CNyJ/dI6zXfz6zoQUCZdOF0AAKCRDdI6zXfz6z
+ obeRD/0WpBZm0htLrSxWNAacexNdC3abLvhbs3ndyfACIDGwCU53kDkEqlMbz0gv3HT04VBGnie
+ 9cn8oWrdmfouSWku3KZy0B13uPUOlZigCDOixje6BB+14wxnEDra8af9OGSLO+v0VjlG5rFs5Nk
+ 0vMV2SH9hkJ0ArDHFp+9H3KSKRaBMIgkGn1ANcMDot8V44Lz03euWWGvbtcIyyxXo7vGSF8IObM
+ tklx3v3obPjVPA1jyof873G2DD59ijCxSklfDDdBDvpev1lxeodCgDHV/kDZKDrCFrmiFIJTbJ0
+ TVG7qT/3/xoO1yC0ANtVm5Id8GxUD08oZggVpGmqC4yTWnGC05uzRdvugwgD1AX+zG4GNrx7YMD
+ 5w0KO0faOnQxjv3H8zUDIKh1r4HlpDgSgTea8auvPSKMRhTJTbk9iNxO+jhumrSAQ4NctSnRFOV
+ B89KrwJXZN/qxNYQCudhwmbGzzPg3w1Ii+CK/a6H1ZX3SEVjy0aaPFkiPkbMtHZNbOF6us+FDpD
+ 6orf236g/m4kNRitVuG9Ss0pwjprbjcQL3NgzVnZP1TTVF4fFFIV6PvHAIMBPlxj/WdJZYPFzh+
+ gUgPfQeYNAH0UQrm3bWbEDlvjgskdXTPftihd8CBZUjkl3GvE0J2/678V9IpD/iQplM6l9LP6y0
+ kZKxN/nhE4NHGTg==
 X-Developer-Key: i=treding@nvidia.com; a=openpgp;
  fpr=88EAC3080149CCF7C08DC89FDD23ACD77F3EB3A1
 
 From: Thierry Reding <treding@nvidia.com>
 
-In many cases the AXI configuration can be derived from the compatible
-string, so there's no need to add the configuration to DT. Allow drivers
-to pass in the default AXI configuration so they can be properly set up
-without extra data in DT.
+Allow the device to use bursts and increase the maximum number of
+outstanding requests to improve performance. Measurements show an
+increase in throughput of around 5x on a 1 Gbps link.
 
 Signed-off-by: Thierry Reding <treding@nvidia.com>
 ---
-Changes in v3:
-- add comments to help explain override logic
-- add missing kerneldoc for new parameter
+ drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-Changes in v2:
-- fix bisectability
----
- drivers/net/ethernet/stmicro/stmmac/stmmac.h       |  2 +
- .../net/ethernet/stmicro/stmmac/stmmac_platform.c  | 59 +++++++++++++++-------
- 2 files changed, 43 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index dddcaa9220cc..573c5d99b4d6 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -36,6 +36,8 @@ struct stmmac_resources {
- 	int sfty_ue_irq;
- 	int rx_irq[MTL_MAX_RX_QUEUES];
- 	int tx_irq[MTL_MAX_TX_QUEUES];
-+
-+	const struct stmmac_axi *axi;
- };
- 
- enum stmmac_txbuf_type {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 4e2eb54306f9..583f78ae9bb0 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-@@ -87,38 +87,61 @@ static int dwmac1000_validate_ucast_entries(struct device *dev,
- /**
-  * stmmac_axi_setup - parse DT parameters for programming the AXI register
-  * @pdev: platform device
-+ * @res: driver-specific parameters
-  * Description:
-- * if required, from device-tree the AXI internal register can be tuned
-- * by using platform parameters.
-+ * Use driver-specific defaults for the AXI internal registers if available,
-+ * or parse them from device tree, if present. Driver-specific defaults can
-+ * be overridden by the values from device tree.
-  */
--static struct stmmac_axi *stmmac_axi_setup(struct platform_device *pdev)
-+static struct stmmac_axi *stmmac_axi_setup(struct platform_device *pdev,
-+					   struct stmmac_resources *res)
- {
- 	struct device_node *np;
- 	struct stmmac_axi *axi;
- 
-+	/*
-+	 * Exit early if the driver hasn't provided any defaults and the
-+	 * device tree doesn't specify values for the AXI configuration.
-+	 */
- 	np = of_parse_phandle(pdev->dev.of_node, "snps,axi-config", 0);
--	if (!np)
-+	if (!np && !res->axi)
- 		return NULL;
- 
- 	axi = devm_kzalloc(&pdev->dev, sizeof(*axi), GFP_KERNEL);
- 	if (!axi) {
--		of_node_put(np);
-+		if (np)
-+			of_node_put(np);
-+
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
--	axi->axi_lpi_en = of_property_read_bool(np, "snps,lpi_en");
--	axi->axi_xit_frm = of_property_read_bool(np, "snps,xit_frm");
--	axi->axi_kbbe = of_property_read_bool(np, "snps,kbbe");
--	axi->axi_fb = of_property_read_bool(np, "snps,fb");
--	axi->axi_mb = of_property_read_bool(np, "snps,mb");
--	axi->axi_rb =  of_property_read_bool(np, "snps,rb");
-+	/* copy defaults provided by the driver */
-+	if (res->axi)
-+		*axi = *res->axi;
-+
-+	/* override defaults with data from DT */
-+	if (np) {
-+		axi->axi_lpi_en = of_property_read_bool(np, "snps,lpi_en");
-+		axi->axi_xit_frm = of_property_read_bool(np, "snps,xit_frm");
-+		axi->axi_kbbe = of_property_read_bool(np, "snps,kbbe");
-+		axi->axi_fb = of_property_read_bool(np, "snps,fb");
-+		axi->axi_mb = of_property_read_bool(np, "snps,mb");
-+		axi->axi_rb =  of_property_read_bool(np, "snps,rb");
-+
-+		if (of_property_read_u32(np, "snps,wr_osr_lmt", &axi->axi_wr_osr_lmt)) {
-+			if (!res->axi)
-+				axi->axi_wr_osr_lmt = 1;
-+		}
- 
--	if (of_property_read_u32(np, "snps,wr_osr_lmt", &axi->axi_wr_osr_lmt))
--		axi->axi_wr_osr_lmt = 1;
--	if (of_property_read_u32(np, "snps,rd_osr_lmt", &axi->axi_rd_osr_lmt))
--		axi->axi_rd_osr_lmt = 1;
--	of_property_read_u32_array(np, "snps,blen", axi->axi_blen, AXI_BLEN);
--	of_node_put(np);
-+		if (of_property_read_u32(np, "snps,rd_osr_lmt", &axi->axi_rd_osr_lmt)) {
-+			if (!res->axi)
-+				axi->axi_rd_osr_lmt = 1;
-+		}
-+
-+		of_property_read_u32_array(np, "snps,blen", axi->axi_blen, AXI_BLEN);
-+
-+		of_node_put(np);
-+	}
- 
- 	return axi;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
+index bab57d1675df..b6bfa48f279d 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-tegra.c
+@@ -199,6 +199,12 @@ static void mgbe_uphy_lane_bringup_serdes_down(struct net_device *ndev, void *mg
+ 	writel(value, mgbe->xpcs + XPCS_WRAP_UPHY_RX_CONTROL);
  }
-@@ -606,7 +629,7 @@ stmmac_probe_config_dt(struct platform_device *pdev,
  
- 	of_property_read_u32(np, "snps,ps-speed", &plat->mac_port_sel_speed);
++static const struct stmmac_axi tegra234_mgbe_axi = {
++	.axi_wr_osr_lmt = 63,
++	.axi_rd_osr_lmt = 63,
++	.axi_blen = { 256, },
++};
++
+ static int tegra_mgbe_probe(struct platform_device *pdev)
+ {
+ 	struct plat_stmmacenet_data *plat;
+@@ -284,6 +290,9 @@ static int tegra_mgbe_probe(struct platform_device *pdev)
+ 	if (err < 0)
+ 		goto disable_clks;
  
--	plat->axi = stmmac_axi_setup(pdev);
-+	plat->axi = stmmac_axi_setup(pdev, res);
- 
- 	rc = stmmac_mtl_setup(pdev, plat);
- 	if (rc) {
++	/* setup default AXI configuration */
++	res.axi = &tegra234_mgbe_axi;
++
+ 	plat = devm_stmmac_probe_config_dt(pdev, &res);
+ 	if (IS_ERR(plat)) {
+ 		err = PTR_ERR(plat);
 
 -- 
 2.43.2
