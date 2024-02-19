@@ -1,120 +1,80 @@
-Return-Path: <linux-kernel+bounces-71985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A640385AD6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:46:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B70CC85AD75
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:48:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46D361F23C63
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:46:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FD2E1C219B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FA2E535D6;
-	Mon, 19 Feb 2024 20:46:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="j5iAxmQE"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18D50482C3;
-	Mon, 19 Feb 2024 20:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26109535BE;
+	Mon, 19 Feb 2024 20:48:38 +0000 (UTC)
+Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72EC1EEE3
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 20:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=163.172.96.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708375595; cv=none; b=nbOxQMeIodzrD/eWbtYTWMBYj9dNSI1GkLOJbEvHWrnNp3pIQ7at7djHTpmaKXZ16tnSefSbZj35NLNQC0SAWRr1KS2nbMdS8a5sLVnQYMIFoqhiQRXfhWF72B92swNbitfiMMwDjk+DzvfGEHSzhNLNS6FpM8fPAuhKk4F3BdQ=
+	t=1708375717; cv=none; b=m0Kq12H6iQ5oXr1J3dBefqa7jaItnu4qUWkTfC4to9jcVSezB+v0qsFbxZeChL3iA6Hkkky080T2hvdfJ7f/KN+Q5o2twDZ+s3Fv6e2fxBnORmnC0KHZijmEnSvP/PJeEI9MjB6EGOFhQ4F7ejyXF0sofJT/zJDSKQmcfG6IEgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708375595; c=relaxed/simple;
-	bh=d4IYYZx35WXgEpuH5iqpmxV6a4CGdc4bKaNsMSXujIM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gGl9jGvdEs2PmdGR1b71f9ITM5i1mWSbMqp3jOYGgAUYWT9Nw1cPqg/ilWw2nFJpJRAlakr79HB+n8QjDxZEDH2Y/41MAVfK9CA7ZpRRLEmXeJbAl3Lu2toPfZWyln5yxI1MLr4ATGUd13Qo6JC5y1UTWAMw10VUj1OAKSTGpYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=j5iAxmQE; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708375592;
-	bh=d4IYYZx35WXgEpuH5iqpmxV6a4CGdc4bKaNsMSXujIM=;
-	h=From:To:Cc:Subject:Date:From;
-	b=j5iAxmQEx2EbCc4DjL8AoNWvrZUqN5Zh6n/TsbU2LDVTgiEWTq7FY4uXEyhiUWjtP
-	 Xyj+dimvLZFu6QeXPel8L+KGwnjpnfbdG1Lo057aUfGWDw6LNj5v8W0zrmF0LS+2Eq
-	 wm4X2dCEzXbq5ucDR2cmdn6M016ojtvTliUtbi79gecKSz30P7ZyAWSsRIwZJYGBNF
-	 BkcWe71oXlcWODWlMj3rQnefbIZF+dWb4qX53TBT05KPQb1+CSt2Fb9uoyn2wWyu5+
-	 /JOQY+/U2JrGhQ5g64/S8dHiopgaAw/eNx3q8QuZAo3aP3p+9hnMBfyzk9z+DyR9u5
-	 oXk8NSpmG1GAw==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: cristicc)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 22DD63782080;
-	Mon, 19 Feb 2024 20:46:32 +0000 (UTC)
-From: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>
-Cc: devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	kernel@collabora.com
-Subject: [PATCH] arm64: dts: rockchip: Add HDMI0 PHY to rk3588
-Date: Mon, 19 Feb 2024 22:46:25 +0200
-Message-ID: <20240219204626.284399-1-cristian.ciocaltea@collabora.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1708375717; c=relaxed/simple;
+	bh=hsIQy+euu5gHabYwqp91w8v7ot17RD1Hbvntagxcb4Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oUQ+kuuAk/rNz7K4YVtFHwXVepOuN3Hlzzls4A01LgXV9Jfu/ISjJls1cYE6aOCqIB8AEA1+/DrTZndShv9Jk+pw/vJaIwO8tRHOwcq+Smqw6GDF/MNV2I/iTlfpEbpOVX8b0FMldkH4eBVtrBdMBGxMPFTypX30u+2QBPxBwsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu; spf=pass smtp.mailfrom=1wt.eu; arc=none smtp.client-ip=163.172.96.212
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=1wt.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=1wt.eu
+Received: (from willy@localhost)
+	by pcw.home.local (8.15.2/8.15.2/Submit) id 41JKmLNZ017647;
+	Mon, 19 Feb 2024 21:48:21 +0100
+Date: Mon, 19 Feb 2024 21:48:21 +0100
+From: Willy Tarreau <w@1wt.eu>
+To: Rodrigo Campos <rodrigo@sdfg.com.ar>
+Cc: Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] Misc fixes for strlcpy() and strlcat()
+Message-ID: <20240219204821.GA9819@1wt.eu>
+References: <20240218195110.1386840-1-rodrigo@sdfg.com.ar>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240218195110.1386840-1-rodrigo@sdfg.com.ar>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Add DT nodes for HDMI0 PHY and related syscon found on RK3588 SoC.
+Hi Rodrigo,
 
-Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
----
- arch/arm64/boot/dts/rockchip/rk3588s.dtsi | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+On Sun, Feb 18, 2024 at 04:51:02PM -0300, Rodrigo Campos wrote:
+> As requested by Willy and Thomas[1], here go some more fixes and tests for
+> strlcpy() and strlcat().
+> 
+> The first patch just fixes the compilation when the compiler might replace some
+> code with its strlen() implementation, which will not be found. Therefore, we
+> just export it as that can happen also on user-code, outside of nolibc.
+> 
+> The rest of the commits:
+> 	* Fix the return code of both functions
+> 	* Make sure to always null-terminate the dst buffer
+> 	* Honor the size parameter as documented
+> 	* Add tests for both functions
+> 
+> All has been checked against the corresponding libbsd implementation[2].
+> 
+> Let me know what you think ?
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-index 36b1b7acfe6a..3a15a30543c3 100644
---- a/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3588s.dtsi
-@@ -586,6 +586,11 @@ u2phy3_host: host-port {
- 		};
- 	};
- 
-+	hdptxphy0_grf: syscon@fd5e0000 {
-+		compatible = "rockchip,rk3588-hdptxphy-grf", "syscon";
-+		reg = <0x0 0xfd5e0000 0x0 0x100>;
-+	};
-+
- 	ioc: syscon@fd5f0000 {
- 		compatible = "rockchip,rk3588-ioc", "syscon";
- 		reg = <0x0 0xfd5f0000 0x0 0x10000>;
-@@ -2360,6 +2365,22 @@ dmac2: dma-controller@fed10000 {
- 		#dma-cells = <1>;
- 	};
- 
-+	hdptxphy_hdmi0: phy@fed60000 {
-+		compatible = "rockchip,rk3588-hdptx-phy";
-+		reg = <0x0 0xfed60000 0x0 0x2000>;
-+		clocks = <&cru CLK_USB2PHY_HDPTXRXPHY_REF>, <&cru PCLK_HDPTX0>;
-+		clock-names = "ref", "apb";
-+		#phy-cells = <0>;
-+		resets = <&cru SRST_HDPTX0>, <&cru SRST_P_HDPTX0>,
-+			 <&cru SRST_HDPTX0_INIT>, <&cru SRST_HDPTX0_CMN>,
-+			 <&cru SRST_HDPTX0_LANE>, <&cru SRST_HDPTX0_ROPLL>,
-+			 <&cru SRST_HDPTX0_LCPLL>;
-+		reset-names = "phy", "apb", "init", "cmn", "lane", "ropll",
-+			      "lcpll";
-+		rockchip,grf = <&hdptxphy0_grf>;
-+		status = "disabled";
-+	};
-+
- 	combphy0_ps: phy@fee00000 {
- 		compatible = "rockchip,rk3588-naneng-combphy";
- 		reg = <0x0 0xfee00000 0x0 0x100>;
--- 
-2.43.2
+This time everything looked good to me and I queued them into the fixes
+branch since they address a real corner-case bug. I finally decided not
+to change your comment for '/*' on a single line because it turns out
+that the file in question almost exclusively uses the shorter, net-style
+comments like you did, and you were probably inspired by the surrounding
+ones.
 
+Many thanks for your work and your patience ;-)
+Willy
 
