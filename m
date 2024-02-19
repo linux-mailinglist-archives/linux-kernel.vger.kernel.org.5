@@ -1,50 +1,51 @@
-Return-Path: <linux-kernel+bounces-71431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BE1C85A529
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:53:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2EE185A52A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:53:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9C1201F23F67
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:53:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 745CAB20FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:53:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40DF374D4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAFA2374DD;
 	Mon, 19 Feb 2024 13:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="p0g99vru"
+	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="LeD7FTRu"
 Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F0A1364C6;
-	Mon, 19 Feb 2024 13:53:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD2C364CC;
+	Mon, 19 Feb 2024 13:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708350783; cv=none; b=C3pvu0c51PWhWmMaA7ABQLKdQAOCyjHVkYV90bQtM+sLLy8jaAN/rOFhW/yga10qDC0ybm6jRh43okglpB+Mf1IB5IUUVLVC9HiykNoP0VS+I1INN7HXETafYEFstkMpcs7obaK0SMJuuOeZvPV+0nXC6/eir+J/HhxApQmhkuI=
+	t=1708350783; cv=none; b=vCYMXKDm4e06e+JlGrXHGgI1ItTSrCQsuFc/QZZbKlpXpj9UcTt8ocQZ/Cl76xNXDEmpFC7/3uqPLJIgRvYzGiHk193RskXjVz5ndE8ciCIfaDC6ybGdE7RpMiHOhcANuF03w64x7T2QJzcjiSdHDnyN+ELfb8b0Yr1Ji/hQnrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708350783; c=relaxed/simple;
-	bh=hyWFT+ulXsZ5bGq5VmS2PaTwAmRzWqlpSCcPDiLoFCc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XrVZYisKWf8Ev2VogzpR8yAYKBL8r+ScTzDITTozbpeAYIfFJ2TsiEsIoznwGxLN+QQclNzavguReDwFDzVP+fRY/YSW+JMokFL3PEaUemDE38I2gvciPNloP0JaU96eL/VvwhT8DCYmSIoBXoh8ULuy4E3BEI0va2nmStUtz04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=p0g99vru; arc=none smtp.client-ip=139.165.32.111
+	bh=pSf/6yBlnsj3efx67HWLfiYU1L7RVALqEg3khS/oWgk=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=RiHqdCtICWRp7J87f+zf7Ni2tS7Q8Ht4ELtRhDxz2pdOVN2FhePDtU7Tu5NUIGSqB8mn7sJdhXLVOnI9qhDGSxkbEV5IK1X4t13SXwg1Aa9LmLWf77rv194np0ar6Dze68IWvcucNX5iJSuKFcBLGWQiUdcB82PXxsuV6iigNe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=LeD7FTRu; arc=none smtp.client-ip=139.165.32.111
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
 Received: from ubuntu.home (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 812242012153;
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id BBFD72012173;
 	Mon, 19 Feb 2024 14:52:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 812242012153
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be BBFD72012173
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
 	s=ulg20190529; t=1708350779;
-	bh=tt503T/pGpOcgK0THB0iW+sdLkagW2VxJB9yOA5ESYg=;
-	h=From:To:Cc:Subject:Date:From;
-	b=p0g99vru96y4+gufU78VYOpL1nxibj1MAFaoaGgs9OuPIwcF0Lx30DrfBGmgSPFEh
-	 JpKac7wWxZ4ynmGL2mgkPMlbJcEApIDFqyOGLXo15cX/LSv9H/5+0QQn1y92PtQYP3
-	 lf1Z/wf5gb/lVrWgV0vRDb6PAUU6oQOzoB1WQC6itcU9FLawvuBQ6jeT+HhKpvHrPr
-	 t73bOoHweeOs0MB4QKYT2iVSmiMqR4Jp9C8D3nsvwfPTGL8y+KzFj1qVummG06duqp
-	 fdtKVxLqznRXFuAztBnCLIJKbjCCsNaZSS3sazuWSc0dViK+AIvEJjTJaX6l0eZ5/s
-	 Gwbn/8k8oi66A==
+	bh=k3BbLM+W3IY++z5FItf1PQyWOHVjGz95oS2lZDTR3f4=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=LeD7FTRu1UZv0Ax6scZg93ZbR/A7tXJxuEboY23KBSAQfrBM+jDp59ehXrAEnxUUu
+	 H9g6lQAGOji7i+pNJqLeHN1Lix50+M3LAgdetCDfQOBWWv7PXLGjApvcmJx4UqNFp1
+	 cBEHDp9POX076y4L5tKQpl1PTCmBg2BkCgiD+oczKoh86wc2QKCZ+Nih2eQOO+HtQC
+	 by3IZ3OJtf6dhSdOtAEEpPssrP2FO7DVFWMwO3uAeNyfMlcjZBKJPk2H+X0u2FereO
+	 AQI2Jdh4zUScaqb9onAVI3bA6vaFIQzC30ySgu41JM++P0G+TTwCMskDrWOdBN3+3Z
+	 9iechtlY0x5GQ==
 From: Justin Iurman <justin.iurman@uliege.be>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -54,10 +55,12 @@ Cc: davem@davemloft.net,
 	pabeni@redhat.com,
 	linux-kernel@vger.kernel.org,
 	justin.iurman@uliege.be
-Subject: [PATCH net v3 0/2] ioam6: fix write to cloned skb's
-Date: Mon, 19 Feb 2024 14:52:53 +0100
-Message-Id: <20240219135255.15429-1-justin.iurman@uliege.be>
+Subject: [PATCH net v3 1/2] Fix write to cloned skb in ipv6_hop_ioam()
+Date: Mon, 19 Feb 2024 14:52:54 +0100
+Message-Id: <20240219135255.15429-2-justin.iurman@uliege.be>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240219135255.15429-1-justin.iurman@uliege.be>
+References: <20240219135255.15429-1-justin.iurman@uliege.be>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,28 +69,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-v3:
- - fix patches tag ("net" and version were removed unexpectedly)
+ioam6_fill_trace_data() writes inside the skb payload without ensuring
+it's writeable (e.g., not cloned). This function is called both from the
+input and output path. The output path (ioam6_iptunnel) already does the
+check. This commit provides a fix for the input path, inside
+ipv6_hop_ioam(). It also updates ip6_parse_tlv() to refresh the network
+header pointer ("nh") when returning from ipv6_hop_ioam().
 
-v2:
- - use skb_ensure_writable() instead of skb_cloned()+pskb_expand_head()
- - refresh network header pointer in ip6_parse_tlv() when returning from
-   ipv6_hop_ioam()
+Fixes: 9ee11f0fff20 ("ipv6: ioam: Data plane support for Pre-allocated Trace")
+Reported-by: Paolo Abeni <pabeni@redhat.com>
+Signed-off-by: Justin Iurman <justin.iurman@uliege.be>
+---
+ net/ipv6/exthdrs.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Make sure the IOAM data insertion is not applied on cloned skb's. As a
-consequence, ioam selftests needed a refactoring.
-
-Justin Iurman (2):
-  Fix write to cloned skb in ipv6_hop_ioam()
-  selftests: ioam: refactoring to align with the fix
-
- net/ipv6/exthdrs.c                         | 10 +++
- tools/testing/selftests/net/ioam6.sh       | 38 ++++-----
- tools/testing/selftests/net/ioam6_parser.c | 95 +++++++++++-----------
- 3 files changed, 76 insertions(+), 67 deletions(-)
-
-
-base-commit: 166c2c8a6a4dc2e4ceba9e10cfe81c3e469e3210
+diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
+index 4952ae792450..02e9ffb63af1 100644
+--- a/net/ipv6/exthdrs.c
++++ b/net/ipv6/exthdrs.c
+@@ -177,6 +177,8 @@ static bool ip6_parse_tlv(bool hopbyhop,
+ 				case IPV6_TLV_IOAM:
+ 					if (!ipv6_hop_ioam(skb, off))
+ 						return false;
++
++					nh = skb_network_header(skb);
+ 					break;
+ 				case IPV6_TLV_JUMBO:
+ 					if (!ipv6_hop_jumbo(skb, off))
+@@ -943,6 +945,14 @@ static bool ipv6_hop_ioam(struct sk_buff *skb, int optoff)
+ 		if (!skb_valid_dst(skb))
+ 			ip6_route_input(skb);
+ 
++		/* About to mangle packet header */
++		if (skb_ensure_writable(skb, optoff + 2 + hdr->opt_len))
++			goto drop;
++
++		/* Trace pointer may have changed */
++		trace = (struct ioam6_trace_hdr *)(skb_network_header(skb)
++						   + optoff + sizeof(*hdr));
++
+ 		ioam6_fill_trace_data(skb, ns, trace, true);
+ 		break;
+ 	default:
 -- 
 2.34.1
 
