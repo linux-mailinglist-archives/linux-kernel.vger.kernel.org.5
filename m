@@ -1,100 +1,99 @@
-Return-Path: <linux-kernel+bounces-71550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71551-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26D4585A6F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:09:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81C885A6FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 826A8285F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:09:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8BE7A1F249E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C332C41C85;
-	Mon, 19 Feb 2024 15:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E448446A2;
+	Mon, 19 Feb 2024 15:06:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PCzLdHA7"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Qpz1bX9X"
+Received: from smtp-fw-80007.amazon.com (smtp-fw-80007.amazon.com [99.78.197.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F2741C78
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:06:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41F714438E;
+	Mon, 19 Feb 2024 15:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708355208; cv=none; b=UHaQkCPwe86UDQz8LKIGmS5sQ/b+rbkuOy26kvpQS3aAPQFKgXHHuHANLp5lNW728VP1u2xB8IRON2co/rzlgVwD7ULE3cJ7jHh0+YeZns0JN53WAj0sNIOcuQlEbS7rnenVB13HEFncJr2cyvUNSnIe9gS6PP1bWkV8RZWx+zo=
+	t=1708355212; cv=none; b=OGiFqJL1iuaGE0SQTiOC4AMulURVSt9VM+nNE1PSM0rSlR4FV/SJ88rg+sKVYujKUUDQri64BctCt5/GjIdqXBzvKjSYnPX3ZQFNMkIUFyr0XGf0yXchYBiFrGv2H+QJs6FB0EVJf2U6TYilppN06rrCsMnFoWEptAlMhj6h1Tg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708355208; c=relaxed/simple;
-	bh=wugezZjVe6UgAzwGzvshOR+TV29UxTPSM7V6CCpV2WY=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=t5IrzyIRhcH38QtvaqPFnQu/GuNkgrVhQrpowGMFlOG9N4gu0lBfnQ+du0QMXZryoQOOx79cKsW/uwF8GWy6mB28gxDqfLtAeD6LQ6EkqGb1dMVopH4RlOkKAT65eRcHPyU/iJAD/gUz/ELEddpM/jfg+uL3Kvn7WJlLKnFbaDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PCzLdHA7; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708355205;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vFCiJ6818JOoFEUYfbT4Q/AOpM96O17V3Tb55o233+4=;
-	b=PCzLdHA7nPr3RQfY/ecMk56B6/+AL77OoCaw8b3pDz/cx6+FRG6d/08QAs9htnpwVFEaxw
-	4+RW/asXjKWamnJs6fGuHj1VkYpL1UyAIkpNWcoHGr1r8eN2DGRbyl4j/GvSbG0NmoX++Z
-	4xulmkZQ7074WUPs0wkhYW79vspN2vo=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-675-eNmBTw3xMj6jNyDE7RWv_g-1; Mon, 19 Feb 2024 10:06:41 -0500
-X-MC-Unique: eNmBTw3xMj6jNyDE7RWv_g-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3D214886460;
-	Mon, 19 Feb 2024 15:06:40 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.15])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 319C0492BE2;
-	Mon, 19 Feb 2024 15:06:38 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240209105251.GE1516992@kernel.org>
-References: <20240209105251.GE1516992@kernel.org> <20240205225726.3104808-1-dhowells@redhat.com> <20240205225726.3104808-10-dhowells@redhat.com>
-To: Simon Horman <horms@kernel.org>
-Cc: dhowells@redhat.com, Steve French <smfrench@gmail.com>,
-    Jeff Layton <jlayton@kernel.org>,
-    Matthew Wilcox <willy@infradead.org>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Christian Brauner <christian@brauner.io>, netfs@lists.linux.dev,
-    linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org, Steve French <sfrench@samba.org>,
-    Shyam Prasad N <nspmangalore@gmail.com>,
-    Rohith Surabattula <rohiths.msft@gmail.com>
-Subject: Re: [PATCH v5 09/12] cifs: Cut over to using netfslib
+	s=arc-20240116; t=1708355212; c=relaxed/simple;
+	bh=wqP+GHbXy5y2dWwKO+f4tx8tvMyIzJowEbRtXjlanIk=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=EiJPF2m/ClkDi551lLlXH1KZLTdO6w+8QeIdfcyyqGGLemdEouC0ZPzh2K/1XEgHpUNIBMp2aNfEcVxIuUZcHnWlPkdzuGfDuTxOJxmQbPpGNHnEiqZRrZ1BEUtOhCPYUZIaxdm6MC/zsQUnhYPRsDsxMFsoKJ8SlYELtcf4GcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Qpz1bX9X; arc=none smtp.client-ip=99.78.197.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1708355211; x=1739891211;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=7cweU86/OrAPAkRsQreyys1w+cw8bobHEMbIMZ1Hpos=;
+  b=Qpz1bX9Xl4aUbr0p5akTMO7hEsz5LitMy1eeQl6h6we6dZz/v+ufkk+n
+   70mZHBhmDwsjJEmNJtzvI94LI8lpjhZh2X4XVv3h43DZXsCobo3esjmzE
+   OQK4UlimmA+pYhB5ATL0T+FVBy2wJpi4yNo2UhuHI4jPNwNh3YiWTDH2d
+   g=;
+X-IronPort-AV: E=Sophos;i="6.06,170,1705363200"; 
+   d="scan'208";a="275092583"
+Subject: Re: [PATCH] selftests/mqueue: Set timeout to 100 seconds
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.25.36.210])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 15:06:47 +0000
+Received: from EX19MTAEUC002.ant.amazon.com [10.0.10.100:5821]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.5.250:2525] with esmtp (Farcaster)
+ id 210590fd-6fcd-4877-98d1-b8d96ef4e607; Mon, 19 Feb 2024 15:06:45 +0000 (UTC)
+X-Farcaster-Flow-ID: 210590fd-6fcd-4877-98d1-b8d96ef4e607
+Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
+ EX19MTAEUC002.ant.amazon.com (10.252.51.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 19 Feb 2024 15:06:44 +0000
+Received: from [192.168.11.164] (10.106.83.24) by
+ EX19D018EUA004.ant.amazon.com (10.252.50.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 19 Feb 2024 15:06:43 +0000
+Message-ID: <f7db39bd-d11e-4854-8b6e-2543aeec1d70@amazon.com>
+Date: Mon, 19 Feb 2024 15:06:42 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <140404.1708355197.1@warthog.procyon.org.uk>
-Date: Mon, 19 Feb 2024 15:06:37 +0000
-Message-ID: <140405.1708355197@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Kees Cook <keescook@chromium.org>, SeongJae Park <sj@kernel.org>
+CC: <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
+	<Vijaikumar_Kanagarajan@mentor.com>, <brauner@kernel.org>,
+	<jlayton@kernel.org>, <jack@suse.cz>
+References: <20240209174243.74220-1-sj@kernel.org>
+ <20240215011309.73168-1-sj@kernel.org> <202402161600.BF1D110BB@keescook>
+From: "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
+In-Reply-To: <202402161600.BF1D110BB@keescook>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D006EUC001.ant.amazon.com (10.252.51.203) To
+ EX19D018EUA004.ant.amazon.com (10.252.50.85)
 
-Simon Horman <horms@kernel.org> wrote:
+On 17/02/2024 00:01, Kees Cook wrote:
 
-> However, the code below this hunk, other than being guarded by
-> smb3_use_rdma_offload(io_parms), uses rdata unconditionally.
+> 
+> Should it be 100 or 180? Either way:
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> 
+> --
+> Kees Cook
 
-Yeah - it does that even without my patches.  SMB2_read() can call the
-function with rdata == NULL, but I'm unsure as to whether the RDMA branch will
-ever be used except for actual reads - in which case rdata will not be NULL at
-the "rdata->mr" point.
+Both options may work, I am more inclined to have this as 180 seconds by 
+giving more time for the test to finish, this can be reduced later to 
+100 or something else if we start hearing complains about the new timeout.
 
-David
-
+Hazem
 
