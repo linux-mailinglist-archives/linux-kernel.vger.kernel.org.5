@@ -1,89 +1,137 @@
-Return-Path: <linux-kernel+bounces-71805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA09785AAD4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:21:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF95385AAE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19E161C20FA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:21:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB32B281B04
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:23:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C872E481DB;
-	Mon, 19 Feb 2024 18:21:12 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83757482C8;
+	Mon, 19 Feb 2024 18:23:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="ok0XJ9Mw"
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FBC2446A1;
-	Mon, 19 Feb 2024 18:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEB3481CF
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 18:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708366872; cv=none; b=C1aIdnI5P2e5QnlkKyVAgdqtFHykN1kmz4AjqwL6XyPGkusZrfj8DZrH4zzW0SJcN7DGOUbh7JpNdHjS2G2Vl1QvIMxsCXZstVZO91JbMURwUcmr8+YqfXYfXqMwDIp2YpfGsg4u/pVR7gsN5J8IGrP4rvZj3RoUV1nvfiIlFdA=
+	t=1708366985; cv=none; b=Yfzc2vNpV3uNHC73fdZtEOnyPIESHgwCHwHEJCcuVBCoykju8hTev90wveCv5KRDSrRFuCdpZUi7SGzMnbMgBOCB6etTLWIhbHJkBFTwL0cLpOvIHML9bJfjlJQKESlTGx2WV/JDpFh/JjMlZiPWQPnop1uqVXCY/XTBGP2UI3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708366872; c=relaxed/simple;
-	bh=FBbXL1bn1jLAvsJAzBCrpdaDZITQl0cdtip8OZUnO4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nC3a6nsKnHNDr2OV1Scfamxti8lgEF7Xje3l20XUqufu43g5piCOlEcoWtZOCJjmJ2KrbhykSJah/aif9aZiViUOVc0Rp+saOx454Er9hJrog1gyIOb4gmC05ELXMXEP266OKvo1LmVRSII9FrJq8B6iZBJRHtITwSJDw977IPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 201B9C433C7;
-	Mon, 19 Feb 2024 18:21:11 +0000 (UTC)
-Date: Mon, 19 Feb 2024 13:22:54 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Vincent Donnefort <vdonnefort@google.com>
-Cc: mhiramat@kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
- kernel-team@android.com
-Subject: Re: [PATCH v17 3/6] tracing: Add snapshot refcount
-Message-ID: <20240219132254.484fde37@gandalf.local.home>
-In-Reply-To: <20240219131754.5d26f4e6@gandalf.local.home>
-References: <20240213114945.3528801-1-vdonnefort@google.com>
-	<20240213114945.3528801-4-vdonnefort@google.com>
-	<20240219131754.5d26f4e6@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708366985; c=relaxed/simple;
+	bh=2diCma878oe8ouCclOiC7aO335qXUQpjGxjO0Fqg1uk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EgnahOseJPfHcmYBeT1g59FOk1/yVqR4PukMiPNt4FH2ZdBzaMeKTUxXuSOzrK/sda5poEBgvxAIz/8sW4PfLVC9m2Vgo/89M7hApKEQy7SeUdBefApQfGmQhpQjXXWA7nY7QxXrukcZRVdSbrsufUMRj9gRys9yUTJ9s+btX2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=ok0XJ9Mw; arc=none smtp.client-ip=80.12.242.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id c8I6rUTMEnpdmc8I6rJqqs; Mon, 19 Feb 2024 19:23:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1708366982;
+	bh=7cSw+RThIdZviJliCkOE7s+SxHD7U5sg+3WzTWH/P6c=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=ok0XJ9MwY7SZtbjR8Iol+9h9SpgZItsPD65MnFbx8hcR4/YQ/7H4LIP+Qlkmcu7/5
+	 6ji7w6kWaZnxfNKnKPQyUt5OUTuiitX0gHJte3kPJJfxVSQAMf0Ljnr4q7nfUMHC6D
+	 qJQx5x+mqcrS6fkrg8K6iuGlEgahvhvu25CBqcygsHZiAE9s/KXE1L56IXl1ObkZUV
+	 kdA7ba4Lh+FcCOv3qhgFruNUCz/7w7TkW63arsgM7KaU5hC/6BSXbXdRBK/wbGP/O0
+	 8BrmDFXviFWE88bHYQ22UHB32Z0GYmPUVm5jwrCtVbI6M/MU/txjYe6MaiWTH7+TLp
+	 wEZt3LuLs9ISA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 19 Feb 2024 19:23:02 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <534b62dc-3874-407f-a5c9-f67d366107dc@wanadoo.fr>
+Date: Mon, 19 Feb 2024 19:22:58 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] watchdog: sp805_wdt: deassert the reset if
+ available
+To: forbidden405@outlook.com
+Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
+ forbidden405@outlook.com, krzysztof.kozlowski+dt@linaro.org,
+ linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+ linux@roeck-us.net, p.zabel@pengutronix.de, robh+dt@kernel.org,
+ vireshk@kernel.org, wim@linux-watchdog.org
+References: <20240220-hisi-wdt-v2-0-63edc4965b4c@outlook.com>
+ <20240220-hisi-wdt-v2-1-63edc4965b4c@outlook.com>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240220-hisi-wdt-v2-1-63edc4965b4c@outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 19 Feb 2024 13:17:54 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Le 19/02/2024 à 19:14, Yang Xiwen via B4 Relay a écrit :
+> From: Yang Xiwen <forbidden405-1ViLX0X+lBJBDgjK7y7TUQ@public.gmane.org>
+> 
+> According to the datasheet, the core has an WDOGRESn input signal that
+> needs to be deasserted before being operational. Implement it in the
+> driver.
+> 
+> Signed-off-by: Yang Xiwen <forbidden405-1ViLX0X+lBJBDgjK7y7TUQ@public.gmane.org>
+> ---
+>   drivers/watchdog/sp805_wdt.c | 9 +++++++++
+>   1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/watchdog/sp805_wdt.c b/drivers/watchdog/sp805_wdt.c
+> index 2756ed54ca3d..b4bcfdeb39e6 100644
+> --- a/drivers/watchdog/sp805_wdt.c
+> +++ b/drivers/watchdog/sp805_wdt.c
+> @@ -25,6 +25,7 @@
+>   #include <linux/moduleparam.h>
+>   #include <linux/pm.h>
+>   #include <linux/property.h>
+> +#include <linux/reset.h>
+>   #include <linux/slab.h>
+>   #include <linux/spinlock.h>
+>   #include <linux/types.h>
+> @@ -59,6 +60,7 @@
+>    * @lock: spin lock protecting dev structure and io access
+>    * @base: base address of wdt
+>    * @clk: (optional) clock structure of wdt
+> + * @rst: (optional) reset control signal of wdt
+>    * @rate: (optional) clock rate when provided via properties
+>    * @adev: amba device structure of wdt
+>    * @status: current status of wdt
+> @@ -69,6 +71,7 @@ struct sp805_wdt {
+>   	spinlock_t			lock;
+>   	void __iomem			*base;
+>   	struct clk			*clk;
+> +	struct reset_control		*rst;
+>   	u64				rate;
+>   	struct amba_device		*adev;
+>   	unsigned int			load_val;
+> @@ -264,6 +267,12 @@ sp805_wdt_probe(struct amba_device *adev, const struct amba_id *id)
+>   		return -ENODEV;
+>   	}
+>   
+> +	wdt->rst = devm_reset_control_get_optional(&adev->dev, NULL);
+> +	if (IS_ERR(wdt->rst))
+> +		return dev_err_probe(&adev->dev, PTR_ERR(wdt->rst), "Can not get reset\n");
+> +
+> +	reset_control_deassert(wdt->rst);
+> +
 
-> On Tue, 13 Feb 2024 11:49:42 +0000
-> Vincent Donnefort <vdonnefort@google.com> wrote:
->=20
-> > @@ -9678,7 +9739,9 @@ trace_array_create_systems(const char *name, cons=
-t char *systems)
-> >  	raw_spin_lock_init(&tr->start_lock);
-> > =20
-> >  	tr->max_lock =3D (arch_spinlock_t)__ARCH_SPIN_LOCK_UNLOCKED;
-> > -
-> > +#ifdef CONFIG_TRCER_MAX_TRACE =20
->=20
-> Oops!
->=20
-> I'll fix this too.
->=20
->=20
-> > +	spinlock_init(&tr->snapshot_trigger_lock);
+Hi,
 
-And this too:
+Is a corresponding reset_control_assert() needed in the remove function?
 
-kernel/trace/trace.c:9245:9: error: implicit declaration of function =E2=80=
-=98spinlock_init=E2=80=99; did you mean =E2=80=98spin_lock_init=E2=80=99? [=
--Werror=3Dimplicit-function-declaration]
- 9245 |         spinlock_init(&tr->snapshot_trigger_lock);
-      |         ^~~~~~~~~~~~~
+CJ
 
--- Steve
-
-> > +#endif
-> >  	tr->current_trace =3D &nop_trace;
-> > =20
-> >  	INIT_LIST_HEAD(&tr->systems); =20
+>   	wdt->adev = adev;
+>   	wdt->wdd.info = &wdt_info;
+>   	wdt->wdd.ops = &wdt_ops;
+> 
 
 
