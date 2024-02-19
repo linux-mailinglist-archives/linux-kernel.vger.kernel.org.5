@@ -1,148 +1,118 @@
-Return-Path: <linux-kernel+bounces-71250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 053DF85A279
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F07FE85A276
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:50:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE85D1F262DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:51:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A5B121F263B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E611436AE0;
-	Mon, 19 Feb 2024 11:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A50742DF9D;
+	Mon, 19 Feb 2024 11:49:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lTAYxurw"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="aF3EPXsT"
+Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A46C0364C6
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:49:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F31236103;
+	Mon, 19 Feb 2024 11:49:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708343368; cv=none; b=JlSn632IVhUiceY8VK7prTh6ENkzODcqfbLcmR2EudXVeQsCiSDz/ywpCuomPaLJaBVNUFdvegUqHUFYt/PW2oaWL9wEEZhWIkONTlJDQrk2ynMQw4oE66vEwhPTqR+yJ35iiRTUZGzS+0q2fiXtR6c4bW2VRDfXx6sK+0A7cOI=
+	t=1708343347; cv=none; b=B4zBD4G8BWpC1NhyLb021a+jj48wp00AZJDLTiSELcUqB+yHSzV8T+SZRNAqp05Sc+Ky58jWAFrPg5yUk/V6T0xJAxuLfF1CZQG6DpNoW5PkKzL2yaFyyUUSD6bbqH8FGJyEA2OTvdC8xZAVNs3xiL8nK1MnfA6jLPA/dHgVXnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708343368; c=relaxed/simple;
-	bh=42XZ7hX+wU9FWriVYFFf2JlaTu+LTLTxliJ/DxOsXJg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Svir4Aedq9NxI7KNPBdvNcDwHuIEnQ98RvYTblXRrpmEc8iOJNsQ/D+6UGBPXgrSeekbmcZWVOArdCCv8EGDhcaTVzcvyIFVCxSosK6iw/au4yeIn+hUAvMVzUqUofjcmXc46AHAd4JWhOPk0H+QKsvi89fji1+/Iza9laYyDcY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lTAYxurw; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708343367; x=1739879367;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=42XZ7hX+wU9FWriVYFFf2JlaTu+LTLTxliJ/DxOsXJg=;
-  b=lTAYxurw1DHGf8WCWL4ZxY0/nj8sQjesuuEMengKraNYJpFNuybyzpGL
-   +FAmWoPt3Qizk2SaztKl73IoC/X5urISnNPwuj43mcG8kuosOvqQ3CVeO
-   iGRvwsGJmp/qCgbZB2M19m3bEgR9/tkxa4snR4yqsVKPFs3KBiAVRtgK6
-   +6dU4eHuLzqpE/MgvDP8WyYKBK4He1w4LLUhttFx6HBHbUpzfgxaVYfPn
-   iUvA+5ZAOxGNXqIbQiZv7yDAyUfAEHCEd+bolJTVZ/ER8d4KZWiRESAQA
-   As60izrah1gXuxsEn1Q02nD2f4rvRRqG2+CJ9jrFSCWPQoKJjaSa0ejdd
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2282126"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="2282126"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:49:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="9139099"
-Received: from proe-mobl.ger.corp.intel.com (HELO [10.252.22.52]) ([10.252.22.52])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:49:23 -0800
-Message-ID: <124a084e-9f8e-4b38-a0e3-9dfac0312e97@intel.com>
-Date: Mon, 19 Feb 2024 11:49:19 +0000
+	s=arc-20240116; t=1708343347; c=relaxed/simple;
+	bh=GVjvAPYbMIuKLzqak2azvCdxXlpubEruAFBoyFzUHMM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jTqyIksWxFJsKf0N4++LZfYoNEEEV8NIO8S7refxc68GSUruNzg+SIZDlqMhUWE1RWge5SiPhIfhuRX8Qe3vaJhGShkgxggkiVAyK8uOv1xxJEZIvSkNF5n4o4V8X/U88zlTh+Od79P4/MfBnCW4nkdwWX2vUSiopsNSPj5tsOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=aF3EPXsT; arc=none smtp.client-ip=209.85.216.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-29996cc6382so632204a91.3;
+        Mon, 19 Feb 2024 03:49:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708343345; x=1708948145;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CW0WXcyNYkXvrmiNrVym9t+J2nK+JeRu5kNrSxRLDH4=;
+        b=fALHzl5xuiAVsL4K8hEMzVTCsihUnAIuDBESB567R8iH46h4kHgzbeG+iI2uheM+Gc
+         iPh2ePgA1Pz2Z41C6/hAZ/x4fVtkCtWhYXh1d8cU+1I3EWrgBLX1JdizNWOCq7gcitoM
+         SRFs7bS+qydCgKAs2+jh/iXsmo+WGekHM8KI4GEwPfDK8yvrH3PEVarYssW6zCQBwvXG
+         3NYWOlV652Wtwg7FH5a5jAYEP2KAwePWX2M7D73zrWVRK4E3emSBfgF7XphFjQJrAK2d
+         Ehi6WI6j9Kg8wV4JTpj4NJSaC2RBsA98srj5jQN3Fzq2vBKI7hW+Ay2g0pJAJc4JJY0m
+         TSFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXY0iqRDkZw4d6SO//mEIBARKxTRsLaU7AGpd3p3ZX/WG6aMFM1EcF/YQlsmRV3PA67bei37cY7qxovC2NYm+jW3SCHOj2SD+tb6o2qNHcU29ktRyd+4vOttkNENXAglCoBOmTnoBHKCmrr04L3uch3FOV17xrpHFsA/Vro9Hfh4o+CUI9bgTuRY5YPPVsimnlKlIvIRlAmZywM
+X-Gm-Message-State: AOJu0YwJDh+ZuFmJzXRLsr4wuWFrWuBaJDjWQwKnpqlcnPC1AFykmzaE
+	+x6FyKF3FaXBy3sEprRWXM9ng8G2z51NdWkRmVhOnJEONm6nu0Vm
+X-Google-Smtp-Source: AGHT+IF68FoElOobhjt+UxMIgmYvkJ7kfurkN7xNBIeED5I12PhyFHotNODXFufCcCdAiwQOshri3A==
+X-Received: by 2002:a17:90b:1990:b0:299:48de:9c7a with SMTP id mv16-20020a17090b199000b0029948de9c7amr5910376pjb.0.1708343344080;
+        Mon, 19 Feb 2024 03:49:04 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id gw15-20020a17090b0a4f00b002961a383303sm5006491pjb.14.2024.02.19.03.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 03:49:03 -0800 (PST)
+Date: Mon, 19 Feb 2024 08:49:47 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1708343342;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CW0WXcyNYkXvrmiNrVym9t+J2nK+JeRu5kNrSxRLDH4=;
+	b=aF3EPXsTFrB1x5H2n2pIS3IyVuCY7etIJQKZUeoPOEOz8WhjXdUyktGbvKmLJR3UA1ouEk
+	PSRfYIKrFGmJBKr+kbNx1ECIPVxnT03aYAJ1XZ0XDSVSBlzJwCnPRGc4n2NAFBQGJU1K/x
+	GjmkZIegzD8zf3Y0+awRerHn0ayq/hJd10q6cq2MesXbGgG5EnZfWK/XIprFIcsvZ0nc1B
+	rNb1dqWxo5r72F9tRyqvBRc6xQySlul7mKOQaTKwTPifwGnBE06nZYnMANsEob+HbYix7E
+	3Xuws4H+hBs1e0J2mcIcpU4XuOgahkF1kfIDygPln7C3NtN5eUEHaHXfINbT1Q==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Guillaume Nault <gnault@redhat.com>
+Cc: Oliver Neukum <oneukum@suse.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Andrew Lunn <andrew@lunn.ch>, 
+	Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>, 
+	Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>, 
+	Loic Poulain <loic.poulain@linaro.org>, Sergey Ryazanov <ryazanov.s.a@gmail.com>, 
+	Johannes Berg <johannes@sipsolutions.net>, netdev@vger.kernel.org, linux-usb@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bridge@lists.linux.dev, linux-ppp@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH 04/12] net: vxlan: constify the struct device_type usage
+Message-ID: <wcvz4nnmhiz5ktrr6mww5sjaxmr6fewjay3hjrlurlkeg3fcor@ntspq2qi2bfz>
+References: <20240217-device_cleanup-net-v1-0-1eb31fb689f7@marliere.net>
+ <20240217-device_cleanup-net-v1-4-1eb31fb689f7@marliere.net>
+ <ZdM+4uKE83V2j4o8@debian>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/tests/drm_buddy: avoid 64-bit calculation
-Content-Language: en-GB
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Arnd Bergmann <arnd@arndb.de>, Randy Dunlap <rdunlap@infradead.org>,
- Arnd Bergmann <arnd@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
-Cc: Dave Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
- David Gow <davidgow@google.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mcanal@igalia.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240216202442.2493031-1-arnd@kernel.org>
- <745e156e-c3ec-427f-98ad-bfc7d3cfd846@infradead.org>
- <4cdc5b58-11c1-490d-8c3b-6352d8f1b8cb@amd.com>
- <fbd0426c-fdd2-4b7f-a13e-072ed5f973de@app.fastmail.com>
- <a293460f-6a40-427f-b5d2-2e701d1af229@amd.com>
-From: Matthew Auld <matthew.auld@intel.com>
-In-Reply-To: <a293460f-6a40-427f-b5d2-2e701d1af229@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdM+4uKE83V2j4o8@debian>
 
-On 19/02/2024 11:41, Christian König wrote:
-> Am 19.02.24 um 12:29 schrieb Arnd Bergmann:
->> On Mon, Feb 19, 2024, at 12:22, Christian König wrote:
->>> Am 17.02.24 um 02:31 schrieb Randy Dunlap:
->>>> On 2/16/24 12:24, Arnd Bergmann wrote:
->>>>> From: Arnd Bergmann <arnd@arndb.de>
->>>>>
->>>>> The newly added drm_test_buddy_alloc_contiguous() test fails to 
->>>>> link on
->>>>> 32-bit targets because of inadvertent 64-bit calculations:
->>>>>
->>>>> ERROR: modpost: "__aeabi_uldivmod" 
->>>>> [drivers/gpu/drm/tests/drm_buddy_test.ko] undefined!
->>>>> ERROR: modpost: "__aeabi_ldivmod" 
->>>>> [drivers/gpu/drm/tests/drm_buddy_test.ko] undefined!
->>>>>
->>>>> >From what I can tell, the numbers cannot possibly overflow a 
->>>>> 32-bit size,
->>>>> so use different types for these.
->>>>>
->>>>> I noticed that the function has another possible flaw in that is mixes
->>>>> what it calls pages with 4KB units. This is a big confusing at best,
->>>>> or possibly broken when built on machines with larger pages.
->>>>>
->>>>> Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
->>>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
->>>> Tested-by: Randy Dunlap <rdunlap@infradead.org>
->>> I've just pushed a similar patch Mathew came up a bit earlier to
->>> drm-misc-fixes.
->>>
->>> Sorry for the noise, I have to catch up on picking up patches for
->>> misc-fixes and misc-next.
->> Ok, thanks.
->>
->> Have you looked at how this code works for larger values of PAGE_SIZE?
->> Is there any need to change other things or will this work with the
->> hardcoded 4KB chunks?
-> 
-> I haven't looked into the details, but I've pointed out before that 
-> using PAGE_SIZE in the buddy or its test cases would be incorrect.
-> 
-> Background is that the buddy allocator is for devices and those work 
-> independent of the CPU PAGE_SIZE. So it can be that on a CPU with 64k 
-> pages the buddy still needs to work with 4k.
-> 
-> Could be that this is work, but could as well be that this is completely 
-> broken. Arun and Mathew needs to answer this, I haven't tested it nor 
-> reviewed the code.
+Hi Guillaume,
 
-Yeah, we should not be using PAGE_SIZE or PAGE_SHIFT in drm_buddy.[ch] 
-and tests/drm_buddy_test.c. The smallest default page size is SZ_4K for 
-drm_buddy. A patch to fix that would be very welcome. If no takers I can 
-send something.
+On 19 Feb 12:43, Guillaume Nault wrote:
+> On Sat, Feb 17, 2024 at 05:13:26PM -0300, Ricardo B. Marliere wrote:
+> > Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+> > core can properly handle constant struct device_type. Move the vxlan_type
+> > variable to be a constant structure as well, placing it into read-only
+> > memory which can not be modified at runtime.
+> 
+> Reviewed-by: Guillaume Nault <gnault@redhat.com>
+> 
+> Note: To help maintainers (and potentially reviewers) work please
+> write in the subject prefix which tree you're targetting. For this
+> series, it should be "[PATCH net-next xx/yy]".
 
-> 
-> Regards,
-> Christian.
-> 
->>
->>       Arnd
-> 
+Makes sense, will keep this in mind next time!
+
+Thanks for reviewing,
+-	Ricardo.
+
+
 
