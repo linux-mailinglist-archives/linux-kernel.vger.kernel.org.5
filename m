@@ -1,207 +1,149 @@
-Return-Path: <linux-kernel+bounces-71717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71718-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F2285A96C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:55:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A2C385A971
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:57:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E868B23333
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:55:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A39A1F2380C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:57:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62732446A6;
-	Mon, 19 Feb 2024 16:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB24144391;
+	Mon, 19 Feb 2024 16:57:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MkZ/IxZ4"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JVtZQAg0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8DwgRJEZ"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C42CA41C8B
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB44B3771C
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708361738; cv=none; b=RH9EqevH2BRHpuzGGo6yGorXHOgcjiszW3RQJJ6bIGaHtwguhNp7VY8lnO/WXJ53SHzs2oPjSzca8SHZwVRF04nmEQ1BwrzzVE7cMGdA24WW8Y3jle6eNbVNRc3VzbZKeGEENQ5OSulRXq0xEDjdS//dBFefHrtDtcR/N8d6ybs=
+	t=1708361842; cv=none; b=b4QTllNWGgVCIEd3eLgDX/hMiJHRbJRsJrqnENCBzDTnMOL7/NkplN5D2/32lHBU2vXaj6Kb1nADZ+QYIczl9a0cSNmPjUtktE+MBZwMWzn55xkypreRF/EaM6qXhTTDxsqhJVLEV24lkMmU3NW/VGMSvcCanQE2LlX8/HArHdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708361738; c=relaxed/simple;
-	bh=L2Wk+KfPMqWFy+4dwx61nIYX1yKhjaAyyhWHKrdqFeo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JwsRUKDxMv550zliVs5btoLjiAbkeN/pgqmfSu66pVc6i0C+/BzIEFVWBWij+h97FO/bj76TC10OwDNzHrdPVPZ7Vnqa5r6bGzZWE1BLMcU4T1llX996Z24BqbOYrTu/Zl0NEggnH9tYMpZ+I9MEG7Nct3KTn3OEa9+2jx6a9yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MkZ/IxZ4; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso4210709276.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708361736; x=1708966536; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MC1JxayV7V5FEwBjiEEHat04AtMi8UdAlknxmmQHPbY=;
-        b=MkZ/IxZ4QGXfI4ZTy9QDCdF6dyp0wZD+oD0HD8XIChpTjEQYwWiVrhhdipzC9NyIoX
-         wLHW5WsTCcZTnzLVnhOYOz3zmUpOSnmKSJYLgsyjrRwWTGVpsApwlptLts+qEn4Qk0Un
-         /dW/ZG24LaZivpClFG7/ubvZNAzi5kJ580ayfAjWOzSsccD70WRH6FVh2D9d+2PH2YOc
-         MSc7F68O3oyldG67kbMOC+F6XuYzndFaavEgloTQqjeveKnHJse9DTh2pD9aMrYwTEK6
-         zlGzqZLMGn+1gmyVal04viaSjc+d0e5VrUXYKev2lgQbl5RMAAxRBv/mbKeatIQWWwjz
-         /QCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708361736; x=1708966536;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MC1JxayV7V5FEwBjiEEHat04AtMi8UdAlknxmmQHPbY=;
-        b=JxJIky94aT0DhE+q7iH//A0Ywgk4pWXKm8KChCSG7NFZnkJFPBJh1CyzwHvIR8y5M/
-         e1GmXk7TZoHm5PloapXoWiUvx+kCGw83cZBSsZXA3HyP7DFydfX2w+zBj51a3+ocectz
-         GSvoj3iWceS5Bve/1fx/klPMWxsshjd5Ey96xnbBQwULCeTBrh4I14SRmuFdvvBgKlac
-         DNFnMzMyW9K5S0a9dPmy5JYCb4qNl9tyqsu43h3E19NrUJ2qT4TvRlGftQyGpQA6HEfp
-         I223Df4vOWazEnpo/KCBMBS7777WGXaz+w6FgPYig0Lw2/t3G4DO503Gfj08La7y1XuL
-         ySbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUs2mJTakoqSTjgFPbyDDOzclfE7NPZFy4P7xv48hNoUU2emD9tLMGPfk1fnhyMCPqcYYzHsHNWRYcg1Z+gPzKrhBR8Fk2FHZscCIMD
-X-Gm-Message-State: AOJu0Yy7XziubYLPrwq4UdSK0bai+1MQhtiGYirm5I5Dcc7PscYv/Zjc
-	IDu4P5I+Jz+CHqrWosXIARYP44VZ8ZiYuV0r80wsm3TNyWBLlMaXbXRt/jIJtozzZ8oppXNvoj4
-	tGXOIARMWET6Qau0bPLiIjmyK5nFBCeFm1tF1
-X-Google-Smtp-Source: AGHT+IE9e4H9CxOF/Wkt1BmMwgF6wG5QNpfKFX5SyoOVKH5zyjhHqyJSbZUQlTjCIfZiNsAQiQ1++39gCNndnejh6es=
-X-Received: by 2002:a25:d68b:0:b0:dc6:aed5:718a with SMTP id
- n133-20020a25d68b000000b00dc6aed5718amr10952783ybg.26.1708361735183; Mon, 19
- Feb 2024 08:55:35 -0800 (PST)
+	s=arc-20240116; t=1708361842; c=relaxed/simple;
+	bh=efuckyKb7AWsjiCxytITdfB2OOnWIcBNGDsHot4Tro4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=MGvv82gUNb9cVQuRnH5AhTSpIrY2lHBC7Z5X2v3LIKbuBwbijbDwowP/3zK9aR2OTXhKQmWlco9gKoK+B8LBesQpi77egIJI6EYtB5CzeUKnZ9+7v5F6XCWB93FXhz4LIw1gPG/XwfvlfOEVgR9HuX+7mJ3BkKZlLYopU2rOonI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JVtZQAg0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8DwgRJEZ; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708361839;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dm+peGplDwnHuVHm6xN1c7FQqxraIl8WA7/xR6XwfzI=;
+	b=JVtZQAg0VuzD4pvtlCtEEab+1EI+n5XoFSq46kzexfHCrrEkVn/ZJ3g5zUK8RtbizDY1rJ
+	vl+QtbHBt4jE2RN8N43k0PBkHiLyy5PhTHxKlhul45QP2lwTbhognybongx22DNDYW75a/
+	sKHdP8m77PgYDxQQDAZJXuM8I54uktDMcnM8Q1X83ljoJSZk+yUOQeyZs4Ft++yAQ6I7G0
+	FH/2FSNlDomvNLk2Fs6zuylOr4ez/dN8F/g66HE1OXoR7gxPR4fjZgK0FUT/GHshmP0Ejn
+	dYGoezLOw5qEBMQAUVme4tU7mg4gD9CBFoFDXX8WCkWNXyR1/DnjPQaKx9L1bg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708361839;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dm+peGplDwnHuVHm6xN1c7FQqxraIl8WA7/xR6XwfzI=;
+	b=8DwgRJEZw6nVJPyGKEh1hknNuJyy3zcQkowApAev6R1js4mPh3omqysbDa5lofL4Idjt/q
+	HdYPz0l7G5c8VXBw==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+ John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
+ <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
+ "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
+ <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
+ Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+ Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
+ <kprateek.nayak@amd.com>, Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v10 13/20] timers: Add get next timer interrupt
+ functionality for remote CPUs
+In-Reply-To: <ZdN8KCTB2smSZb88@localhost.localdomain>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-14-anna-maria@linutronix.de>
+ <ZdN8KCTB2smSZb88@localhost.localdomain>
+Date: Mon, 19 Feb 2024 17:57:16 +0100
+Message-ID: <87edd8fl3n.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-33-surenb@google.com>
- <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz> <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
- <5bd3761f-217d-45bb-bcd2-797f82c8a44f@suse.cz>
-In-Reply-To: <5bd3761f-217d-45bb-bcd2-797f82c8a44f@suse.cz>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 19 Feb 2024 08:55:22 -0800
-Message-ID: <CAJuCfpHRqiV2LZEnCB0hwwoexw+8U_XzqH1f+LwLjsQxmXR3Tw@mail.gmail.com>
-Subject: Re: [PATCH v3 32/35] codetag: debug: skip objext checking when it's
- for objext itself
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
-	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
-	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
-	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
-	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
-	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 1:17=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
->
-> On 2/19/24 02:04, Suren Baghdasaryan wrote:
-> > On Fri, Feb 16, 2024 at 6:39=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz=
-> wrote:
-> >>
-> >> On 2/12/24 22:39, Suren Baghdasaryan wrote:
-> >> > objext objects are created with __GFP_NO_OBJ_EXT flag and therefore =
-have
-> >> > no corresponding objext themselves (otherwise we would get an infini=
-te
-> >> > recursion). When freeing these objects their codetag will be empty a=
-nd
-> >> > when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled this will lead to f=
-alse
-> >> > warnings. Introduce CODETAG_EMPTY special codetag value to mark
-> >> > allocations which intentionally lack codetag to avoid these warnings=
-.
-> >> > Set objext codetags to CODETAG_EMPTY before freeing to indicate that
-> >> > the codetag is expected to be empty.
-> >> >
-> >> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> >> > ---
-> >> >  include/linux/alloc_tag.h | 26 ++++++++++++++++++++++++++
-> >> >  mm/slab.h                 | 25 +++++++++++++++++++++++++
-> >> >  mm/slab_common.c          |  1 +
-> >> >  mm/slub.c                 |  8 ++++++++
-> >> >  4 files changed, 60 insertions(+)
-> >> >
-> >> > diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
-> >> > index 0a5973c4ad77..1f3207097b03 100644
-> >>
-> >> ...
-> >>
-> >> > index c4bd0d5348cb..cf332a839bf4 100644
-> >> > --- a/mm/slab.h
-> >> > +++ b/mm/slab.h
-> >> > @@ -567,6 +567,31 @@ static inline struct slabobj_ext *slab_obj_exts=
-(struct slab *slab)
-> >> >  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
-> >> >                       gfp_t gfp, bool new_slab);
-> >> >
-> >> > +
-> >> > +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> >> > +
-> >> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
-> >> > +{
-> >> > +     struct slabobj_ext *slab_exts;
-> >> > +     struct slab *obj_exts_slab;
-> >> > +
-> >> > +     obj_exts_slab =3D virt_to_slab(obj_exts);
-> >> > +     slab_exts =3D slab_obj_exts(obj_exts_slab);
-> >> > +     if (slab_exts) {
-> >> > +             unsigned int offs =3D obj_to_index(obj_exts_slab->slab=
-_cache,
-> >> > +                                              obj_exts_slab, obj_ex=
-ts);
-> >> > +             /* codetag should be NULL */
-> >> > +             WARN_ON(slab_exts[offs].ref.ct);
-> >> > +             set_codetag_empty(&slab_exts[offs].ref);
-> >> > +     }
-> >> > +}
-> >> > +
-> >> > +#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
-> >> > +
-> >> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)=
- {}
-> >> > +
-> >> > +#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
-> >> > +
-> >>
-> >> I assume with alloc_slab_obj_exts() moved to slub.c, mark_objexts_empt=
-y()
-> >> could move there too.
-> >
-> > No, I think mark_objexts_empty() belongs here. This patch introduced
-> > the function and uses it. Makes sense to me to keep it all together.
->
-> Hi,
->
-> here I didn't mean moving between patches, but files. alloc_slab_obj_exts=
-()
-> in slub.c means all callers of mark_objexts_empty() are in slub.c so it
-> doesn't need to be in slab.h
+Frederic Weisbecker <frederic@kernel.org> writes:
 
-Ah, I see. I misunderstood your comment. Yes, after slab/slob cleanup
-this makes sense.
-
+> Le Mon, Jan 15, 2024 at 03:37:36PM +0100, Anna-Maria Behnsen a =C3=A9crit=
+ :
+>> +# ifdef CONFIG_SMP
+>> +/**
+>> + * fetch_next_timer_interrupt_remote() - Store next timers into @tevt
+>> + * @basej:	base time jiffies
+>> + * @basem:	base time clock monotonic
+>> + * @tevt:	Pointer to the storage for the expiry values
+>> + * @cpu:	Remote CPU
+>> + *
+>> + * Stores the next pending local and global timer expiry values in the
+>> + * struct pointed to by @tevt. If a queue is empty the corresponding
+>> + * field is set to KTIME_MAX. If local event expires before global
+>> + * event, global event is set to KTIME_MAX as well.
+>> + *
+>> + * Caller needs to make sure timer base locks are held (use
+>> + * timer_lock_remote_bases() for this purpose).
+>> + */
+>> +void fetch_next_timer_interrupt_remote(unsigned long basej, u64 basem,
+>> +				       struct timer_events *tevt,
+>> +				       unsigned int cpu)
+>> +{
+>> +	struct timer_base *base_local, *base_global;
+>> +
+>> +	/* Preset local / global events */
+>> +	tevt->local =3D tevt->global =3D KTIME_MAX;
+>> +
+>> +	base_local =3D per_cpu_ptr(&timer_bases[BASE_LOCAL], cpu);
+>> +	base_global =3D per_cpu_ptr(&timer_bases[BASE_GLOBAL], cpu);
+>> +
+>> +	lockdep_assert_held(&base_local->lock);
+>> +	lockdep_assert_held(&base_global->lock);
+>> +
+>> +	fetch_next_timer_interrupt(basej, basem, base_local, base_global, tevt=
+);
 >
-> Also same thing with mark_failed_objexts_alloc() and
-> handle_failed_objexts_alloc() in patch 34/35.
+> If the next timer is global and it is <=3D jiffies + 1, the result will be
+> returned in tevt.local only and not on tevt.global. So a remote fetch may=
+ miss it.
 
-Ack. Thanks!
+Oh no. But yes, sounds reasonable.
 
+> For this to work on both local and remote fetch, you may need:
 >
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index 320eb4ceafa2..64ce9a7760f5 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -2004,6 +2007,8 @@ static unsigned long fetch_next_timer_interrupt(uns=
+igned long basej, u64 basem,
+>  		if (time_before(nextevt, basej))
+>  			nextevt =3D basej;
+>  		tevt->local =3D basem + (u64)(nextevt - basej) * TICK_NSEC;
+> +		if (!local_first)
+> +			tevt->global =3D tevt->local;
+>  		return nextevt;
+>  	}
+>=20=20
+
+Will fix it - with a big comment explaining why this is required for
+remote call sites and will not hurt when executed on the local cpu.
+
+Thanks a lot!
 
