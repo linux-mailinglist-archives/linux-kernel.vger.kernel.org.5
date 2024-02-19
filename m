@@ -1,103 +1,159 @@
-Return-Path: <linux-kernel+bounces-71590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A58C85A778
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:35:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7483B85A780
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCEB71C222EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:35:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4B94B23FFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:35:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23ED39AC6;
-	Mon, 19 Feb 2024 15:35:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b="QhbFq6B3"
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12EB638398;
-	Mon, 19 Feb 2024 15:34:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E45338F9F;
+	Mon, 19 Feb 2024 15:35:24 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BB36381CE;
+	Mon, 19 Feb 2024 15:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708356903; cv=none; b=IQrkQppQiwRzlQSKamiginByLZTqz/lxMR9wlXGDO6LIs+5iKMfgvYfFvkBm20iK5jxi9pZtR2nI7Cml1M7drXO3d65THuQGQ7aLoUxn8VbGXM/ItA4mjpx8f4k0tXItMYFjE9/lz7kPrUC5M3P3OCJkCtEzWiv1G69/JdjvvM0=
+	t=1708356924; cv=none; b=dqvLQn4HDkIkpqp/hxQcNBQjlLXhpNpTxRSUzcCc9DDSxxw1wkcvSE6bDSDJ2p0SxX+eHUwH24R7t5GifGvbqfo74cwbP9HcwkXn11udyrCXqHYpXVVmueBWicO4s+gnvWNB8MVBgZxHQQGqayKiMA3jC20kG/JR8I6LWx76J18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708356903; c=relaxed/simple;
-	bh=aqXyVlW3d+HoF9uReR/+Utxa70z7YXA2kyd8nwe/nkU=;
+	s=arc-20240116; t=1708356924; c=relaxed/simple;
+	bh=gWExRT6udu7I7jl7GjueXlupno17y2YrXS0ghER5g9c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IjVRYQx5UeWUdLNIng5vd0LbnytZqzaRm0+MqxOwyWIWmkKJ7cYxddaqb/2U2BUpLWZQG0U9548U8uTNA5MSnxhe+dfMchRoPRu2XK8u3TRxmmiVQ/IlqDmDGpv/9jXwq//DS/MXsnCSxUcOsLrEQKQG5FVaE81m72rFqffGQHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz; spf=pass smtp.mailfrom=ucw.cz; dkim=pass (1024-bit key) header.d=ucw.cz header.i=@ucw.cz header.b=QhbFq6B3; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ucw.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ucw.cz
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id A78651C0071; Mon, 19 Feb 2024 16:34:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ucw.cz; s=gen1;
-	t=1708356891;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XGkPyHRZGdXnHCCK4TUPor1qkxga/sNFfj4wWfPCLlE=;
-	b=QhbFq6B3Topv1qBT0xYd/ix9Em4Ub9RSJr+dwV5KWiSEbuprYBVo640m+4DoiBnbFCwhPU
-	saQ4g26CApXHkDeM6jZRY8HzfUTinelTFjQCFsLMgHDQWs35RPfyi8P2kb3GLZAO9w2Hk9
-	gX5Uc1K6BXVy0OHAhKtxlCefSpRrDXg=
-Date: Mon, 19 Feb 2024 16:34:51 +0100
-From: Pavel Machek <pavel@ucw.cz>
-To: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc: "lee@kernel.org" <lee@kernel.org>,
-	"linux-leds@vger.kernel.org" <linux-leds@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: Linux support for a 7 segment LED display
-Message-ID: <ZdN1G6PfCK9/vUol@duo.ucw.cz>
-References: <1f598a72-dd9f-4c6c-af7f-29751f84bd23@alliedtelesis.co.nz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q+yeL6exu54Ak51Gma/ZefyQgj4xTzKlpLCoOSS5na9FDCskYqv7nfA3pu0EMJ1YKsrWUipJe0v334QztYtgPYAjDQ09I2egJgeZz1wQvgXEsSNmKWob8wcUgj78eWzJfjqfAMMlLE4/3FA+UJwQ/K3yTNs3dordZV6wX0rwN1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A15CEFEC;
+	Mon, 19 Feb 2024 07:35:57 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.64.104])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E8103F762;
+	Mon, 19 Feb 2024 07:35:16 -0800 (PST)
+Date: Mon, 19 Feb 2024 15:35:08 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: Marc Zyngier <maz@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>,
+	Stephen Rothwell <sfr@canb.auug.org.au>,
+	Christoffer Dall <cdall@cs.columbia.edu>,
+	Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>
+Subject: Re: linux-next: manual merge of the kvm-arm tree with the arm64 tree
+Message-ID: <ZdN1LGKRwcwfhvKB@FVFF77S0Q05N>
+References: <20240219135805.1c4138a3@canb.auug.org.au>
+ <ZdNGGrUDWfvqCudV@arm.com>
+ <86bk8c4gyh.wl-maz@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="yPb17zyHgF1OuMIw"
-Content-Disposition: inline
-In-Reply-To: <1f598a72-dd9f-4c6c-af7f-29751f84bd23@alliedtelesis.co.nz>
-
-
---yPb17zyHgF1OuMIw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <86bk8c4gyh.wl-maz@kernel.org>
 
-Hi!
+On Mon, Feb 19, 2024 at 03:22:14PM +0000, Marc Zyngier wrote:
+> From f24638a5f41424faf47f3d9035e6dcbd3800fcb6 Mon Sep 17 00:00:00 2001
+> From: Marc Zyngier <maz@kernel.org>
+> Date: Mon, 19 Feb 2024 15:13:22 +0000
+> Subject: [PATCH] arm64: Use Signed/Unsigned enums for TGRAN{4,16,64} and
+>  VARange
+> 
+> Open-coding the feature matching parameters for LVA/LVA2 leads to
+> issues with upcoming changes to the cpufeature code.
+> 
+> By making TGRAN{4,16,64} and VARange signed/unsigned as per the
+> architecture, we can use the existing macros, making the feature
+> match robust against those changes.
+> 
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-> I'm looking for something that I figured must exists but maybe it's so=20
-> niche that no-one has bothered to upstream a driver for it.
->=20
-> I have a requirement to support a 7-segment LED display[1] (one that can=
-=20
-> display a single digit from 0-9). Hardware wise it's just a bunch of=20
-> individual GPIOs connected to each segment (plus an extra one for a=20
-> dot). I can't see anything obvious in drivers/leds but maybe I'm looking=
-=20
-> in the wrong place. Or maybe it's the kind of thing on PC hardware that=
-=20
-> is just driven by the BIOS without the operating system knowing about it.
+I think this is the right thing to do; the patch itself looks good to me, so
+FWIW:
 
-Look at drivers/auxdisplay. I believe we have segment displays there.
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Best regards,
-								Pavel
---=20
-People of Russia, stop Putin before his war on Ukraine escalates.
+Mark.
 
---yPb17zyHgF1OuMIw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZdN1GwAKCRAw5/Bqldv6
-8qdXAJ9M+scNVUZ8g1U6IPdv+E7AK/PlMACfTgZ/uvO9npw3kAX/VIEJtyVy/Bk=
-=vVrC
------END PGP SIGNATURE-----
-
---yPb17zyHgF1OuMIw--
+> ---
+>  arch/arm64/kernel/cpufeature.c | 15 +++------------
+>  arch/arm64/tools/sysreg        |  8 ++++----
+>  2 files changed, 7 insertions(+), 16 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+> index 8f9665e8774b..2119e9dd0c4e 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -2791,24 +2791,15 @@ static const struct arm64_cpu_capabilities arm64_features[] = {
+>  		.capability = ARM64_HAS_VA52,
+>  		.type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
+>  		.matches = has_cpuid_feature,
+> -		.field_width = 4,
+>  #ifdef CONFIG_ARM64_64K_PAGES
+>  		.desc = "52-bit Virtual Addressing (LVA)",
+> -		.sign = FTR_SIGNED,
+> -		.sys_reg = SYS_ID_AA64MMFR2_EL1,
+> -		.field_pos = ID_AA64MMFR2_EL1_VARange_SHIFT,
+> -		.min_field_value = ID_AA64MMFR2_EL1_VARange_52,
+> +		ARM64_CPUID_FIELDS(ID_AA64MMFR2_EL1, VARange, 52)
+>  #else
+>  		.desc = "52-bit Virtual Addressing (LPA2)",
+> -		.sys_reg = SYS_ID_AA64MMFR0_EL1,
+>  #ifdef CONFIG_ARM64_4K_PAGES
+> -		.sign = FTR_SIGNED,
+> -		.field_pos = ID_AA64MMFR0_EL1_TGRAN4_SHIFT,
+> -		.min_field_value = ID_AA64MMFR0_EL1_TGRAN4_52_BIT,
+> +		ARM64_CPUID_FIELDS(ID_AA64MMFR0_EL1, TGRAN4, 52_BIT)
+>  #else
+> -		.sign = FTR_UNSIGNED,
+> -		.field_pos = ID_AA64MMFR0_EL1_TGRAN16_SHIFT,
+> -		.min_field_value = ID_AA64MMFR0_EL1_TGRAN16_52_BIT,
+> +		ARM64_CPUID_FIELDS(ID_AA64MMFR0_EL1, TGRAN16, 52_BIT)
+>  #endif
+>  #endif
+>  	},
+> diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
+> index fa3fe0856880..670a33fca3bc 100644
+> --- a/arch/arm64/tools/sysreg
+> +++ b/arch/arm64/tools/sysreg
+> @@ -1540,16 +1540,16 @@ Enum	35:32	TGRAN16_2
+>  	0b0010	IMP
+>  	0b0011	52_BIT
+>  EndEnum
+> -Enum	31:28	TGRAN4
+> +SignedEnum	31:28	TGRAN4
+>  	0b0000	IMP
+>  	0b0001	52_BIT
+>  	0b1111	NI
+>  EndEnum
+> -Enum	27:24	TGRAN64
+> +SignedEnum	27:24	TGRAN64
+>  	0b0000	IMP
+>  	0b1111	NI
+>  EndEnum
+> -Enum	23:20	TGRAN16
+> +UnsignedEnum	23:20	TGRAN16
+>  	0b0000	NI
+>  	0b0001	IMP
+>  	0b0010	52_BIT
+> @@ -1697,7 +1697,7 @@ Enum	23:20	CCIDX
+>  	0b0000	32
+>  	0b0001	64
+>  EndEnum
+> -Enum	19:16	VARange
+> +UnsignedEnum	19:16	VARange
+>  	0b0000	48
+>  	0b0001	52
+>  EndEnum
+> -- 
+> 2.39.2
+> 
+> 
+> -- 
+> Without deviation from the norm, progress is not possible.
 
