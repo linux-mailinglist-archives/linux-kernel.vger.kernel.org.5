@@ -1,122 +1,117 @@
-Return-Path: <linux-kernel+bounces-71481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F243185A5F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:32:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A0C085A5FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:32:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 943201F25F20
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:32:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A80A1F262B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C81720DCB;
-	Mon, 19 Feb 2024 14:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A2C11EA84;
+	Mon, 19 Feb 2024 14:32:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kC7uVdmQ"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NII8P/Jv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F151DDD5;
-	Mon, 19 Feb 2024 14:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97EE1DDFC;
+	Mon, 19 Feb 2024 14:32:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708353110; cv=none; b=V3EGEvzHoOdySDZeqousIvQ55ZF8yz0JAsE4B7EPl2wrFxIug6TYDVsTXItGeX59ty8I4VHnxSkq8AGsH6c6jfa4GrntW9WvOWiqMHpwrtNHzV+zmDTlQG7CeU7G/5Ye92nG+6Vlqkr99Zs7ZXdryyLQyMmxkw5SDCNoPsHwmoo=
+	t=1708353138; cv=none; b=ZbmAYzrO42oe8xCx6lVk61FZcmUsCAJ2iOT+Zjh3W6aEyT7iQ8TIl6ZHKQZ1YPJBOsZ1iQu7UYre8ojTdwL3wXEAE3ausb/IZikkhne1fjP9kowXewzL5Fl00Th41zHd9dhHGvEZfnWlFpbsAtnf+CfyYTqjWmjm7eKBf4CZ6BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708353110; c=relaxed/simple;
-	bh=hKfqt+6AH9WiehjZH1IaTO+O21L0m+AX+DTUgObkBAY=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=TXtWzg/yICbzsBN49fh6U8KD0zvgyQhbOw9OSVOtPuwyQ42indSK83PcpB0dD2VzKcDkBlxTlCQdf8e7f4vQU7Jvi1M8667WB+EBfXeI6ovrr5yF0N9DAW/+PdMyZUy1kGLH72TTBA/qy1x+e3VEKvm0i7nbboZklhW/jyAnCWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kC7uVdmQ; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9F9441C0012;
-	Mon, 19 Feb 2024 14:31:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708353106;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hKfqt+6AH9WiehjZH1IaTO+O21L0m+AX+DTUgObkBAY=;
-	b=kC7uVdmQuKOY2GZO7/+U8nGkDmIS2gUMSAn6I3uoBiu8m1t7O7ruLaNdalx34aTxFThyby
-	4xEjQzka7TB8XMIdmRxWxQw3OWpVgOT5vk695IlP4IdxkXuFPU4ApdZhDB5Kl+CVQpr+RC
-	ZVvauYyA3BM0jtZ8FruNvEisL5LZS9HTI5K9Sa6dgtv2w/u3zzhXJBYg9iPSh+l2eXSZJn
-	3GvZd2GHfFANPZX8zWkS4LXroL2RmFjaem7TJvuJaX7ZRN/WCZfspHigpm5MWOb8kbXvhz
-	jo71SgSyaCFgtWRj/NFHARZzLGnwwSOQ8EVbfHSHGPu9KBuRop9FCd/wV0uXpA==
+	s=arc-20240116; t=1708353138; c=relaxed/simple;
+	bh=p7CKu3q3ddLdu/9KSihXnzeOfwJAXWsmYHQH7vap+SM=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=KldDQIJLD/7TVKiciSWCOvRNQiral1jxl4DY9bWAFeIaGXb63b4HQLLhW+nXzSKAuDfEPLYN9PtYdxDwtOaQcuy18CSKSEeNAkDWzVeKJy9J4hpORQcg9iUD0S6kGUgq9pPdu7q1vK1uFTSgyITIwOYtenDRXJp3uIhp+kwzIJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NII8P/Jv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D3FEC433F1;
+	Mon, 19 Feb 2024 14:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708353138;
+	bh=p7CKu3q3ddLdu/9KSihXnzeOfwJAXWsmYHQH7vap+SM=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=NII8P/JvDIQSdS6jY3XVqY9OwEYbCNImuVFaDu7HQh8UC/uvUsJ/tkH4r3cwOJ+pL
+	 zJC9tno6EAU0Rwg3c2/M9j9dKoVcp+yyaxWmbqEk5xDYdsbNzfdFWzGDPZCWUqf1UT
+	 1XOTqVxZ30LixtHGzYdSUyM9WfyPAE52bNCuTsaC37iFtygZ/aVqmpAT/F3888Qoi7
+	 28SlXXlJIKfquDWCKFgsdWWDg2t7yhd8iE4bHlpCx0GWBGRxq9TCSBZPeC/qmjKIsy
+	 cVHutL99zjZP+dIprMmy7elANko4CEteHsdjrXyt4h5KHYPUhO2VE6+H361hGc5AyS
+	 HKW39QrDx9ExA==
+Date: Mon, 19 Feb 2024 08:32:16 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 19 Feb 2024 15:31:45 +0100
-Message-Id: <CZ94MU7BQIOE.2KYB4TWVOJISN@bootlin.com>
-Subject: Re: [PATCH 07/13] i2c: nomadik: support short xfer timeouts using
- waitqueue & hrtimer
-Cc: "Andi Shyti" <andi.shyti@kernel.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Linus Walleij" <linus.walleij@linaro.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-7-19a336e91dca@bootlin.com>
- <CACRpkdYC=vVBA-s6GmsaED=NdXfsr0JDzzF+x8q8C3tqQ0F8YQ@mail.gmail.com>
-In-Reply-To: <CACRpkdYC=vVBA-s6GmsaED=NdXfsr0JDzzF+x8q8C3tqQ0F8YQ@mail.gmail.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+From: Rob Herring <robh@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ linux-arm-kernel@lists.infradead.org, Rob Clark <robdclark@gmail.com>, 
+ Will Deacon <will@kernel.org>, linux-arm-msm@vger.kernel.org, 
+ Joerg Roedel <joro@8bytes.org>, linux-clk@vger.kernel.org, 
+ freedreno@lists.freedesktop.org, dri-devel@lists.freedesktop.org, 
+ Robin Murphy <robin.murphy@arm.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, devicetree@vger.kernel.org, 
+ iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+ Konrad Dybcio <konradybcio@kernel.org>
+In-Reply-To: <20240219-topic-rb1_gpu-v1-2-d260fa854707@linaro.org>
+References: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
+ <20240219-topic-rb1_gpu-v1-2-d260fa854707@linaro.org>
+Message-Id: <170835313573.3576894.7520977778258170562.robh@kernel.org>
+Subject: Re: [PATCH 2/8] dt-bindings: clock: Add Qcom QCM2290 GPUCC
 
-Hello,
 
-On Mon Feb 19, 2024 at 3:19 PM CET, Linus Walleij wrote:
-> On Thu, Feb 15, 2024 at 5:52=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
-tlin.com> wrote:
->
-> > Replace the completion by a waitqueue for synchronization from IRQ
-> > handler to task. For short timeouts, use hrtimers, else use timers.
-> > Usecase: avoid blocking the I2C bus for too long when an issue occurs.
-> >
-> > The threshold picked is one jiffy: if timeout is below that, use
-> > hrtimers. This threshold is NOT configurable.
-> >
-> > Implement behavior but do NOT change fetching of timeout. This means th=
-e
-> > timeout is unchanged (200ms) and the hrtimer case will never trigger.
-> >
-> > A waitqueue is used because it supports both desired timeout approaches=
-.
-> > See wait_event_timeout() and wait_event_hrtimeout(). An atomic boolean
-> > serves as synchronization condition.
-> >
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
->
-> Part of me want to go and fix completions to handle hrtimer timeouts
-> for submicrosecond timeouts, BUT I realized that this is a bit thick
-> request for a simple driver, so just a suggestion for something we could
-> do one day. This is fine with me.
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On Mon, 19 Feb 2024 14:35:47 +0100, Konrad Dybcio wrote:
+> Add device tree bindings for graphics clock controller for Qualcomm
+> Technology Inc's QCM2290 SoCs.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  .../bindings/clock/qcom,qcm2290-gpucc.yaml         | 76 ++++++++++++++++++++++
+>  include/dt-bindings/clock/qcom,qcm2290-gpucc.h     | 32 +++++++++
+>  2 files changed, 108 insertions(+)
+> 
 
-Indeed having to switch to another abstraction because we desire another
-timeout method is nonsensical. Completion supporting hrtimeouts would
-make sense. As you said though, this is too much for a simple driver.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Thanks,
+yamllint warnings/errors:
 
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/clock/qcom,qcm2290-gpucc.yaml: properties:compatible: [{'const': 'qcom,qcm2290-gpucc'}] is not of type 'object', 'boolean'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/clock/qcom,qcm2290-gpucc.yaml: properties:compatible: [{'const': 'qcom,qcm2290-gpucc'}] is not of type 'object', 'boolean'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/clock/qcom,qcm2290-gpucc.yaml: ignoring, error in schema: properties: compatible
+Documentation/devicetree/bindings/clock/qcom,qcm2290-gpucc.example.dtb: /example-0/soc/clock-controller@5990000: failed to match any schema with compatible: ['qcom,qcm2290-gpucc']
 
-------------------------------------------------------------------------
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240219-topic-rb1_gpu-v1-2-d260fa854707@linaro.org
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
