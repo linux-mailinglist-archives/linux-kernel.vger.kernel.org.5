@@ -1,122 +1,94 @@
-Return-Path: <linux-kernel+bounces-71653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B545285A877
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8E185A80C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:01:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 550061F21C40
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DC8E1F24D01
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBBFF3C467;
-	Mon, 19 Feb 2024 16:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DA13A29A;
+	Mon, 19 Feb 2024 16:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.ch header.i=flurry123@gmx.ch header.b="UgSCrXAR"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G6tXvI5J"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFDD38F96;
-	Mon, 19 Feb 2024 16:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC9E3CF66
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359210; cv=none; b=PpbonuL/ZS4XGnEzDtLjhTxXjTO3EHgT9adGxblgrf4DCISTgg8EQ4P3+VYACb4EVs6O1LBur2m45vU8+UQ0P5yWpAE3ce4LVd69jYtpX9iVMnhGhJhZeLRJhWiC538Gemd2rNIQ4iFOf5wfddC4ciNaayKkUib4j1d5IudI2Hw=
+	t=1708358489; cv=none; b=IzgwCSu1gEGBRHoo1t9nIJD+Wv7wFlhpC4KBT4KCHQXl6xKYd9W1J5VDaeaXr0Mz2ug0cwEzZZYYEPCeK2CROyfQ6sB+6aEM4jEq4EFM3NnB7U1Yd8Ucl5hTANeBKopn+e5n18KHxtauR59Zxhkpp1PsQEjcrVSoG6AYtSwlmpU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359210; c=relaxed/simple;
-	bh=OH4defjKQkatPG8aw0BIrccIFTqxTSBkv6smamyXyvE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Am4dVbpU3mCumUS8/N0KJq9vdSXrnWPIJxwQ8yrthBaaKwLK46CJCrm0pA13o/qJOiq7JE2gBrAmAcpGQFctLfY6I7BenPn0OclsxyFyK5lZ/iaJKMbm0ALShZkrJ9H+f1UdHsXCWXpTZwMbdRfsA4dUM+iqmEWYUUGbagTtpbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.ch; spf=pass smtp.mailfrom=gmx.ch; dkim=pass (2048-bit key) header.d=gmx.ch header.i=flurry123@gmx.ch header.b=UgSCrXAR; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.ch
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.ch; s=s31663417;
-	t=1708359204; x=1708964004; i=flurry123@gmx.ch;
-	bh=OH4defjKQkatPG8aw0BIrccIFTqxTSBkv6smamyXyvE=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:
-	 References;
-	b=UgSCrXARyDtCjcLwLOEBCrWLBbuDXfrND6h7YF3K3a7Nsk7GXh9xOcsZN10LGlA0
-	 egp1Qyg5BTUQdEJxvqIgysXdXaVs9uBCUXhofMJL6SyiLS0T9TL4qwoiRyExNAFxM
-	 n28G+IS2tcI29ljqudBSn5X3QRC+gSE3XdxyGfzp7c++qRYUg1l3iCLvYm9IH06Ex
-	 N7ThlKGvdnBgxvNq+QlGGMTdpcLQJuwcDNJxexxAgB/CPuXxkQ3cUwUsfvF+wMeGM
-	 ItZI0SPbvPt4DsFNhQ0ONLM3eF8pVVBQaHgwUFaUhr8LqLMyxmZPGyxaYfz0DZRvL
-	 +Q9DAnyU3JNP6s5ASA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from void.speedport.ip ([84.155.142.60]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MV63g-1rTk142xtu-00S9Jl; Mon, 19
- Feb 2024 17:13:24 +0100
-From: Hans Peter <flurry123@gmx.ch>
-To: tiwai@suse.de
-Cc: flurry123@gmx.ch,
-	linux-kernel@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	tiwai@suse.com
-Subject: RE: [PATCH] ALSA: hda/realtek: Enable Mute LED on HP 840 G8 (MB 8AB8) 
-Date: Mon, 19 Feb 2024 17:00:57 +0100
-Message-ID: <20240219161240.3840-1-flurry123@gmx.ch>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <874je4q2h0.wl-tiwai@suse.de>
-References: <874je4q2h0.wl-tiwai@suse.de>
+	s=arc-20240116; t=1708358489; c=relaxed/simple;
+	bh=gycZaBE7Cy24i7aMR1MwJXS9SdXAFZkBFApim+SPZRM=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=uSAL0dsQVFGF/HFH1w224nbmd3PZYKSTZC72dM4IbGH6K7+u6o5PzvXHDZPclD/DPQDdDA6S59SZAsOBfJY85iq1aD79o0AYt2/F9hJRrLG4yBwmqw0QSHBjkektGZLsYiT/NZjEu7R60N8gmLq771KnnBsh9Zx8YHTv2MUB75Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G6tXvI5J; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708358486;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gycZaBE7Cy24i7aMR1MwJXS9SdXAFZkBFApim+SPZRM=;
+	b=G6tXvI5JoSVfPl08lUgOEzhwWg6Y9Trct5tqlX+FDqCSgXTEadYfCothxY90Vc9ji9CmzF
+	CYbdxr/hs//wmaMKfrL9D91MshOjRQRyFIQpfVR3g+IDM5YuKbFWbwipmKAwPzblmZ/dh/
+	fw++4B5Jde0/jCC4OeSWH4IyvJiFsIQ=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-134-Sl4aI5GGPlOIOR_R_x3-Jw-1; Mon,
+ 19 Feb 2024 11:01:22 -0500
+X-MC-Unique: Sl4aI5GGPlOIOR_R_x3-Jw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E2AA51C05133;
+	Mon, 19 Feb 2024 16:01:21 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BCDB6492BE2;
+	Mon, 19 Feb 2024 16:01:20 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <208066d6326a428499fa68c5984da62c@aladdin.ru>
+References: <208066d6326a428499fa68c5984da62c@aladdin.ru> <20240212083347.10742-1-d.dulov@aladdin.ru> <125563.1708338814@warthog.procyon.org.uk>
+To: Daniil Dulov <D.Dulov@aladdin.ru>
+Cc: dhowells@redhat.com, Jeffrey E Altman <jaltman@auristor.com>,
+    "linux-afs@lists.infradead.org" <linux-afs@lists.infradead.org>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+    "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
+Subject: Re: [PATCH v2] afs: Increase buffer size in afs_update_volume_status()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <214311.1708358480.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ui8y0rdL7UK2PJ9aPEMQnaEFvD1Pp1UGVqnNh/NHu2PQ9v/8j/Y
- HjHV7LjCuWs9WPuHwEdigcjZ7kfYeW9BpEp+rXMUx2ofoaR64uHPXVOVNLmLwlRmex0i5sd
- YoMhMHAYsKk3k15a1SQYgriictU0eCWAYfItQjFi6/3l+CH72mN3eOWu4ZkXTJn5NlFARNm
- Shh5n9cYbwshNRZvGP/Ew==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:acXfCcZT+3A=;j1CvMKjM4MMwZq73kt0BvvHvLPA
- t9iKJA3KV5L0F5LDSM5XqwODh1UfmRbkirRRLyYpY9fXgWc0iv7sVqvZHNtwo+iUt6w1DcUWc
- lwz10DAW2jkUbjLIi/gHeT1fXOkSu8OghCHhJjMZGdsK84rvW4WYCH7O4xW9BBaBdZ1u3oqP6
- BeDBAk/W3pylXJFl2xNXr8uRDi16AH7XU9dKDEP/EH8s3ZfLkqtQVtZc3SEYOUyhuKkXK9Ocp
- QVhuIx0H9wsiVrXbgf1KP/AJbbygn0iX3X3ng4n9RW/L+baem1XhVUhpQLfC2YSJhzRCWqnlj
- yZL2YgtkPklU99ksgAVYMh99TlYucpPbP8xDLKY+/JZ0yju5r/IeHamid/mUsqurnDbGdnnYW
- doT+jwWjvnDX+Kku1wjlivdUmT/+Y/FEEoBJfWtjRVT/CF/njyR4VUlWzNlLfzACKYAJUJWDl
- a0nj14yri/G5E6tYbwM9qxEbnkLokLrU1j8ZjhAI88RA4vfVXC2ic1PHa+YIFtqisLPcB/jWP
- xdDs6ic6rCetrR1DkHHBfxTrp84inqsna5TYFNjgd0pExPFwMo0ianrBRTyVVQMouMQAit6Fa
- mLTOjYtPHoCrgXgxhxOv4XYHG+xPscH4oa7C1DmoVjwmOBNcMv95EwdaNhcv8tGdc0Aaw2+2k
- S0szbt6ppfA/E9EP7h+MwWatK6HKEqVbQfyv6GxV2MxHxkJoT35hf9x70Wp3fDFbOZBgnWd/s
- mnATF4KBnmz+uELEGyS4GA/HqfreUMO9Veq04FSRwD6gewbjNpHi2H08dIWK4pMRc1tiDk1+q
- iilxYnIyxuo3Of5eGnNZilwMvK8xMyvgpuQ1lWdoDCoBY=
+Date: Mon, 19 Feb 2024 16:01:20 +0000
+Message-ID: <214312.1708358480@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-I apologize, this is my first patch ever.
+Daniil Dulov <D.Dulov@aladdin.ru> wrote:
 
-On my HP EliteBook 840 G8 Notebook PC (ProdId 5S7R6EC#ABD, built 2022 for
-german market) the Mute LED ist always on. The mute button itself works as
-expected. alsa-info.sh shows a different subsystem-id 0x8ab9 for Realtek
-ALC285 Codec, thus the existing quirks for HP 840 G8 don't work.
-Therefore, add a new quirk for this type of EliteBook.
+> Thank you for your feedback. I agree with the suggested improvement. I w=
+ill send v3 a bit later today.
 
-Signed-off-by: Hans Peter <flurry123@gmx.ch>
-=2D--
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+I posted an updated patch:
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 0ec1312bffd5..26a90c92c3b8 100644
-=2D-- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -9927,6 +9927,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[]=
- =3D {
- 	SND_PCI_QUIRK(0x103c, 0x8aa3, "HP ProBook 450 G9 (MB 8AA1)", ALC236_FIXU=
-P_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8aa8, "HP EliteBook 640 G9 (MB 8AA6)", ALC236_FI=
-XUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8aab, "HP EliteBook 650 G9 (MB 8AA9)", ALC236_FI=
-XUP_HP_GPIO_LED),
-+	SND_PCI_QUIRK(0x103c, 0x8ab9, "HP EliteBook 840 G8 (MB 8AB8)", ALC285_FI=
-XUP_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9", ALC245_FIXUP_CS3=
-5L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook PC",=
- ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
- 	SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook PC",=
- ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
-=2D-
-2.43.2
+https://lore.kernel.org/linux-fsdevel/20240219143906.138346-3-dhowells@red=
+hat.com/T/#u
 
 
