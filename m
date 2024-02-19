@@ -1,214 +1,163 @@
-Return-Path: <linux-kernel+bounces-71474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3948085A5D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:25:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1942185A5DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:26:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8BE7FB21041
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:25:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D2D71C21070
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCE7374EE;
-	Mon, 19 Feb 2024 14:24:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A69A376E9;
+	Mon, 19 Feb 2024 14:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="m3wIp3nq"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="X6rgod5W";
+	dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b="X6rgod5W"
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [96.44.175.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A723714E
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:24:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708352696; cv=fail; b=Ytru2ye8oTa8cGbrlmPGzlCmraY5Hyb5LCfjjuClsztoX7lXKOd1Mtzw91jLucAl6q7ilL8r1ccMxfker1Pq3gKOHcxuSqtPslQEVRlDFLBnRtWQDysiFlBmqt/cSEKXZX1//3ubmF64w/8n0QlBlZ8cb3TlogUtyyT6J00phTc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708352696; c=relaxed/simple;
-	bh=j+WLjYG1DpNLCumaCAx7gwu8miX7yrvX9wfnwPslVbg=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=YNLmb5HR/hyhkP82oadDf72en6Sh477GbUydAi+qFs4gGOl+WgnPk6G1kp4b4HnioMRAxUXfCwf6e9QJ//dWhyYj2IMlXNsXPZe+ShmCqzKJ8heN2QyMYb07iAQwV8ns5ccuvUpNbiN9KdWsDFbtLKYCRFSy3gqiZBMzET2ZJWw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=m3wIp3nq; arc=fail smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3054B37160;
+	Mon, 19 Feb 2024 14:26:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.44.175.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708352791; cv=none; b=GsY2DiChj6L+4EumfxUKiRcHy3/a6m1qiwhjkUfJBHZEtIBwTZojRfx7jOJE0git7JZlJxzG7MhAJmuQzoiSyS5Wpd8s0XictVWm5Mx8dxbHviaz8xbV6kAa3aQWcMODSm88Bjy7aXph52hmmk0UwixNign1pKPcaWt45pItv/M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708352791; c=relaxed/simple;
+	bh=tDeLBVZBhJnHFKvYyiFdc/Oh6W2qYH8MubgFjeGN0t8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=oqNK7RsbXgKnqbsWngL02bLmZLe2zSGvYeHkTxxNQQ16zC2PfSQITmjgF9eGpJtKb9rmX119YuE/KUxMrlgpPoS+hxVO12Ke02xFikv1ptq1vpoZOOCo8/P4zL75sCCxmbRu/mKh/EnSo0/owk50erShfY4ik6e3cxdI5klBjsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com; spf=pass smtp.mailfrom=HansenPartnership.com; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=X6rgod5W; dkim=pass (1024-bit key) header.d=hansenpartnership.com header.i=@hansenpartnership.com header.b=X6rgod5W; arc=none smtp.client-ip=96.44.175.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=HansenPartnership.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=HansenPartnership.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708352694; x=1739888694;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=j+WLjYG1DpNLCumaCAx7gwu8miX7yrvX9wfnwPslVbg=;
-  b=m3wIp3nqe3SV2wGPlNMnePeOIsOpHkNyFtk60mbzEDSYIILgikFfKTOt
-   DEPaNGCT1MR41HmBAccKGF5OX1izd2Z5wz2Wp4eSSDCWDtu84BkJO9gfg
-   wWy2Dk1j/Yd3RBX3N98VobqkJ9BbWgSk1ELRtogT93wWQSND/o+xe62Yx
-   +vxd0TMQvBCC65E415DlUGGVJCcfPOqZ6gi9+cmIRbEAf8RiRCL6cS49U
-   SsEXTiBtiQLF23hRaOadQQUMtww7IcMjU98XSEq4GjYnNYudUvCcBT9CW
-   dP7UxdQ9dA/+yV1lFdnS/sBQC1k0gEyQZMfHtRJW+H2mUVf8ZJ151KL2O
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="6209448"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="6209448"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 06:24:53 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="9187889"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 06:24:53 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 06:24:53 -0800
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 06:24:52 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 06:24:52 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.169)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 19 Feb 2024 06:24:51 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CzOZNZfsgrrTKTD+6hjE7LOc7u4Hvsu4kK+pPyhUK+X8/foyccfS/CWEKYFfDN9BCFIrY2HyKhly/jjRjCyR9TZBaDkbmb7H/JVmwVe+sjtZ8bf80N/g6ZicSqoh5iEIEJvu26sngJqg01DMoBpGcETb9W3OaCQQqgvXHcju0rVLhfL1W50hzI564AaOiAg5YOxhhX/8E0lW3lryQfSSIjM+cxCYfPvrXi7L6EDxnjVV3J3eUa9ioZufidLellKaFYLy4o0peIatkMNgW75McpAe2jqXVqDrw3vRZ8eKx+JIFHtKr+lgtntGLueWvvrd+0EOLMaYvi4uHO0l2HbopQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bj4Odu+DeOUKjgMLD6JZKPHxKpnuMBn4/bp3DWe3c+w=;
- b=IF0e7lZGfuFGe3+NkaoWE2OyeFKudi97nG9rt9rp+OArWdV+l5G3TyIiFUakd0GGiuAXh4gJRo8C1DpTt9LpCMt097dSB0oWtocPf+HutdAstbgQJhdz9bwh1eN0ORBjBwy+AmO4y+utgsxkjslkWSFbUlQtFI8WtPGK9/v9ED30NUJX8NMswv95tE6M+SgjtlY9OGJm0e702YEO1ou6MJ7Aoto3vSxqPRSAynsQanP4GeM4RDMIcQgLDqCWiNmi11diyfdUPxOixEMFwxYrUTQVn5cr//DabUzF5Ge91ZGejduN2SsMvW6uUcLAQv7XwON7A3eL7LmWtTQeLvYWlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19) by
- CY8PR11MB7169.namprd11.prod.outlook.com (2603:10b6:930:90::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7292.39; Mon, 19 Feb 2024 14:24:50 +0000
-Received: from DM4PR11MB6020.namprd11.prod.outlook.com
- ([fe80::a83c:a9dc:f30d:507]) by DM4PR11MB6020.namprd11.prod.outlook.com
- ([fe80::a83c:a9dc:f30d:507%7]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
- 14:24:50 +0000
-Date: Mon, 19 Feb 2024 22:24:39 +0800
-From: Chen Yu <yu.c.chen@intel.com>
-To: Hillf Danton <hdanton@sina.com>
-CC: Peter Zijlstra <peterz@infradead.org>, Mathieu Desnoyers
-	<mathieu.desnoyers@efficios.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Mel Gorman <mgorman@suse.de>, K Prateek Nayak
-	<kprateek.nayak@amd.com>, Chen Yu <yu.chen.surf@gmail.com>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 3/3] sched/fair: do not scribble cache-hot CPU in
- select_idle_cpu()
-Message-ID: <ZdNkp5DP8aKnsYGt@chenyu5-mobl2>
-References: <cover.1700548379.git.yu.c.chen@intel.com>
- <20240219115014.1333-1-hdanton@sina.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240219115014.1333-1-hdanton@sina.com>
-X-ClientProxiedBy: SGXP274CA0021.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::33)
- To DM4PR11MB6020.namprd11.prod.outlook.com (2603:10b6:8:61::19)
+	d=hansenpartnership.com; s=20151216; t=1708352788;
+	bh=tDeLBVZBhJnHFKvYyiFdc/Oh6W2qYH8MubgFjeGN0t8=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=X6rgod5WNqiue37EBcG75bN+ZiZTpoNYon5iS1qMIA6pcgOykm/icAWOADJtAQDLx
+	 z7jhf4a/X/mFCarEQ/7q8bfsK5Vc6/tt30BzUm0sTpjTWG+h3oYLvSM+FZDKtg6yjX
+	 5hLko2nQBZalmgCPP0TPoBzs97/ef68sf56J3cck=
+Received: from localhost (localhost [127.0.0.1])
+	by bedivere.hansenpartnership.com (Postfix) with ESMTP id 5A17A1286952;
+	Mon, 19 Feb 2024 09:26:28 -0500 (EST)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id iFERsniFKniF; Mon, 19 Feb 2024 09:26:28 -0500 (EST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=hansenpartnership.com; s=20151216; t=1708352788;
+	bh=tDeLBVZBhJnHFKvYyiFdc/Oh6W2qYH8MubgFjeGN0t8=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+	b=X6rgod5WNqiue37EBcG75bN+ZiZTpoNYon5iS1qMIA6pcgOykm/icAWOADJtAQDLx
+	 z7jhf4a/X/mFCarEQ/7q8bfsK5Vc6/tt30BzUm0sTpjTWG+h3oYLvSM+FZDKtg6yjX
+	 5hLko2nQBZalmgCPP0TPoBzs97/ef68sf56J3cck=
+Received: from lingrow.int.hansenpartnership.com (unknown [IPv6:2601:5c4:4302:c21::a774])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits))
+	(Client did not present a certificate)
+	by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 987511286941;
+	Mon, 19 Feb 2024 09:26:27 -0500 (EST)
+Message-ID: <141b4c7ecda2a8c064586d064b8d1476d8de3617.camel@HansenPartnership.com>
+Subject: Re: [LSF TOPIC] beyond uidmapping, & towards a better security model
+From: James Bottomley <James.Bottomley@HansenPartnership.com>
+To: Kent Overstreet <kent.overstreet@linux.dev>, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lsf-pc@lists.linux-foundation.org
+Cc: Christian Brauner <christian@brauner.io>, =?ISO-8859-1?Q?St=E9phane?=
+	Graber <stgraber@stgraber.org>
+Date: Mon, 19 Feb 2024 09:26:25 -0500
+In-Reply-To: <tixdzlcmitz2kvyamswcpnydeypunkify5aifsmfihpecvat7d@pmgcepiilpi6>
+References: 
+	<tixdzlcmitz2kvyamswcpnydeypunkify5aifsmfihpecvat7d@pmgcepiilpi6>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR11MB6020:EE_|CY8PR11MB7169:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6c6c124f-b96c-44a3-c9c3-08dc3156884b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 54D4wrSlUqgY85k8FEOtiHRSpKeFSO9bMDz4aLyxS13xNEoB1ydW/Z7Yu1uCAEYgdSmZex02vXHQC6SG7vr1wYE6KdUvaDWZ+G3Wf+cpokLdtaOjF+SED53SMaB/doaxFUZUNbixE8qVdeJimAJ2eyqCZMsmJhjEU2azUWaXiYJ415plcNHhNRsh43oyVD/PmAjhKFkpHTqrs6JrH2kS1r7xDxJj29LQ4y7hlfI7PTzQo6FzQdBXgbrcBxlBYj4YkyVA0H/VR/eRKrYEC05Q2yGXKte9Gkn3GuambXt7BQcLrc8ASoOPkMA5YoPO88dPdbqcV4E4OXjtLAPkoJQj/7ud92bloc9zpeo63lW9mku8MFlDu/mcQBD4dcvuxdQT65qGWLMq7rDyypcK2zZDic6dy3WkmmHtjHeihHWjwcmO32X2TRSBo3nCkW+Qlokad6jokb4U0ftwRjFLCNi4dkFGOcB3tvqyIDjwbMqgiAxqZKKXQDSzVEo/7MXt2Hp6IRbmmUt4XMJM8XxXeCM8fk3VqWax0rzNjhJe7SRJQEM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR11MB6020.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?TpqwfekDaOScb3oyU/V/uTpzWGFMywJvS1ayqc7bInoEHrknhIIvocwkyP1q?=
- =?us-ascii?Q?4D5297m8ug6mcKVLduRAnSufrXG5HFCwGYBtCKt44aImZ/ChLMsUH144R/Rc?=
- =?us-ascii?Q?9Q/38gkVAHXHpzU7piMhij8y2/tkc7/akFKlz7IfNXd+mU9iI3NCG4J9bEZN?=
- =?us-ascii?Q?66XzrwxhbmzQM6f/mNBIZMu4oP0MEzVYOQmi7sVAASDMEykRUXoOsoQttmlh?=
- =?us-ascii?Q?iAo8Gs2u7Lcot/QiBUKAZBFamDVmnp28DjpzS9V7L3JUo53+BYSBcFBEZ3iY?=
- =?us-ascii?Q?w2c6OyQfE3jhSnPUC/v0JtXcJvyUb6N616daQKJyciJT5kwWemnhaL9tYTlY?=
- =?us-ascii?Q?SYtH3TfUijG6a3P+hvYUT9dkS/4K5TBPs4j0klITrz+tgzCtq/cGtcxIfZp5?=
- =?us-ascii?Q?exPAMfFcUJl07bUu033hGKsSmAu3kzx+1vCydmaYd7IRNJlMg2AIhmdMESJ+?=
- =?us-ascii?Q?Zd9AzH1r7io1cimhm71I2vYx30bAgb+d9BTnGKGDNFU5iFz+YlL3gK2soTJ1?=
- =?us-ascii?Q?u8g/2rWh7+pQOL+uyHEkusuu0IkVjAZcJF0wHGCE2AF80a+Kw3Ct4sNZpvop?=
- =?us-ascii?Q?73IkQ3Dcg0uPaYsFgCDkKhgfCNAy5vLWXeecIjvu+Y/IIUq58l2mWaoTAeqI?=
- =?us-ascii?Q?2jEReBK1h4etEXuHOx7tNQ/SD8R20bUGx+oEiOT78qyi7aXqs2/fcuuAtqGz?=
- =?us-ascii?Q?/LaK+b7T2Hj0dsU4bYOhGDu0wZGzZsDMKS3KnaJgEREpubB/NR3tJ5z20IZX?=
- =?us-ascii?Q?rmZ6a7K2+E0WfOKAo9JVAdHCrlaKNK5rmP6bGtGdSG3iDsbGf1m/5+Vxi4es?=
- =?us-ascii?Q?b5l3b8ATLz7DRpYBXUtbwtia8uNLwjlWlE/7I3uZ5LQv4v8L6bEbGsWtvu/g?=
- =?us-ascii?Q?azOChsIcNWO9PYXPtG247aSoyYvbzuMrBAD3xlU9RT5XX6GSJSknnD1xf7Is?=
- =?us-ascii?Q?N5Vdf/vRoR5w+TEGA8PMBFVCGb8zIBFh0aXIN63yD/u8kpNdpnDT6qcOj2Sb?=
- =?us-ascii?Q?THywKBH2DNInd9Li9nnEWDaTm+cuUgD13IWad833qjLScH0bz2PmODDGaJRa?=
- =?us-ascii?Q?s8b9sE7T1fy5n0gNykmDdkOPe0Ka79CJ8EedEdVUIDf30C3HsQL3JPC7xNku?=
- =?us-ascii?Q?RMtTb61tY+yxtuWs5SSGjeyl3G7evrKiZYD1ZhbFtlZUjLxTgQjFJFveXlmz?=
- =?us-ascii?Q?9Lz0QVC9WEkaHjYwrc4ov+e134ctbvxWtUT4njqm6ipErx7F4qbhoyDhBbp9?=
- =?us-ascii?Q?eZ9LPq7N9N9olz75xC9nLRLGkTjb0OLY8HaWlXq5sLz1sGqYiQEbyAIFYZJd?=
- =?us-ascii?Q?ixWvUB2VSoio4NEatY9YtcCW0HCbTA1HcfGllf9KxOF78+Bi4opgxLJV7w8S?=
- =?us-ascii?Q?SGLkjFt6dh/vDHDdIGbrNdb0eKnD32hlK7JbaMz1TKeU0H6vOq5no6Q/7+6V?=
- =?us-ascii?Q?Ax5gWduXsS6EYPGlZUuwxUbWFyUyYmI8hWcgSnIlno2N2g6Q/9juGZURNkLF?=
- =?us-ascii?Q?Hgvb2N6fbMus0XjhEP7jvHNcL79AAG6Rd+3gTHRzE6S7X3BpdsaC3bsO0CPS?=
- =?us-ascii?Q?jhfAbFpsEbpJUQT1dLWydTrOHTo31U93CaNOlL1s?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6c6c124f-b96c-44a3-c9c3-08dc3156884b
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR11MB6020.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 14:24:50.6472
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: kq2UmlRv2I9HyhZRgmkTjkNAFFRum5LBVqC0pYc1zJC27BkiiKknQ+1mpG2jcLFiPio99Vo835D69y38cybdaQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7169
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-Hi Hillf,
-
-On 2024-02-19 at 19:50:14 +0800, Hillf Danton wrote:
-> On Tue, 21 Nov 2023 15:40:14 +0800 Chen Yu <yu.c.chen@intel.com>
-> > Problem statement:
-> > When task p is woken up, the scheduler leverages select_idle_sibling()
-> > to find an idle CPU for it. p's previous CPU is usually a preference
-> > because it can improve cache locality. However in many cases, the
-> > previous CPU has already been taken by other wakees, thus p has to
-> > find another idle CPU.
-> > 
-> > Proposal:
-> > Introduce the SIS_CACHE. It considers the sleep time of the task for
-> > better task placement. Based on the task's short sleeping history,
-> > tag p's previous CPU as cache-hot. Later when p is woken up, it can
-> > choose its previous CPU in select_idle_sibling(). When other task is
-> > woken up, skip this cache-hot idle CPU when possible.
-> > 
-> > SIS_CACHE still prefers to choose an idle CPU during task wakeup,
-> > the idea is to optimize the idle CPU scan sequence.
+On Sat, 2024-02-17 at 15:56 -0500, Kent Overstreet wrote:
+> AKA - integer identifiers considered harmful
 > 
-> Could you specify why the currently selected cpu fails to work in the
-> scenario described above?
->
+> Any time you've got a namespace that's just integers, if you ever end
+> up needing to subdivide it you're going to have a bad time.
+> 
+> This comes up all over the place - for another example, consider
+> ioctl numbering, where keeping them organized and collision free is a
+> major headache.
+> 
+> For UIDs, we need to be able to subdivide the UID namespace for e.g.
+> containers and mounting filesystems as an unprivileged user - but
+> since we just have an integer identifier, this requires complicated
+> remapping and updating and maintaining a global table.
+> 
+> Subdividing a UID to create new permissions domains should be a
+> cheap, easy operation, and it's not.
+> 
+> The solution (originally from plan9, of course) is - UIDs shouldn't
+> be numbers, they should be strings; and additionally, the strings
+> should be paths.
+> 
+> Then, if 'alice' is a user, 'alice.foo' and 'alice.bar' would be
+> subusers, created by alice without any privileged operations or
+> mucking with outside system state, and 'alice' would be superuser
+> w.r.t. 'alice.foo' and 'alice.bar'.
+> 
+> What's this get us?
 
-Thank you for your review.
+I would have to say that changing kuid for a string doesn't really buy
+us anything except a load of complexity for no very real gain. 
+However, since the current kuid is u32 and exposed uid is u16 and there
+is already a proposal to make use of this somewhat in the way you
+envision, there might be a possibility to re-express kuid as an array
+of u16s without much disruption.  Each adjacent pair could represent
+the owner at the top and the userns assigned uid underneath.  That
+would neatly solve the nesting problem the current upper 16 bits
+proposal has.
 
-I assume that "currently select cpu" means "target". First, the "target"
-could be chosen by wake_affine() -> wake_affine_weight(), which can
-return non-idle candidate CPU. That is to say, when we reached below code,
-the target and the prev could both be non-idle. Second, when target and
-prev are both non-idle, select_idle_sibling() has to traverse the other CPUs
-to find an idle one. What we do in SIS_CACHE is to increase the possibility
-that the prev is idle and return directly in below code path.
+However, neither proposal would get us out of the problem of mount
+mapping because we'd have to keep the filesystem permission check on
+the owning uid unless told otherwise.
 
-Say, task p1's previous CPU is CPU1, and p1 is sleeping. With SIS_CACHE,
-when another task p2 is woken up in select_idle_sibling()->select_idle_cpu(),
-p2 tries to find CPU2 or CPU3 or CPU4... but not CPU1. This makes it easier
-for p1 to find that CPU1 is idle when p1 is woken up, and choose CPU1 when
-possible.
+> Much better, easier to use sandboxing - and maybe we can kill off a
+> _whole_ lot of other stuff, too. 
+> 
+> Apparmour and selinux are fundamentally just about sandboxing
+> programs so they can't own everything owned by the user they're run
+> by.
+> 
+> But if we have an easy way to say "exec this program as a subuser of
+> the current user..."
+> 
+> Then we can control what that program can access with just our
+> existing UNIX permission and acls.
+> 
+> This would be a pretty radical change, and there's a number of things
+> to explore - lots of brainstorming to do.
+> 
+>  - How can we do this without breaking absolutely everything?
+> Obviously,
+>    any syscalls that communicate in terms of UIDs and GIDs are a
+>    problem; can we come up with a compat layer so that most stuff
+> more
+>    or less still works?
+> 
+>  - How can we do this a way that's the most orthogonal, that gets us
+> the
+>    most bang for our buck? How can we kill off as much security model
+>    stupidity as possible? How can we make sandboxing _dead easy_ for
+> new
+>    applications?
 
-thanks,
-Chenyu
-> 	/*
-> 	 * If the previous CPU is cache affine and idle, don't be stupid:
-> 	 */
-> 	if (prev != target && cpus_share_cache(prev, target) &&
-> 	    (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-> 	    asym_fits_cpu(task_util, util_min, util_max, prev))
-> 		return prev;
+So all of the above could be covered by a u16 kuid array with the last
+element exposed to the user as the uid.  However, there are still
+problems even with that approach: the unmapped uid/gid is something
+some containers rely on and, as I said above, the mount mapping still
+would have to be admin assigned.
+
+James
+
 
