@@ -1,285 +1,126 @@
-Return-Path: <linux-kernel+bounces-72126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CF9385AFB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:19:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C343C85AFC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:22:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D650B21BED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:18:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 713CD1F22516
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:22:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F0556759;
-	Mon, 19 Feb 2024 23:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 880E856774;
+	Mon, 19 Feb 2024 23:22:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EaJ+0C/c"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95F154FA8;
-	Mon, 19 Feb 2024 23:18:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3CC954F94;
+	Mon, 19 Feb 2024 23:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708384729; cv=none; b=D46HUPDKp5LuTwGACnXylzWAD/QvsMDW+dTVCLGR14CpnLuilfMFh6feEk3/RgumIe7bdHuApP9JBG2D1EXCPky6H1FujZcSbvxTBEIwJYEvZoiG/tk4JWDzOhGBOCwbNq6UNaSxTip7+5ZeWBL4ey4Fz+nIwScZKlTfRMRa4Cw=
+	t=1708384960; cv=none; b=QYmM1jNmTs+ZnZoxF6erwbjl1w69152O+VGs6EVXR6qAPUyrfF4SsGVEm5DFprsA2m70nvQ3c6HXwID0U1LvhzxHYqpc/twBcuw6fO/GL9/4VxpsWSBvAhig13vQ7pB1GVW2D3+mCPx6ho/Lb2LqCIKV0b4bAE9EkS0XB24/ol4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708384729; c=relaxed/simple;
-	bh=ieo1LD6zpA/ghJMMNhYNt1Dzh9yD4gVLvF+JYaQMH6w=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Yt1CqmvwNbf2fenpObjMKmDvHnCctoq4Vue+TgKS8WJ0WIDaw7xYJAOnvYiyAGRcT5ZVemFLJiEd1ZNTruiB+g2WpqaHDRVTNRW9ZCTJu3uDyYM0bhiEz0n7ODx0VrlfuoiU7JU32p+p/emRaU8MECremRLyfiRtfIZCytke9GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12EDDC433F1;
-	Mon, 19 Feb 2024 23:18:48 +0000 (UTC)
-Date: Mon, 19 Feb 2024 18:20:32 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
- <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH v3] ring-buffer: Simplify reservation with try_cmpxchg()
- loop
-Message-ID: <20240219182032.2605d0a3@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708384960; c=relaxed/simple;
+	bh=FWpOBCkODHabkJO/2Ou8aa2AzNh5BEcl7n0oV56Fg6I=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=HIVEvNOMnskm0UkSQZV/Gk2qfohFIQP3yClvo6OxDTJllozA/0MEvvnd9gfwbZSZADlLOTe3QL09ra2oynHLJTbIh1jZnFBgmJkIz+glTwsCJNkOJ2zoS5Wooj/VLsj/3RarNoLnQKXPXUMEdE3nTSX2RhrCPGeI4d9OoGyRnBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=EaJ+0C/c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA7CCC433F1;
+	Mon, 19 Feb 2024 23:22:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1708384960;
+	bh=FWpOBCkODHabkJO/2Ou8aa2AzNh5BEcl7n0oV56Fg6I=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EaJ+0C/cEo6UVze4RUQGwKFJgNpO8UmXvSGW6lbK+7OHYWMujxiCpHYry3kLZrm7R
+	 /qv5sNQdPs+ftbGleMvMDWz30WC8x5xjzyROERVRnVce32Sk1lEBFPcnhKg18tQmZt
+	 FU4nutJtr81rBgvMzuJ3pOv9yUmRjneixVpyBw0Y=
+Date: Mon, 19 Feb 2024 15:22:39 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: syzbot <syzbot+6f3c38e8a6a0297caa5a@syzkaller.appspotmail.com>,
+ jasowang@redhat.com, linux-kernel@vger.kernel.org,
+ linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+ syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev,
+ xuanzhuo@linux.alibaba.com, linux-mm@kvack.org
+Subject: Re: [syzbot] [virtualization?] linux-next boot error: WARNING:
+ refcount bug in __free_pages_ok
+Message-Id: <20240219152239.e281ca98f06cb71276db7791@linux-foundation.org>
+In-Reply-To: <20240219022853-mutt-send-email-mst@kernel.org>
+References: <000000000000d305050611b50d09@google.com>
+	<20240219022853-mutt-send-email-mst@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Mon, 19 Feb 2024 02:35:20 -0500 "Michael S. Tsirkin" <mst@redhat.com> wrote:
 
-Instead of using local_add_return() to reserve the ring buffer data,
-Mathieu Desnoyers suggested using local_cmpxchg(). This would simplify the
-reservation with the time keeping code.
+> On Sun, Feb 18, 2024 at 09:06:18PM -0800, syzbot wrote:
+> > Hello,
+> > 
+> > syzbot found the following issue on:
+> > 
+> > HEAD commit:    d37e1e4c52bc Add linux-next specific files for 20240216
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=171ca652180000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=4bc446d42a7d56c0
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=6f3c38e8a6a0297caa5a
+> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > 
+> > Downloadable assets:
+> > disk image: https://storage.googleapis.com/syzbot-assets/14d0894504b9/disk-d37e1e4c.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/6cda61e084ee/vmlinux-d37e1e4c.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/720c85283c05/bzImage-d37e1e4c.xz
+> > 
+> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > Reported-by: syzbot+6f3c38e8a6a0297caa5a@syzkaller.appspotmail.com
+> > 
+>
+> ...
+>
+> > usbcore: registered new interface driver port100
+> > usbcore: registered new interface driver nfcmrvl
+> > Loading iSCSI transport class v2.0-870.
+> > virtio_scsi virtio0: 1/0/0 default/read/poll queues
+> > ------------[ cut here ]------------
+> > refcount_t: decrement hit 0; leaking memory.
+> > WARNING: CPU: 0 PID: 1 at lib/refcount.c:31 refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+> > Modules linked in:
+> > CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc4-next-20240216-syzkaller #0
+> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> > RIP: 0010:refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+> > Code: b2 00 00 00 e8 b7 94 f0 fc 5b 5d c3 cc cc cc cc e8 ab 94 f0 fc c6 05 c6 16 ce 0a 01 90 48 c7 c7 a0 5a fe 8b e8 67 69 b4 fc 90 <0f> 0b 90 90 eb d9 e8 8b 94 f0 fc c6 05 a3 16 ce 0a 01 90 48 c7 c7
+> > RSP: 0000:ffffc90000066e10 EFLAGS: 00010246
+> > RAX: 15c2c224c9b50400 RBX: ffff888020827d2c RCX: ffff8880162d8000
+> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> > RBP: 0000000000000004 R08: ffffffff8157b942 R09: fffffbfff1bf95cc
+> > R10: dffffc0000000000 R11: fffffbfff1bf95cc R12: ffffea000502fdc0
+> > R13: ffffea000502fdc8 R14: 1ffffd4000a05fb9 R15: 0000000000000000
+> > FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: ffff88823ffff000 CR3: 000000000df32000 CR4: 00000000003506f0
+> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > Call Trace:
+> >  <TASK>
+> >  reset_page_owner include/linux/page_owner.h:24 [inline]
+> >  free_pages_prepare mm/page_alloc.c:1140 [inline]
+> >  __free_pages_ok+0xc42/0xd70 mm/page_alloc.c:1269
+> >  make_alloc_exact+0xc4/0x140 mm/page_alloc.c:4847
+> >  vring_alloc_queue drivers/virtio/virtio_ring.c:319 [inline]
+> 
+> Wow this seems to be breakage deep in mm/ - all virtio does is
+> call alloc_pages_exact and that corrupts the refcounts?
+> 
 
-Although, it does not get rid of the double time stamps (before_stamp and
-write_stamp), using cmpxchg() does get rid of the more complex case when
-an interrupting event occurs between getting the timestamps and reserving
-the data, as when that happens, it just tries again instead of dealing
-with it.
-
-Before we had:
-
-	w = local_read(&tail_page->write);
-	/* get time stamps */
-	write = local_add_return(length, &tail_page->write);
-	if (write - length == w) {
-		/* do simple case */
-	} else {
-		/* do complex case */
-	}
-
-By switching the local_add_return() to a local_try_cmpxchg() it can now be:
-
-	 w = local_read(&tail_page->write);
- again:
-	/* get time stamps */
-	if (!local_try_cmpxchg(&tail_page->write, &w, w + length))
-		goto again;
-
-	 /* do simple case */
-
-The benchmarks between the two showed no regressions when trying this:
-
- Enable: CONFIG_TRACEPOINT_BENCHMARK
-
- # trace-cmd record -m 800000 -e benchmark sleep 60
-
-Before the patch:
-
- # trace-cmd report | tail
- event_benchmark-944   [003]  1998.910191: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
- event_benchmark-944   [003]  1998.910192: benchmark_event:      last=149 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=149
- event_benchmark-944   [003]  1998.910193: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
- event_benchmark-944   [003]  1998.910193: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
- event_benchmark-944   [003]  1998.910194: benchmark_event:      last=136 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=136
- event_benchmark-944   [003]  1998.910194: benchmark_event:      last=138 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=138
- event_benchmark-944   [003]  1998.910195: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
- event_benchmark-944   [003]  1998.910196: benchmark_event:      last=151 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=151
- event_benchmark-944   [003]  1998.910196: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
- event_benchmark-944   [003]  1998.910197: benchmark_event:      last=152 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=152
-
-After the patch:
-
- # trace-cmd report | tail
- event_benchmark-848   [004]   171.414716: benchmark_event:      last=143 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=143
- event_benchmark-848   [004]   171.414717: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
- event_benchmark-848   [004]   171.414718: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
- event_benchmark-848   [004]   171.414718: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
- event_benchmark-848   [004]   171.414719: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
- event_benchmark-848   [004]   171.414719: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
- event_benchmark-848   [004]   171.414720: benchmark_event:      last=140 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=140
- event_benchmark-848   [004]   171.414721: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
- event_benchmark-848   [004]   171.414721: benchmark_event:      last=145 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=145
- event_benchmark-848   [004]   171.414722: benchmark_event:      last=144 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=144
-
-It may have even improved!
-
-Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
-Changes since v2: https://lore.kernel.org/linux-trace-kernel/20240219173003.08339d54@gandalf.local.home
-
-- Fixed info.field to be info->field
-
- kernel/trace/ring_buffer.c | 103 ++++++++++++-------------------------
- 1 file changed, 34 insertions(+), 69 deletions(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index fd4bfe3ecf01..6809d085ae98 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -3455,9 +3455,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	/* Don't let the compiler play games with cpu_buffer->tail_page */
- 	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
- 
-- /*A*/	w = local_read(&tail_page->write) & RB_WRITE_MASK;
-+ /*A*/	w = local_read(&tail_page->write);
- 	barrier();
- 	rb_time_read(&cpu_buffer->before_stamp, &info->before);
-+	/* Read before_stamp only the first time through */
-+ again:
- 	rb_time_read(&cpu_buffer->write_stamp, &info->after);
- 	barrier();
- 	info->ts = rb_time_stamp(cpu_buffer->buffer);
-@@ -3470,7 +3472,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 		 * absolute timestamp.
- 		 * Don't bother if this is the start of a new page (w == 0).
- 		 */
--		if (!w) {
-+		if (!(w & RB_WRITE_MASK)) {
- 			/* Use the sub-buffer timestamp */
- 			info->delta = 0;
- 		} else if (unlikely(info->before != info->after)) {
-@@ -3487,89 +3489,52 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 
-  /*B*/	rb_time_set(&cpu_buffer->before_stamp, info->ts);
- 
-- /*C*/	write = local_add_return(info->length, &tail_page->write);
-+ /*C*/	if (!local_try_cmpxchg(&tail_page->write, &w, w + info->length)) {
-+		if (info->add_timestamp & (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND))
-+			info->length -= RB_LEN_TIME_EXTEND;
-+		goto again;
-+	}
- 
--	/* set write to only the index of the write */
--	write &= RB_WRITE_MASK;
-+	/* Set write to the start of this event */
-+	write = w & RB_WRITE_MASK;
- 
--	tail = write - info->length;
-+	/* set tail to the end of the event */
-+	tail = write + info->length;
- 
- 	/* See if we shot pass the end of this buffer page */
--	if (unlikely(write > cpu_buffer->buffer->subbuf_size)) {
-+	if (unlikely(tail > cpu_buffer->buffer->subbuf_size)) {
- 		check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
--		return rb_move_tail(cpu_buffer, tail, info);
-+		return rb_move_tail(cpu_buffer, write, info);
- 	}
- 
--	if (likely(tail == w)) {
--		/* Nothing interrupted us between A and C */
-- /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
--		/*
--		 * If something came in between C and D, the write stamp
--		 * may now not be in sync. But that's fine as the before_stamp
--		 * will be different and then next event will just be forced
--		 * to use an absolute timestamp.
--		 */
--		if (likely(!(info->add_timestamp &
--			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
--			/* This did not interrupt any time update */
--			info->delta = info->ts - info->after;
--		else
--			/* Just use full timestamp for interrupting event */
--			info->delta = info->ts;
--		check_buffer(cpu_buffer, info, tail);
--	} else {
--		u64 ts;
--		/* SLOW PATH - Interrupted between A and C */
--
--		/* Save the old before_stamp */
--		rb_time_read(&cpu_buffer->before_stamp, &info->before);
--
--		/*
--		 * Read a new timestamp and update the before_stamp to make
--		 * the next event after this one force using an absolute
--		 * timestamp. This is in case an interrupt were to come in
--		 * between E and F.
--		 */
--		ts = rb_time_stamp(cpu_buffer->buffer);
--		rb_time_set(&cpu_buffer->before_stamp, ts);
--
--		barrier();
-- /*E*/		rb_time_read(&cpu_buffer->write_stamp, &info->after);
--		barrier();
-- /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
--		    info->after == info->before && info->after < ts) {
--			/*
--			 * Nothing came after this event between C and F, it is
--			 * safe to use info->after for the delta as it
--			 * matched info->before and is still valid.
--			 */
--			info->delta = ts - info->after;
--		} else {
--			/*
--			 * Interrupted between C and F:
--			 * Lost the previous events time stamp. Just set the
--			 * delta to zero, and this will be the same time as
--			 * the event this event interrupted. And the events that
--			 * came after this will still be correct (as they would
--			 * have built their delta on the previous event.
--			 */
--			info->delta = 0;
--		}
--		info->ts = ts;
--		info->add_timestamp &= ~RB_ADD_STAMP_FORCE;
--	}
-+	/* Nothing interrupted us between A and C */
-+ /*D*/	rb_time_set(&cpu_buffer->write_stamp, info->ts);
-+	/*
-+	 * If something came in between C and D, the write stamp
-+	 * may now not be in sync. But that's fine as the before_stamp
-+	 * will be different and then next event will just be forced
-+	 * to use an absolute timestamp.
-+	 */
-+	if (likely(!(info->add_timestamp &
-+		     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
-+		/* This did not interrupt any time update */
-+		info->delta = info->ts - info->after;
-+	else
-+		/* Just use full timestamp for interrupting event */
-+		info->delta = info->ts;
-+	check_buffer(cpu_buffer, info, write);
- 
- 	/*
- 	 * If this is the first commit on the page, then it has the same
- 	 * timestamp as the page itself.
- 	 */
--	if (unlikely(!tail && !(info->add_timestamp &
-+	if (unlikely(!write && !(info->add_timestamp &
- 				(RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
- 		info->delta = 0;
- 
- 	/* We reserved something on the buffer */
- 
--	event = __rb_page_index(tail_page, tail);
-+	event = __rb_page_index(tail_page, write);
- 	rb_update_event(cpu_buffer, event, info);
- 
- 	local_inc(&tail_page->entries);
-@@ -3578,7 +3543,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	 * If this is the first commit on the page, then update
- 	 * its timestamp.
- 	 */
--	if (unlikely(!tail))
-+	if (unlikely(!write))
- 		tail_page->page->time_stamp = info->ts;
- 
- 	/* account for these added bytes */
--- 
-2.43.0
-
+Will the bot be performing a bisection?  If not, can one please be
+performed?
 
