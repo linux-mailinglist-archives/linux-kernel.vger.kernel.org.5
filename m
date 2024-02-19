@@ -1,193 +1,390 @@
-Return-Path: <linux-kernel+bounces-70685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF4D4859B21
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:46:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB9D859B24
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:48:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B56328219C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:46:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB9061F20F2E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BA7C46B7;
-	Mon, 19 Feb 2024 03:46:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1F35226;
+	Mon, 19 Feb 2024 03:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="fK5FuTD1"
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="paMZCARr"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2077.outbound.protection.outlook.com [40.107.93.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDDA442F
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 03:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708314377; cv=none; b=mU3fBFmOAvhZSxwjEjogK3W85onucfJFgm6uHs2Kgqtmw9DmjGkbtaoXSOHlLCw1MhHjfjSOh12bcFM4XVClZ+9QBH/5N3oS6ewJH7baKp3GWLfuX3d5lfc0W2oyeY7OvikJFcnTovgQEMit6lkBj41PgX1jlhEW2vJsbS8fcFs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708314377; c=relaxed/simple;
-	bh=CTeiRfrgWM0ByxLGTzu9SEF9wISQC+DJlWXuws2Y374=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:In-Reply-To:
-	 Content-Type:References; b=LplP48lMj76Qf9tAjVht8QpMpjYDc6mivhoOHq8kRDT/Tqj+LHTQ/LFl3CYq4sN7/Gba4NHwry+voR+geieKid/nCjJ3fJ5lxagtHczhrDWEGablgL+hqvwhi/q9kZDOKP0+ApsKXngNzF9nAa8nXD4U+6/02b7KZxVro61omP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=fK5FuTD1; arc=none smtp.client-ip=203.254.224.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
-	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20240219034608epoutp02343ef0df0cd8e477c0d5f75f6d4d9a2d~1Jt33NpcV1473714737epoutp02G
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 03:46:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20240219034608epoutp02343ef0df0cd8e477c0d5f75f6d4d9a2d~1Jt33NpcV1473714737epoutp02G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708314368;
-	bh=ej5sTsbG7EG8qGJIYejeXO6eVpl5MOeHcT8Ydx697Fg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=fK5FuTD1+vEbOB8vFASPGsNTe8IfIAm7MxFIGrrkcTBGTcFUhk9g5jYh6jJlV9Ndm
-	 NWTrEV67nmIk1ulDHmpjW2T8nLKzuW1iW/UYfxv1FgyuIVGtb41S7UAadeM+r3i0Tr
-	 FX4kIx3AUAMKoCs0KlF25Xhh7kHeuK/2pKhmwV10=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-	epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-	20240219034607epcas2p3b65fe3c873b66629b3068be28fda9ba3~1Jt3WD7aM1373713737epcas2p3X;
-	Mon, 19 Feb 2024 03:46:07 +0000 (GMT)
-Received: from epsmgec2p1-new.samsung.com (unknown [182.195.36.98]) by
-	epsnrtp4.localdomain (Postfix) with ESMTP id 4TdT3M3tDcz4x9Q2; Mon, 19 Feb
-	2024 03:46:07 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-	epsmgec2p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	89.45.18994.FFEC2D56; Mon, 19 Feb 2024 12:46:07 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-	20240219034606epcas2p4f1cd412efcb12d3b0e6ea0377f8aceae~1Jt2Mb2ts0619106191epcas2p4d;
-	Mon, 19 Feb 2024 03:46:06 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240219034606epsmtrp1998fd1b9a886d710b13e866a90809bc2~1Jt2LqBIO3033630336epsmtrp18;
-	Mon, 19 Feb 2024 03:46:06 +0000 (GMT)
-X-AuditID: b6c32a4d-743ff70000004a32-58-65d2ceff5061
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	A7.EC.08755.EFEC2D56; Mon, 19 Feb 2024 12:46:06 +0900 (KST)
-Received: from calab-Precision-7920-Tower (unknown [10.229.83.132]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240219034606epsmtip1f0a54a78bb5d79170488dd60374071f2~1Jt1_n-SI1159511595epsmtip1q;
-	Mon, 19 Feb 2024 03:46:06 +0000 (GMT)
-Date: Mon, 19 Feb 2024 12:46:35 +0900
-From: Hojin Nam <hj96.nam@samsung.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: Robert Moore <robert.moore@intel.com>, "Rafael J . Wysocki"
-	<rafael.j.wysocki@intel.com>, Len Brown <lenb@kernel.org>,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	linux-kernel@vger.kernel.org, ks0204.kim@samsung.com, wj28.lee@samsung.com,
-	alison.schofield@intel.com
-Subject: Re: [PATCH] ACPI: Fix CXL 3.0 structure (RDPAS) in the CEDT table
-Message-ID: <ZdLPG2J0jVgRo5/s@calab-Precision-7920-Tower>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DFA440E;
+	Mon, 19 Feb 2024 03:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708314485; cv=fail; b=f0C4XuNU4ef7jckKg2Y2CkPvM6xMB1vu46c8R+aRym68Fho32KP4Va3GqC5sbjUCAlVOTfV7MvxlLCYPA7H+DWTsspg7khPUGlMOF8x++bLATY5Fag9hCi8ioT98sA5HPWVJwZZSiv1kPX12F7+SIV9j8NuT8i6fbRqIS0OP5No=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708314485; c=relaxed/simple;
+	bh=j1J247qFOokNqTIriD8wGKCjgRS0xJocMVEuwamfiGY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=sQcg/D5U4B2EK/fa+ILIxDO0aGYKRis4Kbyw2YrYN40BSuSd7YWoA7uLRxRdboZ5eJNs4V211s5L+117IHxlbk8AV2Rzlz9Q6+yHknbW5dme5jm/QNlLRGrBgknnMgyc84f2KO0OCUZpB2rwVQDdsnBNYuaoi+NwAjYbmyBrxo4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=paMZCARr; arc=fail smtp.client-ip=40.107.93.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Osgqe5AjCbL5wVfiyakI981j4WcF7j1YijEjPs9917lP46wB1wgChkK2Crl0bd9cnmClhYPEx+cNQm8pB/V2xjiZUdToN8dZwHmVHuBji5sJAehuS6e1pevlIbGQdkNKLIBbIBtQtR7Hdh5YUmDvEcxWwN6pUz1gyG727gwapzzlJr3efnjWldmMpRmKzcBsopNdU/edqrGf8XB44FHi8gTJWjDCJ8rpu3bZLIecqyg6A7sASekV+RP3ueewKK+Vt4dAEn95cKajdHmlwa5vgzQ+/qCtlzkk7Wl3MCWvn7du+h3NtAsoxq589EVU5BqRJPdiF6zgwc01yDtzmlUXBQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=j1J247qFOokNqTIriD8wGKCjgRS0xJocMVEuwamfiGY=;
+ b=V1B6cpUOJ5DKeOSbB5nf+FzxH5ty+N8aHYV5adjAF0a9lWm7x90+yPm5APTmoVqg4EPUQM0g0B5O49UhMdtwQ2aEvykg98Q8p4odyYWmrcdQGctceGrdccWW70zUtqLqaDFK2Y/6l3f2Im6RNITM2UyQY9oT2E8tGR5UqEDt5aPUoo9Ta19rXhPGr/YmCxqd6n+Yf7DMObSpgb7rmnPMrWUFxWcM9JBofAP0F5uOcFzYnQrQh+l5m+zPtIG98+HfHM4P8UiYBN29+PaVlwlT3Lj5jnNLuHew2snegeKO4GP+DsagfWMK6WlEO9YiMYE3F/edefa8nwbwRwKtZu6hoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=j1J247qFOokNqTIriD8wGKCjgRS0xJocMVEuwamfiGY=;
+ b=paMZCARrd36Bqiq6lKuDwwLf0FjF9HuFxVKFufq2x6Kp4KV0efT6bH35IKhzAwqOrYT+YjHdfPdeGMwXROM83wUc99s2htwALwtCfwny/c35mTHfG8Zhr0fapCLPcEd2FVEHDTysGR3642H4iV25fMSwmn7z28gMwqLfYCCzJJuYN8wnnMb8C06c+NzNpC/uHPZFM7S7/ZBFAGS2CCEzf1IIXmrlk0wF9e191sYqEu7BnfGpwRr5D+1dbW2f8oezNFzKHsP8t6JYDN5T3PXtEojgmjd5g7yFJxiuOlh2isQkmExF+865mr9UN2bkMwdhVxWATb1hFfJ7Ws1MRmmK3A==
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
+ by DS0PR12MB8247.namprd12.prod.outlook.com (2603:10b6:8:f5::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Mon, 19 Feb
+ 2024 03:48:01 +0000
+Received: from SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::284c:211f:16dc:f7b2]) by SA1PR12MB7199.namprd12.prod.outlook.com
+ ([fe80::284c:211f:16dc:f7b2%5]) with mapi id 15.20.7316.016; Mon, 19 Feb 2024
+ 03:48:00 +0000
+From: Ankit Agrawal <ankita@nvidia.com>
+To: Yishai Hadas <yishaih@nvidia.com>, Jason Gunthorpe <jgg@nvidia.com>,
+	"alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+	"shameerali.kolothum.thodi@huawei.com"
+	<shameerali.kolothum.thodi@huawei.com>, "kevin.tian@intel.com"
+	<kevin.tian@intel.com>, "mst@redhat.com" <mst@redhat.com>,
+	"eric.auger@redhat.com" <eric.auger@redhat.com>, "jgg@ziepe.ca"
+	<jgg@ziepe.ca>, "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
+	"clg@redhat.com" <clg@redhat.com>, "satyanarayana.k.v.p@intel.com"
+	<satyanarayana.k.v.p@intel.com>, "brett.creeley@amd.com"
+	<brett.creeley@amd.com>, "horms@kernel.org" <horms@kernel.org>,
+	"shannon.nelson@amd.com" <shannon.nelson@amd.com>
+CC: Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>, Kirti
+ Wankhede <kwankhede@nvidia.com>, "Tarun Gupta (SW-GPU)"
+	<targupta@nvidia.com>, Vikram Sethi <vsethi@nvidia.com>, Andy Currid
+	<acurrid@nvidia.com>, Alistair Popple <apopple@nvidia.com>, John Hubbard
+	<jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>, "Anuj Aggarwal
+ (SW-GPU)" <anuaggarwal@nvidia.com>, Matt Ochs <mochs@nvidia.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "virtualization@lists.linux-foundation.org"
+	<virtualization@lists.linux-foundation.org>
+Subject: Re: [PATCH v18 3/3] vfio/nvgrace-gpu: Add vfio pci variant module for
+ grace hopper
+Thread-Topic: [PATCH v18 3/3] vfio/nvgrace-gpu: Add vfio pci variant module
+ for grace hopper
+Thread-Index: AQHaYISKEq7ts7f4oEyo6sBByW/RK7EQEAQAgAD3SjQ=
+Date: Mon, 19 Feb 2024 03:48:00 +0000
+Message-ID:
+ <SA1PR12MB719956FA6354BD78709D6836B0512@SA1PR12MB7199.namprd12.prod.outlook.com>
+References: <20240216030128.29154-1-ankita@nvidia.com>
+ <20240216030128.29154-4-ankita@nvidia.com>
+ <692a111c-f0a7-4e0a-af6a-2590d6a1ffa7@nvidia.com>
+In-Reply-To: <692a111c-f0a7-4e0a-af6a-2590d6a1ffa7@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|DS0PR12MB8247:EE_
+x-ms-office365-filtering-correlation-id: 2fcb7b49-006b-408a-2bbc-08dc30fd91b3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ ok8RPLtvBcwh7NyIXAwY1Urrf0vFGAnT/PHKOGg4eaJGi112PYOaIhgpTK1EamdaoE3SFw6NeyTCosy8YeZ5KyCODybTeX7MKVQXKIpx5SwvtoucwGKDUScTpka6qFuwOyPD+Shka1Si6T+9UciFX3BM5ST+TcFVVmKB/PI8LlE5HwY30UPPUu4d2Rwc/VS4Ay1qTSwFt5ZYkAxVJP5pUKdT4AsmWe0lABRLu4a39Pl4yg/Odl0QBxVmMrcbjAnCfexAO+p+MIl2fCWoDKSDRuE5dg51L7gEPOZyNh4YhNvmNgeWsJ9GqlEab4IH3Ym4pADFwt7pioQDuXoerg/JTsiSpQ+DVdaLU+9MjSvoHnY+MhkBElZWL6UIWc9eeNxiUTP04aySWPsgBJWqKDQmuSALDf1t0qYcots7m8sdaV9mw4JL8btu4GP4NjUtacR0IxRsUdPLsSFN+ZUmbgBkKHBqDB+DxT6OEhXTjjGdMifSkIjstVEQVEq8Q2JP2atHYkW3BENdKY6rMg0Wcegi0LIBKxyzVAzf8ea9NoCUfdCW8QmA7WlPIOjA/hUniMdoyxRwtcKpsK5NPqj1tj5htRwW9Xb8wBYfd8RK2WYgExnSVP9yiZkovQQQ1b/gj8kcMFxFP69Lg+lUj4b1cHZnEA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(366004)(346002)(396003)(39860400002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(55016003)(5660300002)(8676002)(66476007)(91956017)(76116006)(66946007)(64756008)(8936002)(66446008)(52536014)(66556008)(2906002)(7416002)(4326008)(110136005)(71200400001)(54906003)(38070700009)(316002)(9686003)(6506007)(7696005)(478600001)(26005)(921011)(33656002)(86362001)(83380400001)(122000001)(38100700002)(41300700001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?eisAmHOKtpg0jclsg2iB2P2lF+fX3rgA91fr3Z4N6uwGxx40kiP4ayMBeZ?=
+ =?iso-8859-1?Q?DDtntd8xJEtbnahPRRQUKnNI6+shyplymneDGZTiKdh3/PFewYMVUzCtKy?=
+ =?iso-8859-1?Q?hMYg5G/p5/rPmArXQt8s8lVfOhCoBsS1vjIzblU5lWuQcdjkocj448+5ES?=
+ =?iso-8859-1?Q?6Y57fsRizJPtVCdh0+6B8njYbIMrT/Ee6j/FAF2z3lRFkiJ7bIhV18uzlr?=
+ =?iso-8859-1?Q?V9RU2u/4hvpf2ZgQerjBHMSefa5hSMVauMpn07QW4y7Lg69Q+LbgNRBatu?=
+ =?iso-8859-1?Q?gttfJt1gWvfIhOqh7NzjyG2Zf0e4bq/1NP8UK9AFB4+9nTrVf9XJ99qnSk?=
+ =?iso-8859-1?Q?qVU4EF01WTFAD/gWGOGsCsTfWD45V+itJ6eqAPbmY2QII5gQ+MAAcbyRYM?=
+ =?iso-8859-1?Q?hKp+ZuxEO2fNWc8ZPLgwJ3AhwQtsiBswp9DRncR8Hz77pcpZJTya2f90Pk?=
+ =?iso-8859-1?Q?sl/BF1L3Sswmz3QHVTQjneA9oHzR0woR4HYy7K2kHuPz5yqyJLgfmkfPuH?=
+ =?iso-8859-1?Q?+D/Rt5a8LQWi/N0iL6PJjLKrbiMoiUnAdolN6izKKA3I9cloggNWJdQ8cB?=
+ =?iso-8859-1?Q?0C4aDyP/wpfEPGoxClA3R6ohMEuAwfJOU7qFwGUOo/DwYYxcnf0k0+4x4Z?=
+ =?iso-8859-1?Q?zbY1j2AO4t/jDUD6V7qBV+/0ycCsIKpq1U51gNNGBEuuAv2vD4alHDy/vk?=
+ =?iso-8859-1?Q?WJoe/whqrTTSEjckOeLEjEqVBJ2HcIF3ALpR5iLsx8q5MvbWC2/jXOYBLR?=
+ =?iso-8859-1?Q?W/olJHmpzY3r7suH1JjwdBuhC98vZ/Tjp8as+DAVQNVBoHTqNcJge0hqoa?=
+ =?iso-8859-1?Q?7OV+vzw875QsIvVUIeAODOxjuyfF6Os7Tokp1QTDFkl6cjFe5btjuD6U74?=
+ =?iso-8859-1?Q?Q+zkFc3CRcAJeLYErJiU1Tg4WVv7VZIb8j+bVkN7SY2tTcUxpmMuuSIGdt?=
+ =?iso-8859-1?Q?9qHCwAd8MfOHmCPxppmIO4FWNouWj8+YGPqfCoLsTMrAkCmKBigLtvEOY1?=
+ =?iso-8859-1?Q?LFAUcEAHVoEB79rLSG8HLwE/MrOfhbSB4YLbcQOQ01sXhHovmmfnWEu4da?=
+ =?iso-8859-1?Q?z4s/KWwSYEtxNYWgK11CY+6saqewdqQMT2LohTEGpl9yDFCxx8rogijjN6?=
+ =?iso-8859-1?Q?rhMk4TGDjTzrwT7Kq/DAjMf1s6/aE1yF7PEtEgjkQ0OJfGRMwVmxoYOmDs?=
+ =?iso-8859-1?Q?Yr9u8nVY/vhr2QoWjk7lMzCTdiDrPjwtDZNeRGCjfX/srMd0yM0cGxuB9V?=
+ =?iso-8859-1?Q?KX/HxvDGrNt2YvPMxPpr33KpWZt4AF5HtxPZiMJPSz5gPOs1wHHnj9ZsaL?=
+ =?iso-8859-1?Q?7XgSKgnZzWIpJZ8URV/JcKgXComW0hVlXMoGUAsJGrWs9j8HLiYFC2mbIn?=
+ =?iso-8859-1?Q?b6udomPQQrm0fGA5S8T07QyoL11yTbMK+J/zigPit42xsQI6afuZW2kgFu?=
+ =?iso-8859-1?Q?2Bk/VdLqKhzA0EwqFvS8kt4Z9pSEFPy8uxpaefqbYv/5xJY47VYErt69rr?=
+ =?iso-8859-1?Q?Zspsp0/15oeTL3eJY6wie0amDuEcpzr5KY+XrDy3PZ+Le+hujEOZ40jSaI?=
+ =?iso-8859-1?Q?uaO3FMavKHkcIWED3TO+8dkSSIBxXHehkayJeFSLNVfqZWHCVBB80yv8i1?=
+ =?iso-8859-1?Q?hbPeRA2QXb/Ls=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0gusbAKRQVCgbvK7A6G8KQ5piNdUS=Sm3H2tWiSp-beGQ@mail.gmail.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrKJsWRmVeSWpSXmKPExsWy7bCmqe7/c5dSDRbelbV4Nvcdi8XdxxfY
-	LI7u4bDY+fAtm8Xyff2MFpd3zWGzeLziLbvF3C9TmS1WfprCYrHx/js2By6PxXteMnlsWtXJ
-	5vFi80xGj74tqxg9Pm+SC2CNyrbJSE1MSS1SSM1Lzk/JzEu3VfIOjneONzUzMNQ1tLQwV1LI
-	S8xNtVVy8QnQdcvMATpKSaEsMacUKBSQWFyspG9nU5RfWpKqkJFfXGKrlFqQklNgXqBXnJhb
-	XJqXrpeXWmJlaGBgZApUmJCd0f4luuABf0XvsXPsDYxHeboYOTkkBEwkVq97zQhiCwnsYZR4
-	sVCli5ELyP7EKPHnw3UWCOcbo8TsSQfZuxg5wDqaOysg4nsZJaa8fMoK4fxglHj8awELyCgW
-	AVWJOe0PWUFsNgE1iYX3LzGD2CIC2hJLFl0Fs5kFFjNJdLdmgtjCAl4Sb3b3gPXyClhKPFvX
-	BGULSpyc+QTM5hQIlLhyfBs7yDIJgakcEvvuTmGE+MFF4sjKOcwQtrDEq+Nb2CFsKYmX/W1Q
-	V+dLfNrJAhEukJjVs5YJwjaWeHfzOSvEPRkS7yffYoIoV5Y4cosFIswn0XH4L9QUXomONiGI
-	TiWJ/R2tUEslJO6cuAx1jIfEgT9H2SFBcoVRonXZCsYJjHKzkHwzC8m2WUBjmQU0Jdbv0ocI
-	y0s0b53NDBGWllj+jwNJxQJGtlWMUqkFxbnpqclGBYa6eanl8MhOzs/dxAhOr1q+Oxhfr/+r
-	d4iRiYPxEKMEB7OSCK9704VUId6UxMqq1KL8+KLSnNTiQ4ymwJiayCwlmpwPTPB5JfGGJpYG
-	JmZmhuZGpgbmSuK891rnpggJpCeWpGanphakFsH0MXFwSjUwcfS9nB6UwV/PWnvqKNu2p7dM
-	Th/j8nVOifr7skV5geOih/nRXIumlV9477a2z7jqd9qfGb3HLY9cPvxTYsf5abUGB/6dLD8b
-	tifkPYND1invs7q7+BkSjj5mknts4LvuvlHaPiWLwtlenyseH5BdI7/7kLRhbyDXxXPKconT
-	97075qkd2W2ZsqdWi2Hif4/tz2/Za7MeWvVlXdWMPyX+8ufeVRyN+PxVvHLaotSHl1TLtp8S
-	EfiWkjNj0Z5o7mmKL++unPPY7QjX39VBq4MeNvSUbF5vaTS/17axpVra4+QPpYUZz9vMawJk
-	rnMEnX3HMe3nO7Nj1U+msPB0Kh8sWyoWsK535+Rbv5c/viTHUavEUpyRaKjFXFScCAAIgKL+
-	OAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrOLMWRmVeSWpSXmKPExsWy7bCSnO6/c5dSDZbMU7B4Nvcdi8XdxxfY
-	LI7u4bDY+fAtm8Xyff2MFpd3zWGzeLziLbvF3C9TmS1WfprCYrHx/js2By6PxXteMnlsWtXJ
-	5vFi80xGj74tqxg9Pm+SC2CN4rJJSc3JLEst0rdL4MqYvGwzW0ETb8XxjzwNjM1cXYwcHBIC
-	JhLNnRVdjFwcQgK7GSVWbP3A3MXICRSXkFj8eCcThC0scb/lCCtE0TdGiUfbjjGCJFgEVCXm
-	tD9kBbHZBNQkFt6/BNYsIqAtsWTRVWaQBmaBpUwSvZfWgBUJC3hJvNndwwJi8wpYSjxb18QC
-	MfUKo0TLvCVQCUGJkzOfgNnMAuoSf+aBTOUAsqUllv/jgAjLSzRvnQ22jFMgUOLK8W3sExgF
-	ZyHpnoWkexZC9ywk3QsYWVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+duYgTHjZbmDsbt
-	qz7oHWJk4mA8xCjBwawkwuvedCFViDclsbIqtSg/vqg0J7X4EKM0B4uSOK/4i94UIYH0xJLU
-	7NTUgtQimCwTB6dUA1PS1MefE7gCAg8zmLnpH/vSFlCb6zsj/rkq55GH4WWlb8s2LDm43iDM
-	PfTyVlvjtysO/2EvmPzTXHHP6pOMHrMfPJ70hedVVbEV/78TMztCVj6vKZ9eacN6ft8Nn8qK
-	m90izpa+7998u8NgJn/gfEXQjbgltnzSMoeFnq5vsv/Rs+xhdHz/dI1FhnOvx/GfWKT/6uHG
-	TEW+lrO/t9a90H0qWf1LZeXNy4fkLXarqdX+C12zSyFMbZnknp9Och7lCgxlukF3XVVXTuEr
-	/c456+OdD5s9v27YN3Mtp9/OKM9iqQNzWMyeh0U488/KXHVlraLJQ9tPBg/PpsoHJnTOFRMt
-	uW/wJeGh7RqlJUt23lqmxFKckWioxVxUnAgAUvtKAgoDAAA=
-X-CMS-MailID: 20240219034606epcas2p4f1cd412efcb12d3b0e6ea0377f8aceae
-X-Msg-Generator: CA
-Content-Type: multipart/mixed;
-	boundary="----BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240216072906epcas2p407a2f85aca1b9b8677fb8aa458c53aa6
-References: <CGME20240216072906epcas2p407a2f85aca1b9b8677fb8aa458c53aa6@epcas2p4.samsung.com>
-	<20240216072931.34305-1-hj96.nam@samsung.com>
-	<CAJZ5v0gusbAKRQVCgbvK7A6G8KQ5piNdUS=Sm3H2tWiSp-beGQ@mail.gmail.com>
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2fcb7b49-006b-408a-2bbc-08dc30fd91b3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2024 03:48:00.8470
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: yz3bMQSqcYRL89gswnCAugQBR2RSg8bsK4wWt0nAJuFkMCymb2LV06QNKhBDLAKHTi9pPw5R3q3pcLwUiZfX8Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8247
 
-------BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
-
-On Fri, Feb 16, 2024 at 07:39:15PM +0100, Rafael J. Wysocki wrote:
-> On Fri, Feb 16, 2024 at 8:29 AM <hj96.nam@samsung.com> wrote:
-> >
-> > From: Hojin Nam <hj96.nam@samsung.com>
-> >
-> > struct acpi_cedt_rdpas does not match with CXL r3.0 9.17.1.5
-> > Table 9-24. reserved1 and length fields are already added by
-> > struct acpi_cedt_header.
-> >
-> > Signed-off-by: Hojin Nam <hj96.nam@samsung.com>
-> > ---
-> >  include/acpi/actbl1.h | 2 --
-> 
-> This file is part of ACPICA which is a separate project whose code is
-> used by the Linux kernel.  In order to make changes in the ACPICA
-> code, please submit a pull request to the upstream ACPICA project on
-> GitHub.  Once this pull request is merged, you can send a
-> corresponding Linux patch with a Link: tag pointing to it.  However,
-> it is not necessary to do so, as the changes will be automatically
-> included into the ACPICA code in the kernel once a new version of
-> ACPICA is out.
->
-
-I submitted PR to the ACPICA project on Github[1].
-Thanks for the guide!
-
-Link: https://github.com/acpica/acpica/pull/928 [1]
- 
-> >  1 file changed, 2 deletions(-)
-> >
-> > diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
-> > index a33375e055ad..7aff8c39dbd6 100644
-> > --- a/include/acpi/actbl1.h
-> > +++ b/include/acpi/actbl1.h
-> > @@ -571,8 +571,6 @@ struct acpi_cedt_cxims {
-> >
-> >  struct acpi_cedt_rdpas {
-> >         struct acpi_cedt_header header;
-> > -       u8 reserved1;
-> > -       u16 length;
-> >         u16 segment;
-> >         u16 bdf;
-> >         u8 protocol;
-> >
-> > base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
-> > --
-> > 2.34.1
-> >
-> 
-
-------BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_
-Content-Type: text/plain; charset="utf-8"
-
-
-------BUp_ENxb-nhquF.XJ9b44EtHNmvLAWOaNa9oXIBU2Tjzxkvf=_e9aa1_--
+Thanks Kevin and Yishai for the reviews. Comments inline.=0A=
+=0A=
+>> +static int nvgrace_gpu_mmap(struct vfio_device *core_vdev,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 struct vm_area_struct *vma)=0A=
+>> +{=0A=
+>> +=A0=A0=A0=A0 struct nvgrace_gpu_pci_core_device *nvdev =3D=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 container_of(core_vdev, struct nvg=
+race_gpu_pci_core_device,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0 core_device.vdev);=0A=
+>=0A=
+> No need for a new line here.=0A=
+=0A=
+Ack.=0A=
+=0A=
+>> +static ssize_t=0A=
+>> +nvgrace_gpu_read_mem(struct nvgrace_gpu_pci_core_device *nvdev,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 char __user *buf, s=
+ize_t count, loff_t *ppos)=0A=
+>> +{=0A=
+>> +=A0=A0=A0=A0 u64 offset =3D *ppos & VFIO_PCI_OFFSET_MASK;=0A=
+>> +=A0=A0=A0=A0 unsigned int index =3D VFIO_PCI_OFFSET_TO_INDEX(*ppos);=0A=
+>> +=A0=A0=A0=A0 struct mem_region *memregion;=0A=
+>> +=A0=A0=A0=A0 size_t mem_count, i;=0A=
+>> +=A0=A0=A0=A0 u8 val =3D 0xFF;=0A=
+>> +=A0=A0=A0=A0 int ret;=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 memregion =3D nvgrace_gpu_memregion(index, nvdev);=0A=
+>> +=A0=A0=A0=A0 if (!memregion)=0A=
+>=0A=
+> Can that happen ? it was just tested by the caller.=0A=
+=0A=
+Ok, I can remove it. Will put a comment instead that this has been checked.=
+=0A=
+=0A=
+>> +=A0=A0=A0=A0 /*=0A=
+>> +=A0=A0=A0=A0=A0 * Determine how many bytes to be actually read from the=
+ device memory.=0A=
+>> +=A0=A0=A0=A0=A0 * Read request beyond the actual device memory size is =
+filled with ~0,=0A=
+>> +=A0=A0=A0=A0=A0 * while those beyond the actual reported size is skippe=
+d.=0A=
+>> +=A0=A0=A0=A0=A0 */=0A=
+>> +=A0=A0=A0=A0 if (offset >=3D memregion->memlength)=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 mem_count =3D 0;=0A=
+>> +=A0=A0=A0=A0 else=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 mem_count =3D min(count, memregion=
+->memlength - (size_t)offset);=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 ret =3D nvgrace_gpu_map_and_read(nvdev, buf, mem_count, pp=
+os);=0A=
+>> +=A0=A0=A0=A0 if (ret)=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 return ret;=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 /*=0A=
+>> +=A0=A0=A0=A0=A0 * Only the device memory present on the hardware is map=
+ped, which may=0A=
+>> +=A0=A0=A0=A0=A0 * not be power-of-2 aligned. A read to an offset beyond=
+ the device memory=0A=
+>> +=A0=A0=A0=A0=A0 * size is filled with ~0.=0A=
+>> +=A0=A0=A0=A0=A0 */=0A=
+>> +=A0=A0=A0=A0 for (i =3D mem_count; i < count; i++)=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 put_user(val, (unsigned char __use=
+r *)(buf + i));=0A=
+>=0A=
+> Did you condier a failure here ?=0A=
+=0A=
+Yeah, that has to be checked here. Will make the change in the next post.=
+=0A=
+=0A=
+>> +/*=0A=
+>> + * Write count bytes to the device memory at a given offset. The actual=
+ device=0A=
+>> + * memory size (available) may not be a power-of-2. So the driver fakes=
+ the=0A=
+>> + * size to a power-of-2 (reported) when exposing to a user space driver=
+=0A=
+>> + *=0A=
+>> + * Writes extending beyond the reported size are truncated; writes star=
+ting=0A=
+>> + * beyond the reported size generate -EINVAL.=0A=
+>> + */=0A=
+>> +static ssize_t=0A=
+>> +nvgrace_gpu_write_mem(struct nvgrace_gpu_pci_core_device *nvdev,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 size_t count, lo=
+ff_t *ppos, const char __user *buf)=0A=
+>> +{=0A=
+>> +=A0=A0=A0=A0 unsigned int index =3D VFIO_PCI_OFFSET_TO_INDEX(*ppos);=0A=
+>> +=A0=A0=A0=A0 u64 offset =3D *ppos & VFIO_PCI_OFFSET_MASK;=0A=
+>> +=A0=A0=A0=A0 struct mem_region *memregion;=0A=
+>> +=A0=A0=A0=A0 size_t mem_count;=0A=
+>> +=A0=A0=A0=A0 int ret =3D 0;=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 memregion =3D nvgrace_gpu_memregion(index, nvdev);=0A=
+>> +=A0=A0=A0=A0 if (!memregion)=0A=
+>=0A=
+> Same as the above note in nvgrace_gpu_read_mem().=0A=
+=0A=
+Ack.=0A=
+=0A=
+>> +static const struct vfio_device_ops nvgrace_gpu_pci_ops =3D {=0A=
+>> +=A0=A0=A0=A0 .name=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D "nvgrace-gpu-vfio-=
+pci",=0A=
+>> +=A0=A0=A0=A0 .init=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_init=
+_dev,=0A=
+>> +=A0=A0=A0=A0 .release=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_release_de=
+v,=0A=
+>> +=A0=A0=A0=A0 .open_device=A0=A0=A0 =3D nvgrace_gpu_open_device,=0A=
+>> +=A0=A0=A0=A0 .close_device=A0=A0 =3D nvgrace_gpu_close_device,=0A=
+>> +=A0=A0=A0=A0 .ioctl=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D nvgrace_gpu_ioctl,=
+=0A=
+>> +=A0=A0=A0=A0 .read=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D nvgrace_gpu_read,=
+=0A=
+>> +=A0=A0=A0=A0 .write=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D nvgrace_gpu_write,=
+=0A=
+>> +=A0=A0=A0=A0 .mmap=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D nvgrace_gpu_mmap,=
+=0A=
+>> +=A0=A0=A0=A0 .request=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_request,=
+=0A=
+>> +=A0=A0=A0=A0 .match=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_match,=
+=0A=
+>> +=A0=A0=A0=A0 .bind_iommufd=A0=A0 =3D vfio_iommufd_physical_bind,=0A=
+>> +=A0=A0=A0=A0 .unbind_iommufd =3D vfio_iommufd_physical_unbind,=0A=
+>> +=A0=A0=A0=A0 .attach_ioas=A0=A0=A0 =3D vfio_iommufd_physical_attach_ioa=
+s,=0A=
+>> +=A0=A0=A0=A0 .detach_ioas=A0=A0=A0 =3D vfio_iommufd_physical_detach_ioa=
+s,=0A=
+>> +};=0A=
+>> +=0A=
+>> +static const struct vfio_device_ops nvgrace_gpu_pci_core_ops =3D {=0A=
+>> +=A0=A0=A0=A0 .name=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D "nvgrace-gpu-vfio-=
+pci-core",=0A=
+>> +=A0=A0=A0=A0 .init=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_init=
+_dev,=0A=
+>> +=A0=A0=A0=A0 .release=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_release_de=
+v,=0A=
+>> +=A0=A0=A0=A0 .open_device=A0=A0=A0 =3D nvgrace_gpu_open_device,=0A=
+>> +=A0=A0=A0=A0 .close_device=A0=A0 =3D vfio_pci_core_close_device,=0A=
+>> +=A0=A0=A0=A0 .ioctl=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_ioctl,=
+=0A=
+>> +=A0=A0=A0=A0 .device_feature =3D vfio_pci_core_ioctl_feature,=0A=
+>=0A=
+> This entry is missing above as part of nvgrace_gpu_pci_ops.=0A=
+Yes. Will add.=0A=
+>> +=A0=A0=A0=A0 .read=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_read=
+,=0A=
+>> +=A0=A0=A0=A0 .write=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_write,=
+=0A=
+>> +=A0=A0=A0=A0 .mmap=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_mmap=
+,=0A=
+>> +=A0=A0=A0=A0 .request=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_request,=
+=0A=
+>> +=A0=A0=A0=A0 .match=A0=A0=A0=A0=A0=A0=A0=A0=A0 =3D vfio_pci_core_match,=
+=0A=
+>> +=A0=A0=A0=A0 .bind_iommufd=A0=A0 =3D vfio_iommufd_physical_bind,=0A=
+>> +=A0=A0=A0=A0 .unbind_iommufd =3D vfio_iommufd_physical_unbind,=0A=
+>> +=A0=A0=A0=A0 .attach_ioas=A0=A0=A0 =3D vfio_iommufd_physical_attach_ioa=
+s,=0A=
+>> +=A0=A0=A0=A0 .detach_ioas=A0=A0=A0 =3D vfio_iommufd_physical_detach_ioa=
+s,=0A=
+>> +};=0A=
+>> +=0A=
+>> +static struct=0A=
+>> +nvgrace_gpu_pci_core_device *nvgrace_gpu_drvdata(struct pci_dev *pdev)=
+=0A=
+>> +{=0A=
+>> +=A0=A0=A0=A0 struct vfio_pci_core_device *core_device =3D dev_get_drvda=
+ta(&pdev->dev);=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 return container_of(core_device, struct nvgrace_gpu_pci_co=
+re_device,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 core_device);=0A=
+>> +}=0A=
+>=0A=
+> The above function is called only once.=0A=
+> You could just inline its first line (i.e. struct vfio_pci_core_device=0A=
+> *core_device =3D dev_get_drvdata(&pdev->dev); and drop it.=0A=
+=0A=
+True, will fix.=0A=
+=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 /*=0A=
+>> +=A0=A0=A0=A0=A0 * The USEMEM part of the device memory has to be MEMBLK=
+_SIZE=0A=
+>> +=A0=A0=A0=A0=A0 * aligned. This is a hardwired ABI value between the GP=
+U FW and=0A=
+>> +=A0=A0=A0=A0=A0 * VFIO driver. The VM device driver is also aware of it=
+ and make=0A=
+>> +=A0=A0=A0=A0=A0 * use of the value for its calculation to determine USE=
+MEM size.=0A=
+>> +=A0=A0=A0=A0=A0 */=0A=
+>> +=A0=A0=A0=A0 nvdev->usemem.memlength =3D round_down(nvdev->usemem.memle=
+ngth,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 MEMBLK_SIZE);=0A=
+>> +=A0=A0=A0=A0 if ((check_add_overflow(nvdev->usemem.memphys,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 nvdev->usemem.memlength,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 &nvdev->resmem.memphys)) ||=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0 (check_sub_overflow(memlength, nvdev->usemem.m=
+emlength,=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 &nvdev->resmem.memlength))) {=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ret =3D -EOVERFLOW;=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 goto done;=0A=
+>> +=A0=A0=A0=A0 }=0A=
+>> +=0A=
+>> +=A0=A0=A0=A0 if (nvdev->usemem.memlength =3D=3D 0) {=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ret =3D -EINVAL;=0A=
+>> +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 goto done;=0A=
+>> +=A0=A0=A0=A0 }=0A=
+>> +=0A=
+>=0A=
+> Couldn't that check be done earlier in this function ?=0A=
+=0A=
+Yes, will move it.=0A=
+=0A=
+>> +=0A=
+>> +MODULE_LICENSE("GPL");=0A=
+>> +MODULE_AUTHOR("Ankit Agrawal <ankita@nvidia.com>");=0A=
+>> +MODULE_AUTHOR("Aniket Agashe <aniketa@nvidia.com>");=0A=
+>> +MODULE_DESCRIPTION("VFIO NVGRACE GPU PF - User Level driver for NVIDIA =
+devices with CPU coherently accessible device memory");=0A=
+>=0A=
+> I'm not in the full details here, however, the construction of the=0A=
+> variant driver looks OK, so:=0A=
+>=0A=
+> Reviewed-by: Yishai Hadas <yishaih@nvidia.com>=0A=
+=0A=
+Thanks.=
 
