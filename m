@@ -1,199 +1,382 @@
-Return-Path: <linux-kernel+bounces-70939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BDAC859E60
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:35:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68805859E5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:35:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AE551F216A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:35:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CA4C281E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:35:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A950219FC;
-	Mon, 19 Feb 2024 08:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DF8208B9;
+	Mon, 19 Feb 2024 08:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jmNtypG4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q3dsrsu2"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F1D21363
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:35:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1414C9D
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708331736; cv=none; b=jQzjRGgiEdpPDxeNT+8hcIY51I7qvZRjCWhGxmrDf0cH9aQjZULPff1FZiUJ8WEqExoZylXhz1AgwjcnTn7ZCnayAsRxBYBcp5ZA+F0ry9mni9k3fMotOMoyEzL4wf1X3kjqpMW7kvKPSg1Wbr9NoR1zsAXR25UifVtYzjsQbkU=
+	t=1708331732; cv=none; b=W+XkihooODIHqs+G8p4Q2WH5bVTVO94E0ttXEsBJy0agy9tzMp6ZCTvDpb47rgMyXey5NkbXtGl07a0C4z1dzHXwZUUXsyyG1r8DPm3TMHNRf5dWLm92pvusN0amBBkiEl0C0u+lATvLdm2g0TaMYLDEcv1JSA+rPkpWUd9JX/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708331736; c=relaxed/simple;
-	bh=RdRCgva74wgXOKhvd4pBIESMw8E3D4lI+/Xi9vwJuqM=;
-	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
-	 In-Reply-To; b=EzkCf+UOBdoIh8HlfppN6J5yxVxkYLE+PZCFm0kpcPFu6bDUe+qlUVIHwqKmG+UOyNjHXjgaHt8j8s6NUyOigOA+0yJF9t3msXj7Y1lWqmwPR7wwWMls1+0DAGTzRAtvHpdOj4+ZMTuWA9Tmgr/fg0PyDT2cCn+40CtzX5jHZJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jmNtypG4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 106B7C43390;
-	Mon, 19 Feb 2024 08:35:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708331735;
-	bh=RdRCgva74wgXOKhvd4pBIESMw8E3D4lI+/Xi9vwJuqM=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=jmNtypG4aG/ru4HdxZqsyRMkapDuDrpnhy9wgGGgBVaHozFG0l5g9mQdo+HQGgqqA
-	 rWrQj/RLCaMML2chQ3+4WmnlCTYqYXsJ+b4xsUrZnPF31TZAOklpIvdjoXSgvmsrRh
-	 pttsq958gzz7QjDBwIQrHucmrmNQH7s4/UhEUR8gwR/LudPjPn+2eelXqegDHeTr9n
-	 MFVwkynGHsH3TE+WLY6kHMCOMchtXlSYYIYXKQ0bKhNGWJscNZ4Kb5q222mmTs5ADR
-	 MWZH02xjSMFmXJ1eTWbBbOz5c414v9bpkHL8Ccm3Tlf7eTTjFlDYQH7zzKesBKqzdd
-	 wEksk3Ub5eLlg==
-Content-Type: multipart/signed;
- boundary=b8f603d48c60b1f4f96ff961f5834ebd6fe8566e273b1df18547b9aca6e0;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1708331732; c=relaxed/simple;
+	bh=ZV0MvUUbmnvQtQwA2n0yODdO9AG+RtBVh7JEm1W7Rdg=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=NnONCE0UHa8OKzjpQ6u46YvgG3TTa+zrBkn/U+vTZoxGvZuDtarXdeflGyIeR7aWZDpDp9YapbWRvlsdSfibBoCU0n2F5DPwId3LcXj6mLB9dmBczropFu4x85oKepkE0prc2Y4c7Yt4mj9kL2tXfHHSnX8Gxel2VwMM4TqKndc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q3dsrsu2; arc=none smtp.client-ip=209.85.167.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5129cdae3c6so2298449e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:35:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708331728; x=1708936528; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zfx3ZEwTL6FBC4zykr6yONY+eAjewsuouiDmLMUTrYA=;
+        b=Q3dsrsu2Dp6jSENHrGbv9sOddY/8XKT8t3O9ixIEn5lWphISMNgDO72+4HHB7aNyIB
+         ShQZR614auRjol0LUtW5+WbLQN7XPXKlzex416grGcyKL5hUScSw5JodwfBWLelPRnzk
+         t6JOmRcNQK36Dmy24Ey8dNclrf1sR3cSQprNQ9t39XIjYykAf2Qxai3DvtslfdujOuuZ
+         6gY9Ndx7KMBjkao1k358EuAcYy3XN3soywaEOCIJuNWpD+FGTV+OId1MG7br/sc0TgUz
+         0Saxpekowk9l4g2uBI5exAu6lG7tTGoJzSmE7dqmIqUdr9gTxXLZ/omQzuFN9Ke+xH42
+         f5pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708331728; x=1708936528;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Zfx3ZEwTL6FBC4zykr6yONY+eAjewsuouiDmLMUTrYA=;
+        b=hfYC6pX8/w4qxlrcQOLpJgm4f3Z15gEkiliy5N756YQobhVq1PJLNINl+GBkxbcrrF
+         65AkM5iLZSVFEBMUvhAWigbdy08RjsjxNHKUQxv+YzRkhtQZlN72dWQZcgJTRIDsgYVG
+         AuJwOhkXH39YHjJZyn6Xg5/TAa0q4GTziGJ2lacZ9F9JK4ORpk1rj2kWOKZ9BIZQx++u
+         bYhg1hGurXZ288g75Ico0IZnlzrlVjsNJRPcTVTIxhHtQjjX+5r4OB0ZkH90iotkY63u
+         DAQ7a3wBsNDYbdf0uiSaxdI2THEMQbd7Klk4ep6Ua1dBxKzAkTU2IJvj/5aaItTMgEib
+         sxEw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+EkDUZ23hS0Jf++0/8c7dFnM08iLlazqV0AW3kIBYzveUimgCv5qSkvCyRgUpy81VSnLS4r7FjeVXVMSWMlSOYzMvII6zRCVi/s2S
+X-Gm-Message-State: AOJu0YyUq/uuh34lTDiKugIUK+qhkhPZAcPK6Li0LMy+BRlcXLLlGyQq
+	sUlGdpwcQK0PlZBYaS3h526G2mxBvSp2HIxBu8zY6Rm2D1QEAtA9XIbWNngQ4IU=
+X-Google-Smtp-Source: AGHT+IHAyjCKKOsQG0yPf8hX1IXJFzN7yXOpiya+w8YNkF07mLmOCTuQMvbFv0PBrJP8aIFB+GAJ0Q==
+X-Received: by 2002:ac2:4433:0:b0:512:b915:3b18 with SMTP id w19-20020ac24433000000b00512b9153b18mr587309lfl.52.1708331728474;
+        Mon, 19 Feb 2024 00:35:28 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:9470:c6e0:c87a:fa9f? ([2a01:e0a:982:cbb0:9470:c6e0:c87a:fa9f])
+        by smtp.gmail.com with ESMTPSA id g19-20020a7bc4d3000000b004126101915esm4868608wmk.4.2024.02.19.00.35.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 00:35:28 -0800 (PST)
+Message-ID: <4cfb1b74-7941-45af-a60e-0661b1888b79@linaro.org>
 Date: Mon, 19 Feb 2024 09:35:27 +0100
-Message-Id: <CZ8X218EWPC9.25TO9O5C7VXQ9@kernel.org>
-Cc: "David Bauer" <mail@david-bauer.net>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Christian Marangi" <ansuelsmth@gmail.com>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>, <linux-kernel@vger.kernel.org>,
- <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for BoHong bh25q128as
-X-Mailer: aerc 0.16.0
-References: <20240217122029.3278-1-ansuelsmth@gmail.com>
-In-Reply-To: <20240217122029.3278-1-ansuelsmth@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v1] drm/meson: improve encoder probe / initialization
+ error handling
+Content-Language: en-US, fr
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org
+Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+ tzimmermann@suse.de, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---b8f603d48c60b1f4f96ff961f5834ebd6fe8566e273b1df18547b9aca6e0
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-
-Hi,
-
-On Sat Feb 17, 2024 at 1:20 PM CET, Christian Marangi wrote:
-> From: David Bauer <mail@david-bauer.net>
->
-> Add MTD support for the BoHong bh25q128as SPI NOR chip.
-> The chip has 16MB of total capacity, divided into a total of 256
-> sectors, each 64KB sized. The chip also supports 4KB sectors.
-> Additionally, it supports dual and quad read modes.
->
-> Datasheet is public and can be found here [1].
-
-Last time it wasn't clear if this flash will support SFDP or not.
-Could you please try to dump the SFDP again, see [1].
-
-
-> Functionality was verified on an Tenbay WR1800K / MTK MT7621 board.
-
-Also per [1], you'd need to provide your test results.
-
-> [1] https://www.e-interlink.com.tw/userUpload/files/BH25Q128AS_v1_0.pdf
-
-Link: right above your SoB please.
-
-> Signed-off-by: David Bauer <mail@david-bauer.net>
-> [ reworked to new flash_info format ]
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+On 18/02/2024 18:50, Martin Blumenstingl wrote:
+> Rename meson_encoder_{cvbs,dsi,hdmi}_init() to
+> meson_encoder_{cvbs,dsi,hdmi}_probe() so it's clear that these functions
+> are used at probe time during driver initialization. Also switch all
+> error prints inside those functions to use dev_err_probe() for
+> consistency.
+> 
+> This makes the code more straight forward to read and makes the error
+> prints within those functions consistent (by logging all -EPROBE_DEFER
+> with dev_dbg(), while actual errors are logged with dev_err() and get
+> the error value printed).
+> 
+> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 > ---
->  drivers/mtd/spi-nor/Makefile |  1 +
->  drivers/mtd/spi-nor/bohong.c | 24 ++++++++++++++++++++++++
->  drivers/mtd/spi-nor/core.c   |  1 +
->  drivers/mtd/spi-nor/core.h   |  1 +
->  4 files changed, 27 insertions(+)
->  create mode 100644 drivers/mtd/spi-nor/bohong.c
->
-> diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> index 5e68468b72fc..c8849cf5124f 100644
-> --- a/drivers/mtd/spi-nor/Makefile
-> +++ b/drivers/mtd/spi-nor/Makefile
-> @@ -2,6 +2,7 @@
-> =20
->  spi-nor-objs			:=3D core.o sfdp.o swp.o otp.o sysfs.o
->  spi-nor-objs			+=3D atmel.o
-> +spi-nor-objs			+=3D bohong.o
->  spi-nor-objs			+=3D eon.o
->  spi-nor-objs			+=3D esmt.o
->  spi-nor-objs			+=3D everspin.o
-> diff --git a/drivers/mtd/spi-nor/bohong.c b/drivers/mtd/spi-nor/bohong.c
-> new file mode 100644
-> index 000000000000..26988c139262
-> --- /dev/null
-> +++ b/drivers/mtd/spi-nor/bohong.c
-> @@ -0,0 +1,24 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2005, Intec Automation Inc.
-> + * Copyright (C) 2014, Freescale Semiconductor, Inc.
-
-Please remove, there is nothing from the old code left here.
-
-> + */
+> This is meant to be applied on top of my other patch called
+> "drm/meson: Don't remove bridges which are created by other drivers" [0]
+> 
+> 
+> [0] https://lore.kernel.org/dri-devel/20240215220442.1343152-1-martin.blumenstingl@googlemail.com/
+> 
+> 
+>   drivers/gpu/drm/meson/meson_drv.c          |  6 +++---
+>   drivers/gpu/drm/meson/meson_encoder_cvbs.c | 24 ++++++++++------------
+>   drivers/gpu/drm/meson/meson_encoder_cvbs.h |  2 +-
+>   drivers/gpu/drm/meson/meson_encoder_dsi.c  | 23 +++++++++------------
+>   drivers/gpu/drm/meson/meson_encoder_dsi.h  |  2 +-
+>   drivers/gpu/drm/meson/meson_encoder_hdmi.c | 15 +++++++-------
+>   drivers/gpu/drm/meson/meson_encoder_hdmi.h |  2 +-
+>   7 files changed, 35 insertions(+), 39 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
+> index cb674966e9ac..17a5cca007e2 100644
+> --- a/drivers/gpu/drm/meson/meson_drv.c
+> +++ b/drivers/gpu/drm/meson/meson_drv.c
+> @@ -312,7 +312,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
+>   
+>   	/* Encoder Initialization */
+>   
+> -	ret = meson_encoder_cvbs_init(priv);
+> +	ret = meson_encoder_cvbs_probe(priv);
+>   	if (ret)
+>   		goto exit_afbcd;
+>   
+> @@ -326,12 +326,12 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
+>   		}
+>   	}
+>   
+> -	ret = meson_encoder_hdmi_init(priv);
+> +	ret = meson_encoder_hdmi_probe(priv);
+>   	if (ret)
+>   		goto exit_afbcd;
+>   
+>   	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A)) {
+> -		ret = meson_encoder_dsi_init(priv);
+> +		ret = meson_encoder_dsi_probe(priv);
+>   		if (ret)
+>   			goto exit_afbcd;
+>   	}
+> diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.c b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+> index 3407450435e2..d1191de855d9 100644
+> --- a/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+> +++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
+> @@ -219,7 +219,7 @@ static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
+>   	.atomic_reset = drm_atomic_helper_bridge_reset,
+>   };
+>   
+> -int meson_encoder_cvbs_init(struct meson_drm *priv)
+> +int meson_encoder_cvbs_probe(struct meson_drm *priv)
+>   {
+>   	struct drm_device *drm = priv->drm;
+>   	struct meson_encoder_cvbs *meson_encoder_cvbs;
+> @@ -240,10 +240,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
+>   
+>   	meson_encoder_cvbs->next_bridge = of_drm_find_bridge(remote);
+>   	of_node_put(remote);
+> -	if (!meson_encoder_cvbs->next_bridge) {
+> -		dev_err(priv->dev, "Failed to find CVBS Connector bridge\n");
+> -		return -EPROBE_DEFER;
+> -	}
+> +	if (!meson_encoder_cvbs->next_bridge)
+> +		return dev_err_probe(priv->dev, -EPROBE_DEFER,
+> +				     "Failed to find CVBS Connector bridge\n");
+>   
+>   	/* CVBS Encoder Bridge */
+>   	meson_encoder_cvbs->bridge.funcs = &meson_encoder_cvbs_bridge_funcs;
+> @@ -259,10 +258,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
+>   	/* Encoder */
+>   	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_cvbs->encoder,
+>   				      DRM_MODE_ENCODER_TVDAC);
+> -	if (ret) {
+> -		dev_err(priv->dev, "Failed to init CVBS encoder: %d\n", ret);
+> -		return ret;
+> -	}
+> +	if (ret)
+> +		return dev_err_probe(priv->dev, ret,
+> +				     "Failed to init CVBS encoder\n");
+>   
+>   	meson_encoder_cvbs->encoder.possible_crtcs = BIT(0);
+>   
+> @@ -276,10 +274,10 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
+>   
+>   	/* Initialize & attach Bridge Connector */
+>   	connector = drm_bridge_connector_init(priv->drm, &meson_encoder_cvbs->encoder);
+> -	if (IS_ERR(connector)) {
+> -		dev_err(priv->dev, "Unable to create CVBS bridge connector\n");
+> -		return PTR_ERR(connector);
+> -	}
+> +	if (IS_ERR(connector))
+> +		return dev_err_probe(priv->dev, PTR_ERR(connector),
+> +				     "Unable to create CVBS bridge connector\n");
 > +
-> +#include <linux/mtd/spi-nor.h>
-> +
-> +#include "core.h"
-> +
-> +static const struct flash_info bohong_parts[] =3D {
-> +	{
-> +		.id =3D SNOR_ID(0x68, 0x40, 0x18),
-> +		.name =3D "bh25q128as",
-No names anymore, please.
+>   	drm_connector_attach_encoder(connector, &meson_encoder_cvbs->encoder);
+>   
+>   	priv->encoders[MESON_ENC_CVBS] = meson_encoder_cvbs;
+> diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.h b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
+> index 09710fec3c66..7b7bc85c03f7 100644
+> --- a/drivers/gpu/drm/meson/meson_encoder_cvbs.h
+> +++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
+> @@ -24,7 +24,7 @@ struct meson_cvbs_mode {
+>   /* Modes supported by the CVBS output */
+>   extern struct meson_cvbs_mode meson_cvbs_modes[MESON_CVBS_MODES_COUNT];
+>   
+> -int meson_encoder_cvbs_init(struct meson_drm *priv);
+> +int meson_encoder_cvbs_probe(struct meson_drm *priv);
+>   void meson_encoder_cvbs_remove(struct meson_drm *priv);
+>   
+>   #endif /* __MESON_VENC_CVBS_H */
+> diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.c b/drivers/gpu/drm/meson/meson_encoder_dsi.c
+> index 311b91630fbe..7816902f5907 100644
+> --- a/drivers/gpu/drm/meson/meson_encoder_dsi.c
+> +++ b/drivers/gpu/drm/meson/meson_encoder_dsi.c
+> @@ -100,7 +100,7 @@ static const struct drm_bridge_funcs meson_encoder_dsi_bridge_funcs = {
+>   	.atomic_reset = drm_atomic_helper_bridge_reset,
+>   };
+>   
+> -int meson_encoder_dsi_init(struct meson_drm *priv)
+> +int meson_encoder_dsi_probe(struct meson_drm *priv)
+>   {
+>   	struct meson_encoder_dsi *meson_encoder_dsi;
+>   	struct device_node *remote;
+> @@ -118,10 +118,9 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
+>   	}
+>   
+>   	meson_encoder_dsi->next_bridge = of_drm_find_bridge(remote);
+> -	if (!meson_encoder_dsi->next_bridge) {
+> -		dev_dbg(priv->dev, "Failed to find DSI transceiver bridge\n");
+> -		return -EPROBE_DEFER;
+> -	}
+> +	if (!meson_encoder_dsi->next_bridge)
+> +		return dev_err_probe(priv->dev, -EPROBE_DEFER,
+> +				     "Failed to find DSI transceiver bridge\n");
+>   
+>   	/* DSI Encoder Bridge */
+>   	meson_encoder_dsi->bridge.funcs = &meson_encoder_dsi_bridge_funcs;
+> @@ -135,19 +134,17 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
+>   	/* Encoder */
+>   	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_dsi->encoder,
+>   				      DRM_MODE_ENCODER_DSI);
+> -	if (ret) {
+> -		dev_err(priv->dev, "Failed to init DSI encoder: %d\n", ret);
+> -		return ret;
+> -	}
+> +	if (ret)
+> +		return dev_err_probe(priv->dev, ret,
+> +				     "Failed to init DSI encoder\n");
+>   
+>   	meson_encoder_dsi->encoder.possible_crtcs = BIT(0);
+>   
+>   	/* Attach DSI Encoder Bridge to Encoder */
+>   	ret = drm_bridge_attach(&meson_encoder_dsi->encoder, &meson_encoder_dsi->bridge, NULL, 0);
+> -	if (ret) {
+> -		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
+> -		return ret;
+> -	}
+> +	if (ret)
+> +		return dev_err_probe(priv->dev, ret,
+> +				     "Failed to attach bridge\n");
+>   
+>   	/*
+>   	 * We should have now in place:
+> diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.h b/drivers/gpu/drm/meson/meson_encoder_dsi.h
+> index 9277d7015193..85d5b61805f2 100644
+> --- a/drivers/gpu/drm/meson/meson_encoder_dsi.h
+> +++ b/drivers/gpu/drm/meson/meson_encoder_dsi.h
+> @@ -7,7 +7,7 @@
+>   #ifndef __MESON_ENCODER_DSI_H
+>   #define __MESON_ENCODER_DSI_H
+>   
+> -int meson_encoder_dsi_init(struct meson_drm *priv);
+> +int meson_encoder_dsi_probe(struct meson_drm *priv);
+>   void meson_encoder_dsi_remove(struct meson_drm *priv);
+>   
+>   #endif /* __MESON_ENCODER_DSI_H */
+> diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.c b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
+> index c4686568c9ca..22e07847a9a7 100644
+> --- a/drivers/gpu/drm/meson/meson_encoder_hdmi.c
+> +++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
+> @@ -354,7 +354,7 @@ static const struct drm_bridge_funcs meson_encoder_hdmi_bridge_funcs = {
+>   	.atomic_reset = drm_atomic_helper_bridge_reset,
+>   };
+>   
+> -int meson_encoder_hdmi_init(struct meson_drm *priv)
+> +int meson_encoder_hdmi_probe(struct meson_drm *priv)
+>   {
+>   	struct meson_encoder_hdmi *meson_encoder_hdmi;
+>   	struct platform_device *pdev;
+> @@ -374,8 +374,8 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+>   
+>   	meson_encoder_hdmi->next_bridge = of_drm_find_bridge(remote);
+>   	if (!meson_encoder_hdmi->next_bridge) {
+> -		dev_err(priv->dev, "Failed to find HDMI transceiver bridge\n");
+> -		ret = -EPROBE_DEFER;
+> +		ret = dev_err_probe(priv->dev, -EPROBE_DEFER,
+> +				    "Failed to find HDMI transceiver bridge\n");
+>   		goto err_put_node;
+>   	}
+>   
+> @@ -393,7 +393,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+>   	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_hdmi->encoder,
+>   				      DRM_MODE_ENCODER_TMDS);
+>   	if (ret) {
+> -		dev_err(priv->dev, "Failed to init HDMI encoder: %d\n", ret);
+> +		dev_err_probe(priv->dev, ret, "Failed to init HDMI encoder\n");
+>   		goto err_put_node;
+>   	}
+>   
+> @@ -403,7 +403,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+>   	ret = drm_bridge_attach(&meson_encoder_hdmi->encoder, &meson_encoder_hdmi->bridge, NULL,
+>   				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
+>   	if (ret) {
+> -		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
+> +		dev_err_probe(priv->dev, ret, "Failed to attach bridge\n");
+>   		goto err_put_node;
+>   	}
+>   
+> @@ -411,8 +411,9 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
+>   	meson_encoder_hdmi->connector = drm_bridge_connector_init(priv->drm,
+>   							&meson_encoder_hdmi->encoder);
+>   	if (IS_ERR(meson_encoder_hdmi->connector)) {
+> -		dev_err(priv->dev, "Unable to create HDMI bridge connector\n");
+> -		ret = PTR_ERR(meson_encoder_hdmi->connector);
+> +		ret = dev_err_probe(priv->dev,
+> +				    PTR_ERR(meson_encoder_hdmi->connector),
+> +				    "Unable to create HDMI bridge connector\n");
+>   		goto err_put_node;
+>   	}
+>   	drm_connector_attach_encoder(meson_encoder_hdmi->connector,
+> diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.h b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
+> index a6cd38eb5f71..fd5485875db8 100644
+> --- a/drivers/gpu/drm/meson/meson_encoder_hdmi.h
+> +++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
+> @@ -7,7 +7,7 @@
+>   #ifndef __MESON_ENCODER_HDMI_H
+>   #define __MESON_ENCODER_HDMI_H
+>   
+> -int meson_encoder_hdmi_init(struct meson_drm *priv);
+> +int meson_encoder_hdmi_probe(struct meson_drm *priv);
+>   void meson_encoder_hdmi_remove(struct meson_drm *priv);
+>   
+>   #endif /* __MESON_ENCODER_HDMI_H */
 
-> +		.size =3D SZ_16M,
-> +		.no_sfdp_flags =3D SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-> +	},
-> +};
-> +
-> +const struct spi_nor_manufacturer spi_nor_bohong =3D {
-> +	.name =3D "bohong",
-
-This should be dropped, too. Otherwise looks good, if SFDP is not
-supported.
-
--michael
-
-[1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
-
-> +	.parts =3D bohong_parts,
-> +	.nparts =3D ARRAY_SIZE(bohong_parts),
-> +};
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 4129764fad8c..29c28ee683a1 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -2037,6 +2037,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *no=
-r)
-> =20
->  static const struct spi_nor_manufacturer *manufacturers[] =3D {
->  	&spi_nor_atmel,
-> +	&spi_nor_bohong,
->  	&spi_nor_eon,
->  	&spi_nor_esmt,
->  	&spi_nor_everspin,
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index d36c0e072954..c293568ae827 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -601,6 +601,7 @@ struct sfdp {
-> =20
->  /* Manufacturer drivers. */
->  extern const struct spi_nor_manufacturer spi_nor_atmel;
-> +extern const struct spi_nor_manufacturer spi_nor_bohong;
->  extern const struct spi_nor_manufacturer spi_nor_eon;
->  extern const struct spi_nor_manufacturer spi_nor_esmt;
->  extern const struct spi_nor_manufacturer spi_nor_everspin;
-
-
---b8f603d48c60b1f4f96ff961f5834ebd6fe8566e273b1df18547b9aca6e0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZdMSzxIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQzcodo7VsRvsAMQEA3ixSPXqAJfCop2pxfyj0kdDFERTnDLg/
-Q3ExoH80lRQA/1qrCPgE85Tw+hOX5dw+TEwZ6/IOQxD5QORv8VqZ1PwM
-=zQXK
------END PGP SIGNATURE-----
-
---b8f603d48c60b1f4f96ff961f5834ebd6fe8566e273b1df18547b9aca6e0--
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
