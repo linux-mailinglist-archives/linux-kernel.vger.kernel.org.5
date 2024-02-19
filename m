@@ -1,179 +1,151 @@
-Return-Path: <linux-kernel+bounces-71609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C18AF85A7B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:44:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9742785A7BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:44:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E69FD1C2224C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:44:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 38609B2130A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420B93A1BF;
-	Mon, 19 Feb 2024 15:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B473A1DE;
+	Mon, 19 Feb 2024 15:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PHDsck8i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="X4tEdKw3"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7584439840;
-	Mon, 19 Feb 2024 15:43:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EED5339840
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708357438; cv=none; b=AqsJG0y5lcUqWXLE2N9+ymS0m9kJCI6qEA3ohuU9cL2p4iM3Z7ZOC6a8jDcToquzphLoK9lAqGK//J9qFD82/4VG4icuK/hNR2CUgFDrzFrsCxVye3FqO2fS6BkQwXaWpchqsP7kMJc6HqJh8pJ9+dL3pWBf9TTL8GKUs0npl24=
+	t=1708357475; cv=none; b=bG33yY0V1k/Hpyk/QiK0H2F7RsGg96zYMxYsZFBmG2mc37Uowfbksw0SodgVxIVwJAbx956N+RsdpW8Etlu/4lFDeYYamHpFlfOh1VH9EuxyML8MbQAloUedvGs3JWy4UZ4IIT43DndO+CtEEmMRHjW7AczUbq6rmUbsZ4eokgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708357438; c=relaxed/simple;
-	bh=Bohw/bQPmhHQbLkJwGb3KJCaLF1Qkwt6GeyegCF9liw=;
+	s=arc-20240116; t=1708357475; c=relaxed/simple;
+	bh=scapKyQRwA19QJoXyDPy0Su1Y5BbkWzjljaaLXpiXXg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bX0W7R6SdRCwf9YG83Dt4KV00wtQKHki2FPKWFPJo0bq6lrvxQ7Ws1R4Xy2wrOVmsd74w5MkvPRHEiCWQ/9IMG0YCD5noUOS5qQvTYB9QTnx34pZFBChHJmUmyjq64AZZlyeQgR1uXOM6YrIWqRB3R+cl4Qb7dDjDLV0BWKRiUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PHDsck8i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4BD7C43399;
-	Mon, 19 Feb 2024 15:43:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708357437;
-	bh=Bohw/bQPmhHQbLkJwGb3KJCaLF1Qkwt6GeyegCF9liw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PHDsck8ig8UVnrcvTAdSJFp8/p7ksYDXvn4bgh61MVPcjWXGrOtRApdk+LepchXTX
-	 crE2kKhzja1AsBjOqV/DhkUNAyhreeSdwid8Zb+FZoiT7fPRMsPOTgnL8xGoWtkktw
-	 1TBu37eGh/CCRzZS2kXxI5eOaghFtWuPQYuaqoHAb36L7vuK9jI+dPxq1Eksyu6XaO
-	 QDR46mJ1JdTFTtz6lImKbIypKVAXiP+P47+RBFT0NZPmxKzBTHlYR4kniicQMCsAZA
-	 qVTtTjm4vjuq8fh7p+AogP8twmWjOgHNtSFiQZ1knm+q2PiO3VRkdeS8BuXHSxorSA
-	 nkVVzVuQNQP3g==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512bde3d197so645483e87.0;
-        Mon, 19 Feb 2024 07:43:57 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXFX+dcuCN3ssQtjuEtNx0+ta6j2xyVEZIWLgNx1+HvtUck2trV+WIbGYWhOPGAu2/cLwZyaDeOQNhg+s/7m+JEO6kxWpOcxBKmcqYWglhQiXuVXRStrSjwlpIOp5i7RxC3lBAxG2zjFQ==
-X-Gm-Message-State: AOJu0YzdAa9RzEoOgjswme2fdc4kmFBcDMfDUkJDgH9MRfv4FvykgjGH
-	W+UjdKN5/is0ybkrc3oCMBEqRMLgnUBYtLHDZ4D0QvpeyX/D1x/gj3FPBiRS0F3jIlnunWp+QzQ
-	cUJW6ALeUQUncT1mXgzN7krr+lKU=
-X-Google-Smtp-Source: AGHT+IHQf07kEE68xnwbtGzmWP2oj1ydQbkfn2UMLj/otUhl4maUjhyQ9Us3BfTNv1SBfSazBGd6gNllMltwd+JtDa4=
-X-Received: by 2002:a05:6512:1590:b0:512:8d5d:6707 with SMTP id
- bp16-20020a056512159000b005128d5d6707mr8547694lfb.35.1708357436047; Mon, 19
- Feb 2024 07:43:56 -0800 (PST)
+	 To:Cc:Content-Type; b=CFQIEtGGLGlqQ0ss/8MybjDFzT47hqpzs8eIYQoYvvof6BYoKir2Ik8MkwMUp0iBmpgblvjdnG447dGXNWM+N73u2Uo3BKULwnI4M8mkM1K8HK9gReWYs8K8eRBlJbMTarnEPIVJy1I8Z7B7gURRUgziz8Pn5YQ2phHv+BF3w6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=X4tEdKw3; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7d5c890c67fso2139357241.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708357473; x=1708962273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZD/EM3SyhaILUHJgKgYH13JzV9F9I9A7ZoCf0KZhH9M=;
+        b=X4tEdKw3zgChjbs7FYEQhueR+CG+alJQ1fBTOjk7mS5PnSc+sA4tk/6oKch+YhDd1h
+         Rt5wHZw4mcrSS13qQU7UyWvvYBPCQ7qcxmxVObviCiSmIpDdtMouH6WiV9Un1vCSliDo
+         O3s4s3J7cjjnO5kTJeJJBqHFrx6viUFAl+BMiGuvt5bqz+hmvA85tT9IlNNeGE7b1mmn
+         aKTvcfVYPxOdhWl6EaYZW1QZ73IQjQQ5sXOAZrdMgZu9a+58vPPbPSFIBW++RTT4LErl
+         gZopxM7B33iunfoleUO+fzFKWCImrGHbQurfvznCQhD4Vpi9KQrgiLPl23vStx7syPL/
+         ABLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708357473; x=1708962273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZD/EM3SyhaILUHJgKgYH13JzV9F9I9A7ZoCf0KZhH9M=;
+        b=q4gwvGtFdnLcuKgHXDPerf5r/c+TrWtBqWE4/8MK/tGkQ9P03h4s+sSl00hRnn0xob
+         5GbXvTLCVxxY5W7Trp9lzSmeaytnx5MmWRoUiYl5kK3rI+WPgIEsG8n10pX5jAyFUmxA
+         2XJXh0xk7RbtYHJVEeb4+DwkM/MNW6FPZalD3eC/IHedDVClDLwOqmkYrBjwGPfpYMX2
+         /51B6+dMyAGde8aLaCL4l5JnHDiVVh9syvNBFkTqDdWeV6/fszgWX+t9vhWahaLEXO+q
+         j27HEtGiBqFHkutuTkfGuNzGL3QCDLyOVUj5S7X+6A1KNpekwkSf3QcWaFhEXbEAi35s
+         tI/g==
+X-Forwarded-Encrypted: i=1; AJvYcCXOlAlfm5sW/v00E6/Rhd8t6J9LXqb4Dd1NzR+edq4Pkm6G32SDl+fyaflZ4sF6Z/9mFMZ7WD81F/CZrimTzYy0W84DFw4xBd+9XCaL
+X-Gm-Message-State: AOJu0YxrJV/SkoDdl3aP6Qso0IkRlRCmJM59WzwRXCm6hehQLhDgjd8a
+	Kz0VbfmIkm/iDj/zOtyJo1VWU12/TgK9Zaj+UO8pWnugXAymo4Cor8ig+kOhM18AfyLrEPob7Dl
+	KsEBCMb1LPqufZbl2ryFL3aBg6N2zXV/KIlK5bw==
+X-Google-Smtp-Source: AGHT+IHcxeUZmxVYxUCGPtgB71dVPhAzF5DX1jSu8thYPPJY2f3JUx8PESy61uq6Kvu9hlkEpogZD227xE24GoTJoBg=
+X-Received: by 2002:a05:6102:3679:b0:470:574e:9766 with SMTP id
+ bg25-20020a056102367900b00470574e9766mr2196509vsb.12.1708357471314; Mon, 19
+ Feb 2024 07:44:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219135805.1c4138a3@canb.auug.org.au> <ZdNGGrUDWfvqCudV@arm.com>
- <86bk8c4gyh.wl-maz@kernel.org>
-In-Reply-To: <86bk8c4gyh.wl-maz@kernel.org>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 19 Feb 2024 16:43:45 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXEpx_Yq48waCghm88dhhL6+g07Fru53=kyVh-wg8vJcdw@mail.gmail.com>
-Message-ID: <CAMj1kXEpx_Yq48waCghm88dhhL6+g07Fru53=kyVh-wg8vJcdw@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the kvm-arm tree with the arm64 tree
-To: Marc Zyngier <maz@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Christoffer Dall <cdall@cs.columbia.edu>, Will Deacon <will@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Linux Next Mailing List <linux-next@vger.kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	Mark Rutland <mark.rutland@arm.com>
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
+In-Reply-To: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 19 Feb 2024 16:44:20 +0100
+Message-ID: <CAMRc=MfLXCDXBiKKuEPZRjNoNiFN+gvhu+GjZkZ1SQuF1s4=UQ@mail.gmail.com>
+Subject: Re: [PATCH 00/23] Rework Nomadik GPIO to add Mobileye EyeQ5 support
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 19 Feb 2024 at 16:22, Marc Zyngier <maz@kernel.org> wrote:
+On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
+in.com> wrote:
 >
-> On Mon, 19 Feb 2024 12:14:18 +0000,
-> Catalin Marinas <catalin.marinas@arm.com> wrote:
-> >
-> > On Mon, Feb 19, 2024 at 01:58:05PM +1100, Stephen Rothwell wrote:
-> > > diff --cc arch/arm64/kernel/cpufeature.c
-> > > index 0be9296e9253,f309fd542c20..000000000000
-> > > --- a/arch/arm64/kernel/cpufeature.c
-> > > +++ b/arch/arm64/kernel/cpufeature.c
-> > > @@@ -721,13 -754,12 +756,14 @@@ static const struct __ftr_reg_entry
-> > >                            &id_aa64isar2_override),
-> > >
-> > >     /* Op1 = 0, CRn = 0, CRm = 7 */
-> > >  -  ARM64_FTR_REG(SYS_ID_AA64MMFR0_EL1, ftr_id_aa64mmfr0),
-> > >  +  ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64MMFR0_EL1, ftr_id_aa64mmfr0,
-> > >  +                         &id_aa64mmfr0_override),
-> > >     ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64MMFR1_EL1, ftr_id_aa64mmfr1,
-> > >                            &id_aa64mmfr1_override),
-> > >  -  ARM64_FTR_REG(SYS_ID_AA64MMFR2_EL1, ftr_id_aa64mmfr2),
-> > >  +  ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64MMFR2_EL1, ftr_id_aa64mmfr2,
-> > >  +                         &id_aa64mmfr2_override),
-> > >     ARM64_FTR_REG(SYS_ID_AA64MMFR3_EL1, ftr_id_aa64mmfr3),
-> > > +   ARM64_FTR_REG(SYS_ID_AA64MMFR4_EL1, ftr_id_aa64mmfr4),
-> > >
-> > >     /* Op1 = 1, CRn = 0, CRm = 0 */
-> > >     ARM64_FTR_REG(SYS_GMID_EL1, ftr_gmid),
-> > > @@@ -2701,33 -2817,13 +2779,40 @@@ static const struct arm64_cpu_capabilit
-> > >             .type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> > >             .matches = has_lpa2,
-> > >     },
-> > >  +#ifdef CONFIG_ARM64_VA_BITS_52
-> > >  +  {
-> > >  +          .capability = ARM64_HAS_VA52,
-> > >  +          .type = ARM64_CPUCAP_BOOT_CPU_FEATURE,
-> > >  +          .matches = has_cpuid_feature,
-> > >  +          .field_width = 4,
-> > >  +#ifdef CONFIG_ARM64_64K_PAGES
-> > >  +          .desc = "52-bit Virtual Addressing (LVA)",
-> > >  +          .sign = FTR_SIGNED,
-> > >  +          .sys_reg = SYS_ID_AA64MMFR2_EL1,
-> > >  +          .field_pos = ID_AA64MMFR2_EL1_VARange_SHIFT,
-> > >  +          .min_field_value = ID_AA64MMFR2_EL1_VARange_52,
-> > >  +#else
-> > >  +          .desc = "52-bit Virtual Addressing (LPA2)",
-> > >  +          .sys_reg = SYS_ID_AA64MMFR0_EL1,
-> > >  +#ifdef CONFIG_ARM64_4K_PAGES
-> > >  +          .sign = FTR_SIGNED,
-> > >  +          .field_pos = ID_AA64MMFR0_EL1_TGRAN4_SHIFT,
-> > >  +          .min_field_value = ID_AA64MMFR0_EL1_TGRAN4_52_BIT,
-> > >  +#else
-> > >  +          .sign = FTR_UNSIGNED,
-> > >  +          .field_pos = ID_AA64MMFR0_EL1_TGRAN16_SHIFT,
-> > >  +          .min_field_value = ID_AA64MMFR0_EL1_TGRAN16_52_BIT,
-> > >  +#endif
-> > >  +#endif
-> > >  +  },
-> > >  +#endif
-> > > +   {
-> > > +           .desc = "NV1",
-> > > +           .capability = ARM64_HAS_HCR_NV1,
-> > > +           .type = ARM64_CPUCAP_SYSTEM_FEATURE,
-> > > +           .matches = has_nv1,
-> > > +           ARM64_CPUID_FIELDS_NEG(ID_AA64MMFR4_EL1, E2H0, NI_NV1)
-> > > +   },
-> > >     {},
-> > >   };
-> >
-> > Thanks Stephen. It looks fine.
+> Hi,
 >
-> Actually, it breaks 52bit support in a "subtle" way (multiple reports
-> on the list and IRC, all pointing to failures on QEMU). The KVM tree
-> adds support for feature ranges, which this code is totally unaware
-> of, and only provides the min value and not the max. Things go wrong
-> from there.
+> This patch series reworks the Nomadik GPIO driver to bring it up to date
+> to current kernel standards. We then add Mobileye EyeQ5 support that
+> uses the same IP block but with limited functionality. We also add
+> features required by our newly supported platform:
 >
-> I propose to fix it like below, which makes it robust against the KVM
-> changes (patch applies to arm64/for-next/core). I have tested it in
-> combination with kvmarm/next, with 4kB and 16kB (LVA2), as well as
-> 64kB (LVA).
+>  - Dynamic GPIO ID allocation;
+>  - Make clock optional;
+>  - Shared IRQ (usecase: EyeQ5 has two banks using the same IRQ);
+>  - Handle variadic GPIO counts (usecase: EyeQ5 has <32 GPIOs per bank);
+>  - Grab optional reset at probe (usecase: EyeQ5 has a reset available).
 >
-> Thanks,
+> This GPIO platform driver was previously declared & registered inside
+> drivers/pinctrl/nomadik/pinctrl-nomadik.c, side-by-side with the
+> pinctrl driver. Both are tightly integrated, mostly for muxing reasons.
+> Now that gpio-nomadik is used for another platform, we loosen the
+> relationship. The behavior should not change on already supported
+> hardware but I do not have Nomadik hardware to test for that.
 >
->         M.
->
-> From f24638a5f41424faf47f3d9035e6dcbd3800fcb6 Mon Sep 17 00:00:00 2001
-> From: Marc Zyngier <maz@kernel.org>
-> Date: Mon, 19 Feb 2024 15:13:22 +0000
-> Subject: [PATCH] arm64: Use Signed/Unsigned enums for TGRAN{4,16,64} and
->  VARange
->
-> Open-coding the feature matching parameters for LVA/LVA2 leads to
-> issues with upcoming changes to the cpufeature code.
->
-> By making TGRAN{4,16,64} and VARange signed/unsigned as per the
-> architecture, we can use the existing macros, making the feature
-> match robust against those changes.
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-Thanks for the fix.
+I hope Linus can leave his Tested-by under this series then.
 
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
-Tested-by: Ard Biesheuvel <ardb@kernel.org>
+> We have some dependencies, kept neatly to the end. Those are:
+> - The base platform support series from Gr=C3=A9gory [1]. This relates to=
+ the
+>   last four patches (20 thru 23), ie defconfig and devicetree.
+> - The OLB syscon support series [0]. It provides reset and pinctrl nodes
+>   inside the devicetree. This relates to the last two patches (22 and
+>   23), ie resets and gpio-ranges DT props. GPIO works fine without it
+>   if patches 22 and 23 are dropped.
+>
+> This has been tested on the EyeQ5 hardware, with the two parent series
+> applied. It also works fine without the OLB syscon series when our last
+> two patches are removed. It has been built on both Arm defconfigs that
+> rely on pinctrl-nomadik: nhk8815_defconfig and u8500_defconfig. I don't
+> have any Nomadik hardware to test though.
+>
+> Have a nice day,
+> Th=C3=A9o
+>
+
+Are you targeting the GPIO branch with this or pinctrl? I guess GPIO
+so I'll need Linus' Acks under the pinctrl patches.
+
+> [0]: https://lore.kernel.org/lkml/20240212-mbly-clk-v6-0-c46fa1f93839@boo=
+tlin.com/
+> [1]: https://lore.kernel.org/lkml/20240205153503.574468-1-gregory.clement=
+@bootlin.com/
+
+Please advise the relevant maintainers that they should provide an
+immutable branch for these series once they're queued in their
+respective trees.
+
+Bart
+
+[snip]
 
