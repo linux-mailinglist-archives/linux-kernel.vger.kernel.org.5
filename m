@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-70805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D747859C98
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:11:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ED63859C9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:11:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB4841F229B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:11:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C83731F21992
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7311208D7;
-	Mon, 19 Feb 2024 07:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34617208CF;
+	Mon, 19 Feb 2024 07:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bXDkfEhL"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c54hrezK"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 203542033B
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C973620DC8
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:11:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708326665; cv=none; b=rKYwqOkK9iphzI0B6prYlxBQlUiEh0G6MvC4xNly19bgPAmhAzUu9Wr2Tv7N6utuxgZx/sHFBWBariJJvf1kegdhFpGRhCPnyoxZ5qYmktGW91DDto9agIX7t8EeEPM5/ganfDvWPwDeGA6DamiwWiDKE3ex+TWjb0NS/jxoVcM=
+	t=1708326709; cv=none; b=oLOvp0er95XogvHSZ3KAbUex5NoH1lr6WgiHc6ZIEi6XMEsGg0QQg/fYqZw5ckbVdAHwFLXIT01cVQKUFJFcDKpp/hZl7A407nJigkVmUZeq9H2FMBvuLNc3J2QYWkMrplU/KzuUdm309Qc5ACoMtBe6aZmg8Nx5G6SkYFv+WkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708326665; c=relaxed/simple;
-	bh=24NTwolwJK2kSJFxyyQ2p4e8IfTm7IiVK19kvsy/o5g=;
+	s=arc-20240116; t=1708326709; c=relaxed/simple;
+	bh=J5y+aCATLjiobgMkh7qS53oPvdfq92ig8/vEo+zC3vY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oxCAUpddiECZ3GhwZvy14sAqhQf68kaZjOVsqk2/X8qDEqsj+wQ9Ds1gglouI2YLMUcEUNnSTKkXr2w7F+Mt8lW56ptM6wcPCFeRrpHsUZDyZ7L878hhn9LRxH5zdqVpYlMz5CUv51YajhiFkMzZU3FwT30U+L0Lv8oDzdRwdzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bXDkfEhL; arc=none smtp.client-ip=209.85.167.41
+	 In-Reply-To:Content-Type; b=sjZkNeZ1D06X+SBg+0ka8oHqo2wZh8CvUnyA/4oFQcLT7FRREH/ZkT3GQN2eM+bi/A0keyQRzT4JVT6ek6ax68HOuCN32FxnX1mZwSRGDxmLaWwqJsv9ULU1/Dt/dZJpo5CVuRg3r9cVIoezzx2pddi+PKhGaiBo/eVaL6rr6Kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=c54hrezK; arc=none smtp.client-ip=209.85.208.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5129cdae3c6so2209695e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:11:03 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d22fa5c822so15783291fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:11:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708326662; x=1708931462; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708326706; x=1708931506; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=bcJEPOnkRYZTRDvzXIMN85T5MV7yYn8X/AvnE6g07n4=;
-        b=bXDkfEhL7UHnDrkodUAuIByMhj7K+PyD8ieUdg9vEdIBUY+7ZN6aCweScr0BgOfPZ6
-         AZvm8YcGNj++d8svMntCh4gjElq0oTaAVZeS7Qz/9CkaCdfNkTv8vlwpxqeAeuLtxLca
-         IYm7lHvFWJTcs2/LWra2AX7tixcG0u8X0NJ/sKcc2gw57aMLKM9CmPjoxwnvcVnWUuVK
-         rYRHB2O2aW0mzcQaosvu3vUJPDk3PomgjaU6CmNfe2CY0y9CvOpizZ/nK3eamgksCy/5
-         YS0C4CMv+1WcmJrOez40ogHbwZpltOLEU8Y90PUaE8uGZsJXX9mO2SS18CSWo7/j7RZx
-         j/RQ==
+        bh=fYvGItjumstBSToPslryUkJweKqf1lNIBcvDM0i3AXg=;
+        b=c54hrezKgkZTWKnCMt3bOtnjqzWmGrDWbBgPxM/ye1sNNkoBuW3v5t/BsuIEPnUNRb
+         U8G0RHgou7Bd3JZwvZnmfNjAQ79kpdG8+fykTtf2pZlz4Ppx9fOCy//PcFKfK0Xjy/5m
+         +IdTzo2O2/Q72kXzcarsDNmmeA7z01pARLCy09MUcAJiBdt224y0kWPxZ+p2nGEQ64Pf
+         9WbuzcW56zXV3mNExzoDnoqqcfFIA/3tk3te3/k0fG1mhSBJoD0wW2K1wxCHrIIMX7FW
+         lrNgUBuhRUFL6LgQMFNWx/8ScVeUJQ/AufRfKPWhvoRqivEZcrISayGSL51fCDz+ysCL
+         VbwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708326662; x=1708931462;
+        d=1e100.net; s=20230601; t=1708326706; x=1708931506;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=bcJEPOnkRYZTRDvzXIMN85T5MV7yYn8X/AvnE6g07n4=;
-        b=GXTj2dOPy5cBP8u7+t6hFIS+gcm8dpET+K5RKJSObeuspr7ngxaNwixMIpUk2qWYIy
-         Vp1s2orZzA63vTBt5xM2DFBy4tZALfyIMFgxAXyDsBecaI0zMDRcYNSkUIfBCWH5GijO
-         8KHP+XLQeL6me3loNINoypj8zA+c2SF2vA9wU41EObfprTRuZe6AjgFQ4fS5IncMtmfj
-         ane7eaEmue9m81wNKAcOsvIXI1m7pe+wBawVo5hJ1ZKDYb/p1IO4z/z0gFoqqYmmmmp3
-         MkRFo2j19gAs7jD9BFhyXIg0eBB3YF1qkvCCPDkSrduvEV91y8T7OBvKYTzoBuaUHT3x
-         HZ1g==
-X-Forwarded-Encrypted: i=1; AJvYcCW+p4XTSDMEqgrysKvSYd5tO8Q4e1cNT35BbLGuwC6v9yrQSwVbzqgZAQQYkKIb8iuAZLb498xRBbJuT2OB0h1Jub0D6hFvIEKa8vrx
-X-Gm-Message-State: AOJu0Yx//cAoBA8p3a0emSbuJiP+FSCpo7mHNKwt8MpMzdQ4TjtN31WM
-	HHaiOB5REWeLkEEuV9GHpP5aQ1Dn6k1y6IJPVX+137KNUMf3IeizX9PJwwPF+XA=
-X-Google-Smtp-Source: AGHT+IE3tWdkDgRPBx0cmA0ZvhyTBxY/ZlI3eB73v1EpbBXv76eaO9tApBei4yn9qk5YdhM3HJdgjA==
-X-Received: by 2002:a05:6512:159a:b0:511:8492:69ec with SMTP id bp26-20020a056512159a00b00511849269ecmr8174078lfb.5.1708326662239;
-        Sun, 18 Feb 2024 23:11:02 -0800 (PST)
+        bh=fYvGItjumstBSToPslryUkJweKqf1lNIBcvDM0i3AXg=;
+        b=Bk6V7VMf4aaDuTZRoW09QDelYv+m+0b3y63QSZfyzs/YLx2ubysbewAyS/rFTjZrn+
+         ovswV2E7NAC/1is3Ox7uD8LZ/wwSkzS8+o6PF0XVjTTjpsfB9MCERYSiUrck7w4N6Pk0
+         2XVV7OU9oWguZoPQLccZ+gcI7UE715dwt5FwqrzcKCqscT32TFPUjMcAZFsiStX/SkZH
+         QmzVv629jNX7QP2QX/XX70wskHmOhjvT0UI+6dX2DU5lysP9OZ2M73hf6aBqYHDidGDe
+         kX7eBy7+5gXomeSP6V4iPqrnLRZOFHuNBqQ2G2t9o/lSJF/We+ln44I0WB9lUBGn93xx
+         HMAg==
+X-Forwarded-Encrypted: i=1; AJvYcCVCxakoDNxXcnLac0fAv0U9dlbBzdojRG/CiveziITq1k47MN+48jRXlCuqqWwmF884GSyl8Hj//kGbkh2VXMfCCYY3W2/QKfU/BAT8
+X-Gm-Message-State: AOJu0YzoC8TLY2HfodsrYoqZDxKGzhLoqD/n8AbEA1leLFr76O4FcxZf
+	Jh08Xk7FmBrb3KbZRzc7CjewxF6sICnP0b/K5TiCHs0PtwHQsIz1GNZNfSFFiHs=
+X-Google-Smtp-Source: AGHT+IHgm2Sh7nUO4Iz3xywIaoPwbQUCh9v7pMxlKOobIbesLCBKtWB3cpktGIPCCmdz3ymFePgQGg==
+X-Received: by 2002:a05:6512:3f9:b0:511:9c4b:bba1 with SMTP id n25-20020a05651203f900b005119c4bbba1mr8122330lfq.23.1708326706059;
+        Sun, 18 Feb 2024 23:11:46 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id je11-20020a05600c1f8b00b0040fdf5e6d40sm10488570wmb.20.2024.02.18.23.11.00
+        by smtp.gmail.com with ESMTPSA id je11-20020a05600c1f8b00b0040fdf5e6d40sm10488570wmb.20.2024.02.18.23.11.44
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 23:11:01 -0800 (PST)
-Message-ID: <ba71fe48-eabb-40c8-ba3f-6cb763508f23@linaro.org>
-Date: Mon, 19 Feb 2024 08:11:00 +0100
+        Sun, 18 Feb 2024 23:11:45 -0800 (PST)
+Message-ID: <d7a29931-9153-497e-9195-652666896a2c@linaro.org>
+Date: Mon, 19 Feb 2024 08:11:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,23 +75,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 02/16] dt-bindings: bus: imx-weim: convert to YAML
+Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add Qualcomm SM7150 DT
+ bindings
 Content-Language: en-US
-To: Sebastian Reichel <sre@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>, Fabio Estevam <festevam@gmail.com>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- NXP Linux Team <linux-imx@nxp.com>, Dong Aisheng <aisheng.dong@nxp.com>,
- Linus Walleij <linus.walleij@linaro.org>,
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, Mark Brown
- <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+To: Danila Tikhonov <danila@jiaxyga.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, djakov@kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
  devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240216223654.1312880-1-sre@kernel.org>
- <20240216223654.1312880-3-sre@kernel.org>
- <e3b54b1c-79ab-4f25-8b42-fadc922c0d25@linaro.org>
- <znyqirhcxfigmenthyrkpivraj43g23gbbx2e774uy3oc375dd@c6pmvckv3gjs>
+References: <20240218183239.85319-1-danila@jiaxyga.com>
+ <20240218183239.85319-2-danila@jiaxyga.com>
+ <d3a4c6f9-e24a-446c-acbf-75519f6782fb@linaro.org>
+ <3488e5a4-df70-4ecb-a860-af2e13650347@jiaxyga.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -137,31 +132,17 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <znyqirhcxfigmenthyrkpivraj43g23gbbx2e774uy3oc375dd@c6pmvckv3gjs>
+In-Reply-To: <3488e5a4-df70-4ecb-a860-af2e13650347@jiaxyga.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 19/02/2024 02:59, Sebastian Reichel wrote:
-> Hi Krzysztof,
+On 18/02/2024 20:02, Danila Tikhonov wrote:
+> I removed compatible duplicates from qcom,rpmh-common.yaml. No more
+> warnings. I also followed your advice regarding the name of the child
+> node. Maybe something else?
 > 
-> On Sat, Feb 17, 2024 at 09:39:52AM +0100, Krzysztof Kozlowski wrote:
->> On 16/02/2024 23:34, Sebastian Reichel wrote:
->>> +properties:
->>> +  reg: true
->>
->> Your pattern in weim schema suggests you have here minItems: 2.
->> maxItems: can be 2 or 255.
-> 
-> Which part suggests minItems: 2?
-> 
-> It's minItems: 1 with each item consisting of two address cells and
-> one size cell. Most in-tree users actually have exactly one item.
-> The only exception seems to be arch/arm/boot/dts/nxp/imx/imx1-apf9328.dts,
-> which has "davicom,dm9000" using two reg items. Considering this is an
-> external bus, any number is possible in theory. Should I keep it as is,
-> or use minItems: 1, maxItems: 255 instead?
 
-Hm, indeed, existing 'true' is fine.
+Where do you remove them?
 
 Best regards,
 Krzysztof
