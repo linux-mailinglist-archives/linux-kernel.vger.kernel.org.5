@@ -1,277 +1,194 @@
-Return-Path: <linux-kernel+bounces-71786-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEC7685AA6E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D713885AA73
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:55:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ECE11C2186F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:55:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BED671C2103F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:55:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB97E46551;
-	Mon, 19 Feb 2024 17:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB83047F68;
+	Mon, 19 Feb 2024 17:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JGJKC1MZ"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2087.outbound.protection.outlook.com [40.107.244.87])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="byL8U/DS"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B233BB38;
-	Mon, 19 Feb 2024 17:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.87
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708365312; cv=fail; b=JGXFqZiPQ1OMy9pkiwUgL0L2Ee5v3tMVSXh4aF+CZ7cgxz9rSn9hN05ccwk8ZCuK2uWiF2798FVbLzJE+IYqM7ut3o3GC+hJfs7579rTTIWGWOLHZbdYiJQu+GPPXNo8v1iewmonVbL95Hp/fCENO34nCdNKR0gVA+pChKGw52Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708365312; c=relaxed/simple;
-	bh=gIDu+A26VBEo/gU+GlEQxTBd3gYP84zwrlLlOn7BLdA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=eIFDD2mM57APjj+j5vVPHhyl4H0oMtDu51Wg6eqTrWbxKKvPtd1hUQzoSD75RAtnMhW0WeU8pIyeJhDsC0caLlwOW8/Z0ZrlOhAYhrnbLsqFonZVftGJuzbLqUlWOl/M7CYgre3zK5dX6dsvz4IsfAeM2rpVOS6mjYJA1QZDZnk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JGJKC1MZ; arc=fail smtp.client-ip=40.107.244.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dR3VO7W/rsru9Cve0D3ZygaB7j1JZY2P6OXxRq5V84btbvqtHzeJW85d9NKkBIMPFtzTenUktfxUVAwhS//Oqpep5/UQzrx4S5Ca7bBKTE9dcdziEDWrPbG2O/uNk98ajtWxCOSx4SY6s6qfjO0kM5qWWrFW4Qw1bYHqbZ7IgRTwaHyCJ5q9oilVagQUSu0YJmsSTNwLAVWyM6Y0VSNhnyj52CgZrUEbm4jv9glPmmmc1lw3CmgsYZp1SrX8jyvCalC3gU08Cuyl+wlQIYX2+U8a3wLUQbkorwoZLX2X7i3m1EnR83XqeThl0aD/b7JV1COvNFpFUTVGZCS/BVNsqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o+LYSbC/lpCkR7N+KXIfUywQsfXnf3Sj1B5omVzCjZ0=;
- b=Ma1RAfyZasTKaJiDQmO9nyNqZzG99UFsH4Z9bBW/4jV67e3RldJJDrm51SEyeAiDgMrII48u6Uko0tKApL1REG/KNBO/rCUAH4mPVQamxYUaI/3GVewpBCxi7Fgo2BELTiMdum9N+9GPaipKpJw4bsYouk47fVNFquhPjAnRDUUv9taFrc3uiPqt/leRTeE5DGw6PhmMoRb9QjgbFytnFZ9it3pSIUJ/zYsZDx1INAxx/7aGbYbITxHY3Nn/+SQJEwJ60Op2wBzlA85NDk1C2jaY2ZwC74rkBgEHoLZDOO/uf6kMlTF/nacjDraOTI24N4h4X2umZixJkSelHshFlA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o+LYSbC/lpCkR7N+KXIfUywQsfXnf3Sj1B5omVzCjZ0=;
- b=JGJKC1MZoaka0c8K9vsXjITbO0escXM0EGSeTWJXAmb2dG28w4ga1aCTKxLnTneShrtGlwrT/SEj9q0SiCD3jT+M66HwuEhNOq8S0k7wfY370uSbnxBBUCqPcfuanm1PZxKZdOLiP1tjKZhaJoAlP4Jo7s7eGHhZNfGiW1pA2Js=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
- by DS7PR12MB6120.namprd12.prod.outlook.com (2603:10b6:8:98::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7316.19; Mon, 19 Feb 2024 17:55:08 +0000
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::251:b545:952c:18dd]) by BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::251:b545:952c:18dd%7]) with mapi id 15.20.7316.016; Mon, 19 Feb 2024
- 17:55:08 +0000
-Message-ID: <0ceb2ba5-b595-483c-8a4a-2b64352871ed@amd.com>
-Date: Mon, 19 Feb 2024 11:55:05 -0600
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH v11 0/4] add zynqmp TCM bindings
-To: andersson@kernel.org, mathieu.poirier@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- michal.simek@amd.com, ben.levinsky@amd.com
-Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240219174437.3722620-1-tanmay.shah@amd.com>
- <20240219174437.3722620-6-tanmay.shah@amd.com>
-Content-Language: en-US
-From: Tanmay Shah <tanmay.shah@amd.com>
-In-Reply-To: <20240219174437.3722620-6-tanmay.shah@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: DM6PR05CA0039.namprd05.prod.outlook.com
- (2603:10b6:5:335::8) To BL1PR12MB5874.namprd12.prod.outlook.com
- (2603:10b6:208:396::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E862446A1
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708365342; cv=none; b=LO80r/DFpMmH+bNGnJIMUo7kd1QnOIt7eHyp8tr7JwFRvoQCIm4idjkffyupfZJcEVW6Myh6E6qfleNMOUS0Ktyqoyp5zNq0j7XkRre7H8Hq1wmk4YyOaGoPsRvB9/RUm4b3d17KFQsGSJM3JDgOR9jYbyqXrz4M6xSC/bV0gN8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708365342; c=relaxed/simple;
+	bh=zmuzNUJe53cPK2WkM18JFlu/Myum0HfasgK+PAm3zoY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XZscSUpX7OvRca+aTpNZ58bzRBQKlLTRbtgJdjWnht97Di5HpuIGNSTqHFlx2cISB6urHzZ73+IOGqyZE4hYHBmlMth7z5sBgllGWyYzknn9UZ80xDO4VbvFUY6cIB/UsSUaJ5Wr3ALHPc3VH22yDYqodjKju6TisDzCyExgVsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=byL8U/DS; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41JFErwH029986;
+	Mon, 19 Feb 2024 17:55:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=NFaur2+AKSSTaUh1jwIy7KDR536evIuZN72D5jcNy1M=; b=by
+	L8U/DSsMOGfPwjBbxbdCDzh7WjecoqIUi7FZvsBkCr3O02f+lpjhcavpr6PrJQG0
+	FNLY8RFZUKHk0CpoXgFOFaRkR6lk5ibQNhVYSBnQlrLStfEl5vUkjElelUqWyVnN
+	JCt/sepaXlI6zuOnm7LfePCvTxZjWX3n97dCRZZW3emElnreq0EyAmcR7iXCh7CK
+	6HIOmRBtREiKu/SEgABl4sp9P4xWGPIkvHwuIHYCQqjPrQoxFz2/tSJcch4VHt6z
+	l59nvUyLGBW1Tay946S746Tg+diw/kIryPeZKqqfuziEEGo9JEOCW6TOaGC6sqvB
+	57BujAqyQZ+Q99knjQrA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wc3t2s4s5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 17:55:30 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41JHtTr7028776
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 17:55:29 GMT
+Received: from [10.110.50.123] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 19 Feb
+ 2024 09:55:28 -0800
+Message-ID: <525cfc94-146e-5389-753b-545a9fef2ef4@quicinc.com>
+Date: Mon, 19 Feb 2024 09:55:13 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|DS7PR12MB6120:EE_
-X-MS-Office365-Filtering-Correlation-Id: 392dfb5e-9684-4a58-5023-08dc3173e965
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	nXeWZunfmC/LEhjO/D3ciiLEiA+Og7Th4BwXyIAXtsHu/ZSvlDzfVsliF8o8ySIBERAZrHtE99MptfOy9E6GMhuD1uC5Tq2aPyFWFwDsftEPxqOqdAQ0P89voaS/V0sRjLwiDig/e1C9VW6HNGjnRx1tybn+1SXcmgUrrx4HhPTfFoCuyYSot8jXhZFpcybt1+QPYvq+MU97C3lBDByEdMWzCP/4rwYFVZnFeRj67NB0CB1ki7ZmVoOXiOeJhy4J3VyAVSgQUsJWuVkKDNoRWVgTqvPy5Qlq4Tj0C7lsLAu0VWbbcMtm8lk4vAcLR6W6KfcrhSDy8RR8rO/YubsmdR55CqQrL4noCWSgXpdDgLiDOPDZsRuzKJA7CIUYR+gbKP0zDkVCcNrlgGvLM8nk4YINigMQstZs0CW8NEH9a4WLRe5EFSUk8eyzeD3xMcW/w3G3oU8WhhDS0serNdMwxfWv4sJNsiaJNEIv2z0wwbu8GNGl+Y1XBjoTzNCFNr4+UBkvzZRyFOk0CrSicc0hRusRAM9KcIU6g+F5ceSnAay/AlLlDLncVIyW6I42Ao9G
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Y01xZUJVUzhNa25XbTlxWkd2aHhiWXBaaktFd3BEaVZDV3FGUG5HckM4NC9w?=
- =?utf-8?B?bnBTbUVqY2F3WkJ4TTlxOVBRejFyNWJNWWxHN2hYOTUyc3ZQczBsVTRVWVRj?=
- =?utf-8?B?bGpuTGh6K3M1d1Y1YnlpRUZWbkpYeGlBUS81U2FEdkZjUE1tUTRZTjlQdlVD?=
- =?utf-8?B?aW0wRUlIM0hLK003UXFBeWJhREFaQzIwdFZ2ZEF6RWtGRE1qUGxLUzhzZUhs?=
- =?utf-8?B?T0VHMXY5SlM1RXFUT1JWc0JhU05WU201UFRZUHR4N2l3UEQraHBXcVVXMlkv?=
- =?utf-8?B?VnBoTlU3MGVpUVVUMVdjaU1jVDBEOG9nMVNkbXA4bjF5YXhyU0lzNkFCTkps?=
- =?utf-8?B?L2VMVlJrZDMyNStRSmUrTithSWxxbnFLdWNqNUlCcERuanVTdGFlYTQ5QXps?=
- =?utf-8?B?U01PTjU5RG5lZUI3TmUrOWJDSCt6d1dMNytnR3VXSUJtSkJzTk0rSUdwanJD?=
- =?utf-8?B?NnBnUDhOVVB0RWRXSXNsR3FvdTNzM2FtK2E0YjRtUS92a0gyWUhFV3Y0T1l1?=
- =?utf-8?B?ZnlvallBMWE4K0NDRjdLakdwVzMwZElFK2dlK3lKaGFGMDFsYTV1T3lNYkZS?=
- =?utf-8?B?cGdFVFlCNkNwbGozRlBsSnJJUTdkTzhscXBNNWhuVXpoYnlyaDdxUlVtYXM3?=
- =?utf-8?B?d1lyQ3dkejEwMUt5cithMnROVUlSS2Y3cEl6NkRyQ3k5aUNyTXVCTXVZaDc3?=
- =?utf-8?B?SDJiMjdWd0xFSEQyMnF0bHVOTllCUWRGMHJYTXJXMUJscWlPb3hVbUNPcGlx?=
- =?utf-8?B?d1p5SWcrZnpZOTJlcTd2OEM2L2pDb1prZXdsVVVTZDlUUmRuQW5qOXkrU2NO?=
- =?utf-8?B?SGVGQlFLakdzVVg2azBySWFnN0lsTGYrSUlVOGRKVVdVL3djMVQvREIwcTl5?=
- =?utf-8?B?MVFITlU5Z01vZzJ3Q0c5NldhdHhXa1hEbDYxQmFRQXRRN2REMW5hbnBsWklq?=
- =?utf-8?B?M3pxaUtyWE5mTDNuemVINE1pVkVGT1MrNXB5eVNrMUFFRWxQWFNJM0JvUlho?=
- =?utf-8?B?NTlYdHJjK201YXFvK0NFS29lazRKYXJXVVNqZVVmV0lzUUdDSTEvRzBVclg0?=
- =?utf-8?B?ZUMvd0RGaXV5aDQ4V2drWjNlQXIveHBoYU90WTBXc3Nwbkg1enlqb010dExZ?=
- =?utf-8?B?Q1JBOGF1QnJDYStDYXcvY2d1QzZ0NHV0ZllwSXArelcyWlV3M1BWV3U4aERi?=
- =?utf-8?B?STZleFZyblRwdG5XNXVYZDhJZ2NJR3VnTlpTWnNHNjYrOHF0ZGRKL2Q1SUg1?=
- =?utf-8?B?amI3Qkk1QTlpR244c2VkclQ1LzUrd0ZSTW1yandLYU9qemxESHQ1dGxWaVZa?=
- =?utf-8?B?dlp6N0NOUlg0UjJTQXpyZWthVXRrT0xmQVFNVUdhRVdhTzRKTzVDWWg4UEpU?=
- =?utf-8?B?VmllOUFlQXU4aitrMXdBREdHL3pldzllOVl2dlNvUmRSblVGamhBSzV2RVhF?=
- =?utf-8?B?VTdrNTFWRFY1VWRHZnBRSUI1TGZYR3dQajhtNFZRRWE0ZlgyWXZrNmw5S0tt?=
- =?utf-8?B?cHFEcTBEUGtMMnhJcjFxRjZxZW1rRERUVGlHS08zSndTNVlkNHYwclQyRnNw?=
- =?utf-8?B?ZkhZQW82MHNsMW5VSG9PUXQ4ZHVoMDhlbGUrckJ2aVJLbmRXTjhPRkhBZnNq?=
- =?utf-8?B?b2tRb2p1OUlzVDB4ZnNsSWZBMitVRVdNa015eHJNMVZqaVdhMEdXUGM1V3E0?=
- =?utf-8?B?SjB1UFYwK2RDMzFNS3BERTNGSG9TTDQzSlFoNWwycVNRVVQwdG95aW5TYVpF?=
- =?utf-8?B?a0Y1Y1NMbjBaWDBCSDZBT054ZEpTQTg3MGFHQXZYZmhCNWI2T2ZOSnFCajZo?=
- =?utf-8?B?ZG52R2dXMW1hUHpTUWxxUFBqYzVPbzI4ZnYyVzlpMEM5OVlzdHlWbWtpRW5q?=
- =?utf-8?B?RzNxYjkzOExVMW9wZ2tPNEw3QlQ0TDZORlFWMDczVUgvaEtFMi9QSGYrQjB2?=
- =?utf-8?B?YStSeWwwdm4xcVlpTUNmK3BqYTY5QlFydWw5K2w2eWpBTEFyZ1duS1pUWjFT?=
- =?utf-8?B?eVhQZ2JEbWpGWFhkTnBJZGU4OWZkMFRyWnNhWUdTMHZhSkpwVm5naXdSUldX?=
- =?utf-8?B?ODNZVk1xYlJDSVY0cXE3WmIvOGxTbmxNNnVQbEFmeUtobzl4cUNXYWtHdWZi?=
- =?utf-8?Q?QOIV30dgi98zyDYEYNPksqUXa?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 392dfb5e-9684-4a58-5023-08dc3173e965
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 17:55:08.7687
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PcQBRvTL2fHdiCptLvA+CRk5T9BKZftyQimIH+624qawt0K207NF/SgtMJqc8eIl
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6120
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v5] drm/dp: add an API to indicate if sink supports VSC
+ SDP
+Content-Language: en-US
+To: <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+CC: Paloma Arellano <quic_parellan@quicinc.com>, <robdclark@gmail.com>,
+        <freedreno@lists.freedesktop.org>, <dmitry.baryshkov@linaro.org>,
+        <intel-gfx@lists.freedesktop.org>, <quic_jesszhan@quicinc.com>,
+        <linux-kernel@vger.kernel.org>
+References: <20240215191556.3227259-1-quic_abhinavk@quicinc.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20240215191556.3227259-1-quic_abhinavk@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: m-8WQih43M6Ga5N_avK_itKu9UjiDU_r
+X-Proofpoint-GUID: m-8WQih43M6Ga5N_avK_itKu9UjiDU_r
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_15,2024-02-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 spamscore=0 impostorscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 malwarescore=0
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402190135
 
-Hello,
+Hi DRM maintainers
 
-By mistake same set of patches were sent twice in same git send-email command.
+Gentle ping for reviews on this one.
 
-Anyone can be reviewed. Please let me know if I need to take any action to fix it.
+Since the dependent series is mostly complete, would like to get your 
+reviews on this one to land it.
 
-Thanks.
+Thanks
 
-On 2/19/24 11:44 AM, Tanmay Shah wrote:
-> Tightly-Coupled Memories(TCMs) are low-latency memory that provides
-> predictable instruction execution and predictable data load/store
-> timing. Each Cortex-R5F processor contains exclusive two 64 KB memory
-> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
-> In lockstep mode, both 128KB memory is accessible to the cluster.
->
-> As per ZynqMP Ultrascale+ Technical Reference Manual UG1085, following
-> is address space of TCM memory. The bindings in this patch series
-> introduces properties to accommodate following address space with
-> address translation between Linux and Cortex-R5 views.
->
-> |     |     |     |
-> | --- | --- | --- |
-> |      *Mode*        |   *R5 View* | *Linux view* |  Notes               |
-> | *Split Mode*       | *start addr*| *start addr* |                      |
-> | R5_0 ATCM (64 KB)  | 0x0000_0000 | 0xFFE0_0000  |                      |
-> | R5_0 BTCM (64 KB)  | 0x0002_0000 | 0xFFE2_0000  |                      |
-> | R5_1 ATCM (64 KB)  | 0x0000_0000 | 0xFFE9_0000  | alias of 0xFFE1_0000 |
-> | R5_1 BTCM (64 KB)  | 0x0002_0000 | 0xFFEB_0000  | alias of 0xFFE3_0000 |
-> |  ___               |     ___     |    ___       |                      |
-> | *Lockstep Mode*    |             |              |                      |
-> | R5_0 ATCM (128 KB) | 0x0000_0000 | 0xFFE0_0000  |                      |
-> | R5_0 BTCM (128 KB) | 0x0002_0000 | 0xFFE2_0000  |                      |
->
-> References:
-> UG1085 TCM address space:
-> https://docs.xilinx.com/r/en-US/ug1085-zynq-ultrascale-trm/Tightly-Coupled-Memory-Address-Map
->
-> Changes in v11:
->   - Fix yamllint warning and reduce indentation as needed
->   - Remove redundant initialization of the variable
->   - Return correct error code if memory allocation failed
->
-> Changs in v10:
->   - Add new patch (1/4) to series that changes hardcode TCM addresses in
->     lockstep mode and removes separate handling of TCM in lockstep and
->     split mode
->   - modify number of "reg", "reg-names" and "power-domains" entries
->     based on cluster mode
->   - Add extra optional atcm and btcm in "reg" property for lockstep mode
->   - Add "reg-names" for extra optional atcm and btcm for lockstep mode
->   - Drop previous Ack as bindings has new change
->   - Add individual tcm regions via "reg" and "reg-names" for lockstep mode
->   - Add each tcm's power-domains in lockstep mode
->   - Drop previous Ack as new change in dts patchset
->   - Remove redundant changes in driver to handle TCM in lockstep mode
->
-> Changes in v9:
->   - Fix rproc lockstep dts
->   - Introduce new API to request and release core1 TCM power-domains in
->     lockstep mode. This will be used during prepare -> add_tcm_banks
->     callback to enable TCM in lockstep mode.
->   - Parse TCM from device-tree in lockstep mode and split mode in
->     uniform way.
->   - Fix TCM representation in device-tree in lockstep mode.
->   - Fix comments as suggested
->
-> Changes in v8:
->   - Remove use of pm_domains framework
->   - Remove checking of pm_domain_id validation to power on/off tcm
->   - Remove spurious change
->   - parse power-domains property from device-tree and use EEMI calls
->     to power on/off TCM instead of using pm domains framework
->
-> Changes in v7:
->   - %s/pm_dev1/pm_dev_core0/r
->   - %s/pm_dev_link1/pm_dev_core0_link/r
->   - %s/pm_dev2/pm_dev_core1/r
->   - %s/pm_dev_link2/pm_dev_core1_link/r
->   - remove pm_domain_id check to move next patch
->   - add comment about how 1st entry in pm domain list is used
->   - fix loop when jump to fail_add_pm_domains loop
->   - move checking of pm_domain_id from previous patch
->   - fix mem_bank_data memory allocation
->
-> Changes in v6:
->   - Introduce new node entry for r5f cluster split mode dts and
->     keep it disabled by default.
->   - Keep remoteproc lockstep mode enabled by default to maintian
->     back compatibility.
->   - Enable split mode only for zcu102 board to demo split mode use
->   - Remove spurious change
->   - Handle errors in add_pm_domains function
->   - Remove redundant code to handle errors from remove_pm_domains
->   - Missing . at the end of the commit message
->   - remove redundant initialization of variables
->   - remove fail_tcm label and relevant code to free memory
->     acquired using devm_* API. As this will be freed when device free it
->   - add extra check to see if "reg" property is supported or not
->
-> Changes in v5:
->   - maintain Rob's Ack on bindings patch as no changes in bindings
->   - split previous patch into multiple patches
->   - Use pm domain framework to turn on/off TCM
->   - Add support of parsing TCM information from device-tree
->   - maintain backward compatibility with previous bindings without
->     TCM information available in device-tree
->
-> This patch series continues previous effort to upstream ZynqMP
-> TCM bindings:
-> Previous v4 version link:
-> https://lore.kernel.org/all/20230829181900.2561194-1-tanmay.shah@amd.com/
->
-> Previous v3 version link:
-> https://lore.kernel.org/all/1689964908-22371-1-git-send-email-radhey.shyam.pandey@amd.com/
-> Radhey Shyam Pandey (1):
->   dt-bindings: remoteproc: add Tightly Coupled Memory (TCM) bindings
->
->
->
-> Radhey Shyam Pandey (1):
->   dt-bindings: remoteproc: add Tightly Coupled Memory (TCM) bindings
->
-> Tanmay Shah (3):
->   remoteproc: zynqmp: fix lockstep mode memory region
->   dts: zynqmp: add properties for TCM in remoteproc
->   remoteproc: zynqmp: parse TCM from device tree
->
->  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 192 +++++++++++--
->  .../boot/dts/xilinx/zynqmp-zcu102-rev1.0.dts  |   8 +
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi        |  65 ++++-
->  drivers/remoteproc/xlnx_r5_remoteproc.c       | 257 ++++++++----------
->  4 files changed, 357 insertions(+), 165 deletions(-)
->
->
-> base-commit: 929654e8f1add50b01d5a56171a31c311b0a739a
+Abhinav
+
+On 2/15/2024 11:15 AM, Abhinav Kumar wrote:
+> From: Paloma Arellano <quic_parellan@quicinc.com>
+> 
+> YUV420 format is supported only in the VSC SDP packet and not through
+> MSA. Hence add an API which indicates the sink support which can be used
+> by the rest of the DP programming.
+> 
+> changes in v5:
+> 	- rebased on top of drm-tip
+> 
+> changes in v4:
+> 	- bail out early if dpcd rev check fails
+> 
+> changes in v3:
+> 	- fix the commit title prefix to drm/dp
+> 	- get rid of redundant !!
+> 	- break out this change from series [1] to get acks from drm core
+> 	  maintainers
+> 
+> Changes in v2:
+> 	- Move VSC SDP support check API from dp_panel.c to
+> 	  drm_dp_helper.c
+> 
+> [1]: https://patchwork.freedesktop.org/series/129180/
+> 
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Paloma Arellano <quic_parellan@quicinc.com>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> ---
+>   drivers/gpu/drm/display/drm_dp_helper.c | 23 +++++++++++++++++++++++
+>   include/drm/display/drm_dp_helper.h     |  2 ++
+>   2 files changed, 25 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
+> index 8d6ce46471ae..61b11cb45245 100644
+> --- a/drivers/gpu/drm/display/drm_dp_helper.c
+> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
+> @@ -2913,6 +2913,29 @@ void drm_dp_vsc_sdp_log(struct drm_printer *p, const struct drm_dp_vsc_sdp *vsc)
+>   }
+>   EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+>   
+> +/**
+> + * drm_dp_vsc_sdp_supported() - check if vsc sdp is supported
+> + * @aux: DisplayPort AUX channel
+> + * @dpcd: DisplayPort configuration data
+> + *
+> + * Returns true if vsc sdp is supported, else returns false
+> + */
+> +bool drm_dp_vsc_sdp_supported(struct drm_dp_aux *aux, const u8 dpcd[DP_RECEIVER_CAP_SIZE])
+> +{
+> +	u8 rx_feature;
+> +
+> +	if (dpcd[DP_DPCD_REV] < DP_DPCD_REV_13)
+> +		return false;
+> +
+> +	if (drm_dp_dpcd_readb(aux, DP_DPRX_FEATURE_ENUMERATION_LIST, &rx_feature) != 1) {
+> +		drm_dbg_dp(aux->drm_dev, "failed to read DP_DPRX_FEATURE_ENUMERATION_LIST\n");
+> +		return false;
+> +	}
+> +
+> +	return (rx_feature & DP_VSC_SDP_EXT_FOR_COLORIMETRY_SUPPORTED);
+> +}
+> +EXPORT_SYMBOL(drm_dp_vsc_sdp_supported);
+> +
+>   /**
+>    * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
+>    * @dpcd: DisplayPort configuration data
+> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+> index d02014a87f12..36351f3cdba9 100644
+> --- a/include/drm/display/drm_dp_helper.h
+> +++ b/include/drm/display/drm_dp_helper.h
+> @@ -100,6 +100,8 @@ struct drm_dp_vsc_sdp {
+>   
+>   void drm_dp_vsc_sdp_log(struct drm_printer *p, const struct drm_dp_vsc_sdp *vsc);
+>   
+> +bool drm_dp_vsc_sdp_supported(struct drm_dp_aux *aux, const u8 dpcd[DP_RECEIVER_CAP_SIZE]);
+> +
+>   int drm_dp_psr_setup_time(const u8 psr_cap[EDP_PSR_RECEIVER_CAP_SIZE]);
+>   
+>   static inline int
 
