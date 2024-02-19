@@ -1,107 +1,115 @@
-Return-Path: <linux-kernel+bounces-70967-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70968-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6A11859EC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:51:06 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF022859ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:51:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 855731F21AA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:51:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8ECF6B234B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5220821A19;
-	Mon, 19 Feb 2024 08:50:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42751224E3;
+	Mon, 19 Feb 2024 08:51:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="f+PyqisD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OLHxIk+y"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8754D2135A;
-	Mon, 19 Feb 2024 08:50:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF57F224CC
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708332658; cv=none; b=LEIDA0p51dezfm6UYK1+rQE8ONiN036zlMHyfq7wQtxCBvVCQuuyFdyrT0HIRt82QUk5B3NQbs40YxTGsIGn827RPX1050G1oDRTcUvJxrKbSejgGEjztOZzvkcQyttBdBIIIOPGC35FYopzNRKDVbHkOcqaVS65Tnk1K6Fu+yg=
+	t=1708332677; cv=none; b=O5NPyiia9ginROV0A0pFagQ3UzDWwaCoLFzVZB72fve1RUex1OvEl3F2JVc0PC1NpK/WK7imKLwWmfPptVy5a91jfvHEN+AWWOdmQ7Ki/AwZfdjDZ91wmwGvmoqw8ZepefKASPKa9psBY3bxO0X81x1syo7/FiyQCJFzYonvaUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708332658; c=relaxed/simple;
-	bh=Gdta+sVIghXZf3QcsNLG8QdvkbpOc6nIYPto/FbjQvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TNKZfPhHXUYwkk5tQNh1yJnLGpX1qYQZyFUbikeBN81KaBC2fBFKL92HWkhykA2MDyyXwK72GfQ0XcOvsdRa2YUdXZl7DS3Dsr9xodYnQKiWogxVKqPXMdAGBk8BdQWVDq5osWG2WPtXG50jVTJcQBKAxd984GhLRoDaUEQF2zU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=f+PyqisD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B934C433C7;
-	Mon, 19 Feb 2024 08:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1708332658;
-	bh=Gdta+sVIghXZf3QcsNLG8QdvkbpOc6nIYPto/FbjQvc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=f+PyqisDcAC14HikWSUp/Z/VjeWy3jqmgEHCrZb4vs0NIrpjJ8ZF0KoLUU/CT3gMg
-	 isOPrvk/flo5SEC1O/LpqHHZWt8Qa4McEC1goD+k6IEdNb+ZevFKpN31mIuGPFtz/R
-	 DBVVp7q9BgBvIiqJ6S0oEDumtv1eHK2aKrmABIEk=
-Date: Mon, 19 Feb 2024 09:50:54 +0100
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Saurabh Sengar <ssengar@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ssengar@microsoft.com
-Subject: Re: [PATCH 2/6] uio_hv_generic: Query the ringbuffer size for device
-Message-ID: <2024021920-wincing-dyslexic-aae1@gregkh>
-References: <1708193020-14740-1-git-send-email-ssengar@linux.microsoft.com>
- <1708193020-14740-3-git-send-email-ssengar@linux.microsoft.com>
+	s=arc-20240116; t=1708332677; c=relaxed/simple;
+	bh=8eKREEc7F0lAf3GTw+lhnrYpcGZiLLA3+AD1RWpjJ1c=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=Nebw9WCsKgyPg3N2jtWyWhWipO5/VMAzpHd0fGihXucSi1Y17JuDDc+rCR7SL6R+kgk7mdWRUQoU946+1Xg73qcwswXMUyOt1LP2qypUXRMyT2gLZMVO5seGq9HWQBGoHaqFm2a4JAtSWR5vRvhj8MO//5KMUPdBge8Y8JJCZfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OLHxIk+y; arc=none smtp.client-ip=209.85.167.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-512b4388dafso575118e87.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:51:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708332674; x=1708937474; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JrPQnhq+uifNDW6L1wLQ8gkUjpW0jaBliebCRq9SQQ4=;
+        b=OLHxIk+yc6lty6vaK7xRBijROLZUE4tKD98qDYRgxk8GsjMsUQaAqwpv9kcGzqQ6K/
+         HK3Mz3RZ18YyEG9EgENJWY1UFKEgwLmtmWNiY+okmcjMgoLceqThELAlB6d01dj0j1yq
+         50ZMMdFDNR13o9c7yyQkB9dGz9pbe3CcYGVD7ap5XyjSSbfdhZmfJZ2l7amoKiBRxwsP
+         xr8JiWHxE9ADz4YbdBicIX6vEioFYDUISSZP3xavw8Ak+EtBlRgw35/+1kPS/+48xk86
+         2OaCzzMQOrpQq2ZD+lhyxTirTqW2zqgLikmm8AWxXwvkyoPa3hJTOEWv09JBxrpIkfmz
+         +Riw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708332674; x=1708937474;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JrPQnhq+uifNDW6L1wLQ8gkUjpW0jaBliebCRq9SQQ4=;
+        b=Q1fYp5OyLXsP0Dq6DjR+Bcwsy7vpvQuVhxsCfSm/Hd3z6diFZ2au2pGOjMcTAcPIzR
+         5dmOEy6BZO59x7kKoQvb0b1ssNj8Pp3pMO+wJo4tASNbYBYa7u+Bj36LVP3IQDcdNS19
+         IG0RkqJ/LOF7OS0aFtDcPU9dcoKLYEYJ9uJKdkpRVQC7wQkr/ZRhq4/jnj3M4xnBJa+B
+         57vpOdJUDhpUrNVGo83kpOopNCXc7gO/b60NcQ6ajeFMJTpu+gbc3FeTYkaBezriZWWr
+         UWnBfO+Vz6YBnk5X9tvGcO9NATiIbQuXWOwEViimuMM3eoqlDnAySzsOrqOQvjinlx/m
+         WrsQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXTHjpjEw9ea5WyWpV6BBxJAduCwG8uW879oBZ23M1Sr3UsdP7Ozpir544npR2J2OZKvnhHDmR/Mbq1vedGRDQ4wae7zLTs9/tMQpno
+X-Gm-Message-State: AOJu0YyyoDUSlEc6uwwH9epa/vSzJBMoLxN8LuCVJv0QjotJtJrBmKOT
+	HZAYCINTRBc5/6MHj+sWGe/fXkHYXZoyXW8PItIrSdEitEHCiv1vGec1a9e0YQg=
+X-Google-Smtp-Source: AGHT+IEp94VAwIV8UDUHZQ6iK2j8S1+JA1YOJjp/Q1c61r3h7VoeVocWfcqAQMleJ3dGtbsARm1Nsw==
+X-Received: by 2002:a05:6512:2150:b0:512:be4c:b53a with SMTP id s16-20020a056512215000b00512be4cb53amr39287lfr.3.1708332673938;
+        Mon, 19 Feb 2024 00:51:13 -0800 (PST)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id p11-20020a05600c1d8b00b004126a0dfd11sm409187wms.29.2024.02.19.00.51.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 00:51:13 -0800 (PST)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+To: dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org, 
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org, 
+ tzimmermann@suse.de, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
+References: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
+Subject: Re: [PATCH v1] drm/meson: improve encoder probe / initialization
+ error handling
+Message-Id: <170833267304.1737509.12815192021500266320.b4-ty@linaro.org>
+Date: Mon, 19 Feb 2024 09:51:13 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1708193020-14740-3-git-send-email-ssengar@linux.microsoft.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.4
 
-On Sat, Feb 17, 2024 at 10:03:36AM -0800, Saurabh Sengar wrote:
-> Query the ring buffer size from pre defined table per device.
-> Keep the size as is if the device doesn't have any preferred
-> ring size.
+Hi,
 
-What is the "as is" size?
-
+On Sun, 18 Feb 2024 18:50:35 +0100, Martin Blumenstingl wrote:
+> Rename meson_encoder_{cvbs,dsi,hdmi}_init() to
+> meson_encoder_{cvbs,dsi,hdmi}_probe() so it's clear that these functions
+> are used at probe time during driver initialization. Also switch all
+> error prints inside those functions to use dev_err_probe() for
+> consistency.
 > 
-> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
-> ---
->  drivers/uio/uio_hv_generic.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> This makes the code more straight forward to read and makes the error
+> prints within those functions consistent (by logging all -EPROBE_DEFER
+> with dev_dbg(), while actual errors are logged with dev_err() and get
+> the error value printed).
 > 
-> diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
-> index 20d9762331bd..4bda6b52e49e 100644
-> --- a/drivers/uio/uio_hv_generic.c
-> +++ b/drivers/uio/uio_hv_generic.c
-> @@ -238,6 +238,7 @@ hv_uio_probe(struct hv_device *dev,
->  	struct hv_uio_private_data *pdata;
->  	void *ring_buffer;
->  	int ret;
-> +	size_t ring_size = hv_dev_ring_size(channel);
->  
->  	/* Communicating with host has to be via shared memory not hypercall */
->  	if (!channel->offermsg.monitor_allocated) {
-> @@ -245,12 +246,14 @@ hv_uio_probe(struct hv_device *dev,
->  		return -ENOTSUPP;
->  	}
->  
-> +	if (!ring_size)
-> +		ring_size = HV_RING_SIZE * PAGE_SIZE;
+> [...]
 
-Why the magic * PAGE_SIZE here?
+Thanks, Applied to https://anongit.freedesktop.org/git/drm/drm-misc.git (drm-misc-next)
 
-Where is it documented that ring_size is in pages?
+[1/1] drm/meson: improve encoder probe / initialization error handling
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=1a9e51bef89af0f0976cf4c83a1e682895695dcf
 
-And what happens when PAGE_SIZE is changed?  Why are you relying on that
-arbritrary value to dictate your buffer sizes to a device that has
-no relationship with PAGE_SIZE?
+-- 
+Neil
 
-Yes, I know you are copying what was there today, but you have the
-chance to rethink and most importantly, DOCUMENT this decision properly
-now.
-
-thanks,
-
-greg k-h
 
