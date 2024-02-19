@@ -1,178 +1,222 @@
-Return-Path: <linux-kernel+bounces-70632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13CEE859A4C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:03:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 206A5859A53
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36C761C209AB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 01:03:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00A5BB20CC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 01:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035192107;
-	Mon, 19 Feb 2024 01:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F26CC163;
+	Mon, 19 Feb 2024 01:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="B/2WkZBN"
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2082.outbound.protection.outlook.com [40.107.8.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fz+QvxkG"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86B4163;
-	Mon, 19 Feb 2024 01:03:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.8.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708304617; cv=fail; b=HXVLAdgVTnJ0Z3kiWJXSH5pCBSFTt8A37H/feqiooZn/3/eGz51jsSFdifULlrwLtZjk2gqv9im+CQMwq9gpGvzp8Q/syhhFjzWZbuHSUMoszILuPZc6HlixPT72zGn0fTiNY3uFbpWqhyWVINleAAuzwpk1IXcT6iEM9335iK8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708304617; c=relaxed/simple;
-	bh=Lo4IcBEQx8Jk0fZNMVGWJYR98mNGc+sAn/KCRFi27qc=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=GBlAPEn+rzm9U/80gbRoMqjnGqKky6z9ZalwlOKprWS8QYfc4/8fh64FKXi0RvoJ4Fe5JEqsxhQXoh/gq3WoqHNJ9a3cVmzB/WDS9nfey0Ya8jcRk+RZF8jHDeFDjqJkD3hBk21KNORUoy6S8Hw5CUxNY2hvhpoqbwuf/X4t248=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=B/2WkZBN; arc=fail smtp.client-ip=40.107.8.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a+L1lQPboomxqtos+qRgZMW+u2SWPagBLY1UhwTNLq95Wwm7YPaxStGMzTq6P/Phy+A+3a7IKBasg2h4fSDMVmExVlfpzqHWrh8hJqhWfGxBvbPlKNV0W0/ZillOu0C3Sky/83hfbkeF84kPjINx7222Uttb/+aLUtX8L6UwHfichloG3rPG8H7t8zF+y+++dzhPcCXt/hZ8XB1rQj3twWSDPUgTvwOelf7eaoUOep7m8MTFJgz6Ltek9n31bff0qNkSd6X+T0f9x5fbpDsl6iAMfMaxTEBmQ0Y5Rg7iR6QHM2IdDABI0xEmPpAGTuYEdzSzmHE12GMsXaBk0hzRUg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=sPgE3ob3aUIeF1aoxeVd81WxBqxETHatx9vjUdTrf9A=;
- b=Ak3KjwrSc7UeDFYGGwaETHXZJICeav0x29lumAwsgxt4MXJ5jfBs+goQXIvSoNFqf2kOZptXc1nQ0MN+qJ2osD6wAoL/pjZ4LJlwVHW3EnSKfc2a5QkYMu5sVlC1qnqsAfGChfxsy5SWQkWeB5oS0Uk/Ax/uoxpW9M6MRsxBS4zIMECHHgZ5nCyvNB1jgrNO1sNmiMbIcpY+G7s1aMTpygisGxmGHwPp13yie4JfLyT5bLUl74ePkVhZ7J4+z0lhjVxrsNr43mB4c7jB6y0NSVKXiH9h1hWGFyyMd0zcQaE8Iq1zC1KIWWjb4aoamJrwnhVLfTph0l/dvCXEjDCRfg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sPgE3ob3aUIeF1aoxeVd81WxBqxETHatx9vjUdTrf9A=;
- b=B/2WkZBNRf2zavyng2fe95kyClSZr87Pu9YtRpSW9Axxum3h9SjHGYtAN0uOaaMraXdj42v6BFCik9i9o4dQWRMsjAi5UVWl29bGbwW8GcZUnEt4gb1XIh+vQ3rZ9IsrHx1zRhOWqtjlGdmVYlkZg4AnyZ2omAf/QIAwDktQ23Y=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by DU0PR04MB9633.eurprd04.prod.outlook.com (2603:10a6:10:311::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.34; Mon, 19 Feb
- 2024 01:03:30 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::4ac3:3559:4200:38e1]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::4ac3:3559:4200:38e1%4]) with mapi id 15.20.7292.033; Mon, 19 Feb 2024
- 01:03:29 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Michael Turquette
-	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Sudeep Holla
-	<sudeep.holla@arm.com>, Shawn Guo <shawnguo@kernel.org>, Nishanth Menon
-	<nm@ti.com>, Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio
-	<konrad.dybcio@linaro.org>, Geert Uytterhoeven <geert+renesas@glider.be>,
-	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter
-	<jonathanh@nvidia.com>, Linus Walleij <linus.walleij@linaro.org>, Laurent
- Pinchart <laurent.pinchart@ideasonboard.com>, Mauro Carvalho Chehab
-	<mchehab@kernel.org>, Vinod Koul <vkoul@kernel.org>, Russell King
-	<linux@armlinux.org.uk>, Srinivas Kandagatla
-	<srinivas.kandagatla@linaro.org>, Mark Brown <broonie@kernel.org>, Jaroslav
- Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	"linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "patches@opensource.cirrus.com"
-	<patches@opensource.cirrus.com>, "linux-stm32@st-md-mailman.stormreply.com"
-	<linux-stm32@st-md-mailman.stormreply.com>, dl-linux-imx <linux-imx@nxp.com>,
-	"linux-amlogic@lists.infradead.org" <linux-amlogic@lists.infradead.org>,
-	"linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
-	"linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>,
-	"linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-phy@lists.infradead.org" <linux-phy@lists.infradead.org>,
-	"alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-	"linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
-Subject: RE: [PATCH] clk: constify the of_phandle_args argument of
- of_clk_provider
-Thread-Topic: [PATCH] clk: constify the of_phandle_args argument of
- of_clk_provider
-Thread-Index: AQHaWq0ZPI/aYtegqkWDKKNVao0UqrEQ6UOQ
-Date: Mon, 19 Feb 2024 01:03:29 +0000
-Message-ID:
- <DU0PR04MB9417F8D996A661CAA9E542FE88512@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240208163710.512733-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240208163710.512733-1-krzysztof.kozlowski@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|DU0PR04MB9633:EE_
-x-ms-office365-filtering-correlation-id: 565eb74d-c0e6-4eab-2e9a-08dc30e69607
-x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- YGHe7wtIOI5wGk2i4JEkm5WM2hr4XcziS1MG9DOD6/0S/iJpB+C8ki334R+NsmFErNIf/ZLWgRU18Nm7mls7jHESTWDd5VVnoFHzYTEmu6V1UgIysYFhjmo5gwXzZ/CgaSGhTd8wK07ivjxjY1M8ovw03pDVjYJ+GhGkW0OQ5BI5ZhzkSkZETdKVY9xRULREz12NvKYoVHdVuBVsGaUeqA4nJ6JgSe3aJaFwueMKeCH/AoKfUSoq7PZb5NVxD3wT8jDsGkJ1rXLfZoNaSqFxEwteM6hzHKuz7wsx5QEzJD3glmVsWWP4kGGXq2UoTZWgaKUS5X0Fp4X6yGBJvumB2s5p30oAunfi3G/+fFzp7l3A3eja0RehNEJcnJkTu5XFZmOy0VhhpFzCp94x3SqorLPRCNJ8dgTpSnfuu+SPu/h1DM7d7trGchR8evQGZO0G17MHAd+/B3EtdRvJpjxzMSGNqjkURB0ZysrwaYHSHmPbWgHIMas2wk7MFpZaSligAyR3w6Jja7tWTi7aV+oxGy8DHJA/EzIU9DrfW1Yjt2UfEzulYF/L7hBJdq9KAIfSVumHrRRhVUy8ViQluzQFwbfWXNswBxBwVJ6fSDSzBC8C4IdUBna9eNNsqy1FSOMsCVRrQBDl3lnvXuTRFdlF6Q==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(39860400002)(396003)(376002)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(38070700009)(921011)(26005)(41300700001)(83380400001)(8936002)(52536014)(8676002)(64756008)(66446008)(66476007)(66946007)(76116006)(66556008)(316002)(478600001)(9686003)(7696005)(71200400001)(110136005)(6506007)(33656002)(122000001)(86362001)(38100700002)(44832011)(5660300002)(2906002)(7416002)(7406005)(55016003)(4744005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?i4+e8mXJqncfZOk6Huf1v5+sflTwSEEfQl94kYxCcN0Sl7VL7CrzqoZCrTRD?=
- =?us-ascii?Q?XuYQ6F0aRa9sKYpV7Pit1fadsZ0IOI7CY1WVDP3OSSERRcxmsSqJkjojBi3c?=
- =?us-ascii?Q?Dukxc7+CT5T/T82D0cEumvJymXeSCSCrszSiYWewqkAWMsPAappllUTyi8V/?=
- =?us-ascii?Q?fRvz2ytDOjkIgkHnF2QyvTxYqia4EdP4Tujd387Cq1my4V75snY0bggxPumG?=
- =?us-ascii?Q?Pg8yE4uQPs7vmosmqdtZ7FnwFAvLD8c81+KqKaleXXmgqbJaEwJ/jFOnb9hR?=
- =?us-ascii?Q?N4zjMLyqdzeiofP/U8Mfw2DNSC8/smu25P+1jx+VMf0U7wZy4p3rFf/eFoyP?=
- =?us-ascii?Q?lbBmUzW6t2WmRVRdkgAOErYibWeovbgYB2xLJSzpAzVQwSOjyt4sscoIp2q8?=
- =?us-ascii?Q?R0yp54plqxy4u6R6/0vubRX2V4QslKo/ChIO4iZ9wvQJT67Pg/ZBViCKHNxc?=
- =?us-ascii?Q?4fKF25/FAnX3hbNTKvo5NdvNBvpc+bSJTZOJEMdvB2PLDKvOx7u2QOanSrxE?=
- =?us-ascii?Q?kEPMu8xUfULWZyg354Qn0dRFsHSJMQrFSquuP7R//csyDj9Hz3VDTWleUSH8?=
- =?us-ascii?Q?JgEI3sMtOiYS3mptn2lbnpKqRPmgcaccbdLPcF6jeWGz5Vvyqz1/s32sqvWz?=
- =?us-ascii?Q?/XuiNZzjJCQCN7uFHz7RQQCEy6gS91kDrCd97wMLdtLosKlOu7iQqiKMgIpe?=
- =?us-ascii?Q?1qUHpY4A+gLCwQN3mWzZQtNmwhmR2rmxi4FlbLkZZy8CKzq02TB5Ihhb1n1v?=
- =?us-ascii?Q?gjQEe3Vs69xPDMsoZ/Bd/VYMSbOziaSfWe0SQGVxAVd27yhzO4sntfK1L0G7?=
- =?us-ascii?Q?VqiZjBbzVzYVhDDze7mvVjRGJN2NJbM6Y932iQ32pxmZ9+DMaBphNKd5zHvL?=
- =?us-ascii?Q?CRoX1MMarGTzwsH2cG7tJvcV63JeasgrNYe8m34Rb7O5ndlwlC2AZtXw8bP2?=
- =?us-ascii?Q?V7V+B09/SA3cBAzpP477mkJ7Jv852VUaLiQoeZXysqCKzk57ckmn8UOUDPVT?=
- =?us-ascii?Q?MhC+W2Djq3tXOcrk5t+bqK/DDVeBIOHth6MOt7Mkji1bQVkYwMY1lHgjim7q?=
- =?us-ascii?Q?5W+0cnnvBXxtW4Fg5qIKrSuzBnJleIure51xNWCudO7VIWUh23Ag32quYpxJ?=
- =?us-ascii?Q?jPooVPIgKy3YeH7OBvHtkxWopNPUtApwlmRLl6vf8v6CAoklOZfvw87TqVgQ?=
- =?us-ascii?Q?FzEwN93dbqq9dwwGxUnR2EloREEVlLVlZx2vpmKF+WxMeQHA/4wmPHu/NyGd?=
- =?us-ascii?Q?Ewhj5AOeC53I4EFFLNtXtkt3lmh6dEZ9dcdSZojDAgq2nWJROz6jx2oFuyJv?=
- =?us-ascii?Q?PZW/YKWq2aSclkFoC9T/uE22pRpo8tb4hP30JyzlUHSIcvGA/CtS4zsIKFDK?=
- =?us-ascii?Q?EqDo4iSymHRPUJYsL6iUctvq6Nt8+ouF7xvhSdFpDdFakfeAqHjBt23WQIm4?=
- =?us-ascii?Q?RVqP0OeGMQJ4Bvc/xBlCJb36i1navEuRaopUM6v9EMJptm5CIDqin7VE8nUW?=
- =?us-ascii?Q?N1+3mRyLSVUJrm9jhGBUJvAHOTVLO9LwSJ6A18JafVMS8ZTTuZkqKuy+PaHz?=
- =?us-ascii?Q?YslMAGRZ7W6hbM5eMm0=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE3F7652
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708304712; cv=none; b=OUMmLuLLXgNQ9doBv3CrrhbPeuXQndkJJ0vmGwETFPTTnDn2fekCmM45LOJ0U8CtMzMS+x7rvPOuJ6t1UYTy2N2IZxXuNyv/J90qHzoPCYUUUNthTFQt7jCjysmPm5UrhavbwQz0YEljXO2j7Yh4jH8Xv3DsrrB0kOsYYVfYFS0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708304712; c=relaxed/simple;
+	bh=RN/oOnbxOXJRjgABecn+1xhjdfXant7wAu1DO9OYV0M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=IvzThXYuoZnprnjNw3C/gRcQIJVy6/mA+xTCM4Y1znhDCcKV7PxfFBMYaJ2MEMpCxZFXOrJfD5pJovWHtADSVrgR6/GYKLvkXQDenXxeFNssDjckkVocEMaJZTnLONMdmHL9yfr9oFWydSCDa5bL3EzCTEK7cd+wnJXzWaWOZrM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fz+QvxkG; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso3563798276.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 17:05:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708304708; x=1708909508; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mIDaOHUmOnFQVc3Wwg+6+LPaeJ2ta81+Eqz5TMzPBys=;
+        b=fz+QvxkGr229b6bOrKWi9XavB8I5cjL/HDA9sjZn+pP0oqOmBxKuzRnbZm2bmE6Nue
+         0X98b9HQ0mJuVpQCJ8NsQDg7bMdv4O6KJJIzE6uqTskf5hlTpRx6+OMe0ARgOY0bFZZP
+         2QfpxR5ErVjv499/jVaEHj6IeV8mVNVWmXWCC4NkPE8oA+lEidFad5YsZfvgtKh3Orr/
+         hP0JbfDr5YYpgdcjnvL68K/qXF24lAuS2EDLWGYZeMwuDeXvtJBb4N5JExgrI8l5DAHr
+         B6lYOoDQJXe0Lhw9wpOcJKkd84rfPiGTDy54w80WJjCEq8y9G66FW8jcJBmU1Nibcmw/
+         qh9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708304708; x=1708909508;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mIDaOHUmOnFQVc3Wwg+6+LPaeJ2ta81+Eqz5TMzPBys=;
+        b=DOAm9+WjzoDAPIvPiYu9k55SVWaSCLjNYIkhgiXM0Lp+fC8unMyD5qQXHoVQo3I5da
+         lxcczUl7eOcED0uHkO4aYI6tm0QHoKz2bj0tDhfZBYZMqKN3ysmcCXaZfRfKWnuqqfF7
+         TARBVJZeJXC+gaEuWwp9zup693xc+KLc5g9EujQQ9A13mR0k4igsMd1lMcdPbPP1tD0B
+         xYuhi8kex4U6lO21f8A4v1AL4k8fXty9LuU+rhTRmUJzgCfPiK2K+KX+9Kz1c/NzkxQz
+         XsV4ar/XhUEadpo0zqXR4R6HAcsNYNjREWiorHtNdEh2sVjCNn1a6umH3Q1bovy4wYjz
+         +YUA==
+X-Forwarded-Encrypted: i=1; AJvYcCXLNKKvz1W8UV7jcbx+QfbvpAZMKe4FP4GnOjWCU5hq3x8ogpAuSG2TIVCYoajyGlbB3wPFn2Uq7tFtzpY+eQ/qhpcoSGP4d83JopIr
+X-Gm-Message-State: AOJu0Yxvo1lagdT4NoHekkWQIANl4jnFbaZ6PxRX8i2lOVAF/5JZEMvt
+	TqPMc6aTxtpzg2jp861N6GyLitj1FKQwm061F88WY1I8ZYMT+azkyKsEti2y8BBVQkzEWZWDBB0
+	2Zc7PIuXv5u3jIr9HHL2bFSU59UBfqwMhkMef
+X-Google-Smtp-Source: AGHT+IFAFF6IWWYhF0S9T//EmmWIuYGcDfDoGsA7me1Exr/qYPq0aAoDdEWC37Tru9GNL3XObftohrbEHommrFTiK+w=
+X-Received: by 2002:a5b:b43:0:b0:dcc:eb38:199c with SMTP id
+ b3-20020a5b0b43000000b00dcceb38199cmr10258615ybr.56.1708304707680; Sun, 18
+ Feb 2024 17:05:07 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 565eb74d-c0e6-4eab-2e9a-08dc30e69607
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2024 01:03:29.7182
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GYrdvf3S4gMi2esedVC0myE7nCcmuM5HFRGSaYtPOPDOW78ggG4W/4qFfFv+a2m5TagT2bkmI+VKnRFjp1nx4A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR04MB9633
+References: <20240212213922.783301-1-surenb@google.com> <20240212213922.783301-33-surenb@google.com>
+ <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz>
+In-Reply-To: <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Mon, 19 Feb 2024 01:04:54 +0000
+Message-ID: <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
+Subject: Re: [PATCH v3 32/35] codetag: debug: skip objext checking when it's
+ for objext itself
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	corbet@lwn.net, void@manifault.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org, 
+	arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
+	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
+	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
+	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
+	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
+	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
+	bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org, 
+	iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com, 
+	elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com, 
+	minchan@google.com, kaleshsingh@google.com, kernel-team@android.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	iommu@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Subject: [PATCH] clk: constify the of_phandle_args argument of
-> of_clk_provider
->=20
-> None of the implementations of the get() and get_hw() callbacks of "struc=
-t
-> of_clk_provider" modify the contents of received of_phandle_args pointer.
-> They treat it as read-only variable used to find the clock to return.  Ma=
-ke
-> obvious that implementations are not supposed to modify the
-> of_phandle_args, by making it a pointer to const.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On Fri, Feb 16, 2024 at 6:39=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 2/12/24 22:39, Suren Baghdasaryan wrote:
+> > objext objects are created with __GFP_NO_OBJ_EXT flag and therefore hav=
+e
+> > no corresponding objext themselves (otherwise we would get an infinite
+> > recursion). When freeing these objects their codetag will be empty and
+> > when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled this will lead to fals=
+e
+> > warnings. Introduce CODETAG_EMPTY special codetag value to mark
+> > allocations which intentionally lack codetag to avoid these warnings.
+> > Set objext codetags to CODETAG_EMPTY before freeing to indicate that
+> > the codetag is expected to be empty.
+> >
+> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> > ---
+> >  include/linux/alloc_tag.h | 26 ++++++++++++++++++++++++++
+> >  mm/slab.h                 | 25 +++++++++++++++++++++++++
+> >  mm/slab_common.c          |  1 +
+> >  mm/slub.c                 |  8 ++++++++
+> >  4 files changed, 60 insertions(+)
+> >
+> > diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
+> > index 0a5973c4ad77..1f3207097b03 100644
+>
+> ...
+>
+> > index c4bd0d5348cb..cf332a839bf4 100644
+> > --- a/mm/slab.h
+> > +++ b/mm/slab.h
+> > @@ -567,6 +567,31 @@ static inline struct slabobj_ext *slab_obj_exts(st=
+ruct slab *slab)
+> >  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+> >                       gfp_t gfp, bool new_slab);
+> >
+> > +
+> > +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
+> > +
+> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
+> > +{
+> > +     struct slabobj_ext *slab_exts;
+> > +     struct slab *obj_exts_slab;
+> > +
+> > +     obj_exts_slab =3D virt_to_slab(obj_exts);
+> > +     slab_exts =3D slab_obj_exts(obj_exts_slab);
+> > +     if (slab_exts) {
+> > +             unsigned int offs =3D obj_to_index(obj_exts_slab->slab_ca=
+che,
+> > +                                              obj_exts_slab, obj_exts)=
+;
+> > +             /* codetag should be NULL */
+> > +             WARN_ON(slab_exts[offs].ref.ct);
+> > +             set_codetag_empty(&slab_exts[offs].ref);
+> > +     }
+> > +}
+> > +
+> > +#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+> > +
+> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
+> > +
+> > +#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
+> > +
+>
+> I assume with alloc_slab_obj_exts() moved to slub.c, mark_objexts_empty()
+> could move there too.
 
-For i.MX:
-Acked-by: Peng Fan <peng.fan@nxp.com>
+No, I think mark_objexts_empty() belongs here. This patch introduced
+the function and uses it. Makes sense to me to keep it all together.
 
-Regards,
-Peng.
+>
+> >  static inline bool need_slab_obj_ext(void)
+> >  {
+> >  #ifdef CONFIG_MEM_ALLOC_PROFILING
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index 21b0b9e9cd9e..d5f75d04ced2 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -242,6 +242,7 @@ int alloc_slab_obj_exts(struct slab *slab, struct k=
+mem_cache *s,
+> >                * assign slabobj_exts in parallel. In this case the exis=
+ting
+> >                * objcg vector should be reused.
+> >                */
+> > +             mark_objexts_empty(vec);
+> >               kfree(vec);
+> >               return 0;
+> >       }
+> > diff --git a/mm/slub.c b/mm/slub.c
+> > index 4d480784942e..1136ff18b4fe 100644
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -1890,6 +1890,14 @@ static inline void free_slab_obj_exts(struct sla=
+b *slab)
+> >       if (!obj_exts)
+> >               return;
+> >
+> > +     /*
+> > +      * obj_exts was created with __GFP_NO_OBJ_EXT flag, therefore its
+> > +      * corresponding extension will be NULL. alloc_tag_sub() will thr=
+ow a
+> > +      * warning if slab has extensions but the extension of an object =
+is
+> > +      * NULL, therefore replace NULL with CODETAG_EMPTY to indicate th=
+at
+> > +      * the extension for obj_exts is expected to be NULL.
+> > +      */
+> > +     mark_objexts_empty(obj_exts);
+> >       kfree(obj_exts);
+> >       slab->obj_exts =3D 0;
+> >  }
+>
 
