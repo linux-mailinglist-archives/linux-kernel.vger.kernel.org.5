@@ -1,154 +1,112 @@
-Return-Path: <linux-kernel+bounces-70710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B39E859B68
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:29:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF64F859B6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9283C28150C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:29:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E5931C21A15
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE16C158;
-	Mon, 19 Feb 2024 04:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7041CD07;
+	Mon, 19 Feb 2024 04:39:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="ny0cysA8"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="F1GF5uBY"
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6BE2114;
-	Mon, 19 Feb 2024 04:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8983C26
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:39:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708316989; cv=none; b=koL8AxAjmZinaUnbBsC61rlKw+JlZ37dmJoZSNdrG6OeZTXWxs6sniCDr/1YqtUot9wje3Op1SfqkNavFqdAPLhndz+aR3+LHAFGUgqOn/nOKRJNj92+edTjALOZUB0VeL9DaLyqKixulJIgC4IQkFXdoo+S0w3+3d7OlXbnBF4=
+	t=1708317577; cv=none; b=ig4UfN7VQ9DNmYRIePSIItDwuPiAKlRjbnaHo9mAKkjRFj+sSexoxf/vQMkMOILMxUzQvoUXmRMRGai7NMFMW8o+jqQtYu3390agCOU5pReLi/wr2mFI577RjuNyAIzPLjMjjhg1BmUYIQ1ZypTkQkl7kkWBRzUYABpC+xwPA9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708316989; c=relaxed/simple;
-	bh=SIGWU8j4rGm0JRkqEmRJ5TLOuX98GmQ38UKVMU2NWIQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TLbexd8snN9hhevJWew9HIzS5xLKSUIbWJXi15c0JqY1b78uCi5u7DdIlF/FQcWfk05MM752XyhdgEeVUc1VAFos1TKiTPTvBAqPr7zEBQFhzm+EnOJ9gpPuYivlvFtihZ/DgSCkbuOlup7iqec5yiLA8ISIjzitVlDrSF0VUM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=ny0cysA8; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1708316984;
-	bh=NHz/ml8wR7rRyzCrjA+ja5j9Xr/oV+FlgsSVvKeDt4k=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ny0cysA8UOOXVNACuhPZDYckWEMfXe68/Nus80D26osTI/maRanNzo3ISD3oM62Mn
-	 APa4sdFb9dT0VET6oZ+MTMGTK6c10xlBDx1YjnvETdCFA+5nh4zQ2hzZIoJ+lLWks8
-	 4wA6L0uoqnR2ajYBkjQ+Ttfn0OUtUYmcYWxfDj4/XcDwaeIli0XlTHcO2O+h56YR0f
-	 ey2Sq49ZF4k15QzdzgxJDoUZtr9mtJk+EgLcRl5997KGV+k4QUrDDPLdXl0PCpQhft
-	 5AucMPIc5ukmFzyxADSRqzfIE0Wf9PqSp4R1QbY3UGWW1WJT8wN5iMQUMuRbv4pk+3
-	 nEL3CCqc2dYBQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TdV1h4kDzz4wcH;
-	Mon, 19 Feb 2024 15:29:44 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>, Nathan Lynch
- <nathanl@linux.ibm.com>
-Cc: linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests: powerpc: Add header symlinks for building
- papr character device tests
-In-Reply-To: <20240215215045.GU9696@kitsune.suse.cz>
-References: <20240215165527.23684-1-msuchanek@suse.de>
- <87cysxilr5.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
- <20240215192334.GT9696@kitsune.suse.cz>
- <87a5o1ikk0.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
- <20240215215045.GU9696@kitsune.suse.cz>
-Date: Mon, 19 Feb 2024 15:29:44 +1100
-Message-ID: <877cj113gn.fsf@mail.lhotse>
+	s=arc-20240116; t=1708317577; c=relaxed/simple;
+	bh=jNce4zGsBXTcpAYg6spprQg+FOqejy9WtcVsfsPW6Qc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=C73u0cgKEHyqioiZ3ml+UNEX5IEx8/q1DkdjQf8Er3/KDrI0s92UewTGEciGTzud8Bwp8ZYS9HdRgU1vPZ6MCiqvkCX0rWFmKIlv3OUj9ZDyrq+l/fPlTRzJbErMSOiNeR9c9di12KnUH7Ja0hqnNwSQXnj9hPq8iaGcwoSqxGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=F1GF5uBY; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso3303534a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 20:39:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708317575; x=1708922375; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zdNwOk35Zc4yLcZkronDrKEG/Pad3CGoQyORwvnBAjY=;
+        b=F1GF5uBYoyeDTEOKgtlot2lsN1nN1lqmiZgqLjQTmkyxCAkz/lVZFENNNy8lPCYUV1
+         EHyHMyOPE1GQJr/25VXLWMj1mPfajUoO409uY0rJxRB+/xpHEonMlohlYvPMVcRuq/X8
+         WZ5z1cP63t+E+Q49D4TkyQRDZ2YHn55O9pf6E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708317575; x=1708922375;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zdNwOk35Zc4yLcZkronDrKEG/Pad3CGoQyORwvnBAjY=;
+        b=Tuob02BvHEouSUXbU79K7ZhxuHtxHO42dpRUe+wBhfWi7kjhLT7ssfEkLmoO51qwPz
+         MlAX1mpBFJkOXEEk/9tBsz5Xnkkz1uUUCAjOA6uDmAcqpL8hMoPEMLMIrR8ydb1fZF2L
+         8Mh08k/6r7V6TS2PvX3XlAlIELmEe3RKx5osJREDHAkzwhCPdXNCJq79F+uhnsE7vltr
+         BEzXoRLYeW/QzC359Kdh/k5G5lw3dsm0Ko1kMj8b1a60rYrfzR2Ew1d3llwB9n3jTfgr
+         sH61ict2EXs7shB1xV9aC+6m3joFEFXn+q0ILeWf0tH2b1eRf8KZGE51xQqGkB5nib+g
+         7law==
+X-Forwarded-Encrypted: i=1; AJvYcCXgUizL9NEUryZHnC0p1HYQiAvZJOjIlv1hAtpbxpSbp3X19XEcSX4ZufxfVoPPrAVtPzXbEWSulVF+3bzoZkiWn6sUA08EgCu+lVdl
+X-Gm-Message-State: AOJu0Yye7gmS57MUKkQA2iAv2rVK/uYyiDyiKUMga8AV6tT7tbeKwPse
+	qb1BCOiNJ9RuHDyBQAV90nYMgYydJP9qFMB3E6cYj6Q/jqXBMkEPlmC7GfWyPq335z+tB2nEV4k
+	=
+X-Google-Smtp-Source: AGHT+IHpcygOCwpEkxFwCYsVIRF0pK11TneMKBTtOWTERMPyAyRdjMEZChQcxTwOMgJTkI4XCakVfw==
+X-Received: by 2002:a17:902:db11:b0:1db:f03b:6f5b with SMTP id m17-20020a170902db1100b001dbf03b6f5bmr2992719plx.56.1708317575412;
+        Sun, 18 Feb 2024 20:39:35 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id h4-20020a170902eec400b001d911dd145esm3425695plb.219.2024.02.18.20.39.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 20:39:34 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: Julia Lawall <Julia.Lawall@lip6.fr>,
+	Jacob Keller <jacob.e.keller@intel.com>
+Cc: Kees Cook <keescook@chromium.org>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	cocci@systeme.lip6.fr,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] coccinelle: semantic patch to check for potential struct_size calls
+Date: Sun, 18 Feb 2024 20:38:37 -0800
+Message-Id: <170831751501.1712410.1795028010127344315.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230227202428.3657443-1-jacob.e.keller@intel.com>
+References: <20230227202428.3657443-1-jacob.e.keller@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Michal Such=C3=A1nek <msuchanek@suse.de> writes:
-> On Thu, Feb 15, 2024 at 01:39:27PM -0600, Nathan Lynch wrote:
->> Michal Such=C3=A1nek <msuchanek@suse.de> writes:
->> > On Thu, Feb 15, 2024 at 01:13:34PM -0600, Nathan Lynch wrote:
->> >> Michal Suchanek <msuchanek@suse.de> writes:
->> >> >
->> >> > Without the headers the tests don't build.
->> >> >
->> >> > Fixes: 9118c5d32bdd ("powerpc/selftests: Add test for papr-vpd")
->> >> > Fixes: 76b2ec3faeaa ("powerpc/selftests: Add test for papr-sysparm")
->> >> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
->> >> > ---
->> >> >  tools/testing/selftests/powerpc/include/asm/papr-miscdev.h | 1 +
->> >> >  tools/testing/selftests/powerpc/include/asm/papr-sysparm.h | 1 +
->> >> >  tools/testing/selftests/powerpc/include/asm/papr-vpd.h     | 1 +
->> >> >  3 files changed, 3 insertions(+)
->> >> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/pap=
-r-miscdev.h
->> >> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/pap=
-r-sysparm.h
->> >> >  create mode 120000
->> >> > tools/testing/selftests/powerpc/include/asm/papr-vpd.h
->> >>=20
->> >> I really hope making symlinks into the kernel source isn't necessary.=
- I
->> >> haven't experienced build failures with these tests. How are you
->> >> building them?
->> >>=20
->> >> I usually do something like (on a x86 build host):
->> >>=20
->> >> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- ppc64le_defc=
-onfig
->> >> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- headers
->> >> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- -C tools/tes=
-ting/selftests/powerpc/
->> >>=20
->> >> without issue.
->> >
->> > I am not configuring the kernel, only building the tests, and certainly
->> > not installing headers on the system.
->>=20
->> OK, but again: how do you provoke the build errors, exactly? Don't make
->> us guess please.
->
-> cd tools/testing/selftests/powerpc/
->
-> make -k
->
->> > Apparently this is what people aim to do, and report bugs when it does
->> > not work: build the kselftests as self-contained testsuite that relies
->> > only on standard libc, and whatever it brought in the sources.
->> >
->> > That said, the target to install headers is headers_install, not
->> > headers. The headers target is not documented, it's probably meant to =
-be
->> > internal to the build system. Yet it is not enforced that it is built
->> > before building the selftests.
->>=20
->> <shrug> the headers target is used in Documentation/dev-tools/kselftest.=
-rst:
->>=20
->> """
->> To build the tests::
->>=20
->>   $ make headers
->>   $ make -C tools/testing/selftests
->> """
->
-> Indeed so it's not supposed to work otherwise. It would be nice if it
-> did but might be difficult to achieve with plain makefiles.
+On Mon, 27 Feb 2023 12:24:28 -0800, Jacob Keller wrote:
+> include/linux/overflow.h includes helper macros intended for calculating
+> sizes of allocations. These macros prevent accidental overflow by
+> saturating at SIZE_MAX.
+> 
+> In general when calculating such sizes use of the macros is preferred. Add
+> a semantic patch which can detect code patterns which can be replaced by
+> struct_size.
+> 
+> [...]
 
-It used to work without the headers, but at some point folks decided it
-was causing too many problems and building the headers was made mandatory.
+If this needs tweaking, we can go from this one.
 
-Note that by default they aren't installed globally, they just end up in
-$KBUILD_OUTPUT/usr/include. So it shouldn't affect the host system.
+Applied to for-next/hardening, thanks!
 
-cheers
+[1/1] coccinelle: semantic patch to check for potential struct_size calls
+      https://git.kernel.org/kees/c/39fc2f86ae6a
+
+Take care,
+
+-- 
+Kees Cook
+
 
