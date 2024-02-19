@@ -1,176 +1,127 @@
-Return-Path: <linux-kernel+bounces-71851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71862-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0286585ABBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:02:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF09A85ABF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:22:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BD04B23386
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:02:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91C50284529
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498ED4879D;
-	Mon, 19 Feb 2024 19:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F1550A63;
+	Mon, 19 Feb 2024 19:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b="V2ozuC5w"
-Received: from mail.codeweavers.com (mail.codeweavers.com [4.36.192.163])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="oYEBpSyH"
+Received: from smtp-190a.mail.infomaniak.ch (smtp-190a.mail.infomaniak.ch [185.125.25.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03004482F8;
-	Mon, 19 Feb 2024 19:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=4.36.192.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F17944C86
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.25.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708369341; cv=none; b=PtqBMu5l4xmSTktS6BrTblMnYdGz4qt7MBHgWy0/Ceq+paveDYfUh0TCaoQxzyPMbopBYBiKjkly4A94geno2PYGeEEEYwH3s9iXWSNLYyQeOKCpYMwgdTmBB3KTXavFNh/AVlXluQj3rPFTl+qqPVYhJ4CmTEuap37CnEpBafA=
+	t=1708370532; cv=none; b=GjigZix2Jl3kFEkF3onLDbC5DsOgh0PSeR/D1sWciGsMQE4siR6qdJXIqbB00tJ0gxOYZkTWNSrklXA2ALgSGXiE0Qr445D6cSlLWSsAQTnPShjrjUEfHiixfg2WNSc8/fTZsdy6zv7IChNc6hPegzEcTc58zy962MtvzQGbTgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708369341; c=relaxed/simple;
-	bh=8uwAxkMAA6MNFUqB6ZfPPfcwy23Ru+f/+1DQ3k3LdEQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qyRwMPWREqL4gxlb4i2hGeAbdaWjZDPFdWjWWfdQ9tDKn0tWLtYcBpavm3ZB1pyiEmxvvP0qKkCX1lescOryUAfktHOLWsWyBO1SJpZNxd2qzSLHsDgqUT/JCyM1hNiLyNrtvnB4IEei6shRrMJ/X4nCF9rDq2rMGdHpZjmiXLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com; spf=pass smtp.mailfrom=codeweavers.com; dkim=pass (2048-bit key) header.d=codeweavers.com header.i=@codeweavers.com header.b=V2ozuC5w; arc=none smtp.client-ip=4.36.192.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeweavers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeweavers.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=codeweavers.com; s=s1; h=Message-ID:Date:Subject:Cc:To:From:Sender;
-	bh=OswHFruBK+/42s5rUgGTBUDrZT8BKSSXWo8vUY+w8EE=; b=V2ozuC5whirZjX5c3zIZcKzXOy
-	ochgpA2PZNhXbxdMP7TdNWqORglH4mwKiegmekbtii4Net8AcfYh93PrccpamdE55szcbfIbrTTtV
-	Pm0oTIbBwAbQSiwtYlzKW49z/0QKzXYy+UYC0esfGQWx7/TXCaasq1cFhgYTfUCGPG3FK2PREsghX
-	Ngeb52VM/5Q/rUnGN7uZemohAFeS2FG4OaLqU7CCIUqfttD6Kf0IlbTlpwVTr+ZGUF2k0ztMTBSev
-	hrsOJYIwei+UEu5clcO9CNPbBnunIpm+glQuk8I5Th5gJo9SvB4o0GCzkwDf8UPaw1lm6dOkgN6zo
-	L/jb1B4Q==;
-Received: from cw137ip160.mn.codeweavers.com ([10.69.137.160] helo=camazotz.localnet)
-	by mail.codeweavers.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <zfigura@codeweavers.com>)
-	id 1rc8tz-002yXh-36;
-	Mon, 19 Feb 2024 13:02:08 -0600
-From: Elizabeth Figura <zfigura@codeweavers.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
- linux-api@vger.kernel.org, wine-devel@winehq.org,
- =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
- Wolfram Sang <wsa@kernel.org>, Arkadiusz Hiler <ahiler@codeweavers.com>,
- Peter Zijlstra <peterz@infradead.org>, Andy Lutomirski <luto@kernel.org>,
- linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH 02/31] ntsync: Introduce NTSYNC_IOC_CREATE_SEM.
-Date: Mon, 19 Feb 2024 13:02:07 -0600
-Message-ID: <3547727.iIbC2pHGDl@camazotz>
-In-Reply-To: <2024021707-sloppy-hurt-df0c@gregkh>
-References:
- <20240214233645.9273-1-zfigura@codeweavers.com>
- <13452408.uLZWGnKmhe@camazotz> <2024021707-sloppy-hurt-df0c@gregkh>
+	s=arc-20240116; t=1708370532; c=relaxed/simple;
+	bh=2Hj9UWhrDgzjOkOL5rsGTh1N6ZOemj+WfIpokHEQmEQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jSjpXxn65YcPbjjU0q81G88ZY02mVxftFXMWNADPgzxT8ZFkoDAwYPnZI2GU1GV++9B+nsd74LeKTKMYBxVQIvhbjRpRfb1evSxUq5MXz2qLDyoDtBzTJDgT1BoNOZAnfzbt6WRZsvinJxPT3dLtp5cnfBeQS+WnFWTs9j1qm4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=oYEBpSyH; arc=none smtp.client-ip=185.125.25.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-4-0001.mail.infomaniak.ch (unknown [10.7.10.108])
+	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TdsQN4czSzMq2jt;
+	Mon, 19 Feb 2024 20:03:56 +0100 (CET)
+Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4TdsQM6BKYzHc4;
+	Mon, 19 Feb 2024 20:03:55 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1708369436;
+	bh=2Hj9UWhrDgzjOkOL5rsGTh1N6ZOemj+WfIpokHEQmEQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=oYEBpSyHPf3yCOV1oKVMu8oMFvPoQCSBIkNLD+IxvPoRrocGTlH6/8tVFY6grA/4c
+	 HrGPkpJHLNPY4iMEKl0tx04ZbxKvFox0qZDC43+cqxrcm7kdx5k9AWmXmBj0QePO/+
+	 gDw7Cba472cs3BaH1+HVVVML+M4YsWMtlhVpbagM=
+From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
+To: Arnd Bergmann <arnd@arndb.de>,
+	Christian Brauner <brauner@kernel.org>,
+	=?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
+	Jann Horn <jannh@google.com>
+Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+	Kees Cook <keescook@chromium.org>,
+	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+	Paul Moore <paul@paul-moore.com>,
+	"Serge E . Hallyn" <serge@hallyn.com>,
+	Shervin Oloumi <enlightened@chromium.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH] landlock: Fix asymmetric private inodes referring
+Date: Mon, 19 Feb 2024 20:03:45 +0100
+Message-ID: <20240219190345.2928627-1-mic@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Infomaniak-Routing: alpha
 
-On Saturday, 17 February 2024 02:03:15 CST Greg Kroah-Hartman wrote:
-> On Thu, Feb 15, 2024 at 01:22:01PM -0600, Elizabeth Figura wrote:
-> > On Thursday, 15 February 2024 01:28:32 CST Greg Kroah-Hartman wrote:
-> > > On Wed, Feb 14, 2024 at 05:36:38PM -0600, Elizabeth Figura wrote:
-> > > > This corresponds to the NT syscall NtCreateSemaphore().
-> > > > 
-> > > > Semaphores are one of three types of object to be implemented in this driver,
-> > > > the others being mutexes and events.
-> > > > 
-> > > > An NT semaphore contains a 32-bit counter, and is signaled and can be acquired
-> > > > when the counter is nonzero. The counter has a maximum value which is specified
-> > > > at creation time. The initial value of the semaphore is also specified at
-> > > > creation time. There are no restrictions on the maximum and initial value.
-> > > > 
-> > > > Each object is exposed as an file, to which any number of fds may be opened.
-> > > > When all fds are closed, the object is deleted.
-> > > > 
-> > > > Signed-off-by: Elizabeth Figura <zfigura@codeweavers.com>
-> > > > ---
-> > > >  .../userspace-api/ioctl/ioctl-number.rst      |   2 +
-> > > >  drivers/misc/ntsync.c                         | 120 ++++++++++++++++++
-> > > >  include/uapi/linux/ntsync.h                   |  21 +++
-> > > >  3 files changed, 143 insertions(+)
-> > > >  create mode 100644 include/uapi/linux/ntsync.h
-> > > > 
-> > > > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> > > > index 457e16f06e04..2f5c6994f042 100644
-> > > > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> > > > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> > > > @@ -173,6 +173,8 @@ Code  Seq#    Include File                                           Comments
-> > > >  'M'   00-0F  drivers/video/fsl-diu-fb.h                              conflict!
-> > > >  'N'   00-1F  drivers/usb/scanner.h
-> > > >  'N'   40-7F  drivers/block/nvme.c
-> > > > +'N'   80-8F  uapi/linux/ntsync.h                                     NT synchronization primitives
-> > > > +                                                                     <mailto:wine-devel@winehq.org>
-> > > >  'O'   00-06  mtd/ubi-user.h                                          UBI
-> > > >  'P'   all    linux/soundcard.h                                       conflict!
-> > > >  'P'   60-6F  sound/sscape_ioctl.h                                    conflict!
-> > > > diff --git a/drivers/misc/ntsync.c b/drivers/misc/ntsync.c
-> > > > index e4969ef90722..3ad86d98b82d 100644
-> > > > --- a/drivers/misc/ntsync.c
-> > > > +++ b/drivers/misc/ntsync.c
-> > > > @@ -5,26 +5,146 @@
-> > > >   * Copyright (C) 2024 Elizabeth Figura
-> > > >   */
-> > > >  
-> > > > +#include <linux/anon_inodes.h>
-> > > > +#include <linux/file.h>
-> > > >  #include <linux/fs.h>
-> > > >  #include <linux/miscdevice.h>
-> > > >  #include <linux/module.h>
-> > > > +#include <linux/slab.h>
-> > > > +#include <uapi/linux/ntsync.h>
-> > > >  
-> > > >  #define NTSYNC_NAME	"ntsync"
-> > > >  
-> > > > +enum ntsync_type {
-> > > > +	NTSYNC_TYPE_SEM,
-> > > > +};
-> > > > +
-> > > > +struct ntsync_obj {
-> > > > +	enum ntsync_type type;
-> > > > +
-> > > > +	union {
-> > > > +		struct {
-> > > > +			__u32 count;
-> > > > +			__u32 max;
-> > > > +		} sem;
-> > > > +	} u;
-> > > > +
-> > > > +	struct file *file;
-> > > > +	struct ntsync_device *dev;
-> > > > +};
-> > > > +
-> > > > +struct ntsync_device {
-> > > > +	struct file *file;
-> > > > +};
-> > > 
-> > > No reference counting is needed for your ntsync_device?  Or are you
-> > > relying on the reference counting of struct file here?
-> > > 
-> > > You pass around pointers to this structure, and save it off into other
-> > > structures, how do you know it is "safe" to do so?
-> > 
-> > Yes, this relies on the reference counting of struct file. The sync
-> > objects (semaphore etc.) grab a reference when they're created, via
-> > get_file(), and release it when they're destroyed. This reference is
-> > taken from within ioctls on the ntsync_device, so the file must be
-> > valid when we grab a reference. Maybe I'm missing something, though?
-> 
-> If the reference count is driven by struct file, that's fine, and great,
-> otherwise you end up with two different reference counts and keeping
-> them in sync is impossible.
-> 
-> But as it wasn't obvious, a comment somewhere here would be helpful for
-> reviewing and figuring out how this all works in 4 years when someone
-> has to touch it again.
+When linking or renaming a file, if only one of the source or
+destination directory is backed by an S_PRIVATE inode, then the related
+set of layer masks would be used as uninitialized by
+is_access_to_paths_allowed().  This would result to indeterministic
+access for one side instead of always being allowed.
 
-Ah, makes sense. I'll add comments to be clearer about the refcounting
-relationships, thanks.
+This bug could only be triggered with a mounted filesystem containing
+both S_PRIVATE and !S_PRIVATE inodes, which doesn't seem possible.
 
---Zeb
+The collect_domain_accesses() calls return early if
+is_nouser_or_private() returns false, which means that the directory's
+superblock has SB_NOUSER or its inode has S_PRIVATE.  Because rename or
+link actions are only allowed on the same mounted filesystem, the
+superblock is always the same for both source and destination
+directories.  However, it might be possible in theory to have an
+S_PRIVATE parent source inode with an !S_PRIVATE parent destination
+inode, or vice versa.
 
+To make sure this case is not an issue, explicitly initialized both set
+of layer masks to 0, which means to allow all actions on the related
+side.  If at least on side has !S_PRIVATE, then
+collect_domain_accesses() and is_access_to_paths_allowed() check for the
+required access rights.
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Günther Noack <gnoack@google.com>
+Cc: Jann Horn <jannh@google.com>
+Cc: Shervin Oloumi <enlightened@chromium.org>
+Cc: stable@vger.kernel.org
+Fixes: b91c3e4ea756 ("landlock: Add support for file reparenting with LANDLOCK_ACCESS_FS_REFER")
+Signed-off-by: Mickaël Salaün <mic@digikod.net>
+---
+ security/landlock/fs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/security/landlock/fs.c b/security/landlock/fs.c
+index 90f7f6db1e87..f243c6a392ee 100644
+--- a/security/landlock/fs.c
++++ b/security/landlock/fs.c
+@@ -1093,8 +1093,8 @@ static int current_check_refer_path(struct dentry *const old_dentry,
+ 	bool allow_parent1, allow_parent2;
+ 	access_mask_t access_request_parent1, access_request_parent2;
+ 	struct path mnt_dir;
+-	layer_mask_t layer_masks_parent1[LANDLOCK_NUM_ACCESS_FS],
+-		layer_masks_parent2[LANDLOCK_NUM_ACCESS_FS];
++	layer_mask_t layer_masks_parent1[LANDLOCK_NUM_ACCESS_FS] = {},
++		     layer_masks_parent2[LANDLOCK_NUM_ACCESS_FS] = {};
+ 
+ 	if (!dom)
+ 		return 0;
+-- 
+2.43.0
 
 
