@@ -1,123 +1,141 @@
-Return-Path: <linux-kernel+bounces-71619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71618-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225C785A7E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:54:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC92185A7DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:54:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 55BD31C22C69
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:54:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CB0A1C21B0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3549B3BB4F;
-	Mon, 19 Feb 2024 15:53:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D6A3A1D0;
+	Mon, 19 Feb 2024 15:53:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VFGY22TG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s9vTbW1Z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708463A8F4;
-	Mon, 19 Feb 2024 15:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369E3381CE;
+	Mon, 19 Feb 2024 15:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708358032; cv=none; b=OL0d1sp357XfPeHnfvLY+r/wAUGUaLSUdzhcJMs4DjqdTN2cEmhErM9uuP+MqOhHsxxheuXa9KR5Qp9spMCdhEnwygly8dsn7ZXDuZTQTkCdtLdJgS22eVTqCjkwxXMHNtodxPz77WJnG1UICtkJgqAh3ljxB/CszQ2CsO0QQM8=
+	t=1708358031; cv=none; b=E8wS6geAbvbnrkKn/a9QilP236L/olVkOH6XPWXm/emD3noEgSqC5BfDycV8i+n9S9aX/kRFpTkQez+f1UQEpiR7IxR0JaM+kd+eZjJq0maQAd1KM6NmkiRhuvNIbF3HbmHUcWfwFpVBbvrvSaMZucBGwGC8aKwwtzY5s0sDW50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708358032; c=relaxed/simple;
-	bh=6G3GU8dr597vPaA7pZYko5goQ5rMTkG18ePAdSOWOM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kooeG/gh67FN6Uis6mN0q2eBARLNtjEN8EuC3wbctHIhOw9quI4KsHifPW3nmq6/UXaO55L7stJm9u3tfFwcypgt45d3cecPSlVjktrO3DPnf2KjWqyWqzhSTwPLKoMKFktWKQoTaYFecI+Z2YPr+cjWIsmKf+HIBz1o1dn94gE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VFGY22TG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86ABC433C7;
-	Mon, 19 Feb 2024 15:53:48 +0000 (UTC)
+	s=arc-20240116; t=1708358031; c=relaxed/simple;
+	bh=517fO3sYzhBoS+A0/0syTbcWUfDqWRHc0TLYK++SB58=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YZu5wKtbuXkxg3bDVW2ZTEnt0IpWSQ39N2qvPFkG+jL44BBVUkPBzZUJK5xIoRuECwsPEAGYxL6CDziUJFjZuT2fp5QkBZCyJUbBYOw/KlpQRfiKtEGmwa6E3LrsLhmN3kN+exQ+7YMek1ko5Tqa9/rX6UOHoJhDHaeM2CiGAWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s9vTbW1Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1D53C43390;
+	Mon, 19 Feb 2024 15:53:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708358032;
-	bh=6G3GU8dr597vPaA7pZYko5goQ5rMTkG18ePAdSOWOM4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VFGY22TGcEBqLLImEFZ6ZwvPm2dUA6C3NhX9GH4dldBXTAiFz9DpLPFz9SMdhPDAc
-	 ihE9R2khzR2nXdAOFYSQbRrw48C3EjgwjG2ynEzBElVzf33sD1/ei9Y+I9O53PPMyL
-	 4ElLvBhN2IQAWHRo3hooBJ8hhpCphb4kn3f33hiRJ58MTn9GHv2xl6r6l+ftA7dzFZ
-	 6cqd0sbh6HjjfPGip77JfB7Ijae0CXK+NHxwIbr2qyAkt5mHGtpCOSN3Of96s82KTs
-	 HZGaBdBBE2kv1yJ5rBIhY1Lk0HBRqoOi4zLXLXVW98HJs2S/arpop5FzwJueRv3T7v
-	 DvyWcAAFGlmCQ==
-Date: Mon, 19 Feb 2024 15:53:46 +0000
-From: Simon Horman <horms@kernel.org>
-To: Yang Xiwen <forbidden405@outlook.com>
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Yang Xiwen <forbidden405@foxmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] net: hisilicon: add support for hisi_femac core
- on Hi3798MV200
-Message-ID: <20240219155346.GE40273@kernel.org>
-References: <20240216-net-v2-0-89bd4b7065c2@outlook.com>
- <20240216-net-v2-1-89bd4b7065c2@outlook.com>
+	s=k20201202; t=1708358030;
+	bh=517fO3sYzhBoS+A0/0syTbcWUfDqWRHc0TLYK++SB58=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=s9vTbW1Zb4232ZNMuGkskRATSlx/9DIk6EfIbOERpQ8wfVwMybokX2cKqwlst5k3s
+	 /wZn4awaQpLjSjlE3xEeenjMDR0dcHanOaS6euffCUGFVUJTCbXieWC2CbkLUY7Jbt
+	 gtfATQZS2FDZj+VvvE+Rbyu8DLqMo8RKeHo4/pSmbqAeuKqSUuQJci+wXv6CDkUwlX
+	 CyaQIaLsPqW3PnGTTvOZe+OLq0N0K3RroZG1LBviYsaclgy4qRxOaIVO8hmJ/vX8o8
+	 h6Dsg3AdOR3jPNmSMQtHQeIunm3GFunpTkuDe0rpSpT8AvEml40Im6NYF1qgWqHVfj
+	 f7slrWgzTUg5w==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rc5xk-004crN-Hc;
+	Mon, 19 Feb 2024 15:53:48 +0000
+Date: Mon, 19 Feb 2024 15:53:48 +0000
+Message-ID: <868r3g4fhv.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	Anup Patel <apatel@ventanamicro.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] irqchip/gic-v3: handle DOMAIN_BUS_ANY in gic_irq_domain_select
+In-Reply-To: <20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org>
+References: <20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240216-net-v2-1-89bd4b7065c2@outlook.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dmitry.baryshkov@linaro.org, tglx@linutronix.de, apatel@ventanamicro.com, konrad.dybcio@linaro.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Fri, Feb 16, 2024 at 06:02:00PM +0800, Yang Xiwen via B4 Relay wrote:
-
-..
-
-> @@ -826,15 +847,32 @@ static int hisi_femac_drv_probe(struct platform_device *pdev)
->  						 priv->phy_reset_delays,
->  						 DELAYS_NUM);
->  		if (ret)
-> -			goto out_disable_clk;
-> +			goto out_free_netdev;
->  		hisi_femac_phy_reset(priv);
->  	}
+On Mon, 19 Feb 2024 14:47:37 +0000,
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> 
+> Before the commit de1ff306dcf4 ("genirq/irqdomain: Remove the param
+> count restriction from select()") the irq_find_matching_fwspec() was
+> handling the DOMAIN_BUS_ANY on its own. After this commit it is a job of
+> the select() callback. However the callback of GICv3 (even though it got
+> modified to handle zero param_count) wasn't prepared to return true for
+> DOMAIN_BUS_ANY bus_token.
+> 
+> This breaks probing of any of the child IRQ domains, since
+> platform_irqchip_probe() uses irq_find_matching_host(par_np,
+> DOMAIN_BUS_ANY) to check for the presence of the parent IRQ domain.
+> 
+> Fixes: 151378251004 ("irqchip/gic-v3: Make gic_irq_domain_select() robust for zero parameter count")
+> Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count restriction from select()")
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  drivers/irqchip/irq-gic-v3.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> index 6fb276504bcc..e9e9643c653f 100644
+> --- a/drivers/irqchip/irq-gic-v3.c
+> +++ b/drivers/irqchip/irq-gic-v3.c
+> @@ -1696,7 +1696,8 @@ static int gic_irq_domain_select(struct irq_domain *d,
 >  
-> +	// Register the optional MDIO bus
-> +	for_each_available_child_of_node(node, mdio_np) {
-> +		if (of_node_name_prefix(mdio_np, "mdio")) {
-> +			priv->mdio_pdev = of_platform_device_create(mdio_np, NULL, dev);
-> +			of_node_put(mdio_np);
-> +			if (!priv->mdio_pdev) {
-> +				dev_err(dev, "failed to register MDIO bus device\n");
-> +				goto out_free_netdev;
-
-Hi Yang Xiwen,
-
-out_free_netdev will return ret.
-However, it seems that ret is uninitialised here.
-Perhaps it should be set to a negative error value?
-
-Flagged by Smatch.
-
-> +			}
-> +			mdio_registered = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!mdio_registered)
-> +		dev_warn(dev, "MDIO subnode notfound. This is usually a bug.\n");
-> +
->  	phy = of_phy_get_and_connect(ndev, node, hisi_femac_adjust_link);
->  	if (!phy) {
->  		dev_err(dev, "connect to PHY failed!\n");
->  		ret = -ENODEV;
-> -		goto out_disable_clk;
-> +		goto out_unregister_mdio_bus;
->  	}
+>  	/* Handle pure domain searches */
+>  	if (!fwspec->param_count)
+> -		return d->bus_token == bus_token;
+> +		return d->bus_token == bus_token ||
+> +			bus_token == DOMAIN_BUS_ANY;
 >  
->  	phy_attached_print(phy, "phy_id=0x%.8lx, phy_mode=%s\n",
+>  	/* If this is not DT, then we have a single domain */
+>  	if (!is_of_node(fwspec->fwnode))
+> 
 
-..
+I really dislike the look of this. If that's the case, any irqchip
+that has a 'select' method (such as imx-intmux) should be similarly
+hacked. And at this point, this should be handled by the core code.
+
+Can you try this instead? I don't have any HW that relies on
+behaviour, but I'd expect this to work.
+
+Thanks,
+
+	M.
+
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index aeb41655d6de..3dd1c871e091 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -449,7 +449,7 @@ struct irq_domain *irq_find_matching_fwspec(struct irq_fwspec *fwspec,
+ 	 */
+ 	mutex_lock(&irq_domain_mutex);
+ 	list_for_each_entry(h, &irq_domain_list, link) {
+-		if (h->ops->select)
++		if (h->ops->select && bus_token != DOMAIN_BUS_ANY)
+ 			rc = h->ops->select(h, fwspec, bus_token);
+ 		else if (h->ops->match)
+ 			rc = h->ops->match(h, to_of_node(fwnode), bus_token);
+
+-- 
+Without deviation from the norm, progress is not possible.
 
