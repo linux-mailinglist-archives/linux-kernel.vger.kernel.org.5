@@ -1,141 +1,650 @@
-Return-Path: <linux-kernel+bounces-71075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4336085A05B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:57:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D73D085A05E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:57:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00039280F06
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:57:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64BA01F2249C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F77250F2;
-	Mon, 19 Feb 2024 09:57:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aiE42Muy"
-Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285362376D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D0F25627;
+	Mon, 19 Feb 2024 09:57:09 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEF425611;
+	Mon, 19 Feb 2024 09:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708336619; cv=none; b=OOgKgCuaXDfv/DfytAbPtJYY8sDyVa16brYDJh4noCbkp13gzPybgvKisl+e7Do9hcyspZ8XHfN37Bwo9gJ6LPGW1CYrptsOH5B5smXUedeXG5CA4BsZNxUSFx7GgCyKxMEIwBoIX5ICDmtbqU8m2gNg3VCrDEgohOKEqc+nk0c=
+	t=1708336628; cv=none; b=NVLlAi+E2qU1MwuyGbtWgBA2LtmS3E336vqA28CzN1Iy1euyp+oAsAhl5zeAhCRbG+PaQxqN8y0V++I4eOrBHpZdjZY/4rTRW3A/Ul9seWQ4aiacrxfEZi1l0GoDdMVzGtRrGUAZ6Obb6u8zsLz3wWA7ACxImEvCPNEk3ZBuN0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708336619; c=relaxed/simple;
-	bh=gsJCr79FUEiPZ2xM83pQIsVbvq1wE+I40Oaflbi2Ovw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CqKdwQnX2DAa/rZWUZgaa8v4y2SBDDM19x0GC52FE323pFyWyfhcjzJ8+vmGBq6yPOOLBbbZo+WP750ggaghcAJA9uU8OvmQnb4aBrYOVMIpDgSEqxDqW89yGGufFaUDKrUtTZxBITVz3guYonP/Xujoyx9nXg5z9ibSG32KlXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aiE42Muy; arc=none smtp.client-ip=91.218.175.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 19 Feb 2024 04:56:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708336615;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n6dtuMzHo5sCbMhgQQrehzKfRLz5tbi3zkNihJNdxOo=;
-	b=aiE42MuyHeXKvpH1+cI0et98lA6bnJ3ydTxxQW3QAItUsW1klN9DqHnX8zWdz7yY4zgFNs
-	Pk/Q3XxdA5UsD6+HGWfMuFq8St0wj/RPPhHab9OM5CQX9/rReVB8Ne0/W1+Slgdunj2rny
-	iQg+4kek5ypSoVuKqor5LQK4i6PxKP0=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>, Calvin Owens <jcalvinowens@gmail.com>, 
-	Dave Martin <Dave.Martin@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: [PATCH] arm: Silence gcc warnings about arch ABI drift
-Message-ID: <fharyfc7fnh45dthgd2ehwsgdqzmdfptp7jw7gi5ahb6slwgf6@nrkhlhvbbzx7>
-References: <fe51512baa18e1480ce997fc535813ce6a0b0721.1708286962.git.jcalvinowens@gmail.com>
- <431dd956-ad31-4da8-ad42-34f7380824bb@app.fastmail.com>
- <ZdMe24xN1Ej4QoVU@shell.armlinux.org.uk>
- <xs2splnjhlj257uca5yae64fp4solc4ugbxrkczoyd75n42r66@42boyzdcmyj4>
- <ZdMkyPX/h9s8xht5@shell.armlinux.org.uk>
+	s=arc-20240116; t=1708336628; c=relaxed/simple;
+	bh=eB1yw0ew8nTF7pRCU9S9dvJYG9JuT/Ew1gaEdmlj+5s=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Qxheu1y/Z+VrpztYU/Tw0bcs29x7tKrb+FXA0zMKV+Kkyojt5zmByxJPLrlNxsA0aP+Mu7JRp53E/UytQe/V8IlfykTbptqwS7rbi9P7PZ08UTkIwbO0fe10K0CRa3CE1VTOVTDH5C99tMYMVmD/rCPwBVcB9BoU1dhpQr4JPgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8AxeejuJdNl+U4OAA--.18807S3;
+	Mon, 19 Feb 2024 17:57:02 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxdMzrJdNlw+s7AA--.39945S3;
+	Mon, 19 Feb 2024 17:57:01 +0800 (CST)
+Subject: Re: [PATCH v4 6/6] LoongArch: Add pv ipi support on LoongArch system
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240201031950.3225626-1-maobibo@loongson.cn>
+ <20240201031950.3225626-7-maobibo@loongson.cn>
+ <CAAhV-H6RTUWF9cUwCGhLxfaeSqAp+a4uw8fy8brGT9LumU5tdA@mail.gmail.com>
+ <a52a9cfe-0c8a-dd10-2d5c-eb2817deb3da@loongson.cn>
+ <CAAhV-H4gq=dpvkpRGEa--MtQ3-bAXgehvWQxK3jQOwZEU1Gtag@mail.gmail.com>
+ <03f855ff-0eb7-b4ea-f5ec-4efb0d711f45@loongson.cn>
+ <CAAhV-H6ZK8he1MMid_=wa4EkspMFO=xBs006ocL-kvkmQzwaPA@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <2653ac04-4431-b1fc-7641-c4ff77377914@loongson.cn>
+Date: Mon, 19 Feb 2024 17:57:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZdMkyPX/h9s8xht5@shell.armlinux.org.uk>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <CAAhV-H6ZK8he1MMid_=wa4EkspMFO=xBs006ocL-kvkmQzwaPA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8DxdMzrJdNlw+s7AA--.39945S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj9fXoWftFyUXr45JF13GFW5GFy8JFc_yoW8ZFy5uo
+	W5JF47tw48JryUAFn8J34qq34jvw15Kr4UAry7AwnxGr17t3W7Zr18Gr45tF47GF1UGr17
+	Ga43Jr1kZFWfXrn8l-sFpf9Il3svdjkaLaAFLSUrUUUU8b8apTn2vfkv8UJUUUU8wcxFpf
+	9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
+	UjIYCTnIWjp_UUUOn7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
+	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
+	Y2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14
+	v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
+	wI0_Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
+	xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
+	Jw0_WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwI
+	xGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrV
+	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
+	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267
+	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_
+	Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0epB3
+	UUUUU==
 
-On Mon, Feb 19, 2024 at 09:52:08AM +0000, Russell King (Oracle) wrote:
-> On Mon, Feb 19, 2024 at 04:40:00AM -0500, Kent Overstreet wrote:
-> > On Mon, Feb 19, 2024 at 09:26:51AM +0000, Russell King (Oracle) wrote:
-> > > On Mon, Feb 19, 2024 at 07:21:11AM +0100, Arnd Bergmann wrote:
-> > > > I think these should be addressed in bcachefs instead.
-> > > > While it's not the fault of bcachefs that the calling
-> > > > convention changed between gcc versions, have a look at
-> > > > the actual structure layout:
-> > > > 
-> > > > struct bch_val {
-> > > >         __u64           __nothing[0];
-> > > > };
-> > > > struct bpos {
-> > > >         /*
-> > > >          * Word order matches machine byte order - btree code treats a bpos as a
-> > > >          * single large integer, for search/comparison purposes
-> > > >          *
-> > > >          * Note that wherever a bpos is embedded in another on disk data
-> > > >          * structure, it has to be byte swabbed when reading in metadata that
-> > > >          * wasn't written in native endian order:
-> > > >          */
-> > > > #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-> > > >         __u32           snapshot;
-> > > >         __u64           offset;
-> > > >         __u64           inode;
-> > > > #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-> > > >         __u64           inode;
-> > > >         __u64           offset;         /* Points to end of extent - sectors */
-> > > >         __u32           snapshot;
-> > > > #else
-> > > > #error edit for your odd byteorder.
-> > > > #endif
-> > > > } __packed
-> > > > struct bch_backpointer {
-> > > >         struct bch_val          v;
-> > > >         __u8                    btree_id;
-> > > >         __u8                    level;
-> > > >         __u8                    data_type;
-> > > >         __u64                   bucket_offset:40;
-> > > >         __u32                   bucket_len;
-> > > >         struct bpos             pos;
-> > > > } __packed __aligned(8);
-> > > > 
-> > > > This is not something that should ever be passed by value
-> > > > into a function.
-> > > 
-> > > +1 - bcachefs definitely needs fixing. Passing all that as an argument
-> > > not only means that it has to be read into registers, but also when
-> > > accessing members, it has to be extracted from those registers as well.
-> > > 
-> > > Passing that by argument is utterly insane.
-> > 
-> > If the compiler people can't figure out a vaguely efficient way to pass
-> > a small struct by value, that's their problem - from the way you
-> > describe it, I have to wonder at what insanity is going on there.
-> 
-> It sounds like you have a personal cruisade here.
-> 
-> Passing structures on through function arguments is never efficient.
-> The entire thing _has_ to be loaded from memory at function call and
-> either placed onto the stack (creating an effective memcpy() on every
-> function call) or into registers. Fundamentally. It's not something
-> compiler people can mess around with.
-> 
-> Sorry but it's bcachefs that's the problem here, and well done to the
-> compiler people for pointing out stupid code.
 
-Eh? Passing via stack copy is normal and expected; you were talking
-about something else.
 
-I'm not always trying to write code that will generate the fastest
-assembly possible; there aro other considerations. As long a the
-compiler is doing something /reasonable/, the code is fine.
+On 2024/2/19 下午5:02, Huacai Chen wrote:
+> On Mon, Feb 19, 2024 at 3:37 PM maobibo <maobibo@loongson.cn> wrote:
+>>
+>>
+>>
+>> On 2024/2/19 下午3:16, Huacai Chen wrote:
+>>> On Mon, Feb 19, 2024 at 12:18 PM maobibo <maobibo@loongson.cn> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2024/2/19 上午10:45, Huacai Chen wrote:
+>>>>> Hi, Bibo,
+>>>>>
+>>>>> On Thu, Feb 1, 2024 at 11:20 AM Bibo Mao <maobibo@loongson.cn> wrote:
+>>>>>>
+>>>>>> On LoongArch system, ipi hw uses iocsr registers, there is one iocsr
+>>>>>> register access on ipi sending, and two iocsr access on ipi receiving
+>>>>>> which is ipi interrupt handler. On VM mode all iocsr registers
+>>>>>> accessing will cause VM to trap into hypervisor. So with ipi hw
+>>>>>> notification once there will be three times of trap.
+>>>>>>
+>>>>>> This patch adds pv ipi support for VM, hypercall instruction is used
+>>>>>> to ipi sender, and hypervisor will inject SWI on the VM. During SWI
+>>>>>> interrupt handler, only estat CSR register is written to clear irq.
+>>>>>> Estat CSR register access will not trap into hypervisor. So with pv ipi
+>>>>>> supported, pv ipi sender will trap into hypervsor one time, pv ipi
+>>>>>> revicer will not trap, there is only one time of trap.
+>>>>>>
+>>>>>> Also this patch adds ipi multicast support, the method is similar with
+>>>>>> x86. With ipi multicast support, ipi notification can be sent to at most
+>>>>>> 128 vcpus at one time. It reduces trap times into hypervisor greatly.
+>>>>>>
+>>>>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>>>>>> ---
+>>>>>>     arch/loongarch/include/asm/hardirq.h   |   1 +
+>>>>>>     arch/loongarch/include/asm/kvm_host.h  |   1 +
+>>>>>>     arch/loongarch/include/asm/kvm_para.h  | 124 +++++++++++++++++++++++++
+>>>>>>     arch/loongarch/include/asm/loongarch.h |   1 +
+>>>>>>     arch/loongarch/kernel/irq.c            |   2 +-
+>>>>>>     arch/loongarch/kernel/paravirt.c       | 113 ++++++++++++++++++++++
+>>>>>>     arch/loongarch/kernel/smp.c            |   2 +-
+>>>>>>     arch/loongarch/kvm/exit.c              |  73 ++++++++++++++-
+>>>>>>     arch/loongarch/kvm/vcpu.c              |   1 +
+>>>>>>     9 files changed, 314 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/arch/loongarch/include/asm/hardirq.h b/arch/loongarch/include/asm/hardirq.h
+>>>>>> index 9f0038e19c7f..8a611843c1f0 100644
+>>>>>> --- a/arch/loongarch/include/asm/hardirq.h
+>>>>>> +++ b/arch/loongarch/include/asm/hardirq.h
+>>>>>> @@ -21,6 +21,7 @@ enum ipi_msg_type {
+>>>>>>     typedef struct {
+>>>>>>            unsigned int ipi_irqs[NR_IPI];
+>>>>>>            unsigned int __softirq_pending;
+>>>>>> +       atomic_t messages ____cacheline_aligned_in_smp;
+>>>>> Do we really need atomic_t? A plain "unsigned int" can reduce cost
+>>>>> significantly.
+>>>> For IPI, there are multiple senders and one receiver, the sender uses
+>>>> atomic_fetch_or(action, &info->messages) and the receiver uses
+>>>> atomic_xchg(&info->messages, 0) to clear message.
+>>>>
+>>>> There needs sync mechanism between senders and receiver, atomic is the
+>>>> most simple method.
+>>> At least from receiver side, the native IPI doesn't need atomic for
+>>> read and clear:
+>>> static u32 ipi_read_clear(int cpu)
+>>> {
+>>>           u32 action;
+>>>
+>>>           /* Load the ipi register to figure out what we're supposed to do */
+>>>           action = iocsr_read32(LOONGARCH_IOCSR_IPI_STATUS);
+>>>           /* Clear the ipi register to clear the interrupt */
+>>>           iocsr_write32(action, LOONGARCH_IOCSR_IPI_CLEAR);
+>>>           wbflush();
+>> It is because on physical hardware it is two IOCSR registers and also
+>> there is no method to use atomic read and clear method for IOCSR registers.
+>>
+>> However if ipi message is stored on ddr memory, atomic read/clear can
+>> used. Your can compare price of one iocsr_read32 + one iocsr_write32 +
+>> wbflush with one atomic_xchg(&info->messages, 0)
+> atomic ops is of course cheaper than iocsr, but unsigned int is even cheaper.
+Can you give an example about how to use unsigned int for ipi sender and 
+ipi handler? When clearing ipi message, other ipi senders need know 
+immediately, else ipi senders will call hypercall notification 
+unconditionally.
+
+Regards
+Bibo Mao
+
+> 
+>>
+>> Regards
+>> Bibo Mao
+>>>
+>>>           return action;
+>>> }
+>>>
+>>>>>
+>>>>>>     } ____cacheline_aligned irq_cpustat_t;
+>>>>>>
+>>>>>>     DECLARE_PER_CPU_SHARED_ALIGNED(irq_cpustat_t, irq_stat);
+>>>>>> diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
+>>>>>> index 57399d7cf8b7..1bf927e2bfac 100644
+>>>>>> --- a/arch/loongarch/include/asm/kvm_host.h
+>>>>>> +++ b/arch/loongarch/include/asm/kvm_host.h
+>>>>>> @@ -43,6 +43,7 @@ struct kvm_vcpu_stat {
+>>>>>>            u64 idle_exits;
+>>>>>>            u64 cpucfg_exits;
+>>>>>>            u64 signal_exits;
+>>>>>> +       u64 hvcl_exits;
+>>>>> hypercall_exits is better.
+>>>> yeap, hypercall_exits is better, will fix in next version.
+>>>>>
+>>>>>>     };
+>>>>>>
+>>>>>>     #define KVM_MEM_HUGEPAGE_CAPABLE       (1UL << 0)
+>>>>>> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
+>>>>>> index 41200e922a82..a25a84e372b9 100644
+>>>>>> --- a/arch/loongarch/include/asm/kvm_para.h
+>>>>>> +++ b/arch/loongarch/include/asm/kvm_para.h
+>>>>>> @@ -9,6 +9,10 @@
+>>>>>>     #define HYPERVISOR_VENDOR_SHIFT                8
+>>>>>>     #define HYPERCALL_CODE(vendor, code)   ((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
+>>>>>>
+>>>>>> +#define KVM_HC_CODE_SERVICE            0
+>>>>>> +#define KVM_HC_SERVICE                 HYPERCALL_CODE(HYPERVISOR_KVM, KVM_HC_CODE_SERVICE)
+>>>>>> +#define  KVM_HC_FUNC_IPI               1
+>>>>> Change HC to HCALL is better.
+>>>> will modify in next version.
+>>>>>
+>>>>>> +
+>>>>>>     /*
+>>>>>>      * LoongArch hypcall return code
+>>>>>>      */
+>>>>>> @@ -16,6 +20,126 @@
+>>>>>>     #define KVM_HC_INVALID_CODE            -1UL
+>>>>>>     #define KVM_HC_INVALID_PARAMETER       -2UL
+>>>>>>
+>>>>>> +/*
+>>>>>> + * Hypercalls interface for KVM hypervisor
+>>>>>> + *
+>>>>>> + * a0: function identifier
+>>>>>> + * a1-a6: args
+>>>>>> + * Return value will be placed in v0.
+>>>>>> + * Up to 6 arguments are passed in a1, a2, a3, a4, a5, a6.
+>>>>>> + */
+>>>>>> +static __always_inline long kvm_hypercall(u64 fid)
+>>>>>> +{
+>>>>>> +       register long ret asm("v0");
+>>>>>> +       register unsigned long fun asm("a0") = fid;
+>>>>>> +
+>>>>>> +       __asm__ __volatile__(
+>>>>>> +               "hvcl "__stringify(KVM_HC_SERVICE)
+>>>>>> +               : "=r" (ret)
+>>>>>> +               : "r" (fun)
+>>>>>> +               : "memory"
+>>>>>> +               );
+>>>>>> +
+>>>>>> +       return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static __always_inline long kvm_hypercall1(u64 fid, unsigned long arg0)
+>>>>>> +{
+>>>>>> +       register long ret asm("v0");
+>>>>>> +       register unsigned long fun asm("a0") = fid;
+>>>>>> +       register unsigned long a1  asm("a1") = arg0;
+>>>>>> +
+>>>>>> +       __asm__ __volatile__(
+>>>>>> +               "hvcl "__stringify(KVM_HC_SERVICE)
+>>>>>> +               : "=r" (ret)
+>>>>>> +               : "r" (fun), "r" (a1)
+>>>>>> +               : "memory"
+>>>>>> +               );
+>>>>>> +
+>>>>>> +       return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static __always_inline long kvm_hypercall2(u64 fid,
+>>>>>> +               unsigned long arg0, unsigned long arg1)
+>>>>>> +{
+>>>>>> +       register long ret asm("v0");
+>>>>>> +       register unsigned long fun asm("a0") = fid;
+>>>>>> +       register unsigned long a1  asm("a1") = arg0;
+>>>>>> +       register unsigned long a2  asm("a2") = arg1;
+>>>>>> +
+>>>>>> +       __asm__ __volatile__(
+>>>>>> +                       "hvcl "__stringify(KVM_HC_SERVICE)
+>>>>>> +                       : "=r" (ret)
+>>>>>> +                       : "r" (fun), "r" (a1), "r" (a2)
+>>>>>> +                       : "memory"
+>>>>>> +                       );
+>>>>>> +
+>>>>>> +       return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static __always_inline long kvm_hypercall3(u64 fid,
+>>>>>> +       unsigned long arg0, unsigned long arg1, unsigned long arg2)
+>>>>>> +{
+>>>>>> +       register long ret asm("v0");
+>>>>>> +       register unsigned long fun asm("a0") = fid;
+>>>>>> +       register unsigned long a1  asm("a1") = arg0;
+>>>>>> +       register unsigned long a2  asm("a2") = arg1;
+>>>>>> +       register unsigned long a3  asm("a3") = arg2;
+>>>>>> +
+>>>>>> +       __asm__ __volatile__(
+>>>>>> +               "hvcl "__stringify(KVM_HC_SERVICE)
+>>>>>> +               : "=r" (ret)
+>>>>>> +               : "r" (fun), "r" (a1), "r" (a2), "r" (a3)
+>>>>>> +               : "memory"
+>>>>>> +               );
+>>>>>> +
+>>>>>> +       return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static __always_inline long kvm_hypercall4(u64 fid,
+>>>>>> +               unsigned long arg0, unsigned long arg1, unsigned long arg2,
+>>>>>> +               unsigned long arg3)
+>>>>>> +{
+>>>>>> +       register long ret asm("v0");
+>>>>>> +       register unsigned long fun asm("a0") = fid;
+>>>>>> +       register unsigned long a1  asm("a1") = arg0;
+>>>>>> +       register unsigned long a2  asm("a2") = arg1;
+>>>>>> +       register unsigned long a3  asm("a3") = arg2;
+>>>>>> +       register unsigned long a4  asm("a4") = arg3;
+>>>>>> +
+>>>>>> +       __asm__ __volatile__(
+>>>>>> +               "hvcl "__stringify(KVM_HC_SERVICE)
+>>>>>> +               : "=r" (ret)
+>>>>>> +               : "r"(fun), "r" (a1), "r" (a2), "r" (a3), "r" (a4)
+>>>>>> +               : "memory"
+>>>>>> +               );
+>>>>>> +
+>>>>>> +       return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static __always_inline long kvm_hypercall5(u64 fid,
+>>>>>> +               unsigned long arg0, unsigned long arg1, unsigned long arg2,
+>>>>>> +               unsigned long arg3, unsigned long arg4)
+>>>>>> +{
+>>>>>> +       register long ret asm("v0");
+>>>>>> +       register unsigned long fun asm("a0") = fid;
+>>>>>> +       register unsigned long a1  asm("a1") = arg0;
+>>>>>> +       register unsigned long a2  asm("a2") = arg1;
+>>>>>> +       register unsigned long a3  asm("a3") = arg2;
+>>>>>> +       register unsigned long a4  asm("a4") = arg3;
+>>>>>> +       register unsigned long a5  asm("a5") = arg4;
+>>>>>> +
+>>>>>> +       __asm__ __volatile__(
+>>>>>> +               "hvcl "__stringify(KVM_HC_SERVICE)
+>>>>>> +               : "=r" (ret)
+>>>>>> +               : "r"(fun), "r" (a1), "r" (a2), "r" (a3), "r" (a4), "r" (a5)
+>>>>>> +               : "memory"
+>>>>>> +               );
+>>>>>> +
+>>>>>> +       return ret;
+>>>>>> +}
+>>>>>> +
+>>>>>> +
+>>>>>>     static inline unsigned int kvm_arch_para_features(void)
+>>>>>>     {
+>>>>>>            return 0;
+>>>>>> diff --git a/arch/loongarch/include/asm/loongarch.h b/arch/loongarch/include/asm/loongarch.h
+>>>>>> index a1d22e8b6f94..0ad36704cb4b 100644
+>>>>>> --- a/arch/loongarch/include/asm/loongarch.h
+>>>>>> +++ b/arch/loongarch/include/asm/loongarch.h
+>>>>>> @@ -167,6 +167,7 @@
+>>>>>>     #define CPUCFG_KVM_SIG                 CPUCFG_KVM_BASE
+>>>>>>     #define  KVM_SIGNATURE                 "KVM\0"
+>>>>>>     #define CPUCFG_KVM_FEATURE             (CPUCFG_KVM_BASE + 4)
+>>>>>> +#define  KVM_FEATURE_PV_IPI            BIT(1)
+>>>>>>
+>>>>>>     #ifndef __ASSEMBLY__
+>>>>>>
+>>>>>> diff --git a/arch/loongarch/kernel/irq.c b/arch/loongarch/kernel/irq.c
+>>>>>> index ce36897d1e5a..4863e6c1b739 100644
+>>>>>> --- a/arch/loongarch/kernel/irq.c
+>>>>>> +++ b/arch/loongarch/kernel/irq.c
+>>>>>> @@ -113,5 +113,5 @@ void __init init_IRQ(void)
+>>>>>>                            per_cpu(irq_stack, i), per_cpu(irq_stack, i) + IRQ_STACK_SIZE);
+>>>>>>            }
+>>>>>>
+>>>>>> -       set_csr_ecfg(ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 | ECFGF_IPI | ECFGF_PMC);
+>>>>>> +       set_csr_ecfg(ECFGF_SIP0 | ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 | ECFGF_IPI | ECFGF_PMC);
+>>>>>>     }
+>>>>>> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
+>>>>>> index 21d01d05791a..7a8319df401c 100644
+>>>>>> --- a/arch/loongarch/kernel/paravirt.c
+>>>>>> +++ b/arch/loongarch/kernel/paravirt.c
+>>>>>> @@ -1,6 +1,7 @@
+>>>>>>     // SPDX-License-Identifier: GPL-2.0
+>>>>>>     #include <linux/export.h>
+>>>>>>     #include <linux/types.h>
+>>>>>> +#include <linux/interrupt.h>
+>>>>>>     #include <linux/jump_label.h>
+>>>>>>     #include <linux/kvm_para.h>
+>>>>>>     #include <asm/paravirt.h>
+>>>>>> @@ -16,6 +17,104 @@ static u64 native_steal_clock(int cpu)
+>>>>>>
+>>>>>>     DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
+>>>>>>
+>>>>>> +#ifdef CONFIG_SMP
+>>>>>> +static void pv_send_ipi_single(int cpu, unsigned int action)
+>>>>>> +{
+>>>>>> +       unsigned int min, old;
+>>>>>> +       unsigned long bitmap = 0;
+>>>>>> +       irq_cpustat_t *info = &per_cpu(irq_stat, cpu);
+>>>>>> +
+>>>>>> +       action = BIT(action);
+>>>>>> +       old = atomic_fetch_or(action, &info->messages);
+>>>>>> +       if (old == 0) {
+>>>>>> +               min = cpu_logical_map(cpu);
+>>>>>> +               bitmap = 1;
+>>>>>> +               kvm_hypercall3(KVM_HC_FUNC_IPI, bitmap, 0, min);
+>>>>>> +       }
+>>>>>> +}
+>>>>>> +
+>>>>>> +#define KVM_IPI_CLUSTER_SIZE           (2 * BITS_PER_LONG)
+>>>>>> +static void pv_send_ipi_mask(const struct cpumask *mask, unsigned int action)
+>>>>>> +{
+>>>>>> +       unsigned int cpu, i, min = 0, max = 0, old;
+>>>>>> +       __uint128_t bitmap = 0;
+>>>>>> +       irq_cpustat_t *info;
+>>>>>> +
+>>>>>> +       if (cpumask_empty(mask))
+>>>>>> +               return;
+>>>>>> +
+>>>>>> +       action = BIT(action);
+>>>>>> +       for_each_cpu(i, mask) {
+>>>>>> +               info = &per_cpu(irq_stat, i);
+>>>>>> +               old = atomic_fetch_or(action, &info->messages);
+>>>>>> +               if (old)
+>>>>>> +                       continue;
+>>>>>> +
+>>>>>> +               cpu = cpu_logical_map(i);
+>>>>>> +               if (!bitmap) {
+>>>>>> +                       min = max = cpu;
+>>>>>> +               } else if (cpu > min && cpu < min + KVM_IPI_CLUSTER_SIZE) {
+>>>>>> +                       max = cpu > max ? cpu : max;
+>>>>>> +               } else if (cpu < min && (max - cpu) < KVM_IPI_CLUSTER_SIZE) {
+>>>>>> +                       bitmap <<= min - cpu;
+>>>>>> +                       min = cpu;
+>>>>>> +               } else {
+>>>>>> +                       /*
+>>>>>> +                        * Physical cpuid is sorted in ascending order ascend
+>>>>>> +                        * for the next mask calculation, send IPI here
+>>>>>> +                        * directly and skip the remainding cpus
+>>>>>> +                        */
+>>>>>> +                       kvm_hypercall3(KVM_HC_FUNC_IPI, (unsigned long)bitmap,
+>>>>>> +                               (unsigned long)(bitmap >> BITS_PER_LONG), min);
+>>>>>> +                       min = max = cpu;
+>>>>>> +                       bitmap = 0;
+>>>>>> +               }
+>>>>>> +               __set_bit(cpu - min, (unsigned long *)&bitmap);
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       if (bitmap)
+>>>>>> +               kvm_hypercall3(KVM_HC_FUNC_IPI, (unsigned long)bitmap,
+>>>>>> +                               (unsigned long)(bitmap >> BITS_PER_LONG), min);
+>>>>>> +}
+>>>>>> +
+>>>>>> +static irqreturn_t loongson_do_swi(int irq, void *dev)
+>>>>>> +{
+>>>>>> +       irq_cpustat_t *info;
+>>>>>> +       long action;
+>>>>>> +
+>>>>>> +       clear_csr_estat(1 << INT_SWI0);
+>>>>>> +
+>>>>>> +       info = this_cpu_ptr(&irq_stat);
+>>>>>> +       do {
+>>>>>> +               action = atomic_xchg(&info->messages, 0);
+>>>>>> +               if (action & SMP_CALL_FUNCTION) {
+>>>>>> +                       generic_smp_call_function_interrupt();
+>>>>>> +                       info->ipi_irqs[IPI_CALL_FUNCTION]++;
+>>>>>> +               }
+>>>>>> +
+>>>>>> +               if (action & SMP_RESCHEDULE) {
+>>>>>> +                       scheduler_ipi();
+>>>>>> +                       info->ipi_irqs[IPI_RESCHEDULE]++;
+>>>>>> +               }
+>>>>>> +       } while (action);
+>>>>>> +
+>>>>>> +       return IRQ_HANDLED;
+>>>>>> +}
+>>>>>> +
+>>>>>> +static void pv_init_ipi(void)
+>>>>>> +{
+>>>>>> +       int r, swi0;
+>>>>>> +
+>>>>>> +       swi0 = get_percpu_irq(INT_SWI0);
+>>>>>> +       if (swi0 < 0)
+>>>>>> +               panic("SWI0 IRQ mapping failed\n");
+>>>>>> +       irq_set_percpu_devid(swi0);
+>>>>>> +       r = request_percpu_irq(swi0, loongson_do_swi, "SWI0", &irq_stat);
+>>>>>> +       if (r < 0)
+>>>>>> +               panic("SWI0 IRQ request failed\n");
+>>>>>> +}
+>>>>>> +#endif
+>>>>>> +
+>>>>>>     static bool kvm_para_available(void)
+>>>>>>     {
+>>>>>>            static int hypervisor_type;
+>>>>>> @@ -32,10 +131,24 @@ static bool kvm_para_available(void)
+>>>>>>
+>>>>>>     int __init pv_guest_init(void)
+>>>>>>     {
+>>>>>> +       int feature;
+>>>>>> +
+>>>>>>            if (!cpu_has_hypervisor)
+>>>>>>                    return 0;
+>>>>>>            if (!kvm_para_available())
+>>>>>>                    return 0;
+>>>>>>
+>>>>>> +       /*
+>>>>>> +        * check whether KVM hypervisor supports pv_ipi or not
+>>>>>> +        */
+>>>>>> +#ifdef CONFIG_SMP
+>>>>>> +       feature = read_cpucfg(CPUCFG_KVM_FEATURE);
+>>>>> This line can be moved out of CONFIG_SMP, especially features will
+>>>>> increase in future.
+>>>> Good suggestion, will modify in next version.
+>>>>
+>>>> Regards
+>>>> Bibo Mao
+>>>>>
+>>>>> Huacai
+>>>>>
+>>>>>> +       if (feature & KVM_FEATURE_PV_IPI) {
+>>>>>> +               smp_ops.init_ipi                = pv_init_ipi;
+>>>>>> +               smp_ops.send_ipi_single         = pv_send_ipi_single;
+>>>>>> +               smp_ops.send_ipi_mask           = pv_send_ipi_mask;
+>>>>>> +       }
+>>>>>> +#endif
+>>>>>> +
+>>>>>>            return 1;
+>>>>>>     }
+>>>>>> diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
+>>>>>> index 3d3ec07d1ec4..d50443879353 100644
+>>>>>> --- a/arch/loongarch/kernel/smp.c
+>>>>>> +++ b/arch/loongarch/kernel/smp.c
+>>>>>> @@ -285,7 +285,7 @@ void loongson_boot_secondary(int cpu, struct task_struct *idle)
+>>>>>>     void loongson_init_secondary(void)
+>>>>>>     {
+>>>>>>            unsigned int cpu = smp_processor_id();
+>>>>>> -       unsigned int imask = ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 |
+>>>>>> +       unsigned int imask = ECFGF_SIP0 | ECFGF_IP0 | ECFGF_IP1 | ECFGF_IP2 |
+>>>>>>                                 ECFGF_IPI | ECFGF_PMC | ECFGF_TIMER;
+>>>>>>
+>>>>>>            change_csr_ecfg(ECFG0_IM, imask);
+>>>>>> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+>>>>>> index f4e4df05f578..189b70bad825 100644
+>>>>>> --- a/arch/loongarch/kvm/exit.c
+>>>>>> +++ b/arch/loongarch/kvm/exit.c
+>>>>>> @@ -227,6 +227,9 @@ static int kvm_emu_cpucfg(struct kvm_vcpu *vcpu, larch_inst inst)
+>>>>>>            case CPUCFG_KVM_SIG:
+>>>>>>                    vcpu->arch.gprs[rd] = *(unsigned int *)KVM_SIGNATURE;
+>>>>>>                    break;
+>>>>>> +       case CPUCFG_KVM_FEATURE:
+>>>>>> +               vcpu->arch.gprs[rd] = KVM_FEATURE_PV_IPI;
+>>>>>> +               break;
+>>>>>>            default:
+>>>>>>                    vcpu->arch.gprs[rd] = 0;
+>>>>>>                    break;
+>>>>>> @@ -699,12 +702,78 @@ static int kvm_handle_lasx_disabled(struct kvm_vcpu *vcpu)
+>>>>>>            return RESUME_GUEST;
+>>>>>>     }
+>>>>>>
+>>>>>> +static int kvm_pv_send_ipi(struct kvm_vcpu *vcpu)
+>>>>>> +{
+>>>>>> +       unsigned long ipi_bitmap;
+>>>>>> +       unsigned int min, cpu, i;
+>>>>>> +       struct kvm_vcpu *dest;
+>>>>>> +
+>>>>>> +       min = vcpu->arch.gprs[LOONGARCH_GPR_A3];
+>>>>>> +       for (i = 0; i < 2; i++) {
+>>>>>> +               ipi_bitmap = vcpu->arch.gprs[LOONGARCH_GPR_A1 + i];
+>>>>>> +               if (!ipi_bitmap)
+>>>>>> +                       continue;
+>>>>>> +
+>>>>>> +               cpu = find_first_bit((void *)&ipi_bitmap, BITS_PER_LONG);
+>>>>>> +               while (cpu < BITS_PER_LONG) {
+>>>>>> +                       dest = kvm_get_vcpu_by_cpuid(vcpu->kvm, cpu + min);
+>>>>>> +                       cpu = find_next_bit((void *)&ipi_bitmap, BITS_PER_LONG,
+>>>>>> +                                               cpu + 1);
+>>>>>> +                       if (!dest)
+>>>>>> +                               continue;
+>>>>>> +
+>>>>>> +                       /*
+>>>>>> +                        * Send SWI0 to dest vcpu to emulate IPI interrupt
+>>>>>> +                        */
+>>>>>> +                       kvm_queue_irq(dest, INT_SWI0);
+>>>>>> +                       kvm_vcpu_kick(dest);
+>>>>>> +               }
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +/*
+>>>>>> + * hypcall emulation always return to guest, Caller should check retval.
+>>>>>> + */
+>>>>>> +static void kvm_handle_pv_hcall(struct kvm_vcpu *vcpu)
+>>>>> Rename to kvm_handle_hypecall_service() is better.
+>>>>>
+>>>>>
+>>>>> Huacai
+>>>>>> +{
+>>>>>> +       unsigned long func = vcpu->arch.gprs[LOONGARCH_GPR_A0];
+>>>>>> +       long ret;
+>>>>>> +
+>>>>>> +       switch (func) {
+>>>>>> +       case KVM_HC_FUNC_IPI:
+>>>>>> +               kvm_pv_send_ipi(vcpu);
+>>>>>> +               ret = KVM_HC_STATUS_SUCCESS;
+>>>>>> +               break;
+>>>>>> +       default:
+>>>>>> +               ret = KVM_HC_INVALID_CODE;
+>>>>>> +               break;
+>>>>>> +       };
+>>>>>> +
+>>>>>> +       vcpu->arch.gprs[LOONGARCH_GPR_A0] = ret;
+>>>>>> +}
+>>>>>> +
+>>>>>>     static int kvm_handle_hypcall(struct kvm_vcpu *vcpu)
+>>>>>>     {
+>>>>>> +       larch_inst inst;
+>>>>>> +       unsigned int code;
+>>>>>> +
+>>>>>> +       inst.word = vcpu->arch.badi;
+>>>>>> +       code = inst.reg0i15_format.immediate;
+>>>>>>            update_pc(&vcpu->arch);
+>>>>>>
+>>>>>> -       /* Treat it as noop intruction, only set return value */
+>>>>>> -       vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
+>>>>>> +       switch (code) {
+>>>>>> +       case KVM_HC_SERVICE:
+>>>>>> +               vcpu->stat.hvcl_exits++;
+>>>>>> +               kvm_handle_pv_hcall(vcpu);
+>>>>>> +               break;
+>>>>>> +       default:
+>>>>>> +               /* Treat it as noop intruction, only set return value */
+>>>>>> +               vcpu->arch.gprs[LOONGARCH_GPR_A0] = KVM_HC_INVALID_CODE;
+>>>>>> +               break;
+>>>>>> +       }
+>>>>>> +
+>>>>>>            return RESUME_GUEST;
+>>>>>>     }
+>>>>>>
+>>>>>> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
+>>>>>> index 97ca9c7160e6..80e05ba9b48d 100644
+>>>>>> --- a/arch/loongarch/kvm/vcpu.c
+>>>>>> +++ b/arch/loongarch/kvm/vcpu.c
+>>>>>> @@ -19,6 +19,7 @@ const struct _kvm_stats_desc kvm_vcpu_stats_desc[] = {
+>>>>>>            STATS_DESC_COUNTER(VCPU, idle_exits),
+>>>>>>            STATS_DESC_COUNTER(VCPU, cpucfg_exits),
+>>>>>>            STATS_DESC_COUNTER(VCPU, signal_exits),
+>>>>>> +       STATS_DESC_COUNTER(VCPU, hvcl_exits)
+>>>>>>     };
+>>>>>>
+>>>>>>     const struct kvm_stats_header kvm_vcpu_stats_header = {
+>>>>>> --
+>>>>>> 2.39.3
+>>>>>>
+>>>>
+>>
+
 
