@@ -1,92 +1,62 @@
-Return-Path: <linux-kernel+bounces-70906-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F06E5859DD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:09:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A73EE859DD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:11:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A654228191F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:09:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C34241C21F12
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:11:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B3D20DCC;
-	Mon, 19 Feb 2024 08:09:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 822D92137F;
+	Mon, 19 Feb 2024 08:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cg/H7Xpu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xmYboKy/";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LOIXDR6z";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jn/+HkCr"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="fs7xbopf"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D49208B9
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:09:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8650D2135C;
+	Mon, 19 Feb 2024 08:10:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708330165; cv=none; b=gTTT5QG5vN+53pwdbLKea1e6DB4duyKRsj5eQBNH8XmWJbg9P9TVLOB5KbN4b88X7dWE1j+T/wsIxf15HEwpBdez2K/sJ+rzQsw+N4WmDEtrWh+htsCUSyqKoAdXamvrP/d12L+2GLxEUnczjsRW4NVTkzGzsaaBTl6rqVzMW80=
+	t=1708330228; cv=none; b=KVdIUiGFrR4tK22s2eDbLuI5VJyLltE0XWovecRJOoFy/MJ+TpnSBAp2vaYPI6c07X25YzV4VpFQfwlu3kR2B3PPep9vsYBsUAA91xmRDHDknSZqljOytQo6H+KJaX3CcrGOv0BpVQOmFHf6WA39C0WS0uoD/S3OFRO7SMym+Mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708330165; c=relaxed/simple;
-	bh=7piy8qyiVNpQwftpfWF9GmrBAl11sXKfYWaxpU3VX/w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CY7GH1CAswNsVxiTaUX4+u7GXwIx0psKW8IHAD4bKGqEQ8MApTdCkAooPNa67ofYr+t1b6C7WKaONIc6u0+K61qdMs4stVpmUGTY2Co+egUPbQDEv8gX9PwfnIrseU8qZdsoGxR7J9g+Z7/VJmrwBVYNAwrCQBYNPwTEK2gtO5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cg/H7Xpu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xmYboKy/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LOIXDR6z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jn/+HkCr; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3C3A421E93;
-	Mon, 19 Feb 2024 08:09:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708330156; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7piy8qyiVNpQwftpfWF9GmrBAl11sXKfYWaxpU3VX/w=;
-	b=cg/H7Xpuhbd8wlkrfk/sq5VwYJDVKZGkuuHWnBBl2pnkDPkZLoRx/UySh6kGFmt+ZkqKA4
-	8QmU0C8sq/InK5XCIZQO8L0N6AO5ayMUEUePE3x2LIicfRlWsPLha3yRGGNJCwAbkbuorX
-	DHGf99+ANr4GRT/7oCdvFqTaU6hM7Do=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708330156;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7piy8qyiVNpQwftpfWF9GmrBAl11sXKfYWaxpU3VX/w=;
-	b=xmYboKy/DRJ6mPA/l/Mpx397Fy7dI1DfN9mWuCcx/MPnVqV/5UZ35JxdXAk927N4sTAAc3
-	NbbUSnQzkUTuB0AQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708330154; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7piy8qyiVNpQwftpfWF9GmrBAl11sXKfYWaxpU3VX/w=;
-	b=LOIXDR6zmW9DUBjlgHCuTeWH3EW00+RwIHiUf5sysOTGqnNoVnTW1H8qOzZPGROU6IuXQ9
-	2HDaTbeNAPMY0+YKDkrjd848Y0qQzh7Qdg63wetaoKohF4sfqG9EaCP6ofqkdU8RF4zLIi
-	c4u7wN2F8LE86m78ACoO450x/0W77Qg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708330154;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7piy8qyiVNpQwftpfWF9GmrBAl11sXKfYWaxpU3VX/w=;
-	b=Jn/+HkCrRmhFolAJoid3jzQeFsj9u8rKHCUeFttkQ7zBM469clEpuu3/c6hgKovHXzkSkb
-	KVSODeF/RFUvBNBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1A37F139D0;
-	Mon, 19 Feb 2024 08:09:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OT8SBqoM02X9fwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 19 Feb 2024 08:09:14 +0000
-Message-ID: <4591b2b3-398f-402e-b21d-55b244f05a2e@suse.cz>
-Date: Mon, 19 Feb 2024 09:09:13 +0100
+	s=arc-20240116; t=1708330228; c=relaxed/simple;
+	bh=Wnz7IF+lBWMi5nmkstyYasqT63skyZVsy8kEwI7acJk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lwsMCEePrJAHkMtW/tjn7jhYXWh1T2N++dtXTF1z8+dkGtljT/1YDbr5yyLzORDHqXSIx9c8hoLclOr+DEJ3OiKykV3HvUO1pumFbGqEi1MHZ3TABCKRzqScn6Ik5N/8F79wd5KqOS+5tAVmW/nhpSZMTCE6P/N2jiW2kDw/TRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=fs7xbopf; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41J8A7KN049025;
+	Mon, 19 Feb 2024 02:10:07 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708330207;
+	bh=ecqgTj1/lMnJgqH/K/Gn3LYhWWugkOjDn1gyoX0RGuo=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=fs7xbopfBN1vYyhaEjoO8g7N4NHQoi0vL4+p2Z0fxqZUdaNM9z28PR1Tug1SLCTkd
+	 x7tmcpFBejjBezxuSi/Yi13mx2+7fLt5aF5g4tw9RLu5rPGg7EVkhizTFBjyQJ3FBn
+	 zQGP7yfftVdZMTbZ4QSHRVKlqKjs/paMwRUSDsCc=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41J8A76i003479
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 19 Feb 2024 02:10:07 -0600
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 19
+ Feb 2024 02:10:07 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 19 Feb 2024 02:10:07 -0600
+Received: from [172.24.227.94] (uda0132425.dhcp.ti.com [172.24.227.94])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41J8A3MM066742;
+	Mon, 19 Feb 2024 02:10:05 -0600
+Message-ID: <623c9ed1-85f2-47a3-9ca2-8c7fa5b2251b@ti.com>
+Date: Mon, 19 Feb 2024 13:40:03 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,114 +64,153 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] Documentation: filesystems: introduce
- proc/slabinfo to users
-To: zhang fangzheng <fangzheng.zhang1003@gmail.com>,
- Matthew Wilcox <willy@infradead.org>
-Cc: Fangzheng Zhang <fangzheng.zhang@unisoc.com>,
- Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
- David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, Greg KH <gregkh@linuxfoundation.org>,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, tkjos@google.com,
- Yuming Han <yuming.han@unisoc.com>, Chunyan Zhang <zhang.lyra@gmail.com>
-References: <20240219031911.10372-1-fangzheng.zhang@unisoc.com>
- <20240219031911.10372-3-fangzheng.zhang@unisoc.com>
- <ZdLX51r1mOEZKUje@casper.infradead.org>
- <CA+kNDJ+C2b520afauSWbfNK=S1XiNHR_zF32_K-3Rf7R6m3n5Q@mail.gmail.com>
+Subject: Re: [PATCH V2] arm64: dts: ti: k3-am68-sk-som: Add support for OSPI
+ flash
 Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CA+kNDJ+C2b520afauSWbfNK=S1XiNHR_zF32_K-3Rf7R6m3n5Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-1.59 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLtz7ce9b89hw8xzamye9qeynd)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 BAYES_HAM(-3.00)[100.00%];
-	 RCPT_COUNT_TWELVE(0.00)[16];
-	 FREEMAIL_TO(0.00)[gmail.com,infradead.org];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[unisoc.com,linux.com,kernel.org,google.com,lge.com,linux-foundation.org,linux.dev,gmail.com,linuxfoundation.org,kvack.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -1.59
+To: Sinthu Raja <sinthu.raja@mistralsolutions.com>,
+        Nishanth Menon
+	<nm@ti.com>, Tero Kristo <kristo@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Sinthu Raja <sinthu.raja@ti.com>
+References: <20240219075932.6458-1-sinthu.raja@ti.com>
+From: Vignesh Raghavendra <vigneshr@ti.com>
+In-Reply-To: <20240219075932.6458-1-sinthu.raja@ti.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 2/19/24 07:23, zhang fangzheng wrote:
-> On Mon, Feb 19, 2024 at 12:24 PM Matthew Wilcox <willy@infradead.org> wrote:
->>
->> On Mon, Feb 19, 2024 at 11:19:11AM +0800, Fangzheng Zhang wrote:
->> > +Note, <slabreclaim> comes from the collected results in the file
->> > +/sys/kernel/slab/$cache/reclaim_account. Next, we will mark /proc/slabinfo
->> > +as deprecated and recommend the use of either sysfs directly or
->> > +use of the "slabinfo" tool that we have been providing in linux/tools/mm.
->>
->> Wait, so you're going to all of the trouble of changing the format of
->> slabinfo (with the associated costs of updating every tool that currently
->> parses it), only to recommend that we stop using it and start using
->> tools/mm/slabinfo instead?
->>
 
-Hi,
 
-> The initial purpose was to obtain the type of each slab through
-> a simple command 'cat proc/slabinfo'. So here, my intention is not to
-> update all slabinfo-related tools for the time being, but to modify
-> the version number of proc/slabinfo and further display the results
-> of using the command.
+On 19/02/24 13:29, Sinthu Raja wrote:
+> From: Sinthu Raja <sinthu.raja@ti.com>
+> 
+> AM68 SK has an OSPI NOR flash on its SOM connected to OSPI0 instance.
+> Enable support for the same. Also, describe the OSPI flash partition
+> information through the device tree, according to the offsets in the
+> bootloader.
+> 
+> Signed-off-by: Sinthu Raja <sinthu.raja@ti.com>
+> ---
+> 
+> Changes in V2:
+> =============
+> 1. Address review comments
+>    a. remove pin E20, which is not connected.
+> 
+> V1: https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240206092334.30307-1-sinthu.raja@ti.com/
+> 
+>  arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi | 78 ++++++++++++++++++++++
+>  1 file changed, 78 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> index 0f4a5da0ebc4..afaf702cfc9d 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-am68-sk-som.dtsi
+> @@ -130,6 +130,24 @@ rtos_ipc_memory_region: ipc-memories@a8000000 {
+>  	};
+>  };
+>  
+> +&wkup_pmx0 {
+> +	mcu_fss0_ospi0_pins_default: mcu-fss0-ospi0-pins-default {
 
-I'm not sure you understand the concern. There are existing consumers of
-/proc/slabinfo, that might become broken by patch 1/2. We don't even know
-them all, they might not be all opensource etc. So we can't even make sure
-all of them are updated. What can happen after patch 1/2:
-- they keep working and ignore the new column (good)
-- they include a version check and notice a new unsupported version and
-refuse to work
-- confused by the new column they start throwing error, or report wrong
-stats (that's worse)
+pinmux nodes should end with -pins                        ^^^^^^
 
->> How about we simply do nothing?
 
-Agreed wrt modifying /proc/slabinfo
+Please run make dtbs_check and fix the issues pointed out
 
-> The note here means what changes will occur after
-> we modify the version number of proc/slabinfo to 2.2.
-> As for the replacement of tools/mm/slabinfo (that inspired
-> by Christoph’s suggestions), it will be implemented in the next version
-> or even the later version.
+> +		pinctrl-single,pins = <
+> +			J721S2_WKUP_IOPAD(0x000, PIN_OUTPUT, 0) /* (D19) MCU_OSPI0_CLK */
+> +			J721S2_WKUP_IOPAD(0x02c, PIN_OUTPUT, 0) /* (F15) MCU_OSPI0_CSn0 */
+> +			J721S2_WKUP_IOPAD(0x00c, PIN_INPUT, 0) /* (C19) MCU_OSPI0_D0 */
+> +			J721S2_WKUP_IOPAD(0x010, PIN_INPUT, 0) /* (F16) MCU_OSPI0_D1 */
+> +			J721S2_WKUP_IOPAD(0x014, PIN_INPUT, 0) /* (G15) MCU_OSPI0_D2 */
+> +			J721S2_WKUP_IOPAD(0x018, PIN_INPUT, 0) /* (F18) MCU_OSPI0_D3 */
+> +			J721S2_WKUP_IOPAD(0x01c, PIN_INPUT, 0) /* (E19) MCU_OSPI0_D4 */
+> +			J721S2_WKUP_IOPAD(0x020, PIN_INPUT, 0) /* (G19) MCU_OSPI0_D5 */
+> +			J721S2_WKUP_IOPAD(0x024, PIN_INPUT, 0) /* (F19) MCU_OSPI0_D6 */
+> +			J721S2_WKUP_IOPAD(0x028, PIN_INPUT, 0) /* (F20) MCU_OSPI0_D7 */
+> +			J721S2_WKUP_IOPAD(0x008, PIN_INPUT, 0) /* (E18) MCU_OSPI0_DQS */
+> +		>;
+> +	};
+> +};
+> +
+>  &wkup_pmx2 {
+>  	wkup_i2c0_pins_default: wkup-i2c0-default-pins {
+>  		pinctrl-single,pins = <
+> @@ -152,6 +170,66 @@ eeprom@51 {
+>  	};
+>  };
+>  
+> +&ospi0 {
+> +	status = "okay";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mcu_fss0_ospi0_pins_default>;
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0x0>;
+> +		spi-tx-bus-width = <8>;
+> +		spi-rx-bus-width = <8>;
+> +		spi-max-frequency = <25000000>;
+> +		cdns,tshsl-ns = <60>;
+> +		cdns,tsd2d-ns = <60>;
+> +		cdns,tchsh-ns = <60>;
+> +		cdns,tslch-ns = <60>;
+> +		cdns,read-delay = <4>;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "ospi.tiboot3";
+> +				reg = <0x0 0x80000>;
 
-So what is your motivation for all this in the first place? You have some
-monitoring tool that relies on /proc/slabinfo and want to distinguish
-reclaimable caches? So you can change it to parse the /sys directories. Is
-it more work? Yes, but you only have to do that once per boot, because
-unlike the object/memory stats in /proc/slabinfo, the reclaimable flag will
-not change for a cache.
+Should this be 1MB similar to comment at [0]
 
-Would tools/mm/slabinfo almost work for you, but you're missing something?
-Then send patches for that in the first place. Changing /proc/slabinfo (and
-breaking other consumers) for a quick and easy fix with a different solution
-planned for the future is simply not feasible.
+[0] lore.kernel.org/r/0ca01a1b-8956-40dd-8286-77276e021633@ti.com
 
-HTH,
-Vlastimil
+> +			};
+> +
+> +			partition@80000 {
+> +				label = "ospi.tispl";
+> +				reg = <0x80000 0x200000>;
+> +			};
+> +
+> +			partition@280000 {
+> +				label = "ospi.u-boot";
+> +				reg = <0x280000 0x400000>;
+> +			};
+> +
+> +			partition@680000 {
+> +				label = "ospi.env";
+> +				reg = <0x680000 0x40000>;
+> +			};
+> +
+> +			partition@6c0000 {
+> +				label = "ospi.env.backup";
+> +				reg = <0x6c0000 0x40000>;
+> +			};
+> +
+> +			partition@800000 {
+> +				label = "ospi.rootfs";
+> +				reg = <0x800000 0x37c0000>;
+> +			};
+> +
+> +			partition@3fc0000 {
+> +				label = "ospi.phypattern";
+> +				reg = <0x3fc0000 0x40000>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+>  &mailbox0_cluster0 {
+>  	status = "okay";
+>  	interrupts = <436>;
 
-> Thanks!
-
+-- 
+Regards
+Vignesh
 
