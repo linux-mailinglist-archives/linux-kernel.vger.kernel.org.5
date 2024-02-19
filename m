@@ -1,106 +1,93 @@
-Return-Path: <linux-kernel+bounces-70946-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70947-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FC5B859E8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:38:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA0BD859E94
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:39:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DB741F218A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:38:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86F27280E16
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:39:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B790B22323;
-	Mon, 19 Feb 2024 08:38:41 +0000 (UTC)
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 235D42137F;
+	Mon, 19 Feb 2024 08:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0yqVocF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B05E208B9;
-	Mon, 19 Feb 2024 08:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565DB210E1;
+	Mon, 19 Feb 2024 08:39:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708331921; cv=none; b=Af50z4cL+RdoRQr4a5t79aWrgVjRKWLdqXu8Yd4z2+Mhh4AaxCLs2tJgX0ifYkXhWV7/+NWsxccVoOLMR4nXmSuDrWl1bQHbhCpad6WSpT/Xo/bEfETMAitYMHTIP0OboSglxgFpc+TGpK0E4lvi5gvTCblSD+K9GDJJ3AUIQq4=
+	t=1708331982; cv=none; b=ZmQpe1e3rBD38waFx2W9zzbYTl1mROvzFKFDpVXuFUyr0TiFeQt0GqgQfVuo9K0sFN1T2IqqKDktEGRqAvZwRhlUpSlnisEIphuWEjH1Tf3j9QDqP9fzb7YWi6Bcpcuodwqa6t7PRyHSFQ9FWWneut2OKUEtVtB+bKpKtIO4gVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708331921; c=relaxed/simple;
-	bh=dAs2OALmkNudBmi4/5a+XrcRC0uaaEkJeqpRp/lL8ZI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qZT1BpEGH/bKGTW51pnWYOkYoNYE7zS0VJ/RVRtiD4h/RboYyv76O0uxOMpHZQpMGfwbifulXMPDKfbcn7rOySnBTqZea+LsKc3/M/VDsQPfE3nWkpFJntknPNUFPsuDxFg/OteZOodVvk2zpkwFZsAn6b6XcKaPhIFWKmBvF/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rbzAY-0007jO-Uv; Mon, 19 Feb 2024 09:38:35 +0100
-Message-ID: <960e015a-ec2e-42c2-bd9e-4aa47ab4ef2a@leemhuis.info>
-Date: Mon, 19 Feb 2024 09:38:33 +0100
+	s=arc-20240116; t=1708331982; c=relaxed/simple;
+	bh=crEQOFsZ0LiXnQXnd+HTFgulg92PQY/yu8OuVPtUikk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WddvLALnnzx/SbMCBsf7+PZdUFWg6KIt6NDh30hkebigx5lb43xUjP7sh5yAz3EgD4o1fkbXY4TiOfr+R6jZ0rHzdzXNmT/at1zp81mfnE1lpdDRXDlIzSUMddTFZKL+gbQfRwwvVCYFz4OPXJfWFwDqk3VdEQj6tjoM6l54UyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n0yqVocF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FDDEC43390;
+	Mon, 19 Feb 2024 08:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708331981;
+	bh=crEQOFsZ0LiXnQXnd+HTFgulg92PQY/yu8OuVPtUikk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=n0yqVocFIJEhQ9HbiG4+5G7+3VDenlt6KGMSXspuncofTEEmfjltgGudjYN+SEqtQ
+	 g6puL38eAMH1zPUu7rLyS1pkz2ZOd6p42ZSGssL/qlh12uEsHI8nU/35ShBXOt6kxB
+	 cJc257pU77VW0cN80wN51XMkWtlKKkceWHGH5quW0fhYtKUwvtR3rcMV05ugMfn7Xt
+	 RQiDQ1BDOCQ8AZI/rDYuqA5mT+NhjVepoP9Wo1zhFWqPY/pAJMpBzloYjOVIX0fAH3
+	 4G16G7sU4rvW5E/q37FrIn/r2P3ERMWTjk6+EEQhGB4rZ5KzCwADEpJrQpOfhcSqC1
+	 qAn9bTpasdQWw==
+Date: Mon, 19 Feb 2024 09:39:35 +0100
+From: Niklas Cassel <cassel@kernel.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Damien Le Moal <dlemoal@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Ryder Lee <ryder.lee@mediatek.com>, linux-ide@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Subject: Re: [PATCH] dt-bindings: ata: convert MediaTek controller to the
+ json-schema
+Message-ID: <ZdMTx1CJzFR5uAzK@x1-carbon>
+References: <20240213074747.26151-1-zajec5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Subject: Re: [PATCH 2/2] netfs: Fix missing zero-length check in unbuffered
- write
-Content-Language: en-US, de-DE
-To: David Howells <dhowells@redhat.com>,
- Christian Brauner <christian@brauner.io>
-Cc: Eric Van Hensbergen <ericvh@kernel.org>,
- Dominique Martinet <asmadeus@codewreck.org>, Jeff Layton
- <jlayton@kernel.org>, Matthew Wilcox <willy@infradead.org>,
- netfs@lists.linux.dev, linux-afs@lists.infradead.org,
- linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
- linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux_oss@crudebyte.com,
- Linux kernel regressions list <regressions@lists.linux.dev>
-References: <20240129094924.1221977-1-dhowells@redhat.com>
- <20240129094924.1221977-3-dhowells@redhat.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-In-Reply-To: <20240129094924.1221977-3-dhowells@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1708331919;be4d50cb;
-X-HE-SMSGID: 1rbzAY-0007jO-Uv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240213074747.26151-1-zajec5@gmail.com>
 
-On 29.01.24 10:49, David Howells wrote:
-> Fix netfs_unbuffered_write_iter() to return immediately if
-> generic_write_checks() returns 0, indicating there's nothing to write.
-> Note that netfs_file_write_iter() already does this.
+On Tue, Feb 13, 2024 at 08:47:47AM +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> Also, whilst we're at it, put in checks for the size being zero before we
-> even take the locks.  Note that generic_write_checks() can still reduce the
-> size to zero, so we still need that check.
+> This helps validating DTS files.
 > 
-> Without this, a warning similar to the following is logged to dmesg:
-> 
-> 	netfs: Zero-sized write [R=1b6da]
-> 
-> and the syscall fails with EIO, e.g.:
-> 
-> 	/sbin/ldconfig.real: Writing of cache extension data failed: Input/output error
-> 
-> This can be reproduced on 9p by:
-> 
-> 	xfs_io -f -c 'pwrite 0 0' /xfstest.test/foo
-> 
-> Fixes: 153a9961b551 ("netfs: Implement unbuffered/DIO write support")
-> Reported-by: Eric Van Hensbergen <ericvh@kernel.org>
-> Link: https://lore.kernel.org/r/ZbQUU6QKmIftKsmo@FV7GG9FTHL/
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
 
-David, thx for fixing Eric's regression, which I'm tracking.
+Hello Rob,
 
-Christian, just wondering: that patch afaics is sitting in vfs.netfs for
-about three weeks now -- is that intentional or did it maybe fell
-through the cracks somehow?
+For device tree patches for
+Documentation/devicetree/bindings/ata/
 
-> [...]
+Usually, if we see your Acked-by, we queue the patch via the libata tree.
+(If it is part of a series, usually you take it via your tree.)
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+We have a R-b from Krzysztof, but no Ack from you.
+
+
+Kind regards,
+Niklas
 
