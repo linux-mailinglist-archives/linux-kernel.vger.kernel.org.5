@@ -1,246 +1,176 @@
-Return-Path: <linux-kernel+bounces-72062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72111-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C35A585AE79
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C35B685AF2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A53ABB22D81
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:34:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1F3F5B25674
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54BE5676D;
-	Mon, 19 Feb 2024 22:33:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0707957314;
+	Mon, 19 Feb 2024 22:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="fSWzBEZG"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b="o0kNILLx"
+Received: from forward206c.mail.yandex.net (forward206c.mail.yandex.net [178.154.239.215])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E1A3D966
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:33:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267735381A;
+	Mon, 19 Feb 2024 22:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.215
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708382033; cv=none; b=Zn98sQ5pzKLwc3xgXdlETVV/mpZnDWszdYXgwro/pPrbpCu9QjXEStub6LLyo76XcHflSSCoffgHg/CzlrUnnoCFHbsSkA7tXntdt6iKpHfgp82xVVIHF/kD66gXyXHuWLs6x6Z18qcM0RFgweEMM5aAzdGKQ+wXDDs7gnxFSjk=
+	t=1708382595; cv=none; b=Q+neh+S+ZF/8aGb6CaOArEoPdy9my+VqSafxsH2mBdlBx9LppTXCmBi4JVeCDdXhtzoGCohYEPe3ndJ1GfIIxIIPg0XWmJ/2hnU/zAVbpH35/lhP0kXh7Z+YfvVLj8cvnTklSyMumxs8ODQrXQ00+ocqRGF2+Qzmv/hpcJBuF7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708382033; c=relaxed/simple;
-	bh=cB2Qe3sL4F5K56WhslZkEo6DrttREefN+0eSWkobVVw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=a6J8KacvtTGS6JWUt4k4LLguTs+IFTIt/OOdXZ1AtClFPnHuPisGXVkUYgXS5//dBOmxXf6XE+ydxcdnF/5FZJXjTg5A4jCIsKJfS6DQ933OS5TgoI3jW+aFrJLJ4omarl9TF9u16YUsSL/C6Chv0zN4O8LG/9EsYQNRId1IoJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=fSWzBEZG; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-608575317f8so7479227b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:33:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708382030; x=1708986830; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=L2F2d370iBT4NDo692GMhX9HUMYxc26yEy5510rVGDs=;
-        b=fSWzBEZGOfzNUt3XfCfob2ue7dYG3o4eyz005gCo3AXMO3p53jFRsWpK2Kud+520RF
-         aTj0hLrYJCktHtDxCB/71KqgkPS5mIP0VLxlLNQt5ZcHI4l1ASxPpzObQWCIRsK5CaVZ
-         MfGtGIrMkmdnVI1zb4Yp5tZ1gPUd8dVN4uTCUQhMmrgQcFaw7WwGo1NFgYu+EBfh4W3g
-         6+qmByU+H+8voYIe+aQubTzSmMZjUT1pZiqRgvgUqsfBblLFENLL7vZ2FbIJXPak2tqT
-         pz9h9jvAydMnN35QtgLvwMRNAD/N1T9MtBZUXGLfjunL8S43rejlBLDUswoebLQB1dNt
-         mKpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708382030; x=1708986830;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L2F2d370iBT4NDo692GMhX9HUMYxc26yEy5510rVGDs=;
-        b=ayoevbCEJJ17fiVodYw+UlSNPra/dWZQubxSjzh/EgI6ckhHJz1rdB7iDidpYVePsW
-         fvtsX32SK0yz5WFBjF32von7mPjcFbDOVbl4JvGydZlp/Gh0U+HnCLu1x+vnJyTgHuqW
-         IMlhq2PV6jCU1OxlAZXXK0pL913+1HeuGowGCss51HzRbSpXfld7pujNyL2mWt0Yuc+h
-         SvLtegGeYQazAf17GWPD7ibJCGoisOQi8QUvVCQsFEIduKjXFBAwsTMWGFEpO4BMBVmM
-         g6lU/P6Me9oPg4uZ/1DJBmg38cTS+dXxa5Ul79E1LStX6TWJA6nIYuS049uMgKEqPzgO
-         FcMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUe4QBmOqCrsrj1uLli0Jxbl09tfUt2n5jlM30RQ9EoVNQ0efjhIewmTJw8WA4aAWzXQe9ScJKcE+QhMtuo+FzPmTyU8/f4EbBLdFkb
-X-Gm-Message-State: AOJu0Yzb0wnVveNovKjPCO4U5q9Ydr9BwSzYnyFEoasUfIoH4g5fjP72
-	g5gxasHNLgKe0KCooRQo1eV0HwOtLn1q3gzGGz6JhxtcH8LY/2wsRUoug2ADTG7lJfqexw/JTJc
-	rwQ==
-X-Google-Smtp-Source: AGHT+IFgBn1pwmA80Xr6878qTRqEsY9mDc5ekWPCTg7S48ErOOV5LQyFL19mN0vMOiwUx0LfthTm8jOltuw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:7949:0:b0:608:5535:9bff with SMTP id
- u70-20020a817949000000b0060855359bffmr297616ywc.7.1708382030474; Mon, 19 Feb
- 2024 14:33:50 -0800 (PST)
-Date: Mon, 19 Feb 2024 14:33:49 -0800
-In-Reply-To: <20240217014513.7853-4-dongli.zhang@oracle.com>
+	s=arc-20240116; t=1708382595; c=relaxed/simple;
+	bh=9gKp44U64vpDldG4mNOhjDG2liu6cXrXKG6GoC6eEP8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=D7p4bf1rbmMX74O69zWWChhgx4DVRVtgg8W8NhfXVphucD58MLjnx+HXjZrCffPYguvpGs9QGh4sinxX2uBGjZQb7BNWl2qKcecTsLsvzVysL/6ZeWLi1lHTmMxMWQutzcaY0utbo7vWTPo7okJq/vYDAgQrtM7kf+W0Mwge7gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net; spf=pass smtp.mailfrom=6tel.net; dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b=o0kNILLx; arc=none smtp.client-ip=178.154.239.215
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=6tel.net
+Received: from forward102b.mail.yandex.net (forward102b.mail.yandex.net [IPv6:2a02:6b8:c02:900:1:45:d181:d102])
+	by forward206c.mail.yandex.net (Yandex) with ESMTPS id E577763527;
+	Tue, 20 Feb 2024 01:35:16 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:3285:0:640:fd1e:0])
+	by forward102b.mail.yandex.net (Yandex) with ESMTPS id 819C160985;
+	Tue, 20 Feb 2024 01:35:08 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id bYZIDNh7RSw0-E7KFyfSe;
+	Tue, 20 Feb 2024 01:35:07 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail;
+	t=1708382107; bh=iaUiCJngdlVa+OcnhANuHvIOXadWyrNnDfT/O58QDVA=;
+	h=Message-ID:Date:Cc:Subject:To:From;
+	b=o0kNILLxyr95zX+t/8ATgV+owzuxiS3YX8f0PqUSTtB47X0Ku8lwkEKd5Ok3MShsl
+	 fUU/6iYet1miI+Y9vvp79dhyiByywEWwjIwUIX2EzGCgpZFv7ZAlRfoUy2godheCi7
+	 YxmcDymUhNZYeN+HA4nLTkTdumVFkUZqaFY8x2I0=
+Authentication-Results: mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net; dkim=pass header.i=@6tel.net
+From: efectn@6tel.net
+To: linux-rockchip@lists.infradead.org
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	sebastian.reichel@collabora.com,
+	Muhammed Efe Cetin <efectn@protonmail.com>
+Subject: [PATCH 1/9] arm64: dts: rockchip: Add cpu regulators and vcc5v0_sys to Khadas Edge 2
+Date: Tue, 20 Feb 2024 01:34:17 +0300
+Message-ID: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
+X-Mailer: git-send-email 2.43.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240217014513.7853-1-dongli.zhang@oracle.com> <20240217014513.7853-4-dongli.zhang@oracle.com>
-Message-ID: <ZdPXTfHj4uxfe0Ay@google.com>
-Subject: Re: [PATCH 3/3] KVM: VMX: simplify MSR interception enable/disable
-From: Sean Christopherson <seanjc@google.com>
-To: Dongli Zhang <dongli.zhang@oracle.com>
-Cc: kvm@vger.kernel.org, pbonzini@redhat.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Fri, Feb 16, 2024, Dongli Zhang wrote:
-> ---
->  arch/x86/kvm/vmx/vmx.c | 55 +++++++++++++++++++++---------------------
->  1 file changed, 28 insertions(+), 27 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 5a866d3c2bc8..76dff0e7d8bd 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -669,14 +669,18 @@ static int possible_passthrough_msr_slot(u32 msr)
->  	return -ENOENT;
->  }
->  
-> -static bool is_valid_passthrough_msr(u32 msr)
-> +#define VMX_POSSIBLE_PASSTHROUGH	1
-> +#define VMX_OTHER_PASSTHROUGH		2
-> +/*
-> + * Vefify if the msr is the passthrough MSRs.
-> + * Return the index in *possible_idx if it is a possible passthrough MSR.
-> + */
-> +static int validate_passthrough_msr(u32 msr, int *possible_idx)
+From: Muhammed Efe Cetin <efectn@protonmail.com>
 
-There's no need for a custom tri-state return value or an out-param, just return
-the slot/-ENOENT.  Not fully tested yet, but this should do the trick.
+This commit adds 5V fixed power regulator and CPU regulators to Khadas
+Edge 2.
 
-From: Sean Christopherson <seanjc@google.com>
-Date: Mon, 19 Feb 2024 07:58:10 -0800
-Subject: [PATCH] KVM: VMX: Combine "check" and "get" APIs for passthrough MSR
- lookups
-
-Combine possible_passthrough_msr_slot() and is_valid_passthrough_msr()
-into a single function, vmx_get_passthrough_msr_slot(), and have the
-combined helper return the slot on success, using a negative value to
-indiciate "failure".
-
-Combining the operations avoids iterating over the array of passthrough
-MSRs twice for relevant MSRs.
-
-Suggested-by: Dongli Zhang <dongli.zhang@oracle.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Muhammed Efe Cetin <efectn@protonmail.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 63 +++++++++++++++++-------------------------
- 1 file changed, 25 insertions(+), 38 deletions(-)
+ .../dts/rockchip/rk3588s-khadas-edge2.dts     | 81 +++++++++++++++++++
+ 1 file changed, 81 insertions(+)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 014cf47dc66b..969fd3aa0da3 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -658,25 +658,14 @@ static inline bool cpu_need_virtualize_apic_accesses(struct kvm_vcpu *vcpu)
- 	return flexpriority_enabled && lapic_in_kernel(vcpu);
- }
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
+index f53e993c785e..1d1ce70a0f3a 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
+@@ -17,6 +17,87 @@ aliases {
+ 	chosen {
+ 		stdout-path = "serial2:1500000n8";
+ 	};
++
++	vcc5v0_sys: vcc5v0-sys-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc5v0_sys";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++	};
++};
++
++&cpu_b0 {
++	cpu-supply = <&vdd_cpu_big0_s0>;
++};
++
++&cpu_b1 {
++	cpu-supply = <&vdd_cpu_big0_s0>;
++};
++
++&cpu_b2 {
++	cpu-supply = <&vdd_cpu_big1_s0>;
++};
++
++&cpu_b3 {
++	cpu-supply = <&vdd_cpu_big1_s0>;
++};
++
++&cpu_l0 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&cpu_l1 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&cpu_l2 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&cpu_l3 {
++	cpu-supply = <&vdd_cpu_lit_s0>;
++};
++
++&i2c0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c0m2_xfer>;
++	status = "okay";
++
++	vdd_cpu_big0_s0: regulator@42 {
++		compatible = "rockchip,rk8602";
++		reg = <0x42>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-name = "vdd_cpu_big0_s0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <550000>;
++		regulator-max-microvolt = <1050000>;
++		regulator-ramp-delay = <2300>;
++		vin-supply = <&vcc5v0_sys>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
++
++	vdd_cpu_big1_s0: regulator@43 {
++		compatible = "rockchip,rk8603", "rockchip,rk8602";
++		reg = <0x43>;
++		fcs,suspend-voltage-selector = <1>;
++		regulator-name = "vdd_cpu_big1_s0";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <550000>;
++		regulator-max-microvolt = <1050000>;
++		regulator-ramp-delay = <2300>;
++		vin-supply = <&vcc5v0_sys>;
++
++		regulator-state-mem {
++			regulator-off-in-suspend;
++		};
++	};
+ };
  
--static int possible_passthrough_msr_slot(u32 msr)
-+static int vmx_get_passthrough_msr_slot(u32 msr)
- {
--	u32 i;
--
--	for (i = 0; i < ARRAY_SIZE(vmx_possible_passthrough_msrs); i++)
--		if (vmx_possible_passthrough_msrs[i] == msr)
--			return i;
--
--	return -ENOENT;
--}
--
--static bool is_valid_passthrough_msr(u32 msr)
--{
--	bool r;
-+	int i;
- 
- 	switch (msr) {
- 	case 0x800 ... 0x8ff:
- 		/* x2APIC MSRs. These are handled in vmx_update_msr_bitmap_x2apic() */
--		return true;
-+		return -ENOENT;
- 	case MSR_IA32_RTIT_STATUS:
- 	case MSR_IA32_RTIT_OUTPUT_BASE:
- 	case MSR_IA32_RTIT_OUTPUT_MASK:
-@@ -691,14 +680,16 @@ static bool is_valid_passthrough_msr(u32 msr)
- 	case MSR_LBR_CORE_FROM ... MSR_LBR_CORE_FROM + 8:
- 	case MSR_LBR_CORE_TO ... MSR_LBR_CORE_TO + 8:
- 		/* LBR MSRs. These are handled in vmx_update_intercept_for_lbr_msrs() */
--		return true;
-+		return -ENOENT;
- 	}
- 
--	r = possible_passthrough_msr_slot(msr) != -ENOENT;
--
--	WARN(!r, "Invalid MSR %x, please adapt vmx_possible_passthrough_msrs[]", msr);
-+	for (i = 0; i < ARRAY_SIZE(vmx_possible_passthrough_msrs); i++) {
-+		if (vmx_possible_passthrough_msrs[i] == msr)
-+			return i;
-+	}
- 
--	return r;
-+	WARN(1, "Invalid MSR %x, please adapt vmx_possible_passthrough_msrs[]", msr);
-+	return -ENOENT;
- }
- 
- struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
-@@ -3954,6 +3945,7 @@ void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
-+	int idx;
- 
- 	if (!cpu_has_vmx_msr_bitmap())
- 		return;
-@@ -3963,16 +3955,13 @@ void vmx_disable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
- 	/*
- 	 * Mark the desired intercept state in shadow bitmap, this is needed
- 	 * for resync when the MSR filters change.
--	*/
--	if (is_valid_passthrough_msr(msr)) {
--		int idx = possible_passthrough_msr_slot(msr);
--
--		if (idx != -ENOENT) {
--			if (type & MSR_TYPE_R)
--				clear_bit(idx, vmx->shadow_msr_intercept.read);
--			if (type & MSR_TYPE_W)
--				clear_bit(idx, vmx->shadow_msr_intercept.write);
--		}
-+	 */
-+	idx = vmx_get_passthrough_msr_slot(msr);
-+	if (idx >= 0) {
-+		if (type & MSR_TYPE_R)
-+			clear_bit(idx, vmx->shadow_msr_intercept.read);
-+		if (type & MSR_TYPE_W)
-+			clear_bit(idx, vmx->shadow_msr_intercept.write);
- 	}
- 
- 	if ((type & MSR_TYPE_R) &&
-@@ -3998,6 +3987,7 @@ void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
- {
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
-+	int idx;
- 
- 	if (!cpu_has_vmx_msr_bitmap())
- 		return;
-@@ -4008,15 +3998,12 @@ void vmx_enable_intercept_for_msr(struct kvm_vcpu *vcpu, u32 msr, int type)
- 	 * Mark the desired intercept state in shadow bitmap, this is needed
- 	 * for resync when the MSR filter changes.
- 	*/
--	if (is_valid_passthrough_msr(msr)) {
--		int idx = possible_passthrough_msr_slot(msr);
--
--		if (idx != -ENOENT) {
--			if (type & MSR_TYPE_R)
--				set_bit(idx, vmx->shadow_msr_intercept.read);
--			if (type & MSR_TYPE_W)
--				set_bit(idx, vmx->shadow_msr_intercept.write);
--		}
-+	idx = vmx_get_passthrough_msr_slot(msr);
-+	if (idx >= 0) {
-+		if (type & MSR_TYPE_R)
-+			set_bit(idx, vmx->shadow_msr_intercept.read);
-+		if (type & MSR_TYPE_W)
-+			set_bit(idx, vmx->shadow_msr_intercept.write);
- 	}
- 
- 	if (type & MSR_TYPE_R)
-
-base-commit: 342c6dfc2a0ae893394a6f894acd1d1728c009f2
+ &sdhci {
 -- 
+2.43.1
+
 
