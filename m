@@ -1,219 +1,199 @@
-Return-Path: <linux-kernel+bounces-71489-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5879385A61A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1786685A669
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 149DF2828A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:36:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70A26283737
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A2C381C2;
-	Mon, 19 Feb 2024 14:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE6ED25614;
+	Mon, 19 Feb 2024 14:51:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="JzoW8wOL"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hWIfrRFn"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0775A381C4
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708353412; cv=none; b=ZHpajGpCcnMCwenISePqPsp3Is4s/PN5gwG2MMRfvx8wuwFfew16v9YHwq1rKLRQtirccJyCpAI0aa8wfrPqMVVvTa3JgyrtV3WQdA2YwaG/tNQ1nhH5oZ2uNJz+OE/YigZrw1VJbQC3eS8ZowQKRyoqMma3B70Q4+a4OaS60dE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708353412; c=relaxed/simple;
-	bh=k1wy1CnwpMGMs6jkrdQ6T1Tsue1hgcl4/4ZtfZnVmJs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=qBTAVG+01a1+yph9aYmandK8R4BXvMGNiavRUdlssjnH3FNTrmmrw3hZ6PN04Nh2+ZUp3oNWhfRif1m6RDvu1Aad51bZSZH85vVttVGqcOWaNRNZt/ncIIT/DJhH9pRNCnG3h5CHUctl+liyHpS/JBj1DXY6CZ4VgU0wQJ9Dg2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=JzoW8wOL; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7c48e13e0d7so170627039f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:36:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1708353410; x=1708958210; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5e/j4wH/8q2m/93ox5vboDjUwAf9Ak3MIjkr/fbj+5c=;
-        b=JzoW8wOL4jUpfTbrKwO9xy8oF9Vn70x9g4HXAW5gO9c1dfpZXD3aXy9gw/HJVChJlE
-         HhMw0/dskigiqwMXS+y+S085HTiCMeMKRv6DthYWeDrf73f5/UcV6ML4xi+0pawyyJaJ
-         mA56FH18GDfRH7XNFQbvHXseGyTpSAGfqHKvFn2n74G8hhPVAUuogv3wVlblcM/sDya9
-         QvE/z9F/IAPXGOrxZzy3l5jz8tyoBhCc2EJgLqeEFdslxn3om/PYdVtR8sQAxY0lHQjQ
-         S+BSJrZzEo02UweZ8ck107my9CNy9heb6+8zxC5ND+bgJ/qFvg23xqtUuYPyHSl2fsTF
-         WUMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708353410; x=1708958210;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5e/j4wH/8q2m/93ox5vboDjUwAf9Ak3MIjkr/fbj+5c=;
-        b=Ei72GtZWzDuwHrQ9Zo00PerqsUtjxVoHNJo+m0SwZd6QH1hXHs7aAUZwd0y0nw8k0f
-         u4ADM6h7O5L5x92snFj8mcSXfGGVGKBZULrtZqO8CRsB4Z26pdGRH75kNq1RuilmQUmS
-         qwBsTzSio7Dvk9kigRYvpl+I/nnP5YZlWMUSkHx9mtwTKPQOwb4fYIHQxBk0fGqfVmua
-         zc+0t5R7GNwXb25KzYokQR2QXlq0sNWz0zcrkknccJUhtqaYAYvl7p/OF52z2FxqyKlk
-         FinONhX+7hgBxxtBKKGG/28qDZxynifXXwzxKrMmFG02/yTYsi8gQSm33vdVkC4kVTCV
-         eiyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZI4WlY/F4lCJKkGCDUulyxszyTP4bkTb64jGRcZWKGluDNkGQmdibCl24r2/u0p02cnss5zrTo8Tjg/X0FqxD74vLjNlHfYxmECXl
-X-Gm-Message-State: AOJu0YwRqzrIa6KwFn6LjbcRSnLjMuRrT3WCLB+MZQK1bwLh7rJuuiVH
-	m70mRbrP09Y56G3CyajpUa9Rqfe/olfBBfWIzvUGSaxpxILd2QLm4M2+QNenrKm4c8t+y/gjglq
-	bLi1MVIQoUH+v+HsyC+dMKWaHSEVsFluK4OQ6fA38f3fQea5Y
-X-Google-Smtp-Source: AGHT+IEKLm2RcJpX0Yzgc7TCjIYiyqGSZKCanrbTb1Kvtv83pUTLiLSVsrtf2qLypNmQ5Lqg6cFt5u1FOv6dN3UXASQ=
-X-Received: by 2002:a5d:9a18:0:b0:7c7:344d:21ad with SMTP id
- s24-20020a5d9a18000000b007c7344d21admr6801531iol.0.1708353410077; Mon, 19 Feb
- 2024 06:36:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10D9F1DDF5
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:51:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708354288; cv=fail; b=so8prh0Xesrgr97xgz5R2iYEInF7xZrmrRvZdSjkEHRxUj1HqfpO2qH2kJ/D4HT182vXdsBIz1yD1eXGp4fWTm+WHoyEH1uE5x3C3EQhjzc3ZEMOqlyzWU1OqLlPwhVc98LPF7YjMJrGHUh3O/vvdbVynphc4Kt+0rHjpeWTG+E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708354288; c=relaxed/simple;
+	bh=BoLKEqQGsLvUE/dKa3QTEY7V8p1CIe7DHtivg6ZIPlU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=CCPxtIcauwPuIPffMMAMoX5W3u1EYLNkE/w3V6D2XWe4NUcDwj2BmHwTH7GbPVEyx9zY3J9TXzCp1rFZ3z/fMfwwQh03bNl78/wjb05tJAWfxqMukLRcdleyBl9sIuFpDiD9N2VsPKMfCPHIi7AAGPCMLSNgZ0/sHjfcd+fmkHc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hWIfrRFn; arc=fail smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708354286; x=1739890286;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=BoLKEqQGsLvUE/dKa3QTEY7V8p1CIe7DHtivg6ZIPlU=;
+  b=hWIfrRFni18lsaNnnlhqyhl3yfI/49+WHkZuSBzZLaSpFXoyXX3Us8rT
+   37g1SOib71zHGNbOYcX1YjDRhERe942vuulvRrL9m7QCzNPEk8Wlt8Yeo
+   BmesmwZdGmHtHbjbfSm3gBW7gs0LNjieLeFYTYAJ62GrhvSGS24/toKCm
+   J9efr4Cr2Fx0LW+aBZGq98V1wTbArWI1qaLIEKulpnXTZclNa7tzI89ck
+   S5Vs1Z8osHOFlHk8Oq3LERAuwT0xtoCnqwIx1EBx7vb5zS2+rg82SpXHM
+   64tqJWqeCg1JEiSB9EEUG54V2bgeLvdKYkXfmOMR5EiLYzljEIK3fBd0b
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="12985527"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="12985527"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 06:51:16 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="4798820"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 06:51:16 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 06:51:14 -0800
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 06:51:14 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 19 Feb 2024 06:51:14 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Jfctll+SlZgOnLi/nE7LzdB2obak4tn4douO8fnPgcjDHl3GfPGgsiCY1sH9kWrtJLLROLHWpneaDfwbX8FfimEKfVTM91odgm3tL+yfPQp7q58gRD4Y41mugzz/IU5xBOl1y7sioOKq/eTfvVCCExnC7l16mJh8HWTV8SnFB5y4YJb5fGGtAxWIY3tuOjtmQOL4YnmOe5PAyHuXrK9WWCET2gqard/dtiZUzWq9WTog1+x22/OdL5pcooJsF28GEnPoWvvt+iCTMlgOrSeY7Y6sX1KBJRwAG/KS5vLSJb882zmZNEoER6rSZSB03zdchjDwf6+N/Mt7JZi6z7dN9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=INNPU6i3KBWhdNk+izTLu2RTYMGn4GqE9oMDZnPooFk=;
+ b=HAx2sTzkwUAK6j2lpqSr1PXjFnsRTZ8POKDjdPj8OPFhFh8mQnrecjzCJpb0YtAYXH5QhQY8iLHnl/F/nAIguCD689T/VEBVwkjFCjm3bWZPtBg1fSvlQsemRCU6e9LBCbD+vcH+LQAXoxhTQCZ2a3GIHmDUjiP0bS0sfq6nAQoskC5DGO7WRmG43DRnNXpcYRnlPu/1TFs5MCzvX7g3/naWrLg+pVXBpGI9aEmwi01LMTH52DgiobrdZ++IjxDPlTlvb1zH5PWzVyX7kWd7d1aQ53Nvn1mg6paGbQ58fomHkeOJ+GiAYRyyVSGrpX38qp+cdvihGMosSShYMD5F0Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+ by DS0PR11MB7801.namprd11.prod.outlook.com (2603:10b6:8:f2::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Mon, 19 Feb
+ 2024 14:51:12 +0000
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::4d4c:6d3e:4780:f643]) by MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::4d4c:6d3e:4780:f643%4]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
+ 14:51:12 +0000
+Date: Mon, 19 Feb 2024 22:37:01 +0800
+From: Feng Tang <feng.tang@intel.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+CC: John Stultz <jstultz@google.com>, Stephen Boyd <sboyd@kernel.org>,
+	<paulmck@kernel.org>, Waiman Long <longman@redhat.com>, Peter Zijlstra
+	<peterz@infradead.org>, <linux-kernel@vger.kernel.org>, Jin Wang
+	<jin1.wang@intel.com>
+Subject: Re: [PATCH v3] clocksource: Scale the max retry number of watchdog
+ read according to CPU numbers
+Message-ID: <ZdNnjdNTjtvpbGH0@feng-clx.sh.intel.com>
+References: <20240129134505.961208-1-feng.tang@intel.com>
+ <87msrwadvu.ffs@tglx>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <87msrwadvu.ffs@tglx>
+X-ClientProxiedBy: SI2P153CA0025.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:4:190::12) To MN0PR11MB6304.namprd11.prod.outlook.com
+ (2603:10b6:208:3c0::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202015102.26251-1-zong.li@sifive.com>
-In-Reply-To: <20240202015102.26251-1-zong.li@sifive.com>
-From: Zong Li <zong.li@sifive.com>
-Date: Mon, 19 Feb 2024 22:36:39 +0800
-Message-ID: <CANXhq0odPmhqsWA8hNqbH8+0ShJjUJktXNC1vxidpwjct+sdCg@mail.gmail.com>
-Subject: Re: [PATCH v2] riscv: add CALLER_ADDRx support
-To: palmer@dabbelt.com, paul.walmsley@sifive.com, alex@ghiti.fr, 
-	conor.dooley@microchip.com, aou@eecs.berkeley.edu, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|DS0PR11MB7801:EE_
+X-MS-Office365-Filtering-Correlation-Id: 804d5def-c0e9-4770-057a-08dc315a3721
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 41J7yWn5dhsIADNSHmQAy3fYvOWbxgBPziwvcFsyK9kajIqVQvvAda7q9RF4QHaaq+AZ80amAGJ6YfxHY44KkzVbcMOS/NBczfWHMpWNSV8uramiQIOCNvZf42zUGXnCGV1PEIYc+cRICNd4BSygkhBaQmar+eRl/r0oJ9gmofNZObYnD+wR1XZU7clhRZx+XVvTNML3axqifbcnTI1aTaBZsdvPQZhPjkvT+/4KFB5FUaJWhZk8XXh/hR5tHZ+45/hymCOLovnrCqzlS+UuBtpP2y8tUWYHFHMMeYYz9p4gZ1NS2ZBp/1bdo9jrZ00SaQtkzLi4XsJj1U+JTMjsDCmcr4SCgGqgpOorau0ahtby/dt+zatpmKJlw+b3VGyraCqS2hlRfI87nH5igvoLmC+pTfcBlvR47fueJujFZlq7kXMHzHNc6jHAuWX4NDax0wgfK8129KTdDnniGr04rXopuiZyOXhN1hmTu5wrZGf5F09lPmU0zDByQnIHwyR6TIx1p869XrdvS+OCnnqBp+rsOixTkWZzT0llD28S2Kg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tRE0qgXyisMSGm1Uc6+VV3gW5hrUXWbEXyRCKMdFvVBVySZSFSleZL1OI+7M?=
+ =?us-ascii?Q?+9dR3yE4DzdAoaS0dnRZEVD9wpIWHUFrGHBy7jXfKQWY+xdveqKqRqsbQlmU?=
+ =?us-ascii?Q?kfWH8aiNg52PhciEGMfrsIrN8zLxQUKE6bi2xJ2qzNauJ43AD4f4N7Zm9cql?=
+ =?us-ascii?Q?/HUOR0LVj0sBvC2AWVKgLFibX+WAjiQ+MPPTEhltE7oJ2TtUzgDtBDdjjsy6?=
+ =?us-ascii?Q?8CsEk8igUYpTKsomouZE1Ukmfiilivjf40RIoY0RTL99AVLhTbIM1noV90iM?=
+ =?us-ascii?Q?v7ZtwiOThQ5LxH2nj/lJVSsJWVW5f/sfIpZi+1A1LNLLKno5WISNf/goyllr?=
+ =?us-ascii?Q?CSKXk62wk9w4G4GT6NwHQvjXeQueR0gbbTckyN2StGjEGgMUzjga29RbjNB5?=
+ =?us-ascii?Q?sTo+USzs76pSUoG5ClmZ6KCh2d7e3RMKdyJYTt2j/8n66SBvtEE87TZvtAmQ?=
+ =?us-ascii?Q?vdqRUwAgMiq8wxx61BkVFLaY2xbQhMlNopmPuYfDdo4TZvUgYox/3P61Uw75?=
+ =?us-ascii?Q?CkqvbZCsXsBCiab9r5f/hR1Z7J2nldZ+vAbVzlnPR6aRlc4Wfyh/VyQm0h6G?=
+ =?us-ascii?Q?BngQXbeeK1VkcQHzKZXQaBlQzN68mHWKHHN/VW41C3h/SgReQyUTXm1adZDR?=
+ =?us-ascii?Q?UQKSI1E4wFYUI6YrMmZ0m5wbC7cPZHOAHwvAt/gpNRACR/9MOk9YHNsPqCBH?=
+ =?us-ascii?Q?K9r5v26LjHys5nWAi/KghzMe7ESCsmRmkXKl0WQ4ZdmPdfdy+TpWKDbluNWG?=
+ =?us-ascii?Q?jca51hf5yL5Yxgtc7ZSy86fyu9FCuvlqaVeNCpghd+9fZtve09v1+itXR1l8?=
+ =?us-ascii?Q?fUtlw2YkUxqkUsm8VeqMMd3/esdiwO1NyxudzylFhYeeIFgJX14C7ubnbtqy?=
+ =?us-ascii?Q?frwlEeJYZwScbqxE/k0usCmh9cOd1Z7Nr6XHERr7hqv755vvaqM1w323YxEU?=
+ =?us-ascii?Q?LT1qDtODHSdIhkA8V6FiiYa76/wGsV8423BP//viebzUtWta7YDjs2xaLd4G?=
+ =?us-ascii?Q?4NhInmZPjBctTwR0JwViG7SWYDIeimraK8VwCwnDoO7H26zSfu6biUGJRjwu?=
+ =?us-ascii?Q?Q4RKDLCy/3Fju2kZPZzlGbqn+bl+QftP4B3zj89nzKXA4FcHY95dtumt2lrC?=
+ =?us-ascii?Q?hBTll0CUuA6MZxzUZsoLbGIQOX9Tqr4sE+eoXnLd7+hucdASlfhoQqcluCXl?=
+ =?us-ascii?Q?370lZJ+xiCHwM6AI4jgF7ZOJ4pL4lzpB/bijEV2vTpRq9BjhaaEPm+aErbVN?=
+ =?us-ascii?Q?pDYuAFs+ADY1P9ol9dXGu3QXP3hQ8RGxTUKrfwydfdh7QkTwazSJSLRssIJv?=
+ =?us-ascii?Q?pzKGtkFSdTx+WX0TOEfiJdZe9JgOHsfiRvL5wz8kZsCOMP9DVYcgTBnu6QFR?=
+ =?us-ascii?Q?J8lOW8Sz4JB7uYuTK+PqdmpNhCds3Nrz3nE41805lLXMn9dVQ1kp2PyHtIva?=
+ =?us-ascii?Q?ETFiarnxG7Nl2RTu6eLkOkC/h5SEhaoNBrAtdHdtRSWs2aJPQYFmwjvfLZN+?=
+ =?us-ascii?Q?0idR9D2DlCvgWneNgY4+2dSv71tZTBJoE+v9YmlAwz1K9uY1yIi0vbOKnahY?=
+ =?us-ascii?Q?XpLhRi8ZFsKx/KaLSN+aegTA37Pb73HxPHKfqVLz?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 804d5def-c0e9-4770-057a-08dc315a3721
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 14:51:12.2456
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lteaOfpBcvkvf2QWxyVIw+4ZS20lI0r31qg1p2GcZUuGQWQhXxz/gi4eqYYqiUa8lwBM5hiHTBEyr3of6vbazQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7801
+X-OriginatorOrg: intel.com
 
-On Fri, Feb 2, 2024 at 9:51=E2=80=AFAM Zong Li <zong.li@sifive.com> wrote:
->
-> CALLER_ADDRx returns caller's address at specified level, they are used
-> for several tracers. These macros eventually use
-> __builtin_return_address(n) to get the caller's address if arch doesn't
-> define their own implementation.
->
-> In RISC-V, __builtin_return_address(n) only works when n =3D=3D 0, we nee=
-d
-> to walk the stack frame to get the caller's address at specified level.
->
-> data.level started from 'level + 3' due to the call flow of getting
-> caller's address in RISC-V implementation. If we don't have additional
-> three iteration, the level is corresponding to follows:
->
-> callsite -> return_address -> arch_stack_walk -> walk_stackframe
-> |           |                 |                  |
-> level 3     level 2           level 1            level 0
->
-> Fixes: 10626c32e382 ("riscv/ftrace: Add basic support")
->
-> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->
-> Changed in v2:
-> - Rebase to v6.8-rc2
-> - Add noinline attribute for return_address()
-> - Add a fixes tag
->
->  arch/riscv/include/asm/ftrace.h    |  5 ++++
->  arch/riscv/kernel/Makefile         |  2 ++
->  arch/riscv/kernel/return_address.c | 48 ++++++++++++++++++++++++++++++
->  3 files changed, 55 insertions(+)
->  create mode 100644 arch/riscv/kernel/return_address.c
->
-> diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftr=
-ace.h
-> index 329172122952..15055f9df4da 100644
-> --- a/arch/riscv/include/asm/ftrace.h
-> +++ b/arch/riscv/include/asm/ftrace.h
-> @@ -25,6 +25,11 @@
->
->  #define ARCH_SUPPORTS_FTRACE_OPS 1
->  #ifndef __ASSEMBLY__
-> +
-> +extern void *return_address(unsigned int level);
-> +
-> +#define ftrace_return_address(n) return_address(n)
-> +
->  void MCOUNT_NAME(void);
->  static inline unsigned long ftrace_call_adjust(unsigned long addr)
->  {
-> diff --git a/arch/riscv/kernel/Makefile b/arch/riscv/kernel/Makefile
-> index f71910718053..604d6bf7e476 100644
-> --- a/arch/riscv/kernel/Makefile
-> +++ b/arch/riscv/kernel/Makefile
-> @@ -7,6 +7,7 @@ ifdef CONFIG_FTRACE
->  CFLAGS_REMOVE_ftrace.o =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_patch.o  =3D $(CC_FLAGS_FTRACE)
->  CFLAGS_REMOVE_sbi.o    =3D $(CC_FLAGS_FTRACE)
-> +CFLAGS_REMOVE_return_address.o =3D $(CC_FLAGS_FTRACE)
->  endif
->  CFLAGS_syscall_table.o +=3D $(call cc-option,-Wno-override-init,)
->  CFLAGS_compat_syscall_table.o +=3D $(call cc-option,-Wno-override-init,)
-> @@ -46,6 +47,7 @@ obj-y +=3D irq.o
->  obj-y  +=3D process.o
->  obj-y  +=3D ptrace.o
->  obj-y  +=3D reset.o
-> +obj-y  +=3D return_address.o
->  obj-y  +=3D setup.o
->  obj-y  +=3D signal.o
->  obj-y  +=3D syscall_table.o
-> diff --git a/arch/riscv/kernel/return_address.c b/arch/riscv/kernel/retur=
-n_address.c
-> new file mode 100644
-> index 000000000000..c8115ec8fb30
-> --- /dev/null
-> +++ b/arch/riscv/kernel/return_address.c
-> @@ -0,0 +1,48 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * This code come from arch/arm64/kernel/return_address.c
-> + *
-> + * Copyright (C) 2023 SiFive.
-> + */
-> +
-> +#include <linux/export.h>
-> +#include <linux/kprobes.h>
-> +#include <linux/stacktrace.h>
-> +
-> +struct return_address_data {
-> +       unsigned int level;
-> +       void *addr;
-> +};
-> +
-> +static bool save_return_addr(void *d, unsigned long pc)
-> +{
-> +       struct return_address_data *data =3D d;
-> +
-> +       if (!data->level) {
-> +               data->addr =3D (void *)pc;
-> +               return false;
-> +       }
-> +
-> +       --data->level;
-> +
-> +       return true;
-> +}
-> +NOKPROBE_SYMBOL(save_return_addr);
-> +
-> +noinline void *return_address(unsigned int level)
-> +{
-> +       struct return_address_data data;
-> +
-> +       data.level =3D level + 3;
-> +       data.addr =3D NULL;
-> +
-> +       arch_stack_walk(save_return_addr, &data, current, NULL);
-> +
-> +       if (!data.level)
-> +               return data.addr;
-> +       else
-> +               return NULL;
-> +
-> +}
-> +EXPORT_SYMBOL_GPL(return_address);
-> +NOKPROBE_SYMBOL(return_address);
-> --
-> 2.17.1
->
+Hi Thomas,
 
-Hi all,
-Is there anything that can be improved in this patch? Thanks.
+On Mon, Feb 19, 2024 at 12:32:05PM +0100, Thomas Gleixner wrote:
+> On Mon, Jan 29 2024 at 21:45, Feng Tang wrote:
+> > +static inline long clocksource_max_watchdog_read_retries(void)
+> > +{
+> > +	long max_retries = max_cswd_read_retries;
+> > +
+> > +	if (max_cswd_read_retries <= 0) {
+> > +		/* santity check for user input value */
+> > +		if (max_cswd_read_retries != -1)
+> > +			pr_warn_once("max_cswd_read_retries was set with an invalid number: %ld\n",
+> > +				max_cswd_read_retries);
+> > +
+> > +		max_retries = ilog2(num_online_cpus()) + 1;
+> 
+> I'm getting tired of these knobs and the horrors behind them. Why not
+> simply doing the obvious:
+> 
+>        retries = ilog2(num_online_cpus()) + 1;
+> 
+> and remove the knob alltogether?
+
+Thanks for the suggestion! Yes, this makes sense to me. IIUC, the
+'max_cswd_read_retries' was introduced mainly to cover different
+platforms' requirement, which could now be covered by the new
+self-adaptive number.
+
+If there is no concern from other developers, I will send a new
+version in this direction.
+
+Thanks,
+Feng
+
+> 
+> Thanks,
+> 
+>         tglx
 
