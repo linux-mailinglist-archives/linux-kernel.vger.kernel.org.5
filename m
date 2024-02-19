@@ -1,127 +1,164 @@
-Return-Path: <linux-kernel+bounces-71331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB1F685A39D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:38:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 108AF85A397
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:38:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33346B223BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:38:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBFEB2819EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A371C31759;
-	Mon, 19 Feb 2024 12:38:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F162B2E84B;
+	Mon, 19 Feb 2024 12:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Lqtwvkjg"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="YA5tGM3r"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CEB2E645
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2DF92E832;
+	Mon, 19 Feb 2024 12:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708346303; cv=none; b=Q0AzpxWGROK/+LuYAejMWd/OnOwioXxo/Ej5Ypk+R1lqcf+9sg+JZF8n8DJX1ajJcwdsQoR2dUb6BlMWsrZgCmCkwBS7ZDI8nGZdEpDNTRZk3fyKhCQblROXNdVor12H/GME9fr818pXkzsJeqPOUOhaxCFGQobcpilbyziOo7o=
+	t=1708346286; cv=none; b=teJgpTgs9WysG8wnSsBlxsayi1u00rBmiaWIyHD/nhY21gTginflizjiu5N15SZWuaoR0DODr+Is7BSCBPP2mZtGG4fhg+pHvpngUae48ZgjU837r6PbDwe3qlRcU7pMOnmbFe+id2u/nfVPKyCx49gTVVFT7bxvKv7gMm+iL74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708346303; c=relaxed/simple;
-	bh=gzjCQw/WkyJ81heO1U1AhwhMls24RaDiBVDZWODcvSA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E7RI+si1cNP88ctsYdNEyys6z3tbGcvS+CLfdGBr3/nHk/WVE5UoUYBh7jlm+XaVrzAbA3zWwZUfyYWXOjZESmt9qFWJm6rPlzGaHfSV02xis1A5ctjIy60hBya0FWxqMSi/bVrOBJ4VYOSksK5fokd9prCpyS63vnR1JZ0B244=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Lqtwvkjg; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708346300;
+	s=arc-20240116; t=1708346286; c=relaxed/simple;
+	bh=6/81RtxYBimTDWQThH/Y5fPpJCQlgo9epDoNinWZNu0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=O9RDynnzRr9Y+jBA5KAB1qxfjygVDfcqWudYhUs4pjYiJhFU/6VH1/817Gq6PCKF31iCJppMn/9SSDcZJJthcqVgQrl75/e/R9rMdrCMtTBf3zNRceW5j34XuURGMkQ7vNlUpab34ZjJqYPN+3F6HBgpEFQ3E9nFV2//grPQwyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=YA5tGM3r; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1da0cd9c0e5so38549245ad.0;
+        Mon, 19 Feb 2024 04:38:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708346284; x=1708951084;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PMHtbRDXeAYpdr62NPPyFG8YmPyz8fxfbQ4i+nYhDHU=;
+        b=SB8Pb3Q2l8ZblSF2dOfzpSCwPLhSyRxCpS8czh087itg3DV5jgZ5YwctZ/PZlu5vMS
+         8Caksxf3/GHvGb502ReKXCu9DpYL104gkmOeb5ASmh7r+AdvP9OIW9KS2UYmzbDh4NjH
+         OLA3n23LVHC4/Vfaw71lp+SSu03hk0UoSfXhgayKzPhTXMNZ2gv/JvVQfJav/50W6D5j
+         Uy8B+1ZjFMDQMyrF8cX4p4E+C9vBDq7zaFbSf25OdfPdxSNv76PPcXfkU+gqBqDSP3vP
+         DyA8ejoZ3u73cHy7Sf91asrLv4mvbW7vMD+Ik01yGu7s/zddgd7vNxJtZy/CmrqTzWts
+         g+GQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUMn3qqA6/o+vOSgqBn+uDF5FnllH0pHVle65LZUQl04URveT85BPR8XCysOq7xgnRmudQHiT7WEEmcjeHUuXDXt1JZJ8+Pu9I6WvhE
+X-Gm-Message-State: AOJu0Yw6UspO03PzM+M0OWIpvvJ0WHe9CmTxXpIAwV3fBvS8Ksk+AjSk
+	sUiPxxnHvl0+HvKC1xA9TrPwmxFlPDjO/Z1/HTCQ3lUinqA71ii+EKWkeTyfbKFqjg==
+X-Google-Smtp-Source: AGHT+IH6zq27iEs4PnVeIJhhXLzSSSGRm1DwoUMnzhtFBw/uyKrFV6MpAKf7rDeuLBC1QTD7P+WTvA==
+X-Received: by 2002:a17:903:1209:b0:1d9:907f:636d with SMTP id l9-20020a170903120900b001d9907f636dmr24035241plh.10.1708346283986;
+        Mon, 19 Feb 2024 04:38:03 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id 19-20020a170902ee5300b001d91b80876dsm4278250plo.245.2024.02.19.04.38.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 04:38:03 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1708346282;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yk2rigtIP1TrPPA5XNRdEMM1GL9bmAZcBohhgdFvSDI=;
-	b=Lqtwvkjgd08IRgwSJGnymMLSyP4myvnkGEp21xt4fCrAhciiE3OyN+OfU72X/RKtYP+Qpb
-	H0yZ/khHDs3LhH3TZcRM6GIZxg7kNHYFmp3dBVUS1ep66pLy9T8woWi4Tmx3q+pWIacUpU
-	K1nQSpI0Km4lQ0xRrdn2NRcQn8YE/ic=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-550-9A9IdWE2MUeU-KRlXknBag-1; Mon, 19 Feb 2024 07:38:18 -0500
-X-MC-Unique: 9A9IdWE2MUeU-KRlXknBag-1
-Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-512bad7d985so618875e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:38:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708346297; x=1708951097;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yk2rigtIP1TrPPA5XNRdEMM1GL9bmAZcBohhgdFvSDI=;
-        b=s1S1xItwDYNFFe/sNZ2FZhaZ0doORzE4v9Cv1HbLJO5+rPVRCWYqCwjD/1KdFLFEjD
-         DGdk4xLVSE5ndyyUbBlneDJCumf1B2htRnDW45llNuOoxSI+V5r3KouchpSKhoMTu//J
-         d5MPKB6x6kLeqev+0BLBJvyvSE+M/hz18K2XmzecJntywbOE/IQQ0Xok7AM13+pGOvaT
-         fHLWDiMZe2Yrs3QNq0pba8iZeHPrsYLapc7tOPMj7qR/s2so42x76y1EgyMSnGZdv7Vj
-         P8vB4KP+KNGNcg+bMud9WyozN4A9FcEm7tqh7MWiHj0yVkvGmCSuX4+54O9n1lZPyguZ
-         HSAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX514fArOClUu6o40rtQHzzPW7lWo28+Y6c2C/cW/9hD7CSh13f4eDcSanOvqvVD+En63K4W+NzUfyDVwbINo8kBioomg3SDUL6NRii
-X-Gm-Message-State: AOJu0Yx6ViujpQAKUFOQOiiUVSTlPi4ukK/0JBCs7N/frq+83Q/d7Gru
-	CJJOUTy9A2X1iAMsEALhrD9zJF9vvRyyUTA5em5soudPyNcJLo0ZALi03nQjzIt4bkJDovBsGoH
-	OMz6tt3Y/KEbF40IUfYQJP5EgB6knqOyNr9+mnHBPtRVj45ixGgm9m+cLgWkF6Q==
-X-Received: by 2002:a05:6512:2312:b0:511:79ce:805d with SMTP id o18-20020a056512231200b0051179ce805dmr9233604lfu.7.1708346296963;
-        Mon, 19 Feb 2024 04:38:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFTIrJSMSE88u6rez8enAJWFXxtTIeYnpfd/46RCais8tXQSS6eAQbycVH8j6AMohdHKR/9Dw==
-X-Received: by 2002:a05:6512:2312:b0:511:79ce:805d with SMTP id o18-20020a056512231200b0051179ce805dmr9233589lfu.7.1708346296662;
-        Mon, 19 Feb 2024 04:38:16 -0800 (PST)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id wp1-20020a170907060100b00a3e2e03c155sm2363377ejb.155.2024.02.19.04.38.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 04:38:16 -0800 (PST)
-Message-ID: <1d5dd3de-5561-4231-94bd-65ac05f1fc50@redhat.com>
-Date: Mon, 19 Feb 2024 13:38:16 +0100
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=PMHtbRDXeAYpdr62NPPyFG8YmPyz8fxfbQ4i+nYhDHU=;
+	b=YA5tGM3rWUiG0Tp0bZcxwsPvv/U+zEMoKq6DyNxHFOTH+pSsG4dRHOOnJVG3flpIR3+/n0
+	wBt2CyEH0uPeC17hPSBhTJZxkFbFtL75RzcAh2qH3fCSAZc9NMfW0G6sv2voRalDWDMMoP
+	XSfolZvbPFn0dVQpyb/Bo2nDXrZK/rlxoN9nq3EBrFb/CkGzBzj4dKQF9Qd3oLRM/c1YK6
+	ydq4U5SsVasVIVDhrjdDhqB7H3MudGuYLZrhwwmTw94gQuR16V0Mjq+vNXElzjQqOEaX+N
+	qA9P0htB+G6T5XONZ79LPLXSCAUue6AUQjzSET9gG0Lf45vfEWhSiLeiw7TTAg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Mon, 19 Feb 2024 09:38:47 -0300
+Subject: [PATCH] i2c: constify the struct device_type usage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] AMD PMF Smart PC error handling cleanups
-Content-Language: en-US
-To: Mario Limonciello <mario.limonciello@amd.com>, Shyam-sundar.S-k@amd.com
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240217014107.113749-1-mario.limonciello@amd.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240217014107.113749-1-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20240219-device_cleanup-i2c-v1-1-1fc5a8749c6f@marliere.net>
+X-B4-Tracking: v=1; b=H4sIANZL02UC/x2MQQqAIBAAvyJ7TlBTsL4SEaJbLYSJUgTS35OOA
+ zNToWAmLDCyChlvKnTGBrJj4HcXN+QUGoMSSgslBx6a5HHxB7p4JU7Kc+NMH1yvjbQWWpgyrvT
+ 802l+3w9m8jvtZAAAAA==
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2007; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=6/81RtxYBimTDWQThH/Y5fPpJCQlgo9epDoNinWZNu0=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl00vYRIftInhn8axwMBV1e8e77qqKkr+O8RKV+
+ USVKAj58g+JAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdNL2AAKCRDJC4p8Y4ZY
+ pnkxD/sFWpPmd9MbWMLrPy7K/yyrxu6obuo1f62YiQU+dnXP/lw2bG17LyAAhKFxeajVcVvapKJ
+ xeZovNdE8p1scrnOE6YEaZt6YbmsR4/YMJ57ye0lcgnmetLA7Y5XAMh8XvRsD7uXfoHdJJ9d8tU
+ Sq3jcsH5vJ9Kigiu4LCA2yH8Ktfa3VFtk8NG+I/W4gZOLZ20aJBZqwRBMgStoRqcC4XASHj/c3h
+ 9J44uegRlQ/fEKQdS9QH9iIP8A0EEr/vWKbdK1jeYw4oSDcD2NtOcO92zkODkW1gPKHVW7XdRGK
+ MQLyl2/BNL4UvyTajkC79DNVTr8UJSaUGcX+PkFcbdruDwYUnTWFXmsx9IjFWT4pAKBMgW8WNji
+ Gfw6May0vbpX3pL6LbKdURG0VFm5ZaY1k7Z/VUtqPwbKJYGZSYLZfubVaqQu9B4C40o9g/BhDM3
+ wyQ4bJ2XoV15nASFK7BhZsI5zWuDVTVmlD5XdX9S08i4a74Nw+QM4kzo1/vjdbb5Es4xn3q8t3x
+ h9AxWPXH5mVKgF009NC4LCBfvbSLcJ/fZRWDduCTzKy1OBV7XrXBdjJdCJbSDpfpL5pz98U+g+7
+ w5lRKzRYr/IzvG5hfMlMkVTfx8nnKVe93xoXF93qblxekqJBfFNJSYYFBQVllqGDwzIeEwwWGuh
+ cIhnGzgn/lIHCjg==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Hi,
+Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+core can properly handle constant struct device_type. Move the
+i2c_adapter_type and i2c_client_type variables to be constant structures as
+well, placing it into read-only memory which can not be modified at
+runtime.
 
-On 2/17/24 02:41, Mario Limonciello wrote:
-> While debugging the suspend issue for amd-pmf the initial bisect result
-> pointed at red herrings of cleanup flow problems for
-> amd_pmf_init_smart_pc().  The actual issue wasn't in this code, but still
-> a lot of memory is allocated and not immediately released if any of the
-> error branches are taken.
-> 
-> This series cleans that up so that every step is cleaned up. I believe
-> this actually fixes driver bugs that "could" occur if a BIOS advertisd
-> Smart PC as well as ITS auto or CNQF but didn't include a policy in the
-> BIOS.
-> 
-> Mario Limonciello (2):
->   platform/x86/amd/pmf: Add debugging message for missing policy data
->   platform/x86/amd/pmf: Fixup error handling for amd_pmf_init_smart_pc()
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/i2c/i2c-core-base.c | 4 ++--
+ include/linux/i2c.h         | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-Thank you for your patch-series, I've applied this series
-to my review-hans branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 3bd48d4b6318..ff5c486a1dbb 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -701,7 +701,7 @@ const struct bus_type i2c_bus_type = {
+ };
+ EXPORT_SYMBOL_GPL(i2c_bus_type);
+ 
+-struct device_type i2c_client_type = {
++const struct device_type i2c_client_type = {
+ 	.groups		= i2c_dev_groups,
+ 	.uevent		= i2c_device_uevent,
+ 	.release	= i2c_client_dev_release,
+@@ -1343,7 +1343,7 @@ static struct attribute *i2c_adapter_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(i2c_adapter);
+ 
+-struct device_type i2c_adapter_type = {
++const struct device_type i2c_adapter_type = {
+ 	.groups		= i2c_adapter_groups,
+ 	.release	= i2c_adapter_dev_release,
+ };
+diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+index 652ecb7abeda..ff93ff8b257c 100644
+--- a/include/linux/i2c.h
++++ b/include/linux/i2c.h
+@@ -24,8 +24,8 @@
+ #include <uapi/linux/i2c.h>
+ 
+ extern const struct bus_type i2c_bus_type;
+-extern struct device_type i2c_adapter_type;
+-extern struct device_type i2c_client_type;
++extern const struct device_type i2c_adapter_type;
++extern const struct device_type i2c_client_type;
+ 
+ /* --- General options ------------------------------------------------	*/
+ 
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+---
+base-commit: 67ec505fae32419354f4172c06c853def2541300
+change-id: 20240219-device_cleanup-i2c-5a53da345188
 
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
-
-Regards,
-
-Hans
-
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
