@@ -1,199 +1,474 @@
-Return-Path: <linux-kernel+bounces-71725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BE5685A987
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:03:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67A2785A998
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:05:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1A01286171
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:03:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 40EF91C21520
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:05:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5926446A5;
-	Mon, 19 Feb 2024 17:03:24 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3BE446A1;
-	Mon, 19 Feb 2024 17:03:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E69481A0;
+	Mon, 19 Feb 2024 17:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aLyvLS4b"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BB0446D0;
+	Mon, 19 Feb 2024 17:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708362204; cv=none; b=Hcu0m2nyow0DOCqikn6Xld+0IYMAzaWuUJWobbdYwSSg9ATyHrUu4IHnhXprsTme0aW3z7V1W4gidvZRuPJIERGrCvmsYZJidbRiz4XGkNT4qVRPGn4TaDbtT63cCtw9EhOtXUMNqvt9pmhn/YzhJOISC5L0KVKiFBUTziFbPAA=
+	t=1708362232; cv=none; b=WZTmMCXroFDr4SMr62REn2x2pgSnghSWtBa4CDarkfb1RubQ3yFsK8bRQPXYQdzOLhJYGoGUoTuGRUqIoEn39R/rb/mKz1EK4mAEIDuwkZDj0RAEnHZt3eh3yYx0LZDKjB1a1anQlnfCFcXccBWdWvjkiWQ6sN7tu/NNNpuDw9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708362204; c=relaxed/simple;
-	bh=MJvYvJVcGAJ+lPRgCUqoBB/EzpB7glN7S5T8DbEhTSM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SHALQbjDsld0kps5IzuuaPIz/58d3rsRqX0gPh0gb5ok/sz4jY/TV5cpsxTRru39IIPKxG8jCsoXW6QxAx00n0zckZnmyCaHY1dO3ZsCaUpBoq6iai5GvYDIsafGFDF0Zdt5G2bm7HdzDA8O4iJwxkMg7YEE/56qGERW32wncz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 11670DA7;
-	Mon, 19 Feb 2024 09:04:02 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.67.88])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4D963F7CE;
-	Mon, 19 Feb 2024 09:03:20 -0800 (PST)
-Date: Mon, 19 Feb 2024 17:03:18 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Kees Cook <keescook@chromium.org>
-Cc: Andy Shevchenko <andy@kernel.org>,
-	Rasmus Villemoes <rasmus.villemoes@prevas.dk>,
-	Marco Elver <elver@google.com>, Eric Biggers <ebiggers@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	linux-hardening@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
+	s=arc-20240116; t=1708362232; c=relaxed/simple;
+	bh=2V6K2WvRgilQJzTyY5J8rzEpLbmO3v/oZJMKcEItRHM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=pir6BP3NM2a0/xFsehlyPfEK7Y/6pgMkNN8hw3ljJuMWcRJIt8iLPuF8J0fElznd4UysUaPe015ghYG2I5KPwksxHtGDRx5mYi+HhxywG+7keD52A4XqEA16zQjir9chc1QZfpfpBb2uYjAY0l7J6c2XYoeYHRLr4zvltCemdjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aLyvLS4b; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708362230; x=1739898230;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=2V6K2WvRgilQJzTyY5J8rzEpLbmO3v/oZJMKcEItRHM=;
+  b=aLyvLS4bqrI8xOWRlUbrNiiKVrniNmO2Xtahk89YWh6Cnofh6jZ+wq9m
+   gyi7/gIwWQdp/QEuO3fAgC5uzECCOhZtpdqZJLTOBaJqVGWGgFfo++E7/
+   7Ad7Soi/gVLRc7YemOAvs5x1yYXH3jYu9WLbhYxMErafsM+U505xpR5xA
+   MJeG6tP60LzAM+YfRAxnzd0NzQwIyQ0sEoQpgfm1ZLUH7SN17XbxIjyvt
+   VvK5V9q8uVCtiPEL9x1WrPPP6niZyJpd0Tbv7yaIheGAyi8DG+0iNPgs+
+   2tNarAb+rfAhYC6DfaDDI1r5vKBopou7glhJF0I+VMXcXvSXUEEfIMEu0
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2577414"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="2577414"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 09:03:46 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="936315356"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="936315356"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Feb 2024 09:03:42 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 2E9AD2A6; Mon, 19 Feb 2024 19:03:41 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/3] overflow: Introduce wrapping_assign_add() and
- wrapping_assign_sub()
-Message-ID: <ZdOJ1lEycqZsIpbJ@FVFF77S0Q05N>
-References: <20240214194432.makes.837-kees@kernel.org>
- <20240214194605.602505-3-keescook@chromium.org>
+Cc: Andy Shevchenko <andy@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Paul Burton <paulburton@kernel.org>
+Subject: [PATCH v3 1/9] auxdisplay: linedisp: Group display drivers together
+Date: Mon, 19 Feb 2024 18:58:00 +0200
+Message-ID: <20240219170337.2161754-2-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com>
+References: <20240219170337.2161754-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240214194605.602505-3-keescook@chromium.org>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 11:46:03AM -0800, Kees Cook wrote:
-> This allows replacements of the idioms "var += offset" and "var -=
-> offset" with the wrapping_assign_add() and wrapping_assign_sub() helpers
-> respectively. They will avoid wrap-around sanitizer instrumentation.
-> 
-> Add to the selftests to validate behavior and lack of side-effects.
-> 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> Cc: Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-> Cc: Marco Elver <elver@google.com>
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
-> Cc: linux-hardening@vger.kernel.org
+For better usability group the display drivers together in Kconfig
+and Makefile. With this we will have the following sections:
+  - Character LCD
+  - Samsung KS0108 LCD controller
+  - Single character line display
+  - Character LCD with non-conforming interface
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+While at it, drop redundant 'default n' entries.
 
-Mark.
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/auxdisplay/Kconfig  | 296 +++++++++++++++++++-----------------
+ drivers/auxdisplay/Makefile |  15 +-
+ 2 files changed, 163 insertions(+), 148 deletions(-)
 
-> ---
->  include/linux/overflow.h | 32 ++++++++++++++++++++++++++++++
->  lib/overflow_kunit.c     | 43 ++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 75 insertions(+)
-> 
-> diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-> index d3ff8e2bec29..dede374832c9 100644
-> --- a/include/linux/overflow.h
-> +++ b/include/linux/overflow.h
-> @@ -81,6 +81,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->  		__val;						\
->  	})
->  
-> +/**
-> + * wrapping_assign_add() - Intentionally perform a wrapping increment assignment
-> + * @var: variable to be incremented
-> + * @offset: amount to add
-> + *
-> + * Increments @var by @offset with wrap-around. Returns the resulting
-> + * value of @var. Will not trip any wrap-around sanitizers.
-> + *
-> + * Returns the new value of @var.
-> + */
-> +#define wrapping_assign_add(var, offset)				\
-> +	({								\
-> +		typeof(var) *__ptr = &(var);				\
-> +		*__ptr = wrapping_add(typeof(var), *__ptr, offset);	\
-> +	})
-> +
->  /**
->   * check_sub_overflow() - Calculate subtraction with overflow checking
->   * @a: minuend; value to subtract from
-> @@ -111,6 +127,22 @@ static inline bool __must_check __must_check_overflow(bool overflow)
->  		__val;						\
->  	})
->  
-> +/**
-> + * wrapping_assign_sub() - Intentionally perform a wrapping decrement assign
-> + * @var: variable to be decremented
-> + * @offset: amount to subtract
-> + *
-> + * Decrements @var by @offset with wrap-around. Returns the resulting
-> + * value of @var. Will not trip any wrap-around sanitizers.
-> + *
-> + * Returns the new value of @var.
-> + */
-> +#define wrapping_assign_sub(var, offset)				\
-> +	({								\
-> +		typeof(var) *__ptr = &(var);				\
-> +		*__ptr = wrapping_sub(typeof(var), *__ptr, offset);	\
-> +	})
-> +
->  /**
->   * check_mul_overflow() - Calculate multiplication with overflow checking
->   * @a: first factor
-> diff --git a/lib/overflow_kunit.c b/lib/overflow_kunit.c
-> index d3fdb906d3fe..65e8a72a83bf 100644
-> --- a/lib/overflow_kunit.c
-> +++ b/lib/overflow_kunit.c
-> @@ -284,6 +284,45 @@ DEFINE_TEST_ARRAY(s64) = {
->  		"Unexpected wrap " #op " macro side-effect!\n");	\
->  } while (0)
->  
-> +static int global_counter;
-> +static void bump_counter(void)
-> +{
-> +	global_counter++;
-> +}
-> +
-> +static int get_index(void)
-> +{
-> +	volatile int index = 0;
-> +	bump_counter();
-> +	return index;
-> +}
-> +
-> +#define check_self_op(fmt, op, sym, a, b) do {				\
-> +	typeof(a + 0) _a = a;						\
-> +	typeof(b + 0) _b = b;						\
-> +	typeof(a + 0) _a_sym = a;					\
-> +	typeof(a + 0) _a_orig[1] = { a };				\
-> +	typeof(b + 0) _b_orig = b;					\
-> +	typeof(b + 0) _b_bump = b + 1;					\
-> +	typeof(a + 0) _r;						\
-> +									\
-> +	_a_sym sym _b;							\
-> +	_r = wrapping_ ## op(_a, _b);					\
-> +	KUNIT_EXPECT_TRUE_MSG(test, _r == _a_sym,			\
-> +		"expected "fmt" "#op" "fmt" == "fmt", got "fmt"\n",	\
-> +		a, b, _a_sym, _r);					\
-> +	KUNIT_EXPECT_TRUE_MSG(test, _a == _a_sym,			\
-> +		"expected "fmt" "#op" "fmt" == "fmt", got "fmt"\n",	\
-> +		a, b, _a_sym, _a);					\
-> +	/* Check for internal macro side-effects. */			\
-> +	global_counter = 0;						\
-> +	wrapping_ ## op(_a_orig[get_index()], _b_orig++);		\
-> +	KUNIT_EXPECT_EQ_MSG(test, global_counter, 1,			\
-> +		"Unexpected wrapping_" #op " macro side-effect on arg1!\n"); \
-> +	KUNIT_EXPECT_EQ_MSG(test, _b_orig, _b_bump,			\
-> +		"Unexpected wrapping_" #op " macro side-effect on arg2!\n"); \
-> +} while (0)
-> +
->  #define DEFINE_TEST_FUNC_TYPED(n, t, fmt)				\
->  static void do_test_ ## n(struct kunit *test, const struct test_ ## n *p) \
->  {									\
-> @@ -293,6 +332,10 @@ static void do_test_ ## n(struct kunit *test, const struct test_ ## n *p) \
->  	check_one_op(t, fmt, sub, "-", p->a, p->b, p->diff, p->d_of);	\
->  	check_one_op(t, fmt, mul, "*", p->a, p->b, p->prod, p->p_of);	\
->  	check_one_op(t, fmt, mul, "*", p->b, p->a, p->prod, p->p_of);	\
-> +	/* wrapping_assign_{add,sub}() */				\
-> +	check_self_op(fmt, assign_add, +=, p->a, p->b);			\
-> +	check_self_op(fmt, assign_add, +=, p->b, p->a);			\
-> +	check_self_op(fmt, assign_sub, -=, p->a, p->b);			\
->  }									\
->  									\
->  static void n ## _overflow_test(struct kunit *test) {			\
-> -- 
-> 2.34.1
-> 
+diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
+index d944d5298eca..109ac253d160 100644
+--- a/drivers/auxdisplay/Kconfig
++++ b/drivers/auxdisplay/Kconfig
+@@ -16,6 +16,9 @@ menuconfig AUXDISPLAY
+ 
+ if AUXDISPLAY
+ 
++#
++# Character LCD section
++#
+ config CHARLCD
+ 	tristate "Character LCD core support" if COMPILE_TEST
+ 	help
+@@ -25,12 +28,6 @@ config CHARLCD
+ 	  This is some character LCD core interface that multiple drivers can
+ 	  use.
+ 
+-config LINEDISP
+-	tristate "Character line display core support" if COMPILE_TEST
+-	help
+-	  This is the core support for single-line character displays, to be
+-	  selected by drivers that use it.
+-
+ config HD44780_COMMON
+ 	tristate "Common functions for HD44780 (and compatibles) LCD displays" if COMPILE_TEST
+ 	select CHARLCD
+@@ -52,131 +49,6 @@ config HD44780
+ 	  kernel and started at boot.
+ 	  If you don't understand what all this is about, say N.
+ 
+-config KS0108
+-	tristate "KS0108 LCD Controller"
+-	depends on PARPORT_PC
+-	default n
+-	help
+-	  If you have a LCD controlled by one or more KS0108
+-	  controllers, say Y. You will need also another more specific
+-	  driver for your LCD.
+-
+-	  Depends on Parallel Port support. If you say Y at
+-	  parport, you will be able to compile this as a module (M)
+-	  and built-in as well (Y).
+-
+-	  To compile this as a module, choose M here:
+-	  the module will be called ks0108.
+-
+-	  If unsure, say N.
+-
+-config KS0108_PORT
+-	hex "Parallel port where the LCD is connected"
+-	depends on KS0108
+-	default 0x378
+-	help
+-	  The address of the parallel port where the LCD is connected.
+-
+-	  The first  standard parallel port address is 0x378.
+-	  The second standard parallel port address is 0x278.
+-	  The third  standard parallel port address is 0x3BC.
+-
+-	  You can specify a different address if you need.
+-
+-	  If you don't know what I'm talking about, load the parport module,
+-	  and execute "dmesg" or "cat /proc/ioports". You can see there how
+-	  many parallel ports are present and which address each one has.
+-
+-	  Usually you only need to use 0x378.
+-
+-	  If you compile this as a module, you can still override this
+-	  using the module parameters.
+-
+-config KS0108_DELAY
+-	int "Delay between each control writing (microseconds)"
+-	depends on KS0108
+-	default "2"
+-	help
+-	  Amount of time the ks0108 should wait between each control write
+-	  to the parallel port.
+-
+-	  If your LCD seems to miss random writings, increment this.
+-
+-	  If you don't know what I'm talking about, ignore it.
+-
+-	  If you compile this as a module, you can still override this
+-	  value using the module parameters.
+-
+-config CFAG12864B
+-	tristate "CFAG12864B LCD"
+-	depends on X86
+-	depends on FB
+-	depends on KS0108
+-	select FB_SYSMEM_HELPERS
+-	default n
+-	help
+-	  If you have a Crystalfontz 128x64 2-color LCD, cfag12864b Series,
+-	  say Y. You also need the ks0108 LCD Controller driver.
+-
+-	  For help about how to wire your LCD to the parallel port,
+-	  check Documentation/admin-guide/auxdisplay/cfag12864b.rst
+-
+-	  Depends on the x86 arch and the framebuffer support.
+-
+-	  The LCD framebuffer driver can be attached to a console.
+-	  It will work fine. However, you can't attach it to the fbdev driver
+-	  of the xorg server.
+-
+-	  To compile this as a module, choose M here:
+-	  the modules will be called cfag12864b and cfag12864bfb.
+-
+-	  If unsure, say N.
+-
+-config CFAG12864B_RATE
+-	int "Refresh rate (hertz)"
+-	depends on CFAG12864B
+-	default "20"
+-	help
+-	  Refresh rate of the LCD.
+-
+-	  As the LCD is not memory mapped, the driver has to make the work by
+-	  software. This means you should be careful setting this value higher.
+-	  If your CPUs are really slow or you feel the system is slowed down,
+-	  decrease the value.
+-
+-	  Be careful modifying this value to a very high value:
+-	  You can freeze the computer, or the LCD maybe can't draw as fast as you
+-	  are requesting.
+-
+-	  If you don't know what I'm talking about, ignore it.
+-
+-	  If you compile this as a module, you can still override this
+-	  value using the module parameters.
+-
+-config IMG_ASCII_LCD
+-	tristate "Imagination Technologies ASCII LCD Display"
+-	depends on HAS_IOMEM
+-	default y if MIPS_MALTA
+-	select MFD_SYSCON
+-	select LINEDISP
+-	help
+-	  Enable this to support the simple ASCII LCD displays found on
+-	  development boards such as the MIPS Boston, MIPS Malta & MIPS SEAD3
+-	  from Imagination Technologies.
+-
+-config HT16K33
+-	tristate "Holtek Ht16K33 LED controller with keyscan"
+-	depends on FB && I2C && INPUT
+-	select FB_SYSMEM_HELPERS
+-	select INPUT_MATRIXKMAP
+-	select FB_BACKLIGHT
+-	select NEW_LEDS
+-	select LEDS_CLASS
+-	select LINEDISP
+-	help
+-	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
+-	  LED controller driver with keyscan.
+-
+ config LCD2S
+ 	tristate "lcd2s 20x4 character display over I2C console"
+ 	depends on I2C
+@@ -187,16 +59,6 @@ config LCD2S
+ 	  is a simple single color character display. You have to connect it
+ 	  to an I2C bus.
+ 
+-config ARM_CHARLCD
+-	bool "ARM Ltd. Character LCD Driver"
+-	depends on PLAT_VERSATILE
+-	help
+-	  This is a driver for the character LCD found on the ARM Ltd.
+-	  Versatile and RealView Platform Baseboards. It doesn't do
+-	  very much more than display the text "ARM Linux" on the first
+-	  line and the Linux version on the second line, but that's
+-	  still useful.
+-
+ menuconfig PARPORT_PANEL
+ 	tristate "Parallel port LCD/Keypad Panel support"
+ 	depends on PARPORT
+@@ -455,7 +317,6 @@ endif # PARPORT_PANEL
+ config PANEL_CHANGE_MESSAGE
+ 	bool "Change LCD initialization message ?"
+ 	depends on CHARLCD
+-	default "n"
+ 	help
+ 	  This allows you to replace the boot message indicating the kernel version
+ 	  and the driver version with a custom message. This is useful on appliances
+@@ -504,8 +365,159 @@ choice
+ 
+ endchoice
+ 
++#
++# Samsung KS0108 LCD controller section
++#
++config KS0108
++	tristate "KS0108 LCD Controller"
++	depends on PARPORT_PC
++	help
++	  If you have a LCD controlled by one or more KS0108
++	  controllers, say Y. You will need also another more specific
++	  driver for your LCD.
++
++	  Depends on Parallel Port support. If you say Y at
++	  parport, you will be able to compile this as a module (M)
++	  and built-in as well (Y).
++
++	  To compile this as a module, choose M here:
++	  the module will be called ks0108.
++
++	  If unsure, say N.
++
++config KS0108_PORT
++	hex "Parallel port where the LCD is connected"
++	depends on KS0108
++	default 0x378
++	help
++	  The address of the parallel port where the LCD is connected.
++
++	  The first  standard parallel port address is 0x378.
++	  The second standard parallel port address is 0x278.
++	  The third  standard parallel port address is 0x3BC.
++
++	  You can specify a different address if you need.
++
++	  If you don't know what I'm talking about, load the parport module,
++	  and execute "dmesg" or "cat /proc/ioports". You can see there how
++	  many parallel ports are present and which address each one has.
++
++	  Usually you only need to use 0x378.
++
++	  If you compile this as a module, you can still override this
++	  using the module parameters.
++
++config KS0108_DELAY
++	int "Delay between each control writing (microseconds)"
++	depends on KS0108
++	default "2"
++	help
++	  Amount of time the ks0108 should wait between each control write
++	  to the parallel port.
++
++	  If your LCD seems to miss random writings, increment this.
++
++	  If you don't know what I'm talking about, ignore it.
++
++	  If you compile this as a module, you can still override this
++	  value using the module parameters.
++
++config CFAG12864B
++	tristate "CFAG12864B LCD"
++	depends on X86
++	depends on FB
++	depends on KS0108
++	select FB_SYSMEM_HELPERS
++	help
++	  If you have a Crystalfontz 128x64 2-color LCD, cfag12864b Series,
++	  say Y. You also need the ks0108 LCD Controller driver.
++
++	  For help about how to wire your LCD to the parallel port,
++	  check Documentation/admin-guide/auxdisplay/cfag12864b.rst
++
++	  Depends on the x86 arch and the framebuffer support.
++
++	  The LCD framebuffer driver can be attached to a console.
++	  It will work fine. However, you can't attach it to the fbdev driver
++	  of the xorg server.
++
++	  To compile this as a module, choose M here:
++	  the modules will be called cfag12864b and cfag12864bfb.
++
++	  If unsure, say N.
++
++config CFAG12864B_RATE
++	int "Refresh rate (hertz)"
++	depends on CFAG12864B
++	default "20"
++	help
++	  Refresh rate of the LCD.
++
++	  As the LCD is not memory mapped, the driver has to make the work by
++	  software. This means you should be careful setting this value higher.
++	  If your CPUs are really slow or you feel the system is slowed down,
++	  decrease the value.
++
++	  Be careful modifying this value to a very high value:
++	  You can freeze the computer, or the LCD maybe can't draw as fast as you
++	  are requesting.
++
++	  If you don't know what I'm talking about, ignore it.
++
++	  If you compile this as a module, you can still override this
++	  value using the module parameters.
++
++#
++# Single character line display section
++#
++config LINEDISP
++	tristate "Character line display core support" if COMPILE_TEST
++	help
++	  This is the core support for single-line character displays, to be
++	  selected by drivers that use it.
++
++config IMG_ASCII_LCD
++	tristate "Imagination Technologies ASCII LCD Display"
++	depends on HAS_IOMEM
++	default y if MIPS_MALTA
++	select MFD_SYSCON
++	select LINEDISP
++	help
++	  Enable this to support the simple ASCII LCD displays found on
++	  development boards such as the MIPS Boston, MIPS Malta & MIPS SEAD3
++	  from Imagination Technologies.
++
++config HT16K33
++	tristate "Holtek Ht16K33 LED controller with keyscan"
++	depends on FB && I2C && INPUT
++	select FB_SYSMEM_HELPERS
++	select INPUT_MATRIXKMAP
++	select FB_BACKLIGHT
++	select NEW_LEDS
++	select LEDS_CLASS
++	select LINEDISP
++	help
++	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
++	  LED controller driver with keyscan.
++
++#
++# Character LCD with non-conforming interface section
++#
++config ARM_CHARLCD
++	bool "ARM Ltd. Character LCD Driver"
++	depends on PLAT_VERSATILE
++	help
++	  This is a driver for the character LCD found on the ARM Ltd.
++	  Versatile and RealView Platform Baseboards. It doesn't do
++	  very much more than display the text "ARM Linux" on the first
++	  line and the Linux version on the second line, but that's
++	  still useful.
++
+ endif # AUXDISPLAY
+ 
++#
++# Deprecated options
++#
+ config PANEL
+ 	tristate "Parallel port LCD/Keypad Panel support (OLD OPTION)"
+ 	depends on PARPORT
+diff --git a/drivers/auxdisplay/Makefile b/drivers/auxdisplay/Makefile
+index 6968ed4d3f0a..9197ea34e2d6 100644
+--- a/drivers/auxdisplay/Makefile
++++ b/drivers/auxdisplay/Makefile
+@@ -5,12 +5,15 @@
+ 
+ obj-$(CONFIG_CHARLCD)		+= charlcd.o
+ obj-$(CONFIG_HD44780_COMMON)	+= hd44780_common.o
+-obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
++obj-$(CONFIG_HD44780)		+= hd44780.o
++obj-$(CONFIG_LCD2S)		+= lcd2s.o
++obj-$(CONFIG_PARPORT_PANEL)	+= panel.o
++
+ obj-$(CONFIG_KS0108)		+= ks0108.o
+ obj-$(CONFIG_CFAG12864B)	+= cfag12864b.o cfag12864bfb.o
+-obj-$(CONFIG_IMG_ASCII_LCD)	+= img-ascii-lcd.o
+-obj-$(CONFIG_HD44780)		+= hd44780.o
+-obj-$(CONFIG_HT16K33)		+= ht16k33.o
+-obj-$(CONFIG_PARPORT_PANEL)	+= panel.o
+-obj-$(CONFIG_LCD2S)		+= lcd2s.o
++
+ obj-$(CONFIG_LINEDISP)		+= line-display.o
++obj-$(CONFIG_IMG_ASCII_LCD)	+= img-ascii-lcd.o
++obj-$(CONFIG_HT16K33)		+= ht16k33.o
++
++obj-$(CONFIG_ARM_CHARLCD)	+= arm-charlcd.o
+-- 
+2.43.0.rc1.1.gbec44491f096
+
 
