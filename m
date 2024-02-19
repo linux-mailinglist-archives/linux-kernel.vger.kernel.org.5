@@ -1,138 +1,176 @@
-Return-Path: <linux-kernel+bounces-71281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D154385A2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:09:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68FC985A2E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B7CD2839C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:09:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D35D31F241FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 355202D60A;
-	Mon, 19 Feb 2024 12:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11D92D605;
+	Mon, 19 Feb 2024 12:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="FH2S+qF9"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mUO1CBBR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="mUO1CBBR"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1351D2CCDF;
-	Mon, 19 Feb 2024 12:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF9422F00;
+	Mon, 19 Feb 2024 12:11:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708344561; cv=none; b=pBli+Gu78vgykX/tlywtVhZHiHFXvsAJPepAE9Zk/y0xq6wvwevIYhTXCZlKpOamxUo86UxTHLlt5uYBjazMzU4oaXj54zRVzbtJkaeXNsD/yDl7gZQnkaJDy+27M6UGDs8c6e8B3TqkeTxYo/zra7hKWttAsxFJmoJMX++UYpU=
+	t=1708344694; cv=none; b=Z8iqH472kc7YRFZtrL2KpPeQCp9qJwKIcbQCeu+xLOQ4YCgVwJueRX3LkV77nHkKnbAfNXXXl0uxbrQpKjPuuf1lpGrOkNMpBJF4q6iAew69W9JdkCsegTDD33fZ27XoIHi1mu9pnVLYgIiKIRi5EMCBLmlnxG0t85eKX9AGZJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708344561; c=relaxed/simple;
-	bh=n/Xlz/SBgwXVhZoy5rPJEekvOcaPleC+nTuQXoDe8g8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=sJn8XGKNU1d0R+LdsPf2v8wA+FZQ4uKokppHWNBjOY9puuahZLrWw3UD622GwIhtFxhWfmxyaDrzwFiUzvNydows9bWMPiRh9dRLSRj0IkDJqUGMbrpw7msrfAlRwKsk7xqDj/lrlxaK/tLPX7tk7iA2/KmuJisVyObjYRgn9kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=FH2S+qF9; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59fe5b77c0cso269423eaf.0;
-        Mon, 19 Feb 2024 04:09:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708344559; x=1708949359;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ka430INN0JYKTvKVdlUJ+8Xn+1ilhUkQuNdcEzZ/V8w=;
-        b=IDSRKI4XcKE4wMySxBYZH3p1gJzOVFAOzWhsJ5Iz3bF1UrwQp4UXBRxgXW0sCyjAOS
-         xkyIXHfUKq7ra+9WRsymEe5ZqEAaFleISEjGU2nirZLjsFMvWwDmEuFliAO0PM90y7hm
-         EdghZdM02A+j/b9ZiI0kdV81QIzgqqmqF36pGzDI+dXP+3trpjHmT4X2NfcbM5aIHnT7
-         38CJYYAGQVkGdyFA6v5/wmJn9zj3C21LpYMz3vt3C+X2I4yA8nI+XtD8ugiEQ/kxAQIH
-         rvy3iSpwyDY0HPe2xlRDCPDQ913q1V4kAp7lkWXcJSIm9VmtXMkF1eepViUpC2JXdy3p
-         ruUw==
-X-Forwarded-Encrypted: i=1; AJvYcCVzhH1lqo5+lkJ9Iyn3nwLfMu1H+nE+ibQ4+2+f+tBKM/Z4MgGd77C3ylpFHpU8tdbXqwUFlUoNb0NvNZRxBoCBj/D+4UIdEu1B8dcc
-X-Gm-Message-State: AOJu0YynNNKt4tw5qaZB7IhT34IzuiYRGW2eqtw0jWVH954lLmChkoDc
-	mMffulMCJjpkBn1Ebq3FWAHqJA/OWJOa1oMOx2UuLiez1ciB+9ej3Lpx0Kq5WCgp1Q==
-X-Google-Smtp-Source: AGHT+IGliMT1wn1dRuG3vdcdQbh7tRuMkEIHQWxtyTIEruwZMoRQAjJnAIbOiLWkH1bokh2F36pZTQ==
-X-Received: by 2002:a05:6358:94a4:b0:176:6141:48e5 with SMTP id i36-20020a05635894a400b00176614148e5mr15153978rwb.10.1708344558802;
-        Mon, 19 Feb 2024 04:09:18 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id e15-20020a056a0000cf00b006e3be1a64f7sm3256347pfj.160.2024.02.19.04.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 04:09:18 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708344556;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ka430INN0JYKTvKVdlUJ+8Xn+1ilhUkQuNdcEzZ/V8w=;
-	b=FH2S+qF9ze5bzSdwBrzty32k/ptTECr1Qz+Y6AOWdmVcU28oc2QRjwqXouT8kO+vOKYOdu
-	1mTaxsexmmXefxWpRJXoRUrHksDjdZbitxr79DqMBAfLg7JaYl0cUUvfAZ1foS2yGCAnvw
-	sMGfp7TcfIWYJ1GLRZy68qpuaIvumZzDJZsm9rm2EdJtNschH6bnCMLCAPXn0+GBALRWCA
-	85b8R5q07ppVD0Bi/Y4gAyrL9Sr+pehucx9jJqn4voxswjHUZ7+t/W4Gyc74kDlr0geawy
-	uWRh/5BXKl4oCAwTHAX9MYZnqcwGufSsqw6SYvdCNcUQCZcUD8RWsR3DjGhPJA==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 19 Feb 2024 09:10:00 -0300
-Subject: [PATCH] bus: ti-sysc: constify the struct device_type usage
+	s=arc-20240116; t=1708344694; c=relaxed/simple;
+	bh=RKA1FRCk3ma0tGwU4yw6balfgkgpjYcTeV2wBsGPWa4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NWUaSaBbTykyJSPzsU1BoQBOMlUElfIC3IBnYsWIM5svkYpQDMCGjqSM/Z2OF/LWTmIvDr7In98S1YnwfI8qO6zHCZy123rnsg+NOW/G0nnYnmWJ/U8LHDOEkvwqkQUlJziRvLB8K1zkgbGCPMh+fM4d9T+WSUIXYy5a83OYtjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mUO1CBBR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=mUO1CBBR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4FF2D21E6D;
+	Mon, 19 Feb 2024 12:11:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708344691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dgEdE8pMlMrPDPVr2iZZlKCQOw1qxLHW5eescT7bZpg=;
+	b=mUO1CBBRL3HyVHI2fWsDkW0cA/NpbcKxhZPLTjpUVNrn15DI+P6p0SBpC+BjTfClxVqY0b
+	OaH+WJkFMGCOaI61UFckLXxAN8SE5Scv8tLSCP8ULatZb7VSAdEIYQ+DrchMsOBFiUy5Y/
+	PI26M9CvjSnmzPnmFtQNRxvkYXhGDu8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708344691; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dgEdE8pMlMrPDPVr2iZZlKCQOw1qxLHW5eescT7bZpg=;
+	b=mUO1CBBRL3HyVHI2fWsDkW0cA/NpbcKxhZPLTjpUVNrn15DI+P6p0SBpC+BjTfClxVqY0b
+	OaH+WJkFMGCOaI61UFckLXxAN8SE5Scv8tLSCP8ULatZb7VSAdEIYQ+DrchMsOBFiUy5Y/
+	PI26M9CvjSnmzPnmFtQNRxvkYXhGDu8=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C8FB139D0;
+	Mon, 19 Feb 2024 12:11:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /jviB3NF02VWPgAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 19 Feb 2024 12:11:31 +0000
+Date: Mon, 19 Feb 2024 13:11:26 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeelb@google.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Efly Young <yangyifei03@kuaishou.com>, android-mm@google.com,
+	yuzhao@google.com, mkoutny@suse.com,
+	Yosry Ahmed <yosryahmed@google.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm: memcg: Use larger batches for proactive reclaim
+Message-ID: <ZdNFbiH1ufbOTIDx@tiehlicka>
+References: <20240202233855.1236422-1-tjmercier@google.com>
+ <ZcC7Kgew3GDFNIux@tiehlicka>
+ <CABdmKX3HbSxX6zLF4z3f+=Ybiq1bA71jckkeHv5QJxAjSexgaA@mail.gmail.com>
+ <ZcE5n9cTdTGJChmq@tiehlicka>
+ <CABdmKX0Du2F+bko=hjLBqdQO-bJSFcG3y1Bbuu2v6J8aVB39sw@mail.gmail.com>
+ <ZcFG2JoXI7i8XzQY@tiehlicka>
+ <CABdmKX0t1LXj80Awe20TrmY5gQB6v2E4bGfW8WXr2i84o+k6ow@mail.gmail.com>
+ <ZcFQMru5_oATGbuP@tiehlicka>
+ <CABdmKX35GV3VFar0_pNR_vAXLpvxo+APALXMharsXh6TO+0mrQ@mail.gmail.com>
+ <ZcH0wBPvOjqayjAD@tiehlicka>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-device_cleanup-ti-sysc-v1-1-13b53177d0a5@marliere.net>
-X-B4-Tracking: v=1; b=H4sIABdF02UC/x2M0QrCMAwAf6XkeYG2DkR/ZchI21QD0pVGRSn79
- xUfD+6ug3ITVriaDo0/orKVAW4yEB9U7oySBoO3frbeXTANKfIan0zlXfElqD+NSJQy2UDncLI
- w4to4y/c/Xm77fgAnVJQwaAAAAA==
-To: Tony Lindgren <tony@atomide.com>
-Cc: linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1089; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=n/Xlz/SBgwXVhZoy5rPJEekvOcaPleC+nTuQXoDe8g8=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl00UaI+RduexGL6Qjo5qoqVK2JPy1OIqabFk37
- hrafRNyTQGJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdNFGgAKCRDJC4p8Y4ZY
- pl4ND/9yBbuwfQ0FG3FFfT2+FKYcaEA3W2Ne7SYz/gZmKjios4P/m4JPoPT0s5NiFR1+ttPAlxW
- cl0AUCQhiVEpAY/hu8tqF3SMS8rErEKqkUFPRKPF3Fa566jQB4/ahV1K2c+dWwj7dvg2MJVXni2
- GIrrGMgTSt4+3rtn7+dzdvEds5sKJNnJzCXXQxr3T8hRPXnSbI0+1mLDSZdgyYDYQy1SJTQK4Uy
- axnUpFT3Zb4aGeEJkSxWGBanjxly119JK3E8VZ3SGGggTSPkCqFGTCR3o7jRuGCr7srf28pRdCH
- LGDzxBuqwtYR3L+4TiisdF5+TzOkSqEde+1XF+M2FO8ENVo4GnM6ps0+hjX837rhcsPHZozutNi
- hyxuRbKDQOfsu6PBFVD54Cv0nmOqnukkG0m3blex0COXAKo8Icafh5JhDjy/i8kL7oxCpjEslul
- 3euvESGScbxbbdHYo4yHplu7RHIxboftP5ArWlSx7jU1IJh8woWgDEEDcQdM0hXZF4RN+IeW5Rc
- VHGNDYdeE+JHsBA66NKfrZ8ISBDznObC+p22we/QpwJzjHn40pASV7/dGVQXXrJKGFZVecyiOj4
- ZXLmVMDs1vKZw+19cEVSpldc7oGPjH39S0NxTnlRPM0/M8OvlKLylnsyNSyQn4/Ge+zbQ+O/24V
- dlqkY76MeKKUS0w==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZcH0wBPvOjqayjAD@tiehlicka>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-core can properly handle constant struct device_type. Move the
-sysc_device_type variable to be a constant structure as well, placing it
-into read-only memory which can not be modified at runtime.
+On Tue 06-02-24 09:58:41, Michal Hocko wrote:
+> On Mon 05-02-24 20:01:40, T.J. Mercier wrote:
+> > On Mon, Feb 5, 2024 at 1:16 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 05-02-24 12:47:47, T.J. Mercier wrote:
+> > > > On Mon, Feb 5, 2024 at 12:36 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > [...]
+> > > > > This of something like
+> > > > > timeout $TIMEOUT echo $TARGET > $MEMCG_PATH/memory.reclaim
+> > > > > where timeout acts as a stop gap if the reclaim cannot finish in
+> > > > > TIMEOUT.
+> > > >
+> > > > Yeah I get the desired behavior, but using sc->nr_reclaimed to achieve
+> > > > it is what's bothering me.
+> > >
+> > > I am not really happy about this subtlety. If we have a better way then
+> > > let's do it. Better in its own patch, though.
+> > >
+> > > > It's already wired up that way though, so if you want to make this
+> > > > change now then I can try to test for the difference using really
+> > > > large reclaim targets.
+> > >
+> > > Yes, please. If you want it a separate patch then no objection from me
+> > > of course. If you do no like the nr_to_reclaim bailout then maybe we can
+> > > go with a simple break out flag in scan_control.
+> > >
+> > > Thanks!
+> > 
+> > It's a bit difficult to test under the too_many_isolated check, so I
+> > moved the fatal_signal_pending check outside and tried with that.
+> > Performing full reclaim on the /uid_0 cgroup with a 250ms delay before
+> > SIGKILL, I got an average of 16ms better latency with
+> > sc->nr_to_reclaim across 20 runs ignoring one 1s outlier with
+> > SWAP_CLUSTER_MAX.
+> 
+> This will obviously scale with the number of memcgs in the hierarchy but
+> you are right that too_many_isolated makes the whole fatal_signal_pending
+> check rather inefficient. I haven't missed that. The reclaim path is
+> rather convoluted so this will likely be more complex than I
+> anticipated. I will think about that some more.
+> 
+> In order to not delay your patch, please repost with suggested updates
+> to the changelog. This needs addressing IMO but I do not think this is
+> critical at this stage.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/bus/ti-sysc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index 245e5e827d0d..41d33f39efe5 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -2400,7 +2400,7 @@ static int sysc_child_add_clocks(struct sysc *ddata,
- 	return 0;
- }
- 
--static struct device_type sysc_device_type = {
-+static const struct device_type sysc_device_type = {
- };
- 
- static struct sysc *sysc_child_to_parent(struct device *dev)
-
----
-base-commit: 0012c1958460386adc5770baf2f53206aed77ff3
-change-id: 20240219-device_cleanup-ti-sysc-aadfa0ba7b30
-
-Best regards,
+Has there been a new version or a proposal to refine the changelog
+posted?
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
-
+Michal Hocko
+SUSE Labs
 
