@@ -1,121 +1,110 @@
-Return-Path: <linux-kernel+bounces-71471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 889A085A5CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:22:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D67A85A5D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DFB61F24A41
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:22:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3D8BBB217AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF54374D9;
-	Mon, 19 Feb 2024 14:22:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C073A3770C;
+	Mon, 19 Feb 2024 14:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4upGx7kJ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4+9ecyFE"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Wq4VfRRh"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7289374C6;
-	Mon, 19 Feb 2024 14:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41FA381C2;
+	Mon, 19 Feb 2024 14:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708352558; cv=none; b=kloREZTaezgs7OESS8fD2sM0xGFQ2Ofd0Kx9Y2revh48pBHQIFjzBlW/vMxoBE6ZwL3U9eSIEsPUe9s1l9OFLTtnJdIdcImjEeN5FdU9DN3K7piG442o2EsYh9K0qxc/a3x9SQ7kEPGNF7jWLzeD184L/Fi6896puPIKuh5E+F0=
+	t=1708352578; cv=none; b=Fr45ECYtWfM5wfTwt1LJhkwRpcpdeOx9nwhhJJg4hVdQkhfWx9suT9tFVhf02ICaOCGeLeSbSB8RTsZm+sNAvNcUFHdQoaJVAuC5ZqBhhpbMqnewYBt75Wk/pQeRISLJQn9dyM4WsbBynukoCEFptohh06MmbAPTndLhUMSgvoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708352558; c=relaxed/simple;
-	bh=VirNTJqU30QLy7416ZaZEoSyRmXkYqVSdeOtlf+rVxA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=avZItcXGZuf+grnBPXVkIzcq5iVBSRBfZSH2a5DrJI/7nmf+YF/P4+3Qp8otDbsuex3I7HAB0zFUe91xALkCjhTLwq6vpFWasitOgipcYfRbtXPNjfluz2wgZVoNhr4QmrpU2Qfwv5Lip+/Ie/5lhgDrEOVpRlh0ptloEdv97Zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4upGx7kJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4+9ecyFE; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708352554;
+	s=arc-20240116; t=1708352578; c=relaxed/simple;
+	bh=TgZIetNidKZZum2lofaITucvNOdC3VO2k45kly53r9g=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=GlS51P0M8WGqxrpW5nkTczX0LOskMkWeNuYtnQkc035rdcY4u62AKzTXBiocKBy/MOKp3LLxxayI8qBNRzLZfd7YqS0bbGbd1ztU1Zr60bcvlL3tjm9EWmGfH1AvUF8FSZgSBmi3ozZhRWZYuad6gw7+r5rjEdDyhEwCJQqacDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Wq4VfRRh; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BAFB41BF207;
+	Mon, 19 Feb 2024 14:22:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708352572;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8iEgdflkmZKXImf680lz4hgFumtn+q/R0YDjSc4t/Vc=;
-	b=4upGx7kJ727A884ML4hUkx8C8e9g9smfQg662DB+Eql0qhnTPCpSxSOyFEBVeuIEZl3D2x
-	lifGEA6YdZDxZ3NATNyidGIV9C47gWKE1F+bi+RMUbfG6GS5JyQqSU1eF7ydP141pP96cO
-	Ejs2/ZFtgYFx6xD+cXA+D6dF14bXZ1Bzog1pajHS8HEuh3FLJOXqNLOya45j2829Og2LQV
-	KSVySQTHgr2Cwbsv/m17DEgTr0sZup4bsdHay2QH+ElPRfgphVBLWy8FzODQOHxWfmARqj
-	+TEWoE/Dyg9x3UBjG4oHCdTBdpxv3lEZlgWMKlBfaLh5q6Id5RObd4Dpti1oRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708352554;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8iEgdflkmZKXImf680lz4hgFumtn+q/R0YDjSc4t/Vc=;
-	b=4+9ecyFEBiX9R65rg3DVI+yqWFudZBvINi2tHB1FDWo7lijLMJysfGElaqbRllJylJYfxs
-	KB6fhvkKSS/LqXBg==
-To: Antonio Borneo <antonio.borneo@foss.st.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
- Torgue <alexandre.torgue@foss.st.com>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: Antonio Borneo <antonio.borneo@foss.st.com>,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 03/12] irqchip/stm32-exti: Map interrupts through
- interrupt nexus node
-In-Reply-To: <20240216094758.916722-4-antonio.borneo@foss.st.com>
-References: <20240216094758.916722-1-antonio.borneo@foss.st.com>
- <20240216094758.916722-4-antonio.borneo@foss.st.com>
-Date: Mon, 19 Feb 2024 15:22:34 +0100
-Message-ID: <87a5nwa5zp.ffs@tglx>
+	bh=yMECSj8MFsTFMbFx4UOjwlLmrEMaulzJW9DpcgMGVBY=;
+	b=Wq4VfRRh8X//3SGa71PdK5V4k51owTqe+daTj255nCc4KvEBONJNncCV7jaHHMsjWnn64W
+	wxQOgEtKPU9r6UFXfCWHit4EPPh4JrjWuGnD2wmIV9VcDbVZfP49G+usNSCdZNonlIfwck
+	jBSA00UKLkGx4LBMtReNPLL1SO7CP/c5yhN7KXDasyifdP1WlvgWqdZFKSfa2VEwfxdZ85
+	txh2NivPs1EExNpE7t8uBtqmhez8g3QwWyr4HSNmUWza8f/5cLbLJLyEiLlHKnx+EZCUDY
+	I+fP0KRn+xWEOq/ySEM1gFIg++JxPuwyGvA8ChdcTmdYn5irkJX48pvgL8j+Mg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Feb 2024 15:22:51 +0100
+Message-Id: <CZ94G0Z1KZEJ.1S56H5MK9T1RU@bootlin.com>
+Subject: Re: [PATCH 00/13] Add Mobileye EyeQ5 support to the Nomadik I2C
+ controller & use hrtimers for timeouts
+Cc: "Andi Shyti" <andi.shyti@kernel.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, "Jean Delvare" <jdelvare@suse.com>, "Guenter
+ Roeck" <linux@roeck-us.net>, <linux-hwmon@vger.kernel.org>
+To: "Linus Walleij" <linus.walleij@linaro.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <CACRpkdbmQLAL-W_2y_T4sBJtZN-DRXMsYhODP=sXSJ4ysUKpxQ@mail.gmail.com>
+In-Reply-To: <CACRpkdbmQLAL-W_2y_T4sBJtZN-DRXMsYhODP=sXSJ4ysUKpxQ@mail.gmail.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Fri, Feb 16 2024 at 10:47, Antonio Borneo wrote:
-> diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
-> index 69982f21126a..95bb3dd10b2c 100644
-> --- a/drivers/irqchip/irq-stm32-exti.c
-> +++ b/drivers/irqchip/irq-stm32-exti.c
-> @@ -61,6 +61,7 @@ struct stm32_exti_host_data {
->  	struct stm32_exti_chip_data *chips_data;
->  	const struct stm32_exti_drv_data *drv_data;
->  	struct hwspinlock *hwlock;
-> +	struct device_node *irq_map_node;
+Hello,
 
-Please keep variable declarations ordered in reverse fir tree layout:
+On Mon Feb 19, 2024 at 3:11 PM CET, Linus Walleij wrote:
+> On Thu, Feb 15, 2024 at 5:52=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
+tlin.com> wrote:
+>
+> >  - Add a new compatible to support Mobileye EyeQ5 which uses the same I=
+P
+> >    block as Nomadik.
+>
+> Sweet! I'm amazed ST Micro licensed this "ARM PrimeCell" to Mobileye, but
+> it's a well tested IP and used in eg ST automotive SoC:s so it's a solid
+> product.
+>
+> It feels worth it for all the time I have put into maintaining it, finall=
+y some
+> real users again! :)
 
-https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
+Using the existing Nomadik drivers with the AMBA bus infrastructure on a
+non-ARM platform and having it work as-is made our day here at Bootlin.
+We are indeed grateful for your work maintaining this platform!
 
->  };
->  
->  static struct stm32_exti_host_data *stm32_host_data;
-> @@ -713,8 +714,9 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
->  	u8 desc_irq;
->  	struct irq_fwspec *fwspec = data;
->  	struct irq_fwspec p_fwspec;
-> +	struct of_phandle_args out_irq;
+Regards,
 
-Please move this into the condition path where it is actually used.
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
->  	irq_hw_number_t hwirq;
-> -	int bank;
-> +	int bank, ret;
->  	u32 event_trg;
->  	struct irq_chip *chip;
->  
-> @@ -731,6 +733,25 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
->  
->  	irq_domain_set_hwirq_and_chip(dm, virq, hwirq, chip, chip_data);
->  
-> +	if (host_data->irq_map_node) {
-> +		out_irq.np = host_data->irq_map_node;
+------------------------------------------------------------------------
 
-Thanks,
-
-        tglx
 
