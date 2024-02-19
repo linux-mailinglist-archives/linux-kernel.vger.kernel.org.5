@@ -1,119 +1,174 @@
-Return-Path: <linux-kernel+bounces-70931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70932-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6709859E26
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A3CB859E29
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26F8D2820D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:24:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20D4328246C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:25:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A649821344;
-	Mon, 19 Feb 2024 08:24:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F59219F0;
+	Mon, 19 Feb 2024 08:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z4fZ/f4T"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="bLey5K03"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401778BEF
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3D021350
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708331096; cv=none; b=JRUDIg0TG0nKqmbQj/uo2D/ftLfN7GFzGbun+z3/QU4Oa5BV6pwcsxW6+Fy1hE3VXTzLRTvOp2AxwYA9/ovN9U/C7U6sWpRgStp8V5/D2XvlsZqFULSEijP6ImZcsuzBDkmRhsSfHDg508vkjuNtigDJyj4rtzxohQlNnliLJtQ=
+	t=1708331099; cv=none; b=GZpKPctP89wsGh08chvcxehgH7CIJBpr8nOXFGoMEb1SK+h0Ob2vB+adLFf16aAPPVfhcyVqasZYJZm/ta/gE7V0AQmet1Zs12slBdYCZBmb0HcM+GUfQOROOgp7prGKx34vU/SPOXRt1+ZovoBFxptCo76XPrBrZxnCxiT/wMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708331096; c=relaxed/simple;
-	bh=Cm14M3AOqBWIacANhQdsnkUQYFsqmJsGStrT+CQVFWc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NFrZu7y2H7z6pOj2/yQmGIBLP12Er7ZpYHJM4OP7TlxVI++JgJoPzJ3RAJIniG83e/NCdaN2oXBTM2dDLVMSD5Za0UXnB1PfX64JwtKA8sZjeQd5eMhyRqODX8apzcUniQaEC+Pk8rDjsBhKaPnKScfCQJNrkxlP2369Fx0AnSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z4fZ/f4T; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d21e2b2245so34116851fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:24:53 -0800 (PST)
+	s=arc-20240116; t=1708331099; c=relaxed/simple;
+	bh=659sHazKJDGIU3TCrq04J7pb9U5DvtNTIS/Kzt2U1i0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qc5hZ085ue/n45/9rKxtBE2yw5CvlxSG2lstjuzQEx92UsSBy4cqzOXolHalwrGi45/U5ZwjPeCVfRH5aH0G4gS4WTnhOYhdawYAOr4voSEL1gBohKHIt3wq9L35ZQc7HUT8n69DpO9la3cXbKiUo0mQTZqNyDS3KiN8UrTyuXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=bLey5K03; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d09cf00214so39499051fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:24:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708331092; x=1708935892; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=B0JpVlr3Rj/c4Qzm5arTBdHpNayVsgbTN0Vg0UGksGk=;
-        b=Z4fZ/f4TJxAZuPRdfcvK/bd20ufUUsW7nAuzMxmcoNo+EHh8HOJNshGBJqcLtwFSzI
-         uE/0sib3GZW+G8drTRaj6ZH04uw0WleOTQQZCkEU9uz29Daie6rOEekxxmbZ59xzKhO9
-         6cFK4fL7O6I5l9B1Q1TXYaJ8RY1jGpyp3cGEeeTIyo1UfgV7ziyXPP+bfBdSa0v4iPFu
-         G1/hACpnAhJ3YYLJli6i3hzpLuwCz96MFsqSuWQU+RXCu2PGCHNwm8hz7dJtH8YXiayT
-         aFQSNsgQsd+werpTFjVz3HDYDuBjaACnwJDzGi/xXDYpw4W6G/tMEbrHN+Zcg7TZREWo
-         R3Gg==
+        d=tuxon.dev; s=google; t=1708331095; x=1708935895; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mw9W65gwqi39i5bv0F25pCikrMp5P7KP+8M6mh4FXG8=;
+        b=bLey5K03C+XzYAIMjN1puWARhMDQAGcsLX68io9epzhm917jNttQD5JR0pWyUeSTft
+         grez4ze31+pftbbWYs2/owcbBqqFbFKDtiz8Kp6xa5Gvo0YGuOU8GjZZFcjvyoPzdwuS
+         juu4enLwiVskLjLjCDY1paEx0lm/xo+NlhAXUEVuZlAwdTFjQ91jm1CItwhVJjG7DIJr
+         scdRfxWgQhrBd6q5d8bbbnnAtelsIOO77atteSla4ZsTyMSMdEYE1coGnEmWP7ZeB0VU
+         FFPtcOwgFvJxycAf3ZWjkmfNZr9scsFst+e1n+3y0Mc3rk7d7NYPjmOgtnwnZcmmag/g
+         zPhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708331092; x=1708935892;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=B0JpVlr3Rj/c4Qzm5arTBdHpNayVsgbTN0Vg0UGksGk=;
-        b=kR+l4VGlOwbPL8BGJbZeIwSrFy9Kg+cb/bygH2d5RhyWltLYs9hZF/f1F9cn0LbaTk
-         bOW6xLQKeD0donDnUj9VPlVJkNktqGqbThgUyT+wfBsRwhnG0YAIdTxZCfa1ZWySQiXC
-         ZxhmWNmGUBq/OfOVQUWFNn40JBIB51m2uQIgC5J1/vTIrycAjFolgNx3mE4rezeiVn/1
-         i7UO4SNrG0kfk8U++IhDYCV8gdfhHjXQeW9qfPoGwV/EpXMNQictPEX/edEHMYCkEBn4
-         nKIZZWReMMpUEHyG8MuSmOWQrKtRYbtEF0cFTTLBR6IWNfvkQhj20iMKA6qK30dbqCbN
-         +gAw==
-X-Gm-Message-State: AOJu0Yw1xGqQLTHbErUeqn14YVf1rtKYM1d5EnfpssfnFPKHFYGz2A1V
-	XUcmmHXlRNz00aitR43P9uIeKPWvoiIA27SlJSoI82KIF8CSagC3hZ202ffO/j8+BRHjhHj5LF2
-	V
-X-Google-Smtp-Source: AGHT+IGl7NEY2uD3XDkNwXB6bSFXBxdMvVaR+g3ETTOChrm2nkM6lK7gTzKtS2cVBknaGgBzfdrNGQ==
-X-Received: by 2002:a2e:9048:0:b0:2d0:de72:9d47 with SMTP id n8-20020a2e9048000000b002d0de729d47mr7790373ljg.8.1708331091929;
-        Mon, 19 Feb 2024 00:24:51 -0800 (PST)
-Received: from krzk-bin.. ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n14-20020a5d420e000000b0033d282c7537sm7047857wrq.23.2024.02.19.00.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 00:24:51 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: [PATCH v2] docs: MAINTAINERS: add "Profile" keyword entry name
-Date: Mon, 19 Feb 2024 09:24:48 +0100
-Message-Id: <20240219082448.14157-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1708331095; x=1708935895;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mw9W65gwqi39i5bv0F25pCikrMp5P7KP+8M6mh4FXG8=;
+        b=AHj661E8jrqJ7LIBo2JLnFwTVZ9PepvmgKmh2Q4tQUHlUKfJZmuxQb+qyhBliFo8DS
+         w+oTft1qDhxMqFcCY/hbMJCFCgKznjYwTx/MJ1DgaxFgLj+Q+jpSoLVkNHo0uraWYAdH
+         cBmSUDxHc/6WrqXr0tQhq8O4NPdp5EJyI7xR6UqZY30qOWsWPNvtKDeDybCR2FbnoxOP
+         NRizRxR5Z0ICn56mHKvfqanOJrPCFIWGbSPWuR9vallaU0LwAIGRxNTJn9ooCZQ+PNGN
+         aegdTohP9Yn4CNw0amVML1RSXxwjVZ52SAyEQHByPChqbWViBn8+aJRhzO3ekVCNXXMq
+         lBdA==
+X-Forwarded-Encrypted: i=1; AJvYcCWx2o+q20scusT7fr4yw4FZ1bfb437mUqT+iDTsnsdrQ+/r6l6IDZx4tZj87X8RSxuQYNxo93kJ7F/DDjYUMfigGNA39rQKHJyzZMnk
+X-Gm-Message-State: AOJu0Yxi01Gj7PjgMaejxJSVwz+aWFWlhb9nXyy3eionUwINAI+gSmgy
+	j9w7hBli01poyAoIPvd11ohKuedDQy0WH7nPBnf7xl6bqUnNnWkwukHn9eUaqns=
+X-Google-Smtp-Source: AGHT+IHp83tWIjNK5FNi6CEck1d35qT0TYDsGv+tNEtQ7sbMzMhE3TNULS0H1XJs/RZ++sX4dieCUA==
+X-Received: by 2002:a05:651c:220c:b0:2d2:3451:52de with SMTP id y12-20020a05651c220c00b002d2345152demr2509803ljq.12.1708331095172;
+        Mon, 19 Feb 2024 00:24:55 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.20])
+        by smtp.gmail.com with ESMTPSA id l14-20020a7bc44e000000b00411d1ce4f9dsm10468796wmi.34.2024.02.19.00.24.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 00:24:54 -0800 (PST)
+Message-ID: <4098873b-a7e7-4c88-9af2-01f3c76424ab@tuxon.dev>
+Date: Mon, 19 Feb 2024 10:24:53 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/17] clk: renesas: rzg2l: Extend power domain support
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ magnus.damm@gmail.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240208124300.2740313-8-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdWdJ9jN9-cko2zSoqSS0acbwYB77aBWvenJHMrFTXhdWg@mail.gmail.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdWdJ9jN9-cko2zSoqSS0acbwYB77aBWvenJHMrFTXhdWg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The HTML output of MAINTAINERS file prints "P:" for subsystem profile,
-e.g.:
-	Status:   Maintained
-	P:        process/maintainer-soc-clean-dts
 
-Use "Profile" as this entry name.
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+On 16.02.2024 16:08, Geert Uytterhoeven wrote:
+> Hi Claudiu,
+> 
+> On Thu, Feb 8, 2024 at 1:44 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> RZ/{G2L, V2L, G3S}-based CPG versions have support for saving extra
+>> power when clocks are disabled by activating module standby. This is done
+>> through MSTOP-specific registers that are part of CPG. Each individual
+>> module has one or more bits associated with one MSTOP register (see table
+>> "Registers for Module Standby Mode" from HW manuals). Hardware manual
+>> associates modules' clocks with one or more MSTOP bits. There are 3 mappings
+>> available (identified by researching RZ/G2L, RZ/G3S, RZ/V2L HW manuals):
+>>
+>> case 1: N clocks mapped to N MSTOP bits (with N={0, ..., X})
+>> case 2: N clocks mapped to 1 MSTOP bit  (with N={0, ..., X})
+>> case 3: N clocks mapped to M MSTOP bits (with N={0, ..., X}, M={0, ..., Y})
+>>
+>> Case 3 has been currently identified on RZ/V2L for the VCPL4 module.
+>>
+>> To cover all three cases, the individual platform drivers will provide to
+>> clock driver MSTOP register offset and associated bits in this register
+>> as a bitmask and the clock driver will apply this bitmask to proper
+>> MSTOP register.
+>>
+>> Apart from MSTOP support, RZ/G3S can save more power by powering down the
+>> individual IPs (after MSTOP has been set) if proper bits in
+>> CPG_PWRDN_IP{1,2} registers are set.
+>>
+>> The MSTOP and IP power down support were implemented through power
+>> domains. Platform-specific clock drivers will register an array of
+>> type struct rzg2l_cpg_pm_domain_init_data, which will be used to
+>> instantiate properly the power domains.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/drivers/clk/renesas/rzg2l-cpg.c
+>> +++ b/drivers/clk/renesas/rzg2l-cpg.c
+>> @@ -1559,9 +1556,34 @@ static bool rzg2l_cpg_is_pm_clk(struct rzg2l_cpg_priv *priv,
+>>         return true;
+>>  }
+[ ... ]
 
----
+> 
+>> @@ -234,6 +246,54 @@ struct rzg2l_reset {
+>>  #define DEF_RST(_id, _off, _bit)       \
+>>         DEF_RST_MON(_id, _off, _bit, -1)
+>>
+>> +/**
+>> + * struct rzg2l_cpg_pm_domain_conf - PM domain configuration data structure
+>> + * @mstop: MSTOP configuration (MSB = register offset, LSB = bitmask)
+>> + * @pwrdn: PWRDN configuration (MSB = register offset, LSB = register bit)
+>> + */
+>> +struct rzg2l_cpg_pm_domain_conf {
+>> +       u32 mstop;
+>> +       u32 pwrdn;
+> 
+> Why not
+> 
+>     u16 mstop_off;
+>     u16 mstop_mask;
+>     u16 pwrdn_off;
+>     u16 pwrdn_mask;
+> 
+> so you can drop the MSTOP*() and PWRDN*() macros below?
 
-Changes in v2:
-1. Drop duplicated "Profile" word.
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I did it like this to align with the already existing approach for this
+kind of things available in this driver. I can do it as you proposed.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b9c3100ef587..36fac6b3499a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -24,7 +24,7 @@ Descriptions of section entries and preferred order
- 	   filing info, a direct bug tracker link, or a mailto: URI.
- 	C: URI for *chat* protocol, server and channel where developers
- 	   usually hang out, for example irc://server/channel.
--	P: Subsystem Profile document for more details submitting
-+	P: Subsystem *Profile* document for more details submitting
- 	   patches to the given subsystem. This is either an in-tree file,
- 	   or a URI. See Documentation/maintainer/maintainer-entry-profile.rst
- 	   for details.
--- 
-2.34.1
+For the rest of your comments on this patch: I agree and will adjust the
+patch in the next version.
 
+Thank you,
+Claudiu Beznea
 
