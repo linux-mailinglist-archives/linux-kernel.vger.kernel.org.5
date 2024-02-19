@@ -1,162 +1,195 @@
-Return-Path: <linux-kernel+bounces-71139-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71140-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70CD85A136
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB4685A138
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:43:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB6621C219EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:41:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A40F1C21B1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02BCA28DD1;
-	Mon, 19 Feb 2024 10:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LY6yXZr3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEDCA28DC8;
+	Mon, 19 Feb 2024 10:43:01 +0000 (UTC)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAA328DA5;
-	Mon, 19 Feb 2024 10:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F96E572;
+	Mon, 19 Feb 2024 10:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708339304; cv=none; b=DbFoN7zh+5feSMXvM9U83k3SZ8/xxUF9GFZAb7pTdLAHAJ4Mn0CRLDsqDlt4FmINJB5UPn3qt/2SnT6rKMKhWevob8gueQYqfVKxV56X7IMmAQK86IY+sDIXhoi3IpSJV9NKBa6zEuNBpI4jj13RKqOtI9ZouFIFmsG1p46AONg=
+	t=1708339381; cv=none; b=N5FHOgVSOuWj/Tsmg+0NebxBgmIepB2fGD1nkM9LDb575iehAYG35UGkAH/RvMn0rsCggNYjlCvqYV9Esy5Wj8YC9xKe/ve9K00Wpajl7DPxXTA3yH9eQEhbBQ7xHcpYkp+H5ruRx4U+6cS7hzXjCb8hl+K1IJJ49CxE+yL3iKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708339304; c=relaxed/simple;
-	bh=j0hZ7OP3iKPpfHm4XNFd9GklyucQI6Echl+Kr1PbKTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d0sFF5oPSj7Gmar+T+mGesT8RbSjcA8HYBfCFBW8YI3bz+JNtPV6V0S4GzX2Uu5Y+XWgtWPBpusX2BXwmQ/YIRaSm0Eud51V+BxVlCrR671jqtjBQ3s4BhVrSthbrdNcLoFbwkbaDF6A6uz/oWw5TFNWEkBPzaWN/g1TlDzcH+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LY6yXZr3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0ADCC433F1;
-	Mon, 19 Feb 2024 10:41:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708339303;
-	bh=j0hZ7OP3iKPpfHm4XNFd9GklyucQI6Echl+Kr1PbKTs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LY6yXZr3E2vzWkg1Hg9gmo5TqYcNayGq//e1aM6TDjTSjOYtKCjyL1lOKXFSFAeuF
-	 V2WJ8OD/2ZPSq3wiOlRSM76qr71jZijdaRDQ/BijFj7wZnZ7sViiwSZ4bLlGNoD+ZV
-	 WH4//y4qt8YHFZuPle48PQ0JIjlUyHbs3sqIxnQQwtNo6naYwYzLqwh0n+Ou9KxA9q
-	 TLmwEhUoEEAKU+0VbbUZMfAjrQcLPHK05XkPWQ3IFQ3TazJb5UBMHb4crKm4a5q9n6
-	 NqUbtMGE/2ohmNR3QBpUDSq7onI6kyNLMXQClsTIMiVx+CgsqLyenhRcpbnB8SmjCa
-	 jPT7FURBb12Ew==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rc15h-000000006eY-16Ya;
-	Mon, 19 Feb 2024 11:41:41 +0100
-Date: Mon, 19 Feb 2024 11:41:41 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Rob Clark <robdclark@gmail.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Kuogee Hsieh <quic_khsieh@quicinc.com>
-Cc: Sean Paul <sean@poorly.run>,
-	Marijn Suijten <marijn.suijten@somainline.org>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org, regressions@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: drm/msm: Second DisplayPort regression in 6.8-rc1
-Message-ID: <ZdMwZa98L23mu3u6@hovoldconsulting.com>
-References: <ZctVmLK4zTwcpW3A@hovoldconsulting.com>
- <343710b1-f0f4-5c05-70e6-3c221cdc9580@quicinc.com>
- <ZczFhVjHIm55JTfO@hovoldconsulting.com>
- <ZdDNcrf4KpflGeYQ@hovoldconsulting.com>
+	s=arc-20240116; t=1708339381; c=relaxed/simple;
+	bh=4CLsoaGfFVA/1zKd93F8iEE1yHiwZoq0zzwFSFK7zYM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f9zranUPfnzXL5qJwMdDhBicfNP2f6Un9KoM7SFLbrcOXIVVlMb4y26D3pD6POSyyj+wrBCAwoeRdfENB97EAM4PHWz5WQLUeRgDT9n8AOdP0tJdIGUEHn8Hjgs+y495piVJzexxGHykGoLw+jzPhlLUkzEh7tap0kaEczfPmwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512a9ae6c02so1684628e87.2;
+        Mon, 19 Feb 2024 02:42:59 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708339378; x=1708944178;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wqTzvsxoFQ547CowH/3MHXh9TCCgzaUG+3u9Ug3NEJc=;
+        b=n6tVxBM4socclyoi1RLYOVMj7NFTm+dRyR3rxIBqxxH/Ys5wkPieJ9R2MfcnR06Ac+
+         uX26bZ5zfWkLYXJjRIDbYq4Mwb2c+1+4NyOy8WZ2y6il1K9+tlYFeMkRlbr6oOOo1gIz
+         bIPnpNWCeKD7sgfgMtWbl8aka/lGjMr4+W48ysFg41+3Qerb4O830NWMqpDP/N7Pzxth
+         88S4gIxkqmdBYTi0f34i6mkxBkg9gpPd5szpqGXu+9PGjjrHPBF6Z/EO6/WL49J/M2Lk
+         CwCPHGHKCZr6yHNAeTZrR6+znfDQDkOHvplGXIW0Az0sW3d8miYJ2lFaG+TAuZLcT4Bm
+         MRzA==
+X-Forwarded-Encrypted: i=1; AJvYcCVJO+V6ynY6mKYx/gvGovDl8TIwktX2ZxrNj6OCf5O2b4dX3nLwL3aG8IZ5cHiRlyx7J93JAW+GaJGygmA0E5B+wMTfnp6YIzi9RU0N
+X-Gm-Message-State: AOJu0YwtlfXf3i7JaBHnaoRPhW84rVd+UMUbVb3CXyB9/5XN3SU0PDrs
+	QjWmQdUrERGqXjXb34JHej62sFIZHdbpczfRgfQCVWsTTjHQtCXz
+X-Google-Smtp-Source: AGHT+IG9+8s5JUxUwQV1K7/hMhfWZLtIGlS2U/M2BBaqhrmWWVstDp/HqVk5QXYnPqph9/EFGBw1yw==
+X-Received: by 2002:a05:6512:318d:b0:512:a04a:52d6 with SMTP id i13-20020a056512318d00b00512a04a52d6mr4669250lfe.44.1708339377390;
+        Mon, 19 Feb 2024 02:42:57 -0800 (PST)
+Received: from localhost (fwdproxy-lla-009.fbsv.net. [2a03:2880:30ff:9::face:b00c])
+        by smtp.gmail.com with ESMTPSA id cq27-20020a056402221b00b005648b000e91sm478207edb.92.2024.02.19.02.42.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 02:42:57 -0800 (PST)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com
+Cc: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	horms@kernel.org,
+	stephen@networkplumber.org,
+	f.fainelli@gmail.com,
+	Johannes Berg <johannes.berg@intel.com>,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH net-next v3] net: sysfs: Do not create sysfs for non BQL device
+Date: Mon, 19 Feb 2024 02:42:36 -0800
+Message-Id: <20240219104238.3782658-1-leitao@debian.org>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdDNcrf4KpflGeYQ@hovoldconsulting.com>
 
-On Sat, Feb 17, 2024 at 04:14:58PM +0100, Johan Hovold wrote:
-> On Wed, Feb 14, 2024 at 02:52:06PM +0100, Johan Hovold wrote:
-> > On Tue, Feb 13, 2024 at 10:00:13AM -0800, Abhinav Kumar wrote:
+Creation of sysfs entries is expensive, mainly for workloads that
+constantly creates netdev and netns often.
 
-> Since Dmitry had trouble reproducing this issue I took a closer look at
-> the DRM aux bridge series that Abhinav pointed and was able to track
-> down the bridge regressions and come up with a reproducer. I just posted
-> a series fixing this here:
-> 
-> 	https://lore.kernel.org/lkml/20240217150228.5788-1-johan+linaro@kernel.org/
-> 
-> As I mentioned in the cover letter, I am still seeing intermittent hard
-> resets around the time that the DRM subsystem is initialising, which
-> suggests that we may be dealing with two separate DRM regressions here
-> however.
-> 
-> If the hard resets are triggered by something like unclocked hardware,
-> perhaps that bit could this be related to the runtime PM rework?
+Do not create BQL sysfs entries for devices that don't need,
+basically those that do not have a real queue, i.e, devices that has
+NETIF_F_LLTX and IFF_NO_QUEUE, such as `lo` interface.
 
-It seems my initial suspicion that at least some of these regressions
-were related to the runtime PM work was correct. The hard resets happens
-when the DP controller is runtime suspended after being probed:
+This will remove the /sys/class/net/eth0/queues/tx-X/byte_queue_limits/
+directory for these devices.
 
-[   16.748475] bus: 'platform': __driver_probe_device: matched device ae00000.display-subsystem with driver msm-mdss
-[   16.759444] msm-mdss ae00000.display-subsystem: Adding to iommu group 21
-[   16.795226] bus: 'platform': __driver_probe_device: matched device ae01000.display-controller with driver msm_dpu
-[   16.807542] probe of ae01000.display-controller returned -517 after 3 usecs
-[   16.821552] bus: 'platform': __driver_probe_device: matched device ae90000.displayport-controller with driver msm-dp-display
-[   16.837749] probe of ae90000.displayport-controller returned -517 after 1 usecs
-[  OK  ] Listening on Load/Save RF Kill Swit[   16.854659] bus: 'platform': __dch Status /dev/rfkill Watch.
-[   16.868458] probe of ae98000.displayport-controller returned -517 after 2 usecs
-[   16.880012] bus: 'platform': __driver_probe_device: matched device aea0000.displayport-controller with driver msm-dp-display
-[   16.891856] probe of aea0000.displayport-controller returned -517 after 2 usecs
-[   16.903825] probe of ae00000.display-subsystem returned 0 after 144497 usecs
-[   16.911636] bus: 'platform': __driver_probe_device: matched device ae01000.display-controller with driver msm_dpu
-[   16.942092] probe of ae01000.display-controller returned 0 after 19593 usecs
-         Starting Load/Save Screen Backligh…rightness[   16.959146] bus: 'platform': _ of backlight:backlight...
-[   16.995355] msm-dp-display ae90000.displayport-controller: dp_display_probe - probe tail
-[   17.004032] probe of ae90000.displayport-controller returned 0 after 30225 usecs
-[   17.012308] bus: 'platform': __driver_probe_device: matched device ae98000.displayport-controller with driver msm-dp-display
-[   17.050193] msm-dp-display ae98000.displayport-controller: dp_display_probe - probe tail
-         Starting Network Name Resolution...
-[   17.058925] probe of ae98000.displayport-controller returned 0 after 34774 usecs
-[   17.074925] bus: 'platform': __driver_probe_device: matched device aea0000.displayport-controller with driver msm-dp-display
-[        Starting Network Time Synchronization...
-[   17.112000] msm-dp-display aea0000.displayport-controller: dp_display_probe - populate aux bus
-[   17.125208] msm-dp-display aea0000.displayport-controller: dp_pm_runtime_resume
-         Starting Record System Boot/Shutdown in UTMP...
-         Starting Virtual Console Setup...
-[  OK  ] Finished Load/Save Screen Backlight Brightness of backlight:backlight.
-[   17.197909] msm-dp-display aea0000.displayport-controller: dp_pm_runtime_suspend
-[   17.198079] probe of aea0Format: Log Type - Time(microsec) - Message - Optional Info
-Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
-S - QC_IMAGE_VERSION_STRING=BOOT.MXF.1.1-00470-MAKENA-1
-S - IMAGE_VARIANT_STRING=SocMakenaWP
-S - OEM_IMAGE_VERSION_STRING=crm-ubuntu92
+In the example below, eth0 has the `byte_queue_limits` directory but not
+`lo`.
 
-  < machine is reset by hypervisor >
+	# ls /sys/class/net/lo/queues/tx-0/
+	traffic_class  tx_maxrate  tx_timeout  xps_cpus  xps_rxqs
 
-Presumably the reset happens when controller is being shut down while
-still being used by the EFI framebuffer.
+	# ls /sys/class/net/eth0/queues/tx-0/byte_queue_limits/
+	hold_time  inflight  limit  limit_max  limit_min
 
-In the cases where the machines survives boot, the controller is never
-suspended.
+This also removes the #ifdefs, since we can also use netdev_uses_bql() to
+check if the config is enabled. (as suggested by Jakub).
 
-When investigating this I've also seen intermittent:
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+Changelog
 
-	[drm:dp_display_probe [msm]] *ERROR* device tree parsing failed
+v1:
+ * https://lore.kernel.org/all/20240215112729.1778958-1-leitao@debian.org/
+v2:
+ * Removed the ifdefs by adding them inside the netdev_uses_bql(), as
+   suggested by Jakub Kicinski.
+v3:
+ * Added an extra parenthesis between or (||) clauses as suggested by
+   Stephen Hemminger
 
-which also appears to be related to the runtime PM rework:
+---
+ net/core/net-sysfs.c | 35 ++++++++++++++++++++++++-----------
+ 1 file changed, 24 insertions(+), 11 deletions(-)
 
-	https://lore.kernel.org/lkml/1701472789-25951-1-git-send-email-quic_khsieh@quicinc.com/
+diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
+index 946caefdd959..e2a01b7b7992 100644
+--- a/net/core/net-sysfs.c
++++ b/net/core/net-sysfs.c
+@@ -1459,6 +1459,9 @@ static const struct attribute_group dql_group = {
+ 	.name  = "byte_queue_limits",
+ 	.attrs  = dql_attrs,
+ };
++#else
++/* Fake declaration, all the code using it should be dead */
++extern const struct attribute_group dql_group;
+ #endif /* CONFIG_BQL */
+ 
+ #ifdef CONFIG_XPS
+@@ -1696,6 +1699,15 @@ static const struct kobj_type netdev_queue_ktype = {
+ 	.get_ownership = netdev_queue_get_ownership,
+ };
+ 
++static bool netdev_uses_bql(const struct net_device *dev)
++{
++	if ((dev->features & NETIF_F_LLTX) ||
++	    (dev->priv_flags & IFF_NO_QUEUE))
++		return false;
++
++	return IS_ENABLED(CONFIG_BQL);
++}
++
+ static int netdev_queue_add_kobject(struct net_device *dev, int index)
+ {
+ 	struct netdev_queue *queue = dev->_tx + index;
+@@ -1713,11 +1725,11 @@ static int netdev_queue_add_kobject(struct net_device *dev, int index)
+ 	if (error)
+ 		goto err;
+ 
+-#ifdef CONFIG_BQL
+-	error = sysfs_create_group(kobj, &dql_group);
+-	if (error)
+-		goto err;
+-#endif
++	if (netdev_uses_bql(dev)) {
++		error = sysfs_create_group(kobj, &dql_group);
++		if (error)
++			goto err;
++	}
+ 
+ 	kobject_uevent(kobj, KOBJ_ADD);
+ 	return 0;
+@@ -1738,9 +1750,9 @@ static int tx_queue_change_owner(struct net_device *ndev, int index,
+ 	if (error)
+ 		return error;
+ 
+-#ifdef CONFIG_BQL
+-	error = sysfs_group_change_owner(kobj, &dql_group, kuid, kgid);
+-#endif
++	if (netdev_uses_bql(ndev))
++		error = sysfs_group_change_owner(kobj, &dql_group, kuid, kgid);
++
+ 	return error;
+ }
+ #endif /* CONFIG_SYSFS */
+@@ -1772,9 +1784,10 @@ netdev_queue_update_kobjects(struct net_device *dev, int old_num, int new_num)
+ 
+ 		if (!refcount_read(&dev_net(dev)->ns.count))
+ 			queue->kobj.uevent_suppress = 1;
+-#ifdef CONFIG_BQL
+-		sysfs_remove_group(&queue->kobj, &dql_group);
+-#endif
++
++		if (netdev_uses_bql(dev))
++			sysfs_remove_group(&queue->kobj, &dql_group);
++
+ 		kobject_put(&queue->kobj);
+ 	}
+ 
+-- 
+2.39.3
 
-I believe this is enough evidence to conclude that this second
-regression is introduced by commit 5814b8bf086a ("drm/msm/dp:
-incorporate pm_runtime framework into DP driver"):
-
-#regzbot introduced: 5814b8bf086a
-
-Has anyone given some thought to how the framebuffer handover is
-supposed to work? It seems we're currently just relying on luck with
-timing.
-
-Johan
 
