@@ -1,188 +1,524 @@
-Return-Path: <linux-kernel+bounces-71761-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 237C185AA10
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:31:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A71A85AA14
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:33:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85CC31F22F7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:31:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B72D1F233BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F5D45953;
-	Mon, 19 Feb 2024 17:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D19D45953;
+	Mon, 19 Feb 2024 17:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VrXUpD3p"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	dkim=pass (2048-bit key) header.d=imgtec.com header.i=@imgtec.com header.b="fcppNbOv";
+	dkim=pass (1024-bit key) header.d=IMGTecCRM.onmicrosoft.com header.i=@IMGTecCRM.onmicrosoft.com header.b="WYNNYFoB"
+Received: from mx07-00376f01.pphosted.com (mx07-00376f01.pphosted.com [185.132.180.163])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F09540BF2;
-	Mon, 19 Feb 2024 17:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A048E41C84;
+	Mon, 19 Feb 2024 17:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=185.132.180.163
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708363902; cv=fail; b=euVngjdde5w0Q3svyE1pPRs821nmaqvqlZZScR6gQenM/5jqvfKYaIhw/bSoCeHskegldt4I4n8jD7OLwojhwRaC+UlkQD81N88sgxnLS9vq4y7zi+yBMsl6XAN8Wu5QSr0jWSE0j8C1eWfGS8eOV6dA6oM9+x/J36OslfthWbg=
+	t=1708363982; cv=fail; b=Oe5/7pyczAnQ2q+nhWIPJd8W8PeG8/5J1PbeK4dW4hrA1ryux8bR6uyzsByObeNoMOWFJsAAVOaJKrsQ78n0EZhG7laZxYxFhNZCq7wp1JrV2ZYk2MBX354Wvjrclfxn/RN+EPkp0q8j6HdetqatIqGwZLlw/2zRKaQRzqBiStg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708363902; c=relaxed/simple;
-	bh=yNNvkhrqXQ8X1Z6JWmAGVJ9A99aE25YCtIagxOPt9e8=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=j7fXefY7Jkl+Y6OgVSczdD0IaM/Rp+Zj2FhTt1eJ8WD9KuGGZv5YnJiSuTVapv1Vp78a7fGB3ZLLN5WTKYB9cK2qI0yxJ1SNjMvrBciR5FBeBPePbv+jc/LpcLXzqDPX77E3oa3fvQNdrI1J1Lb4Bf2oeEPyxuSepQPiywElfGI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VrXUpD3p; arc=fail smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708363901; x=1739899901;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=yNNvkhrqXQ8X1Z6JWmAGVJ9A99aE25YCtIagxOPt9e8=;
-  b=VrXUpD3pE6xWERm/sNGqFfYG7uwF3E/XQvdBSG+Ym2LE16n7BqGy2/K6
-   2FAge3scOnmD3Aw4U40qhr50t8RJNltIyiZ4PSDh0a+h9s0kp9OMUOAdQ
-   /i5vlK7PNj2PXTUkzZbp8CLOqkqyI4QsR6V8Uft4YrqffXdYmusU6ieIY
-   xZG9a7dIxN9FaIISLCvW7y1vxkinv13QrKLtU24EXg8aJYeRm7RPCkDyN
-   BUamJk53zZvNx0nrJ+mLjseAt2xA2oNHzBQSNGk+/8OqkomMqTZYUB+Yc
-   8xWuGI7xP8AgPM6VJ3oTcBM8vUcRReI6ru6b4b2GBmYWPrG7bPmLYWqEE
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2596416"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="2596416"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 09:31:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="9208724"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 09:31:39 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+	s=arc-20240116; t=1708363982; c=relaxed/simple;
+	bh=iKTYnr1Nf41sMJbJEy3J54cEKIBMc2d8BxAjGCncH2I=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=rco222PupzVqdNbOZPt/wZdelPwQY31SBbqd0pj/cGqKD2H6EYaWhE6B1EZ6sGAMVKQa9LlcXyIS9DwxtK1EGVD9Z71fyqSo3jOgaE7FGTd1uOcldiH12kHOmNS3egx2g5ihTFnBbBsRn++HyP5mqcZ9mSzdrWaD9iAIz7ZtcLA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=imgtec.com; spf=pass smtp.mailfrom=imgtec.com; dkim=pass (2048-bit key) header.d=imgtec.com header.i=@imgtec.com header.b=fcppNbOv; dkim=pass (1024-bit key) header.d=IMGTecCRM.onmicrosoft.com header.i=@IMGTecCRM.onmicrosoft.com header.b=WYNNYFoB; arc=fail smtp.client-ip=185.132.180.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=imgtec.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=imgtec.com
+Received: from pps.filterd (m0168889.ppops.net [127.0.0.1])
+	by mx07-00376f01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41J7tBj3027763;
+	Mon, 19 Feb 2024 17:32:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=imgtec.com; h=
+	from:to:cc:subject:date:message-id:references:in-reply-to
+	:content-type:mime-version; s=dk201812; bh=WmYR4NPXjWZegkAg3prRV
+	LdkwQwq0hbTyPGi9+9kAfM=; b=fcppNbOvmLnhxzhvsN06vD+8CIef34aAnfvFU
+	hNTo3AXVbNqYZ6SOdMsEWY8yNmCQDLJ94J2Mb3lPykUZQLcfVNTH7RBJzpnNiKBt
+	r5++o5UGENnFWgqc9YTkKEM6hbVKoX5In5nXqMuRXrS6pmO/5khHueZ/HD/sTQ1+
+	h4PRYcmpxRGKt/NlUOnCppZozOjaRJ14HhXVRam2dyhhe2q2Hl1UM2N/ASbutiNS
+	XYC94YkgqWwYbGbueo/tgZfvcOFkjK6WhkAZFGT7Emdw20lsU42Lc5GxrRfHXabc
+	frpfuRe6XCHZkiLQ9umFBqth6gyQEvSoAqSByIot9WQLYyAsQ==
+Received: from hhmail05.hh.imgtec.org ([217.156.249.195])
+	by mx07-00376f01.pphosted.com (PPS) with ESMTPS id 3wanrvsrnq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Mon, 19 Feb 2024 17:32:24 +0000 (GMT)
+Received: from HHMAIL05.hh.imgtec.org (10.100.10.120) by
+ HHMAIL05.hh.imgtec.org (10.100.10.120) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 09:31:38 -0800
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ 15.1.2507.35; Mon, 19 Feb 2024 17:32:24 +0000
+Received: from GBR01-LO4-obe.outbound.protection.outlook.com (104.47.85.104)
+ by email.imgtec.com (10.100.10.121) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 09:31:38 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 19 Feb 2024 09:31:38 -0800
+ 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 17:32:23 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EvIQ9SuYYN+Z2UCzY+vVR6K+U86I7ULLroJ9mr2uqpMglkmtq3BYX1zw6+Fae8CuPUjrbQGxVnln+SEsN+bw5KbkokV7KCGlNllT2+fsOUloNvMk8SsF3y9cgc+PcWaVmLKZrWGkz4rSKuWor93e9Qmuhyi78QPBq/NojyVe+dQfQYkw3hBzLZcQceFvoWEiupFRgpficd0+TnxuspyUYTqB9qdsZcRyZZKtjDFw3FANeIPxP4LOe3e3tHOe518F6rOKzJR4FFVDOoN1Xadwbca5NkYyBs7J13+8RYTFhZfwBQ5MFKYbSg50rr81lif4mftg+IC/sxCp+orFguUB8Q==
+ b=oP2Y3nlLuJjNkLAuFw+3j2FycoZ0EET7hzAbVQ1FhPeXXAjCgvk+2kkAVK2gPGUtFiQ86y6gSDwj/G5zAyzYNDs82G0bG2HEaW1Qq1Mkw3w35I1in0bKqxvE2eDk26fl1WEfc0hOwFDy109XxuaKGWodpaXe5BBWvcPxAVgsqQfgSkO7YlQ19jXeGTqd3XR2CHLVJQEO+dUt6m9Q9EIBW6FQc/W+2/HcEB0P9OiqrTRJkpXBFBdnuj3vahXwPsnypz+iRwKPfVtklnpyVlrdBoYtaPxGT7/EgxGmaxmTHf2aMS4hLtwRjSyEfeSWOmJjZ5quJvIwyoJX0+OozGvEew==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=I4EdRhzAW0UPlke32OnA0P3RZxVMuLfNm9YQ5zI58ok=;
- b=msR1KUmYo13HoaIsLVLZeQQ3qO1PI+5KNI35oqjXV6n3ZoUb815n/+NfIGr2V5YbvXG7FnbfErS5OPX7EYJ/WxKV8+ZlAiBGQaBPRQBdX1KHMLcC7fBopwXIXMw55XftrB84zyFAPRPFg6ebV7UwDBrRqD1mNQgPyAxZ+5B1hEuV2ycbeqbWL2la81heSqmUipQiJ4389ySa744IEAqx2ix5+pmrgYBjgf6pn+0PcYGcTK3ZbdL6Uz9tA6BLSLlpbZ7hzSblMf9eCAHEO1H2oijbz+Ii4AMzAwTqAlmdcVfEZyetkvEXU5lacHgg/njGGAqjDc6Sc9EWmPV+0rYf0g==
+ bh=WmYR4NPXjWZegkAg3prRVLdkwQwq0hbTyPGi9+9kAfM=;
+ b=Wd+R1wZqeGwEN6nMgNlTGSrFxgJDOv3y2CAxHz9S4/qUnZf+NJBqGKkog7bz+wGrzQytdTU04WRImlIgJEz5JPb8xQ3rln1gnlvTkbsTjOGnCg3TlBuHRHaVRVGXdL6asJIPd0ldq09KPdWl2gov6+PBWxNMXiMfM2eBTy9A/tcC66uDu5Rvkd8jG7OfMfrtH3uUJHqnzblq+kzU+3349vhvw1tCl1zWi/rfi4ANImtb5biA/mYEiQumXD6wJkvHAzSTW+eCM5dUPPpKj3HYGnBC+6BORSauKzKGQhX039y/TSygEcKsQNPHZhoolp1kGEW3dUzRwWaYsTH0mOz1uw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
- by CH0PR11MB5690.namprd11.prod.outlook.com (2603:10b6:610:ed::9) with
+ smtp.mailfrom=imgtec.com; dmarc=pass action=none header.from=imgtec.com;
+ dkim=pass header.d=imgtec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=IMGTecCRM.onmicrosoft.com; s=selector2-IMGTecCRM-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WmYR4NPXjWZegkAg3prRVLdkwQwq0hbTyPGi9+9kAfM=;
+ b=WYNNYFoBwR776D2OjR87ZE76G1TWdWpOsNgUvCduIlKbIY09TjHcb8iP+5graokeT2D7SU4yOxBIbz+6xMk9YFS4v3u14w/nEurNxSQOZ0WadBDi6zXW6X9kAIyevGba37DnEm47ATPqcerQqbGgTS5MQsGp1GZzArCWU7kvnbQ=
+Received: from LO0P265MB3404.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:16c::5)
+ by LO3P265MB1980.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:10e::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
- 2024 17:31:27 +0000
-Received: from IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::9c3:d61a:c2c9:109f]) by IA1PR11MB6097.namprd11.prod.outlook.com
- ([fe80::9c3:d61a:c2c9:109f%5]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
- 17:31:27 +0000
-Message-ID: <07d32ed5-825c-cee2-7551-e8442177dfc1@intel.com>
-Date: Mon, 19 Feb 2024 09:30:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Firefox/91.0 Thunderbird/91.11.0
-Subject: Re: [PATCH] dmaengine: idxd: constify the struct device_type usage
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Mon, 19 Feb
+ 2024 17:32:20 +0000
+Received: from LO0P265MB3404.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::4b5c:d51f:da10:2626]) by LO0P265MB3404.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::4b5c:d51f:da10:2626%5]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
+ 17:32:20 +0000
+From: Matt Coster <Matt.Coster@imgtec.com>
+To: Adam Ford <aford173@gmail.com>
+CC: Biju Das <biju.das.jz@bp.renesas.com>, Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Frank Binns
+	<Frank.Binns@imgtec.com>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        "Sarah
+ Walker" <Sarah.Walker@imgtec.com>,
+        Javier Martinez Canillas
+	<javierm@redhat.com>,
+        Nishanth Menon <nm@ti.com>, Marek Vasut
+	<marek.vasut@mailbox.org>,
+        "linux-renesas-soc@vger.kernel.org"
+	<linux-renesas-soc@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should depend on ARCH_K3
+Thread-Topic: [PATCH v2] drm/imagination: DRM_POWERVR should depend on ARCH_K3
+Thread-Index: AQHaY1mX3OQ3bT0DIkSDvqromulORQ==
+Date: Mon, 19 Feb 2024 17:32:20 +0000
+Message-ID: <a05dbb35-ea9e-4ee6-86dd-612c7aeeaf49@imgtec.com>
+References: <6be2558b8462fc08095c24c9257563ab5f3ae013.1708001398.git.geert+renesas@glider.be>
+ <kycepdxukfsww3tnxoo5hoiuo3vcgpqqmynokzhtl4vodgm6zc@ih4uhw7gz4jh>
+ <CAMuHMdVf7ophCwKt-n_N-LBHV4+t14Gjb4d1O0T8FDk_9xMFtA@mail.gmail.com>
+ <CAHCN7xJ65RP8TO7cS0p5DwE6zru5NEF0_JA+8siT_OpSeLD7pA@mail.gmail.com>
+ <CAHCN7x+EnSU8qk5dBFco=0vkeknGq18qEN7vFmZs0_q83T_3+w@mail.gmail.com>
+ <CAHCN7xKffJ29zyjoJVAcy3b_d=-zkFzbL=URj4yWJWzYvRdB_Q@mail.gmail.com>
+ <TYCPR01MB11269CBE8429A31DE5002A5A5864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <nzrkujogauvn262ucxippwidyub6ikcohcjpbpn4hzj7rymctm@4owntgrmcquf>
+ <TYCPR01MB11269CBAA20275E11D9AD6500864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <wxwad77x2mxhhwdsbgiytzn6x54t4sywodjhzefwldo277njiz@ru7z54wxgelu>
+ <CAHCN7xJi-6W6x+OJmkNwOX45SM4WHD5zkN42ZOp8ZxFnp3YL5w@mail.gmail.com>
+ <TYCPR01MB11269B2104687F091CFA3405F86512@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <CAHCN7x+BVYoeDC+Rt4PV-dxyMZ-0GyYfiRcXwmVWwursz5NAfg@mail.gmail.com>
+In-Reply-To: <CAHCN7x+BVYoeDC+Rt4PV-dxyMZ-0GyYfiRcXwmVWwursz5NAfg@mail.gmail.com>
+Accept-Language: en-GB, en-US
 Content-Language: en-US
-To: "Ricardo B. Marliere" <ricardo@marliere.net>, Dave Jiang
-	<dave.jiang@intel.com>, Vinod Koul <vkoul@kernel.org>
-CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Greg
- Kroah-Hartman" <gregkh@linuxfoundation.org>
-References: <20240219-device_cleanup-dmaengine-v1-1-9f72f3cf3587@marliere.net>
-From: Fenghua Yu <fenghua.yu@intel.com>
-In-Reply-To: <20240219-device_cleanup-dmaengine-v1-1-9f72f3cf3587@marliere.net>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SJ0PR03CA0227.namprd03.prod.outlook.com
- (2603:10b6:a03:39f::22) To IA1PR11MB6097.namprd11.prod.outlook.com
- (2603:10b6:208:3d7::17)
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LO0P265MB3404:EE_|LO3P265MB1980:EE_
+x-ms-office365-filtering-correlation-id: 1c6edfb9-9200-4e40-2071-08dc3170b9d6
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: KlrluAb+HWo3ycprf9+ED2sbH6ZDOtVTBsfQ5jv+NIH5mutGQrBsyUkPTONsez7YJlUdEdV0RZ8jz8bWOsHVJZ0fHpNK8PkYk14HoQn6cy6EeqRS2I92/QMTdDZ4HpTYV7+RpPBTHLR8hbFPI5qIOxrvYbR1TlAaevnQIG3VoU2xSWyjYh0V4w++sOy3yCP9FU6SIyNzfjmKqc3/cwImbbWoJD0hoZge+Rp3dvzOXpEsIC2qxj9hxzHEzLH8bNb8sh5Yd1SDYHYMfMyagdSI7M0bM9vwPAtd91UzUp1EE761RY7EqAUAkJ3FeKE2DQ4PivFSkluuSvUFP2g1IFOi5Wm77F48arxPLNzZ9XsOEOKPR9dv5MqyQUHiXCya8MD6FHQt4tp6DQdZh8troMWw95x//TDuLDfosLdiOYmRHuEDJ0tXAhq0cOs1D9E6t3ZdXT3ymL0bshzwNVoC37cxyjMk3n1P9Ztb813scsg6kIpqr6cti+N1GDLpl7BrdzQNQkP7ewerii4R7C05ULsKGBG7Wr/wfOxg4mJrFIr81nvTGRNs9KrijAZm5wcS3davKHi2HeR+Ai2e9/QqqBtnwCiY1mmlvFtQt4NQXdjNJ3Y=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO0P265MB3404.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RzR5ZWQ4T0ZiVXIxRDZ6clJPVkE5WWM3TWt5LzZGSjArYUszZmFLQUtBNFd4?=
+ =?utf-8?B?QnBPakN4dWt4LzMzZHhmbEFoUWZWRGxuSTBlaE1QUW55eFFxVU5sdWhPSXZz?=
+ =?utf-8?B?Wnk4REZoOEU2Z1czbFVYUVhwd2FzSXBTdk1lRWhRalJLWkMvNE9mQ3NJRTJU?=
+ =?utf-8?B?TS93TXBxSHBibDhadkpxV0trT0Z4OVp4NSs3SndaOGFGM013S1QwNlZSTXFa?=
+ =?utf-8?B?WWJVejVMQm1Gb3FIK2pvQW1HU2JGU3duRlFqajVDcGFITjlGZjRiaDFGdGYv?=
+ =?utf-8?B?bXBod2RZOGR0Y2pPMGFyMUdxL1k4ZFVLN2FNTnlQQWlvaDdIRGNZbkdkdHNB?=
+ =?utf-8?B?U2pXcDAwWGtrV3l2bTFWTEhaaG9lcXNJbnZRcnJpTzNpZjQ0RFFTeFFaYVB3?=
+ =?utf-8?B?TmhuSmkxdHJiUnhBTWRhN1ZQcFpNUnY0aGZ3T2pGUEJzK1p4c1ppSkZNYms1?=
+ =?utf-8?B?dG5PUDNweG5CaG9qc2Y2S0FxaEQ0SU4rYlV4Sjk2UEQzTGlJRWNLMFllc0Vz?=
+ =?utf-8?B?QWxRTmxqR3Rua0J6dGgydlJaV3B6Vmp5OW93eTIza01peDlHWHliZTNjL1F1?=
+ =?utf-8?B?VmN1b3ZLZWZ6VENyQ3VIYUdSQkE3SUNYWHpLaXkvMW0zOHdtWDFodjVvU3Vh?=
+ =?utf-8?B?eHUybTcweWkrSUdCZC9nTWwrYUdITUY0Nkt4S0JIWFk3bDN3SlFOSGNPcGRn?=
+ =?utf-8?B?Ykg5aTFMSFZPbkdINmdJUHE5VGVZWWlJYnpqSDBUV2t3VWRsYkRhYWIrbFc2?=
+ =?utf-8?B?V25ORGJuSVZnMXNBNlNFYjc4N3luOWh5ZHlEUEFBaWFkdExuZEVBUE9LVDhO?=
+ =?utf-8?B?MFF4MGp5d3A4bzQ1bEpqNGV3ZWJlTnBKYWRtRlZLZmZlZVVRMEdnQVRWbWxB?=
+ =?utf-8?B?UlFkSkNONWFkRnBvK25wNmVXYmg5dmpQRGp1bXFuM3pWaTh3a1J1cjVHQlFL?=
+ =?utf-8?B?RXMyVElTRGVQdW9BeXhvTFNwQ0xnd0NQVkI3ZFpSMzkrVTMzVVJZY1BPWjcv?=
+ =?utf-8?B?RWdYSncrQXpFMW5mZzJGWlJzcm5xZkY1WlZMNnBjbHBKTll3WlhTTnhCRFRr?=
+ =?utf-8?B?d1U2c2NIVEJPZlZZdmZWOHJiOU04QVdCZ2RJTjhwM0xVRkE1aUxoWXFrK2E4?=
+ =?utf-8?B?WkxRTFFxREhad21Xd1BrbTRROGRPYy9Yb3ovR2J2bEpVY08rMmZTdWxBRGlt?=
+ =?utf-8?B?bzV3Q1lLWFlyaHJyRWJFOERyMEhuK1lmNmNjbWEzUjd3ai9qM05vRUNyZWpw?=
+ =?utf-8?B?ZEVmVFlORGVneEZyZXFTT2hlUlBjN3ducFhIQ0V0UzRGRzg4K2ZKNzMyejB2?=
+ =?utf-8?B?dVhiV2llS0s3bXFWM1NYalkrYnR1NjVOdXc1TDJNSDFiTnJyQlo2ZDZWQ1Z4?=
+ =?utf-8?B?MTZoVjJaUmU2dXJQSENqd08yYUFVU09udTRWVWxFRy90aC9PNktkVkhRdTZP?=
+ =?utf-8?B?NXBMV3JvdUZvRWFDKytvb1NkOExVaVFEcS9vVkxEQ2p4TkE1UkU2bzg2S245?=
+ =?utf-8?B?RzAwVU9UWDExUzl3eVE0Z09XMjdOSUdlcTR6QzhRWDdoTit6d0FOUGE3RTVo?=
+ =?utf-8?B?bnJ0RGdsQjJ4TjRtS2UxVWo2YWN2U3VpSnZxRzRoL3BQdWtwK2t6SVkzRUhQ?=
+ =?utf-8?B?YjZTall5VnJQcERoakt5cFIxbXZFeGJyTTR1di8ybmpod0N1NTV2R0xqb1Jn?=
+ =?utf-8?B?bU9JSnhrUFBKcXdUNmhHd01nWG04VjlHZEhjbmNRNmN1TFU5ZTh5akVzTHhD?=
+ =?utf-8?B?aFl5SENOMTZwcVI3QndsQitqV2FOK2NBWUpwb2dFY1VEVW15Z1ZJbk1tcjh1?=
+ =?utf-8?B?YW9xTWlJSHVQSHNJWVpPUzV4VkNyd0VJSVJXK2U0U05xeGFsQ3hJTWltSHhl?=
+ =?utf-8?B?WmhRcnNsbnJ6Z0hmd1lURHJxdHlDdWpiUldnRWZ1Qis3QTl3YVJCc2Z4N1I2?=
+ =?utf-8?B?VXZ3OEpJMUpEV2pKYW5xbUNMbURrSWxqVHJ1aUtrTzU2T2t4UmtKV3ZBeUo0?=
+ =?utf-8?B?bENEYzhjcml5S1BjVDVZMzBpYTRzWGNrMTRKQVJYYkc3U2lONDZlWTZ1VCs4?=
+ =?utf-8?B?OUhQWjhrV1Rpc3dZNk9xQW8yaUF3bEkwU0JSWm12eUZzY0tTL3BNTmJ0Zkkv?=
+ =?utf-8?B?Z0lxVE9uWW9XS3pGNFpFTk42cFJTZzJXNGRWZzhIZnl4QXd0TW5SeElVR3BB?=
+ =?utf-8?B?N3c9PQ==?=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Aix8ELYVlghNoPTks37bcxNN"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|CH0PR11MB5690:EE_
-X-MS-Office365-Filtering-Correlation-Id: feb149a5-ebc3-447a-2b51-08dc31709a26
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iDI/nYvTVxZlwZqwiuN0AhptHda0+eFfVK1HN+h5NZFDp3vsq5MuhWajIuJqb/mR6Y+RKTc3NZuMVCYB5CjuBgX1yj7pr9vfjlUpOoYuWDGgqA2w9XgryY1qDZ9AVhLC6pKOWCEwV3L5WGSqju4ZUopw03AiVjhBt9F2Uj1TTMMQJ2yaPFvFSNeJiodPV2rZ8zI0oQXNhMHNkmxuO/6EAL1vH0DjZJHU1hfZEPUl90TY7rxudhDb6sLBO+lb7wvHjDmcBSmjH7qV65aoxLXYrhFXXCzshI4N0kP7dq7UcNBlStUdumP5XQXjjUzC6KvsTz6opGUVYs7rQfh6btMnP2b8s2gxrTQ+2NT7l3/BYcIqG1Y0EW3HOFC4TukhOtXg1w8+MuYBTwMaG4bXy72y+RWAU1F0NyKe4QnA8jJIAnzqhO2OfimPOObUW/PeUtXIsEuX+TYdSw89G6+Ozf3VWmDpzpcV/gJdWTPagAKWthD9yty9gQYRdw46DIrsgRtHKttkak49Ve3q9eFzUrSZzGJL0Ljw2uyWuKFuWjVgs5Q=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Tkphamo5U2VsQlFSMWNidFIzNUh5Ny9zMnM0T3FqMlJEVG45SHdSVmdqd0RL?=
- =?utf-8?B?NGRnRVhWQjZtalZ3YzdkT0pEb0pvL1M3VW1pNkhsWUM4bXFnUTRPUnZRV3Jy?=
- =?utf-8?B?ckpPeXZjUWdrUDBDaHJ4RFZ5Syt1OVVLTGhUTXR0VC83c0xQZTVJbE5pRnQ3?=
- =?utf-8?B?WFl6NWVZQWZtUEdKaTNwRjI0WVJRVVBrRUE3OCtZSVVvbFhFdmo5dFZMMXls?=
- =?utf-8?B?UUpWVFNoMkxwTVBYY1AyNFAzWlR4aTFuZ1JzbjZ1dEVieHJScEdSWDBkbk45?=
- =?utf-8?B?QjY1bEI5QWRzQU1hcTV4L29hUG1HamRFSHZvRTgrUFFIL0Q1aU9sY1hUcEND?=
- =?utf-8?B?VnU3amp3b3F3MXBweldZaW5yOXU2c2ZTaVlmbDB5eElObzhXN003Sm5DYits?=
- =?utf-8?B?TUxVTnEvWWMyRlFhN0doeTlNUUVUdXN0OWkwS21aSjRRZ0FCaVdwUW5Uc1FI?=
- =?utf-8?B?alpob3VSeDg1M1ZyeHpjbnpCUDBzRXV5Z2RiSnpKQW9mdmd3eW12cTVQS0s2?=
- =?utf-8?B?UUswaVdiak9XSmRqOEc0K2t4WmE5aWQwL2RXMzhVeXJkRUJsSll5MTFBY3Zh?=
- =?utf-8?B?YWJDQ3VhOWZzQTVDYnhNYnREQ3NERG5mcDY5bGpYZ0JpQ3puMWJvZ2p0ZEtY?=
- =?utf-8?B?NHI2RVhWcGswQkcyN1U5bTZSRUNOU2pXdG1GY3lqUjNSUGVweDRIVlFrYU5y?=
- =?utf-8?B?U3BlWm9tNlBYbkJrckdrUHZFdHFVeUVBZlE0K0pRS2FodWJtdTJnWGtxSHJt?=
- =?utf-8?B?NjFqUGtFNk1mZWJRNXRhL1JocHhXbXN4aWhIWUVTTUZFOER4bGxXTWx1VnVk?=
- =?utf-8?B?UEdlbEloTXVoSEpzT0FJdWcycFdJK0EzSDFRbFNSUUxRbjVXWmpCVUVzUndC?=
- =?utf-8?B?eHVzZ1RJMVY4NXJzWWxmUUhDcmRDUmhoRWw0UGRhZVpJZ1VMTEM5d0I4SzZz?=
- =?utf-8?B?UVhkYVgyTzN1Wm44R3lKRzFlQldib0FuSjRtSm5RdFBTOWJ2ak9yM1JrR0Vk?=
- =?utf-8?B?NTFlUEVFT0xDNkF4alExUFB5QTVLMjI1ZWN6NDlOSDZYcXNFR1BwbFZOYzdT?=
- =?utf-8?B?aWVaeXdGMTJwRmNaK2NxT292ZW5hVmd3QlJ6M21CVU5ra0hNdTVvdEQra1lD?=
- =?utf-8?B?Z0diQjZGMVFYcTVSaU9CQTl3UU5Ud2pKc01GbXBXeS9EcG5VYVNkdjBSa213?=
- =?utf-8?B?bVpxR0pTZTh1RE51bFZvR2lrcVFMeDZoMEMrWWhabFcvanZxTXNnSDQyc00w?=
- =?utf-8?B?cVNzMjBCMC9IUy9zaVhSUlpuVUtsSFl5QkxjVDEzYVcrS1RpdnIwZi9ucUgv?=
- =?utf-8?B?Q1ZKazVaRC92T2NVMTlSWVoyTDl4cS9UT3k5K1RDaU1DdGlTY3VJdUp3eVZs?=
- =?utf-8?B?UVVLZkEyaHFkeXd6Yjd3cFRLNWFNVU1uYTVGWW5qTnM3LzRsZmdNVE5vQzdO?=
- =?utf-8?B?T2ZlNi83YS9NTDZ5Z1B0a0hiMklJMlVLR1JRNzRJbWd3NEphMVQ1WkQ5OWNS?=
- =?utf-8?B?Sk1xUUozdU9vYVV4eHU4djJKbFpnTG9CZ28zbEY5OEhCL2ZmaDNoZVlIQ3ZN?=
- =?utf-8?B?UW1lamY1ejlZOWM4QUY5aEc2U0xBUXVEaHBUaDI0MWFxSkg2RG5Wb1BQai83?=
- =?utf-8?B?cDFUVmFiazZ5djRmUW1vUzRPMFZPdERmcUdvMVF5V2JJczJCb3daSlhpbm9m?=
- =?utf-8?B?QmMzOE5FM2NTK2VTNGIwKzZNeDBiUklJNlJ5NDJKRHNKdEt0dHpUOVZVTmRS?=
- =?utf-8?B?UVFBcS9JZEVGNEk1KzlxVTU3enJCUjdiUGp5UkpoTlVIcjhOOHN3MDBFT0cv?=
- =?utf-8?B?b2NDMldYRmpSYUdscllMVEdUYjhhM2NMOTVTQXVZNU5TYjRkbWRIa3Q1VVlR?=
- =?utf-8?B?YUJjV2FsSm14Qll2Ykp6U0NyMDlGU1ovQVM5MXZEMzNXYlRXaXIxWXR3NU9P?=
- =?utf-8?B?MWlXcGVPUUdXcm5zM0VTbUZYZWFTcnl5VEFpazRGMldNSitSWHhVT2kxaGN4?=
- =?utf-8?B?SlhOeEdoczJESDRINHFSNzhxdG5jZU9GTEE3cFY3aFc0RmFTTFVBMlFsL3Uy?=
- =?utf-8?B?R1VScWZObjF5N2VMUTluVmlIOG9razFKdEwzdG83RTBSNXBXaGU5QVFnSFdY?=
- =?utf-8?Q?9amnyzf4wa04qkq/hQ9gqFF/L?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: feb149a5-ebc3-447a-2b51-08dc31709a26
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 17:31:27.3814
+X-MS-Exchange-CrossTenant-AuthSource: LO0P265MB3404.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1c6edfb9-9200-4e40-2071-08dc3170b9d6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2024 17:32:20.3282
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: G04BeuqrFHjLRZa81G5HfU/GgsW0Gq5Lq9T6WJ4eMG5gjF2KoYSXyzLvSq7lUv/fGbHnpYAeZDSu3IdcW6pwvg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5690
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d5fd8bb-e8c2-4e0a-8dd5-2c264f7140fe
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GOwFWldhfgQimNjL2JxNB6OU2bVuDacHIAm+dcx52b/l9bE8N1j/dWAackulOgfQt4B8YlPov0baiTIJnGUzRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO3P265MB1980
+X-OriginatorOrg: imgtec.com
+X-EXCLAIMER-MD-CONFIG: 15a78312-3e47-46eb-9010-2e54d84a9631
+X-Proofpoint-ORIG-GUID: HdBl9zYOvnouqbK2kS7vtpo7ClLxw1kZ
+X-Proofpoint-GUID: HdBl9zYOvnouqbK2kS7vtpo7ClLxw1kZ
 
+--------------Aix8ELYVlghNoPTks37bcxNN
+Content-Type: multipart/mixed; boundary="------------dI1S9z5QqJcHo0zOM6RJPqjk";
+ protected-headers="v1"
+From: Matt Coster <matt.coster@imgtec.com>
+To: Adam Ford <aford173@gmail.com>
+Cc: Biju Das <biju.das.jz@bp.renesas.com>, Maxime Ripard
+ <mripard@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>,
+ Frank Binns <frank.binns@imgtec.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Sarah Walker <sarah.walker@imgtec.com>,
+ Javier Martinez Canillas <javierm@redhat.com>, Nishanth Menon <nm@ti.com>,
+ Marek Vasut <marek.vasut@mailbox.org>, linux-renesas-soc@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Message-ID: <a05dbb35-ea9e-4ee6-86dd-612c7aeeaf49@imgtec.com>
+Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should depend on ARCH_K3
+References: <6be2558b8462fc08095c24c9257563ab5f3ae013.1708001398.git.geert+renesas@glider.be>
+ <kycepdxukfsww3tnxoo5hoiuo3vcgpqqmynokzhtl4vodgm6zc@ih4uhw7gz4jh>
+ <CAMuHMdVf7ophCwKt-n_N-LBHV4+t14Gjb4d1O0T8FDk_9xMFtA@mail.gmail.com>
+ <CAHCN7xJ65RP8TO7cS0p5DwE6zru5NEF0_JA+8siT_OpSeLD7pA@mail.gmail.com>
+ <CAHCN7x+EnSU8qk5dBFco=0vkeknGq18qEN7vFmZs0_q83T_3+w@mail.gmail.com>
+ <CAHCN7xKffJ29zyjoJVAcy3b_d=-zkFzbL=URj4yWJWzYvRdB_Q@mail.gmail.com>
+ <TYCPR01MB11269CBE8429A31DE5002A5A5864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <nzrkujogauvn262ucxippwidyub6ikcohcjpbpn4hzj7rymctm@4owntgrmcquf>
+ <TYCPR01MB11269CBAA20275E11D9AD6500864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <wxwad77x2mxhhwdsbgiytzn6x54t4sywodjhzefwldo277njiz@ru7z54wxgelu>
+ <CAHCN7xJi-6W6x+OJmkNwOX45SM4WHD5zkN42ZOp8ZxFnp3YL5w@mail.gmail.com>
+ <TYCPR01MB11269B2104687F091CFA3405F86512@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+ <CAHCN7x+BVYoeDC+Rt4PV-dxyMZ-0GyYfiRcXwmVWwursz5NAfg@mail.gmail.com>
+In-Reply-To: <CAHCN7x+BVYoeDC+Rt4PV-dxyMZ-0GyYfiRcXwmVWwursz5NAfg@mail.gmail.com>
 
+--------------dI1S9z5QqJcHo0zOM6RJPqjk
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2/19/24 03:46, Ricardo B. Marliere wrote:
-> Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-> core can properly handle constant struct device_type. Move the
-> dsa_device_type, iax_device_type, idxd_wq_device_type, idxd_cdev_file_type,
-> idxd_cdev_device_type and idxd_group_device_type variables to be constant
-> structures as well, placing it into read-only memory which can not be
-> modified at runtime.
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+Hi Adam,
 
-Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
+On 19/02/2024 16:38, Adam Ford wrote:
+> On Mon, Feb 19, 2024 at 1:45=E2=80=AFAM Biju Das <biju.das.jz@bp.renesa=
+s.com> wrote:
+>>
+>> Hi Adam,
+>>
+>>> -----Original Message-----
+>>> From: Adam Ford <aford173@gmail.com>
+>>> Sent: Sunday, February 18, 2024 11:26 PM
+>>> Subject: Re: RE: RE: [PATCH v2] drm/imagination: DRM_POWERVR should d=
+epend
+>>> on ARCH_K3
+>>>
+>>> On Fri, Feb 16, 2024 at 8:14=E2=80=AFAM Maxime Ripard <mripard@kernel=
+=2Eorg> wrote:
+>>>>
+>>>> On Fri, Feb 16, 2024 at 09:13:14AM +0000, Biju Das wrote:
+>>>>> Hi Maxime Ripard,
+>>>>>
+>>>>>> -----Original Message-----
+>>>>>> From: Maxime Ripard <mripard@kernel.org>
+>>>>>> Sent: Friday, February 16, 2024 9:05 AM
+>>>>>> Subject: Re: RE: [PATCH v2] drm/imagination: DRM_POWERVR should
+>>>>>> depend on
+>>>>>> ARCH_K3
+>>>>>>
+>>>>>> On Fri, Feb 16, 2024 at 08:47:46AM +0000, Biju Das wrote:
+>>>>>>> Hi Adam Ford,
+>>>>>>>
+>>>>>>>> -----Original Message-----
+>>>>>>>> From: Adam Ford <aford173@gmail.com>
+>>>>>>>> Sent: Thursday, February 15, 2024 11:36 PM
+>>>>>>>> Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should
+>>>>>>>> depend on
+>>>>>>>> ARCH_K3
+>>>>>>>>
+>>>>>>>> On Thu, Feb 15, 2024 at 11:22=E2=80=AFAM Adam Ford <aford173@gma=
+il.com>
+>>> wrote:
+>>>>>>>>>
+>>>>>>>>> On Thu, Feb 15, 2024 at 11:10=E2=80=AFAM Adam Ford
+>>>>>>>>> <aford173@gmail.com>
+>>>>>> wrote:
+>>>>>>>>>>
+>>>>>>>>>> On Thu, Feb 15, 2024 at 10:54=E2=80=AFAM Geert Uytterhoeven
+>>>>>>>>>> <geert@linux-m68k.org> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>> Hi Maxime,
+>>>>>>>>>>>
+>>>>>>>>>>> On Thu, Feb 15, 2024 at 5:18=E2=80=AFPM Maxime Ripard
+>>>>>>>>>>> <mripard@kernel.org>
+>>>>>>>> wrote:
+>>>>>>>>>>>> On Thu, Feb 15, 2024 at 01:50:09PM +0100, Geert
+>>>>>>>>>>>> Uytterhoeven
+>>>>>>>> wrote:
+>>>>>>>>>>>>> Using the Imagination Technologies PowerVR Series 6
+>>>>>>>>>>>>> GPU requires a proprietary firmware image, which is
+>>>>>>>>>>>>> currently only available for Texas Instruments K3
+>>>>>>>>>>>>> AM62x SoCs.  Hence add a dependency on ARCH_K3, to
+>>>>>>>>>>>>> prevent asking the user about this driver when
+>>>>>>>>>>>>> configuring a kernel without Texas Instruments K3
+>>>>>>>> Multicore SoC support.
+>>>>>>>>>>>>
+>>>>>>>>>>>> This wasn't making sense the first time you sent it,
+>>>>>>>>>>>> and now that commit log is just plain wrong. We have
+>>>>>>>>>>>> firmwares for the G6110, GX6250, GX6650, BXE-4-32, and
+>>>>>>>>>>>> BXS-4-64 models, which can be found on (at least)
+>>>>>>>>>>>> Renesas, Mediatek, Rockchip, TI and StarFive, so
+>>>>>>>>>>>> across three
+>>>>>>>>>>>
+>>>>>>>>>>> I am so happy to be proven wrong!
+>>>>>>>>>>> Yeah, GX6650 is found on e.g. R-Car H3, and GX6250 on e.g.
+>>>>>>>>>>> R-Car M3-
+>>>>>>>> W.
+>>>>>>>>>>>
+>>>>>>>>>>>> architectures and 5 platforms. In two months.
+>>>>>>>>>>>
+>>>>>>>>>>> That sounds like great progress, thanks a lot!
+>>>>>>>>>>>
+>>>>>>>>>> Geert,
+>>>>>>>>>>
+>>>>>>>>>>> Where can I find these firmwares? Linux-firmware[1]
+>>>>>>>>>>> seems to lack all but the original K3 AM62x one.
+>>>>>>>>>>
+>>>>>>>>>> I think PowerVR has a repo [1], but the last time I
+>>>>>>>>>> checked it, the BVNC for the firmware didn't match what
+>>>>>>>>>> was necessary for the GX6250 on the RZ/G2M.  I can't
+>>>>>>>>>> remember what the corresponding R-Car3 model is.  I
+>>>>>>>>>> haven't tried recently because I was told more
+>>>>>>>>>> documentation for firmware porting would be delayed until
+>>> everything was pushed into the kernel and Mesa.
+>>>>>>>>>> Maybe there is a better repo and/or newer firmware somewhere
+>>> else.
+>>>>>>>>>>
+>>>>>>>>> I should have doubled checked the repo contents before I
+>>>>>>>>> sent my last e-mail , but it appears the firmware  [2] for
+>>>>>>>>> the RZ/G2M, might be present now. I don't know if there are
+>>>>>>>>> driver updates necessary. I checked my e-mails, but I didn't
+>>>>>>>>> see any notification, or I would have tried it earlier.
+>>>>>>>>> Either way, thank you Frank for adding it.  I'll try to test
+>>> when I have some time.
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>> I don't have the proper version of Mesa setup yet, but for
+>>>>>>>> what it's worth, the firmware loads without error, and it
+>>> doesn't hang.
+>>>>>>>
+>>>>>>> Based on [1] and [2],
+>>>>>>>
+>>>>>>> kmscube should work on R-Car as it works on RZ/G2L with panfrost
+>>>>>>> as earlier version of RZ/G2L which uses drm based on RCar-Du,
+>>>>>>> later changed
+>>>>>> to rzg2l-du.
+>>>>>>
+>>>>>> IIRC, the mesa support isn't there yet for kmscube to start.
+>>>>>
+>>>>> What about glmark2? I tested glmark2 as well.
+>>>>
+>>>> It's not really a matter of kmscube itself, but the interaction with=
 
-Thanks.
+>>>> the compositor entirely. You can run a headless vulkan rendering, bu=
+t
+>>>> an application that renders to a window won't work.
+>>>
+>>> I have made a little progress.  I have Ubuntu running on an RZ/G2M (R=
+ogue
+>>> GX6250) with a device tree configuring the GPU and the GPU loads with=
 
--Fenghua
+>>> firmware.
+>>>
+>>>   powervr fd000000.gpu: [drm] loaded firmware
+>>> powervr/rogue_4.45.2.58_v1.fw
+>>>   powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
+>>>   [drm] Initialized powervr 1.0.0 20230904 for fd000000.gpu on minor =
+0
+>>>
+>>> drmdevice lists card0 and renderD128
+>>> --- Checking the number of DRM device available ---
+>>> --- Devices reported 2 ---
+>>> --- Retrieving devices information (PCI device revision is ignored) -=
+--
+>>> device[0]
+>>> +-> available_nodes 0x05
+>>> +-> nodes
+>>> |   +-> nodes[0] /dev/dri/card0
+>>> |   +-> nodes[2] /dev/dri/renderD128
+>>> +-> bustype 0002
+>>> |   +-> platform
+>>> |       +-> fullname /soc/gpu@fd000000
+>>> +-> deviceinfo
+>>>     +-> platform
+>>>         +-> compatible
+>>>                     renesas,r8a774a1-gpu
+>>>                     img,img-axe
+>>>
+>>> There is more to this dump, but it seems to repeat. I wanted to show =
+that
+>>> it seems like it's trying to work.
+>>>
+>>> I think I need to modify the powervr code in mesa to recognize the
+>>> renesas,r8a774a1-gpu and associate it with the rcar-du, but I am not =
+sure,
+>>> and I am hoping someone might be able to provide some guidance, since=
+ I
+>>> think I am missing something somewhere. I modified pvr_device.c in th=
+e
+>>> mesa driver to attempt do this:
+>>>
+>>> /* This is the list of supported DRM render/display driver configs. *=
+/
+>>> static const struct pvr_drm_device_config pvr_drm_configs[] =3D {
+>>>    DEF_CONFIG("mediatek,mt8173-gpu", "mediatek-drm"),
+>>>    DEF_CONFIG("ti,am62-gpu", "ti,am625-dss"),
+>>>    DEF_CONFIG("renesas,r8a774a1-gpu", "rcar-du"), };
+>>>
+>>> When I run modetest -M rcar-du, I can see the encoders and connectors=
+ and
+>>> I can display test patterns, so the rcar-du is working.
+>>>
+>>> I built Mesa 24.0.1 with the following options:
+>>>
+>>> meson setup builddir -Dvulkan-drivers=3Dimagination-experimental
+>>> -Dimagination-srv=3Dtrue -Dtools=3Dall -Dgallium-drivers=3Dzink,kmsro=
+,swrast
+>>>
+>>> I have tried to set PVR_I_WANT_A_BROKEN_VULKAN_DRIVER=3D1 the Mesa
+>>> documentation for the powerVR, and I have exported the variable for
+>>> VK_ICD_FILENAMES to point to the powervr json file.
+>>>
+>>> when I try to run glmark2-drm, I was expecting the GL reddered to be =
+the
+>>> powervr, but it keeps using the
+>>> GL_RENDERER:    llvmpipe (LLVM 15.0.7, 128 bits)
+>>>
+>>> I realize this driver is still in its infancy, but I was hoping someo=
+ne
+>>> could give me some guidance to let me know if the work to do is on th=
+e
+>>> Mesa side or the rcar-du driver side, or something else.
+>>>
+>>> I rebuilt both libdrm and mesa.  While I don't get any errors, I also=
+
+>>> don't get the hardware acceleration I was hoping for.
+>>>
+>>> I even tried  PVR_I_WANT_A_BROKEN_VULKAN_DRIVER=3D1
+>>> MESA_LOADER_DRIVER_OVERRIDE=3Dzink MESA_DEBUG=3Dcontect glmark2-drm
+>>>
+>>> ...but it only renders with llvmpipe
+>>>
+>>>     glmark2 2023.01
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>>>     OpenGL Information
+>>>     GL_VENDOR:      Mesa
+>>>     GL_RENDERER:    llvmpipe (LLVM 15.0.7, 128 bits)
+>>>     GL_VERSION:     4.5 (Compatibility Profile) Mesa 24.0.1
+>>>     Surface Config: buf=3D32 r=3D8 g=3D8 b=3D8 a=3D8 depth=3D32 stenc=
+il=3D0 samples=3D0
+>>>     Surface Size:   3840x2160 fullscreen
+>>>
+>>>
+>>> I am not as familiar with the Mesa side, but if I can get this workin=
+g to
+>>> a point where something is rendered, even if it's not 100% compliant,=
+ I'd
+>>> like to push patches to the kernel and/or Mesa if necessary.
+>>
+>> FYI, the glmark2 I tested on RZ/G2L with panfrost is with wayland wind=
+ow system [1].
+>>
+>> Maybe there should be an panfrost equivalent package for powevr is ava=
+ilable in mesa??
+>> That is the only difference w.r.to panfrost.
+>>
+>> PACKAGECONFIG_append_pn-mesa =3D " egl kmsro panfrost"
+>>
+>=20
+> I am not using Yocto, because I am using Ubuntu, but I have build Mesa
+> per the instructions they provided, but the glue that connects the
+> powervr to the rcar-du isn't as clear.  I looked at the panfrost
+> implementation, but I didn't see anything obvious.   It looks like the
+> panfrost integrates with the kms driver, which I was rather expecting
+> powervr would do.  I can tell the mesa library is build built and
+> loaded but it's not attempting to use it for some reason
+>=20
+> The GX6250 that is supported looks like it needs some additional
+> look-up-tables added to src/imagination/common/pvr_device_info.c
+> inside Mesa because the LUT they have is for a different BVNC despite
+> the firmware for the BVNC being posted.  I'll have to see if I can
+> find documentation for the the features that are enabled or not within
+> this variant of the the GX6250.
+
+You can find device info for some devices which are not fully supported
+(yet) in [2], including what I think should be the GX6250 you=E2=80=99re =
+looking
+at. I=E2=80=99m not sure how up to date that branch=E2=80=99s base is, so=
+ probably best
+to cherry-pick the change(s) you need.
+
+Matt
+
+[2]: https://gitlab.freedesktop.org/imagination/mesa/-/tree/dev/devinfo
+
+> adam
+>=20
+>>
+>> [1] https://renesas.info/wiki/RZ-G/Panfrost_for_RZG2L
+>>
+>>
+>> Cheers,
+>> Biju
+>>
+
+--------------dI1S9z5QqJcHo0zOM6RJPqjk--
+
+--------------Aix8ELYVlghNoPTks37bcxNN
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQS4qDmoJvwmKhjY+nN5vBnz2d5qsAUCZdOQowUDAAAAAAAKCRB5vBnz2d5qsJ//
+AP0W1k3pzJidPsIUsx6Vi2mzxtJXsuE+aWCkaF6FH07afgEAr4MIpKtlIjK+rkjUeWwtEI9M6N9b
+HRlEMl1/qD8UUQk=
+=Xtes
+-----END PGP SIGNATURE-----
+
+--------------Aix8ELYVlghNoPTks37bcxNN--
 
