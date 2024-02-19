@@ -1,57 +1,54 @@
-Return-Path: <linux-kernel+bounces-71048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E39E859FFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:40:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8057859FFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A57C280C44
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:40:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A03FB227B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:40:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB4624B24;
-	Mon, 19 Feb 2024 09:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67320241E1;
+	Mon, 19 Feb 2024 09:40:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HXHbO1Ha"
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC4D249E0
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="lq9ubTHt"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E9425569;
+	Mon, 19 Feb 2024 09:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708335611; cv=none; b=uPR0V8RbaTNUxtjit83pVd9T3QVAxJKyb0KlFCnUmCVbsWzfYrToQOdYBHCVNJ6istAtq8ewoYQCBUdRefPckiPoHDYStpw+IkzSeVJCFX84EPBEyVq4tf2ipdH5QK74NyXkJL9AEuGfE9UlVA8yVBWPPw+1Nh4OmxeF1TirXYw=
+	t=1708335625; cv=none; b=Ili8wbZTG+2DHajfS0xVDMl0fOej3wLhqMR4lwCzMFxL/xFQVcHhmrRu5j2tKdi5YLSlqTzWAYpcQPSiJtcztC5p0vvkHeBUgruJhZbZNfjFd8AyK06z4ixNz+SpkpEZeTtPcRsIGEiLWHRv6wZDn1wpmmdiqaxlEawNtev2zXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708335611; c=relaxed/simple;
-	bh=iNShBvkReSuu3CObKikmHEsOyAXAVtv2YtxF61VShtk=;
+	s=arc-20240116; t=1708335625; c=relaxed/simple;
+	bh=+0z+WLSqM9PLe9yU45IvLUSUrPaur/xg7coLCs8rcdU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gOYCpDgpN7hpOXKwOxKWrLRnYNJLz48ZJKMLSELmAItY969yN5JNIh8fsJWJwdcu7QsuVBKWjcsbcMnBJtkmXgbp4YVq9ci5hrFkqXgbTxBdMcVBtc+f99zzQnSb3UND8r3lXDlfFTPDGdfmEHNavl+pkfuiI92s/lVwepjqs/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HXHbO1Ha; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 19 Feb 2024 04:40:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708335607;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZSvzriXmD4pK+Pgn1DkXZoJ6hH/hBfzEAXXtTbSS1J4=;
-	b=HXHbO1HaXD3vfobQgbk+7mC2negYDTsMZEjy5mJ/qZMuSNKJjUvhQKC+EoIT+r75vI0ESD
-	AxjQsKWW0H3YvwEu30cPRfi0az1/cD7aebrQOd/97d70JvCH9XylQFuCkCsxHTZ2sbaRsw
-	BkEqvNHi97Y8p6skgyxGQVO7wPuByGY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Arnd Bergmann <arnd@arndb.de>, Calvin Owens <jcalvinowens@gmail.com>, 
-	Dave Martin <Dave.Martin@arm.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, 
-	"linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: [PATCH] arm: Silence gcc warnings about arch ABI drift
-Message-ID: <xs2splnjhlj257uca5yae64fp4solc4ugbxrkczoyd75n42r66@42boyzdcmyj4>
-References: <fe51512baa18e1480ce997fc535813ce6a0b0721.1708286962.git.jcalvinowens@gmail.com>
- <431dd956-ad31-4da8-ad42-34f7380824bb@app.fastmail.com>
- <ZdMe24xN1Ej4QoVU@shell.armlinux.org.uk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HGCmJbwi4RqCz6X88uf7QjjenddDgYO093SA3mnI+jkgaswokpampC/CnkSFTRWCN+Hr8hEQ2Jf6ukiEcDAq/iPPOJMsWtGMQX2SdJxx3UXyCy4AwLlmtftjUaAQSgUQGhIuqxqFNIp9n5HRz6+f7Tvxosq1ay7bWtpq1Pl1e34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=lq9ubTHt; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id 0200320835FB; Mon, 19 Feb 2024 01:40:23 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0200320835FB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1708335624;
+	bh=ELvZ5Y3ANrK+RgjK2Cz1IwCcePKRlLVuyLn+tsrpu80=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lq9ubTHtST3vhh96PIlNVg6zcGkA5oGUWBSYPuT2M3oTjiND+HFtSpsRTWV+R0gSU
+	 2GNU5xMZKGxNhYF6tW7LQtI/thJo2OPoScD2fEaUccSqmqlkmEs2mAfUBo+rvaQe9+
+	 k5vMVrAT193H6tabZQDfsUBWpf8oLZ4Ge6N6ea74=
+Date: Mon, 19 Feb 2024 01:40:23 -0800
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ssengar@microsoft.com
+Subject: Re: [PATCH 2/6] uio_hv_generic: Query the ringbuffer size for device
+Message-ID: <20240219094023.GB32526@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1708193020-14740-1-git-send-email-ssengar@linux.microsoft.com>
+ <1708193020-14740-3-git-send-email-ssengar@linux.microsoft.com>
+ <2024021920-wincing-dyslexic-aae1@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,60 +57,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZdMe24xN1Ej4QoVU@shell.armlinux.org.uk>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <2024021920-wincing-dyslexic-aae1@gregkh>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Mon, Feb 19, 2024 at 09:26:51AM +0000, Russell King (Oracle) wrote:
-> On Mon, Feb 19, 2024 at 07:21:11AM +0100, Arnd Bergmann wrote:
-> > I think these should be addressed in bcachefs instead.
-> > While it's not the fault of bcachefs that the calling
-> > convention changed between gcc versions, have a look at
-> > the actual structure layout:
-> > 
-> > struct bch_val {
-> >         __u64           __nothing[0];
-> > };
-> > struct bpos {
-> >         /*
-> >          * Word order matches machine byte order - btree code treats a bpos as a
-> >          * single large integer, for search/comparison purposes
-> >          *
-> >          * Note that wherever a bpos is embedded in another on disk data
-> >          * structure, it has to be byte swabbed when reading in metadata that
-> >          * wasn't written in native endian order:
-> >          */
-> > #if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-> >         __u32           snapshot;
-> >         __u64           offset;
-> >         __u64           inode;
-> > #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
-> >         __u64           inode;
-> >         __u64           offset;         /* Points to end of extent - sectors */
-> >         __u32           snapshot;
-> > #else
-> > #error edit for your odd byteorder.
-> > #endif
-> > } __packed
-> > struct bch_backpointer {
-> >         struct bch_val          v;
-> >         __u8                    btree_id;
-> >         __u8                    level;
-> >         __u8                    data_type;
-> >         __u64                   bucket_offset:40;
-> >         __u32                   bucket_len;
-> >         struct bpos             pos;
-> > } __packed __aligned(8);
-> > 
-> > This is not something that should ever be passed by value
-> > into a function.
+On Mon, Feb 19, 2024 at 09:50:54AM +0100, Greg KH wrote:
+> On Sat, Feb 17, 2024 at 10:03:36AM -0800, Saurabh Sengar wrote:
+> > Query the ring buffer size from pre defined table per device.
+> > Keep the size as is if the device doesn't have any preferred
+> > ring size.
 > 
-> +1 - bcachefs definitely needs fixing. Passing all that as an argument
-> not only means that it has to be read into registers, but also when
-> accessing members, it has to be extracted from those registers as well.
-> 
-> Passing that by argument is utterly insane.
+> What is the "as is" size?
 
-If the compiler people can't figure out a vaguely efficient way to pass
-a small struct by value, that's their problem - from the way you
-describe it, I have to wonder at what insanity is going on there.
+I will elaborate more here.
+
+> 
+> > 
+> > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > ---
+> >  drivers/uio/uio_hv_generic.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
+> > index 20d9762331bd..4bda6b52e49e 100644
+> > --- a/drivers/uio/uio_hv_generic.c
+> > +++ b/drivers/uio/uio_hv_generic.c
+> > @@ -238,6 +238,7 @@ hv_uio_probe(struct hv_device *dev,
+> >  	struct hv_uio_private_data *pdata;
+> >  	void *ring_buffer;
+> >  	int ret;
+> > +	size_t ring_size = hv_dev_ring_size(channel);
+> >  
+> >  	/* Communicating with host has to be via shared memory not hypercall */
+> >  	if (!channel->offermsg.monitor_allocated) {
+> > @@ -245,12 +246,14 @@ hv_uio_probe(struct hv_device *dev,
+> >  		return -ENOTSUPP;
+> >  	}
+> >  
+> > +	if (!ring_size)
+> > +		ring_size = HV_RING_SIZE * PAGE_SIZE;
+> 
+> Why the magic * PAGE_SIZE here?
+> 
+> Where is it documented that ring_size is in pages?
+> 
+> And what happens when PAGE_SIZE is changed?  Why are you relying on that
+> arbritrary value to dictate your buffer sizes to a device that has
+> no relationship with PAGE_SIZE?
+> 
+> Yes, I know you are copying what was there today, but you have the
+> chance to rethink and most importantly, DOCUMENT this decision properly
+> now.
+
+I agree PAGE_SIZE is not accurate here and we should use HV_HYP_PAGE_SIZE.
+This can be further improved by using VMBUS_RING_SIZE macro.
+
+However, I propose addressing this improvement in a separate patch, given
+the are significant changes already present in this series.
+
+- Saurabh
+
+
+> 
+> thanks,
+> 
+> greg k-h
 
