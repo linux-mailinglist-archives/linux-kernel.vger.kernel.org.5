@@ -1,96 +1,143 @@
-Return-Path: <linux-kernel+bounces-72041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B2285AE28
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:05:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB3C885AE2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9282C1C223E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:05:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06C1DB21BDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB1B54FA2;
-	Mon, 19 Feb 2024 22:05:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC2D5577E;
+	Mon, 19 Feb 2024 22:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="VFPptt+c"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oGP+GQB6"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA4A5475D;
-	Mon, 19 Feb 2024 22:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DE554BEC
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708380344; cv=none; b=Me7tKDi19dNtWconIrI+1F48jxCE9mihl4wLmXXqKcXpXNG/fwxJ4ZklUlJApAO8H3CkN1vUGD+DTxpuUX44o9y2fibb3IMT1eI5ULg2QUjOdvyYedUvGGYiIIcA6lfg4+yOji8bLyFBPY53KChyzVlBMN/beYlfk97VFh/jYbg=
+	t=1708380417; cv=none; b=coomKdy9isw3Ge56CPr7Ahkr10IcGT+6mgYZLFuynwn6n4cawn0sQ6YsoMeUfX+AZcfd0XLLTBso1I5ZkjCi6MLNTrJRYu/NweN7I4EtcQvdluhuagJFEDrp22BCAz6b8A4mdSKY91XUWj3J+qTf8We7IzUi5eTwpvG7hpIEmUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708380344; c=relaxed/simple;
-	bh=CfdV8lh0vB5U6rIXeDqDUnBfZgpMWKXBhIyl8zGtYOo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ok3viBGU9zlypavZ1VSfXPx94qfkHUn1vGg6Y3dammZr+FEYe+/t9+Pfb+f0dlN01UHp6KHdobdiqrsSAk7pRVfzowaCBDWTGan1jtBj7d6w3Fa722+MccWtRsf6v/3R1N766XuL+R0MI603k+UwWdCZHqr8cs5ZbASdkzMokX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=VFPptt+c; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=ttqw/VOatjQjjBR0zQPHDaRkA8aGduPx/uYnTvuNi/k=; b=VFPptt+crIZYg4GR716kVOk9ZJ
-	5Yk84Z1B1m/9oOSnXYMa73+/m9lMTIMqeuBvs2IGvT+F8LJ90aRhFssLoOj3mYGXODv5TbreaZFHQ
-	8cpOF/H7ZOl6QX5ur2X5t0Jl38Zz6XyJbbIS1eG51XPJQwmQww0iYPFoQl+WGSXQiC90=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rcBlc-008EcA-Kb; Mon, 19 Feb 2024 23:05:40 +0100
-Date: Mon, 19 Feb 2024 23:05:40 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Yang Xiwen <forbidden405@outlook.com>
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/6] net: hisilicon: add support for
- hisi_femac core on Hi3798MV200
-Message-ID: <0beab72d-2919-447f-88ff-fb7c92b28b61@lunn.ch>
-References: <20240220-net-v3-0-b68e5b75e765@outlook.com>
- <20240220-net-v3-3-b68e5b75e765@outlook.com>
- <29fc21f0-0e46-4d0f-8d4b-c4dbd1689c55@lunn.ch>
- <SEZPR06MB695901E7D4BEABE1B6F319D096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <5572f4dd-dcf2-42ec-99c8-51bf4d1f28ba@lunn.ch>
- <SEZPR06MB6959E5BDA57AF61BFAB19FC096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
+	s=arc-20240116; t=1708380417; c=relaxed/simple;
+	bh=l0HvovpPqMVUQu9B4ZqhpUtqDN71UcjNp3KMDMRYNP8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=BN1FstMEgqTM+lDdiF9DetT71PokVvH+XU3e9ObRkaIjoTL26y5DOxtDZu0YMPbSd/+tMPXMzTow7c/SR++bpcFSpJL1vC8hvXcemsyWVTGxSF155+/pGzhUV62ZaVvALHwgnPKGMVcLp9Tg22YMAQZTtJY7V8b45+KvGVdcxBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oGP+GQB6; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6ade10cb8so9811504276.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:06:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708380414; x=1708985214; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mpOEZIVxoohE3GrUqHhwdrDwGh8LEXRlOdsMaQjdYhc=;
+        b=oGP+GQB6s2Je7VhzfpYJba2+bM5S9z+eV4RJaJFUN5dWI8Tivumk/t0sg/aOroXc7r
+         29vAAfGLHIWGzvb1+A/6TUuFoyXKyYmnorE/tru2PjJoTGHHQW+J3+0EENgOM1U0Fk74
+         OzzIPNe4OWGIvlDgGSxJW1dpRYaaqylFAy3Ee5wizVqs/rsoCecfT1JfUy3cz53STMix
+         EfEtLuUpTEFjV60iB8pztpvkhV8TApvaXGeNUFktmzrvu56LMgoCIaC8+fyyDC8oU2Tp
+         7KCrtwNqDVrWj24E6lQ/IQ+wWWA7APUXSPwLNZsba9cAWMgAewtpOLK8jUrINYc7YZu3
+         Krow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708380414; x=1708985214;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mpOEZIVxoohE3GrUqHhwdrDwGh8LEXRlOdsMaQjdYhc=;
+        b=ZeY9HV0TGiD6n6dTt5nA1gCvhJPz+WbNzlfW1BkefQb2SDOBxpTWluFwHgNJ/bNVG+
+         2GiIqCLrb4vZkrZ+nRIenS0xcn3TqBuGouvTV4TjvPMPq+9IH7cp3ssGDSngScZ0BOwb
+         kuNt4N8+Nl/N8UFMa3nABJNX1oohEsn11IWnCM54TzDXkhw3mildnoPmEqX22K4fz9mW
+         BRzb1CMUYoDoz7Q9C9qmWdLM5DSHbl163h9R0E6/xPYrwoqPPz6PKqgPzgftSXuqnUVj
+         fUuhwjCew/YP5RSRoaeP/giQ95QceojfvKy8jFtzEnZ3hwEDfBpFYDs0yb5EOCEj9x0o
+         sWag==
+X-Forwarded-Encrypted: i=1; AJvYcCXfCc25A5Jaw8DmtwnRXzKTvfeFDACvaZFglCdsrNa0DhT6IuC5P4qzOQ8NPS6kTyXAFjORpPt/+sOM8SWTN/ldBq22iBGEiVIoG7lF
+X-Gm-Message-State: AOJu0Yw8ZzKljwUeFeLCVUOCxyqgP7k5rDUvxuybXSDtRtccAwLTQTvi
+	wRoF5BgwZeSvM3uxoUj5kyci4DUskLPA5Ht+ZKTHLsdnJVKlQM1PTzdAAQx+6D/3Qeq0kGDUp1c
+	CxQ==
+X-Google-Smtp-Source: AGHT+IGRqD5MJLHGgiuZ4aiPpWZMq+YddUVmGLFXTlIV3IDh3/IjNrlEjd6bMLCvEt6hO0XIgEvR5LwUl4c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:120a:b0:dc7:7655:46ce with SMTP id
+ s10-20020a056902120a00b00dc7765546cemr4267897ybu.2.1708380414286; Mon, 19 Feb
+ 2024 14:06:54 -0800 (PST)
+Date: Mon, 19 Feb 2024 14:06:52 -0800
+In-Reply-To: <20240215152916.1158-1-paul@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SEZPR06MB6959E5BDA57AF61BFAB19FC096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
+Mime-Version: 1.0
+References: <20240215152916.1158-1-paul@xen.org>
+Message-ID: <ZdPQ_AcbTYMtArFJ@google.com>
+Subject: Re: [PATCH v13 00/21] KVM: xen: update shared_info and vcpu_info handling
+From: Sean Christopherson <seanjc@google.com>
+To: Paul Durrant <paul@xen.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, David Hildenbrand <david@redhat.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
+	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-> It's not MAC which behaves wrongly, it's the MDIO bus. If we don't follow
-> the reset procedure properly. The MDIO bus fails to respond to any
-> write/read commands. But i believe MAC controller and PHY are still working.
-> I recalled that it can still transfer network packets, though it fails to
-> read PHY registers from MDIO bus so only 10Mbps is available (And the phy id
-> read out is always 0x0, normally it's 0x20669853).
+On Thu, Feb 15, 2024, Paul Durrant wrote:
+> David Woodhouse (1):
+>   KVM: pfncache: rework __kvm_gpc_refresh() to fix locking issues
 > 
-> Maybe during initialization, PHY sent some garbage to MDIO bus and killed
-> it.
+> Paul Durrant (19):
+>   KVM: pfncache: Add a map helper function
+>   KVM: pfncache: remove unnecessary exports
+>   KVM: x86/xen: mark guest pages dirty with the pfncache lock held
+>   KVM: pfncache: add a mark-dirty helper
+>   KVM: pfncache: remove KVM_GUEST_USES_PFN usage
+>   KVM: pfncache: stop open-coding offset_in_page()
+>   KVM: pfncache: include page offset in uhva and use it consistently
+>   KVM: pfncache: allow a cache to be activated with a fixed (userspace)
+>     HVA
+>   KVM: x86/xen: separate initialization of shared_info cache and content
+>   KVM: x86/xen: re-initialize shared_info if guest (32/64-bit) mode is
+>     set
+>   KVM: x86/xen: allow shared_info to be mapped by fixed HVA
+>   KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA
+>   KVM: selftests: map Xen's shared_info page using HVA rather than GFN
+>   KVM: selftests: re-map Xen's vcpu_info using HVA rather than GPA
+>   KVM: x86/xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA
+>     capability
+>   KVM: x86/xen: split up kvm_xen_set_evtchn_fast()
+>   KVM: x86/xen: don't block on pfncache locks in
+>     kvm_xen_set_evtchn_fast()
+>   KVM: pfncache: check the need for invalidation under read lock first
+>   KVM: x86/xen: allow vcpu_info content to be 'safely' copied
+> 
+> Sean Christopherson (1):
+>   KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+> 
+>  Documentation/virt/kvm/api.rst                |  53 ++-
+>  arch/s390/kvm/diag.c                          |   2 +-
+>  arch/s390/kvm/gaccess.c                       |  14 +-
+>  arch/s390/kvm/kvm-s390.c                      |   4 +-
+>  arch/s390/kvm/priv.c                          |   4 +-
+>  arch/s390/kvm/sigp.c                          |   2 +-
+>  arch/x86/kvm/x86.c                            |   7 +-
+>  arch/x86/kvm/xen.c                            | 361 +++++++++++------
+>  include/linux/kvm_host.h                      |  49 ++-
+>  include/linux/kvm_types.h                     |   8 -
+>  include/uapi/linux/kvm.h                      |   9 +-
+>  .../selftests/kvm/x86_64/xen_shinfo_test.c    |  59 ++-
+>  virt/kvm/pfncache.c                           | 382 ++++++++++--------
+>  13 files changed, 591 insertions(+), 363 deletions(-)
 
-MDIO bus masters are really simple things, not much more than a shift
-register. I find it hard to believe the MDIO bus master breaks because
-of reset order. If the MDIO pins went to SoC pins, it would be simple
-to prove, a bus-pirate or similar can capture the signals and sigrok
-can decode MDIO.
+Except for the read_trylock() patch, just a few nits that I can fixup when
+applying, though I'll defeinitely want your eyeballs on the end result as they
+tweaks aren't _that_ trivial.
 
-To me, its more likely the PHY side of the MDIO bus is broken somehow.
-
-   Andrew
+Running tests now, if all goes well I'll push to kvm-x86 within the hour. 
 
