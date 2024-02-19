@@ -1,115 +1,79 @@
-Return-Path: <linux-kernel+bounces-71707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90EE085A94D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F5585A950
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:51:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C3F2E1C21CD7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:49:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E97E51C22015
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:51:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A79CA40C0E;
-	Mon, 19 Feb 2024 16:49:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84FB8405D3;
+	Mon, 19 Feb 2024 16:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q8adDIMF";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="MTWrsG8W"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="u19BYPk5"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8FF23B9
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:49:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033A440BEF
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:51:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708361374; cv=none; b=A+rjqW2L0xy1dnwpyz7opvYA0J8IaOu4nyV4L2kdUB2vaum17e1422HYRhjoWuEcKK/dcN5sXIpOWVNr1cmxww+2sVvNtEaYqfhUUWZ10Rqyq0ee2FB6cPq7M4iDDSredU8x7uCOqz94sd+jIN6faAnywazT4uBmhV52I2zxr8Q=
+	t=1708361474; cv=none; b=ju32Gkhoi9ikhVyhVhvmX3Icv66yIZWQI6y4sbZrTQdlRSPgYXxcSqvBnWKMDiVVEd93uv7mDkOi93+YO6GYON6G6SscsU3RR8box4IVl7OTz7F1RNSDBE3HzrFwGEJXa2tQUE+flihEIPv/8h0xlfSKgX4JOwdsOKW5oCSvt2w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708361374; c=relaxed/simple;
-	bh=Y6EKdBCPl4p5Md0hUI02SPFaxQ5gQVhFLesx9SAjvRo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=h4QWzJ1duNWsAYNUWJUoJwUK9ruh/c3abeC+LbSYn4/OO/Ddk50rSG5q0fHEnAtrs+id7mxKODLyF549EjAkBguDReelxyho71EI4jh6bIUxcFLwqn7xMcuspEoWEav0LeZ5aq2GdX+Qo2CGFu0mPx6FDEy5Xp70vmGhks0JLxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q8adDIMF; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=MTWrsG8W; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708361369;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BU+4flsDNEBo83o/yPdzhjo6IBA6Ub/lrR12JPUBrfk=;
-	b=Q8adDIMFh/RQwClkAghYdeCatkuI1NOnvyuEYoaipex+Df26d/QdX5O9q/TYf+wERymDdc
-	rdHQ++rAkLskvlkl02f8T8pTT6QYRL1E/9WIOXArRdKD6SAnSk8NGchU+uDEZqBB0+YKio
-	Vk8PRHY8VrpYzj/oTSPhz5pq1Dw49MkOo+j/lo9Y9swXtpKbiRygUYVRFHfq0+qk4y3ug1
-	hP3tvVy+MvIBhq0BX6Ixl+luScZeOVrFfP6zrG5pjCYzKoLTRNutuBuG67i9vTWS6TqvO8
-	KsXUGHVKYQ1vcFnVoriq/BDAcTvo0Ez5C5kf1OIyoFys4ZGVO0XIatNZ7aisIg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708361369;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BU+4flsDNEBo83o/yPdzhjo6IBA6Ub/lrR12JPUBrfk=;
-	b=MTWrsG8WwuF+xhBsAu0MhUpUCJ/6TJS6fuHyJvrW4Hvvhz/MqBgAOrGigyenYVRLFsm5SQ
-	WoZV4yBSJ6qpsIAw==
-To: Borislav Petkov <bp@alien8.de>, James Morse <james.morse@arm.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, Fenghua Yu
- <fenghua.yu@intel.com>, Reinette Chatre <reinette.chatre@intel.com>, Ingo
- Molnar <mingo@redhat.com>, H Peter Anvin <hpa@zytor.com>, Babu Moger
- <Babu.Moger@amd.com>, shameerali.kolothum.thodi@huawei.com, D Scott
- Phillips OS <scott@os.amperecomputing.com>, carl@os.amperecomputing.com,
- lcherian@marvell.com, bobo.shaobowang@huawei.com,
- tan.shaopeng@fujitsu.com, baolin.wang@linux.alibaba.com, Jamie Iles
- <quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
- peternewman@google.com, dfustini@baylibre.com, amitsinght@marvell.com,
- David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v9 00/24] x86/resctrl: monitored closid+rmid together,
- separate arch/fs locking
-In-Reply-To: <20240217105543.GAZdCQr_nosDP4tGuO@fat_crate.local>
-References: <20240213184438.16675-1-james.morse@arm.com>
- <20240217105543.GAZdCQr_nosDP4tGuO@fat_crate.local>
-Date: Mon, 19 Feb 2024 17:49:29 +0100
-Message-ID: <87zfvwieli.ffs@tglx>
+	s=arc-20240116; t=1708361474; c=relaxed/simple;
+	bh=DdD3j5XhCn0EknIO/60FDYkuXpk4uDO0Md2NP1sph8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CXeZlk+LQ1waDJ0b0OAk47y0FqIxCkdoH1NzIVcuR3IS4JCiZAoCFp1vIsII8tMF7Zxoq8AmSFTM94RLmTpZYiZ6cpOj1Yzrs//dDGLFdDEzJZuKPPAetcbZkGEnG6wS8nHpixhcDo4inIYTun2ZmZbaHvQbRAh5f0cPapRX7aA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=u19BYPk5; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=i0E4eQpTOIwPHD4AY+ANWQYLzpqrYXlwWbKYvpZ1KIQ=; b=u19BYPk5u9c0pMjXJTYREC1I7o
+	/e42Y6IuzK+u/EZSLfbcVb59UobsbB5xDL/1Vl6Z+w0ESAaGYDzzOXHoIPUmeZDGXW+OJdJAMfkLd
+	A3QwVsJLULB9uHsyacx3pv0ET2dc1hbEq+6PGABRtG/8fXgyJfKFtWpkYBYx6d8m+jUtU2Igxh5Sq
+	zd3EblFPpGBgAojJ2YRZN2KcddLs99hBq2L9U0lfpKPoZ4E2VsVE3MTYXp9ETwppxVqbIpiO4ydqM
+	blid2wBl4QRukgIySrSbOUocpIJ2utO8GhtFMcxfm0kOiMQC1Rw0IBpyDG3er2njLH64pv7LVeSp2
+	wA5CowFg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rc6rD-0000000DIa6-1rTK;
+	Mon, 19 Feb 2024 16:51:07 +0000
+Date: Mon, 19 Feb 2024 16:51:07 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: lipeifeng@oppo.com
+Cc: akpm@linux-foundation.org, david@redhat.com, osalvador@suse.de,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] Support kshrinkd
+Message-ID: <ZdOG-135dLP0IeU8@casper.infradead.org>
+References: <20240219141703.3851-1-lipeifeng@oppo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240219141703.3851-1-lipeifeng@oppo.com>
 
-On Sat, Feb 17 2024 at 11:55, Borislav Petkov wrote:
+On Mon, Feb 19, 2024 at 10:17:01PM +0800, lipeifeng@oppo.com wrote:
+> 'commit 6d4675e60135 ("mm: don't be stuck to rmap lock on reclaim path")'
+> The above patch would avoid reclaim path to stuck rmap lock.
+> But it would cause some folios in LRU not sorted by aging because
+> the contended-folios in rmap_walk would be putbacked to the head of LRU
+> during shrink_folio_list even if the folios are very cold.
+> 
+> The patchset setups new kthread:kshrinkd to reclaim the contended-folio
+> in rmap_walk when shrink_folio_list, to avoid to break the rules of LRU.
 
-> On Tue, Feb 13, 2024 at 06:44:14PM +0000, James Morse wrote:
->> Hello!
->> 
->> It's been back and forth for whether this series should be rebased onto Tony's
->> SNC series. This version isn't, its based on tip/x86/cache.
->> (I have the rebased-and-tested versions if anyone needs them)
->
-> The set applied ontop of tip:x86/cache gives:
->
-> vmlinux.o: in function `get_domain_from_cpu':
-> (.text+0x150f33): undefined reference to `lockdep_is_cpus_held'
-> ld: vmlinux.o: in function `rdt_ctrl_update':
-> (.text+0x150fbc): undefined reference to `lockdep_is_cpus_held'
+Patch 1/2 didn't make it to my inbox or to lore.  But you should talk
+about the real world consequences of this in the cover letter.  What do
+we observe if this problem happens?  How much extra performance will we
+gain by applying this patch?
 
-Wants to be folded into patch 24.
-
-Thanks,
-
-        tglx
----
---- a/arch/x86/kernel/cpu/resctrl/core.c
-+++ b/arch/x86/kernel/cpu/resctrl/core.c
-@@ -368,8 +368,8 @@ struct rdt_domain *get_domain_from_cpu(i
- 	 * about locks this thread holds will lead to false positives. Check
- 	 * someone is holding the CPUs lock.
- 	 */
--	if (IS_ENABLED(CONFIG_LOCKDEP))
--		lockdep_is_cpus_held();
-+	if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && IS_ENABLED(CONFIG_LOCKDEP))
-+		WARN_ON_ONCE(!lockdep_is_cpus_held());
- 
- 	list_for_each_entry(d, &r->domains, list) {
- 		/* Find the domain that contains this CPU */
 
