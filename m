@@ -1,242 +1,343 @@
-Return-Path: <linux-kernel+bounces-71018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29FC6859F75
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:18:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D81F5859F8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:22:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93A72B22962
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:18:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E3F428482A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:22:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C91224B41;
-	Mon, 19 Feb 2024 09:17:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MWMh6DJ/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GzteuApn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nhZfcUQl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8v+r0UKC"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C432374C;
-	Mon, 19 Feb 2024 09:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029B023765;
+	Mon, 19 Feb 2024 09:21:21 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C28E22F00;
+	Mon, 19 Feb 2024 09:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708334260; cv=none; b=oiq98HdcZHBtOKMNkIeGm6Wc8hbK8OK8YYjgDiPfYuLkQV7L/JYtnnYSZvD+paUDwBB9OcoDQuo5ZVV5PSVddCoQs9YqcJMMXqQVEwj3Fq7USYb2YiwBx8ePij4vxXtaxsSOejVKuK9TmkWnwqu1pG29urajuX20PPodYQ0DZpM=
+	t=1708334480; cv=none; b=l8mrdujFZ82BMfAHLMsyhmEZ8ugWQ7uQWe+Y/xwqB/FQvKZZzqqHJ5PgK9bfXeyrW3T/jkl5otiWu6SFjuEX1ahg2UW5Ky96lzkb+3wuBGYDUdfv+zFiNid/fLG8q5egmS6i0WfqqSvFGPpV7j91xwNgVH4b+MgsEFmj1xLWH4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708334260; c=relaxed/simple;
-	bh=IJlX/1YNrW4MfN2e7g/IXhlJ0tovkeaoJK+d3hUcH1w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lLonUzOZOWfm87L73QS8uRueM+3U3cPrY1wo8qoH08UGpEGY7KOmOq5fXrcvrhqmzKLE+lNYKGQMA3gSOkwGB6CMN8kIdLcdV93JXP/5DoNLKzcKbaz6ietyrvdbcDD66mrIBRS98YujEMC4xPUAVLXNq2HL7ISjKDuiWLilc6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=MWMh6DJ/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GzteuApn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nhZfcUQl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8v+r0UKC; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AD65221EBE;
-	Mon, 19 Feb 2024 09:17:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708334256; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=MWMh6DJ/ibVstvW8CHhxalEdn+EfDp2Pp6CLtUS7w2G8aKm80u24jjbaqFlFeJq3lsm9Ch
-	zmZU9F9fWuq1aSYZnzyc2Nr6Wh+ESMVZCBy+st8OYiqW4rLl90iwbWjzdnPcA6cBBX1juT
-	wQ7oin3joQHdQCFUzFj+7IJwYO/35a0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708334256;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=GzteuApnghPs8TtGI0ScLwvh9hL/i4LonLgBBl+wck2XX6f4rm3q0fbvXB4+6HxOzNxgPu
-	qyCzH5DeLqoEgEBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708334254; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=nhZfcUQlK7pH0NXDM7sv2fYcGG6ZDiDb66Gs3exRJKPJtn1oKKXZk7O+L9mcFpHEICfrnI
-	AaunILK2z67g4pS3/czle2C8GcshxFhiA/5Fdd7m6L0ODF+AijttNP+JrMY5ZWs86XQc47
-	L4h7iwvt+dm0nWThHKdQsKNIJzn5kPA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708334254;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vIC/a+gVDD7XPQtjCAkXOILzScqhk7P47GEkxD0UDQs=;
-	b=8v+r0UKCTIoGKIjYstbF4ma5EEhXx29Kjd7rwRP4H+96aLGc+a6L9kcHVm8j614GlmUDPP
-	qNjxnGR/35wREXDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 18E5713647;
-	Mon, 19 Feb 2024 09:17:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gyquBa4c02VrEgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 19 Feb 2024 09:17:34 +0000
-Message-ID: <5bd3761f-217d-45bb-bcd2-797f82c8a44f@suse.cz>
-Date: Mon, 19 Feb 2024 10:17:33 +0100
+	s=arc-20240116; t=1708334480; c=relaxed/simple;
+	bh=1x9WusD5W5xRgz8XHGTSX8YHleR1EtqPX6p44zrthwY=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=fU2RAH8SMH6vaIWHm6I18XuV6qtyf5OTtP+0jEeXmC16lJA8JfZ9pmg1KZ8h4fDNKerM7A3Ik9WTgBZ7f5hCp37ffL3dbV8H5dEz+VA3gSO78q6emfk1bbqLd6jGYoWFXRJeU0+1X3ojv2eirCJQHOLCXzkqfzZ51hmCecFGXhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8AxeeiJHdNlREsOAA--.18770S3;
+	Mon, 19 Feb 2024 17:21:13 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxX8+FHdNlquY7AA--.22027S3;
+	Mon, 19 Feb 2024 17:21:11 +0800 (CST)
+Subject: Re: [PATCH v4 4/6] LoongArch: Add paravirt interface for guest kernel
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240201031950.3225626-1-maobibo@loongson.cn>
+ <20240201031950.3225626-5-maobibo@loongson.cn>
+ <CAAhV-H7dXsU+WM172PWi_m8TYpYmzG_SW-vVQcdnOdETUxQ9+w@mail.gmail.com>
+ <63f8bd29-c0da-167b-187d-61c56eb081a6@loongson.cn>
+ <CAAhV-H6HQHyu=0zyv6FVLRJTkOcmnkLk5h361yGd2igYnuMMng@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <4dcbd5b2-ba69-e254-b3bb-75a75e5f9215@loongson.cn>
+Date: Mon, 19 Feb 2024 17:21:15 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 32/35] codetag: debug: skip objext checking when it's
- for objext itself
+In-Reply-To: <CAAhV-H6HQHyu=0zyv6FVLRJTkOcmnkLk5h361yGd2igYnuMMng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com,
- hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de,
- dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com,
- corbet@lwn.net, void@manifault.com, peterz@infradead.org,
- juri.lelli@redhat.com, catalin.marinas@arm.com, will@kernel.org,
- arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
- nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev,
- rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com,
- yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com,
- hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org,
- ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org,
- ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- bristot@redhat.com, vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, shakeelb@google.com,
- songmuchun@bytedance.com, jbaron@akamai.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240212213922.783301-1-surenb@google.com>
- <20240212213922.783301-33-surenb@google.com>
- <f0a56027-472d-44a6-aba5-912bd50ee3ae@suse.cz>
- <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <CAJuCfpGUTu7uhcR-23=0d3Wnn8ZbDtNwTaFnukd9qYYVHS9aSA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=nhZfcUQl;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=8v+r0UKC
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 TO_MATCH_ENVRCPT_SOME(0.00)[];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_GT_50(0.00)[73];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[linux-foundation.org,linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.20
-X-Rspamd-Queue-Id: AD65221EBE
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+X-CM-TRANSID:AQAAf8AxX8+FHdNlquY7AA--.22027S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3XFW7XF1DZw1xZF1DtF43Jwc_yoWfWFy5pa
+	4DAF4kGa18Gr1fArsFg398WFnxt3s7GF12gF12ga40yrZFvF17Jr18tryj9FykAa1kG3W0
+	qFyrGw4a9F15t3gCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxYiiDU
+	UUU
 
-On 2/19/24 02:04, Suren Baghdasaryan wrote:
-> On Fri, Feb 16, 2024 at 6:39 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+
+
+On 2024/2/19 下午4:48, Huacai Chen wrote:
+> On Mon, Feb 19, 2024 at 12:11 PM maobibo <maobibo@loongson.cn> wrote:
 >>
->> On 2/12/24 22:39, Suren Baghdasaryan wrote:
->> > objext objects are created with __GFP_NO_OBJ_EXT flag and therefore have
->> > no corresponding objext themselves (otherwise we would get an infinite
->> > recursion). When freeing these objects their codetag will be empty and
->> > when CONFIG_MEM_ALLOC_PROFILING_DEBUG is enabled this will lead to false
->> > warnings. Introduce CODETAG_EMPTY special codetag value to mark
->> > allocations which intentionally lack codetag to avoid these warnings.
->> > Set objext codetags to CODETAG_EMPTY before freeing to indicate that
->> > the codetag is expected to be empty.
->> >
->> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->> > ---
->> >  include/linux/alloc_tag.h | 26 ++++++++++++++++++++++++++
->> >  mm/slab.h                 | 25 +++++++++++++++++++++++++
->> >  mm/slab_common.c          |  1 +
->> >  mm/slub.c                 |  8 ++++++++
->> >  4 files changed, 60 insertions(+)
->> >
->> > diff --git a/include/linux/alloc_tag.h b/include/linux/alloc_tag.h
->> > index 0a5973c4ad77..1f3207097b03 100644
 >>
->> ...
 >>
->> > index c4bd0d5348cb..cf332a839bf4 100644
->> > --- a/mm/slab.h
->> > +++ b/mm/slab.h
->> > @@ -567,6 +567,31 @@ static inline struct slabobj_ext *slab_obj_exts(struct slab *slab)
->> >  int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
->> >                       gfp_t gfp, bool new_slab);
->> >
->> > +
->> > +#ifdef CONFIG_MEM_ALLOC_PROFILING_DEBUG
->> > +
->> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
->> > +{
->> > +     struct slabobj_ext *slab_exts;
->> > +     struct slab *obj_exts_slab;
->> > +
->> > +     obj_exts_slab = virt_to_slab(obj_exts);
->> > +     slab_exts = slab_obj_exts(obj_exts_slab);
->> > +     if (slab_exts) {
->> > +             unsigned int offs = obj_to_index(obj_exts_slab->slab_cache,
->> > +                                              obj_exts_slab, obj_exts);
->> > +             /* codetag should be NULL */
->> > +             WARN_ON(slab_exts[offs].ref.ct);
->> > +             set_codetag_empty(&slab_exts[offs].ref);
->> > +     }
->> > +}
->> > +
->> > +#else /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
->> > +
->> > +static inline void mark_objexts_empty(struct slabobj_ext *obj_exts) {}
->> > +
->> > +#endif /* CONFIG_MEM_ALLOC_PROFILING_DEBUG */
->> > +
+>> On 2024/2/19 上午10:42, Huacai Chen wrote:
+>>> Hi, Bibo,
+>>>
+>>> On Thu, Feb 1, 2024 at 11:19 AM Bibo Mao <maobibo@loongson.cn> wrote:
+>>>>
+>>>> The patch adds paravirt interface for guest kernel, function
+>>>> pv_guest_initi() firstly checks whether system runs on VM mode. If kernel
+>>>> runs on VM mode, it will call function kvm_para_available() to detect
+>>>> whether current VMM is KVM hypervisor. And the paravirt function can work
+>>>> only if current VMM is KVM hypervisor, since there is only KVM hypervisor
+>>>> supported on LoongArch now.
+>>>>
+>>>> This patch only adds paravirt interface for guest kernel, however there
+>>>> is not effective pv functions added here.
+>>>>
+>>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>>>> ---
+>>>>    arch/loongarch/Kconfig                        |  9 ++++
+>>>>    arch/loongarch/include/asm/kvm_para.h         |  7 ++++
+>>>>    arch/loongarch/include/asm/paravirt.h         | 27 ++++++++++++
+>>>>    .../include/asm/paravirt_api_clock.h          |  1 +
+>>>>    arch/loongarch/kernel/Makefile                |  1 +
+>>>>    arch/loongarch/kernel/paravirt.c              | 41 +++++++++++++++++++
+>>>>    arch/loongarch/kernel/setup.c                 |  2 +
+>>>>    7 files changed, 88 insertions(+)
+>>>>    create mode 100644 arch/loongarch/include/asm/paravirt.h
+>>>>    create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
+>>>>    create mode 100644 arch/loongarch/kernel/paravirt.c
+>>>>
+>>>> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+>>>> index 10959e6c3583..817a56dff80f 100644
+>>>> --- a/arch/loongarch/Kconfig
+>>>> +++ b/arch/loongarch/Kconfig
+>>>> @@ -585,6 +585,15 @@ config CPU_HAS_PREFETCH
+>>>>           bool
+>>>>           default y
+>>>>
+>>>> +config PARAVIRT
+>>>> +       bool "Enable paravirtualization code"
+>>>> +       depends on AS_HAS_LVZ_EXTENSION
+>>>> +       help
+>>>> +          This changes the kernel so it can modify itself when it is run
+>>>> +         under a hypervisor, potentially improving performance significantly
+>>>> +         over full virtualization.  However, when run without a hypervisor
+>>>> +         the kernel is theoretically slower and slightly larger.
+>>>> +
+>>>>    config ARCH_SUPPORTS_KEXEC
+>>>>           def_bool y
+>>>>
+>>>> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
+>>>> index 9425d3b7e486..41200e922a82 100644
+>>>> --- a/arch/loongarch/include/asm/kvm_para.h
+>>>> +++ b/arch/loongarch/include/asm/kvm_para.h
+>>>> @@ -2,6 +2,13 @@
+>>>>    #ifndef _ASM_LOONGARCH_KVM_PARA_H
+>>>>    #define _ASM_LOONGARCH_KVM_PARA_H
+>>>>
+>>>> +/*
+>>>> + * Hypcall code field
+>>>> + */
+>>>> +#define HYPERVISOR_KVM                 1
+>>>> +#define HYPERVISOR_VENDOR_SHIFT                8
+>>>> +#define HYPERCALL_CODE(vendor, code)   ((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
+>>>> +
+>>>>    /*
+>>>>     * LoongArch hypcall return code
+>>>>     */
+>>>> diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
+>>>> new file mode 100644
+>>>> index 000000000000..b64813592ba0
+>>>> --- /dev/null
+>>>> +++ b/arch/loongarch/include/asm/paravirt.h
+>>>> @@ -0,0 +1,27 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +#ifndef _ASM_LOONGARCH_PARAVIRT_H
+>>>> +#define _ASM_LOONGARCH_PARAVIRT_H
+>>>> +
+>>>> +#ifdef CONFIG_PARAVIRT
+>>>> +#include <linux/static_call_types.h>
+>>>> +struct static_key;
+>>>> +extern struct static_key paravirt_steal_enabled;
+>>>> +extern struct static_key paravirt_steal_rq_enabled;
+>>>> +
+>>>> +u64 dummy_steal_clock(int cpu);
+>>>> +DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
+>>>> +
+>>>> +static inline u64 paravirt_steal_clock(int cpu)
+>>>> +{
+>>>> +       return static_call(pv_steal_clock)(cpu);
+>>>> +}
+>>> The steal time code can be removed in this patch, I think.
+>>>
+>> Originally I want to remove this piece of code, but it fails to compile
+>> if CONFIG_PARAVIRT is selected. Here is reference code, function
+>> paravirt_steal_clock() must be defined if CONFIG_PARAVIRT is selected.
 >>
->> I assume with alloc_slab_obj_exts() moved to slub.c, mark_objexts_empty()
->> could move there too.
+>> static __always_inline u64 steal_account_process_time(u64 maxtime)
+>> {
+>> #ifdef CONFIG_PARAVIRT
+>>           if (static_key_false(&paravirt_steal_enabled)) {
+>>                   u64 steal;
+>>
+>>                   steal = paravirt_steal_clock(smp_processor_id());
+>>                   steal -= this_rq()->prev_steal_time;
+>>                   steal = min(steal, maxtime);
+>>                   account_steal_time(steal);
+>>                   this_rq()->prev_steal_time += steal;
+>>
+>>                   return steal;
+>>           }
+>> #endif
+>>           return 0;
+>> }
+> OK, then keep it.
 > 
-> No, I think mark_objexts_empty() belongs here. This patch introduced
-> the function and uses it. Makes sense to me to keep it all together.
+>>
+>>>> +
+>>>> +int pv_guest_init(void);
+>>>> +#else
+>>>> +static inline int pv_guest_init(void)
+>>>> +{
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>> +#endif // CONFIG_PARAVIRT
+>>>> +#endif
+>>>> diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h b/arch/loongarch/include/asm/paravirt_api_clock.h
+>>>> new file mode 100644
+>>>> index 000000000000..65ac7cee0dad
+>>>> --- /dev/null
+>>>> +++ b/arch/loongarch/include/asm/paravirt_api_clock.h
+>>>> @@ -0,0 +1 @@
+>>>> +#include <asm/paravirt.h>
+>>>> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
+>>>> index 3c808c680370..662e6e9de12d 100644
+>>>> --- a/arch/loongarch/kernel/Makefile
+>>>> +++ b/arch/loongarch/kernel/Makefile
+>>>> @@ -48,6 +48,7 @@ obj-$(CONFIG_MODULES)         += module.o module-sections.o
+>>>>    obj-$(CONFIG_STACKTRACE)       += stacktrace.o
+>>>>
+>>>>    obj-$(CONFIG_PROC_FS)          += proc.o
+>>>> +obj-$(CONFIG_PARAVIRT)         += paravirt.o
+>>>>
+>>>>    obj-$(CONFIG_SMP)              += smp.o
+>>>>
+>>>> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
+>>>> new file mode 100644
+>>>> index 000000000000..21d01d05791a
+>>>> --- /dev/null
+>>>> +++ b/arch/loongarch/kernel/paravirt.c
+>>>> @@ -0,0 +1,41 @@
+>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>> +#include <linux/export.h>
+>>>> +#include <linux/types.h>
+>>>> +#include <linux/jump_label.h>
+>>>> +#include <linux/kvm_para.h>
+>>>> +#include <asm/paravirt.h>
+>>>> +#include <linux/static_call.h>
+>>>> +
+>>>> +struct static_key paravirt_steal_enabled;
+>>>> +struct static_key paravirt_steal_rq_enabled;
+>>>> +
+>>>> +static u64 native_steal_clock(int cpu)
+>>>> +{
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>> +DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
+>>> The steal time code can be removed in this patch, I think.
+>> Ditto, the same reason with above.
+>>>
+>>>> +
+>>>> +static bool kvm_para_available(void)
+>>>> +{
+>>>> +       static int hypervisor_type;
+>>>> +       int config;
+>>>> +
+>>>> +       if (!hypervisor_type) {
+>>>> +               config = read_cpucfg(CPUCFG_KVM_SIG);
+>>>> +               if (!memcmp(&config, KVM_SIGNATURE, 4))
+>>>> +                       hypervisor_type = HYPERVISOR_KVM;
+>>>> +       }
+>>>> +
+>>>> +       return hypervisor_type == HYPERVISOR_KVM;
+>>>> +}
+>>>> +
+>>>> +int __init pv_guest_init(void)
+>>>> +{
+>>>> +       if (!cpu_has_hypervisor)
+>>>> +               return 0;
+>>>> +       if (!kvm_para_available())
+>>>> +               return 0;
+>>>> +
+>>>> +       return 1;
+>>>> +}
+>>>> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
+>>>> index edf2bba80130..de5c36dccc49 100644
+>>>> --- a/arch/loongarch/kernel/setup.c
+>>>> +++ b/arch/loongarch/kernel/setup.c
+>>>> @@ -43,6 +43,7 @@
+>>>>    #include <asm/efi.h>
+>>>>    #include <asm/loongson.h>
+>>>>    #include <asm/numa.h>
+>>>> +#include <asm/paravirt.h>
+>>>>    #include <asm/pgalloc.h>
+>>>>    #include <asm/sections.h>
+>>>>    #include <asm/setup.h>
+>>>> @@ -367,6 +368,7 @@ void __init platform_init(void)
+>>>>           pr_info("The BIOS Version: %s\n", b_info.bios_version);
+>>>>
+>>>>           efi_runtime_init();
+>>>> +       pv_guest_init();
+>>> I prefer use CONFIG_PARAVIRT here, though you have a dummy version for
+>>> !CONFIG_PARAVIRT, I think it is better to let others clearly know that
+>>> PARAVIRT is an optional feature.
+>> I remember that there is rule that CONFIG_xxx had better be used in
+>> header files rather than c code, so that the code looks neat. Am I wrong?
+> That depends on what we want, sometimes we want to hide the details,
+> but sometimes we want to give others a notice.
+I want to keep code clean here :)
 
-Hi,
+> 
+> And there is another problem: if you want to centralize all pv init
+> functions, it is better to use pv_features_init() rather than
+> pv_guest_init(); if you want to give each feature an init function,
+> then we don't need pv_guest_init here, and we can then add a
+> pv_ipi_init() in the last patch.
+Currently I have no idea how to add other pv features like pv 
+stealtimer, I will consider this when adding other pv features. 
+pv_ipi_init/pv_guest_init is both ok for me, pv_ipi_init is better for now.
 
-here I didn't mean moving between patches, but files. alloc_slab_obj_exts()
-in slub.c means all callers of mark_objexts_empty() are in slub.c so it
-doesn't need to be in slab.h
+Regards
+Bibo Mao
 
-Also same thing with mark_failed_objexts_alloc() and
-handle_failed_objexts_alloc() in patch 34/35.
+> 
+> Huacai
+> 
+>>
+>> Regards
+>> Bibo Mao
+>>>
+>>> Huacai
+>>>
+>>>
+>>> Huacai
+>>>>    }
+>>>>
+>>>>    static void __init check_kernel_sections_mem(void)
+>>>> --
+>>>> 2.39.3
+>>>>
+>>>>
+>>
 
 
