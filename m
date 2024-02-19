@@ -1,114 +1,141 @@
-Return-Path: <linux-kernel+bounces-71057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F358C85A01F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:48:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C654485A020
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:48:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93C8E1F22C7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:48:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8182C281C42
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B371524B2C;
-	Mon, 19 Feb 2024 09:48:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE9425579;
+	Mon, 19 Feb 2024 09:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gApwUOIe"
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lGCtXy+j"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9804320DFD
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9C12556D;
+	Mon, 19 Feb 2024 09:48:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708336099; cv=none; b=hlkZXKBJ9Pxn16x3u/1nClLs1tmY3HxQVOn5xpMzrUmI9D94iy2e3bOiim7gIsrKX/aQI0h3XAuyi2r0YFjvJVQdyS0BR583AZjND2pb1dCxLOT8eaEPn3DQE4DxSmO9ceTX9mqAoP41v8nEoOLdxKledVIyCSRAz/i5dTEzsTY=
+	t=1708336111; cv=none; b=LiZnP/N2saN4Fgi3Gn+Sc9Jdq5rNHMs7gilT92lt+7GJKkoyhrFzZ/uJPzvWjp1i38UMfS6lpMW/I4ne+ReziUey0pPL0tHlW9dG+FZTWhW4w5dMnrQXmHmk/Tcr8gB+ragILYQ043YNJSwXh7cI2sBdyuVDUEgCjhGijNGoA4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708336099; c=relaxed/simple;
-	bh=/9u9EajaJ9Oc5108+x8+7zUM++/57HPGvjhZQ7Eg8dc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZeegRw8IEQnO/8X1wv6MREQvaCGvDpkdO4a+7ftM9PUHS/Rm113So6EqHkCNBVK2TsDCVtGZJSzfttZCO/4KW/Hhpa0yVr2AVK+CsqQvpwAlzlm1DRvy8ZzwAez7CAStkwpjt03DnxAzQbeIQTHQf1UPfSsC6uOap7843RcriyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gApwUOIe; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42c7908fad8so6428011cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:48:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708336096; x=1708940896; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/9u9EajaJ9Oc5108+x8+7zUM++/57HPGvjhZQ7Eg8dc=;
-        b=gApwUOIexkfkOshZvqDHpV3DjYAx5XYxX8MNiTWHFI3PzHHnlSYtIiDzTHQZOxXHwB
-         lUbH0drdrnuq9YL9xy76Tm0Z1PoZdLv1D+mLZnNuI1hdOt8+xqsVLr6Nwwz31m8ftHlh
-         B8RlHp4mHlFdJ/mpPraS2Hbh9ppb1j5EeKacorvuIC+7ROKFYgHgJZZ1Yuxak34/QA71
-         i212joIHDE0DNSZJTXdN5Axmpj6EBP/jbqZ+8YdvB155b2yKWWaFJnfDpJndD6mm+KZE
-         hoeg5wFDuL46MYGeoU+MVo/spdfL9/rSv4ktyIY1w+cede0kevznxlSeeafnMvMni449
-         aJjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708336096; x=1708940896;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/9u9EajaJ9Oc5108+x8+7zUM++/57HPGvjhZQ7Eg8dc=;
-        b=DJVIBwRoJpaBwIpmWzS/gYFYNsGfk0QrU2CyCbcyCGYtbpQsFLZprJI8gUMHMqX1pp
-         3GCPxXdIQzPoLd4xPobjSN6cKeHk/n4plrEKyUNmj+x/bhkwX1MMVEkBzvuv0vQXMOUJ
-         /igyXYiQZlySyCiomf4J8bh/4aJxA3RbSoO/Wf2zhC9RZkrpPSbDG+1FjGFQWyGchAJI
-         VndSpCD7cWytr1bROwJ3KVz8e3Y6vLZe7dGMcx6ZUnEiivtoJRnCBDHqecKaM9NeQEs+
-         kfv1dbKNx+UY6qCKTpNSWCnWaEcfdRq9JIehwPVtfV2njsCeJr4qxI8yIB0Y5FN2ARmO
-         8lmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwt8z2kKv1XujdayNeJ0x6kNjv0bElbL7BUmWrkrJXouGYkRs9kb1lzL9DyDQ9bF8Pv6C8uGz7w1ofnYONDMsv38TwKedSWxaU3KpL
-X-Gm-Message-State: AOJu0YyYz8E5U3d8G5KR3Yn2OrhLQPKtD+v+0qSRdUF7upQW6X4BfucA
-	6M0vTtykbY8vPFYkIvxpS0wRlOpioS+Rwju6yD9XzjGjnYskechl+fhm3B2axjuaXqAAKxePrs9
-	fKIpqlvXQEU4SBdi6v4uWNBoshBg=
-X-Google-Smtp-Source: AGHT+IELShw+1dGgRMqRRbzKynrXYu+xs7uvgXEgtIlInDUZx5cZpuLMBBRiHunbgqcNEZHWxUChAUNWxOu6RnVXI4g=
-X-Received: by 2002:ad4:5cc5:0:b0:68f:3f86:c2d0 with SMTP id
- iu5-20020ad45cc5000000b0068f3f86c2d0mr8573860qvb.5.1708336096579; Mon, 19 Feb
- 2024 01:48:16 -0800 (PST)
+	s=arc-20240116; t=1708336111; c=relaxed/simple;
+	bh=8EXMzXr316H26S3gLy44xerC9vQS2ws3edUhg+achtA=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TI4bO6Q+lpbjfYyttZC6dqKm5kFhTw/s4SskBUfO94h9TtJk9KCPpXcwZfb+CwCRhbYFvX4mZVcVDnmH1kJ4KNhCvjGijx8YtJEseCMv7o9WvL6hylp7V+4x6nR69OS/G8OuH+PNZluHCnOPDPzpNSeHRrDDx+sVbPuEvl6oGAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGCtXy+j; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74759C433F1;
+	Mon, 19 Feb 2024 09:48:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708336110;
+	bh=8EXMzXr316H26S3gLy44xerC9vQS2ws3edUhg+achtA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=lGCtXy+jlxZffUYcughOKAox/vCbo5dNHJdE4tJQCU4WSTkaNlnpi22nhadHPGKtC
+	 eUZOliBjdxNkb0zkve8JII0Q+2Cxc6L4aPH9hJCpKvuibpWJVG/aXujUj+DC3sv3V7
+	 vxiQKlagiZtouSBBDWdIOWDpQ5YRKbd1oTGBxpEQVBzSSetAURzapk9oOw6eG6HYrG
+	 znHtvixlbjJw96BjdQOiwRTyOuF/82d6WW5TnCvrL9ILMP0FOSC6Q1IxiYI0UuTHZ/
+	 e+yVZRkU6uh45Q9ZPp/36nqcJDFisthyTb3dEXPT0kdIZgUKXOr+QD+2dFuNmtmDIg
+	 GUz/3r7Rr8//A==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rc0GC-004WsF-Gq;
+	Mon, 19 Feb 2024 09:48:28 +0000
+Date: Mon, 19 Feb 2024 09:48:28 +0000
+Message-ID: <86edd84wer.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: open list <linux-kernel@vger.kernel.org>,
+	Linux ARM <linux-arm-kernel@lists.infradead.org>,
+	lkft-triage@lists.linaro.org,
+	Linux Regressions <regressions@lists.linux.dev>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: next-20240219: arm64: boot failed - gic_of_init
+In-Reply-To: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
+References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
- <CANpmjNN-5PpSQ1A_9aM3u4ei74HuvCoThiLAHi=reXXQwer67A@mail.gmail.com>
- <CANpmjNM=92PcmODNPB4DrAhfLY=0mePCbyG9=8BGrQ4MC0xZ6w@mail.gmail.com>
- <CABXGCsM+9TxxY-bOUw6MyRV7CSZsyQpfDgvwgaBBKk9UONJkBw@mail.gmail.com>
- <CABXGCsOp3Djn5uQYb3f=4k1m9rY9y3Ext9SMavWAFRTcKwtNMA@mail.gmail.com>
- <CA+fCnZeNsUV4_92A9DMg=yqyS_y_JTABguyQyNMpm6JPKVxruw@mail.gmail.com>
- <CABXGCsPerqj=zXJ0pUCnZ29JGmZFSvH6DB22r2uKio61c1bVkw@mail.gmail.com>
- <CANpmjNMn+ULqbSGQ6uOa0JDhw=2my5TtBK4Y+xyBES_iaG_SEA@mail.gmail.com>
- <CABXGCsM9BSD+SYFkvkYxmcrZL+aUfUb_M-rjNJhzb2cYHQr5ww@mail.gmail.com>
- <CANpmjNNXKiM0j4mR-Rr2KALhgz87=QjCOomEymNMWjtos=Z3Ug@mail.gmail.com>
- <CANpmjNOnbNw2fRL3_depaAgt81p-VpHh5_O_26kyxofjECgsFQ@mail.gmail.com> <CABXGCsPB-KEbE+SfymVmqfiomFVngFL2Je81Qyhw1F5_aZX-TQ@mail.gmail.com>
-In-Reply-To: <CABXGCsPB-KEbE+SfymVmqfiomFVngFL2Je81Qyhw1F5_aZX-TQ@mail.gmail.com>
-From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date: Mon, 19 Feb 2024 14:48:05 +0500
-Message-ID: <CABXGCsO5dcEuorLAXR3CFzDVyAWNk4_YfqCh=UJddfzpWF7hNg@mail.gmail.com>
-Subject: Re: regression/bisected commit 773688a6cb24b0b3c2ba40354d883348a2befa38
- make my system completely unusable under high load
-To: Marco Elver <elver@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>, glider@google.com, dvyukov@google.com, 
-	eugenis@google.com, Oscar Salvador <osalvador@suse.de>, Vlastimil Babka <vbabka@suse.cz>, 
-	Andrew Morton <akpm@linux-foundation.org>, 
-	Linux List Kernel Mailing <linux-kernel@vger.kernel.org>, 
-	Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: naresh.kamboju@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lkft-triage@lists.linaro.org, regressions@lists.linux.dev, catalin.marinas@arm.com, arnd@arndb.de, dan.carpenter@linaro.org, anders.roxell@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Sat, Feb 3, 2024 at 1:14=E2=80=AFAM Mikhail Gavrilov
-<mikhail.v.gavrilov@gmail.com> wrote:
->
-> You are right.
-> Thanks for digging into it!
->
+On Mon, 19 Feb 2024 09:42:45 +0000,
+Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> 
+> The qemu-arm64 boot failed with linux next-20240219 tag kernel.
+> 
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> 
+> Boot log:
+> ---------
+> <6>[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+> <1>[    0.000000] Unable to handle kernel paging request at virtual
+> address ffff80008001ffe8
+> <1>[    0.000000] Mem abort info:
+> <1>[    0.000000]   ESR = 0x0000000096000004
+> <1>[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
+> <1>[    0.000000]   SET = 0, FnV = 0
+> <1>[    0.000000]   EA = 0, S1PTW = 0
+> <1>[    0.000000]   FSC = 0x04: level 0 translation fault
+> <1>[    0.000000] Data abort info:
+> <1>[    0.000000]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+> <1>[    0.000000]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+> <1>[    0.000000]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> <1>[    0.000000] swapper pgtable: 4k pages, 52-bit VAs, pgdp=0000000042497000
+> <1>[    0.000000] [ffff80008001ffe8] pgd=10000000439a5003,
+> p4d=10000001000e3003, pud=10000001000e4003, pmd=10000001000e5003,
+> pte=006800000800f413
+> <0>[    0.000000] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+> <4>[    0.000000] Modules linked in:
+> <4>[    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
+> 6.8.0-rc5-next-20240219 #1
+> <4>[    0.000000] Hardware name: linux,dummy-virt (DT)
+> <4>[    0.000000] pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT
+> -SSBS BTYPE=--)
+> <4>[    0.000000] pc : gic_of_init+0x84/0x3a8
+> <4>[    0.000000] lr : gic_of_init+0x290/0x3a8
+> ...
+> <4>[    0.000000] Call trace:
+> <4>[    0.000000]  gic_of_init+0x84/0x3a8
+> <4>[    0.000000]  of_irq_init+0x1d4/0x3d0
+> <4>[    0.000000]  irqchip_init+0x20/0x50
+> <4>[    0.000000]  init_IRQ+0xa8/0xc8
+> <4>[    0.000000]  start_kernel+0x270/0x690
+> <4>[    0.000000]  __primary_switched+0x80/0x90
+> <0>[    0.000000] Code: f94017e0 f90007e0 d29ffd00 8b0002c0 (b9400000)
+> <4>[    0.000000] ---[ end trace 0000000000000000 ]---
+> <0>[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
+> <0>[    0.000000] ---[ end Kernel panic - not syncing: Attempted to
+> kill the idle task! ]---
+> 
+> Links:
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/test/gcc-13-lkftconfig-armv8_features/log
+>  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/tests/
 
-This [2] revert is still not merged at least I checked on 4f5e5092fdbf.
-Is there any plan to merge it or find another approach?
+Where is the configuration file? What are the parameters to QEMU?
+Please consider making this a useful and actionable report.
 
-[2] https://lore.kernel.org/all/20240118110216.2539519-2-elver@google.com/
+Thanks,
 
---=20
-Best Regards,
-Mike Gavrilov.
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
