@@ -1,384 +1,150 @@
-Return-Path: <linux-kernel+bounces-71409-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71410-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98D7685A4BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:35:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95AA385A4C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:36:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D46281151
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:35:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 235861F23621
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:36:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4D1364A8;
-	Mon, 19 Feb 2024 13:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43A9F364D8;
+	Mon, 19 Feb 2024 13:36:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3mGxzeMt"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Viz3U4m4"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2480836137;
-	Mon, 19 Feb 2024 13:35:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E173613E
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708349731; cv=none; b=E3Al2Oxo7l+6PsgPIon3KsJ6vn83hBjM5vSdeHu3UdI/dFSGvA86K6nBhtsJn9bzo3Nr1jJRpAnMYCzlmcQFPtzr2ROsukS5Ndepm6ZWUHPXoRL1RjnDwQyCAu1+SwFwe1y//r+sRuD6MHqGsJWDwwWxsF9CByqKkcDA8qKePZg=
+	t=1708349766; cv=none; b=aTMQ8zSFYzaYBvkfQgcAsPAotKbsrS7vieGr5dcIzvTKTHfsYgbkPlohcVk4xv+QG93LjgrRyLyYrk/Cwr/8j3PVkkzGxrPweC/d7bnV0JCq9W4H6I8QC473v+Y8OCSDvvxizxTdYqiMHOpLt53y0fhYGdW94EHAOAHJK/Kricc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708349731; c=relaxed/simple;
-	bh=H+UegT4BE+l/Z0xlxbb/7nPi5qpmwmDLNcLFfpCwUQg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oBpgagErjgaLOnV6mN31pW8nlDF5Stn/U7Jw4J2DtlzDk0WzlU4DPCV6sTzQ/THdj/02K61pnEJTDUjboJ4zRNlYh3Uk58BzMAAI+NUckBLFuxoHfARAqIAVbQNlVoJQ2JYChiKVZc2H1+P6Hubv9A4Y2OBC6fCh6U0CLMmOq9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3mGxzeMt; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1708349728;
-	bh=H+UegT4BE+l/Z0xlxbb/7nPi5qpmwmDLNcLFfpCwUQg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=3mGxzeMtAtJnOMk/f0rnl5QqoOUEOpXpEQaxNMOK7/4eAuCPchAACkvTY7gIPgb0s
-	 +hp6Ku/nzt5szkdIZBqexS32JKrzx5my+G7WCwZ4d3x6s8stLbEuVcpqO7+l1u4v+l
-	 LsjH5Ka+K+sBUGvQCA9deontJ75oV/y+zQK1HsuH9IHZXSEG0gfqOP5DhJvUolMAu6
-	 8KYZbPb6QTG6VXcvGxUA7CRh7ZBIacEwZqmEKaLitkPxv8C3v9JQiNKyPECnoI9VgO
-	 wFIJFHNKKIEZsjWvGHVQdTIX9qYSfaI2Wj0ZMhMagAfNJMi2YNMSs+5fBEUDz/qSjd
-	 FPrJbhiGlWxzA==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 86C053780C22;
-	Mon, 19 Feb 2024 13:35:27 +0000 (UTC)
-Message-ID: <b50d49fd-2976-46fc-9f35-354fb39720ad@collabora.com>
-Date: Mon, 19 Feb 2024 14:35:26 +0100
+	s=arc-20240116; t=1708349766; c=relaxed/simple;
+	bh=WXBvHj3CA0v2OnyyONM79OOqbce5c/wCncuFj1EY8Yk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=mdQIAq0gZEUJAMVc11W0SzJNkCbritL2QzP/OT4osG+By/6feDzkxeq1RIPbCmfujxz7vZsHWtpKRcL2Q590JsEKXIYGngBmTwCDeA7CcC0ueNvZ0WKyQuyYksSl4+AeR0IGSY94CMuteBvajfAucswEiwqGbZK/1WM7q1CydRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Viz3U4m4; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-5649eb3ab68so759339a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:36:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708349762; x=1708954562; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=gcUcBFt3N1ktfXc1gPHrIeslPQYkGz8L1uvDW7LPc+w=;
+        b=Viz3U4m4wojIT792Dz/VEHDXeyho8fhbbipT4+iKA2YFFfXS38nH6L4z+jtLhw1zAj
+         1SAbbdSs8nm8zShDQkhta/wawmXM9u6biTwIfW/JrQgk9vOe0dIQFTxpe1B8Eg/5hNzH
+         fgrrid4RqaRRyocHObvOHqXb97MFIQCX4AF3KbLbK1yGjhhB65QOn+zeJLHx7fOh/dE2
+         aizVLDWxBQP4+k6p9Px3DmOp6N9KRGcNfTA0D9pAfpr0IyXxVe+07RU0NMksPxkMxXWj
+         HC/h2zKNu+iYDAQeysrjreX+QH9KDRpQsdYj1teKFLa1NLLfbWDoAkXMTx2uXtgRArvx
+         Z02Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708349762; x=1708954562;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=gcUcBFt3N1ktfXc1gPHrIeslPQYkGz8L1uvDW7LPc+w=;
+        b=g6FZfTrcc2OmNCHVzVaJOyk1Lj7Olm6+t/sOmmgT3wurgLkft1u1QBYqqDo+qzvGF0
+         HP/A5RAC7YNYORIzu0Y3xEFeQhuHm2MuXUMSBKlEck7fsD2bQYH8HVBZGEm0P5fNSOBv
+         Y9iRVlBClw4f91oXDDXL4eEMoCkPu8vt3pJnkxK0sNx/2BSkpZIMwrmMbF0c1lQhd2eb
+         d9JzhzkNevPe8kn3/hfooeMBjp/GHSkiyb0jBkiVkAkyIfL9ESp/hVitMCVLFr3m4jTI
+         awxCw4RaEl9TMIuJP4eJEe7G3b2tpvYhtrGOFAhqidwxtuKhWwy6zuvy4WimEPxPxsEA
+         VAEA==
+X-Forwarded-Encrypted: i=1; AJvYcCU+8cthsvUOh8KPb6u8Io/7+fF+Bsh94AJzas7SMIuG5qi/ucsiI6MGiH760ebhDH1iHA4U8QURMU9kBXCR7wH6WlOgF2Z6+GNaMNRT
+X-Gm-Message-State: AOJu0YxjwLGPrIj7Mq47oq+4MlsZYd1oS7NTuy4z6FyP/ygFMR45PqCu
+	XaqVGlloHIC379XpdfkghXnx/rrggtHGzjzbh8Ixd+fW2Q0fZvJYjb0ZK0vBZ0w=
+X-Google-Smtp-Source: AGHT+IGXVYgMnspzTGdD5I5yCYByz/Xz0DYxnqQrqWXrukEzL4VS6LpQJbj3an4OOgf2z4QtP93W8g==
+X-Received: by 2002:aa7:ca42:0:b0:564:8a4c:6389 with SMTP id j2-20020aa7ca42000000b005648a4c6389mr1158711edt.29.1708349762517;
+        Mon, 19 Feb 2024 05:36:02 -0800 (PST)
+Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id q29-20020a50cc9d000000b00563a3ff30basm2900168edi.59.2024.02.19.05.35.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 05:36:02 -0800 (PST)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: [PATCH 0/8] A702 support
+Date: Mon, 19 Feb 2024 14:35:45 +0100
+Message-Id: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] arm64: dts: mediatek: add Kontron 3.5"-SBC-i1200
-Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
-Cc: devicetree@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240219084456.1075445-1-mwalle@kernel.org>
- <20240219084456.1075445-2-mwalle@kernel.org>
- <2ad6bda8-a457-421b-b35d-dc005fb00ae9@collabora.com>
- <CZ92W3VSYV1A.1693O76GY1XDP@kernel.org>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <CZ92W3VSYV1A.1693O76GY1XDP@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADJZ02UC/x2N7QrCMAwAX2Xkt4F+DKm+ioi0MW6B0ZXUiTD27
+ gZ/3sFxO3RW4Q7XYQflj3RZq4E/DUBzrhOjPI0huDC64C/4XpsQavGPqW0YmRKdU3QxjWBNyZ2
+ xaK40W1W3ZTHZlF/y/U9u9+P4AeWy2Vh0AAAA
+To: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
+ Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Clark <robdclark@gmail.com>, 
+ Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Konrad Dybcio <konradybcio@kernel.org>, linux-arm-msm@vger.kernel.org, 
+ linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+ freedreno@lists.freedesktop.org, Konrad Dybcio <konrad.dybcio@linaro.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708349759; l=1949;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=WXBvHj3CA0v2OnyyONM79OOqbce5c/wCncuFj1EY8Yk=;
+ b=09HBvpU95Fn5jEyPMGkTjAUJ7bgcBbYWScXmo1xRIJoHiVGqrahpUaQv4TEKCcp57yd+6yD83
+ XmQfcZAl71LB20l4ZsL60dx0F34PqpOR8hRCzmP4MVy3+krdyvQCBY6
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Il 19/02/24 14:09, Michael Walle ha scritto:
-> Hi,
-> 
-> thanks for the extensive review!
-> 
-> On Mon Feb 19, 2024 at 11:00 AM CET, AngeloGioacchino Del Regno wrote:
-> 
->>> +&eth {
->>> +	phy-mode ="rgmii-id";
->>> +	phy-handle = <&ethernet_phy0>;
->>> +	snps,reset-gpio = <&pio 93 GPIO_ACTIVE_HIGH>;
->>> +	snps,reset-delays-us = <0 10000 80000>;
->>
->> snps,reset-delays-us and snps,reset-gpio are deprecated.
->>
->>> +	pinctrl-names = "default", "sleep";
->>> +	pinctrl-0 = <&eth_default_pins>;
->>> +	pinctrl-1 = <&eth_sleep_pins>;
->>> +	status = "okay";
->>> +
->>> +	mdio {
->>> +		ethernet_phy0: ethernet-phy@1 {
->>
->> compatible = "is there any applicable compatible?"
->> P.S.: if you've got the usual rtl8211f, should be "ethernet-phy-id001c.c916"
-> 
-> I'd rather not have a compatible here. First, it's auto discoverable
-> and IIRC it's frowned upon adding any compatible if you ask the PHY
-> maintainers. And second, if we change the PHY (maybe due to a second
-> chip shortage or whatever), there is a chance you don't have to
-> update this in the DT.
-> 
+Bit of a megaseries, bunched together for your testing convenience..
+Needs mesa!27665 [1] on the userland part, kmscube happily spins.
 
-Okay then, I'm fine with leaving the compatible out.
+I'm feeling quite lukewarm about the memory barriers in patch 3..
 
->> reg = <0x1>;
->> interrupts-extended = <&pio 94 IRQ_TYPE_LEVEL_LOW>;
->> reset-assert-us = <10000>;
->> reset-deassert-us = <80000>;
->> reset-gpios = <&pio 93 GPIO_ACTIVE_HIGH>;
->>
->>
->>> +			reg = <0x1>;
->>> +			interrupts-extended = <&pio 94 IRQ_TYPE_LEVEL_LOW>;
->>> +		};
->>> +	};
->>> +};
->>> +
->>> +&gpu {
->>> +	status = "okay";
->>> +	mali-supply = <&mt6315_7_vbuck1>;
->>> +};
->>> +
->>> +&i2c2 {
->>> +	pinctrl-names = "default";
->>> +	pinctrl-0 = <&i2c2_pins>;
->>> +	clock-frequency = <400000>;
->>> +	status = "okay";
->>
->> Are i2c2,3,4 exposed as pins somewhere? If they are, can you please put a
->> comment saying so?
-> 
-> This is only a basic device tree. On one i2c controller, there is
-> the LVDS bridge for example. My plan is to get the support for this
-> bridge upstream first and then adding the appropriate device nodes
-> here.
-> 
-> That being said, some are exposed to connectors. I'll add a comment
-> then.
+Patch 1 for Will/smmu, 5-6 for drm/msm, rest for qcom
 
-In that case, could be nice to read something like
+[1] https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/27665
 
-&i2c(x) {
-	properties
-	blahblah
-	status
+Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+---
+Konrad Dybcio (8):
+      dt-bindings: arm-smmu: Add QCM2290 GPU SMMU
+      dt-bindings: clock: Add Qcom QCM2290 GPUCC
+      clk: qcom: clk-alpha-pll: Add HUAYRA_2290 support
+      clk: qcom: Add QCM2290 GPU clock controller driver
+      drm/msm/adreno: Add missing defines for A702
+      drm/msm/adreno: Add A702 support
+      arm64: dts: qcom: qcm2290: Add GPU nodes
+      arm64: dts: qcom: qrb2210-rb1: Enable the GPU
 
-	/* (model, if available) LVDS bridge at 0x10 */
-}
+ .../bindings/clock/qcom,qcm2290-gpucc.yaml         |  76 ++++
+ .../devicetree/bindings/iommu/arm,smmu.yaml        |   3 +-
+ arch/arm64/boot/dts/qcom/qcm2290.dtsi              | 154 ++++++++
+ arch/arm64/boot/dts/qcom/qrb2210-rb1.dts           |   8 +
+ drivers/clk/qcom/Kconfig                           |   9 +
+ drivers/clk/qcom/Makefile                          |   1 +
+ drivers/clk/qcom/clk-alpha-pll.c                   |  45 +++
+ drivers/clk/qcom/clk-alpha-pll.h                   |   3 +
+ drivers/clk/qcom/gpucc-qcm2290.c                   | 423 +++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/a6xx.xml.h              |  18 +
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c              |  92 ++++-
+ drivers/gpu/drm/msm/adreno/adreno_device.c         |  18 +
+ drivers/gpu/drm/msm/adreno/adreno_gpu.h            |  16 +-
+ include/dt-bindings/clock/qcom,qcm2290-gpucc.h     |  32 ++
+ 14 files changed, 888 insertions(+), 10 deletions(-)
+---
+base-commit: 26d7d52b6253574d5b6fec16a93e1110d1489cef
+change-id: 20240219-topic-rb1_gpu-3ec8c6830384
 
-it's again not mandatory, but I like seeing clear messages implying "this should be
-there" as those implicitly mean "...yeah but it's not supported yet for reasons".
-
-It's down to preferences though, and this is not a *strong* opinion, nor a strong
-suggestion - your call here.
-
-> 
->>> +&mmc1 {
->>> +	pinctrl-names = "default", "state_uhs";
->>> +	pinctrl-0 = <&mmc1_default_pins>;
->>> +	pinctrl-1 = <&mmc1_uhs_pins>;
->>> +	cd-gpios = <&pio 129 GPIO_ACTIVE_LOW>;
->>> +	bus-width = <4>;
->>> +	max-frequency = <200000000>;
->>> +	cap-sd-highspeed;
->>> +	sd-uhs-sdr50;
->>> +	sd-uhs-sdr104;
->>> +	vmmc-supply = <&mt6360_ldo5>;
->>> +	vqmmc-supply = <&mt6360_ldo3>;
->>
->> Does mmc1 support eMMC and SDIO?
-> 
-> No eMMC, but I'd guess it will support SDIO as in you can just plug
-> an SDIO card in the SD slot, right? Oh, it's a micro SD socket. So
-> uhm, I'm not sure if we should restrict it, though. Someone might
-> come up with a microsd to sd card adapter. I have one right in front
-> of me ;)
-> 
-
-Honestly ... I even forgot the existance of those adapters!!!
-In that case, yes, since the controller should support SDIO on that slot, and since
-there effectively are ways to add a SDIO card on there, obviously no-sdio shall be
-omitted.
-
-I agree.
-
->> If not, no-mmc; no-sdio;
-> 
-> So no-mmc;
-
-Yes, agreed.
-
-> 
->>> +			drive-strength = <MTK_DRIVE_8mA>;
->>
->> s/MTK_DRIVE//g
->> s/mA//g
->>
->> drive-strength = <8>;
->>
->> Please, here and everywhere else, for all values - let's stop using those
->> MTK_DRIVE_(x)mA definitions, they're just defined as (x), where anyway
->> the drive-strength property is in milliamps by default.
->>
->> We don't need these definitions.
-> 
-> Sure, the mt8195-demo was the blueprint for this. So maybe you should
-> get rid of it there to prevent any copying ;) (btw the same goes for
-> the regulator-compatible property).
-> 
-
-Yeah, that's right. You can imagine that my backlog is rather huge... :-)
-
-> Speaking of pinctrl, I find the R0R1 bias-pull-down values really
-
-If it was only pull-down it would be one problem, but it's also pull-up so
-we can sum that up to *two* problems :-P
-
-> hard to grasp. The DT binding documentation didn't really help here.
-> What is R0 and R1, I presume some resistors which can be enabled.
-
-You got it right
-
-> Also are they in parallel or in series. I'd have assumed, the DT
-
-I'm not sure, and it depends on the SoC most probably... but does that really
-matter?
-
-I mean, on the practical side, imo, it doesn't, but I am also a curious person
-so I can understand why you're eager to know :-)
-
-> binding should have hid this by giving the user a choice for the
-> resistance instead. Also I had a quick search in the RM and
-> couldn't find anything, I probably looked at the wrong place ;)
-> 
-
-I'm not sure you looked at mediatek,mt8195-pinctrl.yaml, but anyway, as you
-can read in there, we're deprecating the MTK_PULL_SET_RSEL_xxx in favor of...
-
-... the right thing to do :-)
-
-Look for "mediatek,rsel-resistance-in-si-unit": that'll allow you to specify
-the PU/PD values in ohms, and that's what should be used.
-
-Those RSEL definitions in the devicetree should disappear. Forever.
-
->>> +	uart1_pins: uart1-pins {
->>> +		pins_rx {
->>> +			pinmux = <PINMUX_GPIO103__FUNC_URXD1>;
->>> +			input-enable;
->>> +			bias-pull-up;
->>> +		};
->>> +
->>> +		pins_tx {
->>> +			pinmux = <PINMUX_GPIO102__FUNC_UTXD1>;
->>> +		};
->>> +
->>> +		pins_rts {
->>> +			pinmux = <PINMUX_GPIO100__FUNC_URTS1>;
->>> +			output-enable;
->>
->> Are you really sure that you need output-enable here?!
->> RTS is not an output buffer....
->>
->> I don't think you do. Please double check.
-> 
-> Ahh, good catch, it's a leftover from mt8183-kukui.dts. There is
-> probably wrong, too.
-> 
-
-Probably. I don't really know either.
-
->>> +		};
->>> +
->>> +		pins_cts {
->>> +			pinmux = <PINMUX_GPIO101__FUNC_UCTS1>;
->>> +			input-enable;
->>> +		};
->>> +	};
->>> +
-> 
-> 
->>> +/* USB3 front port */
->>> +&xhci0 {
->>
->> It's not gonna work like this. I recently fixed the USB nodes in MT8195 by adding
->> MTU3 where necessary...
-> 
-> Uhm, seems like I've missed that.
-> 
-
-No worries!
-
->> Check mt8195.dtsi - only one XHCI controller isn't placed behind MTU3, and that is
->> XHCI1 (11290000), while the others are MTU3.
->>
->> As far as I can see from this DT, it should now instead look like..
->>
->> &ssusb0 {
->> 	dr_mode = "host";
->> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
->> 	status = "okay";
->> };
->>
->> &ssusb2 {
->> 	dr_mode = "host";
->> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
->> 	status = "okay";
->> };
->>
->> &ssusb3 {
->> 	dr_mode = "host";
->> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
->> 	status = "okay";
->> };
->>
->> &xhci0 {
->> 	vbus-supply = <&otg_vbus_regulator>;
->> 	status = "okay";
->> };
->>
->> &xhci1 {
->> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
->>
->> vbus is always supplied by something, as otherwise USB won't work - whether this
->> is an always-on regulator or a passthrough from external supply this doesn't really
->> matter - you should model a regulator-fixed that provides the 5V VBUS line.
-> 
-> I don't think this is correct, though. Think of an on-board USB
-> hub. There only D+/D- are connected (and maybe the USB3.2 SerDes
-> lanes). Or have a look at the M.2 pinout. There is no Vbus.
-> 
-
-Yes but the MediaTek MTU3 and/or controllers do have it ;-)
-
-> Also it seems I need the "mediatek,u3p-dis-msk = <0x01>;". At least
-> the last time I've tested it. I'll test it again, with and without.
-> The SerDes Line of the corresponding USB3.2 port is used for PCIe in
-> this case.
-> 
-
-Have I missed it in my example? If I missed it, that was unintentional.
-
-Anyway, for the u3p-dis-msk, I'll spare you the time to check:
-  - If the controller lies behind MTU3, that property goes to &ssusb(x)
-  - If it is a standalone XHCI controller, it goes to &xhci(x)
-    - The property never goes to both, and always goes to the *outer* node
-      (this is why it goes to mtu3 if there's a mtu3 behind).
-
->> For example:
->> 	vbus_fixed: regulator-vbus {
->> 		compatible = "regulator-fixed";
->> 		regulator-name = "usb-vbus";
->> 		regulator-always-on;
->> 		regulator-boot-on;
->> 		regulator-min-microvolt = <5000000>;
->> 		regulator-max-microvolt = <5000000>;
->> 	};
-> 
-> As mentioned above, I don't think this will make sense in my case.
->  >> P.S.: If the rail has a different name, please use that different name. Obviously
->> that requires you to have schematics at hand, and I don't know if you do: if you
->> don't, then that regulator-vbus name is just fine.
-> 
-> I do have the schematics.
-
-In that case, you should model the power tree with the fixed power lines,
-check mt8195-cherry (and/or cherry-tomato) and radxa-nio-12l; even though
-those are technically "doing nothing", this is device tree, so it should
-provide a description of the hardware ... and the board does have fixed
-power lines.
-It has at least one: DC-IN (typec, barrel jack or whatever, the board needs
-power, doesn't it?!).
-
-Cheers,
-Angelo
-
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
 
