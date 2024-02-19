@@ -1,195 +1,148 @@
-Return-Path: <linux-kernel+bounces-71040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04784859FCF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:37:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA816859FCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:37:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B02E3282299
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:37:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B4AF1F212C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92AC0286A7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A73A286AC;
 	Mon, 19 Feb 2024 09:36:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="iMsPSz5j"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2083.outbound.protection.outlook.com [40.107.101.83])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="crbNLM/4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C76225627;
-	Mon, 19 Feb 2024 09:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.83
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708335391; cv=fail; b=rZkLLVyzyi0X4KOFr2jRwm/dB1tjiATRh8Mk7tQRqdlfDzviN7o7d+3uRHvtZLB85dHeSaoRZ3gWP3JQWCmKheojeixnTjdHcRwoQGMd2vL1uIcFpfXZzjXjlUbLHsXtkdgpPTjwyApA+cI50b49u5Eb0B9f/a35OsQ7d6Xk57U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708335391; c=relaxed/simple;
-	bh=Hu2ka960XbAcKJ3drws4ddvcTGReWGESk/w8lot58zQ=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lg6HciopezTO4LWYwJP6vy4ncDN0eIANm2j7r3zI0c//yf+s3861IhYFIc4hL/mpsg1eVkljFDtWn7RCMWoWPRLz0mqMACtQ0xGYJughEBkHcT5AEeQNuLL6//epwB9+Qte10fsldiaLm9gw8LnxAkfoW/xxBXgknVUk+QD0GAY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=iMsPSz5j; arc=fail smtp.client-ip=40.107.101.83
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U14QDRcDT2B/M4OOThqEZ9dgt3xoH/r66jrmYEst+XVcwxUciy+ldillui+TSepJ1IXLhFTCpN4RdmBEIa1XEnmwdsHRrGCQ6QMYPrl0BxVYKDfoizeWNzNoV30VyaFZKtmqaZ0KKm8k6RSHYl8qWZc3BRkGd6i0MLNrXM6HGdINPuF0kHNfAlupQ2pYvzArdYOCs2HeTK4qawC//0W60oUFetivnTWOufacBOFd5Pjye4VlGGe9nJdKJw3CIC9hnboEP62tJ6C+1f8+8Y+EM95l3g/jZ0p4EgF/hTP7pJ5mGz8BziDRrovMDJmjgXcP3mpusdwqtzB1fGZr6MfwDA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Hu2ka960XbAcKJ3drws4ddvcTGReWGESk/w8lot58zQ=;
- b=V/xEc/qJDlQLghwIyAPn58cD7mjqhEM6k9l0UDTfqo+jbsxEzaP3ApGfz5oQNAW0vC4PbPSIaBdxCnrFmvU4eVUp9dKwswolAZYR/ynjJmt9qDxpbX855VxFH0vE6jdXqHNrlS+4+m8M1uMq60Igy+HPcTmdz6Lv6F047mxl/J4MXX8J4fh+Ax25U6/tcVTTHGSV+dZaKeg2hkk9f5uUaQftDKC0l/YiwJTgO+Q5EO3Wy69D11Tdf0ohzwPCMICSv+gFY7CPnPXTUQ0XYDrUMAPFmcrCDbVRHhIVP7CWWADPiy7xGtvN3GD6DPxbUpZdOdBiNRKYcE1dp+k+H94kRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Hu2ka960XbAcKJ3drws4ddvcTGReWGESk/w8lot58zQ=;
- b=iMsPSz5jijkHpbfK5dhnTHIIUDisL6BLSOX68fEO5V8F+u7OFpnRYZIhkZ0zSM+XX2Kh5I4I+sq53x+ppR1UwAce1Do1NBzCZht9vYH5CqH/VONY8DxiDQiPcRQBenGwo4Ls92w/xnhPQBaYKgvRIwOEmmNWttjnXO6VlwAyEyAGel2avUp+1V99nDZPvkQHLCS1l5w7eyPw8fEsA83obgwt1SZGTfFbJ1Al5ImtIA3/W0vb1X4Yq87iRfu/R9oYE7MCB3kZ4C00iR2OjpeEB9A0/WQxnv2hP/U2Xa5O1Yhu2kywKY4/stn6d/+EPFBfuom4jsCVLoBKOOP+/ctzAw==
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com (2603:10b6:806:2bc::21)
- by LV2PR12MB5775.namprd12.prod.outlook.com (2603:10b6:408:179::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Mon, 19 Feb
- 2024 09:36:26 +0000
-Received: from SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2]) by SA1PR12MB7199.namprd12.prod.outlook.com
- ([fe80::284c:211f:16dc:f7b2%5]) with mapi id 15.20.7316.016; Mon, 19 Feb 2024
- 09:36:26 +0000
-From: Ankit Agrawal <ankita@nvidia.com>
-To: Zhi Wang <zhi.wang.linux@gmail.com>
-CC: Jason Gunthorpe <jgg@nvidia.com>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, Yishai Hadas <yishaih@nvidia.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "kevin.tian@intel.com"
-	<kevin.tian@intel.com>, "mst@redhat.com" <mst@redhat.com>,
-	"eric.auger@redhat.com" <eric.auger@redhat.com>, "jgg@ziepe.ca"
-	<jgg@ziepe.ca>, "oleksandr@natalenko.name" <oleksandr@natalenko.name>,
-	"clg@redhat.com" <clg@redhat.com>, "satyanarayana.k.v.p@intel.com"
-	<satyanarayana.k.v.p@intel.com>, "brett.creeley@amd.com"
-	<brett.creeley@amd.com>, "horms@kernel.org" <horms@kernel.org>,
-	"shannon.nelson@amd.com" <shannon.nelson@amd.com>, Aniket Agashe
-	<aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>, Kirti Wankhede
-	<kwankhede@nvidia.com>, "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>, Vikram
- Sethi <vsethi@nvidia.com>, Andy Currid <acurrid@nvidia.com>, Alistair Popple
-	<apopple@nvidia.com>, John Hubbard <jhubbard@nvidia.com>, Dan Williams
-	<danw@nvidia.com>, "Anuj Aggarwal (SW-GPU)" <anuaggarwal@nvidia.com>, Matt
- Ochs <mochs@nvidia.com>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"virtualization@lists.linux-foundation.org"
-	<virtualization@lists.linux-foundation.org>
-Subject: Re: [PATCH v18 3/3] vfio/nvgrace-gpu: Add vfio pci variant module for
- grace hopper
-Thread-Topic: [PATCH v18 3/3] vfio/nvgrace-gpu: Add vfio pci variant module
- for grace hopper
-Thread-Index: AQHaYISKEq7ts7f4oEyo6sBByW/RK7ERawGAgAABoO0=
-Date: Mon, 19 Feb 2024 09:36:26 +0000
-Message-ID:
- <SA1PR12MB7199C1C570B00C78311666D2B0512@SA1PR12MB7199.namprd12.prod.outlook.com>
-References: <20240216030128.29154-1-ankita@nvidia.com>
-	<20240216030128.29154-4-ankita@nvidia.com>
- <20240219112839.000060df.zhi.wang.linux@gmail.com>
-In-Reply-To: <20240219112839.000060df.zhi.wang.linux@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA1PR12MB7199:EE_|LV2PR12MB5775:EE_
-x-ms-office365-filtering-correlation-id: 8a061421-59cf-43c6-0b0f-08dc312e3e60
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- us8JyJM6KEd6TcE1UCPrXi5FFx8fiUb1ZBM5ynQilcBcitpJ1g2hZ33nxhrXrrFVzkPDWuRv/2DWa7ndlYhNMhYrX3ezCI+KqSM3MGtEj+cuPxZA/1jiu7BBZ7v6O/oSqT2yJUxDfFzwsyLzZOnXxjZ113YRGM0YEV9b30Gam85CnxVJbPzNsPs6ogtT8iAyyWCPdrs7QilnHPF/IxPixM+yRwvp2ogfKmwO0op1suqoao+oIxDu5VzV7ZUmNx0MdwKkYOt829EFGSjqyZSa+6tch4PN+N01XF4hmdmaXyh0bVKGCueQbCUo6P3cncIN8o6+AKcxxuQvYQ7Cjy1k2VEStKPKpRRheRpVS1+4uzFTaq1x+6cUsOyUKEYVk4VX3paGf+Cp50omNsAdtTCe26r9OIRHCeHYe6pouP34Dj9uoQHLxlCYQ159nEF4ShxY1+kHZ4RDbB99cjF/Y+V04r+w/4x54eyoH3zdMN8iKW/HM3XcPkZlh2427+gjjOF3n+qIk0cr5nQIzxU8APkKdwuBQNK+W2BYvyQrS9e40Ibrw7XbOCp9jYEvnddhTtyKb0zZk7Yh7rfxwMMKxUkTSL7+2AkTN0cYxT90v26GKa/T2SQf6nGMeKfARTtgpTN/
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR12MB7199.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(39860400002)(376002)(396003)(366004)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2906002)(5660300002)(7416002)(55016003)(26005)(66446008)(76116006)(91956017)(8936002)(64756008)(66556008)(66476007)(6916009)(4326008)(66946007)(316002)(52536014)(41300700001)(83380400001)(38070700009)(8676002)(86362001)(33656002)(9686003)(71200400001)(478600001)(54906003)(6506007)(7696005)(38100700002)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?W7m6vDrpfM0WC7XfL2WutBCZ9MdXjSqfUJXRhOuqsQFtPo2CCzCznVsruA?=
- =?iso-8859-1?Q?4sru+OqzRgLAbIxlzRBkDbk0NORGLN5+jtPcOw641IKutIGhtII5njW59V?=
- =?iso-8859-1?Q?bfWYFQbLEaQj1OpF2gdZoYiLulpQpe8k8+vYvrEfZ4GvkCY5uYFQqEFzpE?=
- =?iso-8859-1?Q?iKblNFMFFAxb+os+NWtsYH8UfJHhnK+gR5UjJculFh2l20Ve3QihBBDp4j?=
- =?iso-8859-1?Q?kA3ceOE4FfYRCp4wjS9IpX8DGdbIZM3qwLk5fQ1MPUrFWfnT2zxHQ+LR/O?=
- =?iso-8859-1?Q?omzw7vvqOqs3FQZdH+JyfuLEGzIHWD6kIphUm+qU0CRviSoOsmaK/6/CPh?=
- =?iso-8859-1?Q?QsSYoVNYMHbliI3xPLPpq8xIxQK5GbINf2F14uuVjGg94Yl0FlQWB3OBZd?=
- =?iso-8859-1?Q?HBoMdC6WQb34k3IfFWRBMvfV/pThLPzheBaAm0dVfCvpy93CFVaCI9MXbR?=
- =?iso-8859-1?Q?mpz8LKgIFSBxF12uyMuYADZ0onaLJDWsZY/9EEXmVuFcPI5fKNjK09QOoT?=
- =?iso-8859-1?Q?UspJnxA6MYLG6nlw76hatxyLly78MHJy/X1IWS1/RrmwPNchKK5Z5yqaS3?=
- =?iso-8859-1?Q?HT5SHqZ3tyBwWiqxKll7g0h+ZUK1KEWSO87rRl7Wb1seHLno+xDVIACNop?=
- =?iso-8859-1?Q?s5qjQcguudJOZS2RZqpjgSP2aO8TeMEh0YxPlvkqmaW1Ln8yophcRvOPY5?=
- =?iso-8859-1?Q?a4bsVpiz6jKqM0jjhXAIqjnZaVra2kgRDrhVc7P2kQn/ew+kFrKTqRbmfQ?=
- =?iso-8859-1?Q?TYL6UYNaki3UC+myePWWm/Zsz9wsuRhElB6Oe3vH7eJzODRtdqGUmo3/C1?=
- =?iso-8859-1?Q?rvI6eW8mwrYIDHA1S5rXdWDJtRf+Pl+0XPKuUiSzYdPsU3cUi8p1iPBvGF?=
- =?iso-8859-1?Q?ADWZ7KA/zzfk423e2Clr6jn5LRD24CiFb/dqs8eQxE0AvCPBf9ezrqVDwI?=
- =?iso-8859-1?Q?k9fKnu38mv28YE4QWSQnM/dYrlampyiFRpf9DbaWvhqjBfgOzsoqttdxMj?=
- =?iso-8859-1?Q?iibjpkm0LbfBzMPTHJSIg8BM5AYiX6k7i2pMHxq9D545BYvZR+xU28eq0R?=
- =?iso-8859-1?Q?2Vwcj1DShmYasg/Ri/y9Pul0DabJ/d21+ZO7uq7qVgPRXNFhpoAxfpC44W?=
- =?iso-8859-1?Q?Og6oTNvE9+MuyKvbdBNJoERyebMOiaNlCSmCm0M6/Uu/I10033KZHM39NX?=
- =?iso-8859-1?Q?nT1ZMs2vArAKLnRaG1H7eqPjWVCT55LpmfnF/khyTs56XFQN0nAojYSadL?=
- =?iso-8859-1?Q?qSD6f6ZR9/ZwNtzNZudxV2MrMy30llgw/qf/0/MOPhtwclxFY/Qn2N3j6p?=
- =?iso-8859-1?Q?KI096Et/yiekF7ZBqFVMgs3/sAe9+s/dyDZ5NdRLbGE6ekM9hqVWjM72Yd?=
- =?iso-8859-1?Q?vB95Grj39/XQ5ROM/7NPkgBCbcYBdEIuvGHtgEEfD1a5v7mEnJIsZx2hTO?=
- =?iso-8859-1?Q?SrwNJmAvOenc5bpEDqnXbJBtd7ACHlq7PjvOVqITsu3mwJ02Ck0i7JXhoo?=
- =?iso-8859-1?Q?/wx9FkdsmzCtfjNa4W7Sd1zqq6NddMsb75x6RHlhT26w/pyqwZSGPf6Lzj?=
- =?iso-8859-1?Q?iTfL6IBa75pDfk6ShIUK4zVGdkq/vX8KVa1OrtIYuMAcdtoy5MorPA7btg?=
- =?iso-8859-1?Q?X/DhtmaEQkuWw=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE43E2562E;
+	Mon, 19 Feb 2024 09:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708335392; cv=none; b=TjV3NmPx5iZxe4bXfDihMmJnN3zRi3tvCuzE7jFGG2EdowJA3j2bWrBJYScpoCWOcYY0RDFnW07ADMuayVTKTxtOO9tsJlCQ2zzlNq6kDMAAfZM0+eYTEnhP+HEJU6EGFS/FPEzm+ybJ7T2J2nGmh56y3TJN+6aUsHYufvxF7D0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708335392; c=relaxed/simple;
+	bh=2JEkX46Vp/cBAVVvgsgHoF/zxvBsYbJKJ4rTHU/s2hk=;
+	h=Content-Type:Date:Message-Id:From:To:Subject:Cc:References:
+	 In-Reply-To; b=PyIWgaL+ThLGi19K+xsyf+WPFrANijjwAhQ/TXwoSSGei/2FtLgQw85nVAU8ry890VE2SYGN34VbYv4R9Bb6VR1s7lSh+INK6XA7Fx2/Q6yhaOpkwAWrsqzspU2vpcllAdEN7Naq3xnL6Z+WmUqy/F9Jgd+pc/Ee5rGvvovfIEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=crbNLM/4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA76DC433F1;
+	Mon, 19 Feb 2024 09:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708335391;
+	bh=2JEkX46Vp/cBAVVvgsgHoF/zxvBsYbJKJ4rTHU/s2hk=;
+	h=Date:From:To:Subject:Cc:References:In-Reply-To:From;
+	b=crbNLM/4l3WxOMO/z1NI5uM/uMSLp3JKrA1HesJ67bumXJ9OewEOn/oK7qGTbh/Cx
+	 0MM5bHgbYQkGSbKzWTVhwTCMgD0EVbcfbjtXcG38PpFP+Jj/CQ4XFeGgcos2YTn08Q
+	 xx7ZlwO0es5Pb936IJuNIXmLiqlMmgq8m/NoXFw0BhtowiQByycV0WreEjKwzfILek
+	 5u3cVT4CLanHf1GdCmbYmTvdJcEjW5Kk1U0AutY8cz7O7dDQeUaVrLF1eegt+n7ilk
+	 2ogtUwa2kqam0bgJT99sOLYI3e/7AYi6wbDRd6zSQFYvc7sVKVfnmcBfRUmpLLgDKl
+	 xcyF5LzNi6Bsg==
+Content-Type: multipart/signed;
+ boundary=5b911bf665d2ea492c216b90f01b24b10ab08eb643d157bdd14da66d2129;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
+Date: Mon, 19 Feb 2024 10:36:26 +0100
+Message-Id: <CZ8YCQETS7LL.1BLJJZNCLV7DT@kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "AngeloGioacchino Del Regno" <angelogioacchino.delregno@collabora.com>,
+ "Rob Herring" <robh@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Matthias Brugger" <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm64: mediatek: add Kontron
+ 3.5"-SBC-i1200
+Cc: <devicetree@vger.kernel.org>, "Sean Wang" <sean.wang@mediatek.com>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>
+X-Mailer: aerc 0.16.0
+References: <20240219084456.1075445-1-mwalle@kernel.org>
+ <ed3530f0-227a-47f2-938c-28eba90dd6eb@collabora.com>
+In-Reply-To: <ed3530f0-227a-47f2-938c-28eba90dd6eb@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA1PR12MB7199.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a061421-59cf-43c6-0b0f-08dc312e3e60
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2024 09:36:26.4475
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JN19g+Mjaq3PNcxunR0eToRyBfiZvCsIIQHGySDzJMAhe70SOyOyyiLjya2JfKIxs+TiDoYK9uM6z7MjdySWjg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB5775
 
->> diff --git a/drivers/vfio/pci/nvgrace-gpu/main.c=0A=
->> b/drivers/vfio/pci/nvgrace-gpu/main.c new file mode 100644=0A=
->> index 000000000000..5a251a6a782e=0A=
->> --- /dev/null=0A=
->> +++ b/drivers/vfio/pci/nvgrace-gpu/main.c=0A=
->> @@ -0,0 +1,888 @@=0A=
->> +// SPDX-License-Identifier: GPL-2.0-only=0A=
->> +/*=0A=
->> + * Copyright (c) 2024, NVIDIA CORPORATION & AFFILIATES. All rights=0A=
->> reserved=0A=
->> + */=0A=
->> +=0A=
->> +#include <linux/vfio_pci_core.h>=0A=
->> +#include <linux/sizes.h>=0A=
->> +=0A=
->=0A=
-> Let's keep the header inclusion in an alphabet order.=0A=
->=0A=
-> With that addressed,=0A=
->=0A=
-> Reviewed-by: Zhi Wang <zhi.wang.linux@gmail.com>=0A=
-=0A=
-Yes, will adjust that. Thanks!=0A=
-=0A=
->> +/*=0A=
->> + * The device memory usable to the workloads running in the VM is=0A=
->> cached=0A=
->> + * and showcased as a 64b device BAR (comprising of BAR4 and BAR5=0A=
->> region)=0A=
->> + * to the VM and is represented as usemem.=0A=
->> + * Moreover, the VM GPU device driver needs a non-cacheable region to=
-=0A=
->> + * support the MIG feature. This region is also exposed as a 64b BAR=0A=
->> + * (comprising of BAR2 and BAR3 region) and represented as resmem.=0A=
->> + */=0A=
->> +#define RESMEM_REGION_INDEX VFIO_PCI_BAR2_REGION_INDEX=0A=
->> +#define USEMEM_REGION_INDEX VFIO_PCI_BAR4_REGION_INDEX=0A=
+--5b911bf665d2ea492c216b90f01b24b10ab08eb643d157bdd14da66d2129
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+On Mon Feb 19, 2024 at 10:23 AM CET, AngeloGioacchino Del Regno wrote:
+> Il 19/02/24 09:44, Michael Walle ha scritto:
+> > Add the compatible string for the Kontron 3.5"-SBC-i1200 single board
+> > computer.
+> >=20
+> > Signed-off-by: Michael Walle <mwalle@kernel.org>
+> > ---
+> > v2:
+> >   - convert enum to const as there is only one specific board
+> >=20
+> >   Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
+> >   1 file changed, 5 insertions(+)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Docu=
+mentation/devicetree/bindings/arm/mediatek.yaml
+> > index 09f9ffd3ff7b..add167d8b8da 100644
+> > --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> > @@ -357,6 +357,11 @@ properties:
+> >                 - radxa,nio-12l
+> >             - const: mediatek,mt8395
+> >             - const: mediatek,mt8195
+> > +      - description: Kontron 3.5"-SBC-i1200
+> > +        items:
+> > +          - const: kontron,3-5-sbc-i1200
+> > +          - const: mediatek,mt8395
+> > +          - const: mediatek,mt8195
+> >         - items:
+> >             - enum:
+> >                 - mediatek,mt8516-pumpkin
+>
+> I understand that you took inspiration from the Google Chromebooks entrie=
+s, but
+> those are separated only because they've got "a bunch of revisions".
+>
+
+I don't really care about the description. It's just the way I've
+done it in the past. And in this file, there is also google,burnet,
+google,cozmo, google,damu, without any further revs.
+
+> For machines that don't have a billion compatible strings, I would sugges=
+t to
+> add the compatible under a single big entry: like this, the binding is (i=
+mo) a
+> bit more readable .. and cleaner.
+>
+> Eventually, the machine name is in the devicetree so we're not losing any=
+ kind
+> of information anyway... :-)
+>
+>        - items:
+>            - enum:
+>                - kontron,3-5-sbc-i1200
+>                - mediatek,mt8395-evk
+>                - radxa,nio-12l
+>            - const: mediatek,mt8395
+>            - const: mediatek,mt8195
+
+Ack. I'll give you some time to look at the actual DTS before
+posting a new version.
+
+-michael
+
+--5b911bf665d2ea492c216b90f01b24b10ab08eb643d157bdd14da66d2129
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZdMhGhIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQzcodo7VsRvs3fgEAlFQCpxkpEfzEqfjyl3YucexQcUbd1+Lj
+0DJqee5gUp0BAP0BDmrnoWc+fCp5T7L07BNNJRAC7wDWhSUbmgvyBvEF
+=mwoc
+-----END PGP SIGNATURE-----
+
+--5b911bf665d2ea492c216b90f01b24b10ab08eb643d157bdd14da66d2129--
 
