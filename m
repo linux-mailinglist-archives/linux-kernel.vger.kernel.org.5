@@ -1,92 +1,137 @@
-Return-Path: <linux-kernel+bounces-70736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7188A859BAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:26:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CF0D859BB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:33:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11C921F224F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:26:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27554281FE1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849F31E514;
-	Mon, 19 Feb 2024 05:26:04 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F0401E514;
+	Mon, 19 Feb 2024 05:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kEwmBkUl"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35381CA98
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:26:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342A01CF95
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708320364; cv=none; b=t6jPZNUtTP+pJp3qKGegFnpfFYvQxEwtnAQMYPyOm5d5YEUJl04AI6jTd6LpxR/Is+p/Pgi9FC5/jMln4fL/Eljvbke4iPsVteCqpSy8bczl+DhvFcmKqSijn/DHFRHOywGdFKvRK7MaIhxf0662GTzzU0oMtwB23Ca2IJWfqTs=
+	t=1708320817; cv=none; b=faT9kqjgjXphkldInwF5a7G+qu3zbctXjk1YAQW6LBK5JtKXkaoKwWfB/82jqtzPWTibrcuVL36Vb2TLybmgVhKDJUpyrag8L7s8ldwExFaqT49runGpGLDwzLGOTeyXFudQrS+j+MXXuQePcoAA+SOANFuiIIyV6bSlAAq3iXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708320364; c=relaxed/simple;
-	bh=/UamSygtRoHGtpPGb62UgKOiavVW2OhoLRhrRpKJ3bY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=VN9V1lecX6Y1DDyXlDL8/Z6Kd0NCXzS9K8ny0A8GsfNgm2QCQeaiEbcVJb1nhvFMHExOeLm8SLpMhlZnWtEHoJ2bgFXQWJFpBitC3I9hPVGQjNi/42FkUPXniK02gMnBNeQOLHteuFEbCLo1qtRdOFFJ6UrBF70+siuQVW92zo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363c88eff5aso30442295ab.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 21:26:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708320362; x=1708925162;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=NOFoFESmvlklSQbncNSApOvu+sIjkHC5FQZ3He6zZio=;
-        b=t+Iz6upqPKDmy8Nz4hx79MrT2W98GsPozw8GUc+ukU/rAomu4xPbQ/W/yksHz7Drq4
-         k4pXeQ+QVcc8YnmFGE5oZSr5hO2rYWdjsfK9NNOTt4p0JI5wZDuKFElXnd1amm3BBpE9
-         iZqgnHxg4uUH1dxRi0RykQEcko7vRf2t8R0Lw6nZPNrk3tbSWWJ5DIm2u+qIOceKyTcQ
-         OHTtHBM+8mApcImu3XBiL6mv5KEVXB37Cn3hOWAONqcrapjtA/at5WqmGhyEIWBx98q+
-         YrrQNG8az3G4RkzN/4O7xdchhZggvyV0U5CVJnqvc5o+RHi8tP3sqGfcsBXRwoOGUSol
-         bVpg==
-X-Forwarded-Encrypted: i=1; AJvYcCUp042lsymb87ZEnNVulbnH8OS0GvEEL1OTnoz1/FkZO02TMe8fynNVZXkNEo/Y6aB0IUuf/cGm5//nxckYa6wCQCIjWm0EZ3xCadSD
-X-Gm-Message-State: AOJu0YzYIkStWEagzmP0OCI4yxNpli8l+MAICAMqzlgXnJTD88l6niQG
-	DWooNE2+MH/SY9UpiNvswLbqXb09eljstWqf/nyWcPL/YXM5vLioep5hBo3GsbIYrgrMhz9LK4m
-	8GKl93YH7om6QrmSWruiJp//DqlAygNMsMj7SATN/Xyz+SJrqTInTHyI=
-X-Google-Smtp-Source: AGHT+IHSD6r+WANqHstIaCKHCJUTmPR9yzzjf/m9rmHwC3SEFCPekxM9WqAzHDkGdt/XQG/5sU2TdpvwzirUzbIFiKnXK8KWO+xb
+	s=arc-20240116; t=1708320817; c=relaxed/simple;
+	bh=I1Jfd/8FIBp70O+sFzRnE2xgDFNHERXYc1sStRHBxtA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bQ4WoqqCS8yyrxc0AfDWQyKi6zxfS7cAN+od7FwlZe9iFlb/fcvDSW4Qaa9liwwUpcNDp+DQnkT9EuLyGndE0HDM75DbEEiP4DSf699I5faPAzSli1fAQseXnXbhB89XjV5NGA/kIh8Y5ffd0h61j4R1vsRVgz6kxcGLXRUJ/VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kEwmBkUl; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708320815; x=1739856815;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=I1Jfd/8FIBp70O+sFzRnE2xgDFNHERXYc1sStRHBxtA=;
+  b=kEwmBkUljHugpZobXTbdHKigBqktt/cTsv8THOC0wMR85OSKyeZrWIs0
+   vC3jdqXMzu1xdL23kFDQ3T9A14IqOaWASh7egYzRuwHLFPlrptsT6MbmO
+   CLhmfIKXt2s0PDaJUHbI5WXe/deMK5iTiPszmjSYth2UkJe86BvQbaUtG
+   OgJKdqDs1O8o/DHkNpPUyKdzC2n+/LUfwkV7FjlhTqVPbIVBYrVuamTW5
+   gotz18ga6B49V3nnVb2QBuH/iX966jdPriiqIJ6+yGcPc0eUzZxOsJ2t1
+   ys+yBw8XZ9MTUYnkdvyEIvvxo7MtdVyqKHw/rIx1h6T65G/DtlP6A4W6m
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="12933033"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="12933033"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 21:33:34 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="826950509"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="826950509"
+Received: from zhaohaif-mobl.ccr.corp.intel.com (HELO [10.254.209.179]) ([10.254.209.179])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 21:33:31 -0800
+Message-ID: <ba137a34-68d1-4f61-a6dd-30841610c079@linux.intel.com>
+Date: Mon, 19 Feb 2024 13:33:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a2b:b0:365:3328:6324 with SMTP id
- g11-20020a056e021a2b00b0036533286324mr99180ile.5.1708320361966; Sun, 18 Feb
- 2024 21:26:01 -0800 (PST)
-Date: Sun, 18 Feb 2024 21:26:01 -0800
-In-Reply-To: <0000000000004f9dd605eabee6dc@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000056790c0611b5548c@google.com>
-Subject: Re: [syzbot] [jfs?] INFO: task hung in __get_metapage
-From: syzbot <syzbot+84c274731411665e6c52@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, brauner@kernel.org, damien.lemoal@opensource.wdc.com, 
-	jack@suse.cz, jfs-discussion@lists.sourceforge.net, jlayton@kernel.org, 
-	kch@nvidia.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	shaggy@kernel.org, syzkaller-bugs@googlegroups.com, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] iommu/vt-d: Use rbtree to track iommu probed devices
+To: Baolu Lu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
+ Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>
+Cc: Huang Jiaqing <jiaqing.huang@intel.com>, iommu@lists.linux.dev,
+ linux-kernel@vger.kernel.org
+References: <20240215072249.4465-1-baolu.lu@linux.intel.com>
+ <20240215072249.4465-2-baolu.lu@linux.intel.com>
+ <eace2ec0-0b8b-450d-b05f-7b7ca3e473a7@linux.intel.com>
+ <942dd645-7475-4c43-99c6-304601fb09eb@linux.intel.com>
+From: Ethan Zhao <haifeng.zhao@linux.intel.com>
+In-Reply-To: <942dd645-7475-4c43-99c6-304601fb09eb@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+On 2/19/2024 12:04 PM, Baolu Lu wrote:
+> On 2024/2/19 10:45, Ethan Zhao wrote:
+>>> @@ -4264,25 +4313,34 @@ static struct iommu_device 
+>>> *intel_iommu_probe_device(struct device *dev)
+>>>       }
+>>>       dev_iommu_priv_set(dev, info);
+>>> +    ret = device_rbtree_insert(iommu, info);
+>>> +    if (ret)
+>>> +        goto free;
+>>>       if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
+>>>           ret = intel_pasid_alloc_table(dev);
+>>>           if (ret) {
+>>>               dev_err(dev, "PASID table allocation failed\n");
+>>> -            kfree(info);
+>>> -            return ERR_PTR(ret);
+>>> +            goto clear_rbtree;
+>>>           }
+>>>       }
+>>>       intel_iommu_debugfs_create_dev(info);
+>>>       return &iommu->iommu;
+>>> +clear_rbtree:
+>>> +    device_rbtree_remove(info);
+>>> +free:
+>>> +    kfree(info);
+>>> +
+>>> +    return ERR_PTR(ret);
+>>>   }
+>>>   static void intel_iommu_release_device(struct device *dev)
+>>>   {
+>>>       struct device_domain_info *info = dev_iommu_priv_get(dev);
+>>> +    device_rbtree_remove(info);
+>>
+>> Perhpas too early here to remove dev from the rbtree, if it is wanted in
+>> devTLB invalidation steps in intel_pasid_tear_down_entry().
+>
+> Perhaps the caller of device_rbtree_find() should not depend on the
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+I didn't catch up here. seems have to maintain the lifecycle as PCI subsystem
+does, or there would be mutli instances for the same BDF(e.g. the device is
+removed then plugged, again and again.....in the same slot) in the rbtree ?
 
-    fs: Block writes to mounted block devices
+> order in the release_device callback. For the device TLB invalidation
+> timed-out case, probably it could be checked in this way:
+>
+>     struct device *dev = device_rbtree_find(iommu, ite_sid);
+>     if (!dev || !pci_device_is_present(to_pci_dev(dev)))
+>         return -ETIMEDOUT;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13310158180000
-start commit:   1b929c02afd3 Linux 6.2-rc1
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
-dashboard link: https://syzkaller.appspot.com/bug?extid=84c274731411665e6c52
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1702dc54480000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b9eaf4480000
+looks much advanced with such infrastructure !
 
-If the result looks correct, please mark the issue as fixed by replying with:
+Thanks,
+Ethan
 
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+>
+> Best regards,
+> baolu
 
