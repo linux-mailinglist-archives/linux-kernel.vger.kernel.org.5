@@ -1,180 +1,163 @@
-Return-Path: <linux-kernel+bounces-71745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71747-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B609785A9CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:20:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D15FC85A9D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:22:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5788B1F225D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:20:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4593F1F24CEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:22:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F0444C94;
-	Mon, 19 Feb 2024 17:20:45 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9014B446A5;
-	Mon, 19 Feb 2024 17:20:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F87144C81;
+	Mon, 19 Feb 2024 17:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sL45fs6s"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F5CB446C4
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:22:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708363244; cv=none; b=mHl+ypzMjW774JCdny3OEEQ3ll2x7Taua61IIAdcgAeAgO5wX60Qxx8nB3OaxUdKkvvCCT06CgfKTv5oaOU7bSzKpuckweFnCbqLxEuL7yyhIx7cvZ7z0aQxj15Epc18Q4jO21JYVziDpzBZeFcFHMBtqNW8/h4DdAlGWcWkJbQ=
+	t=1708363327; cv=none; b=lyEqIBzqeaf2sAjqq5wTmWXvXlDCUlP6mZ0Tu+ZKdm7GjVQvVyCDl3aXtdnU9k3r76grSe4yPPXVAW2HstUDzUrDcO09FBzn6x95Zk/rhD2FgEKpY1tdGJXrRyg9mt9DDpvr1/rkNAK7SUrurovI/QhNnxgYw+Nx+xMv/IY7atk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708363244; c=relaxed/simple;
-	bh=kIRjLThbu45iSePonaedwx3Sv6aDBvaezx/4y8Z422c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fC5XP1MKWQmx/IWg/G/E/JQcHL1urGAJ8yUKyKJLEMkF8vuZT57f3PVqVGDQaYkyU8dP3SKpBA34MjGFifC7UENz88XdbuqghfdIwJ+Pg+LMK6ttDec0S17GXGkaBv0fmdNiNq40S/b07Nnkhi4ao0W3eqrbIJ+wS0wBqAgR2m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A1E41FEC;
-	Mon, 19 Feb 2024 09:21:21 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.57.67.88])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 061863F762;
-	Mon, 19 Feb 2024 09:20:40 -0800 (PST)
-Date: Mon, 19 Feb 2024 17:20:38 +0000
-From: Mark Rutland <mark.rutland@arm.com>
-To: Petr Pavlu <petr.pavlu@suse.com>
-Cc: masahiroy@kernel.org, nathan@kernel.org, nicolas@fjasle.eu,
-	linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] kbuild: Use -fmin-function-alignment when available
-Message-ID: <ZdON5rbsYFsoulxm@FVFF77S0Q05N>
-References: <20240215151642.8970-1-petr.pavlu@suse.com>
+	s=arc-20240116; t=1708363327; c=relaxed/simple;
+	bh=D4hbJX7uGV8vohd/O7pYTtYq3FdJW6tASIcFVTSogHk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q/DCT6Atc6L3hHg/mEaXlFn0z39QYccwLcMMXH5qgTHThx9ubB4o7MdxmmRpAcBgxdwj/T6njmM0d80jGKhR9V61DbNoL0IgipPHC/dVBeNrp24H8vWmDIn1Mt1G5xualjzdJK91bzynQiXVfYDheM1IUbVtfMipN0klY5sUM18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sL45fs6s; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-411d9e901dcso108535e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:22:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708363324; x=1708968124; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TzE2ImKo71OrGpPwUdYL/4pHbPBLfbVgHi0cr9m3U8k=;
+        b=sL45fs6sLPjwI75d4uFu8XxABRB/V521bZaKwne7qpuU6wrVTEUIA4UD0hzj9EP1O8
+         B1KKCZt+3VgGoF7Eo2IK+Ni47YoRntvhkFlPY+A30st5Hr1LZsE870leOriwliLFM4QA
+         31E+8KBHTjFLEA+KJaLBmftERuQMO0lMH4rO1dbFlAFgXkw+cHn0FrNw8SCEU0nZGulC
+         SwhH+okvFFFS5sgOktS/IHc3YZD6XDQ/hCp7YNUskEC815Xaf5V69Ae0BrsidNm/K/am
+         V2+XY8s87cXVXfMS1wl6/JChlHQIJQT+srZdiZQmJw+uP/TycvNIHtGv37Skm41h4kit
+         Ly3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708363324; x=1708968124;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TzE2ImKo71OrGpPwUdYL/4pHbPBLfbVgHi0cr9m3U8k=;
+        b=l9K4Yxm63nlxbm0BZ3u2ApNbdVOkuYW6NOW9z3QnZQ5oomk/EDtiTNuFnvp2doArus
+         KBl5ujtcE4kNGZalq33duQuNUYn4jyUsKGa7iy59DXpUTxF78oyKtw0ENXkPFLtXWOKr
+         e1dM8XgvjKIwWxgY52hxLvGRXN9s5yW9qcHyaG9uSzkj4GijO5JiJK+/SjIUEF2cDcJx
+         roAxujKXzEr7WJ3UkcHJFgd0N28eW7tAnVs6ipV39q2REY90dmgQFQ0/8vpH0ByiGXTs
+         YcpxbzmEfHYQOw/CwMVFzr3N3qGzqvpi6tFcpHSZ3okt57QQwR2o4r+PteCO1RUV/de6
+         iuvg==
+X-Forwarded-Encrypted: i=1; AJvYcCVmV+yGCWMFHPTi6Qn1/104Wq7s7Pfq06QBRwuoiApasr3A3iNTtL1iNomZNGpB/1M4KNsxIFe9BBQtrtVtEQkO9lGtaZt8Czmqa/yA
+X-Gm-Message-State: AOJu0YwLmMn9+B19OoVn7XQ7J3Cuh4DrvB7/MTt+kbDJQs90X9ZlL0Tc
+	2lJuMCbLzwjE9u9Kqx4kWBxZFDHjDjt7WlIXOBsQE+HmDdI0n2LsnhhetA5+7eu8NUMwaKd3wnx
+	2YpbtzrcO+KaN8rq1XcJqid3k/Hu2GIYkUOal
+X-Google-Smtp-Source: AGHT+IFtUO3gJmAv9pg3NVlt8jW79fOGFR/YkJjU3AyGWJK7/hjLBpWxiTYoMfGOwmlNssRqFlRN3PKW2DohJYoHKeM=
+X-Received: by 2002:a05:600c:c08:b0:412:68a7:913a with SMTP id
+ fm8-20020a05600c0c0800b0041268a7913amr116160wmb.4.1708363323800; Mon, 19 Feb
+ 2024 09:22:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215151642.8970-1-petr.pavlu@suse.com>
+References: <20240215-upstream-net-20240215-misc-fixes-v1-0-8c01a55d8f6a@kernel.org>
+ <20240215-upstream-net-20240215-misc-fixes-v1-3-8c01a55d8f6a@kernel.org>
+In-Reply-To: <20240215-upstream-net-20240215-misc-fixes-v1-3-8c01a55d8f6a@kernel.org>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 19 Feb 2024 18:21:52 +0100
+Message-ID: <CANn89iJ=Oecw6OZDwmSYc9HJKQ_G32uN11L+oUcMu+TOD5Xiaw@mail.gmail.com>
+Subject: Re: [PATCH net 03/13] mptcp: fix lockless access in subflow ULP diag
+To: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Davide Caratti <dcaratti@redhat.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	stable@vger.kernel.org, Boris Pismenny <borisp@nvidia.com>, 
+	John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 15, 2024 at 04:16:42PM +0100, Petr Pavlu wrote:
-> GCC recently added option -fmin-function-alignment, which should appear
-> in GCC 14. Unlike -falign-functions, this option causes all functions to
-> be aligned at the specified value, including the cold ones.
-> 
-> Detect availability of -fmin-function-alignment and use it instead of
-> -falign-functions when present. Introduce CC_HAS_SANE_FUNCTION_ALIGNMENT
-> and make the workarounds for the broken function alignment conditional
-> on this setting.
-> 
-> Signed-off-by: Petr Pavlu <petr.pavlu@suse.com>
-
-I don't have a GCC 14 build to play with, but this looks sound to me.
-
-Petr, are you able to test an arm64 kernel with this and DYNAMIC_FTRACE
-enabled? i.e. build that, and check that function symbols are all aligned to 8
-bytes using objdump or similar? That way we could be pretty sure there's no
-other latent issue in this area.
-
-FWIW, given the structure looks sound:
-
-Acked-by: Mark Rutland <mark.rutland@arm.com>
-
-Mark.
-
+On Thu, Feb 15, 2024 at 7:25=E2=80=AFPM Matthieu Baerts (NGI0)
+<matttbe@kernel.org> wrote:
+>
+> From: Paolo Abeni <pabeni@redhat.com>
+>
+> Since the introduction of the subflow ULP diag interface, the
+> dump callback accessed all the subflow data with lockless.
+>
+> We need either to annotate all the read and write operation accordingly,
+> or acquire the subflow socket lock. Let's do latter, even if slower, to
+> avoid a diffstat havoc.
+>
+> Fixes: 5147dfb50832 ("mptcp: allow dumping subflow context to userspace")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+> Reviewed-by: Mat Martineau <martineau@kernel.org>
+> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
 > ---
-> 
-> Changes since v1 [1]:
-> - Check the availability of -fmin-function-alignment only in one place.
-> 
-> [1] https://lore.kernel.org/linux-kbuild/20240212145355.1050-1-petr.pavlu@suse.com/
-> 
->  Makefile                       |  7 +++++++
->  arch/Kconfig                   | 12 ++++++++++++
->  include/linux/compiler_types.h | 10 +++++-----
->  kernel/exit.c                  |  5 ++++-
->  4 files changed, 28 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Makefile b/Makefile
-> index 7e0b2ad98905..6f20ab5e2e44 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -974,8 +974,15 @@ export CC_FLAGS_CFI
->  endif
->  
->  ifneq ($(CONFIG_FUNCTION_ALIGNMENT),0)
-> +# Set the minimal function alignment. Use the newer GCC option
-> +# -fmin-function-alignment if it is available, or fall back to -falign-funtions.
-> +# See also CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT.
-> +ifdef CONFIG_CC_HAS_MIN_FUNCTION_ALIGNMENT
-> +KBUILD_CFLAGS += -fmin-function-alignment=$(CONFIG_FUNCTION_ALIGNMENT)
-> +else
->  KBUILD_CFLAGS += -falign-functions=$(CONFIG_FUNCTION_ALIGNMENT)
->  endif
-> +endif
->  
->  # arch Makefile may override CC so keep this after arch Makefile is included
->  NOSTDINC_FLAGS += -nostdinc
-> diff --git a/arch/Kconfig b/arch/Kconfig
-> index a5af0edd3eb8..bd6c6335efac 100644
-> --- a/arch/Kconfig
-> +++ b/arch/Kconfig
-> @@ -1507,4 +1507,16 @@ config FUNCTION_ALIGNMENT
->  	default 4 if FUNCTION_ALIGNMENT_4B
->  	default 0
->  
-> +config CC_HAS_MIN_FUNCTION_ALIGNMENT
-> +	# Detect availability of the GCC option -fmin-function-alignment which
-> +	# guarantees minimal alignment for all functions, unlike
-> +	# -falign-functions which the compiler ignores for cold functions.
-> +	def_bool $(cc-option, -fmin-function-alignment=8)
-> +
-> +config CC_HAS_SANE_FUNCTION_ALIGNMENT
-> +	# Set if the guaranteed alignment with -fmin-function-alignment is
-> +	# available or extra care is required in the kernel. Clang provides
-> +	# strict alignment always, even with -falign-functions.
-> +	def_bool CC_HAS_MIN_FUNCTION_ALIGNMENT || CC_IS_CLANG
-> +
->  endmenu
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index 663d8791c871..f0152165e83c 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -99,17 +99,17 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
->   *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Label-Attributes.html#index-cold-label-attribute
->   *
->   * When -falign-functions=N is in use, we must avoid the cold attribute as
-> - * contemporary versions of GCC drop the alignment for cold functions. Worse,
-> - * GCC can implicitly mark callees of cold functions as cold themselves, so
-> - * it's not sufficient to add __function_aligned here as that will not ensure
-> - * that callees are correctly aligned.
-> + * GCC drops the alignment for cold functions. Worse, GCC can implicitly mark
-> + * callees of cold functions as cold themselves, so it's not sufficient to add
-> + * __function_aligned here as that will not ensure that callees are correctly
-> + * aligned.
->   *
->   * See:
->   *
->   *   https://lore.kernel.org/lkml/Y77%2FqVgvaJidFpYt@FVFF77S0Q05N
->   *   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c9
->   */
-> -#if !defined(CONFIG_CC_IS_GCC) || (CONFIG_FUNCTION_ALIGNMENT == 0)
-> +#if defined(CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT) || (CONFIG_FUNCTION_ALIGNMENT == 0)
->  #define __cold				__attribute__((__cold__))
->  #else
->  #define __cold
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index dfb963d2f862..5a6fed4ad3df 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -1920,7 +1920,10 @@ EXPORT_SYMBOL(thread_group_exited);
->   *
->   * See https://gcc.gnu.org/bugzilla/show_bug.cgi?id=88345#c11
->   */
-> -__weak __function_aligned void abort(void)
-> +#ifndef CONFIG_CC_HAS_SANE_FUNCTION_ALIGNMENT
-> +__function_aligned
-> +#endif
-> +__weak void abort(void)
+> Notes:
+>   - This patch modifies the existing ULP API. No better solutions have
+>     been found for -net, and there is some similar prior art, see
+>     commit 0df48c26d841 ("tcp: add tcpi_bytes_acked to tcp_info").
+>
+>     Please also note that TLS ULP Diag has likely the same issue.
+> To: Boris Pismenny <borisp@nvidia.com>
+> To: John Fastabend <john.fastabend@gmail.com>
+> ---
+>  include/net/tcp.h  | 2 +-
+>  net/mptcp/diag.c   | 6 +++++-
+>  net/tls/tls_main.c | 2 +-
+>  3 files changed, 7 insertions(+), 3 deletions(-)
+>
+> diff --git a/include/net/tcp.h b/include/net/tcp.h
+> index dd78a1181031..f6eba9652d01 100644
+> --- a/include/net/tcp.h
+> +++ b/include/net/tcp.h
+> @@ -2506,7 +2506,7 @@ struct tcp_ulp_ops {
+>         /* cleanup ulp */
+>         void (*release)(struct sock *sk);
+>         /* diagnostic */
+> -       int (*get_info)(const struct sock *sk, struct sk_buff *skb);
+> +       int (*get_info)(struct sock *sk, struct sk_buff *skb);
+>         size_t (*get_info_size)(const struct sock *sk);
+>         /* clone ulp */
+>         void (*clone)(const struct request_sock *req, struct sock *newsk,
+> diff --git a/net/mptcp/diag.c b/net/mptcp/diag.c
+> index a536586742f2..e57c5f47f035 100644
+> --- a/net/mptcp/diag.c
+> +++ b/net/mptcp/diag.c
+> @@ -13,17 +13,19 @@
+>  #include <uapi/linux/mptcp.h>
+>  #include "protocol.h"
+>
+> -static int subflow_get_info(const struct sock *sk, struct sk_buff *skb)
+> +static int subflow_get_info(struct sock *sk, struct sk_buff *skb)
 >  {
->  	BUG();
->  
-> 
-> base-commit: 841c35169323cd833294798e58b9bf63fa4fa1de
-> -- 
-> 2.35.3
-> 
+>         struct mptcp_subflow_context *sf;
+>         struct nlattr *start;
+>         u32 flags =3D 0;
+> +       bool slow;
+>         int err;
+>
+>         start =3D nla_nest_start_noflag(skb, INET_ULP_INFO_MPTCP);
+>         if (!start)
+>                 return -EMSGSIZE;
+>
+> +       slow =3D lock_sock_fast(sk);
+>         rcu_read_lock();
+
+I am afraid lockdep is not happy with this change.
+
+Paolo, we probably need the READ_ONCE() annotations after all.
 
