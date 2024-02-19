@@ -1,176 +1,436 @@
-Return-Path: <linux-kernel+bounces-72063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86ED785AE7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:34:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6611385AE98
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:36:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1583E284E42
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:34:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B33A282FD3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB1056450;
-	Mon, 19 Feb 2024 22:34:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A58145677C;
+	Mon, 19 Feb 2024 22:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="J1bCiCmf"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2065.outbound.protection.outlook.com [40.92.52.65])
+	dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b="FYiKSJXG"
+Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37BB54F94;
-	Mon, 19 Feb 2024 22:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.52.65
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708382068; cv=fail; b=orfUqnUO0uetQiKG+sfOkw9m5grmLpLAmX0pi6JoWKP7NkqXT4ThuH9694of4EuDpO35nVCCtihx5PQJERx0WJU23XHWTO8jWngrImWwQC+8qB5cEXFPv7Yxc3RNPq4PuCak+XNWH2B9cLa8OI21XuBycnjzGLa7i1yIEJeW9II=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708382068; c=relaxed/simple;
-	bh=TTmEiPCWpoKhPhvhaNN1aVSKpO9AEkLkUZA434sqxwU=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=kTkY8GuFuOzboL4f7cQK3S23R+zie1J3CjizHlWqLu/zPCoZSj7vmG5VfVt+A1z8nNfxtZhAyLzJmwyI44aWJFDa56LZu2qlWx8eYhS5aIWy8D7CD7NcZ0R+5FhKPTplIPDR0L/F1RijmIvNYDW+Un6IjEijgJdDbVKL+4G6WlE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=J1bCiCmf; arc=fail smtp.client-ip=40.92.52.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dbT7YxhOTL9eWNJFV4iZw7d26GgecxnoRkQGSKycQU60ctalkEjOuzMNGnPvQslRZrEcpPLnSsqZ3UO0BmfE+UKjX4dk1dUKjH5ahG9Lwr6EA+YxY0ELUAlZZXnDgnO33835xeVeZNJDOPmvt4msFUnh+zLRkAXP+usxAGldtQCTXuD0//p+LM9gljOiqsT1A1fPvBCxgyd3bkCN+66W1wWWfJ4NtW598hO8vI0j5AWCExlYkU0HM/k6yPfDJr1ahg3MTOBcXijwwLbyCRvMAUgYe3sU8Ymg8Rn49PAYgucW+LfibUEkRdZ8LWa6xlio/q615UHFi5JPHnrWz5iC4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=mGbM3AC5SJV90fJaTlCt5tBckr/ZJADQtQ7J0uA83gk=;
- b=ZOG1Pw81UOkmsnblCJZrMK2CFbJ1OgPgjjG2SKvhEj6imx/HeLA/d+XXLIsKB5wcedZ3eRRbcUXu5cQF5LoMl/pgNfEXD7Hk9+2M/NEhsyWhDN2qukofGkLU2IClhwnAZNrb0iyfftnnCXx0DBGsDA/W30eHIrVCrmNRjnnSLdv0XQGVvfSbzwNTyY6VR9nOD2H0+9yEqr0guHU/KgIpWQQmPLpTKUt7laGZyS1pvvODKxuxYP7bIUhvGL4Llhl9DBVzbCvWF4wMAiREdJ1LFh5ApM+mhBpwuTGS7M4MORh2LthLCMMCpzhxO/mx+bh+GYdlofusdJxp29XvCCZfVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mGbM3AC5SJV90fJaTlCt5tBckr/ZJADQtQ7J0uA83gk=;
- b=J1bCiCmfp6aUCZ0DrVlss3yE69a1oH9u60nU7/LiPxT/xa9/V5jxbF1rUd7zAeahAp9FgzngWdGHegudk6Fi+OX9ypiZ/tMYnRPEhCx8Hl02YLTZ6LXTDa0GioYNxh0tAHijHm9lPSqRqZbXE1OD1278ZvUUuBXOvm7AFLZYG81o5tEwSjUc1dwi+BrKio9p2B3TmmtohocugAKppZXgK5P0FLlFtHEi16MtHGcVmpG7gX9MR8o5XI4d+78MoKQIbDusY0tmtvqS62HEPiibmiSgE7s2Ht1GfTWNxfLhViwKfpLsvxz26xzfirqdqH/TrwICv9YLWz82aFbq/V88xg==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by SEZPR06MB5958.apcprd06.prod.outlook.com (2603:1096:101:e5::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
- 2024 22:34:21 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
- 22:34:21 +0000
-Message-ID:
- <SEZPR06MB69594F945CDB5DB05F51C9BA96512@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Tue, 20 Feb 2024 06:34:18 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 3/6] net: hisilicon: add support for
- hisi_femac core on Hi3798MV200
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
- Salil Mehta <salil.mehta@huawei.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240220-net-v3-0-b68e5b75e765@outlook.com>
- <20240220-net-v3-3-b68e5b75e765@outlook.com>
- <29fc21f0-0e46-4d0f-8d4b-c4dbd1689c55@lunn.ch>
- <SEZPR06MB695901E7D4BEABE1B6F319D096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <5572f4dd-dcf2-42ec-99c8-51bf4d1f28ba@lunn.ch>
- <SEZPR06MB6959E5BDA57AF61BFAB19FC096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <0beab72d-2919-447f-88ff-fb7c92b28b61@lunn.ch>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <0beab72d-2919-447f-88ff-fb7c92b28b61@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN:
- [+1LCJbXh7vhO7eLkeYwqe1Vv//pXB4cTLMfCKz6DHOOcIIFyOwBJKAzTPRqh5X9lzrTzYwngVl8=]
-X-ClientProxiedBy: TYCP286CA0247.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:400:456::18) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <df199a6f-a859-4ffc-a2be-04dd5f74a2dc@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E5453E30;
+	Mon, 19 Feb 2024 22:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708382124; cv=none; b=hYw4cle43ORPuBEPLDJQVBgQO9Xx1tD4myy9ot4wE+ne5hphT8BEhXodcwMEgKJ+AqbatUKoZNZT9TiRrOWyYBczZ0xzOLgoqgIPuh2OOFzqk4u6SzkbAuGlmUF0XkVbRHtAoK5rzQI6nPFRjFc8NSjney0pmBYUbKdxcYn/gAs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708382124; c=relaxed/simple;
+	bh=cqNV2H5DPBsI5yIoVfpztZpKuDCq6z+Mx1fB8+/HuLI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SrR0J1gCW9OItOuZ5kwVOFmzLVeiQKt6FgcXsxLH5t71VI4hesRXmJXIrdf43qXdWWnOJq1B7kTWVVQp66j78f51qfLn6nqw5D3IZHAsodNZoq4BLaV8LVtz+5Rgyhh/ttT7Y65uqlq0dileUzuaI2JmBfBDUs3gnXTIY477WhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net; spf=pass smtp.mailfrom=6tel.net; dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b=FYiKSJXG; arc=none smtp.client-ip=178.154.239.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=6tel.net
+Received: from mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:3285:0:640:fd1e:0])
+	by forward500b.mail.yandex.net (Yandex) with ESMTPS id 4F92B60FA4;
+	Tue, 20 Feb 2024 01:35:13 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id bYZIDNh7RSw0-bdjyE56a;
+	Tue, 20 Feb 2024 01:35:12 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail;
+	t=1708382112; bh=+jlTY3lUMDLcDBT6kHcttIIlo3eB3VpO7B2awlfbckw=;
+	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
+	b=FYiKSJXGjnVnzFGiTxfpGkoPDQ4BfT4TbOqj9AnGSjVq3q3L3jhIHaBuMRE3CVVTW
+	 wJC5wUqgvRKOWEv3lz+Tg0elFIi5SUPjQUQAfVyM6gU/M+UkhqPGrJ5mrUyASCraL9
+	 bmDQjjyV2mgEKWXHIH9IQc0+Vdx9q3Ew4hOaeN14=
+Authentication-Results: mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net; dkim=pass header.i=@6tel.net
+From: efectn@6tel.net
+To: linux-rockchip@lists.infradead.org
+Cc: devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	heiko@sntech.de,
+	sebastian.reichel@collabora.com,
+	Muhammed Efe Cetin <efectn@protonmail.com>
+Subject: [PATCH 2/9] arm64: dts: rockchip: Add PMIC to Khadas Edge 2
+Date: Tue, 20 Feb 2024 01:34:18 +0300
+Message-ID: <617faf64a68f5af560267d77fd23fc9fb23e6c88.1708381247.git.efectn@protonmail.com>
+X-Mailer: git-send-email 2.43.1
+In-Reply-To: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
+References: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|SEZPR06MB5958:EE_
-X-MS-Office365-Filtering-Correlation-Id: 18c68fbc-bae8-44bb-e051-08dc319aeaa4
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ounD5c9q/rGVTkhm0fNLYQcMFVULPMPTYeauoM7hqRbaMRyHzBqiySXyWB68npnbituPboBGMG0bGhqd8F9RbmLWGh/w1i+/LCC6IXOnXkXDD2kHg0nGDGTZHX0BcvhYwBC3P5ifRspgJXz82ea66nl55lQK+10YDumCB96VI8R1iWQNQ1O8OtgU12iS2zhhgG9f00oYKB3TYxjN8lM81i0UPPRVSFQD5AoZiwN1DdL5aR+IunfbndEUu4e3qtBCc3sZlQrcdHWE1bw4vLsmdH9Ob7nkGe6tjtbweNeNgpAAQMa5GKS08rWGcVQpL9Wk9ViWTa+rqB+W82ReLbgGIU1mDxMFaiADcJDnp1U+aQfSavaYmKT0d8JFyxWKL7n3iqkhyNZddPacKu+ZvFdMpfyy7xF3iva4O0JWE9eCiiaeAy42qCLz4hwyDuD0J1ZpNwhhrzBa0w6m0o713vfERLNCBO2+/sCfVriFqLHHMViyjc6m6n4DOjmAe0EUgD81fs7DL3IbHsTEsHVgKQ40XkncqCiPGABY/ZYd3RlflXGxh7p3jmueAReTFy1YZzT5
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?OEdKVG5GZ0ZyQWE2R2dvVUpWQ0xycTdacnlod2dkVjJsK3Zwd0RmQkt6YlJo?=
- =?utf-8?B?OUdBbWZ4VmdOejZUSnhiK0F1Q0xxMHE4eDhkWDZ1UERjTjNrZzJuRHpHdCsv?=
- =?utf-8?B?ZStpbzFJZG94Q2hvWTE3TTE5Y3RhSmFSdDBDVG0yZ3lkUVpUbTA1Ti9JeGdX?=
- =?utf-8?B?bFhRY2RSbTBZZ3NzTlhCcDhoNlBTSHlBQlc3czlZT0FWWmJid3c5aU1JSVpN?=
- =?utf-8?B?alBWR1ZyT2c2TTdYcmZHTW96MlJGODVKL2VoYXhmZnF5N3JrbE4ySHZ3akww?=
- =?utf-8?B?R3NibzJRSnYwYS9Yd3hwRGx2MEljZjZXdFFCRHkrOFJEUElPd1dBNDZySzI4?=
- =?utf-8?B?VGJJUVYyRU0yQlpnRlArSDhHcy9xT3VVa0tuQjFiKzM0blYyRzJNOE5EZDAr?=
- =?utf-8?B?clpDLy93UERpSW56UFNxb2hiYUYwa0xyOEt4czYxc0xHY05XWktBaGF6dDNj?=
- =?utf-8?B?LzFoVW1DNHp1MDdZYVNKT2FWSzVDeExSdEJycEdLaXQ5aVUxQmoxeUp5eXFk?=
- =?utf-8?B?WFhnT0xNZnR6Z2ZiV3VtRDhINTZzVVoyUjhmcmkrVy92WEJ6bVAzL1RObldO?=
- =?utf-8?B?YW1yd0NibjQxSHRGdHlITnB4Y1ZBMHlBK3JZMnYrc01ncmRRdUVRY0NQTzNh?=
- =?utf-8?B?VGlPY2I4V1ZqY29mazVCWTNqbUhmcWFRMTh2dU5WSzNqS3pFbkpJakR0MGRp?=
- =?utf-8?B?ditvSytWelZPemppdEFBZHNCRXhiT2VJSklxdzhwNXh2MU1Sa2dhNkFuVklP?=
- =?utf-8?B?Qnp3ZmtpaTUyeU43UHBxbkg0d3VZQ2h3QXpqV2ZwaGJrcVNSell0bStPTXZw?=
- =?utf-8?B?L1JTRmxPR1ZuQ21TY0REQk5FY3FIclhSMUdrdGt4eTMxTGp1Rkh6NTBFbXV4?=
- =?utf-8?B?ZDNnUnNnMVl5aC9hVGc5Vkc3bC9pOUkyWitUTUxNMEtqWTZBUE1IaGNBWXdk?=
- =?utf-8?B?ZlZvUlBrZDlZQVdlQmJpS2VTMVVLOXF5Sk5kTU11YXF6RC9YNHE5NzNjNGU0?=
- =?utf-8?B?aElxd29PQmlUMzlqZWFLSUhRSGhrQ1dsNXVOUWE3dlRJUGxxbkVTeXRKdXBO?=
- =?utf-8?B?enhrYUgxQjhxU0NiWGR1SHhiQVczclNPaWx3TitDNGNmNVZpTDJLQVUrNGMy?=
- =?utf-8?B?N1VNMnBNRE91NVNWOGV4eW9MMWJ1N1JKTkFacERUL3JteEhWWlozY3liWGtH?=
- =?utf-8?B?QTFCeHFOdFN4bGltNTRqKzFidVkxR01MR3E5WFZlaWVmdXNoUzhzRFZvQXdM?=
- =?utf-8?B?SklNU3B2cS9xcHJ0TTZmY1ZhTlRpb2FTOWpXMCtzUTg3dDVWZ2RydkJ4NlBq?=
- =?utf-8?B?SHBZM013bnI0TkFqSjdmQUdyVE1Sb1JSeTF6WEtmeWV1TlZrdjFOVktyV0J6?=
- =?utf-8?B?aXpjZ3lxM1Q2NUh0Mm9HMUVXcG1aOGdvR2VCWXZhdlBtR25tOExyMDgrc2s3?=
- =?utf-8?B?RHJnNllEcTJIUUg4enY2RGV1akJvRml0Vi9ETklUQnR4KzdJUkNCU0lDLzRn?=
- =?utf-8?B?SDM5TmJGYkFDazBLQjFDOGZPWk9CT0YyYXNvUHVYaEh4WDU0U3NhT3hCcmZi?=
- =?utf-8?B?ajB3WitTQkhFV0pFcnNsY3RhS0RiOU1JQmNuNW5kdjN1MnpiQjRnQTlPUVFE?=
- =?utf-8?B?ZEV6V3pRTTFMR295bThQWER6a2ZNcVdDUXpMd2FzZkxoa0hDQzQwNEwxMnQr?=
- =?utf-8?B?NUtkQW9qazlnSis5bTNrY1liQk5xL0k1bDRKNTJzeXV3T0I2TmdjQVp5T0NH?=
- =?utf-8?Q?+X1h9ALdyYObh6sTV5a/i8B8/dGuKXY7BlI0OLy?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 18c68fbc-bae8-44bb-e051-08dc319aeaa4
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 22:34:21.2466
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5958
+Content-Transfer-Encoding: 8bit
 
-On 2/20/2024 6:05 AM, Andrew Lunn wrote:
->> It's not MAC which behaves wrongly, it's the MDIO bus. If we don't follow
->> the reset procedure properly. The MDIO bus fails to respond to any
->> write/read commands. But i believe MAC controller and PHY are still working.
->> I recalled that it can still transfer network packets, though it fails to
->> read PHY registers from MDIO bus so only 10Mbps is available (And the phy id
->> read out is always 0x0, normally it's 0x20669853).
->>
->> Maybe during initialization, PHY sent some garbage to MDIO bus and killed
->> it.
-> MDIO bus masters are really simple things, not much more than a shift
-> register. I find it hard to believe the MDIO bus master breaks because
-I conclude that master side is working. Because when i tried to read PHY 
-registers manually. It does say it completes reading(the finish bit is 
-set). Though the data read out is invalid.
-> of reset order. If the MDIO pins went to SoC pins, it would be simple
-> to prove, a bus-pirate or similar can capture the signals and sigrok
-> can decode MDIO.
->
-> To me, its more likely the PHY side of the MDIO bus is broken somehow.
->
->     Andrew
+From: Muhammed Efe Cetin <efectn@protonmail.com>
 
+This commit adds PMIC to Khadas Edge 2 board.
 
+Signed-off-by: Muhammed Efe Cetin <efectn@protonmail.com>
+---
+ .../dts/rockchip/rk3588s-khadas-edge2.dts     | 335 ++++++++++++++++++
+ 1 file changed, 335 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
+index 1d1ce70a0f3a..b99d2b82c787 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
+@@ -26,6 +26,16 @@ vcc5v0_sys: vcc5v0-sys-regulator {
+ 		regulator-min-microvolt = <5000000>;
+ 		regulator-max-microvolt = <5000000>;
+ 	};
++
++	vcc_1v1_nldo_s3: vcc-1v1-nldo-s3-regulator {
++		compatible = "regulator-fixed";
++		regulator-name = "vcc_1v1_nldo_s3";
++		regulator-always-on;
++		regulator-boot-on;
++		regulator-min-microvolt = <1100000>;
++		regulator-max-microvolt = <1100000>;
++		vin-supply = <&vcc5v0_sys>;
++	};
+ };
+ 
+ &cpu_b0 {
+@@ -110,6 +120,331 @@ &sdhci {
+ 	status = "okay";
+ };
+ 
++&spi2 {
++	status = "okay";
++	assigned-clocks = <&cru CLK_SPI2>;
++	assigned-clock-rates = <200000000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi2m2_cs0 &spi2m2_pins>;
++	num-cs = <1>;
++
++	pmic@0 {
++		compatible = "rockchip,rk806";
++		spi-max-frequency = <1000000>;
++		reg = <0x0>;
++
++		interrupt-parent = <&gpio0>;
++		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
++
++		pinctrl-names = "default";
++		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
++			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
++
++		system-power-controller;
++
++		vcc1-supply = <&vcc5v0_sys>;
++		vcc2-supply = <&vcc5v0_sys>;
++		vcc3-supply = <&vcc5v0_sys>;
++		vcc4-supply = <&vcc5v0_sys>;
++		vcc5-supply = <&vcc5v0_sys>;
++		vcc6-supply = <&vcc5v0_sys>;
++		vcc7-supply = <&vcc5v0_sys>;
++		vcc8-supply = <&vcc5v0_sys>;
++		vcc9-supply = <&vcc5v0_sys>;
++		vcc10-supply = <&vcc5v0_sys>;
++		vcc11-supply = <&vcc_2v0_pldo_s3>;
++		vcc12-supply = <&vcc5v0_sys>;
++		vcc13-supply = <&vcc_1v1_nldo_s3>;
++		vcc14-supply = <&vcc_1v1_nldo_s3>;
++		vcca-supply = <&vcc5v0_sys>;
++
++		gpio-controller;
++		#gpio-cells = <2>;
++
++		rk806_dvs1_null: dvs1-null-pins {
++			pins = "gpio_pwrctrl1";
++			function = "pin_fun0";
++		};
++
++		rk806_dvs2_null: dvs2-null-pins {
++			pins = "gpio_pwrctrl2";
++			function = "pin_fun0";
++		};
++
++		rk806_dvs3_null: dvs3-null-pins {
++			pins = "gpio_pwrctrl3";
++			function = "pin_fun0";
++		};
++
++		regulators {
++			vdd_gpu_s0: vdd_gpu_mem_s0: dcdc-reg1 {
++				regulator-boot-on;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vdd_gpu_s0";
++				regulator-enable-ramp-delay = <400>;
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_cpu_lit_s0: vdd_cpu_lit_mem_s0: dcdc-reg2 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vdd_cpu_lit_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_log_s0: dcdc-reg3 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <675000>;
++				regulator-max-microvolt = <750000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vdd_log_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <750000>;
++				};
++			};
++
++			vdd_vdenc_s0: vdd_vdenc_mem_s0: dcdc-reg4 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <550000>;
++				regulator-max-microvolt = <950000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vdd_vdenc_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_ddr_s0: dcdc-reg5 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <675000>;
++				regulator-max-microvolt = <900000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vdd_ddr_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <850000>;
++				};
++			};
++
++			vdd2_ddr_s3: dcdc-reg6 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-name = "vdd2_ddr_s3";
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++				};
++			};
++
++			vcc_2v0_pldo_s3: dcdc-reg7 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <2000000>;
++				regulator-max-microvolt = <2000000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vdd_2v0_pldo_s3";
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <2000000>;
++				};
++			};
++
++			vcc_3v3_s3: dcdc-reg8 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-name = "vcc_3v3_s3";
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <3300000>;
++				};
++			};
++
++			vddq_ddr_s0: dcdc-reg9 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-name = "vddq_ddr_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_1v8_s3: dcdc-reg10 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "vcc_1v8_s3";
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			avcc_1v8_s0: pldo-reg1 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "avcc_1v8_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_1v8_s0: pldo-reg2 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "vcc_1v8_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			avdd_1v2_s0: pldo-reg3 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1200000>;
++				regulator-name = "avdd_1v2_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vcc_3v3_s0: pldo-reg4 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vcc_3v3_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vccio_sd_s0: pldo-reg5 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-ramp-delay = <12500>;
++				regulator-name = "vccio_sd_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			pldo6_s3: pldo-reg6 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-name = "pldo6_s3";
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <1800000>;
++				};
++			};
++
++			vdd_0v75_s3: nldo-reg1 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <750000>;
++				regulator-name = "vdd_0v75_s3";
++
++				regulator-state-mem {
++					regulator-on-in-suspend;
++					regulator-suspend-microvolt = <750000>;
++				};
++			};
++
++			vdd_ddr_pll_s0: nldo-reg2 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <850000>;
++				regulator-max-microvolt = <850000>;
++				regulator-name = "vdd_ddr_pll_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++					regulator-suspend-microvolt = <850000>;
++				};
++			};
++
++			avdd_0v75_s0: nldo-reg3 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <750000>;
++				regulator-name = "avdd_0v75_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_0v85_s0: nldo-reg4 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <850000>;
++				regulator-max-microvolt = <850000>;
++				regulator-name = "vdd_0v85_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++
++			vdd_0v75_s0: nldo-reg5 {
++				regulator-always-on;
++				regulator-boot-on;
++				regulator-min-microvolt = <750000>;
++				regulator-max-microvolt = <750000>;
++				regulator-name = "vdd_0v75_s0";
++
++				regulator-state-mem {
++					regulator-off-in-suspend;
++				};
++			};
++		};
++	};
++};
++
+ &uart2 {
+ 	pinctrl-0 = <&uart2m0_xfer>;
+ 	status = "okay";
 -- 
-Regards,
-Yang Xiwen
+2.43.1
 
 
