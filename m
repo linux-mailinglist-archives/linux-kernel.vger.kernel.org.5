@@ -1,341 +1,197 @@
-Return-Path: <linux-kernel+bounces-70964-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A676859EBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:49:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA538859EC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:50:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B69BB1F217E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:49:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B2D2B22D2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0B522F1C;
-	Mon, 19 Feb 2024 08:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FNQ1uvTY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4A3241EA;
+	Mon, 19 Feb 2024 08:49:11 +0000 (UTC)
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D818C22F00;
-	Mon, 19 Feb 2024 08:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C10122619;
+	Mon, 19 Feb 2024 08:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708332523; cv=none; b=uG+aeCF0pvF6cm+gMxQnFJwDJmqC2lfNwPiTmTpOZX6Kyd6S+V1iSpJLITi83j2csTny5gvzs0udk7npE7aXz1LpEk3pytReK/qTKxt5uulRd19WABwCqUTIxAy+ojXyer+yTRlrdNhNVUqtDDpYrNX6yA+WrV4AMWDeD+qs3Zs=
+	t=1708332550; cv=none; b=AvfXxQL4Ug8oYfJ8ubxGcj389F8nz0m7tKcCGkMkuGzAAnkfLiLpxXmesqqk+dkvrFHBlkNzrRdAp7rcZhtf5S+Yh+Sm5TY5358KO6cKYv21YP2vfKOCCMicz92AUE7xpqxSqYMl5OkFfJE4W0yLB/lgRPSLvY1m9gMqd6+P7Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708332523; c=relaxed/simple;
-	bh=X9ivBbwhPXhNqP0tl5c+NVqkQbaCjwHFU7JRz89ruac=;
+	s=arc-20240116; t=1708332550; c=relaxed/simple;
+	bh=RjDKfILXb40j2Cpnf4ME6MMUhFxxBWNmtqaomKkvvI0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XqNdkkB7Ji2ptuh8QpvNEbFPhsU/ZyW3LZfEF7+DIOT07vTvkvBXHKBQfW1F/ZvWseSgwr8la4h1oUWxyM6XlqbdruajqdPIQ8QbIgzejCZ5NptLesN7IK3za83W1wdjO79s1DIJiMD2XnkGAcn08SFwYbQZiL2JvNfVSuqCMEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FNQ1uvTY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8082EC43394;
-	Mon, 19 Feb 2024 08:48:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708332523;
-	bh=X9ivBbwhPXhNqP0tl5c+NVqkQbaCjwHFU7JRz89ruac=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=FNQ1uvTYJPHQ2f18yTSHtKISEGIBOR9Uyrz7eOZqjMIHvYH4tr7OSo//PFNOAscSx
-	 NgUmYYquR9PxMUVMNxfDQ+vbNjejbMcRVrZcFY3V7MWiFzu1CzdIPiLhcpOvIfvnfu
-	 0fpZ5R7/3ngnK7ZzyZFjys+KNGA64jNwc7bqz6zY12g9w7hO90pWCQMuxYGfjipJ0N
-	 /SCJ/xkRzssnzZ+5LYFuo3vpjBnvfMEoEaTJG3v4ctlgQuc/g5P0WNtmplgjkJjO1B
-	 e6uVlnMUk7BFe91EK7g5CYUmAX3fUfJHAKDmH2JCMn1pc1lXIYhhEbaibpFSYSPh5J
-	 hqBWtRxWXEKjg==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5648d92919dso461633a12.1;
-        Mon, 19 Feb 2024 00:48:43 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUOvl6UcnEX7j8dwg2QhxtoYTE1la5lmk73yXI3j4HqHJjnMmy3PWgTDxVKyilzAIKtmVnr3wu5hWMKLRpn5adBoFdiXRdxaa9+eGFr1cbSHoSicydxI8Pz6tYStbl/G1rh
-X-Gm-Message-State: AOJu0YziqDv8wlDszE6o8lkpv2RZR5Rd8Vrb5bxhUgvhtNRm4VSBQvep
-	Mai7xSxcKZ05JgdzK2Gh4L6yiC+yq0XgiG3mJNjJPEFWIEv5vubW++c8Qp3h45YMAoo2u/zyKW2
-	CfZ5PU4rvQT5ZsfZYn2YbfDQMf9Y=
-X-Google-Smtp-Source: AGHT+IGZ5k5P0SoQs6NZFNBANCohStvMbflaYCSWeOQlusP2ivKhapKmzyib86pwjfkXofS8k7B9JLS6xZRGvHusMaI=
-X-Received: by 2002:a05:6402:5178:b0:564:882d:808e with SMTP id
- d24-20020a056402517800b00564882d808emr613009ede.37.1708332521876; Mon, 19 Feb
- 2024 00:48:41 -0800 (PST)
+	 To:Cc:Content-Type; b=lkBFarnLPYa41tVAYFt6TrazLrKa1w9WRSHmVTUnHdGYZHOWcB3gBHXykWJRMWD2khsGMrpDgbMWuL5SLU7NZy1amBiU+OGI6IFsITAAGvRV0w5qROqGlMZ2eYl4XVvskAcLIEVOPC64s+TZt3yOj2AKjMxtlyg+zWS6s9rB5gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6084c93f80eso1385647b3.3;
+        Mon, 19 Feb 2024 00:49:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708332546; x=1708937346;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PTdtRAbjyGCzCQegMpo3kd+/+HCaaACEQW/D0yb7/D4=;
+        b=dUYu+2Pju5/hsFLt5GyTIScfOmrOBYBm8w1SnI7ySptCN5Dh04fyGjVOIluOI4TpQB
+         xOuXPiWdKDIgQicsY1gqmC8Em00GipCzB3+vsy87SdNOjAO9YEtK0c6hxJnam7UHLhE5
+         J27hXK2uMa9+reDmsFNLPbz/9BR/T878PyV7wpAha08ka/qeSX3wsf2e7aiX4B8xqEeX
+         FbX88ZbauDr+jzaAS6nUv8T4APnqCFM/m7xYVdTun0nUX+xsYyN4xSMnDmQK28qjHtUg
+         WCggGR5fgKsEBuPuepkRyJ3d1l7w/M9PU8DbeC1s2UXKpXvtllNnyDd5B035NBI8LU+j
+         1yTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWbSv7QvWngRBz1Q/gUzS4xiHKHvwcuv5aNsWFUfQ/0yOYqhpRJ303hc0yVpSGPX616FAQgivXOCiN5jGdYGpD2PDQQDn0MWaTBjj1j+Ip7E5MF76ubuXuslNVePdqvQxg5mv7HN/XCpAy3t2wEv1oL4DijsgCog+hLNTcA48xGy5C1wbHqcwbIXJ9N9WP1Hpj356joQf3IY2IarTY+NnprjpWrR1ck
+X-Gm-Message-State: AOJu0YwgzKskVqnjnneWVfGktwGXfgQuoUgPBz5Uamld29keBYSjEf+A
+	/gElbjFrYxsPyuu6PBdbJmf6KIy7pOxNhaE+Jm//GI+PinSTQDrZxXOFT8Pe1zs=
+X-Google-Smtp-Source: AGHT+IEXvfLNDRihTseLNe40xN7P42NeVedN7+2fShY9NhqErXAy11qGnpzHoZp0L6gUI3tRR1e5jg==
+X-Received: by 2002:a0d:cb8d:0:b0:608:1cf8:bfc1 with SMTP id n135-20020a0dcb8d000000b006081cf8bfc1mr4033002ywd.41.1708332546312;
+        Mon, 19 Feb 2024 00:49:06 -0800 (PST)
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
+        by smtp.gmail.com with ESMTPSA id b1-20020a0dd901000000b005ffa352a84fsm1532120ywe.21.2024.02.19.00.49.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 00:49:06 -0800 (PST)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-608245e549fso9515247b3.1;
+        Mon, 19 Feb 2024 00:49:06 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWfZracA1pCHPIVKpGKmWryvuLuLucaE0zDhEYAij9TvPNWSFxJaq/jJ0G1bzL48pe2jtPcDEs3UezWQuFCDNxTPTOhWrUoM3HChFDK+0O5RpJPbDqhGxTlPl3CTxCK9EpsXqwrGcQrI4Yu8FCeLaIEXt88Y/BR/GOX0u0oWZ+84hwW3oFJMO+Qw0ILvRE5k7Xmp5hqWY9IdIIMr+Pn3iKXkv8YB/jp
+X-Received: by 2002:a05:690c:a16:b0:608:28a9:5cfb with SMTP id
+ cg22-20020a05690c0a1600b0060828a95cfbmr2721260ywb.16.1708332545819; Mon, 19
+ Feb 2024 00:49:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201031950.3225626-1-maobibo@loongson.cn> <20240201031950.3225626-5-maobibo@loongson.cn>
- <CAAhV-H7dXsU+WM172PWi_m8TYpYmzG_SW-vVQcdnOdETUxQ9+w@mail.gmail.com> <63f8bd29-c0da-167b-187d-61c56eb081a6@loongson.cn>
-In-Reply-To: <63f8bd29-c0da-167b-187d-61c56eb081a6@loongson.cn>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Mon, 19 Feb 2024 16:48:38 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6HQHyu=0zyv6FVLRJTkOcmnkLk5h361yGd2igYnuMMng@mail.gmail.com>
-Message-ID: <CAAhV-H6HQHyu=0zyv6FVLRJTkOcmnkLk5h361yGd2igYnuMMng@mail.gmail.com>
-Subject: Re: [PATCH v4 4/6] LoongArch: Add paravirt interface for guest kernel
-To: maobibo <maobibo@loongson.cn>
-Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev, 
-	kvm@vger.kernel.org
+References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240208124300.2740313-8-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdWdJ9jN9-cko2zSoqSS0acbwYB77aBWvenJHMrFTXhdWg@mail.gmail.com> <4098873b-a7e7-4c88-9af2-01f3c76424ab@tuxon.dev>
+In-Reply-To: <4098873b-a7e7-4c88-9af2-01f3c76424ab@tuxon.dev>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 19 Feb 2024 09:48:53 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdX0HDK2w1N-k_R9ud_CVotRgAd2CjOoHTsWkSE_Rb7zyQ@mail.gmail.com>
+Message-ID: <CAMuHMdX0HDK2w1N-k_R9ud_CVotRgAd2CjOoHTsWkSE_Rb7zyQ@mail.gmail.com>
+Subject: Re: [PATCH 07/17] clk: renesas: rzg2l: Extend power domain support
+To: claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, 
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 12:11=E2=80=AFPM maobibo <maobibo@loongson.cn> wrot=
-e:
->
->
->
-> On 2024/2/19 =E4=B8=8A=E5=8D=8810:42, Huacai Chen wrote:
-> > Hi, Bibo,
+Hi Claudiu,
+
+On Mon, Feb 19, 2024 at 9:24=E2=80=AFAM claudiu beznea <claudiu.beznea@tuxo=
+n.dev> wrote:
+> On 16.02.2024 16:08, Geert Uytterhoeven wrote:
+> > On Thu, Feb 8, 2024 at 1:44=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.de=
+v> wrote:
+> >> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> >>
+> >> RZ/{G2L, V2L, G3S}-based CPG versions have support for saving extra
+> >> power when clocks are disabled by activating module standby. This is d=
+one
+> >> through MSTOP-specific registers that are part of CPG. Each individual
+> >> module has one or more bits associated with one MSTOP register (see ta=
+ble
+> >> "Registers for Module Standby Mode" from HW manuals). Hardware manual
+> >> associates modules' clocks with one or more MSTOP bits. There are 3 ma=
+ppings
+> >> available (identified by researching RZ/G2L, RZ/G3S, RZ/V2L HW manuals=
+):
+> >>
+> >> case 1: N clocks mapped to N MSTOP bits (with N=3D{0, ..., X})
+> >> case 2: N clocks mapped to 1 MSTOP bit  (with N=3D{0, ..., X})
+> >> case 3: N clocks mapped to M MSTOP bits (with N=3D{0, ..., X}, M=3D{0,=
+ ..., Y})
+> >>
+> >> Case 3 has been currently identified on RZ/V2L for the VCPL4 module.
+> >>
+> >> To cover all three cases, the individual platform drivers will provide=
+ to
+> >> clock driver MSTOP register offset and associated bits in this registe=
+r
+> >> as a bitmask and the clock driver will apply this bitmask to proper
+> >> MSTOP register.
+> >>
+> >> Apart from MSTOP support, RZ/G3S can save more power by powering down =
+the
+> >> individual IPs (after MSTOP has been set) if proper bits in
+> >> CPG_PWRDN_IP{1,2} registers are set.
+> >>
+> >> The MSTOP and IP power down support were implemented through power
+> >> domains. Platform-specific clock drivers will register an array of
+> >> type struct rzg2l_cpg_pm_domain_init_data, which will be used to
+> >> instantiate properly the power domains.
+> >>
+> >> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > >
-> > On Thu, Feb 1, 2024 at 11:19=E2=80=AFAM Bibo Mao <maobibo@loongson.cn> =
-wrote:
+> > Thanks for your patch!
+> >
+> >> --- a/drivers/clk/renesas/rzg2l-cpg.c
+> >> +++ b/drivers/clk/renesas/rzg2l-cpg.c
+> >> @@ -1559,9 +1556,34 @@ static bool rzg2l_cpg_is_pm_clk(struct rzg2l_cp=
+g_priv *priv,
+> >>         return true;
+> >>  }
+> [ ... ]
+>
+> >
+> >> @@ -234,6 +246,54 @@ struct rzg2l_reset {
+> >>  #define DEF_RST(_id, _off, _bit)       \
+> >>         DEF_RST_MON(_id, _off, _bit, -1)
 > >>
-> >> The patch adds paravirt interface for guest kernel, function
-> >> pv_guest_initi() firstly checks whether system runs on VM mode. If ker=
-nel
-> >> runs on VM mode, it will call function kvm_para_available() to detect
-> >> whether current VMM is KVM hypervisor. And the paravirt function can w=
-ork
-> >> only if current VMM is KVM hypervisor, since there is only KVM hypervi=
-sor
-> >> supported on LoongArch now.
-> >>
-> >> This patch only adds paravirt interface for guest kernel, however ther=
-e
-> >> is not effective pv functions added here.
-> >>
-> >> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> >> ---
-> >>   arch/loongarch/Kconfig                        |  9 ++++
-> >>   arch/loongarch/include/asm/kvm_para.h         |  7 ++++
-> >>   arch/loongarch/include/asm/paravirt.h         | 27 ++++++++++++
-> >>   .../include/asm/paravirt_api_clock.h          |  1 +
-> >>   arch/loongarch/kernel/Makefile                |  1 +
-> >>   arch/loongarch/kernel/paravirt.c              | 41 +++++++++++++++++=
-++
-> >>   arch/loongarch/kernel/setup.c                 |  2 +
-> >>   7 files changed, 88 insertions(+)
-> >>   create mode 100644 arch/loongarch/include/asm/paravirt.h
-> >>   create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
-> >>   create mode 100644 arch/loongarch/kernel/paravirt.c
-> >>
-> >> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> >> index 10959e6c3583..817a56dff80f 100644
-> >> --- a/arch/loongarch/Kconfig
-> >> +++ b/arch/loongarch/Kconfig
-> >> @@ -585,6 +585,15 @@ config CPU_HAS_PREFETCH
-> >>          bool
-> >>          default y
-> >>
-> >> +config PARAVIRT
-> >> +       bool "Enable paravirtualization code"
-> >> +       depends on AS_HAS_LVZ_EXTENSION
-> >> +       help
-> >> +          This changes the kernel so it can modify itself when it is =
-run
-> >> +         under a hypervisor, potentially improving performance signif=
-icantly
-> >> +         over full virtualization.  However, when run without a hyper=
-visor
-> >> +         the kernel is theoretically slower and slightly larger.
-> >> +
-> >>   config ARCH_SUPPORTS_KEXEC
-> >>          def_bool y
-> >>
-> >> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/in=
-clude/asm/kvm_para.h
-> >> index 9425d3b7e486..41200e922a82 100644
-> >> --- a/arch/loongarch/include/asm/kvm_para.h
-> >> +++ b/arch/loongarch/include/asm/kvm_para.h
-> >> @@ -2,6 +2,13 @@
-> >>   #ifndef _ASM_LOONGARCH_KVM_PARA_H
-> >>   #define _ASM_LOONGARCH_KVM_PARA_H
-> >>
-> >> +/*
-> >> + * Hypcall code field
+> >> +/**
+> >> + * struct rzg2l_cpg_pm_domain_conf - PM domain configuration data str=
+ucture
+> >> + * @mstop: MSTOP configuration (MSB =3D register offset, LSB =3D bitm=
+ask)
+> >> + * @pwrdn: PWRDN configuration (MSB =3D register offset, LSB =3D regi=
+ster bit)
 > >> + */
-> >> +#define HYPERVISOR_KVM                 1
-> >> +#define HYPERVISOR_VENDOR_SHIFT                8
-> >> +#define HYPERCALL_CODE(vendor, code)   ((vendor << HYPERVISOR_VENDOR_=
-SHIFT) + code)
-> >> +
-> >>   /*
-> >>    * LoongArch hypcall return code
-> >>    */
-> >> diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/in=
-clude/asm/paravirt.h
-> >> new file mode 100644
-> >> index 000000000000..b64813592ba0
-> >> --- /dev/null
-> >> +++ b/arch/loongarch/include/asm/paravirt.h
-> >> @@ -0,0 +1,27 @@
-> >> +/* SPDX-License-Identifier: GPL-2.0 */
-> >> +#ifndef _ASM_LOONGARCH_PARAVIRT_H
-> >> +#define _ASM_LOONGARCH_PARAVIRT_H
-> >> +
-> >> +#ifdef CONFIG_PARAVIRT
-> >> +#include <linux/static_call_types.h>
-> >> +struct static_key;
-> >> +extern struct static_key paravirt_steal_enabled;
-> >> +extern struct static_key paravirt_steal_rq_enabled;
-> >> +
-> >> +u64 dummy_steal_clock(int cpu);
-> >> +DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
-> >> +
-> >> +static inline u64 paravirt_steal_clock(int cpu)
-> >> +{
-> >> +       return static_call(pv_steal_clock)(cpu);
-> >> +}
-> > The steal time code can be removed in this patch, I think.
+> >> +struct rzg2l_cpg_pm_domain_conf {
+> >> +       u32 mstop;
+> >> +       u32 pwrdn;
 > >
-> Originally I want to remove this piece of code, but it fails to compile
-> if CONFIG_PARAVIRT is selected. Here is reference code, function
-> paravirt_steal_clock() must be defined if CONFIG_PARAVIRT is selected.
+> > Why not
+> >
+> >     u16 mstop_off;
+> >     u16 mstop_mask;
+> >     u16 pwrdn_off;
+> >     u16 pwrdn_mask;
+> >
+> > so you can drop the MSTOP*() and PWRDN*() macros below?
 >
-> static __always_inline u64 steal_account_process_time(u64 maxtime)
-> {
-> #ifdef CONFIG_PARAVIRT
->          if (static_key_false(&paravirt_steal_enabled)) {
->                  u64 steal;
->
->                  steal =3D paravirt_steal_clock(smp_processor_id());
->                  steal -=3D this_rq()->prev_steal_time;
->                  steal =3D min(steal, maxtime);
->                  account_steal_time(steal);
->                  this_rq()->prev_steal_time +=3D steal;
->
->                  return steal;
->          }
-> #endif
->          return 0;
-> }
-OK, then keep it.
+> I did it like this to align with the already existing approach for this
+> kind of things available in this driver. I can do it as you proposed.
 
->
-> >> +
-> >> +int pv_guest_init(void);
-> >> +#else
-> >> +static inline int pv_guest_init(void)
-> >> +{
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +#endif // CONFIG_PARAVIRT
-> >> +#endif
-> >> diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h b/arch/lo=
-ongarch/include/asm/paravirt_api_clock.h
-> >> new file mode 100644
-> >> index 000000000000..65ac7cee0dad
-> >> --- /dev/null
-> >> +++ b/arch/loongarch/include/asm/paravirt_api_clock.h
-> >> @@ -0,0 +1 @@
-> >> +#include <asm/paravirt.h>
-> >> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Ma=
-kefile
-> >> index 3c808c680370..662e6e9de12d 100644
-> >> --- a/arch/loongarch/kernel/Makefile
-> >> +++ b/arch/loongarch/kernel/Makefile
-> >> @@ -48,6 +48,7 @@ obj-$(CONFIG_MODULES)         +=3D module.o module-s=
-ections.o
-> >>   obj-$(CONFIG_STACKTRACE)       +=3D stacktrace.o
-> >>
-> >>   obj-$(CONFIG_PROC_FS)          +=3D proc.o
-> >> +obj-$(CONFIG_PARAVIRT)         +=3D paravirt.o
-> >>
-> >>   obj-$(CONFIG_SMP)              +=3D smp.o
-> >>
-> >> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/=
-paravirt.c
-> >> new file mode 100644
-> >> index 000000000000..21d01d05791a
-> >> --- /dev/null
-> >> +++ b/arch/loongarch/kernel/paravirt.c
-> >> @@ -0,0 +1,41 @@
-> >> +// SPDX-License-Identifier: GPL-2.0
-> >> +#include <linux/export.h>
-> >> +#include <linux/types.h>
-> >> +#include <linux/jump_label.h>
-> >> +#include <linux/kvm_para.h>
-> >> +#include <asm/paravirt.h>
-> >> +#include <linux/static_call.h>
-> >> +
-> >> +struct static_key paravirt_steal_enabled;
-> >> +struct static_key paravirt_steal_rq_enabled;
-> >> +
-> >> +static u64 native_steal_clock(int cpu)
-> >> +{
-> >> +       return 0;
-> >> +}
-> >> +
-> >> +DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
-> > The steal time code can be removed in this patch, I think.
-> Ditto, the same reason with above.
-> >
-> >> +
-> >> +static bool kvm_para_available(void)
-> >> +{
-> >> +       static int hypervisor_type;
-> >> +       int config;
-> >> +
-> >> +       if (!hypervisor_type) {
-> >> +               config =3D read_cpucfg(CPUCFG_KVM_SIG);
-> >> +               if (!memcmp(&config, KVM_SIGNATURE, 4))
-> >> +                       hypervisor_type =3D HYPERVISOR_KVM;
-> >> +       }
-> >> +
-> >> +       return hypervisor_type =3D=3D HYPERVISOR_KVM;
-> >> +}
-> >> +
-> >> +int __init pv_guest_init(void)
-> >> +{
-> >> +       if (!cpu_has_hypervisor)
-> >> +               return 0;
-> >> +       if (!kvm_para_available())
-> >> +               return 0;
-> >> +
-> >> +       return 1;
-> >> +}
-> >> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/set=
-up.c
-> >> index edf2bba80130..de5c36dccc49 100644
-> >> --- a/arch/loongarch/kernel/setup.c
-> >> +++ b/arch/loongarch/kernel/setup.c
-> >> @@ -43,6 +43,7 @@
-> >>   #include <asm/efi.h>
-> >>   #include <asm/loongson.h>
-> >>   #include <asm/numa.h>
-> >> +#include <asm/paravirt.h>
-> >>   #include <asm/pgalloc.h>
-> >>   #include <asm/sections.h>
-> >>   #include <asm/setup.h>
-> >> @@ -367,6 +368,7 @@ void __init platform_init(void)
-> >>          pr_info("The BIOS Version: %s\n", b_info.bios_version);
-> >>
-> >>          efi_runtime_init();
-> >> +       pv_guest_init();
-> > I prefer use CONFIG_PARAVIRT here, though you have a dummy version for
-> > !CONFIG_PARAVIRT, I think it is better to let others clearly know that
-> > PARAVIRT is an optional feature.
-> I remember that there is rule that CONFIG_xxx had better be used in
-> header files rather than c code, so that the code looks neat. Am I wrong?
-That depends on what we want, sometimes we want to hide the details,
-but sometimes we want to give others a notice.
+The other fields do not align nicely with byte or word boundaries.
 
-And there is another problem: if you want to centralize all pv init
-functions, it is better to use pv_features_init() rather than
-pv_guest_init(); if you want to give each feature an init function,
-then we don't need pv_guest_init here, and we can then add a
-pv_ipi_init() in the last patch.
+I can see the value of the MSTOP(name, bitmask) and
+PWRDN(name, bitmask) macros, but I'd rather get rid of the *_MASK()
+and *_OFF() variants.
 
-Huacai
+> For the rest of your comments on this patch: I agree and will adjust the
+> patch in the next version.
 
->
-> Regards
-> Bibo Mao
-> >
-> > Huacai
-> >
-> >
-> > Huacai
-> >>   }
-> >>
-> >>   static void __init check_kernel_sections_mem(void)
-> >> --
-> >> 2.39.3
-> >>
-> >>
->
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
