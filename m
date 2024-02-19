@@ -1,173 +1,271 @@
-Return-Path: <linux-kernel+bounces-71274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BBC385A2C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3742785A2C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:02:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C54D11F247CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:02:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9D481F2214C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C93B2D05F;
-	Mon, 19 Feb 2024 12:02:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DDC02E84A;
+	Mon, 19 Feb 2024 12:02:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="To78uyru";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A1NLMhrb"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="GLA3jWiP"
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164382D045
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52DC2E832
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708344134; cv=none; b=UPq9m8fG5RQnIQCrlYPGMpP751mB7ISqHuiEMJipREjcXhuDQP2DGn+qBizFf11XCqZUU3ALIj39uZT3E9oNtD01RCuwN1e3OYKTS1AdczjuIBS/h0elv/p/ZuXPpPTVeQobm6IEUO8hL3hQ+j+ASGOLurNlVpW9W9xZXOKmubo=
+	t=1708344154; cv=none; b=hUUIeEYKS5EcQ0YkSXhROiqj9+fMYhT1gfLefUD2SArYRghuzwe3+8MVe0/7RQiDEicOIhNHvcH64DnU7jmfmvPqB2+CJNVOFoTqPfhjhEQ0V9NU7reJULAsRUpd6VzZYTZUCCavJRzLa7/v9RbYaodf0NbX/SrzPgjswuLrLag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708344134; c=relaxed/simple;
-	bh=Bb6kPvv5oK092ISD8O2j3930bKBc8I2L5B8ZYVbUHDA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D8ND7WIalMqlN7b8Q4YH6sWqwovtneb+l5hIzIrtcIXZBj99kOTSxZ5nL0huCKkTvOeb2E2FUT0Vu0kMUrWAoFcwYflhpROBQS5+r6FOxotiMP0eUqNuQALoRLniNHeSSPZtbKk4SXb3maleUT7aVWZtfNjLK4D11VET4jEHhGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=To78uyru; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A1NLMhrb; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3B7FB222F6;
-	Mon, 19 Feb 2024 12:02:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708344131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tQ67GULT9b2cq8o8yDuQQdBKS5DXm9sCybmVYMJMEs8=;
-	b=To78uyrujPNe5UELxtzj2tigRKklvQJMo5Bv7bYjY6EM2HIKrbTpY0wcePEEYrEXoPuHrd
-	IL8uqPD9sqMNi4Yt6UZhhEHBfb86stjJewTsS8cgZO+IGe8bAy4P7UzSVieM3EsM4HwdDo
-	7OHSpE7LsHeA5ik/pEQaRYy3j3QvpEY=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708344130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tQ67GULT9b2cq8o8yDuQQdBKS5DXm9sCybmVYMJMEs8=;
-	b=A1NLMhrb/o9+kAV69g5AXZVzzWIWvKlqCyj0Cb5nrQN8F1oLnbcBGvRZO0W3lL8ceMuiHH
-	bMd2WSW19aOStA57+gs+lCfrH3Wv4OtMk8ZoI0Fs21SCtvaupNgvsHe5ED+9t6RfjToDeb
-	ls2EMCTxMaQpPgDU958wMOiHLnFeTWU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D25E139D0;
-	Mon, 19 Feb 2024 12:02:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XM7hAEJD02UfPAAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Mon, 19 Feb 2024 12:02:10 +0000
-Date: Mon, 19 Feb 2024 13:02:09 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Donet Tom <donettom@linux.ibm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Aneesh Kumar <aneesh.kumar@kernel.org>,
-	Huang Ying <ying.huang@intel.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Mel Gorman <mgorman@suse.de>, Ben Widawsky <ben.widawsky@intel.com>,
-	Feng Tang <feng.tang@intel.com>,
-	Andrea Arcangeli <aarcange@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@surriel.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mike Kravetz <mike.kravetz@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Hugh Dickins <hughd@google.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 2/3] mm/mempolicy: Avoid the fallthrough with MPOLD_BIND
- in mpol_misplaced.
-Message-ID: <ZdNDQUZrhz5kfR2f@tiehlicka>
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
- <bf7e6779f842fb65cf7bb9b2c617feb2af271cb7.1708097962.git.donettom@linux.ibm.com>
+	s=arc-20240116; t=1708344154; c=relaxed/simple;
+	bh=V4QRYQ76YEpXXNMyK5V0fnE0QpgAewPnLJMPRZ8+iSU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=GbHSWqfcYJSnp2prDg7KmT1BA44wtq0ShM2Kr8m02pLtnO6J7HIL4Iu4019ZzBjSjZyKbqyrtpJPW/HxXmSHeiGFDCfsiKe4mgqaIl4uJQDWtDwl/Cj3YyO1tyd3LQ03YwuP2XeCcl0g9Y19FpCymO52zMCP546XYgQB2LTDEBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=GLA3jWiP; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2907a17fa34so2350834a91.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:02:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708344152; x=1708948952;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H2hACCCQq6ctsb61YdZfXiP9Cf/ZpEuBHB2ZECqqD5A=;
+        b=fqkzAXb0h/XgBj9/2qdgW4qBjibcm7hpCvzVd0ZwP3RcT1pvP4lEK5NN/MQQ7umaVc
+         ZDoBdJRjTcpQW3iWrO3xxinMjw1iFpHXmMYVdnCIzMBAl6BLx9ZbnDnzA0b0hWmxzif9
+         OjyrUmR6FepEGG04t4ExPqwYfl9OfXmI0FrMOOiYlv6p6UQ+tfDYeEWa1in5LVvNDDEo
+         PCELugrFzIzbV9T3eDCfdEHKwuYmuWJUg8HgmGgdgwxiYa4weHxY64a1C9z53ElHKJIC
+         EP3N4NViEj+SKIUwIRcjPjik5LIU6O5K8LLFK5liBm/Fgf49fnqk36PW4uaswfKZAAPJ
+         Saog==
+X-Gm-Message-State: AOJu0YydGZUa5MUNIoOn5V51poDJyUXg50AkRFyvZB9GNx5pWd4BUmks
+	3bZLlmgTNJ+i31PVL8PBGq38Bq5in6r8sWeCPk/0FEpNdtLHqPIU
+X-Google-Smtp-Source: AGHT+IEO+YceAxGq2zoMcU6dSkph8vmrCIO81MsGwhvnHlOxsV6tVSs3Bi29WEspnQG7z4rGjj8g5g==
+X-Received: by 2002:a17:90a:d243:b0:299:9ba4:abe6 with SMTP id o3-20020a17090ad24300b002999ba4abe6mr1749666pjw.46.1708344150939;
+        Mon, 19 Feb 2024 04:02:30 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id gw3-20020a17090b0a4300b0029718f72ad3sm5126787pjb.44.2024.02.19.04.02.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 04:02:30 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1708344149;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=H2hACCCQq6ctsb61YdZfXiP9Cf/ZpEuBHB2ZECqqD5A=;
+	b=GLA3jWiPfbc35JQVF/PpwYZwxKUTNUioga/Ok1SoTYCgQTMIjQGElW2L2aK2wXrjQ1vXnE
+	+rCYxAJaXrqtRLmLTM7DqEIqTmrTN+Ety2TkswvsF8iqVw0vF/kUpSO+rHVXa8hvrrP8fH
+	g9KXDgectJMv8K7GmQZ9o31BzcYiaaQOP/EDwyVAYQRJo+bngUEQTxPmF7A2pVUcHVc2q0
+	9YB7e/4VyDMvbnLZWmHWQtbP4/f2LufRVpOyyeUDD++NLKsvJ/iMnIgsrvY+vZJKmkEjWU
+	pKakv9y0qJWVgumDUucFWnZsMJmYFnun4cOo9sAt0LD6C7r6tI9DZQOC3gLILQ==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Mon, 19 Feb 2024 09:03:11 -0300
+Subject: [PATCH next] bus: fsl-mc: constify the struct device_type usage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bf7e6779f842fb65cf7bb9b2c617feb2af271cb7.1708097962.git.donettom@linux.ibm.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=A1NLMhrb
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.52 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 DKIM_TRACE(0.00)[suse.com:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[22];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-1.51)[91.79%]
-X-Spam-Score: -2.52
-X-Rspamd-Queue-Id: 3B7FB222F6
-X-Spam-Flag: NO
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240219-device_cleanup-fsl-mc-v1-1-d206b8b90f2b@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAH5D02UC/x2M7QpAMBRAX0X3t1sz5ONVJM12xy1GG1Ly7pafp
+ 845DwTyTAHa5AFPFwfeXIQsTUDPyk2EbCKDFLIQMmvQREnToBdS7tzRhgVXjaM0ta1UmYvaQGx
+ 3T5bv/9uBo/uA/n0/rKXtfm0AAAA=
+To: Stuart Yoder <stuyoder@gmail.com>, 
+ Laurentiu Tudor <laurentiu.tudor@nxp.com>, Li Yang <leoyang.li@nxp.com>
+Cc: linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+ linux-arm-kernel@lists.infradead.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6005; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=V4QRYQ76YEpXXNMyK5V0fnE0QpgAewPnLJMPRZ8+iSU=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl00OC7UwZ8Nbbx/scP4H7DsOPAQv3LfbSIDf7w
+ Pd5guhK1ZOJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdNDggAKCRDJC4p8Y4ZY
+ piGBD/0bu6xlhMehhehiv7GOBEfHsJlzUi2KMB8YcoxxTzu5gAxpsmRGTP+o5QPMkq4thc+fp+W
+ va20fT14amRdGHGlgOHY/PbRwA86NbKik7Jnw+uuSwhONhu1Ws1c4HuYJhZG2WPcYrRZOPxEzFg
+ tSu84QZEGMYqoKHPKZ4criSJXv0PqdRqhnJY/ogPbudPJd5ctRFQ17Y2Q6QoR/S/InoXVajONRy
+ ICxqEbeWKlw7ikvQVIBuoCvC+5x9yWB3MkwbfG/KwCyLgPNyPB/bID8qw8avDrIR6O+JdYCuhzy
+ a4YTpf2/UYIgM+s+3SXZE8JWoscZVB2OV0/4YrdHga8/nzW8OPVdBeFDeyOGZADigEjWo+11cMm
+ tf0AgyJlzCXdTAjKOQ0vqzJiUMOizGok7hK6/krmlLyGiYgnDQKQTmTNG9xf0xf6seVe0mnVMnw
+ u1sL6Iukrfek7rNZ7jHLfg+09qd59fTU5X4JZEOlLWweCZSiS7PlmiIdV2S45lNEGL4C/6O3sNm
+ TXGCDlf1NrxfAT+L+mf+c87pl5Hny3fzmrcy9H1FxZzs37TlQhYsHsnfNOKzepW5BZ7dRNoCa9m
+ +R1QjJPzW+wKNgvVZBtBAdGaSC+VMXCCSZisoeyiZhBwXeA64gJ4kMb8hfNqmGGtqLRQb80OI/h
+ 1dl9deN300fRuyQ==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On Sat 17-02-24 01:31:34, Donet Tom wrote:
-> We will update MPOL_PREFERRED_MANY in the follow up patch. This change
-> is required for that.
+Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+core can properly handle constant struct device_type. Move all the
+device_type variables used in the bus to be constant structures as well,
+placing it into read-only memory which can not be modified at runtime.
 
-Why is it a separate patch then? Does it make review of the next patch
-easier? If so make it explicit in the changelog.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/bus/fsl-mc/fsl-mc-bus.c | 32 ++++++++++++++++----------------
+ include/linux/fsl/mc.h          | 30 +++++++++++++++---------------
+ 2 files changed, 31 insertions(+), 31 deletions(-)
 
-> 
-> Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
-> Signed-off-by: Donet Tom <donettom@linux.ibm.com>
-> ---
->  mm/mempolicy.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 8478574c000c..73d698e21dae 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -2515,7 +2515,15 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
->  				break;
->  			goto out;
->  		}
-> -		fallthrough;
-> +
-> +		if (node_isset(curnid, pol->nodes))
-> +			goto out;
-> +		z = first_zones_zonelist(
-> +				node_zonelist(thisnid, GFP_HIGHUSER),
-> +				gfp_zone(GFP_HIGHUSER),
-> +				&pol->nodes);
-> +		polnid = zone_to_nid(z->zone);
-> +		break;
->  
->  	case MPOL_PREFERRED_MANY:
->  		/*
-> -- 
-> 2.39.3
+diff --git a/drivers/bus/fsl-mc/fsl-mc-bus.c b/drivers/bus/fsl-mc/fsl-mc-bus.c
+index 78b96cd63de9..f75ca3f0d75a 100644
+--- a/drivers/bus/fsl-mc/fsl-mc-bus.c
++++ b/drivers/bus/fsl-mc/fsl-mc-bus.c
+@@ -320,82 +320,82 @@ struct bus_type fsl_mc_bus_type = {
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_type);
+ 
+-struct device_type fsl_mc_bus_dprc_type = {
++const struct device_type fsl_mc_bus_dprc_type = {
+ 	.name = "fsl_mc_bus_dprc"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dprc_type);
+ 
+-struct device_type fsl_mc_bus_dpni_type = {
++const struct device_type fsl_mc_bus_dpni_type = {
+ 	.name = "fsl_mc_bus_dpni"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpni_type);
+ 
+-struct device_type fsl_mc_bus_dpio_type = {
++const struct device_type fsl_mc_bus_dpio_type = {
+ 	.name = "fsl_mc_bus_dpio"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpio_type);
+ 
+-struct device_type fsl_mc_bus_dpsw_type = {
++const struct device_type fsl_mc_bus_dpsw_type = {
+ 	.name = "fsl_mc_bus_dpsw"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpsw_type);
+ 
+-struct device_type fsl_mc_bus_dpbp_type = {
++const struct device_type fsl_mc_bus_dpbp_type = {
+ 	.name = "fsl_mc_bus_dpbp"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpbp_type);
+ 
+-struct device_type fsl_mc_bus_dpcon_type = {
++const struct device_type fsl_mc_bus_dpcon_type = {
+ 	.name = "fsl_mc_bus_dpcon"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpcon_type);
+ 
+-struct device_type fsl_mc_bus_dpmcp_type = {
++const struct device_type fsl_mc_bus_dpmcp_type = {
+ 	.name = "fsl_mc_bus_dpmcp"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpmcp_type);
+ 
+-struct device_type fsl_mc_bus_dpmac_type = {
++const struct device_type fsl_mc_bus_dpmac_type = {
+ 	.name = "fsl_mc_bus_dpmac"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpmac_type);
+ 
+-struct device_type fsl_mc_bus_dprtc_type = {
++const struct device_type fsl_mc_bus_dprtc_type = {
+ 	.name = "fsl_mc_bus_dprtc"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dprtc_type);
+ 
+-struct device_type fsl_mc_bus_dpseci_type = {
++const struct device_type fsl_mc_bus_dpseci_type = {
+ 	.name = "fsl_mc_bus_dpseci"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpseci_type);
+ 
+-struct device_type fsl_mc_bus_dpdmux_type = {
++const struct device_type fsl_mc_bus_dpdmux_type = {
+ 	.name = "fsl_mc_bus_dpdmux"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpdmux_type);
+ 
+-struct device_type fsl_mc_bus_dpdcei_type = {
++const struct device_type fsl_mc_bus_dpdcei_type = {
+ 	.name = "fsl_mc_bus_dpdcei"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpdcei_type);
+ 
+-struct device_type fsl_mc_bus_dpaiop_type = {
++const struct device_type fsl_mc_bus_dpaiop_type = {
+ 	.name = "fsl_mc_bus_dpaiop"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpaiop_type);
+ 
+-struct device_type fsl_mc_bus_dpci_type = {
++const struct device_type fsl_mc_bus_dpci_type = {
+ 	.name = "fsl_mc_bus_dpci"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpci_type);
+ 
+-struct device_type fsl_mc_bus_dpdmai_type = {
++const struct device_type fsl_mc_bus_dpdmai_type = {
+ 	.name = "fsl_mc_bus_dpdmai"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpdmai_type);
+ 
+-struct device_type fsl_mc_bus_dpdbg_type = {
++const struct device_type fsl_mc_bus_dpdbg_type = {
+ 	.name = "fsl_mc_bus_dpdbg"
+ };
+ EXPORT_SYMBOL_GPL(fsl_mc_bus_dpdbg_type);
+diff --git a/include/linux/fsl/mc.h b/include/linux/fsl/mc.h
+index a1b3de87a3d1..4b9311f122e0 100644
+--- a/include/linux/fsl/mc.h
++++ b/include/linux/fsl/mc.h
+@@ -438,21 +438,21 @@ struct fsl_mc_device *fsl_mc_get_endpoint(struct fsl_mc_device *mc_dev,
+ 
+ extern struct bus_type fsl_mc_bus_type;
+ 
+-extern struct device_type fsl_mc_bus_dprc_type;
+-extern struct device_type fsl_mc_bus_dpni_type;
+-extern struct device_type fsl_mc_bus_dpio_type;
+-extern struct device_type fsl_mc_bus_dpsw_type;
+-extern struct device_type fsl_mc_bus_dpbp_type;
+-extern struct device_type fsl_mc_bus_dpcon_type;
+-extern struct device_type fsl_mc_bus_dpmcp_type;
+-extern struct device_type fsl_mc_bus_dpmac_type;
+-extern struct device_type fsl_mc_bus_dprtc_type;
+-extern struct device_type fsl_mc_bus_dpseci_type;
+-extern struct device_type fsl_mc_bus_dpdmux_type;
+-extern struct device_type fsl_mc_bus_dpdcei_type;
+-extern struct device_type fsl_mc_bus_dpaiop_type;
+-extern struct device_type fsl_mc_bus_dpci_type;
+-extern struct device_type fsl_mc_bus_dpdmai_type;
++extern const struct device_type fsl_mc_bus_dprc_type;
++extern const struct device_type fsl_mc_bus_dpni_type;
++extern const struct device_type fsl_mc_bus_dpio_type;
++extern const struct device_type fsl_mc_bus_dpsw_type;
++extern const struct device_type fsl_mc_bus_dpbp_type;
++extern const struct device_type fsl_mc_bus_dpcon_type;
++extern const struct device_type fsl_mc_bus_dpmcp_type;
++extern const struct device_type fsl_mc_bus_dpmac_type;
++extern const struct device_type fsl_mc_bus_dprtc_type;
++extern const struct device_type fsl_mc_bus_dpseci_type;
++extern const struct device_type fsl_mc_bus_dpdmux_type;
++extern const struct device_type fsl_mc_bus_dpdcei_type;
++extern const struct device_type fsl_mc_bus_dpaiop_type;
++extern const struct device_type fsl_mc_bus_dpci_type;
++extern const struct device_type fsl_mc_bus_dpdmai_type;
+ 
+ static inline bool is_fsl_mc_bus_dprc(const struct fsl_mc_device *mc_dev)
+ {
 
+---
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240219-device_cleanup-fsl-mc-b2d8f7a5308d
+
+Best regards,
 -- 
-Michal Hocko
-SUSE Labs
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
