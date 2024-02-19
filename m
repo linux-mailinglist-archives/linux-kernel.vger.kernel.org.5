@@ -1,208 +1,223 @@
-Return-Path: <linux-kernel+bounces-71338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C74985A3AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:43:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FC6D85A3B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:45:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1BB21C2142B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:43:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349DD1C22C55
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:45:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 085962E83F;
-	Mon, 19 Feb 2024 12:43:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318772E856;
+	Mon, 19 Feb 2024 12:45:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="EyWdc7sc"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JYkfoEB+"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2061.outbound.protection.outlook.com [40.107.220.61])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B647C2D05D;
-	Mon, 19 Feb 2024 12:43:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708346599; cv=none; b=TGi2Zpf+bNqIDzzZP065nu1oNmYzKNxxumPCWmHDVFof62CZvQQFLdFIHOn1VI5hPK3pkt6OM6DaEnbgqpYiN0CElkZ2Tl08kgAQY09h7lr5N3mU1CEp8ZkyhaP+GYq1qBqfbFCEkbLaoDb8Xh7/v631O+c05J81Jf/b/iYhDu4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708346599; c=relaxed/simple;
-	bh=Zs9XwXfin6vsvyZ0Tkvtj1y1nmSBKNq0xIOxwIjWzyM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=YTJoZ8EbcZ+7CBnl21imVDg5A17m41Ein7P4lHojD4b3ofAg9W07nNbnVXZ6cfNsjJ2I9cqgsORO98ny7eEUayV0R0RrvXpcfoxXbelTC67VCKtKf6DpQcg9JwI1K5zZfMQntl37vZ3F1yIkmpmfkpYuok3FOcQDjJxtANK+AAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=EyWdc7sc; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dba177c596so21737645ad.0;
-        Mon, 19 Feb 2024 04:43:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708346597; x=1708951397;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=81C9/qYgaM7+uTbMn1Q+DPCJE1ow0PPCxUFOn05+/9E=;
-        b=BXh05nLq4ZAwiiAhDPEZREniCQcMZ12fHTSxdUiJUTIWEB1UXpKj5oYCZtw8Ad8i40
-         Axl3JPnCCkNhjDF93nfqLNo833Fp1l/qniG9FHLc4d6VH8hYPbYc5a25495qaHv2AEAo
-         1/CUPIvU/vFfAd79e0+vlMoc5oOad311wafs8WBoE+YflnUaArwo6f0f82DjccZeXXSs
-         2esxTigin/bUaUYcIvzHrZWi6zjNUauYVzfWHC4Xj97feyDCUUc9g83L7gC/KqUPa0SY
-         SmJAM3KMSSpW6EBLKGtKdBiMjhanr1AhDGqAZleDG+PJZft507pB6QdC/lvGVDkQll+T
-         rD4w==
-X-Forwarded-Encrypted: i=1; AJvYcCWfkqtjnR3YAjgO/DFdVH3b70gatTZ8EMeLWirTRNwBYKwM+Migu6K6hU3oGBNya2SuzmNzoalHY0E2P/LW4iWi3dzVm0/eh6DmBuHL
-X-Gm-Message-State: AOJu0YzcytFF1fFN5a7/1V+UE7diKcbkSvP9kQCfJqB8FNMkXzuoBQ20
-	SZskhQEyMtWH2Oige6VO2dWPGUq41QH2pZcEAnqT9tbn1PcnSuMcnwQXpozOZwQ+/Q==
-X-Google-Smtp-Source: AGHT+IFQZO85RawS9N/GVLt7CKZ2Nc56+OWGJeihEfPdmFPM26vz9zhNukHu0h491d1y4B0JgOf0Lg==
-X-Received: by 2002:a17:902:c402:b0:1d9:30e3:ea84 with SMTP id k2-20020a170902c40200b001d930e3ea84mr18763047plk.2.1708346596888;
-        Mon, 19 Feb 2024 04:43:16 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id y12-20020a170903010c00b001d974ffa1fcsm4325840plc.173.2024.02.19.04.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 04:43:16 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708346594;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=81C9/qYgaM7+uTbMn1Q+DPCJE1ow0PPCxUFOn05+/9E=;
-	b=EyWdc7scphkQr3bgEmgzEcABO8mh0xDJgwJFz1daVDpM2LDssZ+DHj8aPcKj6rOYZHRYJT
-	bnGq+A91wOz9lQQSVJfNX3pcvgvmjE+hsnHguwuMDt1i1dSdjDrf+GFaIupCHRGonWz5KP
-	hWabEyF3QxgufHBQCMRQ0d2PIO36ZJJ9YhTEj4Ls7aOsT6wgh3nWtk+5xGo9V1TQYSpYFk
-	senLvpgdhx3msNDjWO/+bS/eJl4sujDMou1WSe178Tg5x3C/wtkuimMYHCq7vrTK5KkiQL
-	2b3+ENFI+UEO3bFcHNMphUnmi3csnUJWHexUm37d3XGdE54QE90+fEZ/88h4Hg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 19 Feb 2024 09:43:57 -0300
-Subject: [PATCH] mmc: core: constify the struct device_type usage
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2493F2E647;
+	Mon, 19 Feb 2024 12:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708346735; cv=fail; b=Er9qmx9A5rUqKeDCeUjWVL7o/EU3adRRLprzDKTqa7/QrhbLaod09cXwr9RoNveRnTDjR4Y6x9/tcrhtoD1nH4vT0Yjp8E1K0+QexPJ4b7hW/hH2bdICxEm6VzBuhxi+EaIsxVTslw0ZDFTc6ZComzu7QAiAZf/Ac/hj9EJtFDI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708346735; c=relaxed/simple;
+	bh=Is4lY6G1qFh2OTRe/UGWjH+2ET45xwpGpSI/wF+vWQM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=AWWetss1/hl+IslDwpxMEEdPwwLOsJvO8WUR918crZ9b8XK69Wd+QDWxxIIIfYBPw41klIGCDkHQVkeFg51F3ongykPzYQLbhXG9gmDIdvmdvfHpVNT+t9TEg5m/fxd7IvFW5wltzRk2NRln4ECTyTzgFnhY7KMGRsBPOsEA+1M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JYkfoEB+; arc=fail smtp.client-ip=40.107.220.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aH4YYjMpj6VfvfqvNAP56JIf7SOoQNPtsgkKXDA66eJOrcpUUF+/gQGd1WMA7yByGRZwfHcQEmUNQ9bjX3FnQsDwRAGCqC5UtemEu/8onxYCDeq3TUXeu99nPZvjSvqxYY2iUdpJTVX2mSpEocOABVM1wiLOa2WD73+IACdUwdlaN4dfxHNAwAmC8DFw+MDC3MV1DBoJaFjknstDG4U6nexW8dlc1d6JM8JK/fvEXHpjlps7xhOjbwbcME5MNrmSesa0JgW10g5y06t5CYVGZWYD4E++WWhMP1rAHJ3k4LRL0/UeCGjrMxJyStWPPiDIJ/jgdZ/LV4O8H14z/R9WVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GQl43IE71pNrbKZ184dB5OesS5z16NU+SBEe8StfGG0=;
+ b=E69IlicZ8ICoXd4MR47M6/7rWJobg2NqmoXjNkynqfaT1qKngDFxeuduPaQV6sNA8EDg2HBDeilNBgfnZaVEICslFo6zFk/FqeDNALpXiqU7AyUnsHwcWwxFpYV10mupMrEarlEsPR3E0lFRsF30ezvwEdi7hS8GmkimRY/aShshzEzwcUSq6kOfkyM5oaqdct7ARocsMjTIzIgAmR+pPc4MzB3sDZKmmlrSWbuh7lDIZukKKaZZLYbwStDb5mqgoI3he3IfutSTARMQqThI3KN94+838NGKTuSzoA5XT+xPIMA56MX2U7lK3bSuddYo+2FobX89k3U/eBoeuAadYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GQl43IE71pNrbKZ184dB5OesS5z16NU+SBEe8StfGG0=;
+ b=JYkfoEB++pDJfNeCDP/CSW1NJkS/AseCq5gB5MO7p/hdSMj157Dxe8waEjwrGUKh+i8ttI9UFTvU5bQz+Ry1LcMn+xhIJMDDHIt+QUs2D6XTcZcojyqoeKh241YFJxWBSLC2NZedPnyYMUds9OV3KxesdQa3eD4xufjrYZtfTSA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
+ by PH7PR12MB5594.namprd12.prod.outlook.com (2603:10b6:510:134::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Mon, 19 Feb
+ 2024 12:45:28 +0000
+Received: from MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::dd00:9ab5:4d11:2d1a]) by MN0PR12MB6101.namprd12.prod.outlook.com
+ ([fe80::dd00:9ab5:4d11:2d1a%7]) with mapi id 15.20.7316.016; Mon, 19 Feb 2024
+ 12:45:28 +0000
+Message-ID: <736af6b3-52c0-4b3a-bab1-07e04eb156ce@amd.com>
+Date: Mon, 19 Feb 2024 06:45:25 -0600
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+To: Daniel Drake <drake@endlessos.org>, david.e.box@linux.intel.com
+Cc: Bjorn Helgaas <helgaas@kernel.org>, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+ bhelgaas@google.com, rafael@kernel.org, lenb@kernel.org,
+ linux-acpi@vger.kernel.org, linux@endlessos.org
+References: <20240207084452.9597-1-drake@endlessos.org>
+ <20240207200538.GA912749@bhelgaas>
+ <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
+ <CAD8Lp44-8WhPyOrd2dCWyG3rRuCqzJ-aZCH6b1r0kyhfcXJ8xg@mail.gmail.com>
+ <9654146ac849bb00faf2fe963d3da94ad65003b8.camel@linux.intel.com>
+ <CAD8Lp44tO_pz_HZmPOKUQ-LEQT=c856eH52xWL9nBtAtJwjL1g@mail.gmail.com>
+ <CAD8Lp46dPtE12ai8srt9Bz3awnkkb1LZz_7FQuF57M=LaUSaCw@mail.gmail.com>
+Content-Language: en-US
+From: Mario Limonciello <mario.limonciello@amd.com>
+In-Reply-To: <CAD8Lp46dPtE12ai8srt9Bz3awnkkb1LZz_7FQuF57M=LaUSaCw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: DM6PR06CA0080.namprd06.prod.outlook.com
+ (2603:10b6:5:336::13) To MN0PR12MB6101.namprd12.prod.outlook.com
+ (2603:10b6:208:3cb::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-device_cleanup-mmc-v1-1-1910e283cf5a@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAAxN02UC/x2MQQqAIBAAvxJ7TlDrUl+JCFu3WkgTpQiiv7d0H
- JiZBwplpgJ99UCmiwsfUcDUFeDm4kqKvTBYbVttTae8SEgT7uTimVQIqHRrjZ4RG985kDBlWvj
- +p8P4vh8Z+m4kZAAAAA==
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3388; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=Zs9XwXfin6vsvyZ0Tkvtj1y1nmSBKNq0xIOxwIjWzyM=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl000RePCeBs1bWiwAl9LosSaNviJ82I1W3PzrM
- Ut4tb+obZeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdNNEQAKCRDJC4p8Y4ZY
- poVXD/wLI4sBidqgdBxJQs4zMVBekU1VwhcVmqngHoYLP8wfbq7ynHP2WJwmm+hYDGFAApbP+l0
- AJaksMcgVN0sZ1aQXzV7bYWH6l7Dq4IJ33wXoO1firTHC9r0Yt8t9q+C24wJOyBwEZL4MRCYfyV
- 4GlifwrH+Xh53LAhkL/E3Mhntv2r8iTlKmblJOEDONlSOpGDvg+PiYxaku/D6iHM8GLc1jrXl4G
- sVLBGoYayikC1F2NIFAkMCKhI1yPGCNJ5oDQjSqDeVrknAkIZmzAevyiJLmU5Y/+esoHkX3Tfx4
- dYopAaTp28OwDLUkVGivJlZ1Vm1cJcJToStPbv1D/5pAf2KUS5wTuuItJPtNXosdmWp+j5iUKn8
- +w+2425qZL3TSRnDWFo+NCH67cirRA9CX+NOBvgLxRxiZzkQXN8bGC5ekoftGLJblPRxPygw69u
- Ndjk8TaQtxVi6LNf4erqpwN1zKtv4sktWHUsUMPgH/D2phwt2rI0jFGt76XeoKkQ/TEAwWaMDEM
- DWofQvP5AO/oklARoOeEWxbaamZThs/5SeDMCgX1DjdlRSQtyFiVsqny3wVRhEuwgXcSn/vlgQP
- bUE5HALCacooKRMyMIH2Jp+jMv3KQjluPXzvxQJHq7+RNGZzaq6BcaUzqmHvZSnRPbxcU1HVwgk
- O96BMcM9739e+tA==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|PH7PR12MB5594:EE_
+X-MS-Office365-Filtering-Correlation-Id: 84372b42-29e2-4c17-629c-08dc3148a69d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bJZpSdCl5jz3gIvI99JOuuW0ktt9GedVRVlDGyH9D15Om+1x1sXTwaKv4X4cZ6P4nbsJ7ScJUJlR0x8TP9qYC/xjEgSrwuatFsk6fJBR+XfuhCZ1jcbZV8kpIzsKF0s4KxckdkN6uaKFYjB3GMOhN1tr5cBiVKwRikV+7QCWm2cvJtV9lpiUtTSNXpLLGm2mjrcB//fCVc4AgpKG+s/oaD+006ZZj/b5zSuNfvJJR4zpGJGZ4hJ74dYYsNM5KmsGu3R0x5Z5AOM3VVEHfuZzQaOA1eLiWhwVnvukgZWHut+rYJ4d4eaL46FFHx3/Ak9uHE18lAO4h/tt0yYPokxxvp+jLOQSIW6Tm+RhlPEn9NhN0ljQA//2wOte957AON2mPKpMMBeNt2uM7tI0UNu6dNKsOLg2z+4/MICveTFMzUazv7PPfcECbl01Fn4zJj2bUoDM2TRfSXzFP3FLn+HQs75rjJTWYwPTJcTpQ1EvB5po3OwNtY7U0r5l65X34KeSywYc/t8+JzBeJEmz3j8gprTx9//DDzJUMK4xzHgrHiU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?M1JiMGZ2b3M4NnllNHVNd1h3WGV4bGhwWFVLN1pDbTE0Wk1qQkYxbnVOTVVF?=
+ =?utf-8?B?WFFBVXNFaElBVnNCb1g3VjFaZGRGVXBIMVpnNFVxWnlabUFTbldyVTBrdGxi?=
+ =?utf-8?B?OW1RMzZDV3ljT1Exa1RRUDZIV01UZFdvQTdDeXRFNE1uUG9sSkwrd1dGOFFW?=
+ =?utf-8?B?WVppOCtwalBmVVhqNzVZOHNnNmV5RVpVcC95cmtoK3F3SDdqRmdOWFU5ZVI5?=
+ =?utf-8?B?VkpLeHZpS3JDM09QajgwamVxUDg0ME9KdVNTd2RoYjlPL05Nend4ZzJMcTNQ?=
+ =?utf-8?B?dVljVWNadFc0c1Z6L21sVnFLL2RneG5RMGJFRVZRcDQ5UDdOTzFncEo2dW9p?=
+ =?utf-8?B?aEtTa0VueTBLVFhleE84NzZ3b25uaGY4ZExxYzhxN0drTTRIdDg1UkE4VDZP?=
+ =?utf-8?B?RmR4L1laK1E3Y1NQSGRiWjZaTFpSY0RTSE1uUTF5Z3IzNzV3bkI2TmxTaVVZ?=
+ =?utf-8?B?K21rYjRPSTg0MUdIM21FMG1JbFpBd3FXeTF1OXdJdVhNSzNjWUFUUHFKT1RX?=
+ =?utf-8?B?QjMzYjBUVXhNai9haEppVVFvSFYzeTI3dTFvQzN4RnA4MXlUOHR1UjgwUnBp?=
+ =?utf-8?B?K1FERkNQVlBuZG5RTGdCOFdtbGxzYlRRYUU3ZVdGVjRZYnFnTjRMaVZHMmxH?=
+ =?utf-8?B?djBRZXVRcC9JWE5wRkpnek1kRTd6ektpQUdXSklrNFU2amd1R2k0eHJqbGJr?=
+ =?utf-8?B?ZUVXVlRqeGl2SlIxd2EvL1p1S0J4WkZLQm1jbUlqZDkzOHhsbjJ6Rnh3VS9t?=
+ =?utf-8?B?S2VqN29jZFpTZnJnMkxkdmtrUW4xd25EZ0JoZU1xVmtITzQ1ZTN2WkNPTHpQ?=
+ =?utf-8?B?R01qbzVMTHc2R0ZQU2xJSXAxWnlRRkZSWWkvYVZNaUdCYzhsZFpucWQvQ1Na?=
+ =?utf-8?B?N05PeVZmUnJsaGZaZjVnWTA4UFEvaEhrc01uRXQ3RkI3NXJ5dHcvcldITlFP?=
+ =?utf-8?B?czhJOTUzUWtFR21kSyt5M1RoOUVmeS9qbStLaVdkeFBEYnNlZThIdVhWY3M0?=
+ =?utf-8?B?azdFVFlnL3NwZGcvWTZvOVp5aFhtRHdrUldwUXU2eFd0Znc5d2lXS0J5VktN?=
+ =?utf-8?B?cE16THByeDNVbE40MHB4NUdrSWJtRkRvYmdkUjlwcnNSYnBiVUQvcGFheGIr?=
+ =?utf-8?B?V01wUXlJc2o1QktHR1ZnczcyME5uNDcrMUQ5TXR0OXF0bm45cURXaUR6WkM0?=
+ =?utf-8?B?RUE5eDlPTTE3NnAwYlZpRlQ1Q0dPTzh6eVIvejBZaFV5SGtvcVhxQ211SmU5?=
+ =?utf-8?B?UVZNMVVvdUhSOGZDUUp5eEFuR0NXUnB5Nmw3MUpxNVpmMTNINVYydDFzVlB4?=
+ =?utf-8?B?MURXSEplZDFmOXdXOVZPSVZqTWVJcmVTRWFHY0o0d00zK3pBdjRtQXJUOFVG?=
+ =?utf-8?B?MTQwcnM1akdmM2RqTGZUdU1RK2liY0tBYlZUbkJTTFJrdlh1bmg0VEExV2FM?=
+ =?utf-8?B?alNQeVlpdk9GRlV5aTJOWEc0Z0gzNi94RHNqMHFsNzl4ZnlPdUU5UDVWMHNY?=
+ =?utf-8?B?VUVOblY5NEJsU3BUQkRYbytQVHpGN0RWaG9OZkVnc25RME84STZsSGw3dXNz?=
+ =?utf-8?B?a05DWTlEcjlwdVJvZTlaeThzRXk0dkcwZjIxbTh0MU9XWFJ0WHltV1Y0Q2JZ?=
+ =?utf-8?B?aTJ2SS9CTE9GVDlWaHh2bHlTZ3lEby9ueURqSXROeHBjUEl1Zk0xOHFYa21L?=
+ =?utf-8?B?YWpoUGkxajVaL2FjNytyTThZRmFsaGpGWEErMVNwUzUvQTRRMTc3SlVZTnIz?=
+ =?utf-8?B?em82MzRSUXlxVklpd0R2NWFRaDd0T3RmVlNyb2pkeFUrOHQ4cE9xV1dSL3di?=
+ =?utf-8?B?V0pxKzh6cVRDbHBoV01vWmdyejhYamFtUC9GbXRpZThtUnpQZXZvZFl5MkF1?=
+ =?utf-8?B?c1hkd0pnb2pzZ05TclMwa2EwS2VxWXBGa0NKUFJ0NTZKTkpELzg4ZitMMmtS?=
+ =?utf-8?B?Q1RHcTR2ZlRmTkxtbWZGMGVMTFZrZlIrN2ZWQ0srTXpuaG9US1U0M2ZGRk82?=
+ =?utf-8?B?NTFLL1ZwWkZFdnVNc084KzMzVmJFQlM5cnFXUkdsajg0OXlDTi84akRwU0RN?=
+ =?utf-8?B?MjczUnd1VEUrYUNLZEo0dTBoSnNUU2luRlE0dCswQ05jdGdmR1k5d3c0NnN3?=
+ =?utf-8?Q?XpFiw8izfQh+HG66AuEPApgdI?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84372b42-29e2-4c17-629c-08dc3148a69d
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 12:45:28.3889
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Jklx46Cmx0uk1vK3/xTgToq5xu2hsJhgKf3qIpRUpYuKTEJCUB32WJsc7Fabu7Z9J00iG5gIISF8L/wrigX4CA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5594
 
-Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-core can properly handle constant struct device_type. Move the sdio_type,
-sd_type and mmc_type variables to be constant structures as well, placing
-it into read-only memory which can not be modified at runtime.
+On 2/19/2024 05:35, Daniel Drake wrote:
+> On Fri, Feb 9, 2024 at 9:36 AM Daniel Drake <drake@endlessos.org> wrote:
+>> On Thu, Feb 8, 2024 at 5:57 PM David E. Box <david.e.box@linux.intel.com> wrote:
+>>> This does look like a firmware bug. We've had reports of D3cold support missing
+>>> when running in non-VMD mode on systems that were designed with VMD for Windows.
+>>> These issues have been caught and addressed by OEMs during enabling of Linux
+>>> systems. Does D3cold work in VMD mode?
+>>
+>> On Windows for the VMD=on case, we only tested this on a BIOS with
+>> StorageD3Enable=0. The NVMe device and parent bridge stayed in D0 over
+>> suspend, but that's exactly what the BIOS asked for, so it doesn't
+>> really answer your question.
+> 
+> Tested on the original BIOS version with VMD=on: Windows leaves the
+> NVMe device (and parent bridge) in D0 during suspend (i.e. same result
+> as VMD=off).
+> 
+> On this setup, there are 2 devices with StorageD3Enable flags:
+> 
+> 1. \_SB.PC00.PEG0.PEGP._DSD has StorageD3Enable=1. This is set
+> regardless of the VMD setting at the BIOS level. This is the flag that
+> is causing us the headache in non-VMD mode where Linux then proceeds
+> to put devices into D3cold.
+> This PEGP device in the non-VMD configuration corresponds to the NVMe
+> storage device. PEG0 is the PCI root port at 00:06.0 (the one in
+> question in this thread), and PEGP is the child with address 0.
+> However in VMD mode, 00:06.0 is a dummy device (not a bridge) so this
+> PEGP device isn't going to be used by anything.
+> 
+> 2. \_SB.PC00.VMD0._DSD has StorageD3Enable=0. This VMD0 device is only
+> present when VMD is enabled in the BIOS. It is the companion for
+> 00:0e.0 which is the device that the vmd driver binds against. This
+> could be influencing Windows to leave the NVMe device in D0, but I
+> doubt it, because it can't explain why Windows would have the D0
+> behaviour when VMD=off, also this is a really strange place to put the
+> StorageD3Enable setting because it is not a storage device.
+> 
+>> On Linux with VMD=on and StorageD3Enable=1, the NVMe storage device
+>> and the VMD parent bridge are staying in D0 over suspend. I don't know
+>> why this is, I would have expected at least D3hot.  However, given
+>> that the NVMe device has no firmware_node under the VMD=on setup, I
+>> believe there is no way it would enter D3cold because there's no
+>> linkage to an ACPI device, so no available _PS3 or _PR0 or whatever is
+>> the precise definition of D3cold.
+> 
+> Checked in more detail. In Linux, the NVMe device will only go into
+> D3hot/D3cold if the ACPI companion device has an explicit
+> StorageD3Enable=1. However, in VMD mode the NVMe storage device has no
+> ACPI companion. Code flow is nvme_pci_alloc_dev() -> acpi_storage_d3()
+>   -> return false because no companion.
+> 
+> The VMD PCI bridge at 10000:e0:06.0 that is parent of the SATA & NVME
+> devices does have a companion \_SB.PC00.VMD0.PEG0
+> However, the SATA and NVME child devices do not have any ACPI
+> companion. I examined the logic of vmd_acpi_find_companion() and
+> determined that it is looking for devices with _ADR 80b8ffff (SATA)
+> and 8100ffff (NVME) and such devices do not exist in the ACPI tables.
+> 
+> Speculating a little, I guess this is also why Windows leaves the
+> device in D0 in VMD=on mode: it would only put the NVMe device in
+> D3hot/D3cold if it had a corresponding companion with
+> StorageD3Enable=1 and there isn't one of those. What's still unknown
+> is why it doesn't put the device in D3 in VMD=off mode because there
+> is a correctly placed StorageD3Enable=1 in that case.
+> 
+> Daniel
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/mmc/core/bus.c  | 2 +-
- drivers/mmc/core/bus.h  | 2 +-
- drivers/mmc/core/mmc.c  | 2 +-
- drivers/mmc/core/sd.c   | 2 +-
- drivers/mmc/core/sd.h   | 2 +-
- drivers/mmc/core/sdio.c | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/mmc/core/bus.c b/drivers/mmc/core/bus.c
-index 48daeafdff7a..0ddaee0eae54 100644
---- a/drivers/mmc/core/bus.c
-+++ b/drivers/mmc/core/bus.c
-@@ -272,7 +272,7 @@ static void mmc_release_card(struct device *dev)
- /*
-  * Allocate and initialise a new MMC card structure.
-  */
--struct mmc_card *mmc_alloc_card(struct mmc_host *host, struct device_type *type)
-+struct mmc_card *mmc_alloc_card(struct mmc_host *host, const struct device_type *type)
- {
- 	struct mmc_card *card;
- 
-diff --git a/drivers/mmc/core/bus.h b/drivers/mmc/core/bus.h
-index 3996b191b68d..cfd0d02d3420 100644
---- a/drivers/mmc/core/bus.h
-+++ b/drivers/mmc/core/bus.h
-@@ -23,7 +23,7 @@ static ssize_t mmc_##name##_show (struct device *dev, struct device_attribute *a
- static DEVICE_ATTR(name, S_IRUGO, mmc_##name##_show, NULL)
- 
- struct mmc_card *mmc_alloc_card(struct mmc_host *host,
--	struct device_type *type);
-+				const struct device_type *type);
- int mmc_add_card(struct mmc_card *card);
- void mmc_remove_card(struct mmc_card *card);
- 
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 58ed7193a3ca..5b2f7c285461 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -883,7 +883,7 @@ static struct attribute *mmc_std_attrs[] = {
- };
- ATTRIBUTE_GROUPS(mmc_std);
- 
--static struct device_type mmc_type = {
-+static const struct device_type mmc_type = {
- 	.groups = mmc_std_groups,
- };
- 
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index c3e554344c99..1c8148cdda50 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -805,7 +805,7 @@ static const struct attribute_group sd_std_group = {
- };
- __ATTRIBUTE_GROUPS(sd_std);
- 
--struct device_type sd_type = {
-+const struct device_type sd_type = {
- 	.groups = sd_std_groups,
- };
- 
-diff --git a/drivers/mmc/core/sd.h b/drivers/mmc/core/sd.h
-index 1af5a038bae9..fe6dd46927a4 100644
---- a/drivers/mmc/core/sd.h
-+++ b/drivers/mmc/core/sd.h
-@@ -4,7 +4,7 @@
- 
- #include <linux/types.h>
- 
--extern struct device_type sd_type;
-+extern const struct device_type sd_type;
- 
- struct mmc_host;
- struct mmc_card;
-diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
-index 5914516df2f7..4fb247fde5c0 100644
---- a/drivers/mmc/core/sdio.c
-+++ b/drivers/mmc/core/sdio.c
-@@ -66,7 +66,7 @@ static struct attribute *sdio_std_attrs[] = {
- };
- ATTRIBUTE_GROUPS(sdio_std);
- 
--static struct device_type sdio_type = {
-+static const struct device_type sdio_type = {
- 	.groups = sdio_std_groups,
- };
- 
-
----
-base-commit: 25e69172db8a31ef8564ce1cf755ac5cb8374daa
-change-id: 20240219-device_cleanup-mmc-04210bcc3d9a
-
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
-
+Tangentially related, I've observed from multiple bug reports that 
+Windows will apply StorageD3Enable behavior to all storage devices in 
+the system even if "only one" has the property.  I would speculate that 
+the logic for Windows exists specifically in the Microsoft storage 
+drivers but is a "global boolean" for those drivers.  So perhaps when 
+VMD is enabled the Intel VMD driver is used instead of the Microsoft 
+storage driver so it doesn't have that logic.
 
