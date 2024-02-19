@@ -1,149 +1,272 @@
-Return-Path: <linux-kernel+bounces-70999-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71000-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 682E8859F34
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:06:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B187859F35
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:07:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D9041F21534
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:06:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1024C1F21137
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:07:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E08225579;
-	Mon, 19 Feb 2024 09:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F0922612;
+	Mon, 19 Feb 2024 09:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ApXLLN4S"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="YOjQ3s7p"
+Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C762555D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406E0224F0
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708333564; cv=none; b=HuZAeQa4JeG0697CrueNxNmm2f/uH60L0SRZVEnk6mQSqTgKFX7itEKSxW1wOo+1Sv5TaU7XysNMVE6ayQNPj5bO2i42NCxtA2Cw3yn+/rBcMG9Flm9Oh5WnwC5AAf6ehi64RP2+HOn4+JaInoNxIxlfzq3uiiKQhzKdXRmxuTo=
+	t=1708333577; cv=none; b=D1jd8fJWf5YIo23UOyyL1bbPiGXiO0P1JT6eh/+juTq3MRdlfn1RXCbsgR7lRJU7rWGJHUo3CUN0yz4wtWhB7+v6yUSOiDHNzoWIToo8ZsMSA1IjvawFk8f1/+ALq3vsCFLGc05eTdjblEfJONqo3SKSF9JB9p+e8L9wGLRKl6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708333564; c=relaxed/simple;
-	bh=xpY3ZmKzm5W53U81GOab3gbPC2jYO9O/nb67la/7GTs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=h2VqoWbzNpyn4Hs/fG5EVZ8+FkMax273V7qRoJsU8+w1p0Ak/AzJlXzAMcOCL0DZoWMqLFusdnNcZlfZHB8a8eqV2oHUVLgp0DxPmUZyC/LdcAvzjSERj85oouBNym0GJ9sY5s9236VeNzIfW3ScKqlmhd0zhPEd2/ySXE/Dgy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ApXLLN4S; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-47044462962so41830137.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:06:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708333562; x=1708938362; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xpY3ZmKzm5W53U81GOab3gbPC2jYO9O/nb67la/7GTs=;
-        b=ApXLLN4S3mDbrHTU/U2jLnKEz6wz4Nl/9kO76lpoyykaKLqeJ2QUJgqoTC6+DGqQGC
-         F1GRnlNib6EicIrvLa5M/1fAiQr50/GLv24REdNFVOtLkpDxprBVWN6KddkHCqv02Qri
-         l9ADWkZM6TEBu1WIVqKHu0tr+NldrFThQgSHPtx5up2m2h6Cfr0gE+gWuoTE6JrgP+N0
-         J1kfBiGX7mLVInXiZ1a0JqiQXiMp5FSDRuRI7s4Aj2RDXfanYaWsEZG6273atdAm+0YB
-         lHB3qsOErY3qfCaOyKt6HI2Xnr/pXTu5yhDvXFsOKjapm29a+fednO/T4wDT37wMry/w
-         dQRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708333562; x=1708938362;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xpY3ZmKzm5W53U81GOab3gbPC2jYO9O/nb67la/7GTs=;
-        b=FIPofy4x8AgfswSOcPdy1+YDqfl7xU7dW++L26uW3t4u4aTxtWgq38Tm8FB7RW3zH4
-         4B1Dak16sVLXBhjVuFunVTRPLHQEvE4dV0McxpMbsAXqZC5P2edIhx5gjkj0kGMHEez0
-         lU4eK64NAGEb+7pijVWIYPogfdq+cjsvZOQ9vn8XGUIwbsOQtqiqNZguYuTio6Q3Od47
-         1b6HyFg3O5ir94pNchIT8zDCdXqCLSeu6VZtqLEGJEh6bC63P4DP5Mg9XEOWXtX9G0c4
-         1egIX8Bdy13oQNs5Ir+1ceqPyIhiRd8cJanwGWFTOg/As6lYUOz+EWCl7oMIaZnDXaxi
-         AGWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUz07tCLUEAIopUH0ZarFUVMnng7Oe2mTaDuuz11jXJuyVtmVQ0j6c1G04lpq8igtOez3KbvNhMNFkxkEQk9PCb0DJtPRC9R/Ti7pOd
-X-Gm-Message-State: AOJu0YybPHZ0IgMNqfdBwwWYA82q4U7xz01g72QFH9EySaDSZp4kC5ax
-	v7z2YXFecd3Eg6zeF+7A9kR3rOLPx9VxyqJIrcUZ9XBALWVwn33jp4bmXTaSt8SPxIIjIUz96MF
-	nl6VzNZ1WTkXMzfcccXAvhXTlfTw5Er95VuHS
-X-Google-Smtp-Source: AGHT+IF1//6y3SGVWkcDFEE9RbhBB+iqv2Qr9EGFFuWkEJX/nlJvEdkBWwNoyAZuDtuFmc9lsVY4W0RoTQFSx7ySmig=
-X-Received: by 2002:a67:f3da:0:b0:470:4510:eda8 with SMTP id
- j26-20020a67f3da000000b004704510eda8mr995388vsn.21.1708333561626; Mon, 19 Feb
- 2024 01:06:01 -0800 (PST)
+	s=arc-20240116; t=1708333577; c=relaxed/simple;
+	bh=O1NH8OisEdtqkSO8OVfB16fLp9Kt0L5NGy6WOB5FB6Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oslu0DeKrxj4eiITGI5i834VmXMQtD0o15tobQylp8t6L2IID5anRJDyRxjEm4PKi5/CRVeD0wGqnwk5AmsRmt0kWdIvxtEsoX9DI7oChteAGEaifpZbSwR4qBEZYKDbw+wDdsvyFyqZ466bVF0rjRcWm8oWuAYZTzs9qBwWw/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=YOjQ3s7p; arc=none smtp.client-ip=77.240.19.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
+	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=zJd2/jY6apWwqOqaVrnaYHmAu95Wj50A02KcGcRg8FY=; b=YOjQ3s7pagONYvtf0BbS29bThl
+	t0VySPGSezTNdCJj+Q7qtpXTjXN+7VpXV1sDgbTEPlkHfRswnD7AtLego+buBYMuMpZHoWC8J6OTb
+	/XAZBZYKeHhOJywcqC8zRwtlcZbfxl05YGz8vteqhBpc+bTEmlsBkaKNaqR9ukMlA3oSzKdFYeeqy
+	91VSFuTC4Au10IuSuUOWTD7vVO+WQfws60zgOqLldFvjjcS7IUcTex7dVvijD+3qnshHjQkSubgmu
+	ps3ASrejKZjjX2l5TCCNmHGVkqDxbdqgY+XvvBWMikFwaBzm3+wH6pqpaQrVrYKxVb2KGg55RGpVs
+	VoBkHbaQ==;
+Received: from [194.136.85.206] (port=35564 helo=eldfell)
+	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96.2)
+	(envelope-from <pekka.paalanen@haloniitty.fi>)
+	id 1rbzbB-0001JA-2x;
+	Mon, 19 Feb 2024 11:06:05 +0200
+Date: Mon, 19 Feb 2024 11:05:56 +0200
+From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
+To: Mario Limonciello <mario.limonciello@amd.com>
+Cc: Harry Wentland <harry.wentland@amd.com>, Hamza Mahfooz
+ <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org, Leo Li
+ <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, Alex
+ Deucher <alexander.deucher@amd.com>, Christian =?UTF-8?B?S8O2bmln?=
+ <christian.koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Alex Hung
+ <alex.hung@amd.com>, Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
+ Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
+ to eDP connectors
+Message-ID: <20240219110556.04a27591@eldfell>
+In-Reply-To: <14cd1dee-94b7-48b4-96f4-b3c58512a605@amd.com>
+References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
+	<20240216101936.2e210be2@eldfell>
+	<82280a39-4e1d-41ee-82fb-758ceed953e4@amd.com>
+	<20240216174242.15d07657@eldfell>
+	<a25a6205-c43f-40ab-bb79-8199a8290912@amd.com>
+	<d30e50bf-5b8e-47cb-8abf-e474f8490c99@amd.com>
+	<14cd1dee-94b7-48b4-96f4-b3c58512a605@amd.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217002717.57507-1-ojeda@kernel.org>
-In-Reply-To: <20240217002717.57507-1-ojeda@kernel.org>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Mon, 19 Feb 2024 10:05:50 +0100
-Message-ID: <CAH5fLgirUqw2hkEgFKOV4a2N2sW-GAGVY=KkkyzptMN+H2txfQ@mail.gmail.com>
-Subject: Re: [PATCH] rust: upgrade to Rust 1.77.0
-To: Miguel Ojeda <ojeda@kernel.org>
-Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/iBK1dT1Ja+rNCM2/OJPAtU.";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - whm50.louhi.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - haloniitty.fi
+X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
+X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+
+--Sig_/iBK1dT1Ja+rNCM2/OJPAtU.
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Feb 17, 2024 at 1:27=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wro=
-te:
->
-> This is the next upgrade to the Rust toolchain, from 1.76.0 to 1.77.0
-> (i.e. the latest) [1].
->
-> See the upgrade policy [2] and the comments on the first upgrade in
-> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
->
-> # Unstable features
->
-> The `offset_of` feature (single-field `offset_of!`) that we were using
-> got stabilized in Rust 1.77.0 [3].
->
-> Therefore, now the only unstable features allowed to be used outside the
-> `kernel` crate is `new_uninit`, though other code to be upstreamed may
-> increase the list.
->
-> Please see [4] for details.
->
-> # Required changes
->
-> Rust 1.77.0 merged the `unused_tuple_struct_fields` lint into `dead_code`=
-,
-> thus upgrading it from `allow` to `warn` [5]. In turn, this makes `rustc`
-> complain about the `ThisModule`'s pointer field being never read. Thus
-> locally `allow` it for the moment, since we will have users later on
-> (e.g. Binder needs a `as_ptr` method [6]).
+On Fri, 16 Feb 2024 10:32:10 -0600
+Mario Limonciello <mario.limonciello@amd.com> wrote:
 
-Maybe you should just add the as_ptr method to ThisModule now? It will
-silence the warning, and doesn't trigger a warning of its own since it
-is pub.
+> On 2/16/2024 10:13, Harry Wentland wrote:
+> >=20
+> >=20
+> > On 2024-02-16 11:11, Harry Wentland wrote: =20
+> >>
+> >>
+> >> On 2024-02-16 10:42, Pekka Paalanen wrote: =20
+> >>> On Fri, 16 Feb 2024 09:33:47 -0500
+> >>> Harry Wentland <harry.wentland@amd.com> wrote:
+> >>> =20
+> >>>> On 2024-02-16 03:19, Pekka Paalanen wrote: =20
+> >>>>> On Fri, 2 Feb 2024 10:28:35 -0500
+> >>>>> Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
+> >>>>>     =20
+> >>>>>> We want programs besides the compositor to be able to enable or di=
+sable
+> >>>>>> panel power saving features. =20
+> >>>>>
+> >>>>> Could you also explain why, in the commit message, please?
+> >>>>>
+> >>>>> It is unexpected for arbitrary programs to be able to override the =
+KMS
+> >>>>> client, and certainly new ways to do so should not be added without=
+ an
+> >>>>> excellent justification.
+> >>>>>
+> >>>>> Maybe debugfs would be more appropriate if the purpose is only test=
+ing
+> >>>>> rather than production environments?
+> >>>>>     =20
+> >>>>>> However, since they are currently only
+> >>>>>> configurable through DRM properties, that isn't possible. So, to r=
+emedy
+> >>>>>> that issue introduce a new "panel_power_savings" sysfs attribute. =
+=20
+> >>>>>
+> >>>>> When the DRM property was added, what was used as the userspace to
+> >>>>> prove its workings?
+> >>>>>     =20
+> >>>>
+> >>>> I don't think there ever was a userspace implementation and doubt any
+> >>>> exists today. Part of that is on me. In hindsight, the KMS prop shou=
+ld
+> >>>> have never gone upstream.
+> >>>>
+> >>>> I suggest we drop the KMS prop entirely. =20
+> >>>
+> >>> Sounds good. What about the sysfs thing? Should it be a debugfs thing
+> >>> instead, assuming the below question will be resolved?
+> >>> =20
+> >>
+> >>
+> >> It's intended to be used by the power profiles daemon (PPD). I don't t=
+hink
+> >> debugfs is the right choice. See
+> >> https://gitlab.freedesktop.org/upower/power-profiles-daemon/-/commit/4=
+1ed5d33a82b0ceb7b6d473551eb2aa62cade6bc
+> >> =20
+> >>>> As for the color accuracy topic, I think it is important that compos=
+itors
+> >>>> can have full control over that if needed, while it's also important
+> >>>> for HW vendors to optimize for power when absolute color accuracy is=
+ not
+> >>>> needed. An average end-user writing code or working on their slides
+> >>>> would rather have a longer battery life than a perfectly color-accur=
+ate
+> >>>> display. We should probably think of a solution that can support both
+> >>>> use-cases. =20
+> >>>
+> >>> I agree. Maybe this pondering should start from "how would it work fr=
+om
+> >>> end user perspective"?
+> >>>
+> >>> "Automatically" is probably be most desirable answer. Some kind of =20
+> >>
+> >> I agree
+> >> =20
+> >>> desktop settings with options like "save power at the expense of image
+> >>> quality":
+> >>> - always
+> >>> - not if watching movies/gaming
+> >>> - on battery
+> >>> - on battery, unless I'm watching movies/gaming
+> >>> - never
+> >>> =20
+> >>
+> >> It's interesting that you split out movies/gaming, specifically. AMD's
+> >> ABM algorithm seems to have considered movies in particular when
+> >> evaluating the power/fidelity trade-off.
+> >>
+> >> I wouldn't think consumer media is very particular about a specific
+> >> color fidelity (despite what HDR specs try to make you believe). Where
+> >> color fidelity would matter to me is when I'd want to edit pictures or
+> >> video.
+> >>
+> >> The "abm_level" property that we expose is really just that, a setting
+> >> for the strength of the power-savings effect, with 0 being off and 4 b=
+eing
+> >> maximum strength and power saving, at the expense of fidelity.
+> >>
+> >> Mario's work is to let the PPD control it and set the ABM levels based=
+ on
+> >> the selected power profile:
+> >> 0 - Performance
+> >> 1 - Balance
+> >> 3 - Power
+> >>
+> >> And I believe we've looked at disabling ABM (setting it to 0) automati=
+cally
+> >> if we know we're on AC power.
+> >> =20
+> >>> Or maybe there already is something like that, and it only needs to be
+> >>> plumbed through?
+> >>>
+> >>> Which would point towards KMS clients needing to control it, which
+> >>> means a generic KMS prop rather than vendor specific?
+> >>>
+> >>> Or should the desktop compositor be talking to some daemon instead of
+> >>> KMS for this? Maybe they already are?
+> >>> =20
+> >>
+> >> I think the intention is for the PPD to be that daemon. Mario can elab=
+orate.
+> >> =20
+> >=20
+> > Some more details and screenshots on how the PPD is expected to work an=
+d look:
+> > https://linuxconfig.org/how-to-manage-power-profiles-over-d-bus-with-po=
+wer-profiles-daemon-on-linux =20
+>=20
+> Right, thanks!
+>=20
+> The most important point is that the user indicates intent from the GUI.
+> The daemon orchestrates the various knobs to get that intent.
+>=20
+> It's intentionally very coarse - 3 power states.  The policy of what to=20
+> do for those states is managed by the daemon.
+>=20
+> In the case of ABM it will only apply the policy if the daemon detects=20
+> the system is on battery.
+>=20
 
-> # Other changes
->
-> Rust 1.77.0 introduces the `--check-cfg` feature [7], for which there
-> is a Call for Testing going on [8]. We were requested to test it and
-> we found it useful [9] -- we will likely enable it in the future.
->
-> # `alloc` upgrade and reviewing
+Sounds like sysfs is the best option, and it should never have been a
+KMS property, indeed.
 
-[...]
 
-> Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1=
-770-2024-03-21 [1]
-> Link: https://rust-for-linux.com/rust-version-policy [2]
-> Link: https://github.com/rust-lang/rust/pull/118799 [3]
-> Link: https://github.com/Rust-for-Linux/linux/issues/2 [4]
-> Link: https://github.com/rust-lang/rust/pull/118297 [5]
-> Link: https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-2-08=
-ba9197f637@google.com/#Z31rust:kernel:lib.rs [6]
-> Link: https://doc.rust-lang.org/nightly/unstable-book/compiler-flags/chec=
-k-cfg.html [7]
-> Link: https://github.com/rust-lang/rfcs/pull/3013#issuecomment-1936648479=
- [8]
-> Link: https://github.com/rust-lang/rust/issues/82450#issuecomment-1947462=
-977 [9]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+Thanks,
+pq
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+--Sig_/iBK1dT1Ja+rNCM2/OJPAtU.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXTGfQACgkQI1/ltBGq
+qqdjHw/5AToq06LCDGYksSytCQJdqrFukKT5suSnJdaN43R1UsNSQu4dhu4m24om
+aa0edR25V+07wYSCyRGmdC5s0S8flAahE6F9xW7pSBMEBh2GuV63C0/5Z9UfWn96
+e/lWDYBxD3qaygfcd2e+QJ43hJVIhZXJRI+vs8xsf/tTjjB6msEzKg4QIji+IE3B
+hIjIr7Y8VgBOK/QiCKMMpS6b7ZIgmp7GNYPsOXka/Mnq+8tVshRD3eGqsjqcdwpo
+ZHHsXHwq65xAT+hoRpHLMAtCcCNpSfGZCUbfkZG7AKPAMg/x3ojJHv+u1zMIguhM
+pvQuFoh3d9O3RNMjAj+geTwMYIkHhISLV8UlVgV2DPVwD17quWVu+imoozd+jiou
+jYfhpmVBPd4HbvvoD31hPd20z9du3KpvUvsa/c7rkRLJDeHA2KldiNn2ERAVfmzP
+StAKtSt84x+txvK5YxHN46Z938gvRgsxc7Q0j3yRGyedvyPvXMtRsYMK3MONcyCV
+EZT/46LWPxnKeXUEjCwG34LEFR3wxo9M832o5PcWo/bwmJl3PsH7ZAnhrvLSUGwM
+NaM0Xw3Sv+8D6pwTT8MPHOia3hT8OhL1/vftV+FktCXKUdTDk6ZeX1wdI/RUxQqa
+OgEVqXQR56cE2SwR8BXPlPKulSi/Y0/XUbMl3+rygMoaxi3Xees=
+=qd2V
+-----END PGP SIGNATURE-----
+
+--Sig_/iBK1dT1Ja+rNCM2/OJPAtU.--
 
