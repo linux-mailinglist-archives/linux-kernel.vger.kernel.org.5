@@ -1,90 +1,108 @@
-Return-Path: <linux-kernel+bounces-71042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 024B5859FD2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:38:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 116BE859FD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:38:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAB221F2233D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:38:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1F72281C3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEED2377E;
-	Mon, 19 Feb 2024 09:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="ODAyBUXC"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97FF92556C;
+	Mon, 19 Feb 2024 09:38:50 +0000 (UTC)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4670223755;
-	Mon, 19 Feb 2024 09:38:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629CA25556
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:38:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708335494; cv=none; b=IWPG89Cx5/Ot59DLgMgn/F5bbXYhi3unC5dFyc8mw39pG80U3eQ0UL1Pxrd+2Y7uw3aMUEf3+4KBO+X5J6fPoX+GSLk+RmcQnD8o7SMzIYogL4qINVANzMZ6PxqCNRfzeGIAgEyjJ+WLZnvl1IbgMEBpiBuNMcYZO5KdgEp3C10=
+	t=1708335530; cv=none; b=uUHgy7CgQW6wRMjyC975WIDA9oU3GPKm5oMnNDkQ/4LRppzvlv/cO4/Lm4JRDzHk372CzlRFmecJWWOO1YQyI+HSFnjWXxWj7YJg7INNyZ70VcKTffNL44jFQGgH1vBWZ9N4TrE2iRGUVKMSyskUC37Bzqf3NexQbARRvauln/I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708335494; c=relaxed/simple;
-	bh=JZqE/ySqdsMfEywlr++2U8VqDqwCtrbDoFfqyNfv9TQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YMCKObKzYFbuaVJycY0rhWzzD4C/jXBx9yjstC0UNi3eSOFJbBSZllm8CZbFzGWAAo5gyrdJmKlJO0SKLMdr3tmCrRU+YhRCP//Dao0xDaKrPF4j5fz0sSVSmQmASmmZIRu/3lRrkBTxV0VgVxDUXhC5FolcAwfPzE30VVfdRF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=ODAyBUXC; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3CDB3E0006;
-	Mon, 19 Feb 2024 09:38:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1708335490;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tfpHxAcfl5M2NGtp+kneEgWWO1Zl5+LXLY73+P7UT5k=;
-	b=ODAyBUXCl8yQM4qTctmYz70QQOi5vgZlS7TgpsCPz4ZPW3x3rTfBGhu+qm1C/jqljcwmos
-	EoSsPdac6aGzYaSr4RCnI7/QC5DClNMsUTVE+A6cSzrg1voGInI3zKPwOT1OwrEcalroOp
-	3Y0LT4Rx67IuRoFximD6UPR8heZIkCY/4WFGSZCSaGNt9WYnwP/U1ogOCEkD4ng58NI5rN
-	l6kCnrTmPG1E93HfRifzEu+hCRHws03Agn9GZSalFPHS5vpkRqlOfeKzCS8RqGBAML4LHT
-	PvZFSIGXfLKKKKpEj4y5TMU04hxBci0P5z/5zmP6b+cBZ2L/aD+HD+O1awftWA==
-Message-ID: <27b9f494-b824-46b8-9028-23e2ed1ff0f9@arinc9.com>
-Date: Mon, 19 Feb 2024 12:38:05 +0300
+	s=arc-20240116; t=1708335530; c=relaxed/simple;
+	bh=beV3HkcCobjEE+8GR3pJ/U2oTxy49Di4rABAON7noqk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lj1LdBukcZpCcJBCF8kQhByfFKhrvizPJGa99acgaoYnMpHRolI5IJq1Swb60iLCLCj9T2zjmvmrvA6Tbbdgf9Zpb86rgfSCarz1JHaz+AC7V15FPyliw/NtOJeqgzTUJkJ5n/0PRa6KCNxbbPyeFuWN4Igy+b7wmLQey15c07k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Tdcr055lpzXhDH;
+	Mon, 19 Feb 2024 17:36:48 +0800 (CST)
+Received: from dggpeml500004.china.huawei.com (unknown [7.185.36.140])
+	by mail.maildlp.com (Postfix) with ESMTPS id 13CFF18007A;
+	Mon, 19 Feb 2024 17:38:40 +0800 (CST)
+Received: from [10.174.186.25] (10.174.186.25) by
+ dggpeml500004.china.huawei.com (7.185.36.140) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 17:38:39 +0800
+Message-ID: <a3a41828-e65d-bc7f-ca75-7d3e9477042c@huawei.com>
+Date: Mon, 19 Feb 2024 17:38:15 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: {mt7622,mt7986}: add port@5 as CPU port
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
-Cc: Frank Wunderlich <frank-w@public-files.de>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20230918074938.79796-1-arinc.unal@arinc9.com>
- <5d582382-9a31-4a95-bc81-01d99dde0a6e@arinc9.com>
- <2795a056-eac2-491b-bcb5-52bf4a331c07@collabora.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] KVM: arm64: Add capability for unconditional WFx
+ passthrough
 Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <2795a056-eac2-491b-bcb5-52bf4a331c07@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+To: Oliver Upton <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>
+CC: James Morse <james.morse@arm.com>, Suzuki K Poulose
+	<suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, Catalin Marinas
+	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Paolo Bonzini
+	<pbonzini@redhat.com>, <linux-arm-kernel@lists.infradead.org>,
+	<kvmarm@lists.linux.dev>, <linux-kernel@vger.kernel.org>, Colton Lewis
+	<coltonlewis@google.com>, <wanghaibin.wang@huawei.com>
+References: <20240129213918.3124494-1-coltonlewis@google.com>
+ <Zbgx8hZgWCmtzMjH@linux.dev>
+From: "sundongxu (A)" <sundongxu3@huawei.com>
+In-Reply-To: <Zbgx8hZgWCmtzMjH@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500004.china.huawei.com (7.185.36.140)
 
-On 19.02.2024 12:17, AngeloGioacchino Del Regno wrote:
-> Il 18/02/24 11:52, Arınç ÜNAL ha scritto:
->> Matthias, please apply this patch.
+Hi Marc, Oliver,
+
+On 2024/1/30 7:17, Oliver Upton wrote:
+> Hi Colton,
+> 
+> On Mon, Jan 29, 2024 at 09:39:17PM +0000, Colton Lewis wrote:
+>> Add KVM_CAP_ARM_WFX_PASSTHROUGH capability to always allow WFE/WFI
+>> instructions to run without trapping. Current behavior is to only
+>> allow this if the vcpu is the only task running. This commit keeps the
+>> old behavior when the capability is not set.
 >>
->> Arınç
+>> This allows userspace to set deterministic behavior and increase
+>> efficiency for platforms with direct interrupt injection support.
 > 
-> Please split this by SoC and resend as two patches.
+> Marc and I actually had an offlist conversation (shame on us!) about
+> this very topic since there are users asking for the _opposite_ of this
+> patch (unconditionally trap) [*].
 > 
-> If you can resend fast enough, I can apply the patches for 6.9.
+> I had originally wanted something like this, but Marc made the very good
+> point that (1) the behavior of WFx traps is in no way user-visible and
+> (2) it is entirely an IMP DEF behavior. The architecture only requires
+> the traps be effective if the instruction does not complete in finite
+> time.
+> 
+> We need to think of an interface that doesn't depend on
+> implementation-specific behavior, such as a control based on runqueue
+> depth.
 
-Done.
+If I understand correctly, this run queue belongs to the scheduler, right?
+And I will be appreciated if you can share any more detail information
+about this.
 
-https://lore.kernel.org/linux-mediatek/20240219-for-mediatek-v1-0-7078f23eab82@arinc9.com/
+> 
+> [*] https://lore.kernel.org/kvmarm/a481ef04-ddd2-dfc1-41b1-d2ec45c6a3b5@huawei.com/
+> 
 
-Arınç
+Thanks,
+Dongxu
 
