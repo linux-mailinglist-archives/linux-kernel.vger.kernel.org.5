@@ -1,140 +1,105 @@
-Return-Path: <linux-kernel+bounces-71491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71492-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 365F685A625
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:39:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E992285A626
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:39:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF0B6B2191B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:39:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29360B2131A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:39:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B19C37163;
-	Mon, 19 Feb 2024 14:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D38941E890;
+	Mon, 19 Feb 2024 14:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hcJH9P9m"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KWPFwFJD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5CD1DFE8;
-	Mon, 19 Feb 2024 14:38:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703031E526
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708353528; cv=none; b=WHalSSriSEUMvvgX8D3xDhu1QuHkI1saSqn/Leu/cjmpYlvDD9NXjrLuXxW62HwRPqigYSZHbaoEul4Xs4pEfqmew2MBq13r+xSbb9tW+LKOW94VoSATiFtwzlY8ANMhvdkiYDTbeL27R+YASUibketRD6W/f6y/w23oiqJJ/C0=
+	t=1708353556; cv=none; b=A0jP/HPjHgBbGPVRTOdC+RPspGW2bRBPnECsyxNmfvXxD86JvJ8XuyhUuFzKUINqsh2QOlL6tu1tLXZPLH9gNOXFp+G3U4cEIjSFAy6055eX9N9qTjGHHwSAapdx1XdTeBHWMXIjXdjzdyPJjWxijBwe/KyTFnsdv7Bc3XDxCFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708353528; c=relaxed/simple;
-	bh=V33FKlInx1KJB20TacJi7c48XX2d5TgiGJuyJLQhp3M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=khBoxxiFa4EdvC3v1SGgQ9ox3nkwJu8GZNQEGgardH8nciLIuN/NWszYdP+FBAw3UTU7orenYzXqBRtGYNQVPS+5h3juPEZ3cdIgckyKVJ5on1ycwLKgrgg71jpb/mtmyoPch9ST8hCGlWFU++9/OwU7Z8N++OjOx9fciii8Ypk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=hcJH9P9m; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 38DE81BF20E;
-	Mon, 19 Feb 2024 14:38:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708353524;
+	s=arc-20240116; t=1708353556; c=relaxed/simple;
+	bh=iAYLQ/ry4Ws2zpmoqOww5l5/+sgF7NvkadRmo19kmW0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bvH0UrjD/ZjB2VUl/3vi1fKTnNaOOUpuwbU8urHximETBaOCRWNtCv7I+/WRPu/D4T0aYHFURFGwjMRg8/BQZgZ0YE/rSPa4S42MTOEZVoECPg5OIAOx8fBUpJmQB52Y7EVJKeX5AH5V95u1ZRbP6E7HZCNyfnSNIwLIzI423As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KWPFwFJD; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708353553;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dlMyt/GJrB0JNCkR9mOHZ/+ThyT2C/+DYVpdAxe/hfA=;
-	b=hcJH9P9mEQdasxaR15/c5bbDhmL8Cr/KWh2ZitP7vTgc0Z2gT+VmaBJfxTCoXNLgIdmAXY
-	h3QyZ0CpfPfbQPrwxOQFWGtHCSbI4QU+yzptWL7C9R2zwHVLW6oXpFvE4Bp45eePioVmXo
-	ub2k0nPcu0dMPKiRFRgUrmmxhmfIw/2+tUXXRTVbL7g0h2ndfO/R41JP4Qm/rrej/HnC0S
-	YWbldHcqA3n4MRrOKQ7JOFcKE6/AKOq0GLa3yaPVkPHzUKPx9R9Gk1mi0xPQ8cp5dLWeFo
-	Uam0aGLjIoKPCFiaUtRWQsDcnEQYi0FWs/sxTl6TfEPK3wOW1K4Ep9Yr5CGfzw==
-Date: Mon, 19 Feb 2024 15:38:40 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
- <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v4 14/17] dt-bindings: net: pse-pd: Add
- bindings for PD692x0 PSE controller
-Message-ID: <20240219153840.507be7b3@kmaincent-XPS-13-7390>
-In-Reply-To: <ZdCjJcPbbBGYVtuo@pengutronix.de>
-References: <20240215-feature_poe-v4-0-35bb4c23266c@bootlin.com>
-	<20240215-feature_poe-v4-14-35bb4c23266c@bootlin.com>
-	<ZdCjJcPbbBGYVtuo@pengutronix.de>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=zRNUK86yxiv/OwmKYhoDvWlQYRo9iQoXDxOJPggkFCc=;
+	b=KWPFwFJDMUefH9bX5Tiw8hbCNLyk1z16IL2TlBQO6S/ghd3xwIVMfeRWRJYMyd5UljA72K
+	A92yU/KRk8ZY+dshHvEzjwf4ICNjuhRsaA4q9VlGpPk2/XPCV3uMRolQsVvs9vuVV49d6s
+	GsOf7nsR8FndoHR+ve4kJiKQ95M8j8U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-331-0HMhFc7UODeaRflfNH66Xw-1; Mon, 19 Feb 2024 09:39:09 -0500
+X-MC-Unique: 0HMhFc7UODeaRflfNH66Xw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 65111185A780;
+	Mon, 19 Feb 2024 14:39:09 +0000 (UTC)
+Received: from warthog.procyon.org.com (unknown [10.42.28.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 3AB65492BE2;
+	Mon, 19 Feb 2024 14:39:08 +0000 (UTC)
+From: David Howells <dhowells@redhat.com>
+To: Christian Brauner <christian@brauner.io>
+Cc: David Howells <dhowells@redhat.com>,
+	Markus Suvanto <markus.suvanto@gmail.com>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	Daniil Dulov <d.dulov@aladdin.ru>,
+	linux-afs@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] afs: Miscellaneous fixes
+Date: Mon, 19 Feb 2024 14:39:01 +0000
+Message-ID: <20240219143906.138346-1-dhowells@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Sat, 17 Feb 2024 13:14:29 +0100
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+Hi Christian,
 
-> On Thu, Feb 15, 2024 at 05:02:55PM +0100, Kory Maincent wrote:
-> > Add the PD692x0 I2C Power Sourcing Equipment controller device tree
-> > bindings documentation.
-> >=20
-> > This patch is sponsored by Dent Project <dentproject@linuxfoundation.or=
-g>.
-> >=20
-> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-> > --- =20
-> ...
-> > +        pse_pis {
-> > +          #address-cells =3D <1>;
-> > +          #size-cells =3D <0>;
-> > +
-> > +          pse_pi0: pse_pi@0 {
-> > +            reg =3D <0>;
-> > +            #pse-cells =3D <0>;
-> > +            pairset-names =3D "alternative-a", "alternative-b";
-> > +            pairsets =3D <&phys0>, <&phys1>;
-> > +          };
-> > +          pse_pi1: pse_pi@1 {
-> > +            reg =3D <1>;
-> > +            #pse-cells =3D <0>;
-> > +            pairset-names =3D "alternative-a";
-> > +            pairsets =3D <&phys2>; =20
->=20
-> According to latest discussions, PSE PI nodes will need some
-> additional, board specific, information:
-> - this controller do not implements polarity switching, we need to know
->   what polarity is implemented on this board. The 802.3 spec provide not
->   really consistent names for polarity configurations:
->   - Alternative A MDI-X
->   - Alternative A MDI
->   - Alternative B X
->   - Alternative B S
->   The board may implement one of polarity configurations per alternative
->   or have additional helpers to switch them without using PSE
->   controller.
->   Even if specification explicitly say:
->   "The PD shall be implemented to be insensitive to the polarity of the p=
-ower
->    supply and shall be able to operate per the PD Mode A column and the PD
->    Mode B column in Table 33=E2=80=9313"
->   it is possible to find reports like this:
->   https://community.ui.com/questions/M5-cant-take-reversed-power-polarity=
--/d834d9a8-579d-4f08-80b1-623806cc5070
+Here are some fixes for afs, if you could take them?
 
-Mmh not sure we want to support broken cases that does not follow the spec.
-Should we?
+ (1) Fix searching for the AFS fileserver record for an incoming callback
+     in a mixed IPv4/IPv6 environment.
 
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
+ (2) Fix the size of a buffer in afs_update_volume_status() to avoid
+     overrunning it and use snprintf() as well.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+Thanks,
+David
+
+Daniil Dulov (1):
+  afs: Increase buffer size in afs_update_volume_status()
+
+Marc Dionne (1):
+  afs: Fix ignored callbacks over ipv4
+
+ fs/afs/internal.h |  6 ++----
+ fs/afs/main.c     |  3 +--
+ fs/afs/server.c   | 14 +++++---------
+ fs/afs/volume.c   |  4 ++--
+ 4 files changed, 10 insertions(+), 17 deletions(-)
+
 
