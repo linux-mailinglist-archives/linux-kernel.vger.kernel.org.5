@@ -1,291 +1,268 @@
-Return-Path: <linux-kernel+bounces-71051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71052-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CFB585A003
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:42:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE6085A00C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:43:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 03A5D281222
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:42:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B010F1C21266
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:43:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FBE3249ED;
-	Mon, 19 Feb 2024 09:42:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FFC25629;
+	Mon, 19 Feb 2024 09:42:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="byXsP7sq"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="OAV6CbRe"
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBF32420B
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFB4250F2
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:42:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708335758; cv=none; b=CGQFXxAWRORV40J3E+/RrRGJxxfHTwf/8Q0/Kzr7dGN+OC4iykeCqA8EKtevmG7HLxsVZB3qduE+cdmV0UNGXKDHEptpwGV80veAIPj+b9kp2rko3LSOOBzm8ngO96UE7FWJLmuk+l8LVCgmgpMMnAEYV+sD2arBbMDQM8tF2FE=
+	t=1708335765; cv=none; b=UZVRPdsF3zUionX6hz917CuGtH5ONw5I2eX2XYBV6EcA/qe2bun+YPK7O2QvWY6GeT2oBlHPC/uJ6XB7ftxtKSKNpv7aoTR63dG916pEoefZns5/HOYtLlj4Dz/sH0y/ZMam7jJslzWA4pcWsdIKejndT3Xo0xjAhgu1q5T3vAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708335758; c=relaxed/simple;
-	bh=j6dRbHM1rHyKp3gaEVtJQirzEs2zBxOnB0hIBrgRSI0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B05W6et0DIhyRwnKjUmWCUmVJmpEk+Kj1rXgfRzlhpMyUoYZfmieo/Yp/i6shfCj7hSFU9Pq2lY8mGsxbWoDR7arsV2WZnVz8fXSlUrNQtfvKaPEZNXMsPdD0ltOPe5dXMXpi6pHRHCMH34MZZKCWtX89Iy3Mr3v4uEHwAd98wY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=byXsP7sq; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 074BD40E01BB;
-	Mon, 19 Feb 2024 09:42:33 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id Z7aAfeFXR0DQ; Mon, 19 Feb 2024 09:42:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708335750; bh=yCXgwZFpjKx2w5kY7xomV0PW2GNqfaew+W1uSPXnCF4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=byXsP7sqEgRA6vA0qrP+uuhrb2BheSracE32Iz3M4t36f/I47JAJ33EDZfAuGomPL
-	 PX9yfjap9Rb5A62qXIko+E+1MJoUca01dmG6AiLx0md1DTJ4S9EM/g2F7/KkBNY8yb
-	 NpJqxggoYkh/HfNCL22dKnWRouOC5A086MInRnSVJP788k41V2DyR53QmBLSW7Ymmb
-	 WzRYOEES0Gm8DFBUfDyT5MpO99F7yxj5FW/49ofVWosOs8GWkdiNe3Cw332s2UVikd
-	 NNWv0NvQiThs1VKw3IYDjp4xK3MFGguUlF77N6s3Seutoi8xikCcEAqJdvUjZEhnEs
-	 AhYQA2cKQUk0NLN84hK8FzD/QII9UBg/h1URLXXapRdY5+IOCCcUXSp40ndQbQ6iy6
-	 xbN58zCqcuJPoEUVZQBM9BCms/9/7S3GZyA6nxW01TS6hjGrhT3UygOlIgGgNrpxg7
-	 YSA6gFQo5JO181mDdxu+8n5LB6463I7HNdcrmxp9HoMVKpAK9WJg0MszOfTdNLVvI5
-	 vxqC26hVUgKqY+Z4iQDqQYsZ841QecDQz9e1TcLzp7ohkNWhl1Q/nDTSCKF+APrS9B
-	 dZvHfmTtZi2WqVTZt7k2OFfJemaTLxgT/jA5L5Xi0xm5YkPQd8I65B+58CET++w/L4
-	 Uxlq8Tmnxn2BDAQjoUviI/Oo=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2365F40E0196;
-	Mon, 19 Feb 2024 09:42:23 +0000 (UTC)
-Date: Mon, 19 Feb 2024 10:42:16 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Ashish Kalra <ashish.kalra@amd.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>
-Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	Nikunj A Dadhania <nikunj@amd.com>,
-	Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-Subject: [PATCH -v2] x86/sev: Dump SEV_STATUS
-Message-ID: <20240219094216.GAZdMieDHKiI8aaP3n@fat_crate.local>
-References: <20240213163311.32130-1-bp@alien8.de>
+	s=arc-20240116; t=1708335765; c=relaxed/simple;
+	bh=X8w7qaPKtinHDZjF5H+rGNDsPK0DugLEiwZmVKW48OU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=NVnnR4smlt3jeOqPzZ3gXheGBJoXAc6w4DQ2MDolmJQjS9aps90QHjb/7hrXCPq0dhLW49vNwG/8GsX7PUMyz92L4pwAejheLmq8L0+z2xUFFe15dMZMZYoJ1gjCVYynkRTReLKv6ekCu5ftejZE6PBOY0y0jPeHKHi5t6jcLDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=OAV6CbRe; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4125cf71eecso11276135e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:42:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708335761; x=1708940561; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vbycw2c2h8YYWAo75A5nc8ijiR5Amsqr6B7bz/qk71A=;
+        b=OAV6CbReOML3q2Ic9GEAz1c2Fe+Q8APdzyHNjq5uZ/7O2X48HsWMUOqR6JkihimdgK
+         1jYrME1GqHgglTLhG8myfIBvq/jKybFMxCVdTHrgSKalD3BJkXL9Qr1JizosWOMFcveM
+         cw6+M4Bl4LeWGkJkLt4RGnmmTasNYTGYJBRzTfjqeoBJg277NHiXBoGHA38eLfUoIC6z
+         MMsRcDOQKeqFKDyTOJZKgUZyTfnZfomEgT/VdEAYtJ0BBIjh1YQ8aObX4siNDKROPZve
+         9n8LVJF2VAuAn6uk5eRi3GjbQD9yB7z6Q9XIgZh2GD7a7wrQDWsX71Oqy0BpNGs7z/pM
+         qlmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708335761; x=1708940561;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vbycw2c2h8YYWAo75A5nc8ijiR5Amsqr6B7bz/qk71A=;
+        b=fOP/ld2iFHArUZ5k+n1XtHI4N2UU/VGj2vvU3GH76+gEPP3GAJa5ztltUZqCCZ4Vjs
+         3qzMFs0hYhmO3uTh4K101XKX467nzbFT+8YFOH6IzjBugWSnW+U9xcRO7lz7s9nygzT0
+         PZXMqeEF7TFGaJISHhjWXYyGhUorW6j9OzLagkhGF/xMmz1p4SkVcrFoY1tf3Yxxxlrz
+         RV6O56dghekmbwEd7gsGVqC16ApDkhofSca70IiG4iRV3++KsILzF1EDi8ALTwyet6rJ
+         ZadmcTTDVAoe+/rdv6UV+noZziARBmuuF/uOd+3hXJmYL+9nCKUR8/uxa8tWrv48v3t5
+         MZow==
+X-Forwarded-Encrypted: i=1; AJvYcCWLo3eVAeEtdQU58MrhwBjxHEF8uHPgZyo6r3RBibhzLSKjTd2f4vy7LP36XCOf3g/JvO5OiyIPgIO3LA/mEs4An7/AwxymNwLkv53V
+X-Gm-Message-State: AOJu0YzjPDJ2tg21HpfCDgV7Jn/2JqTfSkjHTjTxn3r6sIUhOKYAQN+E
+	i0fD9HkNSZ/1wUp8z9mijMXQxBx7u2qHZ/CJbg1vJK5fK6LXdRIBXN2/nQZt/do=
+X-Google-Smtp-Source: AGHT+IEaDPCR8uUdx0sRdbD2siOvMIF/SdMjOkjwLxWoEY2uhR+PzppCD9xsvyNY3eTuCS0GeOwQIQ==
+X-Received: by 2002:a05:600c:a42:b0:411:50aa:110d with SMTP id c2-20020a05600c0a4200b0041150aa110dmr9142123wmq.21.1708335761107;
+        Mon, 19 Feb 2024 01:42:41 -0800 (PST)
+Received: from ?IPV6:2a01:e0a:982:cbb0:9470:c6e0:c87a:fa9f? ([2a01:e0a:982:cbb0:9470:c6e0:c87a:fa9f])
+        by smtp.gmail.com with ESMTPSA id m20-20020a05600c281400b0041214ff06cesm10690182wmb.42.2024.02.19.01.42.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 01:42:40 -0800 (PST)
+Message-ID: <4d2a6f16-bb48-4d4e-b8fd-7e4b14563ffa@linaro.org>
+Date: Mon, 19 Feb 2024 10:42:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240213163311.32130-1-bp@alien8.de>
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH v5 00/18] power: sequencing: implement the subsystem and
+ add first users
+Content-Language: en-US, fr
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
+ <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
+ <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>,
+ Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
+ Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>,
+ Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>,
+ Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org,
+ netdev@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240216203215.40870-1-brgl@bgdev.pl>
+ <CAA8EJppt4-L1RyDeG=1SbbzkTDhLkGcmAbZQeY0S6wGnBbFbvw@mail.gmail.com>
+ <e4cddd9f-9d76-43b7-9091-413f923d27f2@linaro.org>
+ <CAA8EJpp6+2w65o2Bfcr44tE_ircMoON6hvGgyWfvFuh3HamoSQ@mail.gmail.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CAA8EJpp6+2w65o2Bfcr44tE_ircMoON6hvGgyWfvFuh3HamoSQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-From: "Borislav Petkov (AMD)" <bp@alien8.de>
+On 19/02/2024 10:22, Dmitry Baryshkov wrote:
+> On Mon, 19 Feb 2024 at 10:14, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+>>
+>> On 18/02/2024 13:53, Dmitry Baryshkov wrote:
+>>> On Fri, 16 Feb 2024 at 22:33, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>>>>
+>>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>>>>
+>>>> First, I'd like to apologize for the somewhat chaotic previous iterations
+>>>> of this series and improper versioning which was rightfully pointed out
+>>>> to me. I figured that the scope changed so much that it didn't make sense
+>>>> to consider previous submissions part of the same series as the original
+>>>> RFC but others thought otherwise so this one becomes v5 and I'll keep the
+>>>> versioning going forward.
+>>>>
+>>>> This is the summary of the work so far:
+>>>>
+>>>> v1: Original RFC:
+>>>>
+>>>> https://lore.kernel.org/lkml/20240104130123.37115-1-brgl@bgdev.pl/T/
+>>>>
+>>>> v2: First real patch series (should have been PATCH v2) adding what I
+>>>>       referred to back then as PCI power sequencing:
+>>>>
+>>>> https://lore.kernel.org/linux-arm-kernel/2024021413-grumbling-unlivable-c145@gregkh/T/
+>>>>
+>>>> v3: RFC for the DT representation of the PMU supplying the WLAN and BT
+>>>>       modules inside the QCA6391 package (was largely separate from the
+>>>>       series but probably should have been called PATCH or RFC v3):
+>>>>
+>>>> https://lore.kernel.org/all/CAMRc=Mc+GNoi57eTQg71DXkQKjdaoAmCpB=h2ndEpGnmdhVV-Q@mail.gmail.com/T/
+>>>>
+>>>> v4: Second attempt at the full series with changed scope (introduction of
+>>>>       the pwrseq subsystem, should have been RFC v4)
+>>>>
+>>>> https://lore.kernel.org/lkml/20240201155532.49707-1-brgl@bgdev.pl/T/
+>>>>
+>>>> ===
+>>>>
+>>>> With that out of the way, I'd like to get down to explaining the two
+>>>> problems I'm trying to solve.
+>>>>
+>>>> Problem statement #1: Dynamic bus chicken-and-egg problem.
+>>>>
+>>>> Certain on-board PCI devices need to be powered up before they are can be
+>>>> detected but their PCI drivers won't get bound until the device is
+>>>> powered-up so enabling the relevant resources in the PCI device driver
+>>>> itself is impossible.
+>>>>
+>>>> Problem statement #2: Sharing inter-dependent resources between devices.
+>>>>
+>>>> Certain devices that use separate drivers (often on different busses)
+>>>> share resources (regulators, clocks, etc.). Typically these resources
+>>>> are reference-counted but in some cases there are additional interactions
+>>>> between them to consider, for example specific power-up sequence timings.
+>>>>
+>>>> ===
+>>>>
+>>>> The reason for tackling both of these problems in a single series is the
+>>>> fact the the platform I'm working on - Qualcomm RB5 - deals with both and
+>>>> both need to be addressed in order to enable WLAN and Bluetooth support
+>>>> upstream.
+>>>>
+>>>> The on-board WLAN/BT package - QCA6391 - has a Power Management Unit that
+>>>> takes inputs from the host and exposes LDO outputs consumed by the BT and
+>>>> WLAN modules which can be powered-up and down independently. However
+>>>> a delay of 100ms must be respected between enabling the BT- and
+>>>> WLAN-enable GPIOs[*].
+>>>>
+>>>> ===
+>>>>
+>>>> This series is logically split into several sections. I'll go
+>>>> patch-by-patch and explain each step.
+>>>>
+>>>> Patch 1/18:
+>>>>
+>>>> This is a commit taken from the list by Jonathan Cameron that adds
+>>>> a __free() helper for OF nodes. Not strictly related to the series but
+>>>> until said commit ends in next, I need to carry it with this series.
+>>>>
+>>>> Patch 2/18:
+>>>>
+>>>> This enables the ath12k PCI module in arm64 defconfig as Qualcomm sm8650
+>>>> and sm8550 reference platforms use it in the WCN7850 module.
+>>>>
+>>>> Patches 3/18-6/18:
+>>>>
+>>>> These contain all relevant DT bindings changes. We add new documents for
+>>>> the QCA6390 PMU and ATH12K devices as well as extend the bindings for the
+>>>> Qualcomm Bluetooth and ATH11K modules with regulators used by them in
+>>>> QCA6390.
+>>>>
+>>>> Patches 7/18-9/18:
+>>>>
+>>>> These contain changes to device-tree sources for the three platforms we
+>>>> work with in this series. As the WCN7850 module doesn't require any
+>>>> specific timings introducing dependencies between the Bluetooth and WLAN
+>>>> modules, while the QCA6390 does, we take two different approaches to how
+>>>> me model them in DT.
+>>>>
+>>>> For WCN7850 we hide the existence of the PMU as modeling it is simply not
+>>>> necessary. The BT and WLAN devices on the device-tree are represented as
+>>>> consuming the inputs (relevant to the functionality of each) of the PMU
+>>>> directly.
+>>>
+>>> We are describing the hardware. From the hardware point of view, there
+>>> is a PMU. I think at some point we would really like to describe all
+>>> Qualcomm/Atheros WiFI+BT units using this PMU approach, including the
+>>> older ath10k units present on RB3 (WCN3990) and db820c (QCA6174).
+>>
+>> While I agree with older WiFi+BT units, I don't think it's needed for
+>> WCN7850 since BT+WiFi are now designed to be fully independent and PMU is
+>> transparent.
+> 
+> I don't see any significant difference between WCN6750/WCN6855 and
+> WCN7850 from the PMU / power up point of view. Could you please point
+> me to the difference?
+> 
 
-It is, and will be even more useful in the future, to dump the SEV
-features enabled according to SEV_STATUS. Do so:
+The WCN7850 datasheet clearly states there's not contraint on the WLAN_EN
+and BT_EN ordering and the only requirement is to have all input regulators
+up before pulling up WLAN_EN and/or BT_EN.
 
-  [    0.542753] Memory Encryption Features active: AMD SEV SEV-ES SEV-SNP
-  [    0.544425] SEV: Status: SEV SEV-ES SEV-SNP DebugSwap
+This makes the PMU transparent and BT and WLAN can be described as independent.
 
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Reviewed-by: Nikunj A Dadhania <nikunj@amd.com>
----
- arch/x86/boot/compressed/sev.c   |  2 +-
- arch/x86/include/asm/msr-index.h | 59 +++++++++++++++++++-------------
- arch/x86/include/asm/sev.h       |  2 ++
- arch/x86/kernel/sev.c            | 35 +++++++++++++++++++
- arch/x86/mm/mem_encrypt.c        |  5 +++
- 5 files changed, 78 insertions(+), 25 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/sev.c b/arch/x86/boot/compressed/sev.c
-index fffdba4ae806..97561eabfbef 100644
---- a/arch/x86/boot/compressed/sev.c
-+++ b/arch/x86/boot/compressed/sev.c
-@@ -370,7 +370,7 @@ static void enforce_vmpl0(void)
- 				 MSR_AMD64_SNP_VMPL_SSS |		\
- 				 MSR_AMD64_SNP_SECURE_TSC |		\
- 				 MSR_AMD64_SNP_VMGEXIT_PARAM |		\
--				 MSR_AMD64_SNP_VMSA_REG_PROTECTION |	\
-+				 MSR_AMD64_SNP_VMSA_REG_PROT |		\
- 				 MSR_AMD64_SNP_RESERVED_BIT13 |		\
- 				 MSR_AMD64_SNP_RESERVED_BIT15 |		\
- 				 MSR_AMD64_SNP_RESERVED_MASK)
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 237c50cc1c72..24c575cdd6b9 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -605,36 +605,47 @@
- #define MSR_AMD64_SEV_ES_GHCB		0xc0010130
- #define MSR_AMD64_SEV			0xc0010131
- #define MSR_AMD64_SEV_ENABLED_BIT	0
--#define MSR_AMD64_SEV_ES_ENABLED_BIT	1
--#define MSR_AMD64_SEV_SNP_ENABLED_BIT	2
- #define MSR_AMD64_SEV_ENABLED		BIT_ULL(MSR_AMD64_SEV_ENABLED_BIT)
-+#define MSR_AMD64_SEV_ES_ENABLED_BIT	1
- #define MSR_AMD64_SEV_ES_ENABLED	BIT_ULL(MSR_AMD64_SEV_ES_ENABLED_BIT)
-+#define MSR_AMD64_SEV_SNP_ENABLED_BIT	2
- #define MSR_AMD64_SEV_SNP_ENABLED	BIT_ULL(MSR_AMD64_SEV_SNP_ENABLED_BIT)
--#define MSR_AMD64_RMP_BASE		0xc0010132
--#define MSR_AMD64_RMP_END		0xc0010133
--
--/* SNP feature bits enabled by the hypervisor */
--#define MSR_AMD64_SNP_VTOM			BIT_ULL(3)
--#define MSR_AMD64_SNP_REFLECT_VC		BIT_ULL(4)
--#define MSR_AMD64_SNP_RESTRICTED_INJ		BIT_ULL(5)
--#define MSR_AMD64_SNP_ALT_INJ			BIT_ULL(6)
--#define MSR_AMD64_SNP_DEBUG_SWAP		BIT_ULL(7)
--#define MSR_AMD64_SNP_PREVENT_HOST_IBS		BIT_ULL(8)
--#define MSR_AMD64_SNP_BTB_ISOLATION		BIT_ULL(9)
--#define MSR_AMD64_SNP_VMPL_SSS			BIT_ULL(10)
--#define MSR_AMD64_SNP_SECURE_TSC		BIT_ULL(11)
--#define MSR_AMD64_SNP_VMGEXIT_PARAM		BIT_ULL(12)
--#define MSR_AMD64_SNP_IBS_VIRT			BIT_ULL(14)
--#define MSR_AMD64_SNP_VMSA_REG_PROTECTION	BIT_ULL(16)
--#define MSR_AMD64_SNP_SMT_PROTECTION		BIT_ULL(17)
--
--/* SNP feature bits reserved for future use. */
--#define MSR_AMD64_SNP_RESERVED_BIT13		BIT_ULL(13)
--#define MSR_AMD64_SNP_RESERVED_BIT15		BIT_ULL(15)
--#define MSR_AMD64_SNP_RESERVED_MASK		GENMASK_ULL(63, 18)
-+#define MSR_AMD64_SNP_VTOM_BIT		3
-+#define MSR_AMD64_SNP_VTOM		BIT_ULL(MSR_AMD64_SNP_VTOM_BIT)
-+#define MSR_AMD64_SNP_REFLECT_VC_BIT	4
-+#define MSR_AMD64_SNP_REFLECT_VC	BIT_ULL(MSR_AMD64_SNP_REFLECT_VC_BIT)
-+#define MSR_AMD64_SNP_RESTRICTED_INJ_BIT 5
-+#define MSR_AMD64_SNP_RESTRICTED_INJ	BIT_ULL(MSR_AMD64_SNP_RESTRICTED_INJ_BIT)
-+#define MSR_AMD64_SNP_ALT_INJ_BIT	6
-+#define MSR_AMD64_SNP_ALT_INJ		BIT_ULL(MSR_AMD64_SNP_ALT_INJ_BIT)
-+#define MSR_AMD64_SNP_DEBUG_SWAP_BIT	7
-+#define MSR_AMD64_SNP_DEBUG_SWAP	BIT_ULL(MSR_AMD64_SNP_DEBUG_SWAP_BIT)
-+#define MSR_AMD64_SNP_PREVENT_HOST_IBS_BIT 8
-+#define MSR_AMD64_SNP_PREVENT_HOST_IBS	BIT_ULL(MSR_AMD64_SNP_PREVENT_HOST_IBS_BIT)
-+#define MSR_AMD64_SNP_BTB_ISOLATION_BIT	9
-+#define MSR_AMD64_SNP_BTB_ISOLATION	BIT_ULL(MSR_AMD64_SNP_BTB_ISOLATION_BIT)
-+#define MSR_AMD64_SNP_VMPL_SSS_BIT	10
-+#define MSR_AMD64_SNP_VMPL_SSS		BIT_ULL(MSR_AMD64_SNP_VMPL_SSS_BIT)
-+#define MSR_AMD64_SNP_SECURE_TSC_BIT	11
-+#define MSR_AMD64_SNP_SECURE_TSC	BIT_ULL(MSR_AMD64_SNP_SECURE_TSC_BIT)
-+#define MSR_AMD64_SNP_VMGEXIT_PARAM_BIT	12
-+#define MSR_AMD64_SNP_VMGEXIT_PARAM	BIT_ULL(MSR_AMD64_SNP_VMGEXIT_PARAM_BIT)
-+#define MSR_AMD64_SNP_RESERVED_BIT13	BIT_ULL(13)
-+#define MSR_AMD64_SNP_IBS_VIRT_BIT	14
-+#define MSR_AMD64_SNP_IBS_VIRT		BIT_ULL(MSR_AMD64_SNP_IBS_VIRT_BIT)
-+#define MSR_AMD64_SNP_RESERVED_BIT15	BIT_ULL(15)
-+#define MSR_AMD64_SNP_VMSA_REG_PROT_BIT	16
-+#define MSR_AMD64_SNP_VMSA_REG_PROT	BIT_ULL(MSR_AMD64_SNP_VMSA_REG_PROT_BIT)
-+#define MSR_AMD64_SNP_SMT_PROT_BIT	17
-+#define MSR_AMD64_SNP_SMT_PROT		BIT_ULL(MSR_AMD64_SNP_SMT_PROT_BIT)
-+#define MSR_AMD64_SNP_RESV_BIT		18
-+#define MSR_AMD64_SNP_RESERVED_MASK	GENMASK_ULL(63, MSR_AMD64_SNP_RESV_BIT)
- 
- #define MSR_AMD64_VIRT_SPEC_CTRL	0xc001011f
- 
-+#define MSR_AMD64_RMP_BASE		0xc0010132
-+#define MSR_AMD64_RMP_END		0xc0010133
-+
- /* AMD Collaborative Processor Performance Control MSRs */
- #define MSR_AMD_CPPC_CAP1		0xc00102b0
- #define MSR_AMD_CPPC_ENABLE		0xc00102b1
-diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
-index d7b27cb34c2b..10f9f1b259c3 100644
---- a/arch/x86/include/asm/sev.h
-+++ b/arch/x86/include/asm/sev.h
-@@ -229,6 +229,7 @@ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
- u64 snp_get_unsupported_features(u64 status);
- u64 sev_get_status(void);
- void kdump_sev_callback(void);
-+void sev_show_status(void);
- #else
- static inline void sev_es_ist_enter(struct pt_regs *regs) { }
- static inline void sev_es_ist_exit(void) { }
-@@ -258,6 +259,7 @@ static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
- static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
- static inline u64 sev_get_status(void) { return 0; }
- static inline void kdump_sev_callback(void) { }
-+static inline void sev_show_status(void) { }
- #endif
- 
- #ifdef CONFIG_KVM_AMD_SEV
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 1ef7ae806a01..7d242898852f 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -59,6 +59,25 @@
- #define AP_INIT_CR0_DEFAULT		0x60000010
- #define AP_INIT_MXCSR_DEFAULT		0x1f80
- 
-+static const char * const sev_status_feat_names[] = {
-+	[MSR_AMD64_SEV_ENABLED_BIT]		= "SEV",
-+	[MSR_AMD64_SEV_ES_ENABLED_BIT]		= "SEV-ES",
-+	[MSR_AMD64_SEV_SNP_ENABLED_BIT]		= "SEV-SNP",
-+	[MSR_AMD64_SNP_VTOM_BIT]		= "vTom",
-+	[MSR_AMD64_SNP_REFLECT_VC_BIT]		= "ReflectVC",
-+	[MSR_AMD64_SNP_RESTRICTED_INJ_BIT]	= "RI",
-+	[MSR_AMD64_SNP_ALT_INJ_BIT]		= "AI",
-+	[MSR_AMD64_SNP_DEBUG_SWAP_BIT]		= "DebugSwap",
-+	[MSR_AMD64_SNP_PREVENT_HOST_IBS_BIT]	= "NoHostIBS",
-+	[MSR_AMD64_SNP_BTB_ISOLATION_BIT]	= "BTBIsol",
-+	[MSR_AMD64_SNP_VMPL_SSS_BIT]		= "VmplSSS",
-+	[MSR_AMD64_SNP_SECURE_TSC_BIT]		= "SecureTSC",
-+	[MSR_AMD64_SNP_VMGEXIT_PARAM_BIT]	= "VMGExitParam",
-+	[MSR_AMD64_SNP_IBS_VIRT_BIT]		= "IBSVirt",
-+	[MSR_AMD64_SNP_VMSA_REG_PROT_BIT]	= "VMSARegProt",
-+	[MSR_AMD64_SNP_SMT_PROT_BIT]		= "SMTProt",
-+};
-+
- /* For early boot hypervisor communication in SEV-ES enabled guests */
- static struct ghcb boot_ghcb_page __bss_decrypted __aligned(PAGE_SIZE);
- 
-@@ -2275,3 +2294,19 @@ void kdump_sev_callback(void)
- 	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
- 		wbinvd();
- }
-+
-+void sev_show_status(void)
-+{
-+	int i;
-+
-+	pr_info("Status: ");
-+	for (i = 0; i < MSR_AMD64_SNP_RESV_BIT; i++) {
-+		if (sev_status & BIT_ULL(i)) {
-+			if (!sev_status_feat_names[i])
-+				continue;
-+
-+			pr_cont("%s ", sev_status_feat_names[i]);
-+		}
-+	}
-+	pr_cont("\n");
-+}
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index d035bce3a2b0..6f3b3e028718 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -14,6 +14,8 @@
- #include <linux/mem_encrypt.h>
- #include <linux/virtio_anchor.h>
- 
-+#include <asm/sev.h>
-+
- /* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
- bool force_dma_unencrypted(struct device *dev)
- {
-@@ -74,6 +76,9 @@ static void print_mem_encrypt_feature_info(void)
- 			pr_cont(" SEV-SNP");
- 
- 		pr_cont("\n");
-+
-+		sev_show_status();
-+
- 		break;
- 	default:
- 		pr_cont("Unknown\n");
--- 
-2.43.0
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Neil
 
