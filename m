@@ -1,96 +1,119 @@
-Return-Path: <linux-kernel+bounces-72033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62E9285AE11
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:52:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BA1C85AE14
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09ED21F22E82
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:52:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9EEC41C21F50
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:53:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43DF5475D;
-	Mon, 19 Feb 2024 21:52:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52D9254730;
+	Mon, 19 Feb 2024 21:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="Z3cm5RRq"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1JFzGjYH"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE8645BFA;
-	Mon, 19 Feb 2024 21:52:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62BF25478B
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 21:53:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708379562; cv=none; b=Tugpj0KzTPROnAUFrxTlSvQ7YKGBNzeydx5qFS2VVIQXjmqNX/Kp+LxmXorJlnfm06MW1AvWUrZNbgPyJSuLTzMAvQwwE8O8VmD6CR6qbyuhMGSAS8J+P3Y4F9I9X8ZTePVzpNL8WCS+4Yz+e65aCKHY+k1PJnslnO2CmwWWVDM=
+	t=1708379591; cv=none; b=SQZ4L2yQ9+cC/Ttl8Lq1FAQxUZNcuREWIdJozwQs0ozZuesQzvu017rhtyTAG6zKfr9Td5ixUuln9VmEYO6oyMReCxow3wgmUCq0HbHD8lIQ1pFDGVRYxBkgwzOltOXSELz/G/ekyCRwaiJmYk/Q74RGGT3mrWv/FEBP8WFHwE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708379562; c=relaxed/simple;
-	bh=0Uj0TEYAVl1N+ryaeMyYaWin46FVZqeDShsZz+K5gdg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Sg2gUJVha6CtEDVZLtNj65i5qwzv6hgg+lsx2uOpforZI6l/A+gN/w2vABz0n0hXmlH98tz/IRLiUxlXbb6MHN8buwuMuSbpIPR7hjMmDxVop+XeMDxsozmJMaUVufhHlrnZj5sgGToDj8jnBUYad5G6AtrpPI6Q+yKTzUndqLY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=Z3cm5RRq; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 484A247A99
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1708379560; bh=/sGpY7ZQ8fXIb+Q0hw1+y34Hj8sxxoRre8b/MFfEl2Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=Z3cm5RRqgTVmJM45NUtTKbfOAegLhBjHLxNNE59BXfC81omLAz2sRbbLXGLzyMA0W
-	 0eBM2kM7uV+pUxM4U1IUHYiUuvfYH8icDpdluEyJdewjpmyRu6pPV6K+xBDUH15rg9
-	 GJIhWD7t92u9PvqAFGGUMZPY6b+70yLVWEbisESpk4dYJPw2qX/TwGw0+XOu7ebrzj
-	 ECjw+ykcjwlM2h98Frbu69lJWw0PivctXFuNfNVMdmx5DmB2Rw5E4LOe8BoILuy8q/
-	 AvUbUXm1fXje6p/FGRzaW88T7Hg9HevH1cfFaMFXObZAR0+NISOJMxAUx0XoiX+1Te
-	 H6Z3RyZKOgKPw==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 484A247A99;
-	Mon, 19 Feb 2024 21:52:40 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: SeongJae Park <sj@kernel.org>
-Cc: SeongJae Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: Set the field name for subsystem profile
- section
-In-Reply-To: <20240216201902.10095-1-sj@kernel.org>
-References: <20240216201902.10095-1-sj@kernel.org>
-Date: Mon, 19 Feb 2024 14:52:39 -0700
-Message-ID: <87il2km89k.fsf@meer.lwn.net>
+	s=arc-20240116; t=1708379591; c=relaxed/simple;
+	bh=KGtvedv9J2Q+aICQY5KyN44vvbdTifr327wYhVDJi8E=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=UR5EltilSuYiqtMoxLfhR5LgxBbdvKhvP8CsDWKHM9gcBk175jd6M8pFCN/nELluqSUfu/XcMs48A5WzzzvPCjPCT+B1IKi66MR+Quon6Bk4VwagowLC8OI+f+9ThXbXrgUjkfJZAaiEBWqZkvdRUoWTYQDcDGMR/DUuEyVxUj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1JFzGjYH; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e41d856114so1630054b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:53:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708379589; x=1708984389; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NFqpZSKH861BhiQTTyjzCdqprlBqo4gmUGK5oD0uOYg=;
+        b=1JFzGjYH+qQBGS6AZb6Hccf3ZgWZ8pLNsC4jeBi+b+wvp39bqE9dCKwECDCyq6U1Zk
+         ztPCCBfzc2keaPLNoRhbGK5UOUPdiC0XPQ5dCh7y/CzLFLx7g3c1rMUUuACtX1opfmQ9
+         2E5ZuSgclRzfM8rq5MvNzGGsmFhwzrZsNDgpmPloSke3rZfyfUozXWoMwptzpruV7xA0
+         d+uTdDBRb2okReYH+tQztv1/GpEr3RiD4EzM4dMSrVS1VE/31xtqJzm4kbV7j02ujpD9
+         +NxWzvBRJyF+on9dpnQLzlypl1oWTal1KxD93Es0A8LpIBdQZVgFy14D3Navy+8o6PZo
+         f3Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708379589; x=1708984389;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NFqpZSKH861BhiQTTyjzCdqprlBqo4gmUGK5oD0uOYg=;
+        b=FyEPs8NarNP2Q91KM5z7T5KBDcw5twjZ51wglBnFiEmFMLau8oGDzZJSxDXA8EbXhR
+         2aEt2h6LHepInmMvQKnCqunWk4bIW2esg+1BqLSbSNaoFPL9/V3O+qtg/W/dbMhM3kO1
+         Ll07Fi49v4HNCuW4W6kiaVB2dQg2mm9/XXQLKSHdmn114ju8tQT8LSbjtsH8/hzpOyts
+         rLdwwMXlESnwnx65LJ47hQY/hnsswWL4XA9f7FHM9SbuMW12CXhJ23ZRd5Px9nFHsqPr
+         fagPddkGQzzMZpOTYH6TSW3AYiVxZ5R6TMiXqT/xZ+rIUWwxPak4evn6yp0/0zZdw2RA
+         eNUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXo+9HCuZg3VAHvHPP5TA07ZlNntQxfc7H9EtNPBIiDxdj741+zsASJmiFRUOqMI+zMJcAYuSS+Lh57JdSTOFq9xkhgFWQspVOT107T
+X-Gm-Message-State: AOJu0Yx6izsaCIHxD+ImQCH+RzLvt0H5qMtuwyZ7dShrfCnelwWMofhW
+	05OGUIjmqmhQARRbPJz4H/l5gQh1hrCbBaLGeddKGTNp2FFhOijX85BQKyuHsRI5UJc3awDIqll
+	xVw==
+X-Google-Smtp-Source: AGHT+IH/Or4BZP7MhcpiaZcbu9MeGySoedOfq752Zz8WMWEBM8KeiUUYdKJIqjjXKI7+Ve8OybP/rzc9484=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:8c09:b0:6e4:5a40:a151 with SMTP id
+ ih9-20020a056a008c0900b006e45a40a151mr22695pfb.1.1708379588868; Mon, 19 Feb
+ 2024 13:53:08 -0800 (PST)
+Date: Mon, 19 Feb 2024 13:53:07 -0800
+In-Reply-To: <20240215152916.1158-13-paul@xen.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+References: <20240215152916.1158-1-paul@xen.org> <20240215152916.1158-13-paul@xen.org>
+Message-ID: <ZdPNw9evnWw2JzG-@google.com>
+Subject: Re: [PATCH v13 12/21] KVM: x86/xen: allow shared_info to be mapped by
+ fixed HVA
+From: Sean Christopherson <seanjc@google.com>
+To: Paul Durrant <paul@xen.org>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, David Hildenbrand <david@redhat.com>, 
+	Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
+	Alexander Gordeev <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>, 
+	kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-s390@vger.kernel.org, linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-SeongJae Park <sj@kernel.org> writes:
+On Thu, Feb 15, 2024, Paul Durrant wrote:
+> @@ -715,13 +731,23 @@ int kvm_xen_hvm_get_attr(struct kvm *kvm, struct kvm_xen_hvm_attr *data)
+>  		break;
+>  
+>  	case KVM_XEN_ATTR_TYPE_SHARED_INFO:
+> -		if (kvm->arch.xen.shinfo_cache.active)
+> +		if (kvm->arch.xen.shinfo_cache.active &&
+> +		    kvm->arch.xen.shinfo_cache.gpa != KVM_XEN_INVALID_GPA)
 
-> Subsystem profile section entry identifier is not having its field name
-> that can be parsed by maintainers_include.py, unlike other sections
-> which have their own human-readable field names.  As a result, profile
-> sections on rendered rst file is having weird name, 'P:'.  Set the field
-> name as 'Subsystem Profile'.
->
-> Fixes: 4699c504e603 ("Maintainer Handbook: Maintainer Entry Profile")
-> Signed-off-by: SeongJae Park <sj@kernel.org>
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 8d1052fa6a69..25fa30bec35f 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -24,7 +24,7 @@ Descriptions of section entries and preferred order
->  	   filing info, a direct bug tracker link, or a mailto: URI.
->  	C: URI for *chat* protocol, server and channel where developers
->  	   usually hang out, for example irc://server/channel.
-> -	P: Subsystem Profile document for more details submitting
-> +	P: *Subsystem Profile* document for more details submitting
->  	   patches to the given subsystem. This is either an in-tree file,
+This should really use INVALID_GPA when checking internal gpc state.  Mostly to
+help clarify what is/isn't KVM Xen ABI, but also because I don't like the subtle
+assumption that KVM_XEN_INVALID_GPA == INVALID_GPA.
 
-Applied, thanks.
+Even better, if we slot in two helpers when the HVA-based GPC support is added,
+then the Xen code doesn't need to to make assumptions about how the GPC code
+manages HVA vs. GPA internally.  E.g. if we ever refactor the code again and use
+a dedicated flag instead of gpc->gpa as the implicit flag.
 
-jon
+  static inline bool kvm_gpc_is_gpa_active(struct gfn_to_pfn_cache *gpc)
+  {
+	return gpc->active && !kvm_is_error_gpa(gpc->gpa);
+  }
+
+  static inline bool kvm_gpc_is_hva_active(struct gfn_to_pfn_cache *gpc)
+  {
+	return gpc->active && kvm_is_error_gpa(gpc->gpa);
+  }
 
