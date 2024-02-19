@@ -1,172 +1,113 @@
-Return-Path: <linux-kernel+bounces-71575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A44E085A73B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:19:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01AEF85A738
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:18:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C958A1C22822
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:19:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DE851C22827
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:18:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5CAB39FC1;
-	Mon, 19 Feb 2024 15:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="LFCePNxG"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71643383A1;
+	Mon, 19 Feb 2024 15:18:41 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92B539AC6
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:19:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D43038389
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708355968; cv=none; b=bTeq+17ezkAW5h7dMSVUHcQEa0Y3E0pP9Q3208Pz1PlH/lB2XKB7wykA/fHSKRiwxmMcGYbcwXhrnmmOLFOdAMZ8HVYp30GEncnuZ41Extlg/bQkObSu5etPMgi+drmGGvc1YjlahVNZoCSs50Uxz2VYTaHWVAl1crtu9lpuwLI=
+	t=1708355921; cv=none; b=YZ82zDMQJtdlVtN15zw4pRg2kN0GwXrevef9Exdu5GPR/T0Bjkck+z9C3TRd68WW+DG5GFM8xWvgz5xHJCplcsQkaTUs2V1tf0qgmE/jPc0LDFhdXrJ2WYzFuK4MoGCtlnE5yzvuDpqdhSjxDC/JKUkiFGtfprVak1su5gJATS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708355968; c=relaxed/simple;
-	bh=2ftRL6ak6vNWy26XU5huffGC5jlMFBcle07fPPhlgMc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Rzs7pFYiPWFCQWr/woC7Qm/hmA2KToyYHsnv5OuDBpgrEVfCwO80LukdPavTCmWGZoOzBODUNDP4Ay7gL+IjMqLHe/33T6xdzTr6zlFBCtItE8d9cptNtu3pjcyxa3woWi37bARysVESfzFVIxs8grQe//J8vgotpWkhltvL5ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=LFCePNxG; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41JF0tbI026387;
-	Mon, 19 Feb 2024 15:18:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=yVGjdmY5iAHugXQNWJ8/Fw9WYRlDYQRwbAMRx27rxPM=;
- b=LFCePNxGdnySouVA2yXL6+Qi29ZtkUS0RrO4zeIIXkC5MKTbZfm3D3/y99NCVTJ3w0tS
- a37pdUHXfxHvlO3DwsLcUuHUinFkATgQ4PpASTzDUNJVCYKw+XYjSHDkWaWgGSKq6m/C
- XoxVAMiakJQEkWGndQnoDd2DzdrTxfRvCzOOC7X7BojSJdAqupCGynyYvQpk4fsmM7To
- V+AAijx5SCNKa9wv/PLm0TYtmNlMkZT2xupyasxf9fkRQ7lxkgfFzSoYTuPL7CxRWdCX
- BKNHF454FR8E7NXmsrli1LPvQJsBqQpBTRyyPU7+WsOLL+GscJ0oy9bce53DoU5FXYfa gA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wc81bb45x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 15:18:49 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41JF13sD027418;
-	Mon, 19 Feb 2024 15:18:49 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wc81bb44f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 15:18:48 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41JDGDt5014406;
-	Mon, 19 Feb 2024 15:18:47 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb9u29dws-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 15:18:47 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41JFIibA16450056
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 19 Feb 2024 15:18:47 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BD66558067;
-	Mon, 19 Feb 2024 15:18:44 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 28C1858052;
-	Mon, 19 Feb 2024 15:18:36 +0000 (GMT)
-Received: from [9.109.245.191] (unknown [9.109.245.191])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 19 Feb 2024 15:18:33 +0000 (GMT)
-Message-ID: <3a64efcc-9a9d-4973-92f8-d76899f01868@linux.ibm.com>
-Date: Mon, 19 Feb 2024 20:48:31 +0530
+	s=arc-20240116; t=1708355921; c=relaxed/simple;
+	bh=e+73T9SMCi27PyDmGbKHMRdyG/AztmAZjvgCjhDl5fw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XrMaLBwHp2OpE3EHTJOV1Gne3xvb8497n0FTtfuwkKosVmb4LY0CAOyoXzCWuAODU6gAmwsjVB/aVCcRfCdNkweMAjk4q6/m2KRES3u43lE1yLODRXUwQPTiDnJjPLoi27qLaRKLQWWRR0T3AIpaczLjcdCshj5obiruA2UPmxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 179F3C433F1;
+	Mon, 19 Feb 2024 15:18:35 +0000 (UTC)
+Date: Mon, 19 Feb 2024 15:18:33 +0000
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Ryan Roberts <ryan.roberts@arm.com>
+Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	David Hildenbrand <david@redhat.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
+	Barry Song <21cnbao@gmail.com>,
+	Alistair Popple <apopple@nvidia.com>,
+	Yang Shi <shy828301@gmail.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 12/18] arm64/mm: Wire up PTE_CONT for user mappings
+Message-ID: <ZdNxSRR9MgvtMVao@arm.com>
+References: <20240215103205.2607016-1-ryan.roberts@arm.com>
+ <20240215103205.2607016-13-ryan.roberts@arm.com>
+ <Zc9UQy-mtYAzNWm2@arm.com>
+ <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mm/mempolicy: Avoid the fallthrough with MPOLD_BIND
- in mpol_misplaced.
-Content-Language: en-US
-To: Michal Hocko <mhocko@suse.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Aneesh Kumar <aneesh.kumar@kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Dave Hansen
- <dave.hansen@linux.intel.com>,
-        Mel Gorman <mgorman@suse.de>, Ben Widawsky <ben.widawsky@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Peter Zijlstra
- <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-        Rik van Riel <riel@surriel.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz
- <mike.kravetz@oracle.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Hugh Dickins <hughd@google.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Suren Baghdasaryan <surenb@google.com>
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
- <bf7e6779f842fb65cf7bb9b2c617feb2af271cb7.1708097962.git.donettom@linux.ibm.com>
- <ZdNDQUZrhz5kfR2f@tiehlicka>
-From: Donet Tom <donettom@linux.ibm.com>
-In-Reply-To: <ZdNDQUZrhz5kfR2f@tiehlicka>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: U-OLzk4O98MX92nF8yp1-quPYt5Up4G6
-X-Proofpoint-GUID: NJ0Rt-lau9wYBECklNCSjEcuji-DF5vn
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-19_11,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 mlxscore=0 mlxlogscore=999 lowpriorityscore=0
- clxscore=1015 phishscore=0 adultscore=0 bulkscore=0 suspectscore=0
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2402190114
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com>
 
+On Fri, Feb 16, 2024 at 12:53:43PM +0000, Ryan Roberts wrote:
+> On 16/02/2024 12:25, Catalin Marinas wrote:
+> > On Thu, Feb 15, 2024 at 10:31:59AM +0000, Ryan Roberts wrote:
+> >> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
+> >> +{
+> >> +	/*
+> >> +	 * Gather access/dirty bits, which may be populated in any of the ptes
+> >> +	 * of the contig range. We may not be holding the PTL, so any contiguous
+> >> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
+> >> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
+> >> +	 * in the range are valid and have CONT_PTE set, that all pfns are
+> >> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
+> >> +	 * If we find a pte that is not consistent, then we must be racing with
+> >> +	 * an update so start again. If the target pte does not have CONT_PTE
+> >> +	 * set then that is considered consistent on its own because it is not
+> >> +	 * part of a contpte range.
+> >> +*/
+[...]
+> > After writing the comments above, I think I figured out that the whole
+> > point of this loop is to check that the ptes in the contig range are
+> > still consistent and the only variation allowed is the dirty/young
+> > state to be passed to the orig_pte returned. The original pte may have
+> > been updated by the time this loop finishes but I don't think it
+> > matters, it wouldn't be any different than reading a single pte and
+> > returning it while it is being updated.
+> 
+> Correct. The pte can be updated at any time, before after or during the reads.
+> That was always the case. But now we have to cope with a whole contpte block
+> being repainted while we are reading it. So we are just checking to make sure
+> that all the ptes that we read from the contpte block are consistent with
+> eachother and therefore we can trust that the access/dirty bits we gathered are
+> consistent.
 
-On 2/19/24 17:32, Michal Hocko wrote:
-> On Sat 17-02-24 01:31:34, Donet Tom wrote:
->> We will update MPOL_PREFERRED_MANY in the follow up patch. This change
->> is required for that.
-> Why is it a separate patch then? Does it make review of the next patch
-> easier? If so make it explicit in the changelog.
+I've been thinking a bit more about this - do any of the callers of
+ptep_get_lockless() check the dirty/access bits? The only one that seems
+to care is ptdump but in that case I'd rather see the raw bits for
+debugging rather than propagating the dirty/access bits to the rest in
+the contig range.
 
-Hi Michal
+So with some clearer documentation on the requirements, I think we don't
+need an arm64-specific ptep_get_lockless() (unless I missed something).
 
-In this patch there is no functional changes. This is just re-arrangement of code. Patch 3 is the actual fix .It will not look nice if we mix these patches. As you said it is easy for reviewing also. That's why we kept it as a separate patch.
-
-Thanks
-Donet Tom
-
->
->> Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
->> Signed-off-by: Donet Tom <donettom@linux.ibm.com>
->> ---
->>   mm/mempolicy.c | 10 +++++++++-
->>   1 file changed, 9 insertions(+), 1 deletion(-)
->>
->> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
->> index 8478574c000c..73d698e21dae 100644
->> --- a/mm/mempolicy.c
->> +++ b/mm/mempolicy.c
->> @@ -2515,7 +2515,15 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
->>   				break;
->>   			goto out;
->>   		}
->> -		fallthrough;
->> +
->> +		if (node_isset(curnid, pol->nodes))
->> +			goto out;
->> +		z = first_zones_zonelist(
->> +				node_zonelist(thisnid, GFP_HIGHUSER),
->> +				gfp_zone(GFP_HIGHUSER),
->> +				&pol->nodes);
->> +		polnid = zone_to_nid(z->zone);
->> +		break;
->>   
->>   	case MPOL_PREFERRED_MANY:
->>   		/*
->> -- 
->> 2.39.3
+-- 
+Catalin
 
