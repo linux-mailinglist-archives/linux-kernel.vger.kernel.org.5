@@ -1,183 +1,277 @@
-Return-Path: <linux-kernel+bounces-71628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A9585A802
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:58:53 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2463985A805
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:00:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7781D1F25E1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:58:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495001C21E1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:00:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296E73A1DE;
-	Mon, 19 Feb 2024 15:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0DBA3A1DE;
+	Mon, 19 Feb 2024 15:59:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bRZiDo9P"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="JyukACi/"
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2074.outbound.protection.outlook.com [40.107.241.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970D53C09F;
-	Mon, 19 Feb 2024 15:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708358310; cv=none; b=s/zWtNYzFXhLJm8+4jTsIfJzfJKgAU+jiARm7aQn+07+ZdHJabP/E99+gARGgjwk27dAhKUxcwKjiT91G3vgJr8gBFdkfHyNTHk/0Qc29K5vg324bYwnUvHJR5crYIbwOihZ9NP01weYuJcmEaK6gFNUBROG26NFHSkC2qXg0rk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708358310; c=relaxed/simple;
-	bh=icU/jxR0DFDHz5XD9AAV7lcBtUbJa4K2a1BPr/lVQOg=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:
-	 References:In-Reply-To; b=rVuECbyUJPwIztrlHLTCB0q5GC56rVmqe2zx8r6Hjv2Q/LA5k/610EitvQYb2fyXo2t0QNiW0hUCyvTQHPDws5DQn4p1apiAgsoNerFd8NEcIUsBxBJanwRPPs0jH5XMM0oQTVcojqzOjDKb+bq32pRHJJDVrIHIZQP88OnzHgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bRZiDo9P; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a3eafbcb1c5so103413366b.0;
-        Mon, 19 Feb 2024 07:58:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708358307; x=1708963107; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tiqLc5KdCmtjYQt/eIFsjHHh0iB3V/zgzPhPHivKtAs=;
-        b=bRZiDo9PXa9+VKDjKADljVQkf4cPFN6ym9XX5wiIKCHgX6kg/EpiHWUYiwTYKijb54
-         LItev2WCuyWWY18OKeyqcjybUqNjU+yp4W4ABb/hfC37Y84i8q4OeLb5lZLi5sU9MSH4
-         7cg+ZWqH2dN9ThbqN2+/VD05cUjnzHrHPu3o82Dg/HhVsjG0gsdFrlJJvFr2ctq6/RuL
-         lPlDBrypYSRIURvSXHpTjt1er6X0q1HUM+HuC0hljfphEkYOHkn3QU4aPd9SGJgEHKBd
-         +XXE3tWBMpTHN9zC2NQKpCzwn8kQRBeUD5SwEJhs0kCPjd7Jj+G3H76L56dK580YF30c
-         9bKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708358307; x=1708963107;
-        h=in-reply-to:references:to:from:subject:message-id:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tiqLc5KdCmtjYQt/eIFsjHHh0iB3V/zgzPhPHivKtAs=;
-        b=Z4EIHk1j/DhSfCAsOqRm95EX1S0ZkZSfWKSsdSHj+fPMFdqvNyjy+W2tkv7tr18iGK
-         1mr2DIFPasJAQJ4SUxR8vGUW33R+5oYhHLV0zoHULZqlypGr1NZ3/n26yTRJtaRnm+ce
-         u5d5uJKTiRBDS6rPUbZ84YYGxv0a85dt7d2K8BNGGX4evNVgArNRUoVsCJjb0LFglKx/
-         T11WgcTEgD1dva9YTXoT5HttctKcG3hL0+MvpnLtiEoOj9l0V5DXUE6vTB3VtpFzC/oA
-         hPM7lW+7XtEJDacgVG7JPN11tpqMNcYJY2Qlb2xmR4jqbI+6bFOLv0vXE1HU484DzjJK
-         X77g==
-X-Forwarded-Encrypted: i=1; AJvYcCX38WLLdJbhz3FOzPkjqIAFVVLKXvIY0TMpNDu1f8Ias4ldEMla6J5WOYXAko8WoaLeBiFD523ZEpEaJMNTNThrJGNC3QWA6xr+OzTRbOF42UFt2WlIQRFez3DpJENx3AzLJQgAU8T2zdinTIYGqgk9pp/JQX8VmCjVTL20Zhv24IjhEC8bc+PnXQ+g8dIGCY/2Xz+GImJpbMcqUwJWlNW5ERQFITaQV5V+ChjcF+hp+nA8suA+q58rLhifmhysVn5ifiIYCuieZ69CexbGWMMGUdtsaY41XXIPDhdCODXZJjBnenrN3MkXyWY6b1RAC4F/L7GlOlexPJEUUGyiNAoMNlc=
-X-Gm-Message-State: AOJu0Yz3zkXOK1pYz0UfPEWI69hknu4v9ioIbxNtTaqSR/rxlW6U5E0c
-	EYRYtTZPkCnvYap9jB7BB4ZZIYL5IKNGxZ+rH2mSY2aQyHeJO6N3
-X-Google-Smtp-Source: AGHT+IFtwqfaW9gJsxLy3j5F49CYy1xFjRlT0RRadI4Z0IOCUNhh1itGGGOPl5tKEJMCv67TBumOMw==
-X-Received: by 2002:a17:906:851:b0:a3d:80d7:d1e3 with SMTP id f17-20020a170906085100b00a3d80d7d1e3mr7428154ejd.77.1708358306585;
-        Mon, 19 Feb 2024 07:58:26 -0800 (PST)
-Received: from localhost (p200300e41f2d4600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f2d:4600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id rf23-20020a1709076a1700b00a3da5bf6aa5sm3076542ejc.211.2024.02.19.07.58.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 07:58:26 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=f0caf17c841197981a0b66a2ac604de0b745306e0ba899959bfe0165d31f;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8915838DF2;
+	Mon, 19 Feb 2024 15:59:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.74
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708358395; cv=fail; b=mKA/Inz80tClZi1suDCC/q+4m0eaGL7paaNQIPxLYExOLEo9aOmWe5g6ipGJSVcHMBdq7K2DYfhP2x9BgCuyrSXfYM93kxVzv9TeCTNV3fM/oeGSdWrC3+oB3B6THPJg3aId2h7JzJ5iq0u9fTlFG/RnEkgoQ/BIeJS2JRlhBK8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708358395; c=relaxed/simple;
+	bh=PbebcNxPPqgmQwzviQuB7uu2/erkbS8O0hptgyXd1J8=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=IcRT+C6Nf1xi6mxg92LqOpBCYJE0ibFFEcDM4V0i8qQCtxsPMM8kPFe1lj4IOk83ezWQ57NIgr6FWa6WsqR13UKzIpryyQmx0al5ct1he5aixzmojfsSev1cowwdNXpovTLy2sM8wvaABw+Ru5WYzJaUKxyDczKdBIK9t3o5km0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=JyukACi/; arc=fail smtp.client-ip=40.107.241.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oNaOtdOovodA9mO0IhHA9A6rGJELW9kzx5Li1p2XltDdTyTzcCWVZzssXHH5qH/hdF7+unDcCJ6JbtSSlBlsdAzRP/ybVDolB6oaQllNRB7LpY6JnXDAK1ViaBz+Zn+cgEU99aMD+bwguhtDmMeIUnbj2WEe1MHcnqp/dUNaxrWLWd72pw0vHfVCUK71YCIDq0YTc9hIs1tn6vTa/TfsXVbcmbofGkMvLcxzln7/HGh0+RF8KaWR1Lr4ZMzMz7nqxItbENVYr7Sfc6tjYVXSHYJt0+UeOHhTKAs3BM51xLSGjFekpTlcofyPUI29895TheyT7X6ULvDZQucF/LHlHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=0a/URzydOecL9yZy0YkXo2W/IfmwvDzcgc8qqKA0Tss=;
+ b=YiuMZhcxws+ghsTXAmQuTtNVifTQDuHZGKWE7jwSfPmCYFAfNaVd2JwQ3AN1o18+2jZ+uRu1CVoCz2Py94ud2oGwL/t4LpjQu2bgMq8VuW7SUmqqW+pc1A9Ba1gF6mjWfgOxZonrnMbKZdVR7o+52nEeXCMc61zb7kSnP38bmJtyRukh+QUWEU+dMc04FUpxdIUD7XI0mynjjhfY10iJ4wrpVycYMdbiH7v/pzmscjUv5d5l0n67SyY6xYyAwT4Eqs02UblTMvdsOwE/SA2ptR3shYficvPF5UinbRGYf8wD/I9RFhfzc1U3w4aBm+XyVvk9iaHn5HUkTekY4PVcQw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0a/URzydOecL9yZy0YkXo2W/IfmwvDzcgc8qqKA0Tss=;
+ b=JyukACi/74BxsAyvcbAA2hond08Bj/RlcubcXqfAXDBNS1ZuLAcrUzueXDj6rnG660AwQ+oLOJ1r9VsGlYycnnvvKf2T8u4Lqhy+3rVDagkQFymf2OANt9qXl9CNbfHOuL2dsEi0vhhzZT/aaJoODGMTy0VBGIhTtJTDNI4brLQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB8627.eurprd04.prod.outlook.com (2603:10a6:20b:42a::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.27; Mon, 19 Feb
+ 2024 15:59:50 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::c8b4:5648:8948:e85c%3]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
+ 15:59:50 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: Vinod Koul <vkoul@kernel.org>,
+	dmaengine@vger.kernel.org (open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM),
+	linux-kernel@vger.kernel.org (open list)
+Cc: imx@lists.linux.dev
+Subject: [PATCH v2 1/1] dmaengine: fsl-qdma: add __iomem and struct in union to fix sparse warning
+Date: Mon, 19 Feb 2024 10:59:39 -0500
+Message-Id: <20240219155939.611237-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: BYAPR01CA0051.prod.exchangelabs.com (2603:10b6:a03:94::28)
+ To PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Mon, 19 Feb 2024 16:58:25 +0100
-Message-Id: <CZ96H72GI4Z0.SZJBZXA1VXJZ@gmail.com>
-Subject: Re: [PATCH] phy: constify of_phandle_args in xlate
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Vinod Koul"
- <vkoul@kernel.org>, "Kishon Vijay Abraham I" <kishon@kernel.org>,
- "Chun-Kuang Hu" <chunkuang.hu@kernel.org>, "Philipp Zabel"
- <p.zabel@pengutronix.de>, "Jonathan Hunter" <jonathanh@nvidia.com>,
- "Laurent Pinchart" <laurent.pinchart@ideasonboard.com>, "Linus Walleij"
- <linus.walleij@linaro.org>, <linux-phy@lists.infradead.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-sunxi@lists.linux.dev>,
- <linux-kernel@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
- <netdev@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
- <linux-mediatek@lists.infradead.org>, <linux-arm-msm@vger.kernel.org>,
- <linux-renesas-soc@vger.kernel.org>, <linux-rockchip@lists.infradead.org>,
- <linux-samsung-soc@vger.kernel.org>,
- <linux-stm32@st-md-mailman.stormreply.com>, <linux-tegra@vger.kernel.org>,
- <linux-gpio@vger.kernel.org>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240217093937.58234-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240217093937.58234-1-krzysztof.kozlowski@linaro.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8627:EE_
+X-MS-Office365-Filtering-Correlation-Id: 55080c36-cc7a-4038-c3fc-08dc3163cdd2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	+8LuqDWaaHys4k1Ljq7OPAWe2XtgASEhQq9MDX239sSdxaAbPFT3CQtlK0fSGKCb5zaOahUUXih7FMU0/VdHfo6qifU1NIyge/m/uKrUgSnlKBE9Ovc39Zjx+jFatWSoBSqX4W+vGgt7xPjsmeing5ZppDpBusdDOuPQnxrZTUcjvnhsJOy/3qoxruVwBbZH6S4GyuRZXQK4zgD8CKLeXIcCxtjprqUKSjBWMQHDG/Ug8y+Ue1/R8flB8NIa0iZj9huuRh44Mrfg3XcgVoTfab1w0ArW7YZkEBHIzwy6LVqSceVG0HbVnz/koB/4eNjLPxg+gt2BztSGt+0lUknox5EXIxdOaEzdlf/CHHmJE8pklMqTdbloHQu0+SjW99jbkBpekCGmrM7qt2fm1MXGy65naArVNWKv7zemeOeBHUtc2unjS7527wYvAdCs/B1f1JUqLtVXXzpVSC2uQ7la051178paKdAjUcXNhvXu94SIURjH/9H4uM8HvZPROcz4A+p3vNcooaxYIPbv0HOJymSQjswIvDquPSu00fn1JgbVSYyPSxOR/x2PW4mwqjhA/B9LDO6SPRz80KWbFPAvbuAIt1XEaw3YThqxbUV6HLk=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RzBUOVBtTlI4RlliUkU4cDREa2trcE1YTkNSMmhWK3oybXNoWEZzaExSMFcr?=
+ =?utf-8?B?QjlvcWJBMWN6b3hYbkNZYU1tbVAzUlBXckVYT3cyNVNqUzU1VmQrKzU0MzNN?=
+ =?utf-8?B?QlBGYk5PWTFyRUtMWnJuWVFhc0I0ZDhQUXVQcFR0NWRXK25TOHVaMEdNcFdm?=
+ =?utf-8?B?dGhxYkZxOE9hcEZIUFgvZ3U4QmdmQmdGVHhXZU1rdGpzY21mUjcxNndlL2d2?=
+ =?utf-8?B?RUY3c0NkNVF5VStOYkxFazh3emhacTdEN3pod3FpdFN4M2ZRUWVzc2crQ2tv?=
+ =?utf-8?B?NklaejlITFBPOTJtd0dkOGZGdFZITHBsL0E5VXpaVjJkV1FXdkFGaFQxVjdt?=
+ =?utf-8?B?d082U090aFRTakx0UFA0aWUxMnR3MVIwUVJOMXpCU2w0dWNIZWZPdEFPdC9U?=
+ =?utf-8?B?S1lVc3E4aENQeUIyVjg2YXBMM0JSekRUdHh6bDNIbUxiY3Q5a295WnZrSitY?=
+ =?utf-8?B?QVRWQjgzQkNjT2d0S2ladEZhOUxTaDJicEg4ZGcxMkYyTWt0ZTVEQ2V0TWQ2?=
+ =?utf-8?B?dkdyS0lvYTlmZWVDRWxLUGJZS1FiaExMaFRaeHBIWmxHQTYxOHBhK20rak1s?=
+ =?utf-8?B?QWFTWktSL0ZlaFFpbFJkVjdzbUpLWDlsWGJnaTZodXZudTNFanFsS0NYRkRO?=
+ =?utf-8?B?ZkdyWm1HcjV5S3hxUHUxMllhcjNsS2FmWXBOVEZaVU1vOFhDY29KOFI0RXJ0?=
+ =?utf-8?B?c0RURkFVVWMxNVVTSkxINEFpcFJKN2QyNlBMOGhqVGM4M2hDb2krWTdzdW1V?=
+ =?utf-8?B?VVkyQzJ5SjBpd01QZmlhdnlNNU45ZlM4WlZiNk1kcmhQOGplZFVKeFcvVnBp?=
+ =?utf-8?B?bTVlcUdpSnJ0emhaVkcxNDdzeDVnbUNxSG81UjM5WCtYei9TL2xGZ3RjamFS?=
+ =?utf-8?B?R0VIRURDZ0l3S2dXZVJmVk91R3VzSk5YaFZrbk1lbFVjYlJob2tpT0gzSjFv?=
+ =?utf-8?B?M2RnVXdSNHZIdEdJc25tVE01Y0ZlTTBWTE8rbzBwUk9QbWFDNmdzUklKSCta?=
+ =?utf-8?B?bnMydGllZ0pVdTBMZFBzWHpXc2l3UmkvZE0vd00wd3pMKzJNY255bXp3Zklo?=
+ =?utf-8?B?MVp3SHRubnNQSnJTcHpWM1hHSkg1bEpRRW04K21FR01ERnpUOENiNTB2SGpi?=
+ =?utf-8?B?Z1ZTS1M5YjIzVklVdXlzaFpvcjNBbmJNd0hKamxnY2hlc3YvL0JHY3Y4S1lD?=
+ =?utf-8?B?aXhGZEVKQTZRQUVuUTN0MGR4cExpdXYwWk9HdnZPZUF5THk5a1VKeHI4Snov?=
+ =?utf-8?B?eGJUejgyU240MnFEUm9TTCtpWUJoc1MwbzV5SGlseENabnNTdUIrQ3FjSkZp?=
+ =?utf-8?B?YWExdFlBamszWWJhWXZWeDhhditHM1B3OXJ2L0wyREs5M0pLcVZhdFh1NXda?=
+ =?utf-8?B?NHdhNjdnRTRsUVEzNkd3ZEdOOGlQdFMyOHBoNzA3WHNCM2YyM2ZOVFdqYll4?=
+ =?utf-8?B?VlFUb0w0c2MvQjZGOCs5Y01DYkkrUDBpaUQwTVpyZEZFVHRaeVF2QmpkdWNU?=
+ =?utf-8?B?ckJLNk4wUGZoN1lGL04zM0g0TDYyRFNsS2pOY2x1UEpOQ2xsZ0oxd052RlZO?=
+ =?utf-8?B?OEtqakcwSWhHSGwyd1lsQUtKRFYrT2t6VFkrb01GVFVqalZNNnJ5U0tJdjNG?=
+ =?utf-8?B?OU5Wb0xaV3JkMFp6NUQ2a1BrbVczMFdmeERRMHBrNGVwN282dlhpMnJNYVBn?=
+ =?utf-8?B?eWtwZFVmcUhIRDhaS1J3QmFVS2JIamoyeTJLaGVvL21FK3VGQk94enRMbTFu?=
+ =?utf-8?B?K3J1R2VlL0ZuQ2R2em9iazdsTTdBSHh6a2RvdHE4dm9Td2Mra2RqOTQ1TU1J?=
+ =?utf-8?B?bFlJT3RDYzlmNlh3dnJkZUtQcmlNRzNPSTdLRVpvOUtSK2tPT0ptWFA5eXZZ?=
+ =?utf-8?B?aEdKVXRPN0JVVWIyOVZiYjNqNHhxalJUYTE1NnlqYURSdmxJS0NvcU14anFX?=
+ =?utf-8?B?ZTVWalBMdjlGNXhDMHlYbHhkVGV4M1hUNnV5YWVVS3dvWGx4bXlhWDF4WW1L?=
+ =?utf-8?B?OXg4N05ETlJ1TVdjbkNuRTJYTHVpQmtsZktZajZLdlIxc0pNYTNhdG1VYUdW?=
+ =?utf-8?B?d3hsSTB6REZCRmNLVVRpMXYzVUhkZjJpY3pVVTRLNWthMmZianNScjBibWtn?=
+ =?utf-8?Q?0+sJFFvizIvFw564+4BJD9P4K?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55080c36-cc7a-4038-c3fc-08dc3163cdd2
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 15:59:50.5545
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: v196wIL0kct3kdHDxeRsSgysEsEwXVw3I/HajQN2fKOPPbyzHengqvckbJVGQ5kQA7i0LeTvxAlbQKttFw4fIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8627
 
---f0caf17c841197981a0b66a2ac604de0b745306e0ba899959bfe0165d31f
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Fix below sparse warnings.
 
-On Sat Feb 17, 2024 at 10:39 AM CET, Krzysztof Kozlowski wrote:
-> The xlate callbacks are supposed to translate of_phandle_args to proper
-> provider without modifying the of_phandle_args.  Make the argument
-> pointer to const for code safety and readability.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  drivers/phy/allwinner/phy-sun4i-usb.c              |  2 +-
->  drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c     |  2 +-
->  drivers/phy/broadcom/phy-bcm-sr-pcie.c             |  2 +-
->  drivers/phy/broadcom/phy-bcm-sr-usb.c              |  2 +-
->  drivers/phy/broadcom/phy-bcm63xx-usbh.c            |  2 +-
->  drivers/phy/broadcom/phy-brcm-usb.c                |  2 +-
->  drivers/phy/freescale/phy-fsl-imx8qm-lvds-phy.c    |  2 +-
->  drivers/phy/freescale/phy-fsl-lynx-28g.c           |  2 +-
->  drivers/phy/hisilicon/phy-histb-combphy.c          |  2 +-
->  drivers/phy/intel/phy-intel-lgm-combo.c            |  2 +-
->  drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c        |  2 +-
->  drivers/phy/marvell/phy-armada375-usb2.c           |  2 +-
->  drivers/phy/marvell/phy-armada38x-comphy.c         |  2 +-
->  drivers/phy/marvell/phy-berlin-sata.c              |  2 +-
->  drivers/phy/marvell/phy-mvebu-a3700-comphy.c       |  2 +-
->  drivers/phy/marvell/phy-mvebu-cp110-comphy.c       |  2 +-
->  drivers/phy/mediatek/phy-mtk-mipi-csi-0-5.c        |  2 +-
->  drivers/phy/mediatek/phy-mtk-tphy.c                |  2 +-
->  drivers/phy/mediatek/phy-mtk-xsphy.c               |  2 +-
->  drivers/phy/microchip/lan966x_serdes.c             |  2 +-
->  drivers/phy/microchip/sparx5_serdes.c              |  2 +-
->  drivers/phy/mscc/phy-ocelot-serdes.c               |  2 +-
->  drivers/phy/phy-core.c                             |  8 ++++----
->  drivers/phy/phy-xgene.c                            |  2 +-
->  drivers/phy/qualcomm/phy-qcom-qmp-combo.c          |  2 +-
->  drivers/phy/ralink/phy-mt7621-pci.c                |  2 +-
->  drivers/phy/renesas/phy-rcar-gen2.c                |  2 +-
->  drivers/phy/renesas/phy-rcar-gen3-usb2.c           |  2 +-
->  drivers/phy/renesas/r8a779f0-ether-serdes.c        |  2 +-
->  drivers/phy/rockchip/phy-rockchip-naneng-combphy.c |  2 +-
->  drivers/phy/rockchip/phy-rockchip-pcie.c           |  2 +-
->  drivers/phy/samsung/phy-exynos-mipi-video.c        |  2 +-
->  drivers/phy/samsung/phy-exynos5-usbdrd.c           |  2 +-
->  drivers/phy/samsung/phy-samsung-usb2.c             |  2 +-
->  drivers/phy/socionext/phy-uniphier-usb2.c          |  2 +-
->  drivers/phy/st/phy-miphy28lp.c                     |  2 +-
->  drivers/phy/st/phy-spear1310-miphy.c               |  2 +-
->  drivers/phy/st/phy-spear1340-miphy.c               |  2 +-
->  drivers/phy/st/phy-stm32-usbphyc.c                 |  2 +-
->  drivers/phy/tegra/xusb.c                           |  2 +-
->  drivers/phy/ti/phy-am654-serdes.c                  |  2 +-
->  drivers/phy/ti/phy-da8xx-usb.c                     |  2 +-
->  drivers/phy/ti/phy-gmii-sel.c                      |  2 +-
->  drivers/phy/xilinx/phy-zynqmp.c                    |  2 +-
->  drivers/pinctrl/tegra/pinctrl-tegra-xusb.c         |  2 +-
->  include/linux/phy/phy.h                            | 14 +++++++-------
->  46 files changed, 55 insertions(+), 55 deletions(-)
+drivers/dma/fsl-qdma.c:645:50: sparse: warning: incorrect type in argument 2 (different address spaces)
+drivers/dma/fsl-qdma.c:645:50: sparse:    expected void [noderef] __iomem *addr
+drivers/dma/fsl-qdma.c:645:50: sparse:    got void
 
-Makes sense:
+drivers/dma/fsl-qdma.c:387:15: sparse: sparse: restricted __le32 degrades to integer
+drivers/dma/fsl-qdma.c:390:19: sparse:     expected restricted __le64 [usertype] data
+drivers/dma/fsl-qdma.c:392:13: sparse:     expected unsigned int [assigned] [usertype] cmd
 
-Acked-by: Thierry Reding <treding@nvidia.com>
+QDMA decriptor have below 3 kind formats. (little endian)
 
---f0caf17c841197981a0b66a2ac604de0b745306e0ba899959bfe0165d31f
-Content-Type: application/pgp-signature; name="signature.asc"
+Compound Command Descriptor Format
+  ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+  │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
+  │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
+  ├──────┼─┴─┼─┴─┴─┼─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┤
+  │ 0x0C │DD │  -  │QUEUE│             -                 │      ADDR     │
+  ├──────┼───┴─────┴─────┴───────────────────────────────┴───────────────┤
+  │ 0x08 │                       ADDR                                    │
+  ├──────┼─────┬─────────────────┬───────────────────────────────────────┤
+  │ 0x04 │ FMT │    OFFSET       │                   -                   │
+  ├──────┼─┬─┬─┴─────────────────┴───────────────────────┬───────────────┤
+  │      │ │S│                                           │               │
+  │ 0x00 │-│E│                   -                       │    STATUS     │
+  │      │ │R│                                           │               │
+  └──────┴─┴─┴───────────────────────────────────────────┴───────────────┘
 
------BEGIN PGP SIGNATURE-----
+Compound S/G Table Entry Format
+ ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+ │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
+ │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
+ ├──────┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┼─┴─┴─┴─┴─┴─┴─┴─┤
+ │ 0x0C │                      -                        │    ADDR       │
+ ├──────┼───────────────────────────────────────────────┴───────────────┤
+ │ 0x08 │                          ADDR                                 │
+ ├──────┼─┬─┬───────────────────────────────────────────────────────────┤
+ │ 0x04 │E│F│                    LENGTH                                 │
+ ├──────┼─┴─┴─────────────────────────────────┬─────────────────────────┤
+ │ 0x00 │              -                      │        OFFSET           │
+ └──────┴─────────────────────────────────────┴─────────────────────────┘
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXTeqIACgkQ3SOs138+
-s6GdEBAAsZtqIRL7k6ZV5nu5N0juG6RO7Sm34o9+isHlbNUAhmDQeIXxdlWIF3qc
-ap2W/H4jLtQnrDaCtdFWa5oPx8Ud41AKoeOQRlZq6goHZemt2JbUyB5IzsMIL0KN
-FUGwvVEZdDnJbhe2+8YX0fN8WG4qpAYo7vrb1XsgP4RzGwgkwH64LbCOtoAoYtYl
-rOc7hn6eNJrIYlW1LaU37BApWV0KgdMiI1YSILAT5YJK24fYst7j//8UxyEQP4aO
-S+3uPr8/1K1JifAihpgqu7w5kyDcMW1ncoAamilKe2xDzz7wJ8wxtYcdypnwBSpd
-/+rhMybnEj2kgbDrSbY+LVlczSU6Wf/SEtZzB+DOCE4+CZrtFyMVsSgAeVXFT1n0
-L5vTh0182skHEAm97GXHwoQOmLND8wJJVZR+Sw1OApxEYI1Y8hTx33NrbA+5hiVq
-15m0Jq8NXvpd237p5obNfFNuDmK/BlMhlq3x+3/aWGqT+pRlavF1i0HP/wEV9YoC
-6zleWWkx9BAonksD76uhrk/LBnYnc3wb9O5B4KS6dp+tYE3ekIWauHxzhg4tpOcg
-FqcY6ObCs+Jjtplo4vtrTBR6A4jdvunJQcp4WqSO/5RkZd/ySVdSbpvCdK1yy/JM
-j7SSnUWV03IbkbGoBduin/a8YT84GAn3seVzxO0ik5dpZHGbAPM=
-=Z186
------END PGP SIGNATURE-----
+Source/Destination Descriptor Format
+  ┌──────┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+  │Offset│3│3│2│2│2│2│2│2│2│2│2│2│1│1│1│1│1│1│1│1│1│1│ │ │ │ │ │ │ │ │ │ │
+  │      │1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│9│8│7│6│5│4│3│2│1│0│
+  ├──────┼─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┤
+  │ 0x0C │                            CMD                                │
+  ├──────┼───────────────────────────────────────────────────────────────┤
+  │ 0x08 │                             -                                 │
+  ├──────┼───────────────┬───────────────────────┬───────────────────────┤
+  │ 0x04 │       -       │         S[D]SS        │        S[D]SD         │
+  ├──────┼───────────────┴───────────────────────┴───────────────────────┤
+  │ 0x00 │                             -                                 │
+  └──────┴───────────────────────────────────────────────────────────────┘
 
---f0caf17c841197981a0b66a2ac604de0b745306e0ba899959bfe0165d31f--
+Previous code use 64bit 'data' map to 0x8 and 0xC. In little endian system
+CMD is high part of 64bit 'data'. It is correct by left shift 32. But in
+big endian system, shift left 32 will write to 0x8 position. Sparse detect
+this problem.
+
+Add below field ot match 'Source/Destination Descriptor Format'.
+struct {
+	__le32 __reserved2;
+	__le32 cmd;
+} __packed;
+
+Using ddf(sdf)->cmd save to correct posistion regardless endian.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402081929.mggOTHaZ-lkp@intel.com/
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+
+Notes:
+    Change from v1 to v2
+    - update commit message to show why add 'cmd'
+    
+    fsl-edma-common.c's build warning should not cause by this driver. which is
+    difference drivers. This driver will not use any code related with
+    fsl-edma-common.c.
+
+ drivers/dma/fsl-qdma.c | 21 ++++++++++-----------
+ 1 file changed, 10 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/dma/fsl-qdma.c b/drivers/dma/fsl-qdma.c
+index 1e3bf6f30f784..5005e138fc239 100644
+--- a/drivers/dma/fsl-qdma.c
++++ b/drivers/dma/fsl-qdma.c
+@@ -161,6 +161,10 @@ struct fsl_qdma_format {
+ 			u8 __reserved1[2];
+ 			u8 cfg8b_w1;
+ 		} __packed;
++		struct {
++			__le32 __reserved2;
++			__le32 cmd;
++		} __packed;
+ 		__le64 data;
+ 	};
+ } __packed;
+@@ -355,7 +359,6 @@ static void fsl_qdma_free_chan_resources(struct dma_chan *chan)
+ static void fsl_qdma_comp_fill_memcpy(struct fsl_qdma_comp *fsl_comp,
+ 				      dma_addr_t dst, dma_addr_t src, u32 len)
+ {
+-	u32 cmd;
+ 	struct fsl_qdma_format *sdf, *ddf;
+ 	struct fsl_qdma_format *ccdf, *csgf_desc, *csgf_src, *csgf_dest;
+ 
+@@ -384,15 +387,11 @@ static void fsl_qdma_comp_fill_memcpy(struct fsl_qdma_comp *fsl_comp,
+ 	/* This entry is the last entry. */
+ 	qdma_csgf_set_f(csgf_dest, len);
+ 	/* Descriptor Buffer */
+-	cmd = cpu_to_le32(FSL_QDMA_CMD_RWTTYPE <<
+-			  FSL_QDMA_CMD_RWTTYPE_OFFSET) |
+-			  FSL_QDMA_CMD_PF;
+-	sdf->data = QDMA_SDDF_CMD(cmd);
+-
+-	cmd = cpu_to_le32(FSL_QDMA_CMD_RWTTYPE <<
+-			  FSL_QDMA_CMD_RWTTYPE_OFFSET);
+-	cmd |= cpu_to_le32(FSL_QDMA_CMD_LWC << FSL_QDMA_CMD_LWC_OFFSET);
+-	ddf->data = QDMA_SDDF_CMD(cmd);
++	sdf->cmd = cpu_to_le32((FSL_QDMA_CMD_RWTTYPE << FSL_QDMA_CMD_RWTTYPE_OFFSET) |
++			       FSL_QDMA_CMD_PF);
++
++	ddf->cmd = cpu_to_le32((FSL_QDMA_CMD_RWTTYPE << FSL_QDMA_CMD_RWTTYPE_OFFSET) |
++			       (FSL_QDMA_CMD_LWC << FSL_QDMA_CMD_LWC_OFFSET));
+ }
+ 
+ /*
+@@ -626,7 +625,7 @@ static int fsl_qdma_halt(struct fsl_qdma_engine *fsl_qdma)
+ 
+ static int
+ fsl_qdma_queue_transfer_complete(struct fsl_qdma_engine *fsl_qdma,
+-				 void *block,
++				 __iomem void *block,
+ 				 int id)
+ {
+ 	bool duplicate;
+-- 
+2.34.1
+
 
