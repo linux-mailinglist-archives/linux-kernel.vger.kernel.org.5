@@ -1,342 +1,312 @@
-Return-Path: <linux-kernel+bounces-70697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57297859B41
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:11:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C60D859B44
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:12:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C03BC1F21657
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:11:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AE6571F210E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665CAB67B;
-	Mon, 19 Feb 2024 04:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="aoAEwim7"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61ED463BF
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:10:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23AA8F5D;
+	Mon, 19 Feb 2024 04:11:54 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4949011734;
+	Mon, 19 Feb 2024 04:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708315851; cv=none; b=KGSFCoV+80WPpcmjBV5Dv1/DBXGMX/uF0lyKOt27xZRort+ohoajlD/x5bGHYWAcYUr1pqwZhpYxJTOvg6oqnJIvk8h/cLv+70Vy4Hci8+JgYZ0KM30gGl9rjuY3vFZULkOuE6XcqeXrDyToefyhfUFyJXFPQ9iI5NbwQ8nF7KU=
+	t=1708315914; cv=none; b=D8B3DOd8yu0XKdur9bGf5iPc99N7l6uzidFofEWsRPXdYQS3TRfJ0IHp4h+TT5smpTGONUIGz3J98sndKJXFpD5bVd7yAXOjcExZ8hfQVPvs0Fi7EXpR7XI07u4h3CLXbo+Pwqi3zi4SZNpQ77wetP4yi0CQKiQorsTsohADrWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708315851; c=relaxed/simple;
-	bh=MNiOlQwCxdQTE2LkxWa35Suj5p4Uq7+niJe+XPHvMAU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C9VA9Qqtguzc1L9uL9CPFBs/fvDI8tdTR+Zf3IV9Xmrjc2AJZ0a2IO08iYYHwdg0SNJut97ojBYSNUWoqG/Iqd4em+FcHfbUStnqbouJGZU3926hHbC+JGy9NrnlCtFux78y14V4fxU2i99hdlqRU+ZJ9N1GGI6OkqQyybzmGAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=aoAEwim7; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-512b4388dafso358816e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 20:10:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1708315847; x=1708920647; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oSJX0E0lGzgCklhLOPs9/5otZxCSMrkz3Hl3lgIz64Q=;
-        b=aoAEwim7td430AdJpC47nVT8B7QEsJ9lw709zXR8G9xvuUNTGuV/B4oPl63zf8VA9V
-         drzhlI0DKmMhZ06YVJrLLTw3z9aGSyWnMeXQxti7ZlIRRRSyv2b5JuJtsBCuhA7YL17G
-         jtfqTOIASFs8A0AOoHagYJz6Tnn3k5AiLd40QjCms0ZhwR/PhV2O5iooscYKSh0nxp8h
-         B6NVWYP1ACacRwsXU8jRdfjMJCcfLHh6CQwmMgrzuCpGGkQAgaklBuMy2ksHI6ZL3rT6
-         vp6MP3DFQ+kS5gfGJ1ozHrhV5GVuJm1zEuYV8KRYXzXZHSEbUkb/bEHT89TRTJ9g84Km
-         fKSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708315847; x=1708920647;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oSJX0E0lGzgCklhLOPs9/5otZxCSMrkz3Hl3lgIz64Q=;
-        b=pTmOq9zpIUM+QndTak3qa86LLXdRZA4wl4/cDlM1YPuPhzFE3B9O5Epm/jV/qbQLq4
-         iT4u3NtJqihQc7H2lWaC5y3hAwMAgC9n12cwL3E5TH+pcvbMFN3yAl+c6q46t9T7Uvv6
-         yts0Y+iDEGJYYsXpTPqasGhfLZbCMwdjtinBjgtr5rP90S0rur/yCcC6lR6Srkwg2UY4
-         yWk+nIQf+vnGDd8h3XInQTNVPL3zlQyTKvsHF3JzgE5lG5j1OWQs9Gy0eMgLEYIutYVE
-         i3WB7Lzk0Vj6d/XPBWuNVq0jhp00161MquCdwKtuo9EeedEtE0tUed7Veekn7RBNYKZx
-         npoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUaDOSUxs8GhSVbt2poK9mVh53oAWfQ2i5Fuemn99+/yvJD1QXI35WzgeCBCGAktalPgyesqpgI48kJTV9+j5SNO6KSZD7137OAJ2EF
-X-Gm-Message-State: AOJu0YxLFY/HkMLN5rvXntnqDvu4bZEMgAjC/xhy27hRuonvnLhAQEhS
-	5bn6SmNCoCo90DfDdBmLcxWlA8g2SNkVnsGvMh2voozfTKFvH4viaabLYGtznry5w23UI/CrpSP
-	C23ry5ezClJWC2wxKB7xcg2LNltbm/sOoVrXWOg==
-X-Google-Smtp-Source: AGHT+IFXrBDhOps8+KLoDpgDGX0zeotDQUgEkGspEQp4WsWHRxO/1h8/vRFqOVdSq4bjng+KktDbQ+TtxJII0xh78w0=
-X-Received: by 2002:a05:6512:3e14:b0:512:b932:7913 with SMTP id
- i20-20020a0565123e1400b00512b9327913mr252592lfv.41.1708315847272; Sun, 18 Feb
- 2024 20:10:47 -0800 (PST)
+	s=arc-20240116; t=1708315914; c=relaxed/simple;
+	bh=Pe9P/xDePK2BHCp3Enr8rBxxSlCFo7+ZwOE2XI9VlGU=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=J9Tba59v2OqSMLJlqLLnVVO81KevNwdgFPfOtNoxdQ3ODmPg2aRHXDoGJC6IKGsD0OkjuFk9BMbYmbMXDSBOX6Bf7M+VjgLfwlIrECIls0pcOgFelnlKet8TgkYymbRywdzYD7MvX3MvBZyRhKOBAfcQNXTPZrOVYZpXvDmJT/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8CxSPAF1dJlxTQOAA--.38845S3;
+	Mon, 19 Feb 2024 12:11:49 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxTs0C1dJl08M7AA--.20072S3;
+	Mon, 19 Feb 2024 12:11:48 +0800 (CST)
+Subject: Re: [PATCH v4 4/6] LoongArch: Add paravirt interface for guest kernel
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240201031950.3225626-1-maobibo@loongson.cn>
+ <20240201031950.3225626-5-maobibo@loongson.cn>
+ <CAAhV-H7dXsU+WM172PWi_m8TYpYmzG_SW-vVQcdnOdETUxQ9+w@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <63f8bd29-c0da-167b-187d-61c56eb081a6@loongson.cn>
+Date: Mon, 19 Feb 2024 12:11:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <20240127161753.114685-20-apatel@ventanamicro.com> <87eddccgo7.ffs@tglx>
-In-Reply-To: <87eddccgo7.ffs@tglx>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Mon, 19 Feb 2024 09:40:35 +0530
-Message-ID: <CAK9=C2VK-sOtyhxnDH83WwMNQbetC-zLssZdYG399pBghU+yUw@mail.gmail.com>
-Subject: Re: [PATCH v12 19/25] irqchip/riscv-imsic: Add device MSI domain
- support for platform devices
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
-	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
-	Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAAhV-H7dXsU+WM172PWi_m8TYpYmzG_SW-vVQcdnOdETUxQ9+w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8AxTs0C1dJl08M7AA--.20072S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3JF13XF45Aw47Xw47GrW5XFc_yoW3Xr43pa
+	4DAF4kGa18GF1xArZ3Krsxurn8J397CF129Fy2qa4FyFZFvr1UXr1vgryq9FyDJa1kJ3W0
+	qFyrWw1a9a15tagCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+	02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAF
+	wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4
+	CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
+	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
+	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E
+	14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JV
+	WxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcHUq
+	UUUUU
 
-On Sat, Feb 17, 2024 at 1:42=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Sat, Jan 27 2024 at 21:47, Anup Patel wrote:
-> > +static int imsic_cpu_page_phys(unsigned int cpu,
-> > +                            unsigned int guest_index,
-> > +                            phys_addr_t *out_msi_pa)
-> > +{
-> > +     struct imsic_global_config *global;
-> > +     struct imsic_local_config *local;
-> > +
-> > +     global =3D &imsic->global;
-> > +     local =3D per_cpu_ptr(global->local, cpu);
-> > +
-> > +     if (BIT(global->guest_index_bits) <=3D guest_index)
-> > +             return -EINVAL;
->
-> As the callsite does not care about the return value, just make this
-> function boolean and return true on success.
 
-Okay, I will update.
 
->
-> > +     if (out_msi_pa)
-> > +             *out_msi_pa =3D local->msi_pa +
-> > +                           (guest_index * IMSIC_MMIO_PAGE_SZ);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void imsic_irq_mask(struct irq_data *d)
-> > +{
-> > +     imsic_vector_mask(irq_data_get_irq_chip_data(d));
-> > +}
-> > +
-> > +static void imsic_irq_unmask(struct irq_data *d)
-> > +{
-> > +     imsic_vector_unmask(irq_data_get_irq_chip_data(d));
-> > +}
-> > +
-> > +static int imsic_irq_retrigger(struct irq_data *d)
-> > +{
-> > +     struct imsic_vector *vec =3D irq_data_get_irq_chip_data(d);
-> > +     struct imsic_local_config *local;
-> > +
-> > +     if (WARN_ON(vec =3D=3D NULL))
-> > +             return -ENOENT;
-> > +
-> > +     local =3D per_cpu_ptr(imsic->global.local, vec->cpu);
-> > +     writel(vec->local_id, local->msi_va);
-> > +     return 0;
-> > +}
-> > +
-> > +static void imsic_irq_compose_vector_msg(struct imsic_vector *vec,
-> > +                                      struct msi_msg *msg)
-> > +{
-> > +     phys_addr_t msi_addr;
-> > +     int err;
-> > +
-> > +     if (WARN_ON(vec =3D=3D NULL))
-> > +             return;
-> > +
-> > +     err =3D imsic_cpu_page_phys(vec->cpu, 0, &msi_addr);
-> > +     if (WARN_ON(err))
-> > +             return;
->
->         if (WARN_ON(!imsic_cpu_page_phys(...)))
->                 return
-> Hmm?
+On 2024/2/19 上午10:42, Huacai Chen wrote:
+> Hi, Bibo,
+> 
+> On Thu, Feb 1, 2024 at 11:19 AM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> The patch adds paravirt interface for guest kernel, function
+>> pv_guest_initi() firstly checks whether system runs on VM mode. If kernel
+>> runs on VM mode, it will call function kvm_para_available() to detect
+>> whether current VMM is KVM hypervisor. And the paravirt function can work
+>> only if current VMM is KVM hypervisor, since there is only KVM hypervisor
+>> supported on LoongArch now.
+>>
+>> This patch only adds paravirt interface for guest kernel, however there
+>> is not effective pv functions added here.
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>   arch/loongarch/Kconfig                        |  9 ++++
+>>   arch/loongarch/include/asm/kvm_para.h         |  7 ++++
+>>   arch/loongarch/include/asm/paravirt.h         | 27 ++++++++++++
+>>   .../include/asm/paravirt_api_clock.h          |  1 +
+>>   arch/loongarch/kernel/Makefile                |  1 +
+>>   arch/loongarch/kernel/paravirt.c              | 41 +++++++++++++++++++
+>>   arch/loongarch/kernel/setup.c                 |  2 +
+>>   7 files changed, 88 insertions(+)
+>>   create mode 100644 arch/loongarch/include/asm/paravirt.h
+>>   create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
+>>   create mode 100644 arch/loongarch/kernel/paravirt.c
+>>
+>> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+>> index 10959e6c3583..817a56dff80f 100644
+>> --- a/arch/loongarch/Kconfig
+>> +++ b/arch/loongarch/Kconfig
+>> @@ -585,6 +585,15 @@ config CPU_HAS_PREFETCH
+>>          bool
+>>          default y
+>>
+>> +config PARAVIRT
+>> +       bool "Enable paravirtualization code"
+>> +       depends on AS_HAS_LVZ_EXTENSION
+>> +       help
+>> +          This changes the kernel so it can modify itself when it is run
+>> +         under a hypervisor, potentially improving performance significantly
+>> +         over full virtualization.  However, when run without a hypervisor
+>> +         the kernel is theoretically slower and slightly larger.
+>> +
+>>   config ARCH_SUPPORTS_KEXEC
+>>          def_bool y
+>>
+>> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
+>> index 9425d3b7e486..41200e922a82 100644
+>> --- a/arch/loongarch/include/asm/kvm_para.h
+>> +++ b/arch/loongarch/include/asm/kvm_para.h
+>> @@ -2,6 +2,13 @@
+>>   #ifndef _ASM_LOONGARCH_KVM_PARA_H
+>>   #define _ASM_LOONGARCH_KVM_PARA_H
+>>
+>> +/*
+>> + * Hypcall code field
+>> + */
+>> +#define HYPERVISOR_KVM                 1
+>> +#define HYPERVISOR_VENDOR_SHIFT                8
+>> +#define HYPERCALL_CODE(vendor, code)   ((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
+>> +
+>>   /*
+>>    * LoongArch hypcall return code
+>>    */
+>> diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
+>> new file mode 100644
+>> index 000000000000..b64813592ba0
+>> --- /dev/null
+>> +++ b/arch/loongarch/include/asm/paravirt.h
+>> @@ -0,0 +1,27 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _ASM_LOONGARCH_PARAVIRT_H
+>> +#define _ASM_LOONGARCH_PARAVIRT_H
+>> +
+>> +#ifdef CONFIG_PARAVIRT
+>> +#include <linux/static_call_types.h>
+>> +struct static_key;
+>> +extern struct static_key paravirt_steal_enabled;
+>> +extern struct static_key paravirt_steal_rq_enabled;
+>> +
+>> +u64 dummy_steal_clock(int cpu);
+>> +DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
+>> +
+>> +static inline u64 paravirt_steal_clock(int cpu)
+>> +{
+>> +       return static_call(pv_steal_clock)(cpu);
+>> +}
+> The steal time code can be removed in this patch, I think.
+> 
+Originally I want to remove this piece of code, but it fails to compile 
+if CONFIG_PARAVIRT is selected. Here is reference code, function 
+paravirt_steal_clock() must be defined if CONFIG_PARAVIRT is selected.
 
-Okay, I will update like you suggested.
+static __always_inline u64 steal_account_process_time(u64 maxtime)
+{
+#ifdef CONFIG_PARAVIRT
+         if (static_key_false(&paravirt_steal_enabled)) {
+                 u64 steal;
 
->
-> > +
-> > +     msg->address_hi =3D upper_32_bits(msi_addr);
-> > +     msg->address_lo =3D lower_32_bits(msi_addr);
-> > +     msg->data =3D vec->local_id;
-> > +}
-> > +
-> > +static void imsic_irq_compose_msg(struct irq_data *d, struct msi_msg *=
-msg)
-> > +{
-> > +     imsic_irq_compose_vector_msg(irq_data_get_irq_chip_data(d), msg);
-> > +}
-> > +
-> > +#ifdef CONFIG_SMP
-> > +static void imsic_msi_update_msg(struct irq_data *d, struct imsic_vect=
-or *vec)
-> > +{
-> > +     struct msi_msg msg[2] =3D { [1] =3D { }, };
-> > +
-> > +     imsic_irq_compose_vector_msg(vec, msg);
-> > +     irq_data_get_irq_chip(d)->irq_write_msi_msg(d, msg);
-> > +}
-> > +
-> > +static int imsic_irq_set_affinity(struct irq_data *d,
-> > +                               const struct cpumask *mask_val,
-> > +                               bool force)
-> > +{
-> > +     struct imsic_vector *old_vec, *new_vec;
-> > +     struct irq_data *pd =3D d->parent_data;
-> > +
-> > +     old_vec =3D irq_data_get_irq_chip_data(pd);
-> > +     if (WARN_ON(old_vec =3D=3D NULL))
-> > +             return -ENOENT;
-> > +
-> > +     /* Get a new vector on the desired set of CPUs */
-> > +     new_vec =3D imsic_vector_alloc(old_vec->hwirq, mask_val);
-> > +     if (!new_vec)
-> > +             return -ENOSPC;
-> > +
-> > +     /* If old vector belongs to the desired CPU then do nothing */
-> > +     if (old_vec->cpu =3D=3D new_vec->cpu) {
-> > +             imsic_vector_free(new_vec);
-> > +             return IRQ_SET_MASK_OK_DONE;
-> > +     }
->
-> You can spare that exercise by checking it before the allocation:
->
->         if (cpumask_test_cpu(old_vec->cpu, mask_val))
->                 return IRQ_SET_MASK_OK_DONE;
+                 steal = paravirt_steal_clock(smp_processor_id());
+                 steal -= this_rq()->prev_steal_time;
+                 steal = min(steal, maxtime);
+                 account_steal_time(steal);
+                 this_rq()->prev_steal_time += steal;
 
-Okay, I will update.
+                 return steal;
+         }
+#endif
+         return 0;
+}
 
->
-> > +
-> > +     /* Point device to the new vector */
-> > +     imsic_msi_update_msg(d, new_vec);
->
-> > +static int imsic_irq_domain_alloc(struct irq_domain *domain,
-> > +                               unsigned int virq, unsigned int nr_irqs=
-,
-> > +                               void *args)
-> > +{
-> > +     struct imsic_vector *vec;
-> > +     int hwirq;
-> > +
-> > +     /* Legacy-MSI or multi-MSI not supported yet. */
->
-> What's legacy MSI in that context?
+>> +
+>> +int pv_guest_init(void);
+>> +#else
+>> +static inline int pv_guest_init(void)
+>> +{
+>> +       return 0;
+>> +}
+>> +
+>> +#endif // CONFIG_PARAVIRT
+>> +#endif
+>> diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h b/arch/loongarch/include/asm/paravirt_api_clock.h
+>> new file mode 100644
+>> index 000000000000..65ac7cee0dad
+>> --- /dev/null
+>> +++ b/arch/loongarch/include/asm/paravirt_api_clock.h
+>> @@ -0,0 +1 @@
+>> +#include <asm/paravirt.h>
+>> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
+>> index 3c808c680370..662e6e9de12d 100644
+>> --- a/arch/loongarch/kernel/Makefile
+>> +++ b/arch/loongarch/kernel/Makefile
+>> @@ -48,6 +48,7 @@ obj-$(CONFIG_MODULES)         += module.o module-sections.o
+>>   obj-$(CONFIG_STACKTRACE)       += stacktrace.o
+>>
+>>   obj-$(CONFIG_PROC_FS)          += proc.o
+>> +obj-$(CONFIG_PARAVIRT)         += paravirt.o
+>>
+>>   obj-$(CONFIG_SMP)              += smp.o
+>>
+>> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
+>> new file mode 100644
+>> index 000000000000..21d01d05791a
+>> --- /dev/null
+>> +++ b/arch/loongarch/kernel/paravirt.c
+>> @@ -0,0 +1,41 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +#include <linux/export.h>
+>> +#include <linux/types.h>
+>> +#include <linux/jump_label.h>
+>> +#include <linux/kvm_para.h>
+>> +#include <asm/paravirt.h>
+>> +#include <linux/static_call.h>
+>> +
+>> +struct static_key paravirt_steal_enabled;
+>> +struct static_key paravirt_steal_rq_enabled;
+>> +
+>> +static u64 native_steal_clock(int cpu)
+>> +{
+>> +       return 0;
+>> +}
+>> +
+>> +DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
+> The steal time code can be removed in this patch, I think.
+Ditto, the same reason with above.
+> 
+>> +
+>> +static bool kvm_para_available(void)
+>> +{
+>> +       static int hypervisor_type;
+>> +       int config;
+>> +
+>> +       if (!hypervisor_type) {
+>> +               config = read_cpucfg(CPUCFG_KVM_SIG);
+>> +               if (!memcmp(&config, KVM_SIGNATURE, 4))
+>> +                       hypervisor_type = HYPERVISOR_KVM;
+>> +       }
+>> +
+>> +       return hypervisor_type == HYPERVISOR_KVM;
+>> +}
+>> +
+>> +int __init pv_guest_init(void)
+>> +{
+>> +       if (!cpu_has_hypervisor)
+>> +               return 0;
+>> +       if (!kvm_para_available())
+>> +               return 0;
+>> +
+>> +       return 1;
+>> +}
+>> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
+>> index edf2bba80130..de5c36dccc49 100644
+>> --- a/arch/loongarch/kernel/setup.c
+>> +++ b/arch/loongarch/kernel/setup.c
+>> @@ -43,6 +43,7 @@
+>>   #include <asm/efi.h>
+>>   #include <asm/loongson.h>
+>>   #include <asm/numa.h>
+>> +#include <asm/paravirt.h>
+>>   #include <asm/pgalloc.h>
+>>   #include <asm/sections.h>
+>>   #include <asm/setup.h>
+>> @@ -367,6 +368,7 @@ void __init platform_init(void)
+>>          pr_info("The BIOS Version: %s\n", b_info.bios_version);
+>>
+>>          efi_runtime_init();
+>> +       pv_guest_init();
+> I prefer use CONFIG_PARAVIRT here, though you have a dummy version for
+> !CONFIG_PARAVIRT, I think it is better to let others clearly know that
+> PARAVIRT is an optional feature.
+I remember that there is rule that CONFIG_xxx had better be used in 
+header files rather than c code, so that the code looks neat. Am I wrong?
 
-The legacy-MSI is the MSI support in PCI v2.2 where
-number of MSIs allocated by device were either 1, 2, 4,
-8, 16, or 32 and the data written is <data_word> + <irqnum>.
+Regards
+Bibo Mao
+> 
+> Huacai
+> 
+> 
+> Huacai
+>>   }
+>>
+>>   static void __init check_kernel_sections_mem(void)
+>> --
+>> 2.39.3
+>>
+>>
 
->
-> > +     if (nr_irqs > 1)
-> > +             return -ENOTSUPP;
-> > +
-> > +     hwirq =3D imsic_hwirq_alloc();
-> > +     if (hwirq < 0)
-> > +             return hwirq;
-> > +
-> > +     vec =3D imsic_vector_alloc(hwirq, cpu_online_mask);
-> > +     if (!vec) {
-> > +             imsic_hwirq_free(hwirq);
-> > +             return -ENOSPC;
-> > +     }
-> > +
-> > +     irq_domain_set_info(domain, virq, hwirq,
-> > +                         &imsic_irq_base_chip, vec,
-> > +                         handle_simple_irq, NULL, NULL);
-> > +     irq_set_noprobe(virq);
-> > +     irq_set_affinity(virq, cpu_online_mask);
-> > +
-> > +     /*
-> > +      * IMSIC does not implement irq_disable() so Linux interrupt
-> > +      * subsystem will take a lazy approach for disabling an IMSIC
-> > +      * interrupt. This means IMSIC interrupts are left unmasked
-> > +      * upon system suspend and interrupts are not processed
-> > +      * immediately upon system wake up. To tackle this, we disable
-> > +      * the lazy approach for all IMSIC interrupts.
->
-> Why? Lazy works perfectly fine even w/o an irq_disable() callback.
-
-This was suggested by SiFive folks. I am also not sure why we
-need this. For now, I will drop this and bring it back as a separate
-patch if required.
-
->
-> > +      */
-> > +     irq_set_status_flags(virq, IRQ_DISABLE_UNLAZY);
->
-> > +
-> > +#define MATCH_PLATFORM_MSI           BIT(DOMAIN_BUS_PLATFORM_MSI)
->
-> You really love macro indirections :)
-
-This is to be consistent with MATCH_PCI_MSI introduced by the
-subsequent patch.
-
-Also, this is inspired from your ARM GIC patches.
-https://lore.kernel.org/linux-arm-kernel/20221121140049.038269899@linutroni=
-x.de/
-https://lore.kernel.org/linux-arm-kernel/20221121140049.112451419@linutroni=
-x.de/
-https://lore.kernel.org/linux-arm-kernel/20221121140049.237988384@linutroni=
-x.de/
-https://lore.kernel.org/linux-arm-kernel/20221121140049.941784867@linutroni=
-x.de/
-
->
-> > +static const struct msi_parent_ops imsic_msi_parent_ops =3D {
-> > +     .supported_flags        =3D MSI_GENERIC_FLAGS_MASK,
-> > +     .required_flags         =3D MSI_FLAG_USE_DEF_DOM_OPS |
-> > +                               MSI_FLAG_USE_DEF_CHIP_OPS,
-> > +     .bus_select_token       =3D DOMAIN_BUS_NEXUS,
-> > +     .bus_select_mask        =3D MATCH_PLATFORM_MSI,
-> > +     .init_dev_msi_info      =3D imsic_init_dev_msi_info,
-> > +};
-> > +
-> > +int imsic_irqdomain_init(void)
-> > +{
-> > +     struct imsic_global_config *global;
-> > +
-> > +     if (!imsic || !imsic->fwnode) {
-> > +             pr_err("early driver not probed\n");
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     if (imsic->base_domain) {
-> > +             pr_err("%pfwP: irq domain already created\n", imsic->fwno=
-de);
-> > +             return -ENODEV;
-> > +     }
-> > +
-> > +     global =3D &imsic->global;
->
-> Please move that assignment down to the usage site. Here it's just a
-> distraction.
-
-Okay, I will update.
-
->
-> > +     /* Create Base IRQ domain */
-> > +     imsic->base_domain =3D irq_domain_create_tree(imsic->fwnode,
-> > +                                     &imsic_base_domain_ops, imsic);
-> > +     if (!imsic->base_domain) {
-> > +             pr_err("%pfwP: failed to create IMSIC base domain\n",
-> > +                     imsic->fwnode);
-> > +             return -ENOMEM;
-> > +     }
-> > +     imsic->base_domain->flags |=3D IRQ_DOMAIN_FLAG_MSI_PARENT;
-> > +     imsic->base_domain->msi_parent_ops =3D &imsic_msi_parent_ops;
->
-
-Regards,
-Anup
 
