@@ -1,102 +1,187 @@
-Return-Path: <linux-kernel+bounces-70659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC454859AC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:39:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9787A859ACC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:41:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B8B61C20FF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:39:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 099361F207C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A2F20F1;
-	Mon, 19 Feb 2024 02:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D16C3FF4;
+	Mon, 19 Feb 2024 02:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="OtRgshy8"
-Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S+OGnFGN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E70235220;
-	Mon, 19 Feb 2024 02:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9722BEDD;
+	Mon, 19 Feb 2024 02:41:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708310390; cv=none; b=UsDiOQurzemlbkBKr7RQCfFhvQ5ZMjnpYhB/Z/s1y5UY7qNfXEs7GFfzz2U3zd9PETFSK52VBpctlUlgWphydawXh+4GIcJhnxaj6GbilKT9eDtndXTPRYuPW0G04COqg/T6PVQBZ19aQ5SzU4rIiH/YHKRXf5uAi4EZuFjqCM8=
+	t=1708310472; cv=none; b=s1R8H3wTOEPn9wvvlSM0FtCFBbIsFZOpNyU4lNZoRuz0urR4g6ZmcVxgZpkPEtKrz7HDOvrm+oHDTdYwFEsM//2L09UkuIY5857t6db1dP3E9HTAHWMBgEytiK0rrVq86gWtuPf4uKLQZsKNmX269egWVRd4Un49bhsLZMN6LMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708310390; c=relaxed/simple;
-	bh=9+xo2zaRwmyqIG/KcG72WcTIbFb/AQNcCcaqkzX/i3A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qaJhB5alvBuKoXaX41T+4zSnib8bc8nAY+eGLQCMFEAn9lnMquqINyWgK/gNNvg1hGJH9AA6A5m35ZT6Y1xx2VwtcW0M4gEQywAWzUSAP/E33PKmAigGeW7vpWZ1bZ6hOhUZv6akzyxBsH0o+3nhHTTCCd/WHVoCoPve9Y7GmdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=OtRgshy8; arc=none smtp.client-ip=185.125.188.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from [10.172.69.54] (1.general.ikepanhc.us.vpn [10.172.69.54])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 9BB9A40ECB;
-	Mon, 19 Feb 2024 02:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1708310385;
-	bh=k/b69OpV3ks4THLHdlq+Zzsdc+UxJzsw9Pq1QvTtppc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type;
-	b=OtRgshy8bvsiIskAGifZ5LyuCJbK263xRfDe2VvjXDuV/UZn7fG280f/j8GQpLDAS
-	 PzyfLKBbsPD9s/Ndcid/rlQKjlYDvG6lBRF/c2DN+wItIpxAgIeWxpOo5MaGB0GX2G
-	 fiDWEqNB1m/UqIZQJJR3tbiBbh00Sb7RRQ9juYBM83e4RyRjg9THqTTegCyBWoPQXe
-	 1kFkQy+mKf3jp+f2BKsZhMH0wogkEc0uNBzXnc+lpvQ4s8gwDATdEwbf1hRXY8au2R
-	 OIHtx+50TfUNCKYjZAev35R0PMQ780AAJDcN9LBctJHpWys+IWRX+6NiWTnqiqZITo
-	 ZSIx5gkwNBcog==
-Message-ID: <3b6a7bba-47a5-469c-aac1-5574ad78dadf@canonical.com>
-Date: Mon, 19 Feb 2024 10:39:38 +0800
+	s=arc-20240116; t=1708310472; c=relaxed/simple;
+	bh=n/DOB7UnLd+txgeMjMhK1a3w80QrfLgIcdMDu/kmSzg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mG+EnxwE+F5rUSggWUjMZUdtnecw+I607VSAQnHQenXEeFy7lDKAItuQMyI2FDilaNygr/m/QtpZLb3gBV+I5k2BVlmW7yDwVNLtJ/mhfLlUNhtf/Cg/QEPqmBWZyuq3CU/tabP5fIKejOC7av+cJz1j9bcGCKPlQF4Vts7CKNQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S+OGnFGN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 127CAC43394;
+	Mon, 19 Feb 2024 02:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708310472;
+	bh=n/DOB7UnLd+txgeMjMhK1a3w80QrfLgIcdMDu/kmSzg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=S+OGnFGNjWQfCbxi9spgZO3ZgUu3iOx4/IVtMC2fFZ1mdPkopxJNgaGV7YNl5O7X+
+	 mEVDqZweuwbhJ6sX2pScf6dvDARQ4l2kEomupAXAGWFr3K+ynwdjQ2cke5DT4AkfrF
+	 R/wpzatt+FZBsoo3Y6rMTePM6W8ZoD0bqdV6sqK1rSwQ6dcLVRWn1iZOi9GzTpKfiB
+	 BM22TPSOuMhGC59jx0aXXcsrHyyyWw4z9duVkfuC2qlqsTlvOxEdZujISm3LdvaMFP
+	 fdhZ1heA5dujJoTOaIhh4fEb5cTOZHYVmjR+FB1uzIgOCE2CIMpIjUjUMpDNOnmy2K
+	 Z4U7QbFqnnZew==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-512b700c8ebso249391e87.0;
+        Sun, 18 Feb 2024 18:41:11 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWQobqZhGdFsMc7FnEXUQ0YVSkNl7m1vRWllC/7Zgj9hLXkuJhW735sUuRpbcWnFeZLqX9gsKFwKd7iWwUolqzdPvPe4rMvZUP0CGtwUDusaGsMmayFg42QMSxFkt0BNJ2P
+X-Gm-Message-State: AOJu0YxEUmW3wB8RMOcVeqHtD8zkh3uIZqQVhhCg6s6g9LTqAlkFKlyU
+	IWQsvo20GZpJ62G3gPtBXBPq83mNHdjM2UuFICqtSMfOlgGdVKptlnGaxQrbs8YK2kQbsQKTVMz
+	CFv0E/PDrZq7LU/NV7VlpNY1xftM=
+X-Google-Smtp-Source: AGHT+IGkf86sxr3E88riN9LY+fLnYRXO7KBtdBQuStB4h/v7RHbcSd+YPmDerO6Lb24C5vHUo5MWSE1B85bs0/AHILI=
+X-Received: by 2002:a05:6512:3d9e:b0:511:61b4:65c1 with SMTP id
+ k30-20020a0565123d9e00b0051161b465c1mr8974984lfv.39.1708310470192; Sun, 18
+ Feb 2024 18:41:10 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: support Fn+R dual-function
- key
-To: Gergo Koteles <soyer@irl.hu>, Hans de Goede <hdegoede@redhat.com>,
- =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0cdbc0e6eb65e160384ae0ed152e7de3ded1d9d5.1707604991.git.soyer@irl.hu>
-Content-Language: en-US
-From: Ike Panhc <ike.pan@canonical.com>
-In-Reply-To: <0cdbc0e6eb65e160384ae0ed152e7de3ded1d9d5.1707604991.git.soyer@irl.hu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240201031950.3225626-1-maobibo@loongson.cn> <20240201031950.3225626-3-maobibo@loongson.cn>
+In-Reply-To: <20240201031950.3225626-3-maobibo@loongson.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Mon, 19 Feb 2024 10:41:07 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H4f=m2xX7_WF3YkRbxWyVAyBLemNv3OVq-AbqtsKKtCyA@mail.gmail.com>
+Message-ID: <CAAhV-H4f=m2xX7_WF3YkRbxWyVAyBLemNv3OVq-AbqtsKKtCyA@mail.gmail.com>
+Subject: Re: [PATCH v4 2/6] LoongArch: KVM: Add hypercall instruction
+ emulation support
+To: Bibo Mao <maobibo@loongson.cn>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, virtualization@lists.linux.dev, 
+	kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2/11/24 06:51, Gergo Koteles wrote:
-> According to the manual, Fn+R adjusts the display refresh rate.
-> Map Fn+R to KEY_DISPLAYTOGGLE.
-> 
-> Signed-off-by: Gergo Koteles <soyer@irl.hu>
+Hi, Bibo,
+
+On Thu, Feb 1, 2024 at 11:19=E2=80=AFAM Bibo Mao <maobibo@loongson.cn> wrot=
+e:
+>
+> On LoongArch system, hypercall instruction is supported when system
+> runs on VM mode. This patch adds dummy function with hypercall
+> instruction emulation, rather than inject EXCCODE_INE invalid
+> instruction exception.
+>
+> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
 > ---
->  drivers/platform/x86/ideapad-laptop.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
-> index 88eefccb6ed2..4c130957f80d 100644
-> --- a/drivers/platform/x86/ideapad-laptop.c
-> +++ b/drivers/platform/x86/ideapad-laptop.c
-> @@ -1091,6 +1091,8 @@ static const struct key_entry ideapad_keymap[] = {
->  	{ KE_KEY,	0x07 | IDEAPAD_WMI_KEY, { KEY_HELP } },
->  	{ KE_KEY,	0x0e | IDEAPAD_WMI_KEY, { KEY_PICKUP_PHONE } },
->  	{ KE_KEY,	0x0f | IDEAPAD_WMI_KEY, { KEY_HANGUP_PHONE } },
-> +	/* Refresh Rate Toggle (Fn+R) */
-> +	{ KE_KEY,	0x10 | IDEAPAD_WMI_KEY, { KEY_DISPLAYTOGGLE } },
->  	/* Dark mode toggle */
->  	{ KE_KEY,	0x13 | IDEAPAD_WMI_KEY, { KEY_PROG1 } },
->  	/* Sound profile switch */
+>  arch/loongarch/include/asm/Kbuild      |  1 -
+>  arch/loongarch/include/asm/kvm_para.h  | 26 ++++++++++++++++++++++++++
+>  arch/loongarch/include/uapi/asm/Kbuild |  2 --
+>  arch/loongarch/kvm/exit.c              | 10 ++++++++++
+>  4 files changed, 36 insertions(+), 3 deletions(-)
+>  create mode 100644 arch/loongarch/include/asm/kvm_para.h
+>  delete mode 100644 arch/loongarch/include/uapi/asm/Kbuild
+>
+> diff --git a/arch/loongarch/include/asm/Kbuild b/arch/loongarch/include/a=
+sm/Kbuild
+> index 93783fa24f6e..22991a6f0e2b 100644
+> --- a/arch/loongarch/include/asm/Kbuild
+> +++ b/arch/loongarch/include/asm/Kbuild
+> @@ -23,4 +23,3 @@ generic-y +=3D poll.h
+>  generic-y +=3D param.h
+>  generic-y +=3D posix_types.h
+>  generic-y +=3D resource.h
+> -generic-y +=3D kvm_para.h
+> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/inclu=
+de/asm/kvm_para.h
+> new file mode 100644
+> index 000000000000..9425d3b7e486
+> --- /dev/null
+> +++ b/arch/loongarch/include/asm/kvm_para.h
+> @@ -0,0 +1,26 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_LOONGARCH_KVM_PARA_H
+> +#define _ASM_LOONGARCH_KVM_PARA_H
+> +
+> +/*
+> + * LoongArch hypcall return code
+Maybe using "hypercall" in comments is better.
 
-Acked-by: Ike Panhc <ike.pan@canonical.com>
+> + */
+> +#define KVM_HC_STATUS_SUCCESS          0
+> +#define KVM_HC_INVALID_CODE            -1UL
+> +#define KVM_HC_INVALID_PARAMETER       -2UL
+Maybe KVM_HCALL_SUCCESS/KVM_HCALL_INVALID_CODE/KVM_HCALL_PARAMETER is bette=
+r.
 
-BTW on which ideapad we need this patch?
+Huacai
 
-Thanks.
-
---
-Ike
+> +
+> +static inline unsigned int kvm_arch_para_features(void)
+> +{
+> +       return 0;
+> +}
+> +
+> +static inline unsigned int kvm_arch_para_hints(void)
+> +{
+> +       return 0;
+> +}
+> +
+> +static inline bool kvm_check_and_clear_guest_paused(void)
+> +{
+> +       return false;
+> +}
+> +#endif /* _ASM_LOONGARCH_KVM_PARA_H */
+> diff --git a/arch/loongarch/include/uapi/asm/Kbuild b/arch/loongarch/incl=
+ude/uapi/asm/Kbuild
+> deleted file mode 100644
+> index 4aa680ca2e5f..000000000000
+> --- a/arch/loongarch/include/uapi/asm/Kbuild
+> +++ /dev/null
+> @@ -1,2 +0,0 @@
+> -# SPDX-License-Identifier: GPL-2.0
+> -generic-y +=3D kvm_para.h
+> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
+> index ed1d89d53e2e..d15c71320a11 100644
+> --- a/arch/loongarch/kvm/exit.c
+> +++ b/arch/loongarch/kvm/exit.c
+> @@ -685,6 +685,15 @@ static int kvm_handle_lasx_disabled(struct kvm_vcpu =
+*vcpu)
+>         return RESUME_GUEST;
+>  }
+>
+> +static int kvm_handle_hypcall(struct kvm_vcpu *vcpu)
+> +{
+> +       update_pc(&vcpu->arch);
+> +
+> +       /* Treat it as noop intruction, only set return value */
+> +       vcpu->arch.gprs[LOONGARCH_GPR_A0] =3D KVM_HC_INVALID_CODE;
+> +       return RESUME_GUEST;
+> +}
+> +
+>  /*
+>   * LoongArch KVM callback handling for unimplemented guest exiting
+>   */
+> @@ -716,6 +725,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_ST=
+ART] =3D {
+>         [EXCCODE_LSXDIS]                =3D kvm_handle_lsx_disabled,
+>         [EXCCODE_LASXDIS]               =3D kvm_handle_lasx_disabled,
+>         [EXCCODE_GSPR]                  =3D kvm_handle_gspr,
+> +       [EXCCODE_HVC]                   =3D kvm_handle_hypcall,
+>  };
+>
+>  int kvm_handle_fault(struct kvm_vcpu *vcpu, int fault)
+> --
+> 2.39.3
+>
 
