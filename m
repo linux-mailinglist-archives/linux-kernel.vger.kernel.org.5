@@ -1,86 +1,130 @@
-Return-Path: <linux-kernel+bounces-71538-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12A9685A6D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D3E385A706
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:10:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C3111280D79
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:05:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00C0E280571
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A81A93839B;
-	Mon, 19 Feb 2024 15:05:07 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47945446D8;
+	Mon, 19 Feb 2024 15:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HT++SGvD"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FD9381B1
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:05:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C3037701;
+	Mon, 19 Feb 2024 15:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708355107; cv=none; b=Qo4gACj8P400XYQi/EuqL5CeNgfyC9vrboU1xE05hWfqRZQfid5AlzbmAOL/zz3XUJnxpdqOoimpDysKHfHG7wfnJsjU+FYr20sIEAkqwvVqflyCqZUR243V8Am80WwlD96VleO7FQ3AZX3SGmHyGJbzi3LMI/3939LLbwd/uN8=
+	t=1708355221; cv=none; b=KiYqrRNMXzFT/A/FtNH5/hvWvKeTGKi3qCMqC3DG26c99SpFNxxw7OLYSQuiJ49H28jrK0CTl8hk1k1iRrnzdrsu9Sa9ZooWZwYOc038vcWB/MvCgzebhPpCHnxsQtsX0IQgu0/Ri/PRFo12djTuIoIyLkUbBAcTw84HXSQ3A0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708355107; c=relaxed/simple;
-	bh=gmrF/d9fnvBujfvzzmEj2K6sNHpmgiuQK/4OQHkLnbM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=JOpHG4m3/jJGJijW9Ny4jOLnW1KXHad7BxY/H2tG6zXcS3KFA9J0jWndvs4kQTGIga3Ac9uz2J3bCVYK7cGH4lR1Tcaupva5OwvPgTFVA9IPh4Z/ny7n+BDUxTkaelLJfg3KfPQ0AbB0HEZX90Fl5KnmPcfWA9+zoJy4FUG96EQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c74d3ab389so82015139f.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:05:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708355105; x=1708959905;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DHKBFuNAT/YooSgZ/ha7+6WUrz4Zbm6cjlAajlAzOGQ=;
-        b=Z9Nc3DRBe7yqI1qDMx0JBVGF74PIISZbJ7bPoHqEjPO3jxFQqvnEH/rsmwGbk+zq3E
-         EWH9Y+qCPgKBD3D/unBdaL9l3XBOmrbmOEefgzQ/vsE9XdS12OVfBylb0/4z+NBEuYcR
-         d9+BOln3fG3dmIXw0lVl7Jj5dVTV6rGjPkqA5Tvzl3130cyim8+hJ9efYFA8QS17zp+0
-         2LZaIgrEc5rG1oUSMGvPkSenaV9MvDyDztXAiI/m97KQ43kbtMfRlgYU23srNKUtbOQd
-         Qnqh/eHS1EpXt5KfqfHR4G8+eov3FLO++zAwRvAoMHeAT/W/HbgoPiGDzWR3S6m09zQe
-         UEkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUZTw+/dl+u7VALKc+aDUqYPmTMP3nmYfs9bPIFnrxV0/SOyIRIKctcug74JkJH0RLDfZBLc3WC0QR8bsN7dG/uBNlhUnVFB9IZyIc7
-X-Gm-Message-State: AOJu0Yw8uTHtVmQZJgIysLl2rU+WxWDML6cXyx5lG2geNZFp77+P5+SI
-	ZfXQwzyxt5J/5w7BnWALj6LSiyTLToiKQNckoTyx+IAy7sMKg5GMjGYmHERfXBHiPXY6O7voN3R
-	ysH35NIpCpX+VYAFYpeKgzFOqUQMV7dTBM1MgbTpp6YCEW6/x5aBQBjg=
-X-Google-Smtp-Source: AGHT+IFlFXGsJ4D52+O4iBNFFJCNEZDJ5LbCNdjN7RFOLiN9InVzRRHKm9oS01hKvz4T0pp5os3+EuxIYwEXvmem1vANk80LbTNc
+	s=arc-20240116; t=1708355221; c=relaxed/simple;
+	bh=utfcqhg+6zII+yQBPRsJUw/zhNmlWQJxo5cBdL99Jgo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=oZiIyT7hmnPmAI9yjl7zA8nW63nXX4VBWM+gGawe018Yt7JiRmfuOgaoLOx9qnAHlpbRAKa+xk6oBGXKSRxkgg2jPpRv7tV4iYv8K55Sol2E2+gYCGC20OC6Ym+enjWVTKNtSvevN2SMRGt5RQtoYv8hqdh0zy53p+BJQOUx+b0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HT++SGvD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 32152C433C7;
+	Mon, 19 Feb 2024 15:07:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708355221;
+	bh=utfcqhg+6zII+yQBPRsJUw/zhNmlWQJxo5cBdL99Jgo=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=HT++SGvDsxz8u4VkBNjnD9qaA4FZ+16ZmIttmZ4pI/gyVmxr2FcobkDuKqZNO/Qz2
+	 1bTbQhSeGEcshay3q8urzY6H4K3fbWL0wb3ZXYxmpiKRVkA7Rkqoq4fdZu/ILdEoeV
+	 ZD+yoTMNoG85h+6L+LipQuNRJ0+b6FtVuED2xuh89RVo0zCnYdq5D+LefHie/8M38+
+	 XbloGf+1KXqrCZjDSQ67+R4i69GjUpQ2JniSXYTixgVKwYkn0f5SnekzWvNSIaP/Ct
+	 BwrO2omdPNuV935qrmeJLytVvijNXN7I+o2VWMjleDwTKxr5VK6gwbv7PbICUw7/4i
+	 gYYni4SFZBHAw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1476BC48BC3;
+	Mon, 19 Feb 2024 15:07:01 +0000 (UTC)
+From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
+Subject: [PATCH v3 0/3] arm64: dts: hi3798cv200: fix GICR size, add cache
+ info, maintenance irq and GICH, GICV spaces
+Date: Mon, 19 Feb 2024 23:05:25 +0800
+Message-Id: <20240219-cache-v3-0-a33c57534ae9@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:ea04:0:b0:7bf:ffe2:3537 with SMTP id
- m4-20020a6bea04000000b007bfffe23537mr92123ioc.3.1708355105010; Mon, 19 Feb
- 2024 07:05:05 -0800 (PST)
-Date: Mon, 19 Feb 2024 07:05:04 -0800
-In-Reply-To: <20240219140408.GB22070@breakpoint.cc>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002f3c3a0611bd6b5e@google.com>
-Subject: Re: [syzbot] [netfilter?] WARNING in __nf_unregister_net_hook (6)
-From: syzbot <syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com>
-To: fw@strlen.de, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADVu02UC/22Myw6CMBBFf8XM2prOgDxc+R/GRRkGaVRqWmw0h
+ H+3sNO4PDf3nAmCeCsBDpsJvEQbrBsSZNsNcG+GiyjbJgbSlGvCSrHhXhQiV01X7ouCCdL34aW
+ zr7VzOifubRidf6/ZiMv6W4iotCLWpjJ5XpKUR/ccb85dd+zusDQi/fUoedi1NdZCTZvJtzfP8
+ wc0A9KW1AAAAA==
+To: Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Jiancheng Xue <xuejiancheng@hisilicon.com>, Alex Elder <elder@linaro.org>, 
+ Peter Griffin <peter.griffin@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+ Yang Xiwen <forbidden405@outlook.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708355220; l=1734;
+ i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
+ bh=utfcqhg+6zII+yQBPRsJUw/zhNmlWQJxo5cBdL99Jgo=;
+ b=2PQbYA0iF6C0vZng2DScPn60GvXq/i3yJXMaSQS9RqK0McpsKIIUTJEWHyebhP70eiowmjzyT
+ ts1Cd5ksH14D6ALeqqux240ihttaargZG1Jx7lBJ7WdqYcjDbTAX6sQ
+X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
+ pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
+X-Endpoint-Received:
+ by B4 Relay for forbidden405@outlook.com/20230724 with auth_id=67
+X-Original-From: Yang Xiwen <forbidden405@outlook.com>
+Reply-To: <forbidden405@outlook.com>
 
-Hello,
+The patchset fixes some warnings reported by the kernel during boot.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+The cache size info is from Processor_Datasheet_v2XX.pdf [1], Section
+2.2.1 Master Processor.
 
-Reported-and-tested-by: syzbot+de4025c006ec68ac56fc@syzkaller.appspotmail.com
+The cache line size and the set-associative info are from Cortex-A53
+Documentation [2].
 
-Tested on:
+From the doc, it can be concluded that L1 i-cache is 4-way assoc, L1
+d-cache is 2-way assoc and L2 cache is 16-way assoc. Calculate the dts
+props accordingly.
 
-commit:         34bfd872 netfilter: nf_tables: raise dormant flag agai..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/fwestphal/nf.git dormant-reset
-console output: https://syzkaller.appspot.com/x/log.txt?x=1495c734180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=52f6b87f61a6b59c
-dashboard link: https://syzkaller.appspot.com/bug?extid=de4025c006ec68ac56fc
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+Also, to use KVM's VGIC code, GICH, GICV registers spaces and maintenance
+IRQ are added to the dts with verification.
 
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+[1]: https://github.com/96boards/documentation/blob/master/enterprise/poplar/hardware-docs/Processor_Datasheet_v2XX.pdf
+[2]: https://developer.arm.com/documentation/ddi0500/j/Level-1-Memory-System
+
+Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+---
+Changes in v3:
+- send patches to stable (Andrew Lunn)
+- rewrite the commit logs more formally (Andrew Lunn)
+- rename l2-cache0 to l2-cache (Krzysztof Kozlowski)
+- Link to v2: https://lore.kernel.org/r/20240218-cache-v2-0-1fd919e2bd3e@outlook.com
+
+Changes in v2:
+- arm64: dts: hi3798cv200: add GICH, GICV register spces and
+  maintainance IRQ.
+- Link to v1: https://lore.kernel.org/r/20240218-cache-v1-0-2c0a8a4472e7@outlook.com
+
+---
+Yang Xiwen (3):
+      arm64: dts: hi3798cv200: fix the size of GICR
+      arm64: dts: hi3798cv200: add GICH, GICV register space and irq
+      arm64: dts: hi3798cv200: add cache info
+
+ arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 43 +++++++++++++++++++++++++-
+ 1 file changed, 42 insertions(+), 1 deletion(-)
+---
+base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
+change-id: 20240218-cache-11c8bf7566c2
+
+Best regards,
+-- 
+Yang Xiwen <forbidden405@outlook.com>
+
 
