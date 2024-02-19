@@ -1,249 +1,114 @@
-Return-Path: <linux-kernel+bounces-70663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64F53859AD3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06186859ADB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:57:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 88F8D1C2109F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:46:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38E841C20F25
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE52257D;
-	Mon, 19 Feb 2024 02:45:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9F973D7B;
+	Mon, 19 Feb 2024 02:57:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SfUPBW1I"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="QBTww7cr"
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E881C20F1
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 02:45:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852F12103
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 02:57:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708310753; cv=none; b=WTON8CZBkcU+JlVlVQbn3/BnjUudBH2LQZAzPA3mFyxjUzm59z4htoKvHilJeh2ZqKDoJR/m+UHP8r59+XrD4mipHlzWw2zqY7yGAA/TSAtAoqTN5uRNvL9nMksQFqoM+EqFPc6cYOPCCNBvD7RSKkhYEoFxQBS9H9g04scqTwQ=
+	t=1708311437; cv=none; b=mRnFWh5DdnHN+tkt7I6aAiSmV/yy6Xg3+MbJ6eSzy8IIb5rfnSS3HVqbQtq1HriZob4mokwfNRK8TRuzvpArbT06G4KUS/Ptid3dEd7+VMLXGBRSzNvJ3PD+dWe7GFxduZF0O2AvzZMdjNGxJgc0B7kv8AIh1eUXsstZ1cGM4CU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708310753; c=relaxed/simple;
-	bh=jLKo4UyGeYxJZoyOzIUF8wJoLEiraRcY6Lb44gvdGHY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pv0jH5RhjzK3BMXYyM92dmhmabQBapYP7/cbQa7EeXzy1bCxuR94EuAM0T6dsBPnRnrzcp7G2S7U/HJ6AMWEVy/h6bfgKd57Ls1NFERdmYqj2mz2Uq3HrCBa6pToPaJhDxMKH63kIqS7oLbr3ab1y4waTWDn2uqBVd/UXiYAlpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SfUPBW1I; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708310752; x=1739846752;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jLKo4UyGeYxJZoyOzIUF8wJoLEiraRcY6Lb44gvdGHY=;
-  b=SfUPBW1IoAd7+gMJB85Km0OM6FdQMNwibqLLZ0u3qbGmNlp9Kdb3Rjax
-   y66tT6xEcHtCToLgBXPmaXsy/Y80qA39WeB0uqEu8dk2/y4surPglFctc
-   SOOMx4g04wnD3JYf8mQCOf6kRpmUzqZujlJwJqvSJpj6resheHKdLuCGt
-   I3n4bCCmlrwdcAqk0yoT21Jqbm4sVNN/tz1cQUMbtbAqFZedztNGeRJjj
-   DghHAGIi9Kji7qHWX/byyA2qRjAqdhZHRcK+ek3BvTcRF/5nvjhzkfVDo
-   /Op8nz7QxsFYlu5OJvH9i26ruzUOgbhf3/GisRU3uHZ+7c2z+zDib1XS5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="13484224"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="13484224"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 18:45:51 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="27527006"
-Received: from yuhanliu-mobl.ccr.corp.intel.com (HELO [10.254.209.179]) ([10.254.209.179])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 18:45:47 -0800
-Message-ID: <eace2ec0-0b8b-450d-b05f-7b7ca3e473a7@linux.intel.com>
-Date: Mon, 19 Feb 2024 10:45:43 +0800
+	s=arc-20240116; t=1708311437; c=relaxed/simple;
+	bh=/sT628QU7hhhOgu/cwt/DOFforB7kkTOr1NUg6K+gJ0=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=msvve7wfvLI4ZUC4Vgz/S7Ior/cjBByKRo8i+mt9IlH0oeGvsKhXMggQw8KSH31s5u34lF8hKEIWGMTZp9zZWqf6jwSKdKoPI5gwF1mA6vPIi+Hi6BoqKCWEa3rRm7GSjW90WjicyMiV6koR25GI5h+grXxihCaZtavVYw7Lddo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=QBTww7cr; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 3C72A2C0270;
+	Mon, 19 Feb 2024 15:51:58 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1708311118;
+	bh=/sT628QU7hhhOgu/cwt/DOFforB7kkTOr1NUg6K+gJ0=;
+	h=From:To:Subject:Date:References:In-Reply-To:From;
+	b=QBTww7cryoBEcwLYtR6q5ueAEMVVHO9gaxqHKqynPL4t6Pn5apTeWv+hO4QSRl8iK
+	 zdvXwPjZdIj3SF9pQ4gAcCgfmiiv2SLbO6QLgE2tg+yfDc14LgRqtP1HGUrQyCIyrN
+	 580U7SGWXEo7xynot121kxFct1zrEHzYypnBVuT7mtOupZ5YcVReYSUE546tvTCGhI
+	 RplUvB6YkDP/gURV6XFUVoG6he6jbnTHR70aTkudprxmOr2Jw6dK/mVTkg1EcQxrFE
+	 28CahbBREBl+uutmJEcC2jHEMkWEvgqyQA05wKD6NI2N7+D3XhS1Om50SHs4fOfWEV
+	 i8p8Oo2G/Oq6Q==
+Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B65d2c24e0001>; Mon, 19 Feb 2024 15:51:58 +1300
+Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
+ svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 19 Feb 2024 15:51:57 +1300
+Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
+ svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
+ 15.02.1118.040; Mon, 19 Feb 2024 15:51:57 +1300
+From: Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+To: Antoniu Miclaus <antoniu.miclaus@analog.com>, Alessandro Zummo
+	<a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	"Jean Delvare" <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+	"linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+Subject: Re: [PATCH v9 2/2] rtc: max31335: add driver support
+Thread-Topic: [PATCH v9 2/2] rtc: max31335: add driver support
+Thread-Index: AQHaYt6aqhqsMvt9rUeZpcrpI3oGpA==
+Date: Mon, 19 Feb 2024 02:51:57 +0000
+Message-ID: <1a51a8ac-e2a6-4054-b91d-c860913b7385@alliedtelesis.co.nz>
+References: <20231120120114.48657-1-antoniu.miclaus@analog.com>
+ <20231120120114.48657-2-antoniu.miclaus@analog.com>
+In-Reply-To: <20231120120114.48657-2-antoniu.miclaus@analog.com>
+Accept-Language: en-NZ, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6D9684104BB159439CC41F4F009C1578@atlnz.lc>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] iommu/vt-d: Use rbtree to track iommu probed devices
-To: Lu Baolu <baolu.lu@linux.intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>
-Cc: Huang Jiaqing <jiaqing.huang@intel.com>, iommu@lists.linux.dev,
- linux-kernel@vger.kernel.org
-References: <20240215072249.4465-1-baolu.lu@linux.intel.com>
- <20240215072249.4465-2-baolu.lu@linux.intel.com>
-From: Ethan Zhao <haifeng.zhao@linux.intel.com>
-In-Reply-To: <20240215072249.4465-2-baolu.lu@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65d2c24e a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=_jlGtV7tAAAA:8 a=gAnH3GRIAAAA:8 a=FVfxCX4UZNgzJca5yKQA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=nlm17XC03S6CtCLSeiRr:22 a=oVHKYsEdi7-vN-J5QA_j:22
+X-SEG-SpamProfiler-Score: 0
 
-
-On 2/15/2024 3:22 PM, Lu Baolu wrote:
-> Use a red-black tree(rbtree) to track devices probed by the driver's
-> probe_device callback. These devices need to be looked up quickly by
-> a source ID when the hardware reports a fault, either recoverable or
-> unrecoverable.
->
-> Fault reporting paths are critical. Searching a list in this scenario
-> is inefficient, with an algorithm complexity of O(n). An rbtree is a
-> self-balancing binary search tree, offering an average search time
-> complexity of O(log(n)). This significant performance improvement
-> makes rbtrees a better choice.
->
-> Furthermore, rbtrees are implemented on a per-iommu basis, eliminating
-> the need for global searches and further enhancing efficiency in
-> critical fault paths. The rbtree is protected by a spin lock with
-> interrupts disabled to ensure thread-safe access even within interrupt
-> contexts.
->
-> Co-developed-by: Huang Jiaqing <jiaqing.huang@intel.com>
-> Signed-off-by: Huang Jiaqing <jiaqing.huang@intel.com>
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> ---
->   drivers/iommu/intel/iommu.h |  7 +++++
->   drivers/iommu/intel/dmar.c  |  3 +-
->   drivers/iommu/intel/iommu.c | 62 +++++++++++++++++++++++++++++++++++--
->   3 files changed, 69 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-> index cf9a28c7fab8..54eeaa8e35a9 100644
-> --- a/drivers/iommu/intel/iommu.h
-> +++ b/drivers/iommu/intel/iommu.h
-> @@ -716,6 +716,11 @@ struct intel_iommu {
->   	struct q_inval  *qi;            /* Queued invalidation info */
->   	u32 iommu_state[MAX_SR_DMAR_REGS]; /* Store iommu states between suspend and resume.*/
->   
-> +	/* rb tree for all probed devices */
-> +	struct rb_root device_rbtree;
-> +	/* protect the device_rbtree */
-> +	spinlock_t device_rbtree_lock;
-> +
->   #ifdef CONFIG_IRQ_REMAP
->   	struct ir_table *ir_table;	/* Interrupt remapping info */
->   	struct irq_domain *ir_domain;
-> @@ -749,6 +754,8 @@ struct device_domain_info {
->   	struct intel_iommu *iommu; /* IOMMU used by this device */
->   	struct dmar_domain *domain; /* pointer to domain */
->   	struct pasid_table *pasid_table; /* pasid table */
-> +	/* device tracking node(lookup by PCI RID) */
-> +	struct rb_node node;
->   #ifdef CONFIG_INTEL_IOMMU_DEBUGFS
->   	struct dentry *debugfs_dentry; /* pointer to device directory dentry */
->   #endif
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index 23cb80d62a9a..f9b63c2875f7 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -1095,7 +1095,8 @@ static int alloc_iommu(struct dmar_drhd_unit *drhd)
->   	iommu->agaw = agaw;
->   	iommu->msagaw = msagaw;
->   	iommu->segment = drhd->segment;
-> -
-> +	iommu->device_rbtree = RB_ROOT;
-> +	spin_lock_init(&iommu->device_rbtree_lock);
->   	iommu->node = NUMA_NO_NODE;
->   
->   	ver = readl(iommu->reg + DMAR_VER_REG);
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index a81a2be9b870..09009d96e553 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -96,6 +96,55 @@ static phys_addr_t root_entry_uctp(struct root_entry *re)
->   	return re->hi & VTD_PAGE_MASK;
->   }
->   
-> +static int device_rid_cmp_key(const void *key, const struct rb_node *node)
-> +{
-> +	struct device_domain_info *info =
-> +		rb_entry(node, struct device_domain_info, node);
-> +	const u16 *rid_lhs = key;
-> +
-> +	if (*rid_lhs < PCI_DEVID(info->bus, info->devfn))
-> +		return -1;
-> +
-> +	if (*rid_lhs > PCI_DEVID(info->bus, info->devfn))
-> +		return 1;
-> +
-> +	return 0;
-> +}
-> +
-> +static int device_rid_cmp(struct rb_node *lhs, const struct rb_node *rhs)
-> +{
-> +	struct device_domain_info *info =
-> +		rb_entry(lhs, struct device_domain_info, node);
-> +	u16 key = PCI_DEVID(info->bus, info->devfn);
-> +
-> +	return device_rid_cmp_key(&key, rhs);
-> +}
-> +
-> +static int device_rbtree_insert(struct intel_iommu *iommu,
-> +				struct device_domain_info *info)
-> +{
-> +	struct rb_node *curr;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
-> +	curr = rb_find_add(&info->node, &iommu->device_rbtree, device_rid_cmp);
-> +	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
-> +	if (curr)
-> +		dev_warn(info->dev, "device already in rbtree\n");
-> +
-> +	return curr ? -EEXIST : 0;
-> +}
-> +
-> +static void device_rbtree_remove(struct device_domain_info *info)
-> +{
-> +	struct intel_iommu *iommu = info->iommu;
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
-> +	rb_erase(&info->node, &iommu->device_rbtree);
-> +	spin_unlock_irqrestore(&iommu->device_rbtree_lock, flags);
-> +}
-> +
->   /*
->    * This domain is a statically identity mapping domain.
->    *	1. This domain creats a static 1:1 mapping to all usable memory.
-> @@ -4264,25 +4313,34 @@ static struct iommu_device *intel_iommu_probe_device(struct device *dev)
->   	}
->   
->   	dev_iommu_priv_set(dev, info);
-> +	ret = device_rbtree_insert(iommu, info);
-> +	if (ret)
-> +		goto free;
->   
->   	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
->   		ret = intel_pasid_alloc_table(dev);
->   		if (ret) {
->   			dev_err(dev, "PASID table allocation failed\n");
-> -			kfree(info);
-> -			return ERR_PTR(ret);
-> +			goto clear_rbtree;
->   		}
->   	}
->   
->   	intel_iommu_debugfs_create_dev(info);
->   
->   	return &iommu->iommu;
-> +clear_rbtree:
-> +	device_rbtree_remove(info);
-> +free:
-> +	kfree(info);
-> +
-> +	return ERR_PTR(ret);
->   }
->   
->   static void intel_iommu_release_device(struct device *dev)
->   {
->   	struct device_domain_info *info = dev_iommu_priv_get(dev);
->   
-> +	device_rbtree_remove(info);
-
-Perhpas too early here to remove dev from the rbtree, if it is wanted in
-devTLB invalidation steps in intel_pasid_tear_down_entry().
-
-Thanks,
-Ethan
-
->   	dmar_remove_one_dev_info(dev);
->   	intel_pasid_free_table(dev);
->   	intel_iommu_debugfs_remove_dev(info);
+SGkgQWxsLA0KDQpJJ20gbG9va2luZyBhdCBmb2xkaW5nIHRoaXMgaW50byB0aGUgcmVzdCBvZiB0
+aGUgbWF4MzEzeHggc3VwcG9ydCAoYnV0IA0KSSdsbCBzdGljayB3aXRoIHRoZSBtYXgzMTMzNSBu
+YW1lIHNpbmNlIHRoYXQncyBsYW5kZWQpIGFuZCBJIG5vdGljZWQgYSANCnByb2JsZW0uDQoNCk9u
+IDIxLzExLzIzIDAxOjAwLCBBbnRvbml1IE1pY2xhdXMgd3JvdGU6DQo+IFJUQyBkcml2ZXIgZm9y
+IE1BWDMxMzM1IMKxMnBwbSBBdXRvbW90aXZlIFJlYWwtVGltZSBDbG9jayB3aXRoDQo+IEludGVn
+cmF0ZWQgTUVNUyBSZXNvbmF0b3IuDQo+DQo+IFJldmlld2VkLWJ5OiBHdWVudGVyIFJvZWNrIDxs
+aW51eEByb2Vjay11cy5uZXQ+DQo+IFNpZ25lZC1vZmYtYnk6IEFudG9uaXUgTWljbGF1cyA8YW50
+b25pdS5taWNsYXVzQGFuYWxvZy5jb20+DQo8c25pcD4NCj4gKw0KPiArc3RhdGljIGJvb2wgbWF4
+MzEzMzVfdm9sYXRpbGVfcmVnKHN0cnVjdCBkZXZpY2UgKmRldiwgdW5zaWduZWQgaW50IHJlZykN
+Cj4gK3sNCj4gKwkvKiB0aW1lIGtlZXBpbmcgcmVnaXN0ZXJzICovDQo+ICsJaWYgKHJlZyA+PSBN
+QVgzMTMzNV9TRUNPTkRTICYmDQo+ICsJICAgIHJlZyA8IE1BWDMxMzM1X1NFQ09ORFMgKyBNQVgz
+MTMzNV9USU1FX1NJWkUpDQo+ICsJCXJldHVybiB0cnVlOw0KPiArDQo+ICsJLyogaW50ZXJydXB0
+IHN0YXR1cyByZWdpc3RlciAqLw0KPiArCWlmIChyZWcgPT0gTUFYMzEzMzVfSU5UX0VOMV9BMUlF
+KQ0KPiArCQlyZXR1cm4gdHJ1ZTsNClByZXN1bWFibHkgdGhpcyBzaG91bGQgYmUgc29tZXRoaW5n
+IGVsc2UgYXMgTUFYMzEzMzVfSU5UX0VOMV9BMUlFIGlzIGEgDQpiaXRmaWVsZCBvZmZzZXQgbm90
+IGEgcmVnaXN0ZXIuwqAgQmFzZWQgb24gdGhlIG90aGVyIGNoaXBzIEknbSBndWVzc2luZyANCnRo
+aXMgc2hvdWxkIGJlIGByZWcgPT0gTUFYMzEzMzVfU1RBVFVTMWAuIEknbGwgdHJ5IHRvIGluY29y
+cG9yYXRlIGEgZml4IA0KaW50byBteSB1cGRhdGUgYnV0IHNvbWVvbmUgbWlnaHQgd2FudCB0byBm
+aXggaXQgdXAgZm9yIHN0YWJsZS4NCj4gKw0KPiArCS8qIHRlbXBlcmF0dXJlIHJlZ2lzdGVycyAq
+Lw0KPiArCWlmIChyZWcgPT0gTUFYMzEzMzVfVEVNUF9EQVRBX01TQiB8fCBNQVgzMTMzNV9URU1Q
+X0RBVEFfTFNCKQ0KPiArCQlyZXR1cm4gdHJ1ZTsNCj4gKw0KPiArCXJldHVybiBmYWxzZTsNCj4g
+K30NCj4gKw0K
 
