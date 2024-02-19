@@ -1,125 +1,139 @@
-Return-Path: <linux-kernel+bounces-71659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0A4485A897
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:18:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A630385A8A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:19:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 813F0B2387B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:18:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8C841C231A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:19:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0321F3E470;
-	Mon, 19 Feb 2024 16:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABFF3CF71;
+	Mon, 19 Feb 2024 16:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C5cj25p+"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kRt2ZEVE"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB6E83D0D8
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4D13B1B2;
+	Mon, 19 Feb 2024 16:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359496; cv=none; b=VgIqC9BHaVRGEq9+ABf1WlGZVma54fNELC9o9alGM6CuFz0BEyVexIh31hSavMfNAAnYxCSPTxjBflV37BR3O3JA8aPpExIraeMv8KyRlceid+SbmNH14sPQ6E8T8jFhrZfAgI6uMlXQvRIZzQ9FZW/1eotlUvrRvdhKc8wUGWw=
+	t=1708359530; cv=none; b=p66c90+yfzlRxfHZCTBlNctkRAqJnR3g9uD/8Z/g9M+8A9e6mYpjUHa7eIw8dgyhtKEEEB3JYERnxGIWN44F5ZWqbafjrgJnzwpi3sFFV5ciArDppYZr5bWH/KBu3mqMFJ9wx8qdtKVLexFrmfBlr/SQHXJPM9PDTajFdkKmsfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359496; c=relaxed/simple;
-	bh=DKi9ClYEI2bnAdqgXQhxDsS6OIw5QRI8XJDUvDaOSFw=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OCqzwI+eMMPCQN4o2/mU8fqkUVrL6Wse/5QYhVYxNnKHJEGFJGCD/xOOBWWKrmeSTUolj1ezW43zPtgjbR2qtE3n9KTNghckB3WX+y/Ub65qBUSgL311NJ7rKbsBtjO+Pn1Pmq/qwE3mE+ydOhMbgM8DHBlEN0v6coPr5puV+Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C5cj25p+; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-607a628209eso81426857b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:18:14 -0800 (PST)
+	s=arc-20240116; t=1708359530; c=relaxed/simple;
+	bh=5LP7ITI8IxR8FihyrEfCPsDi/hGVUhuwAapc8ojBuww=;
+	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=evDUyZ+0fly5MFBsmFn9VaPoh7NALfvntcHu6ChdFOQM9dIBDU2jwWhErEKx6Fn/HdSE8E3eQs9ZVLpOUcDaRbP4bh7ccw4c7DXuG0QxnkcP9qMfrjNF1jENUMRBpAg84Z5f2VJDQru9qCap0Vqk1kXX75WKdfTGWYt+Se/zNnE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kRt2ZEVE; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3e82664d53so164766366b.3;
+        Mon, 19 Feb 2024 08:18:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708359494; x=1708964294; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qxVgM4sFgvltRiBksmHu5Sv+NRJFlTzi90+ryT5Fkzk=;
-        b=C5cj25p+vuXpbVTM2ftW/3LHvunPLMp4SvtJAq5TiGaWFY4d+fVYbAZLEg2dW+rF3g
-         nGfA37wHdOmh2MYDKyh/OUkGlrmrKmQCDJSM08OufxNo42xLdY7bLzyNZZqPjVk4QTKX
-         EjZKRl0+UP4GgXX2w+ihi2idqYmU5XxkKA2+zmkI2QfvfW01ebr7l4FlFGmJK1E7a8Aq
-         2bod52ZM/X64fnj5NpBZdskkNrgDpW0ob0TwG4B8u4nuqQw++1cSx1UZYbonQp3JsvDb
-         EPByTn9/7fsLqknsvvMQ47+TGdkkqngIGmV2RUdmfaZawey/uY4LwzihvVkhJO/Umd/4
-         3wyQ==
+        d=gmail.com; s=20230601; t=1708359527; x=1708964327; darn=vger.kernel.org;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XnGkOpf2CVhPz/zljsYVnaZe/git0nem6as96fuozFY=;
+        b=kRt2ZEVELTC8206hPrKBxwHd0K7EEonen9W+xLVkxzYcedVhxpaUXoP3FH5iD7wnoJ
+         RVoBpnJfThUlUm+tv0ttDU2JI6zi/CwTfpNjabQuGg7sGr1Jb8ytOaIOaCqdk7RJk0KE
+         M+6+MFipJMczJ0lID/MfgiXjovWjPO0W+yPn/zEP/ZqZ1w9uinzJmHEPYL01ds7BYUTn
+         w5ky8UepE1f+9REx40hivXM2X316W/FjclBd66LFHdp9Mah2Pz/FjTORpuOIZ5OkWxnS
+         zhyzogl/sr3sZpVKtD4qOehl7ghQjDjaZtpuq6lZR/QrrW/cmg3oAFVI5RUQBZQtWtiu
+         pm3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708359494; x=1708964294;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qxVgM4sFgvltRiBksmHu5Sv+NRJFlTzi90+ryT5Fkzk=;
-        b=tzjnFXuH47H0/Vf9Io6frAgPY/AEU7I/bQU2X45KTLw7xAUQo55UxL2ypM2nh20nxd
-         h9rzTgVvynRhbymJYKfICdh5eLRGz9hMjtRlyUImak2gOFo3HodUnACV1RkxMOgUtvgh
-         pFonI8+yfCIS5obQ2DFYJ9z+N+DGZAb4TcvMkiLqCHzZIHU7ZT7ythRvLT/b3NzWQgaD
-         27kkVRgJoz4fM/3/K3B5t2KpnYmrpFE/swL4H06NckOSG9yS2OxXpHIScPtVYo4MKM6q
-         cVY7KNxclwWhru5x9RizAq+UA5TojNmYGwgfkM0Urt6PlZRmkUhonREXOB7az8/UJRvK
-         caIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAEQuELW69KR5RcxS6yK+NI7S5MjJsPc20N8805pfICWmjlpUDOCmXaEvOARxL1ZMvd5aG72J79D7ENxI+0D5c5xI+K0wLC7AQPKEf
-X-Gm-Message-State: AOJu0YxXNJFoOTuxECn7GVOMQvLbawS/w8PggTvukLnWAPn8Z9XmDd0f
-	ocD0+QzVtGkG8Rzs2uCYGlnUPDTKeLUNWtMuXpZIxIARzB2fRYM0E02sGfKib6eLCORAhS+z488
-	MOw==
-X-Google-Smtp-Source: AGHT+IHPO+KAFMFbQFRd+7ASVQ43PJ+mYJJ1avOdvFckaE7fEErIBRHV5mqyYUo8l3V2m9JAyHSm0+2KWrU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a0d:e611:0:b0:607:9268:6665 with SMTP id
- p17-20020a0de611000000b0060792686665mr3175499ywe.10.1708359493839; Mon, 19
- Feb 2024 08:18:13 -0800 (PST)
-Date: Mon, 19 Feb 2024 08:18:12 -0800
-In-Reply-To: <ZdDGooxx/a+sAzmq@yilunxu-OptiPlex-7050>
+        d=1e100.net; s=20230601; t=1708359527; x=1708964327;
+        h=in-reply-to:references:cc:to:from:subject:message-id:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XnGkOpf2CVhPz/zljsYVnaZe/git0nem6as96fuozFY=;
+        b=AL63P20PQMOaCq1qnhE7FsHjEMEeRzOED63Ur3I8AWWYpHyP8tAYYVjDNe7xVEhV4w
+         I35Ox+KUYwtTNP93vpeKvNojtqlygThbbph2z42ZGKA3IexCYumxxWhzaBoUnyKlkDwe
+         PXdMiWiXyKFdd5j3JBIGLBcUJHzAQWgbcPi/V6uN3bBWh+d7tcx1KMgJ349lEhZ+rjTS
+         0FCCMIYK1nOAaWQ0SGBjf3uWkwvRyhTeoqJPiNhDOIApwnGhOzt2dhr3IAVilWKHyLo4
+         /i/moI8Xf5vuRVEM0q19WK0OwrGx1ZWAIIlx7gEF30FvJrg1CK4JbRQe5YW77pBSrPnn
+         J6iQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVANScUt2sXLnupRb0x8aW6ITlNvIoSsMi+W+68EKeCE6rys5hIk5s32XusOWscyRFYhU0QKAzn5bKWKA/Uu+VpY9Lpl4YNea67tAvM5LmhB/kc5ctLEFWu5vleMElfDM/NrZ6eS407XWE=
+X-Gm-Message-State: AOJu0YyzIXVWS5pjLjqPkGUtIDeQpmDftdqrY8YbKEYcKvEcE1gDyoLY
+	PkfyeXoVYBf+rgs3Z+lbxAOfhYI4aG2AedTPUGmy5is9qzhwl8x1
+X-Google-Smtp-Source: AGHT+IGUUJV/eeBIPCMl91Llf2j9jWuLG81QcvUsRhfs2AAcLV0xDw8mFgA+LpOP6YpcRwzhpcHTFg==
+X-Received: by 2002:a17:906:1cc5:b0:a3e:98ee:765d with SMTP id i5-20020a1709061cc500b00a3e98ee765dmr1790223ejh.60.1708359527215;
+        Mon, 19 Feb 2024 08:18:47 -0800 (PST)
+Received: from localhost (p200300e41f2d4600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f2d:4600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id tj1-20020a170907c24100b00a3d35bccdf0sm3099051ejc.139.2024.02.19.08.18.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 08:18:46 -0800 (PST)
+Content-Type: multipart/signed;
+ boundary=5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240209222858.396696-1-seanjc@google.com> <20240209222858.396696-2-seanjc@google.com>
- <ZdDGooxx/a+sAzmq@yilunxu-OptiPlex-7050>
-Message-ID: <ZdN_RM2awyNyKiZu@google.com>
-Subject: Re: [PATCH v4 1/4] KVM: x86/mmu: Retry fault before acquiring
- mmu_lock if mapping is changing
-From: Sean Christopherson <seanjc@google.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Yan Zhao <yan.y.zhao@intel.com>, Friedrich Weber <f.weber@proxmox.com>, 
-	Kai Huang <kai.huang@intel.com>, Yuan Yao <yuan.yao@linux.intel.com>, 
-	Yu Zhang <yu.c.zhang@linux.intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Fuad Tabba <tabba@google.com>, Michael Roth <michael.roth@amd.com>, 
-	Isaku Yamahata <isaku.yamahata@intel.com>, David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="us-ascii"
+Date: Mon, 19 Feb 2024 17:18:46 +0100
+Message-Id: <CZ96WS1F2H67.CCTTAWAZX7PF@gmail.com>
+Subject: Re: [PATCH v2 1/2] clocksource/drivers/timer-tegra186: add
+ WDIOC_GETTIMELEFT support
+From: "Thierry Reding" <thierry.reding@gmail.com>
+To: "Pohsun Su" <pohsuns@nvidia.com>, <daniel.lezcano@linaro.org>,
+ <tglx@linutronix.de>, <jonathanh@nvidia.com>
+Cc: <sumitg@nvidia.com>, <linux-kernel@vger.kernel.org>,
+ <linux-tegra@vger.kernel.org>
+X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
+References: <20240216210258.24855-1-pohsuns@nvidia.com>
+ <20240216210258.24855-2-pohsuns@nvidia.com>
+In-Reply-To: <20240216210258.24855-2-pohsuns@nvidia.com>
 
-On Sat, Feb 17, 2024, Xu Yilun wrote:
-> >  static int kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault,
-> >  			   unsigned int access)
-> >  {
-> > +	struct kvm_memory_slot *slot = fault->slot;
-> >  	int ret;
-> >  
-> >  	fault->mmu_seq = vcpu->kvm->mmu_invalidate_seq;
-> >  	smp_rmb();
-> >  
-> > +	/*
-> > +	 * Check for a relevant mmu_notifier invalidation event before getting
-> > +	 * the pfn from the primary MMU, and before acquiring mmu_lock.
-> > +	 *
-> > +	 * For mmu_lock, if there is an in-progress invalidation and the kernel
-> > +	 * allows preemption, the invalidation task may drop mmu_lock and yield
-> > +	 * in response to mmu_lock being contended, which is *very* counter-
-> > +	 * productive as this vCPU can't actually make forward progress until
-> > +	 * the invalidation completes.
-> > +	 *
-> > +	 * Retrying now can also avoid unnessary lock contention in the primary
-> > +	 * MMU, as the primary MMU doesn't necessarily hold a single lock for
-> > +	 * the duration of the invalidation, i.e. faulting in a conflicting pfn
-> > +	 * can cause the invalidation to take longer by holding locks that are
-> > +	 * needed to complete the invalidation.
-> > +	 *
-> > +	 * Do the pre-check even for non-preemtible kernels, i.e. even if KVM
-> > +	 * will never yield mmu_lock in response to contention, as this vCPU is
-> > +	 * *guaranteed* to need to retry, i.e. waiting until mmu_lock is held
-> > +	 * to detect retry guarantees the worst case latency for the vCPU.
-> > +	 */
-> > +	if (!slot &&
-> 
-> typo?   if (slot &&
+--5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Ugh, and bad testing on my end.
+On Fri Feb 16, 2024 at 10:02 PM CET, Pohsun Su wrote:
+[...]
+> diff --git a/drivers/clocksource/timer-tegra186.c b/drivers/clocksource/t=
+imer-tegra186.c
+[...]
+> @@ -234,12 +239,49 @@ static int tegra186_wdt_set_timeout(struct watchdog=
+_device *wdd,
+>  	return 0;
+>  }
+> =20
+> +static unsigned int tegra186_wdt_get_timeleft(struct watchdog_device *wd=
+d)
+> +{
+> +	struct tegra186_wdt *wdt =3D to_tegra186_wdt(wdd);
+> +	u32 timeleft;
+> +	u32 expiration;
+
+One more thing I noticed: you could put both of these declarations on a
+single line to make this a bit more compact.
+
+Thierry
+
+--5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXTf2YACgkQ3SOs138+
+s6E30w//RlBSnLCPyQUCIOSqMYVuZUurdNauTPP7qqPY/IIOiqNIekmR+XRVjEDZ
+A7pk4k1xqy8W9hfDYptB+F+3FpAgwT6Zk0kuIlD8lQgBhuHdfLXEmLyv+ZIBJJ1/
+MNPXk89CIL3MDz5LDveTIVFG9jr8PO9WpPXjKFY+bN0tV/XAqAH7GKpW/ViUzE+w
+dCIiN0GsH1/K8MxhOyl/juWZCAF7FpCxkWJ/CCJM5D6tQlP5qpw2bAwoFmlRD8PB
+h92WRSlXCs2oiS58curADylcOvGFS8K26EJoP7vaAjGx//UiYBPrC0q1MfReROyx
+Nd424Uv1jMPWbWpS4rRLwLsLTg3hlxGVHkkeXBvHtd5PF1JCvu9HXwzpIbP9X+nP
+XWW0ksjeb+kQFoeXNTnYSHI8VsJXy3bnhM76U6TQZGXAOkQdF+uoP0VH1Nj9JGwo
+SHSXfYWrXvVscWo1rQNDMZ6S2OmzRLpzLAr0cPQ6EEJ+cHZyFMShWMN5HwuaI4KA
+Rvj24XY5z00kZFDPD7m590pqyWfbxakj9Q43oOSLMcs1B27REH1efAtiaQMIRe40
+CxiFK7ayjesBpNz22hN4L9iCm0QtNcDZiiAW/f1+jq419fUkIQPox6S1h8v4C3iJ
+IZ+NiKstX7lczpyFv2t3AuCfmQyHfrAt475aCitHZJGCWTvLMkA=
+=ZlBV
+-----END PGP SIGNATURE-----
+
+--5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91--
 
