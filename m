@@ -1,45 +1,44 @@
-Return-Path: <linux-kernel+bounces-72125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9BC185AFB5
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:12:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEF9885AFB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:12:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC52F1C2178C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:12:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 50035B21563
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479CA59B78;
-	Mon, 19 Feb 2024 23:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A311D58135;
+	Mon, 19 Feb 2024 23:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="vGsHYTAa"
+	dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b="bLdO6L6Z"
 Received: from ahti.lucaweiss.eu (ahti.lucaweiss.eu [128.199.32.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555DF56448;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5559E55E74;
 	Mon, 19 Feb 2024 23:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=128.199.32.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708384311; cv=none; b=Y12N86eb5U3GP2NVRLABV3qloxpWzBdm10NUqoXdaefMOBHgDQV8a/qI/d3I+yEp1cwmM0G/kEBnHE9vYc0VcT/P+YEAoSQnJ38u7Sqjca2emwKVrokRJRmASo1TQxhDOzsi8YhCEgfqagCoKdPyL40UhX2tlv4U7ottGyA4BVs=
+	t=1708384310; cv=none; b=Y7XlomcfHvSCvH+yaXMNw3L2l7uV1UCRA4cCTf/Qv1jVWURj4hZZCMm0Sp+4QKc2DupN8To7gz8SyxYJ5Ue39rYUn/n/CQECwogD/G2fFHRlNP7lhYPF8tFp3soLOxUey8A7Uf0pZzbrBLesHspnyxr2+o9q6QzrfS03uzV1OR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708384311; c=relaxed/simple;
-	bh=tgSDAwlrVTzUIqiZyqw7iiUTatrOj4HaquGU5a8EzIU=;
+	s=arc-20240116; t=1708384310; c=relaxed/simple;
+	bh=ni9Hk46J16/FHSxaH5CWtQXBguOqf3wPvo6zQuh0j5I=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=o/OHUnWER17yuSSCdPsdV3qplLhZLZh1lGU2Z36TBsARMEhErdKuWxg0R8WvuhQYcdeOA8VVO4wxaWYZ8c65W76zNhNLC/tAkYtWqNzbe8+mofp7D5Hejk2TZYLYFpd3t/RV23vsv0LCyB7yOsCdvHRmMXDOvc1P4giQMjgioGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=vGsHYTAa; arc=none smtp.client-ip=128.199.32.197
+	 In-Reply-To:To:Cc; b=tcS0yHS2tzjJ2tDd/3hAS32uSv4Jgl+9v512KiL1mCm+xIZprTG/LDZPH/O4CXJ4Ka3TMOruD1cdSAmwdXsaL3plsCWiHQnb9M3FIy2RWP7i6kYUHC4u15N7t07K7VYtB3DFBUG57PqDVENLzQxNydw38mWxJg92SsxvUFutPVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz; spf=pass smtp.mailfrom=z3ntu.xyz; dkim=pass (1024-bit key) header.d=z3ntu.xyz header.i=@z3ntu.xyz header.b=bLdO6L6Z; arc=none smtp.client-ip=128.199.32.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=z3ntu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=z3ntu.xyz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=s1;
-	t=1708384300; bh=tgSDAwlrVTzUIqiZyqw7iiUTatrOj4HaquGU5a8EzIU=;
+	t=1708384301; bh=ni9Hk46J16/FHSxaH5CWtQXBguOqf3wPvo6zQuh0j5I=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc;
-	b=vGsHYTAaubBzb2bYsXKkzfudGfH7qgOPou2A89bhFI7dVoNZtUuqZKndldkTDoges
-	 m4nnpyNEXOtzzLO2I2n/E4w505BcJhS81oI3ojXv3bqGQRX+7bAU0fVpqfiIyixtEZ
-	 IudaTj5Wajeq1MYkLlTuMhbRd3/PbV7BGms8PvcU=
+	b=bLdO6L6ZOMuCpGRuBzoCbFIj6Ne9M2++W6hJNKuHY4J/H4Wke2M63dMmBuUr2NAFZ
+	 wPsuUdezeIIR+iDXVMJiu67OwpMGyEE/dfGAbV+L7ivphIc/s86+/8KuEn47/5gTK+
+	 cGaagGby6KD2aQoEeXFSUNK5CDXlH9SCmVHU08/E=
 From: Luca Weiss <luca@z3ntu.xyz>
-Date: Tue, 20 Feb 2024 00:11:21 +0100
-Subject: [PATCH 3/4] backlight: lm3630a: Use backlight_get_brightness
- helper in update_status
+Date: Tue, 20 Feb 2024 00:11:22 +0100
+Subject: [PATCH 4/4] ARM: dts: qcom: msm8974-hammerhead: Hook up backlight
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,7 +47,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240220-lm3630a-fixups-v1-3-9ca62f7e4a33@z3ntu.xyz>
+Message-Id: <20240220-lm3630a-fixups-v1-4-9ca62f7e4a33@z3ntu.xyz>
 References: <20240220-lm3630a-fixups-v1-0-9ca62f7e4a33@z3ntu.xyz>
 In-Reply-To: <20240220-lm3630a-fixups-v1-0-9ca62f7e4a33@z3ntu.xyz>
 To: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
@@ -65,88 +64,53 @@ Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
  devicetree@vger.kernel.org, Luca Weiss <luca@z3ntu.xyz>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2663; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=tgSDAwlrVTzUIqiZyqw7iiUTatrOj4HaquGU5a8EzIU=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBl0+AoTixhJbLZliq9WxIhxRszJgCAbf5dK6Uaz
- 3FQbTd6OhKJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZdPgKAAKCRBy2EO4nU3X
- Vul3D/40hfXK/hCXfw+Oi4sNLlrVTWbF3wGBLJv0EYE+UIYALtzpvViG6lquEEohZzR8nJOGd5m
- SOCn4lYVrh69CX4YGafx/Z035y23A3f7lOGlhkCZHxCmC7TkCz7jUZDIESfH2TGyxYG4im6sVnn
- 71RPTiAzOyD89Qv8Tr0TKWPgA/K8bbf+U2BtESebvJpkVMcWuMHtSiE67fqAacK7iheq+glGzjc
- DHwBzbL7/3YFJKZL9j18yXpSoKNZJZEFTtvWKPzCv75tB9Hd6h3Q7zbkN6cvOPsO9PWdjkFa/NI
- QCfymKnd9v1CPuENWvC5ADh+6z+j3N6l/moHLDtMLu6t1HTbDLYz9nVi1EplW/ECfW5LRKMM3Aw
- KvoArTl1OzAZ7kVLFAR7U9kCRYsrRUD28dcVJ9dK8Rm1ce4svScTKNQA7VtlfpogEzQlrbcB/BY
- 09cpxfGmPN8exdgSWL8cOhY89TSZqQgHVN+YzhE+COLgm0LExv7pp4wzTr4DAejtjeQxjIwfcSy
- +2UJrKAhEIz3mFyQw9t7aj8dlmiNey9T0lemmUXe+PJpnwHYcmyndCRiiYw8j0FE08de3ECwrBL
- 837t9lFnkz1VbucT4TL+uSBfcB4qjUqDAEkb2w1uUsOSrSSJIHubbZsL/JjrCaK7jST+ZPV4ICW
- fv/vS9d1qz9CyDg==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1027; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=ni9Hk46J16/FHSxaH5CWtQXBguOqf3wPvo6zQuh0j5I=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBl0+Ap06xVVfOjf7jo2py8gyWN6Lc4io9S0g2Uy
+ UAt+awT6YOJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZdPgKQAKCRBy2EO4nU3X
+ VsSCD/42xL9+QTj0aHPyGIPTtH/EKXNhf6ghXkZmndDoIPhAm7thYII1LR1oCs7HUJ5omau9+th
+ 9lJaTndXPqbbXnZ+a/RIBnSyVdt/eXQKDxa7WIlXGro+gUYgVyt9cPQZ4E0d+8DnHeuX803yhOX
+ YDNPkHa5UwzwkojTUIu9KHf82KbQxbQb9UygKLcsx5RKGdTE4Z2N480ygzvaiskAueFtPxlVYS8
+ ijqBTGzGz5sp6hK8C0oNNXJHphROVnwEZKAvJLeBrmcJgBI51rd+2BcMKCHqA717ibE3wd9nYTV
+ bgH0KCzC1Fb5SqswvEv//ePLT5M4s2OfU7kWQ9Zo8e6Ko0NZFqhrYIw8c5XwOmv8YucDls8MtmO
+ HugR0Km3hPqOUSAfuEGWVSNFfWzPuwcykI/EcVjsUSYKWQevqLqGZexTFAL4i+YRITNspjlbnKR
+ AtJL2pcNro0SWEtcUrW2hN5ak6AUbIfemzRo3/j96n96BaoBCImRCHcduFKCdlSaeIpZYtu2H4f
+ TXr9UMAh7c80tzAfjSY2vvcTb1lwO3S3loeXvqQ1WcWl4HtXC5vsyJX2pun4s6QST96xKYH5h8B
+ 5QMlXneIVb8+DyGPQZiOkP3MhbPIXKw3D4nLlLd1FT1KSFE7XOH7TFHJa+K/70i+NkhGJpCyewJ
+ cU9CaRARJQ9Ihqw==
 X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
  fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 
-As per documentation "drivers are expected to use this function in their
-update_status() operation to get the brightness value.".
-
-With this we can also drop the manual backlight_is_blank() handling
-since backlight_get_brightness() is already handling this correctly.
+Connect the panel with the backlight nodes so that the backlight can be
+turned off when the display is blanked.
 
 Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 ---
- drivers/video/backlight/lm3630a_bl.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ arch/arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dts | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
-index 26ff4178cc16..e6c0916ec88b 100644
---- a/drivers/video/backlight/lm3630a_bl.c
-+++ b/drivers/video/backlight/lm3630a_bl.c
-@@ -189,10 +189,11 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
- 	int ret;
- 	struct lm3630a_chip *pchip = bl_get_data(bl);
- 	enum lm3630a_pwm_ctrl pwm_ctrl = pchip->pdata->pwm_ctrl;
-+	int brightness = backlight_get_brightness(bl);
+diff --git a/arch/arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dts b/arch/arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dts
+index 4aaae8537a3f..8eaa5b162815 100644
+--- a/arch/arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dts
++++ b/arch/arm/boot/dts/qcom/qcom-msm8974-lge-nexus5-hammerhead.dts
+@@ -182,7 +182,7 @@ &blsp2_i2c5 {
+ 	status = "okay";
+ 	clock-frequency = <355000>;
  
- 	/* pwm control */
- 	if ((pwm_ctrl & LM3630A_PWM_BANK_A) != 0)
--		return lm3630a_pwm_ctrl(pchip, bl->props.brightness,
-+		return lm3630a_pwm_ctrl(pchip, brightness,
- 					bl->props.max_brightness);
+-	led-controller@38 {
++	backlight: led-controller@38 {
+ 		compatible = "ti,lm3630a";
+ 		status = "okay";
+ 		reg = <0x38>;
+@@ -272,6 +272,8 @@ panel: panel@0 {
+ 		reg = <0>;
+ 		compatible = "lg,acx467akm-7";
  
- 	/* disable sleep */
-@@ -201,9 +202,9 @@ static int lm3630a_bank_a_update_status(struct backlight_device *bl)
- 		goto out_i2c_err;
- 	usleep_range(1000, 2000);
- 	/* minimum brightness is 0x04 */
--	ret = lm3630a_write(pchip, REG_BRT_A, bl->props.brightness);
-+	ret = lm3630a_write(pchip, REG_BRT_A, brightness);
++		backlight = <&backlight>;
++
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&panel_pin>;
  
--	if (backlight_is_blank(bl) || (backlight_get_brightness(bl) < 0x4))
-+	if (brightness < 0x4)
- 		/* turn the string off  */
- 		ret |= lm3630a_update(pchip, REG_CTRL, LM3630A_LEDA_ENABLE, 0);
- 	else
-@@ -263,10 +264,11 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
- 	int ret;
- 	struct lm3630a_chip *pchip = bl_get_data(bl);
- 	enum lm3630a_pwm_ctrl pwm_ctrl = pchip->pdata->pwm_ctrl;
-+	int brightness = backlight_get_brightness(bl);
- 
- 	/* pwm control */
- 	if ((pwm_ctrl & LM3630A_PWM_BANK_B) != 0)
--		return lm3630a_pwm_ctrl(pchip, bl->props.brightness,
-+		return lm3630a_pwm_ctrl(pchip, brightness,
- 					bl->props.max_brightness);
- 
- 	/* disable sleep */
-@@ -275,9 +277,9 @@ static int lm3630a_bank_b_update_status(struct backlight_device *bl)
- 		goto out_i2c_err;
- 	usleep_range(1000, 2000);
- 	/* minimum brightness is 0x04 */
--	ret = lm3630a_write(pchip, REG_BRT_B, bl->props.brightness);
-+	ret = lm3630a_write(pchip, REG_BRT_B, brightness);
- 
--	if (backlight_is_blank(bl) || (backlight_get_brightness(bl) < 0x4))
-+	if (brightness < 0x4)
- 		/* turn the string off  */
- 		ret |= lm3630a_update(pchip, REG_CTRL, LM3630A_LEDB_ENABLE, 0);
- 	else
 
 -- 
 2.43.2
