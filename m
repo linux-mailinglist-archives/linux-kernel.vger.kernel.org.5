@@ -1,181 +1,116 @@
-Return-Path: <linux-kernel+bounces-71668-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AAC685A8C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:21:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ACC085A8C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:22:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7CA981C2095C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:21:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D907C2858FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:22:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF253CF7B;
-	Mon, 19 Feb 2024 16:21:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C7563CF4F;
+	Mon, 19 Feb 2024 16:22:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hUed3Kdu"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ytm8/zWH"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C0FC3CF48
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D04374DD;
+	Mon, 19 Feb 2024 16:22:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359680; cv=none; b=lGLTVIb1zXicelAndpI/rgcm9LqwEzv8fOaLr8qqvO7SsUjR3ZDsSOSfi8pJwYHt3zTXX8dsEQ6oCn4RK6iyVaPRfUZJHEogsOyIegjipJEVPQuZNoOQTK5v1P7a605RCdP9FKG7blrBJxPhit+5gf0KF3O3zJ5sMsxL/uXPt90=
+	t=1708359741; cv=none; b=QFSN0zX6AGqjNPYu0yIyaW9aY0XM6/1eIQ4/fsb8ZNsGdIKVlR3Mopg/WhiL3vtNzvsY/RhiKUfnZwnJQ+hxlv7j0ywuvxftEzV/ppovVohyt5l4xHB5eItEiKO8LCHOHmDgJMl9cJgECuPPC1ygCx5ihbEc/rHOAq5IUzcjZ00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359680; c=relaxed/simple;
-	bh=gEqc7+mZIizrBsHgqf3iXtCjJRR1NKFgsluQ7BMfYkI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=i3mYI4B/VIWl1H3NTRNmFeFyMV4mdx+oRtaDEYcnwwn9nc9URV/OVVs8hGjIfPjFJZXBz0Blg5UXo9Ryb8ebIOtefw2rl5gHsPpWaSptxgmoItJw3k1eWNCfXl1REJr6SmLHLgxBZq0e/GAVn9ZvNNeOjnsdlqyVkB+ePOL3afw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hUed3Kdu; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-60495209415so42408387b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:21:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708359677; x=1708964477; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R2wt3HoshVyMSpGbBwuw8bsOeM4QsAyrGiOVNmA65O8=;
-        b=hUed3KduHb81mmXzxHPrN1ZMNnt42OSPyvlxqh/elgvkNyaXgjvMJEq3UKmG2dK+F4
-         ym9e7hh2OakiIB/MTJWc+815GQpENfeWEiYacOqls8HqA5qVlRpSbVuiFTD7Brn+qirY
-         XKb47LivrcvmXdMlL4A80R2VLQyi1y9YkDMr0sEA3YgNLyHw13sCfOw6MnWniAk6Aj5s
-         Bh1UnqY5TsSE03hyMVCTAMRcGd4Uoniv2/L7g2R3MWwS0Oyuhfk/twh/XG7HgrhCrnwH
-         qFTWYhlxu3RNl8uXNBKPaORgEzDpr6I1s1nxERE00dhO03Myh7Pbded5P6VoMcX5DaH5
-         ivEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708359677; x=1708964477;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R2wt3HoshVyMSpGbBwuw8bsOeM4QsAyrGiOVNmA65O8=;
-        b=a9wTdaDRH3enzjYhRpFJCu5zTzZQkZ5EYfpIl/6vgOLoiHlp7c6O0DHByB7MoaM8lW
-         Z+v4vOZpAG5VJ9DUm+UekvyZGgYH74cUuUjpgosX5hXrEH4TOnKKYZEWkKea0CSgTwyL
-         gQObhwLZ+IEXwE7S5vwG5l6NhRdzb8QZWWrmyCP+xGBa7g9tE5H5HSVIT0Qo9No2PJVW
-         gCDGKyBB5H0++ImgUpj0HLQjC0U0UttdBGfzrlXiiKxsQMkqsM5Gwc7GykhKMoaEYqRa
-         JfL6bbOCPcOqI45KadWn35myZQDvEiINKmc0G3vdhoGbV/zMKoMnHNyPrZ7XTztQS44b
-         2ing==
-X-Forwarded-Encrypted: i=1; AJvYcCUrD2YDDLqTKcRj385ykRUpw1HAiw2j9p17TXAVHJ2Rpfo6W4TwWP+cbQANBX33uuEgT+GCVCI9Fun7GxggRGuokshU/ycxEnXBXF4I
-X-Gm-Message-State: AOJu0YyzzK5DFgaVXZDNx0rHiI5lAR0uRX2ApSWZZ05TC8estctwf2Db
-	ItgFKlebSALz7B7qjynlwwYuxOiH7jwS+yoCiHAmv7xDhXZuGViOLPBsoDEwK7/Lin8NgnTjk62
-	tx8DVbhcRfE2WZzBE9WHGSOVKTTpqhRMLGdQWmg==
-X-Google-Smtp-Source: AGHT+IEQn0c4ED0ZVL1Lxu49TiXak7RXw5M8hdgJfXaLEATpd6+9NC0IG4FzU8TZixBPFIIGr32Qva5v2j6a+srqihE=
-X-Received: by 2002:a81:431e:0:b0:607:f785:c5b5 with SMTP id
- q30-20020a81431e000000b00607f785c5b5mr8604211ywa.22.1708359677335; Mon, 19
- Feb 2024 08:21:17 -0800 (PST)
+	s=arc-20240116; t=1708359741; c=relaxed/simple;
+	bh=hDYsI9osVj/sIAvuqFcdJVNB9hb4QwVGsGzwVEm1oNk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XyMyoVRND7CQ4tNqZGDOEI1LHTo4v21T1q6I55UuaWITdXM9GRy+PsHoe/FMv5Cv1G6QmX35fC0uY2mDsu+OyjYc8XAG/TBGRMffRL45SVCFWuMqCRLZwS/ucNxgPr/OIZIWlWDhNFfM4x5dIeYVIslf+qpXjgiOHVETB9a/hyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ytm8/zWH; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41JFcPEk023093;
+	Mon, 19 Feb 2024 16:22:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=wNNK4H9rLt/e+SO2ZcWoe4RsM1HqZV3aots/hybb5oY=;
+ b=Ytm8/zWHOsaX/KpJtVK57ljiA1N6zS6ivo9mEF2WWKMUPUJn5KJ8jjEYdvunM2Fbk+4r
+ z91YPgZtbtrfISDQGWeHn7VIlijyEwZE/MaauSc7ipKuJ0B8Cye2hqK+G5bGQUtTMMaF
+ PRHpNGXpIo2pg/nFpnQ6sNYwaraoT7yoHUJcjCGm7DdrhgKms6uNlpAdTZoEACH8I5n8
+ m+3+cQ8kw6+zkVupjDtlsL5HR6x9iZhiMkmBQurWg6qtR4B9vzmFC4fARkOd6aPRINkC
+ 6q5Z1GA7YYVvN3r80ICd/jRz7ZlC+T5ky/5w8i/CdliGzCyzj9lODlrXzUg+D3fTrE+I 2Q== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wc9t6h270-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 16:22:04 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41JGKGIY003606;
+	Mon, 19 Feb 2024 16:22:03 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb74takhe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 16:22:03 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41JGLvYS45547992
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 Feb 2024 16:22:00 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B5C4B20040;
+	Mon, 19 Feb 2024 16:21:57 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 375D320043;
+	Mon, 19 Feb 2024 16:21:57 +0000 (GMT)
+Received: from osiris (unknown [9.171.27.39])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 19 Feb 2024 16:21:57 +0000 (GMT)
+Date: Mon, 19 Feb 2024 17:21:55 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>, linux-s390@vger.kernel.org
+Subject: Re: [PATCH 02/10] s390/vdso/data: Drop unnecessary header include
+Message-ID: <20240219162155.16287-F-hca@linux.ibm.com>
+References: <20240219153939.75719-1-anna-maria@linutronix.de>
+ <20240219153939.75719-3-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org> <868r3g4fhv.wl-maz@kernel.org>
-In-Reply-To: <868r3g4fhv.wl-maz@kernel.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 19 Feb 2024 18:21:06 +0200
-Message-ID: <CAA8EJpqiN6oRMWhAMMP6EsAeki5KSMbO+XzEtT9YRdJKc9_Gbg@mail.gmail.com>
-Subject: Re: [PATCH] irqchip/gic-v3: handle DOMAIN_BUS_ANY in gic_irq_domain_select
-To: Marc Zyngier <maz@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Anup Patel <apatel@ventanamicro.com>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240219153939.75719-3-anna-maria@linutronix.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: acyEUdKEUvlZsTsXBChOazRe66SMK7AE
+X-Proofpoint-ORIG-GUID: acyEUdKEUvlZsTsXBChOazRe66SMK7AE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_12,2024-02-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=483 lowpriorityscore=0 priorityscore=1501 impostorscore=0
+ bulkscore=0 spamscore=0 malwarescore=0 clxscore=1011 mlxscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402190122
 
-On Mon, 19 Feb 2024 at 17:53, Marc Zyngier <maz@kernel.org> wrote:
->
-> On Mon, 19 Feb 2024 14:47:37 +0000,
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > Before the commit de1ff306dcf4 ("genirq/irqdomain: Remove the param
-> > count restriction from select()") the irq_find_matching_fwspec() was
-> > handling the DOMAIN_BUS_ANY on its own. After this commit it is a job of
-> > the select() callback. However the callback of GICv3 (even though it got
-> > modified to handle zero param_count) wasn't prepared to return true for
-> > DOMAIN_BUS_ANY bus_token.
-> >
-> > This breaks probing of any of the child IRQ domains, since
-> > platform_irqchip_probe() uses irq_find_matching_host(par_np,
-> > DOMAIN_BUS_ANY) to check for the presence of the parent IRQ domain.
-> >
-> > Fixes: 151378251004 ("irqchip/gic-v3: Make gic_irq_domain_select() robust for zero parameter count")
-> > Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count restriction from select()")
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >  drivers/irqchip/irq-gic-v3.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > index 6fb276504bcc..e9e9643c653f 100644
-> > --- a/drivers/irqchip/irq-gic-v3.c
-> > +++ b/drivers/irqchip/irq-gic-v3.c
-> > @@ -1696,7 +1696,8 @@ static int gic_irq_domain_select(struct irq_domain *d,
-> >
-> >       /* Handle pure domain searches */
-> >       if (!fwspec->param_count)
-> > -             return d->bus_token == bus_token;
-> > +             return d->bus_token == bus_token ||
-> > +                     bus_token == DOMAIN_BUS_ANY;
-> >
-> >       /* If this is not DT, then we have a single domain */
-> >       if (!is_of_node(fwspec->fwnode))
-> >
->
-> I really dislike the look of this. If that's the case, any irqchip
-> that has a 'select' method (such as imx-intmux) should be similarly
-> hacked. And at this point, this should be handled by the core code.
->
-> Can you try this instead? I don't have any HW that relies on
-> behaviour, but I'd expect this to work.
->
-> Thanks,
->
->         M.
->
-> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-> index aeb41655d6de..3dd1c871e091 100644
-> --- a/kernel/irq/irqdomain.c
-> +++ b/kernel/irq/irqdomain.c
-> @@ -449,7 +449,7 @@ struct irq_domain *irq_find_matching_fwspec(struct irq_fwspec *fwspec,
->          */
->         mutex_lock(&irq_domain_mutex);
->         list_for_each_entry(h, &irq_domain_list, link) {
-> -               if (h->ops->select)
-> +               if (h->ops->select && bus_token != DOMAIN_BUS_ANY)
->                         rc = h->ops->select(h, fwspec, bus_token);
->                 else if (h->ops->match)
->                         rc = h->ops->match(h, to_of_node(fwnode), bus_token);
+On Mon, Feb 19, 2024 at 04:39:31PM +0100, Anna-Maria Behnsen wrote:
+> vdso/datapage.h includes the arch specific vdso/data.h file. So there is no
+> need to do it also the other way round and including the generic
+> vdso/datapage.h file inside the arch specific data.h file.
+> 
+> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+> Cc: linux-s390@vger.kernel.org
+> ---
+>  arch/s390/include/asm/vdso/data.h | 1 -
+>  1 file changed, 1 deletion(-)
 
-This works. But I wonder if the following change is even better. WDYT?
-
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index aeb41655d6de..2f0d2700709e 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -449,14 +449,17 @@ struct irq_domain
-*irq_find_matching_fwspec(struct irq_fwspec *fwspec,
-         */
-        mutex_lock(&irq_domain_mutex);
-        list_for_each_entry(h, &irq_domain_list, link) {
--               if (h->ops->select)
-+               if (fwnode != NULL &&
-+                   h->fwnode == fwnode &&
-+                   bus_token == DOMAIN_BUS_ANY)
-+                       rc = true;
-+               else if (h->ops->select)
-                        rc = h->ops->select(h, fwspec, bus_token);
-                else if (h->ops->match)
-                        rc = h->ops->match(h, to_of_node(fwnode), bus_token);
-                else
-                        rc = ((fwnode != NULL) && (h->fwnode == fwnode) &&
--                             ((bus_token == DOMAIN_BUS_ANY) ||
--                              (h->bus_token == bus_token)));
-+                             (h->bus_token == bus_token));
-
-                if (rc) {
-                        found = h;
-
-
--- 
-With best wishes
-Dmitry
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
 
