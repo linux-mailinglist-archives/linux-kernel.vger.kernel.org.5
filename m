@@ -1,166 +1,130 @@
-Return-Path: <linux-kernel+bounces-71797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71792-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1894385AA97
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:10:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29CF085AA85
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C34A7283627
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:10:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAB9B282FA6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD74481AE;
-	Mon, 19 Feb 2024 18:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2101481B2;
+	Mon, 19 Feb 2024 18:03:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="nQ8mYB5r"
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qfqY9KQ2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991D347F5D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 18:09:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE4543BB38;
+	Mon, 19 Feb 2024 18:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708366200; cv=none; b=pHFRr0bqJOR8TxDUWETI2XRm24n8Yii3B9ixb0uHId6nMrLAQGgelSakBLsxmmssPRt9JLWEIs3v6FQhok7qxybDFxjUiaeFppQNqi5CSSjfHtq1OiikqYDg69NZd945wvKHVKhIkBLkACSrucGNu65vf+kRDhS8KwHW8eltFGM=
+	t=1708365797; cv=none; b=OkkR24XqeowG8mZTYEsDwV5YrIo4CvruhQ1f7RJ3XHQ9bTknx6q67cg2xKV4B6YX0wjK1FlvLJ5jQIItDa0EaFA5MfjaJJMAUhCRd6B2c/+rl6s+fC/qdwXV67x84H3/IAtFPl5MNqJLTMfdMQftwIHuB9t4aL7glst0VpOPEfk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708366200; c=relaxed/simple;
-	bh=RfBCXLwyCUeqZQEFpji75aPuuqXowh06NHelS8dUuSc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SY6MllDQpdEkE6k9vypwsaOklp4szWnRjWrsR8lyNa3xQ84zH9tXVblQ/N78lICqkmiGQKtXL0dhE2tDKA/aprcAzaKLqzfhBSWvZG69SDGjLw4Va2dwHeqL2sHo1i0pK29lgADTWK46zOyak6f2pXFBxJzoCFT4jic0BE+pNRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=nQ8mYB5r; arc=none smtp.client-ip=167.114.26.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-	s=smtpout1; t=1708365676;
-	bh=RfBCXLwyCUeqZQEFpji75aPuuqXowh06NHelS8dUuSc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=nQ8mYB5rDyHcJmVZ2AurI90Bg6HQ+uf8P+ck8e1SDJoxe53nNWLTxDwDG4c7NRKNm
-	 548aH/nzgVX4jc7NOUXKC1w64SCbKxfvZb03abl3IAU/1oTs9ukktX2l0g68+5pLMM
-	 G9h0UNGNMUapjggYBysuJvzwVW+wDM3QHDYi8PDRP6DvCaxhiaqfO3gBsQnyMhKqIR
-	 DtF6FiWubxDBrhYvk+O+3iaqX1UmXDY7dteeGdenzFERonD1osDlqr8NdymuPndcvf
-	 F2GMzzHjTShTfQz4pjM52OgOHg1JCCF7lAzrnYMhajHlYMxBR7JCPz+XyQjKXg84cp
-	 FgRe3CF5ExTLQ==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4Tdr2444BqzZyH;
-	Mon, 19 Feb 2024 13:01:16 -0500 (EST)
-Message-ID: <776b842b-b19f-44bf-bc34-ac756fce7466@efficios.com>
-Date: Mon, 19 Feb 2024 13:01:16 -0500
+	s=arc-20240116; t=1708365797; c=relaxed/simple;
+	bh=fN+7T2/ux9us6GFbiDO1by9SUDxjo7ndhirheQxhNXg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bepM8ERrso06Ez8EGnkVmhsOiCF3QnebYpn6K4GKvFiTFmIgV7ZIjNqkrJDhbWBu3YdWbM6kDz9Gs8pFBZzZdvmDMboTUbj9JbQCx+m4gsfj6Aal8f2pfcRwxjk+LqjbnZZaEqBJB2CAw5hkgpEYaVNgldl9kWD2yL8nU8r6jng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qfqY9KQ2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C34AC433C7;
+	Mon, 19 Feb 2024 18:03:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708365796;
+	bh=fN+7T2/ux9us6GFbiDO1by9SUDxjo7ndhirheQxhNXg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qfqY9KQ2bRFKYwmsH0uzlhQyYe3wi0lQtfF7J8Or2LPWCBwIxdtqUsol0P/TlsPNu
+	 f1BUTTd8v03NxJR9Z0g7YY2jn/DzGiBkgj+7joJ6q0wQtM6sPhewKU/xHuu6GCZQ5p
+	 rWMW75ggpoPmQYwiqKmNBEC/RAyW+ATsoH4mYNfSDWRVO257rLekRm9FP+wh+Lr01m
+	 +9uQfeHQK7NEMIUsbHpl36G6qlB/KqsksKYBm7o8VDBvj9+I6LpLyMFPbXdCoV06v0
+	 MSXnA/g8Yq91VWXrESrD1xa+CDhVggBP5/3ZKsVL1zs/FWwOqOL/YAHcB0w11B4cCO
+	 p6B0OBYRWtBFA==
+Date: Mon, 19 Feb 2024 18:03:03 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v5 09/18] arm64: dts: qcom: qrb5165-rb5: model the PMU of
+ the QCA6391
+Message-ID: <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk>
+References: <20240216203215.40870-1-brgl@bgdev.pl>
+ <20240216203215.40870-10-brgl@bgdev.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] coredump debugging: add a tracepoint to report the
- coredumping
-Content-Language: en-US
-To: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>
-Cc: wenyang.linux@foxmail.com, Masami Hiramatsu <mhiramat@kernel.org>,
- Ingo Molnar <mingo@kernel.org>, Mel Gorman <mgorman@techsingularity.net>,
- Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-References: <tencent_5CD40341EC9384E9B7CC127EA5CF2655B408@qq.com>
- <20240217104924.GB10393@redhat.com>
- <20240219112926.77ac16f8@gandalf.local.home>
- <20240219170038.GA710@redhat.com>
- <20240219122825.31579a1e@gandalf.local.home>
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20240219122825.31579a1e@gandalf.local.home>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="6Ec75K1sOfBNW6oj"
+Content-Disposition: inline
+In-Reply-To: <20240216203215.40870-10-brgl@bgdev.pl>
+X-Cookie: Kleeneness is next to Godelness.
 
-On 2024-02-19 12:28, Steven Rostedt wrote:
-> On Mon, 19 Feb 2024 18:00:38 +0100
-> Oleg Nesterov <oleg@redhat.com> wrote:
-> 
->>> void __noreturn do_exit(long code)
->>> {
->>> 	struct task_struct *tsk = current;
->>> 	int group_dead;
->>>
->>> [...]
->>> 	acct_collect(code, group_dead);
->>> 	if (group_dead)
->>> 		tty_audit_exit();
->>> 	audit_free(tsk);
->>>
->>> 	tsk->exit_code = code;
->>> 	taskstats_exit(tsk, group_dead);
->>>
->>> 	exit_mm();
->>>
->>> 	if (group_dead)
->>> 		acct_process();
->>> 	trace_sched_process_exit(tsk);
->>>
->>> There's a lot that happens before we trigger the above event.
->>
->> and a lot after.
-> 
-> True. There really isn't a meaningful location here is there?
-> 
-> I actually use this tracepoint in my pid tracing.
-> 
-> The set_ftrace_pid and set_event_pid from /sys/kernel/tracing will add and
-> remove PIDs if the options function-fork or event-fork are set respectively.
-> 
-> I hook to the sched_process_fork tracepoint to add new PIDs if the parent
-> pid is already in one of the files, and remove a PID via the
-> sched_process_exit function.
 
-No ? Those hook on sched_process_free, which is the actual point where the
-task is freed (AFAIR after it's been a zombie and then waited for by another
-task).
+--6Ec75K1sOfBNW6oj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-kernel/trace/trace_events.c:
+On Fri, Feb 16, 2024 at 09:32:06PM +0100, Bartosz Golaszewski wrote:
 
-void trace_event_follow_fork(struct trace_array *tr, bool enable)
-{
-         if (enable) {
-                 register_trace_prio_sched_process_fork(event_filter_pid_sched_process_fork,
-                                                        tr, INT_MIN);
-                 register_trace_prio_sched_process_free(event_filter_pid_sched_process_exit,
-                                                        tr, INT_MAX);
-         } else {
-                 unregister_trace_sched_process_fork(event_filter_pid_sched_process_fork,
-                                                     tr);
-                 unregister_trace_sched_process_free(event_filter_pid_sched_process_exit,
-                                                     tr);
-         }
-}
+> +			vreg_pmu_aon_0p59: ldo1 {
+> +				regulator-name = "vreg_pmu_aon_0p59";
+> +				regulator-min-microvolt = <540000>;
+> +				regulator-max-microvolt = <840000>;
+> +			};
 
-kernel/trace/ftrace.c:
+That's a *very* wide voltage range for a supply that's got a name ending
+in _0_p59 which sounds a lot like it should be fixed at 0.59V.
+Similarly for a bunch of the other supplies, and I'm not seeing any
+evidence that the consumers do any voltage changes here?  There doesn't
+appear to be any logic here, I'm not convinced these are validated or
+safe constraints.
 
-void ftrace_pid_follow_fork(struct trace_array *tr, bool enable)
-{
-         if (enable) {
-                 register_trace_sched_process_fork(ftrace_pid_follow_sched_process_fork,
-                                                   tr);
-                 register_trace_sched_process_free(ftrace_pid_follow_sched_process_exit,
-                                                   tr);
-         } else {
-                 unregister_trace_sched_process_fork(ftrace_pid_follow_sched_process_fork,
-                                                     tr);
-                 unregister_trace_sched_process_free(ftrace_pid_follow_sched_process_exit,
-                                                     tr);
-         }
-}
+--6Ec75K1sOfBNW6oj
+Content-Type: application/pgp-signature; name="signature.asc"
 
-AFAIU, "sched_process_exit" is issued close to the point where the task exits
-(it should not go back to userspace after that). "sched_process_free" is done
-when the task is really being removed.
+-----BEGIN PGP SIGNATURE-----
 
-Between "sched_process_exit" and "sched_process_free", the task can still be
-observed by a trace analysis looking at sched and signal events: it's a zombie at
-that stage.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXTl9YACgkQJNaLcl1U
+h9AVgQf/Zstl1AGU01IOsCVbEoRgtQnUVnvdCJmcKksR0WQRA9Ez7ZgGXt2kYGCV
+fJfjGIuSto9RcICB8ifx7MrgId9TmPvp9N9Duh87hY01bzM7kmk/pXX7HMBJlU4T
+c6IC7feW5hVtwO7i+xWu4xEjmtGtBPcyhkNuN5x/niH5MHtFqqsBsd7GKz36dJL0
+Ow7999ejPBXXTJSWrIUHN2SQyPmr/06rondsVSlNct8OVA/sjIjPtv7z/642ETwR
+QgVxlgM46BBusYa9IzPbpnE60VsWiecTGBALHtpwtM83iSdQhNnoNJf1l1khPwsp
+za6sxl3vD4FWj+gFYkh1oMTuE/Jp1g==
+=WZdq
+-----END PGP SIGNATURE-----
 
-Thanks,
-
-Mathieu
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+--6Ec75K1sOfBNW6oj--
 
