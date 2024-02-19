@@ -1,223 +1,244 @@
-Return-Path: <linux-kernel+bounces-71340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FC6D85A3B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:45:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37B8585A3B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:45:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 349DD1C22C55
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:45:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2E00283927
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:45:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 318772E856;
-	Mon, 19 Feb 2024 12:45:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 512F32E84E;
+	Mon, 19 Feb 2024 12:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JYkfoEB+"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2061.outbound.protection.outlook.com [40.107.220.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="pmcgNQpe"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2493F2E647;
-	Mon, 19 Feb 2024 12:45:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708346735; cv=fail; b=Er9qmx9A5rUqKeDCeUjWVL7o/EU3adRRLprzDKTqa7/QrhbLaod09cXwr9RoNveRnTDjR4Y6x9/tcrhtoD1nH4vT0Yjp8E1K0+QexPJ4b7hW/hH2bdICxEm6VzBuhxi+EaIsxVTslw0ZDFTc6ZComzu7QAiAZf/Ac/hj9EJtFDI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708346735; c=relaxed/simple;
-	bh=Is4lY6G1qFh2OTRe/UGWjH+2ET45xwpGpSI/wF+vWQM=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=AWWetss1/hl+IslDwpxMEEdPwwLOsJvO8WUR918crZ9b8XK69Wd+QDWxxIIIfYBPw41klIGCDkHQVkeFg51F3ongykPzYQLbhXG9gmDIdvmdvfHpVNT+t9TEg5m/fxd7IvFW5wltzRk2NRln4ECTyTzgFnhY7KMGRsBPOsEA+1M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JYkfoEB+; arc=fail smtp.client-ip=40.107.220.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aH4YYjMpj6VfvfqvNAP56JIf7SOoQNPtsgkKXDA66eJOrcpUUF+/gQGd1WMA7yByGRZwfHcQEmUNQ9bjX3FnQsDwRAGCqC5UtemEu/8onxYCDeq3TUXeu99nPZvjSvqxYY2iUdpJTVX2mSpEocOABVM1wiLOa2WD73+IACdUwdlaN4dfxHNAwAmC8DFw+MDC3MV1DBoJaFjknstDG4U6nexW8dlc1d6JM8JK/fvEXHpjlps7xhOjbwbcME5MNrmSesa0JgW10g5y06t5CYVGZWYD4E++WWhMP1rAHJ3k4LRL0/UeCGjrMxJyStWPPiDIJ/jgdZ/LV4O8H14z/R9WVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GQl43IE71pNrbKZ184dB5OesS5z16NU+SBEe8StfGG0=;
- b=E69IlicZ8ICoXd4MR47M6/7rWJobg2NqmoXjNkynqfaT1qKngDFxeuduPaQV6sNA8EDg2HBDeilNBgfnZaVEICslFo6zFk/FqeDNALpXiqU7AyUnsHwcWwxFpYV10mupMrEarlEsPR3E0lFRsF30ezvwEdi7hS8GmkimRY/aShshzEzwcUSq6kOfkyM5oaqdct7ARocsMjTIzIgAmR+pPc4MzB3sDZKmmlrSWbuh7lDIZukKKaZZLYbwStDb5mqgoI3he3IfutSTARMQqThI3KN94+838NGKTuSzoA5XT+xPIMA56MX2U7lK3bSuddYo+2FobX89k3U/eBoeuAadYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GQl43IE71pNrbKZ184dB5OesS5z16NU+SBEe8StfGG0=;
- b=JYkfoEB++pDJfNeCDP/CSW1NJkS/AseCq5gB5MO7p/hdSMj157Dxe8waEjwrGUKh+i8ttI9UFTvU5bQz+Ry1LcMn+xhIJMDDHIt+QUs2D6XTcZcojyqoeKh241YFJxWBSLC2NZedPnyYMUds9OV3KxesdQa3eD4xufjrYZtfTSA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com (2603:10b6:208:3cb::10)
- by PH7PR12MB5594.namprd12.prod.outlook.com (2603:10b6:510:134::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Mon, 19 Feb
- 2024 12:45:28 +0000
-Received: from MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::dd00:9ab5:4d11:2d1a]) by MN0PR12MB6101.namprd12.prod.outlook.com
- ([fe80::dd00:9ab5:4d11:2d1a%7]) with mapi id 15.20.7316.016; Mon, 19 Feb 2024
- 12:45:28 +0000
-Message-ID: <736af6b3-52c0-4b3a-bab1-07e04eb156ce@amd.com>
-Date: Mon, 19 Feb 2024 06:45:25 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
-To: Daniel Drake <drake@endlessos.org>, david.e.box@linux.intel.com
-Cc: Bjorn Helgaas <helgaas@kernel.org>, tglx@linutronix.de, mingo@redhat.com,
- bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
- linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
- bhelgaas@google.com, rafael@kernel.org, lenb@kernel.org,
- linux-acpi@vger.kernel.org, linux@endlessos.org
-References: <20240207084452.9597-1-drake@endlessos.org>
- <20240207200538.GA912749@bhelgaas>
- <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
- <CAD8Lp44-8WhPyOrd2dCWyG3rRuCqzJ-aZCH6b1r0kyhfcXJ8xg@mail.gmail.com>
- <9654146ac849bb00faf2fe963d3da94ad65003b8.camel@linux.intel.com>
- <CAD8Lp44tO_pz_HZmPOKUQ-LEQT=c856eH52xWL9nBtAtJwjL1g@mail.gmail.com>
- <CAD8Lp46dPtE12ai8srt9Bz3awnkkb1LZz_7FQuF57M=LaUSaCw@mail.gmail.com>
-Content-Language: en-US
-From: Mario Limonciello <mario.limonciello@amd.com>
-In-Reply-To: <CAD8Lp46dPtE12ai8srt9Bz3awnkkb1LZz_7FQuF57M=LaUSaCw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DM6PR06CA0080.namprd06.prod.outlook.com
- (2603:10b6:5:336::13) To MN0PR12MB6101.namprd12.prod.outlook.com
- (2603:10b6:208:3cb::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A5A2D610;
+	Mon, 19 Feb 2024 12:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708346712; cv=none; b=pw6+2ZGkLJyLY/Lj/ggAo5uuedCJ7oI2KL1aHk5A73Y550H52lQVMzexJK+1udJfAjvfBBG0SxRgDB5HgcOMHpEr0QV1pG5UbbejoVuzPYve5mVnApRD0MA1b8HHsla3jd5BMfX6ueoPeav1nYhVk8J0B09VPWaE/nDaSFJ1Qhk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708346712; c=relaxed/simple;
+	bh=+qGfhiVCyV9q7WZjG4VEtZjEWGbusXpLGOzf0leGW0M=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=KPRG+L5SiJZKuH5jrFKlvxTykWE6cPspTtwcvJIZTsWBUGmVy4CeyGy0NOUqCT58LjJmtvh5kWyrrTID2qK0kQ5re8WP8ErGO0Z4RuUmNIDE7KWVqwHeXCKl0nSpJoXYcjpD7hR0t5rrVgS6IAllCYx3DQxQWsT0cr057ZSHjDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=pmcgNQpe; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e22e63abf1so920555b3a.3;
+        Mon, 19 Feb 2024 04:45:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708346709; x=1708951509;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F3d+lJrHnThtsf8pUVLxKYnnmGUoQxCJeQhGw1ipwrk=;
+        b=iFUNVog/5XEeraoAVQUo/qNOcLjOeqGOLr6v+CAPz2vJxwJe/9iOR46NrarMPHO5HH
+         XQSVQvfheNbPDAvgena6vqSCdtDegu/dWSlo4gTlYTv4bzIsC1BGKMroqGZoikpao7se
+         B8FRgY7SNIxTBbJN5hqLTY73Qw3qUR2kOImSPVem8DzZwq3DeZ339FC0NPaBnvY5m8WR
+         6oEYrRTT3Y8Db+uY6n76HfSceQDmjUT9khrkr7FmXuvs/hsOa4ggDhTdw6QAWTMlCM9s
+         1hnZrZxaj4NkpOIyJcY5Wvw749j4S1Dn7R3s6zUSI6ykbBMW3AIENpVXWNrQedTVQiVs
+         cA3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVLf9duHDEATHdCyAYxK78DzBmw4iiqvTMJqgb2r9VyxvSq6cqCb4HpsKPbtgg6ZVoXvcCFaFrO6uZohepAKUohuW542n8A8bPRT63p
+X-Gm-Message-State: AOJu0Yz3InZZqWDBA1GOPE6Wb0T+e6dCUZGzz3BIg59Ii5yMevZRNnq3
+	Bo2/EyOz1xodem9s9D6maLBaJaZA71ErhOWbptZI6lwefUzTZQKH
+X-Google-Smtp-Source: AGHT+IGWP7wCo7AVG7o3NF8lKLZJpOzUrUMnCQZ7wnQWllz39e6iIFKod1hUclsB6ASZvJHd7YC3Mg==
+X-Received: by 2002:a05:6a20:9e4b:b0:1a0:9010:92ad with SMTP id mt11-20020a056a209e4b00b001a0901092admr4780055pzb.31.1708346709194;
+        Mon, 19 Feb 2024 04:45:09 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id p27-20020a056a0026db00b006e4648059b6sm1685205pfw.26.2024.02.19.04.45.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 04:45:08 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1708346707;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=F3d+lJrHnThtsf8pUVLxKYnnmGUoQxCJeQhGw1ipwrk=;
+	b=pmcgNQpeawXYM49pRCTVvbGqUdnBQMVROUywws/Uj4dnRg7pseGdsNUEE979QGn0hNIBbh
+	lj5cqkdYkSHR9qhMHclnHpIy7GmHV10jNPcJMSxSxer2xly1911IkgQDNIkED5Pzy9GXGJ
+	rf00efGliok8BpZQ3XhldGvUQpyC8qmof9d/oxuwh3EVCRdIHEO8OhOqjBP+6VKWNi0rtT
+	vozKUuXn7+Q94MZB6ipwnOuXEmSg6o3h03bEXM1bYv48KNlL+mNSTEfsYakQCcYTH/+eaJ
+	DOAZW03IuoYg/F9zLyyWBt0+84RNUr/r91CDVp4SOhnByTiTUC/BHUknLuZXvA==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Mon, 19 Feb 2024 09:45:50 -0300
+Subject: [PATCH] thunderbolt: constify the struct device_type usage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR12MB6101:EE_|PH7PR12MB5594:EE_
-X-MS-Office365-Filtering-Correlation-Id: 84372b42-29e2-4c17-629c-08dc3148a69d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	bJZpSdCl5jz3gIvI99JOuuW0ktt9GedVRVlDGyH9D15Om+1x1sXTwaKv4X4cZ6P4nbsJ7ScJUJlR0x8TP9qYC/xjEgSrwuatFsk6fJBR+XfuhCZ1jcbZV8kpIzsKF0s4KxckdkN6uaKFYjB3GMOhN1tr5cBiVKwRikV+7QCWm2cvJtV9lpiUtTSNXpLLGm2mjrcB//fCVc4AgpKG+s/oaD+006ZZj/b5zSuNfvJJR4zpGJGZ4hJ74dYYsNM5KmsGu3R0x5Z5AOM3VVEHfuZzQaOA1eLiWhwVnvukgZWHut+rYJ4d4eaL46FFHx3/Ak9uHE18lAO4h/tt0yYPokxxvp+jLOQSIW6Tm+RhlPEn9NhN0ljQA//2wOte957AON2mPKpMMBeNt2uM7tI0UNu6dNKsOLg2z+4/MICveTFMzUazv7PPfcECbl01Fn4zJj2bUoDM2TRfSXzFP3FLn+HQs75rjJTWYwPTJcTpQ1EvB5po3OwNtY7U0r5l65X34KeSywYc/t8+JzBeJEmz3j8gprTx9//DDzJUMK4xzHgrHiU=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB6101.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?M1JiMGZ2b3M4NnllNHVNd1h3WGV4bGhwWFVLN1pDbTE0Wk1qQkYxbnVOTVVF?=
- =?utf-8?B?WFFBVXNFaElBVnNCb1g3VjFaZGRGVXBIMVpnNFVxWnlabUFTbldyVTBrdGxi?=
- =?utf-8?B?OW1RMzZDV3ljT1Exa1RRUDZIV01UZFdvQTdDeXRFNE1uUG9sSkwrd1dGOFFW?=
- =?utf-8?B?WVppOCtwalBmVVhqNzVZOHNnNmV5RVpVcC95cmtoK3F3SDdqRmdOWFU5ZVI5?=
- =?utf-8?B?VkpLeHZpS3JDM09QajgwamVxUDg0ME9KdVNTd2RoYjlPL05Nend4ZzJMcTNQ?=
- =?utf-8?B?dVljVWNadFc0c1Z6L21sVnFLL2RneG5RMGJFRVZRcDQ5UDdOTzFncEo2dW9p?=
- =?utf-8?B?aEtTa0VueTBLVFhleE84NzZ3b25uaGY4ZExxYzhxN0drTTRIdDg1UkE4VDZP?=
- =?utf-8?B?RmR4L1laK1E3Y1NQSGRiWjZaTFpSY0RTSE1uUTF5Z3IzNzV3bkI2TmxTaVVZ?=
- =?utf-8?B?K21rYjRPSTg0MUdIM21FMG1JbFpBd3FXeTF1OXdJdVhNSzNjWUFUUHFKT1RX?=
- =?utf-8?B?QjMzYjBUVXhNai9haEppVVFvSFYzeTI3dTFvQzN4RnA4MXlUOHR1UjgwUnBp?=
- =?utf-8?B?K1FERkNQVlBuZG5RTGdCOFdtbGxzYlRRYUU3ZVdGVjRZYnFnTjRMaVZHMmxH?=
- =?utf-8?B?djBRZXVRcC9JWE5wRkpnek1kRTd6ektpQUdXSklrNFU2amd1R2k0eHJqbGJr?=
- =?utf-8?B?ZUVXVlRqeGl2SlIxd2EvL1p1S0J4WkZLQm1jbUlqZDkzOHhsbjJ6Rnh3VS9t?=
- =?utf-8?B?S2VqN29jZFpTZnJnMkxkdmtrUW4xd25EZ0JoZU1xVmtITzQ1ZTN2WkNPTHpQ?=
- =?utf-8?B?R01qbzVMTHc2R0ZQU2xJSXAxWnlRRkZSWWkvYVZNaUdCYzhsZFpucWQvQ1Na?=
- =?utf-8?B?N05PeVZmUnJsaGZaZjVnWTA4UFEvaEhrc01uRXQ3RkI3NXJ5dHcvcldITlFP?=
- =?utf-8?B?czhJOTUzUWtFR21kSyt5M1RoOUVmeS9qbStLaVdkeFBEYnNlZThIdVhWY3M0?=
- =?utf-8?B?azdFVFlnL3NwZGcvWTZvOVp5aFhtRHdrUldwUXU2eFd0Znc5d2lXS0J5VktN?=
- =?utf-8?B?cE16THByeDNVbE40MHB4NUdrSWJtRkRvYmdkUjlwcnNSYnBiVUQvcGFheGIr?=
- =?utf-8?B?V01wUXlJc2o1QktHR1ZnczcyME5uNDcrMUQ5TXR0OXF0bm45cURXaUR6WkM0?=
- =?utf-8?B?RUE5eDlPTTE3NnAwYlZpRlQ1Q0dPTzh6eVIvejBZaFV5SGtvcVhxQ211SmU5?=
- =?utf-8?B?UVZNMVVvdUhSOGZDUUp5eEFuR0NXUnB5Nmw3MUpxNVpmMTNINVYydDFzVlB4?=
- =?utf-8?B?MURXSEplZDFmOXdXOVZPSVZqTWVJcmVTRWFHY0o0d00zK3pBdjRtQXJUOFVG?=
- =?utf-8?B?MTQwcnM1akdmM2RqTGZUdU1RK2liY0tBYlZUbkJTTFJrdlh1bmg0VEExV2FM?=
- =?utf-8?B?alNQeVlpdk9GRlV5aTJOWEc0Z0gzNi94RHNqMHFsNzl4ZnlPdUU5UDVWMHNY?=
- =?utf-8?B?VUVOblY5NEJsU3BUQkRYbytQVHpGN0RWaG9OZkVnc25RME84STZsSGw3dXNz?=
- =?utf-8?B?a05DWTlEcjlwdVJvZTlaeThzRXk0dkcwZjIxbTh0MU9XWFJ0WHltV1Y0Q2JZ?=
- =?utf-8?B?aTJ2SS9CTE9GVDlWaHh2bHlTZ3lEby9ueURqSXROeHBjUEl1Zk0xOHFYa21L?=
- =?utf-8?B?YWpoUGkxajVaL2FjNytyTThZRmFsaGpGWEErMVNwUzUvQTRRMTc3SlVZTnIz?=
- =?utf-8?B?em82MzRSUXlxVklpd0R2NWFRaDd0T3RmVlNyb2pkeFUrOHQ4cE9xV1dSL3di?=
- =?utf-8?B?V0pxKzh6cVRDbHBoV01vWmdyejhYamFtUC9GbXRpZThtUnpQZXZvZFl5MkF1?=
- =?utf-8?B?c1hkd0pnb2pzZ05TclMwa2EwS2VxWXBGa0NKUFJ0NTZKTkpELzg4ZitMMmtS?=
- =?utf-8?B?Q1RHcTR2ZlRmTkxtbWZGMGVMTFZrZlIrN2ZWQ0srTXpuaG9US1U0M2ZGRk82?=
- =?utf-8?B?NTFLL1ZwWkZFdnVNc084KzMzVmJFQlM5cnFXUkdsajg0OXlDTi84akRwU0RN?=
- =?utf-8?B?MjczUnd1VEUrYUNLZEo0dTBoSnNUU2luRlE0dCswQ05jdGdmR1k5d3c0NnN3?=
- =?utf-8?Q?XpFiw8izfQh+HG66AuEPApgdI?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 84372b42-29e2-4c17-629c-08dc3148a69d
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB6101.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 12:45:28.3889
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Jklx46Cmx0uk1vK3/xTgToq5xu2hsJhgKf3qIpRUpYuKTEJCUB32WJsc7Fabu7Z9J00iG5gIISF8L/wrigX4CA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5594
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240219-device_cleanup-thunderbolt-v1-1-7890787f1ec5@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAH1N02UC/x3MQQqAIBBA0avErBNUKqirRMSkYw2IhVYE4d2Tl
+ g8+/4VEkSnBUL0Q6ebEeyhQdQVmw7CSYFsMWupGatULWyJDs/GE4TrEuV3BUlx2f4pe6dbYTiE
+ 6hDI4Ijl+/vk45fwB7uaMnWwAAAA=
+To: Andreas Noever <andreas.noever@gmail.com>, 
+ Michael Jamet <michael.jamet@intel.com>, 
+ Mika Westerberg <mika.westerberg@linux.intel.com>, 
+ Yehezkel Bernat <YehezkelShB@gmail.com>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5022; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=+qGfhiVCyV9q7WZjG4VEtZjEWGbusXpLGOzf0leGW0M=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl002Csy5N7M/mDcAaLsxV3VsnAlxjZPjc+Npqr
+ K8kYtVqmuKJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdNNggAKCRDJC4p8Y4ZY
+ plsCD/wNjI47Zjz6WoONWQ8IbQhvJ3ls9fMibAiFTn9QnQuCpKaXgkUz5gpJzyHGx+wWfzvhmCA
+ U5ZfWHO01omlxCtb38lwXQ/CihkxV3A7I1XwBNfKtcLSEv/JaRivYY8AoqQrEw0lxr0FcGZv2hO
+ vhFwJKCczHESP2btoim7OJ+CREu9Wuc1vCzdk71HiSvKEbUlPkKMHeiFxqq8rV087jvmsq5urW/
+ KeP/IkkJZ+d2lwCmhp92LJb/lkly7csMu2MxRurq2yELtfjB3GGU7NpBXzzq/cGK1ZObWRlooA2
+ bTy7y95G83JXnGhzhc/9W+Lu+TZoTc/tLZf73/WVzQ6oatQMPnNCtAZlhBHT7VysE0ym2FUpxJL
+ +aF5K27aj6Exe5cZ69Tqc7nOJ5eQE8kuImDDySOxcCXkyZOiU7wOd8+8GeUwlHG7mZdc70mqzyA
+ nfOcrHmbNFRVPzHoBEdTeuRTAxkY2Hrl4TE+NgwuzNey5VO9MDLtBfskU0bKIOAnrhsaEaHlKqT
+ URPguBHE6jx+TPUbtJccBNY43zh1lDJN4plzxV6jZ+ODnJuyTEJEkTv0eScOgXU+6gMcYvxwWSh
+ J5KlGFpk4Jw7DpEtwaZMuGo7/YEIWrPVgrDDmy44zSLcIsJUCr7/DtNsT6fNc+ZDwOO0HMSYKiy
+ DTgZ3fi4o28PF+Q==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-On 2/19/2024 05:35, Daniel Drake wrote:
-> On Fri, Feb 9, 2024 at 9:36 AM Daniel Drake <drake@endlessos.org> wrote:
->> On Thu, Feb 8, 2024 at 5:57 PM David E. Box <david.e.box@linux.intel.com> wrote:
->>> This does look like a firmware bug. We've had reports of D3cold support missing
->>> when running in non-VMD mode on systems that were designed with VMD for Windows.
->>> These issues have been caught and addressed by OEMs during enabling of Linux
->>> systems. Does D3cold work in VMD mode?
->>
->> On Windows for the VMD=on case, we only tested this on a BIOS with
->> StorageD3Enable=0. The NVMe device and parent bridge stayed in D0 over
->> suspend, but that's exactly what the BIOS asked for, so it doesn't
->> really answer your question.
-> 
-> Tested on the original BIOS version with VMD=on: Windows leaves the
-> NVMe device (and parent bridge) in D0 during suspend (i.e. same result
-> as VMD=off).
-> 
-> On this setup, there are 2 devices with StorageD3Enable flags:
-> 
-> 1. \_SB.PC00.PEG0.PEGP._DSD has StorageD3Enable=1. This is set
-> regardless of the VMD setting at the BIOS level. This is the flag that
-> is causing us the headache in non-VMD mode where Linux then proceeds
-> to put devices into D3cold.
-> This PEGP device in the non-VMD configuration corresponds to the NVMe
-> storage device. PEG0 is the PCI root port at 00:06.0 (the one in
-> question in this thread), and PEGP is the child with address 0.
-> However in VMD mode, 00:06.0 is a dummy device (not a bridge) so this
-> PEGP device isn't going to be used by anything.
-> 
-> 2. \_SB.PC00.VMD0._DSD has StorageD3Enable=0. This VMD0 device is only
-> present when VMD is enabled in the BIOS. It is the companion for
-> 00:0e.0 which is the device that the vmd driver binds against. This
-> could be influencing Windows to leave the NVMe device in D0, but I
-> doubt it, because it can't explain why Windows would have the D0
-> behaviour when VMD=off, also this is a really strange place to put the
-> StorageD3Enable setting because it is not a storage device.
-> 
->> On Linux with VMD=on and StorageD3Enable=1, the NVMe storage device
->> and the VMD parent bridge are staying in D0 over suspend. I don't know
->> why this is, I would have expected at least D3hot.  However, given
->> that the NVMe device has no firmware_node under the VMD=on setup, I
->> believe there is no way it would enter D3cold because there's no
->> linkage to an ACPI device, so no available _PS3 or _PR0 or whatever is
->> the precise definition of D3cold.
-> 
-> Checked in more detail. In Linux, the NVMe device will only go into
-> D3hot/D3cold if the ACPI companion device has an explicit
-> StorageD3Enable=1. However, in VMD mode the NVMe storage device has no
-> ACPI companion. Code flow is nvme_pci_alloc_dev() -> acpi_storage_d3()
->   -> return false because no companion.
-> 
-> The VMD PCI bridge at 10000:e0:06.0 that is parent of the SATA & NVME
-> devices does have a companion \_SB.PC00.VMD0.PEG0
-> However, the SATA and NVME child devices do not have any ACPI
-> companion. I examined the logic of vmd_acpi_find_companion() and
-> determined that it is looking for devices with _ADR 80b8ffff (SATA)
-> and 8100ffff (NVME) and such devices do not exist in the ACPI tables.
-> 
-> Speculating a little, I guess this is also why Windows leaves the
-> device in D0 in VMD=on mode: it would only put the NVMe device in
-> D3hot/D3cold if it had a corresponding companion with
-> StorageD3Enable=1 and there isn't one of those. What's still unknown
-> is why it doesn't put the device in D3 in VMD=off mode because there
-> is a correctly placed StorageD3Enable=1 in that case.
-> 
-> Daniel
+Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+core can properly handle constant struct device_type. Move the
+tb_domain_type, tb_retimer_type, tb_switch_type, usb4_port_device_type,
+tb_service_type and tb_xdomain_type variables to be constant structures as
+well, placing it into read-only memory which can not be modified at
+runtime.
 
-Tangentially related, I've observed from multiple bug reports that 
-Windows will apply StorageD3Enable behavior to all storage devices in 
-the system even if "only one" has the property.  I would speculate that 
-the logic for Windows exists specifically in the Microsoft storage 
-drivers but is a "global boolean" for those drivers.  So perhaps when 
-VMD is enabled the Intel VMD driver is used instead of the Microsoft 
-storage driver so it doesn't have that logic.
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/thunderbolt/domain.c    | 2 +-
+ drivers/thunderbolt/retimer.c   | 2 +-
+ drivers/thunderbolt/switch.c    | 2 +-
+ drivers/thunderbolt/tb.h        | 8 ++++----
+ drivers/thunderbolt/usb4_port.c | 2 +-
+ drivers/thunderbolt/xdomain.c   | 4 ++--
+ include/linux/thunderbolt.h     | 4 ++--
+ 7 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
+index d7abb8c445aa..6a7ec53ddc44 100644
+--- a/drivers/thunderbolt/domain.c
++++ b/drivers/thunderbolt/domain.c
+@@ -326,7 +326,7 @@ static void tb_domain_release(struct device *dev)
+ 	kfree(tb);
+ }
+ 
+-struct device_type tb_domain_type = {
++const struct device_type tb_domain_type = {
+ 	.name = "thunderbolt_domain",
+ 	.release = tb_domain_release,
+ };
+diff --git a/drivers/thunderbolt/retimer.c b/drivers/thunderbolt/retimer.c
+index d49d6628dbf2..6bb49bdcd6c1 100644
+--- a/drivers/thunderbolt/retimer.c
++++ b/drivers/thunderbolt/retimer.c
+@@ -356,7 +356,7 @@ static void tb_retimer_release(struct device *dev)
+ 	kfree(rt);
+ }
+ 
+-struct device_type tb_retimer_type = {
++const struct device_type tb_retimer_type = {
+ 	.name = "thunderbolt_retimer",
+ 	.groups = retimer_groups,
+ 	.release = tb_retimer_release,
+diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+index bca6f28c553b..5a617ea285a7 100644
+--- a/drivers/thunderbolt/switch.c
++++ b/drivers/thunderbolt/switch.c
+@@ -2327,7 +2327,7 @@ static const struct dev_pm_ops tb_switch_pm_ops = {
+ 			   NULL)
+ };
+ 
+-struct device_type tb_switch_type = {
++const struct device_type tb_switch_type = {
+ 	.name = "thunderbolt_device",
+ 	.release = tb_switch_release,
+ 	.uevent = tb_switch_uevent,
+diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
+index 1bbbeb034e0e..5e93c02d37b3 100644
+--- a/drivers/thunderbolt/tb.h
++++ b/drivers/thunderbolt/tb.h
+@@ -745,10 +745,10 @@ static inline int tb_port_write(struct tb_port *port, const void *buffer,
+ struct tb *icm_probe(struct tb_nhi *nhi);
+ struct tb *tb_probe(struct tb_nhi *nhi);
+ 
+-extern struct device_type tb_domain_type;
+-extern struct device_type tb_retimer_type;
+-extern struct device_type tb_switch_type;
+-extern struct device_type usb4_port_device_type;
++extern const struct device_type tb_domain_type;
++extern const struct device_type tb_retimer_type;
++extern const struct device_type tb_switch_type;
++extern const struct device_type usb4_port_device_type;
+ 
+ int tb_domain_init(void);
+ void tb_domain_exit(void);
+diff --git a/drivers/thunderbolt/usb4_port.c b/drivers/thunderbolt/usb4_port.c
+index e355bfd6343f..5150879888ca 100644
+--- a/drivers/thunderbolt/usb4_port.c
++++ b/drivers/thunderbolt/usb4_port.c
+@@ -243,7 +243,7 @@ static void usb4_port_device_release(struct device *dev)
+ 	kfree(usb4);
+ }
+ 
+-struct device_type usb4_port_device_type = {
++const struct device_type usb4_port_device_type = {
+ 	.name = "usb4_port",
+ 	.groups = usb4_port_device_groups,
+ 	.release = usb4_port_device_release,
+diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
+index b48df88981bd..940ae97987ff 100644
+--- a/drivers/thunderbolt/xdomain.c
++++ b/drivers/thunderbolt/xdomain.c
+@@ -1002,7 +1002,7 @@ static void tb_service_release(struct device *dev)
+ 	kfree(svc);
+ }
+ 
+-struct device_type tb_service_type = {
++const struct device_type tb_service_type = {
+ 	.name = "thunderbolt_service",
+ 	.groups = tb_service_attr_groups,
+ 	.uevent = tb_service_uevent,
+@@ -1893,7 +1893,7 @@ static const struct dev_pm_ops tb_xdomain_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(tb_xdomain_suspend, tb_xdomain_resume)
+ };
+ 
+-struct device_type tb_xdomain_type = {
++const struct device_type tb_xdomain_type = {
+ 	.name = "thunderbolt_xdomain",
+ 	.release = tb_xdomain_release,
+ 	.pm = &tb_xdomain_pm_ops,
+diff --git a/include/linux/thunderbolt.h b/include/linux/thunderbolt.h
+index 2c835e5c41f6..4338ea9ac4fd 100644
+--- a/include/linux/thunderbolt.h
++++ b/include/linux/thunderbolt.h
+@@ -87,8 +87,8 @@ struct tb {
+ };
+ 
+ extern const struct bus_type tb_bus_type;
+-extern struct device_type tb_service_type;
+-extern struct device_type tb_xdomain_type;
++extern const struct device_type tb_service_type;
++extern const struct device_type tb_xdomain_type;
+ 
+ #define TB_LINKS_PER_PHY_PORT	2
+ 
+
+---
+base-commit: b4734507ac55cc7ea1380e20e83f60fcd7031955
+change-id: 20240219-device_cleanup-thunderbolt-9125cd61aafa
+
+Best regards,
+-- 
+Ricardo B. Marliere <ricardo@marliere.net>
+
 
