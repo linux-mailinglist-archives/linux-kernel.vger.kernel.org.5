@@ -1,102 +1,144 @@
-Return-Path: <linux-kernel+bounces-71503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1AAC85A648
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94C0F85A64D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:47:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20A071C21DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:46:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C768B1C21D43
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:47:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BB7381CC;
-	Mon, 19 Feb 2024 14:46:54 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A362E419;
+	Mon, 19 Feb 2024 14:47:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q2HRZbqx"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68BA8381B1
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30311EA80
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:47:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708354014; cv=none; b=mlTu+MDfqB/QPQt3KsBSgUUJQgLY+YYqdv8H+WC2GmAVWCpk9tRRSNSt0P+yYvJexeOl8Pd8AF1tX1YVPlBEiY8B/x+1QgsFC0uYnosGBjFnsGhyE5Vi0IDi35Kr2Iqkj881/RxKZzOHuKFDZa/MdAN7ld6UHXEppPP6t3xCrBk=
+	t=1708354061; cv=none; b=h23SwCp4KKcxU7SOdt65xDreloRJUK+AVUqj+xOnT6eR+dIHhOXEYBn108OTLYCjsU66KjxOK2BE+USQQkBIJcmZ7Y2cqV+205i766iQuZGN6pWfc9e2DPr3L7lwHVpGNgrgjRWroXoC/RPI0hjHOskPJthwOSd0T1SQM2hkvVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708354014; c=relaxed/simple;
-	bh=kpIRgmjNfP2xfAUjdOKDDAgk+2y6zCPRfbk1io7KGWg=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=ffGDVzRCtHy/S9AFHLn+kcyoDw8Zjfp/rhfU9X3v0eUBLAUiKxNBd5R5cGCd7MN0+nDwo2DviJBR9DXC/6MTOv9Muya7VBDp8BeiezTaN7QA+C+c/7K2YzMgt4f1IF2fLk0QHp5MSCdFG1vtwqJzTcyoLvcAK3Sz2cVGOwtRU/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TdlgF21Gvz1gyfD;
-	Mon, 19 Feb 2024 22:44:41 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id 516CC18002D;
-	Mon, 19 Feb 2024 22:46:48 +0800 (CST)
-Received: from [10.174.185.179] (10.174.185.179) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 22:46:47 +0800
-Subject: Re: next-20240219: arm64: boot failed - gic_of_init
-To: Marc Zyngier <maz@kernel.org>
-CC: Naresh Kamboju <naresh.kamboju@linaro.org>, open list
-	<linux-kernel@vger.kernel.org>, Linux ARM
-	<linux-arm-kernel@lists.infradead.org>, <lkft-triage@lists.linaro.org>, Linux
- Regressions <regressions@lists.linux.dev>, Catalin Marinas
-	<catalin.marinas@arm.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter
-	<dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>
-References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
- <86edd84wer.wl-maz@kernel.org> <86cyss4rl7.wl-maz@kernel.org>
-From: Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <a7d8e529-9a44-3f88-50ef-d87b80515c36@huawei.com>
-Date: Mon, 19 Feb 2024 22:46:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+	s=arc-20240116; t=1708354061; c=relaxed/simple;
+	bh=EHbRQ7dLHAog9MqSFM/E+Sdhe/5P8jIuOjtEE4j2X68=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=FVyvh2YrMZMlLkcruyddQ1DgNZ/nc4KR05KyXPywxQgKCJ3Pkg44n++pk8diRBhHijbc5g8Zhrhgz3+D2GuRsE7rcdr0+WC+l8Qmzd8+QnGAFGQBEpSO/jdVHhGkWjhNY4lm1k4wl+5VQ3BATHn3R9r5VagRFow6JsEOZRZdfTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q2HRZbqx; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-512b3b04995so965409e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:47:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708354058; x=1708958858; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5NUo4d1gxTmiY7z7v99UlcjZS6ZKrBDK3bbgjglglyk=;
+        b=Q2HRZbqxi1I8dtM5d8BAv2sw1Q1OVcXcwMMutizeRuKueAoguhm6WIkmJqHxkzDIJO
+         yv4EDu/qlspXK2lG5Vn8QXPsDpib1ynTROXoKSIi/st4HSvfTL7kXXSit4ayo/2JZxWF
+         I88MZbyZOgKihO2x+481kcvG+sR6jMf9tjdcE3r4rHcfgPASxOQSRqsDH/A4+nnsC77p
+         mtZOeiAdXjYm/N9g2+AkiVWZnapbDxny2W3xFpIgoXeBImkEnsSgPOfBB2toZZBV/dGX
+         72WWc6yq/G7SsSgcbcwOD4srmJJnNInDKRcmWs8od42zP8NmVkbLokGD/3rSBimOiWLC
+         iZjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708354058; x=1708958858;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5NUo4d1gxTmiY7z7v99UlcjZS6ZKrBDK3bbgjglglyk=;
+        b=Wn82DlLuYUV7Ssr/6+QPelueJsXbnsnvLIDwmo7ucyLf9KSDsDtXRzXFNV6v6Hx5pM
+         KijfN6CnohkigTCCQRjKa6ktk7l3FVTnA89VJJR0eTH4Ik+Zgu6AWYI9mfmsiHzUwoCX
+         JdBT4zkFY1hq0fPasCvAo+13e62P4lMVG4DsRO45Coz089tkBX9XEpBmhj8N6HnImkRd
+         pGu7LTtReHTHOQ+YuC72xnANIPn315YYSTswsYpfcqzbpVcBwKrC6BDufrPHguU6wwR4
+         gvNUIpz2mhvgxRqu07s/ywQXQR8HBO7h9tZkiLpsrKEThYabx18VbAYIpev/HHo0+RlA
+         6r1w==
+X-Forwarded-Encrypted: i=1; AJvYcCW8om5bbl7IZvWLBCNuo9J5pfe7XGxmc3nr9RpY8JQFN7QOH0sf7byhnwpnlqz6qq7PJtJ9a1x0d0zfsZwDjyJWR7gRJ0cwITynBq3x
+X-Gm-Message-State: AOJu0YxFHvGHeQYEWjMSD8TyH+6WNTDZuwmLCweG+cKIHUFdKvZXu8Fr
+	KAVaZK2OuSx1EY8zOF/wEMHOwjEwLMw/nZwujvGzuU21r9osMwSR0ckWgEKbuA0=
+X-Google-Smtp-Source: AGHT+IGsyulPjnmfahOMJZ1D3dlJkcZNdWHiMlP++b2WnCvL2tuMyrc7eh5KbLdlQJgmjRTt56KbhQ==
+X-Received: by 2002:a05:6512:6d4:b0:511:e296:e563 with SMTP id u20-20020a05651206d400b00511e296e563mr9724280lff.2.1708354057815;
+        Mon, 19 Feb 2024 06:47:37 -0800 (PST)
+Received: from umbar.lan ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id v29-20020a056512049d00b005128d5d670csm924254lfq.193.2024.02.19.06.47.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 06:47:37 -0800 (PST)
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 19 Feb 2024 16:47:37 +0200
+Subject: [PATCH] irqchip/gic-v3: handle DOMAIN_BUS_ANY in
+ gic_irq_domain_select
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <86cyss4rl7.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600007.china.huawei.com (7.193.23.208)
+Message-Id: <20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAAhq02UC/x2MQQqAIBAAvxJ7bkHFwPpKdDBdbaEsFCKQ/p50H
+ JiZCoUyU4Gpq5Dp5sJnaiD7DtxmUyRk3xiUUFooOWJkh4EfdBvvHv15WE5orDRarDSGMEBLr0z
+ N+bfz8r4fqFrqTWYAAAA=
+To: Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
+ Anup Patel <apatel@ventanamicro.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-arm-msm@vger.kernel.org, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1663;
+ i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
+ bh=EHbRQ7dLHAog9MqSFM/E+Sdhe/5P8jIuOjtEE4j2X68=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBl02oJZo2K7nEm2susxBahpdq/LMzQO89GN/01X
+ IghlhaAWmWJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZdNqCQAKCRCLPIo+Aiko
+ 1dr2B/4iG4WVuvwqRcRvLAR7OJUV4wyiF8CtzhWVKinJ6V3wT+pna+GA8Cn3+mK3WJwaVmFedql
+ oJKMb9ykN0akdVxAA7eZh7UWNNdx1Lwn4EnrXWEzhGDq49r+tuJANZoSXrSaPB/rl8Nw8bg2DMm
+ dvNnIRyQr5i7MhLceVChQ30DQuVfilQBIHMeXBiRnIjFw9HxuQx7yOApeFBHMV14HsXNvgZeGLw
+ ym0wzk/ft10ot8T0Avdnr6wxJs/adnIjDfWI5nBhoaXEuIrsLMcD2tifsXK0LsmR15cqP3zmbmI
+ 31h4E5so8h3/+aNhdKZUPfqtMcL75NNBnSpKNvFeH/Wa++Yo
+X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
+ fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-On 2024/2/19 19:32, Marc Zyngier wrote:
-> For what it is worth, I've just tested both defconfig and my own
-> configuration with both 4k (kvmtool, QEMU+KVM and on SynQuacer) and
-> 16k (kvmtool), without any obvious problem.
+Before the commit de1ff306dcf4 ("genirq/irqdomain: Remove the param
+count restriction from select()") the irq_find_matching_fwspec() was
+handling the DOMAIN_BUS_ANY on its own. After this commit it is a job of
+the select() callback. However the callback of GICv3 (even though it got
+modified to handle zero param_count) wasn't prepared to return true for
+DOMAIN_BUS_ANY bus_token.
 
-I had a quick test on top of next-20240219 with defconfig.  I can
-reproduce it with QEMU parameter '-cpu max -accel tcg', but things are
-fine with '-cpu max,lpa2=off -accel tcg'.
+This breaks probing of any of the child IRQ domains, since
+platform_irqchip_probe() uses irq_find_matching_host(par_np,
+DOMAIN_BUS_ANY) to check for the presence of the parent IRQ domain.
 
-Bisection shows that the problem happens when we start putting the
-latest arm64 and kvmarm changes together.  The following hack fixes the
-problem for me (but I **only** write it for kernel built with defconfig
-with ARM64_4K_PAGES=y atm).
+Fixes: 151378251004 ("irqchip/gic-v3: Make gic_irq_domain_select() robust for zero parameter count")
+Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count restriction from select()")
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ drivers/irqchip/irq-gic-v3.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I can investigate it further tomorrow (as it's too late now ;-) ).  Or
-maybe Marc or Catalin can help fix it with a proper approach.
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index 6fb276504bcc..e9e9643c653f 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -1696,7 +1696,8 @@ static int gic_irq_domain_select(struct irq_domain *d,
+ 
+ 	/* Handle pure domain searches */
+ 	if (!fwspec->param_count)
+-		return d->bus_token == bus_token;
++		return d->bus_token == bus_token ||
++			bus_token == DOMAIN_BUS_ANY;
+ 
+ 	/* If this is not DT, then we have a single domain */
+ 	if (!is_of_node(fwspec->fwnode))
 
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 4f7662008ede..babdc3f4721b 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -2798,6 +2798,7 @@ static const struct arm64_cpu_capabilities 
-arm64_features[] = {
-| 		.sign = FTR_SIGNED,
-| 		.field_pos = ID_AA64MMFR0_EL1_TGRAN4_SHIFT,
-| 		.min_field_value = ID_AA64MMFR0_EL1_TGRAN4_52_BIT,
-|+		.max_field_value = BIT(ID_AA64MMFR0_EL1_TGRAN4_WIDTH - 1) - 1,
-| #else
-| 		.sign = FTR_UNSIGNED,
-| 		.field_pos = ID_AA64MMFR0_EL1_TGRAN16_SHIFT,
+---
+base-commit: 35a4fdde2466b9d90af297f249436a270ef9d30e
+change-id: 20240219-gic-fix-child-domain-8a1840be9ff5
 
-Thanks,
-Zenghui
+Best regards,
+-- 
+Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
 
