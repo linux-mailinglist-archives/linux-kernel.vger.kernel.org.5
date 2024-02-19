@@ -1,65 +1,60 @@
-Return-Path: <linux-kernel+bounces-71938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4422E85ACC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:04:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3209285ACC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:07:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00E84288AE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:04:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F8B1F23812
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:07:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFE752F65;
-	Mon, 19 Feb 2024 20:03:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BDF52F68;
+	Mon, 19 Feb 2024 20:07:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ZdAaJRaG"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="cAWui9vB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F63171B1;
-	Mon, 19 Feb 2024 20:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8E0374DD;
+	Mon, 19 Feb 2024 20:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708373035; cv=none; b=k1MCSJLW8ZjVS+sidebay5OUMg8dhOgkT9Y8jgdgArEqjSveP4MJbD1U0Ao+uPLqhgcLD4Q/mZDNe4uHFy0cQaGsxngF+1bcQSnLwk1tvBkVtCNO645Jiiuokj0SLJcZNN5ad3cORzo1UgSPuHhjfkq0GqxeacKuV7KBsSsSPXg=
+	t=1708373240; cv=none; b=YGNrDO7ieq3n2zJDIKa3oPEoVqFRs71UuS+xiYLFYNv7RKMpoXcMeiv/uph1eBU5YcZJdrT5gCSnVyVIg1NHL2l5OaI4yh8ZeDvK2e0bwibRgU6kLjPtoZW9GSizaDjRPaGyS6pJdkv+/mkr0kroopYnRm00mJkuea2YlEOliL8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708373035; c=relaxed/simple;
-	bh=Q6YX/nSHF4SXTGacODXfDERzSEGJdnmUdA5aLHPu76Y=;
+	s=arc-20240116; t=1708373240; c=relaxed/simple;
+	bh=aNEcQiXoV4afv/M+136E7/8ESPor1nnFBNzWVogGSEE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hphvVitcdkcLxp9in6NTC4G7T4mK7UE5MNfF7K5tEY0J67CDSqZSFTtZvhqoDgMHR+orA+B1hypg6/KU7Uoglk6v/JglFouwr5nCKkneNjalEB01W9tKrqeCd5HIFRFJ7cmVtFakhFqbVzEMLLNQM0qilMWIPRATayRnXdZEjNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=ZdAaJRaG; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=b3vT0nj23S7kHYz1QGiFYSw/NcYxj4aBnJ8NurX22FU=; b=ZdAaJRaGQbRxNrO/+Xdsmr4dAx
-	WqYljqcOZJCp/xKXCpmOtEYHPB8XI1PqLcLPQvyXk6Oc2wm3xCkDWfLd2zInMBj8hBYIgKPLSgjkc
-	Wsv8Vcu0H/ojbimN41axCR0dSavCT2HpOJWOcgHfhR2dCh3/dQz/b52XotOJ1x2KxG2w=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rc9rd-008EF1-Bf; Mon, 19 Feb 2024 21:03:45 +0100
-Date: Mon, 19 Feb 2024 21:03:45 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: forbidden405@outlook.com
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next v3 3/6] net: hisilicon: add support for
- hisi_femac core on Hi3798MV200
-Message-ID: <29fc21f0-0e46-4d0f-8d4b-c4dbd1689c55@lunn.ch>
-References: <20240220-net-v3-0-b68e5b75e765@outlook.com>
- <20240220-net-v3-3-b68e5b75e765@outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jzpkQwqIsUf9nbpXjvvTuhNd/Q+zedWtZyC0QiYnPy7qr6nAUCyCShzwXhgkkPmCv/9HwiMG2gbZEvwlj1W3esRLicFi+/kXXQWHz7sw4TSMOrRgxZxM4R/Inr0SB0Am7vXimm8O2Za/xcKSVtTFxiqGqg38rkf1EXUb0JH2/XQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=cAWui9vB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB520C433C7;
+	Mon, 19 Feb 2024 20:07:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708373240;
+	bh=aNEcQiXoV4afv/M+136E7/8ESPor1nnFBNzWVogGSEE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cAWui9vBghjT4PJXtaXla7JmOHz+cZ4byaP61zxzYbzrycn7+e1jGzuzrokiFHU7z
+	 +zXQfUiH9DJ07uOfgmc9iDaggKTeUPpbYwIw7Bgct/2yL0wM8OuiK18aMFfplN4cjt
+	 /PNpGqjrBx/t6ccfb2QIDujVLQr37Tf/vURKs2FM=
+Date: Mon, 19 Feb 2024 21:07:17 +0100
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Michael Grzeschik <mgr@pengutronix.de>
+Cc: Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Jonathan Corbet <corbet@lwn.net>, v9fs@lists.linux.dev,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-usb@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH v2 3/4] usb: gadget: legacy: add 9pfs multi gadget
+Message-ID: <2024021948-reformer-silly-fe48@gregkh>
+References: <20240116-ml-topic-u9p-v2-0-b46cbf592962@pengutronix.de>
+ <20240116-ml-topic-u9p-v2-3-b46cbf592962@pengutronix.de>
+ <2024021757-geography-hacksaw-3022@gregkh>
+ <ZdKze80oFj0PRkkZ@pengutronix.de>
+ <2024021911-facelift-graveyard-0760@gregkh>
+ <ZdOz7mc-NbiEe2Ei@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,19 +63,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240220-net-v3-3-b68e5b75e765@outlook.com>
+In-Reply-To: <ZdOz7mc-NbiEe2Ei@pengutronix.de>
 
-> Note it's unable to put the MDIO bus node outside of MAC controller
-> (i.e. at the same level in the parent bus node). Because we need to
-> control all clocks and resets in FEMAC driver due to the phy reset
-> procedure. So the clocks can't be assigned to MDIO bus device, which is
-> an essential resource for the MDIO bus to work.
+On Mon, Feb 19, 2024 at 09:02:54PM +0100, Michael Grzeschik wrote:
+> Okay, What about the rest of the series? Can you just skip this patch
+> then for? Or do you want me to send the series again without this
+> legacy driver. There are no dependencies to this in that series.
 
-What PHY driver is being used? If there a specific PHY driver for this
-hardware? Does it implement soft reset?
+I don't remember what the rest of this series was, it is long gone from
+my review queue :(
 
-I'm wondering if you can skip hardware reset of the PHY and only do a
-software reset.
+So yes, please resend.
 
-	Andrew
+thanks,
+
+greg k-h
 
