@@ -1,66 +1,89 @@
-Return-Path: <linux-kernel+bounces-71433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A9585A52C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:53:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D822485A52F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:54:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6B4D1F23F67
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:53:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C93C1B22220
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:54:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E2C37716;
-	Mon, 19 Feb 2024 13:53:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487EB36AFB;
+	Mon, 19 Feb 2024 13:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="fmALJ666"
-Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YXVvc6ki";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KbJioyej"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B23E0364D2;
-	Mon, 19 Feb 2024 13:53:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20E4364C6;
+	Mon, 19 Feb 2024 13:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708350784; cv=none; b=poOetaK3L4gQjOsyTDDeGIQJDAtVi5gwgFlJGE9QDUqhBJbmZRgrZhoBSp/KUqLSyxOq05OLqhzImcUpncxJwQ4xjn6866h9ZOlZvunTsBO9nQ6722w4K6oMz802JmZPJo0QaeowlA2BgvebNtOWR9CAokr39ufhOFGW/j6bDQA=
+	t=1708350818; cv=none; b=F0VlmY7xVTMliSmc4wRJRedY2GFr3SU8JjvhLjGxe3FTOgNq+nuUOv+3B3o5/v65U3bsC7KJvqMUvp/ddKECSEPanAhKY6gEibGq/XPxEBoiUNpNHUlTNZoJ49mh5E9orpshlz8lF7KhHMpjXY8Hr79XmtheL4hAFMkrG2tJPOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708350784; c=relaxed/simple;
-	bh=7zlMxKEMlRi2fMVorHFpbWy+YlGO3wP3+8xPvDrFk8c=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=vAP+MaBT8qxLKfmfMxu9TKSJMPUyYq7Ytx3ZPG6ALqPYIHIl353gwRfZxf2OO6SbnssVf7UmT3d64yUZdnNyYvx/bIWGIn6ahNoCjVzZsKxvfNXohJZjH7/v7eY2/nyaBVlc1SbWIKm0JVUpY998GxoPGV4A7o5vAlz4cMphuy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=fmALJ666; arc=none smtp.client-ip=139.165.32.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
-Received: from ubuntu.home (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	s=arc-20240116; t=1708350818; c=relaxed/simple;
+	bh=mjCeAIQZv6m3D3psvqDPNKm1MymqtEETfxNpQ8BvHoM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Z7AydNt/Tk/TgbBbUy1VfZrQg9q/03yEPRn/YjaaF7VbdIzYNz8E/bu+i5kgVS5YMh4iLrc3LdDXDXHgZtpNIMwarvku6nL9fwBwcQZ22IwAPIyyO/bp2DvUcnGIIhXJuuh8acmEqRN55nfoUrgOmeMolqxF7Gwy5aEntjtRMg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YXVvc6ki; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KbJioyej; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 028612012175;
-	Mon, 19 Feb 2024 14:52:59 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 028612012175
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
-	s=ulg20190529; t=1708350780;
-	bh=GdqClNP24oSb21PimU1rdj3YpRVP83hpGrMM7xmTrzo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fmALJ666QvGHhyPzujiJe1P4IZsy/ia40rxc6jnJe27+BQuUCJKYrVXS5m1r8SVhE
-	 Hdpv5JuT8G854C58qUTp/Nve9Jfkm8DRKRUDblan/rj+Z5gS3Cbi0QJ/oaYG0rcHcg
-	 QmUc5m4vflMM2+UKeg8QyO3d5TIOmzoRnF5YsWV/8hL5FjzsRZ3KeNQwLNqT3+9MlT
-	 JW7EZtmCwUXsoGvMBuz7O0/Og/ZJP4o9KL3srtJr3qEKjDvbSdS/ZcUYAAaeSuoktT
-	 iGpspB1WVI9u9FG/Q627lpes1gDhqJ9WYs/u0sLvP9Kr5xExaMyE+2rSMRFsFRSilW
-	 XbuIIBdZQ15Ag==
-From: Justin Iurman <justin.iurman@uliege.be>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	dsahern@kernel.org,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E53BE21747;
+	Mon, 19 Feb 2024 13:53:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708350815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iWgx8ZUrqNvRYMebTBHKWkfDEjmiK2tptdVH4AjyYtY=;
+	b=YXVvc6ki+BbBR0BE/vR1JOoFmujkPZDgv7Jk9X2GPIpfKcVZ5vrWKBkB0gDpOe+S1UMzEp
+	b17aNUQS6vTQJMI1mYRYLXxuRWLRxbVgIqocQj5v6ylGt1tcZZ4jj12X333DaSAd5NIorM
+	rzIS7CaoUW+ONHtuHCtA2kSkMRl0Ok4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708350814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iWgx8ZUrqNvRYMebTBHKWkfDEjmiK2tptdVH4AjyYtY=;
+	b=KbJioyej9rk6fekZDPu2bjoJqFGs3fxeyhyM8L8IGb+vGbsMlvHLEDEiydaRp04KEdwjcq
+	HAzCVc/npxIV4qksMQy4OoBdTmQlQq6Fsm7Rf8d/7fXx1TiMjd+91t5mGO5glDBXcu/Yfd
+	HPf5zq5SEtZuwjusVCJ+SyBzRTdbE8A=
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 66CC513585;
+	Mon, 19 Feb 2024 13:53:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 3ETgCl5d02XgCwAAn2gu4w
+	(envelope-from <mpdesouza@suse.com>); Mon, 19 Feb 2024 13:53:34 +0000
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
+To: Marcos Paulo de Souza <mpdesouza@suse.com>
+Cc: kernel test robot <lkp@intel.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Miroslav Benes <mbenes@suse.cz>,
+	Petr Mladek <pmladek@suse.com>,
+	Joe Lawrence <joe.lawrence@redhat.com>,
+	oe-kbuild-all@lists.linux.dev,
+	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	justin.iurman@uliege.be
-Subject: [PATCH net v3 2/2] selftests: ioam: refactoring to align with the fix
-Date: Mon, 19 Feb 2024 14:52:55 +0100
-Message-Id: <20240219135255.15429-3-justin.iurman@uliege.be>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240219135255.15429-1-justin.iurman@uliege.be>
-References: <20240219135255.15429-1-justin.iurman@uliege.be>
+	live-patching@vger.kernel.org
+Subject: Re: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
+Date: Mon, 19 Feb 2024 10:53:22 -0300
+Message-ID: <20240219135325.2280-1-mpdesouza@suse.com>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <20240219121522.23480-1-mpdesouza@suse.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,291 +91,66 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [1.90 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: *
+X-Spam-Score: 1.90
+X-Spam-Flag: NO
 
-ioam6_parser uses a packet socket. After the fix to prevent writing to
-cloned skb's, the receiver does not see its IOAM data anymore, which
-makes input/forward ioam-selftests to fail. As a workaround,
-ioam6_parser now uses an IPv6 raw socket and leverages ancillary data to
-get hop-by-hop options. As a consequence, the hook is "after" the IOAM
-data insertion by the receiver and all tests are working again.
+On Mon, 19 Feb 2024 09:15:15 -0300 Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
 
-Signed-off-by: Justin Iurman <justin.iurman@uliege.be>
----
- tools/testing/selftests/net/ioam6.sh       | 38 ++++-----
- tools/testing/selftests/net/ioam6_parser.c | 95 +++++++++++-----------
- 2 files changed, 66 insertions(+), 67 deletions(-)
+> On Mon, 19 Feb 2024 14:35:16 +0800 kernel test robot <lkp@intel.com> wrote:
+> 
+> > Hi Marcos,
+> > 
+> > kernel test robot noticed the following build errors:
+> > 
+> > [auto build test ERROR on 345e8abe4c355bc24bab3f4a5634122e55be8665]
+> > 
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Marcos-Paulo-de-Souza/selftests-lib-mk-Do-not-process-TEST_GEN_MODS_DIR/20240216-021601
+> > base:   345e8abe4c355bc24bab3f4a5634122e55be8665
+> > patch link:    https://lore.kernel.org/r/20240215-lp-selftests-fixes-v1-1-89f4a6f5cddc%40suse.com
+> > patch subject: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
+> > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402191417.XULH88Ct-lkp@intel.com/reproduce)
+> > 
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202402191417.XULH88Ct-lkp@intel.com/
+> > 
+> > All errors (new ones prefixed by >>):
+> > 
+> > >> make[3]: *** /lib/modules/5.9.0-2-amd64/build: No such file or directory.  Stop.
+> 
+> We should ask the kernel test robot machine owners to install kernel-devel
+> package in order to have this fixed.
 
-diff --git a/tools/testing/selftests/net/ioam6.sh b/tools/testing/selftests/net/ioam6.sh
-index fe59ca3e5596..12491850ae98 100755
---- a/tools/testing/selftests/net/ioam6.sh
-+++ b/tools/testing/selftests/net/ioam6.sh
-@@ -367,14 +367,12 @@ run_test()
-   local desc=$2
-   local node_src=$3
-   local node_dst=$4
--  local ip6_src=$5
--  local ip6_dst=$6
--  local if_dst=$7
--  local trace_type=$8
--  local ioam_ns=$9
--
--  ip netns exec $node_dst ./ioam6_parser $if_dst $name $ip6_src $ip6_dst \
--         $trace_type $ioam_ns &
-+  local ip6_dst=$5
-+  local trace_type=$6
-+  local ioam_ns=$7
-+  local type=$8
-+
-+  ip netns exec $node_dst ./ioam6_parser $name $trace_type $ioam_ns $type &
-   local spid=$!
-   sleep 0.1
- 
-@@ -489,7 +487,7 @@ out_undef_ns()
-          trace prealloc type 0x800000 ns 0 size 4 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_beta \
--         db01::2 db01::1 veth0 0x800000 0
-+         db01::1 0x800000 0 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
- }
-@@ -509,7 +507,7 @@ out_no_room()
-          trace prealloc type 0xc00000 ns 123 size 4 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_beta \
--         db01::2 db01::1 veth0 0xc00000 123
-+         db01::1 0xc00000 123 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
- }
-@@ -543,14 +541,14 @@ out_bits()
-       if [ $cmd_res != 0 ]
-       then
-         npassed=$((npassed+1))
--        log_test_passed "$descr"
-+        log_test_passed "$descr ($1 mode)"
-       else
-         nfailed=$((nfailed+1))
--        log_test_failed "$descr"
-+        log_test_failed "$descr ($1 mode)"
-       fi
-     else
- 	run_test "out_bit$i" "$descr ($1 mode)" $ioam_node_alpha \
--           $ioam_node_beta db01::2 db01::1 veth0 ${bit2type[$i]} 123
-+           $ioam_node_beta db01::1 ${bit2type[$i]} 123 $1
-     fi
-   done
- 
-@@ -574,7 +572,7 @@ out_full_supp_trace()
-          trace prealloc type 0xfff002 ns 123 size 100 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_beta \
--         db01::2 db01::1 veth0 0xfff002 123
-+         db01::1 0xfff002 123 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
- }
-@@ -604,7 +602,7 @@ in_undef_ns()
-          trace prealloc type 0x800000 ns 0 size 4 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_beta \
--         db01::2 db01::1 veth0 0x800000 0
-+         db01::1 0x800000 0 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
- }
-@@ -624,7 +622,7 @@ in_no_room()
-          trace prealloc type 0xc00000 ns 123 size 4 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_beta \
--         db01::2 db01::1 veth0 0xc00000 123
-+         db01::1 0xc00000 123 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
- }
-@@ -651,7 +649,7 @@ in_bits()
-            dev veth0
- 
-     run_test "in_bit$i" "${desc/<n>/$i} ($1 mode)" $ioam_node_alpha \
--           $ioam_node_beta db01::2 db01::1 veth0 ${bit2type[$i]} 123
-+           $ioam_node_beta db01::1 ${bit2type[$i]} 123 $1
-   done
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
-@@ -679,7 +677,7 @@ in_oflag()
-          trace prealloc type 0xc00000 ns 123 size 4 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_beta \
--         db01::2 db01::1 veth0 0xc00000 123
-+         db01::1 0xc00000 123 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
- 
-@@ -703,7 +701,7 @@ in_full_supp_trace()
-          trace prealloc type 0xfff002 ns 123 size 80 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_beta \
--         db01::2 db01::1 veth0 0xfff002 123
-+         db01::1 0xfff002 123 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_beta link set ip6tnl0 down
- }
-@@ -731,7 +729,7 @@ fwd_full_supp_trace()
-          trace prealloc type 0xfff002 ns 123 size 244 via db01::1 dev veth0
- 
-   run_test ${FUNCNAME[0]} "${desc} ($1 mode)" $ioam_node_alpha $ioam_node_gamma \
--         db01::2 db02::2 veth0 0xfff002 123
-+         db02::2 0xfff002 123 $1
- 
-   [ "$1" = "encap" ] && ip -netns $ioam_node_gamma link set ip6tnl0 down
- }
-diff --git a/tools/testing/selftests/net/ioam6_parser.c b/tools/testing/selftests/net/ioam6_parser.c
-index d9d1d4190126..895e5bb5044b 100644
---- a/tools/testing/selftests/net/ioam6_parser.c
-+++ b/tools/testing/selftests/net/ioam6_parser.c
-@@ -8,7 +8,6 @@
- #include <errno.h>
- #include <limits.h>
- #include <linux/const.h>
--#include <linux/if_ether.h>
- #include <linux/ioam6.h>
- #include <linux/ipv6.h>
- #include <stdlib.h>
-@@ -512,14 +511,6 @@ static int str2id(const char *tname)
- 	return -1;
- }
- 
--static int ipv6_addr_equal(const struct in6_addr *a1, const struct in6_addr *a2)
--{
--	return ((a1->s6_addr32[0] ^ a2->s6_addr32[0]) |
--		(a1->s6_addr32[1] ^ a2->s6_addr32[1]) |
--		(a1->s6_addr32[2] ^ a2->s6_addr32[2]) |
--		(a1->s6_addr32[3] ^ a2->s6_addr32[3])) == 0;
--}
--
- static int get_u32(__u32 *val, const char *arg, int base)
- {
- 	unsigned long res;
-@@ -603,70 +594,80 @@ static int (*func[__TEST_MAX])(int, struct ioam6_trace_hdr *, __u32, __u16) = {
- 
- int main(int argc, char **argv)
- {
--	int fd, size, hoplen, tid, ret = 1;
--	struct in6_addr src, dst;
-+	int fd, size, hoplen, tid, ret = 1, on = 1;
- 	struct ioam6_hdr *opt;
--	struct ipv6hdr *ip6h;
--	__u8 buffer[400], *p;
--	__u16 ioam_ns;
-+	struct cmsghdr *cmsg;
-+	struct msghdr msg;
-+	struct iovec iov;
-+	__u8 buffer[512];
- 	__u32 tr_type;
-+	__u16 ioam_ns;
-+	__u8 *ptr;
- 
--	if (argc != 7)
-+	if (argc != 5)
- 		goto out;
- 
--	tid = str2id(argv[2]);
-+	tid = str2id(argv[1]);
- 	if (tid < 0 || !func[tid])
- 		goto out;
- 
--	if (inet_pton(AF_INET6, argv[3], &src) != 1 ||
--	    inet_pton(AF_INET6, argv[4], &dst) != 1)
-+	if (get_u32(&tr_type, argv[2], 16) ||
-+	    get_u16(&ioam_ns, argv[3], 0))
- 		goto out;
- 
--	if (get_u32(&tr_type, argv[5], 16) ||
--	    get_u16(&ioam_ns, argv[6], 0))
-+	fd = socket(PF_INET6, SOCK_RAW,
-+		    !strcmp(argv[4], "encap") ? IPPROTO_IPV6 : IPPROTO_ICMPV6);
-+	if (fd < 0)
- 		goto out;
- 
--	fd = socket(AF_PACKET, SOCK_DGRAM, __cpu_to_be16(ETH_P_IPV6));
--	if (!fd)
--		goto out;
-+	setsockopt(fd, IPPROTO_IPV6, IPV6_RECVHOPOPTS,  &on, sizeof(on));
- 
--	if (setsockopt(fd, SOL_SOCKET, SO_BINDTODEVICE,
--		       argv[1], strlen(argv[1])))
-+	iov.iov_len = 1;
-+	iov.iov_base = malloc(CMSG_SPACE(sizeof(buffer)));
-+	if (!iov.iov_base)
- 		goto close;
--
- recv:
--	size = recv(fd, buffer, sizeof(buffer), 0);
-+	memset(&msg, 0, sizeof(msg));
-+	msg.msg_iov = &iov;
-+	msg.msg_iovlen = 1;
-+	msg.msg_control = buffer;
-+	msg.msg_controllen = CMSG_SPACE(sizeof(buffer));
-+
-+	size = recvmsg(fd, &msg, 0);
- 	if (size <= 0)
- 		goto close;
- 
--	ip6h = (struct ipv6hdr *)buffer;
-+	for (cmsg = CMSG_FIRSTHDR(&msg); cmsg; cmsg = CMSG_NXTHDR(&msg, cmsg)) {
-+		if (cmsg->cmsg_level != IPPROTO_IPV6 ||
-+		    cmsg->cmsg_type != IPV6_HOPOPTS ||
-+		    cmsg->cmsg_len < sizeof(struct ipv6_hopopt_hdr))
-+			continue;
- 
--	if (!ipv6_addr_equal(&ip6h->saddr, &src) ||
--	    !ipv6_addr_equal(&ip6h->daddr, &dst))
--		goto recv;
-+		ptr = (__u8 *)CMSG_DATA(cmsg);
- 
--	if (ip6h->nexthdr != IPPROTO_HOPOPTS)
--		goto close;
-+		hoplen = (ptr[1] + 1) << 3;
-+		ptr += sizeof(struct ipv6_hopopt_hdr);
- 
--	p = buffer + sizeof(*ip6h);
--	hoplen = (p[1] + 1) << 3;
--	p += sizeof(struct ipv6_hopopt_hdr);
-+		while (hoplen > 0) {
-+			opt = (struct ioam6_hdr *)ptr;
- 
--	while (hoplen > 0) {
--		opt = (struct ioam6_hdr *)p;
-+			if (opt->opt_type == IPV6_TLV_IOAM &&
-+			    opt->type == IOAM6_TYPE_PREALLOC) {
-+				ptr += sizeof(*opt);
-+				ret = func[tid](tid,
-+						(struct ioam6_trace_hdr *)ptr,
-+						tr_type, ioam_ns);
-+				goto close;
-+			}
- 
--		if (opt->opt_type == IPV6_TLV_IOAM &&
--		    opt->type == IOAM6_TYPE_PREALLOC) {
--			p += sizeof(*opt);
--			ret = func[tid](tid, (struct ioam6_trace_hdr *)p,
--					   tr_type, ioam_ns);
--			break;
-+			ptr += opt->opt_len + 2;
-+			hoplen -= opt->opt_len + 2;
- 		}
--
--		p += opt->opt_len + 2;
--		hoplen -= opt->opt_len + 2;
- 	}
-+
-+	goto recv;
- close:
-+	free(iov.iov_base);
- 	close(fd);
- out:
- 	return ret;
--- 
-2.34.1
+Or maybe ask them to change the reproducer to specify KDIR to the git tree,
+instead of /lib/modules/?
 
+> 
+> > 
+> > -- 
+> > 0-DAY CI Kernel Test Service
+> > https://github.com/intel/lkp-tests/wiki
 
