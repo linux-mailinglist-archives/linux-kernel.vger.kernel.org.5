@@ -1,201 +1,161 @@
-Return-Path: <linux-kernel+bounces-71213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69EE385A208
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:35:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4653685A20C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:35:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB86FB217EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:34:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD9621F22102
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5233C2C68E;
-	Mon, 19 Feb 2024 11:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C6D92C68B;
+	Mon, 19 Feb 2024 11:35:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dk+P21/i";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ty+8KCsT";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wQMfl/kC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h/46827Y"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b="kpLzs6uM"
+Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166592C1A4;
-	Mon, 19 Feb 2024 11:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3B624B47
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:35:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708342488; cv=none; b=T6SSid9D5HlHTzbI8eG367FOUKXkweLHigvIFIDd4Pzg3YBtUJkkQ17Obhv0J7FJs04mHtI0fg2QHIirt/bRRHMldnRafWN9+rH1Z2AsVRU5Nuun8sreNV2TyM/yis6CQOLY2mvVKB5tegvXspsnZ3FVB4QsbByeXdrASck+ZZo=
+	t=1708342542; cv=none; b=C2zBUK5FLLf45E0Y6Yl6zVVp0LQM6oQHO/1ah5qiE8mYHNh3Nj8PGrPRPZZbXIYOIL5qp5ZbMgwT0/FMN9Ro4pzNxs1d9HCRYwiIMybruzTCZFxNfJt8gljgBK4KxR36Z2OyP+FyxYhNj/DndXNJhgVMx4dCsY8/OoAIvj0Tfmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708342488; c=relaxed/simple;
-	bh=04zZQvErufDHrsOkOYmWa71v/CV/vTUEjZZ/qUxq2hs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=odUoMM+vI7G/7lxFKXZ/k9zLmfEp1tpgymbELxn2PvH8AS14svm/CfYw2Ra8haWtnlwyJv3ryfVqWsPiMsvENJW6x9aEfmOYU7W74tlkwcbD3oYGoZphgvkqVj0q0a/ziGsd0IZKn4yiCciPjIgo6tadPLG+p1nhyinh3//YFiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dk+P21/i; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ty+8KCsT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wQMfl/kC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h/46827Y; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6116E1FD0F;
-	Mon, 19 Feb 2024 11:34:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708342484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
-	b=dk+P21/iZjdfWn1OMr58LZnfRoDNJTOmLtmGN1+2VeomfGvmKRppzti0v5qXd/Q03Xf2Fg
-	C8QltB8mRQHRiatUwi3RZaV24EFAxUtYACmEgiFn5zdcL4/qs739dHXoY2N9bh/ESHI5BZ
-	ypDkhVpmtYeHkZRyga1261rfb79laqw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708342484;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
-	b=ty+8KCsTwu+4P1tXchJB/zd9m+HPb2ztbLnMkiSsh1ee4/ZsRMQCmclrtLUXEtAr968ISP
-	0pHv51k6REhAUaDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708342482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
-	b=wQMfl/kC8LYtLbRSxqJXIbM12ekeEdeqIBXvBHVD6Y5Cs1QO/pjnemurukXSO1QOfKE6b0
-	5KKfQA2D1UOVd3y3yz1nOSipqEvqXrN/ySHoGG4gbfT6tUEn8nEmuI0GT7LrXbCU6qRsfL
-	rwPmYN5BMSdtna1mCLUCTbVozWCdJLY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708342482;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
-	b=h/46827Ys+ElhiiA4KhHcwVXMyzywj/2kcYR6KPT5sTOm8njw/mFhKE2zEtrWF036CEem3
-	ruaVIjSZ+O2HKDBw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5196A13585;
-	Mon, 19 Feb 2024 11:34:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id /56mE9I802VDawAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 19 Feb 2024 11:34:42 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E5B27A0806; Mon, 19 Feb 2024 12:34:37 +0100 (CET)
-Date: Mon, 19 Feb 2024 12:34:37 +0100
-From: Jan Kara <jack@suse.cz>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Kees Cook <keescook@chromium.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Andi Kleen <ak@linux.intel.com>, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] fs/select: rework stack allocation hack for clang
-Message-ID: <20240219113437.y7vxeyhvjnxo7rlh@quack3>
-References: <20240216202352.2492798-1-arnd@kernel.org>
+	s=arc-20240116; t=1708342542; c=relaxed/simple;
+	bh=gbALrddErfrqPTXShtUwM+T8XXo3d7O3TSnDO0Eh7xo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eYoMYa4+WWgIztpsjqrXH8VmxBVjncD1wxgSiz+zeePH5zMcc7jMME4duUR4tYIOWFGFAnnbCKnb/2J9wphEM3o6KvxDiFOrzXO7QWwqA5fwv9au2PluiBPJYk0keI8mB21LPwpMwKPMCi/Ivg4UbkE+FsAIr5DoQ4AO0cU8oeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org; spf=pass smtp.mailfrom=endlessos.org; dkim=pass (2048-bit key) header.d=endlessos.org header.i=@endlessos.org header.b=kpLzs6uM; arc=none smtp.client-ip=209.85.128.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=endlessos.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=endlessos.org
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-6080f51bf0aso1798987b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 03:35:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google; t=1708342540; x=1708947340; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Wva+EmFcBirATjd5TWYv8SP3tCcrLwwYurAHa3W9HRM=;
+        b=kpLzs6uMjhxZJb7icRAk42AsLFuNbaMJZj2ONo6c+7zGVTi/ybf4NgN6xNnimLvqQQ
+         aBV0Y44X+3zCTtixlHXd+9YxeN56WlYUUAw8IvzdHvI1LQgF+12qDjiD2LvITC9eXhTS
+         nI91wrgtIzbN5kqj3uoxwEt9D49Ku9ZB9m6iByHTZ0FacKfhEvEQeEmYbXw7tmWon9mw
+         U83L/2UyNLyx/QlQ9S5MOhbRQolra1XC2nlsM2eneifZPUrsJtxjFu52KQkloNvsEGrw
+         EJC1SS3vpL9t++ltg2zy0RH6hyHF0AlYM4qQWhA6lE6WHlG68PXv8+RYofJZe7j2sgVJ
+         BkvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708342540; x=1708947340;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wva+EmFcBirATjd5TWYv8SP3tCcrLwwYurAHa3W9HRM=;
+        b=Bcmt/tBHTwydHuPHkq7+OIqul5jeqwkgkT7qkgvf9IiW82aAbFdM8fH4h3TSTOiN37
+         oLVJ0zbz3kGJKmp6j0WCLPIFBncbn/Xy7MpWw4GeXkZWu+1Jw/3z+DQiHv++11X6jD+U
+         vWl3JcWw7UGTOK7jGKPbJAd/txAvbPoFERp1F/OomaTT6CMksACkxukyvC89vYVbRVW/
+         z47mvyju7nYHD1F/+1cTfd3mmAAYCEZXsCHLZ5fWtJkPRsEEu9H460t13Vt/JN96u6Er
+         kg+ri8XnNj4Tth2WetHUPphLmgBCE8+C6vDp7veIb7BJV2WZEONSt9BL+k0RS2q+ZioB
+         lyHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcvgwwWwm/zsEymWSASvDJGnN0v974bXl9v1TAsM667G0dyD+6tmJwHgOzOgOUxm/5eV+Kn+mTb6JKDgI2JkHTsjbotE2qHjIeY6/W
+X-Gm-Message-State: AOJu0YyaNAuTInXhW8PV90VFSYa0ITQfd4Ng5uu0a2dhA/8EZ55PerYA
+	gwRSJ5dA/gdk+u8bmyX1vZAdc7wGnpN2H6BLecbBmQz/jMtbFSOOXNf6VSECb/AxAfnVyITuWmq
+	JXBMpsf9L1i6WTeKXd3s1nolVDISfYZ0Q/yogH/MytDJlPSXpjppcYA==
+X-Google-Smtp-Source: AGHT+IGDdacL0TAZ7yJyspFhEqpglS95Pn0FT4r6XPlrF3TFfPKwVmK4ASnL9/+uSFZJkA0VuRZY3QuVlY/ZgDd3jP8=
+X-Received: by 2002:a25:b04d:0:b0:dcc:82d9:776b with SMTP id
+ e13-20020a25b04d000000b00dcc82d9776bmr6556242ybj.6.1708342540012; Mon, 19 Feb
+ 2024 03:35:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240216202352.2492798-1-arnd@kernel.org>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.80
-X-Spamd-Result: default: False [-0.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[43.66%]
-X-Spam-Flag: NO
+References: <20240207084452.9597-1-drake@endlessos.org> <20240207200538.GA912749@bhelgaas>
+ <CAD8Lp47DjuAAxqwt+yKD22UNMyvqE00x0u+JeM74KO2OC+Otrg@mail.gmail.com>
+ <CAD8Lp44-8WhPyOrd2dCWyG3rRuCqzJ-aZCH6b1r0kyhfcXJ8xg@mail.gmail.com>
+ <9654146ac849bb00faf2fe963d3da94ad65003b8.camel@linux.intel.com> <CAD8Lp44tO_pz_HZmPOKUQ-LEQT=c856eH52xWL9nBtAtJwjL1g@mail.gmail.com>
+In-Reply-To: <CAD8Lp44tO_pz_HZmPOKUQ-LEQT=c856eH52xWL9nBtAtJwjL1g@mail.gmail.com>
+From: Daniel Drake <drake@endlessos.org>
+Date: Mon, 19 Feb 2024 12:35:03 +0100
+Message-ID: <CAD8Lp46dPtE12ai8srt9Bz3awnkkb1LZz_7FQuF57M=LaUSaCw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] PCI: Disable D3cold on Asus B1400 PCI-NVMe bridge
+To: david.e.box@linux.intel.com
+Cc: Bjorn Helgaas <helgaas@kernel.org>, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, 
+	dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, bhelgaas@google.com, 
+	mario.limonciello@amd.com, rafael@kernel.org, lenb@kernel.org, 
+	linux-acpi@vger.kernel.org, linux@endlessos.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri 16-02-24 21:23:34, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A while ago, we changed the way that select() and poll() preallocate
-> a temporary buffer just under the size of the static warning limit of
-> 1024 bytes, as clang was frequently going slightly above that limit.
-> 
-> The warnings have recently returned and I took another look. As it turns
-> out, clang is not actually inherently worse at reserving stack space,
-> it just happens to inline do_select() into core_sys_select(), while gcc
-> never inlines it.
-> 
-> Annotate do_select() to never be inlined and in turn remove the special
-> case for the allocation size. This should give the same behavior for
-> both clang and gcc all the time and once more avoids those warnings.
-> 
-> Fixes: ad312f95d41c ("fs/select: avoid clang stack usage warning")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Fri, Feb 9, 2024 at 9:36=E2=80=AFAM Daniel Drake <drake@endlessos.org> w=
+rote:
+> On Thu, Feb 8, 2024 at 5:57=E2=80=AFPM David E. Box <david.e.box@linux.in=
+tel.com> wrote:
+> > This does look like a firmware bug. We've had reports of D3cold support=
+ missing
+> > when running in non-VMD mode on systems that were designed with VMD for=
+ Windows.
+> > These issues have been caught and addressed by OEMs during enabling of =
+Linux
+> > systems. Does D3cold work in VMD mode?
+>
+> On Windows for the VMD=3Don case, we only tested this on a BIOS with
+> StorageD3Enable=3D0. The NVMe device and parent bridge stayed in D0 over
+> suspend, but that's exactly what the BIOS asked for, so it doesn't
+> really answer your question.
 
-Looks good (if this indeed works with clang ;). Feel free to add:
+Tested on the original BIOS version with VMD=3Don: Windows leaves the
+NVMe device (and parent bridge) in D0 during suspend (i.e. same result
+as VMD=3Doff).
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+On this setup, there are 2 devices with StorageD3Enable flags:
 
-								Honza
+1. \_SB.PC00.PEG0.PEGP._DSD has StorageD3Enable=3D1. This is set
+regardless of the VMD setting at the BIOS level. This is the flag that
+is causing us the headache in non-VMD mode where Linux then proceeds
+to put devices into D3cold.
+This PEGP device in the non-VMD configuration corresponds to the NVMe
+storage device. PEG0 is the PCI root port at 00:06.0 (the one in
+question in this thread), and PEGP is the child with address 0.
+However in VMD mode, 00:06.0 is a dummy device (not a bridge) so this
+PEGP device isn't going to be used by anything.
 
-> ---
->  fs/select.c          | 2 +-
->  include/linux/poll.h | 4 ----
->  2 files changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/fs/select.c b/fs/select.c
-> index 11a3b1312abe..9515c3fa1a03 100644
-> --- a/fs/select.c
-> +++ b/fs/select.c
-> @@ -476,7 +476,7 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
->  		wait->_key |= POLLOUT_SET;
->  }
->  
-> -static int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
-> +static noinline_for_stack int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
->  {
->  	ktime_t expire, *to = NULL;
->  	struct poll_wqueues table;
-> diff --git a/include/linux/poll.h b/include/linux/poll.h
-> index a9e0e1c2d1f2..d1ea4f3714a8 100644
-> --- a/include/linux/poll.h
-> +++ b/include/linux/poll.h
-> @@ -14,11 +14,7 @@
->  
->  /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
->     additional memory. */
-> -#ifdef __clang__
-> -#define MAX_STACK_ALLOC 768
-> -#else
->  #define MAX_STACK_ALLOC 832
-> -#endif
->  #define FRONTEND_STACK_ALLOC	256
->  #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
->  #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2. \_SB.PC00.VMD0._DSD has StorageD3Enable=3D0. This VMD0 device is only
+present when VMD is enabled in the BIOS. It is the companion for
+00:0e.0 which is the device that the vmd driver binds against. This
+could be influencing Windows to leave the NVMe device in D0, but I
+doubt it, because it can't explain why Windows would have the D0
+behaviour when VMD=3Doff, also this is a really strange place to put the
+StorageD3Enable setting because it is not a storage device.
+
+> On Linux with VMD=3Don and StorageD3Enable=3D1, the NVMe storage device
+> and the VMD parent bridge are staying in D0 over suspend. I don't know
+> why this is, I would have expected at least D3hot.  However, given
+> that the NVMe device has no firmware_node under the VMD=3Don setup, I
+> believe there is no way it would enter D3cold because there's no
+> linkage to an ACPI device, so no available _PS3 or _PR0 or whatever is
+> the precise definition of D3cold.
+
+Checked in more detail. In Linux, the NVMe device will only go into
+D3hot/D3cold if the ACPI companion device has an explicit
+StorageD3Enable=3D1. However, in VMD mode the NVMe storage device has no
+ACPI companion. Code flow is nvme_pci_alloc_dev() -> acpi_storage_d3()
+ -> return false because no companion.
+
+The VMD PCI bridge at 10000:e0:06.0 that is parent of the SATA & NVME
+devices does have a companion \_SB.PC00.VMD0.PEG0
+However, the SATA and NVME child devices do not have any ACPI
+companion. I examined the logic of vmd_acpi_find_companion() and
+determined that it is looking for devices with _ADR 80b8ffff (SATA)
+and 8100ffff (NVME) and such devices do not exist in the ACPI tables.
+
+Speculating a little, I guess this is also why Windows leaves the
+device in D0 in VMD=3Don mode: it would only put the NVMe device in
+D3hot/D3cold if it had a corresponding companion with
+StorageD3Enable=3D1 and there isn't one of those. What's still unknown
+is why it doesn't put the device in D3 in VMD=3Doff mode because there
+is a correctly placed StorageD3Enable=3D1 in that case.
+
+Daniel
 
