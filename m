@@ -1,114 +1,185 @@
-Return-Path: <linux-kernel+bounces-71130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B75585A10F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:33:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45BF485A115
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:35:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE5421C21E5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:33:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4417B22025
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:35:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8E328DBC;
-	Mon, 19 Feb 2024 10:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BB628DC3;
+	Mon, 19 Feb 2024 10:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VNDt7bpO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b="Bfc8z3RI"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9AC928DA0
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9432E545
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708338823; cv=none; b=W/QvBKSeydzp7vCp5UHi/A5E5EG43IocOpcOnde+/XmVzDD5Exq6bWUUypIVHOagyaXdbfNQn1naiol2rR9TNTQVz23TffkYym6sGHkuiiUH7WyS+932QBinvUuFAH2Ke4ODepj9QjBKBh4dLBbBOU+6rMBzkWLQpbSZGifEIaw=
+	t=1708338906; cv=none; b=FRQ5qPLn9ZdAkfyuSR+e4LSkHRIfJmaM5nF9EQ5t4IOHpwoVzSGtuc0kY/t1+WtULCQCv43nOPGc4YQFBYdHf3V16C3SU/nCRKTmBqO6HYH5NMyzOEvpfvPRbPjaOvxEy+QaFoy83oPKWosiyjIpLYpIXBJAqc3JkgT0ye/MKJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708338823; c=relaxed/simple;
-	bh=SULjHKF6QtgiPOkWISbPbw47xCTYnymy99P09bdIJNc=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=C6D9IUKHCPGcPBLSImutiFDtH+Q97X+kl5Ktgrx8mK+YAGBaxsoDMd7wOXHFzF9Hea7M7n8b5zPqcT2uqsS0QAaITnnjMbjF6IjwoTJ0nL6K5oYL8/wrvi5aQTX5rqBEWlx/V21ly7lHnHlRyM/U6AnFDZ71uUNK67qU9kLl144=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VNDt7bpO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708338820;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZJRU4uALKxhx4r7SpSYo3olSdwrEbW5jzxK5ltbiNOI=;
-	b=VNDt7bpOBABm8nkm3Qmzvwok858dtxIloz5WjpqTKsbyZ5XaHyutfd41e7kqTmHuRZR/cR
-	YXY42R+zJuCyYWmS4WJiN2P75kTH/tiFkG9bRh3SAInbrqQTYMYx6F1WAErt0uMbwO5MHT
-	rbee+zWtDa8ZgqBDlWBTeOR6cCJG/pw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-203-37UTrRGvPkiRbvpTfzHnZg-1; Mon,
- 19 Feb 2024 05:33:36 -0500
-X-MC-Unique: 37UTrRGvPkiRbvpTfzHnZg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A38983812596;
-	Mon, 19 Feb 2024 10:33:35 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.15])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id AD0BC1BDD1;
-	Mon, 19 Feb 2024 10:33:34 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240212083347.10742-1-d.dulov@aladdin.ru>
-References: <20240212083347.10742-1-d.dulov@aladdin.ru>
-To: Daniil Dulov <d.dulov@aladdin.ru>
-Cc: dhowells@redhat.com, Jeffrey E Altman <jaltman@auristor.com>,
-    linux-afs@lists.infradead.org,
-    Marc Dionne <marc.dionne@auristor.com>, linux-kernel@vger.kernel.org,
-    lvc-project@linuxtesting.org
-Subject: Re: [PATCH v2] afs: Increase buffer size in afs_update_volume_status()
+	s=arc-20240116; t=1708338906; c=relaxed/simple;
+	bh=n8tu26m3oZK1YFNyaBGqTJIbWfF/4wYBs1xQMVZxbFE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=gHcZXEQ3s9d28L65KTMMiuG+em4UD+Pll5PzzK2PRHrmhj0rVnwYWaL7x4npZvjB1yODUKWKdW71RU6//v0tGhpcPRNa017UxlXnEyyzOBx0/4dh9T17spNX8gcUFRnc4Dp/BP6j3ojKYVImKZqgHeRgSLTnVSbvIDYBC5VuQuE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com; spf=pass smtp.mailfrom=fairphone.com; dkim=pass (2048-bit key) header.d=fairphone.com header.i=@fairphone.com header.b=Bfc8z3RI; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fairphone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fairphone.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4125cf71eecso11674055e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 02:35:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fairphone.com; s=fair; t=1708338901; x=1708943701; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9ycbsLi0t9h8MohDsd9HPsQxAwjcag+LQ7Zzd41prA=;
+        b=Bfc8z3RID2cBNkA8O+sFxhwbRU0mp80SX52j90Hx+owpxIg0eMOJDqXTuowCV7nugm
+         ziRuSPT1h2YPzOHwYW3J1eVo+jWWEmfq7mCsQNk4hlFyXbdzF5bDFI71E0i8nTTFmJ8p
+         iaJbG0diCxIPe01hbcB0dI4yw8CcKyaPf1BegNZ6ATIe4Ghldansgn9BMlO1oiTeWNXL
+         zapFwMaBxB4vaKV9ZvqCRxZxbwlor9ViZ3uxycIYkMBYCTtPvope+kK9qe5eaTjM/Ogy
+         XowbRjPg+xP3vK82d8noqvsYkS56O6T4VNLa7fl/WqDa0/GJS/Xt9eV+JDY3n4TGKJdO
+         WZFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708338901; x=1708943701;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=m9ycbsLi0t9h8MohDsd9HPsQxAwjcag+LQ7Zzd41prA=;
+        b=WFykUIB3PJRtKD7Xirp7zstWE3BGUDIUkl/tmWwgII0Z04ZrDoPBR83wxb7spavnz+
+         9ZqqRzGUegAJhi96oHmSdDX+P6OfMXBGXQsQW8w34mXVA3AqdBwFHdMKmIZAFRXkKYMn
+         qaijcoU4/ZACqIt4cB4Wz7oTpkRNlbvquKR2MjcXlDPzyeXtlKRquSUdzsDnOxa9uxt+
+         fKCEnqIVxp+TFS4rLad6WMj8Y+TakcbTSoUgXU9Nv0ug1adH4eB1vXGpX8ipUt4K/244
+         Ah5wq0Oy1Zb6V7t0sQe0sEew2kaYcNZt2g2HReoJw26DQbsYg19DtcXuKjv3zJMpXz44
+         zIig==
+X-Forwarded-Encrypted: i=1; AJvYcCWh2iORB9s+cLRDyWEr987fxZqlFe9qnkJKKJVicjlEe6yxOz2x9hz+ZKFzTc/GewY/5+AzRfQ2djOzGvLVGltiY8Ve9L48a0zrO29g
+X-Gm-Message-State: AOJu0Yz3UYVJqe67tgL+iOKXswwO/3+OQN3rycL1t446mv0OuUnpKFU3
+	zs2N88MNQT/7ZN7Xqbog/v9zDF9D2XiDsCHPOHRFnhOM/d/oguRMkjWU94fBa68=
+X-Google-Smtp-Source: AGHT+IFjPAJ4fuhpSh/fhJtskqrhKDQ+QhWZsMMC2miAFTn6NQtrqQAj36thD2JD/ura21aD9NsYcw==
+X-Received: by 2002:a05:600c:1911:b0:411:f94b:379e with SMTP id j17-20020a05600c191100b00411f94b379emr9207828wmq.27.1708338901286;
+        Mon, 19 Feb 2024 02:35:01 -0800 (PST)
+Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
+        by smtp.gmail.com with ESMTPSA id p11-20020a05600c1d8b00b004126a0dfd11sm677563wms.29.2024.02.19.02.35.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 02:35:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <125562.1708338814.1@warthog.procyon.org.uk>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 19 Feb 2024 10:33:34 +0000
-Message-ID: <125563.1708338814@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Feb 2024 11:35:00 +0100
+Message-Id: <CZ8ZLKN072K5.1WRT68QL5IUSZ@fairphone.com>
+From: "Luca Weiss" <luca.weiss@fairphone.com>
+To: "Bjorn Andersson" <andersson@kernel.org>
+Cc: "Stephan Gerhold" <stephan@gerhold.net>, "Andy Gross"
+ <agross@kernel.org>, "Konrad Dybcio" <konrad.dybcio@linaro.org>, "Thara
+ Gopinath" <thara.gopinath@gmail.com>, "Herbert Xu"
+ <herbert@gondor.apana.org.au>, "David S. Miller" <davem@davemloft.net>,
+ "Rob Herring" <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Bhupesh Sharma" <bhupesh.sharma@linaro.org>,
+ <~postmarketos/upstreaming@lists.sr.ht>, <phone-devel@vger.kernel.org>,
+ <linux-crypto@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sm6350: Add Crypto Engine
+X-Mailer: aerc 0.15.2
+References: <20240105-sm6350-qce-v1-0-416e5c7319ac@fairphone.com>
+ <20240105-sm6350-qce-v1-2-416e5c7319ac@fairphone.com>
+ <ZZguvdJTyVgfxm4D@gerhold.net> <CZ6FYZLGWT3K.ZBHYDQ7TDN4B@fairphone.com>
+ <pbjbhnj4opt57xswk7jfg2h2wjdv3onmg4ukxn22tsjjsnknxv@m5gy44kkbvvl>
+In-Reply-To: <pbjbhnj4opt57xswk7jfg2h2wjdv3onmg4ukxn22tsjjsnknxv@m5gy44kkbvvl>
 
-I suggest the attached instead.
+On Fri Feb 16, 2024 at 7:09 PM CET, Bjorn Andersson wrote:
+> On Fri, Feb 16, 2024 at 11:46:49AM +0100, Luca Weiss wrote:
+> > On Fri Jan 5, 2024 at 5:30 PM CET, Stephan Gerhold wrote:
+> > > On Fri, Jan 05, 2024 at 05:15:44PM +0100, Luca Weiss wrote:
+> > > > Add crypto engine (CE) and CE BAM related nodes and definitions for=
+ this
+> > > > SoC.
+> > > >=20
+> > > > For reference:
+> > > >=20
+> > > >   [    2.297419] qcrypto 1dfa000.crypto: Crypto device found, versi=
+on 5.5.1
+> > > >=20
+> > > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+> > > > ---
+> > > >  arch/arm64/boot/dts/qcom/sm6350.dtsi | 31 ++++++++++++++++++++++++=
++++++++
+> > > >  1 file changed, 31 insertions(+)
+> > > >=20
+> > > > diff --git a/arch/arm64/boot/dts/qcom/sm6350.dtsi b/arch/arm64/boot=
+/dts/qcom/sm6350.dtsi
+> > > > index 8fd6f4d03490..516aadbb16bb 100644
+> > > > --- a/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> > > > +++ b/arch/arm64/boot/dts/qcom/sm6350.dtsi
+> > > > @@ -1212,6 +1212,37 @@ ufs_mem_phy_lanes: phy@1d87400 {
+> > > >  			};
+> > > >  		};
+> > > > =20
+> > > > +		cryptobam: dma-controller@1dc4000 {
+> > > > +			compatible =3D "qcom,bam-v1.7.4", "qcom,bam-v1.7.0";
+> > > > +			reg =3D <0 0x01dc4000 0 0x24000>;
+> > > > +			interrupts =3D <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+> > > > +			#dma-cells =3D <1>;
+> > > > +			qcom,ee =3D <0>;
+> > > > +			qcom,controlled-remotely;
+> > > > +			num-channels =3D <16>;
+> > > > +			qcom,num-ees =3D <4>;
+> > > > +			iommus =3D <&apps_smmu 0x432 0x0000>,
+> > > > +				 <&apps_smmu 0x438 0x0001>,
+> > > > +				 <&apps_smmu 0x43f 0x0000>,
+> > > > +				 <&apps_smmu 0x426 0x0011>,
+> > > > +				 <&apps_smmu 0x436 0x0011>;
+> > >
+> > > The last two lines look equivalent to me: 0x436 & ~0x0011 =3D 0x426.
+> >=20
+> > I don't understand the IOMMU SID + mask really, but I think I've seen
+> > somewhere before like here that TZ can be a bit picky with the SIDs?
+> >=20
+> > https://lore.kernel.org/linux-arm-msm/opqdrmyj3y64nqqqmakjydn5rkspizufy=
+eavm7ec7c7ufqz4wk@ey2a7bq3shfj/
+> > https://lore.kernel.org/linux-arm-msm/11b5db69-49f5-4d7b-81c9-687d66a5c=
+b0d@linaro.org/
+> >=20
+> > I don't quite want to risk having some obscure use case breaking becaus=
+e
+> > we cleaned up the dts ;)
+> >=20
+> > But if you're more sure than me that it won't break, let me know!
+> >=20
+> > >
+> > > It's also a bit weird that the mask has one more digit than the strea=
+m
+> > > ID. And ordered numerically (by stream ID, first number) it would be =
+a
+> > > bit easier to read. :-)
+> >=20
+> > Sorting them is no problem, can do that for v2.
+> >=20
+>
+> Where you able to do this? I don't see a v2 in my inbox, am I just
+> searching poorly?
 
-David
----
-diff --git a/fs/afs/volume.c b/fs/afs/volume.c
-index 020ecd45e476..af3a3f57c1b3 100644
---- a/fs/afs/volume.c
-+++ b/fs/afs/volume.c
-@@ -353,7 +353,7 @@ static int afs_update_volume_status(struct afs_volume =
-*volume, struct key *key)
- {
- 	struct afs_server_list *new, *old, *discard;
- 	struct afs_vldb_entry *vldb;
--	char idbuf[16];
-+	char idbuf[24];
- 	int ret, idsz;
- =
+Only sent v2 some minutes ago, didn't have any more time on Friday.
 
- 	_enter("");
-@@ -361,7 +361,7 @@ static int afs_update_volume_status(struct afs_volume =
-*volume, struct key *key)
- 	/* We look up an ID by passing it as a decimal string in the
- 	 * operation's name parameter.
- 	 */
--	idsz =3D sprintf(idbuf, "%llu", volume->vid);
-+	idsz =3D snprintf(idbuf, sizeof(idbuf), "%llu", volume->vid);
- =
+Regards
+Luca
 
- 	vldb =3D afs_vl_lookup_vldb(volume->cell, key, idbuf, idsz);
- 	if (IS_ERR(vldb)) {
+>
+> Regards,
+> Bjorn
+>
+> > >
+> > > Thanks,
+> > > Stephan
+> >=20
 
 
