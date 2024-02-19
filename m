@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-70835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70836-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0410C859D01
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:34:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70948859D03
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:34:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD615280FBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:34:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CEB91C219FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6322210F0;
-	Mon, 19 Feb 2024 07:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B0F520B34;
+	Mon, 19 Feb 2024 07:34:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XX8wxhsH"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ivwMq1Sh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B948920DC8
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:34:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1166620B0E;
+	Mon, 19 Feb 2024 07:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708328058; cv=none; b=MFZDZyFfqP/xwqWER+fn1STCmRGhOxJohqKea82GFyhGz12I1hYsP3KRoK0x6+o4S8PUOBgUC5+ZgFD+jAcoVTiukFXwGy/Y8uXDi4Swu7cV3oJ9fzlx/CpxRScnYsNosUaxsBgIiA/u+jIfSpPPnrvHZB3yfzmlAk+nBiPyTvU=
+	t=1708328068; cv=none; b=L/ndf2ch6jh760DAX6FWZM0yNym6AAxXzmY3XeOve0jXn6eOroROFLU9OTvdy57H/F8G8H7587Fsu0hlW/XvVYmcV/Vr+PlziAXCzAS1aoSshquYUh9P7hnSPf/h9fLhIyr9ANYs6tv4SvqGXOi/eg49hvjuQhqKnNE6wjpbs1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708328058; c=relaxed/simple;
-	bh=krkCfySZSkroyGR6IAkJme4Tqg0Cs5e39JCBndl9dII=;
+	s=arc-20240116; t=1708328068; c=relaxed/simple;
+	bh=nG+e0xfx4vtsde8hCf9gGVh7ZBbgR70WURJo1H2ry3E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JkP6B661J60+ulnJqxhHW3qaQuQYHk4hGtPfX/iVf5KECOhsxMfMgWF6prer2DvYXNnkBGgsKxIFFIsjNomNXttSpDAJuhEiNQ/c2RbgbUTGhIF3U7pjeFC1Ea1kXFcHilb/JZuvJuCMXi2GxCt85Wgf1cotEuOR4e1i0vcXfoQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XX8wxhsH; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4125df8f347so10187635e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:34:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708328055; x=1708932855; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xfYKjQlB3cTR/VJt7JP21CmTYzoHEEFMBY9a1YgsyAo=;
-        b=XX8wxhsHCzhZh6PK5Ycd2YjgnWTP1cvNkhhxWB6xKtCl8PI7bSLUfSJEoP/4ko97m3
-         NjsburrZAT2cIchEHK93HVVuvJQsxaGJyVT4DTSC1USupAQI0vQaUlvoHsHSV5bZaAzu
-         bsW5V59EW3FQYfobZorZoH1JMpmHppFfuNuUhmMY2dj7u7vUyL8o5pAKxZaWm1q6QY+g
-         bfj7rOAMF/310mnvogNqLwl5t2WnB0CJbUsilvW6fV1TnU+roXxFOSiPwYVxq02GAjZQ
-         rJFuySBlNiHeg8ergHKRSfAP88/hoCuXE9RCRCl31e9WptPKmYAnJjS4z7q/YVpx/YSI
-         ilgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708328055; x=1708932855;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xfYKjQlB3cTR/VJt7JP21CmTYzoHEEFMBY9a1YgsyAo=;
-        b=IXVOmQ2RPwFlYL2t8T0rfM80eo973QpKoqGYQCuDhFW3+VAs+ku72G4MsAukwY/kC9
-         hp0FbZsntKaHXS3BBRxFqslrMOI4laViyq5nV4TVSr1ZGkNfPy2VU77Ass9PaomJ89bF
-         UE26LEfCC93aTzQJ5ZKpg3AzqS4n5Owd6jVfCRWUxk+qFKad7pGGZS88+WQAsB3uXB7w
-         5Pmh+Sey/6OkDqClxm9ksNcI+ZknKVQEqIPWk2XLMhpOrfzUTJeJtgPUylCDikLCWU35
-         RGh24j/KlAfe/KK/jkyv4ksutEXJMi5t+d5/EUg2GJ/hlBzaGv0b+lLNOEUfhtMfPWiP
-         C1Yg==
-X-Forwarded-Encrypted: i=1; AJvYcCXF11rDkao7h3zhSvtbK1Yzb7kIb2qg6Gnt8ZggMQgc1+VK8qqKefBDSuTWhYLTQGnr4R0qGbWbqnUF7Ffg+R+1lFJvxgiiHisH/yrA
-X-Gm-Message-State: AOJu0YyI3/RYJg2C+LEvAYdlUH0NKkWcAkuspWNNp3lRtddubxucn5NX
-	XKjoCAoEuk+XvmYuPVZHrGOLMVbWB0BPYYOgXIFtlAX0SiOrA8FbpxuSYxftKbs=
-X-Google-Smtp-Source: AGHT+IEY4IXUUaJrDQ/A3fyk8ahV8A9JPF6sLtLwu5zuCAycDgcK9b/PJNWgzPznWAFvTfOJ9+QdWg==
-X-Received: by 2002:a05:600c:a3a3:b0:412:415a:43ac with SMTP id hn35-20020a05600ca3a300b00412415a43acmr5919941wmb.15.1708328055247;
-        Sun, 18 Feb 2024 23:34:15 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id jv14-20020a05600c570e00b0040fe3147babsm10640011wmb.0.2024.02.18.23.34.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 23:34:14 -0800 (PST)
-Message-ID: <55770080-9b27-4e04-a78e-7a7e508f37c2@linaro.org>
-Date: Mon, 19 Feb 2024 08:34:11 +0100
+	 In-Reply-To:Content-Type; b=WAZuyCc/ZCWyhRmNZg5EH+zACpR6CEk5GWVYSjcO7Rgvd1q79t34IR02uJMxF81FM4fWPUk7Epe7UDVQ203Fpo7Mlihsj028yIuo67rQPI/nyNsj0GM5R703Fl7eTQs6Nq1K9dXfMUeKDfp2YgzhuCOrDo8yxFnM1rIhjQzSqNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ivwMq1Sh; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708328067; x=1739864067;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=nG+e0xfx4vtsde8hCf9gGVh7ZBbgR70WURJo1H2ry3E=;
+  b=ivwMq1Sh0968tUK0gIeSVA4F8Pn9Y0YKlFLZ3uPh86b9IkiI0Ld806o3
+   AkQZrMvwJD/uSBVzAZEiI/+Q4YIDqJEyzBwFUVIHG/k6g+7EyJzqksPz9
+   HkGTzj7y59CuwN4GlDp1dY827rRyApQyKQJvq1MTvEDS3nWtWGshE8lif
+   oYEte3YEyLJIQXN4zA1ODtpQxbLiUyPPMUKUiGN1En1PaitQhhSWGT8rA
+   TlD7NucZn3xtz9duE5P2BoqZQVDNxaHxoOnk33RQaFAk22o7z6K2JiyKf
+   JE01vxd1QlvVnA/b3XXd8hUlf/b5OTRQ6dapVlKznynj2W9XUWrmd7j9G
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="13503078"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="13503078"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 23:34:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="27579484"
+Received: from mojammel-mobl.amr.corp.intel.com (HELO [10.209.58.186]) ([10.209.58.186])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 23:34:24 -0800
+Message-ID: <7feb889f-f78e-4caa-a2f4-9d41acf6ca76@linux.intel.com>
+Date: Sun, 18 Feb 2024 23:34:23 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,106 +62,96 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 03/18] dt-bindings: regulator: describe the PMU module
- of the QCA6390 package
+Subject: Re: [PATCH v2 2/2] efi/libstub: Add get_event_log() support for CC
+ platforms
+To: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc: Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-efi@vger.kernel.org
+References: <20240215030002.281456-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20240215030002.281456-3-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <CAC_iWjJ_TS66KG7uGOQFiKGfZNKjnod6u7zua4LVK-EJHEUv8w@mail.gmail.com>
 Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>,
- Lukas Wunner <lukas@wunner.de>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-pm@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-4-brgl@bgdev.pl>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240216203215.40870-4-brgl@bgdev.pl>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <CAC_iWjJ_TS66KG7uGOQFiKGfZNKjnod6u7zua4LVK-EJHEUv8w@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 16/02/2024 21:32, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> The QCA6390 package contains discreet modules for WLAN and Bluetooth. They
-> are powered by the Power Management Unit (PMU) that takes inputs from the
-> host and provides LDO outputs. This document describes this module.
-> 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> ---
->  .../bindings/regulator/qcom,qca6390-pmu.yaml  | 166 ++++++++++++++++++
->  1 file changed, 166 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/qcom,qca6390-pmu.yaml
-> 
+Hi Ilias,
 
-This matches our internal discussions and how we see the QCA6390 power
-handling based on datasheet.
+On 2/18/24 11:03 PM, Ilias Apalodimas wrote:
+> On Thu, 15 Feb 2024 at 05:02, Kuppuswamy Sathyanarayanan
+> <sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>> To allow event log info access after boot, EFI boot stub extracts
+>> the event log information and installs it in an EFI configuration
+>> table. Currently, EFI boot stub only supports installation of event
+>> log only for TPM 1.2 and TPM 2.0 protocols. Extend the same support
+>> for CC protocol. Since CC platform also uses TCG2 format, reuse TPM2
+>> support code as much as possible.
+>>
+>> Link: https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#efi-cc-measurement-protocol [1]
+>> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> [...]
+>
+>> +void efi_retrieve_eventlog(void)
+>> +{
+>> +       efi_physical_addr_t log_location = 0, log_last_entry = 0;
+>> +       efi_guid_t cc_guid = EFI_CC_MEASUREMENT_PROTOCOL_GUID;
+>> +       efi_guid_t tpm2_guid = EFI_TCG2_PROTOCOL_GUID;
+>> +       int version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
+>> +       efi_tcg2_protocol_t *tpm2 = NULL;
+>> +       efi_cc_protocol_t *cc = NULL;
+>> +       efi_bool_t truncated;
+>> +       efi_status_t status;
+>> +
+>> +       status = efi_bs_call(locate_protocol, &tpm2_guid, NULL, (void **)&tpm2);
+>> +       if (status == EFI_SUCCESS) {
+>> +               status = efi_call_proto(tpm2, get_event_log, version, &log_location,
+>> +                                       &log_last_entry, &truncated);
+>> +
+>> +               if (status != EFI_SUCCESS || !log_location) {
+>> +                       version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
+>> +                       status = efi_call_proto(tpm2, get_event_log, version,
+>> +                                               &log_location, &log_last_entry,
+>> +                                               &truncated);
+>> +                       if (status != EFI_SUCCESS || !log_location)
+>> +                               return;
+>> +               }
+>> +
+>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
+>> +                                          truncated);
+>> +               return;
+>> +       }
+>> +
+>> +       status = efi_bs_call(locate_protocol, &cc_guid, NULL, (void **)&cc);
+>> +       if (status == EFI_SUCCESS) {
+>> +               version = EFI_CC_EVENT_LOG_FORMAT_TCG_2;
+>> +               status = efi_call_proto(cc, get_event_log, version, &log_location,
+>> +                                       &log_last_entry, &truncated);
+>> +               if (status != EFI_SUCCESS || !log_location)
+>> +                       return;
+>> +
+>> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
+>> +                                          truncated);
+>> +               return;
+>> +       }
+>> +}
+> [...]
+>
+> I haven't looked into CC measurements much, but do we always want to
+> prioritize the tcg2 protocol? IOW if you have firmware that implements
+> both, shouldn't we prefer the CC protocol for VMs?
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+According the UEFI specification, sec "Conidential computing", if a firmware implements
+the TPM, then it should be used and CC interfaces should not be published. So I think
+we should check for TPM first, if it does not exist then try for CC.
 
-Best regards,
-Krzysztof
+https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#confidential-computing
+
+> Thanks
+> /Ilias
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
