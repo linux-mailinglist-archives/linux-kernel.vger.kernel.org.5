@@ -1,107 +1,111 @@
-Return-Path: <linux-kernel+bounces-71318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71327-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B3EF85A376
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:33:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7565885A391
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:37:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDB5E1C23815
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:33:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDE4FB2325B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:37:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6991E2E847;
-	Mon, 19 Feb 2024 12:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="AIqzeuSe"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0142E647;
+	Mon, 19 Feb 2024 12:37:18 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8B92E410
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1DE32E410;
+	Mon, 19 Feb 2024 12:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708345924; cv=none; b=hMtSgtrWEluGyi99XSem9VfZW/549w6FUxz03W5NUyyyCtuKWpu21w5WBxczbFdPBdrLTEYd9eg7MqGDP42NVDGvb2w71Y33dT0Fxq72RQ6QS1s9KorHhslkjFHfe5b+zdQ1PxC5aRn8/qLUKQwGUUE8L2JQid1pUg2N0knnvXc=
+	t=1708346238; cv=none; b=BCMedfzuqFZM2MGP9jXhCGyzLQyU67VlibbrCfGGUgQkbeUVgum0WlcnETNmiV9Y+bHsWF6ZC/Br+dMqm3vTXCO5BJdcn7lqcu8AaW0h2TrKWqgd3+k0Wt8J6bb6KL7AdViHDvaIW1s+R/8THO/DUSTKSODMEiTMqGB4KCb/k4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708345924; c=relaxed/simple;
-	bh=j6578wxWKqcx8ONxEVdRiQYKPP0Syiq2K9w0PPf/ewo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TKPcshwJFo+5xKK/jLJ0T1XMgPOUpryGqR2/hQa7bEdn1GWfPzxAFmwmTGbIvtEfPKqsZjy9FhyIHv+cBFYOo54Cx3aiSwOdI+WsYAKN2BG+BUh1VWvong83SEzWDyB8E4VGUvhIAkZq5SpP09YNjjlrG9q4JfrD2YK3IYN/Lww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=AIqzeuSe; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55a035669d5so6874793a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:32:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708345921; x=1708950721; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H5rTBOT512LHdHzuBKt2E2Za1VrV48YhxTWcmimOXXM=;
-        b=AIqzeuSeZYg137oUl4Xet+ISHfWTpkcaMMD+rffcceD3VIB4aJ/LWyHrnosyWw7gsZ
-         c2PmMQCUfise+JZd86B9I8xXAJhkA5RJ7ILUX2nlLGy0GsAD3dnqv8RZbSEIwx7dqbqI
-         eyuZX6r/ADjG8KN3G2oTS3TVpbwez3dnKfjDEBtogUSSgfVtL9866oZsDd4BzXW8z/WP
-         nwVp119okOyDdvn5zA374AospP6XSW7lrRzWiqQeyfbci3/wSjushcLLWpXMqb9oc79S
-         zGVWtLao+xdGYm4jhtdO39ByG4D+dTAGy0nwPrdNVY3cNbq4FBwlIiiq95hKPbQfQWcc
-         +5WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708345921; x=1708950721;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H5rTBOT512LHdHzuBKt2E2Za1VrV48YhxTWcmimOXXM=;
-        b=oDztKqKV9ZFpBu8NqnuZZGIzjDBik4DMuFETb4U4QGRvmwg71OSWJRE+026GCmYoGk
-         eqEYYJzlOUr/RzGX3rf3oUNzQiiEHNfn9chfrsYRGATEN6/DTEfeinUSxq/sw2H2w/2r
-         9q4DPveAqnROEaCBgw9RnyaKp7+FKGski4yQ782N0rEm7ygIGMDG7A8vPO5AkcGweAd8
-         BCrrvTY0Ak3HWmlNSMELQLC41zer1/XcMomjBBt+8dDmnV+IL8Pnx/YAqPgShO7gm+3L
-         HUkEQgqj/O7jSZQLERRBy6dIaAcJ5BYONujaDc4NQYQq9KVT22PFmr1vVUagy3cEnyhB
-         BIGg==
-X-Forwarded-Encrypted: i=1; AJvYcCXYlAA0zGw5oeCTF/F1hsbrIzI1XEP4QMv9uSK76brldbPRAOi2hjz+QVcvAPY8YEzP4tQF0/FJt9+0FtEBZsPtE+2ywcZskC0vJIXd
-X-Gm-Message-State: AOJu0Yw4EPFgkv4IYp9AvrPysOXdUP2zesQrgZuq0bY43L4Uc5yacpEt
-	OLdEW6pOVjYiCNNtggWoAuLoZFHzInnqH+6k/DsPUGSeT3uZc+d54eG2f9XmppQ=
-X-Google-Smtp-Source: AGHT+IEqPkau5gA1xSLGNYFbfj0SBd1j9tWIVJtBLMtRG5TURWbjPOmxSGxc5PG7FWezTEwt4jfqrg==
-X-Received: by 2002:a05:6402:14d0:b0:564:66c1:d527 with SMTP id f16-20020a05640214d000b0056466c1d527mr2208068edx.36.1708345921462;
-        Mon, 19 Feb 2024 04:32:01 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id i7-20020aa7c9c7000000b005649f17558bsm348699edt.42.2024.02.19.04.31.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 04:32:00 -0800 (PST)
-Date: Mon, 19 Feb 2024 15:31:56 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Moritz C. Weber" <mo.c.weber@gmail.com>
-Cc: florian.fainelli@broadcom.com, linux-staging@lists.linux.dev,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] Staging: vc04_services: bcm2835-camera: Fix code
- style checks
-Message-ID: <4295c4b8-bcee-4a7f-8960-80b6d3934530@moroto.mountain>
-References: <236d985c-1835-410f-b0b5-cacbd5fbf930@moroto.mountain>
- <20240219112234.8673-1-mo.c.weber@gmail.com>
+	s=arc-20240116; t=1708346238; c=relaxed/simple;
+	bh=/J65+q+QomSfZ3wGcuHtMpFRfCHCYMuMStDpL3y0AZc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gP5IUeCMi6KBw/4WhFJVnpR52gvvG2yEL9+fR3L6f4SQloUOsmzowUYDzpVA5jVFf6aeeYkkNTdfwvjos2Fv725m7rxLWXQygLcmUcWH/y9/uCU6gGlYoiDN7fXE/GtzR+r0JW+G1pvJUBV5jx92j6oy0jcaipkR6L8yU+9+X30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from [192.168.2.4] (51b68f08.dsl.pool.telekom.hu [::ffff:81.182.143.8])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 0000000000073B80.0000000065D34A46.001CFF03; Mon, 19 Feb 2024 13:32:06 +0100
+Message-ID: <531e85d73c1926161eb15f8900ea77aade394b6f.camel@irl.hu>
+Subject: Re: [PATCH] platform/x86: ideapad-laptop: support Fn+R
+ dual-function key
+From: Gergo Koteles <soyer@irl.hu>
+To: Ike Panhc <ike.pan@canonical.com>,
+  Hans de Goede <hdegoede@redhat.com>,
+  Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Mon, 19 Feb 2024 13:32:05 +0100
+In-Reply-To: <3b6a7bba-47a5-469c-aac1-5574ad78dadf@canonical.com>
+References: 
+	<0cdbc0e6eb65e160384ae0ed152e7de3ded1d9d5.1707604991.git.soyer@irl.hu>
+	 <3b6a7bba-47a5-469c-aac1-5574ad78dadf@canonical.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219112234.8673-1-mo.c.weber@gmail.com>
 
-On Mon, Feb 19, 2024 at 12:22:32PM +0100, Moritz C. Weber wrote:
-> Resubmit these patches to address comments to rebase the 8 v2 changes into
-> 2 patches topicwise
-> Fix patches with same subject issue based on v2, which fixes multiple code
-> style checks for better readability, consistency, and fixes typos from v1
-> 
-> Moritz C. Weber (2):
->   Staging: vc04_services: bcm2835-camera: fix blank line style check
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
-> 
+Hi Ike,
 
-Looks okay now.
+On Mon, 2024-02-19 at 10:39 +0800, Ike Panhc wrote:
+> On 2/11/24 06:51, Gergo Koteles wrote:
+> > According to the manual, Fn+R adjusts the display refresh rate.
+> > Map Fn+R to KEY_DISPLAYTOGGLE.
+> >=20
+> > Signed-off-by: Gergo Koteles <soyer@irl.hu>
+> > ---
+> >  drivers/platform/x86/ideapad-laptop.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >=20
+> > diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x=
+86/ideapad-laptop.c
+> > index 88eefccb6ed2..4c130957f80d 100644
+> > --- a/drivers/platform/x86/ideapad-laptop.c
+> > +++ b/drivers/platform/x86/ideapad-laptop.c
+> > @@ -1091,6 +1091,8 @@ static const struct key_entry ideapad_keymap[] =
+=3D {
+> >  	{ KE_KEY,	0x07 | IDEAPAD_WMI_KEY, { KEY_HELP } },
+> >  	{ KE_KEY,	0x0e | IDEAPAD_WMI_KEY, { KEY_PICKUP_PHONE } },
+> >  	{ KE_KEY,	0x0f | IDEAPAD_WMI_KEY, { KEY_HANGUP_PHONE } },
+> > +	/* Refresh Rate Toggle (Fn+R) */
+> > +	{ KE_KEY,	0x10 | IDEAPAD_WMI_KEY, { KEY_DISPLAYTOGGLE } },
+> >  	/* Dark mode toggle */
+> >  	{ KE_KEY,	0x13 | IDEAPAD_WMI_KEY, { KEY_PROG1 } },
+> >  	/* Sound profile switch */
+>=20
+> Acked-by: Ike Panhc <ike.pan@canonical.com>
+>=20
+> BTW on which ideapad we need this patch?
+>=20
 
-Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
+Oh, I somehow missed that. I found it on a Yoga 7 14ARB7.
 
-regards,
-dan carpenter
+Newer Yogas and Legions with 60Hz/90Hz displays have this refresh rate
+toggle feature.
+
+I'm wondering if this would be worth a new KEY_REFRESH_RATE_TOGGLE
+event code?=20
+
+KEY_DISPLAYTOGGLE is used to toggle the LCD on/off in other drivers.
+
+What do you think?
+
+Thanks,
+Gergo
+
+> Thanks.
+>=20
+> --
+> Ike
 
 
