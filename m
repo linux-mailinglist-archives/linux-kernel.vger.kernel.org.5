@@ -1,74 +1,75 @@
-Return-Path: <linux-kernel+bounces-72136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A54A585AFD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:45:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 610AF85AFDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:45:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 300B0B217D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:45:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 926191C2370C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5161F56B74;
-	Mon, 19 Feb 2024 23:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13DF56773;
+	Mon, 19 Feb 2024 23:44:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PgEsfXpQ"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NQDU1EO2"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE0C537F6;
-	Mon, 19 Feb 2024 23:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8623F57307;
+	Mon, 19 Feb 2024 23:44:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708386292; cv=none; b=HC3CkeyMsrLxM/gXgOf3F5f079OkdC3xUl9vROXIpCCG9wiHdc3eT/Qu/H1tTPXAJGvznqk06fpPY/E+fc3BO+aLXqkMORuwrT/2I2ia6ABexIjEbpI54diod0iaQ83dmfuCK3VOfLchhfY4NeFvwEnc7j0R9NCFrzSJhEH3SG4=
+	t=1708386298; cv=none; b=qrobbavae21UORS026/bLPdGDEkRzJP6HbqmGX8icW5ttAAVrF61fLzyuEozBKDvg7uNR1INwUX3rwHgxlOSEcEz0vAinasNB8E5BStHhOlRdDaPTNemGx0B7ALtsuK7Tdo1vuN3EC/thylFL9Q6imoQiJxgGZQOQg6rymn9n+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708386292; c=relaxed/simple;
-	bh=8QtiyWrWfuzQjwuwyJxh0N9o8CzHsc9182ryunCiVNA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ovTp/aKUHVeGAGnV05zSLoeIZPq3vsqyAktR7U9S+eLF8xZnRRduMgCoa8VP7QsmEWgRVuYDEFUGyFBNIdD05yTsQcjDdbXdRSal0O7SQ52wEgK8s3UEtg2wZil6MQy1Bs1iNVO8UFKobwX1rv5GtxnArYbEuqle2dXlZgwmtEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PgEsfXpQ; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1708386298; c=relaxed/simple;
+	bh=H+V3H/pUojjUDeW+Drln+Q8pnAl3NAhUesryrOUfrE8=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ObhvE2tr+B1UQ0n3mlwqRiUbY/+IFgEhYDPmUnpql8WqNaHBs97xi633qxfETCNlfZ9Y4X0FnT0s4Mp1jUjVIegQy+hbBemOh4650nFzfeW6fc9gP+bzTzRugR2OsYVXSHoUg50LiAWbIyt41kKcVhJOhdthBY+jKLIwnwEnlOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NQDU1EO2; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e22e63abf1so1419073b3a.3;
-        Mon, 19 Feb 2024 15:44:50 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1d932f6ccfaso39708565ad.1;
+        Mon, 19 Feb 2024 15:44:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708386290; x=1708991090; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s1aJuW6j9tgwUyJl9DgLg8w9vuSaZM6Q1DPHNzf8iOI=;
-        b=PgEsfXpQSBJGfS7CcmB+ywPMeveehd45br/RyVassjYKBgRVhzFT78iKQ1kxiojPxo
-         ArpMGUmKBZpq6dFd9aHo0u6qn4jFuXd/9rpTJfZM4uGyIklIpc/3cyHnDzB4vfDNZQ+4
-         11X/EOs/uKZE99dzXggcOEsc0HbiYhdhhJj226rh+5CaQJj4cO82fgBPCBjaZur4c1PF
-         o4UB4V4nYQ7t03Lgf8rMnBHhJnC1qVFYyRGwHQ4+uhDz8+0Yq16m7HYfuDVBko7hcztG
-         unTdHioSjEZ8GTDGrU0h0tVwlWsogbEwipcBx8cL3lSzBCegqJcskwyhIgp97MhBS90J
-         fffg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708386290; x=1708991090;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1708386296; x=1708991096; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=s1aJuW6j9tgwUyJl9DgLg8w9vuSaZM6Q1DPHNzf8iOI=;
-        b=cZQPTuivi2Qb/zkDfgjdD5pQkIRlWu3t/4qxSYrag+yFqW35nPJwawwizBhlxoTIlZ
-         oX/9+zES/DzTuSuWLXybNGsfsME6qRGtTrq9cIPPti7MoOe7hYnx/2Ey04UZ4vkJ/TcU
-         5KMu3B7i5CC3Uft5WMPVjcsPrcQvTouZNTI00rl693H3hGwZ2Gl1lRx1WrtEqvxecAnZ
-         6ttxdJNZheClyxJh83zq14fBkYnCQ1H4zlV9s0Q4EmL8acbt7ZyWwguU6tTmtd5oE6q3
-         XEAQ7iGDNervHKL2HL99XxRToroHIUMDezMIW/FDtfSy1nRQAa7Vy0QN38IERSzFn6Wq
-         hPKA==
-X-Forwarded-Encrypted: i=1; AJvYcCWx18bthmgnQJblBO0WvllfJZ+bBR4ZBtdnxWw2bKs4S1OMLUqHDfLVP1LUthBeFW4z+1dpG67leO3PK+BCiWtDoZOWXNViux0FoUR3upPitSJ4oiulxsgDvhyclfxDMBGinoyAgbdOhA==
-X-Gm-Message-State: AOJu0Yxo8/pLQ6g/Fg7jyzZO0P4fqLO+TQA7cgvJkn5T2Mr69xx26rD+
-	e67AXCQmLMiA18O8eopqHLRUyQjA8C0MHxvLG2LoxEmBAZ6ZeRz8
-X-Google-Smtp-Source: AGHT+IFi8j4fOnROdnnuPW1Igl7EDTZav1azQk8bJAAgCFTIAUNGUljNFn5PIbRTZgpJNbavS2bxxg==
-X-Received: by 2002:a05:6a21:168d:b0:19e:9c82:b139 with SMTP id np13-20020a056a21168d00b0019e9c82b139mr12417262pzb.45.1708386290406;
-        Mon, 19 Feb 2024 15:44:50 -0800 (PST)
+        bh=LueoYuZoj0tdtI/F/x4411lJmW0/7TmefZQEZfrpPmg=;
+        b=NQDU1EO2cYD2pLu0BdeLvUBQsnmIKYzM6wSfCLhq81DVlOgKPYr8USnThVO+z0w855
+         PmYvCK5X9VKRdu09+1GBG3lxPzHU1JdZ2ZJV4FHzyZizncY/LHZQsAorpR1udEQ3UaNJ
+         vV8Lq2Dg++yB6W2Hr2Dqt6SzWOI6lbx5RllGcs1NIjs/JlcLPaueAvHHfCz9j+2B+jVl
+         hIXsChh/73upY3d1e9UF3gx1zZgjEzIQs0a4+83bV1DVYlUIVrAlePaNzgJJDSQTWbzk
+         fdm3etg0G4QdDImUnasWdnMP1bWXz0VzDXmY3tyOfYhqyuiFs6NPzRYY1L5uZve4qv3K
+         3g0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708386296; x=1708991096;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LueoYuZoj0tdtI/F/x4411lJmW0/7TmefZQEZfrpPmg=;
+        b=fO65zlqHI9/Ec0Ypv0JYteni6ZvmssiCRDe1/HNWqipuAbJeUzzOnYNsFq/oj9XbQN
+         gaYeS8ckRyo/8RsF4WJMKkd3DdvQNqW1LRvJkBnk0nAxWU0z+kNM9jmrcpAET8IAsWWx
+         9wJ1A1B6ls7voPwX4AqqAMEmwRKJM6m07x/CSl3QBPCgPQPXFHuGzi3WaL76aQe0UJX0
+         9H432ZaTTChHWDuywT5xzuWFdqKn5GKBplcwoxzzo4RKy7HQo75fUiBgsvWfVmeer/Ek
+         Q/lfhex85+Q8mDsQEeYX0w/ago6LD0w8ePlMsOyQYq4rKpNvytKkD1BjMV2lQQZtIi3i
+         aEiA==
+X-Forwarded-Encrypted: i=1; AJvYcCURNmqJrQFWsem19/SXF1ZFBrVm0FAvujlB1S4x2ekqV2dwKeF0IrSzz4RosQQjCQDgA5d2S7bKU2AonnLcKrMuZQ3JP5Cq2N6KGzc8QxbHc14raFsRq0mYEvRJd1LZdCOI+BYYzWtkvA==
+X-Gm-Message-State: AOJu0YxsRJys4okainPYvmN1edh2ijFhATRMpge2zuYDBHyj5OeOBJuy
+	qEbvALQB8kP6VwYgL4eXow22xmlwqMYI+pCwCYzll1Jf18kZdlaH
+X-Google-Smtp-Source: AGHT+IF4lSUWw78zeKTcoUCUVkEL/5ACwhRIKgtKqWOdQ3saNXSreYNT+/FoR1Q5/x737j0nzbG9Uw==
+X-Received: by 2002:a17:902:ea04:b0:1db:cb13:6792 with SMTP id s4-20020a170902ea0400b001dbcb136792mr7385956plg.5.1708386295573;
+        Mon, 19 Feb 2024 15:44:55 -0800 (PST)
 Received: from tresc054937.tre-sc.gov.br ([2804:c:204:200:2be:43ff:febc:c2fb])
-        by smtp.gmail.com with ESMTPSA id h4-20020a170902eec400b001db7ed7ac34sm4903477plb.297.2024.02.19.15.44.45
+        by smtp.gmail.com with ESMTPSA id h4-20020a170902eec400b001db7ed7ac34sm4903477plb.297.2024.02.19.15.44.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 15:44:49 -0800 (PST)
+        Mon, 19 Feb 2024 15:44:54 -0800 (PST)
 From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-Subject: [PATCH net-next v4 0/3] net: dsa: realtek: support reset
- controller and update docs
-Date: Mon, 19 Feb 2024 20:44:39 -0300
-Message-Id: <20240219-realtek-reset-v4-0-858b82a29503@gmail.com>
+Date: Mon, 19 Feb 2024 20:44:40 -0300
+Subject: [PATCH net-next v4 1/3] dt-bindings: net: dsa: realtek:
+ reset-gpios is not required
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,11 +77,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAOfn02UC/12NwQqDMBBEf0X23JS4USI99T+Kh2hXXaqxJCFYJ
- P/eEHrqaRhm5s0JnhyTh1t1gqPInnebTXOpYFyMnUnwM3tAiY3EGoUjswZ6ZfUURNcZOUzYDgM
- i5M3b0cRH4T3A5oKlI0Cfk4V92N2nHEVV8h9T/TGjElIo3SlNrW50re7zZni9jvsGfUrpC3o1F
- vW0AAAA
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240219-realtek-reset-v4-1-858b82a29503@gmail.com>
+References: <20240219-realtek-reset-v4-0-858b82a29503@gmail.com>
+In-Reply-To: <20240219-realtek-reset-v4-0-858b82a29503@gmail.com>
 To: Linus Walleij <linus.walleij@linaro.org>, 
  =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
  Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
@@ -96,74 +96,46 @@ Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org,
  =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
  Rob Herring <robh@kernel.org>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2428; i=luizluca@gmail.com;
- h=from:subject:message-id; bh=8QtiyWrWfuzQjwuwyJxh0N9o8CzHsc9182ryunCiVNA=;
- b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBl0+ft4zDo/D6lzha4ZuSPn8C1KJ1vQeB0gCWV+
- qLQA9DxMfqJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZdPn7QAKCRC7Edu60Qc7
- VjUhB/9acQZ8JinWv+cLeQabihlpWgx9N2BiuteygJpRL6qCMRBhO8Z6Zpszdz1QshmEnKjjWtp
- wvrBVSE8aJNAmfsODpaKX6aaa5W4GB8a/ICCHFr6tOP0m3ezGQIIXmMgyl6DR5abhPQ1H9WNQqf
- Mz0xjAK3e+6BmcM101OfUsSyWNRoaEhoXajQqQSs5woqWBVliTH/79hwvDiD/4UDaPBv1l21gt5
- E3srGHoDUiFWPGp8DOxbXIOx1Z3KrD9dBO1qRenLI3IalO59L+D194r69aWcMEiaN9n/P1ddooB
- +05wFaIz5rn+nel1PJNUvkkYGhPCOcUtDU+hBDKSZ15xsMJc
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1010; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=H+V3H/pUojjUDeW+Drln+Q8pnAl3NAhUesryrOUfrE8=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBl0+ftFGwQ3f7Vc5ZoKQlIMQIGYdJ/7AUnuvqCz
+ p1fm+RfWg6JATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZdPn7QAKCRC7Edu60Qc7
+ VkD8B/4pgClUom4bSS2DHLwU9JxSuQ3XLoyfKhTCoDJiW58dyarql/+fdrzFqnCa1LN/FWnMM0+
+ xgk8xSN53jNume5oIcKals2/sgEBr1YJARU44SJ4nrSf+mEvINPmrD1TJ+MFjAyWtb/xIyfxoOM
+ pH8UTTXFkmVizWk5lk2GWc55sRDAZH+deLhT4AnCBgjoEbtZLiJiVOXdqDlZGlM1chUfe01pFWu
+ /fJ1wjjxHPF88zbtEZHWTj5YHo8cnIRIt1u6ZZZ6EvWowA7rMT5B5yoPpYaZZ4XnXXb2C5dFWvp
+ G7roQxbLz6cyLYEkRSN6p6J8LW2tk1Dzu9hy69PfEtP33wan
 X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
  fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-The driver previously supported reset pins using GPIO, but it lacked
-support for reset controllers. Although a reset method is generally not
-required, the driver fails to detect the switch if the reset was kept
-asserted by a previous driver.
-
-This series adds support to reset a Realtek switch using a reset
-controller. It also updates the binding documentation to remove the
-requirement of a reset method and to add the new reset controller
-property.
-
-It was tested on a TL-WR1043ND v1 router (rtl8366rb via SMI).
+The 'reset-gpios' should not be mandatory. although they might be
+required for some devices if the switch reset was left asserted by a
+previous driver, such as the bootloader.
 
 Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc: devicetree@vger.kernel.org
+Acked-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Reviewed-by: Alvin Šipraga <alsi@bang-olufsen.dk>
 ---
-Changes in v4:
-- do not test for priv->reset,priv->reset_ctl
-- updated commit message
-- Link to v3: https://lore.kernel.org/r/20240213-realtek-reset-v3-0-37837e574713@gmail.com
+ Documentation/devicetree/bindings/net/dsa/realtek.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
-Changes in v3:
-- Rebased on the Realtek DSA driver refactoring (08f627164126)
-- Dropped the reset controller example in bindings
-- Used %pe in error printing
-- Linked to v2: https://lore.kernel.org/r/20231027190910.27044-1-luizluca@gmail.com/
+diff --git a/Documentation/devicetree/bindings/net/dsa/realtek.yaml b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+index cce692f57b08..46e113df77c8 100644
+--- a/Documentation/devicetree/bindings/net/dsa/realtek.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/realtek.yaml
+@@ -127,7 +127,6 @@ else:
+     - mdc-gpios
+     - mdio-gpios
+     - mdio
+-    - reset-gpios
+ 
+ required:
+   - compatible
 
-Changes in v2:
-- Introduced a dedicated commit for removing the reset-gpios requirement
-- Placed binding patches before code changes
-- Removed the 'reset-names' property
-- Moved the example from the commit message to realtek.yaml
-- Split the reset function into _assert/_deassert variants
-- Modified reset functions to return a warning instead of a value
-- Utilized devm_reset_control_get_optional to prevent failure when the
-  reset control is missing
-- Used 'true' and 'false' for boolean values
-- Removed the CONFIG_RESET_CONTROLLER check as stub methods are
-  sufficient when undefined
-- Linked to v1: https://lore.kernel.org/r/20231024205805.19314-1-luizluca@gmail.com/
-
----
-Luiz Angelo Daros de Luca (3):
-      dt-bindings: net: dsa: realtek: reset-gpios is not required
-      dt-bindings: net: dsa: realtek: add reset controller
-      net: dsa: realtek: support reset controller
-
- .../devicetree/bindings/net/dsa/realtek.yaml       |  4 +-
- drivers/net/dsa/realtek/realtek.h                  |  2 +
- drivers/net/dsa/realtek/rtl83xx.c                  | 46 +++++++++++++++++++---
- drivers/net/dsa/realtek/rtl83xx.h                  |  2 +
- 4 files changed, 48 insertions(+), 6 deletions(-)
----
-base-commit: d1d77120bc2867b3e449e07ee656a26b2fb03d1e
-change-id: 20240212-realtek-reset-88a0bf25bb22
-
-Best regards,
 -- 
-Luiz Angelo Daros de Luca <luizluca@gmail.com>
+2.43.0
 
 
