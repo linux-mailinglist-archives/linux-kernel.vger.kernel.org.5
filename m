@@ -1,164 +1,291 @@
-Return-Path: <linux-kernel+bounces-71438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4FF985A53E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:01:22 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25DC685A543
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E7C591C21223
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:01:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D11EA28486F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABE436B1C;
-	Mon, 19 Feb 2024 14:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0937E36B17;
+	Mon, 19 Feb 2024 14:01:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="Jcr4shji"
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EkncEYUa"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 699FF36136;
-	Mon, 19 Feb 2024 14:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E756036134
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:01:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708351275; cv=none; b=DtkRQV/7VbWjqa1pbyBBTm9ug3d2iWoI7vRRdg588ys8yF1zRyEEfMVr7/z2qZINPXgd8fGQZ3GIJ5jCz+2fxJgqFQunGwVGrwccKjAIfCnCuik5lBcBeZOgYTqNXBnfCOkmlzX9Cgxsabjt8U3TwQjKjOVmJfGhiO4wJ0++MCA=
+	t=1708351313; cv=none; b=VDHkeaTjQVnhidLqiKtf345x7adYXuU3vUZ28YEKcy3L/wt/uzqLcEOyJR5Y2G2j2XznwVk8TsTKgYqx7T5ANRENASMklyG7cY8xBPFTBeVzqA/mKtNmuIUHz3mXnpwbzvUOI77PiBmmzwPHheZz8E9ll9jcQfuLGwl3XFoNfs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708351275; c=relaxed/simple;
-	bh=ikzcV1URla2GgnY93GwPS2bZ/HFf3YKKWO17DlHhvWg=;
-	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Dsca40eu3gZhArzZEy1UWyFEr1Z+N19C6VA+rKu+HWEBmdR7wOuI1kPsDI3kpwtGQw8z3mM3xp9fv3/QrUSRj2J2spIsTRxusHJ+YEb2O19ev1og9zie6u1HsLewBz3jqWqmsfqQSbNuVuwMlz3LZYPLzticiSeDn1YFW2Mp2KA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=Jcr4shji; arc=none smtp.client-ip=52.119.213.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1708351274; x=1739887274;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=W7gVIamMoMUxGHZcPfOMCqRDKpC788b33nadGhFmXO8=;
-  b=Jcr4shjiy6STwx3+Y74P3FZ78VW6hSiz98kFe9s6f5D7O8VIqhN944n4
-   i9FOxc2I8khzf4e6EU6nm18Igrszai1QWoSO1IlMIYmO4kIAQiOYh7bRh
-   fM2T00HeOj4yAi/P8nmbPa7SotPw+ATfGTZkfQGsMnqQKIEyZruPF2IlJ
-   o=;
-X-IronPort-AV: E=Sophos;i="6.06,170,1705363200"; 
-   d="scan'208";a="638842739"
-Subject: Re: [PATCH] selftests/mqueue: Set timeout to 100 seconds
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 14:01:11 +0000
-Received: from EX19MTAEUA001.ant.amazon.com [10.0.17.79:5692]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.35.15:2525] with esmtp (Farcaster)
- id c94ac43a-ba01-480a-b5f1-b87cfce8f244; Mon, 19 Feb 2024 14:01:09 +0000 (UTC)
-X-Farcaster-Flow-ID: c94ac43a-ba01-480a-b5f1-b87cfce8f244
-Received: from EX19D018EUA004.ant.amazon.com (10.252.50.85) by
- EX19MTAEUA001.ant.amazon.com (10.252.50.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 19 Feb 2024 14:01:08 +0000
-Received: from [192.168.11.164] (10.106.83.24) by
- EX19D018EUA004.ant.amazon.com (10.252.50.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 19 Feb 2024 14:01:08 +0000
-Message-ID: <ee8b746b-aee9-43d8-949b-62017fe0bca0@amazon.com>
-Date: Mon, 19 Feb 2024 14:01:06 +0000
+	s=arc-20240116; t=1708351313; c=relaxed/simple;
+	bh=jQIVDS/JkMP5zftyabZIdPyESMnWgo509RhNAS7bLjI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r88tiLGvEo5KA7lYVmMF1FYoC5zG23N3GkrAK+nh6CR1yv2rex0nwFbM5o5EYg/sdLdKmVPV2fTBuh/sHSSZCPy2gdvNGkw1hkFOUagFFpipLQA6d445GoMqaOEDUl8eUaCb0Izh6Ji7emp38QqHG5IhZDFVoMpYN2qrYTA9qFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EkncEYUa; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708351309;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u587ZdVcj3glUgoM/Hcg0rJugpW/yYo4cuFbTIpN5kY=;
+	b=EkncEYUa4AxBx8NCdQmJNhUZSoeSIvFYjmIB5AWOp2HCZgcp36oqq2WOwwDTmyN9SEhdwl
+	4yvBSWApTcm7v8HLHqfY8xxCHs3WBCDHqDjZn92+84VJhcVLjc6ONL55QdZXn7ZBb6AlKt
+	h3lJcTcxoT86Vyb0Nxakc12Wd2gcGBI=
+Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
+ [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-622-E5WrhkFeOrqRgMFlqCbFXA-1; Mon, 19 Feb 2024 09:01:48 -0500
+X-MC-Unique: E5WrhkFeOrqRgMFlqCbFXA-1
+Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d2367f66bdso11007211fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:01:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708351306; x=1708956106;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u587ZdVcj3glUgoM/Hcg0rJugpW/yYo4cuFbTIpN5kY=;
+        b=LFmrIo6fuQBbm82L2LD9+k5uilOT/2K8UTKGGqUGxSPaM+7Vz0FGUnSk3Q4UN0ulUH
+         WjCW0I8RlDU4u9677Jrv0XoGkfx5k9OhTqv89y/arHUfux0+OcXHEdE6UOVwu+RODePN
+         5fM6J2UVcsk/fDuqFaMBeBGvKLIazy28rnQU05UqCwcTs1QJ82qpttA/qwSZwz1Atccl
+         MBmmiHhYoz40yojXv7q3IvF926FuYVJqkJLVDr4mGoyf0ylQDD+KRRXA7p/lYQEOK7ow
+         MC16PKKzJOhlj5DbKSHXlgBPhIUtxSDnXM+kg6/ZPyXfmHLMHsrJREajBt+Q6Oy2POF0
+         MtaA==
+X-Forwarded-Encrypted: i=1; AJvYcCVnTTL01iTwwOJzETQ7eNDC8kP1mLfCAvQeEQkSfJR7VSvVH2UhrQRxbYf20pMrxKrN84PR67j1zvAeUdv1Ng8RECPQqH32F3MQid6m
+X-Gm-Message-State: AOJu0YzcfhTVF6Ko4srg1MP0OvTDfnwy5CGeVZ7+lhZONpeUDBuN8raQ
+	4Tni5m189fujMywLmovg89bBiFoDRPNCh82bjdtwG3wPeBKvRaN/Cge+f7baU6niYGvdWe7IghA
+	vVSDsl3454drnQErXhV9cPLqEQbmBxvy31cjXZuZsS73MwUN+0QFIvLN8dBNirQ==
+X-Received: by 2002:a2e:bb88:0:b0:2d2:317a:4e51 with SMTP id y8-20020a2ebb88000000b002d2317a4e51mr2711444lje.19.1708351306649;
+        Mon, 19 Feb 2024 06:01:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFYOkgdkpjUPqkVShV5VUvUXvy45CYFqtPgSKyukje33ZPvJRJxa7MElMt9lvxrCNYhdDWEcw==
+X-Received: by 2002:a2e:bb88:0:b0:2d2:317a:4e51 with SMTP id y8-20020a2ebb88000000b002d2317a4e51mr2711422lje.19.1708351306160;
+        Mon, 19 Feb 2024 06:01:46 -0800 (PST)
+Received: from toolbox ([2001:9e8:89aa:1800:3845:886a:5f99:bee1])
+        by smtp.gmail.com with ESMTPSA id v21-20020a05600c445500b0041266f5b041sm2964973wmn.34.2024.02.19.06.01.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 06:01:45 -0800 (PST)
+Date: Mon, 19 Feb 2024 15:01:44 +0100
+From: Sebastian Wick <sebastian.wick@redhat.com>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Emma Anholt <emma@anholt.net>, Jonathan Corbet <corbet@lwn.net>,
+	Sandy Huang <hjc@rock-chips.com>,
+	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Subject: Re: Re: Re: Re: Re: Re: Re: [PATCH v5 08/44] drm/connector: hdmi:
+ Add Broadcast RGB property
+Message-ID: <20240219140144.GB1956149@toolbox>
+References: <Zb0M_2093UwPXK8y@intel.com>
+ <hez2m57ogqx3yyqk45tzdkvxvhrbdepgm244i4m2aty2xhf5b5@acqgvmxhmmvr>
+ <Zb0aYAapkxQ2kopt@intel.com>
+ <zml6j27skvjmbrfyz7agy5waxajv4p4asbemeexelm3wuv4o7j@xkd2wvnxhbuc>
+ <20240209203435.GB996172@toolbox>
+ <ahfl6f72lpgpsbnrbgvbsh4db4npr2hh36kua2c6krh544hv5r@dndw4hz2mu2g>
+ <Zco-DQaXqae7B1jt@intel.com>
+ <yx2t7xltxxgsngdsxamsfq6y7dze3wzegxcqwmsb5yrxen73x6@u3vilqhpci4w>
+ <20240212170618.GA1372043@toolbox>
+ <2mih3humepuedtli7ge52ncom4uffkqravdpalncgfyucmwdzc@bp5o7i3ky77a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: SeongJae Park <sj@kernel.org>, Kees Cook <keescook@chromium.org>
-CC: <shuah@kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-	<Vijaikumar_Kanagarajan@mentor.com>, <brauner@kernel.org>,
-	<jlayton@kernel.org>, <jack@suse.cz>
-References: <20240217003142.86297-1-sj@kernel.org>
-From: "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
-In-Reply-To: <20240217003142.86297-1-sj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D001EUB003.ant.amazon.com (10.252.51.38) To
- EX19D018EUA004.ant.amazon.com (10.252.50.85)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2mih3humepuedtli7ge52ncom4uffkqravdpalncgfyucmwdzc@bp5o7i3ky77a>
 
-On 17/02/2024 00:31, SeongJae Park wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+On Thu, Feb 15, 2024 at 12:00:01PM +0100, Maxime Ripard wrote:
+> On Mon, Feb 12, 2024 at 06:06:18PM +0100, Sebastian Wick wrote:
+> > On Mon, Feb 12, 2024 at 05:53:48PM +0100, Maxime Ripard wrote:
+> > > On Mon, Feb 12, 2024 at 05:49:33PM +0200, Ville Syrjälä wrote:
+> > > > On Mon, Feb 12, 2024 at 11:01:07AM +0100, Maxime Ripard wrote:
+> > > > > On Fri, Feb 09, 2024 at 09:34:35PM +0100, Sebastian Wick wrote:
+> > > > > > On Mon, Feb 05, 2024 at 10:39:38AM +0100, Maxime Ripard wrote:
+> > > > > > > On Fri, Feb 02, 2024 at 06:37:52PM +0200, Ville Syrjälä wrote:
+> > > > > > > > On Fri, Feb 02, 2024 at 04:59:30PM +0100, Maxime Ripard wrote:
+> > > > > > > > > On Fri, Feb 02, 2024 at 05:40:47PM +0200, Ville Syrjälä wrote:
+> > > > > > > > > > On Fri, Feb 02, 2024 at 02:01:39PM +0100, Maxime Ripard wrote:
+> > > > > > > > > > > Hi,
+> > > > > > > > > > > 
+> > > > > > > > > > > On Mon, Jan 15, 2024 at 03:37:20PM +0100, Sebastian Wick wrote:
+> > > > > > > > > > > > > >  /**
+> > > > > > > > > > > > > >   * DOC: HDMI connector properties
+> > > > > > > > > > > > > >   *
+> > > > > > > > > > > > > > + * Broadcast RGB
+> > > > > > > > > > > > > > + *      Indicates the RGB Quantization Range (Full vs Limited) used.
+> > > > > > > > > > > > > > + *      Infoframes will be generated according to that value.
+> > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > + *      The value of this property can be one of the following:
+> > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > + *      Automatic:
+> > > > > > > > > > > > > > + *              RGB Range is selected automatically based on the mode
+> > > > > > > > > > > > > > + *              according to the HDMI specifications.
+> > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > + *      Full:
+> > > > > > > > > > > > > > + *              Full RGB Range is forced.
+> > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > + *      Limited 16:235:
+> > > > > > > > > > > > > > + *              Limited RGB Range is forced. Unlike the name suggests,
+> > > > > > > > > > > > > > + *              this works for any number of bits-per-component.
+> > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > > + *      Drivers can set up this property by calling
+> > > > > > > > > > > > > > + *      drm_connector_attach_broadcast_rgb_property().
+> > > > > > > > > > > > > > + *
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > This is a good time to document this in more detail. There might be two
+> > > > > > > > > > > > > different things being affected:
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > 1. The signalling (InfoFrame/SDP/...)
+> > > > > > > > > > > > > 2. The color pipeline processing
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > All values of Broadcast RGB always affect the color pipeline processing
+> > > > > > > > > > > > > such that a full-range input to the CRTC is converted to either full- or
+> > > > > > > > > > > > > limited-range, depending on what the monitor is supposed to accept.
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > When automatic is selected, does that mean that there is no signalling,
+> > > > > > > > > > > > > or that the signalling matches what the monitor is supposed to accept
+> > > > > > > > > > > > > according to the spec? Also, is this really HDMI specific?
+> > > > > > > > > > > > > 
+> > > > > > > > > > > > > When full or limited is selected and the monitor doesn't support the
+> > > > > > > > > > > > > signalling, what happens?
+> > > > > > > > > > > > 
+> > > > > > > > > > > > Forgot to mention: user-space still has no control over RGB vs YCbCr on
+> > > > > > > > > > > > the cable, so is this only affecting RGB? If not, how does it affect
+> > > > > > > > > > > > YCbCr?
+> > > > > > > > > > > 
+> > > > > > > > > > > So I dug a bit into both the i915 and vc4 drivers, and it looks like if
+> > > > > > > > > > > we're using a YCbCr format, i915 will always use a limited range while
+> > > > > > > > > > > vc4 will follow the value of the property.
+> > > > > > > > > > 
+> > > > > > > > > > The property is literally called "Broadcast *RGB*".
+> > > > > > > > > > That should explain why it's only affecting RGB.
+> > > > > > > > > 
+> > > > > > > > > Right. And the limited range option is called "Limited 16:235" despite
+> > > > > > > > > being usable on bpc > 8 bits. Naming errors occurs, and history happens
+> > > > > > > > > to make names inconsistent too, that's fine and not an argument in
+> > > > > > > > > itself.
+> > > > > > > > > 
+> > > > > > > > > > Full range YCbCr is a much rarer beast so we've never bothered
+> > > > > > > > > > to enable it.
+> > > > > > > > > 
+> > > > > > > > > vc4 supports it.
+> > > > > > > > 
+> > > > > > > > Someone implemented it incorrectly then.
+> > > > > > > 
+> > > > > > > Incorrectly according to what documentation / specification? I'm sorry,
+> > > > > > > but I find it super ironic that i915 gets to do its own thing, not
+> > > > > > > document any of it, and when people try to clean things up they get told
+> > > > > > > that we got it all wrong.
+> > > > > > 
+> > > > > > FWIW, this was an i915 property and if another driver uses the same
+> > > > > > property name it must have the same behavior. Yes, it isn't standardized
+> > > > > > and yes, it's not documented (hence this effort here) but it's still on
+> > > > > > vc4 to make the property compatible.
+> > > > > 
+> > > > > How is it not compatible? It's a superset of what i915 provides, but
+> > > > > it's strictly compatible with it.
+> > > > 
+> > > > No it is not.
+> > > 
+> > > The property is compatible with i915 interpretation of it, whether you
+> > > like it or not. And that's what Sebastian was referring to.
+> > > 
+> > > > Eg. what happens if you set the thing to full range for RGB (which you
+> > > > must on many broken monitors), and then the kernel automagically
+> > > > switches to YCbCr (for whatever reason) but the monitor doesn't
+> > > > support full range YCbCr? Answer: you get crap output.
+> > > 
+> > > And that part is just moving goalposts.
+> > 
+> > But it's really not.
 > 
-> 
-> 
-> On Fri, 16 Feb 2024 16:01:20 -0800 Kees Cook <keescook@chromium.org> wrote:
-> 
->> On Wed, Feb 14, 2024 at 05:13:09PM -0800, SeongJae Park wrote:
->>> A gentle reminder.
->>>
->>>
->>> Thanks,
->>> SJ
->>>
->>> On Fri, 9 Feb 2024 09:42:43 -0800 SeongJae Park <sj@kernel.org> wrote:
->>>
->>>> On Fri, 9 Feb 2024 10:30:38 +0000 "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com> wrote:
->>>>
->>>>> On 08/02/2024 21:29, SeongJae Park wrote:
->>>>>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->>>>>>
->>>>>>
->>>>>>
->>>>>> While mq_perf_tests runs with the default kselftest timeout limit, which
->>>>>> is 45 seconds, the test takes about 60 seconds to complete on i3.metal
->>>>>> AWS instances.  Hence, the test always times out.  Increase the timeout
->>>>>> to 100 seconds.
->>>>>>
->>>>>> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
->>>>>> Cc: <stable@vger.kernel.org> # 5.4.x
->>>>>> Signed-off-by: SeongJae Park <sj@kernel.org>
->>>>>> ---
->>>>>>    tools/testing/selftests/mqueue/setting | 1 +
->>>>>>    1 file changed, 1 insertion(+)
->>>>>>    create mode 100644 tools/testing/selftests/mqueue/setting
->>>>>>
->>>>>> diff --git a/tools/testing/selftests/mqueue/setting b/tools/testing/selftests/mqueue/setting
->>>>>> new file mode 100644
->>>>>> index 000000000000..54dc12287839
->>>>>> --- /dev/null
->>>>>> +++ b/tools/testing/selftests/mqueue/setting
->>>>>> @@ -0,0 +1 @@
->>>>>> +timeout=100
->>>>>> --
->>>>>> 2.39.2
->>>>>>
->>>>>>
->>>>>
->>>>> Added Vijai Kumar to CC
->>>>>
->>>>> This looks similar to [PATCH] kselftest: mqueue: increase timeout
->>>>> https://lore.kernel.org/lkml/20220622085911.2292509-1-Vijaikumar_Kanagarajan@mentor.com/T/#r12820aede6bba015b70ae33323e29ae27d5b69c7
->>>>> which was increasing the timeout to 180 however it's not clear why this
->>>>> hasn't been merged yet.
->>
->> Should it be 100 or 180?
-Both options may work, I am more inclined to have this as 180 seconds by 
-giving more time for the test to finish, this can be reduced later to 
-100 or something else if we start hearing complains about the new timeout.
+> It really is. This whole discussion started by "well it would be nice if
+> we made that property handled by the core", and we're now at the "we
+> need to deal with broken YCbCr displays and i915 opinion about them"
+> stage. After creating documentation, unit tests, etc. It's the textbook
+> definition of moving goalposts. And while i915 won't be affected by all
+> that work.
 
-Hazem
+Sorry, but what you're saying is just not true.
+
+The Broadcast RGB property is an Intel specific property. It lacked
+documentation but the user space contract exists and it based on how
+i915 implemented it. By changing the semantics you're breaking user
+space. The documentation has to document the current contract between
+i915 and user space, not whatever you want the property to be like.
+
+I get that you're frustrated that you have to do work while i915 doesn't
+but none of that is relevant for what the property is and how user space
+expects it to work.
+
+> That series has been stuck for multiple iterations on pointless and
+> mundane debates while the biggest part and whole point of it is not
+> getting any review. So yeah, sorry, it's frustrating.
+
+I'm reviewing the parts that I can, and that's the uAPI. I find it
+really offensive that you're saying that this is pointless and mundate.
+The uAPI is your end product, if it can't be used, everything you do in
+your driver is utterly pointless.
+
+> > The Broadcast RGB property kind of works from a user space perspective
+> > because it's a workaround for broken sinks. If a sink expects limited
+> > range we can force full range. If this however affects YCbCr modes as
+> > well, then this isn't a workaround for broken RGB range anymore
+> > because it now breaks YCbCr.
 > 
-> As mentioned on the previous mail[1], either values are good to me :)
+> Or, you know, it's a workaround for broken YCbCr display.
+
+Displays can accept both RGB and YCbCr signals, drivers can chose
+whichever they want, and user space can not influence or even know which
+one is being used.
+
+The automatic selection of the range is very different between RGB and
+YCbCr. If user space forces the range to a specific value and the driver
+for whatever reason switches from RGB to YCbCr or the other way around,
+this forcing of the range will most likely be incorrect.
+
+This is what we're talking about when we say that the semantics of the
+vc4 Broadcast RGB property is broken. User space literally cannot use it
+consistenly. By restricting it to RGB signals, user space can user it
+consistently and fix monitors that do not follow the automatic
+quantization range algorithm correctly. Yes, if there is an issue with
+the quantization range of a YCbCr signal then this property doesn't
+help, but it never tried to help those cases.
+
+> > Sorry, but vc4 just has to change.
+> > 
+> > And again: let's please stop trying to improve the property.
 > 
-> [1] https://lore.kernel.org/r/20240215011309.73168-1-sj@kernel.org
-> 
->> Either way:
->>
->> Reviewed-by: Kees Cook <keescook@chromium.org>
-> 
-> Thank you!
-> 
-> 
-> Thanks,
-> SJ
-> 
->>
->> --
->> Kees Cook
->>
+> I'm not. I'm super close to just dropping that patch entirely and keep
+> the current situation that seems to work fine for everyone.
+
+I mean, vc4 doesn't work fine apparently. You're just lucky that no one
+reported issues to you.
+
+All you have to do is adjust the documentation to say that Broadcast RGB
+only affects RGB signalling. Yes, vc4 has a bug according to the docs
+then, but that's okay. Fix it at some point.
+
+> Maxime
+
 
 
