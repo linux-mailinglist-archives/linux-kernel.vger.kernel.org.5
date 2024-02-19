@@ -1,125 +1,107 @@
-Return-Path: <linux-kernel+bounces-71446-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E12385A55A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:04:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F6585A569
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E656D1F22B18
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:04:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F7D41F24813
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:06:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC02374F9;
-	Mon, 19 Feb 2024 14:04:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D882837155;
+	Mon, 19 Feb 2024 14:06:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jedCcVnU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="CwY0wRZs"
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7380374CB;
-	Mon, 19 Feb 2024 14:04:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D2B2E647;
+	Mon, 19 Feb 2024 14:06:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708351483; cv=none; b=d3Zcq2zeX/op1fV0TYyKBhgP1We4ldPGk6ax4eDOOaFBKzey/QetTzhJGuuBN7fJk56LelK3oq/AoXoAe2S5Cno+K87db8EDD97B5lLUKQPraBZNY0+9lUbtFIUBeE8GCpvb+TDUP7aM3/prMBfJOhDd7Pza33ackTZJM9Ejp2s=
+	t=1708351594; cv=none; b=CqRYPICktIuRdMWuX5ngm/v27HSPIdiSmXmvme1UPudzbR4DBLmtFEbT9VS/iMGxe0NlRiQrBlPlHU0ba1VZqvgiuWvxsps7j9GlDKi7qJGxBDoV4U8PgV1CW6ug+ILRR/GEpIZBJ4lVDhRbcBgG2GdpnIa5ru3VqHhJGaiss+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708351483; c=relaxed/simple;
-	bh=MIUwjUjiAAu1+q/+I/qDOmSpFjx0udf6D1AQ0UhEV0k=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Moko6YmUs9VBaJe3gswYATlz21uLWzHzJd6tGzdnuR2BppuRkoK3FoAFu/0C04n3/yikxEIfBBG9xXmCoTq8wRyPz5mjx/pdA0ZRnHjlbpK3PbGCJ2QRIUGTHk1qQCNXu1komn4YBTWZrIFAvupLeXd83BFax2Yvz9i+KLLeLLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jedCcVnU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69997C433F1;
-	Mon, 19 Feb 2024 14:04:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708351482;
-	bh=MIUwjUjiAAu1+q/+I/qDOmSpFjx0udf6D1AQ0UhEV0k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jedCcVnUuRu7WsgBTsb7EkozXwzEc3q772jGzsuk/FFQmz1tgYk50Mc2U2wZx/91y
-	 WbyV4CYns7fJxNb3T8sbT12ZpsxAvz2UMK8HNJHAexd4YIf8Hs2kCUnCPh9LjJA5i9
-	 +hn23n7mOO5tHgEfkBrZgFCR2JEFmex5DzGDmSxO+YbV1llrm+6ORSDZrT3eMEfBRX
-	 agBkU5jq7zX0iCu9JbIUWEkodqBPYXRWjjT9cerlSRJrTQNy15NwcypdqVWi+pqJ0s
-	 garRRcf/WFr8bICdloI03C9IvteoR/FOsb4rhi1IkfFqsHafVmJeun6ny9xToBXma0
-	 5+xmyVcvS+AFA==
-Date: Mon, 19 Feb 2024 23:04:35 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v7 23/36] function_graph: Add a new exit handler with
- parent_ip and ftrace_regs
-Message-Id: <20240219230435.3158a36f60c20dcf2112cf0f@kernel.org>
-In-Reply-To: <20240218115328.c95bfe7001b7260071e6b674@kernel.org>
-References: <170723204881.502590.11906735097521170661.stgit@devnote2>
-	<170723230476.502590.16817817024423790038.stgit@devnote2>
-	<20240215110404.4e8c5a94@gandalf.local.home>
-	<20240216175108.79a256a20c89ed1d672c7e14@kernel.org>
-	<20240218115328.c95bfe7001b7260071e6b674@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708351594; c=relaxed/simple;
+	bh=5qxW4X1Ezb6TCJqh1wJ/+ccuB+eQ0ymYQKUPdQ8a+lU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lgN/uclQdIM3bpSj/KpDP+2PtRopl94t2WADIOpyIe34Fb5OwhNo6zbMNx2UgntBU0p6kSBA3RWix6rns04DWoVObVCUl4I+nlMUncT2BGKq3Zf7HZWD1neKdI39Aa3jvInRBjcEA904zkhUdMil5UsunYj3qpB4EgPJ3pDE/dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=CwY0wRZs; arc=none smtp.client-ip=185.132.182.106
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41J9TEVB008714;
+	Mon, 19 Feb 2024 15:06:08 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=selector1; bh=yFRkBHM
+	ELWMAJ4eYruQiX4W19nuUNwDsJhqaDX8WO6k=; b=CwY0wRZsPMwx/gPCla0+Mai
+	jI1r4KRfzqINlSZKMM3ZOlEbkz3YWE+Ui2Xf+rFvSH5sI+Sh8D0cZVEyN633iPdj
+	WbKQvtxvW4jNBfnugRWC7xfg1fCgmmNzcu8M7LnHAKFZmuXTfez/Doksdvj7MQEe
+	WNXo6yzsXobn6a1PCWJPZwc/UC41u50ZmrCDpAEG8DYZaPqTYa7Ww8bMfuaAx78z
+	JtxMH/PTsK2cXqDFx5x3+vjpCr02v3Ct2O2HJhYo7WgrhoSlXty/OrTTRx8ENA6z
+	5M/hxkgBjaAWW4gYqXNaWzWocUbSvpDxxIyqWPD/APHmipsPTNYny5URr3wXtUw=
+	=
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wb784d40h-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 15:06:08 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id 7BB4A4002D;
+	Mon, 19 Feb 2024 15:06:04 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 59B8426A995;
+	Mon, 19 Feb 2024 15:05:24 +0100 (CET)
+Received: from localhost (10.201.21.177) by SHFDAG1NODE3.st.com (10.75.129.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 19 Feb
+ 2024 15:05:24 +0100
+From: Christophe Kerello <christophe.kerello@foss.st.com>
+To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>
+CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <devicetree@vger.kernel.org>,
+        Christophe Kerello <christophe.kerello@foss.st.com>
+Subject: [PATCH v2 0/3] mtd: rawnand: stm32_fmc2: add MP25 support
+Date: Mon, 19 Feb 2024 15:05:02 +0100
+Message-ID: <20240219140505.85794-1-christophe.kerello@foss.st.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE3.st.com
+ (10.75.129.71)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_10,2024-02-19_01,2023-05-22_02
 
-Hi Steve,
+FMC2 IP supports up to 4 chip select. On MP1 SoC, only 2 of them are
+available when on MP25 SoC, the 4 chip select are available.
 
-On Sun, 18 Feb 2024 11:53:28 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+For MP1 SoCs, MDMA is used and the max burst size is 128.
+For MP25 SoC, DMA3 is used and the max burst size is 64.
 
-> On Fri, 16 Feb 2024 17:51:08 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> 
-> > > > @@ -798,10 +798,6 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
-> > > >  
-> > > >  	*index += FGRAPH_RET_INDEX;
-> > > >  	*ret = ret_stack->ret;
-> > > > -	trace->func = ret_stack->func;
-> > > > -	trace->calltime = ret_stack->calltime;
-> > > > -	trace->overrun = atomic_read(&current->trace_overrun);
-> > > > -	trace->depth = current->curr_ret_depth;
-> > > 
-> > > There's a lot of information stored in the trace structure. Why not pass
-> > > that to the new retregfunc?
-> > > 
-> > > Then you don't need to separate this code out.
-> > 
-> > Sorry, I couldn't catch what you meant, Would you mean to call
-> > ftrace_pop_return_trace() before calling retregfunc()?? because some of the
-> > information are found from ret_stack, which is poped from shadow stack.
-> 
-> Ah, sorry I got what you said. I think this `trace` is not usable for the new
-> interface. Most of the information is only used for the function-graph tracer.
-> For example, trace->calltime and trace->overrun, trace->depth are used only
-> for the function-graph tracer, but not for the other tracers.
-> 
-> But yeah, this idea is considerable. It also allows us to just update
-> entryfunc() and retfunc() to pass fgraph_regs and return address.
+Changes in v2:
+ - dt-bindings commit message has been updated.
+ - V1 patch 10, 11 and 12 have been squashed and reworked.
 
-The reason why I didn't use the those for *regfunc() is not only those
-have unused information, but those does not have some params.
+Christophe Kerello (3):
+  dt-bindings: mtd: st,stm32: add MP25 support
+  mtd: rawnand: stm32_fmc2: use dma_get_slave_caps to get DMA max burst
+  mtd: rawnand: stm32_fmc2: add MP25 support
 
- - ftrace_graph_ent only have current `func`, but entryregfunc()
-    needs `parent_ip` (== return address)
- - ftrace_graph_ret only have current `func`, but retregfunc()
-    needs `ret` (== return address) too.
-
-If I update the ftrace_graph_ent/ret to add 'retaddr', we can just pass
-ftrace_graph_ent/ret, ftrace_regs, and fgraph_ops to *regfunc().
-Moreover, maybe we don't need *regfunc, but just update entryfunc/retfunc
-to pass ftrace_regs *, which will be NULL if it is not supported.
-
-Thank you,
+ .../bindings/mtd/st,stm32-fmc2-nand.yaml      | 25 +++++-
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c        | 83 +++++++++++++++----
+ 2 files changed, 93 insertions(+), 15 deletions(-)
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.25.1
+
 
