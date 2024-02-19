@@ -1,112 +1,130 @@
-Return-Path: <linux-kernel+bounces-71635-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71636-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F6E185A818
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:04:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE5D985A81C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:05:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53761B23D35
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:04:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C2CD282E82
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:05:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7694D3BB48;
-	Mon, 19 Feb 2024 16:03:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF773B18D;
+	Mon, 19 Feb 2024 16:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NaJoKZ2a"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q7kcpoHl"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6655C3399C;
-	Mon, 19 Feb 2024 16:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96DE73308A
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708358634; cv=none; b=mIl+Kj8iMIWFPNYzGvRMjP5WxAdZuNnZ7GWShZohPlb9uLxuzZTLEMFwnwORey6mdvg4z3/u7uhuCD+qn3mkCh4k8xQ+drGjjQ9peMmROAQB5IIhMLsTaDQ8vtGNIUQb1qAKpAV49+wEixQSZAxw9tqBSIrEkyb1HFzS/tuHIM4=
+	t=1708358701; cv=none; b=R9GiNHEd5NinyZY901VzvGCbpaq/KDCMIlP2goXg4jZCBa2aerLSZt0mpK9B1VhafxVGHMxtlM3ekbQkanpSoFnVSkOhstFmGVysJkuBDDhjd7TqNQHKpLbfs9J05yQDjux4gZOPMgKp7+GcZp7s0ngRchrEYvQDlAulVQ2tY5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708358634; c=relaxed/simple;
-	bh=WmRlSNkA/KdX9XPb6GEYSoKbr9CXuMXKqExqINGkwbc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XIp3XZ/PjMOE69MJkuVk9SPqNk11Iy78e5v9Q1gH+Ykcaa3KgcvXLAgZj1+dxlM8hlGSt/Ecw7DS9lStxzbcoyi9PAem6GhCPSsWj146LCL/iLV1aN6YUuapiwy/QIXMj8a3obrizDUdFy6IqHi1IJL7AzziT2TsbRR8Sim9iik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NaJoKZ2a; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso4161014276.1;
-        Mon, 19 Feb 2024 08:03:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708358632; x=1708963432; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WmRlSNkA/KdX9XPb6GEYSoKbr9CXuMXKqExqINGkwbc=;
-        b=NaJoKZ2aIZ6BypJdqLRAfH8GBZ9hJOEb9bry/ZfGTfzwSp8+zsaBWTSp6ZTwASOdQX
-         pB74qz1ShPeux8n2i71gtYNg8LiAkp3J/EWsQyldRW2pEM+bytVyi+pBnXZHMab4kCyc
-         n7R0uzVgmRQZv8u7RDC10mavX/v3rcD6dv6Ld7rGbPqTrW9QRviHEV6R/zL1hoq1IZba
-         s0dkkQQOybOZRjFImWooWT0bmXtgqNf16VOkeRu2CSlCsqzM+c1dwTtGby22l33cr/Jb
-         TDRloC4R71vHlwwkXvAqejcISXHBiMGp6HjyiLm4olpnJ+Udv2LEjhghKj/CAd5sKdi2
-         vbSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708358632; x=1708963432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WmRlSNkA/KdX9XPb6GEYSoKbr9CXuMXKqExqINGkwbc=;
-        b=N+D4CUP5DXnb2/jA9+ucrrlGUIdAw35Cw42yiopcBoTW5D6T3MpKd7pjZk1Ejmofdi
-         dLOgGVqln7/PxKgCtELGVX60wiE/rvS4NvJlTQKxAcT1BEqPYuj+93az9YJu7r3+IMta
-         YeR8s8lUvnMgVxs0bP7QSWMp9btlej4b1ZWwh8uo2NAu0jaTdACkoKdsa7ByYHYOd5si
-         Otw58q4cGvYPcnS1993NUPPM47ekb74XNYyK6h+qT6kMWr0nUxgUhmnJd7xtPeAXQt23
-         duRalhXPX7NHEfPDs/s6aiC3J+uHaYcX9BzsxzT+nM0I7TsNk+1RQCA21Cy01iaB3CjQ
-         NO0g==
-X-Forwarded-Encrypted: i=1; AJvYcCW4wJXypXIHrawpJz+0jFaqe9KrzON/yxyIq3cFYVht6U8qHHOIOyoWsvzo2pEvNmrfskM/XueImRZOaoCokm/9t7BoHlGGpEltLmym9mFE1yt6KdWeNRwfHlrRfDdjCkosMO5Kw1Bzxb8yZ+g=
-X-Gm-Message-State: AOJu0YzFVrfaeLer4kgSq6P/ZtJ4dqhfi5Y7G5bp38MXIeu6vgSRyqD2
-	URkgJFe8dUcU9AnXVgZhsY1OWaMBNSxTsZyB30P6+4wTMc93kmLfP0JwfWHD6Wt19ESX6RiiwwH
-	phoS0zLAQAqMeEjE8wyD/iqNLYs4=
-X-Google-Smtp-Source: AGHT+IF1m6Ip0CcBIu/E+D6EL8tZaYd0E7pl/0FJrjViHllCekK5lu/AmUM3Gf4H0Avnm+Z8AE/nVZLC6R42mHnhSWU=
-X-Received: by 2002:a25:ac9b:0:b0:dc7:5018:4022 with SMTP id
- x27-20020a25ac9b000000b00dc750184022mr13383631ybi.44.1708358632536; Mon, 19
- Feb 2024 08:03:52 -0800 (PST)
+	s=arc-20240116; t=1708358701; c=relaxed/simple;
+	bh=QSQhFzqyHvdSBslDmpugOpRWw2G2U/ioWUEnLCdRQaM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a2BuZZylYL08JuTRUSHJZsMJrTThN4rDCJ8kayPbRN6fpq6vaXJlsRnwoVLpthQBjGVN1w2szwpo45fxLFqJNTOK6vo8NwGAal6LdZbJOZQarV7yuBb37y0rlCFcmZvbRmvcy4wVxZ+fF84T2I4h50ffgzp7PsJ1Qfo5XvtiXOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q7kcpoHl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A47C0C433C7;
+	Mon, 19 Feb 2024 16:05:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708358701;
+	bh=QSQhFzqyHvdSBslDmpugOpRWw2G2U/ioWUEnLCdRQaM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q7kcpoHlgsbbngSSNe5KCyP4JbREt2a3SmvVj1ufDyge68StNJNRgRIjEjZjhPXTq
+	 37dCRdT+LKBsXXTPus9E8Vgi0LAmdbCBnl4GbP2JtjDuSmtL8Nfn30V5WtoHqeV2wM
+	 E3DVSWYnjKUp0FEv8Bppk+Xg38ZIFbgZuvVcNDkXn8JjeKTgUFymz5VeGlbjO7C4Qi
+	 50cIyf+0J4n40e2Tu/JsM6HECwDXcI/ZeJJRGKos8C5lAJqyYYWe6MsEgsRW7ScJWm
+	 Ypfq+motK7Q1itoStAtmX8qEV/CcM7VbcF1hHPzyJbz4fYmwK0MirmlaHBfdhSjVlx
+	 31f+rM/ReYgZg==
+Date: Mon, 19 Feb 2024 17:04:56 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Eric Dumazet <edumazet@google.com>,
+	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+	Arjan van de Ven <arjan@infradead.org>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Rik van Riel <riel@surriel.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Sebastian Siewior <bigeasy@linutronix.de>,
+	Giovanni Gherdovich <ggherdovich@suse.cz>,
+	Lukasz Luba <lukasz.luba@arm.com>,
+	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v10 13/20] timers: Add get next timer interrupt
+ functionality for remote CPUs
+Message-ID: <ZdN8KCTB2smSZb88@localhost.localdomain>
+References: <20240115143743.27827-1-anna-maria@linutronix.de>
+ <20240115143743.27827-14-anna-maria@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217002717.57507-1-ojeda@kernel.org> <87ttm4g462.fsf@metaspace.dk>
-In-Reply-To: <87ttm4g462.fsf@metaspace.dk>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Mon, 19 Feb 2024 17:03:41 +0100
-Message-ID: <CANiq72nbr6qy1otJpdh3FVUN5cUfrkUPYEHJFm_QqfKvYEj-Xw@mail.gmail.com>
-Subject: Re: [PATCH] rust: upgrade to Rust 1.77.0
-To: "Andreas Hindborg (Samsung)" <nmi@metaspace.dk>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Alice Ryhl <aliceryhl@google.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	patches@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240115143743.27827-14-anna-maria@linutronix.de>
 
-On Mon, Feb 19, 2024 at 11:06=E2=80=AFAM Andreas Hindborg (Samsung)
-<nmi@metaspace.dk> wrote:
->
-> I am a little confused about this patch, since 1.77.0 is not released
-> yet and the link [1] (currently) points to the release notes for 1.76.
+Le Mon, Jan 15, 2024 at 03:37:36PM +0100, Anna-Maria Behnsen a écrit :
+> +# ifdef CONFIG_SMP
+> +/**
+> + * fetch_next_timer_interrupt_remote() - Store next timers into @tevt
+> + * @basej:	base time jiffies
+> + * @basem:	base time clock monotonic
+> + * @tevt:	Pointer to the storage for the expiry values
+> + * @cpu:	Remote CPU
+> + *
+> + * Stores the next pending local and global timer expiry values in the
+> + * struct pointed to by @tevt. If a queue is empty the corresponding
+> + * field is set to KTIME_MAX. If local event expires before global
+> + * event, global event is set to KTIME_MAX as well.
+> + *
+> + * Caller needs to make sure timer base locks are held (use
+> + * timer_lock_remote_bases() for this purpose).
+> + */
+> +void fetch_next_timer_interrupt_remote(unsigned long basej, u64 basem,
+> +				       struct timer_events *tevt,
+> +				       unsigned int cpu)
+> +{
+> +	struct timer_base *base_local, *base_global;
+> +
+> +	/* Preset local / global events */
+> +	tevt->local = tevt->global = KTIME_MAX;
+> +
+> +	base_local = per_cpu_ptr(&timer_bases[BASE_LOCAL], cpu);
+> +	base_global = per_cpu_ptr(&timer_bases[BASE_GLOBAL], cpu);
+> +
+> +	lockdep_assert_held(&base_local->lock);
+> +	lockdep_assert_held(&base_global->lock);
+> +
+> +	fetch_next_timer_interrupt(basej, basem, base_local, base_global, tevt);
 
-Yeah, the patch is written as it would have been written by the time
-it is applied, i.e. see the note after `---`.
+If the next timer is global and it is <= jiffies + 1, the result will be
+returned in tevt.local only and not on tevt.global. So a remote fetch may miss it.
 
-So, for instance, the link actually points to the 1.77.0 notes, it is
-just that they do not exist yet :)
+For this to work on both local and remote fetch, you may need:
 
-> Will there be a new version of this patch when 1.77 is released, or do
-> we just expect no changes to alloc when the compiler goes from beta to
-> release?
-
-There can changes (or not), so it depends on that, i.e. if not, I will
-apply this one. If there are non-trivial ones, then I will send a v2.
-
-(There are no changes so far)
-
-Cheers,
-Miguel
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 320eb4ceafa2..64ce9a7760f5 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -2004,6 +2007,8 @@ static unsigned long fetch_next_timer_interrupt(unsigned long basej, u64 basem,
+ 		if (time_before(nextevt, basej))
+ 			nextevt = basej;
+ 		tevt->local = basem + (u64)(nextevt - basej) * TICK_NSEC;
++		if (!local_first)
++			tevt->global = tevt->local;
+ 		return nextevt;
+ 	}
+ 
 
