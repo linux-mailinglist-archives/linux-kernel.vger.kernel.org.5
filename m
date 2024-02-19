@@ -1,140 +1,139 @@
-Return-Path: <linux-kernel+bounces-71294-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71295-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47AE485A309
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:18:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1084985A30B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBAE71F24C4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:18:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96A5287402
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:19:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A95F2E407;
-	Mon, 19 Feb 2024 12:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475342D611;
+	Mon, 19 Feb 2024 12:19:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fctb0g3u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CaIe+yC3"
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C07A2D608;
-	Mon, 19 Feb 2024 12:18:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C547028DDA
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:19:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708345099; cv=none; b=iwUjCfxDhyokADo9q2aErHH09ng6xK29fV1hBd6hj5f1TChgTtKffh3c3XwU2ZDr6VCLJUbC6cdBuXXid1XFCOhzdZewGGBXdVD64Ork8k/vlr8wDtrk8dy8Wa53P/kLgg3iqjFcAmpGFeYxdgDhf/kR/i4T8DZrdgZQdBdqs8c=
+	t=1708345177; cv=none; b=qv5TxbCJgWwgdT7BgxZaY8ltxEowgZf0ljPNPPmVnUCfIoBFZsrR24C2+ZMG/8QQW96HniHk95mm5WnZfdE00XQSlIy42F0IGnrBo7Ltsf5VwPM74RnIf31yZfnCjHHLdtfoWsmPmUEhtjhi13NLSluXIjrxiD3MvS3y+r1GXy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708345099; c=relaxed/simple;
-	bh=SI4DlrhOGz6M5DT7VRcKdAQia2lvU/yGx2zQ8fTxd+Q=;
+	s=arc-20240116; t=1708345177; c=relaxed/simple;
+	bh=XZhHjRkTj6nAHd5DH2JdWTq2TlG6374TlIGjtVi+DOg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=J5pvR1hrc7JVQithYS+ORMSjl8dYa7RcgzHfD8AMgRuZAEW3E6RkJpU+KkRf5EHlbfmp+xVqultP34vw+81CkseZgwI0oRSjgJmQgzPsaWDU+SZ7spaoVe+Oseixdk2UpRh1DBnXx0vKMaQKW4MzMCeRCKFP0FCKk3yISaUaW2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fctb0g3u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2277AC433C7;
-	Mon, 19 Feb 2024 12:18:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708345098;
-	bh=SI4DlrhOGz6M5DT7VRcKdAQia2lvU/yGx2zQ8fTxd+Q=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=fctb0g3ut0wFPjpLw4PSuWcLuL0+6kpjfT1Qnf6vabW9fb+7s82kp/uaNh9LJzsux
-	 JaKtWtRyHjo1oFYLOHIUiymJLCYX0ynPU/oGAoUtXe4D0BI4sJ+nPZPP1fqtIF6AGz
-	 Bjip5rTKviKO02SoxOrj/5HyYB/hUmMSH4L15uO5jOxDeQNQwPiUfNWK8RZrJPSmD2
-	 XHrtM3N0hCGzLH6DHmV29fhPUob/4sy7nk7tHWej9U9Glqv7r4ZdWYyraY1UXTAta9
-	 NYTabE3P56ZgOQ2vCOXkOzMR0Gfg+b6pSUcHN7uCdMcqjXj4MokNo3Co3DsWMXNHym
-	 LON08zVPWjChA==
-Message-ID: <eeb97fc2-326c-4d0c-97a8-7973e95f8047@kernel.org>
-Date: Mon, 19 Feb 2024 13:18:12 +0100
+	 In-Reply-To:Content-Type; b=uxnhKVFVyEoy7W0zqXrkszLKObSxNi73mpO7DczR/d1p4mrzNPFrPf28KggHngTTTQQ72cLdZkrvjyZEoY5MXmxQl9ueCLFElnBvY7Ey0/IwLzym49F3dLXRBZzCyIl7GqbpbmSxhMvOzhA822tY1w0vHT7cn8i0y+dN4acp/Ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CaIe+yC3; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <99e3e994-ef6a-4339-abf2-cda62d24b1ce@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708345173;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DkVT2jDCTEiEB3I4q1MvWvXu2gwGeHJQocWwFjbYXGE=;
+	b=CaIe+yC3VWWsIwDtdZDwlDmoJQpk6KwmTKHJjMIbgk2ALrL3MJOcJRTs0xk71hAcD0iHcs
+	rG4whUuljZj/jHmsTTZ0T6Pk/ZKRszUCWxxxHZ0EzOS7Isofz+m+i+9m2jq/REDPQQ3xss
+	45FxfJFgIskFkV4+58egD+GIeT71+/4=
+Date: Mon, 19 Feb 2024 20:19:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] dt-bindings: usb: Add xhci glue driver support
-To: Puma Hsu <pumahsu@google.com>, mathias.nyman@intel.com,
- gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com
-Cc: badhri@google.com, royluo@google.com, howardyen@google.com,
- albertccwang@google.com, raychi@google.com, linux-kernel@vger.kernel.org,
- linux-usb@vger.kernel.org
-References: <20240219061008.1761102-1-pumahsu@google.com>
- <20240219061008.1761102-2-pumahsu@google.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240219061008.1761102-2-pumahsu@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] net/mlx5: fix possible stack overflows
+To: Hamdan Agbariya <hamdani@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
+ Arnd Bergmann <arnd@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
+ Leon Romanovsky <leon@kernel.org>
+Cc: "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>,
+ Alex Vesker <valex@nvidia.com>, Netdev <netdev@vger.kernel.org>,
+ "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20240213100848.458819-1-arnd@kernel.org>
+ <84874528-daea-424d-af63-b9b86835fae6@linux.dev>
+ <2ebe5a36-ce81-4d26-a12b-7affbd65c5e3@app.fastmail.com>
+ <11f40993-ec02-48b7-aec5-13ff7cddf665@linux.dev>
+ <DM6PR12MB45168A0957212864D8D53B80CE512@DM6PR12MB4516.namprd12.prod.outlook.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <DM6PR12MB45168A0957212864D8D53B80CE512@DM6PR12MB4516.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 19/02/2024 07:10, Puma Hsu wrote:
-> Currently the dwc3 driver always probes xhci-plat driver
-
-Not a DT property, at least at first glance. NAK.
-
-> by hardcode in driver. Introduce a property to make this
-> flexible that a user can probe a xhci glue driver by the
-> generic dwc3 driver.
+在 2024/2/19 17:05, Hamdan Agbariya 写道:
+>> 在 2024/2/15 16:03, Arnd Bergmann 写道:
+>>> On Thu, Feb 15, 2024, at 01:18, Zhu Yanjun wrote:
+>>>> 在 2024/2/13 18:08, Arnd Bergmann 写道:
+>>>>>     static int
+>>>>> -dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx
+>>>>> *rule_rx_tx,
+>>>>> +dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
+>>>>> +              struct mlx5dr_rule_rx_tx *rule_rx_tx,
+>>>>>                 bool is_rx, const u64 rule_id, u8 format_ver)
+>>>>>     {
+>>>>>      struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES +
+>>>>> DR_ACTION_MAX_STES]; @@ -533,7 +532,7 @@
+>> dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx
+>> *rule_rx_tx,
+>>>>>              return 0;
+>>>>>
+>>>>>      while (i--) {
+>>>>> -           ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
+>>>> Before buff is reused, I am not sure whether buff should be firstly
+>>>> zeroed or not.
+>>> I don't see why it would, but if you want to zero it, that would be a
+>>> separate patch that is already needed on the existing code, which
+>>> never zeroes its buffers.
+>>
+>> Sure. I agree with you. In the existing code, the buffers are not zeroed.
+>>
+>> But to a buffer which is used for several times, it is good to zero it before it is
+>> used again.
+>>
+>> Can you add a new commit with the following?
+>>
+>> 1). Zero the buffers in the existing code
+>>
 > 
-> Signed-off-by: Puma Hsu <pumahsu@google.com>
+> No need to zero the buffers, as it does not have any necessity and it will only affect performance.
+> Thanks,
 
-Please use scripts/get_maintainers.pl to get a list of necessary people
-and lists to CC. It might happen, that command when run on an older
-kernel, gives you outdated entries. Therefore please be sure you base
-your patches on recent Linux kernel.
+Sorry. I can not get your point. Can you explain why no need to zero the 
+buffers? Thanks in advance.
 
-Tools like b4 or scripts/get_maintainer.pl provide you proper list of
-people, so fix your workflow. Tools might also fail if you work on some
-ancient tree (don't, instead use mainline), work on fork of kernel
-(don't, instead use mainline) or you ignore some maintainers (really
-don't). Just use b4 and everything should be fine, although remember
-about `b4 prep --auto-to-cc` if you added new patches to the patchset.
+> Hamdan
+> 
+> 
+> 
+> 
+>> 2). Add the zero functionality to your patch
 
-You missed at least devicetree list (maybe more), so this won't be
-tested by automated tooling. Performing review on untested code might be
-a waste of time, thus I will skip this patch entirely till you follow
-the process allowing the patch to be tested.
+If a buffer is used for many times, is it necessary to zero it before it 
+is used again?
 
-Best regards,
-Krzysztof
+Thanks,
+Zhu Yanjun
+
+>>
+>>   From my perspective, it is good to the whole commit.
+>>
+>> Please Jason and Leon comment on this.
+>>
+>> Thanks,
+>>
+>> Zhu Yanjun
+>>
+>>>
+>>>       Arnd
 
 
