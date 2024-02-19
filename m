@@ -1,229 +1,167 @@
-Return-Path: <linux-kernel+bounces-71237-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20E6F85A256
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:46:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDA5185A263
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:47:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD33D2810A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:46:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EE761C21EAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:47:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AD852C860;
-	Mon, 19 Feb 2024 11:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17872C85C;
+	Mon, 19 Feb 2024 11:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="GPZTh5MV"
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PIRjpJoK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="eizLTF4s";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AGxB46Wv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="taNCoXnS"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE8C92C68E;
-	Mon, 19 Feb 2024 11:46:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D2F28DBD;
+	Mon, 19 Feb 2024 11:47:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708343174; cv=none; b=Z9yixbfzazsPZjiS826xbUwFoulQ8AF7lYK0yb42zcdzYiPZGCXtJrLRerDVH6f2JQiasZbFIImVl5R/ZnIufGeAfzVwjqFteAINba3YMldJaq8lsub+a7OBRJdeReuhz98j7dt3wUSJi3DbFz7K89EIPNomMVt2AnA3GuNg4y8=
+	t=1708343250; cv=none; b=rz777X+g8W41Ae1cuYacLp5C18iOC5M2v8WS3jJsiorfI40Xk/o7V0fdqAReWUPgQFCRJn6V2D4vn8dw+gDg0yYGqAdiQVvOznksi2WY5YsIrjjVVrVNkNT2c9wPCJy/9rOe9PEf7bEf7TuJGDpmoPyt6YnYI+Ry/GWeHSyvsVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708343174; c=relaxed/simple;
-	bh=ZLdHVZJAAAsJKH0nm7DlEteP3dEdil2jcxKBXSOFsXw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=qbHtkunXVE3f7amQhKojvLE/gWhRMih5n5pl81UkeUvikKFxaUlOGOj5VvEC2CXM7GfXwJb/ELGQ+B7FrTD+X2Sem3S+aBhBcGQTne1bQReqaetq3L4qDCV8JjPZfPDI2DINx9x72zd0zCPp0t9Nq6KqjHDDs1sFEmwFtSoKh4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=GPZTh5MV; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e43ee3f6fbso1154952b3a.3;
-        Mon, 19 Feb 2024 03:46:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708343172; x=1708947972;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f9dBN/g8PVu9zXkbkm1kFd1y636aWTHVivk7klXjspk=;
-        b=lukl9hc3BAuLYfkGguA778MNg1vhgRkdycck0QMAGfnlQ9BQC4dBVnnJZIw0Ysiddr
-         dz6TRHds0MWm9paP+tn4oTsdU0+cg0+YhGKicdGP8+r7xy/m7fbo1Nob1lOR0C8nuq+C
-         +3gpA8ffGNWvsvyQyzoJ+D1FaQRG3Tc+eaLwXbYLdu0DkzehDxR5BeBgNEtoth8JxzBz
-         LWfEwTXyKruof2ZAw0XZk3/gyq/hEgKnZiwI4t1O7M0tiTjKfAEkzDD39yzBjjw3ES2u
-         keMIxE3oX3AEQucdryeWxji2M1A8fTLamQprcyFsDoUbRssJUiOaAxfu4LI0/YF78ytR
-         jUwg==
-X-Forwarded-Encrypted: i=1; AJvYcCWiQD1dO95aTPwVqzQoEsBseFw9p+a11ZG5BaLQ2kwaK+uaKxCx8MD4b7535A31kMitnVKrKIPzVUsbSwjVwaZcy1vLgwRoeeJxv38g
-X-Gm-Message-State: AOJu0YwUFBgQ/KMw+gFLHhsB4VJLBUogl4RL3W9E5rNjwFfAHP29FmZb
-	BxsTs0HtCBNEFOlOrLGHL/8nUTW11kuIQdF0nIdH9h+EWQpOvnJbYbofWmPn0DeEPA==
-X-Google-Smtp-Source: AGHT+IHaMvJE3zBOKZBwunmhEb3RzIMNIX9xDRt90aebem4P93dQyK4lpz4lV3/QnnOV1kJ9fUxFVQ==
-X-Received: by 2002:aa7:864d:0:b0:6e3:7331:3b7a with SMTP id a13-20020aa7864d000000b006e373313b7amr5795668pfo.27.1708343171966;
-        Mon, 19 Feb 2024 03:46:11 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id t4-20020a62d144000000b006e3b868b8b8sm3443384pfl.130.2024.02.19.03.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 03:46:11 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708343170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=f9dBN/g8PVu9zXkbkm1kFd1y636aWTHVivk7klXjspk=;
-	b=GPZTh5MVJmleh2ejHnqIvrOSQIsyqR1nUDwQL7roYQUu5r5f89QU3YcGiMdQOTV9ThEaqk
-	Vu7IC4Wbs7PRAefKMlRUhBazFOPMhlefLEZtRNbLjQW1ggAuGa/99ENmRpG1k71n1rSt+T
-	Cs40UoXBvYqY5IfcmXm/UUlIofptoW9NXWXwAqBKuWZSb6Ajfd1QEeP+azS3IyLbEee30I
-	r0osyMevrf6wmEZpbs53s3hd4QlcEUrxspXbJMXqF1pj0wg8F5N5bwIGKuSHAR5Wx8MQTT
-	i+dMDBZQuSHVn4mzHbjfG58TWZ86SkGUMwo9VHowjcoFzSSPw3SMIop+4gufVg==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 19 Feb 2024 08:46:56 -0300
-Subject: [PATCH] dmaengine: idxd: constify the struct device_type usage
+	s=arc-20240116; t=1708343250; c=relaxed/simple;
+	bh=SCzSVDeXhJh0zIbeBglTZd4xn7FK70eXZH9Wgo5j/pA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qMH2g3g42qXr+JxNXoAwBo9VkJNGn47WygzQr1Tic5m0VsplbupCs0BHKgigN3ec1d0DbcQl5MTV+t/LPfeyaJ1AIz45I75arDmfkodYuhhwdRN+JVTolk4HN5w4y2NpqNJQxLkCSCH+ToTTKWzu7fyCzz3H19BnvPIjlpSDsow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PIRjpJoK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=eizLTF4s; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AGxB46Wv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=taNCoXnS; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C496A2231F;
+	Mon, 19 Feb 2024 11:47:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708343247; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/HW1O8/0Ek2CVqztQkYAK9/MsoJrJt80t5MZg8IQsq0=;
+	b=PIRjpJoKsye+XABw41EC1SvhJf8KDgpfk+8t9Sz/gPiS8ZmMYYgS57/imtPArptapRi+0j
+	kAS4kZVRKX+ngzERASp8mNDrFMG0V+62B+bdH9/MVH03VwQb6AcT+jimE2fVbxnf55cC3c
+	CMfsn+lnvfhs9Hb6VqoXSLsRJ11ZjL0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708343247;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/HW1O8/0Ek2CVqztQkYAK9/MsoJrJt80t5MZg8IQsq0=;
+	b=eizLTF4s3ePFkFwKSwMLtkIme5ckMcu693XFtQFdR1ZPUYmlJRV+VeQHxv1gyzij4+YY83
+	p36jkYU1Pn1cowDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708343244; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/HW1O8/0Ek2CVqztQkYAK9/MsoJrJt80t5MZg8IQsq0=;
+	b=AGxB46Wvp8LJasWBCsG7x7y4vc2KtMHqEZBCntJqhmCo57QcmulsEZqZp4uIW2+seLWdrL
+	4PucXURDDxjU/yF+Vm7/FhGa3J/o3qRMZ9TBhisZvP4gGVIKlipa9RfUTVsyDvY5iqhe2e
+	VlI7SPOBtdczh1kfOiJPu+gUj7upDU8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708343244;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/HW1O8/0Ek2CVqztQkYAK9/MsoJrJt80t5MZg8IQsq0=;
+	b=taNCoXnSCyevd55YOeoz9Lur0PEBKmpjgaV8JSqenHpZ8CqxIHxJBpjk9xQvdrmwINoFeB
+	Mn1y+sf0zShB7mBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A78F113585;
+	Mon, 19 Feb 2024 11:47:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id gbbmKMw/02USbgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 19 Feb 2024 11:47:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id ED0B2A0806; Mon, 19 Feb 2024 12:47:19 +0100 (CET)
+Date: Mon, 19 Feb 2024 12:47:19 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+4936b06b07f365af31cc@syzkaller.appspotmail.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, jack@suse.cz,
+	konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [nilfs?] KASAN: use-after-free Read in nilfs_set_link
+Message-ID: <20240219114719.pyntouzverbsk4da@quack3>
+References: <000000000000375f00060eb11585@google.com>
+ <00000000000029d2820611a09994@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-device_cleanup-dmaengine-v1-1-9f72f3cf3587@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAK8/02UC/x2MwQqDMBAFf0X2bCAJveivFJFl84wL7VYSWoTgv
- xt6HJiZRhVFUWkeGhX8tOrHOoRxINnZMpymzhR9fPgYJpe6JFjlBbbv4dKbYVkNDh5bkMA8SaK
- eHwWbnv/1c7muG8Kz7z9qAAAA
-To: Fenghua Yu <fenghua.yu@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
- Vinod Koul <vkoul@kernel.org>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4365; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=ZLdHVZJAAAsJKH0nm7DlEteP3dEdil2jcxKBXSOFsXw=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl0z+wiyHB1Y74MjkRjbvGpa4OoiWJXWcQ+jCdU
- nmKnUjzOKyJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdM/sAAKCRDJC4p8Y4ZY
- pqaHD/9iqbYNVL9ebqauZTuwQB+vd4/KZ68RaPvYmo3yawIRgvHZGGnOh6fhDep5N60uxnnBv6+
- fE1Vj1r/5JbHaxFLopjNSqNTwFpb/rxurKwjuDdjdSrKrjhtXzAsSedshTxS65Tb++5VpfeFvPU
- SA6fvSy9y3REmLRVFgkHDOfsgRXWJxHp6BsgmQ5+//kf/F7GquecvkQ8ZIW+0RfCa9P4MewvoUf
- d/w4+dW0Ah6Ts8BJooZM7wUUoub7VVujEQBMb4NAnc2FuH0DQuWFVMRYws2SMbd/k4koFOChVRj
- jolrAxT2s7Rj33STI6WnzWyk4Wkne3jNrExWBFit2AZXSvuKScoMi692W37IcPaQR3K+KzvTjeW
- iCziYnysSeQylcPcikkJ6FuggivhfBOT3DqqGI5kStkm9h9xmKbeSElnN1SlV582/UM3eSTA25f
- SDgR0ekgTXdlmTVRLPqtpHsTjVjjDSMuH+0KGYGKn876sDIpWd8CVo+sRdFDb8G4VxBCUACn4t/
- vRwk7sqvvRE1I0QZlnQxNAIYCOyPAWuIkWfzjDfBbgT5uLBYvHpCL4TSpPeKFmvDi4sVzN/lGjR
- KUY0uaDfO/BHvvsoUGIWZyn3I5YpOIkypdXp5xe32HV4G4cUblk+h2yNLnHTJ8nmApodDPH+7yb
- iNbqk6+L6ei/QyQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000029d2820611a09994@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: *
+X-Spam-Score: 1.70
+X-Spamd-Result: default: False [1.70 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.00)[34.64%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b];
+	 TAGGED_RCPT(0.00)[4936b06b07f365af31cc];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.dk,kernel.org,suse.cz,gmail.com,vger.kernel.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
 
-Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-core can properly handle constant struct device_type. Move the
-dsa_device_type, iax_device_type, idxd_wq_device_type, idxd_cdev_file_type,
-idxd_cdev_device_type and idxd_group_device_type variables to be constant
-structures as well, placing it into read-only memory which can not be
-modified at runtime.
+On Sat 17-02-24 20:42:02, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
+> 
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
+> 
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10639b34180000
+> start commit:   52b1853b080a Merge tag 'i2c-for-6.7-final' of git://git.ke..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=655f8abe9fe69b3b
+> dashboard link: https://syzkaller.appspot.com/bug?extid=4936b06b07f365af31cc
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d62025e80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13c38055e80000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+> 
+> #syz fix: fs: Block writes to mounted block devices
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/dma/idxd/cdev.c  |  4 ++--
- drivers/dma/idxd/idxd.h  | 12 ++++++------
- drivers/dma/idxd/sysfs.c | 10 +++++-----
- 3 files changed, 13 insertions(+), 13 deletions(-)
+The reproducers don't seem to be doing anything suspicious so I'm not sure
+why the commit makes them not work anymore. There are no working
+reproducers for this bug though so I'll leave it upto the nilfs maintainer
+to decide what to do.
 
-diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
-index 77f8885cf407..72bb982d7af7 100644
---- a/drivers/dma/idxd/cdev.c
-+++ b/drivers/dma/idxd/cdev.c
-@@ -152,7 +152,7 @@ static void idxd_file_dev_release(struct device *dev)
- 	mutex_unlock(&wq->wq_lock);
- }
- 
--static struct device_type idxd_cdev_file_type = {
-+static const struct device_type idxd_cdev_file_type = {
- 	.name = "idxd_file",
- 	.release = idxd_file_dev_release,
- 	.groups = cdev_file_attribute_groups,
-@@ -169,7 +169,7 @@ static void idxd_cdev_dev_release(struct device *dev)
- 	kfree(idxd_cdev);
- }
- 
--static struct device_type idxd_cdev_device_type = {
-+static const struct device_type idxd_cdev_device_type = {
- 	.name = "idxd_cdev",
- 	.release = idxd_cdev_dev_release,
- };
-diff --git a/drivers/dma/idxd/idxd.h b/drivers/dma/idxd/idxd.h
-index f14a660a2a34..d8d3611bf79a 100644
---- a/drivers/dma/idxd/idxd.h
-+++ b/drivers/dma/idxd/idxd.h
-@@ -282,7 +282,7 @@ typedef int (*load_device_defaults_fn_t) (struct idxd_device *idxd);
- struct idxd_driver_data {
- 	const char *name_prefix;
- 	enum idxd_type type;
--	struct device_type *dev_type;
-+	const struct device_type *dev_type;
- 	int compl_size;
- 	int align;
- 	int evl_cr_off;
-@@ -520,11 +520,11 @@ extern const struct bus_type dsa_bus_type;
- 
- extern bool support_enqcmd;
- extern struct ida idxd_ida;
--extern struct device_type dsa_device_type;
--extern struct device_type iax_device_type;
--extern struct device_type idxd_wq_device_type;
--extern struct device_type idxd_engine_device_type;
--extern struct device_type idxd_group_device_type;
-+extern const struct device_type dsa_device_type;
-+extern const struct device_type iax_device_type;
-+extern const struct device_type idxd_wq_device_type;
-+extern const struct device_type idxd_engine_device_type;
-+extern const struct device_type idxd_group_device_type;
- 
- static inline bool is_dsa_dev(struct idxd_dev *idxd_dev)
- {
-diff --git a/drivers/dma/idxd/sysfs.c b/drivers/dma/idxd/sysfs.c
-index 523ae0dff7d4..7f28f01be672 100644
---- a/drivers/dma/idxd/sysfs.c
-+++ b/drivers/dma/idxd/sysfs.c
-@@ -91,7 +91,7 @@ static void idxd_conf_engine_release(struct device *dev)
- 	kfree(engine);
- }
- 
--struct device_type idxd_engine_device_type = {
-+const struct device_type idxd_engine_device_type = {
- 	.name = "engine",
- 	.release = idxd_conf_engine_release,
- 	.groups = idxd_engine_attribute_groups,
-@@ -577,7 +577,7 @@ static void idxd_conf_group_release(struct device *dev)
- 	kfree(group);
- }
- 
--struct device_type idxd_group_device_type = {
-+const struct device_type idxd_group_device_type = {
- 	.name = "group",
- 	.release = idxd_conf_group_release,
- 	.groups = idxd_group_attribute_groups,
-@@ -1369,7 +1369,7 @@ static void idxd_conf_wq_release(struct device *dev)
- 	kfree(wq);
- }
- 
--struct device_type idxd_wq_device_type = {
-+const struct device_type idxd_wq_device_type = {
- 	.name = "wq",
- 	.release = idxd_conf_wq_release,
- 	.groups = idxd_wq_attribute_groups,
-@@ -1798,13 +1798,13 @@ static void idxd_conf_device_release(struct device *dev)
- 	kfree(idxd);
- }
- 
--struct device_type dsa_device_type = {
-+const struct device_type dsa_device_type = {
- 	.name = "dsa",
- 	.release = idxd_conf_device_release,
- 	.groups = idxd_attribute_groups,
- };
- 
--struct device_type iax_device_type = {
-+const struct device_type iax_device_type = {
- 	.name = "iax",
- 	.release = idxd_conf_device_release,
- 	.groups = idxd_attribute_groups,
+								Honza
 
----
-base-commit: 35b78e2eef2d75c8722bf39d6bd1d89a8e21479e
-change-id: 20240219-device_cleanup-dmaengine-e0ef1c1aa9cd
-
-Best regards,
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
