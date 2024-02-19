@@ -1,156 +1,92 @@
-Return-Path: <linux-kernel+bounces-71434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D822485A52F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:54:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F155685A531
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C93C1B22220
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:54:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9187C1F234A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487EB36AFB;
-	Mon, 19 Feb 2024 13:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D218536AFB;
+	Mon, 19 Feb 2024 13:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YXVvc6ki";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KbJioyej"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="VbG5kIlD"
+Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D811332182;
+	Mon, 19 Feb 2024 13:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708350992; cv=none; b=VkWbUawf3K1W/tuEX9hagyYIFZJ6thXwocB0Zz8omB+LUSN9Tztic9ezoikUoKwj7+PV49EgFsg3o4i1zxxoGQ6QGAgng2xXcSFqjhXmf+P1VobGdEyqpoPU3aKiULgcZ9QvHBC5KARWSpjvChjNfsFjVS5x5cIo9MLjiLrqHkQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708350992; c=relaxed/simple;
+	bh=RgNJprUPPOwhgeZ+/R3P4cQ/LqQ2+TTNR4vf52w2fm8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ph2wmv+LEwpJYs27yOyvvEqXkwyWFoRqAJUCKE+yLiP8nib/doCKBI25GWbU10JjT76UlKSQQn288T4vJ7+UDq0p4INnr9VxiAfQG68nUvtXwykkVjaUmJ18RypsOSR2ILAdSanJO6kaDOY0pru+HhJQp3NYksCQv/wvQF/LM9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=VbG5kIlD; arc=none smtp.client-ip=139.165.32.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
+Received: from [192.168.1.38] (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20E4364C6;
-	Mon, 19 Feb 2024 13:53:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708350818; cv=none; b=F0VlmY7xVTMliSmc4wRJRedY2GFr3SU8JjvhLjGxe3FTOgNq+nuUOv+3B3o5/v65U3bsC7KJvqMUvp/ddKECSEPanAhKY6gEibGq/XPxEBoiUNpNHUlTNZoJ49mh5E9orpshlz8lF7KhHMpjXY8Hr79XmtheL4hAFMkrG2tJPOE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708350818; c=relaxed/simple;
-	bh=mjCeAIQZv6m3D3psvqDPNKm1MymqtEETfxNpQ8BvHoM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z7AydNt/Tk/TgbBbUy1VfZrQg9q/03yEPRn/YjaaF7VbdIzYNz8E/bu+i5kgVS5YMh4iLrc3LdDXDXHgZtpNIMwarvku6nL9fwBwcQZ22IwAPIyyO/bp2DvUcnGIIhXJuuh8acmEqRN55nfoUrgOmeMolqxF7Gwy5aEntjtRMg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YXVvc6ki; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KbJioyej; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E53BE21747;
-	Mon, 19 Feb 2024 13:53:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708350815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iWgx8ZUrqNvRYMebTBHKWkfDEjmiK2tptdVH4AjyYtY=;
-	b=YXVvc6ki+BbBR0BE/vR1JOoFmujkPZDgv7Jk9X2GPIpfKcVZ5vrWKBkB0gDpOe+S1UMzEp
-	b17aNUQS6vTQJMI1mYRYLXxuRWLRxbVgIqocQj5v6ylGt1tcZZ4jj12X333DaSAd5NIorM
-	rzIS7CaoUW+ONHtuHCtA2kSkMRl0Ok4=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708350814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iWgx8ZUrqNvRYMebTBHKWkfDEjmiK2tptdVH4AjyYtY=;
-	b=KbJioyej9rk6fekZDPu2bjoJqFGs3fxeyhyM8L8IGb+vGbsMlvHLEDEiydaRp04KEdwjcq
-	HAzCVc/npxIV4qksMQy4OoBdTmQlQq6Fsm7Rf8d/7fXx1TiMjd+91t5mGO5glDBXcu/Yfd
-	HPf5zq5SEtZuwjusVCJ+SyBzRTdbE8A=
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 66CC513585;
-	Mon, 19 Feb 2024 13:53:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 3ETgCl5d02XgCwAAn2gu4w
-	(envelope-from <mpdesouza@suse.com>); Mon, 19 Feb 2024 13:53:34 +0000
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
-To: Marcos Paulo de Souza <mpdesouza@suse.com>
-Cc: kernel test robot <lkp@intel.com>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Jiri Kosina <jikos@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Petr Mladek <pmladek@suse.com>,
-	Joe Lawrence <joe.lawrence@redhat.com>,
-	oe-kbuild-all@lists.linux.dev,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	live-patching@vger.kernel.org
-Subject: Re: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
-Date: Mon, 19 Feb 2024 10:53:22 -0300
-Message-ID: <20240219135325.2280-1-mpdesouza@suse.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20240219121522.23480-1-mpdesouza@suse.com>
-References: 
+	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 2BFAE2012151;
+	Mon, 19 Feb 2024 14:56:29 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 2BFAE2012151
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
+	s=ulg20190529; t=1708350989;
+	bh=v6h+TrhDCcE8IdpFwn9bMKIad9vYrlT3yDGRaM2ZAMc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VbG5kIlDrORQqXvWn0WMs9HpjzrRMevGs7wjEDQih1jP60yCONS7UjsItXmrEIqHl
+	 wu+AmuGiwc2oBAoHY6rb/ByUoxHF8Iu1KmoUK3zFx7UfxF6MBoQVFOm5mrnFMtmcz6
+	 NN+9V3SkU2eSqVf5CQhuHLMjwFWdbblor82dQVbvh/5JPv5ItkcDiTopmAkjrbq+P+
+	 GScktonQlaiOhxZGk9BiuiaNirCcp3Y8101S+tmUfN+1BvCDD00/7E0lY4dOniN6Gn
+	 aj6h/pjOATGA5Y0ZM04bgHV/iXlwwXdqYscavkADyn8UJfWePE5yokSPa5+XQziL6f
+	 XEzPmK760Aytg==
+Message-ID: <4aa88e30-ea08-44ed-a7a3-602c12b6705b@uliege.be>
+Date: Mon, 19 Feb 2024 14:56:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [1.90 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: *
-X-Spam-Score: 1.90
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net v2 0/2] ioam6: fix write to cloned skb's
+Content-Language: en-US
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org
+References: <20240219134821.14009-1-justin.iurman@uliege.be>
+From: Justin Iurman <justin.iurman@uliege.be>
+In-Reply-To: <20240219134821.14009-1-justin.iurman@uliege.be>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, 19 Feb 2024 09:15:15 -0300 Marcos Paulo de Souza <mpdesouza@suse.com> wrote:
-
-> On Mon, 19 Feb 2024 14:35:16 +0800 kernel test robot <lkp@intel.com> wrote:
+On 2/19/24 14:48, Justin Iurman wrote:
+> v2:
+>   - use skb_ensure_writable() instead of skb_cloned()+pskb_expand_head()
+>   - refresh network header pointer in ip6_parse_tlv() when returning from
+>     ipv6_hop_ioam()
 > 
-> > Hi Marcos,
-> > 
-> > kernel test robot noticed the following build errors:
-> > 
-> > [auto build test ERROR on 345e8abe4c355bc24bab3f4a5634122e55be8665]
-> > 
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Marcos-Paulo-de-Souza/selftests-lib-mk-Do-not-process-TEST_GEN_MODS_DIR/20240216-021601
-> > base:   345e8abe4c355bc24bab3f4a5634122e55be8665
-> > patch link:    https://lore.kernel.org/r/20240215-lp-selftests-fixes-v1-1-89f4a6f5cddc%40suse.com
-> > patch subject: [PATCH 1/3] selftests: lib.mk: Do not process TEST_GEN_MODS_DIR
-> > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402191417.XULH88Ct-lkp@intel.com/reproduce)
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202402191417.XULH88Ct-lkp@intel.com/
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> > >> make[3]: *** /lib/modules/5.9.0-2-amd64/build: No such file or directory.  Stop.
+> Make sure the IOAM data insertion is not applied on cloned skb's. As a
+> consequence, ioam selftests needed a refactoring.
 > 
-> We should ask the kernel test robot machine owners to install kernel-devel
-> package in order to have this fixed.
-
-Or maybe ask them to change the reproducer to specify KDIR to the git tree,
-instead of /lib/modules/?
-
+> Justin Iurman (2):
+>    Fix write to cloned skb in ipv6_hop_ioam()
+>    selftests: ioam: refactoring to align with the fix
 > 
-> > 
-> > -- 
-> > 0-DAY CI Kernel Test Service
-> > https://github.com/intel/lkp-tests/wiki
+>   net/ipv6/exthdrs.c                         | 10 +++
+>   tools/testing/selftests/net/ioam6.sh       | 38 ++++-----
+>   tools/testing/selftests/net/ioam6_parser.c | 95 +++++++++++-----------
+>   3 files changed, 76 insertions(+), 67 deletions(-)
+> 
+> 
+> base-commit: 166c2c8a6a4dc2e4ceba9e10cfe81c3e469e3210
+
+Sorry, please ignore v2 due to net and version not present in patches 
+tag. Instead, please consider v3. Thanks.
 
