@@ -1,114 +1,190 @@
-Return-Path: <linux-kernel+bounces-71763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71764-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F76385AA18
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:33:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B26E185AA1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D4943B203A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:33:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4475B283C20
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52B1545953;
-	Mon, 19 Feb 2024 17:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA4945C1C;
+	Mon, 19 Feb 2024 17:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GU8jiLmL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="qnZR8Mf9"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24EAE45956
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E797545950
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708364002; cv=none; b=TN+x6QS9ZbsPmkbSfXknWrjAZpw7aOqYG0GznuD7s7JoBuCAw+ErhBOvzEnK9S6o6VeZZpmUi6z3Tt2DhXG5oCLfnuVARgBpcPS1Tqhd+6vO6ab+rfD5mpzPqqSHyU2VWBk1/AlVG6D668vGsg06aRHuVWeJ82SIbAjAa66AYe0=
+	t=1708364148; cv=none; b=fU4uleMzktBAN93G6yF8DMt8gzsv1xpRJTii1h894aBoGrSkQZsyRskp2xTCGYnjpgLyYk/+1XgXsFxS7WY+nSRMSCZot14gJkTO9qJw17sayNSRxIELG1qwWv2m80q/cC1tD1EzYf6KZjeK+7wPxuTBs/Wk05qYwoeoLEewNdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708364002; c=relaxed/simple;
-	bh=6avWnawr2UKbNt3LnY1oNnBulNS03ZSo4bYwpqCzFXk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=lbyOpIMv69k8K6pKn3DY0b65NRMaw+RrMdo9WLihYRohOuk5xT5jun2hv9XqSZHmZrF4e/w4rqtfXw51ES1zklSMGSwrxX9gPnFUYlEngONqocvWtU5G+KDnOk2087AoQ6Bq/QCHYKvmMBHLyNhiddRb94L9inD6TSkVxIVLAbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GU8jiLmL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708364000;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=y70x1lk7CC3AaVnNjq3BizuyfG0wau/9LXBpqiTefe8=;
-	b=GU8jiLmLdHl1cA+0PDS0VpiPcjMiyNa99yxrBUq2IFwOUmz0cJEKvL+DusCFxnlPbRj/oJ
-	nAABAuTT+FzVotLf2rqAAo199NknZYPEiIKv7B6l6W8hCfNoCI2xDurohQ4OPRBoAo7gxy
-	zD6IC43uVGeZgKCfmEiqj7J9nmmiLb0=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-222-CR5oL2YbOUeSoBgzquaX7Q-1; Mon, 19 Feb 2024 12:33:16 -0500
-X-MC-Unique: CR5oL2YbOUeSoBgzquaX7Q-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-7872bf222bfso487039285a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:33:16 -0800 (PST)
+	s=arc-20240116; t=1708364148; c=relaxed/simple;
+	bh=wJCpYntqq8nCglIkq88Zs9qTSRweYslEK0KjbQBa4Bg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UZWYJJ5SRuMudEx7V8fcQph2R3pKuJuIeey4+YBiTC2G7UJSGgiq3ddXGi52FoDNrErB7xFpTUNdz6hbp6flk0aW8+ZFmh+0qYTtdoMcu4VLjv8VQoHOcRg1Swm+jHmXH053h9gJkzmE6jWx/ezFT8d9xFxGrDWSw3oLcNlZakw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=qnZR8Mf9; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-561f0f116ecso15850a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:35:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708364145; x=1708968945; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bpH+GG/JxRVKqFjHr33MFZWda+dSzZgj8Xxgn4JwPS8=;
+        b=qnZR8Mf9OXg9M88jTqacpGR0VokQ4cl6dxm4BrwfAqkIhovRA2gUuTEyZfLnhAEcFR
+         Mo9djPgblUq9mIGUmbSlFtdv61274wgtpdJo05I4wr109y9ULgiAGKw1GPFDscQ/38zk
+         YDJ9hkomHCkHZ9UMUWaCflYoPokfEpf/uw5+so3Jo4nbDk9YS8Uq4Ovzq2Bp2q3DGJOt
+         8E0azaZNDmTnNKhnMUTpG5osWaTJ0OT9q2jtAn+1o/OxJ63OsK6Vhgi54Wua6AZPXNWO
+         ABxCAfNG1ylw8P6sg6xGDNEeQqNm+Su0XA7/FuQ2lOuUtRynVGVJlqxFtcYP67f2bIVQ
+         FhgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708363996; x=1708968796;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y70x1lk7CC3AaVnNjq3BizuyfG0wau/9LXBpqiTefe8=;
-        b=LsmkLwOOd+5MCY4imgy+p5QiBESv4Jn3RclCx5O0ICGbv3xXDHhsvSxPo0MwM8iGB3
-         AoLyq3yH+Cz8kHcGiEtcbTImR2sNw0nng99kQhwB8l8EvQtSqtP0dHmhnL6oDk5DMnmP
-         jgIixnnrZ16aKHZ45qQcyyMTMKnv58HSr9bFybbfnixlYTKkEw4fVRT7RUsevV9toHJb
-         SgiXIzjpfShToqHhbK92NZT3cjstPLS6iOB462OlxAeRkiyhc/MNKzd7N/40a3xSCmvN
-         e5k+G02hwM7q7Nm5aaDYTbmEjX2ta+F04zqhrSb12gqLsuxhLNdtOlMmcyZSDuCTsdfo
-         lr0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXMKeTGDP0riXozEQbXIoiolAapP+ZYHLLr9ohIEyGq1DvT2GBomh+PmjFTZYQHiwX/bjc4vIUxOjU5bJojPriu4LcMopvAVyTNqDcx
-X-Gm-Message-State: AOJu0YxjMLG68aRPHOke7skt2ZZKecEWxre1LRa6iOXDgZj6vFDYtCLO
-	KuA6im6+VTrBaBHX0UX3XIZfq5fcYDez0fXqpFPrHwxJ7YRX5/f89xST7hXJOZ5zq5rPZF3B6wJ
-	XDcThte7BuqCc7dIJ6K80kkMUyHcX/3GyQGmRZv9AkvUjHf0BOiQJQpFt5M10OA==
-X-Received: by 2002:ae9:c30a:0:b0:787:6e99:a889 with SMTP id n10-20020ae9c30a000000b007876e99a889mr2048062qkg.37.1708363996011;
-        Mon, 19 Feb 2024 09:33:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHFBQjY+bgONGiwJ1rR4f9gvvW0U1G0AhkGdUJGBg6+TbNfHWaPDDjFL9uuKTQRsoigx6HeNA==
-X-Received: by 2002:ae9:c30a:0:b0:787:6e99:a889 with SMTP id n10-20020ae9c30a000000b007876e99a889mr2048046qkg.37.1708363995737;
-        Mon, 19 Feb 2024 09:33:15 -0800 (PST)
-Received: from thinkpad2021 ([71.217.33.204])
-        by smtp.gmail.com with ESMTPSA id i1-20020a05620a404100b00785d8a6d019sm2654149qko.12.2024.02.19.09.33.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 09:33:15 -0800 (PST)
-Date: Mon, 19 Feb 2024 12:33:12 -0500
-From: "John B. Wyatt IV" <jwyatt@redhat.com>
-To: John Ogness <john.ogness@linutronix.de>
-Cc: Petr Mladek <pmladek@suse.com>, Clark Williams <williams@redhat.com>,
-	Juri Lelli <jlelli@redhat.com>, Derek Barbosa <debarbos@redhat.com>,
-	Bruno Goncalves <bgoncalv@redhat.com>,
-	"John B. Wyatt IV" <sageofredondo@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Automating console_blast.sh
-Message-ID: <ZdOQ2KzOIgYc8Ber@thinkpad2021>
+        d=1e100.net; s=20230601; t=1708364145; x=1708968945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bpH+GG/JxRVKqFjHr33MFZWda+dSzZgj8Xxgn4JwPS8=;
+        b=bVtiJT+EmsmqZsGTpDWCoshc1Wy/jwETi10JG30x110p2Rk+SaRZ7UHHMQKwQpQtyz
+         4pNJ6ssZifJ85nLRyIO5q0vBg7kUwGeWWIIX7sgDZ0Duqc9+L5feIuy1LU3Ag2ubTnqk
+         +gye30fE31Xekk8VKDaXtcK127kVa+wgyapdHFUtey7dMEICeDu7w+kYO8eDJQjtGhnD
+         AHXiUZOQZoN9nH6aRCJS5AIkSQhMlYvt2HQv9PF0Bm7l60kNcNUu+rteukC/Iy9vziqf
+         Au5UnwcAr81F5H3IDqa2W7J8nppJANcaN2VK+2trjtS5TyZjbV5WjxWhYqg1j2MGp4S3
+         SFJQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX5l8gLak7S+aC024Rd/9OB9hcI2D1wF30dEJ242AvxlhAx/f/yAB2huMhpbs5aPRlgsrCfXPld7T2jSk0XN9AfbNoAIkuLdCmrJPAi
+X-Gm-Message-State: AOJu0YznYotUXFQQpExa9ZKQTAbujn3/mljwr7L0UOaBnCcPfZX17jKF
+	saRVU1rfaGwVxcTMCczqGsrPdg/Jl8mUugzYa+r6lnbNSk6PcbQQgEiiKECuWhfdzP/Leh6sLjY
+	bzgu2YbmrgJdeAfHUstyBMveCNNxEgLPuQomQ
+X-Google-Smtp-Source: AGHT+IE99wN/PQYfiDNakz6zkMQR7kOEOngXX0T7gN2tvc5IjeQakHE9Z1BsxKNQN8jOzpCri2PXj7rsMGF+tGMHWj0=
+X-Received: by 2002:a50:a697:0:b0:563:ff57:b7e8 with SMTP id
+ e23-20020a50a697000000b00563ff57b7e8mr322644edc.1.1708364145075; Mon, 19 Feb
+ 2024 09:35:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20240215-upstream-net-20240215-misc-fixes-v1-0-8c01a55d8f6a@kernel.org>
+ <20240215-upstream-net-20240215-misc-fixes-v1-3-8c01a55d8f6a@kernel.org> <CANn89iJ=Oecw6OZDwmSYc9HJKQ_G32uN11L+oUcMu+TOD5Xiaw@mail.gmail.com>
+In-Reply-To: <CANn89iJ=Oecw6OZDwmSYc9HJKQ_G32uN11L+oUcMu+TOD5Xiaw@mail.gmail.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 19 Feb 2024 18:35:31 +0100
+Message-ID: <CANn89iJDypRXX-8S-UdqWgw73eOgt0+D74qUCLDkb0cRpFFXkg@mail.gmail.com>
+Subject: Re: [PATCH net 03/13] mptcp: fix lockless access in subflow ULP diag
+To: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Davide Caratti <dcaratti@redhat.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	stable@vger.kernel.org, Boris Pismenny <borisp@nvidia.com>, 
+	John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello John,
+On Mon, Feb 19, 2024 at 6:21=E2=80=AFPM Eric Dumazet <edumazet@google.com> =
+wrote:
+>
+> On Thu, Feb 15, 2024 at 7:25=E2=80=AFPM Matthieu Baerts (NGI0)
+> <matttbe@kernel.org> wrote:
+> >
+> > From: Paolo Abeni <pabeni@redhat.com>
+> >
+> > Since the introduction of the subflow ULP diag interface, the
+> > dump callback accessed all the subflow data with lockless.
+> >
+> > We need either to annotate all the read and write operation accordingly=
+,
+> > or acquire the subflow socket lock. Let's do latter, even if slower, to
+> > avoid a diffstat havoc.
+> >
+> > Fixes: 5147dfb50832 ("mptcp: allow dumping subflow context to userspace=
+")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+> > Reviewed-by: Mat Martineau <martineau@kernel.org>
+> > Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+> > ---
+> > Notes:
+> >   - This patch modifies the existing ULP API. No better solutions have
+> >     been found for -net, and there is some similar prior art, see
+> >     commit 0df48c26d841 ("tcp: add tcpi_bytes_acked to tcp_info").
+> >
+> >     Please also note that TLS ULP Diag has likely the same issue.
+> > To: Boris Pismenny <borisp@nvidia.com>
+> > To: John Fastabend <john.fastabend@gmail.com>
+> > ---
+> >  include/net/tcp.h  | 2 +-
+> >  net/mptcp/diag.c   | 6 +++++-
+> >  net/tls/tls_main.c | 2 +-
+> >  3 files changed, 7 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/net/tcp.h b/include/net/tcp.h
+> > index dd78a1181031..f6eba9652d01 100644
+> > --- a/include/net/tcp.h
+> > +++ b/include/net/tcp.h
+> > @@ -2506,7 +2506,7 @@ struct tcp_ulp_ops {
+> >         /* cleanup ulp */
+> >         void (*release)(struct sock *sk);
+> >         /* diagnostic */
+> > -       int (*get_info)(const struct sock *sk, struct sk_buff *skb);
+> > +       int (*get_info)(struct sock *sk, struct sk_buff *skb);
+> >         size_t (*get_info_size)(const struct sock *sk);
+> >         /* clone ulp */
+> >         void (*clone)(const struct request_sock *req, struct sock *news=
+k,
+> > diff --git a/net/mptcp/diag.c b/net/mptcp/diag.c
+> > index a536586742f2..e57c5f47f035 100644
+> > --- a/net/mptcp/diag.c
+> > +++ b/net/mptcp/diag.c
+> > @@ -13,17 +13,19 @@
+> >  #include <uapi/linux/mptcp.h>
+> >  #include "protocol.h"
+> >
+> > -static int subflow_get_info(const struct sock *sk, struct sk_buff *skb=
+)
+> > +static int subflow_get_info(struct sock *sk, struct sk_buff *skb)
+> >  {
+> >         struct mptcp_subflow_context *sf;
+> >         struct nlattr *start;
+> >         u32 flags =3D 0;
+> > +       bool slow;
+> >         int err;
+> >
+> >         start =3D nla_nest_start_noflag(skb, INET_ULP_INFO_MPTCP);
+> >         if (!start)
+> >                 return -EMSGSIZE;
+> >
+> > +       slow =3D lock_sock_fast(sk);
+> >         rcu_read_lock();
+>
+> I am afraid lockdep is not happy with this change.
+>
+> Paolo, we probably need the READ_ONCE() annotations after all.
 
-I am investigating if we can automate, and, possibly add console_blash.sh
-[1] to our test suite here at Red Hat.
+Or perhaps something like the following would be enough.
 
-At Red Hat we use SSH to manage our test boxes. On an off-list email
-you wrote that 'Only the UART should be used as a console'. I took
-this as no ssh session should be used from the boot up until the crash,
-but I should have confirmed this. Is this correct?
+diff --git a/net/mptcp/diag.c b/net/mptcp/diag.c
+index 6ff6f14674aa2941bc04c680bacd9f79fc65060d..7017dd60659dc7133318c1c82e3=
+f429bea3a5d57
+100644
+--- a/net/mptcp/diag.c
++++ b/net/mptcp/diag.c
+@@ -21,6 +21,9 @@ static int subflow_get_info(struct sock *sk, struct
+sk_buff *skb)
+        bool slow;
+        int err;
 
-The license for our test suite is GPL v3 [2]. May we have your permission to
-license it under that or permissive?
-
-Adding Bruno @ CKI to CC. 
-
-[1] https://lore.kernel.org/linux-rt-users/ZcQjxa4UA6hzXHnU@thinkpad2021/
-
-[2] https://gitlab.com/redhat/centos-stream/tests/kernel/kernel-tests/-/tree/main/rt-tests
-
-Sincerely
-John Wyatt
-
++       if (inet_sk_state_load(sk) =3D=3D TCP_LISTEN)
++               return 0;
++
+        start =3D nla_nest_start_noflag(skb, INET_ULP_INFO_MPTCP);
+        if (!start)
+                return -EMSGSIZE;
 
