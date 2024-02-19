@@ -1,172 +1,236 @@
-Return-Path: <linux-kernel+bounces-71120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F8085A0E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B047985A0E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52839282422
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:24:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66ED2282C76
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F8A32869B;
-	Mon, 19 Feb 2024 10:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C94682C190;
+	Mon, 19 Feb 2024 10:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b3dkl5Rl"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OXziVmJy"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB5B2C842;
-	Mon, 19 Feb 2024 10:24:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DBFF25614;
+	Mon, 19 Feb 2024 10:25:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708338268; cv=none; b=tRXelmjFboBpWFmkzkUWglX4ORHA2u1T1rVk7ZpricuYzvf2t4sVLt6d7CkFb5gJX/sEjPxsJdmkuLpD08pKw4yEPy4deWwBMLIR5w7Fi56D86WLTl8ldL73E4HNhna5hh36kPhkL4AQguNMBiv+Ys62Ss57slP7RUsm8dz6VTg=
+	t=1708338314; cv=none; b=oKKKjLGHPgylUkaYanNhzzpIt2b0cZVbpfSnQmV8/UsmQk01ni+nQP83IpgzCzYbvbXoFRfP6QlW+9Zu2BtWTyt4KVzoZLyVgKKGd1Q7k+OLN+xzsj6gmN0UUl1ZAyMacqxEOVhkUPc/avVhYCi0TF3YpWk/Vu/8FDaC/8mjsx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708338268; c=relaxed/simple;
-	bh=k1ZR/2E9zgonOGEnTcqjd8PimJKIdi71ZsQPKAiK/pI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Zcrh9Pyc3e0qk4xibUe71iYukgJaPX3kYoXCylLOwg5pNA7h7VFlXvVJmPDbbfjQlzx8awDBUdNu/VOr2D+hf8Pf90ACSwDjfMrvUTHj2NnOnz97/zEh4gamxIsoac2WNZo+7YrGAEZNXwkd2YgTmcoNwST/3GHj3bJdk5UAFcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b3dkl5Rl; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33adec41b55so1988430f8f.0;
-        Mon, 19 Feb 2024 02:24:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708338265; x=1708943065; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=BUKAB7sb5czIBMBlNuCagdfu4VWTGp2m4SsAnQpFoNI=;
-        b=b3dkl5RlDoZTZsIBYGkFf+oQLT1YkojTyompktRPUJEOSggCvUpcF4H06z9SMEgav4
-         lea9GPuAK/CXVEaeUpvOtIUt216mBw30jT0acLoaiI6Ce8PvCMUOkFSnM9etxJZlB+R/
-         6mbGm5XkvFOULCz2T8V0YBDCoTaI1dyIkMQZQqAHMH/kRreI2bEQQS8wFl+QxrfhBLrE
-         TA6tEGyDDxDjwcg/Oz305XRNR+gWKW66U2c1DVKgG16QmYfqzdQasmayxoqPUnJdEoyw
-         67tadi/DLGeR4acXOdvn1W5fz2a2egIUIieoBePHRy50jYFUz6jJrO0cmrlDJpa99lZr
-         M4UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708338265; x=1708943065;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BUKAB7sb5czIBMBlNuCagdfu4VWTGp2m4SsAnQpFoNI=;
-        b=fyyVTJHJdiLJga4DNw9yNh1WzrMFpYQFT2Yi3StORlVqyJ9L9wvvv+sALYXvzQ1tux
-         Vdq/P7q0w1y2luxw383E95MmDfH/mkZYBsn9bHLbhwg+T0lzoxIZ5h6sGNOUDZZGG0fX
-         Zg//3EvDq7brvy/jZJMtv4WKuPEix/89PcxVwF+N8QWWcl8gf456ovuZvnOnwSNnl3kX
-         LaFrkBnOm3daPA6BGRabQpTCnBU6yDHECequBBQcngM24HeUclhzzRJ/IjrBlMYI7erZ
-         irECcT6IF8i6L8H0bWWweFD0ls4G1xxgvWcMpQxbK5OSzALWe/saTixY2p3vagfcWfRU
-         4klQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU5/cI4e99Of2LcgXgPWJ5sJfH3e5QvcbeMpCzNNF0VHzSUUl7PPAFd+Uoun+iXjdkL5ph+IXzjG9k6HRuxEyjcou4dBNfw83lhVkRQFMfyTBzrNSj61llGy9tONYU0VghmUcxK
-X-Gm-Message-State: AOJu0YxpcuG3ArrMH1oeB0AAQUwpWpJ24+bn4zpxQ/cgM9C/2gk1nF/n
-	ob7pCK+LK74FETbPd/vFX8vK9NhFlx0MPOIuEvYoIMLj4PEUNKL7
-X-Google-Smtp-Source: AGHT+IF2g+ewN6RzWmlzDcSLZzfEMtoVfx31tsuHwChkjg0cogBD03go0OpotKFKhvIk+IC5hhds6A==
-X-Received: by 2002:adf:ea47:0:b0:33d:32fe:cb49 with SMTP id j7-20020adfea47000000b0033d32fecb49mr3310387wrn.3.1708338265299;
-        Mon, 19 Feb 2024 02:24:25 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:a92:c660:d7e1:869b:1148:64e8])
-        by smtp.gmail.com with ESMTPSA id u10-20020a5d6daa000000b0033d170a5d6dsm9986328wrs.98.2024.02.19.02.24.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 02:24:24 -0800 (PST)
-From: Piotr Wejman <piotrwejman90@gmail.com>
-To: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	netdev@vger.kernel.org,
-	linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Cc: Piotr Wejman <piotrwejman90@gmail.com>
-Subject: [PATCH] net: stmmac: fix rx queue priority assignment
-Date: Mon, 19 Feb 2024 11:24:05 +0100
-Message-Id: <20240219102405.32015-1-piotrwejman90@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708338314; c=relaxed/simple;
+	bh=p1tLn3Yrs92lQ8kD/e1MBVf6hxU6mcgV7cfVI6sPNI4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mPcTb+iGvDzfKYu8lqguBBbVmRbnxE02nshzf2HKb0m6HOSGb8Atc3bzRJ8TbsupwzpwKWM6hl4DQCPJsojI8j4nHmxQ6DoVtjptg57pzhh5AFdBPfM3dY2OuPy9ojcZ1BBKF4RCw07KwIU2LU1XSgb1+bmMS89MAL6MLLHOVp8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OXziVmJy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7209FC433F1;
+	Mon, 19 Feb 2024 10:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708338313;
+	bh=p1tLn3Yrs92lQ8kD/e1MBVf6hxU6mcgV7cfVI6sPNI4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OXziVmJysu+PHLz5OXKIs6IJE/RCI10RctyDG4T+DED6qGXVVOGSpjWadnai/N0wH
+	 9vHBAqxIXTJ+ZFPIchcVlxJq3joQpOJbUUdpoUwNRY6jW64jhHrV8IMLjU9YFyvawW
+	 SSM2YJ1myPlYLDDPEnpQjd82+JYtkMMhsoPnDtfSevtkmQuIXi8TNVVyDR5hY+tuXz
+	 TnbhuaG068lh0A3j/gZcwqQspaQ2vOvc+j3yPO5aDEiKGz0chFX03amjohxNYv2eRS
+	 IGwbCUvJ7J0Y1p5jVtJ09UxzXbTBF90RdVbv4mavyaY9uT0jCJu84MtVeZZY0yIYx5
+	 XMuvK+cq7PRHg==
+Message-ID: <84e913c6-8dc9-464b-a2d9-2a9c95bd47e6@kernel.org>
+Date: Mon, 19 Feb 2024 12:25:08 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 1/2] net: ethernet: ti: am65-cpts: Enable PTP RX
+ HW timestamp using CPTS FIFO
+Content-Language: en-US
+To: Chintan Vankar <c-vankar@ti.com>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Siddharth Vadapalli <s-vadapalli@ti.com>,
+ Richard Cochran <richardcochran@gmail.com>, Paolo Abeni <pabeni@redhat.com>,
+ Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
+ "David S. Miller" <davem@davemloft.net>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+References: <20240215110953.3225099-1-c-vankar@ti.com>
+From: Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20240215110953.3225099-1-c-vankar@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-The driver should ensure that same priority is not mapped to multiple
-rx queues. Currently dwmac4_rx_queue_priority function is adding
-priorities for a queue without clearing them from others.
 
-From DesignWare Cores Ethernet Quality-of-Service
-Databook, section 17.1.29 MAC_RxQ_Ctrl2:
-"[...]The software must ensure that the content of this field is
-mutually exclusive to the PSRQ fields for other queues, that is,
-the same priority is not mapped to multiple Rx queues[...]"
 
-After this patch, dwmac4_rx_queue_priority function will:
-- assign desired priorities to a queue
-- remove those priorities from all other queues
-The write sequence of CTRL2 and CTRL3 registers is done in the way to
-ensure this order.
+On 15/02/2024 13:09, Chintan Vankar wrote:
+> CPTS module supports capturing timestamp for every packet it receives,
+> add a new function named "am65_cpts_rx_find_ts()" to get the timestamp
+> of received packets from CPTS FIFO.
+> 
+> Add another function named "am65_cpts_rx_timestamp()" which internally
+> calls "am65_cpts_rx_find_ts()" function and timestamps the received
+> PTP packets.
+> 
+> Signed-off-by: Chintan Vankar <c-vankar@ti.com>
+> ---
+>  drivers/net/ethernet/ti/am65-cpts.c | 84 +++++++++++++++++++++--------
+>  drivers/net/ethernet/ti/am65-cpts.h | 11 ++--
+>  2 files changed, 67 insertions(+), 28 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+> index c66618d91c28..92a3b40e60d6 100644
+> --- a/drivers/net/ethernet/ti/am65-cpts.c
+> +++ b/drivers/net/ethernet/ti/am65-cpts.c
+> @@ -859,29 +859,6 @@ static long am65_cpts_ts_work(struct ptp_clock_info *ptp)
+>  	return delay;
+>  }
+>  
+> -/**
+> - * am65_cpts_rx_enable - enable rx timestamping
+> - * @cpts: cpts handle
+> - * @en: enable
+> - *
+> - * This functions enables rx packets timestamping. The CPTS can timestamp all
+> - * rx packets.
+> - */
+> -void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+> -{
+> -	u32 val;
+> -
+> -	mutex_lock(&cpts->ptp_clk_lock);
+> -	val = am65_cpts_read32(cpts, control);
+> -	if (en)
+> -		val |= AM65_CPTS_CONTROL_TSTAMP_EN;
+> -	else
+> -		val &= ~AM65_CPTS_CONTROL_TSTAMP_EN;
+> -	am65_cpts_write32(cpts, val, control);
+> -	mutex_unlock(&cpts->ptp_clk_lock);
+> -}
+> -EXPORT_SYMBOL_GPL(am65_cpts_rx_enable);
+> -
 
-Also, the PSRQn field contains the mask of priorities and not only one
-priority. Rename "prio" argument to "prio_mask".
+This function is used in am65-cpsw-nuss.c so this patch will
+break build.
 
-Signed-off-by: Piotr Wejman <piotrwejman90@gmail.com>
----
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 36 +++++++++++++------
- 1 file changed, 26 insertions(+), 10 deletions(-)
+This looks like preparation for the workaround in next patch
+which affects only some platforms. So please restrict this limitation
+only to those platforms that are affected.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index 6b6d0de09619..6acc8bad794e 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -89,22 +89,38 @@ static void dwmac4_rx_queue_enable(struct mac_device_info *hw,
- }
- 
- static void dwmac4_rx_queue_priority(struct mac_device_info *hw,
--				     u32 prio, u32 queue)
-+				     u32 prio_mask, u32 queue)
- {
- 	void __iomem *ioaddr = hw->pcsr;
--	u32 base_register;
--	u32 value;
-+	u32 clear_mask = 0;
-+	u32 ctrl2, ctrl3;
-+	int i;
- 
--	base_register = (queue < 4) ? GMAC_RXQ_CTRL2 : GMAC_RXQ_CTRL3;
--	if (queue >= 4)
--		queue -= 4;
-+	ctrl2 = readl(ioaddr + GMAC_RXQ_CTRL2);
-+	ctrl3 = readl(ioaddr + GMAC_RXQ_CTRL3);
- 
--	value = readl(ioaddr + base_register);
-+	for (i = 0; i < 4; i++)
-+		clear_mask |= ((prio_mask << GMAC_RXQCTRL_PSRQX_SHIFT(i)) &
-+						GMAC_RXQCTRL_PSRQX_MASK(i));
- 
--	value &= ~GMAC_RXQCTRL_PSRQX_MASK(queue);
--	value |= (prio << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
-+	ctrl2 &= ~clear_mask;
-+	ctrl3 &= ~clear_mask;
-+
-+	if (queue < 4) {
-+		ctrl2 |= (prio_mask << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
- 						GMAC_RXQCTRL_PSRQX_MASK(queue);
--	writel(value, ioaddr + base_register);
-+
-+		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
-+		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
-+	} else {
-+		queue -= 4;
-+
-+		ctrl3 |= (prio_mask << GMAC_RXQCTRL_PSRQX_SHIFT(queue)) &
-+						GMAC_RXQCTRL_PSRQX_MASK(queue);
-+
-+		writel(ctrl3, ioaddr + GMAC_RXQ_CTRL3);
-+		writel(ctrl2, ioaddr + GMAC_RXQ_CTRL2);
-+	}
- }
- 
- static void dwmac4_tx_queue_priority(struct mac_device_info *hw,
+>  static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>  {
+>  	unsigned int ptp_class = ptp_classify_raw(skb);
+> @@ -906,6 +883,67 @@ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>  	return 1;
+>  }
+>  
+> +static u64 am65_cpts_find_rx_ts(struct am65_cpts *cpts, struct sk_buff *skb,
+> +				int ev_type, u32 skb_mtype_seqid)
+> +{
+> +	struct list_head *this, *next;
+> +	struct am65_cpts_event *event;
+> +	unsigned long flags;
+> +	u32 mtype_seqid;
+> +	u64 ns = 0;
+> +
+> +	am65_cpts_fifo_read(cpts);
+> +	spin_lock_irqsave(&cpts->lock, flags);
+> +	list_for_each_safe(this, next, &cpts->events) {
+> +		event = list_entry(this, struct am65_cpts_event, list);
+> +		if (time_after(jiffies, event->tmo)) {
+> +			list_del_init(&event->list);
+> +			list_add(&event->list, &cpts->pool);
+> +			continue;
+> +		}
+> +
+> +		mtype_seqid = event->event1 &
+> +			      (AM65_CPTS_EVENT_1_MESSAGE_TYPE_MASK |
+> +			       AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK |
+> +			       AM65_CPTS_EVENT_1_EVENT_TYPE_MASK);
+> +
+> +		if (mtype_seqid == skb_mtype_seqid) {
+> +			ns = event->timestamp;
+> +			list_del_init(&event->list);
+> +			list_add(&event->list, &cpts->pool);
+> +			break;
+> +		}
+> +	}
+> +	spin_unlock_irqrestore(&cpts->lock, flags);
+> +
+> +	return ns;
+> +}
+> +
+> +void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb)
+> +{
+> +	struct am65_cpts_skb_cb_data *skb_cb = (struct am65_cpts_skb_cb_data *)skb->cb;
+> +	struct skb_shared_hwtstamps *ssh;
+> +	int ret;
+> +	u64 ns;
+> +
+> +	ret = am65_skb_get_mtype_seqid(skb, &skb_cb->skb_mtype_seqid);
+> +	if (!ret)
+> +		return; /* if not PTP class packet */
+> +
+> +	skb_cb->skb_mtype_seqid |= (AM65_CPTS_EV_RX << AM65_CPTS_EVENT_1_EVENT_TYPE_SHIFT);
+> +
+> +	dev_dbg(cpts->dev, "%s mtype seqid %08x\n", __func__, skb_cb->skb_mtype_seqid);
+> +
+> +	ns = am65_cpts_find_rx_ts(cpts, skb, AM65_CPTS_EV_RX, skb_cb->skb_mtype_seqid);
+> +	if (!ns)
+> +		return;
+> +
+> +	ssh = skb_hwtstamps(skb);
+> +	memset(ssh, 0, sizeof(*ssh));
+> +	ssh->hwtstamp = ns_to_ktime(ns);
+> +}
+> +EXPORT_SYMBOL_GPL(am65_cpts_rx_timestamp);
+> +
+>  /**
+>   * am65_cpts_tx_timestamp - save tx packet for timestamping
+>   * @cpts: cpts handle
+> diff --git a/drivers/net/ethernet/ti/am65-cpts.h b/drivers/net/ethernet/ti/am65-cpts.h
+> index 6e14df0be113..6099d772799d 100644
+> --- a/drivers/net/ethernet/ti/am65-cpts.h
+> +++ b/drivers/net/ethernet/ti/am65-cpts.h
+> @@ -22,9 +22,9 @@ void am65_cpts_release(struct am65_cpts *cpts);
+>  struct am65_cpts *am65_cpts_create(struct device *dev, void __iomem *regs,
+>  				   struct device_node *node);
+>  int am65_cpts_phc_index(struct am65_cpts *cpts);
+> +void am65_cpts_rx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>  void am65_cpts_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+>  void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts, struct sk_buff *skb);
+> -void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en);
+>  u64 am65_cpts_ns_gettime(struct am65_cpts *cpts);
+>  int am65_cpts_estf_enable(struct am65_cpts *cpts, int idx,
+>  			  struct am65_cpts_estf_cfg *cfg);
+> @@ -48,17 +48,18 @@ static inline int am65_cpts_phc_index(struct am65_cpts *cpts)
+>  	return -1;
+>  }
+>  
+> -static inline void am65_cpts_tx_timestamp(struct am65_cpts *cpts,
+> +static inline void am65_cpts_rx_timestamp(struct am65_cpts *cpts,
+>  					  struct sk_buff *skb)
+>  {
+>  }
+>  
+> -static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
+> -					       struct sk_buff *skb)
+> +static inline void am65_cpts_tx_timestamp(struct am65_cpts *cpts,
+> +					  struct sk_buff *skb)
+>  {
+>  }
+>  
+> -static inline void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+> +static inline void am65_cpts_prep_tx_timestamp(struct am65_cpts *cpts,
+> +					       struct sk_buff *skb)
+>  {
+>  }
+>  
+
 -- 
-2.25.1
-
+cheers,
+-roger
 
