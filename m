@@ -1,128 +1,203 @@
-Return-Path: <linux-kernel+bounces-70743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F5FF859BC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:46:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAA2A859BC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 39EA9B21534
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:46:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99855282710
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:55:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3849C200AC;
-	Mon, 19 Feb 2024 05:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36309200A8;
+	Mon, 19 Feb 2024 05:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iY/RMKXF"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Tj+LMdnD"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E4E41F941
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:46:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DE9433C0;
+	Mon, 19 Feb 2024 05:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708321562; cv=none; b=XN53FlYIJb1fG9X8n5AU/vUm8D+EHFwEpwSFbayzh/o+lms2J1CEDugmN1rlYmodiWGdN1lmIrGndfV/eEyPh+07hJO21EEKKppEzWQG3So9r8SZUkZ18+6ncGhrrO8URVLURJWblH5pXwy03fQwWeCsam6bJJaJ5Z38iBaNdcw=
+	t=1708322149; cv=none; b=RY9aPhLagsw2Nf/GXOHFH1nKhpogEi1FifpjtWTSJS19XxnntQuLLmL1RIBvS6pXR32s/KY+d7DA8U4RSNw7mQ28JBlKZKM0DHjOSxHDuO6nVbjrlZBxHtjrvx89ADeBGaGymgo2FdGjlIiw57eky63NNULhsz0W2PU6C5AxmlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708321562; c=relaxed/simple;
-	bh=sM7/kYg3akwckvbOmZedl+YI9QqqWV+YsqY4FWr+xe8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mhRZyqKCXxa30rWI3/3Rz14U2/kjojcwvIpCl1D86xs4/wmskXyoYu34nkWUEm/OYMsy95nqrKTYjVzFp7lDtwyz20+SOthdRFjFYgzLTGsI9gvHldXOW15MXFJRTc5ZhUeWJ0SACkif4OTytYGpcu752E4gClG8YOboRlnodc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iY/RMKXF; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-563c2b2bddbso5003879a12.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 21:46:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708321559; x=1708926359; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=dWOy7fC8kILp8YGaQUICy/CUH4PzJNJowUSlf/QA3S0=;
-        b=iY/RMKXFZ+HjDOT5Ahnoz8vaUbkbe2syaIEVuWlsWSHZ30OnlCkpoZ7p9TmwDT7Vp/
-         YHd9Sl4XxnRp5QX0dbvALtupgR3YmUdFAbdXdzUFe0QQXUpZtXt4nnIlCae5loRcTUja
-         jcfGNClJEyO+b1GanOBV/B5PFZtDBUoFZ0OxQyumtvAjF+AIe7Sno9MwpK8g0kZPdmNN
-         pEAS1lNAUXcESXWIDDHJbDctp3DoydPy3wOjBZeA95SWtIYQQspK4Up0Nob3fNBueO6S
-         qNHoLYXahIVC4mBoBu1izcH5e/MaTODnupV0NurjuW8NdCGb1jjigPtEF6OlBr5c7TZs
-         nyQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708321559; x=1708926359;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dWOy7fC8kILp8YGaQUICy/CUH4PzJNJowUSlf/QA3S0=;
-        b=dS5oX8Nj4MUUBdHgJS3sFJnN5mfJkPNmSQx4j8mIXnqfE5EtGUuJtMc42NzcoO2KxF
-         +9zIGgZFzQofLNVuPnoXxW4IAclzFyL4YBVNx28T2BboY6Jx5xSLgZUHeD0+z5rJoEfV
-         nHt2BLIac5M5w8YZB+FFyRLWHazEl+HQ0PrgO9YznPvfqokG2ecZB0Q3CZFbxdZ9Wcn4
-         Fmu3ZyBPh6ALQM7hFQB0MsT5CCCPCS9CPBM9idye9iF4l6xPETKTop0ewCqhpP6h7dlZ
-         NQZfJTY1++7NaIdPCqDz1MgeVEhzqzpqa4oPd1F10ctp6QfczguPTPBRPK4lRF43VwLq
-         AROg==
-X-Forwarded-Encrypted: i=1; AJvYcCUW8cAC/bD3z0cAND/P4FTBOhsobU3SqWr60RwedJwuDotUtt5spc0Wppix+EtolWZbTsBdFwsnAaegLOFbkNvavW3vImcfZmtV/TuD
-X-Gm-Message-State: AOJu0YxWhKQbMx6TZjiMlIho8hcTvZA9vruM8JXlhVcpl9vAegKFw91s
-	B3lsgyZeqdLgmSIb8vpf5J3fj7o4jb64LpuftkrE9TQFhjMQnAZemJL4qWdxKeE=
-X-Google-Smtp-Source: AGHT+IG3TNBd53zJ81xbVFVbF0zkMNYMQW5MS6CzLs2WFXOk2QZD2ot6Ugdot8/gGvCSUIevT9/CGA==
-X-Received: by 2002:a05:6402:1801:b0:564:7007:e14d with SMTP id g1-20020a056402180100b005647007e14dmr932726edy.41.1708321558829;
-        Sun, 18 Feb 2024 21:45:58 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id s1-20020a056402164100b00563f918c76asm2372735edx.52.2024.02.18.21.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 21:45:58 -0800 (PST)
-Date: Mon, 19 Feb 2024 08:45:54 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Cabiddu, Giovanni" <giovanni.cabiddu@intel.com>
-Cc: Damian Muszynski <damian.muszynski@intel.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-	Tero Kristo <tero.kristo@linux.intel.com>,
-	Markas Rapoportas <markas.rapoportas@intel.com>,
-	qat-linux@intel.com, linux-crypto@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] crypto: qat - uninitialized variable in
- adf_hb_error_inject_write()
-Message-ID: <42ad3d09-649c-4dc1-84e4-7aacd3f97ce0@moroto.mountain>
-References: <193d36b0-961a-4b66-b945-37988f157ebe@moroto.mountain>
- <Zc+Z7RBFNLcnzNOL@gcabiddu-mobl.ger.corp.intel.com>
+	s=arc-20240116; t=1708322149; c=relaxed/simple;
+	bh=kqS+eZftSx4sIClKNOVzzYPgpZBOuze/EHjy6Xbuk/w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YbKv4Ddh+XnYVVP8tBGEzEvcEWSZt5Y+90AoBGPPUzXJd8f90HEEP5f2CRGXep4bE9VSQ95EHHtt/WpnlLQoyirXm4FVQ08mCRoWUOaGmFnhgWLgU5nFP95OQFCJGIpsj8DrR/iL3kwJBaoZdJXa3oE2O03tW3pkSH1PHaAbc60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Tj+LMdnD; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41J5tWsW012920;
+	Sun, 18 Feb 2024 23:55:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708322132;
+	bh=JLu3cR3Rq0C0/l0UjUXLHLU/TL0qcZO1fpe3DiWw7Ro=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=Tj+LMdnDlfiG4Z0KQ4IdWsDw4JGtxWRegUrysk6kXSR4ly0SKqk0xcpo68JS0DpN4
+	 ShWS6sewKWBsq6mPjW0xttRgkfFanJKs+OS2URfYz+b2HDN6N5Kfo21WsV4imh2JnH
+	 yeKYCVvCnKufI6YAO6ufaN2n79ZSUGubKTwXEuYg=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41J5tWHM009778
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Sun, 18 Feb 2024 23:55:32 -0600
+Received: from DFLE112.ent.ti.com (10.64.6.33) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 18
+ Feb 2024 23:55:32 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sun, 18 Feb 2024 23:55:32 -0600
+Received: from [172.24.20.156] (lt5cd2489kgj.dhcp.ti.com [172.24.20.156])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41J5tRZE123575;
+	Sun, 18 Feb 2024 23:55:28 -0600
+Message-ID: <0ca01a1b-8956-40dd-8286-77276e021633@ti.com>
+Date: Mon, 19 Feb 2024 11:25:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zc+Z7RBFNLcnzNOL@gcabiddu-mobl.ger.corp.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: ti: k3-j722s-evm: Enable OSPI NOR support
+To: Vaishnav Achath <vaishnav.a@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <s-vadapalli@ti.com>
+References: <20240216135533.904130-1-vaishnav.a@ti.com>
+ <20240216135533.904130-3-vaishnav.a@ti.com>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20240216135533.904130-3-vaishnav.a@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Fri, Feb 16, 2024 at 05:22:53PM +0000, Cabiddu, Giovanni wrote:
-> > --- a/drivers/crypto/intel/qat/qat_common/adf_heartbeat_dbgfs.c
-> > +++ b/drivers/crypto/intel/qat/qat_common/adf_heartbeat_dbgfs.c
-> > @@ -160,16 +160,17 @@ static ssize_t adf_hb_error_inject_write(struct file *file,
-> >  					 size_t count, loff_t *ppos)
-> >  {
-> >  	struct adf_accel_dev *accel_dev = file->private_data;
-> > -	size_t written_chars;
-> >  	char buf[3];
-> >  	int ret;
-> >  
-> >  	/* last byte left as string termination */
-> > -	if (count != 2)
-> > +	if (*ppos != 0 || count != 2)
-> Is this alone not sufficient to fix the problem? Probably I'm missing
-> something.
-> The function just checks the first character in buf.
+Hi Vaishnav
 
-I mean, technically, yes.
+On 2/16/2024 7:25 PM, Vaishnav Achath wrote:
+> J722S EVM has S28HS512T 64 MiB Octal SPI NOR flash connected
+> to the OSPI interface, add support for the flash and describe
+> the partition information as per bootloader.
+>
+> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 79 +++++++++++++++++++++++++
+>   1 file changed, 79 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> index 9e12a6e9111f..b1c6499c0c9d 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> @@ -169,6 +169,23 @@ J722S_IOPAD(0x015c, PIN_INPUT, 0) /* (AD25) MDIO0_MDIO */
+>   		>;
+>   	};
+>   
+> +	ospi0_pins_default: ospi0-default-pins {
+> +		pinctrl-single,pins = <
+> +			J722S_IOPAD(0x0000, PIN_OUTPUT, 0) /* (P23) OSPI0_CLK */
+> +			J722S_IOPAD(0x002c, PIN_OUTPUT, 0) /* (M25) OSPI0_CSn0 */
+> +			J722S_IOPAD(0x000c, PIN_INPUT, 0) /* (L25) OSPI0_D0 */
+> +			J722S_IOPAD(0x0010, PIN_INPUT, 0) /* (N24) OSPI0_D1 */
+> +			J722S_IOPAD(0x0014, PIN_INPUT, 0) /* (N25) OSPI0_D2 */
+> +			J722S_IOPAD(0x0018, PIN_INPUT, 0) /* (M24) OSPI0_D3 */
+> +			J722S_IOPAD(0x001c, PIN_INPUT, 0) /* (N21) OSPI0_D4 */
+> +			J722S_IOPAD(0x0020, PIN_INPUT, 0) /* (N22) OSPI0_D5 */
+> +			J722S_IOPAD(0x0024, PIN_INPUT, 0) /* (P21) OSPI0_D6 */
+> +			J722S_IOPAD(0x0028, PIN_INPUT, 0) /* (N20) OSPI0_D7 */
+> +			J722S_IOPAD(0x0008, PIN_INPUT, 0) /* (P22) OSPI0_DQS */
 
-But leaving the last character uninitialized is ugly...  Using
-simple_write_to_buffer() was inappropriate because it's not like this
-code supported partial writes.  Better to just fix it all the way so no
-one copy and pastes it somewhere else.
 
-> 
-> Anyway, looks correct to me.
-> Reviewed-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Could you check, Pin name in comments
 
-Thanks!
+For example, Schematic says L22 is for OSPI0_DQS , but comments says P22
 
-regards,
-dan carpenter
+However offsets are good .
 
+> +		>;
+> +		bootph-all;
+> +	};
+> +
+>   	rgmii1_pins_default: rgmii1-default-pins {
+>   		pinctrl-single,pins = <
+>   			J722S_IOPAD(0x014c, PIN_INPUT, 0) /* (AC25) RGMII1_RD0 */
+> @@ -290,6 +307,68 @@ exp1: gpio@23 {
+>   	};
+>   };
+>   
+> +&ospi0 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&ospi0_pins_default>;
+> +	status = "okay";
+> +
+> +	flash@0 {
+> +		compatible = "jedec,spi-nor";
+> +		reg = <0x0>;
+> +		spi-tx-bus-width = <8>;
+> +		spi-rx-bus-width = <8>;
+> +		spi-max-frequency = <25000000>;
+> +		cdns,tshsl-ns = <60>;
+> +		cdns,tsd2d-ns = <60>;
+> +		cdns,tchsh-ns = <60>;
+> +		cdns,tslch-ns = <60>;
+> +		cdns,read-delay = <4>;
+> +		bootph-all;
+> +
+> +		partitions {
+> +			compatible = "fixed-partitions";
+> +			#address-cells = <1>;
+> +			#size-cells = <1>;
+> +
+> +			partition@0 {
+> +				label = "ospi.tiboot3";
+> +				reg = <0x00 0x80000>;
+> +			};
+
+
+I suggest to keep 1MB to accommodate future size increase
+
+> +
+> +			partition@80000 {
+> +				label = "ospi.tispl";
+> +				reg = <0x80000 0x200000>;
+> +			};
+> +
+> +			partition@280000 {
+> +				label = "ospi.u-boot";
+> +				reg = <0x280000 0x400000>;
+> +			};
+> +
+> +			partition@680000 {
+> +				label = "ospi.env";
+> +				reg = <0x680000 0x40000>;
+> +			};
+> +
+> +			partition@6c0000 {
+> +				label = "ospi.env.backup";
+> +				reg = <0x6c0000 0x40000>;
+> +			};
+> +
+> +			partition@800000 {
+> +				label = "ospi.rootfs";
+> +				reg = <0x800000 0x37c0000>;
+> +			};
+> +
+> +			partition@3fc0000 {
+> +				label = "ospi.phypattern";
+> +				reg = <0x3fc0000 0x40000>;
+> +			};
+> +		};
+> +	};
+> +
+> +};
+> +
+>   &sdhci1 {
+>   	/* SD/MMC */
+>   	vmmc-supply = <&vdd_mmc1>;
 
