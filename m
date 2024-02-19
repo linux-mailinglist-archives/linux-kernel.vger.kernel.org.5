@@ -1,94 +1,148 @@
-Return-Path: <linux-kernel+bounces-71666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C80985A8B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:20:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23C5185A8B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:21:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E0811C22CCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:20:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4ADD2860D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF6341773;
-	Mon, 19 Feb 2024 16:19:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1793CF77;
+	Mon, 19 Feb 2024 16:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xo5yyCr1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j+y64Myy"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591D140BE4;
-	Mon, 19 Feb 2024 16:19:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DD04436D;
+	Mon, 19 Feb 2024 16:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359584; cv=none; b=h4Pl7sVUNH6harYUSdGXUDYU9VRUt/mzVrOrNWPXpqnX7jxK0It/4YpwfiHcj7eMJPG54/dPGbSwKKoNcTLs/DjH7uY+KDaCHcw1EWkLmnkk6yJm7W0vOWjU/yOf4lkEcZyPTmKK5pzR8v5UjV8HMtTGg5Z7jrN+eDfPPZRNM30=
+	t=1708359589; cv=none; b=kJZ1It/q/PlR7W5y5qR5su8b5pImKQRPZDK+bClJq7El8fiTX13bQLuntoqqTHnTJheu8cfnqWjyPwvIqpgbJfvu84+ySeNRUvI9DdZkPWxLvqeD5Kf6HKbI9tyhJcwpZYrhWfR1qZ9MtbP7jHN+5H6PeWJ1xxYblEFh4RBvHgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359584; c=relaxed/simple;
-	bh=geMTJ9lOTTXbNkYKZFBhsIQdmz8LDBCNbCre8M8nqR0=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=OnisBO6ozDisvQX3znNgeJsLqLm47XXixPrKrEsq9TOTqQAOnYsnOEptiPgm47o90KH1XOiPp0lrX6YZyGo4K7Mm6WDBa6rKPhHeMQO42jofe7apZf09uC4cXapUIe1s5B5zQbiLxb7K4tbNfdTlczr+N3bezepj+9qjTGHcMXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xo5yyCr1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89F60C43399;
-	Mon, 19 Feb 2024 16:19:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708359583;
-	bh=geMTJ9lOTTXbNkYKZFBhsIQdmz8LDBCNbCre8M8nqR0=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
-	b=Xo5yyCr17Zoe09ZxqrdyCQU2C6g1HE9oPU0CRmvyA8NN9MqCk+sP6YsTrqD1nbheD
-	 ZGbriuY5QIQt7FJmgODmak9gdO89i6WdJuNuzt3kQS+GT5wyRNVMNWBcfHM6WuZkhR
-	 CHd6SYp3jxQa9G3TZsPxRBuOLfrRjKvdZrIcEojizE2trJ7IiUa4J1fbHERsmRcdCZ
-	 gKVmYrLRZ70GMdsr3IolfJuSY6alj3rdMbIBOn1p+WBUn2rxp0kHf2+7CQA9Hj9kg5
-	 MbGnhP3Utq9Ok/JWLZBeqrY9Med7mcC//cLqVzvK6AkHoifC6oqHaHvL9D1lEJeiYK
-	 80AmKKiI7eN3Q==
-From: Kalle Valo <kvalo@kernel.org>
-To: Alexis =?utf-8?Q?Lothor=C3=A9?= <alexis.lothore@bootlin.com>
-Cc: linux-wireless@vger.kernel.org,  Ajay Singh <ajay.kathat@microchip.com>,
-  Claudiu Beznea <claudiu.beznea@tuxon.dev>,  Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/4] wifi: wilc1000: fix RCU usage
-References: <20240215-wilc_fix_rcu_usage-v1-0-f610e46c6f82@bootlin.com>
-Date: Mon, 19 Feb 2024 18:19:40 +0200
-In-Reply-To: <20240215-wilc_fix_rcu_usage-v1-0-f610e46c6f82@bootlin.com>
-	("Alexis =?utf-8?Q?Lothor=C3=A9=22's?= message of "Thu, 15 Feb 2024
- 16:36:17 +0100")
-Message-ID: <87h6i4mnoj.fsf@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
+	s=arc-20240116; t=1708359589; c=relaxed/simple;
+	bh=RdNZuOtLOx4IGGS9wQnvPIdnfB7/swLpF9VOXubJEbY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VukkZfcHNba1bnVL+xZ5mTzU2q9Psf3FDvGqespga4w+LnsdpCpDlquiy0FMHXhtB0COvfT6VL3vZ0lxo5jg3yRGIffdNmaG5ptnis0J0/3guHzXtuA2ZSe5+LN3q0F+ITtdmR/cwm1Pqudo1ZL44nGXGPqCh0bxErYMc/VLi4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j+y64Myy; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708359588; x=1739895588;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=RdNZuOtLOx4IGGS9wQnvPIdnfB7/swLpF9VOXubJEbY=;
+  b=j+y64MyylHLQhdgPVh9Ok9lGppgeAGMQtg1jES2Z8B8rpjR5ABnJIa8Q
+   U29tDtqg5wJkrUfN9hfzb4hJeF6cwIlmabVwkhlyV7o5eO/4+RQ/HX64O
+   ijVeY+bBFKPYyrwZii3+mFQ2Gacj/iYiotpEVi7UVHLsKD0m5miHL3ems
+   Ldf6x5QK5baV1MiNrxPwoU1JJRN7dhvQcESXKfcHXrmA7d9gYKZnoltk4
+   NERmi2r88J7GA3xXwgtdlGiqB+6SCsHy7WkElmM//6shbAKIfBIeGKbP+
+   P32gutfb+HFJNS0LWXpfQTthGGGKkm5ku1UV6c2YGe7ifaPHUhB1LM0iM
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2308988"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="2308988"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 08:19:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="912900937"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="912900937"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 08:19:45 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rc6Mo-00000005rnm-2qGX;
+	Mon, 19 Feb 2024 18:19:42 +0200
+Date: Mon, 19 Feb 2024 18:19:42 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Rengarajan.S@microchip.com
+Cc: linux-serial@vger.kernel.org, gregkh@linuxfoundation.org,
+	linux-kernel@vger.kernel.org, jirislaby@kernel.org,
+	Kumaravel.Thiagarajan@microchip.com,
+	Tharunkumar.Pasumarthi@microchip.com
+Subject: Re: [PATCH v1 1/1] serial: 8250_pci1xxxx: Drop quirk from 8250_port
+Message-ID: <ZdN_npTcCfz0cI_g@smile.fi.intel.com>
+References: <20240214135009.3299940-1-andriy.shevchenko@linux.intel.com>
+ <063a1804732c619bc4a5c801c9881fedd92ad745.camel@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <063a1804732c619bc4a5c801c9881fedd92ad745.camel@microchip.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Alexis Lothor=C3=A9 <alexis.lothore@bootlin.com> writes:
+On Thu, Feb 15, 2024 at 09:26:21AM +0000, Rengarajan.S@microchip.com wrote:
+> On Wed, 2024-02-14 at 15:50 +0200, Andy Shevchenko wrote:
 
-> This small series aims to fix multiple warnings observed when enabling
-> CONFIG_PROVE_RCU_LIST:
-> - add missing locks to create corresponding critical read sections
-> - fix mix between RCU and SRCU API usage
->
-> While at it, since SRCU API is already in use in the driver, any fix done
-> on RCU usage was also done with the SRCU variant of RCU API. I do not
-> really get why we are using SRCU in this driver instead of classic RCU, as
-> it seems to be done in any other wireless driver.
+..
 
-And even more so, no other driver in drivers/net use SRCU.
+> > +       /*
+> > +        * 8250 core considers prescaller value to be always 16.
+> > +        * The MCHP ports support downscaled mode and hence the
+> > +        * functional UART clock can be lower, i.e. 62.5MHz, than
+> > +        * software expects in order to support higher baud rates.
+> > +        * Assign here 64MHz to support 4Mbps.
+> > +        *
+> > +        * The value itself is not really used anywhere except baud
+> > +        * rate calculations, so we can mangle it as we wish.
+> > +        */
+> > +       port->port.uartclk = 64 * HZ_PER_MHZ;
+> 
+> As per internal MCHP DOS, PCI1XXXX driver uses a simple method of
+> converting "legacy 16 bit baud rate generator" to a "32 bit fractional
+> baud rate generator" which enables generation of an acceptable baud
+> rate from any valuable frequency.
+> 
+> This is applicable only when the baud clock selected is 62.5 MHz, so
+> when we configure the baud clock to 64 MHz(as above) will it be
+> downscaled to 62.5 MHz, thus supporting the above feature? 
 
-> My understanding is that primary SRCU use case is for compatibility
-> with realtime kernel, which needs to be preemptible everywhere. Has
-> the driver been really developped with this constraint in mind ? If
-> you have more details about this, feel free to educate me.
+I specifically added the above comment. If you look closer, your driver does
+not use this value at all, the 8250 port code uses it in several places:
 
-Alexis, if you have the time I recommend submitting a patchset
-converting wilc1000 to use classic RCU. At least I have a hard time
-understanding why SRCU is needed, especially after seeing the warning
-you found.
+- 8250_rsa case (not applicable to your driver)
 
---=20
-https://patchwork.kernel.org/project/linux-wireless/list/
+- probe_baud() call (applicable iff the kernel command line misses the
+  baudrate, but even without this patch it's broken for your driver)
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
-hes
+- serial8250_update_uartclk() call (not applicable to your driver)
+
+- serial8250_get_baud_rate() call (only to get max and min range;
+  my change will have an effect on min (max is exactly what your
+  quirk is doing right no), so 62500000/16/65535 ~= 59.6, while
+  with my change 64000000/16/65535 ~= 61.0, but standard baudrate
+  here is 50 and 75, the former isn't supported by the existing
+  code either
+
+- serial8250_do_get_divisor() call when magic_multiplier supplied
+  (not applicable to your driver)
+
+- autoconfig_16550a() call (not applicable to your driver)
+
+Hope this clarifies the case.
+
+Of course if you able to test, will be even better.
+But wait for v2 where I update what Greg caught.
+
+..
+
+> Acked-by: Rengarajan S <rengarajan.s@microchip.com>
+
+Thank you!
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
