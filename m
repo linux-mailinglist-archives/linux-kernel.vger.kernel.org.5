@@ -1,134 +1,210 @@
-Return-Path: <linux-kernel+bounces-71861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60C8E85ABEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:21:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7197E85ABF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:26:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B507B22BE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:21:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B5328482E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:26:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEA151016;
-	Mon, 19 Feb 2024 19:21:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648A95027F;
+	Mon, 19 Feb 2024 19:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rDI2Tw7l"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="WBOZqsAY"
+Received: from weasel.tulip.relay.mailchannels.net (weasel.tulip.relay.mailchannels.net [23.83.218.247])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DCC1BF3D;
-	Mon, 19 Feb 2024 19:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708370478; cv=none; b=SBF0I3XXx/ucgvyIoBHQXPkIz+aL/h2rpfRYye/znGquht+KP7tOJP+n9sIfIZdCv5ge82naMRc8nK4O4SHoLQUfkYkP2axvbzGG08tBZ9QyLNbtRYK3GHdRzCDsljVKU3BaY3KpOOHWIl/Zek084+fXTmmOw3m/xPyyQBMY5tw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708370478; c=relaxed/simple;
-	bh=BU7vmtS91LW14umqdRks1US1wmoCN7BfyNRskJ+lpzg=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA4F5C99
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.247
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708370788; cv=pass; b=ThxREUHTDfTQJ9To7ZViVr3nRxhSXzrkIpeckL8aNZQYARwCD/lUnSop/H9YVZbZMOIxLR14xn7qs/W0K/xk7feIeHc5/fwhHfbwnQtnf3pvLKlqWO9iVwJIJcGUML4u+U45cRqP4DrcMbCxaoPYvHGo1kgl+YwZSGWlA5SeaMI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708370788; c=relaxed/simple;
+	bh=uf1A//8zCOrZfoBhZKPqmCeZ7Kh/8dmn97nNY6s5mYw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mc6sb+9HBgxmwuyl+D3F8kK0kW7JHCuVYq9kP6piFBor4padm1iphrSgCmg9epJn39UJRg4riEp68mo56byjdRtjz7C43fUxZoRFP9r7I/dME9A3YrQ6vlIiNLaXZTf/joYaCOhu6V7XTg7fqkX+b912k9VEK11b86JJOPXxmYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rDI2Tw7l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5BB4C433F1;
-	Mon, 19 Feb 2024 19:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708370478;
-	bh=BU7vmtS91LW14umqdRks1US1wmoCN7BfyNRskJ+lpzg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rDI2Tw7lYr17vYfRVT31/CFWOTvQvw8vu8Kd10WZDkZAfAUrzH8Df4KP6kxyUwmrK
-	 rGFpMcWC60IsJ/xONKcoIBQHrAldlZdG91Eo5stQQ7g0kxVAFfd9FHlI499h6X/V9X
-	 uV3aNuG/f+xnORzGFBi12Jq9+lalxrUM0mCfg2eSqcmNxdvWWWj0HLY4KndwAixZ5R
-	 QrIt0Synm8G4YerLcrr4Ta1M2jUeYFvwJyqYGsqzjANrsTGlgG6z54InG3nSN7NzBy
-	 lWYK1LwZxKgM45/cm2HfebVej40pz17i5AFt4n/v5CPx9+emInzhElr3yhPEDIr6p7
-	 ynArQJ8jnkTMw==
-Date: Mon, 19 Feb 2024 12:21:14 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com, Alan Adamson <alan.adamson@oracle.com>
-Subject: Re: [PATCH v4 10/11] nvme: Atomic write support
-Message-ID: <ZdOqKr6Js_nlobh5@kbusch-mbp>
-References: <20240219130109.341523-1-john.g.garry@oracle.com>
- <20240219130109.341523-11-john.g.garry@oracle.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DS5DEALWdoFaSzECWtAYYWplEVgFqfTnOCvxzPQ8XVvzdoPl6YoP+DvtmmXI15HUUHBb3i3jkwkSLbsHgE1KqH256JKDKxgPtqt5eXMJqBW4utKw+xyb8uC+d/JpBEoXKk4Gu9rm3XBXcLYKYVCS1uyWHRjwMj4CFJDmsN4u2fg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=WBOZqsAY; arc=pass smtp.client-ip=23.83.218.247
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id C367A764159;
+	Mon, 19 Feb 2024 19:26:20 +0000 (UTC)
+Received: from pdx1-sub0-mail-a281.dreamhost.com (unknown [127.0.0.6])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id D41DD760B46;
+	Mon, 19 Feb 2024 19:26:19 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1708370780; a=rsa-sha256;
+	cv=none;
+	b=tdpzv6Vivgyp5rlzlWZHXQjW0KBlF+EPAmmdNhqZLi3kIBwDk+Y/yYZfARc5IYajG3Bw06
+	srhWfmQ4ixmfpyj3UtiUe9KPoeX6sf9e7ZMflV90OL2/cczUUcwCJldZ7/kJ2SNWjqdX8M
+	SCV2Ey89yVTGOm+JihSQMiQiRGCQoa3QHKwj0ukuKMcH37++Srj1LV0mnLiuuvqynrj9F4
+	vHSByvqGimoGWhLY+T1mYVtSwyNQxg1BzARBZMwcVjBfqVqg/j4N78B2kLegdScR5xq9wq
+	PkDGxmUIQYp0Jg2oLho61wKGaqdPgEGl4zzAqklF5RXqAKjvaah9UPoNPiIc2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1708370780;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=Hn2l3d45OvLwYGiCr0LlqsBI++buxfvs3HMYLYE8Fk4=;
+	b=pHOxg1gNAzrmlHob8c9Xi/82rm6dywk9T2mqdTEIs5qqS+HydjRDsSEiNbGG9q8ac488lL
+	LGIAyDe9v2B5K1G172SEGQyRTdh+9RXe5zoicVQMSLpYQipQN81gxx5LFr5euZT0ZYySlD
+	58yNgZVUiK0Cc6JCnfxlBUfO1LCKTV5KXv8JUFQdRsqazqbs/rm9BLxTgRjI6TIPKN0era
+	tgIgWb0P8wCKVoFQ+QQZE8WM3V2Ajp6/xKONb9TX3RqW4ccWqMYnynwZPm0Nwhz9g7izMk
+	agz4tzbedOTsAog9DXXXHDG/DaBB86Z6KQ2TrrkHQRuPT87ZmHILvh6L0tO6IQ==
+ARC-Authentication-Results: i=1;
+	rspamd-55b4bfd7cb-5mzw9;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
+X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
+X-MailChannels-Auth-Id: dreamhost
+X-Daffy-Cellar: 2b2031422a3cfeaf_1708370780645_702971671
+X-MC-Loop-Signature: 1708370780645:464803234
+X-MC-Ingress-Time: 1708370780645
+Received: from pdx1-sub0-mail-a281.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.126.181.103 (trex/6.9.2);
+	Mon, 19 Feb 2024 19:26:20 +0000
+Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: dave@stgolabs.net)
+	by pdx1-sub0-mail-a281.dreamhost.com (Postfix) with ESMTPSA id 4TdswB4kXjzGH;
+	Mon, 19 Feb 2024 11:26:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
+	s=dreamhost; t=1708370779;
+	bh=Hn2l3d45OvLwYGiCr0LlqsBI++buxfvs3HMYLYE8Fk4=;
+	h=Date:From:To:Cc:Subject:Content-Type;
+	b=WBOZqsAYKS9HgVsjtYxiIK9i0CM1ATn7RXh9NGZcdf2nD6iyhaa4bVyH3H8dHdBxR
+	 wuGXtz+1CKgaK+WP118KJPyiempcvgvCkNcsybhkErAu/4cgASzeuHe7lDiISwdBqu
+	 JKPqhyCRoEfFjOFRuuxO9L4benP/dih3t0ERyPBjq4uQ/2WvFcFNuwYa2bIq9p1oTk
+	 kcR9paTrIQN5kfnOy/D5FC/9/vEmcUhIy8sdjG3FjUz7XL+H/VoD7yqrCeMs1TnqqU
+	 vrjpym5dV5T1zt0lwXn2te1jDwHA5zZbTagcezJr5eZci/fXz5xUFDWlgJg03b8lc4
+	 qejgiwv7aw8fA==
+Date: Mon, 19 Feb 2024 11:26:15 -0800
+From: Davidlohr Bueso <dave@stgolabs.net>
+To: Oscar Salvador <osalvador@suse.de>
+Cc: Byungchul Park <byungchul@sk.com>, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org,
+	fan.ni@samsung.com
+Subject: Re: [PATCH v3] sched/numa, mm: do not promote folios to nodes not
+ set N_MEMORY
+Message-ID: <20240219192615.adgr4cfknnb356de@offworld>
+Mail-Followup-To: Oscar Salvador <osalvador@suse.de>,
+	Byungchul Park <byungchul@sk.com>, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	kernel_team@skhynix.com, akpm@linux-foundation.org,
+	fan.ni@samsung.com
+References: <20240216114045.24828-1-byungchul@sk.com>
+ <Zc9oXOwGMGGE4bBh@localhost.localdomain>
+ <ZdG1yO29WTyRiw8Q@localhost.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20240219130109.341523-11-john.g.garry@oracle.com>
+In-Reply-To: <ZdG1yO29WTyRiw8Q@localhost.localdomain>
+User-Agent: NeoMutt/20220429
 
-On Mon, Feb 19, 2024 at 01:01:08PM +0000, John Garry wrote:
-> From: Alan Adamson <alan.adamson@oracle.com>
-> 
-> Add support to set block layer request_queue atomic write limits. The
-> limits will be derived from either the namespace or controller atomic
-> parameters.
-> 
-> NVMe atomic-related parameters are grouped into "normal" and "power-fail"
-> (or PF) class of parameter. For atomic write support, only PF parameters
-> are of interest. The "normal" parameters are concerned with racing reads
-> and writes (which also applies to PF). See NVM Command Set Specification
-> Revision 1.0d section 2.1.4 for reference.
-> 
-> Whether to use per namespace or controller atomic parameters is decided by
-> NSFEAT bit 1 - see Figure 97: Identify - Identify Namespace Data Structure,
-> #NVM Command Set.
-> 
-> NVMe namespaces may define an atomic boundary, whereby no atomic guarantees
-> are provided for a write which straddles this per-lba space boundary. The
-> block layer merging policy is such that no merges may occur in which the
-> resultant request would straddle such a boundary.
-> 
-> Unlike SCSI, NVMe specifies no granularity or alignment rules. In addition,
-> again unlike SCSI, there is no dedicated atomic write command - a write
-> which adheres to the atomic size limit and boundary is implicitly atomic.
-> 
-> If NSFEAT bit 1 is set, the following parameters are of interest:
-> - NAWUPF (Namespace Atomic Write Unit Power Fail)
-> - NABSPF (Namespace Atomic Boundary Size Power Fail)
-> - NABO (Namespace Atomic Boundary Offset)
-> 
-> and we set request_queue limits as follows:
-> - atomic_write_unit_max = rounddown_pow_of_two(NAWUPF)
-> - atomic_write_max_bytes = NAWUPF
-> - atomic_write_boundary = NABSPF
-> 
-> If in the unlikely scenario that NABO is non-zero, then atomic writes will
-> not be supported at all as dealing with this adds extra complexity. This
-> policy may change in future.
-> 
-> In all cases, atomic_write_unit_min is set to the logical block size.
-> 
-> If NSFEAT bit 1 is unset, the following parameter is of interest:
-> - AWUPF (Atomic Write Unit Power Fail)
-> 
-> and we set request_queue limits as follows:
-> - atomic_write_unit_max = rounddown_pow_of_two(AWUPF)
-> - atomic_write_max_bytes = AWUPF
-> - atomic_write_boundary = 0
-> 
-> The block layer requires that the atomic_write_boundary value is a
-> power-of-2. However, it is really only required that atomic_write_boundary
-> be a multiple of atomic_write_unit_max. As such, if NABSPF were not a
-> power-of-2, atomic_write_unit_max could be reduced such that it was
-> divisible into NABSPF. However, this complexity will not be yet supported.
-> 
-> A helper function, nvme_valid_atomic_write(), is also added for the
-> submission path to verify that a request has been submitted to the driver
-> will actually be executed atomically.
+On Sun, 18 Feb 2024, Oscar Salvador wrote:
 
-Maybe patch 11 should be folded into this one. No bigged, the series as
-a whole looks good.
+>On Fri, Feb 16, 2024 at 02:51:24PM +0100, Oscar Salvador wrote:
+>> On Fri, Feb 16, 2024 at 08:40:45PM +0900, Byungchul Park wrote:
+>> > From 150af2f78e19217a1d03e47e3ee5279684590fb4 Mon Sep 17 00:00:00 2001
+>> > From: Byungchul Park <byungchul@sk.com>
+>> > Date: Fri, 16 Feb 2024 20:18:10 +0900
+>> > Subject: [PATCH v3] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
+>>
+>> "do not try to promote folios to memoryless nodes"
+>
+>Thinking some more, promote might be misleading, just something like
+>"do not try to migrate memory to memoryless nodes".
 
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+Yes. Does this also want an unlikely()? Not that it would be measurable.
+
+>As this is not a bug fix but an optimization, as we will fail anyways
+>in migrate_misplaced_folio() when migrate_balanced_pgdat() notices that
+>we do not have any memory on that code.
+
+This should be in the changelog and the subject is misleading as well.
+
+Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+
+>
+>With the other comments addressed:
+>
+>Reviewed-by: Oscar Salvador <osalvador@suse.de>
+>
+>>
+>> because AFAICS we are just trying.
+>> Even if should_numa_migrate_memory() returns true, I assume that we will
+>> fail somewhere down the chain e.g: migrate_pages() when we see that this
+>> node does not any memory, right?
+>>
+>> > A numa node might not have its local memory but CPUs. Promoting a folio
+>> > to the node's local memory is nonsense. So avoid nodes not set N_MEMORY
+>> > from getting promoted.
+>>
+>> If you talk about memoryless nodes everybody gets it better IMHO.
+>> "Memoryless nodes do not have any memory to migrate to, so stop trying it."
+>>
+>>
+>> > Signed-off-by: Byungchul Park <byungchul@sk.com>
+>> > ---
+>> >  kernel/sched/fair.c | 7 +++++++
+>> >  1 file changed, 7 insertions(+)
+>> >
+>> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> > index d7a3c63a2171..7ed9ef3c0134 100644
+>> > --- a/kernel/sched/fair.c
+>> > +++ b/kernel/sched/fair.c
+>> > @@ -1828,6 +1828,13 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
+>> >  	int dst_nid = cpu_to_node(dst_cpu);
+>> >  	int last_cpupid, this_cpupid;
+>> >
+>> > +	/*
+>> > +	 * A node of dst_nid might not have its local memory. Promoting
+>> > +	 * a folio to the node is meaningless.
+>> > +	 */
+>> > +	if (!node_state(dst_nid, N_MEMORY))
+>> > +		return false;
+>>
+>> "Cannot migrate to memoryless nodes"
+>>
+>> seems shorter and more clear.
+>>
+>> So, what happens when we return true here? will we fail at
+>> migrate_pages() I guess? That is quite down the road so I guess
+>> this check can save us some time.
+>>
+>>
+>> --
+>> Oscar Salvador
+>> SUSE Labs
+>>
+>
+>-- 
+>Oscar Salvador
+>SUSE Labs
+>
 
