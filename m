@@ -1,112 +1,117 @@
-Return-Path: <linux-kernel+bounces-70711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF64F859B6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:39:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2958E859B6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:41:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E5931C21A15
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:39:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B66B51F222C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B7041CD07;
-	Mon, 19 Feb 2024 04:39:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E9971CD1C;
+	Mon, 19 Feb 2024 04:41:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="F1GF5uBY"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="RJCXF6o2"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8983C26
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50B5D1C2BC
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708317577; cv=none; b=ig4UfN7VQ9DNmYRIePSIItDwuPiAKlRjbnaHo9mAKkjRFj+sSexoxf/vQMkMOILMxUzQvoUXmRMRGai7NMFMW8o+jqQtYu3390agCOU5pReLi/wr2mFI577RjuNyAIzPLjMjjhg1BmUYIQ1ZypTkQkl7kkWBRzUYABpC+xwPA9s=
+	t=1708317685; cv=none; b=m4+oywC8TuO1ILQALdH7zyCBS1fEQwF5n3nn5hKIxIS/+2B8UaKk6tHQxPbze3BIvaLYGVGbAxuz8vx+LMfZRZ4Lgyt5j2l+X9is5FyqksmFEHrCDhattUn5YoRWd7F16x+m2boBkkWVQ9IS1kkFf3+5Gb40zpG+rfLxsxTXp54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708317577; c=relaxed/simple;
-	bh=jNce4zGsBXTcpAYg6spprQg+FOqejy9WtcVsfsPW6Qc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C73u0cgKEHyqioiZ3ml+UNEX5IEx8/q1DkdjQf8Er3/KDrI0s92UewTGEciGTzud8Bwp8ZYS9HdRgU1vPZ6MCiqvkCX0rWFmKIlv3OUj9ZDyrq+l/fPlTRzJbErMSOiNeR9c9di12KnUH7Ja0hqnNwSQXnj9hPq8iaGcwoSqxGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=F1GF5uBY; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5d8ddbac4fbso3303534a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 20:39:35 -0800 (PST)
+	s=arc-20240116; t=1708317685; c=relaxed/simple;
+	bh=4LdoFdA4gax5ChDVZdlPxcKkkWuMB45j9OVz8iTB44I=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LM1yctBVDWFfLqvAU6iiVkiYAH4Xt29P30Ibia+M0L4T9Wma3q490/UCKfrjeIuZHj0LXF2Xzqf+jpGXZI+1hwhhqgnBm1ayX6Bo2M0XR+CUjP6KyiEAJHxtpPUDO664mATblL1L4QuhORfRkkkPgNSSEArVbPDbL+RO1XIOjVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=RJCXF6o2; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d23114b19dso11424561fa.3
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 20:41:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708317575; x=1708922375; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=ventanamicro.com; s=google; t=1708317682; x=1708922482; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zdNwOk35Zc4yLcZkronDrKEG/Pad3CGoQyORwvnBAjY=;
-        b=F1GF5uBYoyeDTEOKgtlot2lsN1nN1lqmiZgqLjQTmkyxCAkz/lVZFENNNy8lPCYUV1
-         EHyHMyOPE1GQJr/25VXLWMj1mPfajUoO409uY0rJxRB+/xpHEonMlohlYvPMVcRuq/X8
-         WZ5z1cP63t+E+Q49D4TkyQRDZ2YHn55O9pf6E=
+        bh=970f2/ePHEzTAJOzsFgotpGi303T4B4dyp5tQNQW5ic=;
+        b=RJCXF6o25SnTpbVoCECtzr0EkrHO09ZOOG7PuLoufT7dUva1R+R11M6bBjsWEPP7Mt
+         Wxdw7loJuGc2jtX23k1NeMwJmPwwKJPwiuA/F2H4iWz3fen4wtRSYpbXqLrj0Mj11V9w
+         YrM5uZJyrxUr6JP4FPiHBkLwtD1x3BbhHe2VTgp6YReiCEiSfxFKzVJyq2Z8HoxARGUs
+         3Eh3syPa6jZbUdCHsfS4ZTDXjX0uX1Yvbs6NrW/6HX/A6FVjYKtCHBQ6bL6EiPkcJtjv
+         Q3X2MEJM4sncNP6MNBdgopGpIfdQ/uMjtV+XOUiZd4Jjvr8I7ia2g8wp6Txz9oI1mfG8
+         plsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708317575; x=1708922375;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1708317682; x=1708922482;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zdNwOk35Zc4yLcZkronDrKEG/Pad3CGoQyORwvnBAjY=;
-        b=Tuob02BvHEouSUXbU79K7ZhxuHtxHO42dpRUe+wBhfWi7kjhLT7ssfEkLmoO51qwPz
-         MlAX1mpBFJkOXEEk/9tBsz5Xnkkz1uUUCAjOA6uDmAcqpL8hMoPEMLMIrR8ydb1fZF2L
-         8Mh08k/6r7V6TS2PvX3XlAlIELmEe3RKx5osJREDHAkzwhCPdXNCJq79F+uhnsE7vltr
-         BEzXoRLYeW/QzC359Kdh/k5G5lw3dsm0Ko1kMj8b1a60rYrfzR2Ew1d3llwB9n3jTfgr
-         sH61ict2EXs7shB1xV9aC+6m3joFEFXn+q0ILeWf0tH2b1eRf8KZGE51xQqGkB5nib+g
-         7law==
-X-Forwarded-Encrypted: i=1; AJvYcCXgUizL9NEUryZHnC0p1HYQiAvZJOjIlv1hAtpbxpSbp3X19XEcSX4ZufxfVoPPrAVtPzXbEWSulVF+3bzoZkiWn6sUA08EgCu+lVdl
-X-Gm-Message-State: AOJu0Yye7gmS57MUKkQA2iAv2rVK/uYyiDyiKUMga8AV6tT7tbeKwPse
-	qb1BCOiNJ9RuHDyBQAV90nYMgYydJP9qFMB3E6cYj6Q/jqXBMkEPlmC7GfWyPq335z+tB2nEV4k
-	=
-X-Google-Smtp-Source: AGHT+IHpcygOCwpEkxFwCYsVIRF0pK11TneMKBTtOWTERMPyAyRdjMEZChQcxTwOMgJTkI4XCakVfw==
-X-Received: by 2002:a17:902:db11:b0:1db:f03b:6f5b with SMTP id m17-20020a170902db1100b001dbf03b6f5bmr2992719plx.56.1708317575412;
-        Sun, 18 Feb 2024 20:39:35 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id h4-20020a170902eec400b001d911dd145esm3425695plb.219.2024.02.18.20.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 20:39:34 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Julia Lawall <Julia.Lawall@lip6.fr>,
-	Jacob Keller <jacob.e.keller@intel.com>
-Cc: Kees Cook <keescook@chromium.org>,
-	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
-	cocci@systeme.lip6.fr,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coccinelle: semantic patch to check for potential struct_size calls
-Date: Sun, 18 Feb 2024 20:38:37 -0800
-Message-Id: <170831751501.1712410.1795028010127344315.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230227202428.3657443-1-jacob.e.keller@intel.com>
-References: <20230227202428.3657443-1-jacob.e.keller@intel.com>
+        bh=970f2/ePHEzTAJOzsFgotpGi303T4B4dyp5tQNQW5ic=;
+        b=RRiLijIk5mRfRJx/LxeBftIQSGtzqWj6r2MIbnilGDrmOWcf7c8gOpfnpzp/QD9Jh+
+         LFPkyNZoViI2O4jXF0r3ZNaDzfVUn84HPqYbkyLRIjPBePA6XgAsuspz0mPxt+xT7fU2
+         7msjDMufJgcCnkkCjUipabT3abQpa8jpgHOJKwjBUckZyxoECGDm54tW38173F7aJVu/
+         28DoPW60KxF9IU97q3DDyelgyQWuTc5IFlRzQ81F6QzVnroCabVfqRID1F1HCnwv2Q0f
+         zbrH21a1il2M5N2l8tDwZCazrgHdPXATmSxGtZmjSSc5BoXhLmqWnodEaxKKLj3jnbCY
+         WYAg==
+X-Forwarded-Encrypted: i=1; AJvYcCWAkPgoyWGG/I0EEI6ISm5DixBVk5IXGxc7M47j+qYa1IJkAcjhhS7AZ/2DwTQpxCp4W2jnL7LYSHD6oGfW2N9Ai/UifxtYz3We2ynv
+X-Gm-Message-State: AOJu0YyOZ9vuhyawszw3xlB44rmZnOZoZvACANJVya7BZEVM+IV1W23X
+	ZSypvYx6z3/Qimfe4WTqbiFYahW08c7jGKR3SXiPyZiQNuzb56K0qEXFJ/4Ij0YktAAIxctp4hk
+	pBdkxX1UM2lD8wHtYUT2vue+cwVzN6RgzhNmsAQ==
+X-Google-Smtp-Source: AGHT+IHwZTbHuAg+JP9/Rm67wr4lAFmZwAADwZGC3to+Jiv/TLN1rLbaG+V+unxjUP+XSKzsjocLxuGb6f+9UVQ0Xxk=
+X-Received: by 2002:a2e:3801:0:b0:2d2:2b77:43a8 with SMTP id
+ f1-20020a2e3801000000b002d22b7743a8mr4474665lja.14.1708317682305; Sun, 18 Feb
+ 2024 20:41:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20240127161753.114685-1-apatel@ventanamicro.com>
+ <20240127161753.114685-21-apatel@ventanamicro.com> <87bk8gcgjz.ffs@tglx>
+In-Reply-To: <87bk8gcgjz.ffs@tglx>
+From: Anup Patel <apatel@ventanamicro.com>
+Date: Mon, 19 Feb 2024 10:11:10 +0530
+Message-ID: <CAK9=C2XUre1A0+x7VjE2DvfTb5YxXgT7EHd-wKQQwJUhOOQNdw@mail.gmail.com>
+Subject: Re: [PATCH v12 20/25] irqchip/riscv-imsic: Add device MSI domain
+ support for PCI devices
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
+	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
+	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
+	Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 27 Feb 2023 12:24:28 -0800, Jacob Keller wrote:
-> include/linux/overflow.h includes helper macros intended for calculating
-> sizes of allocations. These macros prevent accidental overflow by
-> saturating at SIZE_MAX.
-> 
-> In general when calculating such sizes use of the macros is preferred. Add
-> a semantic patch which can detect code patterns which can be replaced by
-> struct_size.
-> 
-> [...]
+On Sat, Feb 17, 2024 at 1:44=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
+> wrote:
+>
+> On Sat, Jan 27 2024 at 21:47, Anup Patel wrote:
+> > +#ifdef CONFIG_RISCV_IMSIC_PCI
+> > +
+> > +static void imsic_pci_mask_irq(struct irq_data *d)
+> > +{
+> > +     pci_msi_mask_irq(d);
+> > +     irq_chip_mask_parent(d);
+> > +}
+> > +
+> > +static void imsic_pci_unmask_irq(struct irq_data *d)
+> > +{
+> > +     pci_msi_unmask_irq(d);
+> > +     irq_chip_unmask_parent(d);
+>
+> That's asymmetric vs. mask().
 
-If this needs tweaking, we can go from this one.
+Yes, this needs to be symmetric vs mask(). I will update.
 
-Applied to for-next/hardening, thanks!
-
-[1/1] coccinelle: semantic patch to check for potential struct_size calls
-      https://git.kernel.org/kees/c/39fc2f86ae6a
-
-Take care,
-
--- 
-Kees Cook
-
+Regards,
+Anup
 
