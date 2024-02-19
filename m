@@ -1,163 +1,246 @@
-Return-Path: <linux-kernel+bounces-71529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71530-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0BA385A6B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3302485A6BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CFF728399E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:01:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD54E2839A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361A937714;
-	Mon, 19 Feb 2024 15:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF70381B9;
+	Mon, 19 Feb 2024 15:01:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AuWLj+ph"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m4vTzgp4"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5AAF1DDD5
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45E437704
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:01:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708354862; cv=none; b=F186nXt5Rr9ldzCtyHd9MxhMytggZyN9Cd0yLVCoIL/2fAWCCqDy6P4eYw2k455/pcF/1XWZVVFmlLLBdKh7EMZ703CIf1ugeFdGuNFmpGzhdMVJh+ypsajUilT+jOzCCpuVzvq/lyXAKXXY1S17lO9FYoh9x+fuIu+VCTvkDuc=
+	t=1708354892; cv=none; b=MRxj+Z1LQEGZKwP89Ue35jrvV+lWneZm0EmMVzCHvKqiGi7Unp+Ycsz87w75SPpPpclcTydMDGz88kZ54FtueSZKlZv3itjxIEel7muOqocOqhcccm47P1uu9RhZJXmzxibMswMf5wt8Ub1Hle2IQdTqZqVqxM9faQQRoS4Lh4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708354862; c=relaxed/simple;
-	bh=AYEyjEkHwol4fFgLkvEh9A00aPKw67Bae3yjLrAwXXA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gmU8nTyHftrry1er985CyjXsMEcYx5/bg5W8KLi6tupyAIQAil/1c5H6VMXJj9NJalyOrRC9CGdnMl+RhVrJmL/Iy+OVQ9onRCJZm4PGxd05Y25vV1viAE6ribMGJJ1VA2300ZWOBIIiMsvetOTRIlLjzVGO52MdSm8jh1mvt7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AuWLj+ph; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708354859;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q5dBDj1kDlmWCbGoSjQ1BBTQ4aeYU8rqDaj67mpl6Gs=;
-	b=AuWLj+phrIW0C9uvBC9kKInP5tssrbtsz8Y2UBwBCbfJLkG2/wcGyLBMe86pK+uOZAyhGD
-	2vwpuxL7mkgEOvmmim/1Ncg/WU31o/JZvlTLenhTzBIIrM+1WQLBlSmx0V2jIYQZA6UDOA
-	bzNQwiwLwY/QEoC7ED5w+HJzXcULVd8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-581-ThxWcfgWNUGCd941DoO2fQ-1; Mon, 19 Feb 2024 10:00:55 -0500
-X-MC-Unique: ThxWcfgWNUGCd941DoO2fQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0C4BA886461;
-	Mon, 19 Feb 2024 15:00:54 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (unknown [10.39.195.107])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 68EB524E4;
-	Mon, 19 Feb 2024 15:00:47 +0000 (UTC)
-Date: Mon, 19 Feb 2024 10:00:43 -0500
-From: Phil Auld <pauld@redhat.com>
-To: Byungchul Park <byungchul@sk.com>
-Cc: Oscar Salvador <osalvador@suse.de>, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, akpm@linux-foundation.org
-Subject: Re: [PATCH v3] sched/numa, mm: do not promote folios to nodes not
- set N_MEMORY
-Message-ID: <20240219150043.GA184804@lorien.usersys.redhat.com>
-References: <20240216114045.24828-1-byungchul@sk.com>
- <Zc9oXOwGMGGE4bBh@localhost.localdomain>
- <20240219020854.GA65758@system.software.com>
+	s=arc-20240116; t=1708354892; c=relaxed/simple;
+	bh=aJSHj9HniTFFT8SjDNG5w7VAxxQZAl9isd1Hc/vf8go=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sai1DO84/EMYjEQ3baOxpRCctAEo27q2bTRmV/dxqhtNbESfY7e667Exb0wZ3Pmorp6ducQWROqL4+6aR91aoDq0qCm3+kdBr+0PxdSlzlE7ozkr8DXRhIQPy8UkTgVQzKvfNMfye9ObQCJv2e03AqiMajLLsFW7/v90o7Baf5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=m4vTzgp4; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-511ac32fe38so6658658e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:01:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708354888; x=1708959688; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Fyijmgv5Xc4qQW7NoJwHILZpg0h1x8EzSZbjwL/lNv4=;
+        b=m4vTzgp47AOCFEdLQKQxMk7QxGa3ImA3QUtkjrLgDTdUCJTd2SrPOZLaFEWnLttnOw
+         TxS8RefLO5o6seFte09/ANegznVTsDnAi18G/D2Zoy/g/IDjaZa7q9w8oVl4YJnG1YIs
+         QUx4EIwg6kYoK0S3Cakg8x1154LbfHA6rDvHezxcSlGY4FxXgb3qHT0T7oJRNUK9oX/J
+         Mqn6L/rNCW9HBKscT5WdAA0YMlaj2YVw4LRo2VHpcoSuBtDxPssRlOPCKS8J9/lhO7lE
+         uTzVq/S2PBh8WY3B02eLmeSzCLNXHCQ1fFyHKVlVj1cZwttcIwl08uscEpeXQdyLXgwt
+         oTsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708354888; x=1708959688;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Fyijmgv5Xc4qQW7NoJwHILZpg0h1x8EzSZbjwL/lNv4=;
+        b=ZyNlI7Sz/zWJeFhaQ3hMAoHqOVeSHWwyn0U+Cb0Lpyf3J50gVVzvhU3us3nirvd1Sa
+         QhK9AGRJwJun0eozp1tSceHo0FcjEJs2Te0Y88KH3ucB+l8yXUeXOest63q/JfI9qq+K
+         tEFCtSKBza/aLZ7cKSiZbnwNTeBMEBCg6Ck6G0DJCGW6S/pb9SCrrEgq5CN52bcCwJDX
+         aXd91QXaoOolTU4KH7ixtpJJF6RTjxm5uO3k0IKLtqai6EEWMEpRzJq1ce6OH73ZiwMP
+         7CK1fNyt5X3c4TW+eBUIRQqmNYSJBW+fda9HXPKyDje3jFmr3oCx9HoX+H8O/vIdHcCK
+         gYZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXr3mkQMo1jaOIGERuYAjDuTmHhkcpdi/dow1NLiC01Iy6mbQLcfNQwkXYyp6gwez3ihTqrckdWCweAqMuYWEjMNUr1CSMvx9es9Pq9
+X-Gm-Message-State: AOJu0YxKDE70KyrIZQNZ+DKpuLF+dwSWubq4Y1gauQckw5OqTnkJKlMp
+	+ZBKbwVWYiQ4+iF6Q6N4VnojwqFKayQmuWGs2MTgLbcTww/DjNakUAiXRS4ICPM=
+X-Google-Smtp-Source: AGHT+IEDIsdQG1UPM3EDDLCecc5t85EINjACXNa3VncuUkRCHIvhrLnC9PhHvBMOJnz+odgxDTjuCw==
+X-Received: by 2002:a05:6512:2385:b0:512:a9af:8c5e with SMTP id c5-20020a056512238500b00512a9af8c5emr5129683lfv.8.1708354887871;
+        Mon, 19 Feb 2024 07:01:27 -0800 (PST)
+Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id ek23-20020a056402371700b0055edfb81384sm2716963edb.60.2024.02.19.07.01.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 07:01:27 -0800 (PST)
+Message-ID: <d212b700-aedb-4653-80e4-36320b33e51e@linaro.org>
+Date: Mon, 19 Feb 2024 16:01:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219020854.GA65758@system.software.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/8] clk: qcom: clk-alpha-pll: Add HUAYRA_2290 support
+Content-Language: en-US
+To: Andrew Halaney <ahalaney@redhat.com>
+Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+ Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Clark <robdclark@gmail.com>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Marijn Suijten <marijn.suijten@somainline.org>,
+ linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Konrad Dybcio <konradybcio@kernel.org>, linux-arm-msm@vger.kernel.org,
+ linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ freedreno@lists.freedesktop.org
+References: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
+ <20240219-topic-rb1_gpu-v1-3-d260fa854707@linaro.org>
+ <u7beg6ui3i6nxoaulc3o7ghfkvcsy46ps53k3jynrurdwn6o7o@ppyqoz4jsotc>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <u7beg6ui3i6nxoaulc3o7ghfkvcsy46ps53k3jynrurdwn6o7o@ppyqoz4jsotc>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 11:08:54AM +0900 Byungchul Park wrote:
-> On Fri, Feb 16, 2024 at 02:51:24PM +0100, Oscar Salvador wrote:
-> > On Fri, Feb 16, 2024 at 08:40:45PM +0900, Byungchul Park wrote:
-> > > From 150af2f78e19217a1d03e47e3ee5279684590fb4 Mon Sep 17 00:00:00 2001
-> > > From: Byungchul Park <byungchul@sk.com>
-> > > Date: Fri, 16 Feb 2024 20:18:10 +0900
-> > > Subject: [PATCH v3] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
-> > 
-> > "do not try to promote folios to memoryless nodes"
+On 19.02.2024 15:54, Andrew Halaney wrote:
+> On Mon, Feb 19, 2024 at 02:35:48PM +0100, Konrad Dybcio wrote:
+>> Commit 134b55b7e19f ("clk: qcom: support Huayra type Alpha PLL")
+>> introduced an entry to the alpha offsets array, but diving into QCM2290
+>> downstream and some documentation, it turned out that the name Huayra
+>> apparently has been used quite liberally across many chips, even with
+>> noticeably different hardware.
+>>
+>> Introduce another set of offsets and a new configure function for the
+>> Huayra PLL found on QCM2290. This is required e.g. for the consumers
+>> of GPUCC_PLL0 to properly start.
+>>
+>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+>> ---
+>>  drivers/clk/qcom/clk-alpha-pll.c | 45 ++++++++++++++++++++++++++++++++++++++++
+>>  drivers/clk/qcom/clk-alpha-pll.h |  3 +++
+>>  2 files changed, 48 insertions(+)
+>>
+>> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+>> index 8a412ef47e16..61b5abd13782 100644
+>> --- a/drivers/clk/qcom/clk-alpha-pll.c
+>> +++ b/drivers/clk/qcom/clk-alpha-pll.c
+>> @@ -244,6 +244,19 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+>>  		[PLL_OFF_OPMODE] = 0x30,
+>>  		[PLL_OFF_STATUS] = 0x3c,
+>>  	},
+>> +	[CLK_ALPHA_PLL_TYPE_HUAYRA_2290] =  {
+>> +		[PLL_OFF_L_VAL] = 0x04,
+>> +		[PLL_OFF_ALPHA_VAL] = 0x08,
+>> +		[PLL_OFF_USER_CTL] = 0x0c,
+>> +		[PLL_OFF_CONFIG_CTL] = 0x10,
+>> +		[PLL_OFF_CONFIG_CTL_U] = 0x14,
+>> +		[PLL_OFF_CONFIG_CTL_U1] = 0x18,
+>> +		[PLL_OFF_TEST_CTL] = 0x1c,
+>> +		[PLL_OFF_TEST_CTL_U] = 0x20,
+>> +		[PLL_OFF_TEST_CTL_U1] = 0x24,
+>> +		[PLL_OFF_OPMODE] = 0x28,
+>> +		[PLL_OFF_STATUS] = 0x38,
+>> +	},
+>>  };
+>>  EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
+>>  
+>> @@ -779,6 +792,38 @@ static long clk_alpha_pll_round_rate(struct clk_hw *hw, unsigned long rate,
+>>  	return clamp(rate, min_freq, max_freq);
+>>  }
+>>  
+>> +void clk_huayra_2290_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+>> +				   const struct alpha_pll_config *config)
+>> +{
+>> +	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL(pll), config->config_ctl_val);
+>> +	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U(pll), config->config_ctl_hi_val);
+>> +	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U1(pll), config->config_ctl_hi1_val);
+>> +	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL(pll), config->test_ctl_val);
+>> +	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U(pll), config->test_ctl_hi_val);
+>> +	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U1(pll), config->test_ctl_hi1_val);
+>> +	clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
+>> +	clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
+>> +	clk_alpha_pll_write_config(regmap, PLL_USER_CTL(pll), config->user_ctl_val);
+>> +
+>> +	/* Set PLL_BYPASSNL */
+>> +	regmap_update_bits(regmap, PLL_MODE(pll), PLL_BYPASSNL, PLL_BYPASSNL);
+>> +
+>> +	/* Wait 5 us between setting BYPASS and deasserting reset */
+>> +	mb();
+>> +	udelay(5);
+>> +
+>> +	/* Take PLL out from reset state */
+>> +	regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
+>> +
+>> +	/* Wait 50us for PLL_LOCK_DET bit to go high */
+>> +	mb();
+>> +	usleep_range(50, 55);
 > 
-> Thank you. I will.
+> I *think* you'd want to use a read to ensure your write goes through
+> prior to your sleep... from memory-barriers.txt:
 > 
-> > because AFAICS we are just trying.
-> > Even if should_numa_migrate_memory() returns true, I assume that we will
-> > fail somewhere down the chain e.g: migrate_pages() when we see that this
-> > node does not any memory, right?
+> 	5. A readX() by a CPU thread from the peripheral will complete before
+> 	   any subsequent delay() loop can begin execution on the same thread.
+> 	   This ensures that two MMIO register writes by the CPU to a peripheral
+> 	   will arrive at least 1us apart if the first write is immediately read
+> 	   back with readX() and udelay(1) is called prior to the second
+> 	   writeX():
 > 
-> Yes.
+> 		writel(42, DEVICE_REGISTER_0); // Arrives at the device...
+> 		readl(DEVICE_REGISTER_0);
+> 		udelay(1);
+> 		writel(42, DEVICE_REGISTER_1); // ...at least 1us before this.
 > 
-> > > A numa node might not have its local memory but CPUs. Promoting a folio
-> > > to the node's local memory is nonsense. So avoid nodes not set N_MEMORY
-> > > from getting promoted.
-> > 
-> > If you talk about memoryless nodes everybody gets it better IMHO.
-> > "Memoryless nodes do not have any memory to migrate to, so stop trying it."
-> 
-> Much better.
-> 
-> > > Signed-off-by: Byungchul Park <byungchul@sk.com>
-> > > ---
-> > >  kernel/sched/fair.c | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > > 
-> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > > index d7a3c63a2171..7ed9ef3c0134 100644
-> > > --- a/kernel/sched/fair.c
-> > > +++ b/kernel/sched/fair.c
-> > > @@ -1828,6 +1828,13 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
-> > >  	int dst_nid = cpu_to_node(dst_cpu);
-> > >  	int last_cpupid, this_cpupid;
-> > >  
-> > > +	/*
-> > > +	 * A node of dst_nid might not have its local memory. Promoting
-> > > +	 * a folio to the node is meaningless.
-> > > +	 */
-> > > +	if (!node_state(dst_nid, N_MEMORY))
-> > > +		return false;
-> > 
-> > "Cannot migrate to memoryless nodes"
-> > 
-> > seems shorter and more clear.
-> 
-> Agree.
->
+> also https://youtu.be/i6DayghhA8Q?si=7lp0be35q1HRmlnV&t=1677
+> for more references on this topic.
 
-We clearly have dst_cpu when we call this so I still think a
-check could be done farther up. But this one still looks reasonable
-to me.
+I mentioned this feels very iffy in the cover letter, but it's a combination
+of two things:
 
-Thanks,
-Phil
+1. i followed what qualcomm downstream code did
 
-
-Reviewed-by: Phil Auld <pauld@redhat.com>
+2. qualcomm downstream code is not known for being always correct
 
 
-> 	Byungchul
-> 
-> > So, what happens when we return true here? will we fail at
-> > migrate_pages() I guess? That is quite down the road so I guess
-> > this check can save us some time.
-> > 
-> > 
-> > -- 
-> > Oscar Salvador
-> > SUSE Labs
-> 
 
--- 
+I suppose a readback would be the correct solution, but then it should be
+done for all similar calls in this driver.
 
+Although this code has shipped in literally hundreds of millions of devices
+and it didn't explode badly :P (i'm not defending it, though)
+
+Konrad
 
