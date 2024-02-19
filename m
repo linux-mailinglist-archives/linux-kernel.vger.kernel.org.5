@@ -1,419 +1,677 @@
-Return-Path: <linux-kernel+bounces-71811-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71812-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E20585AB0B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:33:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E3AB85AB12
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:37:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E83FCB21741
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:33:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A330A1C21339
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC75011734;
-	Mon, 19 Feb 2024 18:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35BA8481CF;
+	Mon, 19 Feb 2024 18:37:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s8okv9Fu"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XauW0NCB";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="O8zRqcU4"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E4763A7
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 18:33:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AC1171B4;
+	Mon, 19 Feb 2024 18:37:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708367604; cv=none; b=JIpU0oko802JsCdiLAfqBmfSA3e0dL174RqnK6CAolt6i1nYWZ3DQQ4omil0WM17dZHLK+BBs65Wlmk5gIP1lgI3ijLF05pdmOqzGx5/sgzfBaEa9KwFQiUvbVnFdQD5XZsfGg6fygIYP6pFwJ/VRefZg9L63RynJePMeCBtJKY=
+	t=1708367846; cv=none; b=VTfkgIfUBi/m2dMsXZ6c4jQwnlHbcWe0lj6tvJIkZrO+qKotQDjzlHTHRLDXuxBkIKGRU7yDLET1lHhsr/nehowyQkIfxbU//gluRBnvlti3lWjHP0uvvzgbngHg4Zqk4e8bH8hZfk9RmwCw6wLWX+OE2Rz+Q3TQgoQ9OL32UxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708367604; c=relaxed/simple;
-	bh=urfjPGxUSCWZFzm7sWzHsWMp9j1mL/hHkq92hRdEMl0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FTIw79Sfr+EhU8B3eJDczDC/hlXkxGNfGeb6T/QZs6+NocJX2MCXhAlYVUtuTFKl62S//wncNEJOBbjhrZtTmVqvtT6SrysUdxQZduQXneXhPYxMj2Hb7s4KZlA2xi8GwPA6LH+W9acQiqCT6CBeialme1Oy0Hr408TABYZ5tK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=s8okv9Fu; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5647f4aac6aso11224a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:33:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708367594; x=1708972394; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1K9icUn6knVrJjpIsa0lgiaeTMRuttYU/puu1i4laUA=;
-        b=s8okv9Fu6ugklSSAh+1VvYNdFqIWO7S+Yi52wmbJ9bmAw24/VugS11dUM5WUrPBtHI
-         NMwJ3QWUsIlkJi1+nD5pvk3VtqzZffg7J4qvGpSFL74d6EsqMecm1ugKOaDMQ2XyX1/O
-         6oD9tQu5j2fg2bDq5cfLulm3MJ5qDSV+5ol/hixvROZkvMVCL9dChxI/voD2+7c9RdZQ
-         nEp47/GMlNn6SBmTmB4NqoamG+Kj4xnmKAYIdV3FgAh3eZCkU9/szRVHXfUU+Qy21wZk
-         NpOSMrioIgrQSmtw+58Qz1YUzpQtTmTe/+DV2rjIIi5A+lj6JzDtFBERShV8+DKbGJaH
-         UlwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708367594; x=1708972394;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1K9icUn6knVrJjpIsa0lgiaeTMRuttYU/puu1i4laUA=;
-        b=anyrE2wQ0EVN6szrTIf1f5T3lUwV4I2BYwJFx4QJ06NY8qLEIkiHIQFY25AuNXOwGv
-         bUAo/xsgEPB3B6WF20HhB74vWFNIKFkmj60epgsIT+JEIZxQ711lcloTkoHTxnRqaaPA
-         cNROcdjc1F+X4SjB/IvIbQcADkhE8lBWfEIGTq/qz8qPRI6Ot3Os8kVZSkZY9FQGjGd7
-         BQOHy4HMqcPLG5+oe+q6w9uNOj1IJh0m/6w5Ah0u2ZmqBJGBrelbRv/vCLHv/LiKLM0s
-         5iFIX3VSxKC1BnK7lKjyUcqnX9SlUOzEx4yMvs++INbiapYrWxPPGMCvDDvNkmg3GoT4
-         zVWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW91592c/D89qYPcdNvGRoGrl4sQVkWIi86zznA6iztS+NJ8++2kj5KBtXpUNBEF/qp+BxSwk1phZ0EpfmptIoMMvRxwoqNK8IbGhdN
-X-Gm-Message-State: AOJu0YyShl1xp4SjMdJqIHUV36oamhV33mpCu3XwwadZ6uu6zReLqWKO
-	pbkMH2fdVyhFmBtff6IH3iNGm/+BK2jWT73O4ZhJhLfB+mFHcA6+Tr5M4615xTnDTDC7kbZoVga
-	uTs42PLHDWgDx4YroiUAIzsw4Bhbsx4JSL7mn
-X-Google-Smtp-Source: AGHT+IFpLAhyqckLFaen7AWiB1PwE14LElLyPxQQTPrAyv7t4Ui0vG+fVundmKcVTiRmAyxVzowrJkDr8lUWD34KkII=
-X-Received: by 2002:a50:9e25:0:b0:560:1a1:eb8d with SMTP id
- z34-20020a509e25000000b0056001a1eb8dmr262864ede.7.1708367593611; Mon, 19 Feb
- 2024 10:33:13 -0800 (PST)
+	s=arc-20240116; t=1708367846; c=relaxed/simple;
+	bh=uvlVlVgy+ZWEocuzTRTmSwTyEHujwtffi1ypoqvo6EE=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=EP/RArTn0AvDypr051sPUTD9RE9r9rYyAnU3IN9djJJVofTognOBnD67aqmxku8Jz6o3uKafnL6M+zyak6fItMQJFWJbkUdSaiYYHrQ5/8+zFHmhZx8wp77gLurR6motgJ1khF685hyIO40LoGyzL6FFyiFP3j/lrS8NWyMrG4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XauW0NCB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=O8zRqcU4; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Mon, 19 Feb 2024 18:37:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708367842;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GDrROiVFXCoOAjI02bWKAdN635yUGp+6+6AfSMTD3Ng=;
+	b=XauW0NCBMgJcpnCefepSgKOLzZFVoAYOwVLSwHMnj2IGXTdMCPEtg/9q4iGL1m7lxDJ4bl
+	zQUzCND9B/EChMAaCUQ7dep6H5M1TI9oQX10P8azir+SNI3oEXDga/I7U/tYc4RF2BbB5r
+	vBSlPRWEBuDpvOZAbJoQ8F/q3eFWznsjMBumfT8tGuNJdJhyVuDzXQDgyEnUFr6x/sKqD/
+	ro0xE8M24EPKEJ5tCg0AUXFwGyww/nw/IJUG8prSD6U0XRmEEeszp15oCL5a21LXF+PiS+
+	nVqPeKPM2AZfWWCbUNb1PD2I1zSIEDonRvOhkqgDGw1LAWeLprNVpfjkyP5O+w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708367842;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GDrROiVFXCoOAjI02bWKAdN635yUGp+6+6AfSMTD3Ng=;
+	b=O8zRqcU4uS/2DyRN0SbusAGMknU26zZIJwqdjXeR0oB1Sj8kDH7GB+4WFVJRd2hIYaqWY1
+	SN6Wzyd43FtdPiDA==
+From: "tip-bot2 for James Morse" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Separate arch and fs resctrl locks
+Cc: James Morse <james.morse@arm.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+ Reinette Chatre <reinette.chatre@intel.com>, Babu Moger <babu.moger@amd.com>,
+ Peter Newman <peternewman@google.com>,
+ Carl Worth <carl@os.amperecomputing.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240213184438.16675-25-james.morse@arm.com>
+References: <20240213184438.16675-25-james.morse@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215-upstream-net-20240215-misc-fixes-v1-0-8c01a55d8f6a@kernel.org>
- <20240215-upstream-net-20240215-misc-fixes-v1-3-8c01a55d8f6a@kernel.org>
- <CANn89iJ=Oecw6OZDwmSYc9HJKQ_G32uN11L+oUcMu+TOD5Xiaw@mail.gmail.com>
- <CANn89iJDypRXX-8S-UdqWgw73eOgt0+D74qUCLDkb0cRpFFXkg@mail.gmail.com> <278c26d6f4042dc6dadb9742afe11b7fa610f0b2.camel@redhat.com>
-In-Reply-To: <278c26d6f4042dc6dadb9742afe11b7fa610f0b2.camel@redhat.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 19 Feb 2024 19:33:02 +0100
-Message-ID: <CANn89iK72hE16sQcGPUFG6Am_V-77PNJOYHgeAA6M+SD5UO13A@mail.gmail.com>
-Subject: Re: [PATCH net 03/13] mptcp: fix lockless access in subflow ULP diag
-To: Paolo Abeni <pabeni@redhat.com>
-Cc: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, mptcp@lists.linux.dev, 
-	Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Davide Caratti <dcaratti@redhat.com>, Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	stable@vger.kernel.org, Boris Pismenny <borisp@nvidia.com>, 
-	John Fastabend <john.fastabend@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <170836784129.398.6554207202208846631.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 7:04=E2=80=AFPM Paolo Abeni <pabeni@redhat.com> wro=
-te:
->
-> On Mon, 2024-02-19 at 18:35 +0100, Eric Dumazet wrote:
-> > On Mon, Feb 19, 2024 at 6:21=E2=80=AFPM Eric Dumazet <edumazet@google.c=
-om> wrote:
-> > >
-> > > On Thu, Feb 15, 2024 at 7:25=E2=80=AFPM Matthieu Baerts (NGI0)
-> > > <matttbe@kernel.org> wrote:
-> > > >
-> > > > From: Paolo Abeni <pabeni@redhat.com>
-> > > >
-> > > > Since the introduction of the subflow ULP diag interface, the
-> > > > dump callback accessed all the subflow data with lockless.
-> > > >
-> > > > We need either to annotate all the read and write operation accordi=
-ngly,
-> > > > or acquire the subflow socket lock. Let's do latter, even if slower=
-, to
-> > > > avoid a diffstat havoc.
-> > > >
-> > > > Fixes: 5147dfb50832 ("mptcp: allow dumping subflow context to users=
-pace")
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-> > > > Reviewed-by: Mat Martineau <martineau@kernel.org>
-> > > > Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-> > > > ---
-> > > > Notes:
-> > > >   - This patch modifies the existing ULP API. No better solutions h=
-ave
-> > > >     been found for -net, and there is some similar prior art, see
-> > > >     commit 0df48c26d841 ("tcp: add tcpi_bytes_acked to tcp_info").
-> > > >
-> > > >     Please also note that TLS ULP Diag has likely the same issue.
-> > > > To: Boris Pismenny <borisp@nvidia.com>
-> > > > To: John Fastabend <john.fastabend@gmail.com>
-> > > > ---
-> > > >  include/net/tcp.h  | 2 +-
-> > > >  net/mptcp/diag.c   | 6 +++++-
-> > > >  net/tls/tls_main.c | 2 +-
-> > > >  3 files changed, 7 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/include/net/tcp.h b/include/net/tcp.h
-> > > > index dd78a1181031..f6eba9652d01 100644
-> > > > --- a/include/net/tcp.h
-> > > > +++ b/include/net/tcp.h
-> > > > @@ -2506,7 +2506,7 @@ struct tcp_ulp_ops {
-> > > >         /* cleanup ulp */
-> > > >         void (*release)(struct sock *sk);
-> > > >         /* diagnostic */
-> > > > -       int (*get_info)(const struct sock *sk, struct sk_buff *skb)=
-;
-> > > > +       int (*get_info)(struct sock *sk, struct sk_buff *skb);
-> > > >         size_t (*get_info_size)(const struct sock *sk);
-> > > >         /* clone ulp */
-> > > >         void (*clone)(const struct request_sock *req, struct sock *=
-newsk,
-> > > > diff --git a/net/mptcp/diag.c b/net/mptcp/diag.c
-> > > > index a536586742f2..e57c5f47f035 100644
-> > > > --- a/net/mptcp/diag.c
-> > > > +++ b/net/mptcp/diag.c
-> > > > @@ -13,17 +13,19 @@
-> > > >  #include <uapi/linux/mptcp.h>
-> > > >  #include "protocol.h"
-> > > >
-> > > > -static int subflow_get_info(const struct sock *sk, struct sk_buff =
-*skb)
-> > > > +static int subflow_get_info(struct sock *sk, struct sk_buff *skb)
-> > > >  {
-> > > >         struct mptcp_subflow_context *sf;
-> > > >         struct nlattr *start;
-> > > >         u32 flags =3D 0;
-> > > > +       bool slow;
-> > > >         int err;
-> > > >
-> > > >         start =3D nla_nest_start_noflag(skb, INET_ULP_INFO_MPTCP);
-> > > >         if (!start)
-> > > >                 return -EMSGSIZE;
-> > > >
-> > > > +       slow =3D lock_sock_fast(sk);
-> > > >         rcu_read_lock();
-> > >
-> > > I am afraid lockdep is not happy with this change.
-> > >
-> > > Paolo, we probably need the READ_ONCE() annotations after all.
-> >
-> > Or perhaps something like the following would be enough.
-> >
-> > diff --git a/net/mptcp/diag.c b/net/mptcp/diag.c
-> > index 6ff6f14674aa2941bc04c680bacd9f79fc65060d..7017dd60659dc7133318c1c=
-82e3f429bea3a5d57
-> > 100644
-> > --- a/net/mptcp/diag.c
-> > +++ b/net/mptcp/diag.c
-> > @@ -21,6 +21,9 @@ static int subflow_get_info(struct sock *sk, struct
-> > sk_buff *skb)
-> >         bool slow;
-> >         int err;
-> >
-> > +       if (inet_sk_state_load(sk) =3D=3D TCP_LISTEN)
-> > +               return 0;
-> > +
-> >         start =3D nla_nest_start_noflag(skb, INET_ULP_INFO_MPTCP);
-> >         if (!start)
-> >                 return -EMSGSIZE;
->
-> Thanks for the head-up. This later option looks preferable, to avoid
-> quit a bit of noise with _ONCE annotation. Is there a syzkaller splat I
-> could look at? if it landed on the ML, I missed it.
->
+The following commit has been merged into the x86/cache branch of tip:
 
-Not landed yet, here is the splat :
+Commit-ID:     fb700810d30b9eb333a7bf447012e1158e35c62f
+Gitweb:        https://git.kernel.org/tip/fb700810d30b9eb333a7bf447012e1158e35c62f
+Author:        James Morse <james.morse@arm.com>
+AuthorDate:    Tue, 13 Feb 2024 18:44:38 
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 19 Feb 2024 19:28:07 +01:00
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D
-WARNING: possible circular locking dependency detected
-6.8.0-rc4-syzkaller-00212-g40b9385dd8e6 #0 Not tainted
-------------------------------------------------------
-syz-executor.2/24141 is trying to acquire lock:
-ffff888045870130 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at:
-tcp_diag_put_ulp net/ipv4/tcp_diag.c:100 [inline]
-ffff888045870130 (k-sk_lock-AF_INET6){+.+.}-{0:0}, at:
-tcp_diag_get_aux+0x738/0x830 net/ipv4/tcp_diag.c:137
+x86/resctrl: Separate arch and fs resctrl locks
 
-but task is already holding lock:
-ffffc9000135e488 (&h->lhash2[i].lock){+.+.}-{2:2}, at: spin_lock
-include/linux/spinlock.h:351 [inline]
-ffffc9000135e488 (&h->lhash2[i].lock){+.+.}-{2:2}, at:
-inet_diag_dump_icsk+0x39f/0x1f80 net/ipv4/inet_diag.c:1038
+resctrl has one mutex that is taken by the architecture-specific code, and the
+filesystem parts. The two interact via cpuhp, where the architecture code
+updates the domain list. Filesystem handlers that walk the domains list should
+not run concurrently with the cpuhp callback modifying the list.
 
-which lock already depends on the new lock.
+Exposing a lock from the filesystem code means the interface is not cleanly
+defined, and creates the possibility of cross-architecture lock ordering
+headaches. The interaction only exists so that certain filesystem paths are
+serialised against CPU hotplug. The CPU hotplug code already has a mechanism to
+do this using cpus_read_lock().
 
+MPAM's monitors have an overflow interrupt, so it needs to be possible to walk
+the domains list in irq context. RCU is ideal for this, but some paths need to
+be able to sleep to allocate memory.
 
-the existing dependency chain (in reverse order) is:
+Because resctrl_{on,off}line_cpu() take the rdtgroup_mutex as part of a cpuhp
+callback, cpus_read_lock() must always be taken first.
+rdtgroup_schemata_write() already does this.
 
--> #1 (&h->lhash2[i].lock){+.+.}-{2:2}:
-lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-__raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
-_raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
-spin_lock include/linux/spinlock.h:351 [inline]
-__inet_hash+0x335/0xbe0 net/ipv4/inet_hashtables.c:743
-inet_csk_listen_start+0x23a/0x320 net/ipv4/inet_connection_sock.c:1261
-__inet_listen_sk+0x2a2/0x770 net/ipv4/af_inet.c:217
-inet_listen+0xa3/0x110 net/ipv4/af_inet.c:239
-rds_tcp_listen_init+0x3fd/0x5a0 net/rds/tcp_listen.c:316
-rds_tcp_init_net+0x141/0x320 net/rds/tcp.c:577
-ops_init+0x352/0x610 net/core/net_namespace.c:136
-__register_pernet_operations net/core/net_namespace.c:1214 [inline]
-register_pernet_operations+0x2cb/0x660 net/core/net_namespace.c:1283
-register_pernet_device+0x33/0x80 net/core/net_namespace.c:1370
-rds_tcp_init+0x62/0xd0 net/rds/tcp.c:735
-do_one_initcall+0x238/0x830 init/main.c:1236
-do_initcall_level+0x157/0x210 init/main.c:1298
-do_initcalls+0x3f/0x80 init/main.c:1314
-kernel_init_freeable+0x42f/0x5d0 init/main.c:1551
-kernel_init+0x1d/0x2a0 init/main.c:1441
-ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
+Most of the filesystem code's domain list walkers are currently protected by
+the rdtgroup_mutex taken in rdtgroup_kn_lock_live().  The exceptions are
+rdt_bit_usage_show() and the mon_config helpers which take the lock directly.
 
--> #0 (k-sk_lock-AF_INET6){+.+.}-{0:0}:
-check_prev_add kernel/locking/lockdep.c:3134 [inline]
-check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-validate_chain+0x18ca/0x58e0 kernel/locking/lockdep.c:3869
-__lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
-lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-lock_sock_fast include/net/sock.h:1723 [inline]
-subflow_get_info+0x166/0xd20 net/mptcp/diag.c:28
-tcp_diag_put_ulp net/ipv4/tcp_diag.c:100 [inline]
-tcp_diag_get_aux+0x738/0x830 net/ipv4/tcp_diag.c:137
-inet_sk_diag_fill+0x10ed/0x1e00 net/ipv4/inet_diag.c:345
-inet_diag_dump_icsk+0x55b/0x1f80 net/ipv4/inet_diag.c:1061
-__inet_diag_dump+0x211/0x3a0 net/ipv4/inet_diag.c:1263
-inet_diag_dump_compat+0x1c1/0x2d0 net/ipv4/inet_diag.c:1371
-netlink_dump+0x59b/0xc80 net/netlink/af_netlink.c:2264
-__netlink_dump_start+0x5df/0x790 net/netlink/af_netlink.c:2370
-netlink_dump_start include/linux/netlink.h:338 [inline]
-inet_diag_rcv_msg_compat+0x209/0x4c0 net/ipv4/inet_diag.c:1405
-sock_diag_rcv_msg+0xe7/0x410
-netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
-sock_diag_rcv+0x2a/0x40 net/core/sock_diag.c:280
-netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
-netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
-netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
-sock_sendmsg_nosec net/socket.c:730 [inline]
-__sock_sendmsg+0x221/0x270 net/socket.c:745
-____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
-___sys_sendmsg net/socket.c:2638 [inline]
-__sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
-do_syscall_64+0xf9/0x240
-entry_SYSCALL_64_after_hwframe+0x6f/0x77
+Make the domain list protected by RCU. An architecture-specific lock prevents
+concurrent writers. rdt_bit_usage_show() could walk the domain list using RCU,
+but to keep all the filesystem operations the same, this is changed to call
+cpus_read_lock().  The mon_config helpers send multiple IPIs, take the
+cpus_read_lock() in these cases.
 
-other info that might help us debug this:
+The other filesystem list walkers need to be able to sleep.  Add
+cpus_read_lock() to rdtgroup_kn_lock_live() so that the cpuhp callbacks can't
+be invoked when file system operations are occurring.
 
-Possible unsafe locking scenario:
+Add lockdep_assert_cpus_held() in the cases where the rdtgroup_kn_lock_live()
+call isn't obvious.
 
-CPU0 CPU1
----- ----
-lock(&h->lhash2[i].lock);
-lock(k-sk_lock-AF_INET6);
-lock(&h->lhash2[i].lock);
-lock(k-sk_lock-AF_INET6);
+Resctrl's domain online/offline calls now need to take the rdtgroup_mutex
+themselves.
 
-*** DEADLOCK ***
+  [ bp: Fold in a build fix: https://lore.kernel.org/r/87zfvwieli.ffs@tglx ]
 
-5 locks held by syz-executor.2/24141:
-#0: ffffffff8f380bc8 (sock_diag_mutex){+.+.}-{3:3}, at:
-sock_diag_rcv+0x1b/0x40 net/core/sock_diag.c:279
-#1: ffffffff8f380a28 (sock_diag_table_mutex){+.+.}-{3:3}, at:
-sock_diag_rcv_msg+0xc6/0x410 net/core/sock_diag.c:259
-#2: ffff8880586f5680 (nlk_cb_mutex-SOCK_DIAG){+.+.}-{3:3}, at:
-netlink_dump+0xde/0xc80 net/netlink/af_netlink.c:2211
-#3: ffffffff8f464568 (inet_diag_table_mutex){+.+.}-{3:3}, at:
-inet_diag_lock_handler net/ipv4/inet_diag.c:63 [inline]
-#3: ffffffff8f464568 (inet_diag_table_mutex){+.+.}-{3:3}, at:
-__inet_diag_dump+0x191/0x3a0 net/ipv4/inet_diag.c:1261
-#4: ffffc9000135e488 (&h->lhash2[i].lock){+.+.}-{2:2}, at: spin_lock
-include/linux/spinlock.h:351 [inline]
-#4: ffffc9000135e488 (&h->lhash2[i].lock){+.+.}-{2:2}, at:
-inet_diag_dump_icsk+0x39f/0x1f80 net/ipv4/inet_diag.c:1038
+Signed-off-by: James Morse <james.morse@arm.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Babu Moger <babu.moger@amd.com>
+Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
+Tested-by: Peter Newman <peternewman@google.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
+Tested-by: Carl Worth <carl@os.amperecomputing.com> # arm64
+Link: https://lore.kernel.org/r/20240213184438.16675-25-james.morse@arm.com
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ arch/x86/kernel/cpu/resctrl/core.c        | 44 ++++++++++----
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 15 ++++-
+ arch/x86/kernel/cpu/resctrl/monitor.c     |  8 +++-
+ arch/x86/kernel/cpu/resctrl/pseudo_lock.c |  3 +-
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 68 +++++++++++++++++-----
+ include/linux/resctrl.h                   |  2 +-
+ 6 files changed, 112 insertions(+), 28 deletions(-)
 
-stack backtrace:
-CPU: 0 PID: 24141 Comm: syz-executor.2 Not tainted
-6.8.0-rc4-syzkaller-00212-g40b9385dd8e6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-BIOS Google 01/25/2024
-Call Trace:
-<TASK>
-__dump_stack lib/dump_stack.c:88 [inline]
-dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
-check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
-check_prev_add kernel/locking/lockdep.c:3134 [inline]
-check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-validate_chain+0x18ca/0x58e0 kernel/locking/lockdep.c:3869
-__lock_acquire+0x1345/0x1fd0 kernel/locking/lockdep.c:5137
-lock_acquire+0x1e3/0x530 kernel/locking/lockdep.c:5754
-lock_sock_fast include/net/sock.h:1723 [inline]
-subflow_get_info+0x166/0xd20 net/mptcp/diag.c:28
-tcp_diag_put_ulp net/ipv4/tcp_diag.c:100 [inline]
-tcp_diag_get_aux+0x738/0x830 net/ipv4/tcp_diag.c:137
-inet_sk_diag_fill+0x10ed/0x1e00 net/ipv4/inet_diag.c:345
-inet_diag_dump_icsk+0x55b/0x1f80 net/ipv4/inet_diag.c:1061
-__inet_diag_dump+0x211/0x3a0 net/ipv4/inet_diag.c:1263
-inet_diag_dump_compat+0x1c1/0x2d0 net/ipv4/inet_diag.c:1371
-netlink_dump+0x59b/0xc80 net/netlink/af_netlink.c:2264
-__netlink_dump_start+0x5df/0x790 net/netlink/af_netlink.c:2370
-netlink_dump_start include/linux/netlink.h:338 [inline]
-inet_diag_rcv_msg_compat+0x209/0x4c0 net/ipv4/inet_diag.c:1405
-sock_diag_rcv_msg+0xe7/0x410
-netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
-sock_diag_rcv+0x2a/0x40 net/core/sock_diag.c:280
-netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
-netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
-netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
-sock_sendmsg_nosec net/socket.c:730 [inline]
-__sock_sendmsg+0x221/0x270 net/socket.c:745
-____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
-___sys_sendmsg net/socket.c:2638 [inline]
-__sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
-do_syscall_64+0xf9/0x240
-entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7fbc4c07dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbc4ce750c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fbc4c1abf80 RCX: 00007fbc4c07dda9
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00007fbc4c0ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fbc4c1abf80 R15: 00007ffcc3d92258
-</TASK>
-BUG: sleeping function called from invalid context at net/core/sock.c:3554
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 24141, name:
-syz-executor.2
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-INFO: lockdep is turned off.
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 24141 Comm: syz-executor.2 Not tainted
-6.8.0-rc4-syzkaller-00212-g40b9385dd8e6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine,
-BIOS Google 01/25/2024
-Call Trace:
-<TASK>
-__dump_stack lib/dump_stack.c:88 [inline]
-dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
-__might_resched+0x5d3/0x780 kernel/sched/core.c:10176
-__lock_sock_fast+0x31/0xe0 net/core/sock.c:3554
-lock_sock_fast include/net/sock.h:1725 [inline]
-subflow_get_info+0x172/0xd20 net/mptcp/diag.c:28
-tcp_diag_put_ulp net/ipv4/tcp_diag.c:100 [inline]
-tcp_diag_get_aux+0x738/0x830 net/ipv4/tcp_diag.c:137
-inet_sk_diag_fill+0x10ed/0x1e00 net/ipv4/inet_diag.c:345
-inet_diag_dump_icsk+0x55b/0x1f80 net/ipv4/inet_diag.c:1061
-__inet_diag_dump+0x211/0x3a0 net/ipv4/inet_diag.c:1263
-inet_diag_dump_compat+0x1c1/0x2d0 net/ipv4/inet_diag.c:1371
-netlink_dump+0x59b/0xc80 net/netlink/af_netlink.c:2264
-__netlink_dump_start+0x5df/0x790 net/netlink/af_netlink.c:2370
-netlink_dump_start include/linux/netlink.h:338 [inline]
-inet_diag_rcv_msg_compat+0x209/0x4c0 net/ipv4/inet_diag.c:1405
-sock_diag_rcv_msg+0xe7/0x410
-netlink_rcv_skb+0x1e3/0x430 net/netlink/af_netlink.c:2543
-sock_diag_rcv+0x2a/0x40 net/core/sock_diag.c:280
-netlink_unicast_kernel net/netlink/af_netlink.c:1341 [inline]
-netlink_unicast+0x7ea/0x980 net/netlink/af_netlink.c:1367
-netlink_sendmsg+0xa3b/0xd70 net/netlink/af_netlink.c:1908
-sock_sendmsg_nosec net/socket.c:730 [inline]
-__sock_sendmsg+0x221/0x270 net/socket.c:745
-____sys_sendmsg+0x525/0x7d0 net/socket.c:2584
-___sys_sendmsg net/socket.c:2638 [inline]
-__sys_sendmsg+0x2b0/0x3a0 net/socket.c:2667
-do_syscall_64+0xf9/0x240
-entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7fbc4c07dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbc4ce750c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00007fbc4c1abf80 RCX: 00007fbc4c07dda9
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000004
-RBP: 00007fbc4c0ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007fbc4c1abf80 R15: 00007ffcc3d92258
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index b03a6c6..8a4ef4f 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -16,6 +16,7 @@
+ 
+ #define pr_fmt(fmt)	"resctrl: " fmt
+ 
++#include <linux/cpu.h>
+ #include <linux/slab.h>
+ #include <linux/err.h>
+ #include <linux/cacheinfo.h>
+@@ -25,8 +26,15 @@
+ #include <asm/resctrl.h>
+ #include "internal.h"
+ 
+-/* Mutex to protect rdtgroup access. */
+-DEFINE_MUTEX(rdtgroup_mutex);
++/*
++ * rdt_domain structures are kfree()d when their last CPU goes offline,
++ * and allocated when the first CPU in a new domain comes online.
++ * The rdt_resource's domain list is updated when this happens. Readers of
++ * the domain list must either take cpus_read_lock(), or rely on an RCU
++ * read-side critical section, to avoid observing concurrent modification.
++ * All writers take this mutex:
++ */
++static DEFINE_MUTEX(domain_list_lock);
+ 
+ /*
+  * The cached resctrl_pqr_state is strictly per CPU and can never be
+@@ -354,6 +362,15 @@ struct rdt_domain *get_domain_from_cpu(int cpu, struct rdt_resource *r)
+ {
+ 	struct rdt_domain *d;
+ 
++	/*
++	 * Walking r->domains, ensure it can't race with cpuhp.
++	 * Because this is called via IPI by rdt_ctrl_update(), assertions
++	 * about locks this thread holds will lead to false positives. Check
++	 * someone is holding the CPUs lock.
++	 */
++	if (IS_ENABLED(CONFIG_HOTPLUG_CPU) && IS_ENABLED(CONFIG_LOCKDEP))
++		WARN_ON_ONCE(!lockdep_is_cpus_held());
++
+ 	list_for_each_entry(d, &r->domains, list) {
+ 		/* Find the domain that contains this CPU */
+ 		if (cpumask_test_cpu(cpu, &d->cpu_mask))
+@@ -510,6 +527,8 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+ 	struct rdt_domain *d;
+ 	int err;
+ 
++	lockdep_assert_held(&domain_list_lock);
++
+ 	d = rdt_find_domain(r, id, &add_pos);
+ 	if (IS_ERR(d)) {
+ 		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
+@@ -543,11 +562,12 @@ static void domain_add_cpu(int cpu, struct rdt_resource *r)
+ 		return;
+ 	}
+ 
+-	list_add_tail(&d->list, add_pos);
++	list_add_tail_rcu(&d->list, add_pos);
+ 
+ 	err = resctrl_online_domain(r, d);
+ 	if (err) {
+-		list_del(&d->list);
++		list_del_rcu(&d->list);
++		synchronize_rcu();
+ 		domain_free(hw_dom);
+ 	}
+ }
+@@ -558,6 +578,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
+ 	struct rdt_hw_domain *hw_dom;
+ 	struct rdt_domain *d;
+ 
++	lockdep_assert_held(&domain_list_lock);
++
+ 	d = rdt_find_domain(r, id, NULL);
+ 	if (IS_ERR_OR_NULL(d)) {
+ 		pr_warn("Couldn't find cache id for CPU %d\n", cpu);
+@@ -568,7 +590,8 @@ static void domain_remove_cpu(int cpu, struct rdt_resource *r)
+ 	cpumask_clear_cpu(cpu, &d->cpu_mask);
+ 	if (cpumask_empty(&d->cpu_mask)) {
+ 		resctrl_offline_domain(r, d);
+-		list_del(&d->list);
++		list_del_rcu(&d->list);
++		synchronize_rcu();
+ 
+ 		/*
+ 		 * rdt_domain "d" is going to be freed below, so clear
+@@ -598,13 +621,13 @@ static int resctrl_arch_online_cpu(unsigned int cpu)
+ {
+ 	struct rdt_resource *r;
+ 
+-	mutex_lock(&rdtgroup_mutex);
++	mutex_lock(&domain_list_lock);
+ 	for_each_capable_rdt_resource(r)
+ 		domain_add_cpu(cpu, r);
+-	clear_closid_rmid(cpu);
++	mutex_unlock(&domain_list_lock);
+ 
++	clear_closid_rmid(cpu);
+ 	resctrl_online_cpu(cpu);
+-	mutex_unlock(&rdtgroup_mutex);
+ 
+ 	return 0;
+ }
+@@ -613,13 +636,14 @@ static int resctrl_arch_offline_cpu(unsigned int cpu)
+ {
+ 	struct rdt_resource *r;
+ 
+-	mutex_lock(&rdtgroup_mutex);
+ 	resctrl_offline_cpu(cpu);
+ 
++	mutex_lock(&domain_list_lock);
+ 	for_each_capable_rdt_resource(r)
+ 		domain_remove_cpu(cpu, r);
++	mutex_unlock(&domain_list_lock);
++
+ 	clear_closid_rmid(cpu);
+-	mutex_unlock(&rdtgroup_mutex);
+ 
+ 	return 0;
+ }
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index 20b02d6..7997b47 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -212,6 +212,9 @@ static int parse_line(char *line, struct resctrl_schema *s,
+ 	struct rdt_domain *d;
+ 	unsigned long dom_id;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	if (rdtgrp->mode == RDT_MODE_PSEUDO_LOCKSETUP &&
+ 	    (r->rid == RDT_RESOURCE_MBA || r->rid == RDT_RESOURCE_SMBA)) {
+ 		rdt_last_cmd_puts("Cannot pseudo-lock MBA resource\n");
+@@ -316,6 +319,9 @@ int resctrl_arch_update_domains(struct rdt_resource *r, u32 closid)
+ 	struct rdt_domain *d;
+ 	u32 idx;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+@@ -381,11 +387,9 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
+ 		return -EINVAL;
+ 	buf[nbytes - 1] = '\0';
+ 
+-	cpus_read_lock();
+ 	rdtgrp = rdtgroup_kn_lock_live(of->kn);
+ 	if (!rdtgrp) {
+ 		rdtgroup_kn_unlock(of->kn);
+-		cpus_read_unlock();
+ 		return -ENOENT;
+ 	}
+ 	rdt_last_cmd_clear();
+@@ -447,7 +451,6 @@ ssize_t rdtgroup_schemata_write(struct kernfs_open_file *of,
+ out:
+ 	rdt_staged_configs_clear();
+ 	rdtgroup_kn_unlock(of->kn);
+-	cpus_read_unlock();
+ 	return ret ?: nbytes;
+ }
+ 
+@@ -467,6 +470,9 @@ static void show_doms(struct seq_file *s, struct resctrl_schema *schema, int clo
+ 	bool sep = false;
+ 	u32 ctrl_val;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	seq_printf(s, "%*s:", max_name_width, schema->name);
+ 	list_for_each_entry(dom, &r->domains, list) {
+ 		if (sep)
+@@ -537,6 +543,9 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+ {
+ 	int cpu;
+ 
++	/* When picking a CPU from cpu_mask, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	/*
+ 	 * Setup the parameters to pass to mon_event_count() to read the data.
+ 	 */
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index 67edd4c..c34a35e 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -15,6 +15,7 @@
+  * Software Developer Manual June 2016, volume 3, section 17.17.
+  */
+ 
++#include <linux/cpu.h>
+ #include <linux/module.h>
+ #include <linux/sizes.h>
+ #include <linux/slab.h>
+@@ -472,6 +473,9 @@ static void add_rmid_to_limbo(struct rmid_entry *entry)
+ 
+ 	lockdep_assert_held(&rdtgroup_mutex);
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	idx = resctrl_arch_rmid_idx_encode(entry->closid, entry->rmid);
+ 
+ 	entry->busy = 0;
+@@ -778,6 +782,7 @@ void cqm_handle_limbo(struct work_struct *work)
+ 	unsigned long delay = msecs_to_jiffies(CQM_LIMBOCHECK_INTERVAL);
+ 	struct rdt_domain *d;
+ 
++	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	d = container_of(work, struct rdt_domain, cqm_limbo.work);
+@@ -792,6 +797,7 @@ void cqm_handle_limbo(struct work_struct *work)
+ 	}
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
++	cpus_read_unlock();
+ }
+ 
+ /**
+@@ -823,6 +829,7 @@ void mbm_handle_overflow(struct work_struct *work)
+ 	struct rdt_resource *r;
+ 	struct rdt_domain *d;
+ 
++	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	/*
+@@ -856,6 +863,7 @@ void mbm_handle_overflow(struct work_struct *work)
+ 
+ out_unlock:
+ 	mutex_unlock(&rdtgroup_mutex);
++	cpus_read_unlock();
+ }
+ 
+ /**
+diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+index 8056bed..884b88e 100644
+--- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
++++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
+@@ -844,6 +844,9 @@ bool rdtgroup_pseudo_locked_in_hierarchy(struct rdt_domain *d)
+ 	struct rdt_domain *d_i;
+ 	bool ret = false;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	if (!zalloc_cpumask_var(&cpu_with_psl, GFP_KERNEL))
+ 		return true;
+ 
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 777e9f6..011e17e 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -35,6 +35,10 @@
+ DEFINE_STATIC_KEY_FALSE(rdt_enable_key);
+ DEFINE_STATIC_KEY_FALSE(rdt_mon_enable_key);
+ DEFINE_STATIC_KEY_FALSE(rdt_alloc_enable_key);
++
++/* Mutex to protect rdtgroup access. */
++DEFINE_MUTEX(rdtgroup_mutex);
++
+ static struct kernfs_root *rdt_root;
+ struct rdtgroup rdtgroup_default;
+ LIST_HEAD(rdt_all_groups);
+@@ -1014,6 +1018,7 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
+ 	bool sep = false;
+ 	u32 ctrl_val;
+ 
++	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 	hw_shareable = r->cache.shareable_bits;
+ 	list_for_each_entry(dom, &r->domains, list) {
+@@ -1074,6 +1079,7 @@ static int rdt_bit_usage_show(struct kernfs_open_file *of,
+ 	}
+ 	seq_putc(seq, '\n');
+ 	mutex_unlock(&rdtgroup_mutex);
++	cpus_read_unlock();
+ 	return 0;
+ }
+ 
+@@ -1329,6 +1335,9 @@ static bool rdtgroup_mode_test_exclusive(struct rdtgroup *rdtgrp)
+ 	struct rdt_domain *d;
+ 	u32 ctrl;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	list_for_each_entry(s, &resctrl_schema_all, list) {
+ 		r = s->res;
+ 		if (r->rid == RDT_RESOURCE_MBA || r->rid == RDT_RESOURCE_SMBA)
+@@ -1593,6 +1602,7 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
+ 	struct rdt_domain *dom;
+ 	bool sep = false;
+ 
++	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	list_for_each_entry(dom, &r->domains, list) {
+@@ -1609,6 +1619,7 @@ static int mbm_config_show(struct seq_file *s, struct rdt_resource *r, u32 evtid
+ 	seq_puts(s, "\n");
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
++	cpus_read_unlock();
+ 
+ 	return 0;
+ }
+@@ -1690,6 +1701,9 @@ static int mon_config_write(struct rdt_resource *r, char *tok, u32 evtid)
+ 	unsigned long dom_id, val;
+ 	struct rdt_domain *d;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ next:
+ 	if (!tok || tok[0] == '\0')
+ 		return 0;
+@@ -1736,6 +1750,7 @@ static ssize_t mbm_total_bytes_config_write(struct kernfs_open_file *of,
+ 	if (nbytes == 0 || buf[nbytes - 1] != '\n')
+ 		return -EINVAL;
+ 
++	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	rdt_last_cmd_clear();
+@@ -1745,6 +1760,7 @@ static ssize_t mbm_total_bytes_config_write(struct kernfs_open_file *of,
+ 	ret = mon_config_write(r, buf, QOS_L3_MBM_TOTAL_EVENT_ID);
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
++	cpus_read_unlock();
+ 
+ 	return ret ?: nbytes;
+ }
+@@ -1760,6 +1776,7 @@ static ssize_t mbm_local_bytes_config_write(struct kernfs_open_file *of,
+ 	if (nbytes == 0 || buf[nbytes - 1] != '\n')
+ 		return -EINVAL;
+ 
++	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	rdt_last_cmd_clear();
+@@ -1769,6 +1786,7 @@ static ssize_t mbm_local_bytes_config_write(struct kernfs_open_file *of,
+ 	ret = mon_config_write(r, buf, QOS_L3_MBM_LOCAL_EVENT_ID);
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
++	cpus_read_unlock();
+ 
+ 	return ret ?: nbytes;
+ }
+@@ -2245,6 +2263,9 @@ static int set_cache_qos_cfg(int level, bool enable)
+ 	struct rdt_domain *d;
+ 	int cpu;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	if (level == RDT_RESOURCE_L3)
+ 		update = l3_qos_cfg_update;
+ 	else if (level == RDT_RESOURCE_L2)
+@@ -2444,6 +2465,7 @@ struct rdtgroup *rdtgroup_kn_lock_live(struct kernfs_node *kn)
+ 
+ 	rdtgroup_kn_get(rdtgrp, kn);
+ 
++	cpus_read_lock();
+ 	mutex_lock(&rdtgroup_mutex);
+ 
+ 	/* Was this group deleted while we waited? */
+@@ -2461,6 +2483,8 @@ void rdtgroup_kn_unlock(struct kernfs_node *kn)
+ 		return;
+ 
+ 	mutex_unlock(&rdtgroup_mutex);
++	cpus_read_unlock();
++
+ 	rdtgroup_kn_put(rdtgrp, kn);
+ }
+ 
+@@ -2793,6 +2817,9 @@ static int reset_all_ctrls(struct rdt_resource *r)
+ 	struct rdt_domain *d;
+ 	int i;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	if (!zalloc_cpumask_var(&cpu_mask, GFP_KERNEL))
+ 		return -ENOMEM;
+ 
+@@ -3077,6 +3104,9 @@ static int mkdir_mondata_subdir_alldom(struct kernfs_node *parent_kn,
+ 	struct rdt_domain *dom;
+ 	int ret;
+ 
++	/* Walking r->domains, ensure it can't race with cpuhp */
++	lockdep_assert_cpus_held();
++
+ 	list_for_each_entry(dom, &r->domains, list) {
+ 		ret = mkdir_mondata_subdir(parent_kn, dom, r, prgrp);
+ 		if (ret)
+@@ -3907,13 +3937,13 @@ static void domain_destroy_mon_state(struct rdt_domain *d)
+ 
+ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
+ {
+-	lockdep_assert_held(&rdtgroup_mutex);
++	mutex_lock(&rdtgroup_mutex);
+ 
+ 	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA)
+ 		mba_sc_domain_destroy(r, d);
+ 
+ 	if (!r->mon_capable)
+-		return;
++		goto out_unlock;
+ 
+ 	/*
+ 	 * If resctrl is mounted, remove all the
+@@ -3938,6 +3968,9 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
+ 	}
+ 
+ 	domain_destroy_mon_state(d);
++
++out_unlock:
++	mutex_unlock(&rdtgroup_mutex);
+ }
+ 
+ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
+@@ -3973,20 +4006,22 @@ static int domain_setup_mon_state(struct rdt_resource *r, struct rdt_domain *d)
+ 
+ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
+ {
+-	int err;
++	int err = 0;
+ 
+-	lockdep_assert_held(&rdtgroup_mutex);
++	mutex_lock(&rdtgroup_mutex);
+ 
+-	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA)
++	if (supports_mba_mbps() && r->rid == RDT_RESOURCE_MBA) {
+ 		/* RDT_RESOURCE_MBA is never mon_capable */
+-		return mba_sc_domain_allocate(r, d);
++		err = mba_sc_domain_allocate(r, d);
++		goto out_unlock;
++	}
+ 
+ 	if (!r->mon_capable)
+-		return 0;
++		goto out_unlock;
+ 
+ 	err = domain_setup_mon_state(r, d);
+ 	if (err)
+-		return err;
++		goto out_unlock;
+ 
+ 	if (is_mbm_enabled()) {
+ 		INIT_DELAYED_WORK(&d->mbm_over, mbm_handle_overflow);
+@@ -4006,15 +4041,18 @@ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
+ 	if (resctrl_mounted && resctrl_arch_mon_capable())
+ 		mkdir_mondata_subdir_allrdtgrp(r, d);
+ 
+-	return 0;
++out_unlock:
++	mutex_unlock(&rdtgroup_mutex);
++
++	return err;
+ }
+ 
+ void resctrl_online_cpu(unsigned int cpu)
+ {
+-	lockdep_assert_held(&rdtgroup_mutex);
+-
++	mutex_lock(&rdtgroup_mutex);
+ 	/* The CPU is set in default rdtgroup after online. */
+ 	cpumask_set_cpu(cpu, &rdtgroup_default.cpu_mask);
++	mutex_unlock(&rdtgroup_mutex);
+ }
+ 
+ static void clear_childcpus(struct rdtgroup *r, unsigned int cpu)
+@@ -4033,8 +4071,7 @@ void resctrl_offline_cpu(unsigned int cpu)
+ 	struct rdtgroup *rdtgrp;
+ 	struct rdt_domain *d;
+ 
+-	lockdep_assert_held(&rdtgroup_mutex);
+-
++	mutex_lock(&rdtgroup_mutex);
+ 	list_for_each_entry(rdtgrp, &rdt_all_groups, rdtgroup_list) {
+ 		if (cpumask_test_and_clear_cpu(cpu, &rdtgrp->cpu_mask)) {
+ 			clear_childcpus(rdtgrp, cpu);
+@@ -4043,7 +4080,7 @@ void resctrl_offline_cpu(unsigned int cpu)
+ 	}
+ 
+ 	if (!l3->mon_capable)
+-		return;
++		goto out_unlock;
+ 
+ 	d = get_domain_from_cpu(cpu, l3);
+ 	if (d) {
+@@ -4057,6 +4094,9 @@ void resctrl_offline_cpu(unsigned int cpu)
+ 			cqm_setup_limbo_handler(d, 0, cpu);
+ 		}
+ 	}
++
++out_unlock:
++	mutex_unlock(&rdtgroup_mutex);
+ }
+ 
+ /*
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 270ff1d..a365f67 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -159,7 +159,7 @@ struct resctrl_schema;
+  * @cache_level:	Which cache level defines scope of this resource
+  * @cache:		Cache allocation related data
+  * @membw:		If the component has bandwidth controls, their properties.
+- * @domains:		All domains for this resource
++ * @domains:		RCU list of all domains for this resource
+  * @name:		Name to use in "schemata" file.
+  * @data_width:		Character width of data when displaying
+  * @default_ctrl:	Specifies default cache cbm or memory B/W percent.
 
