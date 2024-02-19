@@ -1,140 +1,142 @@
-Return-Path: <linux-kernel+bounces-70901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B5A3859DC2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:02:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDC54859DC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:03:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D489D1F23754
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:02:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 720FB1F23672
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5266428DC0;
-	Mon, 19 Feb 2024 07:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E8528E26;
+	Mon, 19 Feb 2024 07:57:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="iqHr9/Oe";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RVELYMGV"
-Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T3uRSW0Y"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329D928DA7;
-	Mon, 19 Feb 2024 07:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C4624A06;
+	Mon, 19 Feb 2024 07:57:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708329443; cv=none; b=rhvg3bSzgznFnFKUJqmoZTQZ7g6xtnHJkBDPtTaeIwbkq5HEF4+zzkuwjZpzFeGPnzQqCRahxgxrEjAQ71TPGuxBsH3LqFb4SASGg23cUvmtZdXrP8Yvaus8iATNP8r+QSWUcdO6RxKUjS+/lmc+ZmFIpO3uOPRaCb1mgmmqKP4=
+	t=1708329473; cv=none; b=rryjjTXSMHjMSstOUKcRVejR5T4uwrvmxNtLHXLsruPSIb7LCOtX8i+4+uACISSqJSGfYXr8sgDVtF9dnJmHjzaTaH7uDqIZnxwPVk7oHHfK6HyV7dsztZ6Bo6fvcLI+/jYSQeUPDenXfcxSdJ61uUgMeGqAVQzLRTfQm3fd7SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708329443; c=relaxed/simple;
-	bh=R351teBCaIZBraoQMQ7o6QtixbLRhIaIfdXsiDV0M1Q=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=XWReH2Kp3JGbo3YfN1gzVPVEnMq0wJV40BOewtYiZeyqcEGoP6t+bFuZntEHtPPkRRlB5DVUVsEXHS2jd5ueJhEpTJBQPo06pDnn2qNeF881m3NayGxhryx+t4qewtvixc6QqAf8G6jEChOdKCTXcVAZESNWeRbdjXHJ9119Zro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=iqHr9/Oe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RVELYMGV; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 2C00711400B4;
-	Mon, 19 Feb 2024 02:57:20 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Mon, 19 Feb 2024 02:57:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1708329440; x=1708415840; bh=LF+R2ufZgU
-	yCJvXqnj1dT61AxvaaLi9q1G7F23mtRdU=; b=iqHr9/OeA05YA0MFVi47yyPA4z
-	p0Vnyq0ciQoKo7oktZlSJCfpWAS6mHsTgkeY9iVUDUDBFYcaSua/VYZc6nX17zLf
-	pV3GrYWnM2YYmFhEHSqO1838Anp9937ReSQ+PEJPmuRBF0+CTIstqB17fJaoGdG6
-	lmMtSQGodLUeHOkKSabbe1q4IrNI4z2FVnpJIklZ8PmJNXre8VTLHb8HV+gUsW9E
-	ML4wafDwv9V/j8uVT84rXf0zTdl6cUV4yc/TlXFpmCPMNkcJmUaNNbW/E+Y1V7/v
-	VsG/PLPwI29LKArDc7es2MhEd/KWRyUNoGvTV5gFSZdRf58SUAf8xwin1G5A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708329440; x=1708415840; bh=LF+R2ufZgUyCJvXqnj1dT61Axvaa
-	Li9q1G7F23mtRdU=; b=RVELYMGVXVqAaJ6dYSgGaFfVZP0hEp+uL+tqNWG4TOwf
-	u9FkFMoaXR5isl3Bwgf3RYKoiA1Nb/XW9NtQ/wSd0xpBHq2WnZ56d6dw1QROIvE+
-	75yBDh5cMDImicKx/BifTF9fiTRCC7gF+4V5aUg1hu/POsm1FLrGxDA5L+Zamn0/
-	0wUC0nK4BbcXSWsMKmlLQmOSZYjuaKLheFd4/y2iukTZT6IUQF+NadD49WtxOXym
-	LyW7cxMp8YLZ3E2Sy4au4sKnFszGCB7MKtm48wv1ZI6XPmlO5PdbOtqCYQm6JMUY
-	8kridWV23MBArHrDMcyQlnVfEiV253QchxycDfsuEw==
-X-ME-Sender: <xms:3wnTZQYz5opi0nTkmLg7CKWaeWcWy_c6_4b77xA2LbOBrJmzJAyg8A>
-    <xme:3wnTZbY5WXtTkJYOvohqIsxEQ1OyFRt9sksrZYvf37OsXfA3_JI8QJAiUrwEyGQ0S
-    KHs_nJfrevLj5Epr84>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdejgdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:3wnTZa9u_61XTqKZpjl79_YMtSx7tIKygdBhoFw-TwkjDsHtXZE8XA>
-    <xmx:3wnTZarGaqOdL6diMYhp9JSSU1Z_9R2shxA7qHQZTMP2Q-LoVibYzw>
-    <xmx:3wnTZboW708Kk2tAmQnWECjeHKbIJFLGoj3tDByISFtK9uxbZnJQ-g>
-    <xmx:4AnTZcdl_hqZ3tCU3yZTHFRCC5BQm9rYLMmJ-fJ6lLkZy7-vPCftRg>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id B940AB6008D; Mon, 19 Feb 2024 02:57:19 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	s=arc-20240116; t=1708329473; c=relaxed/simple;
+	bh=N2RkZrodmWyz4vz0qln61OM6p79VpeMwDDBrrUeGnBY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZvB6f2uzBu7cwDv8wsWuZre9lsauVOBj688AuC9EohU+gSo7MiaPdm3CBSJR5UrTnbx2ct4J0TaF5h2lLCzBmZZPxpQVLTsPiejZeij+Urk2sgw+gtfH2G1ZXjhlHpwxQx2jd/w21vWWF+6W9eDUyd2CxboT+Cp+P4sIv7D115M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T3uRSW0Y; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41J4exjq030321;
+	Mon, 19 Feb 2024 07:57:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=2gPaOks
+	5XaolXUxqAHGacsRovinPywfLsxiCbRDVFTU=; b=T3uRSW0YBpSfoBt2Sf7tIrg
+	Z6+3EzQvxqDOJyHGRVZwi5eS3CPw/gr/ea2ce0F0L4kLdnCaPrCtBS+80GOlraRo
+	0eAur/k/jqUe++T4oAn2tQFZa9hmAaIzRIslnRnFBrkhX2jgHLVL/wesfJBOUVbB
+	po19FmpfHvaHqADbV4A0Uc3FROtEoQaDWdcCdX6CrshcjruV+a0t5lV4HH74y+Eo
+	2AdYK6P9BZumlfjDcALWvIT2LguBqIEYjC1JL1Gm+vRoO1PnZmoh5QREeIjjK9zd
+	9EnAyxCuG6C6B4ZXgiXWtjt0QyLC572tR4QuC49XB4q/FGJtkpefxj0lPH6BeiQ=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wan17k68v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 07:57:47 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41J7vX2l012589
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 07:57:33 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 18 Feb 2024 23:57:30 -0800
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, Krishna Kurapati <quic_kriskura@quicinc.com>
+Subject: [PATCH] arm64: dts: qcom: sc8280xp: Add missing hs_phy_irq in USB nodes
+Date: Mon, 19 Feb 2024 13:27:20 +0530
+Message-ID: <20240219075720.640529-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <4997c865-fc6f-4d8c-b73f-a649b6257ed0@app.fastmail.com>
-In-Reply-To: 
- <k6cclnrqu2h6mh4wb33hpakhfasq7jec7dnbaiaxlpw525adan@cor5l3bi35u2>
-References: 
- <fe51512baa18e1480ce997fc535813ce6a0b0721.1708286962.git.jcalvinowens@gmail.com>
- <431dd956-ad31-4da8-ad42-34f7380824bb@app.fastmail.com>
- <k6cclnrqu2h6mh4wb33hpakhfasq7jec7dnbaiaxlpw525adan@cor5l3bi35u2>
-Date: Mon, 19 Feb 2024 08:56:59 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Kent Overstreet" <kent.overstreet@linux.dev>
-Cc: "Calvin Owens" <jcalvinowens@gmail.com>,
- "Russell King" <linux@armlinux.org.uk>, "Dave Martin" <Dave.Martin@arm.com>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- "linux-bcachefs@vger.kernel.org" <linux-bcachefs@vger.kernel.org>
-Subject: Re: [PATCH] arm: Silence gcc warnings about arch ABI drift
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: RjMFkSsBJN1JbHHkvJpCJ_9tGkHBOPuW
+X-Proofpoint-GUID: RjMFkSsBJN1JbHHkvJpCJ_9tGkHBOPuW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_05,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ spamscore=0 phishscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=485 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402190059
 
-On Mon, Feb 19, 2024, at 07:25, Kent Overstreet wrote:
-> On Mon, Feb 19, 2024 at 07:21:11AM +0100, Arnd Bergmann wrote:
->> 
->> This is not something that should ever be passed by value
->> into a function.
->
-> Why?
+Recent binding update [1] indicates that there are hs_phy_irq
+present in primary and secondary usb controllers of sc8280xp.
 
-Mostly because of the size, as 8 registers (on 32-bit) or
-4 registers (on 64 bit) mean that even in the best case
-passing these through argument registers is going to cause
-spills if anything else gets passed as well. Passing them
-through the stack in turn requires the same number of
-registers to get copied in and out for every call, which
-in turn can evict other registers that hold local variables.
+Add the missing hs_phy_irq for these controllers. Since the driver
+doesn't use this interrupt, this change has been only compile
+tested.
 
-On top of that, you have all the complications that make
-passing them inconsistent and possibly worse depending
-on how exactly a particular ABI passes structures:
+[1]: https://lore.kernel.org/all/20231227091951.685-2-quic_kriskura@quicinc.com/
 
-- If each struct member is passed individually, you always
-  need eight registers
-- bitfields tend to get the compiler into corner cases
-  that are not as optimized
-- __u64 members tend to need even/odd register pairs on
-  many 32-bit architectures.
-- on big-endian kernels, two __u64 members are
-  misaligned, which causes them to be in two halves
-  of separate registers if the struct gets passed as
-  four 64-bit regs.
-  
-I can't think of any platform where passing the structure
-through a const pointer ends up worse than passing
-by value.
+Signed-off-by: Krishna Kurapati <quic_kriskura@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/sc8280xp.dtsi | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-    Arnd
+diff --git a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+index a5b194813079..62e2b99915af 100644
+--- a/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc8280xp.dtsi
+@@ -3361,10 +3361,12 @@ usb_0: usb@a6f8800 {
+ 			assigned-clock-rates = <19200000>, <200000000>;
+ 
+ 			interrupts-extended = <&intc GIC_SPI 804 IRQ_TYPE_LEVEL_HIGH>,
++					      <&intc GIC_SPI 805 IRQ_TYPE_LEVEL_HIGH>,
+ 					      <&pdc 14 IRQ_TYPE_EDGE_BOTH>,
+ 					      <&pdc 15 IRQ_TYPE_EDGE_BOTH>,
+ 					      <&pdc 138 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "pwr_event",
++					  "hs_phy_irq",
+ 					  "dp_hs_phy_irq",
+ 					  "dm_hs_phy_irq",
+ 					  "ss_phy_irq";
+@@ -3421,10 +3423,12 @@ usb_1: usb@a8f8800 {
+ 			assigned-clock-rates = <19200000>, <200000000>;
+ 
+ 			interrupts-extended = <&intc GIC_SPI 811 IRQ_TYPE_LEVEL_HIGH>,
++					      <&intc GIC_SPI 790 IRQ_TYPE_LEVEL_HIGH>,
+ 					      <&pdc 12 IRQ_TYPE_EDGE_BOTH>,
+ 					      <&pdc 13 IRQ_TYPE_EDGE_BOTH>,
+ 					      <&pdc 136 IRQ_TYPE_LEVEL_HIGH>;
+ 			interrupt-names = "pwr_event",
++					  "hs_phy_irq",
+ 					  "dp_hs_phy_irq",
+ 					  "dm_hs_phy_irq",
+ 					  "ss_phy_irq";
+-- 
+2.34.1
+
 
