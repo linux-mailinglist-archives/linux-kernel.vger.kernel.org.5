@@ -1,150 +1,201 @@
-Return-Path: <linux-kernel+bounces-71212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9899685A202
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:33:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69EE385A208
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50F64281822
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:33:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB86FB217EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526242D054;
-	Mon, 19 Feb 2024 11:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5233C2C68E;
+	Mon, 19 Feb 2024 11:34:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OcZaLk7Q"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dk+P21/i";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ty+8KCsT";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wQMfl/kC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h/46827Y"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84EBF2C85C;
-	Mon, 19 Feb 2024 11:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 166592C1A4;
+	Mon, 19 Feb 2024 11:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708342359; cv=none; b=Npvjuftp9YPzVg7szaGlmiLPhHG2Hvt4usY51pDXCKz+b/tLrFTheGGuI6ic6nr8nw5nS+7R5479Qqedk4istkc/RxdeD4BVyP+1twLcGltiqYFZh5CiYxref352mS4Vi31S4kghJdAdnXGaRazyuoW49Qfw9zCSPXuo/VVnPTA=
+	t=1708342488; cv=none; b=T6SSid9D5HlHTzbI8eG367FOUKXkweLHigvIFIDd4Pzg3YBtUJkkQ17Obhv0J7FJs04mHtI0fg2QHIirt/bRRHMldnRafWN9+rH1Z2AsVRU5Nuun8sreNV2TyM/yis6CQOLY2mvVKB5tegvXspsnZ3FVB4QsbByeXdrASck+ZZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708342359; c=relaxed/simple;
-	bh=77RHh1S722+4UZIFP/TepDf9R/B6Xzqn2rhn7GF3+uY=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=W6SQL5d7NLRRwy5sdMkYif9+HOYe/UF8czpEXHoPbSH3GRRez/pq+ozornMUsJESEfit1xLlILR4liRocrTDAuCL2pQzQvIjouugHukS3hNeovymprjQsgrt6LoHTAqUyx8qshnvRhPq2r6ASC2MZjt+n1wJtWN8vEi2RM9A63Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OcZaLk7Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2179CC433C7;
-	Mon, 19 Feb 2024 11:32:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708342359;
-	bh=77RHh1S722+4UZIFP/TepDf9R/B6Xzqn2rhn7GF3+uY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=OcZaLk7Qto84dLXIvKqf5aWkOulZTjrfezhfVPPyMzz647fRVKpmQLknKwslN2xnd
-	 lJtCIXetyJOgxFkrGK2e/w7PjUN7EmvQ0Yty2f99mjUDj6qxP+rdfOS9OsWEP2HamV
-	 dD1wJ7+FIt1CaiN8P/Gb772cLhhZrHTrmxUelk7/KFLGKsmWKwlmSvIlb1oCmma8Q0
-	 pnt4QmiiVI4oyBuxyxbNLZnuGkX/yc7gF4xQcrM6yhsxg1PBwVlFjzm82j2Qy3PHGr
-	 sKzmCtQVpx0GEqbg2wCA0uMJbDwUzCrT5+gvsSjL5q4D4XppGCOv+ZN4ngZNEpGajk
-	 8YjjodraKjEBA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rc1sz-004YSJ-4G;
-	Mon, 19 Feb 2024 11:32:37 +0000
-Date: Mon, 19 Feb 2024 11:32:36 +0000
-Message-ID: <86cyss4rl7.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: open list <linux-kernel@vger.kernel.org>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	lkft-triage@lists.linaro.org,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: next-20240219: arm64: boot failed - gic_of_init
-In-Reply-To: <86edd84wer.wl-maz@kernel.org>
-References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
-	<86edd84wer.wl-maz@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1708342488; c=relaxed/simple;
+	bh=04zZQvErufDHrsOkOYmWa71v/CV/vTUEjZZ/qUxq2hs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=odUoMM+vI7G/7lxFKXZ/k9zLmfEp1tpgymbELxn2PvH8AS14svm/CfYw2Ra8haWtnlwyJv3ryfVqWsPiMsvENJW6x9aEfmOYU7W74tlkwcbD3oYGoZphgvkqVj0q0a/ziGsd0IZKn4yiCciPjIgo6tadPLG+p1nhyinh3//YFiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dk+P21/i; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ty+8KCsT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wQMfl/kC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h/46827Y; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6116E1FD0F;
+	Mon, 19 Feb 2024 11:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708342484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
+	b=dk+P21/iZjdfWn1OMr58LZnfRoDNJTOmLtmGN1+2VeomfGvmKRppzti0v5qXd/Q03Xf2Fg
+	C8QltB8mRQHRiatUwi3RZaV24EFAxUtYACmEgiFn5zdcL4/qs739dHXoY2N9bh/ESHI5BZ
+	ypDkhVpmtYeHkZRyga1261rfb79laqw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708342484;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
+	b=ty+8KCsTwu+4P1tXchJB/zd9m+HPb2ztbLnMkiSsh1ee4/ZsRMQCmclrtLUXEtAr968ISP
+	0pHv51k6REhAUaDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708342482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
+	b=wQMfl/kC8LYtLbRSxqJXIbM12ekeEdeqIBXvBHVD6Y5Cs1QO/pjnemurukXSO1QOfKE6b0
+	5KKfQA2D1UOVd3y3yz1nOSipqEvqXrN/ySHoGG4gbfT6tUEn8nEmuI0GT7LrXbCU6qRsfL
+	rwPmYN5BMSdtna1mCLUCTbVozWCdJLY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708342482;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Sxr37yjvsBDH8ImiBOjxjncGbh787kSDIXFry4Onmac=;
+	b=h/46827Ys+ElhiiA4KhHcwVXMyzywj/2kcYR6KPT5sTOm8njw/mFhKE2zEtrWF036CEem3
+	ruaVIjSZ+O2HKDBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5196A13585;
+	Mon, 19 Feb 2024 11:34:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id /56mE9I802VDawAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 19 Feb 2024 11:34:42 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id E5B27A0806; Mon, 19 Feb 2024 12:34:37 +0100 (CET)
+Date: Mon, 19 Feb 2024 12:34:37 +0100
+From: Jan Kara <jack@suse.cz>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>, Jan Kara <jack@suse.cz>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Kees Cook <keescook@chromium.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Andi Kleen <ak@linux.intel.com>, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] fs/select: rework stack allocation hack for clang
+Message-ID: <20240219113437.y7vxeyhvjnxo7rlh@quack3>
+References: <20240216202352.2492798-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: naresh.kamboju@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lkft-triage@lists.linaro.org, regressions@lists.linux.dev, catalin.marinas@arm.com, arnd@arndb.de, dan.carpenter@linaro.org, anders.roxell@linaro.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216202352.2492798-1-arnd@kernel.org>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.80
+X-Spamd-Result: default: False [-0.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 RCPT_COUNT_TWELVE(0.00)[15];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[43.66%]
+X-Spam-Flag: NO
 
-On Mon, 19 Feb 2024 09:48:28 +0000,
-Marc Zyngier <maz@kernel.org> wrote:
+On Fri 16-02-24 21:23:34, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> On Mon, 19 Feb 2024 09:42:45 +0000,
-> Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > 
-> > The qemu-arm64 boot failed with linux next-20240219 tag kernel.
-> > 
-> > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> > 
-> > Boot log:
-> > ---------
-> > <6>[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
-> > <1>[    0.000000] Unable to handle kernel paging request at virtual
-> > address ffff80008001ffe8
-> > <1>[    0.000000] Mem abort info:
-> > <1>[    0.000000]   ESR = 0x0000000096000004
-> > <1>[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
-> > <1>[    0.000000]   SET = 0, FnV = 0
-> > <1>[    0.000000]   EA = 0, S1PTW = 0
-> > <1>[    0.000000]   FSC = 0x04: level 0 translation fault
-> > <1>[    0.000000] Data abort info:
-> > <1>[    0.000000]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> > <1>[    0.000000]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> > <1>[    0.000000]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> > <1>[    0.000000] swapper pgtable: 4k pages, 52-bit VAs, pgdp=0000000042497000
-> > <1>[    0.000000] [ffff80008001ffe8] pgd=10000000439a5003,
-> > p4d=10000001000e3003, pud=10000001000e4003, pmd=10000001000e5003,
-> > pte=006800000800f413
-> > <0>[    0.000000] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-> > <4>[    0.000000] Modules linked in:
-> > <4>[    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
-> > 6.8.0-rc5-next-20240219 #1
-> > <4>[    0.000000] Hardware name: linux,dummy-virt (DT)
-> > <4>[    0.000000] pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT
-> > -SSBS BTYPE=--)
-> > <4>[    0.000000] pc : gic_of_init+0x84/0x3a8
-> > <4>[    0.000000] lr : gic_of_init+0x290/0x3a8
-> > ...
-> > <4>[    0.000000] Call trace:
-> > <4>[    0.000000]  gic_of_init+0x84/0x3a8
-> > <4>[    0.000000]  of_irq_init+0x1d4/0x3d0
-> > <4>[    0.000000]  irqchip_init+0x20/0x50
-> > <4>[    0.000000]  init_IRQ+0xa8/0xc8
-> > <4>[    0.000000]  start_kernel+0x270/0x690
-> > <4>[    0.000000]  __primary_switched+0x80/0x90
-> > <0>[    0.000000] Code: f94017e0 f90007e0 d29ffd00 8b0002c0 (b9400000)
-> > <4>[    0.000000] ---[ end trace 0000000000000000 ]---
-> > <0>[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
-> > <0>[    0.000000] ---[ end Kernel panic - not syncing: Attempted to
-> > kill the idle task! ]---
-> > 
-> > Links:
-> >  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/test/gcc-13-lkftconfig-armv8_features/log
-> >  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/tests/
+> A while ago, we changed the way that select() and poll() preallocate
+> a temporary buffer just under the size of the static warning limit of
+> 1024 bytes, as clang was frequently going slightly above that limit.
 > 
-> Where is the configuration file? What are the parameters to QEMU?
-> Please consider making this a useful and actionable report.
+> The warnings have recently returned and I took another look. As it turns
+> out, clang is not actually inherently worse at reserving stack space,
+> it just happens to inline do_select() into core_sys_select(), while gcc
+> never inlines it.
+> 
+> Annotate do_select() to never be inlined and in turn remove the special
+> case for the allocation size. This should give the same behavior for
+> both clang and gcc all the time and once more avoids those warnings.
+> 
+> Fixes: ad312f95d41c ("fs/select: avoid clang stack usage warning")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-For what it is worth, I've just tested both defconfig and my own
-configuration with both 4k (kvmtool, QEMU+KVM and on SynQuacer) and
-16k (kvmtool), without any obvious problem.
+Looks good (if this indeed works with clang ;). Feel free to add:
 
-So until you come up with more specific details, there isn't much I
-can do.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-	M.
+								Honza
 
+> ---
+>  fs/select.c          | 2 +-
+>  include/linux/poll.h | 4 ----
+>  2 files changed, 1 insertion(+), 5 deletions(-)
+> 
+> diff --git a/fs/select.c b/fs/select.c
+> index 11a3b1312abe..9515c3fa1a03 100644
+> --- a/fs/select.c
+> +++ b/fs/select.c
+> @@ -476,7 +476,7 @@ static inline void wait_key_set(poll_table *wait, unsigned long in,
+>  		wait->_key |= POLLOUT_SET;
+>  }
+>  
+> -static int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
+> +static noinline_for_stack int do_select(int n, fd_set_bits *fds, struct timespec64 *end_time)
+>  {
+>  	ktime_t expire, *to = NULL;
+>  	struct poll_wqueues table;
+> diff --git a/include/linux/poll.h b/include/linux/poll.h
+> index a9e0e1c2d1f2..d1ea4f3714a8 100644
+> --- a/include/linux/poll.h
+> +++ b/include/linux/poll.h
+> @@ -14,11 +14,7 @@
+>  
+>  /* ~832 bytes of stack space used max in sys_select/sys_poll before allocating
+>     additional memory. */
+> -#ifdef __clang__
+> -#define MAX_STACK_ALLOC 768
+> -#else
+>  #define MAX_STACK_ALLOC 832
+> -#endif
+>  #define FRONTEND_STACK_ALLOC	256
+>  #define SELECT_STACK_ALLOC	FRONTEND_STACK_ALLOC
+>  #define POLL_STACK_ALLOC	FRONTEND_STACK_ALLOC
+> -- 
+> 2.39.2
+> 
 -- 
-Without deviation from the norm, progress is not possible.
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
