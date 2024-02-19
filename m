@@ -1,246 +1,122 @@
-Return-Path: <linux-kernel+bounces-71530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3302485A6BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:01:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8125585A6C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD54E2839A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:01:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22CCAB211D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:02:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF70381B9;
-	Mon, 19 Feb 2024 15:01:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11AF381C4;
+	Mon, 19 Feb 2024 15:02:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m4vTzgp4"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FlLLfKxp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45E437704
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:01:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6FB376EC;
+	Mon, 19 Feb 2024 15:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708354892; cv=none; b=MRxj+Z1LQEGZKwP89Ue35jrvV+lWneZm0EmMVzCHvKqiGi7Unp+Ycsz87w75SPpPpclcTydMDGz88kZ54FtueSZKlZv3itjxIEel7muOqocOqhcccm47P1uu9RhZJXmzxibMswMf5wt8Ub1Hle2IQdTqZqVqxM9faQQRoS4Lh4o=
+	t=1708354936; cv=none; b=bxPi2sPCdS2z8pghXVnyoRGtFop7ZgASc4pKptuJxr7GiaTRSJ2bLzd0lEvijN+7ir31MRLk2KfXAhCAHkWDDXT+uayaid/apwn9dFojo4D6MAvbt+bDktj7k8wz611osTQ9tpmXPKiY659bNmVrUZ1HSjmZtPot8Iaaxj/YOAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708354892; c=relaxed/simple;
-	bh=aJSHj9HniTFFT8SjDNG5w7VAxxQZAl9isd1Hc/vf8go=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Sai1DO84/EMYjEQ3baOxpRCctAEo27q2bTRmV/dxqhtNbESfY7e667Exb0wZ3Pmorp6ducQWROqL4+6aR91aoDq0qCm3+kdBr+0PxdSlzlE7ozkr8DXRhIQPy8UkTgVQzKvfNMfye9ObQCJv2e03AqiMajLLsFW7/v90o7Baf5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=m4vTzgp4; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-511ac32fe38so6658658e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:01:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708354888; x=1708959688; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fyijmgv5Xc4qQW7NoJwHILZpg0h1x8EzSZbjwL/lNv4=;
-        b=m4vTzgp47AOCFEdLQKQxMk7QxGa3ImA3QUtkjrLgDTdUCJTd2SrPOZLaFEWnLttnOw
-         TxS8RefLO5o6seFte09/ANegznVTsDnAi18G/D2Zoy/g/IDjaZa7q9w8oVl4YJnG1YIs
-         QUx4EIwg6kYoK0S3Cakg8x1154LbfHA6rDvHezxcSlGY4FxXgb3qHT0T7oJRNUK9oX/J
-         Mqn6L/rNCW9HBKscT5WdAA0YMlaj2YVw4LRo2VHpcoSuBtDxPssRlOPCKS8J9/lhO7lE
-         uTzVq/S2PBh8WY3B02eLmeSzCLNXHCQ1fFyHKVlVj1cZwttcIwl08uscEpeXQdyLXgwt
-         oTsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708354888; x=1708959688;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fyijmgv5Xc4qQW7NoJwHILZpg0h1x8EzSZbjwL/lNv4=;
-        b=ZyNlI7Sz/zWJeFhaQ3hMAoHqOVeSHWwyn0U+Cb0Lpyf3J50gVVzvhU3us3nirvd1Sa
-         QhK9AGRJwJun0eozp1tSceHo0FcjEJs2Te0Y88KH3ucB+l8yXUeXOest63q/JfI9qq+K
-         tEFCtSKBza/aLZ7cKSiZbnwNTeBMEBCg6Ck6G0DJCGW6S/pb9SCrrEgq5CN52bcCwJDX
-         aXd91QXaoOolTU4KH7ixtpJJF6RTjxm5uO3k0IKLtqai6EEWMEpRzJq1ce6OH73ZiwMP
-         7CK1fNyt5X3c4TW+eBUIRQqmNYSJBW+fda9HXPKyDje3jFmr3oCx9HoX+H8O/vIdHcCK
-         gYZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXr3mkQMo1jaOIGERuYAjDuTmHhkcpdi/dow1NLiC01Iy6mbQLcfNQwkXYyp6gwez3ihTqrckdWCweAqMuYWEjMNUr1CSMvx9es9Pq9
-X-Gm-Message-State: AOJu0YxKDE70KyrIZQNZ+DKpuLF+dwSWubq4Y1gauQckw5OqTnkJKlMp
-	+ZBKbwVWYiQ4+iF6Q6N4VnojwqFKayQmuWGs2MTgLbcTww/DjNakUAiXRS4ICPM=
-X-Google-Smtp-Source: AGHT+IEDIsdQG1UPM3EDDLCecc5t85EINjACXNa3VncuUkRCHIvhrLnC9PhHvBMOJnz+odgxDTjuCw==
-X-Received: by 2002:a05:6512:2385:b0:512:a9af:8c5e with SMTP id c5-20020a056512238500b00512a9af8c5emr5129683lfv.8.1708354887871;
-        Mon, 19 Feb 2024 07:01:27 -0800 (PST)
-Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id ek23-20020a056402371700b0055edfb81384sm2716963edb.60.2024.02.19.07.01.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 07:01:27 -0800 (PST)
-Message-ID: <d212b700-aedb-4653-80e4-36320b33e51e@linaro.org>
-Date: Mon, 19 Feb 2024 16:01:23 +0100
+	s=arc-20240116; t=1708354936; c=relaxed/simple;
+	bh=qkvjpH6GcUSoKvmAK9+dudgyRxq2VO9xR86tq/v/1SU=;
+	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
+	 Message-ID:Content-Type; b=mVm9fBFfDjRwDU7KqR0Worwd29H3j3LahUhPf8JGIvxvZ1zq5ge6RKXBrqO1Q9vEzqp7qyP7lBRR+5kg5EsqF5KGPQ7AUvghtFqRKKdNR/zNH55uAUVqfdcPvT3AhQOyW+ryQkaqF+48tPMMJvqyP1UYck5MqyhPiSM5U+yctKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FlLLfKxp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD934C433F1;
+	Mon, 19 Feb 2024 15:02:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708354935;
+	bh=qkvjpH6GcUSoKvmAK9+dudgyRxq2VO9xR86tq/v/1SU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FlLLfKxp4qgMC3C+sIlHLlkwXCefLV63VVOU7xikaY+/U2s1DyNILgjPgkCN+9epS
+	 24t2pX3PJxpwd+TqdIaKSwyiw8cIrzttU0/pSnExtwmqvEcHUeruUUVshtOENlFeoJ
+	 8Uinxezxeiu+aXba0uQEA/astLhhW9EMzc7gO6JBvfINHQ94jo8AqAcH7nJygp2Dzr
+	 mws6VTHRkOfWzgG3Elyt+HbmA/Vq5gWt9gcd4h2ND8QkeFeklew+akKdJ23K05c8YN
+	 1A5GsMuaPEPK1eBr/0x3GjtN6jQnFGLttEgzPXBTFzftoR/3rxWpDEuyPL/azbMjUI
+	 7NV9lMjXDL48A==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rc59k-004bwO-7z;
+	Mon, 19 Feb 2024 15:02:08 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/8] clk: qcom: clk-alpha-pll: Add HUAYRA_2290 support
-Content-Language: en-US
-To: Andrew Halaney <ahalaney@redhat.com>
-Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Rob Clark <robdclark@gmail.com>,
- Abhinav Kumar <quic_abhinavk@quicinc.com>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, Sean Paul <sean@poorly.run>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Konrad Dybcio <konradybcio@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
- freedreno@lists.freedesktop.org
-References: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
- <20240219-topic-rb1_gpu-v1-3-d260fa854707@linaro.org>
- <u7beg6ui3i6nxoaulc3o7ghfkvcsy46ps53k3jynrurdwn6o7o@ppyqoz4jsotc>
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <u7beg6ui3i6nxoaulc3o7ghfkvcsy46ps53k3jynrurdwn6o7o@ppyqoz4jsotc>
-Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Feb 2024 15:02:07 +0000
+From: Marc Zyngier <maz@kernel.org>
+To: Zenghui Yu <yuzenghui@huawei.com>
+Cc: Naresh Kamboju <naresh.kamboju@linaro.org>, open list
+ <linux-kernel@vger.kernel.org>, Linux ARM
+ <linux-arm-kernel@lists.infradead.org>, lkft-triage@lists.linaro.org, Linux
+ Regressions <regressions@lists.linux.dev>, Catalin Marinas
+ <catalin.marinas@arm.com>, Arnd Bergmann <arnd@arndb.de>, Dan Carpenter
+ <dan.carpenter@linaro.org>, Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: next-20240219: arm64: boot failed - gic_of_init
+In-Reply-To: <a7d8e529-9a44-3f88-50ef-d87b80515c36@huawei.com>
+References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
+ <86edd84wer.wl-maz@kernel.org> <86cyss4rl7.wl-maz@kernel.org>
+ <a7d8e529-9a44-3f88-50ef-d87b80515c36@huawei.com>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <20adfff58d44d09d0e968f5c502f28ce@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: yuzenghui@huawei.com, naresh.kamboju@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lkft-triage@lists.linaro.org, regressions@lists.linux.dev, catalin.marinas@arm.com, arnd@arndb.de, dan.carpenter@linaro.org, anders.roxell@linaro.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On 19.02.2024 15:54, Andrew Halaney wrote:
-> On Mon, Feb 19, 2024 at 02:35:48PM +0100, Konrad Dybcio wrote:
->> Commit 134b55b7e19f ("clk: qcom: support Huayra type Alpha PLL")
->> introduced an entry to the alpha offsets array, but diving into QCM2290
->> downstream and some documentation, it turned out that the name Huayra
->> apparently has been used quite liberally across many chips, even with
->> noticeably different hardware.
->>
->> Introduce another set of offsets and a new configure function for the
->> Huayra PLL found on QCM2290. This is required e.g. for the consumers
->> of GPUCC_PLL0 to properly start.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  drivers/clk/qcom/clk-alpha-pll.c | 45 ++++++++++++++++++++++++++++++++++++++++
->>  drivers/clk/qcom/clk-alpha-pll.h |  3 +++
->>  2 files changed, 48 insertions(+)
->>
->> diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
->> index 8a412ef47e16..61b5abd13782 100644
->> --- a/drivers/clk/qcom/clk-alpha-pll.c
->> +++ b/drivers/clk/qcom/clk-alpha-pll.c
->> @@ -244,6 +244,19 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
->>  		[PLL_OFF_OPMODE] = 0x30,
->>  		[PLL_OFF_STATUS] = 0x3c,
->>  	},
->> +	[CLK_ALPHA_PLL_TYPE_HUAYRA_2290] =  {
->> +		[PLL_OFF_L_VAL] = 0x04,
->> +		[PLL_OFF_ALPHA_VAL] = 0x08,
->> +		[PLL_OFF_USER_CTL] = 0x0c,
->> +		[PLL_OFF_CONFIG_CTL] = 0x10,
->> +		[PLL_OFF_CONFIG_CTL_U] = 0x14,
->> +		[PLL_OFF_CONFIG_CTL_U1] = 0x18,
->> +		[PLL_OFF_TEST_CTL] = 0x1c,
->> +		[PLL_OFF_TEST_CTL_U] = 0x20,
->> +		[PLL_OFF_TEST_CTL_U1] = 0x24,
->> +		[PLL_OFF_OPMODE] = 0x28,
->> +		[PLL_OFF_STATUS] = 0x38,
->> +	},
->>  };
->>  EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
->>  
->> @@ -779,6 +792,38 @@ static long clk_alpha_pll_round_rate(struct clk_hw *hw, unsigned long rate,
->>  	return clamp(rate, min_freq, max_freq);
->>  }
->>  
->> +void clk_huayra_2290_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
->> +				   const struct alpha_pll_config *config)
->> +{
->> +	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL(pll), config->config_ctl_val);
->> +	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U(pll), config->config_ctl_hi_val);
->> +	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U1(pll), config->config_ctl_hi1_val);
->> +	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL(pll), config->test_ctl_val);
->> +	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U(pll), config->test_ctl_hi_val);
->> +	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U1(pll), config->test_ctl_hi1_val);
->> +	clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
->> +	clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
->> +	clk_alpha_pll_write_config(regmap, PLL_USER_CTL(pll), config->user_ctl_val);
->> +
->> +	/* Set PLL_BYPASSNL */
->> +	regmap_update_bits(regmap, PLL_MODE(pll), PLL_BYPASSNL, PLL_BYPASSNL);
->> +
->> +	/* Wait 5 us between setting BYPASS and deasserting reset */
->> +	mb();
->> +	udelay(5);
->> +
->> +	/* Take PLL out from reset state */
->> +	regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
->> +
->> +	/* Wait 50us for PLL_LOCK_DET bit to go high */
->> +	mb();
->> +	usleep_range(50, 55);
+On 2024-02-19 14:46, Zenghui Yu wrote:
+> On 2024/2/19 19:32, Marc Zyngier wrote:
+>> For what it is worth, I've just tested both defconfig and my own
+>> configuration with both 4k (kvmtool, QEMU+KVM and on SynQuacer) and
+>> 16k (kvmtool), without any obvious problem.
 > 
-> I *think* you'd want to use a read to ensure your write goes through
-> prior to your sleep... from memory-barriers.txt:
+> I had a quick test on top of next-20240219 with defconfig.  I can
+> reproduce it with QEMU parameter '-cpu max -accel tcg', but things are
+> fine with '-cpu max,lpa2=off -accel tcg'.
 > 
-> 	5. A readX() by a CPU thread from the peripheral will complete before
-> 	   any subsequent delay() loop can begin execution on the same thread.
-> 	   This ensures that two MMIO register writes by the CPU to a peripheral
-> 	   will arrive at least 1us apart if the first write is immediately read
-> 	   back with readX() and udelay(1) is called prior to the second
-> 	   writeX():
+> Bisection shows that the problem happens when we start putting the
+> latest arm64 and kvmarm changes together.  The following hack fixes the
+> problem for me (but I **only** write it for kernel built with defconfig
+> with ARM64_4K_PAGES=y atm).
 > 
-> 		writel(42, DEVICE_REGISTER_0); // Arrives at the device...
-> 		readl(DEVICE_REGISTER_0);
-> 		udelay(1);
-> 		writel(42, DEVICE_REGISTER_1); // ...at least 1us before this.
+> I can investigate it further tomorrow (as it's too late now ;-) ).  Or
+> maybe Marc or Catalin can help fix it with a proper approach.
 > 
-> also https://youtu.be/i6DayghhA8Q?si=7lp0be35q1HRmlnV&t=1677
-> for more references on this topic.
+> diff --git a/arch/arm64/kernel/cpufeature.c 
+> b/arch/arm64/kernel/cpufeature.c
+> index 4f7662008ede..babdc3f4721b 100644
+> --- a/arch/arm64/kernel/cpufeature.c
+> +++ b/arch/arm64/kernel/cpufeature.c
+> @@ -2798,6 +2798,7 @@ static const struct arm64_cpu_capabilities
+> arm64_features[] = {
+> | 		.sign = FTR_SIGNED,
+> | 		.field_pos = ID_AA64MMFR0_EL1_TGRAN4_SHIFT,
+> | 		.min_field_value = ID_AA64MMFR0_EL1_TGRAN4_52_BIT,
+> |+		.max_field_value = BIT(ID_AA64MMFR0_EL1_TGRAN4_WIDTH - 1) - 1,
+> | #else
+> | 		.sign = FTR_UNSIGNED,
+> | 		.field_pos = ID_AA64MMFR0_EL1_TGRAN16_SHIFT,
 
-I mentioned this feels very iffy in the cover letter, but it's a combination
-of two things:
+Yup, got to that point too.
 
-1. i followed what qualcomm downstream code did
+Working on a slightly more elaborate fix.
 
-2. qualcomm downstream code is not known for being always correct
+Thanks,
 
-
-
-I suppose a readback would be the correct solution, but then it should be
-done for all similar calls in this driver.
-
-Although this code has shipped in literally hundreds of millions of devices
-and it didn't explode badly :P (i'm not defending it, though)
-
-Konrad
+         M.
+-- 
+Jazz is not dead. It just smells funny...
 
