@@ -1,149 +1,148 @@
-Return-Path: <linux-kernel+bounces-71911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C871C85AC67
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:52:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1961C85AC71
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:53:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 07C811C22642
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:52:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEC83B24A5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:53:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9800056B70;
-	Mon, 19 Feb 2024 19:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F9F05822F;
+	Mon, 19 Feb 2024 19:49:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="OHp0+xoN"
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QCcwxNIG"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C3E56B6C
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB265822D;
+	Mon, 19 Feb 2024 19:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708372132; cv=none; b=O7jc+dI0OH6/0jcEOTAhG1M2rxPnt5sxasX1xkIk0cUHZfuPffFhggiKrBbMOlAeLOMHLAT43k+6+nG0p4xy84mGiAFnpibLVb7gRkfwiQZZYKv9nSWg0oihBv2EocS8+JohMmcVlAsxg1Q+P1/7mBA3lxdi0ww/a/rzs+A4pZ4=
+	t=1708372191; cv=none; b=f+jbpaEnIKOEy5i9gtTykLpa1eP1dC17TX6A/BKQrlxedS6id3rgZGGj42o38jFOimfTs9nivoifzWXhO+QiV5JSTXekuLv1xXt2cWhFt0WLX4Ldu79SEAXlRMtOkq9LNiad9wZIA7SQI5sUhpEBDTbx4x4X9+N1WqDjdUB+a5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708372132; c=relaxed/simple;
-	bh=NMqAs0MjnufjzieP2aA0KfC0+NvfSYAdC36Vekj6kDo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eFZzq5LDM63q9MT8olmF+tw8X9yEhl3DAqF8zu0G7YAFKtTRuxlCQjTEkxFoPhPo9O8hWbihMFyV62F+rRqZ6aH7gPCBQvFcL4uW9T7/96S3ZxWU1Xi7qFvAYSNM3+g2KLHIqbOzimUvzCXJEgY6kID4pZoif2axOvrGVGMI8a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=OHp0+xoN; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+	s=arc-20240116; t=1708372191; c=relaxed/simple;
+	bh=2BFGhy1GoGAZQrg+qot76orHOK5E0hhM9ZPKjpWs0L0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gnh5UEbRb6T3YqkM5nY/pcGsmPgf855BUDHbK8VrGsPQuAa3CYikS3vOXxFLY6s8DBWaI0ojL2iQFYbLOAqCbyVew1BmkZMcVMDUrOPiXg4ky4C81PW8byo7x6phj3vHD6RpWHSXSOpStRrQAkyQDVBBXlkK11rgS/Mkxv/tO5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QCcwxNIG; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so3479286a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:48:51 -0800 (PST)
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d22b8c6e0dso29294761fa.2;
+        Mon, 19 Feb 2024 11:49:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708372188; x=1708976988; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j+Mxj6oL3njy7wYXA6Pewj5A5hfEOxX2yUvAWo5Ne8Y=;
+        b=QCcwxNIGTB7hAr5jM8+nlA13qyCz7fi/DIt9SzF0EPOK9N1V5VnNC6HYmBTi23N1vO
+         4BpiDr76lg7K3ucRS4yBHnIAH4ZbiRU6RAr0mWaUWtOmQbQwGIXhuhRNXk+VIcS6wQJn
+         MDsU9lXoRDPvAhHPer5K7RnCaMEDEj5r8MfHbyVeCKeEBFLLuBBeGbi5k/uOkkmPIfzc
+         dUnLv7Xds80aSitjv8/xeqIyDWBXitFH0GPy1fRGPujgrvXSJCYJpMBntF8mrYQ+djKK
+         v2QRphZnloiiX02qD75JhAqSYGH5VllvOkqPDDNY6N4A4weZ7JxuUfFfGW7OTh+Ir1UY
+         DNOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708372131; x=1708976931;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RpPLVhfeHrdVMlFPITmrnXxqzPQFObmVpUnLSpO4uvg=;
-        b=NoLe+4aomcZHK7zfAN//1Ix/tj89hyVF4JhVT5U06iQEkylhVmOtHODWGnXoJyRhJe
-         r27uu8CpNmKWxws2Vflm4t6Z2Bo7+zC8fDSUPS93ULPS8KWAC0yb8zbWAyNtt9Ofyc3F
-         vgil8h0dZfgwz5joradcWcyDDEeB9HGU0XBzxQJIJ2fNByq17Vqy80uRG3cYlJ32GcZc
-         oMtDnDR1PcWKo97k2rLJMVovlde1RCTZXDQ0JDdA5KA2lj2oj7Zxv+a+UDM6qWWruEL2
-         vK90UcscuyAiw8hyqnzbPQ5YGHkgYIU30/VOwl3qTSM6CR9cIQYX4uTvs2VEXU1iokGl
-         dYvg==
-X-Gm-Message-State: AOJu0YxE/3PxLv+NMObWenD0P9CixV4gX8hDLw/RlCG/mzr7wEPbzZyU
-	HYbW6BxhMs5T/+Tm2nJ3NrIUJ1Okb3tm098s+Hb+Sk24AGgkozKWtqTv8maGUPAbWg==
-X-Google-Smtp-Source: AGHT+IGbig8bdQR8Pb6ym/ttIM8aBTIN8GInXUFkMvmbpkvSKYReLvqacpqwjGoiarU7iK3uNmdoHA==
-X-Received: by 2002:a17:903:11c3:b0:1d9:a4a5:7a6c with SMTP id q3-20020a17090311c300b001d9a4a57a6cmr19098246plh.57.1708372130514;
-        Mon, 19 Feb 2024 11:48:50 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id mq6-20020a170902fd4600b001d96a0cddccsm4781942plb.296.2024.02.19.11.48.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 11:48:50 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708372129;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=RpPLVhfeHrdVMlFPITmrnXxqzPQFObmVpUnLSpO4uvg=;
-	b=OHp0+xoN7r2aADn+PdxCxTJNnch//6IqhQCsYi9huI5KCB5sPHI6DiXeU99l6AOdbF9GNB
-	mj+XQXCEbi5KwvIC4cKvr25X3Dl9xYIfinEpXaB4siruU6shKetVdCOtfNTQiDWZ6oyEiK
-	zSEWmp5EosfaB8tFw8jcrni2l1CCK4sLGDkDAt3NmiiYuI54qpiNy6HNNUlbMA7SGD4nB3
-	lD4jzbFgFZTXla5MOPQDJel7RTa3dRSpAYfagUZPWFyRn0wW4MHmOzqKWDxwMN6opp06Up
-	v1FuOhXdGlcWUO8L7+8lsnIdKmoDW+DXBzWRQy2Phx6UbPjAf18GfLiykXfu+g==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 19 Feb 2024 16:49:30 -0300
-Subject: [PATCH] siox: constify the struct device_type usage
+        d=1e100.net; s=20230601; t=1708372188; x=1708976988;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j+Mxj6oL3njy7wYXA6Pewj5A5hfEOxX2yUvAWo5Ne8Y=;
+        b=AoD2bZMfIZEdsbTo9/zyePhjYqhQNemxIlvatQw1w5as6Ve73CuAsrp89qNcLUgBDF
+         qamz+sRurVwyxD6Vi6RXq6CYXci3mULwr7Ky2W7vgWXXVg8a2anqSpjqQxwARbcD9dS8
+         6mt8VSQ8uTpgaQUukt45T1fGlmYVRt6YVupXpzpKV+IrmJF6j1c4iXqyBTf8KyaMlziG
+         nrmzIieLE5BAUYqbQyqKRpyAn7S66vme7OifNpOubSbsVa0qTywQxWptSqj4EFWfSZQX
+         JT2nkgEaRbaBJrjz35bDczNjTqd2ST0y6b6DCL6qGnI4DC+7mG4La5jMpdkaDM9gMDcI
+         WUOw==
+X-Forwarded-Encrypted: i=1; AJvYcCVJqj9v2LDU0DOkllAe9NQca/6DvUA5+5Q7ewMvrvn4y4IX+5xcRklatHeuL7Ak9WtKHN6DsFZg9Pf94deTmemlGvvOnCL6p5KP8krwZS2GNWufiexmiSKiksV4pOnIPuMqLwzD8yy975/jPRZmiP8=
+X-Gm-Message-State: AOJu0YwPXQM6IBOFJBz1bzHhDCXieB+fIq9XxolM+6Hzbdh+NpgI+Kww
+	r1yq6qOFSzSk3TSbv8273FvdivqFqZmI9YppSt7sA1J0Pd4y4iLM
+X-Google-Smtp-Source: AGHT+IFih7GdrQAufuteLL8qMR0G4/2b7CwVADm2kPBGSrjoEY1liwkNr8A7UP7zROTWMCWm0iPUfA==
+X-Received: by 2002:a05:651c:b21:b0:2d2:35e6:7a7f with SMTP id b33-20020a05651c0b2100b002d235e67a7fmr3898833ljr.0.1708372188047;
+        Mon, 19 Feb 2024 11:49:48 -0800 (PST)
+Received: from [192.168.50.244] (83.8.201.110.ipv4.supernova.orange.pl. [83.8.201.110])
+        by smtp.gmail.com with ESMTPSA id d5-20020aa7c1c5000000b00564775edd4esm1224313edp.35.2024.02.19.11.49.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 11:49:47 -0800 (PST)
+Message-ID: <c2fde69d-48c2-446f-ac56-876651c06b51@gmail.com>
+Date: Mon, 19 Feb 2024 20:49:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ARM: dts: exynos4212-tab3: limit usable memory range
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Alim Akhtar <alim.akhtar@samsung.com>
+Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ~postmarketos/upstreaming@lists.sr.ht
+References: <20240217-tab3-limit-usable-memory-range-v1-1-49cc9c86a5cc@gmail.com>
+ <15ab6aa6-fb30-4970-9c50-546afb933e03@linaro.org>
+Content-Language: en-US
+From: Artur Weber <aweber.kernel@gmail.com>
+In-Reply-To: <15ab6aa6-fb30-4970-9c50-546afb933e03@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-device_cleanup-siox-v1-1-eb32ca2b0113@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAMmw02UC/x2MQQqAIBAAvyJ7TlAL0r4SEaFbLYSJUgjR31s6D
- szMAwUzYYFBPJDxpkJnZNCNAL8vcUNJgRmMMp0y2snAksfZH7jEK0n2q7TGOoVd29uggMuUcaX
- 6X8fpfT+v9IwrZQAAAA==
-To: Thorsten Scherer <t.scherer@eckelmann.de>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>
-Cc: linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1408; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=NMqAs0MjnufjzieP2aA0KfC0+NvfSYAdC36Vekj6kDo=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl07DPeCLeYDytCH05eYgcc6D2V+l0OriDggsG2
- R6TEHHfKjeJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdOwzwAKCRDJC4p8Y4ZY
- pmASEAClish8Lsqj9rCSEq/7T1o2DaKpNAps7zxxvfKfwDeN7NgrHXWfy7vzRw4Hv9KP6+Irof8
- 2d30qEy16r5jdMUizSd9LuNmzGxUWz6GK2bhxio21tNMG4HIN0ZV0EgQDoxPWmLAlbffs3hlbwb
- mDU0KS2mmyygDxfAa5nQBvJeJcGoaxsIIQdW6ebzD+U81/SolYkdsS34vhngi9iJ1ZSjinLWLGT
- 0Vy+ophnuXYdw12kD8xxEZIxBOK+g9JFdaTNJY/xmnlKeZxx9gH92qJI+DpOk8ybEpwN8UnJB8V
- CNIBfhyZ49XoExKkGJTRUMyXVH1REdiav/jYJ4Rr94QIdh5wiqHLdI4zHeXTeaRRNiV44H4Vpdm
- yn6uwwtTrXg4rhi++6882UAS6HC2NoKVKmIQ39IEsjjdyAkygdxAq1EcauQ9Kcutq2WUbT9/LD8
- M1TF6FYSy8hNRh7CCkRCC1xL9aHq5Cp4fuwWwFXHePiWajWrhFw1CXkPlhir8Z+ukZFxAMSN0At
- eWoq83ZgjAwt1uEFc2KsRfRiOtTeWTEg1M4jRB2olywH4NWbVhUMOXyKNrNDBdQJEHETGZAIEyx
- sujOayzJflaD4sjG7DxxJlnyMIzYnZKea9erh3g3sd6T06f3sfQ901UeJYw5wXf+UuoFF1z5EDr
- D6MABwYUh119OJQ==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-core can properly handle constant struct device_type. Move the
-siox_device_type and siox_master_type variables to be constant structures
-as well, placing it into read-only memory which can not be modified at
-runtime.
+On 19.02.2024 08:44, Krzysztof Kozlowski wrote:
+> On 17/02/2024 20:02, Artur Weber wrote:
+>> The stock bootloader on the Samsung Galaxy Tab 3 8.0 provides an
+>> incorrect available memory range over ATAG_MEM. Limit the usable
+>> memory in the DTS to prevent it from doing so, without having to
+>> disable ATAG support.
+>>
+>> Signed-off-by: Artur Weber <aweber.kernel@gmail.com>
+>> ---
+>>   arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
+>> index e5254e32aa8f..9bc05961577d 100644
+>> --- a/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
+>> +++ b/arch/arm/boot/dts/samsung/exynos4212-tab3.dtsi
+>> @@ -45,6 +45,12 @@ chosen {
+>>   		/* Default S-BOOT bootloader loads initramfs here */
+>>   		linux,initrd-start = <0x42000000>;
+>>   		linux,initrd-end = <0x42800000>;
+>> +
+>> +		/*
+>> +		 * Stock bootloader provides incorrect memory size in ATAG_MEM;
+>> +		 * override it here
+>> +		 */
+>> +		linux,usable-memory-range = <0x40000000 0x3fc00000>;
+> 
+> Applied and dropped:
+>   chosen: linux,usable-memory-range:0: [4611686019496935424] is too short
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/siox/siox-core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This seems to be a binding issue; the DT schema expects a 64-bit memory 
+address and size, and doesn't allow a 32-bit range. I've tested the DTS 
+on my device and this property seems to be handled fine, so I think this 
+should allow 32-bit values as well.
 
-diff --git a/drivers/siox/siox-core.c b/drivers/siox/siox-core.c
-index 561408583b2b..8eca20c2ea9c 100644
---- a/drivers/siox/siox-core.c
-+++ b/drivers/siox/siox-core.c
-@@ -498,7 +498,7 @@ static void siox_device_release(struct device *dev)
- 	kfree(sdevice);
- }
- 
--static struct device_type siox_device_type = {
-+static const struct device_type siox_device_type = {
- 	.groups = siox_device_groups,
- 	.release = siox_device_release,
- };
-@@ -676,7 +676,7 @@ static void siox_master_release(struct device *dev)
- 	kfree(smaster);
- }
- 
--static struct device_type siox_master_type = {
-+static const struct device_type siox_master_type = {
- 	.groups = siox_master_groups,
- 	.release = siox_master_release,
- };
+I've opened a PR[1] against devicetree-org/dt-schema (where the schema 
+for the chosen node is stored) to try and fix this. If my approach is 
+incorrect, feel free to comment there as well.
 
----
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240219-device_cleanup-siox-82890e4378d0
+Best regards
+Artur
 
-Best regards,
--- 
-Ricardo B. Marliere <ricardo@marliere.net>
+[1] https://github.com/devicetree-org/dt-schema/pull/128
+
+> 
+> Does not look you tested the bindings.
+> 
+> Please observe that we have dedicated subsystem profile since a release:
+> https://www.kernel.org/doc/html/latest/process/maintainers.html#arm-samsung-s3c-s5p-and-exynos-arm-architectures
+> 
+> Best regards,
+> Krzysztof
+> 
 
 
