@@ -1,153 +1,131 @@
-Return-Path: <linux-kernel+bounces-71606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4E985A7A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:42:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3F685A7AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:42:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A0D91F22C8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:42:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A16781C228B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0183AC1E;
-	Mon, 19 Feb 2024 15:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EA623C49A;
+	Mon, 19 Feb 2024 15:42:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUW/Qgfm"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ff9ttbFa"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A759C3A297
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEB53A287
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708357276; cv=none; b=CKXm09vnX+zLJXH+7Pyciz9L7BHwizgfNC4fydcsIGYhGaJSQfJgMEBgAifrRurqjl6y9Unee23TQIEgeTcB1skGf1rGlY2p7LnR97ihjV5BhraV25+qDSjY4lOM0+pvin354OWpLxnhDE/Uf7YEkmVK373yo0OnNbIqVxBCLi4=
+	t=1708357344; cv=none; b=VhLub02a77ssLBBnKsGJopwB/qdWUJSnZ910eAui6B9hiNnC7Hht+bZ3Yw+YrHBF1GRx+S3DS1RNp70sZCa0EFDAcPRL2G2kERFC8ei3jgUI0t5hYTIFsnAggz0/XT2Li2308i6SOPj4bJp9nwyWCl6b4m1SpWI3LWR6HawyOFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708357276; c=relaxed/simple;
-	bh=kN7/FxZg2B4U0kkEnp+f+35AOQ3P4uh2oK/ZbnyEGPc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CBwdy7v3qk6MTzBJtvUFddHJ7FdDwjWLTD7zfAS6KtilKgvchCSexkBamThjsVa3LDPrAg/WGCtb3uXjv6hDOVxFew7I/71EUtPZB/YywWibFHyUaC2mQ2R0Ez5oobr69BzWo5x2ZFrWro65gWLhScrJpSp2OaChjcUyLNKN4eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUW/Qgfm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EB30C43399
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:41:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708357276;
-	bh=kN7/FxZg2B4U0kkEnp+f+35AOQ3P4uh2oK/ZbnyEGPc=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=tUW/QgfmsH4Vdh129JzdOQ8l/LvoHRZylg24rMkxUzMkcwRP1NM25hd7+faU2GhR9
-	 s/DK0pnKYYV336dXciaX/y4OGC/Jl01tgSop5r5DS61s4vWMgAhUESaw4UJAHxLjGC
-	 W7HMQl3b5xWjxXbpyzfblL74xUvZfQ7ddbg1Hvjdk9I+Y4zq+xkXjjMfBtNvOCr4yA
-	 1rLt1TWxGokbLVqvOGWPSZonAlTHfmMqfMkRnfSC1sklpMmDXdJJaFgWJqBqnoElte
-	 IdIVCGoBxUuvjgS2V9oN8EcTXyhccQOL4NNdlCqWQH/kz625CAO4bPOIuwHFxj/Hnm
-	 L24vMOtufDYvg==
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d204e102a9so57343221fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:41:16 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVgdnoC3eJq82dl1keITXN9xB310UZu+Fc0i6m+MKjmmglLWxAAuBy4mdtwWDPfZWRtu0OmWeCKqqfCaKRz+ySjoqPPkxwemQPz4ATM
-X-Gm-Message-State: AOJu0YwGIpe63u8JZUZtMOsCRkXnTdu0ejdOdWt5gVNjD6q0Np5vOqDy
-	H4DjTQhzt9wCxNCPD6lYpSo0v9KiP12Jz3BOE6nhbSrsU2u0HDKILPdfcmnSfldqsU/Q0jDhK/S
-	o2Ft5eipFMAYlJ62HPMgnpkQNC0g=
-X-Google-Smtp-Source: AGHT+IHkRv5759OCKHrFBcoZL5QX4beAd5RFXwDpYEZXX7suzJ+JwQ8On/fgdp7Ct96YAZ0TiFYkz+Xfo3acVf3B/Lo=
-X-Received: by 2002:a05:651c:218:b0:2d2:3437:ef4a with SMTP id
- y24-20020a05651c021800b002d23437ef4amr2717698ljn.42.1708357274494; Mon, 19
- Feb 2024 07:41:14 -0800 (PST)
+	s=arc-20240116; t=1708357344; c=relaxed/simple;
+	bh=NIFtUpFLsHivFguvB+ZvyrkpY/INW7ZD0v9T38aeM/k=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=TJdE+Y6cE0Pw451AWB6dTXQ84OLOTIFeg7EB7gXHUDzIIaacdIfb+9Oub3MUKLsAgCQaBJyZf7zSt9UbsrFlG20aF4D4/iqmi+GW1Is0nup1IfjHONHzWXw6YtrtsOGHPIiTscM49uRLUnH2f10VxRL8AX+FABOjusav7U4lfMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ff9ttbFa; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708357341;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gYi7OFizi+TSpI37jerYjh3Z/519CTMS/OFVVmKV/5k=;
+	b=ff9ttbFaABc9sfvfG9s9reKZZ1nCAOrOlf4Tjj9J+SrK1r+thK8rom1LysXhe8tcOCDcRm
+	8j+Vfz9eogr1laT2SxD58VWOG/tgcyN1m9JA67QuiVFKn0XBWAvvu6uaou2ntDObkOMC7e
+	SG5Hhc48evxEV+KCwCyhtmmFYwRADOI=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-634-78AazjT2NnWPZegN_d8_QQ-1; Mon, 19 Feb 2024 10:42:17 -0500
+X-MC-Unique: 78AazjT2NnWPZegN_d8_QQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6C10E85A588;
+	Mon, 19 Feb 2024 15:42:16 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.15])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A3E7D1C060B3;
+	Mon, 19 Feb 2024 15:42:14 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <187136.1708356611@warthog.procyon.org.uk>
+References: <187136.1708356611@warthog.procyon.org.uk> <CAH2r5mu0Dw7jVHFaz4cYCNjWj9RFa76pRTyQOEenDACHDgNfyg@mail.gmail.com> <20240205225726.3104808-1-dhowells@redhat.com>
+To: Steve French <smfrench@gmail.com>
+Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+    Matthew Wilcox <willy@infradead.org>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Christian Brauner <christian@brauner.io>, netfs@lists.linux.dev,
+    linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 00/12] netfs, cifs: Delegate high-level I/O to netfslib
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240206074552.541154-1-maskray@google.com> <CAMuHMdVOoxVFohcwwoQtY0KgZEvbjgJJ6mib8Fabo97P0krEqw@mail.gmail.com>
- <CAMj1kXGaF5bobHTr1pTg+-=s4Ft7+5SSbX72-NxsR_W_Yuxb8Q@mail.gmail.com>
- <CAMj1kXGw+r7yEEBA8gYBcdrqkiP=VYOSzz9YLnNavJn2snmFwA@mail.gmail.com> <CAMuHMdX+6fnAf8Hm6EqYJPAjrrLO9T7c=Gu3S8V_pqjSDowJ6g@mail.gmail.com>
-In-Reply-To: <CAMuHMdX+6fnAf8Hm6EqYJPAjrrLO9T7c=Gu3S8V_pqjSDowJ6g@mail.gmail.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 19 Feb 2024 16:41:03 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXHh_m=V0QsiTpHrUXpFBXFbFfezdysz8quhPSgUrZg1MA@mail.gmail.com>
-Message-ID: <CAMj1kXHh_m=V0QsiTpHrUXpFBXFbFfezdysz8quhPSgUrZg1MA@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: jump_label: use constraints "Si" instead of "i"
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: Fangrui Song <maskray@google.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org, 
-	Jisheng Zhang <jszhang@kernel.org>, Dave Martin <Dave.Martin@arm.com>, 
-	Peter Smith <peter.smith@arm.com>, llvm@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <187506.1708357334.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
+Date: Mon, 19 Feb 2024 15:42:14 +0000
+Message-ID: <187507.1708357334@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On Mon, 19 Feb 2024 at 15:43, Geert Uytterhoeven <geert@linux-m68k.org> wro=
-te:
->
-> Hi Ard,
->
-> On Mon, Feb 19, 2024 at 11:57=E2=80=AFAM Ard Biesheuvel <ardb@kernel.org>=
- wrote:
-> > On Mon, 19 Feb 2024 at 11:56, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > On Mon, 19 Feb 2024 at 11:03, Geert Uytterhoeven <geert@linux-m68k.or=
-g> wrote:
-> > > > On Tue, Feb 6, 2024 at 8:46=E2=80=AFAM Fangrui Song <maskray@google=
-com> wrote:
-> > > > > The generic constraint "i" seems to be copied from x86 or arm (an=
-d with
-> > > > > a redundant generic operand modifier "c"). It works with -fno-PIE=
- but
-> > > > > not with -fPIE/-fPIC in GCC's aarch64 port.
-> > > >
-> > > > Thanks for your patch, which is now commit f9daab0ad01cf9d1 ("arm64=
-:
-> > > > jump_label: use constraints "Si" instead of "i"") in v6.8-rc5.
-> > > >
-> > > > > The machine constraint "S", which denotes a symbol or label refer=
-ence
-> > > > > with a constant offset, supports PIC and has been available in GC=
-C since
-> > > > > 2012 and in Clang since 7.0. However, Clang before 19 does not su=
-pport
-> > > > > "S" on a symbol with a constant offset [1] (e.g.
-> > > > > `static_key_false(&nf_hooks_needed[pf][hook])` in
-> > > > > include/linux/netfilter.h), so we use "i" as a fallback.
-> > > >
-> > > > https://gcc.gnu.org/releases.html says gcc-5 was released in 2015,
-> > > > i.e. after 2012 ...
-> > > >
-> > > > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > > Signed-off-by: Fangrui Song <maskray@google.com>
-> > > > > Link: https://github.com/llvm/llvm-project/pull/80255 [1]
-> > > > >
-> > > > > ---
-> > > > > Changes from
-> > > > > arm64: jump_label: use constraint "S" instead of "i" (https://lor=
-e.kernel.org/all/20240131065322.1126831-1-maskray@google.com/)
-> > > > >
-> > > > > * Use "Si" as Ard suggested to support Clang<19
-> > > > > * Make branch a separate operand
-> > > > >
-> > > > > Changes from v1:
-> > > > >
-> > > > > * Use asmSymbolicName for readability
-> > > >
-> > > > But it still fails on gcc-5:
-> > > >
-> > > >     arch/arm64/include/asm/jump_label.h:25:2: error: invalid 'asm':
-> > > > invalid operand
-> > > >       asm goto(
-> > > >       ^
-> > > >
-> > > > http://kisskb.ellerman.id.au/kisskb/buildresult/15129281/
-> > > >
-> > >
-> > > How odd. godbolt.org has 5.4 and it seems perfectly happy with it.
->
-> > https://godbolt.org/z/GTnf3vPaT
->
-> I could reproduce the issue on v6.8-rc5 using arm64 defconfig
-> and x86_64-gcc-5.5.0-nolibc-aarch64-linux.tar.xz from
-> https://cdn.kernel.org/pub/tools/crosstool/files/bin/x86_64/5.5.0/:
->
+David Howells <dhowells@redhat.com> wrote:
 
-OK, I managed to do so as well.
+> I don't suppose you can tell me what line smb2_readv_callback+0x50f/0x5b=
+0 is?
 
-And GCC 6.4 from the same source works correctly.
+It's almost certainly the iov_iter_revert() here:
 
-Not sure whether there are any plans to bump the minimal GCC version
-any time soon (cc'ing Arnd), but we should probably drop this change
-until that happens.
+	switch (mid->mid_state) {
+	case MID_RESPONSE_RECEIVED:
+		credits.value =3D le16_to_cpu(shdr->CreditRequest);
+		credits.instance =3D server->reconnect_instance;
+		/* result already set, check signature */
+		if (server->sign && !mid->decrypted) {
+			int rc;
+
+			iov_iter_revert(&rqst.rq_iter, rdata->got_bytes);
+			iov_iter_truncate(&rqst.rq_iter, rdata->got_bytes);
+
+The reason that the:
+
+	[  228.573737] kernel BUG at lib/iov_iter.c:582!
+
+happens is that we're trying to wind the iterator back before its start po=
+int.
+
+Now, the iterator is reinitialised at the beginning of the function:
+
+	if (rdata->got_bytes) {
+		rqst.rq_iter	  =3D rdata->subreq.io_iter;
+		rqst.rq_iter_size =3D iov_iter_count(&rdata->subreq.io_iter);
+	}
+
+so the reversion is probably unnecessary.
+
+Note that this can only happen if we're using signed messages:
+
+		if (server->sign && !mid->decrypted) {
+
+as we wind back the iterator so that we can use it to feed the buffer to t=
+he
+hashing algorithm.
+
+David
+
 
