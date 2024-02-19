@@ -1,200 +1,154 @@
-Return-Path: <linux-kernel+bounces-70936-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70937-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E8D3859E42
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:32:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DE61859E49
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:32:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 432101C218D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:32:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25E491F21609
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:32:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B48D21114;
-	Mon, 19 Feb 2024 08:32:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9A32135A;
+	Mon, 19 Feb 2024 08:32:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UQl//MT4";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="6niTp9FV";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="oIl96RWi";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="X8//vfLG"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tol60US4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92AC4EADB;
-	Mon, 19 Feb 2024 08:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD0214C9D;
+	Mon, 19 Feb 2024 08:32:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708331521; cv=none; b=uPlqt4zLYAypttjWaz96JhgSBheUFxn37x8HMear/uiswEEVnmpnGVmIPZcfLaDmd7NI+VQd/U1znzR+UjhMftS9wRui50JQDXzZWVyaOvO4ctmbKI34NiR00TO8m3N+mG7kq123kmdOFj3raDTUkUs1rHpCXxVBiXGA5xDlCMM=
+	t=1708331555; cv=none; b=UyjL4hOrZUsR3pJFXdCZZyAS4DyUC+yqFOlN+LB+VDItS0OM50D/jVReKHIfowM8tcRfXjb2ptMH+qPTnUc88HJG0hv6FU+1u5X33OPqd8ZcNtCcLCb7AJcpLR6sCCrEeXDyL3SzVJ3tZIunGH5UfjNNZ2WI+6wBEOJdF3kLjG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708331521; c=relaxed/simple;
-	bh=AdQtMeJgH2/BHN3sSej+s7w2viE8v0aJWk+2thNs0dg=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kNFB9IbpbEw3fKzvcLtCVAd33wty0obN/XeUbuqS7LPagI7diB4JAmUEaThnS6b2CN4XmNOaClxIv4OI33Nwu9ureWg8BV8/W68Ahljjc2VY+bXsZFdXvFuyxwxeewxtEMYszqW4gj11hg107EjFmpzxLHGh92aP58aZJ0DbzBM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UQl//MT4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=6niTp9FV; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=oIl96RWi; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=X8//vfLG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CCCC6222FE;
-	Mon, 19 Feb 2024 08:31:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708331517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGt6MuPRGBnHkBNOq3vW8nHROQlJopdTk2qgvu5Tcx8=;
-	b=UQl//MT4MeIn8g+KFjYTXs/jgi5lvknX/rf2TXWMHY5e0+ZfsHVu6+uZVUxDzbBHgcdfKa
-	50Na0lvfVzv2xHzJ9fIMbvCNI+GTLyVSAbtkxuDD3vrd/BrgcHnCPiWaoXstYWsA34+yET
-	QPGwkMtfFPZdndNv6/LtZEgdgGRtGms=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708331517;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGt6MuPRGBnHkBNOq3vW8nHROQlJopdTk2qgvu5Tcx8=;
-	b=6niTp9FVmUhEojZoxtReRiPmN2MAed6Y7pvFdDcdZ7BO+AEEyvPieIpgZjc0kUgBjXFeF6
-	2PvqsmxVeeodMjBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708331515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGt6MuPRGBnHkBNOq3vW8nHROQlJopdTk2qgvu5Tcx8=;
-	b=oIl96RWixquwOiYjVph9YxMuv22ArILOYFj3N+aHpIvB8nlgmyib0XfXMUtuA7jAdwhCv0
-	wtnS24sskmRH9vKbi3Zz8RYz+DzAK/8bF6/z5bAE6QKYvjKb0j/4JJBJCLZXw9Wr0Wtom9
-	7JCahSHGpJMlMTcHkh6u6wChFJl4drM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708331515;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pGt6MuPRGBnHkBNOq3vW8nHROQlJopdTk2qgvu5Tcx8=;
-	b=X8//vfLGRwEPtJK2mlj2u0iHdkiZYC1Vzxb55USzEAmYXZkH7+uoD9NPzlM0nnw8/IJysi
-	KlJ09jd4dcDGcUCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A191D13647;
-	Mon, 19 Feb 2024 08:31:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mzr0JfsR02UeBwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 19 Feb 2024 08:31:55 +0000
-Date: Mon, 19 Feb 2024 09:31:55 +0100
-Message-ID: <874je4q2h0.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Hans Peter <flurry123@gmx.ch>
-Cc: tiwai@suse.com,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ALSA: hda/realtek: Enable Mute LED on HP 840 G8 (MB 8AB8)
-In-Reply-To: <a170992c-2acf-42f9-9dcc-b5dae5fffa67@gmx.ch>
-References: <a170992c-2acf-42f9-9dcc-b5dae5fffa67@gmx.ch>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1708331555; c=relaxed/simple;
+	bh=mzagyX0s00DuFga1OEspDrD7QlaYPTc6QQLSYid+wmc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SDHM4K3/V4uHdowGtb6nIsJOLxEZSzmT4wTllUGB1U21GDV5NoVFZStxOIMDP3zLwqBFRMUvJMxhw3foQKlzp3DibyoXdH03RYsV7PKAAuX4YZPtZ1Ijvq9MaXZ60+BgtufP29omhCWD1vv7p+yar10ZaqdkOGgFGJ1gFUOxl6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tol60US4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF3BBC433C7;
+	Mon, 19 Feb 2024 08:32:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708331555;
+	bh=mzagyX0s00DuFga1OEspDrD7QlaYPTc6QQLSYid+wmc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Tol60US4baCbJG5fCN3uEhGriEOUOYWBYHl269+fX+R+Er5iSS88SX83aWXsgKtar
+	 TT8pQEt+YM3WkRQ+1+knktgRTOXFpfeliyG2/trJclp1x8K6oVQTgUYk+V0jMFKTtF
+	 zNtG/nT7YxKkBmHxfY6nXhT7m6Ckd/3NO+tL383q5fBxmdNGpje5iBCeO/uFKtzr6D
+	 K1fc5Rp2FtKB/GHFf1U5VS4+4aUAqp+IRv+7HmngiQXqkqC2R37kGYxhKnMD0F6OOF
+	 ceExrtnn3r2jaqvzWa2xDh9WCwshPs2w3sSySQ/lXO2rtchedL7KtjbtvFIdSIzaPj
+	 dOV4NmnqMrrMQ==
+Date: Mon, 19 Feb 2024 14:02:20 +0530
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: Manivannan Sadhasivam <mani@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+	andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org, robh+dt@kernel.org, quic_shazhuss@quicinc.com,
+	quic_nitegupt@quicinc.com, quic_ramkri@quicinc.com,
+	quic_nayiluri@quicinc.com, dmitry.baryshkov@linaro.org,
+	robh@kernel.org, quic_krichai@quicinc.com,
+	quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+	quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Bjorn Helgaas <bhelgaas@google.com>, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-pci@vger.kernel.org
+Subject: Re: [PATCH v4 1/3] PCI: qcom: Enable cache coherency for SA8775P RC\
+Message-ID: <20240219083220.GA3281@thinkpad>
+References: <1700577493-18538-1-git-send-email-quic_msarkar@quicinc.com>
+ <1700577493-18538-2-git-send-email-quic_msarkar@quicinc.com>
+ <20231130052116.GA3043@thinkpad>
+ <a9c2532a-eaa6-4019-8ce9-5a58b1b720b2@linaro.org>
+ <20231130110909.GQ3043@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=oIl96RWi;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="X8//vfLG"
-X-Spamd-Result: default: False [0.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 FREEMAIL_ENVRCPT(0.00)[gmx.ch];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[alsa-info.sh:url,suse.de:dkim];
-	 FREEMAIL_TO(0.00)[gmx.ch];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[35.63%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 0.69
-X-Rspamd-Queue-Id: CCCC6222FE
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Bar: /
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231130110909.GQ3043@thinkpad>
 
-On Sun, 18 Feb 2024 13:16:03 +0100,
-Hans Peter wrote:
+On Thu, Nov 30, 2023 at 04:39:09PM +0530, Manivannan Sadhasivam wrote:
+> On Thu, Nov 30, 2023 at 11:09:59AM +0100, Konrad Dybcio wrote:
+> > On 30.11.2023 06:21, Manivannan Sadhasivam wrote:
+> > > On Tue, Nov 21, 2023 at 08:08:11PM +0530, Mrinmay Sarkar wrote:
+> > >> In a multiprocessor system cache snooping maintains the consistency
+> > >> of caches. Snooping logic is disabled from HW on this platform.
+> > >> Cache coherency doesn’t work without enabling this logic.
+> > >>
+> > >> 8775 has IP version 1.34.0 so intruduce a new cfg(cfg_1_34_0) for this
+> > >> platform. Assign no_snoop_override flag into struct qcom_pcie_cfg and
+> > >> set it true in cfg_1_34_0 and enable cache snooping if this particular
+> > >> flag is true.
+> > >>
+> > > 
+> > > I just happen to check the internal register details of other platforms and I
+> > > see this PCIE_PARF_NO_SNOOP_OVERIDE register with the reset value of 0x0. So
+> > > going by the logic of this patch, this register needs to be configured for other
+> > > platforms as well to enable cache coherency, but it seems like not the case as
+> > > we never did and all are working fine (so far no issues reported).
+> > 
+> > Guess we know that already [1]
+> > 
 > 
-> The HP EliteBook 840 G8 seems to be circulating with different
-> subsystem-IDs. alsa-info.sh showed on my box:
+> Bummer! I didn't look close into that reply :/
 > 
-> !!DMI Information
-> !!---------------
+> > The question is whether this override is necessary, or the default
+> > internal state is OK on other platforms
+> > 
 > 
-> Manufacturer:      HP
-> Product Name:      HP EliteBook 840 G8 Notebook PC
-> Product Version:   SBKPF
-> Firmware Version:  T37 Ver. 01.15.02
-> System SKU:        5S7R6EC#ABD
-> Board Vendor:      HP
-> Board Name:        8AB8
+> I digged into it further...
 > 
-> ...
+> The register description says "Enable this bit x to override no_snoop". So
+> NO_SNOOP is the default behavior unless bit x is set in this register.
 > 
-> !!HDA-Intel Codec information
-> !!---------------------------
-> --startcollapse--
+> This means if bit x is set, MRd and MWd TLPs originating from the desired PCIe
+> controller (Requester) will have the NO_SNOOP bit set in the header. So the
+> completer will not do any cache management for the transaction. But this also
+> requires that the address referenced by the TLP is not cacheable.
 > 
-> Codec: Realtek ALC285
-> Address: 0
-> AFG Function Id: 0x1 (unsol 1)
-> Vendor Id: 0x10ec0285
-> Subsystem Id: 0x103c8ab9
-> Revision Id: 0x100002
+> My guess here is that, hw designers have enabled the NO_SNOOP logic by default
+> and running into coherency issues on the completer side. Maybe due to the
+> addresses are cacheable always (?).
 > 
+> And the default value of this register has no impact on the NO_SNOOP attribute
+> unless specific bits are set.
 > 
-> So an additional quirk enabled mute led for me:
+> But I need to confirm my above observations with HW team. Until then, I will
+> hold on to my Nack.
 > 
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -9752,6 +9752,7 @@
->  	SND_PCI_QUIRK(0x103c, 0x8aa3, "HP ProBook 450 G9 (MB 8AA1)",
-> ALC236_FIXUP_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8aa8, "HP EliteBook 640 G9 (MB 8AA6)",
-> ALC236_FIXUP_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8aab, "HP EliteBook 650 G9 (MB 8AA9)",
-> ALC236_FIXUP_HP_GPIO_LED),
-> +	SND_PCI_QUIRK(0x103c, 0x8ab9, "HP EliteBook 840 G8 (MB 8AB8)",
-> ALC285_FIXUP_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8abb, "HP ZBook Firefly 14 G9",
-> ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8ad1, "HP EliteBook 840 14 inch G9 Notebook
-> PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
->  	SND_PCI_QUIRK(0x103c, 0x8ad2, "HP EliteBook 860 16 inch G9 Notebook
-> PC", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
 
-Could you repost a proper patch with your Signed-off-by tag?  It's a
-legal requirement.  See Documentation/process/submitting-patches.rst
-for details.
+I had some discussions with the hardware folks and clarified my concerns with
+them. Here is the summary:
 
-Also the information of your device could be a bit more concise.
+Due to some hardware changes, SA8775P has set the NO_SNOOP attribute in its TLP
+for all the PCIe controllers. NO_SNOOP attribute when set, the requester is
+indicating that there no cache coherency issues exit for the addressed memory
+on the host i.e., memory is not cached. But in reality, requester cannot assume
+this unless there is a complete control/visibility over the addressed memory on
+the host.
 
-Last but not least, the patch doesn't seem cleanly applicable.  Your
-mailer seems breaking the lines.  Please fix your setup, or use
-git-send-email to resubmit.
+And worst case, if the memory is cached on the host, it may lead to memory
+corruption issues. It should be noted that the caching of memory on the host is
+not solely dependent on the NO_SNOOP attribute in TLP.
 
+So to avoid the corruption, this patch overrides the NO_SNOOP attribute by
+setting the PCIE_PARF_NO_SNOOP_OVERIDE register. This patch is not needed for
+other upstream supported platforms since they do not set NO_SNOOP attribute by
+default.
 
-thanks,
+Mrinmay, please add above information in the commit message while sending v2.
+I'm taking by NACK back.
 
-Takashi
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
 
