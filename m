@@ -1,227 +1,118 @@
-Return-Path: <linux-kernel+bounces-71453-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A98185A573
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:07:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 300C285A56E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FE451C208ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:07:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 999F71F246D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F7A937160;
-	Mon, 19 Feb 2024 14:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CEE737165;
+	Mon, 19 Feb 2024 14:06:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="GaI+akPG"
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x3DauRNp"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF63376EA;
-	Mon, 19 Feb 2024 14:07:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.132.182.106
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0DDF374D3
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708351650; cv=none; b=G8E+CFslzgGMUH5m1nqAC39gYHQmhqoL1xC3d9gUpYZU0xLSVngd4xQGcjIRoSEo5BWeG0MxAaFnQ52Y5MMAMMSWJN2IYT4jtJ+0sehVAyzYDV5hVO4rdZZUSibJOvM8G3EWqyugC776SXrRNmZshYIPPyVqVtYgGw6Ni6sZ8wE=
+	t=1708351618; cv=none; b=NS3UlX9jubxvytnRo4hocI/A1Tvi8vNnY1zSppYJd+ytqh8hDHWqAuphzqZmFzy35Y1gXuengmsy3oNkjdV1ua6o5gPnU8sk3t+QzcihLrq3KFeBbva23n/7E73Ym4CCVkVGAlvDcL2uMenUHq0lJTj67Q07s31gk8nRNXxv0BY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708351650; c=relaxed/simple;
-	bh=nFKSpS3PemvDLmUNh7OXOjfDkEFFKvCwt+Q77tt/2Iw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QbiE8MbXTuQUTF33n9MmYlqRXHLORNol01CUYGK5YPzDZiz/x9rh2iEm0O4jY2ziGWqBWOq5imfxxZCvfwEpmv17vK9EWHkzGHfBRZkbZA7lQ1Xa6u94KW/sxP7cJDX/IkCTqsQ/Ojec9ZXFRrubOTVceBQlTBxyWcgMLvE20Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=GaI+akPG; arc=none smtp.client-ip=185.132.182.106
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41JBjavi010682;
-	Mon, 19 Feb 2024 15:07:05 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	selector1; bh=bQIpKoFRIw2Mc0ACsi+d25xPFjAM3ujZnUnmxEvKVDY=; b=Ga
-	I+akPG5hcdjMPrIxO32nIQ+rVS5/yxR16g2OB0jZr4VqIMFT77VcbbIzBiFMXvAh
-	eCF3pemAGBBHbIfGQGkqyDOvJvRKX2ixnY5jLP8oDjrmhlY3ljGYQ9cWMH0ldAn8
-	6qn8BS8jCvEJvF1oGxEgVsf+N7kqr7f6fmuT9TSkvuJD5Sy65649gDx2XgPzzY2C
-	wz9RYzCyEGDGzVv3TL5hSVAaWBed9qZWciLiHmqPAinrc/kIzunsiGYUKJyxjn2a
-	sheWuKpWyr7m4+KOTzxIBmsJ3Y6GhqczSVVwm1mQBjNaDfO9OEC72UrjZAR0ZHB6
-	NNDdi2xMRQWJ6+J1YZCw==
-Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
-	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3wan11q1ae-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 15:07:04 +0100 (CET)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D8A034002D;
-	Mon, 19 Feb 2024 15:06:47 +0100 (CET)
-Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3EF532690A8;
-	Mon, 19 Feb 2024 15:06:07 +0100 (CET)
-Received: from localhost (10.201.21.177) by SHFDAG1NODE3.st.com (10.75.129.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 19 Feb
- 2024 15:06:06 +0100
-From: Christophe Kerello <christophe.kerello@foss.st.com>
-To: <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <devicetree@vger.kernel.org>,
-        Christophe Kerello <christophe.kerello@foss.st.com>
-Subject: [PATCH v2 3/3] mtd: rawnand: stm32_fmc2: add MP25 support
-Date: Mon, 19 Feb 2024 15:05:05 +0100
-Message-ID: <20240219140505.85794-4-christophe.kerello@foss.st.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240219140505.85794-1-christophe.kerello@foss.st.com>
-References: <20240219140505.85794-1-christophe.kerello@foss.st.com>
+	s=arc-20240116; t=1708351618; c=relaxed/simple;
+	bh=ZN4BmNlEPEpjW/1H6cuktkLIhxEDSd5BgGVVJDCLARw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EnwWGOEPeXhz03l3Z20HYDE4ILpfoU71TaRiFfc4PD9cQ6yPJnLDppLQcbhddOGwa2iUsxZ1pvSWsQNVLyIUVgnDHmctDip84wlsCG4UMETZ/88ESPXPXZOD1uNhXacHTlDlGWAbmUyAvTBohNg1L+OsNIaT7gXlWk3UGo53t0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x3DauRNp; arc=none smtp.client-ip=209.85.210.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e432beab47so1539227a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:06:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708351616; x=1708956416; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZN4BmNlEPEpjW/1H6cuktkLIhxEDSd5BgGVVJDCLARw=;
+        b=x3DauRNpxSasiSusCnfPUiD99ZhMX9wFlxFvRukioEBT3PUdaDkL2Mkfq8RWevdycb
+         M8I04oIPCDGeh4t15Yg1VmICe71+zPx8hQe13O0ChRc2IPfjI6QA5IuEuzkKXoW9UL26
+         jvF+w0UJ4HF1bhLJLPSk8paQDTPTEY7+Amx7g1z7bscRESgf8fntXmFX5e/DJt4Z60yR
+         Qv6ITduFqDuGDJSltMT6fWgNGpkfM5TI9zl8YZKAnkdpsqyGQpN+LuwZRQ6c4bDwxpYc
+         aomNlT11H9eb0Tc7+1EU3n82UygI3v4YHO7TQmKsRAGPQlcpYnaBTpVYlmDtjSITYoXS
+         bxag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708351616; x=1708956416;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZN4BmNlEPEpjW/1H6cuktkLIhxEDSd5BgGVVJDCLARw=;
+        b=qy3Uurm3l8HZ8nADJBJ6crRI/2qhHU70eNHCAiqHJ12qtKl1BfuHIM4vzWBfh8aVd8
+         jwYNKQSqpgjJ+tO1gEfPK17CKw1PoP5cccaS7f9r5TCPBeIgTMOcALI4h6Uz7KOiSPJ1
+         EKaObth3mb1dRVEaKy+HL7+5trNG92mTi3/N9H4s6wUfpvn/IGctSk1yNg2mWpdyk2X7
+         AUapdwbagXxROa+ds4EJ5qkQFrEqnMThEPszFPw7+gVt+SlDW7pNh+eWd4nN+52HMI2Q
+         wxHZds58TjaHGP44R/6jM+XzxfaphotTbZQpRf3cf10pFTWmvtYEG7oD4xUhqSGB9lkN
+         V52g==
+X-Forwarded-Encrypted: i=1; AJvYcCVz2lsXoGTj2noTO5h/gj9Lny8ptIjwIUAQxrbXYoWVwXbaOBqeTk0jIiXCJBUkKBluOsTUSW7CFb6oXDQnPQTJ5RCRtDt0nILUciWD
+X-Gm-Message-State: AOJu0Yx3SrZsEeg1DljcJBxAUdTgNwSMhz3j9EuIxn/tnEzerGX8OW/n
+	oq2SZILtF+fGTJSWBVHWTrUH0OmPkjD/DGw4G/Trjzt/SVc/5548v7F2IIpRPNTz0+AwptzusI1
+	iFBRou3Eyb1O5MORHmNbrBAmtsq/whgpbw0LXhQ==
+X-Google-Smtp-Source: AGHT+IH04EqapwhcfryqkGeJ0PLDo0rjKByqtrCM8cYE2MnjC0gv9WZUijbBYPo1lK02ZF+BZQw3zmYboI9pZdUPgfQ=
+X-Received: by 2002:a05:6359:4427:b0:172:d79f:1841 with SMTP id
+ nz39-20020a056359442700b00172d79f1841mr14599705rwb.7.1708351615699; Mon, 19
+ Feb 2024 06:06:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE3.st.com
- (10.75.129.71)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-19_10,2024-02-19_01,2023-05-22_02
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-1-19a336e91dca@bootlin.com> <20240216022704.GB850600-robh@kernel.org>
+ <CZ6E24VPJKJG.35LACFD6ZV5KE@bootlin.com>
+In-Reply-To: <CZ6E24VPJKJG.35LACFD6ZV5KE@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 19 Feb 2024 15:06:44 +0100
+Message-ID: <CACRpkdZZhhzg5SY7U5dv_OfLEVejRFom4V9nCfkQXunAw1ZXSw@mail.gmail.com>
+Subject: Re: [PATCH 01/13] dt-bindings: i2c: nomadik: add timeout-usecs
+ property bindings
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Rob Herring <robh@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-arm-kernel@lists.infradead.org, 
+	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+	Gregory Clement <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-FMC2 IP supports up to 4 chip select. On MP1 SoC, only 2 of them are
-available when on MP25 SoC, the 4 chip select are available.
+Hi Th=C3=A9o,
 
-Let's use a platform data structure for parameters that will differ.
+thanks for your patch!
 
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
----
-Changes in v2:
- - V1 patch 10, 11 and 12 have been squashed and reworked.
- - a platform data structure is handling the difference between MP1 and MP25.
+On Fri, Feb 16, 2024 at 10:16=E2=80=AFAM Th=C3=A9o Lebrun <theo.lebrun@boot=
+lin.com> wrote:
 
- drivers/mtd/nand/raw/stm32_fmc2_nand.c | 54 +++++++++++++++++++++-----
- 1 file changed, 45 insertions(+), 9 deletions(-)
+> i2c-mpc (fsl,timeout) and i2c-gpio (i2c-gpio,timeout-ms). I agree this
+> prop has no reason to be compatible-specific.
+>
+> Feedback from dt-bindings and I2C host maintainers would be useful: what
+> should the property be named? Having the unit makes it self-descriptive,
+> which sounds like a good idea to me. timeout-usecs, timeout-us, another
+> option?
 
-diff --git a/drivers/mtd/nand/raw/stm32_fmc2_nand.c b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-index a7db7b675514..264556939a00 100644
---- a/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-+++ b/drivers/mtd/nand/raw/stm32_fmc2_nand.c
-@@ -16,6 +16,7 @@
- #include <linux/module.h>
- #include <linux/mtd/rawnand.h>
- #include <linux/of_address.h>
-+#include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
-@@ -37,7 +38,7 @@
- #define FMC2_MAX_SG			16
- 
- /* Max chip enable */
--#define FMC2_MAX_CE			2
-+#define FMC2_MAX_CE			4
- 
- /* Max ECC buffer length */
- #define FMC2_MAX_ECC_BUF_LEN		(FMC2_BCHDSRS_LEN * FMC2_MAX_SG)
-@@ -243,6 +244,13 @@ static inline struct stm32_fmc2_nand *to_fmc2_nand(struct nand_chip *chip)
- 	return container_of(chip, struct stm32_fmc2_nand, chip);
- }
- 
-+struct stm32_fmc2_nfc;
-+
-+struct stm32_fmc2_nfc_data {
-+	int max_ncs;
-+	int (*set_cdev)(struct stm32_fmc2_nfc *nfc);
-+};
-+
- struct stm32_fmc2_nfc {
- 	struct nand_controller base;
- 	struct stm32_fmc2_nand nand;
-@@ -256,6 +264,7 @@ struct stm32_fmc2_nfc {
- 	phys_addr_t data_phys_addr[FMC2_MAX_CE];
- 	struct clk *clk;
- 	u8 irq_state;
-+	const struct stm32_fmc2_nfc_data *data;
- 
- 	struct dma_chan *dma_tx_ch;
- 	struct dma_chan *dma_rx_ch;
-@@ -1809,7 +1818,7 @@ static int stm32_fmc2_nfc_parse_child(struct stm32_fmc2_nfc *nfc,
- 			return ret;
- 		}
- 
--		if (cs >= FMC2_MAX_CE) {
-+		if (cs >= nfc->data->max_ncs) {
- 			dev_err(nfc->dev, "invalid reg value: %d\n", cs);
- 			return -EINVAL;
- 		}
-@@ -1915,9 +1924,17 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	nand_controller_init(&nfc->base);
- 	nfc->base.ops = &stm32_fmc2_nfc_controller_ops;
- 
--	ret = stm32_fmc2_nfc_set_cdev(nfc);
--	if (ret)
--		return ret;
-+	nfc->data = of_device_get_match_data(dev);
-+	if (!nfc->data)
-+		return -EINVAL;
-+
-+	if (nfc->data->set_cdev) {
-+		ret = nfc->data->set_cdev(nfc);
-+		if (ret)
-+			return ret;
-+	} else {
-+		nfc->cdev = dev->parent;
-+	}
- 
- 	ret = stm32_fmc2_nfc_parse_dt(nfc);
- 	if (ret)
-@@ -1936,7 +1953,7 @@ static int stm32_fmc2_nfc_probe(struct platform_device *pdev)
- 	if (nfc->dev == nfc->cdev)
- 		start_region = 1;
- 
--	for (chip_cs = 0, mem_region = start_region; chip_cs < FMC2_MAX_CE;
-+	for (chip_cs = 0, mem_region = start_region; chip_cs < nfc->data->max_ncs;
- 	     chip_cs++, mem_region += 3) {
- 		if (!(nfc->cs_assigned & BIT(chip_cs)))
- 			continue;
-@@ -2092,7 +2109,7 @@ static int __maybe_unused stm32_fmc2_nfc_resume(struct device *dev)
- 
- 	stm32_fmc2_nfc_wp_disable(nand);
- 
--	for (chip_cs = 0; chip_cs < FMC2_MAX_CE; chip_cs++) {
-+	for (chip_cs = 0; chip_cs < nfc->data->max_ncs; chip_cs++) {
- 		if (!(nfc->cs_assigned & BIT(chip_cs)))
- 			continue;
- 
-@@ -2105,9 +2122,28 @@ static int __maybe_unused stm32_fmc2_nfc_resume(struct device *dev)
- static SIMPLE_DEV_PM_OPS(stm32_fmc2_nfc_pm_ops, stm32_fmc2_nfc_suspend,
- 			 stm32_fmc2_nfc_resume);
- 
-+static const struct stm32_fmc2_nfc_data stm32_fmc2_nfc_mp1_data = {
-+	.max_ncs = 2,
-+	.set_cdev = stm32_fmc2_nfc_set_cdev,
-+};
-+
-+static const struct stm32_fmc2_nfc_data stm32_fmc2_nfc_mp25_data = {
-+	.max_ncs = 4,
-+};
-+
- static const struct of_device_id stm32_fmc2_nfc_match[] = {
--	{.compatible = "st,stm32mp15-fmc2"},
--	{.compatible = "st,stm32mp1-fmc2-nfc"},
-+	{
-+		.compatible = "st,stm32mp15-fmc2",
-+		.data = &stm32_fmc2_nfc_mp1_data,
-+	},
-+	{
-+		.compatible = "st,stm32mp1-fmc2-nfc",
-+		.data = &stm32_fmc2_nfc_mp1_data,
-+	},
-+	{
-+		.compatible = "st,stm32mp25-fmc2-nfc",
-+		.data = &stm32_fmc2_nfc_mp25_data,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, stm32_fmc2_nfc_match);
--- 
-2.25.1
+Use i2c-transfer-timeout-ms in my opinion, so it us crystal clear
+what that property is for.
 
+As Rob mentioned this isn't in the kernel schemas but in dtschema, so
+you need to patch this:
+https://github.com/robherring/dt-schema
+
+Yours,
+Linus Walleij
 
