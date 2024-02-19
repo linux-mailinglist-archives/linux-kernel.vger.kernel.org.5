@@ -1,170 +1,240 @@
-Return-Path: <linux-kernel+bounces-71004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C43859F3F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:08:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46E48859F4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:09:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B5361C21B8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:08:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AD3A1C21C43
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5493722EE8;
-	Mon, 19 Feb 2024 09:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02DC22EF7;
+	Mon, 19 Feb 2024 09:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZIFtvBUV"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DZBiokTQ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cEu3F6wK"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0584224F0
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:07:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C7222309;
+	Mon, 19 Feb 2024 09:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708333678; cv=none; b=JUKjrJ+1ApGWt96RK1uhoZFQkoh8Pjk2hlryi2cFJf9wwAuLNlX15weShEJocH9w2ovVayc7L/64MiHNfdoxAluvXpJ2iHs5v16CYDpcl9J/u5fXzoYEuBKl4d/U2/XB2jHix2mQSbZlFkp0rUchf6o+xIaHfi6ms+A4vY8/fHk=
+	t=1708333737; cv=none; b=gF69JPBpbvVEeI8lwciac4cNBXDAxmFGlD3Yl/ccQfhYYKlVq5dPsNK3raWEuYtlVJi211l0iO3ZUtlpUuoL9hqTJBrvlFQsWpHw9/k9UQzU+Iemvi3tmTSoXsVlx+AaOwWfpdoB+hjqRaZrRTrOpxue6xY5qCoeKXqFMKiwxz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708333678; c=relaxed/simple;
-	bh=tRnAUD55yksVdxHuB0T/WrK0lH6aDVw5T82GrrE5A9I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tiCQ1LYoi8DMqurS/2eaecznEcEGAyk+OmPAkU7Wj+Y2+m2MjzNZD0WeogzqOIZ9tZVnt0p9yRdLnZBfqo5Hxb0tHmaOBk1JRwWwI105ostHljN0bZnfsgp6m7vG48C91DV8DFoTdu/OP3kF0yUZvQCT+wN/knkit0dhv3VsY90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZIFtvBUV; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d22d0f8ad1so15961561fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:07:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708333675; x=1708938475; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h6Xu1HAHZ9HRxjD9AT8qdpfBrvzwdj1aG2VVZhQOMJw=;
-        b=ZIFtvBUVOqMV5bnEiFiA1M4mu9cEB4WyzSgdgfSWQa9nGbVR6RkuLAPdJJb2t3k031
-         H1y6Igh2/7pPK5HnxJKXy/eg6xPa3D1S0dy5RANPAXVb62He8bUoOSZf2q2CUB1GWBdH
-         9itL8HR4NGZ/flk+Q28iaShC2q6ff2G+Kt62g7w7IlNM/oMDALPeJftxEpzimq78kpnQ
-         eRbMEqI4LI7nSpwp+8Vf/U0PdGIQJFjisQHXKKzKKT+ivtdUTQVt6Tt1ta47PNuk4rWK
-         fntkFmN5Q4LxEoPHvBOMOj+H+EPoS98+RNbnp+vzLCkUVQvwMFXhyKFO0aZSO7LWpgVE
-         QBRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708333675; x=1708938475;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h6Xu1HAHZ9HRxjD9AT8qdpfBrvzwdj1aG2VVZhQOMJw=;
-        b=ZHHKAULfyYaQ6CmyQqusxPKQF7a20zxto1n98K8q/SWiyMtfJ8Uu7LiwgXsveM1OIm
-         4O3qCABLjfxTkLCmUJY+xvrc+PwLUuRXqcJQxg7tAwgCGFjONfc/CjQWD/9EhQeMtNhp
-         /ae4awvmOUYncSZmCHqxa20zoL5HKveviip7KxBACHmF1Xp5McyWwsFqasy7xjKL+OVp
-         7aIVitXKmlYyl3+FTTc1lW8EyoEt3D0dvo16aQHCkUbSI8ywoYo2ToMjBIIJM3VANRQ0
-         24HQOFs/F9R4arbx4fKmOtfohAMu3bX+e+Ki74kyl9i4O594i+JWiPUEU/40l0uTdnJY
-         GrzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQp8pvy8FFyCVzGuHGb9LoH1vBUywliVEjNs/uTcVyfneO53SjfKtrzfbAsIgzYLyoYsxWWgrLv5pPAlLwcg3peymN3kMeXQvHN0Sc
-X-Gm-Message-State: AOJu0Yy/eExCXttaQB+6mGuTBD2qYDD8AYgZNbin73xCYhKEa18pg5WB
-	Z9p2zoYxWpoIj4M/4xd83vGyCJlzR4YgoR3T06N0Ux0b5AUCsTh74MQXpXj7bXY=
-X-Google-Smtp-Source: AGHT+IHKVEM/gaTzGxSC7rvNgeF2ynwsCj8mGyyotbBTNHns2GoyzBtLpoPiJwNRHV81I2/an5TDpA==
-X-Received: by 2002:a2e:99c3:0:b0:2d2:3b20:72ba with SMTP id l3-20020a2e99c3000000b002d23b2072bamr994750ljj.50.1708333674873;
-        Mon, 19 Feb 2024 01:07:54 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id z2-20020a5d4c82000000b0033d07edbaa6sm9725160wrs.110.2024.02.19.01.07.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 01:07:54 -0800 (PST)
-Message-ID: <77a7223b-9407-4191-b53a-0bfc623f14bf@linaro.org>
-Date: Mon, 19 Feb 2024 10:07:52 +0100
+	s=arc-20240116; t=1708333737; c=relaxed/simple;
+	bh=+ZMPIvIwkppldENup3GEYut/raXsv5r8fa0cHqLSbv0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k1CHWdp4/kG6C5k4KKQtAgWAYc9B/BEVd/VYEv/HgabxydiXp1M1TJ4xv7VgJCTdrUalaTNgKq0nqOJVjdKN4VS7xL2c3pAwJD1eRFerAzkdtv5b4VlMkwQElfWy3wD61K6hjNxGk0fZMThKHDvQjsgQcWF4eMMwcuW8SRwNWm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DZBiokTQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cEu3F6wK; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Florian Kauer <florian.kauer@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708333733;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CyuTyEUacN3pepSBJWL72y/0RunhnYpq37IXOd+sUdI=;
+	b=DZBiokTQDlOdztrlEBO0BdhvIfliISfFM5K/4igbF+EX0M5Mp/S53BDNd5VvTXiEMasiC+
+	1pefmKJK+6CZMS6Y0jjI5fLAfoPYLIdlKbqc239RxTpshpEr3JiGjXvtxKnO1gdNNuiFeN
+	/4rHIuIH/vToEnRmlN1KCZI94VpP8qeqK5W3rUcSGMFzlPiVDcl8XGqY6UyLuX8Rq/Vd6Y
+	NOSzYyxXxP2QooXTb1qGagaeOP6WCtrKISM/skhN1DwZudviNR5dtMOavYKqUZCbHLWGNf
+	4qUaTzsJOhkEJqTTtlCweMo+zOQAJRxQ/mR6D4FaFyyY3FobjVLEQdIRRcp1dg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708333733;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CyuTyEUacN3pepSBJWL72y/0RunhnYpq37IXOd+sUdI=;
+	b=cEu3F6wKVZE3xIS+G90z7VEP0pbOGI6Cah5j92ZjIX8P7r+WNCPCb+EsBK0mtFje58an/p
+	G0lCqcsKHNsJqlDA==
+To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Jithu Joseph <jithu.joseph@intel.com>,
+	Andre Guedes <andre.guedes@intel.com>,
+	Vedang Patel <vedang.patel@intel.com>
+Cc: Florian Kauer <florian.kauer@linutronix.de>,
+	kurt@linutronix.de,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net 1/1] igc: avoid returning frame twice in XDP_REDIRECT
+Date: Mon, 19 Feb 2024 10:08:43 +0100
+Message-Id: <20240219090843.9307-1-florian.kauer@linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: ata: convert MediaTek controller to the
- json-schema
-Content-Language: en-US
-To: Niklas Cassel <cassel@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: Damien Le Moal <dlemoal@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Ryder Lee <ryder.lee@mediatek.com>, linux-ide@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-References: <20240213074747.26151-1-zajec5@gmail.com>
- <ZdMTx1CJzFR5uAzK@x1-carbon>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <ZdMTx1CJzFR5uAzK@x1-carbon>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 19/02/2024 09:39, Niklas Cassel wrote:
-> On Tue, Feb 13, 2024 at 08:47:47AM +0100, Rafał Miłecki wrote:
->> From: Rafał Miłecki <rafal@milecki.pl>
->>
->> This helps validating DTS files.
->>
->> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
->> ---
-> 
-> Hello Rob,
-> 
-> For device tree patches for
-> Documentation/devicetree/bindings/ata/
-> 
-> Usually, if we see your Acked-by, we queue the patch via the libata tree.
-> (If it is part of a series, usually you take it via your tree.)
-> 
-> We have a R-b from Krzysztof, but no Ack from you.
+When a frame can not be transmitted in XDP_REDIRECT
+(e.g. due to a full queue), it is necessary to free
+it by calling xdp_return_frame_rx_napi.
 
-You don't need Ack from Rob. Rb or Ack from one of three DT maintainers
-is enough. Therefore mine is enough.
+However, this is the reponsibility of the caller of
+the ndo_xdp_xmit (see for example bq_xmit_all in
+kernel/bpf/devmap.c) and thus calling it inside
+igc_xdp_xmit (which is the ndo_xdp_xmit of the igc
+driver) as well will lead to memory corruption.
 
-https://www.kernel.org/doc/html/latest/process/maintainers.html#open-firmware-and-flattened-device-tree-bindings
+In fact, bq_xmit_all expects that it can return all
+frames after the last successfully transmitted one.
+Therefore, break for the first not transmitted frame,
+but do not call xdp_return_frame_rx_napi in igc_xdp_xmit.
+This is equally implemented in other Intel drivers
+such as the igb.
 
-Best regards,
-Krzysztof
+There are two alternatives to this that were rejected:
+1. Return num_frames as all the frames would have been
+   transmitted and release them inside igc_xdp_xmit.
+   While it might work technically, it is not what
+   the return value is meant to repesent (i.e. the
+   number of SUCCESSFULLY transmitted packets).
+2. Rework kernel/bpf/devmap.c and all drivers to
+   support non-consecutively dropped packets.
+   Besides being complex, it likely has a negative
+   performance impact without a significant gain
+   since it is anyway unlikely that the next frame
+   can be transmitted if the previous one was dropped.
+
+The memory corruption can be reproduced with
+the following script which leads to a kernel panic
+after a few seconds.  It basically generates more
+traffic than a i225 NIC can transmit and pushes it
+via XDP_REDIRECT from a virtual interface to the
+physical interface where frames get dropped.
+
+   #!/bin/bash
+   INTERFACE=enp4s0
+   INTERFACE_IDX=`cat /sys/class/net/$INTERFACE/ifindex`
+
+   sudo ip link add dev veth1 type veth peer name veth2
+   sudo ip link set up $INTERFACE
+   sudo ip link set up veth1
+   sudo ip link set up veth2
+
+   cat << EOF > redirect.bpf.c
+
+   SEC("prog")
+   int redirect(struct xdp_md *ctx)
+   {
+       return bpf_redirect($INTERFACE_IDX, 0);
+   }
+
+   char _license[] SEC("license") = "GPL";
+   EOF
+   clang -O2 -g -Wall -target bpf -c redirect.bpf.c -o redirect.bpf.o
+   sudo ip link set veth2 xdp obj redirect.bpf.o
+
+   cat << EOF > pass.bpf.c
+
+   SEC("prog")
+   int pass(struct xdp_md *ctx)
+   {
+       return XDP_PASS;
+   }
+
+   char _license[] SEC("license") = "GPL";
+   EOF
+   clang -O2 -g -Wall -target bpf -c pass.bpf.c -o pass.bpf.o
+   sudo ip link set $INTERFACE xdp obj pass.bpf.o
+
+   cat << EOF > trafgen.cfg
+
+   {
+     /* Ethernet Header */
+     0xe8, 0x6a, 0x64, 0x41, 0xbf, 0x46,
+     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+     const16(ETH_P_IP),
+
+     /* IPv4 Header */
+     0b01000101, 0,   # IPv4 version, IHL, TOS
+     const16(1028),   # IPv4 total length (UDP length + 20 bytes (IP header))
+     const16(2),      # IPv4 ident
+     0b01000000, 0,   # IPv4 flags, fragmentation off
+     64,              # IPv4 TTL
+     17,              # Protocol UDP
+     csumip(14, 33),  # IPv4 checksum
+
+     /* UDP Header */
+     10,  0, 1, 1,    # IP Src - adapt as needed
+     10,  0, 1, 2,    # IP Dest - adapt as needed
+     const16(6666),   # UDP Src Port
+     const16(6666),   # UDP Dest Port
+     const16(1008),   # UDP length (UDP header 8 bytes + payload length)
+     csumudp(14, 34), # UDP checksum
+
+     /* Payload */
+     fill('W', 1000),
+   }
+   EOF
+
+   sudo trafgen -i trafgen.cfg -b3000MB -o veth1 --cpp
+
+Fixes: 4ff320361092 ("igc: Add support for XDP_REDIRECT action")
+Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index ba8d3fe186ae..81c21a893ede 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -6487,7 +6487,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
+ 	int cpu = smp_processor_id();
+ 	struct netdev_queue *nq;
+ 	struct igc_ring *ring;
+-	int i, drops;
++	int i, nxmit;
+ 
+ 	if (unlikely(!netif_carrier_ok(dev)))
+ 		return -ENETDOWN;
+@@ -6503,16 +6503,15 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
+ 	/* Avoid transmit queue timeout since we share it with the slow path */
+ 	txq_trans_cond_update(nq);
+ 
+-	drops = 0;
++	nxmit = 0;
+ 	for (i = 0; i < num_frames; i++) {
+ 		int err;
+ 		struct xdp_frame *xdpf = frames[i];
+ 
+ 		err = igc_xdp_init_tx_descriptor(ring, xdpf);
+-		if (err) {
+-			xdp_return_frame_rx_napi(xdpf);
+-			drops++;
+-		}
++		if (err)
++			break;
++		nxmit++;
+ 	}
+ 
+ 	if (flags & XDP_XMIT_FLUSH)
+@@ -6520,7 +6519,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
+ 
+ 	__netif_tx_unlock(nq);
+ 
+-	return num_frames - drops;
++	return nxmit;
+ }
+ 
+ static void igc_trigger_rxtxq_interrupt(struct igc_adapter *adapter,
+-- 
+2.39.2
 
 
