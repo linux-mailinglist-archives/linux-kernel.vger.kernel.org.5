@@ -1,260 +1,164 @@
-Return-Path: <linux-kernel+bounces-71154-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8669385A16F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:54:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C281885A172
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:54:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0F6283686
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:54:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3ABF31F22E69
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:54:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39EBE28DDF;
-	Mon, 19 Feb 2024 10:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IgoWWx4r";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="02R1N3KT"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE12E2C1BF;
+	Mon, 19 Feb 2024 10:54:19 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C13028DBF;
-	Mon, 19 Feb 2024 10:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94FFD28DD0
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708340048; cv=none; b=VW8B9KbQyX+uL+LisJKHGYq2Y2WRwJgsa+FunTq5XuB2XKuneYwYl9bBr+C/hSt5j07536SMlz9o8HYe9HjmjALzkY3oEP8rE1ZjaPKLy6AWVE7Kreirf3Cl/vm6cPImvW83MFuM4VhmHJgCffIrLLqvzSOyyoktk8LvboSL32A=
+	t=1708340059; cv=none; b=QcGQ5BP1WbX9UgRgFYTtFMCcqjoAs/Kksh8+dRKwRAK9DbYSxJeNMLjOV2e/SA1DroMrx0z7+PNjV1k4HnAluAV4sPR4QTiwTc0xThhl3M1Edh9nwrZUp9LwT/iPyJaVzWmfMjmybq5MIL+VU38Z1G0d1nnYBmjPNQ4DJgYxSyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708340048; c=relaxed/simple;
-	bh=gf3z+xntVMESYYOXqdfthNDgYasDPWbJWCxy0swxIeY=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=O0teFbKzq46sPnQ/wz3i44/VgnZv+3SdipAiveGyrJ+3EqATmVgVUEEQvyvPf994zvT/LVOB0ZljuGN4hRyO9EaCRcw90qOQ4pNf8Iq5KGMVSUDNzj0C/pL11IUwBHbObNsa8J+ir44Ugz3/hkrwpT3G0lRqrsdIUhv1Wk6AJyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IgoWWx4r; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=02R1N3KT; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 19 Feb 2024 10:54:03 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708340044;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vMr5wZHo+iJizSZtBfiMUkOCyOt32t5SxZbwNDvsiX0=;
-	b=IgoWWx4rkxSHsVUQoVxtwT8ijHI3PVMJR/HZnTQC6PxRa0Yr8MDJxTSq9n6HvUgZLboOaW
-	68lBea33yaGfBsNahwPtvJqHQXCQ1m3qBhlZ+1oM2GJyW9fYW7TUpijf6VftxYRup++bAS
-	A4Pb+nc7LeiO/YmH3Ax2UuaYYRkXUZpvXbFIlsXd5xDBL52WxkRiVm+AdAMcKsbKKvB0V4
-	HfOBc/UrHUCngfGd3m5l8L14jN+2ZDj4zbqu60ZSbQfEG3sa8IqY2MNMSpFVoHL+FHTc28
-	D5z0btesOf+9wJs8Z8avPkkH3zYhLOh706FsZKwiwV22nkxiQLbrQoipb1mkNg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708340044;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vMr5wZHo+iJizSZtBfiMUkOCyOt32t5SxZbwNDvsiX0=;
-	b=02R1N3KTQMFhQf8ZKCvrMHZtHSMGEbYYlTJBgIOGH6Y5CCoFyOo9iVCQTzbg0YW71XeNRP
-	2CklfOWwV9XQjtAA==
-From: "tip-bot2 for Crystal Wood" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/core] genirq: Wake interrupt threads immediately when
- changing affinity
-Cc: Crystal Wood <crwood@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240122235353.15235-1-crwood@redhat.com>
-References: <20240122235353.15235-1-crwood@redhat.com>
+	s=arc-20240116; t=1708340059; c=relaxed/simple;
+	bh=vcmWLpsbR5n9RKGU2WnaOKPU7Yuwl2Bb2ZNlUPIMcCI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u34TJjnVhCdrsE1MnXHTk9Qblg0WNPFEiCWeRfN61X//nN633UX/99XcGkikfoAdgSGd9xIufjCsLFMhQP5KM7AEZZNZ0FHSvFocYrL8HQzVMhgrWEyf+DUkkmGcH5LM9HL7rfyW0c+GtnIXlibU3/Gtfu1nU9IebuiwwqOqEMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3651fd50053so17732565ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 02:54:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708340056; x=1708944856;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jk5EspbERIA8uUIF9TL7Tb+L6jCRUl5vlESHpidcuZc=;
+        b=cAW4py8DzX82Q1WxfN5jd0UKzZFtmWC2nh5pl0XQy+aRkeH5PMDxlM+f4iAuITFIh5
+         QFDDFZ1B+ZDH/yW5DxWwqz+HsD9D84wWAkiNL+BQXV0iMqNL8hY3csGDB3kybb4v8Xkq
+         cXDZRhc5b1JaNjdx9VUsI8xCbYgw+aa2f6BT46r7WqGRSnwMki/RfT3/5ViXqzCqsG1v
+         KukmpJlYun3Ad0UmB1V93xLpsFsSLsantSQqyNObtFojGEsmd3DYfU33gV6+Hp6AFDVy
+         k3ysZAfXg6r/SxswKGznITx2GHhE7HjhdET+/ihORRNpTO3bv2cA3rqXECpE2auu/b6S
+         0nTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRLhffBhze47byH2ef3bI2zb6xjByOfxRZkzzthJ8qChlx/ydKpRGy9UTFTERBgFXozKRyxndKZs3j+xXTWTlvI3htS/kScj+XDnEO
+X-Gm-Message-State: AOJu0YwgLtmHUx7NMahz+RAGCh6qkDP9+7wCqCw3zuH4S8oeTvK/vsho
+	vW3ES7fLX88vtCRz5ob5hMsytyOrsieZ2QvYxIwpmMTCUD0Tv3y/n6P8lO6tTxddLHkQHO61p3u
+	w6VmQCZlyL+ZZ9dQD+la6Wfc0LxzwwemmXNcOHRZyaQ/DTZhz4A4lDW0=
+X-Google-Smtp-Source: AGHT+IHhBF6fp0Jnn7wYY17cmd8VUoh94pZXEYHyQl4ojI/qWuxyam31nMsi1y3qV4CIjdv6lbez3Oc8cN5vk76QJp82TsVGcCzQ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170834004383.398.5346093175756384370.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1b0f:b0:365:26e3:6e60 with SMTP id
+ i15-20020a056e021b0f00b0036526e36e60mr398541ilv.0.1708340056777; Mon, 19 Feb
+ 2024 02:54:16 -0800 (PST)
+Date: Mon, 19 Feb 2024 02:54:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003d6c9d0611b9ea2d@google.com>
+Subject: [syzbot] [nilfs?] INFO: task hung in nilfs_segctor_thread (2)
+From: syzbot <syzbot+c8166c541d3971bf6c87@syzkaller.appspotmail.com>
+To: konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The following commit has been merged into the irq/core branch of tip:
+Hello,
 
-Commit-ID:     c99303a2d2a25ba467ebf75d3e446b58c7e7df3a
-Gitweb:        https://git.kernel.org/tip/c99303a2d2a25ba467ebf75d3e446b58c7e7df3a
-Author:        Crystal Wood <crwood@redhat.com>
-AuthorDate:    Mon, 22 Jan 2024 17:53:53 -06:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 19 Feb 2024 11:43:46 +01:00
+syzbot found the following issue on:
 
-genirq: Wake interrupt threads immediately when changing affinity
+HEAD commit:    f735966ee23c Merge branches 'for-next/reorg-va-space' and ..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=12dbb3dc180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d47605a39da2cf06
+dashboard link: https://syzkaller.appspot.com/bug?extid=c8166c541d3971bf6c87
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-The affinity setting of interrupt threads happens in the context of the
-thread when the thread is woken up by an hard interrupt. As this can be an
-arbitrary after changing the affinity, the thread can become runnable on an
-isolated CPU and cause isolation disruption.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Avoid this by checking the set affinity request in wait_for_interrupt() and
-waking the threads immediately when the affinity is modified.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bdea2316c4db/disk-f735966e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/75ba7806a91c/vmlinux-f735966e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/208f119d45ed/Image-f735966e.gz.xz
 
-Note that this is of the most benefit on systems where the interrupt
-affinity itself does not need to be deferred to the interrupt handler, but
-even where that's not the case, the total dirsuption will be less.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c8166c541d3971bf6c87@syzkaller.appspotmail.com
 
-Signed-off-by: Crystal Wood <crwood@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20240122235353.15235-1-crwood@redhat.com
+INFO: task segctord:26558 blocked for more than 143 seconds.
+      Not tainted 6.8.0-rc3-syzkaller-gf735966ee23c #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:segctord        state:D stack:0     pid:26558 tgid:26558 ppid:2      flags:0x00000008
+Call trace:
+ __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0x1498/0x24b4 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xb8/0x19c kernel/sched/core.c:6817
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6874
+ rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
+ __down_write_common kernel/locking/rwsem.c:1306 [inline]
+ __down_write kernel/locking/rwsem.c:1315 [inline]
+ down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
+ nilfs_transaction_lock+0x178/0x33c fs/nilfs2/segment.c:357
+ nilfs_segctor_thread_construct fs/nilfs2/segment.c:2523 [inline]
+ nilfs_segctor_thread+0x3cc/0xd78 fs/nilfs2/segment.c:2608
+ kthread+0x288/0x310 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:860
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffff80008ee43fc0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:297
+2 locks held by getty/5931:
+ #0: ffff0000d82710a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
+ #1: ffff800093fe72f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x41c/0x1228 drivers/tty/n_tty.c:2201
+1 lock held by syz-executor.0/6205:
+ #0: ffff0000d6d12c68 (&pipe->mutex/1){+.+.}-{3:3}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:297
+2 locks held by kworker/u4:26/13298:
+6 locks held by syz-executor.2/26553:
+1 lock held by segctord/26558:
+ #0: ffff00011fc2d2a0
+ (&nilfs->ns_segctor_sem){++++}-{3:3}, at: nilfs_transaction_lock+0x178/0x33c fs/nilfs2/segment.c:357
+1 lock held by syz-executor.3/11586:
+ #0: ffff0000c346f8b8 (&nft_net->commit_mutex){+.+.}-{3:3}, at: nf_tables_valid_genid+0x3c/0xd4 net/netfilter/nf_tables_api.c:10624
+1 lock held by syz-executor.1/11588:
+1 lock held by syz-executor.2/11593:
+ #0: ffff0001485282b8 (&nft_net->commit_mutex){+.+.}-{3:3}, at: nf_tables_valid_genid+0x3c/0xd4 net/netfilter/nf_tables_api.c:10624
+1 lock held by syz-executor.4/11594:
+ #0: ffff0000d343fcb8 (&nft_net->commit_mutex){+.+.}-{3:3}, at: nf_tables_valid_genid+0x3c/0xd4 net/netfilter/nf_tables_api.c:10624
+4 locks held by syz-executor.0/11595:
+ #0: ffff0001b400ef58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested kernel/sched/core.c:559 [inline]
+ #0: ffff0001b400ef58 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock kernel/sched/sched.h:1385 [inline]
+ #0: ffff0001b400ef58 (&rq->__lock){-.-.}-{2:2}, at: rq_lock kernel/sched/sched.h:1699 [inline]
+ #0: ffff0001b400ef58 (&rq->__lock){-.-.}-{2:2}, at: __schedule+0x2e0/0x24b4 kernel/sched/core.c:6643
+ #1: ffff0001b3ffac88 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_switch+0x3c0/0x618 kernel/sched/psi.c:988
+ #2: ffff0001b401cc88 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x100/0x234 kernel/sched/psi.c:912
+ #3: ffff0001b401cc88 (&per_cpu_ptr(group->pcpu, cpu)->seq){-.-.}-{0:0}, at: psi_task_change+0x100/0x234 kernel/sched/psi.c:912
+
+=============================================
+
+
+
 ---
- kernel/irq/manage.c | 109 +++++++++++++++++++++----------------------
- 1 file changed, 55 insertions(+), 54 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-index 1782f90..ad3eaf2 100644
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -192,10 +192,14 @@ void irq_set_thread_affinity(struct irq_desc *desc)
- 	struct irqaction *action;
- 
- 	for_each_action_of_desc(desc, action) {
--		if (action->thread)
-+		if (action->thread) {
- 			set_bit(IRQTF_AFFINITY, &action->thread_flags);
--		if (action->secondary && action->secondary->thread)
-+			wake_up_process(action->thread);
-+		}
-+		if (action->secondary && action->secondary->thread) {
- 			set_bit(IRQTF_AFFINITY, &action->secondary->thread_flags);
-+			wake_up_process(action->secondary->thread);
-+		}
- 	}
- }
- 
-@@ -1049,10 +1053,57 @@ static irqreturn_t irq_forced_secondary_handler(int irq, void *dev_id)
- 	return IRQ_NONE;
- }
- 
--static int irq_wait_for_interrupt(struct irqaction *action)
-+#ifdef CONFIG_SMP
-+/*
-+ * Check whether we need to change the affinity of the interrupt thread.
-+ */
-+static void irq_thread_check_affinity(struct irq_desc *desc, struct irqaction *action)
-+{
-+	cpumask_var_t mask;
-+	bool valid = false;
-+
-+	if (!test_and_clear_bit(IRQTF_AFFINITY, &action->thread_flags))
-+		return;
-+
-+	__set_current_state(TASK_RUNNING);
-+
-+	/*
-+	 * In case we are out of memory we set IRQTF_AFFINITY again and
-+	 * try again next time
-+	 */
-+	if (!alloc_cpumask_var(&mask, GFP_KERNEL)) {
-+		set_bit(IRQTF_AFFINITY, &action->thread_flags);
-+		return;
-+	}
-+
-+	raw_spin_lock_irq(&desc->lock);
-+	/*
-+	 * This code is triggered unconditionally. Check the affinity
-+	 * mask pointer. For CPU_MASK_OFFSTACK=n this is optimized out.
-+	 */
-+	if (cpumask_available(desc->irq_common_data.affinity)) {
-+		const struct cpumask *m;
-+
-+		m = irq_data_get_effective_affinity_mask(&desc->irq_data);
-+		cpumask_copy(mask, m);
-+		valid = true;
-+	}
-+	raw_spin_unlock_irq(&desc->lock);
-+
-+	if (valid)
-+		set_cpus_allowed_ptr(current, mask);
-+	free_cpumask_var(mask);
-+}
-+#else
-+static inline void irq_thread_check_affinity(struct irq_desc *desc, struct irqaction *action) { }
-+#endif
-+
-+static int irq_wait_for_interrupt(struct irq_desc *desc,
-+				  struct irqaction *action)
- {
- 	for (;;) {
- 		set_current_state(TASK_INTERRUPTIBLE);
-+		irq_thread_check_affinity(desc, action);
- 
- 		if (kthread_should_stop()) {
- 			/* may need to run one last time */
-@@ -1129,52 +1180,6 @@ out_unlock:
- 	chip_bus_sync_unlock(desc);
- }
- 
--#ifdef CONFIG_SMP
--/*
-- * Check whether we need to change the affinity of the interrupt thread.
-- */
--static void
--irq_thread_check_affinity(struct irq_desc *desc, struct irqaction *action)
--{
--	cpumask_var_t mask;
--	bool valid = true;
--
--	if (!test_and_clear_bit(IRQTF_AFFINITY, &action->thread_flags))
--		return;
--
--	/*
--	 * In case we are out of memory we set IRQTF_AFFINITY again and
--	 * try again next time
--	 */
--	if (!alloc_cpumask_var(&mask, GFP_KERNEL)) {
--		set_bit(IRQTF_AFFINITY, &action->thread_flags);
--		return;
--	}
--
--	raw_spin_lock_irq(&desc->lock);
--	/*
--	 * This code is triggered unconditionally. Check the affinity
--	 * mask pointer. For CPU_MASK_OFFSTACK=n this is optimized out.
--	 */
--	if (cpumask_available(desc->irq_common_data.affinity)) {
--		const struct cpumask *m;
--
--		m = irq_data_get_effective_affinity_mask(&desc->irq_data);
--		cpumask_copy(mask, m);
--	} else {
--		valid = false;
--	}
--	raw_spin_unlock_irq(&desc->lock);
--
--	if (valid)
--		set_cpus_allowed_ptr(current, mask);
--	free_cpumask_var(mask);
--}
--#else
--static inline void
--irq_thread_check_affinity(struct irq_desc *desc, struct irqaction *action) { }
--#endif
--
- /*
-  * Interrupts which are not explicitly requested as threaded
-  * interrupts rely on the implicit bh/preempt disable of the hard irq
-@@ -1312,13 +1317,9 @@ static int irq_thread(void *data)
- 	init_task_work(&on_exit_work, irq_thread_dtor);
- 	task_work_add(current, &on_exit_work, TWA_NONE);
- 
--	irq_thread_check_affinity(desc, action);
--
--	while (!irq_wait_for_interrupt(action)) {
-+	while (!irq_wait_for_interrupt(desc, action)) {
- 		irqreturn_t action_ret;
- 
--		irq_thread_check_affinity(desc, action);
--
- 		action_ret = handler_fn(desc, action);
- 		if (action_ret == IRQ_WAKE_THREAD)
- 			irq_wake_secondary(desc, action);
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
