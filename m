@@ -1,199 +1,199 @@
-Return-Path: <linux-kernel+bounces-71230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B3285A23C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:42:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E9C185A23D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3498B25E9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:42:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D86B1F2463A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A92112C6B9;
-	Mon, 19 Feb 2024 11:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F40A2D79D;
+	Mon, 19 Feb 2024 11:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IIIEmoKR"
-Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com [209.85.215.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="2crYCenU"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2079.outbound.protection.outlook.com [40.107.220.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 487F32C6B2;
-	Mon, 19 Feb 2024 11:41:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708342883; cv=none; b=an6Zh10oD8/kpieSSP2dv7kJXGXpgh9ZvvNmUlXE3m25rcj37su24HzdYzJgMtpvl1y/ZopGYGWyI2uGpw2opXkKt7/er1J4wcMrsJOQ9iphLa6NXb6CL46b9iHkuqf33VHcBCirmLbNafP/HmnEGrjJ6ZfrLXIP09t896icJ80=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708342883; c=relaxed/simple;
-	bh=GarlTur4+PHKD6pyM7B394O7WrFcuzDDaSRQcnIMS2M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hdwA1yXaFE4g1YjtkH5bn9vFo+YyZAPJA0B/ujllpYRFchkwiyk7RG76xN0t3Q5ZvlPG4eTijYvn705HOioAlSgr/8Fi3QMo3/Z6zupfYOeQjW9hWuFf90JN53uVa9+2p2I1ojRPxY8bxqEUpdYgt9kyPv5NvKLXImQQEaPxYAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IIIEmoKR; arc=none smtp.client-ip=209.85.215.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f194.google.com with SMTP id 41be03b00d2f7-5cdf76cde78so3483059a12.1;
-        Mon, 19 Feb 2024 03:41:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708342881; x=1708947681; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DseBf/8i17+ETW7/Dma7xksfJzr0mR0ZxNxdl75ecBo=;
-        b=IIIEmoKRP1oBzFqaOPPp2A1ZcMN7T9hl1wJJQCwA9ENdaA5xmSwxAeLQ5l1ZwcSaDs
-         reGuTc2sFoveVcUVlN3qj2WTxF2QFawO0dtoe/ss2aHttg5hJsLlLTE/VDkvWz/V86uR
-         laAwqt3Osa0gid4JQTKaESZljZXedu2LgiiVxpIHlwF5oYvVwE3hpT+K3cOi6hGjS8HK
-         crcFDvv997tUyf91lErpcceDzhYdDv7a4/m/bWWxGW6jK45MyWp6qW80vwDsDweUeHzq
-         QsFvCCVQR2JFPkP8xAfsNU5fiYlznilUy4KS9SkTiCi7UCuA6ridGB3bed/HFVouMY3u
-         zZPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708342881; x=1708947681;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DseBf/8i17+ETW7/Dma7xksfJzr0mR0ZxNxdl75ecBo=;
-        b=egJaNwhZmFRtl9vCNQDxIcpCVYahl13aco9RJvZVaCEAcvT5uC9Yrlssi4Ve8HmKdo
-         ROM0UepdJU/wJuccKQ5LUtrGYD0FYXcAFEXFofV1SlkBuxqmgeCzd7wlq5P6mrRQfy/1
-         oYspWGNwJ1EylSQer0hrsI93ykedDB2VvGq+E+y0xHg83xw+rURGwwWoQ/GkhmWfPb3/
-         9GmcaByumr7GrzDz6pyCWHvgodNz46WmAXBruSHcUtEOK5KcX4B62ILSGMKQJyabX7fH
-         rBIvfr1Wz7PpH5MxAEHnKRBQIuMTYKOAHGrcnZnEF+mieVnjfKw5mnxZXIAi4kYIIQNQ
-         1ZWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXHgf2gb5E1f+FA5/ujIva6po5UpB7vrRKWDHMmfMoj90JEPQwpUkBq9UZAu9pS8CVIPHB7M7g0JSu2wQ7RwI0lnvv4jsmEwrbOcx3e
-X-Gm-Message-State: AOJu0YzTkN/h/th8mXtvJcx8661bTfa2snIADtn3FuMHaJXkPZ4Hoozj
-	+FPkH5X3U2y9xSLONpKYiMTsAVLJOnhF+fa33s6jRau3Uw/G5osbH/kcqnOB+ZbdZIeZ41k=
-X-Google-Smtp-Source: AGHT+IHt9rUtlOsN4joDJDaLQ46HZsx+ssQX5mNojSpy9mOPjyyNMVV/S4A0DycY+IBGc04fyk0DsA==
-X-Received: by 2002:a17:90a:134f:b0:299:11c0:13c4 with SMTP id y15-20020a17090a134f00b0029911c013c4mr7631636pjf.24.1708342881478;
-        Mon, 19 Feb 2024 03:41:21 -0800 (PST)
-Received: from [10.4.72.30] ([139.177.225.242])
-        by smtp.gmail.com with ESMTPSA id w3-20020a17090a528300b002990d91d31dsm4956437pjh.15.2024.02.19.03.41.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 03:41:21 -0800 (PST)
-Message-ID: <7a1c2bf7-df85-431a-ae21-82eeb171f1c4@gmail.com>
-Date: Mon, 19 Feb 2024 19:41:13 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1D62C6B2
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:41:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.79
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708342892; cv=fail; b=WZd+9PIgb2CFNeHAalHND21E73QeUIqFbVNjMp5KyPdfcAJ+ywbJLSwCu60oFNGIGpasWVplcJNtUmfcGOX2J6TpljWA6CKQ8qsNA2ovqWCpxbciRFKDTfwxuvozT/R5U7Ydrtq9DrFBhO/MqGSpet2RqeLF6dFyMlzSF3uP0QU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708342892; c=relaxed/simple;
+	bh=TYt+/f8r2uzbBO6xAOI9BPUGvI6n1tXuOxSre4T5eik=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=PqgIr9CrCWSkeE4NnXD5ZdqL4qWeQHlPdNFf1wwJ2RYPtsUfEOsRCkIqFISp7D7lkNwxoSX/slqIwpZHi7EJTGTHQE3fNpxurgUBpMNZHWcZdb9tezh1na16lJgHVxzPZUe9vIwZt3VsghZ26yqvC0LEslZ72aULRmiW1G9CKec=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=2crYCenU; arc=fail smtp.client-ip=40.107.220.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dM2dn9g459tmiEM/PWWQO2j9YCbhEKqveFtJKpHOkrCgGOdbZSeCLJ2Tihf4Ssw0CkDpWMCW3RFpM0LqbeZ3dpnViNveEkQxmx7LAuCUWQIDk2NrzdOW67vxGbLXcOzDItmcRUOLqprxaUcqs6GiEWxBwJ0zr3GEllZHr7NStNL27Z8GZK8/sjP/SfDaCuHuOHO9QtFTxU2DUe+biYpA8cNwEfi6LiBDSUe4zlfBWTk3L0Rxuvxii9a8h38XsjX/akinLQd7ozBXktqQxx7zPRzC9uUrHmLyj4JbQGu+xchJjWJwfJW+h2WqtalBO8Cn3ODN9o9uFaV7/Tu6d/A2aA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=V+pEWXW1rK2Q53zCwHVBMu8sVBF8rb9cL20HpcdB5Q0=;
+ b=fUAYwBEH2sF4WzXYDto5j9E7tXHN/ffuftp8OhTFXjALZ6ItS1nMj2ImLo9NdbASN/xARDxMq+LbV6QFpxGS4FleMUjXj/1beD32s+IehIwcXVmP82gTmFkGwm/Up+RwrDX+JKxt4za58Ode6UNBYzSSDvM5qWhgO0hbq3ANyF0eEQNS88/sR2t2agy9k2RAmFbQgNIfUsqB4CU70ep6eeP8miPvpxA81C1TPW4bNk9mxd1OVbiBaX+/kkMkeKnwt0omebHTxlsKXfGpui+Yrizp62ZvZ0wFt9Cp4rXYBTSQnBDoCmf5/WfGaUBoHfVoJRd73PbGPboTnlW6tReF7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V+pEWXW1rK2Q53zCwHVBMu8sVBF8rb9cL20HpcdB5Q0=;
+ b=2crYCenU02twjJt6rs63g8bocwk9wLMjGSNbU88S/oRgTg6gdKvzQvevA5PDxRVtWpSnBSbZuyrbcBoIalSK+RNsbm4zrz6BOhSID1eygXtj9LlRgfNs5GCc6WVb+kFJSIqYtURi+vtRYMeucFAzAKCHtJrhe30BqpGC2RD17dA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+ by SA1PR12MB7272.namprd12.prod.outlook.com (2603:10b6:806:2b6::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.17; Mon, 19 Feb
+ 2024 11:41:26 +0000
+Received: from PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653]) by PH7PR12MB5685.namprd12.prod.outlook.com
+ ([fe80::e1fb:4123:48b1:653%4]) with mapi id 15.20.7316.018; Mon, 19 Feb 2024
+ 11:41:26 +0000
+Message-ID: <a293460f-6a40-427f-b5d2-2e701d1af229@amd.com>
+Date: Mon, 19 Feb 2024 12:41:20 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/tests/drm_buddy: avoid 64-bit calculation
+Content-Language: en-US
+To: Arnd Bergmann <arnd@arndb.de>, Randy Dunlap <rdunlap@infradead.org>,
+ Arnd Bergmann <arnd@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Dave Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Arunpravin Paneer Selvam <Arunpravin.PaneerSelvam@amd.com>,
+ David Gow <davidgow@google.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mcanal@igalia.com>, Matthew Auld <matthew.auld@intel.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240216202442.2493031-1-arnd@kernel.org>
+ <745e156e-c3ec-427f-98ad-bfc7d3cfd846@infradead.org>
+ <4cdc5b58-11c1-490d-8c3b-6352d8f1b8cb@amd.com>
+ <fbd0426c-fdd2-4b7f-a13e-072ed5f973de@app.fastmail.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <fbd0426c-fdd2-4b7f-a13e-072ed5f973de@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR5P281CA0044.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f3::16) To PH7PR12MB5685.namprd12.prod.outlook.com
+ (2603:10b6:510:13c::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND RFC] kernel/ksysfs.c: restrict /sys/kernel/notes to root
- access
-To: Kees Cook <keescook@chromium.org>, Greg KH <gregkh@linuxfoundation.org>
-Cc: linux-hardening@vger.kernel.org, Juergen Gross <jgross@suse.com>,
- Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Stefano Stabellini <sstabellini@kernel.org>,
- Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
- Guixiong Wei <weiguixiong@bytedance.com>, linux-kernel@vger.kernel.org,
- xen-devel@lists.xenproject.org
-References: <20240218073501.54555-1-guixiongwei@gmail.com>
- <2024021825-skiing-trustee-a56a@gregkh> <202402180028.6DB512C50@keescook>
-From: Guixiong Wei <guixiongwei@gmail.com>
-In-Reply-To: <202402180028.6DB512C50@keescook>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SA1PR12MB7272:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1f261ee6-0847-40ae-80a2-08dc313fb4b3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	yIoHc5+t0O3dSfKvXFFOhQiPg0heoSaZ25wa0TBW1wjOMKbrtICrczDJ3askVMo454oQtlx3uVaKaDgLqFRJDsJJHgFySErvHiXfZe3Q6YDHJwC1b8TWGqiiL5ZZuzFNzskSmHBaLYZSqijyK76TP8RWLQxfs/cdrXFBII2UjA+Ho+520rEnAEl3VvwAoBjd6yL7zmXp7t57nUp/6EFkdkzspvcNn1H+1XMj5BFDEkPQ6zuNF1InouwG5g2tvb3JMcjzX0DCquXvPedKx05CJ4Kw86yBWi8+Qa4xnUmui3cb+6aIhtilBGszSClta/853/bDt5UCuMfWOkeOt+910Qf3XzVcZ4OFs7+qbSbof7E8aDBoJMdVXMF3VOuC2SgE0AM6CxfFxhpGDoOEG2qDd6+hiVTTPuSxtXs1W5Y/juCv+0jzw58yyI1vfdRJwbAF5NoE0DQYypeK9O8q69SYTFN+yBoIpPfBbrjWd9A66Olaavg/NCCF4Q5f6RY6K64gLCxDjCnUCAXd5FZfSC/0H5ZwSPiVioUF0e4FktiNgCE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?L3ZyTk5EeXR4TmxNaWRWaW1pQVFjUUFjT245SEt0VjJ0a25qVG9FZGREVzRa?=
+ =?utf-8?B?U0FWSE9jWGFmYWNUaWJ0UGtkQTVkMlNCNFdyakNBYnhrSy8wQU9MNVkwMXla?=
+ =?utf-8?B?V0RPSUVvWnZHQlRPZ3F3dnFCUGtMVFZ6RGNKbk81SlhwTWhpUUdwQmJyVlJY?=
+ =?utf-8?B?RmhoQ2lieUVaU1hXUU1nNXZHZFZNSnJXb0NKSlE4a0tSbHYxOG9ib2tmb2Rt?=
+ =?utf-8?B?QXNZQ20yK3ZtZEFvWXI3eW9PSDl2eHhVZzd2bDVVV09hMlZkV2FQVWNJdHN4?=
+ =?utf-8?B?WGQvM2FENVIydWc3TndmZUgvankzSjJWL2s2M0pEeWZhUVZoaVpKeW5CRThL?=
+ =?utf-8?B?VXVvT1Q3d3c4RVUzNVBIN2M3Yk41R29VTEhUTVFZWlU1Si9saUQ0SjJyYVhr?=
+ =?utf-8?B?YjN6alkwSzMvUEFVTXRwZ1E3WWd3bWpaWHkydVBxZ0JJOU5kQnVreWl3RlVw?=
+ =?utf-8?B?akMyUmdZS0NFc0d0d09LMi90bmFKWkpoakpDYzNQYTcxNU5NYmR1WFdtdE4v?=
+ =?utf-8?B?K1R6dzBXYmVURFhhY2Nkc0JtaUdxRTg0MDJ5THJYbk9ob0lNWGFiU3JDUzhu?=
+ =?utf-8?B?c1Q1WkFvZUhobzk5M1RmYUpZS0NYWjZ2SFFNQWd0ZGNpQTFJWjdpMlNDeFdo?=
+ =?utf-8?B?RmEvN3cwbGpYaU1yZE51UmEwY1h2SjQ1TDY5d1BFaDFsWExXaHdVUGVBZldl?=
+ =?utf-8?B?NkRkYjF2Njd5Y0xuZlRaWU5BUTZna052VFNvSzc5aGE5aWE0VlpmaHdOSEhK?=
+ =?utf-8?B?SDJ3b2ZENE9ESjBlMGVEUTJmd1oydDFUbU1udUlMRFhBNVFOUmlhUldJTlBM?=
+ =?utf-8?B?d3JTNWdXbkdjTFA2czZqZ1YzdEhvTTFMazM4VmpSdVA2dWJNUENkMWFaVm94?=
+ =?utf-8?B?cDkyOWgrU3lML0JhMWRkU2lTSGpqSDZTanpFL3pTRFdNL1Q1MTdwQUEzdmdh?=
+ =?utf-8?B?RzFvOTMyNVVHb1MrcTVYUDFXRXVBMFlrUnl1RW9SWU12ZGN5bk1YN0pWU0Mx?=
+ =?utf-8?B?a2pYV2lIeTRPb1hiL0JpNitwVXBzZUV5NUNEd0FjZ1N5aTVhbjQ2OVB1MkUr?=
+ =?utf-8?B?Q3YzWHVFVkROZjFDVTR5cTBqd0pMYXA3RnpKQU5Ha2JZckRhMmRWNUJEQTdQ?=
+ =?utf-8?B?YjZ1QjJxdGJrWEY2cUV0OW1aSkNVejIyVFpubCtPUGNQWklQMVh5d2tGNVJR?=
+ =?utf-8?B?UFlMZldYQ3JVb2FZeWlvNGx0c2tDTjQzRzcyZUZFRlJ0Z0tMbHh1ZlVoN2FO?=
+ =?utf-8?B?K2dwajZKZkVxeGFBeVVzWm5vYml3K29MMW5zamtnVXJsK1dLN09yOWNQTll3?=
+ =?utf-8?B?Q3FweGZ1NEJFUUp5eEkwZ3Yva2s5Y09HT1VqbjhPRHVFTUlQbmJGNU1UUDl1?=
+ =?utf-8?B?NFZVVHRZYVFhRG1QaTZVUVk3UmFaVk5VSHdEaEFXMUlpSkFOemxqdFQ1aEdV?=
+ =?utf-8?B?dXhJTm9MUkRXUDhHRjVZelF1UTU0c21QQk1qT28rcW1iTVVpc0hSbllwQUE0?=
+ =?utf-8?B?UHI0MG1VdU0zeFJjT3RaK3Vjb2tPVmt6bm84ejAweUJVaW92a0xLdFJTdTdo?=
+ =?utf-8?B?dUVRbVhiUjM1MDNiZUNLbDU2RVMwRlhFUVM0K0UzS1ZISFlqS2tiaFRmVWN3?=
+ =?utf-8?B?ZnZNaEY4M0RQckhLQ0NVRWd1ODQzTXNuZ0t0SkkxZEovMjN5VlVqSk9rUW9l?=
+ =?utf-8?B?UXRPZWlaNXlKMVZJL0hVakU2ZGlaTnBQKzl1NVljZEZZTG15UkJNS3NFOG4x?=
+ =?utf-8?B?Zjk3RjVqYU5YWjJBQ2RFbkdsQTd2cmlualZrUlBtTFBuQTZYWEdKSjI2ZjZI?=
+ =?utf-8?B?SWVjYmhSUlRldEROV2R3STRFb3BYeDNlc01CdWpBd055L2hNREF3Qk1ES29o?=
+ =?utf-8?B?V3lwcktpVXdaSnRiUjdONHl4N09nV3pad0dSVU9JckR1MlVoTGM5TnpDYVNt?=
+ =?utf-8?B?S0hEY3JyQStHbi9JK0Q5QzlUc0NSVnIwbjRyRE52OEdNWHdCRGF0VmdiYmpp?=
+ =?utf-8?B?SGw2TTFabHFZeVNldzgyMHlLSEJXNW5CaFFwK2VaNDc0SkJod1I1NDV6ejU1?=
+ =?utf-8?B?cFMxOUhQcWtsSzVJR2gzeWNVTGthcy9aOVpXVktBcXRiSnFYN1cxWDVBbnIr?=
+ =?utf-8?Q?T7yXT/oNIJpfFVcfFR6O265AS?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1f261ee6-0847-40ae-80a2-08dc313fb4b3
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 11:41:26.5296
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E90u0laMipFVJGm3TsX3rddHCXXxNwGMHwa0kGUPie3SJox9n2VTbStN/THLjDg9
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB7272
 
+Am 19.02.24 um 12:29 schrieb Arnd Bergmann:
+> On Mon, Feb 19, 2024, at 12:22, Christian König wrote:
+>> Am 17.02.24 um 02:31 schrieb Randy Dunlap:
+>>> On 2/16/24 12:24, Arnd Bergmann wrote:
+>>>> From: Arnd Bergmann <arnd@arndb.de>
+>>>>
+>>>> The newly added drm_test_buddy_alloc_contiguous() test fails to link on
+>>>> 32-bit targets because of inadvertent 64-bit calculations:
+>>>>
+>>>> ERROR: modpost: "__aeabi_uldivmod" [drivers/gpu/drm/tests/drm_buddy_test.ko] undefined!
+>>>> ERROR: modpost: "__aeabi_ldivmod" [drivers/gpu/drm/tests/drm_buddy_test.ko] undefined!
+>>>>
+>>>> >From what I can tell, the numbers cannot possibly overflow a 32-bit size,
+>>>> so use different types for these.
+>>>>
+>>>> I noticed that the function has another possible flaw in that is mixes
+>>>> what it calls pages with 4KB units. This is a big confusing at best,
+>>>> or possibly broken when built on machines with larger pages.
+>>>>
+>>>> Fixes: a64056bb5a32 ("drm/tests/drm_buddy: add alloc_contiguous test")
+>>>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>>> Tested-by: Randy Dunlap <rdunlap@infradead.org>
+>> I've just pushed a similar patch Mathew came up a bit earlier to
+>> drm-misc-fixes.
+>>
+>> Sorry for the noise, I have to catch up on picking up patches for
+>> misc-fixes and misc-next.
+> Ok, thanks.
+>
+> Have you looked at how this code works for larger values of PAGE_SIZE?
+> Is there any need to change other things or will this work with the
+> hardcoded 4KB chunks?
 
-On 2024/2/18 17:04, Kees Cook wrote:
-> On Sun, Feb 18, 2024 at 08:47:03AM +0100, Greg KH wrote:
->> On Sun, Feb 18, 2024 at 03:35:01PM +0800, Guixiong Wei wrote:
->>> From: Guixiong Wei <weiguixiong@bytedance.com>
->>>
->>> Restrict non-privileged user access to /sys/kernel/notes to
->>> avoid security attack.
->>>
->>> The non-privileged users have read access to notes. The notes
->>> expose the load address of startup_xen. This address could be
->>> used to bypass KASLR.
->> How can it be used to bypass it?
->>
->> KASLR is, for local users, pretty much not an issue, as that's not what
->> it protects from, only remote ones.
->>
->>> For example, the startup_xen is built at 0xffffffff82465180 and
->>> commit_creds is built at 0xffffffff810ad570 which could read from
->>> the /boot/System.map. And the loaded address of startup_xen is
->>> 0xffffffffbc265180 which read from /sys/kernel/notes. So the loaded
->>> address of commit_creds is 0xffffffffbc265180 - (0xffffffff82465180
->>>   - 0xffffffff810ad570) = 0xffffffffbaead570.
->> I've cc: the hardening list on this, I'm sure the developers there have
->> opinions about this.
-> Oh eww, why is Xen spewing addresses into the notes section? (This must
-> be how it finds its entry point? But that would be before relocations
-> happen...)
+I haven't looked into the details, but I've pointed out before that 
+using PAGE_SIZE in the buddy or its test cases would be incorrect.
+
+Background is that the buddy allocator is for devices and those work 
+independent of the CPU PAGE_SIZE. So it can be that on a CPU with 64k 
+pages the buddy still needs to work with 4k.
+
+Could be that this is work, but could as well be that this is completely 
+broken. Arun and Mathew needs to answer this, I haven't tested it nor 
+reviewed the code.
+
+Regards,
+Christian.
+
 >
-> But yes, I can confirm that relocations are done against the .notes
-> section at boot, so the addresses exposed in .notes is an immediate
-> KASLR offset exposure.
->
-> In /sys/kernel/notes (are there any tools to read this? I wrote my own...)
->
-> 	type: 1
-> 	name: Xen
-> 	desc: 0xb4a711c0 0xffffffff
->
-> which matches a privileged read of /proc/kallsysms:
->
-> 	ffffffffb4a711c0 T startup_xen
->
-> (and the hypercall_page too)
->
-> There are all coming from arch/x86/xen/xen-head.S:
->
->          ELFNOTE(Xen, XEN_ELFNOTE_GUEST_OS,       .asciz "linux")
->          ELFNOTE(Xen, XEN_ELFNOTE_GUEST_VERSION,  .asciz "2.6")
->          ELFNOTE(Xen, XEN_ELFNOTE_XEN_VERSION,    .asciz "xen-3.0")
-> #ifdef CONFIG_XEN_PV
->          ELFNOTE(Xen, XEN_ELFNOTE_VIRT_BASE,      _ASM_PTR __START_KERNEL_map)
->          /* Map the p2m table to a 512GB-aligned user address. */
->          ELFNOTE(Xen, XEN_ELFNOTE_INIT_P2M,       .quad (PUD_SIZE * PTRS_PER_PUD))
->          ELFNOTE(Xen, XEN_ELFNOTE_ENTRY,          _ASM_PTR startup_xen)
-> ...
->
-> Introduced in commit 5ead97c84fa7 ("xen: Core Xen implementation")
->
-> Exposed in commit da1a679cde9b ("Add /sys/kernel/notes")
->
-> Amazingly these both went in on the same release (v2.6.23, 2007). This
-> has been exposed for longer than KASLR has been upstream. :P
->
->>> Signed-off-by: Guixiong Wei <weiguixiong@bytedance.com>
->>> ---
->>>   kernel/ksysfs.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/ksysfs.c b/kernel/ksysfs.c
->>> index b1292a57c2a5..09bc0730239b 100644
->>> --- a/kernel/ksysfs.c
->>> +++ b/kernel/ksysfs.c
->>> @@ -199,7 +199,7 @@ static ssize_t notes_read(struct file *filp, struct kobject *kobj,
->>>   static struct bin_attribute notes_attr __ro_after_init  = {
->>>   	.attr = {
->>>   		.name = "notes",
->>> -		.mode = S_IRUGO,
->>> +		.mode = S_IRUSR,
->>>   	},
->>>   	.read = &notes_read,
->>>   };
-> Yes please.
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> I wonder if we should also remove relocations that are aimed at the
-> .notes section for good measure? If that had already been true, this
-> would have just given the same info as System.map.
-That's a good idea, but it depends on whether the user space tool can 
-accept the remove relocation address.
->> No objection from me, but what userspace tool requires access to this
->> file today?  Will it break if permissions are changed on it?
- From the exposed content, it seems that the main users are Xen-related 
-tools. I add Xen list, developers should be able to provide some 
-information.
->> And what about the module notes files?  If you change one, shouldn't you
->> change all?
- From what I currently know, the module note files do not expose any 
-kernel symbol address, so there is no need for modification.
-> Luckily all of _those_ contain what I'd expect: the Linux and
-> GNU.build-id notes, which are harmless. But if we're going to suddenly
-> have things appearing in here, let's make those root-only too.
-Yes, but I also not sure whether the user space tools using this file 
-can accept this permission modification.
+>       Arnd
+
 
