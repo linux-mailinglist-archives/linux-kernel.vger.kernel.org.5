@@ -1,382 +1,122 @@
-Return-Path: <linux-kernel+bounces-70938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68805859E5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:35:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EBEA859E6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:36:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1CA4C281E5B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:35:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B1A281FCC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DF8208B9;
-	Mon, 19 Feb 2024 08:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBA8921360;
+	Mon, 19 Feb 2024 08:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Q3dsrsu2"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YdDr/1Oz"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1414C9D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA392135C
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:36:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708331732; cv=none; b=W+XkihooODIHqs+G8p4Q2WH5bVTVO94E0ttXEsBJy0agy9tzMp6ZCTvDpb47rgMyXey5NkbXtGl07a0C4z1dzHXwZUUXsyyG1r8DPm3TMHNRf5dWLm92pvusN0amBBkiEl0C0u+lATvLdm2g0TaMYLDEcv1JSA+rPkpWUd9JX/o=
+	t=1708331777; cv=none; b=aLAQ/bQdWrS0ishaWsSU9MC/9Q9wlsVBAi54LNxBj2sukwurSLJ2cPHDbfgIAMFAyXWnt3NyfybHWeG9k/DnIP+fgGU4UtIyhPIraJi9lJTidJVcREvQhaAF79jBtSVVDuLgt6wdMssgzCpSgNxnXsiL74/Xp4ZXSfb4ScaLJMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708331732; c=relaxed/simple;
-	bh=ZV0MvUUbmnvQtQwA2n0yODdO9AG+RtBVh7JEm1W7Rdg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=NnONCE0UHa8OKzjpQ6u46YvgG3TTa+zrBkn/U+vTZoxGvZuDtarXdeflGyIeR7aWZDpDp9YapbWRvlsdSfibBoCU0n2F5DPwId3LcXj6mLB9dmBczropFu4x85oKepkE0prc2Y4c7Yt4mj9kL2tXfHHSnX8Gxel2VwMM4TqKndc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Q3dsrsu2; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-5129cdae3c6so2298449e87.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:35:30 -0800 (PST)
+	s=arc-20240116; t=1708331777; c=relaxed/simple;
+	bh=Rx9ZJKs/bR/usyBx3lVmlWkCDToMSZHSILyEGGUJ6aI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Izmuxfvu3dBYp7GCv7c6J3FLTKwl68Nrx05fWqQ1EVKrQFGOgL1u0bUlwY9q8OIKhNGiVg/doUi59sBfbsybKPGksNn4T2UU+BYYHyZRunNOYxF/IXrgv0lYkZdmV+J8d3/cTgAs+XLTv2rygNmiDcxQFOe8O1/JhUwYyuIYBkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YdDr/1Oz; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-563dd5bd382so10700a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:36:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708331728; x=1708936528; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zfx3ZEwTL6FBC4zykr6yONY+eAjewsuouiDmLMUTrYA=;
-        b=Q3dsrsu2Dp6jSENHrGbv9sOddY/8XKT8t3O9ixIEn5lWphISMNgDO72+4HHB7aNyIB
-         ShQZR614auRjol0LUtW5+WbLQN7XPXKlzex416grGcyKL5hUScSw5JodwfBWLelPRnzk
-         t6JOmRcNQK36Dmy24Ey8dNclrf1sR3cSQprNQ9t39XIjYykAf2Qxai3DvtslfdujOuuZ
-         6gY9Ndx7KMBjkao1k358EuAcYy3XN3soywaEOCIJuNWpD+FGTV+OId1MG7br/sc0TgUz
-         0Saxpekowk9l4g2uBI5exAu6lG7tTGoJzSmE7dqmIqUdr9gTxXLZ/omQzuFN9Ke+xH42
-         f5pA==
+        d=google.com; s=20230601; t=1708331774; x=1708936574; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=i8QoRFayjt/6bleBBpTu5vM12K7hqxhYDmZf5s1lnAg=;
+        b=YdDr/1Oz8JYDQ2flZsPaGpxoiBdsL8C8Zev9YL3hR0wsj5LRUUqQAnIuSSFVIFfk5m
+         COjJKQ2uYf5INL02sVySv+0ec2YckJFvrqS8c11Dix9oEPwywPZ3Q7b7cWqvnCNpJgPo
+         QeeGAOzgLfkMirb4ZOzryiy1M/r9MKyy2dvGbsozNr7VqjGi9XdG1eBel4GqD8P1eWJJ
+         WQqbJ6bGiRGv2EzA0n3z5vBL6XRpFX6OH14eActBy/anKnfvM/2p4NerlVeQamyyKxtw
+         iMghrU/KvzlvUBGj1ROGm3SFV0ScgVzsHSwrF7XmxOL3PVk4h5DUkoXss1455ObA3LBG
+         pj+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708331728; x=1708936528;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Zfx3ZEwTL6FBC4zykr6yONY+eAjewsuouiDmLMUTrYA=;
-        b=hfYC6pX8/w4qxlrcQOLpJgm4f3Z15gEkiliy5N756YQobhVq1PJLNINl+GBkxbcrrF
-         65AkM5iLZSVFEBMUvhAWigbdy08RjsjxNHKUQxv+YzRkhtQZlN72dWQZcgJTRIDsgYVG
-         AuJwOhkXH39YHjJZyn6Xg5/TAa0q4GTziGJ2lacZ9F9JK4ORpk1rj2kWOKZ9BIZQx++u
-         bYhg1hGurXZ288g75Ico0IZnlzrlVjsNJRPcTVTIxhHtQjjX+5r4OB0ZkH90iotkY63u
-         DAQ7a3wBsNDYbdf0uiSaxdI2THEMQbd7Klk4ep6Ua1dBxKzAkTU2IJvj/5aaItTMgEib
-         sxEw==
-X-Forwarded-Encrypted: i=1; AJvYcCX+EkDUZ23hS0Jf++0/8c7dFnM08iLlazqV0AW3kIBYzveUimgCv5qSkvCyRgUpy81VSnLS4r7FjeVXVMSWMlSOYzMvII6zRCVi/s2S
-X-Gm-Message-State: AOJu0YyUq/uuh34lTDiKugIUK+qhkhPZAcPK6Li0LMy+BRlcXLLlGyQq
-	sUlGdpwcQK0PlZBYaS3h526G2mxBvSp2HIxBu8zY6Rm2D1QEAtA9XIbWNngQ4IU=
-X-Google-Smtp-Source: AGHT+IHAyjCKKOsQG0yPf8hX1IXJFzN7yXOpiya+w8YNkF07mLmOCTuQMvbFv0PBrJP8aIFB+GAJ0Q==
-X-Received: by 2002:ac2:4433:0:b0:512:b915:3b18 with SMTP id w19-20020ac24433000000b00512b9153b18mr587309lfl.52.1708331728474;
-        Mon, 19 Feb 2024 00:35:28 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:9470:c6e0:c87a:fa9f? ([2a01:e0a:982:cbb0:9470:c6e0:c87a:fa9f])
-        by smtp.gmail.com with ESMTPSA id g19-20020a7bc4d3000000b004126101915esm4868608wmk.4.2024.02.19.00.35.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 00:35:28 -0800 (PST)
-Message-ID: <4cfb1b74-7941-45af-a60e-0661b1888b79@linaro.org>
-Date: Mon, 19 Feb 2024 09:35:27 +0100
+        d=1e100.net; s=20230601; t=1708331774; x=1708936574;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=i8QoRFayjt/6bleBBpTu5vM12K7hqxhYDmZf5s1lnAg=;
+        b=ZTRNEx0h12M/+2pg+U4uHxruUCYYF3mxK4N5+ZQQvubDftcd2M/zPJaTkyejOJRCTD
+         aT//gzNO/H1ZT6A8q70xY/qg3I6PKbWMwepY/cJ9WpO7aeRUx0uztemfAItywUTWQOTU
+         RRP1lTtLsza67hvcHXzbfomMe0irM0qw7r0X26rqFJ48FO7u83u192iE35hy5iud2cg7
+         qbIbFD+6xyiW7HDxJ27UwYTVQx+n+tR8uJuASe2+3lsG3NPMtn7POGTWXz6UuvKnPCUT
+         ZR+o2rxSfnF8Aj8oT39l0bng/Poy2tohgqUzjiGWzJpn+RWuisENHBV63zdvyMJLjSOA
+         XmWg==
+X-Forwarded-Encrypted: i=1; AJvYcCUNj/gaXmc9TLLuKQRpVt7yg/yQBONUgS2V2j9RLOuoyKdsoOVuoxW76A2bLwTChkiyzq9Y40gqYKX7rU4ssy5nm2R8oBYD4eWCpOjd
+X-Gm-Message-State: AOJu0YwdZfe4TaYjT01Fnnfb/tvm3sqvNr//aDEHL5dBFSeXtxqCFcMw
+	HUS0tcqCA3ubK8zCZoKNjSK16sxTGLY9BJE3bP9jJWGvI4cNoYjddoZVHviXgr2+m0ANiSWW+HY
+	Unse4nKHSvJljSJLJGdZbs5RtPSzBsY1JDaZE
+X-Google-Smtp-Source: AGHT+IHY6CT7bVLUITQoLpctqBSsq7nAekyPp9XNaT4BIubHaz9rpg4bjl/zXDzr3cCzpfHEsPfJO1FNnKV5xNnneeU=
+X-Received: by 2002:a50:9555:0:b0:563:c0e0:667c with SMTP id
+ v21-20020a509555000000b00563c0e0667cmr221141eda.0.1708331773467; Mon, 19 Feb
+ 2024 00:36:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v1] drm/meson: improve encoder probe / initialization
- error handling
-Content-Language: en-US, fr
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org
-Cc: maarten.lankhorst@linux.intel.com, mripard@kernel.org,
- tzimmermann@suse.de, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <20240218175035.1948165-1-martin.blumenstingl@googlemail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240219061008.1761102-1-pumahsu@google.com> <20240219061008.1761102-4-pumahsu@google.com>
+ <2024021951-coping-ferment-2023@gregkh>
+In-Reply-To: <2024021951-coping-ferment-2023@gregkh>
+From: Puma Hsu <pumahsu@google.com>
+Date: Mon, 19 Feb 2024 16:35:36 +0800
+Message-ID: <CAGCq0LasRTLQA59g+kPekWb5ZKzeHSX9c4C8LCsHwFNfT0JHTw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] MAINTAINERS: Add maintainer for Google USB XHCI driver
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: mathias.nyman@intel.com, Thinh.Nguyen@synopsys.com, badhri@google.com, 
+	royluo@google.com, howardyen@google.com, albertccwang@google.com, 
+	raychi@google.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 18/02/2024 18:50, Martin Blumenstingl wrote:
-> Rename meson_encoder_{cvbs,dsi,hdmi}_init() to
-> meson_encoder_{cvbs,dsi,hdmi}_probe() so it's clear that these functions
-> are used at probe time during driver initialization. Also switch all
-> error prints inside those functions to use dev_err_probe() for
-> consistency.
-> 
-> This makes the code more straight forward to read and makes the error
-> prints within those functions consistent (by logging all -EPROBE_DEFER
-> with dev_dbg(), while actual errors are logged with dev_err() and get
-> the error value printed).
-> 
-> Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> ---
-> This is meant to be applied on top of my other patch called
-> "drm/meson: Don't remove bridges which are created by other drivers" [0]
-> 
-> 
-> [0] https://lore.kernel.org/dri-devel/20240215220442.1343152-1-martin.blumenstingl@googlemail.com/
-> 
-> 
->   drivers/gpu/drm/meson/meson_drv.c          |  6 +++---
->   drivers/gpu/drm/meson/meson_encoder_cvbs.c | 24 ++++++++++------------
->   drivers/gpu/drm/meson/meson_encoder_cvbs.h |  2 +-
->   drivers/gpu/drm/meson/meson_encoder_dsi.c  | 23 +++++++++------------
->   drivers/gpu/drm/meson/meson_encoder_dsi.h  |  2 +-
->   drivers/gpu/drm/meson/meson_encoder_hdmi.c | 15 +++++++-------
->   drivers/gpu/drm/meson/meson_encoder_hdmi.h |  2 +-
->   7 files changed, 35 insertions(+), 39 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/meson/meson_drv.c b/drivers/gpu/drm/meson/meson_drv.c
-> index cb674966e9ac..17a5cca007e2 100644
-> --- a/drivers/gpu/drm/meson/meson_drv.c
-> +++ b/drivers/gpu/drm/meson/meson_drv.c
-> @@ -312,7 +312,7 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
->   
->   	/* Encoder Initialization */
->   
-> -	ret = meson_encoder_cvbs_init(priv);
-> +	ret = meson_encoder_cvbs_probe(priv);
->   	if (ret)
->   		goto exit_afbcd;
->   
-> @@ -326,12 +326,12 @@ static int meson_drv_bind_master(struct device *dev, bool has_components)
->   		}
->   	}
->   
-> -	ret = meson_encoder_hdmi_init(priv);
-> +	ret = meson_encoder_hdmi_probe(priv);
->   	if (ret)
->   		goto exit_afbcd;
->   
->   	if (meson_vpu_is_compatible(priv, VPU_COMPATIBLE_G12A)) {
-> -		ret = meson_encoder_dsi_init(priv);
-> +		ret = meson_encoder_dsi_probe(priv);
->   		if (ret)
->   			goto exit_afbcd;
->   	}
-> diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.c b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
-> index 3407450435e2..d1191de855d9 100644
-> --- a/drivers/gpu/drm/meson/meson_encoder_cvbs.c
-> +++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.c
-> @@ -219,7 +219,7 @@ static const struct drm_bridge_funcs meson_encoder_cvbs_bridge_funcs = {
->   	.atomic_reset = drm_atomic_helper_bridge_reset,
->   };
->   
-> -int meson_encoder_cvbs_init(struct meson_drm *priv)
-> +int meson_encoder_cvbs_probe(struct meson_drm *priv)
->   {
->   	struct drm_device *drm = priv->drm;
->   	struct meson_encoder_cvbs *meson_encoder_cvbs;
-> @@ -240,10 +240,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
->   
->   	meson_encoder_cvbs->next_bridge = of_drm_find_bridge(remote);
->   	of_node_put(remote);
-> -	if (!meson_encoder_cvbs->next_bridge) {
-> -		dev_err(priv->dev, "Failed to find CVBS Connector bridge\n");
-> -		return -EPROBE_DEFER;
-> -	}
-> +	if (!meson_encoder_cvbs->next_bridge)
-> +		return dev_err_probe(priv->dev, -EPROBE_DEFER,
-> +				     "Failed to find CVBS Connector bridge\n");
->   
->   	/* CVBS Encoder Bridge */
->   	meson_encoder_cvbs->bridge.funcs = &meson_encoder_cvbs_bridge_funcs;
-> @@ -259,10 +258,9 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
->   	/* Encoder */
->   	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_cvbs->encoder,
->   				      DRM_MODE_ENCODER_TVDAC);
-> -	if (ret) {
-> -		dev_err(priv->dev, "Failed to init CVBS encoder: %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (ret)
-> +		return dev_err_probe(priv->dev, ret,
-> +				     "Failed to init CVBS encoder\n");
->   
->   	meson_encoder_cvbs->encoder.possible_crtcs = BIT(0);
->   
-> @@ -276,10 +274,10 @@ int meson_encoder_cvbs_init(struct meson_drm *priv)
->   
->   	/* Initialize & attach Bridge Connector */
->   	connector = drm_bridge_connector_init(priv->drm, &meson_encoder_cvbs->encoder);
-> -	if (IS_ERR(connector)) {
-> -		dev_err(priv->dev, "Unable to create CVBS bridge connector\n");
-> -		return PTR_ERR(connector);
-> -	}
-> +	if (IS_ERR(connector))
-> +		return dev_err_probe(priv->dev, PTR_ERR(connector),
-> +				     "Unable to create CVBS bridge connector\n");
-> +
->   	drm_connector_attach_encoder(connector, &meson_encoder_cvbs->encoder);
->   
->   	priv->encoders[MESON_ENC_CVBS] = meson_encoder_cvbs;
-> diff --git a/drivers/gpu/drm/meson/meson_encoder_cvbs.h b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
-> index 09710fec3c66..7b7bc85c03f7 100644
-> --- a/drivers/gpu/drm/meson/meson_encoder_cvbs.h
-> +++ b/drivers/gpu/drm/meson/meson_encoder_cvbs.h
-> @@ -24,7 +24,7 @@ struct meson_cvbs_mode {
->   /* Modes supported by the CVBS output */
->   extern struct meson_cvbs_mode meson_cvbs_modes[MESON_CVBS_MODES_COUNT];
->   
-> -int meson_encoder_cvbs_init(struct meson_drm *priv);
-> +int meson_encoder_cvbs_probe(struct meson_drm *priv);
->   void meson_encoder_cvbs_remove(struct meson_drm *priv);
->   
->   #endif /* __MESON_VENC_CVBS_H */
-> diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.c b/drivers/gpu/drm/meson/meson_encoder_dsi.c
-> index 311b91630fbe..7816902f5907 100644
-> --- a/drivers/gpu/drm/meson/meson_encoder_dsi.c
-> +++ b/drivers/gpu/drm/meson/meson_encoder_dsi.c
-> @@ -100,7 +100,7 @@ static const struct drm_bridge_funcs meson_encoder_dsi_bridge_funcs = {
->   	.atomic_reset = drm_atomic_helper_bridge_reset,
->   };
->   
-> -int meson_encoder_dsi_init(struct meson_drm *priv)
-> +int meson_encoder_dsi_probe(struct meson_drm *priv)
->   {
->   	struct meson_encoder_dsi *meson_encoder_dsi;
->   	struct device_node *remote;
-> @@ -118,10 +118,9 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
->   	}
->   
->   	meson_encoder_dsi->next_bridge = of_drm_find_bridge(remote);
-> -	if (!meson_encoder_dsi->next_bridge) {
-> -		dev_dbg(priv->dev, "Failed to find DSI transceiver bridge\n");
-> -		return -EPROBE_DEFER;
-> -	}
-> +	if (!meson_encoder_dsi->next_bridge)
-> +		return dev_err_probe(priv->dev, -EPROBE_DEFER,
-> +				     "Failed to find DSI transceiver bridge\n");
->   
->   	/* DSI Encoder Bridge */
->   	meson_encoder_dsi->bridge.funcs = &meson_encoder_dsi_bridge_funcs;
-> @@ -135,19 +134,17 @@ int meson_encoder_dsi_init(struct meson_drm *priv)
->   	/* Encoder */
->   	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_dsi->encoder,
->   				      DRM_MODE_ENCODER_DSI);
-> -	if (ret) {
-> -		dev_err(priv->dev, "Failed to init DSI encoder: %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (ret)
-> +		return dev_err_probe(priv->dev, ret,
-> +				     "Failed to init DSI encoder\n");
->   
->   	meson_encoder_dsi->encoder.possible_crtcs = BIT(0);
->   
->   	/* Attach DSI Encoder Bridge to Encoder */
->   	ret = drm_bridge_attach(&meson_encoder_dsi->encoder, &meson_encoder_dsi->bridge, NULL, 0);
-> -	if (ret) {
-> -		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
-> -		return ret;
-> -	}
-> +	if (ret)
-> +		return dev_err_probe(priv->dev, ret,
-> +				     "Failed to attach bridge\n");
->   
->   	/*
->   	 * We should have now in place:
-> diff --git a/drivers/gpu/drm/meson/meson_encoder_dsi.h b/drivers/gpu/drm/meson/meson_encoder_dsi.h
-> index 9277d7015193..85d5b61805f2 100644
-> --- a/drivers/gpu/drm/meson/meson_encoder_dsi.h
-> +++ b/drivers/gpu/drm/meson/meson_encoder_dsi.h
-> @@ -7,7 +7,7 @@
->   #ifndef __MESON_ENCODER_DSI_H
->   #define __MESON_ENCODER_DSI_H
->   
-> -int meson_encoder_dsi_init(struct meson_drm *priv);
-> +int meson_encoder_dsi_probe(struct meson_drm *priv);
->   void meson_encoder_dsi_remove(struct meson_drm *priv);
->   
->   #endif /* __MESON_ENCODER_DSI_H */
-> diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.c b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-> index c4686568c9ca..22e07847a9a7 100644
-> --- a/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-> +++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.c
-> @@ -354,7 +354,7 @@ static const struct drm_bridge_funcs meson_encoder_hdmi_bridge_funcs = {
->   	.atomic_reset = drm_atomic_helper_bridge_reset,
->   };
->   
-> -int meson_encoder_hdmi_init(struct meson_drm *priv)
-> +int meson_encoder_hdmi_probe(struct meson_drm *priv)
->   {
->   	struct meson_encoder_hdmi *meson_encoder_hdmi;
->   	struct platform_device *pdev;
-> @@ -374,8 +374,8 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
->   
->   	meson_encoder_hdmi->next_bridge = of_drm_find_bridge(remote);
->   	if (!meson_encoder_hdmi->next_bridge) {
-> -		dev_err(priv->dev, "Failed to find HDMI transceiver bridge\n");
-> -		ret = -EPROBE_DEFER;
-> +		ret = dev_err_probe(priv->dev, -EPROBE_DEFER,
-> +				    "Failed to find HDMI transceiver bridge\n");
->   		goto err_put_node;
->   	}
->   
-> @@ -393,7 +393,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
->   	ret = drm_simple_encoder_init(priv->drm, &meson_encoder_hdmi->encoder,
->   				      DRM_MODE_ENCODER_TMDS);
->   	if (ret) {
-> -		dev_err(priv->dev, "Failed to init HDMI encoder: %d\n", ret);
-> +		dev_err_probe(priv->dev, ret, "Failed to init HDMI encoder\n");
->   		goto err_put_node;
->   	}
->   
-> @@ -403,7 +403,7 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
->   	ret = drm_bridge_attach(&meson_encoder_hdmi->encoder, &meson_encoder_hdmi->bridge, NULL,
->   				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
->   	if (ret) {
-> -		dev_err(priv->dev, "Failed to attach bridge: %d\n", ret);
-> +		dev_err_probe(priv->dev, ret, "Failed to attach bridge\n");
->   		goto err_put_node;
->   	}
->   
-> @@ -411,8 +411,9 @@ int meson_encoder_hdmi_init(struct meson_drm *priv)
->   	meson_encoder_hdmi->connector = drm_bridge_connector_init(priv->drm,
->   							&meson_encoder_hdmi->encoder);
->   	if (IS_ERR(meson_encoder_hdmi->connector)) {
-> -		dev_err(priv->dev, "Unable to create HDMI bridge connector\n");
-> -		ret = PTR_ERR(meson_encoder_hdmi->connector);
-> +		ret = dev_err_probe(priv->dev,
-> +				    PTR_ERR(meson_encoder_hdmi->connector),
-> +				    "Unable to create HDMI bridge connector\n");
->   		goto err_put_node;
->   	}
->   	drm_connector_attach_encoder(meson_encoder_hdmi->connector,
-> diff --git a/drivers/gpu/drm/meson/meson_encoder_hdmi.h b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
-> index a6cd38eb5f71..fd5485875db8 100644
-> --- a/drivers/gpu/drm/meson/meson_encoder_hdmi.h
-> +++ b/drivers/gpu/drm/meson/meson_encoder_hdmi.h
-> @@ -7,7 +7,7 @@
->   #ifndef __MESON_ENCODER_HDMI_H
->   #define __MESON_ENCODER_HDMI_H
->   
-> -int meson_encoder_hdmi_init(struct meson_drm *priv);
-> +int meson_encoder_hdmi_probe(struct meson_drm *priv);
->   void meson_encoder_hdmi_remove(struct meson_drm *priv);
->   
->   #endif /* __MESON_ENCODER_HDMI_H */
+On Mon, Feb 19, 2024 at 2:31=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Mon, Feb 19, 2024 at 02:10:08PM +0800, Puma Hsu wrote:
+> > Add Google USB XHCI driver and maintainer.
+> >
+> > Signed-off-by: Puma Hsu <pumahsu@google.com>
+> > ---
+> >  MAINTAINERS | 6 ++++++
+> >  1 file changed, 6 insertions(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 960512bec428..dc0e32a3c250 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -9081,6 +9081,12 @@ F:     arch/arm64/boot/dts/exynos/google/
+> >  F:   drivers/clk/samsung/clk-gs101.c
+> >  F:   include/dt-bindings/clock/google,gs101.h
+> >
+> > +GOOGLE USB XHCI DRIVER
+> > +M:   Puma Hsu <pumahsu@google.com>
+> > +L:   linux-usb@vger.kernel.org
+> > +S:   Maintained
+> > +F:   drivers/usb/host/xhci-goog.c
+>
+> You are not paid to look after this?  That sounds odd, can you work with
+> your managers to do this, otherwise this is going to be tough to do over
+> time, right?
+>
+> thanks,
+>
+> greg k-h
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+I misunderstand the definitions between Supported and Maintained,
+will update to Supported in next revision. Thanks for advising.
 
