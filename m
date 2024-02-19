@@ -1,113 +1,126 @@
-Return-Path: <linux-kernel+bounces-71574-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01AEF85A738
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:18:48 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A1C385A73F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DE851C22827
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:18:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DCAA6B223F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71643383A1;
-	Mon, 19 Feb 2024 15:18:41 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74049383A2;
+	Mon, 19 Feb 2024 15:21:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KNFedXtT";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="g7i+1UYB"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D43038389
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6445A37704
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:21:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708355921; cv=none; b=YZ82zDMQJtdlVtN15zw4pRg2kN0GwXrevef9Exdu5GPR/T0Bjkck+z9C3TRd68WW+DG5GFM8xWvgz5xHJCplcsQkaTUs2V1tf0qgmE/jPc0LDFhdXrJ2WYzFuK4MoGCtlnE5yzvuDpqdhSjxDC/JKUkiFGtfprVak1su5gJATS4=
+	t=1708356067; cv=none; b=MyU4KRoWnO1yW6k6Puszsllx2N76Q176vRj+H/QVteNF9xP1eBSU3wemEZZrQ6DvwkLZaNuWd2YzYJqFMmgr6brSYr0omSEBA0xEe/l1VmAKx/TVny3GKnd3NwpI21E87bBj6VXmb3bM+m5AC/HKDqcy/xFNIjK4g2DNp9hBNH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708355921; c=relaxed/simple;
-	bh=e+73T9SMCi27PyDmGbKHMRdyG/AztmAZjvgCjhDl5fw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XrMaLBwHp2OpE3EHTJOV1Gne3xvb8497n0FTtfuwkKosVmb4LY0CAOyoXzCWuAODU6gAmwsjVB/aVCcRfCdNkweMAjk4q6/m2KRES3u43lE1yLODRXUwQPTiDnJjPLoi27qLaRKLQWWRR0T3AIpaczLjcdCshj5obiruA2UPmxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 179F3C433F1;
-	Mon, 19 Feb 2024 15:18:35 +0000 (UTC)
-Date: Mon, 19 Feb 2024 15:18:33 +0000
-From: Catalin Marinas <catalin.marinas@arm.com>
-To: Ryan Roberts <ryan.roberts@arm.com>
-Cc: Will Deacon <will@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-	Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>,
-	Barry Song <21cnbao@gmail.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	Yang Shi <shy828301@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 12/18] arm64/mm: Wire up PTE_CONT for user mappings
-Message-ID: <ZdNxSRR9MgvtMVao@arm.com>
-References: <20240215103205.2607016-1-ryan.roberts@arm.com>
- <20240215103205.2607016-13-ryan.roberts@arm.com>
- <Zc9UQy-mtYAzNWm2@arm.com>
- <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com>
+	s=arc-20240116; t=1708356067; c=relaxed/simple;
+	bh=SO9EJRPc2OtG7Aa3cZxhtWPvr0nrr4GX1mvW13IYFmI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GLTRbs/qu1JbrJ1A6qtfdUdydstWCaENGuKMiwFdljZe/8guWhWEHAtJxQJTI2v8DTXTOLDdZZiFfXboI1ncLxO9lBZKdBx/F9nBO59rPQFklDxuidnoC0tML7N4XrHqb/hvesz0RiRHhZwE1BGXgWrLxYdqErGZ6OR4M38MhMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KNFedXtT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=g7i+1UYB; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708356064;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dRgF3/J0XN5JqGy2f1p48BuFm4HrR7Wm2czCxwJLcQs=;
+	b=KNFedXtThPCfebDXZNu8meVtnIB8qcuXnlRiDWFQjvkdEFBWIAEeBD4gDTrCxHKoZ4DgRS
+	xKI+uIkqY8F6uUwhgyTEFdkQKlR4+PESsAEH/D2KZBQOcICaEtB2/7j5WlI20hQwt/VCkY
+	1MmXEgeobx6yRIQj4lP0suhPILrmrR9AUh3djaYph9oUKUFcJrO7O9xc27s6JMUtMosGNg
+	EljGKK4ga4zXgnZHDxMTSOb2oSHw5IRXdXd88Ili7j5ibcYgQoo6+niRjBSBjuLgbW/HKM
+	aQ+Tp0mYfq51aSMbuUKLCPevkDOhlutLicCCK1wtK57KQh37zOpM9nDOmpokwA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708356064;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dRgF3/J0XN5JqGy2f1p48BuFm4HrR7Wm2czCxwJLcQs=;
+	b=g7i+1UYB/bPe+pNxkFbhq1JV4LIKQz6KpbFYzjmIstITVC7EMCSyMEiHoHdbiEziFloHP0
+	fyjD62PD/kFJAWCw==
+To: Mark Rutland <mark.rutland@arm.com>, Ankur Arora <ankur.a.arora@oracle.com>
+Cc: linux-kernel@vger.kernel.org, peterz@infradead.org,
+ torvalds@linux-foundation.org, paulmck@kernel.org,
+ akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+ dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org, willy@infradead.org,
+ mgorman@suse.de, jpoimboe@kernel.org, jgross@suse.com,
+ andrew.cooper3@citrix.com, bristot@kernel.org,
+ mathieu.desnoyers@efficios.com, geert@linux-m68k.org,
+ glaubitz@physik.fu-berlin.de, anton.ivanov@cambridgegreys.com,
+ mattst88@gmail.com, krypton@ulrich-teichert.org, rostedt@goodmis.org,
+ David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
+ jon.grimm@amd.com, bharata@amd.com, raghavendra.kt@amd.com,
+ boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, Arnd Bergmann
+ <arnd@arndb.de>, "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 03/30] thread_info: tif_need_resched() now takes
+ resched_t as param
+In-Reply-To: <ZczJU8uZdbRKvcAE@FVFF77S0Q05N>
+References: <20240213055554.1802415-1-ankur.a.arora@oracle.com>
+ <20240213055554.1802415-4-ankur.a.arora@oracle.com>
+ <ZczJU8uZdbRKvcAE@FVFF77S0Q05N>
+Date: Mon, 19 Feb 2024 16:21:04 +0100
+Message-ID: <87v86k8opr.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <892caa6a-e4fe-4009-aa33-0570526961c5@arm.com>
+Content-Type: text/plain
 
-On Fri, Feb 16, 2024 at 12:53:43PM +0000, Ryan Roberts wrote:
-> On 16/02/2024 12:25, Catalin Marinas wrote:
-> > On Thu, Feb 15, 2024 at 10:31:59AM +0000, Ryan Roberts wrote:
-> >> +pte_t contpte_ptep_get_lockless(pte_t *orig_ptep)
-> >> +{
-> >> +	/*
-> >> +	 * Gather access/dirty bits, which may be populated in any of the ptes
-> >> +	 * of the contig range. We may not be holding the PTL, so any contiguous
-> >> +	 * range may be unfolded/modified/refolded under our feet. Therefore we
-> >> +	 * ensure we read a _consistent_ contpte range by checking that all ptes
-> >> +	 * in the range are valid and have CONT_PTE set, that all pfns are
-> >> +	 * contiguous and that all pgprots are the same (ignoring access/dirty).
-> >> +	 * If we find a pte that is not consistent, then we must be racing with
-> >> +	 * an update so start again. If the target pte does not have CONT_PTE
-> >> +	 * set then that is considered consistent on its own because it is not
-> >> +	 * part of a contpte range.
-> >> +*/
-[...]
-> > After writing the comments above, I think I figured out that the whole
-> > point of this loop is to check that the ptes in the contig range are
-> > still consistent and the only variation allowed is the dirty/young
-> > state to be passed to the orig_pte returned. The original pte may have
-> > been updated by the time this loop finishes but I don't think it
-> > matters, it wouldn't be any different than reading a single pte and
-> > returning it while it is being updated.
-> 
-> Correct. The pte can be updated at any time, before after or during the reads.
-> That was always the case. But now we have to cope with a whole contpte block
-> being repainted while we are reading it. So we are just checking to make sure
-> that all the ptes that we read from the contpte block are consistent with
-> eachother and therefore we can trust that the access/dirty bits we gathered are
-> consistent.
+On Wed, Feb 14 2024 at 14:08, Mark Rutland wrote:
+> On Mon, Feb 12, 2024 at 09:55:27PM -0800, Ankur Arora wrote:
+>>  
+>> -static __always_inline bool tif_need_resched(void)
+>> +static __always_inline bool __tif_need_resched(int nr_flag)
+>>  {
+>> -	return test_bit(TIF_NEED_RESCHED,
+>> -			(unsigned long *)(&current_thread_info()->flags));
+>> +	return test_bit(nr_flag,
+>> +		(unsigned long *)(&current_thread_info()->flags));
+>>  }
+>>  
+>>  #endif /* _ASM_GENERIC_BITOPS_INSTRUMENTED_NON_ATOMIC_H */
+>>  
+>> +static __always_inline bool tif_need_resched(resched_t rs)
+>> +{
+>> +	/*
+>> +	 * With !PREEMPT_AUTO tif_need_resched(NR_lazy) is defined
+>> +	 * as TIF_NEED_RESCHED (the TIF_NEED_RESCHED_LAZY flag is not
+>> +	 * defined). Return false in that case.
+>> +	 */
+>> +	if (IS_ENABLED(CONFIG_PREEMPT_AUTO) || rs == NR_now)
+>> +		return __tif_need_resched(tif_resched(rs));
+>> +	else
+>> +		return false;
+>> +}
+>
+> As above, I think this would be a bit simpler/clearer if we did:
+>
+> static __always_inline bool tif_need_resched_now(void)
+> {
+> 	return __tif_need_resched(TIF_NEED_RESCHED);
+> }
+>
+> static __always_inline bool tif_need_resched_lazy(void)
+> {
+> 	return IS_ENABLED(CONFIG_PREEMPT_AUTO) &&
+> 	        __tif_need_resched(TIF_NEED_RESCHED_LAZY);
+> }
 
-I've been thinking a bit more about this - do any of the callers of
-ptep_get_lockless() check the dirty/access bits? The only one that seems
-to care is ptdump but in that case I'd rather see the raw bits for
-debugging rather than propagating the dirty/access bits to the rest in
-the contig range.
-
-So with some clearer documentation on the requirements, I think we don't
-need an arm64-specific ptep_get_lockless() (unless I missed something).
-
--- 
-Catalin
+Yes please.
 
