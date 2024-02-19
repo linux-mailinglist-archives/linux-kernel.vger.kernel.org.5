@@ -1,139 +1,178 @@
-Return-Path: <linux-kernel+bounces-71661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A630385A8A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:19:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDC6485A8A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D8C841C231A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:19:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0B0F1C23318
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:19:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABFF3CF71;
-	Mon, 19 Feb 2024 16:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E703CF63;
+	Mon, 19 Feb 2024 16:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kRt2ZEVE"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="X5+G85Ql"
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4D13B1B2;
-	Mon, 19 Feb 2024 16:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87F263B79D;
+	Mon, 19 Feb 2024 16:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359530; cv=none; b=p66c90+yfzlRxfHZCTBlNctkRAqJnR3g9uD/8Z/g9M+8A9e6mYpjUHa7eIw8dgyhtKEEEB3JYERnxGIWN44F5ZWqbafjrgJnzwpi3sFFV5ciArDppYZr5bWH/KBu3mqMFJ9wx8qdtKVLexFrmfBlr/SQHXJPM9PDTajFdkKmsfY=
+	t=1708359573; cv=none; b=YqUQdQdr4chRfT+C2giqPLtOB0zftutD249LJeQWiaHpdIOqfpasU4hChgYve9HjoMHTjiq4B5Kr0fuWR58R+BKnnr2TZCoXpqGb96KXnNFvnJQrdiO4bQmAFrA3Nqu19neJ7hPngSi7BcUNg67YooV6rIxSjrvd6I+UUDDDf3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359530; c=relaxed/simple;
-	bh=5LP7ITI8IxR8FihyrEfCPsDi/hGVUhuwAapc8ojBuww=;
-	h=Content-Type:Mime-Version:Date:Message-Id:Subject:From:To:Cc:
-	 References:In-Reply-To; b=evDUyZ+0fly5MFBsmFn9VaPoh7NALfvntcHu6ChdFOQM9dIBDU2jwWhErEKx6Fn/HdSE8E3eQs9ZVLpOUcDaRbP4bh7ccw4c7DXuG0QxnkcP9qMfrjNF1jENUMRBpAg84Z5f2VJDQru9qCap0Vqk1kXX75WKdfTGWYt+Se/zNnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kRt2ZEVE; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a3e82664d53so164766366b.3;
-        Mon, 19 Feb 2024 08:18:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708359527; x=1708964327; darn=vger.kernel.org;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XnGkOpf2CVhPz/zljsYVnaZe/git0nem6as96fuozFY=;
-        b=kRt2ZEVELTC8206hPrKBxwHd0K7EEonen9W+xLVkxzYcedVhxpaUXoP3FH5iD7wnoJ
-         RVoBpnJfThUlUm+tv0ttDU2JI6zi/CwTfpNjabQuGg7sGr1Jb8ytOaIOaCqdk7RJk0KE
-         M+6+MFipJMczJ0lID/MfgiXjovWjPO0W+yPn/zEP/ZqZ1w9uinzJmHEPYL01ds7BYUTn
-         w5ky8UepE1f+9REx40hivXM2X316W/FjclBd66LFHdp9Mah2Pz/FjTORpuOIZ5OkWxnS
-         zhyzogl/sr3sZpVKtD4qOehl7ghQjDjaZtpuq6lZR/QrrW/cmg3oAFVI5RUQBZQtWtiu
-         pm3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708359527; x=1708964327;
-        h=in-reply-to:references:cc:to:from:subject:message-id:date
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XnGkOpf2CVhPz/zljsYVnaZe/git0nem6as96fuozFY=;
-        b=AL63P20PQMOaCq1qnhE7FsHjEMEeRzOED63Ur3I8AWWYpHyP8tAYYVjDNe7xVEhV4w
-         I35Ox+KUYwtTNP93vpeKvNojtqlygThbbph2z42ZGKA3IexCYumxxWhzaBoUnyKlkDwe
-         PXdMiWiXyKFdd5j3JBIGLBcUJHzAQWgbcPi/V6uN3bBWh+d7tcx1KMgJ349lEhZ+rjTS
-         0FCCMIYK1nOAaWQ0SGBjf3uWkwvRyhTeoqJPiNhDOIApwnGhOzt2dhr3IAVilWKHyLo4
-         /i/moI8Xf5vuRVEM0q19WK0OwrGx1ZWAIIlx7gEF30FvJrg1CK4JbRQe5YW77pBSrPnn
-         J6iQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVANScUt2sXLnupRb0x8aW6ITlNvIoSsMi+W+68EKeCE6rys5hIk5s32XusOWscyRFYhU0QKAzn5bKWKA/Uu+VpY9Lpl4YNea67tAvM5LmhB/kc5ctLEFWu5vleMElfDM/NrZ6eS407XWE=
-X-Gm-Message-State: AOJu0YyzIXVWS5pjLjqPkGUtIDeQpmDftdqrY8YbKEYcKvEcE1gDyoLY
-	PkfyeXoVYBf+rgs3Z+lbxAOfhYI4aG2AedTPUGmy5is9qzhwl8x1
-X-Google-Smtp-Source: AGHT+IGUUJV/eeBIPCMl91Llf2j9jWuLG81QcvUsRhfs2AAcLV0xDw8mFgA+LpOP6YpcRwzhpcHTFg==
-X-Received: by 2002:a17:906:1cc5:b0:a3e:98ee:765d with SMTP id i5-20020a1709061cc500b00a3e98ee765dmr1790223ejh.60.1708359527215;
-        Mon, 19 Feb 2024 08:18:47 -0800 (PST)
-Received: from localhost (p200300e41f2d4600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f2d:4600:f22f:74ff:fe1f:3a53])
-        by smtp.gmail.com with ESMTPSA id tj1-20020a170907c24100b00a3d35bccdf0sm3099051ejc.139.2024.02.19.08.18.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 08:18:46 -0800 (PST)
-Content-Type: multipart/signed;
- boundary=5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91;
- micalg=pgp-sha256; protocol="application/pgp-signature"
+	s=arc-20240116; t=1708359573; c=relaxed/simple;
+	bh=Jy9k09PAlwl2enFfxaMgkzK9iRBdmSRKjEAtKTGbCKo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=l9GqlARBHA9E7KyRd74v0NyPeFTOcNXDEl6wumHnB+gRv48yIf5xvkQPDbmJVn+3rZIUQauTkK7zEw3hhXmSUQ/2QWgHhSoA0PlsfKgfJBQFCLlVFToZCtnqnjeig3ZVUQRPgSLZZq3BiIEEqplrBydJyTxhhUa/9mYiAIdOSpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=X5+G85Ql; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708359567; h=From:To:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	bh=5PwNPGoMJ7CW08mOs+1ZY9zWs2CVp91wKkFaBXXx+ns=;
+	b=X5+G85QlodZlQ5xES/KTNP2T4PVsHYvqYAKrp5RD1GsM/e3XOwe7zKxh6/huZ32VRxnC6obQYirzB5FnCfXzOV7ICl7kF7dDA/FFGqrAvmBsyBxuRk33fH7zdojIhID2OrK/gzS7dq4SLFuml/WC/dUR6INwZ82LguLwobmXDRM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W0tz6l._1708359563;
+Received: from localhost.localdomain(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W0tz6l._1708359563)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Feb 2024 00:19:25 +0800
+From: Bitao Hu <yaoma@linux.alibaba.com>
+To: tglx@linutronix.de,
+	dianders@chromium.org,
+	pmladek@suse.com,
+	akpm@linux-foundation.org,
+	kernelfans@gmail.com,
+	liusong@linux.alibaba.com,
+	deller@gmx.de,
+	npiggin@gmail.com,
+	jan.kiszka@siemens.com,
+	kbingham@kernel.org
+Cc: linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-parisc@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	kvm@vger.kernel.org,
+	Bitao Hu <yaoma@linux.alibaba.com>
+Subject: [PATCHv8 0/2] *** Detect interrupt storm in softlockup ***
+Date: Tue, 20 Feb 2024 00:19:18 +0800
+Message-Id: <20240219161920.15752-1-yaoma@linux.alibaba.com>
+X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Date: Mon, 19 Feb 2024 17:18:46 +0100
-Message-Id: <CZ96WS1F2H67.CCTTAWAZX7PF@gmail.com>
-Subject: Re: [PATCH v2 1/2] clocksource/drivers/timer-tegra186: add
- WDIOC_GETTIMELEFT support
-From: "Thierry Reding" <thierry.reding@gmail.com>
-To: "Pohsun Su" <pohsuns@nvidia.com>, <daniel.lezcano@linaro.org>,
- <tglx@linutronix.de>, <jonathanh@nvidia.com>
-Cc: <sumitg@nvidia.com>, <linux-kernel@vger.kernel.org>,
- <linux-tegra@vger.kernel.org>
-X-Mailer: aerc 0.16.0-1-0-g560d6168f0ed-dirty
-References: <20240216210258.24855-1-pohsuns@nvidia.com>
- <20240216210258.24855-2-pohsuns@nvidia.com>
-In-Reply-To: <20240216210258.24855-2-pohsuns@nvidia.com>
-
---5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri Feb 16, 2024 at 10:02 PM CET, Pohsun Su wrote:
-[...]
-> diff --git a/drivers/clocksource/timer-tegra186.c b/drivers/clocksource/t=
-imer-tegra186.c
-[...]
-> @@ -234,12 +239,49 @@ static int tegra186_wdt_set_timeout(struct watchdog=
-_device *wdd,
->  	return 0;
->  }
-> =20
-> +static unsigned int tegra186_wdt_get_timeleft(struct watchdog_device *wd=
-d)
-> +{
-> +	struct tegra186_wdt *wdt =3D to_tegra186_wdt(wdd);
-> +	u32 timeleft;
-> +	u32 expiration;
+Hi, guys.
+I have implemented a low-overhead method for detecting interrupt
+storm in softlockup. Please review it, all comments are welcome.
 
-One more thing I noticed: you could put both of these declarations on a
-single line to make this a bit more compact.
+Changes from v7 to v8:
 
-Thierry
+- From Thomas Gleixner, implement statistics within the interrupt
+core code and provide sensible interfaces for the watchdog code. 
 
---5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91
-Content-Type: application/pgp-signature; name="signature.asc"
+- Patch #1 remains unchanged. Patch #2 has significant changes
+based on Thomas's suggestions, which is why I have removed
+Liu Song and Douglas's Reviewed-by from patch #2. Please review
+it again, and all comments are welcome.
 
------BEGIN PGP SIGNATURE-----
+Changes from v6 to v7:
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmXTf2YACgkQ3SOs138+
-s6E30w//RlBSnLCPyQUCIOSqMYVuZUurdNauTPP7qqPY/IIOiqNIekmR+XRVjEDZ
-A7pk4k1xqy8W9hfDYptB+F+3FpAgwT6Zk0kuIlD8lQgBhuHdfLXEmLyv+ZIBJJ1/
-MNPXk89CIL3MDz5LDveTIVFG9jr8PO9WpPXjKFY+bN0tV/XAqAH7GKpW/ViUzE+w
-dCIiN0GsH1/K8MxhOyl/juWZCAF7FpCxkWJ/CCJM5D6tQlP5qpw2bAwoFmlRD8PB
-h92WRSlXCs2oiS58curADylcOvGFS8K26EJoP7vaAjGx//UiYBPrC0q1MfReROyx
-Nd424Uv1jMPWbWpS4rRLwLsLTg3hlxGVHkkeXBvHtd5PF1JCvu9HXwzpIbP9X+nP
-XWW0ksjeb+kQFoeXNTnYSHI8VsJXy3bnhM76U6TQZGXAOkQdF+uoP0VH1Nj9JGwo
-SHSXfYWrXvVscWo1rQNDMZ6S2OmzRLpzLAr0cPQ6EEJ+cHZyFMShWMN5HwuaI4KA
-Rvj24XY5z00kZFDPD7m590pqyWfbxakj9Q43oOSLMcs1B27REH1efAtiaQMIRe40
-CxiFK7ayjesBpNz22hN4L9iCm0QtNcDZiiAW/f1+jq419fUkIQPox6S1h8v4C3iJ
-IZ+NiKstX7lczpyFv2t3AuCfmQyHfrAt475aCitHZJGCWTvLMkA=
-=ZlBV
------END PGP SIGNATURE-----
+- Remove "READ_ONCE" in "start_counting_irqs"
 
---5c88819ce2d668f2ae4936a9cee5d50b46dfdf026a77d46f159ba4c5cd91--
+- Replace the hard-coded 5 with "NUM_SAMPLE_PERIODS" macro in
+"set_sample_period".
+
+- Add empty lines to help with reading the code.
+
+- Remove the branch that processes IRQs where "counts_diff = 0".
+
+- Add the Reviewed-by of Liu Song and Douglas.
+
+Changes from v5 to v6:
+
+- Use "./scripts/checkpatch.pl --strict" to get a few extra
+style nits and fix them.
+
+- Squash patch #3 into patch #1, and wrapp the help text to
+80 columns.
+
+- Sort existing headers alphabetically in watchdog.c
+
+- Drop "softlockup_hardirq_cpus", just read "hardirq_counts"
+and see if it's non-NULL.
+
+- Store "nr_irqs" in a local variable.
+
+- Simplify the calculation of "cpu_diff".
+
+Changes from v4 to v5:
+
+- Rearranging variable placement to make code look neater.
+
+Changes from v3 to v4:
+
+- Renaming some variable and function names to make the code logic
+more readable.
+
+- Change the code location to avoid predeclaring.
+
+- Just swap rather than a double loop in tabulate_irq_count.
+
+- Since nr_irqs has the potential to grow at runtime, bounds-check
+logic has been implemented.
+
+- Add SOFTLOCKUP_DETECTOR_INTR_STORM Kconfig knob.
+
+Changes from v2 to v3:
+
+- From Liu Song, using enum instead of macro for cpu_stats, shortening
+the name 'idx_to_stat' to 'stats', adding 'get_16bit_precesion' instead
+of using right shift operations, and using 'struct irq_counts'.
+
+- From kernel robot test, using '__this_cpu_read' and '__this_cpu_write'
+instead of accessing to an per-cpu array directly, in order to avoid
+this warning.
+'sparse: incorrect type in initializer (different modifiers)'
+
+Changes from v1 to v2:
+
+- From Douglas, optimize the memory of cpustats. With the maximum number
+of CPUs, that's now this.
+2 * 8192 * 4 + 1 * 8192 * 5 * 4 + 1 * 8192 = 237,568 bytes.
+
+- From Liu Song, refactor the code format and add necessary comments.
+
+- From Douglas, use interrupt counts instead of interrupt time to
+determine the cause of softlockup.
+
+- Remove the cmdline parameter added in PATCHv1.
+
+
+Bitao Hu (2):
+  watchdog/softlockup: low-overhead detection of interrupt
+  watchdog/softlockup: report the most frequent interrupts
+
+ arch/mips/dec/setup.c                |   2 +-
+ arch/parisc/kernel/smp.c             |   2 +-
+ arch/powerpc/kvm/book3s_hv_rm_xics.c |   2 +-
+ include/linux/irqdesc.h              |   9 +-
+ include/linux/kernel_stat.h          |   4 +
+ kernel/irq/internals.h               |   2 +-
+ kernel/irq/irqdesc.c                 |  34 ++++-
+ kernel/irq/proc.c                    |   9 +-
+ kernel/watchdog.c                    | 213 ++++++++++++++++++++++++++-
+ lib/Kconfig.debug                    |  13 ++
+ scripts/gdb/linux/interrupts.py      |   6 +-
+ 11 files changed, 269 insertions(+), 27 deletions(-)
+
+-- 
+2.37.1 (Apple Git-137.1)
+
 
