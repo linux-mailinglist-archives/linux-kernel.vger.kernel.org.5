@@ -1,80 +1,81 @@
-Return-Path: <linux-kernel+bounces-71820-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 163C385AB20
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:39:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2649085AB22
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:39:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3ACAE1C21E43
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:39:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76055B237EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C30E44F5E9;
-	Mon, 19 Feb 2024 18:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BB024F612;
+	Mon, 19 Feb 2024 18:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lxg973ik";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VPZUQH43"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iZOPyEcS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZTIN9zEI"
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F908335CC;
-	Mon, 19 Feb 2024 18:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D56304BA8E;
+	Mon, 19 Feb 2024 18:37:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708367853; cv=none; b=Lbst4l1r8aCdUs2/BdSoiH7W3MsIfzQZlYCceVXZsetA2sfVIYs5BMEDD/pYTM5+WIZt5Jos+2YCP2zzaX7LBUvabg9t94EijUjhck1wEXlcOij1i5uoYdf0QYJFoHRb3Nn9mqPV5Sxv6TaASt558AICjgNOTvhrj3HMZGkzE6k=
+	t=1708367854; cv=none; b=nvgXow/LllRS8rNhqIOGKHzk+c/bPk0xFKVlEk3e4DktpVDB2ZbXf6o1QgupmUdDoJync64IO91Awvgu4T7ZyjhRyaEY0/SSK9Ps0fXSZpfJYbeKi7pyI+uqbl1n4hPDLzI13gwjRGW2wqp3C8TN0lDAcGPZVSm8M1d5/X2/POM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708367853; c=relaxed/simple;
-	bh=DJbv8PlTs7Q0u1jWJ944PqXLpVfpNCj/q/6b102ToMw=;
+	s=arc-20240116; t=1708367854; c=relaxed/simple;
+	bh=SOIUXVdkxWhzbCSmKQHhvoVfPbwVY797IJF8veGTdYo=;
 	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=hE6Yf8HkN0ykj/UNWgSlzVQ585SZAoOcufFBjBHEaWTVMPrUzpGgHErEzDbRqq2dkA08Y1Znch1hXBRRL1cGvhRzcI2N5fRxZsK0DFRbPAj3Pygp8EuC22AId7/gwbWgUDGEtMouZjFZWiFPQc+qhNqHxtkUbRUxfFGVWNl4+fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lxg973ik; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VPZUQH43; arc=none smtp.client-ip=193.142.43.55
+	 Message-ID:Content-Type; b=BBWcvA4y+pORgkBB0B3DKgr0UatmAIPh3sNVkVucamWws73Mekol/NtNoTLfiNfF3r/4L0t8iFYV4ULQZsEwSdIIoKTZM0ButM4uctjVnEgxMlaHofZ687wiykI/zrQWPuBTLbPrU4V+9WIVe/vuPJydjIMh7HemdrTNqSfdwwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iZOPyEcS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZTIN9zEI; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 19 Feb 2024 18:37:28 -0000
+Date: Mon, 19 Feb 2024 18:37:29 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708367849;
+	s=2020; t=1708367850;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e2Kc2tviYJUv0wSM+PXJ2wt5GBpL9zGXMsSD7iNX6aQ=;
-	b=lxg973ikBd2tvq79QwOnqVqN5oe1jqytRJdM1cAP9fdNe9b/4G345ktj5y2aN9AxaLS7/V
-	8hHdSSLYehQh3Ol2QJqvcgJKgywWUx38bzyDAqjVCSKhpMyJlU6SWmJjLEQoT94LmmwIMk
-	HXxEEGNNV18lnS7YjjhNyqVSWK7IyLKWW3wwH0zAl11Ru9SM1U157Ynf6EbHMC7BUtvvlf
-	rmlH1JqCZxfiQsiWltfUfUOHHWFkRSnEx28BM7KJaBSCVoWlLVWU9NcApgganp7aTXvY7f
-	zqOGUTX7LEXYpgYIOhBhmiX7Os8vJgg0uLYwyw4TqibzemPXhtbKScP+XruZgw==
+	bh=ewgHXo6BYgEGmn5G3EAbq/GDPrY8+8XTecMKh3KwJFw=;
+	b=iZOPyEcSU94GWdfDUAxKpU0wQ0+15nOjmxLBQJ3XR/1Ysk4NVbq7V6y1fG6kMjcy3aWAfd
+	O5cDVqibrgeG4MPH1SRpPTwlFUezfGtBpg0hFhpGFZgvDDmTF0bSYXZ7t7DZfFBSThzLw6
+	gSqgkcR4+5RD+ON3ISNXv2hiDm5eMoDGuhTb7nBTgSr5klFdLJ782PDj3HBX2GnxTumB3q
+	6HYhf1bSizsdH35Kbuzw4QU9KKSqDqi3hUl/ucVeDtaxqo6wdA6XNNXLbls5cTFNwF/ONV
+	rwSmbwXgl4byBmc+vv+QD+r8IrWQaMQS6DanbIioFSUVOVmZo1Yw9/2X5QsT7w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708367849;
+	s=2020e; t=1708367850;
 	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
 	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
 	 content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=e2Kc2tviYJUv0wSM+PXJ2wt5GBpL9zGXMsSD7iNX6aQ=;
-	b=VPZUQH435oamxnJnbjzNVhzT4Utv8uOh6TglP+sdt0ECGtewMhwQD3Py7tKgVH95Y/4vRr
-	UTMHvd6tOVoWaiAQ==
+	bh=ewgHXo6BYgEGmn5G3EAbq/GDPrY8+8XTecMKh3KwJFw=;
+	b=ZTIN9zEI0xy+Mx7KFbJRAWA+3vr3GR/n2HJM2kVg7P4kiGkW3Cjk5SIre8ehI50HlF425E
+	7z6cLmA5pzAV0rDA==
 From: "tip-bot2 for James Morse" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cache] x86/resctrl: Make resctrl_mounted checks explicit
+Subject: [tip: x86/cache] x86/resctrl: Allow arch to allocate memory needed in
+ resctrl_arch_rmid_read()
 Cc: James Morse <james.morse@arm.com>, "Borislav Petkov (AMD)" <bp@alien8.de>,
  Shaopeng Tan <tan.shaopeng@fujitsu.com>,
  Reinette Chatre <reinette.chatre@intel.com>, Babu Moger <babu.moger@amd.com>,
  Peter Newman <peternewman@google.com>,
  Carl Worth <carl@os.amperecomputing.com>, x86@kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20240213184438.16675-17-james.morse@arm.com>
-References: <20240213184438.16675-17-james.morse@arm.com>
+In-Reply-To: <20240213184438.16675-16-james.morse@arm.com>
+References: <20240213184438.16675-16-james.morse@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170836784854.398.11745838351691603695.tip-bot2@tip-bot2>
+Message-ID: <170836784943.398.8186361738055610316.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe:
  Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -84,32 +85,30 @@ Content-Transfer-Encoding: 7bit
 
 The following commit has been merged into the x86/cache branch of tip:
 
-Commit-ID:     13e5769debf09588543db83836c524148873929f
-Gitweb:        https://git.kernel.org/tip/13e5769debf09588543db83836c524148873929f
+Commit-ID:     e557999f80a5ee4ec812f594ab42bb76c3ec4eb2
+Gitweb:        https://git.kernel.org/tip/e557999f80a5ee4ec812f594ab42bb76c3ec4eb2
 Author:        James Morse <james.morse@arm.com>
-AuthorDate:    Tue, 13 Feb 2024 18:44:30 
+AuthorDate:    Tue, 13 Feb 2024 18:44:29 
 Committer:     Borislav Petkov (AMD) <bp@alien8.de>
 CommitterDate: Fri, 16 Feb 2024 19:18:32 +01:00
 
-x86/resctrl: Make resctrl_mounted checks explicit
+x86/resctrl: Allow arch to allocate memory needed in resctrl_arch_rmid_read()
 
-The rdt_enable_key is switched when resctrl is mounted, and used to prevent
-a second mount of the filesystem. It also enables the architecture's context
-switch code.
+Depending on the number of monitors available, Arm's MPAM may need to
+allocate a monitor prior to reading the counter value. Allocating a
+contended resource may involve sleeping.
 
-This requires another architecture to have the same set of static keys, as
-resctrl depends on them too. The existing users of these static keys are
-implicitly also checking if the filesystem is mounted.
+__check_limbo() and mon_event_count() each make multiple calls to
+resctrl_arch_rmid_read(), to avoid extra work on contended systems,
+the allocation should be valid for multiple invocations of
+resctrl_arch_rmid_read().
 
-Make the resctrl_mounted checks explicit: resctrl can keep track of whether it
-has been mounted once. This doesn't need to be combined with whether the arch
-code is context switching the CLOSID.
+The memory or hardware allocated is not specific to a domain.
 
-rdt_mon_enable_key is never used just to test that resctrl is mounted, but does
-also have this implication. Add a resctrl_mounted to all uses of
-rdt_mon_enable_key.
-
-This will allow the static key changing to be moved behind resctrl_arch_ calls.
+Add arch hooks for this allocation, which need calling before
+resctrl_arch_rmid_read(). The allocated monitor is passed to
+resctrl_arch_rmid_read(), then freed again afterwards. The helper
+can be called on any CPU, and can sleep.
 
 Signed-off-by: James Morse <james.morse@arm.com>
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
@@ -120,131 +119,192 @@ Tested-by: Shaopeng Tan <tan.shaopeng@fujitsu.com>
 Tested-by: Peter Newman <peternewman@google.com>
 Tested-by: Babu Moger <babu.moger@amd.com>
 Tested-by: Carl Worth <carl@os.amperecomputing.com> # arm64
-Link: https://lore.kernel.org/r/20240213184438.16675-17-james.morse@arm.com
+Link: https://lore.kernel.org/r/20240213184438.16675-16-james.morse@arm.com
 Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 ---
- arch/x86/kernel/cpu/resctrl/internal.h |  1 +
- arch/x86/kernel/cpu/resctrl/monitor.c  | 12 ++++++++++--
- arch/x86/kernel/cpu/resctrl/rdtgroup.c | 23 +++++++++++++++++------
- 3 files changed, 28 insertions(+), 8 deletions(-)
+ arch/x86/include/asm/resctrl.h            | 11 +++++++-
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c |  7 ++++-
+ arch/x86/kernel/cpu/resctrl/internal.h    |  1 +-
+ arch/x86/kernel/cpu/resctrl/monitor.c     | 35 ++++++++++++++++++++--
+ include/linux/resctrl.h                   |  5 ++-
+ 5 files changed, 55 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index e089d1a..9bfda69 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -144,6 +144,7 @@ extern bool rdt_alloc_capable;
- extern bool rdt_mon_capable;
- extern unsigned int rdt_mon_features;
- extern struct list_head resctrl_schema_all;
-+extern bool resctrl_mounted;
+diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctrl.h
+index 1d274db..29c4cc3 100644
+--- a/arch/x86/include/asm/resctrl.h
++++ b/arch/x86/include/asm/resctrl.h
+@@ -136,6 +136,17 @@ static inline u32 resctrl_arch_rmid_idx_encode(u32 ignored, u32 rmid)
+ 	return rmid;
+ }
  
- enum rdt_group_type {
- 	RDTCTRL_GROUP = 0,
-diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
-index 9b503e6..d5d8a58 100644
---- a/arch/x86/kernel/cpu/resctrl/monitor.c
-+++ b/arch/x86/kernel/cpu/resctrl/monitor.c
-@@ -813,7 +813,11 @@ void mbm_handle_overflow(struct work_struct *work)
- 
- 	mutex_lock(&rdtgroup_mutex);
- 
--	if (!static_branch_likely(&rdt_mon_enable_key))
-+	/*
-+	 * If the filesystem has been unmounted this work no longer needs to
-+	 * run.
-+	 */
-+	if (!resctrl_mounted || !static_branch_likely(&rdt_mon_enable_key))
- 		goto out_unlock;
- 
- 	r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
-@@ -846,7 +850,11 @@ void mbm_setup_overflow_handler(struct rdt_domain *dom, unsigned long delay_ms)
- 	unsigned long delay = msecs_to_jiffies(delay_ms);
- 	int cpu;
- 
--	if (!static_branch_likely(&rdt_mon_enable_key))
-+	/*
-+	 * When a domain comes online there is no guarantee the filesystem is
-+	 * mounted. If not, there is no need to catch counter overflow.
-+	 */
-+	if (!resctrl_mounted || !static_branch_likely(&rdt_mon_enable_key))
- 		return;
- 	cpu = cpumask_any_housekeeping(&dom->cpu_mask);
- 	dom->mbm_work_cpu = cpu;
-diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-index e42cbdf..857fbbc 100644
---- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-+++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-@@ -42,6 +42,9 @@ LIST_HEAD(rdt_all_groups);
- /* list of entries for the schemata file */
- LIST_HEAD(resctrl_schema_all);
- 
-+/* The filesystem can only be mounted once. */
-+bool resctrl_mounted;
++/* x86 can always read an rmid, nothing needs allocating */
++struct rdt_resource;
++static inline void *resctrl_arch_mon_ctx_alloc(struct rdt_resource *r, int evtid)
++{
++	might_sleep();
++	return NULL;
++};
 +
- /* Kernel fs node for "info" directory under root */
- static struct kernfs_node *kn_info;
++static inline void resctrl_arch_mon_ctx_free(struct rdt_resource *r, int evtid,
++					     void *ctx) { };
++
+ void resctrl_cpu_detect(struct cpuinfo_x86 *c);
  
-@@ -881,7 +884,7 @@ int proc_resctrl_show(struct seq_file *s, struct pid_namespace *ns,
- 	mutex_lock(&rdtgroup_mutex);
- 
- 	/* Return empty if resctrl has not been mounted. */
--	if (!static_branch_unlikely(&rdt_enable_key)) {
-+	if (!resctrl_mounted) {
- 		seq_puts(s, "res:\nmon:\n");
- 		goto unlock;
- 	}
-@@ -2608,7 +2611,7 @@ static int rdt_get_tree(struct fs_context *fc)
- 	/*
- 	 * resctrl file system can only be mounted once.
- 	 */
--	if (static_branch_unlikely(&rdt_enable_key)) {
-+	if (resctrl_mounted) {
- 		ret = -EBUSY;
- 		goto out;
- 	}
-@@ -2669,8 +2672,10 @@ static int rdt_get_tree(struct fs_context *fc)
- 	if (rdt_mon_capable)
- 		static_branch_enable_cpuslocked(&rdt_mon_enable_key);
- 
--	if (rdt_alloc_capable || rdt_mon_capable)
-+	if (rdt_alloc_capable || rdt_mon_capable) {
- 		static_branch_enable_cpuslocked(&rdt_enable_key);
-+		resctrl_mounted = true;
+ #else
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index e933e1c..52fa0e1 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -546,6 +546,11 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+ 	rr->d = d;
+ 	rr->val = 0;
+ 	rr->first = first;
++	rr->arch_mon_ctx = resctrl_arch_mon_ctx_alloc(r, evtid);
++	if (IS_ERR(rr->arch_mon_ctx)) {
++		rr->err = -EINVAL;
++		return;
 +	}
  
- 	if (is_mbm_enabled()) {
- 		r = &rdt_resources_all[RDT_RESOURCE_L3].r_resctrl;
-@@ -2944,6 +2949,7 @@ static void rdt_kill_sb(struct super_block *sb)
- 	static_branch_disable_cpuslocked(&rdt_alloc_enable_key);
- 	static_branch_disable_cpuslocked(&rdt_mon_enable_key);
- 	static_branch_disable_cpuslocked(&rdt_enable_key);
-+	resctrl_mounted = false;
- 	kernfs_kill_sb(sb);
- 	mutex_unlock(&rdtgroup_mutex);
- 	cpus_read_unlock();
-@@ -3913,7 +3919,7 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d)
- 	 * If resctrl is mounted, remove all the
- 	 * per domain monitor data directories.
- 	 */
--	if (static_branch_unlikely(&rdt_mon_enable_key))
-+	if (resctrl_mounted && static_branch_unlikely(&rdt_mon_enable_key))
- 		rmdir_mondata_subdir_allrdtgrp(r, d->id);
+ 	cpu = cpumask_any_housekeeping(&d->cpu_mask);
  
- 	if (is_mbm_enabled())
-@@ -3990,8 +3996,13 @@ int resctrl_online_domain(struct rdt_resource *r, struct rdt_domain *d)
- 	if (is_llc_occupancy_enabled())
- 		INIT_DELAYED_WORK(&d->cqm_limbo, cqm_handle_limbo);
+@@ -559,6 +564,8 @@ void mon_event_read(struct rmid_read *rr, struct rdt_resource *r,
+ 		smp_call_function_any(&d->cpu_mask, mon_event_count, rr, 1);
+ 	else
+ 		smp_call_on_cpu(cpu, smp_mon_event_count, rr, false);
++
++	resctrl_arch_mon_ctx_free(r, evtid, rr->arch_mon_ctx);
+ }
  
--	/* If resctrl is mounted, add per domain monitor data directories. */
--	if (static_branch_unlikely(&rdt_mon_enable_key))
-+	/*
-+	 * If the filesystem is not mounted then only the default resource group
-+	 * exists. Creation of its directories is deferred until mount time
-+	 * by rdt_get_tree() calling mkdir_mondata_all().
-+	 * If resctrl is mounted, add per domain monitor data directories.
-+	 */
-+	if (resctrl_mounted && static_branch_unlikely(&rdt_mon_enable_key))
- 		mkdir_mondata_subdir_allrdtgrp(r, d);
+ int rdtgroup_mondata_show(struct seq_file *m, void *arg)
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 81f5de9..e089d1a 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -137,6 +137,7 @@ struct rmid_read {
+ 	bool			first;
+ 	int			err;
+ 	u64			val;
++	void			*arch_mon_ctx;
+ };
  
- 	return 0;
+ extern bool rdt_alloc_capable;
+diff --git a/arch/x86/kernel/cpu/resctrl/monitor.c b/arch/x86/kernel/cpu/resctrl/monitor.c
+index e8aeff6..9b503e6 100644
+--- a/arch/x86/kernel/cpu/resctrl/monitor.c
++++ b/arch/x86/kernel/cpu/resctrl/monitor.c
+@@ -269,7 +269,7 @@ static u64 mbm_overflow_count(u64 prev_msr, u64 cur_msr, unsigned int width)
+ 
+ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+ 			   u32 unused, u32 rmid, enum resctrl_event_id eventid,
+-			   u64 *val)
++			   u64 *val, void *ignored)
+ {
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+ 	struct rdt_hw_domain *hw_dom = resctrl_to_arch_dom(d);
+@@ -324,9 +324,17 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+ 	u32 idx_limit = resctrl_arch_system_num_rmid_idx();
+ 	struct rmid_entry *entry;
+ 	u32 idx, cur_idx = 1;
++	void *arch_mon_ctx;
+ 	bool rmid_dirty;
+ 	u64 val = 0;
+ 
++	arch_mon_ctx = resctrl_arch_mon_ctx_alloc(r, QOS_L3_OCCUP_EVENT_ID);
++	if (IS_ERR(arch_mon_ctx)) {
++		pr_warn_ratelimited("Failed to allocate monitor context: %ld",
++				    PTR_ERR(arch_mon_ctx));
++		return;
++	}
++
+ 	/*
+ 	 * Skip RMID 0 and start from RMID 1 and check all the RMIDs that
+ 	 * are marked as busy for occupancy < threshold. If the occupancy
+@@ -340,7 +348,8 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+ 
+ 		entry = __rmid_entry(idx);
+ 		if (resctrl_arch_rmid_read(r, d, entry->closid, entry->rmid,
+-					   QOS_L3_OCCUP_EVENT_ID, &val)) {
++					   QOS_L3_OCCUP_EVENT_ID, &val,
++					   arch_mon_ctx)) {
+ 			rmid_dirty = true;
+ 		} else {
+ 			rmid_dirty = (val >= resctrl_rmid_realloc_threshold);
+@@ -353,6 +362,8 @@ void __check_limbo(struct rdt_domain *d, bool force_free)
+ 		}
+ 		cur_idx = idx + 1;
+ 	}
++
++	resctrl_arch_mon_ctx_free(r, QOS_L3_OCCUP_EVENT_ID, arch_mon_ctx);
+ }
+ 
+ bool has_busy_rmid(struct rdt_domain *d)
+@@ -533,7 +544,7 @@ static int __mon_event_count(u32 closid, u32 rmid, struct rmid_read *rr)
+ 	}
+ 
+ 	rr->err = resctrl_arch_rmid_read(rr->r, rr->d, closid, rmid, rr->evtid,
+-					 &tval);
++					 &tval, rr->arch_mon_ctx);
+ 	if (rr->err)
+ 		return rr->err;
+ 
+@@ -722,11 +733,27 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d,
+ 	if (is_mbm_total_enabled()) {
+ 		rr.evtid = QOS_L3_MBM_TOTAL_EVENT_ID;
+ 		rr.val = 0;
++		rr.arch_mon_ctx = resctrl_arch_mon_ctx_alloc(rr.r, rr.evtid);
++		if (IS_ERR(rr.arch_mon_ctx)) {
++			pr_warn_ratelimited("Failed to allocate monitor context: %ld",
++					    PTR_ERR(rr.arch_mon_ctx));
++			return;
++		}
++
+ 		__mon_event_count(closid, rmid, &rr);
++
++		resctrl_arch_mon_ctx_free(rr.r, rr.evtid, rr.arch_mon_ctx);
+ 	}
+ 	if (is_mbm_local_enabled()) {
+ 		rr.evtid = QOS_L3_MBM_LOCAL_EVENT_ID;
+ 		rr.val = 0;
++		rr.arch_mon_ctx = resctrl_arch_mon_ctx_alloc(rr.r, rr.evtid);
++		if (IS_ERR(rr.arch_mon_ctx)) {
++			pr_warn_ratelimited("Failed to allocate monitor context: %ld",
++					    PTR_ERR(rr.arch_mon_ctx));
++			return;
++		}
++
+ 		__mon_event_count(closid, rmid, &rr);
+ 
+ 		/*
+@@ -736,6 +763,8 @@ static void mbm_update(struct rdt_resource *r, struct rdt_domain *d,
+ 		 */
+ 		if (is_mba_sc(NULL))
+ 			mbm_bw_count(closid, rmid, &rr);
++
++		resctrl_arch_mon_ctx_free(rr.r, rr.evtid, rr.arch_mon_ctx);
+ 	}
+ }
+ 
+diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
+index 8649fc8..bf460c9 100644
+--- a/include/linux/resctrl.h
++++ b/include/linux/resctrl.h
+@@ -235,6 +235,9 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
+  * @rmid:		rmid of the counter to read.
+  * @eventid:		eventid to read, e.g. L3 occupancy.
+  * @val:		result of the counter read in bytes.
++ * @arch_mon_ctx:	An architecture specific value from
++ *			resctrl_arch_mon_ctx_alloc(), for MPAM this identifies
++ *			the hardware monitor allocated for this read request.
+  *
+  * Some architectures need to sleep when first programming some of the counters.
+  * (specifically: arm64's MPAM cache occupancy counters can return 'not ready'
+@@ -248,7 +251,7 @@ void resctrl_offline_domain(struct rdt_resource *r, struct rdt_domain *d);
+  */
+ int resctrl_arch_rmid_read(struct rdt_resource *r, struct rdt_domain *d,
+ 			   u32 closid, u32 rmid, enum resctrl_event_id eventid,
+-			   u64 *val);
++			   u64 *val, void *arch_mon_ctx);
+ 
+ /**
+  * resctrl_arch_rmid_read_context_check()  - warn about invalid contexts
 
