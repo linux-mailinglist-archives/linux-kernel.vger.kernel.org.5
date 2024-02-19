@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-72109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72071-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E5385AF28
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:48:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7694B85AE97
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:36:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8E3E1C213A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:48:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8DF91C218D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:36:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FC556772;
-	Mon, 19 Feb 2024 22:42:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A46556776;
+	Mon, 19 Feb 2024 22:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b="I6yNfdsn"
-Received: from forward502c.mail.yandex.net (forward502c.mail.yandex.net [178.154.239.210])
+	dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b="XO02EO3Z"
+Received: from forward500b.mail.yandex.net (forward500b.mail.yandex.net [178.154.239.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 750FE2119;
-	Mon, 19 Feb 2024 22:42:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E91654F88;
+	Mon, 19 Feb 2024 22:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708382568; cv=none; b=D0ILOnamOzjoniE7OCy4ttV2g2LowCcG76rR9sNo7bG36zjBkFtZdkStWwBVoJtFOmu1c1w6Owh+HTa9mZa+Y72AWHsx/KdCcg4Jmhr22vpNgEzMIpMkUGZCRvEfhymkHtpXBdPZUE50UwtUHjcbtLO9YGFynT5ReQ0gKMJf+74=
+	t=1708382124; cv=none; b=Ec8oD3Ib0GXTGKariNZIoFbKJyO5RIkAc9L55jiT1Wg+/l5hP9ljAE8lpBoRXyH+t6VtsaAzqYgvu84L0RFKF0V9BOcBbSWwwMOSUkwZWS6DfRRW3cQOu62K6FPJwxsZvYo6CdIx9kiTKdE8UKBTQNrs1hKUer2X2QKSXi1NXa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708382568; c=relaxed/simple;
-	bh=205kobiiq0OZ4vyrcPqGUylfgKbklJ6av7kqniVA3sg=;
+	s=arc-20240116; t=1708382124; c=relaxed/simple;
+	bh=syOmdfRytxiX/HKVSxNzcoLs0gcEIlM3vpEM9T4e5BI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bZ5lSnl18mOFbOZb7K2/RHTiATXzsusPRVfYbMn4l3da4w9F43e8LXmDt/COo/21utIPVUOaXmu0kl+T1Kf80D3RUY+4TS+WKPRhxu5rwiwQjs5T48E/Ib6hpe7aPKUEt1KHyCqeaoNskRwtttqjwDrzFGa0hZjmABC0MBZzog4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net; spf=pass smtp.mailfrom=6tel.net; dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b=I6yNfdsn; arc=none smtp.client-ip=178.154.239.210
+	 MIME-Version; b=GC0qgenXxUgsZpwNMs03ssryNLYxthIj6cGE9/86dq+Tt5T5GiakK6jabNcmEB6907yrik8Y4ksGCAxnbz8SE8cba1Iw5bFV1mtX8aRtbEldyE3b+m09hBlJpjSze+aSQNb2reodVP/tm83mtjJLvcnH2p9nveqwcQsIDVncG3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net; spf=pass smtp.mailfrom=6tel.net; dkim=pass (1024-bit key) header.d=6tel.net header.i=@6tel.net header.b=XO02EO3Z; arc=none smtp.client-ip=178.154.239.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=6tel.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=6tel.net
 Received: from mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:3285:0:640:fd1e:0])
-	by forward502c.mail.yandex.net (Yandex) with ESMTPS id 7F9E060F42;
-	Tue, 20 Feb 2024 01:35:17 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id bYZIDNh7RSw0-FB9u05gv;
-	Tue, 20 Feb 2024 01:35:16 +0300
+	by forward500b.mail.yandex.net (Yandex) with ESMTPS id E7FB260FA0;
+	Tue, 20 Feb 2024 01:35:19 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id bYZIDNh7RSw0-9nfYeG6M;
+	Tue, 20 Feb 2024 01:35:18 +0300
 X-Yandex-Fwd: 1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=6tel.net; s=mail;
-	t=1708382117; bh=fqzflXpM3r0MZxo6zkWwvorWkYWVAXDmWK9yDZQ1Bvo=;
+	t=1708382119; bh=4esHHPB8QRrp0Iemcf6FHGQ6BZdQ9YtoicpK0U4GrhM=;
 	h=Message-ID:Date:In-Reply-To:Cc:Subject:References:To:From;
-	b=I6yNfdsnH2TtlNDPrBD8hwigAJudfpl0wSu687KvBm6piazgsYhwy/b3l0RvDLhpJ
-	 1bu4boWlLeVsuzaNRwRJRDvCq2rzStOyeFL7H8aD2Dv8x+5vPGM98D7D11syxEXuzw
-	 61lHTRZhUpzuqOBHd9c4Q2kivEJKn+Q9/lFqqOKc=
+	b=XO02EO3ZIyNk2n+j94csTnSD72YDrZtTmKwAN3Kjo8JS7bEIeneV4MehIV7ObDD7J
+	 1PpZdTVrI80RsISeBTo/QUSFy2oDxY63Y7/ivDgnv+aXstdFnkfyjuQW5XXQM0WhZH
+	 ML+av7TcBA+YT/DcWbIIAYYYeqygpbfY7j5QZadk=
 Authentication-Results: mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net; dkim=pass header.i=@6tel.net
 From: efectn@6tel.net
 To: linux-rockchip@lists.infradead.org
@@ -54,9 +54,9 @@ Cc: devicetree@vger.kernel.org,
 	heiko@sntech.de,
 	sebastian.reichel@collabora.com,
 	Muhammed Efe Cetin <efectn@protonmail.com>
-Subject: [PATCH 4/9] arm64: dts: rockchip: USB2, USB3 Host, PCIe2 to Khadas Edge 2
-Date: Tue, 20 Feb 2024 01:34:20 +0300
-Message-ID: <4d22afd70e5583458f405f5170f67690584e7efa.1708381247.git.efectn@protonmail.com>
+Subject: [PATCH 5/9] arm64: dts: rockchip: Add ir receiver and leds to Khadas Edge 2
+Date: Tue, 20 Feb 2024 01:34:21 +0300
+Message-ID: <335629f57e593e20418a4a55a1e662505640cbde.1708381247.git.efectn@protonmail.com>
 X-Mailer: git-send-email 2.43.1
 In-Reply-To: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
 References: <5a7bd2cd8703e51382abfc11242de59d45286477.1708381247.git.efectn@protonmail.com>
@@ -70,140 +70,116 @@ Content-Transfer-Encoding: 8bit
 
 From: Muhammed Efe Cetin <efectn@protonmail.com>
 
-Khadas Edge 2 has 1x USB2 with hub, 1x USB3 Host and 1x USB-C.
-This commit adds support for PCIe2, USB3 Host and USB2.
+Khadas Edge 2 exposes IR receiver pins as same as TF card via EXTIO. The
+IR receiver is connected to MCU and SoC.
+
+The board also has 2 PWM RGB leds. One is controlled by MCU and the
+other is controlled by SoC. This commit adds support for the led
+controlled by SoC using pwm-leds.
 
 Signed-off-by: Muhammed Efe Cetin <efectn@protonmail.com>
 ---
- .../dts/rockchip/rk3588s-khadas-edge2.dts     | 97 +++++++++++++++++++
- 1 file changed, 97 insertions(+)
+ .../dts/rockchip/rk3588s-khadas-edge2.dts     | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
-index 856ce4f869a2..ea7f1bb7c908 100644
+index ea7f1bb7c908..5a3b52e62dce 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3588s-khadas-edge2.dts
-@@ -38,6 +38,33 @@ vcc_1v1_nldo_s3: vcc-1v1-nldo-s3-regulator {
- 		vin-supply = <&vcc5v0_sys>;
+@@ -4,6 +4,7 @@
+ 
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/pinctrl/rockchip.h>
++#include <dt-bindings/leds/common.h>
+ #include "rk3588s.dtsi"
+ 
+ / {
+@@ -19,6 +20,47 @@ chosen {
+ 		stdout-path = "serial2:1500000n8";
  	};
  
-+	vcc5v0_host: vcc5v0-host-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc5v0_host";
-+		regulator-boot-on;
-+		regulator-always-on;
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		enable-active-high;
-+		gpio = <&gpio1 RK_PB1 GPIO_ACTIVE_HIGH>;
++	ir-receiver {
++		compatible = "gpio-ir-receiver";
++		gpios = <&gpio1 RK_PA7 GPIO_ACTIVE_LOW>;
 +		pinctrl-names = "default";
-+		pinctrl-0 = <&vcc5v0_host_en>;
-+		vin-supply = <&vcc5v0_sys>;
++		pinctrl-0 = <&ir_receiver_pin>;
 +	};
 +
-+	vcc3v3_pcie_wl: vcc3v3-pcie-wl-regulator {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpios = <&gpio0 RK_PC4 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pcie2_2_vcc3v3_en>;
-+		regulator-name = "vcc3v3_pcie_wl";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <5000>;
-+		vin-supply = <&vcc5v0_sys>;
++	leds {
++		compatible = "pwm-leds";
++
++		red_led: led-0 {
++			label = "red_led";
++			linux,default-trigger = "none";
++			default-state = "off";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_RED>;
++			max-brightness = <255>;
++			pwms = <&pwm11 0 25000 0>;
++		};
++
++		green_led: led-1 {
++			label = "green_led";
++			linux,default-trigger = "default-on";
++			default-state = "on";
++			function = LED_FUNCTION_POWER;
++			color = <LED_COLOR_ID_GREEN>;
++			max-brightness = <255>;
++			pwms = <&pwm14 0 25000 0>;
++		};
++
++		blue_led: led-2 {
++			label = "blue_led";
++			linux,default-trigger = "none";
++			default-state = "off";
++			function = LED_FUNCTION_INDICATOR;
++			color = <LED_COLOR_ID_BLUE>;
++			max-brightness = <255>;
++			pwms = <&pwm15 0 25000 0>;
++		};
 +	};
 +
- 	vdd_3v3_sd: vdd-3v3-sd-regulator {
+ 	vcc5v0_sys: vcc5v0-sys-regulator {
  		compatible = "regulator-fixed";
- 		regulator-name = "vdd_3v3_sd";
-@@ -84,6 +111,14 @@ &cpu_l3 {
- 	cpu-supply = <&vdd_cpu_lit_s0>;
- };
- 
-+&combphy0_ps {
-+	status = "okay";
-+};
-+
-+&combphy2_psu {
-+	status = "okay";
-+};
-+
- &i2c0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&i2c0m2_xfer>;
-@@ -130,6 +165,30 @@ vdd_sd_en: vdd-sd-en {
- 			rockchip,pins = <1 RK_PB6 RK_FUNC_GPIO &pcfg_pull_up>;
+ 		regulator-name = "vcc5v0_sys";
+@@ -181,6 +223,12 @@ vcc5v0_host_en: vcc5v0-host-en {
+ 			rockchip,pins = <1 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
  		};
  	};
 +
-+	pcie2 {
-+		pcie2_2_rst: pcie2-2-rst {
-+			rockchip,pins = <3 RK_PD1 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		pcie2_2_vcc3v3_en: pcie2-2-vcc-en {
-+			rockchip,pins = <0 RK_PC4 RK_FUNC_GPIO &pcfg_pull_none>;
++	ir-receiver {
++		ir_receiver_pin: ir-receiver-pin {
++			rockchip,pins = <1  RK_PA7  RK_FUNC_GPIO  &pcfg_pull_none>;
 +		};
 +	};
-+
-+	usb {
-+		vcc5v0_host_en: vcc5v0-host-en {
-+			rockchip,pins = <1 RK_PB1 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+};
-+
-+&pcie2x1l2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pcie2_2_rst>;
-+	reset-gpios = <&gpio3 RK_PD1 GPIO_ACTIVE_HIGH>;
-+	vpcie3v3-supply = <&vcc3v3_pcie_wl>;
-+	status = "okay";
  };
  
- &sdhci {
-@@ -483,3 +542,41 @@ &uart2 {
- 	pinctrl-0 = <&uart2m0_xfer>;
+ &pcie2x1l2 {
+@@ -191,6 +239,24 @@ &pcie2x1l2 {
  	status = "okay";
  };
-+
-+&u2phy2 {
+ 
++&pwm11 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pwm11m1_pins>;
 +	status = "okay";
 +};
 +
-+&u2phy2_host {
-+	phy-supply = <&vcc5v0_host>;
++&pwm14 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pwm14m1_pins>;
 +	status = "okay";
 +};
 +
-+&u2phy3 {
++&pwm15 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pwm15m1_pins>;
 +	status = "okay";
 +};
 +
-+&u2phy3_host {
-+	phy-supply = <&vcc5v0_host>;
-+	status = "okay";
-+};
-+
-+&usb_host0_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host0_ohci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ehci {
-+	status = "okay";
-+};
-+
-+&usb_host1_ohci {
-+	status = "okay";
-+};
-+
-+&usb_host2_xhci {
-+	status = "okay";
-+};
+ &sdhci {
+ 	bus-width = <8>;
+ 	no-sdio;
 -- 
 2.43.1
 
