@@ -1,74 +1,62 @@
-Return-Path: <linux-kernel+bounces-71396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 284FD85A486
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:20:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E73985A48C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:21:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD20FB21C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:20:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D99A1B23279
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9453536132;
-	Mon, 19 Feb 2024 13:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5328036135;
+	Mon, 19 Feb 2024 13:21:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="E1QGrYw8"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="B5QVJHKv"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2195536118;
-	Mon, 19 Feb 2024 13:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37BFF2E834;
+	Mon, 19 Feb 2024 13:21:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708348846; cv=none; b=Wz7dZLjVWFD5sMp1Dn5RO/Rjz5ADVj77ikTE0ALG7f0qOj/52zvelnOoPNSDw6HHTNI4OUX5txr+z7aplPeTGhNTyR+WjXRFV9so//bvmudc1OjbnhSn1o1V+QPKTIrOzR+ZiBgO9ul9YO34X+hQXISgDapn0mFLIBBp64tpYAE=
+	t=1708348900; cv=none; b=Lzbd3c9OHoyROggHBBH/aBSm71o4Z6QB01snM+rjWsktQZ3tpfWYIz37Up2kTNIjrDeuREe7FSdhN43BiJjpFZHwoh9/Cmxl7A5ug5jSvDkWQAl55MtddjG8Tpv5z8JSItFcHFYycsPkqb6L7HZ7iC4SaIvYSr7t98IW1ZF29s0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708348846; c=relaxed/simple;
-	bh=KNb0KK+q8cVZ0ApPaQM11/OWeLMxQLjSnB8wr3hcRM0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=szUi3ApnWGUobcSSIFgvS9vpnyhwAH/rC2m+KFX7Xw+ehHxYYLT9MjGFKbEtodayiiHr5UPV4s4tE/MiHsHLSGcRYz9r7yHaZi5Zju8e4XJWuQkePYH/OCnWMzi3wjJxDjc12h37dyqG6gav13jcz20hYmH7oEIJIZvMv3Nyztw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=E1QGrYw8; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41JDKWsq008361;
-	Mon, 19 Feb 2024 07:20:32 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708348832;
-	bh=M0uNNQWLLHnv3ooGLreNOREbGeGPXAw3YOkIrOj8EYQ=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=E1QGrYw8g5mUiZtTdhp0jn2+yRHVqL3sTnMGjtWFskO8/UBvw6B+ctnwQj5XgxkmY
-	 VbL2l3m/kSWgw+HrXPE7DKn9Z39MkY6GhjfxYq7X3Jb2sEDk3vwE0aWNYxMPVcrN6A
-	 NBWoi11bprC0jUcV8jiN3WROuUp6mjC0Ijj2reXo=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41JDKVGw037512
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 19 Feb 2024 07:20:31 -0600
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 19
- Feb 2024 07:20:31 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 19 Feb 2024 07:20:31 -0600
-Received: from uda0132425.dhcp.ti.com (uda0132425.dhcp.ti.com [172.24.227.94])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41JDKRZm125092;
-	Mon, 19 Feb 2024 07:20:28 -0600
-From: Vignesh Raghavendra <vigneshr@ti.com>
-To: <nm@ti.com>, <kristo@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <huaqian.li@siemens.com>
-CC: Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <jan.kiszka@siemens.com>,
-        <baocheng.su@siemens.com>
-Subject: Re: [PATCH] arm64: dts: ti: Add reserved memory for watchdog
-Date: Mon, 19 Feb 2024 18:50:19 +0530
-Message-ID: <170834878953.3471454.17341005022396223551.b4-ty@ti.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240117060654.109424-1-huaqian.li@siemens.com>
-References: <20240117060654.109424-1-huaqian.li@siemens.com>
+	s=arc-20240116; t=1708348900; c=relaxed/simple;
+	bh=lC+Va8VKJJRnjPL1NP5hZ/mWgsIad/xDcJU8KKEla+E=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=JFFpnWpwyhOYvMcBpiBFf+VQw/ZnZBxw+G15eQY1RTWWMwYJ+O07A0Tfn+u/iTuI/4CLu2kTLkWfEigIj0IwI+4dGITBjSFqOXhvYoAD1w1mJrQRuossB4n021itcTI2jbsRzLVJqqsK+ofqxAv9DL8HNPqgKU/4rVmaDuYQa60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=B5QVJHKv; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41JCiNFU018209;
+	Mon, 19 Feb 2024 13:21:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:to:cc; s=qcppdkim1; bh=F7i
+	D/VqgEIiLKlYBQdbtCp2S7O7L8FqKjuOYcPetuLs=; b=B5QVJHKv8YU0U2gA/Dr
+	Ek18Kx8ENx8SUHM8/c3QrlzhXlWF2baE5BpvaDCQwOGaKSUz31EFTaY5SUb9cb2V
+	ALNkGi1BWXNNyy+cDdJYKjXCElDRNKJ0tQ4HJYm5frBBtyfa/5BXByIOtn5A+pVn
+	pCYjQEhnrxPD0MswXlRQf+R9+wHtB/xloHz35IfNLQzLWgfZhhEatGUx3odu1316
+	xWbgYh9enM/VXhPHF7ZPurgf7xEU5kw/3ps23fK0P3GUtdbtjoOSeXGjmL+jOPVh
+	dzNxZTEsNh/XTH3T9Wrkxs7MPFS/n2bLaCx7LEiSmGZW7gbRNd0WXLZDx0MosMM/
+	muQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wc78qr24j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 13:21:28 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41JDLRWW015729
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 13:21:27 GMT
+Received: from hu-krichai-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Mon, 19 Feb 2024 05:21:23 -0800
+From: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+Date: Mon, 19 Feb 2024 18:51:10 +0530
+Subject: [PATCH] PCI: dwc: Enable runtime pm of the host bridge
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,42 +64,93 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240219-runtime_pm_enable-v1-1-d39660310504@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAMZV02UC/x3MQQqAIBBA0avIrBNUiqirRITmVANpohWBdPek5
+ Vv8nyFhJEzQswwRb0p0+AJZMZg37VfkZItBCVULJTseL3+Swym4Cb02O3JjZ9l2sja2EVC6EHG
+ h538O4/t+PxSkQWMAAAA=
+To: Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel
+	<gustavo.pimentel@synopsys.com>,
+        Manivannan Sadhasivam
+	<manivannan.sadhasivam@linaro.org>,
+        Lorenzo Pieralisi
+	<lpieralisi@kernel.org>,
+        =?utf-8?q?Krzysztof_Wilczy=C5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>
+CC: <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_ramkri@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_parass@quicinc.com>,
+        Krishna chaitanya chundru
+	<quic_krichai@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708348882; l=1466;
+ i=quic_krichai@quicinc.com; s=20230907; h=from:subject:message-id;
+ bh=lC+Va8VKJJRnjPL1NP5hZ/mWgsIad/xDcJU8KKEla+E=;
+ b=uItbQ0PRyWCOqJ4GM6tXMhioNvyuGlpf0qLZwqb0FVXGXoQYKMkFJHVBAc37WwDCbpYKHRX7x
+ UJ461EQdg1YDr+nAnerFDyH+ncy8TJhTaA+qCHcnls78GuO+vvzG6FQ
+X-Developer-Key: i=quic_krichai@quicinc.com; a=ed25519;
+ pk=10CL2pdAKFyzyOHbfSWHCD0X0my7CXxj8gJScmn1FAg=
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: rIGyQEr32HOD5ThTKYpcNVhD5kBNqavq
+X-Proofpoint-ORIG-GUID: rIGyQEr32HOD5ThTKYpcNVhD5kBNqavq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_09,2024-02-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 adultscore=0 spamscore=0 mlxscore=0 priorityscore=1501
+ mlxlogscore=785 phishscore=0 malwarescore=0 suspectscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402190099
 
-Hi huaqian.li@siemens.com,
+Currently controller driver goes to runtime suspend irrespective
+of the child(pci-pci bridge & endpoint driver) runtime state.
+This is because the runtime pm is not being enabled for the host
+bridge dev which maintains parent child relationship.
 
-On Wed, 17 Jan 2024 14:06:56 +0800, huaqian.li@siemens.com wrote:
-> This patch adds a reserved memory for the TI AM65X platform watchdog
-> to reserve the specific info, triggering the watchdog reset in last
-> boot, to know if the board reboot is due to a watchdog reset.
-> 
-> 
+So enable pm runtime for the host bridge, so that controller driver
+goes to suspend only when all child devices goes to runtime suspend.
 
-I have applied the following to branch ti-k3-dts-next on [1].
-Thank you!
+Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+---
+ drivers/pci/controller/dwc/pcie-designware-host.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-[1/1] arm64: dts: ti: Add reserved memory for watchdog
-      commit: 14a65ea5fee71d716d246b8cc494a95bc9924306
+diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+index d5fc31f8345f..57756a73df30 100644
+--- a/drivers/pci/controller/dwc/pcie-designware-host.c
++++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+@@ -16,6 +16,7 @@
+ #include <linux/of_pci.h>
+ #include <linux/pci_regs.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ 
+ #include "../../pci.h"
+ #include "pcie-designware.h"
+@@ -505,6 +506,9 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
+ 	if (pp->ops->post_init)
+ 		pp->ops->post_init(pp);
+ 
++	pm_runtime_set_active(&bridge->dev);
++	pm_runtime_enable(&bridge->dev);
++
+ 	return 0;
+ 
+ err_stop_link:
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent up the chain during
-the next merge window (or sooner if it is a relevant bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+---
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+change-id: 20240219-runtime_pm_enable-bdc17914bd50
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/ti/linux.git
---
-Vignesh
+Best regards,
+-- 
+Krishna chaitanya chundru <quic_krichai@quicinc.com>
 
 
