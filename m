@@ -1,366 +1,207 @@
-Return-Path: <linux-kernel+bounces-72051-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E42E085AE49
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:18:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00FA585AE58
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:22:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 25BBDB2166B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:18:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AC774284E5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1BB754FA7;
-	Mon, 19 Feb 2024 22:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88A85645B;
+	Mon, 19 Feb 2024 22:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="cd/vqplH"
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jeBEtE8D"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B27B54FB3
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0254155C16
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708381113; cv=none; b=M8tOH9RvWKNlU6B9+9eUlSWPfWDSzozhXCLD7qAEOhC9FJv8LypKXpDfHI3RV/u3lHt5rTNdVKIOfl4/avLRq8i3VcFe66hKD5cz07wl9SHnP+jqVjosuBd5JW2USUiVlBsY9rl3iG9ETDAKSXFQ86gqmLPjxEXukhXNhK1LITA=
+	t=1708381319; cv=none; b=MKg4wlCzV+3uvUSCqxs5qa7ipcHMTDA44myuqpn8Sv4FCsjVZ5q4IwK91Bh3r0oYFdb4N10snjcATtm3z1I+3378pHRBpu8M3KnTcAjwJVhB8PajxiBdwStX9yOqtID7vA7Qw9pPTR3bSGvdCaw/Fgfv4b7I7eNbEYvnR73Aes0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708381113; c=relaxed/simple;
-	bh=3KLuTROTcuIG8ts2TGB7kpawKU3BuHsxiX3BpUeVXPA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RCzfIFTCzGnHhZbbKcVLQQcIg/tJ3VgkXsDhSagaygzak7wpsWL54VmAYKyou8iTjlGiOJ8VPicZlwJ0ESmiw6lkIOlHVl0RqLjC01reRSikOOQzpGj9YLyFWrpptJAJGFdf68THVx6UJQuok7F39v92pV844BSQ6xQqwYBGfUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=cd/vqplH; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D8BF72C03CF;
-	Tue, 20 Feb 2024 11:18:28 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1708381108;
-	bh=oyWkRtqqsv+aKaLBRLeW55YBTClyGJKuCBoRSiD+nCA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cd/vqplHdk3I+7F+YSv2d9a1tRYD7GiPMPg1bYsD6PBppdzVVC4ESI9SBhyaVZb50
-	 lCTLxk+UEa23yL97YoQhKO/9RNv5KKUY9mBCSTh7RppHIlMg+4a7J8kIETY8BmJGHy
-	 +OGZmeL+VyRdqoUhWKzuG9QLPq0uxc6yY0uUYEAoy8L4++EvfBDNxryunLTKWWtpDs
-	 wZ+Ep4LFsE3cwxOjk/vUQpT3oHZIiW2tBoMqHR5OmFmXKENzWA/8rzyS2TVzZHaIhM
-	 pgV2LZ5AvrmTS6+feseG/LyxaYdhKU8SltwuIvK/8XtXrPnjpMTXp/FgRcwVPEAJtD
-	 a6loSDeew1hlw==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B65d3d3b40002>; Tue, 20 Feb 2024 11:18:28 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 92FB213EE85;
-	Tue, 20 Feb 2024 11:18:28 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 8BFF2280ADF; Tue, 20 Feb 2024 11:18:28 +1300 (NZDT)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: antoniu.miclaus@analog.com,
-	alexandre.belloni@bootlin.com,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	jdelvare@suse.com,
-	linux@roeck-us.net
-Cc: linux-rtc@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-	Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v7 2/2] dt-bindings: rtc: add max313xx RTCs
-Date: Tue, 20 Feb 2024 11:18:24 +1300
-Message-ID: <20240219221827.3821415-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240219221827.3821415-1-chris.packham@alliedtelesis.co.nz>
-References: <20240219221827.3821415-1-chris.packham@alliedtelesis.co.nz>
+	s=arc-20240116; t=1708381319; c=relaxed/simple;
+	bh=AV04W98SGcs03DR+MbROhSLr0Maq3x3IF7tuWG4r08E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OHXdBB0JiiI+8yOr22YfXAaW1K4chILWsMjInSyLMOOrSeP4Bryc4D4hMCCBwxK5XcgO36dmJ6tXBQxdVcOEZHikCaISKd0hC8wSB7wvYSbS//UHhhUxcWTfPUlzS1E4p2m/RgPXJByx47Qhh0DrrWialagKB24rabe6y6XH5Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jeBEtE8D; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6085ed1e916so2355987b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:21:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708381317; x=1708986117; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CWBfqhdEXedBrtNGEQDXyHOTQXUxKpS9xFZl5trWPds=;
+        b=jeBEtE8D5+RBIx8FwXYe8gUqn9uAmiKUwypD5maslZ2iX9iMfG22I5zVV2MhFz/O+f
+         e7k6cUsrsAlM17Ys50ObNbcuDligfa6M1uh3Lme7xPi/iysl3Md6dk3qY4LPFHydMTTt
+         xNIl0wtPa3UvLZ4GJToMPIja2UHOY9++XHEogBuwgGA2+ahV0L7qpQSw2puGwTneltJ8
+         INrX2j378nAQkTnIK0fS+iiGsZ51kfR26MNaQe7xhwSvaZ6f8fDKA3XcDxoqvfJLIqOt
+         El4H4KFRCDUGnY9oVUhm3v9SEoXEXuqkF1wlxdOUXdeq7Fl8ewcAwO5cOeWB87jRkFQQ
+         BkWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708381317; x=1708986117;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CWBfqhdEXedBrtNGEQDXyHOTQXUxKpS9xFZl5trWPds=;
+        b=Nn4bgyCuYdPh8h/u5btvT2ATBCPNZUVGamfnH9atcJtRUU4sr/J3wDvXmXJMdJAyaO
+         1BMKJfsQ+qehRr6o//PFUI3VwPqlyyrR3NJRHUgxDUWPT6+1yfHq7aLBXNu4GNUxNPZ7
+         BP8pUN6La+1jFW8nlOjLigvO7UlVal0K/XM09aCPubGJzq6Mv3VqGBXggFT4VZUu/Nb7
+         bu41csvub9y7R6UnnInJ0QS33biKWAdw1kQzjdMnrL2gdrSKaxVv76iNiIUyEjXj6+si
+         RpFLo1QrlR1SRh6P21BcweOPhNPXfQNhDMxAo9VJ2RyH2BjfdXqiTOm2FpT4dDvmOfBT
+         xG6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWuDGXMD8DQ8T3WmA4rLfVgRaAnZTN42kXHNW0e+nkbfM6dp+tkQTAlbARJLOF5wzYqU66OCABaDHYE9bNQSl7MZYmivT8T4LG1iTvF
+X-Gm-Message-State: AOJu0YxI4Xm/2yOOnguk4OWzW8FwznM0aooM7yzODHYLsWmeP9iIUtwR
+	Fknp3wP1+Tafoadl8j0wJMWExAUwyuVoBDP9lmvrkfHnLj50q08PKjjJv4PmSqgqEG2V5ewHHbR
+	gcTFl/zkcCDkSzV4R+YqDPPTLKGjh59xt8Lvl7A==
+X-Google-Smtp-Source: AGHT+IEw1QxrScZ5otnCQ0EY59GfXlyDDJtQ3b51NbbVrQfFF81qQ7/f7MndD7svyF5jQtcz/STFrjnb2NG3XxDBlfQ=
+X-Received: by 2002:a81:b603:0:b0:607:caee:ebd4 with SMTP id
+ u3-20020a81b603000000b00607caeeebd4mr13871897ywh.31.1708381316805; Mon, 19
+ Feb 2024 14:21:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <20240216203215.40870-1-brgl@bgdev.pl> <CAA8EJppt4-L1RyDeG=1SbbzkTDhLkGcmAbZQeY0S6wGnBbFbvw@mail.gmail.com>
+ <e4cddd9f-9d76-43b7-9091-413f923d27f2@linaro.org> <CAA8EJpp6+2w65o2Bfcr44tE_ircMoON6hvGgyWfvFuh3HamoSQ@mail.gmail.com>
+ <4d2a6f16-bb48-4d4e-b8fd-7e4b14563ffa@linaro.org> <CAA8EJpq=iyOfYzNATRbpqfBaYSdJV1Ao5t2ewLK+wY+vEaFYAQ@mail.gmail.com>
+ <CAMRc=Mfnpusf+mb-CB5S8_p7QwVW6owekC5KcQF0qrR=iOQ=oA@mail.gmail.com>
+ <CAA8EJppY7VTrDz3-FMZh2qHoU+JSGUjCVEi5x=OZgNVxQLm3eQ@mail.gmail.com> <b9a31374-8ea9-407e-9ec3-008a95e2b18b@linaro.org>
+In-Reply-To: <b9a31374-8ea9-407e-9ec3-008a95e2b18b@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 20 Feb 2024 00:21:45 +0200
+Message-ID: <CAA8EJppWY8c-pF75WaMadWtEuaAyCc5A1VLEq=JmB2Ngzk-zyw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/18] power: sequencing: implement the subsystem and
+ add first users
+To: neil.armstrong@linaro.org
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>, 
+	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=BKkQr0QG c=1 sm=1 tr=0 ts=65d3d3b4 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=gAnH3GRIAAAA:8 a=gEfo2CItAAAA:8 a=2mgWcbLM5WXxDnXTRRQA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=oVHKYsEdi7-vN-J5QA_j:22 a=sptkURWiP4Gy88Gu7hUp:22
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
 
-From: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
+On Mon, 19 Feb 2024 at 19:18, <neil.armstrong@linaro.org> wrote:
+>
+> On 19/02/2024 13:33, Dmitry Baryshkov wrote:
+> > On Mon, 19 Feb 2024 at 14:23, Bartosz Golaszewski <brgl@bgdev.pl> wrote=
+:
+> >>
+> >> On Mon, Feb 19, 2024 at 11:26=E2=80=AFAM Dmitry Baryshkov
+> >> <dmitry.baryshkov@linaro.org> wrote:
+> >>>
+> >>
+> >> [snip]
+> >>
+> >>>>>>>>
+> >>>>>>>> For WCN7850 we hide the existence of the PMU as modeling it is s=
+imply not
+> >>>>>>>> necessary. The BT and WLAN devices on the device-tree are repres=
+ented as
+> >>>>>>>> consuming the inputs (relevant to the functionality of each) of =
+the PMU
+> >>>>>>>> directly.
+> >>>>>>>
+> >>>>>>> We are describing the hardware. From the hardware point of view, =
+there
+> >>>>>>> is a PMU. I think at some point we would really like to describe =
+all
+> >>>>>>> Qualcomm/Atheros WiFI+BT units using this PMU approach, including=
+ the
+> >>>>>>> older ath10k units present on RB3 (WCN3990) and db820c (QCA6174).
+> >>>>>>
+> >>>>>> While I agree with older WiFi+BT units, I don't think it's needed =
+for
+> >>>>>> WCN7850 since BT+WiFi are now designed to be fully independent and=
+ PMU is
+> >>>>>> transparent.
+> >>>>>
+> >>>>> I don't see any significant difference between WCN6750/WCN6855 and
+> >>>>> WCN7850 from the PMU / power up point of view. Could you please poi=
+nt
+> >>>>> me to the difference?
+> >>>>>
+> >>>>
+> >>>> The WCN7850 datasheet clearly states there's not contraint on the WL=
+AN_EN
+> >>>> and BT_EN ordering and the only requirement is to have all input reg=
+ulators
+> >>>> up before pulling up WLAN_EN and/or BT_EN.
+> >>>>
+> >>>> This makes the PMU transparent and BT and WLAN can be described as i=
+ndependent.
+> >>>
+> >>>  From the hardware perspective, there is a PMU. It has several LDOs. =
+So
+> >>> the device tree should have the same style as the previous
+> >>> generations.
+> >>>
+> >>
+> >> My thinking was this: yes, there is a PMU but describing it has no
+> >> benefit (unlike QCA6x90). If we do describe, then we'll end up having
+> >> to use pwrseq here despite it not being needed because now we won't be
+> >> able to just get regulators from WLAN/BT drivers directly.
+> >>
+> >> So I also vote for keeping it this way. Let's go into the package
+> >> detail only if it's required.
+> >
+> > The WiFi / BT parts are not powered up by the board regulators. They
+> > are powered up by the PSU. So we are not describing it in the accurate
+> > way.
+>
+> I disagree, the WCN7850 can also be used as a discrete PCIe M.2 card, and=
+ in
+> this situation the PCIe part is powered with the M.2 slot and the BT side
+> is powered separately as we currently do it now.
 
-Add devicetree binding documentation for Analog Devices MAX313XX RTCs.
-This combines the new models with the existing max31335 binding.
+QCA6390 can also be used as a discrete M.2 card.
 
-Signed-off-by: Ibrahim Tilki <Ibrahim.Tilki@analog.com>
-Signed-off-by: Zeynep Arslanbenzer <Zeynep.Arslanbenzer@analog.com>
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- .../devicetree/bindings/rtc/adi,max31335.yaml |  70 --------
- .../devicetree/bindings/rtc/adi,max313xx.yaml | 167 ++++++++++++++++++
- 2 files changed, 167 insertions(+), 70 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/rtc/adi,max31335.ya=
-ml
- create mode 100644 Documentation/devicetree/bindings/rtc/adi,max313xx.ya=
-ml
+> So yes there's a PMU, but it's not an always visible hardware part, from =
+the
+> SoC PoV, only the separate PCIe and BT subsystems are visible/controllabl=
+e/powerable.
 
-diff --git a/Documentation/devicetree/bindings/rtc/adi,max31335.yaml b/Do=
-cumentation/devicetree/bindings/rtc/adi,max31335.yaml
-deleted file mode 100644
-index 0125cf6727cc..000000000000
---- a/Documentation/devicetree/bindings/rtc/adi,max31335.yaml
-+++ /dev/null
-@@ -1,70 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
--%YAML 1.2
-----
--$id: http://devicetree.org/schemas/rtc/adi,max31335.yaml#
--$schema: http://devicetree.org/meta-schemas/core.yaml#
--
--title: Analog Devices MAX31335 RTC
--
--maintainers:
--  - Antoniu Miclaus <antoniu.miclaus@analog.com>
--
--description:
--  Analog Devices MAX31335 I2C RTC =C2=B12ppm Automotive Real-Time Clock =
-with
--  Integrated MEMS Resonator.
--
--allOf:
--  - $ref: rtc.yaml#
--
--properties:
--  compatible:
--    const: adi,max31335
--
--  reg:
--    maxItems: 1
--
--  interrupts:
--    maxItems: 1
--
--  "#clock-cells":
--    description:
--      RTC can be used as a clock source through its clock output pin.
--    const: 0
--
--  adi,tc-diode:
--    description:
--      Select the diode configuration for the trickle charger.
--      schottky - Schottky diode in series.
--      standard+schottky - standard diode + Schottky diode in series.
--    enum: [schottky, standard+schottky]
--
--  trickle-resistor-ohms:
--    description:
--      Selected resistor for trickle charger. Should be specified if tric=
-kle
--      charger should be enabled.
--    enum: [3000, 6000, 11000]
--
--required:
--  - compatible
--  - reg
--
--unevaluatedProperties: false
--
--examples:
--  - |
--    #include <dt-bindings/interrupt-controller/irq.h>
--    i2c {
--        #address-cells =3D <1>;
--        #size-cells =3D <0>;
--
--        rtc@68 {
--            compatible =3D "adi,max31335";
--            reg =3D <0x68>;
--            pinctrl-0 =3D <&rtc_nint_pins>;
--            interrupts-extended =3D <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
--            aux-voltage-chargeable =3D <1>;
--            trickle-resistor-ohms =3D <6000>;
--            adi,tc-diode =3D "schottky";
--        };
--    };
--...
-diff --git a/Documentation/devicetree/bindings/rtc/adi,max313xx.yaml b/Do=
-cumentation/devicetree/bindings/rtc/adi,max313xx.yaml
-new file mode 100644
-index 000000000000..e56e5394aa86
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/adi,max313xx.yaml
-@@ -0,0 +1,167 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+# Copyright 2022 Analog Devices Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/adi,max313xx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Analog Devices MAX313XX series I2C RTCs
-+
-+maintainers:
-+  - Antoniu Miclaus <antoniu.miclaus@analog.com>
-+  - Chris Packham <chris.packham@alliedtelesis.co.nz>
-+
-+description: Analog Devices MAX313XX series I2C RTCs.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,max31328
-+      - adi,max31329
-+      - adi,max31331
-+      - adi,max31334
-+      - adi,max31335
-+      - adi,max31341
-+      - adi,max31342
-+      - adi,max31343
-+
-+  reg:
-+    description: I2C address of the RTC
-+    items:
-+      - enum: [0x68, 0x69]
-+
-+  interrupts:
-+    description:
-+      Alarm1 interrupt line of the RTC. Some of the RTCs have two interr=
-upt
-+      lines and alarm1 interrupt muxing depends on the clockin/clockout
-+      configuration.
-+    maxItems: 1
-+
-+  "#clock-cells":
-+    description:
-+      RTC can be used as a clock source through its clock output pin whe=
-n
-+      supplied.
-+    const: 0
-+
-+  clocks:
-+    description:
-+      RTC uses this clock for clock input when supplied. Clock has to pr=
-ovide
-+      one of these four frequencies - 1Hz, 50Hz, 60Hz or 32.768kHz.
-+    maxItems: 1
-+
-+  adi,tc-diode:
-+    description:
-+      Select the diode configuration for the trickle charger.
-+      schottky - Schottky diode in series.
-+      standard+schottky - standard diode + Schottky diode in series.
-+    enum: [schottky, standard+schottky]
-+
-+  trickle-resistor-ohms:
-+    description:
-+      Selected resistor for trickle charger. Should be specified if tric=
-kle
-+      charger should be enabled.
-+    enum: [3000, 6000, 11000]
-+
-+required:
-+  - compatible
-+  - reg
-+
-+allOf:
-+  - $ref: rtc.yaml#
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31328
-+              - adi,max31342
-+
-+    then:
-+      properties:
-+        aux-voltage-chargeable: false
-+        trickle-resistor-ohms: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31328
-+              - adi,max31331
-+              - adi,max31334
-+              - adi,max31335
-+              - adi,max31343
-+
-+    then:
-+      properties:
-+        clocks: false
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - adi,max31341
-+              - adi,max31342
-+
-+    then:
-+      properties:
-+        reg:
-+          items:
-+            - const: 0x69
-+
-+    else:
-+      properties:
-+        reg:
-+          items:
-+            - const: 0x68
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        rtc@68 {
-+            reg =3D <0x68>;
-+            compatible =3D "adi,max31329";
-+            clocks =3D <&clkin>;
-+            interrupt-parent =3D <&gpio>;
-+            interrupts =3D <26 IRQ_TYPE_EDGE_FALLING>;
-+            aux-voltage-chargeable =3D <1>;
-+            trickle-resistor-ohms =3D <6000>;
-+            adi,tc-diode =3D "schottky";
-+        };
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        rtc@68 {
-+            compatible =3D "adi,max31335";
-+            reg =3D <0x68>;
-+            pinctrl-0 =3D <&rtc_nint_pins>;
-+            interrupts-extended =3D <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
-+            aux-voltage-chargeable =3D <1>;
-+            trickle-resistor-ohms =3D <6000>;
-+            adi,tc-diode =3D "schottky";
-+        };
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells =3D <1>;
-+        #size-cells =3D <0>;
-+
-+        rtc@68 {
-+            reg =3D <0x68>;
-+            compatible =3D "adi,max31331";
-+            #clock-cells =3D <0>;
-+        };
-+    };
-+...
+From the hardware point:
+- There is a PMU
+- The PMU is connected to the board supplies
+- Both WiFi and BT parts are connected to the PMU
+- The BT_EN / WLAN_EN pins are not connected to the PMU
+
+So, not representing the PMU in the device tree is a simplification.
+
+>
+> Neil
+>
+> >
+> > Moreover, I think we definitely want to move BT driver to use only the
+> > pwrseq power up method. Doing it in the other way results in the code
+> > duplication and possible issues because of the regulator / pwrseq
+> > taking different code paths.
+
 --=20
-2.43.2
-
+With best wishes
+Dmitry
 
