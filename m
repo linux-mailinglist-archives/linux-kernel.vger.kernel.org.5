@@ -1,106 +1,66 @@
-Return-Path: <linux-kernel+bounces-71524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B70D785A6A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:56:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93BB585A6A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:56:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC69C1C20E0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:56:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B88471C210B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:56:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02F2D381A4;
-	Mon, 19 Feb 2024 14:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7120E381B0;
+	Mon, 19 Feb 2024 14:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="avRGE7em";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rslRCV1q";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="avRGE7em";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rslRCV1q"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1TbsRCfB";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="KGw0AHdW"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45183383BB;
-	Mon, 19 Feb 2024 14:55:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED1837700
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:56:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708354541; cv=none; b=nk1or6aC+cWM0r/XjhgFzyexkHLwCpl1pfjOF8BsI+PqCB3ZuUN0A7TJU2jbEf07zC4EU5hz0Oqd/stG7CYyVDrGZXP8mkT7+LnMTkPGNielsR0VUI/7LzhhS2UJhVTI3kHvZGP8uck/29BlEog4aVl+mllI1UfFcDSXRl71iHo=
+	t=1708354580; cv=none; b=mFH1DIeqZpf9Q0watycs4DCD42y0cJRzRpT6eV4uMbTZP3JMTfoJ32wGShDiETvLWOg5uUjN9ybh0GhygtVXdaStoYFf4j8nAVI5frZVazSapMwYVj6ky+ZFtTjkHjCkMrkdxAYreN3alkdhMG9H8zaBl3mUCrHmv5Q1rB66fbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708354541; c=relaxed/simple;
-	bh=9wlvF0ScyfXlUKJvQHCY1lykuhVQIEGLiokTklW2Gwg=;
+	s=arc-20240116; t=1708354580; c=relaxed/simple;
+	bh=5zS63jNT/YDZjnZziU+0uuX/rDwvESQkJpZcGzWxcGI=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FELljpqdP/M9Sl1zVIleM3Y1kOII/TdnTJ7XRJBnWxabU2OSSlhNE6l5rHVjG3TLJ2YGpOD2Jebi1q7RBECYUdnnQ2rVVAleE1jhZ3TURzYDTwTgBNnre633kB3H0GUfuCViXMvIXMUGblDBSWIrHkxL8wDuVe43ON0Vyl+f9CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=avRGE7em; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rslRCV1q; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=avRGE7em; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rslRCV1q; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3C6691F808;
-	Mon, 19 Feb 2024 14:55:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708354537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	 MIME-Version:Content-Type; b=Uq44vP3u4nLYf44LdHvXOz5dMefr6mmNNtaWP7Scu9P+IwLQ2UCuTvbWol6cwZQkPPTFFuMftgkFcg8qd4DqYrHk/Pr4BjUNcb5V/L9uEWgP2F0iufXwyIh+wm/AxeBal5cS2zAsBFWL93ICD+345JJcDX+cdS01h/vaIZOMPhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1TbsRCfB; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=KGw0AHdW; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708354576;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=avRGE7emlGK5R4lKzhzXy/KUzSRA9hYSOhJA+eAltWjJCyHVXalS5saGrIkYiu+wgD7sOc
-	efDfHL+rhifvUvdMglnmWCmNC4sF0j1btEHVDdD5UXpdqoKcObGkAmPtWS5tSzReR4ZMq7
-	vAEJSswwKYtR/sc0qtxRNpeHQ7mzxqY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708354537;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	bh=HHlyd8j6kp9DlA7pZO5MIaEPRDtqFTi7Fn9egV2/uZo=;
+	b=1TbsRCfBkg8xzE+wTmL7H/x0n8DmT5KFb7XyeF3Xxlw4NW3vDAapxiZLp710VbAjs0EIwv
+	rz2qUndZOeIwKk+D5TVexrxcGQJq76SUduImRIK25eFIqnrgdZHpUKBL0TCCqb1i0N+QXw
+	qdRYiv9L9Q2HaX9kpWQh/WPnpTt7fFV4yOlr94sxZRK26aB5P8MkLZW1isb5F5WqJ73Xss
+	INZcKNdNfKHQ3W7+2ysYb7SdviSw+d3IFkEJyMGO3sT9qhy93zx+N5FsyB/bIWITQroR4v
+	6oWdwliKWznctsvG51HLhfDqQXVebhQlM0W0mLeL3txRsewR6cGGmjjGEmxAaw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708354576;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=rslRCV1qhQjgRNyL9E23Je3vLima4yq+nmbzcAsktechQjpAwDAIxEfRX3o2Vb+ufEz+3U
-	oCsAEYa/ATeNNfDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708354537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=avRGE7emlGK5R4lKzhzXy/KUzSRA9hYSOhJA+eAltWjJCyHVXalS5saGrIkYiu+wgD7sOc
-	efDfHL+rhifvUvdMglnmWCmNC4sF0j1btEHVDdD5UXpdqoKcObGkAmPtWS5tSzReR4ZMq7
-	vAEJSswwKYtR/sc0qtxRNpeHQ7mzxqY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708354537;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=rslRCV1qhQjgRNyL9E23Je3vLima4yq+nmbzcAsktechQjpAwDAIxEfRX3o2Vb+ufEz+3U
-	oCsAEYa/ATeNNfDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA12513647;
-	Mon, 19 Feb 2024 14:55:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +d5pMuhr02UhaAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Mon, 19 Feb 2024 14:55:36 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
- Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v10 3/8] libfs: Introduce case-insensitive string
- comparison helper
-In-Reply-To: <50d2afaa-fd7e-4772-ac84-24e8994bfba8@collabora.com> (Eugen
-	Hristev's message of "Mon, 19 Feb 2024 06:22:37 +0200")
-Organization: SUSE
-References: <20240215042654.359210-1-eugen.hristev@collabora.com>
-	<20240215042654.359210-4-eugen.hristev@collabora.com>
-	<87zfw0bd6y.fsf@mailhost.krisman.be>
-	<50d2afaa-fd7e-4772-ac84-24e8994bfba8@collabora.com>
-Date: Mon, 19 Feb 2024 09:55:31 -0500
-Message-ID: <87msrwbj18.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	bh=HHlyd8j6kp9DlA7pZO5MIaEPRDtqFTi7Fn9egV2/uZo=;
+	b=KGw0AHdWoIdO7CjXJy+ARgvP8SOTZV/2oAxIGLUkxZS9tQXykgKK8Olu19povEvepeWOr2
+	TYgBY22xwXY7h+Cg==
+To: Nipun Gupta <nipun.gupta@amd.com>, gregkh@linuxfoundation.org,
+ maz@kernel.org, jgg@ziepe.ca, linux-kernel@vger.kernel.org
+Cc: git@amd.com, harpreet.anand@amd.com, pieter.jansen-van-vuuren@amd.com,
+ nikhil.agarwal@amd.com, michal.simek@amd.com, abhijit.gangurde@amd.com,
+ srivatsa@csail.mit.edu, Nipun Gupta <nipun.gupta@amd.com>
+Subject: Re: [PATCH v7] cdx: add MSI support for CDX bus
+In-Reply-To: <20240202113811.2546311-1-nipun.gupta@amd.com>
+References: <20240202113811.2546311-1-nipun.gupta@amd.com>
+Date: Mon, 19 Feb 2024 15:56:16 +0100
+Message-ID: <877cj0a4fj.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -108,167 +68,147 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=avRGE7em;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=rslRCV1q
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 HAS_ORG_HEADER(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,collabora.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.51
-X-Rspamd-Queue-Id: 3C6691F808
-X-Spam-Flag: NO
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
-
-> On 2/16/24 18:12, Gabriel Krisman Bertazi wrote:
->> Eugen Hristev <eugen.hristev@collabora.com> writes:
->> 
->>> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->>>
->>> generic_ci_match can be used by case-insensitive filesystems to compare
->>> strings under lookup with dirents in a case-insensitive way.  This
->>> function is currently reimplemented by each filesystem supporting
->>> casefolding, so this reduces code duplication in filesystem-specific
->>> code.
->>>
->>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->>> [eugen.hristev@collabora.com: rework to first test the exact match]
->>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
->>> ---
->>>  fs/libfs.c         | 80 ++++++++++++++++++++++++++++++++++++++++++++++
->>>  include/linux/fs.h |  4 +++
->>>  2 files changed, 84 insertions(+)
->>>
->>> diff --git a/fs/libfs.c b/fs/libfs.c
->>> index bb18884ff20e..82871fa1b066 100644
->>> --- a/fs/libfs.c
->>> +++ b/fs/libfs.c
->>> @@ -1773,6 +1773,86 @@ static const struct dentry_operations generic_ci_dentry_ops = {
->>>  	.d_hash = generic_ci_d_hash,
->>>  	.d_compare = generic_ci_d_compare,
->>>  };
->>> +
->>> +/**
->>> + * generic_ci_match() - Match a name (case-insensitively) with a dirent.
->>> + * This is a filesystem helper for comparison with directory entries.
->>> + * generic_ci_d_compare should be used in VFS' ->d_compare instead.
->>> + *
->>> + * @parent: Inode of the parent of the dirent under comparison
->>> + * @name: name under lookup.
->>> + * @folded_name: Optional pre-folded name under lookup
->>> + * @de_name: Dirent name.
->>> + * @de_name_len: dirent name length.
->>> + *
->>> + *
->> 
->> Since this need a respin, mind dropping the extra empty line here?
->> 
->>> + * Test whether a case-insensitive directory entry matches the filename
->>> + * being searched.  If @folded_name is provided, it is used instead of
->>> + * recalculating the casefold of @name.
->>> + *
->>> + * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
->>> + * < 0 on error.
->>> + */
->>> +int generic_ci_match(const struct inode *parent,
->>> +		     const struct qstr *name,
->>> +		     const struct qstr *folded_name,
->>> +		     const u8 *de_name, u32 de_name_len)
->>> +{
->>> +	const struct super_block *sb = parent->i_sb;
->>> +	const struct unicode_map *um = sb->s_encoding;
->>> +	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
->>> +	struct qstr dirent = QSTR_INIT(de_name, de_name_len);
->>> +	int res;
->>> +
->>> +	if (IS_ENCRYPTED(parent)) {
->>> +		const struct fscrypt_str encrypted_name =
->>> +			FSTR_INIT((u8 *) de_name, de_name_len);
->>> +
->>> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
->>> +			return -EINVAL;
->>> +
->>> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
->>> +		if (!decrypted_name.name)
->>> +			return -ENOMEM;
->>> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
->>> +						&decrypted_name);
->>> +		if (res < 0)
->>> +			goto out;
->>> +		dirent.name = decrypted_name.name;
->>> +		dirent.len = decrypted_name.len;
->>> +	}
->>> +
->>> +	/*
->>> +	 * Attempt a case-sensitive match first. It is cheaper and
->>> +	 * should cover most lookups, including all the sane
->>> +	 * applications that expect a case-sensitive filesystem.
->>> +	 *
->> 
->> 
->>> +	 * This comparison is safe under RCU because the caller
->>> +	 * guarantees the consistency between str and len. See
->>> +	 * __d_lookup_rcu_op_compare() for details.
->>> +	 */
->> 
->> This paragraph doesn't really make sense here.  It is originally from
->> the d_compare hook, which can be called under RCU, but there is no RCU
->> here.  Also, here we are comparing the dirent with the
->> name-under-lookup, name which is already safe.
->> 
->> 
->>> +	if (folded_name->name) {
->>> +		if (dirent.len == folded_name->len &&
->>> +		    !memcmp(folded_name->name, dirent.name, dirent.len)) {
->>> +			res = 1;
->>> +			goto out;
->>> +		}
->>> +		res = !utf8_strncasecmp_folded(um, folded_name, &dirent);
->> 
->> Hmm, second thought on this.  This will ignore errors from utf8_strncasecmp*,
->> which CAN happen for the first time here, if the dirent itself is
->> corrupted on disk (exactly why we have patch 6).  Yes, ext4_match will drop the
->> error, but we want to propagate it from here, such that the warning on
->> patch 6 can trigger.
->> 
->> This is why I did that match dance on the original submission.  Sorry
->> for suggesting it.  We really want to get the error from utf8 and
->> propagate it if it is negative. basically:
->> 
->>         res > 0: match
->>         res == 0: no match.
->>         res < 0: propagate error and let the caller handle it
+On Fri, Feb 02 2024 at 17:08, Nipun Gupta wrote:
+> Add CDX-MSI domain per CDX controller with gic-its domain as
+> a parent, to support MSI for CDX devices. CDX devices allocate
+> MSIs from the CDX domain. Also, introduce APIs to alloc and free
+> IRQs for CDX domain.
 >
-> In that case I will revert to the original v9 implementation and send a v11 to
-> handle that.
+> In CDX subsystem firmware is a controller for all devices and
+> their configuration. CDX bus controller sends all the write_msi_msg
+> commands to firmware running on RPU and the firmware interfaces with
+> actual devices to pass this information to devices
+>
+> Since, CDX controller is the only way to communicate with the Firmware
+> for MSI write info, CDX domain per controller required in contrast to
+> having a CDX domain per device.
+>
+> Changes v6->v7:
+> - Rebased on Linux 6.8-rc2
+>  ...
+> Changes v1->v2:
+> - fixed scenario where msi write was called asynchronously in
+>   an atomic context, by using irq_chip_(un)lock, and using sync
+>   MCDI API for write MSI message.
+> - fixed broken Signed-off-by chain.
 
-Please, note that the memcmp optimization is still valid. On match, we
-know the name is valid utf8.  It is just a matter of propagating the
-error code from utf8 to the caller if we need to call it.
+Please put the Changes documentation after the --- separator. That's not
+part of the change log and just creates work for the maintainer to remove.
 
--- 
-Gabriel Krisman Bertazi
- 
+> +#ifdef CONFIG_GENERIC_MSI_IRQ
+
+Why do you need this #ifdef? AFAICT it's completely pointless 
+
+> +/**
+> + * cdx_msi_domain_init - Init the CDX bus MSI domain.
+> + * @dev: Device of the CDX bus controller
+> + *
+> + * Return: CDX MSI domain, NULL on failure
+> + */
+> +struct irq_domain *cdx_msi_domain_init(struct device *dev);
+> +#endif
+>  #endif /* _CDX_H_ */
+
+> +	/*
+> +	 * dev_configure is a controller callback which can interact with
+
+s/dev_configure/dev_configure()/ which makes it clear that this is about
+a function
+
+> +	 * Firmware or other entities, and can sleep, so invoke this function
+> +	 * outside of the mutex lock.
+
+s/lock/held region/
+
+> +	 */
+> +	dev_config.type = CDX_DEV_MSI_CONF;
+> +	if (cdx->ops->dev_configure)
+> +		cdx->ops->dev_configure(cdx, cdx_dev->bus_num, cdx_dev->dev_num,
+> +					&dev_config);
+
+Please use either a single line, which is within the 100 character limit
+or place brackets around the condition:
+
+https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#bracket-rules
+
+All over the place.
+
+> +int cdx_msi_domain_alloc_irqs(struct device *dev, unsigned int irq_count)
+> +{
+> +	int ret;
+> +
+> +	ret = msi_setup_device_data(dev);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = msi_domain_alloc_irqs_range(dev, MSI_DEFAULT_DOMAIN,
+> +					  0, irq_count - 1);
+> +	if (ret)
+> +		dev_err(dev, "Failed to allocate IRQs: %d\n", ret);
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(cdx_msi_domain_alloc_irqs);
+
+Why does this need a special allocation function instead of setting the
+irq domain of the device and using the generic allocation function
+directly?
+
+> +static int cdx_msi_prepare(struct irq_domain *msi_domain,
+> +			   struct device *dev,
+> +			   int nvec, msi_alloc_info_t *info)
+> +{
+> +	struct cdx_device *cdx_dev = to_cdx_device(dev);
+> +	struct device *parent = cdx_dev->cdx->dev;
+> +	struct msi_domain_info *msi_info;
+> +	u32 dev_id;
+> +	int ret;
+> +
+> +	/* Retrieve device ID from requestor ID using parent device */
+> +	ret = of_map_id(parent->of_node, cdx_dev->msi_dev_id, "msi-map",
+> +			"msi-map-mask", NULL, &dev_id);
+> +	if (ret) {
+> +		dev_err(dev, "of_map_id failed for MSI: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +#ifdef GENERIC_MSI_DOMAIN_OPS
+> +	/* Set the device Id to be passed to the GIC-ITS */
+> +	info->scratchpad[0].ul = dev_id;
+> +#endif
+
+Is this ever used on a platform which does not have
+GENERIC_MSI_DOMAIN_OPS ?
+
+> @@ -120,9 +135,13 @@ struct cdx_controller {
+>   * @req_id: Requestor ID associated with CDX device
+>   * @is_bus: Is this bus device
+>   * @enabled: is this bus enabled
+> + * @msi_dev_id: MSI Device ID associated with CDX device
+> + * @num_msi: Number of MSI's supported by the device
+>   * @driver_override: driver name to force a match; do not set directly,
+>   *                   because core frees it; use driver_set_override() to
+>   *                   set or clear it.
+> + * @irqchip_lock: lock to synchronize irq/msi configuration
+> + * @msi_write_pending: MSI write pending for this device
+>   */
+>  struct cdx_device {
+>  	struct device dev;
+> @@ -144,7 +163,11 @@ struct cdx_device {
+>  	u32 req_id;
+>  	bool is_bus;
+>  	bool enabled;
+> +	u32 msi_dev_id;
+> +	u32 num_msi;
+>  	const char *driver_override;
+> +	struct mutex irqchip_lock; /* Serialize write msi configuration */
+
+This tail comment is pointless. It's already documented above, no?
+
+Other than those nitpicks this looks reasonable.
+
+Thanks,
+
+        tglx
 
