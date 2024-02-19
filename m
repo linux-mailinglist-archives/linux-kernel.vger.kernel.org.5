@@ -1,69 +1,72 @@
-Return-Path: <linux-kernel+bounces-70991-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF3A859F1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:04:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2238859F1D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:05:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93B0E1F22FA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:04:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ED091C213A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412B6224ED;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC2422EE8;
 	Mon, 19 Feb 2024 09:04:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="upitwn/C"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Qk9k8S5/"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F00210E1;
-	Mon, 19 Feb 2024 09:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D72C22338;
+	Mon, 19 Feb 2024 09:04:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708333490; cv=none; b=LFQnPvg0IPLfLPVy55aM4XEd12nGKfThZh8axWaAMpj/Sk8ekE9evPMnjEqH13UlOafXbVZLkWj87KL+oSQ2qWIM6hYawQnuAYBdRIXugD954nwb/e0Zo/CDzbZWVXLEIwpkIVK3vUOw/0R2mXD3DjX/Qw7eBNNyvONraWAjFqk=
+	t=1708333491; cv=none; b=n4WBF4vmdIrdz6H568d9rxhglCHHTzWy7yVyG60kJv5bxcPDF+BMjIcvGrTnw23JD2umP54XaHzw3pmdC5zhbkn6gCXN+H2Bb2oHl2B17T2y+eKW611e359uFRO7Tr5zatxuLbPzKzCdVDX8jGl1BfV7WpLgzBiy8rNIBTli9Ms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708333490; c=relaxed/simple;
-	bh=PV2jwbKP2gvymiEUlZh3/QkNvNEHx4g/+1/AVkg50vU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Xrd3LZQO264AF12CB/OXDuWyB35LGVASYnjsvXSH/Z9wK04zvnvIavp4GexVsT/y3+UUzdNLQ9tN3HFDYFgHwdK/CorDRBoQM83+AWJu9lyrWBnDjQuAreKVx5OfyNQCYRo1bALzeLZfrUHWN8z9S2TkuLIfCvtyGkoCmIYXwQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=upitwn/C; arc=none smtp.client-ip=198.47.19.141
+	s=arc-20240116; t=1708333491; c=relaxed/simple;
+	bh=wk1n0oWjh34QbIeqz7ZNkSxon2SKxcvJK+7DW2eQqgQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h98HMjGCmOiPd3+dA6TSlreM9AphBLwSXC7+bcnBBZkBrIe8C4yDlLKoyT63Pp8MLOy67KjjlWye9ldDks/aplM8YGaE9g9W8fn4/gqDAOCuIJ+QIswqFFEURvMk3d4V78XLu6aykmkF6nqHk9d3VZc18HdvGEUJRs3uHiWxdkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Qk9k8S5/; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41J94dTA060504;
-	Mon, 19 Feb 2024 03:04:39 -0600
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41J94hDb097758;
+	Mon, 19 Feb 2024 03:04:43 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1708333479;
-	bh=/ma8tqzSbtHdZlrL/dDS7UMvkDsXMNTTocHQA9khYO4=;
-	h=From:To:CC:Subject:Date;
-	b=upitwn/Cwh3zfsaj4likHSZWjpTpkc8zG+kFsK5pE1hj+uzz86OuH/k/nNnfyby5B
-	 3hK8Sa+D+4PwhM0UxATfjOTqsU69b876fqCAgFVCggkpgEgModlXOOhB5632MdcDKK
-	 qRuEsYE73ii26drTbo8FR4tj52jXumntm4g2Hgig=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41J94dUM084292
+	s=ti-com-17Q1; t=1708333483;
+	bh=F9VQ5cICpZyC3r18cZBGn07fwGkoD+GP7y8K4AAm+eI=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=Qk9k8S5/vHsfbglZEJKP+qlDjO+UIAW48ODAeaMvbO2EE9uUnadNlv2caQtHVARrG
+	 LY0hMW43D+d8VcQWZKF45P8xh4HvhoFGGGzBdbcCHyMOIueYyhsQBOkqjNSui/+/gz
+	 aHixgZ9D+aNooSBduyug6e3i4PrKQ/vAh5lWzexg=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41J94haD084363
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 19 Feb 2024 03:04:39 -0600
-Received: from DLEE106.ent.ti.com (157.170.170.36) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 19 Feb 2024 03:04:43 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 19
- Feb 2024 03:04:39 -0600
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE106.ent.ti.com
- (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ Feb 2024 03:04:42 -0600
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 19 Feb 2024 03:04:39 -0600
+ Frontend Transport; Mon, 19 Feb 2024 03:04:43 -0600
 Received: from uda0490681.. ([10.24.69.142])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41J94ZnU011977;
-	Mon, 19 Feb 2024 03:04:36 -0600
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41J94ZnV011977;
+	Mon, 19 Feb 2024 03:04:39 -0600
 From: Vaishnav Achath <vaishnav.a@ti.com>
 To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
         <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
 CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <vaishnav.a@ti.com>, <u-kumar1@ti.com>,
         <s-vadapalli@ti.com>
-Subject: [PATCH v2 0/2] Add OSPI and Ethernet support on J722S EVM
-Date: Mon, 19 Feb 2024 14:34:33 +0530
-Message-ID: <20240219090435.934383-1-vaishnav.a@ti.com>
+Subject: [PATCH v2 1/2] arm64: dts: ti: k3-j722s-evm: Enable CPSW3G RGMII1
+Date: Mon, 19 Feb 2024 14:34:34 +0530
+Message-ID: <20240219090435.934383-2-vaishnav.a@ti.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240219090435.934383-1-vaishnav.a@ti.com>
+References: <20240219090435.934383-1-vaishnav.a@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,38 +77,89 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi,
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
 
-This series adds support for Ethernet and OSPI NOR flash on J722S EVM.
+Enable MAC Port 1 of CPSW3G instance of CPSW Ethernet Switch in
+RGMII-RXID mode of operation. Port 2 is not connected on the EVM,
+thus keep it disabled.
 
-V1: https://lore.kernel.org/all/20240216135533.904130-1-vaishnav.a@ti.com/
+Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+---
+ arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 53 +++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
 
-Changelog:
-V1->V2:
-  * Update comments indicating PAD numbers.  
-
-EVM Schematics are available at:
-	https://www.ti.com/lit/zip/sprr495
-
-Test log (6.8.0-rc4-next-20240216):
-  https://gist.github.com/vaishnavachath/b04e3be90af4cdec59fb0d9cc72441b9
-
-For those interested, more details about this SoC can be found in the
-Technical Reference Manual here:
-            https://www.ti.com/lit/zip/sprujb3
-
-Thanks and Regards,
-Vaishnav
-
-Siddharth Vadapalli (1):
-  arm64: dts: ti: k3-j722s-evm: Enable CPSW3G RGMII1
-
-Vaishnav Achath (1):
-  arm64: dts: ti: k3-j722s-evm: Enable OSPI NOR support
-
- arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 132 ++++++++++++++++++++++++
- 1 file changed, 132 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+index b4f2fee53a97..9e12a6e9111f 100644
+--- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
++++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+@@ -8,6 +8,7 @@
+ 
+ /dts-v1/;
+ 
++#include <dt-bindings/net/ti-dp83867.h>
+ #include "k3-j722s.dtsi"
+ 
+ / {
+@@ -160,6 +161,58 @@ J722S_IOPAD(0x0240, PIN_INPUT, 0) /* (B24) MMC1_SDCD */
+ 		>;
+ 		bootph-all;
+ 	};
++
++	mdio_pins_default: mdio-default-pins {
++		pinctrl-single,pins = <
++			J722S_IOPAD(0x0160, PIN_OUTPUT, 0) /* (AC24) MDIO0_MDC */
++			J722S_IOPAD(0x015c, PIN_INPUT, 0) /* (AD25) MDIO0_MDIO */
++		>;
++	};
++
++	rgmii1_pins_default: rgmii1-default-pins {
++		pinctrl-single,pins = <
++			J722S_IOPAD(0x014c, PIN_INPUT, 0) /* (AC25) RGMII1_RD0 */
++			J722S_IOPAD(0x0150, PIN_INPUT, 0) /* (AD27) RGMII1_RD1 */
++			J722S_IOPAD(0x0154, PIN_INPUT, 0) /* (AE24) RGMII1_RD2 */
++			J722S_IOPAD(0x0158, PIN_INPUT, 0) /* (AE26) RGMII1_RD3 */
++			J722S_IOPAD(0x0148, PIN_INPUT, 0) /* (AE27) RGMII1_RXC */
++			J722S_IOPAD(0x0144, PIN_INPUT, 0) /* (AD23) RGMII1_RX_CTL */
++			J722S_IOPAD(0x0134, PIN_OUTPUT, 0) /* (AF27) RGMII1_TD0 */
++			J722S_IOPAD(0x0138, PIN_OUTPUT, 0) /* (AE23) RGMII1_TD1 */
++			J722S_IOPAD(0x013c, PIN_OUTPUT, 0) /* (AG25) RGMII1_TD2 */
++			J722S_IOPAD(0x0140, PIN_OUTPUT, 0) /* (AF24) RGMII1_TD3 */
++			J722S_IOPAD(0x0130, PIN_OUTPUT, 0) /* (AG26) RGMII1_TXC */
++			J722S_IOPAD(0x012c, PIN_OUTPUT, 0) /* (AF25) RGMII1_TX_CTL */
++		>;
++	};
++};
++
++&cpsw3g {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&rgmii1_pins_default>;
++};
++
++&cpsw3g_mdio {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mdio_pins_default>;
++
++	cpsw3g_phy0: ethernet-phy@0 {
++		reg = <0>;
++		ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_00_NS>;
++		ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
++		ti,min-output-impedance;
++	};
++};
++
++&cpsw_port1 {
++	phy-mode = "rgmii-rxid";
++	phy-handle = <&cpsw3g_phy0>;
++};
++
++&cpsw_port2 {
++	status = "disabled";
+ };
+ 
+ &main_gpio1 {
 -- 
 2.34.1
 
