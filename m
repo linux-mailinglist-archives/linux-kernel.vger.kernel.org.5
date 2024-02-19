@@ -1,151 +1,214 @@
-Return-Path: <linux-kernel+bounces-70800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F080859C8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:04:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 826C1859CBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:22:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB5991F22537
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:04:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB4D92825BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D324208A9;
-	Mon, 19 Feb 2024 07:04:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F273E208D3;
+	Mon, 19 Feb 2024 07:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="x+oI5Br9"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="fyUkx5KR"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4AEA20324
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:04:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC1E3653
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708326279; cv=none; b=c4irJ062tFWqv9gHfiU1tZHJmd3IDUqOF+BHUI+ZqOMA7AyiZCGu0W+zPJPANUaHbMlnvgVLJPhYFvTbBlk77aE2O9iTi04GW7PevqqJ0FS3tYVp2yMxRHoTqUqglsC5LfLe+qnQUCg6/a1PzJMvR4awowiSJaOTYrnkTIyXRo8=
+	t=1708327333; cv=none; b=mPZJ2mYXK2ymy+vlYpTLfxv3Opc5Mg1uHbpbZ5iENCb64Xl/fFvuTxA5KDVldQWcN9P2xwOqJvdrUgA5jP9EoIEG1XfiFOjFXkd4aA7Q35+9HuRY/pdN73CyhyN3/OIIFa91mq7uWfLG4Thfwq2PjyS+sPzLDdbi03n16XU19n8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708326279; c=relaxed/simple;
-	bh=9BF4VHYAJQVC+PMso4qtHthrHGU8sETSviqlU/rlT0M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PWh+BjQtCEyBghKGj/tW36EHsIW7k/gxTezX2xwVBN4xixCUwTy5JxcMB4LT/1Zk4MglL52dQswFqx+MMwr5pMCV0+RImvtcEo0xIS16xno2BugYCrM6aRVPpuBWxeaIERpNV49SlESJKH9IxGqIidv2K8/EvK5I3e9nriDwwwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=x+oI5Br9; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51197ca63f5so3592864e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:04:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708326276; x=1708931076; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=f9q1ZHX4OCAaTYBsl70W1Bs+lwL/VQjxv3nw/B2A9Ag=;
-        b=x+oI5Br9rT4Hepty1PvWLVzzUwalhhh9ljvSgAS+Ag38AWM6E7CJLTVF6ie9+nfc94
-         YPZ3qarnXR2j+SsASx75FA8neKQM10XXbPkR4hMlWfkUgqf0Tkyfl1do8uOeFG9FAhYZ
-         l7ly6c0F+GtMqFB9BluEUJqHTMI9jPZpejpgsCIFaWIIwh8zu3o1lKtg23BJ4ugoVsC5
-         N5XyLkZfqsSFwwguHflwHGAvmxYv+Zz5HC+Tc5RTkgcOGep4EclbmWRQCdlk4uAW77g4
-         UaN2N65/wuxvL750sgk16T+pRZA9l7CQKo5vs/Te23EdaHiDlMwZaJxZap0tC4aLAFnx
-         v99A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708326276; x=1708931076;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f9q1ZHX4OCAaTYBsl70W1Bs+lwL/VQjxv3nw/B2A9Ag=;
-        b=VQgX6iqYWomjiEfCykaBv8c4pL+s0Oix8o1ZbfL/pUJbIQzIbDKMHVlQg6OB0danCL
-         h+yvBYreBo1njkup3Y36LuBMiNbJDDAQETS3SGgtNR7vZYhUM5lFKlJN2tL+vuOd+6/7
-         OnIGnLnNG0ybNH5cs9cmqfFWYsKZh0zVc7lTYXeuyFQb5Nhb6cQ5lep2gQOK2pcnd/Dg
-         e061BLYYTKmdECeLtcH+w/Dw9pt6PUtOGpG4VV2TpwZB841uqFtSs20UijRkufvfmSvG
-         GEP3r9Lus0GqEagyI6kK9waEpDc7Kg25vnToHVCH1jZOPOVgXcMtuEQO5pzAN3JlCZJ8
-         KcmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQBF9AWKlZyb5p3UbdUg7gU3Y2ca3HjS8+jkemsHTU88r3K1N0/oEW3W5WZHDLC0PHGPt0+b92fxMNs1Ri2jA0OcAVGyrCpAfXJS4s
-X-Gm-Message-State: AOJu0YyW9KSKwLb6BnCNGNvWX3NbkQXH7tYCMM4jj5EiL14sjrVLFbiW
-	kzJxuTUXPQEY6BMDJXjUCWW8xRHsTFuyQU3J+IK5yhXsEclsGtr+QcMEJ3r+lDq8q6w79FgLpRM
-	Fv23JR4QLOhF74xCDecwYtTDZGi9xvvSL5FqVll/w7dFr76gE9fI=
-X-Google-Smtp-Source: AGHT+IEebHOoNBoc5A7Fsyh8Lvb9N9sknu1CjxwyvDHBhMTXgUt3UbEPOQlP/rUCndPPxrNmxJYr+86uDDdIa3p0NZc=
-X-Received: by 2002:a05:6512:744:b0:512:b24f:78e3 with SMTP id
- c4-20020a056512074400b00512b24f78e3mr1341708lfs.6.1708326275918; Sun, 18 Feb
- 2024 23:04:35 -0800 (PST)
+	s=arc-20240116; t=1708327333; c=relaxed/simple;
+	bh=z5gEp1g+Cx86Qj4hb2iV/fY7GbbVaIldH4c4QsjgZLg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:MIME-Version:
+	 Content-Type:References; b=GdWA7cLsxFL+vmU9204UoeToIm/W/7dJg86tTHADMD0IiJIjU3i3j1OxzXuRTBAZaoxdfj6r9jH+flLWrngfvls/Tl5qW/2mVqT1ksff4E0cLbsBeE5t4el0uPcatq7FPDPpbznyLbrwWAj5RR0WWP79YO0ab267T3mH6ewSMvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=fyUkx5KR; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240219072202epoutp0383e0c8fbe102fa4642c7f7cbe282b9e7~1MqYDJI9X0857208572epoutp03Y
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:22:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240219072202epoutp0383e0c8fbe102fa4642c7f7cbe282b9e7~1MqYDJI9X0857208572epoutp03Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1708327322;
+	bh=t26mQRhskGWreQ+iBAEauW8i+bpFYE4AzVGSadA654I=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=fyUkx5KRH8DAdigMCft6bN5zXONj8YwzDBQyAEv37ZtqitMiF4V/11YcHFJFJFkX2
+	 gZBnf6CC1xyjgOorLr8HXHjSf2g1W5oEQQejfs/hCU1HvJIOLpsYoIbWppI/mk9yRj
+	 Zw8oej/RosobbUZj/56B4EbCSP+t+JKfNsGJ+2kY=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+	20240219072201epcas5p41fbb970f2902d04565d8dbe3888cdb98~1MqXSaSGS1847418474epcas5p4W;
+	Mon, 19 Feb 2024 07:22:01 +0000 (GMT)
+Received: from epsmges5p2new.samsung.com (unknown [182.195.38.183]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4TdYrR6rp0z4x9Pw; Mon, 19 Feb
+	2024 07:21:59 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	A5.80.10009.79103D56; Mon, 19 Feb 2024 16:21:59 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+	20240219031238epcas5p3aa330855093314a2c5768cf83971599c~1JQnjg2i31795817958epcas5p32;
+	Mon, 19 Feb 2024 03:12:38 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240219031238epsmtrp25ad73a7782742174d219c1a1ae1d2925~1JQnisthy1454914549epsmtrp2W;
+	Mon, 19 Feb 2024 03:12:38 +0000 (GMT)
+X-AuditID: b6c32a4a-261fd70000002719-92-65d30197bd09
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	EA.6A.08817.527C2D56; Mon, 19 Feb 2024 12:12:37 +0900 (KST)
+Received: from testpc118124.samsungds.net (unknown [109.105.118.124]) by
+	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240219031236epsmtip193194b00f806aa26e158495b77512ae7~1JQmQ4xjl2613326133epsmtip1T;
+	Mon, 19 Feb 2024 03:12:36 +0000 (GMT)
+From: Xiaobing Li <xiaobing.li@samsung.com>
+To: axboe@kernel.dk
+Cc: asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+	io-uring@vger.kernel.org, kun.dou@samsung.com, peiwei.li@samsung.com,
+	joshi.k@samsung.com, kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+	ruyi.zhang@samsung.com, xiaobing.li@samsung.com
+Subject: Re: Re: [PATCH] liburing: add script for statistics sqpoll running
+ time.
+Date: Mon, 19 Feb 2024 11:12:32 +0800
+Message-Id: <20240219031232.203025-1-xiaobing.li@samsung.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <522c03d9-a8ba-459d-9f7c-dfbf461dcf6b@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215030002.281456-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20240215030002.281456-3-sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240215030002.281456-3-sathyanarayanan.kuppuswamy@linux.intel.com>
-From: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date: Mon, 19 Feb 2024 09:03:59 +0200
-Message-ID: <CAC_iWjJ_TS66KG7uGOQFiKGfZNKjnod6u7zua4LVK-EJHEUv8w@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] efi/libstub: Add get_event_log() support for CC platforms
-To: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-efi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrEJsWRmVeSWpSXmKPExsWy7bCmuu50xsupBi1fTCzmrNrGaLH6bj+b
+	xbvWcywWR/+/ZbP41X2X0WLrl6+sFpd3zWGzeLaX0+LL4e/sFmcnfGC1mLplB5NFR8tlRgce
+	j52z7rJ7XD5b6tG3ZRWjx+dNcgEsUdk2GamJKalFCql5yfkpmXnptkrewfHO8aZmBoa6hpYW
+	5koKeYm5qbZKLj4Bum6ZOUCHKSmUJeaUAoUCEouLlfTtbIryS0tSFTLyi0tslVILUnIKTAr0
+	ihNzi0vz0vXyUkusDA0MjEyBChOyM3Z0rWQq+CBS8XXaIcYGxj0CXYwcHBICJhJznkV1MXJx
+	CAnsZpQ4er2BCcL5xCjx7dAnKOcbo8SZyY1sXYycYB1Htk9ihEjsZZTYd/YYE0hCSOAXo0RP
+	VyKIzSagLXF9XRcriC0iICyxv6OVBaSBWeAvo8SEl7+ZQRLCAsESjQcXgjWzCKhKLNzbww5i
+	8wrYSvT/X84CsU1eYv/Bs8wgt3ICxecvM4EoEZQ4OfMJWAkzUEnz1tnMIPMlBBo5JNr2/2GF
+	6HWReHvzBSOELSzx6vgWdghbSuLzu71Q3xRLHOn5zgrR3MAoMf32Vagia4l/V/awgCxmFtCU
+	WL9LHyIsKzH11DomiMV8Er2/nzBBxHkldsyDsVUlVl96CHW/tMTrht9QcQ+J6yfesUFCbgKj
+	xKH2VywTGBVmIXloFpKHZiGsXsDIvIpRMrWgODc9tdi0wCgvtRwey8n5uZsYwYlVy2sH48MH
+	H/QOMTJxMB5ilOBgVhLhdW+6kCrEm5JYWZValB9fVJqTWnyI0RQY4BOZpUST84GpPa8k3tDE
+	0sDEzMzMxNLYzFBJnPd169wUIYH0xJLU7NTUgtQimD4mDk6pBqa21YwzYmRzZ71cHlRUMvt9
+	v86hOQ7W5RN/p+epxJ85M+fE/z17tiZd+771XRari1qlr9+7OSs02qKO2O1Yci9W64OO8Yr9
+	7Mkvu9M8jPfdkw1eveH3ym/xc88W3S5I3suaJOCc9XBmbsua6e4edfIOf7pKlqwNze82lL/w
+	8XN7QJby0z9+Nk9nV/yxzTHaK7mcUSJjxbLecxse8vXl/xIV7vi96+3VW7fCTogzzQz6XNz0
+	XuTrG9vgrTGfi9U+65+JPc1RbFOi0rDhaVAYd+uCC85XP9tsfB19xNDg+c+sh95/Ouz+nloc
+	4+Dxtvqr59nu/7luplXS6St/LlHbpmCrq3wn9LsEyxOZL8YVO7YrsRRnJBpqMRcVJwIA9Yds
+	KDUEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGLMWRmVeSWpSXmKPExsWy7bCSnK7q8UupBu/XmFvMWbWN0WL13X42
+	i3et51gsjv5/y2bxq/suo8XWL19ZLS7vmsNm8Wwvp8WXw9/ZLc5O+MBqMXXLDiaLjpbLjA48
+	Hjtn3WX3uHy21KNvyypGj8+b5AJYorhsUlJzMstSi/TtErgydnStZCr4IFLxddohxgbGPQJd
+	jJwcEgImEke2T2LsYuTiEBLYzShxYPkuti5GDqCEtMSfP+UQNcISK/89Z4eo+cEosf3vCXaQ
+	BJuAtsT1dV2sILYIUNH+jlYWEJtZoJNJ4vVnPRBbWCBQ4sarHrA4i4CqxMK9PWC9vAK2Ev3/
+	l7NALJCX2H/wLDPIXk6g+PxlJiCmkICNxKTGAohqQYmTM59ATZeXaN46m3kCo8AsJKlZSFIL
+	GJlWMUqmFhTnpucWGxYY5aWW6xUn5haX5qXrJefnbmIEB72W1g7GPas+6B1iZOJgPMQowcGs
+	JMLr3nQhVYg3JbGyKrUoP76oNCe1+BCjNAeLkjjvt9e9KUIC6YklqdmpqQWpRTBZJg5OqQam
+	7Jw6MaVrp+9Vnu9kSr7R9HTJLJv2fWrhYk42eQEfHpxmF96l2NP08eOWt686Zk15Wf7sd+Y9
+	pSsP1c003j5c9MP7wEz+c+s8r8Xamvy4FxK16pldurdGR0rt30V2DpcnM64/X+838+yLp2fm
+	Lyp6F757Ovv/ZV+FHOp47leripekNidaHnlfwbp4msKWzlAXp5uWYk6Tk7jevZRy2f5Le00U
+	b9QBk92hW9ZlbDOJajtnEruE5fiV39N2JGzckaYk97Uk+KGTd/WN7QoTon127Vp6/cu1C4/f
+	1B7LVMtfo/FuQ9uz5MuNvsbZqU0SniI+D8PNj0ht/Pr9u8OS7Gs5m+e3vmx+tPiw2fdK9c9L
+	opRYijMSDbWYi4oTAW+dnGPpAgAA
+X-CMS-MailID: 20240219031238epcas5p3aa330855093314a2c5768cf83971599c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20240219031238epcas5p3aa330855093314a2c5768cf83971599c
+References: <522c03d9-a8ba-459d-9f7c-dfbf461dcf6b@kernel.dk>
+	<CGME20240219031238epcas5p3aa330855093314a2c5768cf83971599c@epcas5p3.samsung.com>
 
-On Thu, 15 Feb 2024 at 05:02, Kuppuswamy Sathyanarayanan
-<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+On 2/18/24 06:00 AM, Jens Axboe wrote:
+>And since your Signed-off-by is here, it also does not go into the
+>commit message, which it must.
 >
-> To allow event log info access after boot, EFI boot stub extracts
-> the event log information and installs it in an EFI configuration
-> table. Currently, EFI boot stub only supports installation of event
-> log only for TPM 1.2 and TPM 2.0 protocols. Extend the same support
-> for CC protocol. Since CC platform also uses TCG2 format, reuse TPM2
-> support code as much as possible.
+>> index 976e9500f651..18c6f4aa4a48 100644
+>> --- a/io_uring/fdinfo.c
+>> +++ b/io_uring/fdinfo.c
+>> @@ -64,6 +64,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
+>>  	unsigned int sq_shift = 0;
+>>  	unsigned int sq_entries, cq_entries;
+>>  	int sq_pid = -1, sq_cpu = -1;
+>> +	u64 sq_total_time = 0, sq_work_time = 0;
+>>  	bool has_lock;
+>>  	unsigned int i;
+>>  
+>> @@ -147,10 +148,17 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
+>>  
+>>  		sq_pid = sq->task_pid;
+>>  		sq_cpu = sq->sq_cpu;
+>> +		struct rusage r;
 >
-> Link: https://uefi.org/specs/UEFI/2.10/38_Confidential_Computing.html#efi-cc-measurement-protocol [1]
-> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+>Here, and in one other spot, you're mixing variable declarations and
+>code. Don't do that, they need to be top of that scope and before any
+>code.
+>
+>> diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
+>> index 65b5dbe3c850..9155fc0b5eee 100644
+>> --- a/io_uring/sqpoll.c
+>> +++ b/io_uring/sqpoll.c
+>> @@ -251,6 +251,9 @@ static int io_sq_thread(void *data)
+>>  		}
+>>  
+>>  		cap_entries = !list_is_singular(&sqd->ctx_list);
+>> +		struct rusage start, end;
+>> +
+>> +		getrusage(current, RUSAGE_SELF, &start);
+>
+>Ditto, move the variables to the top of the scope.
+>
+>>  		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
+>>  			int ret = __io_sq_thread(ctx, cap_entries);
+>>  
+>> @@ -260,6 +263,11 @@ static int io_sq_thread(void *data)
+>>  		if (io_run_task_work())
+>>  			sqt_spin = true;
+>>  
+>> +		getrusage(current, RUSAGE_SELF, &end);
+>> +		if (sqt_spin == true)
+>> +			sqd->work_time += (end.ru_stime.tv_sec - start.ru_stime.tv_sec) *
+>> +					1000000 + (end.ru_stime.tv_usec - start.ru_stime.tv_usec);
+>> +
+>
+>and this should go in a helper instead. It's trivial code, but the way
+>too long lines makes it hard to read. Compare the above to eg:
+>
+>static void io_sq_update_worktime(struct io_sq_data *sqd, struct rusage *start)
+>{
+>       struct rusage end;
+>
+>       getrusage(current, RUSAGE_SELF, &end);
+>       end.ru_stime.tv_sec -= start->ru_stime.tv_sec;
+>       end_ru_stime.tv_usec -= start->ru_stime.tv_usec;
+>
+>       sqd->work_time += end.ru_stime.tv_usec + end.ru_stime.tv_sec * 1000000;
+>}
+>
+>which is so much nicer to look at.
+>
+>We're already doing an sqt_spin == true check right below, here:
+>
+>>  		if (sqt_spin || !time_after(jiffies, timeout)) {
+>>  			if (sqt_spin)
+>>  				timeout = jiffies + sqd->sq_thread_idle;
+>
+>why not just put io_sq_update_worktime(sqd, &start); inside this check?
+>
+ 
+ok, I got it, I will send out a v9.
 
-[...]
-
-> +void efi_retrieve_eventlog(void)
-> +{
-> +       efi_physical_addr_t log_location = 0, log_last_entry = 0;
-> +       efi_guid_t cc_guid = EFI_CC_MEASUREMENT_PROTOCOL_GUID;
-> +       efi_guid_t tpm2_guid = EFI_TCG2_PROTOCOL_GUID;
-> +       int version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_2;
-> +       efi_tcg2_protocol_t *tpm2 = NULL;
-> +       efi_cc_protocol_t *cc = NULL;
-> +       efi_bool_t truncated;
-> +       efi_status_t status;
-> +
-> +       status = efi_bs_call(locate_protocol, &tpm2_guid, NULL, (void **)&tpm2);
-> +       if (status == EFI_SUCCESS) {
-> +               status = efi_call_proto(tpm2, get_event_log, version, &log_location,
-> +                                       &log_last_entry, &truncated);
-> +
-> +               if (status != EFI_SUCCESS || !log_location) {
-> +                       version = EFI_TCG2_EVENT_LOG_FORMAT_TCG_1_2;
-> +                       status = efi_call_proto(tpm2, get_event_log, version,
-> +                                               &log_location, &log_last_entry,
-> +                                               &truncated);
-> +                       if (status != EFI_SUCCESS || !log_location)
-> +                               return;
-> +               }
-> +
-> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
-> +                                          truncated);
-> +               return;
-> +       }
-> +
-> +       status = efi_bs_call(locate_protocol, &cc_guid, NULL, (void **)&cc);
-> +       if (status == EFI_SUCCESS) {
-> +               version = EFI_CC_EVENT_LOG_FORMAT_TCG_2;
-> +               status = efi_call_proto(cc, get_event_log, version, &log_location,
-> +                                       &log_last_entry, &truncated);
-> +               if (status != EFI_SUCCESS || !log_location)
-> +                       return;
-> +
-> +               efi_retrieve_tcg2_eventlog(version, log_location, log_last_entry,
-> +                                          truncated);
-> +               return;
-> +       }
-> +}
-
-[...]
-
-I haven't looked into CC measurements much, but do we always want to
-prioritize the tcg2 protocol? IOW if you have firmware that implements
-both, shouldn't we prefer the CC protocol for VMs?
-
-Thanks
-/Ilias
+--
+Xiaobing Li
 
