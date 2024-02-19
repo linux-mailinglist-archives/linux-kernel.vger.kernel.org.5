@@ -1,291 +1,151 @@
-Return-Path: <linux-kernel+bounces-71954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71955-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA0DF85AD02
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:20:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4328485AD08
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:22:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3910728378A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:20:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C94BDB2261A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28B1B5339E;
-	Mon, 19 Feb 2024 20:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C3B752F9C;
+	Mon, 19 Feb 2024 20:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MjTtUSkY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=pqrs.dk header.i=@pqrs.dk header.b="vJuDBtbJ"
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F1EC374DD;
-	Mon, 19 Feb 2024 20:20:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37A9050272
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 20:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708374018; cv=none; b=B1RHWF9x0nKBwE9cLNSWHRfvzyIscQPWLWtXnV+cdoWXG/y1sUZOMJrBwmU1i8VKn0P7sjUYUvjI0LwCepCbwESZ6hU7hqoHeVEyjjJSRca2tqtpRp3k8pBqVxsy5UMae2W3C/e2gdNHOSjGSq4hLfq8EJP8LtXjlDZUtoBDKSQ=
+	t=1708374120; cv=none; b=NosEm2wT7XI65wk2pwPVcaHpx4kcJo9Kn9WYqe8R2RnZ1uANBSPOKZDl2y6xBU3ZBhtl6Cn20DSFZTBNZjI4aEy27RNirWZu4NsYza/kQ4dhAvkPUq2N/oiKBL41ta1t59LBBioh7TGmO59h+wQL/ACZlWoCDzu1K0HJK8vmywU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708374018; c=relaxed/simple;
-	bh=gHOp1QBYiHr0I6TnykCbbaoLqfJQnuRcGvEdxF39TMQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=WJkWmlL0WZ3Q86dmGhzkZmLZOk3mia4reHSIQSjNeNPeKcBmkhv8Z787f6iSDaNWN4mSxsIkebczasfDYfD4P1HbZ+W444t5bWTuNGnmKxXKgf8XF2ClAWGUzfU2XhzaVE0gsQ/VX2TAwOOU8PBzjQQyQhdRGsMgrPTZICkQjrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MjTtUSkY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55613C433F1;
-	Mon, 19 Feb 2024 20:20:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708374017;
-	bh=gHOp1QBYiHr0I6TnykCbbaoLqfJQnuRcGvEdxF39TMQ=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=MjTtUSkYwMCnetFVEyU3rTIW7slfhEkNYlnC5PSLvNOkTBn7jVZm5yq4Ko2MmODZJ
-	 XmyXQTTl+GD42Oeqq+4x9Vc9QgphUq3WNQd7Rl/0PWY9StAS7vaaMGRZiPQPvO88A0
-	 LLduiZBeZlB5rFTsylvnz5ZyithTDB/e2wHsfagzBOnJrXsks6lSyw8j+PIt7JQ0T+
-	 CBSTnEjzyavFGMIQpfdsgF5h2CcYbsfWZOeoAx9uFjq6RaZOkYXVFGVtBBOaRMFS6V
-	 pqSKP32SRiickys93tIvJgohpV/wE0x1i/1Uhw4JsQptKbxJOV8tkqfPYe3MqRqzFy
-	 QwNC4OwnXLClA==
+	s=arc-20240116; t=1708374120; c=relaxed/simple;
+	bh=NadXeNdqAB/nYs/a/J52wOKf5x7jp+wtAwDpZbHVNsU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=rovoYNEG26gCJae06Tnm/1V0j0D1uHAQxYU49vy2uhMqm4O4AI2cqY5N6CuNN359FLakGO0Fg1kIkyZVttTUFOdz8fObvV4iZFHGZA0YhNGcQPJHWQRtMOVeom+VoWOH0fcC5ivgkVtPAFqywqJVrSuLLMBY1iIhUStSjyp+wwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pqrs.dk; spf=pass smtp.mailfrom=pqrs.dk; dkim=pass (2048-bit key) header.d=pqrs.dk header.i=@pqrs.dk header.b=vJuDBtbJ; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pqrs.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pqrs.dk
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqrs.dk; s=key1;
+	t=1708374116;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kp0URhMfvWbpdkL0k/GUMkRRGYQFzEpfZ2mEHZ+rImI=;
+	b=vJuDBtbJv9vc8nkDV5W8HkNi/RotiChvYxU+iCCH//5OXnSXXFLGWEXjMo12APQduibzSs
+	pUJdHP+aXrcsFVW2MF32O6dUnXcUTI1zU7ssWLM89GcKv7C0jPVonulxbEXvdinALRv0hY
+	4Op3EwWKB+DhT+hzTdwpTGpcq5xWkAZlzx//r9qtE5pHaHr2IuNBjUzRO4MzQHOMbWUm0r
+	qXjuh9Ycf+HOkXCYUSvPM4djzYi6V3x4wcIOFwTp9BuXQgsnVyPDDC9tp12sOPVJbimF34
+	Ll5Bod0/JPiQvSviwcq0oUqdrNuMgKoyY98BOTSXDoTasebmIcyAPiKEEBm17A==
+From: =?utf-8?q?Alvin_=C5=A0ipraga?= <alvin@pqrs.dk>
+Date: Mon, 19 Feb 2024 21:21:47 +0100
+Subject: [PATCH v2] drm/bridge: adv7511: fix crash on irq during probe
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 19 Feb 2024 20:20:11 +0000
-Message-Id: <CZ9C1M72695Q.1K7JBWXIQNLTL@seitikki>
-Cc: <zhiquan1.li@intel.com>, <kristen@linux.intel.com>, <seanjc@google.com>,
- <zhanb@microsoft.com>, <anakrish@microsoft.com>,
- <mikko.ylinen@linux.intel.com>, <yangjie@microsoft.com>,
- <chrisyan@microsoft.com>
-Subject: Re: [PATCH v9 10/15] x86/sgx: Add EPC reclamation in cgroup
- try_charge()
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>,
- <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
- <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
- <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
- <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
- <sohil.mehta@intel.com>, <tim.c.chen@linux.intel.com>
-X-Mailer: aerc 0.15.2
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-11-haitao.huang@linux.intel.com>
- <CZ3D53XFVXAW.25EK0ZBFH3HV2@kernel.org>
- <op.2i1xkgedwjvjmi@hhuan26-mobl.amr.corp.intel.com>
- <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
- <op.2jd9vpf0wjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <op.2jd9vpf0wjvjmi@hhuan26-mobl.amr.corp.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240219-adv7511-cec-irq-crash-fix-v2-1-245e53c4b96f@bang-olufsen.dk>
+X-B4-Tracking: v=1; b=H4sIAFq402UC/42OSw7CMAxEr1J5jVHdlH5YcQ/URUgcaoHakkAEq
+ nJ3Qk/A8o00b2aFwF44wLFYwXOUIPOUodoVYEY9XRnFZoaqrBSVVKO2sT0QoWGD4h9ovA4jOnl
+ j46zty15Z02rI/cVzjjf3ecg8SnjO/rNNRfql/1gjIaFSXV93jelUq06XfAvn+8sFnvb2BkNK6
+ Qs4CESPyAAAAA==
+To: Andrzej Hajda <andrzej.hajda@intel.com>, 
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Archit Taneja <architt@codeaurora.org>, 
+ Hans Verkuil <hans.verkuil@cisco.com>
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Mads Bligaard Nielsen <bli@bang-olufsen.dk>, 
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon Feb 19, 2024 at 3:12 PM UTC, Haitao Huang wrote:
-> On Tue, 13 Feb 2024 19:52:25 -0600, Jarkko Sakkinen <jarkko@kernel.org> =
-=20
-> wrote:
->
-> > On Tue Feb 13, 2024 at 1:15 AM EET, Haitao Huang wrote:
-> >> Hi Jarkko
-> >>
-> >> On Mon, 12 Feb 2024 13:55:46 -0600, Jarkko Sakkinen <jarkko@kernel.org=
->
-> >> wrote:
-> >>
-> >> > On Mon Feb 5, 2024 at 11:06 PM EET, Haitao Huang wrote:
-> >> >> From: Kristen Carlson Accardi <kristen@linux.intel.com>
-> >> >>
-> >> >> When the EPC usage of a cgroup is near its limit, the cgroup needs =
-to
-> >> >> reclaim pages used in the same cgroup to make room for new =20
-> >> allocations.
-> >> >> This is analogous to the behavior that the global reclaimer is =20
-> >> triggered
-> >> >> when the global usage is close to total available EPC.
-> >> >>
-> >> >> Add a Boolean parameter for sgx_epc_cgroup_try_charge() to indicate
-> >> >> whether synchronous reclaim is allowed or not. And trigger the
-> >> >> synchronous/asynchronous reclamation flow accordingly.
-> >> >>
-> >> >> Note at this point, all reclaimable EPC pages are still tracked in =
-=20
-> >> the
-> >> >> global LRU and per-cgroup LRUs are empty. So no per-cgroup =20
-> >> reclamation
-> >> >> is activated yet.
-> >> >>
-> >> >> Co-developed-by: Sean Christopherson =20
-> >> <sean.j.christopherson@intel.com>
-> >> >> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com=
->
-> >> >> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> >> >> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
-> >> >> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> >> >> ---
-> >> >> V7:
-> >> >> - Split this out from the big patch, #10 in V6. (Dave, Kai)
-> >> >> ---
-> >> >>  arch/x86/kernel/cpu/sgx/epc_cgroup.c | 26 ++++++++++++++++++++++++=
---
-> >> >>  arch/x86/kernel/cpu/sgx/epc_cgroup.h |  4 ++--
-> >> >>  arch/x86/kernel/cpu/sgx/main.c       |  2 +-
-> >> >>  3 files changed, 27 insertions(+), 5 deletions(-)
-> >> >>
-> >> >> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> >> >> b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> >> >> index d399fda2b55e..abf74fdb12b4 100644
-> >> >> --- a/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> >> >> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
-> >> >> @@ -184,13 +184,35 @@ static void
-> >> >> sgx_epc_cgroup_reclaim_work_func(struct work_struct *work)
-> >> >>  /**
-> >> >>   * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single=
- =20
-> >> EPC
-> >> >> page
-> >> >>   * @epc_cg:	The EPC cgroup to be charged for the page.
-> >> >> + * @reclaim:	Whether or not synchronous reclaim is allowed
-> >> >>   * Return:
-> >> >>   * * %0 - If successfully charged.
-> >> >>   * * -errno - for failures.
-> >> >>   */
-> >> >> -int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
-> >> >> +int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg, bool
-> >> >> reclaim)
-> >> >>  {
-> >> >> -	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg, =20
-> >> PAGE_SIZE);
-> >> >> +	for (;;) {
-> >> >> +		if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
-> >> >> +					PAGE_SIZE))
-> >> >> +			break;
-> >> >> +
-> >> >> +		if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
-> >> >> +			return -ENOMEM;
-> >> >> + +		if (signal_pending(current))
-> >> >> +			return -ERESTARTSYS;
-> >> >> +
-> >> >> +		if (!reclaim) {
-> >> >> +			queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
-> >> >> +			return -EBUSY;
-> >> >> +		}
-> >> >> +
-> >> >> +		if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, false))
-> >> >> +			/* All pages were too young to reclaim, try again a little late=
-r =20
-> >> */
-> >> >> +			schedule();
-> >> >
-> >> > This will be total pain to backtrack after a while when something
-> >> > needs to be changed so there definitely should be inline comments
-> >> > addressing each branch condition.
-> >> >
-> >> > I'd rethink this as:
-> >> >
-> >> > 1. Create static __sgx_epc_cgroup_try_charge() for addressing single
-> >> >    iteration with the new "reclaim" parameter.
-> >> > 2. Add a new sgx_epc_group_try_charge_reclaim() function.
-> >> >
-> >> > There's a bit of redundancy with sgx_epc_cgroup_try_charge() and
-> >> > sgx_epc_cgroup_try_charge_reclaim() because both have almost the
-> >> > same loop calling internal __sgx_epc_cgroup_try_charge() with
-> >> > different parameters. That is totally acceptable.
-> >> >
-> >> > Please also add my suggested-by.
-> >> >
-> >> > BR, Jarkko
-> >> >
-> >> > BR, Jarkko
-> >> >
-> >> For #2:
-> >> The only caller of this function, sgx_alloc_epc_page(), has the same
-> >> boolean which is passed into this this function.
-> >
-> > I know. This would be good opportunity to fix that up. Large patch
-> > sets should try to make the space for its feature best possible and
-> > thus also clean up the code base overally.
-> >
-> >> If we separate it into sgx_epc_cgroup_try_charge() and
-> >> sgx_epc_cgroup_try_charge_reclaim(), then the caller has to have the
-> >> if/else branches. So separation here seems not help?
-> >
-> > Of course it does. It makes the code in that location self-documenting
-> > and easier to remember what it does.
-> >
-> > BR, Jarkko
-> >
->
-> Please let me know if this aligns with your suggestion.
->
->
-> static int ___sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
-> {
->          if (!misc_cg_try_charge(MISC_CG_RES_SGX_EPC, epc_cg->cg,
->                                          PAGE_SIZE))
->                  return 0;
->
->          if (sgx_epc_cgroup_lru_empty(epc_cg->cg))
->                  return -ENOMEM;
->
->          if (signal_pending(current))
->                  return -ERESTARTSYS;
->
->          return -EBUSY;
-> }
->
-> /**
->   * sgx_epc_cgroup_try_charge() - try to charge cgroup for a single page
->   * @epc_cg:     The EPC cgroup to be charged for the page.
->   *
->   * Try to reclaim pages in the background if the group reaches its limit=
- =20
-> and
->   * there are reclaimable pages in the group.
->   * Return:
->   * * %0 - If successfully charged.
->   * * -errno - for failures.
->   */
-> int sgx_epc_cgroup_try_charge(struct sgx_epc_cgroup *epc_cg)
-> {
->          int ret =3D  ___sgx_epc_cgroup_try_charge(epc_cg);
->
->          if (ret =3D=3D -EBUSY)
->                  queue_work(sgx_epc_cg_wq, &epc_cg->reclaim_work);
->
->          return ret;
-> }
->
-> /**
->   * sgx_epc_cgroup_try_charge_reclaim() - try to charge cgroup for a sing=
-le =20
-> page
->   * @epc_cg:     The EPC cgroup to be charged for the page.
->   *
->   * Try to reclaim pages directly if the group reaches its limit and ther=
-e =20
-> are
->   * reclaimable pages in the group.
->   * Return:
->   * * %0 - If successfully charged.
->   * * -errno - for failures.
->   */
-> int sgx_epc_cgroup_try_charge_reclaim(struct sgx_epc_cgroup *epc_cg)
-> {
->          int ret;
->
->          for (;;) {
->                  ret =3D  ___sgx_epc_cgroup_try_charge(epc_cg);
->                  if (ret !=3D -EBUSY)
->                          return ret;
->
->                  if (!sgx_epc_cgroup_reclaim_pages(epc_cg->cg, current->m=
-m))
->                          /* All pages were too young to reclaim, try agai=
-n =20
-> a little later */
->                          schedule();
->          }
->
->          return 0;
-> }
->
-> It is a little more involved to remove the boolean for =20
-> sgx_alloc_epc_page() and its callers like sgx_encl_grow(), =20
-> sgx_alloc_va_page(). I'll send a separate patch for comments.
+From: Mads Bligaard Nielsen <bli@bang-olufsen.dk>
 
-With quick look, it is towards right direction for sure.
+Moved IRQ registration down to end of adv7511_probe().
 
-BR, Jarkko
+If an IRQ already is pending during adv7511_probe
+(before adv7511_cec_init) then cec_received_msg_ts
+could crash using uninitialized data:
+
+    Unable to handle kernel read from unreadable memory at virtual address 00000000000003d5
+    Internal error: Oops: 96000004 [#1] PREEMPT_RT SMP
+    Call trace:
+     cec_received_msg_ts+0x48/0x990 [cec]
+     adv7511_cec_irq_process+0x1cc/0x308 [adv7511]
+     adv7511_irq_process+0xd8/0x120 [adv7511]
+     adv7511_irq_handler+0x1c/0x30 [adv7511]
+     irq_thread_fn+0x30/0xa0
+     irq_thread+0x14c/0x238
+     kthread+0x190/0x1a8
+
+Fixes: 3b1b975003e4 ("drm: adv7511/33: add HDMI CEC support")
+Signed-off-by: Mads Bligaard Nielsen <bli@bang-olufsen.dk>
+Signed-off-by: Alvin Šipraga <alsi@bang-olufsen.dk>
+---
+Changes in v2:
+- rebase on latest drm-misc-fixes
+- no other changes
+- RESEND
+- Link to v1: https://lore.kernel.org/r/20231014-adv7511-cec-irq-crash-fix-v1-1-3389486c8373@bang-olufsen.dk
+---
+ drivers/gpu/drm/bridge/adv7511/adv7511_drv.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+index 8be235144f6d..6fc292393c67 100644
+--- a/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
++++ b/drivers/gpu/drm/bridge/adv7511/adv7511_drv.c
+@@ -1277,17 +1277,6 @@ static int adv7511_probe(struct i2c_client *i2c)
+ 
+ 	INIT_WORK(&adv7511->hpd_work, adv7511_hpd_work);
+ 
+-	if (i2c->irq) {
+-		init_waitqueue_head(&adv7511->wq);
+-
+-		ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
+-						adv7511_irq_handler,
+-						IRQF_ONESHOT, dev_name(dev),
+-						adv7511);
+-		if (ret)
+-			goto err_unregister_cec;
+-	}
+-
+ 	adv7511_power_off(adv7511);
+ 
+ 	i2c_set_clientdata(i2c, adv7511);
+@@ -1311,6 +1300,17 @@ static int adv7511_probe(struct i2c_client *i2c)
+ 
+ 	adv7511_audio_init(dev, adv7511);
+ 
++	if (i2c->irq) {
++		init_waitqueue_head(&adv7511->wq);
++
++		ret = devm_request_threaded_irq(dev, i2c->irq, NULL,
++						adv7511_irq_handler,
++						IRQF_ONESHOT, dev_name(dev),
++						adv7511);
++		if (ret)
++			goto err_unregister_audio;
++	}
++
+ 	if (adv7511->info->has_dsi) {
+ 		ret = adv7533_attach_dsi(adv7511);
+ 		if (ret)
+
+---
+base-commit: 335126937753844d36036984e96a8f343538a778
+change-id: 20231014-adv7511-cec-irq-crash-fix-6fdd9093dc7a
+
 
