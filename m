@@ -1,117 +1,96 @@
-Return-Path: <linux-kernel+bounces-71671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8883E85A8CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:23:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41D8485A8D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DE3F281002
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:23:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D48921F21223
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3D83BB3B;
-	Mon, 19 Feb 2024 16:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35B443CF4F;
+	Mon, 19 Feb 2024 16:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pGTQTonu"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K52xXHkm"
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80962D620;
-	Mon, 19 Feb 2024 16:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306C037704;
+	Mon, 19 Feb 2024 16:23:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359795; cv=none; b=ovQ4OqebdOtli7kW+4LRdTq7Bo0AnahxtVgU/qonNcTCBfeB4Nj9/HP71rLM7hCzTQkqPFJKE0MRsF/bzD/cn2vDLDP+bQ8iqW35GD9ks+qx/DwajdTP+qn76/vbKyNxIbeKectxkZgtElPLXTLUtbnphaRBC8btkDEY1dghfak=
+	t=1708359816; cv=none; b=hao0ooE0oc4+vxwPWq0IO7VlcfjUG3TI1rHS0RrcuhOUTdUoEnbhGYJJfpGI5ln64ixFwduQ62HUAW48Usc867R1NDDVverUcQT2UwzcpzmE5jz2IeMy4xQjHNXZGIxzn37VY8xTqv0p8wxTkNze0xayqlNec9diq4TWkmycNsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359795; c=relaxed/simple;
-	bh=mmSPbWQiapCwR2flDPIpWEVVDDLQO2RnQqCCmuow9TU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QTu7QvNBqr2T4dEZm5yY+1hi3WtsU6Rp9rqyfWRnFdVhu63VEW6vOdPIL11Bxyzp4KKAPRQgQKon0y5EOIuQYEprtpnWcT9qSlP3Dt4ZyQ+vlHF69qiobfTY1ObwRXH4J+dWOS3XtYf7OLoI4JbITowXd7bXbtZsPeowAU9HtSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pGTQTonu; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41JFqjND029351;
-	Mon, 19 Feb 2024 16:23:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=LyWVOHOToYNN6u9Ni+d5jhn9uK1m+RW+rCmqq8zQhUo=;
- b=pGTQTonupdGOayUpihLLA7YE4sXPgIh5PvAllR/s788a811lrWXQ/XdDLht6icl+Svjz
- PHxgYVZbG+PAv56oepWvJzJjk/c3MTkRRLPcTXnLwL3DRWsK5v+CfUVbZyxsX489yTs/
- waGBg5a+559U18rRpf08EMajSL+9cdWDFItJT279p8Y4iVxSUrSdrFXQ7SuoVuHbBl92
- srgOI6FaF8pZQDMzo7JL75oYH+4dw6som7HenQQDkbmrpVHfHG32F4M9MtifSukj8V/T
- TquSl96SPepahnICPjkHHM7A/QgketWG8qFRWeak9vrH6wTuHrZTHkAwVYVNlSx7CkLq Cg== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wca0w0vy9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 16:23:06 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 41JGFvfl014427;
-	Mon, 19 Feb 2024 16:23:06 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wb9u29qv5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 16:23:05 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 41JGN0bN59638136
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 19 Feb 2024 16:23:02 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7995A2004D;
-	Mon, 19 Feb 2024 16:23:00 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F145920043;
-	Mon, 19 Feb 2024 16:22:59 +0000 (GMT)
-Received: from osiris (unknown [9.171.27.39])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 19 Feb 2024 16:22:59 +0000 (GMT)
-Date: Mon, 19 Feb 2024 17:22:58 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>, linux-s390@vger.kernel.org
-Subject: Re: [PATCH 07/10] s390/vdso: Use generic union vdso_data_store
-Message-ID: <20240219162258.16287-G-hca@linux.ibm.com>
-References: <20240219153939.75719-1-anna-maria@linutronix.de>
- <20240219153939.75719-8-anna-maria@linutronix.de>
+	s=arc-20240116; t=1708359816; c=relaxed/simple;
+	bh=+D5YYAsErOqCse+fPjYBEdC9kFrJx3mF+Nk1IPOoTbw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CsHGOS8Nl6OQ3brAG3rhRe9yKGKauDLIPJUvDWoTRGW7lleVKjzLXMoJ9eWyl83WwQXlDSNyBoCw69E8HPmeibpHT1OYHyi7hEDh91Zl/7Ju73Nd7sdE9Kjci35en+5l73jXVNpn3DXEfe0K1zJLSEsXseiMS4cZnd108mNRnqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K52xXHkm; arc=none smtp.client-ip=209.85.216.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29936dd174cso389583a91.1;
+        Mon, 19 Feb 2024 08:23:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708359814; x=1708964614; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+D5YYAsErOqCse+fPjYBEdC9kFrJx3mF+Nk1IPOoTbw=;
+        b=K52xXHkmxfIU9BeXGcAQJ4wMGrJD4o2TELKl3Uk0xTdIHTADnDJbRjWm3F8ifQk3lf
+         z19s7ZV8Vg36M4C+NQ31hRIkpiWd2j62i37aG3IDtmuTDykBYDyhLjHagmunSTHjt1x6
+         D3AMyDLW/kSaouwMWEXPs2AAeDGgMCFjW3ZPXRA+o1hnFPau4FUDUCAEXFWNbDMkC8F2
+         cPvZnjyd67eY9SVZegVZm7dwr1t7VfbOEllMo/6VHIGNuGyOHSVXWuYZQfnfs20y4dc6
+         zMHbOhHxP50BWDZn+9Zra4ztNDS7nYnOTVa2PkghUwb5G+80xNIheioCruZo32636UTk
+         yfJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708359814; x=1708964614;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+D5YYAsErOqCse+fPjYBEdC9kFrJx3mF+Nk1IPOoTbw=;
+        b=DQIhEUdQuumVLdDzouQrbugZ9k3cUimwwTY5jplqIBDSM5PWCiP3LDF7useksU/4Z9
+         a1TcZN9Wz7PTtLlwC5WbTj1guKYFi4+ET+APUv6WgSYM77G9EW3gyTya3GJ710rIIji9
+         C5YCHy6R3pWY2uzuJimt9NFwEgKtTCVA+li5MR0kGQoXhWHpOAZcbeiDTitUkYR+cF8t
+         IZ3VIEZdF3+51Jz0+cxmb09qhhq+bepH0/0hLCaPs7VYq0OmvMTRpfKjIle/NtlGGpkM
+         dm7rMufxVK9lWbQkxR8sZ5teLvYvIY90eULiPQCtz/JvcRcoErl0fEvitD7yaJvq2wT5
+         Bb6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWiwnnMIlcG+MDN7HH8AAFAgIlYL2Hfk0ZkTzLQ2No4+qVLAxVVcDrM2ZrD/5H6pRtdKEgyjHqY0CXkrEAEIElnQFpJNvIBGus5aGvI8tGbW9O0QfSBXxxrgqgm07MrrBceTLEzAkxR
+X-Gm-Message-State: AOJu0Yz7/pUu8tCmaGQGseuR7ur4n4ER/6kvY+gAAInLRFNCkqJozS0/
+	w03pEAMMVH4+D1nlFpJmXRYYOdTuAARQOlL3uFv/qnnRULeZPfQYukEJYbeWaNTE8gG4qpOwaDE
+	gE31JaPtrK3MVICSc4nrtUedRLX8=
+X-Google-Smtp-Source: AGHT+IGC4MiCOuJgMCaNYzE2gAv19LVxth2Ob5XBRgVfMJUNVLjwMVsCRccoio7XPQSJVvrQtek/awV3z4kI4V50KP8=
+X-Received: by 2002:a17:90a:38e3:b0:299:3748:4ada with SMTP id
+ x90-20020a17090a38e300b0029937484adamr6973062pjb.1.1708359813553; Mon, 19 Feb
+ 2024 08:23:33 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219153939.75719-8-anna-maria@linutronix.de>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 08hCN1IEk0HWQF-7EYMghrtS7WRqXZg_
-X-Proofpoint-GUID: 08hCN1IEk0HWQF-7EYMghrtS7WRqXZg_
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-19_12,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- impostorscore=0 mlxscore=0 malwarescore=0 clxscore=1015 bulkscore=0
- spamscore=0 mlxlogscore=309 suspectscore=0 phishscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402190122
+References: <20240219155728.606497-1-Frank.Li@nxp.com>
+In-Reply-To: <20240219155728.606497-1-Frank.Li@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Mon, 19 Feb 2024 13:23:22 -0300
+Message-ID: <CAOMZO5C4XFGoWYgexdFLgHiXAoAP7-aMdi=K6CG3adQE_mHAmA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] dmaengine: mxs-dma: switch from dma_coherent to dma_pool
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	NXP Linux Team <linux-imx@nxp.com>, 
+	"open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" <dmaengine@vger.kernel.org>, 
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, imx@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 04:39:36PM +0100, Anna-Maria Behnsen wrote:
-> There is already a generic union definition for vdso_data_store in vdso
-> datapage header.
-> 
-> Use this definition to prevent code duplication.
-> 
-> Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> Cc: linux-s390@vger.kernel.org
-> ---
->  arch/s390/kernel/vdso.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+On Mon, Feb 19, 2024 at 12:57=E2=80=AFPM Frank Li <Frank.Li@nxp.com> wrote:
+>
+> From: Han Xu <han.xu@nxp.com>
+>
+> Using dma_pool to manage dma descriptor memory.
 
-Acked-by: Heiko Carstens <hca@linux.ibm.com>
+Please clearly describe the motivation for doing this.
 
