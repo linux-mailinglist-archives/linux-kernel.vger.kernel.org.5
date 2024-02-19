@@ -1,175 +1,245 @@
-Return-Path: <linux-kernel+bounces-70837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F9B859D0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:35:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EF62859D10
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF15F1F22B75
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:35:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52A921C20DEC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:35:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB0A2137A;
-	Mon, 19 Feb 2024 07:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9FA820DC3;
+	Mon, 19 Feb 2024 07:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vazxlQK+"
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QIRJ2bIl"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBDB20DC1
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:34:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100AF20B11
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708328086; cv=none; b=l03mgbk6ZdEIOU+eZBlxz7cPzEYk4PDlDj/bI1UIpf9Emo/edu6OaHiL9VYWc4+dETe1Gy13mOYAmsienNHYJjErZ1IJAPAltpale2M+0wDqevAqm2ke+4AASycrIeARAKoyhTy7UjgAglLfezorAua2viJD93y6qDvuh/E5BTU=
+	t=1708328131; cv=none; b=YxbGSvmzOvzV+9B6u5K3zqkYykThyO5RPphRgMznJsAFNktAhrh2oXambjQnNtgTDjpMXp/rzYRQlGRkGzhiTy5DJJCwVRDYYgzb8YqjGNr3pQfVlHkbGNEJUBltJwVzcog5KCovPssNLonmUarFEJJviaOUdB/1VRxhPqczees=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708328086; c=relaxed/simple;
-	bh=wVr8phqPhAkF0b9oWovDQdPdxnbZUP9wWMXDE0q3O+E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fFQfHI+RlpHN6FYBnrfwna94cCzPa0llb+3bhtzbbbqpv2dUM/eoB9Y3Y9CqOL8RWiJkkEXtBILqXNdqrAKlnEIh4twpWyys8Ucjz86oh2aW4WNe/jpee7WebO1+58yJ65rNZoDiRLib2Efb9YKMrSkB67RtfMrQhkqEm9ExQt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vazxlQK+; arc=none smtp.client-ip=209.85.167.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-512acc1a881so993345e87.3
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:34:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708328082; x=1708932882; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xvLNrJJRwNsw7GHS06wt5yBCCTtq8TZaQZJgpC0CeaY=;
-        b=vazxlQK+vf2dY9nVGPG4nyEukjERdERKTFy7JDhvY14xeTW92TFLRN2dKu8QXVw60H
-         vi4K/rRfOtnzgi67LHqdLemXcdEtVaPS1hhy0nUMRXmIOZTWLPSrLL3DizKFl4kTJqSq
-         NcP1blHJJwx4CHuFteX3aqPOZroR6VMweO+I4kI6mECQ/vvvyLapyKtZqlWItYS1zu4x
-         7D4AEfV+Y0CvCT+PbOB6vdVxOB5bHRQsfoFbZiV/bFPPTNLfSV4UzQO0fEC7Sv3Ax0Uh
-         Dp/cjG9kXfeonf35FBVXyE/lVfKL8KDlyFVy6r2uo+2Z3ikmYdPof+vWVN0abEh+8tqb
-         4u2Q==
+	s=arc-20240116; t=1708328131; c=relaxed/simple;
+	bh=G7HLOrYngo8q4BEnvRRH2ahhz3DfOF7qDbhuFedVurs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aWypNyIAsUIieShNOlG5wt9s6xtQhMq6jdteVDa3WIbRNahcgQWYvUxQkWz/h2bYTgJL8kKngowGyTjzInEUbrDgX28e99McByVl5rf/QyjquCal5E/ZaqRfFGhP/4jPwbhcb1swAwNDScxgn93s9OcWh22DWj5+QzgEg3RQKNo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QIRJ2bIl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708328129;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Bl9XnWl1XVxx3txJT849rP5bjpqGNtkwrTydDeqJ91Y=;
+	b=QIRJ2bIlIwz6rCJqtEQ926gUCr68+kiJlGOiX2H65XcSpw+2Ra65IV/KRalIp3KrV1dvXI
+	OwPYkwBVuN251n5g1yuPWilaLTT8akkfCraWJueayyONSBOa9sM5riHWBc/eGXdpxGq+yD
+	be2USSxaVxJmG6IAlZ+WBfs9Wh4ZCSo=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-564-O_pKKx-7PQmYfbHND62Nfw-1; Mon, 19 Feb 2024 02:35:26 -0500
+X-MC-Unique: O_pKKx-7PQmYfbHND62Nfw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-41082621642so22394915e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:35:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708328082; x=1708932882;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xvLNrJJRwNsw7GHS06wt5yBCCTtq8TZaQZJgpC0CeaY=;
-        b=EmOzXQAnHyTli6Gi8TG5rK5llTUtL1IAU/fmKskp/BTpsb5OorND9w0DVUku1dhZ60
-         XzAVdv8a5N3aVkIrF8qGqduDp9EbCWv6CgOoqfoDb3/Ykm/r80nbgOxhRwpeqx2qzewJ
-         xR8gdEMLvi8ivoHUyv2Y6zDtkP8a80Fkrp/j9Ik04z+OhW2/Dn2ztB6b+Gld9A+Gw2bU
-         AMIvm6eI6mRi1G73tgjQtMR5fnMf6PdGcOWkTsOX+04DZvC37kfFi4pVcYsG7Y+rV5c3
-         7IQy0uj+y/bGukVkeV+bBdTYmp4lZYpIlCGvKG8Ww2ZY40hkPlsBmvFSNfZquf9oDTbR
-         HeeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWBBbbjMM3Fy1ZwOT17PLj79RrkOMISI9DerbW0iZQQq5w+FnSwmFSYVfZO0V+iHjFXvEhXULRyYGdGoWhUFIn0r93VAKM3dvU9Z/J3
-X-Gm-Message-State: AOJu0YyBuJGUXdxBjgvbfQkXDU1bQ2/JOKLOs4inGxEBgHN3gy/HYZs1
-	EZG/CXh0fDwc1NXuHZK3kHnprcVsgjIrvF1eyuKGhTaRaJ552OcSbrdi7MM+5iE=
-X-Google-Smtp-Source: AGHT+IHULjgckgRcgbc1CIDA7u2voVte9tOzxMYCJeWas52dwNJodaOuSWwS5Jl6p2X5XUL/pfqp6g==
-X-Received: by 2002:a05:6512:239a:b0:511:9706:58eb with SMTP id c26-20020a056512239a00b00511970658ebmr9246588lfv.1.1708328082040;
-        Sun, 18 Feb 2024 23:34:42 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id jv14-20020a05600c570e00b0040fe3147babsm10640011wmb.0.2024.02.18.23.34.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 23:34:41 -0800 (PST)
-Message-ID: <e5adbea4-1706-46b1-9f45-6b3c3b5f0954@linaro.org>
-Date: Mon, 19 Feb 2024 08:34:38 +0100
+        d=1e100.net; s=20230601; t=1708328125; x=1708932925;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bl9XnWl1XVxx3txJT849rP5bjpqGNtkwrTydDeqJ91Y=;
+        b=czBk2eZMxb12jeaqoH6KrU2osqG58KjIfSNSRiyTmuSAKCJgXCcFBT+shwV5FGWsq+
+         44EHzCGBo9I71AkPX7WqnMTobEFaxVdmcTgIoAqU+Y9EcBhVz4Vh+hsawUJjchWeKYpb
+         ssbsJl06mw9waK3nXoukVcosdAUA/FtWNCazdI5ZMvISMbB5W+e1TKOhccUkVJO6DWKd
+         ksdQeRHZNv0Y5Rn3vHUmuDYU2GJx7wgjF485H8t8n1BpnQqmuzvtEMgxEMp8M1CW7TkA
+         33ygj4PFVDnAZo4vz3aVdcVlzZYKdh23BXuTbi5kFnaux/iKduT62b1eCwjnVwpgCfLT
+         Xq9w==
+X-Forwarded-Encrypted: i=1; AJvYcCWyLXK/t7Fe3Lx8mrmdw9PaqB6RiQ6h1qXARW9jPE9h6OtW/EJlxSnfvsoj6B9qFk/Jhhz4PbIJ6xAKug2jgVGpgRy4BDZT4cx4pBci
+X-Gm-Message-State: AOJu0YwqfrzJHwWOtdKeO1VRpCXrhF8ultMPP6XIxr+ZW/wl+Ec4O+7P
+	M6E3rnupiw2jx9HYm6iwYgDAa8uS3FA9S8qv4glJ784aJLPrweoGjB8/NHiiRlNe2xkkuLsXQsQ
+	S7KUx2gv2b3vd343dLEQriLJIjiazBTq/hs55ZoW1Yoy9i8osfgSxjmPfWyqCaA==
+X-Received: by 2002:a05:600c:3788:b0:410:c148:2a4b with SMTP id o8-20020a05600c378800b00410c1482a4bmr9613531wmr.37.1708328125158;
+        Sun, 18 Feb 2024 23:35:25 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHfOWPFrTaQjiUUO0BsYoZHbxf9g5FgMEc6KPGmDU1RfUXTi6ysJf8vefAhkzBbQMN4SRDoPQ==
+X-Received: by 2002:a05:600c:3788:b0:410:c148:2a4b with SMTP id o8-20020a05600c378800b00410c1482a4bmr9613516wmr.37.1708328124746;
+        Sun, 18 Feb 2024 23:35:24 -0800 (PST)
+Received: from redhat.com ([2.52.19.211])
+        by smtp.gmail.com with ESMTPSA id k10-20020a7bc40a000000b004101f27737asm10397510wmi.29.2024.02.18.23.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 18 Feb 2024 23:35:23 -0800 (PST)
+Date: Mon, 19 Feb 2024 02:35:20 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: syzbot <syzbot+6f3c38e8a6a0297caa5a@syzkaller.appspotmail.com>
+Cc: jasowang@redhat.com, linux-kernel@vger.kernel.org,
+	linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev,
+	xuanzhuo@linux.alibaba.com,
+	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: Re: [syzbot] [virtualization?] linux-next boot error: WARNING:
+ refcount bug in __free_pages_ok
+Message-ID: <20240219022853-mutt-send-email-mst@kernel.org>
+References: <000000000000d305050611b50d09@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 04/18] dt-bindings: net: bluetooth: qualcomm: describe
- regulators for QCA6390
-Content-Language: en-US
-To: Bartosz Golaszewski <brgl@bgdev.pl>, Marcel Holtmann
- <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>,
- Lukas Wunner <lukas@wunner.de>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-pm@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-5-brgl@bgdev.pl>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240216203215.40870-5-brgl@bgdev.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000d305050611b50d09@google.com>
 
-On 16/02/2024 21:32, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Sun, Feb 18, 2024 at 09:06:18PM -0800, syzbot wrote:
+> Hello,
 > 
-> QCA6390 has a compatible listed in the bindings but is missing the
-> regulators description. Add the missing supply property and list the
-> required ones in the allOf section.
+> syzbot found the following issue on:
 > 
-> Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> HEAD commit:    d37e1e4c52bc Add linux-next specific files for 20240216
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=171ca652180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=4bc446d42a7d56c0
+> dashboard link: https://syzkaller.appspot.com/bug?extid=6f3c38e8a6a0297caa5a
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/14d0894504b9/disk-d37e1e4c.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/6cda61e084ee/vmlinux-d37e1e4c.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/720c85283c05/bzImage-d37e1e4c.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+6f3c38e8a6a0297caa5a@syzkaller.appspotmail.com
+> 
+> Key type pkcs7_test registered
+> Block layer SCSI generic (bsg) driver version 0.4 loaded (major 239)
+> io scheduler mq-deadline registered
+> io scheduler kyber registered
+> io scheduler bfq registered
+> input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+> ACPI: button: Power Button [PWRF]
+> input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+> ACPI: button: Sleep Button [SLPF]
+> ioatdma: Intel(R) QuickData Technology Driver 5.00
+> ACPI: \_SB_.LNKC: Enabled at IRQ 11
+> virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+> ACPI: \_SB_.LNKD: Enabled at IRQ 10
+> virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+> ACPI: \_SB_.LNKB: Enabled at IRQ 10
+> virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+> virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+> N_HDLC line discipline registered with maxframe=4096
+> Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+> 00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+> 00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+> 00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+> 00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+> Non-volatile memory driver v1.3
+> Linux agpgart interface v0.103
+> ACPI: bus type drm_connector registered
+> [drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
+> [drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
+> Console: switching to colour frame buffer device 128x48
+> platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
+> usbcore: registered new interface driver udl
+> brd: module loaded
+> loop: module loaded
+> zram: Added device: zram0
+> null_blk: disk nullb0 created
+> null_blk: module loaded
+> Guest personality initialized and is inactive
+> VMCI host device registered (name=vmci, major=10, minor=118)
+> Initialized host personality
+> usbcore: registered new interface driver rtsx_usb
+> usbcore: registered new interface driver viperboard
+> usbcore: registered new interface driver dln2
+> usbcore: registered new interface driver pn533_usb
+> nfcsim 0.2 initialized
+> usbcore: registered new interface driver port100
+> usbcore: registered new interface driver nfcmrvl
+> Loading iSCSI transport class v2.0-870.
+> virtio_scsi virtio0: 1/0/0 default/read/poll queues
+> ------------[ cut here ]------------
+> refcount_t: decrement hit 0; leaking memory.
+> WARNING: CPU: 0 PID: 1 at lib/refcount.c:31 refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-rc4-next-20240216-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
+> RIP: 0010:refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+> Code: b2 00 00 00 e8 b7 94 f0 fc 5b 5d c3 cc cc cc cc e8 ab 94 f0 fc c6 05 c6 16 ce 0a 01 90 48 c7 c7 a0 5a fe 8b e8 67 69 b4 fc 90 <0f> 0b 90 90 eb d9 e8 8b 94 f0 fc c6 05 a3 16 ce 0a 01 90 48 c7 c7
+> RSP: 0000:ffffc90000066e10 EFLAGS: 00010246
+> RAX: 15c2c224c9b50400 RBX: ffff888020827d2c RCX: ffff8880162d8000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 0000000000000004 R08: ffffffff8157b942 R09: fffffbfff1bf95cc
+> R10: dffffc0000000000 R11: fffffbfff1bf95cc R12: ffffea000502fdc0
+> R13: ffffea000502fdc8 R14: 1ffffd4000a05fb9 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffff88823ffff000 CR3: 000000000df32000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  reset_page_owner include/linux/page_owner.h:24 [inline]
+>  free_pages_prepare mm/page_alloc.c:1140 [inline]
+>  __free_pages_ok+0xc42/0xd70 mm/page_alloc.c:1269
+>  make_alloc_exact+0xc4/0x140 mm/page_alloc.c:4847
+>  vring_alloc_queue drivers/virtio/virtio_ring.c:319 [inline]
+
+Wow this seems to be breakage deep in mm/ - all virtio does is
+call alloc_pages_exact and that corrupts the refcounts?
+
+
+>  vring_alloc_queue_split+0x20a/0x600 drivers/virtio/virtio_ring.c:1108
+>  vring_create_virtqueue_split+0xc6/0x310 drivers/virtio/virtio_ring.c:1158
+>  vring_create_virtqueue+0xca/0x110 drivers/virtio/virtio_ring.c:2683
+>  setup_vq+0xe9/0x2d0 drivers/virtio/virtio_pci_legacy.c:131
+>  vp_setup_vq+0xbf/0x330 drivers/virtio/virtio_pci_common.c:189
+>  vp_find_vqs_msix+0x8b2/0xc80 drivers/virtio/virtio_pci_common.c:331
+>  vp_find_vqs+0x4c/0x4e0 drivers/virtio/virtio_pci_common.c:408
+>  virtio_find_vqs include/linux/virtio_config.h:233 [inline]
+>  virtscsi_init+0x8db/0xd00 drivers/scsi/virtio_scsi.c:887
+>  virtscsi_probe+0x3ea/0xf60 drivers/scsi/virtio_scsi.c:945
+>  virtio_dev_probe+0x991/0xaf0 drivers/virtio/virtio.c:311
+>  really_probe+0x29e/0xc50 drivers/base/dd.c:658
+>  __driver_probe_device+0x1a2/0x3e0 drivers/base/dd.c:800
+>  driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+>  __driver_attach+0x45f/0x710 drivers/base/dd.c:1216
+>  bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:368
+>  bus_add_driver+0x347/0x620 drivers/base/bus.c:673
+>  driver_register+0x23a/0x320 drivers/base/driver.c:246
+>  virtio_scsi_init+0x65/0xe0 drivers/scsi/virtio_scsi.c:1083
+>  do_one_initcall+0x238/0x830 init/main.c:1233
+>  do_initcall_level+0x157/0x210 init/main.c:1295
+>  do_initcalls+0x3f/0x80 init/main.c:1311
+>  kernel_init_freeable+0x435/0x5d0 init/main.c:1543
+>  kernel_init+0x1d/0x2b0 init/main.c:1432
+>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:242
+>  </TASK>
+> 
+> 
 > ---
-
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
-Best regards,
-Krzysztof
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
 
