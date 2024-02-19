@@ -1,170 +1,106 @@
-Return-Path: <linux-kernel+bounces-70731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36FE9859BA0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 969C7859BA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:18:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBA251F20D47
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:17:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 389F21F22255
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 652F61CF9A;
-	Mon, 19 Feb 2024 05:17:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D9D200BE;
+	Mon, 19 Feb 2024 05:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="cr8fsVbo"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="ajimO8V5"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9ED1CF81;
-	Mon, 19 Feb 2024 05:17:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F36C200A5;
+	Mon, 19 Feb 2024 05:17:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708319833; cv=none; b=PFJIpBUkf/fQaKGWxjRiTH6F7Po4To6r8IpFnTy1e22h+WaCDf/0H85ThV1ykjzSIdRZzI/Z/zNn2isVs9/XKpYLeve5LHWwvYeAsJ8MIGFvUNScZ4ymat84Tojtjlj08TaCcqwc4fDeMw4JVGTfJ8vn/jwDnB3IpYL2eMqvVA4=
+	t=1708319876; cv=none; b=LsuXOWUu1YC6P8Dbx44kpv+Txo0AkOesk/Sys1acda21Muoe9LQ5vE8BV+mfkKOEPF1nNsr4MWFC8gmph+QCRuGchnt+IuuH7HbIpTCoy+LqUUSpDdz7P+uXUQuq1eUJUQS7cqwvfP2oAQ2AwnOs2sJX3vEdU3LhdjTLwQH52co=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708319833; c=relaxed/simple;
-	bh=M3OTG06d9RxSKB1rENK+SnmvW0I3gkARsXBX2A4vdG0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=uv5MJfJgsw4440Lgl4flCvfcVrYGE6st/Vei6u0X2U/gRlJFMQ/4dwSh8gyZPatd5r2UGRV5531Cg0YEeI/IaPG1M0sBrxhzitxXi+vJMjtHA9MEGQpwojcw01f+YjmVHq80lzK6i2wfAKXxkErpGcS9IAmoxStgkLDSTytoG0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=cr8fsVbo; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41J4jvCo020491;
-	Mon, 19 Feb 2024 05:17:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=gdKdWz8ss1z4dbc1DHVLkPAo2fig5lGq5nOkdt7FYk0=; b=cr
-	8fsVbokmG6zDzm7nARShRIj6GDH1+86KR/fTvON2RTL86F8uIJlB72jExSA2ifYv
-	VMNOe8x02Q6WgW9LQh6UiE3lAHaOdruEHSAtn/2ECwYQJ4O+h9PG7YcrAPWDObhr
-	OypgsR/Zgu00kkOUmXdeVp1hGkE3zuYZK78ISavS9U9CjNOe/IsZohnGWY9LQsbH
-	kuuIKLN6LVQSe0YEcsz2YOIhunnY2EragcvzSvUCINrmnBuHmVzq/w83EFJ3qxSN
-	EVpiPuiMkr9FSwn1adxzxv0D7V28a+cQPZ7/cIfW8lWmlXeiUqHzqAgkKUIpQ5ZX
-	baaz4VlC/mZrwO63KXDg==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3waktctur9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 05:17:06 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41J5H5Ah009875
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 05:17:05 GMT
-Received: from [10.216.58.209] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 18 Feb
- 2024 21:17:01 -0800
-Message-ID: <413e23b5-2b81-4278-907c-a5b9f6992e6a@quicinc.com>
-Date: Mon, 19 Feb 2024 10:46:58 +0530
+	s=arc-20240116; t=1708319876; c=relaxed/simple;
+	bh=MLALHvMYrNAME5JoShokM3tOa4pEwZh56aR8W8tm2WE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=uG4lQkWLre9vWouk4zKa9LDi8EXPMctpAuPuXM+gYe9g8NeutzzyGH+I9rlwLHZW2T5LgpDgP+bMAu2bVhWAFctyc9Fm67jYXmUYX1yVGN2dIneiNddTvcKeY7NRhl5bK8xnA/zUg1d5VmZVMHNf83NtOLLbIV8Bi5Dr2bdqUgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=ajimO8V5; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1708319871;
+	bh=DiLQ78DkSeB+VFr6W48xH7ZI1R4cqbqoXRlZF7XqOGI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=ajimO8V5mB2EySBWaJuCyS2mWAzEr8NrmgxZqW7bR0YTNtyXSdwBpU/wSYJFRccYF
+	 oW/nIupmIfD0FfF4xnyZuNd2dWGcWQ04h4Rjs3KdlAZXMiVj5uUebod+8FsvTp5L0K
+	 VJZuh4VvRi5z0GG9Q8EGekJXxsjuCyVREUemxZfSo2I4zNpkqM82czLKdx8/eytkH/
+	 vMQnB3TRG2TqhV2iwlC/r8v4vV3oM/wC9T4EquYRJw/6fTEIfx0m3QmStrAJVzNkzT
+	 2rHTNWrlUkc0xJBEEonJYtbvGmIpUd18U8t5UuwLq36vz33Kw2HFID4q02M7pmurBv
+	 NiAvFbs1ydx0w==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TdW5941t2z4wd0;
+	Mon, 19 Feb 2024 16:17:49 +1100 (AEDT)
+Date: Mon, 19 Feb 2024 16:17:47 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Daniel Vetter <daniel.vetter@ffwll.ch>, Jani Nikula
+ <jani.nikula@linux.intel.com>, Joonas Lahtinen
+ <joonas.lahtinen@linux.intel.com>, Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc: Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Intel
+ Graphics <intel-gfx@lists.freedesktop.org>, DRI
+ <dri-devel@lists.freedesktop.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the drm-intel tree
+Message-ID: <20240219161747.0e867406@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] arm64: dts: qcom: sc7280: add slimbus DT node
-To: Bjorn Andersson <andersson@kernel.org>
-CC: <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-sm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <quic_msavaliy@quicinc.com>,
-        <quic_vtanuku@quicinc.com>, <quic_cchiluve@quicinc.com>,
-        <quic_anupkulk@quicinc.com>
-References: <20240215090910.30021-1-quic_vdadhani@quicinc.com>
- <wkbz5ska66c4kil67k4csqzm3anusskza7ysisaupfaqak3x77@wb3pqlngyzcd>
-Content-Language: en-US
-From: Viken Dadhaniya <quic_vdadhani@quicinc.com>
-In-Reply-To: <wkbz5ska66c4kil67k4csqzm3anusskza7ysisaupfaqak3x77@wb3pqlngyzcd>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dbn1_Bt5JRmsJntLaFQN3UB-x1HcRgeB
-X-Proofpoint-ORIG-GUID: dbn1_Bt5JRmsJntLaFQN3UB-x1HcRgeB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-19_02,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- mlxlogscore=945 lowpriorityscore=0 priorityscore=1501 adultscore=0
- malwarescore=0 impostorscore=0 spamscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402190037
+Content-Type: multipart/signed; boundary="Sig_/y.AEXD9XRXmOD3_UAne7Cho";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
+--Sig_/y.AEXD9XRXmOD3_UAne7Cho
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-On 2/17/2024 4:49 AM, Bjorn Andersson wrote:
-> On Thu, Feb 15, 2024 at 02:39:10PM +0530, Viken Dadhaniya wrote:
-> 
-> You've misspelled "linux-arm-msm" in the mailing list address, so this
-> was not in my review queue. Please switch to using b4 for preparing and
-> sending future patches, to avoid such mistakes.
+After merging the drm-intel tree, today's linux-next build (htmldocs)
+produced this warning:
 
-Corrected mailing list address and submitted V4.
+Documentation/gpu/i915:222: drivers/gpu/drm/i915/display/intel_cdclk.c:69: =
+ERROR: Unexpected indentation.
 
-> 
-> Regards,
-> Bjorn
-> 
->> Populate the DTSI node for slimbus instance to be
->> used by bluetooth FM audio case.
->>
->> Signed-off-by: Viken Dadhaniya <quic_vdadhani@quicinc.com>
->> ---
->> v2 -> v3:
->> - Fix patch title by adding "PATCH" string.
->> - Update commit log.
->>
->> v1 -> v2:
->> - change 0x0 -> 0 to reg property.
->> - reorder the DT property.
->> - change node tag slim_msm to slim.
->> ---
->> ---
->>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 25 +++++++++++++++++++++++++
->>   1 file changed, 25 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> index 581818676a4c..1d6afde915aa 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
->> @@ -2672,6 +2672,31 @@
->>   			status = "disabled";
->>   		};
->>   
->> +		slimbam: dma-controller@3a84000 {
->> +			compatible = "qcom,bam-v1.7.0";
->> +			reg = <0 0x03a84000 0 0x20000>;
->> +			interrupts = <GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>;
->> +			#dma-cells = <1>;
->> +			qcom,controlled-remotely;
->> +			num-channels  = <31>;
->> +			qcom,ee = <1>;
->> +			qcom,num-ees = <2>;
->> +			iommus = <&apps_smmu 0x1826 0x0>;
->> +			status = "disabled";
->> +		};
->> +
->> +		slim: slim-ngd@3ac0000 {
->> +			compatible = "qcom,slim-ngd-v1.5.0";
->> +			reg = <0 0x03ac0000 0 0x2c000>;
->> +			interrupts = <GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>;
->> +			dmas = <&slimbam 3>, <&slimbam 4>;
->> +			dma-names = "rx", "tx";
->> +			iommus = <&apps_smmu 0x1826 0x0>;
->> +			#address-cells = <1>;
->> +			#size-cells = <0>;
->> +			status = "disabled";
->> +		};
->> +
->>   		lpass_hm: clock-controller@3c00000 {
->>   			compatible = "qcom,sc7280-lpasshm";
->>   			reg = <0 0x03c00000 0 0x28>;
->> -- 
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
->>
+Introduced by commit
+
+  79e2ea2eaaa6 ("drm/i915/cdclk: Document CDCLK update methods")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/y.AEXD9XRXmOD3_UAne7Cho
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmXS5HsACgkQAVBC80lX
+0GyrhAf+MQM/FkWhlVWtkovGLvV9ffn3n0kyMg09Nal+PDllXMNFipnuIquyTl5B
+j+xkdITwjY8CtQZfKJjcxT8LrVu8A5WiAb4qRniJRQARIq9p9zxVTBghsKiisylZ
+0IXHh4APrqWx+fuTEpamYOskLwbQwlD8hAp94jizHuIY571RrSAkfMcLhLvK18lW
+5Usl8mUvXesTcoY4q/6xna7RW14Q5CmApw7ptCGH1pVvrlVN6ItDyZcdXl/QrCht
+gDPZjXlELGLelxjfbg+pd3akx1TVZ0m+rzUIcindrb69gIXiNTgWJCQ2B57QrK+r
+515zTyQjtLTOAwrxdvsXZaIdmZKc6w==
+=/y9I
+-----END PGP SIGNATURE-----
+
+--Sig_/y.AEXD9XRXmOD3_UAne7Cho--
 
