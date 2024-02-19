@@ -1,163 +1,161 @@
-Return-Path: <linux-kernel+bounces-71258-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71259-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 138E285A292
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:56:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40E0385A297
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83DD62817A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:56:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E98D01F21118
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:57:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A95F2D627;
-	Mon, 19 Feb 2024 11:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB9C2C85C;
+	Mon, 19 Feb 2024 11:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gMfhQGjO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CW3k+AAS";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="buau6+K+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="t31G6cyP"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nCk+6lzP"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C121F2D604;
-	Mon, 19 Feb 2024 11:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A57EE2561A;
+	Mon, 19 Feb 2024 11:57:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708343779; cv=none; b=sM5cbThLK/xi8i6g0uww9T7F53Vt+okY9Rr9FPL/bVuA6OIDHjprOXHwF/fzHYKH9uLU/3Saa4N4/seZwaPeKE50vMWJV3KqnseMXuoeb4P8c60l5opSGnp4ugtYeJdbji2IKc3YOzcqKQXfHsqiZRVx941hX9GGd5Sa+ISwRak=
+	t=1708343835; cv=none; b=AXkU69WCMG3JGl2iF7XKDz4JmvPFjHAEdmZoC6gAPj2u/jcv5uZymb8DM6fjrNBTSPlbvyueILpDmVFeIvO3jANh3LYZqBOzde5WtnCXXMUBESuSafiOLogeB0xx0eOC8dPz5j5p/gTWDcIsPQP5QUU3kxQM9ui7nu2yImoZfKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708343779; c=relaxed/simple;
-	bh=6EisK76yYaXOwsl5YMYWUtUhlQhrvrxsUxnJoTcUV9U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LgZCQ6SddtqiN+lYB5NS3L1nrlMrHr5d/N9ECM+gL3jyuoq4Oy3Oklus9CQXEOEpUckdjS3wjdQ8Ft0a3ksab96Uclsj8RqIuizXCxw73LMkQFD2dlYkP0t0B/6JYmj9+1wiDrv0CbMoOPNS2xbj6e2BmGz542KDPRRQ6ndpV/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gMfhQGjO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CW3k+AAS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=buau6+K+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=t31G6cyP; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EB9582231D;
-	Mon, 19 Feb 2024 11:56:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708343775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
-	b=gMfhQGjOI+lbem8SkpG7abYXZG/YGgsbr5mfhTFEt32zW1Limui820XncUd3JP4Jf/4cjb
-	Ki2fipqnH6aZNqggQcrRBpvej5RFxm3Gf1k4azm8OzeBA2Zjorl5by+Ny2VFQpP4sFWCTW
-	VqPFtogMpHtYR6RLlotNkKPFguE/0+0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708343775;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
-	b=CW3k+AASubWZUsX7BEFpJjYNb6M0up0wqB5uWYsyR6VxJvrC9ZCwXfu8YryV9Fd8VAXOri
-	5XB31zaQdMHLrYBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708343773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
-	b=buau6+K+bHQBAEbQguScoIcRxtFI0j7HwT8gHAUdxEJUUcZwmnLmx902BD6L4pg2FD/uw8
-	iCK1i7I3hf+0dC8b2q7Hc5ZRYKfDNUhrLEW5N2oQRMZEqKm6yoU+zPYXXkCHXnUVuq6BV7
-	/ZFSsvDjjx6glmdQ6+bnmSX5XxMvZto=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708343773;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
-	b=t31G6cyP2MTxAh//4JyTp9UpLAj2jDCsgF5zz0fCnkkhDX77LFRDdUwQO793OeIuKrM0Lb
-	wjIs1K4uYH4qxVAw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DE64213585;
-	Mon, 19 Feb 2024 11:56:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id gFdGNt1B02U2cAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 19 Feb 2024 11:56:13 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 92E02A0806; Mon, 19 Feb 2024 12:56:13 +0100 (CET)
-Date: Mon, 19 Feb 2024 12:56:13 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+84c274731411665e6c52@syzkaller.appspotmail.com>
-Cc: axboe@kernel.dk, brauner@kernel.org, damien.lemoal@opensource.wdc.com,
-	jack@suse.cz, jfs-discussion@lists.sourceforge.net,
-	jlayton@kernel.org, kch@nvidia.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, shaggy@kernel.org,
-	syzkaller-bugs@googlegroups.com, willy@infradead.org
-Subject: Re: [syzbot] [jfs?] INFO: task hung in __get_metapage
-Message-ID: <20240219115613.frzm7ttf7vfdy3xo@quack3>
-References: <0000000000004f9dd605eabee6dc@google.com>
- <00000000000056790c0611b5548c@google.com>
+	s=arc-20240116; t=1708343835; c=relaxed/simple;
+	bh=tpEZvY4JNPf3zA/5+c+vBc9IYvKrcWuT2LwwwYik6zA=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=XI5F9wmd2PpQk6NuVvAk50VlZpPuHB4vn4ZVTO+GD6cFupWiO3XrI2Gx3QpS/9lkSbeCJGI/GltGQz6zW/zdIcKkuw038kNirhyNfwODVVSmXaN3IP0zA9zVNGU6HbwiukNTzlcPOdHKXpYR1hfC5sAtGIZnk10JJ60p0zyb64A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nCk+6lzP; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708343834; x=1739879834;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=tpEZvY4JNPf3zA/5+c+vBc9IYvKrcWuT2LwwwYik6zA=;
+  b=nCk+6lzPdj0a8NULbSi84dMxbTDb3sOJGialrv2RWdtpMiG60eNzFih1
+   FEyB2lMX0jSGtN9QHmG/+qBSN/DqG4QhH8eNKg3VD6e80dtVWk9edznnF
+   dXDJZbyPqSG7zR5frQ2DYBoN8kvhNYjUSH1ekgVaXTzf2hMFEt6vpdXCX
+   6cYDFtRbdFiXqLIi2XEbLnWCjBI/DaUnJDGsJnM33Y05X0E4G9MmQpYaC
+   jNdGtXslzDYfIasDm+zWj2dmQK3HfBSnrKcE3DX8wuzbcGA5ERN2fMtRz
+   KZ2L6gbjT0esPLYv5UBEVfXyKlENZIkPzcNu88W43DZmn8EMSd7ieeVci
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="6196084"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="6196084"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:57:13 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="41967148"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.18])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:57:09 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 19 Feb 2024 13:57:01 +0200 (EET)
+To: Armin Wolf <W_Armin@gmx.de>
+cc: =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>, 
+    corentin.chary@gmail.com, luke@ljones.dev, 
+    Hans de Goede <hdegoede@redhat.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/5] platform/x86: wmi: Check if event data is not NULL
+In-Reply-To: <80bc19ce-7111-4a5d-b875-2712bdf2bb72@gmx.de>
+Message-ID: <1fb172ff-b085-185e-90ea-1cd131f42b84@linux.intel.com>
+References: <20240214070433.2677-1-W_Armin@gmx.de> <20240214070433.2677-3-W_Armin@gmx.de> <e03b600e-6ad2-1dd1-c4af-56ebfce51f12@linux.intel.com> <80bc19ce-7111-4a5d-b875-2712bdf2bb72@gmx.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000056790c0611b5548c@google.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: *
-X-Spam-Score: 1.69
-X-Spamd-Result: default: False [1.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.01)[47.63%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4];
-	 TAGGED_RCPT(0.00)[84c274731411665e6c52];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 R_RATELIMIT(0.00)[to_ip_from(RLpdan7qhx516wxzbnn3a3f9z9)];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
+Content-Type: multipart/mixed; boundary="8323328-1334979965-1708343821=:1174"
 
-On Sun 18-02-24 21:26:01, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13310158180000
-> start commit:   1b929c02afd3 Linux 6.2-rc1
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
-> dashboard link: https://syzkaller.appspot.com/bug?extid=84c274731411665e6c52
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1702dc54480000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b9eaf4480000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-No working repro and this is JFS. So:
- 
-#syz fix: fs: Block writes to mounted block devices
+--8323328-1334979965-1708343821=:1174
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+On Thu, 15 Feb 2024, Armin Wolf wrote:
+
+> Am 15.02.24 um 13:31 schrieb Ilpo J=C3=A4rvinen:
+>=20
+> > On Wed, 14 Feb 2024, Armin Wolf wrote:
+> >=20
+> > > WMI event drivers which do not have no_notify_data set expect
+> > > that each WMI event contains valid data. Evaluating _WED however
+> > > might return no data, which can cause issues with such drivers.
+> > >=20
+> > > Fix this by validating that evaluating _WED did return data.
+> > >=20
+> > > Signed-off-by: Armin Wolf <W_Armin@gmx.de>
+> > > ---
+> > >   drivers/platform/x86/wmi.c | 11 +++++++++--
+> > >   1 file changed, 9 insertions(+), 2 deletions(-)
+> > >=20
+> > > diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
+> > > index 34d8f55afaad..8a916887c546 100644
+> > > --- a/drivers/platform/x86/wmi.c
+> > > +++ b/drivers/platform/x86/wmi.c
+> > > @@ -1211,6 +1211,7 @@ static void wmi_notify_driver(struct wmi_block
+> > > *wblock)
+> > >   {
+> > >   =09struct wmi_driver *driver =3D drv_to_wdrv(wblock->dev.dev.driver=
+);
+> > >   =09struct acpi_buffer data =3D { ACPI_ALLOCATE_BUFFER, NULL };
+> > > +=09union acpi_object *obj =3D NULL;
+> > >   =09acpi_status status;
+> > >=20
+> > >   =09if (!driver->no_notify_data) {
+> > > @@ -1219,12 +1220,18 @@ static void wmi_notify_driver(struct wmi_bloc=
+k
+> > > *wblock)
+> > >   =09=09=09dev_warn(&wblock->dev.dev, "Failed to get event
+> > > data\n");
+> > >   =09=09=09return;
+> > >   =09=09}
+> > > +
+> > > +=09=09obj =3D data.pointer;
+> > > +=09=09if (!obj) {
+> > > +=09=09=09dev_warn(&wblock->dev.dev, "Event contains not event
+> > > data\n");
+> > > +=09=09=09return;
+> > > +=09=09}
+> > >   =09}
+> > >=20
+> > >   =09if (driver->notify)
+> > > -=09=09driver->notify(&wblock->dev, data.pointer);
+> > > +=09=09driver->notify(&wblock->dev, obj);
+> > >=20
+> > > -=09kfree(data.pointer);
+> > > +=09kfree(obj);
+> > Hi Armin,
+> >=20
+> > While looking into this patch, I failed to connect the mention of
+> > no_notify_data in the commit message with the code change that does
+> > nothing differently based no_notify_data being set or not, AFAICT.
+> >=20
+> > It could be just that you need to explain things better in the commit
+> > message, I'm not sure.
+>=20
+> Here the _WED ACPI control method is only evaluated if driver->no_notify_=
+data
+> is not set.
+> So the returned ACPI object should only be validated in this case, as we =
+pass
+> NULL otherwise.
+
+Yes, I'm sorry, it seems fine. For some reason I was very confused while=20
+reviewing even if no_notify_data was mentioned right in the previous=20
+context (maybe Iused some older version of the code while trying to figure=
+=20
+things out, I dunno).
+
+--=20
+ i.
+
+--8323328-1334979965-1708343821=:1174--
 
