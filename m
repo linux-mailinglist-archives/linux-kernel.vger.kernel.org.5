@@ -1,39 +1,46 @@
-Return-Path: <linux-kernel+bounces-70664-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9397859AD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:52:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A5EB859AD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:56:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBE171C21000
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:52:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C1CA1C21027
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E2623CB;
-	Mon, 19 Feb 2024 02:52:49 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2A5720F1;
-	Mon, 19 Feb 2024 02:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BE852114;
+	Mon, 19 Feb 2024 02:56:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mA8/dNu+"
+Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD611FC8
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 02:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708311169; cv=none; b=edkhAkOUTwvrMSGLR/QzU3Kxfm/VTXl6IcSBYx3bOzZGQGCHIB+tlbnfvonJjp2+qejS97A4DtWGWUBWS9Ftgy+XgkglVBMZu1perytWV32dymGsq+gVP9ys1lo/h4mCuYOcnr4ap8Ulkk+YdLTZheO8hqAkHWmszeHFG4XRdgg=
+	t=1708311365; cv=none; b=B1wvf3iGqjmjRYZ5JNwUm/VHNTQXoIBx8bzJHe8/nlk2Zz80wwimuUd3P+1kY+NhwDT7Lf/FK9pFsQePEPUd6vH6Zd8NyJcGAWpe6DCc73jbmJTR4bfHPo0SEB7dqgGjfZ9jWhdX71oBSW7uux5ogIU9cX2Jx7hwLISK2HYrBUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708311169; c=relaxed/simple;
-	bh=/5quQyLZ0qlAalvNxnek0ybbYAycaAWEuCwqEblZfek=;
+	s=arc-20240116; t=1708311365; c=relaxed/simple;
+	bh=9I3/khzFwIbdzXjPtuKVOdiJu0VzmQlOsKemxYS09TE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wg2CZ8VmBLizPIxwLAU/yYSadd93ZchzBFU41vlGkNEE4obwBlfs+GSgKhe3bxG330wilmbQGolIgMnIFrzCrVmIHrKuPS4tK51ac+jNkDBTpH5i1coZ60PbFz4V2bB/8yUdZNlGDFldQ+2HDc5MUCD1yYhz8bqYV4UQyhPzsGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 81CE4FEC;
-	Sun, 18 Feb 2024 18:53:20 -0800 (PST)
-Received: from [10.162.43.127] (a077893.blr.arm.com [10.162.43.127])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B10943F766;
-	Sun, 18 Feb 2024 18:52:36 -0800 (PST)
-Message-ID: <ff8cbe8c-c56e-4e04-8d89-040d2ba2fd0e@arm.com>
-Date: Mon, 19 Feb 2024 08:22:33 +0530
+	 In-Reply-To:Content-Type; b=jz6U0X/BdO12knZBT5mix85ScoWCjji3IlyUqOT7TBeN0aNvhI0nJhCW8o/Olc/wjgc8RURJq3pyhWlB5D5Luc+FXoy+9CahAf9Qb6bxc9+WDOqhaNOujUmBHxYZg6TKqG6F1fC1Ixe/XKBd7cUVMmZE+Euls+lr2IyUX+fyzYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mA8/dNu+; arc=none smtp.client-ip=115.124.30.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708311360; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=yQrlVUbCNycovOpvidI2cU4GO80wwX6nTyqP1bcvxIc=;
+	b=mA8/dNu+PbaXczsmCXl1lKeRVO5+gN6ORC0Cs1wz4PURyYKrBTtrRzGZvzh9VsLBNQqf24X/m39ePItXdBJMPmvMz2TMYFkD3L0D9nm4+y+E7qI/SXGm1N1VNAVqI7hy4J86DgSzxthWwtmVA+llH34zEkJqJan0/FQuuF3zExU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W0mvt6V_1708311359;
+Received: from 30.97.56.48(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W0mvt6V_1708311359)
+          by smtp.aliyun-inc.com;
+          Mon, 19 Feb 2024 10:56:00 +0800
+Message-ID: <83bc1070-2eb4-4fac-aecf-9cc407003ca2@linux.alibaba.com>
+Date: Mon, 19 Feb 2024 10:55:59 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,92 +48,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 05/11] coresight: replicator: Move ACPI support from
- AMBA driver to platform driver
-Content-Language: en-US
-To: Suzuki K Poulose <suzuki.poulose@arm.com>,
- linux-arm-kernel@lists.infradead.org
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
- Sudeep Holla <sudeep.holla@arm.com>, Mike Leach <mike.leach@linaro.org>,
- James Clark <james.clark@arm.com>,
- Maxime Coquelin <mcoquelin.stm32@gmail.com>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>, linux-acpi@vger.kernel.org,
- linux-kernel@vger.kernel.org, coresight@lists.linaro.org,
- linux-stm32@st-md-mailman.stormreply.com
-References: <20240123054608.1790189-1-anshuman.khandual@arm.com>
- <20240123054608.1790189-6-anshuman.khandual@arm.com>
- <b72c54bf-17a8-453c-8fbb-fbc90abdb45a@arm.com>
- <b0c8b92e-53bc-4232-a748-ff3e6b94b112@arm.com>
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-In-Reply-To: <b0c8b92e-53bc-4232-a748-ff3e6b94b112@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 1/2] mm: compaction: limit the suitable target page order
+ to be less than cc->order
+To: Zi Yan <ziy@nvidia.com>, Vlastimil Babka <vbabka@suse.cz>
+Cc: akpm@linux-foundation.org, mgorman@techsingularity.net,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <afcd9377351c259df7a25a388a4a0d5862b986f4.1705928395.git.baolin.wang@linux.alibaba.com>
+ <20c8fa7c-62ae-4e48-aaec-8b512519cee9@suse.cz>
+ <5277627F-6791-46A1-AFC2-54FBF0DABF1A@nvidia.com>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <5277627F-6791-46A1-AFC2-54FBF0DABF1A@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 2/15/24 16:55, Suzuki K Poulose wrote:
-> On 15/02/2024 11:23, Suzuki K Poulose wrote:
->> Hi Anshuman
->>
->> On 23/01/2024 05:46, Anshuman Khandual wrote:
->>> Add support for the dynamic replicator device in the platform driver, which
->>> can then be used on ACPI based platforms. This change would now allow
->>> runtime power management for repliacator devices on ACPI based systems.
+On 2024/2/12 23:00, Zi Yan wrote:
+> On 12 Feb 2024, at 4:13, Vlastimil Babka wrote:
+> 
+>> On 1/22/24 14:01, Baolin Wang wrote:
+>>> It can not improve the fragmentation if we isolate the target free pages
+>>> exceeding cc->order, especially when the cc->order is less than pageblock_order.
+>>> For example, suppose the pageblock_order is MAX_ORDER (size is 4M) and cc->order
+>>> is 2M THP size, we should not isolate other 2M free pages to be the migration
+>>> target, which can not improve the fragmentation.
 >>>
->>> The driver would try to enable the APB clock if available. Also, rename the
->>> code to reflect the fact that it now handles both static and dynamic
->>> replicators.
->>>
->>> Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>
->>> Cc: Sudeep Holla <sudeep.holla@arm.com>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: James Clark <james.clark@arm.com>
->>> Cc: linux-acpi@vger.kernel.org
->>> Cc: linux-arm-kernel@lists.infradead.org
->>> Cc: linux-kernel@vger.kernel.org
->>> Cc: coresight@lists.linaro.org
->>> Tested-by: Sudeep Holla <sudeep.holla@arm.com> # Boot and driver probe only
->>> Acked-by: Sudeep Holla <sudeep.holla@arm.com> # For ACPI related changes
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>>> Moreover this is also applicable for large folio compaction.
 >>
->> I think the patch is doing three different things:
->>
->> 1) Use new helper to register/remove AMBA/Platform drivers
->> 2) Refactor replicator_probe() to make sure it can be reused for platform/amba driver, by moving the pm_runtime_put() to the callers.
->> 3) Actually moving the ACPI driver to Platform driver
->>
->> While (1) and (3) are obvious, (2) gave me hard time to review this
->> patch, without proper description. If you don't mind, are you able to
->> split the patch and add proper description of the 3 changes mentioned
->> above.
+>> So why not Cc: Zi Yan? (done)
 >>
 > 
-> You could even move (1) for all the existing drivers into a single patch
-> or even fold it with the patch that introduces the helpers. That way it
+> Thanks.
+> 
+> Hi Baolin,
+> 
+> How often do you see this happening?
 
-There are only two existing coresight devices with both AMBA and platform
-drivers available i.e replicator and funnel. Such devices could use these
-new helpers right from the beginning. As you mentioned earlier such changes
-might be folded back into the patch adding the helpers.
+This is theoretically analyzed from the code inspection.
 
-But coresight devices such as catu, tpiu, tmc, stm and debug don't have
-platform drivers to begin with. Hence the helpers could only be used in
-their respective patches adding platform drivers.
+>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>>
+>> I doubt this will make much difference, because if such a larger order free
+>> page exists, we shouldn't have a reason to be compacting for a lower order
+>> in the first place?
+> 
+> Unless kswapd gets us such a free block in the background right after
+> get_page_from_freelist() and before compaction finishes in the allocation
+> slow path.
+> 
+> If this happens often and cc->order is not -1, it might be better to stop
+> compaction and get_page_from_freelist() to save cycles on unnecessary pfn
+> scanning. For completeness, when cc->order == -1, the logic does not change.
 
-> is cleaner and easier to review. And (2) & (3) could be in the same patch for each driver, but please add something in the description for (2).
+Yes, this is one possible case. There are also some other concurrent 
+scenarios, such as when compaction is running (after 
+compaction_suitable()), at the same time, other applications release a 
+large folio to the free list. In this case, the free large folio 
+scanning should also be avoided.
 
-Please find the updated commit message here, does this look okay ?
-
-    coresight: replicator: Move ACPI support from AMBA driver to platform driver
-
-    Add support for the dynamic replicator device in the platform driver, which
-    can then be used on ACPI based platforms. This change would now allow
-    runtime power management for replicator devices on ACPI based systems.
-
-    The driver would try to enable the APB clock if available. Also, rename the
-    code to reflect the fact that it now handles both static and dynamic
-    replicators. But first this refactors replicator_probe() making sure it can
-    be used both for platform and AMBA drivers, by moving the pm_runtime_put()
-    to the callers.
+>>> ---
+>>>   mm/compaction.c | 4 +++-
+>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/mm/compaction.c b/mm/compaction.c
+>>> index 27ada42924d5..066b72b3471a 100644
+>>> --- a/mm/compaction.c
+>>> +++ b/mm/compaction.c
+>>> @@ -1346,12 +1346,14 @@ static bool suitable_migration_target(struct compact_control *cc,
+>>>   {
+>>>   	/* If the page is a large free page, then disallow migration */
+>>>   	if (PageBuddy(page)) {
+>>> +		int order = cc->order > 0 ? cc->order : pageblock_order;
+>>> +
+>>>   		/*
+>>>   		 * We are checking page_order without zone->lock taken. But
+>>>   		 * the only small danger is that we skip a potentially suitable
+>>>   		 * pageblock, so it's not worth to check order for valid range.
+>>>   		 */
+>>> -		if (buddy_order_unsafe(page) >= pageblock_order)
+>>> +		if (buddy_order_unsafe(page) >= order)
+>>>   			return false;
+>>>   	}
+>>>
+> 
+> 
+> --
+> Best Regards,
+> Yan, Zi
 
