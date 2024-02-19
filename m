@@ -1,222 +1,119 @@
-Return-Path: <linux-kernel+bounces-72035-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 526AF85AE17
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:56:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 927DB85AE1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:57:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0ACE28423D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:56:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33B99B22A3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:57:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D21C54750;
-	Mon, 19 Feb 2024 21:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C21E54750;
+	Mon, 19 Feb 2024 21:56:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Osxb3bbf"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yaKQvI2I"
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C0D53E16
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 21:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2BA954FA0
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 21:56:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708379795; cv=none; b=Clqnp+hmMuKF21ZivYTnJGecM0E4CvLJBekDqttGcINB32KG8SMOZbK5AY2c8gx+ENbAv77PDXpQe4zMc6X/Oq9h7MNZewjXgv6TOoUgg8hnNkWVP274QbSE6LRtjl9xBxDHPbRKLsNlaa8Pgk+KDkJXhmD0bqwj3vXULmkorTg=
+	t=1708379806; cv=none; b=toXLjITAlTVFGdAJxtuCFvkPZpZgF6gFWLtLnCCgWLLTgQQxgn+vZ9+2z7bFYqv97jL1oIfdM8CuFAtTqx9EU6r9N6oBNO6WO9RggHgoAZgkg++MJb/a8xOKAZ58kMF5ZFK/tlcSgPlTnyRkzevdGL7b1w7caQpxMhymWSDw00g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708379795; c=relaxed/simple;
-	bh=7JCfhPDkJUhYAoeR4FrqaMZFWAEXdZeyjhqYx/qMTgw=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p6Quqx1p46XWtoVoc1B/OmcZvXCbV+14eXHVu/Fbrw4BYW7I2MfbV5wqHLIW/UCrpneDNbyhMkl5vsOvV5n64qpai/sHphSelqJEzh2fCByoPg5mzEEIZ4W4p4vSvn3K4nuqqmjqKtNZ2p8cmVXg9GgDwT3CYFE5i6jBlMW+8c0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Osxb3bbf; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41263dbdfeaso13380985e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:56:33 -0800 (PST)
+	s=arc-20240116; t=1708379806; c=relaxed/simple;
+	bh=jnwZE4S2VTxOOE1MLufKwv7MLtdIeQ/H3SGA6T3ceVw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KF2t+vgN4AiEzXAnuAT/kwQHi7nnAucpmygv+W8H6E1HGeq7L8/IkJLEfj5Xsx7GHVjeHi1c+Hwq8ZF6TQ33nYJr5WGEbCWQ1U26hV2mtiago4DABV/EMpZ4QZozjuLuz56x6ExxzoI+PPiOrzy5XwajJdLkDp4TRUM5sSLBj7A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yaKQvI2I; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6085ed1e916so2144297b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:56:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708379792; x=1708984592; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=oJHcV/T82uWCoxsFHTEBn8FHgLuv3HM/m85Ck6a9z44=;
-        b=Osxb3bbfj6zYw7My83cEiZ9V+uZ21xriGaQFL62n4RMuNgYox553fSEC/vg2SvUbLi
-         0bzrM+YEU2QPZuyrziaLj5pA/+G6euBkqjnz5pYBbC0Xxh4oZOe9woMTuhZJudfcvCtO
-         hikyxCEQp9Q1fmG1E+cHQ0//Gv/EQEaDtISCLC/v4DkdvjXjYxL0KRa+8Ng50zqxeCAo
-         2nnsVUixOa/kd84GUExLiAhHPEupywMLEtFeF/m3AuDb23d0In5DTcWVXU87kN8Q6sry
-         iRIUHQehn84G7v3kA3xlXf12TA+QIS0xIki1WNwKj6Bj+n+b/WP2yWaeIqXAMmD4zMXT
-         mR7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708379792; x=1708984592;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1708379804; x=1708984604; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oJHcV/T82uWCoxsFHTEBn8FHgLuv3HM/m85Ck6a9z44=;
-        b=qhZy6mqs5igO9y4HQizz5KXGp2oq8nQ4BW5ng93LWiHW9bKFrhG6PCE0YPc0stNF9/
-         36Xgv88pO3eM/GDVGeTe5/XntRvAqkrzy68eet16u7llRmCtdD5o0xLKDwA86HISIq4e
-         5jl6/GYBUREZ0qqoBRvcMy87DbxRrCiYSxcXSWsi0I3yLHj/XO7Yi68nrr5bIX6ONCl2
-         uBIqasyy4O8ctkRsDmDohHjP2tc4qFGrPBSLRdjm1pSfCuk9T3V9R4TwPOF1weDwEo3U
-         dyZlyuWwUX9VM9HboW1melrqyx+eCj2PvR93BLZtFdH5KERuLttJxtnMdjsKzp2Ifz6l
-         66JQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXk8cZnUJ7Ap4ANUHGGPh5vClzyocTN7DoOmILZZJRWqwQPc0PYpdmbPdv9ktwG2llcavt8ziV67PRj1Imtne2SmUOe2ioubQhhSywq
-X-Gm-Message-State: AOJu0YwYHrcMcMh53ShSomrQpii58TjMjzto7aCp7CAUoiXj1rl/VIgB
-	Qz36cjDh5EveSN3KRFTqHHOn++/QJHW2p8qkZE9tx8xFEbphUSeS
-X-Google-Smtp-Source: AGHT+IFJYWBDF4gET9omu3xc8KSaSs/8Eb4LET3mTi87Yb5PdCv4fspcYOYQ4rnbRp6gkgvbvHS4UA==
-X-Received: by 2002:adf:fe0f:0:b0:33c:e35b:7a59 with SMTP id n15-20020adffe0f000000b0033ce35b7a59mr9025210wrr.48.1708379791537;
-        Mon, 19 Feb 2024 13:56:31 -0800 (PST)
-Received: from Ansuel-XPS. (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.gmail.com with ESMTPSA id bv9-20020a0560001f0900b0033b5b6a186dsm11690760wrb.69.2024.02.19.13.56.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 13:56:31 -0800 (PST)
-Message-ID: <65d3ce8f.050a0220.e5faf.c252@mx.google.com>
-X-Google-Original-Message-ID: <ZdPOjrr7AYoOth74@Ansuel-XPS.>
-Date: Mon, 19 Feb 2024 22:56:30 +0100
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, David Bauer <mail@david-bauer.net>
-Subject: Re: [PATCH] mtd: spi-nor: Add support for BoHong bh25q128as
-References: <20240217122029.3278-1-ansuelsmth@gmail.com>
- <CZ8X218EWPC9.25TO9O5C7VXQ9@kernel.org>
+        bh=0/z7Oth3uWYAoZv2gVpy6Dr4nj1eg780SKedkbWLNvY=;
+        b=yaKQvI2IzjqJefvDuWLsiN7ih+t6Ar2DuN96gdel9Da/lXfAe0CyXVGlmNudhJragY
+         SAxpmWT2IVinRNrzaJaze/UJLrcjIRBH8gjrEnF9nZ7xUMQ5Pz3qeezT/EXGY2GVF1kG
+         /RhvKWGnszItfi9V84Pn4iLNaaupRH9Jh0hhSQxQ3BKz2ozGC04VFtpP4wDrXDup3BUC
+         GnQE1aEOmZFViAvgWMKX92tXQuzI7AzuTftCAMqsZGoVRH5X/Fpwz6l1ssAPm2UKJCqw
+         js0vmBGHx2zMjkUn6Y6KwefSnUaOBQNEjChV3pz0PVUurPGG3A7qcpAVjAuxKlwJvzmI
+         3PdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708379804; x=1708984604;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0/z7Oth3uWYAoZv2gVpy6Dr4nj1eg780SKedkbWLNvY=;
+        b=R/p6NYB23nEewGcjwq2GH4UFCxn82euRIc3sqKBYi5AUqPOl6OKLs99oK6i+UacTZG
+         0/ImOBY5Rk6gXOC4M6WWPck1nPCcsNjioywQBHlzfKvb+6+nGdcsigVqIkSuZ+y4Bawm
+         yPqJGCApQzv5spfg9JoGW2h0TM4rskB8GngiU7EGGyAEz/flQNC/pSg4WCOSMcFfaVyK
+         vDLJ55I5kHxViGgU9jS8X6HYg4ljIQ/s03RaHjY0JKUnZEDqWWJx/C+KrHAcs6ftTdqA
+         OT/X6N29ojLspNek3q8feyzlQ4Ps3djd51npjtel9wkMGRQ8TcBUmVUv/eeD+8FRLUm5
+         QOeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVww+mKV0ZJkzuLLQME1ZHGn4xUmQ1ge79N4jCceb4SGzCMGojDAKW51YfhmfKOLVn2oaWKqTPsy8JRQfbkbeJY6kv3ixKNtjQe4CLE
+X-Gm-Message-State: AOJu0Yz9gsUnczAtCIFHDgfH4XGRle+VqyVHD2YudR36hgKVQEnQ+yxY
+	6opqo/SHz8jh93hsC+O4E/tg+uAaXOvnPEUzolitU5enW46E8KP9S/S6P5zXlakooK/xwp+Ec5U
+	/t+HNmn0LcdIO5eBPZ4ZnjxrwahB1QqikIkvgOA==
+X-Google-Smtp-Source: AGHT+IGcz7rDFrB3H96NwCEBK79eVL4dxmtjY7EUMR+E2Y+tyM0OKpEUleavbf8K7T1I+Q8afEbrz38cYzH/dDLZwL8=
+X-Received: by 2002:a81:ae41:0:b0:607:e8c7:f9c9 with SMTP id
+ g1-20020a81ae41000000b00607e8c7f9c9mr12782963ywk.1.1708379803904; Mon, 19 Feb
+ 2024 13:56:43 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CZ8X218EWPC9.25TO9O5C7VXQ9@kernel.org>
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com> <20240214-mbly-gpio-v1-13-f88c0ccf372b@bootlin.com>
+In-Reply-To: <20240214-mbly-gpio-v1-13-f88c0ccf372b@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 19 Feb 2024 22:56:32 +0100
+Message-ID: <CACRpkdbq_QxdftNGOv3+-SpfrV_qPTB-m-atdY0hCE_s8DK64A@mail.gmail.com>
+Subject: Re: [PATCH 13/23] gpio: nomadik: fix offset bug in nmk_pmx_set()
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 09:35:27AM +0100, Michael Walle wrote:
-> Hi,
-> 
-> On Sat Feb 17, 2024 at 1:20 PM CET, Christian Marangi wrote:
-> > From: David Bauer <mail@david-bauer.net>
-> >
-> > Add MTD support for the BoHong bh25q128as SPI NOR chip.
-> > The chip has 16MB of total capacity, divided into a total of 256
-> > sectors, each 64KB sized. The chip also supports 4KB sectors.
-> > Additionally, it supports dual and quad read modes.
-> >
-> > Datasheet is public and can be found here [1].
-> 
-> Last time it wasn't clear if this flash will support SFDP or not.
-> Could you please try to dump the SFDP again, see [1].
+On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
+in.com> wrote:
+
+> Previously, the statement looked like:
 >
-
-Ok will include in v2.
-
-> 
-> > Functionality was verified on an Tenbay WR1800K / MTK MT7621 board.
-> 
-> Also per [1], you'd need to provide your test results.
-> 
-> > [1] https://www.e-interlink.com.tw/userUpload/files/BH25Q128AS_v1_0.pdf
-> 
-> Link: right above your SoB please.
-> 
-> > Signed-off-by: David Bauer <mail@david-bauer.net>
-> > [ reworked to new flash_info format ]
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/mtd/spi-nor/Makefile |  1 +
-> >  drivers/mtd/spi-nor/bohong.c | 24 ++++++++++++++++++++++++
-> >  drivers/mtd/spi-nor/core.c   |  1 +
-> >  drivers/mtd/spi-nor/core.h   |  1 +
-> >  4 files changed, 27 insertions(+)
-> >  create mode 100644 drivers/mtd/spi-nor/bohong.c
-> >
-> > diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-> > index 5e68468b72fc..c8849cf5124f 100644
-> > --- a/drivers/mtd/spi-nor/Makefile
-> > +++ b/drivers/mtd/spi-nor/Makefile
-> > @@ -2,6 +2,7 @@
-> >  
-> >  spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
-> >  spi-nor-objs			+= atmel.o
-> > +spi-nor-objs			+= bohong.o
-> >  spi-nor-objs			+= eon.o
-> >  spi-nor-objs			+= esmt.o
-> >  spi-nor-objs			+= everspin.o
-> > diff --git a/drivers/mtd/spi-nor/bohong.c b/drivers/mtd/spi-nor/bohong.c
-> > new file mode 100644
-> > index 000000000000..26988c139262
-> > --- /dev/null
-> > +++ b/drivers/mtd/spi-nor/bohong.c
-> > @@ -0,0 +1,24 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Copyright (C) 2005, Intec Automation Inc.
-> > + * Copyright (C) 2014, Freescale Semiconductor, Inc.
-> 
-> Please remove, there is nothing from the old code left here.
-> 
-> > + */
-> > +
-> > +#include <linux/mtd/spi-nor.h>
-> > +
-> > +#include "core.h"
-> > +
-> > +static const struct flash_info bohong_parts[] = {
-> > +	{
-> > +		.id = SNOR_ID(0x68, 0x40, 0x18),
-> > +		.name = "bh25q128as",
-> No names anymore, please.
-> 
-
-Mhhh why this change? Doesn't this makes the thing problematic to
-identify?
-
-> > +		.size = SZ_16M,
-> > +		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-> > +	},
-> > +};
-> > +
-> > +const struct spi_nor_manufacturer spi_nor_bohong = {
-> > +	.name = "bohong",
-> 
-> This should be dropped, too. Otherwise looks good, if SFDP is not
-> supported.
+>     slpm[x] &=3D ~BIT(g->pins[i]);
 >
+> Where:
+>  - slpm is a unsigned int pointer;
+>  - g->pins[i] is a pin number which can grow to more than 32.
+>
+> The expected shift amount is a pin bank offset.
+>
+> This bug does not occur on every group or pin: the altsetting must be
+> NMK_GPIO_ALT_C and the pin must be 32 or above. It is possible that it
+> occurred. For example, in pinctrl-nomadik-db8500.c, pin group i2c3_c_2
+> has the right altsetting and has pins 229 and 230.
+>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-Ok, thanks a lot for the review!
+Ah good catch!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-> 
-> [1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
-> 
-> > +	.parts = bohong_parts,
-> > +	.nparts = ARRAY_SIZE(bohong_parts),
-> > +};
-> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> > index 4129764fad8c..29c28ee683a1 100644
-> > --- a/drivers/mtd/spi-nor/core.c
-> > +++ b/drivers/mtd/spi-nor/core.c
-> > @@ -2037,6 +2037,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
-> >  
-> >  static const struct spi_nor_manufacturer *manufacturers[] = {
-> >  	&spi_nor_atmel,
-> > +	&spi_nor_bohong,
-> >  	&spi_nor_eon,
-> >  	&spi_nor_esmt,
-> >  	&spi_nor_everspin,
-> > diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> > index d36c0e072954..c293568ae827 100644
-> > --- a/drivers/mtd/spi-nor/core.h
-> > +++ b/drivers/mtd/spi-nor/core.h
-> > @@ -601,6 +601,7 @@ struct sfdp {
-> >  
-> >  /* Manufacturer drivers. */
-> >  extern const struct spi_nor_manufacturer spi_nor_atmel;
-> > +extern const struct spi_nor_manufacturer spi_nor_bohong;
-> >  extern const struct spi_nor_manufacturer spi_nor_eon;
-> >  extern const struct spi_nor_manufacturer spi_nor_esmt;
-> >  extern const struct spi_nor_manufacturer spi_nor_everspin;
-> 
+I this something I could just apply as a fix or are there
+dependencies on other patches?
 
-
-
--- 
-	Ansuel
+Yours,
+Linus Walleij
 
