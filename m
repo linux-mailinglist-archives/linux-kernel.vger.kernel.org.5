@@ -1,122 +1,102 @@
-Return-Path: <linux-kernel+bounces-71522-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6939385A699
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:56:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E50CD85A69D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:56:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E98F281884
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:56:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B8711F21C2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1DAB381D9;
-	Mon, 19 Feb 2024 14:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953F73839D;
+	Mon, 19 Feb 2024 14:55:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DQrOLR+8"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="inQcANvX"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BFB73C498;
-	Mon, 19 Feb 2024 14:55:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A90B383BB
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:55:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708354512; cv=none; b=jNapdEJcLoe8HZ56BttbMPzHLq9r7l4VlHE+dSrvNZ8nR1vSU4otUH05p6ErdHP7t2I/qA/bD3qzAegAK+j4DfEZNZ4may4UG8e8S4lY8V9lTn8DoHxYkS6W2Xl3wMiLvOeckI7jN4Fg6ft4CskbcAbDAdUt9k4x8UAUeW0XlFY=
+	t=1708354521; cv=none; b=Yt1xlZzxIgo/rjBQ3XpKkROw3YhSq2bBs9WPNoERTi/9QL01Nz0gHAB/rEoxN31pb/OqaczvSOY5zCXqLp1qw8sAV7iBcrmOx6JlMCYEQphtIg0h6fa5aa9DMY00s+1oN0+olQOc+lYf/Uw9n4on2jVjgZYiyNBxEzFJfN3q+Ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708354512; c=relaxed/simple;
-	bh=HfxplOuL4q2xzVZw2TcJFzzqRvoMGhVC0FGr2EalnFk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
-	 References:In-Reply-To; b=Unf5x23o891Jexzu68TLpUPK0XbPbeWWieGcndx0BSckvgMA2Nom//TXXLGKtNBaHuJcfwZvV1ZDEPP1Jt4GA0Hf1Uks35Fxi5IKTEoYa67sx87jH23YwpMC4UXi4PEp/2uIrjIJY8O9PEXLB9kcIuRPNtYwIeV9Jjs2HTdK8pU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=DQrOLR+8; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 010D64000D;
-	Mon, 19 Feb 2024 14:55:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708354507;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lC1i1N0UNT/0y8QCJSxQOgeE4oJ6ZMsxZMZkpa3P++M=;
-	b=DQrOLR+8qm0bY5slL6AB6BEDjk5hcfQb6M/P+U/Yz4hAszxWqXlg7zof7bpVXHb6qdKWTw
-	6pfod3Ipext1BnHghowE0GYoMePMiFejmBxRovogdYzKujHPwRJTvaYD4GiMPuznwvlM5d
-	pMcNd+J3Wioq1qwLUEzVT7jK2i3EnL+7NCruF52BF1DyUMdPAcVo5Qcq0QI5DjLxMEEvKN
-	BEfpk6D7byjJwG/neMbHlQIBSnc4srjB+vBb4puI2KRovGSUl7jQL0gw+WP+C9GOxUJTmS
-	7Goniy3e24fzWP/GB2WPy1IT4jvkCxPUgtgtXZGZTXn/TH1g9AW4/UbqdWVcdg==
+	s=arc-20240116; t=1708354521; c=relaxed/simple;
+	bh=qH5wXiM3i78ypS1cE2GuObYzdJP6nTn9QLDwtM+E/gc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=svujXZN8oP32t1hfkaaRvLh1wL1BtjouH0/cNwNBISrHZoPJNaogEdx1//7UNeo76Iz3xwRL/dltKsM29MPGP+ej1V8SnYkVfZxbcy6su0nD9IZy/Ucqom+IlxeJJjtpyJ2keBKIkmslWlYZlQio4rRaWwiIY+ueWkfDYchPdMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=inQcANvX; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-607cd210962so36645607b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:55:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708354519; x=1708959319; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qH5wXiM3i78ypS1cE2GuObYzdJP6nTn9QLDwtM+E/gc=;
+        b=inQcANvXPuCuqHnryjl/iYJk9U8YX74QKTNoRgcSh/w3cNzWxiLg/phOgd7Tfz8l+M
+         VSOksR+Auug9hFDV0A0XSvsSlwoMB/9AftArn1ydHjsET4v8TKc90WV1CGo3lRbuO2CM
+         8zPFN2Atu7tW6mPt7Pn0W4PK9UYx+j8hQG4N424F79htcSecCIoTnBle/mWx/TvWB68F
+         KN6ilw43mTQ+X9kulN3QOdJwdMVKjcf2w8PbOhRiN1gjez0fcrku3gpTKuQUOKyAJJYL
+         V12Wzw3rmoOuVbBwGpZRAdu7wRE9znCPzDM+JSFW6NaUqySFNJp51p+S0Rjr5Z7iVruP
+         KLNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708354519; x=1708959319;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qH5wXiM3i78ypS1cE2GuObYzdJP6nTn9QLDwtM+E/gc=;
+        b=jqassbhTvomxoco8G5KC/A02LS8cxF4+ELoakcVTz9dAoaSVgfngw5Y4SJQOfFocLP
+         kAuujG72jO4qymOVImxMdOuUVy3rJTIzjLKIR8v5FwbQBPwXrjRxlMX/WF16t4Qmpfrq
+         efsZZ29XCeHkXBCOs6sjBREZDbsGX4TtBLaFmdLvu17mufGnIOIzQex0SFi7RBAOSifQ
+         xy4UsO9WM3w0kpv3LlhlgqcsCV3F/0GkSjmcCInY18173pPbsUKFOi7WeMjZDqmS5yOR
+         DHlRxwO/S1aMfzNwn7A8Wvg5m+5+8aLHDWf/ZgmVOxnquVxpSwFdtLUwehXvsmdlTSsa
+         RGDA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6GVQo80CVoISkh1nsSOTcsFHqU1qTg/Jqm6z2bmOkVF3ypgSErgsS/5MuPYHNVrvpuL/3IzGn3P7A/ofyPEgR/WHe9p7sP6PnFs9a
+X-Gm-Message-State: AOJu0YzVfJM+5ZXv88kfcaixaerjLZhRMScD3sDyB8wmOSv03HHE24Sg
+	Dp9jrBgSYn1XfK3VdI0MELZ/I95D9nAS2EpbuHZfxNIfPSQyJ2VMDdNGy7gx8llhQOQMdmk3l1W
+	faZupjgroSxFoGAz74wpkMdejSxlTIAisZCyqvw==
+X-Google-Smtp-Source: AGHT+IFltO6KkjBY25OUgoFC/Kmxadk8ahvUfaezI8PdV+xriL2Xe4U881DZubLOYqtDNDNARjLCAVm5NBCSj2rOXnE=
+X-Received: by 2002:a05:690c:a8c:b0:607:a8d9:c29e with SMTP id
+ ci12-20020a05690c0a8c00b00607a8d9c29emr13974595ywb.33.1708354519351; Mon, 19
+ Feb 2024 06:55:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com> <20240214-mbly-gpio-v1-4-f88c0ccf372b@bootlin.com>
+In-Reply-To: <20240214-mbly-gpio-v1-4-f88c0ccf372b@bootlin.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Mon, 19 Feb 2024 15:55:08 +0100
+Message-ID: <CACRpkdZ5v4GUJtrOV4U4bhvKC+RZFXk8LZdyN1cbxmm5mxcLuQ@mail.gmail.com>
+Subject: Re: [PATCH 04/23] dt-bindings: gpio: nomadik: add optional reset property
+To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Philipp Zabel <p.zabel@pengutronix.de>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 19 Feb 2024 15:55:06 +0100
-Message-Id: <CZ954Q11FWMI.39QMRYTRZAO1C@bootlin.com>
-Subject: Re: [PATCH 02/23] dt-bindings: gpio: nomadik: add optional ngpios
- property
-Cc: "Bartosz Golaszewski" <brgl@bgdev.pl>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Philipp Zabel" <p.zabel@pengutronix.de>, "Thomas Bogendoerfer"
- <tsbogend@alpha.franken.de>, <linux-gpio@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-arm-kernel@lists.infradead.org>, <linux-mips@vger.kernel.org>,
- "Gregory CLEMENT" <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Linus Walleij" <linus.walleij@linaro.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: aerc 0.15.2
-References: <20240214-mbly-gpio-v1-0-f88c0ccf372b@bootlin.com>
- <20240214-mbly-gpio-v1-2-f88c0ccf372b@bootlin.com>
- <CACRpkdawXwae7GKf4zOfVUJPLgLOeEX-8w5fbnr8O6FXuZHuaw@mail.gmail.com>
-In-Reply-To: <CACRpkdawXwae7GKf4zOfVUJPLgLOeEX-8w5fbnr8O6FXuZHuaw@mail.gmail.com>
-X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hello,
+On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
+in.com> wrote:
 
-On Mon Feb 19, 2024 at 3:50 PM CET, Linus Walleij wrote:
-> On Wed, Feb 14, 2024 at 5:24=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
-tlin.com> wrote:
+> Add optional reset device-tree property to the Nomadik GPIO controller.
 >
-> > This GPIO controller can support a lesser number of GPIOs than 32.
-> > Express that in devicetree using an optional, generic property.
-> >
-> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
-> > ---
-> >  Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yam=
-l b/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
-> > index a999908173d2..bbd23daed229 100644
-> > --- a/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
-> > +++ b/Documentation/devicetree/bindings/gpio/st,nomadik-gpio.yaml
-> > @@ -50,6 +50,10 @@ properties:
-> >    gpio-ranges:
-> >      maxItems: 1
-> >
-> > +  ngpios:
-> > +    minimum: 0
-> > +    maximum: 32
->
-> I can't help but wonder what good is ngpios =3D <0>; but OK.
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
 
-A min value is required, else it is equal to the max. There was no
-reason to pick anything bigger than zero.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-I'll admit it is not a setup I have tested so the driver might have
-issues with the ngpios=3D=3D0 edge-case. Of course I do not expect anyone
-to care.
-
-Regards,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Yours,
+Linus Walleij
 
