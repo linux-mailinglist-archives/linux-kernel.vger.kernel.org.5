@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-71186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71187-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 683B285A1D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:22:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0950785A1D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C603D283B25
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:22:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DB61B22434
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3420D2C1B5;
-	Mon, 19 Feb 2024 11:21:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0BC2C69F;
+	Mon, 19 Feb 2024 11:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WdZKyfKu"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cT59GSDj"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07EA2C693
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A022C1B9
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708341716; cv=none; b=MfD2HEBJIdYwkU7fpFk1O8KWsfA2PLR6TXMkqkiCVXHUel2y2Ah2b+ibWeD+klleOsoRwsTbtQys1LjBNBexGt51oOE16V38WfLyYBPgrOOiaOVraiXxo8Rbxd72X7iuzB7mNCYh0fMXmyu5mRPw6RDOTkqQ6T1MYHnV3mcC1iw=
+	t=1708341718; cv=none; b=E+UdSRmirVWSbbJ4myD+oUA+HTauu35M3K+GdZIryFTRQ662UzW5iq+2VhlYMOq9kSgAOcEKGgJJjC5hmAXWvM8M2iPgn54JV9xlQ1YRxK6l/zYPdAtqJySL2i5E2OLEbC62AZe1keL3JnDkcVcv0+a8IaaXXih8t8i0bBVLuY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708341716; c=relaxed/simple;
-	bh=FU4fhoGWvuGe6qI9myzpUIIpInnM2vTTQxC1ESzz82w=;
+	s=arc-20240116; t=1708341718; c=relaxed/simple;
+	bh=Zqh+3Mt2v/emqmQjBVUt1eEzkbGDcsPozbxTYVR4sOQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Tu47pkt+j/8aCXsxkgq3I5cUn6ZItjXZfBXBBdbFZ5hs6eX3ClYVFeCiDxn9TsgdkPGesgDs21PAHO9y0V2y8U6pd1kNq0sI5owP+LimxvUM52/Lro+qAcURAB5fFUFCa6nPLtK/cYzBfplf8Aagztl4aXPEnKpT66hL800hMGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WdZKyfKu; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=m9FeFbTjLIqFL4RtVGr7G4HozGpznxB9Y9Z5yJGM1mJYNJXIqEQr4zlZ/K4ptmu5E8WA3Ocb+6N4r0DHJ3cvTAKhj7D5YE324opnDvqdyrbQ4BdOZJIKa+51vCtcWpdYvDNcj8l3Dc1dfGzksir9yzExpXJI9QBzmD8E22V4Vhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cT59GSDj; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708341715; x=1739877715;
+  t=1708341718; x=1739877718;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=FU4fhoGWvuGe6qI9myzpUIIpInnM2vTTQxC1ESzz82w=;
-  b=WdZKyfKuTF7tRNL0utkI/BiM6S9ojPgiKh1aGLJ0Y0ksG7DWVYlHYnTl
-   NXZXrmsKeNbAH5Pt5qEf6LymeOgE86Gj+ozOl8d9bHPdOwS2eF5S9kQ3m
-   Ju/lhEyMvRTPzu1/p9bP/1FF4XB5kquZcmDyqnAKlU4yQLnpASHbt02A8
-   rdwLZSliJKEZOH/6gqgyIpJfdutlDLQK1JbxaZv3UVkLIfdgsw1jekPoD
-   WXiyUn4Mm2Vd132VFEOzXDts26VtjDRjWIkQKukEEq2TwnDBglG02CWq1
-   jzNULSCucvg+/HVgjhKuXtz+67rzGV+q/pelA7FaKo1v3q1kPh4kjWGSq
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="13823334"
+  bh=Zqh+3Mt2v/emqmQjBVUt1eEzkbGDcsPozbxTYVR4sOQ=;
+  b=cT59GSDj9BKSYHkESZJQfxxbx549XxChlEJ0kUbCrOiKYjfGIdiAJ1KP
+   niBA9QLCyw/ZhZOUgx3veOIhhV2/EfbAvF4LK4Th+9THqLVmff09INclS
+   nm84AzkmaaRm+9zBFGtrDBcAL/SCAXHyuLboPlNLzsF8cz/oXLAoO3Jzt
+   s6temF4ThxSlnuDKHiPT4VmjHAspj3lvJKG8agQDgxaZslIzDlwmwbBS/
+   wDGVpoxPF2+8aHwhZzJikzQ9k1n/HHDJbADTLNqW9T/v8ZS/4ambMXaFf
+   1kJM+69aMpgiKhQ+U1PrrBCmGj9JT9DhrQRNeGv5HidVrmmlHGJnAezJE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="13823343"
 X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="13823334"
+   d="scan'208";a="13823343"
 Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:21:55 -0800
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:21:58 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="4826784"
+   d="scan'208";a="4826798"
 Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orviesa006.jf.intel.com with ESMTP; 19 Feb 2024 03:21:52 -0800
+  by orviesa006.jf.intel.com with ESMTP; 19 Feb 2024 03:21:55 -0800
 From: Lu Baolu <baolu.lu@linux.intel.com>
 To: Joerg Roedel <joro@8bytes.org>
 Cc: Yi Liu <yi.l.liu@intel.com>,
@@ -61,9 +61,9 @@ Cc: Yi Liu <yi.l.liu@intel.com>,
 	Joao Martins <joao.m.martins@oracle.com>,
 	iommu@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 01/10] iommu/vt-d: Track nested domains in parent
-Date: Mon, 19 Feb 2024 19:15:52 +0800
-Message-Id: <20240219111601.96405-2-baolu.lu@linux.intel.com>
+Subject: [PATCH 02/10] iommu/vt-d: Add __iommu_flush_iotlb_psi()
+Date: Mon, 19 Feb 2024 19:15:53 +0800
+Message-Id: <20240219111601.96405-3-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240219111601.96405-1-baolu.lu@linux.intel.com>
 References: <20240219111601.96405-1-baolu.lu@linux.intel.com>
@@ -77,127 +77,117 @@ Content-Transfer-Encoding: 8bit
 
 From: Yi Liu <yi.l.liu@intel.com>
 
-Today the parent domain (s2_domain) is unaware of which DID's are
-used by and which devices are attached to nested domains (s1_domain)
-nested on it. This leads to a problem that some operations (flush
-iotlb/devtlb and enable dirty tracking) on parent domain only apply to
-DID's and devices directly tracked in the parent domain hence are
-incomplete.
+Add __iommu_flush_iotlb_psi() to do the psi iotlb flush with a DID input
+rather than calculating it within the helper.
 
-This tracks the nested domains in list in parent domain. With this,
-operations on parent domain can loop the nested domains and refer to
-the devices and iommu_array to ensure the operations on parent domain
-take effect on all the affected devices and iommus.
+This is useful when flushing cache for parent domain which reuses DIDs of
+its nested domains.
 
 Signed-off-by: Yi Liu <yi.l.liu@intel.com>
 Reviewed-by: Kevin Tian <kevin.tian@intel.com>
-Link: https://lore.kernel.org/r/20240208082307.15759-2-yi.l.liu@intel.com
+Link: https://lore.kernel.org/r/20240208082307.15759-3-yi.l.liu@intel.com
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/intel/iommu.h  |  6 ++++++
- drivers/iommu/intel/iommu.c  | 18 ++++++++++++++----
- drivers/iommu/intel/nested.c | 12 +++++++++++-
- 3 files changed, 31 insertions(+), 5 deletions(-)
+ drivers/iommu/intel/iommu.c | 78 ++++++++++++++++++++-----------------
+ 1 file changed, 43 insertions(+), 35 deletions(-)
 
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index d02f916d8e59..9b27edb73aa9 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -627,6 +627,10 @@ struct dmar_domain {
- 			int		agaw;
- 			/* maximum mapped address */
- 			u64		max_addr;
-+			/* Protect the s1_domains list */
-+			spinlock_t	s1_lock;
-+			/* Track s1_domains nested on this domain */
-+			struct list_head s1_domains;
- 		};
- 
- 		/* Nested user domain */
-@@ -637,6 +641,8 @@ struct dmar_domain {
- 			unsigned long s1_pgtbl;
- 			/* page table attributes */
- 			struct iommu_hwpt_vtd_s1 s1_cfg;
-+			/* link to parent domain siblings */
-+			struct list_head s2_link;
- 		};
- 	};
- 
 diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 6fb5f6fceea1..e393c62776f3 100644
+index e393c62776f3..dbdb8366c42a 100644
 --- a/drivers/iommu/intel/iommu.c
 +++ b/drivers/iommu/intel/iommu.c
-@@ -3883,6 +3883,7 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
- 	bool dirty_tracking = flags & IOMMU_HWPT_ALLOC_DIRTY_TRACKING;
- 	bool nested_parent = flags & IOMMU_HWPT_ALLOC_NEST_PARENT;
- 	struct intel_iommu *iommu = info->iommu;
-+	struct dmar_domain *dmar_domain;
- 	struct iommu_domain *domain;
+@@ -1368,6 +1368,46 @@ static void domain_flush_pasid_iotlb(struct intel_iommu *iommu,
+ 	spin_unlock_irqrestore(&domain->lock, flags);
+ }
  
- 	/* Must be NESTING domain */
-@@ -3908,11 +3909,16 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
- 	if (!domain)
- 		return ERR_PTR(-ENOMEM);
- 
--	if (nested_parent)
--		to_dmar_domain(domain)->nested_parent = true;
-+	dmar_domain = to_dmar_domain(domain);
++static void __iommu_flush_iotlb_psi(struct intel_iommu *iommu, u16 did,
++				    unsigned long pfn, unsigned int pages,
++				    int ih)
++{
++	unsigned int aligned_pages = __roundup_pow_of_two(pages);
++	unsigned long bitmask = aligned_pages - 1;
++	unsigned int mask = ilog2(aligned_pages);
++	u64 addr = (u64)pfn << VTD_PAGE_SHIFT;
 +
-+	if (nested_parent) {
-+		dmar_domain->nested_parent = true;
-+		INIT_LIST_HEAD(&dmar_domain->s1_domains);
-+		spin_lock_init(&dmar_domain->s1_lock);
++	/*
++	 * PSI masks the low order bits of the base address. If the
++	 * address isn't aligned to the mask, then compute a mask value
++	 * needed to ensure the target range is flushed.
++	 */
++	if (unlikely(bitmask & pfn)) {
++		unsigned long end_pfn = pfn + pages - 1, shared_bits;
++
++		/*
++		 * Since end_pfn <= pfn + bitmask, the only way bits
++		 * higher than bitmask can differ in pfn and end_pfn is
++		 * by carrying. This means after masking out bitmask,
++		 * high bits starting with the first set bit in
++		 * shared_bits are all equal in both pfn and end_pfn.
++		 */
++		shared_bits = ~(pfn ^ end_pfn) & ~bitmask;
++		mask = shared_bits ? __ffs(shared_bits) : BITS_PER_LONG;
 +	}
- 
- 	if (dirty_tracking) {
--		if (to_dmar_domain(domain)->use_first_level) {
-+		if (dmar_domain->use_first_level) {
- 			iommu_domain_free(domain);
- 			return ERR_PTR(-EOPNOTSUPP);
- 		}
-@@ -3924,8 +3930,12 @@ intel_iommu_domain_alloc_user(struct device *dev, u32 flags,
- 
- static void intel_iommu_domain_free(struct iommu_domain *domain)
- {
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
 +
-+	WARN_ON(dmar_domain->nested_parent &&
-+		!list_empty(&dmar_domain->s1_domains));
- 	if (domain != &si_domain->domain)
--		domain_exit(to_dmar_domain(domain));
-+		domain_exit(dmar_domain);
- }
- 
- int prepare_domain_attach_device(struct iommu_domain *domain,
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index f26c7f1c46cc..6a75f6eb18f1 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -70,7 +70,13 @@ static int intel_nested_attach_dev(struct iommu_domain *domain,
- 
- static void intel_nested_domain_free(struct iommu_domain *domain)
- {
--	kfree(to_dmar_domain(domain));
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	struct dmar_domain *s2_domain = dmar_domain->s2_domain;
++	/*
++	 * Fallback to domain selective flush if no PSI support or
++	 * the size is too big.
++	 */
++	if (!cap_pgsel_inv(iommu->cap) || mask > cap_max_amask_val(iommu->cap))
++		iommu->flush.flush_iotlb(iommu, did, 0, 0,
++					 DMA_TLB_DSI_FLUSH);
++	else
++		iommu->flush.flush_iotlb(iommu, did, addr | ih, mask,
++					 DMA_TLB_PSI_FLUSH);
++}
 +
-+	spin_lock(&s2_domain->s1_lock);
-+	list_del(&dmar_domain->s2_link);
-+	spin_unlock(&s2_domain->s1_lock);
-+	kfree(dmar_domain);
- }
+ static void iommu_flush_iotlb_psi(struct intel_iommu *iommu,
+ 				  struct dmar_domain *domain,
+ 				  unsigned long pfn, unsigned int pages,
+@@ -1384,42 +1424,10 @@ static void iommu_flush_iotlb_psi(struct intel_iommu *iommu,
+ 	if (ih)
+ 		ih = 1 << 6;
  
- static void nested_flush_dev_iotlb(struct dmar_domain *domain, u64 addr,
-@@ -201,5 +207,9 @@ struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
- 	spin_lock_init(&domain->lock);
- 	xa_init(&domain->iommu_array);
+-	if (domain->use_first_level) {
++	if (domain->use_first_level)
+ 		domain_flush_pasid_iotlb(iommu, domain, addr, pages, ih);
+-	} else {
+-		unsigned long bitmask = aligned_pages - 1;
+-
+-		/*
+-		 * PSI masks the low order bits of the base address. If the
+-		 * address isn't aligned to the mask, then compute a mask value
+-		 * needed to ensure the target range is flushed.
+-		 */
+-		if (unlikely(bitmask & pfn)) {
+-			unsigned long end_pfn = pfn + pages - 1, shared_bits;
+-
+-			/*
+-			 * Since end_pfn <= pfn + bitmask, the only way bits
+-			 * higher than bitmask can differ in pfn and end_pfn is
+-			 * by carrying. This means after masking out bitmask,
+-			 * high bits starting with the first set bit in
+-			 * shared_bits are all equal in both pfn and end_pfn.
+-			 */
+-			shared_bits = ~(pfn ^ end_pfn) & ~bitmask;
+-			mask = shared_bits ? __ffs(shared_bits) : BITS_PER_LONG;
+-		}
+-
+-		/*
+-		 * Fallback to domain selective flush if no PSI support or
+-		 * the size is too big.
+-		 */
+-		if (!cap_pgsel_inv(iommu->cap) ||
+-		    mask > cap_max_amask_val(iommu->cap))
+-			iommu->flush.flush_iotlb(iommu, did, 0, 0,
+-							DMA_TLB_DSI_FLUSH);
+-		else
+-			iommu->flush.flush_iotlb(iommu, did, addr | ih, mask,
+-							DMA_TLB_PSI_FLUSH);
+-	}
++	else
++		__iommu_flush_iotlb_psi(iommu, did, pfn, pages, ih);
  
-+	spin_lock(&s2_domain->s1_lock);
-+	list_add(&domain->s2_link, &s2_domain->s1_domains);
-+	spin_unlock(&s2_domain->s1_lock);
-+
- 	return &domain->domain;
- }
+ 	/*
+ 	 * In caching mode, changes of pages from non-present to present require
 -- 
 2.34.1
 
