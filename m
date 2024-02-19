@@ -1,120 +1,154 @@
-Return-Path: <linux-kernel+bounces-70709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AB0B859B66
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:26:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B39E859B68
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:29:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD84E1C21B8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:26:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9283C28150C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833C7C8FD;
-	Mon, 19 Feb 2024 04:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE16C158;
+	Mon, 19 Feb 2024 04:29:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H7OReeQR"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="ny0cysA8"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71AB863B3;
-	Mon, 19 Feb 2024 04:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6BE2114;
+	Mon, 19 Feb 2024 04:29:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708316794; cv=none; b=CvlIRJH872HZIe0z/troDzzsmMxkS8Y4AWGvXb1GtEXAPOhOAohFB2ayvKMahcspG2M224eYLxvGn0xJ8qnbcYZSXxWjQ7JXga3lBMcsZjTnnvGty91iJIVSzRggWodYFcwPbdf1sGAyWuKl67HPaScR02mt1aF+HvwP3FdIgmc=
+	t=1708316989; cv=none; b=koL8AxAjmZinaUnbBsC61rlKw+JlZ37dmJoZSNdrG6OeZTXWxs6sniCDr/1YqtUot9wje3Op1SfqkNavFqdAPLhndz+aR3+LHAFGUgqOn/nOKRJNj92+edTjALOZUB0VeL9DaLyqKixulJIgC4IQkFXdoo+S0w3+3d7OlXbnBF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708316794; c=relaxed/simple;
-	bh=n9cVINVVeUQ7a6yT1OPSYHFXjTFZteQyoAsMJpuvlM0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jotE2OxC3yH97zvCh3sHqfNUfxxfy1mII93BnD6DapCpUldQB2/KUEm1D22EbNdbV6ubib1CDBFOVctygZkuJAc8b9jgGHInyq1KKTRoRV8YNSPvhKSr2Tr+RwO9lGGjp6vENb46O3SWCwjlr/anmCbpeQWByisvuQpG0RvbFy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H7OReeQR; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c1404d05bfso2501589b6e.3;
-        Sun, 18 Feb 2024 20:26:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708316792; x=1708921592; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=N8jLBR+wUVXC8fLxBsadkCVVQvYdLsp9BAEZYoHcJYU=;
-        b=H7OReeQRzUHsLM0NEgv430iVBEIdMB+SODdpjD4eNDpJAT/SfeOZEc2hSFwOIJOr1s
-         ZM2mcJGVdWPI1BP6sIAcl/pRZTLjUOeRwfycgd3CzgAj60FeyBQHLhXEY+i92GfYOooe
-         51tDZJeLY+IxcLFvRzG1QsNrxndeLdaOclsdf2oaubrouaMskxmil6Kei1pLplwcXzq2
-         8VxrPt+ipr8dQEgeEmTSPABX000nsCihxIfx1oww9MktHbYm6XVKB9xdK4jkWPsRM1O7
-         RvA3Ee97UkXJLpnhtyWG6FCczX1sIllXF8ifEwt+4jN92zif4779R+/YQVB0sDzwMGyc
-         7AcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708316792; x=1708921592;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N8jLBR+wUVXC8fLxBsadkCVVQvYdLsp9BAEZYoHcJYU=;
-        b=vi7qkaa7QZ4O+lIlJKR+jINXxt6jMntJHLW5phJqVgdKn1CUzCEc3ULN/DZ3VwTa/J
-         Dg3gu/FVWY81hs4hRn81+G9AIfm03ZX83RJLNuCeYHu+W0CZDkBWvCK6E1mZIzV7AcmB
-         JFBwl+z/PRIzHU0wHyjwAEfsLOrH5yYXjrItVFvM5MwN6P0TnKQQGnN6JrKZ0mYHKd4L
-         DUgPmrY5eemxiNAC6ybN+CKX0GzkLZ8LHa0hI6ewLzRrRejedScAoM2hCO/PDMAQvoL5
-         TTpPnZT1Xb/HexnXYy3+GMuAPnHlwb4XgZICgmz60pRMh0G0ylbPxTVXAtyl4ocdpLTB
-         9y2g==
-X-Forwarded-Encrypted: i=1; AJvYcCV1qm8+Q/lh36ywx+yEXMNoLhTglIH24rx47XMLK6fzs1d1BpjS9c246mk4qR3mUYbfHkEbAW+6EPfjH4b1HuT3SEQVkzOpOM9U3nfmn1yARFnDXa3Hxt5lFQcGv/gvVpGXExvF
-X-Gm-Message-State: AOJu0YzLyoSeNbcv+1Owo1rOusNz3K1pcBC/sYbSoM8OEsBwrQxVZ3Oq
-	grLdFOQMYjuL/T7eKinAWOKyjRwmkpWQnJuvDjPH+EFeoblk9bsE
-X-Google-Smtp-Source: AGHT+IHVqMRlOqIH4wgN0nkqEjo+7JQ69GvJzGhVRk3pRqPrLLuJuwnwpt/ksbnvzS/243FF8tU8MQ==
-X-Received: by 2002:a05:6808:17a3:b0:3c1:37d9:dc93 with SMTP id bg35-20020a05680817a300b003c137d9dc93mr13745293oib.10.1708316792302;
-        Sun, 18 Feb 2024 20:26:32 -0800 (PST)
-Received: from ?IPV6:2600:8802:b00:ba1:e814:598f:2d92:8806? ([2600:8802:b00:ba1:e814:598f:2d92:8806])
-        by smtp.gmail.com with ESMTPSA id s27-20020a056a00179b00b006e3cdae7e60sm2280327pfg.58.2024.02.18.20.26.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 20:26:31 -0800 (PST)
-Message-ID: <6146eb3b-720a-4523-bcc7-8e2656aeafef@gmail.com>
-Date: Sun, 18 Feb 2024 20:26:29 -0800
+	s=arc-20240116; t=1708316989; c=relaxed/simple;
+	bh=SIGWU8j4rGm0JRkqEmRJ5TLOuX98GmQ38UKVMU2NWIQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=TLbexd8snN9hhevJWew9HIzS5xLKSUIbWJXi15c0JqY1b78uCi5u7DdIlF/FQcWfk05MM752XyhdgEeVUc1VAFos1TKiTPTvBAqPr7zEBQFhzm+EnOJ9gpPuYivlvFtihZ/DgSCkbuOlup7iqec5yiLA8ISIjzitVlDrSF0VUM0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=ny0cysA8; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1708316984;
+	bh=NHz/ml8wR7rRyzCrjA+ja5j9Xr/oV+FlgsSVvKeDt4k=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=ny0cysA8UOOXVNACuhPZDYckWEMfXe68/Nus80D26osTI/maRanNzo3ISD3oM62Mn
+	 APa4sdFb9dT0VET6oZ+MTMGTK6c10xlBDx1YjnvETdCFA+5nh4zQ2hzZIoJ+lLWks8
+	 4wA6L0uoqnR2ajYBkjQ+Ttfn0OUtUYmcYWxfDj4/XcDwaeIli0XlTHcO2O+h56YR0f
+	 ey2Sq49ZF4k15QzdzgxJDoUZtr9mtJk+EgLcRl5997KGV+k4QUrDDPLdXl0PCpQhft
+	 5AucMPIc5ukmFzyxADSRqzfIE0Wf9PqSp4R1QbY3UGWW1WJT8wN5iMQUMuRbv4pk+3
+	 nEL3CCqc2dYBQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TdV1h4kDzz4wcH;
+	Mon, 19 Feb 2024 15:29:44 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>, Nathan Lynch
+ <nathanl@linux.ibm.com>
+Cc: linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests: powerpc: Add header symlinks for building
+ papr character device tests
+In-Reply-To: <20240215215045.GU9696@kitsune.suse.cz>
+References: <20240215165527.23684-1-msuchanek@suse.de>
+ <87cysxilr5.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+ <20240215192334.GT9696@kitsune.suse.cz>
+ <87a5o1ikk0.fsf@li-e15d104c-2135-11b2-a85c-d7ef17e56be6.ibm.com>
+ <20240215215045.GU9696@kitsune.suse.cz>
+Date: Mon, 19 Feb 2024 15:29:44 +1100
+Message-ID: <877cj113gn.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [net-next RFC PATCH 6/6] net: phy: bcm7xxx: rework phy_driver
- table to new multiple PHY ID format
-Content-Language: en-US
-To: Christian Marangi <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, Robert Marko <robimarko@gmail.com>,
- "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>,
- Nipun Gupta <nipun.gupta@amd.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Puneet Gupta <puneet.gupta@amd.com>,
- Abhijit Gangurde <abhijit.gangurde@amd.com>,
- Umang Jain <umang.jain@ideasonboard.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240218190034.15447-1-ansuelsmth@gmail.com>
- <20240218190034.15447-7-ansuelsmth@gmail.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20240218190034.15447-7-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Michal Such=C3=A1nek <msuchanek@suse.de> writes:
+> On Thu, Feb 15, 2024 at 01:39:27PM -0600, Nathan Lynch wrote:
+>> Michal Such=C3=A1nek <msuchanek@suse.de> writes:
+>> > On Thu, Feb 15, 2024 at 01:13:34PM -0600, Nathan Lynch wrote:
+>> >> Michal Suchanek <msuchanek@suse.de> writes:
+>> >> >
+>> >> > Without the headers the tests don't build.
+>> >> >
+>> >> > Fixes: 9118c5d32bdd ("powerpc/selftests: Add test for papr-vpd")
+>> >> > Fixes: 76b2ec3faeaa ("powerpc/selftests: Add test for papr-sysparm")
+>> >> > Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+>> >> > ---
+>> >> >  tools/testing/selftests/powerpc/include/asm/papr-miscdev.h | 1 +
+>> >> >  tools/testing/selftests/powerpc/include/asm/papr-sysparm.h | 1 +
+>> >> >  tools/testing/selftests/powerpc/include/asm/papr-vpd.h     | 1 +
+>> >> >  3 files changed, 3 insertions(+)
+>> >> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/pap=
+r-miscdev.h
+>> >> >  create mode 120000 tools/testing/selftests/powerpc/include/asm/pap=
+r-sysparm.h
+>> >> >  create mode 120000
+>> >> > tools/testing/selftests/powerpc/include/asm/papr-vpd.h
+>> >>=20
+>> >> I really hope making symlinks into the kernel source isn't necessary.=
+ I
+>> >> haven't experienced build failures with these tests. How are you
+>> >> building them?
+>> >>=20
+>> >> I usually do something like (on a x86 build host):
+>> >>=20
+>> >> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- ppc64le_defc=
+onfig
+>> >> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- headers
+>> >> $ make ARCH=3Dpowerpc CROSS_COMPILE=3Dpowerpc64le-linux- -C tools/tes=
+ting/selftests/powerpc/
+>> >>=20
+>> >> without issue.
+>> >
+>> > I am not configuring the kernel, only building the tests, and certainly
+>> > not installing headers on the system.
+>>=20
+>> OK, but again: how do you provoke the build errors, exactly? Don't make
+>> us guess please.
+>
+> cd tools/testing/selftests/powerpc/
+>
+> make -k
+>
+>> > Apparently this is what people aim to do, and report bugs when it does
+>> > not work: build the kselftests as self-contained testsuite that relies
+>> > only on standard libc, and whatever it brought in the sources.
+>> >
+>> > That said, the target to install headers is headers_install, not
+>> > headers. The headers target is not documented, it's probably meant to =
+be
+>> > internal to the build system. Yet it is not enforced that it is built
+>> > before building the selftests.
+>>=20
+>> <shrug> the headers target is used in Documentation/dev-tools/kselftest.=
+rst:
+>>=20
+>> """
+>> To build the tests::
+>>=20
+>>   $ make headers
+>>   $ make -C tools/testing/selftests
+>> """
+>
+> Indeed so it's not supposed to work otherwise. It would be nice if it
+> did but might be difficult to achieve with plain makefiles.
 
+It used to work without the headers, but at some point folks decided it
+was causing too many problems and building the headers was made mandatory.
 
-On 2/18/2024 11:00 AM, Christian Marangi wrote:
-> Rework bcm7xxx PHY driver table to new multiple PHY format
-> implementation to reduce code duplication and final size of the compiled
-> module.
+Note that by default they aren't installed globally, they just end up in
+$KBUILD_OUTPUT/usr/include. So it shouldn't affect the host system.
 
-I like the idea of sharing as much code as possible and creating a 
-smaller module, however by changing the name, you are creating an 
-user-space ABI change, we rely upon the exact PHY name being shown under 
-/sys/class/mdio_bus/*/* and this change will break that.
-
-Thanks!
--- 
-Florian
+cheers
 
