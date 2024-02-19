@@ -1,54 +1,56 @@
-Return-Path: <linux-kernel+bounces-71898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30B2E85AC46
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:48:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6967F85AC48
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:48:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9102282E84
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25DC6281270
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CC755A10C;
-	Mon, 19 Feb 2024 19:44:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474DE5B5CD;
+	Mon, 19 Feb 2024 19:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q8gTpAJD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aCReNk/o"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D06FF59B67;
-	Mon, 19 Feb 2024 19:44:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7849C5A106;
+	Mon, 19 Feb 2024 19:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708371888; cv=none; b=sr8/MR85WIfc6NI/8aM4iX04qmaOOmVW0Kgzvm1qycg5cVP1Y4L5GeBvkwWpoJBesJqzlf4P5ESeY4gggGQla15zQx+OHF6KugT6zNgtab9z/P7vSdLZ2y2FhEWYT8D79aJuFiZ96M3yaRSszzetycmRbCzCpkEyYwFp3Q7rM2U=
+	t=1708371889; cv=none; b=SBc/VUfo+TpOzBqA2wEWUrR5goA3zAniHdSAyB0SRnFlN7JzOY9c3T7WYn+sg7cKhgqaepnM6woWLZrtgJmWhJyoEWMX8FVQD719eWfyq2a+uSdYq2n0ffaq5eqR1nDAMy0zL0mXfv9hif/05tkKPIVF6OWaqkaGI9hwd+YOihw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708371888; c=relaxed/simple;
-	bh=JKYORKiKp9fESKQKjIG1tUqNr+4IIyTYixshjOr7TsM=;
+	s=arc-20240116; t=1708371889; c=relaxed/simple;
+	bh=on8Lep3AS4Mtk6AjiPZh/C8TU3CHqMgnp8c3zsc3Iao=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NCmemoEOoR55PbQ9dQiZ58XegXqG5lYbfZLFnBxWox4YUiJWUJkrAvBpTpsafAodltgaoMicmFff3mVeLwKRhDjU0UgeqS7LRusyj5POFjZMTL68KNCkAIJHcM65cbJGhFDVkC6lmQ33WwL9AgPivq6lyXu8zoFCPc1RTP3pRJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q8gTpAJD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F302FC43601;
-	Mon, 19 Feb 2024 19:44:47 +0000 (UTC)
+	 MIME-Version:Content-Type; b=sjy0UQgQmtoVM7DKUBmpL9eG8R9i6Ef2u7/v14yIPoy7/7DAiJ+jhaDTpLYBv/R045hPI+WcfgQqlgzvjhCoTlfEPuEi9niwRH2HojtGQRmtLth0uMet5PFcUXF3oMNyNsLE4FNZuBDghqsIWBaUM7EslSPmGYOOOr6GPxcc/nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aCReNk/o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A6DC433C7;
+	Mon, 19 Feb 2024 19:44:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708371888;
-	bh=JKYORKiKp9fESKQKjIG1tUqNr+4IIyTYixshjOr7TsM=;
+	s=k20201202; t=1708371889;
+	bh=on8Lep3AS4Mtk6AjiPZh/C8TU3CHqMgnp8c3zsc3Iao=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Q8gTpAJDSUzJv8SYnqnTE+B4iPJvIqmm7yTz4AgyCUn2q6YUpC/PRX2+d/wOAti1S
-	 YgtPp8CLq7n025xJ/5a7E8FrGh6nPgEzzziDF/GySMDgyJzDRX9qe9+GEIxn8frWWv
-	 vFkGXpDH3rBXUZzCeYvB5bhyfjtRAZODGi9WIx1Dqnh25o70cAIH/DiPCnjmB0C9hE
-	 e8zcW3eIeT4hAqhLacEzc6/J49hpuP9T1531pVqwKmDi3tv0q1ihiL/i+WIvv6LR7y
-	 Bkkc9Pm5IH7cnm1+YZN2RbaqMCGNqhltt4sznZ+sKGB+D2XikKVTeEVt+z46zXNubF
-	 7cb1/2hWWXAuQ==
+	b=aCReNk/oosprUvxML+loGz5WEl3Ex0wq8loimKpYSK8vC0StgTzc6hzZtHhrVpWd+
+	 me+a2u1A2eOPZrePsH9WPL1k2OS8p8XMl2saSj+BmYT3t6QBHa+T0pb7ZfAlzCvrk7
+	 gA6aUzkKjMNrH76IFAPd0BaiuojxtgycMnw8vDjd8Vyj4MbrA1ejTXY7slYrRDLE8c
+	 MgPkImBcgWOtQ49mT8xulLK8eeMQ6OytjD582dPstYkeDyokYl/YmwJ0jIILgvYZwL
+	 DlFu3pE/pVPe/hLKevn9ubaCmAWtyDdVO+9RXbtJrdpoVlzCFwt9KG9NjcHwEW/F3b
+	 PuXS69mZlmmzg==
 From: SeongJae Park <sj@kernel.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: SeongJae Park <sj@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
 	damon@lists.linux.dev,
 	linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 16/20] Docs/ABI/damon: document quota goal metric file
-Date: Mon, 19 Feb 2024 11:44:27 -0800
-Message-Id: <20240219194431.159606-17-sj@kernel.org>
+Subject: [PATCH 17/20] Docs/admin-guide/mm/damon/usage: document quota goal metric file
+Date: Mon, 19 Feb 2024 11:44:28 -0800
+Message-Id: <20240219194431.159606-18-sj@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240219194431.159606-1-sj@kernel.org>
 References: <20240219194431.159606-1-sj@kernel.org>
@@ -58,32 +60,46 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Update DAMON ABI document for the quota goal target_metric file.
+Update DAMON usage document for the quota goal target_metric file.
 
 Signed-off-by: SeongJae Park <sj@kernel.org>
 ---
- Documentation/ABI/testing/sysfs-kernel-mm-damon | 6 ++++++
- 1 file changed, 6 insertions(+)
+ Documentation/admin-guide/mm/damon/usage.rst | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-kernel-mm-damon b/Documentation/ABI/testing/sysfs-kernel-mm-damon
-index a1e4fdb04f95..dad4d5ffd786 100644
---- a/Documentation/ABI/testing/sysfs-kernel-mm-damon
-+++ b/Documentation/ABI/testing/sysfs-kernel-mm-damon
-@@ -229,6 +229,12 @@ Description:	Writing a number 'N' to this file creates the number of
- 		directories for setting automatic tuning of the scheme's
- 		aggressiveness named '0' to 'N-1' under the goals/ directory.
+diff --git a/Documentation/admin-guide/mm/damon/usage.rst b/Documentation/admin-guide/mm/damon/usage.rst
+index 220ebbde7324..b33eecfd0e90 100644
+--- a/Documentation/admin-guide/mm/damon/usage.rst
++++ b/Documentation/admin-guide/mm/damon/usage.rst
+@@ -86,7 +86,7 @@ comma (",").
+     │ │ │ │ │ │ │ :ref:`quotas <sysfs_quotas>`/ms,bytes,reset_interval_ms,effective_bytes
+     │ │ │ │ │ │ │ │ weights/sz_permil,nr_accesses_permil,age_permil
+     │ │ │ │ │ │ │ │ :ref:`goals <sysfs_schemes_quota_goals>`/nr_goals
+-    │ │ │ │ │ │ │ │ │ 0/target_value,current_value
++    │ │ │ │ │ │ │ │ │ 0/target_metric,target_value,current_value
+     │ │ │ │ │ │ │ :ref:`watermarks <sysfs_watermarks>`/metric,interval_us,high,mid,low
+     │ │ │ │ │ │ │ :ref:`filters <sysfs_filters>`/nr_filters
+     │ │ │ │ │ │ │ │ 0/type,matching,memcg_id
+@@ -366,11 +366,11 @@ number (``N``) to the file creates the number of child directories named ``0``
+ to ``N-1``.  Each directory represents each goal and current achievement.
+ Among the multiple feedback, the best one is used.
  
-+What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/quotas/goals/<G>/target_metric
-+Date:		Feb 2024
-+Contact:	SeongJae Park <sj@kernel.org>
-+Description:	Writing to and reading from this file sets and gets the quota
-+		auto-tuning goal metric.
-+
- What:		/sys/kernel/mm/damon/admin/kdamonds/<K>/contexts/<C>/schemes/<S>/quotas/goals/<G>/target_value
- Date:		Nov 2023
- Contact:	SeongJae Park <sj@kernel.org>
+-Each goal directory contains two files, namely ``target_value`` and
+-``current_value``.  Users can set and get any number to those files to set the
+-feedback.  User space main workload's latency or throughput, system metrics
+-like free memory ratio or memory pressure stall time (PSI) could be example
+-metrics for the values.  Note that users should write
++Each goal directory contains three files, namely ``target_metric``,
++``target_value`` and ``current_value``.  Users can set and get the three
++parameters for the quota auto-tuning goals that specified on the :ref:`design
++doc <damon_design_damos_quota_auto_tuning>` by writing to and reading from each
++of the files.  Note that users should further write
+ ``commit_schemes_quota_goals`` to the ``state`` file of the :ref:`kdamond
+ directory <sysfs_kdamond>` to pass the feedback to DAMON.
+ 
 -- 
 2.39.2
 
