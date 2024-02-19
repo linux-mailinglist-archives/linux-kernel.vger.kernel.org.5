@@ -1,199 +1,334 @@
-Return-Path: <linux-kernel+bounces-70669-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70670-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B7A859AE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:07:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C04A5859AE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 04:10:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 450DFB212E4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:07:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 188772817A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E10F3FD4;
-	Mon, 19 Feb 2024 03:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087E23FF4;
+	Mon, 19 Feb 2024 03:10:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EcvGLg8g"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bzLQpkpL"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A53220F1;
-	Mon, 19 Feb 2024 03:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098DB2103;
+	Mon, 19 Feb 2024 03:10:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708312039; cv=none; b=l1Z1SDGBvUp8G7OZZc8Q69yFfhEd5YIlK36Ez/a94ugxCe97c40Ie0Bfnz8qcvUDQYkLJqNGL6L8uV7GT5gGtuPF64yfabVTWAbwtvpqlXTQbHRFcq2izW5/69mrUHn0V8tNiZMCL5Qv+ozDnlkTfyMBSGQYEeUvOerMzt1eSfQ=
+	t=1708312220; cv=none; b=UKwTtqigHg2AAMsZFGeEuvChOxb2ob7GZuKyxoKXTekuri8i0W45if8MjoV9pu8k/AWJ9wJRVBRCT3DdW0KELysQc+GF7y6BxvhMFbV2fF8oB3PESKAioq1uUgxck1rd3/hPcYOz4SviIyn5H+wmi+uemHVPs4bbx0r+EtD5x28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708312039; c=relaxed/simple;
-	bh=XQeH4obCzIwDVNOBuxCqI+SricNPqRL82HPK4fc4/jM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=Rnhrv8l82mRBk7VE8raXDeyYOLpC7r9z7uh0Za/P0JUq15XW6CmVfyaef0q6ZDtnk+/OCb8VMOXCdqlOtYuqGbeWTMN+AqeHFKauzMkQ3GKeAzeP0Yg1+huF7QnyP0N1BIJLwaVc3UPcUkhyDSgSGmvMQ29H7xUGrsDlCuCIx40=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EcvGLg8g; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41J36RFj023496;
-	Mon, 19 Feb 2024 03:07:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=n5FtCz25BpyroYipWCCkQfOwY+crHF/X3CqywesI5qs=; b=Ec
-	vGLg8ggIXW+MJIiT2R2IXhKEkgD/b1VrkHDl2PQnisyr1xKFerAa3n9tfouJZcf5
-	6hm7sDkLgDmiInOi32qfafC5FDCq8XpQ7t+xx7D2UqWMjhfe8GAuLN9y+/ifKaOW
-	N1Wi0z0H1i38Yb+ocrWlwNRA5wlbkLSaG77iQHMARFzYtwELlor2Kg/5tJtEAKin
-	nfnbTvv5PeOLuhAE6GJWLEd235RobDhZTwE8OYOe6aSZ0GAyNdMhaCNXZRsArlkk
-	M1iT2eGYBWqW6x5AlNAe03VshgxA3y5/B8KbrHFJXReQ8A5nnH9iUMF+PEqwylRT
-	FUbR8ytwdopio5mI+Tdw==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wan17jkqn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 03:07:13 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41J37A1v000567
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 19 Feb 2024 03:07:10 GMT
-Received: from [10.253.36.30] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 18 Feb
- 2024 19:07:08 -0800
-Message-ID: <6f6dfaa2-f529-c9fe-7dde-402c92f0daf6@quicinc.com>
-Date: Mon, 19 Feb 2024 11:06:39 +0800
+	s=arc-20240116; t=1708312220; c=relaxed/simple;
+	bh=vHGy/5iizTblx9c71wOca8ydjyG2ycIVofaO4XacMGw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cq91eO/HUv7RVSGv6bbYOuUeZOo2/xM+dZ41RI5psGDj1p/h+KGS2WmoqdxZSFFYg42GLeqlQRnCgZiDYDZYH8B3yhMM7PgnOUelGgEp4ariaYHSBgyGcRV+6UyUVQjf5njbxSPJWxABe4Vlw3mJPNJ5eGbv0kynGEYOU9xkCJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bzLQpkpL; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d1094b549cso57691271fa.3;
+        Sun, 18 Feb 2024 19:10:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708312216; x=1708917016; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xeqhTfKf3+27PA2TjmaJvKhx4MTodoOtzntu6kefSAY=;
+        b=bzLQpkpLZZXyf+8w6UhwRbmYeOztrK68yVpxGNfAe1SnKRZnj5BwQceJfIsHcy7+Y2
+         ABhzw1zxyv2b2QWbmIm2L9wTb5mBmpTtuxcMTlFlt/n/9DgYjmEDvST5CBrWN/xoz9VC
+         ECQ6AcafxxZGnZhLmWrzxwqxkBwJ6vJs9EQ+zugC8VkFLrFXQcm/ASCcOfxLxgIL7Qkm
+         lSyvakp4jIeTJ+qjOoaj55NIdrMLLhd1QcuvzqE/pEJ1ajWnhLpNIVnOelQjXWXIhRdz
+         g9lXlk2WmcvKsiQRcMedywebnJxXZYuGWnZDMFm3Xwlt1q4WP+sG6ae/PR+hVDnpvBL/
+         kauw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708312216; x=1708917016;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xeqhTfKf3+27PA2TjmaJvKhx4MTodoOtzntu6kefSAY=;
+        b=MA71WDtze9S5UF+r5EI+qASJ/vI+sB1imd4Gd6WjTfndftYn1ARwS5z9oo2OsgaM5E
+         fpglwyTh7l/PUAoOBB4GG8tXzgUhgD6KsslumxtV9/ftH8PBjpDJFJux7LeMaLYpHkOW
+         mDnrxp8SsVqYZWrqvp9p57caKsjrZMszVUDu9x4E0sClT7k1Gnv7CWWYUYH9m3FWCYN9
+         xVCvHdDssE/egxSvMMuwYrXLp0b77wB2gYWiCFmSOl1dUo35mEwZ6D6NDfTCF1GKERx7
+         svW37KxbCeNcrzH1qAm5Z8XrO3aRS2Qyn61CUWE6AbxmR7WiWJsA7SSb5tnb7MNa4+1C
+         nLLw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDYncSMK0y3nUgSTB0NaMbxr0PVLwEx7D8hCgImRdGO0F9fzm5Wa4/eB5/+teIxFKGvEVb8xWJMcWDIy9CnoeY/6Gpm/DjJKQOh/DNPDMUf7//8DjWTJEd0/OUYLg+BntHlOyl
+X-Gm-Message-State: AOJu0Yy0Uw7lho2LKOnUraw6dXBTjkIeUDlWiZ62eHMrYdSKoxY70UnX
+	5iZqLjeIEJMNvPev0/itPbJcIWTgZHHeoaSw5fWHCzMuLGoJn1XkkpMFHgvoVe8DdOq4tNvyeux
+	7ZX80CkDkNQmRQ+0HR9AGnrMzF4g=
+X-Google-Smtp-Source: AGHT+IFMri5xaTNIC9eRRWGfpO+Cn0mEcLRlM4XjhbWHOrUI/sR7GMROAiiCw1Cu3ajRUW/b8KUK+VnS4MMasI10aQo=
+X-Received: by 2002:a2e:8699:0:b0:2d2:20eb:dad8 with SMTP id
+ l25-20020a2e8699000000b002d220ebdad8mr3910630lji.33.1708312215948; Sun, 18
+ Feb 2024 19:10:15 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.1
-Subject: Re: [PATCH] regulator: qcom-rpmh: Fix pm8010 pmic5_pldo502ln minimum
- voltage
-Content-Language: en-US
-To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Mark Brown
-	<broonie@kernel.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <lgirdwood@gmail.com>,
-        <quic_collinsd@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240214121614.2723085-1-bryan.odonoghue@linaro.org>
- <13baed68-1014-4a48-874a-94027a6dd061@sirena.org.uk>
- <f38468b4-8b16-4180-9738-0a2b557651a1@linaro.org>
- <dcce3fa9-ecf3-42be-adf6-ca653a79ba2e@sirena.org.uk>
- <3851e21f-f8cb-487b-9ed4-9975949ff922@linaro.org>
- <a09d6450-95e7-4ed6-a0ad-5e7bb661533a@sirena.org.uk>
- <df6a49f3-88e9-46b4-b7c3-e5419fd01eca@linaro.org>
-From: Fenglin Wu <quic_fenglinw@quicinc.com>
-In-Reply-To: <df6a49f3-88e9-46b4-b7c3-e5419fd01eca@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: N25RXN6fofJ8BOE08JqpWMFUfdZivI6e
-X-Proofpoint-GUID: N25RXN6fofJ8BOE08JqpWMFUfdZivI6e
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-18_21,2024-02-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
- spamscore=0 phishscore=0 bulkscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 suspectscore=0 malwarescore=0 impostorscore=0
- mlxlogscore=687 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402190024
+References: <20240216095105.14502-1-ryncsn@gmail.com> <87wmr2rx4a.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAMgjq7CArJDbEev3YR2OB4aZjE9n6PzuzC6WLmsxCKhwq-jb3Q@mail.gmail.com>
+ <87jzn1s2xe.fsf@yhuang6-desk2.ccr.corp.intel.com> <87frxprxm8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+In-Reply-To: <87frxprxm8.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Mon, 19 Feb 2024 11:09:58 +0800
+Message-ID: <CAMgjq7C4UmRgrqycrM=Na18+ONeFT57_Nr6b2jhbKb=7f10YMA@mail.gmail.com>
+Subject: Re: [PATCH v3] mm/swap: fix race when skipping swapcache
+To: "Huang, Ying" <ying.huang@intel.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	Chris Li <chrisl@kernel.org>, Minchan Kim <minchan@kernel.org>, Yu Zhao <yuzhao@google.com>, 
+	Barry Song <v-songbaohua@oppo.com>, SeongJae Park <sj@kernel.org>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, David Hildenbrand <david@redhat.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Aaron Lu <aaron.lu@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 19, 2024 at 10:35=E2=80=AFAM Huang, Ying <ying.huang@intel.com>=
+ wrote:
+> "Huang, Ying" <ying.huang@intel.com> writes:
+> > Kairui Song <ryncsn@gmail.com> writes:
+> >
+> >> On Sun, Feb 18, 2024 at 4:34=E2=80=AFPM Huang, Ying <ying.huang@intel.=
+com> wrote:
+> >>>
+> >>> Kairui Song <ryncsn@gmail.com> writes:
+> >>>
+> >>> > From: Kairui Song <kasong@tencent.com>
+> >>> >
+> >>> > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more thre=
+ads
+> >>> > swapin the same entry at the same time, they get different pages (A=
+, B).
+> >>> > Before one thread (T0) finishes the swapin and installs page (A)
+> >>> > to the PTE, another thread (T1) could finish swapin of page (B),
+> >>> > swap_free the entry, then swap out the possibly modified page
+> >>> > reusing the same entry. It breaks the pte_same check in (T0) becaus=
+e
+> >>> > PTE value is unchanged, causing ABA problem. Thread (T0) will
+> >>> > install a stalled page (A) into the PTE and cause data corruption.
+> >>> >
+> >>> > One possible callstack is like this:
+> >>> >
+> >>> > CPU0                                 CPU1
+> >>> > ----                                 ----
+> >>> > do_swap_page()                       do_swap_page() with same entry
+> >>> > <direct swapin path>                 <direct swapin path>
+> >>> > <alloc page A>                       <alloc page B>
+> >>> > swap_read_folio() <- read to page A  swap_read_folio() <- read to p=
+age B
+> >>> > <slow on later locks or interrupt>   <finished swapin first>
+> >>> > ...                                  set_pte_at()
+> >>> >                                      swap_free() <- entry is free
+> >>> >                                      <write to page B, now page A s=
+talled>
+> >>> >                                      <swap out page B to same swap =
+entry>
+> >>> > pte_same() <- Check pass, PTE seems
+> >>> >               unchanged, but page A
+> >>> >               is stalled!
+> >>> > swap_free() <- page B content lost!
+> >>> > set_pte_at() <- staled page A installed!
+> >>> >
+> >>> > And besides, for ZRAM, swap_free() allows the swap device to discar=
+d
+> >>> > the entry content, so even if page (B) is not modified, if
+> >>> > swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+> >>> > it may also cause data loss.
+> >>> >
+> >>> > To fix this, reuse swapcache_prepare which will pin the swap entry =
+using
+> >>> > the cache flag, and allow only one thread to pin it. Release the pi=
+n
+> >>> > after PT unlocked. Racers will simply wait since it's a rare and ve=
+ry
+> >>> > short event. A schedule() call is added to avoid wasting too much C=
+PU
+> >>> > or adding too much noise to perf statistics
+> >>> >
+> >>> > Other methods like increasing the swap count don't seem to be a goo=
+d
+> >>> > idea after some tests, that will cause racers to fall back to use t=
+he
+> >>> > swap cache again. Parallel swapin using different methods leads to
+> >>> > a much more complex scenario.
+> >>>
+> >>> The swap entry may be put in swap cache by some parallel code path
+> >>> anyway.  So, we always need to consider that when reasoning the code.
+> >>>
+> >>> > Reproducer:
+> >>> >
+> >>> > This race issue can be triggered easily using a well constructed
+> >>> > reproducer and patched brd (with a delay in read path) [1]:
+> >>> >
+> >>> > With latest 6.8 mainline, race caused data loss can be observed eas=
+ily:
+> >>> > $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+> >>> >   Polulating 32MB of memory region...
+> >>> >   Keep swapping out...
+> >>> >   Starting round 0...
+> >>> >   Spawning 65536 workers...
+> >>> >   32746 workers spawned, wait for done...
+> >>> >   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss=
+!
+> >>> >   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data los=
+s!
+> >>> >   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data los=
+s!
+> >>> >   Round 0 Failed, 15 data loss!
+> >>> >
+> >>> > This reproducer spawns multiple threads sharing the same memory reg=
+ion
+> >>> > using a small swap device. Every two threads updates mapped pages o=
+ne by
+> >>> > one in opposite direction trying to create a race, with one dedicat=
+ed
+> >>> > thread keep swapping out the data out using madvise.
+> >>> >
+> >>> > The reproducer created a reproduce rate of about once every 5 minut=
+es,
+> >>> > so the race should be totally possible in production.
+> >>> >
+> >>> > After this patch, I ran the reproducer for over a few hundred round=
+s
+> >>> > and no data loss observed.
+> >>> >
+> >>> > Performance overhead is minimal, microbenchmark swapin 10G from 32G
+> >>> > zram:
+> >>> >
+> >>> > Before:     10934698 us
+> >>> > After:      11157121 us
+> >>> > Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+> >>> >
+> >>> > Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchr=
+onous device")
+> >>> > Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-s=
+tress-race [1]
+> >>> > Reported-by: "Huang, Ying" <ying.huang@intel.com>
+> >>> > Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk=
+2.ccr.corp.intel.com/
+> >>> > Signed-off-by: Kairui Song <kasong@tencent.com>
+> >>> > Cc: stable@vger.kernel.org
+> >>> >
+> >>> > ---
+> >>> > Update from V2:
+> >>> > - Add a schedule() if raced to prevent repeated page faults wasting=
+ CPU
+> >>> >   and add noise to perf statistics.
+> >>> > - Use a bool to state the special case instead of reusing existing
+> >>> >   variables fixing error handling [Minchan Kim].
+> >>> >
+> >>> > V2: https://lore.kernel.org/all/20240206182559.32264-1-ryncsn@gmail=
+com/
+> >>> >
+> >>> > Update from V1:
+> >>> > - Add some words on ZRAM case, it will discard swap content on swap=
+_free so the race window is a bit different but cure is the same. [Barry So=
+ng]
+> >>> > - Update comments make it cleaner [Huang, Ying]
+> >>> > - Add a function place holder to fix CONFIG_SWAP=3Dn built [SeongJa=
+e Park]
+> >>> > - Update the commit message and summary, refer to SWP_SYNCHRONOUS_I=
+O instead of "direct swapin path" [Yu Zhao]
+> >>> > - Update commit message.
+> >>> > - Collect Review and Acks.
+> >>> >
+> >>> > V1: https://lore.kernel.org/all/20240205110959.4021-1-ryncsn@gmail.=
+com/
+> >>> >
+> >>> >  include/linux/swap.h |  5 +++++
+> >>> >  mm/memory.c          | 20 ++++++++++++++++++++
+> >>> >  mm/swap.h            |  5 +++++
+> >>> >  mm/swapfile.c        | 13 +++++++++++++
+> >>> >  4 files changed, 43 insertions(+)
+> >>> >
+> >>> > diff --git a/include/linux/swap.h b/include/linux/swap.h
+> >>> > index 4db00ddad261..8d28f6091a32 100644
+> >>> > --- a/include/linux/swap.h
+> >>> > +++ b/include/linux/swap.h
+> >>> > @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t s=
+wp)
+> >>> >       return 0;
+> >>> >  }
+> >>> >
+> >>> > +static inline int swapcache_prepare(swp_entry_t swp)
+> >>> > +{
+> >>> > +     return 0;
+> >>> > +}
+> >>> > +
+> >>> >  static inline void swap_free(swp_entry_t swp)
+> >>> >  {
+> >>> >  }
+> >>> > diff --git a/mm/memory.c b/mm/memory.c
+> >>> > index 7e1f4849463a..7059230d0a54 100644
+> >>> > --- a/mm/memory.c
+> >>> > +++ b/mm/memory.c
+> >>> > @@ -3799,6 +3799,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+> >>> >       struct page *page;
+> >>> >       struct swap_info_struct *si =3D NULL;
+> >>> >       rmap_t rmap_flags =3D RMAP_NONE;
+> >>> > +     bool need_clear_cache =3D false;
+> >>> >       bool exclusive =3D false;
+> >>> >       swp_entry_t entry;
+> >>> >       pte_t pte;
+> >>> > @@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf=
+)
+> >>> >       if (!folio) {
+> >>> >               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+> >>> >                   __swap_count(entry) =3D=3D 1) {
+> >>> > +                     /*
+> >>> > +                      * Prevent parallel swapin from proceeding wi=
+th
+> >>> > +                      * the cache flag. Otherwise, another thread =
+may
+> >>> > +                      * finish swapin first, free the entry, and s=
+wapout
+> >>> > +                      * reusing the same entry. It's undetectable =
+as
+> >>> > +                      * pte_same() returns true due to entry reuse=
+.
+> >>> > +                      */
+> >>> > +                     if (swapcache_prepare(entry)) {
+> >>> > +                             /* Relax a bit to prevent rapid repea=
+ted page faults */
+> >>> > +                             schedule();
+> >>>
+> >>> The current task may be chosen in schedule().  So, I think that we
+> >>> should use cond_resched() here.
+> >>>
+> >>
+> >> I think if we are worried about current task got chosen again we can
+> >> use schedule_timeout_uninterruptible(1) here. Isn't cond_resched still
+> >> __schedule() and and it can even get omitted, so it should be "weaker"
+> >> IIUC.
+> >
+> > schedule_timeout_uninterruptible(1) will introduce 1ms latency for the
+> > second task.  That may kill performance of some workloads.
 
+It actually calls schedule_timeout so it should be a 1 jiffy latency,
+not 1ms, right?
 
-On 2024/2/15 6:47, Bryan O'Donoghue wrote:
-> On 14/02/2024 14:52, Mark Brown wrote:
->> On Wed, Feb 14, 2024 at 02:44:56PM +0000, Bryan O'Donoghue wrote:
->>> On 14/02/2024 14:13, Mark Brown wrote:
->>
->>>> Not just that but also note that every voltage step in the range will
->>>> have the 8mV offset added.
->>
->>> The documents I have just show sensors attached to ldo3, ldo4 and 
->>> ldo6 fixed
->>> at 1.808.
->>
->>> I don't think there's any better or different information than a 
->>> +200000uV
->>> increment TBH.
->>
->> This seems like a very surprising and unusual hardware design, the
->> 1.808V voltage is already unusual.  Note that this may break systems
->> that are trying to set a range of say 1.8-2.0V if they actually need to
->> set 2V.
-> 
-> Hmm. I'm sure the rail value should be 1.808 its all over the 
-> documentation for example when we get to index 3 we hit 2608000
-> 
-> REGULATOR_LINEAR_RANGE(1808000, 0,  2,  200000),
-> 1808000 0
-> 2008000 1
-> 2208000 2
-> 2408000 x
-> REGULATOR_LINEAR_RANGE(2608000, 3,  28, 16000),
-> 
-> And there are other rails @ 1v8 if 1v8
-> 
-> The one thing I can't easily verify is index 0 = 1808000 and not say 
-> 1800000 or indeed that the increment is 200000 and not say 8000.
-> 
-> I'll see if I can ask around with the hw people and get a more complete 
-> answer.
-> 
-> Similarly now that you've gotten me digging into this problem, it's not 
-> clear to me why this regulator isn't just a linear regulator with an 8mv 
-> increment over a range of indexes.
-> 
-> At least the documentation I'm looking at doesn't elucidate.
-> 
-> I'll dig some more.
-Please see the voltage steps for LDO3/4/6 described in the PM8010 TDOS 
-document which is the most authoritative that we used internally for 
-PMIC driver development:
+/**
+ * schedule_timeout - sleep until timeout
+ * @timeout: timeout value in jiffies
+..
 
-Index	Vset (mV)
-0	1800
-1	2000
-2	2200
-3	2608
-4	2624
-5	2640
-6	2656
-7	2672
-8	2688
-9	2704
-10	2720
-11	2736
-12	2752
-13	2768
-14	2784
-15	2800
-16	2816
-17	2832
-18	2848
-19	2864
-20	2880
-21	2896
-22	2912
-23	2928
-24	2944
-25	2960
-26	2976
-27	2992
-28	3008
-29	3104
-30	3200
-31	3312
+But I think what we really want here is actually the set_current_state
+to force yield CPU for a short period. The latency should be mild.
 
-And I do see from the document change history that step 0 was changed 
-from 1808mV and step 2 was changed from 2512mV, I don't know the reason 
-of the change though.
+>
+> Just found that the cond_sched() in __read_swap_cache_async() has been
+> changed to schedule_timeout_uninterruptible(1) to fix some live lock.
+> Details are in the description of commit 029c4628b2eb ("mm: swap: get
+> rid of livelock in swapin readahead").  I think the similar issue may
+> happen here too.  So, we must use schedule_timeout_uninterruptible(1)
+> here until some other better idea becomes available.
 
-Fenglin
-
-> 
-> ---
-> bod
-> 
+Indeed, I'll switch to schedule_timeout_uninterruptible(1). I've
+tested and posted the result with schedule_timeout_uninterruptible(1)
+before, it looked fine, or even better.
 
