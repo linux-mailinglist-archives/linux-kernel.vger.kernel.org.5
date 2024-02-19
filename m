@@ -1,272 +1,169 @@
-Return-Path: <linux-kernel+bounces-71000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71002-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B187859F35
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:07:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F26F859F3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1024C1F21137
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:07:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF08D28103B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95F0922612;
-	Mon, 19 Feb 2024 09:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE6923766;
+	Mon, 19 Feb 2024 09:06:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b="YOjQ3s7p"
-Received: from whm50.louhi.net (whm50.louhi.net [77.240.19.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="m0Hl221J"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406E0224F0
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.240.19.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAB9623746
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708333577; cv=none; b=D1jd8fJWf5YIo23UOyyL1bbPiGXiO0P1JT6eh/+juTq3MRdlfn1RXCbsgR7lRJU7rWGJHUo3CUN0yz4wtWhB7+v6yUSOiDHNzoWIToo8ZsMSA1IjvawFk8f1/+ALq3vsCFLGc05eTdjblEfJONqo3SKSF9JB9p+e8L9wGLRKl6I=
+	t=1708333598; cv=none; b=uydcM5AqJYEN829YKJEf6x6xAtIrWJabzhga+IWF9r/Mxo/eGNciKldsEGiPioyY9H95hhJO3Vplz07PFJGZXSPufKfFoCF59BUDgt1rovlP4X7SnAY/uegDbIvTWk6BSZ5hGK1MUxs2RYRLUXnjX92Vyvr67trUnaehIL7IXwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708333577; c=relaxed/simple;
-	bh=O1NH8OisEdtqkSO8OVfB16fLp9Kt0L5NGy6WOB5FB6Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oslu0DeKrxj4eiITGI5i834VmXMQtD0o15tobQylp8t6L2IID5anRJDyRxjEm4PKi5/CRVeD0wGqnwk5AmsRmt0kWdIvxtEsoX9DI7oChteAGEaifpZbSwR4qBEZYKDbw+wDdsvyFyqZ466bVF0rjRcWm8oWuAYZTzs9qBwWw/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi; spf=pass smtp.mailfrom=haloniitty.fi; dkim=pass (2048-bit key) header.d=haloniitty.fi header.i=@haloniitty.fi header.b=YOjQ3s7p; arc=none smtp.client-ip=77.240.19.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=haloniitty.fi
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=haloniitty.fi
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=haloniitty.fi; s=default; h=Content-Type:MIME-Version:References:
-	In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zJd2/jY6apWwqOqaVrnaYHmAu95Wj50A02KcGcRg8FY=; b=YOjQ3s7pagONYvtf0BbS29bThl
-	t0VySPGSezTNdCJj+Q7qtpXTjXN+7VpXV1sDgbTEPlkHfRswnD7AtLego+buBYMuMpZHoWC8J6OTb
-	/XAZBZYKeHhOJywcqC8zRwtlcZbfxl05YGz8vteqhBpc+bTEmlsBkaKNaqR9ukMlA3oSzKdFYeeqy
-	91VSFuTC4Au10IuSuUOWTD7vVO+WQfws60zgOqLldFvjjcS7IUcTex7dVvijD+3qnshHjQkSubgmu
-	ps3ASrejKZjjX2l5TCCNmHGVkqDxbdqgY+XvvBWMikFwaBzm3+wH6pqpaQrVrYKxVb2KGg55RGpVs
-	VoBkHbaQ==;
-Received: from [194.136.85.206] (port=35564 helo=eldfell)
-	by whm50.louhi.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96.2)
-	(envelope-from <pekka.paalanen@haloniitty.fi>)
-	id 1rbzbB-0001JA-2x;
-	Mon, 19 Feb 2024 11:06:05 +0200
-Date: Mon, 19 Feb 2024 11:05:56 +0200
-From: Pekka Paalanen <pekka.paalanen@haloniitty.fi>
-To: Mario Limonciello <mario.limonciello@amd.com>
-Cc: Harry Wentland <harry.wentland@amd.com>, Hamza Mahfooz
- <hamza.mahfooz@amd.com>, amd-gfx@lists.freedesktop.org, Leo Li
- <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>, Alex
- Deucher <alexander.deucher@amd.com>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, "Pan, Xinhui" <Xinhui.Pan@amd.com>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Alex Hung
- <alex.hung@amd.com>, Srinivasan Shanmugam <srinivasan.shanmugam@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/amd/display: add panel_power_savings sysfs entry
- to eDP connectors
-Message-ID: <20240219110556.04a27591@eldfell>
-In-Reply-To: <14cd1dee-94b7-48b4-96f4-b3c58512a605@amd.com>
-References: <20240202152837.7388-1-hamza.mahfooz@amd.com>
-	<20240216101936.2e210be2@eldfell>
-	<82280a39-4e1d-41ee-82fb-758ceed953e4@amd.com>
-	<20240216174242.15d07657@eldfell>
-	<a25a6205-c43f-40ab-bb79-8199a8290912@amd.com>
-	<d30e50bf-5b8e-47cb-8abf-e474f8490c99@amd.com>
-	<14cd1dee-94b7-48b4-96f4-b3c58512a605@amd.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708333598; c=relaxed/simple;
+	bh=gm12EEsec1XU6vdLLBDw2ZcT1t0fwEKSLeI1NjHfJvw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LiDJBlOkuwVhM2/dfKODIkJ0zedHo0VsUd+y1IfK7KPhNxonETFgmEePMD3kyfLJMYt9AHbp9rktMy5MdcBOh9IpVkBDA6Rt+7JJOVu/Pr0O29R5izhglXX2FIF1OSliT2AOEtkACnj9dgZRX0Tt8cvYIyjZB+E2hNRFcduVY5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=m0Hl221J; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-33d38c9ca5bso624661f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:06:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708333595; x=1708938395; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hfO0qqe3wWMOTMMAVQM2mr03BWRL4if8K5v6ah+tKAg=;
+        b=m0Hl221JohtEAryFA9nX8YgHT2f6zPgcswMqQYjZwmbBrhGKtr+JhaGoZWY5JpYSE9
+         z8WC2zVUxBoY37L6SmVQbl2QmL+nboLqSAV8iQXW3yt0zAoznIkrFU7g2QVWoNrKWq23
+         P05buItLVrRkWlDOL+xShk4kXGYmRTB+QeXJE2FzIRxUC3WLzZQrVckEzOajnTlYieen
+         3Ev+Ct8K0py6BRACHdUi+8wFsbDemJqGd+thFC8huWPpakAa2ShcZqE+CHdKgFp2QiQa
+         LVAOHVyzbLBzWuX3J90K1e3kYmU1lihHwCEDFWbYsyRWXY0h6FWrprlGRkTE7zaR/NCB
+         L1IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708333595; x=1708938395;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hfO0qqe3wWMOTMMAVQM2mr03BWRL4if8K5v6ah+tKAg=;
+        b=aoGHRksxfXUPRVuI6S6vj3BAdwQYc+mEByoEIB1hctWIrbZZ1NHtO4QWtMglq7BNOq
+         ksnOryS118dS2yR3+niflkTEzMfedLKMDtAd+QT/seIJ4hnGrYVceVnf6lfK9udKTGOJ
+         /XE2d+Ip/nzgExkwxETrB8Ec2GD/gsEUopwA1enr2Fjv65PlQbpdm0f0t7RHBB23/gbd
+         y61Hudj4XrEFWZ/8mFqmKMWoyhdehjlTQXewmiga0zfxEZzogUQtXNeMqKSFymD7seUp
+         OsLAc5TRx4vJ/3ZEm5p41hFTxsJ0yZ3MoMNxvc+3gunHvqFyHZI4yTPGzQJgZMXiuJTs
+         nXnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ/tqMNuow9tFSYLGNASxfF9FJLciGWk4UbaRve49BWo7yZlvnRzHGvG4QsTy1ihYWTIlVc7mVoq89q1vYlPgCrI8jnW0WqaFTfGQj
+X-Gm-Message-State: AOJu0Ywuo+xkOZFlqTma7XVBv/wFySANSciqw4fM4C9mpw268AjajgQH
+	a+7VJM3NeLWFw1dxx0SbrsCCwb++SKZcydPs7eUgLnyx1Muokv48YQ2Oar8UzCA=
+X-Google-Smtp-Source: AGHT+IHAhI2sUb2Mudtx+wU42TiWUKdglMF3z2hN/Yb/7ARoaTlARAaRqy2hH5hUhrZlS2FwV0X2Ig==
+X-Received: by 2002:a5d:56c3:0:b0:33d:32fe:1978 with SMTP id m3-20020a5d56c3000000b0033d32fe1978mr4025388wrw.17.1708333595155;
+        Mon, 19 Feb 2024 01:06:35 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id z2-20020a5d4c82000000b0033d07edbaa6sm9725160wrs.110.2024.02.19.01.06.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 01:06:34 -0800 (PST)
+Message-ID: <72fffc25-33f0-4394-b7c1-8dbc2d23a4a4@linaro.org>
+Date: Mon, 19 Feb 2024 10:06:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/iBK1dT1Ja+rNCM2/OJPAtU.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - whm50.louhi.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - haloniitty.fi
-X-Get-Message-Sender-Via: whm50.louhi.net: authenticated_id: pekka.paalanen@haloniitty.fi
-X-Authenticated-Sender: whm50.louhi.net: pekka.paalanen@haloniitty.fi
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm64: mediatek: add Kontron
+ 3.5"-SBC-i1200
+Content-Language: en-US
+To: Michael Walle <mwalle@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: devicetree@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240219084456.1075445-1-mwalle@kernel.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240219084456.1075445-1-mwalle@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---Sig_/iBK1dT1Ja+rNCM2/OJPAtU.
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 19/02/2024 09:44, Michael Walle wrote:
+> Add the compatible string for the Kontron 3.5"-SBC-i1200 single board
+> computer.
+> 
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> ---
+> v2:
+>  - convert enum to const as there is only one specific board
+> 
+>  Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> index 09f9ffd3ff7b..add167d8b8da 100644
+> --- a/Documentation/devicetree/bindings/arm/mediatek.yaml
+> +++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+> @@ -357,6 +357,11 @@ properties:
+>                - radxa,nio-12l
+>            - const: mediatek,mt8395
+>            - const: mediatek,mt8195
+> +      - description: Kontron 3.5"-SBC-i1200
+> +        items:
+> +          - const: kontron,3-5-sbc-i1200
 
-On Fri, 16 Feb 2024 10:32:10 -0600
-Mario Limonciello <mario.limonciello@amd.com> wrote:
+And then it should be part of earlier entry. Just take a look there in
+the file...
 
-> On 2/16/2024 10:13, Harry Wentland wrote:
-> >=20
-> >=20
-> > On 2024-02-16 11:11, Harry Wentland wrote: =20
-> >>
-> >>
-> >> On 2024-02-16 10:42, Pekka Paalanen wrote: =20
-> >>> On Fri, 16 Feb 2024 09:33:47 -0500
-> >>> Harry Wentland <harry.wentland@amd.com> wrote:
-> >>> =20
-> >>>> On 2024-02-16 03:19, Pekka Paalanen wrote: =20
-> >>>>> On Fri, 2 Feb 2024 10:28:35 -0500
-> >>>>> Hamza Mahfooz <hamza.mahfooz@amd.com> wrote:
-> >>>>>     =20
-> >>>>>> We want programs besides the compositor to be able to enable or di=
-sable
-> >>>>>> panel power saving features. =20
-> >>>>>
-> >>>>> Could you also explain why, in the commit message, please?
-> >>>>>
-> >>>>> It is unexpected for arbitrary programs to be able to override the =
-KMS
-> >>>>> client, and certainly new ways to do so should not be added without=
- an
-> >>>>> excellent justification.
-> >>>>>
-> >>>>> Maybe debugfs would be more appropriate if the purpose is only test=
-ing
-> >>>>> rather than production environments?
-> >>>>>     =20
-> >>>>>> However, since they are currently only
-> >>>>>> configurable through DRM properties, that isn't possible. So, to r=
-emedy
-> >>>>>> that issue introduce a new "panel_power_savings" sysfs attribute. =
-=20
-> >>>>>
-> >>>>> When the DRM property was added, what was used as the userspace to
-> >>>>> prove its workings?
-> >>>>>     =20
-> >>>>
-> >>>> I don't think there ever was a userspace implementation and doubt any
-> >>>> exists today. Part of that is on me. In hindsight, the KMS prop shou=
-ld
-> >>>> have never gone upstream.
-> >>>>
-> >>>> I suggest we drop the KMS prop entirely. =20
-> >>>
-> >>> Sounds good. What about the sysfs thing? Should it be a debugfs thing
-> >>> instead, assuming the below question will be resolved?
-> >>> =20
-> >>
-> >>
-> >> It's intended to be used by the power profiles daemon (PPD). I don't t=
-hink
-> >> debugfs is the right choice. See
-> >> https://gitlab.freedesktop.org/upower/power-profiles-daemon/-/commit/4=
-1ed5d33a82b0ceb7b6d473551eb2aa62cade6bc
-> >> =20
-> >>>> As for the color accuracy topic, I think it is important that compos=
-itors
-> >>>> can have full control over that if needed, while it's also important
-> >>>> for HW vendors to optimize for power when absolute color accuracy is=
- not
-> >>>> needed. An average end-user writing code or working on their slides
-> >>>> would rather have a longer battery life than a perfectly color-accur=
-ate
-> >>>> display. We should probably think of a solution that can support both
-> >>>> use-cases. =20
-> >>>
-> >>> I agree. Maybe this pondering should start from "how would it work fr=
-om
-> >>> end user perspective"?
-> >>>
-> >>> "Automatically" is probably be most desirable answer. Some kind of =20
-> >>
-> >> I agree
-> >> =20
-> >>> desktop settings with options like "save power at the expense of image
-> >>> quality":
-> >>> - always
-> >>> - not if watching movies/gaming
-> >>> - on battery
-> >>> - on battery, unless I'm watching movies/gaming
-> >>> - never
-> >>> =20
-> >>
-> >> It's interesting that you split out movies/gaming, specifically. AMD's
-> >> ABM algorithm seems to have considered movies in particular when
-> >> evaluating the power/fidelity trade-off.
-> >>
-> >> I wouldn't think consumer media is very particular about a specific
-> >> color fidelity (despite what HDR specs try to make you believe). Where
-> >> color fidelity would matter to me is when I'd want to edit pictures or
-> >> video.
-> >>
-> >> The "abm_level" property that we expose is really just that, a setting
-> >> for the strength of the power-savings effect, with 0 being off and 4 b=
-eing
-> >> maximum strength and power saving, at the expense of fidelity.
-> >>
-> >> Mario's work is to let the PPD control it and set the ABM levels based=
- on
-> >> the selected power profile:
-> >> 0 - Performance
-> >> 1 - Balance
-> >> 3 - Power
-> >>
-> >> And I believe we've looked at disabling ABM (setting it to 0) automati=
-cally
-> >> if we know we're on AC power.
-> >> =20
-> >>> Or maybe there already is something like that, and it only needs to be
-> >>> plumbed through?
-> >>>
-> >>> Which would point towards KMS clients needing to control it, which
-> >>> means a generic KMS prop rather than vendor specific?
-> >>>
-> >>> Or should the desktop compositor be talking to some daemon instead of
-> >>> KMS for this? Maybe they already are?
-> >>> =20
-> >>
-> >> I think the intention is for the PPD to be that daemon. Mario can elab=
-orate.
-> >> =20
-> >=20
-> > Some more details and screenshots on how the PPD is expected to work an=
-d look:
-> > https://linuxconfig.org/how-to-manage-power-profiles-over-d-bus-with-po=
-wer-profiles-daemon-on-linux =20
->=20
-> Right, thanks!
->=20
-> The most important point is that the user indicates intent from the GUI.
-> The daemon orchestrates the various knobs to get that intent.
->=20
-> It's intentionally very coarse - 3 power states.  The policy of what to=20
-> do for those states is managed by the daemon.
->=20
-> In the case of ABM it will only apply the policy if the daemon detects=20
-> the system is on battery.
->=20
+Best regards,
+Krzysztof
 
-Sounds like sysfs is the best option, and it should never have been a
-KMS property, indeed.
-
-
-Thanks,
-pq
-
---Sig_/iBK1dT1Ja+rNCM2/OJPAtU.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJQjwWQChkWOYOIONI1/ltBGqqqcFAmXTGfQACgkQI1/ltBGq
-qqdjHw/5AToq06LCDGYksSytCQJdqrFukKT5suSnJdaN43R1UsNSQu4dhu4m24om
-aa0edR25V+07wYSCyRGmdC5s0S8flAahE6F9xW7pSBMEBh2GuV63C0/5Z9UfWn96
-e/lWDYBxD3qaygfcd2e+QJ43hJVIhZXJRI+vs8xsf/tTjjB6msEzKg4QIji+IE3B
-hIjIr7Y8VgBOK/QiCKMMpS6b7ZIgmp7GNYPsOXka/Mnq+8tVshRD3eGqsjqcdwpo
-ZHHsXHwq65xAT+hoRpHLMAtCcCNpSfGZCUbfkZG7AKPAMg/x3ojJHv+u1zMIguhM
-pvQuFoh3d9O3RNMjAj+geTwMYIkHhISLV8UlVgV2DPVwD17quWVu+imoozd+jiou
-jYfhpmVBPd4HbvvoD31hPd20z9du3KpvUvsa/c7rkRLJDeHA2KldiNn2ERAVfmzP
-StAKtSt84x+txvK5YxHN46Z938gvRgsxc7Q0j3yRGyedvyPvXMtRsYMK3MONcyCV
-EZT/46LWPxnKeXUEjCwG34LEFR3wxo9M832o5PcWo/bwmJl3PsH7ZAnhrvLSUGwM
-NaM0Xw3Sv+8D6pwTT8MPHOia3hT8OhL1/vftV+FktCXKUdTDk6ZeX1wdI/RUxQqa
-OgEVqXQR56cE2SwR8BXPlPKulSi/Y0/XUbMl3+rygMoaxi3Xees=
-=qd2V
------END PGP SIGNATURE-----
-
---Sig_/iBK1dT1Ja+rNCM2/OJPAtU.--
 
