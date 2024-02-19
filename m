@@ -1,326 +1,281 @@
-Return-Path: <linux-kernel+bounces-70818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 228FD859CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:22:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88A92859C8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:06:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58CEBB21035
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:22:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14F9F1F22568
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A642D20DC1;
-	Mon, 19 Feb 2024 07:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A3D208BD;
+	Mon, 19 Feb 2024 07:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="DqDnKtzh"
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="IGS0e80c";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="EvT2RSmU"
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8707D20B09
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:22:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708327338; cv=none; b=E+moeLCO+OOG9qLtde68X5IwOzX5/Ql5eWjcn9jfjMtAwsSKXugvvWva3biipGq2xKzeyeIv0SIagBE4p4UqC9GPMnIN/TLTjSpzLCDvM5t9kcHz7HOYSohKYDkA571nJUshCUFrlxkJqmWNAJWXJpr58FE/YA7h8IbetsTz1C0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708327338; c=relaxed/simple;
-	bh=hM2078OiTib/x95otys9s1/rI9Z/Fl8gvbHNop8S0T8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 References; b=F1nCYtvy/xk/QJZ8dhnSMbKW2iTZ+Z/P5zsDOIKs4XzqbJk5vKLRMpi+KFSjyuKHVlt6kyhvvQ7c5caPWDrEp24l5dR9rj4kzi1b/szbBmBn7EEU+GuZ5DLMKBwncoZ7rJQ8zKz9B3IzLCP/WSVz2P8pWcGJlTBBMQ8YR1DzDSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=DqDnKtzh; arc=none smtp.client-ip=203.254.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240219072207epoutp041b6b7ff28a0c7ec065e7a39412a76c29~1MqdJ3dE41103711037epoutp04c
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:22:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240219072207epoutp041b6b7ff28a0c7ec065e7a39412a76c29~1MqdJ3dE41103711037epoutp04c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1708327327;
-	bh=Iv95Eb6L/ARkoTmdNirj17GtPhmXPpDoLjdbyBvtWjI=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=DqDnKtzhNmDYk+MdZ3KdN3+KBR3nUOrhjT5JYdRkofPs4fIbuwjVq96+SblB60hbA
-	 D9AAr5fYR7e0+r+6qTgFccjuJ2zXbNtOEF4ES1PKNTW2OBZQ4aEf887VKgUiJVZ7tx
-	 FFbP1LFp6Hacm22IXcnx/KiSNlakYzrDaiCYhL7w=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-	20240219072207epcas5p122a869102f255af25574b3742b377ad8~1MqcwUZoe2172121721epcas5p1S;
-	Mon, 19 Feb 2024 07:22:07 +0000 (GMT)
-Received: from epsmges5p2new.samsung.com (unknown [182.195.38.177]) by
-	epsnrtp2.localdomain (Postfix) with ESMTP id 4TdYrY0q5Tz4x9QN; Mon, 19 Feb
-	2024 07:22:05 +0000 (GMT)
-Received: from epcas5p4.samsung.com ( [182.195.41.42]) by
-	epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	2A.80.10009.C9103D56; Mon, 19 Feb 2024 16:22:05 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240219064250epcas5p10e883fb39a12909946028672c0b5d6f3~1MIJoa6ct1439314393epcas5p1b;
-	Mon, 19 Feb 2024 06:42:50 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240219064250epsmtrp2995ae29545c2e7c79c2693a1094b8026~1MIJmd1mh0459004590epsmtrp2O;
-	Mon, 19 Feb 2024 06:42:50 +0000 (GMT)
-X-AuditID: b6c32a4a-261fd70000002719-a6-65d3019c6e18
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-	epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	82.BE.07368.A68F2D56; Mon, 19 Feb 2024 15:42:50 +0900 (KST)
-Received: from testpc118124.samsungds.net (unknown [109.105.118.124]) by
-	epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240219064248epsmtip187df19d852c641985512f01147afd3b6~1MIHgHIvN2069320693epsmtip1P;
-	Mon, 19 Feb 2024 06:42:47 +0000 (GMT)
-From: Xiaobing Li <xiaobing.li@samsung.com>
-To: axboe@kernel.dk, asml.silence@gmail.com
-Cc: linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-	kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-	kundan.kumar@samsung.com, wenwen.chen@samsung.com, ruyi.zhang@samsung.com,
-	cliang01.li@samsung.com, xue01.he@samsung.com, Xiaobing Li
-	<xiaobing.li@samsung.com>
-Subject: [PATCH v9] io_uring: Statistics of the true utilization of sq
- threads.
-Date: Mon, 19 Feb 2024 14:42:41 +0800
-Message-Id: <20240219064241.20531-1-xiaobing.li@samsung.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 094422031C;
+	Mon, 19 Feb 2024 07:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708326396; cv=fail; b=AWC+Sb/7WA/WUZ+pc12YDP9z/P9tENV5StXpPAwX0xKXrl35gTJAvjne+a/zGVHWvwQgVjaCjSzih7ZWRLhysQsv7IUzL6wiccj3Ru8gLHOleObkMUZhll4bu6eo9VUqcUJbym+ukbuYip8V68ICrTUQ/t1GTsJqJOg1KULsSRM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708326396; c=relaxed/simple;
+	bh=ZLk5pdtfzFBOuQ5qWUQJObUSu9i8Z9FO4g6kkCe7bEs=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=gbkVVqDmy0ij1maP7QRywNWDkje+vtpfS+ZvkteS33nSog5WKgpXao8Zht6i2kTaltqxgE1riiJIY07I/qcloayvcHnWGyM80rfNrDojObKyBvQn02pMzvsoP9JRMwlNXB6yCN1V6Qcqnog+B9FhUh0tCYpfuraDvSjJjgvQlx8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=IGS0e80c; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=EvT2RSmU; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41J6pIar021829;
+	Mon, 19 Feb 2024 07:06:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=CWVS3+o6GKeQ2wv92il4La7lcBLOwdc1gd/bn2dnoYk=;
+ b=IGS0e80cd0ZDgPMt6WI8R2AYAODb3U/G5aewitk7rvVNyq26RYqbpcqp/deIipgVQFNU
+ woSsUFM61DPLIDvtyk7SPHW9sJOuyn9XjQbIXkYVG8hR2LZwR9n/bV33hMWFjDwBkvcx
+ j6BGJ4jyTn6g6URJM4tafrAcELbqunSvIdwcEoNEoFsM6QA8YnfFjXkT+WMrp1vPkp0g
+ FpYY7xVE04D0kKGRnZQAGsH3JywRDkoVltOXznnyy7zV5jqkeX3Ggf+sQiLSZmA/+1+x
+ srwrJHMhTDIZ5j8VtOybTLifCJyL4zdyv9dDt3C/C9M1pKHYKu7DCXn8Y8NdEy5hIP3a FA== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wanbvb8pm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 Feb 2024 07:06:20 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41J6ix9n029144;
+	Mon, 19 Feb 2024 07:06:19 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2169.outbound.protection.outlook.com [104.47.57.169])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak85qsef-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 19 Feb 2024 07:06:19 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DR2nb7osLML5NoTg/t5HOvDDKe3Gq4eQ+V2Rp+wMWK/rSPUG9OfdKO2DyXQ2oOim34wZI3jBTYb3Rd26or4aEBR3cAX36aBwccx83nnjDmiu5jQrLU7azFyQQsRhF75bjsybdZfSYQzIdRAm3fVeQ6ggG2gMKbcF1FqXSFU+34AGfJI4aJ7jjpoyZZP/C7qk9BwAkGN60qwnJCu0QkBFWd0llj3WaI7IjvQw8ZOnU2og0pSbfrltyzYe5CdQ9SzgUIL59opcCJ/YDZlu3hss1mk3wTi6yz3vYyzShPoamHc8B90DyKr4GyOHUOUi+xtpC+zdAqhmix9bbbjr9hxBxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=CWVS3+o6GKeQ2wv92il4La7lcBLOwdc1gd/bn2dnoYk=;
+ b=Jq5r4+Pu3mRa7CR21qZ9RDJ/J8DzZkKWoxMcRngycf4iMJdxIRSpyZcwEZE3pyLO+Qp6zmLnSUpi3g/sW+lSWMLPgvKJB0lqYkqrwvrNMBc3DF9jeqjrsQ8EScYdaEMzB7NvxHeXKfHolXY5yCHL6sx1GAqsD8JmO9F96ZkEtABUrfqWmaydplWDqREvSKlX5FncEK75NaBrzR6u2wLljYnBhM61yEM5Qo4cYXMIWaSsyKjoH81iXLshEuzRqEUqbB2tM0xOvPzTai1JCmK2y+ct1+NbUdFa0/6ML+KAPM+h56O3oyE7mJgJZwDmhPakHQwZDgsybqAVn3aqbwUN8g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CWVS3+o6GKeQ2wv92il4La7lcBLOwdc1gd/bn2dnoYk=;
+ b=EvT2RSmU64j8TvOp4IegGUB5c2ymkyUfudfH8P9GPPXaa59nqnCmpT60ucaGqbPWDkc4Tq3a9HnS5fVlR6Mn0WPCkioujoHJFHwGdWcMIakUWldeydodBK5nIPIKAEs62sWj1zYxyFvxzvvt1CJN+BTk3W5okYtU4DicQGDrNjA=
+Received: from MN2PR10MB4349.namprd10.prod.outlook.com (2603:10b6:208:1d4::9)
+ by CH0PR10MB4955.namprd10.prod.outlook.com (2603:10b6:610:c2::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Mon, 19 Feb
+ 2024 07:06:17 +0000
+Received: from MN2PR10MB4349.namprd10.prod.outlook.com
+ ([fe80::2b25:4b29:73ac:20fd]) by MN2PR10MB4349.namprd10.prod.outlook.com
+ ([fe80::2b25:4b29:73ac:20fd%6]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
+ 07:06:17 +0000
+From: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+To: Maximilian Heyne <mheyne@amazon.de>
+CC: "ravib@amazon.com" <ravib@amazon.com>,
+        "stable@vger.kernel.org"
+	<stable@vger.kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger
+	<adilger.kernel@dilger.ca>,
+        Yongqiang Yang <xiaoqiangnk@gmail.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Rajesh
+ Sivaramasubramaniom <rajesh.sivaramasubramaniom@oracle.com>,
+        Junxiao Bi
+	<junxiao.bi@oracle.com>
+Subject: RE: [External] : [PATCH v2] ext4: fix corruption during on-line
+ resize
+Thread-Topic: [External] : [PATCH v2] ext4: fix corruption during on-line
+ resize
+Thread-Index: AQHaYCdv+HKdg+s0OE+j5sdgQBPcPbERQ2lw
+Date: Mon, 19 Feb 2024 07:06:17 +0000
+Message-ID: 
+ <MN2PR10MB4349049992351787B0E5F83AA0512@MN2PR10MB4349.namprd10.prod.outlook.com>
+References: <20240215155009.94493-1-mheyne@amazon.de>
+In-Reply-To: <20240215155009.94493-1-mheyne@amazon.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN2PR10MB4349:EE_|CH0PR10MB4955:EE_
+x-ms-office365-filtering-correlation-id: c842881b-0c72-4ea1-15ca-08dc31194469
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ QkJgb93nYStjOu02dZyS05Mb7o2L/OlxwPPrQ/X5HfYYXMIyTlIqKepFthxKwJZZqEGTX37XIVFkqTEbeYnU90Rc/t466vyELxStHWhFXw4eaOntldZZVMR/4bm5XkJbI93XDYlGvme08v8kAEKy6BbCieOrzC84/hiNh9F65OMLASrKGEy699jo1wOKL5+EYaiEUoiOZTESQORY5+dnQfsNdjr240VCkirkXWrrpyoor67PgfUU9gxhgn+K665taKtsFHRcbsVb+Hf/GPomgpuQe2esV+dXS+F3G8W9A1gormvA8klS3pd2psFUIzBdCsgPwLie++5/z4IzDA6tJmGoqxpLHIup8txQfrSbw8NRvdu5mHE5fHUWn6NZylKijYywX22hKTULKj2wx3NdpJ3vi/KCM1frFAw8/80YM5nmBbMw9ZLkqAEnzXoFSojbSZocwvPSDwlyvU+yC4O7PA/P9tISTYc1h7ALcVpAAcgtdv9T+rVLf1oOQV7xHKQ5Uu7aVEF+44CF5CuONmKznSpGcoUnIc3sJImR8aTFbYdOHuhzCweVhMDtYPtMLBf3dhHwrD7sn8ozqsRVDxOVI4KDDWaKO2p7lHwE3K42RFyFRiHjL5/wlWrdBEn8hXhw
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4349.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(376002)(136003)(366004)(230273577357003)(230922051799003)(186009)(1800799012)(451199024)(64100799003)(38070700009)(8676002)(26005)(41300700001)(107886003)(83380400001)(316002)(66556008)(8936002)(52536014)(66476007)(66446008)(64756008)(66946007)(4326008)(6916009)(76116006)(478600001)(9686003)(71200400001)(54906003)(6506007)(7696005)(33656002)(122000001)(38100700002)(86362001)(2906002)(5660300002)(55016003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?nldK1WxpqjsuUWq8U5+PmzFHjxwXGp0ZD4Dkz9IxB8d2PXAuZHjyNWgd9Jkd?=
+ =?us-ascii?Q?Szsf/Medz2YXHHQ0mmoNupgUOGwkFAva2VFDe+TjZtI7CcVwPUraQzcGCjix?=
+ =?us-ascii?Q?JFsirXklrg2enlD0VJvt1ro39U3XjmMl68Gv1OGSco91ZlPvhhdYTL5d2fCs?=
+ =?us-ascii?Q?0SKHVkk8cae9Z6iPS7zzcwzuvGsNQLgVCU/xmbPW1Sn+rIs+eBaPzYyQkNjQ?=
+ =?us-ascii?Q?DkX9dM3bDd8zknB28oRWafyCmc2NFYuOtclcNPVaNoM+mnm+TDwqU4kncB+q?=
+ =?us-ascii?Q?lNSU2zGFsIHU85nKZAgK/R6CIln58pvpx8ZWwKsCU8QKJRxzq9KVOaN+jox2?=
+ =?us-ascii?Q?dEadDzXInBxend9sJz2xUGis6zjxdIlRpjaWPlCxwjvvcsqr23B4UJGPyNLE?=
+ =?us-ascii?Q?MIHyzk4a6O9MQeYHqCUDZWlVp8gK/lSy/qJ8drXHE0O1KM+Saangk7/ZYNm4?=
+ =?us-ascii?Q?6fpD4yPyu1qYgisK3UyhZmauUCfRLpx0sMrjRx5X4ufO00Q/k57sebgPdlwN?=
+ =?us-ascii?Q?2fljFt8g5uC9V+88gTVpRcd9D5qaVhYNFVbZdKAr6HideWMQ7PdYGbmUmDI8?=
+ =?us-ascii?Q?KSxt567P7xSz6rqqajIYSZrJ4VAsKxxYDeFlKA5sUIKDBrGRy3SI1GD02xhF?=
+ =?us-ascii?Q?0X4rtHBkYNqNJ5j1/XAGfK/kmYnxhhM25XZF73YowEvdvYPpeRuUX10Pgueh?=
+ =?us-ascii?Q?4FM6dCUBw2l7SUvFiisAWrY8umNIQLPwuc8tQVVyKpJPML3jIFXvwrx+11Pj?=
+ =?us-ascii?Q?uAUcozLluyTyASg1BhCPJzRdfvJyswxgFWAfny1VZf+SE/gY61Y9TYl1Vtzn?=
+ =?us-ascii?Q?qXAJtuKuuwinHyIsjVFubu4auFQ3NTACqLNBFFcWYORkLHN5IwVsy03ONfQv?=
+ =?us-ascii?Q?uQDVNYO5ZKDJMiU0r3KfsOG6U1uA2Dm9/CF/oHvbMFML6Sq889dZLAOUMgJz?=
+ =?us-ascii?Q?Ynpymn+1bN94rwTNbXjPeFGJvsJu1OMnDPZPHpMCbQqhBibVonBFhvm/RkeH?=
+ =?us-ascii?Q?j44/jUepja40C5GBtrmYLrHp/SvHAKPqfxTa+gT7n89uigreFrFnidnAZoEn?=
+ =?us-ascii?Q?LVDHYTrCnrAtBzLcxAf59pfPWYDaKBAh4IFCeaq0m7SL/+XO23IJal7+s2Uu?=
+ =?us-ascii?Q?vB0LlUeH81aJyADwk/BAgDu2Hvn9H4XDiL/maw1VX1+VDJRcY9VGWhyfznwg?=
+ =?us-ascii?Q?NpHtHiYgeaYanQrngGO7kU39/465tZ2uy2tasDzho/Szo8zS+upjTg2kjP5s?=
+ =?us-ascii?Q?Nh5JuAJ1pgtxFUSdYQOCVBuNkHEyXkytkvubR4yFS3WwxspSsCDcnhZjx3x4?=
+ =?us-ascii?Q?OfgthUbadnusvBtIEM+gEfBEyCpjt2aigDXfn81xMWuIgdesKunteuq01Nkv?=
+ =?us-ascii?Q?18dSTUUN9ZBM0rOxiw1cJB2XOGBJfE8TSVkXEAglGri/fJx4IeHIkOrWRQvX?=
+ =?us-ascii?Q?gVJpJBVbYUbiVok7M99OgbaHpag4MLVIZPzodj+V+yZOogB7Umvub/k9oPqh?=
+ =?us-ascii?Q?rlOBulORHgZZbVjSVkjyDE2zFrF9c50UpTvZkG1mw+AFPdtqqr0NxLTEqXjK?=
+ =?us-ascii?Q?qNKDZi80nZhNWBCrN7T56XatE047RC74pLOhATRRga2sgJZ5ARl9lTzGHyO4?=
+ =?us-ascii?Q?kA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPJsWRmVeSWpSXmKPExsWy7bCmlu5cxsupBnsmMVvMWbWN0WL13X42
-	i9N/H7NYvGs9x2Jx9P9bNotf3XcZLbZ++cpqcXnXHDaLZ3s5Lb4c/s5ucXbCB1aLqVt2MFl0
-	tFxmtOi6cIrNgc9j56y77B6Xz5Z69G1ZxejxeZNcAEtUtk1GamJKapFCal5yfkpmXrqtkndw
-	vHO8qZmBoa6hpYW5kkJeYm6qrZKLT4CuW2YO0IlKCmWJOaVAoYDE4mIlfTubovzSklSFjPzi
-	Elul1IKUnAKTAr3ixNzi0rx0vbzUEitDAwMjU6DChOyMVzNmsxdM1Ku4feE+YwPjCtUuRk4O
-	CQETiT2H+llAbCGB3YwS3Z9rIOxPjBLb7qlC2N8YJZbcZoGpX//9E2sXIxdQfC+jxOs5s1kg
-	nF+MEifXnWIHqWIT0Ja4vq6LFcQWAbJfP54KVsQssIRJYuu3w0wgCWGBQInmxnVgNouAqsSf
-	pndsIDavgI3E85kvmSDWyUvsP3iWGSIuKHFy5hOwM5iB4s1bZzODDJUQ6OWQmLl4FxtEg4vE
-	hw1fGSFsYYlXx7ewQ9hSEp/f7YWqKZY40vOdFaK5gVFi+u2rUEXWEv+u7AHawAG0QVNi/S59
-	iLCsxNRTEIcyC/BJ9P5+AnUcr8SOeTC2qsTqSw+hYSQt8brhN1TcQ2LS1s1skHCMlTi65xLT
-	BEb5WUj+mYXkn1kImxcwMq9ilEwtKM5NTy02LTDKSy2HR2xyfu4mRnBK1fLawfjwwQe9Q4xM
-	HIyHGCU4mJVEeN2bLqQK8aYkVlalFuXHF5XmpBYfYjQFBvJEZinR5HxgUs8riTc0sTQwMTMz
-	M7E0NjNUEud93To3RUggPbEkNTs1tSC1CKaPiYNTqoFppcNrlidSrQdVHjOX8N7xWKLU49xU
-	qrz6y+wOj8+2py+U9SyryZIod5hzXskoK559+qeeeVxNvN/7NAJ21jnJ+PIZavxI6ll/9k6T
-	V9ziWK1Tt37f2N7C1fzrynehTftvfru05PeTiaZHpf3sS/QqJnFz9c2z0ik8/fLHVsbwzRL8
-	1dkHXPhPKAdwR3HOdFj9tPTeQn6JT7OvFfnIx92vL1XzfSmVa5IWdUlr7q5IuQpjw+9PJ+zY
-	aNebKq3bevj+sV0BGfmFyYulH1fFb7L8V7jf9uS1J9V8W7WFUnmcZp6KfRNWPa9bZnV0r/LZ
-	8B+vTz/tFn29+JAF84q16kcOt/6bNeGCrJv6ntgv2+8psRRnJBpqMRcVJwIAK0UG3TIEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrALMWRmVeSWpSXmKPExsWy7bCSnG7Wj0upBsu+c1rMWbWN0WL13X42
-	i9N/H7NYvGs9x2Jx9P9bNotf3XcZLbZ++cpqcXnXHDaLZ3s5Lb4c/s5ucXbCB1aLqVt2MFl0
-	tFxmtOi6cIrNgc9j56y77B6Xz5Z69G1ZxejxeZNcAEsUl01Kak5mWWqRvl0CV8arGbPZCybq
-	Vdy+cJ+xgXGFahcjJ4eEgInE+u+fWLsYuTiEBHYzSvxsWc3SxcgBlJCW+POnHKJGWGLlv+fs
-	EDU/GCUWtm9iBEmwCWhLXF/XxQpSLyKgK9F4VwGkhllgA5PE/qfzWEFqhAX8JTpndLGA2CwC
-	qhJ/mt6xgdi8AjYSz2e+ZIJYIC+x/+BZZoi4oMTJmU/AbmAWUJdYP08IJMwMVNK8dTbzBEb+
-	WUiqZiFUzUJStYCReRWjZGpBcW56brJhgWFearlecWJucWleul5yfu4mRnAkaGnsYLw3/5/e
-	IUYmDsZDjBIczEoivO5NF1KFeFMSK6tSi/Lji0pzUosPMUpzsCiJ8xrOmJ0iJJCeWJKanZpa
-	kFoEk2Xi4JRqYHrYc9xguz5j4x3jO+Frbmbf33TrzyTfiphfRydUunZkT7/PdG1bjeDj5uen
-	qtTZn9e+Lp7X9dzJV2lWf+zRZXzu6/PlxR7MKvpZb/2ou3nCqjcf3DvO7SxfsFnq08xFvk9N
-	+fltz0VvWT0/nd9n90LWtjIOrS2Gj6sqlrcEOniYpgWca1ap1UqrCbaaefbI7+kOOqXnZvB6
-	N3PJql/l6rTPshd5ERauc/gml1Da//kH+Tarh7g31E/KvMM3pSLBUcnlF79gxdcCqfKgcusd
-	r79/lVrzXfQIa7uUzKO1wtPNFuWopH+ue3YwzfsVz9SFUhLb5m5a+znXymOZ5cFnGzV2y08w
-	vdb3qu9w8iV5OyWW4oxEQy3mouJEANtw09TzAgAA
-X-CMS-MailID: 20240219064250epcas5p10e883fb39a12909946028672c0b5d6f3
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20240219064250epcas5p10e883fb39a12909946028672c0b5d6f3
-References: <CGME20240219064250epcas5p10e883fb39a12909946028672c0b5d6f3@epcas5p1.samsung.com>
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	VsNXOLJg+po6uF5ovMSf/HVrcR048VJ7fShF5UzIrotHATt2SrjlR3M2oWKmWph87RAkSy/r4sUitWGnASF/YACcLgQ3I2Gznhhw+wOGSZCV2bFCX38aGJh2TfkOAjHzwpda7q4KAaGKyZ1fQtqLb/2+qpfzaMQFHthkX3JQT2+0d4wyBpDhWy15WWA56wnPj8jzquNmVqt9yCrM0x1M3xHod16OmBPwCy/sYnLVaZPUUaLACk8tF605UG8Eq3PsOthW3eB303cjJru1e31ziawYiMouPm3z1iQj5rKZMjK92Rc4fc90RR8rl7rtihJX9bJcbRPuEzkI+rKen0zxMlHCYx39eSHPvweXbTEF5Il2aGgAIWrakbS6yzpbI3+kdAzu7h3Q899XIcOdstAI/cxXLslzdptu+AkFCm46aCIwiYsNPtshumyZnz+nYlaIpRGJkbSXVT9XjEaj74ugZy4rXkW651GUKqecETHA9NgVHb1iOE2munmYIL0GEw0OfbD4iYGe79dlFgVySmdtU0QTLPqwQL0jwVW79Fe70gPjSWSUnBV7fVDCIA8KWDq1p96j+Hoq616+zo/pNUbLyOsd29GipfbLOzJi+0ONqtk=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4349.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c842881b-0c72-4ea1-15ca-08dc31194469
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2024 07:06:17.1302
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6udeOLfvfzyVEwF4FyNvT6eidl+pPdjUoGJKKzjsB1i84lSa5A1KiKzqWLm+K6unYSaf/O/v40///U8zp/7J4dS3pV5YFWn8YtvlqztG12w=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB4955
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_04,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 suspectscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402190052
+X-Proofpoint-GUID: W4uyKVQGCsFVZkKxuSijkDwSl--OiS83
+X-Proofpoint-ORIG-GUID: W4uyKVQGCsFVZkKxuSijkDwSl--OiS83
 
-Count the running time and actual IO processing time of the sqpoll
-thread, and output the statistical data to fdinfo.
 
-Variable description:
-"work_time" in the code represents the sum of the jiffies of the sq
-thread actually processing IO, that is, how many milliseconds it
-actually takes to process IO. "total_time" represents the total time
-that the sq thread has elapsed from the beginning of the loop to the
-current time point, that is, how many milliseconds it has spent in
-total.
+-----Original Message-----
+From: Maximilian Heyne <mheyne@amazon.de>=20
+Sent: Thursday, February 15, 2024 9:20 PM
+Cc: ravib@amazon.com; Maximilian Heyne <mheyne@amazon.de>;=20
+stable@vger.kernel.org; Theodore Ts'o <tytso@mit.edu>; Andreas Dilger=20
+<adilger.kernel@dilger.ca>; Yongqiang Yang <xiaoqiangnk@gmail.com>;=20
+linux-ext4@vger.kernel.org; linux-kernel@vger.kernel.org
+Subject: [External] : [PATCH v2] ext4: fix corruption during on-line resize
 
-The test tool is fio, and its parameters are as follows:
-[global]
-ioengine=io_uring
-direct=1
-group_reporting
-bs=128k
-norandommap=1
-randrepeat=0
-refill_buffers
-ramp_time=30s
-time_based
-runtime=1m
-clocksource=clock_gettime
-overwrite=1
-log_avg_msec=1000
-numjobs=1
+> We observed a corruption during on-line resize of a file system that is
+> larger than 16 TiB with 4k block size. With having more then 2^32 blocks
+> resize_inode is turned off by default by mke2fs. The issue can be
+> reproduced on a smaller file system for convenience by explicitly
+> turning off resize_inode. An on-line resize across an 8 GiB boundary (the
+> size of a meta block group in this setup) then leads to a corruption:
+>
+>  dev=3D/dev/<some_dev> # should be >=3D 16 GiB
+>  mkdir -p /corruption
+>  /sbin/mke2fs -t ext4 -b 4096 -O ^resize_inode $dev $((2 * 2**21 - 2**15)=
+)
+>  mount -t ext4 $dev /corruption
+>
+>  dd if=3D/dev/zero bs=3D4096 of=3D/corruption/test count=3D$((2*2**21 - 4=
+*2**15))
+>  sha1sum /corruption/test
+>  # 79d2658b39dcfd77274e435b0934028adafaab11  /corruption/test
+>
+>  /sbin/resize2fs $dev $((2*2**21))
+>  # drop page cache to force reload the block from disk
+>  echo 1 > /proc/sys/vm/drop_caches
+>
+>  sha1sum /corruption/test
+>  # 3c2abc63cbf1a94c9e6977e0fbd72cd832c4d5c3  /corruption/test
+>
+> 2^21 =3D 2^15*2^6 equals 8 GiB whereof 2^15 is the number of blocks per
+> block group and 2^6 are the number of block groups that make a meta
+> block group.
+>
+> The last checksum might be different depending on how the file is laid
+> out across the physical blocks. The actual corruption occurs at physical
+> block 63*2^15 =3D 2064384 which would be the location of the backup of th=
+e
+> meta block group's block descriptor. During the on-line resize the file
+> system will be converted to meta_bg starting at s_first_meta_bg which is
+> 2 in the example - meaning all block groups after 16 GiB. However, in
+> ext4_flex_group_add we might add block groups that are not part of the
+> first meta block group yet. In the reproducer we achieved this by
+> substracting the size of a whole block group from the point where the
+> meta block group would start. This must be considered when updating the
+> backup block group descriptors to follow the non-meta_bg layout. The fix
+> is to add a test whether the group to add is already part of the meta
+> block group or not.
+>
+> Fixes: 01f795f9e0d67 ("ext4: add online resizing support for meta_bg and =
+64-bit file systems")
+> Cc: stable@vger.kernel.org
 
-[disk0]
-filename=/dev/nvme0n1
-rw=read
-iodepth=16
-hipri
-sqthread_poll=1
+Tested the patch across filesystem of various sizes and blocksizes. The pat=
+ch stops
+the corruption.
 
-The test results are as follows:
-Every 2.0s: cat /proc/9230/fdinfo/6 | grep -E Sq
-SqMask: 0x3
-SqHead: 3197153
-SqTail: 3197153
-CachedSqHead:   3197153
-SqThread:       9231
-SqThreadCpu:    11
-SqTotalTime:    18099614
-SqWorkTime:     16748316
+> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
 
-The test results corresponding to different iodepths are as follows:
-|-----------|-------|-------|-------|------|-------|
-|   iodepth |   1   |   4   |   8   |  16  |  64   |
-|-----------|-------|-------|-------|------|-------|
-|utilization| 2.9%  | 8.8%  | 10.9% | 92.9%| 84.4% |
-|-----------|-------|-------|-------|------|-------|
-|    idle   | 97.1% | 91.2% | 89.1% | 7.1% | 15.6% |
-|-----------|-------|-------|-------|------|-------|
+Tested-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+Reviewed-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
 
-Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
-
----
-
-changes：
-v9:
- - Modified the encoding format
-
-v8:
- - Get the work time of the sqpoll thread through getrusage
-
-v7:
- - Get the total time of the sqpoll thread through getrusage
- - The working time of the sqpoll thread is obtained through ktime_get()
-
-v6:
- - Replace the percentages in the fdinfo output with the actual running
-time and the time actually processing IO
-
-v5：
- - list the changes in each iteration.
-
-v4：
- - Resubmit the patch based on removing sq->lock
-
-v3：
- - output actual working time as a percentage of total time
- - detailed description of the meaning of each variable
- - added test results
-
-v2：
- - output the total statistical time and work time to fdinfo
-
-v1：
- - initial version
- - Statistics of total time and work time
- 
- io_uring/fdinfo.c |  7 +++++++
- io_uring/sqpoll.c | 17 ++++++++++++++++-
- io_uring/sqpoll.h |  1 +
- 3 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
-index 976e9500f651..37afc5bac279 100644
---- a/io_uring/fdinfo.c
-+++ b/io_uring/fdinfo.c
-@@ -55,6 +55,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 	struct io_ring_ctx *ctx = f->private_data;
- 	struct io_overflow_cqe *ocqe;
- 	struct io_rings *r = ctx->rings;
-+	struct rusage sq_usage;
- 	unsigned int sq_mask = ctx->sq_entries - 1, cq_mask = ctx->cq_entries - 1;
- 	unsigned int sq_head = READ_ONCE(r->sq.head);
- 	unsigned int sq_tail = READ_ONCE(r->sq.tail);
-@@ -64,6 +65,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 	unsigned int sq_shift = 0;
- 	unsigned int sq_entries, cq_entries;
- 	int sq_pid = -1, sq_cpu = -1;
-+	u64 sq_total_time = 0, sq_work_time = 0;
- 	bool has_lock;
- 	unsigned int i;
- 
-@@ -147,10 +149,15 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 
- 		sq_pid = sq->task_pid;
- 		sq_cpu = sq->sq_cpu;
-+		getrusage(sq->thread, RUSAGE_SELF, &sq_usage);
-+		sq_total_time = sq_usage.ru_stime.tv_sec * 1000000 + sq_usage.ru_stime.tv_usec;
-+		sq_work_time = sq->work_time;
- 	}
- 
- 	seq_printf(m, "SqThread:\t%d\n", sq_pid);
- 	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
-+	seq_printf(m, "SqTotalTime:\t%llu\n", sq_total_time);
-+	seq_printf(m, "SqWorkTime:\t%llu\n", sq_work_time);
- 	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
- 	for (i = 0; has_lock && i < ctx->nr_user_files; i++) {
- 		struct file *f = io_file_from_index(&ctx->file_table, i);
-diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-index 65b5dbe3c850..006d7fc9cf92 100644
---- a/io_uring/sqpoll.c
-+++ b/io_uring/sqpoll.c
-@@ -219,10 +219,22 @@ static bool io_sqd_handle_event(struct io_sq_data *sqd)
- 	return did_sig || test_bit(IO_SQ_THREAD_SHOULD_STOP, &sqd->state);
- }
- 
-+static void io_sq_update_worktime(struct io_sq_data *sqd, struct rusage *start)
-+{
-+		struct rusage end;
-+
-+		getrusage(current, RUSAGE_SELF, &end);
-+		end.ru_stime.tv_sec -= start->ru_stime.tv_sec;
-+		end.ru_stime.tv_usec -= start->ru_stime.tv_usec;
-+
-+		sqd->work_time += end.ru_stime.tv_usec + end.ru_stime.tv_sec * 1000000;
-+}
-+
- static int io_sq_thread(void *data)
- {
- 	struct io_sq_data *sqd = data;
- 	struct io_ring_ctx *ctx;
-+	struct rusage start;
- 	unsigned long timeout = 0;
- 	char buf[TASK_COMM_LEN];
- 	DEFINE_WAIT(wait);
-@@ -251,6 +263,7 @@ static int io_sq_thread(void *data)
- 		}
- 
- 		cap_entries = !list_is_singular(&sqd->ctx_list);
-+		getrusage(current, RUSAGE_SELF, &start);
- 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
- 			int ret = __io_sq_thread(ctx, cap_entries);
- 
-@@ -261,8 +274,10 @@ static int io_sq_thread(void *data)
- 			sqt_spin = true;
- 
- 		if (sqt_spin || !time_after(jiffies, timeout)) {
--			if (sqt_spin)
-+			if (sqt_spin) {
-+				io_sq_update_worktime(sqd, &start);
- 				timeout = jiffies + sqd->sq_thread_idle;
-+			}
- 			if (unlikely(need_resched())) {
- 				mutex_unlock(&sqd->lock);
- 				cond_resched();
-diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
-index 8df37e8c9149..4171666b1cf4 100644
---- a/io_uring/sqpoll.h
-+++ b/io_uring/sqpoll.h
-@@ -16,6 +16,7 @@ struct io_sq_data {
- 	pid_t			task_pid;
- 	pid_t			task_tgid;
- 
-+	u64			work_time;
- 	unsigned long		state;
- 	struct completion	exited;
- };
--- 
-2.34.1
-
+> ---
+> fs/ext4/resize.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+> index 4d4a5a32e310..3c0d12382e06 100644
+> --- a/fs/ext4/resize.c
+> +++ b/fs/ext4/resize.c
+> @@ -1602,7 +1602,8 @@ static int ext4_flex_group_add(struct super_block *=
+sb,
+> 		int gdb_num =3D group / EXT4_DESC_PER_BLOCK(sb);
+> 		int gdb_num_end =3D ((group + flex_gd->count - 1) /
+> 				   EXT4_DESC_PER_BLOCK(sb));
+> -		int meta_bg =3D ext4_has_feature_meta_bg(sb);
+> +		int meta_bg =3D ext4_has_feature_meta_bg(sb) &&
+> +			      gdb_num >=3D le32_to_cpu(es->s_first_meta_bg);
+> 		sector_t padding_blocks =3D meta_bg ? 0 : sbi->s_sbh->b_blocknr -
+> 					 ext4_group_first_block_no(sb, 0);
+>=20
+> --=20
+> 2.40.1
+>
+>
+>
+>
+> Amazon Development Center Germany GmbH
+> Krausenstr. 38
+> 10117 Berlin
+> Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+> Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+> Sitz: Berlin
+> Ust-ID: DE 289 237 879
 
