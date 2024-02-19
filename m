@@ -1,95 +1,173 @@
-Return-Path: <linux-kernel+bounces-71273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EAC285A2C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBC385A2C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21DA21F243FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:02:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C54D11F247CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:02:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603202D051;
-	Mon, 19 Feb 2024 12:01:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C93B2D05F;
+	Mon, 19 Feb 2024 12:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="CTItosMf"
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 101662D04B
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.220
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="To78uyru";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="A1NLMhrb"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164382D045
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:02:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708344113; cv=none; b=pj/kVYeu9DfRpISskIYPKB3YlcQjeWqwPU1yEs46CW+pZxRJ3ScAwM+ODOpk8w7vTK8lucEGdvn1dv8lg8P5tas4PA644bTn8pS/ofapbJM+UwMJjxNV7YxIF3Ag1d/db0rWxcgSIPagm5AQgJ7E02o5WPLIqUX439676cfgZLI=
+	t=1708344134; cv=none; b=UPq9m8fG5RQnIQCrlYPGMpP751mB7ISqHuiEMJipREjcXhuDQP2DGn+qBizFf11XCqZUU3ALIj39uZT3E9oNtD01RCuwN1e3OYKTS1AdczjuIBS/h0elv/p/ZuXPpPTVeQobm6IEUO8hL3hQ+j+ASGOLurNlVpW9W9xZXOKmubo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708344113; c=relaxed/simple;
-	bh=Qd+RI16juGVjN7zrBNOH3Q/KIOhwUI6VbC2DgVyOadg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qeD2gKBfnzyxvW+EDjBW/06f2eHMo4qSJd9tj548nTnVttkzNwG5nkZf0bFrZsIERmk/em4Arzt9kvH26/QleqIbUBTzGtyGLuM68lXpngE/F+tiq1GD3iR26AyHLGuYvOp/bAhQiAo4zqRQ7dKz7SQ+mVR10lt6ijZTyE/NDRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=CTItosMf; arc=none smtp.client-ip=45.254.50.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=rWWze
-	ynqvpKTE8wM5BvJ7WhI4cRh2jw6a0Kbi0ZwsdA=; b=CTItosMfLTdC8dozrCo38
-	53GssiMoHJxhFpmG1TKAPgS1VoVYZ8So0Fzs99MPM0SPLMcfa7YmoHjQ8BQ4dXVw
-	rGsCo0ETcFLt+lpM32nsWFw1HWIyK2yyCGi9DpdbSBImo6qmpahm6s0+wjUthBE+
-	QReLqTb/JJkUsC47UeLe6g=
-Received: from ProDesk.. (unknown [58.22.7.114])
-	by gzga-smtp-mta-g0-3 (Coremail) with SMTP id _____wCnzosNQ9Nlm_S7Dw--.54357S2;
-	Mon, 19 Feb 2024 20:01:21 +0800 (CST)
-From: Andy Yan <andyshrk@163.com>
-To: heiko@sntech.de
-Cc: hjc@rock-chips.com,
-	s.hauer@pengutronix.de,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
+	s=arc-20240116; t=1708344134; c=relaxed/simple;
+	bh=Bb6kPvv5oK092ISD8O2j3930bKBc8I2L5B8ZYVbUHDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=D8ND7WIalMqlN7b8Q4YH6sWqwovtneb+l5hIzIrtcIXZBj99kOTSxZ5nL0huCKkTvOeb2E2FUT0Vu0kMUrWAoFcwYflhpROBQS5+r6FOxotiMP0eUqNuQALoRLniNHeSSPZtbKk4SXb3maleUT7aVWZtfNjLK4D11VET4jEHhGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=To78uyru; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=A1NLMhrb; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3B7FB222F6;
+	Mon, 19 Feb 2024 12:02:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708344131; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tQ67GULT9b2cq8o8yDuQQdBKS5DXm9sCybmVYMJMEs8=;
+	b=To78uyrujPNe5UELxtzj2tigRKklvQJMo5Bv7bYjY6EM2HIKrbTpY0wcePEEYrEXoPuHrd
+	IL8uqPD9sqMNi4Yt6UZhhEHBfb86stjJewTsS8cgZO+IGe8bAy4P7UzSVieM3EsM4HwdDo
+	7OHSpE7LsHeA5ik/pEQaRYy3j3QvpEY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708344130; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tQ67GULT9b2cq8o8yDuQQdBKS5DXm9sCybmVYMJMEs8=;
+	b=A1NLMhrb/o9+kAV69g5AXZVzzWIWvKlqCyj0Cb5nrQN8F1oLnbcBGvRZO0W3lL8ceMuiHH
+	bMd2WSW19aOStA57+gs+lCfrH3Wv4OtMk8ZoI0Fs21SCtvaupNgvsHe5ED+9t6RfjToDeb
+	ls2EMCTxMaQpPgDU958wMOiHLnFeTWU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D25E139D0;
+	Mon, 19 Feb 2024 12:02:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XM7hAEJD02UfPAAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Mon, 19 Feb 2024 12:02:10 +0000
+Date: Mon, 19 Feb 2024 13:02:09 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Donet Tom <donettom@linux.ibm.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
-	Andy Yan <andy.yan@rock-chips.com>
-Subject: [PATCH] drm/rockchip: vop2: Remove AR30 and AB30 format support
-Date: Mon, 19 Feb 2024 20:01:15 +0800
-Message-Id: <20240219120115.1306717-1-andyshrk@163.com>
-X-Mailer: git-send-email 2.34.1
+	Aneesh Kumar <aneesh.kumar@kernel.org>,
+	Huang Ying <ying.huang@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Mel Gorman <mgorman@suse.de>, Ben Widawsky <ben.widawsky@intel.com>,
+	Feng Tang <feng.tang@intel.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Rik van Riel <riel@surriel.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Hugh Dickins <hughd@google.com>,
+	Kefeng Wang <wangkefeng.wang@huawei.com>,
+	Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH 2/3] mm/mempolicy: Avoid the fallthrough with MPOLD_BIND
+ in mpol_misplaced.
+Message-ID: <ZdNDQUZrhz5kfR2f@tiehlicka>
+References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
+ <bf7e6779f842fb65cf7bb9b2c617feb2af271cb7.1708097962.git.donettom@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wCnzosNQ9Nlm_S7Dw--.54357S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKr47XrWkGr4DZw17ur45KFg_yoWfuwcEk3
-	47X3Wfur4xCrn8Jw12y3y7WrZFy3WI9Fs2ga9Yyan5AF1vvw1rXFy0vry7Gas8JF42kFs7
-	GF1jqry3CFn8WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8hiSPUUUUU==
-X-CM-SenderInfo: 5dqg52xkunqiywtou0bp/1tbiqBKJXmVOCUBxqAAAsW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bf7e6779f842fb65cf7bb9b2c617feb2af271cb7.1708097962.git.donettom@linux.ibm.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=A1NLMhrb
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.52 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 DKIM_TRACE(0.00)[suse.com:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[22];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.51)[91.79%]
+X-Spam-Score: -2.52
+X-Rspamd-Queue-Id: 3B7FB222F6
+X-Spam-Flag: NO
 
-From: Andy Yan <andy.yan@rock-chips.com>
+On Sat 17-02-24 01:31:34, Donet Tom wrote:
+> We will update MPOL_PREFERRED_MANY in the follow up patch. This change
+> is required for that.
 
-The Alpha blending for 30 bit RGB/BGR are not
-functioning properly for rk3568/rk3588, so remove
-it from the format list.
+Why is it a separate patch then? Does it make review of the next patch
+easier? If so make it explicit in the changelog.
 
-Fixes: bfd8a5c228fa ("drm/rockchip: vop2: Add more supported 10bit formats")
-Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
----
+> 
+> Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+> Signed-off-by: Donet Tom <donettom@linux.ibm.com>
+> ---
+>  mm/mempolicy.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 8478574c000c..73d698e21dae 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -2515,7 +2515,15 @@ int mpol_misplaced(struct folio *folio, struct vm_area_struct *vma,
+>  				break;
+>  			goto out;
+>  		}
+> -		fallthrough;
+> +
+> +		if (node_isset(curnid, pol->nodes))
+> +			goto out;
+> +		z = first_zones_zonelist(
+> +				node_zonelist(thisnid, GFP_HIGHUSER),
+> +				gfp_zone(GFP_HIGHUSER),
+> +				&pol->nodes);
+> +		polnid = zone_to_nid(z->zone);
+> +		break;
+>  
+>  	case MPOL_PREFERRED_MANY:
+>  		/*
+> -- 
+> 2.39.3
 
- drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-index 48170694ac6b..18efb3fe1c00 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop2_reg.c
-@@ -17,9 +17,7 @@
- 
- static const uint32_t formats_cluster[] = {
- 	DRM_FORMAT_XRGB2101010,
--	DRM_FORMAT_ARGB2101010,
- 	DRM_FORMAT_XBGR2101010,
--	DRM_FORMAT_ABGR2101010,
- 	DRM_FORMAT_XRGB8888,
- 	DRM_FORMAT_ARGB8888,
- 	DRM_FORMAT_XBGR8888,
 -- 
-2.34.1
-
+Michal Hocko
+SUSE Labs
 
