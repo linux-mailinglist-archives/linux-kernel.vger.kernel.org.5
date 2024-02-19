@@ -1,158 +1,136 @@
-Return-Path: <linux-kernel+bounces-72055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E9E985AE61
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:25:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65AAC85AE67
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:28:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8C33282820
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:25:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B44E8B22D23
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:28:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC0455C26;
-	Mon, 19 Feb 2024 22:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04AC45674E;
+	Mon, 19 Feb 2024 22:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j9agmI/G"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="J4M/tSJy"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCEDE54730;
-	Mon, 19 Feb 2024 22:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72FEF55792
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708381535; cv=none; b=Ts0CmRl21JEMkCY5Rt3AJIDd9QBYrtZhCCAmrGfpRxeCtHhSVgJTCY9i+kMHfUYXqtcr3yMCliIvE+tchY/z/xrrwP4Nsk4bHL/Zd7J90iW5ktdK7ySLCUI4Ss2RlfSjuDpUz+Aw2nH+XU3Bx+Ps3AHccupieVM1HLQRdeMiePs=
+	t=1708381704; cv=none; b=bDMZZQi6KDf2RIi9abFclwSWFEUHE2VGjLFKIHUcqiACspiynUrsjUoaIKqRW1WL6VMpsiSkhzYqosnSu5zhE+KVTP25g03v4rAVXVZ4kM4zg4F/uJ4XWKOnCPpajMCAMt7bC/MODuhRaRygWIPyDjJHkkKTDuG+P6kWY8JzL10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708381535; c=relaxed/simple;
-	bh=crP7RAEv7VRGsrEhWj4V+xiOIILazy22p7z1gsKcuEg=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=afZ+d+UQXQ/XjDonhzWJOuVCHGCHco1xM4jU9yutEtb3KijoMAR4OxHxSsL5Fl2i92igaDNOlhjsNK0RJEXRxlYYxY4XKpszmMbGtIS54qnUNfGklyqPnwidCPDALRDPMoEWDZmGTo09laWtz+pKUkhsAtymDOO/YI7e+eYIS4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j9agmI/G; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708381533; x=1739917533;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=crP7RAEv7VRGsrEhWj4V+xiOIILazy22p7z1gsKcuEg=;
-  b=j9agmI/GQuD/SHLxb2c4lntCa8iWDWl6RLzeerYneUXKl5V5/eFlFhnk
-   vBALiTUYr3AHHcFz/a/EAd+uW9duzK9sqXkdbubyl58flEpWKeIr9KNuD
-   H7YeSRhSA5EMswgBg5rS05i7KZbo17acX/JVPV6hgDLtMwXONs/xrn9vm
-   V5txxtfCE0ZI1JVVD2oCl5uipdqe8i6pI1Kgzvbq4IqOBjJjnQ59XdZam
-   aJU3e2/bnbuXSP8XwEGOhs5wmepBQ/0x/fyOt7N/7PzQJDGuI0kpBUtNw
-   sXKrkTHG1RHV3qKB8HxCZH1FnpGd/8T7FZPbQtwfHBodSERCDTktYPtAq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="13097391"
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="13097391"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 14:25:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,171,1705392000"; 
-   d="scan'208";a="9296252"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 19 Feb 2024 14:25:27 -0800
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "Dave Hansen" <dave.hansen@intel.com>, "Jarkko Sakkinen"
- <jarkko@kernel.org>
-Cc: anakrish@microsoft.com, bp@alien8.de, cgroups@vger.kernel.org,
- chrisyan@microsoft.com, dave.hansen@linux.intel.com, hpa@zytor.com,
- kristen@linux.intel.com, linux-kernel@vger.kernel.org,
- linux-sgx@vger.kernel.org, mikko.ylinen@linux.intel.com, mingo@redhat.com,
- mkoutny@suse.com, seanjc@google.com, sohil.mehta@intel.com,
- tglx@linutronix.de, tim.c.chen@linux.intel.com, tj@kernel.org, x86@kernel.org,
- yangjie@microsoft.com, zhanb@microsoft.com, zhiquan1.li@intel.com
-Subject: Re: [RFC PATCH] x86/sgx: Remove 'reclaim' boolean parameters
-References: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
- <20240219153957.9957-1-haitao.huang@linux.intel.com>
- <40f95b90-8698-42dd-89d7-cd73d1e311b1@intel.com>
- <CZ9CIP97661C.2WUZJNNCQUHE8@seitikki>
-Date: Mon, 19 Feb 2024 16:25:22 -0600
+	s=arc-20240116; t=1708381704; c=relaxed/simple;
+	bh=xfm6jm1SjOIoP0NYwIGg4sHKFEn2nlbRNl5VwkfOadc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Is91+uW2RRTOXza6zWOvfKozFs6yOB8e4NlIkZT1wfEg0mZU9xNE68NLYAcaEZ2OvSG3UwaZZCzmpNUW9rT0THbIwjLegh9oH1s7r+a1x13MRAvVkDPLq9/ZWZ2cVlxJtmjiZ8SgG27NzrWjQVhZ14PVc1Z791aZ0I86R2ULI3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=J4M/tSJy; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7c45829f3b6so31520739f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:28:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1708381700; x=1708986500; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GvtVpu24juxIMlhGInfZIlPjBB2bdtPvceMgWyk+MJM=;
+        b=J4M/tSJyqVxqSCFgaQf0FhNAYY3Mi4dCnxGFJtpR+5XYteFAquV7wU30j8OWDhvkhR
+         rdYYHQgHXdrByypWdie+qLt+/27/OK2OnElK24fJQD3BAPuc5wjv7hQorJyD6NYoSSVt
+         nl0RrThxd9PsNW+6GVXxQyfmRwgUMGZUek2Ro=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708381700; x=1708986500;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GvtVpu24juxIMlhGInfZIlPjBB2bdtPvceMgWyk+MJM=;
+        b=VUK0/6x4h+gUyTvTiyiJ8i86yfgo762pc2NNfwEZ02oCVx0aKuQpb47MWJWvotC98P
+         Y7um+I31r5ximy6GM9VxkIFlXamV2SCtRxwGmjY6dgiZtHH3toHe0Wf/hpKTjnH7/RAc
+         kZDBEdWWixm7kn6twEu2siivvGU7F9wflQcEphvw5Owg8qDSl/qJlPmDqDFktg76KgNw
+         WgrnemR2ARsfcE/kZyd1+xB7ryqK5jw8FGTrVPSreeNuW8T6g2bBZxhipT2yPWigLDio
+         6wW4gnCawPBLEE3spQU66uUJmklNA5hGOr604RXLG9yyk928hir4cnKIhpQetvdQBYmN
+         HJjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXDLvcyFW6sT7a8howkD2YUP0ZE5/C5qds+3Ke5OB4+dGlTv6CrNKEh3vAPjjnVGGpuKS0P1/u1QMxlJ3ZZgn+JO3hzj5XzckG4/Hx3
+X-Gm-Message-State: AOJu0YzJon51wXDir8VqXwzcLRn31HsrJZtthCPc2dz0/ygpHTI5AhlR
+	R8u1GQICcIEQP0OZFssek8b0k6Ct3Hbsqri6qZlwRehfFCjBZAsqAtC1h5Su5Vs=
+X-Google-Smtp-Source: AGHT+IF5ZE10mQTgDsLvD1ifbam2YQnVa3oxztXPgmU9bHt+UyMsXLRSNn539UO88nD6SmPSG1oO8Q==
+X-Received: by 2002:a5d:8948:0:b0:7c7:28dc:da21 with SMTP id b8-20020a5d8948000000b007c728dcda21mr8565424iot.1.1708381700434;
+        Mon, 19 Feb 2024 14:28:20 -0800 (PST)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id a18-20020a056638165200b0047127daf4ddsm1787440jat.140.2024.02.19.14.28.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 14:28:20 -0800 (PST)
+Message-ID: <e2b42c87-f87e-4d09-b17f-82ed4002e989@linuxfoundation.org>
+Date: Mon, 19 Feb 2024 15:28:19 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Spelling correction patch
+Content-Language: en-US
+To: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240217074353.19445-1-pvkumar5749404@gmail.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240217074353.19445-1-pvkumar5749404@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2jetwkvkwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <CZ9CIP97661C.2WUZJNNCQUHE8@seitikki>
-User-Agent: Opera Mail/1.0 (Win32)
 
-On Mon, 19 Feb 2024 14:42:29 -0600, Jarkko Sakkinen <jarkko@kernel.org>  
-wrote:
+On 2/17/24 00:43, Prabhav Kumar Vaish wrote:
 
-> On Mon Feb 19, 2024 at 3:56 PM UTC, Dave Hansen wrote:
->> On 2/19/24 07:39, Haitao Huang wrote:
->> > Remove all boolean parameters for 'reclaim' from the function
->> > sgx_alloc_epc_page() and its callers by making two versions of each
->> > function.
->> >
->> > Also opportunistically remove non-static declaration of
->> > __sgx_alloc_epc_page() and a typo
->> >
->> > Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
->> > Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
->> > ---
->> >  arch/x86/kernel/cpu/sgx/encl.c  | 56 +++++++++++++++++++++------
->> >  arch/x86/kernel/cpu/sgx/encl.h  |  6 ++-
->> >  arch/x86/kernel/cpu/sgx/ioctl.c | 23 ++++++++---
->> >  arch/x86/kernel/cpu/sgx/main.c  | 68  
->> ++++++++++++++++++++++-----------
->> >  arch/x86/kernel/cpu/sgx/sgx.h   |  4 +-
->> >  arch/x86/kernel/cpu/sgx/virt.c  |  2 +-
->> >  6 files changed, 115 insertions(+), 44 deletions(-)
->>
->> Jarkko, did this turn out how you expected?
->>
->> I think passing around a function pointer to *only* communicate 1 bit of
->> information is a _bit_ overkill here.
->>
->> Simply replacing the bool with:
->>
->> enum sgx_reclaim {
->> 	SGX_NO_RECLAIM,
->> 	SGX_DO_RECLAIM
->> };
->>
->> would do the same thing.  Right?
->>
->> Are you sure you want a function pointer for this?
->
-> To look this in context I drafted quickly two branches representing
-> imaginary next version of the patch set.
->
-> I guess this would simpler and totally sufficient approach.
->
-> With this approach I'd then change also:
->
-> [PATCH v9 04/15] x86/sgx: Implement basic EPC misc cgroup functionality
->
-> And add the enum-parameter already in that patch with just "no reclaim"
-> enum. I.e. then 10/15 will add only "do reclaim" and the new
-> functionality.
->
-> BR, Jarkko
->
+Missing change log?
 
-Thanks. My understanding is:
+Are you sure you included everybody get_maintainer.pl asked
+you to
 
-1) For this patch, replace the boolean with the enum as Dave suggested. No  
-two versions of the same functions. And this is a prerequisite for the  
-cgroup series, positioned before [PATCH v9 04/15]
+Patch summary line should include the subsystem. Refer to a few
+change logs and patches.
 
-2) For [PATCH v9 04/15], pass a hard coded SGX_NO_RECLAIM to  
-sgx_epc_cg_try_charge() from sgx_alloc_epc_page().
 
-3) For [PATCH v9 10/15], remove the hard coded value, pass the reclaim  
-enum parameter value from sgx_alloc_epc_page() to  sgx_epc_cg_try_charge()  
-and add the reclaim logic.
+> Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+> ---
+>   Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc | 2 +-
+>   Documentation/ABI/testing/sysfs-bus-cxl                   | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
+> index 96aafa66b4a5..339cec3b2f1a 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
+> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
+> @@ -97,7 +97,7 @@ Date:		August 2023
+>   KernelVersion:	6.7
+>   Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
+>   Description:	(Read) Shows all supported Coresight TMC-ETR buffer modes available
+> -		for the users to configure explicitly. This file is avaialble only
+> +		for the users to configure explicitly. This file is available only
+>   		for TMC ETR devices.
+>   
+>   What:		/sys/bus/coresight/devices/<memory_map>.tmc/buf_mode_preferred
+> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+> index fff2581b8033..bbf6de5a4ca1 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-cxl
+> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> @@ -224,7 +224,7 @@ Description:
+>   		decoding a Host Physical Address range. Note that this number
+>   		may be elevated without any regionX objects active or even
+>   		enumerated, as this may be due to decoders established by
+> -		platform firwmare or a previous kernel (kexec).
+> +		platform firmware or a previous kernel (kexec).
+>   
+>   
+>   What:		/sys/bus/cxl/devices/decoderX.Y
 
-I'll send patches soon. But please let me know if I misunderstood.
 
-Thanks
-Haitao
+Otherwise it looks good. Send v2 with a proper change log
+and short summary
+
+thanks,
+-- Shuah
 
