@@ -1,130 +1,143 @@
-Return-Path: <linux-kernel+bounces-71755-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA1985A9F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:28:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D00285AA0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:29:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F4F31F223C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:28:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8CF52894AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:29:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BECF04879C;
-	Mon, 19 Feb 2024 17:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4612E45C04;
+	Mon, 19 Feb 2024 17:29:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GE770cYs"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58032481C4
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:26:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DA425566;
+	Mon, 19 Feb 2024 17:29:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708363604; cv=none; b=Qp3JLNigf1CQqGZ9y2Oarthbm694JDj1kErC71jP/qRnCuaI2h+5OgjdHUjk/JEHEkfsf8HSDmDcBrOKCYHzd41vIjha5pN7dAraMwDbP4e+gkMyQ3erm1GwL7b77nVdoxTL6Xy1xOLSuMlrwDjfTT7A4riuL5WtjT50cbiMuaY=
+	t=1708363756; cv=none; b=cYh3KQkt6BD31rHmATOQSnIfbIju7FT21qR4ryRjN+1NO6qKvtYXkqZEnH+chAZMYoOx1smr+Mryg3oVamwR9iaNmws4nCne4uPKlbPTgW0UOMlqi+bHHc8y3lQDL4tT/6Y5N/ngmOeY1mChGMm3A9JYAk8h/dORuHL/lqwGFHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708363604; c=relaxed/simple;
-	bh=Q25xU1PMIcagmUfGS0YVSM4O2LLHesbt2AkQg2Pad6I=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CHJZDA03pWmtkZ1xxiTcQPmiK/5QkIXEtjuA7kKGXIbzvD7ta/MlD6wxb6k52R8rNLzSoGnk1rrrynhDdBaQhzftYr1CUNjM1itm/xFAkpWS2L/4U8QIbK2a4B60cM1tmzrqKceQsWKer7j+iZAwF8vTD47e9/tlZsbTWaEqnUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7DD3C43390;
-	Mon, 19 Feb 2024 17:26:42 +0000 (UTC)
-Date: Mon, 19 Feb 2024 12:28:25 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: wenyang.linux@foxmail.com, Masami Hiramatsu <mhiramat@kernel.org>, Ingo
- Molnar <mingo@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Mel Gorman <mgorman@techsingularity.net>,
- Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] coredump debugging: add a tracepoint to report the
- coredumping
-Message-ID: <20240219122825.31579a1e@gandalf.local.home>
-In-Reply-To: <20240219170038.GA710@redhat.com>
-References: <tencent_5CD40341EC9384E9B7CC127EA5CF2655B408@qq.com>
-	<20240217104924.GB10393@redhat.com>
-	<20240219112926.77ac16f8@gandalf.local.home>
-	<20240219170038.GA710@redhat.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1708363756; c=relaxed/simple;
+	bh=HDOUgL6Y0nc7IvKBPLbbUpZK2qQlAnpDmaaG/SLeRF0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L1iPQzRqBxKR8sx11JYoJR7cScv7h4eJC+a3VZDey26upiybbYNXewKyll/ZgEADvpixsQZvCc49BwAUrLs/kS3HM5bngsDb/MFIRS3bD34zVTKfMAYPl8VdDy6WCOmrZhOSMA40GlXlyzAH/0jTWVr+HiZgFrDNAULfnslSvZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GE770cYs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D434C433F1;
+	Mon, 19 Feb 2024 17:29:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708363756;
+	bh=HDOUgL6Y0nc7IvKBPLbbUpZK2qQlAnpDmaaG/SLeRF0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GE770cYsLQOhGWHmeW4Wg45pDEMxw26SbCB7J9GSGeTl7xQsE9XqhdyPsSDWl1Zx3
+	 GkLul7ypkIJvVGKOnIDIlmwNi8Q+VnTopWh448gGGS5T4pP9gJuH89xqr118L7d1l+
+	 obyKh8WkVuV6gjlzFMVRklxXAY53JPCpTT8xRRQlccCm2IQW+xOklWfRPJqQsSsPKl
+	 jX+pEMjurC+jfEYSlBBVtis0nu2adzeOz5r3PlYClT5iggsaVZ/Iw8rNmvz8fOtJv2
+	 /KGOTaFj8QTc8l5D2mo7mpGYFBC2DwW7mT6IMbPFGcR+H8eiJ7B64HfaZCJtDbhn8w
+	 dXFebOuUKJu9A==
+Date: Mon, 19 Feb 2024 18:29:10 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Maulik Shah <quic_mkshah@quicinc.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, andersson@kernel.org,
+	ulf.hansson@linaro.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-pm@vger.kernel.org, quic_lsrao@quicinc.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] firmware/psci: Move psci_init_system_suspend() to
+ late_initcall()
+Message-ID: <ZdOP5oAwZvEhNAsn@lpieralisi>
+References: <20240219-suspend_ops_late_init-v1-1-6330ca9597fa@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240219-suspend_ops_late_init-v1-1-6330ca9597fa@quicinc.com>
 
-On Mon, 19 Feb 2024 18:00:38 +0100
-Oleg Nesterov <oleg@redhat.com> wrote:
-
-> > void __noreturn do_exit(long code)
-> > {
-> > 	struct task_struct *tsk = current;
-> > 	int group_dead;
-> >
-> > [...]
-> > 	acct_collect(code, group_dead);
-> > 	if (group_dead)
-> > 		tty_audit_exit();
-> > 	audit_free(tsk);
-> >
-> > 	tsk->exit_code = code;
-> > 	taskstats_exit(tsk, group_dead);
-> >
-> > 	exit_mm();
-> >
-> > 	if (group_dead)
-> > 		acct_process();
-> > 	trace_sched_process_exit(tsk);
-> >
-> > There's a lot that happens before we trigger the above event.  
+On Mon, Feb 19, 2024 at 03:02:04PM +0530, Maulik Shah wrote:
+> psci_init_system_suspend() invokes suspend_set_ops() very early during
+> bootup even before kernel command line for mem_sleep_default is setup.
+> This leads to kernel command line mem_sleep_default=s2idle not working
+> as mem_sleep_current gets changed to deep via suspend_set_ops() and never
+> changes back to s2idle.
 > 
-> and a lot after.
+> Move psci_init_system_suspend() to late_initcall() to make sure kernel
+> command line mem_sleep_default=s2idle sets up s2idle as default suspend
+> mode.
 
-True. There really isn't a meaningful location here is there?
+Why can't we fix it the other way around, namely enforce
+mem_sleep_current according to the mem_sleep_default command line
+even if suspend_set_ops() was already called ?
 
-I actually use this tracepoint in my pid tracing.
+Just asking, I am not super keen on using initcalls ordering, it
+looks fragile to me.
 
-The set_ftrace_pid and set_event_pid from /sys/kernel/tracing will add and
-remove PIDs if the options function-fork or event-fork are set respectively.
+Thanks,
+Lorenzo
 
-I hook to the sched_process_fork tracepoint to add new PIDs if the parent
-pid is already in one of the files, and remove a PID via the
-sched_process_exit function.
-
-Honestly, if anything, it should probably be moved down right next to
-perf_event_exit_task() (I never understood why perf needed its own hooks
-and not just use tracepoints).
-
+> Fixes: faf7ec4a92c0 ("drivers: firmware: psci: add system suspend support")
+> CC: stable@vger.kernel.org # 5.15+
+> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> ---
+>  drivers/firmware/psci/psci.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 > 
-> To me the current placement of trace_sched_process_exit() looks absolutely
-> random.
-
-Agreed.
-
+> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
+> index d9629ff87861..655a2db70a67 100644
+> --- a/drivers/firmware/psci/psci.c
+> +++ b/drivers/firmware/psci/psci.c
+> @@ -523,18 +523,26 @@ static void __init psci_init_system_reset2(void)
+>  		psci_system_reset2_supported = true;
+>  }
+>  
+> -static void __init psci_init_system_suspend(void)
+> +static int __init psci_init_system_suspend(void)
+>  {
+>  	int ret;
+> +	u32 ver;
+>  
+>  	if (!IS_ENABLED(CONFIG_SUSPEND))
+> -		return;
+> +		return 0;
+> +
+> +	ver = psci_0_2_get_version();
+> +	if (PSCI_VERSION_MAJOR(ver) < 1)
+> +		return 0;
+>  
+>  	ret = psci_features(PSCI_FN_NATIVE(1_0, SYSTEM_SUSPEND));
+>  
+>  	if (ret != PSCI_RET_NOT_SUPPORTED)
+>  		suspend_set_ops(&psci_suspend_ops);
+> +
+> +	return ret;
+>  }
+> +late_initcall(psci_init_system_suspend)
+>  
+>  static void __init psci_init_cpu_suspend(void)
+>  {
+> @@ -651,7 +659,6 @@ static int __init psci_probe(void)
+>  	if (PSCI_VERSION_MAJOR(ver) >= 1) {
+>  		psci_init_smccc();
+>  		psci_init_cpu_suspend();
+> -		psci_init_system_suspend();
+>  		psci_init_system_reset2();
+>  		kvm_init_hyp_services();
+>  	}
 > 
-> > I could
-> > imagine that there are users expecting those actions to have taken place by
-> > the time the event triggered. Like the "exit_mm()" call, as well as many
-> > others.
-> >
-> > I would be leery of moving that tracepoint.  
+> ---
+> base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
+> change-id: 20240219-suspend_ops_late_init-27fb0b15baee
 > 
-> And I agree. I am always scared of every user-visible change, simply
-> because it is user-visbible.
+> Best regards,
+> -- 
+> Maulik Shah <quic_mkshah@quicinc.com>
 > 
-> If it was not clear, I didn't try to nack this patch. I simply do not know
-> how people use the tracepoints and for what. Apart from debugging.
-> 
-> But if we add the new one into coredump_task_exit(), then we probably want
-> another one in ptrace_event(PTRACE_EVENT_EXIT) ? It too can "take some time"
-> before the exiting task actually exits.
-> 
-> So I think this needs some discussion, and the changelog should probably say
-> more.
-> 
-> In short: I am glad you are here, I leave this to you and Wen ;)
-
-I still would like to have your input too ;-)
-
--- Steve
 
