@@ -1,221 +1,384 @@
-Return-Path: <linux-kernel+bounces-71408-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71409-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19F2985A4B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:35:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98D7685A4BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:35:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C682D284494
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:35:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51D46281151
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6860B364A8;
-	Mon, 19 Feb 2024 13:35:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4D1364A8;
+	Mon, 19 Feb 2024 13:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="gStnp1WP"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2041.outbound.protection.outlook.com [40.107.101.41])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3mGxzeMt"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C17F36136;
-	Mon, 19 Feb 2024 13:35:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.41
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708349718; cv=fail; b=oq6SLcM3RVNm9ehljJuqzdDEoXza5Rcs4869b7ppjQ/dwAZJNYYBNZ/6vD7jVfzCS8ox2rWbXE1/lhIbjIXIzGCVgyr9jYc8hDut3Eph4+vGq69EE29yodpKM0HNhXjgaoQNkKqWtRAulckK75uasiwsRTWQHAOpRbvkfU3mHqY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708349718; c=relaxed/simple;
-	bh=hvhQ07g+YyKChZZRTrS9AlOl6Jay2NIOa/ulx0FfruI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=t0mhtJ1SWzRlih4Ba1O/3DBxyC/oPzCQdaSvPwBZNnYa2A61R4SAOtt1Y8SZ6o3vGSxUEGyUXgKzTmWyW+DFlEQwqDKcPqZEQ/2K1Pcwkb2WCLyLespCE8smzHGJesRdm2AbcHxP1v/LJMKFRZRlQwYePNWuzlq2V8qittKCovA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=gStnp1WP; arc=fail smtp.client-ip=40.107.101.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VGUl9+sCzk94R8Rjlg3GL03kCMdY6GaTgoUSc6i4P71SH1JvWOW7y/gffx1ULggqQa5FlqxneEByAZUwvecJsqRaq5DjhI7u/Z7E1VOTfr1DDCTREme/CH+pWxAXoEPT4I9bsc91kbbVZ10JrSe3O5Q7eccE/XM/92h/fWa1Qv42w41TNPbtwXXB+rV35SCyJQ6hdG+GIqrfsTx0APoC3/TOMpuV5ejEdxFfl5KOfZ+DNNdhutKgtWxpeE+MVBjj7YSehJWth+3hW6Or5fMn55KjoWrjASdjOnrNKZRcvZeuFEOAOc5mA03LKJv0IPoV4gl9ARHNpgY68dMEAyjyKw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IJZ0LIZamRDkxhw41UGBQNyqOHJW7pbuT8Z+VNI41/k=;
- b=PNSwkZV0lNhfOjHou/t8vj18tNefxzA3YMAof6+Ptdpv04icDVxr5tfpRemLY4gGQog9JqEbyPXjGbp5G1mZvYpLfrg9v4cdx9TYrxEr9M+QiSB5ooVkID9aS1z/fhLzPnkPQ3RP1fLb9rEYInhd92+5AxKsc9maPIkEvhAMhguM67rUhX3B6ky8s+hatVvjUWMWLWuLIvVEiRg18BqJ8E0yOD3oeIt06b6B7CsAO954GIlIcZ13INHQl66DsZnO4jfH8Wh3mYfVoJEYWYclZ9SXZU2GAg6fMSwr/P1X824uMMTqtKqT/TDqpzZ15KNX5NV+UthAKySPFdirkzO7hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IJZ0LIZamRDkxhw41UGBQNyqOHJW7pbuT8Z+VNI41/k=;
- b=gStnp1WPXMMjWE4aAhEGptUl3XmDFwePKzjxLmeejv+0strWRCGvPSOIrqx5Tg1E23oFJnXeQcr8uDzI4nTG3szdQjQhi6CAp83+6Bu5VWGNb+LAKPiHj1VUeWJJqxxS2BExfJ2U/Pbs4oiSmWR7ki40WV4hmmBRmkc2pc1Wy+A=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CYXPR12MB9337.namprd12.prod.outlook.com (2603:10b6:930:d8::20)
- by DM4PR12MB6662.namprd12.prod.outlook.com (2603:10b6:8:b5::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.17; Mon, 19 Feb
- 2024 13:35:13 +0000
-Received: from CYXPR12MB9337.namprd12.prod.outlook.com
- ([fe80::84b1:5355:e3da:dc97]) by CYXPR12MB9337.namprd12.prod.outlook.com
- ([fe80::84b1:5355:e3da:dc97%4]) with mapi id 15.20.7316.018; Mon, 19 Feb 2024
- 13:35:13 +0000
-Message-ID: <86e1c66c-8fd4-402e-a827-cc4347d468c1@amd.com>
-Date: Mon, 19 Feb 2024 14:35:01 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: zynq: Prevent null pointer dereference caused by
- kmalloc failure
-Content-Language: en-US
-To: Duoming Zhou <duoming@zju.edu.cn>, linux-kernel@vger.kernel.org
-Cc: mturquette@baylibre.com, sboyd@kernel.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org
-References: <20240214073318.82573-1-duoming@zju.edu.cn>
-From: Michal Simek <michal.simek@amd.com>
-Autocrypt: addr=michal.simek@amd.com; keydata=
- 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
- 3i3l5DA=
-In-Reply-To: <20240214073318.82573-1-duoming@zju.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: VI1PR04CA0115.eurprd04.prod.outlook.com
- (2603:10a6:803:f0::13) To LV8PR12MB9360.namprd12.prod.outlook.com
- (2603:10b6:408:205::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2480836137;
+	Mon, 19 Feb 2024 13:35:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708349731; cv=none; b=E3Al2Oxo7l+6PsgPIon3KsJ6vn83hBjM5vSdeHu3UdI/dFSGvA86K6nBhtsJn9bzo3Nr1jJRpAnMYCzlmcQFPtzr2ROsukS5Ndepm6ZWUHPXoRL1RjnDwQyCAu1+SwFwe1y//r+sRuD6MHqGsJWDwwWxsF9CByqKkcDA8qKePZg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708349731; c=relaxed/simple;
+	bh=H+UegT4BE+l/Z0xlxbb/7nPi5qpmwmDLNcLFfpCwUQg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oBpgagErjgaLOnV6mN31pW8nlDF5Stn/U7Jw4J2DtlzDk0WzlU4DPCV6sTzQ/THdj/02K61pnEJTDUjboJ4zRNlYh3Uk58BzMAAI+NUckBLFuxoHfARAqIAVbQNlVoJQ2JYChiKVZc2H1+P6Hubv9A4Y2OBC6fCh6U0CLMmOq9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3mGxzeMt; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708349728;
+	bh=H+UegT4BE+l/Z0xlxbb/7nPi5qpmwmDLNcLFfpCwUQg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=3mGxzeMtAtJnOMk/f0rnl5QqoOUEOpXpEQaxNMOK7/4eAuCPchAACkvTY7gIPgb0s
+	 +hp6Ku/nzt5szkdIZBqexS32JKrzx5my+G7WCwZ4d3x6s8stLbEuVcpqO7+l1u4v+l
+	 LsjH5Ka+K+sBUGvQCA9deontJ75oV/y+zQK1HsuH9IHZXSEG0gfqOP5DhJvUolMAu6
+	 8KYZbPb6QTG6VXcvGxUA7CRh7ZBIacEwZqmEKaLitkPxv8C3v9JQiNKyPECnoI9VgO
+	 wFIJFHNKKIEZsjWvGHVQdTIX9qYSfaI2Wj0ZMhMagAfNJMi2YNMSs+5fBEUDz/qSjd
+	 FPrJbhiGlWxzA==
+Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kholk11)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 86C053780C22;
+	Mon, 19 Feb 2024 13:35:27 +0000 (UTC)
+Message-ID: <b50d49fd-2976-46fc-9f35-354fb39720ad@collabora.com>
+Date: Mon, 19 Feb 2024 14:35:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CYXPR12MB9337:EE_|DM4PR12MB6662:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68d27b73-47fb-4e2b-6ee5-08dc314f9931
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	IITkBUM9WuiqycnL+V6VAPZ8M7h6HkjPXoKaGOvSXhOrJohr7fKIryqG93ZqksYsrI2mpu/8swM8zcM72p0t/4Le/b5yPazX0nImocxxCu9ypBPGvDLneY3Sg6J4dpZ/pwCLwvgiD0tXp0P6pwm95F6d65DfH0kLe/I+DevROvNvuCckToacv74x2CqSgT9P6fTD5fU55nIV9U0Tsu5T1UUCFM2IpIW04SMBldEBEMbEKSdJbTsX/5lCqE2VV7IV3F76fUH7nsvzooB1pzDZ0KOcVd14ZQTk/UzH/7mNVxmlNBTjT3SSro2XHOxXKE2flSfQIbXEkBqohq/TAM0X+ZdvYlcX/NLz1+F/8Z94YNKm9yfvcDYtWLnIL8GveRPuW6sbtxoDwb9hUXCqeVULuyYYIXvXs1p78bIOggfTEPv40MqD0uxUlFFckpA+/HJ9nZ+dL5Jf24jdmDDgbdWZgk9ygtIBR1QUk5IjtyHECer63jbaectuI2WKw2LqHJKuWgYassHnlMF3oidkfJuOA/lihrbAItkv9oNQn1djFwM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYXPR12MB9337.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?elFINlJaOU9QcXhwRk9pM3djLzNSbzNpN05NYnBSMHlNOWMzU2NObXlKQjhW?=
- =?utf-8?B?S3NNMXhPS1hDb2RYWkUzaVkyVlIvT1pjRjAxMURqMWYvQU01RU8rYmVIOExz?=
- =?utf-8?B?N0tjZG50emd0a290b0hSeEFwSGU4Vnp6TXV5VTZhamlFNExMa05kMyt3WUpO?=
- =?utf-8?B?b1JFVzhGUDc3dktXd1RWeld4OWd0b3puVEcwb05vRlFlSE1WVkFLVkVFVUl5?=
- =?utf-8?B?eUdqNWJVczJ2NUhlSTdnelVSb0ZoZTJvQyt4RWdTUEoxbUNhVWlzNldBZ05Y?=
- =?utf-8?B?NjhmNXlGVDZ4cTBiWTFWQmU5TWlsSG5LcUNMdDVUSkZFTnh0VElETVliSXNW?=
- =?utf-8?B?V1ZVa1NvQjdKdi9Ha1BhU3BGNlB0SlZHUFZjRU1kc0l3N2ZrazNOblF3QUhw?=
- =?utf-8?B?WFdpZjFpdUtGMVBPSnlTUnY2TzRnRTEyVVIybTJRUHBJUkhZMnlueTVrUE9q?=
- =?utf-8?B?ZTdXell2RW1PSVhiLzRMMlY4Sys5UzBTUHllRzc1SFA3eUFTa0NDaFRrQ2tk?=
- =?utf-8?B?dnNhSUFHeVRmbm9aT1dWNnRXNW96Nm1wWW9LV1M3Tk9GUlpoV3daSjFZWEFh?=
- =?utf-8?B?aEprSHVxNGNrN1FuWW5naVJlUEhnVzh2cElBTnFRMkdGVlJEZXNMSGpiSUhE?=
- =?utf-8?B?bExqU0JyOFdRV3RXdHRKUXg2REhZWjdUMUY0M3hHMy9TMlFFL0EraHBwSEVa?=
- =?utf-8?B?bVBsdElUQms1OWpZSDVCbmF6bHZ2YTFTbUkwazVmTm1lV0FNNUdtd09kSUJ2?=
- =?utf-8?B?QWJST2g0cXgzNXZQK1ozSHpkQ2Z1TzFvWS9sZGpLU1Q2OUwzcFZ3ZHVkbkhL?=
- =?utf-8?B?SHZDb1BONExEcE5WYS84OXd2N1JLYm5EdjE3RGswT3MzRmxpYkdHdm05eFJ2?=
- =?utf-8?B?STdQWmFJUkFOZllpNGJQNUdPYW5ZSVZWWVdDTjdmdERlTnkrMGFycFNoMy9w?=
- =?utf-8?B?VXZwZi9vc1Q3MXlyMm5FM3FVYkZhY3h3N3psM1h0SUlNTk1CcERDdDJTckFt?=
- =?utf-8?B?R0NHaXp4QkRKdjZpL2ErOEs3Z3ROT1J4c252akJMVzhjTTUwVVIvUGFuTHZv?=
- =?utf-8?B?aWd0eUFqS2RtMDNOZzVMVWdBR3FJcDNZK3grOWxPYTFCbjByL1lXWVlDZUtS?=
- =?utf-8?B?VTlWTnlTWjRlT2xvUjFlcGtDUzcvdkJobkF3SVhSSXlWdWcwTFhpTmdKQUFO?=
- =?utf-8?B?am93WkpFNTh5OUlxblRxWUgra0RldzJHU3B6c0tMTnpGWkE4eU9RR3pXbUNv?=
- =?utf-8?B?aHd1UWpwbWNCZDhsbWxqT3kwMm01WUJtMXJVYW5KdStqUjJxUVRxYVFWS2NJ?=
- =?utf-8?B?QTA2VU5id3doZlFLREZtNTNSOFJGWGxlYlFuWE8wc2h3aDlSSnkrdUdEM0pm?=
- =?utf-8?B?TUljUzBaTEVpZmZxaDVaS0gyeHJzMkdUZEl4M0NVZllUemdmQXZjRUc5Qmxy?=
- =?utf-8?B?VFVianJkVVFNeW9TNWEvSXlDT0RkMGdSQml4Sk5Nbk8zY2hBVldnaUJhUlFa?=
- =?utf-8?B?TGQ2ZHhqYVB1Ylh5d2x3djRuVC9LUzVvV0d3UnNReVYvMDV0UDJmUmUxL1Ra?=
- =?utf-8?B?STNqckFRajhzb3BMT3FRQWw3dm9nZ25wRFFEOVhvQmtCa1gwU0I4U0lqUjF6?=
- =?utf-8?B?eFhKMkhkUjVhWk5pVlFVUHFBbXJnYXNsR3A3SzZhWG1BSWovaDRlSW9nVE5G?=
- =?utf-8?B?ZTUzNEFmSFFvd0VGcVRxdTJRakZ6eUtNSmkxY0Y3aVVrSXg5V2ZPdjV3Mmw0?=
- =?utf-8?B?WldCS25TMEJVVjhyd0lqaHM5d2FlK20zSzh5U0h0WHRxdGtFWWR0WEhzOGJQ?=
- =?utf-8?B?VE8rR00xRFY0ank1RTVWR1NFMWhiU01HZFkzV1NFancwb21RblpZMElGTmNo?=
- =?utf-8?B?QmZTRUU4Tk5rZjBqS3NKVlBnKzVLM0VnM1labEh1VXBsdGtMVFVCSTRoTkdN?=
- =?utf-8?B?VHdIbWphT2l2TERMaVZwYVlhc2dIS1dGREFnR2o3Y2JuSG1Ic1pnRVVkUXJE?=
- =?utf-8?B?SGVMTXdxODk3YkFhMXRldFdjYTI4dzNPcTR0Z1QwSXRHajVPdnI2N0xSajRa?=
- =?utf-8?B?Z3ZCZUxBVmc4VXljWTFhKzNpcEVScHlSSTRmenBiRVcyaEdpZXdkY3BoQnlL?=
- =?utf-8?Q?0aCVu0yBn8RwcjUhSRx7W3kyR?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68d27b73-47fb-4e2b-6ee5-08dc314f9931
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9360.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 13:35:13.7499
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: H21EtRRvpJ4ToJMMKBgc6E5S00fATBCyr4WNYrBJtkFhibCgopw86JxKCQ+0pEob
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6662
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] arm64: dts: mediatek: add Kontron 3.5"-SBC-i1200
+Content-Language: en-US
+To: Michael Walle <mwalle@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>
+Cc: devicetree@vger.kernel.org, Sean Wang <sean.wang@mediatek.com>,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240219084456.1075445-1-mwalle@kernel.org>
+ <20240219084456.1075445-2-mwalle@kernel.org>
+ <2ad6bda8-a457-421b-b35d-dc005fb00ae9@collabora.com>
+ <CZ92W3VSYV1A.1693O76GY1XDP@kernel.org>
+From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <CZ92W3VSYV1A.1693O76GY1XDP@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On 2/14/24 08:33, Duoming Zhou wrote:
-> The kmalloc in zynq_clk_setup will return null if the
-> physical memory has run out. As a result, if we use
-> snprintf to write data to the null address, the null
-> pointer dereference bug will happen.
+Il 19/02/24 14:09, Michael Walle ha scritto:
+> Hi,
 > 
-> The required memory is only 11 bytes, so this patch
-> adds a "__GFP_NOFAIL" flag in kmalloc in order that
-> the kmalloc will never return with failure.
+> thanks for the extensive review!
 > 
-> Fixes: 0ee52b157b8e ("clk: zynq: Add clock controller driver")
-> Signed-off-by: Duoming Zhou <duoming@zju.edu.cn>
-> ---
->   drivers/clk/zynq/clkc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon Feb 19, 2024 at 11:00 AM CET, AngeloGioacchino Del Regno wrote:
 > 
-> diff --git a/drivers/clk/zynq/clkc.c b/drivers/clk/zynq/clkc.c
-> index 7bdeaff2bfd..7621c2f0046 100644
-> --- a/drivers/clk/zynq/clkc.c
-> +++ b/drivers/clk/zynq/clkc.c
-> @@ -427,7 +427,7 @@ static void __init zynq_clk_setup(struct device_node *np)
->   			SLCR_GEM1_CLK_CTRL, 0, 0, &gem1clk_lock);
->   
->   	tmp = strlen("mio_clk_00x");
-> -	clk_name = kmalloc(tmp, GFP_KERNEL);
-> +	clk_name = kmalloc(tmp, GFP_KERNEL | __GFP_NOFAIL);
->   	for (i = 0; i < NUM_MIO_PINS; i++) {
->   		int idx;
->   
+>>> +&eth {
+>>> +	phy-mode ="rgmii-id";
+>>> +	phy-handle = <&ethernet_phy0>;
+>>> +	snps,reset-gpio = <&pio 93 GPIO_ACTIVE_HIGH>;
+>>> +	snps,reset-delays-us = <0 10000 80000>;
+>>
+>> snps,reset-delays-us and snps,reset-gpio are deprecated.
+>>
+>>> +	pinctrl-names = "default", "sleep";
+>>> +	pinctrl-0 = <&eth_default_pins>;
+>>> +	pinctrl-1 = <&eth_sleep_pins>;
+>>> +	status = "okay";
+>>> +
+>>> +	mdio {
+>>> +		ethernet_phy0: ethernet-phy@1 {
+>>
+>> compatible = "is there any applicable compatible?"
+>> P.S.: if you've got the usual rtl8211f, should be "ethernet-phy-id001c.c916"
+> 
+> I'd rather not have a compatible here. First, it's auto discoverable
+> and IIRC it's frowned upon adding any compatible if you ask the PHY
+> maintainers. And second, if we change the PHY (maybe due to a second
+> chip shortage or whatever), there is a chance you don't have to
+> update this in the DT.
+> 
 
-Reviewed-by: Michal Simek <michal.simek@amd.com>
+Okay then, I'm fine with leaving the compatible out.
 
-Thanks,
-Michal
+>> reg = <0x1>;
+>> interrupts-extended = <&pio 94 IRQ_TYPE_LEVEL_LOW>;
+>> reset-assert-us = <10000>;
+>> reset-deassert-us = <80000>;
+>> reset-gpios = <&pio 93 GPIO_ACTIVE_HIGH>;
+>>
+>>
+>>> +			reg = <0x1>;
+>>> +			interrupts-extended = <&pio 94 IRQ_TYPE_LEVEL_LOW>;
+>>> +		};
+>>> +	};
+>>> +};
+>>> +
+>>> +&gpu {
+>>> +	status = "okay";
+>>> +	mali-supply = <&mt6315_7_vbuck1>;
+>>> +};
+>>> +
+>>> +&i2c2 {
+>>> +	pinctrl-names = "default";
+>>> +	pinctrl-0 = <&i2c2_pins>;
+>>> +	clock-frequency = <400000>;
+>>> +	status = "okay";
+>>
+>> Are i2c2,3,4 exposed as pins somewhere? If they are, can you please put a
+>> comment saying so?
+> 
+> This is only a basic device tree. On one i2c controller, there is
+> the LVDS bridge for example. My plan is to get the support for this
+> bridge upstream first and then adding the appropriate device nodes
+> here.
+> 
+> That being said, some are exposed to connectors. I'll add a comment
+> then.
+
+In that case, could be nice to read something like
+
+&i2c(x) {
+	properties
+	blahblah
+	status
+
+	/* (model, if available) LVDS bridge at 0x10 */
+}
+
+it's again not mandatory, but I like seeing clear messages implying "this should be
+there" as those implicitly mean "...yeah but it's not supported yet for reasons".
+
+It's down to preferences though, and this is not a *strong* opinion, nor a strong
+suggestion - your call here.
+
+> 
+>>> +&mmc1 {
+>>> +	pinctrl-names = "default", "state_uhs";
+>>> +	pinctrl-0 = <&mmc1_default_pins>;
+>>> +	pinctrl-1 = <&mmc1_uhs_pins>;
+>>> +	cd-gpios = <&pio 129 GPIO_ACTIVE_LOW>;
+>>> +	bus-width = <4>;
+>>> +	max-frequency = <200000000>;
+>>> +	cap-sd-highspeed;
+>>> +	sd-uhs-sdr50;
+>>> +	sd-uhs-sdr104;
+>>> +	vmmc-supply = <&mt6360_ldo5>;
+>>> +	vqmmc-supply = <&mt6360_ldo3>;
+>>
+>> Does mmc1 support eMMC and SDIO?
+> 
+> No eMMC, but I'd guess it will support SDIO as in you can just plug
+> an SDIO card in the SD slot, right? Oh, it's a micro SD socket. So
+> uhm, I'm not sure if we should restrict it, though. Someone might
+> come up with a microsd to sd card adapter. I have one right in front
+> of me ;)
+> 
+
+Honestly ... I even forgot the existance of those adapters!!!
+In that case, yes, since the controller should support SDIO on that slot, and since
+there effectively are ways to add a SDIO card on there, obviously no-sdio shall be
+omitted.
+
+I agree.
+
+>> If not, no-mmc; no-sdio;
+> 
+> So no-mmc;
+
+Yes, agreed.
+
+> 
+>>> +			drive-strength = <MTK_DRIVE_8mA>;
+>>
+>> s/MTK_DRIVE//g
+>> s/mA//g
+>>
+>> drive-strength = <8>;
+>>
+>> Please, here and everywhere else, for all values - let's stop using those
+>> MTK_DRIVE_(x)mA definitions, they're just defined as (x), where anyway
+>> the drive-strength property is in milliamps by default.
+>>
+>> We don't need these definitions.
+> 
+> Sure, the mt8195-demo was the blueprint for this. So maybe you should
+> get rid of it there to prevent any copying ;) (btw the same goes for
+> the regulator-compatible property).
+> 
+
+Yeah, that's right. You can imagine that my backlog is rather huge... :-)
+
+> Speaking of pinctrl, I find the R0R1 bias-pull-down values really
+
+If it was only pull-down it would be one problem, but it's also pull-up so
+we can sum that up to *two* problems :-P
+
+> hard to grasp. The DT binding documentation didn't really help here.
+> What is R0 and R1, I presume some resistors which can be enabled.
+
+You got it right
+
+> Also are they in parallel or in series. I'd have assumed, the DT
+
+I'm not sure, and it depends on the SoC most probably... but does that really
+matter?
+
+I mean, on the practical side, imo, it doesn't, but I am also a curious person
+so I can understand why you're eager to know :-)
+
+> binding should have hid this by giving the user a choice for the
+> resistance instead. Also I had a quick search in the RM and
+> couldn't find anything, I probably looked at the wrong place ;)
+> 
+
+I'm not sure you looked at mediatek,mt8195-pinctrl.yaml, but anyway, as you
+can read in there, we're deprecating the MTK_PULL_SET_RSEL_xxx in favor of...
+
+... the right thing to do :-)
+
+Look for "mediatek,rsel-resistance-in-si-unit": that'll allow you to specify
+the PU/PD values in ohms, and that's what should be used.
+
+Those RSEL definitions in the devicetree should disappear. Forever.
+
+>>> +	uart1_pins: uart1-pins {
+>>> +		pins_rx {
+>>> +			pinmux = <PINMUX_GPIO103__FUNC_URXD1>;
+>>> +			input-enable;
+>>> +			bias-pull-up;
+>>> +		};
+>>> +
+>>> +		pins_tx {
+>>> +			pinmux = <PINMUX_GPIO102__FUNC_UTXD1>;
+>>> +		};
+>>> +
+>>> +		pins_rts {
+>>> +			pinmux = <PINMUX_GPIO100__FUNC_URTS1>;
+>>> +			output-enable;
+>>
+>> Are you really sure that you need output-enable here?!
+>> RTS is not an output buffer....
+>>
+>> I don't think you do. Please double check.
+> 
+> Ahh, good catch, it's a leftover from mt8183-kukui.dts. There is
+> probably wrong, too.
+> 
+
+Probably. I don't really know either.
+
+>>> +		};
+>>> +
+>>> +		pins_cts {
+>>> +			pinmux = <PINMUX_GPIO101__FUNC_UCTS1>;
+>>> +			input-enable;
+>>> +		};
+>>> +	};
+>>> +
+> 
+> 
+>>> +/* USB3 front port */
+>>> +&xhci0 {
+>>
+>> It's not gonna work like this. I recently fixed the USB nodes in MT8195 by adding
+>> MTU3 where necessary...
+> 
+> Uhm, seems like I've missed that.
+> 
+
+No worries!
+
+>> Check mt8195.dtsi - only one XHCI controller isn't placed behind MTU3, and that is
+>> XHCI1 (11290000), while the others are MTU3.
+>>
+>> As far as I can see from this DT, it should now instead look like..
+>>
+>> &ssusb0 {
+>> 	dr_mode = "host";
+>> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
+>> 	status = "okay";
+>> };
+>>
+>> &ssusb2 {
+>> 	dr_mode = "host";
+>> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
+>> 	status = "okay";
+>> };
+>>
+>> &ssusb3 {
+>> 	dr_mode = "host";
+>> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
+>> 	status = "okay";
+>> };
+>>
+>> &xhci0 {
+>> 	vbus-supply = <&otg_vbus_regulator>;
+>> 	status = "okay";
+>> };
+>>
+>> &xhci1 {
+>> 	vusb33-supply = <&mt6359_vusb_ldo_reg>;
+>>
+>> vbus is always supplied by something, as otherwise USB won't work - whether this
+>> is an always-on regulator or a passthrough from external supply this doesn't really
+>> matter - you should model a regulator-fixed that provides the 5V VBUS line.
+> 
+> I don't think this is correct, though. Think of an on-board USB
+> hub. There only D+/D- are connected (and maybe the USB3.2 SerDes
+> lanes). Or have a look at the M.2 pinout. There is no Vbus.
+> 
+
+Yes but the MediaTek MTU3 and/or controllers do have it ;-)
+
+> Also it seems I need the "mediatek,u3p-dis-msk = <0x01>;". At least
+> the last time I've tested it. I'll test it again, with and without.
+> The SerDes Line of the corresponding USB3.2 port is used for PCIe in
+> this case.
+> 
+
+Have I missed it in my example? If I missed it, that was unintentional.
+
+Anyway, for the u3p-dis-msk, I'll spare you the time to check:
+  - If the controller lies behind MTU3, that property goes to &ssusb(x)
+  - If it is a standalone XHCI controller, it goes to &xhci(x)
+    - The property never goes to both, and always goes to the *outer* node
+      (this is why it goes to mtu3 if there's a mtu3 behind).
+
+>> For example:
+>> 	vbus_fixed: regulator-vbus {
+>> 		compatible = "regulator-fixed";
+>> 		regulator-name = "usb-vbus";
+>> 		regulator-always-on;
+>> 		regulator-boot-on;
+>> 		regulator-min-microvolt = <5000000>;
+>> 		regulator-max-microvolt = <5000000>;
+>> 	};
+> 
+> As mentioned above, I don't think this will make sense in my case.
+>  >> P.S.: If the rail has a different name, please use that different name. Obviously
+>> that requires you to have schematics at hand, and I don't know if you do: if you
+>> don't, then that regulator-vbus name is just fine.
+> 
+> I do have the schematics.
+
+In that case, you should model the power tree with the fixed power lines,
+check mt8195-cherry (and/or cherry-tomato) and radxa-nio-12l; even though
+those are technically "doing nothing", this is device tree, so it should
+provide a description of the hardware ... and the board does have fixed
+power lines.
+It has at least one: DC-IN (typec, barrel jack or whatever, the board needs
+power, doesn't it?!).
+
+Cheers,
+Angelo
+
+
 
