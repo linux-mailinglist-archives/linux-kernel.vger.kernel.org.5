@@ -1,114 +1,92 @@
-Return-Path: <linux-kernel+bounces-70737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE6EE859BB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:26:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7188A859BAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:26:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BAA81C20E0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:26:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11C921F224F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDD8C1F958;
-	Mon, 19 Feb 2024 05:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b="WwvedV/8"
-Received: from mail.systec-electronic.com (mail.systec-electronic.com [77.220.239.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849F31E514;
+	Mon, 19 Feb 2024 05:26:04 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEF4200A5;
-	Mon, 19 Feb 2024 05:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.220.239.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C35381CA98
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708320385; cv=none; b=OyJqsTBZXhlR2DF2kDcUlvJ3PCpj9nggJ+zI4wICFVqsfN4N7aNuDbUFyI6GEuYJvmmRzOGvTfT9lx7iekwk/k1XLJ8iwqijcEyCf/VoXtzJY7T6Tid/V/XsqkuFNSRX+/z6E7hgyKd6bddQ2IYhPcJKLZ4OZcxd5Buq7lj83Ag=
+	t=1708320364; cv=none; b=t6jPZNUtTP+pJp3qKGegFnpfFYvQxEwtnAQMYPyOm5d5YEUJl04AI6jTd6LpxR/Is+p/Pgi9FC5/jMln4fL/Eljvbke4iPsVteCqpSy8bczl+DhvFcmKqSijn/DHFRHOywGdFKvRK7MaIhxf0662GTzzU0oMtwB23Ca2IJWfqTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708320385; c=relaxed/simple;
-	bh=Hf7mqXhNlzUUxeHMeoZI+WsoQoEFtb7ECbEnhFBLf1o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=C7bfFdrpRxYCw9dJ7JRtbBIeiVXAe5yE+pmCs5cna3/QGbsqgKwN3oyDjpinOkUFUgJNPS9ky2ITACUVGBppT+/awpIv1J1BQik5I7eSp77ZQ/qHa5nnqGHZpCBNuD4aVKKAGMy1VjH/g4513iTRn1jvc7Zhuw6v7Zr6h7D45O0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com; spf=pass smtp.mailfrom=systec-electronic.com; dkim=pass (2048-bit key) header.d=systec-electronic.com header.i=@systec-electronic.com header.b=WwvedV/8; arc=none smtp.client-ip=77.220.239.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=systec-electronic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=systec-electronic.com
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 7BB989400107;
-	Mon, 19 Feb 2024 06:26:12 +0100 (CET)
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id tXBnMA295uNL; Mon, 19 Feb 2024 06:26:12 +0100 (CET)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.systec-electronic.com (Postfix) with ESMTP id 47B7D9400109;
-	Mon, 19 Feb 2024 06:26:12 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.systec-electronic.com 47B7D9400109
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=systec-electronic.com; s=B34D3B04-5DC7-11EE-83E3-4D8CAB78E8CD;
-	t=1708320372; bh=3Ewc8dAHVNPMC1w5d5Us9H7cSl8PtD+Xligfbli6chk=;
-	h=From:To:Date:Message-ID:MIME-Version;
-	b=WwvedV/84bG/3dFvq2tOKWIHhjhplL+1QE+FRET709SXkmWrnL6KLsXZbHy+d/k7L
-	 Rwkq+duiNnrAH+YhfvexzK9fnrF/jmI5AftS3SUAZy3xFUGa0lawW6BG/6CDLYLIt8
-	 0+IRothKCY5HLPf9QXAQNFS3O8A09/zNWAfeMOKkoWTrynPqtI9zv02BlaS+BLPB9c
-	 a0356UpqVlkKnRjvd7ZUycEhDWPOyIj7eD4FQsB+/oz1WAjMEFaZPTdhqrMe2UEYba
-	 1ET+1puf6/FyPt+g8EnT2TE58hXMTiUOwIB7S/SLsj28P7jY/YwH+QDZbP3W783bGZ
-	 5s0lZl5VXKWwg==
-X-Virus-Scanned: amavis at systec-electronic.com
-Received: from mail.systec-electronic.com ([127.0.0.1])
- by localhost (mail.systec-electronic.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id fniezTr3ixvC; Mon, 19 Feb 2024 06:26:12 +0100 (CET)
-Received: from ws-565760.systec.local (unknown [212.185.67.148])
-	by mail.systec-electronic.com (Postfix) with ESMTPSA id E45139400107;
-	Mon, 19 Feb 2024 06:26:11 +0100 (CET)
-From: Andre Werner <andre.werner@systec-electronic.com>
-To: steve.glendinning@shawell.net,
-	UNGLinuxDriver@microchip.com,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com
-Cc: netdev@vger.kernel.org,
-	linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	daniel.krueger@systec-electronic.com,
-	Andre Werner <andre.werner@systec-electronic.com>
-Subject: [PATCH net-next v2] net: smsc95xx: add support for SYS TEC USB-SPEmodule1
-Date: Mon, 19 Feb 2024 06:25:16 +0100
-Message-ID: <20240219052609.3317-1-andre.werner@systec-electronic.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708320364; c=relaxed/simple;
+	bh=/UamSygtRoHGtpPGb62UgKOiavVW2OhoLRhrRpKJ3bY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=VN9V1lecX6Y1DDyXlDL8/Z6Kd0NCXzS9K8ny0A8GsfNgm2QCQeaiEbcVJb1nhvFMHExOeLm8SLpMhlZnWtEHoJ2bgFXQWJFpBitC3I9hPVGQjNi/42FkUPXniK02gMnBNeQOLHteuFEbCLo1qtRdOFFJ6UrBF70+siuQVW92zo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-363c88eff5aso30442295ab.1
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 21:26:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708320362; x=1708925162;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=NOFoFESmvlklSQbncNSApOvu+sIjkHC5FQZ3He6zZio=;
+        b=t+Iz6upqPKDmy8Nz4hx79MrT2W98GsPozw8GUc+ukU/rAomu4xPbQ/W/yksHz7Drq4
+         k4pXeQ+QVcc8YnmFGE5oZSr5hO2rYWdjsfK9NNOTt4p0JI5wZDuKFElXnd1amm3BBpE9
+         iZqgnHxg4uUH1dxRi0RykQEcko7vRf2t8R0Lw6nZPNrk3tbSWWJ5DIm2u+qIOceKyTcQ
+         OHTtHBM+8mApcImu3XBiL6mv5KEVXB37Cn3hOWAONqcrapjtA/at5WqmGhyEIWBx98q+
+         YrrQNG8az3G4RkzN/4O7xdchhZggvyV0U5CVJnqvc5o+RHi8tP3sqGfcsBXRwoOGUSol
+         bVpg==
+X-Forwarded-Encrypted: i=1; AJvYcCUp042lsymb87ZEnNVulbnH8OS0GvEEL1OTnoz1/FkZO02TMe8fynNVZXkNEo/Y6aB0IUuf/cGm5//nxckYa6wCQCIjWm0EZ3xCadSD
+X-Gm-Message-State: AOJu0YzYIkStWEagzmP0OCI4yxNpli8l+MAICAMqzlgXnJTD88l6niQG
+	DWooNE2+MH/SY9UpiNvswLbqXb09eljstWqf/nyWcPL/YXM5vLioep5hBo3GsbIYrgrMhz9LK4m
+	8GKl93YH7om6QrmSWruiJp//DqlAygNMsMj7SATN/Xyz+SJrqTInTHyI=
+X-Google-Smtp-Source: AGHT+IHSD6r+WANqHstIaCKHCJUTmPR9yzzjf/m9rmHwC3SEFCPekxM9WqAzHDkGdt/XQG/5sU2TdpvwzirUzbIFiKnXK8KWO+xb
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a05:6e02:1a2b:b0:365:3328:6324 with SMTP id
+ g11-20020a056e021a2b00b0036533286324mr99180ile.5.1708320361966; Sun, 18 Feb
+ 2024 21:26:01 -0800 (PST)
+Date: Sun, 18 Feb 2024 21:26:01 -0800
+In-Reply-To: <0000000000004f9dd605eabee6dc@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000056790c0611b5548c@google.com>
+Subject: Re: [syzbot] [jfs?] INFO: task hung in __get_metapage
+From: syzbot <syzbot+84c274731411665e6c52@syzkaller.appspotmail.com>
+To: axboe@kernel.dk, brauner@kernel.org, damien.lemoal@opensource.wdc.com, 
+	jack@suse.cz, jfs-discussion@lists.sourceforge.net, jlayton@kernel.org, 
+	kch@nvidia.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	shaggy@kernel.org, syzkaller-bugs@googlegroups.com, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-This patch adds support for the SYS TEC USB-SPEmodule1 10Base-T1L
-ethernet device to the existing smsc95xx driver by adding the new
-USB VID/PID pair.
+syzbot suspects this issue was fixed by commit:
 
-Signed-off-by: Andre Werner <andre.werner@systec-electronic.com>
----
-v2:
-- Sort new USB_DEVICE entry by VID and swap with previous entry.
----
- drivers/net/usb/smsc95xx.c | 5 +++++
- 1 file changed, 5 insertions(+)
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-diff --git a/drivers/net/usb/smsc95xx.c b/drivers/net/usb/smsc95xx.c
-index a530f20ee257..bb4e62a93d96 100644
---- a/drivers/net/usb/smsc95xx.c
-+++ b/drivers/net/usb/smsc95xx.c
-@@ -2109,6 +2109,11 @@ static const struct usb_device_id products[] =3D {
- 		USB_DEVICE(0x184F, 0x0051),
- 		.driver_info =3D (unsigned long)&smsc95xx_info,
- 	},
-+	{
-+		/* SYSTEC USB-SPEmodule1 10BASE-T1L Ethernet Device */
-+		USB_DEVICE(0x0878, 0x1400),
-+		.driver_info =3D (unsigned long)&smsc95xx_info,
-+	},
- 	{ },		/* END */
- };
- MODULE_DEVICE_TABLE(usb, products);
---=20
-2.43.0
+    fs: Block writes to mounted block devices
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13310158180000
+start commit:   1b929c02afd3 Linux 6.2-rc1
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
+dashboard link: https://syzkaller.appspot.com/bug?extid=84c274731411665e6c52
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1702dc54480000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b9eaf4480000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
