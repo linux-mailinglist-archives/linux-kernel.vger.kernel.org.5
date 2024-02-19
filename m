@@ -1,92 +1,152 @@
-Return-Path: <linux-kernel+bounces-71435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F155685A531
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:56:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E1085A546
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:03:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9187C1F234A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:56:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94A3F1C21477
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:03:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D218536AFB;
-	Mon, 19 Feb 2024 13:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E5937153;
+	Mon, 19 Feb 2024 14:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="VbG5kIlD"
-Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JKdrVC//"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D811332182;
-	Mon, 19 Feb 2024 13:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F86036B09;
+	Mon, 19 Feb 2024 14:03:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708350992; cv=none; b=VkWbUawf3K1W/tuEX9hagyYIFZJ6thXwocB0Zz8omB+LUSN9Tztic9ezoikUoKwj7+PV49EgFsg3o4i1zxxoGQ6QGAgng2xXcSFqjhXmf+P1VobGdEyqpoPU3aKiULgcZ9QvHBC5KARWSpjvChjNfsFjVS5x5cIo9MLjiLrqHkQ=
+	t=1708351384; cv=none; b=Xxs8d3O0oz+HQ+C0Ja+lAe5M/+qkLQ6VaDqKybfrfQI4xAivWGN0btMjteH95kW3MBYzkjXAkWsPlZ29MlnlBgoHCBxYu2IPqcPdFDEvRcX+O/Q5nakpDnUJzx4r+Jyqq5PWgvoQ2QPzijjwY7VAbaticHvcuj5NMqqrZNfe/lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708350992; c=relaxed/simple;
-	bh=RgNJprUPPOwhgeZ+/R3P4cQ/LqQ2+TTNR4vf52w2fm8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ph2wmv+LEwpJYs27yOyvvEqXkwyWFoRqAJUCKE+yLiP8nib/doCKBI25GWbU10JjT76UlKSQQn288T4vJ7+UDq0p4INnr9VxiAfQG68nUvtXwykkVjaUmJ18RypsOSR2ILAdSanJO6kaDOY0pru+HhJQp3NYksCQv/wvQF/LM9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=VbG5kIlD; arc=none smtp.client-ip=139.165.32.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
-Received: from [192.168.1.38] (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 2BFAE2012151;
-	Mon, 19 Feb 2024 14:56:29 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 2BFAE2012151
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
-	s=ulg20190529; t=1708350989;
-	bh=v6h+TrhDCcE8IdpFwn9bMKIad9vYrlT3yDGRaM2ZAMc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=VbG5kIlDrORQqXvWn0WMs9HpjzrRMevGs7wjEDQih1jP60yCONS7UjsItXmrEIqHl
-	 wu+AmuGiwc2oBAoHY6rb/ByUoxHF8Iu1KmoUK3zFx7UfxF6MBoQVFOm5mrnFMtmcz6
-	 NN+9V3SkU2eSqVf5CQhuHLMjwFWdbblor82dQVbvh/5JPv5ItkcDiTopmAkjrbq+P+
-	 GScktonQlaiOhxZGk9BiuiaNirCcp3Y8101S+tmUfN+1BvCDD00/7E0lY4dOniN6Gn
-	 aj6h/pjOATGA5Y0ZM04bgHV/iXlwwXdqYscavkADyn8UJfWePE5yokSPa5+XQziL6f
-	 XEzPmK760Aytg==
-Message-ID: <4aa88e30-ea08-44ed-a7a3-602c12b6705b@uliege.be>
-Date: Mon, 19 Feb 2024 14:56:28 +0100
+	s=arc-20240116; t=1708351384; c=relaxed/simple;
+	bh=wHheWqOg2lnrXFJQJwK4hCwjRP1jqy2jGPo/csvfdrM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=L75m7U5+OT8vGH7SmQcD2cxXoyOmeAIpY8E7zSybXOWCF4wkW0203m7M6eNAfaEGAkGKLKNOCdIJ6fmHLMctOIKKHbcgcvMT3YiaoL4AnPNmRgcIZrA8FmAozIlI5hCHst7i3YJz0M3A5N/krJhgfW63nZhUfFzLBgvS91vw2oE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JKdrVC//; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708351383; x=1739887383;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wHheWqOg2lnrXFJQJwK4hCwjRP1jqy2jGPo/csvfdrM=;
+  b=JKdrVC//GNaIbK1i5uTYZQ4qMuusEE/T/srpkOcRtEzuarH2BAft74Q5
+   3i2Fvw6XrD4S/UR5A4uYJIgyrb9B0hTUv6VwydVBli3r1XvGceuA+j+zl
+   OzGLJqniqIm+1SNIAm1dPNzO4NpU1Z1xZ+wZ5xOS2pNKvM7XRcpmIQwKU
+   DexXAORBnOlw/A13FmZrcRk3pSkEjY9b2jl4aev2aks5Yh3GceXuGB/nI
+   PVcUFeE+D2SqT1bgh8eIwfvO6J6EK8zOQj2w2Uxc1LtwnkYHKqOoxuWeo
+   t3DVVmwMTJNNrDB8CK1yURIF0W+FSCy6eb3az0RStMC0tbTPQXtuOddcC
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2294745"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="2294745"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 06:03:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="4407006"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by fmviesa007.fm.intel.com with ESMTP; 19 Feb 2024 06:03:00 -0800
+Date: Mon, 19 Feb 2024 21:59:08 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
+Subject: Re: [PATCH 1/4] KVM: Always flush async #PF workqueue when vCPU is
+ being destroyed
+Message-ID: <ZdNerMaewrcrwBlL@yilunxu-OptiPlex-7050>
+References: <20240110011533.503302-1-seanjc@google.com>
+ <20240110011533.503302-2-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 0/2] ioam6: fix write to cloned skb's
-Content-Language: en-US
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net, dsahern@kernel.org, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org
-References: <20240219134821.14009-1-justin.iurman@uliege.be>
-From: Justin Iurman <justin.iurman@uliege.be>
-In-Reply-To: <20240219134821.14009-1-justin.iurman@uliege.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240110011533.503302-2-seanjc@google.com>
 
-On 2/19/24 14:48, Justin Iurman wrote:
-> v2:
->   - use skb_ensure_writable() instead of skb_cloned()+pskb_expand_head()
->   - refresh network header pointer in ip6_parse_tlv() when returning from
->     ipv6_hop_ioam()
-> 
-> Make sure the IOAM data insertion is not applied on cloned skb's. As a
-> consequence, ioam selftests needed a refactoring.
-> 
-> Justin Iurman (2):
->    Fix write to cloned skb in ipv6_hop_ioam()
->    selftests: ioam: refactoring to align with the fix
-> 
->   net/ipv6/exthdrs.c                         | 10 +++
->   tools/testing/selftests/net/ioam6.sh       | 38 ++++-----
->   tools/testing/selftests/net/ioam6_parser.c | 95 +++++++++++-----------
->   3 files changed, 76 insertions(+), 67 deletions(-)
-> 
-> 
-> base-commit: 166c2c8a6a4dc2e4ceba9e10cfe81c3e469e3210
+>  void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+> @@ -114,7 +132,6 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+>  #else
+>  		if (cancel_work_sync(&work->work)) {
+>  			mmput(work->mm);
+> -			kvm_put_kvm(vcpu->kvm); /* == work->vcpu->kvm */
+>  			kmem_cache_free(async_pf_cache, work);
+>  		}
+>  #endif
+> @@ -126,7 +143,18 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+>  			list_first_entry(&vcpu->async_pf.done,
+>  					 typeof(*work), link);
+>  		list_del(&work->link);
+> -		kmem_cache_free(async_pf_cache, work);
+> +
+> +		spin_unlock(&vcpu->async_pf.lock);
+> +
+> +		/*
+> +		 * The async #PF is "done", but KVM must wait for the work item
+> +		 * itself, i.e. async_pf_execute(), to run to completion.  If
+> +		 * KVM is a module, KVM must ensure *no* code owned by the KVM
+> +		 * (the module) can be run after the last call to module_put(),
+> +		 * i.e. after the last reference to the last vCPU's file is put.
+> +		 */
+> +		kvm_flush_and_free_async_pf_work(work);
 
-Sorry, please ignore v2 due to net and version not present in patches 
-tag. Instead, please consider v3. Thanks.
+I have a new concern when I re-visit this patchset.
+
+Form kvm_check_async_pf_completion(), I see async_pf.queue is always a
+superset of async_pf.done (except wake-all work, which is not within
+concern).  And done work would be skipped from sync (cancel_work_sync()) by:
+
+                if (!work->vcpu)
+                        continue;
+
+But now with this patch we also sync done works, how about we just sync all
+queued work instead.
+
+diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
+index e033c79d528e..2268f16a36c2 100644
+--- a/virt/kvm/async_pf.c
++++ b/virt/kvm/async_pf.c
+@@ -71,7 +71,6 @@ static void async_pf_execute(struct work_struct *work)
+        spin_lock(&vcpu->async_pf.lock);
+        first = list_empty(&vcpu->async_pf.done);
+        list_add_tail(&apf->link, &vcpu->async_pf.done);
+-       apf->vcpu = NULL;
+        spin_unlock(&vcpu->async_pf.lock);
+
+        if (!IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC) && first)
+@@ -101,13 +100,6 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
+                                         typeof(*work), queue);
+                list_del(&work->queue);
+
+-               /*
+-                * We know it's present in vcpu->async_pf.done, do
+-                * nothing here.
+-                */
+-               if (!work->vcpu)
+-                       continue;
+-
+                spin_unlock(&vcpu->async_pf.lock);
+ #ifdef CONFIG_KVM_ASYNC_PF_SYNC
+                flush_work(&work->work);
+
+
+This way we don't have to sync twice for the same purpose, also we could
+avoid reusing work->vcpu as a "done" flag which confused me a bit.
+
+Thanks,
+Yilun
+
+> +		spin_lock(&vcpu->async_pf.lock);
+>  	}
+>  	spin_unlock(&vcpu->async_pf.lock);
+>  
 
