@@ -1,132 +1,209 @@
-Return-Path: <linux-kernel+bounces-71577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0F5785A744
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:21:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA7185A747
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:21:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BD89B23EC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:21:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 849F6283301
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C8D4383A6;
-	Mon, 19 Feb 2024 15:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB509383BB;
+	Mon, 19 Feb 2024 15:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Gige87Op";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="6iNM42ud"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDOOKXa5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88C338389;
-	Mon, 19 Feb 2024 15:21:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD38B38384;
+	Mon, 19 Feb 2024 15:21:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708356084; cv=none; b=kyrWLoL8jLYG4CNle+E0geJ5kg+D1URdx+tltlO9cyKlCO1HU6qV0Tmvxa+03aVhuYVGPo058vxWiEVL/ihQtpf5ollu/BcXXKzelZqc6y2HpQlK0hHduS43qpOKBkJKcOQ+P6ORwmO1XMSiEJVhxW64ve4dJbeWKVx3rIfQrQ8=
+	t=1708356094; cv=none; b=eZlpjfSsQedcBuEgp7i1v/beeP5WBgvQa/yU/bcb2LDRf4GLuqxMErsuPyGtCY9oU4JtF163CHfegDu5KV7bnuewA7bBUk6ucM1+CUYHKc0NAW2eUcnXdPcgbs2YC1SQgAQmdP2JP6dAdZAYtMCF0EEYRuIY8VTawljjwVZbOvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708356084; c=relaxed/simple;
-	bh=G2cvM0uYCACv57fHf4T3QzA7HExl9j/2O59IDZ0UxGU=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=sXy4TUb6Pb0UuaAm/8ho1KYjvLmQFHo8E70CYsmn8LgtkCGNJvADz0JyVpEQtRyF3VLgEldrsGGVV0dlQ+wfjri8Qo7R7/xnt00/zqXwcyFaONBCOkNNYbgNXtZdq2UGA+Nytaa2plI58dWDPSRkRzc1K6CaBqMn6JuEPoh8GqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Gige87Op; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=6iNM42ud; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 19 Feb 2024 15:21:20 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708356081;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8ltsHf1PwnnRBNn4pYqVf92/T9hGBxHrz+dtWVE8uYw=;
-	b=Gige87Opi7VjCflOt1nd0zzjShhvwRwbYbhCnE7EXdwbyP54+wahAW7LKw8z0Zt7OOXc0f
-	MYU+6AwielGbDFWcMTyM3NRYvCKIhWcCQs1EUf3RwKkeWzqa6R80Wx/q+gcNGHT9uszCyQ
-	Npx8oMDQFTJgaf/FUjmKbb4DOPfa5P+kUcUemD0+czaQ6TT3smmzDmkpZhDstLM7/FmyQq
-	Pj/S49U0+na/S8CF1O08X6CuzZLO+QWxPaEihSx/RMxPtrLTLPl6tl07BLXPPNpZxNzxg2
-	dAh16Y7J8FBkkRk74FcM1mC/KW7lCdKyEa54xN+QPZsJ0lF4Movsug46CboaSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708356081;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8ltsHf1PwnnRBNn4pYqVf92/T9hGBxHrz+dtWVE8uYw=;
-	b=6iNM42udPMh3wflw8piWHMn4tr58N9QanjUMxYRhH6e6rvF11TQWDzTzrKAajfEcx3x9OD
-	ZMY/tlabIARuBBCA==
-From: "tip-bot2 for Vidya Sagar" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: irq/urgent] PCI/MSI: Prevent MSI hardware interrupt number truncation
-Cc: Vidya Sagar <vidyas@nvidia.com>, Thomas Gleixner <tglx@linutronix.de>,
- Shanker Donthineni <sdonthineni@nvidia.com>, stable@vger.kernel.org,
- x86@kernel.org, linux-kernel@vger.kernel.org, maz@kernel.org
-In-Reply-To: <20240115135649.708536-1-vidyas@nvidia.com>
-References: <20240115135649.708536-1-vidyas@nvidia.com>
+	s=arc-20240116; t=1708356094; c=relaxed/simple;
+	bh=kWjDFBWNyukDqiqilRrkk/NPz9Qf4ovSHkLaWG4pOcs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GVF4Z2B4blDtgXx0oYiveVVINxukdyAR5C9xBiF/hAf+Xc3RIvNngsTdu8qkvvLYruXbSh5O9t4xKgFkS7D/+b33fPkdlP6Hemru/yQ3dmHrgTB+RvB+xTKzJSCHQvtRt4EWJeDb8MB9cnnmirlSuYuXQntDFQcVmpiYYAEBpMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FDOOKXa5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A20DBC433C7;
+	Mon, 19 Feb 2024 15:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708356094;
+	bh=kWjDFBWNyukDqiqilRrkk/NPz9Qf4ovSHkLaWG4pOcs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FDOOKXa5BKBH1ElXgKDSx2ks+y9Xel5+lS491Zq86zliaMN6GLKy3Llxnvk0DTd61
+	 PR0g4s6crii1spGlwXzoMqPtpGsMYkooXxLbyqe5evvoin9UgVhSpGWuB2fwVTzbVf
+	 l1oR9b1TEdrL8JggZ6WGfStnHxQovjg3sTK+wmG6TMhtR5xbVeOhcPr51RugyVpRW2
+	 WvQsM9SHsHgou/6vWLHdYFxK/41/OyriI6nQdOJKXi1c2gePTO43p87SJrzKJMPoeT
+	 Yq/FHUWfkf88gl56AJwAelvNdaGENye+7n9iBS59u/so9RPbd+swKW+vbjiJCGhNjO
+	 tNV7qxMXasfiA==
+Date: Mon, 19 Feb 2024 16:21:26 +0100
+From: Lorenzo Pieralisi <lpieralisi@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: bhelgaas@google.com, conor+dt@kernel.org, devicetree@vger.kernel.org,
+	festevam@gmail.com, helgaas@kernel.org, hongxing.zhu@nxp.com,
+	imx@lists.linux.dev, kernel@pengutronix.de,
+	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org,
+	kw@linux.com, l.stach@pengutronix.de,
+	linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+	manivannan.sadhasivam@linaro.org, robh@kernel.org,
+	s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH v10 00/14] PCI: imx6: Clean up and add imx95 pci support
+Message-ID: <ZdNx9op+MhzF5FNB@lpieralisi>
+References: <20240205173335.1120469-1-Frank.Li@nxp.com>
+ <ZdNvsdao8jbB/52L@lizhi-Precision-Tower-5810>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170835608023.398.3330290067084127851.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdNvsdao8jbB/52L@lizhi-Precision-Tower-5810>
 
-The following commit has been merged into the irq/urgent branch of tip:
+On Mon, Feb 19, 2024 at 10:11:45AM -0500, Frank Li wrote:
+> On Mon, Feb 05, 2024 at 12:33:21PM -0500, Frank Li wrote:
+> > first 6 patches use drvdata: flags to simplify some switch-case code.
+> > Improve maintaince and easy to read code.
+> > 
+> 
+> @Lorenzo Pieralisi:
+> 
+> 	Do you have chance to look other patches?
 
-Commit-ID:     db744ddd59be798c2627efbfc71f707f5a935a40
-Gitweb:        https://git.kernel.org/tip/db744ddd59be798c2627efbfc71f707f5a935a40
-Author:        Vidya Sagar <vidyas@nvidia.com>
-AuthorDate:    Mon, 15 Jan 2024 19:26:49 +05:30
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 19 Feb 2024 16:11:01 +01:00
+Yes, they are fine.
 
-PCI/MSI: Prevent MSI hardware interrupt number truncation
+> 	Mani's apply EP side change. 
+> 	'PCI: imx6: Add iMX95 Endpoint (EP) support' need be rebased. 
 
-While calculating the hardware interrupt number for a MSI interrupt, the
-higher bits (i.e. from bit-5 onwards a.k.a domain_nr >= 32) of the PCI
-domain number gets truncated because of the shifted value casting to return
-type of pci_domain_nr() which is 'int'. This for example is resulting in
-same hardware interrupt number for devices 0019:00:00.0 and 0039:00:00.0.
+What does that mean ? I think it is best to pull the series in a single
+branch if there are not any dependencies on other branches.
 
-To address this cast the PCI domain number to 'irq_hw_number_t' before left
-shifting it to calculate the hardware interrupt number.
+Thanks,
+Lorenzo
 
-Please note that this fixes the issue only on 64-bit systems and doesn't
-change the behavior for 32-bit systems i.e. the 32-bit systems continue to
-have the issue. Since the issue surfaces only if there are too many PCIe
-controllers in the system which usually is the case in modern server
-systems and they don't tend to run 32-bit kernels.
-
-Fixes: 3878eaefb89a ("PCI/MSI: Enhance core to support hierarchy irqdomain")
-Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Shanker Donthineni <sdonthineni@nvidia.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20240115135649.708536-1-vidyas@nvidia.com
----
- drivers/pci/msi/irqdomain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/pci/msi/irqdomain.c b/drivers/pci/msi/irqdomain.c
-index c8be056..cfd84a8 100644
---- a/drivers/pci/msi/irqdomain.c
-+++ b/drivers/pci/msi/irqdomain.c
-@@ -61,7 +61,7 @@ static irq_hw_number_t pci_msi_domain_calc_hwirq(struct msi_desc *desc)
- 
- 	return (irq_hw_number_t)desc->msi_index |
- 		pci_dev_id(dev) << 11 |
--		(pci_domain_nr(dev->bus) & 0xFFFFFFFF) << 27;
-+		((irq_hw_number_t)(pci_domain_nr(dev->bus) & 0xFFFFFFFF)) << 27;
- }
- 
- static void pci_msi_domain_set_desc(msi_alloc_info_t *arg,
+> Frank
+> 
+> > Then add imx95 basic pci host function.
+> > 
+> > follow two patch do endpoint code clean up.
+> > Then add imx95 basic endpont function.
+> > 
+> > Compared with v2, added EP function support and some fixes,  please change
+> > notes at each patches.
+> > 
+> > Change from v9 to v10
+> > - remove two patches:
+> > >   dt-bindings: imx6q-pcie: Add linux,pci-domain as required for iMX8MQ
+> > >   PCI: imx6: Using "linux,pci-domain" as slot ID
+> > it is not good solution to fixed hardcode check to get controller id.
+> > Will see better solution later.
+> > 
+> > dt-binding pass pcie node:
+> > 
+> > pcie0: pcie@4c300000 {
+> >                         compatible = "fsl,imx95-pcie";
+> >                         reg = <0 0x4c300000 0 0x40000>,
+> >                                 <0 0x4c360000 0 0x10000>,
+> >                                 <0 0x4c340000 0 0x20000>,
+> >                                 <0 0x60100000 0 0xfe00000>;
+> >                         reg-names = "dbi", "atu", "app", "config";
+> >                         #address-cells = <3>;
+> >                         #size-cells = <2>;
+> >                         device_type = "pci";
+> >                         linux,pci-domain = <0>;
+> >                         bus-range = <0x00 0xff>;
+> >                         ranges = <0x81000000 0x0 0x00000000 0x0 0x6ff00000 0 0x00100000>,
+> >                                  <0x82000000 0x0 0x10000000 0x9 0x10000000 0 0x10000000>;
+> >                         num-lanes = <1>;
+> >                         num-viewport = <8>;
+> >                         interrupts = <GIC_SPI 310 IRQ_TYPE_LEVEL_HIGH>;
+> >                         interrupt-names = "msi";
+> >                         #interrupt-cells = <1>;
+> >                         interrupt-map-mask = <0 0 0 0x7>;
+> >                         interrupt-map = <0 0 0 1 &gic 0 0 GIC_SPI 309 IRQ_TYPE_LEVEL_HIGH>,
+> >                                         <0 0 0 2 &gic 0 0 GIC_SPI 308 IRQ_TYPE_LEVEL_HIGH>,
+> >                                         <0 0 0 3 &gic 0 0 GIC_SPI 307 IRQ_TYPE_LEVEL_HIGH>,
+> >                                         <0 0 0 4 &gic 0 0 GIC_SPI 306 IRQ_TYPE_LEVEL_HIGH>;
+> >                         fsl,max-link-speed = <3>;
+> >                         clocks = <&scmi_clk IMX95_CLK_HSIO>,
+> >                                  <&scmi_clk IMX95_CLK_HSIOPLL>,
+> >                                  <&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+> >                                  <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+> >                         clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_aux";
+> >                         assigned-clocks =<&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+> >                                          <&scmi_clk IMX95_CLK_HSIOPLL>,
+> >                                          <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+> >                         assigned-clock-rates = <3600000000>, <100000000>, <10000000>;
+> >                         assigned-clock-parents = <0>, <0>,
+> >                                                  <&scmi_clk IMX95_CLK_SYSPLL1_PFD1_DIV2>;
+> >                         power-domains = <&scmi_devpd IMX95_PD_HSIO_TOP>;
+> >                         /* 0x30~0x37 stream id for pci0 */
+> >                         /*
+> >                          * iommu-map = <0x000 &apps_smmu 0x30 0x1>,
+> >                          * <0x100 &apps_smmu 0x31 0x1>;
+> >                          */
+> >                         status = "disabled";
+> >                 };
+> > 
+> > pcie1: pcie-ep@4c380000 {
+> >                         compatible = "fsl,imx95-pcie-ep";
+> >                         reg = <0 0x4c380000 0 0x20000>,
+> >                               <0 0x4c3e0000 0 0x1000>,
+> >                               <0 0x4c3a0000 0 0x1000>,
+> >                               <0 0x4c3c0000 0 0x10000>,
+> >                               <0 0x4c3f0000 0 0x10000>,
+> >                               <0xa 0 1 0>;
+> >                         reg-names = "dbi", "atu", "dbi2", "app", "dma", "addr_space";
+> >                         interrupts = <GIC_SPI 317 IRQ_TYPE_LEVEL_HIGH>;
+> >                         interrupt-names = "dma";
+> >                         fsl,max-link-speed = <3>;
+> >                         clocks = <&scmi_clk IMX95_CLK_HSIO>,
+> >                                  <&scmi_clk IMX95_CLK_HSIOPLL>,
+> >                                  <&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+> >                                  <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+> >                         clock-names = "pcie", "pcie_bus", "pcie_phy", "pcie_aux";
+> >                         assigned-clocks =<&scmi_clk IMX95_CLK_HSIOPLL_VCO>,
+> >                                          <&scmi_clk IMX95_CLK_HSIOPLL>,
+> >                                          <&scmi_clk IMX95_CLK_HSIOPCIEAUX>;
+> >                         assigned-clock-rates = <3600000000>, <100000000>, <10000000>;
+> >                         assigned-clock-parents = <0>, <0>,
+> >                                                  <&scmi_clk IMX95_CLK_SYSPLL1_PFD1_DIV2>;
+> >                         power-domains = <&scmi_devpd IMX95_PD_HSIO_TOP>;
+> >                         status = "disabled";
+> >                 };
+> > 
+> > Frank Li (13):
+> >   PCI: imx6: Simplify clock handling by using clk_bulk*() function
+> >   PCI: imx6: Simplify phy handling by using IMX6_PCIE_FLAG_HAS_PHYDRV
+> >   PCI: imx6: Simplify reset handling by using by using
+> >     *_FLAG_HAS_*_RESET
+> >   PCI: imx6: Simplify ltssm_enable() by using ltssm_off and ltssm_mask
+> >   PCI: imx6: Simplify configure_type() by using mode_off and mode_mask
+> >   PCI: imx6: Simplify switch-case logic by involve init_phy callback
+> >   dt-bindings: imx6q-pcie: Clean up irrationality clocks check
+> >   dt-bindings: imx6q-pcie: Restruct reg and reg-name
+> >   PCI: imx6: Add iMX95 PCIe Root Complex support
+> >   PCI: imx6: Clean up get addr_space code
+> >   PCI: imx6: Add epc_features in imx6_pcie_drvdata
+> >   dt-bindings: imx6q-pcie: Add iMX95 pcie endpoint compatible string
+> >   PCI: imx6: Add iMX95 Endpoint (EP) support
+> > 
+> > Richard Zhu (1):
+> >   dt-bindings: imx6q-pcie: Add imx95 pcie compatible string
+> > 
+> >  .../bindings/pci/fsl,imx6q-pcie-common.yaml   |  17 +-
+> >  .../bindings/pci/fsl,imx6q-pcie-ep.yaml       |  46 +-
+> >  .../bindings/pci/fsl,imx6q-pcie.yaml          |  49 +-
+> >  drivers/pci/controller/dwc/pci-imx6.c         | 634 ++++++++++--------
+> >  4 files changed, 436 insertions(+), 310 deletions(-)
+> > 
+> > -- 
+> > 2.34.1
+> > 
 
