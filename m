@@ -1,108 +1,121 @@
-Return-Path: <linux-kernel+bounces-71472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8805585A5D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:23:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 889A085A5CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:22:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17BD0B2218E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:23:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DFB61F24A41
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:22:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48F9737702;
-	Mon, 19 Feb 2024 14:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF54374D9;
+	Mon, 19 Feb 2024 14:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QK8+8CNN"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4upGx7kJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4+9ecyFE"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA1553715E
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:22:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7289374C6;
+	Mon, 19 Feb 2024 14:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708352566; cv=none; b=GwqtpOqB00RCZsKvufuu60pMb7XUXRL6E+lOvwCThTJw7uvmKEhACCILrzSlCrcKr6T/DyFUdkDZ79mfb8+PdVjSoHU5bd6njMFmE6I1LgwD4HcrBaDPz1xnroB5hfH6ZFT/osEUaI5RbCUDLsjKn4wUxXg8YvcBuOiCQ0ClMzw=
+	t=1708352558; cv=none; b=kloREZTaezgs7OESS8fD2sM0xGFQ2Ofd0Kx9Y2revh48pBHQIFjzBlW/vMxoBE6ZwL3U9eSIEsPUe9s1l9OFLTtnJdIdcImjEeN5FdU9DN3K7piG442o2EsYh9K0qxc/a3x9SQ7kEPGNF7jWLzeD184L/Fi6896puPIKuh5E+F0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708352566; c=relaxed/simple;
-	bh=/6PWkDSKkw93KI091rp+ZKivJdBGMc4Px963+IBDBT8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OtnUIqdxiiFWP4BE2HelHDHaAJAFu31pVGqPp+QXJpFkKt/8sm9IlgBAX5pqo0foiWlJApvFbra5CxnLuN+HzvOOSpzFaKIkzZnbzaiX84qWZSeT/g6LkJkBh9SWwqmi5QTEqpZ1z0OuPoHmWrphWdrh98yizQcvJ5LiJ+jUATQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QK8+8CNN; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-607eefeea90so29852137b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:22:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708352561; x=1708957361; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/6PWkDSKkw93KI091rp+ZKivJdBGMc4Px963+IBDBT8=;
-        b=QK8+8CNNnTfN1raQMq9SGwcCDv94HK4cl1CPPMwtichxmoLfdE4jrnY1b1dEp6pANF
-         dA0zchzFSNfBrAKQR+UDGBnvJr0xYWi3PDSoFDbapanJX8q7bqFY5WxzwZS0shgzBoZl
-         PRJN2/t8q/r61pdGNBjK8EU/Ws7XKfnsLUrdcI6xKvRNZU6qGGxgJxgF6Tvh1wObtwDW
-         INZTj5QqDeT/FCo06uWXKI5VlyGMQWhOhZhwFQCFXjqM/VwM8TKUxPseunrFmzpq5RcU
-         HVASwkHo7+5vgO2E9qGu0FpV9niN1CwxzZRpAtZCJWdHZNDTVwDObCVYEpyOoowspzHO
-         zJng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708352561; x=1708957361;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/6PWkDSKkw93KI091rp+ZKivJdBGMc4Px963+IBDBT8=;
-        b=pUbBgK4LQMcV7evakBEQj9ksgU4N3xNCEbPAao/kfe/36dOrRDXuQvYSsz+F2jtkle
-         NfB1uA93uqokeeJ4TTxO+mhXlEeOSWbwg7cMorraz/KGtHlH+VCDED18awN1iR1MGliC
-         VB/KrFpKfX4IJA3xuyHBS3EA+1F5mqxA3m7Zh3YFHE2dZbjwKDoeJ70J5+bVwh3sJzF5
-         gi4cieHo914LZBAHyjLMINLzlXap84WKcfJv1gGqz6ijWZLgv+u0EL5jFXFPvHrXovm8
-         gIO2dxMDMOCDI07xPvDlRf3yQ+TaBGA4n9s5t0S07VYv3+hzbK/tmbh+olMmJ613NH1y
-         ZycQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX3Wl4SuLBSuQnP1a4rujYQZzeUZ8dq7lAV8xH19vEXdsCcUbcusVRwV3SuYIq51aT0r/DbUNhokJnddPVtmCJNqUPjPrI5mCdkdIN/
-X-Gm-Message-State: AOJu0YyYOPfR0U25OyZCNTfXWgChe5c4vzGUTtQUUGooxeXjUKvYVLTC
-	8kpIECisXMSHOwWPg9SS1N/+69YiyVXr3iQ6febjcBPgg0HEdSAMTamf4bYOT4YihaFDQwsOBD3
-	XAPvt/VZxSXPLxzx38FjjWEDXXK4t7mo2Qw809Q==
-X-Google-Smtp-Source: AGHT+IHfGO3HzVvde7/SGBe6Nu45IRUjxZfAmy7HegMXKV9VObfO53W61JP8jP6VnQ6Ovt+OnS9AL46c8cvPyPnGIzg=
-X-Received: by 2002:a05:690c:16:b0:608:b86:7c9f with SMTP id
- bc22-20020a05690c001600b006080b867c9fmr4632737ywb.7.1708352561399; Mon, 19
- Feb 2024 06:22:41 -0800 (PST)
+	s=arc-20240116; t=1708352558; c=relaxed/simple;
+	bh=VirNTJqU30QLy7416ZaZEoSyRmXkYqVSdeOtlf+rVxA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=avZItcXGZuf+grnBPXVkIzcq5iVBSRBfZSH2a5DrJI/7nmf+YF/P4+3Qp8otDbsuex3I7HAB0zFUe91xALkCjhTLwq6vpFWasitOgipcYfRbtXPNjfluz2wgZVoNhr4QmrpU2Qfwv5Lip+/Ie/5lhgDrEOVpRlh0ptloEdv97Zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4upGx7kJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4+9ecyFE; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1708352554;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8iEgdflkmZKXImf680lz4hgFumtn+q/R0YDjSc4t/Vc=;
+	b=4upGx7kJ727A884ML4hUkx8C8e9g9smfQg662DB+Eql0qhnTPCpSxSOyFEBVeuIEZl3D2x
+	lifGEA6YdZDxZ3NATNyidGIV9C47gWKE1F+bi+RMUbfG6GS5JyQqSU1eF7ydP141pP96cO
+	Ejs2/ZFtgYFx6xD+cXA+D6dF14bXZ1Bzog1pajHS8HEuh3FLJOXqNLOya45j2829Og2LQV
+	KSVySQTHgr2Cwbsv/m17DEgTr0sZup4bsdHay2QH+ElPRfgphVBLWy8FzODQOHxWfmARqj
+	+TEWoE/Dyg9x3UBjG4oHCdTBdpxv3lEZlgWMKlBfaLh5q6Id5RObd4Dpti1oRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1708352554;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8iEgdflkmZKXImf680lz4hgFumtn+q/R0YDjSc4t/Vc=;
+	b=4+9ecyFEBiX9R65rg3DVI+yqWFudZBvINi2tHB1FDWo7lijLMJysfGElaqbRllJylJYfxs
+	KB6fhvkKSS/LqXBg==
+To: Antonio Borneo <antonio.borneo@foss.st.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
+ Torgue <alexandre.torgue@foss.st.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
+Cc: Antonio Borneo <antonio.borneo@foss.st.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 03/12] irqchip/stm32-exti: Map interrupts through
+ interrupt nexus node
+In-Reply-To: <20240216094758.916722-4-antonio.borneo@foss.st.com>
+References: <20240216094758.916722-1-antonio.borneo@foss.st.com>
+ <20240216094758.916722-4-antonio.borneo@foss.st.com>
+Date: Mon, 19 Feb 2024 15:22:34 +0100
+Message-ID: <87a5nwa5zp.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com> <20240215-mbly-i2c-v1-9-19a336e91dca@bootlin.com>
-In-Reply-To: <20240215-mbly-i2c-v1-9-19a336e91dca@bootlin.com>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Mon, 19 Feb 2024 15:22:30 +0100
-Message-ID: <CACRpkdYWi6kcCnS9EGwp-Saa7ZXQvRN+Pn9gOLetT_6Hbwq0bA@mail.gmail.com>
-Subject: Re: [PATCH 09/13] i2c: nomadik: fetch timeout-usecs property from devicetree
-To: =?UTF-8?B?VGjDqW8gTGVicnVu?= <theo.lebrun@bootlin.com>
-Cc: Andi Shyti <andi.shyti@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-arm-kernel@lists.infradead.org, 
-	linux-i2c@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
-	Gregory Clement <gregory.clement@bootlin.com>, 
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Thu, Feb 15, 2024 at 5:52=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@bootl=
-in.com> wrote:
+On Fri, Feb 16 2024 at 10:47, Antonio Borneo wrote:
+> diff --git a/drivers/irqchip/irq-stm32-exti.c b/drivers/irqchip/irq-stm32-exti.c
+> index 69982f21126a..95bb3dd10b2c 100644
+> --- a/drivers/irqchip/irq-stm32-exti.c
+> +++ b/drivers/irqchip/irq-stm32-exti.c
+> @@ -61,6 +61,7 @@ struct stm32_exti_host_data {
+>  	struct stm32_exti_chip_data *chips_data;
+>  	const struct stm32_exti_drv_data *drv_data;
+>  	struct hwspinlock *hwlock;
+> +	struct device_node *irq_map_node;
 
-> Allow overriding the default timeout value (200ms) from devicetree,
-> using the timeout-usecs property.
->
-> The i2c_adapter->timeout field is an unaccurate jiffies amount;
-> i2c-nomadik uses hrtimers for timeouts below one jiffy.
->
-> Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+Please keep variable declarations ordered in reverse fir tree layout:
 
-Once we agree on the binding name:
+https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>  };
+>  
+>  static struct stm32_exti_host_data *stm32_host_data;
+> @@ -713,8 +714,9 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+>  	u8 desc_irq;
+>  	struct irq_fwspec *fwspec = data;
+>  	struct irq_fwspec p_fwspec;
+> +	struct of_phandle_args out_irq;
 
-Yours,
-Linus Walleij
+Please move this into the condition path where it is actually used.
+
+>  	irq_hw_number_t hwirq;
+> -	int bank;
+> +	int bank, ret;
+>  	u32 event_trg;
+>  	struct irq_chip *chip;
+>  
+> @@ -731,6 +733,25 @@ static int stm32_exti_h_domain_alloc(struct irq_domain *dm,
+>  
+>  	irq_domain_set_hwirq_and_chip(dm, virq, hwirq, chip, chip_data);
+>  
+> +	if (host_data->irq_map_node) {
+> +		out_irq.np = host_data->irq_map_node;
+
+Thanks,
+
+        tglx
 
