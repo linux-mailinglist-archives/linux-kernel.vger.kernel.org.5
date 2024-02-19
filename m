@@ -1,157 +1,122 @@
-Return-Path: <linux-kernel+bounces-71480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C85485A5F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:31:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F243185A5F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:32:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF54A1C211E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:31:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 943201F25F20
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6561E890;
-	Mon, 19 Feb 2024 14:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C81720DCB;
+	Mon, 19 Feb 2024 14:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="U/s9u0OS"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kC7uVdmQ"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 090121DFE8;
-	Mon, 19 Feb 2024 14:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F151DDD5;
+	Mon, 19 Feb 2024 14:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708353076; cv=none; b=tbQQDAvZ/fUmFIU2xrOVxxll6M2zabcs/jOeJ/JcU5SxpExFgYdURmpAPZ2qkWBM07gIKYz5gKfEDSVE4E7LbYwalxY9ijEEFRc2VYAaHjTIi2rcfgJ/Bjbt4NPWHnXgkVhxKP+4uH/RMxFvZ2y6PPInr7H84NkJ6dg41yGznII=
+	t=1708353110; cv=none; b=V3EGEvzHoOdySDZeqousIvQ55ZF8yz0JAsE4B7EPl2wrFxIug6TYDVsTXItGeX59ty8I4VHnxSkq8AGsH6c6jfa4GrntW9WvOWiqMHpwrtNHzV+zmDTlQG7CeU7G/5Ye92nG+6Vlqkr99Zs7ZXdryyLQyMmxkw5SDCNoPsHwmoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708353076; c=relaxed/simple;
-	bh=kCExhr7TI0B5O0k5tOI7V68szWpBz5xEoI5w1iUnUEw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JBeWwuyMX1gUxDV5jgs3x3jUSUCgxCf+Px3+uiUbph0SeHtR7JeB/2vcxagua89/CbJ8LzLt9lOTBJdM6n5t4QUVRpwlGwNDl8EtxPxbMY0HwYXod1qfiFHxk8GMFlDNbI1NriDt+vHbP2x+69lbb4mVTFAsscjIFOIhO3kYB7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=U/s9u0OS; arc=none smtp.client-ip=217.70.183.201
+	s=arc-20240116; t=1708353110; c=relaxed/simple;
+	bh=hKfqt+6AH9WiehjZH1IaTO+O21L0m+AX+DTUgObkBAY=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=TXtWzg/yICbzsBN49fh6U8KD0zvgyQhbOw9OSVOtPuwyQ42indSK83PcpB0dD2VzKcDkBlxTlCQdf8e7f4vQU7Jvi1M8667WB+EBfXeI6ovrr5yF0N9DAW/+PdMyZUy1kGLH72TTBA/qy1x+e3VEKvm0i7nbboZklhW/jyAnCWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kC7uVdmQ; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2E40C1BF206;
-	Mon, 19 Feb 2024 14:31:08 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9F9441C0012;
+	Mon, 19 Feb 2024 14:31:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708353072;
+	t=1708353106;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9h+OMrQCyhqHA7MCzpM0VlZZ6CwDDvEtHV/K94gz0WI=;
-	b=U/s9u0OSp/Z7R2FUlgP0FV/wusIZrolBvVwUWtIO4FxFiOGCiQTMv/8XnFtg5S6NqyIWls
-	zwzzQt1XSmq6BRxzXIZWCrE1Mn+nR6GJE1CpM4Mfjbsrwlq300d3xNFDglvo2dif8rchV+
-	bE75OAq8FhfduMysPMIFJJ77YSaynAKfxd30GD+0b1cOrBQB86OKMpZWQHr476u4qsYGlJ
-	ovL1G1kBYbNNJ1RkO0CvO2wOA5A1TXYCrqfB7sVXJbIaECwhCshHM8fD7VprqiA6yqQD3U
-	zfE7HMT1o0+nr1XRTfOqoHSTV535PlLcOm6JIluUhlpI+4bFOxV+0O0VJ9/3QA==
-Date: Mon, 19 Feb 2024 15:31:06 +0100
-From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Andrew Lunn <andrew@lunn.ch>, Rob Herring <robh@kernel.org>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Jonathan
- Corbet <corbet@lwn.net>, Luis Chamberlain <mcgrof@kernel.org>, Russ Weight
- <russ.weight@linux.dev>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- "Rafael J. Wysocki" <rafael@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
- Heiner Kallweit <hkallweit1@gmail.com>, Russell King
- <linux@armlinux.org.uk>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, devicetree@vger.kernel.org, Dent Project
- <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v3 14/17] dt-bindings: net: pse-pd: Add
- bindings for PD692x0 PSE controller
-Message-ID: <20240219153106.19e83213@kmaincent-XPS-13-7390>
-In-Reply-To: <Zc8TAojumif1irE-@pengutronix.de>
-References: <20240208-feature_poe-v3-0-531d2674469e@bootlin.com>
-	<20240208-feature_poe-v3-14-531d2674469e@bootlin.com>
-	<20240209145727.GA3702230-robh@kernel.org>
-	<ZciUQqjM4Z8Tc6Db@pengutronix.de>
-	<618be4b1-c52c-4b8f-8818-1e4150867cad@lunn.ch>
-	<Zc3IrO_MXIdLXnEL@pengutronix.de>
-	<65099b67-b7dc-4d78-ba42-d550aae2c31e@lunn.ch>
-	<Zc8TAojumif1irE-@pengutronix.de>
-Organization: bootlin
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	bh=hKfqt+6AH9WiehjZH1IaTO+O21L0m+AX+DTUgObkBAY=;
+	b=kC7uVdmQuKOY2GZO7/+U8nGkDmIS2gUMSAn6I3uoBiu8m1t7O7ruLaNdalx34aTxFThyby
+	4xEjQzka7TB8XMIdmRxWxQw3OWpVgOT5vk695IlP4IdxkXuFPU4ApdZhDB5Kl+CVQpr+RC
+	ZVvauYyA3BM0jtZ8FruNvEisL5LZS9HTI5K9Sa6dgtv2w/u3zzhXJBYg9iPSh+l2eXSZJn
+	3GvZd2GHfFANPZX8zWkS4LXroL2RmFjaem7TJvuJaX7ZRN/WCZfspHigpm5MWOb8kbXvhz
+	jo71SgSyaCFgtWRj/NFHARZzLGnwwSOQ8EVbfHSHGPu9KBuRop9FCd/wV0uXpA==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: kory.maincent@bootlin.com
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Feb 2024 15:31:45 +0100
+Message-Id: <CZ94MU7BQIOE.2KYB4TWVOJISN@bootlin.com>
+Subject: Re: [PATCH 07/13] i2c: nomadik: support short xfer timeouts using
+ waitqueue & hrtimer
+Cc: "Andi Shyti" <andi.shyti@kernel.org>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Linus Walleij" <linus.walleij@linaro.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-7-19a336e91dca@bootlin.com>
+ <CACRpkdYC=vVBA-s6GmsaED=NdXfsr0JDzzF+x8q8C3tqQ0F8YQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYC=vVBA-s6GmsaED=NdXfsr0JDzzF+x8q8C3tqQ0F8YQ@mail.gmail.com>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Fri, 16 Feb 2024 08:47:14 +0100
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+Hello,
+
+On Mon Feb 19, 2024 at 3:19 PM CET, Linus Walleij wrote:
+> On Thu, Feb 15, 2024 at 5:52=E2=80=AFPM Th=C3=A9o Lebrun <theo.lebrun@boo=
+tlin.com> wrote:
+>
+> > Replace the completion by a waitqueue for synchronization from IRQ
+> > handler to task. For short timeouts, use hrtimers, else use timers.
+> > Usecase: avoid blocking the I2C bus for too long when an issue occurs.
 > >
-> > So, either somebody needs to understand 1000BaseT and can say the
-> > proposed binding works, or we explicitly document the binding is
-> > limited to 10BaseT and 100BaseT. =20
->=20
-> I asked the internet and found the answer: Some PSE/PD implementations
-> are not compatible with 1000BaseT.
->=20
-> See Figure 33=E2=80=934=E2=80=9410BASE-T/100BASE-TX Endpoint PSE location=
- overview.
-> Alternative B show a variant where power is injected directly to pairs
-> without using magnetics as it is done for Alternative A (phantom
-> delivery - over magnetics).
->=20
-> So, we have following variants of 2 pairs PoE:
-> +---------+---------------+-------------------+---------------------+----=
-----------------+
-> | Variant | Alternative   | Polarity          | Power Feeding Type  |
-> Compatibility with | |         | (a/b)         | (Direct/Reverse)  |
-> (Direct/Phantom)    | 1000BaseT          |
-> +=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D+
-> | 1       | a             | Direct            | Phantom             | Yes
->            |
-> +---------+---------------+-------------------+---------------------+----=
-----------------+
-> | 2       | a             | Reverse           | Phantom             | Yes
->            |
-> +---------+---------------+-------------------+---------------------+----=
-----------------+
-> | 3       | b             | Direct            | Phantom             | Yes
->            |
-> +---------+---------------+-------------------+---------------------+----=
-----------------+
-> | 4       | b             | Reverse           | Phantom             | Yes
->            |
-> +---------+---------------+-------------------+---------------------+----=
-----------------+
-> | 5       | b             | Direct            | Direct              | No
->            |
-> +---------+---------------+-------------------+---------------------+----=
-----------------+
-> | 6       | b             | Reverse           | Direct              | No
->            |
-> +---------+---------------+-------------------+---------------------+----=
-----------------+
+> > The threshold picked is one jiffy: if timeout is below that, use
+> > hrtimers. This threshold is NOT configurable.
+> >
+> > Implement behavior but do NOT change fetching of timeout. This means th=
+e
+> > timeout is unchanged (200ms) and the hrtimer case will never trigger.
+> >
+> > A waitqueue is used because it supports both desired timeout approaches=
+.
+> > See wait_event_timeout() and wait_event_hrtimeout(). An atomic boolean
+> > serves as synchronization condition.
+> >
+> > Signed-off-by: Th=C3=A9o Lebrun <theo.lebrun@bootlin.com>
+>
+> Part of me want to go and fix completions to handle hrtimer timeouts
+> for submicrosecond timeouts, BUT I realized that this is a bit thick
+> request for a simple driver, so just a suggestion for something we could
+> do one day. This is fine with me.
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-Maybe we could remove the polarity column on this table as it does not bring
-more information. It is also already explained on the PI pinout alternatives
-table.
+Indeed having to switch to another abstraction because we desire another
+timeout method is nonsensical. Completion supporting hrtimeouts would
+make sense. As you said though, this is too much for a simple driver.
 
-Also we should document that a 4pairs PSE supporting only 10/100BaseT (which
-mean no magnetics on pinout AlternativeB) may not be compatible with a 4pai=
-rs
-1GBaseT PD.
+Thanks,
 
-> For this case, it will be good if systems knows supported modes, so user
-> can get this information  directly. For example with ethtool
-
-Yes.
-
-Regards,
---=20
-K=C3=B6ry Maincent, Bootlin
-Embedded Linux and kernel engineering
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
 https://bootlin.com
+
+------------------------------------------------------------------------
+
 
