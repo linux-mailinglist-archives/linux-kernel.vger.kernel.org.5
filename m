@@ -1,91 +1,138 @@
-Return-Path: <linux-kernel+bounces-71956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBC9785AD0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:23:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F023C85AD14
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A117C1F25F42
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:23:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 863132830DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE542535C7;
-	Mon, 19 Feb 2024 20:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CD1454F88;
+	Mon, 19 Feb 2024 20:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OjpUcB1I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Lk50Vlzo"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E655A52F9B;
-	Mon, 19 Feb 2024 20:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB52253E14
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 20:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708374210; cv=none; b=fjba62Ar33FrTx/M5Jx6hKgXiw2FQLN6cAL5mECYn2oNrEZqtIqdOGnIj4dg80ecHqyj6TLY4KB+KGriSglLuwl24iq+hh3epZAGrH8cSaMMgTo4dlOCU5D5TpENYB6CxDEn0tRpOHnZU4ZGmC0eZD1xpjl//UMNXDpLB4JqoL0=
+	t=1708374214; cv=none; b=ip9tpnIVj4TLhD/fZ5/fkqudZDdLbab5wLcgL0xHteyhqpR2kMPBnBAPgCQKTZsz8fI2blGqiT0Al6BK1ZyPLozKCGLBdQawQvAh0KhJu8VdC08RC5i3TIWwrgEr+ERcXh28UWv8afNdgJ4dqquTWkFzWTKE9Sj2x699Laqox6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708374210; c=relaxed/simple;
-	bh=ixHV3knXhwlKaNm/H5VZf90xSon7xbNx8HdzY1OHTaE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=Dpehsvbmg6I9Ca1ZlsApovOj41KiM472ygwU72XtYhNAeYqEAWtquSUeKQdUbcLzagDQpZD3CiC9XssYoExRi/Kg8saz6N7ZoeKOtl07YcpoMk3G3zQcLI93qk8DleYBhTl9lNlJ+Ar2bFr3jEKaC2/mKTg4fzXaSAgdG1HqvQQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OjpUcB1I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F0DC433F1;
-	Mon, 19 Feb 2024 20:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708374209;
-	bh=ixHV3knXhwlKaNm/H5VZf90xSon7xbNx8HdzY1OHTaE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OjpUcB1IXEiERVGSZfOvbUCkCuR4TmpnrjXZViMy49DFN74vJyxOHJLpZnI/mluoy
-	 5t+48D1/yfNRnngCi3+O0k93X+tzsXNC7dAfSJM1dwk67yAW2JS1kc+dPAxzYGD9Va
-	 OV5MRb5nxQL8BnJo8n/GRJqfacljYIXCAX4FOOisF+xFEjguF/rcH7Lmv+D3rQGvaA
-	 IQbOSumem2riEQiubkyQhsh9xN9QoS7/OMHYNw+DwKzoexy78hpiAEfsMZdIvzZ3w7
-	 OWAMjZu1i7F0TgNnDh9tR9RVkP93uO1muS6llIweMUmrsexc+d2ZHttmbOHLbMQJlU
-	 T3j5ctixMwO1w==
+	s=arc-20240116; t=1708374214; c=relaxed/simple;
+	bh=1LpOcOPE8NF67KY2Om+0rc+yLxqoD9d+aNt1OJgcsWY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=VO4oBSAD0cePSSAcqfRE8RVltapFDOVBdk3izsRSz+GaxYlPqeuDgheHgD7PCi10ApocdX+Y6UwP3AjryYZPeIjGchASxS8d+iLUlRx0FwmfbsqYJlDMUJMG3NCDzXSfPJob4DW0pvTR5omszD68BObczgkIrAoMDbvQTeED1Bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Lk50Vlzo; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2998950e951so787629a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:23:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708374212; x=1708979012; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GaHCMRLTHpVjbQpn0nm8Soa0CT5I0pTuDvK1Y4TvoOs=;
+        b=Lk50VlzoWwTHtFvsPUYJhB0ed6Lu8/AhLLfJdlMIo9L1kEo4eRRXLbizWAzh6sxvEg
+         QKEwNOSbmbqU9nGjbgF8hIdcKiTncogBz7a/OzxyuXHYb3TQLc4sC+lHI/4HG2IS5e4L
+         2yqr7pUjTYKhuvVEgCCH6sR80EsP5jyH/K1rU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708374212; x=1708979012;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GaHCMRLTHpVjbQpn0nm8Soa0CT5I0pTuDvK1Y4TvoOs=;
+        b=lajnjEM6QM3Ll1LrSHI8ElI3pZYTfVTTYhcyD+q1ZTc7BxHTphy6DHYDDZ7+hVYmZM
+         itk3yKhWk7dTTa2ccSfnJE0UXZp+skpcS3nJF1tiQsTAgBh6c7fYJUjSryiwYhrIvrH1
+         4NKd825mrvsMALrwArG2lCnhiAikKU+UgZa4Qeg4ARsHDda22vzJv8BJdRmGaiGc++9y
+         FjYMwg3Fxw/BLk0tMEl8RPxcrw47zB+CQNnssUovdxVF06aE95s2fjzTjl28LYhgXUxb
+         h08m0yX2aNcqRYtLUXd5j1wjq1tnZOVGAZ3d476Df8JJMlDcDuzWe2++IerNlTwtIN2o
+         7Qgw==
+X-Gm-Message-State: AOJu0Yxg7DVlMWP889sOHZZGizWerptujTYuvwSTcKBHonzjmjSdD6Jt
+	vou+CnEWNT3SoXHGeKP2Abdsx7oVWo0OMVlqVsvDZKAcMUzBalkY9fcdt90E0g==
+X-Google-Smtp-Source: AGHT+IEAUG2tvGVJGd+hj3U8ybO/DpLRVg66FdpMvbg2eIV6gnVcioXBOcc/U9zxzq4OgB0t7uZbUg==
+X-Received: by 2002:a17:90a:b382:b0:299:3e54:83f3 with SMTP id e2-20020a17090ab38200b002993e5483f3mr6532900pjr.38.1708374212270;
+        Mon, 19 Feb 2024 12:23:32 -0800 (PST)
+Received: from localhost (175.199.125.34.bc.googleusercontent.com. [34.125.199.175])
+        by smtp.gmail.com with UTF8SMTPSA id e21-20020a17090ac21500b00298dd684b8csm5810598pjt.32.2024.02.19.12.23.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 12:23:31 -0800 (PST)
+From: Stephen Boyd <swboyd@chromium.org>
+To: Lee Jones <lee@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	patches@lists.linux.dev,
+	devicetree@vger.kernel.org,
+	chrome-platform@lists.linux.dev,
+	Douglas Anderson <dianders@chromium.org>,
+	Pin-yen Lin <treapking@chromium.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Benson Leung <bleung@chromium.org>,
+	Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH 2/2] mfd: cros_ec_dev: Add gpio device if feature present on EC
+Date: Mon, 19 Feb 2024 12:23:24 -0800
+Message-ID: <20240219202325.4095816-3-swboyd@chromium.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
+In-Reply-To: <20240219202325.4095816-1-swboyd@chromium.org>
+References: <20240219202325.4095816-1-swboyd@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 19 Feb 2024 20:23:23 +0000
-Message-Id: <CZ9C42ETAIZ5.2QF94SIXDWCHR@seitikki>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Haitao Huang" <haitao.huang@linux.intel.com>
-Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
- <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
- <kristen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
- <linux-sgx@vger.kernel.org>, <mikko.ylinen@linux.intel.com>,
- <mingo@redhat.com>, <mkoutny@suse.com>, <seanjc@google.com>,
- <sohil.mehta@intel.com>, <tglx@linutronix.de>,
- <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
- <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
-Subject: Re: [RFC PATCH] x86/sgx: Remove 'reclaim' boolean parameters
-X-Mailer: aerc 0.15.2
-References: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
- <20240219153957.9957-1-haitao.huang@linux.intel.com>
-In-Reply-To: <20240219153957.9957-1-haitao.huang@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon Feb 19, 2024 at 3:39 PM UTC, Haitao Huang wrote:
-> Remove all boolean parameters for 'reclaim' from the function
-> sgx_alloc_epc_page() and its callers by making two versions of each
-> function.
->
-> Also opportunistically remove non-static declaration of
-> __sgx_alloc_epc_page() and a typo
->
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
+The ChromeOS embedded controller (EC) supports setting the state of
+GPIOs when the system is unlocked, and getting the state of GPIOs in all
+cases. Check for the feature support by checking for the GPIO feature
+and then populate a sub-device for the gpio hardware on the EC.
 
-I think this is for better.
+Cc: Lee Jones <lee@kernel.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Benson Leung <bleung@chromium.org>
+Cc: Guenter Roeck <groeck@chromium.org>
+Cc: <chrome-platform@lists.linux.dev>
+Cc: Pin-yen Lin <treapking@chromium.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/mfd/cros_ec_dev.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-My view point for kernel patches overally is that:
+diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
+index 603b1cd52785..9c3f8488b416 100644
+--- a/drivers/mfd/cros_ec_dev.c
++++ b/drivers/mfd/cros_ec_dev.c
+@@ -74,6 +74,10 @@ static const struct mfd_cell cros_ec_cec_cells[] = {
+ 	{ .name = "cros-ec-cec", },
+ };
+ 
++static const struct mfd_cell cros_ec_gpio_cells[] = {
++	{ .name = "cros-ec-gpio", },
++};
++
+ static const struct mfd_cell cros_ec_rtc_cells[] = {
+ 	{ .name = "cros-ec-rtc", },
+ };
+@@ -97,6 +101,11 @@ static const struct cros_feature_to_cells cros_subdevices[] = {
+ 		.mfd_cells	= cros_ec_cec_cells,
+ 		.num_cells	= ARRAY_SIZE(cros_ec_cec_cells),
+ 	},
++	{
++		.id		= EC_FEATURE_GPIO,
++		.mfd_cells	= cros_ec_gpio_cells,
++		.num_cells	= ARRAY_SIZE(cros_ec_gpio_cells),
++	},
+ 	{
+ 		.id		= EC_FEATURE_RTC,
+ 		.mfd_cells	= cros_ec_rtc_cells,
+-- 
+https://chromeos.dev
 
-1. A feature should leave the subsystem in cleaner state as
-   far as the existing framework of doing things goes.
-2. A bugfix can sometimes do the opposite if corner case
-   requires some weird dance to perform.
-
-
-BR, Jarkko
 
