@@ -1,147 +1,132 @@
-Return-Path: <linux-kernel+bounces-71055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD00A85A018
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:45:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B74D85A01C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97535281B70
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:45:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 917F1281CFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:47:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D92C24B2C;
-	Mon, 19 Feb 2024 09:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="ZfZOs1ye"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6F9424B4A;
+	Mon, 19 Feb 2024 09:47:11 +0000 (UTC)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F5EE24214
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:45:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A772376D;
+	Mon, 19 Feb 2024 09:47:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708335952; cv=none; b=oPa0oU9SbWUrnYvl4H+0gE+B1313xVkjoLemwbZEPBbLTyS4SpIs12QJVPA1azvHYC9y1OY5gV9pnAfHdjYLk8Kx5NBRPCsdPNHvlEhV9Fkds0gHVtMny+IOtO8Icu2IpMgAMYMOj/fxbAa3jRU3A3t6pD8YG6Cr0E0Ql1dwXZY=
+	t=1708336031; cv=none; b=n2x+ET1A6+oGyNi2DbUR2wO1Rus8vpsglJLJOTsAh7TCjAYBhRmUtyOAKQVDws2zwTvWogKvsd/2MSGznWVwwXwguOulNZbWUR5xHQ2k23QO4YN0H76r3cxqo3AuIHGtewFYFDnQugg8D7SZjzQNggUdp2AI8i3qCD3rxtb9TwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708335952; c=relaxed/simple;
-	bh=N9nunNqolWoHQ9jtyYVDUhqU0wlAtz5/DFbjp/E6MEY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=moe7jOcoWYsn0WQvlTdN2C7m3JAoueB0W8s6sEDr+SxhJALK6dn51BJWYgxaBTWn/oDTv8Y3QEcdGmFvdRFByp5a3cWXcIJ6G/bfna7mPcxGeOlPiZAZt9MDL1aehbhMPzH0/DKZvJLc3gdZSuXXfkF1Nv6pLi38n4Q5M83XBys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=ZfZOs1ye; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d1094b5568so54441601fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:45:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1708335949; x=1708940749; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=naVcereUeVbO3/kpmJac5B2YT7rfwRkVivtJPUxX/Ps=;
-        b=ZfZOs1yepMZ/+X74bNyoNknK8IFMGlFouNR323sArMSPje3AkgsUcXuSFCsHCNc5z8
-         SeBav1xcuNb6bi4na7K9OhlbC7cRclvbKvX9t8a7H3TkyTPSLQaBuWh9auLvIBhvtsIt
-         Q9hXvgvoIFYPi4wqv8Oc0YNA51yifVJth7F2HansNJJ5Al6kY9AMo5J3V1Gwz4QQY2TO
-         oEaa1LLBdbFt2xnJ9MXs5khE4ENge/EjMeFhfwiIm6QRT+0x68oqElubsBX0/dkBuWVB
-         ThoHyuUWKBIKjNgsJXAw5jLcLNY78PWw0xKO0US3u0nEXPRc8Syyl6DHaQMq1kn930Ca
-         zWeg==
+	s=arc-20240116; t=1708336031; c=relaxed/simple;
+	bh=m/4dznxbgBSFJZQTFF0vW86u26Oju2apBeu/wmtxlwk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qKNhzCe6v4aU1TNEu3VJ1sOUVMnQaLSgfvGVTYuAQ20HdMlFt4jjXbAU5qJvnJ/tWS/rEn12lArLsk6LlabY4UVllIij3M+Z2pQMp69xX2PzD7RYfyDmvTOG3ah+aUF57wJ7bXfyj5qQw33PsTl9DXrdaHKX5qLlvG9s+ux/uGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5649f396269so412849a12.1;
+        Mon, 19 Feb 2024 01:47:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708335949; x=1708940749;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=naVcereUeVbO3/kpmJac5B2YT7rfwRkVivtJPUxX/Ps=;
-        b=N0yvTMDEm7Cur1UAjeDDPzv6QEm2STAMIO/bZ1K/uy7ruOVFetGTDQJbBf/mSOnRNn
-         t2pJZVh9xps6odYIsf73sxhHnoxtMhk1ArwnSZcvE4s44nuFVriCCA2ybOS1Ba/grJj1
-         CHrWfPupfSaN5ELH+F8Tk0aURS6Tagh0voTyKTnQdUcYsEp4v+rCJhS0f0jDv+sv2mJ5
-         1hV53YxaFcRzT36N80PENhkg9qbGgB3aM9jmYuAbbFWcnQ1Uu6SBDYz71PsM/nid/q9I
-         73R95i2ob5+vFS6Q7vmp3AmoXoRyYR7GtD3FTfhCZPom0ZPhXi9+Y2aFDwCVgjVPly9E
-         l8sg==
-X-Forwarded-Encrypted: i=1; AJvYcCUM7prYt9ARiAJglsxdTwBr6ao/1fkxqnEnfrJ4snE19pZDYd4X3xxoA5e/Cme5WrkS8aSAAEmdu8kMUlc5DleTCsk+Up8VkeYUj2nQ
-X-Gm-Message-State: AOJu0YzlFBa2biylmBdXy/+DdA6SJGYHH8M8WYr/gNWAwHfuTIYaKd12
-	H4O05HKOSS0O8N58SYfPwMOPX4tFCGRKGbvPmKzv8aYvglbedZID9bBp6TZz33YJA5U25Bsbjiq
-	JiWi1YEky5TcWcGNi0A2Hxa6iHTLxNkVWF8T37g==
-X-Google-Smtp-Source: AGHT+IGAijWJ2t6HYaGF6pJu0Y9VzBy2gwT9CAw6PjDoQnuVNOtC7X4VHfZDfslwVbPV/P3tZbkNIq5o09aA55e5Vhc=
-X-Received: by 2002:a2e:a49a:0:b0:2d2:4315:4d8b with SMTP id
- h26-20020a2ea49a000000b002d243154d8bmr194214lji.2.1708335949088; Mon, 19 Feb
- 2024 01:45:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708336028; x=1708940828;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cqiQ7pV/qcZKf6d4gul+rJPooKYa9MwYrv6emu52dJ8=;
+        b=boT1KYGConn4hUHlhfZyhDioBktJwgGq5gXZgluR79EqMMYQamN8y4rF9+AH+rdWRo
+         Sna865LV1/8+14WYsPhdiOMj6b66YJN1wKpfcu7zp2Y5eLqz78PoPPvvKa4tXjGWyM0L
+         jx7vJGrLyxeARjdk4NdO8ErLSRZ39Xrtjl0DI8zrdx2kyiC1Y6yxXDzJBw40eUi96fgq
+         5nlF4oUNUVvkKBvSpvPMj+fVFIq6t4Hem2s9ftBdTbWawVq2v/uxMMqCCHR4QuYTFPjH
+         r03liGsif3fdyJ9Q7cPE8FFdNd998kpWrd3HyDu8H7SVOmlufwI5YlTushDe2gPXH7Eh
+         KBbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXc3E0bsh3yBfICJaBRXkZBMPgDQA3znTFuYDjkr/F3VEaHXVDiD+aMX71GYYsp6cLSEjUolkKXWunffpe4YeLdpd71HG1OnvQDlUiQ3AwVcIZ4RoRHUf3RUagxypy2SFKth7bR
+X-Gm-Message-State: AOJu0YxWguJtkIbs+EldYRS+04VbqxNG8Q0kBf9wtT5Z4BPFzOqjieLV
+	X0K13eHPfbcYtOL04NA/B8eXVtDrxaSx5VP9TVfZxgpZ9xbQKNHr
+X-Google-Smtp-Source: AGHT+IGrf2XT7kEij2cA5DQcyRl8OmqiUJYtyL1g3O7j/oOvVAnKImAftHzbHgSYZE3imIhHjh8dmA==
+X-Received: by 2002:a50:cb88:0:b0:563:d237:4e1c with SMTP id k8-20020a50cb88000000b00563d2374e1cmr8211176edi.8.1708336027759;
+        Mon, 19 Feb 2024 01:47:07 -0800 (PST)
+Received: from gmail.com (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
+        by smtp.gmail.com with ESMTPSA id i26-20020a50fc1a000000b005603dea632esm2543825edr.88.2024.02.19.01.47.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 01:47:07 -0800 (PST)
+Date: Mon, 19 Feb 2024 01:46:16 -0800
+From: Breno Leitao <leitao@debian.org>
+To: Eric Dumazet <edumazet@google.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Stephen Hemminger <stephen@networkplumber.org>, kuba@kernel.org,
+	davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, horms@kernel.org,
+	Johannes Berg <johannes.berg@intel.com>
+Subject: Re: [PATCH net-next v2] net: sysfs: Do not create sysfs for non BQL
+ device
+Message-ID: <ZdMjaCSKFSkAoDOS@gmail.com>
+References: <20240216094154.3263843-1-leitao@debian.org>
+ <20240216092905.4e2d3c7c@hermes.local>
+ <0e0ba573-1ae0-4a4b-8286-fdbc8dbe7639@gmail.com>
+ <CANn89i+5F7d4i7Ds4V6TtkzzAjQjNQ8xOeoYqZr8tY6tWWmMEg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240127161753.114685-1-apatel@ventanamicro.com>
- <20240127161753.114685-24-apatel@ventanamicro.com> <8734tsce9o.ffs@tglx>
-In-Reply-To: <8734tsce9o.ffs@tglx>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Mon, 19 Feb 2024 15:15:37 +0530
-Message-ID: <CAK9=C2Vf63ZcETD-ja33tK11XARz+y5hg1dqjGP-bZTW-XNWHg@mail.gmail.com>
-Subject: Re: [PATCH v12 23/25] irqchip/riscv-aplic: Add support for MSI-mode
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
-	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
-	Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89i+5F7d4i7Ds4V6TtkzzAjQjNQ8xOeoYqZr8tY6tWWmMEg@mail.gmail.com>
 
-On Sat, Feb 17, 2024 at 2:34=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Sat, Jan 27 2024 at 21:47, Anup Patel wrote:
-> > We extend the existing APLIC irqchip driver to support MSI-mode for
-> > RISC-V platforms having both wired interrupts and MSIs.
->
-> We? Just s/We//
+On Fri, Feb 16, 2024 at 07:45:37PM +0100, Eric Dumazet wrote:
+> On Fri, Feb 16, 2024 at 7:41 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+> >
+> > On 2/16/24 09:29, Stephen Hemminger wrote:
+> > > On Fri, 16 Feb 2024 01:41:52 -0800
+> > > Breno Leitao <leitao@debian.org> wrote:
+> > >
+> > >> +static bool netdev_uses_bql(const struct net_device *dev)
+> > >> +{
+> > >> +    if (dev->features & NETIF_F_LLTX ||
+> > >> +        dev->priv_flags & IFF_NO_QUEUE)
+> > >> +            return false;
+> > >> +
+> > >> +    return IS_ENABLED(CONFIG_BQL);
+> > >> +}
+> > >
+> > > Various compilers will warn about missing parens in that expression.
+> > > It is valid but mixing & and || can be bug trap.
+> > >
+> > >       if ((dev->features & NETIF_F_LLTX) || (dev->priv_flags & IFF_NO_QUEUE))
+> > >               return false;
+> > >
+> > > Not all drivers will be using bql, it requires driver to have that code.
+> > > So really it means driver could be using BQL.
+> > > Not sure if there is a way to find out if driver has the required BQL bits.
+> >
+> > There is not a feature flag to be keying off if that is what you are
+> > after, you would need to audit the drivers and see whether they make
+> > calls to netdev_tx_sent_queue(), netdev_tx_reset_queue(),
+> > netdev_tx_completed_queue().
+> >
+> > I suppose you might be able to programmatically extract that information
+> > by looking at whether a given driver object file has a reference to
+> > dql_{reset,avail,completed} or do that at the source level, whichever is
+> > easier.
+> 
+> Note that the suggested patch does not change current functionality.
+> 
+> Traditionally, we had sysfs entries fpr BQL for all netdev, regardless of them
+> using BQL or not.
+> 
+> The patch seems to be a good first step.
 
-Okay, I will update.
+Thanks Eric. I agree it solves the problem without creating a new
+feature flag, that could also be done, but maybe less important than
+this first step.
 
->
-> > +
-> > +static void aplic_msi_irq_unmask(struct irq_data *d)
-> > +{
-> > +     aplic_irq_unmask(d);
-> > +     irq_chip_unmask_parent(d);
-> > +}
-> > +
-> > +static void aplic_msi_irq_mask(struct irq_data *d)
-> > +{
-> > +     aplic_irq_mask(d);
-> > +     irq_chip_mask_parent(d);
-> > +}
->
-> Again asymmetric vs. unmask()
+Hoping this is OK, I am planning to send a v2 adding the extra
+parenthesis as reported above. 
 
-Okay, I will update.
-
->
-> > +static void aplic_msi_irq_eoi(struct irq_data *d)
-> > +{
-> > +     struct aplic_priv *priv =3D irq_data_get_irq_chip_data(d);
-> > +     u32 reg_off, reg_mask;
-> > +
-> > +     /*
-> > +      * EOI handling only required only for level-triggered
-> > +      * interrupts in APLIC MSI mode.
-> > +      */
-> > +
-> > +     reg_off =3D APLIC_CLRIP_BASE + ((d->hwirq / APLIC_IRQBITS_PER_REG=
-) * 4);
-> > +     reg_mask =3D BIT(d->hwirq % APLIC_IRQBITS_PER_REG);
-> > +     switch (irqd_get_trigger_type(d)) {
-> > +     case IRQ_TYPE_LEVEL_LOW:
-> > +             if (!(readl(priv->regs + reg_off) & reg_mask))
-> > +                     writel(d->hwirq, priv->regs + APLIC_SETIPNUM_LE);
->
-> A comment what this condition is for would be nice.
-
-Okay, I will add a comment about the condition.
-
-Regards,
-Anup
+Thanks
 
