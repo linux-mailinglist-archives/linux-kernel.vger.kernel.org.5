@@ -1,98 +1,83 @@
-Return-Path: <linux-kernel+bounces-72046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72047-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CF8A85AE36
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:13:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5852085AE37
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:13:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DF16CB211A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:13:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0E24B20F7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890BE54FA0;
-	Mon, 19 Feb 2024 22:12:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="JWTL3GIg"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0EB55E4F;
+	Mon, 19 Feb 2024 22:13:47 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BB154BFA;
-	Mon, 19 Feb 2024 22:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DBB55E43
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:13:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708380774; cv=none; b=dr0A3MaVGYf2RJAYkaigCFU/9MxrtXUEr89oftzkJTLtdKJa8LzOSFSokdE/xEhWNM5oearMUBbLo80Ddpz31iq40Vt6MiXLHAmew+P7Nx5FRXrZ2wkMije/Btbpb3T13MqF6iUR2ujXimTQFIESJyA5nBaHhYWmlnVIF0vtw+s=
+	t=1708380827; cv=none; b=skD9LZ4NKrV7w00ON3qH2RROaADZtpmY0+CYZDztUlO3k5VO3cRBSo4lE5/7nQlHNZ08ETH4/JyID7qwrvjqR2+2MZLXBfa7QhpBOUZpKKmSbjqiDGhKpTrpECQqC/gEfvhTLsgMjH4dhuuY1CCbI3Q4Vyems6slGq+zC4ITows=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708380774; c=relaxed/simple;
-	bh=MprGuCqzth6nJ+bm3v2om+NnHH0gsp5Q48D1qQdrV8I=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Y3W+c6miG/vHWLbcwLdNnSkGssg6Lcd5JGw8qGrzfBDssFZ1hEV0eouIc9ePbzE8QLPcAZosOzUjMmuXagCFAERJXG/fZiXuqXCPAaR2cb6aqyc0FdejbCindk+i4Lrz7srvffWmoXj9LE0333oDKg7xsPVpjdTyORtwVN+bQIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=JWTL3GIg; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net BBBE247A99
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1708380772; bh=Qd0BQ3n6gkIeJuHHuKpFJNVK61hbHPyFzkqZDXaQUCc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=JWTL3GIgUu00nWJ7QqjWuPjSfIECMiZAVqAjb2jqlxfNl7FzB3tONbcrxg/5F37wh
-	 /7AAa0fAEYIAnbNJoikxGU2BT88mppF5zJL0rmQLTmW0xv1F25NGqHt1avfewFhhe2
-	 8Y7CZJT+a0yd9QPAUvqOgawIO8enEPNvQarRL+sOZn0S+CJJX8Tkr4caw4d9kPguqR
-	 SGm+prdBQYuTd9T/mKPi+D9MoBl192Xww+tbZ2ltLsVhooGC44aFUN6s1dxK11bp+T
-	 eQjY0k+I8awPmSCisFgBLUHFKDui4HOD+fijC6u3XE8RWIxMA55DJcqPECqok9+vEw
-	 YlViVCDY9vEJQ==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id BBBE247A99;
-	Mon, 19 Feb 2024 22:12:52 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Thorsten Leemhuis <linux@leemhuis.info>, Petr =?utf-8?B?VGVzYcWZw61r?=
- <petr@tesarici.cz>
-Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>, Nathan
- Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH v1] docs: new text on bisecting which also covers bug
- validation
-In-Reply-To: <62ea7097-256c-4331-b937-778444125a06@leemhuis.info>
-References: <bf1d2eba0d291ff583e01b5985a0dec248eaf27a.1708072870.git.linux@leemhuis.info>
- <20240216204140.2ecbceec@meshulam.tesarici.cz>
- <62ea7097-256c-4331-b937-778444125a06@leemhuis.info>
-Date: Mon, 19 Feb 2024 15:12:52 -0700
-Message-ID: <87a5nwm7bv.fsf@meer.lwn.net>
+	s=arc-20240116; t=1708380827; c=relaxed/simple;
+	bh=HqMn80djPQUIYTF5ICDwnrR7AbzqadPjX6f4LJwG6hk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=s2lsBkRCpXWPkHVVoDEuZgVKd1DyxkBd2GWJc0c2CPoD/q4LyT3Me0imT2HruepmaIh/OD1x0mFWL9UM6qJoxQDzyIil6BskcCjBAA9ErLhLZrb1etz6ZAe5RxU7+8d8BkHdNgrHGECINj9adpSnf7g4BL/y93akMFswOvcmKWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-265-m_PGMIMlN6iHaxBJ_AyIiw-1; Mon, 19 Feb 2024 22:13:41 +0000
+X-MC-Unique: m_PGMIMlN6iHaxBJ_AyIiw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 19 Feb
+ 2024 22:13:40 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Mon, 19 Feb 2024 22:13:40 +0000
+From: David Laight <David.Laight@ACULAB.COM>
+To: =?utf-8?B?J0Jqw7ZybiBUw7ZwZWwn?= <bjorn@kernel.org>, Samuel Holland
+	<samuel.holland@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>
+CC: "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Samuel Holland
+	<samuel.holland@sifive.com>
+Subject: RE: [PATCH 4/7] riscv: Simplify text patching loops
+Thread-Topic: [PATCH 4/7] riscv: Simplify text patching loops
+Thread-Index: AQHaYzROWznNq41EbUSlVTL0RNzcK7ESOwDw
+Date: Mon, 19 Feb 2024 22:13:40 +0000
+Message-ID: <cb89b03b34d6403685297f95924524a7@AcuMS.aculab.com>
+References: <20240212025529.1971876-1-samuel.holland@sifive.com>
+ <20240212025529.1971876-5-samuel.holland@sifive.com>
+ <874je4fvxl.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <874je4fvxl.fsf@all.your.base.are.belong.to.us>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 
-Thorsten Leemhuis <linux@leemhuis.info> writes:
+Li4uDQo+ID4gLQl3aGlsZSAocGF0Y2hlZCA8IGxlbiAmJiAhcmV0KSB7DQo+ID4gLQkJc2l6ZSA9
+IG1pbl90KHNpemVfdCwgUEFHRV9TSVpFICogMiAtIG9mZnNldF9pbl9wYWdlKGFkZHIgKyBwYXRj
+aGVkKSwgbGVuIC0gcGF0Y2hlZCk7DQo+ID4gLQkJcmV0ID0gX19wYXRjaF9pbnNuX3NldChhZGRy
+ICsgcGF0Y2hlZCwgYywgc2l6ZSk7DQo+ID4gKwl3aGlsZSAobGVuICYmICFyZXQpIHsNCj4gPiAr
+CQlzaXplID0gbWluX3Qoc2l6ZV90LCBQQUdFX1NJWkUgKiAyIC0gb2Zmc2V0X2luX3BhZ2UoYWRk
+ciksIGxlbik7DQoNCkRvZXMgdGhhdCBuZWVkIHRvIGJlIG1pbl90KCk/DQpCb3RoIGFyZ3VtZW50
+cyBzZWVtIHRvIGJlIHVuc2lnbmVkLg0KKERpZCBpdCBldmVuIGV2ZXIgbmVlZCB0byBiZT8pDQoN
+CglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwg
+TW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzog
+MTM5NzM4NiAoV2FsZXMpDQo=
 
-> On 16.02.24 20:41, Petr Tesa=C5=99=C3=ADk wrote:
->> Is this because you want to keep it readable if the target audience
->> reads the source text of the documentation? Otherwise, the .. include
->> directive does not make a difference after rendering to HTML. AFAIK.
->
-> It less that I want that, it's more that I got the impression that both
-> Jonathan and most of the kernel development community wants the source
-> text to be readable; not totally sure, but I think that's the right
-> thing to do, too.
-
-As a general rule, yes.  To harp on this one more time, I do think we
-could create sections of the manual (a "tutorials" book, say) with a
-different set of priorities.
-
-In the documentation session at the last kernel summit, I got some
-pretty clear feedback that plain-text readability could be made
-secondary to getting the best rendered output, at least in some cases.
-Tutorials seems like a good example of such a case, where we could focus
-on good web output without, as you say, creating potential maintenance
-troubles going forward.
-
-Thanks,
-
-jon
 
