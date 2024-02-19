@@ -1,108 +1,150 @@
-Return-Path: <linux-kernel+bounces-71202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E090E85A1EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:27:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C499E85A1F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:28:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C475281ABC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:27:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 028511C223BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:28:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C03F2C1AF;
-	Mon, 19 Feb 2024 11:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4F592C1BC;
+	Mon, 19 Feb 2024 11:28:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="RuamGSQI"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Ep2UP6He"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EBD228E09
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:27:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45C842C1A0
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:28:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708342034; cv=none; b=OvKGe4iSaWFWb7zXC5MhEYef+8plgj5bqJDM1NSm0l/08y50PAyQFhceUCp3CC5xh9wyZxLg4Tg+6Qu0FEV1lNSHx6f2iEaR+040tL1c/9leaxRmNV2U6acfC5g6G1nWHtFoS4lVyNwnSZwc7NdGnQpt3zDu0r3C09EqKt+v+V0=
+	t=1708342131; cv=none; b=lMpkYGrVERprdIrXC0y96Xa5bF/SWEhtYrF32G3KjFisaLMtwm/DZFM5UEkZuB5/FZvoOfITf8iAfAiGdkF/jYxwkoWZuU+e6r6AiFGInevyXq6p8jfUTqrAfT50jhu/WQcavcHIsCq0CnPqUr3VfzULS2HFAuSokbsgC/yd3vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708342034; c=relaxed/simple;
-	bh=psRznd+qwD4id3H3mkwUZ3NR28Q098n95rwBPacKDxA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XpmiffwOb+1GivF492IhLlBNdF37T0nTns6IFtHd7h/9lxQGqiSNCvjfCZ8fBbGVrTiRSjt5KPDiilwjJnMnhLMc5qV8+nfBIoDM7fVlB5UdnVui4kFa8bQS22xgGkjG78LqbcPsCdHsHYCDIn3f23hg+8Riuz+8V04i5bq7Qpk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=RuamGSQI; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-607d8506099so39355317b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 03:27:12 -0800 (PST)
+	s=arc-20240116; t=1708342131; c=relaxed/simple;
+	bh=P+laAF+cG7fMZpEX/X8L1Tdx42RnClpS0IgBt0RKewY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NgW2aVqbA7SMGbasbqks4vUSqArwoiU3ovuWCm6i9BAAGiMFwWI5UCie6Xf31T1Qp9CXRDCQGrISLigY4+g8HP8bK9eIQhCXXgk0J5cQq6ZiXzFRQe7jD9Nt0Isbp3/EmEGl640RFEW43Sx8aRgrqXEcbYl0AW/GVzsxiS8Buu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Ep2UP6He; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-561587ce966so8487928a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 03:28:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708342032; x=1708946832; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=psRznd+qwD4id3H3mkwUZ3NR28Q098n95rwBPacKDxA=;
-        b=RuamGSQI7GqoCVLg/q2m0RK5mjcT9ldwLOSlPBkOZmSiO6fpNRGZezZMkv1uy7WBG2
-         29jRTSvJTJ2NoIhosCrDluQHbA00nI2PO4tiArv6RvWxtqG2TsxwpZKzTwoLvHBnaGTD
-         7ubvmG2DvHE2M3fjbnGHs0PviFpi7in5ItKRaaM0i8bu417AqOBBjh5CpYJQSzzUm/95
-         vF72EKwk+3JQacpP7nhNcd+gy1ZcxSn5zYE4ER2AwDNhEcSFy2ZTLcBC9ACdxoaSLT61
-         He4rWpVpjOjj3/QDGagbFEqudRwwqRjrrG7hbGMO+8FrX8AaXA6MUJmQPGrOzcF1oWMt
-         1IHA==
+        d=linaro.org; s=google; t=1708342127; x=1708946927; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nCyAWccqRzJ02Jr3HnjydtbclYSZbIBmeAFchAjZvoE=;
+        b=Ep2UP6He0gDt2MP4OyVLjY4exXSCD1R5PDfNJB23NaCHcZrvM1fNADwJqGe1xOjcCe
+         BkOy7N522ckJJT5pSaDNXSUM9CwhOrP8wTALiM7Ne9lfzS2sR8nkw0smzz3T2elMS2oI
+         rXFh02/BvEXnJw3fCGQSX6N/Qm+0/rqn+OAxBBlxJ4AFll/ck69hBxMcMSC/yHzCSv1s
+         arpVa3fVa6Gu005CynMXiR1ZwTIYb/zX/OjB098FmUYhRX4IV2lSZYuHR9CYnQtGgzt2
+         O9+M0bZ6tiWfkIP/ujJHIWLFW0Bvv1UHozIagUKNO4WZtynUqzEaZG2wZss4akXWU7xl
+         FT+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708342032; x=1708946832;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=psRznd+qwD4id3H3mkwUZ3NR28Q098n95rwBPacKDxA=;
-        b=gvBHxJcabWd/QCc0S2IZx2KsQcEuutkRzMe4189hpOcS2wfmwexxYahG+Cf1k+NP93
-         ts73st6+CKS00gF6gwrxDCvXCt54nLl18ZLujF5KwEKdrF2XJDe9WT1HYwQP4ANaKAdR
-         fM75QV9cwhE12gWwny1S6nGePQCS4jS4nRR9gYrKPsa8mmnsvq1/NvPSU1u6Qk/OckOA
-         HOVuRAUPHz+McUV3isKND6GecG2J9jcJ9uq21dJ6WnbhP5rflwG061BY8NUYHDLigaRI
-         BW7Rw5EjWZNWDCG++6lPc81fq6w7quqdEqheHCKf2Sq8HK6zB3PCu8d7YkGuoOwBAkAx
-         lYpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVYaiUptyGXjwOZkQwnGQOkp21q6RGnk7oS9Ma1cPHNHYBTkbUVSUI2Mza4FsHLBFtH6Popbs/TAQf4LImF/VENhd8ftza+9V9i/5wd
-X-Gm-Message-State: AOJu0YzE5XsvQwBGl+aExPYwQ31kW/GlvUD99fDozRxFD1xqe542zcXC
-	HrIenLNXP1KU2xEOujS88uWSeWypO9yLDkkg4h/Lhh/T9NIqbq1CFXoDLXMzdmMpUHVJhOAE0br
-	2sOVFJ678XjjH4svqEl1Jy/nPnEWqDE2JYjg4
-X-Google-Smtp-Source: AGHT+IGYQ7Ft8/k+yh/fauCEDuGdjwHYmI6RFXGJtA15ZTj7Vn8HJ0Oql8n7gZRk8bvuYJStcRQFfFcSWNN8TG2iA8c=
-X-Received: by 2002:a0d:cb89:0:b0:607:c93f:2c2a with SMTP id
- n131-20020a0dcb89000000b00607c93f2c2amr11818399ywd.46.1708342032049; Mon, 19
- Feb 2024 03:27:12 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708342127; x=1708946927;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nCyAWccqRzJ02Jr3HnjydtbclYSZbIBmeAFchAjZvoE=;
+        b=s0T0MNYsxD7jCQUA47qlZSDLAuDCXg2fv0Ftf4eIuANAbJMPIvQamZnt9OF5+bHEkT
+         7D1zmnZWlv9nbighcBv1ktR5Yn4Ch/HgdSFHb+gyctFXCrvfuUAp+CfWb5+PvMDnTzrG
+         HklQEJmVwrP8HknidfNfrgYg6FoC0z7snSTMUxBnryEBb+lTJH59cnfGAnYec+iKOvDK
+         SY4F9RRoTZ1MQbZ4XbjNbHJr6nQruhFpiMVt9TMhkWxDO0IXo/AGSradeIXyUlShoOVa
+         NR37+cONQWodUSHMtkbkxCvD/lzG+TrxNguVO5/TFoZbHRAvm0SeVV9K3YOzxQofrwQ8
+         blYw==
+X-Forwarded-Encrypted: i=1; AJvYcCVOvdGgUcWVHU0v931Dnq3mWoJYYR5GFs4DnpKyTQrjWZcGWT+kXC6JGUd7vUIdgIF8I9ea8Z97a1cjTdtbY9hXj3CzguCurSaYlE2g
+X-Gm-Message-State: AOJu0Yw9ZjymwzcCALP4T9oNA5DEeHLzXHji386+vUm28p3/9z4G3NiT
+	RP58xpVyKaHo315G69uTCKU4haPOEf86eaNR5EdBFjKQRCbeq79C6GJ0KtIQIzj+IohDOM3NR7U
+	L
+X-Google-Smtp-Source: AGHT+IE3Zoj5Kw00K+Q1Oq/u8jQF4xulPdA6ZClow24TWEYwMXrNi35dMdqJQqanNvP5Txi3Qumx2Q==
+X-Received: by 2002:aa7:d304:0:b0:564:4647:947d with SMTP id p4-20020aa7d304000000b005644647947dmr3745838edq.3.1708342127493;
+        Mon, 19 Feb 2024 03:28:47 -0800 (PST)
+Received: from linaro.org ([188.24.162.93])
+        by smtp.gmail.com with ESMTPSA id e26-20020a50d4da000000b00564024b7845sm2797505edj.38.2024.02.19.03.28.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 03:28:47 -0800 (PST)
+Date: Mon, 19 Feb 2024 13:28:45 +0200
+From: Abel Vesa <abel.vesa@linaro.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Rob Herring <robh@kernel.org>, Sean Paul <sean@poorly.run>,
+	Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	freedreno@lists.freedesktop.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	David Airlie <airlied@gmail.com>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	Rob Clark <robdclark@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH v3 2/4] dt-bindings: display/msm: Document MDSS on
+ X1E80100
+Message-ID: <ZdM7beFZPyHKJnEU@linaro.org>
+References: <20240216-x1e80100-display-v3-0-28b1c33ac8c0@linaro.org>
+ <20240216-x1e80100-display-v3-2-28b1c33ac8c0@linaro.org>
+ <170810832158.3497594.1997532394027797497.robh@kernel.org>
+ <ZdCbAjnga8HCMdYf@linaro.org>
+ <CAA8EJpqCKWih1OeMsynMHkS6CAoDTsgRXcv5YAPZNvLT3MfA8g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208152808.3712149-1-howardyen@google.com> <20240213055426.GA22451@lst.de>
-In-Reply-To: <20240213055426.GA22451@lst.de>
-From: Howard Yen <howardyen@google.com>
-Date: Mon, 19 Feb 2024 19:27:01 +0800
-Message-ID: <CAJDAHvYbMVCitf59OvKGQk+cWrHc9Sk7_20LSyssUOEeJGvbFg@mail.gmail.com>
-Subject: Re: [PATCH v3] dma-coherent: add support for multi coherent rmems per dev
-To: Christoph Hellwig <hch@lst.de>
-Cc: m.szyprowski@samsung.com, robin.murphy@arm.com, gregkh@linuxfoundation.org, 
-	andriy.shevchenko@linux.intel.com, rafael@kernel.org, broonie@kernel.org, 
-	james@equiv.tech, james.clark@arm.com, masahiroy@kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA8EJpqCKWih1OeMsynMHkS6CAoDTsgRXcv5YAPZNvLT3MfA8g@mail.gmail.com>
 
-On Tue, Feb 13, 2024 at 1:54=E2=80=AFPM Christoph Hellwig <hch@lst.de> wrot=
-e:
->
-> On Thu, Feb 08, 2024 at 03:28:05PM +0000, Howard Yen wrote:
-> > Add support for multiple coherent rmems per device.
->
-> Why?
+On 24-02-18 15:06:45, Dmitry Baryshkov wrote:
+> On Sat, 17 Feb 2024 at 13:39, Abel Vesa <abel.vesa@linaro.org> wrote:
+> >
+> > On 24-02-16 12:32:02, Rob Herring wrote:
+> > >
+> > > On Fri, 16 Feb 2024 19:01:06 +0200, Abel Vesa wrote:
+> > > > Document the MDSS hardware found on the Qualcomm X1E80100 platform.
+> > > >
+> > > > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> > > > Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> > > > ---
+> > > >  .../bindings/display/msm/qcom,x1e80100-mdss.yaml   | 253 +++++++++++++++++++++
+> > > >  1 file changed, 253 insertions(+)
+> > > >
+> > >
+> > > My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> > > on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> > >
+> > > yamllint warnings/errors:
+> > >
+> > > dtschema/dtc warnings/errors:
+> > > Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dts:24:18: fatal error: dt-bindings/clock/qcom,x1e80100-dispcc.h: No such file or directory
+> > >    24 |         #include <dt-bindings/clock/qcom,x1e80100-dispcc.h>
+> > >       |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> > > compilation terminated.
+> > > make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/display/msm/qcom,x1e80100-mdss.example.dtb] Error 1
+> > > make[2]: *** Waiting for unfinished jobs....
+> > > make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
+> > > make: *** [Makefile:240: __sub-make] Error 2
+> > >
+> >
+> > These bindings headers are already in -next.
+> 
+> However they are not a part of the drm/msm branch. We can probably
+> merge the rest of the patches from the series (once patch 1, DPU
+> bindings, gets reviewed) and merge this one in the next cycle. Does
+> that sound suitable?
 
-Resend the message because the previous one contained some HTML.
+Fine by me.
 
-I tried to upload the patch to support multiple coherent rmems per device
-because in some system, the primary memory space for the device might
-be limited, so that add multiple coherent rmems support per device to satis=
-fy
-the scenario.
-
-
---=20
-Regards,
-
-Howard
+> 
+> -- 
+> With best wishes
+> Dmitry
 
