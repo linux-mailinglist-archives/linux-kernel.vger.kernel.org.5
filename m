@@ -1,116 +1,141 @@
-Return-Path: <linux-kernel+bounces-70844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4BD56859D25
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:38:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D98D9859D29
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:39:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07DBE282F1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:38:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9673D282C1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05C5420DC3;
-	Mon, 19 Feb 2024 07:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6D520DD5;
+	Mon, 19 Feb 2024 07:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Tn28pYlA"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="QDMMKoUZ"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C36DC1EA99
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71DCE2031A
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:39:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708328328; cv=none; b=J/1eBwq7uagw/o2WrB5SiKi4Nrza//8OQH5LlWbtPGnXfprdVXEM4Mrn691G6SMLWanVYwmRBMykoab1XmKToANvdFm6zAjZab4GFPcf3jWgaK8Ne3L3lhQ2B7hL4z1F8a2r5nlZKEXNk/sJdIQa3vUyQp02jDWSIRgBHJFJiDg=
+	t=1708328380; cv=none; b=WvPw18MqSvQcHFPJWbrgxx7oPGbfK/D/QJFw4ZCumO1/VZXBm/5Uzc9GWaxWvFsq0i1yGabqm7WzcDoSJlScGOebwcEVzfqRoyP5qqdgbPMJXcgNe3j2zjk9Zmvxfc/2TVq/IsbzbEhYU6H0A0xNPi9XiHGk0+8clRxX+RoisBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708328328; c=relaxed/simple;
-	bh=NxiEFIBjTY1Do9kn5kKP/w0Pjgi5SqwX9YC+ZSzfghI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HwpdLsvywubDxMIFQplC2leg6CaU1ps6wkaTUYZ98s+tHqOqHWWzhed65KBWNm/8UEKRRmnid9NvhMr75dyMj3nCF2FSn172AiTsZQo70+5zzd50+szCfgKqXTZC+qBZhcjKy7isHhjchIIcSdNMb10NxgNohc9E+soJiu95M60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Tn28pYlA; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a3e550ef31cso93223966b.3
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:38:46 -0800 (PST)
+	s=arc-20240116; t=1708328380; c=relaxed/simple;
+	bh=TJbq3thR54sD0Wi77iVig095+YH5xo0jhAJ9BMhF3rU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kC3KOAun3jxFU9aDuOGuTUJc1zdKS5/TP16voRng0NqXqboHOzk/8cFKHS8RP/ts2wiXZOTzPtTFlhBYq2suA2+6V9hjC/WRdcmL2swd6MrT2LLB63egNHuKwsYrKLRXwO6tqQan+AJeMkA3MRCuJuhw15IqTV5d9EYyJDaDz+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=QDMMKoUZ; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4126a159fa6so381045e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:39:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708328325; x=1708933125; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2UbzHAgsifZLHIRrIwdYYz80lAX1K8yNv65dXow/Z0E=;
-        b=Tn28pYlAbvxHYW2fvPOm1WRbHCojeHBpz0H/deVs4UXTnh08IbMB5sIfZZuZZV7vg9
-         vDXGQYvDs6y82dnbzImtyhht+ukATUUhdEKHPNNZKjz8+2X4vpSzSwoZDYSLYB7gOX/F
-         zbO3DRA6E9zsd+678bfZWREgf2VI7q15kTs5dud8Gkwq3sFxnio1fPzdytE7NChdBLuU
-         ryCqAUiL+8yqvh4agYkUL0muPuKfmykGDx1QXBdacSxRiLsCK6QEIegR0DZ9s4H2GimO
-         FfgcyXTFYfIG71HjR4djgnyG5Ja4pNr1VK9G5Y2HvVlItrXJaubFbuAwOcJxaVfnFdXo
-         PC1Q==
+        d=tuxon.dev; s=google; t=1708328376; x=1708933176; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ztvukbsw2DpPqYv6GrnPegXCQAC9j1Oi6plVvewLB6I=;
+        b=QDMMKoUZTVRK0dilXQCZcu+/FjOvoyjuTFVl0cqo4krhYmz+4zNEl+kXDY0QtwCKrw
+         o0eQG4YLZcZ2/kbOf2LGjAfqH9GFb764//2dZeNd+sBGM4y6Q+dhbNIUbdtyGbYi7RD+
+         YXACWNMoXqB40ERO74m0IKZ0PIRb18e5ezWgyN+EnDg5C+dk1UGCMFxsfe1/SQGL7fqT
+         +ZjLKX3dARp/EAvTz1oPYdmi2ck+2X3HyD+zBvODEMnVHIqPDq0faUhF+QygVcMfrHnl
+         o9XZjpmmuPMnjXUrMaAWKTS2H57XukCPPPS4pvj1e6VNj4TzoCB9t8OAQBE6MtMugRp1
+         2THQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708328325; x=1708933125;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2UbzHAgsifZLHIRrIwdYYz80lAX1K8yNv65dXow/Z0E=;
-        b=wUKisHhqWdxL94S9Rywk8XIKvRCqVYOr8Mx8GE1STmlVkDa1yv0aHqX/XmtGf40Xg5
-         ZXq01qjUx282dhhoS53p/40l6osqWComAkp7yqODbo2v2Nlt3JBqhsnf6Pop0MXAW/rx
-         Dv+AJWblb7nQAr/YiSHSMz7JuI0pt+IculvBhyKua9/kRzrHAf+w3oMxevGfXxVVK2OA
-         Qs35Ez/7u81iS9QVf4d4lvnDy4esdpS253FvLOw/cz9Hw0zSos9CbFZ0po0G86Ebo9Wj
-         jvQ6sfTS/LCko6i0rnhUnsgFx6+tVkvyq26Cmt0EX4FOdzqRbH7d+SIbuMK8OQ9tAHeF
-         5zHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqJAbp5szeG1SFQJV3a6B4J4puINmmkoghUgL92IrDPizuOu1V2XksKnysjvmWrXWMwUD3p1ygRoOcS8QqyA3onqeazkXp3s2r5zLz
-X-Gm-Message-State: AOJu0Ywe0UnuKACf4iVqaJX/pB9FjyoOzKY8EoSitpuxJCSmwHfRHd5v
-	qfcOtJyBhjXBAIu7vYBHczsfIRUMopC1NfKxPynqHYl7+9Wikcs4zAvLr0eE9HA=
-X-Google-Smtp-Source: AGHT+IFKq13yKKtl8d4bo7fen+xKM4HC7jliizmOlN64Kq5IgE0uttWwGfdyIGLRLU/CnfB7DBMxLA==
-X-Received: by 2002:a17:907:104b:b0:a3e:979f:fd0b with SMTP id oy11-20020a170907104b00b00a3e979ffd0bmr1021993ejb.34.1708328325238;
-        Sun, 18 Feb 2024 23:38:45 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id ty13-20020a170907c70d00b00a3d60daaa72sm2654007ejc.41.2024.02.18.23.38.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Feb 2024 23:38:44 -0800 (PST)
-Date: Mon, 19 Feb 2024 10:38:30 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: "Moritz C. Weber" <mo.c.weber@gmail.com>
-Cc: florian.fainelli@broadcom.com, linux-staging@lists.linux.dev,
-	linux-rpi-kernel@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/8] Staging: vc04_services: bcm2835-camera: Fix code
- style checks
-Message-ID: <510574c4-ad26-4fc2-93c4-7b67737f8eb1@moroto.mountain>
-References: <20240217211246.28882-1-mo.c.weber@gmail.com>
+        d=1e100.net; s=20230601; t=1708328376; x=1708933176;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ztvukbsw2DpPqYv6GrnPegXCQAC9j1Oi6plVvewLB6I=;
+        b=QFQhk7nLWDjBhwoMP2Hm1/yT+sevfmDVvVlBR4cceY2luXEFzXrKF/DjJgeNQ92ODD
+         3UXz1dHZbrjtmDc+j5ZJRduy4WM6p5y/IaV3fR9wVpVIS1Uqn3g0SLQktD3Pyz/bWw/K
+         9HIMVYwRxYx1m4eVAry26IcDLeMjKX8m6txt5H2mBvnqFN+i2irnjEx3uLkfhJ0lxc7v
+         qWQptJh3kzM2328KfPyrL2MC7lIfPXUOjglvV7tiRUYVQ1wHoThFOxbII4R/Ft95NFqD
+         7nJe6nI4YWbNFRG61eHEFXfvjv7BkML6Mo7JwMKVASLCgSlBBwRhgpnooFM/SB+H0jKA
+         1fwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXgviVdt+rKHEBYfX7DwKjDcMGChchbFcRYyWHsjrUY9Ta9fETMR9mm4Elf3nlyC4t3qAqR0sa2rgert3X9TnxSGj2h9AWC/4qvfUhs
+X-Gm-Message-State: AOJu0YxFC7MHu7y+HKUo+0eYOIM/DmOTivWl1BRddfWyJT303N0p0T9A
+	VORsjGl+WsC0PvNXBdJ/tuQe82MgquqtZD4+FpSRKIRV1WM69M8eU8clvr3u5WU=
+X-Google-Smtp-Source: AGHT+IHzTk4jAkU4Cb4x2j5R1eZYxapWDSX9BdPNE/TAg6w2jAWj8XsoaKg0OzZkL2HOPDbGsXDXjw==
+X-Received: by 2002:a05:600c:354a:b0:412:5b86:2f2c with SMTP id i10-20020a05600c354a00b004125b862f2cmr3647927wmq.14.1708328375766;
+        Sun, 18 Feb 2024 23:39:35 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.20])
+        by smtp.gmail.com with ESMTPSA id k35-20020a05600c1ca300b00412393ddac2sm10715749wms.6.2024.02.18.23.39.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Feb 2024 23:39:35 -0800 (PST)
+Message-ID: <c6bea32e-5169-4181-ab42-a8f7f35594b2@tuxon.dev>
+Date: Mon, 19 Feb 2024 09:39:33 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240217211246.28882-1-mo.c.weber@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/17] dt-bindings: clock: r9a09g011-cpg: Add always-on
+ power domain IDs
+Content-Language: en-US
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ magnus.damm@gmail.com, paul.walmsley@sifive.com, palmer@dabbelt.com,
+ aou@eecs.berkeley.edu, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20240208124300.2740313-1-claudiu.beznea.uj@bp.renesas.com>
+ <20240208124300.2740313-6-claudiu.beznea.uj@bp.renesas.com>
+ <CAMuHMdVbCYfaM6Zi5AZhj+yc8vySFdCDFF3x1rgbV9Y5xh4LSA@mail.gmail.com>
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <CAMuHMdVbCYfaM6Zi5AZhj+yc8vySFdCDFF3x1rgbV9Y5xh4LSA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sat, Feb 17, 2024 at 10:12:38PM +0100, Moritz C. Weber wrote:
-> Resubmit these patches to fix multiple code style checks for better readability, consistency, and to address errors indicated by Gregs patch bot
+
+
+On 16.02.2024 16:03, Geert Uytterhoeven wrote:
+> Hi Claudiu,
 > 
-> Moritz C. Weber (8):
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
->   Staging: vc04_services: bcm2835-camera: fix blank line style check
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
->   Staging: vc04_services: bcm2835-camera: fix brace code style check
+> On Thu, Feb 8, 2024 at 1:43 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Add always-on power domain ID for RZ/V2M (R9A09G011) SoC.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> Thanks for your patch!
+> 
+>> --- a/include/dt-bindings/clock/r9a09g011-cpg.h
+>> +++ b/include/dt-bindings/clock/r9a09g011-cpg.h
+>> @@ -349,4 +349,7 @@
+>>  #define R9A09G011_DDI_RESET            93
+>>  #define R9A09G011_DDI_RESETN_APB       94
+>>
+>> +/* Power domain IDs. */
+>> +#define R9A09G011_PD_ALWAYS_ON         0
+> 
+> RZ/V2M has many more power domains, but they are not controlled through
+> CPG_BUS_*_MSTOP registers, but by the Internal Power Domain Controller
+> (PMC).
 
-These are automatically rejected because you sent 8 patches with the
-same subject.  But really they should just be one patch.  In v1 Greg
-complained that you were changing a bunch of random stuff.  It's not
-clear what was going on there because it was random text and there was
-no way it would compile.
+I wasn't aware of that. I'll be checking it.
 
-Was it an AI generated patch or what one earth happened?
-
-Anyway, that was the issue, not that you need to break up the patch line
-by line and send each line as a separate patch.
-
-regards,
-dan carpenter
-
-
+> 
+>> +
+>>  #endif /* __DT_BINDINGS_CLOCK_R9A09G011_CPG_H__ */
+> 
+> Gr{oetje,eeting}s,
+> 
+>                         Geert
+> 
+> 
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
 
