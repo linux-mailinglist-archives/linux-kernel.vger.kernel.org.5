@@ -1,261 +1,174 @@
-Return-Path: <linux-kernel+bounces-70804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E7C7859C95
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:10:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5623A859C99
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C31961C219B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:10:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 785BF1C21967
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:11:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF73208D1;
-	Mon, 19 Feb 2024 07:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA42208D9;
+	Mon, 19 Feb 2024 07:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UlYij6RX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=eckelmann.de header.i=@eckelmann.de header.b="TCdgYp3K"
+Received: from DEU01-FR2-obe.outbound.protection.outlook.com (mail-fr2deu01on2133.outbound.protection.outlook.com [40.107.135.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6771220332
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:10:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708326640; cv=none; b=LAnaYKnlE0TjLbNbQE2esYDoClBO/3o7lzoqz2+wXFcK8zdMcY+VvhYeYYmUFWYl8Umhtms7QFnDQoSNGpTfnQ8OzC19/LTZiFOzsQGRJgQFbcj14DePxpIA8LnHqu/yt14HXUADlgngIOOsvXgHEGtjxdC1FaAsBvbTAwbJwYw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708326640; c=relaxed/simple;
-	bh=9xEjE6+llg7FSYZddttTBDyXXvYings1z3vF35XvNY8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JPozwPqgUybneltAK/rqPlSSFYGoVBPsxb3jf5N+Za/lbrnkzrqeREr15DfWUIIbieX6AUjcgFyXLgALBoRap/AkVuqvwFQ7l8+AhGkUloOh6+O0waYENcTcHly6jYW6ewoKKuJH+Y/HdJ4bvd42AITf/w0PVKI/HyAYELuBjO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UlYij6RX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708326637;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=09iKyJWFTQqDiDLFZ86MZSdQOAnt2Ii5ujFvuQizOBU=;
-	b=UlYij6RX7tURXk4gZzN4oVslcTNsRh/hDW34sj12U//+Oj15BV6VIAKwE6Kki8k/psr5D3
-	uLc9NQ38IuAZjltf71ByoabWLohmcrfl/qRPvDRQPX0EtfP7o9J9YKc1/H8YhKoDloRChc
-	id6779I2XxJmgKw3+G1tf8crJf1HTAo=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-320-ribcz0FZOAeDUrooCB-3WQ-1; Mon, 19 Feb 2024 02:10:36 -0500
-X-MC-Unique: ribcz0FZOAeDUrooCB-3WQ-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-29935047600so2754790a91.0
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:10:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708326635; x=1708931435;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=09iKyJWFTQqDiDLFZ86MZSdQOAnt2Ii5ujFvuQizOBU=;
-        b=tAAEqxmuuDKL19I5391z8bVmWHpjVLjsOqP1wcMh+eK5ZXVq8+MD2qw5B7VTX8LqJP
-         tVyDcnJN1UBuIV6tbbfLJ5xQDXO/ohvIES4tjMNPKjrkZ+eHlbXQsSmCmGCYxHwwn4Iu
-         i6O4TReQlS3utUSOlF8IQ/kvK/KtJBpg+NHRDqYKDoUgThp2np4VzAp1hAerb4kER5vR
-         vC1BTQWPZHWjvzbCLAGlcB5S+kJwGihBBuRIyCGVg5SXojGYnyjfsed9r+l+riYHfmFp
-         0t7AwCVg03ih507yrpFQ61ZJK7T5IAtVPybA4B9pUoPqXpjepU3S9IBnD/dPHqRmJP9u
-         WSdA==
-X-Forwarded-Encrypted: i=1; AJvYcCXCaNBV19qBGMd5nUtzAVwQTTkmRlGrxliM5jcySpDxM3PbB3ryxYvNHQ7cUhSZtSMu6ixGCCAm+hWBJPc8ll6prHUtY+0Xt5DNjX3Z
-X-Gm-Message-State: AOJu0YwSTyOevGLOTnPtioJdFcJQvfNxwDjBCB+OjB3b/prdr+UR+gJq
-	cdujUWkjGZOLzDWYOQKvGyz2BPJwFDHkFwAlbWClIWi9wnO/yrVWCIw7eOAkJPLX2ZpObMl5vyK
-	4ek1jyFfX4V38AtLk53yY3pZBfaffNL3pHxPShNvvpc/BBzgdFC52g7Yo08ySdz9GU5xzXyYDgE
-	gmEnMHBm2ygPEHuet0KREFQEK6/fh6Oj50KlsM
-X-Received: by 2002:a17:90b:2e45:b0:299:5652:8ad7 with SMTP id sm5-20020a17090b2e4500b0029956528ad7mr3805720pjb.9.1708326634673;
-        Sun, 18 Feb 2024 23:10:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGnXkpJIWvHveS7qeIJqIwLHIz4Z0ka5mEN4GtpQCg+zvCaVhEQeTIIADA3TqiLibV8FapugKwIlKbWZUzfOAo=
-X-Received: by 2002:a17:90b:2e45:b0:299:5652:8ad7 with SMTP id
- sm5-20020a17090b2e4500b0029956528ad7mr3805665pjb.9.1708326632883; Sun, 18 Feb
- 2024 23:10:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9B5620335;
+	Mon, 19 Feb 2024 07:11:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.135.133
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708326665; cv=fail; b=QxbQZ7OvJtwY1BB/MncMBtAopf/yPG8ctePaor9fwqzkfC2lpFgvKI0dJc1aY6Adzn7rwzs9iGMRSxrzitm5/juA/4pp7L5ONNfRiA70dsLTbTfKh4jLQTFd7exAC8IA65UdF02QDB6iJqrbGH1KVOoonvD+LL2dWXPtVv8K1AY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708326665; c=relaxed/simple;
+	bh=ziSAKrd6W9VWYgte/DJxt3DQc33RxSdjOFRVd6pFgEs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=DbtjKRgLRh3K5IsFaLfrC6+mH1fkYxr5Nb59H0Jl5Z0yfTu55jnJs0lNRX/S9hL937v3M+XXiMp1S55BjmUowhnqE3ipPtSP6suU5lEKGeESgbwqaZt5t63SZZyrXE6y+VAbLQ/8qBZrydWYa/ZXg1vjtxwudxXpQPrPM2RBidc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eckelmann.de; spf=pass smtp.mailfrom=eckelmann.de; dkim=pass (1024-bit key) header.d=eckelmann.de header.i=@eckelmann.de header.b=TCdgYp3K; arc=fail smtp.client-ip=40.107.135.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eckelmann.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eckelmann.de
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TisPRHNzDCtGwi06uehxnUmL4NH6Pxl+bmZHykPCxy0rieGxpzwqQMXwOhBaU/HTwDOxSQWhzT67AatZomB6b+xV4s9GS+GqZ11GLUP5IXiu/XNa8kZMujoyKA3T+XjWkMQm0WcxTYYLc2dNYyXbN6fbb1sP/2s5CB9CvW3zSNPvBhYUIa67nZRm/Z4H6jQmIQARAY23fQFaMKwehossKombWHcSTj6avT31wHyKn3cthlbFW/Q2oKDRfRVVqVEjwZQQ/URlrTq5FaQLD36cYFex6RlYuvI1cndNplB0lSSks1M4EGovsg2MdKcymd3nfa7ja/oU1zzWvTZZErwWJg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=yM7/C4NfEQxkZIWy0MsZbbJlet6FwGMN72fJSqiPsik=;
+ b=J8+O7NbiNVL+NQ2YdVAX4fV9C2Tr1qXNuZGMXrb9EDHXklJA21lDNHhpHcFLg6SX6fpClG2x16feV/kj0AMeuDCSiuT9W1kWpw911YFj7dAQW4fd6PUMqhzjC2MSqAEL9WtOfDz0JaEgiE0bOH0LZkMqdOXHUCT1BUOoG+XRnbuk1i3i3pEdXxVWRcDT1q6zexDrS20dPkSjSwOp6mzCs1m9CfL1hUZfoJlRnbTqhHOH3z34dBgAp5e3VfuWf28CLfsOa6WCRwYruZyhB2AwFhrLZnOB/zPtK8trQjacFunzSYRdSQpQK4MwPX9+nxueIDpWcALUYfgWBBlKN4PhxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=eckelmann.de; dmarc=pass action=none header.from=eckelmann.de;
+ dkim=pass header.d=eckelmann.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eckelmann.de;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yM7/C4NfEQxkZIWy0MsZbbJlet6FwGMN72fJSqiPsik=;
+ b=TCdgYp3Ku8DxMQcin+cgENT2LfAwpy5MQLK73f5vjvpa3qBVBvowUgKJlTH6o79UYSyfKNbQqMuyHzGc41DDDV47oFTT7uP4XYLITejk9idN5ZKGJjO8cjKYeMCVeh3ifRkppaln/HD7SsJQ6y4rjhW7A3W+I/7Mm2rgpL428ZQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=eckelmann.de;
+Received: from FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:da::13)
+ by FR2P281MB1853.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:3c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
+ 2024 07:11:01 +0000
+Received: from FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::a175:dc81:cb6b:2dd8]) by FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::a175:dc81:cb6b:2dd8%5]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
+ 07:11:01 +0000
+Date: Mon, 19 Feb 2024 08:11:00 +0100
+From: Thorsten Scherer <T.Scherer@eckelmann.de>
+To: Raag Jadav <raag.jadav@intel.com>
+Cc: u.kleine-koenig@pengutronix.de, jarkko.nikula@linux.intel.com, 
+	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com, lakshmi.sowjanya.d@intel.com, 
+	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/4] pwm: dwc: drop redundant error check
+Message-ID: <m57yqdldszy3s44p5rdxd6kwii5tqzqa44aaevpe7bep2yyeuo@wls3ad3gcl7y>
+References: <20240219033835.11369-1-raag.jadav@intel.com>
+ <20240219033835.11369-3-raag.jadav@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240219033835.11369-3-raag.jadav@intel.com>
+X-ClientProxiedBy: FR3P281CA0188.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:a4::20) To FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:da::13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240201092559.910982-1-yukuai1@huaweicloud.com>
- <20240201092559.910982-2-yukuai1@huaweicloud.com> <CALTww2-ZhRBJOD3jXs=xKFaD=iR=dtoC9h2rUQi5Stpi+tJ9Bw@mail.gmail.com>
- <64d27757-9387-09dc-48e8-a9eedd67f075@huaweicloud.com> <CALTww28E=k6fXJURG77KwHb7M2OByLrcE8g7GNkQDTtcOV48hQ@mail.gmail.com>
- <d4a2689e-b5cc-f268-9fb2-84c10e5eb0f4@huaweicloud.com> <CALTww28bUzmQASme3XOz0CY=o86f1EUU23ENmnf42UVyuGzQ4Q@mail.gmail.com>
- <c1195efd-dd83-317e-3067-cd4891ae013e@huaweicloud.com> <CALTww2-7tTMdf_XZ60pNKH_QCq3OUX2P==VPXZo3f-dHzVhmnw@mail.gmail.com>
- <2fa01c30-2ee7-7c01-6833-bf74142e6d7c@huaweicloud.com> <CALTww2-HngEJ9z9cYZ0=kcfuKMpziH3utSgk_8u3dxc553ZNeg@mail.gmail.com>
- <5480b350-efe3-2be7-cf3b-3a62bb0e012b@huaweicloud.com> <CALTww2-_uvkB7M=_J_6DgW1kfzW2rpQgp0vyKt7EYvON41adGw@mail.gmail.com>
- <ed1fc73d-57f8-6862-76f4-2e6ff0cd5fc8@huaweicloud.com>
-In-Reply-To: <ed1fc73d-57f8-6862-76f4-2e6ff0cd5fc8@huaweicloud.com>
-From: Xiao Ni <xni@redhat.com>
-Date: Mon, 19 Feb 2024 15:10:21 +0800
-Message-ID: <CALTww28cvDpLxUGinFOz=wJJBo7BOT8D9VBLEiQ8L+Kwka7d2Q@mail.gmail.com>
-Subject: Re: [PATCH v5 01/14] md: don't ignore suspended array in md_check_recovery()
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: mpatocka@redhat.com, heinzm@redhat.com, blazej.kucman@linux.intel.com, 
-	agk@redhat.com, snitzer@kernel.org, dm-devel@lists.linux.dev, song@kernel.org, 
-	neilb@suse.de, shli@fb.com, akpm@osdl.org, linux-kernel@vger.kernel.org, 
-	linux-raid@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com, 
-	Jonathan Brassow <jbrassow@redhat.com>, "yukuai (C)" <yukuai3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: FR4P281MB3510:EE_|FR2P281MB1853:EE_
+X-MS-Office365-Filtering-Correlation-Id: acd817f3-6742-4813-a63b-08dc3119ed95
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Y1ul2pH2vWoBJmfk0BRnSPDh6Hd4agtnBjEQ/JeVtQkuT+w6ZewlhZ3YcJMCkh3toGk1H64qLnvjsH0I6bcm7XZfhGUxnV7bsZFiUSbnVoaa5pXQxnmfBP8eEKI2FiZMiq3Pdxb+HRVJ3cQv+1c9hUw7pJTwUnuQBaQ2o5wboqjhBpQNMwviYbKbAR3rgk+WXVjJLjRZmxWmrQPNLImceUFhw8d72nfcHsOuLp6sAD8+qI1snnjxqvcgSWhRq5Lv5LrolRzXND6wQ2y6D7WgcbNkpL4krDb528AcSEq4nZXs9JP0LIcnRaHgIa2JPYsRPDuZ8DBbw+sjW7HY8Nml/T0r/g/cgfTbRn1u13cFiy4yT7J39rEJSd9NADMB3OAxMm9wtB9Rs8HFXZeYutDHin8UBhZ7jOTyj4BgWog0n+ryIxc4C0ti3w7VsX4k4a2syXm211ijtL1yzq4gSbavS9uHKU10dmDkEUYpxKHaLuzpilYCM5w33SUB1CAHPzS4B/1oo+BSAPeWJYA9MW9yAZPwoWD+N4QqOys8/dCGkwD4D1/ZJ/vQ1MAKmIbRxG/i
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39830400003)(376002)(396003)(346002)(136003)(366004)(230922051799003)(451199024)(64100799003)(186009)(1800799012)(83380400001)(86362001)(41300700001)(316002)(6506007)(6512007)(6486002)(9686003)(2906002)(5660300002)(478600001)(66556008)(66946007)(66476007)(8676002)(8936002)(6916009)(4326008)(38100700002)(33716001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?fJmohRM+HEuhJ58/c/GoMHNgqV+Bqp1nNPfKx3bqet35zlJyW5DzhdVs8gGP?=
+ =?us-ascii?Q?R4UpDcDH5Wkq37w3awHNegdlZHjwJx1hKJ3tuCxCnYelhtP8uN1FzrFN0PR3?=
+ =?us-ascii?Q?U0E8tUroi8vkJ/x++Ku/zyTh682ErTa3orAMaA3zHaPE9rMy4YiTxkEmTwas?=
+ =?us-ascii?Q?xSy4De53svJf8YG6TXPAi/2Cl45kXypnHXm8w5UpWOzjD/a/508i1hMw0uN6?=
+ =?us-ascii?Q?AtfaV3121sy4BCaO1TLskZoVniLnPhDf+FHL3N9GDemtVF6QOQtTxLF99r2F?=
+ =?us-ascii?Q?z4iU+L4da7IuWpj4bCUe+yfQuKZZSVYuxKn2vxwQWcxaG4NQZ6bKWqM5oLsh?=
+ =?us-ascii?Q?Llx+9wpiY0ne1O3wTb6ydYRdXqcATYn7+94JpaKaG98kyk2f9RSarZVBucv+?=
+ =?us-ascii?Q?KiouBYapwTdsX/2cr4pAIld/kT+be4oV/VH5bmaulprecnuiMcVzlaT0HswI?=
+ =?us-ascii?Q?Ux4NmzlAPBYkDwVBCnEg+A8YUP33HcD+uTWLNZ8L7GCZWaGCHda1uYbNRNJT?=
+ =?us-ascii?Q?+I6uqcGb0sy2KtUhGKnygRO7xDNMML3C2yrXamkAIzMMmPzD39ZB77UJuSLN?=
+ =?us-ascii?Q?Ff++F6N9H6Sk44LsMDTU7voER6nV22r/4bRrSguSH3F0/5ZMGzwWZYlJQnbv?=
+ =?us-ascii?Q?QYRzB6Uaee9ze2mRosHEQy7z2X4/ar+0ZFmPIG5Y6mfFxdcpgqBr7BnhFRDV?=
+ =?us-ascii?Q?45m9xvBp4grhmNcGW3exRPxupLj8skkhAMQTCrUEOeHRGv2gpHhIWyPgweOM?=
+ =?us-ascii?Q?YaQKC5iTyPEF4+Usm/xu0hB5LKvPzxhqpCdnBaWQoxDAcYQYCYKK9VQFxS9C?=
+ =?us-ascii?Q?6INww/6y61hJqLafPOczZPwfvBneMElFJGE7BdNM7suu5ejh38pLT6oF1wEn?=
+ =?us-ascii?Q?nVN+n2js3uWB8MAT6j8vybVbOb2/sZIppeXehQe4HrICbDpZh14p3vcThm9f?=
+ =?us-ascii?Q?AsOh6LpqztvZ5yaDEbdtDXigYFNyQX58Mx/WtIaDB8FL/1s2VCxlDYzc8UVQ?=
+ =?us-ascii?Q?mxH5TISFcEE82060rrFNNLn4x9JwMrdQDvqDEH1mbligJUfINylKtNQvEdgJ?=
+ =?us-ascii?Q?8JJN5uofopuEJSxsjafoUsJCFqyjKewIVC6vsUdQBuv2NWYHAwv6vy++r97w?=
+ =?us-ascii?Q?tY+x76Tw7TMXBwb2gziq3Om67BvDoMV9E/qJzeGHsAeIy3+ZoWa3aTXWmujl?=
+ =?us-ascii?Q?kBZMmYtvioOydpTf9KpgtvBDFjdA082/ET/foihk3nCU4HhfTF+WeDao2Iuv?=
+ =?us-ascii?Q?IJdVHbmDfoh2AriBPkRAgupyjuEgtxMTmeUc58Qd3RqjEFH361zTeYIzQKOT?=
+ =?us-ascii?Q?esNR06EjSSnWBx83QHgS5E15zBLZHRF+WHgsvo9hrBWPmA63TTsShhHO5fJP?=
+ =?us-ascii?Q?qyD+mqUA/HM7Ah2g0jiK0YZwXLMmhsSzzxiX4+euS/lv3rbeYfvckF0qcZEE?=
+ =?us-ascii?Q?0eCsyXfdcF1DjgGRewnA10EMpeInTqy6CC0fnRrYPef9Zkc+pyiYq310bZto?=
+ =?us-ascii?Q?LxIQGhXD5W9iWNGvBXc5JbAADeYM0WJiHcB0QUeMt9TOMzGYnEl8C4o5vK6P?=
+ =?us-ascii?Q?WarUvTL5Ky2KChVxo1x/NEEjVnVaFig0Q0urYkTok5MFhK/wfSH5BfVk+49I?=
+ =?us-ascii?Q?lfdwY54j1+Yh9EW87RCt0xcKyLcrYUmulHjGRCOCW1vagyvnQyInn/dmZXPX?=
+ =?us-ascii?Q?Y6vZ3w=3D=3D?=
+X-OriginatorOrg: eckelmann.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: acd817f3-6742-4813-a63b-08dc3119ed95
+X-MS-Exchange-CrossTenant-AuthSource: FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 07:11:01.1215
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 62e24f58-823c-4d73-8ff2-db0a5f20156c
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: owZn8EPZm+pGsYYyMrqx86nnJiJruGTJ0riEOesZGE+JWekrzPk7zbUzpQsDB8hW8qNV8erjFs04KQ4FS4Jkuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR2P281MB1853
 
-On Sun, Feb 18, 2024 at 4:48=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> w=
-rote:
->
-> Hi,
->
-> =E5=9C=A8 2024/02/18 16:07, Xiao Ni =E5=86=99=E9=81=93:
-> > On Sun, Feb 18, 2024 at 2:22=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.co=
-m> wrote:
-> >>
-> >> Hi,
-> >>
-> >> =E5=9C=A8 2024/02/18 13:07, Xiao Ni =E5=86=99=E9=81=93:
-> >>> On Sun, Feb 18, 2024 at 11:24=E2=80=AFAM Yu Kuai <yukuai1@huaweicloud=
-com> wrote:
-> >>>>
-> >>>> Hi,
-> >>>>
-> >>>> =E5=9C=A8 2024/02/18 11:15, Xiao Ni =E5=86=99=E9=81=93:
-> >>>>> On Sun, Feb 18, 2024 at 10:34=E2=80=AFAM Yu Kuai <yukuai1@huaweiclo=
-ud.com> wrote:
-> >>>>>>
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> =E5=9C=A8 2024/02/18 10:27, Xiao Ni =E5=86=99=E9=81=93:
-> >>>>>>> On Sun, Feb 18, 2024 at 9:46=E2=80=AFAM Yu Kuai <yukuai1@huaweicl=
-oud.com> wrote:
-> >>>>>>>>
-> >>>>>>>> Hi,
-> >>>>>>>>
-> >>>>>>>> =E5=9C=A8 2024/02/18 9:33, Xiao Ni =E5=86=99=E9=81=93:
-> >>>>>>>>> The deadlock problem mentioned in this patch should not be righ=
-t?
-> >>>>>>>>
-> >>>>>>>> No, I think it's right. Looks like you are expecting other probl=
-ems,
-> >>>>>>>> like mentioned in patch 6, to be fixed by this patch.
-> >>>>>>>
-> >>>>>>> Hi Kuai
-> >>>>>>>
-> >>>>>>> Could you explain why step1 and step2 from this comment can happe=
-n
-> >>>>>>> simultaneously? From the log, the process should be
-> >>>>>>> The process is :
-> >>>>>>> dev_remove->dm_destroy->__dm_destroy->dm_table_postsuspend_target=
-s(raid_postsuspend)
-> >>>>>>> -> dm_table_destroy(raid_dtr).
-> >>>>>>> After suspending the array, it calls raid_dtr. So these two funct=
-ions
-> >>>>>>> can't happen simultaneously.
-> >>>>>>
-> >>>>>> You're removing the target directly, however, dm can suspend the d=
-isk
-> >>>>>> directly, you can simplily:
-> >>>>>>
-> >>>>>> 1) dmsetup suspend xxx
-> >>>>>> 2) dmsetup remove xxx
-> >>>>>
-> >>>>> For dm-raid, the design of suspend stops sync thread first and then=
- it
-> >>>>> calls mddev_suspend to suspend array. So I'm curious why the sync
-> >>>>> thread can still exit when array is suspended. I know the reason no=
-w.
-> >>>>> Because before f52f5c71f (md: fix stopping sync thread), the proces=
-s
-> >>>>> is raid_postsuspend->md_stop_writes->__md_stop_writes
-> >>>>> (__md_stop_writes sets MD_RECOVERY_FROZEN). In patch f52f5c71f, it
-> >>>>> doesn't set MD_RECOVERY_FROZEN in __md_stop_writes anymore.
-> >>>>>
-> >>>>> The process changes to
-> >>>>> 1. raid_postsuspend->md_stop_writes->__md_stop_writes->stop_sync_th=
-read
-> >>>>> (wait until MD_RECOVERY_RUNNING clears)
-> >>>>> 2. md thread -> md_check_recovery -> unregister_sync_thread ->
-> >>>>> md_reap_sync_thread (clears MD_RECOVERY_RUNNING, stop_sync_thread
-> >>>>> returns, md_reap_sync_thread sets MD_RECOVERY_NEEDED)
-> >>>>> 3. raid_postsuspend->mddev_suspend
-> >>>>> 4. md sync thread starts again because __md_stop_writes doesn't set
-> >>>>> MD_RECOVERY_FROZEN.
-> >>>>> It's the reason why we can see sync thread still happens when raid =
-is suspended.
-> >>>>>
-> >>>>> So the patch fix this problem should:
-> >>>>
-> >>>> As I said, this is really a different problem from this patch, and i=
-t is
-> >>>> fixed seperately by patch 9. Please take a look at that patch.
-> >>>
-> >>> I think we're talking about the same problem. In patch07 it has a new
-> >>> api md_frozen_sync_thread. It sets MD_RECOVERY_FROZEN before
-> >>> stop_sync_thread. This is right. If we use this api in
-> >>> raid_postsuspend, sync thread can't restart. So the deadlock can't
-> >>> happen anymore?
-> >>
-> >> We are not talking about the same problem at all. This patch just fix =
-a
-> >> simple problem in md/raid(not dm-raid). And the deadlock can also be
-> >> triggered for md/raid the same.
-> >>
-> >> - mddev_suspend() doesn't handle sync_thread at all;
-> >> - md_check_recovery() ignore suspended array;
-> >>
-> >> Please keep in mind this patch just fix the above case. The deadlock i=
-n
-> >> dm-raid is just an example of problems caused by this. Fix the deadloc=
-k
-> >> other way doesn't mean this case is fine.
-> >
-> > Because this patch set is used to fix dm raid deadlocks. But this
-> > patch changes logic, it looks like more a feature - "we can start/stop
-> > sync thread when array is suspended". Because this patch is added many
-> > years ago and dm raid works well. If we change this, there is
-> > possibilities to introduce new problems. Now we should try to walk
-> > slowly.
->
-> This patch itself really is quite simple, it fixes problems for md/raid,
-> and can be triggered by dm-raid as well. This patch will be needed
-> regardless of dm-raid, and it's absolutely not a feature.
+Hello,
 
-Hi Kuai
+On Mon, Feb 19, 2024 at 09:08:33AM +0530, Raag Jadav wrote:
+> pcim_iomap_table() fails only if pcim_iomap_regions() fails. No need to
+> check for failure if the latter is already successful.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
+> Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+> ---
+>  drivers/pwm/pwm-dwc.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pwm/pwm-dwc.c b/drivers/pwm/pwm-dwc.c
+> index c0e586688e57..7dbb72c80ef5 100644
+> --- a/drivers/pwm/pwm-dwc.c
+> +++ b/drivers/pwm/pwm-dwc.c
+> @@ -51,11 +51,8 @@ static int dwc_pwm_probe(struct pci_dev *pci, const struct pci_device_id *id)
+>  		return ret;
+>  	}
+>  
+> +	/* No need to check for failure, pcim_iomap_regions() does it for us. */
 
-Yes, this patch is simple. But it changes the original logic. Do we
-really need to do this? And as the title of the patch set, it's used
-to fix regression problems. We need to avoid much changes, find out
-the root cause and fix them. It's better to use another patch set to
-do more jobs. For example, allow sync request when array is suspended
-(But I don't want to do this change).
->
-> For dm-raid, there is no doubt that sync_thread should be stopped before
-> suspend, and keep frozen until resume, and this behaviour is not changed
+IMHO this comment could be omitted.
 
-Agree with this
-> at all and will never change. Other patches actually tries to gurantee
+>  	dwc->base = pcim_iomap_table(pci)[0];
+> -	if (!dwc->base) {
+> -		dev_err(dev, "Base address missing\n");
+> -		return -ENOMEM;
+> -	}
+>  
+>  	ret = devm_pwmchip_add(dev, chip);
+>  	if (ret)
+> -- 
+> 2.35.3
+> 
+> 
 
-In fact, we only need to use one line code to do this. We don't need
-so many patches. It only needs to set MD_RECOVERY_FROZEN before stop
-sync thread.
-
-        set_bit(MD_RECOVERY_FROZEN, &mddev->recovery);
-        __md_stop_writes(mddev);
-
-> this. If you think this patch can introduce new problems for dm-raid,
-> please be more specific.
->
-> The problem in dm-raid is that it relies on __md_stop_writes() to stop
-> and frozen sync_thread, while it also relies that MD_RECOVERY_FROZEN is
-> not set, and this is abuse of MD_RECOVERY_FROZEN. And if you still think
-> there are problems with considering of the entire patchset, feel free to
-> discuss. :)
-
-In fact, dmraid sets MD_RECOVERY_FROZEN before f52f5c71f3d4 (md: fix
-stopping sync thread).  It calls __md_stop_writes and this function
-sets MD_RECOVERY_FROZEN. Thanks for your patience :)
-
-Regards
-Xiao
->
-> Thanks,
-> Kuai
->
-
+Best regards
+Thorsten
 
