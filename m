@@ -1,166 +1,286 @@
-Return-Path: <linux-kernel+bounces-72058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72056-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A1185AE6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:29:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2934885AE65
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E1A7B22BFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:29:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB940284AF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A436B5644E;
-	Mon, 19 Feb 2024 22:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="Eo7QiUrE"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784F655C16;
+	Mon, 19 Feb 2024 22:28:21 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B8AA56754
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:28:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D030DF9E0;
+	Mon, 19 Feb 2024 22:28:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708381729; cv=none; b=jzZhGcGS1dysOrj68Dqwla/I1EuRJk0EuVufxtO/GxjnCvMT3wjMWRu/71GfmXhetNHX38vBM8UaXlh6CTP3H4B1ecWo4IdgrPS/P1lTxWBc3wb+pqpJolUEmlM7OveTA/NKL8QvIe72BrwSo/uegy/79fegXgZkiVKh5ocUZwY=
+	t=1708381700; cv=none; b=HmVvOAL3IRuwz+CwLPyruJi4iCOR+95A+7tvW/ynDvu9sv+x3nBogTgki59oBzuCM/vDZ4J6NGGyZBdAQ84tRcACo5682BzWX61iMBDkH7EKO2e1KLGHBl0plA2qPMzMxd1PDOeJ3z/lkbZRWJ++GbiOcqNrCuCUmYOPK6qxq0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708381729; c=relaxed/simple;
-	bh=69e7kVPN/Z3SH6Is7oQo68JrXDtUBF6qZahWkHqh+7c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GofWtn3vXoJl10k44SRcPGRrG7jdhDsycAdSpEO1l1cZDv8gEhQsV2A5xtQa/Firh2CKfeqLwT3ze4UZiipIndUaWYgpZYPL3OGsfoqhKzRE+TaImsXJ1TsOFlgjsh51lnHDsk3VHwaa2maaXah/IoKWHUb7Lfw7m5GnB8ekdQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=Eo7QiUrE; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1d94323d547so33019165ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:28:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1708381727; x=1708986527; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bl5GKAX3dlaK9635suuwAaWFkidsg1LZ0Wt1MsG+2JM=;
-        b=Eo7QiUrEwSYhaJWG5CYDmFY8qzWsm8HqNf9yftgk3QxW7yhgamkJs0idwtYvIx2F4O
-         RSOHv9L+OIE2wJEeSF1rigqXbk9hg26ShWyJy4wXxqoyqnW1hYErH8tKBOhW85cBAtqW
-         MKFQYzLu3nmEGiRgrTcx+goUEHIhkQ1MiE2xeSvteU63Z9a3j9MK7t46PjSPGtikCEef
-         M18272AscOXxeMR1FrTPTLX2ZO4UboMWFDlV7dUO3WFzZib63zx1h9JG2A6awBSLG4Ok
-         HvcOo/+HZh+c+XuZwVtVvlntWST77EN1XK8Pu9qevk9diZBjLj79Z8yGt18BkPepP3ii
-         aHgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708381727; x=1708986527;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bl5GKAX3dlaK9635suuwAaWFkidsg1LZ0Wt1MsG+2JM=;
-        b=oysghr7UAHtvi/M09Sm033Dd+NHVLCjelufICquyof6rYeF1m0L+Tsufp38stspzIH
-         n0lktOIAkZ7zidmbtefH7eQ6VrL8bUwdCF5z4hRy9OsIPz4gdOn+chJTP+nKRWs2vS3Z
-         2BEZJ0v348Sk0JEwQ4jeFj3tVxpe+OpOXjtb6NOTcxhVmzsSGjmo0tslTx4qKh+d0qP7
-         jr1pXr+iDk/shSTT7smbSfUfd23h1ZcaWJFzr/S+VUxLOlgsqnnt5qBl+HbTE0LEIViQ
-         Uwb9UVuKfVGb7LX2/hn9hZKqF9PjEbfYCbQTIbbIwMgL78PQrdm2NVK0pAFurRKxQ7er
-         h9Kg==
-X-Forwarded-Encrypted: i=1; AJvYcCWNcjJtp8SfX9XY+AuCAGiSxsN5UEV214nr0WNQk3XwY8LlVvghOwnNUoAO2Gb45NWHeFRHt31KNjj4WMIlPIYEBObRVtNg3fihIxr6
-X-Gm-Message-State: AOJu0YyXIUYyQeO3cP6I7TbutKevJcBKh8/JWlveyVMtwG6Gbinc3AZ9
-	HHrac+WSNcOgTDxcAOpCnxKzZ97k0lOzj/CT1k9JfetZLy5QiBlzoS7fhMUQDPs=
-X-Google-Smtp-Source: AGHT+IHlEqzTbeqGZugXvJDuwYCJATCsRA1NiGwC9reCuuiCgxtV1VeURbikH3d/YTo82RrU7aljog==
-X-Received: by 2002:a17:902:cecf:b0:1db:d66e:cd15 with SMTP id d15-20020a170902cecf00b001dbd66ecd15mr6464817plg.59.1708381727050;
-        Mon, 19 Feb 2024 14:28:47 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
-        by smtp.gmail.com with ESMTPSA id l4-20020a170902d04400b001d949e663d5sm4933240pll.31.2024.02.19.14.28.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 14:28:46 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rcC7v-008o4I-26;
-	Tue, 20 Feb 2024 09:28:43 +1100
-Date: Tue, 20 Feb 2024 09:28:43 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com,
-	Prasad Singamsetty <prasad.singamsetty@oracle.com>
-Subject: Re: [PATCH v4 04/11] fs: Add initial atomic write support info to
- statx
-Message-ID: <ZdPWGwntYMvstbpc@dread.disaster.area>
-References: <20240219130109.341523-1-john.g.garry@oracle.com>
- <20240219130109.341523-5-john.g.garry@oracle.com>
+	s=arc-20240116; t=1708381700; c=relaxed/simple;
+	bh=i6q7y2j0vNWvZS7oD9Y9HjF1bcJC1i3lu0aXjcy0EyA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Ybt9jo5VC3oWlGAI70STD7uxWhBuc57ArHTNeSJf4rwWSFh8VIvnJJuMTzQlGbMGoc0cPXQnR5cd7Ai1ecx/XFPGB97UoG68C6WUS6bZ0vQom8YgAWPbi/E0uTOHjjYUKdf1JDa+8IDkpeQ7gl7gr2RzEwGBNtVXBp98EMYnVkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B067FC433C7;
+	Mon, 19 Feb 2024 22:28:19 +0000 (UTC)
+Date: Mon, 19 Feb 2024 17:30:03 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH v2] ring-buffer: Simplify reservation with try_cmpxchg()
+ loop
+Message-ID: <20240219173003.08339d54@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219130109.341523-5-john.g.garry@oracle.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 01:01:02PM +0000, John Garry wrote:
-> From: Prasad Singamsetty <prasad.singamsetty@oracle.com>
-> 
-> Extend statx system call to return additional info for atomic write support
-> support for a file.
-> 
-> Helper function generic_fill_statx_atomic_writes() can be used by FSes to
-> fill in the relevant statx fields.
-> 
-> Signed-off-by: Prasad Singamsetty <prasad.singamsetty@oracle.com>
-> #jpg: relocate bdev support to another patch
-> Signed-off-by: John Garry <john.g.garry@oracle.com>
-> ---
->  fs/stat.c                 | 34 ++++++++++++++++++++++++++++++++++
->  include/linux/fs.h        |  3 +++
->  include/linux/stat.h      |  3 +++
->  include/uapi/linux/stat.h |  9 ++++++++-
->  4 files changed, 48 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/stat.c b/fs/stat.c
-> index 77cdc69eb422..522787a4ab6a 100644
-> --- a/fs/stat.c
-> +++ b/fs/stat.c
-> @@ -89,6 +89,37 @@ void generic_fill_statx_attr(struct inode *inode, struct kstat *stat)
->  }
->  EXPORT_SYMBOL(generic_fill_statx_attr);
->  
-> +/**
-> + * generic_fill_statx_atomic_writes - Fill in the atomic writes statx attributes
-> + * @stat:	Where to fill in the attribute flags
-> + * @unit_min:	Minimum supported atomic write length
-> + * @unit_max:	Maximum supported atomic write length
-> + *
-> + * Fill in the STATX{_ATTR}_WRITE_ATOMIC flags in the kstat structure from
-> + * atomic write unit_min and unit_max values.
-> + */
-> +void generic_fill_statx_atomic_writes(struct kstat *stat,
-> +				      unsigned int unit_min,
-> +				      unsigned int unit_max)
-> +{
-> +	/* Confirm that the request type is known */
-> +	stat->result_mask |= STATX_WRITE_ATOMIC;
-> +
-> +	/* Confirm that the file attribute type is known */
-> +	stat->attributes_mask |= STATX_ATTR_WRITE_ATOMIC;
-> +
-> +	if (unit_min) {
-> +		stat->atomic_write_unit_min = unit_min;
-> +		stat->atomic_write_unit_max = unit_max;
-> +		/* Initially only allow 1x segment */
-> +		stat->atomic_write_segments_max = 1;
-> +
-> +		/* Confirm atomic writes are actually supported */
-> +		stat->attributes |= STATX_ATTR_WRITE_ATOMIC;
-> +	}
-> +}
-> +EXPORT_SYMBOL(generic_fill_statx_atomic_writes);
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-What units are these in? Nothing in the patch or commit description
-tells us....
+Instead of using local_add_return() to reserve the ring buffer data,
+Mathieu Desnoyers suggested using local_cmpxchg(). This would simplify the
+reservation with the time keeping code.
 
--Dave.
+Although, it does not get rid of the double time stamps (before_stamp and
+write_stamp), using cmpxchg() does get rid of the more complex case when
+an interrupting event occurs between getting the timestamps and reserving
+the data, as when that happens, it just tries again instead of dealing
+with it.
+
+Before we had:
+
+	w = local_read(&tail_page->write);
+	/* get time stamps */
+	write = local_add_return(length, &tail_page->write);
+	if (write - length == w) {
+		/* do simple case */
+	} else {
+		/* do complex case */
+	}
+
+By switching the local_add_return() to a local_try_cmpxchg() it can now be:
+
+	 w = local_read(&tail_page->write);
+ again:
+	/* get time stamps */
+	if (!local_try_cmpxchg(&tail_page->write, &w, w + length))
+		goto again;
+
+	 /* do simple case */
+
+The benchmarks between the two showed no regressions when trying this:
+
+ Enable: CONFIG_TRACEPOINT_BENCHMARK
+
+ # trace-cmd record -m 800000 -e benchmark sleep 60
+
+Before the patch:
+
+ # trace-cmd report | tail
+ event_benchmark-944   [003]  1998.910191: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910192: benchmark_event:      last=149 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=149
+ event_benchmark-944   [003]  1998.910193: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910193: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910194: benchmark_event:      last=136 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=136
+ event_benchmark-944   [003]  1998.910194: benchmark_event:      last=138 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=138
+ event_benchmark-944   [003]  1998.910195: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910196: benchmark_event:      last=151 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=151
+ event_benchmark-944   [003]  1998.910196: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910197: benchmark_event:      last=152 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=152
+
+After the patch:
+
+ # trace-cmd report | tail
+ event_benchmark-848   [004]   171.414716: benchmark_event:      last=143 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=143
+ event_benchmark-848   [004]   171.414717: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
+ event_benchmark-848   [004]   171.414718: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
+ event_benchmark-848   [004]   171.414718: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
+ event_benchmark-848   [004]   171.414719: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
+ event_benchmark-848   [004]   171.414719: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
+ event_benchmark-848   [004]   171.414720: benchmark_event:      last=140 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=140
+ event_benchmark-848   [004]   171.414721: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
+ event_benchmark-848   [004]   171.414721: benchmark_event:      last=145 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=145
+ event_benchmark-848   [004]   171.414722: benchmark_event:      last=144 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=144
+
+It may have even improved!
+
+Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v1: https://lore.kernel.org/linux-trace-kernel/20240118181206.4977da2f@gandalf.local.home
+
+- If the try_cmpxchg() fails when it added a timestamp, it is likely to add
+  the length of that timestamp again. Subtract the length if it fails.
+
+ kernel/trace/ring_buffer.c | 103 ++++++++++++-------------------------
+ 1 file changed, 34 insertions(+), 69 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index fd4bfe3ecf01..4ba0af82c33e 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3455,9 +3455,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	/* Don't let the compiler play games with cpu_buffer->tail_page */
+ 	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
+ 
+- /*A*/	w = local_read(&tail_page->write) & RB_WRITE_MASK;
++ /*A*/	w = local_read(&tail_page->write);
+ 	barrier();
+ 	rb_time_read(&cpu_buffer->before_stamp, &info->before);
++	/* Read before_stamp only the first time through */
++ again:
+ 	rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ 	barrier();
+ 	info->ts = rb_time_stamp(cpu_buffer->buffer);
+@@ -3470,7 +3472,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		 * absolute timestamp.
+ 		 * Don't bother if this is the start of a new page (w == 0).
+ 		 */
+-		if (!w) {
++		if (!(w & RB_WRITE_MASK)) {
+ 			/* Use the sub-buffer timestamp */
+ 			info->delta = 0;
+ 		} else if (unlikely(info->before != info->after)) {
+@@ -3487,89 +3489,52 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 
+  /*B*/	rb_time_set(&cpu_buffer->before_stamp, info->ts);
+ 
+- /*C*/	write = local_add_return(info->length, &tail_page->write);
++ /*C*/	if (!local_try_cmpxchg(&tail_page->write, &w, w + info->length)) {
++		if (info.add_timestamp & (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND))
++			info.length -= RB_LEN_TIME_EXTEND;
++		goto again;
++	}
+ 
+-	/* set write to only the index of the write */
+-	write &= RB_WRITE_MASK;
++	/* Set write to the start of this event */
++	write = w & RB_WRITE_MASK;
+ 
+-	tail = write - info->length;
++	/* set tail to the end of the event */
++	tail = write + info->length;
+ 
+ 	/* See if we shot pass the end of this buffer page */
+-	if (unlikely(write > cpu_buffer->buffer->subbuf_size)) {
++	if (unlikely(tail > cpu_buffer->buffer->subbuf_size)) {
+ 		check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
+-		return rb_move_tail(cpu_buffer, tail, info);
++		return rb_move_tail(cpu_buffer, write, info);
+ 	}
+ 
+-	if (likely(tail == w)) {
+-		/* Nothing interrupted us between A and C */
+- /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
+-		/*
+-		 * If something came in between C and D, the write stamp
+-		 * may now not be in sync. But that's fine as the before_stamp
+-		 * will be different and then next event will just be forced
+-		 * to use an absolute timestamp.
+-		 */
+-		if (likely(!(info->add_timestamp &
+-			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
+-			/* This did not interrupt any time update */
+-			info->delta = info->ts - info->after;
+-		else
+-			/* Just use full timestamp for interrupting event */
+-			info->delta = info->ts;
+-		check_buffer(cpu_buffer, info, tail);
+-	} else {
+-		u64 ts;
+-		/* SLOW PATH - Interrupted between A and C */
+-
+-		/* Save the old before_stamp */
+-		rb_time_read(&cpu_buffer->before_stamp, &info->before);
+-
+-		/*
+-		 * Read a new timestamp and update the before_stamp to make
+-		 * the next event after this one force using an absolute
+-		 * timestamp. This is in case an interrupt were to come in
+-		 * between E and F.
+-		 */
+-		ts = rb_time_stamp(cpu_buffer->buffer);
+-		rb_time_set(&cpu_buffer->before_stamp, ts);
+-
+-		barrier();
+- /*E*/		rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-		barrier();
+- /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+-		    info->after == info->before && info->after < ts) {
+-			/*
+-			 * Nothing came after this event between C and F, it is
+-			 * safe to use info->after for the delta as it
+-			 * matched info->before and is still valid.
+-			 */
+-			info->delta = ts - info->after;
+-		} else {
+-			/*
+-			 * Interrupted between C and F:
+-			 * Lost the previous events time stamp. Just set the
+-			 * delta to zero, and this will be the same time as
+-			 * the event this event interrupted. And the events that
+-			 * came after this will still be correct (as they would
+-			 * have built their delta on the previous event.
+-			 */
+-			info->delta = 0;
+-		}
+-		info->ts = ts;
+-		info->add_timestamp &= ~RB_ADD_STAMP_FORCE;
+-	}
++	/* Nothing interrupted us between A and C */
++ /*D*/	rb_time_set(&cpu_buffer->write_stamp, info->ts);
++	/*
++	 * If something came in between C and D, the write stamp
++	 * may now not be in sync. But that's fine as the before_stamp
++	 * will be different and then next event will just be forced
++	 * to use an absolute timestamp.
++	 */
++	if (likely(!(info->add_timestamp &
++		     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
++		/* This did not interrupt any time update */
++		info->delta = info->ts - info->after;
++	else
++		/* Just use full timestamp for interrupting event */
++		info->delta = info->ts;
++	check_buffer(cpu_buffer, info, write);
+ 
+ 	/*
+ 	 * If this is the first commit on the page, then it has the same
+ 	 * timestamp as the page itself.
+ 	 */
+-	if (unlikely(!tail && !(info->add_timestamp &
++	if (unlikely(!write && !(info->add_timestamp &
+ 				(RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
+ 		info->delta = 0;
+ 
+ 	/* We reserved something on the buffer */
+ 
+-	event = __rb_page_index(tail_page, tail);
++	event = __rb_page_index(tail_page, write);
+ 	rb_update_event(cpu_buffer, event, info);
+ 
+ 	local_inc(&tail_page->entries);
+@@ -3578,7 +3543,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	 * If this is the first commit on the page, then update
+ 	 * its timestamp.
+ 	 */
+-	if (unlikely(!tail))
++	if (unlikely(!write))
+ 		tail_page->page->time_stamp = info->ts;
+ 
+ 	/* account for these added bytes */
 -- 
-Dave Chinner
-david@fromorbit.com
+2.43.0
+
 
