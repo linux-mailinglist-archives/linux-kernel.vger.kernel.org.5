@@ -1,170 +1,362 @@
-Return-Path: <linux-kernel+bounces-71063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFAE685A02F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:50:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A7785A02E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 437DB1F22A8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:50:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B3DC1C21436
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 829A124B5B;
-	Mon, 19 Feb 2024 09:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="OLxbccUO"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2046.outbound.protection.outlook.com [40.107.244.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09AAA24A19
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708336220; cv=fail; b=Hq8G0j/pKscRE9GuBhYie14OhzuopRPyLFOCeYyrdRu13+TAk8uN+q7dyD0XWXtBGTj/xjAmRpUfQg2uGtJh2LwqJpdB0XscyGYXMjxFQuZQZ5hrCpS2PxSCz6fhoCbKVZAEcgdoD5qiIwYBGJKQc4SxellI61IGddgwWdrCuCE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708336220; c=relaxed/simple;
-	bh=iQeiM3xpYp00ELdC1AWh7K49vh067MS8un07PYHxHVM=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=mgy4oHJycw434Xq6Ump1Cb95jw1jzQ9/0oBGEb951njr6BKSuhFIRsItIDkWxnV5GHhunmj3l3ppYW44DFiJtvEzZ84lYfnDVW06DjAGueJvKufPafEeFLRzWCNvKIg05bvouSAhcnD3F57rq06A1T9FaIuFCvJwKiZG7J/gRME=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=OLxbccUO; arc=fail smtp.client-ip=40.107.244.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X9iYkO9l/4lwqFkX1nponr5tD4vCooWjwKr35drOkkhooM0BOPDBGx02npzOg3Mkb8vMz3wusFMe5UgjHZVtgaAK9wuyKCp92z/GAHKqMQsGkJ+G9vSDKsT6wt1rUF01zLuAKArrh3RR3pkP/kfAM+qenheKe0P2Epb3ZtkCJM8F3GdizCpyxmQrlma4JxIxWoWXc6OIfWNSdORGOgOksLITh1aAxDfPsEVi9gIbNumZJjwYcXp7oaPghCvDGkfPzh7lNdr2INSf8qxsoEXWmiCbqr5TGr8FYqB5uws7QUWFo+LkZJs0aLXcGBg4IVP7Y1O50Vfn8gi07MsFK4q1eQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2tixQ5R9IZUP+WEX2uv+RFHb/ecS/16t8tSkxwJh1HM=;
- b=TdqZHV/zSXx3+mc9faIE2qb6/VrQWWy5JFz4idA52FfT2tw4WUQSgmYEbgU0vZ0vXQFFLEzxpMbE1B3sJeAVvfeQN+e+fYAWAPHiSW0Nb0a2/d4Vp3RzyYdfIo1ZSGOh/RFO7GGpxJnEl5hlZIBmb9KETxyYgWAxarMn4JKf53PZZJCgHVpyo/JctWy8tm1FukK8WH4Kh15nyEX1Uwd4vI8OoPLgXkFak1L9CPxJ7VjjxHEFgzRFfUvL3w4ODFzL5klvl4KdFdRNyCkodg0niIOfQe4fKCTTB58r/VDmELzr/YcI5iNqdHAvvLjvOshGs/RJFfT9vQT24oTvzZ26Ag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2tixQ5R9IZUP+WEX2uv+RFHb/ecS/16t8tSkxwJh1HM=;
- b=OLxbccUOKiANT3Kq4Xs7GgEhO6mRmZJ6zY/LTxjsFG8PP2JVik8fC0Imd2ttpgEVnGpT/olLLc6Y1UWhzbsgIQcod4u4c/UhIAE0D/nj+yTeL3A8ff9pcbJpjtJ/hNDujTF8wdCy7Ksyc6OWmdK2ghLFNOi1Nv7G6CpEjOhkVNqXX7w0IIvz3KW4Hut+7vSUpf8awkU0Z9KOdowKsFmuSOjMayE9Q9TmC8RvHNHlugWWf3nspMOgJhcUgerFpvkriaKq6KjfulLjV7cVknNUsAIrg2WsZxeUbMMNYSN7SVxBqIfJofNvewj1kkfYfNEtb3B6FfGWP+IDH+f8eNn7fQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
- CH3PR12MB9252.namprd12.prod.outlook.com (2603:10b6:610:1ba::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7316.19; Mon, 19 Feb 2024 09:50:14 +0000
-Received: from DS0PR12MB7726.namprd12.prod.outlook.com
- ([fe80::a892:3047:6c68:5adb]) by DS0PR12MB7726.namprd12.prod.outlook.com
- ([fe80::a892:3047:6c68:5adb%4]) with mapi id 15.20.7316.018; Mon, 19 Feb 2024
- 09:50:13 +0000
-References: <20240216211320.222431-1-sidhartha.kumar@oracle.com>
- <20240216211320.222431-4-sidhartha.kumar@oracle.com>
- <Zc_Z1PT20tNlsiFf@casper.infradead.org>
- <71db0ad0-a385-8572-7bea-bb11f76a6345@oracle.com>
- <Zc_taXK-X-NYPQli@casper.infradead.org>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Alistair Popple <apopple@nvidia.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Sidhartha Kumar <sidhartha.kumar@oracle.com>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- akpm@linux-foundation.org
-Subject: Re: [PATCH v2 4/6] mm/migrate_device: convert
- __migrate_device_pages() to folios
-Date: Mon, 19 Feb 2024 20:49:07 +1100
-In-reply-to: <Zc_taXK-X-NYPQli@casper.infradead.org>
-Message-ID: <8734tobx66.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SYBPR01CA0198.ausprd01.prod.outlook.com
- (2603:10c6:10:16::18) To DS0PR12MB7726.namprd12.prod.outlook.com
- (2603:10b6:8:130::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541CA25569;
+	Mon, 19 Feb 2024 09:50:05 +0000 (UTC)
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DBC824B2C;
+	Mon, 19 Feb 2024 09:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708336204; cv=none; b=ANDHuHhksgXfqaoISdPNq2sODiTSh875INpyc0e+YPcNFNgije1vpRedM4CDkkNf0rGX3IOXuM4VEWgjIh+ynUxAsUQv9iAh7KqGThPWipsHq3NjTKCbCQhgl8EDPLLRH1ctJvezsyBZPstt48EGmdBEv4OuKK0BhRnT2OtYPG4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708336204; c=relaxed/simple;
+	bh=qVLktq4L4ue04kDObs/s6VXvHhJ8BL4Ga9qHhCok+Xw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=rmHAFdZfiuSTJ3brCLZfWAzBNPUA+uq+hVJGC6vL3EsXEbI055FwsSqvJ0RSBMbTOQ9mKBzL9lQePycbl2qsxNTPIMka8o1kox2K5H82ixx04u7LP709OHwHNwPnTNctqzgSfGTmvZ+0bUVG9rVJPK6qX/DR2woCoWQ5MozoMvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [10.20.42.173])
+	by gateway (Coremail) with SMTP id _____8BxOPBHJNNlMU4OAA--.38551S3;
+	Mon, 19 Feb 2024 17:50:00 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxnhNDJNNlsOo7AA--.33312S3;
+	Mon, 19 Feb 2024 17:49:57 +0800 (CST)
+Subject: Re: [PATCH v4 4/6] LoongArch: Add paravirt interface for guest kernel
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Tianrui Zhao <zhaotianrui@loongson.cn>, Juergen Gross <jgross@suse.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, loongarch@lists.linux.dev,
+ linux-kernel@vger.kernel.org, virtualization@lists.linux.dev,
+ kvm@vger.kernel.org
+References: <20240201031950.3225626-1-maobibo@loongson.cn>
+ <20240201031950.3225626-5-maobibo@loongson.cn>
+ <CAAhV-H7dXsU+WM172PWi_m8TYpYmzG_SW-vVQcdnOdETUxQ9+w@mail.gmail.com>
+ <63f8bd29-c0da-167b-187d-61c56eb081a6@loongson.cn>
+ <CAAhV-H6HQHyu=0zyv6FVLRJTkOcmnkLk5h361yGd2igYnuMMng@mail.gmail.com>
+ <4dcbd5b2-ba69-e254-b3bb-75a75e5f9215@loongson.cn>
+ <CAAhV-H7UyOX6ifKzUdTQiPuueOwsBUO2Jhtfcb832Gc0DTpQKQ@mail.gmail.com>
+From: maobibo <maobibo@loongson.cn>
+Message-ID: <b6482ad7-c800-beb9-ac49-989f8a044132@loongson.cn>
+Date: Mon, 19 Feb 2024 17:50:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|CH3PR12MB9252:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9b8a8a9b-53dd-4dcc-ce3a-08dc31302b82
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	1fyFWcheHumYfIVojtuhGxolXlQpk1uwdk2vbvZovXZXazyVSI2ejlNT2TvTs1vNesfamNYrCyPZUa7GDCXR9jSTVzY7sOTy9uLSjeQEbsyuU7k+8C7EGy+P5H4gQ5pZcNDVKa5TOb6L1CxlHEOnaSJUkSCchuhYvT65BUszMgBKIew6sEMKu6deSWhKfQ2rQmLEg0ey2W8XcNaoljViUoGxkdaUKv1259k+bAtHoVwASM18+6JKiaO0MnOPT9VTR1fwHYIrXdwVKGOlHQAT4IoXyBTa3efVBbFHkS05LizVIHc28pXEYmWzF27fw0npNpXtw5fpcyxYZlvkRHWUZ8z60uZC/QCBl2WwSorBrvVYGijpcv4EFWT+mG3T3CCfRYsIkIL9ZEdUhMKxSCgcGSYrKNHQsbzsRLR4xudo03h5NkTkRyA7zA+mVEixpiUix9gngpR3dy8keAst5aNBrZ70ZpOdJ74rfexxQAfU1cTGL+h9N1GQlML429SIsM+JLB+ApcrNr5vCyXJka8EECvD57ZDXcLKrBK18QYxgzlX6sidGev6QTzzJAZt7wwPH
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(366004)(39860400002)(376002)(230922051799003)(186009)(64100799003)(1800799012)(451199024)(2906002)(5660300002)(26005)(8936002)(316002)(66476007)(6916009)(4326008)(66946007)(66556008)(41300700001)(83380400001)(8676002)(86362001)(38100700002)(9686003)(53546011)(478600001)(6666004)(6486002)(6512007)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?NDSACoz2xKlKHoGe3zE90od1VwS78IS0gbILsS1ERrZKUQlgAT5EFOkH/WGk?=
- =?us-ascii?Q?CH0zSWoXrLCKlQWAgh4TBe68VBMSpT9CfOQomTb+A9BzKWiDY0XZ/pNdnPd1?=
- =?us-ascii?Q?xTh4YI1tGEK0aeNqgA0HWsEU8FMoQ4UF28sjDK061DtKS9KI8443XntUYl/L?=
- =?us-ascii?Q?FWNSm74WjMFMtZvaN5Ufvl1YXBRY19Ke3gLMnGD+qIpo8urgElGKm5SEc5A7?=
- =?us-ascii?Q?9s1UmqSgVqKbxrjMQ6WeJq9+wsL6apyl0hIDjC9ggaZnMAZ86nINM8WglXdL?=
- =?us-ascii?Q?O28jcXarPepxD79aj15hdpcdTE8kx2tcLu53dWAvkj9lyy+ej5h9kzElaUxl?=
- =?us-ascii?Q?iFAN8QnSOYyma691MamLMguczSAR38ehvYrrb2gUJNmDGdhSBXV/HxKCqLDa?=
- =?us-ascii?Q?xth6jPnc007fnV18OP9Pg8jeLOhK6ONHm5Cd7kJ1Qg+Z0Hom3TPyafL2Wz0B?=
- =?us-ascii?Q?5nB1VmaL7WdyDdwGAAjiwm+eXsFZMy/C0bkbGCjh4ivapkHHNvf82i3WLIW7?=
- =?us-ascii?Q?1sfqUjeAWp8niBXn007Fi8TX+NETfX4mpc2WhXmK0Xwc5LEPG67JJR6m+6Yx?=
- =?us-ascii?Q?OlACYeDU9Q1VAxYPIzGCQUc9scySaGGc9j8v3hyHKRO4Qt4E+ZMjqYDUaAaP?=
- =?us-ascii?Q?aTQ//cYKvTDqA1btNFArPv54J8XO81+qGMO6jgp0nDdxKEYtsB1+hzPBLuBT?=
- =?us-ascii?Q?6wiE5pzi1W4ExHXadTSWsWpT+NqRWHube8jI1dWh20UKNSfmmLhnRuRKKaMD?=
- =?us-ascii?Q?6Aw9i33aXUmC4xVKgkf0Rx+WzYvErEv+Kg5tCQrVcC8xsbE/qn7BhKZiDq/E?=
- =?us-ascii?Q?USB5waIQHzBeM7Y4aCDkxVOAPy3RJJuW1HhChcfZNP9tPaZ3P7LCm2iO4oUL?=
- =?us-ascii?Q?mIqh3YmoaIVFc5oubV600ESrVW6Q9dFdjfgQaaKAxeeB1zLkorOWJQw6M1zd?=
- =?us-ascii?Q?fOL5KVqbmnsKXZJ/WQAeaj9mNoypE6vaETu5gJy0gBYvfEtf9oJ4wUxBmdsC?=
- =?us-ascii?Q?25/saf7Fj4WCaJal+GdnTVKFb2/hj6YhDyyrlN9Y0Y4uUxFizn0qpOPHniiZ?=
- =?us-ascii?Q?oinF4RdELS7AHbVHjqC2Y7z0qRdW163xAmTaUZwlrs7cNts6rE6D5eHZQvMD?=
- =?us-ascii?Q?wFDeqxtD7qTN8T6cZ7e6XwKfsQd51jQRp0wT6L9BXznGsc07JoYbcNjZVfFW?=
- =?us-ascii?Q?itHd8sKUqEGUvHy9auWgJHGNAWa5o6Ay7J15VTQAdwYSXgjHBks17Txze/vL?=
- =?us-ascii?Q?jxIx+XvjGT/hKmcrH/hpIvoJ3kG+U7Z/jIVHxizVlBOGpSLSgkY3FAnDh5sA?=
- =?us-ascii?Q?IeolxdCedlBmqRSVtU41YUtVIlNrx+rIzmCAxIn39l4balJTAOJ8ztDTiLxi?=
- =?us-ascii?Q?1Q1l+HyVROwc+J4TCvE4V1/7S/ZizVL2d/ZQ77L+pWH0Xq+fnjj0yz2olgL3?=
- =?us-ascii?Q?T369WEQ7kQ0dDHdHr7iW0uJ3IS7mthJvhcQmBOb+i6UG+2KAtkvAI7sE1uyV?=
- =?us-ascii?Q?sJpsos/0cWmXeAp5nhzZC4aY+L1hvpGLmL1QQnlEDOMCmNJIhwUZSJajigwb?=
- =?us-ascii?Q?dkk5xJD9vbUdjujCjl2iKbQo+IwIXUWYT4OzMGBU?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b8a8a9b-53dd-4dcc-ce3a-08dc31302b82
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB7726.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 09:50:13.9166
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CDs7OaJzsyWVIAK6I2neLksFqao7uBRwKYE9Bqy/0PV09s0wH0USF/0N7Jqc4kqoGobOysnYcKsQqOb4yPSF3Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9252
+In-Reply-To: <CAAhV-H7UyOX6ifKzUdTQiPuueOwsBUO2Jhtfcb832Gc0DTpQKQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:AQAAf8BxnhNDJNNlsOo7AA--.33312S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW3ZF47urW8GFy5ZF4UWr4ftFc_yoWDXry5pF
+	yUAF4kGF4UGr1xArnFq3y5Wrnxtrn7Gr17WF17t340yrsFvr17Jr18Jryj9FykJa1kGF10
+	qFy8Gr4a9F15J3gCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+	XVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+	8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+	Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4s2-UUUUU
 
 
-Matthew Wilcox <willy@infradead.org> writes:
 
-> On Fri, Feb 16, 2024 at 02:00:31PM -0800, Sidhartha Kumar wrote:
->> On 2/16/24 1:55 PM, Matthew Wilcox wrote:
->> > On Fri, Feb 16, 2024 at 01:13:18PM -0800, Sidhartha Kumar wrote:
->> > > Use migrate_pfn_to_folio() so we can work with folios directly in
->> > > __migrate_device_pages().
->> > 
->> > i don't understand why this would be correct if we have multipage
->> > folios.
->> > 
->> 
->> Alistair mentioned that he is working on order > 0 device page support so I
->> was under the impression that currently device pages are only order 0.
+On 2024/2/19 下午5:38, Huacai Chen wrote:
+> On Mon, Feb 19, 2024 at 5:21 PM maobibo <maobibo@loongson.cn> wrote:
+>>
+>>
+>>
+>> On 2024/2/19 下午4:48, Huacai Chen wrote:
+>>> On Mon, Feb 19, 2024 at 12:11 PM maobibo <maobibo@loongson.cn> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2024/2/19 上午10:42, Huacai Chen wrote:
+>>>>> Hi, Bibo,
+>>>>>
+>>>>> On Thu, Feb 1, 2024 at 11:19 AM Bibo Mao <maobibo@loongson.cn> wrote:
+>>>>>>
+>>>>>> The patch adds paravirt interface for guest kernel, function
+>>>>>> pv_guest_initi() firstly checks whether system runs on VM mode. If kernel
+>>>>>> runs on VM mode, it will call function kvm_para_available() to detect
+>>>>>> whether current VMM is KVM hypervisor. And the paravirt function can work
+>>>>>> only if current VMM is KVM hypervisor, since there is only KVM hypervisor
+>>>>>> supported on LoongArch now.
+>>>>>>
+>>>>>> This patch only adds paravirt interface for guest kernel, however there
+>>>>>> is not effective pv functions added here.
+>>>>>>
+>>>>>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>>>>>> ---
+>>>>>>     arch/loongarch/Kconfig                        |  9 ++++
+>>>>>>     arch/loongarch/include/asm/kvm_para.h         |  7 ++++
+>>>>>>     arch/loongarch/include/asm/paravirt.h         | 27 ++++++++++++
+>>>>>>     .../include/asm/paravirt_api_clock.h          |  1 +
+>>>>>>     arch/loongarch/kernel/Makefile                |  1 +
+>>>>>>     arch/loongarch/kernel/paravirt.c              | 41 +++++++++++++++++++
+>>>>>>     arch/loongarch/kernel/setup.c                 |  2 +
+>>>>>>     7 files changed, 88 insertions(+)
+>>>>>>     create mode 100644 arch/loongarch/include/asm/paravirt.h
+>>>>>>     create mode 100644 arch/loongarch/include/asm/paravirt_api_clock.h
+>>>>>>     create mode 100644 arch/loongarch/kernel/paravirt.c
+>>>>>>
+>>>>>> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
+>>>>>> index 10959e6c3583..817a56dff80f 100644
+>>>>>> --- a/arch/loongarch/Kconfig
+>>>>>> +++ b/arch/loongarch/Kconfig
+>>>>>> @@ -585,6 +585,15 @@ config CPU_HAS_PREFETCH
+>>>>>>            bool
+>>>>>>            default y
+>>>>>>
+>>>>>> +config PARAVIRT
+>>>>>> +       bool "Enable paravirtualization code"
+>>>>>> +       depends on AS_HAS_LVZ_EXTENSION
+>>>>>> +       help
+>>>>>> +          This changes the kernel so it can modify itself when it is run
+>>>>>> +         under a hypervisor, potentially improving performance significantly
+>>>>>> +         over full virtualization.  However, when run without a hypervisor
+>>>>>> +         the kernel is theoretically slower and slightly larger.
+>>>>>> +
+>>>>>>     config ARCH_SUPPORTS_KEXEC
+>>>>>>            def_bool y
+>>>>>>
+>>>>>> diff --git a/arch/loongarch/include/asm/kvm_para.h b/arch/loongarch/include/asm/kvm_para.h
+>>>>>> index 9425d3b7e486..41200e922a82 100644
+>>>>>> --- a/arch/loongarch/include/asm/kvm_para.h
+>>>>>> +++ b/arch/loongarch/include/asm/kvm_para.h
+>>>>>> @@ -2,6 +2,13 @@
+>>>>>>     #ifndef _ASM_LOONGARCH_KVM_PARA_H
+>>>>>>     #define _ASM_LOONGARCH_KVM_PARA_H
+>>>>>>
+>>>>>> +/*
+>>>>>> + * Hypcall code field
+>>>>>> + */
+>>>>>> +#define HYPERVISOR_KVM                 1
+>>>>>> +#define HYPERVISOR_VENDOR_SHIFT                8
+>>>>>> +#define HYPERCALL_CODE(vendor, code)   ((vendor << HYPERVISOR_VENDOR_SHIFT) + code)
+>>>>>> +
+>>>>>>     /*
+>>>>>>      * LoongArch hypcall return code
+>>>>>>      */
+>>>>>> diff --git a/arch/loongarch/include/asm/paravirt.h b/arch/loongarch/include/asm/paravirt.h
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..b64813592ba0
+>>>>>> --- /dev/null
+>>>>>> +++ b/arch/loongarch/include/asm/paravirt.h
+>>>>>> @@ -0,0 +1,27 @@
+>>>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>>>> +#ifndef _ASM_LOONGARCH_PARAVIRT_H
+>>>>>> +#define _ASM_LOONGARCH_PARAVIRT_H
+>>>>>> +
+>>>>>> +#ifdef CONFIG_PARAVIRT
+>>>>>> +#include <linux/static_call_types.h>
+>>>>>> +struct static_key;
+>>>>>> +extern struct static_key paravirt_steal_enabled;
+>>>>>> +extern struct static_key paravirt_steal_rq_enabled;
+>>>>>> +
+>>>>>> +u64 dummy_steal_clock(int cpu);
+>>>>>> +DECLARE_STATIC_CALL(pv_steal_clock, dummy_steal_clock);
+>>>>>> +
+>>>>>> +static inline u64 paravirt_steal_clock(int cpu)
+>>>>>> +{
+>>>>>> +       return static_call(pv_steal_clock)(cpu);
+>>>>>> +}
+>>>>> The steal time code can be removed in this patch, I think.
+>>>>>
+>>>> Originally I want to remove this piece of code, but it fails to compile
+>>>> if CONFIG_PARAVIRT is selected. Here is reference code, function
+>>>> paravirt_steal_clock() must be defined if CONFIG_PARAVIRT is selected.
+>>>>
+>>>> static __always_inline u64 steal_account_process_time(u64 maxtime)
+>>>> {
+>>>> #ifdef CONFIG_PARAVIRT
+>>>>            if (static_key_false(&paravirt_steal_enabled)) {
+>>>>                    u64 steal;
+>>>>
+>>>>                    steal = paravirt_steal_clock(smp_processor_id());
+>>>>                    steal -= this_rq()->prev_steal_time;
+>>>>                    steal = min(steal, maxtime);
+>>>>                    account_steal_time(steal);
+>>>>                    this_rq()->prev_steal_time += steal;
+>>>>
+>>>>                    return steal;
+>>>>            }
+>>>> #endif
+>>>>            return 0;
+>>>> }
+>>> OK, then keep it.
+>>>
+>>>>
+>>>>>> +
+>>>>>> +int pv_guest_init(void);
+>>>>>> +#else
+>>>>>> +static inline int pv_guest_init(void)
+>>>>>> +{
+>>>>>> +       return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +#endif // CONFIG_PARAVIRT
+>>>>>> +#endif
+>>>>>> diff --git a/arch/loongarch/include/asm/paravirt_api_clock.h b/arch/loongarch/include/asm/paravirt_api_clock.h
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..65ac7cee0dad
+>>>>>> --- /dev/null
+>>>>>> +++ b/arch/loongarch/include/asm/paravirt_api_clock.h
+>>>>>> @@ -0,0 +1 @@
+>>>>>> +#include <asm/paravirt.h>
+>>>>>> diff --git a/arch/loongarch/kernel/Makefile b/arch/loongarch/kernel/Makefile
+>>>>>> index 3c808c680370..662e6e9de12d 100644
+>>>>>> --- a/arch/loongarch/kernel/Makefile
+>>>>>> +++ b/arch/loongarch/kernel/Makefile
+>>>>>> @@ -48,6 +48,7 @@ obj-$(CONFIG_MODULES)         += module.o module-sections.o
+>>>>>>     obj-$(CONFIG_STACKTRACE)       += stacktrace.o
+>>>>>>
+>>>>>>     obj-$(CONFIG_PROC_FS)          += proc.o
+>>>>>> +obj-$(CONFIG_PARAVIRT)         += paravirt.o
+>>>>>>
+>>>>>>     obj-$(CONFIG_SMP)              += smp.o
+>>>>>>
+>>>>>> diff --git a/arch/loongarch/kernel/paravirt.c b/arch/loongarch/kernel/paravirt.c
+>>>>>> new file mode 100644
+>>>>>> index 000000000000..21d01d05791a
+>>>>>> --- /dev/null
+>>>>>> +++ b/arch/loongarch/kernel/paravirt.c
+>>>>>> @@ -0,0 +1,41 @@
+>>>>>> +// SPDX-License-Identifier: GPL-2.0
+>>>>>> +#include <linux/export.h>
+>>>>>> +#include <linux/types.h>
+>>>>>> +#include <linux/jump_label.h>
+>>>>>> +#include <linux/kvm_para.h>
+>>>>>> +#include <asm/paravirt.h>
+>>>>>> +#include <linux/static_call.h>
+>>>>>> +
+>>>>>> +struct static_key paravirt_steal_enabled;
+>>>>>> +struct static_key paravirt_steal_rq_enabled;
+>>>>>> +
+>>>>>> +static u64 native_steal_clock(int cpu)
+>>>>>> +{
+>>>>>> +       return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>> +DEFINE_STATIC_CALL(pv_steal_clock, native_steal_clock);
+>>>>> The steal time code can be removed in this patch, I think.
+>>>> Ditto, the same reason with above.
+>>>>>
+>>>>>> +
+>>>>>> +static bool kvm_para_available(void)
+>>>>>> +{
+>>>>>> +       static int hypervisor_type;
+>>>>>> +       int config;
+>>>>>> +
+>>>>>> +       if (!hypervisor_type) {
+>>>>>> +               config = read_cpucfg(CPUCFG_KVM_SIG);
+>>>>>> +               if (!memcmp(&config, KVM_SIGNATURE, 4))
+>>>>>> +                       hypervisor_type = HYPERVISOR_KVM;
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       return hypervisor_type == HYPERVISOR_KVM;
+>>>>>> +}
+>>>>>> +
+>>>>>> +int __init pv_guest_init(void)
+>>>>>> +{
+>>>>>> +       if (!cpu_has_hypervisor)
+>>>>>> +               return 0;
+>>>>>> +       if (!kvm_para_available())
+>>>>>> +               return 0;
+>>>>>> +
+>>>>>> +       return 1;
+>>>>>> +}
+>>>>>> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
+>>>>>> index edf2bba80130..de5c36dccc49 100644
+>>>>>> --- a/arch/loongarch/kernel/setup.c
+>>>>>> +++ b/arch/loongarch/kernel/setup.c
+>>>>>> @@ -43,6 +43,7 @@
+>>>>>>     #include <asm/efi.h>
+>>>>>>     #include <asm/loongson.h>
+>>>>>>     #include <asm/numa.h>
+>>>>>> +#include <asm/paravirt.h>
+>>>>>>     #include <asm/pgalloc.h>
+>>>>>>     #include <asm/sections.h>
+>>>>>>     #include <asm/setup.h>
+>>>>>> @@ -367,6 +368,7 @@ void __init platform_init(void)
+>>>>>>            pr_info("The BIOS Version: %s\n", b_info.bios_version);
+>>>>>>
+>>>>>>            efi_runtime_init();
+>>>>>> +       pv_guest_init();
+>>>>> I prefer use CONFIG_PARAVIRT here, though you have a dummy version for
+>>>>> !CONFIG_PARAVIRT, I think it is better to let others clearly know that
+>>>>> PARAVIRT is an optional feature.
+>>>> I remember that there is rule that CONFIG_xxx had better be used in
+>>>> header files rather than c code, so that the code looks neat. Am I wrong?
+>>> That depends on what we want, sometimes we want to hide the details,
+>>> but sometimes we want to give others a notice.
+>> I want to keep code clean here :)
+>>
+>>>
+>>> And there is another problem: if you want to centralize all pv init
+>>> functions, it is better to use pv_features_init() rather than
+>>> pv_guest_init(); if you want to give each feature an init function,
+>>> then we don't need pv_guest_init here, and we can then add a
+>>> pv_ipi_init() in the last patch.
+>> Currently I have no idea how to add other pv features like pv
+>> stealtimer, I will consider this when adding other pv features.
+>> pv_ipi_init/pv_guest_init is both ok for me, pv_ipi_init is better for now.
+> Then you want to add an init function for each feature, so please
+> rename to pv_ipi_init(), move to the last patch and in
+> loongson_smp_setup().
+Sure, will change function name with pv_ipi_init() and move sentences 
+calling this function to last patch.
 
-Right, at the moment we only create order 0 device private pages.
+Regards
+Bibo Mao
 
-> That might well be true, but I'm *very* uncomfortable with doing a folio
-> conversion in core MM that won't work with large folios.  We need to
-> consider what will happen with large device folios.
-
-Yes. Perhaps it would be better to post these fixes as part of a series
-introducing multi-page folio support for deivce private pages after
-all. I don't think we can address your other comments here without first
-describing how large folios for device private pages would work, and the
-best way to describe that is with the patches.
-
-I doubt I will get those posted this week, but will aim to do so in the
-next 2-3 weeks.
-
-> (for filesystems, I am less bothered.  Individual filesystems control
-> whether they see large folios or not, and for lesser filesystems it may
-> never be worth converting them to support large folios)
+> 
+> Huacai
+> 
+>>
+>> Regards
+>> Bibo Mao
+>>
+>>>
+>>> Huacai
+>>>
+>>>>
+>>>> Regards
+>>>> Bibo Mao
+>>>>>
+>>>>> Huacai
+>>>>>
+>>>>>
+>>>>> Huacai
+>>>>>>     }
+>>>>>>
+>>>>>>     static void __init check_kernel_sections_mem(void)
+>>>>>> --
+>>>>>> 2.39.3
+>>>>>>
+>>>>>>
+>>>>
+>>
 
 
