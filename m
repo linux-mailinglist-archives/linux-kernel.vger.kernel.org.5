@@ -1,66 +1,94 @@
-Return-Path: <linux-kernel+bounces-71088-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71090-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17B8885A080
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:05:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2326485A085
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:06:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BF641C21422
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:05:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B789B2170E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1179C2561A;
-	Mon, 19 Feb 2024 10:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BFED25577;
+	Mon, 19 Feb 2024 10:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIqlK0/x"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b="o+pdkKRl"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2061.outbound.protection.outlook.com [40.107.20.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F3C22F13;
-	Mon, 19 Feb 2024 10:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708337130; cv=none; b=VoEE4enWR486j1JxDr5+t7vfDjkOqx9V5qm5tjiXgvunFWWNI8AFJwNNie4mYag3Pgp1xeRMCmRB1Tu3kAkKN00HZv2FwOq9pQdH0QHlDGhq6dIks1nKy3qn+cTKqiJGjfEc7Ah5Dl6da8DqmXBezEeucWj2YL8tkQSBSfZeavA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708337130; c=relaxed/simple;
-	bh=Wp1z8DD4y2npUVyApGi7Hca+cEHUY33+maH5kr1tQf8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M5J0459LtIsBn5CrllFaKzjzjOuEYRcrwl4pxU+OeD3NcskIjR1gnmPYn/dObHNKJ0fajcAXs59iufV31XoXCWOiGluTIV51rX6BHlQMdrX6E8lPR8Ww6t8dVh3vWHq9KZU3wFB0exiaiM7fjiqFJ/dPkm0goPL7+QJPJKkB5Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hIqlK0/x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C83B9C433F1;
-	Mon, 19 Feb 2024 10:05:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708337129;
-	bh=Wp1z8DD4y2npUVyApGi7Hca+cEHUY33+maH5kr1tQf8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hIqlK0/xwDm4hFEwUq+KvV91ubPAyFk5GkmJHR1wz7FaM7mmXgiGrgVUDFpwWgO+U
-	 /TyKtGUmQTVguqYNLMBBLlNCE2AhS7bpIDZlo2XgreH1+ZTaPl8AIfh3oyzKAw7nSz
-	 YJRiTIQN6azbWHt79KcQ5I02nL5llWFEUfPl6b4I0hSByeeBZYUAUKLSsWhChQ5D+e
-	 CFyGm0EOJY2bglrWukdKWfjQe85i958MchkOqaI0O6hM8EX/USA7WSLbVjrcsQWnRO
-	 rDYbZFIsQjY5JsTAwLjHjxKa8wiyZG6g03OSL2TEVe72D6jwAhUKeW/pYQcAe5F4Ak
-	 Twubf9Tg6Azlw==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: Zhu Yanjun <yanjun.zhu@linux.dev>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Yevgeny Kliteynik <kliteyn@nvidia.com>,
-	Alex Vesker <valex@nvidia.com>,
-	Hamdan Igbaria <hamdani@nvidia.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] [v2] net/mlx5: fix possible stack overflows
-Date: Mon, 19 Feb 2024 11:04:56 +0100
-Message-Id: <20240219100506.648089-2-arnd@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE67A25601;
+	Mon, 19 Feb 2024 10:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708337189; cv=fail; b=Wo49Dgn2LiZV5R5PqkyBoc81ZuOSwXyzRIotyU4UGhFYoDj10EcOaby0PI7jYYMzeT/P7yzOzRjOFiC8+UeNmF5a8EO4nZz/XsiczwfDAq2FLsvzweMclnizJOtwmy1xhDKHd089tFIs/9LyTQWXKlcEkcwxrugU1mhaI4f5+uQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708337189; c=relaxed/simple;
+	bh=QllKm+DOC1RbYYaWSN5KO3kt7XUxMDQTwy7n0sTeHDo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WfJ8JhgWlyJAIukXPEjRWbY4eUgndgkXZ+/WIyK1jHuJXho/vWyIe0mCN2inCg3G+7jjQy59hI4Xfw3p4BN1HKS8PBnTfnrha1habMMGbLNZ3nnI3sO2ShDeTaq8PWVViXlUY4fK/wa563/9yXK8/u3WWlgxg5b4WasFURzcOGo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com; spf=pass smtp.mailfrom=axis.com; dkim=pass (1024-bit key) header.d=axis.com header.i=@axis.com header.b=o+pdkKRl; arc=fail smtp.client-ip=40.107.20.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=axis.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=axis.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iqn/78Zvsx2ywBBicMI6Nl1xq8+fnLpaRPFUOBjaZSqpoFR7LXMEBqbOralYCCurxofvdP1vZmrp/O86tgWanNt2SvuZ/zRQ05n6wHjijTMvIUCc9bSpn9JEe2FNTUmEfsa/5OUDgIMUD4yxPSWpZiEeTKOSMuP9YrBZYh7Sfo0kIa5DGSWFjOc4HwX6UNYdb8AqOXIKwaLD3YvFdN3gg7TP2RIEf2aB3mqS0yNN5iYIVU68vnKHDyvqCbOvnEOHR/kpC1/zo69ZhM1yN0VBCrj965mMVgZvO2YFHP3MTC//RG9LlMZeX+pVQPeNqEfxuuebRNuqBYiPtbUg+yr3Zg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4s1BDnDuHDBjX0mFYs3eWGmuhP6tZtmlxgTcXFK0frg=;
+ b=njmR1xYDJK1V6t1teStzMXO5NUhIA/vJThkdlhLHbzsPi+buChaz4tacD/zXCBZThtfS7HblF/7qFKkQdmUWT8MWs/bMLhCDt0c8ePItsCXrpl35M3CJ8q/0x6EmAySoTQ0BVGP/1TMKrjvnvVHCL/drMuoXibAqBw4q2iE5vgxcf4Ld799X+LV8sGXi+PQTsu9lXDIbEsggMSVtU4Ckrn01vP6AwR6XFkW7HtK6SBL0eVWj/U5ljVCHxLF7vaWs4hroKBunBO8cmI5goXNWtC4XM+DFWRrd+qD+QjJ2JhwYXjgl9DXTvHHshqANc8kEYYsMpwujhUafQHZomEv09g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 195.60.68.100) smtp.rcpttodomain=kernel.org smtp.mailfrom=axis.com;
+ dmarc=fail (p=none sp=none pct=100) action=none header.from=axis.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axis.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=4s1BDnDuHDBjX0mFYs3eWGmuhP6tZtmlxgTcXFK0frg=;
+ b=o+pdkKRl9exbhN+6i1x2I3lOZWFWqbIN0T1irIpk64tqMyJuZSXbWPBOHvCAVkVEbbdPiVql0rtd4ip/SZbK5DkOBADrQ5LdMbCwRy9pnG0ruSrI64yhoJotRBNqop8MESXZEjN2i9sAOHOEeXZpXvFgnRkiQwg1Ks2MoCHeNLI=
+Received: from AS8PR04CA0027.eurprd04.prod.outlook.com (2603:10a6:20b:310::32)
+ by DU0PR02MB8739.eurprd02.prod.outlook.com (2603:10a6:10:3ef::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
+ 2024 10:06:22 +0000
+Received: from AMS1EPF00000047.eurprd04.prod.outlook.com
+ (2603:10a6:20b:310:cafe::41) by AS8PR04CA0027.outlook.office365.com
+ (2603:10a6:20b:310::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.34 via Frontend
+ Transport; Mon, 19 Feb 2024 10:06:22 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 195.60.68.100)
+ smtp.mailfrom=axis.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=none header.from=axis.com;
+Received-SPF: Fail (protection.outlook.com: domain of axis.com does not
+ designate 195.60.68.100 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.60.68.100; helo=mail.axis.com;
+Received: from mail.axis.com (195.60.68.100) by
+ AMS1EPF00000047.mail.protection.outlook.com (10.167.16.135) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Mon, 19 Feb 2024 10:06:22 +0000
+Received: from se-mail01w.axis.com (10.20.40.7) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.34; Mon, 19 Feb
+ 2024 11:06:21 +0100
+Received: from se-intmail01x.se.axis.com (10.0.5.60) by se-mail01w.axis.com
+ (10.20.40.7) with Microsoft SMTP Server id 15.1.2375.34 via Frontend
+ Transport; Mon, 19 Feb 2024 11:06:21 +0100
+Received: from lnxchenhuiz2.sh.cn.axis.com (lnxchenhuiz2.sh.cn.axis.com [192.168.77.59])
+	by se-intmail01x.se.axis.com (Postfix) with ESMTP id 1D64D146F3;
+	Mon, 19 Feb 2024 11:06:20 +0100 (CET)
+Received: from lnxchenhuiz2.sh.cn.axis.com (localhost [127.0.0.1])
+	by lnxchenhuiz2.sh.cn.axis.com (8.17.1.9/8.17.1.9/Debian-2) with ESMTP id 41JA6J2i048781;
+	Mon, 19 Feb 2024 18:06:19 +0800
+Received: (from chenhuiz@localhost)
+	by lnxchenhuiz2.sh.cn.axis.com (8.17.1.9/8.17.1.9/Submit) id 41JA6JD2048780;
+	Mon, 19 Feb 2024 18:06:19 +0800
+From: Hermes Zhang <Hermes.Zhang@axis.com>
+To: Sebastian Reichel <sre@kernel.org>
+CC: <kernel@axis.com>, Hermes Zhang <Hermes.Zhang@axis.com>,
+	=?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>, <linux-pm@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH] power: supply: bq27xxx: Introduce parameter to config cache regs
+Date: Mon, 19 Feb 2024 18:05:40 +0800
+Message-ID: <20240219100541.48453-1-Hermes.Zhang@axis.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240219100506.648089-1-arnd@kernel.org>
-References: <20240219100506.648089-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,336 +96,196 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AMS1EPF00000047:EE_|DU0PR02MB8739:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3ed88a4d-816c-45a9-4255-08dc31326ca1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pSSRNIekvYWDTA0DuVMQUkwqeP8K41pvZFjtvV8CVInNCnt3TKQUBi6rWXBtQg6sFHD/2vAeSwWN0a1HQN2Zo1jyHvAcOAxdbSE6gOMWUFNZh8jUpOtJCFGmoQT6Uh0+mouCfLnf3HOnDeVGSXAJwKrJrkAGLjwntdrRVfyNcKA6zkjqVBevwe4KMI6nplcqKDNlJKYXX8Fguf/ZoQqThy5QLINiAmHEzuXw/KwZJ0MXQw4m/UDPNWxE5H5o6fvpvhmX6u7LUWajX7zv5wmzSwkKi/+MDbhg/kKdhSZBxLzUHzxQuQFHq/sCeWaCNSp8ZxhLiYkWhP6g+DMnAWpXnTbblhvfdlvbvQtlL6amVgOQzCikCsG51Ho3TMGHuqwFSMtLUovd2xB8RnWgZ89RNlAV3d+MyyBwX6LjpALgdAPMEvMCVM4IBJMaARILdzGIKWsJjURy6Dd1N/MohbRDi/pMoQ/k81mSpxj7mo0++EoxZyv/YN2NyDJUPO85gve5HDRP/2TewAY9YnHcddClSXo5BJ/Q+7Nwx15BsdDVKnqh13zG8NvbFq44pP26jcK1Y5Xm/nJyrLN8vpDELQoMQ2SL6nc1mcpfIrrGqwdB1ztcyxNmn669LsF5nyOTeF7nkrLPT+3Hh62BVZ5/+i+Z6juEwbctYpbn4qChZsfMf7Q=
+X-Forefront-Antispam-Report:
+	CIP:195.60.68.100;CTRY:SE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.axis.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(82310400011)(186009)(64100799003)(451199024)(1800799012)(36860700004)(46966006)(40470700004)(83380400001)(81166007)(356005)(86362001)(82740400003)(478600001)(316002)(6916009)(42186006)(54906003)(70206006)(70586007)(1076003)(26005)(2616005)(426003)(336012)(6666004)(36756003)(41300700001)(5660300002)(8936002)(4326008)(8676002)(2906002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: axis.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 10:06:22.0088
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ed88a4d-816c-45a9-4255-08dc31326ca1
+X-MS-Exchange-CrossTenant-Id: 78703d3c-b907-432f-b066-88f7af9ca3af
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=78703d3c-b907-432f-b066-88f7af9ca3af;Ip=[195.60.68.100];Helo=[mail.axis.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	AMS1EPF00000047.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB8739
 
-From: Arnd Bergmann <arnd@arndb.de>
+Since all of the regs in the bq27xxx_reg_cache are now cached, a simple
+property read (such as temperature) will need nine I2C transmissions.
+Introduce a new module parameter to enable the reg cache to be configured,
+which decrease the amount of unnecessary I2C transmission and preventing
+the error -16 (EBUSY) happen when working on an I2C bus that is shared by
+many devices.
 
-A couple of debug functions use a 512 byte temporary buffer and call another
-function that has another buffer of the same size, which in turn exceeds the
-usual warning limit for excessive stack usage:
-
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1073:1: error: stack frame size (1448) exceeds limit (1024) in 'dr_dump_start' [-Werror,-Wframe-larger-than]
-dr_dump_start(struct seq_file *file, loff_t *pos)
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1009:1: error: stack frame size (1120) exceeds limit (1024) in 'dr_dump_domain' [-Werror,-Wframe-larger-than]
-dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:705:1: error: stack frame size (1104) exceeds limit (1024) in 'dr_dump_matcher_rx_tx' [-Werror,-Wframe-larger-than]
-dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
-
-Rework these so that each of the various code paths only ever has one of
-these buffers in it, and exactly the functions that declare one have
-the 'noinline_for_stack' annotation that prevents them from all being
-inlined into the same caller.
-
-Fixes: 917d1e799ddf ("net/mlx5: DR, Change SWS usage to debug fs seq_file interface")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Hermes Zhang <Hermes.Zhang@axis.com>
 ---
-[v2] no changes, just based on patch 1/2 but can still be applied independently
----
- .../mellanox/mlx5/core/steering/dr_dbg.c      | 82 +++++++++----------
- 1 file changed, 41 insertions(+), 41 deletions(-)
+ drivers/power/supply/bq27xxx_battery.c | 65 +++++++++++++++++++-------
+ include/linux/power/bq27xxx_battery.h  |  9 ++++
+ 2 files changed, 58 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-index be7a8481d7d2..eae04f66b8f4 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-@@ -205,12 +205,11 @@ dr_dump_hex_print(char hex[DR_HEX_SIZE], char *src, u32 size)
- }
+diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/supply/bq27xxx_battery.c
+index 1c4a9d137744..45fd956ec961 100644
+--- a/drivers/power/supply/bq27xxx_battery.c
++++ b/drivers/power/supply/bq27xxx_battery.c
+@@ -1100,6 +1100,11 @@ module_param_cb(poll_interval, &param_ops_poll_interval, &poll_interval, 0644);
+ MODULE_PARM_DESC(poll_interval,
+ 		 "battery poll interval in seconds - 0 disables polling");
  
- static int
--dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
-+dr_dump_rule_action_mem(struct seq_file *file, char *buff, const u64 rule_id,
- 			struct mlx5dr_rule_action_member *action_mem)
++static unsigned int bq27xxx_cache_mask = 0xFF;
++module_param(bq27xxx_cache_mask, uint, 0644);
++MODULE_PARM_DESC(bq27xxx_cache_mask,
++		 "mask for bq27xxx reg cache - 0 disables reg cache");
++
+ /*
+  * Common code for BQ27xxx devices
+  */
+@@ -1842,21 +1847,29 @@ static void bq27xxx_battery_update_unlocked(struct bq27xxx_device_info *di)
+ 	if ((cache.flags & 0xff) == 0xff)
+ 		cache.flags = -1; /* read error */
+ 	if (cache.flags >= 0) {
+-		cache.temperature = bq27xxx_battery_read_temperature(di);
+-		if (di->regs[BQ27XXX_REG_TTE] != INVALID_REG_ADDR)
++		if (bq27xxx_cache_mask & BQ27XXX_CACHE_TEMP)
++			cache.temperature = bq27xxx_battery_read_temperature(di);
++		if (di->regs[BQ27XXX_REG_TTE] != INVALID_REG_ADDR &&
++			bq27xxx_cache_mask & BQ27XXX_CACHE_TTE)
+ 			cache.time_to_empty = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTE);
+-		if (di->regs[BQ27XXX_REG_TTECP] != INVALID_REG_ADDR)
++		if (di->regs[BQ27XXX_REG_TTECP] != INVALID_REG_ADDR &&
++			bq27xxx_cache_mask & BQ27XXX_CACHE_TTECP)
+ 			cache.time_to_empty_avg = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTECP);
+-		if (di->regs[BQ27XXX_REG_TTF] != INVALID_REG_ADDR)
++		if (di->regs[BQ27XXX_REG_TTF] != INVALID_REG_ADDR &&
++			bq27xxx_cache_mask & BQ27XXX_CACHE_TTF)
+ 			cache.time_to_full = bq27xxx_battery_read_time(di, BQ27XXX_REG_TTF);
+ 
+-		cache.charge_full = bq27xxx_battery_read_fcc(di);
+-		cache.capacity = bq27xxx_battery_read_soc(di);
+-		if (di->regs[BQ27XXX_REG_AE] != INVALID_REG_ADDR)
++		if (bq27xxx_cache_mask & BQ27XXX_CACHE_CHARGE_FULL)
++			cache.charge_full = bq27xxx_battery_read_fcc(di);
++		if (bq27xxx_cache_mask & BQ27XXX_CACHE_CAPACITY)
++			cache.capacity = bq27xxx_battery_read_soc(di);
++		if (di->regs[BQ27XXX_REG_AE] != INVALID_REG_ADDR &&
++			bq27xxx_cache_mask & BQ27XXX_CACHE_ENERGY)
+ 			cache.energy = bq27xxx_battery_read_energy(di);
+ 		di->cache.flags = cache.flags;
+ 		cache.health = bq27xxx_battery_read_health(di);
+-		if (di->regs[BQ27XXX_REG_CYCT] != INVALID_REG_ADDR)
++		if (di->regs[BQ27XXX_REG_CYCT] != INVALID_REG_ADDR &&
++			bq27xxx_cache_mask & BQ27XXX_CACHE_CYCT)
+ 			cache.cycle_count = bq27xxx_battery_read_cyct(di);
+ 
+ 		/*
+@@ -2004,6 +2017,7 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
  {
- 	struct mlx5dr_action *action = action_mem->action;
- 	const u64 action_id = DR_DBG_PTR_TO_ID(action);
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	u64 hit_tbl_ptr, miss_tbl_ptr;
- 	u32 hit_tbl_id, miss_tbl_id;
- 	int ret;
-@@ -505,10 +504,9 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
- }
+ 	int ret = 0;
+ 	struct bq27xxx_device_info *di = power_supply_get_drvdata(psy);
++	int tmp;
  
- static int
--dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
-+dr_dump_rule_mem(struct seq_file *file, char *buff, struct mlx5dr_ste *ste,
- 		 bool is_rx, const u64 rule_id, u8 format_ver)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	char hw_ste_dump[DR_HEX_SIZE];
- 	u32 mem_rec_type;
- 	int ret;
-@@ -540,7 +538,8 @@ dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
- }
+ 	mutex_lock(&di->lock);
+ 	if (time_is_before_jiffies(di->last_update + 5 * HZ))
+@@ -2027,24 +2041,37 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+ 		ret = bq27xxx_battery_current_and_status(di, val, NULL, NULL);
+ 		break;
+ 	case POWER_SUPPLY_PROP_CAPACITY:
+-		ret = bq27xxx_simple_value(di->cache.capacity, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_CAPACITY ?
++				di->cache.capacity : bq27xxx_battery_read_soc(di);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_CAPACITY_LEVEL:
+ 		ret = bq27xxx_battery_capacity_level(di, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_TEMP:
+-		ret = bq27xxx_simple_value(di->cache.temperature, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_TEMP ?
++				di->cache.temperature : bq27xxx_battery_read_temperature(di);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		if (ret == 0)
+ 			val->intval -= 2731; /* convert decidegree k to c */
+ 		break;
+ 	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_NOW:
+-		ret = bq27xxx_simple_value(di->cache.time_to_empty, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_TTE ?
++				di->cache.time_to_empty :
++				bq27xxx_battery_read_time(di, BQ27XXX_REG_TTE);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_TIME_TO_EMPTY_AVG:
+-		ret = bq27xxx_simple_value(di->cache.time_to_empty_avg, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_TTECP ?
++				di->cache.time_to_empty_avg :
++				bq27xxx_battery_read_time(di, BQ27XXX_REG_TTECP);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_TIME_TO_FULL_NOW:
+-		ret = bq27xxx_simple_value(di->cache.time_to_full, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_TTF ?
++				di->cache.time_to_full :
++				bq27xxx_battery_read_time(di, BQ27XXX_REG_TTF);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_TECHNOLOGY:
+ 		if (di->opts & BQ27XXX_O_MUL_CHEM)
+@@ -2059,7 +2086,9 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+ 			ret = bq27xxx_simple_value(bq27xxx_battery_read_rc(di), val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_CHARGE_FULL:
+-		ret = bq27xxx_simple_value(di->cache.charge_full, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_CHARGE_FULL ?
++				di->cache.charge_full : bq27xxx_battery_read_fcc(di);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+ 		ret = bq27xxx_simple_value(di->charge_design_full, val);
+@@ -2072,10 +2101,14 @@ static int bq27xxx_battery_get_property(struct power_supply *psy,
+ 	case POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN:
+ 		return -EINVAL;
+ 	case POWER_SUPPLY_PROP_CYCLE_COUNT:
+-		ret = bq27xxx_simple_value(di->cache.cycle_count, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_CYCT ?
++				di->cache.cycle_count : bq27xxx_battery_read_cyct(di);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_ENERGY_NOW:
+-		ret = bq27xxx_simple_value(di->cache.energy, val);
++		tmp = bq27xxx_cache_mask & BQ27XXX_CACHE_ENERGY ?
++				di->cache.energy : bq27xxx_battery_read_energy(di);
++		ret = bq27xxx_simple_value(tmp, val);
+ 		break;
+ 	case POWER_SUPPLY_PROP_POWER_AVG:
+ 		ret = bq27xxx_battery_pwr_avg(di, val);
+diff --git a/include/linux/power/bq27xxx_battery.h b/include/linux/power/bq27xxx_battery.h
+index 7d8025fb74b7..29d1e7107ee2 100644
+--- a/include/linux/power/bq27xxx_battery.h
++++ b/include/linux/power/bq27xxx_battery.h
+@@ -4,6 +4,15 @@
  
- static int
--dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
-+dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
-+		   struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 		   bool is_rx, const u64 rule_id, u8 format_ver)
- {
- 	struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES + DR_ACTION_MAX_STES];
-@@ -551,7 +550,7 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 		return 0;
+ #include <linux/power_supply.h>
  
- 	while (i--) {
--		ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
-+		ret = dr_dump_rule_mem(file, buff, ste_arr[i], is_rx, rule_id,
- 				       format_ver);
- 		if (ret < 0)
- 			return ret;
-@@ -560,7 +559,8 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 	return 0;
- }
- 
--static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
-+static noinline_for_stack int
-+dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- {
- 	struct mlx5dr_rule_action_member *action_mem;
- 	const u64 rule_id = DR_DBG_PTR_TO_ID(rule);
-@@ -584,19 +584,19 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- 		return ret;
- 
- 	if (rx->nic_matcher) {
--		ret = dr_dump_rule_rx_tx(file, rx, true, rule_id, format_ver);
-+		ret = dr_dump_rule_rx_tx(file, buff, rx, true, rule_id, format_ver);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_matcher) {
--		ret = dr_dump_rule_rx_tx(file, tx, false, rule_id, format_ver);
-+		ret = dr_dump_rule_rx_tx(file, buff, tx, false, rule_id, format_ver);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	list_for_each_entry(action_mem, &rule->rule_actions_list, list) {
--		ret = dr_dump_rule_action_mem(file, rule_id, action_mem);
-+		ret = dr_dump_rule_action_mem(file, buff, rule_id, action_mem);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -605,10 +605,10 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- }
- 
- static int
--dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
-+dr_dump_matcher_mask(struct seq_file *file, char *buff,
-+		     struct mlx5dr_match_param *mask,
- 		     u8 criteria, const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	char dump[DR_HEX_SIZE];
- 	int ret;
- 
-@@ -706,10 +706,10 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
- }
- 
- static int
--dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
-+dr_dump_matcher_builder(struct seq_file *file, char *buff,
-+			struct mlx5dr_ste_build *builder,
- 			u32 index, bool is_rx, const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	memset(buff, 0, sizeof(buff));
-@@ -728,11 +728,10 @@ dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
- }
- 
- static int
--dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
-+dr_dump_matcher_rx_tx(struct seq_file *file, char *buff, bool is_rx,
- 		      struct mlx5dr_matcher_rx_tx *matcher_rx_tx,
- 		      const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	enum dr_dump_rec_type rec_type;
- 	u64 s_icm_addr, e_icm_addr;
- 	int i, ret;
-@@ -758,7 +757,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
- 		return ret;
- 
- 	for (i = 0; i < matcher_rx_tx->num_of_builders; i++) {
--		ret = dr_dump_matcher_builder(file,
-+		ret = dr_dump_matcher_builder(file, buff,
- 					      &matcher_rx_tx->ste_builder[i],
- 					      i, is_rx, matcher_id);
- 		if (ret < 0)
-@@ -768,7 +767,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
- 	return 0;
- }
- 
--static int
-+static noinline_for_stack int
- dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
- {
- 	struct mlx5dr_matcher_rx_tx *rx = &matcher->rx;
-@@ -791,19 +790,19 @@ dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
- 	if (ret)
- 		return ret;
- 
--	ret = dr_dump_matcher_mask(file, &matcher->mask,
-+	ret = dr_dump_matcher_mask(file, buff, &matcher->mask,
- 				   matcher->match_criteria, matcher_id);
- 	if (ret < 0)
- 		return ret;
- 
- 	if (rx->nic_tbl) {
--		ret = dr_dump_matcher_rx_tx(file, true, rx, matcher_id);
-+		ret = dr_dump_matcher_rx_tx(file, buff, true, rx, matcher_id);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_tbl) {
--		ret = dr_dump_matcher_rx_tx(file, false, tx, matcher_id);
-+		ret = dr_dump_matcher_rx_tx(file, buff, false, tx, matcher_id);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -831,11 +830,10 @@ dr_dump_matcher_all(struct seq_file *file, struct mlx5dr_matcher *matcher)
- }
- 
- static int
--dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
-+dr_dump_table_rx_tx(struct seq_file *file, char *buff, bool is_rx,
- 		    struct mlx5dr_table_rx_tx *table_rx_tx,
- 		    const u64 table_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	enum dr_dump_rec_type rec_type;
- 	u64 s_icm_addr;
- 	int ret;
-@@ -858,7 +856,8 @@ dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
- 	return 0;
- }
- 
--static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
-+static noinline_for_stack int
-+dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
- {
- 	struct mlx5dr_table_rx_tx *rx = &table->rx;
- 	struct mlx5dr_table_rx_tx *tx = &table->tx;
-@@ -878,14 +877,14 @@ static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
- 		return ret;
- 
- 	if (rx->nic_dmn) {
--		ret = dr_dump_table_rx_tx(file, true, rx,
-+		ret = dr_dump_table_rx_tx(file, buff, true, rx,
- 					  DR_DBG_PTR_TO_ID(table));
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_dmn) {
--		ret = dr_dump_table_rx_tx(file, false, tx,
-+		ret = dr_dump_table_rx_tx(file, buff, false, tx,
- 					  DR_DBG_PTR_TO_ID(table));
- 		if (ret < 0)
- 			return ret;
-@@ -911,10 +910,10 @@ static int dr_dump_table_all(struct seq_file *file, struct mlx5dr_table *tbl)
- }
- 
- static int
--dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
-+dr_dump_send_ring(struct seq_file *file, char *buff,
-+		  struct mlx5dr_send_ring *ring,
- 		  const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	memset(buff, 0, sizeof(buff));
-@@ -933,13 +932,13 @@ dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
- 	return 0;
- }
- 
--static noinline_for_stack int
-+static int
- dr_dump_domain_info_flex_parser(struct seq_file *file,
-+				char *buff,
- 				const char *flex_parser_name,
- 				const u8 flex_parser_value,
- 				const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	memset(buff, 0, sizeof(buff));
-@@ -957,11 +956,11 @@ dr_dump_domain_info_flex_parser(struct seq_file *file,
- 	return 0;
- }
- 
--static noinline_for_stack int
--dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
-+static int
-+dr_dump_domain_info_caps(struct seq_file *file, char *buff,
-+			 struct mlx5dr_cmd_caps *caps,
- 			 const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	struct mlx5dr_cmd_vport_cap *vport_caps;
- 	unsigned long i, vports_num;
- 	int ret;
-@@ -1003,34 +1002,35 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
- }
- 
- static int
--dr_dump_domain_info(struct seq_file *file, struct mlx5dr_domain_info *info,
-+dr_dump_domain_info(struct seq_file *file, char *buff,
-+		    struct mlx5dr_domain_info *info,
- 		    const u64 domain_id)
- {
- 	int ret;
- 
--	ret = dr_dump_domain_info_caps(file, &info->caps, domain_id);
-+	ret = dr_dump_domain_info_caps(file, buff, &info->caps, domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw0",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw0",
- 					      info->caps.flex_parser_id_icmp_dw0,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw1",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw1",
- 					      info->caps.flex_parser_id_icmp_dw1,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw0",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw0",
- 					      info->caps.flex_parser_id_icmpv6_dw0,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw1",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw1",
- 					      info->caps.flex_parser_id_icmpv6_dw1,
- 					      domain_id);
- 	if (ret < 0)
-@@ -1067,12 +1067,12 @@ dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
- 	if (ret)
- 		return ret;
- 
--	ret = dr_dump_domain_info(file, &dmn->info, domain_id);
-+	ret = dr_dump_domain_info(file, buff, &dmn->info, domain_id);
- 	if (ret < 0)
- 		return ret;
- 
- 	if (dmn->info.supp_sw_steering) {
--		ret = dr_dump_send_ring(file, dmn->send_ring, domain_id);
-+		ret = dr_dump_send_ring(file, buff, dmn->send_ring, domain_id);
- 		if (ret < 0)
- 			return ret;
- 	}
++#define BQ27XXX_CACHE_TEMP        (1 << 0)
++#define BQ27XXX_CACHE_TTE         (1 << 1)
++#define BQ27XXX_CACHE_TTECP       (1 << 2)
++#define BQ27XXX_CACHE_TTF         (1 << 3)
++#define BQ27XXX_CACHE_CHARGE_FULL (1 << 4)
++#define BQ27XXX_CACHE_CYCT        (1 << 5)
++#define BQ27XXX_CACHE_CAPACITY    (1 << 6)
++#define BQ27XXX_CACHE_ENERGY      (1 << 7)
++
+ enum bq27xxx_chip {
+ 	BQ27000 = 1, /* bq27000, bq27200 */
+ 	BQ27010, /* bq27010, bq27210 */
 -- 
 2.39.2
 
