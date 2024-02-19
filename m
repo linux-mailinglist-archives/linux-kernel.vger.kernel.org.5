@@ -1,181 +1,128 @@
-Return-Path: <linux-kernel+bounces-71420-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71421-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 173E785A4F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:38:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64CF885A4FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:39:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE1AF2876FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:38:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05D5F1F2147A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464F1364CC;
-	Mon, 19 Feb 2024 13:37:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC4936B16;
+	Mon, 19 Feb 2024 13:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="GrfkitrD"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RKU4rhLm"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00F62364A1;
-	Mon, 19 Feb 2024 13:37:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E57136AE5;
+	Mon, 19 Feb 2024 13:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708349866; cv=none; b=hxYzBm4wzBVY3rU90qGBSqn7+BEwtTXdrcyePoR6M8dIaixLtMGx4JamtqCzrS7rXeZCbXXW/LrvXRM62qKJsxnhENeI0n0DQ1aTsIaNVlz+mt6gq3WAi4wXJ7HoBmfwgEo+GvTXsvHU6TU7ozZiDD7mrEc2BBGUmD2czpgVoGk=
+	t=1708349924; cv=none; b=ABcn01yEdFgNqRcWU04gF8p2u+aPEiCORAdKJwQ8JD3Es9cZrfA++qL4XmmyRZhtRBli4G3GGiu2ZShDo5eqTRO9tRWppqsfVm6K/j9+rQPSSU5AWK9KIz9PEiS7rG0ZYoT7MPwp2BjkAPGYHYcpLG3cytjzdtszeAduW7iw4qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708349866; c=relaxed/simple;
-	bh=GX1gehkvQcZqiJUoO8NQAFdj6CmJo/860fgT0JsK+xc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I4N6VEVGWoZJgj9Cb2R9suk+McdeZRAoQ0UEuj6yxLNARe0mQhzeW28nObIlTXdx+VemtLLOXc2SKt869x8Q4LqZ5pGw/DGOXimuYz7/9nF4UPc27jAE/8ACQH9Mtrz+6pYV41KsayUmcLxseUVGNYdqZt0mKqPCOGxneFhU2X0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=GrfkitrD; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41J8O74V029244;
-	Mon, 19 Feb 2024 13:37:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=v5j29fJ7l64OqdiJXkSFRWQ/MC7+s+gIo0U3PRJ4NMc=;
- b=GrfkitrDIneElEPutV3vloudxTdwvvaUHYwtcZCQUIMZPnZxfag1LNfK18ILuaxFt+9t
- TVa8TKtqHV3hDsQXGXA+sF57YDJwEbNmF094KdkXQ+R0tzNDH/WZ1DQvOttH1xUxBft0
- f6aQ+db2vScSpZ+JLHNXKpZqLjofqHLgjCW0mLc0NJANTvnRgUmyuAcOhhUv9q5+dSwU
- eIQwmbIhORiDbIbeNicJzUiIPlSzTf4tyGfWvOxTh1V9vPhhoCqbHhcjFmHTtpx/DzGd
- PN9+r0M0vrnq8CTCzzWnD/tICtHzREnlBt/lfPA92zwQslS1xAdWQ+58zVkeFMAvtqyD Bw== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wakd246v0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 19 Feb 2024 13:37:37 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41JCP7Cx039727;
-	Mon, 19 Feb 2024 13:37:36 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wak85xfrc-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 19 Feb 2024 13:37:36 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41JDWmtk016570;
-	Mon, 19 Feb 2024 13:37:35 GMT
-Received: from pkannoju-vm.us.oracle.com (dhcp-10-166-182-179.vpn.oracle.com [10.166.182.179])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wak85xfmt-1;
-	Mon, 19 Feb 2024 13:37:35 +0000
-From: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-To: j.vosburgh@gmail.com, andy@greyhouse.net, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: rajesh.sivaramasubramaniom@oracle.com, rama.nichanamatlu@oracle.com,
-        manjunath.b.patil@oracle.com,
-        Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
-Subject: [PATCH] bonding: rate-limit bonding driver inspect messages
-Date: Mon, 19 Feb 2024 19:07:21 +0530
-Message-Id: <20240219133721.4567-1-praveen.kannoju@oracle.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1708349924; c=relaxed/simple;
+	bh=2y/R2rNrQF5YNdRb1X6YdN4UDCwnv5pqvMcfcKpihWM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s6fCGpt4gOEwaC+tw1LLCvT9sdymmjt03/jiMQIoHjWaEAhKYp4ylEuR12PL0wGqbTsuUiGiC/Tz2ae3q3Sx9gREy6YB8Zl62xTSKIF7W42ShmHGCaIXrg0QO16gg2SPB7v2865S8MM4781vP68YQdYb6JKECYS/AGjlROe2ZKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RKU4rhLm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03E31C433F1;
+	Mon, 19 Feb 2024 13:38:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708349924;
+	bh=2y/R2rNrQF5YNdRb1X6YdN4UDCwnv5pqvMcfcKpihWM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RKU4rhLmXh2QGNfVOd1TLLlAWldlYF1g01lkeL+TNUl/NObJeGAgG8LAVZSK8Zt7l
+	 ySPSnhqT2Gi2bZ5Kz09RVV3tGh8l9vffvkg9q29/Ypd5SQF4fw63Hx7eh3sZhT4Zfa
+	 D6jeHwAt3rfOmYxtibweL82tniOlA9SX5g7Wtuxja01mcAzBbNATfB0mpLVp7IRw2u
+	 s8nNCVyHiDp8qiomruTzVpmtl8nQJjLOy6HBxahTsCeydfzpL2F6c4sTkbsj5+qmGg
+	 FtGX6AoSQRa4y+/hS/mnZvGo+91/BDSS5IEBoYAg0uAXgSWiLXszqzFpZyMt6eF5OF
+	 /sHe0ELFLhLqw==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rc3qz-000000002NA-15HX;
+	Mon, 19 Feb 2024 14:38:41 +0100
+Date: Mon, 19 Feb 2024 14:38:41 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Rob Clark <robdclark@gmail.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Kuogee Hsieh <quic_khsieh@quicinc.com>
+Cc: Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Bjorn Andersson <quic_bjorande@quicinc.com>,
+	quic_jesszhan@quicinc.com, quic_sbillaka@quicinc.com,
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+	linux-arm-msm@vger.kernel.org, regressions@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: drm/msm: Second DisplayPort regression in 6.8-rc1
+Message-ID: <ZdNZ4TiJn9-yKT5_@hovoldconsulting.com>
+References: <ZctVmLK4zTwcpW3A@hovoldconsulting.com>
+ <343710b1-f0f4-5c05-70e6-3c221cdc9580@quicinc.com>
+ <ZczFhVjHIm55JTfO@hovoldconsulting.com>
+ <ZdDNcrf4KpflGeYQ@hovoldconsulting.com>
+ <ZdMwZa98L23mu3u6@hovoldconsulting.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-19_09,2024-02-19_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
- suspectscore=0 mlxscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402190101
-X-Proofpoint-GUID: E8SaMYBR-BetkhYxqamTVOZAfjPKF_Op
-X-Proofpoint-ORIG-GUID: E8SaMYBR-BetkhYxqamTVOZAfjPKF_Op
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdMwZa98L23mu3u6@hovoldconsulting.com>
 
-Through the routine bond_mii_monitor(), bonding driver inspects and commits the
-slave state changes. During the times when slave state change and failure in
-aqcuiring rtnl lock happen at the same time, the routine bond_mii_monitor()
-reschedules itself to come around after 1 msec to commit the new state.
+On Mon, Feb 19, 2024 at 11:41:41AM +0100, Johan Hovold wrote:
 
-During this, it executes the routine bond_miimon_inspect() to re-inspect the
-state chane and prints the corresponding slave state on to the console. Hence
-we do see a message at every 1 msec till the rtnl lock is acquired and state
-chage is committed.
-
-This patch doesn't change how bond functions. It only simply limits this kind
-of log flood.
-
-v2: Use exising net_ratelimit() instead of introducing new rate-limit
-parameter.
-
-v3: Commit message is modified to provide summary of the issue, because of
-which rate-limiting the bonding driver messages is needed.
-
-Signed-off-by: Praveen Kumar Kannoju <praveen.kannoju@oracle.com>
----
- drivers/net/bonding/bond_main.c | 36 ++++++++++++++++++++----------------
- 1 file changed, 20 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 4e0600c..e92eba1 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -2610,12 +2610,13 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			commit++;
- 			slave->delay = bond->params.downdelay;
- 			if (slave->delay) {
--				slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
--					   (BOND_MODE(bond) ==
--					    BOND_MODE_ACTIVEBACKUP) ?
--					    (bond_is_active_slave(slave) ?
--					     "active " : "backup ") : "",
--					   bond->params.downdelay * bond->params.miimon);
-+				if (net_ratelimit())
-+					slave_info(bond->dev, slave->dev, "link status down for %sinterface, disabling it in %d ms\n",
-+						   (BOND_MODE(bond) ==
-+						   BOND_MODE_ACTIVEBACKUP) ?
-+						   (bond_is_active_slave(slave) ?
-+						   "active " : "backup ") : "",
-+						   bond->params.downdelay * bond->params.miimon);
- 			}
- 			fallthrough;
- 		case BOND_LINK_FAIL:
-@@ -2623,9 +2624,10 @@ static int bond_miimon_inspect(struct bonding *bond)
- 				/* recovered before downdelay expired */
- 				bond_propose_link_state(slave, BOND_LINK_UP);
- 				slave->last_link_up = jiffies;
--				slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
--					   (bond->params.downdelay - slave->delay) *
--					   bond->params.miimon);
-+				if (net_ratelimit())
-+					slave_info(bond->dev, slave->dev, "link status up again after %d ms\n",
-+						   (bond->params.downdelay - slave->delay) *
-+						   bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
-@@ -2648,18 +2650,20 @@ static int bond_miimon_inspect(struct bonding *bond)
- 			slave->delay = bond->params.updelay;
+> It seems my initial suspicion that at least some of these regressions
+> were related to the runtime PM work was correct. The hard resets happens
+> when the DP controller is runtime suspended after being probed:
  
- 			if (slave->delay) {
--				slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
--					   ignore_updelay ? 0 :
--					   bond->params.updelay *
--					   bond->params.miimon);
-+				if (net_ratelimit())
-+					slave_info(bond->dev, slave->dev, "link status up, enabling it in %d ms\n",
-+						   ignore_updelay ? 0 :
-+						   bond->params.updelay *
-+						   bond->params.miimon);
- 			}
- 			fallthrough;
- 		case BOND_LINK_BACK:
- 			if (!link_state) {
- 				bond_propose_link_state(slave, BOND_LINK_DOWN);
--				slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
--					   (bond->params.updelay - slave->delay) *
--					   bond->params.miimon);
-+				if (net_ratelimit())
-+					slave_info(bond->dev, slave->dev, "link status down again after %d ms\n",
-+						   (bond->params.updelay - slave->delay) *
-+						   bond->params.miimon);
- 				commit++;
- 				continue;
- 			}
--- 
-1.8.3.1
+> [   17.074925] bus: 'platform': __driver_probe_device: matched device aea0000.displayport-controller with driver msm-dp-display
+> [   17.112000] msm-dp-display aea0000.displayport-controller: dp_display_probe - populate aux bus
+> [   17.125208] msm-dp-display aea0000.displayport-controller: dp_pm_runtime_resume
+> [   17.197909] msm-dp-display aea0000.displayport-controller: dp_pm_runtime_suspend
+> [   17.198079] probe of aea0Format: Log Type - Time(microsec) - Message - Optional Info
+> Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+> S - QC_IMAGE_VERSION_STRING=BOOT.MXF.1.1-00470-MAKENA-1
+> S - IMAGE_VARIANT_STRING=SocMakenaWP
+> S - OEM_IMAGE_VERSION_STRING=crm-ubuntu92
+> 
+>   < machine is reset by hypervisor >
+> 
+> Presumably the reset happens when controller is being shut down while
+> still being used by the EFI framebuffer.
+> 
+> In the cases where the machines survives boot, the controller is never
+> suspended.
+> 
+> When investigating this I've also seen intermittent:
+> 
+> 	[drm:dp_display_probe [msm]] *ERROR* device tree parsing failed
 
+Note that there are further indications there may be more than one bug
+here too.
+
+I definitely see hard resets when dp_pm_runtime_suspend() is shutting
+down the eDP PHY, but there are occasional resets also if I instrument
+DP controller probe() to resume and then prevent the controller from
+suspending until after a timeout (e.g. to be used as a temporary
+workaround):
+
+[   15.676495] bus: 'platform': __driver_probe_device: matched device aea0000.displayport-controller with driver msm-dp-display
+[   15.769392] msm-dp-display aea0000.displayport-controller: dp_display_probe - populate aux bus
+[   15.778808] msm-dp-display aea0000.displayport-controller: dp_display_probe - scheduling handover
+[   15.789931] probe of aea0000.displayport-controller returned 0 after 91121 usecs
+[   15.790460] bus: 'dp-aux': __driver_probe_device: matched device aux-aea0000.displayport-controller with driver panel-simple-dp-aux
+Format: Log Type - Time(microsec) - Message - Optional Info
+Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+S - QC_IMAGE_VERSION_STRING=BOOT.MXF.1.1-00470-MAKENA-1
+
+I'll wait for the maintainers and authors of this code to comment, but
+it seems the runtime PM work is broken in multiple ways.
+
+Johan
 
