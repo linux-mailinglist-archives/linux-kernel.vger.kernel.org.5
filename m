@@ -1,124 +1,127 @@
-Return-Path: <linux-kernel+bounces-71330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3A8485A39B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:38:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1F685A39D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322371C20D22
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:38:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33346B223BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:38:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445E42E84B;
-	Mon, 19 Feb 2024 12:38:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A371C31759;
+	Mon, 19 Feb 2024 12:38:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WIJ3kPhZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Lqtwvkjg"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BD962E644;
-	Mon, 19 Feb 2024 12:38:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CEB2E645
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:38:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708346301; cv=none; b=cuTq5hpUygisTOXZj21UVh9CTCiwLkpFWyUVusrNg1KQHhZKvLyj5CVTvU/BfF19r6Ji3yG82Bo5RmqMVb5NXG7//nygPYGKEUfm8rhfusj+hkwjQ4ZhlKUlQBhyBkwPPcHRJbDU3mpNIrKCW1bHHnz08E1KRLbBli3WIezq9TU=
+	t=1708346303; cv=none; b=Q0AzpxWGROK/+LuYAejMWd/OnOwioXxo/Ej5Ypk+R1lqcf+9sg+JZF8n8DJX1ajJcwdsQoR2dUb6BlMWsrZgCmCkwBS7ZDI8nGZdEpDNTRZk3fyKhCQblROXNdVor12H/GME9fr818pXkzsJeqPOUOhaxCFGQobcpilbyziOo7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708346301; c=relaxed/simple;
-	bh=2tY2MZjkFTTdw1DjZNPEnmqZhflzeeQAO/A2N+2m5pY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XP7bE9vhyzu4hA3GZ6feM/mRsBxlgtYtsVl2BmNPycCi+fiKXBf+V3GiZ84p7rKGzI+iLDCqOwFc2JDedDgLzoJN050/yyJtuy1gW392lkCAZvGPEemBs2Z8F3urD369TdlXtLG+6bQJQpM4y84/x+FLxf0TuVJMrRAoL4OrENU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WIJ3kPhZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF95C433C7;
-	Mon, 19 Feb 2024 12:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708346300;
-	bh=2tY2MZjkFTTdw1DjZNPEnmqZhflzeeQAO/A2N+2m5pY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WIJ3kPhZFfFWJQsqCAUgP3SYF7pexh2h3cTq1B1TScLDQJKsHiH3xn5yGNkbByzoz
-	 qtuJtysq3MOhCOnD324DOo7J3GCAqLHQ/u2M7oIwzcLsjlzqYQXyN2AKTTJHeKCbhg
-	 3Qh1zuU2nRm2RUL/vYX75FOxgzuKspXx+XZaKAuyq66AM0uDUms1PlNa4Q1qzzR8Pz
-	 FsHcyJbyCOY5ZeGjA4qHvnL9jawRW7/ZvImwH8yIL4fRJ0rDHbeQjmmh7Ir7dy9usq
-	 Jryb+IFM0fg4qGGgg5wAJ2CjI32jkmf1udSE+bFoNqrPvDGskMXbEspH4/8N6Q8nHw
-	 3rb6vN7chyMCg==
-Date: Mon, 19 Feb 2024 18:08:08 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Viresh Kumar <viresh.kumar@linaro.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Krishna chaitanya chundru <quic_krichai@quicinc.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 5/6] arm64: dts: qcom: sm8450: Add opp table support
- to PCIe
-Message-ID: <20240219123808.GB3281@thinkpad>
-References: <20240130071449.GG32821@thinkpad>
- <20240130083619.lqbj47fl7aa5j3k5@vireshk-i7>
- <20240130094804.GD83288@thinkpad>
- <20240130095508.zgufudflizrpxqhy@vireshk-i7>
- <20240130131625.GA2554@thinkpad>
- <20240131052335.6nqpmccgr64voque@vireshk-i7>
- <610d5d7c-ec8d-42f1-81a2-1376b8a1a43f@linaro.org>
- <20240202073334.mkabgezwxn3qe7iy@vireshk-i7>
- <8a7b63a8-0583-43cf-9876-8a964c8b77ee@linaro.org>
- <20240219102834.x22ggazkmzppsdxc@vireshk-i7>
+	s=arc-20240116; t=1708346303; c=relaxed/simple;
+	bh=gzjCQw/WkyJ81heO1U1AhwhMls24RaDiBVDZWODcvSA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E7RI+si1cNP88ctsYdNEyys6z3tbGcvS+CLfdGBr3/nHk/WVE5UoUYBh7jlm+XaVrzAbA3zWwZUfyYWXOjZESmt9qFWJm6rPlzGaHfSV02xis1A5ctjIy60hBya0FWxqMSi/bVrOBJ4VYOSksK5fokd9prCpyS63vnR1JZ0B244=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Lqtwvkjg; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708346300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yk2rigtIP1TrPPA5XNRdEMM1GL9bmAZcBohhgdFvSDI=;
+	b=Lqtwvkjgd08IRgwSJGnymMLSyP4myvnkGEp21xt4fCrAhciiE3OyN+OfU72X/RKtYP+Qpb
+	H0yZ/khHDs3LhH3TZcRM6GIZxg7kNHYFmp3dBVUS1ep66pLy9T8woWi4Tmx3q+pWIacUpU
+	K1nQSpI0Km4lQ0xRrdn2NRcQn8YE/ic=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-550-9A9IdWE2MUeU-KRlXknBag-1; Mon, 19 Feb 2024 07:38:18 -0500
+X-MC-Unique: 9A9IdWE2MUeU-KRlXknBag-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-512bad7d985so618875e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:38:18 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708346297; x=1708951097;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yk2rigtIP1TrPPA5XNRdEMM1GL9bmAZcBohhgdFvSDI=;
+        b=s1S1xItwDYNFFe/sNZ2FZhaZ0doORzE4v9Cv1HbLJO5+rPVRCWYqCwjD/1KdFLFEjD
+         DGdk4xLVSE5ndyyUbBlneDJCumf1B2htRnDW45llNuOoxSI+V5r3KouchpSKhoMTu//J
+         d5MPKB6x6kLeqev+0BLBJvyvSE+M/hz18K2XmzecJntywbOE/IQQ0Xok7AM13+pGOvaT
+         fHLWDiMZe2Yrs3QNq0pba8iZeHPrsYLapc7tOPMj7qR/s2so42x76y1EgyMSnGZdv7Vj
+         P8vB4KP+KNGNcg+bMud9WyozN4A9FcEm7tqh7MWiHj0yVkvGmCSuX4+54O9n1lZPyguZ
+         HSAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX514fArOClUu6o40rtQHzzPW7lWo28+Y6c2C/cW/9hD7CSh13f4eDcSanOvqvVD+En63K4W+NzUfyDVwbINo8kBioomg3SDUL6NRii
+X-Gm-Message-State: AOJu0Yx6ViujpQAKUFOQOiiUVSTlPi4ukK/0JBCs7N/frq+83Q/d7Gru
+	CJJOUTy9A2X1iAMsEALhrD9zJF9vvRyyUTA5em5soudPyNcJLo0ZALi03nQjzIt4bkJDovBsGoH
+	OMz6tt3Y/KEbF40IUfYQJP5EgB6knqOyNr9+mnHBPtRVj45ixGgm9m+cLgWkF6Q==
+X-Received: by 2002:a05:6512:2312:b0:511:79ce:805d with SMTP id o18-20020a056512231200b0051179ce805dmr9233604lfu.7.1708346296963;
+        Mon, 19 Feb 2024 04:38:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFTIrJSMSE88u6rez8enAJWFXxtTIeYnpfd/46RCais8tXQSS6eAQbycVH8j6AMohdHKR/9Dw==
+X-Received: by 2002:a05:6512:2312:b0:511:79ce:805d with SMTP id o18-20020a056512231200b0051179ce805dmr9233589lfu.7.1708346296662;
+        Mon, 19 Feb 2024 04:38:16 -0800 (PST)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id wp1-20020a170907060100b00a3e2e03c155sm2363377ejb.155.2024.02.19.04.38.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 04:38:16 -0800 (PST)
+Message-ID: <1d5dd3de-5561-4231-94bd-65ac05f1fc50@redhat.com>
+Date: Mon, 19 Feb 2024 13:38:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240219102834.x22ggazkmzppsdxc@vireshk-i7>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/2] AMD PMF Smart PC error handling cleanups
+Content-Language: en-US
+To: Mario Limonciello <mario.limonciello@amd.com>, Shyam-sundar.S-k@amd.com
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240217014107.113749-1-mario.limonciello@amd.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240217014107.113749-1-mario.limonciello@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 03:58:34PM +0530, Viresh Kumar wrote:
-> On 09-02-24, 22:14, Konrad Dybcio wrote:
-> > On 2.02.2024 08:33, Viresh Kumar wrote:
-> > > On 01-02-24, 15:45, Konrad Dybcio wrote:
-> > >> I'm lukewarm on this.
-> > >>
-> > >> A *lot* of hardware has more complex requirements than "x MBps at y MHz",
-> > >> especially when performance counters come into the picture for dynamic
-> > >> bw management.
-> > >>
-> > >> OPP tables can't really handle this properly.
-> > > 
-> > > There was a similar concern for voltages earlier on and we added the capability
-> > > of adjusting the voltage for OPPs in the OPP core. Maybe something similar can
-> > > be done here ?
-> > > 
-> > I really don't think it's fitting.. At any moment the device may require any
-> > bandwidth value between 0 and MAX_BW_PER_LINK_GEN * LINK_WIDTH..
+Hi,
+
+On 2/17/24 02:41, Mario Limonciello wrote:
+> While debugging the suspend issue for amd-pmf the initial bisect result
+> pointed at red herrings of cleanup flow problems for
+> amd_pmf_init_smart_pc().  The actual issue wasn't in this code, but still
+> a lot of memory is allocated and not immediately released if any of the
+> error branches are taken.
 > 
-> Okay, I leave it up to you guys to decide on how you want to do it. I still
-> believe getting the information via DT is the right thing, but maybe I still
-> don't understand the problem fully.
+> This series cleans that up so that every step is cleaned up. I believe
+> this actually fixes driver bugs that "could" occur if a BIOS advertisd
+> Smart PC as well as ITS auto or CNQF but didn't include a policy in the
+> BIOS.
 > 
+> Mario Limonciello (2):
+>   platform/x86/amd/pmf: Add debugging message for missing policy data
+>   platform/x86/amd/pmf: Fixup error handling for amd_pmf_init_smart_pc()
 
-I argued for a different issue, but what Konrad pointed out is not a valid
-concern to me. The driver may only require _fixed_ bandwidth between 0 and
-(MAX_BW_PER_LINK_GEN * LINK_WIDTH) and DT can pass those bandwidth values.
+Thank you for your patch-series, I've applied this series
+to my review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-Chaitanya pointed out that this may end up with long entries in DT once the PCIe
-Gen versions start to increase (current Qcom platforms support upto Gen 4 only).
-But that shouldn't be a real concern if we look at what DT has to provide.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-- Mani
+I will include this patch in my next fixes pull-req to Linus
+for the current kernel development cycle.
 
--- 
-மணிவண்ணன் சதாசிவம்
+Regards,
+
+Hans
+
+
 
