@@ -1,115 +1,113 @@
-Return-Path: <linux-kernel+bounces-71146-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71147-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB2D85A14D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:48:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA5585A14F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:48:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C57C11F223A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:48:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D53D31F226BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2466A2C693;
-	Mon, 19 Feb 2024 10:47:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PM6pzIX0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688612C686;
-	Mon, 19 Feb 2024 10:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FA028DCA;
+	Mon, 19 Feb 2024 10:48:37 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182E528DC6
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708339672; cv=none; b=b25fYoGVOu6oYU7ACqgjUdOmUEX1c2teBf6j4HJuyaH7nqoVYlEGqfv3fUwrbDBW5cYRasBlm/ZB4IYKt9vMsf4y8DNaFhJSA6OMxO4rE9gaawQF82gpHQqZlSzDqGm/Qdbn50ymyCVmwXIiBcxsqvgFxtOiSQoSB2pYEscI+OA=
+	t=1708339717; cv=none; b=XeD+NWncq0MdGQQk+h59FReI5+y/cCAy53HThuuxnLXQUMO2S9pkHTvTT4qGJdyzG49XBMWVqBPq7OoBGfkAFjS6PhzLsIAZgnEAyoUnnwaWBieh2TXG5KtFIKvkm5s4CBafYnKCVXpEbL57rjcK7vftuskt9ybBlIO+rEulw/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708339672; c=relaxed/simple;
-	bh=Jfo6TfwmGwLUsV6LesciDk9MRgp2/h+EYgVBnXUJszM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=g8tOKB9sM2CtglQhwcs0DeGfAvhrAn09ukxpy578yvoK5GwRwpJ2RAFDdlbu3CoHykBM6tVVNrwfNSf2zOmnEegRyVsmJJXI79qqSvC0B8/9OzoJ7A4TRzGaem8iI1yE4CCVPQ4q3od2VYthYcsy9UZ2BrP4QWqJIks/97OYbQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PM6pzIX0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC801C433C7;
-	Mon, 19 Feb 2024 10:47:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708339672;
-	bh=Jfo6TfwmGwLUsV6LesciDk9MRgp2/h+EYgVBnXUJszM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=PM6pzIX03tt4ZjrxnYPJXPGUX5ADnjh07V73zqD2omNQ4Xk9qSfJfl3GsLdLJnffd
-	 osYaXkKlJpqogY/SPg0hw1jVPJHtWPS1r9N6APmdJ87PXKsoc9GjxT4fFtkmgFOrR1
-	 wvtMoS8iRqGbO5JMuv8sHJAdVZyrj9X9p7Sfor/wo433BXO0vGAM9VhhRj+LmuDDrk
-	 pPDYP9aFdOFUkfTAZXOMwbd1F1LIHXzO/hYoj3X/6ImodrI7my9qlMbbuBGDHMDzl/
-	 2Cg3vo0E0huhrCNGfaBoQL+h1RS6xZIg7zoLXAs3STouIJZaSC2+ox6jA9Aty5i06L
-	 0ozKuW1QQq/JQ==
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-512bd533be0so344670e87.0;
-        Mon, 19 Feb 2024 02:47:51 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUpdvI9Mf0CmQMGu4pAR3QfKyyTcN3Tg5i91pHmCnZZnCNdwXnfu8U47BCOoT4hjg8UzVmh98TkzQI39lCfeDlMSVJDrNYb2sDTxTNKrkttPlDqrAkffG9hRsIlLzhlj/A9rYnLZSncPw==
-X-Gm-Message-State: AOJu0Yw33nuJbNyK+asppnUyFl3m2F64e519J5kcR1FuKY9ZsyK28h9I
-	hZSe52SOQ8zrFMUAISIpBiXOBamJ8tBFsql1HzmPWu4MCNzy8aZewocsv/ifp+3/muu6Fy/ikki
-	l7u8FCKeAz+W7rtBiynafIe9RUS4=
-X-Google-Smtp-Source: AGHT+IGuVJ1P1iK/x+vOmrtC/tU48rUsDna2+oeh1glDTw2nC4sRpzBKFaqlDQkaZk6qcR3xVV+mXqWRMCazBcGGgSs=
-X-Received: by 2002:a05:6512:609:b0:512:a984:267f with SMTP id
- b9-20020a056512060900b00512a984267fmr2885423lfe.58.1708339670239; Mon, 19 Feb
- 2024 02:47:50 -0800 (PST)
+	s=arc-20240116; t=1708339717; c=relaxed/simple;
+	bh=C1GsjsFw5uaZhBTJ8BwnJ+MEAALKzYl16o3lM+wB1o0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hfCT5Wid6ZSy+WWXDY/QXNM+MUbOmuKBn+nRKsbbCuvTwTOZwI2gZtUOSsezW3TpTWkAVeGIgHLBpcrlpe+fSeCMCvkF8iisbEsTjqW2ycvc0JtjEwyQ/nrXO9L33KRkdi74sB/DipCEHHeJPoPwufr+ac47kdliZBUHJYq9KRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 475EFFEC;
+	Mon, 19 Feb 2024 02:49:14 -0800 (PST)
+Received: from FVFF77S0Q05N (unknown [10.57.66.18])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6DBDA3F762;
+	Mon, 19 Feb 2024 02:48:33 -0800 (PST)
+Date: Mon, 19 Feb 2024 10:48:26 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: skseofh@gmail.com
+Cc: catalin.marinas@arm.com, will@kernel.org, ryan.roberts@arm.com,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: add early fixmap initialization flag
+Message-ID: <ZdMx-svsHgrfguxX@FVFF77S0Q05N>
+References: <20240217140326.2367186-1-skseofh@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213124143.1484862-13-ardb+git@google.com>
- <20240213124143.1484862-15-ardb+git@google.com> <20240217125102.GSZdCrtgI-DnHA8DpK@fat_crate.local>
- <CAMj1kXEcTfvRcNh_VDhj5QxzMhD9rFhVmeAfuSF7vm1c_4_iHg@mail.gmail.com> <20240219100124.GCZdMm9IAWoMcfEKhF@fat_crate.local>
-In-Reply-To: <20240219100124.GCZdMm9IAWoMcfEKhF@fat_crate.local>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 19 Feb 2024 11:47:39 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH7CtN2j1os7Ujw7G_xtD2H0g=pfxNBLK=ayj4XGPkudA@mail.gmail.com>
-Message-ID: <CAMj1kXH7CtN2j1os7Ujw7G_xtD2H0g=pfxNBLK=ayj4XGPkudA@mail.gmail.com>
-Subject: Re: [PATCH v4 02/11] x86/startup_64: Replace pointer fixups with
- RIP-relative references
-To: Borislav Petkov <bp@alien8.de>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Tom Lendacky <thomas.lendacky@amd.com>, 
-	Dionna Glaze <dionnaglaze@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ingo Molnar <mingo@redhat.com>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Andy Lutomirski <luto@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240217140326.2367186-1-skseofh@gmail.com>
 
-On Mon, 19 Feb 2024 at 11:01, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Sat, Feb 17, 2024 at 02:58:29PM +0100, Ard Biesheuvel wrote:
-> > More testing is always good, but I am not particularly nervous about
-> > these changes.
->
-> Perhaps but there's a big difference between testing everything as much
-> as one can and *then* queueing it - vs testing a bit, not being really
-> nervous about the changes and then someone reporting a snafu when the
-> patches are already in Linus' tree.
->
-> Means dropping everything and getting on that. And then imagine a couple
-> more breakages happening in parallel and needing urgent attention.
->
-> Not something you wanna deal with. Speaking from my experience, at
-> least.
->
+On Sat, Feb 17, 2024 at 11:03:26PM +0900, skseofh@gmail.com wrote:
+> From: Daero Lee <skseofh@gmail.com>
+> 
+> early_fixmap_init may be called multiple times. Since there is no
+> change in the page table after early fixmap initialization, an
+> initialization flag was added.
 
-Not disagreeing with that.
+Why is that better?
 
-> > I could split this up into 3+ patches so we could bisect any resulting
-> > issues more effectively.
->
-> Yeah, splitting changes into separate bits - ala, one logical change per
-> patch - is always a good idea.
->
-> In this particular case, I don't mind splitting them even more so that
-> it is perfectly clear what happens and looking at those changes doesn't
-> make people have to go look at the source to figure out what the change
-> actually looks like applied, in order to fully grok it.
->
+We call early_fixmap_init() in two places:
 
-I split this into 5 patches for v5. The final patch in this v4 is
-broken for CONFIG_X86_5LEVEL=n so I was going to have to respin
-anyway. (I'll pick up the latest version of patch #1 you pasted)
+* early_fdt_map()
+* setup_arch()
+
+.. and to get to setup_arch() we *must* have gone through early_fdt_map(),
+since __primary_switched() calls that before going to setup_arch().
+
+So AFAICT we can remove the second call to early_fixmap_init() in setup_arch(),
+and rely on the earlier one in early_fdt_map().
+
+Mark.
+
+> 
+> Signed-off-by: Daero Lee <skseofh@gmail.com>
+> ---
+>  arch/arm64/mm/fixmap.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/arch/arm64/mm/fixmap.c b/arch/arm64/mm/fixmap.c
+> index c0a3301203bd..fbdd5f30f3a1 100644
+> --- a/arch/arm64/mm/fixmap.c
+> +++ b/arch/arm64/mm/fixmap.c
+> @@ -32,6 +32,8 @@ static pte_t bm_pte[NR_BM_PTE_TABLES][PTRS_PER_PTE] __page_aligned_bss;
+>  static pmd_t bm_pmd[PTRS_PER_PMD] __page_aligned_bss __maybe_unused;
+>  static pud_t bm_pud[PTRS_PER_PUD] __page_aligned_bss __maybe_unused;
+>  
+> +static int early_fixmap_initialized __initdata;
+> +
+>  static inline pte_t *fixmap_pte(unsigned long addr)
+>  {
+>  	return &bm_pte[BM_PTE_TABLE_IDX(addr)][pte_index(addr)];
+> @@ -100,10 +102,15 @@ void __init early_fixmap_init(void)
+>  	unsigned long addr = FIXADDR_TOT_START;
+>  	unsigned long end = FIXADDR_TOP;
+>  
+> +	if (early_fixmap_initialized)
+> +		return;
+> +
+>  	pgd_t *pgdp = pgd_offset_k(addr);
+>  	p4d_t *p4dp = p4d_offset(pgdp, addr);
+>  
+>  	early_fixmap_init_pud(p4dp, addr, end);
+> +
+> +	early_fixmap_initialized = 1;
+>  }
+>  
+>  /*
+> -- 
+> 2.25.1
+> 
 
