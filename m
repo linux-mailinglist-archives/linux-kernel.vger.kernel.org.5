@@ -1,152 +1,161 @@
-Return-Path: <linux-kernel+bounces-71440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61E1085A546
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:03:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE4E885A539
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:59:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 94A3F1C21477
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:03:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 465D31F234EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79E5937153;
-	Mon, 19 Feb 2024 14:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9360E36AFF;
+	Mon, 19 Feb 2024 13:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JKdrVC//"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m8AyvZQ5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F86036B09;
-	Mon, 19 Feb 2024 14:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1D19364C6;
+	Mon, 19 Feb 2024 13:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708351384; cv=none; b=Xxs8d3O0oz+HQ+C0Ja+lAe5M/+qkLQ6VaDqKybfrfQI4xAivWGN0btMjteH95kW3MBYzkjXAkWsPlZ29MlnlBgoHCBxYu2IPqcPdFDEvRcX+O/Q5nakpDnUJzx4r+Jyqq5PWgvoQ2QPzijjwY7VAbaticHvcuj5NMqqrZNfe/lM=
+	t=1708351164; cv=none; b=On4HsBWiR/Bz3+OA5a4Hbm+/ZtxItXnMmvQZCCyTHRU/IVkypfr+BVCmWcICgjKUzS3S5dMP1oU9/ZwWt4w/iVMTfOmsft/Fr0nv2exxugmgDhGW2q5hJBzcfEbRsXo9tShlRyWBqFYDq+9+TtIpSSTVP7LJ7ZMlpYBYuyeeBqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708351384; c=relaxed/simple;
-	bh=wHheWqOg2lnrXFJQJwK4hCwjRP1jqy2jGPo/csvfdrM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L75m7U5+OT8vGH7SmQcD2cxXoyOmeAIpY8E7zSybXOWCF4wkW0203m7M6eNAfaEGAkGKLKNOCdIJ6fmHLMctOIKKHbcgcvMT3YiaoL4AnPNmRgcIZrA8FmAozIlI5hCHst7i3YJz0M3A5N/krJhgfW63nZhUfFzLBgvS91vw2oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JKdrVC//; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708351383; x=1739887383;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wHheWqOg2lnrXFJQJwK4hCwjRP1jqy2jGPo/csvfdrM=;
-  b=JKdrVC//GNaIbK1i5uTYZQ4qMuusEE/T/srpkOcRtEzuarH2BAft74Q5
-   3i2Fvw6XrD4S/UR5A4uYJIgyrb9B0hTUv6VwydVBli3r1XvGceuA+j+zl
-   OzGLJqniqIm+1SNIAm1dPNzO4NpU1Z1xZ+wZ5xOS2pNKvM7XRcpmIQwKU
-   DexXAORBnOlw/A13FmZrcRk3pSkEjY9b2jl4aev2aks5Yh3GceXuGB/nI
-   PVcUFeE+D2SqT1bgh8eIwfvO6J6EK8zOQj2w2Uxc1LtwnkYHKqOoxuWeo
-   t3DVVmwMTJNNrDB8CK1yURIF0W+FSCy6eb3az0RStMC0tbTPQXtuOddcC
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2294745"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="2294745"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 06:03:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="4407006"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa007.fm.intel.com with ESMTP; 19 Feb 2024 06:03:00 -0800
-Date: Mon, 19 Feb 2024 21:59:08 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Subject: Re: [PATCH 1/4] KVM: Always flush async #PF workqueue when vCPU is
- being destroyed
-Message-ID: <ZdNerMaewrcrwBlL@yilunxu-OptiPlex-7050>
-References: <20240110011533.503302-1-seanjc@google.com>
- <20240110011533.503302-2-seanjc@google.com>
+	s=arc-20240116; t=1708351164; c=relaxed/simple;
+	bh=z+LUHVxMNuaZaB3RCn8D1OAdSMF663IBq3JaYmth/Bs=;
+	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
+	 In-Reply-To; b=HeM1IYq+JYMuJ3XCJhd9dVNOmvD0EFbyHST+9/F8apLEhwtyRiIJA7YOrkbwKfeYzBi8vboWGqIPSy9ccNi6XGlYbnnnUnk5JlF7v4kqr/HtGUdmzGqETeWRzkDcQLOUYlcGiOgDhk7C4UqR5jhUmrcXOwa8xjg1OJuJalnyQts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m8AyvZQ5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE2B6C433F1;
+	Mon, 19 Feb 2024 13:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708351164;
+	bh=z+LUHVxMNuaZaB3RCn8D1OAdSMF663IBq3JaYmth/Bs=;
+	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
+	b=m8AyvZQ5Ohu1atbf96hEHaz9Pokq2daWbrJfLUgMLQRFIQOa8lbFCHhtlvYjRGY9z
+	 06b32rtvxL7d6gRwUBpsxeOEmqEAJ5d/KTCEySs+UllYH7K+aFq3CYUdpfjDTXWjb3
+	 tJzaua0YMTlQdyeTxdG//DX6ASbplDq34q+E0r2xXNiDFjkDkONTbDHFhTMqdN89Kn
+	 BFkpTMPq8gMzGRPMozKDC5B2oDqY3A0FgrYe5BUCSrUVbQGhIkFftwOd28g8YhpdF6
+	 iVoutFNaee+xsY+50Glo4NZWSMT1nffJXJMtFPeePcb9YDxwuTdvETsj7zdUPG6nef
+	 ow43dtJLGgh9g==
+Content-Type: multipart/signed;
+ boundary=99d1e3bae09ed9ca9f76a08dd12da8ba24b3a631d884834e984f62944198;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
+Date: Mon, 19 Feb 2024 14:59:16 +0100
+Message-Id: <CZ93XYV3MB10.YRCFWLLHIICY@kernel.org>
+Cc: <devicetree@vger.kernel.org>, "Sean Wang" <sean.wang@mediatek.com>,
+ <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <linux-mediatek@lists.infradead.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "AngeloGioacchino Del Regno" <angelogioacchino.delregno@collabora.com>,
+ "Rob Herring" <robh@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Matthias Brugger" <matthias.bgg@gmail.com>
+Subject: Re: [PATCH v2 2/2] arm64: dts: mediatek: add Kontron 3.5"-SBC-i1200
+X-Mailer: aerc 0.16.0
+References: <20240219084456.1075445-1-mwalle@kernel.org>
+ <20240219084456.1075445-2-mwalle@kernel.org>
+ <2ad6bda8-a457-421b-b35d-dc005fb00ae9@collabora.com>
+ <CZ92W3VSYV1A.1693O76GY1XDP@kernel.org>
+ <b50d49fd-2976-46fc-9f35-354fb39720ad@collabora.com>
+In-Reply-To: <b50d49fd-2976-46fc-9f35-354fb39720ad@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240110011533.503302-2-seanjc@google.com>
 
->  void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-> @@ -114,7 +132,6 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
->  #else
->  		if (cancel_work_sync(&work->work)) {
->  			mmput(work->mm);
-> -			kvm_put_kvm(vcpu->kvm); /* == work->vcpu->kvm */
->  			kmem_cache_free(async_pf_cache, work);
->  		}
->  #endif
-> @@ -126,7 +143,18 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
->  			list_first_entry(&vcpu->async_pf.done,
->  					 typeof(*work), link);
->  		list_del(&work->link);
-> -		kmem_cache_free(async_pf_cache, work);
-> +
-> +		spin_unlock(&vcpu->async_pf.lock);
-> +
-> +		/*
-> +		 * The async #PF is "done", but KVM must wait for the work item
-> +		 * itself, i.e. async_pf_execute(), to run to completion.  If
-> +		 * KVM is a module, KVM must ensure *no* code owned by the KVM
-> +		 * (the module) can be run after the last call to module_put(),
-> +		 * i.e. after the last reference to the last vCPU's file is put.
-> +		 */
-> +		kvm_flush_and_free_async_pf_work(work);
+--99d1e3bae09ed9ca9f76a08dd12da8ba24b3a631d884834e984f62944198
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-I have a new concern when I re-visit this patchset.
+On Mon Feb 19, 2024 at 2:35 PM CET, AngeloGioacchino Del Regno wrote:
+> >> vbus is always supplied by something, as otherwise USB won't work - wh=
+ether this
+> >> is an always-on regulator or a passthrough from external supply this d=
+oesn't really
+> >> matter - you should model a regulator-fixed that provides the 5V VBUS =
+line.
+> >=20
+> > I don't think this is correct, though. Think of an on-board USB
+> > hub. There only D+/D- are connected (and maybe the USB3.2 SerDes
+> > lanes). Or have a look at the M.2 pinout. There is no Vbus.
+> >=20
+>
+> Yes but the MediaTek MTU3 and/or controllers do have it ;-)
 
-Form kvm_check_async_pf_completion(), I see async_pf.queue is always a
-superset of async_pf.done (except wake-all work, which is not within
-concern).  And done work would be skipped from sync (cancel_work_sync()) by:
+. and ..
 
-                if (!work->vcpu)
-                        continue;
+> >> For example:
+> >> 	vbus_fixed: regulator-vbus {
+> >> 		compatible =3D "regulator-fixed";
+> >> 		regulator-name =3D "usb-vbus";
+> >> 		regulator-always-on;
+> >> 		regulator-boot-on;
+> >> 		regulator-min-microvolt =3D <5000000>;
+> >> 		regulator-max-microvolt =3D <5000000>;
+> >> 	};
+> >=20
+> > As mentioned above, I don't think this will make sense in my case.
+> >  >> P.S.: If the rail has a different name, please use that different n=
+ame. Obviously
+> >> that requires you to have schematics at hand, and I don't know if you =
+do: if you
+> >> don't, then that regulator-vbus name is just fine.
+> >=20
+> > I do have the schematics.
+>
+> In that case, you should model the power tree with the fixed power lines,
+> check mt8195-cherry (and/or cherry-tomato) and radxa-nio-12l; even though
+> those are technically "doing nothing", this is device tree, so it should
+> provide a description of the hardware ... and the board does have fixed
+> power lines.
+> It has at least one: DC-IN (typec, barrel jack or whatever, the board nee=
+ds
+> power, doesn't it?!).
 
-But now with this patch we also sync done works, how about we just sync all
-queued work instead.
+Mh, maybe I don't get it. But within the hardware there is simply no
+Vbus. Thus I'd argue it doesn't make sense to have a vbus-supply
+property. Besides, the mediatek,mtu3.yaml binding lists it as
+deprecated anyway and it should rather be on the connector. There,
+it makes perfectly sense (at least if it's a USB connector).
 
-diff --git a/virt/kvm/async_pf.c b/virt/kvm/async_pf.c
-index e033c79d528e..2268f16a36c2 100644
---- a/virt/kvm/async_pf.c
-+++ b/virt/kvm/async_pf.c
-@@ -71,7 +71,6 @@ static void async_pf_execute(struct work_struct *work)
-        spin_lock(&vcpu->async_pf.lock);
-        first = list_empty(&vcpu->async_pf.done);
-        list_add_tail(&apf->link, &vcpu->async_pf.done);
--       apf->vcpu = NULL;
-        spin_unlock(&vcpu->async_pf.lock);
-
-        if (!IS_ENABLED(CONFIG_KVM_ASYNC_PF_SYNC) && first)
-@@ -101,13 +100,6 @@ void kvm_clear_async_pf_completion_queue(struct kvm_vcpu *vcpu)
-                                         typeof(*work), queue);
-                list_del(&work->queue);
-
--               /*
--                * We know it's present in vcpu->async_pf.done, do
--                * nothing here.
--                */
--               if (!work->vcpu)
--                       continue;
--
-                spin_unlock(&vcpu->async_pf.lock);
- #ifdef CONFIG_KVM_ASYNC_PF_SYNC
-                flush_work(&work->work);
+Thus in my case, the xhci for the front port has a vbus-supply
+property (but it should rather have a connector node, as I've just
+learned). But the internal port which connects to the USB hub
+shouldn't have one.
 
 
-This way we don't have to sync twice for the same purpose, also we could
-avoid reusing work->vcpu as a "done" flag which confused me a bit.
+  +-----+           +-----+                  +------+
+  |     |<--Dp/Dn-->|     |<------Dp/Dn----->| USB  |
+  | SoC |           |     |                  | Conn |
+  |     |           |     |   +-----+        |      |
+  +-----+           | USB |   | PWR |--Vbus->|      |
+                    | Hub |   | SW  |        +------+
+                    |     |   +-----+
+                    |     |     ^
+                    |     |     | PRTPWR
+                    |     |-----'
+                    +-----+
 
-Thanks,
-Yilun
+"PWR SW" is a power switch, the input (+5V) isn't shown here. The
+power will be enabled by the USB Hub.
 
-> +		spin_lock(&vcpu->async_pf.lock);
->  	}
->  	spin_unlock(&vcpu->async_pf.lock);
->  
+-michael
+
+--99d1e3bae09ed9ca9f76a08dd12da8ba24b3a631d884834e984f62944198
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZdNetBIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQzcodo7VsRvudvgEAyZCGdO77Pxmrm6K+phBbI5ki8C3j8JDu
+SRao0N5psZUBAJZpI2DCkGN2QIvMqVrxwVuZpy7mA4Hbal7hl7rlF3gH
+=UXiX
+-----END PGP SIGNATURE-----
+
+--99d1e3bae09ed9ca9f76a08dd12da8ba24b3a631d884834e984f62944198--
 
