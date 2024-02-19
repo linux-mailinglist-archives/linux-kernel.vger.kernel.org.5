@@ -1,187 +1,285 @@
-Return-Path: <linux-kernel+bounces-72128-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7BBB85AFBB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:20:35 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF9385AFB8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:19:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 17EFF1C21976
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:20:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D650B21BED
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5385676E;
-	Mon, 19 Feb 2024 23:20:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W5KL6WPN"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F0556759;
+	Mon, 19 Feb 2024 23:18:50 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C120154F94
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:20:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D95F154FA8;
+	Mon, 19 Feb 2024 23:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708384817; cv=none; b=ASXj4u7c5rtk3UcW0Djh7cVCABC21b1Abxv+qP+Fxi4YWJB0WY1NhQpjgob/ZV+GzF7FzsrwmllZ4AxLotaAvCUVbRZY0q7VtosUiFSyi1ikO+z2GEnWht0Cg0OVe0d2IQEDT+sNxa63CsZNY0xU0W8Hwno77qOeAygrMDbUZOw=
+	t=1708384729; cv=none; b=D46HUPDKp5LuTwGACnXylzWAD/QvsMDW+dTVCLGR14CpnLuilfMFh6feEk3/RgumIe7bdHuApP9JBG2D1EXCPky6H1FujZcSbvxTBEIwJYEvZoiG/tk4JWDzOhGBOCwbNq6UNaSxTip7+5ZeWBL4ey4Fz+nIwScZKlTfRMRa4Cw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708384817; c=relaxed/simple;
-	bh=SrmZXUdwYcI0Wb1S6dn/yNTrATUSfBRul1wownfAy6U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UoufFbm94buuiQVHdYGy1u9QGuaaP+OjYJ16xYZxs21O1ONhE0mYxMsgrgZDRYextpa87vYZXpAUB2g2UZiUmf+PDi0ICo7xfdCQbzUPU6M1W8pft3VnG4teWVq8oLdh3oWAdIK3Fc1GWEEnLCLKVUpbUTzWsqoDeloZuZClsjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W5KL6WPN; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dbe7e51f91so211485ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:20:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708384815; x=1708989615; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SrmZXUdwYcI0Wb1S6dn/yNTrATUSfBRul1wownfAy6U=;
-        b=W5KL6WPNAQ/xL1ZHAkYr0B0O8rzat2SHj5D/6Jb52v+j9E24dOlWZkswHgBun4qUOY
-         +d5L4IirPtcmwNV/AGAEy4c5OBOmDEEUy00NDz8t7FrGvXGZDoEdpJnnvLBKjTivadoM
-         q7qvku+2VAkM+SxdRb1nYS9y3c6aqnh9gzCA38rzL3vgfgwkDr8tbs2tvYpRIN9jnSVw
-         yyqsSDD4/5KBnAs8B7RpdqF0a6WUqNVX/ki0WBBwu4ifK6m9kOXLAQS655z6mNQeFCvG
-         NdVqCeim0BRqz7pvVdcGPGdM2y54eDMAs+pGOEyzvX65lp31jNutlZ8BbPxCl22vWEtF
-         NU9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708384815; x=1708989615;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SrmZXUdwYcI0Wb1S6dn/yNTrATUSfBRul1wownfAy6U=;
-        b=ABW4bNm7+XzhixfAEcVL2nNiwz+NCn9zrkQ8ksxFTgmIv6iXhhHO86Om5KHZNcB8oj
-         FnyxxUzeEdzD2gtUJtHwPpqip324nqq3kje5yuAMdYfbCyIKolxAi2WDjBSqglhctDIk
-         AOVqsvWyIz7turFoHqm4se7pls+YiE4OQS61GOW2ucMx8hWMpsg85Gc+7DDIWGg7Oz7D
-         WlJtKpYjjOAJgqIzj3csN5CTZRFOCSS65cemSRQsxGqW0j67qvUTkMRnXoSN+P6Ja9xB
-         1oUtvUbKqDmWoX5um6HdWbiS5XOQgdr5iME24Crb+sl+YP/6H1WWHQM6DAc6DlApJeQI
-         Yf5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVW7N7Kdih2SPPA9GuWpXouC8kf125BGavMhlC8PAapB+3SsaHe73G63CcxHk1p1s2AKz7eaTOjTvEYDm4BFpMTyZUOgGMHsgLTGhoY
-X-Gm-Message-State: AOJu0YwuoxvtguJaSqkxUtmSTI8jWPe+E3IMLI/W8xiZYxgMvyjLe+JR
-	3WMbyirmMj/5JlHWdS5cMW812aSrfsP0PWhB4ThISHaEv5aQqtIDu1b1E4KGLtphek+Toam7Pxt
-	ZtQfFnkz155Wnshakrlv7GZx35QGHtgD7KWU/
-X-Google-Smtp-Source: AGHT+IEwvZzgko2mNXlN6svPu4bbKQCxp72X2gWcMmLsxRTNMGvG4TxkpT7FZTJ709tC42y3e1vYwXuhP1Eiq4mTe/w=
-X-Received: by 2002:a17:902:fb4f:b0:1d9:aa55:e4c1 with SMTP id
- lf15-20020a170902fb4f00b001d9aa55e4c1mr388526plb.20.1708384814851; Mon, 19
- Feb 2024 15:20:14 -0800 (PST)
+	s=arc-20240116; t=1708384729; c=relaxed/simple;
+	bh=ieo1LD6zpA/ghJMMNhYNt1Dzh9yD4gVLvF+JYaQMH6w=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Yt1CqmvwNbf2fenpObjMKmDvHnCctoq4Vue+TgKS8WJ0WIDaw7xYJAOnvYiyAGRcT5ZVemFLJiEd1ZNTruiB+g2WpqaHDRVTNRW9ZCTJu3uDyYM0bhiEz0n7ODx0VrlfuoiU7JU32p+p/emRaU8MECremRLyfiRtfIZCytke9GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12EDDC433F1;
+	Mon, 19 Feb 2024 23:18:48 +0000 (UTC)
+Date: Mon, 19 Feb 2024 18:20:32 -0500
+From: Steven Rostedt <rostedt@goodmis.org>
+To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
+ <linux-trace-kernel@vger.kernel.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: [PATCH v3] ring-buffer: Simplify reservation with try_cmpxchg()
+ loop
+Message-ID: <20240219182032.2605d0a3@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAG48ez3RmV6SsVw9oyTXxQXHp3rqtKDk2qwJWo9TGvXCq7Xr-w@mail.gmail.com>
-In-Reply-To: <CAG48ez3RmV6SsVw9oyTXxQXHp3rqtKDk2qwJWo9TGvXCq7Xr-w@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 19 Feb 2024 15:20:00 -0800
-Message-ID: <CAP-5=fXsFBwt9ARmQja0pKGL-_Vms_NDKeaH5CX=_om1aSvssw@mail.gmail.com>
-Subject: Re: [BUG] perf/x86/intel: HitM false-positives on Ice Lake / Tiger
- Lake (I think?)
-To: Jann Horn <jannh@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Feng Tang <feng.tang@intel.com>, 
-	Andi Kleen <ak@linux.intel.com>, "the arch/x86 maintainers" <x86@kernel.org>, 
-	kernel list <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org, 
-	"Liang, Kan" <kan.liang@linux.intel.com>, Stephane Eranian <eranian@google.com>, 
-	"Taylor, Perry" <perry.taylor@intel.com>, "Alt, Samantha" <samantha.alt@intel.com>, 
-	"Biggers, Caleb" <caleb.biggers@intel.com>, "Wang, Weilin" <weilin.wang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19, 2024 at 5:01=E2=80=AFAM Jann Horn <jannh@google.com> wrote:
->
-> Hi!
->
-> From what I understand, "perf c2c" shows bogus HitM events on Ice Lake
-> (and newer) because Intel added some feature where *clean* cachelines
-> can get snoop-forwarded ("cross-core FWD"), and the PMU apparently
-> treats this mostly the same as snoop-forwarding of modified cache
-> lines (HitM)? On a Tiger Lake CPU, I can see addresses from the kernel
-> rodata section in "perf c2c report".
->
-> This is mentioned in the SDM, Volume 3B, section "20.9.7 Load Latency
-> Facility", table "Table 20-101. Data Source Encoding for Memory
-> Accesses (Ice Lake and Later Microarchitectures)", encoding 07H:
-> "XCORE FWD. This request was satisfied by a sibling core where either
-> a modified (cross-core HITM) or a non-modified (cross-core FWD)
-> cache-line copy was found."
->
-> I don't see anything about this in arch/x86/events/intel/ds.c - if I
-> understand correctly, the kernel's PEBS data source decoding assumes
-> that 0x07 means "L3 hit, snoop hitm" on these CPUs. I think this needs
-> to be adjusted somehow - and maybe it just isn't possible to actually
-> distinguish between HitM and cross-core FWD in PEBS events on these
-> CPUs (without big-hammer chicken bit trickery)? Maybe someone from
-> Intel can clarify?
->
-> (The SDM describes that E-cores on the newer 12th Gen have more
-> precise PEBS encodings that distinguish between "L3 HITM" and "L3
-> HITF"; but I guess the P-cores there maybe still don't let you
-> distinguish HITM/HITF?)
->
->
-> I think https://perfmon-events.intel.com/tigerLake.html is also
-> outdated, or at least it uses ambiguous grammar: The
-> MEM_LOAD_L3_HIT_RETIRED.XSNP_FWD event (EventSel=3DD2H UMask=3D04H) is
-> documented as "Counts retired load instructions where a cross-core
-> snoop hit in another cores caches on this socket, the data was
-> forwarded back to the requesting core as the data was modified
-> (SNOOP_HITM) or the L3 did not have the data(SNOOP_HIT_WITH_FWD)" -
-> from what I understand, a "cross-core FWD" should be a case where the
-> L3 does have the data, unless L3 has become non-inclusive on Ice Lake?
->
-> On a Tiger Lake CPU, I can see this event trigger for the
-> sys_call_table, which is located in the rodata region and probably
-> shouldn't be containing Modified cache lines:
->
-> # grep -A1 -w sys_call_table /proc/kallsyms
-> ffffffff82800280 D sys_call_table
-> ffffffff82801100 d vdso_mapping
-> # perf record -e mem_load_l3_hit_retired.xsnp_fwd:ppp --all-kernel -c 100=
- --data
-> ^C[ perf record: Woken up 11 times to write data ]
-> [ perf record: Captured and wrote 22.851 MB perf.data (43176 samples) ]
-> # perf script -F event,ip,sym,addr | egrep --color 'ffffffff828002[89abcd=
-ef]'
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002d8
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800288
-> ffffffff82526275 do_syscall_64
-> mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
-> ffffffff82526275 do_syscall_64
->
->
-> (For what it's worth, there is a thread on LKML where "cross-core FWD"
-> got mentioned: <https://lore.kernel.org/lkml/b4aaf1ed-124d-1339-3e99-a120=
-f6cc4d28@linux.intel.com/>)
+From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-+others better qualified than me to respond.
+Instead of using local_add_return() to reserve the ring buffer data,
+Mathieu Desnoyers suggested using local_cmpxchg(). This would simplify the
+reservation with the time keeping code.
 
-Hi Jann,
+Although, it does not get rid of the double time stamps (before_stamp and
+write_stamp), using cmpxchg() does get rid of the more complex case when
+an interrupting event occurs between getting the timestamps and reserving
+the data, as when that happens, it just tries again instead of dealing
+with it.
 
-I'm not overly familiar with the issue, but it appears a similar issue
-has been reported for Broadwell Xeon here:
-https://community.intel.com/t5/Software-Tuning-Performance/Broadwell-Xeon-p=
-erf-c2c-showing-remote-HITM-but-remote-socket-is/td-p/1172120
-I'm not sure that thread will be particularly useful, but having the
-Intel people better qualified than me to answer is probably the better
-service of this email.
+Before we had:
 
-Thanks,
-Ian
+	w = local_read(&tail_page->write);
+	/* get time stamps */
+	write = local_add_return(length, &tail_page->write);
+	if (write - length == w) {
+		/* do simple case */
+	} else {
+		/* do complex case */
+	}
+
+By switching the local_add_return() to a local_try_cmpxchg() it can now be:
+
+	 w = local_read(&tail_page->write);
+ again:
+	/* get time stamps */
+	if (!local_try_cmpxchg(&tail_page->write, &w, w + length))
+		goto again;
+
+	 /* do simple case */
+
+The benchmarks between the two showed no regressions when trying this:
+
+ Enable: CONFIG_TRACEPOINT_BENCHMARK
+
+ # trace-cmd record -m 800000 -e benchmark sleep 60
+
+Before the patch:
+
+ # trace-cmd report | tail
+ event_benchmark-944   [003]  1998.910191: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910192: benchmark_event:      last=149 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=149
+ event_benchmark-944   [003]  1998.910193: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910193: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910194: benchmark_event:      last=136 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=136
+ event_benchmark-944   [003]  1998.910194: benchmark_event:      last=138 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=138
+ event_benchmark-944   [003]  1998.910195: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910196: benchmark_event:      last=151 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=151
+ event_benchmark-944   [003]  1998.910196: benchmark_event:      last=150 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=150
+ event_benchmark-944   [003]  1998.910197: benchmark_event:      last=152 first=3488 max=1199686 min=124 avg=208 std=39 std^2=1579 delta=152
+
+After the patch:
+
+ # trace-cmd report | tail
+ event_benchmark-848   [004]   171.414716: benchmark_event:      last=143 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=143
+ event_benchmark-848   [004]   171.414717: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
+ event_benchmark-848   [004]   171.414718: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
+ event_benchmark-848   [004]   171.414718: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
+ event_benchmark-848   [004]   171.414719: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
+ event_benchmark-848   [004]   171.414719: benchmark_event:      last=141 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=141
+ event_benchmark-848   [004]   171.414720: benchmark_event:      last=140 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=140
+ event_benchmark-848   [004]   171.414721: benchmark_event:      last=142 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=142
+ event_benchmark-848   [004]   171.414721: benchmark_event:      last=145 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=145
+ event_benchmark-848   [004]   171.414722: benchmark_event:      last=144 first=14483 max=1155491 min=125 avg=189 std=16 std^2=264 delta=144
+
+It may have even improved!
+
+Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+Changes since v2: https://lore.kernel.org/linux-trace-kernel/20240219173003.08339d54@gandalf.local.home
+
+- Fixed info.field to be info->field
+
+ kernel/trace/ring_buffer.c | 103 ++++++++++++-------------------------
+ 1 file changed, 34 insertions(+), 69 deletions(-)
+
+diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
+index fd4bfe3ecf01..6809d085ae98 100644
+--- a/kernel/trace/ring_buffer.c
++++ b/kernel/trace/ring_buffer.c
+@@ -3455,9 +3455,11 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	/* Don't let the compiler play games with cpu_buffer->tail_page */
+ 	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
+ 
+- /*A*/	w = local_read(&tail_page->write) & RB_WRITE_MASK;
++ /*A*/	w = local_read(&tail_page->write);
+ 	barrier();
+ 	rb_time_read(&cpu_buffer->before_stamp, &info->before);
++	/* Read before_stamp only the first time through */
++ again:
+ 	rb_time_read(&cpu_buffer->write_stamp, &info->after);
+ 	barrier();
+ 	info->ts = rb_time_stamp(cpu_buffer->buffer);
+@@ -3470,7 +3472,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 		 * absolute timestamp.
+ 		 * Don't bother if this is the start of a new page (w == 0).
+ 		 */
+-		if (!w) {
++		if (!(w & RB_WRITE_MASK)) {
+ 			/* Use the sub-buffer timestamp */
+ 			info->delta = 0;
+ 		} else if (unlikely(info->before != info->after)) {
+@@ -3487,89 +3489,52 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 
+  /*B*/	rb_time_set(&cpu_buffer->before_stamp, info->ts);
+ 
+- /*C*/	write = local_add_return(info->length, &tail_page->write);
++ /*C*/	if (!local_try_cmpxchg(&tail_page->write, &w, w + info->length)) {
++		if (info->add_timestamp & (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_EXTEND))
++			info->length -= RB_LEN_TIME_EXTEND;
++		goto again;
++	}
+ 
+-	/* set write to only the index of the write */
+-	write &= RB_WRITE_MASK;
++	/* Set write to the start of this event */
++	write = w & RB_WRITE_MASK;
+ 
+-	tail = write - info->length;
++	/* set tail to the end of the event */
++	tail = write + info->length;
+ 
+ 	/* See if we shot pass the end of this buffer page */
+-	if (unlikely(write > cpu_buffer->buffer->subbuf_size)) {
++	if (unlikely(tail > cpu_buffer->buffer->subbuf_size)) {
+ 		check_buffer(cpu_buffer, info, CHECK_FULL_PAGE);
+-		return rb_move_tail(cpu_buffer, tail, info);
++		return rb_move_tail(cpu_buffer, write, info);
+ 	}
+ 
+-	if (likely(tail == w)) {
+-		/* Nothing interrupted us between A and C */
+- /*D*/		rb_time_set(&cpu_buffer->write_stamp, info->ts);
+-		/*
+-		 * If something came in between C and D, the write stamp
+-		 * may now not be in sync. But that's fine as the before_stamp
+-		 * will be different and then next event will just be forced
+-		 * to use an absolute timestamp.
+-		 */
+-		if (likely(!(info->add_timestamp &
+-			     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
+-			/* This did not interrupt any time update */
+-			info->delta = info->ts - info->after;
+-		else
+-			/* Just use full timestamp for interrupting event */
+-			info->delta = info->ts;
+-		check_buffer(cpu_buffer, info, tail);
+-	} else {
+-		u64 ts;
+-		/* SLOW PATH - Interrupted between A and C */
+-
+-		/* Save the old before_stamp */
+-		rb_time_read(&cpu_buffer->before_stamp, &info->before);
+-
+-		/*
+-		 * Read a new timestamp and update the before_stamp to make
+-		 * the next event after this one force using an absolute
+-		 * timestamp. This is in case an interrupt were to come in
+-		 * between E and F.
+-		 */
+-		ts = rb_time_stamp(cpu_buffer->buffer);
+-		rb_time_set(&cpu_buffer->before_stamp, ts);
+-
+-		barrier();
+- /*E*/		rb_time_read(&cpu_buffer->write_stamp, &info->after);
+-		barrier();
+- /*F*/		if (write == (local_read(&tail_page->write) & RB_WRITE_MASK) &&
+-		    info->after == info->before && info->after < ts) {
+-			/*
+-			 * Nothing came after this event between C and F, it is
+-			 * safe to use info->after for the delta as it
+-			 * matched info->before and is still valid.
+-			 */
+-			info->delta = ts - info->after;
+-		} else {
+-			/*
+-			 * Interrupted between C and F:
+-			 * Lost the previous events time stamp. Just set the
+-			 * delta to zero, and this will be the same time as
+-			 * the event this event interrupted. And the events that
+-			 * came after this will still be correct (as they would
+-			 * have built their delta on the previous event.
+-			 */
+-			info->delta = 0;
+-		}
+-		info->ts = ts;
+-		info->add_timestamp &= ~RB_ADD_STAMP_FORCE;
+-	}
++	/* Nothing interrupted us between A and C */
++ /*D*/	rb_time_set(&cpu_buffer->write_stamp, info->ts);
++	/*
++	 * If something came in between C and D, the write stamp
++	 * may now not be in sync. But that's fine as the before_stamp
++	 * will be different and then next event will just be forced
++	 * to use an absolute timestamp.
++	 */
++	if (likely(!(info->add_timestamp &
++		     (RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
++		/* This did not interrupt any time update */
++		info->delta = info->ts - info->after;
++	else
++		/* Just use full timestamp for interrupting event */
++		info->delta = info->ts;
++	check_buffer(cpu_buffer, info, write);
+ 
+ 	/*
+ 	 * If this is the first commit on the page, then it has the same
+ 	 * timestamp as the page itself.
+ 	 */
+-	if (unlikely(!tail && !(info->add_timestamp &
++	if (unlikely(!write && !(info->add_timestamp &
+ 				(RB_ADD_STAMP_FORCE | RB_ADD_STAMP_ABSOLUTE))))
+ 		info->delta = 0;
+ 
+ 	/* We reserved something on the buffer */
+ 
+-	event = __rb_page_index(tail_page, tail);
++	event = __rb_page_index(tail_page, write);
+ 	rb_update_event(cpu_buffer, event, info);
+ 
+ 	local_inc(&tail_page->entries);
+@@ -3578,7 +3543,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
+ 	 * If this is the first commit on the page, then update
+ 	 * its timestamp.
+ 	 */
+-	if (unlikely(!tail))
++	if (unlikely(!write))
+ 		tail_page->page->time_stamp = info->ts;
+ 
+ 	/* account for these added bytes */
+-- 
+2.43.0
+
 
