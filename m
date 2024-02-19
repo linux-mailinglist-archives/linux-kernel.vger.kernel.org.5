@@ -1,73 +1,92 @@
-Return-Path: <linux-kernel+bounces-71221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB9ED85A221
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:39:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9996B85A230
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:40:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E5ED1F21EA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:39:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 111771F21EBF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDE9D2C691;
-	Mon, 19 Feb 2024 11:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88C12C68C;
+	Mon, 19 Feb 2024 11:40:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dUCI/3Yo"
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qyxDsVl2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nTDEHiH1";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qyxDsVl2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nTDEHiH1"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F39C02C861
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:38:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4972D052;
+	Mon, 19 Feb 2024 11:40:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708342733; cv=none; b=JNiQbqfmTsTUEm6aqvz5Db6zKUNraK82RvKr+pXkgtzZEsISg7GXsbR/FcQrfdyo1riPwVOV8HK/2buGNrORk9wZqX/KOA8+yh63HgaKZerxzfX+EhHbxL1hmC9jaLcy4BgwKNYK9adU00Lz+0TSXT6kFx1IcwqzFbaLOS7Bx0s=
+	t=1708342805; cv=none; b=BiU2N8GmYbU4O9bIsxVjJpDz56GbTkgxoY5ipuYo6qYl7ixPcfUeHZi4iKKWMUhxVrU04eJwUrc4yG+fC2IXCWR/PDdbDpOQggn/fjJarNfFPLtRReJyReDkvkj9WdXT5PgcHQp+mM3S9rMmh4gQN+se2VCpCvVp0cvKE3/oj4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708342733; c=relaxed/simple;
-	bh=jr44VXtqh1WfN5s8vQyEdoQue8G83eRGigWTX8V3R/U=;
+	s=arc-20240116; t=1708342805; c=relaxed/simple;
+	bh=8w5CP+AO5f8hWR39DOrpl6lIQYcmtAL6hnFbGEfxNH4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iVkwMZFObv5O7Y/U4gys+ybVUfwDgAOPKQ+b8zX/+0dlXMqiFDBSq6zyN3+zVhAWJbkelSYJ/pui3vQ30vP0AWxTA31VgkwRUF2StdiICKs2RO0yUFjfnm6W5Z4/v8ACsaX/SpTAC3usObghpidf1GtuaJRpWLvblasqqfA3pBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dUCI/3Yo; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-33d153254b7so1871622f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 03:38:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708342730; x=1708947530; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RgCc9xkjAlHBUoV30Un9Gq7IYtTdQzKUjRHl/TDRQVI=;
-        b=dUCI/3YoLDn74dH7MKxWqlh6o+/F141AOh/fE41nsuSgNjweRLMuvwCNxUjW8ujySG
-         ujtf+dgRgSoYWsvebx8Mxy2MOG4OTs4qg6Kk5Yjvqrt/0xQUsU+SwC5WCHccwCJLmnW7
-         D3IWDBT8sE+k9iX6YG60OUJNZN1P1H0zwRQ6ohUwXdF9ft29zjWRIYUcSXl2BlNrJ9U+
-         KT2I+nffPIB3fcknUe/T1X5BdL51/aJ6cZJAOAInKPi7U3pyNyDeMk3ODDpE9NrqxuIU
-         KMPIDpT1hDo+sL0aSbZQAWv2ustU4kuW2Y2rdd6F0clmXIwdWgMSK2dxr7JQRweIkyEy
-         lcLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708342730; x=1708947530;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RgCc9xkjAlHBUoV30Un9Gq7IYtTdQzKUjRHl/TDRQVI=;
-        b=cRrnEZP7aeCxUtrhHPj1aksnX+Ym4IazsIsc44mU+VREDlXt/O3ZDbLgc8Gt8mkINt
-         geIiAMSFBS5F/svgcOz7YUTLV2uGiVXc1+qYSY8WL1lZSFVFzvdMJ9CsmUoQkoH1Mkz/
-         gbnA4pBTHIRJMi0t6ssdFte6rtAfZwPDEB+fQFdbcKmtGRs6+XoExsb92xqycBHpsSUM
-         oe8EoY29C8FqYO48ntI1ww6TIgFlif/cmacEGFv7TH/2ltrf5nZETd+dR5nawAEutQEk
-         TtO2TghUO40Aa+zLTnjXBWbtEeJFcMgZPtlBzyfP6X3hHThcKrHxeecBg0I2PfkV7r2Y
-         HgCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU/St0Gba3bX+v9r7d0jXlsEjUASg8GpO7OpLApoqQrsRkXx18GsAXRjQ1ESPIAbGqoytnVwDoSOxUR9BihxuMjsUnIFm/mAEeNdxok
-X-Gm-Message-State: AOJu0Yz5c/fWPgEdL4I8O87JOlQ65FizZVY+sBNVu+oeZD3rRKcf1ebC
-	pDZlhGAeJjYNIlKxnKvYq53mHgCwOlPUfvZseITrHOg5+XBs688cyxhkNKLkxxU=
-X-Google-Smtp-Source: AGHT+IFmuNVQ7UlRuPrxHeguM8IFbjVIjhzZhoC+9YobmX6Mn/J7gsAOTr3zn1otvedrjfDNc9H2TA==
-X-Received: by 2002:a5d:4e52:0:b0:33d:3909:ff6 with SMTP id r18-20020a5d4e52000000b0033d39090ff6mr3046644wrt.29.1708342730078;
-        Mon, 19 Feb 2024 03:38:50 -0800 (PST)
-Received: from [192.168.2.107] ([79.115.63.202])
-        by smtp.gmail.com with ESMTPSA id e14-20020a5d4e8e000000b0033cdf1f15e8sm10152630wru.16.2024.02.19.03.38.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 03:38:49 -0800 (PST)
-Message-ID: <058be836-bcd4-403e-bbc3-bb75f3f3d896@linaro.org>
-Date: Mon, 19 Feb 2024 11:38:48 +0000
+	 In-Reply-To:Content-Type; b=Mv85GfyCA1hyXgYwKi3jUMTFsz3zNk3vzePSas6QbUdoV7tDTLmWq+XaKfANtXKh2KGZh/VJhlWjmEKiZXZ9cstPlHM1Rd/QVWipr2FPk+mQZVUQC8CeDkrLVBsKTDDhTtFU4EHy+fxWIE0mCEEh+Tj6vdUZlAb5/+IFSB5Fn7g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qyxDsVl2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nTDEHiH1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qyxDsVl2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nTDEHiH1; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3741E1FD12;
+	Mon, 19 Feb 2024 11:40:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708342802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VpNd7pScMzcCua32coUiV3InuIJm0wwq2wM8HmpeqA4=;
+	b=qyxDsVl2nUf/elcWaG06ru0iwhkV3yDVeyszL4wtreYDPp2GliqZBCGCJhtrrsqr8j4cEU
+	9FUpM5nyW3uDaGDQjC/F6gz9D5YSQxsqvFmC+YQYo1LfuB+MLTRJY38d3wm5txQIO3+R+H
+	QjokKUPFJ/HyFhVFStL/1SucI/1Wt4g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708342802;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VpNd7pScMzcCua32coUiV3InuIJm0wwq2wM8HmpeqA4=;
+	b=nTDEHiH188LXGOCghi9RFOmdhpIEfrthQIl/Ne7U4pmnEm8boyJrpa2vN4ckwPYguaGbcV
+	6V1jV3BEUoIdpbCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708342802; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VpNd7pScMzcCua32coUiV3InuIJm0wwq2wM8HmpeqA4=;
+	b=qyxDsVl2nUf/elcWaG06ru0iwhkV3yDVeyszL4wtreYDPp2GliqZBCGCJhtrrsqr8j4cEU
+	9FUpM5nyW3uDaGDQjC/F6gz9D5YSQxsqvFmC+YQYo1LfuB+MLTRJY38d3wm5txQIO3+R+H
+	QjokKUPFJ/HyFhVFStL/1SucI/1Wt4g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708342802;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VpNd7pScMzcCua32coUiV3InuIJm0wwq2wM8HmpeqA4=;
+	b=nTDEHiH188LXGOCghi9RFOmdhpIEfrthQIl/Ne7U4pmnEm8boyJrpa2vN4ckwPYguaGbcV
+	6V1jV3BEUoIdpbCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1EF9D139D0;
+	Mon, 19 Feb 2024 11:40:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id bBw4BxI+02W+NgAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Mon, 19 Feb 2024 11:40:02 +0000
+Message-ID: <235ab5aa-90a4-4dd7-b2c6-70469605bcfb@suse.cz>
+Date: Mon, 19 Feb 2024 12:40:01 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,161 +94,144 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] spi: spi-mem: add statistics support to ->exec_op()
- calls
+Subject: Re: Stall at page allocations with __GFP_RETRY_MAYFAIL (Re: [PATCH
+ v1] ALSA: memalloc: Fix indefinite hang in non-iommu case)
 Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Mark Brown <broonie@kernel.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
- Dhruva Gole <d-gole@ti.com>, Gregory CLEMENT <gregory.clement@bootlin.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240216-spi-mem-stats-v2-1-9256dfe4887d@bootlin.com>
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-In-Reply-To: <20240216-spi-mem-stats-v2-1-9256dfe4887d@bootlin.com>
+To: Takashi Iwai <tiwai@suse.de>,
+ Karthikeyan Ramasubramanian <kramasub@chromium.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Sven van Ashbrook <svenva@chromium.org>, Brian Geffon <bgeffon@google.com>,
+ stable@vger.kernel.org, Curtis Malainey <cujomalainey@chromium.org>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+ linux-sound@vger.kernel.org, linux-mm@kvack.org
+References: <20240214170720.v1.1.Ic3de2566a7fd3de8501b2f18afa9f94eadb2df0a@changeid>
+ <87jzn0ofdb.wl-tiwai@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <87jzn0ofdb.wl-tiwai@suse.de>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.29
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[chromium.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Flag: NO
 
+On 2/19/24 12:36, Takashi Iwai wrote:
+> On Thu, 15 Feb 2024 01:07:25 +0100,
+> Karthikeyan Ramasubramanian wrote:
+>> 
+>> Before 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+>> the alsa non-contiguous allocator always called the alsa fallback
+>> allocator in the non-iommu case. This allocated non-contig memory
+>> consisting of progressively smaller contiguous chunks. Allocation was
+>> fast due to the OR-ing in of __GFP_NORETRY.
+>> 
+>> After 9d8e536 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+>> the code tries the dma non-contig allocator first, then falls back to
+>> the alsa fallback allocator. In the non-iommu case, the former supports
+>> only a single contiguous chunk.
+>> 
+>> We have observed experimentally that under heavy memory fragmentation,
+>> allocating a large-ish contiguous chunk with __GFP_RETRY_MAYFAIL
+>> triggers an indefinite hang in the dma non-contig allocator. This has
+>> high-impact, as an occurrence will trigger a device reboot, resulting in
+>> loss of user state.
+>> 
+>> Fix the non-iommu path by letting dma_alloc_noncontiguous() fail quickly
+>> so it does not get stuck looking for that elusive large contiguous chunk,
+>> in which case we will fall back to the alsa fallback allocator.
+>> 
+>> Note that the iommu dma non-contiguous allocator is not affected. While
+>> assembling an array of pages, it tries consecutively smaller contiguous
+>> allocations, and lets higher-order chunk allocations fail quickly.
+>> 
+>> Suggested-by: Sven van Ashbrook <svenva@chromium.org>
+>> Suggested-by: Brian Geffon <bgeffon@google.com>
+>> Fixes: 9d8e536d36e7 ("ALSA: memalloc: Try dma_alloc_noncontiguous() at first")
+>> Cc: stable@vger.kernel.org
+>> Cc: Sven van Ashbrook <svenva@chromium.org>
+>> Cc: Brian Geffon <bgeffon@google.com>
+>> Cc: Curtis Malainey <cujomalainey@chromium.org>
+>> Signed-off-by: Karthikeyan Ramasubramanian <kramasub@chromium.org>
+> 
+> After chatting with Vlastimil, he recommended to get linux-mm people
+> involved, as basically such a problem shouldn't happen in the page
+> allocator side.  So let's widen the audience.
+> 
+> To recap the thread: the problem is that dma_alloc_contiguous() call
+> with high order pages and __GFP_FAIL_MAYRETRY leads to indefinite
+> stall.  (It was __GFP_NORETRY beforehand.)  This looks like the code
+> path with the direct page allocation where no IOMMU is involved.
+> 
+> Karthikeyan, Sven, and co: could you guys show the stack trace at the
+> stall?  This may give us more clear light.
 
+Yeah, if the inifinite loop with __GFP_RETRY_MAYFAIL happens in a call to
+__alloc_pages and not in some retry loop around it in an upper layer (I
+tried to check the dma functions but got lost quickly so the exact call
+stack would be useful), we definitely want to know the details. It shouldn't
+happen for costly orders (>3) because the retries are hard limited for those
+despite apparent progress or reclaim or compaction.
 
-On 2/16/24 16:42, Théo Lebrun wrote:
-> Current behavior is that spi-mem operations do not increment statistics,
-> neither per-controller nor per-device, if ->exec_op() is used. For
-> operations that do NOT use ->exec_op(), stats are increased as the
-> usual spi_sync() is called.
+> Also, Vlastimil suggested that tracepoints would be helpful if that's
+> really in the page allocator, too.
 > 
-> The newly implemented spi_mem_add_op_stats() function is strongly
-> inspired by spi_statistics_add_transfer_stats(); locking logic and
-> l2len computation comes from there.
 > 
-> Statistics that are being filled: bytes{,_rx,_tx}, messages, transfers,
-> errors, timedout, transfer_bytes_histo_*.
+> Thanks!
 > 
-> Note about messages & transfers counters: in the fallback to spi_sync()
-> case, there are from 1 to 4 transfers per message. We only register one
-> big transfer in the ->exec_op() case as that is closer to reality.
+> Takashi
 > 
-> This patch is NOT touching:
->  - spi_async, spi_sync, spi_sync_immediate: those counters describe
->    precise function calls, incrementing them would be lying. I believe
->    comparing the messages counter to spi_async+spi_sync is a good way
->    to detect ->exec_op() calls, but I might be missing edge cases
->    knowledge.
->  - transfers_split_maxsize: splitting cannot happen if ->exec_op() is
->    provided.
-> 
-> Reviewed-by: Dhruva Gole <d-gole@ti.com>
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com
-> ---
-> Changes in v2:
-> - Turn len and l2len into u64. Remove casts on all 4 nbytes fields.
->   Remove clamp of l2len to be positive.
-> - Replace "xferred" in comment by "transferred".
-> - Remove sysfs demo from commit message. Moved to below the tear line.
-> - Take Reviewed-by Dhruva Gole.
-> - Link to v1: https://lore.kernel.org/r/20240209-spi-mem-stats-v1-1-dd1a422fc015@bootlin.com
+>> ---
+>> 
+>>  sound/core/memalloc.c | 7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+>> index f901504b5afc1..5f6526a0d731c 100644
+>> --- a/sound/core/memalloc.c
+>> +++ b/sound/core/memalloc.c
+>> @@ -540,13 +540,18 @@ static void *snd_dma_noncontig_alloc(struct snd_dma_buffer *dmab, size_t size)
+>>  {
+>>  	struct sg_table *sgt;
+>>  	void *p;
+>> +	gfp_t gfp_flags = DEFAULT_GFP;
+>>  
+>>  #ifdef CONFIG_SND_DMA_SGBUF
+>>  	if (cpu_feature_enabled(X86_FEATURE_XENPV))
+>>  		return snd_dma_sg_fallback_alloc(dmab, size);
+>> +
+>> +	/* Non-IOMMU case: prevent allocator from searching forever */
+>> +	if (!get_dma_ops(dmab->dev.dev))
+>> +		gfp_flags |= __GFP_NORETRY;
+>>  #endif
+>>  	sgt = dma_alloc_noncontiguous(dmab->dev.dev, size, dmab->dev.dir,
+>> -				      DEFAULT_GFP, 0);
+>> +				      gfp_flags, 0);
+>>  #ifdef CONFIG_SND_DMA_SGBUF
+>>  	if (!sgt && !get_dma_ops(dmab->dev.dev))
+>>  		return snd_dma_sg_fallback_alloc(dmab, size);
+>> -- 
+>> 2.43.0.687.g38aa6559b0-goog
+>> 
 
-Reviewed-by: Tudor Ambarus <tudor.ambarus@linaro.org>
-> ---
-> 
-> Testing this patch:
-> 
->    $ cd /sys/devices/platform/soc
->    $ find . -type d -path "*spi*" -name statistics
->    ./2100000.spi/spi_master/spi0/statistics
->    ./2100000.spi/spi_master/spi0/spi0.0/statistics
->    $ cd ./2100000.spi/spi_master/spi0/statistics
-> 
->    $ for f in *; do printf "%s\t" $f; cat $f; done | \
->          grep -v transfer_bytes_histo | column -t
->    bytes                    240745444
->    bytes_rx                 240170907
->    bytes_tx                 126320
->    errors                   0
->    messages                 97354
->    spi_async                0
->    spi_sync                 0
->    spi_sync_immediate       0
->    timedout                 0
->    transfers                97354
->    transfers_split_maxsize  0
-> ---
->  drivers/spi/spi-mem.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++++-
->  1 file changed, 48 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-> index 2dc8ceb85374..c9d6d42a88f5 100644
-> --- a/drivers/spi/spi-mem.c
-> +++ b/drivers/spi/spi-mem.c
-> @@ -297,6 +297,49 @@ static void spi_mem_access_end(struct spi_mem *mem)
->  		pm_runtime_put(ctlr->dev.parent);
->  }
->  
-> +static void spi_mem_add_op_stats(struct spi_statistics __percpu *pcpu_stats,
-> +				 const struct spi_mem_op *op, int exec_op_ret)
-> +{
-> +	struct spi_statistics *stats;
-> +	u64 len, l2len;
-> +
-> +	get_cpu();
-> +	stats = this_cpu_ptr(pcpu_stats);
-> +	u64_stats_update_begin(&stats->syncp);
-> +
-> +	/*
-> +	 * We do not have the concept of messages or transfers. Let's consider
-> +	 * that one operation is equivalent to one message and one transfer.
-> +	 */
-> +	u64_stats_inc(&stats->messages);
-> +	u64_stats_inc(&stats->transfers);
-> +
-> +	/* Use the sum of all lengths as bytes count and histogram value. */
-> +	len = op->cmd.nbytes + op->addr.nbytes;
-> +	len += op->dummy.nbytes + op->data.nbytes;
-> +	u64_stats_add(&stats->bytes, len);
-> +	l2len = min(fls(len), SPI_STATISTICS_HISTO_SIZE) - 1;
-> +	u64_stats_inc(&stats->transfer_bytes_histo[l2len]);
-> +
-> +	/* Only account for data bytes as transferred bytes. */
-> +	if (op->data.nbytes && op->data.dir == SPI_MEM_DATA_OUT)
-> +		u64_stats_add(&stats->bytes_tx, op->data.nbytes);
-> +	if (op->data.nbytes && op->data.dir == SPI_MEM_DATA_IN)
-> +		u64_stats_add(&stats->bytes_rx, op->data.nbytes);
-> +
-> +	/*
-> +	 * A timeout is not an error, following the same behavior as
-> +	 * spi_transfer_one_message().
-> +	 */
-> +	if (exec_op_ret == -ETIMEDOUT)
-> +		u64_stats_inc(&stats->timedout);
-> +	else if (exec_op_ret)
-> +		u64_stats_inc(&stats->errors);
-> +
-> +	u64_stats_update_end(&stats->syncp);
-> +	put_cpu();
-> +}
-> +
->  /**
->   * spi_mem_exec_op() - Execute a memory operation
->   * @mem: the SPI memory
-> @@ -339,8 +382,12 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
->  		 * read path) and expect the core to use the regular SPI
->  		 * interface in other cases.
->  		 */
-> -		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
-> +		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP) {
-> +			spi_mem_add_op_stats(ctlr->pcpu_statistics, op, ret);
-> +			spi_mem_add_op_stats(mem->spi->pcpu_statistics, op, ret);
-> +
->  			return ret;
-> +		}
->  	}
->  
->  	tmpbufsize = op->cmd.nbytes + op->addr.nbytes + op->dummy.nbytes;
-> 
-> ---
-> base-commit: 19b50f80b3a4865bd477aa5c026dd234d39a50d2
-> change-id: 20240209-spi-mem-stats-ff9bf91c0f7e
-> 
-> Best regards,
 
