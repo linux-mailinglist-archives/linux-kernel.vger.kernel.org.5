@@ -1,121 +1,137 @@
-Return-Path: <linux-kernel+bounces-71914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71913-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E2FF85AC7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 58A5785AC72
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:53:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AE85285DDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:53:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15191285A2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:53:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48004535C4;
-	Mon, 19 Feb 2024 19:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248ED58AD7;
+	Mon, 19 Feb 2024 19:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tkwQ6gfd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="gC6mwSDK"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6863352F65;
-	Mon, 19 Feb 2024 19:50:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3C45823E
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708372227; cv=none; b=p6Tj8wMSCPK3QOYfyIY83bVfbd3RJIUqHEaojBplrxtK1C5Mm9xwNKIrmKL7M+S4j0DZeqZ90Q8MCir2HTdlZXl3mTAiDO71Z9TYvVx4M1YwFeTgxMLQ0wUETmDkjPiPZg4W7DG/kmfCFnMfkmrK00B0qpd3icWD+WOce3kpmm0=
+	t=1708372194; cv=none; b=H3s3uJYHEHTJjcDaLpphovkaGViNg8B0m12NWZg8dJ1r6ll2b0jiiZF2yvnN6aQ/vLYl8DEnKrVbLW4i0Rqg65cxowMsgW5SP2zI4xdNNxZxb+dCoe0iCMYGazAjrA2L5HGJOdvlRup5gFlUE5OPVNob8rexy8IE9i2IfGaY/8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708372227; c=relaxed/simple;
-	bh=DKv0x0Lj1BGsY8NfdmRdd4z8+XPtICz9fcfzMgX3ysA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=mMuKruGJuyGQCDSV8OEkilhCVjng5uukydvL50WULG7rMH4vORGXR59PCpo+9T/gLzORhcc4D1jdTM4u4smq5nKQxSgCVTQKhgg5aZmOOqZABjzWCLXz0x3OhP3z25EfIXFmxbbj5E25NMlqDSdQXRQeGFNC74CgQcrGps3114I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tkwQ6gfd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DD54FC43394;
-	Mon, 19 Feb 2024 19:50:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708372226;
-	bh=DKv0x0Lj1BGsY8NfdmRdd4z8+XPtICz9fcfzMgX3ysA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=tkwQ6gfdXf302AG8Vt0ZCKB/gcKJUUHWkSkDO4mwVLBj50tARRukUVcjXPwWeKdFW
-	 cqYhc1/rNAlAUW/aQYbs6gkDF1K/Nuintv1VKnHbGRTm671OeqCzM/AJRo49wGb8DT
-	 tWpExqOK0lJJsCK1GyaqEncLLmnTD1EnsSKDOUlMnur3HkaqGcO9sJeFWOg0fhc7YY
-	 8ocs9CO+eQiE9kNolqraDlQqvsbOyWLl+YkL7pX8LBBvVY8nB/5qo2wlzJ0YOrxTKD
-	 2UNmvOqq1CzCXfl1gLklImAN6xDf1u1kYrRYXrLMCH1IYVQbNet07UCXBXQCRDMDrG
-	 EfCsuyyCOwpnw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C256FD990CD;
-	Mon, 19 Feb 2024 19:50:26 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1708372194; c=relaxed/simple;
+	bh=GDlMaaEvH+4ZAzww1vS7qaXzwS3hQNyr2z3KYzcZF6Q=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=uX+Obvx59SInN60qWCRDXgA/bh8WsgLP6q3mUfq6dWiIoP4qY7nnz/MUDHEqnouaG1AOaqcUDqBOcMFD3XguWNBSpIlw74C2CWmw7+VVKYjn2EKPXdl7oBFNo+8g2t+GuxdT9UFy3I3BqI/ssZSJOSswUkJ3AG3KH7zHpaSudaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=gC6mwSDK; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e09143c7bdso2329303b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:49:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708372192; x=1708976992;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q5cxuExblNc4ySUrOXZT/i60BTkmMfHliWWRnxN2LN0=;
+        b=BPuuSCXMG23HCY1nK8PF3cvowgdGI7+kuq7ETx3MjnMhfeLOtkDUXU9t3PIaEY5XOM
+         MtO6wkmlpVwVihsylWC0MeNDxLD9itUBEKyXxPgyohTLQUG7F95RavPerXxwTnfD6W71
+         l4ccEiCFHWFKz1H3mVbYA0Tq7hFdyxocd1RB56Oan/4KD14OVeXMLK74UB9Q+QvUYYfy
+         o3Qvfz2GofuFmZHEJMWNe0QXSXiGm0rdqYlin1XltAqybjFuc7096HUNE59vIROix0wQ
+         QFPSMcgajrvx4ZXehH+cgXbBBOi18/sKkTaZY9a8LioEC5BnzUgq/U/UYANqUsWAG8Ef
+         BIeg==
+X-Gm-Message-State: AOJu0Yy5TIUw4g8LzqfV81zbogchS0Ysxv4Hi8TvFAMESqHsj7Y8y/GM
+	yzMbwLN2EV4JrUQ0zj/kFWvCZJqd4D1o4YrxBbEy2m0GhV3cXVfKWEKWygd6weAcww==
+X-Google-Smtp-Source: AGHT+IGvsR7nZpZVOpqJkCXeoQYcILZJpPdLLwQ/k4cmbk/+DDsoYDjLvz2mvGPBaCPNeqiROxL1bg==
+X-Received: by 2002:a05:6a20:b21:b0:19e:48e7:e664 with SMTP id x33-20020a056a200b2100b0019e48e7e664mr9473062pzf.31.1708372192022;
+        Mon, 19 Feb 2024 11:49:52 -0800 (PST)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id fn15-20020a056a002fcf00b006e324e33ab8sm4725779pfb.218.2024.02.19.11.49.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 11:49:51 -0800 (PST)
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1708372189;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=q5cxuExblNc4ySUrOXZT/i60BTkmMfHliWWRnxN2LN0=;
+	b=gC6mwSDK9c9cN6GPiykq7vRl+LAoRpYgTdRUePG27mXZ2pK+jYfVPzuFRDUwrTuGgtMykc
+	9QIaA7gI+M75pSJuU8myQfrmLsT+qHgi4DD2xHiK0Vdj38k0EsmaoQFdggrViHsRVGvKvR
+	jtsV4m1Bv3x+4M+1KY24DQgOJL4BkwJ5EM9o/c8scWEBoWz3ld1tg95c+eSAql0+ym9uvt
+	daqMYyqJhF9NRIQisWzpsZ3LSGDcCfQvSo7ulXZM7wyvt8wVQ+K72HlkmDEeWJuK33kHG3
+	lhTXtuB90C2gTjbQ3Xd6oZYbtJ9aUbCtMewSXjuxyvp37SLWpkNpwyefBjPgVg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+Date: Mon, 19 Feb 2024 16:50:37 -0300
+Subject: [PATCH] parport: constify the struct device_type usage
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 0/4] Add 8qm SMMU information
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <170837222679.28614.9914346623954739776.git-patchwork-notify@kernel.org>
-Date: Mon, 19 Feb 2024 19:50:26 +0000
-References: <20240201-8qm_smmu-v2-0-3d12a80201a3@nxp.com>
-In-Reply-To: <20240201-8qm_smmu-v2-0-3d12a80201a3@nxp.com>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: ulf.hansson@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- linux-imx@nxp.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
- xiaoning.wang@nxp.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org, imx@lists.linux.dev
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240219-device_cleanup-parport-v1-1-1d2cac6c884b@marliere.net>
+X-B4-Tracking: v=1; b=H4sIAAyx02UC/x2MUQqFIBAArxL7naBSoO8qj4jNtloIk7UiiO6e9
+ DkwMzdkEqYMv+oGoZMzb7GAqSsIC8aZFI+FwWrbaGu8GosUqA8rYTySSihpk10NqBuHrvXGOyh
+ xEpr4+sb/7nlecmVQuWgAAAA=
+To: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: linux-kernel@vger.kernel.org, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ "Ricardo B. Marliere" <ricardo@marliere.net>
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1065; i=ricardo@marliere.net;
+ h=from:subject:message-id; bh=GDlMaaEvH+4ZAzww1vS7qaXzwS3hQNyr2z3KYzcZF6Q=;
+ b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl07EN8OvcjPJ55hQE7ATHXtY8ZqD3qv9/MYzUZ
+ OBE8ZdNDzOJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdOxDQAKCRDJC4p8Y4ZY
+ pkzJEACloxmdXukC3F/8+gcU19/wbX3/xddgxXrmH0cv5e5DVSSpx7zyUaN7QoDSN8fRy1m2KfF
+ 71a3AuszvKo2/4sjxiveHD54BRcKMKzMnrV5DWtVk4yS/PO/KLFDxcwRHUZXTH3IytF10HcDPWH
+ SQfWSU9r4D1jtQrIo1QyzIKilEPHXLhMhy14ZcwHGujY7ivEB3kEYj3uesgm6A+Gw4hVBj6dDZx
+ p0rLGpUpUa3rMe2BxNBG/BDgsNmc+W8Oa7/ugcIAth4mAhV3ka7CekULOc5KhRje0zPx4vIsdF9
+ QH85dn4bzorAU2ogjCqRsESs9dTYjFtOgt8EBNuTXeNLPNeTxzuKzgAtm017DM/z4iIfhHk1PbF
+ SJ+CO/x5yaOLS4KP+nuBltwsEWemhWFBkNu9/w5vsMHdfa7s3wzVztu/WMErMK9obiati9uwIF1
+ ZoV4MGBhI+C+YP7fQyK+BL8MAd1XqzmD37K/hsS+tI0+ic7wSIX57mbr3Ibi7cpalPfmPO8jf1l
+ 4oeDh8go0T/hzRL6Ha7flO0abSFaC+eG0bWslJyfVLP/5rPQyE+um6VcrZkyojjmDcmyomI6n4d
+ 3cPMs9f3HhREEi/f5WOgS5/xtCeQkrCqmtcKdTRICpZ8jxfzA7rPuTCpx6v/4Fjo8DI2TCs1gxf
+ c8bBLeTscqMPWPw==
+X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
+ fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
 
-Hello:
+Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+core can properly handle constant struct device_type. Move the
+parport_device_type variable to be a constant structure as well, placing it
+into read-only memory which can not be modified at runtime.
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+---
+ drivers/parport/share.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Thu, 01 Feb 2024 15:22:40 -0500 you wrote:
-> Change at v2
-> - Remove iM95 for fec.
-> 
-> To: Ulf Hansson <ulf.hansson@linaro.org>
-> To: Rob Herring <robh+dt@kernel.org>
-> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> To: Conor Dooley <conor+dt@kernel.org>
-> To: Shawn Guo <shawnguo@kernel.org>
-> To: Sascha Hauer <s.hauer@pengutronix.de>
-> To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> To: Fabio Estevam <festevam@gmail.com>
-> To: NXP Linux Team <linux-imx@nxp.com>
-> To: Wei Fang <wei.fang@nxp.com>
-> To: Shenwei Wang <shenwei.wang@nxp.com>
-> To: Clark Wang <xiaoning.wang@nxp.com>
-> To: David S. Miller <davem@davemloft.net>
-> To: Eric Dumazet <edumazet@google.com>
-> To: Jakub Kicinski <kuba@kernel.org>
-> To: Paolo Abeni <pabeni@redhat.com>
-> Cc: linux-mmc@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: imx@lists.linux.dev
-> 
-> [...]
+diff --git a/drivers/parport/share.c b/drivers/parport/share.c
+index 49c74ded8a53..33159392d70c 100644
+--- a/drivers/parport/share.c
++++ b/drivers/parport/share.c
+@@ -101,7 +101,7 @@ static struct parport_operations dead_ops = {
+ 	.owner		= NULL,
+ };
+ 
+-static struct device_type parport_device_type = {
++static const struct device_type parport_device_type = {
+ 	.name = "parport",
+ };
+ 
 
-Here is the summary with links:
-  - [v2,1/4] dt-bindings: mmc: fsl-imx-esdhc: add iommus property
-    (no matching commit)
-  - [v2,2/4] dt-bindings: net: fec: add iommus property
-    https://git.kernel.org/netdev/net-next/c/5983e5df8630
-  - [v2,3/4] arm64: dts: imx8qm: add smmu node
-    (no matching commit)
-  - [v2,4/4] arm64: dts: imx8qm: add smmu stream id information
-    (no matching commit)
+---
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240219-device_cleanup-parport-ba048a859198
 
-You are awesome, thank you!
+Best regards,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Ricardo B. Marliere <ricardo@marliere.net>
 
 
