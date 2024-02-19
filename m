@@ -1,52 +1,51 @@
-Return-Path: <linux-kernel+bounces-71554-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71555-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10E7685A708
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 963E185A709
 	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC9442833C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:10:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 474E4283BF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B1A44C6F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DF344C70;
 	Mon, 19 Feb 2024 15:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bAT3um3x"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dGIJ8r5v"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB169446B1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6E0446B2;
 	Mon, 19 Feb 2024 15:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708355221; cv=none; b=lDe4p88RpJhRxWXOEjQGcMLXnyujVM+Lok5gY5kDauzJVjYkVG4jIKL+XcH0YXNwvkV18I0chqMplZStZQnFAgoSepLk5MSwLzk9ihTpGlg9cr+KM7VX4Dl/c++cGfdWJiw86kWzVWJsLb5ynTyaVnHJLhQd7wplhT4rAvojjqQ=
+	t=1708355221; cv=none; b=C3cs2VcNHRqppddP15jW9UREtMFGuJ/QF37skPv+8vKQMX+TO6FfTlciKodp7IbgjP16oSlrMhrzGn51BUKfY5H89r5jJZ7WQOWeFXz7gMQYBdJxyXKW5HBiMlYcs7AakKZZN9QuR+nGLreZi/BNYy/Ct852KFaRgJs7tgavw14=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708355221; c=relaxed/simple;
-	bh=RPUmB8TnTdVoKukhHeVUW8RKPIT3OlUDg9hq4euJK94=;
+	bh=ZMHx0vXY3BCnqeeGRXitQ/9VWNOaOqi09FTpVeOGZiU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kVryB06vA/WUd08R5VZ/t9y/s7HjvwGeFMPbh8EEQzzhCsGIet7Yvnoe1jXjsQeNBVTujqAUeUsAqMFtwirXKUi8WDOg4vH2y4SZugVh08vIMhxEpAcLPc8hBA68b/5tJ+11rm751FU4Lw+VyRgqijUUXxBRblJcvC7j6qRY7g8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bAT3um3x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4EB31C433F1;
+	 In-Reply-To:To:Cc; b=T+8Ykdt+PrVvUSyNxsEXRO2Tb5ZVwhPvYe8yaTkKKUT1DSiqEh2VylAxYdqnrG62nzox2wwhFlMmhKsfRwSCfYhakO27Ruj7NNqEP2ajRzQolixr+q0Ah+f8/JogWkK4RJcz866x53DgiRGYzyYhd3FgazEzpL/ecso6I4PEo3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dGIJ8r5v; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5E83BC433B1;
 	Mon, 19 Feb 2024 15:07:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1708355221;
-	bh=RPUmB8TnTdVoKukhHeVUW8RKPIT3OlUDg9hq4euJK94=;
+	bh=ZMHx0vXY3BCnqeeGRXitQ/9VWNOaOqi09FTpVeOGZiU=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=bAT3um3xqfYuyN9hwfSJ4Lbpf5VWebxr4RugixBwOTv294NhjsRe+H7RAZo+5/iSr
-	 qg5oxkdTFTOvy+5R7fTLhaHepfhrLk7p1PXeMtecBxjrYf+EsBslfH+GmoaSR3ZBpR
-	 d+5XUjDgGsZKwGGv2iCMntkgTIjgXHicuJzbsJOSJc8XUkvTSmLJ2JhfstVAkZpFrc
-	 tzOAypEb2n9bE9kTmYze0lGfVOUhLz290P6IfLGrhw3gK5X1H+xWwyO+laZwT4F4sg
-	 mviRy/anaEcX5LUC4wDIlLSUWa+P98F/FYDra0BsYy+0TIAhW/EBqpLfxq4C4u1Dkn
-	 wwTWKQMo0uvhw==
+	b=dGIJ8r5vC/Wom7KdLtQbklUS/MgZliqOr/U2dp4sUTRNlGJnsukNQJpAtFMWtab2P
+	 54jojOTACU+x7Tzi+fU92Lj/pgKXs29YflQ4N0nNeiyoKC6/2sIOwin/xvHsg56UUO
+	 uNZ+IjhqhZCcqEucwoAIBwH0zJs0sZqMu8jZtc8IQCTmfPySsOibgCo92Qcy0v8k9X
+	 V/cMqJNIsUp0UjtsOSV1vdDnkwKsso+ab1rN3gPctQEyFxyYNVPLnoTskMZkRGAfhS
+	 kUDgEkbRiHRs7Edceu/bcRulUtxNEMGD70NeqXD4ZPIDJBskMY/oN6mxSViG78VrH8
+	 fUu8PiHdqM+fQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F72FC48BF8;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41B41C54788;
 	Mon, 19 Feb 2024 15:07:01 +0000 (UTC)
 From: Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>
-Date: Mon, 19 Feb 2024 23:05:27 +0800
-Subject: [PATCH v3 2/3] arm64: dts: hi3798cv200: add GICH, GICV register
- space and irq
+Date: Mon, 19 Feb 2024 23:05:28 +0800
+Subject: [PATCH v3 3/3] arm64: dts: hi3798cv200: add cache info
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,7 +54,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-cache-v3-2-a33c57534ae9@outlook.com>
+Message-Id: <20240219-cache-v3-3-a33c57534ae9@outlook.com>
 References: <20240219-cache-v3-0-a33c57534ae9@outlook.com>
 In-Reply-To: <20240219-cache-v3-0-a33c57534ae9@outlook.com>
 To: Wei Xu <xuwei5@hisilicon.com>, Rob Herring <robh+dt@kernel.org>, 
@@ -67,11 +66,11 @@ Cc: linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
  Yang Xiwen <forbidden405@outlook.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708355220; l=1117;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708355220; l=2828;
  i=forbidden405@outlook.com; s=20230724; h=from:subject:message-id;
- bh=oWPOXVSM7W5vHY31kDr4p2HrgQkuCpZx2sc6S9SlCF8=;
- b=/FnJ4jqTMm6uyoHP9rZXBktLTdCPZvHTR3101rtPQylnDigXhthwv/HvdBRI8vAaP5oYbRtqi
- QxY1QvVd/7jANK8eTA2Fker2F5B1Huf7MQB1rZkT31lnLt5M6F4+mqW
+ bh=JCsSJLmRtX8xpTr7tVRxOMtB1SM8sQgXyZwjBU7p06U=;
+ b=xqgpLfoVrqGs2VoZ+PuH1dOy0Z9Fq4MUu+Y3kHKp1cEtduRNLeydUq8AxTXjj8so/JunkHLKW
+ Q8mtsMytX5+DXoRi5eQY8ceAPKRU3PIgKKnWzdSWoZKfDdtYhrLPDqF
 X-Developer-Key: i=forbidden405@outlook.com; a=ed25519;
  pk=qOD5jhp891/Xzc+H/PZ8LWVSWE3O/XCQnAg+5vdU2IU=
 X-Endpoint-Received:
@@ -81,32 +80,100 @@ Reply-To: <forbidden405@outlook.com>
 
 From: Yang Xiwen <forbidden405@outlook.com>
 
-This is needed by KVM to make use of VGIC code. Just like regular
-GIC-400, PPI #9 is the hypervisor maintenance interrupt. It has been
-verified.
+During boot, the kernel complains:
 
+[    0.044029] cacheinfo: Unable to detect cache hierarchy for CPU 0
+
+So add L1/L2 cache info to the dts according to the datasheet. (32KiB L1
+i-cache + 32 KiB L1 d-cache + 512 KiB L2 unified cache)
+
+With this patch, the line above is gone and the following info is added
+to the output of `lscpu`:
+
+Caches (sum of all):
+  L1d:                   128 KiB (4 instances)
+  L1i:                   128 KiB (4 instances)
+  L2:                    512 KiB (1 instance)
+
+Fixes: 2f20182ed670 ("arm64: dts: hisilicon: add dts files for hi3798cv200-poplar board")
 Signed-off-by: Yang Xiwen <forbidden405@outlook.com>
+Cc: stable@vger.kernel.org
 ---
- arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi | 37 ++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-index d01023401d7e..fc64d2fa99eb 100644
+index fc64d2fa99eb..f6bc001c3832 100644
 --- a/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
 +++ b/arch/arm64/boot/dts/hisilicon/hi3798cv200.dtsi
-@@ -58,7 +58,11 @@ cpu@3 {
+@@ -31,6 +31,13 @@ cpu@0 {
+ 			device_type = "cpu";
+ 			reg = <0x0 0x0>;
+ 			enable-method = "psci";
++			d-cache-size = <0x8000>; /* 32 KiB */
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			i-cache-size = <0x8000>; /* 32 KiB */
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			next-level-cache = <&L2>;
+ 		};
+ 
+ 		cpu@1 {
+@@ -38,6 +45,13 @@ cpu@1 {
+ 			device_type = "cpu";
+ 			reg = <0x0 0x1>;
+ 			enable-method = "psci";
++			d-cache-size = <0x8000>; /* 32 KiB */
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			i-cache-size = <0x8000>; /* 32 KiB */
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			next-level-cache = <&L2>;
+ 		};
+ 
+ 		cpu@2 {
+@@ -45,6 +59,13 @@ cpu@2 {
+ 			device_type = "cpu";
+ 			reg = <0x0 0x2>;
+ 			enable-method = "psci";
++			d-cache-size = <0x8000>; /* 32 KiB */
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			i-cache-size = <0x8000>; /* 32 KiB */
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			next-level-cache = <&L2>;
+ 		};
+ 
+ 		cpu@3 {
+@@ -52,9 +73,25 @@ cpu@3 {
+ 			device_type = "cpu";
+ 			reg = <0x0 0x3>;
+ 			enable-method = "psci";
++			d-cache-size = <0x8000>; /* 32 KiB */
++			d-cache-line-size = <64>;
++			d-cache-sets = <128>;
++			i-cache-size = <0x8000>; /* 32 KiB */
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			next-level-cache = <&L2>;
+ 		};
+ 	};
+ 
++	L2: l2-cache {
++		compatible = "cache";
++		cache-unified;
++		cache-size = <0x80000>; /* 512 KiB */
++		cache-line-size = <64>;
++		cache-sets = <512>;
++		cache-level = <2>;
++	};
++
  	gic: interrupt-controller@f1001000 {
  		compatible = "arm,gic-400";
  		reg = <0x0 0xf1001000 0x0 0x1000>,  /* GICD */
--		      <0x0 0xf1002000 0x0 0x2000>;  /* GICC */
-+		      <0x0 0xf1002000 0x0 0x2000>,  /* GICC */
-+		      <0x0 0xf1004000 0x0 0x2000>,  /* GICH */
-+		      <0x0 0xf1006000 0x0 0x2000>;  /* GICV */
-+		interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) |
-+			      IRQ_TYPE_LEVEL_HIGH)>;
- 		#address-cells = <0>;
- 		#interrupt-cells = <3>;
- 		interrupt-controller;
 
 -- 
 2.43.0
