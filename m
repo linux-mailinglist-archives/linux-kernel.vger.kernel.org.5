@@ -1,81 +1,84 @@
-Return-Path: <linux-kernel+bounces-72024-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72025-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32EB885ADF5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:47:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E002785ADF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:47:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 668A61C219EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:47:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F3611F22C35
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC7E54BD2;
-	Mon, 19 Feb 2024 21:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03D5B54FAA;
+	Mon, 19 Feb 2024 21:46:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mai.rs header.i=@mai.rs header.b="weLCNlM7";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DlSJa2u3"
-Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
+	dkim=pass (2048-bit key) header.d=mai.rs header.i=@mai.rs header.b="PzcbEHme";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="WqPazQyo"
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3141482C3;
-	Mon, 19 Feb 2024 21:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E99C482FC;
+	Mon, 19 Feb 2024 21:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708379209; cv=none; b=mybwbHYSzsM2fUeoFAPlkFNZPc2ADMnU6Pxt0qEWbpxkAyxiWYeGApJ6FAavsblZB0pj64kq9ocza/FsC7ejB+Jn1u79garnAJoH4Y57/kzK9hvxgK0eSU5NCWxTxkNd+AeZ5A9MnQjKqyNnZol5naa1VkJ2p1+GHNo8DN1CcCg=
+	t=1708379211; cv=none; b=qB1xIdOj7rTmysyQhqeVSBK/EUN2mDVW3Y6s0sZ6+Xc1eSgcEtCXxBJA9c5XLPWZXupGzgyuCQEqViYLKUREEbv4rYv+SjyB8P+DGqLk4gxSdyOvqiAL1iHjq2uBos15TW77ubGaJUckQ0OT6xZ+Q6gdeRp1VgapxADzZDos0io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708379209; c=relaxed/simple;
-	bh=pX7vlRKzjwZqjEZhPCdp6sZvYIXFuI8KsiHdiUUODoo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DwhQ0IbQgv1h/x/Gip4pPCa/s/xoVqVAGbEbnBL45exK120S6TkTrBJT1dc7y4VzyNz39RrMewORyy/1wzy/Yg839FxCROGsZ6oQtUTlCLJ+gzLolgwVO6yZ/PsAFWfZDPGOq5u28+FBZoaUURbOzIFd2nj6ZKVd2tfk4I8khG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mai.rs; spf=pass smtp.mailfrom=mai.rs; dkim=pass (2048-bit key) header.d=mai.rs header.i=@mai.rs header.b=weLCNlM7; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=DlSJa2u3; arc=none smtp.client-ip=103.168.172.144
+	s=arc-20240116; t=1708379211; c=relaxed/simple;
+	bh=7dNIONGfw8c2XXjF5qp+9x27wEYri99mOp6cpI5f8qM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=WqWxx9/5gfF9AP7nsQNgBA4Peuwhqnt8/xKhxxX/KpvvyO6icHM8bv5eJp5Z3UDBtVA1Tyo7qpEqbNfD6MJkaWQCpwqPpStd2x/hva8caW5H6p29z8+yi3Rn1HwLO+GK6znyiwMuIjrxRgiyh8Nvl1WTMjDuLplCCJf80eUz0lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mai.rs; spf=pass smtp.mailfrom=mai.rs; dkim=pass (2048-bit key) header.d=mai.rs header.i=@mai.rs header.b=PzcbEHme; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=WqPazQyo; arc=none smtp.client-ip=66.111.4.27
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mai.rs
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mai.rs
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 82C5A1380063;
-	Mon, 19 Feb 2024 16:46:46 -0500 (EST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.nyi.internal (Postfix) with ESMTP id 5850F5C00AB;
+	Mon, 19 Feb 2024 16:46:48 -0500 (EST)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 19 Feb 2024 16:46:46 -0500
+  by compute6.internal (MEProxy); Mon, 19 Feb 2024 16:46:48 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mai.rs; h=cc:cc
 	:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1708379206; x=1708465606; bh=1feYDj8c2GFhXtQn58Kwa
-	4gOwxd+KSsz5/PmCXrsOZM=; b=weLCNlM7mpb59dLHcwDx4fjOT+9Fi6Hx/i4QQ
-	ux6u2p9oXhQpXlh+103EtKxI6PBNv4n8FQ8+e6e1gK9lExw2uUaqYoVkydq9yNCM
-	nrb7lowYyPcG053gunBDp2XbDRuavY5sNzjfIIJwxACt7qUQK5oT5+/c4YUF+Mkm
-	6MwJMeD8MEtucomYOLTE3Q4wIexY6hkDB6ajuTU4+SM+cXCYoe1wcGsyW3eJ/EMn
-	vLmP+Lx3cvLuXVhjYenZbIbrO0ETGW8NTviE0YJFDE6ZtGvVQSIkYNcNaxMrsWVD
-	1XLxc1ZppV17bQMS9lGfquEN3V5VeMyRirIE7gg1vhEl5u7IQ==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1708379208; x=
+	1708465608; bh=w7kcGbrAfPlLUWjYOO6KPjshmKNEIHE0dRljasmBcZs=; b=P
+	zcbEHmeoC0G14o8HcdiZB0+r2g9b53QCO0/d4wyRUFnmB5jYuQw/NiQ+JK+jhr5+
+	aKv6+QKMD79khcxiAhNVjZjS+Oagt5X1itwjlH8LwcLnVVDxzxrpyotQHWfRk6Yt
+	eif+HqXG3qfl21NrAfBOmrh7Q7LeSAgyZmS1p5RxFTeABqfpxS8Q76u0mguzM7aN
+	Vb0OCh2Lew+4XyG4jkvrrI4bToHqrORCmVKmlTkMDR/LL62F0cwBxPoXqywaCiNQ
+	QL9xcl3DINTJ0Vup0e5XMoP5OTnLzDIvdVGoYSor9PjjJstmJtb0v7uaLIlAKUW5
+	pQ3sC8OwxOkq9ZAY1ZiJQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1708379206; x=1708465606; bh=1feYDj8c2GFhXtQn58Kwa4gOwxd+
-	KSsz5/PmCXrsOZM=; b=DlSJa2u3gKYNxDHHRiriv2IvOa85kTp5ZcHSdUDxJE3Y
-	1z2aCPVgzpQonHArt1YUqhrVnu5HKgvG5i50WTCH9cIQK9XUpzEZZN/MAxFaimlO
-	E7+9EDwKlDtbWBCg4jLVYGbXXyUyE/9e/OT+theXvcr0urUlsQrq+a0T0/cns/xS
-	4FcVS9w84kA4Iwf4OUWhi24h9QFPDuwNQhEGqZwiztamWEZnuCXr+3tTsGt+7+TV
-	Q12/HqiR1Hai7paXrGpwJEKBS0lfINaa8B/qT5CxqXxOUzK9i54YH1RxLWclam/x
-	begaQ9DZrAm4JucPTfBjRkc6rJSyBmWx5Pf03K6WVw==
-X-ME-Sender: <xms:RszTZSmlweWgh8kPoopBNXtShoBOTgLmUJ3FCjBMhCT3f6JVaeCzTA>
-    <xme:RszTZZ1EmOV7KAnBPqZAQf8NQMoQRClAkyPdg3FuwLcnVie0NNSIdp9y1-eixVfCV
-    Xq2pgjH-bXwpKVBHg>
-X-ME-Received: <xmr:RszTZQqdlu2zrnSMWVC1__hemYqBgIC3B6-XawSzegdPq5MdRMz0IoYmujwfzac>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdekgdduhedtucetufdoteggodetrfdotf
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708379208; x=
+	1708465608; bh=w7kcGbrAfPlLUWjYOO6KPjshmKNEIHE0dRljasmBcZs=; b=W
+	qPazQyoB9cAEgL9WACIltk/mpx9KbpZDzRUeovQFCHZr7bxe8LQYrbVTJ4BmQPYo
+	nu/yFQmcEPICFK4gfcqGJN+t62KUwUvVFHQfE5iGPYobBJ0IhWT/FqhZBGF2EfG6
+	iQflLzApFiDQQR76VO7bWMZSgNh073S0DPF9+xRyyIJgEbXJ1R/3wyjk8wpkKfYd
+	4N0o10zU4tptWLrY8jgPvi4aJWayeOqED4oZylv8oKdFIiImag2bxoKv0s9wfjdc
+	6Fo9ywP8g/2naKXc/37EsiU6Z8kyNuZrQSqV6h/W1Vw/tgyA74UhIlW/Mjt+or3m
+	U1ZBnLaZTio2W/lYfO5RA==
+X-ME-Sender: <xms:SMzTZW7-OHr3izgR3QsnlGzWUpBoEQyzCPg2V3s1S8QqjP0EiHW_4A>
+    <xme:SMzTZf5EOXgBr0J1LHPYxMvhJhyI11tOWTaejxl0-4riMhNET7JE6kDnK4dHbX3Fx
+    nf6pewpTm9wB7Ywew>
+X-ME-Received: <xmr:SMzTZVfs5nniqfZXceHp76OSnibR_LKQ_HdqrvQJCU1yocEZSpo4QB6joPX3xiY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdekgdduheduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvvefufffkofgggfestdekredtredttdenucfhrhhomhepuehrhigrnhht
-    ucforghirhhsuceosghrhigrnhhtsehmrghirdhrsheqnecuggftrfgrthhtvghrnhepge
-    eiteekgfeihfeggedtgeejgfelieffkeeivdduvddugeffteefleehheeiiedunecuffho
-    mhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegsrhihrghnthesmhgrihdrrhhs
-X-ME-Proxy: <xmx:RszTZWlFUzCqYQpiPUK1ov6TO-I9FFEXdMZrsF-hDXJURa7RyPBdMQ>
-    <xmx:RszTZQ2o4KoDrg20iRTPYEvAFZNncVmp3Q57tQwDHMi_iSo-3xNo4A>
-    <xmx:RszTZdvXhUuVoGHUuFUVBKptIvAgADhRkcpmhksgWNgpzSl_QIJL8Q>
-    <xmx:RszTZWO3I9TNm7pD6JrPn_dKM6gW1u5JOCqadcgjTMGsSZMU7J5Cag>
+    cujfgurhephffvvefufffkofgjfhgggfestdekredtredttdenucfhrhhomhepuehrhigr
+    nhhtucforghirhhsuceosghrhigrnhhtsehmrghirdhrsheqnecuggftrfgrthhtvghrnh
+    epffetieevteehteehhfejudetheegjeegleehgefhkefhjeeiueduudeiieelffetnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghrhigrnh
+    htsehmrghirdhrsh
+X-ME-Proxy: <xmx:SMzTZTI3wPbkh1b3MOLUiJAqUXbcEbNEuCQhIblgOdYWxWg_3qN8uQ>
+    <xmx:SMzTZaIwyjs2HMo_JtClculsgqELghB1QlJ8OH73JRToUTzP0n0_2A>
+    <xmx:SMzTZUzdBu-5WKlOFiXj5jH7Uz800W9PUGdR01Ye__05AXELzG5EDA>
+    <xmx:SMzTZcCPqnVLVnVTBpJOKmVzHUMFkk37arAgIBq40gcWlCbPK7n-Dw>
 Feedback-ID: i891b436e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 19 Feb 2024 16:46:44 -0500 (EST)
+ 19 Feb 2024 16:46:46 -0500 (EST)
 From: Bryant Mairs <bryant@mai.rs>
 To: Bjorn Andersson <andersson@kernel.org>,
 	Konrad Dybcio <konrad.dybcio@linaro.org>,
@@ -88,11 +91,14 @@ To: Bjorn Andersson <andersson@kernel.org>,
 	luca@z3ntu.xyz
 Cc: ~postmarketos/upstreaming@lists.sr.ht,
 	phone-devel@vger.kernel.org,
-	Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v3 0/2] Add samsung-milletwifi 
-Date: Mon, 19 Feb 2024 22:43:15 +0100
-Message-ID: <20240219214643.197116-1-bryant@mai.rs>
+	Linus Walleij <linus.walleij@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v3 1/2] dt-bindings: arm: qcom: Document samsung,milletwifi device
+Date: Mon, 19 Feb 2024 22:43:16 +0100
+Message-ID: <20240219214643.197116-2-bryant@mai.rs>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240219214643.197116-1-bryant@mai.rs>
+References: <20240219214643.197116-1-bryant@mai.rs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -101,41 +107,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series adds support for samsung-milletwifi, the smaller cousin
-to samsung-matisselte. I've used the manufacturer's naming convention
-for consistency.
-
-Hardware currently supported:
-- Display
-- Cover detection
-- Physical buttons
-- Touchscreen and touchkeys
-- Accelerometer
+Add binding documentation for Samsung Galaxy Tab 4 8.0 Wi-Fi
+tablet which is based on Snapdragon 400 (apq8026) SoC.
 
 Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 Signed-off-by: Bryant Mairs <bryant@mai.rs>
 ---
-Changes in v3:
-- Minor style changes to the DTS
-- Corrected list of supported hardware peripherals
-- Link to v2: https://lore.kernel.org/all/20240215172617.115307-1-bryant@mai.rs/
----
-Changes in v2:
-- Squashed DTS work into a single commit
-- Add touchkeys to the DTS
-- Link to v1: https://lore.kernel.org/all/20231105204759.37107-1-bryant@mai.rs/
----
+ Documentation/devicetree/bindings/arm/qcom.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-Bryant Mairs (2):
-  dt-bindings: arm: qcom: Document samsung,milletwifi device
-  ARM: dts: qcom: Add support for Samsung Galaxy Tab 4 8.0 Wi-Fi
-
- .../devicetree/bindings/arm/qcom.yaml         |   1 +
- arch/arm/boot/dts/qcom/Makefile               |   1 +
- .../qcom/qcom-apq8026-samsung-milletwifi.dts  | 573 ++++++++++++++++++
- 3 files changed, 575 insertions(+)
- create mode 100644 arch/arm/boot/dts/qcom/qcom-apq8026-samsung-milletwifi.dts
-
+diff --git a/Documentation/devicetree/bindings/arm/qcom.yaml b/Documentation/devicetree/bindings/arm/qcom.yaml
+index 2b993b4c51dc..c11bb2a81643 100644
+--- a/Documentation/devicetree/bindings/arm/qcom.yaml
++++ b/Documentation/devicetree/bindings/arm/qcom.yaml
+@@ -104,6 +104,7 @@ properties:
+               - huawei,sturgeon
+               - lg,lenok
+               - samsung,matisse-wifi
++              - samsung,milletwifi
+           - const: qcom,apq8026
+ 
+       - items:
 -- 
 2.43.0
 
