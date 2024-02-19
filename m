@@ -1,148 +1,150 @@
-Return-Path: <linux-kernel+bounces-70894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70897-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D0E859DAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:00:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15F0D859DB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DB4FB20C4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:00:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 946D41F22E93
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:01:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1482561A;
-	Mon, 19 Feb 2024 07:48:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8544B22330;
+	Mon, 19 Feb 2024 07:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="f1TDRla2"
-Received: from mail-vk1-f175.google.com (mail-vk1-f175.google.com [209.85.221.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="huNXhnlc"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2069.outbound.protection.outlook.com [40.107.243.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262DF33CCF
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:48:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.175
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708328896; cv=none; b=ego8ZLaVwozBzsiuQ7WU7Dqfh8VySxXmqiDTSidynfOdpuTuUScXkZYTShCTZwEWkvFxEGBxv3nHHZcTuy/e9IUtPDcIM9vu5jJBF++e0nN715FNcS7TN3t7mSXaPauBPcERib1q7Kym5q6KiJofhqGgRT+Hwn8kSdZdZizu1wU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708328896; c=relaxed/simple;
-	bh=SFHi854Gz/x7BPHly3IFV5lL1cynY+1gHOPArMf/Sqc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=enA+WHYQ6tNFlHcXNZiCSvPpkYxEz2KyJKEEj9fm/IZgvixpi2tGIBOPCQRA0hdKsQ5jPcMLao5wvgIEK24sjrYu8/ijXIGZSG0D1aotbLxgZDhjMe+P6ZgXFQL5G7li5x6q2yGG3oDpYlUU0I7ax2BqKF9Ex6ywJEdcwyZcGjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=f1TDRla2; arc=none smtp.client-ip=209.85.221.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-vk1-f175.google.com with SMTP id 71dfb90a1353d-4cbc49dacc2so345948e0c.1
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:48:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708328894; x=1708933694; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uh/2kexeGE7bZDqQ3L9KdAdgJ//W8++IP1nzOLGrSe0=;
-        b=f1TDRla2ENXS81vfTqE4JbYqZarzGoegd2lw/TpxGcnJ+LdFOXtOE7+V5iAkCnf+64
-         hVdwUa1OpWuhb5slQe26HlRHiyAH+038Hnhx3giTDFvzU0QwO9U/tmolKw1XuocRkZu+
-         YJgiviGK0Zl5P7CZ1MHxXHhjTFNmcdw8yQK8YeXbNuWvBCBfe5WtKA6yjB1nVEMFZogY
-         uMEQccRjsg2HnumiBgj6K46fj8Vfr3lsdtTNUplsAT7/V5Isae98OESJpjO79m8pMEM+
-         Ee6Foe4r8MO0/0FxW2px0MwtKXCGhEudhMpctQCRCdFx9IYyWi8t37X8QV8GbIGf5eyK
-         UumQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708328894; x=1708933694;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Uh/2kexeGE7bZDqQ3L9KdAdgJ//W8++IP1nzOLGrSe0=;
-        b=ph9SAs444XR5+rvUnmE4v6T6y8ieTZzAlevielFxxPHPVpMyJlyTeNtmg/eIVdpmXF
-         ZIV74SrQhKLd7CzM1APB4TX05yiu8FvGss4EXFefbIaNWRF+n5v0+NYIyFNDJLRl+pZI
-         BhIyPzrmgztFPIUOv+0uJKMd/pjgkAS4guBgoOUAtiXPyxY1PR0S7oC4Y72VHYqA4wcP
-         jP63CppjtfDDnadUn2emzokwKDF0/oO2brf/liiaW5Kca1YDE6AU3qxQyytpQ+GjbYmb
-         ElWCXhYzcFmO5BmL7o82J3BlD6/NOUOFiUfJX9zyzh1HEE7GH+1FMgQZMy2R2pJ+FM+A
-         WGLw==
-X-Forwarded-Encrypted: i=1; AJvYcCXiVHgXNxxUWtCD7nFPKbvaEDa54dkKW7XI770a/j42BBuXRJQ1WwbpSPrVeB6IYh6DdmXs8OSsefvW/dAzes47N8MG62vaEy685bW2
-X-Gm-Message-State: AOJu0YxnLGgtLadZH0m/Yr1hELCeOQUrv3T2NwlwAijg8z0HJiOKmhVK
-	yJ5ivy1bIbmEDNCoLjfMB5juqzqEvU5omppUapg5zew/nUKpZyuK5hp7rtvwNDRuvtnd0INN0YU
-	AePoaR6M26haU/USEUQuNQpMhlmldxOTSgk5H5Q==
-X-Google-Smtp-Source: AGHT+IEr+dKw4FvYGePcQdmMt3uLpUZexzxb5QuFQFS4Hv6gh6AKzZdwd68wOYylylT3jH2O3mOEoXq3c4c3TaOJm6Q=
-X-Received: by 2002:a1f:c483:0:b0:4c8:a2c6:c2be with SMTP id
- u125-20020a1fc483000000b004c8a2c6c2bemr2563138vkf.8.1708328894162; Sun, 18
- Feb 2024 23:48:14 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0A02232E;
+	Mon, 19 Feb 2024 07:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.69
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708329079; cv=fail; b=A3/xRuyOCIOdKup2rQ3ef2L/+3wKvUqDilbhFg5SP5CU/cHKUG/b0i+ueXRgUGDkxBzHelo4TgS4+jNiC2A251h50e5xm2KGirfPPtR2TYE9OWffRuv96kAtGiAw9e7K1mYQRoEp9s7c5ya1R8/OAXIppu/r0YUhaPX5ppc2E9I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708329079; c=relaxed/simple;
+	bh=G4Tc+7Zb3w+pmvhaBq+QwaDIX9/OWcq55Yha3Uk8pl4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=X+rOth763PPArnPHCkSWWRoKFX4IgFz9+An35n+sXbppN+gsGmbjdfxg3PwAAg11Hu5p+hIa8JoSsIskJpjXlPQOfWsQE65QNVymNQIKiWDhr0E61cbKLCwGOPdpLMWDVmYeCzSUl5FlGz6+ilfN8B9/Ijw3tqHCZcH+HrPDkfE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=huNXhnlc; arc=fail smtp.client-ip=40.107.243.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Iesoww8bkchDaiMQXpSKUtVNZ5w+7OdNntqikxtU8zqEH7T7PjxG8Jfr8sgIy+7N6JmtKIlssrU3CiKW5oFHBTveNzzWW8LAjSZxUW3QrmXCwOz8jB6k9cm7kGzC6qUWOkdnczxOJXs0xHLBX4278e2mgvvSCxuca2skBnjNoSU0y8I5KjaCJtFbAjtNmnyRGW9rr+7aBwjR5QP64IqaRfMjeSM4KSuhWN94kTXJhzqxRXqyqFaNfFIOPHGKxSJh9wno/keLnY3bsu0hTXLePg8p1E7Wesa8zzUFwTAuE1LAF76wEo3i/bEGDpWQ7u7U+q/lI5VKwCq8Ugg4ONXCjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bHn3iXH7UVdNTmCEfhrVhu0TnsY4LxYdcTCsJr0bNbg=;
+ b=eXrl6NDIJHjdAaZ7DR+wjB2Gjehdyj/wSaSa2CmbqlOT377T4IxgziyEeCCuvkqrX+ZAWh2/MZrROVp1meJnQSPaAx76fL2hrHrbJ20doqO36xf1VrXOYE9blYcVeUzcG1FnR4mad6vSejTVqjATlsYSmI52VysBgoLgG3m+ykvcZCYy/8ffqjJcs3AHS+wyEAHXZBBxq+dfe9iqMn1dgTAhqbR24QTRckUUnS/1BdfjEzxPZI7E7GDF702PMLqwYGscI4sCoOpg9j0E4ov4WVdrOz3GjkG9rAEw/MHbITMeiprETg/2Mu44gzP/YP2wkTKcvWJbb2YC00CTQ2Wsaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linuxfoundation.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bHn3iXH7UVdNTmCEfhrVhu0TnsY4LxYdcTCsJr0bNbg=;
+ b=huNXhnlcTzE8sI/yU/Vndq8XBQLBOz1VeSTlKLSUgfBEUBle6ZMI3oi7Xf6vo5ZvxGfNso9e037APnpybLhfrPn5SXLIoBbsgqXFb8xpxuB9wG83xiHoWq2wijpm2p1EZ2zLeMFnODkx1/8R9d91IegJH642Xo2eCmh1dNz7X34=
+Received: from CH0PR13CA0009.namprd13.prod.outlook.com (2603:10b6:610:b1::14)
+ by IA1PR12MB8539.namprd12.prod.outlook.com (2603:10b6:208:446::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Mon, 19 Feb
+ 2024 07:51:14 +0000
+Received: from DS2PEPF00003448.namprd04.prod.outlook.com
+ (2603:10b6:610:b1:cafe::fc) by CH0PR13CA0009.outlook.office365.com
+ (2603:10b6:610:b1::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.16 via Frontend
+ Transport; Mon, 19 Feb 2024 07:51:14 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF00003448.mail.protection.outlook.com (10.167.17.75) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7292.25 via Frontend Transport; Mon, 19 Feb 2024 07:51:13 +0000
+Received: from jasmine-meng.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 19 Feb
+ 2024 01:51:09 -0600
+From: Meng Li <li.meng@amd.com>
+To: Shuah Khan <skhan@linuxfoundation.org>, Andrei Vagin <avagin@google.com>,
+	Huang Rui <ray.huang@amd.com>, <linux-pm@vger.kernel.org>
+CC: Nathan Fontenot <nathan.fontenot@amd.com>, Deepak Sharma
+	<deepak.sharma@amd.com>, Alex Deucher <alexander.deucher@amd.com>, "Mario
+ Limonciello" <mario.limonciello@amd.com>, Jinzhou Su <Jinzhou.Su@amd.com>,
+	Perry Yuan <Perry.Yuan@amd.com>, Xiaojian Du <Xiaojian.Du@amd.com>, "Viresh
+ Kumar" <viresh.kumar@linaro.org>, Borislav Petkov <bp@alien8.de>,
+	<linux-kernel@vger.kernel.org>, Meng Li <li.meng@amd.com>
+Subject: [PATCH] selftests/overlayfs: fix compilation error in overlayfs
+Date: Mon, 19 Feb 2024 15:50:29 +0800
+Message-ID: <20240219075029.2318383-1-li.meng@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217135255.1128716-1-xiaolei.wang@windriver.com>
-In-Reply-To: <20240217135255.1128716-1-xiaolei.wang@windriver.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 19 Feb 2024 08:48:03 +0100
-Message-ID: <CAMRc=MeQ_kiVndj93fuJOMSALXbd9oFhZD3d+O_fWXiqxwoYTg@mail.gmail.com>
-Subject: Re: [linux-next][PATCH 1/1] gpio: Delete excess allocated label memory
-To: Xiaolei Wang <xiaolei.wang@windriver.com>
-Cc: linus.walleij@linaro.org, andriy.shevchenko@linux.intel.com, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003448:EE_|IA1PR12MB8539:EE_
+X-MS-Office365-Filtering-Correlation-Id: 62e892a7-2e85-4ec8-162d-08dc311f8be7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	GuGnJlzXi1CmMzvWJxO7nzdzh9YmTJDUsmT1xywgRWQhsq/dr5Yj5E1+ASXE8UJt+RMw4bDSD+BQrgD6SZa+A591dMdrZndU1zZWebcIOAA01kWog1qsWWWg+xFRr+nrHlxKuITkj2AxKNAXNiq53wuUJV5pxvl6Md3d1Tjc+8IeF/7TZCO4hynYlR+gzdIKe+LjX1XBsyzBGohvBjsiJXl9GM54FB0oCYLBvg3dIMU1RhoNhVlCtKPXG7a51thJ8/xwAMTHnLfvttQj7m3pS/tcu2JI4PYm/9KdQHbsy0l/o5b5bvYR9Mo+hzC9Zyai6Zfhc7k1N1eZ2WkUgekbPDUcf9jz0IKoCA5OjTzwboNuLXRlFBb9t9iFpWFo3SgFcMjiHZJtsjc/0jhWKz6Mf/ArsVLUxwYYRGADxxJ2QUXRZohOdItEi1wyFv7wfj2HdGlU/GOWpm8qzMJsnhjpOInA9k1iGM50gmOb3m6ZJBDiFs8MwPVrJlwfuNqJF1Qy1ulZQJtqtArVrp46I6JW/U+g/2WOge//tuRUOzlXwB8G0Bueynr/Xi896N5WWvwkFCdAooCbtkqPuPMQZPm3cWYpfILHN5sEbq85UAZHVkgO4GYBKJeaftZGOj21gaBKG3jttSswh+RxGzAhp5nVlCfisB0oTA24ViFMgi1xtRI=
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(376002)(346002)(136003)(396003)(39860400002)(230922051799003)(36860700004)(451199024)(1800799012)(82310400011)(64100799003)(186009)(40470700004)(46966006)(36756003)(82740400003)(86362001)(356005)(81166007)(7696005)(41300700001)(316002)(6666004)(54906003)(110136005)(478600001)(83380400001)(336012)(2616005)(16526019)(426003)(1076003)(26005)(8936002)(8676002)(4326008)(70586007)(70206006)(2906002)(5660300002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 07:51:13.9755
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62e892a7-2e85-4ec8-162d-08dc311f8be7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF00003448.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8539
 
-On Sat, Feb 17, 2024 at 2:53=E2=80=AFPM Xiaolei Wang <xiaolei.wang@windrive=
-r.com> wrote:
->
-> The changes in commit 1f2bcb8c8ccd ("gpio: protect the
-> descriptor label with SRCU"), desc_set_label has already
-> allocated memory space for the label, so there is no need
-> to allocate it again. otherwise memory leaks will be
-> introduced.
->
-> unreferenced object 0xffff0000c3e4d0c0 (size 32):
->   comm "kworker/u16:4", pid 60, jiffies 4294894555
->   hex dump (first 32 bytes):
->     72 65 67 75 6c 61 74 6f 72 2d 63 61 6e 32 2d 73  regulator-can2-s
->     74 62 79 00 00 00 ff ff ff ff ff ff eb db ff ff  tby.............
->   backtrace (crc 2c3a0350):
->     [<00000000e93c5cf4>] kmemleak_alloc+0x34/0x40
->     [<0000000097a2657f>] __kmalloc_node_track_caller+0x2c4/0x524
->     [<000000000dd1c057>] kstrdup+0x4c/0x98
->     [<00000000b513a96a>] kstrdup_const+0x34/0x40
->     [<000000008a7f0feb>] gpiod_request_commit+0xdc/0x358
->     [<00000000fc71ad64>] gpiod_request+0xd8/0x204
->     [<00000000fa24b091>] gpiod_find_and_request+0x170/0x780
->     [<0000000086ecf92d>] gpiod_get_index+0x70/0xe0
->     [<000000004aef97f9>] gpiod_get_optional+0x18/0x30
->     [<00000000312f1b25>] reg_fixed_voltage_probe+0x58c/0xad8
->     [<00000000e6f47635>] platform_probe+0xc4/0x198
->     [<00000000cf78fbdb>] really_probe+0x204/0x5a8
->     [<00000000e28d05ec>] __driver_probe_device+0x158/0x2c4
->     [<00000000e4fe452b>] driver_probe_device+0x60/0x18c
->     [<00000000479fcf5d>] __device_attach_driver+0x168/0x208
->     [<000000007d389f38>] bus_for_each_drv+0x104/0x190
->
-> Fixes: 1f2bcb8c8ccd ("gpio: protect the descriptor label with SRCU")
-> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
-> ---
->  drivers/gpio/gpiolib.c | 6 ------
->  1 file changed, 6 deletions(-)
->
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 02be0ba1a402..32191547dece 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -2250,12 +2250,6 @@ static int gpiod_request_commit(struct gpio_desc *=
-desc, const char *label)
->         if (test_and_set_bit(FLAG_REQUESTED, &desc->flags))
->                 return -EBUSY;
->
-> -       if (label) {
-> -               label =3D kstrdup_const(label, GFP_KERNEL);
-> -               if (!label)
-> -                       return -ENOMEM;
-> -       }
-> -
->         /* NOTE:  gpio_request() can be called in early boot,
->          * before IRQs are enabled, for non-sleeping (SOC) GPIOs.
->          */
-> --
-> 2.25.1
->
+make -C tools/testing/selftests, compiling dev_in_maps fail.
+In file included from dev_in_maps.c:10:
+/usr/include/x86_64-linux-gnu/sys/mount.h:35:3: error: expected identifier before numeric constant
+   35 |   MS_RDONLY = 1,                /* Mount read-only.  */
+      |   ^~~~~~~~~
 
-A queued this, sorry for the confusion, this is of course a correct fix.
+That sys/mount.h has to be included before linux/mount.h.
 
-Bart
+Signed-off-by: Meng Li <li.meng@amd.com>
+---
+ tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
+index e19ab0e85709..871a0923c06e 100644
+--- a/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
++++ b/tools/testing/selftests/filesystems/overlayfs/dev_in_maps.c
+@@ -7,11 +7,11 @@
+ 
+ #include <linux/unistd.h>
+ #include <linux/types.h>
+-#include <linux/mount.h>
+ #include <sys/syscall.h>
+ #include <sys/stat.h>
+ #include <sys/mount.h>
+ #include <sys/mman.h>
++#include <linux/mount.h>
+ #include <sched.h>
+ #include <fcntl.h>
+ 
+-- 
+2.34.1
+
 
