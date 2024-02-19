@@ -1,71 +1,56 @@
-Return-Path: <linux-kernel+bounces-71114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68B7285A0D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:21:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E27B685A0D5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:21:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E86B1F23AA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:21:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E44F281A45
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151EF288A7;
-	Mon, 19 Feb 2024 10:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD8C2577A;
+	Mon, 19 Feb 2024 10:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oZj/Sz/I"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F7172561A;
-	Mon, 19 Feb 2024 10:21:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="N+/gcWeE"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1B3525629;
+	Mon, 19 Feb 2024 10:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708338063; cv=none; b=VjgeIrFk1eckyIZ+CZ4WbFqYLWTnfKQuf7gM/hCR/+IX9vJ0u8n375/6l6zr20t60TyXWEUWkgq7jNeOZb7vyTn5+2nXB0BlDvi3ax462+vrJP29Vp7/4Z+qSb6fqlwo2pn2y+4115GUF0mqwYKGR8OrXDCwKcSHZxP2V1ZNPNo=
+	t=1708338080; cv=none; b=G2X9gTk4T3b//bg+IL6Mwe3iELCDrWOK8kxLvJyRqyetyqvdGpQ+pGkIT9+fqAUW5/v+0/BE5CmynYdSspA+sKOFzmpfuyv+jjI5GttmtwrYK5kYzYYuBkcnXG9P2VFacUwtSMWWqfcaCjWGG94EBR43SAWm2WnpxyVcUobEeYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708338063; c=relaxed/simple;
-	bh=h8b5hbcVCLA3zszp+wjNGpgMRChVVKuKioL5cmf5iWU=;
+	s=arc-20240116; t=1708338080; c=relaxed/simple;
+	bh=082kgRnD4xJdz4sWz/Rvx72DZtoHykAZlKd2AYf2pbA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OCEqiZ/e2H+SK+iZuDnYDjAGzLuZKu+CMZtQ//SAyHwNL1h9C3Y01TxQ/j9mvvrMI8xZ//VB8AMWWXDwgmKAGgk6MhkDoYXgdC+GrmVltrfcrWKjewkp8Qaxald8r8RuoZp6hpcfeGDPOC0pjBtyaN0FdH6N8ghFW3nIRBY0cOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oZj/Sz/I; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 931B7C433C7;
-	Mon, 19 Feb 2024 10:20:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708338062;
-	bh=h8b5hbcVCLA3zszp+wjNGpgMRChVVKuKioL5cmf5iWU=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=HaJK1pYl2olWUWxCKXCUicFzSe12kPjBztnuouUag/c1/SMCq2i64gcE7bzMjJpzUirY3ObWADgSeklQlGEnknUZ1ww45ztbKa1nQNgj7ZRj89WSHjBEsDL/7Wn8OJyVOhZgJzeKzanPRuzuQT5JDWrphFqitBpxN0ihY2UIDgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=N+/gcWeE; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1127)
+	id 5611720835FD; Mon, 19 Feb 2024 02:21:17 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5611720835FD
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1708338077;
+	bh=3RfB/ZUC3DRlZx6uKGU+hjBX+fw2Lfpx3BLQx+GSTqE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oZj/Sz/InasetlsIOZ7hkseqSjGZfo0eNokPYcfmTapImrSac7KzyzLqc4Wdw5QdM
-	 TmUmvKOtra/aY9QMGHMH/Q2lFGaG72k31w9wwIEBGgPdxaiuhm/SVDR9NGCOVE1Mle
-	 d1Tsay61132yt+6zak0tpyeqsbw4fhjHDhOJ+XHAOnHJ60PieASP7OO9anVqPEMldn
-	 8OftREMRCtZCzV8BWEqmJYzNHNez1KM/lf3zUEH0btz0GN813kCNk6TWCPat4z/2Hg
-	 aTsxqZVDzNOjfRQEaVRl7G4Ga/x4gmHaf2WBxELBUDZou9Wlz8W497P0K2v/mQCv3D
-	 GJk5Mtc14aWaw==
-Date: Mon, 19 Feb 2024 10:19:25 +0000
-From: Simon Horman <horms@kernel.org>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
-Subject: Re: [PATCH bpf-next] bpf: Check return from set_memory_rox() and
- friends
-Message-ID: <20240219101925.GW40273@kernel.org>
-References: <63322c8e8454de9b240583de58cd730bc97bb789.1708165016.git.christophe.leroy@csgroup.eu>
+	b=N+/gcWeEdZDtyEd80qiuexXE/sDvBroQFliCpaFsMGWe1IsHrG0xpNGXqzuseDMgG
+	 TbtPHLjt0t32JJAIFvdIiHftWKhETHs4fXGPkynJEauS+14yAWlmep9HUVpgCp3m4E
+	 zqi0q7SO1QV9czA//xTSB/Fa+ppEVvtm937mt0Ac=
+Date: Mon, 19 Feb 2024 02:21:17 -0800
+From: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, linux-hyperv@vger.kernel.org,
+	linux-kernel@vger.kernel.org, ssengar@microsoft.com
+Subject: Re: [PATCH 2/6] uio_hv_generic: Query the ringbuffer size for device
+Message-ID: <20240219102117.GA11634@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1708193020-14740-1-git-send-email-ssengar@linux.microsoft.com>
+ <1708193020-14740-3-git-send-email-ssengar@linux.microsoft.com>
+ <2024021920-wincing-dyslexic-aae1@gregkh>
+ <20240219094023.GB32526@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <2024021931-heroics-ducktail-e7aa@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,69 +59,71 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <63322c8e8454de9b240583de58cd730bc97bb789.1708165016.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <2024021931-heroics-ducktail-e7aa@gregkh>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Sat, Feb 17, 2024 at 11:24:07AM +0100, Christophe Leroy wrote:
-> arch_protect_bpf_trampoline() and alloc_new_pack() call
-> set_memory_rox() which can fail, leading to unprotected memory.
+On Mon, Feb 19, 2024 at 11:02:54AM +0100, Greg KH wrote:
+> On Mon, Feb 19, 2024 at 01:40:23AM -0800, Saurabh Singh Sengar wrote:
+> > On Mon, Feb 19, 2024 at 09:50:54AM +0100, Greg KH wrote:
+> > > On Sat, Feb 17, 2024 at 10:03:36AM -0800, Saurabh Sengar wrote:
+> > > > Query the ring buffer size from pre defined table per device.
+> > > > Keep the size as is if the device doesn't have any preferred
+> > > > ring size.
+> > > 
+> > > What is the "as is" size?
+> > 
+> > I will elaborate more here.
+> > 
+> > > 
+> > > > 
+> > > > Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> > > > ---
+> > > >  drivers/uio/uio_hv_generic.c | 7 +++++--
+> > > >  1 file changed, 5 insertions(+), 2 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/uio/uio_hv_generic.c b/drivers/uio/uio_hv_generic.c
+> > > > index 20d9762331bd..4bda6b52e49e 100644
+> > > > --- a/drivers/uio/uio_hv_generic.c
+> > > > +++ b/drivers/uio/uio_hv_generic.c
+> > > > @@ -238,6 +238,7 @@ hv_uio_probe(struct hv_device *dev,
+> > > >  	struct hv_uio_private_data *pdata;
+> > > >  	void *ring_buffer;
+> > > >  	int ret;
+> > > > +	size_t ring_size = hv_dev_ring_size(channel);
+> > > >  
+> > > >  	/* Communicating with host has to be via shared memory not hypercall */
+> > > >  	if (!channel->offermsg.monitor_allocated) {
+> > > > @@ -245,12 +246,14 @@ hv_uio_probe(struct hv_device *dev,
+> > > >  		return -ENOTSUPP;
+> > > >  	}
+> > > >  
+> > > > +	if (!ring_size)
+> > > > +		ring_size = HV_RING_SIZE * PAGE_SIZE;
+> > > 
+> > > Why the magic * PAGE_SIZE here?
+> > > 
+> > > Where is it documented that ring_size is in pages?
+> > > 
+> > > And what happens when PAGE_SIZE is changed?  Why are you relying on that
+> > > arbritrary value to dictate your buffer sizes to a device that has
+> > > no relationship with PAGE_SIZE?
+> > > 
+> > > Yes, I know you are copying what was there today, but you have the
+> > > chance to rethink and most importantly, DOCUMENT this decision properly
+> > > now.
+> > 
+> > I agree PAGE_SIZE is not accurate here and we should use HV_HYP_PAGE_SIZE.
+> > This can be further improved by using VMBUS_RING_SIZE macro.
+> > 
+> > However, I propose addressing this improvement in a separate patch, given
+> > the are significant changes already present in this series.
 > 
-> Take into account return from set_memory_XX() functions and add
-> __must_check flag to arch_protect_bpf_trampoline().
+> Add it as a new patch to the series makes sense, thanks!
+
+Sure, will add in V2.
+
+- Saurabh
+
 > 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-
-..
-
-> diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-> index ea6843be2616..23ce17da3bf7 100644
-> --- a/kernel/bpf/core.c
-> +++ b/kernel/bpf/core.c
-> @@ -898,23 +898,30 @@ static LIST_HEAD(pack_list);
->  static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_insns)
->  {
->  	struct bpf_prog_pack *pack;
-> +	int err;
->  
->  	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)),
->  		       GFP_KERNEL);
->  	if (!pack)
->  		return NULL;
->  	pack->ptr = bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
-> -	if (!pack->ptr) {
-> -		kfree(pack);
-> -		return NULL;
-> -	}
-> +	if (!pack->ptr)
-> +		goto out;
->  	bpf_fill_ill_insns(pack->ptr, BPF_PROG_PACK_SIZE);
->  	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
->  	list_add_tail(&pack->list, &pack_list);
-
-Hi Christophe,
-
-Here pack is added to pack_list.
-
->  
->  	set_vm_flush_reset_perms(pack->ptr);
-> -	set_memory_rox((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-> +	err = set_memory_rox((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-> +	if (err)
-> +		goto out_free;
-
-But this unwind path doesn't appear to remove pack form pack_list.
-
-Flagged by Smatch.
-
->  	return pack;
-> +
-> +out_free:
-> +	bpf_jit_free_exec(pack->ptr);
-> +out:
-> +	kfree(pack);
-> +	return NULL;
->  }
->  
->  void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
-
-..
+> greg k-h
 
