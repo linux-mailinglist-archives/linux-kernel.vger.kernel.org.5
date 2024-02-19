@@ -1,205 +1,165 @@
-Return-Path: <linux-kernel+bounces-71358-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71359-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0315485A3F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:56:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0272185A3FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 362051C220A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:56:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844111F24665
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:59:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374DF321B0;
-	Mon, 19 Feb 2024 12:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A16360BA;
+	Mon, 19 Feb 2024 12:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IaC62Hw3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UpPC2RyS"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6799C2E847;
-	Mon, 19 Feb 2024 12:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A911334CDE
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:59:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708347385; cv=none; b=OXf+u//OI2E1v1lfM3w5UpyGPNGJ9SqKdzB8LyH6Gm7wLTxeJEK7Xq1s/MNuGZRdsBVJngOOQWIgs0oxlX7AbDUIPccmXohl407jNh3Eh1DVeDAK/MEtOhfL53p3gF4f8ZH7aEk7DkDYwElRQgNrHQ9iG50cW2E0PfCvEMQhmCY=
+	t=1708347589; cv=none; b=C5Y7nTMdpDzxcKVZRsBjPb04H/GRnc13m/9UsoxJL34us8n+zBeIQxPhBSGLvEstMOIMDQ0zC1DSrRNmNUpQku9MIEwHDyLnzwgnLRvjLRdwvdWq5943po9z6MX1B2fq/FBKzsvtcXQBRz7L4ppEcY9BW0Bi7bdFvV361gNeI0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708347385; c=relaxed/simple;
-	bh=ccbHakWFMPqKyo56fEKpc8aAf3Wb4VQoRZfLVnlY020=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oResCehQ17j0TVd+NHJRPUookdFB4vm5Ff4f/vxn+hASgoPlPHfHEJ/L5R0icqL8E5tRXZl03+X4XbcxoF+lhWSf7b4bTgpq0YtoQzl4ICbjxNgHEtNl2OBm4NbEvHc9U+OH6XyFVFYbj/R61YagfeuNOUyB29gK5Bn2wI8wqxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IaC62Hw3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94AC8C433C7;
-	Mon, 19 Feb 2024 12:56:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708347385;
-	bh=ccbHakWFMPqKyo56fEKpc8aAf3Wb4VQoRZfLVnlY020=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=IaC62Hw3yjK1/flPQhxsuk0O4OdKFtG83Nn2lk244OGiDCxR6rKWUuaIKZ7/t7BGf
-	 jcZ4sk87QdlBUQyW+B0eTFWUJqh7KWkUxhHmL6ecneCUylAn7cjjSKL2XBdbdy3RLl
-	 luWHN2toOrZvmPvGb5Q9qjdgM64Vw50ntuXtUpwPGQpqFW5I/Bbvjedgt+/lYXvXns
-	 llJFV31k0n50KPsX8E49DfrCARvcDerNAopvgQZ3uvWHBBwI9WKL6UtN5XLZU83/kQ
-	 40kwgeSzuu9EeBatmrJQUzesPW9bepQxFLwCM9L5vwIJEvs1iln+7drGvgDeAF6M/j
-	 h6OP4j6RmhfZA==
-Date: Mon, 19 Feb 2024 13:56:18 +0100
-From: Mauro Carvalho Chehab <mchehab@kernel.org>
-To: Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
- sakari.ailus@iki.fi, tfiga@chromium.org, m.szyprowski@samsung.com,
- linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
- Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
- lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
- alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v12 08/15] media: uapi: Define audio sample format
- fourcc type
-Message-ID: <20240219135618.5c557e66@coco.lan>
-In-Reply-To: <CAA+D8APD+zL0xYkf6FxPNfM3Y3O8+PhT7WEXO7XCLAmBjoMmUA@mail.gmail.com>
-References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
-	<1705581128-4604-9-git-send-email-shengjiu.wang@nxp.com>
-	<20240217101926.3f1d2452@coco.lan>
-	<CAA+D8APD+zL0xYkf6FxPNfM3Y3O8+PhT7WEXO7XCLAmBjoMmUA@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1708347589; c=relaxed/simple;
+	bh=3Fi65QIGXfdHgZ04kFVl3weeoPhyvqfKbrI6gyowmVo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sPEFTmp72LMAkkZOrcHEdLT8JdFDbiEMEBfUM5PzgYAt5NAnwKH28KYUzid5zMnuV51a49JgABHxu4tXdORLAYkNzPVFEGtfegHP6QfDSGQx8hZq4nR+3SsUI2e8qmzmbH0z6xNRESMQzI9R/JyQUcHvgtoIzJEhhTy465B1bYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UpPC2RyS; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708347586;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nMxKeQCC51WbQZLbi5a685VF0mibFkff8D67rJw7soU=;
+	b=UpPC2RySwdQtHBpFs58kkNvzz+EDP1k97tfaOaKRyfEQXjd059wC2Elf6xcq4g3uhBZgJP
+	74YY27x0SE1xcRKnOM1vU6uh/ilPpHh+kAhqYMAjuN7qIui4bEHpgvGZTuesTzrQbGqsDR
+	52q3/CVoyHUfzUsvm9jNR8ydkhZQEns=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-81-EzM1hemWOQOpSh1QDP-PiA-1; Mon, 19 Feb 2024 07:59:44 -0500
+X-MC-Unique: EzM1hemWOQOpSh1QDP-PiA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a3ecd8d3a8dso29595866b.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:59:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708347583; x=1708952383;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nMxKeQCC51WbQZLbi5a685VF0mibFkff8D67rJw7soU=;
+        b=XEItN3oU9Pu+VgRDqyUlQPpwv0N+75wDaYTd7AAPLdSuERQmq/6uJ21x6h7X77X9he
+         v4d6w7RTDD56xtbtx1G1eMjoQfNNgWjnk8XLRPBi4XQn1ynCMfp4W3kY0ViFaCfK93ud
+         c+h7NlYrmDdoD5fuUITv4xU1xM3BVeQZXmxdjCbNmKmnECXi8l0FHPWDGmt8XNDNq5PG
+         7MU65ZkGHT+aa123oeiQJzjzFklXVbMSs8j2suKMzzTMQgM2cWFvVbWdKUrU3l9x97X3
+         qleIIBNy4jsilOIFnK8u/RiTT3asXu4An+R5CMGdDpTYKIAT9Cq8uB/Js+hzcJcIG5FY
+         78bA==
+X-Forwarded-Encrypted: i=1; AJvYcCWhPGV+RtzcWgITqecs1mK9Y5svvUgziwP7JxJquMq8iONBxqM1NruJEB6Zegdp/Xe6Wo2Bv2UULey/fcSVtEiv0BqMxiupuxviVZyd
+X-Gm-Message-State: AOJu0YwoJld9EqgyOLYFbdGXzPqQ6AzdLO9QZWiJFrGBTaMpWHSRssO/
+	Cy0K+72bqQrLWWrUQaK3z1JbFdnyInZXR5g2takXdPwC2jHFhWBx953Dn06fcGQQGQ/bJ/ufw65
+	I0yP7ohKWrk5PeBMWDZ4xMlP7OhELmH/qjjazMwmpWhXZxYU51xNfBpek0JDOXg==
+X-Received: by 2002:a17:906:718d:b0:a3e:7cd8:3db7 with SMTP id h13-20020a170906718d00b00a3e7cd83db7mr2495942ejk.68.1708347583633;
+        Mon, 19 Feb 2024 04:59:43 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF0lzjx1aAmMTv/0aa0dQdKzvgpfGRNniCzHwLJhmH2u8A2FduKGrk8NWgLHabH3q9tu/SZwA==
+X-Received: by 2002:a17:906:718d:b0:a3e:7cd8:3db7 with SMTP id h13-20020a170906718d00b00a3e7cd83db7mr2495929ejk.68.1708347583325;
+        Mon, 19 Feb 2024 04:59:43 -0800 (PST)
+Received: from [10.40.98.142] ([78.108.130.194])
+        by smtp.gmail.com with ESMTPSA id a19-20020a1709064a5300b00a3e2b0799e0sm2404226ejv.4.2024.02.19.04.59.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 04:59:43 -0800 (PST)
+Message-ID: <f0f64e2d-5e6f-4a3b-b57d-e617142eb08c@redhat.com>
+Date: Mon, 19 Feb 2024 13:59:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Only update profile if
+ successfully converted
+Content-Language: en-US
+To: Mario Limonciello <mario.limonciello@amd.com>,
+ Mark Pearson <mpearson-lenovo@squebb.ca>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240217022311.113879-1-mario.limonciello@amd.com>
+From: Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20240217022311.113879-1-mario.limonciello@amd.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Em Mon, 19 Feb 2024 12:05:02 +0800
-Shengjiu Wang <shengjiu.wang@gmail.com> escreveu:
+Hi,
 
-> Hi Mauro
->=20
-> On Sat, Feb 17, 2024 at 5:19=E2=80=AFPM Mauro Carvalho Chehab
-> <mchehab@kernel.org> wrote:
-> >
-> > Em Thu, 18 Jan 2024 20:32:01 +0800
-> > Shengjiu Wang <shengjiu.wang@nxp.com> escreveu:
-> > =20
-> > > The audio sample format definition is from alsa,
-> > > the header file is include/uapi/sound/asound.h, but
-> > > don't include this header file directly, because in
-> > > user space, there is another copy in alsa-lib.
-> > > There will be conflict in userspace for include
-> > > videodev2.h & asound.h and asoundlib.h
-> > >
-> > > Here still use the fourcc format.
-> > >
-> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > ---
-> > >  .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++=
-++
-> > >  .../userspace-api/media/v4l/pixfmt.rst        |  1 +
-> > >  drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
-> > >  include/uapi/linux/videodev2.h                | 23 +++++
-> > >  4 files changed, 124 insertions(+)
-> > >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audi=
-o.rst
-> > >
-> > > diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b=
-/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-> > > new file mode 100644
-> > > index 000000000000..04b4a7fbd8f4
-> > > --- /dev/null
-> > > +++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
-> > > @@ -0,0 +1,87 @@
-> > > +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
-> > > +
-> > > +.. _pixfmt-audio:
-> > > +
-> > > +*************
-> > > +Audio Formats
-> > > +*************
-> > > +
-> > > +These formats are used for :ref:`audiomem2mem` interface only.
-> > > +
-> > > +.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
-> > > +
-> > > +.. cssclass:: longtable
-> > > +
-> > > +.. flat-table:: Audio Format
-> > > +    :header-rows:  1
-> > > +    :stub-columns: 0
-> > > +    :widths:       3 1 4
-> > > +
-> > > +    * - Identifier
-> > > +      - Code
-> > > +      - Details
-> > > +    * .. _V4L2-AUDIO-FMT-S8:
-> > > +
-> > > +      - ``V4L2_AUDIO_FMT_S8``
-> > > +      - 'S8'
-> > > +      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
-> > > +    * .. _V4L2-AUDIO-FMT-S16-LE: =20
-> >
-> > Hmm... why can't we just use SNDRV_*_FORMAT_*? Those are already part of
-> > an uAPI header. No need to add any abstraction here and/or redefine
-> > what is there already at include/uapi/sound/asound.h.
-> > =20
-> Actually I try to avoid including the include/uapi/sound/asound.h.
-> Because in user space, there is another copy in alsa-lib (asoundlib.h).
-> There will be conflict in userspace when including videodev2.h and
-> asoundlib.h.
+On 2/17/24 03:23, Mario Limonciello wrote:
+> Randomly a Lenovo Z13 will trigger a kernel warning traceback from this
+> condition:
+> 
+> ```
+> if (WARN_ON((profile < 0) || (profile >= ARRAY_SIZE(profile_names))))
+> ```
+> 
+> This happens because thinkpad-acpi always assumes that
+> convert_dytc_to_profile() successfully updated the profile. On the
+> contrary a condition can occur that when dytc_profile_refresh() is called
+> the profile doesn't get updated as there is a -EOPNOTSUPP branch.
+> 
+> Catch this situation and avoid updating the profile. Also log this into
+> dynamic debugging in case any other modes should be added in the future.
+> 
+> Fixes: c3bfcd4c6762 ("platform/x86: thinkpad_acpi: Add platform profile support")
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 
-Well, alsasoundlib.h seems to be using the same definitions:
-	https://github.com/michaelwu/alsa-lib/blob/master/include/pcm.h
+Thank you for your patch, I've applied this patch to my review-hans 
+branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-So, I can't see what would be the actual issue, as both userspace library
-and ALSA internal headers use the same magic numbers.
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-You can still do things like:
+I will include this patch in my next fixes pull-req to Linus
+for the current kernel development cycle.
 
-	#ifdef __KERNEL__
-	#  include <sound/asound.h>
-	#else
-	#  include <asoundlib.h>
-	#endif
+Regards,
 
-To avoid such kind of conflicts, if you need to have it included on
-some header file. Yet, I can't see why you would need that.
+Hans
 
-IMO, at uAPI headers, you just need to declare the uAPI audiofmt field
-to be either __u32 or __u64, pointing it to where this value comes from
-(on both userspace and Kernelspace. E. g.:
 
-/**
- * struct v4l2_audio_format - audio data format definition
- * @audioformat:
- *	an integer number matching the fields inside
- *	enum snd_pcm_format_t (e. g. `SNDRV_PCM_FORMAT_*`), as defined
- *	in include/uapi/sound/asound.h and
- *      https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#g=
-aa14b7f26877a812acbb39811364177f8.
- * @channels:		channel numbers
- * @buffersize:		maximum size in bytes required for data
- */
-struct v4l2_audio_format {
-	__u32				audioformat;
-	__u32				channels;
-	__u32				buffersize;
-} __attribute__ ((packed));
 
-Then, at documentation you just need to point to where the
-possible values for SNDRV_PCM_FORMAT_ are defined. No need to
-document them one by one.
 
-With such definition, you'll only need to include sound/asound.h
-within the kAPI scope.
+> ---
+> BTW - This isn't new.  I've been seeing this a long time, but I just finally
+> got annoyed enough by it to find the code that triggered the sequence.
+> 
+>  drivers/platform/x86/thinkpad_acpi.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index c4895e9bc714..5ecd9d33250d 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -10308,6 +10308,7 @@ static int convert_dytc_to_profile(int funcmode, int dytcmode,
+>  		return 0;
+>  	default:
+>  		/* Unknown function */
+> +		pr_debug("unknown function 0x%x\n", funcmode);
+>  		return -EOPNOTSUPP;
+>  	}
+>  	return 0;
+> @@ -10493,8 +10494,8 @@ static void dytc_profile_refresh(void)
+>  		return;
+>  
+>  	perfmode = (output >> DYTC_GET_MODE_BIT) & 0xF;
+> -	convert_dytc_to_profile(funcmode, perfmode, &profile);
+> -	if (profile != dytc_current_profile) {
+> +	err = convert_dytc_to_profile(funcmode, perfmode, &profile);
+> +	if (!err && profile != dytc_current_profile) {
+>  		dytc_current_profile = profile;
+>  		platform_profile_notify();
+>  	}
 
->=20
-> And in the V4l framework, the fourcc type is commonly used in other
-> cases (video, radio, touch, meta....), to avoid changing common code
-> a lot, so I think using fourcc definition for audio may be simpler.
-
-Those are real video streams (or a video-related streams, in the case
-of metadata) where fourcc is widely used. There, it makes sense.
-However, ALSA format definitions are already being used for a long time.
-There's no sense on trying to reinvent it - or having an abstract layer
-to convert from/to fourcc <=3D=3D> enum snd_pcm_format_t. Just use what is
-there already.
-
-Thanks,
-Mauro
 
