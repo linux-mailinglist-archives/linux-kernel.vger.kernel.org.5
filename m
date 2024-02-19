@@ -1,75 +1,92 @@
-Return-Path: <linux-kernel+bounces-71153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71155-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF6D085A16C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:52:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05F1885A170
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F5281F22739
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:52:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B528A28369B
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:54:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C124E28E26;
-	Mon, 19 Feb 2024 10:52:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BV0zLHHl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84692C19D;
+	Mon, 19 Feb 2024 10:54:12 +0000 (UTC)
+Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0854C1C10;
-	Mon, 19 Feb 2024 10:52:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F304F28DDA
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708339961; cv=none; b=p8uSi6z7cvc/swQWR4Vi2lZJouL1Of/2k9IHmB1/5i+bRGD9OzcZggOrNI+BKnBIfwGBe+Byp3ezomE8AchQd7EGMZIU1C02CV5zCoFr0GsiZRlPpCeXBtx3N+hmneQkuPH5eKYDEBAZueCZWIdNpezSAXCzU066aNjnxVWc66Y=
+	t=1708340052; cv=none; b=mlzuUWAnO7zPWmUrNkSeDeaygV1jvo2YvQko392sPWUlUXGAVYomNN3QGweccP5dildIknG7DmNvFwYhp2Q5+VqPMTI0Y95tLFE16AnCbqTIk6llrSypUtsnEIv67YsFMbl7btVmJ39ntnDKK83UDiffzS/+9YnWpdJO6U7+lqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708339961; c=relaxed/simple;
-	bh=Q4NsvvYSuir97OFwMmHvNRy3c3JBCxlYJttiAWiO/xs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dILRw0nBrQN6ZFmstluOoRKvECEfFZWgd5dFiwL2Ce7hIKj2gONSGReCU7dvHGL6/eup5sujeO+i3Hl99abjlxe0JqzF6pLUe/Jovdg3EOa6VeInVgHJgUsr1BPypjc7bg++sZHUdNYrEB8uSZ4vG9HMKFg4liV8iSvcWUvcGIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BV0zLHHl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74408C433F1;
-	Mon, 19 Feb 2024 10:52:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708339960;
-	bh=Q4NsvvYSuir97OFwMmHvNRy3c3JBCxlYJttiAWiO/xs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BV0zLHHlb0odT0Raki8ppmoWy0b04lWRSANyB3IJV3PIkFEnw7P4U8M3lKyz+jiMU
-	 6Zb90NlIGbYBflGZpakkvh0oWcmCVG/JuXsG9Ue8BOik42Plq0EG5h+im9QUy8sT66
-	 epdVKGzH4DtI7y1rjrsvmNVasLr4TmCZe5Rxi2IMhe1OsB2pz67LeDQwMhnjIP9S7V
-	 U6WdLEPYm/AqXKZ8Zbi/vWZ2swE5HMyKcTDb/RhyV+OYMY305iS1uh0psL0caweCyf
-	 o/TCIDQlU+JcXtrTq4+1EjQJF71P/PQJ9Ns0HuvUN5rSBfYlFWOZ7caXbjo3zWU9CI
-	 FHpiKb2PZRC0Q==
-Date: Mon, 19 Feb 2024 10:52:36 +0000
-From: Simon Horman <horms@kernel.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Johannes Berg <johannes.berg@intel.com>, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-	Johannes Berg <johannes@sipsolutions.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v1 1/1] wireless: Add KHZ_PER_GHZ to units.h and
- reuse
-Message-ID: <20240219105236.GY40273@kernel.org>
-References: <20240215154136.630029-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1708340052; c=relaxed/simple;
+	bh=v1tv+Hn2MMckB7tibXPo04tWJVN+P3e6WQ1r4106PQ0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iHfCpFad0jPITK1jmZpCkE1/9doooXdrQhOsIGYMIFERL27q5FivuzRA46dqdJpTO0wvJfw+N192BhHI7Oc9H/SYOgUc/WTQLemHWUrIFYpbaLiew1BDEO3ak9fQJeG9g9Aw/76/qefTc9mFxZB5dHGDKeoQU7VVFy/BQPnI3tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: by air.basealt.ru (Postfix, from userid 490)
+	id E59C22F20256; Mon, 19 Feb 2024 10:54:06 +0000 (UTC)
+X-Spam-Level: 
+Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
+	by air.basealt.ru (Postfix) with ESMTPSA id 2C3B22F20253;
+	Mon, 19 Feb 2024 10:54:05 +0000 (UTC)
+From: kovalev@altlinux.org
+To: linux-kernel@vger.kernel.org
+Cc: keescook@chromium.org,
+	gregkh@linuxfoundation.org,
+	bryantan@vmware.com,
+	vdasa@vmware.com,
+	pv-drivers@vmware.com,
+	arnd@arndb.de,
+	harshit.m.mogalapalli@oracle.com,
+	nickel@altlinux.org,
+	oficerovas@altlinux.org,
+	dutyrok@altlinux.org,
+	kovalev@altlinux.org
+Subject: [PATCH] VMCI: Fix possible memcpy() run-time warning in vmci_datagram_invoke_guest_handler()
+Date: Mon, 19 Feb 2024 13:53:15 +0300
+Message-Id: <20240219105315.76955-1-kovalev@altlinux.org>
+X-Mailer: git-send-email 2.33.8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215154136.630029-1-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Feb 15, 2024 at 05:41:36PM +0200, Andy Shevchenko wrote:
-> The KHZ_PER_GHZ might be used by others (with the name aligned
-> with similar constants). Define it in units.h and convert
-> wireless to use it.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Vasiliy Kovalev <kovalev@altlinux.org>
 
-Reviewed-by: Simon Horman <horms@kernel.org>
+The changes are similar to those given in the commit 19b070fefd0d
+("VMCI: Fix memcpy() run-time warning in dg_dispatch_as_host()").
+
+Fix filling of the msg and msg_payload in dg_info struct, which prevents a
+possible "detected field-spanning write" of memcpy warning that is issued
+by the tracking mechanism __fortify_memcpy_chk.
+
+Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
+---
+ drivers/misc/vmw_vmci/vmci_datagram.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/misc/vmw_vmci/vmci_datagram.c b/drivers/misc/vmw_vmci/vmci_datagram.c
+index d1d8224c8800c4..a0ad1f3a69f7e9 100644
+--- a/drivers/misc/vmw_vmci/vmci_datagram.c
++++ b/drivers/misc/vmw_vmci/vmci_datagram.c
+@@ -378,7 +378,8 @@ int vmci_datagram_invoke_guest_handler(struct vmci_datagram *dg)
+ 
+ 		dg_info->in_dg_host_queue = false;
+ 		dg_info->entry = dst_entry;
+-		memcpy(&dg_info->msg, dg, VMCI_DG_SIZE(dg));
++		dg_info->msg = *dg;
++		memcpy(&dg_info->msg_payload, dg + 1, dg->payload_size);
+ 
+ 		INIT_WORK(&dg_info->work, dg_delayed_dispatch);
+ 		schedule_work(&dg_info->work);
+-- 
+2.33.8
 
 
