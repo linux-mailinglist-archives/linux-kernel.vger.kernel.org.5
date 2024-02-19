@@ -1,135 +1,134 @@
-Return-Path: <linux-kernel+bounces-71860-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71861-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14A2A85ABE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:18:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60C8E85ABEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:21:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72E98284101
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:18:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B507B22BE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 773825027F;
-	Mon, 19 Feb 2024 19:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEA151016;
+	Mon, 19 Feb 2024 19:21:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="vX0UKSCQ"
-Received: from smtp-8fad.mail.infomaniak.ch (smtp-8fad.mail.infomaniak.ch [83.166.143.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rDI2Tw7l"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1975026E
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:18:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DCC1BF3D;
+	Mon, 19 Feb 2024 19:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708370304; cv=none; b=s9QrYcSHUCH+MYgXmLKU8radzWMrF0x18mni26ZYw5pfeZVm864We99VJJenX/uZ7qJaBlLF2rEE3qEE+mlJXw+R80uLXuExiYnCh4wO3bSfhpi01orQP0F4mG1fxnFctpi04lr7KXbUkwSE5aLWDfbpJJpklrl8EQqzJdpafKI=
+	t=1708370478; cv=none; b=SBF0I3XXx/ucgvyIoBHQXPkIz+aL/h2rpfRYye/znGquht+KP7tOJP+n9sIfIZdCv5ge82naMRc8nK4O4SHoLQUfkYkP2axvbzGG08tBZ9QyLNbtRYK3GHdRzCDsljVKU3BaY3KpOOHWIl/Zek084+fXTmmOw3m/xPyyQBMY5tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708370304; c=relaxed/simple;
-	bh=lWp1mvnF6XdLVxAwayXsUI7kHokjjbIIQ8IV4f8d2fc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GBKdlMNpz49RLE02AYqctzAVOPUmoRWgUIr0vAZqPWKLX0YObpF784XMr95nPfZQ+Ln0nV4ygMifo+6uANrp+jd8VouWpyMb6PmJqy90YHoxiqg8wnpvIlN5WId2Vw7qyd/mYJ8fHdqQNgKNWR8Ka8PK4Amei9+lH9l7xowblRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=vX0UKSCQ; arc=none smtp.client-ip=83.166.143.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0001.mail.infomaniak.ch (smtp-4-0001.mail.infomaniak.ch [10.7.10.108])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Tdsks0cSsznBQ;
-	Mon, 19 Feb 2024 20:18:13 +0100 (CET)
-Received: from unknown by smtp-4-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Tdskr0wsqzHNV;
-	Mon, 19 Feb 2024 20:18:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1708370292;
-	bh=lWp1mvnF6XdLVxAwayXsUI7kHokjjbIIQ8IV4f8d2fc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=vX0UKSCQSIn+wlfY47YBGvvF7KwJaXD7ijzCLv/U/WDG0LHjbyGxgSQhOIDPlmWWQ
-	 vi2Dkp6AVjK6V9IqjgVRfi7e0rq4/qStY9YSQbUUwZtQXZOGf6Y9XoXbnp4YByabAO
-	 LhvcVHDitDj0ZJvKLkWU7AeIpW5uQjot3UxaVR5Q=
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: =?UTF-8?q?G=C3=BCnther=20Noack?= <gnoack@google.com>,
-	Paul Moore <paul@paul-moore.com>,
-	"Serge E . Hallyn" <serge@hallyn.com>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-	Shervin Oloumi <enlightened@chromium.org>,
-	linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH] landlock: Warn once if a Landlock action is requested while disabled
-Date: Mon, 19 Feb 2024 20:18:04 +0100
-Message-ID: <20240219191804.2978911-1-mic@digikod.net>
+	s=arc-20240116; t=1708370478; c=relaxed/simple;
+	bh=BU7vmtS91LW14umqdRks1US1wmoCN7BfyNRskJ+lpzg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mc6sb+9HBgxmwuyl+D3F8kK0kW7JHCuVYq9kP6piFBor4padm1iphrSgCmg9epJn39UJRg4riEp68mo56byjdRtjz7C43fUxZoRFP9r7I/dME9A3YrQ6vlIiNLaXZTf/joYaCOhu6V7XTg7fqkX+b912k9VEK11b86JJOPXxmYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rDI2Tw7l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5BB4C433F1;
+	Mon, 19 Feb 2024 19:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708370478;
+	bh=BU7vmtS91LW14umqdRks1US1wmoCN7BfyNRskJ+lpzg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rDI2Tw7lYr17vYfRVT31/CFWOTvQvw8vu8Kd10WZDkZAfAUrzH8Df4KP6kxyUwmrK
+	 rGFpMcWC60IsJ/xONKcoIBQHrAldlZdG91Eo5stQQ7g0kxVAFfd9FHlI499h6X/V9X
+	 uV3aNuG/f+xnORzGFBi12Jq9+lalxrUM0mCfg2eSqcmNxdvWWWj0HLY4KndwAixZ5R
+	 QrIt0Synm8G4YerLcrr4Ta1M2jUeYFvwJyqYGsqzjANrsTGlgG6z54InG3nSN7NzBy
+	 lWYK1LwZxKgM45/cm2HfebVej40pz17i5AFt4n/v5CPx9+emInzhElr3yhPEDIr6p7
+	 ynArQJ8jnkTMw==
+Date: Mon, 19 Feb 2024 12:21:14 -0700
+From: Keith Busch <kbusch@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com, Alan Adamson <alan.adamson@oracle.com>
+Subject: Re: [PATCH v4 10/11] nvme: Atomic write support
+Message-ID: <ZdOqKr6Js_nlobh5@kbusch-mbp>
+References: <20240219130109.341523-1-john.g.garry@oracle.com>
+ <20240219130109.341523-11-john.g.garry@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20240219130109.341523-11-john.g.garry@oracle.com>
 
-Because sandboxing can be used as an opportunistic security measure,
-user space may not log unsupported features.  Let the system
-administrator know if an application tries to use Landlock but failed
-because it isn't enabled at boot time.  This may be caused by bootloader
-configurations with outdated "lsm" kernel's command-line parameter.
+On Mon, Feb 19, 2024 at 01:01:08PM +0000, John Garry wrote:
+> From: Alan Adamson <alan.adamson@oracle.com>
+> 
+> Add support to set block layer request_queue atomic write limits. The
+> limits will be derived from either the namespace or controller atomic
+> parameters.
+> 
+> NVMe atomic-related parameters are grouped into "normal" and "power-fail"
+> (or PF) class of parameter. For atomic write support, only PF parameters
+> are of interest. The "normal" parameters are concerned with racing reads
+> and writes (which also applies to PF). See NVM Command Set Specification
+> Revision 1.0d section 2.1.4 for reference.
+> 
+> Whether to use per namespace or controller atomic parameters is decided by
+> NSFEAT bit 1 - see Figure 97: Identify - Identify Namespace Data Structure,
+> #NVM Command Set.
+> 
+> NVMe namespaces may define an atomic boundary, whereby no atomic guarantees
+> are provided for a write which straddles this per-lba space boundary. The
+> block layer merging policy is such that no merges may occur in which the
+> resultant request would straddle such a boundary.
+> 
+> Unlike SCSI, NVMe specifies no granularity or alignment rules. In addition,
+> again unlike SCSI, there is no dedicated atomic write command - a write
+> which adheres to the atomic size limit and boundary is implicitly atomic.
+> 
+> If NSFEAT bit 1 is set, the following parameters are of interest:
+> - NAWUPF (Namespace Atomic Write Unit Power Fail)
+> - NABSPF (Namespace Atomic Boundary Size Power Fail)
+> - NABO (Namespace Atomic Boundary Offset)
+> 
+> and we set request_queue limits as follows:
+> - atomic_write_unit_max = rounddown_pow_of_two(NAWUPF)
+> - atomic_write_max_bytes = NAWUPF
+> - atomic_write_boundary = NABSPF
+> 
+> If in the unlikely scenario that NABO is non-zero, then atomic writes will
+> not be supported at all as dealing with this adds extra complexity. This
+> policy may change in future.
+> 
+> In all cases, atomic_write_unit_min is set to the logical block size.
+> 
+> If NSFEAT bit 1 is unset, the following parameter is of interest:
+> - AWUPF (Atomic Write Unit Power Fail)
+> 
+> and we set request_queue limits as follows:
+> - atomic_write_unit_max = rounddown_pow_of_two(AWUPF)
+> - atomic_write_max_bytes = AWUPF
+> - atomic_write_boundary = 0
+> 
+> The block layer requires that the atomic_write_boundary value is a
+> power-of-2. However, it is really only required that atomic_write_boundary
+> be a multiple of atomic_write_unit_max. As such, if NABSPF were not a
+> power-of-2, atomic_write_unit_max could be reduced such that it was
+> divisible into NABSPF. However, this complexity will not be yet supported.
+> 
+> A helper function, nvme_valid_atomic_write(), is also added for the
+> submission path to verify that a request has been submitted to the driver
+> will actually be executed atomically.
 
-Cc: Günther Noack <gnoack@google.com>
-Cc: stable@vger.kernel.org
-Fixes: 265885daf3e5 ("landlock: Add syscall implementations")
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
----
- security/landlock/syscalls.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+Maybe patch 11 should be folded into this one. No bigged, the series as
+a whole looks good.
 
-diff --git a/security/landlock/syscalls.c b/security/landlock/syscalls.c
-index f0bc50003b46..b5b424819dee 100644
---- a/security/landlock/syscalls.c
-+++ b/security/landlock/syscalls.c
-@@ -33,6 +33,18 @@
- #include "ruleset.h"
- #include "setup.h"
- 
-+static bool is_not_initialized(void)
-+{
-+	if (likely(landlock_initialized))
-+		return false;
-+
-+	pr_warn_once(
-+		"Disabled but requested by user space. "
-+		"You should enable Landlock at boot time: "
-+		"https://docs.kernel.org/userspace-api/landlock.html#kernel-support\n");
-+	return true;
-+}
-+
- /**
-  * copy_min_struct_from_user - Safe future-proof argument copying
-  *
-@@ -173,7 +185,7 @@ SYSCALL_DEFINE3(landlock_create_ruleset,
- 	/* Build-time checks. */
- 	build_check_abi();
- 
--	if (!landlock_initialized)
-+	if (is_not_initialized())
- 		return -EOPNOTSUPP;
- 
- 	if (flags) {
-@@ -407,7 +419,7 @@ SYSCALL_DEFINE4(landlock_add_rule, const int, ruleset_fd,
- 	struct landlock_ruleset *ruleset;
- 	int err;
- 
--	if (!landlock_initialized)
-+	if (is_not_initialized())
- 		return -EOPNOTSUPP;
- 
- 	/* No flag for now. */
-@@ -467,7 +479,7 @@ SYSCALL_DEFINE2(landlock_restrict_self, const int, ruleset_fd, const __u32,
- 	struct landlock_cred_security *new_llcred;
- 	int err;
- 
--	if (!landlock_initialized)
-+	if (is_not_initialized())
- 		return -EOPNOTSUPP;
- 
- 	/*
--- 
-2.43.0
-
+Reviewed-by: Keith Busch <kbusch@kernel.org>
 
