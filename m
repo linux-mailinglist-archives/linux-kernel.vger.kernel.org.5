@@ -1,153 +1,119 @@
-Return-Path: <linux-kernel+bounces-71354-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71355-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A3F585A3EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:54:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DBFA85A3EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E654C1F2441A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:54:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF4FD28523E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:55:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D18FB33CE2;
-	Mon, 19 Feb 2024 12:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AEA531A79;
+	Mon, 19 Feb 2024 12:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="udQ3cv9J"
-Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oma2XsIY"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6BF2EB1D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:54:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58B22E844
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708347252; cv=none; b=rSs7TRf66l5fG/7G8XHWiMfnJQnn5lFZ8b512ATqKviV/KumIspDCzbIm9eYLK2txW+2jLJCrlxlfumQylQTaI2Tf0Te55zsajy3cEJJFuDrw5TURpZ5UwdssH46V3nWvU/2aWk40QWbrXFcAJR3LnW/qp1ce+EOaKKMG4y3nn4=
+	t=1708347301; cv=none; b=oIi/haTMOmAVyQDtKw9U10NOQacUF5ZncUPr88zJLvpfptMq98H3MbwEwVSzTiW17FBkU15b86CBUUCfWTUiR4yiKpNZ17+RtXwmykWFYLjopxe+5U/iiPoRSL/FUUJPaqMOnNxxIwm0z/7Fpcm5gPOtEH53uDJgq8ahA2VTjdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708347252; c=relaxed/simple;
-	bh=sVsdNaxDrQaT+5xLkuNNBvQ4+mZpUehI+ER8LAoDUdY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=alusAnPDTlJpp7GMyBWcVNgusmfsnMKREs5VlC32mpceP+5eqUF+MKX0k09i9fvzsBiJ/K3hFGOguQ70SBRkbkSx+SrkPjxhNpU6dmKwyfAcKiDbnE4hIaH0fQhgvrEeNF1NnQ/jodJC0WoWKCXZylIL8bdk+12mZE9xy+w0CgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=udQ3cv9J; arc=none smtp.client-ip=209.85.222.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7d2e1832d4dso1395349241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:54:09 -0800 (PST)
+	s=arc-20240116; t=1708347301; c=relaxed/simple;
+	bh=hSBsjVnDq4V/SaD5QrTbaSrUiQ2o7wo0Gts4ho71hgw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YPsxG8ko7qKs2VAvztTeplMxsX5H7SPi+qF36whTv8slRT9WhNYBbnMkET3qale8iMU7y5S9LxriBgDFsxd0Zeb/0yM5q07OkBFR/+DuAHGf3VaM0u9yPghmX/gpwUO2wNwHTveg9GgIXzfdmFrerxNjTKDO6FgiTut3sUqDMyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oma2XsIY; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41267d9d6faso4876955e9.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:54:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708347249; x=1708952049; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sVsdNaxDrQaT+5xLkuNNBvQ4+mZpUehI+ER8LAoDUdY=;
-        b=udQ3cv9JtqKeraoYuLqdfWfwCCI8IqdYdtHNz3famgOyfzEASJbnUbi9Ip4iBFsEfQ
-         Kl8HsjfC+7SkcF9V5ISgTbGDqgyoHJRrjgR0/PfVtTCIysmhpDAH+oe378A755J6JlXM
-         1r94W6myxOuaOuRiIVphSmifjG0c6dN6Ppy0iQ1WbUj5I9pPZilN2tTRygjbg9MKHk3d
-         pnM2uYsVw244oGzm9Y/8g4n35ljis+R+dRxgOYJIEg4XNhXjTDndDIcQhpEsUBMx+Bzb
-         /xqB9GlsDT2n1v4h5B+LoZr03fuAttuy4C4vf+rBZrpUOCRTZoFDTdRI05jcpekZ90R1
-         U54A==
+        d=linaro.org; s=google; t=1708347297; x=1708952097; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a6B2DruJerLZbkIuvRU8f0cBof8KbpMYUSV8dqn0q2g=;
+        b=oma2XsIYTPEEH2cTCTebgFW0WNDwBs446XfKHcPOofp2PXTT4GXsLgpHNo98ZcwiPV
+         VfSwNlpghors5DOpkoeNT77D4MboAFO4Y4vppu/aYN3dBTjxonC3+3N8d6zyqgiQ1zyI
+         8v+iIu227pbSpeRYj9y5/MyLuSCW829spZKGc8kEvuekf44a0BfM5plO2XXPd0XH5rh2
+         X6YqgLvBSFvNvvRBxyJlQDjW3ctTXpHqgJBExySUDPGlou5dxvN8To4abFVuHMlU57AH
+         kZdBVWLRHB0LtKOtTjklATNnnfQHbY7Ftjino9knLysapgfsIrixrK3AbDKLuPKStepf
+         qcsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708347249; x=1708952049;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sVsdNaxDrQaT+5xLkuNNBvQ4+mZpUehI+ER8LAoDUdY=;
-        b=JCS7j0CtBFtjBZymPho7xiPk26LtN2lFJ53HFNxTSB7V/YQ/gfRNOARU4eHfRwjBmv
-         7Tf85znoozS1HqyHXk2uh5KzcgrOVnIk0u+9PEeH8oTdi7MkSBWe3BNeC/CuXjH8EsXp
-         /HWKESfG8fgZmiCCHMZwJcG2mXaLcC+Q6LeBNg0m7HgSdYLW9nvoPtX28pR5hLE1sg8N
-         9MF6mvnJwo5EJGHULGQmt63UEt+hGXV4nTdAfs/ClkKqckBL0XQxfRH+tp07Yb1N54Lw
-         gIBRFleNCuGWOc6NFwfRXrryohgssiSAJPp9auxp3DOEPS1mNcWZ7KmDiZevbKaqbgy4
-         ccng==
-X-Forwarded-Encrypted: i=1; AJvYcCV8NMI9aKYjvFHLnlbBamJoTqGL/55/85A+WlYxvTrWze2Dy6O4lyKncugQHOlSwB7BD74EzbZ3iTmtHqp42n/AiqHVf23Fav6OHCHr
-X-Gm-Message-State: AOJu0Yx49Th7yBlRcrcTkP9vvU41nO7qYdwd7LuRwT06VQAQfKPC3WmA
-	0CA2eMPlxGbO2b4VFj5RoeOfpR1QPGesIQRjbNOGzKk+EXvEQp/t+vs73EMLyeCFZtpmJQUyMk6
-	2c0VkFnSgYDeuulXyf22yJl8550V62tvToaWfCg==
-X-Google-Smtp-Source: AGHT+IHxyvxbs8UNV+RvesaBK90xtZZfu2Xu6HFPB14T7Tm6G1AVsPn3zgxyvNAFZBNi1d1T6kkfRUxMA6fnOOW6aBY=
-X-Received: by 2002:a67:c902:0:b0:46d:2b65:aa16 with SMTP id
- w2-20020a67c902000000b0046d2b65aa16mr6787860vsk.34.1708347248824; Mon, 19 Feb
- 2024 04:54:08 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708347297; x=1708952097;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a6B2DruJerLZbkIuvRU8f0cBof8KbpMYUSV8dqn0q2g=;
+        b=CtqAFWqOVPiFKt+CShiDQktiW6LMdrwszfD433jGpRKlLLE5pU5EECGz1e/qInF3ZL
+         cy3k93bBIOrsrJmJw3JXYeuJ1hUx43q4ePRomFQ62hTY4vBLvGy3g1SVA9kOTkqIZSDe
+         TQv21Lmx17c/hOT02tk2gECTCi5i8rZl/yQzQZdkx9/cIA5u3uiZqVti6QJPZ/RwXz5k
+         Pw5cFp8tS8AmzGnGTn/rDmAS8/dG8UGKOAxpzWLGY+rDE88culWQUnjoDmkMDJDcZoiM
+         lOul5tXOqOf95umqj75Rl0OL4MERSJoxNK357KGrc0uVY9iiWI4OfAxXuU4nK8CQNOWU
+         49pg==
+X-Forwarded-Encrypted: i=1; AJvYcCUQxJDqjdU/m4sUFEypV7/fw/h0WkFpJQ8CdjWTrWe80HnYCy8aORMH7CLXEcf/gL1GSpWRw8GOKsczG43wTcuWE1ydRwWfnb8W/BYD
+X-Gm-Message-State: AOJu0YwAUBNdk/sdX9b8ZVjrmwhhlHoBnBx96TnkVmRuFfF8QZg2vCxm
+	mCF/RFIipRqFn+butK6CWbh6rIkSYMk4EEhurROQitVw+4VeKQkJ7PCd+pjrt9Q=
+X-Google-Smtp-Source: AGHT+IEIv5BtZVO+FqLBERhY0mbMiI6B12HVtWh8EH0ZzyLDVS+rqzvTu7JiEtbiqXaNJAReIfKO2w==
+X-Received: by 2002:a05:600c:3549:b0:411:ff38:aa13 with SMTP id i9-20020a05600c354900b00411ff38aa13mr9228779wmq.27.1708347297209;
+        Mon, 19 Feb 2024 04:54:57 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id h5-20020a05600c350500b004124219a8c9sm11006918wmq.32.2024.02.19.04.54.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 04:54:56 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Peter Griffin <peter.griffin@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH] MAINTAINERS: samsung: gs101: match patches touching Google Tensor SoC
+Date: Mon, 19 Feb 2024 13:54:53 +0100
+Message-Id: <20240219125453.103692-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-4-brgl@bgdev.pl>
- <ZdDVNbjv60G9YUNy@finisterre.sirena.org.uk> <CAMRc=Mf9Sro4kM_Jn8_v=cyO5PxCp6AnBdeS9XspqVDGKdA_Dg@mail.gmail.com>
- <7c1327c0-d0ea-4797-a5fa-5844ba46bf53@linaro.org>
-In-Reply-To: <7c1327c0-d0ea-4797-a5fa-5844ba46bf53@linaro.org>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Mon, 19 Feb 2024 13:53:57 +0100
-Message-ID: <CAMRc=Me=3HhGc_yZuaEo1TsLbF2R=g+072185_PAh5GmAQ-M7w@mail.gmail.com>
-Subject: Re: [PATCH v5 03/18] dt-bindings: regulator: describe the PMU module
- of the QCA6390 package
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, "David S . Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Saravana Kannan <saravanak@google.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Arnd Bergmann <arnd@arndb.de>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>, 
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
-	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-bluetooth@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 19, 2024 at 8:32=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 17/02/2024 19:32, Bartosz Golaszewski wrote:
-> > On Sat, Feb 17, 2024 at 4:48=E2=80=AFPM Mark Brown <broonie@kernel.org>=
- wrote:
-> >>
-> >> On Fri, Feb 16, 2024 at 09:32:00PM +0100, Bartosz Golaszewski wrote:
-> >>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >>>
-> >>> The QCA6390 package contains discreet modules for WLAN and Bluetooth.=
- They
-> >>> are powered by the Power Management Unit (PMU) that takes inputs from=
- the
-> >>> host and provides LDO outputs. This document describes this module.
-> >>
-> >> Please submit patches using subject lines reflecting the style for the
-> >> subsystem, this makes it easier for people to identify relevant patche=
-s.
-> >> Look at what existing commits in the area you're changing are doing an=
-d
-> >> make sure your subject lines visually resemble what they're doing.
-> >> There's no need to resubmit to fix this alone.
-> >
-> > Mark,
-> >
-> > This is quite vague, could you elaborate? I have no idea what is wrong
-> > with this patch.
->
-> Use subject prefixes matching the subsystem. You can get them for
-> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-> your patch is touching.
->
-> Best regards,
-> Krzysztof
->
+Maintainers of Google Tensor SoC should be aware of all driver patches
+having that name.
 
-Yes, I always do. And for Documentation/devicetree/bindings/regulator/
-the subjects are split 50:50 between "dt-bindings: regulator: ..." and
-"regulator: dt-bindings: ...". For Documentation/devicetree/bindings/
-it's overwhelmingly "dt-bindings: <subsystem>: ...". It's the first
-time someone wants me to send a DT bindings patch without
-"dt-bindings" coming first in the subject.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-I mean: I can do it alright but it's not stated anywhere explicitly.
+---
 
-Bartosz
+This allows to spot easier such weird drivers (weird because they claim they are
+for hardware, but they omit entirely hardware part) like:
+https://lore.kernel.org/all/20240219061008.1761102-3-pumahsu@google.com/
+---
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 36fac6b3499a..69fb1ae94897 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9126,6 +9126,7 @@ F:	Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+ F:	arch/arm64/boot/dts/exynos/google/
+ F:	drivers/clk/samsung/clk-gs101.c
+ F:	include/dt-bindings/clock/google,gs101.h
++K:	[gG]oogle.?[tT]ensor
+ 
+ GPD POCKET FAN DRIVER
+ M:	Hans de Goede <hdegoede@redhat.com>
+-- 
+2.34.1
+
 
