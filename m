@@ -1,387 +1,183 @@
-Return-Path: <linux-kernel+bounces-70763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70766-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DA5859BEF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:14:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A39B1859BF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 701D3B215C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:14:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6112C28157A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBB6F200B7;
-	Mon, 19 Feb 2024 06:14:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tqUF+jlO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E46200C3;
+	Mon, 19 Feb 2024 06:22:34 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC421F941
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C8220300;
+	Mon, 19 Feb 2024 06:22:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708323284; cv=none; b=EdVGjXGRfL2jqgoQLam5VLd6VuVI2lvrNJmqe86i0fyN0HSk3/mQqQbtHRAlER6I3NAFkKV1w5fDYqJ25MtTQdEb06rv/N/L2fxtEFvgCwPGKPOou2sV62ZJxSt/2alzhG45QEus1tvclbOsCRxqQFoF00gLWaHmx7RjJqcsevE=
+	t=1708323753; cv=none; b=BJ5mSd/lHdtJvm+QpzUBPiP+B4lIN5TPDfOoa99Y1ZyQoJYAoiM5MaskazAb3QoVFFxVNuiWcfGY7dSyVqUyiAYCXmdyPRW8o/OqdMosnI/A5a0fFiOmPTHRex+FR1S5sk9Dmy4FqcNszR8ylSp4xjwxNKryxwnRqTNK8z6wBmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708323284; c=relaxed/simple;
-	bh=PpHx2/pQWPEbWNxb5SrbhLdxytS0axjN+q7c792Cei4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YtwBJEKiHVEZRqJnnBUI20hIWOh9Wi0d4sVMiMXcNqIGM9ugVlAUg+URWBDzPYmLDk1iB2AUAOysdidzc0dPrgnzWm4nvsz4BPhjMiABH6kmEe28d4e+qgEYgEyGJ6lDkVs2Uv40kaftrsX9+awAbSGckFcu1aUA1QZkGvc6kfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tqUF+jlO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 462C7C433C7;
-	Mon, 19 Feb 2024 06:14:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708323284;
-	bh=PpHx2/pQWPEbWNxb5SrbhLdxytS0axjN+q7c792Cei4=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=tqUF+jlObLt4labMX3pUAXVEmblQnpbAuis7TxGfke9RvsbavKbEASHyaHTRr58/w
-	 kr1pALQlrN2AkLDtFI5SUwfQuCxuUH1kAqvZLZb+ZX+DSqYte9HYBKix2qYsOgeWKC
-	 5iOl1CxRGar/dTZo/YgyWrrS3tzFD0FBF2kBR2QvNvGGAzWFEUMM3uTl7iQ41pN5nL
-	 mYasgPMlzgb5GJgo2kTm0MnZEKqQ/76EvuJl7DDgOCgGH4ANfttVogZj0yKBviV9gF
-	 yX7EEBpoCRHlaVOU72s0tHAXVrhvcVCFt++Zt5cO+SCwXJmX0ZH06CEeH3danlFOXq
-	 tjlfM3pC+REqA==
-Message-ID: <74933d5b-449e-4061-9571-799acbc42b43@kernel.org>
-Date: Mon, 19 Feb 2024 14:14:39 +0800
+	s=arc-20240116; t=1708323753; c=relaxed/simple;
+	bh=HL9tjnCMOqkDFFykDHNI4UFffH0/mEiphqfYVgR+jQ4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LDOXjZ2F8Fk/Z9rufR1kG/vvZaswMpaWKk62Q+TjNu9rn1pdEb9EwH2b3gOP8zUoHS8bQlAvc0QGElPsXn7FqLr2OvZZGSB+b7GcqUx/+G4kstJVONN7jkEbsqrXWX4L4ym2K67/TFZCqqxWxBoDM/i4VP3+kEs2uPMSohyY/0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TdXPz1kcgz1FKsc;
+	Mon, 19 Feb 2024 14:17:27 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 9417B1A0172;
+	Mon, 19 Feb 2024 14:22:16 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 14:22:16 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next] RDMA/hns: Fix mis-modifying default congestion control algorithm
+Date: Mon, 19 Feb 2024 14:18:05 +0800
+Message-ID: <20240219061805.668170-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] f2fs: support compress extension update via sysfs
- interface
-Content-Language: en-US
-To: Jaegeuk Kim <jaegeuk@kernel.org>
-Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
- Sheng Yong <shengyong@oppo.com>
-References: <20240207062546.3083870-1-chao@kernel.org>
- <ZcQbRzyvb8MNeOMB@google.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <ZcQbRzyvb8MNeOMB@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-On 2024/2/8 8:07, Jaegeuk Kim wrote:
-> On 02/07, Chao Yu wrote:
->> Introduce /sys/fs/f2fs/<disk>/compress_extension to support
->> adding/deleting compress extension via sysfs interface, in
->> comparison to mount option, it's more easy to use and less
->> authority issue for applications.
->>
->> Usage:
->> - Query: cat /sys/fs/f2fs/<disk>/compress_extension
->> - Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
->> - Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
->> - [c] means add/del compress extension
->> - [n] means add/del nocompress extension
->>
->> Signed-off-by: Sheng Yong <shengyong@oppo.com>
->> Signed-off-by: Chao Yu <chao@kernel.org>
->> ---
->>   Documentation/ABI/testing/sysfs-fs-f2fs | 10 ++++
->>   Documentation/filesystems/f2fs.rst      |  6 ++-
->>   fs/f2fs/compress.c                      | 61 +++++++++++++++++++++++
->>   fs/f2fs/f2fs.h                          |  4 +-
->>   fs/f2fs/sysfs.c                         | 65 +++++++++++++++++++++++--
->>   5 files changed, 139 insertions(+), 7 deletions(-)
->>
->> diff --git a/Documentation/ABI/testing/sysfs-fs-f2fs b/Documentation/ABI/testing/sysfs-fs-f2fs
->> index 48c135e24eb5..1f2cc0913e45 100644
->> --- a/Documentation/ABI/testing/sysfs-fs-f2fs
->> +++ b/Documentation/ABI/testing/sysfs-fs-f2fs
->> @@ -762,3 +762,13 @@ Date:		November 2023
->>   Contact:	"Chao Yu" <chao@kernel.org>
->>   Description:	It controls to enable/disable IO aware feature for background discard.
->>   		By default, the value is 1 which indicates IO aware is on.
->> +
->> +What:		/sys/fs/f2fs/<disk>/compress_extension
->> +Date:		October 2023
->> +Contact:	"Chao Yu" <chao@kernel.org>
->> +Description:	Used to control configure [|no]compress_extension list:
->> +		- Query: cat /sys/fs/f2fs/<disk>/compress_extension
->> +		- Add: echo '[c|n]extension' > /sys/fs/f2fs/<disk>/compress_extension
->> +		- Del: echo '[c|n]!extension' > /sys/fs/f2fs/<disk>/compress_extension
->> +		- [c] means add/del compress extension
->> +		- [n] means add/del nocompress extension
->> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->> index 32cbfa864f38..c82a8fd7316b 100644
->> --- a/Documentation/filesystems/f2fs.rst
->> +++ b/Documentation/filesystems/f2fs.rst
->> @@ -821,17 +821,19 @@ Compression implementation
->>     all logical blocks in cluster contain valid data and compress ratio of
->>     cluster data is lower than specified threshold.
->>   
->> -- To enable compression on regular inode, there are four ways:
->> +- To enable compression on regular inode, there are five ways:
->>   
->>     * chattr +c file
->>     * chattr +c dir; touch dir/file
->>     * mount w/ -o compress_extension=ext; touch file.ext
->>     * mount w/ -o compress_extension=*; touch any_file
->> +  * echo '[c]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
->>   
->> -- To disable compression on regular inode, there are two ways:
->> +- To disable compression on regular inode, there are three ways:
->>   
->>     * chattr -c file
->>     * mount w/ -o nocompress_extension=ext; touch file.ext
->> +  * echo '[n]ext' > /sys/fs/f2fs/<disk>/compress_extension; touch file.ext
->>   
->>   - Priority in between FS_COMPR_FL, FS_NOCOMP_FS, extensions:
->>   
->> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->> index 3dc488ce882b..a5257882c772 100644
->> --- a/fs/f2fs/compress.c
->> +++ b/fs/f2fs/compress.c
->> @@ -20,6 +20,67 @@
->>   #include "segment.h"
->>   #include <trace/events/f2fs.h>
->>   
->> +static int is_compress_extension_exist(struct f2fs_sb_info *sbi,
->> +				unsigned char (*ext)[F2FS_EXTENSION_LEN],
->> +				int ext_cnt, unsigned char *new_ext)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < ext_cnt; i++) {
->> +		if (!strcasecmp(new_ext, ext[i]))
->> +			return i;
->> +	}
->> +	return -1;
->> +}
->> +
->> +int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
->> +				unsigned char *new_ext, bool is_ext, bool set)
->> +{
->> +	unsigned char (*ext)[F2FS_EXTENSION_LEN];
->> +	unsigned char *ext_cnt;
->> +
->> +	if (is_ext) {
->> +		ext = F2FS_OPTION(sbi).extensions;
->> +		ext_cnt = &F2FS_OPTION(sbi).compress_ext_cnt;
->> +	} else {
->> +		ext = F2FS_OPTION(sbi).noextensions;
->> +		ext_cnt = &F2FS_OPTION(sbi).nocompress_ext_cnt;
->> +	}
->> +
->> +	if (set) {
->> +		if (*ext_cnt >= COMPRESS_EXT_NUM)
->> +			return -EINVAL;
->> +
->> +		if (is_compress_extension_exist(sbi,
->> +					F2FS_OPTION(sbi).extensions,
->> +					F2FS_OPTION(sbi).compress_ext_cnt,
->> +					new_ext) >= 0)
->> +			return -EEXIST;
->> +
->> +		if (is_compress_extension_exist(sbi,
->> +					F2FS_OPTION(sbi).noextensions,
->> +					F2FS_OPTION(sbi).nocompress_ext_cnt,
->> +					new_ext) >= 0)
->> +			return -EEXIST;
->> +
->> +		strcpy(ext[*ext_cnt], new_ext);
->> +		(*ext_cnt)++;
->> +	} else {
->> +		int pos = is_compress_extension_exist(sbi, ext,
->> +						*ext_cnt, new_ext);
->> +		if (pos < 0)
->> +			return -ENOENT;
->> +
->> +		if (pos < *ext_cnt - 1)
->> +			memmove(ext + pos, ext + pos + 1,
->> +				F2FS_EXTENSION_LEN * (*ext_cnt - pos - 1));
->> +		memset(ext + *ext_cnt - 1, 0, F2FS_EXTENSION_LEN);
->> +		(*ext_cnt)--;
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>   static struct kmem_cache *cic_entry_slab;
->>   static struct kmem_cache *dic_entry_slab;
->>   
->> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->> index c5e7460d1a0a..d44e2c43d8ab 100644
->> --- a/fs/f2fs/f2fs.h
->> +++ b/fs/f2fs/f2fs.h
->> @@ -186,7 +186,7 @@ struct f2fs_mount_info {
->>   	unsigned char compress_level;		/* compress level */
->>   	bool compress_chksum;			/* compressed data chksum */
->>   	unsigned char compress_ext_cnt;		/* extension count */
->> -	unsigned char nocompress_ext_cnt;		/* nocompress extension count */
->> +	unsigned char nocompress_ext_cnt;	/* nocompress extension count */
->>   	int compress_mode;			/* compression mode */
->>   	unsigned char extensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN];	/* extensions */
->>   	unsigned char noextensions[COMPRESS_EXT_NUM][F2FS_EXTENSION_LEN]; /* extensions */
->> @@ -4273,6 +4273,8 @@ static inline bool f2fs_post_read_required(struct inode *inode)
->>    * compress.c
->>    */
->>   #ifdef CONFIG_F2FS_FS_COMPRESSION
->> +int f2fs_update_compress_extension(struct f2fs_sb_info *sbi,
->> +				unsigned char *new_ext, bool is_ext, bool set);
->>   bool f2fs_is_compressed_page(struct page *page);
->>   struct page *f2fs_compress_control_page(struct page *page);
->>   int f2fs_prepare_compress_overwrite(struct inode *inode,
->> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
->> index a7ec55c7bb20..a8f05a02e202 100644
->> --- a/fs/f2fs/sysfs.c
->> +++ b/fs/f2fs/sysfs.c
->> @@ -39,6 +39,7 @@ enum {
->>   	RESERVED_BLOCKS,	/* struct f2fs_sb_info */
->>   	CPRC_INFO,	/* struct ckpt_req_control */
->>   	ATGC_INFO,	/* struct atgc_management */
->> +	MOUNT_INFO,	/* struct f2fs_mount_info */
->>   };
->>   
->>   static const char *gc_mode_names[MAX_GC_MODE] = {
->> @@ -89,6 +90,8 @@ static unsigned char *__struct_ptr(struct f2fs_sb_info *sbi, int struct_type)
->>   		return (unsigned char *)&sbi->cprc_info;
->>   	else if (struct_type == ATGC_INFO)
->>   		return (unsigned char *)&sbi->am;
->> +	else if (struct_type == MOUNT_INFO)
->> +		return (unsigned char *)&F2FS_OPTION(sbi);
->>   	return NULL;
->>   }
->>   
->> @@ -358,6 +361,25 @@ static ssize_t f2fs_sbi_show(struct f2fs_attr *a,
->>   
->>   	if (!strcmp(a->attr.name, "compr_new_inode"))
->>   		return sysfs_emit(buf, "%u\n", sbi->compr_new_inode);
->> +
->> +	if (!strcmp(a->attr.name, "compress_extension")) {
->> +		int len = 0, i;
->> +
->> +		f2fs_down_read(&sbi->sb_lock);
->> +		len += scnprintf(buf + len, PAGE_SIZE - len,
->> +						"compress extension:\n");
->> +		for (i = 0; i < F2FS_OPTION(sbi).compress_ext_cnt; i++)
->> +			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
->> +					F2FS_OPTION(sbi).extensions[i]);
->> +
->> +		len += scnprintf(buf + len, PAGE_SIZE - len,
->> +						"nocompress extension:\n");
->> +		for (i = 0; i < F2FS_OPTION(sbi).nocompress_ext_cnt; i++)
->> +			len += scnprintf(buf + len, PAGE_SIZE - len, "%s\n",
->> +					F2FS_OPTION(sbi).noextensions[i]);
-> 
-> I don't think this is acceptable in sysfs.
+From: Luoyouming <luoyouming@huawei.com>
 
-It looks block layer output similar string:
+Commit 27c5fd271d8b ("RDMA/hns: The UD mode can only be configured
+with DCQCN") adds a check of congest control alorithm for UD. But
+that patch causes a problem: hr_dev->caps.congest_type is global,
+used by all QPs, so modifying this field to DCQCN for UD QPs causes
+other QPs unable to use any other algorithm except DCQCN.
 
-cat /sys/block/<dev>/queue/scheduler
-mq-deadline kyber [bfq] none
+Revert the modification in commit 27c5fd271d8b ("RDMA/hns: The UD
+mode can only be configured with DCQCN"). Add a new field cong_type
+to struct hns_roce_qp and configure DCQCN for UD QPs.
 
-Or, can we add extension entries into /sys/fs/f2fs/<dev>/compress_extensions/
-directory? like feature entries in /sys/fs/f2fs/<dev>/feature_list/.
+Fixes: 27c5fd271d8b ("RDMA/hns: The UD mode can only be configured with DCQCN")
+Fixes: f91696f2f053 ("RDMA/hns: Support congestion control type selection according to the FW")
+Signed-off-by: Luoyouming <luoyouming@huawei.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_device.h | 17 +++++++++--------
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 16 ++++++++++------
+ 2 files changed, 19 insertions(+), 14 deletions(-)
 
-e.g.
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 1a8516019516..1d062c522d69 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -594,6 +594,13 @@ struct hns_roce_work {
+ 	u32 queue_num;
+ };
+ 
++enum hns_roce_cong_type {
++	CONG_TYPE_DCQCN,
++	CONG_TYPE_LDCP,
++	CONG_TYPE_HC3,
++	CONG_TYPE_DIP,
++};
++
+ struct hns_roce_qp {
+ 	struct ib_qp		ibqp;
+ 	struct hns_roce_wq	rq;
+@@ -637,6 +644,7 @@ struct hns_roce_qp {
+ 	struct list_head	sq_node; /* all send qps are on a list */
+ 	struct hns_user_mmap_entry *dwqe_mmap_entry;
+ 	u32			config;
++	enum hns_roce_cong_type	cong_type;
+ };
+ 
+ struct hns_roce_ib_iboe {
+@@ -708,13 +716,6 @@ struct hns_roce_eq_table {
+ 	struct hns_roce_eq	*eq;
+ };
+ 
+-enum cong_type {
+-	CONG_TYPE_DCQCN,
+-	CONG_TYPE_LDCP,
+-	CONG_TYPE_HC3,
+-	CONG_TYPE_DIP,
+-};
+-
+ struct hns_roce_caps {
+ 	u64		fw_ver;
+ 	u8		num_ports;
+@@ -844,7 +845,7 @@ struct hns_roce_caps {
+ 	u16		default_aeq_period;
+ 	u16		default_aeq_arm_st;
+ 	u16		default_ceq_arm_st;
+-	enum cong_type	cong_type;
++	enum hns_roce_cong_type cong_type;
+ };
+ 
+ enum hns_roce_device_state {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index de56dc6e3226..42e28586cefa 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -4738,12 +4738,15 @@ static int check_cong_type(struct ib_qp *ibqp,
+ 			   struct hns_roce_congestion_algorithm *cong_alg)
+ {
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 
+-	if (ibqp->qp_type == IB_QPT_UD)
+-		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
++	if (ibqp->qp_type == IB_QPT_UD || ibqp->qp_type == IB_QPT_GSI)
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
++	else
++		hr_qp->cong_type = hr_dev->caps.cong_type;
+ 
+ 	/* different congestion types match different configurations */
+-	switch (hr_dev->caps.cong_type) {
++	switch (hr_qp->cong_type) {
+ 	case CONG_TYPE_DCQCN:
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+@@ -4771,8 +4774,8 @@ static int check_cong_type(struct ib_qp *ibqp,
+ 	default:
+ 		ibdev_warn(&hr_dev->ib_dev,
+ 			   "invalid type(%u) for congestion selection.\n",
+-			   hr_dev->caps.cong_type);
+-		hr_dev->caps.cong_type = CONG_TYPE_DCQCN;
++			   hr_qp->cong_type);
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+ 		cong_alg->dip_vld = DIP_INVALID;
+@@ -4791,6 +4794,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 	struct hns_roce_congestion_algorithm cong_field;
+ 	struct ib_device *ibdev = ibqp->device;
+ 	struct hns_roce_dev *hr_dev = to_hr_dev(ibdev);
++	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 	u32 dip_idx = 0;
+ 	int ret;
+ 
+@@ -4803,7 +4807,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 		return ret;
+ 
+ 	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
+-		     hr_dev->caps.cong_type * HNS_ROCE_CONG_SIZE);
++		     hr_qp->cong_type * HNS_ROCE_CONG_SIZE);
+ 	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
+ 	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
+ 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
+-- 
+2.30.0
 
-ls /sys/fs/f2fs/<dev>/compress_extensions/
-so dex
-
-Show enable/disable to indicate current extension is in
-compress_extension/nocompress_extension array.
-
-cat /sys/fs/f2fs/<dev>/compress_extensions/so
-enable
-
-cat /sys/fs/f2fs/<dev>/compress_extensions/dex
-disable
-
-Thanks,
-
-> 
->> +		f2fs_up_read(&sbi->sb_lock);
->> +		return len;
->> +	}
->>   #endif
->>   
->>   	if (!strcmp(a->attr.name, "gc_segment_mode"))
->> @@ -446,6 +468,35 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
->>   		return ret ? ret : count;
->>   	}
->>   
->> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->> +	if (!strcmp(a->attr.name, "compress_extension")) {
->> +		char *name = strim((char *)buf);
->> +		bool set = true, cmpr;
->> +
->> +		if (!strncmp(name, "[c]", 3))
->> +			cmpr = true;
->> +		else if (!strncmp(name, "[n]", 3))
->> +			cmpr = false;
->> +		else
->> +			return -EINVAL;
->> +
->> +		name += 3;
->> +
->> +		if (*name == '!') {
->> +			name++;
->> +			set = false;
->> +		}
->> +
->> +		if (!strlen(name) || strlen(name) >= F2FS_EXTENSION_LEN)
->> +			return -EINVAL;
->> +
->> +		f2fs_down_write(&sbi->sb_lock);
->> +		ret = f2fs_update_compress_extension(sbi, name, cmpr, set);
->> +		f2fs_up_write(&sbi->sb_lock);
->> +		return ret ? ret : count;
->> +	}
->> +#endif
->> +
->>   	if (!strcmp(a->attr.name, "ckpt_thread_ioprio")) {
->>   		const char *name = strim((char *)buf);
->>   		struct ckpt_req_control *cprc = &sbi->cprc_info;
->> @@ -785,15 +836,16 @@ static ssize_t f2fs_sbi_store(struct f2fs_attr *a,
->>   			const char *buf, size_t count)
->>   {
->>   	ssize_t ret;
->> -	bool gc_entry = (!strcmp(a->attr.name, "gc_urgent") ||
->> -					a->struct_type == GC_THREAD);
->> +	bool need_lock = (!strcmp(a->attr.name, "gc_urgent") ||
->> +					a->struct_type == GC_THREAD ||
->> +					a->struct_type == MOUNT_INFO);
->>   
->> -	if (gc_entry) {
->> +	if (need_lock) {
->>   		if (!down_read_trylock(&sbi->sb->s_umount))
->>   			return -EAGAIN;
->>   	}
->>   	ret = __sbi_store(a, sbi, buf, count);
->> -	if (gc_entry)
->> +	if (need_lock)
->>   		up_read(&sbi->sb->s_umount);
->>   
->>   	return ret;
->> @@ -942,6 +994,9 @@ static struct f2fs_attr f2fs_attr_##name = __ATTR(name, 0444, name##_show, NULL)
->>   #define ATGC_INFO_RW_ATTR(name, elname)				\
->>   	F2FS_RW_ATTR(ATGC_INFO, atgc_management, name, elname)
->>   
->> +#define MOUNT_INFO_RW_ATTR(name, elname)			\
->> +	F2FS_RW_ATTR(MOUNT_INFO, f2fs_mount_info, name, elname)
->> +
->>   /* GC_THREAD ATTR */
->>   GC_THREAD_RW_ATTR(gc_urgent_sleep_time, urgent_sleep_time);
->>   GC_THREAD_RW_ATTR(gc_min_sleep_time, min_sleep_time);
->> @@ -1008,6 +1063,7 @@ F2FS_SBI_GENERAL_RW_ATTR(compr_saved_block);
->>   F2FS_SBI_GENERAL_RW_ATTR(compr_new_inode);
->>   F2FS_SBI_GENERAL_RW_ATTR(compress_percent);
->>   F2FS_SBI_GENERAL_RW_ATTR(compress_watermark);
->> +MOUNT_INFO_RW_ATTR(compress_extension, extensions);
->>   #endif
->>   /* atomic write */
->>   F2FS_SBI_GENERAL_RO_ATTR(current_atomic_write);
->> @@ -1181,6 +1237,7 @@ static struct attribute *f2fs_attrs[] = {
->>   	ATTR_LIST(compr_new_inode),
->>   	ATTR_LIST(compress_percent),
->>   	ATTR_LIST(compress_watermark),
->> +	ATTR_LIST(compress_extension),
->>   #endif
->>   	/* For ATGC */
->>   	ATTR_LIST(atgc_candidate_ratio),
->> -- 
->> 2.40.1
 
