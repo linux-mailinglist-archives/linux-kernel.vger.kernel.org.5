@@ -1,81 +1,85 @@
-Return-Path: <linux-kernel+bounces-71845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BECD085ABA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:58:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C3A485ABAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 753DF1F2255B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:58:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1A732842F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BEA4C3DB;
-	Mon, 19 Feb 2024 18:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D73BC482FC;
+	Mon, 19 Feb 2024 18:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ByWPm0we"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EoGXnPCJ"
+Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB3A4878A;
-	Mon, 19 Feb 2024 18:57:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7375447A4D
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 18:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708369079; cv=none; b=HlGnKrGG8hQo3gEgVoLS/4Pm376n93lCgMBWkYtOVT55cx9InZzIDmI+M/u7rKUuWmAuFZxjvUbltVbuyz36sJicm9evQpbizaPwgE0Sl/S9jn+74sOIX+IYLozjCZrmC52nc2qJjk2thUqMET8DO3bE0wzjnJhsyfi6isoACkc=
+	t=1708369105; cv=none; b=IY0UJvfsrxFV8DYMqS1ougOfZbWxLDL8+8ebDgBiWKNawyQJbIsOtU63pXcnNyW44aAHKBa0DYfs++UBxeRlz69/FlLMKrIR71tRYWL2zs5h7EggZfqTQu71dVMrFAuNo1cWe8IAVz0b47bvQkadZsCjPpmrIsMzKEucYDV6qk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708369079; c=relaxed/simple;
-	bh=WX+/BwKaMoi4eZrIDNE+tT6bRVlFBx1G/86vGVtXqD4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t6q0jRk83u0MfQIMuu10jp9MLjmBTIzwmWkyqKE23hO2YBYII9pJtdf6kwFT7qQf0dSxit6+uFsfDW/oOF0ZOm/RpiI/VYNGdZvrlC/rAZU35KA9tVPyPCk5yBVU+S1AhT4+iuidSYUhFSH0KrrOcenogMB9FYUEj9WzXqZOKeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ByWPm0we; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D104AC43399;
-	Mon, 19 Feb 2024 18:57:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708369079;
-	bh=WX+/BwKaMoi4eZrIDNE+tT6bRVlFBx1G/86vGVtXqD4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ByWPm0weIZLIZDkeu9F7U3wLzNAxvJ0wCc0RX9kGhgdhcJfvd6woVFl/GnXE1TSmM
-	 COFe07bO2b5emaS1mCXplG7Nyp/lAlqeDf6IoQ9f8bPe+rUntxpHDqCnExMiY7kJ47
-	 KiwTKH06LtDIHzNkYCwqAsiuJvnjz4kdzONe4y5nqyZ40xBUm010Vz30bGq053wPcE
-	 +ONYB1Np8G22L8MxHL7VziiI7QiaCYtoXbZ21PR0m6EN4hIiN9NUFXFLyO6dqrPXPJ
-	 gBrd6UUtBmYPhuyFFd3uerXJdoDrUxB06wlm4ih5guvURtYgzliLa/DRz5pLQJVpJx
-	 RB9hrKDCMCVDg==
-Date: Mon, 19 Feb 2024 11:57:55 -0700
-From: Keith Busch <kbusch@kernel.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH v4 01/11] block: Pass blk_queue_get_max_sectors() a
- request pointer
-Message-ID: <ZdOks-bU2kDY6S6Z@kbusch-mbp>
-References: <20240219130109.341523-1-john.g.garry@oracle.com>
- <20240219130109.341523-2-john.g.garry@oracle.com>
+	s=arc-20240116; t=1708369105; c=relaxed/simple;
+	bh=5OU0GHTdrAKrf4dsHeadS9f7uXCHbQibWUgINaNMk/w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j4s9WZHBJiFeSjKLaedx9fcVgNtppcRuLc2n6qha/WaGive5S+b6E9Sj1nXBm+kEjyc4xHAwfePwFv8J6LUpWdnoihRo7bdn3wCBvcwju3SX19AVBsgQan6PXoz5+y3EPnAGk/0A6+zUHwgwW+u7buAyPWJQ5jQxiTM7fMtSFok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EoGXnPCJ; arc=none smtp.client-ip=91.218.175.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1708369101;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=pW+8iNQbeLyIbXJPdyK8epJlh98fOASyjU7Mp6Za3ys=;
+	b=EoGXnPCJuOK9jAEWm2hEqf+Nlz33xTl/DnShq8918M7ywhjJ4P8txTql9CiVAZXo0w19Ms
+	n3wG07f6xe/IXqediWEBTfKzf4PSvw8E4vx4xlPFMTKB9WuEoJ8AxMwI9cok6qLJBoosFy
+	8t4HI2Dl21Qc3YEpGST/4tWy2GDLCBY=
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Marc Zyngier <maz@kernel.org>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	Jing Zhang <jingzhangos@google.com>,
+	Oliver Upton <oliver.upton@linux.dev>
+Subject: [PATCH 0/3] irqchip/gic-v3-its: Fix GICv4.1 initialization after kexec
+Date: Mon, 19 Feb 2024 18:58:05 +0000
+Message-ID: <20240219185809.286724-1-oliver.upton@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219130109.341523-2-john.g.garry@oracle.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Feb 19, 2024 at 01:00:59PM +0000, John Garry wrote:
-> Currently blk_queue_get_max_sectors() is passed a enum req_op. In future
-> the value returned from blk_queue_get_max_sectors() may depend on certain
-> request flags, so pass a request pointer.
-> 
-> Also use rq->cmd_flags instead of rq->bio->bi_opf when possible.
+Fix an issue with GICv4.1 redistributor initialization after kexec,
+ensuring the vPE table gets reinstalled even if the kernel is using
+preallocated LPI tables.
 
-Looks good.
+First patch is worthy of a backport back to the introduction of GICv4.1,
+second two are intended to avoid these mess-ups in the future.
 
-Reviewed-by: Keith Busch <kbusch@kernel.org>
+Tested by kexec'ing into a new kernel on a GICv4.1 system.
+
+Oliver Upton (3):
+  irqchip/gic-v3-its: Do not assume vPE tables are preallocated
+  irqchip/gic-v3-its: Spin off GICv4 init into a separate function
+  irqchip/gic-v3-its: Print the vPE table installed in redistributor
+
+ drivers/irqchip/irq-gic-v3-its.c | 50 +++++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 17 deletions(-)
+
+
+base-commit: 6613476e225e090cc9aad49be7fa504e290dd33d
+-- 
+2.44.0.rc0.258.g7320e95886-goog
+
 
