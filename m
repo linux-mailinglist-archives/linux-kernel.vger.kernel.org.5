@@ -1,106 +1,129 @@
-Return-Path: <linux-kernel+bounces-71499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B60685A63E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:42:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11CF785A642
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E28D1C21B53
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:42:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C73E8285185
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:43:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 474FB1E89E;
-	Mon, 19 Feb 2024 14:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60DB337141;
+	Mon, 19 Feb 2024 14:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Kjis16DY"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="QSE3iKHm"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF701E539;
-	Mon, 19 Feb 2024 14:42:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D471EA7D
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708353757; cv=none; b=tdEN6WNBl3TYjz7G+8RpADsUlyht4wuUVKDiMM/DV2fo0rJ3dANnAHX0djsF8SCRWpEFvWtGeXvdpdQ9PQiMQddYNxbGczHw1vWat4ToD8zVnEiL76Qb28HniFMYVw1cccm2RaKvlxmqTfEq2ynXiB4Kxfa+//0LzrR+K83CRFM=
+	t=1708353772; cv=none; b=fV3f2oMwmuym8L55VwEcA350xbVCoqxHfINlqP43+OY5aZJcBT7jcY3ApcYyF6m1UIWlwBJsNkMqZDDe7Sm9uGIqyDGHhw8rCLnZ+bnf8nG3yRlH0H/Wl2QxvomXphWnYy3N8xkyrACAOwh6MmsC/eSv23L8U0VUBg7GYogcADw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708353757; c=relaxed/simple;
-	bh=cip1i8B8DD/QCl1/kX5cfjQXuF4t6MqqTcxz1cJ2xxA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NqmbkJ2e2dBnJ2YhqtUEJ7aj2n8lnOj518ZHuRH98gNrmlbuVImeDsJRoQr9O136rtuJ9LW8/K2K8/FpxgqFQecjWgbu8TDNGveBoTjn30JxAI6tz3sQQCDF6emTpViwTPy+HRrAohDz8sEp6OrJOXR+UmqtcR3h+DQ2jWZNjwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Kjis16DY; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 71A8B40E01BB;
-	Mon, 19 Feb 2024 14:42:26 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id cdxkXbQoPgnP; Mon, 19 Feb 2024 14:42:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1708353744; bh=wruQZ2Y3NvX4XlylYHQfJUkxVCtOk9vrXRhRqlWChRs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kjis16DYQ0GRshMDdxyqTHD9DgkaWwsjHND2me2yOdvnnMPRR2/e982pSTYP1Eyek
-	 PgMNc2GfUl9MEhwEfZVYV08K+MiYYlCdxsKtqv+TRoc6rr3+74P0bT1y2EXCLfRQQ2
-	 WSH7U7znko67VTvHhGEBTboIO0ChOnO7F7k87axPgJ/9Blrh9hWHpgF970csuNtRHw
-	 SatLMWWtWhaOy+lBH5f9EZiCIVchvkSJ4cBlzcRUv4phzFBfBN9bpv2VzA7o21hMON
-	 KnSo3E9stWVpTQ8eayHYKA1Yo57c6uY8m3eoqHl1TnKUoRPccr/RCfbWr3Ktz7W1Y0
-	 ttacL2eiRKkVJPSq5eYRLGp3B+fXhbpYi2Ainn3JQiP4eIpgbqnmvjgYrByg9CSdbQ
-	 kvbxlghor+gde7jf6MGW9dF6au7pkkQvLAwRmNhkDieQnTO2hmF7QN9tlgZv0e9pQS
-	 eqdUymv9pyuDOgZB/DS2riUc2I+nYcHZv4ew27Pskx2MSMi45tcxZqh2l131IAOsN0
-	 cDLb8mas7esDKxuHH6PjwqNXXGaybTPD/Isneo3IYY+FhA7G50qyd9jZaYEx3CUs5B
-	 cU6erxJrb986YJAQipwSZcRHBrL/8AK7auHUDkAOS17Ttky048RCMx4Q3UqMGJ+GW7
-	 6gvsLewOguEotjgi19mGVS1k=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id DC80540E01A9;
-	Mon, 19 Feb 2024 14:42:15 +0000 (UTC)
-Date: Mon, 19 Feb 2024 15:42:10 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Brendan Jackman <jackmanb@google.com>
-Cc: linux-kernel@vger.kernel.org, linux-tip-commits@vger.kernel.org,
-	Lai Jiangshan <laijs@linux.alibaba.com>,
-	Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-	Kevin Cheng <chengkev@google.com>,
-	Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [tip: x86/entry] x86/entry: Avoid redundant CR3 write on
- paranoid returns
-Message-ID: <20240219144210.GDZdNowiz8Tr9j8acY@fat_crate.local>
-References: <20240108113950.360438-1-jackmanb@google.com>
- <170612139384.398.13715690088153668463.tip-bot2@tip-bot2>
- <CA+i-1C1OpZQTS3EQa8fEc5BTzcLNMcgrwt0b9mR_jqiY0-zV3A@mail.gmail.com>
+	s=arc-20240116; t=1708353772; c=relaxed/simple;
+	bh=pAQ36Mouu5LBU9w/qPkLQEX9p2kwmTFAJ2rFQbxWzyY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M8P/KpOi9MFoUdjDYaittWQR5dV/opeoBVCBJXnf3UCiYQfBdrubCD1tJILDLtJjNN/Ut84aMULOxpSfkyLRRk1w5iEXL8yt8uf98aYhQhAfl+aZSx3i4RIzInTWI0Ng8UIRCWu791QjNmW0J/tMzEfGpTShFCGKJgpVC4sH2lE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QSE3iKHm; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-561f0f116ecso13745a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 06:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708353769; x=1708958569; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QK6TJ1NiFtkG4ibJWHZitNlZraEYM47hN7HesdXjSmk=;
+        b=QSE3iKHmoGpXseBVKAYWaMMwr41vY9ifkCHKdzm5WGSeedcwHNIL1QSLMtyn6dyUkm
+         SwYqRkY5iJU9X6PQnsQgQloOskR3MkfKDEJkRvWom61X34cVgH65ecqQ4HHUhVHHSteC
+         9b7MU9htDrwUXtF0edX1FZzmwduIJyDE+xA8SuN8A1Cq61wZznvsNJMwzn4f/+g3RqLg
+         KUHZY/hSeuWJjcX6jYzbQC3MLN0tzK9mrwV+wHTGHOxES9J6hOuUV92VIXGv2XRbFx+H
+         7cM5D/TgmqOZH//tsrWNwHSTPIuBRx1xnykvLlKcNnMDZ4KJnkOr3FK9nJ+J/+81ASXH
+         9jCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708353769; x=1708958569;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QK6TJ1NiFtkG4ibJWHZitNlZraEYM47hN7HesdXjSmk=;
+        b=K2CiaIzQUtDcw59DDrX79m3HDanQW60bzxMHtHCmHiIjdNizr+/tcTpKLGImMxqxtK
+         OYYBTd/it00K98japqmDgyunbs7NbBi2zYtcQf+xREZLPon6qZTu3b8LOAP0PbIl/1Vx
+         B+UtUleyy1+q2jblQvJtvCUfmVK9CrTQNxy7ehiMa3fegNQXPMzL6n0qTLwzDlWRyPdY
+         RW86PT3EicC4fOBqPHAa3cND9xzpypi7jch6l8/9en1hMftGBasR7RJChSFXYNs4wfje
+         0IQeF0B4dt/EryMcL3Nwi8oCfzS+pl/enCgBF3hXE/3lVHOS4I+gciChN10WSMm6iBom
+         5QuA==
+X-Forwarded-Encrypted: i=1; AJvYcCVanmOsPzvMgcl8srSBaYQY9vO8bDC7zQI0Ls6gQ2CIXoxbyoEKanQEQDPleMfVuPnXbFzSTuSeYq4o8iGWbU1aoihTdxuUuRJXMLzt
+X-Gm-Message-State: AOJu0Ywwr1JhV9FqSx+BhA7RjjGmgNyDwBmWK3ypKzMcjp1Yl9NgFDsk
+	HgiXU5OT6RrA9NXxmGYsj1G+HWX0xFRFzz/GhXyyW6EN/AxaGo8evYpCfUgca6l+js3GUHZFpLD
+	Y8Aiu/0G/gh2vc1qgc16WSmuwvy07dgrg4OGB
+X-Google-Smtp-Source: AGHT+IETr5Fg0KJAZlnaeDsbnQhKIQl70L4uyU1bEvQGzZr716e4ct6UKPj1TKwF25G19fVSf9HT3kKxRf0iELr+aGg=
+X-Received: by 2002:a50:a697:0:b0:563:ff57:b7e8 with SMTP id
+ e23-20020a50a697000000b00563ff57b7e8mr298755edc.1.1708353768955; Mon, 19 Feb
+ 2024 06:42:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CA+i-1C1OpZQTS3EQa8fEc5BTzcLNMcgrwt0b9mR_jqiY0-zV3A@mail.gmail.com>
+References: <20240219095729.2339914-1-vschneid@redhat.com> <20240219095729.2339914-2-vschneid@redhat.com>
+In-Reply-To: <20240219095729.2339914-2-vschneid@redhat.com>
+From: Eric Dumazet <edumazet@google.com>
+Date: Mon, 19 Feb 2024 15:42:37 +0100
+Message-ID: <CANn89i+3-zgAkWukFavu1wgf1XG+K9U4BhJWw7H+QKwsfYL4WA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/1] tcp/dcpp: Un-pin tw_timer
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: dccp@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-rt-users@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, mleitner@redhat.com, 
+	David Ahern <dsahern@kernel.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Tomas Glozar <tglozar@redhat.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 19, 2024 at 11:49:46AM +0100, Brendan Jackman wrote:
-> [Apologies if you see this as a duplicate, accidentally sent the
-> original in HTML, please disregard the other one]
-> 
-> Hi Thomas,
-> 
-> I have just noticed that the commit has disappeared from
-> tip/x86/entry. Is that deliberate?
+On Mon, Feb 19, 2024 at 10:57=E2=80=AFAM Valentin Schneider <vschneid@redha=
+t.com> wrote:
+>
+> The TCP timewait timer is proving to be problematic for setups where sche=
+duler
+> CPU isolation is achieved at runtime via cpusets (as opposed to staticall=
+y via
+> isolcpus=3Ddomains).
+>
 
-$ git fetch tip
-$ git log -1 --oneline tip/x86/entry
-bb998361999e (refs/remotes/tip/x86/entry) x86/entry: Avoid redundant CR3 write on paranoid returns
+..
 
-Looks there to me. :)
+>  void inet_twsk_deschedule_put(struct inet_timewait_sock *tw)
+>  {
+> +       /* This can race with tcp_time_wait() and dccp_time_wait(), as th=
+e timer
+> +        * is armed /after/ adding it to the hashtables.
+> +        *
+> +        * If this is interleaved between inet_twsk_hashdance() and inet_=
+twsk_put(),
+> +        * then this is a no-op: the timer will still end up armed.
+> +        *
+> +        * Conversely, if this successfully deletes the timer, then we kn=
+ow we
+> +        * have already gone through {tcp,dcpp}_time_wait(), and we can s=
+afely
+> +        * call inet_twsk_kill().
+> +        */
+>         if (del_timer_sync(&tw->tw_timer))
+>                 inet_twsk_kill(tw);
 
--- 
-Regards/Gruss,
-    Boris.
+I really do not think adding a comment will prevent races at netns dismantl=
+e.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+We need to make sure the timer is not rearmed, we want to be absolutely
+sure that after inet_twsk_purge() we have no pending timewait sockets,
+otherwise UAF will happen on the netns structures.
+
+I _think_ that you need timer_shutdown_sync() here, instead of del_timer_sy=
+nc()
 
