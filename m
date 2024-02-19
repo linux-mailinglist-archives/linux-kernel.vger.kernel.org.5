@@ -1,101 +1,67 @@
-Return-Path: <linux-kernel+bounces-71952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0D0685ACFA
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:19:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D022F85AD00
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A1ECB249A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:19:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FBE11C219C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6A2535CF;
-	Mon, 19 Feb 2024 20:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8806B5339E;
+	Mon, 19 Feb 2024 20:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="235wwiap";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1EaDPUl7";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nxo036ya";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="f+PnHmjo"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZJJBiWbb"
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BDFE535A4;
-	Mon, 19 Feb 2024 20:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C09524C0;
+	Mon, 19 Feb 2024 20:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708373945; cv=none; b=F6HwzTiNEuUU3seT4lEOSrhmpdmagZuzNUpoFIWpkjfmTYcv8EKkhfxrdtlPI11aQLnROWjGHTKSK4KmwI8e1DCltAmTg1LV22x/ICBJxPThtebjjRh+HjN35Y23vFtAfqMxbVnE8JTDkh/cLMJ8N4m03TNrtsj2fhmb+15grcQ=
+	t=1708373968; cv=none; b=CyM55jKjV2lXGT+7+GokUtGaJaEi5d37dhIpVN+KJey9rSC+6DNs3nA1QaFAeutMSICkfN/TCIXE2BhbG+4Y2Ub1l2Rtj+hP0xiHW20WCIVbCRDz/txGISFhvjmzW1VrFKEbS/QptRludGnLLdTWa61nj8fUhkPwCAXI+MhyH98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708373945; c=relaxed/simple;
-	bh=iGX9cdeVIG/Ztjd5mQgNxssxqzc3sAxG96dgQzy/YS0=;
+	s=arc-20240116; t=1708373968; c=relaxed/simple;
+	bh=EwTBXOokFY4P9ANdyfQvACUoGgEpku28/zv8Debf6KQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fTJKNBJqE51n4l+Q9rgjrWSui/tzAGM6YbIsUddU1UsfOk3nzxic0laE6NUqUCDVM+PU/P5uGI4x3ftJUlt4PgVsDckPWlEWDeIrZKOttzbDkhDO3RF49UOhdVXWURzU/VFgm9QGt1IADSNP90O3NOCIXAOLx6D7W1squUNjQ6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=235wwiap; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1EaDPUl7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nxo036ya; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=f+PnHmjo; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A024220F3;
-	Mon, 19 Feb 2024 20:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708373942;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ERRnDhHYB+4R1fXE9uNMbj/UmuOznIHYbRcwocpzAC9t5M8/FX4lZs2G6exC/cPsD06FxP7ZIG2k0gEzaYKK0aQsjdt3zsebJ+YeDGDfyisIwFOelLKWtKI8ekjzjZaTLx4k5cJ/lYb6jRHe5mUAsRimiSNQCUNG/IPOWiqUXQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZJJBiWbb; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1FC0F240003;
+	Mon, 19 Feb 2024 20:19:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708373957;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CuCE8EaVxyZoWlyZBAsJkeD3EuUy/CWpepR2maKVU6M=;
-	b=235wwiapNRduYgHbIs528Aq5VjH/56tDgtfSlvsBzQ36h6uERgW3piw1tGiMPaAkyD2WDq
-	FL1rNtgTb/c3UJJowukjhe2KiaBCaPVRpSc8ceDnDQsTId4ZH+FIJQJxQsXNevlKp01a2s
-	c7eQZl3hwCg/R6VPLErdbkUGyRGCOUk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708373942;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CuCE8EaVxyZoWlyZBAsJkeD3EuUy/CWpepR2maKVU6M=;
-	b=1EaDPUl7ZXhHnR0wnm1ZbFbZI4vtksRYwjFFpAK0VW8X5L2mS+BLwv2rSYK2p20z52WDgM
-	pCTlWWoP1n6/naCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708373940;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CuCE8EaVxyZoWlyZBAsJkeD3EuUy/CWpepR2maKVU6M=;
-	b=Nxo036ya6g717+/g4J0n5XpbRClMwUCuU7l8Mqe3gX1RcqaREWkYySGBjd0Sd0BnzxvQOz
-	VOIblsxM3fVpz9V17DfHQMl63b9sFo38HsiyrB7zfbPMVWVV1JU3HOzeUXMWi4twikeA4T
-	0RQRP2G4ivYrIwLwujHi+EkWDayUbEo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708373940;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CuCE8EaVxyZoWlyZBAsJkeD3EuUy/CWpepR2maKVU6M=;
-	b=f+PnHmjoVTyDsc5ajOZz+ugjulMcWKauf9q4+cvjRuhUCQ94XXuqS5mXhToyUpbtpf3V7x
-	EdTZtnq+NADEsMBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5681E13585;
-	Mon, 19 Feb 2024 20:19:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id M3+cFLS302WUXAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Mon, 19 Feb 2024 20:19:00 +0000
-Date: Mon, 19 Feb 2024 21:18:24 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Boris Burkov <boris@bur.io>
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, Christoph Hellwig <hch@lst.de>,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] btrfs: open block devices after superblock creation
-Message-ID: <20240219201824.GA355@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240214-hch-device-open-v1-0-b153428b4f72@wdc.com>
- <20240214-hch-device-open-v1-4-b153428b4f72@wdc.com>
- <20240214185809.GC377066@zen.localdomain>
+	bh=/eFa1OZ6RfBH4efn1I84fs1ja49iC4gp/bJRJKYHyLY=;
+	b=ZJJBiWbbQlaBB2D6VpMjxy7mi1VJFKuuQHHbAVy2+IbVDdQ6zzJNgzwpTrdZy3I7Z5Xl81
+	lmZ/fVm4w9xg7xsGvRp47527tcWFUhfrz6mGGNeQ2uzs4msTJbniB8ZKQq2pYnxwH/SsdX
+	YRVfyuatTfzV0WAY6i2dJyzxDEdEuCm41W+B9LzOpSscxlaSNYOphuOgHlO1O+bcljUUxz
+	Qem3xafhQyRKvcG+A57yYeIjrYlz8WMWqMjfJY7Oa3blsQV6klPHBz1RRKl0XokY2ILVQh
+	FD3Sc4jN8ItbrLxZXE5SKqG+N5MFkgsNQwDZ7xEAfIttA/j6f33s5t1RtpgUMA==
+Date: Mon, 19 Feb 2024 21:19:16 +0100
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+To: Michal Simek <michal.simek@amd.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	linux-kernel@vger.kernel.org, monstr@monstr.eu,
+	michal.simek@xilinx.com, git@xilinx.com,
+	Conor Dooley <conor+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Rob Herring <robh@kernel.org>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	"moderated list:ARM/ZYNQ ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	"open list:REAL TIME CLOCK (RTC) SUBSYSTEM" <linux-rtc@vger.kernel.org>
+Subject: Re: [PATCH] dt-bindings: rtc: zynqmp: Describe power-domains property
+Message-ID: <202402192019160b9c4120@mail.local>
+References: <94726c90ff519185767475f672d70311472ea925.1708073513.git.michal.simek@amd.com>
+ <5a81f16b-8ece-4263-b424-4dd6cd6e386f@linaro.org>
+ <ed59671f-6e0b-45a2-bae7-38f7b4b7e625@amd.com>
+ <ebcfd49d-f810-4d9b-8cba-b55071fc7fa6@linaro.org>
+ <96c0f613-7c53-4189-bfc8-7d572b308b9f@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -104,59 +70,55 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240214185809.GC377066@zen.localdomain>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -1.00
-X-Spamd-Result: default: False [-1.00 / 50.00];
-	 ARC_NA(0.00)[];
-	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 REPLYTO_ADDR_EQ_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[39.77%]
-X-Spam-Flag: NO
+In-Reply-To: <96c0f613-7c53-4189-bfc8-7d572b308b9f@amd.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 
-On Wed, Feb 14, 2024 at 10:58:09AM -0800, Boris Burkov wrote:
-> On Wed, Feb 14, 2024 at 08:42:15AM -0800, Johannes Thumshirn wrote:
-> > From: Christoph Hellwig <hch@lst.de>
-> > 
-> > Currently btrfs_mount_root opens the block devices before committing to
-> > allocating a super block. That creates problems for restricting the
-> > number of writers to a device, and also leads to a unusual and not very
-> > helpful holder (the fs_type).
-> > 
-> > Reorganize the code to first check whether the superblock for a
-> > particular fsid does already exist and open the block devices only if it
-> > doesn't, mirroring the recent changes to the VFS mount helpers.  To do
-> > this the increment of the in_use counter moves out of btrfs_open_devices
-> > and into the only caller in btrfs_mount_root so that it happens before
-> > dropping uuid_mutex around the call to sget.
+On 19/02/2024 14:11:50+0100, Michal Simek wrote:
 > 
-> I believe this commit message is now out of date as of
-> 'btrfs: remove old mount API code'
-> which got rid of btrfs_mount_root.
+> 
+> On 2/17/24 09:26, Krzysztof Kozlowski wrote:
+> > On 16/02/2024 10:42, Michal Simek wrote:
+> > > 
+> > > 
+> > > On 2/16/24 10:19, Krzysztof Kozlowski wrote:
+> > > > On 16/02/2024 09:51, Michal Simek wrote:
+> > > > > RTC has its own power domain on Xilinx Versal SOC that's why describe it as
+> > > > > optional property.
+> > > > > 
+> > > > > Signed-off-by: Michal Simek <michal.simek@amd.com>
+> > > > > ---
+> > > > > 
+> > > > >    Documentation/devicetree/bindings/rtc/xlnx,zynqmp-rtc.yaml | 3 +++
+> > > > >    1 file changed, 3 insertions(+)
+> > > > > 
+> > > > 
+> > > > But Versal is not described in this binding, is it? I see only one
+> > > > compatible.
+> > > 
+> > > It is the same IP only as is on zynqmp with own power rail.
+> > 
+> > Then you should have separate compatible, because they are not
+> > identical. It would also allow you to narrow the domains to versal and
+> > also require it (on versal).
+> 
+> I can double check with HW guys but I am quite sure IP itself is exactly the
+> same. What it is different is that there is own power domain to it (not
+> shared one as is in zynqmp case).
+> 
+> Also Linux is non secure sw and if secure firmware won't allow to change
+> setting of it it can't be required. I am just saying that Linux doesn't need
+> to be owner of any power domain that's why it shouldn't be required
+> property.
 
-It's not just that, this patchset was sent before the conversion to new
-mount API that changed how devices are scanned (and potentially race
-with mount). The changelog should be updated at minimum.
+I guess because the integration is different, you still need a
+differente compatible so you can forbid the property on non-Versal.
 
-I haven't found any problems so far, the locking around device opening
-should serialize any races so the one thread winning will open the super
-block and the other will inherit the fs_devices.
+> 
+> Thanks,
+> Michal
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
