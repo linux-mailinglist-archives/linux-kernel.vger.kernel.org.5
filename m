@@ -1,168 +1,100 @@
-Return-Path: <linux-kernel+bounces-71422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71424-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B34A085A503
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:41:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 823CD85A508
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:42:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79347287F0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:41:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B507A1C215DF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:42:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 291B5364C6;
-	Mon, 19 Feb 2024 13:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE2A36B09;
+	Mon, 19 Feb 2024 13:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="KKX55vGX"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VH6iZy9r"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930683612E;
-	Mon, 19 Feb 2024 13:41:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F7F36AF8
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708350090; cv=none; b=pxz4X8VsQIngGHB7WlAf2p28WRt8vnQ6HVGEarqgGaeoQQ3CnkQRfhK8XhZdCJa9evcRjtEGAJ9tkSDfK+OhTKUbsOjtGaelAEQhHLTQmi+/xNKICnEwuwjd0QNClPEO4C88rCXVYRvWIMIBeiRG9qlArMEZTWJSj66WqLwz60Q=
+	t=1708350153; cv=none; b=QNajzpW0A0pRAP+kPqsUa+0wQlqgCVrgYNcQN98LO1df4pQ1x09Ug7kSrlKXS2gl0o3sSJv/qlu2rhyGbbXwHCJVT14slxo2NFbJLTEHRbly3W4YObWH6MVqqI2180uEML4zfWUyZ1EtS+GyXTgp5c0o2i8I0fAdOrkiaCdbhtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708350090; c=relaxed/simple;
-	bh=fGpvwIGy2LQRXThEEta3A8xVTtWdS4NNyyyJxz4ZWoE=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=fZXVuQE6HelgQvZEoQj7x94ucU5+XcVMNR7lHM9D6W4ksirGhRL+UV4JSLTxA2DTIYbkRncOBu3nNJN+gespSYkQOLYjdHapRzVxu8sdv97bWs68OzuvrFARxivpyZkPWkJyb+/ptnBBLHBUKNYLVE2nQ9lCI0FZtEvb2h85MC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=KKX55vGX; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 6892B40007;
-	Mon, 19 Feb 2024 13:41:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1708350085;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=npYRmHh0n3z51AZdDa3QZzAz5BYIy4ErQyiNWsy/7k8=;
-	b=KKX55vGXkgAsul0jJVBBh0WsHdH8Ty2o0BPwgXrX+pRSA/sZsj+tCny78oV9IMd9+Ypv8W
-	yZOLwdTULOXg6jjFRTUj6/M/B46V7Ub/8tc7aJHs2pPxMCGhUPYGUfPiDcVpgvsDkzMpgi
-	5xBswwSooElotlLj4fWUbsWevhqaY58Mws6Tur2cwC3A0wDMfqWg/b01Xpxrd1aLDQATo0
-	LJPXMx8Qw45HmDL1SUVlB8rPrDo5GRkU6oMayDC5RkmgYarbfNpaZ4logH21A3pmOChH6W
-	VyspoZjQqPJoVXA35x/79EEd5M/Ik5ProNlLxlZ21A5P6WVZVJKqaOp3tn1O0g==
+	s=arc-20240116; t=1708350153; c=relaxed/simple;
+	bh=ekWn96iKMNvp/I5xStdVDipFHjZ+JUmKFaqTXglCXl0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i8sjtISiMpg25233wipG4HxrGeBG8oxHF3YJVHLO8WGNniYan4pAAtoREAK1tysDHVftgq3fmLcjnM9JVP45Y6n/CbD5F94V/Aao8PL5NT2MyGxj8zEfEA/xA/PDq0nqu9/0Gj/Y5TAF7uxsPTr8Hsg/2OaCg5GqgYSnIcvPXfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VH6iZy9r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02CBCC433C7;
+	Mon, 19 Feb 2024 13:42:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708350153;
+	bh=ekWn96iKMNvp/I5xStdVDipFHjZ+JUmKFaqTXglCXl0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VH6iZy9rmngkiXVK3l1H6HZlB8jQwjtr6sl/oaIBMEQHC4TOEp7fb82NF3PBr6Lh0
+	 7/4/om9OScHg7nqEFBAMhhfARQIpgNA8gMgmq/WHPi14/ID2sBAAkzej0REN8nZJV6
+	 QmfhIXNZNcVxCtWmVO4UlbDqPCmU+FmGtPf2OJXeZbb7b9hfAwjixzSxH/+G6C1zMI
+	 jYvnmAApZlMU70HbgYDuMvwqaYKJRzPsImnYoxRAQd2x1xO7xf93n7o3p2VvHQg7Hu
+	 tfBRNzATvbRinOk+hR7w3t9VkHdfaaVi1XR61C+PBUcIu8H7I+uEvzHedQix2A6Tj9
+	 ISCNK2goIOBXQ==
+Date: Mon, 19 Feb 2024 13:42:29 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Anshuman Khandual <anshuman.khandual@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64/sysreg: Add register fields for ID_AA64DFR1_EL1
+Message-ID: <6ec0f73f-cbac-44c5-a215-d3754ce6a5d8@sirena.org.uk>
+References: <20240215065454.2489075-1-anshuman.khandual@arm.com>
+ <d2722ae9-d29c-41f9-9eec-f829589adf6e@sirena.org.uk>
+ <785e9bd7-f47b-4e8f-9291-0616aa87fa27@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 19 Feb 2024 14:41:24 +0100
-Message-Id: <CZ93KAA53F8G.38AUM6RZGUYY7@bootlin.com>
-Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
- <andi.shyti@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
- <linux-mips@vger.kernel.org>, "Gregory Clement"
- <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Rob Herring"
- <robh@kernel.org>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 02/13] dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c
- bindings and example
-X-Mailer: aerc 0.15.2
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-2-19a336e91dca@bootlin.com>
- <20240216022227.GA850600-robh@kernel.org>
- <CZ6FD7EHIJDT.32IEDVT9FG2GP@bootlin.com>
- <6effca50-29a4-43b9-86eb-310bd4e08e5c@linaro.org>
- <CZ6FUECKEX2B.36QWZZA5EYPI@bootlin.com>
- <cf360cbf-7414-4024-8bdd-d2aba7f048b3@linaro.org>
-In-Reply-To: <cf360cbf-7414-4024-8bdd-d2aba7f048b3@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="m/O6pAuNP29MQ3iu"
+Content-Disposition: inline
+In-Reply-To: <785e9bd7-f47b-4e8f-9291-0616aa87fa27@arm.com>
+X-Cookie: Kleeneness is next to Godelness.
 
-Hello,
 
-On Sat Feb 17, 2024 at 9:25 AM CET, Krzysztof Kozlowski wrote:
-> On 16/02/2024 11:40, Th=C3=A9o Lebrun wrote:
-> > On Fri Feb 16, 2024 at 11:33 AM CET, Krzysztof Kozlowski wrote:
-> >> On 16/02/2024 11:18, Th=C3=A9o Lebrun wrote:
-> >>>
-> >>>>> +        mobileye,id:
-> >>>>> +          $ref: /schemas/types.yaml#/definitions/uint32
-> >>>>> +          description: Platform-wide controller ID (integer starti=
-ng from zero).
-> >>>>
-> >>>> instance indexes are a NAK. You can use i2cN aliases if you must.
-> >>>>
-> >>>> Why do you need it? To access OLB? If so, add cell args to the OLB=
-=20
-> >>>> phandle instead.
-> >>>
-> >>> Why we do what we do: I2C controller must write a 2 bit value dependi=
-ng
-> >>> on the bus speed. All I2C controllers write into the same register.
-> >>
-> >> Which register?  Your devices do not share IO address space.
-> >=20
-> > mobileye,olb is a prop with a phandle to a syscon. That syscon contains
-> > the register we are interested in.
->
-> So exactly what Rob said... I don't understand why you have chosen to go
-> with alias.
+--m/O6pAuNP29MQ3iu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I had misunderstood Rob's original message. Now that I've done some
-tests to use cells I get what was meant. I'd have a follow-up question.
-What should the cells contain? I see two options:
+On Sun, Feb 18, 2024 at 06:04:34AM +0530, Anshuman Khandual wrote:
 
- - phandle + I2C controller global index (from 0 thru 4). Then Linux
-   (or other) driver know how to map that index to register + mask
-   combo. ie:
+> Just wondering - would something like the following make sense. Because
+> 0b0000 signifies that the cycle counter would just ignore PMCR_EL0.FZS,
+> where as it gets frozen with 0b0001.
 
-      i2c2: i2c@500000 {
-         compatible =3D "mobileye,eyeq5-i2c", "arm,primecell";
-         reg =3D <0 0x500000 0x0 0x1000>;
-         /* ... */
-         mobileye,olb =3D <&olb 2>;
-      };
+> UnsignedEnum   55:52   DPFZS
+>        0b0000  IGNR
+>        0b0001  FRZN
+> EndEnum
 
- - phandle + register offset + mask. ie:
+LGTM.
 
-      i2c2: i2c@500000 {
-         compatible =3D "mobileye,eyeq5-i2c", "arm,primecell";
-         reg =3D <0 0x500000 0x0 0x1000>;
-         /* ... */
-         mobileye,olb =3D <&olb 0xB8 0x300>; /* phandle + offset + mask */
-      };
+--m/O6pAuNP29MQ3iu
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I would have guessed the second approach was frown upon as DT aren't
-meant to contain iomem offsets. However I'm seeing quite a few drivers
-using this approach, and no driver doing the first approach. Maybe my
-instinct isn't leading me the right way.
+-----BEGIN PGP SIGNATURE-----
 
-See those bindings that use the second approach. They were found because
-their drivers use the syscon_regmap_lookup_by_phandle_args() function
-call. I've added the file creation date to highlight recent bindings
-(that hopefully are closer to the right way).
- - phy/starfive,jh7110-pcie-phy.yaml    2023-06-29T15:51:12+08:00
- - usb/starfive,jh7110-usb.yaml         2023-05-18T19:27:48+08:00
- - net/starfive,jh7110-dwmac.yaml       2023-04-17T18:02:49+08:00
- - phy/qcom,sc8280xp-qmp-pcie-phy.yaml  2022-11-05T15:59:34+01:00
- - sound/snps,designware-i2s.yaml       2022-07-01T20:22:49+01:00
- - pinctrl/canaan,k210-fpioa.yaml       2020-12-13T22:50:44+09:00
- - media/ti,cal.yaml                    2019-11-12T15:53:47+01:00
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXTWsQACgkQJNaLcl1U
+h9DhsAf+PgeKvGRhmcjsTA+KRwRFDLO8aDtLZVSK/lAH3JZi4ROmmipI0n3TpEKe
+gjmzcVKdLKKLKq2qgJMvkAHskwe1pbfpwi/BW7NszdVESdO0DOMR855Tmxk0bzkg
+RDLZHSp4vsEAcL4OzyoS1lb+lZBtIjX436vpz5a3kXjNrE6KPlfq/qZtbhREW+Ka
+Z87RLrmDaHoP3rG57Kefrp1ljRlmPgcMg6m0TK+MaQZVoByC3Ds4iquRqM9X2lbx
+IlFQ08NNa49Sy5cuWChMe20a2xsr+/fUS212LBKzZ88HtBsw21A2xK92NiPgOwI6
+J5sQz2J1xkRToBYRqfi8t9jM2BRhwg==
+=9eLA
+-----END PGP SIGNATURE-----
 
-I know looking at existing drivers/bindings isn't the right way, but I
-have no other frame of reference. That's why I'm asking for guidance on
-this one.
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
-------------------------------------------------------------------------
-
+--m/O6pAuNP29MQ3iu--
 
