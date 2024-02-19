@@ -1,177 +1,130 @@
-Return-Path: <linux-kernel+bounces-71840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2F7085AB62
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:48:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85DA785AB6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E69661C21D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:48:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89C10B2283A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:48:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326DF482FA;
-	Mon, 19 Feb 2024 18:47:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF16D48CE5;
+	Mon, 19 Feb 2024 18:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="UuCzQEkK"
-Received: from omta038.useast.a.cloudfilter.net (omta038.useast.a.cloudfilter.net [44.202.169.37])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="1VGGa1fm"
+Received: from mail-ua1-f54.google.com (mail-ua1-f54.google.com [209.85.222.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769A741C78
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 18:47:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=44.202.169.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F30C482DB
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 18:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708368476; cv=none; b=G8/+IjhwpptC2R7QBMLHTAC6CmnV+hsbMWD02PAp933VFEmnE/Z/MUTrz/+TMr6RFQ3MRNwu/UtIB0+7TNj2oOzuCM1wX8jURLCIp3Y134xEm6fYGWSRCW/+r6a+MFE0t+FbGQ0siRk9ghtWut8thx++RuwY6O+dWANSNAW+3kw=
+	t=1708368515; cv=none; b=HJfsCSrPtEO2/exSO/v0zbzT+/TZZSlz+B1wUaz882eRoY3L5N0qN/33U9sX7SSvvQ0Q4HV4EXJ5i+yqvdMV3DFVYH6r6kEsi/1uZbWFP7SyH+vGNqTMAo2YP0a7vI068PS0RNjSHMX50V87ktoECRfkjtHDKHMxaa7qnqg2XOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708368476; c=relaxed/simple;
-	bh=gg32L9SW51TCVEIcz5TJ3+5Ik5TcvDzFXrh6AEcBGn8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jmyEigW7Gmok3S10HQ7ill3E3y+0d2fIde8US1j+CY/Qp26HqdY5VhNIBQOjEII098fcgkWZDm4xPrv5LmNep9KJWsJWvMTXrpIJIGXkNSmfb30Wxx5t0dEvoYnqh5dGNaniszgW+U+D9uCtCz7YxKXScmb+KPcGj43hrpBJ5Lg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=UuCzQEkK; arc=none smtp.client-ip=44.202.169.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-	by cmsmtp with ESMTPS
-	id c3hnr9wzu9gG6c8g7rObtI; Mon, 19 Feb 2024 18:47:47 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id c8g6rH8gBcr2pc8g6r7D1x; Mon, 19 Feb 2024 18:47:46 +0000
-X-Authority-Analysis: v=2.4 cv=W56bVgWk c=1 sm=1 tr=0 ts=65d3a252
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=VhncohosazJxI00KdYJ/5A==:17
- a=VSjF23E3Ok2ZiNtq:21 a=IkcTkHD0fZMA:10 a=k7vzHIieQBIA:10 a=wYkD_t78qR0A:10
- a=VwQbUJbxAAAA:8 a=hpmp6n0Fncvi9LRvqokA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=PsUWlBLUfZeSjk+Yv21JCfUUB/vLVf1BaKRuAmYHUeo=; b=UuCzQEkK7vHOFykbSc9v990Ogl
-	NAB8YOvszb6OOJidZ4Yp43lBZgqAoSUSYiLUnc5d3IMdxbWsGrR+bL4gmPSQ+dVgJyh8wD43KouWm
-	TpFRBhC7CmnaaW3u7rGihpPgM+gIxbJG60M21G81RHJqA8zb3Azvp9GmNgpYSkX+X9Ymz5eM0Eo7I
-	vCInVKdGqPPKyOKoL88Xm1F6w+ROJPDY6wq0nhNePvWxBthCnzSsQgH2184A6PsGwM0cJixX9y75N
-	ZWOTW1gUtkMr+uJvIdd3rQtxiY/iKnI67TDWBJAqtfC9POiBgzWT5+e98bmPcVhTQeQCtgwGgTcti
-	cHw5qIYQ==;
-Received: from [201.172.172.225] (port=57308 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rc8g5-002Aa2-1q;
-	Mon, 19 Feb 2024 12:47:45 -0600
-Message-ID: <292b9fb0-5661-488b-a52a-d5e7dbb3dc45@embeddedor.com>
-Date: Mon, 19 Feb 2024 12:47:43 -0600
+	s=arc-20240116; t=1708368515; c=relaxed/simple;
+	bh=tWv3BTcXIRuvABZYmrMpTNLM1fVSSvR8wJ9miScNVZI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W/eiF0fwBU92hxAO3ENQwaJ5ikD2AQEYXGXQyVo0FEQyX86D+KVdh5ve/IXJVQOpX5NN6e3Cpj6at4g5yqdoWKH/j7Gbh11saSvE4JVpVMRTcEbPllyynYmMb9mOzU2e123LkUg5oP4G6PwlSrvxXocDZpLoHUTmtT3h5EiUIDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=1VGGa1fm; arc=none smtp.client-ip=209.85.222.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-ua1-f54.google.com with SMTP id a1e0cc1a2514c-7d5c25267deso2174051241.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:48:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708368512; x=1708973312; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iw+h6XA2eEk7N3nhL73ACZ3Q8FgRaHJnjAZBDU1Wfkk=;
+        b=1VGGa1fmMaxjWD5xtBOgZYKLB62EqAJVXLgaLXI6WHf97nYa9CwwKXdkPuo7Vnzq/3
+         R+Gm0JsxkC/2YN6UHYxTktPcQYoFjNdgKmHd00V7WUGoano+PdA8jljF18mKLtOEy4y7
+         sXJ1XVpvc0KRXPoKI6DUmwJIrnAEvF+sftONKaI7f2pLDlPrbocdOCI3dpa45Ev6eAmz
+         ku2hbAmLSRUX6y5fQ8AgWoCU6tEmjoqmI9fK7lW16qfH/uv2JaXqKf45LDMIwnTWfXiQ
+         lDIkpCoNXuz7CDPdn+1wmb6l2Wl1WQddLgSqJKtLS/m4+SIORm2kmh1FEQrmVOJ9/wnA
+         TLXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708368512; x=1708973312;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iw+h6XA2eEk7N3nhL73ACZ3Q8FgRaHJnjAZBDU1Wfkk=;
+        b=Q+gNn1l5EV5vdsm05tJpZHs1Jqs0wZ2tH8OXuxt6+pSxsNje1fNDSKm/6QQTmcJ9DH
+         Q3A/teEH468nnfWkwlKsqkdNevzqeGqMlJDZJME1NeFsVkoCHbZYdyn+bFZILuPJ34hA
+         L67kJPDruGBO60p7i6J0Z0xJpR/H7t1v2+YwqGZq7yyIJ8/7s7f7s9zTyltbtORgZFwQ
+         W+pO0QHyC98gIA6BgmgYvm0D0ZlvJ2o9t1p4oeyEl8eyiOK/5+m6oul3S7/IhvW0DoBK
+         WwheCHUxIrnMgLRLnkNpgiWEaFJ/1butTI9UEu4wEoSMMajG+e+cLoY9Oqw8yGKIbFZJ
+         GQ8w==
+X-Forwarded-Encrypted: i=1; AJvYcCXNWtafId410zy1aRIWdvKqVQnbI59QHdQZAYy1N/StTPKAmqDWTEMMS6N+j1YQW5c5YjXWZWGVHyWclIumn0EVlihS0HuY6FtqBHU1
+X-Gm-Message-State: AOJu0YwtpFvMDb0wsE7cDzqzNYOA3bjkWLX5i6KgadhwlGQmN/aKaLQ8
+	If+tg6NpDhUcTJyw2wL1CcEx8IAPauUblyt/cWRD39Vg2jawkgSHNxrbtCShC4kWukzwaowtwCm
+	/ozfV4JwQ8wdoJJOgKMnHiV2s0hfYMmTmLW6cHQ==
+X-Google-Smtp-Source: AGHT+IFew0xpEP8/09qOXqEwkTDNNehQKTGr1SM0trRodxSgKcCNIctA84dQ/9qfd01qZ/b5K7TWSeVoDwJUt5v12E8=
+X-Received: by 2002:a1f:e207:0:b0:4ca:f519:c25f with SMTP id
+ z7-20020a1fe207000000b004caf519c25fmr2526721vkg.9.1708368512278; Mon, 19 Feb
+ 2024 10:48:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] udmabuf: Fix a potential (and unlikely) access to
- unallocated memory
-Content-Language: en-US
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- keescook@chromium.org, Gerd Hoffmann <kraxel@redhat.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org,
- linaro-mm-sig@lists.linaro.org
-References: <f75d0426a17b57dbddacd7da345c1c62a3dbb7ce.1708278363.git.christophe.jaillet@wanadoo.fr>
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <f75d0426a17b57dbddacd7da345c1c62a3dbb7ce.1708278363.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.172.225
-X-Source-L: No
-X-Exim-ID: 1rc8g5-002Aa2-1q
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.172.225]:57308
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfB1dc0kfdRAir02c/WvigyTTumhdfMB3wEOsjxdgeqR5PBk8baiKYMSArTc1Fcs/EV164rtcu1qCvV8Ckdghoq5MpAdgFLKbunjg2mkpwMUbz2rZfDCT
- uVWe1GWo8edNmFdioYzrWxPn2Ix7s4Z+eq9gT+9Yw1yvLDFTCHFtqWmZaew1RX09NUR9H2GGqOtLFNqteJ+UZduk/M4Y5a+h+fdAAU49BYGgWhIbrMCudjpx
+References: <20240216203215.40870-1-brgl@bgdev.pl> <20240216203215.40870-10-brgl@bgdev.pl>
+ <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk>
+In-Reply-To: <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Mon, 19 Feb 2024 19:48:20 +0100
+Message-ID: <CAMRc=Md7ymMTmF1OkydewF5C32jDNy0V+su7pcJPHKto6VLjLg@mail.gmail.com>
+Subject: Re: [PATCH v5 09/18] arm64: dts: qcom: qrb5165-rb5: model the PMU of
+ the QCA6391
+To: Mark Brown <broonie@kernel.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	"David S . Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Kalle Valo <kvalo@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood <lgirdwood@gmail.com>, 
+	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Marek Szyprowski <m.szyprowski@samsung.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Abel Vesa <abel.vesa@linaro.org>, 
+	Manivannan Sadhasivam <mani@kernel.org>, Lukas Wunner <lukas@wunner.de>, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, linux-bluetooth@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-pci@vger.kernel.org, linux-pm@vger.kernel.org, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Feb 19, 2024 at 7:03=E2=80=AFPM Mark Brown <broonie@kernel.org> wro=
+te:
+>
+> On Fri, Feb 16, 2024 at 09:32:06PM +0100, Bartosz Golaszewski wrote:
+>
+> > +                     vreg_pmu_aon_0p59: ldo1 {
+> > +                             regulator-name =3D "vreg_pmu_aon_0p59";
+> > +                             regulator-min-microvolt =3D <540000>;
+> > +                             regulator-max-microvolt =3D <840000>;
+> > +                     };
+>
+> That's a *very* wide voltage range for a supply that's got a name ending
+> in _0_p59 which sounds a lot like it should be fixed at 0.59V.
+> Similarly for a bunch of the other supplies, and I'm not seeing any
+> evidence that the consumers do any voltage changes here?  There doesn't
+> appear to be any logic here, I'm not convinced these are validated or
+> safe constraints.
 
+No, the users don't request any regulators (or rather: software
+representations thereof) because - as per the cover letter - no
+regulators are created by the PMU driver. This is what is physically
+on the board - as the schematics and the datasheet define it. I took
+the values from the docs verbatim. In C, we create a power sequencing
+provider which doesn't use the regulator framework at all.
 
-On 2/18/24 11:46, Christophe JAILLET wrote:
-> If 'list_limit' is set to a very high value, 'lsize' computation could
-> overflow if 'head.count' is big enough.
-> 
-> In such a case, udmabuf_create() would access to memory beyond 'list'.
-> 
-> Use memdup_array_user() which checks for overflow.
-> 
-> While at it, include <linux/string.h>.
-> 
-> Fixes: fbb0de795078 ("Add udmabuf misc device")'
-
-I don't think this tag is needed in this case.
-
-Also, please, CC linux-hardening next time.
-
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-
-In any case, LGTM:
-
-Reviewed-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-
-Thanks!
---
-Gustavo
-
-> ---
-> v2: - Use memdup_array_user()   [Kees Cook]
->      - Use sizeof(*list)   [Gustavo A. R. Silva]
->      - Add include <linux/string.h>
-> 
-> v1: https://lore.kernel.org/all/3e37f05c7593f1016f0a46de188b3357cbbd0c0b.1695060389.git.christophe.jaillet@wanadoo.fr/
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->   drivers/dma-buf/udmabuf.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/udmabuf.c b/drivers/dma-buf/udmabuf.c
-> index c40645999648..5728948ea6f2 100644
-> --- a/drivers/dma-buf/udmabuf.c
-> +++ b/drivers/dma-buf/udmabuf.c
-> @@ -11,6 +11,7 @@
->   #include <linux/module.h>
->   #include <linux/shmem_fs.h>
->   #include <linux/slab.h>
-> +#include <linux/string.h>
->   #include <linux/udmabuf.h>
->   #include <linux/vmalloc.h>
->   #include <linux/iosys-map.h>
-> @@ -314,14 +315,13 @@ static long udmabuf_ioctl_create_list(struct file *filp, unsigned long arg)
->   	struct udmabuf_create_list head;
->   	struct udmabuf_create_item *list;
->   	int ret = -EINVAL;
-> -	u32 lsize;
->   
->   	if (copy_from_user(&head, (void __user *)arg, sizeof(head)))
->   		return -EFAULT;
->   	if (head.count > list_limit)
->   		return -EINVAL;
-> -	lsize = sizeof(struct udmabuf_create_item) * head.count;
-> -	list = memdup_user((void __user *)(arg + sizeof(head)), lsize);
-> +	list = memdup_array_user((void __user *)(arg + sizeof(head)),
-> +				 sizeof(*list), head.count);
->   	if (IS_ERR(list))
->   		return PTR_ERR(list);
->   
+Bartosz
 
