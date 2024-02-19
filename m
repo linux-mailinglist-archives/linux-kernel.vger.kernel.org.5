@@ -1,145 +1,281 @@
-Return-Path: <linux-kernel+bounces-70627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70629-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F707859A39
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 01:37:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70EE1859A3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 01:41:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1001F1C20A1F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:37:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14DA4B20ABA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 00:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A6B1652;
-	Mon, 19 Feb 2024 00:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8614AEDD;
+	Mon, 19 Feb 2024 00:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SwRRv/Tk"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="W6tyGwoK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D783163
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E59236B;
+	Mon, 19 Feb 2024 00:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708303029; cv=none; b=QK6s5nlyycswVmZKYYm78vcOmIINJGJ6lTRDcXk1vD+ODfjOtHFE79/v2LzPu4APBX7WGHKNWpVfoVGNAfCvyr+Z+Z6GM1Xg2dJDKVthr59Z5AYmDEIxuRHpVz3vfSUJ3SYckfDljsVvPCuinZPbkdvZzu4XBwD72J/d6E6Xoak=
+	t=1708303272; cv=none; b=pZABINZ+EKjsaQUjmfc5Ta76D5VCi8ahmeJolhB1dXB2j8ARiXzU5rbRdr88wUzB4sfWtTfzROi+4bK/WbzmYfdRztqler5noo4lYCS0P/Au+CO4SVxVvQo8s21TWF4rT6+mGLqjY9XqkIGlsODI23QQwartvxpKfhO0TeU7e1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708303029; c=relaxed/simple;
-	bh=OqVAF6K8hh+2d2FiTbNoOFfzwaN3i9pwfxEnfO0YRu4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=U0S+xPSfo3r1fr5/eK+tmo/clgm0eXT3FqWGYSpCV0C20kDV2TuV1WsIyGtR5j1IaL2CIahXyjRei5gnsdJ/+rGeukU9nDblevPUsAwP/57nvd0xBE25hUQg0MyLZtuEx1V5rcX5Qqz+TDe9yBQbbFcn83pYoE5scOaYi86/OSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SwRRv/Tk; arc=none smtp.client-ip=192.198.163.16
+	s=arc-20240116; t=1708303272; c=relaxed/simple;
+	bh=9SelTA33djGiCgnQIz4P/Re605CPIWBhuKal9ZySlmM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=O1DaOjaN1i/Iu4YuSotMVJj3G0PzFQH+NlysUISgQfhhXNFcc7qu5lXfWIY9ItcWzlfrzS+X+yfI/T3N+1gReGv4msF9Ud22Xl9pJC7QZjFnpYDW+gUMZxZFdZnOwJzgrEyt85N1oE9KJ2MVlhxQxHS1/lyiH1Sv8DbaP9OXO1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=W6tyGwoK; arc=none smtp.client-ip=192.198.163.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708303027; x=1739839027;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=OqVAF6K8hh+2d2FiTbNoOFfzwaN3i9pwfxEnfO0YRu4=;
-  b=SwRRv/Tkhxv7N+8LRNoWv21LQUU1+2QKo3JxKu7Jr5UPQ1SIOSqu8gK1
-   ItnbQkgwsauEAcbWZFL0+XO4enh26BICy20jbHjeuvtLFg2Uw7ucsewJH
-   fw6n+8vR4pgzngwM/PMrQnTSX9p+EgBFYZiHFTiZWAaPkVxJUofTEzuyu
-   ytU0gCl3vnRay8xwHB5KbmgJb/nRtB4sxgaguRj7hGI+6hqhPLj2BVJOa
-   Razv6v+psiPsO65s3jXUDOVuJUAvT6WjIpyedIJ0dcZrMP3vg9MxfM/yl
-   jKGV6SdcsOMTSo/rbAkaAbmAcuGvAoEfa0UozxhUIPZXPtw0Jue4x51Zk
+  t=1708303270; x=1739839270;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=9SelTA33djGiCgnQIz4P/Re605CPIWBhuKal9ZySlmM=;
+  b=W6tyGwoKBhj3Uq5En2k6M5VRBtr3n8JQfaJ5rQlHj7t/NyJ3xb4AHSaB
+   OtLUTkY6JRfKatvHZE324vuzP0NtSMqzZsAhoA5lpQxL+JLy58Snca82T
+   6R2p2jqkDUU7z/txNEShxyVdNoizU/DaP2/zPwHZzKMBftptsfc196m2Q
+   F/51RnFymMYv78mppWTTA5/ICC0rGFNM+4rkRdH1w/hGZipwoV5Z/tAOn
+   bCdrUlP9duQbzyUg9Q52E9bv03iCFuM1UWQzDsHjCNHeOaSluHioWMBje
+   DKwyO19bEmVrh/RwdSBQ/fJLhn9fbgBZ+gzOAdZn2kb2nV0vTXPSv5ReO
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2804248"
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="5329857"
 X-IronPort-AV: E=Sophos;i="6.06,169,1705392000"; 
-   d="scan'208";a="2804248"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 16:37:07 -0800
+   d="scan'208";a="5329857"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 16:41:09 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="912772617"
 X-IronPort-AV: E=Sophos;i="6.06,169,1705392000"; 
-   d="scan'208";a="4735275"
-Received: from lkp-server02.sh.intel.com (HELO 3c78fa4d504c) ([10.239.97.151])
-  by orviesa008.jf.intel.com with ESMTP; 18 Feb 2024 16:37:05 -0800
-Received: from kbuild by 3c78fa4d504c with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rbreZ-0003Og-0M;
-	Mon, 19 Feb 2024 00:37:03 +0000
-Date: Mon, 19 Feb 2024 08:36:53 +0800
-From: kernel test robot <lkp@intel.com>
-To: Johannes Berg <johannes.berg@intel.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: include/linux/compiler_types.h:358:45: error: call to
- '__compiletime_assert_947' declared with attribute error: BUILD_BUG_ON
- failed: sizeof(struct ieee80211_rx_status) > sizeof(skb->cb)
-Message-ID: <202402190801.9ZnFahvB-lkp@intel.com>
+   d="scan'208";a="912772617"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 16:41:05 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: linux-mm@kvack.org,  Andrew Morton <akpm@linux-foundation.org>,  Chris
+ Li <chrisl@kernel.org>,  Minchan Kim <minchan@kernel.org>,  Yu Zhao
+ <yuzhao@google.com>,  Barry Song <v-songbaohua@oppo.com>,  SeongJae Park
+ <sj@kernel.org>,  Hugh Dickins <hughd@google.com>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Matthew Wilcox <willy@infradead.org>,  Michal Hocko
+ <mhocko@suse.com>,  Yosry Ahmed <yosryahmed@google.com>,  David
+ Hildenbrand <david@redhat.com>,  stable@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/swap: fix race when skipping swapcache
+In-Reply-To: <CAMgjq7CArJDbEev3YR2OB4aZjE9n6PzuzC6WLmsxCKhwq-jb3Q@mail.gmail.com>
+	(Kairui Song's message of "Sun, 18 Feb 2024 17:20:25 +0800")
+References: <20240216095105.14502-1-ryncsn@gmail.com>
+	<87wmr2rx4a.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<CAMgjq7CArJDbEev3YR2OB4aZjE9n6PzuzC6WLmsxCKhwq-jb3Q@mail.gmail.com>
+Date: Mon, 19 Feb 2024 08:39:09 +0800
+Message-ID: <87jzn1s2xe.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Johannes,
+Kairui Song <ryncsn@gmail.com> writes:
 
-FYI, the error/warning still remains.
+> On Sun, Feb 18, 2024 at 4:34=E2=80=AFPM Huang, Ying <ying.huang@intel.com=
+> wrote:
+>>
+>> Kairui Song <ryncsn@gmail.com> writes:
+>>
+>> > From: Kairui Song <kasong@tencent.com>
+>> >
+>> > When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
+>> > swapin the same entry at the same time, they get different pages (A, B=
+).
+>> > Before one thread (T0) finishes the swapin and installs page (A)
+>> > to the PTE, another thread (T1) could finish swapin of page (B),
+>> > swap_free the entry, then swap out the possibly modified page
+>> > reusing the same entry. It breaks the pte_same check in (T0) because
+>> > PTE value is unchanged, causing ABA problem. Thread (T0) will
+>> > install a stalled page (A) into the PTE and cause data corruption.
+>> >
+>> > One possible callstack is like this:
+>> >
+>> > CPU0                                 CPU1
+>> > ----                                 ----
+>> > do_swap_page()                       do_swap_page() with same entry
+>> > <direct swapin path>                 <direct swapin path>
+>> > <alloc page A>                       <alloc page B>
+>> > swap_read_folio() <- read to page A  swap_read_folio() <- read to page=
+ B
+>> > <slow on later locks or interrupt>   <finished swapin first>
+>> > ...                                  set_pte_at()
+>> >                                      swap_free() <- entry is free
+>> >                                      <write to page B, now page A stal=
+led>
+>> >                                      <swap out page B to same swap ent=
+ry>
+>> > pte_same() <- Check pass, PTE seems
+>> >               unchanged, but page A
+>> >               is stalled!
+>> > swap_free() <- page B content lost!
+>> > set_pte_at() <- staled page A installed!
+>> >
+>> > And besides, for ZRAM, swap_free() allows the swap device to discard
+>> > the entry content, so even if page (B) is not modified, if
+>> > swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+>> > it may also cause data loss.
+>> >
+>> > To fix this, reuse swapcache_prepare which will pin the swap entry usi=
+ng
+>> > the cache flag, and allow only one thread to pin it. Release the pin
+>> > after PT unlocked. Racers will simply wait since it's a rare and very
+>> > short event. A schedule() call is added to avoid wasting too much CPU
+>> > or adding too much noise to perf statistics
+>> >
+>> > Other methods like increasing the swap count don't seem to be a good
+>> > idea after some tests, that will cause racers to fall back to use the
+>> > swap cache again. Parallel swapin using different methods leads to
+>> > a much more complex scenario.
+>>
+>> The swap entry may be put in swap cache by some parallel code path
+>> anyway.  So, we always need to consider that when reasoning the code.
+>>
+>> > Reproducer:
+>> >
+>> > This race issue can be triggered easily using a well constructed
+>> > reproducer and patched brd (with a delay in read path) [1]:
+>> >
+>> > With latest 6.8 mainline, race caused data loss can be observed easily:
+>> > $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+>> >   Polulating 32MB of memory region...
+>> >   Keep swapping out...
+>> >   Starting round 0...
+>> >   Spawning 65536 workers...
+>> >   32746 workers spawned, wait for done...
+>> >   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
+>> >   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
+>> >   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
+>> >   Round 0 Failed, 15 data loss!
+>> >
+>> > This reproducer spawns multiple threads sharing the same memory region
+>> > using a small swap device. Every two threads updates mapped pages one =
+by
+>> > one in opposite direction trying to create a race, with one dedicated
+>> > thread keep swapping out the data out using madvise.
+>> >
+>> > The reproducer created a reproduce rate of about once every 5 minutes,
+>> > so the race should be totally possible in production.
+>> >
+>> > After this patch, I ran the reproducer for over a few hundred rounds
+>> > and no data loss observed.
+>> >
+>> > Performance overhead is minimal, microbenchmark swapin 10G from 32G
+>> > zram:
+>> >
+>> > Before:     10934698 us
+>> > After:      11157121 us
+>> > Non-direct: 13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+>> >
+>> > Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchrono=
+us device")
+>> > Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stre=
+ss-race [1]
+>> > Reported-by: "Huang, Ying" <ying.huang@intel.com>
+>> > Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.c=
+cr.corp.intel.com/
+>> > Signed-off-by: Kairui Song <kasong@tencent.com>
+>> > Cc: stable@vger.kernel.org
+>> >
+>> > ---
+>> > Update from V2:
+>> > - Add a schedule() if raced to prevent repeated page faults wasting CPU
+>> >   and add noise to perf statistics.
+>> > - Use a bool to state the special case instead of reusing existing
+>> >   variables fixing error handling [Minchan Kim].
+>> >
+>> > V2: https://lore.kernel.org/all/20240206182559.32264-1-ryncsn@gmail.co=
+m/
+>> >
+>> > Update from V1:
+>> > - Add some words on ZRAM case, it will discard swap content on swap_fr=
+ee so the race window is a bit different but cure is the same. [Barry Song]
+>> > - Update comments make it cleaner [Huang, Ying]
+>> > - Add a function place holder to fix CONFIG_SWAP=3Dn built [SeongJae P=
+ark]
+>> > - Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO i=
+nstead of "direct swapin path" [Yu Zhao]
+>> > - Update commit message.
+>> > - Collect Review and Acks.
+>> >
+>> > V1: https://lore.kernel.org/all/20240205110959.4021-1-ryncsn@gmail.com/
+>> >
+>> >  include/linux/swap.h |  5 +++++
+>> >  mm/memory.c          | 20 ++++++++++++++++++++
+>> >  mm/swap.h            |  5 +++++
+>> >  mm/swapfile.c        | 13 +++++++++++++
+>> >  4 files changed, 43 insertions(+)
+>> >
+>> > diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> > index 4db00ddad261..8d28f6091a32 100644
+>> > --- a/include/linux/swap.h
+>> > +++ b/include/linux/swap.h
+>> > @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
+>> >       return 0;
+>> >  }
+>> >
+>> > +static inline int swapcache_prepare(swp_entry_t swp)
+>> > +{
+>> > +     return 0;
+>> > +}
+>> > +
+>> >  static inline void swap_free(swp_entry_t swp)
+>> >  {
+>> >  }
+>> > diff --git a/mm/memory.c b/mm/memory.c
+>> > index 7e1f4849463a..7059230d0a54 100644
+>> > --- a/mm/memory.c
+>> > +++ b/mm/memory.c
+>> > @@ -3799,6 +3799,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       struct page *page;
+>> >       struct swap_info_struct *si =3D NULL;
+>> >       rmap_t rmap_flags =3D RMAP_NONE;
+>> > +     bool need_clear_cache =3D false;
+>> >       bool exclusive =3D false;
+>> >       swp_entry_t entry;
+>> >       pte_t pte;
+>> > @@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>> >       if (!folio) {
+>> >               if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>> >                   __swap_count(entry) =3D=3D 1) {
+>> > +                     /*
+>> > +                      * Prevent parallel swapin from proceeding with
+>> > +                      * the cache flag. Otherwise, another thread may
+>> > +                      * finish swapin first, free the entry, and swap=
+out
+>> > +                      * reusing the same entry. It's undetectable as
+>> > +                      * pte_same() returns true due to entry reuse.
+>> > +                      */
+>> > +                     if (swapcache_prepare(entry)) {
+>> > +                             /* Relax a bit to prevent rapid repeated=
+ page faults */
+>> > +                             schedule();
+>>
+>> The current task may be chosen in schedule().  So, I think that we
+>> should use cond_resched() here.
+>>
+>
+> I think if we are worried about current task got chosen again we can
+> use schedule_timeout_uninterruptible(1) here. Isn't cond_resched still
+> __schedule() and and it can even get omitted, so it should be "weaker"
+> IIUC.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   b401b621758e46812da61fa58a67c3fd8d91de0d
-commit: f66c48af7a110c0d694c4ac4a1257affb272a2ea mac80211: support minimal EHT rate reporting on RX
-date:   1 year, 1 month ago
-config: arm-randconfig-003-20240218 (https://download.01.org/0day-ci/archive/20240219/202402190801.9ZnFahvB-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240219/202402190801.9ZnFahvB-lkp@intel.com/reproduce)
+schedule_timeout_uninterruptible(1) will introduce 1ms latency for the
+second task.  That may kill performance of some workloads.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202402190801.9ZnFahvB-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from <command-line>:
-   net/mac80211/rx.c: In function 'ieee80211_rx_irqsafe':
->> include/linux/compiler_types.h:358:45: error: call to '__compiletime_assert_947' declared with attribute error: BUILD_BUG_ON failed: sizeof(struct ieee80211_rx_status) > sizeof(skb->cb)
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:339:25: note: in definition of macro '__compiletime_assert'
-     339 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
-     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   net/mac80211/rx.c:5283:9: note: in expansion of macro 'BUILD_BUG_ON'
-    5283 |         BUILD_BUG_ON(sizeof(struct ieee80211_rx_status) > sizeof(skb->cb));
-         |         ^~~~~~~~~~~~
-
-
-vim +/__compiletime_assert_947 +358 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  344  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  345  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  346  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  347  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  348  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  349   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  350   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  351   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  352   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  353   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  354   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  355   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  356   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  357  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @358  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  359  
-
-:::::: The code at line 358 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+Best Regards,
+Huang, Ying
 
