@@ -1,138 +1,183 @@
-Return-Path: <linux-kernel+bounces-71908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3304F85AC5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:51:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E5F385AC66
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B28E2B228CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:51:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B6201C21E0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6115C54BFB;
-	Mon, 19 Feb 2024 19:47:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8659C5644B;
+	Mon, 19 Feb 2024 19:48:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="OdT28Q8r"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="BsRtgLJs"
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FB095464A
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:47:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E281456453
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708372064; cv=none; b=Q6ujoXsJQdaYeIZ6Meb1v7gTCgBRM26v/8n0NGD9dL/VCxGmQJ8S5ryweuJjtAMtwLPytXtnjHzr/IQ0dRQL9uHCos/uRuRn+yACyGg7iNO0fF4qo1WBmfYglQPVi7ukdMY2cMnYgdpZ2V0xG7Up6+ovWJ5GyP0dboAVOyfuhzw=
+	t=1708372120; cv=none; b=N7FpxW85jAKOGF3lqKri3ouJNa+pu1B/I9AoRMyR0PSsdXSQ1RStE3H868q8bWYspSRnUnxoMHUOrTgtjUawhLRWKOVZ23HCKEIkQjGs+1wkwKo90dntGy0ERG57eQTtgvNgMwetLl8g95Y1+7ozu5SPWlPKMVk2ZcERkTcFVvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708372064; c=relaxed/simple;
-	bh=E0gu0dftav8MaXjX+7OAo3ktmwiz3PI/6cLVfZ9kBDM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=JbrgARKjmScr3KEPYhyIf7TLqXpUmoou5IlgVAWiNBeQAu5he7miEl4qhpUhQ3GVyM+cz6TRl+7sbCkisls4pRIXCju0OnnwG/QtSCyRwa4o23eQiPbDj4C550PCyh/R7SGSkQhAwCuop3lAzZgmQmAfNogH0KLdqYnBRg3i/G4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=OdT28Q8r; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1d934c8f8f7so44745115ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:47:43 -0800 (PST)
+	s=arc-20240116; t=1708372120; c=relaxed/simple;
+	bh=mTwnrWFRVkMmk/C370Z2PfPl2ZzMt3ZnRg8rjXdj5M8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sH7rofAwYaUiUVEmovBBy2QVtCiPO5dxivttvdUH//wVT04H3/axNJ0f0lo8jSaESc8nsFheFeDHsAArPpFgrV4HQn5ng+sHtze1S2GSf6EgWaEe5nyXJDtKhnqnP5678aAsL1jk4hjt9wKoXp6GwwB6v8nWrqnSAVHXLpQh2Eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=BsRtgLJs; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5ce942efda5so2741617a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:48:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1708372118; x=1708976918; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DOFMy5aAASBYxwEuY26DwtWuV8GmVWpkF2wskH7Kuzg=;
+        b=BsRtgLJsQMCLQ16wev0X7ok0toZRzp0KMmRlhfMFBLuARhuBWGzIl1ddg0B+jTFuxw
+         bX3pq1/yM9RamwfpYN0PVgdPZ5W3X9xlsiGPQq+t6dM9+Y120t+uk2oRPHPq6ZzQA8lY
+         JskCbXmzlBznsWKd0WPivfLmfJ0+Gtj7FMo7w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708372062; x=1708976862;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:dkim-signature:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1708372118; x=1708976918;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E+1K1rDAoLT3yvvcU1xTbjvAZD33p95do2MZR1pqzhU=;
-        b=UEx8CSDe9JKCD2hXElr0271tMOclwvQ3mM897Zhu9YEcCxZCeMdPOlEs+pslkKOdda
-         Ta+UFA9uUrqmSldTBbL2Vb4Cx1pQR0Q2YOLJwkJX2GmYJq4nIy1xqgK5gfypb9IZ0Sk8
-         xhDvFTZ1JuKVeRpbIWmwwm0bMIIyYs6r/CR9dNj9EBRqOs/vYOICbiFLi1VNT86pO8mL
-         /zk6i8GBIHT1RqdrglTA/135i+O7gQVufUa4iYkZIBISpzUO/OBPanDifeIj4//cr/Dk
-         qaWp7nEMDcLbt4JKE05jEJIWEenMNrzbP3e2wagxBdVVd2JOykqQK7H2CfzjnHpTiBQr
-         Aj6g==
-X-Forwarded-Encrypted: i=1; AJvYcCWVnRUOwZpS2OJA2PnscoQF5hBD3OMc4vhXUigU4yThdxU0y/JKMuYymEXWuCFvRmiEQ8tvmVCPKeS30CwEIrm/4Bgwkre27YBC58y9
-X-Gm-Message-State: AOJu0YxHtOFZq6pMEiGt6z/SxL6f7lxXsFSyqJRSgGg6Hvgw8i2qVqSS
-	/7DF7b+bJCs0Q3kyXvM5lHU9YWzfWchAnSmh65p+t/FbGang2mwZ
-X-Google-Smtp-Source: AGHT+IFLdoebQIS/JcbaR+WTW0StOHvz1lg/dtXrJusjwcgDG/iiyXXo8Mi0KYUwCxIZnHDolT/HyA==
-X-Received: by 2002:a17:902:c246:b0:1db:d256:932d with SMTP id 6-20020a170902c24600b001dbd256932dmr5196936plg.10.1708372062528;
-        Mon, 19 Feb 2024 11:47:42 -0800 (PST)
-Received: from mail.marliere.net ([24.199.118.162])
-        by smtp.gmail.com with ESMTPSA id v16-20020a17090331d000b001d9773a1993sm4772917ple.213.2024.02.19.11.47.41
+        bh=DOFMy5aAASBYxwEuY26DwtWuV8GmVWpkF2wskH7Kuzg=;
+        b=nu21g780K8qdE/lLlBCiv51Vq+nfwpB8bMgky1sQWpz3NS0hCxg8WVFMIU8LYG8jrF
+         AUxJgfb1VOyUkUdqCnr6t/4QW7hM3vRlRpK8XsZZce8KsJijgZdJ2BuEfeYhcj3e2qAc
+         JPaoS9UYUBHFqyP42Amtzlj++nZAQyHHj6rrUXPZx51A/h3E6QTmCaQFbifQRevrdb6P
+         6i4C4w6ip6UFAo34tWV15Rr5qCu3cOU1Feb8YGj/Wl8tXstjXDX22S/wse2/xZma0qXw
+         XBfZoDTrBM/oCGYwjfcUTvc6FVLPEwfgULYGiEhJYRBiH0seC712ZV2W2PVcAJwFAiP+
+         RVmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTDVBq+KHVfslDMa3E9k9jKMrpgyWJeNsPqzysJnaNL94XzGmoBzW2v9oEFvD3FhGy0MgMgriuPaDPHnVmWEvC813sYzZxQwX28KJi
+X-Gm-Message-State: AOJu0YwGqQg8WMVu1Gv8lNoOlZg9eEKP5SXHEC4oGWaUstwGrW4U/JHI
+	HNCvgiaFbg3N8zU4e9vjiPLRnn4X/CgFjhzSt5WM0PVisgqsMCktiLwkn6HbwQ==
+X-Google-Smtp-Source: AGHT+IGPuriO6pO2eohejQtmG+dYzeSLnoSt3wKlrVseB6ozhIMP/LdUZ29p1wXTlJey7+1f6pPqsA==
+X-Received: by 2002:a17:903:298b:b0:1db:be69:d02d with SMTP id lm11-20020a170903298b00b001dbbe69d02dmr11902487plb.32.1708372118058;
+        Mon, 19 Feb 2024 11:48:38 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id a16-20020a170902b59000b001d8dd636705sm4716588pls.190.2024.02.19.11.48.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 11:47:42 -0800 (PST)
-From: "Ricardo B. Marliere" <ricardo@marliere.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
-	s=2024; t=1708372061;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=E+1K1rDAoLT3yvvcU1xTbjvAZD33p95do2MZR1pqzhU=;
-	b=OdT28Q8rBK4R7VC1plQYbox3WZs33fwXo+7EeigrLboYI08hmVA/URzu0izOoSnjtPWxbD
-	xGcaHv36+cCtT+fSpMLvGA5i7vnW4QHy7By+GrlhIZreP3TRFxnn4LcisGZnUvtW/jRC1x
-	xAORX9gyynsmvqK/0Xi3DU+m9W/W0mNA9fZOKwoevXkabVQa4iaJ2kX/9LmGtgOoEC64U0
-	Buq5kDil4WWppoQ6KO4qZ3//q3l/v4XrAQaoKlnA4MWz2XEP88g2zC2fezrd+d84syh1G1
-	Lkqvh0FbzwXRY7yh1BSDwJ9UNmS+sbfEc0dRmo0jfCgj+0O/gqhae1CBm8zGlQ==
-Authentication-Results: ORIGINATING;
-	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
-Date: Mon, 19 Feb 2024 16:48:28 -0300
-Subject: [PATCH] accel: constify the struct device_type usage
+        Mon, 19 Feb 2024 11:48:37 -0800 (PST)
+Date: Mon, 19 Feb 2024 11:48:37 -0800
+From: Kees Cook <keescook@chromium.org>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+	Haowen Bai <baihaowen@meizu.com>, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Yonghong Song <yonghong.song@linux.dev>,
+	Anton Protopopov <aspsk@isovalent.com>,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] bpf: Replace bpf_lpm_trie_key 0-length array with
+ flexible array
+Message-ID: <202402191144.C4DB9B7AA@keescook>
+References: <20240216235536.it.234-kees@kernel.org>
+ <e58d035c-fb74-4d29-94d5-6c22542e7513@embeddedor.com>
+ <202402161902.FCFFEC322@keescook>
+ <a74a7255-5dbd-060e-fe2f-ac3563f466fb@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-device_cleanup-accel-v1-1-5031e5046cff@marliere.net>
-X-B4-Tracking: v=1; b=H4sIAIuw02UC/x2MQQqAIBAAvxJ7TlDrYl+JCFvXWhATpQjCvycdB
- 2bmhUKZqcDUvZDp5sJnbKD6DvCwcSfBrjFoqUeplRGuSUgrBrLxSsIiUhDWGOlw2PyGClqaMnl
- +/u281PoBgY4uiWYAAAA=
-To: Oded Gabbay <ogabbay@kernel.org>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Ricardo B. Marliere" <ricardo@marliere.net>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1102; i=ricardo@marliere.net;
- h=from:subject:message-id; bh=E0gu0dftav8MaXjX+7OAo3ktmwiz3PI/6cLVfZ9kBDM=;
- b=owEBbQKS/ZANAwAKAckLinxjhlimAcsmYgBl07CMzkpkFXTFG76NJv+ATsU02RkTl3tfEbF2q
- nEqfBlPSjOJAjMEAAEKAB0WIQQDCo6eQk7jwGVXh+HJC4p8Y4ZYpgUCZdOwjAAKCRDJC4p8Y4ZY
- ph33D/9ue3+Q6/AEYZ8oe7dOzJSV9lsxOuLRgBPtR22qxrIICYQHPY8LGmiQCsURaP4Eqce30P8
- GOyP9QkMkvJpdi1liki9/kNAJDSal5cH8ZhjSzl3o88ZWPROoKDR0Qa4r88qQMPF52EPoTfW1RZ
- pRRnh4leiPk5APBIw52MKjDsH1g9A5ZY95WieSUhA9gsxJ7XuVvdE2kW4SwyyFHhLEZ6SZVLtXN
- p5WjubxnK8qHoHvYtY/2tMZCOz2A4Ku5jRoeYOSuIEhS3i79HN16Jsf/6nf/i2OGi6F/ehp4DoU
- ePE7ja2Pmm/OmzQlHJd5uKqDuo/nwvtL/LXLsdu4s/NVP9gvIZkWgFhl+UND7M9hsD3VNNtJkj0
- p77aDr2p82Ey7ITJd8F9ZxrkhdATf1hger/00R55IcOQ3Had8PkSIrdkkdud7mJdaupkzhTR2Ti
- VQSBuVDmIdzzlBGovKzZAuODskhmlkS1t5fjuJDp3WyAvSV65J3sIoGiiHM+9B1fqMP90fxtbGB
- Wp+bTfWX28zeizLGfBcRlT9UFs8R1VnVJTcDGUWKmmQUuHIq/BaqzxoMMNDi7uJ3KHrXVoOqmsx
- P8Ob/mkZDKVzVVsP2lLNXG8MKj8pnvna2g7HvjhQVeJ+zYKFIE+P/dGfJRdKnGB7tlp0RMWzOa9
- VabkXivaMdt4Ehg==
-X-Developer-Key: i=ricardo@marliere.net; a=openpgp;
- fpr=030A8E9E424EE3C0655787E1C90B8A7C638658A6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a74a7255-5dbd-060e-fe2f-ac3563f466fb@iogearbox.net>
 
-Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
-core can properly handle constant struct device_type. Move the
-accel_sysfs_device_minor variable to be a constant structure as well,
-placing it into read-only memory which can not be modified at runtime.
+On Mon, Feb 19, 2024 at 06:48:41PM +0100, Daniel Borkmann wrote:
+> On 2/17/24 4:03 AM, Kees Cook wrote:
+> > On Fri, Feb 16, 2024 at 06:27:08PM -0600, Gustavo A. R. Silva wrote:
+> > > On 2/16/24 17:55, Kees Cook wrote:
+> > > > Replace deprecated 0-length array in struct bpf_lpm_trie_key with
+> > > > flexible array. Found with GCC 13:
+> > > > 
+> > > > ../kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
+> > > >     207 |                                        *(__be16 *)&key->data[i]);
+> > > >         |                                                   ^~~~~~~~~~~~~
+> > > > ../include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
+> > > >     102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
+> > > >         |                                                      ^
+> > > > ../include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
+> > > >      97 | #define be16_to_cpu __be16_to_cpu
+> > > >         |                     ^~~~~~~~~~~~~
+> > > > ../kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
+> > > >     206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
+> > > > ^
+> > > >         |                            ^~~~~~~~~~~
+> > > > In file included from ../include/linux/bpf.h:7:
+> > > > ../include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
+> > > >      82 |         __u8    data[0];        /* Arbitrary size */
+> > > >         |                 ^~~~
+> > > > 
+> > > > And found at run-time under CONFIG_FORTIFY_SOURCE:
+> > > > 
+> > > >     UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
+> > > >     index 0 is out of range for type '__u8 [*]'
+> > > > 
+> > > > This includes fixing the selftest which was incorrectly using a
+> > > > variable length struct as a header, identified earlier[1]. Avoid this
+> > > > by just explicitly including the prefixlen member instead of struct
+> > > > bpf_lpm_trie_key.
+> > > > 
+> > > > Note that it is not possible to simply remove the "data" member, as it
+> > > > is referenced by userspace
+> > > > 
+> > > > cilium:
+> > > >           struct egress_gw_policy_key in_key = {
+> > > >                   .lpm_key = { 32 + 24, {} },
+> > > >                   .saddr   = CLIENT_IP,
+> > > >                   .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
+> > > >           };
+> > > > 
+> > > > systemd:
+> > > > 	ipv6_map_fd = bpf_map_new(
+> > > > 			BPF_MAP_TYPE_LPM_TRIE,
+> > > > 			offsetof(struct bpf_lpm_trie_key, data) + sizeof(uint32_t)*4,
+> > > > 			sizeof(uint64_t),
+> > > > 			...
+> > > > 
+> > > > The only risk to UAPI would be if sizeof() were used directly on the
+> > > > data member, which it does not seem to be. It is only used as a static
+> > > > initializer destination and to find its location via offsetof().
+> > > > 
+> > > > Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
+> > > > Reported-by: Mark Rutland <mark.rutland@arm.com>
+> > > > Closes: https://paste.debian.net/hidden/ca500597/
+> > > 
+> > > mmh... this URL expires: 2024-05-15
+> > 
+> > Yup, but that's why I included the run-time splat above too. :)
+> 
+> I don't quite follow, this basically undoes 3024d95a4c52 ("bpf: Partially revert
+> flexible-array member replacement") again with the small change that this 'fixes'
+> up the BPF selftest to not embed struct bpf_lpm_trie_key.
+>
+> Outside of BPF selftests though aren't we readding the same error that we fixed
+> earlier for BPF programs in the wild which embed struct bpf_lpm_trie_key into their
+> key structure?
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
----
- drivers/accel/drm_accel.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Oops, yes, sorry. I see how that cilium does include it in the same
+fashion. I will adjust this patch again. Thanks for double-checking!
 
-diff --git a/drivers/accel/drm_accel.c b/drivers/accel/drm_accel.c
-index 24cac4c0274b..16c3edb8c46e 100644
---- a/drivers/accel/drm_accel.c
-+++ b/drivers/accel/drm_accel.c
-@@ -23,7 +23,7 @@ static struct idr accel_minors_idr;
- 
- static struct dentry *accel_debugfs_root;
- 
--static struct device_type accel_sysfs_device_minor = {
-+static const struct device_type accel_sysfs_device_minor = {
- 	.name = "accel_minor"
- };
- 
+struct egress_gw_policy_key {
+        struct bpf_lpm_trie_key lpm_key;
+        __u32 saddr;
+        __u32 daddr;
+};
 
----
-base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
-change-id: 20240219-device_cleanup-accel-a990dc3bfbc1
-
-Best regards,
 -- 
-Ricardo B. Marliere <ricardo@marliere.net>
-
+Kees Cook
 
