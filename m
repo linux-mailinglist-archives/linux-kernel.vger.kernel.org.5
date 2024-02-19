@@ -1,103 +1,121 @@
-Return-Path: <linux-kernel+bounces-71169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF34785A192
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:02:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D2A6085A19A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:04:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9021F22022
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:02:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 836AA1F228BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:04:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B492C19F;
-	Mon, 19 Feb 2024 11:02:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2BF028E39;
+	Mon, 19 Feb 2024 11:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iI3AdxuQ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XoPxeI8r"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B7C1C10;
-	Mon, 19 Feb 2024 11:01:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED861C10
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708340521; cv=none; b=HGRPBixG31K7+BlnDrVE8Lg3N3wjMQQ7vH+OwNowV3X0+7FAL1zv0ZdUWMPPzdCYZwpQ51ffQSEEtbgn9D++4f6mJ9omrxedSwiM0EM6Yn1gmHzXFXZlSTTepEI2k+EsMiR8agMRIytkpOGZIn++OJ+sQl8X61p2mvV/GRnz6cU=
+	t=1708340666; cv=none; b=DKW2omc7c1WbLDcEl5SYsc0K72yQ1M5iLVUYTWhcXlu9hNHpChq/o4CDs7MlVqpY+u53sQLbYoaKNGbvlQ/K6gt/h6cuDG1e7zIaaejN/vGzrVBw5zP9WX37Sft8IPYYLIXyeypMlgxiRvRDicQ5WH060om+0wneVHtR/3+4wKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708340521; c=relaxed/simple;
-	bh=FYHwUjv0CBOVE/UvV6qkWI5k+uNh+6/RQIoNRoiJaqg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=S+cGZ/rTpG2hCZcaYuT0/KpyxyQSCLGNvnhNccGYYxPBPZC/tBgib1Oni+SAYA/2VRpp8yQi89IiDSzpL8DXeAvS6AVTRPx32MDoVb7Zi5ewnjBJ1ZbRF1t/iPece53la1218c6UrgDMn8A87DG+TgxfzP4uIXhVj6aSeHFmqNY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iI3AdxuQ; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708340519; x=1739876519;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FYHwUjv0CBOVE/UvV6qkWI5k+uNh+6/RQIoNRoiJaqg=;
-  b=iI3AdxuQLJ85BdNTv3LccBvTl5WpMvi7xNNIB/S4qC0txlEEhksTTF4t
-   PObXqnZpH7B9civwnocqwQqi7C93tDCK7ntMrdlosEgtv4GHRtZmFZkrR
-   hbPSMYpk0z9IrOc7SQR6DN22A6iklWlgKP08i1akbwVjBrxa435dC7s4x
-   /ZOs19P1TCMAx+2atJl7CfGGimudpfoBiW6s89tAoHFzMM5CkQF7HtsN7
-   bJBRifBbJ+X798YVCRjVfVX+CYt5s7HVfH/oRB8cg1l9HYEvMsSKgdEVY
-   zeHxFy6koLkwkj4IChSaQMcnrJ5v0xh7a4bypUyV8zwLUpOJFFSb9fVMK
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2276106"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="2276106"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:01:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="936276332"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="936276332"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Feb 2024 03:01:53 -0800
-Message-ID: <d82c8955-6793-7544-0013-1033abd9f1e9@linux.intel.com>
-Date: Mon, 19 Feb 2024 13:03:31 +0200
+	s=arc-20240116; t=1708340666; c=relaxed/simple;
+	bh=/w0iYygLzqoKWkoa611dONSmQSfaIjtKlgKCivWQdS0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=mBvb3zHCXB83QcjYn+uEFfs4P7grfjJVXCizRZsCrKj0wK70Ua9U7Lwi90QLzeQH/FfeU08vycyAQKaTDNMbYaS6nRD1G/lXq76ACNVg7HwUH6fBRmhOWottp7qiO3a5q+yV+kA24uS/tzlovJP2+L8AW0VfGtmq0WShUmRt5SM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XoPxeI8r; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 97AD4E000E;
+	Mon, 19 Feb 2024 11:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708340656;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x8NgPd3ichHUKUe1/b2p+TzQDwQB7pbYETz/ptF4PXI=;
+	b=XoPxeI8rJLGBVbcQ6ynl63IreWXv4XK5NDJha/2Xm5BetwHusMR0B8bUU87kdPC+3i2VW9
+	wYF+jzFrrzbrAH1d3iimT/oAb0HJko4hmhyKvtEkZUSdqyy2+P9seIiuFqETb+w1ZXGNl1
+	SIPtsa+2fwlowOpH/G9dTu/JLTMlPxBQ63p7Qaa2G8A6qiy7cSZV1/RJDXi0Q8BDmQDuo6
+	C2lZp3T9l1sQYdd6YzzjjnW4NYMLex3rrktEeQoTOmoU/ECONU7VjC5T9JiLSf1m4BF++w
+	YgmsMBuhSMt1GeTjH8vf30JOPqyM4f/xcjyW9XSDAIs6OqrXW9Scg1pBUvRXnw==
+Date: Mon, 19 Feb 2024 12:04:14 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Michael Walle <michael@walle.cc>, srinivas.kandagatla@linaro.org,
+ gregkh@linuxfoundation.org, rafal@milecki.pl, linux-kernel@vger.kernel.org,
+ kernel@pengutronix.de
+Subject: Re: [RFC PATCH] nvmem: core: add sysfs cell write support
+Message-ID: <20240219120414.32395299@xps-13>
+In-Reply-To: <20240216100750.zxl4wncbgpulr2cc@pengutronix.de>
+References: <20240215211401.1201004-1-m.felsch@pengutronix.de>
+	<CZ6DFL6061FS.2WMDPMSSBXX8S@walle.cc>
+	<20240216100750.zxl4wncbgpulr2cc@pengutronix.de>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Firefox/102.0 Thunderbird/102.13.0
-Subject: Re: [PATCH v17 00/51] Introduce QC USB SND audio offloading support
-Content-Language: en-US
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
- mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
- corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, Thinh.Nguyen@synopsys.com,
- broonie@kernel.org, bgoswami@quicinc.com, tiwai@suse.com,
- robh+dt@kernel.org, konrad.dybcio@linaro.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, linux-sound@vger.kernel.org,
- linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
- <2024021754-unengaged-saggy-6ab1@gregkh>
- <96ab6033-2cb9-daa7-ddad-090138896739@linux.intel.com>
- <2024021922-privatize-runt-495e@gregkh>
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
-In-Reply-To: <2024021922-privatize-runt-495e@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
->>
->> Patch 10/10 is based on an old POC patch by me, but it's heavily modified.
->>
->> It looks like it does a few minor things that are not optimal, like extra
->> spinlock/unlock, and wait_for_completion_timeout() with magical timeout value.
->> I haven't tested this version, but I guess any fixes or cleanups can be done
->> later on top of it.
-> 
-> I can revert it now if you want, just let me know.
-> 
+Hi Marco,
 
-Maybe reverting it would be better yes.
+m.felsch@pengutronix.de wrote on Fri, 16 Feb 2024 11:07:50 +0100:
 
-Thanks
-Mathias
+> Hi Michael,
+>=20
+> On 24-02-16, Michael Walle wrote:
+> > Hi,
+> >=20
+> > On Thu Feb 15, 2024 at 10:14 PM CET, Marco Felsch wrote: =20
+> > > @@ -432,6 +466,7 @@ static int nvmem_populate_sysfs_cells(struct nvme=
+m_device *nvmem)
+> > >  	struct bin_attribute **cells_attrs, *attrs;
+> > >  	struct nvmem_cell_entry *entry;
+> > >  	unsigned int ncells =3D 0, i =3D 0;
+> > > +	umode_t mode;
+> > >  	int ret =3D 0;
+> > > =20
+> > >  	mutex_lock(&nvmem_mutex);
+> > > @@ -456,15 +491,18 @@ static int nvmem_populate_sysfs_cells(struct nv=
+mem_device *nvmem)
+> > >  		goto unlock_mutex;
+> > >  	}
+> > > =20
+> > > +	mode =3D nvmem_bin_attr_get_umode(nvmem);
+> > > +
+> > >  	/* Initialize each attribute to take the name and size of the cell =
+*/
+> > >  	list_for_each_entry(entry, &nvmem->cells, node) {
+> > >  		sysfs_bin_attr_init(&attrs[i]);
+> > >  		attrs[i].attr.name =3D devm_kasprintf(&nvmem->dev, GFP_KERNEL,
+> > >  						    "%s@%x", entry->name,
+> > >  						    entry->offset);
+> > > -		attrs[i].attr.mode =3D 0444; =20
+> >=20
+> > cells are not writable if there is a read post process hook, see
+> > __nvmem_cell_entry_write().
+> >=20
+> > if (entry->read_post_processing)
+> > 	mode &=3D ~0222; =20
+>=20
+> good point, thanks for the hint :) I will add this and send a non-rfc
+> version if write-support is something you would like to have.
+
+I like the idea but, what about mtd devices (and soon maybe UBI
+devices)? This may only work on EEPROM-like devices I guess, where each
+area is fully independent and where no erasure is actually expected.
+
+Thanks,
+Miqu=C3=A8l
 
