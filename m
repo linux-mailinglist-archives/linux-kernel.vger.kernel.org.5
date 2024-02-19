@@ -1,162 +1,148 @@
-Return-Path: <linux-kernel+bounces-71983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 766CE85AD68
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:43:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D29EE85AD6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:45:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91FAE1C23E32
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:43:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 718511F25270
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF3154FA7;
-	Mon, 19 Feb 2024 20:42:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3517B535CF;
+	Mon, 19 Feb 2024 20:45:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="y2xgjGJc"
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ORKqJJPx"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D064A535C6
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 20:42:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788B92E40C;
+	Mon, 19 Feb 2024 20:45:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708375369; cv=none; b=atvTGUqqti1jRVOuQWfGwDmXSZw1rC0lY+3yBUA8k4k59XNqIjiYHTACPT3ELgBmxx0iFK4vtbfeYaQPGWO9nM5CMKWJ76URfkcqyF1zaTg/9Ps0BIvmFWdw1wYnUC8J1dP6yt8rZNkuTJwQ1+mXixKyJgKb6zMWXQS2kxCadrs=
+	t=1708375537; cv=none; b=DqXwCRmZ2FomO1XzhdpyRPo52znHJXMDcHTc54joi0kisig4Dns4niKrnS5UNJ1wWsi1VYTXVsaxTSD0h+Jl2ZkHfxGIN8O/tE4H1guL/Uw7QGCaBKJ4Kb3T7WgzX3qKrlObaL/XotXHsLLSOB3f+nYy2hDqmKn1g42HV0wPvto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708375369; c=relaxed/simple;
-	bh=0qlxg4Wl4LV4zmhyFrXH9tW2Y2omtNhqxGLvqo65VnU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L7GyKMW2xVkB2qHhBuAeEIYdH2EnVXvyxuBA4gBvpEEIRUkXMUnMfniIzmLOM+/3jEcaXFr4Bkn53p4Pmgo3EU2/or/oOV6u+tMrrKwkXpbcf86o6pnc6TOxChM4dABisTz/MohJdgf3Y2lt3hnD7TnTblMGp+HRHe3vm6UGkuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=y2xgjGJc; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33d4c0b198aso739124f8f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:42:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708375366; x=1708980166; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=daii2vCQdv00wY9FjSBPTiVONH9pzRxUrLR+kFtKtA4=;
-        b=y2xgjGJcOlH7IL7GMCQGPV2NXmJd10ZYfSYkU2FBiReg7CJKEuIKHvEIY4hgOuOGQW
-         0mb8MFcCNJ4q/s7kzLA3yhxz8G9jRQQYid7twKvpSKnWRcCFLEDcy1ae6RwsZ07RgYIs
-         j2ZizWZow1J7oWgKgFde/9WPsxlqdMLWgiaHS9qF/OHREs4913wZd8BH0MiHGaM2ZlFT
-         JwAXVDACSc03gH38MQv60dqRd8P3dVJwATdVXMUm7nt5q25GM1xd9Eg1FMW0C8R366az
-         Fkd1Ni25TlfHCLJMteX+Ki6MYmzopztyqJtEibKCa9FGH3nBPUSPBnzmOI8114hkUykU
-         AEGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708375366; x=1708980166;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=daii2vCQdv00wY9FjSBPTiVONH9pzRxUrLR+kFtKtA4=;
-        b=w+dojxXvDVEcw+07+yzYnBhNLzpr+SdwOM6EehLU1Xe8BdKtOKKqQaEyFQfDc8muHg
-         91WlSV92IBXVaW8klfuykQQRsm/q/uKC1/VeD1B1QvAZQ6wt8vJbjKNVeEFpxbYJRkn7
-         Kj+4ch4Y4CaPOKPVlEsXUKKaYg8DxloaSrWbDhuUUO2vSvvjaFQYf3dI1fBVwVwyPMTd
-         bWXZZeV9dvi663CWxRGIR9EZru/2BeqqDF2VZFqadSVM0zlx4AsLw+JuhA53iVzvxzOp
-         TwXLTCUDRdkrHpRMr4ODgwcdz3XWbIFNZH/TbACjl8xrP0i+aEHyXhKC0Up3CPn5zfpK
-         nV9g==
-X-Forwarded-Encrypted: i=1; AJvYcCW1wMIc9v2So35DAJiNVTSja/R7lC/tBHaUBD0Rq0bdY7pvs0XJ0/yy/qFpOKrsclTfm93mdcBbQxZdMwK68RoA/0qrgO6Oi82McYo/
-X-Gm-Message-State: AOJu0YyMUIeMDejIo+xkQiW5vC6pAqOY3a5rp/v7hgl8cersKE78U4Z9
-	z7nZiP40wp6AkbF1Mh0B8XOQ5NvhdidDZhedYxKlWmLBoqCgxl+c39u5nQu2qL4=
-X-Google-Smtp-Source: AGHT+IEcLCWqzEAqp5iQ3VVJMqv2pDXsuNSFdg1jtINv2Aw7ij2NaJ/bQGx00hCn5zu5haX9xWIfMw==
-X-Received: by 2002:a5d:624b:0:b0:33b:381d:a71e with SMTP id m11-20020a5d624b000000b0033b381da71emr8750226wrv.17.1708375366132;
-        Mon, 19 Feb 2024 12:42:46 -0800 (PST)
-Received: from gpeter-l.lan (host-92-18-74-232.as13285.net. [92.18.74.232])
-        by smtp.gmail.com with ESMTPSA id bx15-20020a5d5b0f000000b0033d202abf01sm10561000wrb.28.2024.02.19.12.42.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 12:42:45 -0800 (PST)
-From: Peter Griffin <peter.griffin@linaro.org>
-To: arnd@arndb.de,
-	krzysztof.kozlowski@linaro.org,
-	linux@roeck-us.net,
-	wim@linux-watchdog.org,
-	alim.akhtar@samsung.com,
-	jaewon02.kim@samsung.com,
-	semen.protsenko@linaro.org
-Cc: alexey.klimov@linaro.org,
-	kernel-team@android.com,
-	peter.griffin@linaro.org,
-	tudor.ambarus@linaro.org,
-	andre.draszik@linaro.org,
-	saravanak@google.com,
-	willmcvicker@google.com,
-	linux-fsd@tesla.com,
-	linux-watchdog@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-samsung-soc@vger.kernel.org
-Subject: [PATCH v5 2/2] watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle() for PMU regs
-Date: Mon, 19 Feb 2024 20:42:38 +0000
-Message-ID: <20240219204238.356942-3-peter.griffin@linaro.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240219204238.356942-1-peter.griffin@linaro.org>
-References: <20240219204238.356942-1-peter.griffin@linaro.org>
+	s=arc-20240116; t=1708375537; c=relaxed/simple;
+	bh=RbLok3TbzDososfsQR6bBnabxTYPM3ftFZEG1ID3oXk=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=q2ttGYig0exyM+H4Vnxq0lhpIoqv1wrGBnUeu3csTtjTEeHVXEANYwtiXOBZtcLwVRY27TPszHAiaCjlL/SIPUamEwhm9U8Ub31jHSnJREBmg7//ynjYU0kuhhAIx/twtZoFAgaU/7LJpUWxUQF4D07Ayg4gE6ZWf5Ttp+GtEDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ORKqJJPx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC55EC433F1;
+	Mon, 19 Feb 2024 20:45:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708375537;
+	bh=RbLok3TbzDososfsQR6bBnabxTYPM3ftFZEG1ID3oXk=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=ORKqJJPxeviSRqukC/iAm7zBNCaa4iR8Tc9fVBK6aB7dng3G7U2hQP/KCA3khvlXE
+	 AmcRUJFrn6G1ScFF4cz5ItWC+HGV+NlKfFY8u68ftAvEoiY8u9+njfZqnZRSenccjz
+	 9bC3NDRwq8SBgT+8AJRkeCBgdTG+noAi73LCkQcECJe7ac/rqdCcw6/BcFyD+n5S3s
+	 MDU7Mz2qjW+wcEiyYVE9UzbN8HV++BXTMP7uiSNGu3jx0M6QB0BB1uaC29IEe+m7sL
+	 Ubo0qZOCtxmIbMcfHbo+qgJXuf59B+chSKaov+yuY91AqAvA0g+RWTfSEEslhpjtiS
+	 BgCgFh+Y5MxuQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Feb 2024 20:45:33 +0000
+Message-Id: <CZ9CL1MYG4SK.2L7WVGM7WVCG1@seitikki>
+Cc: "Ross Philipson" <ross.philipson@oracle.com>, "Peter Huewe"
+ <peterhuewe@gmx.de>
+Subject: Re: [PATCH 3/3] tpm: make locality request return value consistent
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Daniel P. Smith" <dpsmith@apertussolutions.com>, "Jason Gunthorpe"
+ <jgg@ziepe.ca>, <linux-integrity@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.15.2
+References: <20240131170824.6183-1-dpsmith@apertussolutions.com>
+ <20240131170824.6183-4-dpsmith@apertussolutions.com>
+ <CYU3XUGOX6QT.1GL070ONNPBWQ@suppilovahvero>
+ <80d95a08-a1c1-44a7-959c-8bff14254608@apertussolutions.com>
+In-Reply-To: <80d95a08-a1c1-44a7-959c-8bff14254608@apertussolutions.com>
 
-Obtain the PMU regmap using the new API added to exynos-pmu driver rather
-than syscon_regmap_lookup_by_phandle(). As this driver no longer depends
-on mfd syscon remove that header and Kconfig dependency.
+On Mon Feb 19, 2024 at 8:29 PM UTC, Daniel P. Smith wrote:
+> On 2/1/24 17:49, Jarkko Sakkinen wrote:
+> > On Wed Jan 31, 2024 at 7:08 PM EET, Daniel P. Smith wrote:
+> >> The function tpm_tis_request_locality() is expected to return the loca=
+lity
+> >> value that was requested, or a negative error code upon failure. If it=
+ is called
+> >> while locality_count of struct tis_data is non-zero, no actual localit=
+y request
+> >> will be sent. Because the ret variable is initially set to 0, the
+> >> locality_count will still get increased, and the function will return =
+0. For a
+> >> caller, this would indicate that locality 0 was successfully requested=
+ and not
+> >> the state changes just mentioned.
+> >>
+> >> Additionally, the function __tpm_tis_request_locality() provides incon=
+sistent
+> >> error codes. It will provide either a failed IO write or a -1 should i=
+t have
+> >> timed out waiting for locality request to succeed.
+> >>
+> >> This commit changes __tpm_tis_request_locality() to return valid negat=
+ive error
+> >> codes to reflect the reason it fails. It then adjusts the return value=
+ check in
+> >> tpm_tis_request_locality() to check for a non-negative return value be=
+fore
+> >> incrementing locality_cout. In addition, the initial value of the ret =
+value is
+> >> set to a negative error to ensure the check does not pass if
+> >> __tpm_tis_request_locality() is not called.
+> >=20
+> > This is way way too abtract explanation and since I don't honestly
+> > understand what I'm reading, the code changes look bunch of arbitrary
+> > changes with no sound logic as a whole.
+>
+> In more simpler terms, the interface is inconsistent with its return=20
+> values. To be specific, here are the sources for the possible values=20
+> tpm_tis_request_locality() will return:
+> 1. 0 - 4: _tpm_tis_request_locality() was able to set the locality
+> 2. 0: a locality already open, no locality request made
+> 3. -1: if timeout happens in __tpm_tis_request_locality()
+> 4. -EINVAL: unlikely, return by IO write for incorrect sized write
+>
+> As can easily be seen, tpm_tis_request_locality() will return 0 for both=
+=20
+> a successful(1) and non-successful request(2). And to be explicit for=20
+> (2), if tpm_tis_request_locality is called for a non-zero locality and=20
+> the locality counter is not zero, it will return 0. Thus, making the=20
+> value 0 reflect as success when locality 0 is successfully requested and=
+=20
+> as failure when a locality is requested with a locality already open.
+>
+> As for failures, correct me if I am wrong, but if a function is=20
+> returning negative error codes, it should not be using a hard coded -1=20
+> as a generic error code. As I note, it is unlikely for the -EINVAL to be=
+=20
+> delivered, but the code path is still available should something in the=
+=20
+> future change the backing call logic.
+>
+> After this change, the possible return values for=20
+> tpm_tis_request_locality() become:
+> 1. 0 - 4: the locality that was successfully requested
+> 2. -EBUSY: tpm busy, unable to request locality
+> 3. -EINVAL: invalid parameter
+>
+> With this more consistent interface, I updated the return value checks=20
+> at the call sites to check for negative error as the means to catch=20
+> failures.
 
-Tested-by: Alexey Klimov <alexey.klimov@linaro.org>
-Tested-by: Sam Protsenko <semen.protsenko@linaro.org>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
----
- drivers/watchdog/Kconfig       | 1 -
- drivers/watchdog/s3c2410_wdt.c | 8 ++++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+For all commits: your responses to my queries have much more to the
+point information and buy-in than the original commit messages. So
+for next version I would take them and edit a bit and then this all
+makes much much more sense. Thank you.
+>
+> v/r,
+> dps
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 7d22051b15a2..d78fe7137799 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -512,7 +512,6 @@ config S3C2410_WATCHDOG
- 	tristate "S3C6410/S5Pv210/Exynos Watchdog"
- 	depends on ARCH_S3C64XX || ARCH_S5PV210 || ARCH_EXYNOS || COMPILE_TEST
- 	select WATCHDOG_CORE
--	select MFD_SYSCON if ARCH_EXYNOS
- 	help
- 	  Watchdog timer block in the Samsung S3C64xx, S5Pv210 and Exynos
- 	  SoCs. This will reboot the system when the timer expires with
-diff --git a/drivers/watchdog/s3c2410_wdt.c b/drivers/watchdog/s3c2410_wdt.c
-index 349d30462c8c..686cf544d0ae 100644
---- a/drivers/watchdog/s3c2410_wdt.c
-+++ b/drivers/watchdog/s3c2410_wdt.c
-@@ -24,9 +24,9 @@
- #include <linux/slab.h>
- #include <linux/err.h>
- #include <linux/of.h>
--#include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- #include <linux/delay.h>
-+#include <linux/soc/samsung/exynos-pmu.h>
- 
- #define S3C2410_WTCON		0x00
- #define S3C2410_WTDAT		0x04
-@@ -699,11 +699,11 @@ static int s3c2410wdt_probe(struct platform_device *pdev)
- 		return ret;
- 
- 	if (wdt->drv_data->quirks & QUIRKS_HAVE_PMUREG) {
--		wdt->pmureg = syscon_regmap_lookup_by_phandle(dev->of_node,
--						"samsung,syscon-phandle");
-+		wdt->pmureg = exynos_get_pmu_regmap_by_phandle(dev->of_node,
-+						 "samsung,syscon-phandle");
- 		if (IS_ERR(wdt->pmureg))
- 			return dev_err_probe(dev, PTR_ERR(wdt->pmureg),
--					     "syscon regmap lookup failed.\n");
-+					     "PMU regmap lookup failed.\n");
- 	}
- 
- 	wdt_irq = platform_get_irq(pdev, 0);
--- 
-2.44.0.rc0.258.g7320e95886-goog
-
+BR, Jarkko
 
