@@ -1,216 +1,258 @@
-Return-Path: <linux-kernel+bounces-71743-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8086285A9C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AB5985A9CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F66E1F21F3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:18:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9CE251F2194F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38864595A;
-	Mon, 19 Feb 2024 17:18:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D08744C81;
+	Mon, 19 Feb 2024 17:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hqQqDI3U"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Iopo+4MV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F4E8446CE
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:18:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708363116; cv=none; b=S71E18cGCh5zZHle+ipfkXWWbscK1PR6Bo0nVMkt5/aIKYDzJYMpJpMO6Zk4R+LAEPs4/02jjMjPrsJg9wiXYHqCCpQbDX2+3CivXIUj1OyFNsyA+hXu852fP6nP6fXT+6I161P1+tf20C34R3TuO0q6xatzm9Q58C5kSfGlH7w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708363116; c=relaxed/simple;
-	bh=YtBsaUyY/Wb1P24PhdovpdBvyLf28UKpe0gDT+2Ldzs=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=V3jB4R7sfp/6CTpYFbYCtgAdgLgaCGwFpxgytIVz2o+EyIprSYEWU6Pp2EaZTxwIfkUobq0tRQ455nNEjwcYRJ8oVjwTk3/SmX3kA42Lnxe6rKjM2gYdZYfDtvvig+4TDQuKYZHVEASgDydFS7vpc0ZYhyWaFgohIuTCw65GUIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hqQqDI3U; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41262ec677fso10419845e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:18:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708363111; x=1708967911; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=u7kZlLXHS08bcdnhY94K2kbmvHbCpRcAmjuD4rUAeN0=;
-        b=hqQqDI3UTvqcM1op56C6Rxsqy2oUu2x4TlZ1k0D/AcnXfFRlvHXlixoiL09wHuY+1K
-         KifV4Hj16GRpLJvi0BOxcXIq4CnWM+xP6YQUHKmBCnO7RE2i5IeI32xKsYbaQNd2b1d1
-         6SdFADJUGBsRib9RmIJVut+ivdi7b1r/F5pQI5XzvCjmj11XUnmfPv8x6/qDKQE/DAI5
-         RH8pNs4O2znG2C3/Nk7P5yKvbyRYz4mAqc4FvTQwDnYzsesCth2md4HFGFE4woDwJUXZ
-         DSCzXRT0gCrNvnEBxcUl3c+yV54GhP1tmfaI7CGTfgLR2/xAkzJRpoxj1z706POhjtCK
-         JnFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708363111; x=1708967911;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=u7kZlLXHS08bcdnhY94K2kbmvHbCpRcAmjuD4rUAeN0=;
-        b=wJ4BzecHjRzuop0ynqyiFnrPQSFAE51/jWS1qpo3FVIH+9TN80g5pv5Vb1mG3z/ZPG
-         ZzSYmBNjl/RtdJqlcbF+XN2RhhvA2ThhxsiK3Lb8rH3LFgclqwxUNo/vN2bCEbCWbmiR
-         wUIwEmolUMYfEanzoBLq4yc4gfvYT4s2ReK8YuU0hy5aNhmrqaFFonBPITgmvGT4O+sr
-         qt3NDg+zYkgLUrSPqNinZbzm22TILnc/+UG311nhxo/Dpl4YjX+z5FLPvgkU3PL/l6Nb
-         9evvrqcCoxmsD2OlFy5k7vFks3+cjmfKgNdmU01j/EyNsVMspUnDpbsGWgjh3DmZtCQD
-         Zp3A==
-X-Forwarded-Encrypted: i=1; AJvYcCUpHcvQcvEVUUHhNgHeol6Pmow4KtZ+Hc/gipr4EQn7WCH6kE7fulL9dHtuW+z7O2oUuqf+21KJKM/AMoT8YdC9I1brCZt30ok7Cdw2
-X-Gm-Message-State: AOJu0YzV9gAFSqx708IHx4ZPowj03En6Tx1cbxfcDiw/Fij6ksQZV/CZ
-	p0fRGQ4opkgvz9TzNRqn+97MZBscossOvupYr2s20RZjvgs2DYlUZlOZ3iWBm/M=
-X-Google-Smtp-Source: AGHT+IG6HApNAr08gNp8EANCLSEDYJY0OEJeO4RN59vBmzRJNnpiIxby3zbW1YTKTzihCko1G1T4UQ==
-X-Received: by 2002:a05:600c:5186:b0:412:6953:fc8c with SMTP id fa6-20020a05600c518600b004126953fc8cmr1379148wmb.23.1708363111460;
-        Mon, 19 Feb 2024 09:18:31 -0800 (PST)
-Received: from ?IPV6:2a01:e0a:982:cbb0:fe7f:ff5e:4cf1:97b9? ([2a01:e0a:982:cbb0:fe7f:ff5e:4cf1:97b9])
-        by smtp.gmail.com with ESMTPSA id p17-20020a05600c469100b004120b4c57c9sm12103046wmo.4.2024.02.19.09.18.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 09:18:30 -0800 (PST)
-Message-ID: <b9a31374-8ea9-407e-9ec3-008a95e2b18b@linaro.org>
-Date: Mon, 19 Feb 2024 18:18:28 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6909727714;
+	Mon, 19 Feb 2024 17:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708363256; cv=fail; b=gMy41F4+hjrU8tOlHeLsaK98V9f6gViWQl7AR+zarSF9VDW6kNnPRB+DwpHrf1rBbFF4IsyA+F9wjMDG8VrCtUR2zw+SzjMKOWcZygt+3G6VWRqophySg26v7uJF8XKiKQxtnZZPEklnZmitbMj3gQOp5Wr7kNZaEa5Nvw31mvM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708363256; c=relaxed/simple;
+	bh=mTF3N52Nb/oMdp7ie6MNuJ9d3KWyAvuPjBpFpcmeB28=;
+	h=Message-ID:Date:Subject:From:To:CC:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=OrqB7qWu4+7CD2MePxCiZOOOUe8fcMuG+hDUyvkmvaxN4GIR+Xwp4jB9M4RoAmCPi1mNzocow6hdtkN11I7S03ko2VVxZ7UlXaeDwCkOIwnLYNoAiVvxG9L4Oox4M7/DKO4jy6cxKVr0+2qLn8FhtXj9lO8jJ5FJz2lm+sgxttE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Iopo+4MV; arc=fail smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708363255; x=1739899255;
+  h=message-id:date:subject:from:to:cc:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=mTF3N52Nb/oMdp7ie6MNuJ9d3KWyAvuPjBpFpcmeB28=;
+  b=Iopo+4MVNYXkZwkM/ZZXCGyO7D8j8H7s0hOfOGy1KkGCIm9No87kVi5o
+   kVOpLa7ehDMT2PTEQHW1OxRYfYiXe0U1Xkzue12nf6G0MBP6+2tkKumC8
+   amBWmPBJEk7XLoV9nb5H71bT90KP9jKwZQvmWY15R4PX+9r48zYWgaClI
+   G/MNS0FJDcvUnKU4PNegToUAAgj9/y/PFKFebJIG+AEx1iSlFoXiyMWFH
+   e5+bomFBd+Q2EJR+/odgQeNyYj/pZKXjzoYB5tzjtxpQMcVwlD9L5oAXH
+   WATAF9IKw8GxPOpwdrm6XbJTEcKIYTGjqTJbyRZT2STiQoV1znOHbOqSL
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2316208"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="2316208"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 09:20:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="4934627"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 09:20:54 -0800
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 09:20:53 -0800
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 09:20:52 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 09:20:52 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 19 Feb 2024 09:20:52 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ICkS79zYAn4QdDG1C9hhACtRrtZt9RakU5rhwCNKJqzwJjFSdxWwuxbiamzyjquvtCjPOCM0EhVMZ+Gb/1gBbQv42NnQ7xg3dKyiLUBWGjS26ZtmyxuLZKZ9t7a08dMQLYkFyzC7mLNCrZ8Xl7gck1CSH4FRV432GTm2HGiBubiyyvGvRzd3XoTnNDG5hy1Tc6zIf5ffciI9oo4W145IJNHkIlEgqMIXPGHNGBvsU4wbIFe9pTGl1/x1VaVt3XNnHQ9AZB7Qsn+EHTaKdN7OZYkomHz93ChyVR8gx6CJytUPuTdmTMwiJViMX+YOqC0Imen0IbZIWB8f8ARI7xslQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RGuUxbwz1fJwhw7VX0FBL8VQvGX2KJOQy7CTwXVDpz4=;
+ b=RSmDoKE8pkirayjSxeLszwAfJqa04wcnWu8d/OX7OTlnd+MNotG2+kC1hY6WkNyekZwEh81yviSo7/iA2qdKoQA2cwu/raTaZrtvWyLyYkkgP6Vft6Fk7v/t2J9/3oJa+2JJR6xRFBikrO2TyZDA98Qq8kc1jjrHVlTaUuAOkxGkDHXTxehRCI5pwCBdIYmd/IkOreHKUJjPXGf9+4exQTLbpG3guW5SiQZsCv6Hoj/+t6CP5o0vKFhN/hi0FNd8KZjIcqHxgovsi9cYx8//B66ZXG0P9rHbP+dAkwux1HBeNlkJGE9v8XXKZrFn4h2hMLE1ynl/oz2YWB/mhy0LuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
+ by BN9PR11MB5482.namprd11.prod.outlook.com (2603:10b6:408:103::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
+ 2024 17:20:51 +0000
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::9c3:d61a:c2c9:109f]) by IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::9c3:d61a:c2c9:109f%5]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
+ 17:20:50 +0000
+Message-ID: <82d6f21b-3bc6-2094-385c-f9ff849203dc@intel.com>
+Date: Mon, 19 Feb 2024 09:20:23 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH] dmaengine: idxd: Ensure safe user copy of completion
+ record
+Content-Language: en-US
+From: Fenghua Yu <fenghua.yu@intel.com>
+To: Lijun Pan <lijun.pan@intel.com>, Vinod Koul <vkoul@kernel.org>, Dave Jiang
+	<dave.jiang@intel.com>
+CC: <dmaengine@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>,
+	Tony Zhu <tony.zhu@intel.com>
+References: <20240209191412.1050270-1-fenghua.yu@intel.com>
+ <4237a933-0f61-417f-bbb6-ce5954b304d4@intel.com>
+ <5012d165-e726-e3c7-2a5a-02745dd44f3e@intel.com>
+In-Reply-To: <5012d165-e726-e3c7-2a5a-02745dd44f3e@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR05CA0099.namprd05.prod.outlook.com
+ (2603:10b6:a03:334::14) To IA1PR11MB6097.namprd11.prod.outlook.com
+ (2603:10b6:208:3d7::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: neil.armstrong@linaro.org
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v5 00/18] power: sequencing: implement the subsystem and
- add first users
-Content-Language: en-US, fr
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>,
- Lukas Wunner <lukas@wunner.de>, linux-bluetooth@vger.kernel.org,
- netdev@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <CAA8EJppt4-L1RyDeG=1SbbzkTDhLkGcmAbZQeY0S6wGnBbFbvw@mail.gmail.com>
- <e4cddd9f-9d76-43b7-9091-413f923d27f2@linaro.org>
- <CAA8EJpp6+2w65o2Bfcr44tE_ircMoON6hvGgyWfvFuh3HamoSQ@mail.gmail.com>
- <4d2a6f16-bb48-4d4e-b8fd-7e4b14563ffa@linaro.org>
- <CAA8EJpq=iyOfYzNATRbpqfBaYSdJV1Ao5t2ewLK+wY+vEaFYAQ@mail.gmail.com>
- <CAMRc=Mfnpusf+mb-CB5S8_p7QwVW6owekC5KcQF0qrR=iOQ=oA@mail.gmail.com>
- <CAA8EJppY7VTrDz3-FMZh2qHoU+JSGUjCVEi5x=OZgNVxQLm3eQ@mail.gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <CAA8EJppY7VTrDz3-FMZh2qHoU+JSGUjCVEi5x=OZgNVxQLm3eQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|BN9PR11MB5482:EE_
+X-MS-Office365-Filtering-Correlation-Id: cbf2e7d6-8ff3-4057-39ff-08dc316f1ebb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NTDCWgPtxUGTvraVTDDKh1s72mX3ZqN9EI5Zo+P4FgbvJcvbiEOvMiAVQhg7M9N0GkfdsnyAXhZ0dBMLQ5Wtw2gIuaowj6kDM4foqbme4RN7GiBcjPc/k/ZNpRv0eR9Mh/G8dJfEYEMU06q+J+MkgKBq8j2zB+noMfq5jA85wNoDMEWGFMzzFjIzZv/F3OhO3UNgjOgd4lL/uXSruFgTq/T14YQ+4VYxaeoJtQ+MgNt1i+ZEE9QAj5wK4sMJg94y7i2fVKysfCB+MHVVM9YZlUY85JXXbfEQneAU1zyw3pUFXYM2cvDawcw5ZA6Z5bjNSLKL826SsWiCWfAKZ6rAT7AQXqijXr1l+AT8dzzi4taKl1HlCXuyNeAP8cMcNszWAvxFD+6URxt6wWt134dJgvLQZ0LQuxUOMBz8wwAQKJp3u+evol0PSF+H1fuMuwhiL5fPtT68KAaslxHoE2tqfi499dJyxR5C7xkUuHQcyCfva2fhfPi26XQz/6Rm9kiH7VpWc8n+RmCbI3yBIl5vcYoIRz8mQBA8ucaNeJvLS2s=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q0N5M002SUNYb0pFOFl5WDNCSUVDZ2JadmVkVUp6QWRUYUw4Q2c3OUNxVEky?=
+ =?utf-8?B?TkpkdUhSYzJSSmo3Q3hLUnpGWjRPMW0vNituZXl2MTcyZmU3Z0NxUi9JMmpE?=
+ =?utf-8?B?bTdhMnlEL2hLbEZtOFZJVTFOeUdSS3lPeUpxNHJqaGJuOFVLUWtBbnFaNFda?=
+ =?utf-8?B?aE16L3dDc2hSakN0d2pmYzgwQnAydURFWlhzaXRYVGtvc0F3QzNQcEVDRU92?=
+ =?utf-8?B?TklQVWZvTkZkbXV5MTU3SUpxaWUwV1VVV0VTNnhhVjFDQ01EWEhSUFA5RWV2?=
+ =?utf-8?B?RGVCU01nQTNSTExOMVM2SFNZNkFWaitvZzdsTHNsNlZOTmU2OWhxNVYreVR1?=
+ =?utf-8?B?K1dKaS91ZXpLNDNpU1dqTHl1dHNpb1k5VTlobFRhSkNvcDM0YU4rZVEyN2pv?=
+ =?utf-8?B?eGVpWk9NRUE3TG5kTU9UNE9vSVV6NFJtdERkeTFqSkNGa2VnL2xXd1kxdDdj?=
+ =?utf-8?B?OTdhNkJmUUF5cFNxcFJWNXQzR3phMldvN1RLTzltYWZFMWVKd1UvQjkySmto?=
+ =?utf-8?B?UnpsU2xFUlBYWldVUDlUZWs5a01hcC9OcjF6bzhzeXhWVTBUcGlNZGhUV002?=
+ =?utf-8?B?MHI5NVhzSmNNbGxsQzkyUXcxMy9GamFNUVpkMmRIUXd3dEE0ZDhyeHdtK0or?=
+ =?utf-8?B?am9ncVNYajViM2tDbk96a1owb2xVNE12SEhHWEZNSkRpU1N1ZnlCRlJDK1Qz?=
+ =?utf-8?B?dXNYSHRvWm90RUdpZ0ZKcWlnSkh0WXhQeWhCb25pZnhyNytBTE1MbCtVUFpw?=
+ =?utf-8?B?bzBSRmtiZmVuUWxlbEFqZjh6QlFoZHZERHVxTXFkRUlITmozaEllWkdBN0xl?=
+ =?utf-8?B?R3lXcExweWVJdHlteHVnOHhYL2oyNTVla3o1TXVFUTd1NzlNOVVNd1NWbFlW?=
+ =?utf-8?B?UExVZmdoRmJHcWtZVlNvVHhpQjJwZ1E0aGcrLytWOWxKTFprdnMvYjh4Yndp?=
+ =?utf-8?B?ZWplQmNzMEI0c0hCTGNVZTUvM1kxN2VnYndMTWpNdkxQbG1SZzNCcWlhWWgr?=
+ =?utf-8?B?TnloU280UFVDdXF1M1BqelcrQ3ZEcysxa1lPQTFaZUVmMGVwWHdZc0c1WmlL?=
+ =?utf-8?B?Rjl4NmFjZ09TdVZ5TEZkcjNOWWhDTmZhb2RDNExkSkg1ekpXaGRjRnRhVHo3?=
+ =?utf-8?B?dzhNSFc5MlM1ZElrNDJJdXhDTlNLdUFDVzVMTi9sU3NjTzBEeEUybUNhakRQ?=
+ =?utf-8?B?YjF3aTB0Z3o1T0Rua050UnI2aUxiMis5bGlReG56M29SRmRmVWdWN3Zod0JD?=
+ =?utf-8?B?ZmdramZ2TSt0ZlMydEswMGwyUkplOTVLQVcxUVFsaXhZcmZrQ0FsRmkrY05y?=
+ =?utf-8?B?QlJkbm9CdENheXdZWEV1SFpoT2dGcUQ1bHRMaGRjZUtoNUMvVHhqWjgvQVdX?=
+ =?utf-8?B?WklRTElOSGJxWmEvcVFpMWwxcmpXM3g4OHBjdnBxYnc2alZwcDVPbCtka1lz?=
+ =?utf-8?B?NlNNTkJScE50K0NaMkxPQ0tNb1RtOVErVUVDTldIbitSNFc2RTZ5ZHg5Y3RJ?=
+ =?utf-8?B?M0ZuTjZkTFRmZFFaZTZXSWJSTng5d3lhWVdJdDU4WFZQYWRUNHhkUkl6Z20w?=
+ =?utf-8?B?QjF0YWhDUUF6UnBMeVFUbWszc1JSb2Z2bDJhSDJGdEZIc1Z3b1Q4WUNMOTdw?=
+ =?utf-8?B?L3B2NE1qNThsNUhrS0J1bG9jSTJwNnJRRHZjYXJJZ2RCZDZXaC81SHZQS05p?=
+ =?utf-8?B?YjJ3YlNud2JvVkNHQjBiNWh4N2tPU2pjTTRuZnJuRVNHcHhsMkRnTWNsQnpj?=
+ =?utf-8?B?OVNOMU4rcEljUDhuTlN6OWJxckVkeCtlL20rOGV2cVpLTmJKWENIZ0dLb3JP?=
+ =?utf-8?B?VEk0c2xXa0JLUEx1YXRqVWtuamEwWFMrck5NMlpFQW1EU2dvdXpMb0dHUUwy?=
+ =?utf-8?B?Zzk5ZFl4OWFCMUcrVi9zZTdQWDN0RHhrNytCbUtMbU1TcWRiSGw4VisrS0hI?=
+ =?utf-8?B?ZG44akRyV0E5bHdBblRoc1U3U1lVLzFQYjR1K0JjUXA0MVZ3dU8xZmhsOUZy?=
+ =?utf-8?B?Y2hMTzNqQ0NGK01vS1ltaTdxcXZhR2RGeXJSeGxEc1VTZG5hS2Y1dUtzK2ha?=
+ =?utf-8?B?LzBXaVlBYVNsTk9LTGRnRFI5R1dzbVo2VHdpYmdFVkZFL0J1dWdPNVhYZ2t5?=
+ =?utf-8?Q?scN+3Z2npsTNK9xJ4xdnkA9MI?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbf2e7d6-8ff3-4057-39ff-08dc316f1ebb
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 17:20:50.8469
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OkUl9U5weGQJRF2CMnS6dYS8lpq0MP25gEEalM51u7H97mnzy01gQnx2s/IobCHY1ZAtmAshlUW4b4w53657vw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5482
+X-OriginatorOrg: intel.com
 
-On 19/02/2024 13:33, Dmitry Baryshkov wrote:
-> On Mon, 19 Feb 2024 at 14:23, Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+Hi, Vinod,
+
+On 2/9/24 16:20, Fenghua Yu wrote:
+> Hi, Lijun,
+> 
+> On 2/9/24 13:53, Lijun Pan wrote:
 >>
->> On Mon, Feb 19, 2024 at 11:26 AM Dmitry Baryshkov
->> <dmitry.baryshkov@linaro.org> wrote:
+>>
+>> On 2/10/2024 3:14 AM, Fenghua Yu wrote:
+>>> If CONFIG_HARDENED_USERCOPY is enabled, copying completion record from
+>>> event log cache to user triggers a kernel bug.
+> 
+> ...
+> 
+>>> Fixes: c2f156bf168f ("dmaengine: idxd: create kmem cache for event 
+>>> log fault items")
+>>> Reported-by: Tony Zhu <tony.zhu@intel.com>
+>>> Tested-by: Tony Zhu <tony.zhu@intel.com>
+>>> Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+>>
+>> Reviewed-by: Lijun Pan <lijun.pan@intel.com>
+>>
+>>> ---
+>>>   drivers/dma/idxd/init.c | 15 ++++++++++++---
+>>>   1 file changed, 12 insertions(+), 3 deletions(-)
 >>>
+>>> diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
+>>> index 14df1f1347a8..4954adc6bb60 100644
+>>> --- a/drivers/dma/idxd/init.c
+>>> +++ b/drivers/dma/idxd/init.c
+>>> @@ -343,7 +343,9 @@ static void idxd_cleanup_internals(struct 
+>>> idxd_device *idxd)
+>>>   static int idxd_init_evl(struct idxd_device *idxd)
+>>>   {
+>>>       struct device *dev = &idxd->pdev->dev;
+>>> +    unsigned int evl_cache_size;
+>>>       struct idxd_evl *evl;
+>>> +    const char *idxd_name;
+>>>       if (idxd->hw.gen_cap.evl_support == 0)
+>>>           return 0;
+>>> @@ -355,9 +357,16 @@ static int idxd_init_evl(struct idxd_device *idxd)
+>>>       spin_lock_init(&evl->lock);
+>>>       evl->size = IDXD_EVL_SIZE_MIN;
+>>> -    idxd->evl_cache = kmem_cache_create(dev_name(idxd_confdev(idxd)),
+>>> -                        sizeof(struct idxd_evl_fault) + 
+>>> evl_ent_size(idxd),
+>>> -                        0, 0, NULL);
+>>> +    idxd_name = dev_name(idxd_confdev(idxd));
+>>> +    evl_cache_size = sizeof(struct idxd_evl_fault) + 
+>>> evl_ent_size(idxd);
+>>> +    /*
+>>> +     * Since completion record in evl_cache will be copied to user
+>>> +     * when handling completion record page fault, need to create
+>>> +     * the cache suitable for user copy.
+>>> +     */
 >>
->> [snip]
->>
->>>>>>>>
->>>>>>>> For WCN7850 we hide the existence of the PMU as modeling it is simply not
->>>>>>>> necessary. The BT and WLAN devices on the device-tree are represented as
->>>>>>>> consuming the inputs (relevant to the functionality of each) of the PMU
->>>>>>>> directly.
->>>>>>>
->>>>>>> We are describing the hardware. From the hardware point of view, there
->>>>>>> is a PMU. I think at some point we would really like to describe all
->>>>>>> Qualcomm/Atheros WiFI+BT units using this PMU approach, including the
->>>>>>> older ath10k units present on RB3 (WCN3990) and db820c (QCA6174).
->>>>>>
->>>>>> While I agree with older WiFi+BT units, I don't think it's needed for
->>>>>> WCN7850 since BT+WiFi are now designed to be fully independent and PMU is
->>>>>> transparent.
->>>>>
->>>>> I don't see any significant difference between WCN6750/WCN6855 and
->>>>> WCN7850 from the PMU / power up point of view. Could you please point
->>>>> me to the difference?
->>>>>
->>>>
->>>> The WCN7850 datasheet clearly states there's not contraint on the WLAN_EN
->>>> and BT_EN ordering and the only requirement is to have all input regulators
->>>> up before pulling up WLAN_EN and/or BT_EN.
->>>>
->>>> This makes the PMU transparent and BT and WLAN can be described as independent.
->>>
->>>  From the hardware perspective, there is a PMU. It has several LDOs. So
->>> the device tree should have the same style as the previous
->>> generations.
->>>
->>
->> My thinking was this: yes, there is a PMU but describing it has no
->> benefit (unlike QCA6x90). If we do describe, then we'll end up having
->> to use pwrseq here despite it not being needed because now we won't be
->> able to just get regulators from WLAN/BT drivers directly.
->>
->> So I also vote for keeping it this way. Let's go into the package
->> detail only if it's required.
+>> Maybe briefly compare kmem_cache_create() with 
+>> kmem_cache_create_usercopy() and add up to the above comments. If you 
+>> think it too verbose, then forget about it.
 > 
-> The WiFi / BT parts are not powered up by the board regulators. They
-> are powered up by the PSU. So we are not describing it in the accurate
-> way.
-
-I disagree, the WCN7850 can also be used as a discrete PCIe M.2 card, and in
-this situation the PCIe part is powered with the M.2 slot and the BT side
-is powered separately as we currently do it now.
-
-So yes there's a PMU, but it's not an always visible hardware part, from the
-SoC PoV, only the separate PCIe and BT subsystems are visible/controllable/powerable.
-
-Neil
-
+> It's improper to add comment to compare the two functions here because:
+> 1. When people look into this code in init.c, they have no idea why 
+> compare the functions here when only kmem_cache_create_usercopy() is 
+> used. The comparison is only meaningful in this patch's context and has 
+> been explained in the patch commit message.
 > 
-> Moreover, I think we definitely want to move BT driver to use only the
-> pwrseq power up method. Doing it in the other way results in the code
-> duplication and possible issues because of the regulator / pwrseq
-> taking different code paths.
+> 2. Comparison or any details of the function can be found easily in the 
+> function implementation. No need to add more details on top of the 
+> current comment which covers enough info (i.e. why call this function) 
+> already.
 > 
-> 
+> Given the above reasons, I will keep the current comment and patch 
+> without change.
 
+Since Dave gave Reviewed-by already and the comment from Lijun is 
+invalid and won't be addressed, could you please apply this patch to 
+dmaengine tree for upstream inclusion?
+
+Thank you very much!
+
+-Fenghua
 
