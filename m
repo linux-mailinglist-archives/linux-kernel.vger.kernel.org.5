@@ -1,166 +1,205 @@
-Return-Path: <linux-kernel+bounces-71357-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3AC485A3F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:56:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0315485A3F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 068DFB23974
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:56:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 362051C220A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:56:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B710321B0;
-	Mon, 19 Feb 2024 12:56:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374DF321B0;
+	Mon, 19 Feb 2024 12:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Vz/b3y+W";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UvmK2WYN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dJBbbMw6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rx0TOfk1"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IaC62Hw3"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710BF2E847;
-	Mon, 19 Feb 2024 12:56:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6799C2E847;
+	Mon, 19 Feb 2024 12:56:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708347368; cv=none; b=a6U6PuISXgAVfYZyGVQtPoMNHcMavmO6TDn302BPPPPbPYSR+9yXUqxzkO14U3+lCKQ+HZ3s93P9e/BMWUJjqgaMG7oIJKNGCEQ1/8SLcSExEMYUkjEqhjE2PEtyaB2bvXI89RLVkrJGDqijwEXFyrH8aY22sbZKU1m4fNJ3lb0=
+	t=1708347385; cv=none; b=OXf+u//OI2E1v1lfM3w5UpyGPNGJ9SqKdzB8LyH6Gm7wLTxeJEK7Xq1s/MNuGZRdsBVJngOOQWIgs0oxlX7AbDUIPccmXohl407jNh3Eh1DVeDAK/MEtOhfL53p3gF4f8ZH7aEk7DkDYwElRQgNrHQ9iG50cW2E0PfCvEMQhmCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708347368; c=relaxed/simple;
-	bh=1xMUyCp7MByC4pxmGHlkXU0SqaRPNqUQxypzPEEGZTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HjK0DNteR+JFxVMG1tUk28og76XG948z+4PqJT64oqm+DD9VOpw77NCg0JcLuphx9jviYkjl0N+zvhgQaF5zQYtiVMhmEqK2gSCWr1yUE5Nl7xvRYo9fV8R9OGSTdolIKI8+izgq/gY74KCu1oLI6vFU50YeVaDZ2DTdxdGctlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Vz/b3y+W; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UvmK2WYN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dJBbbMw6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rx0TOfk1; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A385B1F7F7;
-	Mon, 19 Feb 2024 12:56:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708347364; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TWRdspdcX3pYQWfNbt9wzvKxEQREQ1wZYPUI0lwbR2o=;
-	b=Vz/b3y+Wis0IDsEdSmDxJ3aRR3Zin6jo/maOrkKPkZj1Q/1REQuE+san0w//NOGMxzE5et
-	MFePVK0vOWNbxzufnHqyU+NqmIWWc6Ve3dsPEcjx5XvBgPdPFedYF0oxABiod0hRN3orvT
-	dY07EKNYQCrTyOiuZdM0MKow9/F4c1s=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708347364;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TWRdspdcX3pYQWfNbt9wzvKxEQREQ1wZYPUI0lwbR2o=;
-	b=UvmK2WYNhvzljgDn657vqNCu4O5jODq4IzP5sIIcXiBqncQeVCnDg1EYSlFVIB7qQ0Lwr/
-	MjEU3Hkf/Y2G4RCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708347362; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TWRdspdcX3pYQWfNbt9wzvKxEQREQ1wZYPUI0lwbR2o=;
-	b=dJBbbMw649OgT1w3qsyvKW7FWn2KkHKOvMsaRti5xE6lEg7FhW34huv5CbBQZ8HSrIQdb+
-	JvDiIs8nFLO5pvYexmnxyyPsERkgWR7qMnIFozVUflsb7FqLiLAprDpmG8dxED30rjjRQv
-	ZOeZtJqMM+AoFPh0lruNvzFJOsVQm8Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708347362;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TWRdspdcX3pYQWfNbt9wzvKxEQREQ1wZYPUI0lwbR2o=;
-	b=rx0TOfk1P728XPAdp67rvDcPpemYH2UXp/ybsqyEDScOPyWIdbdqUoZZ9waagM7ytA+1uW
-	3N5OhMQWyK2i9YCQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 93DB2139C6;
-	Mon, 19 Feb 2024 12:56:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id zoIRJOJP02VOfQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 19 Feb 2024 12:56:02 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3D7F7A0806; Mon, 19 Feb 2024 13:56:02 +0100 (CET)
-Date: Mon, 19 Feb 2024 13:56:02 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+427fed3295e9a7e887f2@syzkaller.appspotmail.com>
-Cc: agruenba@redhat.com, axboe@kernel.dk, brauner@kernel.org,
-	cluster-devel@redhat.com, elver@google.com, gfs2@lists.linux.dev,
-	jack@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, nogikh@google.com,
-	peterz@infradead.org, rpeterso@redhat.com,
-	syzkaller-bugs@googlegroups.com, valentin.schneider@arm.com
-Subject: Re: [syzbot] [gfs2?] general protection fault in gfs2_dump_glock (2)
-Message-ID: <20240219125602.mytnw647csn777bc@quack3>
-References: <00000000000050a49105f63ed997@google.com>
- <00000000000077ce280611bace5b@google.com>
+	s=arc-20240116; t=1708347385; c=relaxed/simple;
+	bh=ccbHakWFMPqKyo56fEKpc8aAf3Wb4VQoRZfLVnlY020=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oResCehQ17j0TVd+NHJRPUookdFB4vm5Ff4f/vxn+hASgoPlPHfHEJ/L5R0icqL8E5tRXZl03+X4XbcxoF+lhWSf7b4bTgpq0YtoQzl4ICbjxNgHEtNl2OBm4NbEvHc9U+OH6XyFVFYbj/R61YagfeuNOUyB29gK5Bn2wI8wqxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IaC62Hw3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94AC8C433C7;
+	Mon, 19 Feb 2024 12:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708347385;
+	bh=ccbHakWFMPqKyo56fEKpc8aAf3Wb4VQoRZfLVnlY020=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=IaC62Hw3yjK1/flPQhxsuk0O4OdKFtG83Nn2lk244OGiDCxR6rKWUuaIKZ7/t7BGf
+	 jcZ4sk87QdlBUQyW+B0eTFWUJqh7KWkUxhHmL6ecneCUylAn7cjjSKL2XBdbdy3RLl
+	 luWHN2toOrZvmPvGb5Q9qjdgM64Vw50ntuXtUpwPGQpqFW5I/Bbvjedgt+/lYXvXns
+	 llJFV31k0n50KPsX8E49DfrCARvcDerNAopvgQZ3uvWHBBwI9WKL6UtN5XLZU83/kQ
+	 40kwgeSzuu9EeBatmrJQUzesPW9bepQxFLwCM9L5vwIJEvs1iln+7drGvgDeAF6M/j
+	 h6OP4j6RmhfZA==
+Date: Mon, 19 Feb 2024 13:56:18 +0100
+From: Mauro Carvalho Chehab <mchehab@kernel.org>
+To: Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
+ sakari.ailus@iki.fi, tfiga@chromium.org, m.szyprowski@samsung.com,
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+ lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+ alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v12 08/15] media: uapi: Define audio sample format
+ fourcc type
+Message-ID: <20240219135618.5c557e66@coco.lan>
+In-Reply-To: <CAA+D8APD+zL0xYkf6FxPNfM3Y3O8+PhT7WEXO7XCLAmBjoMmUA@mail.gmail.com>
+References: <1705581128-4604-1-git-send-email-shengjiu.wang@nxp.com>
+	<1705581128-4604-9-git-send-email-shengjiu.wang@nxp.com>
+	<20240217101926.3f1d2452@coco.lan>
+	<CAA+D8APD+zL0xYkf6FxPNfM3Y3O8+PhT7WEXO7XCLAmBjoMmUA@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000077ce280611bace5b@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [2.89 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.01)[45.13%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=5eadbf0d3c2ece89];
-	 TAGGED_RCPT(0.00)[427fed3295e9a7e887f2];
-	 MIME_GOOD(-0.10)[text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RLf9gkbf6uh3yspgf5h4jyjkwo)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,syzkaller.appspot.com:url,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: **
-X-Spam-Score: 2.89
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 19-02-24 03:58:05, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14238a3c180000
-> start commit:   58390c8ce1bd Merge tag 'iommu-updates-v6.4' of git://git.k..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5eadbf0d3c2ece89
-> dashboard link: https://syzkaller.appspot.com/bug?extid=427fed3295e9a7e887f2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172bead8280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14d01d08280000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
-> 
-> #syz fix: fs: Block writes to mounted block devices
+Em Mon, 19 Feb 2024 12:05:02 +0800
+Shengjiu Wang <shengjiu.wang@gmail.com> escreveu:
 
-I don't see anything that suspicious in the reproducers but there's no
-working reproducer anymore. So I'm leaving this upto gfs2 maintainers to
-decide.
+> Hi Mauro
+>=20
+> On Sat, Feb 17, 2024 at 5:19=E2=80=AFPM Mauro Carvalho Chehab
+> <mchehab@kernel.org> wrote:
+> >
+> > Em Thu, 18 Jan 2024 20:32:01 +0800
+> > Shengjiu Wang <shengjiu.wang@nxp.com> escreveu:
+> > =20
+> > > The audio sample format definition is from alsa,
+> > > the header file is include/uapi/sound/asound.h, but
+> > > don't include this header file directly, because in
+> > > user space, there is another copy in alsa-lib.
+> > > There will be conflict in userspace for include
+> > > videodev2.h & asound.h and asoundlib.h
+> > >
+> > > Here still use the fourcc format.
+> > >
+> > > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > > ---
+> > >  .../userspace-api/media/v4l/pixfmt-audio.rst  | 87 +++++++++++++++++=
+++
+> > >  .../userspace-api/media/v4l/pixfmt.rst        |  1 +
+> > >  drivers/media/v4l2-core/v4l2-ioctl.c          | 13 +++
+> > >  include/uapi/linux/videodev2.h                | 23 +++++
+> > >  4 files changed, 124 insertions(+)
+> > >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audi=
+o.rst
+> > >
+> > > diff --git a/Documentation/userspace-api/media/v4l/pixfmt-audio.rst b=
+/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+> > > new file mode 100644
+> > > index 000000000000..04b4a7fbd8f4
+> > > --- /dev/null
+> > > +++ b/Documentation/userspace-api/media/v4l/pixfmt-audio.rst
+> > > @@ -0,0 +1,87 @@
+> > > +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> > > +
+> > > +.. _pixfmt-audio:
+> > > +
+> > > +*************
+> > > +Audio Formats
+> > > +*************
+> > > +
+> > > +These formats are used for :ref:`audiomem2mem` interface only.
+> > > +
+> > > +.. tabularcolumns:: |p{5.8cm}|p{1.2cm}|p{10.3cm}|
+> > > +
+> > > +.. cssclass:: longtable
+> > > +
+> > > +.. flat-table:: Audio Format
+> > > +    :header-rows:  1
+> > > +    :stub-columns: 0
+> > > +    :widths:       3 1 4
+> > > +
+> > > +    * - Identifier
+> > > +      - Code
+> > > +      - Details
+> > > +    * .. _V4L2-AUDIO-FMT-S8:
+> > > +
+> > > +      - ``V4L2_AUDIO_FMT_S8``
+> > > +      - 'S8'
+> > > +      - Corresponds to SNDRV_PCM_FORMAT_S8 in ALSA
+> > > +    * .. _V4L2-AUDIO-FMT-S16-LE: =20
+> >
+> > Hmm... why can't we just use SNDRV_*_FORMAT_*? Those are already part of
+> > an uAPI header. No need to add any abstraction here and/or redefine
+> > what is there already at include/uapi/sound/asound.h.
+> > =20
+> Actually I try to avoid including the include/uapi/sound/asound.h.
+> Because in user space, there is another copy in alsa-lib (asoundlib.h).
+> There will be conflict in userspace when including videodev2.h and
+> asoundlib.h.
 
-								Honza
+Well, alsasoundlib.h seems to be using the same definitions:
+	https://github.com/michaelwu/alsa-lib/blob/master/include/pcm.h
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+So, I can't see what would be the actual issue, as both userspace library
+and ALSA internal headers use the same magic numbers.
+
+You can still do things like:
+
+	#ifdef __KERNEL__
+	#  include <sound/asound.h>
+	#else
+	#  include <asoundlib.h>
+	#endif
+
+To avoid such kind of conflicts, if you need to have it included on
+some header file. Yet, I can't see why you would need that.
+
+IMO, at uAPI headers, you just need to declare the uAPI audiofmt field
+to be either __u32 or __u64, pointing it to where this value comes from
+(on both userspace and Kernelspace. E. g.:
+
+/**
+ * struct v4l2_audio_format - audio data format definition
+ * @audioformat:
+ *	an integer number matching the fields inside
+ *	enum snd_pcm_format_t (e. g. `SNDRV_PCM_FORMAT_*`), as defined
+ *	in include/uapi/sound/asound.h and
+ *      https://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#g=
+aa14b7f26877a812acbb39811364177f8.
+ * @channels:		channel numbers
+ * @buffersize:		maximum size in bytes required for data
+ */
+struct v4l2_audio_format {
+	__u32				audioformat;
+	__u32				channels;
+	__u32				buffersize;
+} __attribute__ ((packed));
+
+Then, at documentation you just need to point to where the
+possible values for SNDRV_PCM_FORMAT_ are defined. No need to
+document them one by one.
+
+With such definition, you'll only need to include sound/asound.h
+within the kAPI scope.
+
+>=20
+> And in the V4l framework, the fourcc type is commonly used in other
+> cases (video, radio, touch, meta....), to avoid changing common code
+> a lot, so I think using fourcc definition for audio may be simpler.
+
+Those are real video streams (or a video-related streams, in the case
+of metadata) where fourcc is widely used. There, it makes sense.
+However, ALSA format definitions are already being used for a long time.
+There's no sense on trying to reinvent it - or having an abstract layer
+to convert from/to fourcc <=3D=3D> enum snd_pcm_format_t. Just use what is
+there already.
+
+Thanks,
+Mauro
 
