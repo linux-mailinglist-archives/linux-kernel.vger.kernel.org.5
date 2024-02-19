@@ -1,130 +1,157 @@
-Return-Path: <linux-kernel+bounces-70913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11BAC859DE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:14:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53356859DE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C115128214A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:14:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8432F1C21CA4
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AFED20DC3;
-	Mon, 19 Feb 2024 08:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AF82232C;
+	Mon, 19 Feb 2024 08:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="R3W1h9R1"
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kaJt2spz"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC1732209E
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:13:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EFD2209A
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708330438; cv=none; b=trM1+kRykfvZz5F6Z+HMInKBeE+MQjTFDckUnJzsgADpFL2LBWePYfp52Ht2qYqGGZjzS3HB3FchRABUmuko+OnjLlpOklIBOvnmOH3Ka53jdQKmaoa0QfNrg+NqQ+NSyKcrvY/W+eZsAeQsD7fPR1Acg9AeH6c/uyloLHg61FA=
+	t=1708330438; cv=none; b=Rza7y1gtQ/nhYvttLU2y499T6+tC70PqV3nYCA8WjWHCGwBJTMRKcFt3QRYWkHb2hA/4kXY7RH/KMvkUv2AgU7zwRAqxCfxRL3282wqB8Y9ngDoOSV51fy772UX7kuuGhe6mZCCeiJOMhoM0/ZWtlyiMmN8G76biO7IXQnzLalc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708330438; c=relaxed/simple;
-	bh=L4LDe6/2pjSy98QopaS+9Ub807rsKp5R4F3WNI3CNGk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S924dHUlxJuL90fEoOj+6C2K4C9Tk9NKLZy6dtX4UkhPn/MLztNncSZwpTuNNpJzqbyIzFBg+KLM4+fqc5Vx6ZsGz9ss7ZF0wx9Shq1KGRQU4myiwYBlYHWCTIatlCuSMBQsF8V8IaI6DdLZNc22GP9sfxfxZicPOt6WMqU2PNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=R3W1h9R1; arc=none smtp.client-ip=209.85.210.178
+	bh=hdW7Rr/GStlKb4q4MN/fQ/tDCDLJJ4mp4WcZbKTVTsg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bFe2na9hqxNgIP3exJIiiYFdKVmwZZAzSjWUExawSt48Sjwl2VigHEvaVqvLUUJfXY0WltcNarENokN5MajZ594BKUC/ctRTThD7GaECuf1R408kuuDozapnLXyqS+esNY2awO47l6+8qvPzur9Ea+WR+hdVnqu4CvwVKLgpZ1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kaJt2spz; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-6e43ee3f6fbso994348b3a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:13:56 -0800 (PST)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d146737e6so2356858f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:13:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708330436; x=1708935236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Faazju06esA/iLDjRJkBakC+phNkJjgF7OASCw5VQPg=;
-        b=R3W1h9R1qI8HzpQIMu6DhKDUPZxprb9YWZ6T82lfiiyk/zYbqg/svWlfDbGa0fLiJE
-         U3sVoxv6m18RXFs/O2aCg3ixjBgep5FIt6Wmy8eDlSKkCDbHquP6srB7hYAZGjDCrLp2
-         WGoRA0Nj84HmTyE+qaiBjVNVcfBi0kZ4eczzUzyjFXqI4vrH6ovHalrSi15F4aQqR4RG
-         lGUtDM7HlYi0Ox8eAgAlYglwpYrBuISzh8bw37aQ09XAssbB+tSGgeZxeV6iEFON/GrE
-         FRQ40bjxfBMF/iDOdgZU1VcvtlkhpNhIsUbvegSABP5oyx9ze2uqVrDLOd2wzd0iWWg3
-         0jqw==
+        d=linaro.org; s=google; t=1708330434; x=1708935234; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hdW7Rr/GStlKb4q4MN/fQ/tDCDLJJ4mp4WcZbKTVTsg=;
+        b=kaJt2spzfJ/YhJfk/XTgB0sO/+0Ce3Jqn5TrWAankTjHyZyzdpRvIWgADBM32VXsUT
+         rPGBX8sOe2QSetbAkCSo0qwvd0RwZc+EymwlwE/h01ExOC2Dn6MUiXbxluaeCPZZaUyR
+         y1TOOiJ6x0o/N1Wa2sooCIg/8qXLO7yxgG6+zG+/VniJ61/xAgxWv3VozCy4iJMZ/JDL
+         IoXD6+bWdore50nBQIVeBTkvL46VwDFoSsObPTYKjNaa0ZcqOQ5wLv5aOVSfRIoSJmN0
+         XhYzfPYO/L2jTfLswsLi2zFXMn2qI2b+cLm+utB7M60TcxrcM5PQ0xjXX7AIly9oU5IP
+         oQOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708330436; x=1708935236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Faazju06esA/iLDjRJkBakC+phNkJjgF7OASCw5VQPg=;
-        b=LCUqFuUZg5/yOikEOENgA8FuESGxHFBTXCaVgo2oZjzD8RvXqEv3RSf0ZIyKg3saJO
-         A+MPH+ZByEzCTaUlfWiPuRiMzMYVP61GNfuhHL33pfoH/jQ0jQr50P5c15ZiN4LgixlX
-         4eRBYwi47dZ9jsWcqwM92mQhguBJ3CTdAmoc3CU9STGQWfrH4/1JIr0MstTtVoufP30v
-         Zm2h5aRSsbzOJXwxrS/2dOoqJdpAbwulQjYq7h8jolFFaqVJisPPCY7Hc3wywtnWcf1Y
-         fnKVeOt38acsQzODThWCyRgFACDknXsOUKX2qDh8/uvh5dAaMgyqqaqOEiNng9meBSZw
-         QcZw==
-X-Forwarded-Encrypted: i=1; AJvYcCVnybRYdmaHHHgQ4zKou55eddkv2aj9XUQ/1r+RP8+JT1Z9qt2qhYdTR3AHK8X6YVi28etR3kAGv+XhctnexcQeFCWeVUaPGoSr8QPv
-X-Gm-Message-State: AOJu0YxItlzM7WLKCTv4DGep5mGauAEh3HK4OqPKS/GJevxCewSeGL5A
-	VOrSz6r7RvKrwcqMKOBIWMYNC0lRxrwXE5nYajmLyjYEQlmLMDmosqn2CjrJnWCPPrF0FA5iZvp
-	21XgrLSe/1Q2p5Ul6ED6HnFxVFFBowzysTofxDg==
-X-Google-Smtp-Source: AGHT+IH4P+EJqjGg42FcH2qCVt4SYGQoiN23N28i6N69kj3qRf3djQwdq4QgJyosAwKqXUVruDAnLuKYd+zMJmCKyQA=
-X-Received: by 2002:a05:6a20:d38f:b0:19e:367a:2ca9 with SMTP id
- iq15-20020a056a20d38f00b0019e367a2ca9mr14536523pzb.8.1708330436239; Mon, 19
- Feb 2024 00:13:56 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708330434; x=1708935234;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hdW7Rr/GStlKb4q4MN/fQ/tDCDLJJ4mp4WcZbKTVTsg=;
+        b=tFQuBayH1meQAy57pDtkr+3VUJchZAFzWFn3f44Lqku09VFSovQqg11k1M4AiMKYg+
+         K3pxZFp1GQrwOhF0M4joZIf2epbrjP/pe9bNRQJWpVub2gLJUXVB2LOSA9Woa4LhB1Gb
+         CHv4aJgqtHsyL9aRWr869UPHlagb2Y0vzjHvCotNpAn8zr+K5S7Mn79XUBRaGUJTZJkU
+         b+tAALR0EGa1XDZZNfIVyqQek4COSc+2EbHWopDVzxmEK6YF5kRA59k7UGKFDEFERKFG
+         3sQnrRUwD03zTx8x+kY+ip9lXsDhSlZNYwgJwEydQQwhnTsQUN2Fzh8mx72Bby56ezpM
+         qoOg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+Pk079neJXiTO2t1W7+4MjgYYBsjoGsvOofEfzp2YaP15wdO9Hu1AepKVvLSAzyrONeaesPsg3LpXlZBoWAYiH64U4E886dJckWg0
+X-Gm-Message-State: AOJu0YygCR/lUDF1q1cnJbZ0UtzdRmHo0/xnVdX2jRvEWPoNpCakPr7M
+	G26hgoDgcH3+rOaiWoyj7OpvZYaE3y7zSqGweP0RjlaCVMWnrEFkQqC6scThAao=
+X-Google-Smtp-Source: AGHT+IG4038ckdSMEAMJ4hwm7hb6L1Az/lWk5+t4b76xF6nJ+U0YUOF672wMYB55K2sy56nhGSTxYg==
+X-Received: by 2002:a5d:64aa:0:b0:33d:3a95:9642 with SMTP id m10-20020a5d64aa000000b0033d3a959642mr3708544wrp.47.1708330434547;
+        Mon, 19 Feb 2024 00:13:54 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id co22-20020a0560000a1600b0033d2848046asm7075888wrb.95.2024.02.19.00.13.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 00:13:54 -0800 (PST)
+Message-ID: <433e89c1-9522-4bfa-8c87-a32e7e62aca8@linaro.org>
+Date: Mon, 19 Feb 2024 09:13:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <64955b50602fc64e2d3c7d4a92a1f9459e8c7ead.1708120036.git.mirq-linux@rere.qmqm.pl>
-In-Reply-To: <64955b50602fc64e2d3c7d4a92a1f9459e8c7ead.1708120036.git.mirq-linux@rere.qmqm.pl>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Mon, 19 Feb 2024 09:13:44 +0100
-Message-ID: <CAKfTPtAvcRvdHQ2OY4cej26dXt_y5LbtYh=OGWxfbQunh-Juww@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched/topology: loop properly when clearing flags
-To: =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, 
-	Len Brown <len.brown@intel.com>, "Joel Fernandes (Google)" <joel@joelfernandes.org>, 
-	Ricardo Neri <ricardo.neri-calderon@linux.intel.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] dt-bindings: arm: qcom,coresight-tpdm: Rename
+ qcom,dsb-element-size
+Content-Language: en-US
+To: Mao Jinlong <quic_jinlmao@quicinc.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
+ <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Tao Zhang <quic_taozha@quicinc.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240218094322.22470-1-quic_jinlmao@quicinc.com>
+ <20240218094322.22470-2-quic_jinlmao@quicinc.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240218094322.22470-2-quic_jinlmao@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, 16 Feb 2024 at 22:55, Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qm=
-qm.pl> wrote:
->
-> Fixed commit introduced sched_group::flags and a loop that was supposed
-> to clear groups' flags if the child sched_domain was deleted.  The
-> iterating part was missing.
->
-> Fixes: 16d364ba6ef2 ("sched/topology: Introduce sched_group::flags")
-> Signed-off-by: Micha=C5=82 Miros=C5=82aw <mirq-linux@rere.qmqm.pl>
-> ---
->  kernel/sched/topology.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 10d1391e7416..75b1a18783c2 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -767,6 +767,7 @@ cpu_attach_domain(struct sched_domain *sd, struct roo=
-t_domain *rd, int cpu)
->                          */
->                         do {
->                                 sg->flags =3D 0;
-> +                               sg =3D sg->next;
->                         } while (sg !=3D sd->groups);
+On 18/02/2024 10:43, Mao Jinlong wrote:
+> Change qcom,dsb-element-size to qcom,dsb-element-bits as the unit is
+> bit. There is no tpdm node in any DT as of now. Make this change before
 
-This has been discussed here
-https://lore.kernel.org/all/20230523105935.GN83892@hirez.programming.kicks-=
-ass.net/T/#m0881c3e17954dc6e23f81216873e721f8395e554
+You should say why. "What" we see from the diff. I keep repeating this
+like a broken record...
 
-and here
-https://lore.kernel.org/lkml/20230617081926.2035113-1-linmiaohe@huawei.com/
+This applies to all your patches. Future as well.
 
-and the right solution would be to remove the while loop but  for
-whatever the reason, this has never been resend with an updated commit
-message
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
->
->                         sd->child =3D NULL;
-> --
-> 2.39.2
->
+Best regards,
+Krzysztof
+
 
