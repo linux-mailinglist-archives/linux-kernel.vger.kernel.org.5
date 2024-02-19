@@ -1,107 +1,87 @@
-Return-Path: <linux-kernel+bounces-71922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D01785AC8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:56:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0C2685AC90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:56:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A340282592
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:55:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DB0A2821E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B6551037;
-	Mon, 19 Feb 2024 19:55:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EB8B524A6;
+	Mon, 19 Feb 2024 19:56:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zlKLk5Bx"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="j/Tf0rg/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE474F1F5
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A2824F203;
+	Mon, 19 Feb 2024 19:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708372553; cv=none; b=FjHTIgmDynkWhLcUL5fdHU9JuwKxtrGKKajtpvFG7kBsyiN+6emABp8e922IQYwnwa+L7FYM3RtjpnA8nqXeERBH0efI2RIvXxinU1bofKfFfzTVt4cSg7JQvAU8F/JGuv8LH/Q7GDydbZnBUh5rP9ob0G+eqfI9x4ks4FYg8rU=
+	t=1708372602; cv=none; b=DHLIqOk/1zuzODK1TxZr8HGfHB52qeawYpUb5R33su4WXZ7wdq7O2KolJPgkr2eqLkkWeEvHV8GVRLtQQdsExja5sSo+f0n/e8XW2CN82kSlPyndDGcq0ClHn8UHxy/5/ZU8qRSb0n/Zd7VcoM2HgXXm4qtvBfDPwLB3sqsujww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708372553; c=relaxed/simple;
-	bh=8OKl41Wc+X80Yr8sNThOn8WRf/IkQK8EP6oDeYEVzfw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rF+LetVer/llok2HvVmqz6/JsPa8cALnLRwGBycVISC2nYsR8Z/KOLfyifeamEO9VZV9fYPrxNm0ORYSMW1FelKqISQGX104mwBGNPNm/wS4oHOmMGPHssTW2h+0Yd/ZNs/S4e0LqO85tO/6Wvo726IWAzJJ9q/JxPYj7cWLrgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zlKLk5Bx; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6818f3cf00aso28001026d6.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:55:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708372551; x=1708977351; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8OKl41Wc+X80Yr8sNThOn8WRf/IkQK8EP6oDeYEVzfw=;
-        b=zlKLk5Bx5qV8ZRs9WwK799E2imjQoywr4LoZhjnL3NOaBAv2H4dnsTkaSw4yFGQ0VC
-         gfyxL7jclaKOC6JGmIJRp3am5tfxYWciy4G/LjBT6d6ZjdOphH5O2+DuXtI93pjvM5Ki
-         3bWejXzmNUJrQ3STIAN+CqoNW8lKbkCtznm9HzvP4ZR/XWSHveTVYsnoF1Ww6DYseAx2
-         IWxMxvGblRuzyGdTqeL2GJUMV68b+kpzXQ5j89Asne3UVerkWi3fli8z8BL34P405ZzZ
-         kuq0EfshsxtSQ0M2Dwz1POm/I2WyoaNqrUlS1nYyhgY0HVhfLJvvXKEiQnj9ys5DFg3q
-         WQ4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708372551; x=1708977351;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8OKl41Wc+X80Yr8sNThOn8WRf/IkQK8EP6oDeYEVzfw=;
-        b=X5MRtTYaAMyLB4QNhqAVaERPH15iM29+mOun9CgCUJ9I2YSTRA5iKLUXBrXrBjaoSi
-         8fOEwlg7+B9j9AXL9j4n3dpPr0Z5JmQ56ZIW/FoRgfidigRnqtd569YWu0n713YoaiFL
-         tdGBUGAWlD7GiJqgtByaI39aSTFKbrbrAE5NMU+3muqGJqjP4LAm+m7W9lIYLBTJRbXp
-         Z+FeuoBU9VDPhR7MzT5qrZTjE4YMr04HqBpaX3qaSSvyUD3Qbu7v9MzARpzAlJ9BaKFE
-         nFeCAKaNeONInBtabxmcbiOa9K5WFT0IWKwBpeQvSzveaLRDSe33UlJq3OpII09BvpIz
-         Kl/w==
-X-Forwarded-Encrypted: i=1; AJvYcCV96WBkkk8b5Sa/jnT5pWaVifrBO/gEAvuCa1X82X3N1NaE7QCiwg4/tF4ze3uAu/YTuRwEj9XgjJsfiFyDYxTLlFNHxYnAglm/K68w
-X-Gm-Message-State: AOJu0YzpG3rCH1h2ML82om0xvHy1p9KnpcNsq9qRNdoBtjfYzLl4P/fB
-	bRgx2p4RCOQ/T/hhpvQL3njYljORwQSWz/EhdOJ7XNWBrNvUl7p4WkDZ1jeaXqn3AxHoAZjKGjk
-	b7E1IY22hP0rQ8glOaiTzmwDe9/rgoeQ+eFTzNrGxpcgxi0Ncx9g=
-X-Google-Smtp-Source: AGHT+IG102p+3tJPXw/wv5GEecEGDJ4yNBwcwvEeNuhkzfGBOzbwgyL9AORHgu7VBoaPB3l8XOP6sTuKS6wMjWiNBq8=
-X-Received: by 2002:a05:6214:2687:b0:68f:3c39:c63e with SMTP id
- gm7-20020a056214268700b0068f3c39c63emr10578054qvb.6.1708372550871; Mon, 19
- Feb 2024 11:55:50 -0800 (PST)
+	s=arc-20240116; t=1708372602; c=relaxed/simple;
+	bh=OaAEMFvFDN1qhJ4t5nXfrOCymw4TroM52J1E3WnfAP0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CH4YqlWQDjRZLjxA9JEkwaaOqLi/mrjBUUS/3yaX83WK06PFr8FxyNJBd91I6uSMOnjWDsIJ91rhDKrrmpit9Vhy8jb01pRudRtDZ9VQ3Rq0HhgzI/meluSTxcDYa/e5ovNASbEkGksYmoyofeDx5Fm7G3IfRDji4+O9hTZ2GkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=j/Tf0rg/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BB28C433F1;
+	Mon, 19 Feb 2024 19:56:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708372601;
+	bh=OaAEMFvFDN1qhJ4t5nXfrOCymw4TroM52J1E3WnfAP0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=j/Tf0rg/52VRU0RdqcIIbgIp34hsAGhLLM6UEzs4f8XeRAe8Pe0ZnvuYgjEaedKPh
+	 XzolqPbpGuyslO57mb26R3nPLHjlPXFweVZOqmQ+StxE+IHfCDJsSFchYOb0ECw4Ej
+	 9bic7JeKdiqsqqJlLXwCDhAwxYe5B/OGUhUOFkGU=
+Date: Mon, 19 Feb 2024 20:56:39 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+	mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+	corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, Thinh.Nguyen@synopsys.com,
+	broonie@kernel.org, bgoswami@quicinc.com, tiwai@suse.com,
+	robh+dt@kernel.org, konrad.dybcio@linaro.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH v17 00/51] Introduce QC USB SND audio offloading support
+Message-ID: <2024021929-catching-subheader-d51b@gregkh>
+References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
+ <2024021754-unengaged-saggy-6ab1@gregkh>
+ <96ab6033-2cb9-daa7-ddad-090138896739@linux.intel.com>
+ <2024021922-privatize-runt-495e@gregkh>
+ <d82c8955-6793-7544-0013-1033abd9f1e9@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219125453.103692-1-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240219125453.103692-1-krzysztof.kozlowski@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Mon, 19 Feb 2024 19:55:39 +0000
-Message-ID: <CADrjBPq1X2P7hTqSiTnZ03c_QguTQ4kbFen9MeWh5TaYn9fh-A@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: samsung: gs101: match patches touching
- Google Tensor SoC
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Alim Akhtar <alim.akhtar@samsung.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d82c8955-6793-7544-0013-1033abd9f1e9@linux.intel.com>
 
-Hi Krzysztof,
+On Mon, Feb 19, 2024 at 01:03:31PM +0200, Mathias Nyman wrote:
+> > > 
+> > > Patch 10/10 is based on an old POC patch by me, but it's heavily modified.
+> > > 
+> > > It looks like it does a few minor things that are not optimal, like extra
+> > > spinlock/unlock, and wait_for_completion_timeout() with magical timeout value.
+> > > I haven't tested this version, but I guess any fixes or cleanups can be done
+> > > later on top of it.
+> > 
+> > I can revert it now if you want, just let me know.
+> > 
+> 
+> Maybe reverting it would be better yes.
 
-On Mon, 19 Feb 2024 at 12:54, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> Maintainers of Google Tensor SoC should be aware of all driver patches
-> having that name.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->
-> ---
->
-> This allows to spot easier such weird drivers (weird because they claim they are
-> for hardware, but they omit entirely hardware part) like:
-> https://lore.kernel.org/all/20240219061008.1761102-3-pumahsu@google.com/
-> ---
+Ok, will do, thanks for letting me know.
 
-Thanks for this, I hadn't seen the series you referenced above.
-
-Reviewed-by: Peter Griffin <peter.griffin@linaro.org>
+greg k-h
 
