@@ -1,134 +1,93 @@
-Return-Path: <linux-kernel+bounces-72049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 267DB85AE3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:16:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 934B085AE42
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:18:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A57F1C217EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:16:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FB6F284ED3
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:18:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9253E54FA7;
-	Mon, 19 Feb 2024 22:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LFXS3m3m"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 364D254FB3;
+	Mon, 19 Feb 2024 22:18:05 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387E754F88
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B4B554730
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 22:18:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708380989; cv=none; b=RuddbiW6FZuR9c9r9wKYnEN+S9yG27Mco9a7LLAft8p81MGH1pZ24j/rPbEtM5haioANbvUBWSK2Nm9C9g7TUJSe9E26R7/PF7XnAwGf0uKXatgdYpvxYTOgEytl5oT4DhMiQD6GXqQZdu352ida2U6/lFjulNnrLNEaec7g9nU=
+	t=1708381084; cv=none; b=siFo5g34j+ncq/yH/UjB6qYRLbRjzqaF7Z9CUJ45NSYnJ0jebWtVTvrrbVjIAe3H59pU+RLDZp+O4PJLibLOHDsm+Rl1yKqev2Z0q0xGTXB7CE4XxWZhu/LUmGn/gCI92ce4f4PuR39BpJ5WIAL4oLB60zvqaOTZPCPUgzJZYlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708380989; c=relaxed/simple;
-	bh=zSVu9prVWtzcMIX8nr93vi35ZuujWLtnr1gGDj9Uwf4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Dv2OXzxK5kcBdJdJd+ybj6S93FvP7hm0+Zmso1GqB41NVuRWn3BNrewJLXKSgZpc1fnP38xcMm5z7syGHVe3MuHVpohvzKhG0azh5s5CiSiqSkecujpdZxMegpqaABBv1zr+I7UexaqHknRsuBq7ME+iH8wu1UMBfhL30grP8tM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LFXS3m3m; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-607f8482b88so32503897b3.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:16:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708380987; x=1708985787; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=vuTySsKzEO2OmI0ErX6jaDfKcwaUj4TjQngL5AX3Egg=;
-        b=LFXS3m3mZ5DyEmSD/fxit91P67Eo0tb+8jNuArAoueVpuWcfMqpFd9DDw9qAhMGHGi
-         YX8ig0Amc8Dq40HrO7xtLUkt162i6WB63kIK6ciXeH30SfxmIWMmg868PfUEWprtd//K
-         JTfXi63Oatnv18+1vKC/TeolvQiu3f313gUMu65lrAHfW1N2qPBBZ1STikU3gAbm6Ree
-         KBj36cgnI+sJq1WyYI9ohPDHMYSuvWnjUJ+hQwXoueWi4McpLcSReffxkWC5aymBCHCT
-         uxyn4JTVDKZTJuHS4FBDp0Pf7PnAuDqEJHrXpQv22Ollhm4k35/ULdH91Csa6LNCjgUY
-         2XxA==
+	s=arc-20240116; t=1708381084; c=relaxed/simple;
+	bh=c+0qPs8TPZcmXIQHMEQ1YzES3Yy34XuavJSQTscSXBY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Rs1J17Bzr1tvyeS8C/2vpVK4BBsRP+wCEx5TcMgO5W6wQr8G1focstgzb4xbCABR9MrLHx6vjtSXDDW66Kg6tm3IVPAj/GTnPSh6xgQ9CH+ud+vjxFhdD3Z4YiMJgIpeJXuskshBzNCZRbqsoGB8W7ibLTQtHxdclGuZ6Gj0Cmo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3652d6907a1so14592425ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 14:18:03 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708380987; x=1708985787;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vuTySsKzEO2OmI0ErX6jaDfKcwaUj4TjQngL5AX3Egg=;
-        b=OYyt24rEWzgTQygQg55NaTd5g6MW9RKQMMQuW5CSqcOW3JKqU8UzmYpKQirbUQtgiy
-         cogtwDalDzUR87OYAXxgDZVB2EdJ9+jxMjFoboZErRU/r74VOFVzNFdyEN+54vs5qB1M
-         4AOVp++7HNFB/31Ghdpi6dpCrdhntfx4ORQ0sk0iWLK7MkRd/FHD9era6sOuyS7+ZLp4
-         RB+zkucVczFaRbafNvhtk9XrLc9Jp2//ThxWnPSCphILY1Ln404G1smlIDuR7fV4rAxK
-         kXVWTJwFsOGVrMp4qmDSTpGOKKHNLLa4T9z4QQsXPP20jrUC6OicRDikC//nYqi+iuEM
-         UxfA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlta/YetHd2vpgBgpNuiRKZmOPtrUg/KjHtb0Wu39H9/lgjPNv0dbZPSH4WwyCzheO7jpVucr5va30E7hlFK0HgFmHuLdg6cOgtfMV
-X-Gm-Message-State: AOJu0Yxv5e3hVU2/e0C17wD+p5YG3lCxAtJduNZuVPdCqhgGTuG7CvNB
-	oMVmWr+4HTNjw8YFkGUJZUvEsVgOPgiTUbOQbOO3k0vXolsz9Zd4vce0ate2uvFyH03ARqeTQdW
-	yYcforFazP/p05W8Z31nSNfVX7/dQBk0hZAVs9Q==
-X-Google-Smtp-Source: AGHT+IH0q4G0NXDEX6RVYpZcdEntLJmn3kJY/UlQlPbUsZWH3aZT8Y8yzl3n5AhYDOYefhK8BUnY9HP1u6mwOkNWfWE=
-X-Received: by 2002:a81:431f:0:b0:608:e2f:e3d2 with SMTP id
- q31-20020a81431f000000b006080e2fe3d2mr6514646ywa.22.1708380987231; Mon, 19
- Feb 2024 14:16:27 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708381082; x=1708985882;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4t2paFm5bNQPj52rT++RcxCOeC7mO3UVObeCBKBufjo=;
+        b=AKuNZeraxWLzIfyHFnFbkZasqZ7IeY51js1jz+6CtEVrEnbkuHYX0eULiEwN+FoLHa
+         nqFmgXqXql2BHM5hWYq14NCfZYnOwwwn8odPTk34aUwhv6w+aHRG3WTdzzNBDlkl+CyM
+         uR2o3CDB4IlLS/RehyAl1qBluRoARknr6dbcyroemKqYqrLoPFRBOykNmejAQGMbCIvv
+         MJ/NIMQcxzhtFknvy/dgiobH/6uDXO/irHVxgaMYnMnRDmGReTHCKrJbkTfJslKGtZdh
+         Y7teSGF1NDcjjnorKBg0Ovl+s2fNJ6q3y+YYkHiszAjn0WEFARp1t/s4/0xNxZKeRcXw
+         ObNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWm3dFHmreAdlY6aY6DIpqE+NUgwXFWoIx+vrTSsv8KE0oK08k1vCqIOE9lbDPNyVdT/2BWgZzvOlnNeMUv1+CTBk6aUcB1tQHjJRgf
+X-Gm-Message-State: AOJu0YxYj5jH+oZ4YZ6nvMFFaP1Y7rSE3e0EuN9S1E6/iU8Sgdng1eho
+	wR+WqcBK+RlBgusuFPxVSGrCKkuuyRVxaZW+0k/n1y41XeaiEZ9WsBrzBLRgSZZD3fbrwMfAnqT
+	CZZlggZwCy+KQ2Y8z2pyqw0OepipIt0W1XNP9knyLu/1EMYSgnSAuLZc=
+X-Google-Smtp-Source: AGHT+IHNZ6BqQ00QXj4UQF0JzF8saHr7WBqtNu9rPtVFrdB+5HO6tIDSXWfK6Rsne2Np8ab/YzyIPk0B0OVZ7io32bkJWQ3CGOpF
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
- <20240219-topic-rb1_gpu-v1-8-d260fa854707@linaro.org> <CAA8EJppPvXfkz=wVca8aFBhFaVUe9+OiVzcQUq7D8zPbK+T1FQ@mail.gmail.com>
- <b73e329a-02a4-46e0-bda4-5d5fae0a1180@linaro.org>
-In-Reply-To: <b73e329a-02a4-46e0-bda4-5d5fae0a1180@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 20 Feb 2024 00:16:16 +0200
-Message-ID: <CAA8EJpqxYdjKx54Oph3=+H-42+cKpw=t=5GGJq54FVcOa26TDQ@mail.gmail.com>
-Subject: Re: [PATCH 8/8] arm64: dts: qcom: qrb2210-rb1: Enable the GPU
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
-	Joerg Roedel <joro@8bytes.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
-	Stephen Boyd <sboyd@kernel.org>, Rob Clark <robdclark@gmail.com>, 
-	Abhinav Kumar <quic_abhinavk@quicinc.com>, Sean Paul <sean@poorly.run>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, linux-arm-kernel@lists.infradead.org, 
-	iommu@lists.linux.dev, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Konrad Dybcio <konradybcio@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org
+X-Received: by 2002:a92:c26a:0:b0:365:1957:551a with SMTP id
+ h10-20020a92c26a000000b003651957551amr646218ild.4.1708381082710; Mon, 19 Feb
+ 2024 14:18:02 -0800 (PST)
+Date: Mon, 19 Feb 2024 14:18:02 -0800
+In-Reply-To: <0000000000002f18b905f6026455@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000937d8c0611c377f3@google.com>
+Subject: Re: [syzbot] [ntfs3?] UBSAN: shift-out-of-bounds in ntfs_read_inode_mount
+From: syzbot <syzbot+c601e38d15ce8253186a@syzkaller.appspotmail.com>
+To: almaz.alexandrovich@paragon-software.com, anton@tuxera.com, 
+	axboe@kernel.dk, brauner@kernel.org, jack@suse.cz, linkinjeon@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-ntfs-dev@lists.sourceforge.net, ntfs3@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 19 Feb 2024 at 23:37, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->
-> On 19.02.2024 15:49, Dmitry Baryshkov wrote:
-> > On Mon, 19 Feb 2024 at 15:36, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
-> >>
-> >> Enable the A702 GPU (also marketed as "3D accelerator by qcom [1], lol).
-> >
-> > Is it not?
->
-> Sure, every electronic device is also a heater, I suppose.. I found
-> this wording extremely funny though
+syzbot suspects this issue was fixed by commit:
 
-3D accelerator is a bit outdated term, but it's still valid. Well,
-unless using A702 makes 3D applications run slower than when using
-llvmpipe.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-> >> [1] https://docs.qualcomm.com/bundle/publicresource/87-61720-1_REV_A_QUALCOMM_ROBOTICS_RB1_PLATFORM__QUALCOMM_QRB2210__PRODUCT_BRIEF.pdf
-> >> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> >
-> > With the exception of the commit message:
->
-> :(
->
-> Konrad
->
-> >
-> > Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >
-> >> ---
-> >>  arch/arm64/boot/dts/qcom/qrb2210-rb1.dts | 8 ++++++++
-> >>  1 file changed, 8 insertions(+)
-> >
-> >
+    fs: Block writes to mounted block devices
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11390158180000
+start commit:   022ce8862dff Merge tag 'i2c-for-6.4-rc6' of git://git.kern..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7474de833c217bf4
+dashboard link: https://syzkaller.appspot.com/bug?extid=c601e38d15ce8253186a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11bd01dd280000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13678475280000
 
+If the result looks correct, please mark the issue as fixed by replying with:
 
--- 
-With best wishes
-Dmitry
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
