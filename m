@@ -1,173 +1,227 @@
-Return-Path: <linux-kernel+bounces-70721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 433BB859B89
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:12:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35DB6859B90
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 06:14:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0BBF281A2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:12:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A324D1F221F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 05:14:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37B91CF8D;
-	Mon, 19 Feb 2024 05:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DC602030F;
+	Mon, 19 Feb 2024 05:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FS//woU5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KkuA1cn/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A0C1257D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54357200AB;
+	Mon, 19 Feb 2024 05:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708319565; cv=none; b=hVUGOyCwICUPRqRvUY1RNF0yJGZjDEhNOeSG2iB1FpDZcK+OFn2E3n1gcgt6CvQKCnt6cSkfvsQhMkvcOQKy1228XtsGIomlzIF/2HiUPxXH6mtA8O+xhaqGv/JpqhfZEqTC+wUukozlw1h/AaFKhwsH6ypd8zj7JQF46EdsmZg=
+	t=1708319669; cv=none; b=pDkQzJzJsoZI1OBxvTHYzU/5vGE5nkyG8Bc6pryTEAE6RcrVjgeRxSaT6V2u5J5uuRAUxzyc/Aui5Ifmpp6qH+QJb4d6OiR+s+UYcCpTbccCarou9fU6t+ceDpiW6vcv8ERiEjtFlEgFZhJvLJyp+ajOEq0bO5VmInHxFoDJyD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708319565; c=relaxed/simple;
-	bh=NsrL4UL1lEvCwz0PuMP/EEk4p4JFEnR4E+woMMDvJdI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HtpR8W1A15RuL5MtuFN5tgq4Cns3unSG3geOeaPjQPtU5Gjws7oqUGpEk4ZEAhtXuWC5gYwHrjRTMnOw6Iht3gDv6khXy6XGpezv018kFHxN6DLwAuqFcKaTcfGwMRfNjQxTVRkXwf8vDvoSJgchCpAK7WBF9zqbCc1dTCxa3NQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FS//woU5; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708319562;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ktsZLj5Do+hodpvfXmzkCkX+tlR+x9oS5L9mx60J7nU=;
-	b=FS//woU5ZVuGU2vYF7aOwyTuqOyVLbQFdHm1Fp9PwPdUIvksj55n7CgmIte1xpb6wYyMxi
-	ODHM9ZUx3EJ4+3gdv3pkaOCCutNOASwEL0AH9vAP+atgfffwq6L28BJ59Lk+TDBpoeGxrA
-	/YPbsmRwl9qFmQzBUnX7fGWELa292VU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-116-lFVn_Kq_PiKmLn-f0QhQYg-1; Mon,
- 19 Feb 2024 00:12:38 -0500
-X-MC-Unique: lFVn_Kq_PiKmLn-f0QhQYg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8EDA33C23FC7;
-	Mon, 19 Feb 2024 05:12:37 +0000 (UTC)
-Received: from localhost (unknown [10.72.116.2])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 3F236AC07;
-	Mon, 19 Feb 2024 05:12:34 +0000 (UTC)
-Date: Mon, 19 Feb 2024 13:12:32 +0800
-From: Baoquan He <bhe@redhat.com>
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	Elena Reshetova <elena.reshetova@intel.com>,
-	Jun Nakajima <jun.nakajima@intel.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Tom Lendacky <thomas.lendacky@amd.com>,
-	"Kalra, Ashish" <ashish.kalra@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	"Huang, Kai" <kai.huang@intel.com>, kexec@lists.infradead.org,
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv7 07/16] x86/mm: Return correct level from
- lookup_address() if pte is none
-Message-ID: <ZdLjQCaxhOnR+GzX@MiWiFi-R3L-srv>
-References: <20240212104448.2589568-1-kirill.shutemov@linux.intel.com>
- <20240212104448.2589568-8-kirill.shutemov@linux.intel.com>
+	s=arc-20240116; t=1708319669; c=relaxed/simple;
+	bh=z4idcdiF/V/G2dzC4JCbN56aiWbN2ggIAFpdC/RrtSo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gswjQ0+va/9Ynjz33Pwxz/+GlJE6/xP9rT2mSovS5UYJta13SzKHAbz2hWpFMV1anlozgSNKPuWA+UaoyzbmdC48DXaeow8YBTGgkNUJ9lq8sYVO++qQcL7SPtADfRevI8zyoDkftLDIo93heLW/8aRy6hFNKIeVN2UMDmRkPqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KkuA1cn/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D64F7C433F1;
+	Mon, 19 Feb 2024 05:14:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708319668;
+	bh=z4idcdiF/V/G2dzC4JCbN56aiWbN2ggIAFpdC/RrtSo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KkuA1cn/g3B0W03242S+dyZ4xulDy1Yc+CzPBkUWirDOk/5zx/8cr9OvH/KgkIe2u
+	 1HFr3yNUhubojkbjWZve2FQyV84Iwyns6bAhzrQdL85Hi32peO9bKQwTwmjfz7PL9v
+	 6u3ogGF+GaxnMNWkWmcqMXkAkFNVCPBIhROv+Eu5OfEOXsr9I1HnANb/O0rvigpAKV
+	 KrDu9C0fEy4bAAH2EpWaTeeVUnxHJrdA97DK0DkuXe/jQMO90SvnvmJP4hYCcnKuHs
+	 H7K1ZnHA01YbVn68KFZAzJsFt1zi8SDuW3CfpAutmfEgwe1gDAhL/3k8tpajEhVZa3
+	 5+uZdyEIuv5Ww==
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-51181d8f52fso4976922e87.3;
+        Sun, 18 Feb 2024 21:14:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXhZRdmCMtaMFluJXL76OlCNMwBCW+uq749jHPgiOcL5J2Wbcie4CUfO12bXCGWlu8TRyfu3kB3zGfHQLj7A64ZR4Cmzh9vjiLMqEq8t7eAc5svr2Y0UmpCZgdYjh4faL/iU1he0ad3VVesdjPAwED3Kp+VyudPR1HHhCkUv3Oi6ZY85OJ0
+X-Gm-Message-State: AOJu0YxogTV28qmn45oTEg+5A0C7W2a/RCqYLZ/1PR2v1AsXtLf9QO5a
+	6ig3/U+qoZYmoyM/gl9iGL9xeXZVdvojrpucfvjhPWI4yWmun/r2ly9BVuFJjkHQSvGz6eo7svJ
+	HyBtwsjxGCNFLI5HlIboOzQiFtW4=
+X-Google-Smtp-Source: AGHT+IHP0dlnJUlayhW2vHdNTwFmGK3q7309DdLzwwG1sbb0VcE+YBn293oz0kclgJ7xu4Z8sZIKEobhsBKmAOUZz3o=
+X-Received: by 2002:a19:5e19:0:b0:512:b92a:be02 with SMTP id
+ s25-20020a195e19000000b00512b92abe02mr244978lfb.15.1708319667012; Sun, 18 Feb
+ 2024 21:14:27 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240212104448.2589568-8-kirill.shutemov@linux.intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+References: <20240207092756.2087888-1-linan666@huaweicloud.com>
+ <CAPhsuW74hLiW_KTv3xohwMAcPZ9gp2TvLST4tY7H3O8cA26TTg@mail.gmail.com>
+ <6849835d-a3ac-e840-09e9-8539e7953fe4@huaweicloud.com> <CAPhsuW4k_C=UxwESU4t7R+fpoAJ_HE8g_PpCJXSUGWOdbpCEoQ@mail.gmail.com>
+ <CAPhsuW4H=ehc1UiuFdhBXZUfU_okQ=-rbti1oEWHcs7ajT89iw@mail.gmail.com> <6211cd80-6573-656d-e198-befe074030d8@huaweicloud.com>
+In-Reply-To: <6211cd80-6573-656d-e198-befe074030d8@huaweicloud.com>
+From: Song Liu <song@kernel.org>
+Date: Sun, 18 Feb 2024 21:14:15 -0800
+X-Gmail-Original-Message-ID: <CAPhsuW7T3r4_9PYHrQYPmzhA2t0MVepo-d-6Q922wfyZtB+cpg@mail.gmail.com>
+Message-ID: <CAPhsuW7T3r4_9PYHrQYPmzhA2t0MVepo-d-6Q922wfyZtB+cpg@mail.gmail.com>
+Subject: Re: [PATCH] block: fix deadlock between bd_link_disk_holder and
+ partition scan
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Li Nan <linan666@huaweicloud.com>, axboe@kernel.dk, linux-raid@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	yi.zhang@huawei.com, houtao1@huawei.com, yangerkun@huawei.com, 
+	"yukuai (C)" <yukuai3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 02/12/24 at 12:44pm, Kirill A. Shutemov wrote:
-> lookup_address() only returns correct page table level for the entry if
-> the entry is not none.
-> 
-> Make the helper to always return correct 'level'. It allows to implement
-> iterator over kernel page tables using lookup_address().
-> 
-> Add one more entry into enum pg_level to indicate size of VA covered by
-> one PGD entry in 5-level paging mode.
-> 
-> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Reviewed-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-> ---
->  arch/x86/include/asm/pgtable_types.h | 1 +
->  arch/x86/mm/pat/set_memory.c         | 8 ++++----
->  2 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
-> index 0b748ee16b3d..3f648ffdfbe5 100644
-> --- a/arch/x86/include/asm/pgtable_types.h
-> +++ b/arch/x86/include/asm/pgtable_types.h
-> @@ -548,6 +548,7 @@ enum pg_level {
->  	PG_LEVEL_2M,
->  	PG_LEVEL_1G,
->  	PG_LEVEL_512G,
-> +	PG_LEVEL_256T,
->  	PG_LEVEL_NUM
->  };
->  
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index f92da8c9a86d..3612e3167147 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -666,32 +666,32 @@ pte_t *lookup_address_in_pgd(pgd_t *pgd, unsigned long address,
+On Sat, Feb 17, 2024 at 11:47=E2=80=AFPM Yu Kuai <yukuai1@huaweicloud.com> =
+wrote:
+>
+> Hi,
+>
+> =E5=9C=A8 2024/02/17 3:03, Song Liu =E5=86=99=E9=81=93:
+> > On Thu, Feb 8, 2024 at 4:49=E2=80=AFPM Song Liu <song@kernel.org> wrote=
+:
+> >>
+> >> On Thu, Feb 8, 2024 at 12:44=E2=80=AFAM Li Nan <linan666@huaweicloud.c=
+om> wrote:
+> >>>
+> >>>
+> >>>
+> >>> =E5=9C=A8 2024/2/8 14:50, Song Liu =E5=86=99=E9=81=93:
+> >>>> On Wed, Feb 7, 2024 at 1:32=E2=80=AFAM <linan666@huaweicloud.com> wr=
+ote:
+> >>>>>
+> >>>>> From: Li Nan <linan122@huawei.com>
+> >>>>>
+> >>>>> 'open_mutex' of gendisk is used to protect open/close block devices=
+ But
+> >>>>> in bd_link_disk_holder(), it is used to protect the creation of sym=
+link
+> >>>>> between holding disk and slave bdev, which introduces some issues.
+> >>>>>
+> >>>>> When bd_link_disk_holder() is called, the driver is usually in the =
+process
+> >>>>> of initialization/modification and may suspend submitting io. At th=
+is
+> >>>>> time, any io hold 'open_mutex', such as scanning partitions, can ca=
+use
+> >>>>> deadlocks. For example, in raid:
+> >>>>>
+> >>>>> T1                              T2
+> >>>>> bdev_open_by_dev
+> >>>>>    lock open_mutex [1]
+> >>>>>    ...
+> >>>>>     efi_partition
+> >>>>>     ...
+> >>>>>      md_submit_bio
+> >>>>>                                   md_ioctl mddev_syspend
+> >>>>>                                     -> suspend all io
+> >>>>>                                    md_add_new_disk
+> >>>>>                                     bind_rdev_to_array
+> >>>>>                                      bd_link_disk_holder
+> >>>>>                                       try lock open_mutex [2]
+> >>>>>       md_handle_request
+> >>>>>        -> wait mddev_resume
+> >>>>>
+> >>>>> T1 scan partition, T2 add a new device to raid. T1 waits for T2 to =
+resume
+> >>>>> mddev, but T2 waits for open_mutex held by T1. Deadlock occurs.
+> >>>>>
+> >>>>> Fix it by introducing a local mutex 'holder_mutex' to replace 'open=
+_mutex'.
+> >>>>
+> >>>> Is this to fix [1]? Do we need some Fixes and/or Closes tags?
+> >>>>
+> >>>
+> >>> No. Just use another way to fix [2], and both [2] and this patch can =
+fix
+> >>> the issue. I am not sure about the root cause of [1] yet.
+> >>>
+> >>> [2] https://patchwork.kernel.org/project/linux-raid/list/?series=3D81=
+2045
+> >>>
+> >>>> Could you please add steps to reproduce this issue?
+> >>>
+> >>> We need to modify the kernel, add sleep in md_submit_bio() and md_ioc=
+tl()
+> >>> as below, and then:
+> >>>     1. mdadm -CR /dev/md0 -l1 -n2 /dev/sd[bc]  #create a raid
+> >>>     2. echo 1 > /sys/module/md_mod/parameters/error_inject  #enable s=
+leep
+> >>>     3. 'mdadm --add /dev/md0 /dev/sda'  #add a disk to raid
+> >>>     4. submit ioctl BLKRRPART to raid within 10s.
+> >>
+> >> The analysis makes sense. I also hit the issue a couple times without =
+adding
+> >> extra delays. But I am not sure whether this is the best fix (I didn't=
+ find real
+> >> issues with it either).
+> >
+> > To be extra safe and future proof, we can do something like the
+> > following to only
+> > suspend the array for ADD_NEW_DISK on not-running arrays.
+> >
+> > This appear to solve the problem reported in
+> >
+> > https://bugzilla.kernel.org/show_bug.cgi?id=3D218459
+> >
+> > Thanks,
+> > Song
+> >
+> > diff --git a/drivers/md/md.c b/drivers/md/md.c
+> > index 9e41a9aaba8b..395911d5f4d6 100644
+> > --- a/drivers/md/md.c
+> > +++ b/drivers/md/md.c
+> > @@ -7570,10 +7570,11 @@ static inline bool md_ioctl_valid(unsigned int =
+cmd)
+> >          }
+> >   }
+> >
+> > -static bool md_ioctl_need_suspend(unsigned int cmd)
+> > +static bool md_ioctl_need_suspend(struct mddev *mddev, unsigned int cm=
+d)
+> >   {
+> >          switch (cmd) {
+> >          case ADD_NEW_DISK:
+> > +               return mddev->pers !=3D NULL;
+>
+> Did you check already that this problem is not related that 'active_io'
+> is leaked for flush IO?
+>
+> I don't understand the problem reported yet. If 'mddev->pers' is not set
+> yet, md_submit_bio() will return directly, and 'active_io' should not be
+> grabbed in the first place.
 
-LGTM,
+AFAICT, this is not related to the active_io issue.
 
-Reviewed-by: Baoquan He <bhe@redhat.com>
+>
+> md_run() is the only place to convert 'mddev->pers' from NULL to a real
+> personality, and it's protected by 'reconfig_mutex', however,
+> md_ioctl_need_suspend() is called without 'reconfig_mutex', hence there
+> is a race condition:
+>
+> md_ioctl_need_suspend           array_state_store
+>   // mddev->pers is NULL, return false
+>                                  mddev_lock
+>                                  do_md_run
+>                                   mddev->pers =3D xxx
+>                                  mddev_unlock
+>
+>   // mddev_suspend is not called
+>   mddev_lock
+>   md_add_new_disk
+>    if (mddev->pers)
+>     md_import_device
+>     bind_rdev_to_array
+>     add_bound_rdev
+>      mddev->pers->hot_add_disk
+>      -> hot add disk without suspending
 
-By the way, we may need update the code comment above function
-lookup_address_in_pgd() and function lookup_address() since they don't
-reflect the latest behaviour of them.
+Yeah, this race condition exists. We probably need some
+trick with suspend and lock here.
 
->  	pud_t *pud;
->  	pmd_t *pmd;
->  
-> -	*level = PG_LEVEL_NONE;
-> +	*level = PG_LEVEL_256T;
->  
->  	if (pgd_none(*pgd))
->  		return NULL;
->  
-> +	*level = PG_LEVEL_512G;
->  	p4d = p4d_offset(pgd, address);
->  	if (p4d_none(*p4d))
->  		return NULL;
->  
-> -	*level = PG_LEVEL_512G;
->  	if (p4d_large(*p4d) || !p4d_present(*p4d))
->  		return (pte_t *)p4d;
->  
-> +	*level = PG_LEVEL_1G;
->  	pud = pud_offset(p4d, address);
->  	if (pud_none(*pud))
->  		return NULL;
->  
-> -	*level = PG_LEVEL_1G;
->  	if (pud_large(*pud) || !pud_present(*pud))
->  		return (pte_t *)pud;
->  
-> +	*level = PG_LEVEL_2M;
->  	pmd = pmd_offset(pud, address);
->  	if (pmd_none(*pmd))
->  		return NULL;
->  
-> -	*level = PG_LEVEL_2M;
->  	if (pmd_large(*pmd) || !pmd_present(*pmd))
->  		return (pte_t *)pmd;
->  
-> -- 
-> 2.43.0
-> 
-
+Thanks,
+Song
 
