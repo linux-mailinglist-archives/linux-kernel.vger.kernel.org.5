@@ -1,117 +1,162 @@
-Return-Path: <linux-kernel+bounces-71377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A91B085A459
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:08:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E950285A45A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:08:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 659EB2812B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:08:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A67C22822C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:08:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B609364A4;
-	Mon, 19 Feb 2024 13:07:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52B6C36AF2;
+	Mon, 19 Feb 2024 13:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KLfi3+0a"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="enfEQQeR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="enfEQQeR"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5492E651
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B652D2D607;
+	Mon, 19 Feb 2024 13:08:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708348067; cv=none; b=ludzByorIUtxBtwZLhLOXPchTbTrW1lapHwzfJmkbj8HWOh8UE9whkJHBi+7lMcXtUtUfGytQWrPTTMFZaQQymYrEDXdIwcgLNC2KenQWQD3aFILDUvMNpWu7WW7/VDyQzVpnxZwZvBFCLJRMytPrM+lSkC9R1ycEKWSmsidzrg=
+	t=1708348082; cv=none; b=WtiIUtJdMsls9nPlzu5ZtGeKD3nRaVa5ZoFdJy7z59kcSaXVO393mrXHdRTJdnPsNgA6rV87IlAqyjUkSbm5pzDdARr32N0WK0f/9eHlwGAePqbs8ZLMBjxJl/N1nj0x+gSmKUelLl49ZlCvbIq1xirDc3DiTwGxlXkARgEMSb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708348067; c=relaxed/simple;
-	bh=4B1hENKiAQ5A7FWy3lecw1iO5LY3wMhnaw8pz3g9UCk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ozwXqDNYq7i5xWRJWBQ7S+jrZyY45yqi0xpgwAS2NfAqCx9KfXgiUuPtgRItrlW1OEm35AFQyF5GGP2PUjKHAgqtRTyuHC7i63F56+KASCakJMhCEV4hPAz3x1sOMzydEGqd3tvJ3tQJcql30MJHNAYvjkVxFTonfwMwwKPdrCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KLfi3+0a; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d911c2103aso22069295ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:07:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708348065; x=1708952865; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=UxjSDgN8k5Eq9QSDrchwS/jkSu2I8H4NnMpDWLp/M7U=;
-        b=KLfi3+0aa/5DlyATjTMus58kj8J88SHpcgl14BTjGnSUUIQ3LxDcLj9djRgXCX0rC0
-         x65ZUoVXbxU5zGxOjkDTLbHSQMuyY2ubcGvw3tqkts68XoKkdBbB1OAAblABad14OQFs
-         JV7hliOdvB3qb7tPYrYVrcrSn202zfzad1zLQQ9iLe78U8lVBDb2kl2QGNqpZafm56ko
-         PuITmkdZIlDkvphN31L4vBfK+GXPRA8s3h5jklSZBpJJzjpoBDnftSogD+gosMRu4ZSa
-         VGDnoyk5YRBZzsfjsI5ZsCzURAeeM+P5kK209WaWBAt6At1bBUX2yNHZFH6n7dyYb2JU
-         V5rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708348065; x=1708952865;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UxjSDgN8k5Eq9QSDrchwS/jkSu2I8H4NnMpDWLp/M7U=;
-        b=aDkgS88oIJIpbZc2ewBfXHi8130s85wzun0Fqf1pGsjFIqzHfhfExVT3GFog8sn2px
-         V1D3wE6xonw2JV2tRPKDMQ/H6rjZ4UmngzXTFaboG3xzqMBnQ0M3nOO2soF7ksFitvs2
-         lAyvIYmr8Of0Mwu+S++rCkklZqrCtPmL7FsCFi8MGlU62em8lLpq1hf1GmmJWST9Ij72
-         VSFT3ZXo83D9CHylX+/iSgLpa8YOTmy24rg+mbrh1Si8omJWiQXe/5MboKLF4ZbkCICK
-         OP4Z6fVgcIHmGjhJXVsmjLyAzLgQ2Ci0J4jF/TfkgikZwMigIt2ItsTTBM6vq2rF7EI5
-         PX/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVGstiHB6lHgHVaVS1oOyPUc3h6yEGcygy6GFW5Zd0TwzbfoqtsYuKV7uvQDsb0WD+Qn5sM2Ldg/gbJgMLqevGD4TdbGl3mclTWZYiZ
-X-Gm-Message-State: AOJu0YwuyMuLetwnEdZR5p+jSRkCg1CiMfa/SA46OkAI7/kr9HCbPBuu
-	k22jNDf/r13IkKHubJzoLxQDrGVpxKRX6KgaWQmqT+ecVC+zcP0S
-X-Google-Smtp-Source: AGHT+IEdlidlo/qLMZeFXhrIxPnycgSh09VpERMsTrQCueAFnlaWgozk1tJYjPE7vjToJHFZpNo9Tg==
-X-Received: by 2002:a17:902:e84e:b0:1db:de64:97ac with SMTP id t14-20020a170902e84e00b001dbde6497acmr3715030plg.15.1708348065142;
-        Mon, 19 Feb 2024 05:07:45 -0800 (PST)
-Received: from localhost.localdomain ([49.142.40.215])
-        by smtp.gmail.com with ESMTPSA id t11-20020a170902d28b00b001db40e91beesm4352633plc.285.2024.02.19.05.07.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 05:07:44 -0800 (PST)
-From: skseofh@gmail.com
-To: catalin.marinas@arm.com,
-	will@kernel.org,
-	rmk+kernel@armlinux.org.uk,
-	tglx@linutronix.de,
-	mark.rutland@arm.com
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Daero Lee <skseofh@gmail.com>
-Subject: [PATCH] arm64: remove duplicated early fixmap init
-Date: Mon, 19 Feb 2024 22:07:18 +0900
-Message-Id: <20240219130718.2491496-1-skseofh@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1708348082; c=relaxed/simple;
+	bh=aqhdz5jZvoHHhKuVHFSbbTrTM0VXAIh+AtbEXvKiV5Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u7PUeqmBFQeva5pTOESjr9Nd/PVUyl0aScoT/66mbfdNpNu29E1OBJeROqFEViAJtBQwm31ljfrFB8D7dS3fHnTzS3l9V4RAfSoMlf7+bjfewpzNvYIE7rMlV0SJcRCttTvS0qxb17AC2PuMaOW+bdsInn3jilfRfD9dUDRHMV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=enfEQQeR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=enfEQQeR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 521D722180;
+	Mon, 19 Feb 2024 13:07:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708348078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iIfSlUEslrWVPddWPziGhX/JsVABAGYKiD/rmY5VVxs=;
+	b=enfEQQeRmU6VXSNN8iWZmhdNJOHrOi3WxuFJq0cARxVCwIFkYIBUUMWXjIzQeUwafX5YJK
+	gNFKQqr2XnPrgyxMZU0O3oC1b/s5e8QpA3fBtzXpiTA7f72boOzvhcgrH3Dsl1sSO9jlhZ
+	Sq0oBzHdUlMKEXdmXMnrqPPZJhtNN2M=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1708348078; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iIfSlUEslrWVPddWPziGhX/JsVABAGYKiD/rmY5VVxs=;
+	b=enfEQQeRmU6VXSNN8iWZmhdNJOHrOi3WxuFJq0cARxVCwIFkYIBUUMWXjIzQeUwafX5YJK
+	gNFKQqr2XnPrgyxMZU0O3oC1b/s5e8QpA3fBtzXpiTA7f72boOzvhcgrH3Dsl1sSO9jlhZ
+	Sq0oBzHdUlMKEXdmXMnrqPPZJhtNN2M=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 05A3613647;
+	Mon, 19 Feb 2024 13:07:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id S1IlO61S02UtTAAAD6G6ig
+	(envelope-from <jgross@suse.com>); Mon, 19 Feb 2024 13:07:57 +0000
+Message-ID: <23ecde01-0e9a-4d2f-8194-294174ca7dbc@suse.com>
+Date: Mon, 19 Feb 2024 14:07:57 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND RFC] kernel/ksysfs.c: restrict /sys/kernel/notes to root
+ access
+To: Kees Cook <keescook@chromium.org>, Greg KH <gregkh@linuxfoundation.org>
+Cc: Guixiong Wei <guixiongwei@gmail.com>, linux-hardening@vger.kernel.org,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+ Stefano Stabellini <sstabellini@kernel.org>,
+ Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+ Guixiong Wei <weiguixiong@bytedance.com>, linux-kernel@vger.kernel.org
+References: <20240218073501.54555-1-guixiongwei@gmail.com>
+ <2024021825-skiing-trustee-a56a@gregkh> <202402180028.6DB512C50@keescook>
+Content-Language: en-US
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+In-Reply-To: <202402180028.6DB512C50@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spamd-Result: default: False [0.62 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 BAYES_HAM(-0.00)[21.84%];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 R_MIXED_CHARSET(0.71)[subject];
+	 FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,oracle.com,kernel.org,epam.com,bytedance.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: 0.62
 
-From: Daero Lee <skseofh@gmail.com>
+On 18.02.24 10:04, Kees Cook wrote:
+> On Sun, Feb 18, 2024 at 08:47:03AM +0100, Greg KH wrote:
+>> On Sun, Feb 18, 2024 at 03:35:01PM +0800, Guixiong Wei wrote:
+>>> From: Guixiong Wei <weiguixiong@bytedance.com>
+>>>
+>>> Restrict non-privileged user access to /sys/kernel/notes to
+>>> avoid security attack.
+>>>
+>>> The non-privileged users have read access to notes. The notes
+>>> expose the load address of startup_xen. This address could be
+>>> used to bypass KASLR.
+>>
+>> How can it be used to bypass it?
+>>
+>> KASLR is, for local users, pretty much not an issue, as that's not what
+>> it protects from, only remote ones.
+>>
+>>> For example, the startup_xen is built at 0xffffffff82465180 and
+>>> commit_creds is built at 0xffffffff810ad570 which could read from
+>>> the /boot/System.map. And the loaded address of startup_xen is
+>>> 0xffffffffbc265180 which read from /sys/kernel/notes. So the loaded
+>>> address of commit_creds is 0xffffffffbc265180 - (0xffffffff82465180
+>>>   - 0xffffffff810ad570) = 0xffffffffbaead570.
+>>
+>> I've cc: the hardening list on this, I'm sure the developers there have
+>> opinions about this.
+> 
+> Oh eww, why is Xen spewing addresses into the notes section? (This must
+> be how it finds its entry point? But that would be before relocations
+> happen...)
 
-We call early_fixmap_init() in two place.
-- early_fdt_init()
-- setup_arch()
+Right. Xen is looking into the ELF-file to find the entry point of the
+kernel (PV and PVH guest types only).
 
-Because early_fdt_init() is called before going to setup_arch(),
-early_fixmap_init() can be deleted from setup_arch()
+> 
+> But yes, I can confirm that relocations are done against the .notes
+> section at boot, so the addresses exposed in .notes is an immediate
+> KASLR offset exposure.
 
-Signed-off-by: Daero Lee <skseofh@gmail.com>
----
- arch/arm64/kernel/setup.c | 1 -
- 1 file changed, 1 deletion(-)
+Relocations applied to the kernel when it has been started don't need
+to cover the notes section as far as Xen is concerned.
 
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 42c690bb2d60..ce45f4a9ac4a 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -305,7 +305,6 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 	 */
- 	arm64_use_ng_mappings = kaslr_requires_kpti();
- 
--	early_fixmap_init();
- 	early_ioremap_init();
- 
- 	setup_machine_fdt(__fdt_pointer);
--- 
-2.25.1
 
+Juergen
 
