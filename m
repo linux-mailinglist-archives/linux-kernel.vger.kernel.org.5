@@ -1,145 +1,91 @@
-Return-Path: <linux-kernel+bounces-71959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4373285AD12
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:24:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC9785AD0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:23:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8AA5B22F04
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:24:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A117C1F25F42
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:23:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0FA5467B;
-	Mon, 19 Feb 2024 20:23:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE542535C7;
+	Mon, 19 Feb 2024 20:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bV1JYQCt"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OjpUcB1I"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA74535DF
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 20:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E655A52F9B;
+	Mon, 19 Feb 2024 20:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708374212; cv=none; b=fmkIOcrQQJYSnmV5UVtIGC+dFhnMu8H5L8mbhqp1h6QNzWh1IoabcVcsKzsrJRlGutargBA9+6JhiCEDjdHKQXKz9eMNib9dXDX9AMIBe7dbRg8z+oDKwvk6wYuEPaUh2xSUevj6bCmcODFfAYUp7mOrn20NzBSaVh2c+YAtUSc=
+	t=1708374210; cv=none; b=fjba62Ar33FrTx/M5Jx6hKgXiw2FQLN6cAL5mECYn2oNrEZqtIqdOGnIj4dg80ecHqyj6TLY4KB+KGriSglLuwl24iq+hh3epZAGrH8cSaMMgTo4dlOCU5D5TpENYB6CxDEn0tRpOHnZU4ZGmC0eZD1xpjl//UMNXDpLB4JqoL0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708374212; c=relaxed/simple;
-	bh=GCN4a3XwyVGjN4FSoVSL7WZNZKmZBWlauyy+D84PGEY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XHuJCUbW4/2nu/2uaoE/3zDJsQCXA82mMf1QZwRiP0FporovT5LojYLfnk3n8MUg3YP16qMjwx7kY5tt3xaVQykiOPl1fqyGlKV3H8Wf7P0hWz51pk8I+PhW0+yWMxQ4/t5Gg+SxJjITXLT9OJCCHoN5GFX2ttN5BrNi1pLZZCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bV1JYQCt; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1db51e55023so25477355ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:23:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708374211; x=1708979011; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kUa3JH16Oe5UJV9UEwjr6pY+WpID6lK8xSe+O5n7a8M=;
-        b=bV1JYQCtkS9Hy/MCHAsLi2DxYJJUp0KhmL4KmzkBk8aXLh8/3g3U3ugU8E+n1kKV33
-         q4RwPzkMJx8ltaijxuXdkCMP6uXEHBZHmxFxmU7oCup1bnCgjhmbgDUay4KJWWANBza6
-         U0zd6BPSnOZlRYH+S5CNrFfLgWqajGh0b6nrY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708374211; x=1708979011;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kUa3JH16Oe5UJV9UEwjr6pY+WpID6lK8xSe+O5n7a8M=;
-        b=wx/OZK3AU90qsLOTayK1VfTWaUo7PibJp7i5Mbh16CwoSwe5f42dlVGUJQrEYQ57/u
-         lA5B7n3pydstNselqCyFCeiS3QgRRtDerPvcL2p6GIc0oozGBKSZsTYVIvtx6ubeDtUk
-         eFEuIndkxwfKl9Q7crg3geUn0z5CNhB7ACh9kGca7/YxZANDc/ky4ReRSdhWPPHGIL0T
-         ZVfmz7O6Y7JKUXpoLR+bd5zBgzdK3PdoVtvjk8lf31dbzq3nbAeQMjU/FbAK3633uVAm
-         wn+tJu1UwBTOFijOyUJOt422opYpjD06aVL2F4T345VBu0yTz2q+9bxubH3p1zeC/rCB
-         XqyQ==
-X-Gm-Message-State: AOJu0YzWDGK7zHAzPS2kX6OzcLj6IjyC0iY93BkWfZ7YilM6G+sB/tJn
-	g/hn8zVaZxdBPgZvbW8fpBP9+uI+6S2o0niHv+VnxILNTG8eNEWdyuRGxyZ3NQ==
-X-Google-Smtp-Source: AGHT+IG8LtaETDPpup4Qyvx26INSaCWovgahZdaA0zbKl+GL/t4KUJJLp2AnURqkSJ5Jxmv9EMKmoQ==
-X-Received: by 2002:a17:902:da87:b0:1d9:2158:1308 with SMTP id j7-20020a170902da8700b001d921581308mr16281281plx.28.1708374210688;
-        Mon, 19 Feb 2024 12:23:30 -0800 (PST)
-Received: from localhost (175.199.125.34.bc.googleusercontent.com. [34.125.199.175])
-        by smtp.gmail.com with UTF8SMTPSA id mf8-20020a170902fc8800b001d9fc6cb5f2sm4818207plb.203.2024.02.19.12.23.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 12:23:30 -0800 (PST)
-From: Stephen Boyd <swboyd@chromium.org>
-To: Lee Jones <lee@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	patches@lists.linux.dev,
-	devicetree@vger.kernel.org,
-	chrome-platform@lists.linux.dev,
-	Douglas Anderson <dianders@chromium.org>,
-	Pin-yen Lin <treapking@chromium.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Benson Leung <bleung@chromium.org>,
-	Guenter Roeck <groeck@chromium.org>
-Subject: [PATCH 1/2] dt-bindings: cros-ec: Add properties for GPIO controller
-Date: Mon, 19 Feb 2024 12:23:23 -0800
-Message-ID: <20240219202325.4095816-2-swboyd@chromium.org>
-X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
-In-Reply-To: <20240219202325.4095816-1-swboyd@chromium.org>
-References: <20240219202325.4095816-1-swboyd@chromium.org>
+	s=arc-20240116; t=1708374210; c=relaxed/simple;
+	bh=ixHV3knXhwlKaNm/H5VZf90xSon7xbNx8HdzY1OHTaE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=Dpehsvbmg6I9Ca1ZlsApovOj41KiM472ygwU72XtYhNAeYqEAWtquSUeKQdUbcLzagDQpZD3CiC9XssYoExRi/Kg8saz6N7ZoeKOtl07YcpoMk3G3zQcLI93qk8DleYBhTl9lNlJ+Ar2bFr3jEKaC2/mKTg4fzXaSAgdG1HqvQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OjpUcB1I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3F0DC433F1;
+	Mon, 19 Feb 2024 20:23:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708374209;
+	bh=ixHV3knXhwlKaNm/H5VZf90xSon7xbNx8HdzY1OHTaE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OjpUcB1IXEiERVGSZfOvbUCkCuR4TmpnrjXZViMy49DFN74vJyxOHJLpZnI/mluoy
+	 5t+48D1/yfNRnngCi3+O0k93X+tzsXNC7dAfSJM1dwk67yAW2JS1kc+dPAxzYGD9Va
+	 OV5MRb5nxQL8BnJo8n/GRJqfacljYIXCAX4FOOisF+xFEjguF/rcH7Lmv+D3rQGvaA
+	 IQbOSumem2riEQiubkyQhsh9xN9QoS7/OMHYNw+DwKzoexy78hpiAEfsMZdIvzZ3w7
+	 OWAMjZu1i7F0TgNnDh9tR9RVkP93uO1muS6llIweMUmrsexc+d2ZHttmbOHLbMQJlU
+	 T3j5ctixMwO1w==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 19 Feb 2024 20:23:23 +0000
+Message-Id: <CZ9C42ETAIZ5.2QF94SIXDWCHR@seitikki>
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Haitao Huang" <haitao.huang@linux.intel.com>
+Cc: <anakrish@microsoft.com>, <bp@alien8.de>, <cgroups@vger.kernel.org>,
+ <chrisyan@microsoft.com>, <dave.hansen@linux.intel.com>, <hpa@zytor.com>,
+ <kristen@linux.intel.com>, <linux-kernel@vger.kernel.org>,
+ <linux-sgx@vger.kernel.org>, <mikko.ylinen@linux.intel.com>,
+ <mingo@redhat.com>, <mkoutny@suse.com>, <seanjc@google.com>,
+ <sohil.mehta@intel.com>, <tglx@linutronix.de>,
+ <tim.c.chen@linux.intel.com>, <tj@kernel.org>, <x86@kernel.org>,
+ <yangjie@microsoft.com>, <zhanb@microsoft.com>, <zhiquan1.li@intel.com>
+Subject: Re: [RFC PATCH] x86/sgx: Remove 'reclaim' boolean parameters
+X-Mailer: aerc 0.15.2
+References: <CZ4FCQ633VLC.26Y7HUHGRSFB3@kernel.org>
+ <20240219153957.9957-1-haitao.huang@linux.intel.com>
+In-Reply-To: <20240219153957.9957-1-haitao.huang@linux.intel.com>
 
-The ChromeOS embedded controller (EC) supports setting the state of
-GPIOs when the system is unlocked, and getting the state of GPIOs in all
-cases. The GPIOs are on the EC itself, so the EC acts similar to a GPIO
-expander. Add the #gpio-cells and gpio-controller properties to the
-cros-ec binding so that other devices described in DT can get the GPIOs
-on the EC.
+On Mon Feb 19, 2024 at 3:39 PM UTC, Haitao Huang wrote:
+> Remove all boolean parameters for 'reclaim' from the function
+> sgx_alloc_epc_page() and its callers by making two versions of each
+> function.
+>
+> Also opportunistically remove non-static declaration of
+> __sgx_alloc_epc_page() and a typo
+>
+> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Suggested-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc: Conor Dooley <conor+dt@kernel.org>
-Cc: Lee Jones <lee@kernel.org>
-Cc: Benson Leung <bleung@chromium.org>
-Cc: Guenter Roeck <groeck@chromium.org>
-Cc: <devicetree@vger.kernel.org>
-Cc: <chrome-platform@lists.linux.dev>
-Cc: Pin-yen Lin <treapking@chromium.org>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- Documentation/devicetree/bindings/mfd/google,cros-ec.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+I think this is for better.
 
-diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-index e1ca4f297c6d..aac8819bd00b 100644
---- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-+++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-@@ -93,6 +93,11 @@ properties:
-   '#size-cells':
-     const: 0
- 
-+  '#gpio-cells':
-+    const: 2
-+
-+  gpio-controller: true
-+
-   typec:
-     $ref: /schemas/chrome/google,cros-ec-typec.yaml#
- 
-@@ -275,6 +280,8 @@ examples:
-             interrupts = <99 0>;
-             interrupt-parent = <&gpio7>;
-             spi-max-frequency = <5000000>;
-+            #gpio-cells = <2>;
-+            gpio-controller;
- 
-             proximity {
-                 compatible = "google,cros-ec-mkbp-proximity";
--- 
-https://chromeos.dev
+My view point for kernel patches overally is that:
 
+1. A feature should leave the subsystem in cleaner state as
+   far as the existing framework of doing things goes.
+2. A bugfix can sometimes do the opposite if corner case
+   requires some weird dance to perform.
+
+
+BR, Jarkko
 
