@@ -1,184 +1,154 @@
-Return-Path: <linux-kernel+bounces-70903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54658859DC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:03:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 94865859DCB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:03:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 794261C2209F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:03:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C74AE1C21F34
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:03:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BA420DF5;
-	Mon, 19 Feb 2024 08:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F8121353;
+	Mon, 19 Feb 2024 08:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=eckelmann.de header.i=@eckelmann.de header.b="oW8uuOmm"
-Received: from DEU01-BE0-obe.outbound.protection.outlook.com (mail-be0deu01on2097.outbound.protection.outlook.com [40.107.127.97])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="o7TGhRmT"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0195720DC3;
-	Mon, 19 Feb 2024 08:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.127.97
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708329640; cv=fail; b=uOX7oBRldFlqKLYFr3S+R44fUuKSALVdMdgleYOLvD2G1ZNzjX9rkkR7vNHFpJYl+nQNL89zAl2OzuuwfEtgi3Nu+eFrgDmujwlljNA740Trw3vlu9XBki+hEhJs2U363bbLTtYgY6knXIHh5CqUrW6eZbid8c0uhxyXSHe75kw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708329640; c=relaxed/simple;
-	bh=c7vj/v878oowSjFhlrMex+oGv9IbveMNcMP5kXoKZ28=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=i0HuoTgS3hrTrJYzlq4x6b98RDOqt+KSQ2Hz23GU/ItU/Zx8UP0rh3I/0mrRdLLOUqOj/35jKAV75UNYqIFsGxgvCAPmv9SJg84PG/Y5n3OL0WBcZ8Th49JgUzaZeE0LDw+zEwoXiPDUTFhy+Clbhi+e/L9bjvhxKAHuTmCk2uY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eckelmann.de; spf=pass smtp.mailfrom=eckelmann.de; dkim=pass (1024-bit key) header.d=eckelmann.de header.i=@eckelmann.de header.b=oW8uuOmm; arc=fail smtp.client-ip=40.107.127.97
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eckelmann.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eckelmann.de
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WlZ87VV6ZZz9q+F/lK6h2vMpGqkKoquqa00Ho5d4LS2dUivthdqUtPuGGRqVAFCGfGir8czHBlW8Ni+qMSoWNWx0XpY1il4DixD1MQlhAOd/26DrpYOYuMo7lDKVj/BqYNq9/m64fC1uBXVGxlicfmXekpO2iQegyNnqA2Bj1lSBvPhqjYjGGXOBRSF/V6T8ck3guv38WfmphW6qpUBcK6lFPbLw8OitXI8brMWLw2tp5Zo0Yt6KUThdJZ+nNEb81v/UwslVie4t7Xm+dAkMSupZ0vzfLAR4AMEbgzK9zMdwqJkMzZ72XeZsjpP0ypio55Y5HGjP3PfPn1EvbbJW/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TAxf8+fmmbpIhpHF9hKKwd6CfE3Yl1vi6AMloabTQvs=;
- b=bORr3+myBo2wmwr8Iy7BAJDKzTn2vo9KHz0jznfYXqo6iugAzkJfkIQmNBSBPkcP1ykP8/zPtcPZkdELqU7j7F/Byh7701nrukyKMCyBGD93JPA911K6X9bfDQ5kkFOvmIAMIcVQXhVjtl+yaIOHfgscqx2YKpRQxzURyVSc3q/mYoe0t0I8HY+AYlpsDgI5Zm/Am5cz3Ykm0ngf4hkzk31T6qd9aCFZpsBS5sZb7EyyjcleULyjCLwvijxNaVcgmhoq+KDFD/iqbmw0Rdx1D7SPjMP69GLIwiGGEusDHyp1L7Vf8mthqCTAzcrJHdO3hCtZIoX7sX8Xa/KLpqsmXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=eckelmann.de; dmarc=pass action=none header.from=eckelmann.de;
- dkim=pass header.d=eckelmann.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=eckelmann.de;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TAxf8+fmmbpIhpHF9hKKwd6CfE3Yl1vi6AMloabTQvs=;
- b=oW8uuOmmaWljAsi73nqeHF/1XL9JQZVv0RBV7xrIAzFtGZ+TuxWFIImN0oINTYm4SesY6DMJ8+sfmdHoLNPd+TzfKs/3IZm9SOjiBUN2GmlOBOsHlESfQqdzsqTdNNIWwli/+P/nLuYfmZRLujR7XkYz+Wv24aQh5eodPiLO6mM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=eckelmann.de;
-Received: from FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:da::13)
- by FR2P281MB2379.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:3b::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
- 2024 08:00:35 +0000
-Received: from FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
- ([fe80::a175:dc81:cb6b:2dd8]) by FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
- ([fe80::a175:dc81:cb6b:2dd8%5]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
- 08:00:34 +0000
-Date: Mon, 19 Feb 2024 09:00:33 +0100
-From: Thorsten Scherer <T.Scherer@eckelmann.de>
-To: Raag Jadav <raag.jadav@intel.com>
-Cc: u.kleine-koenig@pengutronix.de, jarkko.nikula@linux.intel.com, 
-	mika.westerberg@linux.intel.com, andriy.shevchenko@linux.intel.com, lakshmi.sowjanya.d@intel.com, 
-	linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] pwm: dwc: drop redundant error check
-Message-ID: <arjrsej4vylprpevarvzufj5fp77hy7m4cotjubc7ufteegqxu@b5btt5aqjz65>
-References: <20240219033835.11369-1-raag.jadav@intel.com>
- <20240219033835.11369-3-raag.jadav@intel.com>
- <m57yqdldszy3s44p5rdxd6kwii5tqzqa44aaevpe7bep2yyeuo@wls3ad3gcl7y>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <m57yqdldszy3s44p5rdxd6kwii5tqzqa44aaevpe7bep2yyeuo@wls3ad3gcl7y>
-X-ClientProxiedBy: FR4P281CA0414.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:d0::7) To FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:da::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6F8C8D6;
+	Mon, 19 Feb 2024 08:01:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708329668; cv=none; b=T9USjC//3nIGyYSFgi2nT0nfdQHzQRWA7byPRKVohtjsQOiOgOi9jRV05Fvo04fG3NckBvgvrHx6IRTU9KhravczRJlBuNy1+6uAJ4yUX2PmHqoD57l0NCsflEmNY6ntQSrGP90RwcJJbIsjlGI08/vGD6EOMfWjcBxTZpXOvPU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708329668; c=relaxed/simple;
+	bh=rfQkQXfU5XnbLWnwEW1iiJydHy5t2btASLhVXbbDWdw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=JCL5e4k/PDndPrrVCxwiGZ8nOxS8qneEgJA1VWAmcWhkLGGiIpJ37hv0m4Aq01ZzwI2aIcgHMr4Fx3qSWFdyEYbTL6xWIEJhLK76wutWob4NEcST9zzGVqJGd+7oTJZuz1iVrgCwVum+q0qweDOnc3KuVk8k+WeF2JHD6mwni3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=o7TGhRmT; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1708329666; x=1739865666;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rfQkQXfU5XnbLWnwEW1iiJydHy5t2btASLhVXbbDWdw=;
+  b=o7TGhRmTYZF2XT1nrisU4e5Mrtwp+eCJl3uSf27mDp0B+DXo12k7bQBo
+   0UUcOevK6kjH8VSh31DX3wSjto74g3mtMw0Znh/WLtnykZ9DCD4ua1Q9P
+   PUxiiNyp80FxdgkQkrql+kkpmOCE6NVwXdS/SVp5t8BDs6yh5MhC6mF8S
+   r1oT4DGxDOvWwGQ634iojxBSWu9Vu+PTLru0TzakKc2H7GaJ1754q0ef8
+   FnkCr9Umkj1QG79So2lVMTAQnEvC+B83uA1kP4OXuDpxc1caKc89KAJJz
+   cYsg/mgY772jWw0ROygPPaQvvyGKwJSlOCsS0DwgInpOcfTDQXBPShzRc
+   Q==;
+X-CSE-ConnectionGUID: 0bIe6Jl+SMycL+aUC1NHPA==
+X-CSE-MsgGUID: XC9el0JIT7ONn6Wduk/pEg==
+X-IronPort-AV: E=Sophos;i="6.06,170,1705388400"; 
+   d="scan'208";a="247196761"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Feb 2024 01:00:59 -0700
+Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 01:00:49 -0700
+Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 01:00:46 -0700
+From: Horatiu Vultur <horatiu.vultur@microchip.com>
+To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <lars.povlsen@microchip.com>,
+	<Steen.Hegelund@microchip.com>, <daniel.machon@microchip.com>,
+	<UNGLinuxDriver@microchip.com>
+CC: <rmk+kernel@armlinux.org.uk>, <u.kleine-koenig@pengutronix.de>,
+	<yuehaibing@huawei.com>, <vladimir.oltean@nxp.com>,
+	<bjarni.jonasson@microchip.com>, <netdev@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net v3] net: sparx5: Add spinlock for frame transmission from CPU
+Date: Mon, 19 Feb 2024 09:00:43 +0100
+Message-ID: <20240219080043.1561014-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: FR4P281MB3510:EE_|FR2P281MB2379:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9923abdf-7227-48cd-09ba-08dc3120d9cf
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	13WjN4RQbX5evAnPtodcHT4k3ApRs9JYXBHuqD/W9RWOwIPzHQ/foCAOOmrR5exTVL6YxqEEyucp1SSnnI8FIEUgRzVVOWf8ZGGuxNxkr/2aZE7GEqPQlbF6EHOH0igcpjVPP6Kbwxu12i0UGYrSCk/uahalvYP7dsj27vD0Y0BOwzmJyok6Hfh2/L0b3NmNf93MLXiVoN4h+llh4yTC4+jPV9vEYGaup7YhOT8q1E/90HtpsR2l3kw4WDtrFFSfTzqOqEFugzC+jjflqi1n1Y7C5/W7uHcZ0vaTkQk8+APDb0Kg6cHpsWpjAjyVbN9R0t9VpDrUr/m2VQhhok7E3Slu9Bz0Bm94Z1Q+4wMz2etpGks5OPREvwLQ0TED41WCqzHBEP/RYNnacnPWZhHmcVWFZGVNhKFwwRGJoUgxY9xiPi8oA5cCvJxbQayphpox9jBfk3G5uCgE1zwgaHfJHUr4tlYlyrjS9huHPgjh57auiWBVpTV7BcYt2LSBS/gkLRlFKCOYscCM0tpZOD7EQOlptYtR/c/c1dzHUG83N0d4ZZ7/HQmeYxd6a6bL+0fS
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(346002)(396003)(366004)(376002)(39830400003)(230922051799003)(186009)(64100799003)(451199024)(1800799012)(2906002)(66556008)(66946007)(66476007)(8676002)(8936002)(4326008)(33716001)(5660300002)(6916009)(86362001)(9686003)(41300700001)(83380400001)(6486002)(6512007)(6506007)(478600001)(38100700002)(316002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?vCJxgJA6LyAifvVZFjXuIpf2XIatoIPt2ge9emoPnPA1LxxrJ75Zfzwqh7kV?=
- =?us-ascii?Q?036AGLGmOFCVwrO0wy2jf7kBW4yQZYXz+oiYQWQdX5sRYw4G38lfBip4cL8Z?=
- =?us-ascii?Q?svsafA7CWn8aJu/c+jfiS/zZhU6qbz+kbhWbAxDOywbQuRl6zydxrCL1lBdO?=
- =?us-ascii?Q?CPW+udwYxIc+TbhWmqybJBfe9WZ3VT+HjF6m+7oHmFO3xIiLh9svw0+ceWPm?=
- =?us-ascii?Q?+mZ3OF34gALxp8ZREBK/NmYYLjpXjwR0Ht/o4a/2/stWRqzC7dCTwAZO/u+N?=
- =?us-ascii?Q?bW3AmBtDC9O6TocmfvWbyqy/YbDtvs7XXrJa/UOnhMX7ppNk76zB1gTrAOWU?=
- =?us-ascii?Q?Tb1axOL+279qiO0is86PHLSZHnOK6TyQQjqvRhPmMzTd+3vdNU2kMLGN11Hf?=
- =?us-ascii?Q?C6pToWjqCmSfZ/pnLD0PFs5SQ6dK3OLR8PczklQbCsIG9ifiIoCkDE9Hf7Ki?=
- =?us-ascii?Q?umfDAOLBp5BBPqq1WYo0ob7zHaIyhx6WkDF3bQyujoxJjeYDbqBtr7Opnl9o?=
- =?us-ascii?Q?h1et5wCtoWry3noS9bVwHE7j8twg/u5RPeMEsCKIWSRuGMXJqpotTkGcswI6?=
- =?us-ascii?Q?nJIhyV9NTfE4YgbJP2jfxO4hx0eJEU4TmELS3izz4O+t1bmN23/yy0AH7Vjo?=
- =?us-ascii?Q?uI7KPT5M64c+x4fLaloscqe/8ves2teKXQP2yMj4bbPfMF4yT9fdgADfTVP7?=
- =?us-ascii?Q?LRF3GNcJX6obR2TfxSMN+vY8nvgoF58Sd4vvSab1jIws0isLscVrRe2vbxAI?=
- =?us-ascii?Q?UYd43SNlCnBgVu4og6cwGir95hFS5azDJ5E1+aY77RMnT+W5CdMKUK1mVqM4?=
- =?us-ascii?Q?Rq9GANW1HmRg4rsQm6E5KWaSZdnmKAkrSrzOnBBPfz9RrhJTgfqD7u/TkWfW?=
- =?us-ascii?Q?k+1LYTzfBrPjZVbNzQE0V1+DQx2z0uxBNYoWhHz4qvSh83pR6W5NnfB7BDAP?=
- =?us-ascii?Q?8QOV77Uo/TVx7LU6oNj5voQHqxspg4rx21yJEftuaLcUfSpfJk0OR9sW2Rg4?=
- =?us-ascii?Q?Bjh4ZQEB+aEer70taZzqis03zqNzip3G8mJjUHBVclV5nfzEJ6fGa+wJNVLI?=
- =?us-ascii?Q?hm9rF/+agZSka6atLAwDWjMbfO4Jay7Tc3TfzTB8rXPyCuSstrCJzOX+uOZJ?=
- =?us-ascii?Q?oA/RzzOjhVKgjtDwRMWrdLYEz/u/uplrj4rpkg+eaLIqijkeDNOxQNcyKug6?=
- =?us-ascii?Q?OqlmJ+/j3NGJHUG2NUJTBCFyn70WbrKmGILRQU0DJI+tgMoSGGkTB23royC8?=
- =?us-ascii?Q?/v8Mrrzl0XJe+ojc1Cq2wDLUhLOYwzZn78NWWSbc6C/OuTp/zQELw1ZmQ3YX?=
- =?us-ascii?Q?TCeDkCg0fjFHcZ+KWcQ/p5CnQ3Tj36urj+T1OfoeyTJWz9+p5HkHK/o5Ww6Y?=
- =?us-ascii?Q?hppcFVfUmnf69cgPP5Rt78Ar+mb58Pb3qaMdDHT3CmmD9cy7DoaWKDlALVEw?=
- =?us-ascii?Q?eESLARVxKxeigH8R1JWy7om6C7MlypW0qIYW7RgSn2IEUEf3gATXBlT09MpW?=
- =?us-ascii?Q?YF+NsE4VD8hq4lYzL3UV28ZuzgN6/1cNBp4TYL/9Isg89SOf2/LdTrqfWN7B?=
- =?us-ascii?Q?2RZGHrq4Tr8WLovFH/BUgHI8ZblHaUiNatwKqJU4DIaMQ+G7CILSerS1122G?=
- =?us-ascii?Q?Lj8HFU21IdIvnnIRdGS0LkMieSAGxYdsX6GQNA055yrXTSS1OauIghUvOfFh?=
- =?us-ascii?Q?yoN7WA=3D=3D?=
-X-OriginatorOrg: eckelmann.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9923abdf-7227-48cd-09ba-08dc3120d9cf
-X-MS-Exchange-CrossTenant-AuthSource: FR4P281MB3510.DEUP281.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 08:00:34.5991
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 62e24f58-823c-4d73-8ff2-db0a5f20156c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: sQt+9tcK9DZoC2ZHj9yY/xKD4sF/Z8xgXcuRArBO0Xw7ayTaILwQ+oe75K7R6BER3LArVnwNrtFFhSpdTIXsdA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: FR2P281MB2379
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Hello,
+Both registers used when doing manual injection or fdma injection are
+shared between all the net devices of the switch. It was noticed that
+when having two process which each of them trying to inject frames on
+different ethernet ports, that the HW started to behave strange, by
+sending out more frames then expected. When doing fdma injection it is
+required to set the frame in the DCB and then make sure that the next
+pointer of the last DCB is invalid. But because there is no locks for
+this, then easily this pointer between the DCB can be broken and then it
+would create a loop of DCBs. And that means that the HW will
+continuously transmit these frames in a loop. Until the SW will break
+this loop.
+Therefore to fix this issue, add a spin lock for when accessing the
+registers for manual or fdma injection.
 
-On Mon, Feb 19, 2024 at 08:11:01AM +0100, Thorsten Scherer wrote:
-> Hello,
-> 
-> On Mon, Feb 19, 2024 at 09:08:33AM +0530, Raag Jadav wrote:
-> > pcim_iomap_table() fails only if pcim_iomap_regions() fails. No need to
-> > check for failure if the latter is already successful.
-> > 
-> > Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > Signed-off-by: Raag Jadav <raag.jadav@intel.com>
-> > Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-> > ---
-> >  drivers/pwm/pwm-dwc.c | 5 +----
-> >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/pwm/pwm-dwc.c b/drivers/pwm/pwm-dwc.c
-> > index c0e586688e57..7dbb72c80ef5 100644
-> > --- a/drivers/pwm/pwm-dwc.c
-> > +++ b/drivers/pwm/pwm-dwc.c
-> > @@ -51,11 +51,8 @@ static int dwc_pwm_probe(struct pci_dev *pci, const struct pci_device_id *id)
-> >  		return ret;
-> >  	}
-> >  
-> > +	/* No need to check for failure, pcim_iomap_regions() does it for us. */
-> 
-> IMHO this comment could be omitted.
+Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+Reviewed-by: Daniel Machon <daniel.machon@microchip.com>
+Fixes: f3cad2611a77 ("net: sparx5: add hostmode with phylink support")
+---
+v2->v3:
+- add missing fix tag as it is targeting net
+v1->v2:
+- target net instead of net-next
+---
+ drivers/net/ethernet/microchip/sparx5/sparx5_main.c   | 1 +
+ drivers/net/ethernet/microchip/sparx5/sparx5_main.h   | 1 +
+ drivers/net/ethernet/microchip/sparx5/sparx5_packet.c | 2 ++
+ 3 files changed, 4 insertions(+)
 
-I somehow overlooked the discussion in the v2.  Please ignore my
-previous mail.
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+index d1f7fc8b1b71a..3c066b62e6894 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.c
+@@ -757,6 +757,7 @@ static int mchp_sparx5_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, sparx5);
+ 	sparx5->pdev = pdev;
+ 	sparx5->dev = &pdev->dev;
++	spin_lock_init(&sparx5->tx_lock);
+ 
+ 	/* Do switch core reset if available */
+ 	reset = devm_reset_control_get_optional_shared(&pdev->dev, "switch");
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
+index 6f565c0c0c3dc..316fed5f27355 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_main.h
+@@ -280,6 +280,7 @@ struct sparx5 {
+ 	int xtr_irq;
+ 	/* Frame DMA */
+ 	int fdma_irq;
++	spinlock_t tx_lock; /* lock for frame transmission */
+ 	struct sparx5_rx rx;
+ 	struct sparx5_tx tx;
+ 	/* PTP */
+diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c b/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c
+index 6db6ac6a3bbc2..ac7e1cffbcecf 100644
+--- a/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c
++++ b/drivers/net/ethernet/microchip/sparx5/sparx5_packet.c
+@@ -244,10 +244,12 @@ netdev_tx_t sparx5_port_xmit_impl(struct sk_buff *skb, struct net_device *dev)
+ 	}
+ 
+ 	skb_tx_timestamp(skb);
++	spin_lock(&sparx5->tx_lock);
+ 	if (sparx5->fdma_irq > 0)
+ 		ret = sparx5_fdma_xmit(sparx5, ifh, skb);
+ 	else
+ 		ret = sparx5_inject(sparx5, ifh, skb, dev);
++	spin_unlock(&sparx5->tx_lock);
+ 
+ 	if (ret == -EBUSY)
+ 		goto busy;
+-- 
+2.34.1
 
-> >  	dwc->base = pcim_iomap_table(pci)[0];
-> > -	if (!dwc->base) {
-> > -		dev_err(dev, "Base address missing\n");
-> > -		return -ENOMEM;
-> > -	}
-> >  
-> >  	ret = devm_pwmchip_add(dev, chip);
-> >  	if (ret)
-> > -- 
-> > 2.35.3
-> > 
-> > 
-> 
-> Best regards
-> Thorsten
-
-Best regards
-Thorsten
 
