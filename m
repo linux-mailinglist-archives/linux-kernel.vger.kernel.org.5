@@ -1,210 +1,224 @@
-Return-Path: <linux-kernel+bounces-71863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7197E85ABF7
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:26:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5713B85ABFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:28:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26B5328482E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:26:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 850521C216B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 19:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 648A95027F;
-	Mon, 19 Feb 2024 19:26:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A11B50A6D;
+	Mon, 19 Feb 2024 19:28:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="WBOZqsAY"
-Received: from weasel.tulip.relay.mailchannels.net (weasel.tulip.relay.mailchannels.net [23.83.218.247])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YRX8uO3u"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCA4F5C99
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:26:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.247
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708370788; cv=pass; b=ThxREUHTDfTQJ9To7ZViVr3nRxhSXzrkIpeckL8aNZQYARwCD/lUnSop/H9YVZbZMOIxLR14xn7qs/W0K/xk7feIeHc5/fwhHfbwnQtnf3pvLKlqWO9iVwJIJcGUML4u+U45cRqP4DrcMbCxaoPYvHGo1kgl+YwZSGWlA5SeaMI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708370788; c=relaxed/simple;
-	bh=uf1A//8zCOrZfoBhZKPqmCeZ7Kh/8dmn97nNY6s5mYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DS5DEALWdoFaSzECWtAYYWplEVgFqfTnOCvxzPQ8XVvzdoPl6YoP+DvtmmXI15HUUHBb3i3jkwkSLbsHgE1KqH256JKDKxgPtqt5eXMJqBW4utKw+xyb8uC+d/JpBEoXKk4Gu9rm3XBXcLYKYVCS1uyWHRjwMj4CFJDmsN4u2fg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=WBOZqsAY; arc=pass smtp.client-ip=23.83.218.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id C367A764159;
-	Mon, 19 Feb 2024 19:26:20 +0000 (UTC)
-Received: from pdx1-sub0-mail-a281.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id D41DD760B46;
-	Mon, 19 Feb 2024 19:26:19 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1708370780; a=rsa-sha256;
-	cv=none;
-	b=tdpzv6Vivgyp5rlzlWZHXQjW0KBlF+EPAmmdNhqZLi3kIBwDk+Y/yYZfARc5IYajG3Bw06
-	srhWfmQ4ixmfpyj3UtiUe9KPoeX6sf9e7ZMflV90OL2/cczUUcwCJldZ7/kJ2SNWjqdX8M
-	SCV2Ey89yVTGOm+JihSQMiQiRGCQoa3QHKwj0ukuKMcH37++Srj1LV0mnLiuuvqynrj9F4
-	vHSByvqGimoGWhLY+T1mYVtSwyNQxg1BzARBZMwcVjBfqVqg/j4N78B2kLegdScR5xq9wq
-	PkDGxmUIQYp0Jg2oLho61wKGaqdPgEGl4zzAqklF5RXqAKjvaah9UPoNPiIc2A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1708370780;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=Hn2l3d45OvLwYGiCr0LlqsBI++buxfvs3HMYLYE8Fk4=;
-	b=pHOxg1gNAzrmlHob8c9Xi/82rm6dywk9T2mqdTEIs5qqS+HydjRDsSEiNbGG9q8ac488lL
-	LGIAyDe9v2B5K1G172SEGQyRTdh+9RXe5zoicVQMSLpYQipQN81gxx5LFr5euZT0ZYySlD
-	58yNgZVUiK0Cc6JCnfxlBUfO1LCKTV5KXv8JUFQdRsqazqbs/rm9BLxTgRjI6TIPKN0era
-	tgIgWb0P8wCKVoFQ+QQZE8WM3V2Ajp6/xKONb9TX3RqW4ccWqMYnynwZPm0Nwhz9g7izMk
-	agz4tzbedOTsAog9DXXXHDG/DaBB86Z6KQ2TrrkHQRuPT87ZmHILvh6L0tO6IQ==
-ARC-Authentication-Results: i=1;
-	rspamd-55b4bfd7cb-5mzw9;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Daffy-Cellar: 2b2031422a3cfeaf_1708370780645_702971671
-X-MC-Loop-Signature: 1708370780645:464803234
-X-MC-Ingress-Time: 1708370780645
-Received: from pdx1-sub0-mail-a281.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.126.181.103 (trex/6.9.2);
-	Mon, 19 Feb 2024 19:26:20 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a281.dreamhost.com (Postfix) with ESMTPSA id 4TdswB4kXjzGH;
-	Mon, 19 Feb 2024 11:26:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1708370779;
-	bh=Hn2l3d45OvLwYGiCr0LlqsBI++buxfvs3HMYLYE8Fk4=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=WBOZqsAYKS9HgVsjtYxiIK9i0CM1ATn7RXh9NGZcdf2nD6iyhaa4bVyH3H8dHdBxR
-	 wuGXtz+1CKgaK+WP118KJPyiempcvgvCkNcsybhkErAu/4cgASzeuHe7lDiISwdBqu
-	 JKPqhyCRoEfFjOFRuuxO9L4benP/dih3t0ERyPBjq4uQ/2WvFcFNuwYa2bIq9p1oTk
-	 kcR9paTrIQN5kfnOy/D5FC/9/vEmcUhIy8sdjG3FjUz7XL+H/VoD7yqrCeMs1TnqqU
-	 vrjpym5dV5T1zt0lwXn2te1jDwHA5zZbTagcezJr5eZci/fXz5xUFDWlgJg03b8lc4
-	 qejgiwv7aw8fA==
-Date: Mon, 19 Feb 2024 11:26:15 -0800
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Oscar Salvador <osalvador@suse.de>
-Cc: Byungchul Park <byungchul@sk.com>, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, akpm@linux-foundation.org,
-	fan.ni@samsung.com
-Subject: Re: [PATCH v3] sched/numa, mm: do not promote folios to nodes not
- set N_MEMORY
-Message-ID: <20240219192615.adgr4cfknnb356de@offworld>
-Mail-Followup-To: Oscar Salvador <osalvador@suse.de>,
-	Byungchul Park <byungchul@sk.com>, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com, akpm@linux-foundation.org,
-	fan.ni@samsung.com
-References: <20240216114045.24828-1-byungchul@sk.com>
- <Zc9oXOwGMGGE4bBh@localhost.localdomain>
- <ZdG1yO29WTyRiw8Q@localhost.localdomain>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025B95026E
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:28:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708370925; cv=none; b=Tj/nTbm2CFyzuTfjYgEyAUiGmLSKiI1DN5bI8yV0BLkAiSoAliLwD4fWIFt7I+UkjcwF4lW29uNNi6VEAyq1KjJlU5narlpFfaUd3IWVBMZCrpBgwiOjtqEYZ7D+d8gShRXsDyJeDjX2zKPGVp4umaFSJb8/1j1uoFCtxcAF9no=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708370925; c=relaxed/simple;
+	bh=IAjwCyxBMPci0g0gw4ihhUopvixuhN4VOL+h9fiPS0o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MMReNpwLC7JrskLTytrOuIitOH3vyayhUvEHXRo1NzqSVbSKoZM+RtbZf+zRA1D0SYR43OL4ym9VI09suyh558eSPvTUAI6lXqLEqRVdLZc/52ckVYADbhT9qMoGx5lHVJsEQRGvVQ8lAJrCzrrUBHAJlgN+ZaMPeMC0+WLKsZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YRX8uO3u; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6083dc087b3so11341547b3.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 11:28:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708370923; x=1708975723; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=O7THUmDYQgW5sUdB+plRPPCtHli507znRGIREXrMsPk=;
+        b=YRX8uO3uVo0EQEimLgOPbG83q0HzlEqY+ox17yl2sH6CLVRkjy7wU3vhrKWWmRhUqz
+         VklTr+ZmqKnaSHP74SzrWZraWVIHYGMzKUixx9SQtNmKUdeV7LRMdIBBxCUWcakYWJUY
+         q+nPpVD1N0DuZYAdEBy/bmAkdnX0dP58NwiQYqRAkLSF/+OYTYd0+mHT7bkiAWSUhEWc
+         exomWF84/tWSmITTs5aMxUOSh8V25QEpS/OsQ4N3knlQp6t+2GF2JQHHyDi2e2hf1BRa
+         K/j9g6O/E4VJInnFREtFvuQDKRTJ/P9J/gNM+sNLeTemNVL6Wu1M7RhVQdgpEOQsnUiW
+         lh9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708370923; x=1708975723;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=O7THUmDYQgW5sUdB+plRPPCtHli507znRGIREXrMsPk=;
+        b=wviQL1o7LDByUTMQTlxdUT+w0Bsl+bOxruKq8YH225FCqZu/xWVy4lGql0dySQm3/n
+         DPAbUBv4mZo4lzbHgK5gZsAlEFHeaI8qCurFGHjf73NAW3oduqqWWGVDQtsg7lBz+Xe6
+         jNmM2QczAnjPBTgxt+Ow1NpvTu8KDbPPLwMuChBUl14pVneYRnvS37631BHeP+Uhbk4z
+         7FSFGkI1P1A58Xn7wZfJdNS34n4UzZUwvg8fLLgv2NDOSq6zEp6rmPtGDFG0FlZQEpVB
+         bmPoqD3PD99WrwwJjM4wbfTkxtANsOFzRGdMvqZx2fah4o6c68q+etOW2tBQhJPPd4lx
+         k9LQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXl8CtQevcYWBwOCzg37fC3jmGxzBbUvpfOnA2KqbY3IYFFPOfQoVNuZXnTt9kl4LZbxS207mk8b+CKoXzh74m9kpxASzSg1f6SPHo
+X-Gm-Message-State: AOJu0Yw6HfYvFao11MCGB9YJuK9Md8Cf2cnJhwcw4B3GfpXKmJCmexaE
+	1o5DDe8z7gxQJeYh5YQnfhDCVyPtlbUlwHLMlEeJtE/d0AbmxnIa/zuATkBL7dyG3fc1Ujz4/2V
+	Q+4wAmIW5P9TfJwkqYGnWdBH9K/WxzLQm81fy+A==
+X-Google-Smtp-Source: AGHT+IHfLbLICp5d9jnJFTqYd/KOWxiKrNflnQySStAix6bImUWy6E0guv21H9PIGvCN+JnXSuWWIxjTpW+i5htjDgY=
+X-Received: by 2002:a81:ac1c:0:b0:607:f09d:b2af with SMTP id
+ k28-20020a81ac1c000000b00607f09db2afmr9775145ywh.1.1708370922949; Mon, 19 Feb
+ 2024 11:28:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <ZdG1yO29WTyRiw8Q@localhost.localdomain>
-User-Agent: NeoMutt/20220429
+References: <20240219-gic-fix-child-domain-v1-1-09f8fd2d9a8f@linaro.org>
+ <868r3g4fhv.wl-maz@kernel.org> <CAA8EJpqiN6oRMWhAMMP6EsAeki5KSMbO+XzEtT9YRdJKc9_Gbg@mail.gmail.com>
+ <865xyk4dgf.wl-maz@kernel.org> <CAA8EJprKUOMwrwawiQ51WKiLCipm72ZcpY6q520kSOg--9oKZg@mail.gmail.com>
+ <864je44a1a.wl-maz@kernel.org>
+In-Reply-To: <864je44a1a.wl-maz@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 19 Feb 2024 21:28:32 +0200
+Message-ID: <CAA8EJppBemsbVsjPvzBK6wp8qDdB-mK_j6HG=sq=USs-zRUNHg@mail.gmail.com>
+Subject: Re: [PATCH] irqchip/gic-v3: handle DOMAIN_BUS_ANY in gic_irq_domain_select
+To: Marc Zyngier <maz@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Anup Patel <apatel@ventanamicro.com>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, 18 Feb 2024, Oscar Salvador wrote:
-
->On Fri, Feb 16, 2024 at 02:51:24PM +0100, Oscar Salvador wrote:
->> On Fri, Feb 16, 2024 at 08:40:45PM +0900, Byungchul Park wrote:
->> > From 150af2f78e19217a1d03e47e3ee5279684590fb4 Mon Sep 17 00:00:00 2001
->> > From: Byungchul Park <byungchul@sk.com>
->> > Date: Fri, 16 Feb 2024 20:18:10 +0900
->> > Subject: [PATCH v3] sched/numa, mm: do not promote folios to nodes not set N_MEMORY
->>
->> "do not try to promote folios to memoryless nodes"
+On Mon, 19 Feb 2024 at 19:51, Marc Zyngier <maz@kernel.org> wrote:
 >
->Thinking some more, promote might be misleading, just something like
->"do not try to migrate memory to memoryless nodes".
+> On Mon, 19 Feb 2024 17:41:37 +0000,
+> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Mon, 19 Feb 2024 at 18:37, Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Mon, 19 Feb 2024 16:21:06 +0000,
+> > > Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> > > >
+> > > > On Mon, 19 Feb 2024 at 17:53, Marc Zyngier <maz@kernel.org> wrote:
+> > > > >
+> > > > > On Mon, 19 Feb 2024 14:47:37 +0000,
+> > > > > Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> > > > > >
+> > > > > > Before the commit de1ff306dcf4 ("genirq/irqdomain: Remove the param
+> > > > > > count restriction from select()") the irq_find_matching_fwspec() was
+> > > > > > handling the DOMAIN_BUS_ANY on its own. After this commit it is a job of
+> > > > > > the select() callback. However the callback of GICv3 (even though it got
+> > > > > > modified to handle zero param_count) wasn't prepared to return true for
+> > > > > > DOMAIN_BUS_ANY bus_token.
+> > > > > >
+> > > > > > This breaks probing of any of the child IRQ domains, since
+> > > > > > platform_irqchip_probe() uses irq_find_matching_host(par_np,
+> > > > > > DOMAIN_BUS_ANY) to check for the presence of the parent IRQ domain.
+> > > > > >
+> > > > > > Fixes: 151378251004 ("irqchip/gic-v3: Make gic_irq_domain_select() robust for zero parameter count")
+> > > > > > Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count restriction from select()")
+> > > > > > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> > > > > > ---
+> > > > > >  drivers/irqchip/irq-gic-v3.c | 3 ++-
+> > > > > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+> > > > > > index 6fb276504bcc..e9e9643c653f 100644
+> > > > > > --- a/drivers/irqchip/irq-gic-v3.c
+> > > > > > +++ b/drivers/irqchip/irq-gic-v3.c
+> > > > > > @@ -1696,7 +1696,8 @@ static int gic_irq_domain_select(struct irq_domain *d,
+> > > > > >
+> > > > > >       /* Handle pure domain searches */
+> > > > > >       if (!fwspec->param_count)
+> > > > > > -             return d->bus_token == bus_token;
+> > > > > > +             return d->bus_token == bus_token ||
+> > > > > > +                     bus_token == DOMAIN_BUS_ANY;
+> > > > > >
+> > > > > >       /* If this is not DT, then we have a single domain */
+> > > > > >       if (!is_of_node(fwspec->fwnode))
+> > > > > >
+> > > > >
+> > > > > I really dislike the look of this. If that's the case, any irqchip
+> > > > > that has a 'select' method (such as imx-intmux) should be similarly
+> > > > > hacked. And at this point, this should be handled by the core code.
+> > > > >
+> > > > > Can you try this instead? I don't have any HW that relies on
+> > > > > behaviour, but I'd expect this to work.
+> > > > >
+> > > > > Thanks,
+> > > > >
+> > > > >         M.
+> > > > >
+> > > > > diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> > > > > index aeb41655d6de..3dd1c871e091 100644
+> > > > > --- a/kernel/irq/irqdomain.c
+> > > > > +++ b/kernel/irq/irqdomain.c
+> > > > > @@ -449,7 +449,7 @@ struct irq_domain *irq_find_matching_fwspec(struct irq_fwspec *fwspec,
+> > > > >          */
+> > > > >         mutex_lock(&irq_domain_mutex);
+> > > > >         list_for_each_entry(h, &irq_domain_list, link) {
+> > > > > -               if (h->ops->select)
+> > > > > +               if (h->ops->select && bus_token != DOMAIN_BUS_ANY)
+> > > > >                         rc = h->ops->select(h, fwspec, bus_token);
+> > > > >                 else if (h->ops->match)
+> > > > >                         rc = h->ops->match(h, to_of_node(fwnode), bus_token);
+> > > >
+> > > > This works. But I wonder if the following change is even better. WDYT?
+> > > >
+> > > > diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> > > > index aeb41655d6de..2f0d2700709e 100644
+> > > > --- a/kernel/irq/irqdomain.c
+> > > > +++ b/kernel/irq/irqdomain.c
+> > > > @@ -449,14 +449,17 @@ struct irq_domain
+> > > > *irq_find_matching_fwspec(struct irq_fwspec *fwspec,
+> > > >          */
+> > > >         mutex_lock(&irq_domain_mutex);
+> > > >         list_for_each_entry(h, &irq_domain_list, link) {
+> > > > -               if (h->ops->select)
+> > > > +               if (fwnode != NULL &&
+> > > > +                   h->fwnode == fwnode &&
+> > > > +                   bus_token == DOMAIN_BUS_ANY)
+> > > > +                       rc = true;
+> > > > +               else if (h->ops->select)
+> > > >                         rc = h->ops->select(h, fwspec, bus_token);
+> > > >                 else if (h->ops->match)
+> > > >                         rc = h->ops->match(h, to_of_node(fwnode), bus_token);
+> > > >                 else
+> > > >                         rc = ((fwnode != NULL) && (h->fwnode == fwnode) &&
+> > > > -                             ((bus_token == DOMAIN_BUS_ANY) ||
+> > > > -                              (h->bus_token == bus_token)));
+> > > > +                             (h->bus_token == bus_token));
+> > > >
+> > > >                 if (rc) {
+> > > >                         found = h;
+> > > >
+> > >
+> > > Can't say I like it either. It duplicates the existing check without
+> > > any obvious benefit. Honestly, this code is shit enough that we should
+> > > try to make it simpler, not more complex...
+> >
+> > Only the fwnode conditions are duplicated. And it makes sense: we
+> > should check for the DOMAIN_BUS_ANY first, before going to select. I'm
+> > not sure whether at some point we'd have to add (&& bus_token !=
+> > DOMAIN_BUS_ANY) to the ops->match check.
+>
+> ops->match should just *die*, and it is not going to see any sort of
+> semantic upgrade. Ever. No new code should be added using match.
+>
+> And look at what my change does. It checks for DOMAIN_BUS_ANY before
+> doing anything else, ensuring that the default clause does the job. So
+> no, your suggestion doesn't make much sense to me.
 
-Yes. Does this also want an unlikely()? Not that it would be measurable.
+Yeah, I was worried about the DOMAIN_BUS_ANY vs match call. If that's
+not an issue, your patch looks fine to me.
 
->As this is not a bug fix but an optimization, as we will fail anyways
->in migrate_misplaced_folio() when migrate_balanced_pgdat() notices that
->we do not have any memory on that code.
-
-This should be in the changelog and the subject is misleading as well.
-
-Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
+Please use 'Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>'
+with your patch.
 
 >
->With the other comments addressed:
+>         M.
 >
->Reviewed-by: Oscar Salvador <osalvador@suse.de>
->
->>
->> because AFAICS we are just trying.
->> Even if should_numa_migrate_memory() returns true, I assume that we will
->> fail somewhere down the chain e.g: migrate_pages() when we see that this
->> node does not any memory, right?
->>
->> > A numa node might not have its local memory but CPUs. Promoting a folio
->> > to the node's local memory is nonsense. So avoid nodes not set N_MEMORY
->> > from getting promoted.
->>
->> If you talk about memoryless nodes everybody gets it better IMHO.
->> "Memoryless nodes do not have any memory to migrate to, so stop trying it."
->>
->>
->> > Signed-off-by: Byungchul Park <byungchul@sk.com>
->> > ---
->> >  kernel/sched/fair.c | 7 +++++++
->> >  1 file changed, 7 insertions(+)
->> >
->> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> > index d7a3c63a2171..7ed9ef3c0134 100644
->> > --- a/kernel/sched/fair.c
->> > +++ b/kernel/sched/fair.c
->> > @@ -1828,6 +1828,13 @@ bool should_numa_migrate_memory(struct task_struct *p, struct folio *folio,
->> >  	int dst_nid = cpu_to_node(dst_cpu);
->> >  	int last_cpupid, this_cpupid;
->> >
->> > +	/*
->> > +	 * A node of dst_nid might not have its local memory. Promoting
->> > +	 * a folio to the node is meaningless.
->> > +	 */
->> > +	if (!node_state(dst_nid, N_MEMORY))
->> > +		return false;
->>
->> "Cannot migrate to memoryless nodes"
->>
->> seems shorter and more clear.
->>
->> So, what happens when we return true here? will we fail at
->> migrate_pages() I guess? That is quite down the road so I guess
->> this check can save us some time.
->>
->>
->> --
->> Oscar Salvador
->> SUSE Labs
->>
->
->-- 
->Oscar Salvador
->SUSE Labs
->
+> --
+> Without deviation from the norm, progress is not possible.
+
+
+
+-- 
+With best wishes
+Dmitry
 
