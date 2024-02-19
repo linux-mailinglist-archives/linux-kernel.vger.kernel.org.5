@@ -1,143 +1,83 @@
-Return-Path: <linux-kernel+bounces-71742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5894185A9B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:18:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ACC885A9CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10D1728733A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:18:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF1601F21C62
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBFD44C8D;
-	Mon, 19 Feb 2024 17:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2625A4594B;
+	Mon, 19 Feb 2024 17:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="norgVx53"
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J6uvawix"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 131B7446AE
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55EE544C70;
+	Mon, 19 Feb 2024 17:19:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708363070; cv=none; b=UbfgLl6Y688N55Am8myQUFVM2X4hWJ8f9kvM2ryJZdpxJN8BA2MMm43Sd3J3MBwFCMtWifBVBYxJHkq3e/y9AvjMcycp7Ja0naNBwLjj4pE1a11xowh7BpktYYzwD91S1eXRKFELItKSmbGnhMfiMlpeqGKw8B43J3EoWwIXvgw=
+	t=1708363161; cv=none; b=eI8G+beuqTaSr7ywlUakxTmBfKSg/WocIKeAA1ZnFNNSJKhb/kkFUEC7VhU/0lTZsCCP+LZA+J7nLF6J1UtiPcZ3iEgtOngtYvhuDedonzoTmQylXtecBoblrmB6CvOlzlaSKN8CvkUUWUfKeZ5Ov59sTKN1l8KpiWalPpIA9XM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708363070; c=relaxed/simple;
-	bh=WTUgtDUhgLo3w13qAUwpQFiIiTT2/XDD2PV7WnKy99s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HUP5cl5jbo1U/ZqmDdAKnIH1aOMQ739j15x0KjM38Cdld8yW4A9wZ7ycwGyMSR7+lMHOMXWOXJV7m+x1h6ArmQyQGjMtBv3CVFhOuUb0UQ7F856q+VYTbnVoz5GXVUyS0q5EUGXf2367ATwY9OlDo97GzogXZgxrylzLeVJsqtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=norgVx53; arc=none smtp.client-ip=209.85.128.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-60821136c5aso9579107b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:17:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708363068; x=1708967868; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WTUgtDUhgLo3w13qAUwpQFiIiTT2/XDD2PV7WnKy99s=;
-        b=norgVx53gDG4kXkhfxad0gWRNtKF1aWfbm2vIPVSmisOFTbyC/gcFaADEANMzR1qFU
-         HXkDCrNuHPo0wu44wABPHWOuiITZUNYAvs9xk6gIsckTeapOZA0KY3I/z7ykwfhMYazs
-         ke4GYoqqvwp30iorNaRtaNq0zORTjo3fnyTsRmWUm0T9dN8UcZX+dW+5ViRnAXd161Sn
-         hucaqv9FZl+0oDMdFViG5PoVfQqWVMZNsOwVFGQUZsEXgB673sKKHFtmNfq+QbHJTDQ2
-         V2HB0/90ENPI7qWUQ1HVo8/O3AXCPis61ANIBWPjMmBHCSyJpG1X4mNP5uGprLnxxAgI
-         2dDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708363068; x=1708967868;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WTUgtDUhgLo3w13qAUwpQFiIiTT2/XDD2PV7WnKy99s=;
-        b=gMgCQMY+VPyDmw/jWdLI5r3IFfjjAagwK3Q1txNW3p3XixEZNVkY0TuGSNgTf7grOC
-         8KYdxVATVq4NYyV2BqX2G13bepklDNpOjrzqEMhJYOz95n1/R4SVa4TCpacXSE82odCr
-         UahZQ4RPjoWnOpKDFSq/HqN8hRl/dzp+dKfmzZETa7ZjpWOxiL7w4zdIzhvIaA3izIwq
-         EjM1dZCRw35v5Qdl45grTrIH06Akow0GM1OPsHg+M1WTVf6RUJS6lsSqg5rXz4nVYXLZ
-         Hlc3x058zLFkMVGoWjD2BZRS8SW3C2w/vfkOYidpLXt6ysvTSFRG9so+YzE9dN7n448B
-         QYyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTdMTJukfh5k1GCT5MuWdSKFp82H47s0LLlRV6A7NsiJ1VoUJCJNjLLDEuym8Yz4s71EAB+admgmFLHCgp4CR6L3mWHrdV+4MSfYKR
-X-Gm-Message-State: AOJu0Yzoqwv5rbz/pTnmlPvLPlvWKx0Y2llZUvZdxVnz4IDS8xZBRTnQ
-	KO+SBPEEvomrd8+/gwPFlVsnFtAVcQYGhWKUvu69baPIr9FO9XE4v7cyc6iUX74xN6ILyLw/qsi
-	zWw8Ox2IKqY59fEfiqdzNC64SfFgn80J3W9DG
-X-Google-Smtp-Source: AGHT+IG9AHtZq/nRnFo+ipW0aGaGM/b0s2YVjCOPysu8kdznAi+vUsM501VBmjXmNGbLKPb0POAqw7+QMoqVeqlQNww=
-X-Received: by 2002:a81:9b02:0:b0:607:9613:2afa with SMTP id
- s2-20020a819b02000000b0060796132afamr11401400ywg.0.1708363067747; Mon, 19 Feb
- 2024 09:17:47 -0800 (PST)
+	s=arc-20240116; t=1708363161; c=relaxed/simple;
+	bh=6JXZWExM5zRAitroyxUGPwJV90fJfV2ON2sr9M8S0mU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k3kMP4akg8P86imyCQys36Pa0FPbBeAn4iwtk8amBIlAGziw61DM4hCtPMrhdPWi9j35ms8h2N8QeWA274gsu2SgIcKdjcMoiG1DHyLK2R35ce24cpAcTcpJRQEpsRekP/D0IStzmF4vXP88ougmsEc43pzt0+oIHyYLqqVSiUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J6uvawix; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3647AC433F1;
+	Mon, 19 Feb 2024 17:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708363161;
+	bh=6JXZWExM5zRAitroyxUGPwJV90fJfV2ON2sr9M8S0mU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=J6uvawixlaFBjUq1IQMwYzKZIjt9Eywp0GmxEDsidINoTfYEUVjIr9EzIjpE+89SP
+	 RtZPgnDEkAvt/hTOTObZHCYflata7pRnZVE7h8Rlk5HOexV2y5DM+DPv2VY2Q9IybC
+	 h/BOog0wGukp2bzI5CP1tyC5FZsD/F23zEJbocaWLzspbMQJcQL+fsgrAI4F0BQiWR
+	 7PPiPDtRGISQXd68efdyrXwQKdgR4TAwK3shDGi1wzulx5iIDeVhYg+WxlCK25iOpa
+	 O7VtgenW15VmCNXQ/zrQoRfZ957j9fySDZO3gSB4ZXEZMB+fizAJHHGr7y1RydbqgH
+	 xdanfUqYnhLHw==
+Date: Mon, 19 Feb 2024 17:17:46 +0000
+From: Simon Horman <horms@kernel.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	"Gustavo A . R . Silva" <gustavo@embeddedor.com>,
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] netfilter: x_tables: Use unsafe_memcpy() for 0-sized
+ destination
+Message-ID: <20240219171746.GI40273@kernel.org>
+References: <20240216233128.work.366-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zc3X8XlnrZmh2mgN@tiehlicka> <CAJuCfpHc2ee_V6SGAc_31O_ikjGGNivhdSG+2XNcc9vVmzO-9g@mail.gmail.com>
- <Zc4_i_ED6qjGDmhR@tiehlicka> <CAJuCfpHq3N0h6dGieHxD6Au+qs=iKAifFrHAMxTsHTcDrOwSQA@mail.gmail.com>
- <ruxvgrm3scv7zfjzbq22on7tj2fjouydzk33k7m2kukm2n6uuw@meusbsciwuut>
- <320cd134-b767-4f29-869b-d219793ba8a1@suse.cz> <efxe67vo32epvmyzplmpd344nw2wf37azicpfhvkt3zz4aujm3@n27pl5j5zahj>
- <20240215180742.34470209@gandalf.local.home> <20240215181648.67170ed5@gandalf.local.home>
- <20240215182729.659f3f1c@gandalf.local.home> <mi5zw42r6c2yfg7fr2pfhfff6hudwizybwydosmdiwsml7vqna@a5iu6ksb2ltk>
-In-Reply-To: <mi5zw42r6c2yfg7fr2pfhfff6hudwizybwydosmdiwsml7vqna@a5iu6ksb2ltk>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Mon, 19 Feb 2024 09:17:36 -0800
-Message-ID: <CAJuCfpEARb8t8pc8WVZYB=yPk6G_kYGmJTMOdgiMHaYYKW3fUA@mail.gmail.com>
-Subject: Re: [PATCH v3 31/35] lib: add memory allocations report in show_mem()
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>, 
-	akpm@linux-foundation.org, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	mgorman@suse.de, dave@stgolabs.net, willy@infradead.org, 
-	liam.howlett@oracle.com, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, tj@kernel.org, muchun.song@linux.dev, 
-	rppt@kernel.org, paulmck@kernel.org, pasha.tatashin@soleen.com, 
-	yosryahmed@google.com, yuzhao@google.com, dhowells@redhat.com, 
-	hughd@google.com, andreyknvl@gmail.com, keescook@chromium.org, 
-	ndesaulniers@google.com, vvvvvv@google.com, gregkh@linuxfoundation.org, 
-	ebiggers@google.com, ytcoode@gmail.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, bsegall@google.com, bristot@redhat.com, 
-	vschneid@redhat.com, cl@linux.com, penberg@kernel.org, iamjoonsoo.kim@lge.com, 
-	42.hyeyoo@gmail.com, glider@google.com, elver@google.com, dvyukov@google.com, 
-	shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240216233128.work.366-kees@kernel.org>
 
-On Thu, Feb 15, 2024 at 3:56=E2=80=AFPM Kent Overstreet
-<kent.overstreet@linux.dev> wrote:
->
-> On Thu, Feb 15, 2024 at 06:27:29PM -0500, Steven Rostedt wrote:
-> > All this, and we are still worried about 4k for useful debugging :-/
+On Fri, Feb 16, 2024 at 03:31:32PM -0800, Kees Cook wrote:
+> The struct xt_entry_target fake flexible array has not be converted to a
+> true flexible array, which is mainly blocked by it being both UAPI and
+> used in the middle of other structures. In order to properly check for
+> 0-sized destinations in memcpy(), an exception must be made for the one
+> place where it is still a destination. Since memcpy() was already
+> skipping checks for 0-sized destinations, using unsafe_memcpy() is no
+> change in behavior.
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-I was planning to refactor this function to print one record at a time
-with a smaller buffer but after discussing with Kent, he has plans to
-reuse this function and having the report in one buffer is needed for
-that.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-> Every additional 4k still needs justification. And whether we burn a
-> reserve on this will have no observable effect on user output in
-> remotely normal situations; if this allocation ever fails, we've already
-> been in an OOM situation for awhile and we've already printed out this
-> report many times, with less memory pressure where the allocation would
-> have succeeded.
-
-I'm not sure this claim will always be true, specifically in the case
-of low-end devices with relatively low amounts of reserves and in the
-presence of a possible quick memory usage spike. We should also
-consider a case when panic_on_oom is set. All we get is one OOM
-report, so we get only one chance to capture this report. In any case,
-I don't yet have data to prove or disprove this claim but it will be
-interesting to test it with data from the field once the feature is
-deployed.
-
-For now I think with Vlastimil's __GFP_NOWARN suggestion the code
-becomes safe and the only risk is to lose this report. If we get cases
-with reports missing this data, we can easily change to reserved
-memory.
 
