@@ -1,143 +1,188 @@
-Return-Path: <linux-kernel+bounces-71760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D00285AA0D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:29:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 237C185AA10
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8CF52894AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:29:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85CC31F22F7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4612E45C04;
-	Mon, 19 Feb 2024 17:29:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00F5D45953;
+	Mon, 19 Feb 2024 17:31:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GE770cYs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VrXUpD3p"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DA425566;
-	Mon, 19 Feb 2024 17:29:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708363756; cv=none; b=cYh3KQkt6BD31rHmATOQSnIfbIju7FT21qR4ryRjN+1NO6qKvtYXkqZEnH+chAZMYoOx1smr+Mryg3oVamwR9iaNmws4nCne4uPKlbPTgW0UOMlqi+bHHc8y3lQDL4tT/6Y5N/ngmOeY1mChGMm3A9JYAk8h/dORuHL/lqwGFHc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708363756; c=relaxed/simple;
-	bh=HDOUgL6Y0nc7IvKBPLbbUpZK2qQlAnpDmaaG/SLeRF0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L1iPQzRqBxKR8sx11JYoJR7cScv7h4eJC+a3VZDey26upiybbYNXewKyll/ZgEADvpixsQZvCc49BwAUrLs/kS3HM5bngsDb/MFIRS3bD34zVTKfMAYPl8VdDy6WCOmrZhOSMA40GlXlyzAH/0jTWVr+HiZgFrDNAULfnslSvZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GE770cYs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D434C433F1;
-	Mon, 19 Feb 2024 17:29:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708363756;
-	bh=HDOUgL6Y0nc7IvKBPLbbUpZK2qQlAnpDmaaG/SLeRF0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GE770cYsLQOhGWHmeW4Wg45pDEMxw26SbCB7J9GSGeTl7xQsE9XqhdyPsSDWl1Zx3
-	 GkLul7ypkIJvVGKOnIDIlmwNi8Q+VnTopWh448gGGS5T4pP9gJuH89xqr118L7d1l+
-	 obyKh8WkVuV6gjlzFMVRklxXAY53JPCpTT8xRRQlccCm2IQW+xOklWfRPJqQsSsPKl
-	 jX+pEMjurC+jfEYSlBBVtis0nu2adzeOz5r3PlYClT5iggsaVZ/Iw8rNmvz8fOtJv2
-	 /KGOTaFj8QTc8l5D2mo7mpGYFBC2DwW7mT6IMbPFGcR+H8eiJ7B64HfaZCJtDbhn8w
-	 dXFebOuUKJu9A==
-Date: Mon, 19 Feb 2024 18:29:10 +0100
-From: Lorenzo Pieralisi <lpieralisi@kernel.org>
-To: Maulik Shah <quic_mkshah@quicinc.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, andersson@kernel.org,
-	ulf.hansson@linaro.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-pm@vger.kernel.org, quic_lsrao@quicinc.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH] firmware/psci: Move psci_init_system_suspend() to
- late_initcall()
-Message-ID: <ZdOP5oAwZvEhNAsn@lpieralisi>
-References: <20240219-suspend_ops_late_init-v1-1-6330ca9597fa@quicinc.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F09540BF2;
+	Mon, 19 Feb 2024 17:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708363902; cv=fail; b=euVngjdde5w0Q3svyE1pPRs821nmaqvqlZZScR6gQenM/5jqvfKYaIhw/bSoCeHskegldt4I4n8jD7OLwojhwRaC+UlkQD81N88sgxnLS9vq4y7zi+yBMsl6XAN8Wu5QSr0jWSE0j8C1eWfGS8eOV6dA6oM9+x/J36OslfthWbg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708363902; c=relaxed/simple;
+	bh=yNNvkhrqXQ8X1Z6JWmAGVJ9A99aE25YCtIagxOPt9e8=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=j7fXefY7Jkl+Y6OgVSczdD0IaM/Rp+Zj2FhTt1eJ8WD9KuGGZv5YnJiSuTVapv1Vp78a7fGB3ZLLN5WTKYB9cK2qI0yxJ1SNjMvrBciR5FBeBPePbv+jc/LpcLXzqDPX77E3oa3fvQNdrI1J1Lb4Bf2oeEPyxuSepQPiywElfGI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VrXUpD3p; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708363901; x=1739899901;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=yNNvkhrqXQ8X1Z6JWmAGVJ9A99aE25YCtIagxOPt9e8=;
+  b=VrXUpD3pE6xWERm/sNGqFfYG7uwF3E/XQvdBSG+Ym2LE16n7BqGy2/K6
+   2FAge3scOnmD3Aw4U40qhr50t8RJNltIyiZ4PSDh0a+h9s0kp9OMUOAdQ
+   /i5vlK7PNj2PXTUkzZbp8CLOqkqyI4QsR6V8Uft4YrqffXdYmusU6ieIY
+   xZG9a7dIxN9FaIISLCvW7y1vxkinv13QrKLtU24EXg8aJYeRm7RPCkDyN
+   BUamJk53zZvNx0nrJ+mLjseAt2xA2oNHzBQSNGk+/8OqkomMqTZYUB+Yc
+   8xWuGI7xP8AgPM6VJ3oTcBM8vUcRReI6ru6b4b2GBmYWPrG7bPmLYWqEE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2596416"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="2596416"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 09:31:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="9208724"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 09:31:39 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 09:31:38 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 09:31:38 -0800
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 19 Feb 2024 09:31:38 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EvIQ9SuYYN+Z2UCzY+vVR6K+U86I7ULLroJ9mr2uqpMglkmtq3BYX1zw6+Fae8CuPUjrbQGxVnln+SEsN+bw5KbkokV7KCGlNllT2+fsOUloNvMk8SsF3y9cgc+PcWaVmLKZrWGkz4rSKuWor93e9Qmuhyi78QPBq/NojyVe+dQfQYkw3hBzLZcQceFvoWEiupFRgpficd0+TnxuspyUYTqB9qdsZcRyZZKtjDFw3FANeIPxP4LOe3e3tHOe518F6rOKzJR4FFVDOoN1Xadwbca5NkYyBs7J13+8RYTFhZfwBQ5MFKYbSg50rr81lif4mftg+IC/sxCp+orFguUB8Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=I4EdRhzAW0UPlke32OnA0P3RZxVMuLfNm9YQ5zI58ok=;
+ b=msR1KUmYo13HoaIsLVLZeQQ3qO1PI+5KNI35oqjXV6n3ZoUb815n/+NfIGr2V5YbvXG7FnbfErS5OPX7EYJ/WxKV8+ZlAiBGQaBPRQBdX1KHMLcC7fBopwXIXMw55XftrB84zyFAPRPFg6ebV7UwDBrRqD1mNQgPyAxZ+5B1hEuV2ycbeqbWL2la81heSqmUipQiJ4389ySa744IEAqx2ix5+pmrgYBjgf6pn+0PcYGcTK3ZbdL6Uz9tA6BLSLlpbZ7hzSblMf9eCAHEO1H2oijbz+Ii4AMzAwTqAlmdcVfEZyetkvEXU5lacHgg/njGGAqjDc6Sc9EWmPV+0rYf0g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com (2603:10b6:208:3d7::17)
+ by CH0PR11MB5690.namprd11.prod.outlook.com (2603:10b6:610:ed::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
+ 2024 17:31:27 +0000
+Received: from IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::9c3:d61a:c2c9:109f]) by IA1PR11MB6097.namprd11.prod.outlook.com
+ ([fe80::9c3:d61a:c2c9:109f%5]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
+ 17:31:27 +0000
+Message-ID: <07d32ed5-825c-cee2-7551-e8442177dfc1@intel.com>
+Date: Mon, 19 Feb 2024 09:30:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH] dmaengine: idxd: constify the struct device_type usage
+Content-Language: en-US
+To: "Ricardo B. Marliere" <ricardo@marliere.net>, Dave Jiang
+	<dave.jiang@intel.com>, Vinod Koul <vkoul@kernel.org>
+CC: <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>
+References: <20240219-device_cleanup-dmaengine-v1-1-9f72f3cf3587@marliere.net>
+From: Fenghua Yu <fenghua.yu@intel.com>
+In-Reply-To: <20240219-device_cleanup-dmaengine-v1-1-9f72f3cf3587@marliere.net>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SJ0PR03CA0227.namprd03.prod.outlook.com
+ (2603:10b6:a03:39f::22) To IA1PR11MB6097.namprd11.prod.outlook.com
+ (2603:10b6:208:3d7::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219-suspend_ops_late_init-v1-1-6330ca9597fa@quicinc.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR11MB6097:EE_|CH0PR11MB5690:EE_
+X-MS-Office365-Filtering-Correlation-Id: feb149a5-ebc3-447a-2b51-08dc31709a26
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: iDI/nYvTVxZlwZqwiuN0AhptHda0+eFfVK1HN+h5NZFDp3vsq5MuhWajIuJqb/mR6Y+RKTc3NZuMVCYB5CjuBgX1yj7pr9vfjlUpOoYuWDGgqA2w9XgryY1qDZ9AVhLC6pKOWCEwV3L5WGSqju4ZUopw03AiVjhBt9F2Uj1TTMMQJ2yaPFvFSNeJiodPV2rZ8zI0oQXNhMHNkmxuO/6EAL1vH0DjZJHU1hfZEPUl90TY7rxudhDb6sLBO+lb7wvHjDmcBSmjH7qV65aoxLXYrhFXXCzshI4N0kP7dq7UcNBlStUdumP5XQXjjUzC6KvsTz6opGUVYs7rQfh6btMnP2b8s2gxrTQ+2NT7l3/BYcIqG1Y0EW3HOFC4TukhOtXg1w8+MuYBTwMaG4bXy72y+RWAU1F0NyKe4QnA8jJIAnzqhO2OfimPOObUW/PeUtXIsEuX+TYdSw89G6+Ozf3VWmDpzpcV/gJdWTPagAKWthD9yty9gQYRdw46DIrsgRtHKttkak49Ve3q9eFzUrSZzGJL0Ljw2uyWuKFuWjVgs5Q=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6097.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Tkphamo5U2VsQlFSMWNidFIzNUh5Ny9zMnM0T3FqMlJEVG45SHdSVmdqd0RL?=
+ =?utf-8?B?NGRnRVhWQjZtalZ3YzdkT0pEb0pvL1M3VW1pNkhsWUM4bXFnUTRPUnZRV3Jy?=
+ =?utf-8?B?ckpPeXZjUWdrUDBDaHJ4RFZ5Syt1OVVLTGhUTXR0VC83c0xQZTVJbE5pRnQ3?=
+ =?utf-8?B?WFl6NWVZQWZtUEdKaTNwRjI0WVJRVVBrRUE3OCtZSVVvbFhFdmo5dFZMMXls?=
+ =?utf-8?B?UUpWVFNoMkxwTVBYY1AyNFAzWlR4aTFuZ1JzbjZ1dEVieHJScEdSWDBkbk45?=
+ =?utf-8?B?QjY1bEI5QWRzQU1hcTV4L29hUG1HamRFSHZvRTgrUFFIL0Q1aU9sY1hUcEND?=
+ =?utf-8?B?VnU3amp3b3F3MXBweldZaW5yOXU2c2ZTaVlmbDB5eElObzhXN003Sm5DYits?=
+ =?utf-8?B?TUxVTnEvWWMyRlFhN0doeTlNUUVUdXN0OWkwS21aSjRRZ0FCaVdwUW5Uc1FI?=
+ =?utf-8?B?alpob3VSeDg1M1ZyeHpjbnpCUDBzRXV5Z2RiSnpKQW9mdmd3eW12cTVQS0s2?=
+ =?utf-8?B?UUswaVdiak9XSmRqOEc0K2t4WmE5aWQwL2RXMzhVeXJkRUJsSll5MTFBY3Zh?=
+ =?utf-8?B?YWJDQ3VhOWZzQTVDYnhNYnREQ3NERG5mcDY5bGpYZ0JpQ3puMWJvZ2p0ZEtY?=
+ =?utf-8?B?NHI2RVhWcGswQkcyN1U5bTZSRUNOU2pXdG1GY3lqUjNSUGVweDRIVlFrYU5y?=
+ =?utf-8?B?U3BlWm9tNlBYbkJrckdrUHZFdHFVeUVBZlE0K0pRS2FodWJtdTJnWGtxSHJt?=
+ =?utf-8?B?NjFqUGtFNk1mZWJRNXRhL1JocHhXbXN4aWhIWUVTTUZFOER4bGxXTWx1VnVk?=
+ =?utf-8?B?UEdlbEloTXVoSEpzT0FJdWcycFdJK0EzSDFRbFNSUUxRbjVXWmpCVUVzUndC?=
+ =?utf-8?B?eHVzZ1RJMVY4NXJzWWxmUUhDcmRDUmhoRWw0UGRhZVpJZ1VMTEM5d0I4SzZz?=
+ =?utf-8?B?UVhkYVgyTzN1Wm44R3lKRzFlQldib0FuSjRtSm5RdFBTOWJ2ak9yM1JrR0Vk?=
+ =?utf-8?B?NTFlUEVFT0xDNkF4alExUFB5QTVLMjI1ZWN6NDlOSDZYcXNFR1BwbFZOYzdT?=
+ =?utf-8?B?aWVaeXdGMTJwRmNaK2NxT292ZW5hVmd3QlJ6M21CVU5ra0hNdTVvdEQra1lD?=
+ =?utf-8?B?Z0diQjZGMVFYcTVSaU9CQTl3UU5Ud2pKc01GbXBXeS9EcG5VYVNkdjBSa213?=
+ =?utf-8?B?bVpxR0pTZTh1RE51bFZvR2lrcVFMeDZoMEMrWWhabFcvanZxTXNnSDQyc00w?=
+ =?utf-8?B?cVNzMjBCMC9IUy9zaVhSUlpuVUtsSFl5QkxjVDEzYVcrS1RpdnIwZi9ucUgv?=
+ =?utf-8?B?Q1ZKazVaRC92T2NVMTlSWVoyTDl4cS9UT3k5K1RDaU1DdGlTY3VJdUp3eVZs?=
+ =?utf-8?B?UVVLZkEyaHFkeXd6Yjd3cFRLNWFNVU1uYTVGWW5qTnM3LzRsZmdNVE5vQzdO?=
+ =?utf-8?B?T2ZlNi83YS9NTDZ5Z1B0a0hiMklJMlVLR1JRNzRJbWd3NEphMVQ1WkQ5OWNS?=
+ =?utf-8?B?Sk1xUUozdU9vYVV4eHU4djJKbFpnTG9CZ28zbEY5OEhCL2ZmaDNoZVlIQ3ZN?=
+ =?utf-8?B?UW1lamY1ejlZOWM4QUY5aEc2U0xBUXVEaHBUaDI0MWFxSkg2RG5Wb1BQai83?=
+ =?utf-8?B?cDFUVmFiazZ5djRmUW1vUzRPMFZPdERmcUdvMVF5V2JJczJCb3daSlhpbm9m?=
+ =?utf-8?B?QmMzOE5FM2NTK2VTNGIwKzZNeDBiUklJNlJ5NDJKRHNKdEt0dHpUOVZVTmRS?=
+ =?utf-8?B?UVFBcS9JZEVGNEk1KzlxVTU3enJCUjdiUGp5UkpoTlVIcjhOOHN3MDBFT0cv?=
+ =?utf-8?B?b2NDMldYRmpSYUdscllMVEdUYjhhM2NMOTVTQXVZNU5TYjRkbWRIa3Q1VVlR?=
+ =?utf-8?B?YUJjV2FsSm14Qll2Ykp6U0NyMDlGU1ovQVM5MXZEMzNXYlRXaXIxWXR3NU9P?=
+ =?utf-8?B?MWlXcGVPUUdXcm5zM0VTbUZYZWFTcnl5VEFpazRGMldNSitSWHhVT2kxaGN4?=
+ =?utf-8?B?SlhOeEdoczJESDRINHFSNzhxdG5jZU9GTEE3cFY3aFc0RmFTTFVBMlFsL3Uy?=
+ =?utf-8?B?R1VScWZObjF5N2VMUTluVmlIOG9razFKdEwzdG83RTBSNXBXaGU5QVFnSFdY?=
+ =?utf-8?Q?9amnyzf4wa04qkq/hQ9gqFF/L?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: feb149a5-ebc3-447a-2b51-08dc31709a26
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6097.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 17:31:27.3814
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G04BeuqrFHjLRZa81G5HfU/GgsW0Gq5Lq9T6WJ4eMG5gjF2KoYSXyzLvSq7lUv/fGbHnpYAeZDSu3IdcW6pwvg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR11MB5690
+X-OriginatorOrg: intel.com
 
-On Mon, Feb 19, 2024 at 03:02:04PM +0530, Maulik Shah wrote:
-> psci_init_system_suspend() invokes suspend_set_ops() very early during
-> bootup even before kernel command line for mem_sleep_default is setup.
-> This leads to kernel command line mem_sleep_default=s2idle not working
-> as mem_sleep_current gets changed to deep via suspend_set_ops() and never
-> changes back to s2idle.
-> 
-> Move psci_init_system_suspend() to late_initcall() to make sure kernel
-> command line mem_sleep_default=s2idle sets up s2idle as default suspend
-> mode.
 
-Why can't we fix it the other way around, namely enforce
-mem_sleep_current according to the mem_sleep_default command line
-even if suspend_set_ops() was already called ?
 
-Just asking, I am not super keen on using initcalls ordering, it
-looks fragile to me.
+On 2/19/24 03:46, Ricardo B. Marliere wrote:
+> Since commit aed65af1cc2f ("drivers: make device_type const"), the driver
+> core can properly handle constant struct device_type. Move the
+> dsa_device_type, iax_device_type, idxd_wq_device_type, idxd_cdev_file_type,
+> idxd_cdev_device_type and idxd_group_device_type variables to be constant
+> structures as well, placing it into read-only memory which can not be
+> modified at runtime.
+> 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
 
-Thanks,
-Lorenzo
+Reviewed-by: Fenghua Yu <fenghua.yu@intel.com>
 
-> Fixes: faf7ec4a92c0 ("drivers: firmware: psci: add system suspend support")
-> CC: stable@vger.kernel.org # 5.15+
-> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-> ---
->  drivers/firmware/psci/psci.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-> index d9629ff87861..655a2db70a67 100644
-> --- a/drivers/firmware/psci/psci.c
-> +++ b/drivers/firmware/psci/psci.c
-> @@ -523,18 +523,26 @@ static void __init psci_init_system_reset2(void)
->  		psci_system_reset2_supported = true;
->  }
->  
-> -static void __init psci_init_system_suspend(void)
-> +static int __init psci_init_system_suspend(void)
->  {
->  	int ret;
-> +	u32 ver;
->  
->  	if (!IS_ENABLED(CONFIG_SUSPEND))
-> -		return;
-> +		return 0;
-> +
-> +	ver = psci_0_2_get_version();
-> +	if (PSCI_VERSION_MAJOR(ver) < 1)
-> +		return 0;
->  
->  	ret = psci_features(PSCI_FN_NATIVE(1_0, SYSTEM_SUSPEND));
->  
->  	if (ret != PSCI_RET_NOT_SUPPORTED)
->  		suspend_set_ops(&psci_suspend_ops);
-> +
-> +	return ret;
->  }
-> +late_initcall(psci_init_system_suspend)
->  
->  static void __init psci_init_cpu_suspend(void)
->  {
-> @@ -651,7 +659,6 @@ static int __init psci_probe(void)
->  	if (PSCI_VERSION_MAJOR(ver) >= 1) {
->  		psci_init_smccc();
->  		psci_init_cpu_suspend();
-> -		psci_init_system_suspend();
->  		psci_init_system_reset2();
->  		kvm_init_hyp_services();
->  	}
-> 
-> ---
-> base-commit: d37e1e4c52bc60578969f391fb81f947c3e83118
-> change-id: 20240219-suspend_ops_late_init-27fb0b15baee
-> 
-> Best regards,
-> -- 
-> Maulik Shah <quic_mkshah@quicinc.com>
-> 
+Thanks.
+
+-Fenghua
 
