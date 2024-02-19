@@ -1,162 +1,151 @@
-Return-Path: <linux-kernel+bounces-71648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B17C085A856
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:11:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DB2685A85E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:12:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69AC3286595
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:11:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C5F291F220FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:12:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDFBB3C082;
-	Mon, 19 Feb 2024 16:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAEB83C498;
+	Mon, 19 Feb 2024 16:12:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="jcwqjzNC"
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="UtWtc1GB"
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A32F3C09F
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:10:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD8438F96;
+	Mon, 19 Feb 2024 16:12:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708359031; cv=none; b=CvldOErIWajF6yF/AKiopi3nbjCGEW2RQ89AOl/MKtJpTmgSUy2fwaL+q5FB61d/IsFM6sX0mpGs5lua7AghglWjh8q2AkboFoG9acuCAJ7JhS9AP3npI0MxbQyQeal/eGz9QTFhTv7D/vUYudike2Repz4yVPtDNRHEvQv1QDM=
+	t=1708359124; cv=none; b=JJOdlN9+QCbtjuS2M29xu+pvzdJHcIG7lgrVOiJ6WPeMP7svewbtGcx3fuISBy/yiC4KGZoWAdP7Nj1y99QbtfZ17tcFhP8/MnKoOsvitdhjyHVyj5FmONrA2Go3yktFEwIRCJgwlFvH0lOR8NeXiWhqMR0TtUiJprPsUaGgAwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708359031; c=relaxed/simple;
-	bh=zYH1LuOXgQQm0vqtmeFhua6+HEyiQe8k/7kz4CN9QA0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sIKagTqgwAIhwJJn2oau/zsemAn6B1gGaI6fl38GRZd8910AtSuupaagCz19YCxtrV6EOJGXqS+MT713eTkmMsT+oV69JtyaAW6sKLRXsO4rq9NDOm5LJ1C1lvMRtyfd/Omxr5aOyG164/bW+2PufY8a9OzUrmv6a08x52810bA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=jcwqjzNC; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d241ff062cso9428401fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:10:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1708359027; x=1708963827; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Pa3zXecLjhLhKgOku2SBcFoSL+ZBhFujLXiFCiZcIb8=;
-        b=jcwqjzNCyYcmjkndQ7fjja85b7W5MA7xr86iGwARthtygpTT6CfXPstXRSyfFYqhkT
-         kiCdW5PCD7lHiLAor1OuJ9gQ4kriHfqFMMdLa9PXfKG/h6A0bh3K0P3o4u5NvJhX4x9U
-         li57PiJPfhkZx2QIEKspXGsQz++Uy1HsWZ0rPZ2Ytc473rTyIbaoLDNddloyZbb+Cntt
-         qOprjnhD5jww9M+cZexQQ4F12PE7q9Rimg2I7tHNcU/+nfFNxwXtjPlnAJYNwvmtv609
-         mtm0e1satmzlpaP7Qa0T4Soc3FqMiDr07uV3OvEQxnGl05eu7wyn75tuRibRcisWpHLJ
-         w9Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708359027; x=1708963827;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Pa3zXecLjhLhKgOku2SBcFoSL+ZBhFujLXiFCiZcIb8=;
-        b=idPUFKOKjyH+yxyGce3/+stD3/DGtOPi3pNJvLe6VYsqJcNOLR7BlgC1UUZzL2Kgbx
-         yMGDkwJmMcWbNDYz9UJDIzYFuiDWtDIXhu/YbEed8Lcj+QMV3nJgRaLknZrC2KR6QOPm
-         GX2ZpUkSc0QsX8eNjc2K43uxJJxm/0j/5tjHAIsPSQAYCaVFs4bnOJSwgW6KjAIabBwW
-         0wGHam5nKBZqyIaBAdUQPup/VWENYblz78xSPodyus2Pzsw/6Is6bAcLtwUuS0hZkzWV
-         ujs6Lu4w/mhaeRHN5ntsfBRk+nqvWhLMjBDOr3Hrugzto5+FBVTjnh+KkrjXfBWOqunB
-         HJ8g==
-X-Forwarded-Encrypted: i=1; AJvYcCV0CQ295OLKCPa0JJNHGPYq9G3h/7PynBzotMmXCWiQw3IBQbHZOI++URnpOY1RYCFlEjHgI1gYIrQXlxWzL+IB0gUuLyDxKA1Xqj52
-X-Gm-Message-State: AOJu0YzeZ9vrjBe3ot+kdocdf//WBOo81a8OWwClAp2NeZZ8KR+oRrpL
-	GQ1aVtiEPsrLRpN3gjEt+N5//LQYkUopIgLFt83GvVle1YAL18jkzenfK6x57nIwCr8NusSpQzT
-	jK/6yG1W9ZBZHeDefMHosU+rqoZlIqSQoswSY7w==
-X-Google-Smtp-Source: AGHT+IE2ef+NW69Aa9c+Eg+arV7TCujS69hqXekx8arU9+dXFwYNzJ9wRTpBkrVa2J5rAPuJaMz5mI0FBQ+xK98yNXU=
-X-Received: by 2002:a05:651c:1047:b0:2d2:3f05:d137 with SMTP id
- x7-20020a05651c104700b002d23f05d137mr1491985ljm.1.1708359026789; Mon, 19 Feb
- 2024 08:10:26 -0800 (PST)
+	s=arc-20240116; t=1708359124; c=relaxed/simple;
+	bh=iq6s+7WKZLZSrLV/9jdqYXS3RZE6PFmDztuMLteg06E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KjysTuDy0QDM7mqbOEbLWfDGMvlNwp8f9SEdrhkjlRvTHW9gQx+8DjRt/1q1uu5c1l5IzvQWiK10o9NfjH8s0XgREfnadPWHWdqAAj304rCqCeGv+poDsha6Iria2jqkW/W29zm+NlcW3xXjo9rXM2R8dCCbpm6zMh0TJ0T//m0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=UtWtc1GB; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+	Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=m2nD4Vwza+aDllTk70i73HnQsiQ53xBK6QE6s2gWwMY=; b=UtWtc1GBcTmeW9Sgii2wiouPQc
+	4gEhMxxwzplTX9PRgnnwprVsPBi6GkUOY05K3a+jS24JnB3DvLoSSgLyNj0rlSl1IZWqPT2DpnysI
+	zPV6mUG5Rvw2XJ7qv7+QQyF3hKN3bOCcCWEQ66cqG5CpPOMae7xjLNSZgKv0vAQi+mqw0tGThFxSs
+	LudSLJh9EuSUUmlQ5kQpZPxFn6LD/iEPzr09MvzUZ5e6zsPUQZfEfStUvqgVoKJJHuV5MmY4+nax8
+	m1e4Re3VoEgATz6u8YIr3QCb4vJyTHptI+TLOWxXh/X2B2La17dWFuU7V+zPm7DW5nTJLuhOnaQeF
+	Pd2gmp4A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51960)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1rc6El-0007Kt-2a;
+	Mon, 19 Feb 2024 16:11:23 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1rc6Ee-0008V0-Sj; Mon, 19 Feb 2024 16:11:16 +0000
+Date: Mon, 19 Feb 2024 16:11:16 +0000
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: =?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>
+Cc: Rahul Rameshbabu <rrameshbabu@nvidia.com>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+	Jay Vosburgh <j.vosburgh@gmail.com>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+	Vladimir Oltean <vladimir.oltean@nxp.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	Maxime Chevallier <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH RFC net-next v8 04/13] net: Change the API of PHY default
+ timestamp to MAC
+Message-ID: <ZdN9pPf3wXwE/9nX@shell.armlinux.org.uk>
+References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+ <20240216-feature_ptp_netnext-v8-4-510f42f444fb@bootlin.com>
+ <87jzn4gtlv.fsf@nvidia.com>
+ <20240219142936.62112d34@kmaincent-XPS-13-7390>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208172459.280189-1-alisa.roman@analog.com>
- <20240208172459.280189-6-alisa.roman@analog.com> <CAMknhBHU6k8J_PLCmGYF48S1q3uXByiCwzcd+B3q3Cd-02CUow@mail.gmail.com>
- <84546728-f0cb-4b38-a71c-e053b9b9278e@gmail.com> <CAMknhBFp-4s+-D8kD9rh0-OCc3gBs3hFX1EZ9ZmOifQOyGgUug@mail.gmail.com>
- <20240216142158.30e96c53@jic23-huawei> <CAMknhBEtLR1QNEv6HhcW35jiGEkx=srzy41NXt8bJ=gokzoemw@mail.gmail.com>
- <20240217162510.5d5d4511@jic23-huawei>
-In-Reply-To: <20240217162510.5d5d4511@jic23-huawei>
-From: David Lechner <dlechner@baylibre.com>
-Date: Mon, 19 Feb 2024 10:10:15 -0600
-Message-ID: <CAMknhBF5mAsN1c-194Qwa5oKmqKzef2khXnqA1cSdKpWHKWp0w@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] iio: adc: ad7192: Add AD7194 support
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: Alisa-Dariana Roman <alisadariana@gmail.com>, alexandru.tachici@analog.com, 
-	alisa.roman@analog.com, conor+dt@kernel.org, devicetree@vger.kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, krzysztof.kozlowski@linaro.org, 
-	lars@metafoo.de, linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	michael.hennerich@analog.com, robh+dt@kernel.org, 
-	Nuno Sa <nuno.sa@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240219142936.62112d34@kmaincent-XPS-13-7390>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Sat, Feb 17, 2024 at 10:25=E2=80=AFAM Jonathan Cameron <jic23@kernel.org=
-> wrote:
->
-> On Fri, 16 Feb 2024 10:57:33 -0600
-> David Lechner <dlechner@baylibre.com> wrote:
->
-> > On Fri, Feb 16, 2024 at 8:22=E2=80=AFAM Jonathan Cameron <jic23@kernel.=
-org> wrote:
+On Mon, Feb 19, 2024 at 02:29:36PM +0100, Köry Maincent wrote:
+> On Fri, 16 Feb 2024 10:09:36 -0800
+> Rahul Rameshbabu <rrameshbabu@nvidia.com> wrote:
+> 
+> > On Fri, 16 Feb, 2024 16:52:22 +0100 Kory Maincent <kory.maincent@bootlin.com>
+> > wrote:
+> > > Change the API to select MAC default time stamping instead of the PHY.
+> > > Indeed the PHY is closer to the wire therefore theoretically it has less
+> > > delay than the MAC timestamping but the reality is different. Due to lower
+> > > time stamping clock frequency, latency in the MDIO bus and no PHC hardware
+> > > synchronization between different PHY, the PHY PTP is often less precise
+> > > than the MAC. The exception is for PHY designed specially for PTP case but
+> > > these devices are not very widespread. For not breaking the compatibility
+> > > default_timestamp flag has been introduced in phy_device that is set by
+> > > the phy driver to know we are using the old API behavior.
 > > >
-> > > On Thu, 15 Feb 2024 11:13:19 -0600
-> > > David Lechner <dlechner@baylibre.com> wrote:
-> > >
-> >
-> > ...
-> >
-> > > >
-> > > > Tables 22, 23 and 24 in the AD7194 datasheet show that this chip is
-> > > > much more configurable than AD7192 when it comes to assigning
-> > > > channels. There are basically no restrictions on which inputs can b=
-e
-> > > > used together. So I am still confident that my suggestion is the wa=
-y
-> > > > to go for AD7194. (Although I didn't actually try it on hardware, s=
-o
-> > > > can't be 100% confident. But at least 90% confident :-p)
-> > >
-> > > You would have to define a channel number for aincom.  There is an ex=
-plicit
-> > > example in the datasheet of it being at 2.5V using a reference supply=
-.
-> > >
-> > > I wonder what expectation here is.  Allways a reference regulator on =
-that pin, or
-> > > an actually varying input? Maybe in long term we want to support both
-> > > options - so if aincom-supply is provided these are single ended with
-> > > an offset, but if not they are differential channels between channel =
-X and
-> > > channel AINCOM.
-> > >
-> > > Note though that this mode is described a pseudo differential which n=
-ormally
-> > > means a fixed voltage on the negative.
-> > >
-> > > So gut feeling from me is treat them as single ended and add an
-> > > aincom-supply + the offsets that result if that is provided in DT and
-> > > voltage from it is non 0.
-> >
-> > Calling AINCOM a supply doesn't sound right to me since usually this
-> > signal is coming somewhere external, i.e. you have a twisted pair
-> > connected to AIN1 and AINCOM going to some signal source that may be
-> > hot-pluggable and not known at compile time. As an example, if AINCOM
-> > was modeled as a supply, then we would have to change the device tree
-> > every time we changed the voltage offset on the signal generator while
-> > we are testing using an evaluation board.
->
-> We tend to stick away from designing features to support testing with
-> devboards where external wiring is involved because anything could be
-> wired up there. (Examples are things like shunt resistors - normally
-> they are DT only) So sometimes it's a bit painful to work with such board=
-s.
-> The main focus has to be production devices or at least stable set ups
-> where a fixed DT is sufficient.
->
-> So I'm more interested in focusing on production device use cases.
-> Do we have an information on how this is this used in those environments?
->
+> > > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > > ---  
+> > 
+> > Overall, I agree with the motivation and reasoning behind the patch. It
+> > takes dedicated effort to build a good phy timestamping mechanism, so
+> > this approach is good. I do have a question though. In this patch if we
+> > set the phy as the default timestamp mechanism, does that mean for even
+> > non-PTP applications, the phy will be used for timestamping when
+> > hardware timestamping is enabled? If so, I think this might need some
+> > thought because there are timing applications in general when a
+> > timestamp closest to the MAC layer would be best.
+> 
+> This patch comes from a request from Russell due to incompatibility between MAC
+> and PHY timestamping when both were supported.
+> https://lore.kernel.org/netdev/Y%2F4DZIDm1d74MuFJ@shell.armlinux.org.uk/
+> 
+> His point was adding PTP support to a PHY driver would select timestamp from it
+> by default even if we had a better timestamp with the MAC which is often the
+> case. This is an unwanted behavior.
+> https://lore.kernel.org/netdev/Y%2F6Cxf6EAAg22GOL@shell.armlinux.org.uk/
+> 
+> In fact, with the new support of NDOs hwtstamp and the
+> dev_get/set_hwtstamp_phylib functions, alongside this series which make
+> timestamp selectable, changing the default timestamp may be not necessary
+> anymore.
+> 
+> Russell any thought about it? 
 
-Point taken. I also checked with an apps engineer at ADI and it does
-sound like AINCOM should be a supply.
+My position remains: in the case of Marvell PP2 network driver with a
+Marvell PHY, when we add PTP support for the Marvell PHYs (I have
+patches for it for years) then we must _not_ regress the existing
+setup where the PP2 timestamps are the default.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
