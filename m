@@ -1,47 +1,62 @@
-Return-Path: <linux-kernel+bounces-71302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 764E885A32B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:27:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42DE985A330
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7532AB22B81
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:27:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAA10B2434F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:28:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B3C2E3F3;
-	Mon, 19 Feb 2024 12:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF312E40C;
+	Mon, 19 Feb 2024 12:27:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="taKnRuL1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="T8lK5B3N"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2843B21103;
-	Mon, 19 Feb 2024 12:27:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62F422D638;
+	Mon, 19 Feb 2024 12:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708345640; cv=none; b=YRMaWyfc8YN5i0R0VIcquD+NdrBIfssBNj3RPHtiJDgb8TlxgLvkaVDYOVqlCKRlkc9SJmtR/FUigmA1aCBJgzfaTsKUGLGvJhQNGZ6CVnS4i7Kq3cpBJ3w4KGeqJF8WtyJYEwgmn8bla7YawotWK3r5lQPLz9l606P1mk0zjks=
+	t=1708345665; cv=none; b=Apsd7vW+b4JD56/4Nw0QkwEu/lNqzEq9PLLhtTNs9Ps4NVuwsDukOL3BGVsFMsEH2NzpIOJ9z9twKe685WStz/RUUI1VnUxao7Rwsx+hG2i0/RA8J+FjlVQ3xbuZQ3ZPqxFTPyYqCqh9H8BcJgQVnCsJkYThjtqmrguIOIyof6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708345640; c=relaxed/simple;
-	bh=wjZw+mWJBR/kGq3Uc+1DZLRkxqifdShqnWAT4YCy3W8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PnV+35/l1FdPhDJ7/lp6B0vg5LKhTFtrbkrICSvjcDtSpkdXDcubGy3AzLS5n3FZnxENgbfmYfGV3lyZjl7XqE9462jyeElEtGHN/zNSjSwjv8HJtn84POh7Rttl5Fo6M9hWcuL4/hUDq/dqISKCrqopo8mXGrERiiFdo+DM4ng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=taKnRuL1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE9CFC433F1;
-	Mon, 19 Feb 2024 12:27:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708345639;
-	bh=wjZw+mWJBR/kGq3Uc+1DZLRkxqifdShqnWAT4YCy3W8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=taKnRuL1BdTEPmcAkix1YrJfWe0NSXrx1QPP3+hwp0hsKkylMuo4/QMRgZnrlM5qH
-	 FLbKpFGDGbfVykoqDJ3b/2XtdUe5KdgI0khlGlGIl481RFuL1gJn4y7EAJWoOfNADk
-	 VXTacMjtmP6iUsMIw1dwzV1xTNWdUzQDDYkyNIk7NjcZx3+ogVSy0Va+i6whO04BFW
-	 vs5kgZ6YGRESnLD0S/wzTDYo94fZ5PKDxCzsV8Uokdh+zRgjXDTgA3ad2Lte+Jg+f3
-	 jQDEkIOBAaPhL3Z3waxc7PaZ78gvjI6jr7SC9qOo8iH7KvZ7MVaV29xO9yXg9piKNQ
-	 yQ2KCXuit0Hyw==
-Message-ID: <956ebf94-62ef-4e67-893e-86586a980883@kernel.org>
-Date: Mon, 19 Feb 2024 13:27:09 +0100
+	s=arc-20240116; t=1708345665; c=relaxed/simple;
+	bh=QtyAmgyaqBP3Pw2hsyXdaBD838ZNokfapk5FB3vM9do=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=RipRGigIOQng3AF9pNI2Xgb5vrpHNSONFeYl0I4+FStye+xGx6pFdUeWRVKIWmiJk5wQ42kECIum3C7kKEhXx3b4ePIv9Eak8GvxX6WFIrX5jY+eRVRrit9OwSQlogsOHk9E2BDEc4a9QIq28YzlxErftR0BNGPbA0MS6/MT4e0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=T8lK5B3N; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41JAeoK2009496;
+	Mon, 19 Feb 2024 12:27:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=k3n1beUOcmwlqVyyDnDeVwvl4hamR/xvV4h8XQhkusc=; b=T8
+	lK5B3NiIBFlquw+7f0Ai1xSOO8osBXYtKp4T+ObjNl1UqRFzYkTnJ/+keYupjTKI
+	VHKZsm6mKhqJEL6Yz3ZWQ/xrAXdJmb5E2d/xRX/EQarcg7uvyHlPFk0e2gj0RbHA
+	DGuwM7FxdSey225lhGRReIlAXASOGYPWYNRnsaCm01a6YTqU/aRKnAdd4aDtl5hH
+	H/kmP9f1NdSZoO9PqdgMLo0cHOsRAGOqCg9028ldNvyvWfyUahnImGrigTTpWd70
+	9+6oPAPg2qXS7uCSk/c4DC15WorRpypGOzSofjOEoF+B0WOAvRBG0gB43rF6IlXh
+	bCfegwQ2ADRDWvM1zoLQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wc5dtr6mx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 12:27:35 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41JCRZLx022733
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 12:27:35 GMT
+Received: from [10.214.82.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 19 Feb
+ 2024 04:27:31 -0800
+Message-ID: <34734d65-6be7-4fab-98b7-357726751af5@quicinc.com>
+Date: Mon, 19 Feb 2024 17:57:28 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,137 +64,61 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] mmc: dw_mmc: add support for hi3798mv200
+Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add Qualcomm SM7150 DT
+ bindings
 Content-Language: en-US
-To: Yang Xiwen <forbidden405@outlook.com>, kernel test robot <lkp@intel.com>,
- Yang Xiwen via B4 Relay <devnull+forbidden405.outlook.com@kernel.org>,
- Ulf Hansson <ulf.hansson@linaro.org>, Jaehoon Chung
- <jh80.chung@samsung.com>, Rob Herring <robh+dt@kernel.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Igor Opaniuk <igor.opaniuk@linaro.org>,
- tianshuliang <tianshuliang@hisilicon.com>, David Yang <mmyangfl@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- devicetree@vger.kernel.org
-References: <20240216-b4-mmc-hi3798mv200-v1-1-7d46db845ae6@outlook.com>
- <202402181540.H4Ose96P-lkp@intel.com>
- <SEZPR06MB695945299705B6E8BF0E326296522@SEZPR06MB6959.apcprd06.prod.outlook.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <SEZPR06MB695945299705B6E8BF0E326296522@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Danila Tikhonov
+	<danila@jiaxyga.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <djakov@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240218183239.85319-1-danila@jiaxyga.com>
+ <20240218183239.85319-2-danila@jiaxyga.com>
+ <fce70468-05fb-4f51-a653-7921dd27bc6b@quicinc.com>
+ <f522e679-3543-46ee-8b2d-92e384427382@linaro.org>
+From: Naman Jain <quic_namajain@quicinc.com>
+In-Reply-To: <f522e679-3543-46ee-8b2d-92e384427382@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FdxgsSP__rrgBzXHnAKkDnCXCpPjd2pP
+X-Proofpoint-GUID: FdxgsSP__rrgBzXHnAKkDnCXCpPjd2pP
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_08,2024-02-19_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ impostorscore=0 mlxlogscore=805 lowpriorityscore=0 phishscore=0
+ spamscore=0 adultscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402190093
 
-On 18/02/2024 09:21, Yang Xiwen wrote:
-> On 2/18/2024 4:03 PM, kernel test robot wrote:
->> Hi Yang,
+On 2/19/2024 4:44 PM, Krzysztof Kozlowski wrote:
+> On 19/02/2024 10:48, Naman Jain wrote:
+>> On 2/19/2024 12:02 AM, Danila Tikhonov wrote:
+>>> The Qualcomm SM7150 platform has several bus fabrics that could be
+>>> controlled and tuned dynamically according to the bandwidth demand.
 >>
->> kernel test robot noticed the following build errors:
+>> Please add what you are trying to do with this patch.
 >>
->> [auto build test ERROR on 8d3dea210042f54b952b481838c1e7dfc4ec751d]
->>
->> url:    https://github.com/intel-lab-lkp/linux/commits/Yang-Xiwen-via-B4-Relay/mmc-dw_mmc-add-support-for-hi3798mv200/20240216-014744
->> base:   8d3dea210042f54b952b481838c1e7dfc4ec751d
->> patch link:    https://lore.kernel.org/r/20240216-b4-mmc-hi3798mv200-v1-1-7d46db845ae6%40outlook.com
->> patch subject: [PATCH 1/3] mmc: dw_mmc: add support for hi3798mv200
->> config: parisc-allyesconfig (https://download.01.org/0day-ci/archive/20240218/202402181540.H4Ose96P-lkp@intel.com/config)
->> compiler: hppa-linux-gcc (GCC) 13.2.0
->> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240218/202402181540.H4Ose96P-lkp@intel.com/reproduce)
->>
->> If you fix the issue in a separate patch/commit (i.e. not just a new version of
->> the same patch/commit), kindly add following tags
->> | Reported-by: kernel test robot <lkp@intel.com>
->> | Closes: https://lore.kernel.org/oe-kbuild-all/202402181540.H4Ose96P-lkp@intel.com/
->>
->> All errors (new ones prefixed by >>):
->>
->>     drivers/mmc/host/dw_mmc-hi3798mv200.c: In function 'dw_mci_hi3798mv200_init':
->>>> drivers/mmc/host/dw_mmc-hi3798mv200.c:178:36: error: passing argument 1 of 'mmc_of_parse_clk_phase' from incompatible pointer type [-Werror=incompatible-pointer-types]
->>       178 |         mmc_of_parse_clk_phase(host->dev, &priv->phase_map);
->>           |                                ~~~~^~~~~
->>           |                                    |
->>           |                                    struct device *
->>     In file included from drivers/mmc/host/dw_mmc-hi3798mv200.c:11:
->>     include/linux/mmc/host.h:542:46: note: expected 'struct mmc_host *' but argument is of type 'struct device *'
->>       542 | void mmc_of_parse_clk_phase(struct mmc_host *host,
->>           |                             ~~~~~~~~~~~~~~~~~^~~~
->>     cc1: some warnings being treated as errors
->>
->>
->> vim +/mmc_of_parse_clk_phase +178 drivers/mmc/host/dw_mmc-hi3798mv200.c
->>
->>     168	
->>     169	static int dw_mci_hi3798mv200_init(struct dw_mci *host)
->>     170	{
->>     171		struct dw_mci_hi3798mv200_priv *priv;
->>     172		struct device_node *np = host->dev->of_node;
->>     173	
->>     174		priv = devm_kzalloc(host->dev, sizeof(*priv), GFP_KERNEL);
->>     175		if (!priv)
->>     176			return -ENOMEM;
->>     177	
->>   > 178		mmc_of_parse_clk_phase(host->dev, &priv->phase_map);
+>> Ref:
+>> https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
 > 
-> Please note that this patch is depending on another patch[1].
+> The reason for this change is explained in commit msg, so what exactly
+> are you missing?
 > 
-> [1]: 
-> https://lore.kernel.org/linux-mmc/ae876e697ba16ba2925ec217c6b4e3d8ffea4ab3.camel@codeconstruct.com.au/T/#t
+> Best regards,
+> Krzysztof
 > 
 
-You did not provide any links to dependencies in cover letter nor in
-patch changelog. You included on purpose, which is nice and correct, the
-base commit:
+I was under the impression that we should have explained/mentioned the
+subject of this patch in the description of the commit msg. It seems
+that it's not required. Thanks for correcting me.
 
-	base-commit: 8d3dea210042f54b952b481838c1e7dfc4ec751d
-
-which does not include above commit apparently.
-
-How anyone can guess it and test your patches?
-
-Please send with proper dependencies marked.
-
-Best regards,
-Krzysztof
-
+Regards,
+Naman Jain
 
