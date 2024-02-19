@@ -1,114 +1,218 @@
-Return-Path: <linux-kernel+bounces-70927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C61859E1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:22:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EC8B859E21
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:23:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A774C1F22166
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:22:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 991E4B223CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:23:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E174E21363;
-	Mon, 19 Feb 2024 08:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA01E210E1;
+	Mon, 19 Feb 2024 08:23:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YqQYis2J"
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Vr0PpZvg"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF9E320DFC
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:22:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43418224DA;
+	Mon, 19 Feb 2024 08:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708330941; cv=none; b=FupSUtBxLMc+ukJ/4bY1kB1fb8g2pPuixTd8wPHT1yeIgZdlPalDI4HS7GGk2yn5p6a9yO0fvU0ShIlYrMPe3khc9rvUildFdqIjym51gEnIksZ1qYmS0U3f6UvpihsXZDynf5QNTOjlgzBuCuZi17SBKPbcNP3WPIjxstKZc3k=
+	t=1708331017; cv=none; b=tkTPe9Tz5rSK4ui4mDL4vAeX3iSoeAgEoVd34ElGGtjO8+RW4UtmvOpmtHPG1/09p2ITj8i3Kh5JgFIUaC3noIopkdiTTsstdD9w6iWoVteJQkdiuPfWfykJbabx24FSJhrlfNgQcWm9Mr16xl/1R+uR6bx0UJ1dlFps/8csZgw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708330941; c=relaxed/simple;
-	bh=FvBbTrLHfzMAs7VtoWvq0W2MIUhWBuAqZ0NPy17yAQY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Le2ZL74sv2J8OPzBsg6bPXPjFF7/akqh2kI35m9KfiLmrf3LDYptsZBeh5f8tVRToGG9WYwaDKMH6zEwHl+05BZ6Lgz7jOsHY5ZsNjN9xPcBVW+tKIG54vDkr16CvRTbIMhU9Daln31pfGFyLLsfvRvabHXQVwzNmJg1igmhy0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YqQYis2J; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-512ab55fde6so1490685e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:22:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708330937; x=1708935737; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ycvOyJbv26u3Dhx0FmRMkxR9ksBoiOuJ0RI4MXT3nOI=;
-        b=YqQYis2J+7HZG2tUZWiYo4PsGnEEhzPNX77ns8wPYZY1L6iI+4RdrCaYQr+xuCzCmP
-         jdXV46UrhVTFtQOJHYix7T2rEx7CFpiHnzRj15M9/MAqPlNYdiat6U4b9c8fe2rNHiFM
-         Zx7k8jho5Kk4W1GMPrTKVGUcY4Bq/rlnXSrFzL6x1stWcWSmaROEcvgJRE687oF0GYDC
-         LjnMv8iamnVeGOW3WDomvUurtD1ml3OoPGnWipI7OviYnTZ44laN+z3LbTOUMmvyqjs1
-         xcb0RMPb/r9t1PYS+aSxLtAST6av7OhWEsC5+KYsGV8YInYgwfmbKu+fm1efIgaP7jVD
-         Ra9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708330937; x=1708935737;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ycvOyJbv26u3Dhx0FmRMkxR9ksBoiOuJ0RI4MXT3nOI=;
-        b=nw8HNmEDRX4+SRlw+IrrYzn8qQuINic1jFOsFdTmRaaDRND8zx8Y2QRtA92fcyfmDb
-         ywQoh2Nbm6g3XppJsiwJGyIjcQxjrKFB6eD6ILpC19ABAcSLnuIYU0SwesBH8XBd1TeL
-         QfaU5kQdKGP4G7disFUcAPjaOcIxAOxG6a67AUc0XLuHd+KwwC5OXps8vXxybu0cqCou
-         PCiLZe4wDAkwCmJZerk4qyROQW5fFdTQVwccPctZZOtRxhhCJws0yKmV1hQXq6iwXxC2
-         m9KycmVPZyx8qUQ5ZZ5Nq4VmBQ1nEXQvhL3xsORevkwAWF36gw76COraS6ENTZ7LhwT4
-         w54g==
-X-Gm-Message-State: AOJu0YzDed73zgLENFLT/DG0wuGUjmnnm01vZ2FC6y5otNJFS5m/H8fq
-	ZZbWi/7MCuNFMVfhfveIWuZRmRNErEJb6mdozBw7GEEOjrR61mukk96HVX2F/jeMZdoXmZJ9NJC
-	Y
-X-Google-Smtp-Source: AGHT+IHvRfIaq2XgjkibK92o/u6nDYSEPMdw9SGBjJGEu6RzlWl8HQjQntEPLa5yOddMIpYADzYYYQ==
-X-Received: by 2002:a05:6512:3bb:b0:512:b694:27be with SMTP id v27-20020a05651203bb00b00512b69427bemr570928lfp.45.1708330937308;
-        Mon, 19 Feb 2024 00:22:17 -0800 (PST)
-Received: from krzk-bin.. ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id bq24-20020a5d5a18000000b0033d50091f3dsm2214696wrb.8.2024.02.19.00.22.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 00:22:16 -0800 (PST)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To: linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	linux-doc@vger.kernel.org
-Subject: [PATCH] docs: MAINTAINERS: add "Profile" keyword entry name
-Date: Mon, 19 Feb 2024 09:22:12 +0100
-Message-Id: <20240219082212.13676-1-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1708331017; c=relaxed/simple;
+	bh=eeunWe+QwDUXJ10WQnrgAfOE+WiHYgfOkZ1VkXfpxeM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tQIlZwqJSO9JHOJfuFoGStjY8JeRRMDbtwJFej9mPS0VUAQeWakNlDz2Fybry5B0C52O9KkoXGeNsTS+UPE72qhRd/aa9FQGJc3MZYa93ZCXw8gQHtguIKinh13IFSIvHUViOuhFZQRIkBzmf0/BsQdx5XzoJmNIxyFpT3K9a0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Vr0PpZvg; arc=none smtp.client-ip=198.47.19.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41J8NIxJ065333;
+	Mon, 19 Feb 2024 02:23:18 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708330998;
+	bh=V+ENyFUmivihIc+SIaiSUWNu9rTsX6msVY869Qv8Fzc=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=Vr0PpZvgIQTlVxPh9ruBP5lPjCISx6vyYn5EuxspzOZRdcABBaOCkzWuLQib1bg/U
+	 Ut+N5II8IWP2I225iQFj2a065G3UeT54ZNtAOEjV4tRzNsG0vmob62sx4ZDA6S5aNh
+	 j6B41rGKG+BceY2+BihC2SdYj8Oey7bIN3Zk626Y=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41J8NIE5073763
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 19 Feb 2024 02:23:18 -0600
+Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 19
+ Feb 2024 02:23:18 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 19 Feb 2024 02:23:17 -0600
+Received: from [10.24.69.142] ([10.24.69.142])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41J8NEil099835;
+	Mon, 19 Feb 2024 02:23:14 -0600
+Message-ID: <09853939-e623-42f1-bf80-1938161d1136@ti.com>
+Date: Mon, 19 Feb 2024 13:53:13 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] arm64: dts: ti: k3-j722s-evm: Enable OSPI NOR support
+Content-Language: en-US
+To: "Kumar, Udit" <u-kumar1@ti.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <s-vadapalli@ti.com>
+References: <20240216135533.904130-1-vaishnav.a@ti.com>
+ <20240216135533.904130-3-vaishnav.a@ti.com>
+ <0ca01a1b-8956-40dd-8286-77276e021633@ti.com>
+From: Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <0ca01a1b-8956-40dd-8286-77276e021633@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The HTML output of MAINTAINERS file prints "P:" for subsystem profile,
-e.g.:
-	Status:   Maintained
-	P:        process/maintainer-soc-clean-dts
+Hi Udit,
 
-Use "Profile" as this entry name.
+On 19/02/24 11:25, Kumar, Udit wrote:
+> Hi Vaishnav
+> 
+> On 2/16/2024 7:25 PM, Vaishnav Achath wrote:
+>> J722S EVM has S28HS512T 64 MiB Octal SPI NOR flash connected
+>> to the OSPI interface, add support for the flash and describe
+>> the partition information as per bootloader.
+>>
+>> Signed-off-by: Vaishnav Achath <vaishnav.a@ti.com>
+>> ---
+>>   arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 79 +++++++++++++++++++++++++
+>>   1 file changed, 79 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts 
+>> b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+>> index 9e12a6e9111f..b1c6499c0c9d 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+>> @@ -169,6 +169,23 @@ J722S_IOPAD(0x015c, PIN_INPUT, 0) /* (AD25) 
+>> MDIO0_MDIO */
+>>           >;
+>>       };
+>> +    ospi0_pins_default: ospi0-default-pins {
+>> +        pinctrl-single,pins = <
+>> +            J722S_IOPAD(0x0000, PIN_OUTPUT, 0) /* (P23) OSPI0_CLK */
+>> +            J722S_IOPAD(0x002c, PIN_OUTPUT, 0) /* (M25) OSPI0_CSn0 */
+>> +            J722S_IOPAD(0x000c, PIN_INPUT, 0) /* (L25) OSPI0_D0 */
+>> +            J722S_IOPAD(0x0010, PIN_INPUT, 0) /* (N24) OSPI0_D1 */
+>> +            J722S_IOPAD(0x0014, PIN_INPUT, 0) /* (N25) OSPI0_D2 */
+>> +            J722S_IOPAD(0x0018, PIN_INPUT, 0) /* (M24) OSPI0_D3 */
+>> +            J722S_IOPAD(0x001c, PIN_INPUT, 0) /* (N21) OSPI0_D4 */
+>> +            J722S_IOPAD(0x0020, PIN_INPUT, 0) /* (N22) OSPI0_D5 */
+>> +            J722S_IOPAD(0x0024, PIN_INPUT, 0) /* (P21) OSPI0_D6 */
+>> +            J722S_IOPAD(0x0028, PIN_INPUT, 0) /* (N20) OSPI0_D7 */
+>> +            J722S_IOPAD(0x0008, PIN_INPUT, 0) /* (P22) OSPI0_DQS */
+> 
+> 
+> Could you check, Pin name in comments
+> 
+> For example, Schematic says L22 is for OSPI0_DQS , but comments says P22
+> 
+> However offsets are good .
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: linux-doc@vger.kernel.org
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for the review, I will fix this in the next revision.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b9c3100ef587..35933bd320cc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -24,7 +24,7 @@ Descriptions of section entries and preferred order
- 	   filing info, a direct bug tracker link, or a mailto: URI.
- 	C: URI for *chat* protocol, server and channel where developers
- 	   usually hang out, for example irc://server/channel.
--	P: Subsystem Profile document for more details submitting
-+	P: *Profile* Subsystem Profile document for more details submitting
- 	   patches to the given subsystem. This is either an in-tree file,
- 	   or a URI. See Documentation/maintainer/maintainer-entry-profile.rst
- 	   for details.
--- 
-2.34.1
+> 
+>> +        >;
+>> +        bootph-all;
+>> +    };
+>> +
+>>       rgmii1_pins_default: rgmii1-default-pins {
+>>           pinctrl-single,pins = <
+>>               J722S_IOPAD(0x014c, PIN_INPUT, 0) /* (AC25) RGMII1_RD0 */
+>> @@ -290,6 +307,68 @@ exp1: gpio@23 {
+>>       };
+>>   };
+>> +&ospi0 {
+>> +    pinctrl-names = "default";
+>> +    pinctrl-0 = <&ospi0_pins_default>;
+>> +    status = "okay";
+>> +
+>> +    flash@0 {
+>> +        compatible = "jedec,spi-nor";
+>> +        reg = <0x0>;
+>> +        spi-tx-bus-width = <8>;
+>> +        spi-rx-bus-width = <8>;
+>> +        spi-max-frequency = <25000000>;
+>> +        cdns,tshsl-ns = <60>;
+>> +        cdns,tsd2d-ns = <60>;
+>> +        cdns,tchsh-ns = <60>;
+>> +        cdns,tslch-ns = <60>;
+>> +        cdns,read-delay = <4>;
+>> +        bootph-all;
+>> +
+>> +        partitions {
+>> +            compatible = "fixed-partitions";
+>> +            #address-cells = <1>;
+>> +            #size-cells = <1>;
+>> +
+>> +            partition@0 {
+>> +                label = "ospi.tiboot3";
+>> +                reg = <0x00 0x80000>;
+>> +            };
+> 
+> 
+> I suggest to keep 1MB to accommodate future size increase
+> 
 
+For J722S, the maximum loadable SPL size is 0x7e000, images larger than 
+these cannot be loaded by ROM, increasing the size here will not give 
+any benefit, planning to keep as-is if there are no objections.
+
+Thanks and Regards,
+Vaishnav
+
+>> +
+>> +            partition@80000 {
+>> +                label = "ospi.tispl";
+>> +                reg = <0x80000 0x200000>;
+>> +            };
+>> +
+>> +            partition@280000 {
+>> +                label = "ospi.u-boot";
+>> +                reg = <0x280000 0x400000>;
+>> +            };
+>> +
+>> +            partition@680000 {
+>> +                label = "ospi.env";
+>> +                reg = <0x680000 0x40000>;
+>> +            };
+>> +
+>> +            partition@6c0000 {
+>> +                label = "ospi.env.backup";
+>> +                reg = <0x6c0000 0x40000>;
+>> +            };
+>> +
+>> +            partition@800000 {
+>> +                label = "ospi.rootfs";
+>> +                reg = <0x800000 0x37c0000>;
+>> +            };
+>> +
+>> +            partition@3fc0000 {
+>> +                label = "ospi.phypattern";
+>> +                reg = <0x3fc0000 0x40000>;
+>> +            };
+>> +        };
+>> +    };
+>> +
+>> +};
+>> +
+>>   &sdhci1 {
+>>       /* SD/MMC */
+>>       vmmc-supply = <&vdd_mmc1>;
 
