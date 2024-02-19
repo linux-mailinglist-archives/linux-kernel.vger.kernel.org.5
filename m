@@ -1,126 +1,140 @@
-Return-Path: <linux-kernel+bounces-70816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3053C859CB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:21:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC9CD859CC1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:22:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 575E01C20E86
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:21:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF0D31C20D5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DD0208DE;
-	Mon, 19 Feb 2024 07:21:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="aWwgAIiB"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB4E720DD8;
+	Mon, 19 Feb 2024 07:22:38 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D06B208C0
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:21:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 844C720DC5
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:22:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708327277; cv=none; b=pTZg/fX2tdTd+6EDOiUlAxe+xsa6Rf7jV1HWNZ6fTo29ZyuzzqCpaSt90b/e1fHFcrZ6i9BvT5yBgQ+04nB22QVJoM5b9VqzQwIJQx6yHlj6w6znLqFPNP1adV9EuwcITEQPKQAf/tUriHUQWORKfIzICYLx7UlaPrQ9ACaueDo=
+	t=1708327358; cv=none; b=A8SeKGhs+PEkqX45duJcLRNtBMa6nXIr6mCRFzpkxwe6iY346npkZsv6KmLIWHpNYDsDg1VujiiPUnu+qKfxDK6gm+u5cXzKXSbzpt6+ONOcp2iIeXhba5B1bM9zLwar4c+/+B4KJV8zblTE0+U8Ry1MxNeCg5W0A+hhqFpN6zM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708327277; c=relaxed/simple;
-	bh=QN0mnIvLWaqPN7bppER4z5cXJNGlnW4ZBUQce0v0esE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AWW1WLqzwQXE8oCOA+AWve2BXkV4JVoWI7JV/RzSSiq1MUYdlPRIvhfipS+zceNK2B/W9F46kOf7yqi/tKxRSwvYKatq29hxodd5v+2k+P41uZXn82pk+EvV1woRUqasSyZs9m53V7HUEvPChhyWc6HqdlRbLgfZqthkCwMlcp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=aWwgAIiB; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4125df3c40aso13601475e9.3
-        for <linux-kernel@vger.kernel.org>; Sun, 18 Feb 2024 23:21:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1708327274; x=1708932074; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PVqM0b0itzTgllW893u9sbLtVTXtg0oDYKDS5Qi+rsQ=;
-        b=aWwgAIiBkKJcNNRvtZvPkgZaOkTx985uMBvssGNY/rsIMO33XFFNmESRpjFvUGVqME
-         g8HqKinnK4V344I2D4E91zpJRbgLKtbqNpbvuMK0BlmrLVRRH5ALDD79PLQviQw19vGt
-         i7vRXOpeFgTSSKhDV71KEVuEKbZO+vhSaJqjr+oeryEYALLaDc/OrFg/ycOcghx9MkSx
-         YsEgTiW+eDbNn1JWvx4fCg0Hb3Mp6NQK9kvAN93nCUxMyQYDmtDt+lpeZt6tEuqcsMf/
-         WpyeQ2STKU2tau1ubq7vMjh/WsPZYNCRA/3aI1sYrbPUNWxVp+k9FjWJeR6fZo12NaBQ
-         czGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708327274; x=1708932074;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PVqM0b0itzTgllW893u9sbLtVTXtg0oDYKDS5Qi+rsQ=;
-        b=suvnyH1acVo87GJ289wyAuIbkycQG1uOU6QUVod440uSXw3Fj97dpvy2Rkmm2PxUUv
-         bRhQmIcL8sWikpZRWtzTQzg993TLd704kH2vtEWGBqIB7cIDz5uHhCVqy+Wx+OQM1/F1
-         rXA9R9dwnyZ2qLUtpq/vQbg0Nn7xDN4ePXCM61PCdz3oTZRjcYR1xjH5QraDaGiRwRsD
-         N4obSeSxsPX7HdIho2v25JUO+xcdzgnoLDkXtVIzwKOzvpreo1gicgQYQkte/9gzDjn+
-         o/LUwVrxsZXN3EeqcQB0CUPWYKJnkspalWETkekZtULF+WBEhcZCvak+TXEQhVRMP6j0
-         3urA==
-X-Forwarded-Encrypted: i=1; AJvYcCUOwFG3RvzWk9yG6iWVvKtXnW2e+wJFEm32C8zFtlzd05kmlTl/RA1e5Nk5MkxicC/72pMSQKsHj86fQPmD3QJv3+PoY79BA+3Cc4gx
-X-Gm-Message-State: AOJu0YxIfNoJB/K1BVhj1Xt5TVv4z3U6QbDWA5Z00n9bIa2gA3XfaAsu
-	YOmOjLaFtgr0jicFwyP18C+vr2rDFQo8NuikOIMMlu3vEC8DGDg4gQzJ6out
-X-Google-Smtp-Source: AGHT+IETLfPHLLopGCD+sezW13FOiuvcS70DNbH9oqN5ZMR+lJmw7TXZAdysc+hTTzbuAYHtPBcg/Q==
-X-Received: by 2002:a05:600c:1c0e:b0:412:698b:d7bd with SMTP id j14-20020a05600c1c0e00b00412698bd7bdmr222859wms.31.1708327273709;
-        Sun, 18 Feb 2024 23:21:13 -0800 (PST)
-Received: from [192.168.1.10] ([94.9.209.181])
-        by smtp.googlemail.com with ESMTPSA id z19-20020a7bc7d3000000b00411e1574f7fsm10327647wmk.44.2024.02.18.23.21.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 18 Feb 2024 23:21:13 -0800 (PST)
-Message-ID: <89630027-f93c-4e1d-a9c0-a120b8f0bc9e@googlemail.com>
-Date: Mon, 19 Feb 2024 07:21:09 +0000
+	s=arc-20240116; t=1708327358; c=relaxed/simple;
+	bh=UP1nq5CRx3BtEKG76frDqPHJU12i2jRZco/i+UQSPTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XSDK7Yb65XC/iDzkNOLThbj4XX1g+jPxQvhow4kC2I/4S0sj6dUzHO5lOaVELMvqz4JOSQoBD4sqC4AQRFIomY6hdJTtwJixJEU6XSaGA+illTISIqISBcsYZ3aLaEAbLN4Do7YnWAjAV4I+OBCEUJxw59SsLIZXU4eZiinTKw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rbxyi-0007Ri-Va; Mon, 19 Feb 2024 08:22:16 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rbxyh-001bBt-SQ; Mon, 19 Feb 2024 08:22:15 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rbxyh-007apT-2W;
+	Mon, 19 Feb 2024 08:22:15 +0100
+Date: Mon, 19 Feb 2024 08:22:15 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Raag Jadav <raag.jadav@intel.com>
+Cc: jarkko.nikula@linux.intel.com, mika.westerberg@linux.intel.com, 
+	andriy.shevchenko@linux.intel.com, lakshmi.sowjanya.d@intel.com, linux-pwm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/4] pwm: dwc: Fix PM regression
+Message-ID: <luewujhgmgypcpnngyriv4trklznrkzngxe7syvfp2dontorwf@3xoooabwfitg>
+References: <20240219033835.11369-1-raag.jadav@intel.com>
+ <20240219033835.11369-2-raag.jadav@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Linux)
-Subject: Re: [PATCH] fs/ntfs3: fix build without CONFIG_NTFS3_LZX_XPRESS
-To: Mark O'Donovan <shiftee@posteo.net>, linux-kernel@vger.kernel.org
-Cc: ntfs3@lists.linux.dev, almaz.alexandrovich@paragon-software.com
-References: <20240214224500.811609-1-shiftee@posteo.net>
-Content-Language: en-GB
-From: Chris Clayton <chris2553@googlemail.com>
-In-Reply-To: <20240214224500.811609-1-shiftee@posteo.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lujspconz4o5yy2y"
+Content-Disposition: inline
+In-Reply-To: <20240219033835.11369-2-raag.jadav@intel.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Hi.
 
-On 14/02/2024 22:45, Mark O'Donovan wrote:
-> When CONFIG_NTFS3_LZX_XPRESS is not set then we get the following:
-> fs/ntfs3/frecord.c:2460:16: error: unused variable ‘i_size’
-> 
-> Signed-off-by: Mark O'Donovan <shiftee@posteo.net>
+--lujspconz4o5yy2y
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Raag,
+
+On Mon, Feb 19, 2024 at 09:08:32AM +0530, Raag Jadav wrote:
+> While preparing dwc driver for devm_pwmchip_alloc() usage, commit
+> df41cd8bbcad ("pwm: dwc: Prepare removing pwm_chip from driver data")
+> modified ->suspend() handle to use the pwm_chip as driver_data for
+> accessing struct dwc_pwm, but didn't modify ->resume() handle with
+> relevant changes. This results into illegal memory access during
+> device wakeup and causes a PM regression.
+>=20
+> Fix this by correctly accessing struct dwc_pwm in ->resume() handle.
+>=20
+> Fixes: df41cd8bbcad ("pwm: dwc: Prepare removing pwm_chip from driver dat=
+a")
+> Signed-off-by: Raag Jadav <raag.jadav@intel.com>
 > ---
->  fs/ntfs3/frecord.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ntfs3/frecord.c b/fs/ntfs3/frecord.c
-> index 3b42938a9d3b..7f27382e0ce2 100644
-> --- a/fs/ntfs3/frecord.c
-> +++ b/fs/ntfs3/frecord.c
-> @@ -2457,7 +2457,6 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
->  	struct ATTR_LIST_ENTRY *le = NULL;
->  	struct runs_tree *run = &ni->file.run;
->  	u64 valid_size = ni->i_valid;
-> -	loff_t i_size = i_size_read(&ni->vfs_inode);
->  	u64 vbo_disk;
->  	size_t unc_size;
->  	u32 frame_size, i, npages_disk, ondisk_size;
-> @@ -2509,6 +2508,7 @@ int ni_read_frame(struct ntfs_inode *ni, u64 frame_vbo, struct page **pages,
->  		err = -EOPNOTSUPP;
->  		goto out1;
->  #else
-> +		loff_t i_size = i_size_read(&ni->vfs_inode);
->  		u32 frame_bits = ni_ext_compress_bits(ni);
->  		u64 frame64 = frame_vbo >> frame_bits;
->  		u64 frames, vbo_data;
-> 
-> base-commit: 7e90b5c295ec1e47c8ad865429f046970c549a66
+>  drivers/pwm/pwm-dwc.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/pwm-dwc.c b/drivers/pwm/pwm-dwc.c
+> index 8ca1c20a6aaf..c0e586688e57 100644
+> --- a/drivers/pwm/pwm-dwc.c
+> +++ b/drivers/pwm/pwm-dwc.c
+> @@ -95,7 +95,8 @@ static int dwc_pwm_suspend(struct device *dev)
+> =20
+>  static int dwc_pwm_resume(struct device *dev)
+>  {
+> -	struct dwc_pwm *dwc =3D dev_get_drvdata(dev);
+> +	struct pwm_chip *chip =3D dev_get_drvdata(dev);
+> +	struct dwc_pwm *dwc =3D to_dwc_pwm(chip);
+>  	int i;
+> =20
+>  	for (i =3D 0; i < DWC_TIMERS_TOTAL; i++) {
 
-Mark - Thanks for the patch.
-Alex - Fixes a build bug introduced by 4fd6c08a16d7f1ba10212c9ef7bc73218144b463.
+If you're ok I'd squash this into df41cd8bbcad adding
 
-Tested-by: Chris Clayton <chris2553@googlemail.com>
+	Thanks to Raag Jadav for providing a hunk of this patch that Uwe
+	missed during creation of this patch.
+
+to the commit log.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--lujspconz4o5yy2y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmXTAaYACgkQj4D7WH0S
+/k4Qmgf8D5jnORguDQnPQg6OUPdRe46RfOY6+BkDi+smMqEj5pksoJ5s3pRZBZYL
+u2eOV4vh3Oxrb017HAOIEMNcuAvNE4O+vbLEX1ppIZNcFj6o3I/P7ctTLfqLNBcj
+b3VAYNNlxm3ZH6j5wh9xpD5U+HVBPadFY70WK9tS3kzgQlzzX1dWDSxDKuiaL9KO
+ZIdmjyygZdTLYCxixnzQQTbzI13wlhLGd1vf7294v0ZFRNxPPrTmfZZzuLdHoQsy
+BTFGxuuBtidfYdWEw8ptkSFbDYAQDgCXFeKJy8j+RoyKkSMywQTKgTTPXmyHQVT6
+hPGk4G4ws89YdtUiUTbAwc/O8XD3Ig==
+=SIJf
+-----END PGP SIGNATURE-----
+
+--lujspconz4o5yy2y--
 
