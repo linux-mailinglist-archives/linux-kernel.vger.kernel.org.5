@@ -1,240 +1,151 @@
-Return-Path: <linux-kernel+bounces-71006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46E48859F4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:09:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 237B3859F50
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:09:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AD3A1C21C43
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:09:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81441F23A7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02DC22EF7;
-	Mon, 19 Feb 2024 09:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D84D42263E;
+	Mon, 19 Feb 2024 09:09:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DZBiokTQ";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="cEu3F6wK"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BybPD/h+"
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72C7222309;
-	Mon, 19 Feb 2024 09:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8891021360
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 09:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708333737; cv=none; b=gF69JPBpbvVEeI8lwciac4cNBXDAxmFGlD3Yl/ccQfhYYKlVq5dPsNK3raWEuYtlVJi211l0iO3ZUtlpUuoL9hqTJBrvlFQsWpHw9/k9UQzU+Iemvi3tmTSoXsVlx+AaOwWfpdoB+hjqRaZrRTrOpxue6xY5qCoeKXqFMKiwxz4=
+	t=1708333763; cv=none; b=UtS75MUXXDv0AxvTb4AcZsK4r1U7h/XS8+RYTvg8f1QUdXRWWWgjXsGo4/6462cRBpI0ziaCKwehW3bsD8XsfVqwC266c9KuAbLgpXM970f2KWMhYE2t1SWPg/F2aiQN3gCN1VcROsaz2zH5kXwKleutCAJIzXDHSOM5Ztpftfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708333737; c=relaxed/simple;
-	bh=+ZMPIvIwkppldENup3GEYut/raXsv5r8fa0cHqLSbv0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k1CHWdp4/kG6C5k4KKQtAgWAYc9B/BEVd/VYEv/HgabxydiXp1M1TJ4xv7VgJCTdrUalaTNgKq0nqOJVjdKN4VS7xL2c3pAwJD1eRFerAzkdtv5b4VlMkwQElfWy3wD61K6hjNxGk0fZMThKHDvQjsgQcWF4eMMwcuW8SRwNWm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DZBiokTQ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=cEu3F6wK; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Florian Kauer <florian.kauer@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708333733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CyuTyEUacN3pepSBJWL72y/0RunhnYpq37IXOd+sUdI=;
-	b=DZBiokTQDlOdztrlEBO0BdhvIfliISfFM5K/4igbF+EX0M5Mp/S53BDNd5VvTXiEMasiC+
-	1pefmKJK+6CZMS6Y0jjI5fLAfoPYLIdlKbqc239RxTpshpEr3JiGjXvtxKnO1gdNNuiFeN
-	/4rHIuIH/vToEnRmlN1KCZI94VpP8qeqK5W3rUcSGMFzlPiVDcl8XGqY6UyLuX8Rq/Vd6Y
-	NOSzYyxXxP2QooXTb1qGagaeOP6WCtrKISM/skhN1DwZudviNR5dtMOavYKqUZCbHLWGNf
-	4qUaTzsJOhkEJqTTtlCweMo+zOQAJRxQ/mR6D4FaFyyY3FobjVLEQdIRRcp1dg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708333733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=CyuTyEUacN3pepSBJWL72y/0RunhnYpq37IXOd+sUdI=;
-	b=cEu3F6wKVZE3xIS+G90z7VEP0pbOGI6Cah5j92ZjIX8P7r+WNCPCb+EsBK0mtFje58an/p
-	G0lCqcsKHNsJqlDA==
-To: Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Jithu Joseph <jithu.joseph@intel.com>,
-	Andre Guedes <andre.guedes@intel.com>,
-	Vedang Patel <vedang.patel@intel.com>
-Cc: Florian Kauer <florian.kauer@linutronix.de>,
-	kurt@linutronix.de,
-	intel-wired-lan@lists.osuosl.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH net 1/1] igc: avoid returning frame twice in XDP_REDIRECT
-Date: Mon, 19 Feb 2024 10:08:43 +0100
-Message-Id: <20240219090843.9307-1-florian.kauer@linutronix.de>
+	s=arc-20240116; t=1708333763; c=relaxed/simple;
+	bh=DJul3TWyiyFiIYG37u7BiMg+il0uv1aR4uQbAGcWQQ8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gD12qt4q6cBf+kD5RDH9H02Oz3oxcgh1C7jcvY17RH3q5Cwq1oEKe8p/3Y4a3UYESeTxRIsc8a0me5WPCRhz0jjzUuRtywhubh5DKOoV57HeaN4S5wDuSqrVVeekazexSDzYZaZarnjdp6Wsw4yH3znvHLFfa8eAo5PFQuOMaHM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BybPD/h+; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7d6a772e08dso1302572241.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 01:09:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708333760; x=1708938560; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pITza/p79puTXkzLF57AKL2ujyb3FxitC2KLqmYBBWs=;
+        b=BybPD/h+28wYwaWtfH7FE2hIOxseZz8JgPQu3Q8rec9SmD5gsV3m3AxX5YJ7m4+zwO
+         eBg1V0yziJ1jgbijM/6D6NbPVZEcPByjeYp+qyrpKunRK9aia8qv+INEvZsbP6gO/mNu
+         /MCg8Ku4uBefcLcvOARySenfMQwkI5A8PbjyJOZgi0Q5ah4+P/RtCEG+79anzTK8y8z/
+         T6zqYB1Q/rLvkJ3fQMIYXrbjYSSM/g4ikYGnaz/jTKR6BbZjlgKHawQQhJxiG8XxnTe6
+         2NEQb8k1RC5dfvd0w48L7/i15xPCjJhFOK1SlqRRABgFkM7hAELH6uDFlMEcRLifVuwl
+         Mn3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708333760; x=1708938560;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pITza/p79puTXkzLF57AKL2ujyb3FxitC2KLqmYBBWs=;
+        b=VGPXS+L+XnKf0SSWX2IVl9LQSMRgMruTPEN3vyyIqkO3uLseUsqOZQemH+MxGv1UNI
+         Ze1Mlp77WAWwRMKH9GUUBHLP7zz3gYKRetycP6sfDboeIri7CJkFY0yoXYqIw+eiE0Q+
+         ejLgyIib49QqOuTg6a1RNXkroxfyweMShEWQWLWNpMVIao/pNylvUZ2MTjFgaNlJN3ic
+         1S7Nmu+jwpcyEqnB2CE6rZ4tcimjoTmYhCsgdsf17euYNFr/qlK4B7mkfRMuGtNW7lpe
+         r2nopx1uqEb3qjbWYVAoIthpIrDOBl/AhqeXfWTM2UCTk2LMwaKfMMEv3qRheoQVjQF7
+         ZPRw==
+X-Forwarded-Encrypted: i=1; AJvYcCXzRE72+xIa+yMwb0j9cA0EazoJKR25aLjB2mk3lKYhBd2i2gtDeOw09UVTAPExtRHf5kybXalzOrPA2U/E1yLlcIdXud21quI9D2n9
+X-Gm-Message-State: AOJu0YwGAhnOYe4imjL7IiPntCfrRXgHFLv2JhHqU0svNB7vlbk2UimE
+	5SmpYv5cYuS80wuL/6nmiOYM123u5M6zqPc6zfeP3yNtUrAeGUSoQI8jV3VLhVJgBGQ/DjPRKyS
+	qKq4Gd9fiBG4+cSlEeULvqLhZsbTg3rWbcKNA
+X-Google-Smtp-Source: AGHT+IHzGqRc5VnbP00Jo3Xc0zRJ6YpmB8/ccl+F//H9hD5P0VDV2TgQ4Y+PEIWCp01pNe7fCDf3Nd+l617M5tt21mY=
+X-Received: by 2002:a05:6102:6c6:b0:46e:c3db:aab6 with SMTP id
+ m6-20020a05610206c600b0046ec3dbaab6mr8365013vsg.24.1708333760384; Mon, 19 Feb
+ 2024 01:09:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240217002638.57373-1-ojeda@kernel.org> <20240217002638.57373-2-ojeda@kernel.org>
+In-Reply-To: <20240217002638.57373-2-ojeda@kernel.org>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Mon, 19 Feb 2024 10:09:09 +0100
+Message-ID: <CAH5fLghAC7yJLzH1K4Jv10QggnG5eHacGTJ8mxgO5neH7YR+EA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rust: upgrade to Rust 1.76.0
+To: Miguel Ojeda <ojeda@kernel.org>
+Cc: Wedson Almeida Filho <wedsonaf@gmail.com>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Masahiro Yamada <masahiroy@kernel.org>, linux-kbuild@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	patches@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When a frame can not be transmitted in XDP_REDIRECT
-(e.g. due to a full queue), it is necessary to free
-it by calling xdp_return_frame_rx_napi.
+On Sat, Feb 17, 2024 at 1:27=E2=80=AFAM Miguel Ojeda <ojeda@kernel.org> wro=
+te:
+>
+> This is the next upgrade to the Rust toolchain, from 1.75.0 to 1.76.0
+> (i.e. the latest) [1].
+>
+> See the upgrade policy [2] and the comments on the first upgrade in
+> commit 3ed03f4da06e ("rust: upgrade to Rust 1.68.2").
+>
+> # Unstable features
+>
+> No unstable features that we use were stabilized in Rust 1.76.0.
+>
+> The only unstable features allowed to be used outside the `kernel` crate
+> are still `new_uninit,offset_of`, though other code to be upstreamed
+> may increase the list.
+>
+> Please see [3] for details.
+>
+> # Required changes
+>
+> `rustc` (and others) now warns when it cannot connect to the Make
+> jobserver, thus mark those invocations as recursive as needed. Please
+> see the previous commit for details.
+>
+> # Other changes
+>
+> Rust 1.76.0 does not emit the `.debug_pub{names,types}` sections anymore
+> for DWARFv4 [4][5]. For instance, in the uncompressed debug info case,
+> this debug information took:
+>
+>     samples/rust/rust_minimal.o   ~64 KiB (~18% of total object size)
+>     rust/kernel.o                 ~92 KiB (~15%)
+>     rust/core.o                  ~114 KiB ( ~5%)
+>
+> In the compressed debug info (zlib) case:
+>
+>     samples/rust/rust_minimal.o   ~11 KiB (~6%)
+>     rust/kernel.o                 ~17 KiB (~5%)
+>     rust/core.o                   ~21 KiB (~1.5%)
+>
+> In addition, the `rustc_codegen_gcc` backend now does not emit the
+> `.eh_frame` section when compiling under `-Cpanic=3Dabort` [6], thus
+> removing the need for the patch in the CI to compile the kernel [7].
+> Moreover, it also now emits the `.comment` section too [6].
+>
+> # `alloc` upgrade and reviewing
 
-However, this is the reponsibility of the caller of
-the ndo_xdp_xmit (see for example bq_xmit_all in
-kernel/bpf/devmap.c) and thus calling it inside
-igc_xdp_xmit (which is the ndo_xdp_xmit of the igc
-driver) as well will lead to memory corruption.
+[...]
 
-In fact, bq_xmit_all expects that it can return all
-frames after the last successfully transmitted one.
-Therefore, break for the first not transmitted frame,
-but do not call xdp_return_frame_rx_napi in igc_xdp_xmit.
-This is equally implemented in other Intel drivers
-such as the igb.
+> Link: https://github.com/rust-lang/rust/blob/stable/RELEASES.md#version-1=
+760-2024-02-08 [1]
+> Link: https://rust-for-linux.com/rust-version-policy [2]
+> Link: https://github.com/Rust-for-Linux/linux/issues/2 [3]
+> Link: https://github.com/rust-lang/compiler-team/issues/688 [4]
+> Link: https://github.com/rust-lang/rust/pull/117962 [5]
+> Link: https://github.com/rust-lang/rust/pull/118068 [6]
+> Link: https://github.com/Rust-for-Linux/ci-rustc_codegen_gcc [7]
+> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
 
-There are two alternatives to this that were rejected:
-1. Return num_frames as all the frames would have been
-   transmitted and release them inside igc_xdp_xmit.
-   While it might work technically, it is not what
-   the return value is meant to repesent (i.e. the
-   number of SUCCESSFULLY transmitted packets).
-2. Rework kernel/bpf/devmap.c and all drivers to
-   support non-consecutively dropped packets.
-   Besides being complex, it likely has a negative
-   performance impact without a significant gain
-   since it is anyway unlikely that the next frame
-   can be transmitted if the previous one was dropped.
-
-The memory corruption can be reproduced with
-the following script which leads to a kernel panic
-after a few seconds.  It basically generates more
-traffic than a i225 NIC can transmit and pushes it
-via XDP_REDIRECT from a virtual interface to the
-physical interface where frames get dropped.
-
-   #!/bin/bash
-   INTERFACE=enp4s0
-   INTERFACE_IDX=`cat /sys/class/net/$INTERFACE/ifindex`
-
-   sudo ip link add dev veth1 type veth peer name veth2
-   sudo ip link set up $INTERFACE
-   sudo ip link set up veth1
-   sudo ip link set up veth2
-
-   cat << EOF > redirect.bpf.c
-
-   SEC("prog")
-   int redirect(struct xdp_md *ctx)
-   {
-       return bpf_redirect($INTERFACE_IDX, 0);
-   }
-
-   char _license[] SEC("license") = "GPL";
-   EOF
-   clang -O2 -g -Wall -target bpf -c redirect.bpf.c -o redirect.bpf.o
-   sudo ip link set veth2 xdp obj redirect.bpf.o
-
-   cat << EOF > pass.bpf.c
-
-   SEC("prog")
-   int pass(struct xdp_md *ctx)
-   {
-       return XDP_PASS;
-   }
-
-   char _license[] SEC("license") = "GPL";
-   EOF
-   clang -O2 -g -Wall -target bpf -c pass.bpf.c -o pass.bpf.o
-   sudo ip link set $INTERFACE xdp obj pass.bpf.o
-
-   cat << EOF > trafgen.cfg
-
-   {
-     /* Ethernet Header */
-     0xe8, 0x6a, 0x64, 0x41, 0xbf, 0x46,
-     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
-     const16(ETH_P_IP),
-
-     /* IPv4 Header */
-     0b01000101, 0,   # IPv4 version, IHL, TOS
-     const16(1028),   # IPv4 total length (UDP length + 20 bytes (IP header))
-     const16(2),      # IPv4 ident
-     0b01000000, 0,   # IPv4 flags, fragmentation off
-     64,              # IPv4 TTL
-     17,              # Protocol UDP
-     csumip(14, 33),  # IPv4 checksum
-
-     /* UDP Header */
-     10,  0, 1, 1,    # IP Src - adapt as needed
-     10,  0, 1, 2,    # IP Dest - adapt as needed
-     const16(6666),   # UDP Src Port
-     const16(6666),   # UDP Dest Port
-     const16(1008),   # UDP length (UDP header 8 bytes + payload length)
-     csumudp(14, 34), # UDP checksum
-
-     /* Payload */
-     fill('W', 1000),
-   }
-   EOF
-
-   sudo trafgen -i trafgen.cfg -b3000MB -o veth1 --cpp
-
-Fixes: 4ff320361092 ("igc: Add support for XDP_REDIRECT action")
-Signed-off-by: Florian Kauer <florian.kauer@linutronix.de>
----
- drivers/net/ethernet/intel/igc/igc_main.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
-index ba8d3fe186ae..81c21a893ede 100644
---- a/drivers/net/ethernet/intel/igc/igc_main.c
-+++ b/drivers/net/ethernet/intel/igc/igc_main.c
-@@ -6487,7 +6487,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 	int cpu = smp_processor_id();
- 	struct netdev_queue *nq;
- 	struct igc_ring *ring;
--	int i, drops;
-+	int i, nxmit;
- 
- 	if (unlikely(!netif_carrier_ok(dev)))
- 		return -ENETDOWN;
-@@ -6503,16 +6503,15 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 	/* Avoid transmit queue timeout since we share it with the slow path */
- 	txq_trans_cond_update(nq);
- 
--	drops = 0;
-+	nxmit = 0;
- 	for (i = 0; i < num_frames; i++) {
- 		int err;
- 		struct xdp_frame *xdpf = frames[i];
- 
- 		err = igc_xdp_init_tx_descriptor(ring, xdpf);
--		if (err) {
--			xdp_return_frame_rx_napi(xdpf);
--			drops++;
--		}
-+		if (err)
-+			break;
-+		nxmit++;
- 	}
- 
- 	if (flags & XDP_XMIT_FLUSH)
-@@ -6520,7 +6519,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
- 
- 	__netif_tx_unlock(nq);
- 
--	return num_frames - drops;
-+	return nxmit;
- }
- 
- static void igc_trigger_rxtxq_interrupt(struct igc_adapter *adapter,
--- 
-2.39.2
-
+Reviewed-by: Alice Ryhl <aliceryhl@google.com>
 
