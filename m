@@ -1,46 +1,47 @@
-Return-Path: <linux-kernel+bounces-70654-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 160BD859ABE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:34:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C67FC859AC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 03:35:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A32351F21563
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:34:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 055471C20E07
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 02:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4271FC8;
-	Mon, 19 Feb 2024 02:34:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF6E2103;
+	Mon, 19 Feb 2024 02:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="N4qwP1kb"
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ick1dCly"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41640EDD
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 02:34:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C211865;
+	Mon, 19 Feb 2024 02:35:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708310079; cv=none; b=bIY0FmBYx8coZx2YzsGAh07p5P6En5VDVfq8utIC6xEAL8Mbtzv2s3bqI8IJwTKtgxtcVtGnbtGqxsG2QGG2p2YKoPo2CG3BZymdhTwcwUmz5jTbaOKz+cAW4YI4ZrSzqsamWjXYmMJGdW9zVmMpfF0tC4BgbgSvIMVheXcCT2s=
+	t=1708310119; cv=none; b=pEi+77dSa1001qyl7mr5zkTwUSasUrZIz8QHTq6951vwt1EuhFSX5zkquR7ahKBzRvjKTnJgbga/UIhHlXfuVEiHivrnvouHxFToycztkuyC4AG0NqZj54nU2kBAeklnUNuXcxGZRO6BbOZO8Z4qkK9VG2AVFyFUTXTbUZiFJxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708310079; c=relaxed/simple;
-	bh=JeyK8A25Fachxr6Owd8b2m5jXCqZjqnuLwNUU7e3iic=;
+	s=arc-20240116; t=1708310119; c=relaxed/simple;
+	bh=7vOsgnul1GxbRF0500oTwAAKvmXKzp4WUWTaSsUsX/s=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PeAefGg3FMpRGmdImPQW0kGuZgMgW4AmxHRQreOABzfxDQ60g0Yh1ZYNuoGSMvH/LNNBZ+FvJI13M7CccgERHQu0xfS01K+khOl9NlYr0J6atebvrJuD34frVdCbhVm9oJin29ZDRKkqvpw0i6AJ1vTqkzYWQThUDHgrbqaOtLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=N4qwP1kb; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708310068; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=HJJiNC7u8LJvikP1pwnY9KUsvCMk8b/lQNjyfCPmCtU=;
-	b=N4qwP1kb5leMSFxZnRZ+RvxDa6b7M+F8CWTGkOOGVXS+ppFb+OuAACY/NPt/9ldxijncnyzqv7IeRbx4DwSwOtppIxl+QXapXz9uXPpI6zs50rSEjN8PvqulYjr4ZcxLjmr6f2YObjJT3lLIJRG17JCIDQf1DoZQ8TGDz53F0Js=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045168;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W0moMY8_1708310067;
-Received: from 30.97.56.48(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W0moMY8_1708310067)
-          by smtp.aliyun-inc.com;
-          Mon, 19 Feb 2024 10:34:28 +0800
-Message-ID: <92e272d5-34e4-47f0-88ee-95b8a25ffd3d@linux.alibaba.com>
-Date: Mon, 19 Feb 2024 10:34:26 +0800
+	 In-Reply-To:Content-Type; b=NM1M06IE/gqOoIDtgkaTo9HmAymsDxgVrEE4AVEPFNZPPrHFCZt3vKWR3WbrxTpFXu+tjHcvexGk4v2Vkf1KMYRy1RwA18OQWwCIxCh1ZXuyzy/7ofIx6iiLC9ZzPOTp/2wh9TFFXFg9X5pZpm11GtoxrN70EXAkEPO22YPDp3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ick1dCly; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2962C433F1;
+	Mon, 19 Feb 2024 02:35:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708310118;
+	bh=7vOsgnul1GxbRF0500oTwAAKvmXKzp4WUWTaSsUsX/s=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ick1dClyqIco0cQcwmp2zXklGRJkUPdQ97kzOUHpc922pxfPbZkj5TQ9x8Sbetr1L
+	 dDAPm/j05sE89tZm59u5YAhad90hTb1aUnXwbQbzDz4+VhhIPwSFmWXhFVsSVc+0ul
+	 HPVAv1/kicGlE8bd1ydxSYHQn3sifhXsVHrn4UkJQj0KTBLnc3s8LKtl9hASIa9kv0
+	 T6mMtz34xwwp4gnQCP47pW5sieNrMbzMiPzJINsJl2aXgl0uxCG1UE8O3ggHeCP0RH
+	 3GEG4NG9/22PQ/gyUMxhGJOZRqsw72Jp2s2KaLA441uDoMhlq0g1wFlipahErJ+/EI
+	 OXo+v7/LByz6Q==
+Message-ID: <6d14ea70-ac1c-46f2-af1d-ba34ea0165aa@kernel.org>
+Date: Mon, 19 Feb 2024 10:35:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,82 +49,83 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] mm: compaction: update the cc->nr_migratepages when
- allocating or freeing the freepages
-To: Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org,
- Zi Yan <ziy@nvidia.com>
-Cc: mgorman@techsingularity.net, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <afcd9377351c259df7a25a388a4a0d5862b986f4.1705928395.git.baolin.wang@linux.alibaba.com>
- <0773058df022fa701b78f9a6dfe3c501a1a77351.1705928395.git.baolin.wang@linux.alibaba.com>
- <7f34e789-e01f-4929-a618-b73c04ebf4d2@suse.cz>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <7f34e789-e01f-4929-a618-b73c04ebf4d2@suse.cz>
+Subject: Re: [regression 6.1.y] f2fs: invalid zstd compress level: 6
+To: Salvatore Bonaccorso <carnil@debian.org>, Dhya <dhya@picorealm.net>,
+ 1063422@bugs.debian.org, Jaegeuk Kim <jaegeuk@kernel.org>
+Cc: linux-f2fs-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, regressions@lists.linux.dev
+References: <170736382774.1975.1861975122613668970.reportbug@tsuga.picorealm.net>
+ <ZcU3VCrt9VOpuFUq@eldamar.lan>
+Content-Language: en-US
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <ZcU3VCrt9VOpuFUq@eldamar.lan>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 2024/2/12 18:32, Vlastimil Babka wrote:
-> On 1/22/24 14:01, Baolin Wang wrote:
->> Currently we will use 'cc->nr_freepages >= cc->nr_migratepages' comparison
->> to ensure that enough freepages are isolated in isolate_freepages(), however
->> it just decreases the cc->nr_freepages without updating cc->nr_migratepages
->> in compaction_alloc(), which will waste more CPU cycles and cause too many
->> freepages to be isolated.
+On 2024/2/9 4:19, Salvatore Bonaccorso wrote:
+> Hi Jaegeuk Kim, Chao Yu,
 > 
-> Hm yeah I guess this can happen with fast_isolate_freepages() if it returns
-> with something but not all the freepages that are expected to be needed, and
-> then we get to isolate_freepages() again.
-
-Yes.
-
+> In Debian the following regression was reported after a Dhya updated
+> to 6.1.76:
 > 
->> So we should also update the cc->nr_migratepages when allocating or freeing
->> the freepages to avoid isolating excess freepages. And I can see fewer free
->> pages are scanned and isolated when running thpcompact on my Arm64 server:
->>                                         k6.7         k6.7_patched
->> Ops Compaction pages isolated      120692036.00   118160797.00
->> Ops Compaction migrate scanned     131210329.00   154093268.00
->> Ops Compaction free scanned       1090587971.00  1080632536.00
->> Ops Compact scan efficiency               12.03          14.26
+> On Wed, Feb 07, 2024 at 10:43:47PM -0500, Dhya wrote:
+>> Package: src:linux
+>> Version: 6.1.76-1
+>> Severity: critical
+>> Justification: breaks the whole system
 >>
->> Moreover, I did not see an obvious latency improvements, this is likely because
->> isolating freepages is not the bottleneck in the thpcompact test case.
->>                                k6.7                  k6.7_patched
->> Amean     fault-both-1      1089.76 (   0.00%)     1080.16 *   0.88%*
->> Amean     fault-both-3      1616.48 (   0.00%)     1636.65 *  -1.25%*
->> Amean     fault-both-5      2266.66 (   0.00%)     2219.20 *   2.09%*
->> Amean     fault-both-7      2909.84 (   0.00%)     2801.90 *   3.71%*
->> Amean     fault-both-12     4861.26 (   0.00%)     4733.25 *   2.63%*
->> Amean     fault-both-18     7351.11 (   0.00%)     6950.51 *   5.45%*
->> Amean     fault-both-24     9059.30 (   0.00%)     9159.99 *  -1.11%*
->> Amean     fault-both-30    10685.68 (   0.00%)    11399.02 *  -6.68%*
+>> Dear Maintainer,
 >>
->> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> ---
->>   mm/compaction.c | 2 ++
->>   1 file changed, 2 insertions(+)
+>> After upgrade to linux-image-6.1.0-18-amd64 6.1.76-1 F2FS filesystem
+>> fails to mount rw.  Message in the boot journal:
 >>
->> diff --git a/mm/compaction.c b/mm/compaction.c
->> index 066b72b3471a..6c84e3a5b32b 100644
->> --- a/mm/compaction.c
->> +++ b/mm/compaction.c
->> @@ -1779,6 +1779,7 @@ static struct folio *compaction_alloc(struct folio *src, unsigned long data)
->>   	dst = list_entry(cc->freepages.next, struct folio, lru);
->>   	list_del(&dst->lru);
->>   	cc->nr_freepages--;
->> +	cc->nr_migratepages--;
+>>    kernel: F2FS-fs (nvme0n1p6): invalid zstd compress level: 6
+>>
+>> There was recently an f2fs patch to the 6.1 kernel tree which might be
+>> related: https://www.spinics.net/lists/stable-commits/msg329957.html
+>>
+>> Was able to recover the system by doing:
+>>
+>> sudo mount -o remount,rw,relatime,lazytime,background_gc=on,discard,no_heap,user_xattr,inline_xattr,acl,inline_data,inline_dentry,extent_cache,mode=adaptive,active_logs=6,alloc_mode=default,checkpoint_merge,fsync_mode=posix,compress_algorithm=lz4,compress_log_size=2,compress_mode=fs,atgc,discard_unit=block,memory=normal /dev/nvme0n1p6 /
+>>
+>> under the running bad 6.1.0-18-amd64 kernel, then editing
+>> /etc/default/grub:
+>>
+>>    GRUB_DEFAULT="Advanced options for Debian GNU/Linux>Debian GNU/Linux, with Linux 6.1.0-17-amd64"
+>>
+>> and running 'update-grub' and rebooting to boot the 6.1.0-17-amd64
+>> kernel.
 > 
-> This is breaking the tracepoint TRACE_EVENT(mm_compaction_migratepages)
-> which does
+> The issue is easily reproducible by:
 > 
-> __entry->nr_failed = cc->nr_migratepages - nr_succeeded;
+> # dd if=/dev/zero of=test.img count=100 bs=1M
+> # mkfs.f2fs -f -O compression,extra_attr ./test.img
+> # mount -t f2fs -o compress_algorithm=zstd:6,compress_chksum,atgc,gc_merge,lazytime ./test.img /mnt
 > 
-> and is called after migrate_pages() finishes, so now this will underflow.
+> resulting in
 > 
-> Probably need to get a snapshot of cc->nr_migratepages before calling
-> migrate_pages() and then feed that to the tracepoint instead of cc.
+> [   60.789982] F2FS-fs (loop0): invalid zstd compress level: 6
 
-Ah, good catch. Will fix in next version. Thanks.
+Hi Salvatore,
+
+Can you please try below fixes:
+
+[PATCH 6.1] f2fs: add helper to check compression level
+https://lore.kernel.org/linux-f2fs-devel/20240212160530.1017205-1-chao@kernel.org
+
+[PATCH] f2fs: compress: fix to check zstd compress level correctly in mount option
+https://lore.kernel.org/linux-f2fs-devel/20240212160818.1020903-1-chao@kernel.org
+
+Thanks,
+
+> 
+> A bugzilla report has been submitted in
+> https://bugzilla.kernel.org/show_bug.cgi?id=218471
+> 
+> #regzbot introduced: v6.1.69..v6.1.76
+> #regzbot link: https://bugs.debian.org/1063422
+> #regzbot link: https://bugzilla.kernel.org/show_bug.cgi?id=218471
+> 
+> Regards,
+> Salvatore
 
