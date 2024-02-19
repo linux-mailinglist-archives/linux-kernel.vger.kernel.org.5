@@ -1,196 +1,183 @@
-Return-Path: <linux-kernel+bounces-71994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D41D85AD99
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:19:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8233385AD9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:20:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A1BC81C21A71
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:19:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C679C282C0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:20:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDAA353E30;
-	Mon, 19 Feb 2024 21:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA1E53E16;
+	Mon, 19 Feb 2024 21:20:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="SVmlgPhx"
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2080.outbound.protection.outlook.com [40.92.52.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ei9Rce7K"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9D1537F6;
-	Mon, 19 Feb 2024 21:19:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.52.80
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708377567; cv=fail; b=hQaerfmH5EYrN5gJjZjkOkMQx5AScwvpVlFf2k2Nxj2OTKmDhQwyolEVJiUq2U5zAEJIUgjfqlHQlwUBqXrMHnMiOmIsgL87ViZuyvmd9mxXiedmjjAjf748Y9LF5BIuTsVNDVtt3pc77L1fwliyKwgpQpHLxEqjX4CBbMbtpK8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708377567; c=relaxed/simple;
-	bh=kco784bwmc5IeJopfoeBo5L63hFZqY6r1OCM8F7x8nI=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=k2zfTe/KeKNU57eVov4HOsooN5oiLdi/0JEWuV3SxBp9nI4FcSyfaPzuWuDgGL/QRQO/jgdJ6rnYiHWX+jM3IUh6JyBkqawmTyyXdu3r+qc4pkrJ0V+73tXqGo10tG4yU7Oo9+9PcStfw56rb+5dddzmeCLHIr2j7QMP1B6ikoc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=SVmlgPhx; arc=fail smtp.client-ip=40.92.52.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xq8DDHYg4aZVVxKtISkbC9gpOs4BPXzWRkNNd+gKcTfske5/HUBQnBmemDJcofi1hoAaN8fAExjfcdGmSR3dKutheh2qPkxSpe4FAgyNQcLAW0/SZAPzzBcDYLHBSOgfKQLAwduA4UKuHr5mkYge/YK1BS3uwzCU+fnpzXC9KgByGcPmWCwg7jlUqhyWGuirStA9NvQKYd5v//lvyasA/TNmTt0Yinr4M02ZUZnBDxP8yeyRY/gqH84qOsXuLw/7FKCNw9UwMu+4OeO31XRYoTcOQRup6cTfQysBde4hi8V+C1X+97dlWTengrdCb3sh+MGRC4/Lp3ou8bBIwvBAjg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0sT8j9X9QzdeXjh3yfdzJjkS1zIrRfvqxO4fRirQjDc=;
- b=bgrP0i5ckb5romT+dsBEumjWMVSIxnz3mM+DbUojqBvvzGeIKiDW005rxKkIzFETGwWzsWjKuqX5DULkB2eyb1wv0IiTKpqjOBwpNAWJf4MBcLvgrauij1Y44u0xMZLhMdMezcvYQaR6f0Ejpb91dUYSs9GWkxTzVQ/Lbq8ydrcm2DcHfh9wiIYkELZ6pSm+DBAHW0AbHrvv+MoiCBuRc9wh4amCXD1o49XUUJDx24VmoJd78zvBfs/Rdjpvbe2O53tX6k/ZB6BqWYtzr4671dODzipUQx6Wmu6uWiFTma1QmS0+Z9FcNiMpn88OjbZsX+aaOSIRl0AkmldaHUgT0Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0sT8j9X9QzdeXjh3yfdzJjkS1zIrRfvqxO4fRirQjDc=;
- b=SVmlgPhxnlC9VvmNfVzBjOsXE7j0Xz8BgjH3VQ9w9+zLfvqbG+e0PKa+FbB+Y7/uYQRS1IQ5n6OIj9J1uVLaPsL4l9MxDksxD+pdnZmao6tDBT9Kwx4jA/A6CJt3cPkLon8zSM2XhQb7QoXzAr5So/yRQEhVEkGdwL1GfTcGN2d0xBFXBQ05UZM8Og7edNN0PVYKhTwZiBMaNqMR+mRkfgZXgMBH00fhuoo7bzH/tw/EtDx3P9naysc6XTDuuZJ27KtbJb5B6q9tus32LGvDaZAzCHVH2RJbYhotiaQ7Vb30pBrCpOXmAZe3TB613irEeGiWwlOL66qKWRVtmKgHLA==
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com (2603:1096:101:1ed::14)
- by JH0PR06MB6478.apcprd06.prod.outlook.com (2603:1096:990:38::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Mon, 19 Feb
- 2024 21:19:18 +0000
-Received: from SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad]) by SEZPR06MB6959.apcprd06.prod.outlook.com
- ([fe80::53da:a8a:83cb:b9ad%4]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
- 21:19:18 +0000
-Message-ID:
- <SEZPR06MB6959E5BDA57AF61BFAB19FC096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
-Date: Tue, 20 Feb 2024 05:19:12 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 3/6] net: hisilicon: add support for
- hisi_femac core on Hi3798MV200
-Content-Language: en-US
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
- Salil Mehta <salil.mehta@huawei.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiner Kallweit <hkallweit1@gmail.com>,
- Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240220-net-v3-0-b68e5b75e765@outlook.com>
- <20240220-net-v3-3-b68e5b75e765@outlook.com>
- <29fc21f0-0e46-4d0f-8d4b-c4dbd1689c55@lunn.ch>
- <SEZPR06MB695901E7D4BEABE1B6F319D096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
- <5572f4dd-dcf2-42ec-99c8-51bf4d1f28ba@lunn.ch>
-From: Yang Xiwen <forbidden405@outlook.com>
-In-Reply-To: <5572f4dd-dcf2-42ec-99c8-51bf4d1f28ba@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN:
- [CXaB7BYLAZOaw1zf/KE9djStwrsROBC8JBvU6JhTwlOrNu9h94YDbReGLIZhspA1W1mB1EtFya4=]
-X-ClientProxiedBy: TYXPR01CA0061.jpnprd01.prod.outlook.com
- (2603:1096:403:a::31) To SEZPR06MB6959.apcprd06.prod.outlook.com
- (2603:1096:101:1ed::14)
-X-Microsoft-Original-Message-ID:
- <0c2b947d-4683-4435-8000-09f26d1b1354@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364CA53E13
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 21:20:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708377603; cv=none; b=DBIlNbKgb3vBzR7O/zrhXJ9YFLgGgzMNYt3cC28qOqCZwYNGIvVGX0rfqodn/5McirVqZaa0LTPVTioKpHuNQ6Jl+Hw73FafxO2FT/fHZMd/Z3sujEj3rixafuoR1a7PMcMUyD2lgkNWd8kPqm1DsEeXb68d1g0xCQKYvgk6oX4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708377603; c=relaxed/simple;
+	bh=DgQ2fXzVj6rzCYfQy6bc1ZxdYWeW5jg3gg+WwPIZre4=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eS6qgQy/TmL3vXfCkmdteN95+5PZTQMjeurcmUVusT1oKwFlKF0BJscd2Itm1djglAgGHawpbGs0CxmpJVQbJg5t8reD8iv0AjHNKaR6vM2XgDnCQcFM5Gi0D3WxNiGH3lgoJXBsLsQFC4rFKWgqY1FFTe9WME3x6esJBbcv6Bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ei9Rce7K; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dc09556599so6708995ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:20:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708377601; x=1708982401; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wxEqpQi/TVfPO8koWPr1g27ez4NagydW/9mU4Hd8GmM=;
+        b=Ei9Rce7K8CXViY5/2RxRPfa0Cn5NnyiARg8cS5geTY6ul+9wSCu0FUbs/pff7DM/ZE
+         vafGqNZ5+jjrFAdI0V6GU2tnK1QzY7wa7uWMt2YkHlJaGXSKxxdHkXRd13sMUV+2dJdy
+         rMmgeqRqkgF7MdryC6DWnoDw4kB50FfB8HWCzK/uIZq3M66GWNzWoUU7WgcIddS/TFQA
+         vDPT7ThC3MvaBqtcbB6nWcFxE9aEgQbl4IHWjOGQLOBJWYUek4jYRZ4orhcTlvYF5H9Q
+         GZmztfTPext9oc7M8/pkaAspRNnz6jIegATjOL4lqBn9Zpm86gd15sUUJjFFOk3Nf17o
+         f2eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708377601; x=1708982401;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wxEqpQi/TVfPO8koWPr1g27ez4NagydW/9mU4Hd8GmM=;
+        b=SPQ0JCvT2tXnGC1w8dWPqsuhFxhM/M3nO1QgOBCuPegkfh0CqzLeg+/p30h06Lwdgg
+         1CjAHiR+eX2LQbRoJbAxe2awRXRsnAgxEMOZIh9+FfmWI2QIhXdkQBDDaee9+YFLinMu
+         nhU8a1T5mZBzUITPT7y+uE1VIMkWiyAqHgMHFqs7rXD/UPw7LD+Cu+U/6TBS8K2as1Vz
+         6KMJOqUkdLR92AZvZiokgA6Qq3LYcciaGRYMnFwBaU2DccL2CnojclBasZCYI5QNBQ+K
+         RetW6m58OLVH05z3fJKKqDzYJmnDnO6/sNoyjlJ9q4zqz/BpHamXOrRijVSuQ/brYGuL
+         lKiA==
+X-Gm-Message-State: AOJu0YyveUJV/THdxgwGYEJK2y+cy4kQX5+lb2ycvIUoPSen+CUMfU0T
+	JH7dOQi57W0LC7vWzdfVQER5ZRDCWovoAtktrtP0FwgXbYnIJc9FpiF0NUoXTi8=
+X-Google-Smtp-Source: AGHT+IG0ivqZcyUbHYdBD0UEK+njjVj6pKBuqsBlmG/eq0/vJGhEObBt2x788f5FBxVjAaZoCKNIuA==
+X-Received: by 2002:a17:902:ec90:b0:1db:c564:5938 with SMTP id x16-20020a170902ec9000b001dbc5645938mr10379108plg.60.1708377601099;
+        Mon, 19 Feb 2024 13:20:01 -0800 (PST)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:dd49:f5c6:f613:4a7e])
+        by smtp.gmail.com with ESMTPSA id p3-20020a170902c70300b001d92a2b258esm4834386plp.118.2024.02.19.13.19.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 13:20:00 -0800 (PST)
+From: Barry Song <21cnbao@gmail.com>
+To: akpm@linux-foundation.org,
+	hannes@cmpxchg.org,
+	linux-mm@kvack.org,
+	nphamcs@gmail.com,
+	senozhatsky@chromium.org,
+	zhouchengming@bytedance.com,
+	yosryahmed@google.com
+Cc: linux-kernel@vger.kernel.org,
+	v-songbaohua@oppo.com
+Subject: [PATCH v3] mm: zswap: increase reject_compress_poor but not reject_compress_fail if compression returns ENOSPC
+Date: Tue, 20 Feb 2024 10:19:35 +1300
+Message-Id: <20240219211935.72394-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SEZPR06MB6959:EE_|JH0PR06MB6478:EE_
-X-MS-Office365-Filtering-Correlation-Id: 503d6f0d-1500-4bea-aa7b-08dc31906e48
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	lsb103ixgmtnI53jpYq3JasPdpKr39qzUOXXHPuxwvuP4Gaho+pBblWMyuAK7cIyQqCtQgMOvmLRsx8/e7QYnTm+hivDHNLqLFy4kSg2tujfH4ydDLaUORKYf0/KK9CuXHDXe8977FCiYj6QcxFqOeMFfJLuko15FkMGDJO/HVGXkSrcqu3My8I/p8Qp9VEADlhTcJVQ8+aRDgAmeI8h4vfCzTZRKZz6CeBxIrc4uVO1eFH8dRjXV7nSgSJMZzvaAa/NxS+vL0A/rRzkBUba5jZseC5jJYsjhkIT7y2IhnaHA/wKOrZKi/RLCOWoj1wjBcEX+uH42pHkuQDA2F0+Q3SGUAiX36WKOVw55q/RwMWxrtOukVIfMpek2bOIzdMLRad2hwWUaDLw9Ci5yXYilWL10f66R0WX8h/HmvCsIGIUYiZF3+EWcEvLATbOtnrU43ywtIbHTmqcWHArn3TzIyJHbg6bOkGLb6j+cYU8QCkl1VyWS+OEC4CPZp9UFn4Gq/C6JGO6C2V8MmDDT032g2sK3p9jo2MAvS9q/drbcVKto0gUFoz8b/c1P388llD/
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?cGxjZS9zVzd2SVgrNDRIaTI3YmhmRWFUeXRWU0Y4WmYwTUVGYmhKVUFiTi9p?=
- =?utf-8?B?OG8zTTB4WW9mNmhrVk9ZSStZUXc1YjA2UjBPanp0cm9kVldGY0szaWo2Zkh4?=
- =?utf-8?B?TWlmaU5YK1Z1OHY5RVdjTnlVbXM5WkJqQjBXeWNjcHZNLzE3UWhOdGtDeWhi?=
- =?utf-8?B?WTZzTjM5QUVVS0JBampsUndVWjd1K2VEUzZPclVqVndNTmcvYjJDTnFTenRs?=
- =?utf-8?B?a1ExZTdacnp0enFnRGN2WWt2YXBTd0E2Q2NOUnBxS1lZNUhLRWZ5Z2RPMGFH?=
- =?utf-8?B?Yi9nM1RhVDZTQnpuWG1CL1cvbFhaUzVYNzhJakhiaWQwcGcwd0xhZ2dSWHp5?=
- =?utf-8?B?b3h6QVVmeThyejBRUFdmWkVBNlVGN0Fyd1o1THJNMmJxYk4xTFMxRmVsa3Bs?=
- =?utf-8?B?TEVtWFRjVTg5Qk16YVFWV0ZiK3lncGQzckJLTkYzSmI2aXFSSk9haTM1ZmJ1?=
- =?utf-8?B?aCtjTmVQYlpBRFJxYmNKdFVqTjNsNDcvM2VCTVRIdXR0UTlSMjQrUDYyckRp?=
- =?utf-8?B?Q29qaklMVE4xeHJBZjJiWGI3dzBNcG9sUHlVSCtMM002eUN6OEFSQnNhL3BK?=
- =?utf-8?B?TkRDbFNtSzl3QWl5S2R0U0xieDdRcTJBRlhpTzFEV1Z5M29GNHRkZWlPejY0?=
- =?utf-8?B?MEkvT0U4TjRhbUxMK1phVFp2NGJFSFNZYVRNSFRiZDdUaHJ2NGhZY1BwMkhu?=
- =?utf-8?B?Z0wyWTlYQmhXYjdnRzAyd3ZSVDMvRXorU3lYQXZMNXlOeXFoMm5NWnAvOElG?=
- =?utf-8?B?WUUrWkQ4ckJGdTgwdjNSeVR6ZmNUWFJDQWFWK3JoeU1MaW8xaWpGdEJJcWhy?=
- =?utf-8?B?dmdEblU3Z0hhNW5zMEhMekliazcyMEZ1NW83aWE0M2FKcUthTnJ1VHVTSjVM?=
- =?utf-8?B?RHY3elJOalVXQ0ZZbFZPaTlScWRYckt5QVpPTGRLWGVLdFZSSjlXNDhrOGlN?=
- =?utf-8?B?RVFjUG9KLzVaczVxNmpEd2NSaEtOSno0b2hZaTBtQzVtTHpYeUJqdWx5bytK?=
- =?utf-8?B?SVRtbWdCcEM5L29Bby8yZnpEdU5EWm9qSXRGbEdOWCtMS1F0R2FEVzA4VlRY?=
- =?utf-8?B?RnZEdWtmMTBqcTJrVkpKOUNORUtUVXIyVE9FRm9GMVlJVTlTK2Z1RjRlTXFQ?=
- =?utf-8?B?djJJYzJ4NkFMSVEyRVQ1TzFOcGtZVVE3RDNIQnUzdWgwQzZCQTQ1WFBFVGU0?=
- =?utf-8?B?d3dHWThkektJbGFkWWJKdytXTnVwcUk5ekl6K0NTeW1LcXV4RWRqYjJqbWR1?=
- =?utf-8?B?TFpKd2xJb0RvUkV0QUpLMTdXU2hnUTkvUFFnZ2ZmTENQYlYvc1VQYzVNNE0r?=
- =?utf-8?B?U3JnalZnaE1LeGQ5eFVrVTdVT1ZTL2RxZEphdGJ3N1dqN0tCdFg3b2EwS2lq?=
- =?utf-8?B?QURYSjg2MnFTbjdpbERBY1VzS0pQVmV0YmdiWkFDQ0RPa29STW9TTVUycDhR?=
- =?utf-8?B?U1psU2dvaDFwN3pWYVdlT0dDQzArc2d2enRtSnEwWUI0dU9EMkJEWEt3V2Zu?=
- =?utf-8?B?ZklPVlZhdzVUWHFKb3NrV1VsMXRTQ1BJVHlpQW0xclhOQVZCcHRwZmhhT2U0?=
- =?utf-8?B?UDc2UzBMM0NlK21neXlmOWJaSDdvUUVOUlFad2NCL00xZyt4ZHhieUJLNWNx?=
- =?utf-8?B?RWNZT3lqSnRIdzU1MUFhQnpuYnIrcUQrTkhZbDc3V1kvYnhmR3pLaE1sZktj?=
- =?utf-8?B?YnpDNC9LQkR0QUpheU8ycTN6R2Z1Z3pwUy9JbFNBTXI1dDgzVlJzdjh4Y012?=
- =?utf-8?Q?PsgUZbtKt51iKkEvrC4e6KI+0TRLaxun3lG+4rC?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 503d6f0d-1500-4bea-aa7b-08dc31906e48
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR06MB6959.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 21:19:17.6391
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: JH0PR06MB6478
+Content-Transfer-Encoding: 8bit
 
-On 2/20/2024 5:05 AM, Andrew Lunn wrote:
-> On Tue, Feb 20, 2024 at 04:14:36AM +0800, Yang Xiwen wrote:
->> On 2/20/2024 4:03 AM, Andrew Lunn wrote:
->>>> Note it's unable to put the MDIO bus node outside of MAC controller
->>>> (i.e. at the same level in the parent bus node). Because we need to
->>>> control all clocks and resets in FEMAC driver due to the phy reset
->>>> procedure. So the clocks can't be assigned to MDIO bus device, which is
->>>> an essential resource for the MDIO bus to work.
->>> What PHY driver is being used? If there a specific PHY driver for this
->>> hardware? Does it implement soft reset?
->> I'm using generic PHY driver.
->>
->> It implements IEEE C22 standard. So there is a soft reset in BMCR register.
->>
->>> I'm wondering if you can skip hardware reset of the PHY and only do a
->>> software reset.
->> There must be someone to deassert the hardware reset control signal for the
->> PHY. We can't rely on the boot loader to do that. And here even we choose to
->> skip the hardware reset procedure, the sequence of deasserting the reset
->> signals is also very important. (i.e. first PHY, then MAC and MACIF).
->> Opposite to the normal sequence. (we normally first register MAC driver, and
->> then PHY).
-> There are a few MACs which require the PHY to provide a clock to the
-> MAC before they can use their DMA engine. The PHY provides typically a
-> 25MHz clock, which is used to driver the DMA. So long as you don't
-> touch the DMA, you can access other parts of the MAC before the PHY is
-> generating the clock.
->
-> So it might be possible to take the MAC and MACIF out of reset, then
-> create the MDIO bus, probe the PHY, take it out of reset so its
-> generating the clock, and then complete the rest of the MAC setup.
+From: Barry Song <v-songbaohua@oppo.com>
 
-It's not MAC which behaves wrongly, it's the MDIO bus. If we don't 
-follow the reset procedure properly. The MDIO bus fails to respond to 
-any write/read commands. But i believe MAC controller and PHY are still 
-working. I recalled that it can still transfer network packets, though 
-it fails to read PHY registers from MDIO bus so only 10Mbps is available 
-(And the phy id read out is always 0x0, normally it's 0x20669853).
+We used to rely on the returned -ENOSPC of zpool_malloc() to increase
+reject_compress_poor. But the code wouldn't get to there after commit
+744e1885922a ("crypto: scomp - fix req->dst buffer overflow") as the
+new code will goto out immediately after the special compression case
+happens. So there might be no longer a chance to execute zpool_malloc
+now. We are incorrectly increasing zswap_reject_compress_fail instead.
+Thus, we need to fix the counters handling right after compressions
+return ENOSPC. This patch also centralizes the counters handling for
+all of compress_poor, compress_fail and alloc_fail.
 
-Maybe during initialization, PHY sent some garbage to MDIO bus and 
-killed it.
+Fixes: 744e1885922a ("crypto: scomp - fix req->dst buffer overflow")
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>
+Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Acked-by: Yosry Ahmed <yosryahmed@google.com>
+Reviewed-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ -v3:
+  * rebase on top of mm-unstable according to Yosry and Andrew
+  * collect review and ack tags of Nhat, Yosry and Chengming, thanks!
 
->
-> 	Andrew
->
+ mm/zswap.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 62fe307521c9..51de79aa8659 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1021,12 +1021,12 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+ {
+ 	struct crypto_acomp_ctx *acomp_ctx;
+ 	struct scatterlist input, output;
++	int comp_ret = 0, alloc_ret = 0;
+ 	unsigned int dlen = PAGE_SIZE;
+ 	unsigned long handle;
+ 	struct zpool *zpool;
+ 	char *buf;
+ 	gfp_t gfp;
+-	int ret;
+ 	u8 *dst;
+ 
+ 	acomp_ctx = raw_cpu_ptr(entry->pool->acomp_ctx);
+@@ -1057,26 +1057,18 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+ 	 * but in different threads running on different cpu, we have different
+ 	 * acomp instance, so multiple threads can do (de)compression in parallel.
+ 	 */
+-	ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
++	comp_ret = crypto_wait_req(crypto_acomp_compress(acomp_ctx->req), &acomp_ctx->wait);
+ 	dlen = acomp_ctx->req->dlen;
+-	if (ret) {
+-		zswap_reject_compress_fail++;
++	if (comp_ret)
+ 		goto unlock;
+-	}
+ 
+ 	zpool = zswap_find_zpool(entry);
+ 	gfp = __GFP_NORETRY | __GFP_NOWARN | __GFP_KSWAPD_RECLAIM;
+ 	if (zpool_malloc_support_movable(zpool))
+ 		gfp |= __GFP_HIGHMEM | __GFP_MOVABLE;
+-	ret = zpool_malloc(zpool, dlen, gfp, &handle);
+-	if (ret == -ENOSPC) {
+-		zswap_reject_compress_poor++;
+-		goto unlock;
+-	}
+-	if (ret) {
+-		zswap_reject_alloc_fail++;
++	alloc_ret = zpool_malloc(zpool, dlen, gfp, &handle);
++	if (alloc_ret)
+ 		goto unlock;
+-	}
+ 
+ 	buf = zpool_map_handle(zpool, handle, ZPOOL_MM_WO);
+ 	memcpy(buf, dst, dlen);
+@@ -1086,8 +1078,15 @@ static bool zswap_compress(struct folio *folio, struct zswap_entry *entry)
+ 	entry->length = dlen;
+ 
+ unlock:
++	if (comp_ret == -ENOSPC || alloc_ret == -ENOSPC)
++		zswap_reject_compress_poor++;
++	else if (comp_ret)
++		zswap_reject_compress_fail++;
++	else if (alloc_ret)
++		zswap_reject_alloc_fail++;
++
+ 	mutex_unlock(&acomp_ctx->mutex);
+-	return ret == 0;
++	return comp_ret == 0 && alloc_ret == 0;
+ }
+ 
+ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
 -- 
-Regards,
-Yang Xiwen
+2.34.1
 
 
