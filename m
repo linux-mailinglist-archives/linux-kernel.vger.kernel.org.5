@@ -1,99 +1,140 @@
-Return-Path: <linux-kernel+bounces-71402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71403-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2D6085A4A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:29:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDEEA85A4A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:29:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 212931C21345
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:29:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CAF11C23670
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:29:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613C936138;
-	Mon, 19 Feb 2024 13:29:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D457364A9;
+	Mon, 19 Feb 2024 13:29:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WqnPE57M"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kQoj3e8z"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429C4282E2;
-	Mon, 19 Feb 2024 13:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA39536132;
+	Mon, 19 Feb 2024 13:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708349348; cv=none; b=NSvoBhjKbE8luSqK5U6ITj+XMgI//M0TeT1T4eXlWAxIIY9Cv7cPBHmrVdn5Fb5o8EZONt+vsr7pbquFNGVDtnqK+EKD8mm3OmT06sYLIclRZMXBL8v+/TfjbdLrTGwrWgmlDookQMEJi6C6QSJO/I/4uvnQGvS8E0Aw71uATXU=
+	t=1708349385; cv=none; b=hD7VOzMgixgZ5p/GfMQxTU1kejpitECOTDfO8jvbyGjyd8NSe5bTazbzwrhnfs0cxgZzW1H3yLQ89CT2FENrrWIaA6WqU7Rnd7dyWRFxFcCwfG/fP8lxZcK1Q9HC909k6/vwGOE8w13TgpdwyS1fm4bed5maCFuWdWV2wDyw9L0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708349348; c=relaxed/simple;
-	bh=wlw1F94G/Aq1BD/qlvGvrNwe+KTsxSdkouhURA34fik=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XFGfkwCznrFQ1wR+PYQA7CVEq5kwmjdy8RK61i/9nUXQ+aFsR2m4jPitU3Pbu2DlGBZ71xNSQ+pY118VZN4jCBWdj9oNmchLNryHL8kZueTfnX4UreRvLbMe59V/2kK4w/iH5+pEzRRAPLBN8x/e5SzVL89oPp5+0ztNDjbuhUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WqnPE57M; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708349347; x=1739885347;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wlw1F94G/Aq1BD/qlvGvrNwe+KTsxSdkouhURA34fik=;
-  b=WqnPE57MmkliMP2zmtA0xk1yHzChpnAGaQAsSkFIc5TSx+JbGFZg83AF
-   UWU5OEocVx223nom72zVVs2UuLT3RYsgCyDgl5Fq381B/Xkh7j+huaVoF
-   uPv1eRn4HfHTFzXpyQekegy575w8nfw7Gu6944megCNgU7Ysf8VJfjE3o
-   DJyo8lmSwArn40IO4bKbcMl1xH8iTsnrHwIlhCInO4IO/7oEvoTJ8GNtr
-   V8XeF+7dc+fzVnqWX7QHVFdduGx6fE3W3bWeKoxcl2+pECvAhtLqPRNc5
-   P3zC2NEpFr/gjTUiwgTMCupOWSYVOqAVeDXFkVB+N+jL3zYnOW4wIX6ba
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2873920"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="2873920"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 05:29:06 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="912877099"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="912877099"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 05:29:05 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rc3he-00000005pan-3kCr;
-	Mon, 19 Feb 2024 15:29:02 +0200
-Date: Mon, 19 Feb 2024 15:29:02 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	Jiri Slaby <jirislaby@kernel.org>
-Subject: Re: [PATCH v1 4/5] serial: 8250_exar: Use 8250 PCI library to map
- and assign resources
-Message-ID: <ZdNXnoQ4vEr4irIm@smile.fi.intel.com>
-References: <20240214171044.3551032-1-andriy.shevchenko@linux.intel.com>
- <20240214171044.3551032-5-andriy.shevchenko@linux.intel.com>
- <2024021723-spellbind-citadel-d2c1@gregkh>
+	s=arc-20240116; t=1708349385; c=relaxed/simple;
+	bh=OQyFDUX5gbESQWUcHgynurH9W9y75J4IWsTxpX5PpzE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WPJDUcjOp/WF5f1qo9kaQxbe+HbiRh3/zCFpGi6EgIA26Y/hLWaBofhG7D3Q5sqmj9yFQ3X9m7qD9YIoEgWYCf8P84wjbqYaQKtjXB+bDhPu/yqbvzYuWJPS+YTGUgKdjU75VKFZAkWGSstI1wPtuRpHvYm1Qqa4DpCuMoatA+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=kQoj3e8z; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C5AE4C0004;
+	Mon, 19 Feb 2024 13:29:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708349380;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OQyFDUX5gbESQWUcHgynurH9W9y75J4IWsTxpX5PpzE=;
+	b=kQoj3e8zggZx2HUbzNGgWUvjl2tZdpNnjmi4YvhYNDGXFf1skWEjdAKvqJWKaoNj/BYILQ
+	xyVEfh1+5RIdu5fgIH6I41uVO9vbJSwEoj5EOUC2oEl/3QfMIpgyDWGTGfLP629NIEhrsI
+	49HDHeoae5n+S0zfOSAlI0rU1QwlOwTP0uomYquWROLogGyz++hr+sCAx27WKFQW73J654
+	vElGXZ4UaOzyORHSkQZHdnK7xKuJNX3UIxzstXU+HilraGFtZUaltQGJdBBCH/XjzUr5Vq
+	V+uSk9HBY1dYxv159NlYgR7c6QCmvC4eTeKO4ou8IiR1K2Z6HqrJqGCVLtrqgA==
+Date: Mon, 19 Feb 2024 14:29:36 +0100
+From: =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, Andrew Lunn
+ <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>, Russell King
+ <linux@armlinux.org.uk>, "David S. Miller" <davem@davemloft.net>, Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
+ Abeni <pabeni@redhat.com>, Richard Cochran <richardcochran@gmail.com>, Radu
+ Pirea <radu-nicolae.pirea@oss.nxp.com>, Jay Vosburgh
+ <j.vosburgh@gmail.com>, Andy Gospodarek <andy@greyhouse.net>, Nicolas Ferre
+ <nicolas.ferre@microchip.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Jonathan Corbet
+ <corbet@lwn.net>, Horatiu Vultur <horatiu.vultur@microchip.com>,
+ UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>, Vladimir
+ Oltean <vladimir.oltean@nxp.com>, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, Maxime Chevallier
+ <maxime.chevallier@bootlin.com>
+Subject: Re: [PATCH RFC net-next v8 04/13] net: Change the API of PHY
+ default timestamp to MAC
+Message-ID: <20240219142936.62112d34@kmaincent-XPS-13-7390>
+In-Reply-To: <87jzn4gtlv.fsf@nvidia.com>
+References: <20240216-feature_ptp_netnext-v8-0-510f42f444fb@bootlin.com>
+	<20240216-feature_ptp_netnext-v8-4-510f42f444fb@bootlin.com>
+	<87jzn4gtlv.fsf@nvidia.com>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2024021723-spellbind-citadel-d2c1@gregkh>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Sat, Feb 17, 2024 at 05:44:31PM +0100, Greg Kroah-Hartman wrote:
-> On Wed, Feb 14, 2024 at 07:09:37PM +0200, Andy Shevchenko wrote:
-> > 8250 PCI library provides a common code to map and assign resources.
-> > Use it in order to deduplicate existing code and support IO port
-> > variants.
-> 
-> Looks like you have a build error :(
+On Fri, 16 Feb 2024 10:09:36 -0800
+Rahul Rameshbabu <rrameshbabu@nvidia.com> wrote:
 
-Indeed, somehow I messed up with branches I have compiled.
-v2 will be issued soon.
+> On Fri, 16 Feb, 2024 16:52:22 +0100 Kory Maincent <kory.maincent@bootlin.=
+com>
+> wrote:
+> > Change the API to select MAC default time stamping instead of the PHY.
+> > Indeed the PHY is closer to the wire therefore theoretically it has less
+> > delay than the MAC timestamping but the reality is different. Due to lo=
+wer
+> > time stamping clock frequency, latency in the MDIO bus and no PHC hardw=
+are
+> > synchronization between different PHY, the PHY PTP is often less precise
+> > than the MAC. The exception is for PHY designed specially for PTP case =
+but
+> > these devices are not very widespread. For not breaking the compatibili=
+ty
+> > default_timestamp flag has been introduced in phy_device that is set by
+> > the phy driver to know we are using the old API behavior.
+> >
+> > Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+> > --- =20
+>=20
+> Overall, I agree with the motivation and reasoning behind the patch. It
+> takes dedicated effort to build a good phy timestamping mechanism, so
+> this approach is good. I do have a question though. In this patch if we
+> set the phy as the default timestamp mechanism, does that mean for even
+> non-PTP applications, the phy will be used for timestamping when
+> hardware timestamping is enabled? If so, I think this might need some
+> thought because there are timing applications in general when a
+> timestamp closest to the MAC layer would be best.
 
--- 
-With Best Regards,
-Andy Shevchenko
+This patch comes from a request from Russell due to incompatibility between=
+ MAC
+and PHY timestamping when both were supported.
+https://lore.kernel.org/netdev/Y%2F4DZIDm1d74MuFJ@shell.armlinux.org.uk/
 
+His point was adding PTP support to a PHY driver would select timestamp fro=
+m it
+by default even if we had a better timestamp with the MAC which is often the
+case. This is an unwanted behavior.
+https://lore.kernel.org/netdev/Y%2F6Cxf6EAAg22GOL@shell.armlinux.org.uk/
 
+In fact, with the new support of NDOs hwtstamp and the
+dev_get/set_hwtstamp_phylib functions, alongside this series which make
+timestamp selectable, changing the default timestamp may be not necessary
+anymore.
+
+Russell any thought about it?=20
+
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
