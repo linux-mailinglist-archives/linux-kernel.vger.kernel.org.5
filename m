@@ -1,93 +1,157 @@
-Return-Path: <linux-kernel+bounces-71987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71990-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BB6C85AD7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D83F85AD8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:08:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6566DB21D89
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:51:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DE8BB22745
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BF1537E3;
-	Mon, 19 Feb 2024 20:51:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5C153E33;
+	Mon, 19 Feb 2024 21:07:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nSfhB46D"
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Ki5jJ4a0";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="hpGTBR9W"
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51BA0482C3
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 20:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708375871; cv=none; b=kwcuRzc7uo2g1QJ9iQJw4JvuhT/5XdZuPNBdNUO7Ypi+rNXL8fZtqGykiv1LgN0DnujmbW4SKCVDpPRVa9xr+pTVytDhgjrz5ZMXNktgZofXrsft1JoTE2plxcLfvKIRYiBg4V3BYwgkSdGina462pXe02S1zQDqF+shNkJTri4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708375871; c=relaxed/simple;
-	bh=Q8thPJRfpgc9+wT7IvwXgRA+nbwQjXmEwTEG9AzjJBU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=BudwQ9Fqk1MU+QLiHyNL3zIaZhAJLSRDN04JHuuUtLjuQ2uScYvolhx5NcfEOBxsP7MVmF6UZchJNMB9NU+iHLo0isZ8snnCXNBZ6GnyCwifJAF8AWiDuM6vGOKpc+NV8E8tn73oQA9rAaJZ5iSA8kCmE0MP5DRfVQzs5zB+dEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nSfhB46D; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708375866;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=pWEO3ujEnp3IBbqfF6yum0hAVIJP6wYM9GAwk4wwij4=;
-	b=nSfhB46DbXXbhi5BXP7LdZxeNZmCa8Exn7KWD7VLiyU2FaocvWZthoWQdlPGlDUVwf2qEe
-	Wv+VJvCnL6E/QYazSu6nk7IyYSKsr565y6CV7twE3XlMApQMUeivX1bG2SazOilP2h1JEG
-	99z1hpSs6uZI7B/sfLXs+rZs0KFuJ7Q=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [PATCH] MAINTAINERS: mailmap: update the email address
-Date: Mon, 19 Feb 2024 12:50:50 -0800
-Message-Id: <20240219205050.887810-1-shakeel.butt@linux.dev>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C442A2E835;
+	Mon, 19 Feb 2024 21:07:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708376871; cv=pass; b=XzmhyyLLOnpOC4fCHhDCca0Ndh7rAN6lchE5uEp7e2vQm7eX1zFu90SB/JoAzDCTsriEVKnn/RabjYDehE7j5wNKSHXJaJTkaWLuyvDjbxhkcKkeN53PFaUvoY61pQSJbenb+kwCWjIJ7j1WdkT4OUL8ak/3ZuCgSUDlUfnaC8Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708376871; c=relaxed/simple;
+	bh=eNljqwevEksOUMlEebSE8qxQgsP5d/5/H18BupVK6+o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SA7JdWWPDe3dIZBnEQjGNziVVourjtuU0BHnPGjSL+91RoY602Pop7/rDLQSc3S/FI464lBPQ1j5kxkJganLcrpwj4OTbP/3puvQvIbh5cEINkjbG6KnAt16P2/iO5AL58sqU/AapRx4x8noX/xhXOVWIZmUWO6CSIVceWu2rJs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Ki5jJ4a0; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=hpGTBR9W; arc=pass smtp.client-ip=85.215.255.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
+ARC-Seal: i=1; a=rsa-sha256; t=1708375067; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=RLoVMLhRCUjEZnzpW3aKBpfB2VpJwlSQuQFYGmFSmyOKvtye0tQjX13oiqK6acTNKZ
+    ARg0EctxXyRO3A/OqoQk8RwolS2Tpd4nG9CqsOoamSAKzW4Ya/Om1+/N5wD2Ta6mIDbp
+    kMcNa4tDkX54shueRnW3016MvLaxpXEDNW9Q+tg2jOypJ8ModkvXBt57P9L0K/oOz5/E
+    m3A2zZIeThrzGav1iC4qF9hXwL57U2nrdYsee0n9R17SqhZM/AdxhRoUlyQEVuMsfOas
+    Hpw5sQYiMXEqYXbNWSwFoQQsER0C61apF3cwgFejRn9slJnvMgwDO3gD4MG0t3nxRGD7
+    4AcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1708375067;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=Fv4HUwoYJ78Ao5yyDcK+Lz6h+c9zEeTZIGoLl7li1Rw=;
+    b=iIxqFJrFnfjERZhfAjhFKwzM7bCpXWkvPNHxMVYWR21X+ZdAT/kAxtkQ4deYzBH30W
+    ciMwYWyemRU0vLfCI23ZKlI3kIBniPQGZc1/BHDNBpdP0LDKyHDIHmKs5Cn1PVo3ViRj
+    db0tX/cbyZnBh4NjuxQyyLVXDVPqbPVjsN/dLvsDcSAQjTTDjP6bOKr+ktwDbyRYrtzP
+    ulcLhJok15ZjfuaQx86hoMlkf4fBP9ppmaPoNIy+tdKAKxmedJms0n1Fx6OpmKOd9sKE
+    v2n6z5UQ+iGzt04Ei/WVO7w8ZZtSvSrtnvXfOrPhxVWQrWiulgGQX6OhW0fZEjydINJs
+    xyfw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1708375067;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=Fv4HUwoYJ78Ao5yyDcK+Lz6h+c9zEeTZIGoLl7li1Rw=;
+    b=Ki5jJ4a0ISlzbCYHqEjTRNXBFq1CXKzI/Padmw8s8rzprr5JAOab26Q86qI/7868Rk
+    lu0GmcOPWDvVXuNYRKkIkrO0ZskonOQ498yTWica2qgRuPV8R9A9dm9eRxSnqfT353RY
+    K566A8yiAkTC6MJ21ErjTt1zyf+6TJ1/YDHb9u15j/ZQT+o04sVnXrG8Oel1Q8sIxP2N
+    8y8AaRaM6WgOl4080G+kCj+x3z9XxEtn6PbS5nQANi8Bop6YNCimMmIOFk9CQbHnZZGA
+    USDsOiQRuw3WVMOKGtpHtIuU6p14gZUjmEA8qMZ8whdVIaX6TR55NAY7VDJUTMbtqBZ8
+    GwIg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1708375067;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=Fv4HUwoYJ78Ao5yyDcK+Lz6h+c9zEeTZIGoLl7li1Rw=;
+    b=hpGTBR9WEO3/nloOvwsmULD0/vv6szH/ypkVJ0Qtir7LqLyWjkXUHGlvHY0rxwFGIQ
+    k2emtWXlYz0tO6oTAGCw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFq0USEbDdAnQ=="
+Received: from [IPV6:2a00:6020:4a8e:5000::90c]
+    by smtp.strato.de (RZmta 49.11.2 AUTH)
+    with ESMTPSA id K49f9c01JKbk876
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 19 Feb 2024 21:37:46 +0100 (CET)
+Message-ID: <e9f2c716-51d3-4c03-a447-9fed357669c5@hartkopp.net>
+Date: Mon, 19 Feb 2024 21:37:46 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: softing: remove redundant NULL check
+Content-Language: en-US
+To: Simon Horman <horms@kernel.org>
+Cc: Daniil Dulov <d.dulov@aladdin.ru>, Wolfgang Grandegger
+ <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org
+References: <20240211150535.3529-1-d.dulov@aladdin.ru>
+ <20240216172701.GP40273@kernel.org>
+ <12cd0fd0-be86-4af0-8d6b-85d3a81edd2a@hartkopp.net>
+ <20240219170038.GH40273@kernel.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20240219170038.GH40273@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Moving to linux.dev based email for kernel work.
+Hi Simon,
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- .mailmap    | 1 +
- MAINTAINERS | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+On 2024-02-19 18:00, Simon Horman wrote:
+> On Fri, Feb 16, 2024 at 08:47:43PM +0100, Oliver Hartkopp wrote:
+>> Hi Simon,
+>>
+>> I have a general question on the "Fixes:" tag in this patch:
+>>
+>> On 16.02.24 18:27, Simon Horman wrote:
+>>> On Sun, Feb 11, 2024 at 07:05:35AM -0800, Daniil Dulov wrote:
+>>>> In this case dev cannot be NULL, so remove redundant check.
+>>>>
+>>>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>>>
+>>>> Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
+>>
+>> IMHO this is simply an improvement which is done by all patches applied to
+>> the kernel but it does not really "fix" anything from a functional
+>> standpoint.
+>>
+>> Shouldn't we either invent a new tag or better leave it out to not confuse
+>> the stable maintainers?
+> 
+> Hi Oliver,
+> 
+> sorry for missing that in my review.
+> 
+> Yes, I agree that this is probably not a fix, for which my
+> rule of thumb is something that addresses a user-visible problem.
+> So I agree it should not have a fixes tag.
+> 
+> I would suggest that we can just change the text to something that
+> has no tag. Something like:
+> 
+> ...
+> 
+> Introduced by 03fd3cf5a179 ("can: add driver for Softing card")
+> 
 
-diff --git a/.mailmap b/.mailmap
-index 1eb607efcc6e..6ac0d469c7fa 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -553,6 +553,7 @@ Senthilkumar N L <quic_snlakshm@quicinc.com> <snlakshm@codeaurora.org>
- Serge Hallyn <sergeh@kernel.org> <serge.hallyn@canonical.com>
- Serge Hallyn <sergeh@kernel.org> <serue@us.ibm.com>
- Seth Forshee <sforshee@kernel.org> <seth.forshee@canonical.com>
-+Shakeel Butt <shakeel.butt@linux.dev> <shakeelb@google.com>
- Shannon Nelson <shannon.nelson@amd.com> <snelson@pensando.io>
- Shannon Nelson <shannon.nelson@amd.com> <shannon.nelson@intel.com>
- Shannon Nelson <shannon.nelson@amd.com> <shannon.nelson@oracle.com>
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ca48f2d37892..4dc0ad25e4ab 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5412,7 +5412,7 @@ CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)
- M:	Johannes Weiner <hannes@cmpxchg.org>
- M:	Michal Hocko <mhocko@kernel.org>
- M:	Roman Gushchin <roman.gushchin@linux.dev>
--M:	Shakeel Butt <shakeelb@google.com>
-+M:	Shakeel Butt <shakeel.butt@linux.dev>
- R:	Muchun Song <muchun.song@linux.dev>
- L:	cgroups@vger.kernel.org
- L:	linux-mm@kvack.org
--- 
-2.34.1
+Yes, but the "Introduced-by:" tag would be an optional tag for people 
+that like blaming others, right?
 
+IMHO we should think about completely removing the "Fixes:" tag, when it 
+has no user-visible effect that might be a candidate for stable kernels. 
+It is common improvement work. And it has been so for years.
+
+Best regards,
+Oliver
 
