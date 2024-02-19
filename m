@@ -1,207 +1,160 @@
-Return-Path: <linux-kernel+bounces-72142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DBBD85AFE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:50:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AEA0185AFEA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91BC31F21FDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:50:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E10DE1C225A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8B95677F;
-	Mon, 19 Feb 2024 23:50:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E0C56B78;
+	Mon, 19 Feb 2024 23:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mCm8Sa/w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PyozkvVG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mCm8Sa/w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PyozkvVG"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRtigiwa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E622C5644E
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:50:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA07E5478B;
+	Mon, 19 Feb 2024 23:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708386634; cv=none; b=B5M9A/QcPWJWiuVNiUiD5nBNRFA+tQYhCyStvY3AtnrDrGcMhGL5/Qcsi2MFBw3ICYq06cDsubruFDbJWOGEzGQvU/wV3PByfekp10Eyjohair5+DbGBlWOLTFTWGH2TCemoDDlV8uaaJCDazgf+b76+DqKhAxgIzdyagc7s5q8=
+	t=1708386872; cv=none; b=mFXoXSolDPDRvUUUkJrmUhGbMeh7wKdFwGtzatDdcUPMLDzqsVc+gfWZUIdhNhmw25sV265MlO1P5A4/PozYGxmTAPrObEoJf154+ap/ellNtoVAKiKw4cv7PIeOQn7yo5QN4PzkXjuPfEh7OVA5XHtIOPgzLCrI03NKsx0m6DQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708386634; c=relaxed/simple;
-	bh=t1Q/ExsdH5KZlffpDm2mtkaWjUzmPWwTi/YNsGSKF7c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MM7NLfuEz1pZU3f7TA2LzpYNtmkwy0B45FMvZIAMvEE4/KQF5X+1lGNGSOTIpNAV97DGhlW8S2/j5l+0LHi36Uej9644ZxFDJkc8RgFSrgwLnA+GyjlmOdpxOHtSczIhEYXHPQV2k+VaxY2piLsYSFu59hCGJjqO3ulrpZiE1WE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mCm8Sa/w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PyozkvVG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mCm8Sa/w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PyozkvVG; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 5918821FD2;
-	Mon, 19 Feb 2024 23:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708386630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xdc5X6/5GGwU4BxQQI32gcL1J486hJF1mILZ+mYNYfE=;
-	b=mCm8Sa/wftvlFDrbkfvdTadwSWrLxMuhTXMhGHgC8byTdtF8w1tiAiH+FDr6Jf5nxwH+oW
-	tuMqbNz2it8eY8Q4WNk+qADo5j2tiayESsWsE2LiIHhBXfaTXle2eu4DeAmOaCQ9RY9tKT
-	4pTnpMc9w/a64SKyNbyMmUsqKrXqjiU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708386630;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xdc5X6/5GGwU4BxQQI32gcL1J486hJF1mILZ+mYNYfE=;
-	b=PyozkvVGeWy4FpEDUzEh3vvu1E+DHVjiY/cZL5IekdrEtAIjmD5/epjKaxgBzv4bw/xbFC
-	zHIcndKfdmAz5vBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708386630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xdc5X6/5GGwU4BxQQI32gcL1J486hJF1mILZ+mYNYfE=;
-	b=mCm8Sa/wftvlFDrbkfvdTadwSWrLxMuhTXMhGHgC8byTdtF8w1tiAiH+FDr6Jf5nxwH+oW
-	tuMqbNz2it8eY8Q4WNk+qADo5j2tiayESsWsE2LiIHhBXfaTXle2eu4DeAmOaCQ9RY9tKT
-	4pTnpMc9w/a64SKyNbyMmUsqKrXqjiU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708386630;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xdc5X6/5GGwU4BxQQI32gcL1J486hJF1mILZ+mYNYfE=;
-	b=PyozkvVGeWy4FpEDUzEh3vvu1E+DHVjiY/cZL5IekdrEtAIjmD5/epjKaxgBzv4bw/xbFC
-	zHIcndKfdmAz5vBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3634813647;
-	Mon, 19 Feb 2024 23:50:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id srCIDEbp02X6YgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 19 Feb 2024 23:50:30 +0000
-Message-ID: <7e31accb-db01-486f-afb8-18a3f5402d00@suse.cz>
-Date: Tue, 20 Feb 2024 00:50:55 +0100
+	s=arc-20240116; t=1708386872; c=relaxed/simple;
+	bh=QeDHhaJqxzviod2zL7H9Evl4rD2LSxF3WcsodiKIcWs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=WKvJHf/LL9fPaa3mTN9qUDd3ASYxFJ8jsRRR44AnFf8jJXmSU7mw9IKaP36/XaEDh8X8flOkH+W4Vi+/lnAM/i6DgItPScxaqkHvJ4WfWtgD3oL7hrWMV0RuZHptIyg4fStIWSD44yrAzyDxugwTe6Bc6LMho5yadRd+8FPeYls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fRtigiwa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63129C433C7;
+	Mon, 19 Feb 2024 23:54:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708386872;
+	bh=QeDHhaJqxzviod2zL7H9Evl4rD2LSxF3WcsodiKIcWs=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=fRtigiwaCwGFdaQcibAEmCQkQnntlgLSz5ACEFdQskrM+XOuwO6dsXIPtw4OKsdzp
+	 biB1sBj2hFBNraQhapP+OTQF0VP0S50aXTlmdszB69+t+4L6EqRpd4L5hw2wUXPUtx
+	 75hZANqklyyNYzqObWSCCi4Y/F1+Vqbo+hV3ueKfifDEymUxj2x6SxzLmUJUmdt566
+	 GHGwUJaHPCQl5Zhs5enV00GQTOTiGRPbDPcqcR8Ninhmb2HVZPLz9dTQ5EU6oRc9k7
+	 UYjhSDcxVMfw7S8a3wwL+oju1wObBiyma4KxwArOKREXOMb5o3K9voqALknNYReLsf
+	 bCuX6r4g0+S4A==
+From: SeongJae Park <sj@kernel.org>
+To: "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	shuah@kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Vijaikumar_Kanagarajan@mentor.com,
+	brauner@kernel.org,
+	jlayton@kernel.org,
+	jack@suse.cz
+Subject: Re: [PATCH] selftests/mqueue: Set timeout to 100 seconds
+Date: Mon, 19 Feb 2024 15:54:30 -0800
+Message-Id: <20240219235430.161792-1-sj@kernel.org>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <ee8b746b-aee9-43d8-949b-62017fe0bca0@amazon.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: regression/bisected commit
- 773688a6cb24b0b3c2ba40354d883348a2befa38 make my system completely unusable
- under high load
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>,
- Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
- Andrey Konovalov <andreyknvl@gmail.com>, glider@google.com,
- dvyukov@google.com, eugenis@google.com, Oscar Salvador <osalvador@suse.de>,
- Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
- Linux Memory Management List <linux-mm@kvack.org>
-References: <CABXGCsOzpRPZGg23QqJAzKnqkZPKzvieeg=W7sgjgi3q0pBo0g@mail.gmail.com>
- <CABXGCsM+9TxxY-bOUw6MyRV7CSZsyQpfDgvwgaBBKk9UONJkBw@mail.gmail.com>
- <CABXGCsOp3Djn5uQYb3f=4k1m9rY9y3Ext9SMavWAFRTcKwtNMA@mail.gmail.com>
- <CA+fCnZeNsUV4_92A9DMg=yqyS_y_JTABguyQyNMpm6JPKVxruw@mail.gmail.com>
- <CABXGCsPerqj=zXJ0pUCnZ29JGmZFSvH6DB22r2uKio61c1bVkw@mail.gmail.com>
- <CANpmjNMn+ULqbSGQ6uOa0JDhw=2my5TtBK4Y+xyBES_iaG_SEA@mail.gmail.com>
- <CABXGCsM9BSD+SYFkvkYxmcrZL+aUfUb_M-rjNJhzb2cYHQr5ww@mail.gmail.com>
- <CANpmjNNXKiM0j4mR-Rr2KALhgz87=QjCOomEymNMWjtos=Z3Ug@mail.gmail.com>
- <CANpmjNOnbNw2fRL3_depaAgt81p-VpHh5_O_26kyxofjECgsFQ@mail.gmail.com>
- <CABXGCsPB-KEbE+SfymVmqfiomFVngFL2Je81Qyhw1F5_aZX-TQ@mail.gmail.com>
- <CABXGCsO5dcEuorLAXR3CFzDVyAWNk4_YfqCh=UJddfzpWF7hNg@mail.gmail.com>
- <CANpmjNPsdM2HrRFgEHYxX1seT2fbOFDuO6Ci-qF3X2y=9_PD1A@mail.gmail.com>
- <91c50335-e7b6-4ae1-9dad-a0c990b52021@suse.cz>
- <20240219152836.11d36709c594e66fe3037f2d@linux-foundation.org>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240219152836.11d36709c594e66fe3037f2d@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="mCm8Sa/w";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=PyozkvVG
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-3.00)[100.00%];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 MX_GOOD(-0.01)[];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[google.com,gmail.com,suse.de,vger.kernel.org,kvack.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 5918821FD2
-X-Spam-Level: 
-X-Spam-Score: -1.80
-X-Spam-Flag: NO
+
+On Mon, 19 Feb 2024 14:01:06 +0000 "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com> wrote:
+
+> On 17/02/2024 00:31, SeongJae Park wrote:
+> > CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> > 
+> > 
+> > 
+> > On Fri, 16 Feb 2024 16:01:20 -0800 Kees Cook <keescook@chromium.org> wrote:
+> > 
+> >> On Wed, Feb 14, 2024 at 05:13:09PM -0800, SeongJae Park wrote:
+> >>> A gentle reminder.
+> >>>
+> >>>
+> >>> Thanks,
+> >>> SJ
+> >>>
+> >>> On Fri, 9 Feb 2024 09:42:43 -0800 SeongJae Park <sj@kernel.org> wrote:
+> >>>
+> >>>> On Fri, 9 Feb 2024 10:30:38 +0000 "Mohamed Abuelfotoh, Hazem" <abuehaze@amazon.com> wrote:
+> >>>>
+> >>>>> On 08/02/2024 21:29, SeongJae Park wrote:
+> >>>>>> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> While mq_perf_tests runs with the default kselftest timeout limit, which
+> >>>>>> is 45 seconds, the test takes about 60 seconds to complete on i3.metal
+> >>>>>> AWS instances.  Hence, the test always times out.  Increase the timeout
+> >>>>>> to 100 seconds.
+> >>>>>>
+> >>>>>> Fixes: 852c8cbf34d3 ("selftests/kselftest/runner.sh: Add 45 second timeout per test")
+> >>>>>> Cc: <stable@vger.kernel.org> # 5.4.x
+> >>>>>> Signed-off-by: SeongJae Park <sj@kernel.org>
+> >>>>>> ---
+> >>>>>>    tools/testing/selftests/mqueue/setting | 1 +
+> >>>>>>    1 file changed, 1 insertion(+)
+> >>>>>>    create mode 100644 tools/testing/selftests/mqueue/setting
+> >>>>>>
+> >>>>>> diff --git a/tools/testing/selftests/mqueue/setting b/tools/testing/selftests/mqueue/setting
+> >>>>>> new file mode 100644
+> >>>>>> index 000000000000..54dc12287839
+> >>>>>> --- /dev/null
+> >>>>>> +++ b/tools/testing/selftests/mqueue/setting
+> >>>>>> @@ -0,0 +1 @@
+> >>>>>> +timeout=100
+> >>>>>> --
+> >>>>>> 2.39.2
+> >>>>>>
+> >>>>>>
+> >>>>>
+> >>>>> Added Vijai Kumar to CC
+> >>>>>
+> >>>>> This looks similar to [PATCH] kselftest: mqueue: increase timeout
+> >>>>> https://lore.kernel.org/lkml/20220622085911.2292509-1-Vijaikumar_Kanagarajan@mentor.com/T/#r12820aede6bba015b70ae33323e29ae27d5b69c7
+> >>>>> which was increasing the timeout to 180 however it's not clear why this
+> >>>>> hasn't been merged yet.
+> >>
+> >> Should it be 100 or 180?
+> Both options may work, I am more inclined to have this as 180 seconds by 
+> giving more time for the test to finish, this can be reduced later to 
+> 100 or something else if we start hearing complains about the new timeout.
+
+Thank you for the opinion.  I will send v2 with 180 seconds timeout.
 
 
+Thanks,
+SJ
 
-On 2/20/24 00:28, Andrew Morton wrote:
-> On Mon, 19 Feb 2024 11:09:23 +0100 Vlastimil Babka <vbabka@suse.cz> wrote:
 > 
->> On 2/19/24 10:52, Marco Elver wrote:
->>> On Mon, 19 Feb 2024 at 10:48, Mikhail Gavrilov
->>> <mikhail.v.gavrilov@gmail.com> wrote:
->>>>
->>>> On Sat, Feb 3, 2024 at 1:14 AM Mikhail Gavrilov
->>>> <mikhail.v.gavrilov@gmail.com> wrote:
->>>>>
->>>>> You are right.
->>>>> Thanks for digging into it!
->>>>>
->>>>
->>>> This [2] revert is still not merged at least I checked on 4f5e5092fdbf.
->>>> Is there any plan to merge it or find another approach?
->>>>
->>>> [2] https://lore.kernel.org/all/20240118110216.2539519-2-elver@google.com/
->>>
->>> I think it's already in -mm and -next. It just takes time, which is a
->>> good thing, after all we want to let -next testing confirm nothing is
->>> wrong with it.
->>>
->>> Andrew, is this planned for the next merge window or as a "hot fix"
->>> for the current rc? Given it has the right "Fixes" tags it will make
->>> it to stable kernels eventually, but I also think that the previous
->>> "slow" version is almost unusable on big systems, so it may be
->>> worthwhile considering the current rc.
->>
->> Yeah it would be best to fix in 6.8 to prevent regressions.
->>
+> Hazem
+> > 
+> > As mentioned on the previous mail[1], either values are good to me :)
+> > 
+> > [1] https://lore.kernel.org/r/20240215011309.73168-1-sj@kernel.org
+> > 
+> >> Either way:
+> >>
+> >> Reviewed-by: Kees Cook <keescook@chromium.org>
+> > 
+> > Thank you!
+> > 
+> > 
+> > Thanks,
+> > SJ
+> > 
+> >>
+> >> --
+> >> Kees Cook
+> >>
 > 
-> I'm all confused.
 > 
-> 4434a56ec209 ("stackdepot: make fast paths lock-less again") was
-> mainlined for v6.8-rc3.
-
-Uh sorry, I just trusted the info that it's not merged and didn't verify
-it myself. Yeah, I can see it is there.
-
-> That patch Fixed: 108be8def46e ("lib/stackdepot: allow users to evict
-> stack traces") which was mainlined for v6.8-rc1, so 4434a56ec209 did
-> not need a cc:stable?
-
-That's right.
 
