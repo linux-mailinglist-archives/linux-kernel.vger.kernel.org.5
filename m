@@ -1,118 +1,338 @@
-Return-Path: <linux-kernel+bounces-71336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E01985A3A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:41:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0DCD85A3B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:45:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7131B1C23C8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:41:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 591DD1F2200E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C0C22E82E;
-	Mon, 19 Feb 2024 12:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="R3Z54+BX"
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C91212E84F;
+	Mon, 19 Feb 2024 12:45:52 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC492D05D
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:41:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=77.93.223.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DCA2E65B;
+	Mon, 19 Feb 2024 12:45:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708346478; cv=none; b=DXk0GWLHSD72rU+lQuLji+hCF8XHQXnPvXFcTub7+PPbm32bs2q7SGXtNDBKFP77Dnomlt8kRmP1RtPHaw57FsTJkP90+WFF91LChQzg2bTvx6GYCJ5B65A0oWaTJjHPyr5lrEwh50+t1nNv/j6IaIJhumYtLqZ3MtNzOZqpN4w=
+	t=1708346752; cv=none; b=K79V1kZdBniJtkNTF8ClN2e+9VYaEcCn1RMyfsGVp0iQ35gWKWjNaknqheDZTHC5dt/SGlAJ7J/lDnnMFSD8+ubq6/z6cQZ5io0NCCbCXYdH05n/RTxB9zJ3elwX6SM2OVjQNVOifRiLkeK+2QF/t00D30lqOpeV9rxUnDbRReQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708346478; c=relaxed/simple;
-	bh=e2xLVu+6ot5sg/6bm7jkOGA6ufHpcMGxIdDhHPg0WHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tnW/ctGMm0WWZnk2Gx0Y8ksi/5wXShzh5A3JafVrWDmTJNt59pwRUCi26KWuNXB+9IAIX5tWQhaui/CaeKWXYyW2AR2s0LumJbHNYDPlI3bJLyWBBBb6PYPxsjsBoLKlkwhsXFqdxmaFN37QUKUkDtiu43nlCUHnCfLgwW8FTuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=R3Z54+BX; arc=none smtp.client-ip=77.93.223.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 43CA11AE035;
-	Mon, 19 Feb 2024 13:41:15 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1708346475; bh=kcbZxawIF5pJIF3e6Fe0CSzj4Wcoglr3TFCIIff5vXc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=R3Z54+BXqzlS3OPPkzdjwGOCVJRRmQm2XfS7SDi44D1NjRiwciIalt7KU3NlYAGfE
-	 nULPo6DRkwbiuZJHh+dS1qT7N3sNZj4chcFQt2HQAkv9nfBh1rH91txI0R9IEbYrHK
-	 Lm+nIAqXY5GOX3MKDpNT5L0/p3HyLqMuz2B52GBC9dBYFiUltM/vrYNu5+05ez82lx
-	 0qVPalhqT/63k1b8ZOED7rFlUNl49SScAKB6p/cQynuea0jKTOAxNN3Z2zbd8kztin
-	 4P06m1lck+QpKTQA2KH4KAybPvi3HcHdQfJpxRa5XAIBHjMbUw0Wa1lKsNPNFqNKq8
-	 MtJ3YzI2Ig6MA==
-Date: Mon, 19 Feb 2024 13:41:13 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Will Deacon <will@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-team@android.com,
- iommu@lists.linux.dev, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
- <decui@microsoft.com>
-Subject: Re: [PATCH v3 2/3] swiotlb: Enforce page alignment in
- swiotlb_alloc()
-Message-ID: <20240219134113.24396ad9@meshulam.tesarici.cz>
-In-Reply-To: <20240205190127.20685-3-will@kernel.org>
-References: <20240205190127.20685-1-will@kernel.org>
-	<20240205190127.20685-3-will@kernel.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1708346752; c=relaxed/simple;
+	bh=0R/k68qA+muFbteM1o4YrRrqdkoWy77R+Re5DfjOkcU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=W8kIT5Z/yzz0DtTj5UCddDugYcJ8B2XOOaa0YEqkRQUoteN+AnOCV7bGxLxSUDNf+xLEpHStsRlHNBdpiljpjUP/ENnzVx52gSihRMWvWLYfX/p/CgVdxPvIyoeJgpJGyHYf2KFEWxHRiDPTSkLS20G0hBL1U3gxzT+aMyuBW/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com; spf=pass smtp.mailfrom=hisilicon.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=hisilicon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hisilicon.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TdhzV0H0Nz2BcyN;
+	Mon, 19 Feb 2024 20:43:34 +0800 (CST)
+Received: from kwepemi500006.china.huawei.com (unknown [7.221.188.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id 348261400CB;
+	Mon, 19 Feb 2024 20:45:41 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.2) by
+ kwepemi500006.china.huawei.com (7.221.188.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 19 Feb 2024 20:45:40 +0800
+From: Junxian Huang <huangjunxian6@hisilicon.com>
+To: <jgg@ziepe.ca>, <leon@kernel.org>
+CC: <linux-rdma@vger.kernel.org>, <linuxarm@huawei.com>,
+	<linux-kernel@vger.kernel.org>, <huangjunxian6@hisilicon.com>
+Subject: [PATCH for-next] RDMA/hns: Support userspace configuring congestion control algorithm with QP granularity
+Date: Mon, 19 Feb 2024 20:41:33 +0800
+Message-ID: <20240219124133.267519-1-huangjunxian6@hisilicon.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemi500006.china.huawei.com (7.221.188.68)
 
-On Mon,  5 Feb 2024 19:01:26 +0000
-Will Deacon <will@kernel.org> wrote:
+Currently, congestion control algorithm is statically configured in
+FW, and all QPs use the same algorithm(except UD which has a fixed
+configuration of DCQCN). This is not flexible enough.
 
-> When allocating pages from a restricted DMA pool in swiotlb_alloc(),
-> the buffer address is blindly converted to a 'struct page *' that is
-> returned to the caller. In the unlikely event of an allocation bug,
-> page-unaligned addresses are not detected and slots can silently be
-> double-allocated.
-> 
-> Add a simple check of the buffer alignment in swiotlb_alloc() to make
-> debugging a little easier if something has gone wonky.
-> 
-> Cc: Christoph Hellwig <hch@lst.de>
-> Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> Cc: Robin Murphy <robin.murphy@arm.com>
-> Cc: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> Cc: Dexuan Cui <decui@microsoft.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
+Support userspace configuring congestion control algorithm with QP
+granularity while creating QPs. If the algorithm is not specified in
+userspace, use the default one.
 
-Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+Signed-off-by: Junxian Huang <huangjunxian6@hisilicon.com>
+---
+ drivers/infiniband/hw/hns/hns_roce_device.h | 19 ++++--
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c  | 14 +----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h  |  3 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c   |  3 +
+ drivers/infiniband/hw/hns/hns_roce_qp.c     | 68 +++++++++++++++++++++
+ include/uapi/rdma/hns-abi.h                 | 17 ++++++
+ 6 files changed, 107 insertions(+), 17 deletions(-)
 
-Petr T
-
-> ---
->  kernel/dma/swiotlb.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> index 9ff909a0039a..adbb3143238b 100644
-> --- a/kernel/dma/swiotlb.c
-> +++ b/kernel/dma/swiotlb.c
-> @@ -1643,6 +1643,12 @@ struct page *swiotlb_alloc(struct device *dev, size_t size)
->  		return NULL;
->  
->  	tlb_addr = slot_addr(pool->start, index);
-> +	if (unlikely(!PAGE_ALIGNED(tlb_addr))) {
-> +		dev_WARN_ONCE(dev, 1, "Cannot allocate pages from non page-aligned swiotlb addr 0x%pa.\n",
-> +			      &tlb_addr);
-> +		swiotlb_release_slots(dev, tlb_addr);
-> +		return NULL;
-> +	}
->  
->  	return pfn_to_page(PFN_DOWN(tlb_addr));
->  }
+diff --git a/drivers/infiniband/hw/hns/hns_roce_device.h b/drivers/infiniband/hw/hns/hns_roce_device.h
+index 1d062c522d69..948fbf30e7d8 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_device.h
++++ b/drivers/infiniband/hw/hns/hns_roce_device.h
+@@ -594,11 +594,19 @@ struct hns_roce_work {
+ 	u32 queue_num;
+ };
+ 
++enum hns_roce_scc_algo {
++	HNS_ROCE_SCC_ALGO_DCQCN = 0,
++	HNS_ROCE_SCC_ALGO_LDCP,
++	HNS_ROCE_SCC_ALGO_HC3,
++	HNS_ROCE_SCC_ALGO_DIP,
++	HNS_ROCE_SCC_ALGO_TOTAL,
++};
++
+ enum hns_roce_cong_type {
+-	CONG_TYPE_DCQCN,
+-	CONG_TYPE_LDCP,
+-	CONG_TYPE_HC3,
+-	CONG_TYPE_DIP,
++	CONG_TYPE_DCQCN = 1 << HNS_ROCE_SCC_ALGO_DCQCN,
++	CONG_TYPE_LDCP = 1 << HNS_ROCE_SCC_ALGO_LDCP,
++	CONG_TYPE_HC3 = 1 << HNS_ROCE_SCC_ALGO_HC3,
++	CONG_TYPE_DIP = 1 << HNS_ROCE_SCC_ALGO_DIP,
+ };
+ 
+ struct hns_roce_qp {
+@@ -845,7 +853,8 @@ struct hns_roce_caps {
+ 	u16		default_aeq_period;
+ 	u16		default_aeq_arm_st;
+ 	u16		default_ceq_arm_st;
+-	enum hns_roce_cong_type cong_type;
++	u8		cong_cap;
++	enum hns_roce_cong_type default_cong_type;
+ };
+ 
+ enum hns_roce_device_state {
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+index 42e28586cefa..21532f213b0f 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
+@@ -2209,11 +2209,12 @@ static int hns_roce_query_caps(struct hns_roce_dev *hr_dev)
+ 	caps->max_wqes = 1 << le16_to_cpu(resp_c->sq_depth);
+ 
+ 	caps->num_srqs = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_SRQS);
+-	caps->cong_type = hr_reg_read(resp_d, PF_CAPS_D_CONG_TYPE);
++	caps->cong_cap = hr_reg_read(resp_d, PF_CAPS_D_CONG_CAP);
+ 	caps->max_srq_wrs = 1 << le16_to_cpu(resp_d->srq_depth);
+ 	caps->ceqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_CEQ_DEPTH);
+ 	caps->num_comp_vectors = hr_reg_read(resp_d, PF_CAPS_D_NUM_CEQS);
+ 	caps->aeqe_depth = 1 << hr_reg_read(resp_d, PF_CAPS_D_AEQ_DEPTH);
++	caps->default_cong_type = hr_reg_read(resp_d, PF_CAPS_D_DEFAULT_ALG);
+ 	caps->reserved_pds = hr_reg_read(resp_d, PF_CAPS_D_RSV_PDS);
+ 	caps->num_uars = 1 << hr_reg_read(resp_d, PF_CAPS_D_NUM_UARS);
+ 	caps->reserved_qps = hr_reg_read(resp_d, PF_CAPS_D_RSV_QPS);
+@@ -4737,14 +4738,8 @@ enum {
+ static int check_cong_type(struct ib_qp *ibqp,
+ 			   struct hns_roce_congestion_algorithm *cong_alg)
+ {
+-	struct hns_roce_dev *hr_dev = to_hr_dev(ibqp->device);
+ 	struct hns_roce_qp *hr_qp = to_hr_qp(ibqp);
+ 
+-	if (ibqp->qp_type == IB_QPT_UD || ibqp->qp_type == IB_QPT_GSI)
+-		hr_qp->cong_type = CONG_TYPE_DCQCN;
+-	else
+-		hr_qp->cong_type = hr_dev->caps.cong_type;
+-
+ 	/* different congestion types match different configurations */
+ 	switch (hr_qp->cong_type) {
+ 	case CONG_TYPE_DCQCN:
+@@ -4772,9 +4767,6 @@ static int check_cong_type(struct ib_qp *ibqp,
+ 		cong_alg->wnd_mode_sel = WND_LIMIT;
+ 		break;
+ 	default:
+-		ibdev_warn(&hr_dev->ib_dev,
+-			   "invalid type(%u) for congestion selection.\n",
+-			   hr_qp->cong_type);
+ 		hr_qp->cong_type = CONG_TYPE_DCQCN;
+ 		cong_alg->alg_sel = CONG_DCQCN;
+ 		cong_alg->alg_sub_sel = UNSUPPORT_CONG_LEVEL;
+@@ -4807,7 +4799,7 @@ static int fill_cong_field(struct ib_qp *ibqp, const struct ib_qp_attr *attr,
+ 		return ret;
+ 
+ 	hr_reg_write(context, QPC_CONG_ALGO_TMPL_ID, hr_dev->cong_algo_tmpl_id +
+-		     hr_qp->cong_type * HNS_ROCE_CONG_SIZE);
++		     ilog2(hr_qp->cong_type) * HNS_ROCE_CONG_SIZE);
+ 	hr_reg_clear(qpc_mask, QPC_CONG_ALGO_TMPL_ID);
+ 	hr_reg_write(&context->ext, QPCEX_CONG_ALG_SEL, cong_field.alg_sel);
+ 	hr_reg_clear(&qpc_mask->ext, QPCEX_CONG_ALG_SEL);
+diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+index cd97cbee682a..359a74672ba1 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
++++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.h
+@@ -1214,12 +1214,13 @@ struct hns_roce_query_pf_caps_d {
+ #define PF_CAPS_D_RQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(21, 20)
+ #define PF_CAPS_D_EX_SGE_HOP_NUM PF_CAPS_D_FIELD_LOC(23, 22)
+ #define PF_CAPS_D_SQWQE_HOP_NUM PF_CAPS_D_FIELD_LOC(25, 24)
+-#define PF_CAPS_D_CONG_TYPE PF_CAPS_D_FIELD_LOC(29, 26)
++#define PF_CAPS_D_CONG_CAP PF_CAPS_D_FIELD_LOC(29, 26)
+ #define PF_CAPS_D_CEQ_DEPTH PF_CAPS_D_FIELD_LOC(85, 64)
+ #define PF_CAPS_D_NUM_CEQS PF_CAPS_D_FIELD_LOC(95, 86)
+ #define PF_CAPS_D_AEQ_DEPTH PF_CAPS_D_FIELD_LOC(117, 96)
+ #define PF_CAPS_D_AEQ_ARM_ST PF_CAPS_D_FIELD_LOC(119, 118)
+ #define PF_CAPS_D_CEQ_ARM_ST PF_CAPS_D_FIELD_LOC(121, 120)
++#define PF_CAPS_D_DEFAULT_ALG PF_CAPS_D_FIELD_LOC(127, 122)
+ #define PF_CAPS_D_RSV_PDS PF_CAPS_D_FIELD_LOC(147, 128)
+ #define PF_CAPS_D_NUM_UARS PF_CAPS_D_FIELD_LOC(155, 148)
+ #define PF_CAPS_D_RSV_QPS PF_CAPS_D_FIELD_LOC(179, 160)
+diff --git a/drivers/infiniband/hw/hns/hns_roce_main.c b/drivers/infiniband/hw/hns/hns_roce_main.c
+index b55fe6911f9f..1dc60c2b2b7a 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_main.c
++++ b/drivers/infiniband/hw/hns/hns_roce_main.c
+@@ -394,6 +394,9 @@ static int hns_roce_alloc_ucontext(struct ib_ucontext *uctx,
+ 			resp.config |= HNS_ROCE_RSP_CQE_INLINE_FLAGS;
+ 	}
+ 
++	if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
++		resp.congest_type = hr_dev->caps.cong_cap;
++
+ 	ret = hns_roce_uar_alloc(hr_dev, &context->uar);
+ 	if (ret)
+ 		goto error_out;
+diff --git a/drivers/infiniband/hw/hns/hns_roce_qp.c b/drivers/infiniband/hw/hns/hns_roce_qp.c
+index 31b147210688..350a9b78ac6b 100644
+--- a/drivers/infiniband/hw/hns/hns_roce_qp.c
++++ b/drivers/infiniband/hw/hns/hns_roce_qp.c
+@@ -1004,6 +1004,68 @@ static void free_kernel_wrid(struct hns_roce_qp *hr_qp)
+ 	kfree(hr_qp->sq.wrid);
+ }
+ 
++static void default_congest_type(struct hns_roce_dev *hr_dev,
++				 struct hns_roce_qp *hr_qp)
++{
++	if (hr_qp->ibqp.qp_type == IB_QPT_UD ||
++	    hr_qp->ibqp.qp_type == IB_QPT_GSI)
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
++	else
++		hr_qp->cong_type = 1 << hr_dev->caps.default_cong_type;
++}
++
++static int set_congest_type(struct hns_roce_qp *hr_qp,
++			    struct hns_roce_ib_create_qp *ucmd)
++{
++	struct hns_roce_dev *hr_dev = to_hr_dev(hr_qp->ibqp.device);
++
++	switch (ucmd->cong_type_flags) {
++	case HNS_ROCE_CREATE_QP_FLAGS_DCQCN:
++		hr_qp->cong_type = CONG_TYPE_DCQCN;
++		break;
++	case HNS_ROCE_CREATE_QP_FLAGS_LDCP:
++		hr_qp->cong_type = CONG_TYPE_LDCP;
++		break;
++	case HNS_ROCE_CREATE_QP_FLAGS_HC3:
++		hr_qp->cong_type = CONG_TYPE_HC3;
++		break;
++	case HNS_ROCE_CREATE_QP_FLAGS_DIP:
++		hr_qp->cong_type = CONG_TYPE_DIP;
++		break;
++	default:
++		hr_qp->cong_type = 0;
++	}
++
++	if (!(hr_qp->cong_type & hr_dev->caps.cong_cap)) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "Unsupported congest type 0x%x, cong_cap = 0x%x.\n",
++				      hr_qp->cong_type, hr_dev->caps.cong_cap);
++		return -EOPNOTSUPP;
++	}
++
++	if (hr_qp->ibqp.qp_type == IB_QPT_UD &&
++	    !(hr_qp->cong_type & CONG_TYPE_DCQCN)) {
++		ibdev_err_ratelimited(&hr_dev->ib_dev,
++				      "Only DCQCN supported for UD. Unsupported congest type 0x%x.\n",
++				      hr_qp->cong_type);
++		return -EOPNOTSUPP;
++	}
++
++	return 0;
++}
++
++static int set_congest_param(struct hns_roce_dev *hr_dev,
++			     struct hns_roce_qp *hr_qp,
++			     struct hns_roce_ib_create_qp *ucmd)
++{
++	if (ucmd->comp_mask & HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE)
++		return set_congest_type(hr_qp, ucmd);
++
++	default_congest_type(hr_dev, hr_qp);
++
++	return 0;
++}
++
+ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 			struct ib_qp_init_attr *init_attr,
+ 			struct ib_udata *udata,
+@@ -1043,6 +1105,10 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 			ibdev_err(ibdev,
+ 				  "failed to set user SQ size, ret = %d.\n",
+ 				  ret);
++
++		ret = set_congest_param(hr_dev, hr_qp, ucmd);
++		if (ret)
++			return ret;
+ 	} else {
+ 		if (hr_dev->pci_dev->revision >= PCI_REVISION_ID_HIP09)
+ 			hr_qp->config = HNS_ROCE_EXSGE_FLAGS;
+@@ -1051,6 +1117,8 @@ static int set_qp_param(struct hns_roce_dev *hr_dev, struct hns_roce_qp *hr_qp,
+ 			ibdev_err(ibdev,
+ 				  "failed to set kernel SQ size, ret = %d.\n",
+ 				  ret);
++
++		default_congest_type(hr_dev, hr_qp);
+ 	}
+ 
+ 	return ret;
+diff --git a/include/uapi/rdma/hns-abi.h b/include/uapi/rdma/hns-abi.h
+index c996e151081e..757095a6c6fc 100644
+--- a/include/uapi/rdma/hns-abi.h
++++ b/include/uapi/rdma/hns-abi.h
+@@ -81,6 +81,9 @@ struct hns_roce_ib_create_qp {
+ 	__u8    sq_no_prefetch;
+ 	__u8    reserved[5];
+ 	__aligned_u64 sdb_addr;
++	__aligned_u64 comp_mask; /* Use enum hns_roce_create_qp_comp_mask */
++	__aligned_u64 create_flags;
++	__aligned_u64 cong_type_flags;
+ };
+ 
+ enum hns_roce_qp_cap_flags {
+@@ -107,6 +110,17 @@ enum {
+ 	HNS_ROCE_RSP_CQE_INLINE_FLAGS = 1 << 2,
+ };
+ 
++enum hns_roce_congest_type_flags {
++	HNS_ROCE_CREATE_QP_FLAGS_DCQCN = 1 << 0,
++	HNS_ROCE_CREATE_QP_FLAGS_LDCP = 1 << 1,
++	HNS_ROCE_CREATE_QP_FLAGS_HC3 = 1 << 2,
++	HNS_ROCE_CREATE_QP_FLAGS_DIP = 1 << 3,
++};
++
++enum hns_roce_create_qp_comp_mask {
++	HNS_ROCE_CREATE_QP_MASK_CONGEST_TYPE = 1 << 1,
++};
++
+ struct hns_roce_ib_alloc_ucontext_resp {
+ 	__u32	qp_tab_size;
+ 	__u32	cqe_size;
+@@ -114,6 +128,9 @@ struct hns_roce_ib_alloc_ucontext_resp {
+ 	__u32	reserved;
+ 	__u32	config;
+ 	__u32	max_inline_data;
++	__u8	reserved0;
++	__u8	congest_type;
++	__u8	reserved1[6];
+ };
+ 
+ struct hns_roce_ib_alloc_ucontext {
+-- 
+2.30.0
 
 
