@@ -1,124 +1,169 @@
-Return-Path: <linux-kernel+bounces-71162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E02285A17F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 516AE85A184
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:00:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF9AA281836
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:59:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ED822831C0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:00:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C371C28E2B;
-	Mon, 19 Feb 2024 10:59:41 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45CC82C848;
+	Mon, 19 Feb 2024 10:59:53 +0000 (UTC)
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F20F28DD1
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 10:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C112F2C6B7;
+	Mon, 19 Feb 2024 10:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708340381; cv=none; b=afFaqVSEHUYr0CzYdT7f+fEbLxzRxEjBqrTbSB1I3rCZTrfRz4ShQL9sn8k2q3Ma1xSfkDlhjiXEwhiZM5AJ7DuOJYNnD5uaPE3KAWdNWTpS7HiJ9/eEluGnZjW5WWPluU0k3X2C9f+qkNuR0ATQdhRMZecGkofjQEXK2ni6+7o=
+	t=1708340392; cv=none; b=XvoUUIl73fvMcDa8nZZGyAdhcDboJs0JLs4tOlYHw3NvXUGRiWl5ySdlv8XmQOfz2m1Ryo8l1hlJPYDgLHvQSXf1OhWsR5zJCXoxee+0wNzd7NIotsp55nG/qTXlYCbu3+/czXCkpf+4rXtGvDf1H8/4/2V7d0GiqetXKwC2Jwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708340381; c=relaxed/simple;
-	bh=00egCWTf/Xz90viScRQeUZaKnDU/N7KFipBuJnl8Wp8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e187HLA7PJ5tNfvNJ5vsbbgNBvskQBzj9mT34F/f/Vm6xZzRU1UUYuWFpAfdAW5+/gOmjCUFV5lXnDXe+zOsUvKV/E4xo6WD4qsKvSXjF+PSC3fW6CA4yrHH2CxltclPj1grqnTtGXPG+Yj8EL1nbuJuGbCFC4kr59LzJo8lGRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rc1N2-0007tT-JA; Mon, 19 Feb 2024 11:59:36 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rc1N2-001dBG-6F; Mon, 19 Feb 2024 11:59:36 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rc1N2-007lm9-0N;
-	Mon, 19 Feb 2024 11:59:36 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: kernel@pengutronix.de,
-	Rob Herring <robh@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] w1: w1-gpio: Convert to platform remove callback returning void
-Date: Mon, 19 Feb 2024 11:59:30 +0100
-Message-ID:  <bd69ccde7395cf4bf63765e29c1ce83834d3669b.1708340114.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1708340114.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1708340114.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1708340392; c=relaxed/simple;
+	bh=9iYUBTrDt0nCCeA++luD/E09crSal7ZT4gRTognu6/0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=c8TLEGnZBuXQiQSPkKT0YejdEx/Pi1lamTOl+Nm5kOIbJQdL9djTEsxkfzUUuWlfucu9ZYXQaRHvdqwvTkPrjcGOj655/Rf+WMLiaJ+ANRe/sSG0nrEeE7zTuBkMRzb1aJrur1wfkxUlS6R1VQNx7Zq6DsOWQJKEPZG/xxussuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso3923433276.1;
+        Mon, 19 Feb 2024 02:59:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708340389; x=1708945189;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GsKj1zxCBujArf1Qupi8h232PRBUoq5ShZ2hvEaWeJs=;
+        b=rLHjS6QqhvUyzgnx3JjtyRSnEOvD6KO/gFzZNEGkTIyIqpjoZJKiqHOaJKZLKYzJNQ
+         9k5ovCx0gIcRqEJPN2Yzzfp9awU49RNH7n+Rc0woUG3M+0b3aNSeGSOhKtxMnb3J+7yl
+         hWYz0vhKdHoDTSYYbkR3LJDD5qByR1SwbaXjWKb+UjbjjhYTxBE6PKSfJ+aefU4eOSgz
+         n2PfULcH2ZpH8B9DtQh+RH4Vx5a633Lh2/fPh3C8+VvoCZEdxqK3eIu5nYxd0d5FC6PN
+         oV9kqDVB5qAeZXKoQnI+y80x4w419G6ces0lmJ0XH6GsjnuwK6K2vzDPjRh1/3PqjCVX
+         arfg==
+X-Forwarded-Encrypted: i=1; AJvYcCXsDaAyjZ+13WYnWE8wsm9jjRc4bxMI5YTmlhJNhwrxBrAtHPPzhlSMnyQlCA0DtESDIp/+ZqlvbQNpwv7+NSYJAIhOdfqb9dXiaw4ruFe35YBlX2jrYmHu7XGONlUTX2ugvy5dm/BpDLuqFcxK7Nk=
+X-Gm-Message-State: AOJu0YzKy1c/ifk+NaTR929TBysUUsmzpElPSrAc2TUMR4LtYmMiVG4k
+	m5LcBw50jgzwfeq51pA4Hv9B5GPyJoeUOJxnO54eWm5ZfaEXHf4B8W57HwYpKug=
+X-Google-Smtp-Source: AGHT+IHSRFkgSZyfJv0Zx5xHdFWYe8GF9x4eOCbZ0UdhcbwwZ43KnaZ6EFDCb9haCOV/dTtBV4SETw==
+X-Received: by 2002:a25:d80a:0:b0:dca:c369:face with SMTP id p10-20020a25d80a000000b00dcac369facemr11777606ybg.18.1708340388594;
+        Mon, 19 Feb 2024 02:59:48 -0800 (PST)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id 189-20020a250bc6000000b00d677aec54ffsm1416987ybl.60.2024.02.19.02.59.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Feb 2024 02:59:48 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6dcd9124bso3923403276.1;
+        Mon, 19 Feb 2024 02:59:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVXKu0T2P5fxP6/iKh0GtVMPeQyu7OThca2SRnz2pbLZ5Txb4r641hUnY7pJTr+3T9339qsZy9RG7uDjIP1UDYZARn6hoM1I4AOp+kF5Gmd+F5P57wZgq1WM3EYNookzTmbC/MXxUfZMZW/mksjk4A=
+X-Received: by 2002:a25:5f0d:0:b0:dcd:3a37:bdb1 with SMTP id
+ t13-20020a255f0d000000b00dcd3a37bdb1mr12200960ybb.44.1708340388188; Mon, 19
+ Feb 2024 02:59:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1873; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=00egCWTf/Xz90viScRQeUZaKnDU/N7KFipBuJnl8Wp8=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBl0zSTrq456IYWTjU+KXkxkmXQkNFMCKWgFxPeF 73xd2/n6FKJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZdM0kwAKCRCPgPtYfRL+ TkKdB/9Nux88D/xvqCPsFwszanxBm2bILV18T4Ub+x9ms/hcYEGQUHyWyiPA1+6ByDeIKJaoR9T Uf63vNWNwVoKavgzTS6VssxsHw9EN41Xg9ftCbvwNTMgPtkUbop0uyuRQTAbNIrRQ0TKKyLUeMV ZXWahZ+BVxAEATso9pWa4sDt5DzzoohY+q1UKYXP2bxA4/3K+l1FNVUDcBWsexPl2RtpyibuBTj Ds6qsQHc0ngNXgbBwMR8zMS6xe5XbVdl9x5IoR5NOCdzasu5wVmFdo429TFwGyE7KFx5RC2Hgsl SbzekQjXrg7aXDor58e4YNb45qbQWxrQXMrFKlBaDeTcZiIC
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20240202095636.868578-1-saravanak@google.com> <20240202095636.868578-3-saravanak@google.com>
+In-Reply-To: <20240202095636.868578-3-saravanak@google.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 19 Feb 2024 11:59:35 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVon3mdivZQ0O6D4+va0nGBrUQbDp23bEq661QD=4t7+g@mail.gmail.com>
+Message-ID: <CAMuHMdVon3mdivZQ0O6D4+va0nGBrUQbDp23bEq661QD=4t7+g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] driver core: fw_devlink: Improve detection of
+ overlapping cycles
+To: Saravana Kannan <saravanak@google.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Xu Yang <xu.yang_2@nxp.com>, kernel-team@android.com, linux-kernel@vger.kernel.org, 
+	Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The .remove() callback for a platform driver returns an int which makes
-many driver authors wrongly assume it's possible to do error handling by
-returning an error code. However the value returned is ignored (apart
-from emitting a warning) and this typically results in resource leaks.
+Hi Saravana,
 
-To improve here there is a quest to make the remove callback return
-void. In the first step of this quest all drivers are converted to
-remove_new(), which already returns void. Eventually after all drivers
-are converted, .remove_new() will be renamed to .remove().
+On Fri, Feb 2, 2024 at 10:57=E2=80=AFAM Saravana Kannan <saravanak@google.c=
+om> wrote:
+> fw_devlink can detect most overlapping/intersecting cycles. However it wa=
+s
+> missing a few corner cases because of an incorrect optimization logic tha=
+t
+> tries to avoid repeating cycle detection for devices that are already
+> marked as part of a cycle.
 
-Trivially convert this driver from always returning zero in the remove
-callback to the void returning variant.
+Nice (I assume it's due to this patch ;-), with v6.8-rc5 I see much fewer
+dependency cycle messages.
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/w1/masters/w1-gpio.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+E.g. on Salvator-XS:
 
-diff --git a/drivers/w1/masters/w1-gpio.c b/drivers/w1/masters/w1-gpio.c
-index 05c67038ed20..34128e6bbbfa 100644
---- a/drivers/w1/masters/w1-gpio.c
-+++ b/drivers/w1/masters/w1-gpio.c
-@@ -141,7 +141,7 @@ static int w1_gpio_probe(struct platform_device *pdev)
- 	return 0;
- }
- 
--static int w1_gpio_remove(struct platform_device *pdev)
-+static void w1_gpio_remove(struct platform_device *pdev)
- {
- 	struct w1_bus_master *master = platform_get_drvdata(pdev);
- 	struct w1_gpio_ddata *ddata = master->data;
-@@ -150,8 +150,6 @@ static int w1_gpio_remove(struct platform_device *pdev)
- 		gpiod_set_value(ddata->pullup_gpiod, 0);
- 
- 	w1_remove_master_device(master);
--
--	return 0;
- }
- 
- static struct platform_driver w1_gpio_driver = {
-@@ -160,7 +158,7 @@ static struct platform_driver w1_gpio_driver = {
- 		.of_match_table = of_match_ptr(w1_gpio_dt_ids),
- 	},
- 	.probe = w1_gpio_probe,
--	.remove = w1_gpio_remove,
-+	.remove_new = w1_gpio_remove,
- };
- 
- module_platform_driver(w1_gpio_driver);
--- 
-2.43.0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef7000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef6000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef5000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef4000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef3000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef2000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef1000/ports/port@1/endpoint@0
+-platform fea80000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef0000/ports/port@1/endpoint@0
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef3000/ports/port@1/endpoint@2
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef2000/ports/port@1/endpoint@2
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef1000/ports/port@1/endpoint@2
+-platform feaa0000.csi2: Fixed dependency cycle(s) with
+/soc/video@e6ef0000/ports/port@1/endpoint@2
+-platform fead0000.hdmi: Fixed dependency cycle(s) with
+/soc/sound@ec500000/ports/port@1/endpoint
+-platform feae0000.hdmi: Fixed dependency cycle(s) with
+/soc/sound@ec500000/ports/port@2/endpoint
+-platform feb00000.display: Fixed dependency cycle(s) with
+/soc/hdmi@feae0000/ports/port@0/endpoint
+-platform feb00000.display: Fixed dependency cycle(s) with
+/soc/hdmi@fead0000/ports/port@0/endpoint
+-platform hdmi0-out: Fixed dependency cycle(s) with
+/soc/hdmi@fead0000/ports/port@1/endpoint
+-platform hdmi1-out: Fixed dependency cycle(s) with
+/soc/hdmi@feae0000/ports/port@1/endpoint
+-platform vga-encoder: Fixed dependency cycle(s) with /vga/port/endpoint
+-platform vga-encoder: Fixed dependency cycle(s) with
+/soc/display@feb00000/ports/port@0/endpoint
 
+-i2c 2-0010: Fixed dependency cycle(s) with
+/soc/sound@ec500000/ports/port@0/endpoint
+-i2c 2-0010: Fixed dependency cycle(s) with /soc/sound@ec500000
+
+-i2c 4-0070: Fixed dependency cycle(s) with
+/soc/csi2@fea80000/ports/port@0/endpoint
+-i2c 4-0070: Fixed dependency cycle(s) with
+/soc/csi2@feaa0000/ports/port@0/endpoint
+-i2c 4-0070: Fixed dependency cycle(s) with /hdmi-in/port/endpoint
+-i2c 4-0070: Fixed dependency cycle(s) with /cvbs-in/port/endpoint
+
+FTR, the only remaining ones (on Salvator-XS) are:
+
+    platform soc: Fixed dependency cycle(s) with
+/soc/interrupt-controller@f1010000
+    platform e6060000.pinctrl: Fixed dependency cycle(s) with
+/soc/pinctrl@e6060000/scif_clk
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
