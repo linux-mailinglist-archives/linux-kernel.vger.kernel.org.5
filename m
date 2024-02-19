@@ -1,216 +1,125 @@
-Return-Path: <linux-kernel+bounces-71448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D3DF85A55F
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:05:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E12385A55A
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 15:04:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD940285FF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:05:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E656D1F22B18
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:04:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4721F374EA;
-	Mon, 19 Feb 2024 14:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BC02374F9;
+	Mon, 19 Feb 2024 14:04:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="jUCOuyn9"
-Received: from out199-15.us.a.mail.aliyun.com (out199-15.us.a.mail.aliyun.com [47.90.199.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jedCcVnU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CBD8381BD;
-	Mon, 19 Feb 2024 14:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.199.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7380374CB;
+	Mon, 19 Feb 2024 14:04:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708351496; cv=none; b=A0nRmhDTqdX0Yz4KHimMmHKZXMIMZ4yjyQkZjOEQV3E+Tm72VNuh6jjUWZA66iBJV4NQt0VSgp6qXqXKO+X9BdnLdmIOnDffarjOw+CDLSB7M+aMu5hjS6j9pFiEfY2z4Iea3YYvUyfRCLxMSVaMIJRu3su8GA1UVCB1x8t3jSs=
+	t=1708351483; cv=none; b=d3Zcq2zeX/op1fV0TYyKBhgP1We4ldPGk6ax4eDOOaFBKzey/QetTzhJGuuBN7fJk56LelK3oq/AoXoAe2S5Cno+K87db8EDD97B5lLUKQPraBZNY0+9lUbtFIUBeE8GCpvb+TDUP7aM3/prMBfJOhDd7Pza33ackTZJM9Ejp2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708351496; c=relaxed/simple;
-	bh=zXE55Wn1vwBRvTQKi9WOqRZmT86viMgSf4go7Yu3bbg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=owAQlgxIHuzo3aggXv/2qIjGNDHTZnJZf/dR4p35y2/QYBHHZ7ipSlvj+qndX9rv5VA7rV8A2on0D5RO2cJzOcgDZ3H4dcoq0yxgmw6IwP5nlv2fxxCmOLZ1oofDkP/lbZ6ZCjI11PPawllKFU9NsDRu/W/VRvjDiQagWKSUUuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=jUCOuyn9; arc=none smtp.client-ip=47.90.199.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708351474; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=BNkhxppDcbFezZ4gGJ8AqJVbJcBTfeeZ+zXUxQ8+TPE=;
-	b=jUCOuyn91MI2xA/eVE+GsD/JFOoJByBj0SaPY53TCHgq9g9L5cUwM0JoLersIFC7zh5Xhnok6v7lfxNBj38xhv8HnjT6SIJPsu0hSKgAFZFSzEirN7LV97QHCoMnswY5zkZ2JMwlUOL4VN19YSopr42jJyTjydorIGNDIuZn71s=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0W0tkCQI_1708351472;
-Received: from 30.221.128.181(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W0tkCQI_1708351472)
-          by smtp.aliyun-inc.com;
-          Mon, 19 Feb 2024 22:04:33 +0800
-Message-ID: <8a333c58-4a74-4a1c-9680-a0b9b4020a62@linux.alibaba.com>
-Date: Mon, 19 Feb 2024 22:04:32 +0800
+	s=arc-20240116; t=1708351483; c=relaxed/simple;
+	bh=MIUwjUjiAAu1+q/+I/qDOmSpFjx0udf6D1AQ0UhEV0k=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Moko6YmUs9VBaJe3gswYATlz21uLWzHzJd6tGzdnuR2BppuRkoK3FoAFu/0C04n3/yikxEIfBBG9xXmCoTq8wRyPz5mjx/pdA0ZRnHjlbpK3PbGCJ2QRIUGTHk1qQCNXu1komn4YBTWZrIFAvupLeXd83BFax2Yvz9i+KLLeLLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jedCcVnU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69997C433F1;
+	Mon, 19 Feb 2024 14:04:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708351482;
+	bh=MIUwjUjiAAu1+q/+I/qDOmSpFjx0udf6D1AQ0UhEV0k=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=jedCcVnUuRu7WsgBTsb7EkozXwzEc3q772jGzsuk/FFQmz1tgYk50Mc2U2wZx/91y
+	 WbyV4CYns7fJxNb3T8sbT12ZpsxAvz2UMK8HNJHAexd4YIf8Hs2kCUnCPh9LjJA5i9
+	 +hn23n7mOO5tHgEfkBrZgFCR2JEFmex5DzGDmSxO+YbV1llrm+6ORSDZrT3eMEfBRX
+	 agBkU5jq7zX0iCu9JbIUWEkodqBPYXRWjjT9cerlSRJrTQNy15NwcypdqVWi+pqJ0s
+	 garRRcf/WFr8bICdloI03C9IvteoR/FOsb4rhi1IkfFqsHafVmJeun6ny9xToBXma0
+	 5+xmyVcvS+AFA==
+Date: Mon, 19 Feb 2024 23:04:35 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
+ linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v7 23/36] function_graph: Add a new exit handler with
+ parent_ip and ftrace_regs
+Message-Id: <20240219230435.3158a36f60c20dcf2112cf0f@kernel.org>
+In-Reply-To: <20240218115328.c95bfe7001b7260071e6b674@kernel.org>
+References: <170723204881.502590.11906735097521170661.stgit@devnote2>
+	<170723230476.502590.16817817024423790038.stgit@devnote2>
+	<20240215110404.4e8c5a94@gandalf.local.home>
+	<20240216175108.79a256a20c89ed1d672c7e14@kernel.org>
+	<20240218115328.c95bfe7001b7260071e6b674@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 00/15] net/smc: implement loopback-ism used by
- SMC-D
-To: Alexandra Winter <wintera@linux.ibm.com>, wenjia@linux.ibm.com,
- hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-s390@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240111120036.109903-1-guwen@linux.alibaba.com>
- <83b9d600-339c-4c9f-860d-ab4539a0ae6b@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <83b9d600-339c-4c9f-860d-ab4539a0ae6b@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+Hi Steve,
 
+On Sun, 18 Feb 2024 11:53:28 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-On 2024/2/6 20:18, Alexandra Winter wrote:
+> On Fri, 16 Feb 2024 17:51:08 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 > 
+> > > > @@ -798,10 +798,6 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+> > > >  
+> > > >  	*index += FGRAPH_RET_INDEX;
+> > > >  	*ret = ret_stack->ret;
+> > > > -	trace->func = ret_stack->func;
+> > > > -	trace->calltime = ret_stack->calltime;
+> > > > -	trace->overrun = atomic_read(&current->trace_overrun);
+> > > > -	trace->depth = current->curr_ret_depth;
+> > > 
+> > > There's a lot of information stored in the trace structure. Why not pass
+> > > that to the new retregfunc?
+> > > 
+> > > Then you don't need to separate this code out.
+> > 
+> > Sorry, I couldn't catch what you meant, Would you mean to call
+> > ftrace_pop_return_trace() before calling retregfunc()?? because some of the
+> > information are found from ret_stack, which is poped from shadow stack.
 > 
-> On 11.01.24 13:00, Wen Gu wrote:
->> This patch set acts as the second part of the new version of [1] (The first
->> part can be referred from [2]), the updated things of this version are listed
->> at the end.
->>
->> # Background
->>
->> SMC-D is now used in IBM z with ISM function to optimize network interconnect
->> for intra-CPC communications. Inspired by this, we try to make SMC-D available
->> on the non-s390 architecture through a software-implemented virtual ISM device,
->> that is the loopback-ism device here, to accelerate inter-process or
->> inter-containers communication within the same OS instance.
+> Ah, sorry I got what you said. I think this `trace` is not usable for the new
+> interface. Most of the information is only used for the function-graph tracer.
+> For example, trace->calltime and trace->overrun, trace->depth are used only
+> for the function-graph tracer, but not for the other tracers.
 > 
-> 
-> Hello Wen Gu,
-> 
-> thank you very much for this patchset. I have been looking at it a bit.
-> I installed in on a testserver, but did not yet excercise the loopback-ism device.
-> I want to continue investigations, but daily work interferes, so I thought I
-> send you some comments now. So this is not at all a code review, but some
-> thoughts and observations about the general concept.
-> 
+> But yeah, this idea is considerable. It also allows us to just update
+> entryfunc() and retfunc() to pass fgraph_regs and return address.
 
-Thank you very much, Sandy.
+The reason why I didn't use the those for *regfunc() is not only those
+have unused information, but those does not have some params.
 
-> 
-> In [1] there was a discussion about an abstraction layer between smc-d and the
-> ism devices.
-> I am not sure what you are proposing now, is it an smc-d feature or independent of smc?
-> In 3/15 you say it is part of the SMC module, but then it has its own device entry.
-> Didn't you want to use it for other things as well? Or is it an SMC-D only feature?
-> Is it a device (Config help: "kind of virtual device")? Or an SMC-D feature?
-> 
+ - ftrace_graph_ent only have current `func`, but entryregfunc()
+    needs `parent_ip` (== return address)
+ - ftrace_graph_ret only have current `func`, but retregfunc()
+    needs `ret` (== return address) too.
 
-This patchset aims to propose an SMC feature, which is SMC-D loopback. The main work
-to achieve this feature is to implement an Emulated-ISM, which is loopback-ism. The
-loopback-ism is a 'built-in' dummy device of SMC and only serves SMC.
+If I update the ftrace_graph_ent/ret to add 'retaddr', we can just pass
+ftrace_graph_ent/ret, ftrace_regs, and fgraph_ops to *regfunc().
+Moreover, maybe we don't need *regfunc, but just update entryfunc/retfunc
+to pass ftrace_regs *, which will be NULL if it is not supported.
 
-SMC-D protocol + 'built-in dummy device' (loopback-ism device) = SMC-D loopback feature.
+Thank you,
 
-To provide the runtime switch and statistics of loopback-ism, I need to find a sysfs
-entry for it, since it doesn't belong to any class (e.g. pci_bus), I created an 'smc'
-entry under /sys/devices/virtual/ and put loopback-ism under it.
-
-The other SMC devices, such as RoCE, s390 ISM, virtio-ism will be in their own sysfs
-entry, not under the /sys/devices/*virtual*/smc/.
-
-The Config help is somewhat inaccurate. To be more precise, the SMC_LO config is used to
-configure whether to enable this built-in dummy device for intra-OS communication.
-
-> Will we have a class of ism devices (s390 ism, ism-loopback, virtio-ism)
-> That share common properties (internal API?)
-> and smc-d will work with any of those? > But they all can exist without smc ?! BTW: This is what we want for s390-ism.
-> The client-registration interface [2] is currently the way to achieve this.
-> But maybe we need a more general concept?
-> 
-
-I didn't mean to create a class to cover all the ISM devices. It is only for
-loopback-ism. Because loopback-ism can not be classified, so I create an entry
-under /sys/devices/virtual/.
-
-> Maybe first a preparation patchset that introduces a class/ism
-> Together with an improved API?
-> In case you want to use ISM devices for other purposes as well..
-> But then the whole picture of ism-loopback in one patchset (RFC?)
-> has its benefits as well.
-> 
-
-Sorry for causing, I didn't mean to create a class to cover all the ISM devices.
-They should be in their own sysfs entries (e.g. pci_bus), since they will be used
-out of SMC. Only loopback-ism belongs only to SMC.
-
-> 
-> Other points that I noticed:
-> 
-> Naming: smc loopback, ism-loopback, loopback-ism ?
-> 
-> config: why not tristate? Why under net/smc?
-> 
-
-'SMC-D loopback' or 'SMC loopback' is used to indicate the feature or capability.
-'loopback-ism' is the emulated-ISM device that 'SMC/SMC-D loopback' used.
-('ism-loopback' doesn't seem to appear in my patchset)
-If we all agree with these, I will check all the terms in the patch and unify them.
-
-SMC_LO is used to configure whether SMC is allowed to use loopback-ism (CONFIG_SMC_LO),
-it acts as a check in the code, so I defined it as a bool.
-And loopback-ism only serves SMC-D loopback, as a feature of SMC, so the implementation
-(net/smc/smc_loopback.{c|h}) is under net/smc.
-
-> /sys/devices/virtual/smc  does not initially show up in my installation!!!
-> root@t35lp50:/sys/devices/virtual/> ls
-> 3270/  bdi/  block/  graphics/  iommu/  mem/  memory_tiering/  misc/  net/  tty/  vc/  vtconsole/  workqueue/
-> root@t35lp50:/sys/devices/virtual/> ls smc/loopback-ism
-> active  dmb_copy  dmbs_cnt  dmb_type  subsystem@  uevent  xfer_bytes
-> root@t35lp50:/sys/devices/virtual/> ls
-> 3270/  bdi/  block/  graphics/  iommu/  mem/  memory_tiering/  misc/  net/  smc/  tty/  vc/  vtconsole/  workqueue/
-> Is that normal behaviour?
-> 
-
-/sys/devices/virtual/smc is created after SMC module initialization.
-During the SMC module initialization, smc_loopback_init() is called, and the
-/sys/devices/virtual/smc entry is created.
-
-> You introduced a class/smc
-> Maybe class/ism would be better?
-> The other smc interfaces do not show up in class/smc!! Not so good
-> 
-
-Sorry for causing, I didn't mean to create a class to cover all the ISM devices.
-They should be in their own sysfs entries (e.g. pci_bus), since they can be used
-out of SMC. But loopback-ism is a SMC 'built-in' dummy device, it belongs only
-to SMC and can't be classified to other entries.
-
-
-> Why doesn't it show in smc_rnics?
-> (Maybe some deficiency of smc_rnics?)
-> 
-smc_rnics can't be used on the arch other than s390.
-
-# ./smc_rnics  -a
-Error: s390/s390x supported only
-
-
-> But then it shows in other smc-tools:
-> root@t35lp50:/sys/> smcd device
-> FID  Type  PCI-ID        PCHID  InUse  #LGs  PNET-ID
-> 0000 0     loopback-ism  ffff   No        0
-> 0029 ISM   0000:00:00.0  07c1   No        0  NET1
-> Nice!
-> 
-
-Yes, this is did on patch 01/15.
-
-Best regards,
-Wen Gu
-
-> Kind regards
-> Sandy
-> 
-> 
-> [1] https://lore.kernel.org/lkml/e3819550-7b10-4f9c-7347-dcf1f97b8e6b@linux.alibaba.com/
-> [2] 89e7d2ba61b7 ("net/ism: Add new API for client registration")
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
