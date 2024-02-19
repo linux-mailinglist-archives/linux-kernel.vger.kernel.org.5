@@ -1,351 +1,91 @@
-Return-Path: <linux-kernel+bounces-71711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B3DC85A95B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:53:38 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2761F85A95C
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6F0D1F25345
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:53:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A8581C22AF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:53:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D60CB44374;
-	Mon, 19 Feb 2024 16:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JI1f4X7z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC30441C88;
-	Mon, 19 Feb 2024 16:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061AC42060;
+	Mon, 19 Feb 2024 16:53:46 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F64341C90
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708361606; cv=none; b=O3Ov8yuubjsxwlkLQFUuurbWcWQHmdGUQFUpe+/k0utBq/ZpOx8958MB7/DHyKY4p1JSt+LDwtr4N5BIjfw4Ot1IkPXKFwD2lzNMhkBaRdv+pR9FUFcKZtyGaah40gXSTLiNoXsWl6wCayl4iJLcPnnuJL1IX2XImZDpaHpzZZE=
+	t=1708361625; cv=none; b=rXw8FGdZ/LBKlahFmI3gJoChELeidABALntl6sO0MKDvHVrVFP3Gong7KUex7umGzq1D3KvC47FAG0Vn3snWLrjc/ExMjJ/OjqBgjbG9duvkpJSBqwzojRTQSII+7P5O1fXrlefFDmvFnF0NxV9oQb5fvlyfPOIC9TUWO7d8eFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708361606; c=relaxed/simple;
-	bh=f2pGjIrGzIVHhDCQuI/OlSCJwyDJBsyEeJGyoKZ6qSw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nbrs4c+4Djst1z+I8Ux2+at72FteVs/HOm2+ivwbrDX4bbnzWRBgAYDwM+FajYzLwNC91CLHnMkGRlxwa7lb1ZQOSd3Ka0rEC58MHuYPVxaSY1QrWOWmmLDfaV0/pxcIxK9NGUFWmf4rNSbEScwleYFbojQm3Fb26gyZDNO34Zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JI1f4X7z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E1AEC433C7;
-	Mon, 19 Feb 2024 16:53:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708361606;
-	bh=f2pGjIrGzIVHhDCQuI/OlSCJwyDJBsyEeJGyoKZ6qSw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JI1f4X7zahYiOHtaw3uaKc51xnxwwsLxnN7zcPr9UHHfa+KJMCkubhWl3d1VmnY1M
-	 dycWS34G782UHX90d03d1zcpaD74GRAaYOUZ7JLBwYAHTGzFeWYNXQ1cVUXVsj1pat
-	 NwOzbUDZftmfha9RG3+a2V8BDvyVre3gMzz8lkjdIR7Haay8YaNypl3ICq57O1DP+w
-	 dkp50REOWOrEBNgor8+6criR97GU601Y7dS5XJ8NrCds/Z9TjViMZw+EDBkzO08wan
-	 LVQ5hXW6xnMj7xFgUNjOKbSSGd2EZ3UJMB3wI3CYPgJqCUDJi1aKEMh4+VnhWLvOIt
-	 QUSGPykzEJHfA==
-Date: Mon, 19 Feb 2024 17:53:23 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Adam Ford <aford173@gmail.com>
-Cc: Biju Das <biju.das.jz@bp.renesas.com>, 
-	Geert Uytterhoeven <geert@linux-m68k.org>, Frank Binns <frank.binns@imgtec.com>, 
-	Matt Coster <matt.coster@imgtec.com>, Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Sarah Walker <sarah.walker@imgtec.com>, 
-	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Nishanth Menon <nm@ti.com>, 
-	Marek Vasut <marek.vasut@mailbox.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should depend on ARCH_K3
-Message-ID: <olsxsviy5w2guinmc33mqtqn36kakanf6i644nzuk5d7mp2ywt@cn5zhr6qxcgy>
-References: <CAHCN7xJ65RP8TO7cS0p5DwE6zru5NEF0_JA+8siT_OpSeLD7pA@mail.gmail.com>
- <CAHCN7x+EnSU8qk5dBFco=0vkeknGq18qEN7vFmZs0_q83T_3+w@mail.gmail.com>
- <CAHCN7xKffJ29zyjoJVAcy3b_d=-zkFzbL=URj4yWJWzYvRdB_Q@mail.gmail.com>
- <TYCPR01MB11269CBE8429A31DE5002A5A5864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <nzrkujogauvn262ucxippwidyub6ikcohcjpbpn4hzj7rymctm@4owntgrmcquf>
- <TYCPR01MB11269CBAA20275E11D9AD6500864C2@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <wxwad77x2mxhhwdsbgiytzn6x54t4sywodjhzefwldo277njiz@ru7z54wxgelu>
- <CAHCN7xJi-6W6x+OJmkNwOX45SM4WHD5zkN42ZOp8ZxFnp3YL5w@mail.gmail.com>
- <TYCPR01MB11269B2104687F091CFA3405F86512@TYCPR01MB11269.jpnprd01.prod.outlook.com>
- <CAHCN7x+BVYoeDC+Rt4PV-dxyMZ-0GyYfiRcXwmVWwursz5NAfg@mail.gmail.com>
+	s=arc-20240116; t=1708361625; c=relaxed/simple;
+	bh=KoQJFulaE3GjiTYeD949sVNOR6BpYwswM2yFF/Q1HPE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rM27Qj/8NmQZKJvgt67HG+sQnIygDecM/41jaX3HM3GoDp0pCQYRW3AiEA+pdpREBcwU5ujscffcpzSrg8d01KISWietdONtHBvLGYA20bT6Vht+9VgxkQclGeXmZXcLOTngxYiYZq31Rt3t7zgruFEDr6qWyc4iepmN7B96gQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 44A13DA7;
+	Mon, 19 Feb 2024 08:54:22 -0800 (PST)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09FB93F762;
+	Mon, 19 Feb 2024 08:53:39 -0800 (PST)
+Message-ID: <66a54c8b-2013-48d9-8114-6f3f72cd2871@arm.com>
+Date: Mon, 19 Feb 2024 16:53:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="n34ceiql5xopfxiw"
-Content-Disposition: inline
-In-Reply-To: <CAHCN7x+BVYoeDC+Rt4PV-dxyMZ-0GyYfiRcXwmVWwursz5NAfg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 00/24] x86/resctrl: monitored closid+rmid together,
+ separate arch/fs locking
+Content-Language: en-GB
+To: Thomas Gleixner <tglx@linutronix.de>, Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+ Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>, Ingo Molnar <mingo@redhat.com>,
+ H Peter Anvin <hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
+ shameerali.kolothum.thodi@huawei.com,
+ D Scott Phillips OS <scott@os.amperecomputing.com>,
+ carl@os.amperecomputing.com, lcherian@marvell.com,
+ bobo.shaobowang@huawei.com, tan.shaopeng@fujitsu.com,
+ baolin.wang@linux.alibaba.com, Jamie Iles <quic_jiles@quicinc.com>,
+ Xin Hao <xhao@linux.alibaba.com>, peternewman@google.com,
+ dfustini@baylibre.com, amitsinght@marvell.com,
+ David Hildenbrand <david@redhat.com>
+References: <20240213184438.16675-1-james.morse@arm.com>
+ <20240217105543.GAZdCQr_nosDP4tGuO@fat_crate.local> <87zfvwieli.ffs@tglx>
+From: James Morse <james.morse@arm.com>
+In-Reply-To: <87zfvwieli.ffs@tglx>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Hi Thomas,
+
+On 19/02/2024 16:49, Thomas Gleixner wrote:
+> On Sat, Feb 17 2024 at 11:55, Borislav Petkov wrote:
+>> On Tue, Feb 13, 2024 at 06:44:14PM +0000, James Morse wrote:
+>>> It's been back and forth for whether this series should be rebased onto Tony's
+>>> SNC series. This version isn't, its based on tip/x86/cache.
+>>> (I have the rebased-and-tested versions if anyone needs them)
+>>
+>> The set applied ontop of tip:x86/cache gives:
+>>
+>> vmlinux.o: in function `get_domain_from_cpu':
+>> (.text+0x150f33): undefined reference to `lockdep_is_cpus_held'
+>> ld: vmlinux.o: in function `rdt_ctrl_update':
+>> (.text+0x150fbc): undefined reference to `lockdep_is_cpus_held'
+> 
+> Wants to be folded into patch 24.
+
+Thanks - I'm just putting a v10 together to fix this.
 
 
---n34ceiql5xopfxiw
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks,
 
-On Mon, Feb 19, 2024 at 10:38:12AM -0600, Adam Ford wrote:
-> On Mon, Feb 19, 2024 at 1:45=E2=80=AFAM Biju Das <biju.das.jz@bp.renesas.=
-com> wrote:
-> >
-> > Hi Adam,
-> >
-> > > -----Original Message-----
-> > > From: Adam Ford <aford173@gmail.com>
-> > > Sent: Sunday, February 18, 2024 11:26 PM
-> > > Subject: Re: RE: RE: [PATCH v2] drm/imagination: DRM_POWERVR should d=
-epend
-> > > on ARCH_K3
-> > >
-> > > On Fri, Feb 16, 2024 at 8:14=E2=80=AFAM Maxime Ripard <mripard@kernel=
-=2Eorg> wrote:
-> > > >
-> > > > On Fri, Feb 16, 2024 at 09:13:14AM +0000, Biju Das wrote:
-> > > > > Hi Maxime Ripard,
-> > > > >
-> > > > > > -----Original Message-----
-> > > > > > From: Maxime Ripard <mripard@kernel.org>
-> > > > > > Sent: Friday, February 16, 2024 9:05 AM
-> > > > > > Subject: Re: RE: [PATCH v2] drm/imagination: DRM_POWERVR should
-> > > > > > depend on
-> > > > > > ARCH_K3
-> > > > > >
-> > > > > > On Fri, Feb 16, 2024 at 08:47:46AM +0000, Biju Das wrote:
-> > > > > > > Hi Adam Ford,
-> > > > > > >
-> > > > > > > > -----Original Message-----
-> > > > > > > > From: Adam Ford <aford173@gmail.com>
-> > > > > > > > Sent: Thursday, February 15, 2024 11:36 PM
-> > > > > > > > Subject: Re: [PATCH v2] drm/imagination: DRM_POWERVR should
-> > > > > > > > depend on
-> > > > > > > > ARCH_K3
-> > > > > > > >
-> > > > > > > > On Thu, Feb 15, 2024 at 11:22=E2=80=AFAM Adam Ford <aford17=
-3@gmail.com>
-> > > wrote:
-> > > > > > > > >
-> > > > > > > > > On Thu, Feb 15, 2024 at 11:10=E2=80=AFAM Adam Ford
-> > > > > > > > > <aford173@gmail.com>
-> > > > > > wrote:
-> > > > > > > > > >
-> > > > > > > > > > On Thu, Feb 15, 2024 at 10:54=E2=80=AFAM Geert Uytterho=
-even
-> > > > > > > > > > <geert@linux-m68k.org> wrote:
-> > > > > > > > > > >
-> > > > > > > > > > > Hi Maxime,
-> > > > > > > > > > >
-> > > > > > > > > > > On Thu, Feb 15, 2024 at 5:18=E2=80=AFPM Maxime Ripard
-> > > > > > > > > > > <mripard@kernel.org>
-> > > > > > > > wrote:
-> > > > > > > > > > > > On Thu, Feb 15, 2024 at 01:50:09PM +0100, Geert
-> > > > > > > > > > > > Uytterhoeven
-> > > > > > > > wrote:
-> > > > > > > > > > > > > Using the Imagination Technologies PowerVR Series=
- 6
-> > > > > > > > > > > > > GPU requires a proprietary firmware image, which =
-is
-> > > > > > > > > > > > > currently only available for Texas Instruments K3
-> > > > > > > > > > > > > AM62x SoCs.  Hence add a dependency on ARCH_K3, to
-> > > > > > > > > > > > > prevent asking the user about this driver when
-> > > > > > > > > > > > > configuring a kernel without Texas Instruments K3
-> > > > > > > > Multicore SoC support.
-> > > > > > > > > > > >
-> > > > > > > > > > > > This wasn't making sense the first time you sent it,
-> > > > > > > > > > > > and now that commit log is just plain wrong. We have
-> > > > > > > > > > > > firmwares for the G6110, GX6250, GX6650, BXE-4-32, =
-and
-> > > > > > > > > > > > BXS-4-64 models, which can be found on (at least)
-> > > > > > > > > > > > Renesas, Mediatek, Rockchip, TI and StarFive, so
-> > > > > > > > > > > > across three
-> > > > > > > > > > >
-> > > > > > > > > > > I am so happy to be proven wrong!
-> > > > > > > > > > > Yeah, GX6650 is found on e.g. R-Car H3, and GX6250 on=
- e.g.
-> > > > > > > > > > > R-Car M3-
-> > > > > > > > W.
-> > > > > > > > > > >
-> > > > > > > > > > > > architectures and 5 platforms. In two months.
-> > > > > > > > > > >
-> > > > > > > > > > > That sounds like great progress, thanks a lot!
-> > > > > > > > > > >
-> > > > > > > > > > Geert,
-> > > > > > > > > >
-> > > > > > > > > > > Where can I find these firmwares? Linux-firmware[1]
-> > > > > > > > > > > seems to lack all but the original K3 AM62x one.
-> > > > > > > > > >
-> > > > > > > > > > I think PowerVR has a repo [1], but the last time I
-> > > > > > > > > > checked it, the BVNC for the firmware didn't match what
-> > > > > > > > > > was necessary for the GX6250 on the RZ/G2M.  I can't
-> > > > > > > > > > remember what the corresponding R-Car3 model is.  I
-> > > > > > > > > > haven't tried recently because I was told more
-> > > > > > > > > > documentation for firmware porting would be delayed unt=
-il
-> > > everything was pushed into the kernel and Mesa.
-> > > > > > > > > > Maybe there is a better repo and/or newer firmware some=
-where
-> > > else.
-> > > > > > > > > >
-> > > > > > > > > I should have doubled checked the repo contents before I
-> > > > > > > > > sent my last e-mail , but it appears the firmware  [2] for
-> > > > > > > > > the RZ/G2M, might be present now. I don't know if there a=
-re
-> > > > > > > > > driver updates necessary. I checked my e-mails, but I did=
-n't
-> > > > > > > > > see any notification, or I would have tried it earlier.
-> > > > > > > > > Either way, thank you Frank for adding it.  I'll try to t=
-est
-> > > when I have some time.
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > I don't have the proper version of Mesa setup yet, but for
-> > > > > > > > what it's worth, the firmware loads without error, and it
-> > > doesn't hang.
-> > > > > > >
-> > > > > > > Based on [1] and [2],
-> > > > > > >
-> > > > > > > kmscube should work on R-Car as it works on RZ/G2L with panfr=
-ost
-> > > > > > > as earlier version of RZ/G2L which uses drm based on RCar-Du,
-> > > > > > > later changed
-> > > > > > to rzg2l-du.
-> > > > > >
-> > > > > > IIRC, the mesa support isn't there yet for kmscube to start.
-> > > > >
-> > > > > What about glmark2? I tested glmark2 as well.
-> > > >
-> > > > It's not really a matter of kmscube itself, but the interaction with
-> > > > the compositor entirely. You can run a headless vulkan rendering, b=
-ut
-> > > > an application that renders to a window won't work.
-> > >
-> > > I have made a little progress.  I have Ubuntu running on an RZ/G2M (R=
-ogue
-> > > GX6250) with a device tree configuring the GPU and the GPU loads with
-> > > firmware.
-> > >
-> > >   powervr fd000000.gpu: [drm] loaded firmware
-> > > powervr/rogue_4.45.2.58_v1.fw
-> > >   powervr fd000000.gpu: [drm] FW version v1.0 (build 6513336 OS)
-> > >   [drm] Initialized powervr 1.0.0 20230904 for fd000000.gpu on minor 0
-> > >
-> > > drmdevice lists card0 and renderD128
-> > > --- Checking the number of DRM device available ---
-> > > --- Devices reported 2 ---
-> > > --- Retrieving devices information (PCI device revision is ignored) -=
---
-> > > device[0]
-> > > +-> available_nodes 0x05
-> > > +-> nodes
-> > > |   +-> nodes[0] /dev/dri/card0
-> > > |   +-> nodes[2] /dev/dri/renderD128
-> > > +-> bustype 0002
-> > > |   +-> platform
-> > > |       +-> fullname /soc/gpu@fd000000
-> > > +-> deviceinfo
-> > >     +-> platform
-> > >         +-> compatible
-> > >                     renesas,r8a774a1-gpu
-> > >                     img,img-axe
-> > >
-> > > There is more to this dump, but it seems to repeat. I wanted to show =
-that
-> > > it seems like it's trying to work.
-> > >
-> > > I think I need to modify the powervr code in mesa to recognize the
-> > > renesas,r8a774a1-gpu and associate it with the rcar-du, but I am not =
-sure,
-> > > and I am hoping someone might be able to provide some guidance, since=
- I
-> > > think I am missing something somewhere. I modified pvr_device.c in the
-> > > mesa driver to attempt do this:
-> > >
-> > > /* This is the list of supported DRM render/display driver configs. */
-> > > static const struct pvr_drm_device_config pvr_drm_configs[] =3D {
-> > >    DEF_CONFIG("mediatek,mt8173-gpu", "mediatek-drm"),
-> > >    DEF_CONFIG("ti,am62-gpu", "ti,am625-dss"),
-> > >    DEF_CONFIG("renesas,r8a774a1-gpu", "rcar-du"), };
-> > >
-> > > When I run modetest -M rcar-du, I can see the encoders and connectors=
- and
-> > > I can display test patterns, so the rcar-du is working.
-> > >
-> > > I built Mesa 24.0.1 with the following options:
-> > >
-> > > meson setup builddir -Dvulkan-drivers=3Dimagination-experimental
-> > > -Dimagination-srv=3Dtrue -Dtools=3Dall -Dgallium-drivers=3Dzink,kmsro=
-,swrast
-> > >
-> > > I have tried to set PVR_I_WANT_A_BROKEN_VULKAN_DRIVER=3D1 the Mesa
-> > > documentation for the powerVR, and I have exported the variable for
-> > > VK_ICD_FILENAMES to point to the powervr json file.
-> > >
-> > > when I try to run glmark2-drm, I was expecting the GL reddered to be =
-the
-> > > powervr, but it keeps using the
-> > > GL_RENDERER:    llvmpipe (LLVM 15.0.7, 128 bits)
-> > >
-> > > I realize this driver is still in its infancy, but I was hoping someo=
-ne
-> > > could give me some guidance to let me know if the work to do is on the
-> > > Mesa side or the rcar-du driver side, or something else.
-> > >
-> > > I rebuilt both libdrm and mesa.  While I don't get any errors, I also
-> > > don't get the hardware acceleration I was hoping for.
-> > >
-> > > I even tried  PVR_I_WANT_A_BROKEN_VULKAN_DRIVER=3D1
-> > > MESA_LOADER_DRIVER_OVERRIDE=3Dzink MESA_DEBUG=3Dcontect glmark2-drm
-> > >
-> > > ...but it only renders with llvmpipe
-> > >
-> > >     glmark2 2023.01
-> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > >     OpenGL Information
-> > >     GL_VENDOR:      Mesa
-> > >     GL_RENDERER:    llvmpipe (LLVM 15.0.7, 128 bits)
-> > >     GL_VERSION:     4.5 (Compatibility Profile) Mesa 24.0.1
-> > >     Surface Config: buf=3D32 r=3D8 g=3D8 b=3D8 a=3D8 depth=3D32 stenc=
-il=3D0 samples=3D0
-> > >     Surface Size:   3840x2160 fullscreen
-> > >
-> > >
-> > > I am not as familiar with the Mesa side, but if I can get this workin=
-g to
-> > > a point where something is rendered, even if it's not 100% compliant,=
- I'd
-> > > like to push patches to the kernel and/or Mesa if necessary.
-> >
-> > FYI, the glmark2 I tested on RZ/G2L with panfrost is with wayland windo=
-w system [1].
-> >
-> > Maybe there should be an panfrost equivalent package for powevr is avai=
-lable in mesa??
-> > That is the only difference w.r.to panfrost.
-> >
-> > PACKAGECONFIG_append_pn-mesa =3D " egl kmsro panfrost"
-> >
->=20
-> I am not using Yocto, because I am using Ubuntu, but I have build Mesa
-> per the instructions they provided, but the glue that connects the
-> powervr to the rcar-du isn't as clear.  I looked at the panfrost
-> implementation, but I didn't see anything obvious.   It looks like the
-> panfrost integrates with the kms driver, which I was rather expecting
-> powervr would do.  I can tell the mesa library is build built and
-> loaded but it's not attempting to use it for some reason
-
-I think the reason is what Matt was hinting at: the driver doesn't
-support OpenGL at the moment, and you're trying to use an OpenGL
-application.
-
-Maxime
-
---n34ceiql5xopfxiw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZdOHggAKCRDj7w1vZxhR
-xfIaAP41zvmkOPFe3gc+9fStEHohe5m5PkqcyJbHnJBNYpZBFwEA1ZzPg6dJj6Gv
-Bbh4YQUUzMoS+3Yy2oLL9CRVF52LpgY=
-=QFmn
------END PGP SIGNATURE-----
-
---n34ceiql5xopfxiw--
+James
 
