@@ -1,160 +1,163 @@
-Return-Path: <linux-kernel+bounces-71256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33CD85A28D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:54:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 138E285A292
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:56:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B2ED1F212DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:54:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83DD62817A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6262D044;
-	Mon, 19 Feb 2024 11:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A95F2D627;
+	Mon, 19 Feb 2024 11:56:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="OGQZ+uzj"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gMfhQGjO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CW3k+AAS";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="buau6+K+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="t31G6cyP"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726422D60C;
-	Mon, 19 Feb 2024 11:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C121F2D604;
+	Mon, 19 Feb 2024 11:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708343670; cv=none; b=m7bA7tYENHeUxrFMvfLOhPq6eztqHN0ozmh9ScXZDbevIr9jYHuDHEwpqVCCg2hC2OlnLFb3NMHY5Jpps4/dl9CID9x07mEg1eLOE74A/fT0Je11s7/qAwV6+ppYKbx5fetfh4JwO+HeEUClmflyF0vWzJalSbxrhEoENgsV9T4=
+	t=1708343779; cv=none; b=sM5cbThLK/xi8i6g0uww9T7F53Vt+okY9Rr9FPL/bVuA6OIDHjprOXHwF/fzHYKH9uLU/3Saa4N4/seZwaPeKE50vMWJV3KqnseMXuoeb4P8c60l5opSGnp4ugtYeJdbji2IKc3YOzcqKQXfHsqiZRVx941hX9GGd5Sa+ISwRak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708343670; c=relaxed/simple;
-	bh=/54XkQRIaMoh0oyLd5k/+n5EWpirSB7YraPB3iemee0=;
+	s=arc-20240116; t=1708343779; c=relaxed/simple;
+	bh=6EisK76yYaXOwsl5YMYWUtUhlQhrvrxsUxnJoTcUV9U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E4yrmS0bckMJStmYVuHdjpzXS2IJcnW+0jUTw5k+9xY+TKayQtTbC+sy36JEllgusjBA4FtmAovX8aYLZz+4JKfqK0qh7TJWlKyN+7L0fErydCSzSLVrer5Us4PXDDUTWzrCQgIo6+Eq63ou84Zr60Zsny4g9xTUDh0chUccRHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=OGQZ+uzj; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (89-27-53-110.bb.dnainternet.fi [89.27.53.110])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8365345B;
-	Mon, 19 Feb 2024 12:54:19 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1708343659;
-	bh=/54XkQRIaMoh0oyLd5k/+n5EWpirSB7YraPB3iemee0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=OGQZ+uzj6S60sRWV3cHkar0scCy41nytkDQw/oQIDciNTC6hgL18tcdAkYpt+matI
-	 pCoHQBqRNwMm4zCsLbWzxlV5T7llaJwCoketLO3IBrTV0jsJCSOxjVZUrVhysYTFYq
-	 yfOxw4zgZeUddRmalFjxBloINbWmvlnglG0YnTic=
-Date: Mon, 19 Feb 2024 13:54:30 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Paul Elder <paul.elder@ideasonboard.com>
-Cc: Umang Jain <umang.jain@ideasonboard.com>,
-	Adam Ford <aford173@gmail.com>,
-	=?utf-8?Q?Ond=C5=99ej?= Jirman <megi@xff.cz>,
-	linux-kernel@vger.kernel.org, Dafna Hirschfeld <dafna@fastmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	"open list:ROCKCHIP ISP V1 DRIVER" <linux-media@vger.kernel.org>,
-	"open list:ROCKCHIP ISP V1 DRIVER" <linux-rockchip@lists.infradead.org>,
-	"moderated list:ARM/Rockchip SoC support" <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] media: rkisp1: Allow higher input resolution
-Message-ID: <20240219115430.GC13043@pendragon.ideasonboard.com>
-References: <20240217185202.1754750-1-megi@xff.cz>
- <20240218205908.GA12766@pendragon.ideasonboard.com>
- <pftafukuzq7qzbhlvwtmeg3mburnttylgy4246timlghtrdgx4@r6munvmj6oqt>
- <CAHCN7x+zi3WxnY-mxZFKePs1cS=-DprEmh_CnypJ4XK7xBzjMQ@mail.gmail.com>
- <b500676e-431f-40fc-868b-9f9bb359a109@ideasonboard.com>
- <ZdMpSLqYVFbU7sF0@pyrite.rasen.tech>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LgZCQ6SddtqiN+lYB5NS3L1nrlMrHr5d/N9ECM+gL3jyuoq4Oy3Oklus9CQXEOEpUckdjS3wjdQ8Ft0a3ksab96Uclsj8RqIuizXCxw73LMkQFD2dlYkP0t0B/6JYmj9+1wiDrv0CbMoOPNS2xbj6e2BmGz542KDPRRQ6ndpV/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gMfhQGjO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CW3k+AAS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=buau6+K+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=t31G6cyP; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EB9582231D;
+	Mon, 19 Feb 2024 11:56:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708343775; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
+	b=gMfhQGjOI+lbem8SkpG7abYXZG/YGgsbr5mfhTFEt32zW1Limui820XncUd3JP4Jf/4cjb
+	Ki2fipqnH6aZNqggQcrRBpvej5RFxm3Gf1k4azm8OzeBA2Zjorl5by+Ny2VFQpP4sFWCTW
+	VqPFtogMpHtYR6RLlotNkKPFguE/0+0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708343775;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
+	b=CW3k+AASubWZUsX7BEFpJjYNb6M0up0wqB5uWYsyR6VxJvrC9ZCwXfu8YryV9Fd8VAXOri
+	5XB31zaQdMHLrYBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708343773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
+	b=buau6+K+bHQBAEbQguScoIcRxtFI0j7HwT8gHAUdxEJUUcZwmnLmx902BD6L4pg2FD/uw8
+	iCK1i7I3hf+0dC8b2q7Hc5ZRYKfDNUhrLEW5N2oQRMZEqKm6yoU+zPYXXkCHXnUVuq6BV7
+	/ZFSsvDjjx6glmdQ6+bnmSX5XxMvZto=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708343773;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M0IoGNXF9cQZCZYZwVTpF79rld9vp/bZIPPNKytiUpQ=;
+	b=t31G6cyP2MTxAh//4JyTp9UpLAj2jDCsgF5zz0fCnkkhDX77LFRDdUwQO793OeIuKrM0Lb
+	wjIs1K4uYH4qxVAw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DE64213585;
+	Mon, 19 Feb 2024 11:56:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id gFdGNt1B02U2cAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 19 Feb 2024 11:56:13 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 92E02A0806; Mon, 19 Feb 2024 12:56:13 +0100 (CET)
+Date: Mon, 19 Feb 2024 12:56:13 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+84c274731411665e6c52@syzkaller.appspotmail.com>
+Cc: axboe@kernel.dk, brauner@kernel.org, damien.lemoal@opensource.wdc.com,
+	jack@suse.cz, jfs-discussion@lists.sourceforge.net,
+	jlayton@kernel.org, kch@nvidia.com, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, shaggy@kernel.org,
+	syzkaller-bugs@googlegroups.com, willy@infradead.org
+Subject: Re: [syzbot] [jfs?] INFO: task hung in __get_metapage
+Message-ID: <20240219115613.frzm7ttf7vfdy3xo@quack3>
+References: <0000000000004f9dd605eabee6dc@google.com>
+ <00000000000056790c0611b5548c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZdMpSLqYVFbU7sF0@pyrite.rasen.tech>
+In-Reply-To: <00000000000056790c0611b5548c@google.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: *
+X-Spam-Score: 1.69
+X-Spamd-Result: default: False [1.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.01)[47.63%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4];
+	 TAGGED_RCPT(0.00)[84c274731411665e6c52];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 R_RATELIMIT(0.00)[to_ip_from(RLpdan7qhx516wxzbnn3a3f9z9)];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
 
-On Mon, Feb 19, 2024 at 07:11:20PM +0900, Paul Elder wrote:
-> On Mon, Feb 19, 2024 at 02:33:21PM +0530, Umang Jain wrote:
-> > On 19/02/24 7:39 am, Adam Ford wrote:
-> > > On Sun, Feb 18, 2024 at 3:02 PM Ondřej Jirman <megi@xff.cz> wrote:
-> > > > On Sun, Feb 18, 2024 at 10:59:08PM +0200, Laurent Pinchart wrote:
-> > > > > On Sat, Feb 17, 2024 at 07:51:58PM +0100, Ondřej Jirman wrote:
-> > > > > > From: Ondrej Jirman <megi@xff.cz>
-> > > > > > 
-> > > > > > In BSP driver, it is allowed, and it works in practice. Tested on
-> > > > > > Pinephone Pro/RK3399 with IMX258 at full res.
-> > > > >
-> > > > > Paul, Umang, do I recall correctly that you have a similar change ?
-> > > > > Could you review and test this (especially on the i.MX8MP) ?
-> > > >
-> > > > It's also a limit from the datasheet, so the change should not be that
-> > > > controversial:
-> > > > 
-> > > >    https://megous.com/dl/tmp/d2b333043ecebaf3.png
-> > > > 
-> > > > (so that it doesn't sound like I just copied the BSP values)
-> > > > 
-> > >  From what I see in the i.MX8M Plus reference manual, it has a max
-> > > resolution of 4096x3072, so it might be necessary to move this off
-> > 
-> > This is what I (and I assume Paul too) have been working with on i.MX8M
-> > Plus. So it's the known and tested value of max ISP input from out side.
-> >
-> > > from a #define into a structure that varies by product family.
+On Sun 18-02-24 21:26:01, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
 > 
-> Yes, this is what needs to be done. Here's what I have in my notes:
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
 > 
-> - The RK3399 TRM says 4416x3312 max input and output on main path, with
->   1920x1080 max output on self path.
-> - The PX30 datasheet [1] says 3264x2448 max input and output on main
->   path, with 1920x1080 max output on self path.
-> - The RK3288 documentation [2] (under "Camera Interface and Image
->   Processor") says 4416x3312 max input and output on main path, with
->   1920x1080 max output on self path.
-> - The i.MX8MP reference manual (the open one) [3] (in table 13-1) says
->   4096x3072 max resolution in single ISP mode
+>     fs: Block writes to mounted block devices
 > 
-> The i.MX8M Plus seems to indeed be limited to 4096x3072, but the TPG is
-> capable of generating 4416x3312, and the ISP works fine in bypass (and
-> therefore raw) mode, so technically it has different maximum sizes
-> depending on the format which makes this more exciting.
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13310158180000
+> start commit:   1b929c02afd3 Linux 6.2-rc1
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=68e0be42c8ee4bb4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=84c274731411665e6c52
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1702dc54480000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13b9eaf4480000
 > 
-> In any case, the PX30 (assuming the datasheet is correct) only supports
-> up to 3264x2448, so the existing #define is incorrect anyway.
-> 
-> I don't have a PX30 nor an RK3288 so I can't test those, and I haven't
-> set up my OV64A40 yet which (I've heard) can be used to test even bigger
-> resolutions.
+> If the result looks correct, please mark the issue as fixed by replying with:
 
-Thanks for the summary Paul.
+No working repro and this is JFS. So:
+ 
+#syz fix: fs: Block writes to mounted block devices
 
-Ondřej, would you be interested in implementing this ?
-
-> [1] https://opensource.rock-chips.com/images/8/87/Rockchip_PX30_Datasheet_V1.4-20191227.pdf
-> [2] https://opensource.rock-chips.com/images/4/49/Rockchip_RK3288_Datasheet_V2.7-20191227.pdf
-> [3] (requires login) https://www.nxp.com/products/processors-and-microcontrollers/arm-processors/i-mx-applications-processors/i-mx-8-applications-processors/i-mx-8m-plus-arm-cortex-a53-machine-learning-vision-multimedia-and-industrial-iot:IMX8MPLUS
-> 
-> > > > > > Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> > > > > > ---
-> > > > > >   drivers/media/platform/rockchip/rkisp1/rkisp1-common.h | 4 ++--
-> > > > > >   1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> > > > > > index 4b6b28c05b89..74098ddbeeb3 100644
-> > > > > > --- a/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> > > > > > +++ b/drivers/media/platform/rockchip/rkisp1/rkisp1-common.h
-> > > > > > @@ -33,8 +33,8 @@ struct dentry;
-> > > > > >   #define RKISP1_ISP_SD_SINK                 BIT(1)
-> > > > > > 
-> > > > > >   /* min and max values for the widths and heights of the entities */
-> > > > > > -#define RKISP1_ISP_MAX_WIDTH                       4032
-> > > > > > -#define RKISP1_ISP_MAX_HEIGHT                      3024
-> > > > > > +#define RKISP1_ISP_MAX_WIDTH                       4416
-> > > > > > +#define RKISP1_ISP_MAX_HEIGHT                      3312
-> > > > > >   #define RKISP1_ISP_MIN_WIDTH                       32
-> > > > > >   #define RKISP1_ISP_MIN_HEIGHT                      32
-> > > > > > 
-
+								Honza
 -- 
-Regards,
-
-Laurent Pinchart
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
