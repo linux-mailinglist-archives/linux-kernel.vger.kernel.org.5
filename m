@@ -1,214 +1,156 @@
-Return-Path: <linux-kernel+bounces-71346-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7DD085A3CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:49:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CC3585A3C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:49:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72C931F22D1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:49:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14296281325
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:49:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 772DE32C8C;
-	Mon, 19 Feb 2024 12:49:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A083C2E856;
+	Mon, 19 Feb 2024 12:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="k15q9YEI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Dt8kmLMu"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E44328B1;
-	Mon, 19 Feb 2024 12:49:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708346970; cv=fail; b=ci96ZL+S1tuMmGbbpQHtIFyaLzV9PI1fAMb51BJJxn2bNWmFCciGbuBhzSbF0HPIQ2TX5L0ZZeMOugI8CwPLlWZVinAgZf8lzaMhV0c1vJxcF4FHA9/MdKzgP+TfqBSZOTthg3OzdJgzaHftUPmeoTYlWdot8hxCh4/Kz4U5s+M=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708346970; c=relaxed/simple;
-	bh=3QkhmzFXKe+RKkyS6WpahY8Kf+tSPVbYfQtaPXJvhvg=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jhZ+iUZiuamCTgG+aUqWXpKbUPRhq0mHK8ZLtMEhmhbLZlV6sr1Mgg83j0FtRygB4MLVbi0zFL1XupIZC+1t3Jdp+RMQsrVPPtYQ978lWbbkGhEku4ZoNRX+jZ9fNGs6AWs7DG6TAGIcyMlAJyvjjxeBuUyqslA17HBTUc7gDTo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=k15q9YEI; arc=fail smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708346969; x=1739882969;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=3QkhmzFXKe+RKkyS6WpahY8Kf+tSPVbYfQtaPXJvhvg=;
-  b=k15q9YEI7kosw7e7rpUMThbtqIrA1Q4bHLnjehhqjgIGKNP6A3ZDMcrD
-   bI//mIuqTo0QqKENmGWjCkwc9/LLxkFoqJz/8qf3pe/Kj0H6SjSNoCbPD
-   TpZyJxUZmxE9YK2YhPAzbNKsSDpi+N8MA/OOo9vL5RpsF6X/rekhYvE/G
-   X690FmO+fJ2N0SoEpWce0N2w3e0eZcLpfIMpf6xe+WqONBTj/rxaafiu+
-   GWjwwb0n2SfgMwDXNTTQOtwBwSnEM6mEZDSDu/FnWpJ3VZY9W6rf1aYqO
-   Aq6O4cvABG95Kxa5zcDqFJbDDtSU9i8kh5kh4yQU5n0Qu/sCcl5xTJvMY
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2868449"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="2868449"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 04:49:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="9153391"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Feb 2024 04:49:27 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 19 Feb 2024 04:49:25 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 19 Feb 2024 04:49:25 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 19 Feb 2024 04:49:24 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SpA17MzHo8YJsWZI3eUQzlV6ucMgiIlTX0QAd0UgJwAhf3wI4GKnVRlkQFIFc3W5YPWb8POmLzl5KJZLzBc7zWdUHE7U91VvFa5w7Z0pR0cCiJkKn9y94A3XN6UUeVmuID8QGB4ttit6MKGTRc6f5CawCNSgpM2KufbvbGUUUbQe+cR1N9Yl+8jkrn3MbEoH4gpMhRXoHvR7EHTjM8CnBrtNCcXkLdqoHxvX0ztZ9JhndA2bk9nXOkc3E7iIW7GsLmOeF+kS2r9qAf/CIcdolWujom0QK1lyhaYqDxe9PYwzOjFsSLig9KM3GZLK2GVZb3QuNQmmhNKr7AF3DEcA9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/N0b9tGaHQhr7acJXshZm6i/t512flc91i1ogIOg89I=;
- b=bO9DrxYCp0yitLysRqZ1HeXn9vUaqTDArte2TBLFJd8VjclsNHg9rgJn+BwgDfeIlSYWhnBVyGmRcECItxB2p36/vEUduQNSeVo4WCLE7C7V4ZuQRGNzHiFgGUTrOOyPOcvlctZhJVwUQH5XWeyjWmnq3vXMRMJaVE3yMyVIJbxO/lrK1r9ETQWHdseKRmnYTToYY1PVmhvKFSAAS0IZ8di8M9U7dkGf8LBCacoi8sOEPFL+Ny0TRxI7R1zjD0tiJj6pwOQXQs/rZi36ekOP+KyT9TTjuJ8bH53w94XYjDIkUWXN1PelZWtxpiwl+ps277eB6+ts6Ip9RMEawjVhWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
- by CY8PR11MB6937.namprd11.prod.outlook.com (2603:10b6:930:5b::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Mon, 19 Feb
- 2024 12:49:17 +0000
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::93d9:a6b2:cf4c:9dd2]) by DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::93d9:a6b2:cf4c:9dd2%5]) with mapi id 15.20.7292.036; Mon, 19 Feb 2024
- 12:49:17 +0000
-Message-ID: <4d2678be-e36c-4726-83a5-ae9a3a0def55@intel.com>
-Date: Mon, 19 Feb 2024 13:49:10 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 2/7] dma: avoid redundant calls for sync
- operations
-Content-Language: en-US
-To: Robin Murphy <robin.murphy@arm.com>
-CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>, Christoph Hellwig <hch@lst.de>, Marek Szyprowski
-	<m.szyprowski@samsung.com>, Joerg Roedel <joro@8bytes.org>, Will Deacon
-	<will@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael
- J. Wysocki" <rafael@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Alexander Duyck
-	<alexanderduyck@fb.com>, <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-	<iommu@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-References: <20240214162201.4168778-1-aleksander.lobakin@intel.com>
- <20240214162201.4168778-3-aleksander.lobakin@intel.com>
- <3a9dd580-1977-418f-a3f3-73003dd37710@arm.com>
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-In-Reply-To: <3a9dd580-1977-418f-a3f3-73003dd37710@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: DB7PR02CA0004.eurprd02.prod.outlook.com
- (2603:10a6:10:52::17) To DS0PR11MB8718.namprd11.prod.outlook.com
- (2603:10b6:8:1b9::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E00DF2D05D;
+	Mon, 19 Feb 2024 12:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708346960; cv=none; b=XkaN1SL5mvUmgcxapmOVkLG8EXjxDbYSHXXXeQuNIFdf3369vY9JzJ2fb4xJDu65Fpm9esEdmDuvVbV/AR8XHKn3kDnAus5Te53nFtD0QDxnrkK4W25Qov+JNYtGx3jc9VeZ3BxwRJqMohAwlMuKkfYaOR8JKFEvA8YfPyW5dBY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708346960; c=relaxed/simple;
+	bh=06p6ukdvxbrRf6/uOtqeOyeu+dw+dCTpr3YlazzJxlM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sXhb4mrnNbDFfnbSIOvInBXoxQDu2STrlNwnTJ0CtpdBbnqLALv/kDMReyFi4LXgFrszmG159T0LAaXPo/k340Tu31fofUa5EXMrmci0tiF3TBjeZbCti5OY8KC67f0ZkI+yya6Kq3g3z68dI93/1tyH/V1g1VqeqUVcva/3+Qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Dt8kmLMu; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 336FB40006;
+	Mon, 19 Feb 2024 12:49:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708346954;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gJALkusf1cXf4p7M933GGzZIRRakiGBqKNoFoSjNoJY=;
+	b=Dt8kmLMuUKWq7J5kXL2nVlaTETvYXuskZRDGfU95wO2IHZ+Ppd4DsAGYhht5GaputNIkF2
+	Dr7TOaMh2TErh9ue2Stx5Eh1QhGz5Jc2f8u1eZaBjLKDv+qO3CliZ8t14wCP9Z1pX+UgTg
+	nA/jCP9JGV4tiKN3brQhVwVYPcdHOUSrIcUhBO4ec8jqK1FCw4bMIa1HMDEgNKtt45lLGv
+	B8RwL5ETqIHOs7pj/TylF4YGPwNUJz/y31jizxHbS5uTsYJkEPm9AHA5L6o2pP2OhodsFQ
+	4K3Aapf/caxS3vxsv3DA4bx8CT/8u6DQFJe8zzHOkm3DdbHmsbGHpgp+ekR0VA==
+Date: Mon, 19 Feb 2024 13:49:13 +0100
+From: Kamel Bouhara <kamel.bouhara@bootlin.com>
+To: SHUKLA Mamta Ramendra <mamta.shukla@leica-geosystems.com>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Henrik Rydberg <rydberg@bitmath.org>,
+	"linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	Marco Felsch <m.felsch@pengutronix.de>,
+	Jeff LaBundy <jeff@labundy.com>,
+	POPESCU Catalin <catalin.popescu@leica-geosystems.com>,
+	"mark.satterthwaite@touchnetix.com" <mark.satterthwaite@touchnetix.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory Clement <gregory.clement@bootlin.com>,
+	GEO-CHHER-bsp-development <bsp-development.geo@leica-geosystems.com>
+Subject: Re: [PATCH v8 3/3] Input: Add TouchNetix axiom i2c touchscreen driver
+Message-ID: <20240219124913.GA99571@tpx1.home>
+References: <20240219101221.129750-1-kamel.bouhara@bootlin.com>
+ <20240219101221.129750-4-kamel.bouhara@bootlin.com>
+ <e374d585-5acc-bbe0-ee1d-65f7abdb8f8d@leica-geosystems.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|CY8PR11MB6937:EE_
-X-MS-Office365-Filtering-Correlation-Id: c7d24e8f-dc5c-41bb-031f-08dc31492f3a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m9GUgYFwip3AWisQuPr4i70wkt2NL9mZBEcisXgyzmS61uI5QugHrnag+PAIqsRTX+gusZ89KABz7j2xC6bUTMpbLQvdX0W6dJwyDXg+TAdYfUViJSNQdIz1qxTg4fnbAu4zBvaKORYJTfb0N+sMOmEHfkBUcfY5QE35WcjGwZnyIaYYBhbFdASAmyBi3z+kXZHadrKJQuq6QCAWYqxtxTsktA65KfAc0l80Nip8mOiYJHr61RcKWYzwBP7EkL4dHi7hLetCJBfuR/b4VP298iR1zC3DF5LW2f6pIR9YYJeA0HJz9Kc6b9RAEmIa/ezPNWzOuoYtC2Rk8hgSRP2+Hs+DfWtT/B7rMfdYBz+bgZkKZTTX7bzSUywoysnIVlp8FP6/9Pul5YF7e+C+080xK11H28Fgh5d0G0xjAovUFzBg1p6ERlkwI83R687sBptvP2SGw4JbwrDdkYHuGy2VqC4+pc7pzpgaXMNGZY4cMXkcrqj1xIF/vKe3SvXG4XRnWjAQ6yBTTx0cnfoxNUBvpALaXmBBakN9crEhtHOGris=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cER1ZXlTNEVEazUwYUkvQTNteUZKaW5VcTZiTmluajRsZ2FZeURMZjRkdWZy?=
- =?utf-8?B?QUI4dXp6K01SYkVQQVlnSndrZmVNOThhVDFtcUJzbGl4bi9rd01SUEJBT3Qz?=
- =?utf-8?B?dTF5V0xZWm4rbnlwMEpwVnFHQ2EwNUhkNVpkeGFJM2k1ejhOVHFENWJtb1Ax?=
- =?utf-8?B?YjVmb3NJZ2V6cVRRc3dhY0Uyem1nM2JWbGxjTnhUNGxoK0hYYkZITURkT0ZK?=
- =?utf-8?B?SXRqUHZSd2RpRC9wQVFweGZNRmNmVWtFUkV2WGNQWHQ1S1ZEZWxlOEszNXZC?=
- =?utf-8?B?bU1vSzhaQTNnbnhRRm1uakZoTFdpSnZWdUJHSmVRQnRFeHdtVWRmaHdTeGhW?=
- =?utf-8?B?cklsUmNEN1p4b1VGT0dWR0pLb2wwekFTYkZpTmJKWFVTcFliaXBva2k0WGtY?=
- =?utf-8?B?RElZakY2bFNIZGJqaXpLYk9tMGtYbG5kMVRSaXJ5K3lrZU05RVhlL1dYZmVX?=
- =?utf-8?B?WlNVSmNJdzN6QUVRY05tSWcrYk9XaGU1NkY5K0NnSTdrMk5PejdoZjRHb2F6?=
- =?utf-8?B?RGpBNndRazBEVEV2Vk9ranFoSWp5NEpkWDBwSTVLckZRY1VXMUhlN3ZqNEtw?=
- =?utf-8?B?TzdoMHplTlhwRXdWbzRJQ0wwUnBCaHhoYjdBRnBoQkhMYXl0bEpYMi9ETU1i?=
- =?utf-8?B?UEcvaGpKQ1h6OWNNTVBFZ095SzQ4dUkvR2ZUY3BJVDFZYkdWcitzcXd5anFJ?=
- =?utf-8?B?a0xRS2YvZ05oR0JBd0ZlUHdhd0dkb3RRU3JWUEVYNCtTM1grbXVlWWxBMHdK?=
- =?utf-8?B?eVpxenB1WEpSZjlIbTlqMnR5R0R3SytuYVZtQ0lIQmp2S01rdWdwR1NFNDVw?=
- =?utf-8?B?RmVSVi8vTk1mVU12QjhKYWZqby9sS1NMU0Z6NmpDOWpZZ2pqZnZWdFNkbElE?=
- =?utf-8?B?U2N6UUNubFhlaWpmc1FpbExNbk1Wc3NReVpudEpMcUhVUExqaldpblArK3Bh?=
- =?utf-8?B?REQrZEE0S2dmYVMzSWlhSWpjdFR4TzBEd25RaHBUQUc4NjRKTGtyditKSnc4?=
- =?utf-8?B?RWRuREZ6cnp4TmlmbFFSYWRLSXVHd254b2hEUGphVlJjcko5K1d6N21hY21K?=
- =?utf-8?B?S1FLak9CYmFRMG1wUjBVekhJYXhRMGE5M1psZGcwR2svZnMwQmg3Rkc3QzAx?=
- =?utf-8?B?T2dGZWc1bjgzc1dLQmxwZnI4RWttaEcwMDRGUkc3MDNFbkpOTDFLSFNkR0lh?=
- =?utf-8?B?RWsxVmxTcC9GQkhQZUR6MElhSHlaVk1TVThWM3N2T3RHREZ2Zlp3SFNNV1V5?=
- =?utf-8?B?Nks5c2JNdVpLdGVPNXg3Y3FNbmd3c044QlJkcU82TFJpaFdYb1cyVE5sUVRo?=
- =?utf-8?B?OExKL1VpSGhDcG8wUFFGeFI0UUZaM2ZtN3c1QnZrVmxraFBRVHlZby9TM2dN?=
- =?utf-8?B?d0UwZTBjbG5mYWtpSm94RVJxc2w4bkZHV1NDNk5iWTZRaWFJVUhyS0U0TkJs?=
- =?utf-8?B?d21qOVRzUng3VVFuM3grYWJOVC9zVzRocnRLcGlDbjNONFV5djZpTENaUlJu?=
- =?utf-8?B?M0pMMDVEcVIyMnYzZzd0SEtEeTYwVkpXTG50ZmFKQjRJNkNBdEZRRmlYVlFn?=
- =?utf-8?B?NGZLSWZ4Zmtjb2sySDQreDZjaXpwOVZHZ2ZxaVlBdXJpRmNOMUVFdTBoTURU?=
- =?utf-8?B?cW1kWE0zQmlRU2NhQ0NTUlMyMlZYRlpYbkVhb3dKQjFXVUVuSWxlRjFTd2xQ?=
- =?utf-8?B?a1Q5cVp1R3FoS2FPMmdueUZSZ3MzVEFSd2cybmlvakx5TUkzRGl1VW9GOS94?=
- =?utf-8?B?ZGpTdzdnYzlKdEk4MDNDRUJvZXVqZDV1YkFiWFlQSUNWYUdHZTNCRXpYNGZi?=
- =?utf-8?B?TTh0bEtSQnJIWGpvKy9qQTZIY2R3RWtxcThwNFlWYklKdDFaZmlKQ0l4Z3NP?=
- =?utf-8?B?a2RzQUl3Ulg3cHk4dHljMjVOcVVYQldvRGNjdTE1WHFQamdiZTVmSjBFYmxC?=
- =?utf-8?B?UCtjaTNTdEFibW5iQWJxa2dVOXJaSnFGK2szOGd6RG1Gd3FyQm9qNmUxNG8v?=
- =?utf-8?B?KzN3RWRDYUdiSlEwZ1pENHNScGQveDlpSEVYSnkyaUNzQjY2MWR1d0lGcWkz?=
- =?utf-8?B?QnNwSW9ZVHRqVzg2NXlsRExzQkkrTlk4MjVaRWRLZGpZUXJRU1Q1cGl2OEkx?=
- =?utf-8?B?YzhTRWJZcTV6d3B0K0RLYmJyWm16OFVydDF2TmlPdmFIUml5S1ZyUDgxeXdB?=
- =?utf-8?B?Rnc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7d24e8f-dc5c-41bb-031f-08dc31492f3a
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 12:49:17.6565
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VMLJfA2WHKZH/T5nc6m6ZC/L/FOYX+RR9MHuHYAIomowJvf5YBH4yfnKDPHDLjfa/r+lOpfOsTDBsfsSVns5QIoc+I0GIFe7/bFKhekqYrk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB6937
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <e374d585-5acc-bbe0-ee1d-65f7abdb8f8d@leica-geosystems.com>
+X-GND-Sasl: kamel.bouhara@bootlin.com
 
-From: Robin Murphy <robin.murphy@arm.com>
-Date: Wed, 14 Feb 2024 17:55:23 +0000
+Le Mon, Feb 19, 2024 at 10:58:22AM +0000, SHUKLA Mamta Ramendra a �crit :
+>
+>
+> Hello Kamel,
 
-> On 2024-02-14 4:21 pm, Alexander Lobakin wrote:
+Hello,
 
 [...]
 
->> +        /*
->> +         * Synchronization is not possible when none of DMA sync ops
->> +         * is set. This check precedes the below one as it disables
->> +         * the synchronization unconditionally.
->> +         */
->> +        dev->dma_skip_sync = true;
->> +    else if (ops->flags & DMA_F_CAN_SKIP_SYNC)
-> 
-> Personally I'd combine this into the dma-direct condition.
+> > +
+> > +/*
+> > + * Support function to axiom_process_u41_report.
+> > + * Generates input-subsystem events for every target.
+> > + * After calling this function the caller shall issue
+> > + * a Sync to the input sub-system.
+> > + */
+> > +static bool axiom_process_u41_report_target(struct axiom_data *ts,
+> > +                                           struct axiom_target_report *target)
+> > +{
+> > +       struct input_dev *input_dev = ts->input_dev;
+> > +       struct axiom_u41_target *target_prev_state;
+> > +       enum axiom_target_state current_state;
+> > +       int id;
+> > +
+> > +       /* Verify the target index */
+> > +       if (target->index >= AXIOM_U41_MAX_TARGETS) {
+> > +               dev_err(ts->dev, "Invalid target index! %u\n", target->index);
+> > +               return false;
+> > +       }
+> > +
+> > +       target_prev_state = &ts->targets[target->index];
+> > +
+> > +       current_state = AXIOM_TARGET_STATE_NOT_PRESENT;
+> > +
+> > +       if (target->present) {
+> > +               if (target->z >= 0)
+> > +                       current_state = AXIOM_TARGET_STATE_TOUCHING;
+> > +               else if (target->z > AXIOM_PROX_LEVEL && target->z < 0)
+> > +                       current_state = AXIOM_TARGET_STATE_HOVER;
+> > +               else if (target->z == AXIOM_PROX_LEVEL)
+> > +                       current_state = AXIOM_TARGET_STATE_PROX;
+> > +       }
+> > +
+> > +       if (target_prev_state->state == current_state &&
+> > +           target_prev_state->x == target->x &&
+> > +           target_prev_state->y == target->y &&
+> > +           target_prev_state->z == target->z)
+> > +               return false;
+> > +
+> > +       id = target->index;
+> > +
+> > +       dev_dbg(ts->dev, "U41 Target T%u, slot:%u present:%u, x:%u, y:%u, z:%d\n",
+> > +               target->index, slot, target->present,
+> > +               target->x, target->y, target->z);
+>
+> This doesn't compile. You forgot to replace slot  with id.
+>
+>
+> -       dev_dbg(ts->dev, "U41 Target T%u, slot:%u present:%u, x:%u,
+> y:%u, z:%d\n",
+> -               target->index, slot, target->present,
+> +       dev_dbg(ts->dev, "U41 Target T%u, id:%u present:%u, x:%u, y:%u,
+> z:%d\n",
+> +               target->index, id, target->present,
+>
 
-Please read the code comment a couple lines above :D
+I don't know how I could missed this one :/ !
 
-> 
->> +        /*
->> +         * Assume that when ``DMA_F_CAN_SKIP_SYNC`` is advertised,
->> +         * the conditions for synchronizing are the same as with
->> +         * the direct DMA.
->> +         */
->> +        dev->dma_skip_sync = dev_is_dma_coherent(dev);
->> +    else
->> +        dev->dma_skip_sync = false;
->> +}
->> +#endif /* CONFIG_DMA_NEED_SYNC */
+Fixed thanks !
 
-[...]
-
-Thanks,
-Olek
+--
+Kamel Bouhara, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
