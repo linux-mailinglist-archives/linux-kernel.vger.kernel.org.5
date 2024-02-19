@@ -1,125 +1,334 @@
-Return-Path: <linux-kernel+bounces-71688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71690-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48BB185A908
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:35:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58B8785A90D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:38:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBD10B259AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:35:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EF2B280ED0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 16:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC3C40BE7;
-	Mon, 19 Feb 2024 16:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2810C405F1;
+	Mon, 19 Feb 2024 16:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="V2zUSuX8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="UQsJZDNp"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="seI9SUZU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D683F9F8;
-	Mon, 19 Feb 2024 16:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D575405D3
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708360521; cv=none; b=pHSonDjs3QjqWItgR7n+rBP7KB/1NtlNGBr9jk6DIeQBPFZxWTXtzr0scareYXclAEfGjXRqlI/w4QqlYzA7W7vLOauLL/Ls6hscRG9/GiSfRo8SOyy0X2hlBXmkH9E5iTFhltCJaNCo2k3KjXHPgRqRJbNx6OP51yXQDhpjX+4=
+	t=1708360682; cv=none; b=esOacke2jbCD8xhZufSuGYVILnvKFEm2eZIgYZ8hEBehht5tk4uC+xoWywYd+YM5vezU+oHt8KNmHUiwSZJIZQyQgc573Bkmvdd6ijjv6yoQSu+XgmIeL738l1NqDnaPPp9FKSeREgM4mHjTXUaksiniWDlwe/zaQc6gghfJxEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708360521; c=relaxed/simple;
-	bh=0/qGMTY0QzX5yGfg8KCT/DD2MfErUyzudLGCN7wutkA=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=Nm2NySnp6UaMEaZcdQoJ/cNjc3/prF6czQxqymdBqkJwt/4zV9bw0hVCEptSlzRWbSzbDXrL9p9bBgZDyPDn5w7s45dFFjeE1d1PoW9O6RT5obP7uhL1D410aV/XIWb5fSHE6l6t1PcOvGOgMTfCenFx+6HRMvvItAsrSHC9K1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=V2zUSuX8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=UQsJZDNp; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 19 Feb 2024 16:35:17 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708360518;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pk7T2jpSR0byywKBG5od7jkk31qcfovIG9EFCImsOd0=;
-	b=V2zUSuX8g4477CHqws2anB3wJH76GLShjMu1UjcuiDdOgULWAqvutYwepKWjsmVoFuP5J8
-	20PH5USRSQ5zcMLXoHBpFRf7Cr1ChuCC7y+UXMKdFHzUiNbSV4e9g2gtI/hVu0cN/R0po5
-	u82VdFfGizQ3mqLrChcZikGGB3POnA9BDQkuthEd5ij0uBmIz7M3NvVHyyZvFAZ3KLIqXt
-	jIy7xOSmG41Jn2K9Zg062jAkW28V0k9+Fj7jll574Wo1tPgMarvfxxhdb2wD9cnnsv+UmB
-	vSODrbKZhzDD+9Obtp3Qqg9f32g8JGWeGeWQj2AO5fOYFbZuzs6ZCbsKvv4vag==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708360518;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Pk7T2jpSR0byywKBG5od7jkk31qcfovIG9EFCImsOd0=;
-	b=UQsJZDNpYsRm30+4+Akfy08+Mbi674FcHEThCCgIX1U81WAY5sAeBy8J+qhLUTtm1vPniA
-	Kze4/vIexvCKNRBg==
-From: "tip-bot2 for Peter Hilber" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timekeeping: Fix cross-timestamp interpolation on
- counter wrap
-Cc: Peter Hilber <peter.hilber@opensynergy.com>,
- Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231218073849.35294-2-peter.hilber@opensynergy.com>
-References: <20231218073849.35294-2-peter.hilber@opensynergy.com>
+	s=arc-20240116; t=1708360682; c=relaxed/simple;
+	bh=lz1WhMP/iYx75AWsimvTEp9QvhmTQfseiRPDSsYwuqA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t82reugSAFgGgNHehQpkFRpm0fXaAFLSRNhNi5Red/vbAWYyRTal8XQ7VlVDvUWgywYuu1vAybX1tKGPa5uDtZ37/eFgtwTY6Ow70nrrR7TmeCn5k3HwDMlnNU6bVeYBQR24CcHgkyeVoPTda6Q1Uhoy50hrOOjbIriqw4z7oEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=seI9SUZU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E142FC433C7
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:38:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708360681;
+	bh=lz1WhMP/iYx75AWsimvTEp9QvhmTQfseiRPDSsYwuqA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=seI9SUZUpVhs52/fAuAyfsmZlgkb7A23HCCGn8MXvrosO0t0fnTvS4WGYvJaY4tHr
+	 eN4iQf7ZTmClUmEsZ4X9wPOI2JIwDoK09KRjuT8WDLWYLyoMIMpf03lFteuJVZDJLV
+	 MRSkv6ZHXpPShEoPEA+7LGZOzSkqwZVLJHkFS/L83exQvoA1hjfKGr2R2/xw/kK4ZZ
+	 WT6Eh0Lb3JQ9DvaTy+aMAuaI7HRdJtBafhd6VdCwRX4hCFzzov/GRvm3HpomPmU1fn
+	 yGqDTc5hs5Ts4QlrcGGyFTV5IlktBINcNLVHdyt+rvtxCOnbNk1wJfnulND9FS6Zmc
+	 RxBKqBlyDvOPg==
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7c403dbf3adso240598639f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:38:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV7tpyqe7qY85+IEvQjj3J5fm5jjey/AcoiL1L01SEpEPj2dOLxWXUseZPKozdQSNdIsOTVvjHC/7MHQzC7TbwNOiFonRhBgGpJ9whD
+X-Gm-Message-State: AOJu0Yyc4ZvGRPEfVVSUF7AAdtzTwTukznW4fH/0TkBHRr8GVr02tk3D
+	PlyenRsUNIVUf20+J8IksZiyVHaJphm4Nj/OpwBdxiefK+Pqk9IrL0cIuLUGJ7LA7dJXWdWZDZF
+	Zur+gJj9mroL3wfXs6d/QBW+r5MS5hDBH/NZj
+X-Google-Smtp-Source: AGHT+IEQJx4eINDk9han3urt19+iHSX8IAzHq0Cp0oJVoORn/uRvSyC3w3nU8x0uvF0lpvzWVw8MazXHYDBXh9Y3KVc=
+X-Received: by 2002:a05:6e02:1206:b0:365:1d36:91d7 with SMTP id
+ a6-20020a056e02120600b003651d3691d7mr5402681ilq.27.1708360681065; Mon, 19 Feb
+ 2024 08:38:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170836051741.398.13453271590417776552.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20240219082040.7495-1-ryncsn@gmail.com>
+In-Reply-To: <20240219082040.7495-1-ryncsn@gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Mon, 19 Feb 2024 08:37:48 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuNVtsaQm8iee=M3QP9961eeLOVWBhJ1uZ38akiaAAB6ng@mail.gmail.com>
+Message-ID: <CAF8kJuNVtsaQm8iee=M3QP9961eeLOVWBhJ1uZ38akiaAAB6ng@mail.gmail.com>
+Subject: Re: [PATCH v4] mm/swap: fix race when skipping swapcache
+To: Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	"Huang, Ying" <ying.huang@intel.com>, Minchan Kim <minchan@kernel.org>, 
+	Barry Song <v-songbaohua@oppo.com>, Yu Zhao <yuzhao@google.com>, SeongJae Park <sj@kernel.org>, 
+	David Hildenbrand <david@redhat.com>, Hugh Dickins <hughd@google.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Matthew Wilcox <willy@infradead.org>, Michal Hocko <mhocko@suse.com>, 
+	Yosry Ahmed <yosryahmed@google.com>, Aaron Lu <aaron.lu@intel.com>, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following commit has been merged into the timers/core branch of tip:
+Acked-by: Chris Li <chrisl@kernel.org>
 
-Commit-ID:     84dccadd3e2a3f1a373826ad71e5ced5e76b0c00
-Gitweb:        https://git.kernel.org/tip/84dccadd3e2a3f1a373826ad71e5ced5e76b0c00
-Author:        Peter Hilber <peter.hilber@opensynergy.com>
-AuthorDate:    Mon, 18 Dec 2023 08:38:39 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 19 Feb 2024 12:18:51 +01:00
+Chris
 
-timekeeping: Fix cross-timestamp interpolation on counter wrap
-
-cycle_between() decides whether get_device_system_crosststamp() will
-interpolate for older counter readings.
-
-cycle_between() yields wrong results for a counter wrap-around where after
-< before < test, and for the case after < test < before.
-
-Fix the comparison logic.
-
-Fixes: 2c756feb18d9 ("time: Add history to cross timestamp interface supporting slower devices")
-Signed-off-by: Peter Hilber <peter.hilber@opensynergy.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: John Stultz <jstultz@google.com>
-Link: https://lore.kernel.org/r/20231218073849.35294-2-peter.hilber@opensynergy.com
-
----
- kernel/time/timekeeping.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/time/timekeeping.c b/kernel/time/timekeeping.c
-index 266d028..8f35455 100644
---- a/kernel/time/timekeeping.c
-+++ b/kernel/time/timekeeping.c
-@@ -1186,7 +1186,7 @@ static bool cycle_between(u64 before, u64 test, u64 after)
- {
- 	if (test > before && test < after)
- 		return true;
--	if (test < before && before > after)
-+	if (before > after && (test > before || test < after))
- 		return true;
- 	return false;
- }
+On Mon, Feb 19, 2024 at 12:21=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wro=
+te:
+>
+> From: Kairui Song <kasong@tencent.com>
+>
+> When skipping swapcache for SWP_SYNCHRONOUS_IO, if two or more threads
+> swapin the same entry at the same time, they get different pages (A, B).
+> Before one thread (T0) finishes the swapin and installs page (A)
+> to the PTE, another thread (T1) could finish swapin of page (B),
+> swap_free the entry, then swap out the possibly modified page
+> reusing the same entry. It breaks the pte_same check in (T0) because
+> PTE value is unchanged, causing ABA problem. Thread (T0) will
+> install a stalled page (A) into the PTE and cause data corruption.
+>
+> One possible callstack is like this:
+>
+> CPU0                                 CPU1
+> ----                                 ----
+> do_swap_page()                       do_swap_page() with same entry
+> <direct swapin path>                 <direct swapin path>
+> <alloc page A>                       <alloc page B>
+> swap_read_folio() <- read to page A  swap_read_folio() <- read to page B
+> <slow on later locks or interrupt>   <finished swapin first>
+> ...                                  set_pte_at()
+>                                      swap_free() <- entry is free
+>                                      <write to page B, now page A stalled=
+>
+>                                      <swap out page B to same swap entry>
+> pte_same() <- Check pass, PTE seems
+>               unchanged, but page A
+>               is stalled!
+> swap_free() <- page B content lost!
+> set_pte_at() <- staled page A installed!
+>
+> And besides, for ZRAM, swap_free() allows the swap device to discard
+> the entry content, so even if page (B) is not modified, if
+> swap_read_folio() on CPU0 happens later than swap_free() on CPU1,
+> it may also cause data loss.
+>
+> To fix this, reuse swapcache_prepare which will pin the swap entry using
+> the cache flag, and allow only one thread to swap it in, also prevent
+> any parallel code from putting the entry in the cache. Release the pin
+> after PT unlocked.
+>
+> Racers just loop and wait since it's a rare and very short event.
+> A schedule_timeout_uninterruptible(1) call is added to avoid repeated
+> page faults wasting too much CPU, causing livelock or adding too much
+> noise to perf statistics. A similar livelock issue was described in
+> commit 029c4628b2eb ("mm: swap: get rid of livelock in swapin readahead")
+>
+> Reproducer:
+>
+> This race issue can be triggered easily using a well constructed
+> reproducer and patched brd (with a delay in read path) [1]:
+>
+> With latest 6.8 mainline, race caused data loss can be observed easily:
+> $ gcc -g -lpthread test-thread-swap-race.c && ./a.out
+>   Polulating 32MB of memory region...
+>   Keep swapping out...
+>   Starting round 0...
+>   Spawning 65536 workers...
+>   32746 workers spawned, wait for done...
+>   Round 0: Error on 0x5aa00, expected 32746, got 32743, 3 data loss!
+>   Round 0: Error on 0x395200, expected 32746, got 32743, 3 data loss!
+>   Round 0: Error on 0x3fd000, expected 32746, got 32737, 9 data loss!
+>   Round 0 Failed, 15 data loss!
+>
+> This reproducer spawns multiple threads sharing the same memory region
+> using a small swap device. Every two threads updates mapped pages one by
+> one in opposite direction trying to create a race, with one dedicated
+> thread keep swapping out the data out using madvise.
+>
+> The reproducer created a reproduce rate of about once every 5 minutes,
+> so the race should be totally possible in production.
+>
+> After this patch, I ran the reproducer for over a few hundred rounds
+> and no data loss observed.
+>
+> Performance overhead is minimal, microbenchmark swapin 10G from 32G
+> zram:
+>
+> Before:     10934698 us
+> After:      11157121 us
+> Cached:     13155355 us (Dropping SWP_SYNCHRONOUS_IO flag)
+>
+> Fixes: 0bcac06f27d7 ("mm, swap: skip swapcache for swapin of synchronous =
+device")
+> Link: https://github.com/ryncsn/emm-test-project/tree/master/swap-stress-=
+race [1]
+> Reported-by: "Huang, Ying" <ying.huang@intel.com>
+> Closes: https://lore.kernel.org/lkml/87bk92gqpx.fsf_-_@yhuang6-desk2.ccr.=
+corp.intel.com/
+> Signed-off-by: Kairui Song <kasong@tencent.com>
+> Cc: stable@vger.kernel.org
+>
+> ---
+> V3: https://lore.kernel.org/all/20240216095105.14502-1-ryncsn@gmail.com/
+> Update from V3:
+> - Use schedule_timeout_uninterruptible(1) for now instead of schedule() t=
+o
+>   prevent the busy faulting task holds CPU and livelocks [Huang, Ying]
+>
+> V2: https://lore.kernel.org/all/20240206182559.32264-1-ryncsn@gmail.com/
+> Update from V2:
+> - Add a schedule() if raced to prevent repeated page faults wasting CPU
+>   and add noise to perf statistics.
+> - Use a bool to state the special case instead of reusing existing
+>   variables fixing error handling [Minchan Kim].
+>
+> V1: https://lore.kernel.org/all/20240205110959.4021-1-ryncsn@gmail.com/
+> Update from V1:
+> - Add some words on ZRAM case, it will discard swap content on swap_free
+>   so the race window is a bit different but cure is the same. [Barry Song=
+]
+> - Update comments make it cleaner [Huang, Ying]
+> - Add a function place holder to fix CONFIG_SWAP=3Dn built [SeongJae Park=
+]
+> - Update the commit message and summary, refer to SWP_SYNCHRONOUS_IO
+>   instead of "direct swapin path" [Yu Zhao]
+> - Update commit message.
+> - Collect Review and Acks.
+>
+>  include/linux/swap.h |  5 +++++
+>  mm/memory.c          | 20 ++++++++++++++++++++
+>  mm/swap.h            |  5 +++++
+>  mm/swapfile.c        | 13 +++++++++++++
+>  4 files changed, 43 insertions(+)
+>
+> diff --git a/include/linux/swap.h b/include/linux/swap.h
+> index 4db00ddad261..8d28f6091a32 100644
+> --- a/include/linux/swap.h
+> +++ b/include/linux/swap.h
+> @@ -549,6 +549,11 @@ static inline int swap_duplicate(swp_entry_t swp)
+>         return 0;
+>  }
+>
+> +static inline int swapcache_prepare(swp_entry_t swp)
+> +{
+> +       return 0;
+> +}
+> +
+>  static inline void swap_free(swp_entry_t swp)
+>  {
+>  }
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 7e1f4849463a..a99f5e7be9a5 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3799,6 +3799,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>         struct page *page;
+>         struct swap_info_struct *si =3D NULL;
+>         rmap_t rmap_flags =3D RMAP_NONE;
+> +       bool need_clear_cache =3D false;
+>         bool exclusive =3D false;
+>         swp_entry_t entry;
+>         pte_t pte;
+> @@ -3867,6 +3868,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>         if (!folio) {
+>                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>                     __swap_count(entry) =3D=3D 1) {
+> +                       /*
+> +                        * Prevent parallel swapin from proceeding with
+> +                        * the cache flag. Otherwise, another thread may
+> +                        * finish swapin first, free the entry, and swapo=
+ut
+> +                        * reusing the same entry. It's undetectable as
+> +                        * pte_same() returns true due to entry reuse.
+> +                        */
+> +                       if (swapcache_prepare(entry)) {
+> +                               /* Relax a bit to prevent rapid repeated =
+page faults */
+> +                               schedule_timeout_uninterruptible(1);
+> +                               goto out;
+> +                       }
+> +                       need_clear_cache =3D true;
+> +
+>                         /* skip swapcache */
+>                         folio =3D vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0=
+,
+>                                                 vma, vmf->address, false)=
+;
+> @@ -4117,6 +4132,9 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>         if (vmf->pte)
+>                 pte_unmap_unlock(vmf->pte, vmf->ptl);
+>  out:
+> +       /* Clear the swap cache pin for direct swapin after PTL unlock */
+> +       if (need_clear_cache)
+> +               swapcache_clear(si, entry);
+>         if (si)
+>                 put_swap_device(si);
+>         return ret;
+> @@ -4131,6 +4149,8 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>                 folio_unlock(swapcache);
+>                 folio_put(swapcache);
+>         }
+> +       if (need_clear_cache)
+> +               swapcache_clear(si, entry);
+>         if (si)
+>                 put_swap_device(si);
+>         return ret;
+> diff --git a/mm/swap.h b/mm/swap.h
+> index 758c46ca671e..fc2f6ade7f80 100644
+> --- a/mm/swap.h
+> +++ b/mm/swap.h
+> @@ -41,6 +41,7 @@ void __delete_from_swap_cache(struct folio *folio,
+>  void delete_from_swap_cache(struct folio *folio);
+>  void clear_shadow_from_swap_cache(int type, unsigned long begin,
+>                                   unsigned long end);
+> +void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry);
+>  struct folio *swap_cache_get_folio(swp_entry_t entry,
+>                 struct vm_area_struct *vma, unsigned long addr);
+>  struct folio *filemap_get_incore_folio(struct address_space *mapping,
+> @@ -97,6 +98,10 @@ static inline int swap_writepage(struct page *p, struc=
+t writeback_control *wbc)
+>         return 0;
+>  }
+>
+> +static inline void swapcache_clear(struct swap_info_struct *si, swp_entr=
+y_t entry)
+> +{
+> +}
+> +
+>  static inline struct folio *swap_cache_get_folio(swp_entry_t entry,
+>                 struct vm_area_struct *vma, unsigned long addr)
+>  {
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 556ff7347d5f..746aa9da5302 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3365,6 +3365,19 @@ int swapcache_prepare(swp_entry_t entry)
+>         return __swap_duplicate(entry, SWAP_HAS_CACHE);
+>  }
+>
+> +void swapcache_clear(struct swap_info_struct *si, swp_entry_t entry)
+> +{
+> +       struct swap_cluster_info *ci;
+> +       unsigned long offset =3D swp_offset(entry);
+> +       unsigned char usage;
+> +
+> +       ci =3D lock_cluster_or_swap_info(si, offset);
+> +       usage =3D __swap_entry_free_locked(si, offset, SWAP_HAS_CACHE);
+> +       unlock_cluster_or_swap_info(si, ci);
+> +       if (!usage)
+> +               free_swap_slot(entry);
+> +}
+> +
+>  struct swap_info_struct *swp_swap_info(swp_entry_t entry)
+>  {
+>         return swap_type_to_swap_info(swp_type(entry));
+> --
+> 2.43.0
+>
+>
 
