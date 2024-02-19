@@ -1,139 +1,160 @@
-Return-Path: <linux-kernel+bounces-71295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1084985A30B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:19:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 275EC85A315
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:22:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B96A5287402
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:19:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C5981C23055
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 475342D611;
-	Mon, 19 Feb 2024 12:19:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A4E2DF84;
+	Mon, 19 Feb 2024 12:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CaIe+yC3"
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iJ76bSpw"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C547028DDA
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:19:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF492D046;
+	Mon, 19 Feb 2024 12:21:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708345177; cv=none; b=qv5TxbCJgWwgdT7BgxZaY8ltxEowgZf0ljPNPPmVnUCfIoBFZsrR24C2+ZMG/8QQW96HniHk95mm5WnZfdE00XQSlIy42F0IGnrBo7Ltsf5VwPM74RnIf31yZfnCjHHLdtfoWsmPmUEhtjhi13NLSluXIjrxiD3MvS3y+r1GXy8=
+	t=1708345317; cv=none; b=KfsaT4G3XJXvywNCuODVkkW6m8tVPkgg09FwYF/r68a1tKv12mWdukFuYJq2/jSz3LjLNNmvbWp6Ujc+5OHRSMR/takMKFofzXta0hDWGT1HkfRJNAOTQqxa27S/aRUga4Rm6NXsJa/GnFhCweS+VkEruLKXxQLOrfZIZ0yjWn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708345177; c=relaxed/simple;
-	bh=XZhHjRkTj6nAHd5DH2JdWTq2TlG6374TlIGjtVi+DOg=;
+	s=arc-20240116; t=1708345317; c=relaxed/simple;
+	bh=6flA8ZvRjaZ71CFJ3kj4db2BE67saNYipRMtxrzSZ5I=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uxnhKVFVyEoy7W0zqXrkszLKObSxNi73mpO7DczR/d1p4mrzNPFrPf28KggHngTTTQQ72cLdZkrvjyZEoY5MXmxQl9ueCLFElnBvY7Ey0/IwLzym49F3dLXRBZzCyIl7GqbpbmSxhMvOzhA822tY1w0vHT7cn8i0y+dN4acp/Ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CaIe+yC3; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <99e3e994-ef6a-4339-abf2-cda62d24b1ce@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1708345173;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DkVT2jDCTEiEB3I4q1MvWvXu2gwGeHJQocWwFjbYXGE=;
-	b=CaIe+yC3VWWsIwDtdZDwlDmoJQpk6KwmTKHJjMIbgk2ALrL3MJOcJRTs0xk71hAcD0iHcs
-	rG4whUuljZj/jHmsTTZ0T6Pk/ZKRszUCWxxxHZ0EzOS7Isofz+m+i+9m2jq/REDPQQ3xss
-	45FxfJFgIskFkV4+58egD+GIeT71+/4=
-Date: Mon, 19 Feb 2024 20:19:23 +0800
+	 In-Reply-To:Content-Type; b=t7r5I2gUMp+QXjXUY4mSAoUiXyjWMfxMI9QayPbBqb1Bc5LezwYj7WppNHi+zYi0OAAZteJ3xI9wRWYDfdC+9zGqnLkcD3OGJprFC3G1CSNxlqkxXCXvWcnnAHQDCBfEAPosqg2zYSyR18NkBwmLjE/pG7HSCnw7pkZ/wOyyu7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iJ76bSpw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9F10C433C7;
+	Mon, 19 Feb 2024 12:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708345317;
+	bh=6flA8ZvRjaZ71CFJ3kj4db2BE67saNYipRMtxrzSZ5I=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=iJ76bSpw1PvQfe+AEUTn1lRTMq6w7ce4Yq4mtOtjA/CffofGJptLjFvUlDjBi0/61
+	 b1n1YEfu6tXRzOhZSCv8+r4etCooTj827qehitIjg8yGJUN+sacHlVbqP6MbcR/o2d
+	 GHLOI/Xp0ZAlzb5q5DGg74lbG5m0uXKnNZdOYa+TLwnCZHpYtB11UEi0zENdJekvDl
+	 IDRr8gJpX4e+NLKR52krXSwiosQG/CjUX/FGIpShsI9W+RpRcAsJjlXme+GmRLrl2Z
+	 iEzHFoWiSFp++KrWDEyo++unNHHjm2XKMIJ3mfjEmyh4aXRgnJJ/0FQKKtZe5hlUmz
+	 bOw+xPnta2t/w==
+Message-ID: <0b4464eb-631e-4c9f-a7c8-3451be15d8b4@kernel.org>
+Date: Mon, 19 Feb 2024 13:21:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] net/mlx5: fix possible stack overflows
-To: Hamdan Agbariya <hamdani@nvidia.com>, Arnd Bergmann <arnd@arndb.de>,
- Arnd Bergmann <arnd@kernel.org>, Saeed Mahameed <saeedm@nvidia.com>,
- Leon Romanovsky <leon@kernel.org>
-Cc: "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Yevgeny Kliteynik <kliteyn@nvidia.com>,
- Alex Vesker <valex@nvidia.com>, Netdev <netdev@vger.kernel.org>,
- "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240213100848.458819-1-arnd@kernel.org>
- <84874528-daea-424d-af63-b9b86835fae6@linux.dev>
- <2ebe5a36-ce81-4d26-a12b-7affbd65c5e3@app.fastmail.com>
- <11f40993-ec02-48b7-aec5-13ff7cddf665@linux.dev>
- <DM6PR12MB45168A0957212864D8D53B80CE512@DM6PR12MB4516.namprd12.prod.outlook.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <DM6PR12MB45168A0957212864D8D53B80CE512@DM6PR12MB4516.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] usb: xhci: Add support for Google XHCI controller
+Content-Language: en-US
+To: Puma Hsu <pumahsu@google.com>, mathias.nyman@intel.com,
+ gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com
+Cc: badhri@google.com, royluo@google.com, howardyen@google.com,
+ albertccwang@google.com, raychi@google.com, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org
+References: <20240219061008.1761102-1-pumahsu@google.com>
+ <20240219061008.1761102-3-pumahsu@google.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240219061008.1761102-3-pumahsu@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-在 2024/2/19 17:05, Hamdan Agbariya 写道:
->> 在 2024/2/15 16:03, Arnd Bergmann 写道:
->>> On Thu, Feb 15, 2024, at 01:18, Zhu Yanjun wrote:
->>>> 在 2024/2/13 18:08, Arnd Bergmann 写道:
->>>>>     static int
->>>>> -dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx
->>>>> *rule_rx_tx,
->>>>> +dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
->>>>> +              struct mlx5dr_rule_rx_tx *rule_rx_tx,
->>>>>                 bool is_rx, const u64 rule_id, u8 format_ver)
->>>>>     {
->>>>>      struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES +
->>>>> DR_ACTION_MAX_STES]; @@ -533,7 +532,7 @@
->> dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx
->> *rule_rx_tx,
->>>>>              return 0;
->>>>>
->>>>>      while (i--) {
->>>>> -           ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
->>>> Before buff is reused, I am not sure whether buff should be firstly
->>>> zeroed or not.
->>> I don't see why it would, but if you want to zero it, that would be a
->>> separate patch that is already needed on the existing code, which
->>> never zeroes its buffers.
->>
->> Sure. I agree with you. In the existing code, the buffers are not zeroed.
->>
->> But to a buffer which is used for several times, it is good to zero it before it is
->> used again.
->>
->> Can you add a new commit with the following?
->>
->> 1). Zero the buffers in the existing code
->>
+On 19/02/2024 07:10, Puma Hsu wrote:
+> In our SoC platform, we support allocating dedicated memory spaces
+> other than system memory for XHCI, which also requires IOMMU mapping.
+> The rest of driver probing and executing will use the generic
+> xhci-plat driver.
 > 
-> No need to zero the buffers, as it does not have any necessity and it will only affect performance.
-> Thanks,
-
-Sorry. I can not get your point. Can you explain why no need to zero the 
-buffers? Thanks in advance.
-
-> Hamdan
+> We support USB dual roles and switch roles by generic dwc3 driver,
+> the dwc3 driver always probes xhci-plat driver now, so we introduce
+> a device tree property to probe a XHCI glue driver.
 > 
+> Sample:
+>   xhci_dma: xhci_dma@99C0000 {
+>     compatible = "shared-dma-pool";
+>     reg = <0x00000000 0x99C0000 0x00000000 0x40000>;
+>     no-map;
+>   };
 > 
-> 
-> 
->> 2). Add the zero functionality to your patch
+>   dwc3: dwc3@c400000 {
+>     compatible = "snps,dwc3";
+>     reg = <0 0x0c400000  0 0x10000>;
+>     xhci-glue = "xhci-hcd-goog";
 
-If a buffer is used for many times, is it necessary to zero it before it 
-is used again?
+NAK, that's not DWC3 hardware in such case.
 
-Thanks,
-Zhu Yanjun
+..
 
->>
->>   From my perspective, it is good to the whole commit.
->>
->> Please Jason and Leon comment on this.
->>
->> Thanks,
->>
->> Zhu Yanjun
->>
->>>
->>>       Arnd
+>  		return -ENOMEM;
+> diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+> index 4448d0ab06f0..1c1613c548d9 100644
+> --- a/drivers/usb/host/Kconfig
+> +++ b/drivers/usb/host/Kconfig
+> @@ -61,6 +61,12 @@ config USB_XHCI_PLATFORM
+>  
+>  	  If unsure, say N.
+>  
+> +config USB_XHCI_GOOG
+> +	tristate "xHCI support for Google Tensor SoCs"
+> +	help
+
+Please always Cc Google Tensor SoC maintainers and Samsung SoC
+maintainers on your contributions around Google Tensor SoC.
+
+Anyway you just tried to push vendor code to upstream without aligning
+it to usptream code style and to proper driver model. That's not good.
+Please work with your colleagues in Google to explain how to upstream
+vendor code. There were many, many trainings and presentations. One
+coming from Dmitry will be in EOSS24 in two months.
+
+Best regards,
+Krzysztof
 
 
