@@ -1,135 +1,147 @@
-Return-Path: <linux-kernel+bounces-71736-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BB0285A99E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:06:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE81D85A9A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB25428754D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:06:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7025A1F2696E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DB214594E;
-	Mon, 19 Feb 2024 17:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D855845953;
+	Mon, 19 Feb 2024 17:06:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJE1PI/+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="jtOKukrL";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kdJ4re0F"
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3FF446AD;
-	Mon, 19 Feb 2024 17:06:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AD42446A9
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 17:06:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708362380; cv=none; b=Bd/YH6TDVE9yDeFcchWVLVAGuuI8O3t4Dft99n1E/V+YOG0Owq59O+7RgpFDNJw77iJM+sM2sfiOy7GEIpuiUOUfbSBLqrLXVEFuVg7FwViryohmlZvrQckrMwvPhI1YolT5+rRPngTIZ2qDYhC0Jrc7t5XQrpOsVwszoKY3qlk=
+	t=1708362407; cv=none; b=mtNn9NrQ3PJ6cPt2zgzuXUJFetfJgusFQ7bddCHfS/lWBYgesKUhTBGQBUb5gQP8BLw+uGrxVsDenlpCufaIJv8Kk1b4ZL7p+DQo1m2UursJIz52KWSfbtMk1PP2+iQnILymh+QN3im3Q2GlZRC5MJmyJxW/LT/bHXOjmdUde64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708362380; c=relaxed/simple;
-	bh=t+TSvmeYQx4nVmUvJDq+bLSSfN+BKXaCGdPbAufGsFg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uE0bI5CRs9fZdSnSvjHQ/2vU5D92SJu0D9v50pLQAaR6glrSgHKmyAAH2smL892TPkxNWbMYodQydu1bV836SHHU8bHBl90F0Tn0qvLUiEvRQCq9cHYakhPZ+ktUu90+zsv5zHmPh54EsSR16ogvkoacmg24UbMkAk58FIQ5GlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJE1PI/+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A083C43609;
-	Mon, 19 Feb 2024 17:06:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708362380;
-	bh=t+TSvmeYQx4nVmUvJDq+bLSSfN+BKXaCGdPbAufGsFg=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rJE1PI/+3hoO27FdW4q7tsFBt/I0zEuTp5T/LKC61VwsnclDdQ2jxuHpkFNqKk/WS
-	 eba/2NPvoIOLi1278fh7IWUKSKX5/1NDQKIwg3mF344ZaoZPLzt2nEp4TOzaVeqQme
-	 09/xjyJ8yTaiv3eMABoYkNHp31J4AJBIstoYGB6++xZjzEONNaksVmWMJPJsrh2V/T
-	 KR4UR6EpJpkHGuStpgw7oUwRTUMLh+ru1gVMuGyuzgtX5+8SFcpG+oP+vAQhbAawaG
-	 g5Yz3GDofnu59C2hOMvGFiVJ8pNDqooZLz8SrYgXrdreSSgQQZMWLdzXLatCCUNnF0
-	 omnsdHQw48h3w==
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d1094b549cso67536011fa.3;
-        Mon, 19 Feb 2024 09:06:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUf4WXQzNv5Df7LBXlCMlc90hlJhuUuJRP95skH7hQ/z5zgoTQ+yctsbXTig87trxjttQ1hE2g3eyy0/36VDxJfNjynA3jF/eZf8BrAxZU82I/JzTK5YYgPEHHmOzmPBzIrHvz0thi3YA==
-X-Gm-Message-State: AOJu0Yy1uJowFDAGM/nOVTZJjj9ZxLNrFwMCsQKPNtOuinDmVBH+L8Ti
-	z58IJ+LlwJzr+pagoGRmk3KnQXdmiIb+1jKbLeONQycU8BZkwZmB/zRweog+C2C7oU8W/YAqEYw
-	0SEhZdw6Z9Nx28dAeSQdtOhb1z0k=
-X-Google-Smtp-Source: AGHT+IH2PehXtcBecdoz6FD+9gOMdsvZTGp/cMIAioAJ8CZAcqtAkx87TjovFZ3twblzIGJe3mOkNVQ3IA3xHKolxwI=
-X-Received: by 2002:ac2:4a91:0:b0:511:a803:7e63 with SMTP id
- l17-20020ac24a91000000b00511a8037e63mr8154400lfp.54.1708362378413; Mon, 19
- Feb 2024 09:06:18 -0800 (PST)
+	s=arc-20240116; t=1708362407; c=relaxed/simple;
+	bh=NjBPWEitbQB8h/c6rIA0dK3jf1as/36ddLT339U5cDA=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=u122lfJX46cOPtbYl5sMEMXa/u6xkTPRqiJHEvk2dtE9KaRYi7OW3REh5yaPkgTq/8N36A0UmQM++zB+q4fR8OYra4dDEvaZcADteVspRz7Ynkt7FvzEk99EDq0fEhtFiku/8cadw4CRYw7EpjQv91Kd3kBXzmXv05a5EQuhAXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=jtOKukrL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kdJ4re0F; arc=none smtp.client-ip=64.147.123.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id 7EE70320077A;
+	Mon, 19 Feb 2024 12:06:44 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Mon, 19 Feb 2024 12:06:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1708362404;
+	 x=1708448804; bh=2NsTyUfjfmFCmuigRd0UfWMsj8n+TennjpPS2AonWHM=; b=
+	jtOKukrLdok0XLb/u1PZvLXxkAjIXbZKOlTXkGD3fBUrVJ/qYs6a3IJXU/ndOsJq
+	Vs5b+RuCGL4r1rctiphmtj+3upHQ4wcjxLX8AFWYsoJ5VtsR2deFl8db35Q590P6
+	1rWvi2XkYySqsnwqllOPDnGU5DX5DNm0aZ9UWqc7MYj+o5crFSLy0rVZy3ZD64Qt
+	FXfDEzDWKH+hg3b0E6rp1GohObWQw92OjiucbAg4gbDRlkIzG+Anp1eduByFOL5d
+	S6MkIgFBazU4/suF2gSfuOMTQxjo/fwNyriFSHSaIrndaWVMZeFVEHGAIWQAWlx4
+	gElHpgalUFX7yOsm3NyojA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708362404; x=
+	1708448804; bh=2NsTyUfjfmFCmuigRd0UfWMsj8n+TennjpPS2AonWHM=; b=k
+	dJ4re0FgYVOAgbyO77Y7/cKAhNXBtaQgEb0M5bl4femM7YMeOB13DDjYx5JW2QxT
+	GGmwfRizOveLyyzvsWIPE3El9XX8FddlUY7OtZPnfkZDPeAYRC5BMIoM/r0Y/XgF
+	ctYo/jF79EZT7gkJ4KlK+yYJu/Kun9b6HsyIWXq1fLUZ4h/i0Zmx4Nvgfd6fGdp0
+	oRSU//OivYLfBBLd237UojXturjoRiFZ0z5BIJ3kgkYTJ3kcqmpiCFiYSIyY+rTj
+	LNwsQLbh6D0+IoIlxhEW6RY5opjtFSOz4YfvZMSq9v9NrGvVTXmX/XHpi2p+C6m3
+	LP1iQEhZxzpSPptR8+zfg==
+X-ME-Sender: <xms:o4rTZfvwaWkLX1jIG4V8BXA8sqRDEZFCJYUSOnPY-JfpdF9fRSV_zQ>
+    <xme:o4rTZQc59yndQ-oen0H2Ore3BV7QpyRiubwI_wO-GGLjykoi-n2L95Od7a1SlTarn
+    7rzVh7ecuzbS1WqgZ8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdekgdelhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepfffgudeljeduieevueegteelkefghfeffefftdefvdehteelfefgueffveeu
+    geegnecuffhomhgrihhnpehgohgusgholhhtrdhorhhgpdhkvghrnhgvlhdrohhrghenuc
+    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnuges
+    rghrnhgusgdruggv
+X-ME-Proxy: <xmx:o4rTZSzqU5c_eiDfgJ7cUT9KZR1GndGx7KO-J3GRfpiMID_GPDqVEQ>
+    <xmx:o4rTZeOokSAhI4D9EOjoLctyM5xOQHqLGycHmiZahls4aDMKLzkGUA>
+    <xmx:o4rTZf-eSIOJRInhs3ppxP-Eiz7ybLb_aUkakt7U6zha8w02gsFq0g>
+    <xmx:pIrTZWbIPizoH29l-buGto2MYny9-bIbmKhh4ob8xzdNCI2ZIO9FLQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 535F1B6008F; Mon, 19 Feb 2024 12:06:43 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240213124143.1484862-13-ardb+git@google.com>
- <20240213124143.1484862-20-ardb+git@google.com> <b2e0b647-b5a7-4c66-bb00-7907a2318f58@amd.com>
-In-Reply-To: <b2e0b647-b5a7-4c66-bb00-7907a2318f58@amd.com>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Mon, 19 Feb 2024 18:06:07 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXG_sQ-+ULtvE7SqD0DYe3p9=tP8K9VPgfiR-0Z55A9vVw@mail.gmail.com>
-Message-ID: <CAMj1kXG_sQ-+ULtvE7SqD0DYe3p9=tP8K9VPgfiR-0Z55A9vVw@mail.gmail.com>
-Subject: Re: [PATCH v4 07/11] efi/libstub: Add generic support for parsing mem_encrypt=
-To: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Ard Biesheuvel <ardb+git@google.com>, linux-kernel@vger.kernel.org, 
-	Kevin Loughlin <kevinloughlin@google.com>, Dionna Glaze <dionnaglaze@google.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Andy Lutomirski <luto@kernel.org>, 
-	Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Kees Cook <keescook@chromium.org>, Brian Gerst <brgerst@gmail.com>, linux-arch@vger.kernel.org, 
-	llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <dca5b082-90d1-40ab-954f-8b3b6f51138c@app.fastmail.com>
+In-Reply-To: 
+ <CAMj1kXHh_m=V0QsiTpHrUXpFBXFbFfezdysz8quhPSgUrZg1MA@mail.gmail.com>
+References: <20240206074552.541154-1-maskray@google.com>
+ <CAMuHMdVOoxVFohcwwoQtY0KgZEvbjgJJ6mib8Fabo97P0krEqw@mail.gmail.com>
+ <CAMj1kXGaF5bobHTr1pTg+-=s4Ft7+5SSbX72-NxsR_W_Yuxb8Q@mail.gmail.com>
+ <CAMj1kXGw+r7yEEBA8gYBcdrqkiP=VYOSzz9YLnNavJn2snmFwA@mail.gmail.com>
+ <CAMuHMdX+6fnAf8Hm6EqYJPAjrrLO9T7c=Gu3S8V_pqjSDowJ6g@mail.gmail.com>
+ <CAMj1kXHh_m=V0QsiTpHrUXpFBXFbFfezdysz8quhPSgUrZg1MA@mail.gmail.com>
+Date: Mon, 19 Feb 2024 18:06:19 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Ard Biesheuvel" <ardb@kernel.org>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Fangrui Song" <maskray@google.com>,
+ "Catalin Marinas" <catalin.marinas@arm.com>, "Will Deacon" <will@kernel.org>,
+ linux-arm-kernel@lists.infradead.org, "Jisheng Zhang" <jszhang@kernel.org>,
+ "Dave Martin" <Dave.Martin@arm.com>, "Peter Smith" <peter.smith@arm.com>,
+ llvm@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] arm64: jump_label: use constraints "Si" instead of "i"
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 19 Feb 2024 at 18:00, Tom Lendacky <thomas.lendacky@amd.com> wrote:
->
-> On 2/13/24 06:41, Ard Biesheuvel wrote:
-> > From: Ard Biesheuvel <ardb@kernel.org>
-> >
-> > Parse the mem_encrypt= command line parameter from the EFI stub if
-> > CONFIG_ARCH_HAS_MEM_ENCRYPT=y, so that it can be passed to the early
-> > boot code by the arch code in the stub.
-> >
-> > This avoids the need for the core kernel to do any string parsing very
-> > early in the boot.
-> >
-> > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > ---
-> >   drivers/firmware/efi/libstub/efi-stub-helper.c | 8 ++++++++
-> >   drivers/firmware/efi/libstub/efistub.h         | 2 +-
-> >   2 files changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> > index bfa30625f5d0..3dc2f9aaf08d 100644
-> > --- a/drivers/firmware/efi/libstub/efi-stub-helper.c
-> > +++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
-> > @@ -24,6 +24,8 @@ static bool efi_noinitrd;
-> >   static bool efi_nosoftreserve;
-> >   static bool efi_disable_pci_dma = IS_ENABLED(CONFIG_EFI_DISABLE_PCI_DMA);
-> >
-> > +int efi_mem_encrypt;
-> > +
-> >   bool __pure __efi_soft_reserve_enabled(void)
-> >   {
-> >       return !efi_nosoftreserve;
-> > @@ -75,6 +77,12 @@ efi_status_t efi_parse_options(char const *cmdline)
-> >                       efi_noinitrd = true;
-> >               } else if (IS_ENABLED(CONFIG_X86_64) && !strcmp(param, "no5lvl")) {
-> >                       efi_no5lvl = true;
-> > +             } else if (IS_ENABLED(CONFIG_ARCH_HAS_MEM_ENCRYPT) &&
-> > +                        !strcmp(param, "mem_encrypt") && val) {
-> > +                     if (parse_option_str(val, "on"))
-> > +                             efi_mem_encrypt = 1;
-> > +                     else if (parse_option_str(val, "off"))
-> > +                             efi_mem_encrypt = -1;
->
-> With CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT having recently been
-> removed, I'm not sure what parsing for mem_encrypt=off does.
->
-> (Same thing in the next patch.)
->
+On Mon, Feb 19, 2024, at 16:41, Ard Biesheuvel wrote:
+> On Mon, 19 Feb 2024 at 15:43, Geert Uytterhoeven <geert@linux-m68k.org=
+> wrote:
+>> On Mon, Feb 19, 2024 at 11:57=E2=80=AFAM Ard Biesheuvel <ardb@kernel.=
+org> wrote:
+>> > On Mon, 19 Feb 2024 at 11:56, Ard Biesheuvel <ardb@kernel.org> wrot=
+e:
 
-We have to deal with both mem_encrypt=on and mem_encrypt=off occurring
-on the command line. efi_parse_options() may be called more than once,
-i.e., when there is a default command line baked into the image that
-can be overridden at runtime. So if the baked in one has
-mem_encrypt=on, mem_encrypt=off appearing later should counter that.
+>> > https://godbolt.org/z/GTnf3vPaT
+>>
+>> I could reproduce the issue on v6.8-rc5 using arm64 defconfig
+>> and x86_64-gcc-5.5.0-nolibc-aarch64-linux.tar.xz from
+>> https://cdn.kernel.org/pub/tools/crosstool/files/bin/x86_64/5.5.0/:
+>>
+>
+> OK, I managed to do so as well.
+>
+> And GCC 6.4 from the same source works correctly.
+>
+> Not sure whether there are any plans to bump the minimal GCC version
+> any time soon (cc'ing Arnd), but we should probably drop this change
+> until that happens.
 
-The same applies to the next patch, although the decompressor appears
-to ignore the built-in command line entirely (I made a note of that in
-the commit log)
+From what I can tell, we may as well formally raise the minimum
+gcc version to 8.1+ already, as that is a version that is
+actually used in distros, and we have been on 5.1+ for a few
+years already.
+
+Not sure if there are any other benefits to gcc-8 besides
+allowing minor cleanups.
+
+gcc-9 would bring --std=3Dgnu2x support, but it may be too
+early for that.
+
+      Arnd
 
