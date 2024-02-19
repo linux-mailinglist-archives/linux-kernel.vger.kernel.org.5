@@ -1,187 +1,117 @@
-Return-Path: <linux-kernel+bounces-71348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C36A85A3CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:51:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3DC685A3D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:52:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26B831F226FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:51:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604AC280DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:52:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710CB2E856;
-	Mon, 19 Feb 2024 12:51:07 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3592E859;
+	Mon, 19 Feb 2024 12:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i7c1+v65"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 192892E642;
-	Mon, 19 Feb 2024 12:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B0B29408;
+	Mon, 19 Feb 2024 12:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708347067; cv=none; b=Kd0/wYHRUabZe/vQCtkehlgNb8SlO+TnI5YaaIxDkvje/fFEMvm4NhzgNnDacl+HlElL15MhU5ZyvXxF3LYB9dF2nPuMwfy7oYfMdRzGhz+Y54BnHwqDS3Qv80bgUGe5DYWeZCsXgJ0ftQMxjQMQA2mRSrkF4IjC1RxkJTvEy+w=
+	t=1708347120; cv=none; b=OWNTF0Knvx7d32b/FrTN6Jtq2BknMYME8xTVs9TG7XVSm1nrOKphoZaWJw0xhGTgSMGSzBCkBBtigqbaTT4CBpM4Eeya8UThkfAmgpz/f3wFW+qPZseNHnQnSeeMZs9166ZVBLCDpHkKYlyNiWdtut/c2SFS8obRzWL+eWx2qrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708347067; c=relaxed/simple;
-	bh=EtnFnWlbUp7GLgtNCRTR1C0TuQakJARn5ciOH4S/YTw=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=EfcAiQEaBFkikCrJ2GMUprGAmM7qfonPvXgV/rXaRoJIctqz2aP3Bxq4sTi1pEI8BdjincXlk8k0mLNe4/U7kJYvkx0S7iJyEVsIhPszDCPpNDJDzELo5ut18l7V7HiCcCEsqVIRYcuNqoCxIEAMHTUTyH+YbmN3mh3u+J6eZVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tdj4023tbz6K8fY;
-	Mon, 19 Feb 2024 20:47:28 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7623B140B38;
-	Mon, 19 Feb 2024 20:51:01 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 19 Feb
- 2024 12:51:00 +0000
-Date: Mon, 19 Feb 2024 12:50:59 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Robert Richter <rrichter@amd.com>
-CC: Alison Schofield <alison.schofield@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, Ira Weiny <ira.weiny@intel.com>, Dan Williams
-	<dan.j.williams@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Davidlohr
- Bueso" <dave@stgolabs.net>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Len
- Brown <lenb@kernel.org>, Lukas Wunner <lukas@wunner.de>, Fan Ni
-	<nifan.cxl@gmail.com>
-Subject: Re: [PATCH v4 2/3] cxl/pci: Get rid of pointer arithmetic reading
- CDAT table
-Message-ID: <20240219125059.0000737c@Huawei.com>
-In-Reply-To: <20240216155844.406996-3-rrichter@amd.com>
-References: <20240216155844.406996-1-rrichter@amd.com>
-	<20240216155844.406996-3-rrichter@amd.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1708347120; c=relaxed/simple;
+	bh=x2tSeZqCvSLh48WjR/1aaEIXZ1DQ5VUPkspUWEFkPOw=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=a1X4NC7LZYsjFVDOQGbNi3b+ZrWQKuAzdt4/dXVbyEYH9jkWuwgrL5yFsE05dN4WoLVBtWg7rf3Mz0g7tff/nCXXrIRYbufYDNYx5BOT/o5fRXVc7gjH92m6ppQcP+wm3WVbmScJ4TeCjizb2Nxk8DHu5Fnz2x88VYNtsme7kgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i7c1+v65; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708347118; x=1739883118;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=x2tSeZqCvSLh48WjR/1aaEIXZ1DQ5VUPkspUWEFkPOw=;
+  b=i7c1+v65C8C7H+GB6fU52O7MYTOKs9pSrXj1lOJdmI/NTF6qkyi66O9s
+   sJaYfo0laSD+C2V2bqojbP2xoYZmyP7pCBX8rmPrT/CcleFISWUw2FKT9
+   iM9tEUuZpyp1QxqRY8LJuds2jeqz17sSsDEoZgMQQhLofgML5SBMwUtug
+   B/qklmAIGGS5BFHDxn/vXu6JyJCbIQ2wz7lHudT2DiAlC9c1putsIvssK
+   YQhUoCZkpikjK6nDbBVy27SrIUV1wRsJ2WqhMRqUKNxtHkaRhEcuIlm8E
+   9/4OEXkEIG1iNLVfqHEVHeIDr5mNx7EP6YvFU9hTuhuO9f1Qj/FVqw1J7
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="13822552"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="13822552"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 04:51:57 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="4387476"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.18])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 04:51:56 -0800
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Mon, 19 Feb 2024 14:51:48 +0200 (EET)
+To: Gergo Koteles <soyer@irl.hu>, Hans de Goede <hdegoede@redhat.com>
+cc: Ike Panhc <ike.pan@canonical.com>, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] platform/x86: ideapad-laptop: support Fn+R dual-function
+ key
+In-Reply-To: <531e85d73c1926161eb15f8900ea77aade394b6f.camel@irl.hu>
+Message-ID: <29ed8a8e-09f5-ec43-11bd-7ddd12ce08f8@linux.intel.com>
+References: <0cdbc0e6eb65e160384ae0ed152e7de3ded1d9d5.1707604991.git.soyer@irl.hu>  <3b6a7bba-47a5-469c-aac1-5574ad78dadf@canonical.com> <531e85d73c1926161eb15f8900ea77aade394b6f.camel@irl.hu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=US-ASCII
 
-On Fri, 16 Feb 2024 16:58:43 +0100
-Robert Richter <rrichter@amd.com> wrote:
+On Mon, 19 Feb 2024, Gergo Koteles wrote:
+> On Mon, 2024-02-19 at 10:39 +0800, Ike Panhc wrote:
+> > On 2/11/24 06:51, Gergo Koteles wrote:
+> > > According to the manual, Fn+R adjusts the display refresh rate.
+> > > Map Fn+R to KEY_DISPLAYTOGGLE.
+> > > 
+> > > Signed-off-by: Gergo Koteles <soyer@irl.hu>
 
-> Reading the CDAT table using DOE requires a Table Access Response
-> Header in addition to the CDAT entry. In current implementation this
-> has caused offsets with sizeof(__le32) to the actual buffers. This led
-> to hardly readable code and even bugs. E.g., see fix of devm_kfree()
-> in read_cdat_data():
+> > > +++ b/drivers/platform/x86/ideapad-laptop.c
+> > > @@ -1091,6 +1091,8 @@ static const struct key_entry ideapad_keymap[] = {
+> > >  	{ KE_KEY,	0x07 | IDEAPAD_WMI_KEY, { KEY_HELP } },
+> > >  	{ KE_KEY,	0x0e | IDEAPAD_WMI_KEY, { KEY_PICKUP_PHONE } },
+> > >  	{ KE_KEY,	0x0f | IDEAPAD_WMI_KEY, { KEY_HANGUP_PHONE } },
+> > > +	/* Refresh Rate Toggle (Fn+R) */
+> > > +	{ KE_KEY,	0x10 | IDEAPAD_WMI_KEY, { KEY_DISPLAYTOGGLE } },
+> > >  	/* Dark mode toggle */
+> > >  	{ KE_KEY,	0x13 | IDEAPAD_WMI_KEY, { KEY_PROG1 } },
+> > >  	/* Sound profile switch */
+> > 
+> > Acked-by: Ike Panhc <ike.pan@canonical.com>
+> > 
+> > BTW on which ideapad we need this patch?
+> > 
 > 
->  c65efe3685f5 cxl/cdat: Free correct buffer on checksum error
+> Oh, I somehow missed that. I found it on a Yoga 7 14ARB7.
 > 
-> Rework code to avoid calculations with sizeof(__le32). Introduce
-> struct cdat_doe_rsp for this which contains the Table Access Response
-> Header and a variable payload size for various data structures
-> afterwards to access the CDAT table and its CDAT Data Structures
-> without recalculating buffer offsets.
+> Newer Yogas and Legions with 60Hz/90Hz displays have this refresh rate
+> toggle feature.
 > 
-> Cc: Lukas Wunner <lukas@wunner.de>
-> Cc: Fan Ni <nifan.cxl@gmail.com>
-> Reviewed-by: Dave Jiang <dave.jiang@intel.com>
-> Signed-off-by: Robert Richter <rrichter@amd.com>
-Ok. I suspect we could fine tune this for ever but changes here look good
-enough to me and definitely nicer than the original ;)
+> I'm wondering if this would be worth a new KEY_REFRESH_RATE_TOGGLE
+> event code? 
+> 
+> KEY_DISPLAYTOGGLE is used to toggle the LCD on/off in other drivers.
+> 
+> What do you think?
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+At least to me it felt like an abuse of KEY_DISPLAYTOGGLE because it's 
+obviously different. But since there was existing, similar use for it 
+already, I didn't push back on it but took your patch.
 
-> ---
->  drivers/cxl/core/pci.c | 77 ++++++++++++++++++++++--------------------
->  drivers/cxl/cxlpci.h   | 24 +++++++++++++
->  2 files changed, 65 insertions(+), 36 deletions(-)
-> 
-> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-> index 39366ce94985..763c39456228 100644
-> --- a/drivers/cxl/core/pci.c
-> +++ b/drivers/cxl/core/pci.c
-> @@ -544,55 +544,57 @@ static int cxl_cdat_get_length(struct device *dev,
->  
->  static int cxl_cdat_read_table(struct device *dev,
->  			       struct pci_doe_mb *doe_mb,
-> -			       void *cdat_table, size_t *cdat_length)
-> +			       struct cdat_doe_rsp *rsp, size_t *length)
->  {
-> -	size_t length = *cdat_length + sizeof(__le32);
-> -	__le32 *data = cdat_table;
-> -	int entry_handle = 0;
-> +	size_t received, remaining = *length;
-> +	unsigned int entry_handle = 0;
-> +	union cdat_data *data;
->  	__le32 saved_dw = 0;
->  
->  	do {
->  		__le32 request = CDAT_DOE_REQ(entry_handle);
-> -		struct cdat_entry_header *entry;
-> -		size_t entry_dw;
->  		int rc;
->  
->  		rc = pci_doe(doe_mb, PCI_DVSEC_VENDOR_ID_CXL,
->  			     CXL_DOE_PROTOCOL_TABLE_ACCESS,
->  			     &request, sizeof(request),
-> -			     data, length);
-> +			     rsp, sizeof(*rsp) + remaining);
->  		if (rc < 0) {
->  			dev_err(dev, "DOE failed: %d", rc);
->  			return rc;
->  		}
->  
-> -		/* 1 DW Table Access Response Header + CDAT entry */
-> -		entry = (struct cdat_entry_header *)(data + 1);
-> -		if ((entry_handle == 0 &&
-> -		     rc != sizeof(__le32) + sizeof(struct cdat_header)) ||
-> -		    (entry_handle > 0 &&
-> -		     (rc < sizeof(__le32) + sizeof(*entry) ||
-> -		      rc != sizeof(__le32) + le16_to_cpu(entry->length))))
-> +		if (rc < sizeof(*rsp))
->  			return -EIO;
->  
-> +		data = (union cdat_data *)rsp->data;
-> +		received = rc - sizeof(*rsp);
-> +
-> +		if (entry_handle == 0) {
-> +			if (received != sizeof(data->header))
-> +				return -EIO;
-> +		} else {
-> +			if (received < sizeof(data->entry) ||
-> +			    received != le16_to_cpu(data->entry.length))
-> +				return -EIO;
-> +		}
-> +
->  		/* Get the CXL table access header entry handle */
->  		entry_handle = FIELD_GET(CXL_DOE_TABLE_ACCESS_ENTRY_HANDLE,
-> -					 le32_to_cpu(data[0]));
-> -		entry_dw = rc / sizeof(__le32);
-> -		/* Skip Header */
-> -		entry_dw -= 1;
-> +					 le32_to_cpu(rsp->doe_header));
-> +
->  		/*
->  		 * Table Access Response Header overwrote the last DW of
->  		 * previous entry, so restore that DW
->  		 */
-> -		*data = saved_dw;
-> -		length -= entry_dw * sizeof(__le32);
-> -		data += entry_dw;
-> -		saved_dw = *data;
-> +		rsp->doe_header = saved_dw;
-> +		remaining -= received;
-> +		rsp = (void *)rsp + received;
-> +		saved_dw = rsp->doe_header;
->  	} while (entry_handle != CXL_DOE_TABLE_ACCESS_LAST_ENTRY);
->  
->  	/* Length in CDAT header may exceed concatenation of CDAT entries */
-> -	*cdat_length -= length - sizeof(__le32);
-> +	*length -= remaining;
->  
->  	return 0;
->  }
+-- 
+ i.
 
 
