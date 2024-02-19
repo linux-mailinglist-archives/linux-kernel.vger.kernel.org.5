@@ -1,165 +1,158 @@
-Return-Path: <linux-kernel+bounces-71359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71361-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0272185A3FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:59:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EFC85A408
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:01:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 844111F24665
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:59:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2207F1C231B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A16360BA;
-	Mon, 19 Feb 2024 12:59:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE77360AE;
+	Mon, 19 Feb 2024 13:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UpPC2RyS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vdMIpNI5"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A911334CDE
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:59:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436E034CDE
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:01:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708347589; cv=none; b=C5Y7nTMdpDzxcKVZRsBjPb04H/GRnc13m/9UsoxJL34us8n+zBeIQxPhBSGLvEstMOIMDQ0zC1DSrRNmNUpQku9MIEwHDyLnzwgnLRvjLRdwvdWq5943po9z6MX1B2fq/FBKzsvtcXQBRz7L4ppEcY9BW0Bi7bdFvV361gNeI0s=
+	t=1708347681; cv=none; b=O55Jk5B6gbrjoye7COZkg8yvSExp/drj2bxubt2TtmVNoHVJMvtUtb2jVeLvgClUNJfxtmp18pqbCMtJTbrqVwzpYzRSsQXUCgK+a89Psmvl83eHlrjiNtDBeIDD3+Hb122HtwLZ/eDJ2jVvCZtzSw6yLDKf5QM80QxXgPH2cbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708347589; c=relaxed/simple;
-	bh=3Fi65QIGXfdHgZ04kFVl3weeoPhyvqfKbrI6gyowmVo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sPEFTmp72LMAkkZOrcHEdLT8JdFDbiEMEBfUM5PzgYAt5NAnwKH28KYUzid5zMnuV51a49JgABHxu4tXdORLAYkNzPVFEGtfegHP6QfDSGQx8hZq4nR+3SsUI2e8qmzmbH0z6xNRESMQzI9R/JyQUcHvgtoIzJEhhTy465B1bYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UpPC2RyS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708347586;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nMxKeQCC51WbQZLbi5a685VF0mibFkff8D67rJw7soU=;
-	b=UpPC2RySwdQtHBpFs58kkNvzz+EDP1k97tfaOaKRyfEQXjd059wC2Elf6xcq4g3uhBZgJP
-	74YY27x0SE1xcRKnOM1vU6uh/ilPpHh+kAhqYMAjuN7qIui4bEHpgvGZTuesTzrQbGqsDR
-	52q3/CVoyHUfzUsvm9jNR8ydkhZQEns=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-81-EzM1hemWOQOpSh1QDP-PiA-1; Mon, 19 Feb 2024 07:59:44 -0500
-X-MC-Unique: EzM1hemWOQOpSh1QDP-PiA-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a3ecd8d3a8dso29595866b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 04:59:44 -0800 (PST)
+	s=arc-20240116; t=1708347681; c=relaxed/simple;
+	bh=SFWnjeNwNJD7FjXnCCO4T0U+0JJ5Grb2rBe4WOV7eZo=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=RAnvakUGYELOxZJ8cSe7jiT0/We6eOsTNIkfURxXcKAChqzmApgQFmKE6HOGPmYDT3aHlqAyKFavxu539MUxeXOtRUQt5RkLjt54I+N5fqSqzNIUE8Wnk19bBQIyxb9SUbuKSKfGMprbw8eAeU09l8PSjzWQJeh5Zg1eeVA9u+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vdMIpNI5; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-563dd5bd382so13813a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:01:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1708347677; x=1708952477; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SFWnjeNwNJD7FjXnCCO4T0U+0JJ5Grb2rBe4WOV7eZo=;
+        b=vdMIpNI5UgKkksP/9bDuIBo15RfKgf0x1HqIzU+6qwrQOZjhHnaYJ3hMQJK9xCO/8c
+         KN6y8qGMY51qgFDCBgQxn2fT7PlVvQEb5K2G20/0KUVqMy33be/mVgIf1HQa9HYZxNZs
+         VhQsbHt5tlJn1YvlIUVPa/HgV9XerD+4fp1XexoiUNcrBimTKsowDWqjzd3xzxwLd/fC
+         ZkKO3teEoy9PkoYA/U2qzOGaJ2PqsOYYjCdREGxQBB4Z3nRdS41EG9xt0VQaG61iEPn8
+         1tuXi0UBkWm7ve3ALcOFuTolj8V/fKDgbTwQgB0RVv3V8hVh6h5IKJW+97R1oY8aWqKO
+         9thw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708347583; x=1708952383;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nMxKeQCC51WbQZLbi5a685VF0mibFkff8D67rJw7soU=;
-        b=XEItN3oU9Pu+VgRDqyUlQPpwv0N+75wDaYTd7AAPLdSuERQmq/6uJ21x6h7X77X9he
-         v4d6w7RTDD56xtbtx1G1eMjoQfNNgWjnk8XLRPBi4XQn1ynCMfp4W3kY0ViFaCfK93ud
-         c+h7NlYrmDdoD5fuUITv4xU1xM3BVeQZXmxdjCbNmKmnECXi8l0FHPWDGmt8XNDNq5PG
-         7MU65ZkGHT+aa123oeiQJzjzFklXVbMSs8j2suKMzzTMQgM2cWFvVbWdKUrU3l9x97X3
-         qleIIBNy4jsilOIFnK8u/RiTT3asXu4An+R5CMGdDpTYKIAT9Cq8uB/Js+hzcJcIG5FY
-         78bA==
-X-Forwarded-Encrypted: i=1; AJvYcCWhPGV+RtzcWgITqecs1mK9Y5svvUgziwP7JxJquMq8iONBxqM1NruJEB6Zegdp/Xe6Wo2Bv2UULey/fcSVtEiv0BqMxiupuxviVZyd
-X-Gm-Message-State: AOJu0YwoJld9EqgyOLYFbdGXzPqQ6AzdLO9QZWiJFrGBTaMpWHSRssO/
-	Cy0K+72bqQrLWWrUQaK3z1JbFdnyInZXR5g2takXdPwC2jHFhWBx953Dn06fcGQQGQ/bJ/ufw65
-	I0yP7ohKWrk5PeBMWDZ4xMlP7OhELmH/qjjazMwmpWhXZxYU51xNfBpek0JDOXg==
-X-Received: by 2002:a17:906:718d:b0:a3e:7cd8:3db7 with SMTP id h13-20020a170906718d00b00a3e7cd83db7mr2495942ejk.68.1708347583633;
-        Mon, 19 Feb 2024 04:59:43 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF0lzjx1aAmMTv/0aa0dQdKzvgpfGRNniCzHwLJhmH2u8A2FduKGrk8NWgLHabH3q9tu/SZwA==
-X-Received: by 2002:a17:906:718d:b0:a3e:7cd8:3db7 with SMTP id h13-20020a170906718d00b00a3e7cd83db7mr2495929ejk.68.1708347583325;
-        Mon, 19 Feb 2024 04:59:43 -0800 (PST)
-Received: from [10.40.98.142] ([78.108.130.194])
-        by smtp.gmail.com with ESMTPSA id a19-20020a1709064a5300b00a3e2b0799e0sm2404226ejv.4.2024.02.19.04.59.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 04:59:43 -0800 (PST)
-Message-ID: <f0f64e2d-5e6f-4a3b-b57d-e617142eb08c@redhat.com>
-Date: Mon, 19 Feb 2024 13:59:42 +0100
+        d=1e100.net; s=20230601; t=1708347677; x=1708952477;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SFWnjeNwNJD7FjXnCCO4T0U+0JJ5Grb2rBe4WOV7eZo=;
+        b=myN5YG0Orwd3t3Xx20QfIkb9EoBDmWE5k637xmXU7YiUd7cfOr1rtwZ7hbhV8GJYHz
+         p/Fzgn42+8xbyV53cBByr6QTLSMt8S2v4IJnJz3nAEn9snM+h/zGQ5znB2OpCcUJjgby
+         Drfwe4yl5FjprG1+/sAjcxnsjz/NOTNLW9OTBROGN/Gn3RZ3MEY9DlE7p6asrFTQrJ0C
+         tHPh8SrS7536if+3kCWWRS+swX7NLCCe06bzA9pgHWUrdw+cGreIYRPSS8VFH7neKQT6
+         hCxVBRjwatCoZ+VFK0Hk+nTSwNlNBbzJgT8Gd46GY7KL/8Ka1X/zDOl1rRYlSmuQTNCP
+         PH0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVGGGjqLLbwnPrLqNHij8vrppBhGMk9n1fZLGEk0nyUEF5CKkW/l+HPtiejYZuAVKbOT692USz6F01CSdSyx7RQMPWY0h8GoDasBxQJ
+X-Gm-Message-State: AOJu0YxFn8eFm3UCOW2GZHK/2oAeC5DZmyAHveARGMrhTsZmz6lk6LmR
+	MadRToiloHOHQKvZ40NRNeQUHM/xa0bYlxqFhEihTfqLBqft2MZPDxTSCihiNdPcf6eiNQMXape
+	dGNest2YhC4KAnLGyQ8hbOUdm1+HeYBc3wgBF
+X-Google-Smtp-Source: AGHT+IHpYMU4YqiVSY3dBqpsEMf3rMu/OQbQSacMLTWWiVD1z8BcTgLzcXXaJUJ8TbvcVgng6HSRfBQgZHFTaKuX7r0=
+X-Received: by 2002:a50:9555:0:b0:563:c0e0:667c with SMTP id
+ v21-20020a509555000000b00563c0e0667cmr257446eda.0.1708347677401; Mon, 19 Feb
+ 2024 05:01:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Only update profile if
- successfully converted
-Content-Language: en-US
-To: Mario Limonciello <mario.limonciello@amd.com>,
- Mark Pearson <mpearson-lenovo@squebb.ca>
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240217022311.113879-1-mario.limonciello@amd.com>
-From: Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20240217022311.113879-1-mario.limonciello@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Jann Horn <jannh@google.com>
+Date: Mon, 19 Feb 2024 14:00:39 +0100
+Message-ID: <CAG48ez3RmV6SsVw9oyTXxQXHp3rqtKDk2qwJWo9TGvXCq7Xr-w@mail.gmail.com>
+Subject: [BUG] perf/x86/intel: HitM false-positives on Ice Lake / Tiger Lake
+ (I think?)
+To: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Ian Rogers <irogers@google.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>
+Cc: Feng Tang <feng.tang@intel.com>, Andi Kleen <ak@linux.intel.com>, 
+	"the arch/x86 maintainers" <x86@kernel.org>, kernel list <linux-kernel@vger.kernel.org>, 
+	linux-perf-users@vger.kernel.org, "Liang, Kan" <kan.liang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
+Hi!
 
-On 2/17/24 03:23, Mario Limonciello wrote:
-> Randomly a Lenovo Z13 will trigger a kernel warning traceback from this
-> condition:
-> 
-> ```
-> if (WARN_ON((profile < 0) || (profile >= ARRAY_SIZE(profile_names))))
-> ```
-> 
-> This happens because thinkpad-acpi always assumes that
-> convert_dytc_to_profile() successfully updated the profile. On the
-> contrary a condition can occur that when dytc_profile_refresh() is called
-> the profile doesn't get updated as there is a -EOPNOTSUPP branch.
-> 
-> Catch this situation and avoid updating the profile. Also log this into
-> dynamic debugging in case any other modes should be added in the future.
-> 
-> Fixes: c3bfcd4c6762 ("platform/x86: thinkpad_acpi: Add platform profile support")
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+From what I understand, "perf c2c" shows bogus HitM events on Ice Lake
+(and newer) because Intel added some feature where *clean* cachelines
+can get snoop-forwarded ("cross-core FWD"), and the PMU apparently
+treats this mostly the same as snoop-forwarding of modified cache
+lines (HitM)? On a Tiger Lake CPU, I can see addresses from the kernel
+rodata section in "perf c2c report".
 
-Thank you for your patch, I've applied this patch to my review-hans 
-branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
+This is mentioned in the SDM, Volume 3B, section "20.9.7 Load Latency
+Facility", table "Table 20-101. Data Source Encoding for Memory
+Accesses (Ice Lake and Later Microarchitectures)", encoding 07H:
+"XCORE FWD. This request was satisfied by a sibling core where either
+a modified (cross-core HITM) or a non-modified (cross-core FWD)
+cache-line copy was found."
 
-Note it will show up in my review-hans branch once I've pushed my
-local branch there, which might take a while.
+I don't see anything about this in arch/x86/events/intel/ds.c - if I
+understand correctly, the kernel's PEBS data source decoding assumes
+that 0x07 means "L3 hit, snoop hitm" on these CPUs. I think this needs
+to be adjusted somehow - and maybe it just isn't possible to actually
+distinguish between HitM and cross-core FWD in PEBS events on these
+CPUs (without big-hammer chicken bit trickery)? Maybe someone from
+Intel can clarify?
 
-I will include this patch in my next fixes pull-req to Linus
-for the current kernel development cycle.
-
-Regards,
-
-Hans
+(The SDM describes that E-cores on the newer 12th Gen have more
+precise PEBS encodings that distinguish between "L3 HITM" and "L3
+HITF"; but I guess the P-cores there maybe still don't let you
+distinguish HITM/HITF?)
 
 
+I think https://perfmon-events.intel.com/tigerLake.html is also
+outdated, or at least it uses ambiguous grammar: The
+MEM_LOAD_L3_HIT_RETIRED.XSNP_FWD event (EventSel=D2H UMask=04H) is
+documented as "Counts retired load instructions where a cross-core
+snoop hit in another cores caches on this socket, the data was
+forwarded back to the requesting core as the data was modified
+(SNOOP_HITM) or the L3 did not have the data(SNOOP_HIT_WITH_FWD)" -
+from what I understand, a "cross-core FWD" should be a case where the
+L3 does have the data, unless L3 has become non-inclusive on Ice Lake?
+
+On a Tiger Lake CPU, I can see this event trigger for the
+sys_call_table, which is located in the rodata region and probably
+shouldn't be containing Modified cache lines:
+
+# grep -A1 -w sys_call_table /proc/kallsyms
+ffffffff82800280 D sys_call_table
+ffffffff82801100 d vdso_mapping
+# perf record -e mem_load_l3_hit_retired.xsnp_fwd:ppp --all-kernel -c 100 --data
+^C[ perf record: Woken up 11 times to write data ]
+[ perf record: Captured and wrote 22.851 MB perf.data (43176 samples) ]
+# perf script -F event,ip,sym,addr | egrep --color 'ffffffff828002[89abcdef]'
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002d8
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800280
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff82800288
+ffffffff82526275 do_syscall_64
+mem_load_l3_hit_retired.xsnp_fwd:ppp: ffffffff828002b8
+ffffffff82526275 do_syscall_64
 
 
-> ---
-> BTW - This isn't new.  I've been seeing this a long time, but I just finally
-> got annoyed enough by it to find the code that triggered the sequence.
-> 
->  drivers/platform/x86/thinkpad_acpi.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-> index c4895e9bc714..5ecd9d33250d 100644
-> --- a/drivers/platform/x86/thinkpad_acpi.c
-> +++ b/drivers/platform/x86/thinkpad_acpi.c
-> @@ -10308,6 +10308,7 @@ static int convert_dytc_to_profile(int funcmode, int dytcmode,
->  		return 0;
->  	default:
->  		/* Unknown function */
-> +		pr_debug("unknown function 0x%x\n", funcmode);
->  		return -EOPNOTSUPP;
->  	}
->  	return 0;
-> @@ -10493,8 +10494,8 @@ static void dytc_profile_refresh(void)
->  		return;
->  
->  	perfmode = (output >> DYTC_GET_MODE_BIT) & 0xF;
-> -	convert_dytc_to_profile(funcmode, perfmode, &profile);
-> -	if (profile != dytc_current_profile) {
-> +	err = convert_dytc_to_profile(funcmode, perfmode, &profile);
-> +	if (!err && profile != dytc_current_profile) {
->  		dytc_current_profile = profile;
->  		platform_profile_notify();
->  	}
-
+(For what it's worth, there is a thread on LKML where "cross-core FWD"
+got mentioned: <https://lore.kernel.org/lkml/b4aaf1ed-124d-1339-3e99-a120f6cc4d28@linux.intel.com/>)
 
