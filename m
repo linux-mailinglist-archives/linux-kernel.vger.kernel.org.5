@@ -1,157 +1,112 @@
-Return-Path: <linux-kernel+bounces-71990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D83F85AD8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:08:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 815B585AD84
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 22:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DE8BB22745
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:08:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B41451C21E18
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD5C153E33;
-	Mon, 19 Feb 2024 21:07:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948B453E08;
+	Mon, 19 Feb 2024 21:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Ki5jJ4a0";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="hpGTBR9W"
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="cIM5NyNN"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C442A2E835;
-	Mon, 19 Feb 2024 21:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.84
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708376871; cv=pass; b=XzmhyyLLOnpOC4fCHhDCca0Ndh7rAN6lchE5uEp7e2vQm7eX1zFu90SB/JoAzDCTsriEVKnn/RabjYDehE7j5wNKSHXJaJTkaWLuyvDjbxhkcKkeN53PFaUvoY61pQSJbenb+kwCWjIJ7j1WdkT4OUL8ak/3ZuCgSUDlUfnaC8Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708376871; c=relaxed/simple;
-	bh=eNljqwevEksOUMlEebSE8qxQgsP5d/5/H18BupVK6+o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SA7JdWWPDe3dIZBnEQjGNziVVourjtuU0BHnPGjSL+91RoY602Pop7/rDLQSc3S/FI464lBPQ1j5kxkJganLcrpwj4OTbP/3puvQvIbh5cEINkjbG6KnAt16P2/iO5AL58sqU/AapRx4x8noX/xhXOVWIZmUWO6CSIVceWu2rJs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=pass smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Ki5jJ4a0; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=hpGTBR9W; arc=pass smtp.client-ip=85.215.255.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hartkopp.net
-ARC-Seal: i=1; a=rsa-sha256; t=1708375067; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=RLoVMLhRCUjEZnzpW3aKBpfB2VpJwlSQuQFYGmFSmyOKvtye0tQjX13oiqK6acTNKZ
-    ARg0EctxXyRO3A/OqoQk8RwolS2Tpd4nG9CqsOoamSAKzW4Ya/Om1+/N5wD2Ta6mIDbp
-    kMcNa4tDkX54shueRnW3016MvLaxpXEDNW9Q+tg2jOypJ8ModkvXBt57P9L0K/oOz5/E
-    m3A2zZIeThrzGav1iC4qF9hXwL57U2nrdYsee0n9R17SqhZM/AdxhRoUlyQEVuMsfOas
-    Hpw5sQYiMXEqYXbNWSwFoQQsER0C61apF3cwgFejRn9slJnvMgwDO3gD4MG0t3nxRGD7
-    4AcQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1708375067;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Fv4HUwoYJ78Ao5yyDcK+Lz6h+c9zEeTZIGoLl7li1Rw=;
-    b=iIxqFJrFnfjERZhfAjhFKwzM7bCpXWkvPNHxMVYWR21X+ZdAT/kAxtkQ4deYzBH30W
-    ciMwYWyemRU0vLfCI23ZKlI3kIBniPQGZc1/BHDNBpdP0LDKyHDIHmKs5Cn1PVo3ViRj
-    db0tX/cbyZnBh4NjuxQyyLVXDVPqbPVjsN/dLvsDcSAQjTTDjP6bOKr+ktwDbyRYrtzP
-    ulcLhJok15ZjfuaQx86hoMlkf4fBP9ppmaPoNIy+tdKAKxmedJms0n1Fx6OpmKOd9sKE
-    v2n6z5UQ+iGzt04Ei/WVO7w8ZZtSvSrtnvXfOrPhxVWQrWiulgGQX6OhW0fZEjydINJs
-    xyfw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1708375067;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Fv4HUwoYJ78Ao5yyDcK+Lz6h+c9zEeTZIGoLl7li1Rw=;
-    b=Ki5jJ4a0ISlzbCYHqEjTRNXBFq1CXKzI/Padmw8s8rzprr5JAOab26Q86qI/7868Rk
-    lu0GmcOPWDvVXuNYRKkIkrO0ZskonOQ498yTWica2qgRuPV8R9A9dm9eRxSnqfT353RY
-    K566A8yiAkTC6MJ21ErjTt1zyf+6TJ1/YDHb9u15j/ZQT+o04sVnXrG8Oel1Q8sIxP2N
-    8y8AaRaM6WgOl4080G+kCj+x3z9XxEtn6PbS5nQANi8Bop6YNCimMmIOFk9CQbHnZZGA
-    USDsOiQRuw3WVMOKGtpHtIuU6p14gZUjmEA8qMZ8whdVIaX6TR55NAY7VDJUTMbtqBZ8
-    GwIg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1708375067;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=Fv4HUwoYJ78Ao5yyDcK+Lz6h+c9zEeTZIGoLl7li1Rw=;
-    b=hpGTBR9WEO3/nloOvwsmULD0/vv6szH/ypkVJ0Qtir7LqLyWjkXUHGlvHY0rxwFGIQ
-    k2emtWXlYz0tO6oTAGCw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1qCHSa1GLptZHusl129OHEdFq0USEbDdAnQ=="
-Received: from [IPV6:2a00:6020:4a8e:5000::90c]
-    by smtp.strato.de (RZmta 49.11.2 AUTH)
-    with ESMTPSA id K49f9c01JKbk876
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Mon, 19 Feb 2024 21:37:46 +0100 (CET)
-Message-ID: <e9f2c716-51d3-4c03-a447-9fed357669c5@hartkopp.net>
-Date: Mon, 19 Feb 2024 21:37:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3381F18D;
+	Mon, 19 Feb 2024 21:06:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708376764; cv=none; b=jzcqHFc+rGXAzdWLeoevqZgT3lkA8FVEeEEMoxqLlUZJBVio4nD+I9PEctmCpgT/P0OvEFJXkPNcLKBOgv84zbEVoN8WUykstJ+4POv2/e/UdmTrk7k1kyu/TfZvvu5mJDbqpLVmnc/stv2lXn3y5YvUL5TcZVUfV1aRLOC/rqc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708376764; c=relaxed/simple;
+	bh=KU4nGP7iEFzvC/1hs1YWVpyHfJhGdPFeSmJ8xNlLcWc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uaam/PdTHgGELq65WQ9y3k/DATIcyDd2nj5KWSfV1o6PW8sUBNnI00b1+xEq0avxo6hwcwPNoDL2J5EgDt3/iH2exSLyO9MIFJECIHKuhYwU3fFd7xxbHrwO5PP9deK8mQ1d7y9ejuLcAu7Rdb7Ge6ECc0y6k2O2k6gnevhhl5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=cIM5NyNN; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=ZOgxDgXjl4qwjPPUdr5tiry2hRdBim87LYWDSoqsvk4=; b=cIM5NyNNeWDim+UZ1Gwx6XfcEH
+	f0PKlkovpQVxnvG2cREypNR88n5pUmtf9z7rqlwmUm6Mlq2lLbQ9zCs6uJBmddp0ZLAtOKLHBpDys
+	Vh42aXe2ZCWSM/85RhEWepKUYNcpWuWbkn3S0mf1V8/O8/nCFQDdXzMRVaC8HXRF18zg=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rcApd-008EUS-9d; Mon, 19 Feb 2024 22:05:45 +0100
+Date: Mon, 19 Feb 2024 22:05:45 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Yang Xiwen <forbidden405@outlook.com>
+Cc: Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next v3 3/6] net: hisilicon: add support for
+ hisi_femac core on Hi3798MV200
+Message-ID: <5572f4dd-dcf2-42ec-99c8-51bf4d1f28ba@lunn.ch>
+References: <20240220-net-v3-0-b68e5b75e765@outlook.com>
+ <20240220-net-v3-3-b68e5b75e765@outlook.com>
+ <29fc21f0-0e46-4d0f-8d4b-c4dbd1689c55@lunn.ch>
+ <SEZPR06MB695901E7D4BEABE1B6F319D096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: softing: remove redundant NULL check
-Content-Language: en-US
-To: Simon Horman <horms@kernel.org>
-Cc: Daniil Dulov <d.dulov@aladdin.ru>, Wolfgang Grandegger
- <wg@grandegger.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org
-References: <20240211150535.3529-1-d.dulov@aladdin.ru>
- <20240216172701.GP40273@kernel.org>
- <12cd0fd0-be86-4af0-8d6b-85d3a81edd2a@hartkopp.net>
- <20240219170038.GH40273@kernel.org>
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20240219170038.GH40273@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <SEZPR06MB695901E7D4BEABE1B6F319D096512@SEZPR06MB6959.apcprd06.prod.outlook.com>
 
-Hi Simon,
+On Tue, Feb 20, 2024 at 04:14:36AM +0800, Yang Xiwen wrote:
+> On 2/20/2024 4:03 AM, Andrew Lunn wrote:
+> > > Note it's unable to put the MDIO bus node outside of MAC controller
+> > > (i.e. at the same level in the parent bus node). Because we need to
+> > > control all clocks and resets in FEMAC driver due to the phy reset
+> > > procedure. So the clocks can't be assigned to MDIO bus device, which is
+> > > an essential resource for the MDIO bus to work.
+> > What PHY driver is being used? If there a specific PHY driver for this
+> > hardware? Does it implement soft reset?
+> 
+> I'm using generic PHY driver.
+> 
+> It implements IEEE C22 standard. So there is a soft reset in BMCR register.
+> 
+> > 
+> > I'm wondering if you can skip hardware reset of the PHY and only do a
+> > software reset.
+> 
+> There must be someone to deassert the hardware reset control signal for the
+> PHY. We can't rely on the boot loader to do that. And here even we choose to
+> skip the hardware reset procedure, the sequence of deasserting the reset
+> signals is also very important. (i.e. first PHY, then MAC and MACIF).
+> Opposite to the normal sequence. (we normally first register MAC driver, and
+> then PHY).
 
-On 2024-02-19 18:00, Simon Horman wrote:
-> On Fri, Feb 16, 2024 at 08:47:43PM +0100, Oliver Hartkopp wrote:
->> Hi Simon,
->>
->> I have a general question on the "Fixes:" tag in this patch:
->>
->> On 16.02.24 18:27, Simon Horman wrote:
->>> On Sun, Feb 11, 2024 at 07:05:35AM -0800, Daniil Dulov wrote:
->>>> In this case dev cannot be NULL, so remove redundant check.
->>>>
->>>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>>>
->>>> Fixes: 03fd3cf5a179 ("can: add driver for Softing card")
->>
->> IMHO this is simply an improvement which is done by all patches applied to
->> the kernel but it does not really "fix" anything from a functional
->> standpoint.
->>
->> Shouldn't we either invent a new tag or better leave it out to not confuse
->> the stable maintainers?
-> 
-> Hi Oliver,
-> 
-> sorry for missing that in my review.
-> 
-> Yes, I agree that this is probably not a fix, for which my
-> rule of thumb is something that addresses a user-visible problem.
-> So I agree it should not have a fixes tag.
-> 
-> I would suggest that we can just change the text to something that
-> has no tag. Something like:
-> 
-> ...
-> 
-> Introduced by 03fd3cf5a179 ("can: add driver for Softing card")
-> 
+There are a few MACs which require the PHY to provide a clock to the
+MAC before they can use their DMA engine. The PHY provides typically a
+25MHz clock, which is used to driver the DMA. So long as you don't
+touch the DMA, you can access other parts of the MAC before the PHY is
+generating the clock.
 
-Yes, but the "Introduced-by:" tag would be an optional tag for people 
-that like blaming others, right?
+So it might be possible to take the MAC and MACIF out of reset, then
+create the MDIO bus, probe the PHY, take it out of reset so its
+generating the clock, and then complete the rest of the MAC setup.
 
-IMHO we should think about completely removing the "Fixes:" tag, when it 
-has no user-visible effect that might be a candidate for stable kernels. 
-It is common improvement work. And it has been so for years.
+	Andrew
 
-Best regards,
-Oliver
 
