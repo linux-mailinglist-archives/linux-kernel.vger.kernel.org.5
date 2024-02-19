@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-71412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A47AF85A4D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 68B1A85A4DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 14:37:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C93D71C21B6D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:36:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DAF91C2187E
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C564136132;
-	Mon, 19 Feb 2024 13:36:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30B11381A2;
+	Mon, 19 Feb 2024 13:36:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="iqIot3Aq"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GrD6zCE/"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2A537162
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82347376E4
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 13:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708349770; cv=none; b=XYzTAcHmLVOg5l/YGHRYMdIBOOZM2srjsXju/JDIAk02wSBqNYKyvE+vL4wLw0Eam4o71aS6b01ntMejWDj8ldwE0iED20SNaQzsx+6oGz1eiszjDPOfRXZtO1+wpgOg3JTL86WYcgmPzkVYGgf4SxkGpL1DsRIAHV4+o7TM5sM=
+	t=1708349773; cv=none; b=XU1z/psVlkWXFeSx83Ezr3XZoLtQlcVU2y3TD/EQXhOeDNw6YW2BedDqriw7JNLzF9a0LIj4HHTlzcJ+kWwS7csYafsnFLMenw0SDA7fWt0TRUZB7QBxMDVQHjcXbmJZLTs+Nw9a7aSF41SKWGueHOjnrwEzABMAjSwkmtA/moE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708349770; c=relaxed/simple;
-	bh=KHcmvINhJktJpppGgwULcqvLybPcSbgdTRhruWN1EGg=;
+	s=arc-20240116; t=1708349773; c=relaxed/simple;
+	bh=79Y0MxxohdGitgftXN/Ssqm4c/Qk+6TMe7Z4Gt+3Bxg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pljuR4+aHMBbdXHFNN0dpDJKjvL9DES2R5c1fizVgOevbKOwZxOxRSZXGFNOxZIO9CBNsVlJnpxCEI3AzfANaBfJidYScRLt1DwFVNDU2AbOQULCC/Lm/DVD83m1VOXDjqJfXAgGMpI9TstS/Jf6GzrGS9ZkRKGpg8eXfoCcrjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=iqIot3Aq; arc=none smtp.client-ip=209.85.208.51
+	 In-Reply-To:To:Cc; b=bPWI2h+nFMLlUUQmHDWMXaXSvZzsA0aU8aY7KRl4O3SU7xw92zu+v6OQgwcfTHbYz7jcAU3C8nzbTg/gOUh32VOHmUI6se1m9GZAh1iy3dl3WgVQagoZ8TB6AQMozoxoZmGSnFqNYoujCuFzEoj4/AMtvOzTvZ5/UI6dA40sNPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GrD6zCE/; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-563fe793e1cso3561444a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:36:08 -0800 (PST)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-564647bcdbfso1186298a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 05:36:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708349767; x=1708954567; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708349770; x=1708954570; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=EDFtd1C6W8+z/D4oBojXzEo0MFOHKoG2NOfGOeLFv6c=;
-        b=iqIot3AqOq40jE9SW6G67syq+9rGIthQ8UAIFGFRBKZjJPJK9rjel+cy3d5V6Cwrsw
-         eHwmrLaepo1G6It1qAmAdg+vQ3n1IZCoEsbpImvGtHhVuVEziakneGnAFVvjo/QZp3Ob
-         6CtYVl5wY6G/PRTexK+UxnXLCrGHJ74s1wQKbcmiNintYyLIToBqwp5nDhGxFJ7m+CPc
-         fTCdMYIEfBz6+d5TUdizjRWnxTvHRjg8zZhiwfXDx6CDHak6FH0YIWL/hSgewM1H8yAT
-         1lGUlF9FM9xcwKKmtX07+0v1oZBdFiAm/HDj4kbquQ9FTbSXCEwyAqaycRfwfKH5k6SU
-         leqw==
+        bh=7M1e7EmpHdXumiDD0LMXKq+SIP28LzfgFkNX1b4YVQE=;
+        b=GrD6zCE/AfxRExmLVtZOeNgI/m3DjLilp+VKVqujXCbIyYWvgzFz1mADwUIh4JSGjb
+         Y6J6aEyAzGX8gQQk5vpfGolASyhx7xI77+s+aEC1FBGl9s4x4Lu3Df7A55bPDwgaQpqH
+         me5WqUglHw72xwX8LQinQxKoGW0ti0r9aP0ePeT+mBUPIa9RnM2wy7eEpHGOr79E8CEH
+         syZ8SW6Kwgl8g35avzMZ0XjVJqb8qc96t+3lxTBemBsGBZFPs82MC2fN+rEZMGk7Bjph
+         6+tVFqrXR3HYJpBzUCvQrwere/kJH03UWFgdbd6ZA1A0LhMaW1zsMEUNX32SoFHeskMX
+         DYgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708349767; x=1708954567;
+        d=1e100.net; s=20230601; t=1708349770; x=1708954570;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EDFtd1C6W8+z/D4oBojXzEo0MFOHKoG2NOfGOeLFv6c=;
-        b=QcIGoPF0SwvK45IrPzkTKgal5zNfYdc1GJ4Uh3HQXpVvxmUfqFD3c6XmDA1GlvwpEc
-         Y6VmoYkL/JfFj/Rdh473deby25zax8lDJU9nRb6PVvbsinBTDxObGHQWvd9XRa+/n1Vt
-         w7QozMTgXtYXiOP7QSCF5CnhtqujmbweVIPb1hTBjKdVf0HsBo0wfQ8gjFkh+qbPhqob
-         9gfIPYWQl+tzvtkdE4w5nqcC8eYLb+XRjzQ2fYBa3prB3oLBBy/VMYI/KhcF8EuGU+c+
-         9ToEhfheFMxfXYVLnNlbKR83wQLV9p1xNGLh804k4P6J8wHpxfZMO3yJoaqNbM5JUUGr
-         jJVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXSP38kcKUMJph80xi0eaLnJpEEICamU0krWMydtlxlaC0xvEWUErHbLO9BIV97p7bGmAXZqDXEog8nE/Z94d3VbXysZWaS6gaJBIqI
-X-Gm-Message-State: AOJu0Yxt0iFX+1J7KmPvGt4TZN7SgTrwoPWXHuZ8NDoGqBZdjm92Q/U2
-	g0Vv/B7tsUKnSu1G3ncXCzhmj0ogAOTJx5bI0IEa3TiMJQAy4B8K5n48CdK5OpE=
-X-Google-Smtp-Source: AGHT+IHcY/jmN1CahbTZpalD29/Injnjyxx742wPBMQHK911Hmm+agbpDEvGFC5DMtm4072JH0z4Dg==
-X-Received: by 2002:aa7:d382:0:b0:564:69be:6e86 with SMTP id x2-20020aa7d382000000b0056469be6e86mr2364504edq.0.1708349767419;
-        Mon, 19 Feb 2024 05:36:07 -0800 (PST)
+        bh=7M1e7EmpHdXumiDD0LMXKq+SIP28LzfgFkNX1b4YVQE=;
+        b=N6psZ2HoxqWfe8jf5grh3OyNBmAUMfNWg7jDnzih6ag6HwS8EQAM+594i1AIqPYuHy
+         4sceKScaGE+sUpFveMdUjhSkzR7oxJ3sIYD6dZOotgIBWT19TEXCzVCAU7TvZQXFWu/Z
+         jGJeW39LzznSeJNXYjoPj+B+Bd+zJwq+uFjtptbEb7gj6f0dloRja69V51nimC7Y/ogX
+         kKfiNzjkLxgMRiF5JppvW+BeZavyXgxQQzkFdLXSlcH9YSBAZBYCbeYjfpLh1bgbZASx
+         a75PWzMCy2cqcq9kxmJFC5+NPn8LaxHDHZYz6d7scz3Pz7FDAnMaLdbBXsJF2uqFEiAV
+         xUIA==
+X-Forwarded-Encrypted: i=1; AJvYcCU5viZVL/Ep1WHPWCeVwLzYXRqeqwQGjawraYI5JbbU9eDf+0BMvehl+2a0YUD8avRQ+A+Cg1H95mslFI7G0jI68LcSLoq8HSNChyTa
+X-Gm-Message-State: AOJu0YypV4X0JIcOJ0i6c5AM3cvVF/rQWghK3hmuICLrUflcPo5HnU07
+	IFib4U1jih1bmG1DbEZ3CuXqWAt9waE9dWFUlFo49hb54fuHBc4fYf1ve7snpkE=
+X-Google-Smtp-Source: AGHT+IGYYROFmdLbUMjFpP9qsW46pO/QmXTyHrKREDj8fB5na2NFI5XZWqwX4q89xnCXQ4xvRWeBEg==
+X-Received: by 2002:a05:6402:1844:b0:564:3830:b9a5 with SMTP id v4-20020a056402184400b005643830b9a5mr3243810edy.21.1708349769992;
+        Mon, 19 Feb 2024 05:36:09 -0800 (PST)
 Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id q29-20020a50cc9d000000b00563a3ff30basm2900168edi.59.2024.02.19.05.36.04
+        by smtp.gmail.com with ESMTPSA id q29-20020a50cc9d000000b00563a3ff30basm2900168edi.59.2024.02.19.05.36.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 05:36:07 -0800 (PST)
+        Mon, 19 Feb 2024 05:36:09 -0800 (PST)
 From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Date: Mon, 19 Feb 2024 14:35:47 +0100
-Subject: [PATCH 2/8] dt-bindings: clock: Add Qcom QCM2290 GPUCC
+Date: Mon, 19 Feb 2024 14:35:48 +0100
+Subject: [PATCH 3/8] clk: qcom: clk-alpha-pll: Add HUAYRA_2290 support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,7 +77,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240219-topic-rb1_gpu-v1-2-d260fa854707@linaro.org>
+Message-Id: <20240219-topic-rb1_gpu-v1-3-d260fa854707@linaro.org>
 References: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
 In-Reply-To: <20240219-topic-rb1_gpu-v1-0-d260fa854707@linaro.org>
 To: Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>, 
@@ -96,143 +96,114 @@ Cc: Marijn Suijten <marijn.suijten@somainline.org>,
  linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org, 
  freedreno@lists.freedesktop.org, Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1708349759; l=3746;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708349759; l=4133;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=KHcmvINhJktJpppGgwULcqvLybPcSbgdTRhruWN1EGg=;
- b=NaBvuZXGfNqiXM+yEApolRkCjYx+y/6MOaCnl4/saDR6RxS+H19AcURQQ3xL9s1DIJWPv3piV
- 7kE09+GRuIVBIzkVJIDvLMhuz1i4zyjDATa4Q78cYVazSmKNUX6FuQw
+ bh=79Y0MxxohdGitgftXN/Ssqm4c/Qk+6TMe7Z4Gt+3Bxg=;
+ b=4nQYbPVeI8Be4nvkpxVfXN4FtQYQuTUrRB6I4LVYY/kCkQW6/OyzfiXXuRABMb+6jrO9nZF9u
+ NlAaZfORH/nBJ6Eq1c667ga2Qun9siLGQF88pnu9nhecTmr3DokAeBS
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Add device tree bindings for graphics clock controller for Qualcomm
-Technology Inc's QCM2290 SoCs.
+Commit 134b55b7e19f ("clk: qcom: support Huayra type Alpha PLL")
+introduced an entry to the alpha offsets array, but diving into QCM2290
+downstream and some documentation, it turned out that the name Huayra
+apparently has been used quite liberally across many chips, even with
+noticeably different hardware.
+
+Introduce another set of offsets and a new configure function for the
+Huayra PLL found on QCM2290. This is required e.g. for the consumers
+of GPUCC_PLL0 to properly start.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- .../bindings/clock/qcom,qcm2290-gpucc.yaml         | 76 ++++++++++++++++++++++
- include/dt-bindings/clock/qcom,qcm2290-gpucc.h     | 32 +++++++++
- 2 files changed, 108 insertions(+)
+ drivers/clk/qcom/clk-alpha-pll.c | 45 ++++++++++++++++++++++++++++++++++++++++
+ drivers/clk/qcom/clk-alpha-pll.h |  3 +++
+ 2 files changed, 48 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/qcom,qcm2290-gpucc.yaml b/Documentation/devicetree/bindings/clock/qcom,qcm2290-gpucc.yaml
-new file mode 100644
-index 000000000000..a16cb7e87e26
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/qcom,qcm2290-gpucc.yaml
-@@ -0,0 +1,76 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/qcom,qcm2290-gpucc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/clk/qcom/clk-alpha-pll.c b/drivers/clk/qcom/clk-alpha-pll.c
+index 8a412ef47e16..61b5abd13782 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.c
++++ b/drivers/clk/qcom/clk-alpha-pll.c
+@@ -244,6 +244,19 @@ const u8 clk_alpha_pll_regs[][PLL_OFF_MAX_REGS] = {
+ 		[PLL_OFF_OPMODE] = 0x30,
+ 		[PLL_OFF_STATUS] = 0x3c,
+ 	},
++	[CLK_ALPHA_PLL_TYPE_HUAYRA_2290] =  {
++		[PLL_OFF_L_VAL] = 0x04,
++		[PLL_OFF_ALPHA_VAL] = 0x08,
++		[PLL_OFF_USER_CTL] = 0x0c,
++		[PLL_OFF_CONFIG_CTL] = 0x10,
++		[PLL_OFF_CONFIG_CTL_U] = 0x14,
++		[PLL_OFF_CONFIG_CTL_U1] = 0x18,
++		[PLL_OFF_TEST_CTL] = 0x1c,
++		[PLL_OFF_TEST_CTL_U] = 0x20,
++		[PLL_OFF_TEST_CTL_U1] = 0x24,
++		[PLL_OFF_OPMODE] = 0x28,
++		[PLL_OFF_STATUS] = 0x38,
++	},
+ };
+ EXPORT_SYMBOL_GPL(clk_alpha_pll_regs);
+ 
+@@ -779,6 +792,38 @@ static long clk_alpha_pll_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	return clamp(rate, min_freq, max_freq);
+ }
+ 
++void clk_huayra_2290_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
++				   const struct alpha_pll_config *config)
++{
++	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL(pll), config->config_ctl_val);
++	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U(pll), config->config_ctl_hi_val);
++	clk_alpha_pll_write_config(regmap, PLL_CONFIG_CTL_U1(pll), config->config_ctl_hi1_val);
++	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL(pll), config->test_ctl_val);
++	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U(pll), config->test_ctl_hi_val);
++	clk_alpha_pll_write_config(regmap, PLL_TEST_CTL_U1(pll), config->test_ctl_hi1_val);
++	clk_alpha_pll_write_config(regmap, PLL_L_VAL(pll), config->l);
++	clk_alpha_pll_write_config(regmap, PLL_ALPHA_VAL(pll), config->alpha);
++	clk_alpha_pll_write_config(regmap, PLL_USER_CTL(pll), config->user_ctl_val);
 +
-+title: Qualcomm Graphics Clock & Reset Controller on QCM2290
++	/* Set PLL_BYPASSNL */
++	regmap_update_bits(regmap, PLL_MODE(pll), PLL_BYPASSNL, PLL_BYPASSNL);
 +
-+maintainers:
-+  - Konrad Dybcio <konradybcio@kernel.org>
++	/* Wait 5 us between setting BYPASS and deasserting reset */
++	mb();
++	udelay(5);
 +
-+description: |
-+  Qualcomm graphics clock control module provides the clocks, resets and power
-+  domains on Qualcomm SoCs.
++	/* Take PLL out from reset state */
++	regmap_update_bits(regmap, PLL_MODE(pll), PLL_RESET_N, PLL_RESET_N);
 +
-+  See also::
-+    include/dt-bindings/clock/qcom,qcm2290-gpucc.h
++	/* Wait 50us for PLL_LOCK_DET bit to go high */
++	mb();
++	usleep_range(50, 55);
 +
-+properties:
-+  compatible:
-+    - const: qcom,qcm2290-gpucc
++	/* Enable PLL output */
++	regmap_update_bits(regmap, PLL_MODE(pll), PLL_OUTCTRL, PLL_OUTCTRL);
++}
++EXPORT_SYMBOL(clk_huayra_2290_pll_configure);
 +
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: AHB interface clock,
-+      - description: SoC CXO clock
-+      - description: GPLL0 main branch source
-+      - description: GPLL0 div branch source
-+
-+  '#clock-cells':
-+    const: 1
-+
-+  '#reset-cells':
-+    const: 1
-+
-+  '#power-domain-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - '#clock-cells'
-+  - '#reset-cells'
-+  - '#power-domain-cells'
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,gcc-qcm2290.h>
-+    #include <dt-bindings/clock/qcom,rpmcc.h>
-+    #include <dt-bindings/power/qcom-rpmpd.h>
-+
-+    soc {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        clock-controller@5990000 {
-+            compatible = "qcom,qcm2290-gpucc";
-+            reg = <0x0 0x05990000 0x0 0x9000>;
-+            clocks = <&gcc GCC_GPU_CFG_AHB_CLK>,
-+                     <&rpmcc RPM_SMD_XO_CLK_SRC>,
-+                     <&gcc GCC_GPU_GPLL0_CLK_SRC>,
-+                     <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
-+            power-domains = <&rpmpd QCM2290_VDDCX>;
-+            required-opps = <&rpmpd_opp_low_svs>;
-+            #clock-cells = <1>;
-+            #reset-cells = <1>;
-+            #power-domain-cells = <1>;
-+        };
-+    };
-+...
-diff --git a/include/dt-bindings/clock/qcom,qcm2290-gpucc.h b/include/dt-bindings/clock/qcom,qcm2290-gpucc.h
-new file mode 100644
-index 000000000000..7c76dd05278f
---- /dev/null
-+++ b/include/dt-bindings/clock/qcom,qcm2290-gpucc.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+/*
-+ * Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
-+ * Copyright (c) 2024, Linaro Limited
-+ */
-+
-+#ifndef _DT_BINDINGS_CLK_QCOM_GPU_CC_QCM2290_H
-+#define _DT_BINDINGS_CLK_QCOM_GPU_CC_QCM2290_H
-+
-+/* GPU_CC clocks */
-+#define GPU_CC_AHB_CLK			0
-+#define GPU_CC_CRC_AHB_CLK		1
-+#define GPU_CC_CX_GFX3D_CLK		2
-+#define GPU_CC_CX_GMU_CLK		3
-+#define GPU_CC_CX_SNOC_DVM_CLK		4
-+#define GPU_CC_CXO_AON_CLK		5
-+#define GPU_CC_CXO_CLK			6
-+#define GPU_CC_GMU_CLK_SRC		7
-+#define GPU_CC_GX_GFX3D_CLK		8
-+#define GPU_CC_GX_GFX3D_CLK_SRC		9
-+#define GPU_CC_PLL0			10
-+#define GPU_CC_SLEEP_CLK		11
-+#define GPU_CC_HLOS1_VOTE_GPU_SMMU_CLK	12
-+
-+/* Resets */
-+#define GPU_GX_BCR			0
-+
-+/* GDSCs */
-+#define GPU_CX_GDSC			0
-+#define GPU_GX_GDSC			1
-+
-+#endif
+ static unsigned long
+ alpha_huayra_pll_calc_rate(u64 prate, u32 l, u32 a)
+ {
+diff --git a/drivers/clk/qcom/clk-alpha-pll.h b/drivers/clk/qcom/clk-alpha-pll.h
+index fb6d50263bb9..91d3d6f19eae 100644
+--- a/drivers/clk/qcom/clk-alpha-pll.h
++++ b/drivers/clk/qcom/clk-alpha-pll.h
+@@ -29,6 +29,7 @@ enum {
+ 	CLK_ALPHA_PLL_TYPE_BRAMMO_EVO,
+ 	CLK_ALPHA_PLL_TYPE_STROMER,
+ 	CLK_ALPHA_PLL_TYPE_STROMER_PLUS,
++	CLK_ALPHA_PLL_TYPE_HUAYRA_2290,
+ 	CLK_ALPHA_PLL_TYPE_MAX,
+ };
+ 
+@@ -191,6 +192,8 @@ extern const struct clk_ops clk_alpha_pll_rivian_evo_ops;
+ 
+ void clk_alpha_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+ 			     const struct alpha_pll_config *config);
++void clk_huayra_2290_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
++				   const struct alpha_pll_config *config);
+ void clk_fabia_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
+ 				const struct alpha_pll_config *config);
+ void clk_trion_pll_configure(struct clk_alpha_pll *pll, struct regmap *regmap,
 
 -- 
 2.43.2
