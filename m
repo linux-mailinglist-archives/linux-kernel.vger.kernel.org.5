@@ -1,53 +1,62 @@
-Return-Path: <linux-kernel+bounces-71180-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71181-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25E0B85A1C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:18:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7762585A1C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:19:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D67EA281F90
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:18:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3657B2228D
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:18:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA9DC2C1A3;
-	Mon, 19 Feb 2024 11:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AA72C197;
+	Mon, 19 Feb 2024 11:18:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b="mNm0yZV2"
-Received: from serv108.segi.ulg.ac.be (serv108.segi.ulg.ac.be [139.165.32.111])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="L2larJ0L"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF80028DD2;
-	Mon, 19 Feb 2024 11:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.165.32.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ED7E2C18E;
+	Mon, 19 Feb 2024 11:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708341500; cv=none; b=igdU/4BqfuxFPf/8KLW2AekSThE2RMiys1kjANcVO/1J8CKl3a1vvuY0806s7vgtSAY6C73UGBuGnvXFW0u5xaPrXkCV27rUFLWZXeyDhJms96Bos10B/LY3y1Tt3/U/EcdCJezqTDxgNyFcfKh++uKsgFlDZJBkGN3uH/7FMos=
+	t=1708341529; cv=none; b=R2ZDErE1V70JSO3g2InYaJIqH1V8iVlax+EqTkNgLmruWDc0YjnDjJSdtfqkHftvTMpUPb6E3ibtj7esILYkr4Y5vGLBWQKa4SblgF6Wf/V4kJ22SSkpYniEf8huJGpGQeNTw1cNxvJDpYjMQ1PAk54klQAV57EWhys3M5TMrtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708341500; c=relaxed/simple;
-	bh=/a/hjVeGi6TuuWHevLBmftl0dE9+L5XpYnN6/mutY2E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pjQIQUFclGIWV3QJm/5zjqv3LOmgtRA8zjWzF2GAv/BMUiQFEwUEJzoxF5MIGiGMxcZdmGLGEwqGCs3nX2LYOUL/MHuWyHQdLbhYUqwyujKIcHlEL2VD6wiusIlBeufPDeqis8JH2Llxzil7ASDCPZfytlLkUwK34tEwMKeNq8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be; spf=pass smtp.mailfrom=uliege.be; dkim=pass (2048-bit key) header.d=uliege.be header.i=@uliege.be header.b=mNm0yZV2; arc=none smtp.client-ip=139.165.32.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uliege.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uliege.be
-Received: from [192.168.1.38] (125.179-65-87.adsl-dyn.isp.belgacom.be [87.65.179.125])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by serv108.segi.ulg.ac.be (Postfix) with ESMTPSA id 49A54200C962;
-	Mon, 19 Feb 2024 12:18:09 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 serv108.segi.ulg.ac.be 49A54200C962
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uliege.be;
-	s=ulg20190529; t=1708341489;
-	bh=6DkiwY1/oZd3nYoHLT4En6bSLBbAgoN0ZstZmoG4ktk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mNm0yZV2gWvCKe4F8CNSBd9sBJn8uGHco5E5KPRL6Pa2DBoyFtgPguUPiteGS7Mo8
-	 ty1ZM2SQt0VWz+XOwiMv6nWShwpood8jg84g+mfAUH/s0N275jJ+W/erlWX4741gv4
-	 q4nsRuN/qoqwPPfbKVu4a6Ja2NJfxEAci9rRV+G/I11L2esowH6RdS06xCo2ZEXBlJ
-	 FGJNe2Xsh/tTBKHWfOzRXaKQvSt9YsPdqIKF1hyBGTuaYVJdiD7pmhcStMSzTjOnEf
-	 gMIrXfhfcnKo2g1gvpZzs+q8AZO4PRVuFNHvPVDetX1y3v+hRhPccQQtwG+egPvLft
-	 1lbgWLsceMyjA==
-Message-ID: <6fb6a4c3-9703-4ab3-ab93-06c8c62bb99a@uliege.be>
-Date: Mon, 19 Feb 2024 12:18:08 +0100
+	s=arc-20240116; t=1708341529; c=relaxed/simple;
+	bh=0nd4imR/9UVYqAWqTa7m9US/emkCCJFVXZAAahrjoH4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cW+kVExUzXIp0Kr34hdAQKApDepeUcdsC1Sn4/qnEQu5z2AvFglYhE++T2Nkq+6klugPdopKywYVB0NMZ6YlLuHXTTdc6bHX/4ckBY5H7Q1yzmi/iENlQ3LtEN9+TAJtYTX2MVQU8IPeNhy5LeAqbcqIuP+qU1RCmRX2xKwhJqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=L2larJ0L; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 41JBITYD006789;
+	Mon, 19 Feb 2024 05:18:29 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1708341509;
+	bh=9xUmo2B41yjBWIaIJX0UyynYUxbiLTtssr1IxtlStFU=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=L2larJ0LNOWMJ4MyYNb+JtZiuFcMJLa5L++6b7V6SiDvZS9nV2JFjE9EIsrJk8oat
+	 JfvLo5hb/i4+96Jp+RH3zsQSV/HJkHtqT7mXysdqShIdsIWil7VBNtXf6AC96Xiwlg
+	 2V/2+fWIVHZ4+gi1w5WyKFl8k5cTUXOYBocLHCFc=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 41JBITdM026167
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 19 Feb 2024 05:18:29 -0600
+Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 19
+ Feb 2024 05:18:29 -0600
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
+ (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 19 Feb 2024 05:18:29 -0600
+Received: from [172.24.227.68] (dhruva.dhcp.ti.com [172.24.227.68])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 41JBIRof083669;
+	Mon, 19 Feb 2024 05:18:28 -0600
+Message-ID: <1d7a15be-dfcf-4c1c-a381-6e76c8840603@ti.com>
+Date: Mon, 19 Feb 2024 16:48:27 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,71 +64,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 1/2] ioam6: fix write to cloned skb in ipv6_hop_ioam()
-To: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- shuah@kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240216234356.32243-1-justin.iurman@uliege.be>
- <20240216234356.32243-2-justin.iurman@uliege.be>
- <e92bea31ff921ea072de86acc2694621fd11a016.camel@redhat.com>
+Subject: Re: linux-next: build warning after merge of the spi tree
+To: Stephen Rothwell <sfr@canb.auug.org.au>, Mark Brown <broonie@kernel.org>
+CC: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next
+ Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap
+	<rdunlap@infradead.org>
+References: <20240216141110.7819d939@canb.auug.org.au>
 Content-Language: en-US
-From: Justin Iurman <justin.iurman@uliege.be>
-In-Reply-To: <e92bea31ff921ea072de86acc2694621fd11a016.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Dhruva Gole <d-gole@ti.com>
+In-Reply-To: <20240216141110.7819d939@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 2/19/24 10:05, Paolo Abeni wrote:
-> On Sat, 2024-02-17 at 00:43 +0100, Justin Iurman wrote:
->> ioam6_fill_trace_data() writes inside the skb payload without ensuring
->> it's writeable (e.g., not cloned). This function is called both from the
->> input and output path. The output path (ioam6_iptunnel) already does the
->> check. This commit provides a fix for the input path, inside
->> ipv6_hop_ioam().
->>
->> Fixes: 9ee11f0fff20 ("ipv6: ioam: Data plane support for Pre-allocated Trace ")
->> Reported-by: Paolo Abeni <pabeni@redhat.com>
->> Signed-off-by: Justin Iurman <justin.iurman@uliege.be>
->> ---
->>   net/ipv6/exthdrs.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/net/ipv6/exthdrs.c b/net/ipv6/exthdrs.c
->> index 4952ae792450..f68e5faab3aa 100644
->> --- a/net/ipv6/exthdrs.c
->> +++ b/net/ipv6/exthdrs.c
->> @@ -943,6 +943,14 @@ static bool ipv6_hop_ioam(struct sk_buff *skb, int optoff)
->>   		if (!skb_valid_dst(skb))
->>   			ip6_route_input(skb);
->>   
->> +		if (skb_cloned(skb)) {
->> +			if (pskb_expand_head(skb, 0, 0, GFP_ATOMIC))
->> +				goto drop;
+Hi,
+
+On 16/02/24 08:41, Stephen Rothwell wrote:
+> Hi all,
 > 
-> My personal preference would be for using skb_ensure_writable() here,
-> with write_len == optoff + hdr->opt_len.
-
-OK, will do!
-
->> +
->> +			hdr = (struct ioam6_hdr *)(skb_network_header(skb) + optoff);
->> +			trace = (struct ioam6_trace_hdr *)((u8 *)hdr + sizeof(*hdr));
+> After merging the spi tree, today's linux-next build (htmldocs) produced
+> this warning:
 > 
-> Note that this can potentially change the network header ptr and the
-> caller - ip6_parse_tlv() - has cached such value in 'nh'. You also need
-> to update ip6_parse_tlv() to reload such pointer.
-
-+1, I completely missed it, thanks!
-
-> Side note: a bunch of self-tests are apparently stuck after this
-> series. I think it's an unrelated problem. I'll try to have a better
-> look.
-
-Can you share the config to observe such behavior? I'll try to 
-investigate too.
-
-> Cheers,
+> Documentation/spi/spi-summary.rst:274: WARNING: Title underline too short.
 > 
-> Paolo
+> Declare target Devices
+> ^^^^^^^^^^^^^^^^^^^^^
 > 
+> Introduced by commit
+> 
+>    99769a52464d ("spi: Update the "master/slave" terminology in documentation")
+> 
+
+This is a known issue with a Fix pending to be merged [0]. Thanks for
+reporting.
+
+[0] 
+https://lore.kernel.org/linux-spi/20240216051637.10920-1-rdunlap@infradead.org/
+
+-- 
+Thanks and Regards,
+Dhruva Gole
 
