@@ -1,150 +1,185 @@
-Return-Path: <linux-kernel+bounces-71132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EC4685A11B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:38:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E577F85A120
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2FEB1F215A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:38:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C7DC282DAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69D7028DC1;
-	Mon, 19 Feb 2024 10:38:30 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24961C10;
-	Mon, 19 Feb 2024 10:38:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 048772C191;
+	Mon, 19 Feb 2024 10:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="vCwVT97q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AD02577C;
+	Mon, 19 Feb 2024 10:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708339110; cv=none; b=epdm9vHFGDIYLyZnMX7Klti11aEJZ/mv3aQd5c9asuu+P/FcsDoS+yExfWmyqCTMmBvnRlmFDuhRokAKNI4ih5BKBGDIxPxqrpnvzyIs9F8/t/yBUb5HU3wtG1FvuO5WZMsVyxpDXUanYahIp/zAwzowokJlqmKuV9TROS0Rc/U=
+	t=1708339120; cv=none; b=eRj1kp9oF+0rz6DNq34vXAnLYcuZBsVg6rOWCEb8GyssgYbQn06wiChll2dFv+qKdFzLWQ8+P4g2oWkxUpX10E75e1NCQ2uGW2F5J64QfF+bRf8oMewm/Z2R2AtXFqX3hyOUJ4gIOv+WUoXpNFGSJ/cLws9glTuBVsIVPq5DHnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708339110; c=relaxed/simple;
-	bh=ANF00kKf6VxoZUFP3NSAnia/Ezpeg/tKkdcwSuCKNyE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q0fqph5ssX5pSQ02lGmDU0y6JknHF9cxFqR3Y3es1oZ6IqIRtXWnTRU2f7IdkGxwt/A2IKaBPFt+KI1GsrsMglJpTCwr+tV9nOAEQzDMX2FmHBAxS8oCkhlGv1ohhsZjFKVmOiMChcFPNZax6bw0a9w1285KvZ3BXX9UmIZszwg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A211EFEC;
-	Mon, 19 Feb 2024 02:39:05 -0800 (PST)
-Received: from [192.168.1.100] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DB5BC3F762;
-	Mon, 19 Feb 2024 02:38:17 -0800 (PST)
-Message-ID: <b260e3e1-ebe9-4fc2-6b81-bc4735a7bb66@arm.com>
-Date: Mon, 19 Feb 2024 10:38:16 +0000
+	s=arc-20240116; t=1708339120; c=relaxed/simple;
+	bh=hOjoEZOsJrgzSDEm791GyPfritGFcTYrGPWq8i5PRXw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MwQIsfVI67yxFc7BSPA19R4r8UuSu2eVuVaAyLivuG/iv9FIMiRfZuttMBClxg8TJ8KO/P2nMfPOid8FiIvzRgVFN2ouqKCiWXMeuwlOlAxwrKC61AC03Q2S4rBAQKT3E1oW+L6vNlrKkEKdC1Df3X5lyZWPuC5ieg+NDWQzI/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=vCwVT97q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F107FC433F1;
+	Mon, 19 Feb 2024 10:38:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1708339119;
+	bh=hOjoEZOsJrgzSDEm791GyPfritGFcTYrGPWq8i5PRXw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=vCwVT97qTUowrz0FvfZbzkPiEn2LAIMZhQupvKtp+Z6uYQ1rsOamJJnYvX19wDqPC
+	 KenKKuPEiebDngxAmkUWwheH4o+Y7YXhVs+suLyUCebhxpKsuQmzgs5NFZvOh+eOCe
+	 tkzh75vrfA+1ElehEF3C4A4QXqrhxYEBZZDG3u6Y=
+Date: Mon, 19 Feb 2024 11:38:36 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+	mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+	corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, Thinh.Nguyen@synopsys.com,
+	broonie@kernel.org, bgoswami@quicinc.com, tiwai@suse.com,
+	robh+dt@kernel.org, konrad.dybcio@linaro.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-doc@vger.kernel.org,
+	alsa-devel@alsa-project.org
+Subject: Re: [PATCH v17 00/51] Introduce QC USB SND audio offloading support
+Message-ID: <2024021922-privatize-runt-495e@gregkh>
+References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
+ <2024021754-unengaged-saggy-6ab1@gregkh>
+ <96ab6033-2cb9-daa7-ddad-090138896739@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 2/8] libperf cpumap: Ensure empty cpumap is NULL from
- alloc
-Content-Language: en-US
-To: Ian Rogers <irogers@google.com>, Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, Leo Yan <leo.yan@linaro.org>,
- John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>,
- Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=c3=a9_Almeida?=
- <andrealmeid@igalia.com>, Kan Liang <kan.liang@linux.intel.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Sean Christopherson <seanjc@google.com>, Paolo Bonzini
- <pbonzini@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
- Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
- Andrew Jones <ajones@ventanamicro.com>,
- Alexandre Ghiti <alexghiti@rivosinc.com>, Atish Patra <atishp@rivosinc.com>,
- "Steinar H. Gunderson" <sesse@google.com>,
- Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>,
- Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>,
- Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>,
- Nick Desaulniers <ndesaulniers@google.com>,
- Huacai Chen <chenhuacai@kernel.org>, Yanteng Si <siyanteng@loongson.cn>,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- bpf@vger.kernel.org
-References: <20240202234057.2085863-1-irogers@google.com>
- <20240202234057.2085863-3-irogers@google.com>
- <CAM9d7ci3VO7reyxPc8WOczdoyYYCUshxCJDMZ7wPpHknCubNXQ@mail.gmail.com>
- <CAP-5=fVNLoes2VaCcqrueiDLBZAZNthSJVD17z77cnyE7wF7ag@mail.gmail.com>
-From: James Clark <james.clark@arm.com>
-In-Reply-To: <CAP-5=fVNLoes2VaCcqrueiDLBZAZNthSJVD17z77cnyE7wF7ag@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <96ab6033-2cb9-daa7-ddad-090138896739@linux.intel.com>
 
-
-
-On 17/02/2024 00:52, Ian Rogers wrote:
-> On Fri, Feb 16, 2024 at 4:25 PM Namhyung Kim <namhyung@kernel.org> wrote:
->>
->> On Fri, Feb 2, 2024 at 3:41 PM Ian Rogers <irogers@google.com> wrote:
->>>
->>> Potential corner cases could cause a cpumap to be allocated with size
->>> 0, but an empty cpumap should be represented as NULL. Add a path in
->>> perf_cpu_map__alloc to ensure this.
->>>
->>> Suggested-by: James Clark <james.clark@arm.com>
->>> Closes: https://lore.kernel.org/lkml/2cd09e7c-eb88-6726-6169-647dcd0a8101@arm.com/
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>> ---
->>>  tools/lib/perf/cpumap.c | 6 +++++-
->>>  1 file changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
->>> index ba49552952c5..cae799ad44e1 100644
->>> --- a/tools/lib/perf/cpumap.c
->>> +++ b/tools/lib/perf/cpumap.c
->>> @@ -18,9 +18,13 @@ void perf_cpu_map__set_nr(struct perf_cpu_map *map, int nr_cpus)
->>>
->>>  struct perf_cpu_map *perf_cpu_map__alloc(int nr_cpus)
->>>  {
->>> -       RC_STRUCT(perf_cpu_map) *cpus = malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cpus);
->>> +       RC_STRUCT(perf_cpu_map) *cpus;
->>>         struct perf_cpu_map *result;
->>>
->>> +       if (nr_cpus == 0)
->>> +               return NULL;
->>
->> But allocation failure also returns NULL.  Then callers should check
->> what's the expected result.>
-> Right, we don't have a habit of just aborting on memory allocation
-
-I'm not sure why we don't abort on allocation. It would simplify the
-code a lot and wouldn't change the behavior in any meaningful way. And
-it would also allow us to print out which line exactly failed which is
-much more useful than bubbling up the error and hiding it.
-
-If we're making the decision that an empty map == NULL rather than
-non-null but with 0 length then maybe it's time to start thinking about it.
-
-> errors. In the case that NULL is returned it is assumed that an empty
-> CPU map is appropriate. Adding checks throughout the code base that an
-> empty CPU map is only returned when 0 is given is beyond the scope of
-> this patch set.
+On Mon, Feb 19, 2024 at 12:27:18PM +0200, Mathias Nyman wrote:
+> On 17.2.2024 17.25, Greg KH wrote:
+> > On Fri, Feb 16, 2024 at 04:09:26PM -0800, Wesley Cheng wrote:
+> > > Several Qualcomm based chipsets can support USB audio offloading to a
+> > > dedicated audio DSP, which can take over issuing transfers to the USB
+> > > host controller.  The intention is to reduce the load on the main
+> > > processors in the SoC, and allow them to be placed into lower power modes.
+> > > There are several parts to this design:
+> > >    1. Adding ASoC binding layer
+> > >    2. Create a USB backend for Q6DSP
+> > >    3. Introduce XHCI interrupter support
+> > >    4. Create vendor ops for the USB SND driver
+> > > 
+> > >        USB                          |            ASoC
+> > > --------------------------------------------------------------------
+> > >                                     |  _________________________
+> > >                                     | |sm8250 platform card     |
+> > >                                     | |_________________________|
+> > >                                     |         |           |
+> > >                                     |      ___V____   ____V____
+> > >                                     |     |Q6USB   | |Q6AFE    |
+> > >                                     |     |"codec" | |"cpu"    |
+> > >                                     |     |________| |_________|
+> > >                                     |         ^  ^        ^
+> > >                                     |         |  |________|
+> > >                                     |      ___V____    |
+> > >                                     |     |SOC-USB |   |
+> > >     ________       ________               |        |   |
+> > >    |USB SND |<--->|QC offld|<------------>|________|   |
+> > >    |(card.c)|     |        |<----------                |
+> > >    |________|     |________|___     | |                |
+> > >        ^               ^       |    | |    ____________V_________
+> > >        |               |       |    | |   |APR/GLINK             |
+> > >     __ V_______________V_____  |    | |   |______________________|
+> > >    |USB SND (endpoint.c)     | |    | |              ^
+> > >    |_________________________| |    | |              |
+> > >                ^               |    | |   ___________V___________
+> > >                |               |    | |->|audio DSP              |
+> > >     ___________V_____________  |    |    |_______________________|
+> > >    |XHCI HCD                 |<-    |
+> > >    |_________________________|      |
+> > > 
+> > > 
+> > > Adding ASoC binding layer:
+> > > soc-usb: Intention is to treat a USB port similar to a headphone jack.
+> > > The port is always present on the device, but cable/pin status can be
+> > > enabled/disabled.  Expose mechanisms for USB backend ASoC drivers to
+> > > communicate with USB SND.
+> > > 
+> > > Create a USB backend for Q6DSP:
+> > > q6usb: Basic backend driver that will be responsible for maintaining the
+> > > resources needed to initiate a playback stream using the Q6DSP.  Will
+> > > be the entity that checks to make sure the connected USB audio device
+> > > supports the requested PCM format.  If it does not, the PCM open call will
+> > > fail, and userpsace ALSA can take action accordingly.
+> > > 
+> > > Introduce XHCI interrupter support:
+> > > XHCI HCD supports multiple interrupters, which allows for events to be routed
+> > > to different event rings.  This is determined by "Interrupter Target" field
+> > > specified in Section "6.4.1.1 Normal TRB" of the XHCI specification.
+> > > 
+> > > Events in the offloading case will be routed to an event ring that is assigned
+> > > to the audio DSP.
+> > > 
+> > > Create vendor ops for the USB SND driver:
+> > > qc_audio_offload: This particular driver has several components associated
+> > > with it:
+> > > - QMI stream request handler
+> > > - XHCI interrupter and resource management
+> > > - audio DSP memory management
+> > > 
+> > > When the audio DSP wants to enable a playback stream, the request is first
+> > > received by the ASoC platform sound card.  Depending on the selected route,
+> > > ASoC will bring up the individual DAIs in the path.  The Q6USB backend DAI
+> > > will send an AFE port start command (with enabling the USB playback path), and
+> > > the audio DSP will handle the request accordingly.
+> > > 
+> > > Part of the AFE USB port start handling will have an exchange of control
+> > > messages using the QMI protocol.  The qc_audio_offload driver will populate the
+> > > buffer information:
+> > > - Event ring base address
+> > > - EP transfer ring base address
+> > > 
+> > > and pass it along to the audio DSP.  All endpoint management will now be handed
+> > > over to the DSP, and the main processor is not involved in transfers.
+> > > 
+> > > Overall, implementing this feature will still expose separate sound card and PCM
+> > > devices for both the platorm card and USB audio device:
+> > >   0 [SM8250MTPWCD938]: sm8250 - SM8250-MTP-WCD9380-WSA8810-VA-D
+> > >                        SM8250-MTP-WCD9380-WSA8810-VA-DMIC
+> > >   1 [Audio          ]: USB-Audio - USB Audio
+> > >                        Generic USB Audio at usb-xhci-hcd.1.auto-1.4, high speed
+> > > 
+> > > This is to ensure that userspace ALSA entities can decide which route to take
+> > > when executing the audio playback.  In the above, if card#1 is selected, then
+> > > USB audio data will take the legacy path over the USB PCM drivers, etc...
+> > > 
+> > > This feature was validated using:
+> > > - tinymix: set/enable the multimedia path to route to USB backend
+> > > - tinyplay: issue playback on platform card
+> > 
+> > I've applied patches 1-10 and the 2 dts changes here, as those all had
+> > acks from the relevant maintainers already.
+> > 
 > 
-> Thanks,
-> Ian
+> Patch 10/10 is based on an old POC patch by me, but it's heavily modified.
 > 
+> It looks like it does a few minor things that are not optimal, like extra
+> spinlock/unlock, and wait_for_completion_timeout() with magical timeout value.
+> I haven't tested this version, but I guess any fixes or cleanups can be done
+> later on top of it.
 
+I can revert it now if you want, just let me know.
 
->> Thanks,
->> Namhyung
->>
->>> +
->>> +       cpus = malloc(sizeof(*cpus) + sizeof(struct perf_cpu) * nr_cpus);
->>>         if (ADD_RC_CHK(result, cpus)) {
->>>                 cpus->nr = nr_cpus;
->>>                 refcount_set(&cpus->refcnt, 1);
->>> --
->>> 2.43.0.594.gd9cf4e227d-goog
->>>
+thanks,
+
+greg k-h
 
