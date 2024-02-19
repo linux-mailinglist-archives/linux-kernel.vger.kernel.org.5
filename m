@@ -1,129 +1,156 @@
-Return-Path: <linux-kernel+bounces-71934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E0FD85ACAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:00:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D86F85ACBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 21:00:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 003E81F2387E
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:00:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDD9E2881B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 20:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14155537E6;
-	Mon, 19 Feb 2024 19:58:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072F054BFB;
+	Mon, 19 Feb 2024 19:59:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZOVKngJu"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T45+FMhR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFBE0524D7
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 19:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D96E535AA;
+	Mon, 19 Feb 2024 19:59:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708372701; cv=none; b=DQTaDayEW44jg42s1xzAmxjWGGlBDehQrtP8iKmMXmlwYdvvjZMbPpK6ZqjXVt3cBLM9V4MW/yVICNDpKJEcXrhfcI51gZ64tbv2LFIX0uH5D1NPrgXbVpQ7iXMuDMYWjSLFO/fCKvv3qhFIaPi2Tinnms2kRhJKJ+XAp0b/kxU=
+	t=1708372797; cv=none; b=khX1RLajPfHcVZLvL6AXr3N3VW41tIVsn69fGnPiW4kuU7Fb7MltNey6Tth9glYtisI2egrGx2gnChmITfgQiidhKhweAQNfeTq5hklHDo9APbKUngECRQ3gPlO+Br+Hcx737xItXedBssIbfFuX3lmUslkP1iq19mYkJP1dfc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708372701; c=relaxed/simple;
-	bh=CnCKLmpVpCmUXuzfNqSYcIlBmrUGIF8rsECdq6agMcQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XkqExx1k9P7DT6bKD3rfCiUUjVR2HYPHBYznF0SP5UnTDoah/bZkXWrpI7vFRI3BahtG1GCAwp9oG9ci8O0CYjdcVOq6rJycRkCNvQwetN6HrUzDPzGD7MG2PnCq7ZSVjn3N/w26TVyWi599b9oSiJzWR+3unDTFs2Js2CTWiLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZOVKngJu; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708372700; x=1739908700;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=CnCKLmpVpCmUXuzfNqSYcIlBmrUGIF8rsECdq6agMcQ=;
-  b=ZOVKngJuBYY2bzZ1AY+1qW4Abg91gl3onef0FaQCxg8fwaADKf8ZjVQC
-   gdwiX3LjyPLA88x9pYbKeAE2nXxwimQQyKDjMLK9LpDqftDE/Cnui6vpL
-   Fec2IfjqLpQ6PsRE0K6f+AdD62MeEqPz2a4NE3+ZqPLDpo0Dwd01MJGz+
-   ELrZF91PVLcl326sd56xRCsYdOR2CtoxVPOnSouBluTKvfxEx5BPIR+GY
-   APTOqx8DFwyWikdRyFzMkmRLWhm08PkXLJllhq3DSnbVyLdtDjF4MGxik
-   /tZl3PAB65av7HePgVx+t/nqbliMD5W5C1YUxb/PqroE9yNI3SoSJkH+8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="19893449"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="19893449"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 11:58:16 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="9239492"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 11:58:15 -0800
-Received: from svinhufvud.ger.corp.intel.com (localhost [IPv6:::1])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id 44BF9120204;
-	Mon, 19 Feb 2024 21:58:11 +0200 (EET)
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: linux-kernel@vger.kernel.org
-Cc: Hans de Goede <hdegoede@redhat.com>,
-	Tomas Winkler <tomas.winkler@intel.com>,
-	Wentong Wu <wentong.wu@intel.com>,
+	s=arc-20240116; t=1708372797; c=relaxed/simple;
+	bh=V7d3FUHDHjaNVIGYicTJg7/TYe1drwX4p1eQCSxDewU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UEkUdzFfjg/A48XyX4qZ9hiot+D8QSaaebNav2umvx3rtsFIohZKU/SIAjecWaLa04OxYmGoX5pkoSYnSKBc9hcG/B/WJBWk0y95apqMssFSWxNuLL7URzHgXiVS1gdaBMTS7gvMxTJqmxHu45xn9oc25tHI8bmUnvR8I2I+RB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T45+FMhR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88CC0C433C7;
+	Mon, 19 Feb 2024 19:59:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708372796;
+	bh=V7d3FUHDHjaNVIGYicTJg7/TYe1drwX4p1eQCSxDewU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=T45+FMhRUYku0IayKkrM4fevhsmPoINGwzAQ9OuvUumK7yoDAV0cFQPSR/JcJDNn6
+	 IH86pdnnzsLO36yg9DvE/hK7dOZdenbuAKHEeg7OE2f+zxYFLmduoDZWzOGylGlVnZ
+	 hoZoC5s4uP59yejL+WA87fY9xoX0np9crzdCKJA5yIqCoqjmyOKHS5oPLcM09Bb3BI
+	 tHtxC/ShPCBum7nM440EwXfy4XGKPa6Nf0ATZqLhlndytiG9amoUQaXq+Oc2LvR9/l
+	 KFDaKUBuG237eYDJ8O8YsLz3vgf0BC2UAqhKruifhPeeCoSZcvsGjOs3/8Y+Y8knzI
+	 waWE8KNaC6a5A==
+Date: Mon, 19 Feb 2024 19:59:46 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Saravana Kannan <saravanak@google.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH v2 3/3] mei: vsc: Assign pinfo fields in variable declaration
-Date: Mon, 19 Feb 2024 21:58:07 +0200
-Message-Id: <20240219195807.517742-4-sakari.ailus@linux.intel.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240219195807.517742-1-sakari.ailus@linux.intel.com>
-References: <20240219195807.517742-1-sakari.ailus@linux.intel.com>
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Alex Elder <elder@linaro.org>,
+	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Lukas Wunner <lukas@wunner.de>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH v5 09/18] arm64: dts: qcom: qrb5165-rb5: model the PMU of
+ the QCA6391
+Message-ID: <8e392aed-b5f7-486b-b5c0-5568e13796ec@sirena.org.uk>
+References: <20240216203215.40870-1-brgl@bgdev.pl>
+ <20240216203215.40870-10-brgl@bgdev.pl>
+ <48164f18-34d0-4053-a416-2bb63aaae74b@sirena.org.uk>
+ <CAMRc=Md7ymMTmF1OkydewF5C32jDNy0V+su7pcJPHKto6VLjLg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="emYsqvRPUjKAiXsY"
+Content-Disposition: inline
+In-Reply-To: <CAMRc=Md7ymMTmF1OkydewF5C32jDNy0V+su7pcJPHKto6VLjLg@mail.gmail.com>
+X-Cookie: Kleeneness is next to Godelness.
 
-Assign all possible fields of pinfo in variable declaration, instead of
-just zeroing it there.
 
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
- drivers/misc/mei/vsc-tp.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+--emYsqvRPUjKAiXsY
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/misc/mei/vsc-tp.c b/drivers/misc/mei/vsc-tp.c
-index 7b678005652b..9b4584d67a1b 100644
---- a/drivers/misc/mei/vsc-tp.c
-+++ b/drivers/misc/mei/vsc-tp.c
-@@ -445,11 +445,16 @@ static int vsc_tp_match_any(struct acpi_device *adev, void *data)
- 
- static int vsc_tp_probe(struct spi_device *spi)
- {
--	struct platform_device_info pinfo = { 0 };
-+	struct vsc_tp *tp;
-+	struct platform_device_info pinfo = {
-+		.name = "intel_vsc",
-+		.data = &tp,
-+		.size_data = sizeof(tp),
-+		.id = PLATFORM_DEVID_NONE,
-+	};
- 	struct device *dev = &spi->dev;
- 	struct platform_device *pdev;
- 	struct acpi_device *adev;
--	struct vsc_tp *tp;
- 	int ret;
- 
- 	tp = devm_kzalloc(dev, sizeof(*tp), GFP_KERNEL);
-@@ -501,13 +506,8 @@ static int vsc_tp_probe(struct spi_device *spi)
- 		ret = -ENODEV;
- 		goto err_destroy_lock;
- 	}
--	pinfo.fwnode = acpi_fwnode_handle(adev);
--
--	pinfo.name = "intel_vsc";
--	pinfo.data = &tp;
--	pinfo.size_data = sizeof(tp);
--	pinfo.id = PLATFORM_DEVID_NONE;
- 
-+	pinfo.fwnode = acpi_fwnode_handle(adev);
- 	pdev = platform_device_register_full(&pinfo);
- 	if (IS_ERR(pdev)) {
- 		ret = PTR_ERR(pdev);
--- 
-2.39.2
+On Mon, Feb 19, 2024 at 07:48:20PM +0100, Bartosz Golaszewski wrote:
+> On Mon, Feb 19, 2024 at 7:03=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
+rote:
+> > On Fri, Feb 16, 2024 at 09:32:06PM +0100, Bartosz Golaszewski wrote:
 
+> > > +                     vreg_pmu_aon_0p59: ldo1 {
+> > > +                             regulator-name =3D "vreg_pmu_aon_0p59";
+> > > +                             regulator-min-microvolt =3D <540000>;
+> > > +                             regulator-max-microvolt =3D <840000>;
+> > > +                     };
+
+> > That's a *very* wide voltage range for a supply that's got a name ending
+> > in _0_p59 which sounds a lot like it should be fixed at 0.59V.
+> > Similarly for a bunch of the other supplies, and I'm not seeing any
+> > evidence that the consumers do any voltage changes here?  There doesn't
+> > appear to be any logic here, I'm not convinced these are validated or
+> > safe constraints.
+
+> No, the users don't request any regulators (or rather: software
+> representations thereof) because - as per the cover letter - no
+> regulators are created by the PMU driver. This is what is physically
+> on the board - as the schematics and the datasheet define it. I took
+
+The above makes no sense.  How can constraints be "what is physically on
+the board", particularly variable constrants when there isn't even a
+consumer?  What values are you taking from which documentation? =20
+
+The cover letter and binding both claimed (buried after large amounts of
+changelog) that these PMUs were exposing regulators to consumers and the
+DTS puports to do exactly that...
+
+> the values from the docs verbatim. In C, we create a power sequencing
+> provider which doesn't use the regulator framework at all.
+
+For something that doesn't use the regulator framework at all what
+appears to be a provider in patch 16 ("power: pwrseq: add a driver for
+the QCA6390 PMU module") seems to have a lot of regualtor API calls?
+
+--emYsqvRPUjKAiXsY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXTszEACgkQJNaLcl1U
+h9Cnngf+IYF9pPUvDAr0+9oD3KtUt4+wAyqpvCYd3QuvT98XgcKtkxuBF8yVrn3o
+LceeY91qW8Y/CLz4ZXDqVdWCd1bOtiU48jYXX29ZuQciuXy20B+0LuJ8hkYSkAUk
+JZplf/496WYrFs/92k/NhBU5djkuEGpxjp+LD+0mGJT3RJphr59zb8ToDh3Fi3Xo
+9Vw/tkd7v+/tZY7g+OJsbnSi1/WHnHYepYRh9O5eO7CYRsHw1sHELt2X5s+wQKv7
+rB+MB9piVE3Vjuys5hjODJMTFg5eZJix6jHU+9xKA5FxezF9mo1Yan6MceBP4ZBK
+IU9LsWWcwWsnu9mgk5kBM58ddzUI/A==
+=aUMd
+-----END PGP SIGNATURE-----
+
+--emYsqvRPUjKAiXsY--
 
