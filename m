@@ -1,141 +1,137 @@
-Return-Path: <linux-kernel+bounces-71058-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71059-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C654485A020
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:48:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 022CF85A025
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 10:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8182C281C42
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:48:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BA2DB209A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE9425579;
-	Mon, 19 Feb 2024 09:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0DB725108;
+	Mon, 19 Feb 2024 09:48:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lGCtXy+j"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="A+CKEvVI"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9C12556D;
-	Mon, 19 Feb 2024 09:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF95E24B2C;
+	Mon, 19 Feb 2024 09:48:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708336111; cv=none; b=LiZnP/N2saN4Fgi3Gn+Sc9Jdq5rNHMs7gilT92lt+7GJKkoyhrFzZ/uJPzvWjp1i38UMfS6lpMW/I4ne+ReziUey0pPL0tHlW9dG+FZTWhW4w5dMnrQXmHmk/Tcr8gB+ragILYQ043YNJSwXh7cI2sBdyuVDUEgCjhGijNGoA4s=
+	t=1708336138; cv=none; b=EJ9YYb/vQJFCBPre3Yt+Jwu21nXbG8dHNMY+kZxC60IT8icldP3I5pCZn/mwKMIopK3S2bUQq8LRgmEB6MI7KZDo+B3LW7tGzd+f0mIESzGI7t6m9Wce9YfE08ccsgZ14fnWQ/g8FyxAy8oveClgssAnyilOIKwz00FTMwHJyf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708336111; c=relaxed/simple;
-	bh=8EXMzXr316H26S3gLy44xerC9vQS2ws3edUhg+achtA=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TI4bO6Q+lpbjfYyttZC6dqKm5kFhTw/s4SskBUfO94h9TtJk9KCPpXcwZfb+CwCRhbYFvX4mZVcVDnmH1kJ4KNhCvjGijx8YtJEseCMv7o9WvL6hylp7V+4x6nR69OS/G8OuH+PNZluHCnOPDPzpNSeHRrDDx+sVbPuEvl6oGAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGCtXy+j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74759C433F1;
-	Mon, 19 Feb 2024 09:48:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708336110;
-	bh=8EXMzXr316H26S3gLy44xerC9vQS2ws3edUhg+achtA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lGCtXy+jlxZffUYcughOKAox/vCbo5dNHJdE4tJQCU4WSTkaNlnpi22nhadHPGKtC
-	 eUZOliBjdxNkb0zkve8JII0Q+2Cxc6L4aPH9hJCpKvuibpWJVG/aXujUj+DC3sv3V7
-	 vxiQKlagiZtouSBBDWdIOWDpQ5YRKbd1oTGBxpEQVBzSSetAURzapk9oOw6eG6HYrG
-	 znHtvixlbjJw96BjdQOiwRTyOuF/82d6WW5TnCvrL9ILMP0FOSC6Q1IxiYI0UuTHZ/
-	 e+yVZRkU6uh45Q9ZPp/36nqcJDFisthyTb3dEXPT0kdIZgUKXOr+QD+2dFuNmtmDIg
-	 GUz/3r7Rr8//A==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rc0GC-004WsF-Gq;
-	Mon, 19 Feb 2024 09:48:28 +0000
-Date: Mon, 19 Feb 2024 09:48:28 +0000
-Message-ID: <86edd84wer.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc: open list <linux-kernel@vger.kernel.org>,
-	Linux ARM <linux-arm-kernel@lists.infradead.org>,
-	lkft-triage@lists.linaro.org,
-	Linux Regressions <regressions@lists.linux.dev>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: next-20240219: arm64: boot failed - gic_of_init
-In-Reply-To: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
-References: <CA+G9fYugYiLd7MDn3wCxK+x5Td9WO-VUX2OvOtTN7D1d4GHCfg@mail.gmail.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1708336138; c=relaxed/simple;
+	bh=evgpaaD5YWF/NgxUotDyDIZio7JSN3VGvWsj49vaKqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=TQtMQiuoya6P3awbWbpyXeC4i0RfMxh+r2Odt3lbOna5V8FNy5oM/L4a8tgw+JWnUrfNvlIKJWZNZ9VNXHCQdTPZelNMAtoS3uAlcFp5Q6/HjwO9DZd+FdANrEkLlhznJ7cR36jsBHijvwVEBwvtw5LrE/yzjL86TEgXnl7ZRcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=A+CKEvVI; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41J4exqM030321;
+	Mon, 19 Feb 2024 09:48:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=SVEu8MZ3e8dW0QHAXGwR0a6sVaNeklP/z/RmXLz5IUs=; b=A+
+	CKEvVIaa8ho3rxF1rvOPVSOyvm+vyBAxUJ+eAo2/DEXrucnypl3KD6+IAsOh5M0C
+	UFozvQedhgwXadehkIHmKsaro0ny3kqAdN9imHt94DTWtZPphgb4gOo9MmOWmX64
+	spIv+BmTh33eRU/VNd/Jl6pnW7zRLyH4f1vu82t3HkzE0ehKuCxh93Sb2+8a650q
+	AnzyCnD6wBAgc6cyQr71NzBHRDdrf1lRpockXtU8nRudmLtUVBo+ZMNep6T4xQ+u
+	ZRThmilgPqZ9ORzhNyuVtpAHBIeI8J7Mif4QBoeKg3nYOC4JpsNvhSJl2X793WP1
+	Zpeh3+X/3ypwSdJV9fWQ==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wan17kd4f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 09:48:43 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41J9mgxh025919
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 19 Feb 2024 09:48:42 GMT
+Received: from [10.214.82.119] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 19 Feb
+ 2024 01:48:39 -0800
+Message-ID: <7acbf41b-1618-4746-aa1d-e6b700994a03@quicinc.com>
+Date: Mon, 19 Feb 2024 15:18:36 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: naresh.kamboju@linaro.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, lkft-triage@lists.linaro.org, regressions@lists.linux.dev, catalin.marinas@arm.com, arnd@arndb.de, dan.carpenter@linaro.org, anders.roxell@linaro.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] Add interconnect support for SM7150 SoC
+To: Danila Tikhonov <danila@jiaxyga.com>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <djakov@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240218183239.85319-1-danila@jiaxyga.com>
+Content-Language: en-US
+From: Naman Jain <quic_namajain@quicinc.com>
+In-Reply-To: <20240218183239.85319-1-danila@jiaxyga.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: loa4WZeOn44LUvK-4Bqq6_kSfedh7lrW
+X-Proofpoint-GUID: loa4WZeOn44LUvK-4Bqq6_kSfedh7lrW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-19_06,2024-02-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ spamscore=0 phishscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 malwarescore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402190073
 
-On Mon, 19 Feb 2024 09:42:45 +0000,
-Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+On 2/19/2024 12:02 AM, Danila Tikhonov wrote:
+> Add dtbindings and driver support for the Qualcomm SM7150 SoC.
+
+Nitpick.
+s/dtbindings/dt-bindings
+
+Please add that you are adding this support for Interconnect driver. Its
+there in Subject of this patch, but reading above line gives wrong
+impression.
+
+Regards,
+Naman Jain
+
 > 
-> The qemu-arm64 boot failed with linux next-20240219 tag kernel.
+> To: Bjorn Andersson <andersson@kernel.org>
+> To: Konrad Dybcio <konrad.dybcio@linaro.org>
+> To: Georgi Djakov <djakov@kernel.org>
+> To: Rob Herring <robh@kernel.org>
+> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> To: Conor Dooley <conor+dt@kernel.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Danila Tikhonov <danila@jiaxyga.com>
 > 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Danila Tikhonov (2):
+>    dt-bindings: interconnect: Add Qualcomm SM7150 DT bindings
+>    interconnect: qcom: Add SM7150 driver support
 > 
-> Boot log:
-> ---------
-> <6>[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
-> <1>[    0.000000] Unable to handle kernel paging request at virtual
-> address ffff80008001ffe8
-> <1>[    0.000000] Mem abort info:
-> <1>[    0.000000]   ESR = 0x0000000096000004
-> <1>[    0.000000]   EC = 0x25: DABT (current EL), IL = 32 bits
-> <1>[    0.000000]   SET = 0, FnV = 0
-> <1>[    0.000000]   EA = 0, S1PTW = 0
-> <1>[    0.000000]   FSC = 0x04: level 0 translation fault
-> <1>[    0.000000] Data abort info:
-> <1>[    0.000000]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> <1>[    0.000000]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> <1>[    0.000000]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> <1>[    0.000000] swapper pgtable: 4k pages, 52-bit VAs, pgdp=0000000042497000
-> <1>[    0.000000] [ffff80008001ffe8] pgd=10000000439a5003,
-> p4d=10000001000e3003, pud=10000001000e4003, pmd=10000001000e5003,
-> pte=006800000800f413
-> <0>[    0.000000] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-> <4>[    0.000000] Modules linked in:
-> <4>[    0.000000] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
-> 6.8.0-rc5-next-20240219 #1
-> <4>[    0.000000] Hardware name: linux,dummy-virt (DT)
-> <4>[    0.000000] pstate: 804000c9 (Nzcv daIF +PAN -UAO -TCO -DIT
-> -SSBS BTYPE=--)
-> <4>[    0.000000] pc : gic_of_init+0x84/0x3a8
-> <4>[    0.000000] lr : gic_of_init+0x290/0x3a8
-> ...
-> <4>[    0.000000] Call trace:
-> <4>[    0.000000]  gic_of_init+0x84/0x3a8
-> <4>[    0.000000]  of_irq_init+0x1d4/0x3d0
-> <4>[    0.000000]  irqchip_init+0x20/0x50
-> <4>[    0.000000]  init_IRQ+0xa8/0xc8
-> <4>[    0.000000]  start_kernel+0x270/0x690
-> <4>[    0.000000]  __primary_switched+0x80/0x90
-> <0>[    0.000000] Code: f94017e0 f90007e0 d29ffd00 8b0002c0 (b9400000)
-> <4>[    0.000000] ---[ end trace 0000000000000000 ]---
-> <0>[    0.000000] Kernel panic - not syncing: Attempted to kill the idle task!
-> <0>[    0.000000] ---[ end Kernel panic - not syncing: Attempted to
-> kill the idle task! ]---
+>   .../interconnect/qcom,sm7150-rpmh.yaml        |   88 +
+>   drivers/interconnect/qcom/Kconfig             |    9 +
+>   drivers/interconnect/qcom/Makefile            |    2 +
+>   drivers/interconnect/qcom/sm7150.c            | 1753 +++++++++++++++++
+>   drivers/interconnect/qcom/sm7150.h            |  140 ++
+>   .../interconnect/qcom,sm7150-rpmh.h           |  150 ++
+>   6 files changed, 2142 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sm7150-rpmh.yaml
+>   create mode 100644 drivers/interconnect/qcom/sm7150.c
+>   create mode 100644 drivers/interconnect/qcom/sm7150.h
+>   create mode 100644 include/dt-bindings/interconnect/qcom,sm7150-rpmh.h
 > 
-> Links:
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/test/gcc-13-lkftconfig-armv8_features/log
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240219/testrun/22730192/suite/boot/tests/
 
-Where is the configuration file? What are the parameters to QEMU?
-Please consider making this a useful and actionable report.
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
 
