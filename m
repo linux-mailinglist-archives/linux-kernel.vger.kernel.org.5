@@ -1,188 +1,119 @@
-Return-Path: <linux-kernel+bounces-70930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D874F859E23
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:24:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6709859E26
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:25:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1516E1C21F5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:24:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26F8D2820D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:24:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDF8D2110F;
-	Mon, 19 Feb 2024 08:24:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A649821344;
+	Mon, 19 Feb 2024 08:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="hKdCB4Dp";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="DXoXgj7m";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="UVN7980c";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1niAQW7F"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z4fZ/f4T"
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A365208B9;
-	Mon, 19 Feb 2024 08:24:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401778BEF
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708331049; cv=none; b=EVglj3IiDq1itkjKyasuSWSj/eoSQGjVNRYdb1C6r83iVRRAxdO29Wv7NVg/UwvmNb1PEnVpiozx6FVOzI8fKAYgL+axhdf7glZkHuFnI/VVrxl3FTzwLLqqLWJHMhrBpmeYKylwzVm3AUhfdiDqVD5yqwRSO1Z5/4gqzR1Xnls=
+	t=1708331096; cv=none; b=JRUDIg0TG0nKqmbQj/uo2D/ftLfN7GFzGbun+z3/QU4Oa5BV6pwcsxW6+Fy1hE3VXTzLRTvOp2AxwYA9/ovN9U/C7U6sWpRgStp8V5/D2XvlsZqFULSEijP6ImZcsuzBDkmRhsSfHDg508vkjuNtigDJyj4rtzxohQlNnliLJtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708331049; c=relaxed/simple;
-	bh=jNiuGMdKQuAqFWJvxAojwpVsbjDd6if8yJz7fs6ToDU=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=fI5MZdaz4/Jzkz14AVqOakGsiHCEg5TzZ+1x5Gq6DTpk4nuawuZJCyAo2OHzmSOltQRiPtd9YbMjtxbeff6eWJGcZQXpg9+a7XMA+32PjAVBDdq3PpQ4vFLB3+940Y5iYYpJA7iyInLEPjrCs7a/iRmmJaxQokeXHoNOYj3UyCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=hKdCB4Dp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=DXoXgj7m; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=UVN7980c; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1niAQW7F; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B54C221BD4;
-	Mon, 19 Feb 2024 08:24:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708331045; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3geTuouwuKJu4oP/3eOGhRrpShoe38npl2lgVrudkQQ=;
-	b=hKdCB4Dp5X4sIHSL8lhL3Me0uIS4ISO47AfInYYrNMhby1oDAf8EaY0sZbW7m+AfLSZmUJ
-	NagQ7k77ApncQkwAX1g/xaKrcefv51Lu0JtwUaTv1F/qjcfr1M/Z66IBLwT1el0EsLVI1T
-	U0n9TkfYUO92UPMdVDYsE/Q7n7/66qU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708331045;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3geTuouwuKJu4oP/3eOGhRrpShoe38npl2lgVrudkQQ=;
-	b=DXoXgj7mdccE69DGVnP5azjcgmoa+ZGUniZL/VZ8Syr78pOw/Z98uEY1b3CNtloO/6rons
-	Wxfv2cU0U9FABwBw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708331043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3geTuouwuKJu4oP/3eOGhRrpShoe38npl2lgVrudkQQ=;
-	b=UVN7980cAg9iY10Mh3rP2sYnq1pvRIkI3zB8du0zdHPsv06AE3t6IR8Xs5GouInyN5oVC2
-	87XIyzvvhDb5l+FhZwsg4D4WzfBVCjzufZo/zQdw3j7DFYcWfM/AB/xAKCFpgEMuKxZCRH
-	BqV0rX0/KQjaRppwHnSyPYjv6FAcanc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708331043;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3geTuouwuKJu4oP/3eOGhRrpShoe38npl2lgVrudkQQ=;
-	b=1niAQW7FZyg4juBHxt3mzOtcuupIZZfxX34b833Vuziobaiejfj1QhsIDs7XomGauuTYoe
-	9MNAdDtC/sK+0CCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 776AA13647;
-	Mon, 19 Feb 2024 08:24:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id d0PdGyMQ02WuBAAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Mon, 19 Feb 2024 08:24:03 +0000
-Date: Mon, 19 Feb 2024 09:24:03 +0100
-Message-ID: <87a5nwq2u4.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Ivan Orlov <ivan.orlov0322@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	linux-sound@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] ALSA: core: fix buffer overflow in test_format_fill_silence()
-In-Reply-To: <20240217104311.3749655-1-arnd@kernel.org>
-References: <20240217104311.3749655-1-arnd@kernel.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1708331096; c=relaxed/simple;
+	bh=Cm14M3AOqBWIacANhQdsnkUQYFsqmJsGStrT+CQVFWc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NFrZu7y2H7z6pOj2/yQmGIBLP12Er7ZpYHJM4OP7TlxVI++JgJoPzJ3RAJIniG83e/NCdaN2oXBTM2dDLVMSD5Za0UXnB1PfX64JwtKA8sZjeQd5eMhyRqODX8apzcUniQaEC+Pk8rDjsBhKaPnKScfCQJNrkxlP2369Fx0AnSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z4fZ/f4T; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d21e2b2245so34116851fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:24:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708331092; x=1708935892; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=B0JpVlr3Rj/c4Qzm5arTBdHpNayVsgbTN0Vg0UGksGk=;
+        b=Z4fZ/f4TJxAZuPRdfcvK/bd20ufUUsW7nAuzMxmcoNo+EHh8HOJNshGBJqcLtwFSzI
+         uE/0sib3GZW+G8drTRaj6ZH04uw0WleOTQQZCkEU9uz29Daie6rOEekxxmbZ59xzKhO9
+         6cFK4fL7O6I5l9B1Q1TXYaJ8RY1jGpyp3cGEeeTIyo1UfgV7ziyXPP+bfBdSa0v4iPFu
+         G1/hACpnAhJ3YYLJli6i3hzpLuwCz96MFsqSuWQU+RXCu2PGCHNwm8hz7dJtH8YXiayT
+         aFQSNsgQsd+werpTFjVz3HDYDuBjaACnwJDzGi/xXDYpw4W6G/tMEbrHN+Zcg7TZREWo
+         R3Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708331092; x=1708935892;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=B0JpVlr3Rj/c4Qzm5arTBdHpNayVsgbTN0Vg0UGksGk=;
+        b=kR+l4VGlOwbPL8BGJbZeIwSrFy9Kg+cb/bygH2d5RhyWltLYs9hZF/f1F9cn0LbaTk
+         bOW6xLQKeD0donDnUj9VPlVJkNktqGqbThgUyT+wfBsRwhnG0YAIdTxZCfa1ZWySQiXC
+         ZxhmWNmGUBq/OfOVQUWFNn40JBIB51m2uQIgC5J1/vTIrycAjFolgNx3mE4rezeiVn/1
+         i7UO4SNrG0kfk8U++IhDYCV8gdfhHjXQeW9qfPoGwV/EpXMNQictPEX/edEHMYCkEBn4
+         nKIZZWReMMpUEHyG8MuSmOWQrKtRYbtEF0cFTTLBR6IWNfvkQhj20iMKA6qK30dbqCbN
+         +gAw==
+X-Gm-Message-State: AOJu0Yw1xGqQLTHbErUeqn14YVf1rtKYM1d5EnfpssfnFPKHFYGz2A1V
+	XUcmmHXlRNz00aitR43P9uIeKPWvoiIA27SlJSoI82KIF8CSagC3hZ202ffO/j8+BRHjhHj5LF2
+	V
+X-Google-Smtp-Source: AGHT+IGl7NEY2uD3XDkNwXB6bSFXBxdMvVaR+g3ETTOChrm2nkM6lK7gTzKtS2cVBknaGgBzfdrNGQ==
+X-Received: by 2002:a2e:9048:0:b0:2d0:de72:9d47 with SMTP id n8-20020a2e9048000000b002d0de729d47mr7790373ljg.8.1708331091929;
+        Mon, 19 Feb 2024 00:24:51 -0800 (PST)
+Received: from krzk-bin.. ([178.197.222.116])
+        by smtp.gmail.com with ESMTPSA id n14-20020a5d420e000000b0033d282c7537sm7047857wrq.23.2024.02.19.00.24.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 19 Feb 2024 00:24:51 -0800 (PST)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org
+Subject: [PATCH v2] docs: MAINTAINERS: add "Profile" keyword entry name
+Date: Mon, 19 Feb 2024 09:24:48 +0100
+Message-Id: <20240219082448.14157-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=UVN7980c;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=1niAQW7F
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.01 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,linaro.org:email,arndb.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[gmail.com,perex.cz,suse.com,arndb.de,linaro.org,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -2.01
-X-Rspamd-Queue-Id: B54C221BD4
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Sat, 17 Feb 2024 11:42:38 +0100,
-Arnd Bergmann wrote:
-> 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> KASAN caught a buffer overflow with the hardcoded 2048 byte buffer
-> size, when 2080 bytes are written to it:
-> 
->  BUG: KASAN: slab-out-of-bounds in snd_pcm_format_set_silence+0x3bc/0x3e4
->  Write of size 8 at addr ffff0000c8149800 by task kunit_try_catch/1297
-> 
->  CPU: 0 PID: 1297 Comm: kunit_try_catch Tainted: G N 6.8.0-rc4-next-20240216 #1
->  Hardware name: linux,dummy-virt (DT)
->  Call trace:
->   kasan_report+0x78/0xc0
->   __asan_report_store_n_noabort+0x1c/0x28
->   snd_pcm_format_set_silence+0x3bc/0x3e4
->   _test_fill_silence+0xdc/0x298
->   test_format_fill_silence+0x110/0x228
->   kunit_try_run_case+0x144/0x3bc
->   kunit_generic_run_threadfn_adapter+0x50/0x94
->   kthread+0x330/0x3e8
->   ret_from_fork+0x10/0x20
-> 
->  Allocated by task 1297:
->   __kmalloc+0x17c/0x2f0
->   kunit_kmalloc_array+0x2c/0x78
->   test_format_fill_silence+0xcc/0x228
->   kunit_try_run_case+0x144/0x3bc
->   kunit_generic_run_threadfn_adapter+0x50/0x94
->   kthread+0x330/0x3e8
->   ret_from_fork+0x10/0x20
-> 
-> Replace the incorrect size with the correct length of 260 64-bit samples.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Suggested-by: Ivan Orlov <ivan.orlov0322@gmail.com>
-> Fixes: 3e39acf56ede ("ALSA: core: Add sound core KUnit test")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v2: use a named constant as suggested by Ivan Orlov
+The HTML output of MAINTAINERS file prints "P:" for subsystem profile,
+e.g.:
+	Status:   Maintained
+	P:        process/maintainer-soc-clean-dts
 
-Thanks, applied now.
+Use "Profile" as this entry name.
 
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: linux-doc@vger.kernel.org
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Takashi
+---
+
+Changes in v2:
+1. Drop duplicated "Profile" word.
+---
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b9c3100ef587..36fac6b3499a 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -24,7 +24,7 @@ Descriptions of section entries and preferred order
+ 	   filing info, a direct bug tracker link, or a mailto: URI.
+ 	C: URI for *chat* protocol, server and channel where developers
+ 	   usually hang out, for example irc://server/channel.
+-	P: Subsystem Profile document for more details submitting
++	P: Subsystem *Profile* document for more details submitting
+ 	   patches to the given subsystem. This is either an in-tree file,
+ 	   or a URI. See Documentation/maintainer/maintainer-entry-profile.rst
+ 	   for details.
+-- 
+2.34.1
+
 
