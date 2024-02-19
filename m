@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-70912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53356859DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:14:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B27B859DE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 09:14:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8432F1C21CA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:14:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82F61281F24
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:14:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AF82232C;
-	Mon, 19 Feb 2024 08:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D1DB20DFA;
+	Mon, 19 Feb 2024 08:14:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="kaJt2spz"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YRdPZFvg"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37EFD2209A
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0F7120DC3
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 08:14:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708330438; cv=none; b=Rza7y1gtQ/nhYvttLU2y499T6+tC70PqV3nYCA8WjWHCGwBJTMRKcFt3QRYWkHb2hA/4kXY7RH/KMvkUv2AgU7zwRAqxCfxRL3282wqB8Y9ngDoOSV51fy772UX7kuuGhe6mZCCeiJOMhoM0/ZWtlyiMmN8G76biO7IXQnzLalc=
+	t=1708330470; cv=none; b=XndA8w2HxlxTPfuDDZ+81jk+pnMfJ0wVtwCisZKJ2qtQWvVXgrqrmoIvUpQzCqV6F7HFm6+FbdCercaCVsGQwd6vX7EcM8QN7n6TBrp+Ez+oZX+6g/LguA5lXKs/Gt9kcCNQVBdvXCVpsPL69Sti68NhMfOxvfWD/jDg4/qpAo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708330438; c=relaxed/simple;
-	bh=hdW7Rr/GStlKb4q4MN/fQ/tDCDLJJ4mp4WcZbKTVTsg=;
+	s=arc-20240116; t=1708330470; c=relaxed/simple;
+	bh=q80JDH9kZ/ou9P03vNHaK5id+9OVp+KC8btXtDoi6qI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bFe2na9hqxNgIP3exJIiiYFdKVmwZZAzSjWUExawSt48Sjwl2VigHEvaVqvLUUJfXY0WltcNarENokN5MajZ594BKUC/ctRTThD7GaECuf1R408kuuDozapnLXyqS+esNY2awO47l6+8qvPzur9Ea+WR+hdVnqu4CvwVKLgpZ1o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=kaJt2spz; arc=none smtp.client-ip=209.85.221.54
+	 In-Reply-To:Content-Type; b=MGFbDU1Ohm4we82WYtOwAI8SKo7J4/PBNOcP3KPiXnvPLcVE2kzkiYKrPkStX5BcFaja1dhIaLcW9jiEGNMuIii8Pi+McdqIKVxjL0v0GbvHd/P+Yy/nQnNZG74x+pX3AjcFJgUg62emFtfRYEGul0mk+JaP3ywFuEkz5e/J97Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YRdPZFvg; arc=none smtp.client-ip=209.85.221.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33d146737e6so2356858f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:13:55 -0800 (PST)
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33cd57b7eabso2128091f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 00:14:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708330434; x=1708935234; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1708330467; x=1708935267; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hdW7Rr/GStlKb4q4MN/fQ/tDCDLJJ4mp4WcZbKTVTsg=;
-        b=kaJt2spzfJ/YhJfk/XTgB0sO/+0Ce3Jqn5TrWAankTjHyZyzdpRvIWgADBM32VXsUT
-         rPGBX8sOe2QSetbAkCSo0qwvd0RwZc+EymwlwE/h01ExOC2Dn6MUiXbxluaeCPZZaUyR
-         y1TOOiJ6x0o/N1Wa2sooCIg/8qXLO7yxgG6+zG+/VniJ61/xAgxWv3VozCy4iJMZ/JDL
-         IoXD6+bWdore50nBQIVeBTkvL46VwDFoSsObPTYKjNaa0ZcqOQ5wLv5aOVSfRIoSJmN0
-         XhYzfPYO/L2jTfLswsLi2zFXMn2qI2b+cLm+utB7M60TcxrcM5PQ0xjXX7AIly9oU5IP
-         oQOw==
+        bh=p9MGknvx7gKM1o1+MnDJc2Ovn7fkZrxKQGfjWiijceM=;
+        b=YRdPZFvgvd2LoatQh7QfDIWJpmot7NhGmvpt13+PehaxO+aYCn6R8n3kww6ZXZ/4vj
+         WXOO20zYNP+GC1UyozsHMy8yDnpMn4XsBerK2U1wqmN4qTe0GcoCyQFGGrE3VmFGN3A8
+         m5+DvFUsSzf7t7AvPzZmeauK4OmfGceIykwuO+5daGFG/WjDZ+WQVziqGME4KMF7fUU0
+         QMMm1NWXRAbvZ5cyabmB00N7GGF3eNActt/wp2gLmW/UR21+JguXrIobCIY9G1utHu6s
+         LZY7Rny8IbvYXs7t58PAu0JfpJMY3N482qDxt4yP7SPh4JaM2iApGRPD3enKmyPadHSm
+         9GwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708330434; x=1708935234;
+        d=1e100.net; s=20230601; t=1708330467; x=1708935267;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hdW7Rr/GStlKb4q4MN/fQ/tDCDLJJ4mp4WcZbKTVTsg=;
-        b=tFQuBayH1meQAy57pDtkr+3VUJchZAFzWFn3f44Lqku09VFSovQqg11k1M4AiMKYg+
-         K3pxZFp1GQrwOhF0M4joZIf2epbrjP/pe9bNRQJWpVub2gLJUXVB2LOSA9Woa4LhB1Gb
-         CHv4aJgqtHsyL9aRWr869UPHlagb2Y0vzjHvCotNpAn8zr+K5S7Mn79XUBRaGUJTZJkU
-         b+tAALR0EGa1XDZZNfIVyqQek4COSc+2EbHWopDVzxmEK6YF5kRA59k7UGKFDEFERKFG
-         3sQnrRUwD03zTx8x+kY+ip9lXsDhSlZNYwgJwEydQQwhnTsQUN2Fzh8mx72Bby56ezpM
-         qoOg==
-X-Forwarded-Encrypted: i=1; AJvYcCW+Pk079neJXiTO2t1W7+4MjgYYBsjoGsvOofEfzp2YaP15wdO9Hu1AepKVvLSAzyrONeaesPsg3LpXlZBoWAYiH64U4E886dJckWg0
-X-Gm-Message-State: AOJu0YygCR/lUDF1q1cnJbZ0UtzdRmHo0/xnVdX2jRvEWPoNpCakPr7M
-	G26hgoDgcH3+rOaiWoyj7OpvZYaE3y7zSqGweP0RjlaCVMWnrEFkQqC6scThAao=
-X-Google-Smtp-Source: AGHT+IG4038ckdSMEAMJ4hwm7hb6L1Az/lWk5+t4b76xF6nJ+U0YUOF672wMYB55K2sy56nhGSTxYg==
-X-Received: by 2002:a5d:64aa:0:b0:33d:3a95:9642 with SMTP id m10-20020a5d64aa000000b0033d3a959642mr3708544wrp.47.1708330434547;
-        Mon, 19 Feb 2024 00:13:54 -0800 (PST)
+        bh=p9MGknvx7gKM1o1+MnDJc2Ovn7fkZrxKQGfjWiijceM=;
+        b=P/OZohYAnIIzt/RJSaRshU+Pj1kSsZ2B7qo2J47rd8hNzPNZiE2DwLlmEsQ+n/PuKg
+         aoeOq5S9oJAr1nLy3rWDigmQ7F1GRtoRizsJnlh5eJ0lIGHYoXfgXDp59dMc6kwvaW95
+         JLgkFq2EDTG5bc1GUuqHpZ3OLfKYcnDx3C+Z7BRUyXbMmg/L0lCsXJsQiacEcPnULQW0
+         QC98KaHR3fT1DMlxb3go0RMT2IaMSOsO1i11yeLFEOYPmBM5dw2qQbuJRPX1Ug4EGV5O
+         IVd5CsZJntzolDHU83Dk6ULNDVJW1xAAKvXUaHN4x8qnB0EQr6L5kkKBkzS1n0ak95O3
+         Ib5g==
+X-Forwarded-Encrypted: i=1; AJvYcCX+wIYxSK4aMV6pQvCNRRin3CCdlZK6Vme1tyudr91hqVkR/G8Nm6zWoZffKU/CthlEExNuDzcmlMLkbB+7SI1gRZdpYpsYpTiiXktm
+X-Gm-Message-State: AOJu0YzT58bvo3YN/vd9Wxpiw8WExftT12Yz3mpKRpqV/9AxgmUx4Oju
+	lJjmUw3pH2O4e1PKNtvLkenVcRJdYD0YTRBNkccbg3P+K0mfjqoKR1xHHzw9aBo=
+X-Google-Smtp-Source: AGHT+IH6eGc6okNeBoJexPf2P4Fodhj5zQ6Bxnzn/yudT2F06lN06XajdvlixTai0kdA53i8AcDfQg==
+X-Received: by 2002:adf:e846:0:b0:33d:3ff3:c8e6 with SMTP id d6-20020adfe846000000b0033d3ff3c8e6mr2375416wrn.17.1708330467350;
+        Mon, 19 Feb 2024 00:14:27 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id co22-20020a0560000a1600b0033d2848046asm7075888wrb.95.2024.02.19.00.13.53
+        by smtp.gmail.com with ESMTPSA id co22-20020a0560000a1600b0033d2848046asm7075888wrb.95.2024.02.19.00.14.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Feb 2024 00:13:54 -0800 (PST)
-Message-ID: <433e89c1-9522-4bfa-8c87-a32e7e62aca8@linaro.org>
-Date: Mon, 19 Feb 2024 09:13:52 +0100
+        Mon, 19 Feb 2024 00:14:26 -0800 (PST)
+Message-ID: <335472bf-7371-4555-bddd-97bb34f73bc3@linaro.org>
+Date: Mon, 19 Feb 2024 09:14:25 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,22 +75,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: arm: qcom,coresight-tpdm: Rename
- qcom,dsb-element-size
+Subject: Re: [PATCH v2 1/2] arm64: dts: rockchip: Add devicetree support for
+ TB-RK3588X board
 Content-Language: en-US
-To: Mao Jinlong <quic_jinlmao@quicinc.com>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach
- <mike.leach@linaro.org>, James Clark <james.clark@arm.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Tao Zhang <quic_taozha@quicinc.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240218094322.22470-1-quic_jinlmao@quicinc.com>
- <20240218094322.22470-2-quic_jinlmao@quicinc.com>
+To: Elon Zhang <zhangzj@rock-chips.com>, heiko@sntech.de, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc: weizhao.ouyang@arm.com, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ devicetree@vger.kernel.org
+References: <20240218065407.652213-1-zhangzj@rock-chips.com>
+ <20240218085314.658223-1-zhangzj@rock-chips.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -136,20 +130,23 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240218094322.22470-2-quic_jinlmao@quicinc.com>
+In-Reply-To: <20240218085314.658223-1-zhangzj@rock-chips.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 18/02/2024 10:43, Mao Jinlong wrote:
-> Change qcom,dsb-element-size to qcom,dsb-element-bits as the unit is
-> bit. There is no tpdm node in any DT as of now. Make this change before
+On 18/02/2024 09:53, Elon Zhang wrote:
+> Add board file for Rockchip Toybrick TB-RK3588X board.
+> 
+> Specification:
+> 	Rockchip Rk3588 SoC
+> 	4x ARM Cortex-A76, 4x ARM Cortex-A55
+> 	8/16GB Memory LPDDR4x
+> 	Mali G610MC4 GPU
+> 	2× MIPI-CSI0 Connector
 
-You should say why. "What" we see from the diff. I keep repeating this
-like a broken record...
-
-This applies to all your patches. Future as well.
-
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Do not attach (thread) your patchsets to some other threads (unrelated
+or older versions). This buries them deep in the mailbox and might
+interfere with applying entire sets.
 
 Best regards,
 Krzysztof
