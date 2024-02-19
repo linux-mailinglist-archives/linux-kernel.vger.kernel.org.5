@@ -1,157 +1,289 @@
-Return-Path: <linux-kernel+bounces-70821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-70822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40213859CC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:23:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E75E1859CC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 08:24:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4812B212F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:23:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7100B282A5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 07:24:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3710208C6;
-	Mon, 19 Feb 2024 07:22:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97788208DF;
+	Mon, 19 Feb 2024 07:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RXn/oV80"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="Kd//NOQC"
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com (mail-db5eur01on2049.outbound.protection.outlook.com [40.107.15.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5150B20DEB
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 07:22:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708327361; cv=none; b=T4wMhggy3+cE19/4uGIqUhEp6XFQgid2B0Pg/ZIkdurmVYyUNcl5fJusDshbNwRyNffuTza4KlJQs9ofYgAvtPoj8hxBSVDCCvhj02qGzVGVJZFvTxhstzwk1Uti53IO/A+AGSoMq850dtF60tv8p8ZbSRhOCSsCT5EnAMohvWI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708327361; c=relaxed/simple;
-	bh=WJoJWc4NJmRDweWqU7/qelFnZ7VDIWAHnqXRxCqaBlI=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=NFTwONQ/NOnFYuZ9i9KhfkufgEgG+E/yut2uJb6QoeyaQroevl6vDLZt8viCIuf3KiqOAXfpxnuaeQRlmhN/L/rvoWJYvnGdlRSawkD7fy4lXyWmFm4Dt0shjccaboA88UAuETKlGHuZ8ETOs+TCnFDL6hNmQt3KCoDWjv2h4T8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RXn/oV80; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708327360; x=1739863360;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=WJoJWc4NJmRDweWqU7/qelFnZ7VDIWAHnqXRxCqaBlI=;
-  b=RXn/oV80x94TSJ93gEGT1btR365fXClSbWJ8q9pktHcja4bw3Gfd/fqI
-   a+pZgGCgAOn+emDp5PCjDRiiaDIICTQHolM/Ckge+uk7NuSF3niln89/X
-   bV5+gCrHHPdgr3aCq0MHw0aOwdl7mvyNTLgTHfzmlMM3c042c+4UZQ409
-   OAgCzeRN0Fk8qmVJNyPky7a1nZz5hhvqoFHSUrlaKPbrXDqHs00mHp/bT
-   RylUSkjz4V9t7VAJoIZCopPA5Iwd4Xpnmk47XnJmlLiFI1qcW/Ca/vqO6
-   rH+ICBZGj3wYDKO5RvrKX6oYHLItsULaT811oiixw7jk4eAs0LutVlmeW
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="13501647"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="13501647"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 23:22:39 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="27576624"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.215.112]) ([10.254.215.112])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2024 23:22:36 -0800
-Message-ID: <2fa8af78-5277-4278-b0e2-8a983dbbab2c@linux.intel.com>
-Date: Mon, 19 Feb 2024 15:22:33 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 344F5208C8;
+	Mon, 19 Feb 2024 07:24:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.15.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708327471; cv=fail; b=S06m601P7M9XJZT4dISFOvk86udbMGLl9Kk6EBtoi2XEMiatKsl3IexZUyNUkHxbIhCOgM1QZPQpytK80VTS1LdO5seXh7gDkk0IPcjPQWi6FnXYDLp+zfBulFUZhqC2eqAwb5JzjYDpjX9rfEfGuduD23Wa/DH4Qn5QasVNQY0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708327471; c=relaxed/simple;
+	bh=bZ9iwa4OC3MkHWZiA2pX1K9YcJG7u+cFKByn+wScEfE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=izBn0Yb7Sf/P05XybGD6jdCGvaygL8xEiq3Hm4avVY0WV5SCmEU0hzD8aucmE/p8eOluhdZlSS1qzIYaZJArLBB8K8afWa/yaP55lWt3Ui0PoLsdxM/Fs60hY9Adrr8UanvaNpzDQbENaoZHqk67/kEMgAF+L0ly2DV8FcFmvWc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=Kd//NOQC; arc=fail smtp.client-ip=40.107.15.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DqJH5NPOKWBeP+d/sE261MLDIfbuNcCOYpip4Sscz9hrZ3MPNFLj5BkG6rU8qkGQsVzLXHQsr+NXuFUCsb6cEN4Ncn4x0GzbmZIDYJLmAma7JUGTl/CNa+h5RNDHF/Z5VQS0yMsxGZvqDmTDfLrxaUTSOXnaDVUVZxYJvMGj4VOofMcY1jkgancRKPRsb2GLUFKgJ2Q/YiieVkMKHKiZDbCS4IBalrQy9nyprj7KtVPKkizpdq4DLPn5xGDRv/H/O5iq9foMr/g0z5yu4i1rUoAi6fPe6e6/cHrZ8nCC6Aei2EjGb8mO5+UmgF1zBFEYbA/xX5BLotVlQqtYYI6DRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1fOlKrhhJREJW+rln1r05pWwcE7CoUF3q80sOghrdO0=;
+ b=LpTeVTCE/MCAjPwE+dPx4p/4tofkd3xS6xeOnWdivr3lX3YhtWE+l2zudmqPZxsPmx/NttqjHY4NsnQLNtTKBmCqdci57HE95NcbFIbLq3xQedr3GP4K5C84X4DBaywhijGfw+NgyVU1OuA8qyofSy6vS3FnMnNsy4kWE1ymmRkN01mkPAHY0597kRM+zKFqkgtt49U4JD4XLgzOrkwmg3I8kzfMFzsDutqaRM0xL6K0SpBv++zYLi7NKF7AY0spB23FNZPTvrXk4yVmZGGsr5QtGrtiX3gIM3FH9b2AVkywscX/eaVcg9aBNR3wC53EkCG5BoxuHAYQ2qNtCMHrVQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1fOlKrhhJREJW+rln1r05pWwcE7CoUF3q80sOghrdO0=;
+ b=Kd//NOQC4VPZBk+/dmcszQItz7l4IwDjaqrMwx+q/yXh/bvWptPcBzTABgrmVOPvt24b9xzs7VVKzeam3FVtEe4uSi3AnSuKBiV/29qzN0MHNtzTUc6v9b/mMEb6jBJWSMRlRZMyM46o/a8gKzuCqmfhzARwSv1830r/Wj/9yRw=
+Received: from DB9PR04MB9452.eurprd04.prod.outlook.com (2603:10a6:10:367::13)
+ by AM9PR04MB7601.eurprd04.prod.outlook.com (2603:10a6:20b:285::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7270.33; Mon, 19 Feb
+ 2024 07:24:25 +0000
+Received: from DB9PR04MB9452.eurprd04.prod.outlook.com
+ ([fe80::4272:e277:dda3:2446]) by DB9PR04MB9452.eurprd04.prod.outlook.com
+ ([fe80::4272:e277:dda3:2446%2]) with mapi id 15.20.7292.029; Mon, 19 Feb 2024
+ 07:24:25 +0000
+From: Sandor Yu <sandor.yu@nxp.com>
+To: Alexander Stein <alexander.stein@ew.tq-group.com>,
+	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>,
+	"andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
+	"neil.armstrong@linaro.org" <neil.armstrong@linaro.org>, Laurent Pinchart
+	<laurent.pinchart@ideasonboard.com>, "jonas@kwiboo.se" <jonas@kwiboo.se>,
+	"jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>, "airlied@gmail.com"
+	<airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
+	"robh+dt@kernel.org" <robh+dt@kernel.org>,
+	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
+	"shawnguo@kernel.org" <shawnguo@kernel.org>, "s.hauer@pengutronix.de"
+	<s.hauer@pengutronix.de>, "festevam@gmail.com" <festevam@gmail.com>,
+	"vkoul@kernel.org" <vkoul@kernel.org>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-phy@lists.infradead.org"
+	<linux-phy@lists.infradead.org>
+CC: "kernel@pengutronix.de" <kernel@pengutronix.de>, dl-linux-imx
+	<linux-imx@nxp.com>, Oliver Brown <oliver.brown@nxp.com>, "sam@ravnborg.org"
+	<sam@ravnborg.org>
+Subject: RE: [EXT] Re: [PATCH v13 4/7] drm: bridge: Cadence: Add MHDP8501
+ DP/HDMI driver
+Thread-Topic: [EXT] Re: [PATCH v13 4/7] drm: bridge: Cadence: Add MHDP8501
+ DP/HDMI driver
+Thread-Index: AQHaV1QsTfsqjPM64Eapj6JNsPkB8bEMnvWAgAS6OOA=
+Date: Mon, 19 Feb 2024 07:24:25 +0000
+Message-ID:
+ <DB9PR04MB94522ED2DB0D32A0792EAB33F4512@DB9PR04MB9452.eurprd04.prod.outlook.com>
+References: <cover.1707040881.git.Sandor.yu@nxp.com>
+ <5bd01470cf971e2385ecd169c3d5ac659a020973.1707040881.git.Sandor.yu@nxp.com>
+ <3549548.iIbC2pHGDl@steina-w>
+In-Reply-To: <3549548.iIbC2pHGDl@steina-w>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DB9PR04MB9452:EE_|AM9PR04MB7601:EE_
+x-ms-office365-filtering-correlation-id: dee72258-9aa3-48a3-67c1-08dc311bcd23
+x-ld-processed: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ a0HsB/y02FxsRatPN9H42C/ro80kDgdQsnWJfWYlqh7YzWTmn4UXkCg1Z2PCl4bxZZS6+exQtOuDE07GKL2VrkHXvYOB8BpmzwdzXpOLnIjfQvaOSE9oZSQIyBeuQzbsjxeKNQMgakdn1zPvuTtjhMVpw2+wcFv1f6rJ2qTDm9ddAolEmVrEsR5z4frtJpd3OqDP54mZR/7RLydNSVTkClPha5p7A/S17l67ll+DfgOROoU+EcYpWXApS6UBTGsybV4AXo2vtvqsA/5IRu8RjNcygSGbg9aq3WrriMxkGfaL9AE5b0iklcxCQfo5roygBxoiU9oPE72BgaqHp/1VK/n4RuH53xbl7gepQqjYtl6O6c4b0x8qGvYHHCZNpaahL/xlS8jEEA0az+hvZBsiH74IakkN5mrpgqaHHXbowmLRIVNWoARnDPUCEv5CVdsG9cg3NbOod4H3zDPdLU63T0seKNNMKKI8MXX1D82PA+R/ex844S/IOM4s9kr6jWEdvFtsytCQOloy7X0ExXihwyOKtCqr+nvs3mzX6avTaB+9qTa5/Uh5Bkkl4oeygmQF89uhIkWgJ1xyObbYPQllZuprIJaELmKJ5COmT33HGuia9TSQJc3XKyPYJYN6USCy
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR04MB9452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(346002)(136003)(366004)(230922051799003)(230273577357003)(186009)(64100799003)(1800799012)(451199024)(55016003)(966005)(45080400002)(71200400001)(478600001)(9686003)(41300700001)(2906002)(5660300002)(4326008)(7416002)(44832011)(52536014)(76116006)(6506007)(316002)(7696005)(66556008)(8936002)(110136005)(54906003)(66946007)(66446008)(64756008)(66476007)(8676002)(83380400001)(66574015)(86362001)(38070700009)(38100700002)(122000001)(33656002)(921011)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?hpItkqBrAa//KvFRd65TFmI0zEmtNGQRsT/AQkf+Lr4CDu93mG9/A8eFwt?=
+ =?iso-8859-1?Q?eQxsqqZmaGLSnfPWqlBbc3Z0p7x2aOQNJl69GoPAOq03RJpMgjMLmU1Ey2?=
+ =?iso-8859-1?Q?TEkqxZLZPaf99vtbjatYe+NrxboZ1yK3oPlpBT9vMKFS72EkA/meisL5kx?=
+ =?iso-8859-1?Q?rip3RUEmeJ7Hs2w5YukVy8hTO4vZHWY0/qVuPBHJr45N6Pu+Upk4ScbQxO?=
+ =?iso-8859-1?Q?11XlzHakP8zcYt4fD40zEPxfkfwasi5XQyypmglm+85hq8PjUH8z52q/qf?=
+ =?iso-8859-1?Q?c8+MEd8OTsYBEpsDW1497iUx/5V2SigHm9cGncc4+QDaNUJrnOTWusXFlo?=
+ =?iso-8859-1?Q?uKig8PUiY6rCW2fMKX4zBqcdgoS9EaEejFDZECEUCw1XO8Cnkj0nN7kqQd?=
+ =?iso-8859-1?Q?XnFNTZUtiwz9f4rB0lYf+eDtOJ9bm2H+Dy2leQ8+GmnHQtEw5ZvCDfhwAd?=
+ =?iso-8859-1?Q?NSeDBZUgmSIPl52c8uOok9suJSTTNirBEtB0iQzLMPSpTCMP064EOb3FQ/?=
+ =?iso-8859-1?Q?+MeJRO1hppp3QFI41CNZIG79UrHuBLSNDS6mkMUJwa/Z0Q1xBU8EiAHzj8?=
+ =?iso-8859-1?Q?jCN+WUHt3i+52yapcknMnZLIu9fgUxl/+phcAY7U5i42Ntg70Irkr5tS1t?=
+ =?iso-8859-1?Q?zGfanYGrjrGag8bi37/Cu5UJeA1A43D0SKWo1MsZIQ5NGjx9F6hsdfleMZ?=
+ =?iso-8859-1?Q?kO6N3nRHFO9eYOcE1JGGp0VhUFL0UNOanPvXOjQ7GLclSYSRURvyJf77mC?=
+ =?iso-8859-1?Q?U/ERH/A13skLw+C90F4BHXJ3Izvj4I1e3ZOntG7/bFrE/e2FSs0uMGRN2S?=
+ =?iso-8859-1?Q?GQKINXWv0bjjDdGta1A381MDFrmxkdUnWG5e2956pdJlY69J4o2agZe6yQ?=
+ =?iso-8859-1?Q?tXMhFQ5G7rEVy4cr0x4zQUo4PHpDx0wuLK4KCBMxt7+Gnv4OrvIAF0Mu/J?=
+ =?iso-8859-1?Q?XQ/bWBEzP1PlX8Dj6szBxSN1/VaMNthAr5qaRKGLiv9Jx8pRwfQqylsH47?=
+ =?iso-8859-1?Q?PLR+j1bNnCWyUr7vaaJMWA9AdwK1XrJ0wFDyj6gdqCXVOUC41m4eivSToj?=
+ =?iso-8859-1?Q?Tw9Bd7wmt8t44NhLKOB0CUV5eO3LrUIShkSTmNOmQokQdsGkVI0r03nhdB?=
+ =?iso-8859-1?Q?52jL18ak4KdYZZGY3qv3UiSDOgzBxifziQemed3QyVIl+DLA8WTdPKH7ir?=
+ =?iso-8859-1?Q?4jtLvi6D+esmOn8rsWGjL3wgjyoXq4bqZNXghTjKCqlwstKeWnt9QKf/Ol?=
+ =?iso-8859-1?Q?xlvE1tCIeo59aXE02+8blsLNovqm0zeY8ipK+6bZBEu2yzq3zZOAdYJrsn?=
+ =?iso-8859-1?Q?L5BcMjzEo4U5F5xTHTbDsutoLlmRKZvdYbJqkEQ+BPCvb2Wa1iLlJx9/W6?=
+ =?iso-8859-1?Q?2ACy1y9O+F5l97B7bNljp30sfCQZCJhywb19lhS0N9KXwjHgkN/QzE6uvM?=
+ =?iso-8859-1?Q?F1qDXm3imlwgrqtVotO+Ydreb4z5HQ9cxzUDhAgt6VcGoATlvG6K1dylwJ?=
+ =?iso-8859-1?Q?bc+s7F4jWMsjowrAnFeSKE1GaGoIQV7rv5F+IaNuXleZ07LAAu3epdjyMO?=
+ =?iso-8859-1?Q?Tmf1Kk80YNd+j+Qzl4HgwMWMdf4fJVajRtIYhdbA3oQLMGb4mo6G6zRwIi?=
+ =?iso-8859-1?Q?i7ddZl1zUeEQs=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, Huang Jiaqing <jiaqing.huang@intel.com>,
- iommu@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] iommu/vt-d: Use device rbtree in iopf reporting path
-Content-Language: en-US
-To: Ethan Zhao <haifeng.zhao@linux.intel.com>, Joerg Roedel
- <joro@8bytes.org>, Will Deacon <will@kernel.org>,
- Robin Murphy <robin.murphy@arm.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Kevin Tian <kevin.tian@intel.com>
-References: <20240215072249.4465-1-baolu.lu@linux.intel.com>
- <20240215072249.4465-3-baolu.lu@linux.intel.com>
- <0da83c5c-0e35-4087-aacf-6831060cab8e@linux.intel.com>
- <e59f6ba0-a289-4c3f-8746-b58f9474a35b@linux.intel.com>
- <be26926a-5843-46c6-a0b9-c51b5d8e29fc@linux.intel.com>
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <be26926a-5843-46c6-a0b9-c51b5d8e29fc@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dee72258-9aa3-48a3-67c1-08dc311bcd23
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Feb 2024 07:24:25.5154
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Y20q7goMgV6w0i/lMVYDHYyv7XMie5UcCNLo3MTT8iq6DzWLwRy6L1dymNdrtpNbh+kOMB8RIBkVQhr2W0eE8A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7601
 
-On 2024/2/19 15:06, Ethan Zhao wrote:
-> On 2/19/2024 2:58 PM, Baolu Lu wrote:
->> On 2024/2/19 14:54, Ethan Zhao wrote:
->>> On 2/15/2024 3:22 PM, Lu Baolu wrote:
->>>> The existing IO page fault handler currently locates the PCI device by
->>>> calling pci_get_domain_bus_and_slot(). This function searches the list
->>>> of all PCI devices until the desired device is found. To improve lookup
->>>> efficiency, a helper function named device_rbtree_find() is introduced
->>>> to search for the device within the rbtree. Replace
->>>> pci_get_domain_bus_and_slot() in the IO page fault handling path.
->>>>
->>>> Co-developed-by: Huang Jiaqing <jiaqing.huang@intel.com>
->>>> Signed-off-by: Huang Jiaqing <jiaqing.huang@intel.com>
->>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->>>> ---
->>>>   drivers/iommu/intel/iommu.h |  1 +
->>>>   drivers/iommu/intel/iommu.c | 29 +++++++++++++++++++++++++++++
->>>>   drivers/iommu/intel/svm.c   | 14 ++++++--------
->>>>   3 files changed, 36 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
->>>> index 54eeaa8e35a9..f13c228924f8 100644
->>>> --- a/drivers/iommu/intel/iommu.h
->>>> +++ b/drivers/iommu/intel/iommu.h
->>>> @@ -1081,6 +1081,7 @@ void free_pgtable_page(void *vaddr);
->>>>   void iommu_flush_write_buffer(struct intel_iommu *iommu);
->>>>   struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain 
->>>> *parent,
->>>>                              const struct iommu_user_data *user_data);
->>>> +struct device *device_rbtree_find(struct intel_iommu *iommu, u16 rid);
->>>>   #ifdef CONFIG_INTEL_IOMMU_SVM
->>>>   void intel_svm_check(struct intel_iommu *iommu);
->>>> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->>>> index 09009d96e553..d92c680bcc96 100644
->>>> --- a/drivers/iommu/intel/iommu.c
->>>> +++ b/drivers/iommu/intel/iommu.c
->>>> @@ -120,6 +120,35 @@ static int device_rid_cmp(struct rb_node *lhs, 
->>>> const struct rb_node *rhs)
->>>>       return device_rid_cmp_key(&key, rhs);
->>>>   }
->>>> +/*
->>>> + * Looks up an IOMMU-probed device using its source ID.
->>>> + *
->>>> + * If the device is found:
->>>> + *  - Increments its reference count.
->>>> + *  - Returns a pointer to the device.
->>>> + *  - The caller must call put_device() after using the pointer.
->>>> + *
->>>> + * If the device is not found, returns NULL.
->>>> + */
->>>> +struct device *device_rbtree_find(struct intel_iommu *iommu, u16 rid)
->>>> +{
->>>> +    struct device_domain_info *info;
->>>> +    struct device *dev = NULL;
->>>> +    struct rb_node *node;
->>>> +    unsigned long flags;
->>>> +
->>>> +    spin_lock_irqsave(&iommu->device_rbtree_lock, flags);
->>>
->>> Though per iommu device rbtree isn't a big tree, given already holds 
->>> spin_lock
->>> why still needs irq off ?
->>
->> I want it to be usable not only in the normal execution flow, but also
->> in the interrupt context, such as for the DMA remapping fault
->> (unrecoverable) reporting path.
-> 
-> Holding rbtree_lock only should work in interrrupt context, I missed 
-> something ?
+Hi Alexander,
 
-No. That will possibly cause dead lock.
+Thanks for your comments,
+get_edid function will be replace by edid_read as community update in the n=
+ext version.
 
-Best regards,
-baolu
+B.R
+Sandor
+
+>
+>
+> Hi Sandor,
+>
+> thanks for the update.
+>
+> Am Sonntag, 4. Februar 2024, 11:21:49 CET schrieb Sandor Yu:
+> > Add a new DRM DisplayPort and HDMI bridge driver for Candence
+> MHDP8501
+> > used in i.MX8MQ SOC. MHDP8501 could support HDMI or DisplayPort
+> > standards according embedded Firmware running in the uCPU.
+> >
+> > For iMX8MQ SOC, the DisplayPort/HDMI FW was loaded and activated by
+> > SOC's ROM code. Bootload binary included respective specific firmware
+> > is required.
+> >
+> > Driver will check display connector type and then load the
+> > corresponding driver.
+> >
+> > Signed-off-by: Sandor Yu <Sandor.yu@nxp.com>
+> > Tested-by: Alexander Stein <alexander.stein@ew.tq-group.com>
+> > ---
+> > v12->v13:
+> > - Explicitly include linux/platform_device.h for cdns-mhdp8501-core.c
+> > - Fix build warning
+> > - Order bit bpc and color_space in descending shit.
+> >
+> > v11->v12:
+> > - Replace DRM_INFO with dev_info or dev_warn.
+> > - Replace DRM_ERROR with dev_err.
+> > - Return ret when cdns_mhdp_dpcd_read failed in function
+> > cdns_dp_aux_transferi(). - Remove unused parmeter in function
+> > cdns_dp_get_msa_misc
+> >   and use two separate variables for color space and bpc.
+> > - Add year 2024 to copyright.
+> >
+> >  drivers/gpu/drm/bridge/cadence/Kconfig        |  16 +
+> >  drivers/gpu/drm/bridge/cadence/Makefile       |   2 +
+> >  .../drm/bridge/cadence/cdns-mhdp8501-core.c   | 316 ++++++++
+> >  .../drm/bridge/cadence/cdns-mhdp8501-core.h   | 365 +++++++++
+> >  .../gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c | 699
+> ++++++++++++++++++
+> >  .../drm/bridge/cadence/cdns-mhdp8501-hdmi.c   | 679
+> +++++++++++++++++
+> >  6 files changed, 2077 insertions(+)
+> >  create mode 100644
+> > drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.c
+> >  create mode 100644
+> > drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-core.h
+> >  create mode 100644
+> drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
+> >  create mode 100644
+> > drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
+> >
+> > [snip]
+> > diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
+> > b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c new file mode
+> > 100644 index 0000000000000..0117cddb85694
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-dp.c
+> > @@ -0,0 +1,699 @@
+> > [snip]
+> > +
+> > +const struct drm_bridge_funcs cdns_dp_bridge_funcs =3D {
+> > +     .attach =3D cdns_dp_bridge_attach,
+> > +     .detect =3D cdns_dp_bridge_detect,
+> > +     .get_edid =3D cdns_dp_bridge_get_edid,
+>
+> Please note that with commits d807ad80d811b ("drm/bridge: add
+> ->edid_read hook and drm_bridge_edid_read()") and 27b8f91c08d99
+> ("drm/bridge: remove ->get_edid
+> callback") the API has slightly changed meanwhile.
+>
+> > +     .mode_valid =3D cdns_dp_bridge_mode_valid,
+> > +     .atomic_enable =3D cdns_dp_bridge_atomic_enable,
+> > +     .atomic_disable =3D cdns_dp_bridge_atomic_disable,
+> > +     .atomic_duplicate_state =3D
+> drm_atomic_helper_bridge_duplicate_state,
+> > +     .atomic_destroy_state =3D drm_atomic_helper_bridge_destroy_state,
+> > +     .atomic_reset =3D drm_atomic_helper_bridge_reset, };
+> > diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
+> > b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c new file mode
+> > 100644 index 0000000000000..e6ed13b9f9ca3
+> > --- /dev/null
+> > +++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8501-hdmi.c
+> > @@ -0,0 +1,679 @@
+> > [snip]
+> > +
+> > +const struct drm_bridge_funcs cdns_hdmi_bridge_funcs =3D {
+> > +     .attach =3D cdns_hdmi_bridge_attach,
+> > +     .detect =3D cdns_hdmi_bridge_detect,
+> > +     .get_edid =3D cdns_hdmi_bridge_get_edid,
+>
+> Please note that with commits d807ad80d811b ("drm/bridge: add
+> ->edid_read hook and drm_bridge_edid_read()") and 27b8f91c08d99
+> ("drm/bridge: remove ->get_edid
+> callback") the API has slightly changed meanwhile.
+>
+> > +     .mode_valid =3D cdns_hdmi_bridge_mode_valid,
+> > +     .mode_fixup =3D cdns_hdmi_bridge_mode_fixup,
+> > +     .atomic_enable =3D cdns_hdmi_bridge_atomic_enable,
+> > +     .atomic_disable =3D cdns_hdmi_bridge_atomic_disable,
+> > +     .atomic_duplicate_state =3D
+> drm_atomic_helper_bridge_duplicate_state,
+> > +     .atomic_destroy_state =3D drm_atomic_helper_bridge_destroy_state,
+> > +     .atomic_reset =3D drm_atomic_helper_bridge_reset, };
+>
+> Please rebase your patch series, thanks.
+>
+> Best regards,
+> Alexander
+> --
+> TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
+> Amtsgericht M=FCnchen, HRB 105018
+> Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
+> http://www.tq-/
+> group.com%2F&data=3D05%7C02%7CSandor.yu%40nxp.com%7Cfc532fc168004f
+> 07439308dc2ebdf280%7C686ea1d3bc2b4c6fa92cd99c5c301635%7C0%7C0%
+> 7C638436640551238910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw
+> MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C0%7C%7C%7C
+> &sdata=3DE1%2Fd8VTcDiXL3uhGDlHz7synQjRD%2BN1hDoHlbB72RiY%3D&reser
+> ved=3D0
+>
+
 
