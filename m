@@ -1,153 +1,103 @@
-Return-Path: <linux-kernel+bounces-71171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71169-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B15F685A199
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:03:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF34785A192
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:02:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E38E61C212CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:03:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9021F22022
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 11:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF96229424;
-	Mon, 19 Feb 2024 11:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0B492C19F;
+	Mon, 19 Feb 2024 11:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="km/R2N0W";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="W4XwrQWP"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iI3AdxuQ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7892EE572;
-	Mon, 19 Feb 2024 11:03:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B7C1C10;
+	Mon, 19 Feb 2024 11:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708340592; cv=none; b=X4yIi37FIG9li3KMlQtidXt+fKxfkQsdxo1TzSZ2KPGb1oKlcd80lb1AlP7awnvy5H28pLDFcwIZiH1E6xRJZCPxs8j/Yp3mBfi3Uv+fbfTTDzMqHz5gOxEN2ogHeLdFQPCh+/4H+ZeNtGNnBdc32YIUrGbOxUDS2sexbV4Yes8=
+	t=1708340521; cv=none; b=HGRPBixG31K7+BlnDrVE8Lg3N3wjMQQ7vH+OwNowV3X0+7FAL1zv0ZdUWMPPzdCYZwpQ51ffQSEEtbgn9D++4f6mJ9omrxedSwiM0EM6Yn1gmHzXFXZlSTTepEI2k+EsMiR8agMRIytkpOGZIn++OJ+sQl8X61p2mvV/GRnz6cU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708340592; c=relaxed/simple;
-	bh=FmJQEyGJLQVLQYwch0n2HMhFM8e+cKsyEMeHqRiQ8SM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ddeTZWuWB+VX4txXf93QEcS2036swhX7Sfa/cK0lRrnkVuje5qhN582pEmz6ARUxxiBVUhzcSWlvpDbG25yu4n/jdejmGXnlrbu8gYcpbFGOo3kDRguy+6MR/20Jm8x0LkW+o84mpmZXpANw3/9r6aVAnuvN+UJGmXp55dMckn4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=km/R2N0W; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=W4XwrQWP; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708340587;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zKDld/uBnZjKtA3ymC1kDB57x1PvjJD6+IsbauqnIRc=;
-	b=km/R2N0WeQl1h7yz5GnViOyv7tHLEwvzYLLabsfcjt2IUYyU2sVbYVViII9pL9a+1hoS6k
-	sHJeBmxpSQEMjJ31AWpD7773/d94TU2p76eVW+0GdnqNLRhSqVoEBJJJIphQSGeouP3Nly
-	Xl4WHudNOWljN1nOdgU1njWe8N7aEw1Daul6PfIhRVGSrIDAdc/KckanTTE/eYIpI1tRjR
-	x/bhGxyNLcrwMnsZGDs/BZKvfIOUwMB6m+/XvPKDxceXwPwlpYrbHDWiRU/PLAkZ3xywjn
-	4YrhVBf2SUNgEYaRzHKGg+BqugSuJkdz0PfPHU0mZ5MVuWYOQ20Ic4NojGByGA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708340587;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zKDld/uBnZjKtA3ymC1kDB57x1PvjJD6+IsbauqnIRc=;
-	b=W4XwrQWPdPbbcWQ5uhHpV6oF0yPIWmY7na5LfqG+OiWCsL3D4e2qkqsujOrvpTnPSkMEKv
-	HZdEgHYk2Jrf0AAA==
-To: Leonardo Bras <leobras@redhat.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Tony
- Lindgren <tony@atomide.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, John Ogness
- <john.ogness@linutronix.de>, Ilpo =?utf-8?Q?J=C3=A4rvinen?=
- <ilpo.jarvinen@linux.intel.com>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, Leonardo Bras <leobras@redhat.com>,
- Florian Fainelli <florian.fainelli@broadcom.com>, Shanker Donthineni
- <sdonthineni@nvidia.com>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/4] irq: Introduce IRQ_HANDLED_MANY
-In-Reply-To: <87zfvwai62.ffs@tglx>
-References: <20240216075948.131372-2-leobras@redhat.com>
- <20240216075948.131372-5-leobras@redhat.com> <87zfvwai62.ffs@tglx>
-Date: Mon, 19 Feb 2024 12:03:07 +0100
-Message-ID: <87v86kaf84.ffs@tglx>
+	s=arc-20240116; t=1708340521; c=relaxed/simple;
+	bh=FYHwUjv0CBOVE/UvV6qkWI5k+uNh+6/RQIoNRoiJaqg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S+cGZ/rTpG2hCZcaYuT0/KpyxyQSCLGNvnhNccGYYxPBPZC/tBgib1Oni+SAYA/2VRpp8yQi89IiDSzpL8DXeAvS6AVTRPx32MDoVb7Zi5ewnjBJ1ZbRF1t/iPece53la1218c6UrgDMn8A87DG+TgxfzP4uIXhVj6aSeHFmqNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iI3AdxuQ; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708340519; x=1739876519;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=FYHwUjv0CBOVE/UvV6qkWI5k+uNh+6/RQIoNRoiJaqg=;
+  b=iI3AdxuQLJ85BdNTv3LccBvTl5WpMvi7xNNIB/S4qC0txlEEhksTTF4t
+   PObXqnZpH7B9civwnocqwQqi7C93tDCK7ntMrdlosEgtv4GHRtZmFZkrR
+   hbPSMYpk0z9IrOc7SQR6DN22A6iklWlgKP08i1akbwVjBrxa435dC7s4x
+   /ZOs19P1TCMAx+2atJl7CfGGimudpfoBiW6s89tAoHFzMM5CkQF7HtsN7
+   bJBRifBbJ+X798YVCRjVfVX+CYt5s7HVfH/oRB8cg1l9HYEvMsSKgdEVY
+   zeHxFy6koLkwkj4IChSaQMcnrJ5v0xh7a4bypUyV8zwLUpOJFFSb9fVMK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="2276106"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="2276106"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 03:01:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="936276332"
+X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
+   d="scan'208";a="936276332"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.199]) ([10.237.72.199])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Feb 2024 03:01:53 -0800
+Message-ID: <d82c8955-6793-7544-0013-1033abd9f1e9@linux.intel.com>
+Date: Mon, 19 Feb 2024 13:03:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v17 00/51] Introduce QC USB SND audio offloading support
+Content-Language: en-US
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Wesley Cheng <quic_wcheng@quicinc.com>, srinivas.kandagatla@linaro.org,
+ mathias.nyman@intel.com, perex@perex.cz, conor+dt@kernel.org,
+ corbet@lwn.net, lgirdwood@gmail.com, andersson@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, Thinh.Nguyen@synopsys.com,
+ broonie@kernel.org, bgoswami@quicinc.com, tiwai@suse.com,
+ robh+dt@kernel.org, konrad.dybcio@linaro.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-sound@vger.kernel.org,
+ linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20240217001017.29969-1-quic_wcheng@quicinc.com>
+ <2024021754-unengaged-saggy-6ab1@gregkh>
+ <96ab6033-2cb9-daa7-ddad-090138896739@linux.intel.com>
+ <2024021922-privatize-runt-495e@gregkh>
+From: Mathias Nyman <mathias.nyman@linux.intel.com>
+In-Reply-To: <2024021922-privatize-runt-495e@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Feb 19 2024 at 10:59, Thomas Gleixner wrote:
-> On Fri, Feb 16 2024 at 04:59, Leonardo Bras wrote:
->
->> In threaded IRQs, some irq handlers are able to handle many requests at a
->> single run, but this is only accounted as a single IRQ_HANDLED when
->> increasing threads_handled.
 >>
->> In order to fix this, introduce IRQ_HANDLED_MANY, so the returned value of
->> those IRQ handlers are able to signal that many IRQs got handled at that
->> run.
+>> Patch 10/10 is based on an old POC patch by me, but it's heavily modified.
 >>
->> Is scenarios where there is no need to keep track of IRQ handled, convert
->> it back to IRQ_HANDLED.
->
-> That's not really workable as you'd have to update tons of drivers just
-> to deal with that corner case. That's error prone and just extra
-> complexity all over the place.
->
-> This really needs to be solved in the core code.
+>> It looks like it does a few minor things that are not optimal, like extra
+>> spinlock/unlock, and wait_for_completion_timeout() with magical timeout value.
+>> I haven't tested this version, but I guess any fixes or cleanups can be done
+>> later on top of it.
+> 
+> I can revert it now if you want, just let me know.
+> 
 
-Something like the uncompiled below should do the trick.
+Maybe reverting it would be better yes.
 
-Thanks,
-
-        tglx
----
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -38,7 +38,8 @@ struct pt_regs;
-  * @affinity_notify:	context for notification of affinity changes
-  * @pending_mask:	pending rebalanced interrupts
-  * @threads_oneshot:	bitfield to handle shared oneshot threads
-- * @threads_active:	number of irqaction threads currently running
-+ * @threads_active:	number of irqaction threads currently activated
-+ * @threads_running:	number of irqaction threads currently running
-  * @wait_for_threads:	wait queue for sync_irq to wait for threaded handlers
-  * @nr_actions:		number of installed actions on this descriptor
-  * @no_suspend_depth:	number of irqactions on a irq descriptor with
-@@ -80,6 +81,7 @@ struct irq_desc {
- #endif
- 	unsigned long		threads_oneshot;
- 	atomic_t		threads_active;
-+	atomic_t		threads_running;
- 	wait_queue_head_t       wait_for_threads;
- #ifdef CONFIG_PM_SLEEP
- 	unsigned int		nr_actions;
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1194,9 +1194,11 @@ irq_forced_thread_fn(struct irq_desc *de
- 	local_bh_disable();
- 	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
- 		local_irq_disable();
-+	atomic_inc(&desc->threads_running);
- 	ret = action->thread_fn(action->irq, action->dev_id);
- 	if (ret == IRQ_HANDLED)
- 		atomic_inc(&desc->threads_handled);
-+	atomic_dec(&desc->threads_running);
- 
- 	irq_finalize_oneshot(desc, action);
- 	if (!IS_ENABLED(CONFIG_PREEMPT_RT))
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -350,6 +350,12 @@ void note_interrupt(struct irq_desc *des
- 				desc->threads_handled_last = handled;
- 			} else {
- 				/*
-+				 * Avoid false positives when there is
-+				 * actually a thread running.
-+				 */
-+				if (atomic_read(&desc->threads_running))
-+					return;
-+				/*
- 				 * None of the threaded handlers felt
- 				 * responsible for the last interrupt
- 				 *
+Thanks
+Mathias
 
