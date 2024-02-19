@@ -1,273 +1,127 @@
-Return-Path: <linux-kernel+bounces-71776-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE27485AA4D
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:48:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8348185AA56
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 18:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F36BE1C217B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:48:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0EDFB249D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 17:49:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F3F4F1F8;
-	Mon, 19 Feb 2024 17:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86ECC47F63;
+	Mon, 19 Feb 2024 17:49:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="0CqQ10OD"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2068.outbound.protection.outlook.com [40.107.244.68])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="h4sRlf5z"
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB0FC4C3DB;
-	Mon, 19 Feb 2024 17:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708364796; cv=fail; b=YO1aVmJqdtt146konyMjP7gmThsPHx07Uem7QLmERqsm35ZRfoZTYVS2O0PN50+HeL+p7MarvCg2EHVtHJE7F+upG1uj6yzsIGI3DRmg9mPmtzvu1QnORlLb6kA8OqFUyQZwGAfJJBJecEBtTH5kA9oqF2cdN3pi5ShouHFG/R4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708364796; c=relaxed/simple;
-	bh=5WkKrr5g217v7TIoQozlMStVoYW6tYiBnQucGNIpWEM=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iwfGy27a9HM20JVI5YEeyICa/EGfS3/COJg3h/AGC1VKqtfnVQIEtXj/b2podZHbSHNP5jH02WcGAf6qG+Cs69A+TOUm0sxmOe8H8KkFG8WPmRjRb8NfJbFF5zkOrD8Qe2mJZ5gaJmmEGw7XuUrBkImkGnIbyuFOneqNnHAeEF0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=0CqQ10OD; arc=fail smtp.client-ip=40.107.244.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VEeP1shtRRd7ab1b4kFCw7EEN39e6Ttamp8jplYijs1ACk/p/R43ethNharm/dRpKyjfpHxQV43EUSdIFp2ie60+E1n6dE10HluihAxcrSG41RZIgO3s+veEnSsMPnAC0/xXv6HOFVNnIQC2Lwb+F+1TPAjoob1pmYJQqSNiywLtthWjlKOBxUVeM/92pKD5AeY0SrIa33lZt2/omCd2bllorYuPM+mELG0ih/VjB11NV76lVpD9PWBAGPvjb1adia7anQebeL9bJb+NaHOF272qAlvNaYshq/z9v3VYaHOSZWcCf0ypILEgTQHA+QChnulLm120DEbzt28mQeHo1Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OCIlscyrZVP8ImE+qjqgUv5nqnzDxNC7BhEip53ddQ0=;
- b=lqqZ0aeV8Cz9+QEkMeMXV0dZ3g0uZTbGDxy5ZhptFQuQgtjWLgbfSYzIa4eiYxZdGwHgxCWL5Jp5fajCtDPpYqg6y4gs9OGsEKqTYARjiH1Z3sAfwSOFv75huan7kfck8fnoRyQPCbJ14gjsAST4rs4Ylh2fkbmwjSxkpg1pQbpbKZWJocLTJ4kt+QXy6fxPcaXEchIMs7YVGj/jKG6NcjfzDXDO5PoOsPT7/bk5zTo0pwQ7G3TmiVMJrnoGT2hD+sVsIvNVUi3P47ba381Dt99qPKTTOOalT3nyjIAvbw33LNsTVPkSDYA7/jXvabTL9pgJU8mlJOCvheScGusspw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OCIlscyrZVP8ImE+qjqgUv5nqnzDxNC7BhEip53ddQ0=;
- b=0CqQ10OD+OVmth0h/GKK+TlRJUJkJ5qc43IqG2lxc6kq/8MeyLb1WKc4HyUGj8RxvRDBu381RML6TPFlxpKu8jyEGHPP8UnPTgJCNcHmMeP9ABlZRF5lS52hhJJhjUWRlbfX/eLy1csUYPkeXVug2cm9/uRE9WKGKflGqlWWE/Q=
-Received: from DS7PR03CA0292.namprd03.prod.outlook.com (2603:10b6:5:3ad::27)
- by PH7PR12MB8108.namprd12.prod.outlook.com (2603:10b6:510:2bc::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.19; Mon, 19 Feb
- 2024 17:46:30 +0000
-Received: from CY4PEPF0000EE32.namprd05.prod.outlook.com
- (2603:10b6:5:3ad:cafe::11) by DS7PR03CA0292.outlook.office365.com
- (2603:10b6:5:3ad::27) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39 via Frontend
- Transport; Mon, 19 Feb 2024 17:46:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB03.amd.com; pr=C
-Received: from SATLEXMB03.amd.com (165.204.84.17) by
- CY4PEPF0000EE32.mail.protection.outlook.com (10.167.242.38) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7292.25 via Frontend Transport; Mon, 19 Feb 2024 17:46:30 +0000
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 19 Feb
- 2024 11:46:28 -0600
-Received: from xsjtanmays50.xilinx.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Mon, 19 Feb 2024 11:46:27 -0600
-From: Tanmay Shah <tanmay.shah@amd.com>
-To: <andersson@kernel.org>, <mathieu.poirier@linaro.org>,
-	<robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-	<conor+dt@kernel.org>, <michal.simek@amd.com>, <ben.levinsky@amd.com>,
-	<tanmay.shah@amd.com>
-CC: <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v11 4/4] remoteproc: zynqmp: parse TCM from device tree
-Date: Mon, 19 Feb 2024 09:44:37 -0800
-Message-ID: <20240219174437.3722620-10-tanmay.shah@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240219174437.3722620-1-tanmay.shah@amd.com>
-References: <20240219174437.3722620-1-tanmay.shah@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8771544C8D;
+	Mon, 19 Feb 2024 17:49:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708364971; cv=none; b=c1OBW3QoofEwpzeZKmFnJ0WiOmSGaXh7rn1D4yFmOY4lQNdz+pCgTQ9EPOk11oAR/O5p4CcikEHFC0+5Y+FDI2YWnnMgYm2Wr7VecEfPDu2Az687pd5Oh2eaJMMWeO/ADN27sNCjmH7fggaxJEH7fj9W3KGxuyJla/PKehSObkw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708364971; c=relaxed/simple;
+	bh=hPupRt57+r+Pl0dfVnsjq1GsNhHpCJ6eXReICe+eDDo=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=elpbcyqsRDbiOr7y+H9F8/zr0K9L/Lw2MV71f9DXzp5Iab4noMbNf/+EsuBzCXnnx/wBBZAl8XCPuQkC4zDBC26O8gEaBOyge3+r11CUbighCudMlQM07tGSVRWvOfccWZu1xXMquPTqmch5k3CBR5Sg70B64QBuJA6q0pYnH9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=h4sRlf5z; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
+	t=1708364915; x=1708969715; i=markus.elfring@web.de;
+	bh=hPupRt57+r+Pl0dfVnsjq1GsNhHpCJ6eXReICe+eDDo=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=h4sRlf5zIV+QWDila5ohfglWmS12NfxX6Wx6NvhudyKq05oHZRWmmvB+yQAl/USd
+	 s/hF88fZLogXlVoPr9rYZcV6U1BvLPtgrwOs3I0XIdBFv8XpCNCNY3EEijkJj1DzY
+	 5VvHfB+6tRpIy0Tq9+g7oAj5CiRYslmyzxurJVIsHN3Kc9uYA8tBa3N1Mp5L6Y/wr
+	 oucP7TurufLy2QMHeMn/SgfhJjg31IVk1/FHtcdSB/Axxv9EWjjleNaSPrJeU4eX5
+	 oZ7w/z6ZtPYAINIoef5Lp0bfUVTHb8xQlzM7tiiHXC7yK1h1ujvgMvoDn/CvIgI7W
+	 Yu6xFw2F9eBfP/W1YQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.80.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M2xrs-1rfQbv2m5c-003JhM; Mon, 19
+ Feb 2024 18:48:35 +0100
+Message-ID: <c95f5ff3-8dad-4302-9384-92a9b83f7bdc@web.de>
+Date: Mon, 19 Feb 2024 18:48:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE32:EE_|PH7PR12MB8108:EE_
-X-MS-Office365-Filtering-Correlation-Id: 63389c6f-59ce-43a5-e4f2-08dc3172b460
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yQWg4Cs7Pw7oNJH8QMCG5TuMsroAaWCGgBl5RkqX8Xtwt0FDPbAWp5fmMgQogGvTvzmSjNFdPCg+GklLIWAY8DgjC/lbdJjapxRGFbpHfYK2PXshyyqntW8NriunZL+h1FtGr8FkqMIm0Q6Tiv5avlhfcnIGJa3Hh7JtJCfp50tRCyCaluI9Mhre94NQJyz8PRfjPiRhF6t0NiEjMhmuFcLYOGzuX0hOGlX1vVMRQ+sPAla1RnWCwoA/ya2z6rVzritR6abBlSTHDBQG3welxQV9ZOGK5EkyrrW8PTIgTiron2QK5wRPVeTEqRpLkU8L5QPNcVpKsHEUG1taxg7tUz25C8SgohbdRmlrXbtzmifotE+qeiQ1Hm3Ka8POYJGGa7XxChmdJRhKY8Gtj60hR5Adnbwi5nqBe4e5ef6wKz8Bjm24Zm3C8ZabHc3Pqbsz7d6OUYhHxWOK491C4a1I8t3EwDoFdRtZL0gqqIzTS3S7stuL9OmxVOtHMy6sXs/5+HOdGj3Xq1YBWaZhOaKbJovB3iBqtl8iwzG5q0lw15U0FbqnkEbueKvVV0bNcldCTrY9zRBozm9R1DdM/5tOE7chMq0viLDcGyEqIvcdvr2N265O3/l8tvIZFW/G23RC7S1X3AJf2UCQjssZE1SjS9+cgPOF788Kip9dUyefYhY=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB03.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(46966006)(40470700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Feb 2024 17:46:30.0799
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63389c6f-59ce-43a5-e4f2-08dc3172b460
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB03.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE32.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB8108
+User-Agent: Mozilla Thunderbird
+To: Johan Hovold <johan+linaro@kernel.org>, freedreno@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+ linux-arm-msm@vger.kernel.org, kernel-janitors@vger.kernel.org,
+ Andrzej Hajda <andrzej.hajda@intel.com>,
+ Bjorn Andersson <andersson@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
+ David Airlie <airlied@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>,
+ Neil Armstrong <neil.armstrong@linaro.org>, Robert Foss <rfoss@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Vinod Koul <vkoul@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Abhinav Kumar <quic_abhinavk@quicinc.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Jonas Karlman <jonas@kwiboo.se>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Kuogee Hsieh <quic_khsieh@quicinc.com>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Rob Clark <robdclark@gmail.com>
+References: <20240217150228.5788-2-johan+linaro@kernel.org>
+Subject: Re: [PATCH 1/6] drm/bridge: aux-hpd: fix OF node leaks
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240217150228.5788-2-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:1qY8TG6XGBPBySkXD9Iw+B/jMk+ITC9FUkKiHaIFz/AtRCFm3X8
+ A2bG3gibnYIc7UfT5py0ZV3IHcRAAwqod7yJen0dD22Od/rMMXKMtv4O3ehHFd6NK1O47oF
+ 2FKhSK+MFr0qgPhK4sp6Gvv75D7So3Dsd6VTfJ4FGrbLdu71hXEBz4h4bEnOqoDzSyVLUQM
+ FFo2segx5J963ehK0Nyqg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Vt1j2p9N3tU=;Y5Fkv24B75ZRsEO6v+JeViz6QDS
+ Z0Qr1vSndEAhOcBQzzzF9Hc+zTH8Lh5ACQIDs7Em43y0RsMfANmO66fe8KzHagSpTU3nCS9yw
+ seqRMXtdrL7zS+FYfxRWVQMh2n+AW0LD8yuU/LvcAOqSzpZuAxCp9sB894cWb6Vs/KQwhcvix
+ 0c0MCspFvzytZ8Z/VmjJpOa6U7u79EUFZbSTMcXdtOidhEyGaXoD1ed1lSk72ZHY4WrxBcoIG
+ AQDpd7AAX8XoGPbGzDh8DSIIf76R1xfHsRz/IWtBKre8C5hyOZibsT6rlCWZf1Hn4OY8nyGe8
+ 0R7jtfGDhFTNaLob/euJ4Xouo1S6JDEo6roUqqRQhLm+eihsK/1yoocr3e4TN5EfooNR/mqlb
+ JU0s2ZXbFHxS1HxFt10qTR2Q3UBDpjnHxaf0nc6H7jpfWpYApArkm5d6/CArQHWMYRyHggilo
+ NOJYAzpbA7OAaB9NNxId1wvcwZvrTgkzAeabC2c5HsL0UzNsbWqKbMMceESmfn72wOIfsQIsP
+ L1S6NcAESVAnTYRBVYmDfWpuRiWfiWzh6aw9JFeF6HLm6Y4ajY/9ve+rE1vwM2zw9Na/oA3vn
+ fbfuZnuDVcd6HgPLX6VmhUXnUzA/O+87vE3/mjhRZ30qPnFNmB7/gDo+4lkRApUIZ+Y5SsU8T
+ C/RmhXE33yy5bOoTU1jR3W+iZ1ylFub+AO8utosVVJ5xfLspRIaoR6ptLogpbtO8A+duLEl5g
+ BTecZA4H8EdbrwYdstFYfumSnHWDkijS5WNqggvyMOhheue05/XZGimtzonJucoBOFIY89JRK
+ mjveQA3OLbiH8J7EvTIIAlcAE3cn0wtcE7uXKqhPCSnq8=
 
-ZynqMP TCM information was fixed in driver. Now ZynqMP TCM information
-is available in device-tree. Parse TCM information in driver
-as per new bindings.
+> The two device node references taken during allocation need to be
+> dropped when the auxiliary device is freed.
+=E2=80=A6
+> +++ b/drivers/gpu/drm/bridge/aux-hpd-bridge.c
+=E2=80=A6
+> @@ -74,6 +75,8 @@ struct device *drm_dp_hpd_bridge_register(struct devic=
+e *parent,
+>
+>  	ret =3D auxiliary_device_init(adev);
+>  	if (ret) {
+> +		of_node_put(adev->dev.platform_data);
+> +		of_node_put(adev->dev.of_node);
+>  		ida_free(&drm_aux_hpd_bridge_ida, adev->id);
+>  		kfree(adev);
+>  		return ERR_PTR(ret);
 
-Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
----
+The last two statements are also used in a previous if branch.
+https://elixir.bootlin.com/linux/v6.8-rc5/source/drivers/gpu/drm/bridge/au=
+x-hpd-bridge.c#L63
 
-Changes in v11:
-  - Remove redundant initialization of the variable
-  - return correct error code if memory allocation failed
+How do you think about to avoid such a bit of duplicate source code
+by adding a label here?
 
- drivers/remoteproc/xlnx_r5_remoteproc.c | 112 ++++++++++++++++++++++--
- 1 file changed, 107 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
-index 42b0384d34f2..d4a22caebaad 100644
---- a/drivers/remoteproc/xlnx_r5_remoteproc.c
-+++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
-@@ -74,8 +74,8 @@ struct mbox_info {
- };
- 
- /*
-- * Hardcoded TCM bank values. This will be removed once TCM bindings are
-- * accepted for system-dt specifications and upstreamed in linux kernel
-+ * Hardcoded TCM bank values. This will stay in driver to maintain backward
-+ * compatibility with device-tree that does not have TCM information.
-  */
- static const struct mem_bank_data zynqmp_tcm_banks_split[] = {
- 	{0xffe00000UL, 0x0, 0x10000UL, PD_R5_0_ATCM, "atcm0"}, /* TCM 64KB each */
-@@ -757,6 +757,103 @@ static struct zynqmp_r5_core *zynqmp_r5_add_rproc_core(struct device *cdev)
- 	return ERR_PTR(ret);
- }
- 
-+static int zynqmp_r5_get_tcm_node_from_dt(struct zynqmp_r5_cluster *cluster)
-+{
-+	int i, j, tcm_bank_count, ret, tcm_pd_idx, pd_count;
-+	struct of_phandle_args out_args;
-+	struct zynqmp_r5_core *r5_core;
-+	struct platform_device *cpdev;
-+	struct mem_bank_data *tcm;
-+	struct device_node *np;
-+	struct resource *res;
-+	u64 abs_addr, size;
-+	struct device *dev;
-+
-+	for (i = 0; i < cluster->core_count; i++) {
-+		r5_core = cluster->r5_cores[i];
-+		dev = r5_core->dev;
-+		np = r5_core->np;
-+
-+		pd_count = of_count_phandle_with_args(np, "power-domains",
-+						      "#power-domain-cells");
-+
-+		if (pd_count <= 0) {
-+			dev_err(dev, "invalid power-domains property, %d\n", pd_count);
-+			return -EINVAL;
-+		}
-+
-+		/* First entry in power-domains list is for r5 core, rest for TCM. */
-+		tcm_bank_count = pd_count - 1;
-+
-+		if (tcm_bank_count <= 0) {
-+			dev_err(dev, "invalid TCM count %d\n", tcm_bank_count);
-+			return -EINVAL;
-+		}
-+
-+		r5_core->tcm_banks = devm_kcalloc(dev, tcm_bank_count,
-+						  sizeof(struct mem_bank_data *),
-+						  GFP_KERNEL);
-+		if (!r5_core->tcm_banks)
-+			return -ENOMEM;
-+
-+		r5_core->tcm_bank_count = tcm_bank_count;
-+		for (j = 0, tcm_pd_idx = 1; j < tcm_bank_count; j++, tcm_pd_idx++) {
-+			tcm = devm_kzalloc(dev, sizeof(struct mem_bank_data),
-+					   GFP_KERNEL);
-+			if (!tcm)
-+				return -ENOMEM;
-+
-+			r5_core->tcm_banks[j] = tcm;
-+
-+			/* Get power-domains id of TCM. */
-+			ret = of_parse_phandle_with_args(np, "power-domains",
-+							 "#power-domain-cells",
-+							 tcm_pd_idx, &out_args);
-+			if (ret) {
-+				dev_err(r5_core->dev,
-+					"failed to get tcm %d pm domain, ret %d\n",
-+					tcm_pd_idx, ret);
-+				return ret;
-+			}
-+			tcm->pm_domain_id = out_args.args[0];
-+			of_node_put(out_args.np);
-+
-+			/* Get TCM address without translation. */
-+			ret = of_property_read_reg(np, j, &abs_addr, &size);
-+			if (ret) {
-+				dev_err(dev, "failed to get reg property\n");
-+				return ret;
-+			}
-+
-+			/*
-+			 * Remote processor can address only 32 bits
-+			 * so convert 64-bits into 32-bits. This will discard
-+			 * any unwanted upper 32-bits.
-+			 */
-+			tcm->da = (u32)abs_addr;
-+			tcm->size = (u32)size;
-+
-+			cpdev = to_platform_device(dev);
-+			res = platform_get_resource(cpdev, IORESOURCE_MEM, j);
-+			if (!res) {
-+				dev_err(dev, "failed to get tcm resource\n");
-+				return -EINVAL;
-+			}
-+
-+			tcm->addr = (u32)res->start;
-+			tcm->bank_name = (char *)res->name;
-+			res = devm_request_mem_region(dev, tcm->addr, tcm->size,
-+						      tcm->bank_name);
-+			if (!res) {
-+				dev_err(dev, "failed to request tcm resource\n");
-+				return -EINVAL;
-+			}
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * zynqmp_r5_get_tcm_node()
-  * Ideally this function should parse tcm node and store information
-@@ -835,9 +932,14 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
- 	struct zynqmp_r5_core *r5_core;
- 	int ret, i;
- 
--	ret = zynqmp_r5_get_tcm_node(cluster);
--	if (ret < 0) {
--		dev_err(dev, "can't get tcm node, err %d\n", ret);
-+	r5_core = cluster->r5_cores[0];
-+	if (of_find_property(r5_core->np, "reg", NULL))
-+		ret = zynqmp_r5_get_tcm_node_from_dt(cluster);
-+	else
-+		ret = zynqmp_r5_get_tcm_node(cluster);
-+
-+	if (ret) {
-+		dev_err(dev, "can't get tcm, err %d\n", ret);
- 		return ret;
- 	}
- 
--- 
-2.25.1
-
+Regards,
+Markus
 
