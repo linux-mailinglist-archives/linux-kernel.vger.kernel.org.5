@@ -1,117 +1,96 @@
-Return-Path: <linux-kernel+bounces-71349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-71350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3DC685A3D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:52:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC90385A3D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 13:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 604AC280DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:52:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D7111F23BEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 12:52:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3592E859;
-	Mon, 19 Feb 2024 12:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DD1B2E85A;
+	Mon, 19 Feb 2024 12:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i7c1+v65"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="efSH1iWp"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B0B29408;
-	Mon, 19 Feb 2024 12:51:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E43942E844
+	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 12:52:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708347120; cv=none; b=OWNTF0Knvx7d32b/FrTN6Jtq2BknMYME8xTVs9TG7XVSm1nrOKphoZaWJw0xhGTgSMGSzBCkBBtigqbaTT4CBpM4Eeya8UThkfAmgpz/f3wFW+qPZseNHnQnSeeMZs9166ZVBLCDpHkKYlyNiWdtut/c2SFS8obRzWL+eWx2qrU=
+	t=1708347151; cv=none; b=B2iX62Y0YZ+AorreLZeCELMAgdeujbHzDnRgXsVQuNWbeeB94QSB44GSK3A5q9dOf825AHtg2uFqgvdM/cWFMykBwVmqA1wajrqPmdeqjuOrtJPhKJTy+68cpfSJJOByrwniXE3Uou6WHcSCbg9kKFl7x9l1x+u9OaJKhEJqR9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708347120; c=relaxed/simple;
-	bh=x2tSeZqCvSLh48WjR/1aaEIXZ1DQ5VUPkspUWEFkPOw=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=a1X4NC7LZYsjFVDOQGbNi3b+ZrWQKuAzdt4/dXVbyEYH9jkWuwgrL5yFsE05dN4WoLVBtWg7rf3Mz0g7tff/nCXXrIRYbufYDNYx5BOT/o5fRXVc7gjH92m6ppQcP+wm3WVbmScJ4TeCjizb2Nxk8DHu5Fnz2x88VYNtsme7kgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i7c1+v65; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708347118; x=1739883118;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=x2tSeZqCvSLh48WjR/1aaEIXZ1DQ5VUPkspUWEFkPOw=;
-  b=i7c1+v65C8C7H+GB6fU52O7MYTOKs9pSrXj1lOJdmI/NTF6qkyi66O9s
-   sJaYfo0laSD+C2V2bqojbP2xoYZmyP7pCBX8rmPrT/CcleFISWUw2FKT9
-   iM9tEUuZpyp1QxqRY8LJuds2jeqz17sSsDEoZgMQQhLofgML5SBMwUtug
-   B/qklmAIGGS5BFHDxn/vXu6JyJCbIQ2wz7lHudT2DiAlC9c1putsIvssK
-   YQhUoCZkpikjK6nDbBVy27SrIUV1wRsJ2WqhMRqUKNxtHkaRhEcuIlm8E
-   9/4OEXkEIG1iNLVfqHEVHeIDr5mNx7EP6YvFU9hTuhuO9f1Qj/FVqw1J7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10988"; a="13822552"
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="13822552"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 04:51:57 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,170,1705392000"; 
-   d="scan'208";a="4387476"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.246.48.18])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 04:51:56 -0800
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Mon, 19 Feb 2024 14:51:48 +0200 (EET)
-To: Gergo Koteles <soyer@irl.hu>, Hans de Goede <hdegoede@redhat.com>
-cc: Ike Panhc <ike.pan@canonical.com>, platform-driver-x86@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/x86: ideapad-laptop: support Fn+R dual-function
- key
-In-Reply-To: <531e85d73c1926161eb15f8900ea77aade394b6f.camel@irl.hu>
-Message-ID: <29ed8a8e-09f5-ec43-11bd-7ddd12ce08f8@linux.intel.com>
-References: <0cdbc0e6eb65e160384ae0ed152e7de3ded1d9d5.1707604991.git.soyer@irl.hu>  <3b6a7bba-47a5-469c-aac1-5574ad78dadf@canonical.com> <531e85d73c1926161eb15f8900ea77aade394b6f.camel@irl.hu>
+	s=arc-20240116; t=1708347151; c=relaxed/simple;
+	bh=oFTNQdLe9IZPhk9GU/tAEuzjPFGM/mjuC7YNdKT5FeM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=o+HgGoc2gcqUMb6K2UuXwjBF2n7QTreoInztM7gyvHRVzrQVd1ZK8k4ycis+ELUBapyRCwNisJch4sSZxRkYdqzjWibIypZQocEv6shqs5/7bXGr56P8TZzSEa2NIxDbqg80cab6hU3OWtdcETBDl/5VaR/t75803FQy1FsaJzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=efSH1iWp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 045B9C433F1;
+	Mon, 19 Feb 2024 12:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708347150;
+	bh=oFTNQdLe9IZPhk9GU/tAEuzjPFGM/mjuC7YNdKT5FeM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=efSH1iWpvJ2lvF7CV+Lz23JHIj5dcAdE4JHFDSdbVVPeBq37vZ0Iix8QV+WOPSUbI
+	 oEPF49HuEbvx3+hUohbXwBMHPVcTTMoKW/0bPVPUxcfCCBC6tScCjrMdbWxjAr08Z+
+	 T7LXUbcCv3c838J1dGlajH3Wp7l5R9WzroiChxC+U9ucIqJsndB4bmwO14/gFFfkbq
+	 LnG3U/QIJomnz+zKMZaWjl/7snmBMGqsI/CJ6aorh9P4g+l+rDLuK2ksBK6eqxr1iP
+	 ejYdCIPHxqPYKqS7kQGRM0otcMxj9mLf0csMo3iPDvaE4sSmzl6/dlH9F7uZKLi7q8
+	 RSGfihMtiW+/g==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Samuel Holland <samuel.holland@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>
+Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Samuel
+ Holland <samuel.holland@sifive.com>
+Subject: Re: [PATCH 3/7] riscv: kprobes: Use patch_text_nosync() for insn slots
+In-Reply-To: <20240212025529.1971876-4-samuel.holland@sifive.com>
+References: <20240212025529.1971876-1-samuel.holland@sifive.com>
+ <20240212025529.1971876-4-samuel.holland@sifive.com>
+Date: Mon, 19 Feb 2024 13:52:27 +0100
+Message-ID: <87a5nwfwfo.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 19 Feb 2024, Gergo Koteles wrote:
-> On Mon, 2024-02-19 at 10:39 +0800, Ike Panhc wrote:
-> > On 2/11/24 06:51, Gergo Koteles wrote:
-> > > According to the manual, Fn+R adjusts the display refresh rate.
-> > > Map Fn+R to KEY_DISPLAYTOGGLE.
-> > > 
-> > > Signed-off-by: Gergo Koteles <soyer@irl.hu>
+Samuel Holland <samuel.holland@sifive.com> writes:
 
-> > > +++ b/drivers/platform/x86/ideapad-laptop.c
-> > > @@ -1091,6 +1091,8 @@ static const struct key_entry ideapad_keymap[] = {
-> > >  	{ KE_KEY,	0x07 | IDEAPAD_WMI_KEY, { KEY_HELP } },
-> > >  	{ KE_KEY,	0x0e | IDEAPAD_WMI_KEY, { KEY_PICKUP_PHONE } },
-> > >  	{ KE_KEY,	0x0f | IDEAPAD_WMI_KEY, { KEY_HANGUP_PHONE } },
-> > > +	/* Refresh Rate Toggle (Fn+R) */
-> > > +	{ KE_KEY,	0x10 | IDEAPAD_WMI_KEY, { KEY_DISPLAYTOGGLE } },
-> > >  	/* Dark mode toggle */
-> > >  	{ KE_KEY,	0x13 | IDEAPAD_WMI_KEY, { KEY_PROG1 } },
-> > >  	/* Sound profile switch */
-> > 
-> > Acked-by: Ike Panhc <ike.pan@canonical.com>
-> > 
-> > BTW on which ideapad we need this patch?
-> > 
-> 
-> Oh, I somehow missed that. I found it on a Yoga 7 14ARB7.
-> 
-> Newer Yogas and Legions with 60Hz/90Hz displays have this refresh rate
-> toggle feature.
-> 
-> I'm wondering if this would be worth a new KEY_REFRESH_RATE_TOGGLE
-> event code? 
-> 
-> KEY_DISPLAYTOGGLE is used to toggle the LCD on/off in other drivers.
-> 
-> What do you think?
+> These instructions are not yet visible to the rest of the system,
+> so there is no need to do the whole stop_machine() dance.
+>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+>
+>  arch/riscv/kernel/probes/kprobes.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probe=
+s/kprobes.c
+> index 2f08c14a933d..cbf8197072bf 100644
+> --- a/arch/riscv/kernel/probes/kprobes.c
+> +++ b/arch/riscv/kernel/probes/kprobes.c
+> @@ -28,9 +28,9 @@ static void __kprobes arch_prepare_ss_slot(struct kprob=
+e *p)
+>=20=20
+>  	p->ainsn.api.restore =3D (unsigned long)p->addr + offset;
+>=20=20
+> -	patch_text(p->ainsn.api.insn, &p->opcode, 1);
+> -	patch_text((void *)((unsigned long)(p->ainsn.api.insn) + offset),
+> -		   &insn, 1);
+> +	patch_text_nosync(p->ainsn.api.insn, &p->opcode, 1);
+> +	patch_text_nosync(p->ainsn.api.insn + offset,
+> +			  &insn, 1);
 
-At least to me it felt like an abuse of KEY_DISPLAYTOGGLE because it's 
-obviously different. But since there was existing, similar use for it 
-already, I didn't push back on it but took your patch.
+Nit: 100 chars lines!
 
--- 
- i.
+Nice find!
 
+Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
 
