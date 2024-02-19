@@ -1,495 +1,169 @@
-Return-Path: <linux-kernel+bounces-72135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C7685AFD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:41:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A54A585AFD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:45:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D73728244B
-	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:41:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 300B0B217D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 19 Feb 2024 23:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A0A356B86;
-	Mon, 19 Feb 2024 23:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5161F56B74;
+	Mon, 19 Feb 2024 23:44:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bDjK1He+"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PgEsfXpQ"
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857285676F
-	for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:41:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AE0C537F6;
+	Mon, 19 Feb 2024 23:44:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708386095; cv=none; b=g5iILiOUHhZChfyfj5KrrUViTecRTptT1nvfR+CvAwqlER2hBL5v7IWZlbW80SVfu4t5jqvJaIFUKPe4Ib9cEf10dJR0jkoGq4gnfrKsJihTQYQGmgWn/hsFGPAgBbHWD1Ycdhr677xGDsWW91juhZvPzMntU2V0khgLCsvS5BU=
+	t=1708386292; cv=none; b=HC3CkeyMsrLxM/gXgOf3F5f079OkdC3xUl9vROXIpCCG9wiHdc3eT/Qu/H1tTPXAJGvznqk06fpPY/E+fc3BO+aLXqkMORuwrT/2I2ia6ABexIjEbpI54diod0iaQ83dmfuCK3VOfLchhfY4NeFvwEnc7j0R9NCFrzSJhEH3SG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708386095; c=relaxed/simple;
-	bh=CgLaPcrJ8UuZe99Nzs2aIaX8FJubBiNyxJ8PhVcKrRg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QuX878MKEd01Y1aS54rLUfu5XAG9OelF7qDLXRAu5OUW2pwzIT2IQYm73jjyqYY1R0EGAIe44JK2Lzup3qu1HvHxkfHueyocToEaXFJTZKmxazrg/0XK2sBVsrOLdXhdKlA8yGFQ3paMWEr9DsrAhoJH8wG2YW6whryNkJwCRE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bDjK1He+; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1d7431e702dso47457025ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 15:41:31 -0800 (PST)
+	s=arc-20240116; t=1708386292; c=relaxed/simple;
+	bh=8QtiyWrWfuzQjwuwyJxh0N9o8CzHsc9182ryunCiVNA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ovTp/aKUHVeGAGnV05zSLoeIZPq3vsqyAktR7U9S+eLF8xZnRRduMgCoa8VP7QsmEWgRVuYDEFUGyFBNIdD05yTsQcjDdbXdRSal0O7SQ52wEgK8s3UEtg2wZil6MQy1Bs1iNVO8UFKobwX1rv5GtxnArYbEuqle2dXlZgwmtEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PgEsfXpQ; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e22e63abf1so1419073b3a.3;
+        Mon, 19 Feb 2024 15:44:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1708386091; x=1708990891; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Rg+sHDVqNfA4kI4Nj60RArjG0KvQeKNF7H5zDOdEbI=;
-        b=bDjK1He+KO88fRq0Mid8V33aWi7vOCPepyXIb15wSPKnICL6OpDzoRk4PHFXEl734O
-         mZY+w/estbASSgnDPU04WgmNY2UxfX8eL6iZKjOBj+IRHNHO1SXHgwboagZc5yb6e6xj
-         DvpDTo7MDK4pyykwKaJc5c5+pbx14V9h8s2Oo=
+        d=gmail.com; s=20230601; t=1708386290; x=1708991090; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1aJuW6j9tgwUyJl9DgLg8w9vuSaZM6Q1DPHNzf8iOI=;
+        b=PgEsfXpQSBJGfS7CcmB+ywPMeveehd45br/RyVassjYKBgRVhzFT78iKQ1kxiojPxo
+         ArpMGUmKBZpq6dFd9aHo0u6qn4jFuXd/9rpTJfZM4uGyIklIpc/3cyHnDzB4vfDNZQ+4
+         11X/EOs/uKZE99dzXggcOEsc0HbiYhdhhJj226rh+5CaQJj4cO82fgBPCBjaZur4c1PF
+         o4UB4V4nYQ7t03Lgf8rMnBHhJnC1qVFYyRGwHQ4+uhDz8+0Yq16m7HYfuDVBko7hcztG
+         unTdHioSjEZ8GTDGrU0h0tVwlWsogbEwipcBx8cL3lSzBCegqJcskwyhIgp97MhBS90J
+         fffg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708386091; x=1708990891;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1708386290; x=1708991090;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3Rg+sHDVqNfA4kI4Nj60RArjG0KvQeKNF7H5zDOdEbI=;
-        b=nawXkzz9VJ+abzhsdQpnGOTZNcatdv7zYvHif7L5TSnbfQ0H08U04KwwUkBhBu528P
-         0Dot9nev0zKIYs+IIWucZb/T5IrHmU9nq/EIdYW8YS7vbj0SsVW5WS5DPrdIzECtX1u0
-         A2Yh59sboTwcVN0+bBRoC+oej8LSGCfcdL9uAJsIRq4fqZ4WJ1mdcT/ZI8hP+aYvIT2Q
-         ShPHAQPagFVZtw05v3AYxIF3ysLN2uRNYZmsOlqQZMLOWhz5EhUoQTcrn5syPoXwJFcO
-         IYUW/BKsHA/ioxJgOi7uNiWW88XgjY6wc6CSSpAHPKe3eqtbA2ix+3LL7o4dp/CayDEh
-         M62g==
-X-Forwarded-Encrypted: i=1; AJvYcCURpWl/BQluF8zznpSX/alttiSUl0AgUKRg5UAaN12onK+WVZtd9uP09iWfFsMIVaM/oVuuBBaQnez5vZrcRXJ/Yoz5xwSQ4y7LLts2
-X-Gm-Message-State: AOJu0YzV3NjqE+rp4ihTwPVRQ3/kvp37TKA8aNP+4oOi/aKpEFqqOrk3
-	dmneXFh9hD+AZBG58nXeI/07Np+eN7iIVrL1PEbjln9trzzTrIPKNAeGD82lXA==
-X-Google-Smtp-Source: AGHT+IG29y4RAikXI7aD3pJIVsLER3vVWeoNlnW5QiT2orL4eZUUzDNo+r8jdpDoyghFqbHmNLtzsA==
-X-Received: by 2002:a17:90b:3847:b0:299:8265:c79f with SMTP id nl7-20020a17090b384700b002998265c79fmr2952947pjb.46.1708386090683;
-        Mon, 19 Feb 2024 15:41:30 -0800 (PST)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id y3-20020a17090a8b0300b0029942a73eaesm5932876pjn.9.2024.02.19.15.41.30
+        bh=s1aJuW6j9tgwUyJl9DgLg8w9vuSaZM6Q1DPHNzf8iOI=;
+        b=cZQPTuivi2Qb/zkDfgjdD5pQkIRlWu3t/4qxSYrag+yFqW35nPJwawwizBhlxoTIlZ
+         oX/9+zES/DzTuSuWLXybNGsfsME6qRGtTrq9cIPPti7MoOe7hYnx/2Ey04UZ4vkJ/TcU
+         5KMu3B7i5CC3Uft5WMPVjcsPrcQvTouZNTI00rl693H3hGwZ2Gl1lRx1WrtEqvxecAnZ
+         6ttxdJNZheClyxJh83zq14fBkYnCQ1H4zlV9s0Q4EmL8acbt7ZyWwguU6tTmtd5oE6q3
+         XEAQ7iGDNervHKL2HL99XxRToroHIUMDezMIW/FDtfSy1nRQAa7Vy0QN38IERSzFn6Wq
+         hPKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWx18bthmgnQJblBO0WvllfJZ+bBR4ZBtdnxWw2bKs4S1OMLUqHDfLVP1LUthBeFW4z+1dpG67leO3PK+BCiWtDoZOWXNViux0FoUR3upPitSJ4oiulxsgDvhyclfxDMBGinoyAgbdOhA==
+X-Gm-Message-State: AOJu0Yxo8/pLQ6g/Fg7jyzZO0P4fqLO+TQA7cgvJkn5T2Mr69xx26rD+
+	e67AXCQmLMiA18O8eopqHLRUyQjA8C0MHxvLG2LoxEmBAZ6ZeRz8
+X-Google-Smtp-Source: AGHT+IFi8j4fOnROdnnuPW1Igl7EDTZav1azQk8bJAAgCFTIAUNGUljNFn5PIbRTZgpJNbavS2bxxg==
+X-Received: by 2002:a05:6a21:168d:b0:19e:9c82:b139 with SMTP id np13-20020a056a21168d00b0019e9c82b139mr12417262pzb.45.1708386290406;
+        Mon, 19 Feb 2024 15:44:50 -0800 (PST)
+Received: from tresc054937.tre-sc.gov.br ([2804:c:204:200:2be:43ff:febc:c2fb])
+        by smtp.gmail.com with ESMTPSA id h4-20020a170902eec400b001db7ed7ac34sm4903477plb.297.2024.02.19.15.44.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 15:41:30 -0800 (PST)
-From: Kees Cook <keescook@chromium.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Kees Cook <keescook@chromium.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Haowen Bai <baihaowen@meizu.com>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Joanne Koong <joannelkoong@gmail.com>,
-	Yafang Shao <laoar.shao@gmail.com>,
-	Kui-Feng Lee <kuifeng@meta.com>,
-	Anton Protopopov <aspsk@isovalent.com>,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [PATCH v3] bpf: Replace bpf_lpm_trie_key 0-length array with flexible array
-Date: Mon, 19 Feb 2024 15:41:28 -0800
-Message-Id: <20240219234121.make.373-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+        Mon, 19 Feb 2024 15:44:49 -0800 (PST)
+From: Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Subject: [PATCH net-next v4 0/3] net: dsa: realtek: support reset
+ controller and update docs
+Date: Mon, 19 Feb 2024 20:44:39 -0300
+Message-Id: <20240219-realtek-reset-v4-0-858b82a29503@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=15498; i=keescook@chromium.org;
- h=from:subject:message-id; bh=CgLaPcrJ8UuZe99Nzs2aIaX8FJubBiNyxJ8PhVcKrRg=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBl0+cnVLiiscNcGtW0kAJ8XWS4mrotWqvh8nkqf
- 3SJCfr0e0eJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZdPnJwAKCRCJcvTf3G3A
- JtG0D/9Ff+bMKTxinX38h/9HJOMX109fkG9aQu+AB0L6YKRnc4Aappjx0Fzc8BPZi59huXUITMj
- FQ91R/UjMWGlfAPIaXn5IUpnIP61WDKORd+ChI/SHT+KfIgnDmwlwM8CIk/VasOlOVmlUWU4lAb
- 4aykezGfvom5Y5likHMWMgQ/xO1CTgO9NnJ2BoDO8iL3mVNR/gM4vxN5F0edLXFNvCD9vx9TCxZ
- R9RyieFQooMOKk4soLAnB30BqK50/mX0fO4mwPGE1PpqDbzd8g7uQcsROfuFlw3B7U6RRHckzWN
- 81K34dv0VERKeUXNej9N3wPvUS3OOmotEVMEBLGDAGqfucR9zUTaETR1LPRrZ5BGQT3UlfuFof8
- m0vyeX1TmZEadsB7QcVaf3gAr7qlNQeiHmHAqy+/17q/xoep9voduRtDLYeV6EREDpo2uV49aqz
- du917pAXMTSjoW1yFDs2Ibrg4wJJx/rzVOZIYg/xAsHAe9cYvlygUIzg4jhM4W3gBf/3YDYJ/Xm
- VAufXJnk7skz2x1Km9Uir9Ou+VdWtRvC4vwETp802dx4976mO1Wv8EWvfYg+m4/dzf5uo8PYYuh
- W1AYaJTioTyF2Q7rWj0y3jtpj9wWuuQ2oIiMPzB/CIMSiK4fkXJ9udPtRVfLqDY364tVYHqUL8q
- x2GEcD VJ201hXEg==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOfn02UC/12NwQqDMBBEf0X23JS4USI99T+Kh2hXXaqxJCFYJ
+ P/eEHrqaRhm5s0JnhyTh1t1gqPInnebTXOpYFyMnUnwM3tAiY3EGoUjswZ6ZfUURNcZOUzYDgM
+ i5M3b0cRH4T3A5oKlI0Cfk4V92N2nHEVV8h9T/TGjElIo3SlNrW50re7zZni9jvsGfUrpC3o1F
+ vW0AAAA
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>, 
+ Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+Cc: netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Luiz Angelo Daros de Luca <luizluca@gmail.com>, 
+ =?utf-8?q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>, 
+ Rob Herring <robh@kernel.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2428; i=luizluca@gmail.com;
+ h=from:subject:message-id; bh=8QtiyWrWfuzQjwuwyJxh0N9o8CzHsc9182ryunCiVNA=;
+ b=owEBbQGS/pANAwAIAbsR27rRBztWAcsmYgBl0+ft4zDo/D6lzha4ZuSPn8C1KJ1vQeB0gCWV+
+ qLQA9DxMfqJATMEAAEIAB0WIQQRByhHhc1bOhL6L/i7Edu60Qc7VgUCZdPn7QAKCRC7Edu60Qc7
+ VjUhB/9acQZ8JinWv+cLeQabihlpWgx9N2BiuteygJpRL6qCMRBhO8Z6Zpszdz1QshmEnKjjWtp
+ wvrBVSE8aJNAmfsODpaKX6aaa5W4GB8a/ICCHFr6tOP0m3ezGQIIXmMgyl6DR5abhPQ1H9WNQqf
+ Mz0xjAK3e+6BmcM101OfUsSyWNRoaEhoXajQqQSs5woqWBVliTH/79hwvDiD/4UDaPBv1l21gt5
+ E3srGHoDUiFWPGp8DOxbXIOx1Z3KrD9dBO1qRenLI3IalO59L+D194r69aWcMEiaN9n/P1ddooB
+ +05wFaIz5rn+nel1PJNUvkkYGhPCOcUtDU+hBDKSZ15xsMJc
+X-Developer-Key: i=luizluca@gmail.com; a=openpgp;
+ fpr=1107284785CD5B3A12FA2FF8BB11DBBAD1073B56
 
-Replace deprecated 0-length array in struct bpf_lpm_trie_key with
-flexible array. Found with GCC 13:
+The driver previously supported reset pins using GPIO, but it lacked
+support for reset controllers. Although a reset method is generally not
+required, the driver fails to detect the switch if the reset was kept
+asserted by a previous driver.
 
-./kernel/bpf/lpm_trie.c:207:51: warning: array subscript i is outside array bounds of 'const __u8[0]' {aka 'const unsigned char[]'} [-Warray-bounds=]
-  207 |                                        *(__be16 *)&key->data[i]);
-      |                                                   ^~~~~~~~~~~~~
-./include/uapi/linux/swab.h:102:54: note: in definition of macro '__swab16'
-  102 | #define __swab16(x) (__u16)__builtin_bswap16((__u16)(x))
-      |                                                      ^
-./include/linux/byteorder/generic.h:97:21: note: in expansion of macro '__be16_to_cpu'
-   97 | #define be16_to_cpu __be16_to_cpu
-      |                     ^~~~~~~~~~~~~
-./kernel/bpf/lpm_trie.c:206:28: note: in expansion of macro 'be16_to_cpu'
-  206 |                 u16 diff = be16_to_cpu(*(__be16 *)&node->data[i]
-^
-      |                            ^~~~~~~~~~~
-In file included from ../include/linux/bpf.h:7:
-./include/uapi/linux/bpf.h:82:17: note: while referencing 'data'
-   82 |         __u8    data[0];        /* Arbitrary size */
-      |                 ^~~~
+This series adds support to reset a Realtek switch using a reset
+controller. It also updates the binding documentation to remove the
+requirement of a reset method and to add the new reset controller
+property.
 
-And found at run-time under CONFIG_FORTIFY_SOURCE:
+It was tested on a TL-WR1043ND v1 router (rtl8366rb via SMI).
 
-  UBSAN: array-index-out-of-bounds in kernel/bpf/lpm_trie.c:218:49
-  index 0 is out of range for type '__u8 [*]'
-
-Changing struct bpf_lpm_trie_key is difficult since has been used by
-userspace. For example, in Cilium:
-
-	struct egress_gw_policy_key {
-	        struct bpf_lpm_trie_key lpm_key;
-	        __u32 saddr;
-	        __u32 daddr;
-	};
-
-While direct references to the "data" member haven't been found, there
-are static initializers what include the final member. For example,
-the "{}" here:
-
-        struct egress_gw_policy_key in_key = {
-                .lpm_key = { 32 + 24, {} },
-                .saddr   = CLIENT_IP,
-                .daddr   = EXTERNAL_SVC_IP & 0Xffffff,
-        };
-
-To avoid the build time and run time warnings seen with a 0-sized
-trailing array for struct bpf_lpm_trie_key, introduce a new struct
-that correctly uses a flexible array for the trailing bytes,
-struct bpf_lpm_trie_key_u8. As part of this, include the "header"
-portion (which is just the "prefixlen" member), so it can be used
-by anything building a bpf_lpr_trie_key that has trailing members that
-aren't a u8 flexible array (like the self-test[1]), which is named
-struct bpf_lpm_trie_key_hdr.
-
-Adjust the kernel code to use struct bpf_lpm_trie_key_u8 through-out,
-and for the selftest to use struct bpf_lpm_trie_key_hdr. Add a comment
-to the UAPI header directing folks to the two new options.
-
-Link: https://lore.kernel.org/all/202206281009.4332AA33@keescook/ [1]
-Reported-by: Mark Rutland <mark.rutland@arm.com>
-Closes: https://paste.debian.net/hidden/ca500597/
-Signed-off-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Luiz Angelo Daros de Luca <luizluca@gmail.com>
 ---
-v3- create a new pair of structs -- leave old struct alone
-v2- https://lore.kernel.org/lkml/20240216235536.it.234-kees@kernel.org/
-v1- https://lore.kernel.org/lkml/20230204183241.never.481-kees@kernel.org/
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Mykola Lysenko <mykolal@fb.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Haowen Bai <baihaowen@meizu.com>
-Cc: bpf@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
----
- Documentation/bpf/map_lpm_trie.rst            |  2 +-
- include/uapi/linux/bpf.h                      | 14 ++++++++++++-
- kernel/bpf/lpm_trie.c                         | 20 +++++++++----------
- samples/bpf/map_perf_test_user.c              |  2 +-
- samples/bpf/xdp_router_ipv4_user.c            |  2 +-
- tools/include/uapi/linux/bpf.h                | 14 ++++++++++++-
- .../selftests/bpf/progs/map_ptr_kern.c        |  2 +-
- tools/testing/selftests/bpf/test_lpm_map.c    | 18 ++++++++---------
- 8 files changed, 49 insertions(+), 25 deletions(-)
+Changes in v4:
+- do not test for priv->reset,priv->reset_ctl
+- updated commit message
+- Link to v3: https://lore.kernel.org/r/20240213-realtek-reset-v3-0-37837e574713@gmail.com
 
-diff --git a/Documentation/bpf/map_lpm_trie.rst b/Documentation/bpf/map_lpm_trie.rst
-index 74d64a30f500..f9cd579496c9 100644
---- a/Documentation/bpf/map_lpm_trie.rst
-+++ b/Documentation/bpf/map_lpm_trie.rst
-@@ -17,7 +17,7 @@ significant byte.
- 
- LPM tries may be created with a maximum prefix length that is a multiple
- of 8, in the range from 8 to 2048. The key used for lookup and update
--operations is a ``struct bpf_lpm_trie_key``, extended by
-+operations is a ``struct bpf_lpm_trie_key_u8``, extended by
- ``max_prefixlen/8`` bytes.
- 
- - For IPv4 addresses the data length is 4 bytes
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 754e68ca8744..c5a46d12076e 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -77,12 +77,24 @@ struct bpf_insn {
- 	__s32	imm;		/* signed immediate constant */
- };
- 
--/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
-+/* Deprecated: use struct bpf_lpm_trie_key_u8 (when the "data" member is needed for
-+ * byte access) or struct bpf_lpm_trie_key_hdr (when using an alternative type for
-+ * the trailing flexible array member) instead.
-+ */
- struct bpf_lpm_trie_key {
- 	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
- 	__u8	data[0];	/* Arbitrary size */
- };
- 
-+/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry, with trailing byte array. */
-+struct bpf_lpm_trie_key_u8 {
-+	__struct_group(bpf_lpm_trie_key_hdr, hdr, /* no attrs */,
-+		/* up to 32 for AF_INET, 128 for AF_INET6 */
-+		__u32	prefixlen;
-+	);
-+	__u8	data[];		/* Arbitrary size */
-+};
-+
- struct bpf_cgroup_storage_key {
- 	__u64	cgroup_inode_id;	/* cgroup inode id */
- 	__u32	attach_type;		/* program attach type (enum bpf_attach_type) */
-diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index b32be680da6c..050fe1ebf0f7 100644
---- a/kernel/bpf/lpm_trie.c
-+++ b/kernel/bpf/lpm_trie.c
-@@ -164,13 +164,13 @@ static inline int extract_bit(const u8 *data, size_t index)
-  */
- static size_t longest_prefix_match(const struct lpm_trie *trie,
- 				   const struct lpm_trie_node *node,
--				   const struct bpf_lpm_trie_key *key)
-+				   const struct bpf_lpm_trie_key_u8 *key)
- {
- 	u32 limit = min(node->prefixlen, key->prefixlen);
- 	u32 prefixlen = 0, i = 0;
- 
- 	BUILD_BUG_ON(offsetof(struct lpm_trie_node, data) % sizeof(u32));
--	BUILD_BUG_ON(offsetof(struct bpf_lpm_trie_key, data) % sizeof(u32));
-+	BUILD_BUG_ON(offsetof(struct bpf_lpm_trie_key_u8, data) % sizeof(u32));
- 
- #if defined(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS) && defined(CONFIG_64BIT)
- 
-@@ -229,7 +229,7 @@ static void *trie_lookup_elem(struct bpf_map *map, void *_key)
- {
- 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
- 	struct lpm_trie_node *node, *found = NULL;
--	struct bpf_lpm_trie_key *key = _key;
-+	struct bpf_lpm_trie_key_u8 *key = _key;
- 
- 	if (key->prefixlen > trie->max_prefixlen)
- 		return NULL;
-@@ -309,7 +309,7 @@ static long trie_update_elem(struct bpf_map *map,
- 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
- 	struct lpm_trie_node *node, *im_node = NULL, *new_node = NULL;
- 	struct lpm_trie_node __rcu **slot;
--	struct bpf_lpm_trie_key *key = _key;
-+	struct bpf_lpm_trie_key_u8 *key = _key;
- 	unsigned long irq_flags;
- 	unsigned int next_bit;
- 	size_t matchlen = 0;
-@@ -437,7 +437,7 @@ static long trie_update_elem(struct bpf_map *map,
- static long trie_delete_elem(struct bpf_map *map, void *_key)
- {
- 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
--	struct bpf_lpm_trie_key *key = _key;
-+	struct bpf_lpm_trie_key_u8 *key = _key;
- 	struct lpm_trie_node __rcu **trim, **trim2;
- 	struct lpm_trie_node *node, *parent;
- 	unsigned long irq_flags;
-@@ -536,7 +536,7 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
- 				 sizeof(struct lpm_trie_node))
- #define LPM_VAL_SIZE_MIN	1
- 
--#define LPM_KEY_SIZE(X)		(sizeof(struct bpf_lpm_trie_key) + (X))
-+#define LPM_KEY_SIZE(X)		(sizeof(struct bpf_lpm_trie_key_u8) + (X))
- #define LPM_KEY_SIZE_MAX	LPM_KEY_SIZE(LPM_DATA_SIZE_MAX)
- #define LPM_KEY_SIZE_MIN	LPM_KEY_SIZE(LPM_DATA_SIZE_MIN)
- 
-@@ -565,7 +565,7 @@ static struct bpf_map *trie_alloc(union bpf_attr *attr)
- 	/* copy mandatory map attributes */
- 	bpf_map_init_from_attr(&trie->map, attr);
- 	trie->data_size = attr->key_size -
--			  offsetof(struct bpf_lpm_trie_key, data);
-+			  offsetof(struct bpf_lpm_trie_key_u8, data);
- 	trie->max_prefixlen = trie->data_size * 8;
- 
- 	spin_lock_init(&trie->lock);
-@@ -616,7 +616,7 @@ static int trie_get_next_key(struct bpf_map *map, void *_key, void *_next_key)
- {
- 	struct lpm_trie_node *node, *next_node = NULL, *parent, *search_root;
- 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
--	struct bpf_lpm_trie_key *key = _key, *next_key = _next_key;
-+	struct bpf_lpm_trie_key_u8 *key = _key, *next_key = _next_key;
- 	struct lpm_trie_node **node_stack = NULL;
- 	int err = 0, stack_ptr = -1;
- 	unsigned int next_bit;
-@@ -703,7 +703,7 @@ static int trie_get_next_key(struct bpf_map *map, void *_key, void *_next_key)
- 	}
- do_copy:
- 	next_key->prefixlen = next_node->prefixlen;
--	memcpy((void *)next_key + offsetof(struct bpf_lpm_trie_key, data),
-+	memcpy((void *)next_key + offsetof(struct bpf_lpm_trie_key_u8, data),
- 	       next_node->data, trie->data_size);
- free_stack:
- 	kfree(node_stack);
-@@ -715,7 +715,7 @@ static int trie_check_btf(const struct bpf_map *map,
- 			  const struct btf_type *key_type,
- 			  const struct btf_type *value_type)
- {
--	/* Keys must have struct bpf_lpm_trie_key embedded. */
-+	/* Keys must have struct bpf_lpm_trie_key_u8 embedded. */
- 	return BTF_INFO_KIND(key_type->info) != BTF_KIND_STRUCT ?
- 	       -EINVAL : 0;
- }
-diff --git a/samples/bpf/map_perf_test_user.c b/samples/bpf/map_perf_test_user.c
-index d2fbcf963cdf..07ff471ed6ae 100644
---- a/samples/bpf/map_perf_test_user.c
-+++ b/samples/bpf/map_perf_test_user.c
-@@ -370,7 +370,7 @@ static void run_perf_test(int tasks)
- 
- static void fill_lpm_trie(void)
- {
--	struct bpf_lpm_trie_key *key;
-+	struct bpf_lpm_trie_key_u8 *key;
- 	unsigned long value = 0;
- 	unsigned int i;
- 	int r;
-diff --git a/samples/bpf/xdp_router_ipv4_user.c b/samples/bpf/xdp_router_ipv4_user.c
-index 9d41db09c480..266fdd0b025d 100644
---- a/samples/bpf/xdp_router_ipv4_user.c
-+++ b/samples/bpf/xdp_router_ipv4_user.c
-@@ -91,7 +91,7 @@ static int recv_msg(struct sockaddr_nl sock_addr, int sock)
- static void read_route(struct nlmsghdr *nh, int nll)
- {
- 	char dsts[24], gws[24], ifs[16], dsts_len[24], metrics[24];
--	struct bpf_lpm_trie_key *prefix_key;
-+	struct bpf_lpm_trie_key_u8 *prefix_key;
- 	struct rtattr *rt_attr;
- 	struct rtmsg *rt_msg;
- 	int rtm_family;
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 7f24d898efbb..c55244bf1a20 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -77,12 +77,24 @@ struct bpf_insn {
- 	__s32	imm;		/* signed immediate constant */
- };
- 
--/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry */
-+/* Deprecated: use struct bpf_lpm_trie_key_u8 (when the "data" member is needed for
-+ * byte access) or struct bpf_lpm_trie_key_hdr (when using an alternative type for
-+ * the trailing flexible array member) instead.
-+ */
- struct bpf_lpm_trie_key {
- 	__u32	prefixlen;	/* up to 32 for AF_INET, 128 for AF_INET6 */
- 	__u8	data[0];	/* Arbitrary size */
- };
- 
-+/* Key of an a BPF_MAP_TYPE_LPM_TRIE entry, with trailing byte array. */
-+struct bpf_lpm_trie_key_u8 {
-+	__struct_group(bpf_lpm_trie_key_hdr, hdr, /* no attrs */,
-+		/* up to 32 for AF_INET, 128 for AF_INET6 */
-+		__u32	prefixlen;
-+	);
-+	__u8	data[];		/* Arbitrary size */
-+};
-+
- struct bpf_cgroup_storage_key {
- 	__u64	cgroup_inode_id;	/* cgroup inode id */
- 	__u32	attach_type;		/* program attach type (enum bpf_attach_type) */
-diff --git a/tools/testing/selftests/bpf/progs/map_ptr_kern.c b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-index 3325da17ec81..efaf622c28dd 100644
---- a/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-+++ b/tools/testing/selftests/bpf/progs/map_ptr_kern.c
-@@ -316,7 +316,7 @@ struct lpm_trie {
- } __attribute__((preserve_access_index));
- 
- struct lpm_key {
--	struct bpf_lpm_trie_key trie_key;
-+	struct bpf_lpm_trie_key_hdr trie_key;
- 	__u32 data;
- };
- 
-diff --git a/tools/testing/selftests/bpf/test_lpm_map.c b/tools/testing/selftests/bpf/test_lpm_map.c
-index c028d621c744..d98c72dc563e 100644
---- a/tools/testing/selftests/bpf/test_lpm_map.c
-+++ b/tools/testing/selftests/bpf/test_lpm_map.c
-@@ -211,7 +211,7 @@ static void test_lpm_map(int keysize)
- 	volatile size_t n_matches, n_matches_after_delete;
- 	size_t i, j, n_nodes, n_lookups;
- 	struct tlpm_node *t, *list = NULL;
--	struct bpf_lpm_trie_key *key;
-+	struct bpf_lpm_trie_key_u8 *key;
- 	uint8_t *data, *value;
- 	int r, map;
- 
-@@ -331,8 +331,8 @@ static void test_lpm_map(int keysize)
- static void test_lpm_ipaddr(void)
- {
- 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_NO_PREALLOC);
--	struct bpf_lpm_trie_key *key_ipv4;
--	struct bpf_lpm_trie_key *key_ipv6;
-+	struct bpf_lpm_trie_key_u8 *key_ipv4;
-+	struct bpf_lpm_trie_key_u8 *key_ipv6;
- 	size_t key_size_ipv4;
- 	size_t key_size_ipv6;
- 	int map_fd_ipv4;
-@@ -423,7 +423,7 @@ static void test_lpm_ipaddr(void)
- static void test_lpm_delete(void)
- {
- 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_NO_PREALLOC);
--	struct bpf_lpm_trie_key *key;
-+	struct bpf_lpm_trie_key_u8 *key;
- 	size_t key_size;
- 	int map_fd;
- 	__u64 value;
-@@ -532,7 +532,7 @@ static void test_lpm_delete(void)
- static void test_lpm_get_next_key(void)
- {
- 	LIBBPF_OPTS(bpf_map_create_opts, opts, .map_flags = BPF_F_NO_PREALLOC);
--	struct bpf_lpm_trie_key *key_p, *next_key_p;
-+	struct bpf_lpm_trie_key_u8 *key_p, *next_key_p;
- 	size_t key_size;
- 	__u32 value = 0;
- 	int map_fd;
-@@ -693,9 +693,9 @@ static void *lpm_test_command(void *arg)
- {
- 	int i, j, ret, iter, key_size;
- 	struct lpm_mt_test_info *info = arg;
--	struct bpf_lpm_trie_key *key_p;
-+	struct bpf_lpm_trie_key_u8 *key_p;
- 
--	key_size = sizeof(struct bpf_lpm_trie_key) + sizeof(__u32);
-+	key_size = sizeof(*key_p) + sizeof(__u32);
- 	key_p = alloca(key_size);
- 	for (iter = 0; iter < info->iter; iter++)
- 		for (i = 0; i < MAX_TEST_KEYS; i++) {
-@@ -717,7 +717,7 @@ static void *lpm_test_command(void *arg)
- 				ret = bpf_map_lookup_elem(info->map_fd, key_p, &value);
- 				assert(ret == 0 || errno == ENOENT);
- 			} else {
--				struct bpf_lpm_trie_key *next_key_p = alloca(key_size);
-+				struct bpf_lpm_trie_key_u8 *next_key_p = alloca(key_size);
- 				ret = bpf_map_get_next_key(info->map_fd, key_p, next_key_p);
- 				assert(ret == 0 || errno == ENOENT || errno == ENOMEM);
- 			}
-@@ -752,7 +752,7 @@ static void test_lpm_multi_thread(void)
- 
- 	/* create a trie */
- 	value_size = sizeof(__u32);
--	key_size = sizeof(struct bpf_lpm_trie_key) + value_size;
-+	key_size = sizeof(struct bpf_lpm_trie_key_hdr) + value_size;
- 	map_fd = bpf_map_create(BPF_MAP_TYPE_LPM_TRIE, NULL, key_size, value_size, 100, &opts);
- 
- 	/* create 4 threads to test update, delete, lookup and get_next_key */
+Changes in v3:
+- Rebased on the Realtek DSA driver refactoring (08f627164126)
+- Dropped the reset controller example in bindings
+- Used %pe in error printing
+- Linked to v2: https://lore.kernel.org/r/20231027190910.27044-1-luizluca@gmail.com/
+
+Changes in v2:
+- Introduced a dedicated commit for removing the reset-gpios requirement
+- Placed binding patches before code changes
+- Removed the 'reset-names' property
+- Moved the example from the commit message to realtek.yaml
+- Split the reset function into _assert/_deassert variants
+- Modified reset functions to return a warning instead of a value
+- Utilized devm_reset_control_get_optional to prevent failure when the
+  reset control is missing
+- Used 'true' and 'false' for boolean values
+- Removed the CONFIG_RESET_CONTROLLER check as stub methods are
+  sufficient when undefined
+- Linked to v1: https://lore.kernel.org/r/20231024205805.19314-1-luizluca@gmail.com/
+
+---
+Luiz Angelo Daros de Luca (3):
+      dt-bindings: net: dsa: realtek: reset-gpios is not required
+      dt-bindings: net: dsa: realtek: add reset controller
+      net: dsa: realtek: support reset controller
+
+ .../devicetree/bindings/net/dsa/realtek.yaml       |  4 +-
+ drivers/net/dsa/realtek/realtek.h                  |  2 +
+ drivers/net/dsa/realtek/rtl83xx.c                  | 46 +++++++++++++++++++---
+ drivers/net/dsa/realtek/rtl83xx.h                  |  2 +
+ 4 files changed, 48 insertions(+), 6 deletions(-)
+---
+base-commit: d1d77120bc2867b3e449e07ee656a26b2fb03d1e
+change-id: 20240212-realtek-reset-88a0bf25bb22
+
+Best regards,
 -- 
-2.34.1
+Luiz Angelo Daros de Luca <luizluca@gmail.com>
 
 
