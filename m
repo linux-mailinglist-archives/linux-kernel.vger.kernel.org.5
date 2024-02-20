@@ -1,146 +1,128 @@
-Return-Path: <linux-kernel+bounces-73187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BFDE85BEF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:40:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F03085BEF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:41:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E7321C23247
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:40:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7165E1C21009
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC9F6F51A;
-	Tue, 20 Feb 2024 14:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A952A6A8D7;
+	Tue, 20 Feb 2024 14:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="xlZXnOWK"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kiUExBqX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93C566BB4A;
-	Tue, 20 Feb 2024 14:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0292F2C;
+	Tue, 20 Feb 2024 14:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708440019; cv=none; b=r4rutRXLtAp8PWsOlbAroeDtXa27DP5WNouMpeVmdk+zAvRV56CxlXjCfDCma8N+G6nzDFBTuyWI7298olrcLvyiBEAgjG/JrtHBCa4H5wgXOLilF6IPalwPE3+//I/NCIulkJDGAC1Cpy2flpnuvJ6Nltt7UVO/6sT9d9ma1uY=
+	t=1708440094; cv=none; b=hHXpgBwIvfbK5zNH8gkQJRhI6r2/SfHW5rQ8MIn1twA8Dqi7m0Q/t8+T+ejIQWJkT9+fRx2+awl6bk3dj3idzmYlADmSFUUH6SjuxJDMwupfFB5JB+3mZ6lM1fpLWSgo5PmIE/TiZ09KfM3zepT/09tYNbFk9w2zPVvJuwy7vvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708440019; c=relaxed/simple;
-	bh=YXroGioVcbZWvHCBYKMA6eeWcKlnKNnCpmo6XOAzkpM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mM8f82XhSPyWnrtlqhPW8J7uqNrpjZ0X9qqRRo1owfY98yFqJ9Ih6htvKrjzsmXnJu17ju5cJa8n7mM6d8q/CQCjDkgjpdNCtv/OelZ3SxCVLBYrj4kOvhaJ9AUxxtIiwdTMB31VumweXVoS9PfRwPQ10ddDFFcz35FI/MGcGRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=xlZXnOWK; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=iiizQyI51jITzT4Y9FB1PoUvVXRX7qZCnb+Qa6MZ8EY=; b=xlZXnOWKTx17XVtDLHKy+gjOwG
-	Xs6SM6iprYji/Cub/GfOPiYnvj4KZWrn8Gf0ZaKj/tfx23rlWXfn3ujsYDyqv0zP8WOWdy1DNJNfb
-	tbj5DvNWGo4cqpujMg6wlIZtyBlSuzk1hQasZqN4qCZNps8nLyjxTtMSZjxLnCqUJ+4U=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rcRIA-008I2R-TM; Tue, 20 Feb 2024 15:40:18 +0100
-Date: Tue, 20 Feb 2024 15:40:18 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Simon Horman <horms@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Ariel Elior <aelior@marvell.com>,
-	Manish Chopra <manishc@marvell.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Tony Nguyen <anthony.l.nguyen@intel.com>, linux-usb@vger.kernel.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org
-Subject: Re: [PATCH net-next v4 2/9] net: usb: ax88179_178a: Use linkmode
- helpers for EEE
-Message-ID: <a8b728c0-f191-47d5-b61d-f2c7a9617eeb@lunn.ch>
-References: <20240218-keee-u32-cleanup-v4-0-71f13b7c3e60@lunn.ch>
- <20240218-keee-u32-cleanup-v4-2-71f13b7c3e60@lunn.ch>
- <20240220123924.GA40273@kernel.org>
+	s=arc-20240116; t=1708440094; c=relaxed/simple;
+	bh=oGGQvlblANH1zeYi/yc/BpgwhrLrkB3TPUi+d5bj4tQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nMvjqDlscKtkoSYYziKLkA7WLolV091rcynYn9F86xUduGMbsobZ/UhWo32+5ssmSuTVcxn2bzoLYG+8BIiKfMuH24PnEbP3SffK2B3xdorUCRrjCfOoYStaL9vlPybqXTCl72Y3GvqTzsOqeZ38V4Fa4WYfjjgWghzOMpZ/Koo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kiUExBqX; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708440092; x=1739976092;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=oGGQvlblANH1zeYi/yc/BpgwhrLrkB3TPUi+d5bj4tQ=;
+  b=kiUExBqX4Nt+cQbA21qUo/7r1ULGoUj32PvogEjf5Ugd8bKzkuBR2+3a
+   rwJ0P6K8dDRFggsp4zFV8S3Am4x/wcDro/p6o1s6iNmortBgiiTGAs9j6
+   w38lHCZuIghGTPpCFghzb8pE1u9KEd7OJDFlYd4ae5Wsfzw1ftekrsvg8
+   QVLO4u+yug2sAkzY5ghM22TfAzXgcZuUZqLsIphXKfZiYBcxgdePci2k3
+   iyODAw/aOn30clvyHxfeQ12qVWXgPBclkX0jlI1IRlAMtsTlAeHAx1TO9
+   DRM4WjLCLqXLoF3hfSk6LUjJNb78vGRNan7ZRr/nQ/LWGEvhfQCBCgKRf
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="5501807"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="5501807"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 06:41:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="913086666"
+X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
+   d="scan'208";a="913086666"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 20 Feb 2024 06:41:07 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 134FE305; Tue, 20 Feb 2024 16:41:05 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>
+Subject: [PATCH v1 1/1] device property: Move enum dev_dma_attr to fwnode.h
+Date: Tue, 20 Feb 2024 16:41:05 +0200
+Message-ID: <20240220144105.2316632-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240220123924.GA40273@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Feb 20, 2024 at 12:39:24PM +0000, Simon Horman wrote:
-> On Sun, Feb 18, 2024 at 11:06:59AM -0600, Andrew Lunn wrote:
-> > Make use of the existing linkmode helpers for converting PHY EEE
-> > register values into links modes, now that ethtool_keee uses link
-> > modes, rather than u32 values.
-> > 
-> > Signed-off-by: Andrew Lunn <andrew@lunn.ch>
-> > ---
-> >  drivers/net/usb/ax88179_178a.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-> > index d6168eaa286f..d4bf9865d87b 100644
-> > --- a/drivers/net/usb/ax88179_178a.c
-> > +++ b/drivers/net/usb/ax88179_178a.c
-> > @@ -676,21 +676,21 @@ ax88179_ethtool_get_eee(struct usbnet *dev, struct ethtool_keee *data)
-> >  					    MDIO_MMD_PCS);
-> >  	if (val < 0)
-> >  		return val;
-> > -	data->supported_u32 = mmd_eee_cap_to_ethtool_sup_t(val);
-> > +	mii_eee_cap1_mod_linkmode_t(data->supported, val);
-> >  
-> >  	/* Get advertisement EEE */
-> >  	val = ax88179_phy_read_mmd_indirect(dev, MDIO_AN_EEE_ADV,
-> >  					    MDIO_MMD_AN);
-> >  	if (val < 0)
-> >  		return val;
-> > -	data->advertised_u32 = mmd_eee_adv_to_ethtool_adv_t(val);
-> > +	mii_eee_cap1_mod_linkmode_t(data->advertised, val);
-> >  
-> >  	/* Get LP advertisement EEE */
-> >  	val = ax88179_phy_read_mmd_indirect(dev, MDIO_AN_EEE_LPABLE,
-> >  					    MDIO_MMD_AN);
-> >  	if (val < 0)
-> >  		return val;
-> > -	data->lp_advertised_u32 = mmd_eee_adv_to_ethtool_adv_t(val);
-> > +	mii_eee_cap1_mod_linkmode_t(data->lp_advertised, val);
-> >  
-> >  	return 0;
-> >  }
-> > @@ -698,7 +698,7 @@ ax88179_ethtool_get_eee(struct usbnet *dev, struct ethtool_keee *data)
-> >  static int
-> >  ax88179_ethtool_set_eee(struct usbnet *dev, struct ethtool_keee *data)
-> >  {
-> > -	u16 tmp16 = ethtool_adv_to_mmd_eee_adv_t(data->advertised_u32);
-> > +	u16 tmp16 = linkmode_to_mii_eee_cap1_t(data->advertised);
-> >  
-> >  	return ax88179_phy_write_mmd_indirect(dev, MDIO_AN_EEE_ADV,
-> >  					      MDIO_MMD_AN, tmp16);
-> > @@ -1663,7 +1663,6 @@ static int ax88179_reset(struct usbnet *dev)
-> >  	ax88179_disable_eee(dev);
-> >  
-> >  	ax88179_ethtool_get_eee(dev, &eee_data);
-> > -	eee_data.advertised_u32 = 0;
-> 
-> Hi Andrew,
-> 
-> could you clarify why advertised no longer needs to be cleared?
+The struct fwnode_operations defines one of the callback to return
+enum dev_dma_attr. But this currently is defined in property.h.
+Move it to the correct location.
 
-Ah, that is me being too delete happy. When the ethtool core calls
-into the driver for eee_get(), it first zeros the structure passed
-in. Some drivers than again zeroed members, so i deleted them.
-
-However, this is not a eee_get() call, eee_data is actually a stack
-variable. ax88179_ethtool_get_eee() has set it, so it is at least not
-random junk. But the intention here is to not advertise any EEE link
-modes until the user calls set_eee(). So this zero'ing is needed.
-
-Good catch, thanks.
-
-    Andrew
-
+Fixes: 8c756a0a2de1 ("device property: Convert device_{dma_supported,get_dma_attr} to fwnode")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-pw-bot: cr
+ include/linux/fwnode.h   | 6 ++++++
+ include/linux/property.h | 6 ------
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index c1379f2d4a44..fabcd5ce084d 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -15,6 +15,12 @@
+ #include <linux/list.h>
+ #include <linux/types.h>
+ 
++enum dev_dma_attr {
++	DEV_DMA_NOT_SUPPORTED,
++	DEV_DMA_NON_COHERENT,
++	DEV_DMA_COHERENT,
++};
++
+ struct fwnode_operations;
+ 
+ /*
+diff --git a/include/linux/property.h b/include/linux/property.h
+index e6516d0b7d52..07fbebc73243 100644
+--- a/include/linux/property.h
++++ b/include/linux/property.h
+@@ -27,12 +27,6 @@ enum dev_prop_type {
+ 	DEV_PROP_REF,
+ };
+ 
+-enum dev_dma_attr {
+-	DEV_DMA_NOT_SUPPORTED,
+-	DEV_DMA_NON_COHERENT,
+-	DEV_DMA_COHERENT,
+-};
+-
+ const struct fwnode_handle *__dev_fwnode_const(const struct device *dev);
+ struct fwnode_handle *__dev_fwnode(struct device *dev);
+ #define dev_fwnode(dev)							\
+-- 
+2.43.0.rc1.1.gbec44491f096
+
 
