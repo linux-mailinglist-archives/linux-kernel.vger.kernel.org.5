@@ -1,306 +1,200 @@
-Return-Path: <linux-kernel+bounces-72983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 205C685BB75
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:09:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96F8C85BB76
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:10:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 465321C21575
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:09:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 45242285ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:10:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B1767C74;
-	Tue, 20 Feb 2024 12:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B3667C75;
+	Tue, 20 Feb 2024 12:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cnbvSuoR"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="OXbdesIX"
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2050.outbound.protection.outlook.com [40.107.113.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78F01664AB;
-	Tue, 20 Feb 2024 12:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708430986; cv=none; b=kKoWij6W3WmRK7v/m1CKPEg0fyZmQFAGxfvDjsn/REmQd1O9UDM/UoMFYxV/mPfvpey2J6Zdjh7eu7oWne2qiktdfTvTO2HvBACgu4Jw+nyFUcTVmpFpbysqUk7eKttdlqA4N3BWf7HfvbwId3e/z21gdBKDhN6IgEcL8spLcY0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708430986; c=relaxed/simple;
-	bh=33VirXyTFbVT+zysoG/H2c2cJMVZuHmlBqex6Y08+KY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=T43BPncVSnvzDoEG9FdlkioWKAGbits1zLZvfar3+lkonJRdmToZxnIQwJCtHyp5sudyBzN3+NWFGN6CPAZiBVsnsVN3JYGQJZOu/D0bKNL8NFdAELXjZ7zfhvcSWjFjg6SlwePhi70lBvgDF8rKhSS0NfMxuEWUtNbZUAzZh8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cnbvSuoR; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5a0dc313058so320932a12.0;
-        Tue, 20 Feb 2024 04:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708430984; x=1709035784; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NiO9eJtO+uVQrXr/q4ZZrBli+HXxDKVU2SENBjkhnPg=;
-        b=cnbvSuoRmGzViflTyfXA3EZkIPmk3vCOVBvKo3QrtiMO53ZmXR+XEA91t+49VZdmlc
-         u/JnBoUl3+bYX3/fuo9M77lkkmsQOMySuG4lfWJMmVImlvz4WQAhL3uOLlFDFaMF8657
-         0+0U5xOm2qZ4GzWprBQ2MULLowuHEbkF7HbkQiN2L9MAYGoSVTXGY1jt2oluXgwsDMRm
-         HN7AbE+vOVjZd03qumsC9euXa07t9K3hP9NOctxp27GTddLs+q/SVIlR8AeOk9ZnDZQ1
-         vJQWhI7ObK4qrMXGy32ShGSykAwJtzM1igh+gT4EfJaRwY430oO6gJjPG+oF1WDnlCV0
-         fplg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708430984; x=1709035784;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NiO9eJtO+uVQrXr/q4ZZrBli+HXxDKVU2SENBjkhnPg=;
-        b=T824JsUop/J4Sgzi1EdZNQ4Zuw8cFIRKjoUydH3ZYsuTMrH8NHxbFcXNppBvC9cyjN
-         ZbHpyrdTAdmOxuQtZHhtqVDJDdILhOIhpJIkT7a97vBNLGP3hT6l2qB6ezgNIdWeFmGU
-         3zdF2YXGAh3l93QC8j4OSaHmKLSTPuc0ruTjmBZ3Y0glV5nBcWqVhZJ673zu1hOKqrgt
-         BLNUbiyJ3Y5Y3TfpZU9ocYvCj4q0PRlraoK8g5vORaIDa1Ds4x0ASXbZtpkLCvvLxaTt
-         tuOOLfB3p/j0l4Ft0o8QwizNtfOJvxQlD/N94MDuP9syCXr+hbhK9fml4j9I38mZrnkj
-         eYHg==
-X-Forwarded-Encrypted: i=1; AJvYcCX7HCIBTJs46MnQynFCvtQLxsSheGvw7QyoLDyHaHr1PBvn3Z7RYwzt+m3Mums7HFLXK0O3PRXm0pKuLB4bXI6XrcwfcCxh6D+QGQKMgkU4rMGctH76J4oQysx8gg6f5bdBUx4IBbTs8fNzRVLu1CGv1cOCLl0YtIBaKeuM0xplq4xNrw==
-X-Gm-Message-State: AOJu0Yyz1OfciaBDeCzIOQhKMJCQk2q3CD9YQq9kF0vm+7m7xfD7gDp1
-	As5BCu14PoYl+y5aC+pIXOhs8ISc7dih8VJa0by+5LQ81LlTtPPd9Iu16XDA61LayRKXp1a4Sfd
-	t6CBWUi+XhWHZBXOZHqzgalGBN4s=
-X-Google-Smtp-Source: AGHT+IH3W9d9qdi3QNlKqfqpXHy9SgKN+QOgk2wFLB6FpnYBYWEXNizsFHWgmT+Y0vTimhvdL78ifGCMazZTPhYS2+k=
-X-Received: by 2002:a17:90a:4e46:b0:299:1ae1:51b2 with SMTP id
- t6-20020a17090a4e4600b002991ae151b2mr10432276pjl.4.1708430983668; Tue, 20 Feb
- 2024 04:09:43 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37E7967C6A
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:10:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.113.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708431011; cv=fail; b=nKQta9qNXwtSd2LOhg9HIea2CqXa0bV8Idc9c5mUyQ/2NDgC+kK+DBmqRqz9qqyubcQCix1CAPR/EHYQc9Mj8z69duF/mr/pyxDekn1ARS8PJjoNX0R9pQbRN2M6leloqrs4WzWSKMMIEpskgqHG5uMOIeG2YraIDlJcKwWjW1I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708431011; c=relaxed/simple;
+	bh=pF8tMd1q3xrsBKCdljHVLWqVR7ZnjcTB+GGhtWR9WIE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=jzfHMKB7HwHTjAMRVHXDdxKaG3lhJK8na1AdSlZxbsRlBCmNeMZ7/0vZ1ijrvTH3409EE422cDAlb13coohbAqbeg3LT9Hg9RJ1exiIc3YkQCcHcEWhkAGxYqzZ/U4/ury22yVGxh2A3qp43qSs1KWk/xnXpr+vidvsxs5CEY8o=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=OXbdesIX; arc=fail smtp.client-ip=40.107.113.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wjnu0xtkZXScs6wuSpibY2xVTRUIRaqxExzmx5vdTTSCN5SiXWsN52T8vZA9KTvxkme7ellGWGPxlLwdi1GemAVxuummHeVLvrC62g4Ui1+o2gv7kHYIrU0rFi/TfNqysCKUrxzqfe8x96FKAJSs/NCWd6htcWtfBTfJ48aVPtcvLfI/kTU1ZQC3gRrRHbA+7pvoB66L1tFAXSZ9cFFOgb1EwioL5WNeB3liDqqA/oEqeQ+Al6t9jxotBk8BxJRJ3rNK+89cCSUuCegPAFkPX47pp6tF5Fo+TZQD5Qk1U4BOUDoVGhDcaUilFxqxbVXqqoKMyslUTkz4mI8UkDN1nA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LxBNaVLTkJMCGBAy1YItVVwlsa+YjYJCx/5/jFsMpD0=;
+ b=Rg8OVz2C2UtsrmYmb6MzPkuEtDEnMTJEEF7UruaE2+LRcg+gpI+zco5oFcTQzpbkFoo6NxOsdT8cew2YzTaKzwobyo/IkVxCtz45eEag5TlQxMzQH4eeXFlcbD/GXfUX4E04cyyKuIeKIyD7oDWWjRtOo/Wrf3gSWnf//RFitBGuEg4FNbHsOVwQF2Vg8sbI8qGb0/rBsn8j2tADiOfHA6CrujKJVzSQKKhiglidSw9oJhkUKbaO0FcZrzUiZOqZMYpsjFaqUp8pjyprGd7vMtYHt387zB1x+8jzmz7LRReYl2cl+bBGpI4KRu3EVzpGlgDTypxxurxOhIO8qA1wWw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LxBNaVLTkJMCGBAy1YItVVwlsa+YjYJCx/5/jFsMpD0=;
+ b=OXbdesIX9ES7tDGPr8zq3BRyIv/ITflZhkSdefkXJtuPT0iNzMTywA51n6P0BPB/5s9krgbvmsf7UoNPQqg9HSbNgoC+9fTttJjMhc7SjEI9koOMCGbYPfUEaJX/qVZCDv6FrAL6MEJmX+FsGL2mQseqLHhNNDd/nO3wjjJxuG8=
+Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
+ (2603:1096:400:3c0::10) by OSYPR01MB5367.jpnprd01.prod.outlook.com
+ (2603:1096:604:8b::11) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 12:10:02 +0000
+Received: from TYCPR01MB11269.jpnprd01.prod.outlook.com
+ ([fe80::6719:535a:7217:9f0]) by TYCPR01MB11269.jpnprd01.prod.outlook.com
+ ([fe80::6719:535a:7217:9f0%3]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 12:10:02 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Marc Zyngier <maz@kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>
+CC: Thomas Gleixner <tglx@linutronix.de>, Dmitry Baryshkov
+	<dmitry.baryshkov@linaro.org>
+Subject: RE: [PATCH] genirq/irqdomain: Don't call ops->select for
+ DOMAIN_BUS_ANY tokens
+Thread-Topic: [PATCH] genirq/irqdomain: Don't call ops->select for
+ DOMAIN_BUS_ANY tokens
+Thread-Index: AQHaY/KbOjxL2AVUs065o+G9f6K8uLETI0WQ
+Date: Tue, 20 Feb 2024 12:10:02 +0000
+Message-ID:
+ <TYCPR01MB112691814D4D444C0CFB51C5186502@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+References: <20240220114731.1898534-1-maz@kernel.org>
+In-Reply-To: <20240220114731.1898534-1-maz@kernel.org>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYCPR01MB11269:EE_|OSYPR01MB5367:EE_
+x-ms-office365-filtering-correlation-id: a5a094c1-b765-44b6-de91-08dc320cddb3
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ mzbYJfMkCvEIaVIih+4GgJOYKmP1jLW4oKv1PcEv3s6wd7de57Q5oC6dEUpiK+qX6axdditcfkq2A3jr00roxiXTFaVZTe0i/pt9PmGzYLQ6Tm5rWnnQoaVWxWMNIk+D1HX6NCisjzewdHXi1GD5Y5KfVigDtdpPpcqE4zqi+nRBWlJZs746WCZ4xpRJ1+/GSVhJ2XRlH4cpYIrwZ1ej248Y4w1JsRhDG4wmW88zbB8OLYYwZJS2KsEruljlAAmDXF4FBh7YBM4nJ5+ap4AW+xwnRVMdbFsJ0eeXW+ckWQplpGDSWojEELKXuB5p0cgUC4VPUfZMB4aAeiznhX68+pHmF/UGzqNmY1r0dW5yNMihDXodKs4jtb4DAuNkRxBCPFoc8o3Qu9/hGsZ1E4l+DK4WlVHzD6tmsSzodDepONG3dAhpVwCrJJrxXKAtvon1lD6Sp/McUWs9j8jDN4RpnykbWrr9aJyR+VTHAwuUmKE1iIsjAi9fq+PqxxEFelbXoBN4nuDPm01Ny6vtpLhZkq+rde2ju7UL7gboxVCLs8PvOBpTWvTaz6mKJ9vl1+dLMDgmE6XCB7KIiAuOpyPv4CpSzEVtRjpoTRHVVFIWjnfZE1k8gklqi3eiRjxEYH21
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB11269.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?p4WDOQ6PeMVVZLRzid7OOL9yxTV9J09ooZMpZlbP75PaYak5XXM5b4ythpYq?=
+ =?us-ascii?Q?p8zheqht1HdJ96hmzL2F8xSFdsgPpH1L1UEB9N6KpPKKr7Og3o6Pu92o0VbO?=
+ =?us-ascii?Q?+62EkAmU2CAowadxPtGLc/3NqeVdFhJo+d8ckjgIRCqEGkS9X+NsZ8sZSTIj?=
+ =?us-ascii?Q?+Xv5CiJ6fjSDBG1ES/xg4R7JOdhdxkH6BjQzIkIDiCWlP+L0yg2aU+P+mG2u?=
+ =?us-ascii?Q?1wPV7Dd9MkKUVfaBDas3DRA5ASJ3aQ96HNcW9VdGXgckJOnPHJbMJHpnuN3O?=
+ =?us-ascii?Q?TS6vDhli4X0fisWSxZGPBAzi7N/hKeQNJCWg2PsWCCQ5mP86MXdcHE7dVqF2?=
+ =?us-ascii?Q?XODG4UeQxMHhLxbTwmF69VKDLQzZQibWvT3hV04q8g25KWR5Nhg6Em6e4T4m?=
+ =?us-ascii?Q?ouW3NDZ/NE0bJdHWNF6yXYBZuzlR1phM1T4at2z2QsapNwo4MA/DycVC4Vzg?=
+ =?us-ascii?Q?QStAi/U+P04V1jJrN3/S9NrAgDXDCal/sR8MGWmLm4qpQ9zafx8CrKY7Wqhk?=
+ =?us-ascii?Q?AHTWUiGXMsDhmgUiL9VpvxrMi/LtuQFirh4ZmgooGYcvnYHjUzrhWYYorY4d?=
+ =?us-ascii?Q?VCKwaqEDrqJJn49/edx0jgdJrSRHDxvbRTnYgwul0OfxyG9b5FliM2mqryMk?=
+ =?us-ascii?Q?3WFuWabhC/uDHmiamX5o6zNFoa84YlHdr2UbhAs/ZvdsD9cB/5D2RvFBICqw?=
+ =?us-ascii?Q?Xnn/kvN8jTEfS8eNb/lAWFXyWungomDHLXyqA+AVlGeygvGp8i7eVr3Ov0su?=
+ =?us-ascii?Q?ETEXITOibhxYGzs5xhlox6hHeaON9sUowZfHkz1yYsoMm2ZVWaCR9drOdRFA?=
+ =?us-ascii?Q?lhrgr0uqpk1K4etxuAvMRbatJk0KMHzyAy4/h5Xn73I2mgfSHxDjzS+sZ2ye?=
+ =?us-ascii?Q?pWleGYa3U8m6Snh6hoaKwkNseyFbVTGLVrKmBufA3bRjI/8xo3u6H4vFJZb7?=
+ =?us-ascii?Q?obZaOP7Lsn3eC/g5sT2KfOeKa9Hfv+1876IziqD7Nybb3IZbGWBL9fGxpFZH?=
+ =?us-ascii?Q?Exrbn1l1sgI/FEPs69lt7dIFr3dTK14GQqWGPFXrFmAba7l+7Hvk6n176FaN?=
+ =?us-ascii?Q?mtNY+luWVyVZqZHcD5rppgH72VeMDYWH3YJ02EB/zSBnmlrFpWnCAW+G6jnd?=
+ =?us-ascii?Q?VfEyiWv3HkfuFwNrHQNba0MlmN3LdNF8ThhNsamNrtkdVlkHCz/mqDhQz6me?=
+ =?us-ascii?Q?is1LsWP9pf0x5oz4JupBH8RqZKgqIuP2SDgaxnRgqlaTp4Ol0vFGJJeruJ/b?=
+ =?us-ascii?Q?iBPnVGZIfFfuJweJA0CytKZbCtsZU5Kvr2n/fJUe/5Aw+l4+DNQQ1BgKuwJf?=
+ =?us-ascii?Q?eOxN6l2RADu+uWzn3ytKqi8U03T0iU8VVJ/fI/FlVRrmA6vcHcRpGsAZFl0p?=
+ =?us-ascii?Q?H9KJsxGawT99QhTPG7Q7CMdtrmfbfLpU7e7SMvGafxCOB1lBnHQ7GbUrc0Ai?=
+ =?us-ascii?Q?u3rpVFzIHrN3Ynqx6Ozr0mT8AKskIGR0Tazke7pw60OTNwP9GydDXX8PGt9Y?=
+ =?us-ascii?Q?ExMgqMtCaEmt/fcU0Fcce0HZpMcSxLUI3SaxNFCoGeDjnrbgpDXcORGnw5oC?=
+ =?us-ascii?Q?aqvla81SfOUdlIZpQlOx7ElfP275Wd/ym7KBJbto7LeABxkX4k0SClPoyk/1?=
+ =?us-ascii?Q?QA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240218101831.113469-1-minda.chen@starfivetech.com>
- <20240218101831.113469-2-minda.chen@starfivetech.com> <SHXPR01MB0863FCE82CA2155E52A3EB6FE650A@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn>
-In-Reply-To: <SHXPR01MB0863FCE82CA2155E52A3EB6FE650A@SHXPR01MB0863.CHNPR01.prod.partner.outlook.cn>
-From: David Abdurachmanov <david.abdurachmanov@gmail.com>
-Date: Tue, 20 Feb 2024 14:09:06 +0200
-Message-ID: <CAEn-LTphwFA6KgCZWsqiMMob2Xw4t4sCZ70U0u0z2=yJOpyGHA@mail.gmail.com>
-Subject: Re: [PATCH v15 15/23] PCI: microchip: Add event irqchip field to host
- port and add PLDA irqchip
-To: Minda Chen <minda.chen@starfivetech.com>
-Cc: Conor Dooley <conor@kernel.org>, =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh+dt@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, 
-	Lorenzo Pieralisi <lpieralisi@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Daire McNamara <daire.mcnamara@microchip.com>, 
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
-	"linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Philipp Zabel <p.zabel@pengutronix.de>, Mason Huo <mason.huo@starfivetech.com>, 
-	Leyfoon Tan <leyfoon.tan@starfivetech.com>, Kevin Xie <kevin.xie@starfivetech.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB11269.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a5a094c1-b765-44b6-de91-08dc320cddb3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2024 12:10:02.0195
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: JtRkMEzMplqpoCUEPCiZsSIqwP9Jw7i0He7CwLvHFm+vyXvS/aWSwfYMQaqNAmggy5PChulmAV7C1z44AehMMc0VDWGFTwk/UBVKMktmO8Y=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSYPR01MB5367
 
-On Tue, Feb 20, 2024 at 1:02=E2=80=AFPM Minda Chen <minda.chen@starfivetech=
-com> wrote:
->
->
-> >
-> > As PLDA dts binding doc(Documentation/devicetree/bindings/pci/
-> > plda,xpressrich3-axi-common.yaml) showed, PLDA PCIe contains an interru=
-pt
-> > controller.
-> >
-> > Microchip PolarFire PCIE event IRQs includes PLDA interrupts and Polarf=
-ire their
-> > own interrupts. The interrupt irqchip ops includes ack/mask/unmask inte=
-rrupt
-> > ops, which will write correct registers.
-> > Microchip Polarfire PCIe additional interrupts require to write Polarfi=
-re SoC
-> > self-defined registers. So Microchip PCIe event irqchip ops can not be =
-re-used.
-> >
-> > To support PLDA its own event IRQ process, implements PLDA irqchip ops =
-and
-> > add event irqchip field to struct pcie_plda_rp.
-> >
-> > Signed-off-by: Minda Chen <minda.chen@starfivetech.com>
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > ---
-> >  .../pci/controller/plda/pcie-microchip-host.c | 66 ++++++++++++++++++-
-> >  drivers/pci/controller/plda/pcie-plda.h       |  3 +
-> >  2 files changed, 68 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/pci/controller/plda/pcie-microchip-host.c
-> > b/drivers/pci/controller/plda/pcie-microchip-host.c
-> > index b3df373a2141..beaf5c27da84 100644
-> > --- a/drivers/pci/controller/plda/pcie-microchip-host.c
-> > +++ b/drivers/pci/controller/plda/pcie-microchip-host.c
-> > @@ -770,6 +770,64 @@ static struct irq_chip mc_event_irq_chip =3D {
-> >       .irq_unmask =3D mc_unmask_event_irq,
-> >  };
-> >
-> Hi Thomas
->   I think this patch code it is easy to review. If you busy, Could you le=
-t other
-> IRQ maintainer review? Thanks.
->
-> Hi Lorenzo, Bjorn and Krzysztof
+Hi Marc Zyngier,
 
-Hi Minda,
+> -----Original Message-----
+> From: Marc Zyngier <maz@kernel.org>
+> Sent: Tuesday, February 20, 2024 11:48 AM
+> Subject: [PATCH] genirq/irqdomain: Don't call ops->select for
+> DOMAIN_BUS_ANY tokens
+>=20
+> Users of the IRQCHIP_PLATFORM_DRIVER_{BEGIN,END} helpers rely on a fwspec
+> containing only the fwnode (and crucially a number of parameters set to 0=
+)
+> together with a DOMAIN_BUS_ANY token to check whether a parent irqchip ha=
+s
+> probed and registered a domain.
+>=20
+> Since de1ff306dcf4 ("genirq/irqdomain: Remove the param count restriction
+> from select()"), we call ops->select unconditionally, meaning that
+> irqchips implementing select now need to handle ANY as a match.
+>=20
+> Instead of adding more esoteric checks to the individual drivers, add tha=
+t
+> condition to irq_find_matching_fwspec(), and let it handle the corner
+> case, as per the comment in the function.
+>=20
+> This restores the functionnality of the above helpers.
+>=20
+> Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Reported-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-This patchset seems to have broken threading (lore, mailman). I have
-seen other folks on IRC mentioning that too.
-
-I am not sure if that requires re-sending, but let's wait for others to com=
-ment.
+Tested-by: Biju Das <biju.das.jz@bp.renesas.com>
 
 Cheers,
-david
+Biju
 
->   Now the code is pending several weeks. Maybe this patch is blocking.
-> Actually I write irqchip ops(ack/mask/unmask) like microchip irqchip ops.
-> They looks very simple that write PLDA mask or status register. They all =
-call the
-> same function plda_hwirq_to_mask(). Now you can see this function below.
-> Except INTx interrupt, one irqnum mapping to one register bit. The PLDA r=
-egister
-> graph can be seen 14th patch, which can show all the PLDA interrupts and =
-easy to
->  get PLDA codes logic.
->
->   Now the 6.9-next will be closed less than 20 days. I still hope the ref=
-actoring patches
-> (patch 1 - 16) can be accepted to 6.9. (Starfive and PLDA patches have to=
- be delayed
-> to 6.10 or later). I will try my best to achieve it because this series p=
-atches reviewed lasts
-> a long period and Conor have reviewed all the refactoring patches.
->
-> I have no experience in refactoring code before this series patches. I tr=
-y my best to do this.
-> Maybe I did something wrong in this. Please forgive me.
->
-> > +static u32 plda_hwirq_to_mask(int hwirq) {
-> > +     u32 mask;
-> > +
-> > +     /* hwirq 23 - 0 are the same with register */
-> > +     if (hwirq < EVENT_PM_MSI_INT_INTX)
-> > +             mask =3D BIT(hwirq);
-> > +     else if (hwirq =3D=3D EVENT_PM_MSI_INT_INTX)
-> > +             mask =3D PM_MSI_INT_INTX_MASK;
-> > +     else
-> > +             mask =3D BIT(hwirq + PCI_NUM_INTX - 1);
-> > +
-> > +     return mask;
-> > +}
-> > +
-> > +static void plda_ack_event_irq(struct irq_data *data) {
-> > +     struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
-> > +
-> > +     writel_relaxed(plda_hwirq_to_mask(data->hwirq),
-> > +                    port->bridge_addr + ISTATUS_LOCAL); }
-> > +
-> > +static void plda_mask_event_irq(struct irq_data *data) {
-> > +     struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
-> > +     u32 mask, val;
-> > +
-> > +     mask =3D plda_hwirq_to_mask(data->hwirq);
-> > +
-> > +     raw_spin_lock(&port->lock);
-> > +     val =3D readl_relaxed(port->bridge_addr + IMASK_LOCAL);
-> > +     val &=3D ~mask;
-> > +     writel_relaxed(val, port->bridge_addr + IMASK_LOCAL);
-> > +     raw_spin_unlock(&port->lock);
-> > +}
-> > +
-> > +static void plda_unmask_event_irq(struct irq_data *data) {
-> > +     struct plda_pcie_rp *port =3D irq_data_get_irq_chip_data(data);
-> > +     u32 mask, val;
-> > +
-> > +     mask =3D plda_hwirq_to_mask(data->hwirq);
-> > +
-> > +     raw_spin_lock(&port->lock);
-> > +     val =3D readl_relaxed(port->bridge_addr + IMASK_LOCAL);
-> > +     val |=3D mask;
-> > +     writel_relaxed(val, port->bridge_addr + IMASK_LOCAL);
-> > +     raw_spin_unlock(&port->lock);
-> > +}
-> > +
-> > +static struct irq_chip plda_event_irq_chip =3D {
-> > +     .name =3D "PLDA PCIe EVENT",
-> > +     .irq_ack =3D plda_ack_event_irq,
-> > +     .irq_mask =3D plda_mask_event_irq,
-> > +     .irq_unmask =3D plda_unmask_event_irq,
-> > +};
-> > +
-> >  static const struct plda_event_ops plda_event_ops =3D {
-> >       .get_events =3D plda_get_events,
-> >  };
-> > @@ -777,7 +835,9 @@ static const struct plda_event_ops plda_event_ops =
-=3D
-> > {  static int plda_pcie_event_map(struct irq_domain *domain, unsigned i=
-nt irq,
-> >                              irq_hw_number_t hwirq)
-> >  {
-> > -     irq_set_chip_and_handler(irq, &mc_event_irq_chip, handle_level_ir=
-q);
-> > +     struct plda_pcie_rp *port =3D (void *)domain->host_data;
-> > +
-> > +     irq_set_chip_and_handler(irq, port->event_irq_chip, handle_level_=
-irq);
-> >       irq_set_chip_data(irq, domain->host_data);
-> >
-> >       return 0;
-> > @@ -962,6 +1022,9 @@ static int plda_init_interrupts(struct platform_de=
-vice
-> > *pdev,
-> >       if (!port->event_ops)
-> >               port->event_ops =3D &plda_event_ops;
-> >
-> > +     if (!port->event_irq_chip)
-> > +             port->event_irq_chip =3D &plda_event_irq_chip;
-> > +
-> >       ret =3D plda_pcie_init_irq_domains(port);
-> >       if (ret) {
-> >               dev_err(dev, "failed creating IRQ domains\n"); @@ -1039,6=
- +1102,7
-> > @@ static int mc_platform_init(struct pci_config_window *cfg)
-> >               return ret;
-> >
-> >       port->plda.event_ops =3D &mc_event_ops;
-> > +     port->plda.event_irq_chip =3D &mc_event_irq_chip;
-> >
-> >       /* Address translation is up; safe to enable interrupts */
-> >       ret =3D plda_init_interrupts(pdev, &port->plda, &mc_event); diff =
---git
-> > a/drivers/pci/controller/plda/pcie-plda.h
-> > b/drivers/pci/controller/plda/pcie-plda.h
-> > index e0e5e7cc8434..a3ce01735bea 100644
-> > --- a/drivers/pci/controller/plda/pcie-plda.h
-> > +++ b/drivers/pci/controller/plda/pcie-plda.h
-> > @@ -107,6 +107,8 @@ enum plda_int_event {
-> >
-> >  #define PLDA_NUM_DMA_EVENTS                  16
-> >
-> > +#define EVENT_PM_MSI_INT_INTX                        (PLDA_NUM_DMA_EVE=
-NTS +
-> > PLDA_INTX)
-> > +#define EVENT_PM_MSI_INT_MSI                 (PLDA_NUM_DMA_EVENTS +
-> > PLDA_MSI)
-> >  #define PLDA_MAX_EVENT_NUM                   (PLDA_NUM_DMA_EVENTS +
-> > PLDA_INT_EVENT_NUM)
-> >
-> >  /*
-> > @@ -155,6 +157,7 @@ struct plda_pcie_rp {
-> >       raw_spinlock_t lock;
-> >       struct plda_msi msi;
-> >       const struct plda_event_ops *event_ops;
-> > +     const struct irq_chip *event_irq_chip;
-> >       void __iomem *bridge_addr;
-> >       int num_events;
-> >  };
-> > --
-> > 2.17.1
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> Fixes: de1ff306dcf4 ("genirq/irqdomain: Remove the param count restrictio=
+n
+> from select()")
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> Link:
+> ---
+>  kernel/irq/irqdomain.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c index
+> aeb41655d6de..3dd1c871e091 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -449,7 +449,7 @@ struct irq_domain *irq_find_matching_fwspec(struct
+> irq_fwspec *fwspec,
+>  	 */
+>  	mutex_lock(&irq_domain_mutex);
+>  	list_for_each_entry(h, &irq_domain_list, link) {
+> -		if (h->ops->select)
+> +		if (h->ops->select && bus_token !=3D DOMAIN_BUS_ANY)
+>  			rc =3D h->ops->select(h, fwspec, bus_token);
+>  		else if (h->ops->match)
+>  			rc =3D h->ops->match(h, to_of_node(fwnode), bus_token);
+> --
+> 2.39.2
+
 
