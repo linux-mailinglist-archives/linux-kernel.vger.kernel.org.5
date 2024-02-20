@@ -1,90 +1,86 @@
-Return-Path: <linux-kernel+bounces-72150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D3485B00D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:34:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60E8E85B011
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:42:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B028B210EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:34:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C555DB2187C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 00:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E5E4A26;
-	Tue, 20 Feb 2024 00:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 523D2BE4F;
+	Tue, 20 Feb 2024 00:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Cy+7QID1"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UlpJj0tg"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06364185B
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:34:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E4494C63;
+	Tue, 20 Feb 2024 00:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708389286; cv=none; b=rzDvPg/DDtYf6l9rN/mtAJR2AVO29jTZUlK+KmmCbHYSxOkUN+Uy+NFMp27xAzkhILiXRLpPk9OJv5h+Kv3bGB02c+L8h2ZIZaoRs3QP5d1/YwRJ74J9xb99vM98JNmJ83lqJaXf0lbNkfeSwVh7QPKqlZwofmcMnzFCQtFKEeg=
+	t=1708389728; cv=none; b=P6NRkTCmpReaSsQ4pCoLWp05H1rjfO3GdvmdDWAVWcWrmRtajiieqyad7q4KoSqCjJrFfd5V1Ye0IqbfCsUr12te/LVa0QiT7LuIf0brU5vQYPDq60QHN+u9myiyTN1ggRXDJ5PvWUJb4HMhefZew+8NIee0ZqnI5rCgnhh3X/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708389286; c=relaxed/simple;
-	bh=twysEfuQ4T/0w/2qh6F2Tm91ScgbJMClrcyBk8mU50U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Veac6j5rpPzd8/0SW5HlXYMvzxuStaFAH3J+G+SUgv0qZKA1BsfjJ1Pe8uBlPbNiWHNN60FSqV1dTEwAPSAeeKIIEFtF/iw8MRuykxoEGXb/llH9yYRr7TDdIEf57LhHyAbgM2YMx8T1Qu/nbmFy+15ZeyGYyhjmj/FmEApKyI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Cy+7QID1; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708389283;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uJszGoDmcJ/e3cfaUrhP/NITyUlid6+ei0fLVW+ftlI=;
-	b=Cy+7QID1hKJgbw06GAFxHFEsANhHN4lh2u2ziDe7GLxeLc3QC6eW23/4JFhNkYlSlJPMSc
-	M6lylbR3VvJIK2GhWB0lFV4Ec939KI96tfIcBFlp1b5GaL++u3+d+gIej6ZfERIIcjKKXw
-	7biA+r2Adt4Si/rODxw8SUuzM09Gi0E=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-127-dn5L_tJ4MfybouTfh8BNvA-1; Mon, 19 Feb 2024 19:34:42 -0500
-X-MC-Unique: dn5L_tJ4MfybouTfh8BNvA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-410e83001cbso27064605e9.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 16:34:42 -0800 (PST)
+	s=arc-20240116; t=1708389728; c=relaxed/simple;
+	bh=isFZRqU/QindhA8jyP52Q3TJRY3mvK6OJTgs+zYmt+0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fY2g3jGnqpb15z8VRqXuJjbOuLXQNTX4J4tsjmWJhNqp5Nfcpl6gfSKjMyndS3et39cCD2mqP8TEOu74sOyiAvUCpaYps/phW5CvsxJZivOX9/HfzPmEXxgq7uNiTedak5NNbagLmBlt/XnD8lWicnCr4jsJo3gEerJBU5FtHNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UlpJj0tg; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso3267612a12.3;
+        Mon, 19 Feb 2024 16:42:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708389726; x=1708994526; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z6VN1Brni0/Tp50Gu9RGeDhBJRhZhzjZgGi+3xEXJ7I=;
+        b=UlpJj0tgLEC7f3/c67lM74JJj764shqJLvEmLfr6xeRX3ee/YopxHwCe1hJaNXEQjy
+         r93ryF0yknEYI22WdlSEfpg/bhZqwUP5xZOonYeBkfMT98gFw/xVCJg7o+znCb9mDVl7
+         2wmU5iLoH8yt6O1Qv22tu7c4Pidyeb7wwmapf72MXXBuKHflYf5QgMNf9oJdJ3WBLOtM
+         W2Rf+AtyuwcRBIUKCTbRD252FLzpjeCOtSoXkBpDeuYD4CpcOkKWN9xovEzrwIO+2HGS
+         xJVo6I+WuC50rR0QFWppEvmLA63ONTJKe8xthiMCjxExtNoCw0wPCYZYDBt/MTw+g6ww
+         3J4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708389280; x=1708994080;
+        d=1e100.net; s=20230601; t=1708389726; x=1708994526;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=uJszGoDmcJ/e3cfaUrhP/NITyUlid6+ei0fLVW+ftlI=;
-        b=n3ISU2I6Z20NVNtZI438hVCRhka7xaMFBTTW/Xno59lL62u2c7NJkVKNZ0IYjBUnrw
-         yZ1i/0qcYo0tw0T+0J0BFBegWWPwv5kwtAQBNK8swlMnFSyYgxgTwn+tWEkfMou3Lobu
-         ic84ehn4hCiV/mPv0GuQ3l2VAu5dnj2J7nB+4D4/+x6pvztUN4DlwgNPo2+wOyv4JL/8
-         I/Yc+UuT7D+AUG8zI4dekXIik2uaRqloboN9Fd2QGCrQ6C4ZRkCdq0ikR5mU7g476xKE
-         puN79zXK3bq1mC14zLwlCZCE59b3ZbTpef2WA5MOS2/3LtT3y1c8iZDu1KXzscIf2/oz
-         YBKQ==
-X-Gm-Message-State: AOJu0Yy/0oEFCrRtU9PQyjiO2v+lMEBMSRwmtx0+JxOppI1EhVMiwYcs
-	J40Wy+/FWJqP8dGh3HA30gN2xkETKBNWuUJXN7g/opgUAGwt4nWM3fB527yKe5EoWD9VqxdVpVc
-	zjLxUDInfgIj66upRJJ5nDenXxq4jBZTOha+rVY0kVq51oG1sZwoJHX0A+KXbjpPgAHiFLPYaDv
-	QxXFNhDe11dtGBdJjo1Vvt+8brNXNrEDJfya69xCGxRLE7
-X-Received: by 2002:a05:600c:198f:b0:412:6d41:920d with SMTP id t15-20020a05600c198f00b004126d41920dmr434597wmq.38.1708389280354;
-        Mon, 19 Feb 2024 16:34:40 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGscKC/h+165pWPIQGiFVK1k+j+cPntLp690DOup1A66feMphWpMObuy7g/A9wibrQFwsUJhA==
-X-Received: by 2002:a05:600c:198f:b0:412:6d41:920d with SMTP id t15-20020a05600c198f00b004126d41920dmr434581wmq.38.1708389279984;
-        Mon, 19 Feb 2024 16:34:39 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id l12-20020a05600c4f0c00b004122b7a680dsm12803198wmq.21.2024.02.19.16.34.39
+        bh=Z6VN1Brni0/Tp50Gu9RGeDhBJRhZhzjZgGi+3xEXJ7I=;
+        b=VUl1c7nRRzoIwW0Q1GE125pVb5lScc7gNKc0YqM55mRusRZqQoWb0X+xFbSJWOn9oB
+         takM6Mh1rgXTUEkZNzw3klwjh8nNx7ON6Juh53CUWvevydBsth30hJkodpISLFpfxB98
+         ei4Yk76wO3HuHSpfTaVN+HdoGow/QN555ZeVDX4joUJfVe7khTOlZhJFHIWn+P6ZrxOz
+         CaLU9oF/0S8/mnyMW7nUzVrEqdnS/7Ht/tO3iwaDICEXrjQp7KrD7nsCARmIxWpABq/5
+         RlD/CPS5gDc74A5F37ctkNjFTu4W06AFfGS1t6jr68Bl/FR4PHSEWqbGO+MkSBJ1KXII
+         yZaA==
+X-Forwarded-Encrypted: i=1; AJvYcCUT2iBs7d+LXBdpHJqpWvAOhQa9hxhdMk77ZD9G09sjXEz0UryYnU4XfUi2Ye/qgauJdEk1esYV0KhxqRXmeQuvewgbEHQvZWwrv6EwrCHIm2QpqvQebiJAF4dBsNrDP5X3LpWq14B/G+tl7xKj/A2opDCYyQVq1KTPX1Qy17R1Z3rrBg0=
+X-Gm-Message-State: AOJu0YzYp0gp99s4/AiDAKt5OulSy4rSukh2hUDzxRakqrvFS2dBMvZu
+	PsRP+3XrWhW8OsP5/wARfPnnCc/TxqX7t49/OeuHCqOKhK01LGGU
+X-Google-Smtp-Source: AGHT+IEHM69vGr3cgZ5j3CjQTgkbjwl8XjDEf2FDav5T0t4zSLwrW2rKbP3r/aS5Wva2ajffTEXvTQ==
+X-Received: by 2002:a05:6a21:3182:b0:1a0:8578:fa97 with SMTP id za2-20020a056a21318200b001a08578fa97mr15579743pzb.48.1708389726256;
+        Mon, 19 Feb 2024 16:42:06 -0800 (PST)
+Received: from a28aa0606c51.. (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id cz3-20020a17090ad44300b00299bf19e872sm1831393pjb.44.2024.02.19.16.42.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Feb 2024 16:34:39 -0800 (PST)
-From: Javier Martinez Canillas <javierm@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: kernel test robot <lkp@intel.com>,
-	oe-kbuild-all@lists.linux.dev,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Helge Deller <deller@gmx.de>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	sparclinux@vger.kernel.org
-Subject: [PATCH] sparc: Fix undefined reference to fb_is_primary_device
-Date: Tue, 20 Feb 2024 01:34:30 +0100
-Message-ID: <20240220003433.3316148-1-javierm@redhat.com>
-X-Mailer: git-send-email 2.43.0
+        Mon, 19 Feb 2024 16:42:05 -0800 (PST)
+From: Jacky Huang <ychuang570808@gmail.com>
+To: linus.walleij@linaro.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	p.zabel@pengutronix.de,
+	j.neuschaefer@gmx.net
+Cc: linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ychuang3@nuvoton.com,
+	schung@nuvoton.com
+Subject: [PATCH v5 0/4] Add support for nuvoton ma35d1 pin control
+Date: Tue, 20 Feb 2024 00:41:55 +0000
+Message-Id: <20240220004159.1580108-1-ychuang570808@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,39 +89,74 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Commit 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE
-symbols") added a new FB_CORE Kconfig symbol, that can be enabled to only
-have fbcon/VT and DRM fbdev emulation, but without support for any legacy
-fbdev driver.
+From: Jacky Huang <ychuang3@nuvoton.com>
 
-Unfortunately, it missed to change a CONFIG_FB in arch/sparc/Makefile and
-that leads to the following linking error in some sparc64 configurations:
+This patch series adds the pin control and GPIO driver for the nuvoton ma35d1
+ARMv8 SoC. It includes DT binding documentation, the ma35d1 pin control driver,
+and device tree updates.
 
-   sparc64-linux-ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_registered':
->> fbcon.c:(.text+0x4f60): undefined reference to `fb_is_primary_device'
+This pin control driver has been tested on the ma35d1 som board with Linux 6.8-rc5	.
 
-Fixes: 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/r/202401290306.IV8rhJ02-lkp@intel.com/
-Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
----
+v5:
+  - Update the pinctrl driver header file pinctrl-ma35.h
+    - Include platform_device.h to fix compile issues.
 
-I don't have a sparc64 toolchain to test this patch, but I'm pretty sure
-that this is the correct fix for the linking error reported by the robot.
+v4:
+  - Update the pinctrl driver Kconfig
+    - Add depends to CONFIG_PINCTRL_MA35D1 to prevent compilation errors.
+  - Update the pinctrl driver
+    - Utilize devm_kcalloc() instead of devm_kzalloc().
+    - Employ ARRAY_SIZE() instead of sizeof()/sizeof().
 
- arch/sparc/video/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3:
+  - Update DTS and YAML files
+    - Corrected the unit address of nodes gpioa ~ gpion.
+    - Removed the invalid "pin-default" node.
+    - Removed the phandle entry from "nuvoton,pins".
+  - Update pinctrl driver
+    - Fixed the Kconfig by using "depend on" instead of "if".
+    - Removed unused #include of header files.
+    - Utilized immutable irq_chip instead of dynamic irq_chip.
+    - Replaced ma35_dt_free_map() with pinconf_generic_dt_free_map().
+    - Implemented other minor fixes as suggested by the reviewer.
 
-diff --git a/arch/sparc/video/Makefile b/arch/sparc/video/Makefile
-index 6baddbd58e4d..d4d83f1702c6 100644
---- a/arch/sparc/video/Makefile
-+++ b/arch/sparc/video/Makefile
-@@ -1,3 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
--obj-$(CONFIG_FB) += fbdev.o
-+obj-$(CONFIG_FB_CORE) += fbdev.o
+v2:
+  - Update nuvoton,ma35d1-pinctrl.yaml
+    - Update the 'nuvoton,pins' to follow the style of rockchip pinctrl approch.
+    - Use power-source to indicate the pin voltage selection which follow the
+      realtek pinctrl approch.
+    - Instead of integer, use drive-strength-microamp to specify the real driving
+      strength capability of IO pins.
+  - Update ma35d1 pinctrl driver
+    - Add I/O drive strength lookup table for translating device tree setting
+      into control register.
+  - Remove ma35d1-pinfunc.h which is unused after update definition of 'nuvoton,pins'.
+
+
+Jacky Huang (4):
+  dt-bindings: reset: Add syscon to nuvoton ma35d1 system-management
+    node
+  dt-bindings: pinctrl: Document nuvoton ma35d1 pin control
+  arm64: dts: nuvoton: Add pinctrl support for ma35d1
+  pinctrl: nuvoton: Add ma35d1 pinctrl and GPIO driver
+
+ .../pinctrl/nuvoton,ma35d1-pinctrl.yaml       |  163 ++
+ .../bindings/reset/nuvoton,ma35d1-reset.yaml  |    3 +-
+ .../boot/dts/nuvoton/ma35d1-iot-512m.dts      |   80 +-
+ .../boot/dts/nuvoton/ma35d1-som-256m.dts      |   83 +-
+ arch/arm64/boot/dts/nuvoton/ma35d1.dtsi       |  150 +-
+ drivers/pinctrl/nuvoton/Kconfig               |   19 +
+ drivers/pinctrl/nuvoton/Makefile              |    2 +
+ drivers/pinctrl/nuvoton/pinctrl-ma35.c        | 1211 +++++++++++
+ drivers/pinctrl/nuvoton/pinctrl-ma35.h        |   51 +
+ drivers/pinctrl/nuvoton/pinctrl-ma35d1.c      | 1797 +++++++++++++++++
+ 10 files changed, 3549 insertions(+), 10 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/nuvoton,ma35d1-pinctrl.yaml
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.c
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35.h
+ create mode 100644 drivers/pinctrl/nuvoton/pinctrl-ma35d1.c
+
 -- 
-2.43.0
+2.34.1
 
 
