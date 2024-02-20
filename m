@@ -1,120 +1,154 @@
-Return-Path: <linux-kernel+bounces-73401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610F385C203
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:07:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A657885C207
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:07:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 946511C22049
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA0041C224D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:07:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEB167690F;
-	Tue, 20 Feb 2024 17:07:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4181876C99;
+	Tue, 20 Feb 2024 17:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gS/+V8Sb"
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lAI/MB9o"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACD0676419;
-	Tue, 20 Feb 2024 17:07:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C92F176911;
+	Tue, 20 Feb 2024 17:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708448841; cv=none; b=oJSBfUazqKz85t9AX6G6WfyXcHaYQ3jXmUBBzHw7WHfcTlsTqSGKb+1Dy3rrEJPieGt8pPYFszfSO9ixWyTk2Vyd3sYlFYJM3NxOcB/3dlS7ezL6Bc6hOLpu09PmSg956xr/KhMRYiWuf3LjQjkgGtvskSgztQPcdZJ9nWBgj78=
+	t=1708448843; cv=none; b=QVQPY2D654ddAIxtcnN5BHq2OaAPAqK6bSACsEcif4ID/de3P8GJqEzX7WLjuP25w6U9icL+Eh1Ulbv2sRnQWXowMYPgRJSeQui3xN0l11LlL9ZKzxOiN7wKYdDkMFXKk4ye2/dgJsKuMulRsGD8Rg3BR3Uo2jYOebNZgYdQHn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708448841; c=relaxed/simple;
-	bh=X1f6yVZGvSqGIjaMOSQQn5bXgJzLy/DlO5pJJScO/L8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qmjjWhm0OFCTLl3UwhE9Tj5HSKw9dHX7jIYFzpwCTYSenHJU5cn5RkHVXfHYEn7hQonrB/5WKp7j+rKsLo6ZM18zkvgpfb0CwIE8CoeG38CqXRGHJvJBDx3Ek1fFZbvPHcM7zgWb5k/YkC70XiF2pQGnCQjkmZIaIN91l2trJlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gS/+V8Sb; arc=none smtp.client-ip=209.85.216.51
+	s=arc-20240116; t=1708448843; c=relaxed/simple;
+	bh=mtYh4pPl8nUvoS1cpHihY1SAedbSQ4SPzAugmWQRuzg=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Y9tKtrsX/ngBqg2MyKGA5LjNzCCY1VRsJE0ImIUWu1g9u+j94OdLqEUQitNKFf73JnSGMgYx9GS8mpftAmGAOlv8nGzW0C84lcGdRk6hgrXYJYJAhJMGKFLLb19SBNOYIlYyovHsU1wZQtlmHYiqQrgPxy7vQIXb7+zvlsYkJ9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lAI/MB9o; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-290ec261a61so3447753a91.0;
-        Tue, 20 Feb 2024 09:07:19 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4127109686fso3954715e9.2;
+        Tue, 20 Feb 2024 09:07:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708448839; x=1709053639; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X1f6yVZGvSqGIjaMOSQQn5bXgJzLy/DlO5pJJScO/L8=;
-        b=gS/+V8SblJJWqLY/JqPTiPkpY70kC6fAkRgr7G9boPB7/wovKrAUXBS3r7dCTjJbfY
-         I904xGzcZyoGE9USEmDDHUqYoizRB7kAQoJSsBYmsx1qHgAa/AFRG620TKQVw2TQnBZT
-         WaWeooSuZ28YPw2kLu94Iae1zSDuK+DgfyT/3aUdUC7ndNwPtlrcXZ12nplMTcCfHZet
-         GWJnEwkQfzSp1OXtRuZ51VtG6yQM873P/sRaQhyr4i4+7KtEgUqVxeHMUCi58OTC20an
-         7y7u97V7o0JUaEuQXLNVDXDfGdbZGVhn2ji9WcgCHCfXDCtPsyXec2LRADMtaWNeYgvR
-         bE/A==
+        d=gmail.com; s=20230601; t=1708448840; x=1709053640; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bS6mzlS2FvG30g8kCU8KyMPeOwgxgcQl7tVtSUw6YUE=;
+        b=lAI/MB9oFbzyaNZfoz840sx0CMM+mGzBvK2b4ln1Kge5yPZFBIpP1VhXIMjjkj5uNC
+         psYZuPFBvfwISobjsRTN5bRv2T8Q0EdRlT/YL7F9WT1uU+nsAKDLkoIyrHbDkzp6iW8t
+         Gx1B5I9MqU6bHy32svhJ/WpZGVlbTipSXdZWysjNKWFplkOvID1ULrNV1KuG17xFdcm1
+         00Oka3gVCTwKqysWHTLrHVcE/7Iv/hBcdu+cqjoc3aDmUjUVRnoJdGauABsIQLw50BiM
+         XRiYd+FmDrG9OHKvc4B8rOPut2GYuHpsPHj2MD1dTKD4sq5hSET/4QlCs/68MBqLEgyi
+         +tCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708448839; x=1709053639;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X1f6yVZGvSqGIjaMOSQQn5bXgJzLy/DlO5pJJScO/L8=;
-        b=WcATCyTyRE0JFRgLCkwfGzafdK90WsYUSCzFmZpNa2ngIY5swclyZW2CoWR5LuQ9rR
-         jY/J+FRijlrPHTwyny8w+d7vWFmv+MaAYV8RzAsqT7OyiaRAS2sDVQGaP0CU9CH+5JdM
-         l0xCu4BlTz/msHzYiDEjmDkOfuVxpKuoM0inL94aAmr3xSMMhxTFHvZOghxv++bdpyIC
-         OCxOk2ego6kjPTiRjs7rC5+mffUmBWrS2ZEJ8hbn3P4mZwzReuHaJFgWHB/mqf71/VBR
-         K5EZIiTnDBxlKrDG1cyJ0P/jMMS4psxxGqYJ0Pkr4vMdmr1htCQhSJFYifvtPtpgpTin
-         TJ3g==
-X-Forwarded-Encrypted: i=1; AJvYcCVANFMexxGRVG5mHPQiyVZTbz58LfvnO1OHMzKMCt2D9tnO4g6VLHqRhp5JVFvHbFfNsbkOaWc/yV27kK/FK5dsATcoMMKdpZIsX+U8kFtrq7r8jmbtozbwyvXaE07Ay5R5rGBHQRm1u5EOuIg=
-X-Gm-Message-State: AOJu0YxjqeKvM6He6J0hgC9uQ1T57eiXRZJR3cstHo+q8qx4zcx8ng8K
-	eUIZRC3/E4jcJ9TxwQBDBHr+daaUj5pik7O5jvO0GkCMifJvTvyGYGLPFgyTDYIe+wvRv60JD/p
-	2wbgVMc7I4OqxIAjy2ZuYt/gsUlpQxC+N
-X-Google-Smtp-Source: AGHT+IEKbzTmxxOipF1JjBIyr6jX91Z7VIXgg+4jlXs41dWyjRETYbjgAHo18r/2l0/L1N9leaHcak/6vvU/zZUfI40=
-X-Received: by 2002:a17:90a:1c17:b0:299:544c:4933 with SMTP id
- s23-20020a17090a1c1700b00299544c4933mr7056810pjs.14.1708448838958; Tue, 20
- Feb 2024 09:07:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708448840; x=1709053640;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:cc:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bS6mzlS2FvG30g8kCU8KyMPeOwgxgcQl7tVtSUw6YUE=;
+        b=Ls2mFvTLZTSzKWqfZHsXXNN/4lthFSDbZ55S+lxCuXzdYHJyFZcX5YphIHpwCd6m5y
+         NdDqALDIWnmhLEYhYTyXN7NCCitmAKDak7znOh3QR/DwMdaNTDDoHuaSWPebZAR6dmEi
+         Oe6rZ9SHI/gxubn992Go3jnxmcLq2eF/60bDYzQqxirc4H+Zi1RQVEjF4HArMUbS4l9h
+         AtJnEbKuIDGsT5SxaNaELPddBVWPnViE2kl/JSTDNIa9N61GYUR9xgF2LQYAZ+1Qsfz7
+         Rmwuxjcto8FnNngTYIrWM00d6Y16OlV0KHo68xEArn5DAvG7pUSua7DndSzcUMYIPZSs
+         E4dA==
+X-Forwarded-Encrypted: i=1; AJvYcCXRo17lhE6TcalT23u+VRU6rPP0Fdnh3HpZs2WRzD7zwrqzyKji8fdz9gpUIElbHNZqHs8tpczVlm2NaZp8iy944sscg6+MZ1MHLBysxFch/A732Q5/qw1BECaukZcAUrBKGEOc4+kLRtbheSY6p8PoHycPPBMUDc52vIIqhF7QNqNDq9XZyPS4kxu23b/QxrdwxuQWSmAYU+VYWzpkvMRcqkVkmjVjVX0lk3P0R6KwBHg3/Y1NBfi+qg==
+X-Gm-Message-State: AOJu0Yw0/jww1HVDaa96CwiGtPtcQ/dQkCIXvH+3a4ePzF5mRuElCuuI
+	vuMis8O8cXD2iXuCkXrY/WPq4zInCou5KGFAw6gNLYIUVzVvprJ7
+X-Google-Smtp-Source: AGHT+IGKDgeb1b4/RZMqZUijqCwIZaYIC4U3t4wwvNhBDBJASOb+1pT/1HGi9975hFGHmqQ0PDn8dQ==
+X-Received: by 2002:a05:600c:1c93:b0:412:6dd4:1001 with SMTP id k19-20020a05600c1c9300b004126dd41001mr2072917wms.16.1708448839929;
+        Tue, 20 Feb 2024 09:07:19 -0800 (PST)
+Received: from [192.168.10.18] (54-240-197-233.amazon.com. [54.240.197.233])
+        by smtp.gmail.com with ESMTPSA id o20-20020a05600c4fd400b00412590eee7csm12231744wmq.10.2024.02.20.09.07.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 09:07:19 -0800 (PST)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <bd028731-bc98-4735-a7f9-9b4ef9c00668@xen.org>
+Date: Tue, 20 Feb 2024 17:07:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <320c4dba-9919-404b-8a26-a8af16be1845@app.fastmail.com>
- <Y9ES4UKl/+DtvAVS@gmail.com> <16641a56-9139-4396-a5a8-89606bedd1f1@app.fastmail.com>
-In-Reply-To: <16641a56-9139-4396-a5a8-89606bedd1f1@app.fastmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Tue, 20 Feb 2024 18:07:06 +0100
-Message-ID: <CANiq72meap5C9bkj5rNDE=0U5gb5OKwDrrTSrVRwJbkAPWgUsg@mail.gmail.com>
-Subject: Re: [PATCH] x86/insn_decoder_test: allow longer symbol-names
-To: David Rheinsberg <david@readahead.eu>
-Cc: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org, 
-	Dave Hansen <dave.hansen@linux.intel.com>, Borislav Petkov <bp@alien8.de>, 
-	Ingo Molnar <mingo@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, John Baublitz <john.m.baublitz@gmail.com>, 
-	=?UTF-8?Q?Sergio_Gonz=C3=A1lez_Collado?= <sergio.collado@gmail.com>, 
-	David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v13 00/21] KVM: xen: update shared_info and vcpu_info
+ handling
+To: Sean Christopherson <seanjc@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
+ kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240215152916.1158-1-paul@xen.org>
+ <170838297541.2281798.7838961694439257911.b4-ty@google.com>
+ <05973da0-f68c-4c84-8806-bdba92f2ed6e@xen.org> <ZdTQCuWor4ipxW6E@google.com>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <ZdTQCuWor4ipxW6E@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Jan 27, 2023 at 11:39=E2=80=AFAM David Rheinsberg <david@readahead.=
-eu> wrote:
->
-> The current workaround is to just disable CONFIG_X86_DECODER_SELFTEST, wh=
-ich I thought is a sad state. I can gladly use `256 + KSYM_NAME_LEN` and ad=
-d a comment ala "room for insn-encoding and a symbol name". Would that be a=
-cceptable? The alternative would be to try to dyn-alloc a buffer and increa=
-se it to the actual line-length?
+On 20/02/2024 16:15, Sean Christopherson wrote:
+> On Tue, Feb 20, 2024, Paul Durrant wrote:
+>> On 20/02/2024 15:55, Sean Christopherson wrote:
+>>> On Thu, 15 Feb 2024 15:28:55 +0000, Paul Durrant wrote:
+>>>> From: Paul Durrant <pdurrant@amazon.com>
+>>>>
+>>>> This series contains a new patch from Sean added since v12 [1]:
+>>>>
+>>>> * KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+>>>>
+>>>> This frees up the function name kvm_is_error_gpa() such that it can then be
+>>>> re-defined in:
+>>>>
+>>>> [...]
+>>>
+>>> *sigh*
+>>>
+>>> I forgot to hit "send" on this yesterday.  But lucky for me, that worked out in
+>>> my favor as I needed to rebase on top of kvm/kvm-uapi to avoid pointless conflicts
+>>> in the uapi headeres.
+>>>
+>>> So....
+>>>
+>>> Applied to kvm-x86 xen, minus 18 and 19 (trylock stuff) and 21 (locking cleanup
+>>> that we're doing elsewhere).
+>>>
+>>
+>> Looks like you meant 17 & 18?
+> 
+> Doh, yes.
+> 
+>>> Paul and David, please take (another) look at the end result to make sure you don't
+>>> object to any of my tweaks and that I didn't botch anything.
+>>>
+>>
+>> What was the issue with 17? It was reasonable clean-up and I'd like to keep
+>> it even without 18 being applied (and I totally understand your reasons for
+>> that).
+> 
+> I omitted it purely to avoid creating an unnecessary dependency for the trylock
+> patch.  That way the trylock patch (or whatever it morphs into) can be applied on
+> any branch (along with the cleanup), i.e. doesn't need to be taken through kvm-x86/xen.
 
-John independently hit this issue again. Could we fix this? Going for
-the `256 + KSYM_NAME_LEN` sounds good enough for the moment since it
-would be a clear improvement, though I agree this could be cleaned up
-further.
-
-Sergio took the approach David suggested in a related patch [1], but
-perhaps it is best to submit the fix on its own so that it is easier
-to put it in. David, would you be so kind as to submit a v2 with that?
-Hopefully x86 can pick it up, otherwise with an Acked-by I am happy to
-take it too; and then Sergio can submit his patch on top again.
-
-Thanks!
-
-(Cc'ing also Masami who wrote this originally)
-
-[1] https://lore.kernel.org/rust-for-linux/20231119180145.157455-1-sergio.c=
-ollado@gmail.com/
-
-Cheers,
-Miguel
+Ok, personally I don't see the dependency being an issue. I suspect it 
+will be a while before we decide what to do about the locking issue... 
+particularly since David is out this week, as he says.
 
