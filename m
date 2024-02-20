@@ -1,273 +1,367 @@
-Return-Path: <linux-kernel+bounces-73639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 715AA85C560
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:03:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4404A85C55F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:03:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27D53285DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:03:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598401C21B05
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5158D14A0B5;
-	Tue, 20 Feb 2024 20:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QNz6T+0q"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F5514AD12
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C699677656;
+	Tue, 20 Feb 2024 20:03:34 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F0037142
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 20:03:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708459419; cv=none; b=TSulUtKjXEqrbkhtTYWjbLH8xh9HMZ8O5QGxqsHDtAbwVjh71Bnf/HZQiWqthoXeBWFjmt99/M01lIzc2f64eXCielPqPoaWSm9hlnp6hBKAw7xPR9Fa5tB6w7N9TVa6B/CaKat1AO8v5ry6tHiGqJ4HFrdRDpgXhLSWxV/EaVY=
+	t=1708459414; cv=none; b=B6kzEojBNxZfJddctX0pz6T4YNX7XcjLcljp7zFb75A7xgsCnmRAHaasWl8lmQxmg9S3FZbN5BlAGQuUSSAe7onVFl+pq9J8N9+7ZSklvwNT7Z/nMRi7Xipajt7juRqYUkYXUKu2b9qd2vr+KLSmn1PvbV0cEhM1sf63RHXc+/E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708459419; c=relaxed/simple;
-	bh=bSI0amZpEoKNz4ctn7HeIKGVObO+8OmOkCcRmss7Fns=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K1SZIc6FYANzfMClT+iX5doGzP+JMLez7UzkYfLNU29Qo+bI59WCuCUJX69rbesoDKEW77o2ljLaQ2hNWbOkknZoL5vywsjX7fE/l17nCuuK9utkaTlgKrkpSF4rhvFvOSHVVELcqe7J3QEYta8eZE1Qq3qjGzP61e3vbZX1oAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QNz6T+0q; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33d066f8239so2889465f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708459416; x=1709064216; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nv7+yFK9n5VmWtu0mqH5ORYhJIf9Kx3iQ/yYWuoADPM=;
-        b=QNz6T+0qRdOhVU6FVGn+SFKztK/Vx5pVZH4AaWjX8jWsRcI2A5rCRCEj/m/pmV1bvK
-         uSFao0wzC3qyNYu1PFEHeIxJ/5Gej2gLAW+q8kv5DMPWbbN9+v+rokkd+bS8zxI+Wpk3
-         FIif6XyYt0TX8/G+LXGnZnSD/rRVs/oEke0ezafaVgNELSdMQCAd6hgUh8/ECmwyVs1f
-         ZIQ3AqKZwwR0Hs1F0+GmXGT0FD1AXQSpxPWJ5d8YvGcb+3msFuPiJ35Hw0AtNKEwaYp2
-         YbjEXoLlSJAx8aof27UGIiccSKsXOKw1Q5QOg44NuFIaIeRXMQddmk8HQaL7m0lDsdAn
-         7hMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708459416; x=1709064216;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nv7+yFK9n5VmWtu0mqH5ORYhJIf9Kx3iQ/yYWuoADPM=;
-        b=Yv0L8qcLwEE7/BSvgRUfLH00A+IOPCO04eEa3Solhg99FwB+Ks3/RDTUQATgf0Dgeu
-         YVu+z6c/gi93Q58kowt7kUHPzJEn4Tbpjsj+zW4wTPe04ATqmk07uK4jYXklLl6vP0g9
-         UP2tXfaMI+121sCR73WU6ZpmSWkda1s2kJSh6Hp1lqgfamIo4/WUZsxfzATLLeusIS/H
-         4oxjM2IIb1inDGtrrs0bI4IcDELNV2jQWfTWbWFPIwAgchCYOuv51geJQjWkujr3YA4S
-         87LsFViwIbrwALlGF9AbYNQQlqTbfPpF3U1/Sjy1rRGM8McMDacb3TUJ2bTJv4pJCgSb
-         nHkw==
-X-Forwarded-Encrypted: i=1; AJvYcCVuPv5ajanYva+kto4MshXecToAsD5nmMozkk6edmjlfHhccd5TKVKXpp56b5HYoGgE2QcCquscNtzT+xzQwKxjdj25GsVdbVwAAGPc
-X-Gm-Message-State: AOJu0YzgljOsEa1XxmJWkIIgCMbLAjwlbLHaD+RaKF6mPAOY6mde87FG
-	b9eP9EJN7PiJz6Bf3nV0DyO2MfG3cAcIc4/LexM2OwHjF19nmxg4
-X-Google-Smtp-Source: AGHT+IEM+Bk6HvcZ+x9oKGd6+MSXBHv6fbx/PMbTluktnlEjiuzxJ+ncYLh7048GIgpCKQ2pScg9BA==
-X-Received: by 2002:a5d:4104:0:b0:33b:5f1d:5ef4 with SMTP id l4-20020a5d4104000000b0033b5f1d5ef4mr10028927wrp.1.1708459415563;
-        Tue, 20 Feb 2024 12:03:35 -0800 (PST)
-Received: from localhost.localdomain (93-34-89-13.ip49.fastwebnet.it. [93.34.89.13])
-        by smtp.googlemail.com with ESMTPSA id x4-20020adff644000000b0033b792ed609sm14539955wrp.91.2024.02.20.12.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 12:03:35 -0800 (PST)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Cc: David Bauer <mail@david-bauer.net>,
-	Christian Marangi <ansuelsmth@gmail.com>
-Subject: [PATCH v2] mtd: spi-nor: Add support for BoHong bh25q128as
-Date: Tue, 20 Feb 2024 21:03:23 +0100
-Message-ID: <20240220200325.19089-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1708459414; c=relaxed/simple;
+	bh=mIBBW5MTEwUSwvkf52s1+6LrKwiyQolUWvpKHDVhev0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OguUNIfPhHRHlSQ1lh/M8XQSpsLJ5JeQ/qY8XeBj1eztrffLtfhc/35yDNUUXpDBbZca1DxregFBHYLSyw+lsQU8u6MazyncH/9Ail7ZI+kbLN9GTr55HIWt/L3GLvOhkpGyogF7SGvR6ETyWiKdlT8b5IC3fHANT8Q8hN0lZwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id EF6BDFEC;
+	Tue, 20 Feb 2024 12:04:09 -0800 (PST)
+Received: from [172.20.10.9] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E11563F73F;
+	Tue, 20 Feb 2024 12:03:27 -0800 (PST)
+Message-ID: <0502bec8-d2a3-4c76-8414-0f65fd7ddc32@arm.com>
+Date: Tue, 20 Feb 2024 21:03:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/4] mm: swap: Swap-out small-sized THP without
+ splitting
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>
+Cc: akpm@linux-foundation.org, david@redhat.com,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+ shy828301@gmail.com, wangkefeng.wang@huawei.com, willy@infradead.org,
+ xiang@kernel.org, ying.huang@intel.com, yuzhao@google.com,
+ chrisl@kernel.org, surenb@google.com, hanchuanhua@oppo.com
+References: <20231025144546.577640-5-ryan.roberts@arm.com>
+ <20240205095155.7151-1-v-songbaohua@oppo.com>
+ <d4f602db-403b-4b1f-a3de-affeb40bc499@arm.com>
+ <CAGsJ_4wo7BiJWSKb1K_WyAai30KmfckMQ3-mCJPXZ892CtXpyQ@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4wo7BiJWSKb1K_WyAai30KmfckMQ3-mCJPXZ892CtXpyQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: David Bauer <mail@david-bauer.net>
+On 18/02/2024 23:40, Barry Song wrote:
+> On Tue, Feb 6, 2024 at 1:14 AM Ryan Roberts <ryan.roberts@arm.com> wrote:
+>>
+>> On 05/02/2024 09:51, Barry Song wrote:
+>>> +Chris, Suren and Chuanhua
+>>>
+>>> Hi Ryan,
+>>>
+>>>> +    /*
+>>>> +     * __scan_swap_map_try_ssd_cluster() may drop si->lock during discard,
+>>>> +     * so indicate that we are scanning to synchronise with swapoff.
+>>>> +     */
+>>>> +    si->flags += SWP_SCANNING;
+>>>> +    ret = __scan_swap_map_try_ssd_cluster(si, &offset, &scan_base, order);
+>>>> +    si->flags -= SWP_SCANNING;
+>>>
+>>> nobody is using this scan_base afterwards. it seems a bit weird to
+>>> pass a pointer.
+>>>
+>>>> --- a/mm/vmscan.c
+>>>> +++ b/mm/vmscan.c
+>>>> @@ -1212,11 +1212,13 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+>>>>                                      if (!can_split_folio(folio, NULL))
+>>>>                                              goto activate_locked;
+>>>>                                      /*
+>>>> -                                     * Split folios without a PMD map right
+>>>> -                                     * away. Chances are some or all of the
+>>>> -                                     * tail pages can be freed without IO.
+>>>> +                                     * Split PMD-mappable folios without a
+>>>> +                                     * PMD map right away. Chances are some
+>>>> +                                     * or all of the tail pages can be freed
+>>>> +                                     * without IO.
+>>>>                                       */
+>>>> -                                    if (!folio_entire_mapcount(folio) &&
+>>>> +                                    if (folio_test_pmd_mappable(folio) &&
+>>>> +                                        !folio_entire_mapcount(folio) &&
+>>>>                                          split_folio_to_list(folio,
+>>>>                                                              folio_list))
+>>>>                                              goto activate_locked;
+>>>> --
+>>>
+>>> Chuanhua and I ran this patchset for a couple of days and found a race
+>>> between reclamation and split_folio. this might cause applications get
+>>> wrong data 0 while swapping-in.
+>>>
+>>> in case one thread(T1) is reclaiming a large folio by some means, still
+>>> another thread is calling madvise MADV_PGOUT(T2). and at the same time,
+>>> we have two threads T3 and T4 to swap-in in parallel. T1 doesn't split
+>>> and T2 does split as below,
+>>>
+>>> static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>>>                                 unsigned long addr, unsigned long end,
+>>>                                 struct mm_walk *walk)
+>>> {
+>>>
+>>>                 /*
+>>>                  * Creating a THP page is expensive so split it only if we
+>>>                  * are sure it's worth. Split it if we are only owner.
+>>>                  */
+>>>                 if (folio_test_large(folio)) {
+>>>                         int err;
+>>>
+>>>                         if (folio_estimated_sharers(folio) != 1)
+>>>                                 break;
+>>>                         if (pageout_anon_only_filter && !folio_test_anon(folio))
+>>>                                 break;
+>>>                         if (!folio_trylock(folio))
+>>>                                 break;
+>>>                         folio_get(folio);
+>>>                         arch_leave_lazy_mmu_mode();
+>>>                         pte_unmap_unlock(start_pte, ptl);
+>>>                         start_pte = NULL;
+>>>                         err = split_folio(folio);
+>>>                         folio_unlock(folio);
+>>>                         folio_put(folio);
+>>>                         if (err)
+>>>                                 break;
+>>>                         start_pte = pte =
+>>>                                 pte_offset_map_lock(mm, pmd, addr, &ptl);
+>>>                         if (!start_pte)
+>>>                                 break;
+>>>                         arch_enter_lazy_mmu_mode();
+>>>                         pte--;
+>>>                         addr -= PAGE_SIZE;
+>>>                         continue;
+>>>                 }
+>>>
+>>>         return 0;
+>>> }
+>>>
+>>>
+>>>
+>>> if T3 and T4 swap-in same page, and they both do swap_read_folio(). the
+>>> first one of T3 and T4 who gets PTL will set pte, and the 2nd one will
+>>> check pte_same() and find pte has been changed by another thread, thus
+>>> goto out_nomap in do_swap_page.
+>>> vm_fault_t do_swap_page(struct vm_fault *vmf)
+>>> {
+>>>         if (!folio) {
+>>>                 if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+>>>                     __swap_count(entry) == 1) {
+>>>                         /* skip swapcache */
+>>>                         folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0,
+>>>                                                 vma, vmf->address, false);
+>>>                         page = &folio->page;
+>>>                         if (folio) {
+>>>                                 __folio_set_locked(folio);
+>>>                                 __folio_set_swapbacked(folio);
+>>>
+>>>                                 /* To provide entry to swap_read_folio() */
+>>>                                 folio->swap = entry;
+>>>                                 swap_read_folio(folio, true, NULL);
+>>>                                 folio->private = NULL;
+>>>                         }
+>>>                 } else {
+>>>                 }
+>>>
+>>>
+>>>         /*
+>>>          * Back out if somebody else already faulted in this pte.
+>>>          */
+>>>         vmf->pte = pte_offset_map_lock(vma->vm_mm, vmf->pmd, vmf->address,
+>>>                         &vmf->ptl);
+>>>         if (unlikely(!vmf->pte || !pte_same(ptep_get(vmf->pte), vmf->orig_pte)))
+>>>                 goto out_nomap;
+>>>
+>>>         swap_free(entry);
+>>>         pte = mk_pte(page, vma->vm_page_prot);
+>>>
+>>>         set_pte_at(vma->vm_mm, vmf->address, vmf->pte, pte);
+>>>         return ret;
+>>> }
+>>>
+>>>
+>>> while T1 and T2 is working in parallel, T2 will split folio. this can
+>>> run into race with T1's reclamation without splitting. T2 will split
+>>> a large folio into a couple of normal pages and reclaim them.
+>>>
+>>> If T3 finishes swap_read_folio and gets PTL earlier than T4, it calls
+>>> set_pte and swap_free. this will cause zRAM to free the slot. then
+>>> t4 will get zero data in swap_read_folio() as the below zRAM code
+>>> will fill zero for freed slots,
+>>>
+>>> static int zram_read_from_zspool(struct zram *zram, struct page *page,
+>>>                                  u32 index)
+>>> {
+>>>         ...
+>>>
+>>>         handle = zram_get_handle(zram, index);
+>>>         if (!handle || zram_test_flag(zram, index, ZRAM_SAME)) {
+>>>                 unsigned long value;
+>>>                 void *mem;
+>>>
+>>>                 value = handle ? zram_get_element(zram, index) : 0;
+>>>                 mem = kmap_local_page(page);
+>>>                 zram_fill_page(mem, PAGE_SIZE, value);
+>>>                 kunmap_local(mem);
+>>>                 return 0;
+>>>         }
+>>> }
+>>>
+>>> usually, after t3 frees swap and does set_pte, t4's pte_same becomes
+>>> false, it won't set pte again. So filling zero data into freed slot
+>>> by zRAM driver is not a problem at all. but the race is that T1 and
+>>> T2 might do set swap to ptes twice as t1 doesn't split but t2 splits
+>>> (splitted normal folios are also added into reclaim_list), thus, the
+>>> corrupted zero data will get a chance to be set into PTE by t4 as t4
+>>> reads the new PTE which is set secondly and has the same swap entry
+>>> as its orig_pte after T3 has swapped-in and free the swap entry.
+>>>
+>>> we have worked around this problem by preventing T4 from splitting
+>>> large folios and letting it goto skip the large folios entirely in
+>>> MADV PAGEOUT once we detect a concurrent reclamation for this large
+>>> folio.
+>>>
+>>> so my understanding is changing vmscan isn't sufficient to support
+>>> large folio swap-out without splitting. we have to adjust madvise
+>>> as well. we will have a fix for this problem in
+>>> [PATCH RFC 6/6] mm: madvise: don't split mTHP for MADV_PAGEOUT
+>>> https://lore.kernel.org/linux-mm/20240118111036.72641-7-21cnbao@gmail.com/
+>>>
+>>> But i feel this patch should be a part of your swap-out patchset rather
+>>> than the swap-in series of Chuanhua and me :-)
+>>
+>> Hi Barry, Chuanhua,
+>>
+>> Thanks for the very detailed bug report! I'm going to have to take some time to
+>> get my head around the details. But yes, I agree the fix needs to be part of the
+>> swap-out series.
+>>
+> 
+> Hi Ryan,
+> I am running into some races especially while enabling large folio swap-out and
+> swap-in both. some of them, i am still struggling with the detailed
+> timing how they
+> are happening.
+> but the below change can help remove those bugs which cause corrupted data.
 
-Add MTD support for the BoHong bh25q128as SPI NOR chip.
-The chip has 16MB of total capacity, divided into a total of 256
-sectors, each 64KB sized. The chip also supports 4KB sectors.
-Additionally, it supports dual and quad read modes.
+Thanks for the report! I'm out of office this week, but this is top of my todo
+list starting next week, so hopefully will knock these into shape and repost
+very soon.
 
-Datasheet is public and can be found at the referenced link.
+Thanks,
+Ryan
 
-Functionality was verified on an Tenbay WR1800K / MTK MT7621 board.
-
-Link: https://www.e-interlink.com.tw/userUpload/files/BH25Q128AS_v1_0.pdf
-Signed-off-by: David Bauer <mail@david-bauer.net>
-[ reworked to new flash_info format ]
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Read/write/erase test are done by flashing and installing an OpenWrt
-image on the spi and by using overlayfs on it confirming correct
-read/write.
-
-root@OpenWrt:/tmp/tmp2# cat /sys/bus/spi/devices/spi0.0/spi-nor/partname 
-bh25q128as
-root@OpenWrt:/tmp/tmp2# cat /sys/bus/spi/devices/spi0.0/spi-nor/jedec_id 
-684018
-root@OpenWrt:/tmp/tmp2# cat /sys/bus/spi/devices/spi0.0/spi-nor/manufacturer 
-bohong
-
-root@OpenWrt:/# xxd -p /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-53464450000101ff00000109300000ff68000103600000ffffffffffffff
-ffffffffffffffffffffffffffffffffffffe520f1ffffffff0744eb086b
-083b42bbeeffffffffff00ffffff44eb0c200f5210d800ffffffffffffff
-ffffffffffff003600279ef97764fcebffff
-
-root@OpenWrt:/# sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-e2e374124e998c9c430a5a4c368ded374186637f48301dcb3943b81af2987995  /sys/bus/spi/devices/spi0.0/spi-np
-
-root@OpenWrt:/tmp/tmp2# hexdump -Cv /sys/bus/spi/devices/spi0.0/spi-nor/sfdp 
-00000000  53 46 44 50 00 01 01 ff  00 00 01 09 30 00 00 ff  |SFDP........0...|
-00000010  68 00 01 03 60 00 00 ff  ff ff ff ff ff ff ff ff  |h...`...........|
-00000020  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000030  e5 20 f1 ff ff ff ff 07  44 eb 08 6b 08 3b 42 bb  |. ......D..k.;B.|
-00000040  ee ff ff ff ff ff 00 ff  ff ff 44 eb 0c 20 0f 52  |..........D.. .R|
-00000050  10 d8 00 ff ff ff ff ff  ff ff ff ff ff ff ff ff  |................|
-00000060  00 36 00 27 9e f9 77 64  fc eb ff ff              |.6.'..wd....|
-0000006c
-
-root@OpenWrt:/tmp/tmp2# sha256sum /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-e2e374124e998c9c430a5a4c368ded374186637f48301dcb3943b81af2987995  /sys/bus/spi/devices/spi0.0/spi-nor/sfdp
-
-root@OpenWrt:/tmp/tmp2# cat /sys/kernel/debug/spi-nor/spi0.0/capabilities
-Supported read modes by the flash
- 1S-1S-1S
-  opcode	0x03
-  mode cycles	0
-  dummy cycles	0
- 1S-1S-2S
-  opcode	0x3b
-  mode cycles	0
-  dummy cycles	8
- 1S-2S-2S
-  opcode	0xbb
-  mode cycles	2
-  dummy cycles	2
- 1S-1S-4S
-  opcode	0x6b
-  mode cycles	0
-  dummy cycles	8
- 1S-4S-4S
-  opcode	0xeb
-  mode cycles	2
-  dummy cycles	4
-
-Supported page program modes by the flash
- 1S-1S-1S
-  opcode	0x02
-
-root@OpenWrt:/tmp/tmp2# cat /sys/kernel/debug/spi-nor/spi0.0/params
-name		bh25q128as
-id		68 40 18
-size		16.0 MiB
-write size	1
-page size	256
-address nbytes	3
-flags		HAS_16BIT_SR
-
-opcodes
- read		0x03
-  dummy cycles	0
- erase		0xd8
- program	0x02
- 8D extension	none
-
-protocols
- read		1S-1S-1S
- write		1S-1S-1S
- register	1S-1S-1S
-
-erase commands
- 20 (4.00 KiB) [1]
- 52 (32.0 KiB) [2]
- d8 (64.0 KiB) [3]
- c7 (16.0 MiB)
-
-sector map
- region (in hex)   | erase mask | flags
- ------------------+------------+----------
- 00000000-00ffffff |     [ 123] | 
-
-Changes v2:
-- Drop wrong copyright header
-- Drop name
-- Add requested info about sfpd and others
-
- drivers/mtd/spi-nor/Makefile |  1 +
- drivers/mtd/spi-nor/bohong.c | 18 ++++++++++++++++++
- drivers/mtd/spi-nor/core.c   |  1 +
- drivers/mtd/spi-nor/core.h   |  1 +
- 4 files changed, 21 insertions(+)
- create mode 100644 drivers/mtd/spi-nor/bohong.c
-
-diff --git a/drivers/mtd/spi-nor/Makefile b/drivers/mtd/spi-nor/Makefile
-index 5e68468b72fc..c8849cf5124f 100644
---- a/drivers/mtd/spi-nor/Makefile
-+++ b/drivers/mtd/spi-nor/Makefile
-@@ -2,6 +2,7 @@
- 
- spi-nor-objs			:= core.o sfdp.o swp.o otp.o sysfs.o
- spi-nor-objs			+= atmel.o
-+spi-nor-objs			+= bohong.o
- spi-nor-objs			+= eon.o
- spi-nor-objs			+= esmt.o
- spi-nor-objs			+= everspin.o
-diff --git a/drivers/mtd/spi-nor/bohong.c b/drivers/mtd/spi-nor/bohong.c
-new file mode 100644
-index 000000000000..8ba4f3a32040
---- /dev/null
-+++ b/drivers/mtd/spi-nor/bohong.c
-@@ -0,0 +1,18 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/mtd/spi-nor.h>
-+
-+#include "core.h"
-+
-+static const struct flash_info bohong_parts[] = {
-+	{
-+		.id = SNOR_ID(0x68, 0x40, 0x18),
-+		.size = SZ_16M,
-+		.no_sfdp_flags = SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ,
-+	},
-+};
-+
-+const struct spi_nor_manufacturer spi_nor_bohong = {
-+	.parts = bohong_parts,
-+	.nparts = ARRAY_SIZE(bohong_parts),
-+};
-diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-index 4129764fad8c..29c28ee683a1 100644
---- a/drivers/mtd/spi-nor/core.c
-+++ b/drivers/mtd/spi-nor/core.c
-@@ -2037,6 +2037,7 @@ int spi_nor_sr2_bit7_quad_enable(struct spi_nor *nor)
- 
- static const struct spi_nor_manufacturer *manufacturers[] = {
- 	&spi_nor_atmel,
-+	&spi_nor_bohong,
- 	&spi_nor_eon,
- 	&spi_nor_esmt,
- 	&spi_nor_everspin,
-diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-index d36c0e072954..c293568ae827 100644
---- a/drivers/mtd/spi-nor/core.h
-+++ b/drivers/mtd/spi-nor/core.h
-@@ -601,6 +601,7 @@ struct sfdp {
- 
- /* Manufacturer drivers. */
- extern const struct spi_nor_manufacturer spi_nor_atmel;
-+extern const struct spi_nor_manufacturer spi_nor_bohong;
- extern const struct spi_nor_manufacturer spi_nor_eon;
- extern const struct spi_nor_manufacturer spi_nor_esmt;
- extern const struct spi_nor_manufacturer spi_nor_everspin;
--- 
-2.43.0
+> 
+> index da2aab219c40..ef9cfbc84760 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1953,6 +1953,16 @@ static unsigned int shrink_folio_list(struct
+> list_head *folio_list,
+> 
+>                         if (folio_test_pmd_mappable(folio))
+>                                 flags |= TTU_SPLIT_HUGE_PMD;
+> +                       /*
+> +                        * make try_to_unmap_one hold ptl from the very first
+> +                        * beginning if we are reclaiming a folio with multi-
+> +                        * ptes. otherwise, we may only reclaim a part of the
+> +                        * folio from the middle.
+> +                        * for example, a parallel thread might temporarily
+> +                        * set pte to none for various purposes.
+> +                        */
+> +                       else if (folio_test_large(folio))
+> +                               flags |= TTU_SYNC;
+> 
+>                         try_to_unmap(folio, flags);
+>                         if (folio_mapped(folio)) {
+> 
+> 
+> While we are swapping-out a large folio, it has many ptes, we change those ptes
+> to swap entries in try_to_unmap_one(). "while (page_vma_mapped_walk(&pvmw))"
+> will iterate all ptes within the large folio. but it will only begin
+> to acquire ptl when
+> it meets a valid pte as below /* xxxxxxx */
+> 
+> static bool map_pte(struct page_vma_mapped_walk *pvmw, spinlock_t **ptlp)
+> {
+>         pte_t ptent;
+> 
+>         if (pvmw->flags & PVMW_SYNC) {
+>                 /* Use the stricter lookup */
+>                 pvmw->pte = pte_offset_map_lock(pvmw->vma->vm_mm, pvmw->pmd,
+>                                                 pvmw->address, &pvmw->ptl);
+>                 *ptlp = pvmw->ptl;
+>                 return !!pvmw->pte;
+>         }
+> 
+>        ...
+>         pvmw->pte = pte_offset_map_nolock(pvmw->vma->vm_mm, pvmw->pmd,
+>                                           pvmw->address, ptlp);
+>         if (!pvmw->pte)
+>                 return false;
+> 
+>         ptent = ptep_get(pvmw->pte);
+> 
+>         if (pvmw->flags & PVMW_MIGRATION) {
+>                 if (!is_swap_pte(ptent))
+>                         return false;
+>         } else if (is_swap_pte(ptent)) {
+>                 swp_entry_t entry;
+>                 ...
+>                 entry = pte_to_swp_entry(ptent);
+>                 if (!is_device_private_entry(entry) &&
+>                     !is_device_exclusive_entry(entry))
+>                         return false;
+>         } else if (!pte_present(ptent)) {
+>                 return false;
+>         }
+>         pvmw->ptl = *ptlp;
+>         spin_lock(pvmw->ptl);   /* xxxxxxx */
+>         return true;
+> }
+> 
+> 
+> for various reasons,  for example, break-before-make for clearing access flags
+> etc. pte can be set to none. since page_vma_mapped_walk() doesn't hold ptl
+> from the beginning,  it might only begin to set swap entries from the middle of
+> a large folio.
+> 
+> For example, in case a large folio has 16 ptes, and 0,1,2 are somehow zero
+> in the intermediate stage of a break-before-make, ptl will be held
+> from the 3rd pte,
+> and swap entries will be set from 3rd pte as well. it seems not good as we are
+> trying to swap out a large folio, but we are swapping out a part of them.
+> 
+> I am still struggling with all the timing of races, but using PVMW_SYNC to
+> explicitly ask for ptl from the first pte seems a good thing for large folio
+> regardless of those races. it can avoid try_to_unmap_one reading intermediate
+> pte and further make the wrong decision since reclaiming pte-mapped large
+> folios is atomic with just one pte.
+> 
+>> Sorry I haven't progressed this series as I had hoped. I've been concentrating
+>> on getting the contpte series upstream. I'm hoping I will find some time to move
+>> this series along by the tail end of Feb (hoping to get it in shape for v6.10).
+>> Hopefully that doesn't cause you any big problems?
+> 
+> no worries. Anyway, we are already using your code to run various tests.
+> 
+>>
+>> Thanks,
+>> Ryan
+> 
+> Thanks
+> Barry
 
 
