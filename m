@@ -1,131 +1,237 @@
-Return-Path: <linux-kernel+bounces-72846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3626385B95D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:43:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5D585B970
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:46:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCB711F21E82
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:43:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F2CE51C21A7F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:46:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87EB66351C;
-	Tue, 20 Feb 2024 10:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F4A64AB3;
+	Tue, 20 Feb 2024 10:46:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SnzrDt8/"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lwNz+Mih"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3644F626B2
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A1762178;
+	Tue, 20 Feb 2024 10:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708425821; cv=none; b=XXx3s11NK9htgWHqCNrGtUfZoWF64uGr/Y/mMmY4BsXaTN1ayvR1iP0KLJZS51cYifTQMlfh2TnuRWLb6M/pBZTJEmQnYDB2VyVBLEn6ewlVGBLKxBofQV7NDI4iI0B0CsUdLf0CHhucXwwTbBZJAsodh/1qtFjbkR2vRJGBNFY=
+	t=1708425960; cv=none; b=nsWMzPwALEimDpHqvlTm3FepTwoIE9+t5mBPVUY67zx3GjG89Zs5gQCQGqFgaUefAJHe/sO5uNoHJtNz3uJIv5K9sQcdWJyTFt+kJZvIHGjFN3QC0toNiQ/5b5b/oTDyzYBipNEhm4J7uP4TOxZHb4IoeURfozSqB/qNIOvJz3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708425821; c=relaxed/simple;
-	bh=2uVxjGx+3eud5qhkSTkqJX9rEMg+dS/p52YYnV0DAZM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JKqwEWBdxEYjrpZ9vOK0OX3KiymMlFUOXqCjpG7ZTZrLmmCZSeOv18cTKM7wOoSLsWw5tox5V8w8WtaDAcr5ylYFDa7YgWkc7kxqr6+fTN6Zn68SCt596c+JW857uVsSFjdJR55Ka/cnVCpiyDfU9/XMGUbfBmeKBeGltwwHGUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SnzrDt8/; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7872614af89so457855985a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:43:39 -0800 (PST)
+	s=arc-20240116; t=1708425960; c=relaxed/simple;
+	bh=WLC9A6RG43jvwrhWBB+oSU4f9HEJVPsaXP+dzWiKVLE=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HPOgVIIpaTNK9rV5tKGnMmuQ2ZIvRtQ45Dyw+S4l/VcJwCQvPd7rmODVhb+oXM1/JryXowfJsJtrBX/bpULiPP4ElpbfXmU42DhTflDNyc83NFLUKWPSe49MK4qCuBFcbSrOc4GJu4mx6Gexz6QsYAKZ0MB3Hwk1hhWmlOruqYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lwNz+Mih; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3394bec856fso3595803f8f.0;
+        Tue, 20 Feb 2024 02:45:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708425819; x=1709030619; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7RLmEvEb9uthgWOA8C/L1GOxTd9uDNdhyoVcD48vMYU=;
-        b=SnzrDt8/dIP5HvFG1YD5S67CB+29fMANv0LN6tpqtBwHwonEFgTPrD+d0Rn/sf0sNI
-         xDr7od/WtvvOLzCfLUTHmu2zvNQWgTZN2KVJpv+TlBFnasRoIRdrBZ2LM6DM3paH8MNe
-         NgNtRzxjK9Q/2PLZn2EhsYaonoVLsr/JMc0/noZR8eF5/hbmWfsvFuD1yhQF+GGbCYEu
-         g2qFiVo/qIN217NKBqXT4ObaIaFyH1xEcAqGJyKSTbiBkz7Ou6/Dc/VBaNVSE9dJOMdJ
-         aWd6GeXazMRPmL3Ef/LE3UK1tFPxpkeWFxfGIKWdFp9OgolzxV23ApQEkuR3Bp0lDyYL
-         ob3Q==
+        d=gmail.com; s=20230601; t=1708425957; x=1709030757; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=IkAfoQIWrV+GrZl5t56+RUv5w7RyqldnbP9GJ593z8k=;
+        b=lwNz+Mihf0FQv6880271A7tmEGR3HI+lRTAo5TQSzmAjeBUvjUcCYufM0fVOr+GjHn
+         Z1sHEqNOexk5KlppFaVoc+XiQ/75JRVnC8pubSBE0gF9FQdFF3kKsxBSqV4tyPFqCaWW
+         GHA5uIbxzOld9FoVnCZc4V2S1tF4CQn9XL/Pmj+P826Zw176xncN+a/+1LEbm+OwXY3L
+         s2NEXIAXOYakOTctqZlhly6Ge+28gavifS3Zy2B74xNUhnFsh1JByG2HCeRNftEORp8j
+         f6cgw7mEyRqBGdxDOMZ0t8dwGLQ1+TxUNQLnmGzV7L0V5zpvyhW/GUI4iptmLKnv+xVw
+         aEjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708425819; x=1709030619;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7RLmEvEb9uthgWOA8C/L1GOxTd9uDNdhyoVcD48vMYU=;
-        b=Tp2ewap3zP8BusNIHQP+gIa/ii2jrCwjLoPQL2WA1oLVCBX+E0ZVTlBdyWU70Z2042
-         UmuoMFc3BfV98kRLNgp3V+LKBo6VxGig9I9xZtekwrefYyW/dw4HT0/9MWdOViIJB51V
-         /fTiX4ya2YxuZQyVqYM8HgUsMbh0zROYQEI3xwXogslAmCGB1Xj2YfESLTFN3RuPugGO
-         iT9vBhhH1ZZY1nwxo4U8SclZBXM5CuwKVGP+coNQN21Q1foQm9x6WmUVtBcyczmEByEA
-         X9U4OBPlqqfEniEkoam8ddl4UFGUE8yfwHqPOIHY4dWR7oZzmYcVmd0Yq+BZmjaT/QVC
-         eI6A==
-X-Forwarded-Encrypted: i=1; AJvYcCX7F41baCdVyx0JR3oY7dKRHoHtJtXI0ZsNp4Gaza3oxpr1E27HepsFx5nPVYEb8VSFRvlgyMykj493m+qnJWZITkpWsbGYbICNNlr/
-X-Gm-Message-State: AOJu0Yx4Svk1cgad+5DwY60sknMXR27tk68RsthfA7bzFpb6OYVNEaQk
-	OlRfTGIsHddeipcmUokPZYePqAhLt1MAXshaMywtN1qLbFbMUneTvleISJllhden+2Wj/mJbwH7
-	OJavVrQSawBW8bEcrlpRcKKAo6jwYFarFWtLzkg==
-X-Google-Smtp-Source: AGHT+IFUKCZfJRzuavD+JnHMpBxd55N68+Y6zcwrt1W83FWCjiT/Yx7qrZ3Ck1WPvs84YRZwuFI4HskxV1M5kDVsGeQ=
-X-Received: by 2002:a0c:dd13:0:b0:68f:4e3a:29e9 with SMTP id
- u19-20020a0cdd13000000b0068f4e3a29e9mr5805704qvk.0.1708425819073; Tue, 20 Feb
- 2024 02:43:39 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708425957; x=1709030757;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IkAfoQIWrV+GrZl5t56+RUv5w7RyqldnbP9GJ593z8k=;
+        b=RbKx9TS4y5438w2zqjLJuDn0/atJrmglN861k0QaGBTxEwUyRwVpYs9yDpzFBu6LsW
+         Iaj+pqR/E138pG/5up5PTYLgf87X3DBPp5x7Szt+bO/n9wOCkbwEq4ZtYjufihB+L+dJ
+         7FoBriuhdCxmpHSzRfI22OlCzlxX0mO7MS5mBzJD8MdYz6xYR6FpOL24lwqOLn6w+LXy
+         LpGuikOOrxUmN2GNeBSlI2u/ODAFW2LR2Rd05n95qJvjifqRsRyRDvjaMRjUv6uD/nNj
+         vtop06a9OsKPBCcr8JuVP5qXl8c+AtM5naiom7GrGN+6hSv1EfSyxH6fXFFW+BfRM2kg
+         ggOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXbklh+MVlFULpRz4DHxcEC0kDtYWaUPhbsG+odGtg2kkjqVbRqWJOv9bs1skZmWzX7O2tgFxsxah7kwBnDd+hSRzgEugjVE2UFsKj455v6tMd1C3anZ/dtXrAm4hd+kvFTQxN1+2lIUC5wfWz3VAk+nQcI88UMguXHnib2TOLauQ5t
+X-Gm-Message-State: AOJu0YxPkRzh3shixT8GDKZJaKHeQIk/o27uhD2K8Ut5/BsW+eSPGl/r
+	4OEeNKZAkc07ugdZJdhPjUH95OgmGExAGfx78UhsvLqdUBqGla8H
+X-Google-Smtp-Source: AGHT+IGvpc4sNp6r9IeGaZC2+2LohpKWIhDpHi9cDSNvwSikx9oiplcouedvHv+qd+byu76Vkvi/qg==
+X-Received: by 2002:a5d:588a:0:b0:33d:3b83:c08 with SMTP id n10-20020a5d588a000000b0033d3b830c08mr7206557wrf.23.1708425956590;
+        Tue, 20 Feb 2024 02:45:56 -0800 (PST)
+Received: from ?IPv6:2001:a61:3456:4e01:6ae:b55a:bd1d:57fc? ([2001:a61:3456:4e01:6ae:b55a:bd1d:57fc])
+        by smtp.gmail.com with ESMTPSA id m8-20020a7bce08000000b004107dfa6aebsm13968319wmc.28.2024.02.20.02.45.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 02:45:56 -0800 (PST)
+Message-ID: <d5fcd8b83f424bc05d8363210632bf8db4c376cb.camel@gmail.com>
+Subject: Re: [PATCH v2 4/5] spi: axi-spi-engine: move message compile to
+ optimize_message
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: David Lechner <dlechner@baylibre.com>, Mark Brown <broonie@kernel.org>
+Cc: Martin Sperl <kernel@martin.sperl.org>, David Jander
+ <david@protonic.nl>,  Jonathan Cameron <jic23@kernel.org>, Michael
+ Hennerich <michael.hennerich@analog.com>, Nuno =?ISO-8859-1?Q?S=E1?=
+ <nuno.sa@analog.com>, Alain Volmat <alain.volmat@foss.st.com>, Maxime
+ Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue
+ <alexandre.torgue@foss.st.com>,  linux-spi@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org,  linux-iio@vger.kernel.org, Julien
+ Stephan <jstephan@baylibre.com>
+Date: Tue, 20 Feb 2024 11:45:55 +0100
+In-Reply-To: <20240219-mainline-spi-precook-message-v2-4-4a762c6701b9@baylibre.com>
+References: 
+	<20240219-mainline-spi-precook-message-v2-0-4a762c6701b9@baylibre.com>
+	 <20240219-mainline-spi-precook-message-v2-4-4a762c6701b9@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240208161700.268570-1-peter.griffin@linaro.org>
- <20240208161700.268570-2-peter.griffin@linaro.org> <ab1f9285-73ba-4b69-8882-0cf08c508e28@linaro.org>
- <CADrjBPqw9E5foNvZ-ETFZR3mb8=x8CYHz3UUhfJUbBpOi3iKYw@mail.gmail.com> <d25a887e-801d-410b-9ccd-2ec10fb28f23@linaro.org>
-In-Reply-To: <d25a887e-801d-410b-9ccd-2ec10fb28f23@linaro.org>
-From: Peter Griffin <peter.griffin@linaro.org>
-Date: Tue, 20 Feb 2024 10:43:27 +0000
-Message-ID: <CADrjBPp9A2eYbE+tRxfOe7MPaNa0uW+=6OzWbQeu2En=VoA0iA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] soc: samsung: exynos-pmu: Add regmap support for
- SoCs that protect PMU regs
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: arnd@arndb.de, linux@roeck-us.net, wim@linux-watchdog.org, 
-	alim.akhtar@samsung.com, jaewon02.kim@samsung.com, semen.protsenko@linaro.org, 
-	alexey.klimov@linaro.org, kernel-team@android.com, tudor.ambarus@linaro.org, 
-	andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com, 
-	linux-fsd@tesla.com, linux-watchdog@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-samsung-soc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-Hi Krzysztof,
+On Mon, 2024-02-19 at 16:33 -0600, David Lechner wrote:
+> In the AXI SPI Engine driver, compiling the message is an expensive
+> operation. Previously, it was done per message transfer in the
+> prepare_message hook. This patch moves the message compile to the
+> optimize_message hook so that it is only done once per message in
+> cases where the peripheral driver calls spi_optimize_message().
+>=20
+> This can be a significant performance improvement for some peripherals.
+> For example, the ad7380 driver saw a 13% improvement in throughput
+> when using the AXI SPI Engine driver with this patch.
+>=20
+> Since we now need two message states, one for the optimization stage
+> that doesn't change for the lifetime of the message and one that is
+> reset on each transfer for managing the current transfer state, the old
+> msg->state is split into msg->opt_state and spi_engine->msg_state. The
+> latter is included in the driver struct now since there is only one
+> current message at a time that can ever use it and it is in a hot path
+> so avoiding allocating a new one on each message transfer saves a few
+> cpu cycles and lets us get rid of the prepare_message callback.
+>=20
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
 
-On Tue, 20 Feb 2024 at 06:56, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 19/02/2024 20:47, Peter Griffin wrote:
-> >>
-> >>> +
-> >>> +     if (property)
-> >>> +             pmu_np = of_parse_phandle(np, property, 0);
-> >>> +     else
-> >>> +             pmu_np = np;
-> >>> +
-> >>> +     if (!pmu_np)
-> >>> +             return ERR_PTR(-ENODEV);
-> >>> +
-> >>> +     /*
-> >>> +      * Determine if exynos-pmu device has probed and therefore regmap
-> >>> +      * has been created and can be returned to the caller. Otherwise we
-> >>> +      * return -EPROBE_DEFER.
-> >>> +      */
-> >>> +     dev = driver_find_device_by_of_node(&exynos_pmu_driver.driver,
-> >>> +                                         (void *)pmu_np);
-> >>> +
-> >>> +     of_node_put(pmu_np);
-> >>
-> >> You are dropping now referencen from np when property==NULL. This does
-> >> no look right.
-> >
-> > Good spot, will fix. It seems syscon.c and altera-sysmgr also have the
-> > same issue.
-> >
->
-> Do you plan on fixing them as well in such case?
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
-Yes I'll send some patches to fix syscon and altera-sysmgr as well.
+>=20
+> v2 changes: none
+>=20
+> =C2=A0drivers/spi/spi-axi-spi-engine.c | 40 +++++++++++++++++------------=
+-----------
+> =C2=A01 file changed, 17 insertions(+), 23 deletions(-)
+>=20
+> diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-e=
+ngine.c
+> index ca66d202f0e2..6177c1a8d56e 100644
+> --- a/drivers/spi/spi-axi-spi-engine.c
+> +++ b/drivers/spi/spi-axi-spi-engine.c
+> @@ -109,6 +109,7 @@ struct spi_engine {
+> =C2=A0	spinlock_t lock;
+> =C2=A0
+> =C2=A0	void __iomem *base;
+> +	struct spi_engine_message_state msg_state;
+> =C2=A0	struct completion msg_complete;
+> =C2=A0	unsigned int int_enable;
+> =C2=A0};
+> @@ -499,17 +500,11 @@ static irqreturn_t spi_engine_irq(int irq, void *de=
+vid)
+> =C2=A0	return IRQ_HANDLED;
+> =C2=A0}
+> =C2=A0
+> -static int spi_engine_prepare_message(struct spi_controller *host,
+> -				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct spi_message *msg)
+> +static int spi_engine_optimize_message(struct spi_message *msg)
+> =C2=A0{
+> =C2=A0	struct spi_engine_program p_dry, *p;
+> -	struct spi_engine_message_state *st;
+> =C2=A0	size_t size;
+> =C2=A0
+> -	st =3D kzalloc(sizeof(*st), GFP_KERNEL);
+> -	if (!st)
+> -		return -ENOMEM;
+> -
+> =C2=A0	spi_engine_precompile_message(msg);
+> =C2=A0
+> =C2=A0	p_dry.length =3D 0;
+> @@ -517,31 +512,22 @@ static int spi_engine_prepare_message(struct spi_co=
+ntroller
+> *host,
+> =C2=A0
+> =C2=A0	size =3D sizeof(*p->instructions) * (p_dry.length + 1);
+> =C2=A0	p =3D kzalloc(sizeof(*p) + size, GFP_KERNEL);
+> -	if (!p) {
+> -		kfree(st);
+> +	if (!p)
+> =C2=A0		return -ENOMEM;
+> -	}
+> =C2=A0
+> =C2=A0	spi_engine_compile_message(msg, false, p);
+> =C2=A0
+> =C2=A0	spi_engine_program_add_cmd(p, false, SPI_ENGINE_CMD_SYNC(
+> =C2=A0						AXI_SPI_ENGINE_CUR_MSG_SYNC_ID));
+> =C2=A0
+> -	st->p =3D p;
+> -	st->cmd_buf =3D p->instructions;
+> -	st->cmd_length =3D p->length;
+> -	msg->state =3D st;
+> +	msg->opt_state =3D p;
+> =C2=A0
+> =C2=A0	return 0;
+> =C2=A0}
+> =C2=A0
+> -static int spi_engine_unprepare_message(struct spi_controller *host,
+> -					struct spi_message *msg)
+> +static int spi_engine_unoptimize_message(struct spi_message *msg)
+> =C2=A0{
+> -	struct spi_engine_message_state *st =3D msg->state;
+> -
+> -	kfree(st->p);
+> -	kfree(st);
+> +	kfree(msg->opt_state);
+> =C2=A0
+> =C2=A0	return 0;
+> =C2=A0}
+> @@ -550,10 +536,18 @@ static int spi_engine_transfer_one_message(struct
+> spi_controller *host,
+> =C2=A0	struct spi_message *msg)
+> =C2=A0{
+> =C2=A0	struct spi_engine *spi_engine =3D spi_controller_get_devdata(host)=
+;
+> -	struct spi_engine_message_state *st =3D msg->state;
+> +	struct spi_engine_message_state *st =3D &spi_engine->msg_state;
+> +	struct spi_engine_program *p =3D msg->opt_state;
+> =C2=A0	unsigned int int_enable =3D 0;
+> =C2=A0	unsigned long flags;
+> =C2=A0
+> +	/* reinitialize message state for this transfer */
+> +	memset(st, 0, sizeof(*st));
+> +	st->p =3D p;
+> +	st->cmd_buf =3D p->instructions;
+> +	st->cmd_length =3D p->length;
+> +	msg->state =3D st;
+> +
+> =C2=A0	reinit_completion(&spi_engine->msg_complete);
+> =C2=A0
+> =C2=A0	spin_lock_irqsave(&spi_engine->lock, flags);
+> @@ -658,8 +652,8 @@ static int spi_engine_probe(struct platform_device *p=
+dev)
+> =C2=A0	host->bits_per_word_mask =3D SPI_BPW_RANGE_MASK(1, 32);
+> =C2=A0	host->max_speed_hz =3D clk_get_rate(spi_engine->ref_clk) / 2;
+> =C2=A0	host->transfer_one_message =3D spi_engine_transfer_one_message;
+> -	host->prepare_message =3D spi_engine_prepare_message;
+> -	host->unprepare_message =3D spi_engine_unprepare_message;
+> +	host->optimize_message =3D spi_engine_optimize_message;
+> +	host->unoptimize_message =3D spi_engine_unoptimize_message;
+> =C2=A0	host->num_chipselect =3D 8;
+> =C2=A0
+> =C2=A0	if (host->max_speed_hz =3D=3D 0)
+>=20
 
-Thanks,
-
-Peter
 
