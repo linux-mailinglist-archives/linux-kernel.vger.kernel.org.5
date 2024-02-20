@@ -1,123 +1,341 @@
-Return-Path: <linux-kernel+bounces-73551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9A9485C40A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:53:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A37485C40B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 990731C22C70
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:53:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C8232851A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCFD12FF7E;
-	Tue, 20 Feb 2024 18:53:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DD112FB38;
+	Tue, 20 Feb 2024 18:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GfHewyEH"
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="msw1Y1fm"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335A27867A
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:53:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342E8768F1
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 18:53:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708455198; cv=none; b=H40IKyb7Vjo7xt73APRNkGETjroq2eVAd6wqZ2512bBjmIOOu6/mrfgAMc3zGfBpeUlEyVWtRpNfEVWl26k8W4qZrmiBoLKMIbeYMsfL/S6bIbWT6mdmJ4zZybse0wgESqBrsuAPmvg95O2Fm73wfSYHrnteg6BoNlxb3o1KYbw=
+	t=1708455212; cv=none; b=AY4+w5HFD0eHVdEFnF/14Gq2e8X8c9sZtlYoNsXUsdJEVwg+T5tWZAzCLbFOfXijH0/9Wh6GjicA9STA7tSIqZh9PjNYv0PDEy5l5XbeJKna68HP9Mw2AQ1w4cYwrsqGjWSY4C5p6oxPTNGGphqx6NtEsUDTusJNrum7pmxo+gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708455198; c=relaxed/simple;
-	bh=9XtmEqIEhWLyi5e53vZ7ChMcMzhZ+IkTAB6tuKaF2A0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fuoBOx5+9vihl0Ul0CCjfHfsVGniLuG24UEpuBdngzj8HuGnq9bSyLOs+O/fEO0ndXUduU3alg/X6CLj9D4HaZHtdMGycf64Qk4KoHiwn4gNBfZqEEk6u96NLRBfDoOzgh71vfULIv4KfkOlbJ/O0HBuHsQAGlSrY1wbKcGZIHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GfHewyEH; arc=none smtp.client-ip=209.85.161.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-59fc4d05861so1460313eaf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:53:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708455196; x=1709059996; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eV3QWgNfLUReB9MaFXoi49crbwUJzuqvx+v6XG5KhCI=;
-        b=GfHewyEHvjiudPcUe/2kh5ldx3059oqYa09MzxPXaljWwKRIqvBRxAJxiuLkeIhEt2
-         11klYQ5g8BQpaVnKAHKUp+XiU2BM0gXY86bnDd3mjKfFsNQVcJinIelHkldOBWZna4Xy
-         Pnd+6pfpkCpgeGeKqMqBJ475qtdUQcQ89NZ3/rEfZP2qfD1uMgK/p0uKUy/sarHYLLuY
-         njnKV8p9sbOxxyUnlLFsisMrwvGq8DJoUcZIV8VJn30j+0PiW5klVdesRmSBmGzhBT2j
-         Sk4kGT9E3v9rdmg0DpupztWjcwItDdF30RuaDAVA2BXb2eY/zaugC8+BDrbqnq0aVrKz
-         59gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708455196; x=1709059996;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eV3QWgNfLUReB9MaFXoi49crbwUJzuqvx+v6XG5KhCI=;
-        b=DrRBKu0bvGhts6b+9lpp7Hjool1JD5WYyyCUyAzQkB7A7x97xrWhQg/dM9l3Dba8ov
-         M28g8p3XYGG/0D/+olPCaLc0vhYQflfJz1QfVSngeJttt9dz4QdDmOYbQJModkUzF4PM
-         9CHBDvK7Q027C2V8VEbZRACSkH7xkI6f0SGM12EBrZzXjPgcCub70n5H9KBQOwMb7VC5
-         xJGOgt3fwdChu7j5ncAiYi4iAyrDyQ8F7vrHY8u/XstVKrpDhvySEnP/VYW2kJ5tJ+n7
-         u/zC2BRASQYDJ0NxG0IH/gfWIXQ45hmveRa5eXYceWIhqzceT28OIYn3CL5hqCBLzoLa
-         XIOg==
-X-Forwarded-Encrypted: i=1; AJvYcCWUPwDZj+shMbFVka7w2V2D6gll+11N+BJRJpCXuML2SPyOO8M4HZRMY+ZjpTc6l6V0sm9+V3cg6YqWgBhnUEPtbF0XUHVLXJN7cvXR
-X-Gm-Message-State: AOJu0YzDrP21qIIm09yW7groAJkg8heTQHWjpvKFz220o5/u0+h/NHql
-	920vXg+xryMvAI4xnrePS86/g8/H+RX3ptRFY9JQJ0RpwyMYXmp+tYHenHfst6c=
-X-Google-Smtp-Source: AGHT+IEEzpEQF8Ea6gZV0llvuow6GZLZPOjZ6rN/O8R8/oleBCGpUZEHNmoSVWPIznRwK9PN6ThSqA==
-X-Received: by 2002:a05:6358:2493:b0:17b:567d:a670 with SMTP id m19-20020a056358249300b0017b567da670mr261326rwc.8.1708455196113;
-        Tue, 20 Feb 2024 10:53:16 -0800 (PST)
-Received: from localhost (dhcp-141-239-158-86.hawaiiantel.net. [141.239.158.86])
-        by smtp.gmail.com with ESMTPSA id w65-20020a636244000000b005dc5289c4edsm6887025pgb.64.2024.02.20.10.53.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 10:53:15 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Tue, 20 Feb 2024 08:53:14 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-	allen.lkml@gmail.com, kernel-team@meta.com
-Subject: Re: [PATCH 13/17] workqueue: Remove WORK_OFFQ_CANCELING
-Message-ID: <ZdT1GghILBWPMfLV@slm.duckdns.org>
-References: <20240216180559.208276-1-tj@kernel.org>
- <20240216180559.208276-14-tj@kernel.org>
- <CAJhGHyBHsu_o02eZ4HWHhuFVXtVUR-sH_W8gFXw7QbLOBm+k+g@mail.gmail.com>
+	s=arc-20240116; t=1708455212; c=relaxed/simple;
+	bh=9oUDj3w3eIcgfmwUoNDxtIPQRDPRn8kTTmRGhEE8awk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=COok093NDWPiqKERBnnO22HsHttgFI6Lnjeo1DziAVtNbXwRdRdGisTYYtNwub14iUcG5+24EcDw2HCwELch/VQwdclH4LjHuNjSB+3HsNPDw3+Vzr8R8o2oqKMoE2uuaF2qsmY6ZQ2DEfQHXiuSs2pMYIArQsfk6QrnKU/u4qE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=msw1Y1fm; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KGgj8I017298;
+	Tue, 20 Feb 2024 18:53:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=flIWORpz8P9rJ1a9Qs3CgiKsYD1Sy9y8ZxgrxDYRTqw=; b=ms
+	w1Y1fmfZdcujz2SPm5E2icMR5leTCoFWlvLMLke3mBPScNBUZrueVKwTJkmK31Xq
+	TySzxzKPfXrpCecGIX6KIoUadZdpzMCI4/V2SsDOcKz6++pMuy8suv8YFzAK+RFQ
+	NHCmGfGnIJlqgs4WC1i7FVIkZCnc1FSF7UHKhE4YiEj49A/fNriiWbTxCYq0yce+
+	tnblJDJZMgnwRayY14qckC7xjJBGxFWLgOpzv6L0OwWO7sevHNFAbNd6VXIsJNRT
+	56NFu69H59PZr31CVrkx3Xe6yaoKsL721266Z/lp0kQVrj8BN25k0bdcd7A20biZ
+	rWCwFi44I3p5IdbGQeuQ==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wct3d142c-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 18:53:17 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KIrG4K019112
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 18:53:16 GMT
+Received: from [10.110.62.85] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 10:53:15 -0800
+Message-ID: <d3674c10-5c29-d917-44f5-758d90d9e679@quicinc.com>
+Date: Tue, 20 Feb 2024 10:53:15 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJhGHyBHsu_o02eZ4HWHhuFVXtVUR-sH_W8gFXw7QbLOBm+k+g@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin
+	<tvrtko.ursulin@linux.intel.com>,
+        <robdclark@gmail.com>, <freedreno@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>, <ville.syrjala@linux.intel.com>,
+        <quic_jesszhan@quicinc.com>, <linux-kernel@vger.kernel.org>,
+        <intel-xe@lists.freedesktop.org>
+References: <20240215190834.3222812-1-quic_abhinavk@quicinc.com>
+ <CAA8EJppQquHgSgCrxKZHPHk248Pxg7Q8mvmmjbcpUxpreQkcuA@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJppQquHgSgCrxKZHPHk248Pxg7Q8mvmmjbcpUxpreQkcuA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: x26x7sZI9jwG55QXSKpXitfYtFSLD338
+X-Proofpoint-GUID: x26x7sZI9jwG55QXSKpXitfYtFSLD338
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxscore=0 spamscore=0 mlxlogscore=999 bulkscore=0 clxscore=1015
+ adultscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2401310000 definitions=main-2402200136
 
-On Tue, Feb 20, 2024 at 03:23:53PM +0800, Lai Jiangshan wrote:
-> Hello, Tejun
+
+
+On 2/20/2024 10:49 AM, Dmitry Baryshkov wrote:
+> On Thu, 15 Feb 2024 at 21:08, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>> intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
+>> Lets move this to drm_dp_helper to achieve this.
+>>
+>> changes in v2:
+>>          - rebased on top of drm-tip
+>>
+>> Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 > 
-> On Sat, Feb 17, 2024 at 2:06 AM Tejun Heo <tj@kernel.org> wrote:
+> v1 had an explicit comment before the ack:
 > 
-> > @@ -2631,19 +2567,13 @@ bool mod_delayed_work_on(int cpu, struct workqueue_struct *wq,
-> >                          struct delayed_work *dwork, unsigned long delay)
-> >  {
-> >         unsigned long irq_flags;
-> > -       int ret;
-> > +       bool ret;
-> >
-> > -       do {
-> > -               ret = try_to_grab_pending(&dwork->work, WORK_CANCEL_DELAYED,
-> > -                                         &irq_flags);
-> > -       } while (unlikely(ret == -EAGAIN));
-> > +       ret = work_grab_pending(&dwork->work, WORK_CANCEL_DELAYED, &irq_flags);
-> >
-> > -       if (likely(ret >= 0)) {
-> > -               __queue_delayed_work(cpu, wq, dwork, delay);
-> > -               local_irq_restore(irq_flags);
-> > -       }
-> > +       __queue_delayed_work(cpu, wq, dwork, delay);
+
+Yes, I remember the comment. I did not make any changes to v2 other than 
+just rebasing it on drm-tip to get the ack from i915 folks.
+
+>>     From my side, with the promise of the size fixup.
 > 
-> The disable count has to be checked before queuing it.
+> However I observe neither a second patch removing the size argument
+> nor it being dropped as a part of this patch.
+> 
 
-Ah, right, this also needs a clear_pending_if_disabled() call.
+Yes, now that in v2 we got the ack for this patch, I can spin a v3 with 
+the addition of the next patch to remove the size OR as another series 
+so as to not block the main series which needs this patch.
 
-Thanks.
+I would prefer the latter.
 
--- 
-tejun
+>> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+>> ---
+>>   drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
+>>   drivers/gpu/drm/i915/display/intel_dp.c | 71 +---------------------
+>>   include/drm/display/drm_dp_helper.h     |  3 +
+>>   3 files changed, 83 insertions(+), 69 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
+>> index 8d6ce46471ae..6c91f400ecb1 100644
+>> --- a/drivers/gpu/drm/display/drm_dp_helper.c
+>> +++ b/drivers/gpu/drm/display/drm_dp_helper.c
+>> @@ -2913,6 +2913,84 @@ void drm_dp_vsc_sdp_log(struct drm_printer *p, const struct drm_dp_vsc_sdp *vsc)
+>>   }
+>>   EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+>>
+>> +/**
+>> + * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
+>> + * @vsc: vsc sdp initialized according to its purpose as defined in
+>> + *       table 2-118 - table 2-120 in DP 1.4a specification
+>> + * @sdp: valid handle to the generic dp_sdp which will be packed
+>> + * @size: valid size of the passed sdp handle
+>> + *
+>> + * Returns length of sdp on success and error code on failure
+>> + */
+>> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+>> +                           struct dp_sdp *sdp, size_t size)
+>> +{
+>> +       size_t length = sizeof(struct dp_sdp);
+>> +
+>> +       if (size < length)
+>> +               return -ENOSPC;
+>> +
+>> +       memset(sdp, 0, size);
+>> +
+>> +       /*
+>> +        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+>> +        * VSC SDP Header Bytes
+>> +        */
+>> +       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+>> +       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+>> +       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+>> +       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+>> +
+>> +       if (vsc->revision == 0x6) {
+>> +               sdp->db[0] = 1;
+>> +               sdp->db[3] = 1;
+>> +       }
+>> +
+>> +       /*
+>> +        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+>> +        * Format as per DP 1.4a spec and DP 2.0 respectively.
+>> +        */
+>> +       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+>> +               goto out;
+>> +
+>> +       /* VSC SDP Payload for DB16 through DB18 */
+>> +       /* Pixel Encoding and Colorimetry Formats  */
+>> +       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+>> +       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+>> +
+>> +       switch (vsc->bpc) {
+>> +       case 6:
+>> +               /* 6bpc: 0x0 */
+>> +               break;
+>> +       case 8:
+>> +               sdp->db[17] = 0x1; /* DB17[3:0] */
+>> +               break;
+>> +       case 10:
+>> +               sdp->db[17] = 0x2;
+>> +               break;
+>> +       case 12:
+>> +               sdp->db[17] = 0x3;
+>> +               break;
+>> +       case 16:
+>> +               sdp->db[17] = 0x4;
+>> +               break;
+>> +       default:
+>> +               WARN(1, "Missing case %d\n", vsc->bpc);
+>> +               return -EINVAL;
+>> +       }
+>> +
+>> +       /* Dynamic Range and Component Bit Depth */
+>> +       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+>> +               sdp->db[17] |= 0x80;  /* DB17[7] */
+>> +
+>> +       /* Content Type */
+>> +       sdp->db[18] = vsc->content_type & 0x7;
+>> +
+>> +out:
+>> +       return length;
+>> +}
+>> +EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
+>> +
+>>   /**
+>>    * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
+>>    * @dpcd: DisplayPort configuration data
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+>> index 217196196e50..a9458df475e2 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+>> @@ -4089,73 +4089,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
+>>          return false;
+>>   }
+>>
+>> -static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+>> -                                    struct dp_sdp *sdp, size_t size)
+>> -{
+>> -       size_t length = sizeof(struct dp_sdp);
+>> -
+>> -       if (size < length)
+>> -               return -ENOSPC;
+>> -
+>> -       memset(sdp, 0, size);
+>> -
+>> -       /*
+>> -        * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+>> -        * VSC SDP Header Bytes
+>> -        */
+>> -       sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+>> -       sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+>> -       sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+>> -       sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+>> -
+>> -       if (vsc->revision == 0x6) {
+>> -               sdp->db[0] = 1;
+>> -               sdp->db[3] = 1;
+>> -       }
+>> -
+>> -       /*
+>> -        * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+>> -        * Format as per DP 1.4a spec and DP 2.0 respectively.
+>> -        */
+>> -       if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+>> -               goto out;
+>> -
+>> -       /* VSC SDP Payload for DB16 through DB18 */
+>> -       /* Pixel Encoding and Colorimetry Formats  */
+>> -       sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+>> -       sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+>> -
+>> -       switch (vsc->bpc) {
+>> -       case 6:
+>> -               /* 6bpc: 0x0 */
+>> -               break;
+>> -       case 8:
+>> -               sdp->db[17] = 0x1; /* DB17[3:0] */
+>> -               break;
+>> -       case 10:
+>> -               sdp->db[17] = 0x2;
+>> -               break;
+>> -       case 12:
+>> -               sdp->db[17] = 0x3;
+>> -               break;
+>> -       case 16:
+>> -               sdp->db[17] = 0x4;
+>> -               break;
+>> -       default:
+>> -               MISSING_CASE(vsc->bpc);
+>> -               break;
+>> -       }
+>> -       /* Dynamic Range and Component Bit Depth */
+>> -       if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+>> -               sdp->db[17] |= 0x80;  /* DB17[7] */
+>> -
+>> -       /* Content Type */
+>> -       sdp->db[18] = vsc->content_type & 0x7;
+>> -
+>> -out:
+>> -       return length;
+>> -}
+>> -
+>>   static ssize_t
+>>   intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
+>>                                           const struct hdmi_drm_infoframe *drm_infoframe,
+>> @@ -4248,8 +4181,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
+>>
+>>          switch (type) {
+>>          case DP_SDP_VSC:
+>> -               len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+>> -                                           sizeof(sdp));
+>> +               len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+>> +                                         sizeof(sdp));
+>>                  break;
+>>          case HDMI_PACKET_TYPE_GAMUT_METADATA:
+>>                  len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
+>> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+>> index d02014a87f12..8474504d4c88 100644
+>> --- a/include/drm/display/drm_dp_helper.h
+>> +++ b/include/drm/display/drm_dp_helper.h
+>> @@ -812,4 +812,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
+>>                         int bpp_x16, unsigned long flags);
+>>   int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
+>>
+>> +ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+>> +                           struct dp_sdp *sdp, size_t size);
+>> +
+>>   #endif /* _DRM_DP_HELPER_H_ */
+>> --
+>> 2.34.1
+>>
+> 
+> 
 
