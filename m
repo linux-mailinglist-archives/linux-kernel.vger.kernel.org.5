@@ -1,259 +1,203 @@
-Return-Path: <linux-kernel+bounces-73366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EABDC85C180
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:33:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8918085C182
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:34:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2E058B261FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:33:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC49F1C23891
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:34:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA4F1E48F;
-	Tue, 20 Feb 2024 16:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 609F7768E9;
+	Tue, 20 Feb 2024 16:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="WwmlLA9j"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="WzbBY+4l"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2055.outbound.protection.outlook.com [40.107.220.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 186BB76C63
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:33:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708446826; cv=none; b=ZRZYay6W7mJfxgnqXApw4OhYRrCoK+zsECUxK78gZchBfMJNzU8v6cpj46TRJ2YquV2MF/lyYDM7BW1td5dtUqyhyMgFIwISn6ffjHLQUFJaQVbe0ivwEydihLHKDPtJ6bWZlETJkzkXzFkCFQmK9uMGdBO7rJzJhxLlIO1M8zY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708446826; c=relaxed/simple;
-	bh=0st9GrLo9qneJ1X2cozJb/8z7udFJ6bJ5TuG75oNHDA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OY9mA61YKmjc6GcVb/59owZ47YuHeb5+lPo9n0akRIGfSp384l6xpDrJVjGKxX4PTbSCx1j5iEbc39dGD86TBsJB9fNt1v5qzko1u8JX9GVAjCPpsMesmT1PgAAPahTRVS6wTEK2b5mYvgwrpIra19F53vla5+YZTO1Fvr2IxH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=WwmlLA9j; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-512aafb3ca8so2616615e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:33:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1708446823; x=1709051623; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p25ro1Z6UmFNJOpkPhd7azDHdv/Ire7OveuzPMEDrco=;
-        b=WwmlLA9jZb5v0d5c4Vmtnl8Qkl03eeUEDz9LJfmEMLoUKMMmsKNA18ERuFuPpabzA3
-         sAfyNxCa/MNnaF/63fq9LwLelH6SmFLlbaHdWCWGvrHQr8/tBiN9WhY0D99d7aqL9Fzg
-         WMVe89PUv0k2RQe6kLm8+ENXfArymm6xsg7njj1Osuavn7wiP3ZOCJY3RtnEudpFG+UK
-         N+56snCkV0g6Eibs3060vnoM2LuGTzU5XaDRIOBcCGonL3RdfqrxzcjR8kcG7tMqzx5i
-         7Hqm7RZRgS524kU82/LlO1onLkDMocmHu7NE0sC5+2ONpQ6DOSCkyjhvgH9ysWzHX1Zz
-         Kk7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708446823; x=1709051623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=p25ro1Z6UmFNJOpkPhd7azDHdv/Ire7OveuzPMEDrco=;
-        b=g/p7CLVcWJjZW/bRNE+r4kh8430PLnmGfV1P6Mf0Y+OZVfJgUujB3xSCP/tP9Dc7en
-         AzSXfoWVvX7oGvlwSc/ZN3MyE5kOPv9jCKF91nOPuwbj6L2Ffx8wPhFD4gOGZYJ050hg
-         p7433bS/xyQ2vP9xdPD4JGGdJhLXQdAz6bc1ZFQ9ZY5WlOetS7+irklbYGmrmhCWT1cS
-         SF2V3FbJQRGFIPlLnUY0AXu33NVUc5Nmw7AAewpWtt2BNjndTqLYZMn+uzPgwV98KSrB
-         c6GsEJsjYE/pz4EhRGNuBxfIB0XRWslX/MiYJ41jWlm4mnpQJXy35kDt4gpzm5ahHval
-         e5xg==
-X-Forwarded-Encrypted: i=1; AJvYcCXJdwRMMmVwQjNv3UztW1XsKOHDbqkV8DdzLwwHs2bLfoFiacFtqcGeUwXZ3K4f/qyA1ICpynteKA/CoFACm8jBeonttS3wt9hviW/U
-X-Gm-Message-State: AOJu0YyhTCYFj6ote9ctIZ7wotwDv6KMmPtcbyPOyYrEp8z7zV7ZrJ+P
-	wHM1OFIOmlpYcZvN6PQ62AwJY4K51bNyiXbdk4OES3O/RG5FuRXRhr5yP6tfYFmPRLm2H2lmQmi
-	dLp59jLC6Y9OxMxDQA7Fp7zLUvb2p29ebJVcpwQ==
-X-Google-Smtp-Source: AGHT+IFEg/QXz9A3XAObYPJXzmoOxIf/e+fzIofGOJqhDrldapT9nC1GUC4P6dVl9adY5fSs8xH8AWe5ez3rD0APoiA=
-X-Received: by 2002:a05:6512:3d91:b0:512:9d11:ae00 with SMTP id
- k17-20020a0565123d9100b005129d11ae00mr9428461lfv.52.1708446822973; Tue, 20
- Feb 2024 08:33:42 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633E9762E0;
+	Tue, 20 Feb 2024 16:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.55
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708446841; cv=fail; b=etDb12Ipnpru/qRTjlw9Rj58k+16fc2CT34ea9ycK2La+Zf4OK/tqRuW675zdnOg6urVEkLDNHZU/CfJalblOgGADkgRb9B6XbNxBlR8oz9Q4PTnbdfRyGxZStBWtzRdaMIibDGjzmNJpcfhxuYT/6Ngogf1vl5WI4club+/+FE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708446841; c=relaxed/simple;
+	bh=z39srBkrTDAZNHduh8HIF5Mx9Zj0GsEqgOHGsG7SLLE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=OEiD+U0XH9DO3DQY1BiEvDOgowkPEPeQ+1v3G1A5NmGDmOR0Q5S6XkEZfZZeQdxOO4wKLoCxyR9MjALpJa+t1zue5lx8Yp13Gpup4U5WWDn25WDUnJaloEJ/8TsYeywsLOgOydLwZcwGFHRJ08mL12TlUxFdBy5CtSdAWcK8HTM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=WzbBY+4l; arc=fail smtp.client-ip=40.107.220.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hIbdb3gB5gyKiojwNsdNKTmh80dTbScCkOM0qwFIka14Ptrs57Te7o1uS+iXRPwj7dSWl8E+07O/OK65jVR/zraql4rnB6893cchSwExsZsz2Hh4MPNniYwyh/kL58UNXYT/aCkID60wqkPmGp9sqsVG107zN8azba+zLbhS7Sv0w+iAylq3LMTLC3AvKOzRs9lUxDIIlD1xVGE/8/XTpbStBFZ6GEG7CbnsRdzmGWTIuFnJhqH6EOZmLadni0cFLSDgssqLz0VN5LPn4ccQP87nEXkeU8biplLcTFvOWNBDIQXhGHqx8GdXYHiCfRCO8+Q8XELTJpwBOkuqqNX7PA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Pzm9dQsZZZlGyztBulTM7Jnd4T669WDdnFIQNJbZWrE=;
+ b=nHk+RuHKubSNWayrPiipRGdeYaGXXr5hgxlnKUiulUVzafHuiBpezLrDMFY8Z0XrxkUWdx8y08XdJ80cq4AZ9YzQ6pHjS5m6jQdvJ9zGs2tzWIdO5Nn7QaPcRRomiNWsaPRTlLjcQA3QSR7WloAbY9sYW5R18h7Y7Djl94NyPP2lWzgyMcNIuYcVJMM+Lc3e+G7a1y7vtqfBqtnzSws63CdAGBuyy/DUtFnKZU2CC/dlVCBnc6eLWpmlbxjBDgvCe4nEpommjYDARLvLuWJwoKUSD7Y+dI4JZigjYHaxQhcnDLymJq/fxlZWt5YR4FMpViS2ZQpvup+7n4uH0Q7AUw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Pzm9dQsZZZlGyztBulTM7Jnd4T669WDdnFIQNJbZWrE=;
+ b=WzbBY+4lQj6b6sSAMENjVjLo+cCpoJdR6AyiFsWfQB7E3Bfo0x8LVXKIPhRtcjSROnslkK+Ruk0MsKIVz3AoQoxgYHTvKiosQak7Jqre4XDb2O58S5Se3YRUjD0UG2rzdZGIl8n9RuMwJEVp902QzeBG8iAb1xAyxbuFS2pGFZ8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com (2603:10b6:208:39b::20)
+ by DM6PR12MB4185.namprd12.prod.outlook.com (2603:10b6:5:216::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7316.20; Tue, 20 Feb
+ 2024 16:33:56 +0000
+Received: from BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::319f:fe56:89b9:4638]) by BL1PR12MB5995.namprd12.prod.outlook.com
+ ([fe80::319f:fe56:89b9:4638%5]) with mapi id 15.20.7316.018; Tue, 20 Feb 2024
+ 16:33:56 +0000
+Date: Tue, 20 Feb 2024 10:33:46 -0600
+From: John Allen <john.allen@amd.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: mlevitsk@redhat.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	pbonzini@redhat.com, weijiang.yang@intel.com,
+	rick.p.edgecombe@intel.com, x86@kernel.org, thomas.lendacky@amd.com,
+	bp@alien8.de
+Subject: Re: [PATCH 6/9] KVM: SVM: Add MSR_IA32_XSS to the GHCB for
+ hypervisor kernel
+Message-ID: <ZdTUap7xy8tu15QY@AUS-L1-JOHALLEN.amd.com>
+References: <20231010200220.897953-1-john.allen@amd.com>
+ <20231010200220.897953-7-john.allen@amd.com>
+ <5e413e05de559971cdc2d1a9281a8a271590f62b.camel@redhat.com>
+ <ZUQvNIE9iU5TqJfw@google.com>
+ <c077e005c64aa82c7eaf4252f322c4ca29a2d0af.camel@redhat.com>
+ <Zc5MRqmspThUoB+n@AUS-L1-JOHALLEN.amd.com>
+ <ZdTRVNt5GWXEKL8h@google.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZdTRVNt5GWXEKL8h@google.com>
+X-ClientProxiedBy: PH8PR07CA0031.namprd07.prod.outlook.com
+ (2603:10b6:510:2cf::11) To BL1PR12MB5995.namprd12.prod.outlook.com
+ (2603:10b6:208:39b::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220060718.823229-1-apatel@ventanamicro.com>
- <20240220060718.823229-7-apatel@ventanamicro.com> <87a5nvi8dv.ffs@tglx>
-In-Reply-To: <87a5nvi8dv.ffs@tglx>
-From: Anup Patel <apatel@ventanamicro.com>
-Date: Tue, 20 Feb 2024 22:03:31 +0530
-Message-ID: <CAK9=C2XQVnoEEzjwnb7ZSM90vbdTU=9yteAYXOhbkSoDcEGnKg@mail.gmail.com>
-Subject: Re: [PATCH v13 06/13] irqchip: Add RISC-V incoming MSI controller
- early driver
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Frank Rowand <frowand.list@gmail.com>, 
-	Conor Dooley <conor+dt@kernel.org>, Marc Zyngier <maz@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Atish Patra <atishp@atishpatra.org>, Andrew Jones <ajones@ventanamicro.com>, 
-	Sunil V L <sunilvl@ventanamicro.com>, Saravana Kannan <saravanak@google.com>, 
-	Anup Patel <anup@brainfault.org>, linux-riscv@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5995:EE_|DM6PR12MB4185:EE_
+X-MS-Office365-Filtering-Correlation-Id: e5c83641-5f2d-4fde-caae-08dc3231bb54
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	SEYgyXnmlXJVqICeDt6v1LS9Ogrqq4jPX42IIfzta58blymJ+lxeKPLG1zLMC1UWS0PcqBGjY7MY8ZzWbarauZHUTCx1L7/RNc6bN2uXsZMelBNQN8b4HkLAB9X2E3kGIQrG4gLCpl1QFdHsZV1btWmZVEORVpbLIBLWHcZRNi81k1ZF/F6cNhG5dsEJv9ei6UJ3PaETchM7TEQAwVOAonxYTwBQ9YYRttH3R4i+HcddtQefFewDW+xut5A9WlY9uY+K65u/BZN3KOJ0brz1G1cnE60+cwtilbviC6BTV88NOv9hMm+Kk68QHGgId1txAlyAyg8/nDcUiKfrVpPswXAZ5Kf9NzqJsUptYhEoeWdDDreelREr2zdVTUDo/OIgmLUJ/f4AGXEUQ52owlv4oG0n8Sh4QjYTbFuEEuTYPdJezloe+1RVDZsBT4GPrN4mx8biQpaJtOiaCQ1grW9G6vBNbUgblqbdCZwjDmD6Kbc3Ss3j+cwr0qBV7AUAtTrm729QUbqJ/qlymHtrD1JXs0jUns9M5euqhO6lBFKWdoo=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5995.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?PxSdARwT3TKExkt4O/MVTLXMmaSbwSHFsqbbLNmO8pNb1RP6vp38+3BRvL5o?=
+ =?us-ascii?Q?G0jscx4TkhHgkhZ8n8apHgE9YNkJ6w0RkIQmZhHZJas1yX9jsf+gMsIcuLpl?=
+ =?us-ascii?Q?6Dk4VPAZUC4z+uHgLlVofBbU+wuau8+lZGsCSpjINDJRdS8OmQO8Rr3Zr1Xi?=
+ =?us-ascii?Q?KSXIonkmEMyIAtvX73xQWd45K65obUrZIo4mmfQKM7X3o986Qi91VtCTHEBy?=
+ =?us-ascii?Q?RoR1AI38yQwV1q99DBJo9f0rr3YEX5opOmphHVmHGt5kbDc239wtM6uVnteW?=
+ =?us-ascii?Q?F1qzRl/lIiCUHOtsz8bl+o2LCAZAHf53TlFeKDJlZr+FpjSQ82W8zvklqtMp?=
+ =?us-ascii?Q?IBCm8mbJA4uNx270+9s950jSOK4t4WHgdt7VD8mo/o7Sqv6Mq7QIf3yTHEw+?=
+ =?us-ascii?Q?wXouCEf3HCLoIUSxH2XAO4oBeMDsflzqpeUks4TvQ+WcaG+dFFpc2zSUh9AK?=
+ =?us-ascii?Q?rtqkZLWpGjmVPkGiPxCTsaW3n1bE+NtkbWKBx1f5QsA6g4RR0iKaB39GpA33?=
+ =?us-ascii?Q?HblvElgbzolCiRuaS9+no0tMpMnTSNOXna/A7yv2laxME4AMF9UC24lC+dSD?=
+ =?us-ascii?Q?cc255F/wqHRuJpvV1yui5RXWk/KqKINp+GakPago+xnzLIEZsqEAa+Qf4hGi?=
+ =?us-ascii?Q?pl8uRZloG6Z1dxb7+llL1/88dhkmjzgu/4muX7a7i4ofLSFCs0ClmNXZ0+os?=
+ =?us-ascii?Q?EUrncX4WaxqWw2VciQ+xtR+V/CcLpTnpke7DHPE/TZ8xwELAZabqCL9O/WwE?=
+ =?us-ascii?Q?fuutumDhapPyPyLSPhiagVkccQutGS1TbofWI4y9ttTWLFzKT5i49poBx9fA?=
+ =?us-ascii?Q?Krzq+qH74Snp/qd4VFGLXiMPFStMKoJPMp5VZlf/RjxvrvrD87Gw6uWEtkEp?=
+ =?us-ascii?Q?K71qPSN1+ws8Gyb/668a5jysZSvxnlojKjZ+xBnPogCa0D8pN0d2GZ8+yDsv?=
+ =?us-ascii?Q?fhPVfwYDr0QOsW8jMFwBqnXUB/ZPisvHLuYjZnGiJuVKTMNZPqX1Gm6fpsGE?=
+ =?us-ascii?Q?wzTBIKY8yOm13OLVqlkMqxC0dryjaTILzr/T9Qr5PAs5yj75mbIGZEaifF43?=
+ =?us-ascii?Q?+fbIpAkofuCJL5pQynqlDkxNJQeVGdGiNlpLwUyolCVCsZxLBHj1lEA8k+3x?=
+ =?us-ascii?Q?qO+aeDWKLzObtR95FTFpG2S/gN0KkBF/zyF2WS3W2HTrt7PrE4GuR/6UF0Es?=
+ =?us-ascii?Q?RPxcXZ62e11MbyTD6eIblGCTbTY6C6YNpyUY+i32st8Zkz/K6yAwxLdAU8zk?=
+ =?us-ascii?Q?7g483LujWh6SD3wuLtYmxyWseq2ZaeqCg/rIN+84fzjp9STTsUd+Vtri1WvH?=
+ =?us-ascii?Q?b3+68G5DUC5soKXyFmkjTtdbjdwpbCWCVxTc0Ewem5bCN5KVEfcyt3RwjNWD?=
+ =?us-ascii?Q?wfLvmZofII2xT4jCwF+gUghd72bdTwtMUjo8FCgHrTE6/54l6jgsh9QX2Bhs?=
+ =?us-ascii?Q?6YRgxswVBsrAUlp/gotZui6WPvqULaFAveRAofIdPpb6jEr+u5dzClkyqVXm?=
+ =?us-ascii?Q?5PpfGES0F/YPvW5ItFYFfvKEOL7HO+T0YxwpU5mENd6OnBBEmeLqxMZzN9Zi?=
+ =?us-ascii?Q?gSm1+PrHEANKxSnV4/cPGrbUkzom0s4uvoJTS6ma?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e5c83641-5f2d-4fde-caae-08dc3231bb54
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5995.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 16:33:56.0324
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jNxDmPc+WbibZeBG1ADBeKMEkazF57WlsSP+Bl+pAEnLKhKaCk36QrcTxtzl9sdtlsx93HTBPbhuckb25WHEgg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4185
 
-On Tue, Feb 20, 2024 at 6:45=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
->
-> On Tue, Feb 20 2024 at 11:37, Anup Patel wrote:
-> > The RISC-V advanced interrupt architecture (AIA) specification
-> > defines a new MSI controller called incoming message signalled
-> > interrupt controller (IMSIC) which manages MSI on per-HART (or
-> > per-CPU) basis. It also supports IPIs as software injected MSIs.
-> > (For more details refer https://github.com/riscv/riscv-aia)
-> >
-> > Let us add an early irqchip driver for RISC-V IMSIC which sets
-> > up the IMSIC state and provide IPIs.
->
-> s/Let us add/Add/
+On Tue, Feb 20, 2024 at 08:20:36AM -0800, Sean Christopherson wrote:
+> On Thu, Feb 15, 2024, John Allen wrote:
+> > On Tue, Nov 07, 2023 at 08:20:52PM +0200, Maxim Levitsky wrote:
+> > > On Thu, 2023-11-02 at 16:22 -0700, Sean Christopherson wrote:
+> > > > On Thu, Nov 02, 2023, Maxim Levitsky wrote:
+> > > > > On Tue, 2023-10-10 at 20:02 +0000, John Allen wrote:
+> > > > > > @@ -3032,6 +3037,9 @@ static void sev_es_init_vmcb(struct vcpu_svm *svm)
+> > > > > >  		if (guest_cpuid_has(&svm->vcpu, X86_FEATURE_RDTSCP))
+> > > > > >  			svm_clr_intercept(svm, INTERCEPT_RDTSCP);
+> > > > > >  	}
+> > > > > > +
+> > > > > > +	if (kvm_caps.supported_xss)
+> > > > > > +		set_msr_interception(vcpu, svm->msrpm, MSR_IA32_XSS, 1, 1);
+> > > > > 
+> > > > > This is not just a virtualization hole. This allows the guest to set MSR_IA32_XSS
+> > > > > to whatever value it wants, and thus it might allow XSAVES to access some host msrs
+> > > > > that guest must not be able to access.
+> > > > > 
+> > > > > AMD might not yet have such msrs, but on Intel side I do see various components
+> > > > > like 'HDC State', 'HWP state' and such.
+> > > > 
+> > > > The approach AMD has taken with SEV-ES+ is to have ucode context switch everything
+> > > > that the guest can access.  So, in theory, if/when AMD adds more XCR0/XSS-based
+> > > > features, that state will also be context switched.
+> > > > 
+> > > > Don't get me wrong, I hate this with a passion, but it's not *quite* fatally unsafe,
+> > > > just horrific.
+> > > > 
+> > > > > I understand that this is needed so that #VC handler could read this msr, and
+> > > > > trying to read it will cause another #VC which is probably not allowed (I
+> > > > > don't know this detail of SEV-ES)
+> > > > > 
+> > > > > I guess #VC handler should instead use a kernel cached value of this msr
+> > > > > instead, or at least KVM should only allow reads and not writes to it.
+> > > > 
+> > > > Nope, doesn't work.  In addition to automatically context switching state, SEV-ES
+> > > > also encrypts the guest state, i.e. KVM *can't* correctly virtualize XSS (or XCR0)
+> > > > for the guest, because KVM *can't* load the guest's desired value into hardware.
+> > > > 
+> > > > The guest can do #VMGEXIT (a.k.a. VMMCALL) all it wants to request a certain XSS
+> > > > or XCR0, and there's not a damn thing KVM can do to service the request.
+> > > > 
+> > > 
+> > > Ah, I understand now. Everything makes sense, and yes, this is really ugly.
+> > 
+> > Hi Maxim and Sean,
+> > 
+> > It looks as though there are some broad changes that will need to happen
+> > over the long term WRT to SEV-ES/SEV-SNP. In the short term, how would
+> > you suggest I proceed with the SVM shstk series? Can we omit the SEV-ES
+> > changes for now with an additional patch that disallows guest shstk when
+> > SEV-ES is enabled? Subsequently, when we have a proper solution for the
+> > concerns discussed here, we could submit another series for SEV-ES
+> > support.
+> 
+> The SEV-ES mess was already addressed by commit a26b7cd22546 ("KVM: SEV: Do not
+> intercept accesses to MSR_IA32_XSS for SEV-ES guests").  Or is there more that's
+> needed for shadow stacks?
 
-Okay, I will update.
+Ah, yes, you are right. That patch should address the controversial
+change discussed above at least. Patch 5/9 and 7/9 of this series also
+address different SEV-ES issues and will still need to included.
 
->
-> > +#else
-> > +static void imsic_ipi_starting_cpu(void)
-> > +{
-> > +}
-> > +
-> > +static void imsic_ipi_dying_cpu(void)
-> > +{
-> > +}
-> > +
-> > +static int __init imsic_ipi_domain_init(void)
-> > +{
-> > +     return 0;
-> > +}
->
-> Please condense this into
->
-> static void imsic_ipi_starting_cpu(void) { }
-> static void imsic_ipi_dying_cpu(void) { }
-> static int __init imsic_ipi_domain_init(void) { return 0; }
->
-> No point in wasting space for these stubs.
-
-Sure, I will update.
-
->
-> > + * To handle an interrupt, we read the TOPEI CSR and write zero in one
-> > + * instruction. If TOPEI CSR is non-zero then we translate TOPEI.ID to
-> > + * Linux interrupt number and let Linux IRQ subsystem handle it.
-> > + */
-> > +static void imsic_handle_irq(struct irq_desc *desc)
-> > +{
-> > +     struct irq_chip *chip =3D irq_desc_get_chip(desc);
-> > +     int err, cpu =3D smp_processor_id();
-> > +     struct imsic_vector *vec;
-> > +     unsigned long local_id;
-> > +
-> > +     chained_irq_enter(chip, desc);
-> > +
-> > +     while ((local_id =3D csr_swap(CSR_TOPEI, 0))) {
-> > +             local_id =3D local_id >> TOPEI_ID_SHIFT;
-> > +
-> > +             if (local_id =3D=3D IMSIC_IPI_ID) {
-> > +#ifdef CONFIG_SMP
->
->         if (IS_ENABLED(CONFIG_SMP))
-
-Okay, I will update.
-
->
-> > +                     ipi_mux_process();
-> > +#endif
-> > +                     continue;
-> > +             }
->
-> > +
-> > +/* MUST be called with lpriv->lock held */
->
-> Instead of a comment which cannot be enforced just have
->
->         lockdep_assert_held(&lpriv->lock);
->
-> right at the top of the function. That documents the requirement and
-> lets lockdep yell if not followed.
->
-> > +#ifdef CONFIG_SMP
-> > +static void imsic_local_timer_callback(struct timer_list *timer)
-> > +{
-> > +     struct imsic_local_priv *lpriv =3D this_cpu_ptr(imsic->lpriv);
-> > +     unsigned long flags;
-> > +
-> > +     raw_spin_lock_irqsave(&lpriv->lock, flags);
-> > +     __imsic_local_sync(lpriv);
-> > +     raw_spin_unlock_irqrestore(&lpriv->lock, flags);
-> > +}
-> > +
-> > +/* MUST be called with lpriv->lock held */
->
-> Ditto
->
-> > +static void __imsic_remote_sync(struct imsic_local_priv *lpriv, unsign=
-ed int cpu)
->
-> > +void imsic_vector_mask(struct imsic_vector *vec)
-> > +{
-> > +     struct imsic_local_priv *lpriv;
-> > +
-> > +     lpriv =3D per_cpu_ptr(imsic->lpriv, vec->cpu);
-> > +     if (WARN_ON(&lpriv->vectors[vec->local_id] !=3D vec))
-> > +             return;
->
-> WARN_ON_ONCE(), no?
->
-> > +bool imsic_vector_isenabled(struct imsic_vector *vec)
-> > +{
-> > +     struct imsic_local_priv *lpriv =3D per_cpu_ptr(imsic->lpriv, vec-=
->cpu);
-> > +     unsigned long flags;
-> > +     bool ret;
-> > +
-> > +     raw_spin_lock_irqsave(&lpriv->lock, flags);
-> > +     ret =3D vec->enable;
-> > +     raw_spin_unlock_irqrestore(&lpriv->lock, flags);
->
-> I'm not sure what you are trying to protect here. vec->enable can
-> obviously change right after the lock is dropped. So that's just a
-> snapshot, which is not any better than using
->
->           READ_ONCE(vec->enable);
->
-> and a corresponding WRITE_ONCE() at the update site, which obviously
-> needs serialization.
->
-> > +static void __init imsic_local_cleanup(void)
-> > +{
-> > +     int cpu;
-> > +     struct imsic_local_priv *lpriv;
->
->         struct imsic_local_priv *lpriv;
->         int cpu;
->
-> Please.
->
-> > +void imsic_state_offline(void)
-> > +{
-> > +#ifdef CONFIG_SMP
-> > +     struct imsic_local_priv *lpriv =3D this_cpu_ptr(imsic->lpriv);
-> > +#endif
->
-> You can move that into the #ifdef below.
->
-> > +     unsigned long flags;
-> > +
-> > +     raw_spin_lock_irqsave(&imsic->matrix_lock, flags);
-> > +     irq_matrix_offline(imsic->matrix);
-> > +     raw_spin_unlock_irqrestore(&imsic->matrix_lock, flags);
-> > +
-> > +#ifdef CONFIG_SMP
-> > +     raw_spin_lock_irqsave(&lpriv->lock, flags);
-> > +     WARN_ON_ONCE(try_to_del_timer_sync(&lpriv->timer) < 0);
-> > +     raw_spin_unlock_irqrestore(&lpriv->lock, flags);
-> > +#endif
-> > +}
->
->
-> Thanks,
->
->         tglx
+Thanks,
+John
 
