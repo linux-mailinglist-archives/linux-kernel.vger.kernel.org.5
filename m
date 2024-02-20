@@ -1,125 +1,146 @@
-Return-Path: <linux-kernel+bounces-72456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C9385B3B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:16:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F047085B3BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 967461C224FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:16:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6758BB23BAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD24A5A4E2;
-	Tue, 20 Feb 2024 07:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC7B35B5C8;
+	Tue, 20 Feb 2024 07:16:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kWA+ZmhB"
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXCgnMRH"
+Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0772E414;
-	Tue, 20 Feb 2024 07:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A2F05B5BB
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:16:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708413371; cv=none; b=HNX3DjHzNe9msufQrBO9WHz3ae0a7uaQvklSCRkvU6OStbxW03ZriicSSpIvJjNVYV26CmGmzhDjDbTNb8s6S69cVXkRlXtQevkRi7bLpUrdLqGH5SIAsyei4+mILxUoyNcnCGjR/MKOFmyqs5iR5mUlSL6svN5IrwlGCN4jKiY=
+	t=1708413382; cv=none; b=ijVMcJAJq5YKvkWCSMSDQs2cGQHre/xc2rOF4lbywUXPPum9qc/Y8E3doJ8jK03QxsEAGNyRRy7YukHbnMCkxnlf2Y41eBdJUpGS0dAhrn6P6RxvyqEXZJCMkfJLLGqmR16JSjXRSRTq6Dlip76l6TfTqBKNH5OQhstad8DgkSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708413371; c=relaxed/simple;
-	bh=cu/T1BOs7iJNYFJOKO7j3SL4H6llYux4Y5Jm+sXsTL4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eqIc88PGczjo9tKtzSmCxY7wwKZ4ds5MqfFVbextZGYepvVn75GON6WjZnfs7cdchVJVnb/ho2MMMvC7CMQQGefPmhsiuPTKnIgKiGTGlD3sB63EXu/RVd5pVlZtDdKy1DrpChT2WmuUYdvxgk9S5+Ir4zQo6bHvmC9Clh2lwCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kWA+ZmhB; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1708413365; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=aRVK0RBqvwU9ESK4wUCOXJ5JGHcyUKkaoM4QJ3fPRkU=;
-	b=kWA+ZmhB9lo4K/EAOIii30ukVBvjUbQWy+Jvm3l7T3FJYZvcYARr1rVOPZixaFA6y8WnkNybUM2QkZZXxa0G13uR4ogobpgi7vWWA58f7VtCuP/OrrGWtxQTtFdyi8sqFJ7mp1Mkko6MG56dHe0eyWNOodmUIyT1ZZLlrAxp+8o=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R831e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=alibuda@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W0w0R3Y_1708413363;
-Received: from 30.221.148.206(mailfrom:alibuda@linux.alibaba.com fp:SMTPD_---0W0w0R3Y_1708413363)
-          by smtp.aliyun-inc.com;
-          Tue, 20 Feb 2024 15:16:05 +0800
-Message-ID: <e1c747a9-64b7-471b-8fb8-093b8f080490@linux.alibaba.com>
-Date: Tue, 20 Feb 2024 15:16:01 +0800
+	s=arc-20240116; t=1708413382; c=relaxed/simple;
+	bh=sjSnzcueANrVxDHSiTSIdj8mpFTdy6IKk/WEGATL4Hg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bwbIeg33xaVpFLU9akClskQJ3PBAnwe6Ru4B0svn99i92YpwaUkdrtSKCoCdxkGnF8xQsfGnpfAwarsoeRG6lgVq/LZL0xfW4hKt7+SuSj1vRh4pe7h54PUwaG/TaoGWiVSCL4BZxdBBGYuyxD7oGgal3+3qONwIG/b+H/ms0gU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UXCgnMRH; arc=none smtp.client-ip=209.85.222.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7cedcea89a0so3228275241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:16:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708413379; x=1709018179; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sjSnzcueANrVxDHSiTSIdj8mpFTdy6IKk/WEGATL4Hg=;
+        b=UXCgnMRHcsSHd8x/dufxf6l1RioRXosQFKGLNSZ3MnwZ1jawvDU8emRsuW+N1bQY+w
+         qriQTOGqeOXmsOqAh0zSwpCuFUv7NnWxfzDdNsEj1sr+1xvIIOOCeHq8ENOb3s1cAHby
+         AgD3HHz++Xk5NsYPEtE2KZgc4nMree2En3cT98wlp3xQLISsZ7jaI8r0p8uGbLyfx147
+         gPFp//ilFRVVbV9y1fBiDxibRJYWC7oUyE0AlGinDSAbY8GGt6SXABE9gQ1VlM3JNfwu
+         OAhyWPehyrabas/7bDywUX72SU2uMZHaMPrxm9QlMaB3uBza1UjCq7xikfqrUDYKxtSg
+         qRGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708413379; x=1709018179;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sjSnzcueANrVxDHSiTSIdj8mpFTdy6IKk/WEGATL4Hg=;
+        b=rglidzqrznHvlrHffZy+d1xZy0FUPME+NrL0oDm33Th2Piy9Z/rn8l4YZFxNO1zJ8j
+         S5fRsmQMDkfnEmo3LHFNBSeSY6RaZVFX4vyUCALr6Y+EaN6BE00oo81MQVV/ScgeLw5+
+         sdv692sCf14H2KmMfGUe5QqycUL7ZWJnw4P2ZAXP0kK9qKsAp4LjoVqfHk/2iy2eaMXg
+         YRPuqi/y+2Q9qvgM9k9fxmiueB3xP2t2VpvuxTP2Yck95cvW1WBwlWTAJAy+OANx1w+E
+         R8y8fZhgK8yy03HmLyMQLSxP26z/wd0N1poKTWDgLw8/zlYFX9N5nc95kFzfJedjJmKK
+         6AeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV2FqAJzTocERVsk7d8VRSYCqQYQvXsRn5BJ95Jg7WYYCfYHKt7U1jLR0pmJQYxr82EzeeSEhlaFgfcUGkkupt+XVxb3rk4H3WGVuYF
+X-Gm-Message-State: AOJu0YzMVzO3QpIWeSpyHRpmg1fSIWy8EPquYyfzlR7rXLa1IqNARxmQ
+	/uhTts9Y/rgpKB2HWdk1ze8+6LLjyxC9TLEHrNJ424eIcbGccK9QN62chidV1YRaC24RZtqL7YO
+	eAFhu54Ax9h0bIGd8mm7HrW1+VF0=
+X-Google-Smtp-Source: AGHT+IF4m3dgoSMmOTM4bk0KoXHGseYv3UMy+OTOQ+OvzblAw7CY3DMgupyPNvuJ3tBg+ruYSxeWUDP5FHgbfoGuQEc=
+X-Received: by 2002:a05:6102:3751:b0:470:40f1:a185 with SMTP id
+ u17-20020a056102375100b0047040f1a185mr7266227vst.13.1708413379290; Mon, 19
+ Feb 2024 23:16:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC nf-next v5 0/2] netfilter: bpf: support prog update
-Content-Language: en-US
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Quentin Deslandes <qde@naccy.de>
-Cc: kadlec@netfilter.org, fw@strlen.de, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- coreteam@netfilter.org, netfilter-devel@vger.kernel.org,
- davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, ast@kernel.org
-References: <1704175877-28298-1-git-send-email-alibuda@linux.alibaba.com>
- <70114fff-43bd-4e27-9abf-45345624042c@naccy.de> <ZcztLZPiz+FkF8kF@calendula>
-From: "D. Wythe" <alibuda@linux.alibaba.com>
-In-Reply-To: <ZcztLZPiz+FkF8kF@calendula>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240219141703.3851-1-lipeifeng@oppo.com> <20240219141703.3851-2-lipeifeng@oppo.com>
+ <7c648dac-3198-3dba-0a96-34798cfdbd99@oppo.com> <CAGsJ_4xPDUgcYxNu230QC--ZiKV71nJJ+v0LVR7yF1io+TiLdA@mail.gmail.com>
+ <8ea640a1-fc2c-a6fa-cf4b-bb8c0b694b4f@oppo.com>
+In-Reply-To: <8ea640a1-fc2c-a6fa-cf4b-bb8c0b694b4f@oppo.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 20 Feb 2024 20:16:08 +1300
+Message-ID: <CAGsJ_4zrctJbGZ6EwTJh5PadG_1Vk09Djw8Vd+hzvorq_DMfig@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm/rmap: support folio_referenced to control if
+ try_lock in rmap_walk
+To: =?UTF-8?B?5p2O5Z+56ZSL?= <lipeifeng@oppo.com>
+Cc: akpm@linux-foundation.org, david@redhat.com, osalvador@suse.de, 
+	willy@infradead.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	tkjos@google.com, surenb@google.com, gregkh@google.com, v-songbaohua@oppo.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Feb 20, 2024 at 5:00=E2=80=AFPM =E6=9D=8E=E5=9F=B9=E9=94=8B <lipeif=
+eng@oppo.com> wrote:
+>
+>
+> =E5=9C=A8 2024/2/20 11:01, Barry Song =E5=86=99=E9=81=93:
+> > Hi peifeng,
+> >
+> > On Tue, Feb 20, 2024 at 2:43=E2=80=AFPM =E6=9D=8E=E5=9F=B9=E9=94=8B <li=
+peifeng@oppo.com> wrote:
+> >> add more experts from Linux and Google.
+> >>
+> >>
+> >> =E5=9C=A8 2024/2/19 22:17, lipeifeng@oppo.com =E5=86=99=E9=81=93:
+> >>> From: lipeifeng <lipeifeng@oppo.com>
+> >>>
+> >>> The patch to support folio_referenced to control the bevavior
+> >>> of walk_rmap, which for some thread to hold the lock in rmap_walk
+> >>> instead of try_lock when using folio_referenced.
+> > please describe what problem the patch is trying to address,
+> > and why this modification is needed in commit message.
+>
+> Hi Barry=EF=BC=9A
+>
+> 1. the patch is one of the kshrinkd series patches.
 
+this seems like a bad name for the patchset as nobody knows
+what is kshrinkd. maybe something like "asynchronously
+reclaim contended folios rather than aging them"?
 
-On 2/15/24 12:41 AM, Pablo Neira Ayuso wrote:
-> On Wed, Feb 14, 2024 at 05:10:46PM +0100, Quentin Deslandes wrote:
->> On 2024-01-02 07:11, D. Wythe wrote:
->>> From: "D. Wythe" <alibuda@linux.alibaba.com>
->>>
->>> This patches attempt to implements updating of progs within
->>> bpf netfilter link, allowing user update their ebpf netfilter
->>> prog in hot update manner.
->>>
->>> Besides, a corresponding test case has been added to verify
->>> whether the update works.
->>> --
->>> v1:
->>> 1. remove unnecessary context, access the prog directly via rcu.
->>> 2. remove synchronize_rcu(), dealloc the nf_link via kfree_rcu.
->>> 3. check the dead flag during the update.
->>> --
->>> v1->v2:
->>> 1. remove unnecessary nf_prog, accessing nf_link->link.prog in direct.
->>> --
->>> v2->v3:
->>> 1. access nf_link->link.prog via rcu_dereference_raw to avoid warning.
->>> --
->>> v3->v4:
->>> 1. remove mutex for link update, as it is unnecessary and can be replaced
->>> by atomic operations.
->>> --
->>> v4->v5:
->>> 1. fix error retval check on cmpxhcg
->>>
->>> D. Wythe (2):
->>>    netfilter: bpf: support prog update
->>>    selftests/bpf: Add netfilter link prog update test
->>>
->>>   net/netfilter/nf_bpf_link.c                        | 50 ++++++++-----
->>>   .../bpf/prog_tests/netfilter_link_update_prog.c    | 83 ++++++++++++++++++++++
->>>   .../bpf/progs/test_netfilter_link_update_prog.c    | 24 +++++++
->>>   3 files changed, 141 insertions(+), 16 deletions(-)
->>>   create mode 100644 tools/testing/selftests/bpf/prog_tests/netfilter_link_update_prog.c
->>>   create mode 100644 tools/testing/selftests/bpf/progs/test_netfilter_link_update_prog.c
->>>
->> It seems this patch has been forgotten, hopefully this answer
->> will give it more visibility.
->>
->> I've applied this change on 6.8.0-rc4 and tested BPF_LINK_UPDATE
->> with bpfilter and everything seems alright.
-> Just post it without RFC tag.
+>
+> 2. it is to support folio_referenced to control the bevavior of walk_rmap=
+,
+>
+> kshrinkd would call folio_referenced through shrink_folio_list but it
+> doesn't
+>
+> want to try_lock in rmap_walk during folio_referenced.
+>
+>
+> > btw, who is set rw_try_lock to 0, what is the benefit?
+>
+> Actually, the current situation is that only shrink_folio_list will set
+> try_lock to 1=EF=BC=8C
 
-Glad to know that, I will send a formal version soon.
+understood, as you don't want contended folios to be skipped
+by scanner any more.
 
-D. Wythe
+>
+> while others will be set to 0 that it would wait for rwsem-lock if
+> contened in rmap_walk.
 
+ok. other reclamation threads will still skip contended folios.
 
+As discussed, the patchset really needs detailed data to back up.
 
-
-
-
+Thanks
+Barry
 
