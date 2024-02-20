@@ -1,194 +1,310 @@
-Return-Path: <linux-kernel+bounces-73621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7734185C536
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:52:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E4C285C53F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 20:54:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E315DB2567D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:52:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 316A11C21CC4
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:54:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BC0414A4D8;
-	Tue, 20 Feb 2024 19:52:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FE3814A4E7;
+	Tue, 20 Feb 2024 19:54:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="OBd8j4zH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="EUG9WsN1"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E2DD768F1;
-	Tue, 20 Feb 2024 19:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708458740; cv=fail; b=WZaj7Ui+X+cFK34HT5ZmqByUnsjqo6iW8w61/FYsWHPactKNlYLonuvb210mqKJsukxoJ2qEsHOQ0TidKfmOAXvW0SyM1wQqjbHbIDiMzQVYMOENCt0vs6JzzANU7wZ2ccPz4DfJugd6rcybpgj6oWCbeHUExudjHgO4ZctDpto=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708458740; c=relaxed/simple;
-	bh=FaSuLXgdfpHAZiQoXLU44BoFSGwVxvLlPh6Gwmgukv8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=asPOTWoFY+jDaBpBCYNaBOS74/ufJYyAKNZqW2kXWERe1DUz1rv4mmKwRe89LPqvgzNQQflxgOR2nNxL/qBlfz305TCQsBdsqryXUbfzF1L9IYdePHAXlTf9SPEfull72pcvzrd7FjuVXulqRVhKwqNdknbxJdpTj6O2GtWv7ZM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=OBd8j4zH; arc=fail smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708458738; x=1739994738;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=FaSuLXgdfpHAZiQoXLU44BoFSGwVxvLlPh6Gwmgukv8=;
-  b=OBd8j4zHW+Qa8ordfDFRisx6RgR1Alju05pIAaBViAPIitRfdJQ2TIFk
-   0XV/btCJqBoetnuP9vdB+MXWYJTXkUcSVr4iUCkvuGbYs8kTJsbYZgkr5
-   Ik4LxlqozvSA4Obl5+Pye3ePL4cUKUZShFYxU8cmR1qsZqTZIi0R/W7GC
-   whCtcZnEHOf+bJ97IkClVZKQyPTrbjNXK6GBYcKOfyZQX4JjnWKmQFx+y
-   fpeZ4hIl7uF+kTyCVEYCpwHKv304KNDWaPTsJhxxvIfjh7U3wYO1QzuLz
-   ra307yLhhqMu3afHCFhMnWxpkGMJJrLhGTs+dwXAxsE5Qj8mPKLg30FUq
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10990"; a="2446123"
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="2446123"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 11:52:17 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,174,1705392000"; 
-   d="scan'208";a="4839950"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 11:52:17 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 20 Feb 2024 11:52:16 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 11:52:16 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D1A276042
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 19:54:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708458852; cv=none; b=YJAykpbmPW6UPmQMJxhqpkwh+hhcaWzx1qBzVNT3Av6Fx0QSyMyHWeOEoOQ4LvIeQi3hJ8Nd7APoGseOjnhKYCTSLCWKOPvmzSpfz4C/eCZmEUOkALnT9xlXz6jlb35EE129fTw+nQVIfXi37AfRK6tXMQooMOuH7umHs04/H4M=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708458852; c=relaxed/simple;
+	bh=Ax9qA7WbVcp14owGnlV9ZMXcZlCp6/ytmv3zjAGDK1E=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V8XjIXt6ZApgZeEdtd2QRQKbcbEv8cAx/48LRPjCALjDrpvTlGhIwiJhwPaF1B0kc6G/U8O7nkhK3p2k106y4hjn6WST4+YvMGXfFOodt/8dPtd71vHF2HEYvybsBR1eMwwJ9nGSQwcVrYfi7YiVzJuLKJft4cOG9bfH6DwChf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=EUG9WsN1; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KJDVnD002669;
+	Tue, 20 Feb 2024 19:53:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=C6UbKUV
+	aoigUmaHW5mDyEs2eNwERzkmF21Ru0vTfCJ8=; b=EUG9WsN12MtjoYcCPK71Z+o
+	jVqWFbAKo4QJU14NzmYi+eGs7gz3Q/c0H89da+QSJVr1jbEKaCBUMU+A7BzuI1+Y
+	nPz3Vd0okc/SOCD4aUZUgHx3LndtDrxZ2r0tTJtRaZYqiJjmlFxfH+XX3fe9gwwt
+	41M2omm2jBoVntpMbEHWmzTFPOnFeyQbraMJhCmmyd9q8mRBxvyPWZWsH5/R/Y3Q
+	ASoEpnHF5Q9kDVgeUIzqOqe9IRuO+s8NyN05UsYG+IiTZ2Fei2/AX23HZJ7MAZwG
+	KHRFDEOiw4PXsKWX41X4rfNpGMu0DGsU5gf1bNhP8b+si7ydLJEA/CTU+KMPAzA=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wd21s02t0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 19:53:59 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KJrwk2030554
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 19:53:58 GMT
+Received: from abhinavk-linux1.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 20 Feb 2024 11:52:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AQ4YKwgCutqc1UD2yUG36jUYnsmwEL1sU9xH2HNrZBlgjhp6hd7bwkrghZRBhh9ez9CEret8QnyDz9JrCClShLvmqUameNQgz1Cm54ckQ2VAWymBafWxCV60EVGZTItfgIvA7ax/+QIZ+JnSUhTMjOo9ouaU9wrCDjAWsstyyunmQEGYq9j+dL1m3sJjcceuDSCzPE9yUlwH0cLfANpkkKkR1jSq4QBNLIvM/5/YV2BODUmIHskm30aFv9IUQaPrv7eJsdCNVnuqcXzjwM0GPB6XVrgZVUy9eQoCLIZB0pRv8i00kLgED+Ty5aigtPYuvNBt7Guso/Kn8w6kGIPFKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=juUvTMfUyNHjHDsKRcgUufB4/TyeMDnE6b/hRpMYoZo=;
- b=MqeKeaFNmB0DefinS0aK0EvCkcNPV8EFMBpTKXvd4S9Zj09PwQXasRz1P6UsDCCPKjBQ3g92sqwVjO4AGBkhbkv5fi/hsf/d/LZ4mH4fBPmNo4xqK/HQ4+yPD23C3mxsIfKLlxQc0EXmk+4A1S3Q2fj4vpuxlhL+x0sZv5ZzOOPQ75Yl1nLCQBcFX47IEvNb+EJrsoq/fr3wnSS0uSek2Pxp3pa+A8uQCASm0HquS6yfepvK6MJ1SjhQ6ObFllxroHBms27yWfl6eg6OlC4Kge0wI/LHTNRZB0wPJwMbtShfkGeNBDTt7Dti2F52NqKuAoO4/Tiq/KUv/kpb1owYYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from PH7PR11MB7605.namprd11.prod.outlook.com (2603:10b6:510:277::5)
- by DS0PR11MB7767.namprd11.prod.outlook.com (2603:10b6:8:138::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.38; Tue, 20 Feb
- 2024 19:52:13 +0000
-Received: from PH7PR11MB7605.namprd11.prod.outlook.com
- ([fe80::c138:faf0:9fa7:8a03]) by PH7PR11MB7605.namprd11.prod.outlook.com
- ([fe80::c138:faf0:9fa7:8a03%7]) with mapi id 15.20.7270.036; Tue, 20 Feb 2024
- 19:52:13 +0000
-From: "Winkler, Tomas" <tomas.winkler@intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: "Usyskin, Alexander" <alexander.usyskin@intel.com>, "Lubart, Vitaly"
-	<vitaly.lubart@intel.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "stable@vger.kernel.org"
-	<stable@vger.kernel.org>
-Subject: RE: [char-misc-next] mei: gsc_proxy: match component when GSC is on
- different bus
-Thread-Topic: [char-misc-next] mei: gsc_proxy: match component when GSC is on
- different bus
-Thread-Index: AQHaXOsIdX3xgemJDE646gGDbr+G7rERhiWAgAAYpIA=
-Date: Tue, 20 Feb 2024 19:52:13 +0000
-Message-ID: <PH7PR11MB7605656F961FC6D31106BD47E5502@PH7PR11MB7605.namprd11.prod.outlook.com>
-References: <20240211130408.3478-1-tomas.winkler@intel.com>
- <2024021927-study-schilling-9dfa@gregkh>
-In-Reply-To: <2024021927-study-schilling-9dfa@gregkh>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PH7PR11MB7605:EE_|DS0PR11MB7767:EE_
-x-ms-office365-filtering-correlation-id: 652ce5c0-750a-4684-4aaa-08dc324d6f10
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: W4k2w3XO4J5hnqU1r9+HLbeXFEB70YEGJHygSbmD9SPCAb2kaoh2SZhFYyxRBuPYdyPntJa0Vm8OehuqUVgUlTBxgFSlzlww/vABCeMV7PiAWgC5Q3EYXZtMf/fqBBDg3dGHSli4jH5Mc/OPfJsHjVAWT/9b3sTSbvynG5tZaZofaATFQ6u9K8jqBxMGxQlg8SjU70Eq+OAI9iCwkXHNWgI7REJE+JK3oMEEijL9zSRj92/orot6tdMMY/0Ki1NUsKsYimCp1cUXtArkvUAd6TYZxzb1hErXyUO1N+RfNHzQAby6QGhKNAPw85FAlHJM4uuOK6FgZgGmbbtZzL5H5zJYVR5H9BfW8kmMDyjao0vlRe2UcW6pNoJXH2BwFfAPbkiWkd5+acF90P/6W+oyKZeAmgaBt06s0OdnIe7wc9y8mSN3GTwvmBMtjgzRBpbV167+QKJ0XmM1/E7QtTByUAqiiDQQ2stQUz6hdO2FdLvJ/PClxRPK6p/fmdKlyXt3zi4bU5VLZml0/iZDI1K6ngyOmfNfiWyqE75ObdRSoTSctvbnYmFyvKRxWBRKLuPlCiZZdIHsdoZ/Xm0BZyv0VqXf5hD79W349jnTAaGXXV/AxTHsFRmy83S96XlRiDFa
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB7605.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?0+OVxdsZsBeIpmNB258+6PTFIkqCalbBDzpcQWV3P0te0p6zPqt03zdglFm1?=
- =?us-ascii?Q?XHeP1KAxbKiVrZfR/v9zP8Il2aJ8Vq7rXmQDKtktphTpQDMs+K7Ov5VTt9w3?=
- =?us-ascii?Q?2zeNpljZW793xKP6rxt4yW5a7li9D62bkJnXrBnU0WE9EySrf3VjDCmD4u8N?=
- =?us-ascii?Q?DisMPNndxySqaQ3isk+ttCjqMdgdJE5LBd3w4tVh5vbvmTcN1w5paZ6odCI5?=
- =?us-ascii?Q?KHay9+I7zyr13ZImwqthDdj8JhNOInMTAcZbuL7V/2gdDA4YmNVS2/gofoHg?=
- =?us-ascii?Q?/GfjrHn/i6XikZV5G7u1gTUA8KP8VcM1UvdK85pAN5P0Yvp/VX2TiMTDO8B3?=
- =?us-ascii?Q?igfHvFEL10bBd3yhhlT6JNYZGZReqzQWuqG/9ZTPqP6oQMwPOTLKcn+3IZSl?=
- =?us-ascii?Q?4pOzDPUdTvUcwcbWIjny2FMosUmTVtQms1v91FxpFuTu0vbc2bFBqqVyGn2d?=
- =?us-ascii?Q?OjMeTlolfvTAwdvoR6DRykzxaG8WHTGQ8A0N+4ylk3HCvZf+yrs2NUavryP6?=
- =?us-ascii?Q?2BZAHP11yMBpRVrWMhyBkN3Gw4qzvDnz+OriAuCCl7FG6DIwElppC0E1Y4Za?=
- =?us-ascii?Q?7bFkZlikNs6sv5idMD47qywn8uaiyryLum4yb76h+JSPiprT4gOqN00tWPI3?=
- =?us-ascii?Q?iwYInHXA7onGB984GarFJQXCPiRPvhkND8IRWfT3PsEfL6Dh/sE3c761iv4/?=
- =?us-ascii?Q?mVDriA5z5I/EnKWhnGs1sC6br5uiF+5N+yFav3jWswchvsvvfNLQJbGu2cXp?=
- =?us-ascii?Q?di7eJY8LwAZnG6KyxdOJ+Xk01xLRehgv3sAPy/0UFaJomxSNm0vZde01IqsB?=
- =?us-ascii?Q?IE551LG2PvG+KYPP6p8BRTIwLVUcuMvNVjt15NaNsJsaOtz9FXGoeRW9nSVe?=
- =?us-ascii?Q?ugNcVHyLhOAPtF4+K9OWBcVFrhEhxypbhRMmffOAIVdIKdMLvQJqy1RHxtKh?=
- =?us-ascii?Q?d+Eqh2uM1yvQ6wv7HXSO+0HlNAqlTXH192zf+wUInbY9PfyaplNwcaYdmugz?=
- =?us-ascii?Q?C+deH4y7KfG9iLI2ALnW0xlLGlOVdfoe5e+0hoBPNUjTQyYUiKwx/VoJtEvV?=
- =?us-ascii?Q?2fIf35F95yKQa+NeVkVA/TXyZBUxqfsgXSHan5TwmyypEoMRQn48dj7ZtIuK?=
- =?us-ascii?Q?7arfrFoxCqhZgEeyfOu0Fl1wBgE5e7O+DLA0lge1hENdtCYvdxmFvkEdwJuH?=
- =?us-ascii?Q?YK3UFuLyaGZmuGNG1JoPDpSTsq+mjCHRdRb3EJeILsjRbstMl8mhseHjVhZb?=
- =?us-ascii?Q?btTL+FLBnxqrjHFTOgRcAW6tq0oViBq4MCrUXK8kqgcurxS9Q3GGwU3ofChA?=
- =?us-ascii?Q?TLYsR4fr8EFa4m9H6dn92sChSRwHO2e2N7VQ/eQ52sIy7Y/Wf7BrjuvbnFkk?=
- =?us-ascii?Q?n96XDMFS7FHeTqOcZ6q2gvqJglT2Hn0QKtykCc2MR6b6xrTTnqGl4R5QShmy?=
- =?us-ascii?Q?wkOw8wM/V9vM0WKwURkcXafp5ILbO69UTL17zSITciZdjPOgesmW+XO/UeSo?=
- =?us-ascii?Q?j22yTf3ZFoVPuKLzcibGxgC3fcqxUoc7DnEK4dBUvjqGNE6x3yOgWue+77rI?=
- =?us-ascii?Q?DCAVaxh+JuSXOtwNwf6/xnAPjiJFuts8wB3kGEgU?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ 15.2.1118.40; Tue, 20 Feb 2024 11:53:57 -0800
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+To: <dri-devel@lists.freedesktop.org>,
+        Maarten Lankhorst
+	<maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Joonas Lahtinen
+	<joonas.lahtinen@linux.intel.com>,
+        Tvrtko Ursulin
+	<tvrtko.ursulin@linux.intel.com>
+CC: Abhinav Kumar <quic_abhinavk@quicinc.com>, <robdclark@gmail.com>,
+        <freedreno@lists.freedesktop.org>, <dmitry.baryshkov@linaro.org>,
+        <intel-gfx@lists.freedesktop.org>, <ville.syrjala@linux.intel.com>,
+        <quic_jesszhan@quicinc.com>, Jani Nikula <jani.nikula@intel.com>,
+        <linux-kernel@vger.kernel.org>, <intel-xe@lists.freedesktop.org>
+Subject: [PATCH v3 1/2] drm/dp: move intel_dp_vsc_sdp_pack() to generic helper
+Date: Tue, 20 Feb 2024 11:53:46 -0800
+Message-ID: <20240220195348.1270854-1-quic_abhinavk@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB7605.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 652ce5c0-750a-4684-4aaa-08dc324d6f10
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2024 19:52:13.6819
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mxc65w9O/2HSmGm7aPwR0lU4gIlRPrDReovpbKkM8thMFFZw8nGGNU7ouAkoDmHHrGgJPNWSblXT8eLXalH1yQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7767
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: kVVNcvwvQwHPDp93LURhgKT9OwU_OzPu
+X-Proofpoint-GUID: kVVNcvwvQwHPDp93LURhgKT9OwU_OzPu
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 impostorscore=0 mlxscore=0 suspectscore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=999 malwarescore=0
+ bulkscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2402120000 definitions=main-2402200142
 
->=20
-> On Sun, Feb 11, 2024 at 03:04:08PM +0200, Tomas Winkler wrote:
-> > From: Alexander Usyskin <alexander.usyskin@intel.com>
-> >
-> > On Arrow Lake S systems, MEI is no longer strictly connected to bus 0,
-> > while graphics remain exclusively on bus 0. Adapt the component
-> > matching logic to accommodate this change:
-> >
-> > Original behavior: Required both MEI and graphics to be on the same
-> > bus 0.
-> >
-> > New behavior: Only enforces graphics to be on bus 0 (integrated),
-> > allowing MEI to reside on any bus.
-> > This ensures compatibility with Arrow Lake S and maintains
-> > functionality for the legacy systems.
-> >
-> > Cc: <stable@vger.kernel.org>
-> > Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
-> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
->=20
-> What commit id does this fix?  How far back in stable kernels should it g=
-o?
-Should be backported together with 'mei: me: add arrow lake point S DID'
-And 1dd924f6885b ("mei: gsc_proxy: add gsc proxy driver")
-I will send v2
+intel_dp_vsc_sdp_pack() can be re-used by other DRM drivers as well.
+Lets move this to drm_dp_helper to achieve this.
 
-Thanks
-Tomas
+changes in v2:
+	- rebased on top of drm-tip
+
+Acked-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Acked-by: Jani Nikula <jani.nikula@intel.com>
+---
+ drivers/gpu/drm/display/drm_dp_helper.c | 78 +++++++++++++++++++++++++
+ drivers/gpu/drm/i915/display/intel_dp.c | 71 +---------------------
+ include/drm/display/drm_dp_helper.h     |  3 +
+ 3 files changed, 83 insertions(+), 69 deletions(-)
+
+diff --git a/drivers/gpu/drm/display/drm_dp_helper.c b/drivers/gpu/drm/display/drm_dp_helper.c
+index 8d6ce46471ae..6c91f400ecb1 100644
+--- a/drivers/gpu/drm/display/drm_dp_helper.c
++++ b/drivers/gpu/drm/display/drm_dp_helper.c
+@@ -2913,6 +2913,84 @@ void drm_dp_vsc_sdp_log(struct drm_printer *p, const struct drm_dp_vsc_sdp *vsc)
+ }
+ EXPORT_SYMBOL(drm_dp_vsc_sdp_log);
+ 
++/**
++ * drm_dp_vsc_sdp_pack() - pack a given vsc sdp into generic dp_sdp
++ * @vsc: vsc sdp initialized according to its purpose as defined in
++ *       table 2-118 - table 2-120 in DP 1.4a specification
++ * @sdp: valid handle to the generic dp_sdp which will be packed
++ * @size: valid size of the passed sdp handle
++ *
++ * Returns length of sdp on success and error code on failure
++ */
++ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
++			    struct dp_sdp *sdp, size_t size)
++{
++	size_t length = sizeof(struct dp_sdp);
++
++	if (size < length)
++		return -ENOSPC;
++
++	memset(sdp, 0, size);
++
++	/*
++	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
++	 * VSC SDP Header Bytes
++	 */
++	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
++	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
++	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
++	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
++
++	if (vsc->revision == 0x6) {
++		sdp->db[0] = 1;
++		sdp->db[3] = 1;
++	}
++
++	/*
++	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
++	 * Format as per DP 1.4a spec and DP 2.0 respectively.
++	 */
++	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
++		goto out;
++
++	/* VSC SDP Payload for DB16 through DB18 */
++	/* Pixel Encoding and Colorimetry Formats  */
++	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
++	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
++
++	switch (vsc->bpc) {
++	case 6:
++		/* 6bpc: 0x0 */
++		break;
++	case 8:
++		sdp->db[17] = 0x1; /* DB17[3:0] */
++		break;
++	case 10:
++		sdp->db[17] = 0x2;
++		break;
++	case 12:
++		sdp->db[17] = 0x3;
++		break;
++	case 16:
++		sdp->db[17] = 0x4;
++		break;
++	default:
++		WARN(1, "Missing case %d\n", vsc->bpc);
++		return -EINVAL;
++	}
++
++	/* Dynamic Range and Component Bit Depth */
++	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
++		sdp->db[17] |= 0x80;  /* DB17[7] */
++
++	/* Content Type */
++	sdp->db[18] = vsc->content_type & 0x7;
++
++out:
++	return length;
++}
++EXPORT_SYMBOL(drm_dp_vsc_sdp_pack);
++
+ /**
+  * drm_dp_get_pcon_max_frl_bw() - maximum frl supported by PCON
+  * @dpcd: DisplayPort configuration data
+diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+index 217196196e50..a9458df475e2 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp.c
++++ b/drivers/gpu/drm/i915/display/intel_dp.c
+@@ -4089,73 +4089,6 @@ intel_dp_needs_vsc_sdp(const struct intel_crtc_state *crtc_state,
+ 	return false;
+ }
+ 
+-static ssize_t intel_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
+-				     struct dp_sdp *sdp, size_t size)
+-{
+-	size_t length = sizeof(struct dp_sdp);
+-
+-	if (size < length)
+-		return -ENOSPC;
+-
+-	memset(sdp, 0, size);
+-
+-	/*
+-	 * Prepare VSC Header for SU as per DP 1.4a spec, Table 2-119
+-	 * VSC SDP Header Bytes
+-	 */
+-	sdp->sdp_header.HB0 = 0; /* Secondary-Data Packet ID = 0 */
+-	sdp->sdp_header.HB1 = vsc->sdp_type; /* Secondary-data Packet Type */
+-	sdp->sdp_header.HB2 = vsc->revision; /* Revision Number */
+-	sdp->sdp_header.HB3 = vsc->length; /* Number of Valid Data Bytes */
+-
+-	if (vsc->revision == 0x6) {
+-		sdp->db[0] = 1;
+-		sdp->db[3] = 1;
+-	}
+-
+-	/*
+-	 * Revision 0x5 and revision 0x7 supports Pixel Encoding/Colorimetry
+-	 * Format as per DP 1.4a spec and DP 2.0 respectively.
+-	 */
+-	if (!(vsc->revision == 0x5 || vsc->revision == 0x7))
+-		goto out;
+-
+-	/* VSC SDP Payload for DB16 through DB18 */
+-	/* Pixel Encoding and Colorimetry Formats  */
+-	sdp->db[16] = (vsc->pixelformat & 0xf) << 4; /* DB16[7:4] */
+-	sdp->db[16] |= vsc->colorimetry & 0xf; /* DB16[3:0] */
+-
+-	switch (vsc->bpc) {
+-	case 6:
+-		/* 6bpc: 0x0 */
+-		break;
+-	case 8:
+-		sdp->db[17] = 0x1; /* DB17[3:0] */
+-		break;
+-	case 10:
+-		sdp->db[17] = 0x2;
+-		break;
+-	case 12:
+-		sdp->db[17] = 0x3;
+-		break;
+-	case 16:
+-		sdp->db[17] = 0x4;
+-		break;
+-	default:
+-		MISSING_CASE(vsc->bpc);
+-		break;
+-	}
+-	/* Dynamic Range and Component Bit Depth */
+-	if (vsc->dynamic_range == DP_DYNAMIC_RANGE_CTA)
+-		sdp->db[17] |= 0x80;  /* DB17[7] */
+-
+-	/* Content Type */
+-	sdp->db[18] = vsc->content_type & 0x7;
+-
+-out:
+-	return length;
+-}
+-
+ static ssize_t
+ intel_dp_hdr_metadata_infoframe_sdp_pack(struct drm_i915_private *i915,
+ 					 const struct hdmi_drm_infoframe *drm_infoframe,
+@@ -4248,8 +4181,8 @@ static void intel_write_dp_sdp(struct intel_encoder *encoder,
+ 
+ 	switch (type) {
+ 	case DP_SDP_VSC:
+-		len = intel_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
+-					    sizeof(sdp));
++		len = drm_dp_vsc_sdp_pack(&crtc_state->infoframes.vsc, &sdp,
++					  sizeof(sdp));
+ 		break;
+ 	case HDMI_PACKET_TYPE_GAMUT_METADATA:
+ 		len = intel_dp_hdr_metadata_infoframe_sdp_pack(dev_priv,
+diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+index d02014a87f12..8474504d4c88 100644
+--- a/include/drm/display/drm_dp_helper.h
++++ b/include/drm/display/drm_dp_helper.h
+@@ -812,4 +812,7 @@ int drm_dp_bw_overhead(int lane_count, int hactive,
+ 		       int bpp_x16, unsigned long flags);
+ int drm_dp_bw_channel_coding_efficiency(bool is_uhbr);
+ 
++ssize_t drm_dp_vsc_sdp_pack(const struct drm_dp_vsc_sdp *vsc,
++			    struct dp_sdp *sdp, size_t size);
++
+ #endif /* _DRM_DP_HELPER_H_ */
+-- 
+2.34.1
 
 
