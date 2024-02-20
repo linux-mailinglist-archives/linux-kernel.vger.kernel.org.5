@@ -1,155 +1,173 @@
-Return-Path: <linux-kernel+bounces-72742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72743-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B76185B839
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D261685B83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C94321F25F14
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:52:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D4441F26C66
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D889464CF6;
-	Tue, 20 Feb 2024 09:50:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xqm43TgX"
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5214657B1;
+	Tue, 20 Feb 2024 09:50:52 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5532063417
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:50:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB8456519F
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422635; cv=none; b=BPEHlMmB2cI8kxf/j20eDyGQBXu6bEb+1vSejqho/DFVWBeK/eYpqtyIrz8q7nXnqTduvDieElNyeAsfP00wNlFABcRFW/5Esf27F48/k1u9LQblICosyGsj5KgXfZQ1KU2GCDgsmsm9OXCZdbxjVMrUEZwnv82HEd3EYLtjdqs=
+	t=1708422652; cv=none; b=fSJlMtCS/dXkQD+7CZ5QnFlsjm5WtxpjwkJpXxbZpQy0r0FKBokzQzMXRU1oASHXDzuO3p29fC7/M3MUx4mYb2Fw6V0QLqk9/9n6ttm3KQ8EXwM6e6de19WMt2vFNuLgpblh3v+UDJcZQMSEEKI34whIF1mlGHpKxZBar0VAJhs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422635; c=relaxed/simple;
-	bh=UmoCSmLZPlaB8P8sjlZAYJ4iN1C5z244f+9G+QOpaIQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EwJcz68zY6+ydQ2z0I+KHlBLMZT+SnWhRw3VK/coExIVacEGw4UQz/qNTGMhvemVRbdlgq0E+3irlp2vCieNWd+CtsHZ8mC9B9BmJWVpX9NmtKVKN8nWYsqz2w1cPGBibOp4o279PLfDBIOGKe6tdgyjKDH3H8IZ+9A2GA7Cumo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Xqm43TgX; arc=none smtp.client-ip=209.85.167.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51197ca63f5so5388986e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:50:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708422631; x=1709027431; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Li4pvRP0A8qs7agB2ER6f6XTSVpc/w2exaZOx/CIdaE=;
-        b=Xqm43TgXCrvI+KaFhV914kHhILHFAwwucjCZwKe+baNaLsx2YqbZLe13wcNerCMj1f
-         JzEP1aztrqL4VcyKkip7FI++vNd9+oQ+2dEwm4eKFzuBKc+cXYTW65mltypI5fRrpYFz
-         MXsR9NIyHxeB3KgHpYPjU1En1oDbia0fN45gUgchEqaJE6vC4jcKUoqwG/iRw7S+2gbL
-         uqSxdCozEdcZf1H4room5pZzlTlQ4TTaYeWaO/5EpnJmJ+JHN5iJMaR5yGpQqS+Wmq46
-         Rb6jegLf1aiN7Y2hBuwmQsapEAOkE5MnQWIubjzpwO4Pae++k6aWNTx9EgLJB6UYdpjm
-         5Bmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708422631; x=1709027431;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Li4pvRP0A8qs7agB2ER6f6XTSVpc/w2exaZOx/CIdaE=;
-        b=l3C2vAGlzW/5xK1YrKU1nSD+ESt1pY12C3cwtEzmJSQ4si9fxNyk7Nhq9uUMVuKNv8
-         mcJKZAMFbAVOLZ+86VH32SohREQQblhJTWTFs/A7VurOgvsDNPaVx18nTKBcmXGHf2AG
-         fA2AO7s/CRTlTx0vv+r4x3d2qytKIWPzvVtwgrAHnHK2tECDB+axy1UF/dNEvqvkFNcU
-         REL06qu//Ry+ERlb1ZGxN8Qlcfd4fSTnPKj9ptco8r2AoJRnNQaYo25iysvpWMIyFwpt
-         0eEFB7gj0JFFDrP7YbNrv6Z86MNotad21hvHp8nKxpIsQSkFcV+XNcXsuSdToSl6er/F
-         Dp8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUOEe9F4WARce1XCY0fy257+Sy0Zl1uFDuOLWNQc27pPWzHOI8QS6SylEWWPmNESd44HBdy9HbjZI/GXrpspu4dy62lIubQ/VHqzvgg
-X-Gm-Message-State: AOJu0YxTwf43IzuJovJmh97XDB44vNJfS8UBANR7gGGWb0fCXqyM0czr
-	9gR5rtjKAKiPzG8JIVrkNdVJItQMGwQxhsf8HyHdEGVtn6bDBt6bN01Mya3YNio=
-X-Google-Smtp-Source: AGHT+IFh3l940sAYH+ayTbJ4nZO8RTZm6WNK2xleyu/oGmx4iRDzsQMzrAwKcsSQilbJF+Dio57ZCA==
-X-Received: by 2002:a19:e05b:0:b0:512:b2b9:3618 with SMTP id g27-20020a19e05b000000b00512b2b93618mr3981711lfj.17.1708422631391;
-        Tue, 20 Feb 2024 01:50:31 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n16-20020a5d4010000000b0033b888a0a63sm13016570wrp.0.2024.02.20.01.50.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 01:50:31 -0800 (PST)
-Message-ID: <2d85b8a8-853d-4792-91d4-d0c43c4dec93@linaro.org>
-Date: Tue, 20 Feb 2024 10:50:29 +0100
+	s=arc-20240116; t=1708422652; c=relaxed/simple;
+	bh=9+eDLJGVj0rPWuMO/mm0uNuc+/jQe54CqNb8DB1nKcQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aOaMQVYB8sP4USiescSKDi4uwqHzYYhfyuq2V1zcZ8Sg9sSPDd6d9H7AVPfWdHk45WAWDQs/AulSm//J0mB44M0t4kep9njrk72mZnEM2SECjg2NQneuh82Nn9VTfauUPeoscZjIctmjOVi4OBvYoq0FBHIRwfRYUtrLpAFJZvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rcMlr-00070T-Q0; Tue, 20 Feb 2024 10:50:39 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rcMlr-001onX-2z; Tue, 20 Feb 2024 10:50:39 +0100
+Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <mfe@pengutronix.de>)
+	id 1rcMlr-00HNa0-00;
+	Tue, 20 Feb 2024 10:50:39 +0100
+Date: Tue, 20 Feb 2024 10:50:38 +0100
+From: Marco Felsch <m.felsch@pengutronix.de>
+To: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: Michael Walle <michael@walle.cc>, srinivas.kandagatla@linaro.org,
+	gregkh@linuxfoundation.org, rafal@milecki.pl,
+	linux-kernel@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [RFC PATCH] nvmem: core: add sysfs cell write support
+Message-ID: <20240220095038.2betrguygehvwodz@pengutronix.de>
+References: <20240215211401.1201004-1-m.felsch@pengutronix.de>
+ <CZ6DFL6061FS.2WMDPMSSBXX8S@walle.cc>
+ <20240216100750.zxl4wncbgpulr2cc@pengutronix.de>
+ <20240219120414.32395299@xps-13>
+ <20240219115358.xui5fpoisvsubdyb@pengutronix.de>
+ <CZ938PEUZ1JQ.2DJE7C03HI9OO@walle.cc>
+ <20240220101811.6ae23f2e@xps-13>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] dt-bindings: soc: renesas: Document Renesas RZ/V2H{P}
- SoC variants
-Content-Language: en-US
-To: Prabhakar <prabhakar.csengg@gmail.com>,
- Magnus Damm <magnus.damm@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Catalin Marinas
- <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
- Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240219160912.1206647-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240219160912.1206647-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240219160912.1206647-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220101811.6ae23f2e@xps-13>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mfe@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On 19/02/2024 17:09, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Hi Miquel, Michael,
+
+On 24-02-20, Miquel Raynal wrote:
+> Hi,
 > 
-> Document Renesas RZ/V2H{P} (R9A09G057) SoC variants.
+> michael@walle.cc wrote on Mon, 19 Feb 2024 14:26:16 +0100:
 > 
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
-> ---
+> > On Mon Feb 19, 2024 at 12:53 PM CET, Marco Felsch wrote:
+> > > On 24-02-19, Miquel Raynal wrote:  
+> > > > Hi Marco,
+> > > > 
+> > > > m.felsch@pengutronix.de wrote on Fri, 16 Feb 2024 11:07:50 +0100:
+> > > >   
+> > > > > Hi Michael,
+> > > > > 
+> > > > > On 24-02-16, Michael Walle wrote:  
+> > > > > > Hi,
+> > > > > > 
+> > > > > > On Thu Feb 15, 2024 at 10:14 PM CET, Marco Felsch wrote:    
+> > > > > > > @@ -432,6 +466,7 @@ static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
+> > > > > > >  	struct bin_attribute **cells_attrs, *attrs;
+> > > > > > >  	struct nvmem_cell_entry *entry;
+> > > > > > >  	unsigned int ncells = 0, i = 0;
+> > > > > > > +	umode_t mode;
+> > > > > > >  	int ret = 0;
+> > > > > > >  
+> > > > > > >  	mutex_lock(&nvmem_mutex);
+> > > > > > > @@ -456,15 +491,18 @@ static int nvmem_populate_sysfs_cells(struct nvmem_device *nvmem)
+> > > > > > >  		goto unlock_mutex;
+> > > > > > >  	}
+> > > > > > >  
+> > > > > > > +	mode = nvmem_bin_attr_get_umode(nvmem);
+> > > > > > > +
+> > > > > > >  	/* Initialize each attribute to take the name and size of the cell */
+> > > > > > >  	list_for_each_entry(entry, &nvmem->cells, node) {
+> > > > > > >  		sysfs_bin_attr_init(&attrs[i]);
+> > > > > > >  		attrs[i].attr.name = devm_kasprintf(&nvmem->dev, GFP_KERNEL,
+> > > > > > >  						    "%s@%x", entry->name,
+> > > > > > >  						    entry->offset);
+> > > > > > > -		attrs[i].attr.mode = 0444;    
+> > > > > > 
+> > > > > > cells are not writable if there is a read post process hook, see
+> > > > > > __nvmem_cell_entry_write().
+> > > > > > 
+> > > > > > if (entry->read_post_processing)
+> > > > > > 	mode &= ~0222;    
+> > > > > 
+> > > > > good point, thanks for the hint :) I will add this and send a non-rfc
+> > > > > version if write-support is something you would like to have.  
+> > > > 
+> > > > I like the idea but, what about mtd devices (and soon maybe UBI
+> > > > devices)? This may only work on EEPROM-like devices I guess, where each
+> > > > area is fully independent and where no erasure is actually expected.  
+> > >
+> > > For MTD I would say that you need to ensure that you need to align the
+> > > cells correctly. The cell-write should handle the page erase/write cycle
+> > > properly. E.g. an SPI-NOR need to align the cells to erase-page size or
+> > > the nvmem-cell-write need to read-copy-update the cells if they are not
+> > > erase-paged aligned.
+> > >
+> > > Regarding UBI(FS) I'm not sure if this is required at all since you have
+> > > an filesystem. IMHO nvmem-cells are very lowelevel and are not made for
+> > > filesystem backed backends.
+> 
+> I'm really talking about UBI, not UBIFS. UBI is just like MTD but
+> handles wear leveling. There is a pending series for enabling nvmem
+> cells on top of UBI.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cells on-top of a wear leveling device? Interesting, the cell-api is
+very lowlevel which means the specified cell will be at the exact same
+place on the hardware device as specified in the dts. How do you know
+that with wear leveling underneath the cell-api?
 
-Best regards,
-Krzysztof
+> > > That beeing said: I have no problem if we provide write support for
+> > > EEPROMs only and adapt it later on to cover spi-nor/nand devices as
+> > > well.  
+> > 
+> > Agreed. Honestly, I don't know how much sense this makes for MTD
+> > devices. First, the operation itself, seems really dangerous, as
+> > you'll have to delete the whole sector. Second, during initial
+> > provisioning, I don't think it will make much sense to use the sysfs
+> > cells because you cannot combine multiple writes into one. You'll
+> > always end up with unnecessary erases.
+> 
+> One cell per erase block would be an immense waste.
 
+Agree.
+
+> Read-copy-update would probably work but would as well be very
+> sub-optimal. I guess we could live with it, but as for now there has
+> not been any real request for it, I'd also advise to keep this feature
+> out of the mtd world in general.
+
+SPI-NORs are very typical for storing production-data as well but as I
+said this is another story. I'm fine with limiting it to EEPROMs since
+this is my use-case :)
+
+Regards,
+  Marco
 
