@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-72729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C93BC85B80C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:48:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D445185B810
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:48:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38EF31F26F44
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:48:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7E51B28108
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:48:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1250657C4;
-	Tue, 20 Feb 2024 09:43:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A1B657DF;
+	Tue, 20 Feb 2024 09:43:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ERUCIKxn"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jzi1/MY5"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83CDF626B2;
-	Tue, 20 Feb 2024 09:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E6C60DDC;
+	Tue, 20 Feb 2024 09:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422232; cv=none; b=R37AkxpTsx28Nhw55nEeRpcLDPoq5OCDefJ2x9uDOice0L+gzaAfBnsfAI5GjZjWU8wK9DRONo4fgRu3VqXJPRc7jn7N2vGG7ZNd9p8hRRlrayJn17u8Sca7fc62lIDS+7vOeGoXj8Jf/uBxX/LTAa34fez80OWHwNPhvEW6Wxc=
+	t=1708422234; cv=none; b=dhCgrppCY6hXsZ7jHbdjtqNg9hihCYpNIm+/XmEBIfW2tSHeYz/UlRzSLgHgG7xE9CetMExZbvF+F1tLkfBoBBnIxhj7vEciVHi8/oieJh0wUjUN7zSj0b4ePtcR0p85UjVqMGCWzP/6bRtnubtyUrUdMb0LxBCng7Eg0nols54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422232; c=relaxed/simple;
-	bh=PL9p/fc//p4mKEZ3pbQoYAvWGl2yUwUCKapaVX+GvB0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HR0BR1cXzdF2GOz6z92onG70ghXwNiah4Xc4jJLx9RvYDKm9T+7kF2s7bPBNUXKlU60QV4U+Yak7HsMYVO0bs/TMb9idCfPvuX7zBVtuexvYRkHcKyLe62odnXz61vYCg6xqGLozvukpvsYpITLunhjiFT76J0C22CriblzxoxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ERUCIKxn; arc=none smtp.client-ip=209.85.128.44
+	s=arc-20240116; t=1708422234; c=relaxed/simple;
+	bh=9UhZWLvkrhqno/vFSqGZ/DXdacovNiY+EP2/H8gs4Pg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=CL8llKgFVy9337lwByS5L4UpHcznc+mxc4nML+j0MwIQbNZ3W8ai//0F3bcJ6TO/giSUK08Yw+0od6WApHN0mNGvdJ7WEftZz6PZXqGh4JhNjPw83HCHBQPXZw7iEKyZ9g4KRetBB4K+Zj4UFu6X59QRiCtb5HZwZT4sv+aLeRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jzi1/MY5; arc=none smtp.client-ip=209.85.208.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4126aa42402so9584995e9.0;
-        Tue, 20 Feb 2024 01:43:50 -0800 (PST)
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d22b8801b9so42223271fa.0;
+        Tue, 20 Feb 2024 01:43:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708422229; x=1709027029; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=e4J6J8VQrcl48Rr9QejprQCFTeVoHKJ+SX2r+VkT0LY=;
-        b=ERUCIKxntE0WgrEKMbasr2ooEJiS9H7Gpfxu29jEWKvbtubyyPhFWYAPbIHH00U+QL
-         Cuu8r7ehWXTLvx3D7l7Wa8HqzdPlwkmsCLEct/SeCZBK+VVfRrHrU1f0HG96xZGZZ4u8
-         DrRsvKjhJlA0YC+mBwC3fgcQNM4NS+0Y0j4CtDWy26d+isbFUnTGHebN04Hy2IBYhYgl
-         6hhj8xD1STEhZRVtZnjjvBNKQ8eGU2+ErZzsU/JHng0m13on10UPFsJoaPA+t2AodL4/
-         QFP8zeilSlVqJT67x4wA01iG+ZHw1wv2CufT3CfweF0x3+rcA/nNCMashXe4GEHRUdj/
-         1J0w==
+        d=gmail.com; s=20230601; t=1708422230; x=1709027030; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/GfdpFSEU4FlothZXUc0bimkte0se1dxOFRg/9N9zyc=;
+        b=Jzi1/MY55NXyeEAgCVzkMfQlL6KT03jjVnBcyN0A482D9QsUHzWjXLdhQ7C/KkS1fH
+         kgw4C9momTntaJ3ii/xp11bPU0Ka6K+KU/YL/DE8NpK1/SlFw3PM/0BvqHaLc7sIMa31
+         s4O12TBaC604aD+qQ8MPSJFNCmV7eoBmxA32hZX3c1K6DHUyyhhA6jF11wUs8rAj68gI
+         cu12rqm8T0pBaHgHzGwDuuLNitr2uNeUgdkYqt59eh1lkkQUq2Z0VfhlEHt9lGb5AtcY
+         jcbnQ/FxwxO0ztWh/nT+HS6xwLGXWFSN52B0BxqknXm2Fa8AIjqFLnarw3Nw+gc+xbPa
+         sqtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708422229; x=1709027029;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e4J6J8VQrcl48Rr9QejprQCFTeVoHKJ+SX2r+VkT0LY=;
-        b=XubMOmAEf2k9ToctO/rk6OmKwh6aPmjczGRb5gYJfhaLhx8WEEDIsrcE3Qthhlm5Uq
-         fmh43PbMVQMmDDldBG32J67PFGMl78Kz6uzF8VlqxKIhoyiILr2CvoCUu0N41fBZjfVW
-         akX14pzRRz+m0FK82lqJH3Cw1WlUd8YuUoMaVtwQ9RxaqxHb18xR/mTe6HPPM9WF9HgS
-         BeLRcqhLu2MxJMw/61otOCsz6bq9bvRvRNXUy9rdvkdm/l98snJeFTI5iMIVcsaEXbDA
-         CU03xKKq7O46kOzrRceBw1H+11aLX2yyslRKipO4FOgoSimVsA5ZN4BOqA0RyZ2TqqjR
-         xwIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXvMKKAaeDMM9hB80XHHb9cm6XPmqYzDiy1zUGMEt5DH+cP0/shPbBroXqGVTa6GpMC+At14ev6RDtZN9MUnuMijY/7zpUzcftJiAKR2o4Lkm35EkLtPj7ZzUcIx4ZUldwVBXCzmA0BHWtKHtJbPyKPLFS9+cO2Lwf3WVHeOFYipKZacq+aJSHwJNUY9qPyG5Mzk+Hq4U5yys6xkAq3Pvk=
-X-Gm-Message-State: AOJu0YwZ8g9h3ixxDdZBYY1WDBECv0tqvKMyY3wIxpqhakg8U+G6XtH/
-	Fr1QfiNDc4JptAQVkvGq/0vEQYPRCw2aDdvjG+ATmjjdM2nZj7Io
-X-Google-Smtp-Source: AGHT+IEP0BE/3AW3vgs8wQzzoBx3MbLyrjhk27hon+9DyYdwmTDYFMqEJt0bLYWLPSpI5hDq2gax4Q==
-X-Received: by 2002:a05:600c:4713:b0:412:6101:9158 with SMTP id v19-20020a05600c471300b0041261019158mr4971935wmo.29.1708422228398;
-        Tue, 20 Feb 2024 01:43:48 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708422230; x=1709027030;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/GfdpFSEU4FlothZXUc0bimkte0se1dxOFRg/9N9zyc=;
+        b=nDWkk+3oDFP6yFhsMt52d6RV8nj1uUVUnEo3Jqz04xsjJN1Q+wIWhJkPIAArHZY1li
+         UXJKH0zqV+PED1bo2DLhM/bdY59CafBAi6ZfYzVOUwZxmFnvmsnVuxuroBkLxSF8+sTO
+         g9tZ7/KdfKjn1Arsy0dg0LMaAmIjMMRxAoEz27Dh0Gt1qYze37mNNpBBUwnUNTm8vy6r
+         FGAGjFK67EeU3M9zvyKJv1h32VIdL+G6okIYeFsmKVs0E5HqNkss5TuEQ/fLg5BriTq8
+         stUB67t9PBocvCJIZwGg8m7c4lsk+PQmv6jisIfV7CyupgVqcSZTrA+CW6tU0os5c4q/
+         ofwg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/LSUFp060bkvfx8EylyFLAyHrfVI3zXJhFM1tw4/X39xDMC+8BBcPjibHxBu7d+r2jL2VYSjS1wExVTVLY/gam5wwXiR+TMVuyEsUJ1LzUDQ+q0CURGQnKTNkzabf2p6puSDhMPBUE4d1qJL3wpEup1swWpGko77NYR1zFngKYkEwmCUNDJ/QGV6gzalUqgYI60DDA+l+Hu7ElzlmVws=
+X-Gm-Message-State: AOJu0YxdclGW7HR34BXIDovM2QIPtGyb2gWGta6Sf6W6M1ewlui5I8op
+	WsnwbZ+Y3B9r/fDEF1zDH805n/GjQbi0locqd7nNr96RXcc/8Ebx
+X-Google-Smtp-Source: AGHT+IG+/XgqpdseubU3KptrBKz456hW/fWGCnDQFNkMAppuMUXqBK1gGGoLAh33mHGpWwkdgW3XZA==
+X-Received: by 2002:a2e:3606:0:b0:2d2:35af:e8a2 with SMTP id d6-20020a2e3606000000b002d235afe8a2mr3732012lja.48.1708422230167;
+        Tue, 20 Feb 2024 01:43:50 -0800 (PST)
 Received: from HYB-hhAwRlzzMZb.ad.analog.com ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id 13-20020a05600c020d00b00410dd253008sm13865092wmi.42.2024.02.20.01.43.46
+        by smtp.gmail.com with ESMTPSA id 13-20020a05600c020d00b00410dd253008sm13865092wmi.42.2024.02.20.01.43.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 01:43:47 -0800 (PST)
+        Tue, 20 Feb 2024 01:43:49 -0800 (PST)
 From: Dumitru Ceclan <mitrutzceclan@gmail.com>
 To: 
 Cc: linus.walleij@linaro.org,
@@ -90,320 +92,144 @@ Cc: linus.walleij@linaro.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Dumitru Ceclan <mitrutzceclan@gmail.com>
-Subject: [PATCH v13 1/3] dt-bindings: adc: add AD7173
-Date: Tue, 20 Feb 2024 11:43:38 +0200
-Message-ID: <20240220094344.17556-1-mitrutzceclan@gmail.com>
+Subject: [PATCH v13 2/3] iio: adc: ad_sigma_delta: Add optional irq selection
+Date: Tue, 20 Feb 2024 11:43:39 +0200
+Message-ID: <20240220094344.17556-2-mitrutzceclan@gmail.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20240220094344.17556-1-mitrutzceclan@gmail.com>
+References: <20240220094344.17556-1-mitrutzceclan@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The AD7173 family offer a complete integrated Sigma-Delta ADC solution
-which can be used in high precision, low noise single channel applications
-or higher speed multiplexed applications. The Sigma-Delta ADC is intended
-primarily for measurement of signals close to DC but also delivers
-outstanding performance with input bandwidths out to ~10kHz.
+Add optional irq_num attribute to ad_sigma_delta_info structure for
+selecting the used interrupt line for adc's conversion completion.
 
 Signed-off-by: Dumitru Ceclan <mitrutzceclan@gmail.com>
 ---
-V12->V13
- - Remove adi,clock-select
- - Update avdd and avdd2 supply descriptions
- - Update adi,reference-select description to suggest that it is referenced to avss
- - Make clocks/clock-names and clock-controller mutually exclusive
-V11->V12
- - Drop "binding", describe hardware in binding description
- - Rename refin and refin2 to vref and vref2
- - Add better description to external references to better show that the voltage
-    value that needs to be specified is the difference between the positive and
-    negative reference pins
- - Add optional clocks properties
- - Add optional adi,clock-select property
- - Add option for second interrupt, error
- - Add description to interrupts
-V10->V11
- - Fix example warning: '#gpio-cells' is a dependency of 'gpio-controller'
- - Add description to #gpio-cells property
-V9->V10
- - Fix dt_binding_check type warning from adi,reference-select
-V8->v9
- - Add gpio-controller and "#gpio-cells" properties
- - Add missing avdd2 and iovdd supplies
- - Add string type to reference-select
-V7->V8
- - include missing fix from V6
-V6->V7 <no changes>
-V5->V6
- - Moved global required property to proper placement
-V4 -> V5
- - Use string enum instead of integers for "adi,reference-select"
- - Fix conditional checking in regards to compatible
-V3 -> V4
- - include supply attributes
- - add channel attribute for selecting conversion reference
-V2 -> V3
- - remove redundant descriptions
- - use referenced 'bipolar' property
- - remove newlines from example
-V1 -> V2 <no changes>
+ drivers/iio/adc/ad_sigma_delta.c       | 23 ++++++++++++++---------
+ include/linux/iio/adc/ad_sigma_delta.h |  3 +++
+ 2 files changed, 17 insertions(+), 9 deletions(-)
 
- .../bindings/iio/adc/adi,ad7173.yaml          | 242 ++++++++++++++++++
- 1 file changed, 242 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-
-diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-new file mode 100644
-index 000000000000..347a0cc0e278
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7173.yaml
-@@ -0,0 +1,242 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright 2023 Analog Devices Inc.
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/adc/adi,ad7173.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
+index 7e2192870743..a0ae3a21e919 100644
+--- a/drivers/iio/adc/ad_sigma_delta.c
++++ b/drivers/iio/adc/ad_sigma_delta.c
+@@ -222,11 +222,11 @@ int ad_sd_calibrate(struct ad_sigma_delta *sigma_delta,
+ 		goto out;
+ 
+ 	sigma_delta->irq_dis = false;
+-	enable_irq(sigma_delta->spi->irq);
++	enable_irq(sigma_delta->irq_num);
+ 	timeout = wait_for_completion_timeout(&sigma_delta->completion, 2 * HZ);
+ 	if (timeout == 0) {
+ 		sigma_delta->irq_dis = true;
+-		disable_irq_nosync(sigma_delta->spi->irq);
++		disable_irq_nosync(sigma_delta->irq_num);
+ 		ret = -EIO;
+ 	} else {
+ 		ret = 0;
+@@ -295,7 +295,7 @@ int ad_sigma_delta_single_conversion(struct iio_dev *indio_dev,
+ 	ad_sigma_delta_set_mode(sigma_delta, AD_SD_MODE_SINGLE);
+ 
+ 	sigma_delta->irq_dis = false;
+-	enable_irq(sigma_delta->spi->irq);
++	enable_irq(sigma_delta->irq_num);
+ 	ret = wait_for_completion_interruptible_timeout(
+ 			&sigma_delta->completion, HZ);
+ 
+@@ -315,7 +315,7 @@ int ad_sigma_delta_single_conversion(struct iio_dev *indio_dev,
+ 
+ out:
+ 	if (!sigma_delta->irq_dis) {
+-		disable_irq_nosync(sigma_delta->spi->irq);
++		disable_irq_nosync(sigma_delta->irq_num);
+ 		sigma_delta->irq_dis = true;
+ 	}
+ 
+@@ -396,7 +396,7 @@ static int ad_sd_buffer_postenable(struct iio_dev *indio_dev)
+ 		goto err_unlock;
+ 
+ 	sigma_delta->irq_dis = false;
+-	enable_irq(sigma_delta->spi->irq);
++	enable_irq(sigma_delta->irq_num);
+ 
+ 	return 0;
+ 
+@@ -414,7 +414,7 @@ static int ad_sd_buffer_postdisable(struct iio_dev *indio_dev)
+ 	wait_for_completion_timeout(&sigma_delta->completion, HZ);
+ 
+ 	if (!sigma_delta->irq_dis) {
+-		disable_irq_nosync(sigma_delta->spi->irq);
++		disable_irq_nosync(sigma_delta->irq_num);
+ 		sigma_delta->irq_dis = true;
+ 	}
+ 
+@@ -516,7 +516,7 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
+ irq_handled:
+ 	iio_trigger_notify_done(indio_dev->trig);
+ 	sigma_delta->irq_dis = false;
+-	enable_irq(sigma_delta->spi->irq);
++	enable_irq(sigma_delta->irq_num);
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -586,9 +586,9 @@ static int devm_ad_sd_probe_trigger(struct device *dev, struct iio_dev *indio_de
+ 	sigma_delta->irq_dis = true;
+ 
+ 	/* the IRQ core clears IRQ_DISABLE_UNLAZY flag when freeing an IRQ */
+-	irq_set_status_flags(sigma_delta->spi->irq, IRQ_DISABLE_UNLAZY);
++	irq_set_status_flags(sigma_delta->irq_num, IRQ_DISABLE_UNLAZY);
+ 
+-	ret = devm_request_irq(dev, sigma_delta->spi->irq,
++	ret = devm_request_irq(dev, sigma_delta->irq_num,
+ 			       ad_sd_data_rdy_trig_poll,
+ 			       sigma_delta->info->irq_flags | IRQF_NO_AUTOEN,
+ 			       indio_dev->name,
+@@ -668,6 +668,11 @@ int ad_sd_init(struct ad_sigma_delta *sigma_delta, struct iio_dev *indio_dev,
+ 		}
+ 	}
+ 
++	if (!info->irq_num)
++		sigma_delta->irq_num = spi->irq;
++	else
++		sigma_delta->irq_num = info->irq_num;
 +
-+title: Analog Devices AD7173 ADC
-+
-+maintainers:
-+  - Ceclan Dumitru <dumitru.ceclan@analog.com>
-+
-+description: |
-+  Analog Devices AD717x ADC's:
-+  The AD717x family offer a complete integrated Sigma-Delta ADC solution which
-+  can be used in high precision, low noise single channel applications
-+  (Life Science measurements) or higher speed multiplexed applications
-+  (Factory Automation PLC Input modules). The Sigma-Delta ADC is intended
-+  primarily for measurement of signals close to DC but also delivers
-+  outstanding performance with input bandwidths out to ~10kHz.
-+
-+  Datasheets for supported chips:
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7172-2.pdf
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7173-8.pdf
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7175-2.pdf
-+    https://www.analog.com/media/en/technical-documentation/data-sheets/AD7176-2.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - adi,ad7172-2
-+      - adi,ad7173-8
-+      - adi,ad7175-2
-+      - adi,ad7176-2
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 1
-+    description: |
-+      Ready interrupt: multiplexed with SPI data out. While SPI CS is low,
-+      can be used to indicate the completion of a conversion.
-+
-+      Error: The three error bits in the status register (ADC_ERROR, CRC_ERROR,
-+      and REG_ERROR) are OR'ed, inverted, and mapped to the ERROR pin. Therefore,
-+      the ERROR pin indicates that an error has occurred.
-+
-+  interrupt-names:
-+    minItems: 1
-+    items:
-+      - const: rdy
-+      - const: err
-+
-+  '#address-cells':
-+    const: 1
-+
-+  '#size-cells':
-+    const: 0
-+
-+  spi-max-frequency:
-+    maximum: 20000000
-+
-+  gpio-controller:
-+    description: Marks the device node as a GPIO controller.
-+
-+  '#gpio-cells':
-+    const: 2
-+    description:
-+      The first cell is the GPIO number and the second cell specifies
-+      GPIO flags, as defined in <dt-bindings/gpio/gpio.h>.
-+
-+  vref-supply:
-+    description: |
-+      Differential external reference supply used for conversion. The reference
-+      voltage (Vref) specified here must be the voltage difference between the
-+      REF+ and REF- pins: Vref = (REF+) - (REF-).
-+
-+  vref2-supply:
-+    description: |
-+      Differential external reference supply used for conversion. The reference
-+      voltage (Vref2) specified here must be the voltage difference between the
-+      REF2+ and REF2- pins: Vref2 = (REF2+) - (REF2-).
-+
-+  avdd-supply:
-+    description: Avdd supply, can be used as reference for conversion.
-+                 This supply is referenced to AVSS, voltage specified here
-+                 represens (AVDD - AVSS).
-+
-+  avdd2-supply:
-+    description: Avdd2 supply, used as the input to the internal voltage regulator.
-+                 This supply is referenced to AVSS, voltage specified here
-+                 represens (AVDD2 - AVSS).
-+
-+  iovdd-supply:
-+    description: iovdd supply, used for the chip digital interface.
-+
-+  clocks:
-+    maxItems: 1
-+    description: |
-+      Optional external clock source. Can include one clock source: external
-+      clock or external crystal.
-+
-+  clock-names:
-+    enum:
-+      - ext-clk
-+      - xtal
-+
-+  '#clock-cells':
-+    const: 0
-+
-+patternProperties:
-+  "^channel@[0-9a-f]$":
-+    type: object
-+    $ref: adc.yaml
-+    unevaluatedProperties: false
-+
-+    properties:
-+      reg:
-+        minimum: 0
-+        maximum: 15
-+
-+      diff-channels:
-+        items:
-+          minimum: 0
-+          maximum: 31
-+
-+      adi,reference-select:
-+        description: |
-+          Select the reference source to use when converting on
-+          the specific channel. Valid values are:
-+          vref       : REF+  /REF−
-+          vref2      : REF2+ /REF2−
-+          refout-avss: REFOUT/AVSS (Internal reference)
-+          avdd       : AVDD  /AVSS
-+
-+          External reference ref2 only available on ad7173-8.
-+          If not specified, internal reference used.
-+        $ref: /schemas/types.yaml#/definitions/string
-+        enum:
-+          - vref
-+          - vref2
-+          - refout-avss
-+          - avdd
-+        default: refout-avss
-+
-+    required:
-+      - reg
-+      - diff-channels
-+
-+required:
-+  - compatible
-+  - reg
-+
-+allOf:
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-+
-+  - if:
-+      properties:
-+        compatible:
-+          not:
-+            contains:
-+              const: adi,ad7173-8
-+    then:
-+      properties:
-+        vref2-supply: false
-+      patternProperties:
-+        "^channel@[0-9a-f]$":
-+          properties:
-+            adi,reference-select:
-+              enum:
-+                - vref
-+                - refout-avss
-+                - avdd
-+
-+  - if:
-+      anyOf:
-+        - required: [clock-names]
-+        - required: [clocks]
-+    then:
-+      properties:
-+        '#clock-cells': false
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    spi {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      adc@0 {
-+        compatible = "adi,ad7173-8";
-+        reg = <0>;
-+
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        interrupts = <25 IRQ_TYPE_EDGE_FALLING>;
-+        interrupt-names = "rdy";
-+        interrupt-parent = <&gpio>;
-+        spi-max-frequency = <5000000>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+        #clock-cells = <0>;
-+
-+        vref-supply = <&dummy_regulator>;
-+
-+        channel@0 {
-+          reg = <0>;
-+          bipolar;
-+          diff-channels = <0 1>;
-+          adi,reference-select = "vref";
-+        };
-+
-+        channel@1 {
-+          reg = <1>;
-+          diff-channels = <2 3>;
-+        };
-+
-+        channel@2 {
-+          reg = <2>;
-+          bipolar;
-+          diff-channels = <4 5>;
-+        };
-+
-+        channel@3 {
-+          reg = <3>;
-+          bipolar;
-+          diff-channels = <6 7>;
-+        };
-+
-+        channel@4 {
-+          reg = <4>;
-+          diff-channels = <8 9>;
-+          adi,reference-select = "avdd";
-+        };
-+      };
-+    };
+ 	iio_device_set_drvdata(indio_dev, sigma_delta);
+ 
+ 	return 0;
+diff --git a/include/linux/iio/adc/ad_sigma_delta.h b/include/linux/iio/adc/ad_sigma_delta.h
+index 7852f6c9a714..77c3a33e5370 100644
+--- a/include/linux/iio/adc/ad_sigma_delta.h
++++ b/include/linux/iio/adc/ad_sigma_delta.h
+@@ -45,6 +45,7 @@ struct iio_dev;
+  * @data_reg: Address of the data register, if 0 the default address of 0x3 will
+  *   be used.
+  * @irq_flags: flags for the interrupt used by the triggered buffer
++ * @irq_num: IRQ for reading conversions. If 0, spi->irq will be used
+  * @num_slots: Number of sequencer slots
+  */
+ struct ad_sigma_delta_info {
+@@ -59,6 +60,7 @@ struct ad_sigma_delta_info {
+ 	unsigned int status_ch_mask;
+ 	unsigned int data_reg;
+ 	unsigned long irq_flags;
++	unsigned long irq_num;
+ 	unsigned int num_slots;
+ };
+ 
+@@ -87,6 +89,7 @@ struct ad_sigma_delta {
+ 	unsigned int		active_slots;
+ 	unsigned int		current_slot;
+ 	unsigned int		num_slots;
++	unsigned int		irq_num;
+ 	bool			status_appended;
+ 	/* map slots to channels in order to know what to expect from devices */
+ 	unsigned int		*slots;
 -- 
 2.42.0
 
