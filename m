@@ -1,161 +1,166 @@
-Return-Path: <linux-kernel+bounces-72914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9666985BAAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:35:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C205285BAB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:36:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52544283A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:35:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DA9A1F224CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:36:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7519C66B5A;
-	Tue, 20 Feb 2024 11:35:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DE6967A09;
+	Tue, 20 Feb 2024 11:36:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BxLgIDWp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="myYCSnem"
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B823B664CB;
-	Tue, 20 Feb 2024 11:35:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9840766B4F
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708428912; cv=none; b=awkZpBRFBAqX2VOhHuB3JfsXGZ6NM9qb8UNV/p4HX5DSc7ShGdDebfYpKC+zQZ+CmXmFO9sqqK1VFwLs5xAKW9EfjhpI/qBOpAcgey3U+9S4ybD53cqgDEFmz3W3M/0Rb/qplRH0mhrQ6fmPov/EuNyJLmTlV7z3JficAg9iP+s=
+	t=1708429011; cv=none; b=iMtGVbltpwwLZQz29p/B9yeRF0Heik7AU1Fsz2lmGF2ZTDqOZz0911/pY3eEFkQI6mzxE9Q5qQSjEhciFcZe3mZcym7baDCv0zLIfN0MoGo2qHtCh4RgiApvDRjfJdNGNypUONkViVAmd2WtoIai/qQ0NRIEkiO3gOTHQ+f99QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708428912; c=relaxed/simple;
-	bh=g+BwWIsDALTdEILafk/ZJXkguL1Tffup+cePcQBqNpA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dhp/sug/qE5bY+1r0zOj7l7VLXY3muIFeimdkQiKU781Y5n5udvddJ/i4XytvAZw4WSIktO2sVCpHvVQ5q1bKjB308OWPgv7ytmCGJlGQfqSdnZofSsCxEPIGmVvVbITZ8N/vxQmF4sd0LBrC+/TUiCKnqieu4HSJaRI0wXXud8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BxLgIDWp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF98AC433F1;
-	Tue, 20 Feb 2024 11:35:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708428912;
-	bh=g+BwWIsDALTdEILafk/ZJXkguL1Tffup+cePcQBqNpA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=BxLgIDWp33lBMiv/zh/ilTuRxvoZuYbroWyEeRjxfS1bOUxaHuEQ+hUACmhb14O5E
-	 hgxLlGc2sZxkaS103n/PajbOL/y9uXATGSSyWGP4/FTgG7zKczm5PuMsdruaewGqfm
-	 R21lEnZgg/lHPeyLc0yNHh7gNQPwCfsJAvNGU8yCDyog+UA77Ljnq7KyLg5i1QA2KR
-	 SI0Z96QWKrqu/ONZrgaNOqqykz+hkyR43Z4X0JUpMkux5xsPV633N0Y7HXjeal6E91
-	 2u2GGgxQoXVfZYVmYHBlm+hhxY8flDSrJP5oItmIwdal1uu1q/PPgVcOyQvVpHX7Pv
-	 oioFLHh6Hg5bg==
-Message-ID: <4c3f9f52-cd56-4d20-a44d-bfca0b2e3b7e@kernel.org>
-Date: Tue, 20 Feb 2024 13:35:07 +0200
+	s=arc-20240116; t=1708429011; c=relaxed/simple;
+	bh=MJZTwvMAhXU1TEesSE5qck+Xlaoz9q2+OP1AZ3mvBy8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YQLo1efzBPoYgwxus4jQJ9Akzx5XF78xPBALdG2Sm5IxiRASGSBwygRmpd3uOTqBKn2j4NjF0F0pTJCOWntlikKYTiReZytivRvZn3Rvo3cRiR3ICNbE9H6bjm5dZKlpeBeEY+c+z4tIeYg9+nfI31UInkTT0juCgcXYSAQ09rs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=myYCSnem; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708429001; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=Cz1c5ISGmBdsxneLIlZx/BdFlZMirzknWzhxQibv2VY=;
+	b=myYCSnem7v/BWmz0M7MvyuyhBIg4zODOaDg1YCDFptmor0rA7rPntF3nyD0WEKBXpCheZTtn9Gw9A+o/C4NkIpZKybcCkeYzAbJm5iegT0jzjpraD6P8ucGHbPpWQzi6zJr8klx57DPRwxA2FbMRTZlP6Cn96r1UNGHHpmMt4js=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R701e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=rongwei.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W0wabbT_1708428963;
+Received: from localhost.localdomain(mailfrom:rongwei.wang@linux.alibaba.com fp:SMTPD_---0W0wabbT_1708428963)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Feb 2024 19:36:40 +0800
+From: Rongwei Wang <rongwei.wang@linux.alibaba.com>
+To: linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: akpm@linux-foundation.org,
+	gregkh@linuxfoundation.org,
+	rafael@kernel.org,
+	pierre.gondois@arm.com,
+	mingo@redhat.com,
+	dave.hansen@linux.intel.com,
+	luto@kernel.org,
+	teng.ma@linux.alibaba.com
+Subject: [PATCH v1 0/2] support NUMA emulation for genertic arch
+Date: Tue, 20 Feb 2024 19:36:00 +0800
+Message-Id: <20240220113602.6943-1-rongwei.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.40.0
+In-Reply-To: <20231012024842.99703-1-rongwei.wang@linux.alibaba.com>
+References: <20231012024842.99703-1-rongwei.wang@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] interconnect:Replace mutex with rt_mutex for icc_bw_lock
-Content-Language: en-US
-To: Rumeng Wang <wangrumeng@xiaomi.corp-partner.google.com>
-Cc: linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
- fengqi@xiaomi.com, xuyingfeng@xiaomi.com
-References: <20240220074300.10805-1-wangrumeng@xiaomi.corp-partner.google.com>
-From: Georgi Djakov <djakov@kernel.org>
-In-Reply-To: <20240220074300.10805-1-wangrumeng@xiaomi.corp-partner.google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hello,
+A brief introduction
+====================
 
-On 20.02.24 9:43, Rumeng Wang wrote:
-> From: wangrumeng <wangrumeng@xiaomi.corp-partner.google.com>
-> 
-> Replace existing mutex with rt_mutex to prevent priority inversion
-> between clients, which can cause unacceptable delays in some cases.
-> 
-> Signed-off-by: wangrumeng <wangrumeng@xiaomi.corp-partner.google.com>
+The NUMA emulation can fake more node base on a single
+node system, e.g.
 
-A similar patch [1] has been posted some time ago. Please check the review
-comments.
+one node system:
 
-Thanks,
-Georgi
+[root@localhost ~]# numactl -H
+available: 1 nodes (0)
+node 0 cpus: 0 1 2 3 4 5 6 7
+node 0 size: 31788 MB
+node 0 free: 31446 MB
+node distances:
+node   0
+  0:  10
 
-[1] https://lore.kernel.org/all/20220906191423.30109-1-quic_mdtipton@quicinc.com/
+add numa=fake=2 (fake 2 node on each origin node):
 
-> ---
->   drivers/interconnect/core.c | 15 ++++++++-------
->   1 file changed, 8 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-> index 50bac2d79d9b..467d42cc7e49 100644
-> --- a/drivers/interconnect/core.c
-> +++ b/drivers/interconnect/core.c
-> @@ -14,6 +14,7 @@
->   #include <linux/interconnect-provider.h>
->   #include <linux/list.h>
->   #include <linux/mutex.h>
-> +#include <linux/rtmutex.h>
->   #include <linux/slab.h>
->   #include <linux/of.h>
->   #include <linux/overflow.h>
-> @@ -28,7 +29,7 @@ static LIST_HEAD(icc_providers);
->   static int providers_count;
->   static bool synced_state;
->   static DEFINE_MUTEX(icc_lock);
-> -static DEFINE_MUTEX(icc_bw_lock);
-> +static DEFINE_RT_MUTEX(icc_bw_lock);
->   static struct dentry *icc_debugfs_dir;
->   
->   static void icc_summary_show_one(struct seq_file *s, struct icc_node *n)
-> @@ -698,7 +699,7 @@ int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw)
->   	if (WARN_ON(IS_ERR(path) || !path->num_nodes))
->   		return -EINVAL;
->   
-> -	mutex_lock(&icc_bw_lock);
-> +	rt_mutex_lock(&icc_bw_lock);
->   
->   	old_avg = path->reqs[0].avg_bw;
->   	old_peak = path->reqs[0].peak_bw;
-> @@ -730,7 +731,7 @@ int icc_set_bw(struct icc_path *path, u32 avg_bw, u32 peak_bw)
->   		apply_constraints(path);
->   	}
->   
-> -	mutex_unlock(&icc_bw_lock);
-> +	rt_mutex_unlock(&icc_bw_lock);
->   
->   	trace_icc_set_bw_end(path, ret);
->   
-> @@ -939,7 +940,7 @@ void icc_node_add(struct icc_node *node, struct icc_provider *provider)
->   		return;
->   
->   	mutex_lock(&icc_lock);
-> -	mutex_lock(&icc_bw_lock);
-> +	rt_mutex_lock(&icc_bw_lock);
->   
->   	node->provider = provider;
->   	list_add_tail(&node->node_list, &provider->nodes);
-> @@ -968,7 +969,7 @@ void icc_node_add(struct icc_node *node, struct icc_provider *provider)
->   	node->avg_bw = 0;
->   	node->peak_bw = 0;
->   
-> -	mutex_unlock(&icc_bw_lock);
-> +	rt_mutex_unlock(&icc_bw_lock);
->   	mutex_unlock(&icc_lock);
->   }
->   EXPORT_SYMBOL_GPL(icc_node_add);
-> @@ -1094,7 +1095,7 @@ void icc_sync_state(struct device *dev)
->   		return;
->   
->   	mutex_lock(&icc_lock);
-> -	mutex_lock(&icc_bw_lock);
-> +	rt_mutex_lock(&icc_bw_lock);
->   	synced_state = true;
->   	list_for_each_entry(p, &icc_providers, provider_list) {
->   		dev_dbg(p->dev, "interconnect provider is in synced state\n");
-> @@ -1107,7 +1108,7 @@ void icc_sync_state(struct device *dev)
->   			}
->   		}
->   	}
-> -	mutex_unlock(&icc_bw_lock);
-> +	rt_mutex_unlock(&icc_bw_lock);
->   	mutex_unlock(&icc_lock);
->   }
->   EXPORT_SYMBOL_GPL(icc_sync_state);
+[root@localhost ~]# numactl -H
+available: 2 nodes (0-1)
+node 0 cpus: 0 1 2 3 4 5 6 7
+node 0 size: 15806 MB
+node 0 free: 15451 MB
+node 1 cpus: 0 1 2 3 4 5 6 7
+node 1 size: 16029 MB
+node 1 free: 15989 MB
+node distances:
+node   0   1
+  0:  10  10
+  1:  10  10
+
+As above shown, a new node has been faked. As cpus, the realization
+of x86 NUMA emulation is kept. Maybe each node should has 4 cores is
+better (not sure, next to do if so).
+
+Why do this
+===========
+
+It seems has following reasons:
+  (1) In x86 host, apply NUMA emulation can fake more nodes environment
+      to test or verify some performance stuff, but arm64 only has
+      one method that modify ACPI table to do this. It's troublesome
+      more or less.
+  (2) Reduce competition for some locks. Here an example we found:
+      will-it-scale/tlb_flush1_processes -t 96 -s 10, it shows obvious
+      hotspot on lruvec->lock when test in single environment. What's
+      more, The performance improved greatly if test in two more nodes
+      system. The data shows below (more is better):
+
+      ---------------------------------------------------------------------
+      threads/process |   1     |     12   |     24   |   48     |   96
+      ---------------------------------------------------------------------
+      one node        | 14 1122 | 110 5372 | 111 2615 | 79 7084  | 72 4516
+      ---------------------------------------------------------------------
+      numa=fake=2     | 14 1168 | 144 4848 | 215 9070 | 157 0412 | 142 3968
+      ---------------------------------------------------------------------
+                      | For concurrency 12, no lruvec->lock hotspot. For 24,
+      hotspot         | one node has 24% hotspot on lruvec->lock, but
+                      | two nodes env hasn't.
+      ---------------------------------------------------------------------
+
+As for risks (e.g. numa balance...), they need to be discussed here.
+
+Lastly, it seems not a good choice to realize x86 and other genertic
+archs separately. But it can indeed avoid some architecture related
+APIs adjustments and alleviate future maintenance. The previous RFC
+link see [1].
+
+Any advice are welcome, Thanks!
+
+Change log
+==========
+
+RFC v1 -> v1
+* add new CONFIG_NUMA_FAKE for genertic archs.
+* keep x86 implementation, realize numa emulation in driver/base/ for
+  genertic arch, e.g, arm64.
+
+[1] RFC v1: https://patchwork.kernel.org/project/linux-arm-kernel/cover/20231012024842.99703-1-rongwei.wang@linux.alibaba.com/
+
+Rongwei Wang (2):
+  arch_numa: remove __init for early_cpu_to_node
+  numa: introduce numa emulation for genertic arch
+
+ drivers/base/Kconfig          |   9 +
+ drivers/base/Makefile         |   1 +
+ drivers/base/arch_numa.c      |  32 +-
+ drivers/base/numa_emulation.c | 909 ++++++++++++++++++++++++++++++++++
+ drivers/base/numa_emulation.h |  41 ++
+ include/asm-generic/numa.h    |   2 +-
+ 6 files changed, 992 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/base/numa_emulation.c
+ create mode 100644 drivers/base/numa_emulation.h
+
+-- 
+2.32.0.3.gf3a3e56d6
 
 
