@@ -1,127 +1,161 @@
-Return-Path: <linux-kernel+bounces-73171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 330DE85BE9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:20:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC01F85BEA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:21:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6F921F2160E
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:20:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A77D1C220B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912B06BB3A;
-	Tue, 20 Feb 2024 14:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A176BB2B;
+	Tue, 20 Feb 2024 14:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="1bGl4ldL"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WMSQxj8R"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E74967E6E
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:20:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7327467E6E;
+	Tue, 20 Feb 2024 14:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708438810; cv=none; b=cFyVbqSE+U45pBh92cLv34fTg9+xxJNh7HhoWQWTpphgY3Sr0k0r36aNO/llaspkK6Ggaji8LNA0gLdbXRUSakP54pZ+OgdzppPx1cswzCM/E40BdgvgGnBZjK7l6eVGJCVk8Z8JG/NhAn8z87HwEeyUlPxoJg5F4JFHFIw40Lc=
+	t=1708438865; cv=none; b=u1TdqP8u9heL7lhcmhqzixSnEVHIxRkfNeeMm3PskROa7R4suS73TJNqasLuDo2ff6jKuySrfbwXTzARzn1tr/dH9hTeIC/uqyx1u7nMq4kMrXFBzvmN8xZ0IiJtV3xjywriojvOHX4juBNso8baXkQMi0a7gkMVlYazLFXJGig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708438810; c=relaxed/simple;
-	bh=48womPk9DGD0jZ8lhc8PlrjqWPDLdoKv+1RFlvmpOPY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qvz6dB+UfhUGgqHy+KqE9V6CbtCKLhZHv5q2SnUkPHiAH9Q3AJ0acti6+CUnNcfHp7R3JmR3BaiXqqowIYNkJ6gu6rYo62iEnljkP7uVv4KRxbRvAjeOxda5H7EMmkkQj5Y8uKGtlJ1DRsm1dpbL8mc0BjWY5+vNtlzBEGmJ11A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=1bGl4ldL; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2185739b64cso3239980fac.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:20:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708438808; x=1709043608; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1k55yQJs+Dey36k/hxT0QeaBbeXBq2IfYIGNUVHLCfU=;
-        b=1bGl4ldLAe3spnfpEOdNnc1ZKZNPWETkTqeLDkHo2E5/39v7W7OecYPU4pGJuQ1z28
-         HS/NXVDOQb9jb+eDsaTie5d9fh9pzepLSjBzKsCAeWVKTfCJAva4Eew4e1fgFnfqmd8x
-         4DZimRjpf+8jR8DaMWxv2pbOv4medEG64Bo/w548sIYn770NYZfZpTsdP4ChCUo6PONf
-         /Yr/7j02JTAANis2JAuXtA4ITId4Xj/J4n7ox8ObdRR825c6dKOhcgKBKiKkppcc8FEr
-         Yy767zbhx5zBCeEnpMmXy7OAgT0tp3hhTjQ29khw/9p9879pbwVpD6w4B/q4VdDlYxZ8
-         aDDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708438808; x=1709043608;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1k55yQJs+Dey36k/hxT0QeaBbeXBq2IfYIGNUVHLCfU=;
-        b=Xv+9wbd1Jgro1NnxrD2NB+hFmEnJUKlTZyOhjedXk+LqQnI63je71AVkv8gfKHLB3B
-         LMNBq1svxwLWKcbEWCn1bPJKNY6Rik6fm19iNg6dwZ3l9uCqYHrpx8SWO1cGbW+dguzf
-         CrSxlFrWuIO8KOMHqcXw44WZXZA4twpBcHViyCt5XMidKGDH75Eci0NmX0pyDXHKBCbg
-         0ViR1X7ySV4xKDt0pwTOt2MYXVFNxVrbDWJt6ClKg8Yqgka0lwaBcaYfcx6e42R4SKQq
-         iHxThQq0GGSWdtRuN8aU8NBOCxTHnfWFHvblZLsA5gqAXuQ/oMpBtE0J+wFCEh9J5skg
-         20dw==
-X-Forwarded-Encrypted: i=1; AJvYcCXoTttiR6ZbkBphGCfQTCNxiRMM2bm1PInp4bv7vvwK0nDXQveHGMHiiYY6u3avWoOncsWBqYbAaqSFuTY0CbD/h1+cshmH4qncJtB2
-X-Gm-Message-State: AOJu0Yx/9slrzoZqNMkjpBMy+kEIlNW5UQ+/2iyUtSPuc1ObUlPuHU+i
-	1K7SGCBv8ZAKGdW4Ly988wXJZgK44nDoeL2n9UhzVmFfkkUbgPSf/I7wn7jjcXBpJLFpS7xKD0r
-	fMUxAdun6VAgambrZnM2dgossROrQezBYw9k2mA==
-X-Google-Smtp-Source: AGHT+IFMnXiKG47gNdHQm7RVwIso6YbTWdIs9HphpyCnoOP6Xb45mzpZFaUrVrOl7nB1Bxt7pQX6gzBpMMRlDVBrGho=
-X-Received: by 2002:a05:6871:5b1d:b0:21e:aca4:883 with SMTP id
- op29-20020a0568715b1d00b0021eaca40883mr9346365oac.15.1708438808666; Tue, 20
- Feb 2024 06:20:08 -0800 (PST)
+	s=arc-20240116; t=1708438865; c=relaxed/simple;
+	bh=2/sNuZhDDW4BKax5wLDrsdyxDXb0JpkYm8vXKo6XHAQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tv3A9VUywDiC++R5oElzABKXjyPcXKx9FoeRlsqqa/sPS4NGw/DxViEu579P78qOnRlbzxHlCpBFvtt87aCDSxWXbYaaW0gYD/s7yaw5b6VPoffFz0S/Mj7clX0UKSYV+7aYz3IQ7kxwStfWarb1HWrr2rMLdulwJKTHEO6zoms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WMSQxj8R; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708438862; x=1739974862;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=2/sNuZhDDW4BKax5wLDrsdyxDXb0JpkYm8vXKo6XHAQ=;
+  b=WMSQxj8RvHSy5mOiymDmSjbNxtzDMpmItitbAzeRfnJRVqEyY4XcJ9ea
+   j3nKoRWGQ/2yqoKsDNEWXBq0M/fyjtzbo9Qx5xoys3O+5sPAjidHi71L7
+   vYrapdwaOtMlkJH46pWBkUU9fSrADBNFD7PO0it26RBxVO3cjdaw2LDuz
+   jt6A+A9JxkmjhC7p9x6AmJFbyaxcQiVip65/uCY1c75A/Ige8CjW3WmRO
+   KNC1VHA5vR9to2mTHuJSc0tHhpgf3/vL8YP1lt2MLhpH/KsD48eCBg5g7
+   shINsF8qQeFV05Gp11osaKAMYgIxUB3QJ/18iJ1b27GdAZ9ZD3NYYTFei
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="5499039"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="5499039"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 06:21:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="913083829"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="913083829"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 06:20:59 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rcQzR-000000066Sa-1IE7;
+	Tue, 20 Feb 2024 16:20:57 +0200
+Date: Tue, 20 Feb 2024 16:20:57 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Rengarajan.S@microchip.com
+Cc: linux-serial@vger.kernel.org, jirislaby@kernel.org,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	Kumaravel.Thiagarajan@microchip.com,
+	Tharunkumar.Pasumarthi@microchip.com
+Subject: Re: [PATCH v1 1/1] serial: 8250_pci1xxxx: Drop quirk from 8250_port
+Message-ID: <ZdS1Se4bVvuKDd6-@smile.fi.intel.com>
+References: <20240214135009.3299940-1-andriy.shevchenko@linux.intel.com>
+ <063a1804732c619bc4a5c801c9881fedd92ad745.camel@microchip.com>
+ <ZdN_npTcCfz0cI_g@smile.fi.intel.com>
+ <9ae91cfc2ca24d23c5f3bc16208e5d59eccba076.camel@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220133950.138452-1-herve.codina@bootlin.com>
-In-Reply-To: <20240220133950.138452-1-herve.codina@bootlin.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Tue, 20 Feb 2024 15:19:57 +0100
-Message-ID: <CAMRc=MfWPEOHeNvAwra-JxHZBFMrQbP+273zbFLDZfxi7fx8Yg@mail.gmail.com>
-Subject: Re: [PATCH RESEND 0/2] leds: gpio: Add devlink between the leds-gpio
- device and the gpio used.
-To: Herve Codina <herve.codina@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>, 
-	Saravana Kannan <saravanak@google.com>, linux-gpio@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org, 
-	Luca Ceresoli <luca.ceresoli@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9ae91cfc2ca24d23c5f3bc16208e5d59eccba076.camel@microchip.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Tue, Feb 20, 2024 at 2:39=E2=80=AFPM Herve Codina <herve.codina@bootlin.=
-com> wrote:
->
-> Hi,
->
-> Note: Resent this series with Saravana added in Cc.
->
-> When a gpio used by the leds-gpio device is removed, the leds-gpio
-> device continues to use this gpio. Also, when the gpio is back, the
-> leds-gpio still uses the old removed gpio.
->
-> A consumer/supplier relationship is missing between the leds-gpio device
-> (consumer) and the gpio used (supplier).
->
-> This series adds an addionnal devlink between this two device.
-> With this link when the gpio is removed, the leds-gpio device is also
-> removed.
->
-> Best regards,
-> Herv=C3=A9 Codina
->
-> Herve Codina (2):
->   gpiolib: Introduce gpiod_device_add_link()
->   leds: gpio: Add devlinks between the gpio consumed and the gpio leds
->     device
->
->  drivers/gpio/gpiolib.c        | 32 ++++++++++++++++++++++++++++++++
->  drivers/leds/leds-gpio.c      | 15 +++++++++++++++
->  include/linux/gpio/consumer.h |  5 +++++
->  3 files changed, 52 insertions(+)
->
-> --
-> 2.43.0
->
+On Tue, Feb 20, 2024 at 04:21:59AM +0000, Rengarajan.S@microchip.com wrote:
+> On Mon, 2024-02-19 at 18:19 +0200, Andy Shevchenko wrote:
+> > On Thu, Feb 15, 2024 at 09:26:21AM +0000,
+> > Rengarajan.S@microchip.com wrote:
+> > > On Wed, 2024-02-14 at 15:50 +0200, Andy Shevchenko wrote:
 
-Can you add some more context here in the form of DT snippets that
-lead to this being needed?
+..
 
-Bartosz
+> > > > +       /*
+> > > > +        * 8250 core considers prescaller value to be always 16.
+> > > > +        * The MCHP ports support downscaled mode and hence the
+> > > > +        * functional UART clock can be lower, i.e. 62.5MHz, than
+> > > > +        * software expects in order to support higher baud
+> > > > rates.
+> > > > +        * Assign here 64MHz to support 4Mbps.
+> > > > +        *
+> > > > +        * The value itself is not really used anywhere except
+> > > > baud
+> > > > +        * rate calculations, so we can mangle it as we wish.
+> > > > +        */
+> > > > +       port->port.uartclk = 64 * HZ_PER_MHZ;
+> > > 
+> > > As per internal MCHP DOS, PCI1XXXX driver uses a simple method of
+> > > converting "legacy 16 bit baud rate generator" to a "32 bit
+> > > fractional
+> > > baud rate generator" which enables generation of an acceptable baud
+> > > rate from any valuable frequency.
+> > > 
+> > > This is applicable only when the baud clock selected is 62.5 MHz,
+> > > so
+> > > when we configure the baud clock to 64 MHz(as above) will it be
+> > > downscaled to 62.5 MHz, thus supporting the above feature?
+> > 
+> > I specifically added the above comment. If you look closer, your
+> > driver does
+> > not use this value at all, the 8250 port code uses it in several
+> > places:
+> > 
+> > - 8250_rsa case (not applicable to your driver)
+> > 
+> > - probe_baud() call (applicable iff the kernel command line misses
+> > the
+> >   baudrate, but even without this patch it's broken for your driver)
+> > 
+> > - serial8250_update_uartclk() call (not applicable to your driver)
+> > 
+> > - serial8250_get_baud_rate() call (only to get max and min range;
+> >   my change will have an effect on min (max is exactly what your
+> >   quirk is doing right no), so 62500000/16/65535 ~= 59.6, while
+> >   with my change 64000000/16/65535 ~= 61.0, but standard baudrate
+> >   here is 50 and 75, the former isn't supported by the existing
+> >   code either
+> > 
+> > - serial8250_do_get_divisor() call when magic_multiplier supplied
+> >   (not applicable to your driver)
+> > 
+> > - autoconfig_16550a() call (not applicable to your driver)
+> > 
+> > Hope this clarifies the case.
+> > 
+> > Of course if you able to test, will be even better.
+> > But wait for v2 where I update what Greg caught.
+> 
+> Thanks for the clarification Andy. Will start with the testing after v2
+> patch.
+
+v2 is here:
+
+https://lore.kernel.org/r/20240219162917.2159736-1-andriy.shevchenko@linux.intel.com
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
