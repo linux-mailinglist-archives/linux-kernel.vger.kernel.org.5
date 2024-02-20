@@ -1,283 +1,239 @@
-Return-Path: <linux-kernel+bounces-72504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72503-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7524185B45A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:03:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF84685B456
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:02:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54DCDB210A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:03:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3AF51C20E0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BFB65BAFA;
-	Tue, 20 Feb 2024 08:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F216E5BAFA;
+	Tue, 20 Feb 2024 08:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bf2QKl78"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KnZSB6zL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D45055BAE9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1F7F41A80;
+	Tue, 20 Feb 2024 08:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708416184; cv=none; b=O4Dhic/H0194CCDeHVw8rm9e6oXf76Oxi7eFbmxRkMV9hs3PwSgC+7DzVwo6o6mwvNm0cXl9Ly9kx5ujaC0vZRVETfVWZWvOnS63CR/cCRAC+y6YTQjeZ1Zvx4rT8xhuR/L2U5g9pyFVd5TM+3POfijVutbyZlopnbY6CfATxbY=
+	t=1708416172; cv=none; b=ZgH1E1beliohxeCXmuwBgadXtjkwDznj6+btVh4XZAMlJrixl0FcljSjPx1CqX/GaRHNfVhztG60Ye6ShzMQgHYkAvYjDSmAoFfJXqRcOULVvlIhPE+/sJSncnIKljQgL/vVELtCDhWNP9KgTimDx2kOX1QXZLXvSmAmOQx+Pqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708416184; c=relaxed/simple;
-	bh=U6BfJQ3lOKorfCB2xQScU7DGVW3UzgWVQwNkzflFuAA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SvkLC7YUmZ3j+TRFKVWhyrWam7xwzuBLmrpC5E0cDFxS0O0pLpgv1lJzBVjRYf1Pi2MGcJMGuxicWxpp4WSujRcRLE/9tJN1VjleNmSOzjPeNt+DkCnxXLIN7Oxdgu1/60EKedlxd+SK24T92xRQxIaucEDTkkm4z2yex9FosvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bf2QKl78; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1708416183; x=1739952183;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=U6BfJQ3lOKorfCB2xQScU7DGVW3UzgWVQwNkzflFuAA=;
-  b=bf2QKl78+NnpFFYJ6POzBdNmHJkmLiEJe0+LshorWY9yB0lS3lVNCkNL
-   +EW+m6ml+yad4dYYhP5C4xVrr+z3nRJeXRYnyZMvLGaDfzqxl7R0AxRbh
-   V5yF2iHoqPsxA4BfTCUFyZFYDHmTYrS21FLhY7jipqEyITmolN3O4cHI5
-   GYkb8ZYT0Yssg/bjnsFk43k0sBakIR4FFqbpSrerUZDp8afY4QzmeIlWA
-   mm3ZsqN6o0BmuhMMUQdlqU48R9YDMR49QDmWCOMMMg6TvQau2qEVN/DBn
-   aSfic1pQP2Nd9jefUbzVOqMGs/gpOLVN9fvNWV/t3GrbMaLvxlJPW8JIV
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2965043"
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="2965043"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 00:03:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
-   d="scan'208";a="4605179"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 00:02:56 -0800
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
-Cc: Donet Tom <donettom@linux.ibm.com>,  Michal Hocko <mhocko@suse.com>,
-  Andrew Morton <akpm@linux-foundation.org>,  linux-mm@kvack.org,
-  linux-kernel@vger.kernel.org,  Dave Hansen <dave.hansen@linux.intel.com>,
-  Mel Gorman <mgorman@suse.de>,  Feng Tang <feng.tang@intel.com>,  Andrea
- Arcangeli <aarcange@redhat.com>,  Peter Zijlstra <peterz@infradead.org>,
-  Ingo Molnar <mingo@redhat.com>,  Rik van Riel <riel@surriel.com>,
-  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
- <willy@infradead.org>,  Mike Kravetz <mike.kravetz@oracle.com>,  Vlastimil
- Babka <vbabka@suse.cz>,  Dan Williams <dan.j.williams@intel.com>,  Hugh
- Dickins <hughd@google.com>,  Kefeng Wang <wangkefeng.wang@huawei.com>,
-  Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH 3/3] mm/numa_balancing:Allow migrate on protnone
- reference with MPOL_PREFERRED_MANY policy
-In-Reply-To: <87v86jzifo.fsf@kernel.org> (Aneesh Kumar K. V.'s message of
-	"Tue, 20 Feb 2024 13:16:51 +0530")
-References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
-	<8d7737208bd24e754dc7a538a3f7f02de84f1f72.1708097962.git.donettom@linux.ibm.com>
-	<ZdNEg_aA0LHJY22T@tiehlicka>
-	<e7b138a4-de46-4cb6-94b8-67019e0369e9@linux.ibm.com>
-	<87bk8bprpr.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<e88eedb7-cad6-4298-8710-4abc98048529@kernel.org>
-	<87y1bfoayd.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<87v86jzifo.fsf@kernel.org>
-Date: Tue, 20 Feb 2024 16:01:01 +0800
-Message-ID: <87plwro98i.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1708416172; c=relaxed/simple;
+	bh=fxVoHUQFZhiyBTFzOf4zVlfu+gBSNN2+n49uFhH6Reg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C9GJWJ/ODqwCYVVh7xgFRBMAp5CSAdXtCsxesKTtPAxn7xV2oqYOIqe6vv30Gy5cZX0pnwK6a1ezaZaZptmQcef9SfgInWcNEOeu4+MbxwAMnI8pX+6qtyGTqCGoriYPrbR/FqlwAdYI0TXGbYZzLM2Y0rS8FBfZBaWP1sbrbYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KnZSB6zL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5A4C433C7;
+	Tue, 20 Feb 2024 08:02:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708416171;
+	bh=fxVoHUQFZhiyBTFzOf4zVlfu+gBSNN2+n49uFhH6Reg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KnZSB6zLL0MB3Fsq93nzm1Qxc7vsALADfcIACZzkL6ifrGSFUNPYYhlu0oxAC8iVR
+	 xb06QDTwC6KgMcierHwSg/hcebTC3TnVN+wZ4c0KDAkI6E9cgfmyu/a52Yt6OuuhBw
+	 YS1Kmvb3R8tih2fNtgVAEbkXa4Wygf9BFUGbMzEWY/QC74M/THZ5n/mT6G0OFcFY5D
+	 +RPNjw6ptz47UBIx5Nf4bd7hh//kEJNfuwkkB3aK90iuClxC+z5W5Sbj8/t6nX2yJM
+	 XMfeid/RdBGFgFSzHvErXwnl3bcWVKekilVbQw8ya+iSLs2C4Rd4CBUoZl6ojEbKWH
+	 ZwCiW8UWqU46w==
+Date: Tue, 20 Feb 2024 09:02:46 +0100
+From: Carlos Maiolino <cem@kernel.org>
+To: Hugh Dickins <hughd@google.com>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	Andrew Morton <akpm@linux-foundation.org>, Jan Kara <jack@suse.cz>, 
+	Ubisectech Sirius <bugreport@ubisectech.com>
+Subject: Re: WARNING in shmem_release_dquot
+Message-ID: <tkghmudytyld3fbyvtlq3tqj7pgbjuim6s5uqryduzmazyfdtv@hvmxxqlolgfh>
+References: <544b03a4-e317-499f-8c9f-29571be668dc.bugreport@ubisectech.com>
+ <6SwVP4lGjXmq_vTawOeZmXdpVFkj93Ca2PYVGJjWWeRa5wG3Yj9ehJ9AsjeUK_-QVN4COqy7DpdS6C8IRKHP_w==@protonmail.internalid>
+ <ae12d2ad-6f7f-09d4-30ba-03411c4dae66@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae12d2ad-6f7f-09d4-30ba-03411c4dae66@google.com>
 
-Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
+On Mon, Feb 19, 2024 at 08:26:20PM -0800, Hugh Dickins wrote:
+> On Mon, 29 Jan 2024, Ubisectech Sirius wrote:
+> 
+> > Hello.
+> > We are Ubisectech Sirius Team, the vulnerability lab of China ValiantSec. Recently, our team has discovered a issue in Linux kernel 6.8.0-rc1-gecb1b8288dc7. Attached to the email were a POC file of the issue.
+> >
+> > Stack dump:
+> > [  246.195553][ T4096] ------------[ cut here ]------------
+> > [  246.196540][ T4096] quota id 16384 from dquot ffff888051bd3000, not in rb tree!
+> > [ 246.198829][ T4096] WARNING: CPU: 1 PID: 4096 at mm/shmem_quota.c:290 shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [  246.199955][ T4096] Modules linked in:
+> > [  246.200435][ T4096] CPU: 1 PID: 4096 Comm: kworker/u6:6 Not tainted 6.8.0-rc1-gecb1b8288dc7 #21
+> > [  246.201566][ T4096] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> > [  246.202667][ T4096] Workqueue: events_unbound quota_release_workfn
+> > [ 246.203516][ T4096] RIP: 0010:shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.204276][ T4096] Code: e8 28 d9 18 00 e9 b3 f8 ff ff e8 6e e1 c2 ff c6 05 bf e8 1b 0d 01 90 48 c7 c7 80 f0 b8 8a 4c 89 ea 44 89 e6 e8 14 6d 89 ff 90 <0f> 0b 90 90 e9 18 fb ff ff e8 f5 d8 18 00 e9 a2 fa ff ff e8 0b d9
+> > All code
+> > ========
+> >    0:   e8 28 d9 18 00          call   0x18d92d
+> >    5:   e9 b3 f8 ff ff          jmp    0xfffffffffffff8bd
+> >    a:   e8 6e e1 c2 ff          call   0xffffffffffc2e17d
+> >    f:   c6 05 bf e8 1b 0d 01    movb   $0x1,0xd1be8bf(%rip)        # 0xd1be8d5
+> >   16:   90                      nop
+> >   17:   48 c7 c7 80 f0 b8 8a    mov    $0xffffffff8ab8f080,%rdi
+> >   1e:   4c 89 ea                mov    %r13,%rdx
+> >   21:   44 89 e6                mov    %r12d,%esi
+> >   24:   e8 14 6d 89 ff          call   0xffffffffff896d3d
+> >   29:   90                      nop
+> >   2a:*  0f 0b                   ud2             <-- trapping instruction
+> >   2c:   90                      nop
+> >   2d:   90                      nop
+> >   2e:   e9 18 fb ff ff          jmp    0xfffffffffffffb4b
+> >   33:   e8 f5 d8 18 00          call   0x18d92d
+> >   38:   e9 a2 fa ff ff          jmp    0xfffffffffffffadf
+> >   3d:   e8                      .byte 0xe8
+> >   3e:   0b d9                   or     %ecx,%ebx
+> >
+> > Code starting with the faulting instruction
+> > ===========================================
+> >    0:   0f 0b                   ud2
+> >    2:   90                      nop
+> >    3:   90                      nop
+> >    4:   e9 18 fb ff ff          jmp    0xfffffffffffffb21
+> >    9:   e8 f5 d8 18 00          call   0x18d903
+> >    e:   e9 a2 fa ff ff          jmp    0xfffffffffffffab5
+> >   13:   e8                      .byte 0xe8
+> >   14:   0b d9                   or     %ecx,%ebx
+> > [  246.206640][ T4096] RSP: 0018:ffffc9000604fbc0 EFLAGS: 00010286
+> > [  246.207403][ T4096] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff814c77da
+> > [  246.208514][ T4096] RDX: ffff888049a58000 RSI: ffffffff814c77e7 RDI: 0000000000000001
+> > [  246.209429][ T4096] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+> > [  246.210362][ T4096] R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000004000
+> > [  246.211367][ T4096] R13: ffff888051bd3000 R14: dffffc0000000000 R15: ffff888051bd3040
+> > [  246.212327][ T4096] FS:  0000000000000000(0000) GS:ffff88807ec00000(0000) knlGS:0000000000000000
+> > [  246.213387][ T4096] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [  246.214232][ T4096] CR2: 00007ffee748ec80 CR3: 000000000cb78000 CR4: 0000000000750ef0
+> > [  246.215216][ T4096] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> > [  246.216187][ T4096] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > [  246.217148][ T4096] PKRU: 55555554
+> > [  246.217615][ T4096] Call Trace:
+> > [  246.218090][ T4096]  <TASK>
+> > [ 246.218467][ T4096] ? show_regs (arch/x86/kernel/dumpstack.c:479)
+> > [ 246.218979][ T4096] ? __warn (kernel/panic.c:677)
+> > [ 246.219505][ T4096] ? shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.220197][ T4096] ? report_bug (lib/bug.c:201 lib/bug.c:219)
+> > [ 246.220775][ T4096] ? shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.221500][ T4096] ? handle_bug (arch/x86/kernel/traps.c:238)
+> > [ 246.222081][ T4096] ? exc_invalid_op (arch/x86/kernel/traps.c:259 (discriminator 1))
+> > [ 246.222687][ T4096] ? asm_exc_invalid_op (./arch/x86/include/asm/idtentry.h:568)
+> > [ 246.223296][ T4096] ? __warn_printk (./include/linux/context_tracking.h:155 kernel/panic.c:726)
+> > [ 246.223878][ T4096] ? __warn_printk (kernel/panic.c:717)
+> > [ 246.224460][ T4096] ? shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.225125][ T4096] quota_release_workfn (fs/quota/dquot.c:839)
+> > [ 246.225792][ T4096] ? dquot_release (fs/quota/dquot.c:810)
+> > [ 246.226401][ T4096] process_one_work (kernel/workqueue.c:2638)
+> > [ 246.227001][ T4096] ? lock_sync (kernel/locking/lockdep.c:5722)
+> > [ 246.227509][ T4096] ? workqueue_congested (kernel/workqueue.c:2542)
+> > [ 246.228266][ T4096] ? assign_work (kernel/workqueue.c:1102)
+> > [ 246.228846][ T4096] worker_thread (kernel/workqueue.c:2700 kernel/workqueue.c:2787)
+> > [ 246.229477][ T4096] ? lockdep_hardirqs_on (kernel/locking/lockdep.c:4423)
+> > [ 246.230150][ T4096] ? process_one_work (kernel/workqueue.c:2733)
+> > [ 246.230735][ T4096] kthread (kernel/kthread.c:388)
+> > [ 246.231247][ T4096] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 246.231950][ T4096] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 246.232465][ T4096] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 246.233153][ T4096] ret_from_fork_asm (arch/x86/entry/entry_64.S:250)
+> > [  246.233783][ T4096]  </TASK>
+> > [  246.234175][ T4096] Kernel panic - not syncing: kernel: panic_on_warn set ...
+> > [  246.235087][ T4096] CPU: 1 PID: 4096 Comm: kworker/u6:6 Not tainted 6.8.0-rc1-gecb1b8288dc7 #21
+> > [  246.236174][ T4096] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> > [  246.237207][ T4096] Workqueue: events_unbound quota_release_workfn
+> > [  246.237927][ T4096] Call Trace:
+> > [  246.238294][ T4096]  <TASK>
+> > [ 246.238619][ T4096] dump_stack_lvl (lib/dump_stack.c:107)
+> > [ 246.239144][ T4096] panic (kernel/panic.c:344)
+> > [ 246.239584][ T4096] ? panic_smp_self_stop+0xa0/0xa0
+> > [ 246.240154][ T4096] ? check_panic_on_warn (kernel/panic.c:236)
+> > [ 246.240714][ T4096] ? shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.241303][ T4096] check_panic_on_warn (kernel/panic.c:237)
+> > [ 246.241915][ T4096] __warn (./arch/x86/include/asm/current.h:42 kernel/panic.c:682)
+> > [ 246.242428][ T4096] ? shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.243117][ T4096] report_bug (lib/bug.c:201 lib/bug.c:219)
+> > [ 246.243688][ T4096] ? shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.244390][ T4096] handle_bug (arch/x86/kernel/traps.c:238)
+> > [ 246.244957][ T4096] exc_invalid_op (arch/x86/kernel/traps.c:259 (discriminator 1))
+> > [ 246.245551][ T4096] asm_exc_invalid_op (./arch/x86/include/asm/idtentry.h:568)
+> > [ 246.246189][ T4096] RIP: 0010:shmem_release_dquot (mm/shmem_quota.c:290 (discriminator 3))
+> > [ 246.246945][ T4096] Code: e8 28 d9 18 00 e9 b3 f8 ff ff e8 6e e1 c2 ff c6 05 bf e8 1b 0d 01 90 48 c7 c7 80 f0 b8 8a 4c 89 ea 44 89 e6 e8 14 6d 89 ff 90 <0f> 0b 90 90 e9 18 fb ff ff e8 f5 d8 18 00 e9 a2 fa ff ff e8 0b d9
+> > All code
+> > ========
+> >    0:   e8 28 d9 18 00          call   0x18d92d
+> >    5:   e9 b3 f8 ff ff          jmp    0xfffffffffffff8bd
+> >    a:   e8 6e e1 c2 ff          call   0xffffffffffc2e17d
+> >    f:   c6 05 bf e8 1b 0d 01    movb   $0x1,0xd1be8bf(%rip)        # 0xd1be8d5
+> >   16:   90                      nop
+> >   17:   48 c7 c7 80 f0 b8 8a    mov    $0xffffffff8ab8f080,%rdi
+> >   1e:   4c 89 ea                mov    %r13,%rdx
+> >   21:   44 89 e6                mov    %r12d,%esi
+> >   24:   e8 14 6d 89 ff          call   0xffffffffff896d3d
+> >   29:   90                      nop
+> >   2a:*  0f 0b                   ud2             <-- trapping instruction
+> >   2c:   90                      nop
+> >   2d:   90                      nop
+> >   2e:   e9 18 fb ff ff          jmp    0xfffffffffffffb4b
+> >   33:   e8 f5 d8 18 00          call   0x18d92d
+> >   38:   e9 a2 fa ff ff          jmp    0xfffffffffffffadf
+> >   3d:   e8                      .byte 0xe8
+> >   3e:   0b d9                   or     %ecx,%ebx
+> >
+> > Code starting with the faulting instruction
+> > ===========================================
+> >    0:   0f 0b                   ud2
+> >    2:   90                      nop
+> >    3:   90                      nop
+> >    4:   e9 18 fb ff ff          jmp    0xfffffffffffffb21
+> >    9:   e8 f5 d8 18 00          call   0x18d903
+> >    e:   e9 a2 fa ff ff          jmp    0xfffffffffffffab5
+> >   13:   e8                      .byte 0xe8
+> >   14:   0b d9                   or     %ecx,%ebx
+> > [  246.249288][ T4096] RSP: 0018:ffffc9000604fbc0 EFLAGS: 00010286
+> > [  246.250033][ T4096] RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff814c77da
+> > [  246.251035][ T4096] RDX: ffff888049a58000 RSI: ffffffff814c77e7 RDI: 0000000000000001
+> > [  246.252036][ T4096] RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
+> > [  246.253028][ T4096] R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000004000
+> > [  246.254060][ T4096] R13: ffff888051bd3000 R14: dffffc0000000000 R15: ffff888051bd3040
+> > [ 246.255058][ T4096] ? __warn_printk (./include/linux/context_tracking.h:155 kernel/panic.c:726)
+> > [ 246.255694][ T4096] ? __warn_printk (kernel/panic.c:717)
+> > [ 246.256256][ T4096] quota_release_workfn (fs/quota/dquot.c:839)
+> > [ 246.256877][ T4096] ? dquot_release (fs/quota/dquot.c:810)
+> > [ 246.257467][ T4096] process_one_work (kernel/workqueue.c:2638)
+> > [ 246.258126][ T4096] ? lock_sync (kernel/locking/lockdep.c:5722)
+> > [ 246.258718][ T4096] ? workqueue_congested (kernel/workqueue.c:2542)
+> > [ 246.259339][ T4096] ? assign_work (kernel/workqueue.c:1102)
+> > [ 246.259915][ T4096] worker_thread (kernel/workqueue.c:2700 kernel/workqueue.c:2787)
+> > [ 246.260529][ T4096] ? lockdep_hardirqs_on (kernel/locking/lockdep.c:4423)
+> > [ 246.261176][ T4096] ? process_one_work (kernel/workqueue.c:2733)
+> > [ 246.261855][ T4096] kthread (kernel/kthread.c:388)
+> > [ 246.262382][ T4096] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 246.263077][ T4096] ret_from_fork (arch/x86/kernel/process.c:153)
+> > [ 246.263620][ T4096] ? kthread_complete_and_exit (kernel/kthread.c:341)
+> > [ 246.264331][ T4096] ret_from_fork_asm (arch/x86/entry/entry_64.S:250)
+> > [  246.264910][ T4096]  </TASK>
+> > [  246.265598][ T4096] Kernel Offset: disabled
+> > [  246.266259][ T4096] Rebooting in 86400 seconds..
+> >
+> > Thank you for taking the time to read this email and we look forward to working with you further.
+> 
+> Carlos, this looks like one for you to puzzle over -
+> thanks,
+> Hugh
 
-> "Huang, Ying" <ying.huang@intel.com> writes:
->
->> "Aneesh Kumar K.V" <aneesh.kumar@kernel.org> writes:
->>
->>> On 2/20/24 12:06 PM, Huang, Ying wrote:
->>>> Donet Tom <donettom@linux.ibm.com> writes:
->>>>=20
->>>>> On 2/19/24 17:37, Michal Hocko wrote:
->>>>>> On Sat 17-02-24 01:31:35, Donet Tom wrote:
->>>>>>> commit bda420b98505 ("numa balancing: migrate on fault among multip=
-le bound
->>>>>>> nodes") added support for migrate on protnone reference with MPOL_B=
-IND
->>>>>>> memory policy. This allowed numa fault migration when the executing=
- node
->>>>>>> is part of the policy mask for MPOL_BIND. This patch extends migrat=
-ion
->>>>>>> support to MPOL_PREFERRED_MANY policy.
->>>>>>>
->>>>>>> Currently, we cannot specify MPOL_PREFERRED_MANY with the mempolicy=
- flag
->>>>>>> MPOL_F_NUMA_BALANCING. This causes issues when we want to use
->>>>>>> NUMA_BALANCING_MEMORY_TIERING. To effectively use the slow memory t=
-ier,
->>>>>>> the kernel should not allocate pages from the slower memory tier via
->>>>>>> allocation control zonelist fallback. Instead, we should move cold =
-pages
->>>>>>> from the faster memory node via memory demotion. For a page allocat=
-ion,
->>>>>>> kswapd is only woken up after we try to allocate pages from all nod=
-es in
->>>>>>> the allocation zone list. This implies that, without using memory
->>>>>>> policies, we will end up allocating hot pages in the slower memory =
-tier.
->>>>>>>
->>>>>>> MPOL_PREFERRED_MANY was added by commit b27abaccf8e8 ("mm/mempolicy=
-: add
->>>>>>> MPOL_PREFERRED_MANY for multiple preferred nodes") to allow better
->>>>>>> allocation control when we have memory tiers in the system. With
->>>>>>> MPOL_PREFERRED_MANY, the user can use a policy node mask consisting=
- only
->>>>>>> of faster memory nodes. When we fail to allocate pages from the fas=
-ter
->>>>>>> memory node, kswapd would be woken up, allowing demotion of cold pa=
-ges
->>>>>>> to slower memory nodes.
->>>>>>>
->>>>>>> With the current kernel, such usage of memory policies implies we c=
-an't
->>>>>>> do page promotion from a slower memory tier to a faster memory tier
->>>>>>> using numa fault. This patch fixes this issue.
->>>>>>>
->>>>>>> For MPOL_PREFERRED_MANY, if the executing node is in the policy node
->>>>>>> mask, we allow numa migration to the executing nodes. If the execut=
-ing
->>>>>>> node is not in the policy node mask but the folio is already alloca=
-ted
->>>>>>> based on policy preference (the folio node is in the policy node ma=
-sk),
->>>>>>> we don't allow numa migration. If both the executing node and folio=
- node
->>>>>>> are outside the policy node mask, we allow numa migration to the
->>>>>>> executing nodes.
->>>>>> The feature makes sense to me. How has this been tested? Do you have=
- any
->>>>>> numbers to present?
->>>>>
->>>>> Hi Michal
->>>>>
->>>>> I have a test program which allocate memory on a specified node and
->>>>> trigger the promotion or migration (Keep accessing the pages).
->>>>>
->>>>> Without this patch if we set MPOL_PREFERRED_MANY promotion or migrati=
-on was not happening
->>>>> with this patch I could see pages are getting  migrated or promoted.
->>>>>
->>>>> My system has 2 CPU+DRAM node (Tier 1) and 1 PMEM node(Tier 2). Below
->>>>> are my test results.
->>>>>
->>>>> In below table N0 and N1 are Tier1 Nodes. N6 is the Tier2 Node.
->>>>> Exec_Node is the execution node, Policy is the nodes in nodemask and
->>>>> "Curr Location Pages" is the node where pages present before migration
->>>>> or promotion start.
->>>>>
->>>>> Tests Results
->>>>> ------------------
->>>>> Scenario 1:=C2=A0 if the executing node is in the policy node mask
->>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
->>>>> Exec_Node=C2=A0=C2=A0=C2=A0 Policy=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 Curr Location Pages       Observations
->>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N0 N1 =
-N6=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-N1                Pages Migrated from N1 to N0
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N0 N1 N6=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N6        =
-        Pages Promoted from N6 to N0
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N0 N1=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0  =
-N1 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0    Pages M=
-igrated from N1 to N0
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N0 N1=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =
-=C2=A0N6 =C2=A0 =C2=A0            Pages Promoted from N6 to N0
->>>>>
->>>>> Scenario 2: If the folio node is in policy node mask and Exec node no=
-t in policy=C2=A0 node mask
->>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
->>>>> Exec_Node=C2=A0=C2=A0=C2=A0 Policy=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 Curr Location Pages=C2=A0=C2=A0=C2=A0  =C2=A0 Observations
->>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0  =C2=A0=C2=A0=C2=A0 N1 N6=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N1         =
-      Pages are not Migrating to N0
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N1 N6=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N6=
-               Pages are not migration to N0
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0N=
-1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 =C2=A0N1 =C2=A0 =C2=A0           Pages are not Migrating to N0
->>>>>
->>>>> Scenario 3: both the folio node and executing node are outside the po=
-licy nodemask
->>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->>>>> Exec_Node=C2=A0 =C2=A0 Policy=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 Curr Location Pages=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Observati=
-ons
->>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =C2=A0 =C2=A0 N1=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N6 =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 Page=
-s Promoted from N6 to N0
->>>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0N6                     N1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0Pages Migrated from N1 to N0
->>>>>
->>>>=20
->>>> Please use some benchmarks (e.g., redis + memtier) and show the
->>>> proc-vmstat stats and benchamrk score.
->>>
->>>
->>> Without this change numa fault migration is not supported with MPOL_PRE=
-FERRED_MANY
->>> policy. So there is no performance comparison with and without patch. W=
-r.t effectiveness of numa
->>> fault migration, that is a different topic from this patch
->>
->> IIUC, the goal of the patch is to optimize performance, right?  If so,
->> the benchmark score will help justify the change.
->>
->
-> The objective is to enable the use of the MPOL_PREFERRED_MANY policy,
-> which is essential for the correct functioning of memory demotion in
-> conjunction with memory promotion. Once we can use memory promotion, we
-> should be able to observe the same benefits as those provided by numa
-> fault memory promotion. The actual benefit of numa fault migration is
-> dependent on various factors such as the speed of the slower memory
-> device, the access pattern of the application, etc. We are discussing
-> its effectiveness and how to improve numa fault overhead in other
-> forums. However, we believe that this discussion should not hinder the
-> merging of this patch.
->
-> This change is similar to commit bda420b98505 ("numa balancing: migrate
-> on fault among multiple bound nodes")
+I'll look into it, thanks!
 
-We provide the performance data in the description of that commit :-)
-
---
-Best Regards,
-Huang, Ying
+Carlos
 
