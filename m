@@ -1,120 +1,142 @@
-Return-Path: <linux-kernel+bounces-73476-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013D785C31A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:56:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B46F585C314
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E02DB24C3F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:56:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E646D1C21926
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:55:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E451E7866C;
-	Tue, 20 Feb 2024 17:55:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Ab81jJE7"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EEB477648;
+	Tue, 20 Feb 2024 17:55:43 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE8177637
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 17:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6796476C9C;
+	Tue, 20 Feb 2024 17:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708451751; cv=none; b=dZuxcf/H2B1JOpY040gs2IXCIoX2NTbohU65irPWOKuPUc1BkPb6akI2JqjHAvfoR55FbweIsLvNm1PbLvmUgzqGeK1zrubZrH+ogWXB71nvoPzGDqD3rRyUN/+9IwwiqHscdjtka293hR6FELOzwnYlIcZCEFgEf4HLwRlqi0I=
+	t=1708451743; cv=none; b=jy0GiVNmpWyrehBUeN23h2eqDhYre84a2ym76yBwwSAsvqZXf6SSq7R5Eh85JXXjZnEU8ucpmkdRXpslWc3zDDqCIXO/w/Fqn6CgmNfJjLfUHo4MPdbLXF4Mbrbz7SW0EmEy27fxfZbSxvvl0zJHBEpOowb1OqAyfZ432582rZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708451751; c=relaxed/simple;
-	bh=hqb1KpK8idTkVHw05D9DaOecFdA77V8n0hYYGqZ4o2Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=qsUQN1CTyB76sfwuVnsClpyfwuq3bxvBdZAu2LMlbLLv1lH8sO7+je3eXjw3R3syBl502OcfdeRJhThz+IHbaJMagjB58082FMOl8caPHyXQ+4v3CWSFGcg8pR0yBOckCJl+zGqTv8YSETXlJqyiQD5YWmI0CCL2pTl0fvJYPY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Ab81jJE7; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-55a179f5fa1so7735350a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:55:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1708451747; x=1709056547; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cs7a6JxSri8UPMBfIFAC6zzBgd9E4B30piovcQly+DY=;
-        b=Ab81jJE7kpciDnJ5EwJA/C9473hy/PJMieFJXVoELmOQlHN1kdZlXBvBYeg2yMEo52
-         g+epCK1CX+nDxaDfjoUwaKrsYvPUvFx4APPM2hylpTX4ZmOcQrSh+a49/xP4JllLSA48
-         zGk7z6o9SYtKONS0sKuhAc8IB/5+tLtazoVno=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708451747; x=1709056547;
-        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cs7a6JxSri8UPMBfIFAC6zzBgd9E4B30piovcQly+DY=;
-        b=GCr1CVmMJHom9HMv6T8qHSiU8lwfvYTyWfeQr0AtnY1hFohKCt9xeqDPHuS1jf6Wt0
-         XUlyGoZsfrungLExZRAlzj2itnXGgBOq4b4rqdmA4c8z2VxPHhcfw5LaCxNU8CLwme57
-         +41kOGEWj0S3iq8iimQnhwRph+nrmPoFCRY9QWQ2CYcib/57a5QQaRHfQUBkEHp61m9q
-         rzfCQipIjgT84jtN1+1207+p8rDdGZC62SjdUWN7By4ezzJa5e6o9Aeim7qLHNBuGP6Y
-         1cUv8M/HnSKPwKRhaTM8kv7uhCIwtkdb4EkpRITm/2pY9qUwmcmisG24FadhV5qsXBM3
-         IYpg==
-X-Forwarded-Encrypted: i=1; AJvYcCVjp2bsQiqQ7gfQV+vkESlixFC/IPSckn/Y06DN1FCSTAltok4+U1RH2MjpkF1zlLohaxBs1QkgPpLT5y3ho81dK82B7ze8AVV1x+3D
-X-Gm-Message-State: AOJu0YyB0LvRbB7iU4KQ33M7RgNekaQM9FyBy3xdogAI83uSR+Ly2bcy
-	i36pgIG6+YPi4/4QIBtfOwixDf9auCvjGdLdARp3XLY4zpnnIBXxExSwe8RBj91e4wM0/E7OeE5
-	pxauNuw==
-X-Google-Smtp-Source: AGHT+IFcBhlYs5guky53suKM++T6S5sbw8fD5UQpAzhpVJPFnFEMD9t6P3PMSV6ehzfXwSEvTJIrhQ==
-X-Received: by 2002:aa7:d595:0:b0:564:405c:dfa with SMTP id r21-20020aa7d595000000b00564405c0dfamr6347428edq.17.1708451747689;
-        Tue, 20 Feb 2024 09:55:47 -0800 (PST)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id e14-20020a50fb8e000000b00564e1b7754asm227238edq.31.2024.02.20.09.55.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 09:55:46 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563e6131140so5488458a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:55:46 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWQzHGE2+RfAjdSCg6xvybw1yJ20WkLqMaeBz4FJXGZXRaYZEDD2ZLmyjOj0WZ9ZI4xC8jabf84+ZnTJabMVGC8XsIdmEEm8b6iGEn2
-X-Received: by 2002:aa7:d393:0:b0:564:3d68:55f5 with SMTP id
- x19-20020aa7d393000000b005643d6855f5mr5518556edq.5.1708451746591; Tue, 20 Feb
- 2024 09:55:46 -0800 (PST)
+	s=arc-20240116; t=1708451743; c=relaxed/simple;
+	bh=eWe42IzIU0TbHcPAOIe8fZ4Mf+FjSEsF6XZBFrPhIn0=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YixL2Z6c9MWvxE4Im4pQ84fxHGCj6m5LIo05Kxy7/1j92B9H7HONfpbjR7n003iqmN2Rtzd5PACvvSE6HaUpn91T8W1OH1G4nqmO1CsfCnGSQQX061lTP2i1eZ/fzTKahOyc+M4Dq/bN2MTk3he6K7zGlzriZ58S/yHgn5XdUUI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TfRmy43Zqz6K8qw;
+	Wed, 21 Feb 2024 01:52:02 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7FA0F140A70;
+	Wed, 21 Feb 2024 01:55:37 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 20 Feb
+ 2024 17:55:37 +0000
+Date: Tue, 20 Feb 2024 17:55:36 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+CC: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, <jic23@kernel.org>,
+	<lars@metafoo.de>, <ang.iglesiasg@gmail.com>, <linus.walleij@linaro.org>,
+	<semen.protsenko@linaro.org>, <linux-iio@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] drivers: iio: pressure: Fixes BMP38x and BMP390 SPI
+ support
+Message-ID: <20240220175536.00007440@Huawei.com>
+In-Reply-To: <20240220174624.GA27576@vamoiridPC>
+References: <20240219191359.18367-1-vassilisamir@gmail.com>
+	<ZdSyljwOyxIY7Gvb@smile.fi.intel.com>
+	<20240220174624.GA27576@vamoiridPC>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240130091300.2968534-1-tj@kernel.org> <20240130091300.2968534-6-tj@kernel.org>
- <bckroyio6l2nt54refuord4pm6mqylt3adx6z2bg6iczxkbnyk@bb5447rqahj5>
-In-Reply-To: <bckroyio6l2nt54refuord4pm6mqylt3adx6z2bg6iczxkbnyk@bb5447rqahj5>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 20 Feb 2024 09:55:30 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whqae-+7Q7wbtnEj7YmR8vsx6skTj6j-srV2Fz7cBZ2ag@mail.gmail.com>
-Message-ID: <CAHk-=whqae-+7Q7wbtnEj7YmR8vsx6skTj6j-srV2Fz7cBZ2ag@mail.gmail.com>
-Subject: Re: [PATCH 5/8] usb: core: hcd: Convert from tasklet to BH workqueue
-To: Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org, mpatocka@redhat.com, 
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com, 
-	ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com, 
-	houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org, 
-	netdev@vger.kernel.org, allen.lkml@gmail.com, kernel-team@meta.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern <stern@rowland.harvard.edu>, 
-	linux-usb@vger.kernel.org, mchehab@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Tue, 20 Feb 2024 at 09:25, Davidlohr Bueso <dave@stgolabs.net> wrote:
->
-> In the past this tasklet removal was held up by Mauro's device not properly
-> streaming - hopefully this no longer the case. Cc'ing.
->
-> https://lore.kernel.org/all/20180216170450.yl5owfphuvltstnt@breakpoint.cc/
+On Tue, 20 Feb 2024 18:46:24 +0100
+Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
 
-Oh, lovely - an actual use-case where the old tasklet code has known
-requirements.
+> On Tue, Feb 20, 2024 at 04:09:26PM +0200, Andy Shevchenko wrote:
+> > On Mon, Feb 19, 2024 at 08:13:59PM +0100, Vasileios Amoiridis wrote:  
+> > > According to the datasheet of BMP38x and BMP390 devices, for an SPI
+> > > read operation the first byte that is returned needs to be dropped,
+> > > and the rest of the bytes are the actual data returned from the
+> > > sensor.  
+> > 
+> > ...
+> >   
+> > >  #include <linux/spi/spi.h>
+> > >  #include <linux/err.h>
+> > >  #include <linux/regmap.h>
+> > > +#include <linux/bits.h>  
+> > 
+> > I see that it's unsorted, but try to squeeze a new header to the better place
+> > where more will be kept sorted. With given context, it should go before all
+> > others, but it might be even better location.
+> > 
+> > ...
+> >   
+> 
+> So you would suggest a re-ordering of the headers with a reverse
+> christmas-tree? I don't see it used in the other drivers of the IIO
+> subsystem but I can do it as well
+Separate patch + alphabetical but in blocks.
 
-Mauro - the BH workqueue should provide the same kind of latency as
-the tasklets, and it would be good to validate early that yes, this
-workqueue conversion works well in practice. Since you have an actual
-real-life test-case, could you give it a try?
+linux/*
+then
+linux/iio/*
+then
+asm/*
 
-You can find the work in
+First 2 can be combined though if you prefer that. Any asm definitely separate.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git
-refs/heads/for-6.9-bh-conversions
+> 
+> > > +static int bmp380_regmap_spi_read(void *context, const void *reg,
+> > > +				  size_t reg_size, void *val, size_t val_size)
+> > > +{
+> > > +	struct spi_device *spi = to_spi_device(context);
+> > > +	u8 rx_buf[4];
+> > > +	ssize_t status;
+> > > +
+> > > +	/*
+> > > +	 * Maximum number of consecutive bytes read for a temperature or
+> > > +	 * pressure measurement is 3.
+> > > +	 */
+> > > +	if (val_size > 3)
+> > > +		return -EINVAL;
+> > > +	/*
+> > > +	 * According to the BMP3xx datasheets, for a basic SPI read opertion,
+> > > +	 * the first byte needs to be dropped and the rest are the requested
+> > > +	 * data.
+> > > +	 */
+> > > +	status = spi_write_then_read(spi, reg, 1, rx_buf, val_size + 1);
+> > > +	if (status)
+> > > +		return status;  
+> >   
+> > > +	memcpy(val, rx_buf + 1, val_size);  
+> > 
+> > Okay, endianess is defined in the regmap_bus below...
+> >   
+> > > +	return 0;
+> > > +}  
+> > 
+> > -- 
+> > With Best Regards,
+> > Andy Shevchenko
+> > 
+> >   
+> 
 
-although it's possible that Tejun has a newer version in some other
-branch. Tejun - maybe point Mauro at something he can try out if you
-have updated the conversion since?
-
-                Linus
 
