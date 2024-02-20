@@ -1,122 +1,194 @@
-Return-Path: <linux-kernel+bounces-73301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59F8485C09D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:04:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F72485C0A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 151F02866E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:04:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 635031C22DC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AACA7641D;
-	Tue, 20 Feb 2024 16:03:16 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E564762E6;
-	Tue, 20 Feb 2024 16:03:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B3A768F8;
+	Tue, 20 Feb 2024 16:03:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MHdsABFU"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54CD769E1C;
+	Tue, 20 Feb 2024 16:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708444995; cv=none; b=UHnqUVy6m3ujfSYRjLQf4X21aA/UQdXQ9wyFOjFgzzJsUkniHWujpym//d5hjY0uI8aE7ly4QDO3EOAiUHChkUEuqVThH6AJciYoenfwmYVqGNMtc7NZSAqgqwGEvVTJjzSLZbdG+2Jb8Q3H+e2VvyPiNH6IWWZymeTKn/fTgvA=
+	t=1708445036; cv=none; b=Cis9i6huIz7kK0Qm9yoob4kmV9iscdFEp0ito4W2uXrNo/XSac3K/L8yCb2ZDXaGTpU10fE4ctaQjFVVicwq4PNjUZ4XP39Kbl8RjIn/u6dvYkCgRECPi6g+L3YbsQ/0orzpLUWqcPsS4cFzdJxf3WdZsTYv9t2sCytzKteqRlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708444995; c=relaxed/simple;
-	bh=p3HCnuUUs6C/TGyrIeEpBxQfcIdcr5XT+JJjYMmCPNs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yw6Z8bYKaJWG0ptjJRhpbRUb9PIZ4VNlHByzA1uMjnqPbXf3R1C2gbIbX6+xY50uYtWJtj0nqpO0rVUupM/3P+ejYU9bOTvCVolANbPV0HehSJdeUYWPAH+Uj5xCmZOsrMyQlyJ0BsmIAYg+2mWT4nAvoJEjR18a3TWUlHVf8cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8333FEC;
-	Tue, 20 Feb 2024 08:03:51 -0800 (PST)
-Received: from raptor (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C114D3F762;
-	Tue, 20 Feb 2024 08:03:08 -0800 (PST)
-Date: Tue, 20 Feb 2024 16:03:06 +0000
-From: Alexandru Elisei <alexandru.elisei@arm.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
-	maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-	yuzenghui@huawei.com, pcc@google.com, steven.price@arm.com,
-	anshuman.khandual@arm.com, eugenis@google.com, kcc@google.com,
-	hyesoo.yu@samsung.com, rppt@kernel.org, akpm@linux-foundation.org,
-	peterz@infradead.org, konrad.wilk@oracle.com, willy@infradead.org,
-	jgross@suse.com, hch@lst.de, geert@linux-m68k.org,
-	vitaly.wool@konsulko.com, ddstreet@ieee.org, sjenning@redhat.com,
-	hughd@google.com, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-mm@kvack.org, alexandru.elisei@arm.com
-Subject: Re: arm64 MTE tag storage reuse - alternatives to MIGRATE_CMA
-Message-ID: <ZdTNOq9BoOoKo8bZ@raptor>
-References: <ZdSMbjGf2Fj98diT@raptor>
- <70d77490-9036-48ac-afc9-4b976433070d@redhat.com>
- <ZdSojvNyaqli2rWE@raptor>
- <e0b7c884-4345-44b1-b8c0-2711a28a980e@redhat.com>
+	s=arc-20240116; t=1708445036; c=relaxed/simple;
+	bh=AhiaIIjBV0cH5PQyZ5c32LP80z8tJP7FX4K7m6lMZLU=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:References:
+	 In-Reply-To:Content-Type; b=FlubF4deJeHE4gH9D3NcQhBdPtgg1/8I+m77ihXV8KTFHSvK96zZNI7aUcH5iJyF05ok2MPFpWz79TvkKayVT9qHI4oPUpxHlx4LMdS9n6ktdyx3Lg8gUJvVqetj5oFRmVLTL8LVlohuntQaxreBzxNzRyl9jkB7uwzftSBbxT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MHdsABFU; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4126aee00b2so12136445e9.3;
+        Tue, 20 Feb 2024 08:03:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708445032; x=1709049832; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NsEOewE8a9LUqZdGpQ0sg6Y8GWXfE7D0W1/CTdE5oVU=;
+        b=MHdsABFUEsqqwCw9JuaNbMTaVeJwVhW+LZPXqxOGPLGJQ3Fp8aC58RaXrY7sWniMRV
+         QD7yRCwJk6faIBTgZ2j4lC3faokHmGUtrRAYrQZK9LArvXCKXTsXQbphDUXqifDVJgDq
+         ycBrnrmHTX5c0ARwaaLOdjsmdTHoODhvXqeh4zVNi1TZdohyiXlYeB8qnW5mA0KdB1C/
+         bNa5pRDQjv6s8e0Z1l8odENVTFzNisl5jEumjIpTDZZz62USw7pRQ+KGtKku9mA97iml
+         SUUZwEKeJdm11cybPS3yyga7+EqtATLYG5ElY9PTi6QDA1J68RJxDcDMcVnueuprDqsR
+         RTPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708445032; x=1709049832;
+        h=content-transfer-encoding:in-reply-to:organization:content-language
+         :references:to:subject:reply-to:user-agent:mime-version:date
+         :message-id:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NsEOewE8a9LUqZdGpQ0sg6Y8GWXfE7D0W1/CTdE5oVU=;
+        b=OySj1WKJ1JZ3p1ykJyA/M6JB7lgz9NhuifkDocINetB/bpKuJ94ABeALRVQ1UPv3S2
+         4fvzKxXEuyAMNA42MLRavbUiXXFn6d6NKyMBhYTmpo15yFRSFIARYC+ibc2hWMKauB5j
+         Wz2gWtjfJNFKN7fvOk6vAC2HeGWHguPC7T9NPDpw2ZJjHDcMyuktGymXSNUman5XbShF
+         n2VCYUSK0OxgEOpgMjmGxZZLFZ6dFmjUt3vUry5kDnK8DU0HrkINEkPwRDSk95G5l6y9
+         5byHpe7cqAZJn3kPVKTFpcZPJkRaldiSqiH14TC4RAoXUHJmd7LjQ06P3+gJIy3JGJbb
+         0HjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXbLchUY3aVGCSVjcI/+rpTO2xdbvssaA+Bf7vxJ5sQI84sfkO6fZnQXG818uvj8cyGtaGDjG7MaDUHMkgAry+1DeIAt01csWe+fpNnhDHoFv958paurrEgBG6K2kQZ5cVqyBOKvM5WN7QP/KIBC+RG+Z8Qs7ScdrDKTIYTVQwpGBFvNWWM6QJLSnVWaDQcukq5krKMXOguGrlSmyaaJhvlrGcagsJSFf3JnJXl/QYuuRAbRy0Y8IfktQ==
+X-Gm-Message-State: AOJu0YxvFd7TfJxVwEmwQybYq8x03FiUcJ/BWf59ZcyKnGJ6QOc6fczp
+	vI5u2AYoi61ixV0/mSAUJW9RbMdNMDlJlfYtHhYmPMgJpYzj46JT
+X-Google-Smtp-Source: AGHT+IFz1o8lFmhShbnKg9eJ+Z3iu+6mmlFKkdnH7xFYAQxzvTVtnL2B01la+pa7bfj5zUx3PQSB5w==
+X-Received: by 2002:adf:ee8b:0:b0:33d:174b:6a3c with SMTP id b11-20020adfee8b000000b0033d174b6a3cmr7851507wro.59.1708445032347;
+        Tue, 20 Feb 2024 08:03:52 -0800 (PST)
+Received: from [192.168.10.18] (54-240-197-225.amazon.com. [54.240.197.225])
+        by smtp.gmail.com with ESMTPSA id n14-20020a5d420e000000b0033d282c7537sm11398333wrq.23.2024.02.20.08.03.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Feb 2024 08:03:52 -0800 (PST)
+From: Paul Durrant <xadimgnik@gmail.com>
+X-Google-Original-From: Paul Durrant <paul@xen.org>
+Message-ID: <05973da0-f68c-4c84-8806-bdba92f2ed6e@xen.org>
+Date: Tue, 20 Feb 2024 16:03:49 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e0b7c884-4345-44b1-b8c0-2711a28a980e@redhat.com>
+User-Agent: Mozilla Thunderbird
+Reply-To: paul@xen.org
+Subject: Re: [PATCH v13 00/21] KVM: xen: update shared_info and vcpu_info
+ handling
+To: Sean Christopherson <seanjc@google.com>,
+ Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
+ Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev
+ <agordeev@linux.ibm.com>, Sven Schnelle <svens@linux.ibm.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+ David Woodhouse <dwmw2@infradead.org>, Shuah Khan <shuah@kernel.org>,
+ kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240215152916.1158-1-paul@xen.org>
+ <170838297541.2281798.7838961694439257911.b4-ty@google.com>
+Content-Language: en-US
+Organization: Xen Project
+In-Reply-To: <170838297541.2281798.7838961694439257911.b4-ty@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
-
-On Tue, Feb 20, 2024 at 03:07:22PM +0100, David Hildenbrand wrote:
-> > > 
-> > > With large folios in place, we'd likely want to investigate not working on
-> > > individual pages, but on (possibly large) folios instead.
-> > 
-> > Yes, that would be interesting. Since the backend has no way of controlling
-> > what tag storage page will be needed for tags, and subsequently dropped
-> > from the cache, we would have to figure out what to do if one of the pages
-> > that is part of a large folio is dropped. The easiest solution that I can
-> > see is to remove the entire folio from the cleancache, but that would mean
-> > also dropping the rest of the pages from the folio unnecessarily.
+On 20/02/2024 15:55, Sean Christopherson wrote:
+> On Thu, 15 Feb 2024 15:28:55 +0000, Paul Durrant wrote:
+>> From: Paul Durrant <pdurrant@amazon.com>
+>>
+>> This series contains a new patch from Sean added since v12 [1]:
+>>
+>> * KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+>>
+>> This frees up the function name kvm_is_error_gpa() such that it can then be
+>> re-defined in:
+>>
+>> [...]
 > 
-> Right, but likely that won't be an issue. Things get interesting when
-> thinking about an efficient allocation approach.
-
-Indeed.
-
+> *sigh*
 > 
-> > 
-> > > 
-> > > > 
-> > > > I believe this is a very good fit for tag storage reuse, because it allows
-> > > > tag storage to be allocated even in atomic contexts, which enables MTE in
-> > > > the kernel. As a bonus, all of the changes to MM from the current approach
-> > > > wouldn't be needed, as tag storage allocation can be handled entirely in
-> > > > set_ptes_at(), copy_*highpage() or arch_swap_restore().
-> > > > 
-> > > > Is this a viable approach that would be upstreamable? Are there other
-> > > > solutions that I haven't considered? I'm very much open to any alternatives
-> > > > that would make tag storage reuse viable.
-> > > 
-> > > As raised recently, I had similar ideas with something like virtio-mem in
-> > > the past (wanted to call it virtio-tmem back then), but didn't have time to
-> > > look into it yet.
-> > > 
-> > > I considered both, using special device memory as "cleancache" backend, and
-> > > using it as backend storage for something similar to zswap. We would not
-> > > need a memmap/"struct page" for that special device memory, which reduces
-> > > memory overhead and makes "adding more memory" a more reliable operation.
-> > 
-> > Hm... this might not work with tag storage memory, the kernel needs to
-> > perform cache maintenance on the memory when it transitions to and from
-> > storing tags and storing data, so the memory must be mapped by the kernel.
+> I forgot to hit "send" on this yesterday.  But lucky for me, that worked out in
+> my favor as I needed to rebase on top of kvm/kvm-uapi to avoid pointless conflicts
+> in the uapi headeres.
 > 
-> The direct map will definitely be required I think (copy in/out data). But
-> memmap for tag memory will likely not be required. Of course, it depends how
-> to manage tag storage. Likely we have to store some metadata, hopefully we
-> can avoid the full memmap and just use something else.
+> So....
+> 
+> Applied to kvm-x86 xen, minus 18 and 19 (trylock stuff) and 21 (locking cleanup
+> that we're doing elsewhere).
+> 
 
-So I guess instead of ZONE_DEVICE I should try to use arch_add_memory()
-directly? That has the limitation that it cannot be used by a driver
-(symbol not exported to modules).
+Looks like you meant 17 & 18?
 
-Thanks,
-Alex
+> Paul and David, please take (another) look at the end result to make sure you don't
+> object to any of my tweaks and that I didn't botch anything.
+> 
+
+What was the issue with 17? It was reasonable clean-up and I'd like to 
+keep it even without 18 being applied (and I totally understand your 
+reasons for that).
+
+> s390 folks, I'm applying/pushing now to get it into -next asap, but I'll make
+> sure to get acks/reviews on patch 08/21 before I do anything else with this
+> branch/series.
+> 
+> Thanks!
+> 
+> [01/21] KVM: pfncache: Add a map helper function
+>          https://github.com/kvm-x86/linux/commit/f39b80e3ff12
+> [02/21] KVM: pfncache: remove unnecessary exports
+>          https://github.com/kvm-x86/linux/commit/41496fffc0e1
+> [03/21] KVM: x86/xen: mark guest pages dirty with the pfncache lock held
+>          https://github.com/kvm-x86/linux/commit/4438355ec6e1
+> [04/21] KVM: pfncache: add a mark-dirty helper
+>          https://github.com/kvm-x86/linux/commit/78b74638eb6d
+> [05/21] KVM: pfncache: remove KVM_GUEST_USES_PFN usage
+>          https://github.com/kvm-x86/linux/commit/a4bff3df5147
+> [06/21] KVM: pfncache: stop open-coding offset_in_page()
+>          https://github.com/kvm-x86/linux/commit/53e63e953e14
+> [07/21] KVM: pfncache: include page offset in uhva and use it consistently
+>          https://github.com/kvm-x86/linux/commit/406c10962a4c
+> [08/21] KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot()
+>          https://github.com/kvm-x86/linux/commit/9e7325acb3dc
+> [09/21] KVM: pfncache: allow a cache to be activated with a fixed (userspace) HVA
+>          https://github.com/kvm-x86/linux/commit/721f5b0dda78
+> [10/21] KVM: x86/xen: separate initialization of shared_info cache and content
+>          https://github.com/kvm-x86/linux/commit/c01c55a34f28
+> [11/21] KVM: x86/xen: re-initialize shared_info if guest (32/64-bit) mode is set
+>          https://github.com/kvm-x86/linux/commit/21b99e4d6db6
+> [12/21] KVM: x86/xen: allow shared_info to be mapped by fixed HVA
+>          https://github.com/kvm-x86/linux/commit/10dcbfc46724
+> [13/21] KVM: x86/xen: allow vcpu_info to be mapped by fixed HVA
+>          https://github.com/kvm-x86/linux/commit/16877dd45f98
+> [14/21] KVM: selftests: map Xen's shared_info page using HVA rather than GFN
+>          https://github.com/kvm-x86/linux/commit/95c27ed8619b
+> [15/21] KVM: selftests: re-map Xen's vcpu_info using HVA rather than GPA
+>          https://github.com/kvm-x86/linux/commit/5359bf19a3f0
+> [16/21] KVM: x86/xen: advertize the KVM_XEN_HVM_CONFIG_SHARED_INFO_HVA capability
+>          https://github.com/kvm-x86/linux/commit/49668ce7e1ae
+> [17/21] KVM: x86/xen: split up kvm_xen_set_evtchn_fast()
+>          (not applied)
+> [18/21] KVM: x86/xen: don't block on pfncache locks in kvm_xen_set_evtchn_fast()
+>          (not applied)
+> [19/21] KVM: pfncache: check the need for invalidation under read lock first
+>          https://github.com/kvm-x86/linux/commit/21dadfcd665e
+> [20/21] KVM: x86/xen: allow vcpu_info content to be 'safely' copied
+>          https://github.com/kvm-x86/linux/commit/dadeabc3b6fa
+> [21/21] KVM: pfncache: rework __kvm_gpc_refresh() to fix locking issues
+>          (not applied)
+> 
+> --
+> https://github.com/kvm-x86/linux/tree/next
+
 
