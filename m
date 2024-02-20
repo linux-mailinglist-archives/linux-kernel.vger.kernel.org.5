@@ -1,127 +1,102 @@
-Return-Path: <linux-kernel+bounces-72509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9693C85B474
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:06:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D94E85B476
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:07:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B5F3B21BDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:06:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C65961F212F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3653E5C8F2;
-	Tue, 20 Feb 2024 08:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046265C908;
+	Tue, 20 Feb 2024 08:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m5q4Vg87"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="VCkDb/nb"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7632F5C5FD;
-	Tue, 20 Feb 2024 08:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B295CDC5;
+	Tue, 20 Feb 2024 08:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708416390; cv=none; b=gIETTIMXgU3YK146QyMfYyZvP4bsqasx2xKmSuAJZhHgA6PQ8ty3oqf1QZU3YPEojeAVTJj7zsp6Yb+1ThJF3GjhNcyCvajPbpVsO7+E8pdc1ToEc7x1PoWgPPMj5swIkYXKiWp30+6mRSD5nEfJPVrJGqO+a0LWwopQ1X2AEuE=
+	t=1708416397; cv=none; b=jtfvB6t3GCNyOTh1Ti2XwovYb+MHsIQEyv/vYvD20TCwP90Yo0m/cNOtM/OpVsrbNb7xmLS3v9BGUfg46/c7zZhFIoF+GbeOQR12gUW9JZOCNYwu8DRCc0CIVEyafq4t5/pxyaElyaE78S3/wgQECfos91h/VNALXleWQdrawrU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708416390; c=relaxed/simple;
-	bh=oWpAKlAuGH6pCkTNf8skez1OA5APeMMN1elQviqEXlk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oz/AC8otDJ4IAoGPkcOaoBuPNHRbrEav/wjG+nGmTI9DSGxGMhej67CklmHAbyzTirRIJtBIijHC76f6o8GFGYRAGcvrbZFTQtSRUneoA5b7f1TXcZe9p4Gfl0licRJ7Dr+NZLyy7caaXHIKqGJ+nLEW+AyHA4kSuDYNLtU6zBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m5q4Vg87; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 005EAC433F1;
-	Tue, 20 Feb 2024 08:06:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708416389;
-	bh=oWpAKlAuGH6pCkTNf8skez1OA5APeMMN1elQviqEXlk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=m5q4Vg87Tc8+FYUf2vrQQ7O2SQcXeWpPaW8snYXaMmwNff63GeIJFN0XXXPr2tQqG
-	 uwf7/ZY9LrTJsRfwbFQ0Wa3o/2BDZjOHqQLydbr6njgyXGwapQY+1frep8EKPsvDYD
-	 qSgGIcd8hz4OGFMolWO3wYKuNcUnhWcK+QXGb9AweVAPWDiQlK0GaE3b6++M8Vp4ei
-	 tndl7soZ354BH9GG05ni2K82cE/wqkNkLgC5WMOZbDkNFLvTnGP4fCfZ3sd4S/KYHD
-	 XMAhnAtS163L8YeiQXw1H0C+qNKbk+D3/aWR3xKHHl5y6TQYAsngpXinyNYbsjI3Kj
-	 Rfqfqw73sVzgQ==
-Date: Tue, 20 Feb 2024 08:06:24 +0000
-From: Simon Horman <horms@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Saeed Mahameed <saeedm@nvidia.com>, Leon Romanovsky <leon@kernel.org>,
-	Zhu Yanjun <yanjun.zhu@linux.dev>, Arnd Bergmann <arnd@arndb.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yevgeny Kliteynik <kliteyn@nvidia.com>,
-	Alex Vesker <valex@nvidia.com>, Hamdan Igbaria <hamdani@nvidia.com>,
-	netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] [v2] net/mlx5: fix possible stack overflows
-Message-ID: <20240220080624.GQ40273@kernel.org>
-References: <20240219100506.648089-1-arnd@kernel.org>
- <20240219100506.648089-2-arnd@kernel.org>
+	s=arc-20240116; t=1708416397; c=relaxed/simple;
+	bh=ui8eSZdVdgjumnpd/xojksq52lstAHrGG9UQ2pkhy5Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W1KPen7qXxDgmViP2iEN/Tg97PIwRoGdA6/pmWD4kZ7Ec1x751x8zQQ4P7b90a0Uqfx77Ns3CSAdCtAeY8+bpckooLRtdMl5feFklepC2+AcdLvvqBnaMoagrEUB7cOSqnd1FmXEysvUNp3GtUDW9g1TeJuozPlA4T/9pO577iI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=VCkDb/nb; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1708416394;
+	bh=ui8eSZdVdgjumnpd/xojksq52lstAHrGG9UQ2pkhy5Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=VCkDb/nb8Pg/lZSkR5XWI6gB/3S/z4/Wm1nHhSUQsSEBsZnFMEsdoOhLhi8upSQxM
+	 9sjHBlfLQ3gsWtS1drMRAu9urUYXW/qQl3UGUA6839AnBlY28YYqHkTzIBI0Q+vQ3Y
+	 cJiqGfUa6PMvi1K0fUQ2iHc652s8fINlVrECWxfNlJnAlbTMWkbb6dG9LNrNJVzKIp
+	 Q5tK6XEfy22HcQjhgQinhqrdJ3WIoQOGZnYBk4xTJE7CFxeFTjghiIM3Hhre8EbINs
+	 VKIdLoTG3PxgN1njK5URHGn7aO9FWqKGdUb/ZsQ5+qB0R/WVKPiPAxdGd7vLezxWNy
+	 WxZfoW2YVJ+Vw==
+Received: from benjamin-XPS-13-9310.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 93C0B37813CB;
+	Tue, 20 Feb 2024 08:06:33 +0000 (UTC)
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To: mchehab@kernel.org,
+	hverkuil-cisco@xs4all.nl,
+	tfiga@chromium.org
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel@collabora.com,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH] media: usbtv: Remove useless locks in usbtv_video_free()
+Date: Tue, 20 Feb 2024 09:06:28 +0100
+Message-Id: <20240220080628.13141-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219100506.648089-2-arnd@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Feb 19, 2024 at 11:04:56AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> A couple of debug functions use a 512 byte temporary buffer and call another
-> function that has another buffer of the same size, which in turn exceeds the
-> usual warning limit for excessive stack usage:
-> 
-> drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1073:1: error: stack frame size (1448) exceeds limit (1024) in 'dr_dump_start' [-Werror,-Wframe-larger-than]
-> dr_dump_start(struct seq_file *file, loff_t *pos)
-> drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1009:1: error: stack frame size (1120) exceeds limit (1024) in 'dr_dump_domain' [-Werror,-Wframe-larger-than]
-> dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
-> drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:705:1: error: stack frame size (1104) exceeds limit (1024) in 'dr_dump_matcher_rx_tx' [-Werror,-Wframe-larger-than]
-> dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
-> 
-> Rework these so that each of the various code paths only ever has one of
-> these buffers in it, and exactly the functions that declare one have
-> the 'noinline_for_stack' annotation that prevents them from all being
-> inlined into the same caller.
-> 
-> Fixes: 917d1e799ddf ("net/mlx5: DR, Change SWS usage to debug fs seq_file interface")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> [v2] no changes, just based on patch 1/2 but can still be applied independently
-> ---
->  .../mellanox/mlx5/core/steering/dr_dbg.c      | 82 +++++++++----------
->  1 file changed, 41 insertions(+), 41 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-> index be7a8481d7d2..eae04f66b8f4 100644
-> --- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-> +++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-> @@ -205,12 +205,11 @@ dr_dump_hex_print(char hex[DR_HEX_SIZE], char *src, u32 size)
->  }
->  
->  static int
-> -dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
-> +dr_dump_rule_action_mem(struct seq_file *file, char *buff, const u64 rule_id,
->  			struct mlx5dr_rule_action_member *action_mem)
->  {
->  	struct mlx5dr_action *action = action_mem->action;
->  	const u64 action_id = DR_DBG_PTR_TO_ID(action);
-> -	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
->  	u64 hit_tbl_ptr, miss_tbl_ptr;
->  	u32 hit_tbl_id, miss_tbl_id;
->  	int ret;
+Remove locks calls in usbtv_video_free() because
+are useless and may led to a deadlock as reported here:
+https://syzkaller.appspot.com/x/bisect.txt?x=166dc872180000
 
-Hi Arnd,
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Fixes: c838530d230b ("media: media videobuf2: Be more flexible on the number of queue stored buffers")
+---
+ drivers/media/usb/usbtv/usbtv-video.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-With patch 1/2 in place this code goes on as:
+diff --git a/drivers/media/usb/usbtv/usbtv-video.c b/drivers/media/usb/usbtv/usbtv-video.c
+index 62a583040cd4..96276358d116 100644
+--- a/drivers/media/usb/usbtv/usbtv-video.c
++++ b/drivers/media/usb/usbtv/usbtv-video.c
+@@ -963,15 +963,9 @@ int usbtv_video_init(struct usbtv *usbtv)
+ 
+ void usbtv_video_free(struct usbtv *usbtv)
+ {
+-	mutex_lock(&usbtv->vb2q_lock);
+-	mutex_lock(&usbtv->v4l2_lock);
+-
+ 	usbtv_stop(usbtv);
+ 	vb2_video_unregister_device(&usbtv->vdev);
+ 	v4l2_device_disconnect(&usbtv->v4l2_dev);
+ 
+-	mutex_unlock(&usbtv->v4l2_lock);
+-	mutex_unlock(&usbtv->vb2q_lock);
+-
+ 	v4l2_device_put(&usbtv->v4l2_dev);
+ }
+-- 
+2.40.1
 
-	switch (action->action_type) {
-	case DR_ACTION_TYP_DROP:
-		memset(buff, 0, sizeof(buff));
-
-buff is now a char * rather than an array of char.
-siceof(buff) doesn't seem right here anymore.
-
-Flagged by Coccinelle.
 
