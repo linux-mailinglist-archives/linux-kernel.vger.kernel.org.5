@@ -1,143 +1,112 @@
-Return-Path: <linux-kernel+bounces-72990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72989-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F3B485BB93
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:13:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D6F285BB8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:13:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46F571C22583
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:13:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50C8C1C21D48
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D0467E86;
-	Tue, 20 Feb 2024 12:12:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E7F67E66;
+	Tue, 20 Feb 2024 12:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ee73j2qk"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="FWVhMlhN"
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC0E67C71;
-	Tue, 20 Feb 2024 12:12:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3154B67C6A
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:12:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708431176; cv=none; b=day58RawakWyQyZ6DlYSCZgBF942Zw111HexQjdbfvaE1VXI3I+EfgwlSvfqpFbDzf49o1HMXxQLpUK1w1qvU/IN3D3C+U0h77OckoyxbMBlD+dNAgs9cK0pzpE1wTgdswI2YFL4TwlkdJABLxNyCLW9Tni332XkDCL1vPSrCtw=
+	t=1708431175; cv=none; b=qV/8firIm0VRidM+7mlN3VvAeKV2kpTkvlBG9G4FB91zzxdtxcXi/5r6rsxy3xr/4Lf4xZ2wFptPaB1n2DW0GqfYx8tkDWyVyVURTTpJXxC9qnyKi0shZZWsevyiEVlX2EXXbHtrKXE1v5zhjmTJdMCa/RbTsOkaSMLb8pQLbF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708431176; c=relaxed/simple;
-	bh=vdq/fhL20CqvrgT/zXduzBt0JpmflD0QRaHYGsHg1Cc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=EEC2Ccc9HZskUFK0K3OAbIRbNd8xvSf4/EOkoN1flc6DbgYP1dfj622QXfNJbK5ocHMmyCGX9o6lFn/L4HhZeLLBABFpMNXE/FObLIM/FI0IPKEqd9v6uNENO9xN+R9DG/QPA1ryu8YNg8ZbiT8m2KH1tkrzvj8wlodyXK0eKDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ee73j2qk; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KAG1ec027660;
-	Tue, 20 Feb 2024 12:12:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=drr88rP1gE8DZYd3IlmPEoaAL4ojdft/vQ7O5Df4b+g=; b=ee
-	73j2qkNHIziBbzP0Ll8PR4rau6H2j8Hfh2pFDH1QgHDNr5ABxH0wGBzHLhyiYB0J
-	oedtraPQOH9rGJjJdjHUyZ/yHiKjuQC63neUgGDXBRpMqHfAJHlFDhm6ZU6uyJ0p
-	IQDXfMFqOq7RpqAAZjh/S6Su0n0eYFh9hKBlB7t+RIoxkyuVYiKSQ/J1ky0NZ0Tn
-	MldD3RR9EqjDR3WVHliyz9F5AwooiqCKVwBoiDID31h6JSoNxiThKUo1IL0XoxyK
-	f1X2AUcR3dhqiM/NVIVtutMJPw4o4uqSOaav2tIDuSnR9tySRJbLjf9qrPWit/ta
-	HPEo6DlMNzJCAz9M/XYQ==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wct5786ta-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 12:12:37 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KCCbla024375
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 12:12:37 GMT
-Received: from [10.216.16.129] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
- 2024 04:12:30 -0800
-Message-ID: <28a6a8f9-8be8-346b-64be-50844ac31ac7@quicinc.com>
-Date: Tue, 20 Feb 2024 17:42:26 +0530
+	s=arc-20240116; t=1708431175; c=relaxed/simple;
+	bh=xk3aJYvUH7ummcRIbLiEZHE82TlzfaBE6gHzhdpzgcs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mv7WBrnEylhL3K8IAc6kWj8UP/4Vm0JCBpmfIRrqVeUEltiRPPc1t9EylacEh3PGYoTkw0DnGF+EiwwmuF8YENZZQ773gl18zXwkIxVZthEWTNRuegtRsK+aqQKXM42J6tKQSyKgIrfqJ/u7dR+HfR+MRl767wmAt+WsK/FihOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=FWVhMlhN; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-608245e549fso23361657b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:12:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708431173; x=1709035973; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=e6wTR0VmqItODr2yd8HndCQHY6rqvWA1sKIhl9SSx/4=;
+        b=FWVhMlhN4rE9aV5P9cCsDPHzXOpyPbpXYkysI+LoL6y4i1pFdT2CoNLaPnILraRGay
+         rQf/m/G4FfWdfcL1PUgrj36CGtLb1CN19ENiYMY+VXCbTPwSQuXy+O5m6z1C/ykoPYxQ
+         mr++JRE8NuvfaVCqTzXMLzs8sQeZEBgyfBGE3vDmKHkD/h0XD0sMnavj44trCFQ49M80
+         6ckPPg9KKWWIvqANU7dnA1iSWvT+1+oRrV7qnod9GqQcGj1zxj/KVauB8tTAoI9GQEp6
+         n5YZ5nQ3nVuUvxZ7w9ONnfn7urGoTyBQWuGvjeTgJfdY9wi8NRpkqPZeKCb8nvRgwsF7
+         QycA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708431173; x=1709035973;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e6wTR0VmqItODr2yd8HndCQHY6rqvWA1sKIhl9SSx/4=;
+        b=Z5QGEHTVo7ZM1J8SKaWbqF6hAyoCkpaFxsxiJ75H/JorEqRxROzsWUEII1tlOAiSbp
+         s1aLGNU4iVv4KyRn+Eraxmf1U16DSTeB3z3nfwF4Sh2UAwrSK1Hi7O8RYDn6ibdIvIC5
+         R4og+hyuUp6b1Nr6Zwa6B8MT5ACiLkVsJBlri6ylIBvlrIo0k/inbux99vlR5V5EPz4a
+         LQRG2h+RpOvq7glwADXHVRYnY7pHxx6d9Lm2doGmjeiEreZtRO6tcPVgj5dd5N0wo0kM
+         DUERNJIaVZVTf2frelj8TsgkHRseiofn0tZXEBXaf9Dbfod/h7AEs50Iu22OTtSRNH+g
+         2+5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUzQEsC5yL+sn/tk4/kEkeMWS8rF9PVazEmQor5jX8eDhL9JOjGY01uQZL7E3x8ZV7nx33kxHrjMwPs0ZRp+Ijt+g1LJR40tAzVcQef
+X-Gm-Message-State: AOJu0Yz9wBSrKBiWOzNW5FN3ypAnFmW0yDx6J3p1pnliJXJQK33feQSU
+	cUeYIZ8pDWGYNc2QXlvnFVeay7/GeeJc6LoPQFLAqduGQHjRqByGjAEb+vdTYAcAyMKYEsM+gc8
+	ErseJgfouyG711mS1IpR3Q7rvj0YIiHIjiZ2sIQ==
+X-Google-Smtp-Source: AGHT+IE89QVyewZFZs3o8KYR14F/wdiOB0kpE6qbJHNRXT44hQTbwweqexbkQuL1HRYlWatO5NlcBcrvZUHtw5GjUgs=
+X-Received: by 2002:a05:690c:f90:b0:604:9551:f595 with SMTP id
+ df16-20020a05690c0f9000b006049551f595mr16185146ywb.50.1708431173276; Tue, 20
+ Feb 2024 04:12:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.1
-Subject: Re: [PATCH 5/5] arm64: dts: qcom: ipq9574: Disable eMMC node
-Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <broonie@kernel.org>,
-        <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-        <vigneshr@ti.com>, <manivannan.sadhasivam@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mtd@lists.infradead.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>
-References: <20240215134856.1313239-1-quic_mdalam@quicinc.com>
- <20240215134856.1313239-6-quic_mdalam@quicinc.com>
- <CAA8EJpqV=w38TqjfTp6OurAwHjR87PpmQTs2jUo6O7vF1-T-WQ@mail.gmail.com>
-From: Md Sadre Alam <quic_mdalam@quicinc.com>
-In-Reply-To: <CAA8EJpqV=w38TqjfTp6OurAwHjR87PpmQTs2jUo6O7vF1-T-WQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: au_RqYUsQNdgJd_KKX3r209aqYUAVbcQ
-X-Proofpoint-GUID: au_RqYUsQNdgJd_KKX3r209aqYUAVbcQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=861 mlxscore=0
- spamscore=0 bulkscore=0 impostorscore=0 priorityscore=1501 malwarescore=0
- adultscore=0 clxscore=1015 phishscore=0 lowpriorityscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2401310000
- definitions=main-2402200088
+References: <20240220-x1e80100-phy-edp-compatible-refactor-v5-0-e8658adf5461@linaro.org>
+ <20240220-x1e80100-phy-edp-compatible-refactor-v5-2-e8658adf5461@linaro.org>
+In-Reply-To: <20240220-x1e80100-phy-edp-compatible-refactor-v5-2-e8658adf5461@linaro.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Tue, 20 Feb 2024 14:12:42 +0200
+Message-ID: <CAA8EJpooQh0v3cvoum94J2AkmUgD=KEiYw6R=2=h9un9bGvc2Q@mail.gmail.com>
+Subject: Re: [PATCH v5 2/2] phy: qcom: edp: Add set_mode op for configuring
+ eDP/DP submode
+To: Abel Vesa <abel.vesa@linaro.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Johan Hovold <johan@kernel.org>, linux-phy@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+On Tue, 20 Feb 2024 at 13:58, Abel Vesa <abel.vesa@linaro.org> wrote:
+>
+> Future platforms should not use different compatibles to differentiate
+> between eDP and DP mode. Instead, they should use a single compatible as
+> the IP block is the same. It will be the job of the controller to set the
+> submode of the PHY accordingly.
+>
+> The existing platforms will remain with separate compatibles for each
+> mode.
+>
+> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+> ---
+>  drivers/phy/qualcomm/phy-qcom-edp.c | 76 +++++++++++++++++++++++++++----------
+>  1 file changed, 56 insertions(+), 20 deletions(-)
+>
+
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 
-
-On 2/15/2024 8:30 PM, Dmitry Baryshkov wrote:
-> On Thu, 15 Feb 2024 at 15:49, Md Sadre Alam <quic_mdalam@quicinc.com> wrote:
->>
->> Disable eMMC node for rdp433, since rdp433 default boot mode
->> is norplusnand.
-> 
-> Are they exclusive?
-
-   Yes its exclusive, gpios are shared b/w NAND and eMMC so that
-   only one could get enable.
-> 
->>
->> Co-developed-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Signed-off-by: Sricharan Ramabadhran <quic_srichara@quicinc.com>
->> Co-developed-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
->> Signed-off-by: Md Sadre Alam <quic_mdalam@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
->> index 1bb8d96c9a82..e33e7fafd695 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
->> +++ b/arch/arm64/boot/dts/qcom/ipq9574-rdp433.dts
->> @@ -24,7 +24,7 @@ &sdhc_1 {
->>          mmc-hs400-enhanced-strobe;
->>          max-frequency = <384000000>;
->>          bus-width = <8>;
->> -       status = "okay";
->> +       status = "disabled";
->>   };
->>
->>   &tlmm {
->> --
->> 2.34.1
->>
->>
-> 
-> 
+-- 
+With best wishes
+Dmitry
 
