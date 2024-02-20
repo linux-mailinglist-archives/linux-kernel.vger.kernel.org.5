@@ -1,253 +1,213 @@
-Return-Path: <linux-kernel+bounces-73440-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 333E185C29A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EFA7E85C2A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88759B23C1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:26:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 555E3B2243B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:29:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B0777655;
-	Tue, 20 Feb 2024 17:25:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6BA576C9C;
+	Tue, 20 Feb 2024 17:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b="LCJcHreW"
-Received: from iguana.tulip.relay.mailchannels.net (iguana.tulip.relay.mailchannels.net [23.83.218.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HSm3oN9H"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63441768FF;
-	Tue, 20 Feb 2024 17:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.253
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708449956; cv=pass; b=XWB0cfbxNeeOqCjdFhwAN/t2Vg6YgtlTWsNmacuFjnS9348CqfLblCY40s1i7aiToOI145tf3kLJdbFZITofHNB8VGSehkC9ZAIJMS3gzyhHYWxyui4vdvLSucNbnvWATQBdseClMujFSOfRxa+Ik+R7ATPih8MX2gq/yORL/vs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708449956; c=relaxed/simple;
-	bh=dwqFzFtF67bmHYRFe9jtxHDVVpBai0q7JDsGwgGIvXA=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CBCD6BB3C;
+	Tue, 20 Feb 2024 17:29:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708450173; cv=none; b=KFpyTSQQdm56hifNCC0nKaF/4lIiTkKZs2iWLEXlqqfwtJnFEoNoglWOgaLln9sIS85aiTx447HifBq4kMFibgvc2sxmqbn4GrAnIdJ5HocCOZFQlOQJtYmgZknf9b6BylPaUaApttTp8bD95BR8pGKdz+CD8o3Auww7ufHkDTQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708450173; c=relaxed/simple;
+	bh=LLqmoBA04TRHMZwh3t0T8pZCMbqVUiaFNgh3qreKen0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GLl+veVivrBYQWt7pYDX26fr++Z+RSMeO7OI6ttVTXvWc703jJ2y5Yh1/prmj+V4ICEr636OSGYbTi9nrK9/+TnzJHEzBf5N3r+a8TRrVtqKp7MoNGbR1+NjgnbTsBMH06VQxViuYeijISSzvgZxs3ptJuVjgoj3NliFe/rjBYg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net; spf=pass smtp.mailfrom=stgolabs.net; dkim=pass (2048-bit key) header.d=stgolabs.net header.i=@stgolabs.net header.b=LCJcHreW; arc=pass smtp.client-ip=23.83.218.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=stgolabs.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id EE593101C9F;
-	Tue, 20 Feb 2024 17:25:46 +0000 (UTC)
-Received: from pdx1-sub0-mail-a278.dreamhost.com (unknown [127.0.0.6])
-	(Authenticated sender: dreamhost)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 16D1F1017D8;
-	Tue, 20 Feb 2024 17:25:46 +0000 (UTC)
-ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1708449946; a=rsa-sha256;
-	cv=none;
-	b=uFe0KtnQTNcohrldk3TsLrZze9jjJapsfc7cERSpDdANNiIXo7KhsZXWLBLX9iabTuK98i
-	7THSEXCa1OzhjtZ44i+nuDPeLKibyxmNpjY/0ZLTT6jqjouQHumaLHLDdAVzZyeyNU5DHj
-	rcJUaRTC/u8s1i2T8eGBpHRgW7YSZVFqwVHgUsKjY+0XEvZzUd8fOsvvrFTtp+UyJZHpTe
-	SpaRAW05PkrMidQtaBQ6++L+6mJgoAvlkw3/Rd6PqC5Hq0eEqu3Vxg2YY1YzuonCsZ9hkZ
-	w6yKQ5ZL7Cxi1081S40duwxoXRG0Kn8YxOcofaoVS+BHK9HP07FrMPE2d4EcGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1708449946;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references:dkim-signature;
-	bh=QzN7EVnZPsjMJ5YLCF9u7H6lIgeQ/8GdiwxTEbneVZE=;
-	b=4iPejISHCraxmp9j7OIq12cswL/0fAVnjKKNrTYMnH+z/SKDCTSKE1ezYZQV0czZpULyhw
-	P0p0uVfw2GbSqA/WBAxiXtqXYdPLO2qw/FlZUKZJaU9XcqdCzBN8mZ63B1p1ChOViQc5pA
-	64A87EVijTYfR+/sl41y2ibevWLoQxfjY8bYPAPLgEnfj+iQl3W/l4uvKmciKMYaDK7+u5
-	EDxt499O2fE2L5vHVibDMBuYR5r+yQwj3LhKbnG0Vkq5gM3mOpoXdFQd1Z+tldeOHIUSD9
-	vuCFNU8EcwcGi4daOTaCw2NmHbv0yu7w2CbgqLENnXUF7wRJFClW8u/BG+OXKQ==
-ARC-Authentication-Results: i=1;
-	rspamd-55b4bfd7cb-5kjb7;
-	auth=pass smtp.auth=dreamhost smtp.mailfrom=dave@stgolabs.net
-X-Sender-Id: dreamhost|x-authsender|dave@stgolabs.net
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: dreamhost|x-authsender|dave@stgolabs.net
-X-MailChannels-Auth-Id: dreamhost
-X-Bored-Bored: 4c241a466fe9111b_1708449946834_2238152251
-X-MC-Loop-Signature: 1708449946834:2999301632
-X-MC-Ingress-Time: 1708449946834
-Received: from pdx1-sub0-mail-a278.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.108.238.155 (trex/6.9.2);
-	Tue, 20 Feb 2024 17:25:46 +0000
-Received: from offworld (ip72-199-50-187.sd.sd.cox.net [72.199.50.187])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: dave@stgolabs.net)
-	by pdx1-sub0-mail-a278.dreamhost.com (Postfix) with ESMTPSA id 4TfRBc0N57z3M;
-	Tue, 20 Feb 2024 09:25:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stgolabs.net;
-	s=dreamhost; t=1708449945;
-	bh=QzN7EVnZPsjMJ5YLCF9u7H6lIgeQ/8GdiwxTEbneVZE=;
-	h=Date:From:To:Cc:Subject:Content-Type;
-	b=LCJcHreWz34d/c9pRfqoxFZWgNst+zT0EUA1YG9/FERYgaaC3azBl3iejiECE66pY
-	 j88hAXfKyMZRiOEg49791CkFdnnixXaHKb4swQPcgERl5SZwuFidDpof3ROOAFxSo2
-	 93ww1byZYHE5WQz2yjnG2LtRjHxGGdy3fcTwxm32DIxs9rF2HKJF0DMHQ1kx4N0mDL
-	 rSEhNa1oAdZJUs5nwacM84pa+MlVxaD/XTIl5LI+Hhw+Jvzn1vVrpifdICm3P5p8L9
-	 LcioJjNeNmQgfEcQWBE7yM+5+o7OSt3znCIU9hgg1aRuQzI0r1OzSrRRtV3a2UM4nH
-	 T3AuYAFzxWpng==
-Date: Tue, 20 Feb 2024 09:25:40 -0800
-From: Davidlohr Bueso <dave@stgolabs.net>
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mpatocka@redhat.com, 
-	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, msnitzer@redhat.com, 
-	ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com, houtao1@huawei.com, 
-	peterz@infradead.org, mingo@kernel.org, netdev@vger.kernel.org, allen.lkml@gmail.com, 
-	kernel-team@meta.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Alan Stern <stern@rowland.harvard.edu>, linux-usb@vger.kernel.org, mchehab@kernel.org
-Subject: Re: [PATCH 5/8] usb: core: hcd: Convert from tasklet to BH workqueue
-Message-ID: <bckroyio6l2nt54refuord4pm6mqylt3adx6z2bg6iczxkbnyk@bb5447rqahj5>
-Mail-Followup-To: Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org, 
-	mpatocka@redhat.com, linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
-	msnitzer@redhat.com, ignat@cloudflare.com, damien.lemoal@wdc.com, bob.liu@oracle.com, 
-	houtao1@huawei.com, peterz@infradead.org, mingo@kernel.org, netdev@vger.kernel.org, 
-	allen.lkml@gmail.com, kernel-team@meta.com, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Alan Stern <stern@rowland.harvard.edu>, 
-	linux-usb@vger.kernel.org, mchehab@kernel.org
-References: <20240130091300.2968534-1-tj@kernel.org>
- <20240130091300.2968534-6-tj@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=W5f4ISTYdEgYFXrww6yPMrRVgHuHDJl0RViHJ2vgnhWkB2E2dI3eYI74s26pjA/mJf5VCQkj4m7xChPd512KxHZ9YY7/cex9WSVfJ7KjwfFA3+KlBNDAMj3D90k48NnF72EisZeUArrea9YrAAdd+9RcKyBrOt1nIG416kK9F6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HSm3oN9H; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-42ce63b1d30so60001891cf.3;
+        Tue, 20 Feb 2024 09:29:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708450170; x=1709054970; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YO9U5sYPFhh0k+yyvUwH5knbzYSiaIx8R62Wuf33g98=;
+        b=HSm3oN9HNcvb9BOmq6Y5+FBL5DObu8UN87S7TLCqp9pKbPAzwrB2h0Vgp4dmWDMg2u
+         msvksb0u8qVtuImi4ddy43ohQLKlygMCEP1dCWdCAOhTVrZ7t6h8Q+SbqOYna1i0bRgE
+         oiSJ6CkQ/7ylPzgT3iPfHB4YxQuLcfTodUejHAccwsQDdLfTPMRq6KIKoc2Eex2sTffy
+         ba2tjqOD7BtVu2p3bPAG3RhroPA1Dkm4UnJb9nxbCptesYek/E0azT+U5/mI8Ctpxl+D
+         dfDCDoUlbxuypn4/Qm6NXAPFGzVaxEtpqcy+UBcbTPXoqxEj5J4QeszJQmMFTd8Ujroj
+         PVLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708450170; x=1709054970;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YO9U5sYPFhh0k+yyvUwH5knbzYSiaIx8R62Wuf33g98=;
+        b=OOW3RvJ3qCfgmV9fF6esh11DZ2l5RVol5mpPnXjaQ+a5Ol6cduE4z9zkZLxyXUe6R3
+         eZJBBPkgXWJtDhcrNcVXUwV1jV3bewFwp/Taqp/1lvZcSzQ+ba7Tod98qRu/7oyrlO77
+         UA9w/JqZ0MFJENN5oznqkTBQMPYdCVCIJFjgywpLw2dyQxdMtdiPAuCWFB3cCqSiUdLj
+         cHyckCkmJTHysmHqGN8nSuwpv4IqFSSpcHRgE9XOVmHnD9sMYvXhLC93f/K7JJxjc6vK
+         7tH8koQKSMuzq48RgD0B30LIube2fC+58iAxCg15yy/skqZocod5TJc6X7BJuF9LDbmA
+         4jUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXo5sXCw7vr9Rmj4qoSvUsN3hWJdvyUd7VMWReBSFNdggcDYG+12fQq9UEOzGN/KzLapxOCyWLG/XmpLZXO+0lpiKloUvQwPvEomu37jnBQhE/HH7LMDMFlCZ/oyNF50x14Bj6LsFZER65w
+X-Gm-Message-State: AOJu0YzPuiVDGrEg4hYn13C1jHeq6fPKhjz6ee2wMiebaisVIAgwEY1B
+	/tp5G2MmEXCYFXkaMrGZQZhg0Ix6DBH/1MrX0pBVpqLI+uAh8umU
+X-Google-Smtp-Source: AGHT+IHQBTfVv+AwnkV2UWhKzFK8HrtmNhxtY3yc1BnDBMGvB+TDdd4Np2obziymLeO4kYrNJJYLvQ==
+X-Received: by 2002:ac8:5fc1:0:b0:42e:1749:6c1f with SMTP id k1-20020ac85fc1000000b0042e17496c1fmr6357141qta.33.1708450169821;
+        Tue, 20 Feb 2024 09:29:29 -0800 (PST)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id f15-20020ac8464f000000b0042db245d609sm3613440qto.86.2024.02.20.09.29.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 09:29:29 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id A7FB11200066;
+	Tue, 20 Feb 2024 12:29:28 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Tue, 20 Feb 2024 12:29:28 -0500
+X-ME-Sender: <xms:eOHUZUreTJHiToJl1D2lmdrEcKP952ad15IbfD29Ooif6rkDIZnd7w>
+    <xme:eOHUZao9n01qhwBH5tOeqlIKoGshLof6L-BApucRQ5L01ElKqgS5tDC_oadzrsC0r
+    VCTcI-dH3kSDsEg5g>
+X-ME-Received: <xmr:eOHUZZNVTFpTEtq3UEis6n8Ga31IlRNFsMacNMa8g3GRLzQ_0tpNMWMtEmoPFg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedtgddutddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
+    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
+    htthgvrhhnpeehudfgudffffetuedtvdehueevledvhfelleeivedtgeeuhfegueeviedu
+    ffeivdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
+    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
+    igmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:eOHUZb7tyamPce-_NozdpZKW1-jB70d7YFlA-6BtE5nCwGU4GF2d7g>
+    <xmx:eOHUZT6y_uHm0nclCS-lJWl-hT4_GMGuXqFWGFQwP42WMYB5yetEQA>
+    <xmx:eOHUZbg0pKPF3ANGmmhhfo1nLNM9JLSUNz8_WnlZJ2hMTbJEBRnFRw>
+    <xmx:eOHUZWaGW5d3lQ-rrJPik7ToJ6Pr5gS5ZymG1TjRDA9gdgFABBPoUO1sj5Y>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 20 Feb 2024 12:29:28 -0500 (EST)
+Date: Tue, 20 Feb 2024 09:29:09 -0800
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Saurabh Singh Sengar <ssengar@linux.microsoft.com>
+Cc: mhklinux@outlook.com, haiyangz@microsoft.com, wei.liu@kernel.org,
+	decui@microsoft.com, linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/1] Drivers: hv: vmbus: Calculate ring buffer size for
+ more efficient use of memory
+Message-ID: <ZdThZUUmGhY2shrX@boqun-archlinux>
+References: <20240213061959.782110-1-mhklinux@outlook.com>
+ <20240220063007.GA17584@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240130091300.2968534-6-tj@kernel.org>
-User-Agent: NeoMutt/20231221
+In-Reply-To: <20240220063007.GA17584@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
 
-On Mon, 29 Jan 2024, Tejun Heo wrote:
+On Mon, Feb 19, 2024 at 10:30:07PM -0800, Saurabh Singh Sengar wrote:
+> On Mon, Feb 12, 2024 at 10:19:59PM -0800, mhkelley58@gmail.com wrote:
+> > From: Michael Kelley <mhklinux@outlook.com>
+> > 
+> > The VMBUS_RING_SIZE macro adds space for a ring buffer header to the
+> > requested ring buffer size.  The header size is always 1 page, and so
+> > its size varies based on the PAGE_SIZE for which the kernel is built.
+> > If the requested ring buffer size is a large power-of-2 size and the header
+> > size is small, the resulting size is inefficient in its use of memory.
+> > For example, a 512 Kbyte ring buffer with a 4 Kbyte page size results in
+> > a 516 Kbyte allocation, which is rounded to up 1 Mbyte by the memory
+> > allocator, and wastes 508 Kbytes of memory.
+> > 
+> > In such situations, the exact size of the ring buffer isn't that important,
+> > and it's OK to allocate the 4 Kbyte header at the beginning of the 512
+> > Kbytes, leaving the ring buffer itself with just 508 Kbytes. The memory
+> > allocation can be 512 Kbytes instead of 1 Mbyte and nothing is wasted.
+> > 
+> > Update VMBUS_RING_SIZE to implement this approach for "large" ring buffer
+> > sizes.  "Large" is somewhat arbitrarily defined as 8 times the size of
+> > the ring buffer header (which is of size PAGE_SIZE).  For example, for
+> > 4 Kbyte PAGE_SIZE, ring buffers of 32 Kbytes and larger use the first
+> > 4 Kbytes as the ring buffer header.  For 64 Kbyte PAGE_SIZE, ring buffers
+> > of 512 Kbytes and larger use the first 64 Kbytes as the ring buffer
+> > header.  In both cases, smaller sizes add space for the header so
+> > the ring size isn't reduced too much by using part of the space for
+> > the header.  For example, with a 64 Kbyte page size, we don't want
+> > a 128 Kbyte ring buffer to be reduced to 64 Kbytes by allocating half
+> > of the space for the header.  In such a case, the memory allocation
+> > is less efficient, but it's the best that can be done.
+> > 
+> > Fixes: c1135c7fd0e9 ("Drivers: hv: vmbus: Introduce types of GPADL")
+> > Signed-off-by: Michael Kelley <mhklinux@outlook.com>
+> > ---
+> >  include/linux/hyperv.h | 22 +++++++++++++++++++++-
+> >  1 file changed, 21 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+> > index 2b00faf98017..6ef0557b4bff 100644
+> > --- a/include/linux/hyperv.h
+> > +++ b/include/linux/hyperv.h
+> > @@ -164,8 +164,28 @@ struct hv_ring_buffer {
+> >  	u8 buffer[];
+> >  } __packed;
+> >  
+> > +
+> > +/*
+> > + * If the requested ring buffer size is at least 8 times the size of the
+> > + * header, steal space from the ring buffer for the header. Otherwise, add
+> > + * space for the header so that is doesn't take too much of the ring buffer
+> > + * space.
+> > + *
+> > + * The factor of 8 is somewhat arbitrary. The goal is to prevent adding a
+> > + * relatively small header (4 Kbytes on x86) to a large-ish power-of-2 ring
+> > + * buffer size (such as 128 Kbytes) and so end up making a nearly twice as
+> > + * large allocation that will be almost half wasted. As a contrasting example,
+> > + * on ARM64 with 64 Kbyte page size, we don't want to take 64 Kbytes for the
+> > + * header from a 128 Kbyte allocation, leaving only 64 Kbytes for the ring.
+> > + * In this latter case, we must add 64 Kbytes for the header and not worry
+> > + * about what's wasted.
+> > + */
+> > +#define VMBUS_HEADER_ADJ(payload_sz) \
+> > +	((payload_sz) >=  8 * sizeof(struct hv_ring_buffer) ? \
+> > +	0 : sizeof(struct hv_ring_buffer))
+> > +
+> >  /* Calculate the proper size of a ringbuffer, it must be page-aligned */
+> > -#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(sizeof(struct hv_ring_buffer) + \
+> > +#define VMBUS_RING_SIZE(payload_sz) PAGE_ALIGN(VMBUS_HEADER_ADJ(payload_sz) + \
+> >  					       (payload_sz))
 
->The only generic interface to execute asynchronously in the BH context is
->tasklet; however, it's marked deprecated and has some design flaws. To
->replace tasklets, BH workqueue support was recently added. A BH workqueue
->behaves similarly to regular workqueues except that the queued work items
->are executed in the BH context.
->
->This patch converts usb hcd from tasklet to BH workqueue.
+I generally see the point of this patch, however, it changes the
+semantics of VMBUS_RING_SIZE() (similiar as Saurabh mentioned below),
+before VMBUS_RING_SIZE() will give you a ring buffer size which has at
+least "payload_sz" bytes, but after the change, you may not get "enough"
+bytes for the vmbus ring buffer.
 
-In the past this tasklet removal was held up by Mauro's device not properly
-streaming - hopefully this no longer the case. Cc'ing.
+One cause of the waste memory is using alloc_pages() to get physical
+continuous, however, after a quick look into GPADL, looks like it also
+supports uncontinuous pages. Maybe that's the longer-term solution?
 
-https://lore.kernel.org/all/20180216170450.yl5owfphuvltstnt@breakpoint.cc/
+Regards,
+Boqun
 
->
->Signed-off-by: Tejun Heo <tj@kernel.org>
->Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->Cc: Alan Stern <stern@rowland.harvard.edu>
->Cc: linux-usb@vger.kernel.org
-
-Acked-by: Davidlohr Bueso <dave@stgolabs.net>
-
->---
-> drivers/usb/core/hcd.c  | 23 ++++++++++++-----------
-> include/linux/usb/hcd.h |  2 +-
-> 2 files changed, 13 insertions(+), 12 deletions(-)
->
->diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
->index 12b6dfeaf658..edf74458474a 100644
->--- a/drivers/usb/core/hcd.c
->+++ b/drivers/usb/core/hcd.c
->@@ -1664,9 +1664,10 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
->	usb_put_urb(urb);
-> }
->
->-static void usb_giveback_urb_bh(struct tasklet_struct *t)
->+static void usb_giveback_urb_bh(struct work_struct *work)
-> {
->-	struct giveback_urb_bh *bh = from_tasklet(bh, t, bh);
->+	struct giveback_urb_bh *bh =
->+		container_of(work, struct giveback_urb_bh, bh);
->	struct list_head local_list;
->
->	spin_lock_irq(&bh->lock);
->@@ -1691,9 +1692,9 @@ static void usb_giveback_urb_bh(struct tasklet_struct *t)
->	spin_lock_irq(&bh->lock);
->	if (!list_empty(&bh->head)) {
->		if (bh->high_prio)
->-			tasklet_hi_schedule(&bh->bh);
->+			queue_work(system_bh_highpri_wq, &bh->bh);
->		else
->-			tasklet_schedule(&bh->bh);
->+			queue_work(system_bh_wq, &bh->bh);
->	}
->	bh->running = false;
->	spin_unlock_irq(&bh->lock);
->@@ -1706,7 +1707,7 @@ static void usb_giveback_urb_bh(struct tasklet_struct *t)
->  * @status: completion status code for the URB.
->  *
->  * Context: atomic. The completion callback is invoked in caller's context.
->- * For HCDs with HCD_BH flag set, the completion callback is invoked in tasklet
->+ * For HCDs with HCD_BH flag set, the completion callback is invoked in BH
->  * context (except for URBs submitted to the root hub which always complete in
->  * caller's context).
->  *
->@@ -1725,7 +1726,7 @@ void usb_hcd_giveback_urb(struct usb_hcd *hcd, struct urb *urb, int status)
->	struct giveback_urb_bh *bh;
->	bool running;
->
->-	/* pass status to tasklet via unlinked */
->+	/* pass status to BH via unlinked */
->	if (likely(!urb->unlinked))
->		urb->unlinked = status;
->
->@@ -1747,9 +1748,9 @@ void usb_hcd_giveback_urb(struct usb_hcd *hcd, struct urb *urb, int status)
->	if (running)
->		;
->	else if (bh->high_prio)
->-		tasklet_hi_schedule(&bh->bh);
->+		queue_work(system_bh_highpri_wq, &bh->bh);
->	else
->-		tasklet_schedule(&bh->bh);
->+		queue_work(system_bh_wq, &bh->bh);
-> }
-> EXPORT_SYMBOL_GPL(usb_hcd_giveback_urb);
->
->@@ -2540,7 +2541,7 @@ static void init_giveback_urb_bh(struct giveback_urb_bh *bh)
->
->	spin_lock_init(&bh->lock);
->	INIT_LIST_HEAD(&bh->head);
->-	tasklet_setup(&bh->bh, usb_giveback_urb_bh);
->+	INIT_WORK(&bh->bh, usb_giveback_urb_bh);
-> }
->
-> struct usb_hcd *__usb_create_hcd(const struct hc_driver *driver,
->@@ -2926,7 +2927,7 @@ int usb_add_hcd(struct usb_hcd *hcd,
->			&& device_can_wakeup(&hcd->self.root_hub->dev))
->		dev_dbg(hcd->self.controller, "supports USB remote wakeup\n");
->
->-	/* initialize tasklets */
->+	/* initialize BHs */
->	init_giveback_urb_bh(&hcd->high_prio_bh);
->	hcd->high_prio_bh.high_prio = true;
->	init_giveback_urb_bh(&hcd->low_prio_bh);
->@@ -3036,7 +3037,7 @@ void usb_remove_hcd(struct usb_hcd *hcd)
->	mutex_unlock(&usb_bus_idr_lock);
->
->	/*
->-	 * tasklet_kill() isn't needed here because:
->+	 * flush_work() isn't needed here because:
->	 * - driver's disconnect() called from usb_disconnect() should
->	 *   make sure its URBs are completed during the disconnect()
->	 *   callback
->diff --git a/include/linux/usb/hcd.h b/include/linux/usb/hcd.h
->index 00724b4f6e12..f698aac71de3 100644
->--- a/include/linux/usb/hcd.h
->+++ b/include/linux/usb/hcd.h
->@@ -55,7 +55,7 @@ struct giveback_urb_bh {
->	bool high_prio;
->	spinlock_t lock;
->	struct list_head  head;
->-	struct tasklet_struct bh;
->+	struct work_struct bh;
->	struct usb_host_endpoint *completing_ep;
-> };
->
->--
->2.43.0
->
+> >  
+> >  struct hv_ring_buffer_info {
+> 
+> Thanks for the patch.
+> It's worth noting that this will affect the size of ringbuffer calculation for
+> some of the drivers: netvsc, storvsc_drv, hid-hyperv, and hyperv-keyboard.c.
+> It will be nice to have this comment added in commit for future reference.
+> 
+> Looks a good improvement to me,
+> Reviewed-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+> 
+> > -- 
+> > 2.25.1
+> > 
 
