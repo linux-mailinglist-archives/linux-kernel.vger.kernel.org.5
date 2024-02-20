@@ -1,122 +1,254 @@
-Return-Path: <linux-kernel+bounces-72466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9EE185B3E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:24:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0EB085B3EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:26:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79C21B243F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:24:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 118731C21164
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7A85B202;
-	Tue, 20 Feb 2024 07:24:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F9C95A4FE;
+	Tue, 20 Feb 2024 07:25:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bH3b3Cjs"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bo9M8nSs"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F525B1F6
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:24:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D385A4D3
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:25:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708413846; cv=none; b=HF4pfan2LyN9sby0eGJ4e1ZPeaWe3ZTvvYUXHcKYP7Kgh6DvldW1Od9Imvmr990OIPrYBTZthVVzlHmMHYs+zKWS4X91yicB2CS2+OfxCpYIrjIxbPMhpFjhcaKjIjoe+ehq+EfIDxgw6h81dvs5W20a4KI4pRhJyvkboCyPTKw=
+	t=1708413957; cv=none; b=hQkWgOX0tiIezNZQXSGqna330HXKuqK8EUUqcg27lpOPIaPHMDan3dQC+i1fQD0GYpzDR1whu38U4DBxIl7tUyQ9PJ6vn9NY9lXzECN2ufoQCrGfQVaTfcziOJk/rStczluxLw01/bSdX3RYiPSFT7UVMNVZtgG18Cx1Wr6QlCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708413846; c=relaxed/simple;
-	bh=qicImOJ+93+7ipaXfqBV3tHxv+ind/fFoWYhUjfLDqI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nCGYX90wxe7i3Mb71uuSfvqUXSeYncWR234njw88ajQgQ2bkuU2izhr/TuztaAXpWxsi9Z+PvRqV3YNlcOAWIvBgQfLjEFhFuGesdZD52ZFKld96/ar7qFrUmcWRuF/kDu8tnklN6P9fWe22bWUS1D78hdEhiTfCKGAoq7/5oBc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bH3b3Cjs; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so3820287a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 19 Feb 2024 23:24:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1708413844; x=1709018644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wg3AWDP/6gw5LIlouNG2JDqC4XWqXexOKTTcNONe2tQ=;
-        b=bH3b3CjscXlDj99hWiYFqqlI6ix0iF88Rh1MBOQUnbSPJdjSoK4RdppWAPEay2cRjH
-         Grzf9bmJhIgBD8MB/bnwJx0mbI0ppF8QkwEb4yAVsaPghq74EMyQqv7TxvEUw1yXPC3J
-         +1Wjlxo+F+1ddLjU0k96uY5REGGgep/he2Zdhxu/FToF8UcHYwa0SphHxSpKIDf50X6v
-         yNuTbD9hYGXyHBqrLGck5wYbm3+OJwBO/t98c/UfMyY8HP23wGxtVhn3xyxWFxilHIFY
-         gaTBwcfL1q2Ax7GT/YFLWfbIJSnT/IlRVuZASqY+BelTGAAB6Id2DJiagSLdX0VCeK1x
-         tgOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708413844; x=1709018644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wg3AWDP/6gw5LIlouNG2JDqC4XWqXexOKTTcNONe2tQ=;
-        b=ALfcuisxNbW8zxjHB8nOvOfPlSxzq9qoEtLtxprnkOL8ScoBmWaAB9stTfBFEWac75
-         2+h0r5WzA7GJaFQxNOWbAU0L4oyPdyXDcNAeJxd0PaFj5a424ZmF5NxSiY/gmc2QK8JF
-         hiDZdZgXgE7vYXb8TN0aFGnowAVlBR10Uh/iIu0CkyHQJxqKNeTDwn+pC08WuUfZh2MZ
-         ajJDGcz6MqeU5+g7T5k16PqrzGknk/5aOYr50tVRa+4sHMLzba6otXljyi7zVxj968cV
-         6ohvkS5FXZe8/9thHpaMrtr27ELESclhjtOgOMF3kwyzk+eM1Xz6AuSfLBgHywvFSsr5
-         1ncw==
-X-Forwarded-Encrypted: i=1; AJvYcCXybzC9Lp+gBPDyoHyPt4kQ34ynr1++AwQK45Da9cPu27MoBvtwjlC6xbJo3GKZbWdy3cfD8i/YzhR0tIVbESlKCCI+hx4mhX7RSl17
-X-Gm-Message-State: AOJu0YzATRNvIQG9bsbQ3YpHf94inHesXVPD8YcSVNP8bGauex37QNkn
-	LhnDWqHxNGDWEg4zVFcj+KkVe2hLubgFdcxu+YzO9dxGLNKHfFPUSjcTM5rP2pw79O/myvB0nmH
-	OzO6L8JKiEpiGpIC7PYqUaVgqfAA=
-X-Google-Smtp-Source: AGHT+IEO4pgfyv8sIu7hPQhpfArLrmFTOVJJVpBVrvJ6BikZC+2evWXAuQcp4Zoz8BXRnR7sMHU9Lo9GKhMD4WyJUbY=
-X-Received: by 2002:a17:90a:ca84:b0:299:4f75:150e with SMTP id
- y4-20020a17090aca8400b002994f75150emr5296615pjt.47.1708413844674; Mon, 19 Feb
- 2024 23:24:04 -0800 (PST)
+	s=arc-20240116; t=1708413957; c=relaxed/simple;
+	bh=Bu7bDg5XnddRWp+AqMHunndsJ8KOIOFxplMKQMYJOoM=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=pVGPQt7jYJrnkEVv/6inZXR6CJOe7Y6yVhUtZBeHux4zeiN/bgaupI5GXUpoe4TTlmS7X04PpKUKTQVWW/LU8+loIPT1m2FQglL1Yd6l39XgrTNMwjW9gKXvfqjsam/dGg3nVifiNrKAFoBgwvsRU99S5KTkyUcC+9QZAnYJtvs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bo9M8nSs; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708413956; x=1739949956;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=Bu7bDg5XnddRWp+AqMHunndsJ8KOIOFxplMKQMYJOoM=;
+  b=bo9M8nSsaKybNhWeXG6guIW4QEZ8GtfMTnUTNEi5dxriHBoPCgPsWDvi
+   AoXaOaPgTkSAwM+i99dOiIjbcIEPAUUJ15AprSGr0Ip8x9NREL4b7S8DK
+   OmPovnn+1ErBhay4LgNcD+VgTHvhG724aQn+uvZ5uKtnOmUnMbR29INjU
+   vlLGehX7beE9nmqOihGnKR7G+sC8nh8UqevGpdMYBbZXX9QzMaF71eLla
+   yvxIxzL1ypIY7kAHDzlxue3X/jmp9aIW7VoVAXAJ3rzJ7PZOC66MQ9Lkf
+   wiLft6ICcVjEq/8f5GbteTO8libRFw25Fxz8GNP9WvDZHw6/+dvO5arTW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2406412"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="2406412"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 23:25:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="4664185"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2024 23:25:50 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: Donet Tom <donettom@linux.ibm.com>,  Michal Hocko <mhocko@suse.com>,
+  Andrew Morton <akpm@linux-foundation.org>,  linux-mm@kvack.org,
+  linux-kernel@vger.kernel.org,  Dave Hansen <dave.hansen@linux.intel.com>,
+  Mel Gorman <mgorman@suse.de>,  Ben Widawsky <ben.widawsky@intel.com>,
+  Feng Tang <feng.tang@intel.com>,  Andrea Arcangeli <aarcange@redhat.com>,
+  Peter Zijlstra <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,
+  Rik van Riel <riel@surriel.com>,  Johannes Weiner <hannes@cmpxchg.org>,
+  Matthew Wilcox <willy@infradead.org>,  Mike Kravetz
+ <mike.kravetz@oracle.com>,  Vlastimil Babka <vbabka@suse.cz>,  Dan
+ Williams <dan.j.williams@intel.com>,  Hugh Dickins <hughd@google.com>,
+  Kefeng Wang <wangkefeng.wang@huawei.com>,  Suren Baghdasaryan
+ <surenb@google.com>
+Subject: Re: [PATCH 3/3] mm/numa_balancing:Allow migrate on protnone
+ reference with MPOL_PREFERRED_MANY policy
+In-Reply-To: <e88eedb7-cad6-4298-8710-4abc98048529@kernel.org> (Aneesh Kumar
+	K. V.'s message of "Tue, 20 Feb 2024 12:14:48 +0530")
+References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
+	<8d7737208bd24e754dc7a538a3f7f02de84f1f72.1708097962.git.donettom@linux.ibm.com>
+	<ZdNEg_aA0LHJY22T@tiehlicka>
+	<e7b138a4-de46-4cb6-94b8-67019e0369e9@linux.ibm.com>
+	<87bk8bprpr.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<e88eedb7-cad6-4298-8710-4abc98048529@kernel.org>
+Date: Tue, 20 Feb 2024 15:23:54 +0800
+Message-ID: <87y1bfoayd.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240216180559.208276-1-tj@kernel.org> <20240216180559.208276-14-tj@kernel.org>
-In-Reply-To: <20240216180559.208276-14-tj@kernel.org>
-From: Lai Jiangshan <jiangshanlai@gmail.com>
-Date: Tue, 20 Feb 2024 15:23:53 +0800
-Message-ID: <CAJhGHyBHsu_o02eZ4HWHhuFVXtVUR-sH_W8gFXw7QbLOBm+k+g@mail.gmail.com>
-Subject: Re: [PATCH 13/17] workqueue: Remove WORK_OFFQ_CANCELING
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	allen.lkml@gmail.com, kernel-team@meta.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Hello, Tejun
+"Aneesh Kumar K.V" <aneesh.kumar@kernel.org> writes:
 
-On Sat, Feb 17, 2024 at 2:06=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
-
-> @@ -2631,19 +2567,13 @@ bool mod_delayed_work_on(int cpu, struct workqueu=
-e_struct *wq,
->                          struct delayed_work *dwork, unsigned long delay)
->  {
->         unsigned long irq_flags;
-> -       int ret;
-> +       bool ret;
+> On 2/20/24 12:06 PM, Huang, Ying wrote:
+>> Donet Tom <donettom@linux.ibm.com> writes:
+>>=20
+>>> On 2/19/24 17:37, Michal Hocko wrote:
+>>>> On Sat 17-02-24 01:31:35, Donet Tom wrote:
+>>>>> commit bda420b98505 ("numa balancing: migrate on fault among multiple=
+ bound
+>>>>> nodes") added support for migrate on protnone reference with MPOL_BIND
+>>>>> memory policy. This allowed numa fault migration when the executing n=
+ode
+>>>>> is part of the policy mask for MPOL_BIND. This patch extends migration
+>>>>> support to MPOL_PREFERRED_MANY policy.
+>>>>>
+>>>>> Currently, we cannot specify MPOL_PREFERRED_MANY with the mempolicy f=
+lag
+>>>>> MPOL_F_NUMA_BALANCING. This causes issues when we want to use
+>>>>> NUMA_BALANCING_MEMORY_TIERING. To effectively use the slow memory tie=
+r,
+>>>>> the kernel should not allocate pages from the slower memory tier via
+>>>>> allocation control zonelist fallback. Instead, we should move cold pa=
+ges
+>>>>> from the faster memory node via memory demotion. For a page allocatio=
+n,
+>>>>> kswapd is only woken up after we try to allocate pages from all nodes=
+ in
+>>>>> the allocation zone list. This implies that, without using memory
+>>>>> policies, we will end up allocating hot pages in the slower memory ti=
+er.
+>>>>>
+>>>>> MPOL_PREFERRED_MANY was added by commit b27abaccf8e8 ("mm/mempolicy: =
+add
+>>>>> MPOL_PREFERRED_MANY for multiple preferred nodes") to allow better
+>>>>> allocation control when we have memory tiers in the system. With
+>>>>> MPOL_PREFERRED_MANY, the user can use a policy node mask consisting o=
+nly
+>>>>> of faster memory nodes. When we fail to allocate pages from the faster
+>>>>> memory node, kswapd would be woken up, allowing demotion of cold pages
+>>>>> to slower memory nodes.
+>>>>>
+>>>>> With the current kernel, such usage of memory policies implies we can=
+'t
+>>>>> do page promotion from a slower memory tier to a faster memory tier
+>>>>> using numa fault. This patch fixes this issue.
+>>>>>
+>>>>> For MPOL_PREFERRED_MANY, if the executing node is in the policy node
+>>>>> mask, we allow numa migration to the executing nodes. If the executing
+>>>>> node is not in the policy node mask but the folio is already allocated
+>>>>> based on policy preference (the folio node is in the policy node mask=
+),
+>>>>> we don't allow numa migration. If both the executing node and folio n=
+ode
+>>>>> are outside the policy node mask, we allow numa migration to the
+>>>>> executing nodes.
+>>>> The feature makes sense to me. How has this been tested? Do you have a=
+ny
+>>>> numbers to present?
+>>>
+>>> Hi Michal
+>>>
+>>> I have a test program which allocate memory on a specified node and
+>>> trigger the promotion or migration (Keep accessing the pages).
+>>>
+>>> Without this patch if we set MPOL_PREFERRED_MANY promotion or migration=
+ was not happening
+>>> with this patch I could see pages are getting  migrated or promoted.
+>>>
+>>> My system has 2 CPU+DRAM node (Tier 1) and 1 PMEM node(Tier 2). Below
+>>> are my test results.
+>>>
+>>> In below table N0 and N1 are Tier1 Nodes. N6 is the Tier2 Node.
+>>> Exec_Node is the execution node, Policy is the nodes in nodemask and
+>>> "Curr Location Pages" is the node where pages present before migration
+>>> or promotion start.
+>>>
+>>> Tests Results
+>>> ------------------
+>>> Scenario 1:=C2=A0 if the executing node is in the policy node mask
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>>> Exec_Node=C2=A0=C2=A0=C2=A0 Policy=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 Curr Location Pages       Observations
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N0 N1 N6=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N1=
+                Pages Migrated from N1 to N0
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N0 N1 N6=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N6        =
+        Pages Promoted from N6 to N0
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N0 N1=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0  =
+N1 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0    Pages M=
+igrated from N1 to N0
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 N0 N1=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =
+=C2=A0N6 =C2=A0 =C2=A0            Pages Promoted from N6 to N0
+>>>
+>>> Scenario 2: If the folio node is in policy node mask and Exec node not =
+in policy=C2=A0 node mask
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>>> Exec_Node=C2=A0=C2=A0=C2=A0 Policy=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
+Curr Location Pages=C2=A0=C2=A0=C2=A0  =C2=A0 Observations
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0  =C2=A0=C2=A0=C2=A0 N1 N6=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N1            =
+   Pages are not Migrating to N0
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N1 N6=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N6   =
+            Pages are not migration to N0
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0N1=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 =C2=A0N1 =C2=A0 =C2=A0           Pages are not Migrating to N0
+>>>
+>>> Scenario 3: both the folio node and executing node are outside the poli=
+cy nodemask
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>>> Exec_Node=C2=A0 =C2=A0 Policy=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 Curr Location Pages=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Observations
+>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =C2=A0 =C2=A0 =C2=A0 N1=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 N6 =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 Pages P=
+romoted from N6 to N0
+>>> N0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0N6                     N1=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0Pages Migrated from N1 to N0
+>>>
+>>=20
+>> Please use some benchmarks (e.g., redis + memtier) and show the
+>> proc-vmstat stats and benchamrk score.
 >
-> -       do {
-> -               ret =3D try_to_grab_pending(&dwork->work, WORK_CANCEL_DEL=
-AYED,
-> -                                         &irq_flags);
-> -       } while (unlikely(ret =3D=3D -EAGAIN));
-> +       ret =3D work_grab_pending(&dwork->work, WORK_CANCEL_DELAYED, &irq=
-_flags);
 >
-> -       if (likely(ret >=3D 0)) {
-> -               __queue_delayed_work(cpu, wq, dwork, delay);
-> -               local_irq_restore(irq_flags);
-> -       }
-> +       __queue_delayed_work(cpu, wq, dwork, delay);
+> Without this change numa fault migration is not supported with MPOL_PREFE=
+RRED_MANY
+> policy. So there is no performance comparison with and without patch. W.r=
+t effectiveness of numa
+> fault migration, that is a different topic from this patch
 
-The disable count has to be checked before queuing it.
+IIUC, the goal of the patch is to optimize performance, right?  If so,
+the benchmark score will help justify the change.
 
-Thanks
-Lai
-
->
-> -       /* -ENOENT from try_to_grab_pending() becomes %true */
-> +       local_irq_restore(irq_flags);
->         return ret;
->  }
->  EXPORT_SYMBOL_GPL(mod_delayed_work_on);
+--
+Best Regards,
+Huang, Ying
 
