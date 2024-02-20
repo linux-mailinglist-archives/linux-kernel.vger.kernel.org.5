@@ -1,197 +1,115 @@
-Return-Path: <linux-kernel+bounces-73132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 505F985BDFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B180A85BE03
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:03:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFDF11F24766
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:01:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67CCC1F24343
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AA966A8A0;
-	Tue, 20 Feb 2024 14:01:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436246A8C5;
+	Tue, 20 Feb 2024 14:03:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VLvzOOAo";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ZHvChhOd"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cUjaVRij"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3981D5C5FC
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1028D69D0D
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708437666; cv=none; b=rkuBaYmxxxDuoBWlJtVwJeyBPc/xQecJpcGMT185DyMi0nVe8gHo/NhQCmnBUg3K51T3YVEkk6PeY0Zp7g3iJydtaWIFSLpa+bvtAj81d+JoxCgy8V3PZy86KV0tyhIjmBqjKLCPupe0DH3uSaeSIY6PGxKxxrgqMFBVaCdR8Pk=
+	t=1708437814; cv=none; b=ufcT4PaOYuXjbuF4yYnEgcOWdSYzb9kFhcSHDTkUS7avY0KJ/aRr+/vs5SQ9tACVXQDFZ42Q7wuY/Kutv2jwRpXSCkMxLyM52x1QlzeY2KJXOmU0DV5GX5ijLRQp6Ju6Hm07cnr2Gltv172H99fejAKgM4VuCtp2ZAmGXOfOlz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708437666; c=relaxed/simple;
-	bh=Sk853J/yvAxcOfHqWwtyvMGjsxlpkpM7HaqcX4p2XxM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Zjp8tkm/bj4AKF9YlPQ7jFE0goOwI94VfFFmswk7FoCQHO434hQdsMH1wJE9m7zPPVXi7KxcHPjuovZLBOiCgkCT3xCE3w8vRAdomNv5jsX6LJCYM8Msn5K+oXPYuArVriQkjoB/Uod29yAVxcduyoin5IT5AR381SPdOcBNAYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VLvzOOAo; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ZHvChhOd; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Anna-Maria Behnsen <anna-maria@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708437658;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LusGeqe77Vvht/qUtbx9FzxlRWWi7gbUeUQ+PlF/39w=;
-	b=VLvzOOAopuqEJ803n7CTkl4EShM1wiYx3+JmYJ9PdqMbE45AhHlZGF0HxfzBTHnXfV1oyo
-	d/r/IpQ9kBQPPdPnhXHhyzRfdrG8vsaycXU8iA4XUpQFqxYh7XJ0D290zG9WREUOZTSsJU
-	CrxAAgAKHMYsS28/BlV6qS0EunSiS8LXlu3XCHMgVV1D0HAK1rkVBSZUHBytcpGitDugt4
-	gfQWV19qAtB9NX8gHv3S+Jvm69ui0q3jmZPr+5EzyGnpb9DhQnAdc3dY5l8TlkF2vhyjSP
-	YX6fPLTvZObHda5r9HQS+Zj809g1uXkILQvNalfTZUSPYdcL57nGl+AOXGwjnA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708437658;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LusGeqe77Vvht/qUtbx9FzxlRWWi7gbUeUQ+PlF/39w=;
-	b=ZHvChhOdl1wOUHPOJwyrKLYwIV000Q4KDR+WEGOHgSzn+g4LmoLC+GFmptRN9o5Nz8vFQA
-	ITurUXs7IWatrEAw==
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
- John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>,
- Eric Dumazet <edumazet@google.com>, "Rafael J . Wysocki"
- <rafael.j.wysocki@intel.com>, Arjan van de Ven <arjan@infradead.org>,
- "Paul E . McKenney" <paulmck@kernel.org>, Rik van Riel <riel@surriel.com>,
- Steven Rostedt <rostedt@goodmis.org>, Sebastian Siewior
- <bigeasy@linutronix.de>, Giovanni Gherdovich <ggherdovich@suse.cz>, Lukasz
- Luba <lukasz.luba@arm.com>, "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
- Srinivas Pandruvada <srinivas.pandruvada@intel.com>, K Prateek Nayak
- <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10a] timers: Move marking timer bases idle into
- tick_nohz_stop_tick()
-In-Reply-To: <ZdScXhIS_G1cjaWG@localhost.localdomain>
-References: <20240115143743.27827-4-anna-maria@linutronix.de>
- <20240219085236.10624-1-anna-maria@linutronix.de>
- <ZdPYEzno3KqIPo4S@localhost.localdomain> <878r3f5s3w.fsf@somnus>
- <ZdSQBD_ZpWvH5SoZ@localhost.localdomain> <87zfvv4a45.fsf@somnus>
- <ZdScXhIS_G1cjaWG@localhost.localdomain>
-Date: Tue, 20 Feb 2024 15:00:57 +0100
-Message-ID: <87ttm344me.fsf@somnus>
+	s=arc-20240116; t=1708437814; c=relaxed/simple;
+	bh=YIgXLQrn14CWmrZfowaGPAblUiVDzjmJHLps35gqblg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KSuQpuIHs8F7NYuWpgBeVXvcVO3JEMZxzzcIxprO8u64wqpcK7Ja09R7vpVX/4F0ZbHy/AptvrZdQwUMDuKH4uJdmdgulCy02YnzksOoF2/4TRBuHynImDe1U+RgG61CokBBCAXEKYUZgR+dPtkgG3ot90S07fkcg5dRD9zjY+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cUjaVRij; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41271096976so2443865e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:03:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708437811; x=1709042611; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YIgXLQrn14CWmrZfowaGPAblUiVDzjmJHLps35gqblg=;
+        b=cUjaVRijlpkAuZyhcMvypRAMfKh2/AQw6/z8dfGU7S2aO72BL7k0f6E5CaYlHdrC7i
+         B5CeBHk+oa3ThzoraBFbcmkWTASt2jDG/xQfkEbsNY7/2PpSgo8FDQUwpz1UGr3BLCGi
+         JhClBUX8agY7V1P7/BOgo1JPNBoYWeyRDHbrTYAX8LDPQAX6usUAQ5m8/iFMprUTpf3E
+         wOhSCzJJwSskJXqK2N7ncSWGbe5gZxpCg/L/e4mkOTgnzmmF+K3NHJ/3ouXJ/XTr/KWF
+         r1HTvLz8oUsTsUAUxMiVbfiXxMmV6grWDrCRk6pHLPodfxLEtzHXifwBPX8429XnZ+Gj
+         NbaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708437811; x=1709042611;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YIgXLQrn14CWmrZfowaGPAblUiVDzjmJHLps35gqblg=;
+        b=YVnRR6Z/syDB2o9aYQVtATUTj4GbuzwVDnpoQyOo/NpUB6X7OJ1JT+G3n3CtzUVaHe
+         3BAD/gYWAmn+mXoQHgXGX9Jg0mYisN2Vfi8rq5qVlpktfrZZd0AIZEboS+gPRicQFZkp
+         aM8Ro3Mi85xtK91Mtekj6mTk5ULkJz5Z0rD1jRKVHgnxLefwjv7jXlGwzlHi6Bom7V5o
+         UvWPP7HM2DZDEtArdXDXZC2lk3LKMp7NgMe6vtpbSZBcObc428DH0DrkenxEnF7DLBRC
+         pP9n4r++e3qfXUzWICsSfYdJqDgcH/K1Qv/Igh0ji4Fdqga4qUsQ7pd/9BKFzjGmwOb/
+         3wzA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqyaMpEhpIv8HrVnahTGOlUsQ764U6wlSGqmSCTVBaBN+AbUX+x/E384wMxZA9HYehxlz4HA9+yL7KTimPHd1B/eHYv87AzNgORFNM
+X-Gm-Message-State: AOJu0Yza3ryy8OWtk0f8cffCp8+ehx899zwUT6yCN8ozSomb4If7SKxc
+	NdjXC/ktMbvUl8CISF6MFcABlrjnYL3nocQie9cimBENrk6eDwJG0+/pWm8dIC4=
+X-Google-Smtp-Source: AGHT+IG6vkgZ+8zSvP2/8Ap20RRDORuDhGSZX+BUAp6ws2+0Tc+tQb9sjACW+5haOxYS7Odl/DVhmQ==
+X-Received: by 2002:a05:600c:1553:b0:40e:d30b:6129 with SMTP id f19-20020a05600c155300b0040ed30b6129mr11941148wmg.13.1708437811534;
+        Tue, 20 Feb 2024 06:03:31 -0800 (PST)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id bj29-20020a0560001e1d00b0033d5c454f03sm4888305wrb.114.2024.02.20.06.03.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 06:03:31 -0800 (PST)
+Date: Tue, 20 Feb 2024 14:03:29 +0000
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Luca Weiss <luca@z3ntu.xyz>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+	Lee Jones <lee@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+	Helge Deller <deller@gmx.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"G.Shark Jeong" <gshark.jeong@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Maximilian Weigand <mweigand@mweigand.net>,
+	dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/4] backlight: lm3630a: Don't set bl->props.brightness
+ in get_brightness
+Message-ID: <20240220140329.GE6716@aspen.lan>
+References: <20240220-lm3630a-fixups-v1-0-9ca62f7e4a33@z3ntu.xyz>
+ <20240220-lm3630a-fixups-v1-2-9ca62f7e4a33@z3ntu.xyz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220-lm3630a-fixups-v1-2-9ca62f7e4a33@z3ntu.xyz>
 
-Frederic Weisbecker <frederic@kernel.org> writes:
-
-> Le Tue, Feb 20, 2024 at 01:02:18PM +0100, Anna-Maria Behnsen a =C3=A9crit=
- :
->> Frederic Weisbecker <frederic@kernel.org> writes:
->>=20
->> > Le Tue, Feb 20, 2024 at 11:48:19AM +0100, Anna-Maria Behnsen a =C3=A9c=
-rit :
->> >> Frederic Weisbecker <frederic@kernel.org> writes:
->> >> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
->> >> index 01fb50c1b17e..b93f0e6f273f 100644
->> >> --- a/kernel/time/tick-sched.c
->> >> +++ b/kernel/time/tick-sched.c
->> >> @@ -895,21 +895,6 @@ static void tick_nohz_stop_tick(struct tick_sche=
-d *ts, int cpu)
->> >>  	/* Make sure we won't be trying to stop it twice in a row. */
->> >>  	ts->timer_expires_base =3D 0;
->> >>=20=20
->> >> -	/*
->> >> -	 * If this CPU is the one which updates jiffies, then give up
->> >> -	 * the assignment and let it be taken by the CPU which runs
->> >> -	 * the tick timer next, which might be this CPU as well. If we
->> >> -	 * don't drop this here, the jiffies might be stale and
->> >> -	 * do_timer() never gets invoked. Keep track of the fact that it
->> >> -	 * was the one which had the do_timer() duty last.
->> >> -	 */
->> >> -	if (cpu =3D=3D tick_do_timer_cpu) {
->> >> -		tick_do_timer_cpu =3D TICK_DO_TIMER_NONE;
->> >> -		ts->do_timer_last =3D 1;
->> >> -	} else if (tick_do_timer_cpu !=3D TICK_DO_TIMER_NONE) {
->> >> -		ts->do_timer_last =3D 0;
->> >> -	}
->> >> -
->> >>  	/* Skip reprogram of event if it's not changed */
->> >>  	if (ts->tick_stopped && (expires =3D=3D ts->next_tick)) {
->> >>  		/* Sanity check: make sure clockevent is actually programmed */
->> >
->> > That should work but then you lose the optimization that resets
->> > ts->do_timer_last even if the next timer hasn't changed.
->> >
->>=20
->> Beside of this optimization thing, I see onther problem. But I'm not
->> sure, if I understood it correctly: When the CPU drops the
->> tick_do_timer_cpu assignment and stops the tick, it is possible, that
->> this CPU nevertheless executes tick_sched_do_timer() and then reassigns
->> to tick_do_timer_cpu?
+On Tue, Feb 20, 2024 at 12:11:20AM +0100, Luca Weiss wrote:
+> There's no need to set bl->props.brightness, the get_brightness function
+> is just supposed to return the current brightness and not touch the
+> struct.
 >
-> Yes but in this case a timer interrupt has executed and ts->next_tick
-> is cleared, so the above skip reprogramm branch is not taken.
+> With that done we can also remove the 'goto out' and just return the
+> value.
 >
+> Fixes: 0c2a665a648e ("backlight: add Backlight driver for lm3630 chip")
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 
-Yes... So I need to change it without dropping the
-optimization. Otherwise someone might complain about it.
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
 
-Two possible solutions:
 
-a) split out this if/else thing for dropping the tick_do_timer_cpu
-   assignment into a separate function and call it:
-   - before the return in the skip reprogramm branch
-   - and after the if clause which contains stopping the tick (where it
-     is executed in the current proposal)
-
-b) Take my current proposal and add before the return in the skip
-   reprogramm branch the following lines:
-
-   if (tick_do_timer_cpu !=3D TICK_DO_TIMER_NONE)
-   	ts->do_timer_last =3D 0;
-
-   as the first part of the tick_do_timer_cpu/last logic shouldn't be
-   required (because then also ts->next_tick is already cleared).
-
-What do you prefere? Or do you prefere something else?
-
-Thanks
-
-> Thanks.
->
->>=20
->> Then it is mandatory that we have this drop the assignment also in the
->> path when the tick is already stopped. Otherwise the problem described
->> in the comment could happen with stale jiffies, no?
->>=20
->> Thanks
->>=20
->> > Thanks.
->> >
->> >
->> >
->> >> @@ -938,6 +923,21 @@ static void tick_nohz_stop_tick(struct tick_sche=
-d *ts, int cpu)
->> >>  		trace_tick_stop(1, TICK_DEP_MASK_NONE);
->> >>  	}
->> >>=20=20
->> >> +	/*
->> >> +	 * If this CPU is the one which updates jiffies, then give up
->> >> +	 * the assignment and let it be taken by the CPU which runs
->> >> +	 * the tick timer next, which might be this CPU as well. If we
->> >> +	 * don't drop this here, the jiffies might be stale and
->> >> +	 * do_timer() never gets invoked. Keep track of the fact that it
->> >> +	 * was the one which had the do_timer() duty last.
->> >> +	 */
->> >> +	if (cpu =3D=3D tick_do_timer_cpu) {
->> >> +		tick_do_timer_cpu =3D TICK_DO_TIMER_NONE;
->> >> +		ts->do_timer_last =3D 1;
->> >> +	} else if (tick_do_timer_cpu !=3D TICK_DO_TIMER_NONE) {
->> >> +		ts->do_timer_last =3D 0;
->> >> +	}
->> >> +
->> >>  	ts->next_tick =3D expires;
->> >>=20=20
->> >>  	/*
+Daniel.
 
