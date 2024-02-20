@@ -1,213 +1,172 @@
-Return-Path: <linux-kernel+bounces-72200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0982585B0BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:08:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9685285B0BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:09:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B20DB1F2180F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:08:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 239D31F21BAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:09:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A1F13A8F7;
-	Tue, 20 Feb 2024 02:08:08 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E188465
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708394887; cv=none; b=osvM6i4X9PzDq4OwVfbmfWNezAtAxVHLhc+liq5sCrBhV7Vzo9mWue8hTBJRd4E5ibPIcuEPLZkiJ73Aiz8aYX75oboFe47AxFoF0C4QT6MiNDuPISeUy44inCRl1LmtqP2rGGGUFm6Py3mRV0fZcToKXiR53lGhhTqd4bNVuTU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708394887; c=relaxed/simple;
-	bh=APJfew27VQ0v3mk16aVpKGackeZkEcMk0nMGzmDw30A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KYrh6N4r9GOEb46IMH+zZaax+79GtCjmt3Gqk2b0Cs+WVwVoLEGEFtyP3KcH8UQWq4WpMkZZp4jaBv0nwvNh7ZjAl2ZsyeufKXfPREhSmTCCU6S8h5yFozYS8YsgNYxZC9ZR1XywnhXu+DI/DGVUW/6cq6zooBZCPI7RpCv9Sq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-96-65d40980b13f
-Date: Tue, 20 Feb 2024 11:07:55 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Huang, Ying" <ying.huang@intel.com>, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	kernel_team@skhynix.com
-Subject: Re: [PATCH v4] sched/numa, mm: do not try to migrate memory to
- memoryless nodes
-Message-ID: <20240220020755.GE65758@system.software.com>
-References: <20240219041920.1183-1-byungchul@sk.com>
- <87o7ccrghz.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <20240219174508.bc6256248a163c3ab9a58369@linux-foundation.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097133A8FA;
+	Tue, 20 Feb 2024 02:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="JKWFTqeB"
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2094.outbound.protection.outlook.com [40.107.117.94])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8622C11CA1
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 02:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.94
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708394967; cv=fail; b=mO5WHePBfpGOzBuNgmyPz+y1TJcZsFMCIKFP2+O0zANBtEcWuTZFEhoJUtU0hvrY2sTnhlAmEelVmDdONjzz/AFoITZ7PACEKxeXTd3XAnA+SaziIQtglE0cTQgAADpRk7x4N7tZrVLDtXthmQ0REhRsU5/oy0LJMlDR/pHAJ6E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708394967; c=relaxed/simple;
+	bh=PTWU9m/PUQLZHOl6tSbl0VTqodkRp+9SKQrLjiFU7Mg=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=euyW0c/OWc0+CPH6/tM6m5bFZtTQ2L/nDvgicNL6flgTAXd+UIHkystbUptwHSwjOBwPPYU5D/iODMLwU2cNclv5RIl83nV1nbMYEqAe+9XBLKmMmAdsFie/TfBzlD637iVUdO/a2xnPAKmCduE+lgUG2VunrET7rhCOjLdu9pA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=JKWFTqeB; arc=fail smtp.client-ip=40.107.117.94
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=V/b7WJrX9Gmpm0XnUY278hkjrsrphJRWqiAHE+5n74R2sVEpJA+khvtIgSOZ96gA52nttH0Kjcsriq05R1MYoaNft/fnYSuqkjbAUx9HDW+zOLxQMptSfhFfF6y0RS+uKOypY/ecOiNO4F/U7EC7oEkazMPIAjr4XTGmSW9Dh6wC6wWkWRYjAPDM1j3jBBFVCVOAVbbm0+lffdwmsoZqmxGa8W7V9D5aEqiIJYhokQ27xw21IEn8DGlOgMsuHQcuR+mV6Ru8eGlKyAO1x4L+X56EsHNXRkyxHyapSeRl3nOhHYJTZCVmNDDjtUtrvfLJxCHtfaSWNm2mRYiA4ZHVww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YrFvPqeH7fgLvxn6lsI8imWZpHD8plWdr3ueLVCvPHA=;
+ b=XcJ1NmovGWS75yURc3/0TGh2e5x8bbaB4NX/D+/sevD4spGYbOtctDY5mEwp1snFB1N7ogLGwg73BsVjkzcVMxwHR5ocR/4/t6TiVPGM1GdJmAFFNnH1SGPYe3u7VuorMfXxuSN/ZCUuKxchsXC2I/sldF3dn4dSyW2ibx8wB1ZCCoUpArk/eWy5vDQGlVBcbJ9ibNOUQT/GpqqlEuqBaFl3KbVPXlvR4kBw7gpecdOZULZVtcxvcIJ+LLgY3I/0DCQZNDVkSSNJGiUvHnqZYj8aql2imBolMqkNOgHeTqqQI4KGfESx9CLEWHHgYC7mM5JjD4ZHA/T6lAZAf9bjbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YrFvPqeH7fgLvxn6lsI8imWZpHD8plWdr3ueLVCvPHA=;
+ b=JKWFTqeB7r2Q7k79MoEPHmxV9t8vj7xAtIO7j0BWVGeJvZ412xbAjPr4PfIknTjsst4wNBsghC1ByOlAQPTKMeUpSDLcnlLGl099TU3FslpIEt0WcyhaKfgdTklqZRwC5ebdoLb7ueJ84LLytYa8pfOhdMCdIlbDET9WA+hblSk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+Received: from SI2PR02MB5612.apcprd02.prod.outlook.com (2603:1096:4:1ab::12)
+ by TYZPR02MB7682.apcprd02.prod.outlook.com (2603:1096:405:4c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 02:09:21 +0000
+Received: from SI2PR02MB5612.apcprd02.prod.outlook.com
+ ([fe80::5002:785e:e85c:37b8]) by SI2PR02MB5612.apcprd02.prod.outlook.com
+ ([fe80::5002:785e:e85c:37b8%3]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 02:09:21 +0000
+Message-ID: <2e4d50aa-7531-7e36-d999-8eb9b5bf3c7c@oppo.com>
+Date: Tue, 20 Feb 2024 10:09:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 0/2] Support kshrinkd
+To: akpm@linux-foundation.org, david@redhat.com, osalvador@suse.de,
+ Matthew Wilcox <willy@infradead.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, tkjos@google.com,
+ gregkh@google.com, v-songbaohua@oppo.com, v-songbaohua@oppo.com
+References: <20240219141703.3851-1-lipeifeng@oppo.com>
+From: =?UTF-8?B?5p2O5Z+56ZSL?= <lipeifeng@oppo.com>
+In-Reply-To: <20240219141703.3851-1-lipeifeng@oppo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: TYCP286CA0322.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:3b7::11) To SI2PR02MB5612.apcprd02.prod.outlook.com
+ (2603:1096:4:1ab::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219174508.bc6256248a163c3ab9a58369@linux-foundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprKIsWRmVeSWpSXmKPExsXC9ZZnkW4D55VUg/M7tS3mrF/DZnHp8VU2
-	i+kvG1ksnk7Yymxxt38qi8XlXXPYLO6t+c9qMfndM0aLSwcWMFkc7z3AZLGv4wGTRceRb8wW
-	W49+Z7c4OWsyiwOfx5p5axg9WvbdYvdYsKnUY/MKLY/Fe14yeWz6NInd4861PWweJ2b8ZvF4
-	v+8qm8fm09UenzfJBXBHcdmkpOZklqUW6dslcGUc+zmVvWC9RsXE5p/MDYwTFLsYOTkkBEwk
-	bsz9zQJjNzROAbNZBFQlvs6dzgpiswmoS9y48ZMZxBYR0JVY9XwXmM0scJ1J4vq/QhBbWCBK
-	YsaSL4wgNq+AhcS7b6fYuxi5OIQEVjJKXDyxlR0iIShxcuYTFohmLYkb/14ydTFyANnSEsv/
-	cYCEOQW8Jd6degc2X1RAWeLAtuNMIHMkBLrZJaZ27IE6VFLi4IobLBMYBWYhGTsLydhZCGMX
-	MDKvYhTKzCvLTczMMdHLqMzLrNBLzs/dxAiMrGW1f6J3MH66EHyIUYCDUYmH90Hc5VQh1sSy
-	4srcQ4wSHMxKIrzuTRdShXhTEiurUovy44tKc1KLDzFKc7AoifMafStPERJITyxJzU5NLUgt
-	gskycXBKNTD2TOrmO3Hl2+lZOvxcj2wtnn86nPjwate3rlvtiW1lcncX9tVFsHWtrauWKrg9
-	Xfx0qsami9UnZ6jdsXarKnZaJ3bTcsFUw28fvZsie6+fOdb1guGq9rkrT79sD3nTuVAnup69
-	y+dyWTrnmwiR319krPWOv86+tr3X/vJnhs6dytPiQxLrfnoosRRnJBpqMRcVJwIAILNVLqgC
-	AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrDLMWRmVeSWpSXmKPExsXC5WfdrNvAeSXVYM8aBYs569ewWVx6fJXN
-	YvrLRhaLpxO2Mlvc7Z/KYnF47klWi8u75rBZ3Fvzn9Vi8rtnjBaXDixgsjjee4DJYl/HAyaL
-	jiPfmC22Hv3ObnFy1mQWB36PNfPWMHq07LvF7rFgU6nH5hVaHov3vGTy2PRpErvHnWt72DxO
-	zPjN4vF+31U2j8UvPjB5bD5d7fF5k1wATxSXTUpqTmZZapG+XQJXxrGfU9kL1mtUTGz+ydzA
-	OEGxi5GTQ0LARKKhcQoLiM0ioCrxde50VhCbTUBd4saNn8wgtoiArsSq57vAbGaB60wS1/8V
-	gtjCAlESM5Z8YQSxeQUsJN59O8XexcjFISSwklHi4omt7BAJQYmTM5+wQDRrSdz495Kpi5ED
-	yJaWWP6PAyTMKeAt8e7UO7D5ogLKEge2HWeawMg7C0n3LCTdsxC6FzAyr2IUycwry03MzDHV
-	K87OqMzLrNBLzs/dxAiMk2W1fybuYPxy2f0QowAHoxIP74O4y6lCrIllxZW5hxglOJiVRHjd
-	my6kCvGmJFZWpRblxxeV5qQWH2KU5mBREuf1Ck9NEBJITyxJzU5NLUgtgskycXBKNTD6Xe9c
-	kWIT0zuzz3O1bpGrKluMwfuoG75zUyxdfp/1u2h1RGfj8f176tSWCapPvmATmXtcJ2RmjnyW
-	KO9myU97K3y9lnP8/vkm74qV+4cGub+L17/95nng8Be/xSlVfJfyrnCer9jfJn/3X5NG2L+i
-	+8HvH918Fen+imOWHPch0W/NtyTSvFOUWIozEg21mIuKEwE9GqczjwIAAA==
-X-CFilter-Loop: Reflected
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SI2PR02MB5612:EE_|TYZPR02MB7682:EE_
+X-MS-Office365-Filtering-Correlation-Id: a2eade61-a839-4f20-662b-08dc31b8f3d9
+X-LD-Processed: f1905eb1-c353-41c5-9516-62b4a54b5ee6,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	hjnzh6BQ1ijY2A35D+0mEucmyP/cDDa2VBDGWkZeOh+8qOWoXzZRCsxgt0lbpAhTSpy8YYgKT+BWES3fMK57uw/IwpEDPJzN2Ba4ZPkukSzdSkJDGWoUfPKcuLARCsb47DaglcvVZh3n/tztSZ5q2LkaPyp30tjCnWZLLTcK40glLQ/vgt8MAm3UFgtVJsjCENWKiEIA8BB8RYO6dPc74hYRdAQUAyAXyQ2+2Z2JxrkL6BF47bAxNaBQmx+yTWsWODWjuGlAy8XFL7Ci+vk/k4/V8ib/7gq/fqMVHQQyumsxRw2eqhHtoeX6NiXD0m0WD9T3/jNPR4gAJFZkO+/Ap9BTOYUCmNld7C37Y32WXqUFMIoJ8J/2xdAHJHDP8YrMLVegRoj4HdDSEptSsCFLLoHDefs0s8NdsDCra/sW6Naxj6SSdo+wNFufGlcLL051V/CXyEscKPwbY4iok21XyTC8/CDuLnvnj8sGIUIJR+1TS8iG0g4tMWHDdQvTyLsTkAEPjCe1IijkO4mSC6l8r3HCA3l2HAw6queyObZMwKA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SI2PR02MB5612.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WjRFTVpMVUcvN0o4d3lBNlRpcm5LbXF5aEt2dkJIb1JyOHJCTlNDMTNMKzZJ?=
+ =?utf-8?B?dWZYeG9qc01jZzRKODlEOVFBWEt2dk5xemxMaEJEK2h5Q2xFb1VCc2VMY1J5?=
+ =?utf-8?B?WUwwV3NPWWVhWlVzNTF1QVhxSVpQazRVeDduRDJVVURWdXEwa2I0RVpLSTY4?=
+ =?utf-8?B?Yy9sUk9nZnBVZjFmeEJ3RTJDYTltY1RBMEltSkplclJ1cmRXSk1VQmdjYm1u?=
+ =?utf-8?B?MktQSVRIeE5LVm5QbC9DZ0x0cXZhTWhIMmNiQ2FjejJEUi9VZ2FtK1VTNmNL?=
+ =?utf-8?B?R0NHU2cwOEVGU1VWS2RqaEMxbTErWmp6NDNxTFhCdnl1ZmQySGtPd2h1aDl2?=
+ =?utf-8?B?QWQ4RFI0U2QvNmlFS3AwUHJmMkNTTVNUNDlnM00rVnViSzYwcFAzN0s3aWdZ?=
+ =?utf-8?B?TjM1eHFPNWp2cjIycVR1MjFldW5iU0hKb0NZU0JGdFduZlRzTUoxaE9Sb1pj?=
+ =?utf-8?B?RktOQzdmbHhJZ3pHNVNCUXhNdGo5N1hxNHNnZGFLamJjQ2tCb2FXRTJyakt2?=
+ =?utf-8?B?YklhOFlKL2Z0bUd4VlphK2xwL0NMajRZSE90ajg5WWF5TjNrQUFZUzV3TWhP?=
+ =?utf-8?B?amVUZWhETW5IV3JJUEk4bHV4ZTduMDNQZ0hSUGpTUDlGYm83RGV6NFRiQ1Bj?=
+ =?utf-8?B?dmxLTFo2Z3ErTkRXVEt4Y3hsTFJDTmtxRWtXWmpBUkdVaHg5OGtyRFJ0MHVt?=
+ =?utf-8?B?UTdJOE1iY0lrYmxEc3N1WWZZdTlnSEpFY2hDbDJ3eFdxakFXNlJGMGp6VHJj?=
+ =?utf-8?B?OXJ5S2hxdlJJOUJDMnh1Smh4Q1JJWjV3QlAwbXJ1ekJnRHEzQ0JOZk1YTWVJ?=
+ =?utf-8?B?N3pzOTVsU3VhY2E1M0w2QkNYVUErYi9vTEdscGR5SXE3Sk8wbmV0Y0hzUExj?=
+ =?utf-8?B?VDhMQTBTeVFlUENaRnJ6RnNtUnViTWQ1Yk5Da2VHTFlkNXkza0UwdFQ5aGxG?=
+ =?utf-8?B?aUg1b053OVhrOFFGd05maGlRbVIxZ3RQY2ViQm9RTGlQeDlWSnRyZnJXL2Iw?=
+ =?utf-8?B?Tys1cnFkaFNDaExSWkI2a1VoVSsydEpXaU9DZE9RVS8yZXFRamRnbEJac2hX?=
+ =?utf-8?B?RGxJM3BhSHpMZTBibnJoOURUaDlFVVZjRkhqTnJrZE9oVmF6aFpub3Qwa3Nx?=
+ =?utf-8?B?UHptY1lqU0hER2M1WFlIakxQRy9SNFhpSGJ3NDFlbTJLUGwzVVkyV09WT3Z2?=
+ =?utf-8?B?TjVXamZYelQ3VWQrMmFORnZWK2p4YXkwSmJMQklFNDZuU1FBVXZJd0g4QVRU?=
+ =?utf-8?B?ZnRGNFB0TUFSZzR5dnQvWlp3NUcvUVlGb3VybHlya1oralNHb241VEZ6L2Ft?=
+ =?utf-8?B?Yk1XbW9qeEZNZWREL1dmRnd6U0txUzRaWWw0L2lJay9rZG56M2V3OHdkYWN5?=
+ =?utf-8?B?VnJrRDRpclJwb3pXc0NrUEJ4TmU5K0RGYTRhMDAxV2o1cVIyRmFHbDlINzB6?=
+ =?utf-8?B?VmNjVEZtSHRoa29Rd2VDL1FpLzBrVFpSeDN3eXlxUzJ0dmY2aHFRNGZKdlNI?=
+ =?utf-8?B?M0RpMktldDNadnBXdmpNTlpuNm4vK2I0eWJOM1JyekRZcit0VTQ1bXB0ME5O?=
+ =?utf-8?B?dWZJOEpQb3BvZWE4YjRzY0xUcHcwcENPd3piWmxISzhaei9XUWlKUjIzZ1NJ?=
+ =?utf-8?B?a0VuWG5QdHNuTU5ha0xseG5RV0ZZellHcG1EL0FpWWthNjM5Umh0Qjd2cnhB?=
+ =?utf-8?B?b3M5Nnl3bmpuTTY2cXRncHN6R2IyZ1hBdXpZaysxMkNHcUdXenlxRmVFVnpk?=
+ =?utf-8?B?Qmo3eXR2MGx6Z2VHS2Q2MnVOLzdoRXV2Yzg3Wjdqa2NjQm9nRUl6ZzQxVkRP?=
+ =?utf-8?B?VFp5anZKK2x1UzVUQ1cxQ1dvTU5rdzg1WDdXalJMSzdlZnlsUXRYVmZLcFp5?=
+ =?utf-8?B?SXZ5UTFCd3piN0x2SGpJZTJxWStFWkw1Zk84L0RaSHkwREpYSHI1REJpLzRm?=
+ =?utf-8?B?L1VXa1o5RkVLTU9aMFF2TWErc2RjNmtyQkRvUXBmRFk0SXZrM0duc2dyMEpO?=
+ =?utf-8?B?Y2hCM1kyS1B2SkpadDA4TitjakdTVDN6SzZTOEwzSG8xY1ZMaGdyMW9kYk84?=
+ =?utf-8?B?K1pOMHRNb2Z6WEIwZFpBY1p6cU1ad3hQTDBXcHNjNmJSS3Urb05tV1h3SlNt?=
+ =?utf-8?B?UC9GYXVXb25GWm9sWnV2MHdaUE4yL0s5WGxOTFk3V1VMNG9iQk1uZTNENk1T?=
+ =?utf-8?B?ZVE9PQ==?=
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2eade61-a839-4f20-662b-08dc31b8f3d9
+X-MS-Exchange-CrossTenant-AuthSource: SI2PR02MB5612.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 02:09:21.6409
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Qakao/QwWPmuy09yE1URKdTyUSDz6tXrSiBYmJ0hK9fL/oRuaXSbDy9hRgeeBcBthYDIb6BpvCN3JwjcCXtHGA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB7682
 
-On Mon, Feb 19, 2024 at 05:45:08PM -0800, Andrew Morton wrote:
-> On Mon, 19 Feb 2024 16:43:36 +0800 "Huang, Ying" <ying.huang@intel.com> wrote:
-> 
-> > > +	/*
-> > > +	 * Cannot migrate to memoryless nodes.
-> > > +	 */
-> > > +	if (!node_state(dst_nid, N_MEMORY))
-> > > +		return false;
-> > > +
-> > >  	/*
-> > >  	 * The pages in slow memory node should be migrated according
-> > >  	 * to hot/cold instead of private/shared.
-> > 
-> > Good catch!
-> > 
-> > IIUC, you will use patch as fix to the issue in
-> > 
-> > https://lore.kernel.org/lkml/20240216111502.79759-1-byungchul@sk.com/
-> > 
-> > If so, we need the Fixes: tag to make it land in -stable properly.
-> 
-> Yes, this changelog is missing rather a lot of important information.
-> 
-> I pulled together the below, please check.
+add experts from Linux and Google.
 
-Plus, two guys gave the tags for the optimization patch as well:
 
-   Reviewed-by: Davidlohr Bueso <dave@stgolabs.net>
-   Acked-by: David Hildenbrand <david@redhat.com>
-
-	Byungchul
-
-> From: Byungchul Park <byungchul@sk.com>
-> Subject: sched/numa, mm: do not try to migrate memory to memoryless nodes
-> Date: Mon, 19 Feb 2024 13:10:47 +0900
-> 
-> With numa balancing on, when a numa system is running where a numa node
-> doesn't have its local memory so it has no managed zones, the following
-> oops has been observed.  It's because wakeup_kswapd() is called with a
-> wrong zone index, -1.  Fixed it by checking the index before calling
-> wakeup_kswapd().
-> 
-> > BUG: unable to handle page fault for address: 00000000000033f3
-> > #PF: supervisor read access in kernel mode
-> > #PF: error_code(0x0000) - not-present page
-> > PGD 0 P4D 0
-> > Oops: 0000 [#1] PREEMPT SMP NOPTI
-> > CPU: 2 PID: 895 Comm: masim Not tainted 6.6.0-dirty #255
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> >    rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-> > RIP: 0010:wakeup_kswapd (./linux/mm/vmscan.c:7812)
-> > Code: (omitted)
-> > RSP: 0000:ffffc90004257d58 EFLAGS: 00010286
-> > RAX: ffffffffffffffff RBX: ffff88883fff0480 RCX: 0000000000000003
-> > RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff88883fff0480
-> > RBP: ffffffffffffffff R08: ff0003ffffffffff R09: ffffffffffffffff
-> > R10: ffff888106c95540 R11: 0000000055555554 R12: 0000000000000003
-> > R13: 0000000000000000 R14: 0000000000000000 R15: ffff88883fff0940
-> > FS:  00007fc4b8124740(0000) GS:ffff888827c00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00000000000033f3 CR3: 000000026cc08004 CR4: 0000000000770ee0
-> > DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > PKRU: 55555554
-> > Call Trace:
-> >  <TASK>
-> > ? __die
-> > ? page_fault_oops
-> > ? __pte_offset_map_lock
-> > ? exc_page_fault
-> > ? asm_exc_page_fault
-> > ? wakeup_kswapd
-> > migrate_misplaced_page
-> > __handle_mm_fault
-> > handle_mm_fault
-> > do_user_addr_fault
-> > exc_page_fault
-> > asm_exc_page_fault
-> > RIP: 0033:0x55b897ba0808
-> > Code: (omitted)
-> > RSP: 002b:00007ffeefa821a0 EFLAGS: 00010287
-> > RAX: 000055b89983acd0 RBX: 00007ffeefa823f8 RCX: 000055b89983acd0
-> > RDX: 00007fc2f8122010 RSI: 0000000000020000 RDI: 000055b89983acd0
-> > RBP: 00007ffeefa821a0 R08: 0000000000000037 R09: 0000000000000075
-> > R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-> > R13: 00007ffeefa82410 R14: 000055b897ba5dd8 R15: 00007fc4b8340000
-> >  </TASK>
-> 
-> Fix this by avoiding any attempt to migrate memory to memoryless nodes.
-> 
-> Link: https://lkml.kernel.org/r/20240219041920.1183-1-byungchul@sk.com
-> Link: https://lkml.kernel.org/r/20240216111502.79759-1-byungchul@sk.com
-> Fixes: c574bbe917036 ("NUMA balancing: optimize page placement for memory tiering system")
-> Signed-off-by: Byungchul Park <byungchul@sk.com>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-> Reviewed-by: Phil Auld <pauld@redhat.com>
-> Cc: Benjamin Segall <bsegall@google.com>
-> Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Valentin Schneider <vschneid@redhat.com>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-> ---
-> 
->  kernel/sched/fair.c |    6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> --- a/kernel/sched/fair.c~sched-numa-mm-do-not-try-to-migrate-memory-to-memoryless-nodes
-> +++ a/kernel/sched/fair.c
-> @@ -1831,6 +1831,12 @@ bool should_numa_migrate_memory(struct t
->  	int last_cpupid, this_cpupid;
->  
->  	/*
-> +	 * Cannot migrate to memoryless nodes.
-> +	 */
-> +	if (!node_state(dst_nid, N_MEMORY))
-> +		return false;
-> +
-> +	/*
->  	 * The pages in slow memory node should be migrated according
->  	 * to hot/cold instead of private/shared.
->  	 */
-> _
+在 2024/2/19 22:17, lipeifeng@oppo.com 写道:
+> From: lipeifeng <lipeifeng@oppo.com>
+>
+> 'commit 6d4675e60135 ("mm: don't be stuck to rmap lock on reclaim path")'
+> The above patch would avoid reclaim path to stuck rmap lock.
+> But it would cause some folios in LRU not sorted by aging because
+> the contended-folios in rmap_walk would be putbacked to the head of LRU
+> during shrink_folio_list even if the folios are very cold.
+>
+> The patchset setups new kthread:kshrinkd to reclaim the contended-folio
+> in rmap_walk when shrink_folio_list, to avoid to break the rules of LRU.
+>
+> lipeifeng (2):
+>    mm/rmap: support folio_referenced to control if try_lock in rmap_walk
+>    mm: support kshrinkd
+>
+>   include/linux/mmzone.h        |   6 ++
+>   include/linux/rmap.h          |   5 +-
+>   include/linux/swap.h          |   3 +
+>   include/linux/vm_event_item.h |   2 +
+>   mm/memory_hotplug.c           |   2 +
+>   mm/rmap.c                     |   5 +-
+>   mm/vmscan.c                   | 205 ++++++++++++++++++++++++++++++++++++++++--
+>   mm/vmstat.c                   |   2 +
+>   8 files changed, 221 insertions(+), 9 deletions(-)
+>
 
