@@ -1,139 +1,78 @@
-Return-Path: <linux-kernel+bounces-73064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A6185BD00
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:18:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D9085BD02
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D92A41F232CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:18:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82E632867BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:19:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5B1E6A03E;
-	Tue, 20 Feb 2024 13:18:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E96EB6A343;
+	Tue, 20 Feb 2024 13:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SK62GqNJ";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UAJcSX72"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/ezfS8Q"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDB769DE4;
-	Tue, 20 Feb 2024 13:18:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397C469DE4;
+	Tue, 20 Feb 2024 13:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708435122; cv=none; b=ImQOWAK41kWZsi/mUBCsM9THR7A652LPsUEJ2Kud508dNoqePc5ZEzYXtZrGpS34LAhwQZelz6QZgWkW+7m1aGFFH2WzUh6SvE2IuI++rYT9IyEweVCDS7w6MtDyv8bUP3UCgzlHOl4fQIYU81qw7DCYOQdUdPDesmValehdTrg=
+	t=1708435128; cv=none; b=HA0DYSLoj2NgJrSl6vGbzYgqvO4tEUkPLj0jTOdAmzzR845kOWv0lQ51xKrMLm1EDRjJA+rj3BIqlpREaSbdyO7nOmNMCwb2fSk1LuD8dvYQBAHwNTxQNn0vBxUZOr7fvzbLLfkJzVktFwnzuKLJE0ShTBSsZys+WB/3Ki16Aoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708435122; c=relaxed/simple;
-	bh=UV/cpuRtRlaCri5lx4C7nu174G6nc2pEi2+tO4UB9kI=;
+	s=arc-20240116; t=1708435128; c=relaxed/simple;
+	bh=RZZk0PE0TiY7k+x5DBdvarX9mRIKYJiIQkRfbPjIlbw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K37vF0n78ZqtNQAEdGazBeR/sFW0TYh+CoA7Si8f7gamKJDfOHaqUkrtu35Y7wwNhntPehIU9Yj4MmcEFjU7iFIPXZ+cbwOgUzgNbxfoNWu/13WT5ThWyoG8bMPWbcpVKKLgcmHHkLxtTT4q/3aIPC108wXnY0NchUuPKT4v4sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SK62GqNJ; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UAJcSX72; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from blackpad (unknown [10.100.12.75])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A5D7B21DFD;
-	Tue, 20 Feb 2024 13:18:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708435117; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UV/cpuRtRlaCri5lx4C7nu174G6nc2pEi2+tO4UB9kI=;
-	b=SK62GqNJCm6uU0Fa4MBbStGEj9foFB5OuS97qZTajQ5GavoJZZyohkDN2/S2NQ4yXptyja
-	+DWu6c9EZjfxoWm7joQohVu1tY9NJfo4yCkD3dPnr278iRH2e99zbKlH6CMX2C20QfLQMX
-	NrKAht9SApV9h66DG8DRA5nctCrCPZQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1708435116; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UV/cpuRtRlaCri5lx4C7nu174G6nc2pEi2+tO4UB9kI=;
-	b=UAJcSX72EekECg5QLU6R/pfmVEasbhaK81mjqzyFjuZtSTHNNOuFX3oFrysF3XDF7t4Hw3
-	xBNEkenU+Q1qasUgYjsAgdpEN+7ET613iEuIYgSvuwSfaC84n/Pnp4XdLIh9KygOcLOYmi
-	dAMbtPCRLqwXmIcEjM5XxxCnftZsVKo=
-Date: Tue, 20 Feb 2024 14:18:35 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: "hpa@zytor.com" <hpa@zytor.com>, 
-	"tim.c.chen@linux.intel.com" <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>, 
-	"x86@kernel.org" <x86@kernel.org>, "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
-	"jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tglx@linutronix.de" <tglx@linutronix.de>, 
-	"haitao.huang@linux.intel.com" <haitao.huang@linux.intel.com>, "Mehta, Sohil" <sohil.mehta@intel.com>, 
-	"tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com" <mingo@redhat.com>, 
-	"bp@alien8.de" <bp@alien8.de>, "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>, 
-	"seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com" <anakrish@microsoft.com>, 
-	"Zhang, Bo" <zhanb@microsoft.com>, "kristen@linux.intel.com" <kristen@linux.intel.com>, 
-	"yangjie@microsoft.com" <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>, 
-	"chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: Re: [PATCH v9 08/15] x86/sgx: Implement EPC reclamation flows
- for cgroup
-Message-ID: <2ni2jychs6oe4ckplvbg7usrn7f4fsa2fi3ys6lrtyhbprpr7c@hokylc73dlwi>
-References: <20240205210638.157741-1-haitao.huang@linux.intel.com>
- <20240205210638.157741-9-haitao.huang@linux.intel.com>
- <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AwUPqdcpcThz72IB7QEzb+HiXlsI6Dh5gCC+jwL6OMNQakYQgCirfBTVoi1WC10bR+vQguzeYtLYkenmmCaiJhT8WB3m+lE8D3uTJC80qjphegp+Zh2xqbCcUUSdQYtw9DPxnYB4suz/Ih6TtoNlg3eKFxQQDuhvwdt3znKWvkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/ezfS8Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24F78C433F1;
+	Tue, 20 Feb 2024 13:18:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1708435127;
+	bh=RZZk0PE0TiY7k+x5DBdvarX9mRIKYJiIQkRfbPjIlbw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=V/ezfS8QpHqQymbTzuh8+/2ORCPdvgXTC8pBg0PQL7ijM5+4ScTS3/lVUXCZhAitq
+	 JIs3Hz5pToRl9TbqMy8zv0uG/dzFhxwwBKEP5zGBge6D3rVrXGokcR/7hAfZYY3Hq0
+	 HbwkJ/alhGyXsvNNwtvYl6yoM+0yVX6rgcKh8K08utKyEBspi/ibqgib2HwtjDYhmy
+	 mAW1ZMWEgIefdfGc/ZuBPhWqtIkAwnkvqhGpOG6vbIWJCxFOPoz6B4T6clvOQoKDn8
+	 k2Xeq4WixppjT91HaUTwfKkZNJMimrc5gvZ0IHrn6zsKeYfNIJID1qIScVdx2h2FOO
+	 7e2h4bmLGr4PQ==
+Date: Tue, 20 Feb 2024 13:18:44 +0000
+From: Simon Horman <horms@kernel.org>
+To: Breno Leitao <leitao@debian.org>
+Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
+	edumazet@google.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net/dummy: Move stats allocation to core
+Message-ID: <20240220131844.GJ40273@kernel.org>
+References: <20240219134328.1066787-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nwjkzrolygogphrr"
-Content-Disposition: inline
-In-Reply-To: <fa091e657c2d3f3cc14aff15ad3484e0d7079b6f.camel@intel.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.24
-X-Spamd-Result: default: False [-4.24 / 50.00];
-	 ARC_NA(0.00)[];
-	 TO_DN_EQ_ADDR_SOME(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.17)[-0.867];
-	 RCPT_COUNT_TWELVE(0.00)[23];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email];
-	 SIGNED_PGP(-2.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_COUNT_ZERO(0.00)[0];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+,1:+,2:~];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 BAYES_HAM(-1.37)[90.67%]
-X-Spam-Flag: NO
-
-
---nwjkzrolygogphrr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240219134328.1066787-1-leitao@debian.org>
 
-On Tue, Feb 20, 2024 at 09:52:39AM +0000, "Huang, Kai" <kai.huang@intel.com> wrote:
-> I am not sure, but is it possible or legal for an ancestor to have less limit
-> than children?
+On Mon, Feb 19, 2024 at 05:43:28AM -0800, Breno Leitao wrote:
+> With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
+> convert veth & vrf"), stats allocation could be done on net core instead
+> of this driver.
+> 
+> With this new approach, the driver doesn't have to bother with error
+> handling (allocation failure checking, making sure free happens in the
+> right spot, etc). This is core responsibility now.
+> 
+> Move dummy driver to leverage the core allocation.
+> 
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-Why not?
-It is desired for proper hiearchical delegation and the tightest limit
-of ancestors applies (cf memory.max).
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Michal
-
---nwjkzrolygogphrr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZdSmqQAKCRAGvrMr/1gc
-jkKzAQDey//gJluYyxAmAACFkpQEQZs7Wq4LdwtcKfaXOfgwmwD8D4Tj0lWyyCDt
-aiID/E7nvQWorGQQc1J6VlBjBfMhagU=
-=CG6M
------END PGP SIGNATURE-----
-
---nwjkzrolygogphrr--
 
