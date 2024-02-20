@@ -1,61 +1,62 @@
-Return-Path: <linux-kernel+bounces-72179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5019E85B086
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:26:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CADF85B088
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 02:26:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E519EB2287D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:26:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DDC931F2185B
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 01:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5AB91F18D;
-	Tue, 20 Feb 2024 01:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA97D25616;
+	Tue, 20 Feb 2024 01:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="N0NKRQKJ"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Okc34UvM"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37602168C7;
-	Tue, 20 Feb 2024 01:26:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E1A210E2;
+	Tue, 20 Feb 2024 01:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708392371; cv=none; b=mDFT4E4Tm3beMIoNMP5WDG7k2U9I+JGLEMnqOkIl2Sf5KbEszdYEhr1YJe6irG2cZOFrQ1iKQ9MxWdrhNFMvZtTToKA/cLNuS+2zmieK9Vqa/LnlNau4sUrilMiJXCO84XksYM7KZtk6txFEhRJsq6+6zyOVG7zfrhzowvv0bVo=
+	t=1708392375; cv=none; b=VFX3ZjY6NkSQGCGaN++1JjAV4LV2EcBESXUM/JmYvqn2XYNBFWrbHXGivaD0Nazn09XN0igGVJXUgy9nFJP266pQ74RcXi1MVoWA2vyjUnAOHeKfFwszJ6CqiGpcMo9+juZ6UxkgkQJzFn9TlSn8EBBEaUhxy2COUQX+VgCv0mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708392371; c=relaxed/simple;
-	bh=OuqSrEBVr+zxzHdDKD+c7Tmv57tFtsNr/yfG4R6Cu/U=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KQ3LBKHS2xTGUXZBOiwSITUASWf6k0DCj2+7a9s6yOFf3Ig04SFHBorQ6aHL1Dh71HAWw/I2Cc/iyWVLW6X1o2QoWsmrez8FOCCf6kGyXTXWwj/kwSuCts08OyhXuNJtX9E6K4JJatdL7uAjvmyn8B0MLrQapztpLFjEl7fFGDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=N0NKRQKJ; arc=none smtp.client-ip=60.244.123.138
+	s=arc-20240116; t=1708392375; c=relaxed/simple;
+	bh=HVDBBL/3JWqvC0r68ICiHb3lyWXf2L4NhzUal3snxks=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZxKJRf8aqfg5hJN1DW2Be1S3PJBBgJgClRrGILe4LksKsWxiE5mrSru6c3ZHsxOj5Z7enx3UWCD/ZH0GUjfSid8oXxvLBFRVjNHIoeQfab4pV7LPrOtFy4MBvWTMCpKkXRGDI2uj6f5LQjEAeIBPLZW48rxzj7dStmG57Nv/RMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=Okc34UvM; arc=none smtp.client-ip=210.61.82.184
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: fd7b633ecf8e11ee9e680517dc993faa-20240220
+X-UUID: 054e6066cf8f11eea2298b7352fd921d-20240220
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Jb79y2cBHS/ycIILNhbC/ey3i5o/CHC+FKzuHKR7Wf8=;
-	b=N0NKRQKJsmOPcs9m0Jx5NX2yxKh5SMTss3VPhwvjO/S1g2jpD8okHChrZJA91T97LqjEELjHalZf5O5bqD7GOFPlU7Zk2mcfnSN82SLD54+kA14gSgdCmnoerp8tXZc7MYtpVdKGuUruS2sfsQAcqsJ3peKmcLnMY7lkGl0gfvo=;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=0bRDwS7PBvuQdYZ5dgFryXT71V4ywxCPzpwNBZamc5g=;
+	b=Okc34UvMSQz5maXz0BE9vvOXxKAth1bF5tiir/Z+wszghZJcgaLwYXmvELpTB7w2gh8wHHDPPzNI2Hwlmxr3rEwX0fWV0wodTOwxhcyF4OM5VxEqpo2Y86hflev7NxEM6XSq/IwqwC/ZihGJUWYaqrgxtqL7Gp1TEo1Rtltd3i4=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:a383cf8b-6d41-426d-bceb-b1e8f2424316,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:4ba9f8fe-c16b-4159-a099-3b9d0558e447,B
+X-CID-O-INFO: VERSION:1.1.37,REQID:86337aa4-04b9-47c8-8ed3-337c2fdc323e,IP:0,U
+	RL:25,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:42aa9380-4f93-4875-95e7-8c66ea833d57,B
 	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
 X-CID-BVR: 0
 X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: fd7b633ecf8e11ee9e680517dc993faa-20240220
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw01.mediatek.com
+X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR
+X-UUID: 054e6066cf8f11eea2298b7352fd921d-20240220
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
 	(envelope-from <zhi.mao@mediatek.com>)
 	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1192308075; Tue, 20 Feb 2024 09:25:54 +0800
+	with ESMTP id 1959251277; Tue, 20 Feb 2024 09:26:07 +0800
 Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 20 Feb 2024 09:25:52 +0800
+ 15.2.1118.26; Tue, 20 Feb 2024 09:26:05 +0800
 Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
  mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 20 Feb 2024 09:25:50 +0800
+ 15.2.1118.26 via Frontend Transport; Tue, 20 Feb 2024 09:26:04 +0800
 From: Zhi Mao <zhi.mao@mediatek.com>
 To: <mchehab@kernel.org>, <robh+dt@kernel.org>,
 	<krzysztof.kozlowski+dt@linaro.org>, <sakari.ailus@linux.intel.com>
@@ -71,79 +72,154 @@ CC: <laurent.pinchart@ideasonboard.com>, <shengnan.wang@mediatek.com>,
 	<andy.shevchenko@gmail.com>, <bingbu.cao@intel.com>,
 	<dan.scally@ideasonboard.com>, <linux-media@vger.kernel.org>,
 	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v5 0/2] media: i2c: Add support for GC08A3 sensor 
-Date: Tue, 20 Feb 2024 09:25:38 +0800
-Message-ID: <20240220012540.10607-1-zhi.mao@mediatek.com>
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v5 1/2] media: dt-bindings: i2c: add GalaxyCore GC08A3 image sensor
+Date: Tue, 20 Feb 2024 09:25:39 +0800
+Message-ID: <20240220012540.10607-2-zhi.mao@mediatek.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240220012540.10607-1-zhi.mao@mediatek.com>
+References: <20240220012540.10607-1-zhi.mao@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-MTK: N
 
-This series adds YAML DT binding and V4L2 sub-device driver for Galaxycore's
-GC08A3 8-megapixel 10-bit RAW CMOS 1/4" sensor, with an MIPI CSI-2 image data
-interface and the I2C control bus.
+Add YAML device tree binding for GC08A3 CMOS image sensor,
+and the relevant MAINTAINERS entries.
 
-The driver is implemented with V4L2 framework.
- - Async registered as a V4L2 sub-device.
- - As the first component of camera system including Seninf, ISP pipeline.
- - A media entity that provides one source pad in common.
- - Used in camera features on ChromeOS application.
-
-Also this driver supports following features:
- - manual exposure and analog gain control support
- - vertical blanking control support
- - test pattern support
- - media controller support
- - runtime PM support
- - support resolution: 3264x2448@30fps, 1920x1080@60fps
-
-Previous versions of this patch-set can be found here:
-v4: https://lore.kernel.org/linux-media/20240204061538.2105-1-zhi.mao@mediatek.com/
-v3: https://lore.kernel.org/linux-media/20240109022715.30278-1-zhi.mao@mediatek.com/
-v2: https://lore.kernel.org/linux-media/20231207052016.25954-1-zhi.mao@mediatek.com/
-v1: https://lore.kernel.org/linux-media/20231123115104.32094-1-zhi.mao@mediatek.com/
-
-This series is based on linux-next, tag: next-20240219
-Changes in v5:
-- gc08a3 sensor driver：
--- sort the header files alphabetically in driver code
--- refine the register define and some macros, fix some typo 
--- drop variable：“clinet/streaming” in struct gc08a3
--- refine "ret" flow in function:gc08a3_test_pattern()
--- drop the gc08a3_link_freq_config structure
--- rename some function and variable with a "gc08a3_" prefix
--- refine function:gc08a3_identify_module()/gc08a3_power_on()/gc08a3_power_off()/gc08a3_update_pad_format()
--- use stored crop rectangle in funcion:gc08a3_get_selectoin()
--- use cci_update_bits() in function:gc08a3_set_ctrl_hflip()/gc08a3_set_ctrl_vflip()
--- put the HFLIP and VFLIP controls in a cluster to make it efficiently set in an atomic operation
--- use "fwnode_graph_get_endpoint_by_id" in function: gc08a3_parse_fwnode()
--- remove function:gc08a3_enum_frame_interval()
--- enable autosuspend in function:probe()
-
-Thanks
-
-Zhi Mao (2):
-  media: dt-bindings: i2c: add GalaxyCore GC08A3 image sensor
-  media: i2c: Add GC08A3 image sensor driver
-
- .../bindings/media/i2c/galaxycore,gc08a3.yaml |  112 ++
- drivers/media/i2c/Kconfig                     |   10 +
- drivers/media/i2c/Makefile                    |    1 +
- drivers/media/i2c/gc08a3.c                    | 1335 +++++++++++++++++
- 4 files changed, 1458 insertions(+)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Zhi Mao <zhi.mao@mediatek.com>
+---
+ .../bindings/media/i2c/galaxycore,gc08a3.yaml | 112 ++++++++++++++++++
+ 1 file changed, 112 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
- create mode 100644 drivers/media/i2c/gc08a3.c
 
+diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
+new file mode 100644
+index 000000000000..8c09e8c121e5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc08a3.yaml
+@@ -0,0 +1,112 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright (c) 2023 MediaTek Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/galaxycore,gc08a3.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: GalaxyCore gc08a3 1/4" 8M Pixel MIPI CSI-2 sensor
++
++maintainers:
++  - Zhi Mao <zhi.mao@mediatek.com>
++
++description:
++  The gc08a3 is a raw image sensor with an MIPI CSI-2 image data
++  interface and CCI (I2C compatible) control bus. The output format
++  is raw Bayer.
++
++properties:
++  compatible:
++    const: galaxycore,gc08a3
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  dovdd-supply: true
++
++  avdd-supply: true
++
++  dvdd-supply: true
++
++  reset-gpios:
++    description: Reference to the GPIO connected to the RESETB pin.
++    maxItems: 1
++
++  port:
++    $ref: /schemas/graph.yaml#/$defs/port-base
++    additionalProperties: false
++    description:
++      Output port node, single endpoint describing the CSI-2 transmitter.
++
++    properties:
++      endpoint:
++        $ref: /schemas/media/video-interfaces.yaml#
++        unevaluatedProperties: false
++
++        properties:
++          data-lanes:
++            oneOf:
++              - items:
++                  - const: 1
++                  - const: 2
++                  - const: 3
++                  - const: 4
++              - items:
++                  - const: 1
++                  - const: 2
++
++          link-frequencies: true
++
++        required:
++          - data-lanes
++          - link-frequencies
++
++    required:
++      - endpoint
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - dovdd-supply
++  - avdd-supply
++  - dvdd-supply
++  - reset-gpios
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        sensor@31 {
++            compatible = "galaxycore,gc08a3";
++            reg = <0x31>;
++
++            clocks = <&gc08a3_clk>;
++
++            reset-gpios = <&pio 19 GPIO_ACTIVE_HIGH>;
++
++            avdd-supply = <&gc08a3_avdd>;
++            dovdd-supply = <&gc08a3_dovdd>;
++            dvdd-supply = <&gc08a3_dvdd>;
++
++            port {
++                sensor_out: endpoint {
++                    data-lanes = <1 2 3 4>;
++                    link-frequencies = /bits/ 64 <336000000 207000000>;
++                    remote-endpoint = <&seninf_csi_port_0_in>;
++                };
++            };
++        };
++    };
++
++...
 -- 
 2.25.1
-
-
 
 
