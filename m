@@ -1,272 +1,204 @@
-Return-Path: <linux-kernel+bounces-73799-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73800-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6013C85CBB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:04:36 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A65EB85CBBA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Feb 2024 00:05:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CA0FB1F22D18
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:04:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02356B2283F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:05:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18FE01552E6;
-	Tue, 20 Feb 2024 23:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86CB154BE0;
+	Tue, 20 Feb 2024 23:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="kWPHlb/E"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="euLsjYWw"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6D21154C01
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 23:03:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B16D15442B;
+	Tue, 20 Feb 2024 23:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708470237; cv=none; b=Iva1tI3IfnyA4+D1nKf8dCuHny7ybavOTRmEBRjXttH+pG4iIMRpmVA5PWjnX0U1baGDQahipUheAl935oApbOfc0/6UZdWw5YAD7B9BObOiB7BkMiMarROQz4i3IrqpZhv02qaorZyv2QbWI7BGhDS3h97AcOxs39xfiiw8SFo=
+	t=1708470276; cv=none; b=Ai5nKK4/0nLu4ArS1RJtAQl+tTfmkPK5+mhGzt2i+0ZFxxTFi9NfudXrM0cOkntgP/FUHYnMoWqBijGVX+antjUwwx5gZuzHt5eHDcye5tJ16+F19DCL2Ix0DEdTKAfNugOr4XESoV3DlC+2iu6+JHzffSQuSmQlUlhlOh5fRTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708470237; c=relaxed/simple;
-	bh=mL0tHNbpRNJfM7MBgHBurNu693ubcSIDZDSiHBuy7vQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sIL2vCvrDuHO6gpZOA5bBsSKd03gaAScXEozqJ+VPQlYzwW8T79EJIJcqthJHpafV2RLzam2pn54Rf5yCE2HfLa5WJE8l+aGqoqp/UPlUdTCCtfxoCHY0yQdg7EM9kUAgIQysNl/7wCM5Vv+99IvXeokbDXDi0eIeaZnEf16NB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org; spf=pass smtp.mailfrom=atishpatra.org; dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b=kWPHlb/E; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-5129e5b8cecso5056256e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 15:03:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1708470232; x=1709075032; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kqH0ROPbbtIdqXSURYkySpHgNfveY4dFLQe0qUwTePc=;
-        b=kWPHlb/EUWj0atJuzBGuzs30Q9oiJNiWq3MA1xEpr+clF0Tb9vztx06FxRSM97DpE5
-         Mgh50M7eJNpqpxPzbQyp55nGKH/vdohuR6J16ekM4B43FYS3hE3OnoSJi7i7MeFSe8ys
-         Ba2QDK/R/XOcyfl9nlQDatl5ysmYbjQORrP8Y=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708470232; x=1709075032;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kqH0ROPbbtIdqXSURYkySpHgNfveY4dFLQe0qUwTePc=;
-        b=vILO9FfgKc23WWotQk8vm9zER2iOK+e/3J4cGCWSRPJcSVtJPQ86WjFULoGacuHC8b
-         xEMRFoHV9viv5k3Mivy0qxXL+RaQQAqZmH/cwADQpPY8uuIxeastY7x+FVkd98e8Vjli
-         yZZxca4Gn0l0tpAaO1/82q9zb4xjlTJFi3iItWI3yEovrhHeVnisLf676kVpwsnVseM7
-         5rg21kx6PwJd9RB+g5Yv3gBpE9nE+gr0M6kegfiF5Aq52+XyFTD4XsdakmA4EMD6BOSK
-         oK30zl3dFrbhvKeZHC3ws0Nzhi4zzJsG3n1rnN276F5FyAHrBQP5LDuyUV7n8ggjgtde
-         DwQw==
-X-Forwarded-Encrypted: i=1; AJvYcCV+bBeY+sy5JG3PpjQ9CWoXe1EuBPzBwnHewctbFL6KBq/vqGZKDsGu6/ZUdzZG92IMOMuJHBv3GOSRJPd8S3+WN3jZsUUu9S6Q5qV+
-X-Gm-Message-State: AOJu0YzmErKSgImGjXxBGFDB7KZb97VszEE8YjXqwUiG14dMmLVDa0hu
-	qwu22ZK+8QpWxrSdFjmtjhzhklx63Cj9Iq5THD0GhItRWtE2Yim6q42UYtZ1P4Et8BnK1Drfqf0
-	G9HxmqjDobzZrQtB4+O7sgTHxz3FzgIU6PG7N
-X-Google-Smtp-Source: AGHT+IHvIMp97EquM1HGvlF+EshWPYeFqFX2gVhb+xvtJN9u9TgHl4t/ylyvXaDa1s3oTu4/8hBS3HdAlZdC/VROf90=
-X-Received: by 2002:a05:6512:3a8b:b0:512:a964:f222 with SMTP id
- q11-20020a0565123a8b00b00512a964f222mr7687790lfu.21.1708470231958; Tue, 20
- Feb 2024 15:03:51 -0800 (PST)
+	s=arc-20240116; t=1708470276; c=relaxed/simple;
+	bh=oPz1dKn6eLd8L4ICwmN64N5D0mASYN0AKcrrz38ylG0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OtaqmvKPf5SLi6+Uj4YZnm27NwaIxkzOd7a9jzSSOL1u6CKij/wBtuu23ay2knzWoyUxpZGOqLPsLyaEGxvuuHNlQKkn8ndIsW20JBGM3wxvRqieU5ly4ndRoWLnfYgPzlFAk3c34C/eEuxmXMQvR6ihx22f2lBzMVVBJ6SThpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=euLsjYWw; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KMx697021470;
+	Tue, 20 Feb 2024 23:04:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Bof6XAm4OTdVjtagLXEQ6O2of8fvs43Zc1jCw22Z0B8=; b=eu
+	LsjYWwT6oBAZ5bdYr1Eqbi6GNvSJ55Q9d/1kWgYbI77gSfl/KNv3IqmtDoOi83dY
+	DMxToNcc7oSRaMSRjSx2I6GQTv2roUJJojY8UQnFVJOhE5scorfelQYMudUiMTbZ
+	nHK4JOVTgXXPRMCOwprwBXrTfbb2tVSCJdl+bAOZ2IFCURNC2H47kCHVH08owpM5
+	Vsaso1ksoGw7ICPqsjTKRg5Isqk0y98aGqtvcw0BWbYn84B/2W/WGP8RmUhtoSDb
+	UGyA6AADpCAX3Yaei+WEl9s2fb/8Og9cXRg6unj+LQYhLGVEG8UjqlQfJnfWab6y
+	HWogz1s2UFv4ltRIkjFA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wd21s8dnv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 23:04:27 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KN4QnI005322
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Feb 2024 23:04:26 GMT
+Received: from [10.110.62.85] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
+ 2024 15:04:25 -0800
+Message-ID: <09928fb7-c5c3-7a36-1ce2-9f4012507d06@quicinc.com>
+Date: Tue, 20 Feb 2024 15:04:25 -0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1705916069.git.haibo1.xu@intel.com> <68856b86a93a4188558e5d0ebac0dd6aac8e404c.1705916069.git.haibo1.xu@intel.com>
-In-Reply-To: <68856b86a93a4188558e5d0ebac0dd6aac8e404c.1705916069.git.haibo1.xu@intel.com>
-From: Atish Patra <atishp@atishpatra.org>
-Date: Tue, 20 Feb 2024 15:03:40 -0800
-Message-ID: <CAOnJCULwRTSnrQkR2o1P53R=tJ3TAxX+y+XRBesW6OFEzgFv2g@mail.gmail.com>
-Subject: Re: [PATCH v5 11/12] KVM: riscv: selftests: Change vcpu_has_ext to a
- common function
-To: Haibo Xu <haibo1.xu@intel.com>
-Cc: xiaobo55x@gmail.com, ajones@ventanamicro.com, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Anup Patel <anup@brainfault.org>, Guo Ren <guoren@kernel.org>, 
-	Mayuresh Chitale <mchitale@ventanamicro.com>, 
-	Daniel Henrique Barboza <dbarboza@ventanamicro.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Samuel Holland <samuel@sholland.org>, Minda Chen <minda.chen@starfivetech.com>, 
-	Jisheng Zhang <jszhang@kernel.org>, Sean Christopherson <seanjc@google.com>, Peter Xu <peterx@redhat.com>, 
-	Like Xu <likexu@tencent.com>, Vipin Sharma <vipinsh@google.com>, Thomas Huth <thuth@redhat.com>, 
-	Aaron Lewis <aaronlewis@google.com>, 
-	Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	kvmarm@lists.linux.dev, kvm-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jan 22, 2024 at 1:48=E2=80=AFAM Haibo Xu <haibo1.xu@intel.com> wrot=
-e:
->
-> Move vcpu_has_ext to the processor.c and rename it to __vcpu_has_ext
-> so that other test cases can use it for vCPU extension check.
->
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
-> ---
->  tools/testing/selftests/kvm/include/riscv/processor.h |  2 ++
->  tools/testing/selftests/kvm/lib/riscv/processor.c     | 10 ++++++++++
->  tools/testing/selftests/kvm/riscv/get-reg-list.c      | 11 +----------
->  3 files changed, 13 insertions(+), 10 deletions(-)
->
-> diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/tool=
-s/testing/selftests/kvm/include/riscv/processor.h
-> index b68b1b731a34..bd27e1c67579 100644
-> --- a/tools/testing/selftests/kvm/include/riscv/processor.h
-> +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
-> @@ -42,6 +42,8 @@ static inline uint64_t __kvm_reg_id(uint64_t type, uint=
-64_t idx,
->  #define RISCV_ISA_EXT_REG(idx) __kvm_reg_id(KVM_REG_RISCV_ISA_EXT, \
->                                              idx, KVM_REG_SIZE_ULONG)
->
-> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext);
-> +
->  struct ex_regs {
->         unsigned long ra;
->         unsigned long sp;
-> diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c b/tools/te=
-sting/selftests/kvm/lib/riscv/processor.c
-> index 39a1e9902dec..dad73ce18164 100644
-> --- a/tools/testing/selftests/kvm/lib/riscv/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
-> @@ -15,6 +15,16 @@
->
->  static vm_vaddr_t exception_handlers;
->
-> +bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-> +{
-> +       unsigned long value =3D 0;
-> +       int ret;
-> +
-> +       ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-> +
-> +       return !ret && !!value;
-> +}
-> +
-
-Not sure what was the base patch on which this was rebased. The actual
-commit in the queue branch looks different.
-
-https://github.com/kvm-riscv/linux/commit/5563517cc2012e3326411b360c9924d3f=
-2706c8d
-
-Both seem to have the same bug though the tests fail now and require
-the following fix.
-The ext id should be uint64_t and we need to pass ext directly so that
-SBI extension tests can also pass.
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] drm/msm/dpu: make "vblank timeout" more useful
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Marijn
+ Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20240208-fd-dpu-debug-timeout-v2-1-9f907f1bdd87@linaro.org>
+ <1cb90bff-ce5b-c6d1-a3df-24f6306f833a@quicinc.com>
+ <CAA8EJpotiHKT_NYphDs0-vhpvsybgTW281XDYbteUx8qOX=v4g@mail.gmail.com>
+ <63bba15b-6d8d-5ba8-d99d-8cd2dd763262@quicinc.com>
+ <CAA8EJpqHmVBry9FyJ6HRB+qdVcVNN3Q7rHZz1daZL1Sz6yeZ=A@mail.gmail.com>
+ <69d152d2-6a25-9ff4-ce6b-c4790247a661@quicinc.com>
+ <CAA8EJpo3XynBrm0S_BA_SxGOw963WQT9jh=YvLcT1N24FyEUsw@mail.gmail.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <CAA8EJpo3XynBrm0S_BA_SxGOw963WQT9jh=YvLcT1N24FyEUsw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 3Iz7JJSkCzsOf73_LYLXAxmBxXsRNUIk
+X-Proofpoint-GUID: 3Iz7JJSkCzsOf73_LYLXAxmBxXsRNUIk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ priorityscore=1501 adultscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0
+ clxscore=1015 mlxscore=0 suspectscore=0 mlxlogscore=858 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2402120000
+ definitions=main-2402200165
 
 
---- a/tools/testing/selftests/kvm/include/riscv/processor.h
-+++ b/tools/testing/selftests/kvm/include/riscv/processor.h
-@@ -48,7 +48,7 @@ static inline uint64_t __kvm_reg_id(uint64_t type,
-uint64_t subtype,
-KVM_REG_RISCV_SBI_SINGLE, \
-idx, KVM_REG_SIZE_ULONG)
 
--bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext);
-+bool __vcpu_has_ext(struct kvm_vcpu *vcpu, uint64_t ext);
+On 2/20/2024 2:42 PM, Dmitry Baryshkov wrote:
+> On Wed, 21 Feb 2024 at 00:40, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 2/19/2024 3:52 AM, Dmitry Baryshkov wrote:
+>>> On Wed, 14 Feb 2024 at 22:36, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 2/14/2024 11:20 AM, Dmitry Baryshkov wrote:
+>>>>> On Wed, 14 Feb 2024 at 20:02, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> On 2/8/2024 6:50 AM, Dmitry Baryshkov wrote:
+>>>>>>> We have several reports of vblank timeout messages. However after some
+>>>>>>> debugging it was found that there might be different causes to that.
+>>>>>>> To allow us to identify the DPU block that gets stuck, include the
+>>>>>>> actual CTL_FLUSH value into the timeout message and trigger the devcore
+>>>>>>> snapshot capture.
+>>>>>>>
+>>>>>>> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>>>>>>> ---
+>>>>>>> Changes in v2:
+>>>>>>> - Added a call to msm_disp_snapshot_state() to trigger devcore dump
+>>>>>>>       (Abhinav)
+>>>>>>> - Link to v1: https://lore.kernel.org/r/20240106-fd-dpu-debug-timeout-v1-1-6d9762884641@linaro.org
+>>>>>>> ---
+>>>>>>>      drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c | 3 ++-
+>>>>>>>      1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+>>>>>>> index d0f56c5c4cce..a8d6165b3c0a 100644
+>>>>>>> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+>>>>>>> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+>>>>>>> @@ -489,7 +489,8 @@ static int dpu_encoder_phys_vid_wait_for_commit_done(
+>>>>>>>                  (hw_ctl->ops.get_flush_register(hw_ctl) == 0),
+>>>>>>>                  msecs_to_jiffies(50));
+>>>>>>>          if (ret <= 0) {
+>>>>>>> -             DPU_ERROR("vblank timeout\n");
+>>>>>>> +             DPU_ERROR("vblank timeout: %x\n", hw_ctl->ops.get_flush_register(hw_ctl));
+>>>>>>> +             msm_disp_snapshot_state(phys_enc->parent->dev);
+>>>>>>
+>>>>>>
+>>>>>> There is no rate limiting in this piece of code unfortunately. So this
+>>>>>> will flood the number of snapshots.
+>>>>>
+>>>>> Well... Yes and no. The devcoredump will destroy other snapshots if
+>>>>> there is a pending one. So only the console will be flooded and only
+>>>>> in case when MSM_DISP_SNAPSHOT_DUMP_IN_CONSOLE is enabled.
+>>>>>
+>>>>
+>>>> Yes, true but at the same time this makes it hard to capture a good dump
+>>>> as potentially every vblank you could timeout so this destroy/create
+>>>> cycle wont end.
+>>>
+>>> Excuse me, maybe I miss something. On the first timeout the snapshot
+>>> is created. It is held by the kernel until it is fully read out from
+>>> the userspace. Other snapshots will not interfere with this snapshot.
+>>>
+>>
+>> For every new snapshot a new devcoredump device will be created which
+>> should remain till it has been read. But now this will be created every
+>> blank. IMO, this is really too much data for no reason.
+> 
+> No-no-no. If there is a devcoredump for a device, the next one will
+> not be created. See dev_coredumpm().
+> So all the snapshots will be created and then destroyed immediately.
+> 
 
-struct ex_regs {
-unsigned long ra;
-diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c
-b/tools/testing/selftests/kvm/lib/riscv/processor.c
-index 282587cd4bbc..ec66d331a127 100644
---- a/tools/testing/selftests/kvm/lib/riscv/processor.c
-+++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
-@@ -15,12 +15,12 @@
+hmm ... I have certainly seen devcd_count go higher than one (but not 
+more than 2). I am wondering whether this was because of some race 
+condition of the previous destroy / new create.
 
-static vm_vaddr_t exception_handlers;
+But anyway, this part is clear now. thanks.
 
--bool __vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-+bool __vcpu_has_ext(struct kvm_vcpu *vcpu, uint64_t ext)
-{
-unsigned long value =3D 0;
-int ret;
+>>
+>> Subsequent vblank timeouts are not going to give any new information
+>> compared to the existing snapshot of the first vblank timeout thats why
+>> we should just create the snapshot when the first error happens and stop.
+>>
+>> For other frame done timeouts, infact subsequent timeouts without any
+>> sort of recovery in between are quite misleading because hardware was
+>> already not able to fetch the previous frame so it will most likely not
+>> fetch the next one either till it has recovered. Typically thats why
+>> these vblank timeouts happen in a flurry as the hardware never really
+>> recovered from the first timeout.
+>>
+>>> Or are you worried that snapshotting takes time, so taking a snapshot
+>>> will also interfere with the vblank timings for the next vblank?
+>>>
+>>
+>> Yes this is another point.
+> 
 
-- ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-+ ret =3D __vcpu_get_reg(vcpu, ext, &value);
-
-return !ret && !!value;
-}
-
-With the above the fix, Both SBI/ISA extension tests pass.
-# ./get-reg-list
-sbi-base: PASS
-sbi-sta: PASS
-sbi-pmu: PASS
-sbi-dbcn: PASS
-aia: PASS
-fp_f: PASS
-fp_d: PASS
-1..0 # SKIP - h not available, skipping tests
-smstateen: PASS
-sscofpmf: PASS
-sstc: PASS
-1..0 # SKIP - svinval not available, skipping tests
-1..0 # SKIP - svnapot not available, skipping tests
-1..0 # SKIP - svpbmt not available, skipping tests
-zba: PASS
-zbb: PASS
-zbc: PASS
-1..0 # SKIP - zbkb not available, skipping tests
-1..0 # SKIP - zbkc not available, skipping tests
-1..0 # SKIP - zbkx not available, skipping tests
-zbs: PASS
-zfa: PASS
-1..0 # SKIP - zfh not available, skipping tests
-1..0 # SKIP - zfhmin not available, skipping tests
-zicbom: PASS
-zicboz: PASS
-zicntr: PASS
-1..0 # SKIP - zicond not available, skipping tests
-zicsr: PASS
-zifencei: PASS
-zihintntl: PASS
-zihintpause: PASS
-zihpm: PASS
-
-
->  static uint64_t page_align(struct kvm_vm *vm, uint64_t v)
->  {
->         return (v + vm->page_size) & ~(vm->page_size - 1);
-> diff --git a/tools/testing/selftests/kvm/riscv/get-reg-list.c b/tools/tes=
-ting/selftests/kvm/riscv/get-reg-list.c
-> index 25de4b8bc347..ed29ba45588c 100644
-> --- a/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> +++ b/tools/testing/selftests/kvm/riscv/get-reg-list.c
-> @@ -75,15 +75,6 @@ bool check_reject_set(int err)
->         return err =3D=3D EINVAL;
->  }
->
-> -static inline bool vcpu_has_ext(struct kvm_vcpu *vcpu, int ext)
-> -{
-> -       int ret;
-> -       unsigned long value;
-> -
-> -       ret =3D __vcpu_get_reg(vcpu, RISCV_ISA_EXT_REG(ext), &value);
-> -       return (ret) ? false : !!value;
-> -}
-> -
->  void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu_reg_list *c)
->  {
->         unsigned long isa_ext_state[KVM_RISCV_ISA_EXT_MAX] =3D { 0 };
-> @@ -111,7 +102,7 @@ void finalize_vcpu(struct kvm_vcpu *vcpu, struct vcpu=
-_reg_list *c)
->                 __vcpu_set_reg(vcpu, RISCV_ISA_EXT_REG(s->feature), 1);
->
->                 /* Double check whether the desired extension was enabled=
- */
-> -               __TEST_REQUIRE(vcpu_has_ext(vcpu, s->feature),
-> +               __TEST_REQUIRE(__vcpu_has_ext(vcpu, s->feature),
->                                "%s not available, skipping tests\n", s->n=
-ame);
->         }
->  }
-> --
-> 2.34.1
->
-
-
---=20
-Regards,
-Atish
+snapshots will still be captured every vblank timeout and reading 
+through the entire DPU reg space every vblank timeout is certainly 
+something we can avoid.
 
