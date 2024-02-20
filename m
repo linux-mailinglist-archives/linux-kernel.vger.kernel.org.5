@@ -1,181 +1,260 @@
-Return-Path: <linux-kernel+bounces-72749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6F7F85B84A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:54:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A3085B851
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:55:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169391C2376A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:54:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F4062B227F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21B22612D6;
-	Tue, 20 Feb 2024 09:53:08 +0000 (UTC)
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A662657AE;
+	Tue, 20 Feb 2024 09:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="I6T8Fm/7"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA29D612CB
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:53:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FB05651BC
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:53:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422787; cv=none; b=qkP5596y3zqj6k8+3bBGbMEfgjnPmzvAdku4l4N5Zr5/KN8bsv7sRdjrcMbcV/U/Jv8qk5EMxELU42M9zbQ+7KXAzqscOUXzXy3kLkxV30vPhWLfPYE9Wf286szK9XQR85raIwO7Cz7+rBNjcTRuQPbJwvRNESNT9EO3ytZ2XC4=
+	t=1708422807; cv=none; b=IOv9tK6a36a1icdx0VJQXGw0gOskoPXmcVAjK+pG9bw+RzX4RfYWll7ZaIFUZASLOhiFKm+UQJC6ASHs2/rxnFYgPlj9gOxQNUldQD7zbwajNdWpgvQnrRM/m6U9LFC4oNbwTHQ85FHHi/mQrd08JexiHitXwaanKwjnwIddOeU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422787; c=relaxed/simple;
-	bh=EqZc8nDomBp+9zFhAQ4weco20HpKIImPlI4qOduJTAg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=A8KYyO6x8/ci4HxRkuGhZUSUew3tWDoaCz5kcJixtPvdubo1YrTGjIDDa9RA+NNv4vxK/IRP25h79LszYVZ2vckA78IbfGk9UykpkcsDecJ1GCcROxUhp0AjdsL6yjPty9BI6jqGpJfi/iw0b8xylYXCy0GUk5scYFDNiCoKuyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4TfF6M2GjYz1Q8rx;
-	Tue, 20 Feb 2024 17:51:23 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5B556140154;
-	Tue, 20 Feb 2024 17:53:01 +0800 (CST)
-Received: from [10.67.109.211] (10.67.109.211) by
- dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Tue, 20 Feb 2024 17:53:01 +0800
-Message-ID: <38c09a4b-69cc-4dc5-8a68-e5f5597613ac@huawei.com>
-Date: Tue, 20 Feb 2024 17:53:00 +0800
+	s=arc-20240116; t=1708422807; c=relaxed/simple;
+	bh=tf6J8yreFA2kU6lgOdYaEkPuNfkRJDwXDVrcwZxoDcs=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Z+1TFx58dE0GBOxQua99+DHk8UvB08yckBld/LYPayIer2zFe1jhA9D+wuNKrVaz96ED4ZBqtkMbK8LxTr9IzSifXWOkUTy2Qq/dQcbHSjdvHqB9gxEKuz313865Vv9Q8TJhnnH4mA64pxXIG4TFnlYxOAX6oBcwYyOnMS1KOjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=I6T8Fm/7; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4B9F81C0009;
+	Tue, 20 Feb 2024 09:53:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708422796;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vSdHFa3arkRH7EqPLCC3LYRFNsMZzoRHpNScPv/MSXA=;
+	b=I6T8Fm/7/rqeok3R1j6SrMr8pTjanZgbB/g44wr2tAmV2NGxNJy0K7MbQna0gZUWFZCyLJ
+	qU60Z4qMmwfe4G4AUPinZEterEvt3q8JLLScpTDgrvIOeSJrxn5nOn85rrgQ81ypYuu6EE
+	rGTLHuT3PSWdX8ljKkwn6ltgrgol/mlbr5XexZguT4C9AcjGtImOYL/TsNbnOjYtNBGfiz
+	FEJbY8o7asRMSQ8OWW3xUrWeK97K6LRY4a6r1f7gAeX0WBFn0VEEdFAnJULNtcjwKzs5u9
+	j0whHTBfGhABgX+P4bTnfCWKT6QwUAozhEG+B0nw1UbK08Mk7sCfSKBI92MV6A==
+Date: Tue, 20 Feb 2024 10:53:13 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: William Zhang <william.zhang@broadcom.com>
+Cc: Linux MTD List <linux-mtd@lists.infradead.org>, Linux ARM List
+ <linux-arm-kernel@lists.infradead.org>, Broadcom Kernel List
+ <bcm-kernel-feedback-list@broadcom.com>, f.fainelli@gmail.com,
+ kursad.oney@broadcom.com, joel.peshkin@broadcom.com,
+ anand.gore@broadcom.com, dregan@mail.com, kamal.dasu@broadcom.com,
+ tomer.yacoby@broadcom.com, dan.beygelman@broadcom.com, David Regan
+ <dregan@broadcom.com>, linux-kernel@vger.kernel.org, Vignesh Raghavendra
+ <vigneshr@ti.com>, Brian Norris <computersforpeace@gmail.com>, Richard
+ Weinberger <richard@nod.at>
+Subject: Re: [PATCH v5 09/12] mtd: rawnand: brcmnand: Add support for
+ getting ecc setting from strap
+Message-ID: <20240220105313.5e3c600d@xps-13>
+In-Reply-To: <20240207202257.271784-10-william.zhang@broadcom.com>
+References: <20240207202257.271784-1-william.zhang@broadcom.com>
+	<20240207202257.271784-10-william.zhang@broadcom.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-To: Arnd Bergmann <arnd@arndb.de>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-CC: Russell King <linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, Andrew
- Morton <akpm@linux-foundation.org>, "Kirill A. Shutemov"
-	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
-	<rppt@kernel.org>, Eric DeVolder <eric.devolder@oracle.com>, Rob Herring
-	<robh@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Linus Walleij
-	<linus.walleij@linaro.org>
-References: <20240220081527.23408-1-liuyuntao12@huawei.com>
- <1342759e-b967-4ec4-98d5-48146f81f695@app.fastmail.com>
-From: "liuyuntao (F)" <liuyuntao12@huawei.com>
-In-Reply-To: <1342759e-b967-4ec4-98d5-48146f81f695@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemd100004.china.huawei.com (7.185.36.20)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
+
+Hi William,
+
+william.zhang@broadcom.com wrote on Wed,  7 Feb 2024 12:22:54 -0800:
+
+> BCMBCA broadband SoC based board design does not specify ecc setting in
+> dts but rather use the SoC NAND strap info to obtain the ecc strength
+> and spare area size setting. Add brcm,nand-ecc-use-strap dts propety for
+> this purpose and update driver to support this option.
+>=20
+> The generic nand ecc settings still take precedence over this flag. For
+> example, if nand-ecc-strength is set in the dts, the driver ignores the
+> strap setting and falls back to original behavior. This makes sure that
+> the existing BCMBCA board dts still works the old way even the strap
+> flag is set in the BCMBCA chip dtsi.
+>=20
+> Signed-off-by: William Zhang <william.zhang@broadcom.com>
+> Reviewed-by: David Regan <dregan@broadcom.com>
+>=20
+> ---
+>=20
+> Changes in v5: None
+> Changes in v4:
+> - Update the comments for ecc setting selection
+>=20
+> Changes in v3: None
+> Changes in v2:
+> - Minor cosmetic fixes
+>=20
+>  drivers/mtd/nand/raw/brcmnand/brcmnand.c | 83 ++++++++++++++++++++++--
+>  1 file changed, 76 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/mtd/nand/raw/brcmnand/brcmnand.c b/drivers/mtd/nand/=
+raw/brcmnand/brcmnand.c
+> index 73fdf7ce21aa..efeee9e80213 100644
+> --- a/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> +++ b/drivers/mtd/nand/raw/brcmnand/brcmnand.c
+> @@ -1038,6 +1038,19 @@ static inline int brcmnand_sector_1k_shift(struct =
+brcmnand_controller *ctrl)
+>  		return -1;
+>  }
+> =20
+> +static int brcmnand_get_sector_size_1k(struct brcmnand_host *host)
+> +{
+> +	struct brcmnand_controller *ctrl =3D host->ctrl;
+> +	int shift =3D brcmnand_sector_1k_shift(ctrl);
+> +	u16 acc_control_offs =3D brcmnand_cs_offset(ctrl, host->cs,
+> +						  BRCMNAND_CS_ACC_CONTROL);
+> +
+> +	if (shift < 0)
+> +		return 0;
+> +
+> +	return (nand_readreg(ctrl, acc_control_offs) >> shift) & 0x1;
+
+What is this & 0x1 ? If you return a yes/no value, please make this
+function return a bool. Also, please use intermediate steps to clarify
+what you do.
+
+sector_1k_bit =3D ...;
+acc =3D nand_readreg();
+return acc & BIT(sector_1k_bit);
+
+Or something like that.
+
+> +}
+> +
+>  static void brcmnand_set_sector_size_1k(struct brcmnand_host *host, int =
+val)
+>  {
+>  	struct brcmnand_controller *ctrl =3D host->ctrl;
+> @@ -1055,6 +1068,38 @@ static void brcmnand_set_sector_size_1k(struct brc=
+mnand_host *host, int val)
+>  	nand_writereg(ctrl, acc_control_offs, tmp);
+>  }
+> =20
+> +static int brcmnand_get_spare_size(struct brcmnand_host *host)
+> +{
+> +	struct brcmnand_controller *ctrl =3D host->ctrl;
+> +	u16 acc_control_offs =3D brcmnand_cs_offset(ctrl, host->cs,
+> +						  BRCMNAND_CS_ACC_CONTROL);
+> +	u32 acc =3D nand_readreg(ctrl, acc_control_offs);
+> +
+> +	return (acc & brcmnand_spare_area_mask(ctrl));
+> +}
+> +
+> +static int brcmnand_get_ecc_strength(struct brcmnand_host *host)
+
+					_from_strap
+
+> +{
+> +	struct brcmnand_controller *ctrl =3D host->ctrl;
+> +	u16 acc_control_offs =3D brcmnand_cs_offset(ctrl, host->cs,
+> +						  BRCMNAND_CS_ACC_CONTROL);
+> +	int sector_size_1k =3D brcmnand_get_sector_size_1k(host);
+> +	int spare_area_size, ecc_level, ecc_strength;
+> +	u32 acc;
+> +
+> +	spare_area_size =3D brcmnand_get_spare_size(host);
+> +	acc =3D nand_readreg(ctrl, acc_control_offs);
+> +	ecc_level =3D (acc & brcmnand_ecc_level_mask(ctrl)) >> ctrl->ecc_level_=
+shift;
+
+Please use FIELD_PREP/FIELD_GET.
+
+> +	if (sector_size_1k)
+> +		ecc_strength =3D ecc_level * 2;
+> +	else if (spare_area_size =3D=3D 16 && ecc_level =3D=3D 15)
+> +		ecc_strength =3D 1; /* hamming */
+> +	else
+> +		ecc_strength =3D ecc_level;
+> +
+> +	return ecc_strength;
+> +}
+> +
+>  /***********************************************************************
+>   * CS_NAND_SELECT
+>   ***********************************************************************/
+> @@ -2622,19 +2667,43 @@ static int brcmnand_setup_dev(struct brcmnand_hos=
+t *host)
+>  		nanddev_get_memorg(&chip->base);
+>  	struct brcmnand_controller *ctrl =3D host->ctrl;
+>  	struct brcmnand_cfg *cfg =3D &host->hwcfg;
+> -	char msg[128];
+> +	struct device_node *np =3D nand_get_flash_node(chip);
+>  	u32 offs, tmp, oob_sector;
+> -	int ret;
+> +	int ret, sector_size_1k =3D 0;
+> +	bool use_strap =3D false;
+> +	char msg[128];
+> =20
+>  	memset(cfg, 0, sizeof(*cfg));
+> +	use_strap =3D of_property_read_bool(np, "brcm,nand-ecc-use-strap");
+> =20
+> -	ret =3D of_property_read_u32(nand_get_flash_node(chip),
+> -				   "brcm,nand-oob-sector-size",
+> +	/*
+> +	 * Set ECC size and strength based on hw configuration from strap
+> +	 * if brcm,nand-ecc-use-strap is set. However if nand-ecc-strength
+> +	 * is set, its value will be used and ignore the strap setting.
+
+Please error out in this case. It's one or the other, not both.
+
+> +	 */
+> +	if (chip->ecc.strength)
+> +		use_strap =3D 0;
+> +
+> +	if (use_strap) {
+> +		chip->ecc.strength =3D brcmnand_get_ecc_strength(host);
+> +		sector_size_1k =3D brcmnand_get_sector_size_1k(host);
+> +		if (chip->ecc.size =3D=3D 0) {
+> +			if (sector_size_1k < 0)
+> +				chip->ecc.size =3D 512;
+> +			else
+> +				chip->ecc.size =3D 512 << sector_size_1k;
+> +		}
+
+I'd instead make a function named brcmnand_get_ecc_settings() with the
+chip->ecc parameter, so you can directly fill the entries without
+getting another time the sector_size_1k thing.
+
+Strength and step size are tightly linked, it does make sense to derive
+them both at the same time.
+
+> +	}
+> +
+> +	ret =3D of_property_read_u32(np, "brcm,nand-oob-sector-size",
+>  				   &oob_sector);
+>  	if (ret) {
+> -		/* Use detected size */
+> -		cfg->spare_area_size =3D mtd->oobsize /
+> -					(mtd->writesize >> FC_SHIFT);
+> +		if (use_strap)
+> +			cfg->spare_area_size =3D brcmnand_get_spare_size(host);
+> +		else
+> +			/* Use detected size */
+> +			cfg->spare_area_size =3D mtd->oobsize /
+> +						(mtd->writesize >> FC_SHIFT);
+>  	} else {
+>  		cfg->spare_area_size =3D oob_sector;
+>  	}
 
 
-
-在 2024/2/20 16:40, Arnd Bergmann 写道:
-> On Tue, Feb 20, 2024, at 09:15, Yuntao Liu wrote:
->> diff --git a/arch/arm/boot/compressed/vmlinux.lds.S
->> b/arch/arm/boot/compressed/vmlinux.lds.S
->> index 3fcb3e62dc56..da21244aa892 100644
->> --- a/arch/arm/boot/compressed/vmlinux.lds.S
->> +++ b/arch/arm/boot/compressed/vmlinux.lds.S
->> @@ -89,7 +89,7 @@ SECTIONS
->>        * The EFI stub always executes from RAM, and runs strictly before
->> the
->>        * decompressor, so we can make an exception for its r/w data, and
->> keep it
->>        */
->> -    *(.data.efistub .bss.efistub)
->> +    *(.data.* .bss.*)
->>       __pecoff_data_end = .;
->>
->>       /*
-> 
-> This doesn't seem right to me, or maybe I misunderstand what
-> the original version does. Have you tested with both
-> CONFIG_EFI_STUB on and off, and booting with and without
-> UEFI?
-
-Yes, I have tested with CONFIG_EFI_STUB on and off, and booting with 
-UEFI on a single-board computer, and it boots well.
-
-
-> 
-> If I read this right, you would move all .data and .bss
-> into the stub here, not just the parts we actually want?
-
-In the file "drivers/firmware/efi/libstub/Makefile", it is written:
-
----
-
-#
-# ARM discards the .data section because it disallows r/w data in the
-# decompressor. So move our .data to .data.efistub and .bss to .bss.efistub,
-# which are preserved explicitly by the decompressor linker script.
-#
-STUBCOPY_FLAGS-$(CONFIG_ARM)	+= --rename-section .data=.data.efistub	\
-				   --rename-section .bss=.bss.efistub,load,alloc
-
----
-
-I think that .data.efistub represents the entire .data section, the same 
-applies to .bss as well,
-
-so i move all .data and .bss into the stub here.
-
-
-> 
->> diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
->> index bd9127c4b451..de373c6c2ae8 100644
->> --- a/arch/arm/kernel/vmlinux.lds.S
->> +++ b/arch/arm/kernel/vmlinux.lds.S
->> @@ -74,7 +74,7 @@ SECTIONS
->>   	. = ALIGN(4);
->>   	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
->>   		__start___ex_table = .;
->> -		ARM_MMU_KEEP(*(__ex_table))
->> +		ARM_MMU_KEEP(KEEP(*(__ex_table)))
->>   		__stop___ex_table = .;
->>   	}
->>
->> @@ -116,7 +116,7 @@ SECTIONS
->>   #endif
->>   	.init.pv_table : {
->>   		__pv_table_begin = .;
->> -		*(.pv_table)
->> +		KEEP(*(.pv_table))
->>   		__pv_table_end = .;
->>   	}
-> 
-> I guess this prevents discarding any function that has a reference
-> from pv_table or ex_table, even if there are no other references,
-> right?
-
-Indeed so, if not keep ex_table,  the compilation process will result in
-
-an error:
-
-     no __ex_table in file: vmlinux
-
-     Failed to sort kernel tables
-
-and if not keep pv_table, It can be compiled successfully, but the QEMU 
-boots will fail.
-
-> 
-> I don't know how to solve this other than forcing all the
-> uaccess and virt_to_phys functions to be out of line
-> helpers. For uaccess, there are probably very few functions
-> that need this, so it should make little difference.
-> 
-> You might want to try changing CONFIG_ARM_PATCH_PHYS_VIRT
-> into a method that just always adds an offset from C code
-> instead of the boot time patching. That way the code would
-> be a bit less efficient but you might be able to get
-> a larger size reduction by dropping additional unused code.
-> 
-> Maybe test your patch both with and without
-> ARM_PATCH_PHYS_VIRT to see what the best-case impact would
-> be.
-> 
-
-This is a very good idea, I will give it a try.
-
->        Arnd
+Thanks,
+Miqu=C3=A8l
 
