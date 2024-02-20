@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-72785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38A9585B8BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DF2385B8A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:12:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 186B9B248D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:11:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B642CB28825
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:12:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07EBA64A93;
-	Tue, 20 Feb 2024 10:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2065365190;
+	Tue, 20 Feb 2024 10:10:44 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9966350F
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C6D64CF5
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708423830; cv=none; b=dACIU+vbKHmPq0S4yN4K357GKZ60Y0ILNEJSIplGJ2obfj+U+aOt9hI1aBkt86qCwLeEgcpGbbol/b48YWQOwmRtm/4fVzftrgsETxuIkSY7eDNYqPUQoqghB+mCIVWU6i9dprr2iaUHKAMMo2wUy/Oy0IyUiRv61/YOChRkOGQ=
+	t=1708423843; cv=none; b=YAM10G4fevaiIuCHWWi/VkVRtSXRz00Eer5uiRg2PeLUV0daVVDfdr7gcPn0q539b7Huou62LD/aREBFlN4QedvhcogS8Bs7+nmF0tz50PqsfigF2PdHg1Gy1yTVxgG5sZi5s8PNAxP4FgOZwul8nISeGTjvS+HLacksx50aGc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708423830; c=relaxed/simple;
-	bh=ffy8KGj3dbgqsDYobvZJShvnkEt0RG4nEnvWV6+kTkU=;
+	s=arc-20240116; t=1708423843; c=relaxed/simple;
+	bh=+nicV0g2b5jsmt8ZfpewvXZy/UwWJ4BnLx9od6RHkZg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=svv+XOFx38Xcv0tZ3sU8Y/Yq45DL1yMTNyvPPhv1x/j7tiF46zDTqpmtfiTxoYhWwG9mw8xze2drVqmCDcVdcWf0g1/tn/78bGbIALUtFNiTDzfxb6lyGxdUraV4OgwaD7N1u0OmI7lw+fkzZotCw7UVVOmeEI0T2QNGT/5bhvs=
+	 MIME-Version; b=uQC4csHmjLJ4np1n7icpGNQnWKPnQeIJz6Kk9scXZTkHc4nMq2e70E+lsq0ZUqhcrJIxMpUXXt6DUXYYba2FkEdUBUeIeDjTtq/1Q+Kq0OYs1pSuAjwV5Q2JM4EAuih2h6CzYk/dN4GN+qSjFg0/Xt4dpjXHm+q94qbdfWv3GD4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68F47FEC;
-	Tue, 20 Feb 2024 02:11:07 -0800 (PST)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9C56EFEC;
+	Tue, 20 Feb 2024 02:11:20 -0800 (PST)
 Received: from e127643.broadband (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 780493F762;
-	Tue, 20 Feb 2024 02:10:22 -0800 (PST)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 7904C3F762;
+	Tue, 20 Feb 2024 02:10:35 -0800 (PST)
 From: James Clark <james.clark@arm.com>
 To: coresight@lists.linaro.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -52,18 +52,18 @@ Cc: James Clark <james.clark@arm.com>,
 	Miguel Luis <miguel.luis@oracle.com>,
 	Joey Gouly <joey.gouly@arm.com>,
 	Ard Biesheuvel <ardb@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Arnd Bergmann <arnd@arndb.de>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Kalesh Singh <kaleshsingh@google.com>,
+	Javier Martinez Canillas <javierm@redhat.com>,
 	Vincent Donnefort <vdonnefort@google.com>,
 	Ryan Roberts <ryan.roberts@arm.com>,
 	Fuad Tabba <tabba@google.com>,
 	Jing Zhang <jingzhangos@google.com>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v5 3/7] arm64/sysreg/tools: Move TRFCR definitions to sysreg
-Date: Tue, 20 Feb 2024 10:09:13 +0000
-Message-Id: <20240220100924.2761706-4-james.clark@arm.com>
+Subject: [PATCH v5 4/7] arm64: KVM: Add iflag for FEAT_TRF
+Date: Tue, 20 Feb 2024 10:09:14 +0000
+Message-Id: <20240220100924.2761706-5-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240220100924.2761706-1-james.clark@arm.com>
 References: <20240220100924.2761706-1-james.clark@arm.com>
@@ -75,148 +75,89 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add separate definitions for ELx and EL2 as TRFCR_EL1 doesn't have CX.
-This also mirrors the previous definition so no code change is required.
+Add an extra iflag to signify if the TRFCR register is accessible.
+Because TRBE requires FEAT_TRF, DEBUG_STATE_SAVE_TRBE still has the same
+behavior even though it's only set when FEAT_TRF is present.
 
-Also add TRFCR_EL12 which will start to be used in a later commit.
+The following holes are left in struct kvm_vcpu_arch, but there aren't
+enough other 8 bit fields to rearrange it to leave any hole smaller than
+7 bytes:
 
-Unfortunately, to avoid breaking the Perf build with duplicate
-definition errors, the tools copy of the sysreg.h header needs to be
-updated at the same time rather than the usual second commit. This is
-because the generated version of sysreg
-(arch/arm64/include/generated/asm/sysreg-defs.h), is currently shared
-and tools/ does not have its own copy.
+  u8                         cflags;               /*  2292     1 */
+  /* XXX 1 byte hole, try to pack */
+  u16                        iflags;               /*  2294     2 */
+  u8                         sflags;               /*  2296     1 */
+  bool                       pause;                /*  2297     1 */
+  /* XXX 6 bytes hole, try to pack */
 
+Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Signed-off-by: James Clark <james.clark@arm.com>
 ---
- arch/arm64/include/asm/sysreg.h       | 12 --------
- arch/arm64/tools/sysreg               | 41 +++++++++++++++++++++++++++
- tools/arch/arm64/include/asm/sysreg.h | 12 --------
- 3 files changed, 41 insertions(+), 24 deletions(-)
+ arch/arm64/include/asm/kvm_host.h |  4 +++-
+ arch/arm64/kvm/debug.c            | 24 ++++++++++++++++++++----
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 9e8999592f3a..35890cf3c49f 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -280,8 +280,6 @@
- #define SYS_RGSR_EL1			sys_reg(3, 0, 1, 0, 5)
- #define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 21c57b812569..85b5477bd1b4 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -569,7 +569,7 @@ struct kvm_vcpu_arch {
+ 	u8 cflags;
  
--#define SYS_TRFCR_EL1			sys_reg(3, 0, 1, 2, 1)
--
- #define SYS_TCR_EL1			sys_reg(3, 0, 2, 0, 2)
+ 	/* Input flags to the hypervisor code, potentially cleared after use */
+-	u8 iflags;
++	u16 iflags;
  
- #define SYS_APIAKEYLO_EL1		sys_reg(3, 0, 2, 1, 0)
-@@ -499,7 +497,6 @@
- #define SYS_VTTBR_EL2			sys_reg(3, 4, 2, 1, 0)
- #define SYS_VTCR_EL2			sys_reg(3, 4, 2, 1, 2)
+ 	/* State flags for kernel bookkeeping, unused by the hypervisor code */
+ 	u8 sflags;
+@@ -779,6 +779,8 @@ struct kvm_vcpu_arch {
+ #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
+ /* vcpu running in HYP context */
+ #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
++/* Save trace filter controls */
++#define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
  
--#define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
- #define SYS_VNCR_EL2			sys_reg(3, 4, 2, 2, 0)
- #define SYS_HAFGRTR_EL2			sys_reg(3, 4, 3, 1, 6)
- #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
-@@ -961,15 +958,6 @@
- /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
- #define SYS_MPIDR_SAFE_VAL	(BIT(31))
+ /* SVE enabled for host EL0 */
+ #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
+diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
+index ce8886122ed3..49a13e72ddd2 100644
+--- a/arch/arm64/kvm/debug.c
++++ b/arch/arm64/kvm/debug.c
+@@ -332,14 +332,30 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
+ 	    !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
+ 		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
  
--#define TRFCR_ELx_TS_SHIFT		5
--#define TRFCR_ELx_TS_MASK		((0x3UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_VIRTUAL		((0x1UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_PHYSICAL		((0x3UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_EL2_CX			BIT(3)
--#define TRFCR_ELx_ExTRE			BIT(1)
--#define TRFCR_ELx_E0TRE			BIT(0)
--
- /* GIC Hypervisor interface registers */
- /* ICH_MISR_EL2 bit definitions */
- #define ICH_MISR_EOI		(1 << 0)
-diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index fa3fe0856880..c4a6b77d2756 100644
---- a/arch/arm64/tools/sysreg
-+++ b/arch/arm64/tools/sysreg
-@@ -2970,3 +2970,44 @@ Field	5	F
- Field	4	P
- Field	3:0	Align
- EndSysreg
-+
-+SysregFields TRFCR_EL2
-+Res0	63:7
-+UnsignedEnum	6:5	TS
-+	0b0000	USE_TRFCR_EL1_TS
-+	0b0001	VIRTUAL
-+	0b0010	GUEST_PHYSICAL
-+	0b0011	PHYSICAL
-+EndEnum
-+Res0	4
-+Field	3	CX
-+Res0	2
-+Field	1	E2TRE
-+Field	0	E0HTRE
-+EndSysregFields
-+
-+# TRFCR_EL1 doesn't have the CX bit so redefine it without CX instead of
-+# using a shared definition between TRFCR_EL2 and TRFCR_EL1
-+SysregFields TRFCR_ELx
-+Res0	63:7
-+UnsignedEnum	6:5	TS
-+	0b0001	VIRTUAL
-+	0b0010	GUEST_PHYSICAL
-+	0b0011	PHYSICAL
-+EndEnum
-+Res0	4:2
-+Field	1	ExTRE
-+Field	0	E0TRE
-+EndSysregFields
-+
-+Sysreg	TRFCR_EL1	3	0	1	2	1
-+Fields	TRFCR_ELx
-+EndSysreg
-+
-+Sysreg	TRFCR_EL2	3	4	1	2	1
-+Fields	TRFCR_EL2
-+EndSysreg
-+
-+Sysreg	TRFCR_EL12	3	5	1	2	1
-+Fields	TRFCR_ELx
-+EndSysreg
-diff --git a/tools/arch/arm64/include/asm/sysreg.h b/tools/arch/arm64/include/asm/sysreg.h
-index 9e8999592f3a..35890cf3c49f 100644
---- a/tools/arch/arm64/include/asm/sysreg.h
-+++ b/tools/arch/arm64/include/asm/sysreg.h
-@@ -280,8 +280,6 @@
- #define SYS_RGSR_EL1			sys_reg(3, 0, 1, 0, 5)
- #define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
+-	/* Check if we have TRBE implemented and available at the host */
+-	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
+-	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
+-		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
++	/*
++	 * Set SAVE_TRFCR flag if FEAT_TRF (TraceFilt) exists. This flag
++	 * signifies that the exclude_host/exclude_guest settings of any active
++	 * host Perf session on a core running a VCPU can be written into
++	 * TRFCR_EL1 on guest switch.
++	 */
++	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT)) {
++		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
++		/*
++		 * Check if we have TRBE implemented and available at the host.
++		 * If it's in use at the time of guest switch then trace will
++		 * need to be completely disabled. The architecture mandates
++		 * FEAT_TRF with TRBE, so we only need to check for TRBE after
++		 * TRF.
++		 */
++		if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
++		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
++			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
++	}
+ }
  
--#define SYS_TRFCR_EL1			sys_reg(3, 0, 1, 2, 1)
--
- #define SYS_TCR_EL1			sys_reg(3, 0, 2, 0, 2)
- 
- #define SYS_APIAKEYLO_EL1		sys_reg(3, 0, 2, 1, 0)
-@@ -499,7 +497,6 @@
- #define SYS_VTTBR_EL2			sys_reg(3, 4, 2, 1, 0)
- #define SYS_VTCR_EL2			sys_reg(3, 4, 2, 1, 2)
- 
--#define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
- #define SYS_VNCR_EL2			sys_reg(3, 4, 2, 2, 0)
- #define SYS_HAFGRTR_EL2			sys_reg(3, 4, 3, 1, 6)
- #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
-@@ -961,15 +958,6 @@
- /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
- #define SYS_MPIDR_SAFE_VAL	(BIT(31))
- 
--#define TRFCR_ELx_TS_SHIFT		5
--#define TRFCR_ELx_TS_MASK		((0x3UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_VIRTUAL		((0x1UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_ELx_TS_PHYSICAL		((0x3UL) << TRFCR_ELx_TS_SHIFT)
--#define TRFCR_EL2_CX			BIT(3)
--#define TRFCR_ELx_ExTRE			BIT(1)
--#define TRFCR_ELx_E0TRE			BIT(0)
--
- /* GIC Hypervisor interface registers */
- /* ICH_MISR_EL2 bit definitions */
- #define ICH_MISR_EOI		(1 << 0)
+ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
+ {
+ 	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
+ 	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
++	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
+ }
 -- 
 2.34.1
 
