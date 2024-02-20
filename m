@@ -1,62 +1,86 @@
-Return-Path: <linux-kernel+bounces-73503-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0AB85C392
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:24:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4DD7485C394
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:26:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CD381F21FCC
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:24:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 027EB28527D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:26:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 175427866C;
-	Tue, 20 Feb 2024 18:23:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F6078660;
+	Tue, 20 Feb 2024 18:26:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="btyhhvSs"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="LEJqjYNq";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KDGogIFL"
+Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1376BB3C;
-	Tue, 20 Feb 2024 18:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D0177655;
+	Tue, 20 Feb 2024 18:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708453428; cv=none; b=JvdGgdhIpIBPfpE77jMMujBXJdRARPDARSx+Uo0zNF9mQxyKpi9DlgPKov9k6UkSjO/sdPtp8U3NhSySMlBMV9MIMXpA2ToqRgGERD7HQ+82TDC5vNi1HT9eahn9dYDw2cAoKZKcjAxJxwKgTb0/7ARDcBmOiOXVhJe2dXAG184=
+	t=1708453572; cv=none; b=t3dIUlwNgQa5WnsKhxskFho5JSZl0c0gwfPpYEsr/wWmTSXKcSyz7QJtuyuoWanVQ8OgZkUwv/VpmwI6y7/79OWYvjJYqQahiiciltCitvDXRO+MoAnNJ4JKDW2LS7cLn1u8QLfdkzJnP4ze/lwFIQ8Wt5J1GwDc3CSZYNysFoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708453428; c=relaxed/simple;
-	bh=gqQmnGNxvTb9NFXdVOZheZnWxzpRLhsYtTeBC/LigWs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eu/eY/hWg3V8M129N1FRGdy2GGeZy1qXZ2B83axRpGoFoSBMrY838uxZK9RSqwmLj4hWOAbJiXY6O2Vbo0uydJGK360RE1tmHmXogAv9JU5uuys/iRoZot+aGLX8RFdT9odJ8iOZXirsVEHJLYqdKNxo3ZGaHAtPr9owF9Fyemk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=btyhhvSs; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 41KEfwfb020497;
-	Tue, 20 Feb 2024 18:23:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=o1XdYNJFsleByPwRb4ZMnCZK00p36/1bvaqiNCoD/gU=; b=bt
-	yhhvSsIurjApTQz1q3pO6r6anSvSGyQjLtRwm2vlNUqvzwamZLxFvu2kEQ9hHnex
-	fpGpK0njHFTv1sKbjwYvKCIxS7G5JBQ76Ov/SDsBC5W/v0spF+0GNetzx3C5vkWf
-	MIdcDbygy7bgo6aZSTSdi54IyvHm378I5sWCl78osjtnOSGJlZtnhL/a+PNcNTy3
-	rtKF9ZRVerqDTrKX5biMY5euR0TYKIFrjZ2GlN1/uNnbGiRy0Q+/mMGohTuTZhgh
-	h7MSXBf5GiK02odM9j+y6MMCVkAkXcIMNohC/lE9fBrfOiCm/EErPZ4MuvUuvs18
-	IIQasRBDZHQvv0+v4qAg==
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wct3eh220-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 18:23:35 +0000 (GMT)
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-	by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 41KINYc7021949
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Feb 2024 18:23:34 GMT
-Received: from [10.71.110.119] (10.80.80.8) by nasanex01b.na.qualcomm.com
- (10.46.141.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 20 Feb
- 2024 10:23:30 -0800
-Message-ID: <38860940-3b21-42e8-8817-10b433d7bd74@quicinc.com>
-Date: Tue, 20 Feb 2024 10:23:31 -0800
+	s=arc-20240116; t=1708453572; c=relaxed/simple;
+	bh=Yu6Ek05D3XzEDulx15fqOxq47ljcIO0qY4zVYkB+TuA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Hh2PTAx3lyeYTwzayoEYoV0bffF1OxADQFyQFv+ktYq5j57kNnty8jZiAFage79Oflzw+n+WyDC9RUIumdkxXANEpQ4OP3Lijho3tB9blzhgetp0f5BHAH3Cmhr+NLowKQ7tb5/VJCeFLDWot7wCDsDsYIqbhP5M/ZlE/PLnlDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=LEJqjYNq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KDGogIFL; arc=none smtp.client-ip=103.168.172.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id D72D811400A2;
+	Tue, 20 Feb 2024 13:26:07 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Tue, 20 Feb 2024 13:26:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1708453567;
+	 x=1708539967; bh=NPcyX8ulrhJ0Mc5gTBoXB3xhQTF03OhSShONl72kdLc=; b=
+	LEJqjYNqNDTSM6cSSwwJMevo8m2reOKPCryJEKhgqG47I5U1w17kaU9RZaw1bMB9
+	q3EYciGDg7QgkzEG09gRKj5AlbatK8QrXpSlvgl2rYNxxYJHYC0Df05x0a6vDJDb
+	kO2MXzAwmwvutcAKfvzyY7mre8uop8VrnRTAAgYZ6GpSrkgJPwVta3x6/p9CYkz6
+	W2B78ORNvRQffbETToNoODJg4fLYIAgtcCURgsAu7xiypubMa4nPRN5QA8C6K8H6
+	4zahwuqy4Z66jHOXHQZPAJn8a1fOjjumieeor8O9EZi4mdsyppiv5yzA8RlP7XBT
+	Hdyha7OtFq45Aqdgvscsxw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708453567; x=
+	1708539967; bh=NPcyX8ulrhJ0Mc5gTBoXB3xhQTF03OhSShONl72kdLc=; b=K
+	DGogIFLfPkqkIlar005cdaMKUMM/IhWvjQpsA+WD3DGBk27Oihj0xWUqvmR3yGqK
+	WCpF3A/kYj6P8huvzj+km8KljYfyvwWku9IfkYD6AZ+Y1NvojGurtpN6lYPO0B/+
+	SbCC9YjC6gdYwadXGWtb7/pLbGvZsVxrcK+lmdK9xxkCL58QghnDQg2frCjvcfoT
+	umsVxuBBKSKjHxwS5noVvmwUXlEDi8TxN4m/P7SrdeMzbf7nmH2sR1MYt5X1T+xM
+	Qh05Ul8S+WhiPKz2WN/qV+aS8ixlx/YDXuXnwS0Uisn4U3YQ2R3mNQyfjjF97int
+	tfuQ2XhXR9v7qCU7ieISA==
+X-ME-Sender: <xms:v-7UZYKWrba4NqRKD0JQsUASdIM3wh__fXvFFfc8fdv2xHsufknlaQ>
+    <xme:v-7UZYL974AsrkO3MAdgbj-NP52Sw1IxiiGxsaZtwhy2mn5ONvG7wVEy6ygae3LGl
+    DyYkYfDD7KY9lsBL-Q>
+X-ME-Received: <xmr:v-7UZYsUKutwD3PNTyzVR0Wu5RP0KYQIPVhkWWse_z8zA04GTins3TqLVlBsr9oqvsRQeMkVPV_6p-4yAycw3oYLvuXhdseIyqPu8l4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedtgdduudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
+    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepleeuffehheegleeuvdelgffhueekjeetueevuefhffdtgfeu
+    hfeggfeukefffedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:v-7UZVYNZ66XnHkHJv3oIs-ihoRSllAHUd-3zmBbSeN8ZFkOPfgmcA>
+    <xmx:v-7UZfa1Z_PUi9IrHvxiIy86Nhf4CF8-_FyQ9DCldUr6kd5iz4TOCA>
+    <xmx:v-7UZRAaUmT5_fWCBJyyuTu6WufDYaKAPf_nTDX7OmtikFBVPbYmpQ>
+    <xmx:v-7UZZkvUn4q6Ga5bnydde5B4wfleNj59gwUoVO2IQTIs3FbbnAr8g>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 20 Feb 2024 13:26:05 -0500 (EST)
+Message-ID: <8b46e25b-fd3c-4fbc-9f41-c8ac7f4d89e6@flygoat.com>
+Date: Tue, 20 Feb 2024 18:26:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,275 +88,101 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] dma-buf: heaps: secure_heap: Add qcom secure system
- heap
+Subject: Re: [PATCH 0/8] MIPS: Aggregate build fixes
 Content-Language: en-US
-To: Pratyush Brahma <quic_pbrahma@quicinc.com>, <sumit.semwal@linaro.org>,
-        <benjamin.gaignard@collabora.com>, <Brian.Starkey@arm.com>,
-        <jstultz@google.com>, <tjmercier@google.com>,
-        <christian.koenig@amd.com>, <linux-media@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>, <linaro-mm-sig@lists.linaro.org>,
-        <linux-kernel@vger.kernel.org>, <quic_guptap@quicinc.com>,
-        Dibakar Singh <quic_dibasing@quicinc.com>
-CC: Vijayanand Jitta <quic_vjitta@quicinc.com>
-References: <cover.1700544802.git.quic_vjitta@quicinc.com>
- <128a84b983d1ddd192e98a42bc6a15030bb60d75.1700544802.git.quic_vjitta@quicinc.com>
-From: Elliot Berman <quic_eberman@quicinc.com>
-In-Reply-To: <128a84b983d1ddd192e98a42bc6a15030bb60d75.1700544802.git.quic_vjitta@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: z8qGia9d6ea18w28Y-_e7hFTGe9a0941
-X-Proofpoint-GUID: z8qGia9d6ea18w28Y-_e7hFTGe9a0941
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-20_06,2024-02-20_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 bulkscore=0
- spamscore=0 phishscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 adultscore=0 lowpriorityscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2401310000 definitions=main-2402200132
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Nathan Chancellor <nathan@kernel.org>,
+ Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
+ <morbo@google.com>, Justin Stitt <justinstitt@google.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, Guenter Roeck <linux@roeck-us.net>
+References: <20240202-llvm-msym32-v1-0-52f0631057d6@flygoat.com>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Autocrypt: addr=jiaxun.yang@flygoat.com;
+ keydata= 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
+ HVO98ZmbMeg=
+In-Reply-To: <20240202-llvm-msym32-v1-0-52f0631057d6@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
 
-On 11/22/2023 5:47 AM, Pratyush Brahma wrote:
-> From: Vijayanand Jitta <quic_vjitta@quicinc.com>
-> 
-> Add secure system for Pixel and Non pixel video usecases, this
-> allocates from system heap and secures using qcom_scm_aasign_mem.
-                                                        ^^^^^^
-                                                        typo
-> 
-> Change-Id: If0702f85bff651843c6a5c83694043364229e66b
-> Signed-off-by: Vijayanand Jitta <quic_vjitta@quicinc.com>
+在 2024/2/2 18:21, Jiaxun Yang 写道:
+> Hi all,
+>
+> This series is a collection of build fixes that have been lying
+> at my local trees for a while, some of them are for Clang built
+> linux and others are for some wiredo configurations.
 
-Please get these patches reviewed internally before sending to mailing
-list for basic checks. You can review go/upstream when within Qualcomm corp network.
+A gentle ping on this series :-)
 
-Pavan mentioned S-o-B is incorrect. Commit text should also not have Change-Id.
+Thanks
+- Jiaxun
 
-Please be sure to send to linux-arm-msm mailing list as well since this affects
-Qualcomm chipsets
-
+>
+> Please review.
+>
+> Thanks
+>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->  drivers/dma-buf/heaps/secure_heap.c | 163 +++++++++++++++++++++++++++-
->  1 file changed, 160 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/dma-buf/heaps/secure_heap.c b/drivers/dma-buf/heaps/secure_heap.c
-> index 04e2ee000e19..cdcf4b3f5333 100644
-> --- a/drivers/dma-buf/heaps/secure_heap.c
-> +++ b/drivers/dma-buf/heaps/secure_heap.c
-> @@ -58,6 +58,11 @@ enum secure_memory_type {
->  	 * protect it, then the detail memory management also is inside the TEE.
->  	 */
->  	SECURE_MEMORY_TYPE_MTK_CM_CMA	= 2,
-> +	/*
-> +	 * QCOM secure system heap, use system heap to alloc/free.
-> +	 * and use qcom_scm_assign_mem to secure the memory.
-> +	 */
-> +	SECURE_MEMORY_TYPE_QCOM_SYSTEM	= 3,
->  };
->  
->  struct secure_buffer {
-> @@ -69,6 +74,7 @@ struct secure_buffer {
->  	 */
->  	u32				sec_handle;
->  	struct page			*cma_page;
-> +	struct sg_table			sg_table;
->  };
->  
->  #define TEE_MEM_COMMAND_ID_BASE_MTK	0x10000
-> @@ -329,11 +335,26 @@ static int secure_heap_qcom_secure_memory(struct secure_heap *sec_heap,
->  	next[0].vmid = data->vmid;
->  	next[0].perm = data->perm;
->  
-> -
-> -	ret = qcom_scm_assign_mem(page_to_phys(sec_buf->cma_page),
-> +	if (sec_heap->mem_type == SECURE_MEMORY_TYPE_CMA) {
-> +		ret = qcom_scm_assign_mem(page_to_phys(sec_buf->cma_page),
->  				sec_buf->size, &src_perms,
->  				next, 1);
-> +	} else if (sec_heap->mem_type == SECURE_MEMORY_TYPE_QCOM_SYSTEM) {
-> +		struct sg_table *table;
-> +		struct scatterlist *sg;
-> +		int i = 0;
-> +
-> +		table = &sec_buf->sg_table;
-> +		for_each_sgtable_sg(table, sg, i) {
-> +			struct page *page = sg_page(sg);
->  
-> +			ret = qcom_scm_assign_mem(page_to_phys(page),
-> +				page_size(page), &src_perms,
-> +				next, 1);
-> +			if (ret)
-> +				break;
-> +		}
-> +	}
->  	return ret;
->  }
->  
-> @@ -347,9 +368,24 @@ static void secure_heap_qcom_unsecure_memory(struct secure_heap *sec_heap,
->  	next[0].vmid = QCOM_SCM_VMID_HLOS;
->  	next[0].perm = QCOM_SCM_PERM_RWX;
->  
-> -	qcom_scm_assign_mem(page_to_phys(sec_buf->cma_page),
-> +	if (sec_heap->mem_type == SECURE_MEMORY_TYPE_CMA) {
-> +		qcom_scm_assign_mem(page_to_phys(sec_buf->cma_page),
->  				sec_buf->size, &src_perms,
->  				next, 1);
-> +	} else if (sec_heap->mem_type == SECURE_MEMORY_TYPE_QCOM_SYSTEM) {
-> +		struct sg_table *table;
-> +		struct scatterlist *sg;
-> +		int i = 0;
-> +
-> +		table = &sec_buf->sg_table;
-> +		for_each_sgtable_sg(table, sg, i) {
-> +			struct page *page = sg_page(sg);
-> +
-> +			qcom_scm_assign_mem(page_to_phys(page),
-> +				page_size(page), &src_perms,
-> +				next, 1);
-> +		}
-> +	}
->  }
->  
->  const struct secure_heap_prv_data qcom_cma_sec_mem_data = {
-> @@ -361,6 +397,117 @@ const struct secure_heap_prv_data qcom_cma_sec_mem_data = {
->  	.unsecure_the_memory    = secure_heap_qcom_unsecure_memory,
->  };
->  
-> +/* Using system heap allocator */
-> +#define LOW_ORDER_GFP (GFP_HIGHUSER | __GFP_ZERO)
-> +#define HIGH_ORDER_GFP  (((GFP_HIGHUSER | __GFP_ZERO | __GFP_NOWARN \
-> +				| __GFP_NORETRY) & ~__GFP_RECLAIM) \
-> +				| __GFP_COMP)
-> +static gfp_t order_flags[] = {HIGH_ORDER_GFP, HIGH_ORDER_GFP, LOW_ORDER_GFP};
-> +static const unsigned int orders[] = {8, 4, 0};
-> +#define NUM_ORDERS ARRAY_SIZE(orders)
-> +
-> +static struct page *alloc_largest_available(unsigned long size,
-> +					    unsigned int max_order)
-> +{
-> +	struct page *page;
-> +	int i;
-> +
-> +	for (i = 0; i < NUM_ORDERS; i++) {
-> +		if (size <  (PAGE_SIZE << orders[i]))
-> +			continue;
-> +		if (max_order < orders[i])
-> +			continue;
-> +
-> +		page = alloc_pages(order_flags[i], orders[i]);
-> +		if (!page)
-> +			continue;
-> +		return page;
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static int qcom_system_secure_memory_allocate(struct secure_heap *sec_heap,
-> +				      struct secure_buffer *sec_buf)
-> +{
-> +	unsigned long size_remaining = sec_buf->size;
-> +	unsigned int max_order = orders[0];
-> +	struct sg_table *table;
-> +	struct scatterlist *sg;
-> +	struct list_head pages;
-> +	struct page *page, *tmp_page;
-> +	int i = 0, ret = -ENOMEM;
-> +
-> +	INIT_LIST_HEAD(&pages);
-> +	while (size_remaining > 0) {
-> +		/*
-> +		 * Avoid trying to allocate memory if the process
-> +		 * has been killed by SIGKILL
-> +		 */
-> +		if (fatal_signal_pending(current)) {
-> +			return -EINTR;
-> +		}
-> +
-> +		page = alloc_largest_available(size_remaining, max_order);
-> +		if (!page)
-> +			goto free;
-> +
-> +		list_add_tail(&page->lru, &pages);
-> +		size_remaining -= page_size(page);
-> +		max_order = compound_order(page);
-> +		i++;
-> +	}
-> +	table = &sec_buf->sg_table;
-> +	if (sg_alloc_table(table, i, GFP_KERNEL))
-> +		goto free;
-> +
-> +	sg = table->sgl;
-> +	list_for_each_entry_safe(page, tmp_page, &pages, lru) {
-> +		sg_set_page(sg, page, page_size(page), 0);
-> +		sg = sg_next(sg);
-> +		list_del(&page->lru);
-> +	}
-> +	return 0;
-> +free:
-> +	list_for_each_entry_safe(page, tmp_page, &pages, lru)
-> +		__free_pages(page, compound_order(page));
-> +
-> +	return ret;
-> +}
-> +
-> +static void qcom_system_secure_memory_free(struct secure_heap *sec_heap,
-> +				   struct secure_buffer *sec_buf)
-> +{
-> +	struct sg_table *table;
-> +	struct scatterlist *sg;
-> +	int i;
-> +
-> +	table = &sec_buf->sg_table;
-> +	for_each_sgtable_sg(table, sg, i) {
-> +		struct page *page = sg_page(sg);
-> +
-> +		__free_pages(page, compound_order(page));
-> +	}
-> +	sg_free_table(table);
-> +}
-> +
-> +const struct secure_heap_prv_data qcom_system_pixel_sec_mem_data = {
-> +	.vmid           = QCOM_SCM_VMID_CP_PIXEL,
-> +	.perm		= QCOM_SCM_PERM_RW,
-> +	.memory_alloc	= qcom_system_secure_memory_allocate,
-> +	.memory_free	= qcom_system_secure_memory_free,
-> +	.secure_the_memory	= secure_heap_qcom_secure_memory,
-> +	.unsecure_the_memory	= secure_heap_qcom_unsecure_memory,
-> +};
-> +
-> +const struct secure_heap_prv_data qcom_system_non_pixel_sec_mem_data = {
-> +	.vmid           = QCOM_SCM_VMID_CP_NON_PIXEL,
-> +	.perm		= QCOM_SCM_PERM_RW,
-> +	.memory_alloc	= qcom_system_secure_memory_allocate,
-> +	.memory_free	= qcom_system_secure_memory_free,
-> +	.secure_the_memory	= secure_heap_qcom_secure_memory,
-> +	.unsecure_the_memory	= secure_heap_qcom_unsecure_memory,
-> +};
-> +
->  static int secure_heap_secure_memory_allocate(struct secure_heap *sec_heap,
->  					      struct secure_buffer *sec_buf)
->  {
-> @@ -585,6 +732,16 @@ static struct secure_heap secure_heaps[] = {
->  		.mem_type	= SECURE_MEMORY_TYPE_MTK_CM_CMA,
->  		.data		= &mtk_sec_mem_data_cma,
->  	},
-> +	{
-> +		.name		= "secure_system_pixel",
-> +		.mem_type	= SECURE_MEMORY_TYPE_QCOM_SYSTEM,
-> +		.data		= &qcom_system_pixel_sec_mem_data,
-> +	},
-> +	{
-> +		.name		= "secure_system_non_pixel",
-> +		.mem_type	= SECURE_MEMORY_TYPE_QCOM_SYSTEM,
-> +		.data		= &qcom_system_non_pixel_sec_mem_data,
-> +	},
->  };
->  
->  static int __init secure_cma_init(struct reserved_mem *rmem)
+> Jiaxun Yang (8):
+>        MIPS: Probe toolchain support of -msym32
+>        MIPS: Remove cc-option checks for -march=octeon
+>        MIPS: Fallback CPU -march flag to ISA level if unsupported
+>        MIPS: BMIPS: Drop unnecessary assembler flag
+>        MIPS: Loongson64: test for -march=loongson3a cflag
+>        MIPS: Limit MIPS_MT_SMP support by ISA reversion
+>        MIPS: Implement microMIPS MT ASE helpers
+>        MIPS: mipsregs: Set proper ISA level for virt extensions
+>
+>   arch/mips/Kconfig                  |   3 +-
+>   arch/mips/Makefile                 |  46 ++++---
+>   arch/mips/include/asm/asmmacro.h   |  22 ++--
+>   arch/mips/include/asm/mipsmtregs.h | 256 ++++++++++++++++++++++---------------
+>   arch/mips/include/asm/mipsregs.h   |  22 +++-
+>   arch/mips/kernel/vpe-mt.c          |   4 +-
+>   6 files changed, 211 insertions(+), 142 deletions(-)
+> ---
+> base-commit: 076d56d74f17e625b3d63cf4743b3d7d02180379
+> change-id: 20240202-llvm-msym32-6392d410f650
+>
+> Best regards,
+
+-- 
+---
+Jiaxun Yang
+
 
