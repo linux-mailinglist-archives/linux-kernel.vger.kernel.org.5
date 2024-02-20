@@ -1,80 +1,74 @@
-Return-Path: <linux-kernel+bounces-73150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA36E85BE31
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:09:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D5F85BE36
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 15:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F85AB235E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:09:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45E7D1F22855
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 14:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D9016BFAA;
-	Tue, 20 Feb 2024 14:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 639DF6F079;
+	Tue, 20 Feb 2024 14:08:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ez1E/1Gj"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yvmjUdRt"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EB176BB48
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B23D6BB48
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:07:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708438050; cv=none; b=hSVQ49UIGKJYyUsMQLCIn/htohd1jummJJzfxIWG8Z0BfWj4IWo2DwojfRjTgdMfI2Xl7onwWOoCJtRkqvc0UI5eF8+kGp1XpIo17+woJhn67kqyRTi9hY/r5k3ZuUZT22jFJpPial/kLT75mRQxlqtT2w/kIQ96Nht2XJLQ4AY=
+	t=1708438082; cv=none; b=CJ2fEro2uAEVRLCFa/QFarAwz8U/FeOOQg71LebCcGHqrt4iDjphEq5WQpieeXLFYiVN3Eyt7nkAJoBYhmrDB0VsWn5sFw3pLovvWVR6pMVYYAKVOuB7GFUz0c/WAtmyt9sJgpH2QH9x5CXT6GGu4KsPuNQoLytGZ9Ubkc+E2/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708438050; c=relaxed/simple;
-	bh=E/1SUYF3tv2F1OGwxNLmQh08FWlc1Ijdbb/2R+O4kIs=;
+	s=arc-20240116; t=1708438082; c=relaxed/simple;
+	bh=5oaeW/V0LDGVm1ZQQ73YcEjzNaiTcy6WpefpawYWA1E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fFXakuugxMEQ3ObLB2Fl6MbTYUmN+yo1k4f3Rbmm2NQ2nC0g8h5tr2HOv+nz9ig8Ph5BijZB46kgf1DNAIL9akypxwc2jqm8ONWT3B5K+3hQ5+RRjTYD86BLTMlnmiFSvdgugB2eIzgWbcBMKF8rfWUao/kxkRxqQoj7DZXQQh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ez1E/1Gj; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1708438047;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=TfSiB4xU3Pf2ASAqrc35eYDgyfR8LdcSqcXXHY4DB94=;
-	b=ez1E/1Gju9rzyoj5NYPFTypNLH1jtrgMesZ2yo6KZxD1wpvWxWqanxk8i1NVQTh7mEwUmF
-	O6VHgIzJRkMgYrP8nvfrx0HoP6E19OrS2EAuhZKqhqA9H6X6TKPtDwIr6eDLJfpXEsj31I
-	5+eqyJMwU++3J3zWk8po/mQVsWS9664=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-34-OYBXdJclP2WePdi5BQlCTw-1; Tue, 20 Feb 2024 09:07:25 -0500
-X-MC-Unique: OYBXdJclP2WePdi5BQlCTw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4125670e7d1so14165595e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:07:25 -0800 (PST)
+	 In-Reply-To:Content-Type; b=DMLfLmf+l5FUvcMy0F9ipmIrlKYuRnDjuZ/6S6KyrhpWnLj5C6ypgEr+0ljvDR+MGDucDOhuBPufneieujVt770y9wYk1Gz3hEYCpnn7SWk9gSG6TdHtVK84mGbAwvcwjohh89ZJZTmPtXQ6NpwC2fyQrrU6JKdE7CcJglzrmSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yvmjUdRt; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so669370566b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 06:07:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1708438078; x=1709042878; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=DSMyX8FZ9wn9s6dszFNVxl4SdqcyAmoAGLVwPyba9iE=;
+        b=yvmjUdRtTnIQVUXJRArmx3rrtQq/wwJ8+icFWUDPfCBBS4mjNo9peX5jijDZW4MdIP
+         xXwdWk4+/zs4XvDxt2wu7ELzHHKs/F4KJkQSFP85C+i52SENCQG1rWIskORac1NCh8qZ
+         t4TbYncFQDoE+snQkIJWZanNzpVPo2gctuzxngvMzz/VstSZsVsNs857YV9rI3AnXbsx
+         TD1EoHGX2BfpkBHsrx1ubE1h04XmTc4jkwreR7Qeg+k4lbHRYeA8j3Pkb6gj3KRaYGpv
+         NjQZoOKO7gSqsF/GOtQyosCl1QpyToQY21VgQIM2nSSSVsN622tVMibCaJJ3VXJqf82m
+         7neQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708438045; x=1709042845;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
+        d=1e100.net; s=20230601; t=1708438078; x=1709042878;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TfSiB4xU3Pf2ASAqrc35eYDgyfR8LdcSqcXXHY4DB94=;
-        b=ms1YhRWYGkB8ub4bHYvxo2moqlnH6PXWPhOtsBq121aZuYEDgKLW1V9NXmsQRucRgV
-         9lYnK55fclG0pxwpaTUyiYzqzcH1A6FT9opcCIqETq1pXItWOiuT1PPiRwtOF3lq+ssz
-         FYfPH5fX1Ea8c6atzPC+OvZxObxQrDEOyI1Ol37luCKdaGMnDz0PsvOHaktRx4SAfumV
-         o/QDx+l/CHri1Ze9Ag+9XLz7N4KviyrIqt8aBLGmBp1oKiQM3RjoxPG0Du00NUur5OQS
-         vUc4kmvoERCTkCpfxtyCt8/fr4ou9KDwwjbzuZ7iHKZXicHGLkTI8titLQXmvxkrFT/J
-         XPjg==
-X-Forwarded-Encrypted: i=1; AJvYcCXjg/q+GDRUNzPDaXk8gDPGeKfZspEqL1tGm17gp/bxWDzM7DkhXWnPaIrAiH6V4JIWY5/BikLIGxSZq/B2IjI+a0G4zt1sWe0MApOh
-X-Gm-Message-State: AOJu0Yyb6CSP2FQI4D6PPYl20MbUudYZcqXzm6eXQteCYWiJ9ARg+PZs
-	vM2K5itCTwPcCi9io2fFq1GZX3SiB6KZFkeCKMJRy1vbm9jMOz54lyovmMerk0Wojg94zHuJ/9D
-	YbUCo4ik1oPAfEgGColvvW3OEE9chsaGO7kBVXi6q20pwICtexxW2YZsiPd/gdQ==
-X-Received: by 2002:a05:600c:1d1a:b0:411:db41:687c with SMTP id l26-20020a05600c1d1a00b00411db41687cmr15038516wms.13.1708438044725;
-        Tue, 20 Feb 2024 06:07:24 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHlgR4p8fQNVJMnd6Ba7hnMrikj+Cav2h5yCFAosFZH5KGSXqMEspMFvnQvfnQxH3EKo9l5vg==
-X-Received: by 2002:a05:600c:1d1a:b0:411:db41:687c with SMTP id l26-20020a05600c1d1a00b00411db41687cmr15038492wms.13.1708438044298;
-        Tue, 20 Feb 2024 06:07:24 -0800 (PST)
-Received: from ?IPV6:2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb? (p200300cbc72abc009a2d8a48ef5196fb.dip0.t-ipconnect.de. [2003:cb:c72a:bc00:9a2d:8a48:ef51:96fb])
-        by smtp.gmail.com with ESMTPSA id js21-20020a05600c565500b0040fdb244485sm14558144wmb.40.2024.02.20.06.07.22
+        bh=DSMyX8FZ9wn9s6dszFNVxl4SdqcyAmoAGLVwPyba9iE=;
+        b=FnDHYMvv8zc8cOI852dZhpW73P4WbDKMCN7augvMkkT6kcLftGuXdcg4N8Sh1L89YE
+         wg9HrZu5cwZheubGAN0RkLGWFieOnE6cHqDGyPtp1rTNFzftXV/q9FYhc5gYdZwK7dz6
+         BRgg/N7BV/Cg6wYurdu/YwVfQEwLx4iBukkGPJxMJNzdqGZAjDNI6azNJ013FUfE+tZe
+         aL7t4v1SJJXEYAlvIJiMBMRlQj3YMAzv8CIizKhCyvkAdRLC8/rOgYobTguVG5VpgT/w
+         3CiN6/F5nE/l1v42132dJc11Iro5D63UgUdaoq7Wny24j4bN7ebrgFK5fIidHDeZFLFZ
+         P7vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUE7mzf7hAANVU14MYMX09rpi4j6MWZfgSzRYEtAtgfOYfPtfvQZxOoWHi66Cd4NcQCG1Ot+IkIXGJ6c10aLj+GbfYiNWfYD+UlKT8s
+X-Gm-Message-State: AOJu0YwWjCtYEZBxhfMWdga4kQinjk2BHF77RXDb2OGikqMg+RKKNyKQ
+	JgS0jDk/OwfRP43rjCARu2H1sfI0LBmLT2ieBFJP8wKE8ze0GOTCfAW/rNCKT4A=
+X-Google-Smtp-Source: AGHT+IH7KpLxnQBbQwJdCvCCTzsuWiXSt3e1ClIEjTyKYfW88fPzUAcb5CjerS4ur6N409QduSLclw==
+X-Received: by 2002:a17:906:48cc:b0:a3e:6501:339d with SMTP id d12-20020a17090648cc00b00a3e6501339dmr4686923ejt.61.1708438078395;
+        Tue, 20 Feb 2024 06:07:58 -0800 (PST)
+Received: from [192.168.192.135] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id vo5-20020a170907a80500b00a3d559c6113sm3974635ejc.204.2024.02.20.06.07.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 06:07:23 -0800 (PST)
-Message-ID: <e0b7c884-4345-44b1-b8c0-2711a28a980e@redhat.com>
-Date: Tue, 20 Feb 2024 15:07:22 +0100
+        Tue, 20 Feb 2024 06:07:58 -0800 (PST)
+Message-ID: <738dcf0e-57fe-4123-af83-be91d8166420@linaro.org>
+Date: Tue, 20 Feb 2024 15:07:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,147 +76,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: arm64 MTE tag storage reuse - alternatives to MIGRATE_CMA
+Subject: Re: [PATCH 1/4] backlight: lm3630a: Initialize backlight_properties
+ on init
+To: Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
+ phone-devel@vger.kernel.org, Lee Jones <lee@kernel.org>,
+ Daniel Thompson <daniel.thompson@linaro.org>,
+ Jingoo Han <jingoohan1@gmail.com>, Helge Deller <deller@gmx.de>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ "G.Shark Jeong" <gshark.jeong@gmail.com>,
+ Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Maximilian Weigand <mweigand@mweigand.net>
+Cc: dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ devicetree@vger.kernel.org
+References: <20240220-lm3630a-fixups-v1-0-9ca62f7e4a33@z3ntu.xyz>
+ <20240220-lm3630a-fixups-v1-1-9ca62f7e4a33@z3ntu.xyz>
 Content-Language: en-US
-To: Alexandru Elisei <alexandru.elisei@arm.com>
-Cc: catalin.marinas@arm.com, will@kernel.org, oliver.upton@linux.dev,
- maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
- yuzenghui@huawei.com, pcc@google.com, steven.price@arm.com,
- anshuman.khandual@arm.com, eugenis@google.com, kcc@google.com,
- hyesoo.yu@samsung.com, rppt@kernel.org, akpm@linux-foundation.org,
- peterz@infradead.org, konrad.wilk@oracle.com, willy@infradead.org,
- jgross@suse.com, hch@lst.de, geert@linux-m68k.org, vitaly.wool@konsulko.com,
- ddstreet@ieee.org, sjenning@redhat.com, hughd@google.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-mm@kvack.org
-References: <ZdSMbjGf2Fj98diT@raptor>
- <70d77490-9036-48ac-afc9-4b976433070d@redhat.com> <ZdSojvNyaqli2rWE@raptor>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZdSojvNyaqli2rWE@raptor>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20240220-lm3630a-fixups-v1-1-9ca62f7e4a33@z3ntu.xyz>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
->>
->> With large folios in place, we'd likely want to investigate not working on
->> individual pages, but on (possibly large) folios instead.
+On 20.02.2024 00:11, Luca Weiss wrote:
+> The backlight_properties struct should be initialized to zero before
+> using, otherwise there will be some random values in the struct.
 > 
-> Yes, that would be interesting. Since the backend has no way of controlling
-> what tag storage page will be needed for tags, and subsequently dropped
-> from the cache, we would have to figure out what to do if one of the pages
-> that is part of a large folio is dropped. The easiest solution that I can
-> see is to remove the entire folio from the cleancache, but that would mean
-> also dropping the rest of the pages from the folio unnecessarily.
-
-Right, but likely that won't be an issue. Things get interesting when 
-thinking about an efficient allocation approach.
-
+> Fixes: 0c2a665a648e ("backlight: add Backlight driver for lm3630 chip")
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+>  drivers/video/backlight/lm3630a_bl.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
->>
->>>
->>> I believe this is a very good fit for tag storage reuse, because it allows
->>> tag storage to be allocated even in atomic contexts, which enables MTE in
->>> the kernel. As a bonus, all of the changes to MM from the current approach
->>> wouldn't be needed, as tag storage allocation can be handled entirely in
->>> set_ptes_at(), copy_*highpage() or arch_swap_restore().
->>>
->>> Is this a viable approach that would be upstreamable? Are there other
->>> solutions that I haven't considered? I'm very much open to any alternatives
->>> that would make tag storage reuse viable.
->>
->> As raised recently, I had similar ideas with something like virtio-mem in
->> the past (wanted to call it virtio-tmem back then), but didn't have time to
->> look into it yet.
->>
->> I considered both, using special device memory as "cleancache" backend, and
->> using it as backend storage for something similar to zswap. We would not
->> need a memmap/"struct page" for that special device memory, which reduces
->> memory overhead and makes "adding more memory" a more reliable operation.
-> 
-> Hm... this might not work with tag storage memory, the kernel needs to
-> perform cache maintenance on the memory when it transitions to and from
-> storing tags and storing data, so the memory must be mapped by the kernel.
+> diff --git a/drivers/video/backlight/lm3630a_bl.c b/drivers/video/backlight/lm3630a_bl.c
+> index a3412c936ca2..8e275275b808 100644
+> --- a/drivers/video/backlight/lm3630a_bl.c
+> +++ b/drivers/video/backlight/lm3630a_bl.c
+> @@ -343,6 +343,7 @@ static int lm3630a_backlight_register(struct lm3630a_chip *pchip)
+>  	struct backlight_properties props;
+>  	const char *label;
+>  
+> +	memset(&props, 0, sizeof(struct backlight_properties));
 
-The direct map will definitely be required I think (copy in/out data). 
-But memmap for tag memory will likely not be required. Of course, it 
-depends how to manage tag storage. Likely we have to store some 
-metadata, hopefully we can avoid the full memmap and just use something 
-else.
+You can zero-initialize it instead
 
-[...]
-
->> Similar to virtio-mem, there are ways for the hypervisor to request changes
->> to the memory consumption of a device (setting the requested size). So when
->> requested to consume less, clean pagecache pages can be dropped and the
->> memory can be handed back to the hypervisor.
->>
->> Of course, likely we would want to consider using "slower" memory in the
->> hypervisor to back such a device.
-> 
-> I'm not sure how useful that will be with tag storage reuse. KVM must
-> assume that **all** the memory that the guest uses is tagged and it needs
-> tag storage allocated (it's a known architectural limitation), so that will
-> leave even less tag storage memory to distribute between the host and the
-> guest(s).
-
-Yes, I don't think this applies to tag storage.
-
-> 
-> Adding to that, at the moment Android is going to be the major (only?) user
-> of tag storage reuse, and as far as I know pKVM is more restrictive with
-> regards to the emulated devices and the memory that is shared between
-> guests and the host.
-
-Right, what I described here does not have overlap with tag storage 
-besides requiring similar (cleancache) hooks.
-
--- 
-Cheers,
-
-David / dhildenb
-
+Konrad
 
