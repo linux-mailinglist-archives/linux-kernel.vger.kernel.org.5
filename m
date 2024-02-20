@@ -1,145 +1,86 @@
-Return-Path: <linux-kernel+bounces-73042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8006685BC95
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:48:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8240785BCA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:54:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 20F4E1F21881
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:48:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFB12B219C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:54:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2506A01A;
-	Tue, 20 Feb 2024 12:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O+70rKxC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E6AE69E1A;
+	Tue, 20 Feb 2024 12:54:21 +0000 (UTC)
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D89482FA;
-	Tue, 20 Feb 2024 12:47:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548A169D20
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 12:54:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708433279; cv=none; b=SgiSZnYTQFrCgJUet+d/Td4HLRll7FM3Q8+TF0DeENcrUOQgO/p/8B3EIZzBJ9o5VPzYnoBrP9mHgCp37p4437xOzJuml7tFTw+NtiPct8mwuejDpr/NZeCmRigzIdpAWcGf3ufM3GqhF1BU34girSZuWAs8aK3YxMcfeoX9Bas=
+	t=1708433661; cv=none; b=Ys9n4JuQLFWn5+95Uj8pIFgrXJeCZCv/dgcoQNfkvb1k7/yya4rr4B9P4WNpgSm+bkTPtZO3YdrpdIQuQsWGMloLUXLEGs2l3Z4uc8+7ZXhsl5bf8nHhQqC2xZmueo/mJ9cwgOTNdgaXs792HMq7k042+gaCX7pN5gzyPv7H+yU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708433279; c=relaxed/simple;
-	bh=ViefJugypi9Weib1Uaokne/i9seCAk+ZC9k+nnoVcWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enLCj+eUSP5TOx+bEoLMQG+hF3q7+nNHGkL/E1BCT54YYJ0ANFxY7FNOl4nub2lO5mtpoxSH9+X+PZIW/CAyB5kIPm3f7N6y+MeEwpq2QVYnNb03CZ/f8JFI7xGJ8KYTWEEsPQtqirIlkpFGRA+8dym6LVL+hyMvnlHO83vMQlc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O+70rKxC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EF8AC433C7;
-	Tue, 20 Feb 2024 12:47:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708433278;
-	bh=ViefJugypi9Weib1Uaokne/i9seCAk+ZC9k+nnoVcWg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O+70rKxC/6pwXD95cIIDMA1V+jnd/1+CGcXC46So93DH3Xkfgy1cC8BWRR3qI4542
-	 kCHuo10Mnf3HQionPq2GoeJHytdnySZN+AtXrVQy7+ULywO7SE8Z3CUfiJ8NRj1Ywd
-	 z7mhQpiMcCcX40rL7NcE6M0QXbOPdV03WEInkMea6IY5d/oCerFF4v6U7n7ekmm2u2
-	 QpqT8/H1cFo+jxS7xEUsTnd2m+nfD2Tamm1ILj4nnQhRbMCeNhB4jl4Y2W3k5YORzJ
-	 UTeGrLpyNukJdQCdQuzVaR5Vu6MU4U2KSZ2E7pwDn9cfOhwfnPepW50PFYspCXupGX
-	 9bF65zzZydcSA==
-Date: Tue, 20 Feb 2024 12:47:48 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Kalle Valo <kvalo@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Saravana Kannan <saravanak@google.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Alex Elder <elder@linaro.org>,
-	Srini Kandagatla <srinivas.kandagatla@linaro.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abel Vesa <abel.vesa@linaro.org>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	Lukas Wunner <lukas@wunner.de>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v5 14/18] PCI/pwrctl: add a power control driver for
- WCN7850
-Message-ID: <ea08a286-ff53-4d58-ae41-38cca151508c@sirena.org.uk>
-References: <20240216203215.40870-1-brgl@bgdev.pl>
- <20240216203215.40870-15-brgl@bgdev.pl>
- <d5d603dc-ec66-4e21-aa41-3b25557f1fb7@sirena.org.uk>
- <CAMRc=MeUjKPS3ANE6=7WZ3kbbGAdyE8HeXFN=75Jp-pVyBaWrQ@mail.gmail.com>
+	s=arc-20240116; t=1708433661; c=relaxed/simple;
+	bh=oJSQtp9yuDvgjsR4TEK8t50L14uFuL/EUmrb3ZJrqv0=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=cEiPX7ImYPywhQB+QdOpQJxqtUXaH1I2XRg9NouQa5jkTFk5ctdspobMObvE05g9Vv5COaNdXtAz24djh3RVciGZZUaWljVclE8Ox+UOg3NBS6oMOTIl2/nBYfI0H8TH/ET+1lXbg5YeGSPbTZGqlUBCFm2Q0jQI0mY/Wa93ZPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TfK9P0wgHz4wxX;
+	Tue, 20 Feb 2024 23:54:17 +1100 (AEDT)
+From: Michael Ellerman <patch-notifications@ellerman.id.au>
+To: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Jean Delvare <jdelvare@suse.de>, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <cover.1704900449.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1704900449.git.u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 0/7] macintosh: Convert to platform remove callback returning void
+Message-Id: <170843363897.1291121.16845812107659928983.b4-ty@ellerman.id.au>
+Date: Tue, 20 Feb 2024 23:53:58 +1100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="g16doyZ3qKVdSFBl"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MeUjKPS3ANE6=7WZ3kbbGAdyE8HeXFN=75Jp-pVyBaWrQ@mail.gmail.com>
-X-Cookie: E = MC ** 2 +- 3db
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
+On Wed, 10 Jan 2024 16:42:47 +0100, Uwe Kleine-König wrote:
+> this series converts all drivers below drivers/macintosh to use
+> .remove_new(). See commit 5c5a7680e67b ("platform: Provide a remove
+> callback that returns no value") for an extended explanation and the
+> eventual goal. The TL;DR; is to make it harder for driver authors to
+> leak resources without noticing.
+> 
+> This is merge window material. All patches are pairwise independent of
+> each other so they can be applied individually. There isn't a maintainer
+> for drivers/macintosh, I'm still sending this as a series in the hope
+> Michael feels repsonsible and applies it completely.
+> 
+> [...]
 
---g16doyZ3qKVdSFBl
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to powerpc/next.
 
-On Tue, Feb 20, 2024 at 12:22:42PM +0100, Bartosz Golaszewski wrote:
-> On Mon, Feb 19, 2024 at 6:50=E2=80=AFPM Mark Brown <broonie@kernel.org> w=
-rote:
-> > On Fri, Feb 16, 2024 at 09:32:11PM +0100, Bartosz Golaszewski wrote:
+[1/7] macintosh: therm_windtunnel: Convert to platform remove callback returning void
+      https://git.kernel.org/powerpc/c/bd6d99b70b2ffa96119826f22e96a5b77e6f90d6
+[2/7] macintosh: windfarm_pm112: Convert to platform remove callback returning void
+      https://git.kernel.org/powerpc/c/839cf59b5596abcdfbcdc4278a7bd4f8da32e1b2
+[3/7] macintosh: windfarm_pm121: Convert to platform remove callback returning void
+      https://git.kernel.org/powerpc/c/2e7e64c8427c2385bf47456a612d908f827bbbbf
+[4/7] macintosh: windfarm_pm72: Convert to platform remove callback returning void
+      https://git.kernel.org/powerpc/c/057894a40e973c829baacce0b9de6bdf6c8ec1da
+[5/7] macintosh: windfarm_pm81: Convert to platform remove callback returning void
+      https://git.kernel.org/powerpc/c/fb0217d79d77f1092929bae1137ac0f586c29fec
+[6/7] macintosh: windfarm_pm91: Convert to platform remove callback returning void
+      https://git.kernel.org/powerpc/c/7cfe99872c711ffa727db85c608a0897955a2758
+[7/7] macintosh: windfarm_rm31: Convert to platform remove callback returning void
+      https://git.kernel.org/powerpc/c/4b26558415d628ad2c0d3d4ec65156a0c99eaf02
 
-> > > +static struct pci_pwrctl_wcn7850_vreg pci_pwrctl_wcn7850_vregs[] =3D=
- {
-> > > +     {
-> > > +             .name =3D "vdd",
-> > > +             .load_uA =3D 16000,
-> > > +     },
-
-> > I know a bunch of the QC stuff includes these load numbers but are they
-> > actually doing anything constructive?  It keeps coming up that they're
-> > causing a bunch of work and it's not clear that they have any great
-> > effect on modern systems.
-
-> Yes, we have what is called a high-power mode and a low-power mode in
-> regulators and these values are used to determine which one to use.
-
-Are you *sure* this actually happens (and that the regulators don't
-figure it out by themselves), especially given that the consumers are
-just specifying the load once rather than varying it dynamically at
-runtime which is supposed to be the use case for this API?  This API is
-intended to be used dynamically, if the regulator always needs to be in
-a particular mode just configure that statically.
-
---g16doyZ3qKVdSFBl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmXUn3MACgkQJNaLcl1U
-h9Coegf/cTLhALjTXQxrUSAhLhbbWi2aaHJ5OUWXQhSYshGlFNvzP1TpP2FeROeb
-YSX+KygQ7NlKk/LLQsU/f6IKcmlMVTO2M+gFe02zg3SiufZoJDPEmx9sqGAjE1gu
-9MlGnfmzhg1wv2nFAsqol7OpYRmGiFWwItzkh+0gcGzM1Z0dofVRz+b7iJ/D1l8k
-BmsnAqWMd6ePiTeyyZD1b2vwbIPLNYLDq0T3iL3ubP8H0tf1HkDXZCLW26RgabHJ
-uNqpcRzG+kxblNPuDu8G3w7SfLPcOQ8YjLJhiKm9ADl7Wktqh+Lx/Z0EWJBwYi+2
-gt31H+Otddbe7zUMgos8YlMmD1oumQ==
-=gJLX
------END PGP SIGNATURE-----
-
---g16doyZ3qKVdSFBl--
+cheers
 
