@@ -1,147 +1,181 @@
-Return-Path: <linux-kernel+bounces-72534-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72603-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC24685B4E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:21:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3468A85B5DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A33D1284A97
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:21:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0DDB283753
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC9E25C8E2;
-	Tue, 20 Feb 2024 08:21:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 775EA5F544;
+	Tue, 20 Feb 2024 08:50:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="E8sjxzfE"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Bparihsg"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58FDB5D75A
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708417266; cv=none; b=C1KmIdU2HWR81pNNGxQ1eSOOMlq3vDOXm1GKg7s78j6F9kuKvF9XRhEmidXZflbKkFxTLGRoOPWu/fpET/uEcHH5WbcThUr0fPcjbI0RCCiRwQlwPOx1c98fw9efhpbSb+j6n8drRkwlaCQY8wa6xcEp060I13+V/R/r6btkk/E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708417266; c=relaxed/simple;
-	bh=o54ifFwgPSsxzCggMuxYL9ZhcWftfWMsUn207YwDOZ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aHFg+JNMXWX90NileV78sf2zTINdeTB8LWrw1TWGu81E3FQBcIhqe4uk7IvHtu92UcSwr+3Foe31mwBLJrNl67kVR/+qy3jhOURpJ8FmmRkG8X3NtSZGeFGnPGba9YRFfFmJ3c4R2v5yHTN9CBPr4V3UAckvTsPlECcBlaMWGxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=E8sjxzfE; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-564647bcdbfso2114595a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:21:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708417263; x=1709022063; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/y0ZRcM9AeqXbMHdo/rZFfK9pZ+QAzjI5XqSR9aH7rI=;
-        b=E8sjxzfE2lI6zaVTeZgAeYDNfF5b2uiqr1/kt+/M6nYCX61HS2fCn5D/wrPH6byMTJ
-         +IP0gG1d7EL/hU9ZA6HIHFGc1FqSHGIt7YnAp3TafnzgOZrLHiHLuM867gvyzOniA5GE
-         jrBVJk0niBaSp7ZAsMH2qmhza8ZA9YpteyxxxA7iVOtZ0Bs0unAI3DPozsYBhCOj82aL
-         JftLuuN26Ul6Wnb9KN77IybwvwgQaWu0zUy0iMkBU3NglD9Q7j7HTx5JraQrgSuhTMKZ
-         r1/y5KPFn4fOChsC4RcFVikbya2ici1YQEF27PgRAa4f42UWyUUxOYxCObN85BL7gBC7
-         8p+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708417263; x=1709022063;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/y0ZRcM9AeqXbMHdo/rZFfK9pZ+QAzjI5XqSR9aH7rI=;
-        b=IkHUOmqXuVvdMe5UUC8X9cXfoPulXy8tr7s7wAx+BGJ/WQujYzCM6UM1UByfYnt9Oo
-         RjkLjoKmBD1qkY3aNvYfBJRZPxtn957xxveGxzUQOESvi+Pzmm5kmYa4bhzjvEjsqTiq
-         a1FFB+DNz16OEcKiNaqpri5YMsEWc5eAOJExuLSb3jhKebV4zYi/HkVE+e0eJFWIV1tu
-         9TVu1cjxxEua2tAwh1LuyoScDMXNBaLS8NLB/2O4fLVkZkmnbTWk1786BBBhMEGe+9kU
-         GDJih/q1bCBuyBtNk0l5dNYa/CI2a0ItXIOBcV6IBXMuLZkeKreZ5GBNYw+LZAs2sAV9
-         E41g==
-X-Forwarded-Encrypted: i=1; AJvYcCW+Mu7QTVZEm/P13apZWUC5nN1TZ4q/SfQYPR5FZDvOvSSJgDk699b+q5cUmG6kBVNuF0ZzkvEN3xpu22kxd2DzxgogLTHVqI2W/XmW
-X-Gm-Message-State: AOJu0YzR2JmQThfW4/jKbAzjc0asIFER6XnhZBoGkUvwKZZgRWDWP4Ah
-	IMhhjTTVzQT3cERt/HrCi8/SGQCSI43vVtE7Qs4JXzVpA+3lxYJ895+fKOcb/tAC8CtGMPI+XGL
-	wEUF55r8qHXjAcxxrU7/ex2zJ/f9iWslzHIgS
-X-Google-Smtp-Source: AGHT+IFJd7ykTaiF5QgxEIxuB8aW3uriUy20BSKF+VODu+o5a9+WR16O88j7rZTp7Zcps7RfwH/iXdALxGGiS0b6mJo=
-X-Received: by 2002:aa7:d685:0:b0:564:67d0:b8c5 with SMTP id
- d5-20020aa7d685000000b0056467d0b8c5mr4053570edr.0.1708417262542; Tue, 20 Feb
- 2024 00:21:02 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8F55F477;
+	Tue, 20 Feb 2024 08:50:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708419051; cv=fail; b=N/IymxfnSmaRXs6YWmYHxf857nC6xQf0PZtqf2toltJkINhVbs8h9iSRQCnUsJXHz9NMi8k2RoednO9z4652V7Uaq2kTD00Qt9hVHUfHZiSP0q4HU+FxzOIjIAmmZ7G6tgDflf5Z2hJXHR1EMlzWBsEp+Vk9rKw+fRq4NtDmIEU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708419051; c=relaxed/simple;
+	bh=O49VgiCJApzoMALdqnBzqOFBz3Ttw3CMrrg7F91z800=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=iCacIUJUeuCHAh/Cyr8BF7UyQE6+147KeG1TyxXt86r0kKWLbes+Oz0/t/joUWUB4WEgH4pn5PbwAOZejHsN9TLkzLwWLUJahIcjNIvIbbm/Yd0tCXrKk9ULAYMSEUABOk2/2Bkik27YCPMPr8Nxc1YvMgrFMu64eFwlBfSG8DA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Bparihsg; arc=fail smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708419049; x=1739955049;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   in-reply-to:mime-version;
+  bh=O49VgiCJApzoMALdqnBzqOFBz3Ttw3CMrrg7F91z800=;
+  b=Bparihsg8ARVyLzY+WKxkBRruGnod5xAbmKCtbitn+J/6qZAWI58vMOo
+   /CJpm0+fEHa9owHbULggACDC/BcS2H3imtRf8nw7URdVxWXIBtWqBqY2T
+   LBoEBEM3O90bDdHDak70Rabn9jEBd13LiLt4HE9CaoNE60op2kMje96AF
+   qCuD8Q5zgR2x0SPPs3U4AADddkQb/8xMSIVtQdhm7Qpa/Jnadvue0UoUw
+   nZh/J+9hTd4o5hy4gYN0dKqqYKOR+4Y/LDoajhEveB0op00Nfp1TUtqD8
+   89abzpRzW/QquLxcf9jq3rQ863FoeRqvTvLE5bn2+Lup0qtZRO6sK19d2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2377128"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="2377128"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 00:50:48 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="936420868"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="936420868"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 20 Feb 2024 00:50:47 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 20 Feb 2024 00:50:47 -0800
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 20 Feb 2024 00:50:47 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 20 Feb 2024 00:50:47 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jg+7AMY7W4dxYhYPOZvZqQjOjaS7aACY6x5Zh/DpjyhQJMbuhUdm1q+00F55WquISWeZvJqYVmfiDjn6WEQ9GY54eyVRmzR6QjNB47yceAqWiurU0Fl/3VEHenUVtuLJyCTDg4ZxGoYqg0eV4FFKswySJYHHDbRqfOMJScky9gFA64axjq9JEZ813yJldFjJ/U2RzSfyT3885qNdQujVv6sW9I8XRt45JlrCJ4QI499o8FuvVAS7Gxy0cOkrJKhlgxuEJFq74aQpASRutsGpLZr3ypvN14cNcssc/FSxaxgrWrkaGchSMmVXhqdK1k1sT+494CpZsYBHJdRmRb47Fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FxwBDeU70/GgTLxx96k14C1pzgxSvUjATv2qFeu0t34=;
+ b=HTVZJ2bQldm98MzkZwCSTAfNAs3xZ8jxyMWs75utic9GpwNKqOl0r+cv3trMllHT8aeN8coZKXcwGoi1I470G8B3pl4eTWC2Q5VvTNQlJmkzyBV19AQKc3GeCJH+m44zkm+0XmaH0xSackEEWewk83aPAyTFFzo0XmKEgki6c0h01kHgHqkmMul6i2nqGDZFEWAdUeAdWrB7qhzBuQF3ETye8RWGtm9epnHt6cFcLLPP3kvHrU5IZkmpT/AFL5vU9NlOQ0OWOl1sumt7jXGq/Ha1nrUgwKJ7RkkcI/JvbX7hh4GPDQ7igD1ErZRixWR/xz6qHufp6LuYzb27rLpCTQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
+ CO1PR11MB5121.namprd11.prod.outlook.com (2603:10b6:303:98::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7292.38; Tue, 20 Feb 2024 08:50:41 +0000
+Received: from DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::81e3:37ec:f363:689e]) by DS7PR11MB5966.namprd11.prod.outlook.com
+ ([fe80::81e3:37ec:f363:689e%6]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
+ 08:50:40 +0000
+Date: Tue, 20 Feb 2024 16:20:58 +0800
+From: Yan Zhao <yan.y.zhao@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+CC: <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-kselftest@vger.kernel.org>, <pbonzini@redhat.com>, <shuah@kernel.org>,
+	<stevensd@chromium.org>
+Subject: Re: [RFC PATCH v2 0/3] KVM: allow mapping of compound tail pages for
+ IO or PFNMAP mapping
+Message-ID: <ZdRg6pubbRSqWehY@yzhao56-desk.sh.intel.com>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20240103084327.19955-1-yan.y.zhao@intel.com>
+ <Zcrc7UxSO3-Cncjm@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <Zcrc7UxSO3-Cncjm@google.com>
+X-ClientProxiedBy: SG2PR01CA0140.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::20) To DS7PR11MB5966.namprd11.prod.outlook.com
+ (2603:10b6:8:71::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220081205.135063-1-raychi@google.com>
-In-Reply-To: <20240220081205.135063-1-raychi@google.com>
-From: Ray Chi <raychi@google.com>
-Date: Tue, 20 Feb 2024 16:20:50 +0800
-Message-ID: <CAPBYUsAnuyLwek39GJiwin_Pit0waH-2fhQv-G21OYkjoz051w@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: gadget: remove warning during kernel boot
-To: Thinh.Nguyen@synopsys.com, gregkh@linuxfoundation.org, 
-	quic_uaggarwa@quicinc.com
-Cc: albertccwang@google.com, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|CO1PR11MB5121:EE_
+X-MS-Office365-Filtering-Correlation-Id: 35234f0e-69a6-4c05-0490-08dc31f1041d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aqVVEkUITMV033dPmYWPyvN49KPOJlr24GQzmani3oE7ggPh95XZVCG3x9f9YukeNzzs/Ow/t0q92eu83zy5ZTkjqWymudBaU7khEuysjknGk2lA9rrp1h0LflpmPN0F4Dkyg+wUJRmOw9kjsic4obCee+MM+vmd3y4oHdvIVAkKjA8zAfzX+6NP3LNd4TvaCLr7aTLobbpUsyhd6FiWp1sigkueGp2oVvDFT77crMzOeDXzEcuodQ0XPQaH2c+wFRvFiWuf/cVNy2dvUwNIJdTaxBl5vw/YMLhrIahFWAicJqISdTRB6m8ntDHjnDVqSQ6JPPkwOIbf1tiBXDa/n+TEBhpnVQT7Kdk5mjvqwXowjTNXzZwXwwDcYA9GNOOS6Am9G3j7oH7ST50DXchM9KIU0On6eDRygDCnmvweJWoMwXgiiQ+O0hRCtfwlBAB3c6jZnRm+F9jw4ddE/ExPNJxdLMVSW9N4ZzdHiSyIqoPhaXwo8GO67a300W6ubqiezmISgyar3K2JVUkYJ7pJpMdMrMUapxjp/nxWICwnwro=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FMomVVPv+5XCqTU8Kwlrmsf5krP07bLFX+3+J6DaPn+tBO9vHwlvRuolOLjb?=
+ =?us-ascii?Q?wDkCxVW/UpuE6eHEsHzlNn2rkAiHBvB1YWyAidohAdS99dOtAi5ZP8TR97vY?=
+ =?us-ascii?Q?LQ15KEhgQrA4C7+OcQ5Zlxd0qPeKIaKwDw6JXG8ZAEFIB2HTiYj+nJjNHM6D?=
+ =?us-ascii?Q?PraE4Nn3Xu3BK+u4oNpp8gWCUfeT9ReN5c+Xi8q6DsEGdhQNmka1IoymtjEj?=
+ =?us-ascii?Q?RKuPOjzeV/Tol5MCH9a3o6rkFd6t8w2RmoAtQdmuHAbAe/D12j3JP3ffpIgf?=
+ =?us-ascii?Q?r+54KjxhYS47hRYQyu2AhRuo3bAsQ89wX5MYoY7zh317H0k3IaIpc6OfeI1I?=
+ =?us-ascii?Q?wIAovOBq5yVmmXvArhBaBkBN1X9aUtYo6UVqoea4JEy0U1YcLR2lvp1q2LUx?=
+ =?us-ascii?Q?CNURi4xfyi4CJoLVRWUXM21k6LQRo4DqmczprujgAA340/0PZfdiM41I3Oli?=
+ =?us-ascii?Q?uekqj1UQeRxF9ZKk0Ug4Z91xVQ4Cdzm6xfMszq/0gD9AZgjoVfxndltbE4mz?=
+ =?us-ascii?Q?eOsaOCb76oIMT7LPq6FfxPxyFC5q+uTqNH19N4G1omXmciAyaVK6dtNBbBnl?=
+ =?us-ascii?Q?EKSMpOVp4xPajFn55e/NG+YNLOYpBb/+3JFwutLu2tkVtOZ/Aei8fD1aYiS1?=
+ =?us-ascii?Q?ONCCyubmRmw9e2jf+9a0aPofi1z6UNdkfhgf/vPYL9Axk5qZdu8HhroE1Wpt?=
+ =?us-ascii?Q?NsGV9PvGqpm7HfWv0Qf9B+IOeE0TQf4dEZ7u7agKy1yf8psK7UqTdVgoUtu8?=
+ =?us-ascii?Q?0/EKSUJ4NXNEdjkoqOcWt85Lqcw0QJzkJ68faDR+t4mHFylbcOVkOnoDx6MD?=
+ =?us-ascii?Q?5bOlV9us+kiqfEWlQbS+9A3Fk0zWt0P9s8KPTNIsnkIU4SK2L9vdyXsDKqpx?=
+ =?us-ascii?Q?T+0Txv2lMqrhHo237ZEEHkqSzugnk9rXSRACerBmcthldIv+4+7GQg3zlizS?=
+ =?us-ascii?Q?TU0kGrPHBd3dCbheokMpwWAhpcqVNRq7zEkk0aEljwQy++Q3I4vF64/S98ZK?=
+ =?us-ascii?Q?wRlch9WZtEAv299OV5EeILkXB5xVVOOgDznQm2nv5IC+7YCMcPVAqgBRGonI?=
+ =?us-ascii?Q?QeFgc0F4+lMr3s6QDS5r0/8Xpfv43MH9ruAH3YFt0zMquHCD1aCCx6sckbDv?=
+ =?us-ascii?Q?ep/Ylp5eZsUMX7TS8m6J9RU8Ndj6cBxxVCwoYAzjccOEPzvXr5jJUduvnwWy?=
+ =?us-ascii?Q?0MjAYSD8DBiyIVtdJzuQi+SyuBG+/xtbFhQu08eTQFcQxkTgYneCb7ZbKRdg?=
+ =?us-ascii?Q?o2Sxnb1ELFS+c9ifngng7CPSM+VwmFvSM7cFHFjbn9jvH3cG1MaNtJr6EhDs?=
+ =?us-ascii?Q?XU7aLgbfG5yPgNqr1LW5oOitqI54MDNnyg8KRToLmj3njdvvrvrChya7o424?=
+ =?us-ascii?Q?izRU+ukvZwrVPSV2Re3t2+657hzrFuOUdhdDcSuQFxm4b8I8YX+2KeP+wBtd?=
+ =?us-ascii?Q?dZ88TRZAmu4JwEXeDCbKoMVr2TlY6OKZX53EC6KhezEBcmVC1fiwusy2D1sN?=
+ =?us-ascii?Q?Xr/iHGajD3AEexQCuXQ46EW1fP8yDVYUpeFEgKQ4dylYFjskfQZ8R/WIO5CH?=
+ =?us-ascii?Q?R0XeYsnaKlH4S8kIAtwEAnRHeCc7dki4ee0iQBQC?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 35234f0e-69a6-4c05-0490-08dc31f1041d
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 08:50:40.6892
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YBAJ3enmaG6nJGVD12eglf8oILlwC5k9XvwR17Rxy5zUgz6+axavbXWcb+1GJUgDHMauCoy5JBZar8axG3soGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5121
+X-OriginatorOrg: intel.com
 
-On Tue, Feb 20, 2024 at 4:12=E2=80=AFPM Ray Chi <raychi@google.com> wrote:
->
-> The dwc3->gadget_driver is not initialized during the dwc3 probe
-> process. This leads to a warning when the runtime power management (PM)
-> attempts to suspend the gadget using dwc3_gadget_suspend().
->
-> This patch adds a check to prevent the warning.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereference in =
-dwc3_gadget_suspend")
-> Signed-off-by: Ray Chi <raychi@google.com>
-> ---
->  drivers/usb/dwc3/gadget.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> index 28f49400f3e8..de987cffe1ec 100644
-> --- a/drivers/usb/dwc3/gadget.c
-> +++ b/drivers/usb/dwc3/gadget.c
-> @@ -4708,6 +4708,9 @@ int dwc3_gadget_suspend(struct dwc3 *dwc)
->         unsigned long flags;
->         int ret;
->
-> +       if (!dwc->gadget_driver)
-> +               return 0;
-> +
->         ret =3D dwc3_gadget_soft_disconnect(dwc);
->         if (ret)
->                 goto err;
-> --
-> 2.44.0.rc0.258.g7320e95886-goog
->
+On Mon, Feb 12, 2024 at 07:07:25PM -0800, Sean Christopherson wrote:
+> On Wed, Jan 03, 2024, Yan Zhao wrote:
+> > This is a v2 for previous series [1] to allow mapping for compound tail
+> > pages for IO or PFNMAP mapping.
+> > 
+> > Compared to v1, this version provides selftest to check functionality in
+> > KVM to map memslots for MMIO BARs (VMAs with flag VM_IO | VM_PFNMAP), as
+> > requested by Sean in [1].
+> 
+> Doh.  So I didn't intend for you to have to create a mock device just to be able
+> to run a selftest.  I assumed it would be easy-ish to utilize an existing generic
+> device.  I take it that's not the case?
 
-Attached the warning message.
+The selftest requires a vma with flag (VM_IO | VM_PFNMAP) with non-reserved
+pages as backend.
 
-02-20 06:01:24.227725  root    86    86 W Call trace:
-02-20 06:01:24.227730  root    86    86 W         :
-dwc3_ep0_out_start+0xec/0x22c
-02-20 06:01:24.227738  root    86    86 W         :
-dwc3_ep0_stall_and_restart+0xb8/0xd4
-02-20 06:01:24.227747  root    86    86 W         :
-dwc3_gadget_soft_disconnect+0x1a8/0x284
-02-20 06:01:24.227756  root    86    86 W         :
-dwc3_gadget_suspend+0x18/0xe4
-02-20 06:01:24.227764  root    86    86 W         :
-dwc3_suspend_common+0x5c/0x320
-02-20 06:01:24.227774  root    86    86 W         :
-dwc3_runtime_suspend+0x30/0x4c
-02-20 06:01:24.227783  root    86    86 W         :
-pm_generic_runtime_suspend+0x3c/0x54
-02-20 06:01:24.227793  root    86    86 W         : __rpm_callback+0xfc/0x7=
-6c
-02-20 06:01:24.227802  root    86    86 W         : rpm_suspend+0x534/0xd78
-02-20 06:01:24.227811  root    86    86 W         : dwc3_runtime_idle+0xcc/=
-0x104
-02-20 06:01:24.227819  root    86    86 W         : rpm_idle+0x228/0x4e0
-02-20 06:01:24.227827  root    86    86 W         : update_autosuspend+0x50=
-/0xb8
-02-20 06:01:24.227836  root    86    86 W         :
-__pm_runtime_use_autosuspend+0x50/0x6c
+Without a mock device, I don't find a easy way to let the selftest take
+effect.
+So, I borrowed the way in "tools/testing/selftests/mm/hmm-tests.c" which
+uses a mock driver in "lib/test_hmm.c".
 
