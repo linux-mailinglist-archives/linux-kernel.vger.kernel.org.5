@@ -1,331 +1,188 @@
-Return-Path: <linux-kernel+bounces-73745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73746-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F48585CA5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:06:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AE1E85CA63
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 23:06:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB5BE1F2229D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:06:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37F372831C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:06:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED94153BD8;
-	Tue, 20 Feb 2024 22:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F1D11534E0;
+	Tue, 20 Feb 2024 22:06:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EJNbxGYr"
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="J9pURTX7"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB08C1534E6
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:05:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20EC5152DF6
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 22:06:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708466745; cv=none; b=cNz9E3C2nG82WHEt1PhlfufGw6lecL0Gl+wCnnnmBvfS2Ovc+TEmrgpM2my66djmYPjqR4+7ylEF5MJOzl7v5sC0a6vCPiACVFyvWemLS/uDse8gG3D8UR2i9bQdbkOe1FWF5laJjVpOabxCJ06TJz45nu+sU+lIV5Pd1LFqOpg=
+	t=1708466781; cv=none; b=CaMq8L4/TlaUBvO0dZCvpTLsZwM/gsbm19LpfCVL4IJa3Eda9nY47YX24E6UKcARkhDD1mS+igSQrZhjioQb2ftwE6aID55nn2H/TKhGsakeVJudLcojPXr6m4332Giw/R3Gs5L55srdjm35jR5b2PBVPATBH3T12DcbKFkr3R0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708466745; c=relaxed/simple;
-	bh=RipjSSNZKUysvlLUgHtGKwmWhC3T7MpgeeiBmI/vAQ8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=l+IyyIrnNri8EBvbHSz1JVVUMZqmw8f7GVevVcgMXDQSA0up7sRGecpf2wPHP8Xb/c8j9R6QaLvYjis8zkJLigqTj3Z9p0NdYJL8JXyxFVwRLR+/uz+UCl3+TnUIDOP0Nb7OQz5UL/phrVn/6+0pqo5FdpwGdvKe3TY5tsR1v7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EJNbxGYr; arc=none smtp.client-ip=209.85.218.49
+	s=arc-20240116; t=1708466781; c=relaxed/simple;
+	bh=GhaDgjWdtUOht8rngj1jEJh+EUkKVJhegTHN4rK9F5U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LOWhqThJPRKJJVYv5KcEm+UgsVhkvX7dnLRL5xyf1+XvgCtEGStPzMBStLI91HFjW8JVmr7xQVe31Bf3xHscpb5Pkf/CP01Ig/skB6TGcvLwjhSJbKpeOSv0bq4vNDIGsK6JwsJ8mQfij89lGFYEOtVcjOIb6gBkMbCEMib3JiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=J9pURTX7; arc=none smtp.client-ip=209.85.218.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a3e6f79e83dso379346566b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:05:43 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a293f2280c7so852143466b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 14:06:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708466742; x=1709071542; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T9zRpY33qAIdmFGHIBJk/pPfEhewGFQ6GNiJNwETb8o=;
-        b=EJNbxGYr/iu7928/OKkhTfbQ8dhJ3V2t234ygLvWeEHKE0SPB/HuQEW8ASRf1x3pTn
-         hk6s+EiXpuTtml3SxgadCi3ku1OmQmsAT7B3nFb5HC7sq7gr5XXNGlUGJe4oicp0xOYL
-         EmW98Wn1fYmfwWalt6k7htXYfRAAQlODNTuQ4jCw25VzfeCjHMxyouhi3eEsYsTG08pZ
-         pDg4FCLnMInSt068T9IILLuuZk3xbvtO30WS+zyt3ZwJNvf5f6CRMf2EmunEGK3wPExf
-         3hQuv9uZAAbTdkY0aWtlPXa3jDkQOIgTN+Lwpnt5oTBFvFSfmNikEXRecmf2fcbAFk9V
-         SbNg==
+        d=linaro.org; s=google; t=1708466777; x=1709071577; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WayrAqJKlPUd9zETfUw1Ts8bEtutpMZwBNJvVgBjtaI=;
+        b=J9pURTX7qJmHmPjZOn2JGsBmsu34gaan7cBdEpRrcmI+KLlokuVtTSVap2u5b5hlxz
+         FkmvONzBXBekIqlkgd9wnIq5BmEhIMUmFzByUYr17WRsiVU5I8Mdi6erE8Dky77eYQyL
+         pi7i7KraOtTPyZSgc9xlwqpZm+bPK/Veo3bpTlANYdmwYhuUdnw1C/hiGaDmCU0W4cNw
+         p/2qnzQztYPrDU9x2LVnegfq8Dj6I1nM6mjaNZa1HRQrDaesD0xQJrhqTR4m9b18W73D
+         26QOSDtvs3y4GUnkOHCej666e9Q6KSOEDtPEGEZem2FyPrps9qT1MJ+LbcFJIDo4hDN8
+         wfrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708466742; x=1709071542;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T9zRpY33qAIdmFGHIBJk/pPfEhewGFQ6GNiJNwETb8o=;
-        b=VhV2iVhRO3toZxuS1jOH+ZsndqXe8vSPDzTlRLoW3qnOBZyj2Bu0+lvZdtyPvwDlsN
-         9L2iMI76jVVZL6xfd1yFOyCWds15FDohVrtOnwu3biy1DyrGqdFlvQDdA6Uc4nl9YDfk
-         7izBv5Q0fJy/6r7gvhzLdvSehDPOcO8l4T2pzyq1BSNwM2BgO4eOHda6E+i3y4NDXCuD
-         j1LzxqZmdCkiWePmOhIirmVYRjl9CKffvSB2yN8ARJ+UhHq66TayhxfbwFxGfDU2FxbM
-         RSsctV8hV0148gv20Mm5om7HaqJgjeOxKx28trezgNU3Dod+a9lE2i84QvMieD1ke4ms
-         NaIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV0T5roIUcijIetqO1TMZmwWafQ7U0l/4kesSpGNBV6KA17VgHUHRiW2LvRPYJEL+Kc7/EXkI9+kBjEuTrGtTdrzxIXNv2fOfvKalkF
-X-Gm-Message-State: AOJu0YxjkotAJG2M4v0W2Jk6z/VHbFx6sf9u27UHzCcwdob287syIPgM
-	0gT2iIjhSvVYdpfB129iOm4syoNyFz4ePIy7WukPeUZnQKdOcyyVpsy60pGvAOw=
-X-Google-Smtp-Source: AGHT+IEoQNAiK5tOVQR3Wmg39prZ7Wt2vULxskVanvYB09ZOUWSrkAhAWhpUPxO0aGELsOY8C7I5MQ==
-X-Received: by 2002:a17:906:4105:b0:a3e:e462:a326 with SMTP id j5-20020a170906410500b00a3ee462a326mr2883393ejk.9.1708466742412;
-        Tue, 20 Feb 2024 14:05:42 -0800 (PST)
-Received: from [127.0.1.1] ([188.24.162.93])
-        by smtp.gmail.com with ESMTPSA id jw15-20020a170906e94f00b00a3e86a9c55asm2716087ejb.146.2024.02.20.14.05.41
+        d=1e100.net; s=20230601; t=1708466777; x=1709071577;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WayrAqJKlPUd9zETfUw1Ts8bEtutpMZwBNJvVgBjtaI=;
+        b=Vj6sTuvujDDLTmPsAbF460Nf0hCk+dYj/E+LN5JwnNZ+XPeIINc/c8KRNzJGNIS96O
+         avlCRjvKMPdx+5icgKSml8aOhf/pv5yaT0RT5D25A1r7CyyLL1WLM/xpiBVy6t85pSdj
+         xI+/TQ/6mHSBfSEX4Eevanpo3Z/4TVb9KWSIv6wFU9XLd0SpGL6a4JfZ8fBknrma9Tge
+         jfhceJym3rPF0RqNTSSa2nDBBOQv5Quxpf7q7Z957Q71YsjPPSbPaWRywzS/xIz/1/f3
+         YlIPV/dXC5iOM6z2qiAp+KKDOOMOj9gZly2aNuX5jWO0NNhoJKpUq6lcWnUcZat3riI4
+         sHig==
+X-Forwarded-Encrypted: i=1; AJvYcCWWxjSCebMMB+xEQqbsOmjgo+KMvCt/4tWoDqEko7VrSt5BKRHpqgG4FFWQijOGtvLXaxgXwEhUZ+ecTxjhhBGHkpMQz3btZPVub0ff
+X-Gm-Message-State: AOJu0YxffaHD+Q1GHNtnt1zZXT4tKHk1BV7K2/ygl5u6O2orw165vbE1
+	T6d4XOGh/n/aRaLRZD4K0e98fUb6m4X53iP7E0X52wi3+AilGO5NwMgKI/VtjyI=
+X-Google-Smtp-Source: AGHT+IG3snKOIDgwa63ac2HZsTDoHUOHQJjsrhmM0VJAueATDqhQcjXoXx0E9aN1/Rc8QHgCkh4A/Q==
+X-Received: by 2002:a17:906:40ce:b0:a3e:69d7:3514 with SMTP id a14-20020a17090640ce00b00a3e69d73514mr5448019ejk.26.1708466777363;
+        Tue, 20 Feb 2024 14:06:17 -0800 (PST)
+Received: from gpeter-l.lan (host-92-18-74-232.as13285.net. [92.18.74.232])
+        by smtp.gmail.com with ESMTPSA id r8-20020a170906364800b00a3e4e7ad9dbsm3413771ejb.68.2024.02.20.14.06.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 14:05:42 -0800 (PST)
-From: Abel Vesa <abel.vesa@linaro.org>
-Date: Wed, 21 Feb 2024 00:05:23 +0200
-Subject: [PATCH v4 3/3] phy: qcom: edp: Add v6 specific ops and X1E80100
- platform support
+        Tue, 20 Feb 2024 14:06:16 -0800 (PST)
+From: Peter Griffin <peter.griffin@linaro.org>
+To: arnd@arndb.de,
+	krzysztof.kozlowski@linaro.org,
+	linux@roeck-us.net,
+	wim@linux-watchdog.org,
+	alim.akhtar@samsung.com,
+	jaewon02.kim@samsung.com,
+	semen.protsenko@linaro.org
+Cc: alexey.klimov@linaro.org,
+	kernel-team@android.com,
+	peter.griffin@linaro.org,
+	tudor.ambarus@linaro.org,
+	andre.draszik@linaro.org,
+	saravanak@google.com,
+	willmcvicker@google.com,
+	linux-fsd@tesla.com,
+	linux-watchdog@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-samsung-soc@vger.kernel.org
+Subject: [PATCH v6 0/2] Add regmap support to exynos-pmu for protected PMU regs
+Date: Tue, 20 Feb 2024 22:06:11 +0000
+Message-ID: <20240220220613.797068-1-peter.griffin@linaro.org>
+X-Mailer: git-send-email 2.44.0.rc0.258.g7320e95886-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240221-phy-qualcomm-edp-x1e80100-v4-3-4e5018877bee@linaro.org>
-References: <20240221-phy-qualcomm-edp-x1e80100-v4-0-4e5018877bee@linaro.org>
-In-Reply-To: <20240221-phy-qualcomm-edp-x1e80100-v4-0-4e5018877bee@linaro.org>
-To: Andy Gross <agross@kernel.org>, Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Abhinav Kumar <quic_abhinavk@quicinc.com>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Johan Hovold <johan@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Abel Vesa <abel.vesa@linaro.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7149; i=abel.vesa@linaro.org;
- h=from:subject:message-id; bh=RipjSSNZKUysvlLUgHtGKwmWhC3T7MpgeeiBmI/vAQ8=;
- b=owEBbQKS/ZANAwAKARtfRMkAlRVWAcsmYgBl1SIvP7SgTS+2RIWll+viIvJqBvD39GET1VSfT
- S5w/2vdEBSJAjMEAAEKAB0WIQRO8+4RTnqPKsqn0bgbX0TJAJUVVgUCZdUiLwAKCRAbX0TJAJUV
- VuO5D/0WkNQZv0n1CuspuYbZai6Kc+5hSuIOUOskm14bWB4kPJho3BkxJtRWFymtrSQJJel9Do0
- xrG2Nk7suLKz84oKpiGReZl7AWQ15jsAULKmDAXin7c5Z7n+cbpEuuRTuDAwS1pz5EOrgIRDsJX
- HlLUbzHP/YMH2zwzlWQ8xPPbXu4nxFQsiLMecTWjf8PFeHdW4w7JU4K4KocU+OHkxUZbElRortS
- MbH7MpqC6h9VolE+IWkVYXbrP7JPX1sI+tmLtFYWGoB5q8C4v2xRiRzgu2tIRwQadXxwssjioOb
- RjY/NzXTv95uRfTAvvCskC/+xzOhX51AipJtIHa0Q6m26AHkvAJVhQE37oNj1bRxmM0izBpQLh/
- l6dm/D32qvmj23zxFTtTSWER/J6/l5RBaGLaLAjZPSfRKENgOyWRivAwVz5WQ0kwfLPNv6j8uRD
- r1GzKy2TViCk5iLKpuCy/2CS0cD/he1KDsGDzPctjBrS72uPuFtiGshSxxSdTl9/10IKOj0AIBI
- GZfb2OLfBbMpqawD4jK3d5QOcSTZwsjlCEjWvVa8ZQh6146EbqUHJ7qPudxE5PeEhm3Z9TaqZDM
- IPqcMesYZWWwcaftWHPdaQ3JcxFy+SJrOFwae/OVqBfGnyQdnvS8O9vr7d5ivesIEd0VGcZcFLX
- Nd+BFjK+dHNMv3Q==
-X-Developer-Key: i=abel.vesa@linaro.org; a=openpgp;
- fpr=6AFF162D57F4223A8770EF5AF7BF214136F41FAE
+Content-Transfer-Encoding: 8bit
 
-Add v6 HW support by implementing the version ops. Add the X1E80100
-compatible and match config as it is v6.
+Hi folks,
 
-Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
----
- drivers/phy/qualcomm/phy-qcom-edp.c | 180 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 180 insertions(+)
+This is a v6 of the series to add support for protected PMU registers found
+on gs101 and derivative SoCs. In v2 and later it was re-worked to be based
+on a regmap abstraction that I think leads to a much neater overall
+solution.
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-edp.c b/drivers/phy/qualcomm/phy-qcom-edp.c
-index 9bbf977c7b4e..da2b32fb5b45 100644
---- a/drivers/phy/qualcomm/phy-qcom-edp.c
-+++ b/drivers/phy/qualcomm/phy-qcom-edp.c
-@@ -24,6 +24,7 @@
- 
- #include "phy-qcom-qmp-dp-phy.h"
- #include "phy-qcom-qmp-qserdes-com-v4.h"
-+#include "phy-qcom-qmp-qserdes-com-v6.h"
- 
- /* EDP_PHY registers */
- #define DP_PHY_CFG                              0x0010
-@@ -532,6 +533,184 @@ static const struct qcom_edp_phy_cfg sc8280xp_edp_phy_cfg = {
- 	.ver_ops = &qcom_edp_phy_ops_v4,
- };
- 
-+static int qcom_edp_phy_power_on_v6(const struct qcom_edp *edp)
-+{
-+	u32 val;
-+
-+	writel(DP_PHY_PD_CTL_PWRDN | DP_PHY_PD_CTL_AUX_PWRDN |
-+	       DP_PHY_PD_CTL_LANE_0_1_PWRDN | DP_PHY_PD_CTL_LANE_2_3_PWRDN |
-+	       DP_PHY_PD_CTL_PLL_PWRDN | DP_PHY_PD_CTL_DP_CLAMP_EN,
-+	       edp->edp + DP_PHY_PD_CTL);
-+	writel(0xfc, edp->edp + DP_PHY_MODE);
-+
-+	return readl_poll_timeout(edp->pll + QSERDES_V6_COM_CMN_STATUS,
-+				     val, val & BIT(7), 5, 200);
-+}
-+
-+static int qcom_edp_phy_com_resetsm_cntrl_v6(const struct qcom_edp *edp)
-+{
-+	u32 val;
-+
-+	writel(0x20, edp->pll + QSERDES_V6_COM_RESETSM_CNTRL);
-+
-+	return readl_poll_timeout(edp->pll + QSERDES_V6_COM_C_READY_STATUS,
-+				     val, val & BIT(0), 500, 10000);
-+}
-+
-+static int qcom_edp_com_bias_en_clkbuflr_v6(const struct qcom_edp *edp)
-+{
-+	/* Turn on BIAS current for PHY/PLL */
-+	writel(0x1f, edp->pll + QSERDES_V6_COM_PLL_BIAS_EN_CLK_BUFLR_EN);
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_com_configure_ssc_v6(const struct qcom_edp *edp)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+	u32 step1;
-+	u32 step2;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+	case 2700:
-+	case 8100:
-+		step1 = 0x92;
-+		step2 = 0x01;
-+		break;
-+
-+	case 5400:
-+		step1 = 0x18;
-+		step2 = 0x02;
-+		break;
-+
-+	default:
-+		/* Other link rates aren't supported */
-+		return -EINVAL;
-+	}
-+
-+	writel(0x01, edp->pll + QSERDES_V6_COM_SSC_EN_CENTER);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_SSC_ADJ_PER1);
-+	writel(0x36, edp->pll + QSERDES_V6_COM_SSC_PER1);
-+	writel(0x01, edp->pll + QSERDES_V6_COM_SSC_PER2);
-+	writel(step1, edp->pll + QSERDES_V6_COM_SSC_STEP_SIZE1_MODE0);
-+	writel(step2, edp->pll + QSERDES_V6_COM_SSC_STEP_SIZE2_MODE0);
-+
-+	return 0;
-+}
-+
-+static int qcom_edp_com_configure_pll_v6(const struct qcom_edp *edp)
-+{
-+	const struct phy_configure_opts_dp *dp_opts = &edp->dp_opts;
-+	u32 div_frac_start2_mode0;
-+	u32 div_frac_start3_mode0;
-+	u32 dec_start_mode0;
-+	u32 lock_cmp1_mode0;
-+	u32 lock_cmp2_mode0;
-+	u32 code1_mode0;
-+	u32 code2_mode0;
-+	u32 hsclk_sel;
-+
-+	switch (dp_opts->link_rate) {
-+	case 1620:
-+		hsclk_sel = 0x5;
-+		dec_start_mode0 = 0x34;
-+		div_frac_start2_mode0 = 0xc0;
-+		div_frac_start3_mode0 = 0x0b;
-+		lock_cmp1_mode0 = 0x37;
-+		lock_cmp2_mode0 = 0x04;
-+		code1_mode0 = 0x71;
-+		code2_mode0 = 0x0c;
-+		break;
-+
-+	case 2700:
-+		hsclk_sel = 0x3;
-+		dec_start_mode0 = 0x34;
-+		div_frac_start2_mode0 = 0xc0;
-+		div_frac_start3_mode0 = 0x0b;
-+		lock_cmp1_mode0 = 0x07;
-+		lock_cmp2_mode0 = 0x07;
-+		code1_mode0 = 0x71;
-+		code2_mode0 = 0x0c;
-+		break;
-+
-+	case 5400:
-+		hsclk_sel = 0x1;
-+		dec_start_mode0 = 0x46;
-+		div_frac_start2_mode0 = 0x00;
-+		div_frac_start3_mode0 = 0x05;
-+		lock_cmp1_mode0 = 0x0f;
-+		lock_cmp2_mode0 = 0x0e;
-+		code1_mode0 = 0x97;
-+		code2_mode0 = 0x10;
-+		break;
-+
-+	case 8100:
-+		hsclk_sel = 0x0;
-+		dec_start_mode0 = 0x34;
-+		div_frac_start2_mode0 = 0xc0;
-+		div_frac_start3_mode0 = 0x0b;
-+		lock_cmp1_mode0 = 0x17;
-+		lock_cmp2_mode0 = 0x15;
-+		code1_mode0 = 0x71;
-+		code2_mode0 = 0x0c;
-+		break;
-+
-+	default:
-+		/* Other link rates aren't supported */
-+		return -EINVAL;
-+	}
-+
-+	writel(0x01, edp->pll + QSERDES_V6_COM_SVS_MODE_CLK_SEL);
-+	writel(0x0b, edp->pll + QSERDES_V6_COM_SYSCLK_EN_SEL);
-+	writel(0x02, edp->pll + QSERDES_V6_COM_SYS_CLK_CTRL);
-+	writel(0x0c, edp->pll + QSERDES_V6_COM_CLK_ENABLE1);
-+	writel(0x06, edp->pll + QSERDES_V6_COM_SYSCLK_BUF_ENABLE);
-+	writel(0x30, edp->pll + QSERDES_V6_COM_CLK_SELECT);
-+	writel(hsclk_sel, edp->pll + QSERDES_V6_COM_HSCLK_SEL_1);
-+	writel(0x07, edp->pll + QSERDES_V6_COM_PLL_IVCO);
-+	writel(0x08, edp->pll + QSERDES_V6_COM_LOCK_CMP_EN);
-+	writel(0x36, edp->pll + QSERDES_V6_COM_PLL_CCTRL_MODE0);
-+	writel(0x16, edp->pll + QSERDES_V6_COM_PLL_RCTRL_MODE0);
-+	writel(0x06, edp->pll + QSERDES_V6_COM_CP_CTRL_MODE0);
-+	writel(dec_start_mode0, edp->pll + QSERDES_V6_COM_DEC_START_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_DIV_FRAC_START1_MODE0);
-+	writel(div_frac_start2_mode0, edp->pll + QSERDES_V6_COM_DIV_FRAC_START2_MODE0);
-+	writel(div_frac_start3_mode0, edp->pll + QSERDES_V6_COM_DIV_FRAC_START3_MODE0);
-+	writel(0x12, edp->pll + QSERDES_V6_COM_CMN_CONFIG_1);
-+	writel(0x3f, edp->pll + QSERDES_V6_COM_INTEGLOOP_GAIN0_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_INTEGLOOP_GAIN1_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_VCO_TUNE_MAP);
-+	writel(lock_cmp1_mode0, edp->pll + QSERDES_V6_COM_LOCK_CMP1_MODE0);
-+	writel(lock_cmp2_mode0, edp->pll + QSERDES_V6_COM_LOCK_CMP2_MODE0);
-+
-+	writel(0x0a, edp->pll + QSERDES_V6_COM_BG_TIMER);
-+	writel(0x14, edp->pll + QSERDES_V6_COM_PLL_CORE_CLK_DIV_MODE0);
-+	writel(0x00, edp->pll + QSERDES_V6_COM_VCO_TUNE_CTRL);
-+	writel(0x1f, edp->pll + QSERDES_V6_COM_PLL_BIAS_EN_CLK_BUFLR_EN);
-+	writel(0x0f, edp->pll + QSERDES_V6_COM_CORE_CLK_EN);
-+	writel(0xa0, edp->pll + QSERDES_V6_COM_VCO_TUNE1_MODE0);
-+	writel(0x03, edp->pll + QSERDES_V6_COM_VCO_TUNE2_MODE0);
-+
-+	writel(code1_mode0, edp->pll + QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE0);
-+	writel(code2_mode0, edp->pll + QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE0);
-+
-+	return 0;
-+}
-+
-+static const struct phy_ver_ops qcom_edp_phy_ops_v6 = {
-+	.com_power_on		= qcom_edp_phy_power_on_v6,
-+	.com_resetsm_cntrl	= qcom_edp_phy_com_resetsm_cntrl_v6,
-+	.com_bias_en_clkbuflr	= qcom_edp_com_bias_en_clkbuflr_v6,
-+	.com_configure_pll	= qcom_edp_com_configure_pll_v6,
-+	.com_configure_ssc	= qcom_edp_com_configure_ssc_v6,
-+};
-+
-+static struct qcom_edp_phy_cfg x1e80100_phy_cfg = {
-+	.swing_pre_emph_cfg = &dp_phy_swing_pre_emph_cfg,
-+	.ver_ops = &qcom_edp_phy_ops_v6,
-+};
-+
- static int qcom_edp_phy_power_on(struct phy *phy)
- {
- 	const struct qcom_edp *edp = phy_get_drvdata(phy);
-@@ -933,6 +1112,7 @@ static const struct of_device_id qcom_edp_phy_match_table[] = {
- 	{ .compatible = "qcom,sc8180x-edp-phy", .data = &sc7280_dp_phy_cfg, },
- 	{ .compatible = "qcom,sc8280xp-dp-phy", .data = &sc8280xp_dp_phy_cfg, },
- 	{ .compatible = "qcom,sc8280xp-edp-phy", .data = &sc8280xp_edp_phy_cfg, },
-+	{ .compatible = "qcom,x1e80100-dp-phy", .data = &x1e80100_phy_cfg, },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, qcom_edp_phy_match_table);
+The advantage of the regmap abstraction is that most leaf drivers that
+read/write PMU registers need minimal changes.
+
+Example of Exynos drivers that require PMU register access are:
+* watchdog
+* usb phy
+* mipi phy
+* ufs phy
+
+This series has been tested on Pixel 6 Oriole / gs101 (by me), exynos850
+(by Sam) and odroid xu3 (exynos 5422) by Alexey. That confirms that both
+the regmap mmio parts and regmap SMC parts are working correctly.
+
+The expectation is this series would be merged via Krzysztofs Samsung Exynos
+tree.
+
+regards,
+
+Peter
+
+Changes since v5:
+ - Update kerneldoc comment property -> propname 
+
+Changes since v4:
+ - Use same argument names as in struct regmap_config
+ - Remove inline keyword and rely on compiler
+ - Update kerneldoc wording
+ - property -> propname argument rename
+ - reverse Xmas tree
+ - Only call of_node_put() when of_parse_phandle() is called
+ - Collect tags
+
+Changes since v3:
+ - Fix PMUALIVE_MASK
+ - Add TENSOR_ prefix
+ - clear SET_BITS bits on each loop iteration
+ - change set_bit to set_bits func name
+ - Fix some alignment
+ - Add missing return on dev_err_probe
+ - Reduce indentation in loop
+
+Changes since v2
+ - Add select REGMAP to Kconfig
+ - Add constant for SET/CLEAR bits
+ - Replace kerneldoc with one line comment
+ - Fix kerneldoc for EXPORT_SYMBOL_GPL funcs
+ - remove superfluous extern keyword
+ - dev_err_probe() on probe error
+ - shorten regmcfg name
+ - no compatibles inside probe, use match data
+ - don't mix declarations with/without initializations
+ - tensor_sec_reg_read() use mmio to avoid access restrictions
+ - Collect up Reviewed-by
+ - const for regmap_config structs
+
+Changes since v1:
+ - Refactor to use custom regmap to abstract SMC register access (Sam / Guenter)
+ - Add deferred probing support (Saravana / Krzysztof)
+
+v5 lore: https://lore.kernel.org/all/20240219204238.356942-1-peter.griffin@linaro.org/
+v4 lore: https://lore.kernel.org/all/20240208161700.268570-1-peter.griffin@linaro.org/
+v3 lore: https://lore.kernel.org/all/20240202145731.4082033-1-peter.griffin@linaro.org/
+v2 lore: https://lore.kernel.org/lkml/20240129211912.3068411-1-peter.griffin@linaro.org/
+v1 lore: https://lore.kernel.org/all/20240122225710.1952066-1-peter.griffin@linaro.org/
+
+Peter Griffin (2):
+  soc: samsung: exynos-pmu: Add regmap support for SoCs that protect PMU
+    regs
+  watchdog: s3c2410_wdt: use exynos_get_pmu_regmap_by_phandle() for PMU
+    regs
+
+ drivers/soc/samsung/Kconfig            |   1 +
+ drivers/soc/samsung/exynos-pmu.c       | 235 ++++++++++++++++++++++++-
+ drivers/soc/samsung/exynos-pmu.h       |   1 +
+ drivers/watchdog/Kconfig               |   1 -
+ drivers/watchdog/s3c2410_wdt.c         |   8 +-
+ include/linux/soc/samsung/exynos-pmu.h |  11 +-
+ 6 files changed, 249 insertions(+), 8 deletions(-)
 
 -- 
-2.34.1
+2.44.0.rc0.258.g7320e95886-goog
 
 
