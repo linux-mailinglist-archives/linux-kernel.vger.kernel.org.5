@@ -1,116 +1,215 @@
-Return-Path: <linux-kernel+bounces-72638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72639-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95CE285B68F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:04:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C662085B690
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:04:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B99F1F24F41
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:04:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D68A2854EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:04:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0777D604B1;
-	Tue, 20 Feb 2024 09:02:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA5B61699;
+	Tue, 20 Feb 2024 09:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Xq1yixNs"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="I4Vm+Tpu"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A39FF5C8E9
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6E055FDC3
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:02:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708419761; cv=none; b=FmOd7TtIGhg852x52J5fKEXUJ+SgoCi0fsxVCZNMPQuEcXuFRpAnuDp8EC18IuyGRE90JRC+Tp7eV5y7QLHPq5p6mn1bXKNpNZI6E7IBEbGVnyHNglxsR/vJ2ku/0BQj2upMuJaqSBy8tZgtz5V9ruCEbRsPAtMfjLIr7jIQE/I=
+	t=1708419762; cv=none; b=G0rmops1DjT6Xko5u6plANOmOytYIgRs1UXrKESEOSUcsE5/3HAi5uSCNcCPUSVGfNklbcbco/1XxHDe/6ogKFKsQN2yGfI2UETEDRJsB6mUDkvsdMu14hXCxXTT0DoHVL73NPYp7Qb9zRmjGe5OAA97aqMKEsVjew/uSsO7uaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708419761; c=relaxed/simple;
-	bh=SgoqViaaje+AgC+n7ivCHYAc8WaXGdnEMAxju39c9XY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=QfQm2lsI08U/vpIUIjSzdJuuYbYRAIoxXhNVbto4XGEWBkbs5B0D7gO2M9Lh2VxK7calgeYOfyBsR93SnKsZpMTtBwD8rDA2O/+N8NKGLQEQxSjUap5cwepgVxu+jonvYh7ljIAPJF1W49KXDjq+fuR2KbaRR+Gg52M5ZFeinGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Xq1yixNs; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a3e85a76fa8so188537566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:02:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708419758; x=1709024558; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c2ULPGAo97hdg1ZsQ6jr2biEBRsVNCZw09zaItnJf/I=;
-        b=Xq1yixNso7pw/x5t8IT/f4qOdwR+izJKKj3NoXGeM9aPT4+Y3NB/L0BShKiZE1YuBj
-         p7j9E6g6mQj7FcNOV+bbuuaadA+u2XHa7DQ8Ozz6H5YZW5zC21pzl+VLx9U2UWrOAZ9p
-         9Y1RM7qjagL1Xv9Zu+UhUPN870GVG/00GRrfnfVbMPGfPX/m86fhH15OmFkUdcAjCk0y
-         N+K952V2wtAez61gwBi9T476OzfOBNf+naXLOP+mJDsN7u/8oJOp3cgEmywy8k2QFlGY
-         gbonEHErW1zZIp/4loFJ7CGm8obBIU12h5OHtKeinJDtfHfdbWQ71ocPJrmlHukjutid
-         0PpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708419758; x=1709024558;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=c2ULPGAo97hdg1ZsQ6jr2biEBRsVNCZw09zaItnJf/I=;
-        b=oRrUl4OBLn73RaAXimaLQnzK1uUIEenjqjsp8TN4/c2Quq2rnM+6qX25wj9bmMGjIP
-         htfXjv24CJv/ijnZw6CUuNSqHlFKXVoO2Ul39prozi9wSpPz3kOF2dt6uX3/ap6DKh1G
-         qU3u1THAtjxU+ArW1huUc3euzejFbYYgJ4w8yB+dnyZuIfdV3Qk7UEVFiK6OmLKbh9yM
-         R/2OIiLF6DVy/WEMHyGnUCZ+b53dC9pSb+pGVhwP+cW5NYu0m/s/dz7tMuJGXZn4pneL
-         z1ldEoGlJT1yWN64yoN7O3xxQjseYV4bnCCLDhUUjT3505G03x9H+JfonXacAqnBgCcb
-         gbbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0BlKNTmFPRQK3NIqbT8ezGmxXF650/A6A8/l67CJFtTgfCbhr7OuBc1TPTz6WwiFPaxfQQoOPiGhh2RKST2EJlnBvfLShgDt5fGoR
-X-Gm-Message-State: AOJu0Yy4pHaT+pfSVohOjh55g1U79hQZinJ0yMLzDYqfIWsmf0A8YpeO
-	LVtebRkpcyPqwe+A2RSKGhetywp1KBWWr2lpiGsnbIMkXvu/LLOZtpqd5495Gf4=
-X-Google-Smtp-Source: AGHT+IGgsUZUBFncC+mK5wmv+K0Z3E1af7GlrV1iQKeWxOP7lFLcUK6IrhElSY60RHx27sQUgvqCKA==
-X-Received: by 2002:a17:906:e2d0:b0:a3f:14f5:2f87 with SMTP id gr16-20020a170906e2d000b00a3f14f52f87mr91187ejb.42.1708419758047;
-        Tue, 20 Feb 2024 01:02:38 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id ha1-20020a170906a88100b00a381ca0e589sm3746733ejb.22.2024.02.20.01.02.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Feb 2024 01:02:37 -0800 (PST)
-Date: Tue, 20 Feb 2024 12:02:31 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Michal Simek <michal.simek@amd.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Ivan Orlov <ivan.orlov0322@gmail.com>,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: [PATCH] char: xilinx_hwicap: Fix NULL vs IS_ERR() bug
-Message-ID: <ef647a9c-b1b7-4338-9bc0-28165ec2a367@moroto.mountain>
+	s=arc-20240116; t=1708419762; c=relaxed/simple;
+	bh=mYhlp/eMEhKS03KF61dRGQDnPpkxK3pDWAEVI1m8zMM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=PpLUz8EKW6RC8uxQLg1WhlBMKTyJphKvs1WUD7mX0wXr8ZP+sMRhLdJGzmO0uA+a7xmMwc6XmNa1Sak5R1iPF19zx8zNQnmeEzhZgWGZQXJpr4eNG9lbtoBUbEwgkUQFFwSB2VOIQMeyQVsClbPlnL+Cp7SL0mPe+BNUhHwf6dI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=I4Vm+Tpu; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708419761; x=1739955761;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=mYhlp/eMEhKS03KF61dRGQDnPpkxK3pDWAEVI1m8zMM=;
+  b=I4Vm+TpuuRKIwgrVwWdPMbRRJkNdUf2tYPQmY+lm+aYxl6VdBZub0wkN
+   UaG6dsCIXtkIpWVNPIx9CnLQCHF/uwzGKtLR4fqFI1amUikeCM7Y5VO/+
+   OAvpfuY2Ivf/ULK3esGW6aG/7Fe9dcjPNkwm0QgakGvt76B749b63vAH4
+   oNJP2y5f0ospts/LSeNr+Z/wB2oa5V7CsWU6FNvbVRCl74urw2QVUAYqx
+   W4TS4IV59SP2x+R5Di8E9UU936yMidM1w2yfWQv5JTcjciXQ+FtW+q7An
+   hABhNoEqwpWEUmYGyo6ZrL0US1O1VDGUMcx4mmENWitpVfngcuXELwohU
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="2391932"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="2391932"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 01:02:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="913039557"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="913039557"
+Received: from linux-pnp-server-09.sh.intel.com ([10.239.176.190])
+  by fmsmga002.fm.intel.com with ESMTP; 20 Feb 2024 01:02:27 -0800
+From: rulinhuang <rulin.huang@intel.com>
+To: urezki@gmail.com
+Cc: akpm@linux-foundation.org,
+	colin.king@intel.com,
+	hch@infradead.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	lstoakes@gmail.com,
+	rulin.huang@intel.com,
+	tim.c.chen@intel.com,
+	zhiguo.zhou@intel.com,
+	wangyang.guo@intel.com,
+	tianyou.li@intel.com
+Subject: [PATCH v2] mm/vmalloc: lock contention optimization under multi-threading
+Date: Tue, 20 Feb 2024 04:05:21 -0500
+Message-ID: <20240220090521.3316345-1-rulin.huang@intel.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240209115147.261510-1-rulin.huang@intel.com>
+References: <20240209115147.261510-1-rulin.huang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Content-Transfer-Encoding: 8bit
 
-The devm_platform_ioremap_resource() function returns error pointers.
-It never returns NULL.  Update the check accordingly.
+When allocating a new memory area where the mapping address range is
+known, it is observed that the vmap_area lock is acquired twice.
+The first acquisition occurs in the alloc_vmap_area() function when
+inserting the vm area into the vm mapping red-black tree. The second
+acquisition occurs in the setup_vmalloc_vm() function when updating the
+properties of the vm, such as flags and address, etc.
+Combine these two operations together in alloc_vmap_area(), which
+improves scalability when the vmap_area lock is contended. By doing so,
+the need to acquire the lock twice can also be eliminated.
+With the above change, tested on intel icelake platform(160 vcpu, kernel
+v6.7), a 6% performance improvement and a 7% reduction in overall
+spinlock hotspot are gained on
+stress-ng/pthread(https://github.com/ColinIanKing/stress-ng), which is
+the stress test of thread creations.
 
-Fixes: 672371832193 ("char: xilinx_hwicap: Modernize driver probe")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+Reviewed-by: Chen Tim C <tim.c.chen@intel.com>
+Reviewed-by: King Colin <colin.king@intel.com>
+Signed-off-by: rulinhuang <rulin.huang@intel.com>
 ---
- drivers/char/xilinx_hwicap/xilinx_hwicap.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+V1 -> V2: Avoided the partial initialization issue of vm and 
+separated insert_vmap_area() from alloc_vmap_area()
+---
+ mm/vmalloc.c | 36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/char/xilinx_hwicap/xilinx_hwicap.c b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
-index 019cf6079cec..6d2eadefd9dc 100644
---- a/drivers/char/xilinx_hwicap/xilinx_hwicap.c
-+++ b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
-@@ -639,8 +639,8 @@ static int hwicap_setup(struct platform_device *pdev, int id,
- 	dev_set_drvdata(dev, (void *)drvdata);
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index d12a17fc0c171..768e45f2ed946 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1630,17 +1630,18 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	va->vm = NULL;
+ 	va->flags = va_flags;
  
- 	drvdata->base_address = devm_platform_ioremap_resource(pdev, 0);
--	if (!drvdata->base_address) {
--		retval = -ENODEV;
-+	if (IS_ERR(drvdata->base_address)) {
-+		retval = PTR_ERR(drvdata->base_address);
- 		goto failed;
+-	spin_lock(&vmap_area_lock);
+-	insert_vmap_area(va, &vmap_area_root, &vmap_area_list);
+-	spin_unlock(&vmap_area_lock);
+-
+ 	BUG_ON(!IS_ALIGNED(va->va_start, align));
+ 	BUG_ON(va->va_start < vstart);
+ 	BUG_ON(va->va_end > vend);
+ 
+ 	ret = kasan_populate_vmalloc(addr, size);
+ 	if (ret) {
+-		free_vmap_area(va);
++		/*
++		 * Insert/Merge it back to the free tree/list.
++		 */
++		spin_lock(&free_vmap_area_lock);
++		merge_or_add_vmap_area_augment(va, &free_vmap_area_root, &free_vmap_area_list);
++		spin_unlock(&free_vmap_area_lock);
+ 		return ERR_PTR(ret);
  	}
  
+@@ -1669,6 +1670,13 @@ static struct vmap_area *alloc_vmap_area(unsigned long size,
+ 	return ERR_PTR(-EBUSY);
+ }
+ 
++static inline void insert_vmap_area_with_lock(struct vmap_area *va)
++{
++	spin_lock(&vmap_area_lock);
++	insert_vmap_area(va, &vmap_area_root, &vmap_area_list);
++	spin_unlock(&vmap_area_lock);
++}
++
+ int register_vmap_purge_notifier(struct notifier_block *nb)
+ {
+ 	return blocking_notifier_chain_register(&vmap_notify_list, nb);
+@@ -2045,6 +2053,8 @@ static void *new_vmap_block(unsigned int order, gfp_t gfp_mask)
+ 		return ERR_CAST(va);
+ 	}
+ 
++	insert_vmap_area_with_lock(va);
++
+ 	vaddr = vmap_block_vaddr(va->va_start, 0);
+ 	spin_lock_init(&vb->lock);
+ 	vb->va = va;
+@@ -2398,6 +2408,8 @@ void *vm_map_ram(struct page **pages, unsigned int count, int node)
+ 		if (IS_ERR(va))
+ 			return NULL;
+ 
++		insert_vmap_area_with_lock(va);
++
+ 		addr = va->va_start;
+ 		mem = (void *)addr;
+ 	}
+@@ -2538,7 +2550,7 @@ static void vmap_init_free_space(void)
+ 	}
+ }
+ 
+-static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
++static inline void setup_vmalloc_vm(struct vm_struct *vm,
+ 	struct vmap_area *va, unsigned long flags, const void *caller)
+ {
+ 	vm->flags = flags;
+@@ -2548,14 +2560,6 @@ static inline void setup_vmalloc_vm_locked(struct vm_struct *vm,
+ 	va->vm = vm;
+ }
+ 
+-static void setup_vmalloc_vm(struct vm_struct *vm, struct vmap_area *va,
+-			      unsigned long flags, const void *caller)
+-{
+-	spin_lock(&vmap_area_lock);
+-	setup_vmalloc_vm_locked(vm, va, flags, caller);
+-	spin_unlock(&vmap_area_lock);
+-}
+-
+ static void clear_vm_uninitialized_flag(struct vm_struct *vm)
+ {
+ 	/*
+@@ -2600,6 +2604,8 @@ static struct vm_struct *__get_vm_area_node(unsigned long size,
+ 
+ 	setup_vmalloc_vm(area, va, flags, caller);
+ 
++	insert_vmap_area_with_lock(va);
++
+ 	/*
+ 	 * Mark pages for non-VM_ALLOC mappings as accessible. Do it now as a
+ 	 * best-effort approach, as they can be mapped outside of vmalloc code.
+@@ -4166,7 +4172,7 @@ struct vm_struct **pcpu_get_vm_areas(const unsigned long *offsets,
+ 	for (area = 0; area < nr_vms; area++) {
+ 		insert_vmap_area(vas[area], &vmap_area_root, &vmap_area_list);
+ 
+-		setup_vmalloc_vm_locked(vms[area], vas[area], VM_ALLOC,
++		setup_vmalloc_vm(vms[area], vas[area], VM_ALLOC,
+ 				 pcpu_get_vm_areas);
+ 	}
+ 	spin_unlock(&vmap_area_lock);
+
+base-commit: de927f6c0b07d9e698416c5b287c521b07694cac
 -- 
 2.43.0
 
