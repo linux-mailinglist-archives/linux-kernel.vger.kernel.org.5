@@ -1,143 +1,154 @@
-Return-Path: <linux-kernel+bounces-73344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73347-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEA6A85C140
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:26:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E24485C14C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 17:27:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6061A1F22480
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:26:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA7F6286C96
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 16:26:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3DFB76C89;
-	Tue, 20 Feb 2024 16:22:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 705AB78B49;
+	Tue, 20 Feb 2024 16:23:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="hNkl1r8M"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="P9auCsaf"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD31D763EF;
-	Tue, 20 Feb 2024 16:22:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0464D7867B
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 16:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708446144; cv=none; b=oDhj09IglQpjDJOd0gz5VwT9p9edaZro4VIsEPl82bg0JuKgY7nK1DhuF/CsmZUFgo3TQCqAxl3cFscJaVQaibN+vcdomMhGVkz3CdOrzxF4E6VsQG5hDBqj75KZIX+tlIBSIEssyvzVYjE+Q7/60OFBZ+VPZroCzSx3lQGYxAM=
+	t=1708446224; cv=none; b=tcl1XyIAtbS9OaT7FgvhiMYwdEBpr0nCVBY/0i78t1QjYxNORVQ5s2GyT15qKp0UFf/jPBqnSGufC9fdEa/Je6Gwp6f4n7fnlLOrwM6reclwilnDDNwKkn3dU7TLh1CYPBWnHhW9KY6PacF9pnZVy4p3D+AmmDRBvXOefjEIv7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708446144; c=relaxed/simple;
-	bh=zFkxNm4XUPZy9yD4NN6KLdlxmc1jFsrfMD0v41KFIfU=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=ZWlRZvBNpzoIYIO12MNSiKtLhsOjsOUSMvQNSindWbVBMQhp7UJOQZSrV3PgmCMRqC+qpEMef4X2YSJAsUVAgmiazpjD2hVqqY2zkIgvJ7zW4TNv+FSo4Nso5VJwWyL0KmJEvGKe65I7munfGUQEMQLpKy2Br0jDTvBNtX1nZuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=hNkl1r8M; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=BzeL9c/hzzSWVv3MKsT7A/KR/PSkHXr2fqH3rJbXD/E=; b=hNkl1r8MrK0h7XuvdH3qSHJNeK
-	4DIQ/6TbXd8tHEsUs6nBa1ZRa+mvZx+9488lzdh3/KTqrQ0C3lwKKlmpJRgESnI2Cl1UlQhANoNMW
-	lb6VNQKrBJVEbFg0uRuYRZMRR3424F3EmhNMQe/68gwhGaf2FeAax5t2GwozfYVtlY/7lV5PxpigP
-	K+1B2BLgRuEKJQBSyq5cpY96o/0NgaYJpXPktU357ig/qcuBMUx+gyj0/xu5MTq3puAkISEDb6c4q
-	omQGSCGfwiPYYEOdi3uLiBkGJQw/qKavQHZcDtirpOTVRgNclzOl1gQLCr1j5Ezqnk3ns9TSFFQn1
-	wkb0ZBAw==;
-Received: from [145.224.98.163] (helo=[127.0.0.1])
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rcSsW-0000000G1oT-0zRv;
-	Tue, 20 Feb 2024 16:21:56 +0000
-Date: Tue, 20 Feb 2024 17:21:52 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sean Christopherson <seanjc@google.com>, paul@xen.org
-CC: Paolo Bonzini <pbonzini@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- David Hildenbrand <david@redhat.com>, Heiko Carstens <hca@linux.ibm.com>,
- Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Thomas Gleixner <tglx@linutronix.de>,
- Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
- Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
- kvm@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-s390@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: =?US-ASCII?Q?Re=3A_=5BPATCH_v13_00/21=5D_KVM=3A_xen=3A_upda?= =?US-ASCII?Q?te_shared=5Finfo_and_vcpu=5Finfo_handling?=
-User-Agent: K-9 Mail for Android
-In-Reply-To: <ZdTQCuWor4ipxW6E@google.com>
-References: <20240215152916.1158-1-paul@xen.org> <170838297541.2281798.7838961694439257911.b4-ty@google.com> <05973da0-f68c-4c84-8806-bdba92f2ed6e@xen.org> <ZdTQCuWor4ipxW6E@google.com>
-Message-ID: <CFFFCD77-3B9E-4808-B084-E86F8EF265A7@infradead.org>
+	s=arc-20240116; t=1708446224; c=relaxed/simple;
+	bh=Hrdacup/C5QmVjecHU71SSg6+eH8XXbOCw03LZMhQeM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DgTDrRvmn5kOYtKQhLZ+8NL19xltnZzv5PWOcHoBDKGg0yGzn9eRWCfGHS11rEhpoYNHwd+ABz64xqHUjCwkmPMzuu4cucaKe1mej0sKReX08oagxvj8UOK/UDNQB3YsLZslMYuTpfwsRB0faHmQFW9Lq+ZVFbMQ6sSAlzjhUQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=P9auCsaf; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708446221;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NiZZHsiRmz0k99S9blsg/bV1RotGSiSDOneujawkCNI=;
+	b=P9auCsafn1GZQZTOZgiMGnHexn9v9q6JxNfD2y8mF5dxJDfBMBLg2j8gKNGtvTSko6UiMb
+	cmUVsAUti0NK0BEIKfwWLrN7bxPHOEpTB1iHWW83az7b7ISdbl0rDfIT8tFofXfKm0vgRV
+	NwLep95a2eq7ft6ws7xFWfD4KnFiNNY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-635-CUFkZZuyNOC3Pv8y0Eewpw-1; Tue, 20 Feb 2024 11:23:38 -0500
+X-MC-Unique: CUFkZZuyNOC3Pv8y0Eewpw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C24E2106D063;
+	Tue, 20 Feb 2024 16:23:22 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.160])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 226A0492BCA;
+	Tue, 20 Feb 2024 16:23:20 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 20 Feb 2024 17:22:04 +0100 (CET)
+Date: Tue, 20 Feb 2024 17:22:02 +0100
+From: Oleg Nesterov <oleg@redhat.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Andy Lutomirski <luto@amacapital.net>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	Tycho Andersen <tycho@tycho.pizza>, linux-api@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] pidfd: change pidfd_send_signal() to respect
+ PIDFD_THREAD
+Message-ID: <20240220162201.GD7783@redhat.com>
+References: <20240214123655.GB16265@redhat.com>
+ <20240216-albern-aufwiegen-1de327c7dafd@brauner>
+ <20240216130625.GA8723@redhat.com>
+ <20240216-ohnedies-improvisieren-58edcc102b6a@brauner>
+ <20240216181214.GA10393@redhat.com>
+ <20240220-einwurf-depesche-d8682be0370c@brauner>
+ <20240220090255.GA7783@redhat.com>
+ <20240220-pragmatisch-parzelle-8a1d10a94fae@brauner>
+ <20240220110012.GB7783@redhat.com>
+ <20240220-anlegen-feinmechaniker-3c2cfcc3ec01@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220-anlegen-feinmechaniker-3c2cfcc3ec01@brauner>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-On 20 February 2024 17:15:06 CET, Sean Christopherson <seanjc@google=2Ecom>=
- wrote:
->On Tue, Feb 20, 2024, Paul Durrant wrote:
->> On 20/02/2024 15:55, Sean Christopherson wrote:
->> > On Thu, 15 Feb 2024 15:28:55 +0000, Paul Durrant wrote:
->> > > From: Paul Durrant <pdurrant@amazon=2Ecom>
->> > >=20
->> > > This series contains a new patch from Sean added since v12 [1]:
->> > >=20
->> > > * KVM: s390: Refactor kvm_is_error_gpa() into kvm_is_gpa_in_memslot=
-()
->> > >=20
->> > > This frees up the function name kvm_is_error_gpa() such that it can=
- then be
->> > > re-defined in:
->> > >=20
->> > > [=2E=2E=2E]
->> >=20
->> > *sigh*
->> >=20
->> > I forgot to hit "send" on this yesterday=2E  But lucky for me, that w=
-orked out in
->> > my favor as I needed to rebase on top of kvm/kvm-uapi to avoid pointl=
-ess conflicts
->> > in the uapi headeres=2E
->> >=20
->> > So=2E=2E=2E=2E
->> >=20
->> > Applied to kvm-x86 xen, minus 18 and 19 (trylock stuff) and 21 (locki=
-ng cleanup
->> > that we're doing elsewhere)=2E
->> >=20
->>=20
->> Looks like you meant 17 & 18?
+On 02/20, Christian Brauner wrote:
 >
->Doh, yes=2E
+> On Tue, Feb 20, 2024 at 12:00:12PM +0100, Oleg Nesterov wrote:
+> >
+> > Perhaps we can kill the "task_pid(current) != pid" check and just return
+> > EPERM if "kinfo.si_code >= 0 || kinfo.si_code == SI_TKILL", I don't think
+> > anobody needs pidfd_send_send_signal() to signal yourself. See below.
 >
->> > Paul and David, please take (another) look at the end result to make =
-sure you don't
->> > object to any of my tweaks and that I didn't botch anything=2E
->> >=20
->>=20
->> What was the issue with 17? It was reasonable clean-up and I'd like to =
-keep
->> it even without 18 being applied (and I totally understand your reasons=
- for
->> that)=2E
+> Yeah.
+
+You have my ack in advance
+
+> > > +       /* Currently unused. */
+> > > +       if (info)
+> > > +               return -EINVAL;
+> >
+> > Well, to me this looks like the unnecessary restriction... And why?
 >
->I omitted it purely to avoid creating an unnecessary dependency for the t=
-rylock
->patch=2E  That way the trylock patch (or whatever it morphs into) can be =
-applied on
->any branch (along with the cleanup), i=2Ee=2E doesn't need to be taken th=
-rough kvm-x86/xen=2E
+> Because right now we aren't sure that it's used
 
-What about if (in_atomic() && read_trylock()) return -EAGAIN; else read_lo=
-ck();
+Yes, but...
 
-That way we don't have any even theoretical fairness issues because the tr=
-ylock can fail just *once* which kicks us to the slow path and that'll take=
- the lock normally now=2E
+> and we aren't sure what use-cases are there.
 
-The condition might not actually be in_atomic() but I'm not working this w=
-eek and you get the idea=2E
+the same use-cases as for rt_sigqueueinfo() ?
+
+Christian, I won't really argue but I still disagree.
+
+Let me first repeat once again, I do not know what people do with pidfd
+and pidfd_send_signal() in particular, so I won't be surprised if this
+change won't cause any regression report.
+
+But at the same time, I can easily imagine the following scenario: a
+userspace programmer tries to use pidfd_send_signal(info != NULL), gets
+-EINVAL, decides it can't/shouldn't work, and switches to sigqueueinfo()
+without any report to lkml.
+
+> Yes, absolutely. That was always the plan. See appended patch I put on top.
+> I put you as author since you did spot this. Let me know if you don't
+> want that.
+
+Ah. Thanks Christian. I am fine either way, whatever is more convenient
+for you.
+
+But just in case, I won't mind at all if you simply fold this minor fix
+into your PIDFD_SEND_PROCESS_GROUP patch, I certainly don't care about
+the "From" tag ;)
+
+A really, really minor/cosmetic nit below, feel free to ignore:
+
+> -		if ((task_pid(current) != pid) &&
+> +		if (((task_pid(current) != pid) || type > PIDTYPE_TGID) &&
+
+we can remove the unnecessary parens around "task_pid(current) != pid"
+or add the extra parens aroung "type > PIDTYPE_TGID".
+
+I mean, the 1st operand of "&&" is
+
+	(task_pid(current) != pid) || type > PIDTYPE_TGID
+
+and this looks a bit inconsistent to me.
+
+Oleg.
+
 
