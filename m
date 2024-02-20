@@ -1,186 +1,228 @@
-Return-Path: <linux-kernel+bounces-73022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0D785BC39
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:32:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5047F85BC3C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 13:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B9022823D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:32:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC0A7B25158
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA57A69302;
-	Tue, 20 Feb 2024 12:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2BFD69E05;
+	Tue, 20 Feb 2024 12:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="T0ml1uRi";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="VaxFvJMH"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="X0pt4tab"
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5BF5A7A0;
-	Tue, 20 Feb 2024 12:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA1C46997D;
+	Tue, 20 Feb 2024 12:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708432314; cv=none; b=FW5EgRd9fnVsegjBMfawRNg5fpr6iS8Y6FHMAiFachGBtXpG6sLelf1dy9swUOin4tuhE9ja86ZZfSKB8fvuqVuwKxHUUqnC5Qpv+h2GVnqmyVDX1vSQfrUne0Wf9wnv5AsPxYaGg5pWrjJRhTS/N0iNAyWcD+y8RnoEQwoaD7c=
+	t=1708432323; cv=none; b=kposO515/IVKl6sWVD6NwPUFncAxr1OC3RJkXaPl7uInlQVP6cjKNHy7LfYPwE5S2L5Lmr364VHJ58GF+N7Fc6tbnSH2QIsJG7oMSPotRA71gV+0kgywpWcF2/NomzMb+TTW9oNFl8lPzF5J+Ey9aj9gajwJAP2vJlCdwAZguvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708432314; c=relaxed/simple;
-	bh=BqN8PgniJ71+Vcwo7x0QfMXaIGIehoo59YjYvGKY3jc=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=Z5JKPwKJ5Ijxz0uUpnuj4gBm1HlicdcsXXEHHoNFs3PjuWUGstlcJ0rAlusKdIRJCcMZG9YL1DD8s2dAmLAZ27JEEETHovME1SFpS9YooHBqcaOJz0J2oaVzY2b7R1M6Rn8dARggcWngwGmzfBcwqubfeiKYLpcNwAKG8Az028w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=T0ml1uRi; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=VaxFvJMH; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 20 Feb 2024 12:31:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1708432309;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ObXswrodBxrGU5oQHeC85uf/NVy2j94FFoEd8MVsz0I=;
-	b=T0ml1uRiNfh+jWuPm/p/dDl+wTmqYCfjsH6Vf+9vZYsMFkzpCYRUaueW8jrXFHKWk6B4kz
-	N6X8O8z2dFErYvtQcWDQ18Gt32tMxce4ZJ1jEQU7xawvX2YG61Npn3GLSGyUlnUsgTxQ8R
-	zuuASYLHKbrhMlkgUStLEbx3hZy+0dzWq3r7VM3EAQj2KhN4DPvjnoKF2ixhrbdLLpgM1M
-	hjYudVq5DIdFTJlAUHUmOTp4q+0Zxcvzhg5HERPHvAJQLlYVmj+VlGIwcdttFTyuSIdmSp
-	hRK4JX0l+z7qCt/qPxTK+cy/WRoAPefSa4Rtj5ydWHLc+/rnw5s+rZSY4l4nsA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1708432309;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ObXswrodBxrGU5oQHeC85uf/NVy2j94FFoEd8MVsz0I=;
-	b=VaxFvJMHPY7KaMVFZH7MUAkx5jkkHTYrT5kLDVAY9YiTWRcFVvqWQuun+kIN1kHoOUA+w0
-	tiwTSjB8M33o7OCg==
-From: "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/core] x86/vdso: Fix rethunk patching for vdso-image-{32,64}.o
-Cc: Nathan Chancellor <nathan@kernel.org>,
- Josh Poimboeuf <jpoimboe@kernel.org>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240215032049.GA3944823@dev-arch.thelio-3990X>
-References: <20240215032049.GA3944823@dev-arch.thelio-3990X>
+	s=arc-20240116; t=1708432323; c=relaxed/simple;
+	bh=C57tELA+v1jLOo/fRRVSiXHSRcnzvGUu74uuhfpwA/U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kR7eoarZhYTeninsUc9D1k9BwgozIQIJiOgHhZ8/5Ca8oax6abRTEkCZTNwsakgJskUe/notW2tqM4KbrVatncaLLNXQI3hWewfZc9GmzWcNiffmZc4OxoTEqQGt5DXw58Mif/TJsdrim1/3ra4m8yi0JtjIEflqghAflFiFh8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=X0pt4tab; arc=none smtp.client-ip=115.124.30.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1708432316; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=i8MeXBL4Q21bO6Mt0CWzsHtCP+BDuMSfUqLrqrJbi1g=;
+	b=X0pt4tabGMITGOSIoiT5jMJGNCsEj0CyYMkZWuGJ3nbdQxOiJnWdwHe/+V0tkkjtZ1tY38aCO7p1jj1pTJli5MENhtVRrQulUPRGBYIdF9H80HzwAGQHurf6Dj5+84H/upjsrIq1tHkdtXELT79ZAsUtFpnOloswp9qP6dpnVZ0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=xiangzao@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0W0wo.d5_1708432314;
+Received: from 30.178.67.248(mailfrom:xiangzao@linux.alibaba.com fp:SMTPD_---0W0wo.d5_1708432314)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Feb 2024 20:31:55 +0800
+Message-ID: <4b69e961-878d-45b0-bdc3-edcfe2306149@linux.alibaba.com>
+Date: Tue, 20 Feb 2024 20:31:53 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <170843230884.398.17338035419021257054.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] tools/testing: adjust pstore backend related selftest
+To: Kees Cook <keescook@chromium.org>
+Cc: tony.luck@intel.com, gpiccoli@igalia.com, shuah@kernel.org,
+ corbet@lwn.net, xlpang@linux.alibaba.com, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-hardening@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, xiangzao@linux.alibaba.com
+References: <20240207021921.206425-1-xiangzao@linux.alibaba.com>
+ <20240207021921.206425-4-xiangzao@linux.alibaba.com>
+ <202402070452.24B3200@keescook>
+From: Yuanhe Shu <xiangzao@linux.alibaba.com>
+In-Reply-To: <202402070452.24B3200@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-The following commit has been merged into the x86/core branch of tip:
 
-Commit-ID:     b388e57d4628eb22782bdad4cd5b83ca87a1b7c9
-Gitweb:        https://git.kernel.org/tip/b388e57d4628eb22782bdad4cd5b83ca87a1b7c9
-Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 19 Feb 2024 21:57:18 -08:00
-Committer:     Borislav Petkov (AMD) <bp@alien8.de>
-CommitterDate: Tue, 20 Feb 2024 13:26:10 +01:00
 
-x86/vdso: Fix rethunk patching for vdso-image-{32,64}.o
+On 2024/2/7 20:53, Kees Cook wrote:
+> On Wed, Feb 07, 2024 at 10:19:21AM +0800, Yuanhe Shu wrote:
+>> Pstore now supports multiple backends, the module parameter
+>> pstore.backend varies from 'registered backend' to 'backends that are
+>> allowed to register'. Adjust selftests to match the change.
+>>
+>> Signed-off-by: Yuanhe Shu <xiangzao@linux.alibaba.com>
+>> ---
+>>   tools/testing/selftests/pstore/common_tests   |  8 +--
+>>   .../selftests/pstore/pstore_post_reboot_tests | 65 ++++++++++---------
+>>   tools/testing/selftests/pstore/pstore_tests   |  2 +-
+>>   3 files changed, 38 insertions(+), 37 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/pstore/common_tests b/tools/testing/selftests/pstore/common_tests
+>> index 4509f0cc9c91..497e6fc3215f 100755
+>> --- a/tools/testing/selftests/pstore/common_tests
+>> +++ b/tools/testing/selftests/pstore/common_tests
+>> @@ -27,9 +27,9 @@ show_result() { # result_value
+>>   }
+>>   
+>>   check_files_exist() { # type of pstorefs file
+>> -    if [ -e ${1}-${backend}-0 ]; then
+>> +    if [ -e ${1}-${2}-0 ]; then
+>>   	prlog "ok"
+>> -	for f in `ls ${1}-${backend}-*`; do
+>> +	for f in `ls ${1}-${2}-*`; do
+>>               prlog -e "\t${f}"
+>>   	done
+>>       else
+>> @@ -74,9 +74,9 @@ prlog "=== Pstore unit tests (`basename $0`) ==="
+>>   prlog "UUID="$UUID
+>>   
+>>   prlog -n "Checking pstore backend is registered ... "
+>> -backend=`cat /sys/module/pstore/parameters/backend`
+>> +backends=$(dmesg | sed -n 's/.*pstore: Registered \(.*\) as persistent store backend.*/\1/p')
+>>   show_result $?
+>> -prlog -e "\tbackend=${backend}"
+>> +prlog -e "\tbackends="$backends
+> 
+> Missing trailing "? Also, doesn't this end up printing multiple lines?
+> Perhaps, like LSM stacking, we need a /sys/module entry for the list of
+> backends, comma separated?
+> 
 
-For CONFIG_RETHUNK kernels, objtool annotates all the function return
-sites so they can be patched during boot.  By design, after
-apply_returns() is called, all tail-calls to the compiler-generated
-default return thunk (__x86_return_thunk) should be patched out and
-replaced with whatever's needed for any mitigations (or lack thereof).
+To avoid printing multiple lines here we move $backends out of "" then 
+it will print one single line backend names seperated by white space.
 
-The commit
+Yes, I also referred to LSM stacking and wondering if we need a module 
+parameter to indicate which backends are registered at present. It would 
+be nice for users to know which pstore backends are registered and 
+selftest could take it for test easily. But I am worried about it would 
+be confusing for users that there is a parameter pstore.backend to 
+indicate which backends are allowed to be registered and another 
+parameter to indicate which backends are registered now. At first the 
+naming is a question. What is your advice?
 
-  4461438a8405 ("x86/retpoline: Ensure default return thunk isn't used at runtime")
-
-adds a runtime check and a WARN_ONCE() if the default return thunk ever
-gets executed after alternatives have been applied.  This warning is
-a sanity check to make sure objtool and apply_returns() are doing their
-job.
-
-As Nathan reported, that check found something:
-
-  Unpatched return thunk in use. This should not happen!
-  WARNING: CPU: 0 PID: 1 at arch/x86/kernel/cpu/bugs.c:2856 __warn_thunk+0x27/0x40
-  RIP: 0010:__warn_thunk+0x27/0x40
-  Call Trace:
-   <TASK>
-   ? show_regs
-   ? __warn
-   ? __warn_thunk
-   ? report_bug
-   ? console_unlock
-   ? handle_bug
-   ? exc_invalid_op
-   ? asm_exc_invalid_op
-   ? ia32_binfmt_init
-   ? __warn_thunk
-   warn_thunk_thunk
-   do_one_initcall
-   kernel_init_freeable
-   ? __pfx_kernel_init
-   kernel_init
-   ret_from_fork
-   ? __pfx_kernel_init
-   ret_from_fork_asm
-   </TASK>
-
-Boris debugged to find that the unpatched return site was in
-init_vdso_image_64(), and its translation unit wasn't being analyzed by
-objtool, so it never got annotated.  So it got ignored by
-apply_returns().
-
-This is only a minor issue, as this function is only called during boot.
-Still, objtool needs full visibility to the kernel.  Fix it by enabling
-objtool on vdso-image-{32,64}.o.
-
-Note this problem can only be seen with !CONFIG_X86_KERNEL_IBT, as that
-requires objtool to run individually on all translation units rather on
-vmlinux.o.
-
-  [ bp: Massage commit message. ]
-
-Reported-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/20240215032049.GA3944823@dev-arch.thelio-3990X
----
- arch/x86/entry/vdso/Makefile |  9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index c4df99a..b80f4bb 100644
---- a/arch/x86/entry/vdso/Makefile
-+++ b/arch/x86/entry/vdso/Makefile
-@@ -34,8 +34,12 @@ obj-y					+= vma.o extable.o
- KASAN_SANITIZE_vma.o			:= y
- UBSAN_SANITIZE_vma.o			:= y
- KCSAN_SANITIZE_vma.o			:= y
--OBJECT_FILES_NON_STANDARD_vma.o		:= n
--OBJECT_FILES_NON_STANDARD_extable.o	:= n
-+
-+OBJECT_FILES_NON_STANDARD_extable.o		:= n
-+OBJECT_FILES_NON_STANDARD_vdso-image-32.o 	:= n
-+OBJECT_FILES_NON_STANDARD_vdso-image-64.o 	:= n
-+OBJECT_FILES_NON_STANDARD_vdso32-setup.o	:= n
-+OBJECT_FILES_NON_STANDARD_vma.o			:= n
- 
- # vDSO images to build
- vdso_img-$(VDSO64-y)		+= 64
-@@ -43,7 +47,6 @@ vdso_img-$(VDSOX32-y)		+= x32
- vdso_img-$(VDSO32-y)		+= 32
- 
- obj-$(VDSO32-y)				 += vdso32-setup.o
--OBJECT_FILES_NON_STANDARD_vdso32-setup.o := n
- 
- vobjs := $(foreach F,$(vobjs-y),$(obj)/$F)
- vobjs32 := $(foreach F,$(vobjs32-y),$(obj)/$F)
+>>   prlog -e "\tcmdline=`cat /proc/cmdline`"
+>>   if [ $rc -ne 0 ]; then
+>>       exit 1
+>> diff --git a/tools/testing/selftests/pstore/pstore_post_reboot_tests b/tools/testing/selftests/pstore/pstore_post_reboot_tests
+>> index d6da5e86efbf..9e40ccb9c918 100755
+>> --- a/tools/testing/selftests/pstore/pstore_post_reboot_tests
+>> +++ b/tools/testing/selftests/pstore/pstore_post_reboot_tests
+>> @@ -36,45 +36,46 @@ else
+>>   fi
+>>   
+>>   cd ${mount_point}
+>> +for backend in ${backends}; do
+>> +    prlog -n "Checking ${backend}-dmesg files exist in pstore filesystem ... "
+>> +    check_files_exist dmesg ${backend}
+>>   
+>> -prlog -n "Checking dmesg files exist in pstore filesystem ... "
+>> -check_files_exist dmesg
+>> +    prlog -n "Checking ${backend}-console files exist in pstore filesystem ... "
+>> +    check_files_exist console ${backend}
+>>   
+>> -prlog -n "Checking console files exist in pstore filesystem ... "
+>> -check_files_exist console
+>> +    prlog -n "Checking ${backend}-pmsg files exist in pstore filesystem ... "
+>> +    check_files_exist pmsg ${backend}
+>>   
+>> -prlog -n "Checking pmsg files exist in pstore filesystem ... "
+>> -check_files_exist pmsg
+>> +    prlog -n "Checking ${backend}-dmesg files contain oops end marker"
+>> +    grep_end_trace() {
+>> +        grep -q "\---\[ end trace" $1
+>> +    }
+>> +    files=`ls dmesg-${backend}-*`
+>> +    operate_files $? "$files" grep_end_trace
+>>   
+>> -prlog -n "Checking dmesg files contain oops end marker"
+>> -grep_end_trace() {
+>> -    grep -q "\---\[ end trace" $1
+>> -}
+>> -files=`ls dmesg-${backend}-*`
+>> -operate_files $? "$files" grep_end_trace
+>> +    prlog -n "Checking ${backend}-console file contains oops end marker ... "
+>> +    grep -q "\---\[ end trace" console-${backend}-0
+>> +    show_result $?
+>>   
+>> -prlog -n "Checking console file contains oops end marker ... "
+>> -grep -q "\---\[ end trace" console-${backend}-0
+>> -show_result $?
+>> -
+>> -prlog -n "Checking pmsg file properly keeps the content written before crash ... "
+>> -prev_uuid=`cat $TOP_DIR/prev_uuid`
+>> -if [ $? -eq 0 ]; then
+>> -    nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
+>> -    if [ $nr_matched -eq 1 ]; then
+>> -	grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
+>> -	show_result $?
+>> +    prlog -n "Checking ${backend}-pmsg file properly keeps the content written before crash ... "
+>> +    prev_uuid=`cat $TOP_DIR/prev_uuid`
+>> +    if [ $? -eq 0 ]; then
+>> +        nr_matched=`grep -c "$TEST_STRING_PATTERN" pmsg-${backend}-0`
+>> +        if [ $nr_matched -eq 1 ]; then
+>> +	    grep -q "$TEST_STRING_PATTERN"$prev_uuid pmsg-${backend}-0
+>> +	    show_result $?
+>> +        else
+>> +            prlog "FAIL"
+>> +            rc=1
+>> +        fi
+>>       else
+>> -	prlog "FAIL"
+>> -	rc=1
+>> +        prlog "FAIL"
+>> +        rc=1
+>>       fi
+>> -else
+>> -    prlog "FAIL"
+>> -    rc=1
+>> -fi
+>>   
+>> -prlog -n "Removing all files in pstore filesystem "
+>> -files=`ls *-${backend}-*`
+>> -operate_files $? "$files" rm
+>> +    prlog -n "Removing all ${backend} files in pstore filesystem "
+>> +    files=`ls *-${backend}-*`
+>> +    operate_files $? "$files" rm
+>> +done
+>>   
+>>   exit $rc
+>> diff --git a/tools/testing/selftests/pstore/pstore_tests b/tools/testing/selftests/pstore/pstore_tests
+>> index 2aa9a3852a84..f4665a8c77dc 100755
+>> --- a/tools/testing/selftests/pstore/pstore_tests
+>> +++ b/tools/testing/selftests/pstore/pstore_tests
+>> @@ -10,7 +10,7 @@
+>>   . ./common_tests
+>>   
+>>   prlog -n "Checking pstore console is registered ... "
+>> -dmesg | grep -Eq "console \[(pstore|${backend})"
+>> +dmesg | grep -Eq "console \[(pstore console)"
+>>   show_result $?
+>>   
+>>   prlog -n "Checking /dev/pmsg0 exists ... "
+>> -- 
+>> 2.39.3
+>>
+> 
+> Otherwise seems ok
+> 
 
