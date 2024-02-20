@@ -1,188 +1,240 @@
-Return-Path: <linux-kernel+bounces-73504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73505-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DD7485C394
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:26:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A659885C397
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:27:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 027EB28527D
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:26:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 01146B21C0A
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:27:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F6078660;
-	Tue, 20 Feb 2024 18:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A80778661;
+	Tue, 20 Feb 2024 18:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="LEJqjYNq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="KDGogIFL"
-Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pb3cT5AP"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D0177655;
-	Tue, 20 Feb 2024 18:26:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 339886BB3C;
+	Tue, 20 Feb 2024 18:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708453572; cv=none; b=t3dIUlwNgQa5WnsKhxskFho5JSZl0c0gwfPpYEsr/wWmTSXKcSyz7QJtuyuoWanVQ8OgZkUwv/VpmwI6y7/79OWYvjJYqQahiiciltCitvDXRO+MoAnNJ4JKDW2LS7cLn1u8QLfdkzJnP4ze/lwFIQ8Wt5J1GwDc3CSZYNysFoY=
+	t=1708453624; cv=none; b=XomIHZgwSiFs/P4bWDHGJ2qkd6HKCV1/eoYhb3dDFydRsjoUmP25cZx3RmPptxePKr4nkWEXz6Ct2BcFWcBQ4uwpINzbbs1WY5id3vtnWUCJZx860qKpYrKBklXjTle/3iq+OaS1FwwSUyhOj0FCQF5PTcqEhnSq/TqIqflkxTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708453572; c=relaxed/simple;
-	bh=Yu6Ek05D3XzEDulx15fqOxq47ljcIO0qY4zVYkB+TuA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hh2PTAx3lyeYTwzayoEYoV0bffF1OxADQFyQFv+ktYq5j57kNnty8jZiAFage79Oflzw+n+WyDC9RUIumdkxXANEpQ4OP3Lijho3tB9blzhgetp0f5BHAH3Cmhr+NLowKQ7tb5/VJCeFLDWot7wCDsDsYIqbhP5M/ZlE/PLnlDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=LEJqjYNq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=KDGogIFL; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id D72D811400A2;
-	Tue, 20 Feb 2024 13:26:07 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 20 Feb 2024 13:26:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1708453567;
-	 x=1708539967; bh=NPcyX8ulrhJ0Mc5gTBoXB3xhQTF03OhSShONl72kdLc=; b=
-	LEJqjYNqNDTSM6cSSwwJMevo8m2reOKPCryJEKhgqG47I5U1w17kaU9RZaw1bMB9
-	q3EYciGDg7QgkzEG09gRKj5AlbatK8QrXpSlvgl2rYNxxYJHYC0Df05x0a6vDJDb
-	kO2MXzAwmwvutcAKfvzyY7mre8uop8VrnRTAAgYZ6GpSrkgJPwVta3x6/p9CYkz6
-	W2B78ORNvRQffbETToNoODJg4fLYIAgtcCURgsAu7xiypubMa4nPRN5QA8C6K8H6
-	4zahwuqy4Z66jHOXHQZPAJn8a1fOjjumieeor8O9EZi4mdsyppiv5yzA8RlP7XBT
-	Hdyha7OtFq45Aqdgvscsxw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1708453567; x=
-	1708539967; bh=NPcyX8ulrhJ0Mc5gTBoXB3xhQTF03OhSShONl72kdLc=; b=K
-	DGogIFLfPkqkIlar005cdaMKUMM/IhWvjQpsA+WD3DGBk27Oihj0xWUqvmR3yGqK
-	WCpF3A/kYj6P8huvzj+km8KljYfyvwWku9IfkYD6AZ+Y1NvojGurtpN6lYPO0B/+
-	SbCC9YjC6gdYwadXGWtb7/pLbGvZsVxrcK+lmdK9xxkCL58QghnDQg2frCjvcfoT
-	umsVxuBBKSKjHxwS5noVvmwUXlEDi8TxN4m/P7SrdeMzbf7nmH2sR1MYt5X1T+xM
-	Qh05Ul8S+WhiPKz2WN/qV+aS8ixlx/YDXuXnwS0Uisn4U3YQ2R3mNQyfjjF97int
-	tfuQ2XhXR9v7qCU7ieISA==
-X-ME-Sender: <xms:v-7UZYKWrba4NqRKD0JQsUASdIM3wh__fXvFFfc8fdv2xHsufknlaQ>
-    <xme:v-7UZYL974AsrkO3MAdgbj-NP52Sw1IxiiGxsaZtwhy2mn5ONvG7wVEy6ygae3LGl
-    DyYkYfDD7KY9lsBL-Q>
-X-ME-Received: <xmr:v-7UZYsUKutwD3PNTyzVR0Wu5RP0KYQIPVhkWWse_z8zA04GTins3TqLVlBsr9oqvsRQeMkVPV_6p-4yAycw3oYLvuXhdseIyqPu8l4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedtgdduudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepleeuffehheegleeuvdelgffhueekjeetueevuefhffdtgfeu
-    hfeggfeukefffedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:v-7UZVYNZ66XnHkHJv3oIs-ihoRSllAHUd-3zmBbSeN8ZFkOPfgmcA>
-    <xmx:v-7UZfa1Z_PUi9IrHvxiIy86Nhf4CF8-_FyQ9DCldUr6kd5iz4TOCA>
-    <xmx:v-7UZRAaUmT5_fWCBJyyuTu6WufDYaKAPf_nTDX7OmtikFBVPbYmpQ>
-    <xmx:v-7UZZkvUn4q6Ga5bnydde5B4wfleNj59gwUoVO2IQTIs3FbbnAr8g>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 20 Feb 2024 13:26:05 -0500 (EST)
-Message-ID: <8b46e25b-fd3c-4fbc-9f41-c8ac7f4d89e6@flygoat.com>
-Date: Tue, 20 Feb 2024 18:26:04 +0000
+	s=arc-20240116; t=1708453624; c=relaxed/simple;
+	bh=cO4ujRper6/Km3zY4aCT4SkVOMMMSTDm9agYKouiuA8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Egl5Jh5fDEcK2iB5UTSu0BT/jDCOdRY8iUf/qlzz/kkavxySli7nDxSmoAJD7hKU3oiF2kVMm5y+5qwjH9fXj7Y2lqlFn1b02tS832bVoFnp/Geg+02cInxf+/Blb2a2GrDj2ciCncLTlxw2Lsdgl6ncW28HdeWoKz5yek4OyzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=pb3cT5AP; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id AB6F71C0002;
+	Tue, 20 Feb 2024 18:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708453619;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kB0cvcURRPKKf25KZPEQvVjQACHIFe4QsdVW+tao6hM=;
+	b=pb3cT5APvCDwUMCs6rkAssdwUJSu1o3vDArTlIdrEpWEqbUiYhk6JFvdA46gc2Uhn3f0dX
+	NEAKKOipxEDnMILY8SbAoeVA2W+kE9aN8AbHUvK/Axmisa4ays3YGF9zS0qlpqFhqHtpZM
+	5yRckL7eH9585zQTvHBOJzvHEGPa+ia+xLlpN53bLb+J9P2DHEdtM2juT1ScfM2wSNricV
+	DJ+3kYQGfCLY6X6Q8dAbna6ppg1gSS7M+yTfccJwQ1HkBQIppKos+BzECIvh1qOYUPbCtg
+	C0j9Kj8ZFoFism6isEbsaH5NLAAkgOwOWvoqYCI8d4COzKkTjgcSkT6zLLskMw==
+Date: Tue, 20 Feb 2024 19:26:57 +0100
+From: Herve Codina <herve.codina@bootlin.com>
+To: Kent Gibson <warthog618@gmail.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Linus Walleij
+ <linus.walleij@linaro.org>, linux-gpio@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Luca Ceresoli <luca.ceresoli@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 2/2] gpiolib: cdev: release IRQs when the gpio chip
+ device is removed
+Message-ID: <20240220192657.3dd9480c@bootlin.com>
+In-Reply-To: <20240220142959.GA244726@rigel>
+References: <20240220111019.133697-1-herve.codina@bootlin.com>
+	<20240220111019.133697-3-herve.codina@bootlin.com>
+	<20240220142959.GA244726@rigel>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/8] MIPS: Aggregate build fixes
-Content-Language: en-US
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev, Guenter Roeck <linux@roeck-us.net>
-References: <20240202-llvm-msym32-v1-0-52f0631057d6@flygoat.com>
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Autocrypt: addr=jiaxun.yang@flygoat.com;
- keydata= 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
- HVO98ZmbMeg=
-In-Reply-To: <20240202-llvm-msym32-v1-0-52f0631057d6@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+
+Hi Kent,
+
+On Tue, 20 Feb 2024 22:29:59 +0800
+Kent Gibson <warthog618@gmail.com> wrote:
+
+> On Tue, Feb 20, 2024 at 12:10:18PM +0100, Herve Codina wrote:
+> > When gpio chip device is removed while some related gpio are used by the
+> > user-space, the following warning can appear:
+> >   remove_proc_entry: removing non-empty directory 'irq/233', leaking at least 'gpiomon'
+> >   WARNING: CPU: 2 PID: 72 at fs/proc/generic.c:717 remove_proc_entry+0x190/0x19c
+> >   ...
+> >   Call trace:
+> >     remove_proc_entry+0x190/0x19c
+> >     unregister_irq_proc+0xd0/0x104
+> >     free_desc+0x4c/0xc4
+> >     irq_free_descs+0x6c/0x90
+> >     irq_dispose_mapping+0x104/0x14c
+> >     gpiochip_irqchip_remove+0xcc/0x1a4
+> >     gpiochip_remove+0x48/0x100
+> >   ...
+> >
+> > Indeed, the gpio cdev uses an IRQ but this IRQ is not released when the
+> > gpio chip device is removed.
+> >
+> > Release IRQs used in the device removal notifier functions.
+> > Also move one of these function definition in order to avoid a forward
+> > declaration (move after the edge_detector_stop() definition).
+> >
+> > Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> > ---
+> >  drivers/gpio/gpiolib-cdev.c | 33 ++++++++++++++++++++++-----------
+> >  1 file changed, 22 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
+> > index 2a88736629ef..aec4a4c8490a 100644
+> > --- a/drivers/gpio/gpiolib-cdev.c
+> > +++ b/drivers/gpio/gpiolib-cdev.c
+> > @@ -688,17 +688,6 @@ static void line_set_debounce_period(struct line *line,
+> >  	 GPIO_V2_LINE_FLAG_EVENT_CLOCK_HTE | \
+> >  	 GPIO_V2_LINE_EDGE_FLAGS)
+> >
+> > -static int linereq_unregistered_notify(struct notifier_block *nb,
+> > -				       unsigned long action, void *data)
+> > -{
+> > -	struct linereq *lr = container_of(nb, struct linereq,
+> > -					  device_unregistered_nb);
+> > -
+> > -	wake_up_poll(&lr->wait, EPOLLIN | EPOLLERR);
+> > -
+> > -	return NOTIFY_OK;
+> > -}
+> > -
+> >  static void linereq_put_event(struct linereq *lr,
+> >  			      struct gpio_v2_line_event *le)
+> >  {
+> > @@ -1189,6 +1178,23 @@ static int edge_detector_update(struct line *line,
+> >  	return edge_detector_setup(line, lc, line_idx, edflags);
+> >  }
+> >
+> > +static int linereq_unregistered_notify(struct notifier_block *nb,
+> > +				       unsigned long action, void *data)
+> > +{
+> > +	struct linereq *lr = container_of(nb, struct linereq,
+> > +					  device_unregistered_nb);
+> > +	int i;
+> > +
+> > +	for (i = 0; i < lr->num_lines; i++) {
+> > +		if (lr->lines[i].desc)
+> > +			edge_detector_stop(&lr->lines[i]);
+> > +	}
+> > +  
+> 
+> Firstly, the re-ordering in the previous patch creates a race,
+> as the NULLing of the gdev->chip serves to numb the cdev ioctls, so
+> there is now a window between the notifier being called and that numbing,
+> during which userspace may call linereq_set_config() and re-request
+> the irq.
+
+Well in my previous patch, if gdev->chip need to NULL before the call to 
+gcdev_unregister(), this can be done.
+I did modification that leads to the following sequence:
+--- 8< ---
+	...
+        gcdev_unregister(gdev);
+
+        gpiochip_free_hogs(gc);
+        /* Numb the device, cancelling all outstanding operations */
+        gdev->chip = NULL;
+        gpiochip_irqchip_remove(gc);
+        acpi_gpiochip_remove(gc);
+        of_gpiochip_remove(gc);
+        gpiochip_remove_pin_ranges(gc);
+	...
+--- 8< ---
+
+I can call gcdev_unregister() right after gdev->chip = NULL.
+The needed things is to have free_irq() (from the gcdev_unregister()) called
+before calling gpiochip_irqchip_remove().
+
+And so, why not:
+--- 8< ---
+	...
+        gpiochip_free_hogs(gc);
+        /* Numb the device, cancelling all outstanding operations */
+        gdev->chip = NULL;
+	gcdev_unregister(gdev);
+        gpiochip_irqchip_remove(gc);
+        acpi_gpiochip_remove(gc);
+        of_gpiochip_remove(gc);
+        gpiochip_remove_pin_ranges(gc);
+	...
+--- 8< ---
+
+> 
+> There is also a race here with linereq_set_config().  That can be prevented
+> by holding the lr->config_mutex - assuming the notifier is not being called
+> from atomic context.
+
+I missed that one and indeed, I probably can take the mutex. With the mutex
+holded, no more race condition with linereq_set_config() and so the IRQ cannot
+be re-requested.
+
+> 
+> You also have a race with the line being freed that could pull the
+> lr out from under you, so a use after free problem.
+
+I probably missed something but I don't see this use after free.
+Can you give me some details/pointers ?
 
 
+> I'd rather live with the warning :(.
+> Fixing that requires rethinking the lifecycle management for the
+> linereq/lineevent.
 
-在 2024/2/2 18:21, Jiaxun Yang 写道:
-> Hi all,
->
-> This series is a collection of build fixes that have been lying
-> at my local trees for a while, some of them are for Clang built
-> linux and others are for some wiredo configurations.
+Well, currently the warning is a big one with a dump_stack included.
+It will be interesting to have it fixed.
 
-A gentle ping on this series :-)
+The need to fix it is to have free_irq() called before
+gpiochip_irqchip_remove();
 
-Thanks
-- Jiaxun
+Is there really no way to have this correct sequence without rethinking all
+the lifecycle management ?
 
->
-> Please review.
->
-> Thanks
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
-> Jiaxun Yang (8):
->        MIPS: Probe toolchain support of -msym32
->        MIPS: Remove cc-option checks for -march=octeon
->        MIPS: Fallback CPU -march flag to ISA level if unsupported
->        MIPS: BMIPS: Drop unnecessary assembler flag
->        MIPS: Loongson64: test for -march=loongson3a cflag
->        MIPS: Limit MIPS_MT_SMP support by ISA reversion
->        MIPS: Implement microMIPS MT ASE helpers
->        MIPS: mipsregs: Set proper ISA level for virt extensions
->
->   arch/mips/Kconfig                  |   3 +-
->   arch/mips/Makefile                 |  46 ++++---
->   arch/mips/include/asm/asmmacro.h   |  22 ++--
->   arch/mips/include/asm/mipsmtregs.h | 256 ++++++++++++++++++++++---------------
->   arch/mips/include/asm/mipsregs.h   |  22 +++-
->   arch/mips/kernel/vpe-mt.c          |   4 +-
->   6 files changed, 211 insertions(+), 142 deletions(-)
-> ---
-> base-commit: 076d56d74f17e625b3d63cf4743b3d7d02180379
-> change-id: 20240202-llvm-msym32-6392d410f650
->
-> Best regards,
+Also, after the warning related to the IRQ, the following one is present:
+--- 8< ---
+[ 9593.527961] gpio gpiochip9: REMOVING GPIOCHIP WITH GPIOS STILL REQUESTED
+[ 9593.535602] ------------[ cut here ]------------
+[ 9593.540244] WARNING: CPU: 0 PID: 309 at drivers/gpio/gpiolib.c:2352 gpiod_free.part.0+0x20/0x48
+..
+[ 9593.725016] Call trace:
+[ 9593.727468]  gpiod_free.part.0+0x20/0x48
+[ 9593.731404]  gpiod_free+0x14/0x24
+[ 9593.734728]  lineevent_free+0x40/0x74
+[ 9593.738402]  lineevent_release+0x14/0x24
+[ 9593.742335]  __fput+0x70/0x2bc
+[ 9593.745403]  __fput_sync+0x50/0x5c
+[ 9593.748817]  __arm64_sys_close+0x38/0x7c
+[ 9593.752751]  invoke_syscall+0x48/0x114
+..
+[ 9593.815299] ---[ end trace 0000000000000000 ]---
+[ 9593.820616] hotplug-manager dock-hotplug-manager: remove overlay 0 (ovcs id 1)
+gpiomon: error waiting for events: No such device
+# 
+--- 8< ---
 
--- 
----
-Jiaxun Yang
-
+Best regards,
+Hervé
 
