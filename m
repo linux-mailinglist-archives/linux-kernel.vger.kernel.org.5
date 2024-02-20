@@ -1,159 +1,194 @@
-Return-Path: <linux-kernel+bounces-72501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2784985B44F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:58:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9205285B451
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:00:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C6439B21379
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 07:58:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1823B20F19
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37E5F5BAEE;
-	Tue, 20 Feb 2024 07:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFDCC5BAF7;
+	Tue, 20 Feb 2024 08:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XwJcZBhj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jkiIiBt9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DDBF5A780
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 07:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E8485BAC7
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:00:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708415885; cv=none; b=tSiqjRxHlGThWsWcLxxl1cLlDseTUyzKp3lK0qs/+GtCon/049ucg0lxnyevVsu7KyNqeFLyGXJl8dZLxCosTyHrDTh8QHGTYEtXDUyQSYS7rRlBHm/fdTwo1o9qW7ae5iuNTfJc6gfKsGk7/HrvuaDsJ/wS6cHR7xAXSxyNZxM=
+	t=1708416011; cv=none; b=UcQAt6DaP0mhCNFTH4Zy4CZBpwLc2FGbm2bHD8MiTGeIAmWy6+eBpiuRMuUZMXeCaDJO0YSySTQYZW3xyjSwWvNDB7ICJvfZ9y15gO4ZubP6F3Z1K66+JnDV2GZSID8RxB8Z08JK0l+/QI7pZeSwAmN0fHZQF+r6jWWkrWoQIKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708415885; c=relaxed/simple;
-	bh=SKdSzd9Om3ss7aelGSZx7GlrCUSOV8sg/VeHoK4NhKs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V8pyhJ/ZvvDYt5b0AFUVcCp+6lFZrV22Fr4OIA7MHw5nykiB51dpFi6P4NVT0WS3XlJMsjJO/nwJKWxNj88OBwq+//IudVdMlhrGbNJ/RucwNbehdy/7ospitSqqxvvxF3QAzdq6YfJpzyVwmrbrwc4KoudrqMR2sbUc94evVuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XwJcZBhj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 609A0C433C7;
-	Tue, 20 Feb 2024 07:58:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708415885;
-	bh=SKdSzd9Om3ss7aelGSZx7GlrCUSOV8sg/VeHoK4NhKs=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=XwJcZBhjVpfemPFNDSUdBoAOjVkwklq3JUgMim0sXvHVJ+Mv1Im9O/KiFpwe1fdwz
-	 Eq4oInUe8QG9haUl3w08iSZ7KN8KTEFJg3wJwC97s77T+q4fRB7TLD3/udIjlQuUR4
-	 bCUzLUNFZXm9h89Z5HB+25+HlG2Kjn1S2kwrdcl4ZM6H/0HufS4+esymXeA890Fmeb
-	 QMngvObDXjjWXBttrI8poxzR2Y/UPnPO6SZyzZYif9DgJ1wDmoJcNjQCP8X7ezE2rn
-	 TXfFCOaz9Vvrzuv8wXFXUt++qaOazsDR/sWqUB5PXAKNLN5Ja5SWMphcQoAc2iqVFu
-	 TDHtG++ulF0jw==
-Message-ID: <5bf29cb0-96a6-4100-8755-750215d31ab6@kernel.org>
-Date: Tue, 20 Feb 2024 15:58:00 +0800
+	s=arc-20240116; t=1708416011; c=relaxed/simple;
+	bh=eZv6WUm7V6V+iGmNDQJxOZcEkeJtxjVLwn7qbkKSKT4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=WXAn61h2HNxb+CaMj/ceJpiKDFq0H4UBUiws3lRtnKFFDD2VjNA3sCkw88bioWGUJGyyvD6OvJhXWAUDon/7OLM+wp2rrEnaZsFN3NTnL8CPhfqTtxGDsfIaX4ls+l/WjzFJz6uyfCfQma3x+twHywRZYksSZXENwFi8hdGm2P8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jkiIiBt9; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708416010; x=1739952010;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=eZv6WUm7V6V+iGmNDQJxOZcEkeJtxjVLwn7qbkKSKT4=;
+  b=jkiIiBt9+HVpYDvpw/JGnOzvuAj5QUwgE5DjmcceP6kPEjmp1qt7NXTh
+   eWcaKGPZWlU4aIibdegsWOmk9CzUWMhYDAHvXMPZ9k2AhVC5k3EZbJIOr
+   mRTd1GF/ti8NjMeAMpi/ISU5UJbox1glQkgfTY5e5rNKq33QmgRmUPmX/
+   SLA1bEUQ4C5Ng4UaAQ4r9z0pxIytJeKjsNcdE7cUUIO0dO9WD3xjBA24W
+   m5m/180P/Ly0lPrEf9ZFzqrH6UzkCi8WhnADTKCW04ddaf7/2+JqS6igX
+   OeC7B1PtNFPespRCIRRk70A+NO9djkdBADAnzqOlfabqYWZgEbtL5ZPxY
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="19942755"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="19942755"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 00:00:09 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="5064774"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 00:00:03 -0800
+From: "Huang, Ying" <ying.huang@intel.com>
+To: Aneesh Kumar K.V <aneesh.kumar@kernel.org>
+Cc: Donet Tom <donettom@linux.ibm.com>,  Andrew Morton
+ <akpm@linux-foundation.org>,  linux-mm@kvack.org,
+  linux-kernel@vger.kernel.org,  Dave Hansen <dave.hansen@linux.intel.com>,
+  Mel Gorman <mgorman@suse.de>,  Ben Widawsky <ben.widawsky@intel.com>,
+  Feng Tang <feng.tang@intel.com>,  Michal Hocko <mhocko@kernel.org>,
+  Andrea Arcangeli <aarcange@redhat.com>,  Peter Zijlstra
+ <peterz@infradead.org>,  Ingo Molnar <mingo@redhat.com>,  Rik van Riel
+ <riel@surriel.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Matthew Wilcox
+ <willy@infradead.org>,  Mike Kravetz <mike.kravetz@oracle.com>,  Vlastimil
+ Babka <vbabka@suse.cz>,  Dan Williams <dan.j.williams@intel.com>,  Hugh
+ Dickins <hughd@google.com>,  Kefeng Wang <wangkefeng.wang@huawei.com>,
+  Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH 3/3] mm/numa_balancing:Allow migrate on protnone
+ reference with MPOL_PREFERRED_MANY policy
+In-Reply-To: <87sf1nzi3s.fsf@kernel.org> (Aneesh Kumar K. V.'s message of
+	"Tue, 20 Feb 2024 13:23:59 +0530")
+References: <9c3f7b743477560d1c5b12b8c111a584a2cc92ee.1708097962.git.donettom@linux.ibm.com>
+	<8d7737208bd24e754dc7a538a3f7f02de84f1f72.1708097962.git.donettom@linux.ibm.com>
+	<877cizppsa.fsf@yhuang6-desk2.ccr.corp.intel.com>
+	<87sf1nzi3s.fsf@kernel.org>
+Date: Tue, 20 Feb 2024 15:58:08 +0800
+Message-ID: <87ttm3o9db.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [f2fs-dev] [PATCH v7] f2fs: unify the error handling of
- f2fs_is_valid_blkaddr
-Content-Language: en-US
-To: Zhiguo Niu <niuzhiguo84@gmail.com>
-Cc: Jaegeuk Kim <jaegeuk@kernel.org>, ke.wang@unisoc.com,
- linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- hongyu.jin@unisoc.com, Zhiguo Niu <zhiguo.niu@unisoc.com>
-References: <1707103845-17220-1-git-send-email-zhiguo.niu@unisoc.com>
- <e2680238-9e9c-422a-adf3-bcee71dfe0a8@kernel.org>
- <ZcGoWAsl08d5-U0g@google.com>
- <6f01fe1b-d580-4a2a-adc5-7eb3baebeb7a@kernel.org>
- <CAHJ8P3J6CrYeBHUHmk4rQXRr=V0jHkLWOKHjdC+xuLgb4a+NQQ@mail.gmail.com>
- <17c9e85a-54b6-4e1c-b95f-262c771b0f1d@kernel.org>
- <4bcf0a1c-b21d-4735-bf57-b78439a65df5@kernel.org>
- <CAHJ8P3+25FxdpqWNW53yyiLLG8J7LnMAeYr_DV3ARF9-3LCUUg@mail.gmail.com>
- <c82f8a3f-0184-43c2-b67d-ca53338a153c@kernel.org>
- <CAHJ8P3J8WUAxOrG91id+sKKt7ndLnETdbzz6Zy7haoC9qfT0tg@mail.gmail.com>
-From: Chao Yu <chao@kernel.org>
-In-Reply-To: <CAHJ8P3J8WUAxOrG91id+sKKt7ndLnETdbzz6Zy7haoC9qfT0tg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 
-On 2024/2/20 15:45, Zhiguo Niu wrote:
-> 
-> 
-> On Tue, Feb 20, 2024 at 2:32 PM Chao Yu <chao@kernel.org <mailto:chao@kernel.org>> wrote:
->  >
->  > On 2024/2/20 13:34, Zhiguo Niu wrote:
->  > > I think do f2fs_handle_error in __is_bitmap_valid is a good way.
->  >
->  > Like this?
->  >
->  > ---
->  >   fs/f2fs/checkpoint.c | 28 ++++++++++++++--------------
->  >   1 file changed, 14 insertions(+), 14 deletions(-)
->  >
->  > diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
->  > index 87b7c988c8ca..b8a7e83eb4e0 100644
->  > --- a/fs/f2fs/checkpoint.c
->  > +++ b/fs/f2fs/checkpoint.c
->  > @@ -155,21 +155,24 @@ static bool __is_bitmap_valid(struct f2fs_sb_info *sbi, block_t blkaddr,
->  >                 return exist;
->  >
->  >         if ((exist && type == DATA_GENERIC_ENHANCE_UPDATE) ||
->  > -               (!exist && type == DATA_GENERIC_ENHANCE)) {
->  > -               f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
->  > -                        blkaddr, exist);
->  > -               set_sbi_flag(sbi, SBI_NEED_FSCK);
->  > -               dump_stack();
->  > -       }
->  > -
->  > +               (!exist && type == DATA_GENERIC_ENHANCE))
->  > +               goto out_err;
->  > +       if (!exist && type != DATA_GENERIC_ENHANCE_UPDATE)
->  > +               goto out_handle;
->  > +       return exist;
->  > +out_err:
->  > +       f2fs_err(sbi, "Inconsistent error blkaddr:%u, sit bitmap:%d",
->  > +                blkaddr, exist);
->  > +       set_sbi_flag(sbi, SBI_NEED_FSCK);
->  > +       dump_stack();
->  > +out_handle:
->  > +       f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->  >         return exist;
->  >   }
->  >
->  >   static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->  >                                         block_t blkaddr, int type)
->  >   {
->  > -       bool valid = false;
->  > -
->  >         switch (type) {
->  >         case META_NAT:
->  >                 break;
->  > @@ -209,10 +212,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->  >                         dump_stack();
->  >                         goto err;
->  >                 } else {
->  > -                       valid = __is_bitmap_valid(sbi, blkaddr, type);
->  > -                       if ((!valid && type != DATA_GENERIC_ENHANCE_UPDATE) ||
->  > -                               (valid && type == DATA_GENERIC_ENHANCE_UPDATE))
->  > -                               goto err;
->  > +                       return __is_bitmap_valid(sbi, blkaddr, type);
->  >                 }
->  >                 break;
->  >         case META_GENERIC:
->  > @@ -227,7 +227,7 @@ static bool __f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->  >         return true;
->  >   err:
->  >         f2fs_handle_error(sbi, ERROR_INVALID_BLKADDR);
->  > -       return valid;
->  > +       return false;
-> I think it's OK.
-> Do we need to wait for Jaegeuk Kim’s suggestion or should I update the new patch  version first😀?
-> thanks!
+Aneesh Kumar K.V <aneesh.kumar@kernel.org> writes:
 
-I guess we'd better to wait for Jaegeuk's comments.
+> "Huang, Ying" <ying.huang@intel.com> writes:
+>
+>> Donet Tom <donettom@linux.ibm.com> writes:
+>>
+>>> commit bda420b98505 ("numa balancing: migrate on fault among multiple bound
+>>> nodes") added support for migrate on protnone reference with MPOL_BIND
+>>> memory policy. This allowed numa fault migration when the executing node
+>>> is part of the policy mask for MPOL_BIND. This patch extends migration
+>>> support to MPOL_PREFERRED_MANY policy.
+>>>
+>>> Currently, we cannot specify MPOL_PREFERRED_MANY with the mempolicy flag
+>>> MPOL_F_NUMA_BALANCING. This causes issues when we want to use
+>>> NUMA_BALANCING_MEMORY_TIERING. To effectively use the slow memory tier,
+>>> the kernel should not allocate pages from the slower memory tier via
+>>> allocation control zonelist fallback. Instead, we should move cold pages
+>>> from the faster memory node via memory demotion. For a page allocation,
+>>> kswapd is only woken up after we try to allocate pages from all nodes in
+>>> the allocation zone list. This implies that, without using memory
+>>> policies, we will end up allocating hot pages in the slower memory tier.
+>>>
+>>> MPOL_PREFERRED_MANY was added by commit b27abaccf8e8 ("mm/mempolicy: add
+>>> MPOL_PREFERRED_MANY for multiple preferred nodes") to allow better
+>>> allocation control when we have memory tiers in the system. With
+>>> MPOL_PREFERRED_MANY, the user can use a policy node mask consisting only
+>>> of faster memory nodes. When we fail to allocate pages from the faster
+>>> memory node, kswapd would be woken up, allowing demotion of cold pages
+>>> to slower memory nodes.
+>>>
+>>> With the current kernel, such usage of memory policies implies we can't
+>>> do page promotion from a slower memory tier to a faster memory tier
+>>> using numa fault. This patch fixes this issue.
+>>>
+>>> For MPOL_PREFERRED_MANY, if the executing node is in the policy node
+>>> mask, we allow numa migration to the executing nodes. If the executing
+>>> node is not in the policy node mask but the folio is already allocated
+>>> based on policy preference (the folio node is in the policy node mask),
+>>> we don't allow numa migration. If both the executing node and folio node
+>>> are outside the policy node mask, we allow numa migration to the
+>>> executing nodes.
+>>>
+>>> Signed-off-by: Aneesh Kumar K.V (IBM) <aneesh.kumar@kernel.org>
+>>> Signed-off-by: Donet Tom <donettom@linux.ibm.com>
+>>> ---
+>>>  mm/mempolicy.c | 28 ++++++++++++++++++++++++++--
+>>>  1 file changed, 26 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+>>> index 73d698e21dae..8c4c92b10371 100644
+>>> --- a/mm/mempolicy.c
+>>> +++ b/mm/mempolicy.c
+>>> @@ -1458,9 +1458,10 @@ static inline int sanitize_mpol_flags(int *mode, unsigned short *flags)
+>>>  	if ((*flags & MPOL_F_STATIC_NODES) && (*flags & MPOL_F_RELATIVE_NODES))
+>>>  		return -EINVAL;
+>>>  	if (*flags & MPOL_F_NUMA_BALANCING) {
+>>> -		if (*mode != MPOL_BIND)
+>>> +		if (*mode == MPOL_BIND || *mode == MPOL_PREFERRED_MANY)
+>>> +			*flags |= (MPOL_F_MOF | MPOL_F_MORON);
+>>> +		else
+>>>  			return -EINVAL;
+>>> -		*flags |= (MPOL_F_MOF | MPOL_F_MORON);
+>>>  	}
+>>>  	return 0;
+>>>  }
+>>> @@ -2463,6 +2464,23 @@ static void sp_free(struct sp_node *n)
+>>>  	kmem_cache_free(sn_cache, n);
+>>>  }
+>>>  
+>>> +static inline bool mpol_preferred_should_numa_migrate(int exec_node, int folio_node,
+>>> +					    struct mempolicy *pol)
+>>> +{
+>>> +	/* if the executing node is in the policy node mask, migrate */
+>>> +	if (node_isset(exec_node, pol->nodes))
+>>> +		return true;
+>>> +
+>>> +	/* If the folio node is in policy node mask, don't migrate */
+>>> +	if (node_isset(folio_node, pol->nodes))
+>>> +		return false;
+>>> +	/*
+>>> +	 * both the folio node and executing node are outside the policy nodemask,
+>>> +	 * migrate as normal numa fault migration.
+>>> +	 */
+>>> +	return true;
+>>
+>> Why?  This may cause some unexpected result.  For example, pages may be
+>> distributed among multiple sockets unexpectedly.  So, I prefer the more
+>> conservative policy, that is, only migrate if this node is in
+>> pol->nodes.
+>>
+>
+> This will only have an impact if the user specifies
+> MPOL_F_NUMA_BALANCING. This means that the user is explicitly requesting
+> for frequently accessed memory pages to be migrated. Memory policy
+> MPOL_PREFERRED_MANY is able to allocate pages from nodes outside of
+> policy->nodes. For the specific use case that I am interested in, it
+> should be okay to restrict it to policy->nodes. However, I am wondering
+> if this is too restrictive given the definition of MPOL_PREFERRED_MANY.
 
-Thanks,
+IMHO, we can start with some consecutive way and expand it if it's
+proved necessary.
 
->  >   }
->  >
->  >   bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
->  > --
->  > 2.40.1
->  >
->  >
+--
+Best Regards,
+Huang, Ying
 
