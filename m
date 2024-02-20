@@ -1,140 +1,147 @@
-Return-Path: <linux-kernel+bounces-72628-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22BDF85B66B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:01:10 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 930BB85B663
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:00:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92DC21F24550
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:01:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B465528263E
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAC264CDC;
-	Tue, 20 Feb 2024 08:56:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C1D963509;
+	Tue, 20 Feb 2024 08:56:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=anyfinetworks-com.20230601.gappssmtp.com header.i=@anyfinetworks-com.20230601.gappssmtp.com header.b="h0GLh4RQ"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ArNwfErr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606E964A98
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A510633F3;
+	Tue, 20 Feb 2024 08:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708419387; cv=none; b=JDbG/+C9P8/Y1VIFw9e10Fjd4kvucOOkLeNTxMtwHlmHUR6wXugjYHmKIe4LOCNKec1fDQ78g6SStNkQ+oPIpU4WAaV4TL65Thg4DwyP4tNIklAljIWuw9Km1HLcvHqinSiz5RydAA8M3yotJ8OBcdwMhkoxnrXlFRhx3/D9KyY=
+	t=1708419383; cv=none; b=lgj/YMAy2M2jXUWM5fMAExr8Mxv8QMabJAllCZbiRHNLrqCMuTdMw9QgP0OVsK5u5l3HsuhHMZP5R5MDEtBxuUcTX2EaX/EkoD0ttgSACy/QgUskhnEP7EAZRtL2Lm7QsiaIZp1ScDwb8PuLETsQL5EDAg32rVfePXLku7wSIBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708419387; c=relaxed/simple;
-	bh=XxS2PiR8TvPD6PooYcEaHBnRrtlm5KfcjvweKguWnMg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=giMdH0DcitI0hQWQWwz4AuS68034hTaowyphlDzaajZddd1LnGZobsJBCihX5CVTrf80jQgbNEiDYvoXm8OOYNbaCxd0gAHKMTRH5PtFUOuiyrbiUjTsAANzIzv7ZBinrv/iYx2QVsvisHvbplyyFtkY2/LOPg4J2p0xmtBuK18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com; spf=none smtp.mailfrom=anyfinetworks.com; dkim=pass (2048-bit key) header.d=anyfinetworks-com.20230601.gappssmtp.com header.i=@anyfinetworks-com.20230601.gappssmtp.com header.b=h0GLh4RQ; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=anyfinetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=anyfinetworks.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-299566373d4so1742788a91.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 00:56:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20230601.gappssmtp.com; s=20230601; t=1708419384; x=1709024184; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dchRxoxVGKioFcq/L4EKVcfcET3Jr75StrPrjuqQjL0=;
-        b=h0GLh4RQIVLzVLbe8bp+bnwWfCCl8/am1azMVG8j9x/pf7WzYHYHqrdPyClK6ldiVt
-         RVgydbd581CGpeqebpB8wUsuydpAbR9W8qxBbrNvHITYCwMzGiVtIHoeWIOdea3jJXLW
-         BK4Rko4LsKB4/W0Yjo8eQ9QGAGGG1FABugsJDm6e0LtBV+XIlIu7YaGGiRZmgEviLbHj
-         m8ioux5EFen4Y6eMkO6DjL0809cTtD05/5/z8uOLyi7kaurzT4AG55ErqCpDyZGDEsdt
-         KmtCD5kmTU9JzJTI7xd/B53T32FQXpslVn25zUtK3oiF2zfZT8ieYnl8vRQs14v1qrKi
-         6tSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708419384; x=1709024184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dchRxoxVGKioFcq/L4EKVcfcET3Jr75StrPrjuqQjL0=;
-        b=b4HBRIS91lM/u+pJh3cqZL9yX0yWEOua5SJsgiTBQMDT/Bz8EyGIXuIiYSe1p4hy+z
-         XGtrU1JELS7uPyoEfw+MxFqpz+XVMEzQsWZlJmqSpBWjGACLSLWZJ/TmDRl8WcaLltR1
-         rwYRAQ64G/1q+ah8tF+1YRXg15Z0iDG8cPKKPr7TqWwCX5yMoZjKYwDFvrlgzOgq1GIb
-         15cTppAdUc6wm+XrMzjImQrArkMFmdLdlBUCh52bGspfePOXTPdKso6j31x3UdO7EkW8
-         LulSupcl0JdZYyQqAxLFpi25hOT2Kee1kU7o48xWkH3rivGr9lesYjzEArC9L5leeH3H
-         4feQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXYuFkRZrXCmTuKTNFCdiMgKL7MgXGpWhNPoI3t1A9HBuiFNqaMNHSAY73IUkCcgWHStrdWtlATWi5DGaHKzJdEBiR3fZ3PZ7GMcEAX
-X-Gm-Message-State: AOJu0YydlGj1xdueMWczvBimLMYWELl8iarVNQH54HH3m4o69CoULufn
-	vma8jXBAbw8GfA/S37HiolwkiAX7+gmGJzyl9omqI8DWczJWbFEtylnaHLIcNtb2G6MiSlz4LxG
-	VH8RkF+z38cW/swB6z8kA+YukAa13aiuBraSSYg==
-X-Google-Smtp-Source: AGHT+IHl7TYiCYsEXMrh4VmDGMZtMQoKh4DXw10jPMT7TOqjy20gTUqscrvJKqfiSDRCNiwo83Vx2RGvwz2GtNa0WA4=
-X-Received: by 2002:a17:90a:34cf:b0:299:5b95:cd7d with SMTP id
- m15-20020a17090a34cf00b002995b95cd7dmr4504419pjf.45.1708419384629; Tue, 20
- Feb 2024 00:56:24 -0800 (PST)
+	s=arc-20240116; t=1708419383; c=relaxed/simple;
+	bh=W7ULu2PbSiwXjM79NAjBueJ9JU/9Ysyic1LEtAhus+E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VHSS/qY2fL/JF74Lue1acoYB4n6Y34NCIbuQHxoxbZseKc130qy0i/vH+ew+1RX7ZqY7xVNsHGJk5i753wiIHkRYnpXHVnB5xp4+rFPTaYp0HY98ZBUEeQ9puN6H0ikk9Hm/OSJkdwxuKWI1Q6Dl+2vXMhRyUCpwk0rjjgW0DkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ArNwfErr; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1708419382; x=1739955382;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=W7ULu2PbSiwXjM79NAjBueJ9JU/9Ysyic1LEtAhus+E=;
+  b=ArNwfErrA8W/kvXPMz90aXrrep64nNu9McjnyamnUHpR5XAYQVJSIo/2
+   b/4ExO3sLfeNI+bxAtwhDfUSyNRJmLvdCQZLUBJPcH7WzOHTroIzns0FX
+   43sLlx6Lv2a0zhvyJPnyNeczuhd9YpDHb3hi+7RbPcBcCMNW2iHU5O3xg
+   ZmPas+8VP0Xk/jtZ6JCo8P2pyFx/vQMvwfJSWccwAuTuKePHwETnbjR1b
+   FlmPeZR6YEL/IQ1lXCKGV3GmjLwJ/iHqlCFbVqWXA0NKbOtcY7EeXrH+X
+   prJkimw/3bBMpGEv0rwoaQ0rLNU3NMFfRTnGpb1A1GNpaAT9Knn1Z0PJw
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10989"; a="24970759"
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="24970759"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 00:56:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.06,172,1705392000"; 
+   d="scan'208";a="27878939"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.1.66]) ([10.238.1.66])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2024 00:56:18 -0800
+Message-ID: <f6214e3a-da8c-4bce-8a1f-a035b2ff909b@linux.intel.com>
+Date: Tue, 20 Feb 2024 16:56:16 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <135feeafe6fe8d412e90865622e9601403c42be5.1708253445.git.christophe.leroy@csgroup.eu>
- <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <ec35e06dbe8672a36415ebe2b9273277c2921977.1708253445.git.christophe.leroy@csgroup.eu>
-From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date: Tue, 20 Feb 2024 09:56:13 +0100
-Message-ID: <CAM1=_QTF1amgOZUWJ4BA872RW3DE_papO5yi7ak+-WCkBfvC5g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] bpf: Take return from set_memory_rox() into
- account with bpf_jit_binary_lock_ro()
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Russell King <linux@armlinux.org.uk>, 
-	Puranjay Mohan <puranjay12@gmail.com>, Zi Shen Lim <zlim.lnx@gmail.com>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Tiezhu Yang <yangtiezhu@loongson.cn>, Hengqi Chen <hengqi.chen@gmail.com>, 
-	Huacai Chen <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, 
-	Paul Burton <paulburton@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Ilya Leoshkevich <iii@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	Andreas Larsson <andreas@gaisler.com>, Wang YanQing <udknight@gmail.com>, 
-	David Ahern <dsahern@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, loongarch@lists.linux.dev, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, 
-	netdev@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
-	"linux-hardening @ vger . kernel . org" <linux-hardening@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v18 069/121] KVM: TDX: restore host xsave state when exit
+ from the guest TD
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+ erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1705965634.git.isaku.yamahata@intel.com>
+ <bfa1994b79687709aae011ff455147cc7dd97ffb.1705965635.git.isaku.yamahata@intel.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <bfa1994b79687709aae011ff455147cc7dd97ffb.1705965635.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, Feb 18, 2024 at 11:55=E2=80=AFAM Christophe Leroy
-<christophe.leroy@csgroup.eu> wrote:
+
+
+On 1/23/2024 7:53 AM, isaku.yamahata@intel.com wrote:
+> From: Isaku Yamahata <isaku.yamahata@intel.com>
 >
-> set_memory_rox() can fail, leaving memory unprotected.
+> On exiting from the guest TD, xsave state is clobbered.  Restore xsave
+> state on TD exit.
 >
-> Check return and bail out when bpf_jit_binary_lock_ro() returns
-> and error.
->
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
 > ---
-> Previous patch introduces a dependency on this patch because it modifies =
-bpf_prog_lock_ro(), but they are independant.
-> It is possible to apply this patch as standalone by handling trivial conf=
-lict with unmodified bpf_prog_lock_ro().
+> v15 -> v16:
+> - Added CET flag mask
 > ---
->  arch/arm/net/bpf_jit_32.c        | 25 ++++++++++++-------------
->  arch/arm64/net/bpf_jit_comp.c    | 21 +++++++++++++++------
->  arch/loongarch/net/bpf_jit.c     | 21 +++++++++++++++------
->  arch/mips/net/bpf_jit_comp.c     |  3 ++-
->  arch/parisc/net/bpf_jit_core.c   |  8 +++++++-
->  arch/s390/net/bpf_jit_comp.c     |  6 +++++-
->  arch/sparc/net/bpf_jit_comp_64.c |  6 +++++-
->  arch/x86/net/bpf_jit_comp32.c    |  3 +--
->  include/linux/filter.h           |  4 ++--
->  9 files changed, 64 insertions(+), 33 deletions(-)
+>   arch/x86/kvm/vmx/tdx.c | 19 +++++++++++++++++++
+>   1 file changed, 19 insertions(+)
+>
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 903f4abb3543..fe818cfde9e7 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -2,6 +2,7 @@
+>   #include <linux/cpu.h>
+>   #include <linux/mmu_context.h>
+>   
+> +#include <asm/fpu/xcr.h>
+>   #include <asm/tdx.h>
+>   
+>   #include "capabilities.h"
+> @@ -584,6 +585,23 @@ void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+>   	 */
+>   }
+>   
+> +static void tdx_restore_host_xsave_state(struct kvm_vcpu *vcpu)
+> +{
+> +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(vcpu->kvm);
+> +
+> +	if (static_cpu_has(X86_FEATURE_XSAVE) &&
+> +	    host_xcr0 != (kvm_tdx->xfam & kvm_caps.supported_xcr0))
+> +		xsetbv(XCR_XFEATURE_ENABLED_MASK, host_xcr0);
+> +	if (static_cpu_has(X86_FEATURE_XSAVES) &&
+> +	    /* PT can be exposed to TD guest regardless of KVM's XSS support */
+> +	    host_xss != (kvm_tdx->xfam &
+> +			 (kvm_caps.supported_xss | XFEATURE_MASK_PT | TDX_TD_XFAM_CET)))
+> +		wrmsrl(MSR_IA32_XSS, host_xss);
+> +	if (static_cpu_has(X86_FEATURE_PKU) &&
+> +	    (kvm_tdx->xfam & XFEATURE_MASK_PKRU))
+> +		write_pkru(vcpu->arch.host_pkru);
+> +}
+> +
 
-For the MIPS part:
-Reviewed-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+The export of host_xcr0 in patch 67 can be moved to this path.
 
-Thanks,
-Johan
+  u64 __read_mostly host_xcr0;
++EXPORT_SYMBOL_GPL(host_xcr0);
+
+>   static noinstr void tdx_vcpu_enter_exit(struct vcpu_tdx *tdx)
+>   {
+>   	struct tdx_module_args args;
+> @@ -659,6 +677,7 @@ fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
+>   
+>   	tdx_vcpu_enter_exit(tdx);
+>   
+> +	tdx_restore_host_xsave_state(vcpu);
+>   	tdx->host_state_need_restore = true;
+>   
+>   	vcpu->arch.regs_avail &= ~VMX_REGS_LAZY_LOAD_SET;
+
 
