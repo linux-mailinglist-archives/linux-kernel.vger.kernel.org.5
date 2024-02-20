@@ -1,104 +1,121 @@
-Return-Path: <linux-kernel+bounces-72585-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72587-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3487285B591
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:41:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B18A85B599
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:41:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E56C0285D5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:41:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A448B24573
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFBC5D477;
-	Tue, 20 Feb 2024 08:40:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 854415D904;
+	Tue, 20 Feb 2024 08:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rm5E89nk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Uf/b7tkA";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pHbtdwNw"
+Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E4A5A110;
-	Tue, 20 Feb 2024 08:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EA175D473;
+	Tue, 20 Feb 2024 08:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708418438; cv=none; b=TGWLIoqKL6pEA95qlGKGrP+Rx92ylKLlJXhmc10mwomBtwu4oLkTl7+aw7ldFb6k9y3NJkswWPOfktvlWJgLZ5cpdZeQnMfwQBMj6h0WARyvMjGco3xy4S+CvaODivf5ZhZ23CdB232lTCy7CYe6/jQjM5wZmzY1D1gq3fds9R8=
+	t=1708418475; cv=none; b=Kc5d22EhESEqJJLTaW0M6M+fV4zKSUWK1bfy/3qT28tif6ESsZtn9FSCur248X1zfwejxIEq/RgLtWt/i/G8gQ2q2mi6cZEyJt6NfY5OqAsQNSenICCADloo2isEhxqKxMckZaxoF+tcNh2pjgwFLPf2DNAvoFXJNGvGO5uVIUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708418438; c=relaxed/simple;
-	bh=2fx/Ssc/6vEiZR2sY8kt9a8iCnW1DDxkpIcLwL+vJD0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EzGnNbI8zgljtds1/sIjNrRT+E8ArprRYIkuxnua+MMUG9J6Xlo6gImkLR3+D/ptYuAV4QGLzL6yI38FAPn85FddYU7dIWSq189fFuaFRM05npFyx44BUaIetZwPvuDc960Zs7l0cRg8JLBo/hNFef0hWT2S0ZkD1evVh60Zm4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rm5E89nk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22661C433F1;
-	Tue, 20 Feb 2024 08:40:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708418438;
-	bh=2fx/Ssc/6vEiZR2sY8kt9a8iCnW1DDxkpIcLwL+vJD0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Rm5E89nk2HRkQ+bEY1H7+DJvYFtC3dJbpxGpqVWX+4Ny0wLO5Prw9x2nDYKfJt6Nh
-	 KKGaYZaWtJK0vUcr8XiY7jGdYlym4yokpKTacZsi6iTSQnp3ZVeaglRhWGaiqHY/dn
-	 OfeikerJ0R0kNihtneUZsYRl2Pc5dY0V9Qu/th/5JltuzhvduD69mhBjVVofCwk0+h
-	 ZHXjUsY6LlX43AEpGQjKGYccoLtJhwijsPqGAglKv9vCcWDSKphwIeHrMlBL3judIH
-	 daRhGV+86OFsy/xOM2TsUdTufdpjZSHs5v1w+zqXnLw/mstRPRDKcwLAilQDJqRU/f
-	 NtjQIUEl/wpfg==
-Date: Tue, 20 Feb 2024 08:40:33 +0000
-From: Simon Horman <horms@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-	edumazet@google.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stephen@networkplumber.org,
-	f.fainelli@gmail.com, Johannes Berg <johannes.berg@intel.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: Re: [PATCH net-next v3] net: sysfs: Do not create sysfs for non BQL
- device
-Message-ID: <20240220084033.GR40273@kernel.org>
-References: <20240219104238.3782658-1-leitao@debian.org>
+	s=arc-20240116; t=1708418475; c=relaxed/simple;
+	bh=aDDymV6LEztxPD2Auh3QLl09iq6XKr3D3yY7CqwO8Es=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=uC4DyP9SsO92Vl2YYJ7IL679En4/Cg1O25i0RN3RSmniR9FNxGmeqBkXsRP1qZ9SDNtuVPobzGLnatPNZnqHKruKyegHjyodDsXfOcrmh4r792FOFVdtGP7fffJd38WlkDFF9TF0o03nXkZOrd80iqsyLmNtWI6dsB77oNUTbXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Uf/b7tkA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pHbtdwNw; arc=none smtp.client-ip=64.147.123.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id A92C21C00082;
+	Tue, 20 Feb 2024 03:41:12 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Tue, 20 Feb 2024 03:41:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1708418472; x=1708504872; bh=wXfeXdPi78
+	lk9EdJVz4SqcfJXJZWVAOw2kytIQNAzT0=; b=Uf/b7tkAq4epPR56tQyD7SAITT
+	+8jMynBiZtK4UOtgEcaqG9FdicdnBhzXibJwQT4hqNgESke+cNdsI9QQ/w+6b/4m
+	sC6fYJgmZB37BD7Q/ssrwU3IRAtuSrxuHcSjCl9oLpd8PT6FrQ/MSScexSq6IAOy
+	ufvMrVgylRS8jqL/0iliX+xsuN8z6KtFDcV01p0J9wNsbI3T954+lFM5Opfy7MQ+
+	XD1WUwKHOjy+sMOwQekkIhtHlemQiueyjnEo7ibUeO8wHKSIA36kT/TzYqzdXHtU
+	W56cuoKYMJZyGNfCZKkzZjDr7CvsaAtSOHEqVnwCMxgqwl1hS8MVB7zyds+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1708418472; x=1708504872; bh=wXfeXdPi78lk9EdJVz4SqcfJXJZW
+	VAOw2kytIQNAzT0=; b=pHbtdwNwuzwai5yuQznBWyV9DcSP2CseIcRODRHo8Tz+
+	THU3OpCtMOD7BrCcmwKdnKGfjFMgC4ZSgd7iftmLAFbtjRDe8LGXYdpctohyd4UN
+	Q3IPFCD7GSUzMwXxtFiJTAl4Vz4CveH4C/cXfUs3BtqzCLdkym2OIfd2sK68ABTd
+	ZPNKeMzGqV4P3z2nVzvorjQFTevJVPM/XDxoTJYf/GViczcOqDqw7UkYBI/rzGYz
+	N3XuXrj8BMiyJLUyPgN5jo++xr1nTAn35DXcNoKj/gXoR04upT7GqEr+TWQmrH8L
+	i2drCXQQ8RkqUY3KDkeUpB6T07OtD3Y7w8zWyCyclQ==
+X-ME-Sender: <xms:p2XUZed7OsyNQvGsgvOrzezQpIx1UkR_ruzNz8iblCneiWneEXl1Xg>
+    <xme:p2XUZYNnIlO2pxfyG6h_dRIEzJSYjywB32c-J_p0na_2JqKgoPBe9Pea9Zj6mdXqX
+    RTeQk83vP4rFggt2JI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdelgdduvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepvefhffeltdegheeffffhtdegvdehjedtgfekueevgfduffettedtkeekueef
+    hedunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:p2XUZfgcykzOnvqhGuVg-Aj-dUlFdg1kQJpfe_WJKuziARciV4UfZw>
+    <xmx:p2XUZb-RmFGEzh2fB0Wam7vUtOKssYUYKrGS8QTUF7byT537UH7tyw>
+    <xmx:p2XUZatsPwugfbhlLOe8A3WPm9B_1VFoGTrjoH7vPET8ok6MTALayA>
+    <xmx:qGXUZYAzmmv0H_K1n_DH26bbAjtrC5t0d_Bg-Yu86zsgEVCvSNs8NilA_QY>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id C1C18B6008D; Tue, 20 Feb 2024 03:41:11 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-153-g7e3bb84806-fm-20240215.007-g7e3bb848
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240219104238.3782658-1-leitao@debian.org>
+Message-Id: <476ca8e4-b0c8-4be2-ad65-8430c7f4acc9@app.fastmail.com>
+In-Reply-To: <20240220003433.3316148-1-javierm@redhat.com>
+References: <20240220003433.3316148-1-javierm@redhat.com>
+Date: Tue, 20 Feb 2024 09:40:50 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Javier Martinez Canillas" <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: "kernel test robot" <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+ "Andreas Larsson" <andreas@gaisler.com>,
+ "David S . Miller" <davem@davemloft.net>, "Helge Deller" <deller@gmx.de>,
+ "Thomas Zimmermann" <tzimmermann@suse.de>, sparclinux@vger.kernel.org
+Subject: Re: [PATCH] sparc: Fix undefined reference to fb_is_primary_device
+Content-Type: text/plain
 
-On Mon, Feb 19, 2024 at 02:42:36AM -0800, Breno Leitao wrote:
-> Creation of sysfs entries is expensive, mainly for workloads that
-> constantly creates netdev and netns often.
-> 
-> Do not create BQL sysfs entries for devices that don't need,
-> basically those that do not have a real queue, i.e, devices that has
-> NETIF_F_LLTX and IFF_NO_QUEUE, such as `lo` interface.
-> 
-> This will remove the /sys/class/net/eth0/queues/tx-X/byte_queue_limits/
-> directory for these devices.
-> 
-> In the example below, eth0 has the `byte_queue_limits` directory but not
-> `lo`.
-> 
-> 	# ls /sys/class/net/lo/queues/tx-0/
-> 	traffic_class  tx_maxrate  tx_timeout  xps_cpus  xps_rxqs
-> 
-> 	# ls /sys/class/net/eth0/queues/tx-0/byte_queue_limits/
-> 	hold_time  inflight  limit  limit_max  limit_min
-> 
-> This also removes the #ifdefs, since we can also use netdev_uses_bql() to
-> check if the config is enabled. (as suggested by Jakub).
-> 
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+On Tue, Feb 20, 2024, at 01:34, Javier Martinez Canillas wrote:
+> Commit 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE
+> symbols") added a new FB_CORE Kconfig symbol, that can be enabled to only
+> have fbcon/VT and DRM fbdev emulation, but without support for any legacy
+> fbdev driver.
+>
+> Unfortunately, it missed to change a CONFIG_FB in arch/sparc/Makefile and
+> that leads to the following linking error in some sparc64 configurations:
+>
+>    sparc64-linux-ld: drivers/video/fbdev/core/fbcon.o: in function 
+> `fbcon_fb_registered':
+>>> fbcon.c:(.text+0x4f60): undefined reference to `fb_is_primary_device'
+>
+> Fixes: 55bffc8170bb ("fbdev: Split frame buffer support in FB and 
+> FB_CORE symbols")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/r/202401290306.IV8rhJ02-lkp@intel.com/
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-Thanks Breno,
-
-I like that this removes sysfs entries for devices for which they do not
-act on.  Although I understand it is not a complete solution - still not
-all devices that have these entries use BQL - I think a key value there is
-to alleviate potential confusion for users.  And as such, this is a step in
-the right direction.
-
-I also like that some #ifdefs disappear.
-
-Reviewed-by: Simon Horman <horms@kernel.org>
-
-..
+Acked-by; Arnd Bergmann <arnd@arndb.de>
 
