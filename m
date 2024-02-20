@@ -1,145 +1,137 @@
-Return-Path: <linux-kernel+bounces-72727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C385B85B803
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:47:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B56E85B7FC
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:46:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57FA91F26B09
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:47:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27BB3286839
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C95363410;
-	Tue, 20 Feb 2024 09:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9A460861;
+	Tue, 20 Feb 2024 09:43:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lhMvpXN9"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gBtdL0sv"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5975762172
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:43:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 032385BAFA
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:43:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422215; cv=none; b=muakdn6wX+E0kt/kkEF7yrjNsIYBqZ9iDcE3fe4eFgavXXUaC6k5tJfhyO9fAnCZChpFWI67s+knVbxQlrwp9NtYV/XkyIrJ4J1YIJt+LAAk+0R8N3shMLyQBrmKuR0k4hHhTKvkTDK5VKJuDFrDvawoFsE6CZ4vQWC8YsaslbA=
+	t=1708422206; cv=none; b=H6EQoEKbRPsTHZiposdxjMK9If1Uq/CcDzGB1B4RvIZvHfIB6cqFE5ijZ+66w95a+Jk0rZY6xNKiMP7J54cO+h5STMa6IEUDzPGZNUnV/qkM+2zgWy5NUGGj43F7cVldlxwLindQAqQEp+2lPo10JAuLbKqV5uR7wjnf6XzMNns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422215; c=relaxed/simple;
-	bh=rlFKBjfxBfB5przc60p+qp81VvS1nj/vKLjjDNglv3Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bWrsCMS0Saug1RlGk2wx84rZxAMfqdJNH2mC8NHnv/nLHFt8X+gxty9JbDN5hZvbQD6K+2mPQhp37L5FpsvBDa+8udbVwbhjSTKih96b6Ah9Ac+sHLtb+M5MUjANCHmxtIL89Z37/zr5u6OCAlG1LS8TYMH4sVIhgKp+QN08C+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lhMvpXN9; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-55c2cf644f3so7048666a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:43:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1708422213; x=1709027013; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6wXGNSO7EAp4ThzIsFzmHN2w6lFZhp54XNCpapquw2M=;
-        b=lhMvpXN904q2pks39RZqlAavJW8u9xVuxVNfmDwC0VRkR06xSxBTTOcx2TmUarqFOw
-         n29uVI1hmLITquzoPhEO7VBmWTKO/iWJgzxkpJ6R8JUU0OPq6fVsuY1nRTL047tONHdj
-         YxSo+arbnPZxqXm8fn79pXozFqIV7zoZwJc6uRIuLggcZmmzo2lruNee7VgS7r3nWh1H
-         C3OEn3+EXha5AdDMtvirEUAf1JyYTjbnHFFtkaewLNamlU+UWsZmeRP4DbrN+JFwmCRy
-         Wm1hMSAMefS1I/wjZXERJhqnapVlX9I2MwJ06AvkQwZsku8CHo2TLXPqKsbu46FAgfzI
-         H/JQ==
+	s=arc-20240116; t=1708422206; c=relaxed/simple;
+	bh=D0Yo5x/4MfZWsJXiUKOIvYZcHzyTT/XtYOAf0/Z82rA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=s2ZsmBrgtZb0LNO3g9Vtyg04a9tWsyC0RWehp48HVFbkI3F0NuCvEBaXn8D7CNypi36FKd6lrGOlSxrdNullkU8n+2iqZdklcOW4OaqqBxMvH23ptRVABU9AWbBz/v1O0ka5jDwJlS9PUyznYkT1lxmc5kCuWh0JNwCA2JRTqk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gBtdL0sv; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1708422203;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d0/eBVPARKg7uLoz7RJuNF4kAD5bZj3l8nX7PR1I690=;
+	b=gBtdL0svQJQSAUKeJmjopNK1MDIWjWjxqHZoQC+rtdpqtGrdHw7qidYy//gwvK7oLmkIjj
+	65Fuw2/VtAOWxvikcgi+uKbzWzEfwvPztbc9HHaU9hLg2Wur+ngIb6hieZM7BRdxKGIlj/
+	n6oBXH9IXijbgJQQ/TkMVaEmNsqpctc=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-106-kodXUa3hPbG79N18a9SLrg-1; Tue, 20 Feb 2024 04:43:22 -0500
+X-MC-Unique: kodXUa3hPbG79N18a9SLrg-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33d1d766f83so1255604f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 01:43:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708422213; x=1709027013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6wXGNSO7EAp4ThzIsFzmHN2w6lFZhp54XNCpapquw2M=;
-        b=GlWju0OUxGXRgeCPU9BNoNoxbzNKWc+G1tS6tmX2xeiaGN18Jzz6Q2MsCLEfCILRQn
-         mR0pXfM6LNT5xc36pVYn+PxVlZz5elqkSlaLhgdR6ykeTVDJEoATNNtnjIERM5dzFE3L
-         7rauCUu0Z7smcCissv2gOZVgZRTy63S1SegT3EcxrknnY+OwQIBQVlVdWMHbw2ORXSTx
-         lSEMU1q5r8VP1Qx5Si8TNcEghoUhafMTpVsR1YwmAKh2Z2y/DNc7BXFwQyQ9ffI3tPrG
-         wNcXgxNTW9yYWBl/4fgeZDmTnpkcG0tJppPQyeouDQrUN9OSDRimdpfduWgZ/Kai9+Vv
-         Rwgg==
-X-Forwarded-Encrypted: i=1; AJvYcCVbzbaipwoKa5ENXiiZS39MOAP1po1oNYWRE6mDg03xOy6z6rU2qquX3huF+No2xijQll2jDlmVl/V29TLorzL5VAhf1Ic+DuzNz79+
-X-Gm-Message-State: AOJu0Yy2x6XYuGdn0gHrukK2bSjToUNsoefNJPenbdBgmzQtJhU16SZR
-	xedJ3JJRMYDe1MkskJ/6E7xql3eIS1ufeaQFF1M3h2qXxMiHI81TugZvA1UOoTUG5imRLazCoSJ
-	DlDD2TSwOn6069MkTEmRyx6vUyEJQocutC5QR
-X-Google-Smtp-Source: AGHT+IGo8bMi1ufIugwBQxJ09WQnYJlAWn1e8eQOJeCgyp5JhtuInq+rAAuyt68+BhpUHU0p7WmO3Bz0UMzJA8+aWuo=
-X-Received: by 2002:a05:6402:3588:b0:564:762c:fe5e with SMTP id
- y8-20020a056402358800b00564762cfe5emr3859938edc.20.1708422212502; Tue, 20 Feb
- 2024 01:43:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1708422201; x=1709027001;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d0/eBVPARKg7uLoz7RJuNF4kAD5bZj3l8nX7PR1I690=;
+        b=p/QWFAot2YRvD8ZzhXJuavpTI+7hPQNz8CR5UOarKoP3KMdvbSsPWC2CjAUGCCOxlN
+         4f5wxSsFBJnD5kfJi7cZXKJxQONJfWocyMaT235xmZXn3poyJeCG/j6ejmU1BYXuozVp
+         29LJD6Wo9EVmXW6z4lu9x37a0lBsn8/WvbMD3fctmkFT9TlphSMmSQPxo380WmuBwrI7
+         iPp+lL7XMKc65me5GiLYGLSf+/9L0Zlimu9OHWeXZlEBDezSuDMnTtlUON10byDHGcIq
+         YgbxlyaKfS/BG05ISU/3w2U3tbtDCqcn+lBHTgmVlwiLPn3cespeBSk0JP/X+/i0RAn2
+         wdGg==
+X-Forwarded-Encrypted: i=1; AJvYcCX03gX1F6hKZ9TJfz1BVuNqFhHuGlZSM82sVxNaaF6mIQ0OlJ7rwSG/hsye7L1FClulnTGdGCvu4sXcjzN5AQ+MAPGcHwo7LKEY5lch
+X-Gm-Message-State: AOJu0Yy/FEuAApbHEGypHaO40w/v8rzp6hHfyut3FlDcUssLVr2PTctF
+	8pafx40dWKt1BNGrUXHMdLAIAb1AJMne8cZvutLPWIidpWenOiqPBTz36RAApjW7PxOejuedRv/
+	oFO79jcNE2+vQTPcG2RfS7z+QTxsdYsXVhXDYwq895y79D/5SNQeOOcJFVG+94A==
+X-Received: by 2002:a05:6000:a18:b0:33d:3a02:8362 with SMTP id co24-20020a0560000a1800b0033d3a028362mr7878948wrb.70.1708422201297;
+        Tue, 20 Feb 2024 01:43:21 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHZ/M2FosjgjQmTAsSXTDdWEs4CliCEKwrB2i44K78RB/mTHLapK6fGxT2mIST6MolghceDqQ==
+X-Received: by 2002:a05:6000:a18:b0:33d:3a02:8362 with SMTP id co24-20020a0560000a1800b0033d3a028362mr7878931wrb.70.1708422201005;
+        Tue, 20 Feb 2024 01:43:21 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id m17-20020a5d4a11000000b0033cf4e47496sm12805118wrq.51.2024.02.20.01.43.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 01:43:20 -0800 (PST)
+From: Javier Martinez Canillas <javierm@redhat.com>
+To: Thomas Zimmermann <tzimmermann@suse.de>, linux-kernel@vger.kernel.org
+Cc: kernel test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+ Andreas Larsson <andreas@gaisler.com>, Arnd Bergmann <arnd@arndb.de>,
+ "David S. Miller" <davem@davemloft.net>, Helge Deller <deller@gmx.de>,
+ sparclinux@vger.kernel.org
+Subject: Re: [PATCH] sparc: Fix undefined reference to fb_is_primary_device
+In-Reply-To: <929a159f-f6dd-49d3-b6b5-70ab7450ab19@suse.de>
+References: <20240220003433.3316148-1-javierm@redhat.com>
+ <929a159f-f6dd-49d3-b6b5-70ab7450ab19@suse.de>
+Date: Tue, 20 Feb 2024 10:43:20 +0100
+Message-ID: <87h6i3ii87.fsf@minerva.mail-host-address-is-not-set>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220081205.135063-1-raychi@google.com> <2024022024-trout-kennel-6d14@gregkh>
- <4d62d4d0-3f28-486b-8132-4cc571b6f721@quicinc.com>
-In-Reply-To: <4d62d4d0-3f28-486b-8132-4cc571b6f721@quicinc.com>
-From: Ray Chi <raychi@google.com>
-Date: Tue, 20 Feb 2024 17:42:56 +0800
-Message-ID: <CAPBYUsD=3ux8RXgRcroVsmpqNs0D+2NeLhqPHh3TBB_oq=ziXA@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: gadget: remove warning during kernel boot
-To: Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, Thinh.Nguyen@synopsys.com, 
-	quic_uaggarwa@quicinc.com, albertccwang@google.com, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-Hi Krishna,
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-I verified the Thinh's patch and the warning could be
-fixed. Thanks for the information.
+Hello Thomas,
 
-Regards,
-Ray
+> Hi
+>
+> Am 20.02.24 um 01:34 schrieb Javier Martinez Canillas:
+>> Commit 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE
+>> symbols") added a new FB_CORE Kconfig symbol, that can be enabled to only
+>> have fbcon/VT and DRM fbdev emulation, but without support for any legacy
+>> fbdev driver.
+>>
+>> Unfortunately, it missed to change a CONFIG_FB in arch/sparc/Makefile and
+>> that leads to the following linking error in some sparc64 configurations:
+>>
+>>     sparc64-linux-ld: drivers/video/fbdev/core/fbcon.o: in function `fbcon_fb_registered':
+>>>> fbcon.c:(.text+0x4f60): undefined reference to `fb_is_primary_device'
+>> Fixes: 55bffc8170bb ("fbdev: Split frame buffer support in FB and FB_CORE symbols")
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Closes: https://lore.kernel.org/r/202401290306.IV8rhJ02-lkp@intel.com/
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>> ---
+>>
+>> I don't have a sparc64 toolchain to test this patch, but I'm pretty sure
+>> that this is the correct fix for the linking error reported by the robot.
+>>
+>>   arch/sparc/video/Makefile | 2 +-
+>
+> I think you also have to fix arch/sparc/Makefile.
+>
 
-On Tue, Feb 20, 2024 at 4:40=E2=80=AFPM Krishna Kurapati PSSNV
-<quic_kriskura@quicinc.com> wrote:
+Oh, you are right! Thanks for pointing that.
+
+> Best regards
+> Thomas
 >
->
->
-> On 2/20/2024 2:04 PM, Greg KH wrote:
-> > On Tue, Feb 20, 2024 at 04:12:04PM +0800, Ray Chi wrote:
-> >> The dwc3->gadget_driver is not initialized during the dwc3 probe
-> >> process. This leads to a warning when the runtime power management (PM=
-)
-> >> attempts to suspend the gadget using dwc3_gadget_suspend().
-> >
-> > What type of warning happens?
-> >
-> >> This patch adds a check to prevent the warning.
-> >>
-> >> Cc: stable@vger.kernel.org
-> >> Fixes: 61a348857e86 ("usb: dwc3: gadget: Fix NULL pointer dereference =
-in dwc3_gadget_suspend")
-> >> Signed-off-by: Ray Chi <raychi@google.com>
-> >> ---
-> >>   drivers/usb/dwc3/gadget.c | 3 +++
-> >>   1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> >> index 28f49400f3e8..de987cffe1ec 100644
-> >> --- a/drivers/usb/dwc3/gadget.c
-> >> +++ b/drivers/usb/dwc3/gadget.c
-> >> @@ -4708,6 +4708,9 @@ int dwc3_gadget_suspend(struct dwc3 *dwc)
-> >>      unsigned long flags;
-> >>      int ret;
-> >>
-> >> +    if (!dwc->gadget_driver)
-> >> +            return 0;
-> >> +
-> >
-> > This directly reverts part of the commit you say this fixes, are you
-> > SURE about this?  Why?
-> >
->
-> Hi Ray,
->
-> Thinh sent a patch recently addressing the issue in soft disconnect.
-> Can you check if it helps:
->
-> https://lore.kernel.org/all/e3be9b929934e0680a6f4b8f6eb11b18ae9c7e07.1708=
-043922.git.Thinh.Nguyen@synopsys.com/
->
-> Regards,
-> Krishna,
+
+-- 
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
 
