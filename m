@@ -1,137 +1,127 @@
-Return-Path: <linux-kernel+bounces-72925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 633BD85BACA
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:42:06 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 591FC85BACF
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 12:42:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 946661C2190A
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:42:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D9491C22333
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB6C56773B;
-	Tue, 20 Feb 2024 11:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED4367735;
+	Tue, 20 Feb 2024 11:42:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rUjWxzsx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="zqE1ULDu"
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10600664CE
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE8667C56
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 11:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708429320; cv=none; b=GWj6TT8bLPU6YJwYb/41XBFknClv75F7o1dy0BBqUdlvtJqbWI9AFfdwV7jE+shpIETG76JjXxX2+TD/gzen/6hoRI989kf09pWaWcmJ9EHOiVa+QG2bZlz92PfDupaW09DqP1a8yLmTtHzx/FHZYkBAOM+mTmFxIe5kUkkB3gg=
+	t=1708429336; cv=none; b=oy8DL1mLsAI5/zF2Z+XUjH920ummMS1IoNlILHPyOGbMP5khFSSTSfdkCz1Og2XcKfzTNs+Hk61PFvro7CEvnChK2LKfTITa8r08/z7Qyila+ETYw35MJcfkdW5zp1/noELVRiJVNv+R9gSyJVE4LKvdCadGZ2EBJU3IVkIhfCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708429320; c=relaxed/simple;
-	bh=q++Ve8879Npx2wq1JnlALpXBfW43mRaompH7G7hkYn8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OHxjho22YJHqKGujL5omH3bnmF80vV2c/JaDXNYanp1PKPHu3pW6jdW+9/i6+az+z6KT6OgdauIXrqtgfnoasrPghQa1uZfJhcRZLPx0hgbBs0IgehiCUOlKgxrZ7829GgLIq6dABBJt+rabrzU+arCqGI+2K68NGWX5qwvUpMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rUjWxzsx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 008D9C433A6;
-	Tue, 20 Feb 2024 11:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708429319;
-	bh=q++Ve8879Npx2wq1JnlALpXBfW43mRaompH7G7hkYn8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rUjWxzsxc7b/+LXSnMFEghOioBejkwFTOwX/XcP7a5GLe8qmThsFBC9ENzl2O6M0X
-	 pGUvvtRmB+dW1/bamR9c/NQ9mjzbiwxvmDg4joH9rvwYWwhiY1Cax8/XM/cTp3GTyR
-	 /NPEm8gFGBigZzbrFCe0PIOf31RI9w+DfHo6Q4yc1oSQxHABGuwYU+gyDUaZwxJGW0
-	 f1RaWdUzl5HQKjtRFFWUlLh9GGdE4yPzByvHzWvu7WifbmtdDQR6jAVm5VMCQ0/FIn
-	 lXICU3JuTh4AFEMfgJWJwVtzrC2PipoF3ITA0AMRNEaEK9WnpIPx8ApeMftjsKW2w+
-	 QCrqqsPtKeniw==
-Date: Tue, 20 Feb 2024 12:41:56 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Anna-Maria Behnsen <anna-maria@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Eric Dumazet <edumazet@google.com>,
-	"Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-	Arjan van de Ven <arjan@infradead.org>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	Rik van Riel <riel@surriel.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Sebastian Siewior <bigeasy@linutronix.de>,
-	Giovanni Gherdovich <ggherdovich@suse.cz>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	"Gautham R . Shenoy" <gautham.shenoy@amd.com>,
-	Srinivas Pandruvada <srinivas.pandruvada@intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>
-Subject: Re: [PATCH v10a] timers: Move marking timer bases idle into
- tick_nohz_stop_tick()
-Message-ID: <ZdSQBD_ZpWvH5SoZ@localhost.localdomain>
-References: <20240115143743.27827-4-anna-maria@linutronix.de>
- <20240219085236.10624-1-anna-maria@linutronix.de>
- <ZdPYEzno3KqIPo4S@localhost.localdomain>
- <878r3f5s3w.fsf@somnus>
+	s=arc-20240116; t=1708429336; c=relaxed/simple;
+	bh=ouR2+vSQw/fSXVao+thlbu3IjNZ33JoflBcFWY3O8Jk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DhwXZAjwmsyZNyyk+PLkx0JMO0SFLsEmnYNwJjSbKt3rpf6dlO13M8eC271OkJrtbObUEUphKaXLN8IOTpskYxdfCB5njyMj+owr1BvQNA1Qf5VCZYZj730PP4kColzNURuY1fjrt8iwvqvMSF0ImG0lpXOqUBaMIyGDNk5PKiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=zqE1ULDu; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-4c857f1c18cso491237e0c.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:42:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1708429333; x=1709034133; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AsA1IuJ1QgZr3RxDT4dHm54eEdxgfhuTT8X+jj/Chbk=;
+        b=zqE1ULDuEYEjsylSbBQU4zhm/yArJK978TWf3jKkxUIiwW5XiToMdRgkqF5hQseidX
+         X3CR8GsFEQ0TGEjFOcy8zD+YZiCuWlMueyKy+fSwE+bewsc1p3J6GFl3HbOgxtaOP873
+         gXZqAp31rH8PhkH3STA+0P4iXoV4VTXjxzYmC+K02khLFBWjxqqIJX9rL7hYB7ly4TE9
+         hrdFwL016oeDPcfNTSr162fURpO7aevF6oQCcLhfGy6K308RegpC1lEDxoVLdCnKbjUc
+         C4HJnNTTFouXjmOBbp13A7XO4aTETwMbgGooBruF+9+TNDE3AfLLcroXBSEUHuPntSiL
+         rIHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708429333; x=1709034133;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AsA1IuJ1QgZr3RxDT4dHm54eEdxgfhuTT8X+jj/Chbk=;
+        b=qbwWCyh68/arRJoPmq78Q4gWLayLeHT4RUd0S7t9Tvz36G3xcAUPWK6mMe0PRgzeyD
+         /odzA4dsoTkCeOi+wa594TFMfIf3U6dohVYGVkdQ98aQx3vdpqF/sBlxE35TON32dkxW
+         ZJGEF0kgEhK5V2zzeuGQ5qNxPYy0+2pCKxJ16wePMNEZF6BkivN5SvRQeROLwVi/zP9s
+         sOmWuOdxqFn+I72SlDrKf8fec1aE9RQjoXXkKvO8G/BoePL6CuU0A6eDYzrA7LZC0U9N
+         /bweVe1CxFY/iVGJICMCcp/COl/kNmOLYenR97l2Bc1lfk+NirxST2G0duKyvAHqp9VE
+         QoeA==
+X-Gm-Message-State: AOJu0YwUwx+F05ak3QxAniWH9OC2NqOYA7D0HzgW8B6ctg8aAG+aKSTa
+	F376nzFOObFJfp5GU8fD2X1GIMSOedLoEfXKX1mkZSaxG6q/wWH8AWevtb8JYvMqet9YKT3+Ivf
+	m9NSWOYzrCd5D9hUZRrBlbk4vzEbJSOM/2+qNyQ==
+X-Google-Smtp-Source: AGHT+IHcllRQy0QvMPlfXyC0j4mq7HZDSa6oNk423QQzmnQONpsBgUoG4iBcidN29kecafPXzp6gdVs8vJxKCKzoCyQ=
+X-Received: by 2002:a1f:4b07:0:b0:4c0:2182:3cdc with SMTP id
+ y7-20020a1f4b07000000b004c021823cdcmr11701946vka.1.1708429333138; Tue, 20 Feb
+ 2024 03:42:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <878r3f5s3w.fsf@somnus>
+References: <20240213160522.37940-1-lincoln.wallace@canonical.com>
+In-Reply-To: <20240213160522.37940-1-lincoln.wallace@canonical.com>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Tue, 20 Feb 2024 12:42:02 +0100
+Message-ID: <CAMRc=MdoUuOLTYHu99+c_AVhnDZ5LkKHkYJ0D681fcJV_aW2Ng@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: gpio: Add a note on the deprecated GPIO
+ Testing Driver
+To: lincoln.wallace@canonical.com
+Cc: linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-gpio@vger.kernel.org, corbet@lwn.net, linus.walleij@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Le Tue, Feb 20, 2024 at 11:48:19AM +0100, Anna-Maria Behnsen a écrit :
-> Frederic Weisbecker <frederic@kernel.org> writes:
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index 01fb50c1b17e..b93f0e6f273f 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -895,21 +895,6 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
->  	/* Make sure we won't be trying to stop it twice in a row. */
->  	ts->timer_expires_base = 0;
->  
-> -	/*
-> -	 * If this CPU is the one which updates jiffies, then give up
-> -	 * the assignment and let it be taken by the CPU which runs
-> -	 * the tick timer next, which might be this CPU as well. If we
-> -	 * don't drop this here, the jiffies might be stale and
-> -	 * do_timer() never gets invoked. Keep track of the fact that it
-> -	 * was the one which had the do_timer() duty last.
-> -	 */
-> -	if (cpu == tick_do_timer_cpu) {
-> -		tick_do_timer_cpu = TICK_DO_TIMER_NONE;
-> -		ts->do_timer_last = 1;
-> -	} else if (tick_do_timer_cpu != TICK_DO_TIMER_NONE) {
-> -		ts->do_timer_last = 0;
-> -	}
-> -
->  	/* Skip reprogram of event if it's not changed */
->  	if (ts->tick_stopped && (expires == ts->next_tick)) {
->  		/* Sanity check: make sure clockevent is actually programmed */
-
-That should work but then you lose the optimization that resets
-ts->do_timer_last even if the next timer hasn't changed.
-
-Thanks.
-
-
-
-> @@ -938,6 +923,21 @@ static void tick_nohz_stop_tick(struct tick_sched *ts, int cpu)
->  		trace_tick_stop(1, TICK_DEP_MASK_NONE);
->  	}
->  
-> +	/*
-> +	 * If this CPU is the one which updates jiffies, then give up
-> +	 * the assignment and let it be taken by the CPU which runs
-> +	 * the tick timer next, which might be this CPU as well. If we
-> +	 * don't drop this here, the jiffies might be stale and
-> +	 * do_timer() never gets invoked. Keep track of the fact that it
-> +	 * was the one which had the do_timer() duty last.
-> +	 */
-> +	if (cpu == tick_do_timer_cpu) {
-> +		tick_do_timer_cpu = TICK_DO_TIMER_NONE;
-> +		ts->do_timer_last = 1;
-> +	} else if (tick_do_timer_cpu != TICK_DO_TIMER_NONE) {
-> +		ts->do_timer_last = 0;
-> +	}
+On Tue, Feb 13, 2024 at 5:05=E2=80=AFPM <lincoln.wallace@canonical.com> wro=
+te:
+>
+> From: Lincoln Wallace <lincoln.wallace@canonical.com>
+>
+> A deprecation note was added on gpio-mockup Kconfig since v6.7,
+> update the documentation to inform users.
+>
+> Signed-off-by: Lincoln Wallace <lincoln.wallace@canonical.com>
+> ---
+>  Documentation/admin-guide/gpio/gpio-mockup.rst | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/Documentation/admin-guide/gpio/gpio-mockup.rst b/Documentati=
+on/admin-guide/gpio/gpio-mockup.rst
+> index 493071da1738..a6424de925da 100644
+> --- a/Documentation/admin-guide/gpio/gpio-mockup.rst
+> +++ b/Documentation/admin-guide/gpio/gpio-mockup.rst
+> @@ -3,6 +3,11 @@
+>  GPIO Testing Driver
+>  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> +.. note::
+> +    Since kernel version 6.7, this method is being deprecated. Prefer us=
+ing
+> +    Documentation/admin-guide/gpio/gpio-sim.rst instead for kernel versi=
+ons
+> +    newer than 5.17, which is when gpio-sim was added.
 > +
->  	ts->next_tick = expires;
->  
->  	/*
+>  The GPIO Testing Driver (gpio-mockup) provides a way to create simulated=
+ GPIO
+>  chips for testing purposes. The lines exposed by these chips can be acce=
+ssed
+>  using the standard GPIO character device interface as well as manipulate=
+d
+> --
+> 2.40.1
+>
+
+We already have a note on that, thanks.
+
+Bart
 
