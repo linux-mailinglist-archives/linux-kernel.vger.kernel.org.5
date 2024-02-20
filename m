@@ -1,46 +1,52 @@
-Return-Path: <linux-kernel+bounces-72287-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72309-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C25C885B1A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:48:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB1E685B1D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 05:08:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 770F21F22518
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 03:48:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 783ED2844C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 04:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A129E54BC4;
-	Tue, 20 Feb 2024 03:48:46 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBCE642A88
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 03:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8210F53E3B;
+	Tue, 20 Feb 2024 04:08:23 +0000 (UTC)
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C3C6168B8
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 04:08:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708400926; cv=none; b=mnC5IAx8SB4t7B3+gOidLXPeMAn6DHOO/PXt/nRB3aBBrWRfGpMQmNAA3UUyhveSxccyDyIuAXPD4P7Ea8k1PjTPZg1E8hPTEKpjPGUUe7tuRq7/G5zVt6yVISy77dbr0YaXbdKTSzAFUIfRXwWPsif6E0INJXimx6bNSkoMXz8=
+	t=1708402103; cv=none; b=p0vgnEAkaoeOpXhizXgVvB1OFPuvfggNRt8I66b5HhF/GqT13MHevPovnroFsdvbk5GsLIRGoeoNsk44Gr8/hg27QycsqENM88sUJmzF5Yzs+yShRE1+ZgSBLIl1Bpht0IwATT28eWrrdbZGzs/uziWD6uawFFpSXUiw8WBctDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708400926; c=relaxed/simple;
-	bh=b8LjkXT84906NkK5/yZUBGhJ7xE6H1O9jZlRmt6wdII=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p3/SwXLpCRDItja6eTxVfJytldh2Si/w28pdZoBbJsDvkHzqYPAPvwlqfy5qXW0jV1ZzejkapJoE/aEYZtfREhQiV88/HO8TQem0WypLjOFQjCKY8WJDoKYaWCQe8APvq9wlB/6vMOFIpe0BmS+ZFrAHhFGd51BhB1Pxr7HlGqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 310B5FEC;
-	Mon, 19 Feb 2024 19:49:22 -0800 (PST)
-Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.42.8])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id C350A3F762;
-	Mon, 19 Feb 2024 19:48:40 -0800 (PST)
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH V2] arm64/sysreg: Update ID_AA64DFR0_EL1 register
-Date: Tue, 20 Feb 2024 09:18:29 +0530
-Message-Id: <20240220034829.3098373-1-anshuman.khandual@arm.com>
+	s=arc-20240116; t=1708402103; c=relaxed/simple;
+	bh=2j4D5kYG7JtSUKyxtW/u2iHPXr2uOOtuX8szenPUMeY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Ivzi2/NcK1WTmoRIDZJRQIaSFoguH886GQAq8T8SW4kz4DR7htz31oi02K8hLoH7sH2iIz2zFSLchbosiaxqOzw5H/kCJtdkFLROM/jSu3v3TOofhbXiDXJhazs1aCRSYK6SQRcItlh1+OgjkURAMbDjRazMMStErZmIxcgC6aI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.105])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Tf52G06ZtzNlm1;
+	Tue, 20 Feb 2024 11:47:18 +0800 (CST)
+Received: from dggpemd200001.china.huawei.com (unknown [7.185.36.224])
+	by mail.maildlp.com (Postfix) with ESMTPS id A70F0140257;
+	Tue, 20 Feb 2024 11:48:39 +0800 (CST)
+Received: from localhost.localdomain (10.175.112.125) by
+ dggpemd200001.china.huawei.com (7.185.36.224) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.28; Tue, 20 Feb 2024 11:48:38 +0800
+From: Wupeng Ma <mawupeng1@huawei.com>
+To: <akpm@linux-foundation.org>, <dave.hansen@linux.intel.com>,
+	<luto@kernel.org>, <tglx@linutronix.de>, <peterz@infradead.org>,
+	<hpa@zytor.com>
+CC: <linux-kernel@vger.kernel.org>, <x86@kernel.org>, <mawupeng1@huawei.com>,
+	<bp@suse.de>, <mingo@redhat.com>, <rdunlap@infradead.org>,
+	<bhelgaas@google.com>, <linux-mm@kvack.org>
+Subject: [PATCH v4 0/3] Cleanup for PAT
+Date: Tue, 20 Feb 2024 11:48:32 +0800
+Message-ID: <20240220034835.507022-1-mawupeng1@huawei.com>
 X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -49,50 +55,36 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemd200001.china.huawei.com (7.185.36.224)
 
-This updates ID_AA64DFR0_EL1.PMSVer and ID_AA64DFR0_EL1.DebugVer register
-fields as per the definitions based on DDI0601 2023-12.
+From: Ma Wupeng <mawupeng1@huawei.com>
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on v6.8-rc5
+Patch #1 move follow_phys to memtype.c since only pat use this.
+Patch #2 cleanup parameter in follow_phys.
+Patch #3 drop the unnecessary WARN_ON_ONCE if follow_phys fails.
 
-Changes in V2:
+Changelog since v3:
+- rebase to latest linux
+- fix compile warnings
 
-- Split ID_AA64DFR0_EL1 changes in this patch and updated PMSVer per Mark
+Changelog since v2:
+- rebase to latest linux
 
-Changes in V1:
+Changelog since v1:
+- split patch #1 into two patches based on Boris's advise
 
-https://lore.kernel.org/all/20240215055159.2440898-1-anshuman.khandual@arm.com/
+Ma Wupeng (3):
+  x86/mm/pat: Move follow_phys to pat-related file
+  x86/mm/pat: Cleanup unused parameter in follow_phys
+  x86/mm/pat: Remove WARN_ON_ONCE if follow_phys fails
 
- arch/arm64/tools/sysreg | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/mm/pat/memtype.c | 32 ++++++++++++++++++++++++++------
+ include/linux/mm.h        |  2 --
+ mm/memory.c               | 28 ----------------------------
+ 3 files changed, 26 insertions(+), 36 deletions(-)
 
-diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index a9cab2b730a3..508224a0e078 100644
---- a/arch/arm64/tools/sysreg
-+++ b/arch/arm64/tools/sysreg
-@@ -1223,6 +1223,7 @@ UnsignedEnum	35:32	PMSVer
- 	0b0010	V1P1
- 	0b0011	V1P2
- 	0b0100	V1P3
-+	0b0101	V1P4
- EndEnum
- Field	31:28	CTX_CMPs
- Res0	27:24
-@@ -1249,6 +1250,7 @@ UnsignedEnum	3:0	DebugVer
- 	0b1000	V8P2
- 	0b1001	V8P4
- 	0b1010	V8P8
-+	0b1011	V8P9
- EndEnum
- EndSysreg
- 
 -- 
 2.25.1
 
