@@ -1,117 +1,125 @@
-Return-Path: <linux-kernel+bounces-73731-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73732-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0989B85CA10
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:41:53 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B93B85CA1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 22:42:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D834C1C21FB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:41:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B06451F21E7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 21:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C934151CFF;
-	Tue, 20 Feb 2024 21:41:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0F26151CEE;
+	Tue, 20 Feb 2024 21:42:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="eM4rQqMx"
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gJhK2oa/"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 398672DF9F
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:41:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D5CA14F9C8
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 21:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708465306; cv=none; b=t+G9jhL0gDWQvmWCh+3K0utTAbd10KhbB3XqkowvyyVDHCW45qjDZShZ9a2IpOrTdYxjvaStgyHayCTpr9niJ9NMyXBpnk9m+UXR7ow35L4ZCUPnQN1BQZud00EfKjg2V8/BepCrDhleC174CzL+rIkm4ranwzEg2qA9J9tq45s=
+	t=1708465344; cv=none; b=c4LCKd33HNvuqqilTsmQ4MsLGq1fmMI+99mikPNc/kiwh4HG8aU0Y0ia58oPJ7uNYMw/7+ZXzlbRGnE2V82Kq/pgY374Ntigcnm17h2EcPuWMblDYj19h0EZzVMQ28WJhcC17TVVs2o8W1uho7quNj8t/Gzvz6qozw07vm0dYlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708465306; c=relaxed/simple;
-	bh=8bsrRQott2AAO2XTms6OJqVRQ6zu+Yw6P1VbD+KUbfY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zmi8ymnY1Vha4R3ZTUoPeRBBT8DMfjF7rwtrlpt7GWp3RyyD8V4FFZXz+TeIZzhd0uoGg2gNkLbyJRGfEWu3AUbgePJf3FpCRp8LWh5QpkDXKdPAxWgRs9VFXyBLQyv5w5aOOdshcA6vAJrZGcq7cXTAV70i/mU8KUqTP+AU3hE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=eM4rQqMx; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-365306a6455so2580005ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:41:45 -0800 (PST)
+	s=arc-20240116; t=1708465344; c=relaxed/simple;
+	bh=G2mNUitTGG1KhBtMJnPfhpNhPMEAqPr9W7kdvUCbE9k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=PEoaNIAAekNUEi5qn00Zcke9816FzTmNnysvSgMfFhgWIfWviMm9ZlJ8i71SAuEXVMEWBiTCvi+ANJm3AOZ0NRFZiigy6wY2kfNczRAGtupXmEGkXMlMPRUC8YbEt/O1z68t/ndB8xH/3D9aaKVD/5NCb+WDMei/xzghb0B8L4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gJhK2oa/; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1d731314e67so42712785ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 13:42:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1708465304; x=1709070104; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SpaIw2fjwUqR+/df90gYdTgydOk/VBRkOcyZe3oxMgk=;
-        b=eM4rQqMxtvaEC77napcjSs1KAf16jjvfolwA1xEerjUoXttAXcMdNkzRoAYnxWZZ1h
-         gu6oM+ooy3hVaTdCuNK9MwDB7TkOkWLBIU2tcCXqkau8LUIo9gCg2B2BOVu9TQyTKlrJ
-         pVTlnwQmKSAZZekAoxm80YKv7d7eICmOGHV5s=
+        d=gmail.com; s=20230601; t=1708465342; x=1709070142; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5FhqsiQDKEAn6Yfpxe63BK7w9ctSLeshC951FYVN1HY=;
+        b=gJhK2oa/mxYixfzG+8DBIIjARC8/K4Rw2YKlVNxnCe4kRFWW2hx6XsA6QTMjmEU1A+
+         0Fvu8EgG7PJP/pjLMxnQx2wI+KjMoAX6LEFMTibKVLNciakWXh1GBFalNuP0PIUKKalX
+         rNgPhBlS2Y0kC90+/d2HU8onWdnQX66h/6f+FwXnQAoGCIYi8zicPc2FiJtpx05SW8my
+         f1WUQ60tQbIXdryV4yx9tYBUGQCXLT5GkDzi9TpaKqqNcqanZmS6ZwdbVZXxbLADsLin
+         SdSnR5Ql4QYzEcsiFPgcza2dUVHMJWHUyQEH2EKVsQfWGTASv40h11moFNhEP1146aEr
+         Tk9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708465304; x=1709070104;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SpaIw2fjwUqR+/df90gYdTgydOk/VBRkOcyZe3oxMgk=;
-        b=FMm+6kJACkFgLeuQVaF7Kyp3bDI13z0I0PXzouMTfUrSpfyl0HAVMroxzM/kPPn7xa
-         NnjpVzddJ80/bnc8jBO6J1tFBpWbeT+9czcxtNA7TTp36DH+/8bCYcg4jldDujiw2vOM
-         hyHTbCRAf1dAavmCvEeI0bEoG/6qo4QE5R4qo9cHZimIf69LBBsaNro9mtWoBI3b/a3H
-         OkQnUe3uoAaYaMEt9hJmQ4QZq5E7n/YWvHdHpfIVWbdJ/wpWAum50jG1zmRnwEpGZJeP
-         EcQD6pfu0Xl6w8ETlnhWhy21Voi3wwiEn4npjmrnzVeJikEwQl3OAYYohi+aRYDO9Wji
-         ToCQ==
-X-Gm-Message-State: AOJu0Yxssw3WWb037DuwwqIVR2pzHQmvQkIgd0i6crq50a1qFQ+aJTaS
-	/jNNa/bCCu1OzxzMxYtvq3VRbeNcpHU3MQX6Mg5mhEx4ughLAl7S64hNqZAD15c=
-X-Google-Smtp-Source: AGHT+IHnc22DIp5TX5eD2xKuhbupC8r+DyPT6CPAZ7gXqMeOVrzQneSYbNs53WdHZjevbLUwpq3wrg==
-X-Received: by 2002:a5d:8948:0:b0:7c7:28dc:da21 with SMTP id b8-20020a5d8948000000b007c728dcda21mr11515603iot.1.1708465304445;
-        Tue, 20 Feb 2024 13:41:44 -0800 (PST)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id k24-20020a023358000000b004743a0b8b8csm486095jak.153.2024.02.20.13.41.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 13:41:44 -0800 (PST)
-Message-ID: <5c173f2c-5c5e-4fdb-898a-1eb8531e336d@linuxfoundation.org>
-Date: Tue, 20 Feb 2024 14:41:43 -0700
+        d=1e100.net; s=20230601; t=1708465342; x=1709070142;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5FhqsiQDKEAn6Yfpxe63BK7w9ctSLeshC951FYVN1HY=;
+        b=mneycRGoQLrHsl7tb8YoiHXhXre2Ow4Dm8g4ndevX1CJ64bym+TBenfg1Lrw03i4sO
+         ntLlVaLfuj5OZJU5lInK47dkjYzfBhU853CqCKG78iWRLb5iQjDTuy5dpWeRlGP0Tmfa
+         XYVT1DEfMeR3d6PL8dz5ssIoaSRgvAn4u4GR2ZHr7gRrDcD93292AAbFOZJ2WrcjIHME
+         xtsm8BdFqlxtsZIxOmvo/LMotdeGQQ1eigL2q4zQn5aD4bwsyas1kvQVkBMQHdrkpcw8
+         9egbPrVUX+7foMoYNjCjn6qT40N2nMVdf/8sX2fdJQ9t9rsHpm7ny7WJsj3aPJAldOON
+         qZdw==
+X-Gm-Message-State: AOJu0YzjoCHBUG3hI9xvmBQRcgS3Mbp/W/6tM1j8ZjkWFHtHtxZlTUTj
+	leENz2XzL5lH2jBiWUKB5T9+2imhT+7J1Wu85fVlBtYt/y5frJ1/
+X-Google-Smtp-Source: AGHT+IG7geGBtg9yOSehILON+Xx96yPGfiFacRJe1mVy2Qqt1TLTiTxLM4+BJID91aatArvFbiEMCQ==
+X-Received: by 2002:a17:902:8496:b0:1db:47bb:65d6 with SMTP id c22-20020a170902849600b001db47bb65d6mr13482472plo.58.1708465341919;
+        Tue, 20 Feb 2024 13:42:21 -0800 (PST)
+Received: from localhost.localdomain ([116.73.143.161])
+        by smtp.gmail.com with ESMTPSA id o16-20020a17090323d000b001d9edac54b1sm6792408plh.171.2024.02.20.13.42.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Feb 2024 13:42:21 -0800 (PST)
+From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+To: suzuki.poulose@arm.com,
+	mike.leach@linaro.org,
+	james.clark@arm.com
+Cc: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Subject: [PATCH] Correcting the spelling mistakes in "Documentation/ABI/testing/sysfs-bus-cxl" and "Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc"
+Date: Wed, 21 Feb 2024 03:12:12 +0530
+Message-Id: <20240220214212.10231-1-pvkumar5749404@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftest/ftrace: fix typo in ftracetest script
-Content-Language: en-US
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
- Kousik Sanagavarapu <five231003@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Shuah Khan <shuah@kernel.org>, Shuah Khan <skhan@linuxfoundation.org>
-References: <20240129162841.57979-1-five231003@gmail.com>
- <20240131235236.749931e31721c892b7591118@kernel.org>
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240131235236.749931e31721c892b7591118@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 1/31/24 07:52, Masami Hiramatsu (Google) wrote:
-> Hi,
-> 
-> On Mon, 29 Jan 2024 21:58:07 +0530
-> Kousik Sanagavarapu <five231003@gmail.com> wrote:
-> 
->> Fix a typo in ftracetest script which is run when running the kselftests
->> for ftrace.
->>
->> s/faii/fail
->>
-> 
-> Thanks, this looks obvious typo.
-> 
->> Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
-> 
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Fixes: dbcf76390eb9 ("selftests/ftrace: Improve integration with kselftest runner")
-> 
-> 
-> Shuah, can you pick this to your branch?
-> 
+Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
 
-Applied to linux-kselftest next for Linux 6.9
+Changes:
+	- "avaialble" corrected to "available" in "Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc"
+	- "firwmare" corrected to "firmware" in "Documentation/ABI/testing/sysfs-bus-cxl"
+Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+---
+ Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc | 2 +-
+ Documentation/ABI/testing/sysfs-bus-cxl                   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-thanks,
--- Shuah
+diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
+index 96aafa66b4a5..339cec3b2f1a 100644
+--- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
++++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tmc
+@@ -97,7 +97,7 @@ Date:		August 2023
+ KernelVersion:	6.7
+ Contact:	Anshuman Khandual <anshuman.khandual@arm.com>
+ Description:	(Read) Shows all supported Coresight TMC-ETR buffer modes available
+-		for the users to configure explicitly. This file is avaialble only
++		for the users to configure explicitly. This file is available only
+ 		for TMC ETR devices.
+ 
+ What:		/sys/bus/coresight/devices/<memory_map>.tmc/buf_mode_preferred
+diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+index fff2581b8033..bbf6de5a4ca1 100644
+--- a/Documentation/ABI/testing/sysfs-bus-cxl
++++ b/Documentation/ABI/testing/sysfs-bus-cxl
+@@ -224,7 +224,7 @@ Description:
+ 		decoding a Host Physical Address range. Note that this number
+ 		may be elevated without any regionX objects active or even
+ 		enumerated, as this may be due to decoders established by
+-		platform firwmare or a previous kernel (kexec).
++		platform firmware or a previous kernel (kexec).
+ 
+ 
+ What:		/sys/bus/cxl/devices/decoderX.Y
+-- 
+2.34.1
 
 
