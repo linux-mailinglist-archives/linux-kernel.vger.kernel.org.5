@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-73509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-73510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EE5C85C3A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:32:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49B5085C3A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 19:31:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DD741C21470
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:32:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 007361F247DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 18:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC8B127B49;
-	Tue, 20 Feb 2024 18:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E589D128828;
+	Tue, 20 Feb 2024 18:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F6XCHcoq"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZMKNfh1a"
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8E5127B42;
-	Tue, 20 Feb 2024 18:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E41F127B5B;
+	Tue, 20 Feb 2024 18:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708453884; cv=none; b=CALfGtYfQ1LPlw92gANIIpt4TbSpKgpXODVt+MjozXTWehIjG15K4IVPDacCpi3TgXgcYRLWola9M3+XeOr/oj3+9fPphxpDH1IC3HKOOKPt9lXtll1rG5wX+ksOKSJQ0o1tRZx58bMN5vI/XS7212jkq3R7HJ2dysKtpHbrhWU=
+	t=1708453884; cv=none; b=YK+FSNXh7ImYg8ErfNYuFDz0ysDCKSaoNogR49L8ia5cgIrJroFoBxIxM3lJYHEzBwNioTUhg/19IIR0kJtB6ro+PJMJ2gn71E4COD0Rcd3p6jZJ4mKrDYzeVvihJ0YbqW3dExhRlAOesN6xT3yRcJiUwuoNuPAbj5uMTcg32Hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708453884; c=relaxed/simple;
-	bh=FdF0mgTap9bXDrmQSaRzwCgS3LDsGplUhtEqGb0GcTQ=;
+	bh=S2TYpCFy1JB7Zaotn5xau8POLflJ7cWtSbobA+OSmdU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Vbbmo3iUrg3ui57Co9pXn50yonwrrksmZ0EpCe+yX7UaG9eEZreK1EurnsTbZsZFWyclGsB/DmVrCPlWaq8YDPiSEqBN59+53UV3Il29a6ulhXhkt8ccxjqPYn9fYwJ9MPQcC2OCemJlXcACz1keeg7GcnBWPlsQ4SPcdx1eHyE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F6XCHcoq; arc=none smtp.client-ip=209.85.208.169
+	 MIME-Version; b=kyPvx85QLVAyhYa3wFfOmsVm3E3upJ3VRhjZZ/jlBzy89zFLxmfJXb1/8zpVf/9r2RI/iQ8nA1jq4Fk1kUJYPWiJQud+l+vJUvuVYxbBi9YUB/zlrqtZzd/JJErTAi3Q0elakvaVD4REU6KUlOVsjy4nxgYb2+52yqqfKj6wZNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZMKNfh1a; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d208be133bso60713851fa.2;
-        Tue, 20 Feb 2024 10:31:21 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-5120ecfd75cso9017718e87.0;
+        Tue, 20 Feb 2024 10:31:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1708453880; x=1709058680; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wus0M0lyQQHcOlLysxUocxe/UwP6fnCb6fumk2LTjUE=;
-        b=F6XCHcoqsMOsLi4lNao4Pbisp6mpJM1GecH4m4yT0AZoR9AVHepHbtzeqoo4oaoZIJ
-         okIHB3hAeihWwe5VdZiKy42DkJsbsJVFL/1GPxZqSnWsp/OfFLJMbm1rNfppF90DkhBv
-         NGxmDZI9ySfJvFjGrhuSusaf+z0+F/ime0OmXVWCUpNWEMisy5CW6AsczaUA8wiFC89v
-         sG/nAmHgcWfjIPOUCrEUBaLB2BlZhNwR3gE7hrDR28z3MIm9zIARw6u/6LcpVeJ3C1YV
-         lpg0EoyBw3bXtRD76vXxJDfeGBJSyZj+m8SBEH36C2brPvEWKhVHhSScd1+tZoEdqSO3
-         M4QA==
+        bh=bMrZV9vvrbQZqV4fEBsa4bv16+I4Dv8VWVkuWrxr4/U=;
+        b=ZMKNfh1aP6lx3SYOS37CeOUZ/7YlaVwJwphLUQV8hssM/fk6/+ij0QRziHvNuwAXIb
+         Q4o0qw79zM75BkRmi3PzabRltO7C9qg8gPi7SNnjluZq450PkkCbnb0pj+7dyotSm2CV
+         h9plMLxR5AkYZb4tveyRKzeAMdp+u7Jr8uMN7Do+KhLWoM4PY7nJbSyqy24/uuH7+59m
+         XutzN1VPwu1fiAG/6qFhmzS/kVkx8L/j8/c3o2kD9uXeyYXyKKOSZFUxU1+l9maoZuee
+         mTBYDfzTOMs2ApV9PzitoJn6axgTzB2CdjUCcS+5DYFiWM3G6SN1dVkzr89UDm/AUou9
+         GwCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1708453880; x=1709058680;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wus0M0lyQQHcOlLysxUocxe/UwP6fnCb6fumk2LTjUE=;
-        b=MbmCcCC+0jj5gmySD+UzJrMcC9EqNgt7sqDnCwWS1W+l0IpIMcujSOgomCUyIJephd
-         fEjXTEKb6Anj5BPhlWTajS/B2tY29ajAOuxqzP9KCVHy939bLryPAmANDYa0JVYHKpYD
-         IikGdi2bXTt/Ebuv0wCZLdHHLDGX+YIlKLiy8fqw0aYN9eN+GDsNXMAQ9xFavgKKGAIY
-         XQ10OYaNBwqFo9KITLYAR0Vl3f9ME2l8q5CQFaxOiRqDyI7UuhgB56NC/jKVVumOCBWk
-         k0BpcPUKyQc5uMX3oWXYJHh1tBp7tFMIJSaC0cvSt2UuxWU//l3TVkF8AjMq4NWbVgdl
-         7V9g==
-X-Forwarded-Encrypted: i=1; AJvYcCX+eM2o4909rq4xe5CcrCnKI1tA1XLVPe8GnpkFMp9ltTqK+wBYND4FLm+lmbXTDT1joXzlsHRd41pvRvKj4J1KXLfLt83Na5bdak7I
-X-Gm-Message-State: AOJu0YxT6t+rNM6qy63iPxBzkU3QmBc6xaYUqtzaGk9T4gaYgeGCnw5o
-	dq3JSiXeKUFnzMa9eIuLqxEUcpNqLGlzQ2APt3zR1zIlnnkI0X/K
-X-Google-Smtp-Source: AGHT+IF869iG7UewWJD16vnzP5Kezt7YBbNT+sy5+ZXKwMYTCLeX8ifpPhPoJLMRHaNM6yCQejQglQ==
-X-Received: by 2002:a05:6512:3a5:b0:512:be45:2b9 with SMTP id v5-20020a05651203a500b00512be4502b9mr2995147lfp.45.1708453879477;
-        Tue, 20 Feb 2024 10:31:19 -0800 (PST)
+        bh=bMrZV9vvrbQZqV4fEBsa4bv16+I4Dv8VWVkuWrxr4/U=;
+        b=YxXhH9I8rhvQjZr1I64JOLz9tWCJWTR+oSzcbAqeVHbV6OIFZyFmIF0VFJlX1NISEb
+         LU6WfTeMeN3K5eFUkOCcZUyV9dx0ZlmrYjDA9PE6SvmJiZuTX9fsApZRLTcmUWQEeh+J
+         pWQN2pQo3LA+ASv0qZHkweitAmPHwi71hLy2ryvEuSHZqQZWgSpN32rl+J9ArgVtQjaF
+         ynSi9mcfv20EbHM5KlXk6W+tln/1kxTXTjZZjkShr89Nq6fWQUvxWZmNok0e9HYIvAtG
+         n6toXqw7kzjV0py0J4fJvkCZC5jCO23cRGs8Tsj49MBGV4vNCQNn4bokRo9iZBHd7otJ
+         CxCg==
+X-Forwarded-Encrypted: i=1; AJvYcCVn2RTpM5Dq76XO2zcf24OxEbVY75jj51DafgAcG1/EzW+/d6uOl7kTMjGKNvkArhN6aLcSVTb5m8S55O/a8dyhgftdOwOwGXUqSeO6
+X-Gm-Message-State: AOJu0YwXAAsqZoEqI+AFc1CNgDlravCydBnnlX1GqDMDwW5YtPym+Zp+
+	+KuL08/QLjrov5EzJAxfVWbHZdOcPl6Y7h2sZC7TYmn63CAbhcD4
+X-Google-Smtp-Source: AGHT+IGPHOnJUnCnKoLVQOCnv+kPDLleOo6580hS+b43irm9Z/dtex0pWHTP9Mef1sB47JTC8jdIcQ==
+X-Received: by 2002:ac2:4a63:0:b0:511:76f1:3bf7 with SMTP id q3-20020ac24a63000000b0051176f13bf7mr10152732lfp.51.1708453880296;
+        Tue, 20 Feb 2024 10:31:20 -0800 (PST)
 Received: from pc638.lan (host-185-121-47-193.sydskane.nu. [185.121.47.193])
-        by smtp.gmail.com with ESMTPSA id b14-20020ac247ee000000b005118add498asm1365937lfp.130.2024.02.20.10.31.18
+        by smtp.gmail.com with ESMTPSA id b14-20020ac247ee000000b005118add498asm1365937lfp.130.2024.02.20.10.31.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Tue, 20 Feb 2024 10:31:19 -0800 (PST)
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
@@ -77,9 +77,9 @@ Cc: RCU <rcu@vger.kernel.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>,
 	Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH v5 2/4] rcu: Reduce synchronize_rcu() latency
-Date: Tue, 20 Feb 2024 19:31:13 +0100
-Message-Id: <20240220183115.74124-3-urezki@gmail.com>
+Subject: [PATCH v5 3/4] rcu: Add a trace event for synchronize_rcu_normal()
+Date: Tue, 20 Feb 2024 19:31:14 +0100
+Message-Id: <20240220183115.74124-4-urezki@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240220183115.74124-1-urezki@gmail.com>
 References: <20240220183115.74124-1-urezki@gmail.com>
@@ -91,552 +91,88 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A call to a synchronize_rcu() can be optimized from a latency
-point of view. Workloads which depend on this can benefit of it.
+Add an rcu_sr_normal() trace event. It takes three arguments
+first one is the name of RCU flavour, second one is a user id
+which triggeres synchronize_rcu_normal() and last one is an
+event.
 
-The delay of wakeme_after_rcu() callback, which unblocks a waiter,
-depends on several factors:
+There are two traces in the synchronize_rcu_normal(). On entry,
+when a new request is registered and on exit point when request
+is completed.
 
-- how fast a process of offloading is started. Combination of:
-    - !CONFIG_RCU_NOCB_CPU/CONFIG_RCU_NOCB_CPU;
-    - !CONFIG_RCU_LAZY/CONFIG_RCU_LAZY;
-    - other.
-- when started, invoking path is interrupted due to:
-    - time limit;
-    - need_resched();
-    - if limit is reached.
-- where in a nocb list it is located;
-- how fast previous callbacks completed;
+Please note, CONFIG_RCU_TRACE=y is required to activate traces.
 
-Example:
-
-1. On our embedded devices i can easily trigger the scenario when
-it is a last in the list out of ~3600 callbacks:
-
-<snip>
-  <...>-29      [001] d..1. 21950.145313: rcu_batch_start: rcu_preempt CBs=3613 bl=28
-..
-  <...>-29      [001] ..... 21950.152578: rcu_invoke_callback: rcu_preempt rhp=00000000b2d6dee8 func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152579: rcu_invoke_callback: rcu_preempt rhp=00000000a446f607 func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152580: rcu_invoke_callback: rcu_preempt rhp=00000000a5cab03b func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152581: rcu_invoke_callback: rcu_preempt rhp=0000000013b7e5ee func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152582: rcu_invoke_callback: rcu_preempt rhp=000000000a8ca6f9 func=__free_vm_area_struct.cfi_jt
-  <...>-29      [001] ..... 21950.152583: rcu_invoke_callback: rcu_preempt rhp=000000008f162ca8 func=wakeme_after_rcu.cfi_jt
-  <...>-29      [001] d..1. 21950.152625: rcu_batch_end: rcu_preempt CBs-invoked=3612 idle=....
-<snip>
-
-2. We use cpuset/cgroup to classify tasks and assign them into
-different cgroups. For example "backgrond" group which binds tasks
-only to little CPUs or "foreground" which makes use of all CPUs.
-Tasks can be migrated between groups by a request if an acceleration
-is needed.
-
-See below an example how "surfaceflinger" task gets migrated.
-Initially it is located in the "system-background" cgroup which
-allows to run only on little cores. In order to speed it up it
-can be temporary moved into "foreground" cgroup which allows
-to use big/all CPUs:
-
-cgroup_attach_task():
- -> cgroup_migrate_execute()
-   -> cpuset_can_attach()
-     -> percpu_down_write()
-       -> rcu_sync_enter()
-         -> synchronize_rcu()
-   -> now move tasks to the new cgroup.
- -> cgroup_migrate_finish()
-
-<snip>
-         rcuop/1-29      [000] .....  7030.528570: rcu_invoke_callback: rcu_preempt rhp=00000000461605e0 func=wakeme_after_rcu.cfi_jt
-    PERFD-SERVER-1855    [000] d..1.  7030.530293: cgroup_attach_task: dst_root=3 dst_id=22 dst_level=1 dst_path=/foreground pid=1900 comm=surfaceflinger
-   TimerDispatch-2768    [002] d..5.  7030.537542: sched_migrate_task: comm=surfaceflinger pid=1900 prio=98 orig_cpu=0 dest_cpu=4
-<snip>
-
-"Boosting a task" depends on synchronize_rcu() latency:
-
-- first trace shows a completion of synchronize_rcu();
-- second shows attaching a task to a new group;
-- last shows a final step when migration occurs.
-
-3. To address this drawback, maintain a separate track that consists
-of synchronize_rcu() callers only. After completion of a grace period
-users are deferred to a dedicated worker to process requests.
-
-4. This patch reduces the latency of synchronize_rcu() approximately
-by ~30-40% on synthetic tests. The real test case, camera launch time,
-shows(time is in milliseconds):
-
-1-run 542 vs 489 improvement 9%
-2-run 540 vs 466 improvement 13%
-3-run 518 vs 468 improvement 9%
-4-run 531 vs 457 improvement 13%
-5-run 548 vs 475 improvement 13%
-6-run 509 vs 484 improvement 4%
-
-Synthetic test(no "noise" from other callbacks):
-Hardware: x86_64 64 CPUs, 64GB of memory
-Linux-6.6
-
-- 10K tasks(simultaneous);
-- each task does(1000 loops)
-     synchronize_rcu();
-     kfree(p);
-
-default: CONFIG_RCU_NOCB_CPU: takes 54 seconds to complete all users;
-patch: CONFIG_RCU_NOCB_CPU: takes 35 seconds to complete all users.
-
-Running 60K gives approximately same results on my setup. Please note
-it is without any interaction with another type of callbacks, otherwise
-it will impact a lot a default case.
-
-5. By default it is disabled. To enable this perform one of the
-below sequence:
-
-echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
-
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Co-developed-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 ---
- .../admin-guide/kernel-parameters.txt         |  14 +
- kernel/rcu/tree.c                             | 331 +++++++++++++++++-
- kernel/rcu/tree_exp.h                         |   2 +-
- 3 files changed, 345 insertions(+), 2 deletions(-)
+ include/trace/events/rcu.h | 27 +++++++++++++++++++++++++++
+ kernel/rcu/tree.c          |  7 ++++++-
+ 2 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 2244aa0a013b..7ca84cf7b4f4 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -5059,6 +5059,20 @@
- 			delay, memory pressure or callback list growing too
- 			big.
- 
-+	rcutree.rcu_normal_wake_from_gp= [KNL]
-+			Reduces a latency of synchronize_rcu() call. This approach
-+			maintains its own track of synchronize_rcu() callers, so it
-+			does not interact with regular callbacks because it does not
-+			use a call_rcu[_hurry]() path. Please note, this is for a
-+			normal grace period.
-+
-+			How to enable it:
-+
-+			echo 1 > /sys/module/rcutree/parameters/rcu_normal_wake_from_gp
-+			or pass a boot parameter "rcutree.rcu_normal_wake_from_gp=1"
-+
-+			Default is 0.
-+
- 	rcuscale.gp_async= [KNL]
- 			Measure performance of asynchronous
- 			grace-period primitives such as call_rcu().
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index c8980d76f402..1328da63c3cd 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -75,6 +75,7 @@
- #define MODULE_PARAM_PREFIX "rcutree."
- 
- /* Data structures. */
-+static void rcu_sr_normal_gp_cleanup_work(struct work_struct *);
- 
- static DEFINE_PER_CPU_SHARED_ALIGNED(struct rcu_data, rcu_data) = {
- 	.gpwrap = true,
-@@ -93,6 +94,8 @@ static struct rcu_state rcu_state = {
- 	.exp_mutex = __MUTEX_INITIALIZER(rcu_state.exp_mutex),
- 	.exp_wake_mutex = __MUTEX_INITIALIZER(rcu_state.exp_wake_mutex),
- 	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
-+	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
-+		rcu_sr_normal_gp_cleanup_work),
- };
- 
- /* Dump rcu_node combining tree at boot to verify correct setup. */
-@@ -1422,6 +1425,282 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
- 		raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
- }
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index 2ef9c719772a..31b3e0d3e65f 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -707,6 +707,33 @@ TRACE_EVENT_RCU(rcu_invoke_kfree_bulk_callback,
+ 		__entry->rcuname, __entry->p, __entry->nr_records)
+ );
  
 +/*
-+ * There is a single llist, which is used for handling
-+ * synchronize_rcu() users' enqueued rcu_synchronize nodes.
-+ * Within this llist, there are two tail pointers:
-+ *
-+ * wait tail: Tracks the set of nodes, which need to
-+ *            wait for the current GP to complete.
-+ * done tail: Tracks the set of nodes, for which grace
-+ *            period has elapsed. These nodes processing
-+ *            will be done as part of the cleanup work
-+ *            execution by a kworker.
-+ *
-+ * At every grace period init, a new wait node is added
-+ * to the llist. This wait node is used as wait tail
-+ * for this new grace period. Given that there are a fixed
-+ * number of wait nodes, if all wait nodes are in use
-+ * (which can happen when kworker callback processing
-+ * is delayed) and additional grace period is requested.
-+ * This means, a system is slow in processing callbacks.
-+ *
-+ * TODO: If a slow processing is detected, a first node
-+ * in the llist should be used as a wait-tail for this
-+ * grace period, therefore users which should wait due
-+ * to a slow process are handled by _this_ grace period
-+ * and not next.
-+ *
-+ * Below is an illustration of how the done and wait
-+ * tail pointers move from one set of rcu_synchronize nodes
-+ * to the other, as grace periods start and finish and
-+ * nodes are processed by kworker.
-+ *
-+ *
-+ * a. Initial llist callbacks list:
-+ *
-+ * +----------+           +--------+          +-------+
-+ * |          |           |        |          |       |
-+ * |   head   |---------> |   cb2  |--------->| cb1   |
-+ * |          |           |        |          |       |
-+ * +----------+           +--------+          +-------+
-+ *
-+ *
-+ *
-+ * b. New GP1 Start:
-+ *
-+ *                    WAIT TAIL
-+ *                      |
-+ *                      |
-+ *                      v
-+ * +----------+     +--------+      +--------+        +-------+
-+ * |          |     |        |      |        |        |       |
-+ * |   head   ------> wait   |------>   cb2  |------> |  cb1  |
-+ * |          |     | head1  |      |        |        |       |
-+ * +----------+     +--------+      +--------+        +-------+
-+ *
-+ *
-+ *
-+ * c. GP completion:
-+ *
-+ * WAIT_TAIL == DONE_TAIL
-+ *
-+ *                   DONE TAIL
-+ *                     |
-+ *                     |
-+ *                     v
-+ * +----------+     +--------+      +--------+        +-------+
-+ * |          |     |        |      |        |        |       |
-+ * |   head   ------> wait   |------>   cb2  |------> |  cb1  |
-+ * |          |     | head1  |      |        |        |       |
-+ * +----------+     +--------+      +--------+        +-------+
-+ *
-+ *
-+ *
-+ * d. New callbacks and GP2 start:
-+ *
-+ *                    WAIT TAIL                          DONE TAIL
-+ *                      |                                 |
-+ *                      |                                 |
-+ *                      v                                 v
-+ * +----------+     +------+    +------+    +------+    +-----+    +-----+    +-----+
-+ * |          |     |      |    |      |    |      |    |     |    |     |    |     |
-+ * |   head   ------> wait |--->|  cb4 |--->| cb3  |--->|wait |--->| cb2 |--->| cb1 |
-+ * |          |     | head2|    |      |    |      |    |head1|    |     |    |     |
-+ * +----------+     +------+    +------+    +------+    +-----+    +-----+    +-----+
-+ *
-+ *
-+ *
-+ * e. GP2 completion:
-+ *
-+ * WAIT_TAIL == DONE_TAIL
-+ *                   DONE TAIL
-+ *                      |
-+ *                      |
-+ *                      v
-+ * +----------+     +------+    +------+    +------+    +-----+    +-----+    +-----+
-+ * |          |     |      |    |      |    |      |    |     |    |     |    |     |
-+ * |   head   ------> wait |--->|  cb4 |--->| cb3  |--->|wait |--->| cb2 |--->| cb1 |
-+ * |          |     | head2|    |      |    |      |    |head1|    |     |    |     |
-+ * +----------+     +------+    +------+    +------+    +-----+    +-----+    +-----+
-+ *
-+ *
-+ * While the llist state transitions from d to e, a kworker
-+ * can start executing rcu_sr_normal_gp_cleanup_work() and
-+ * can observe either the old done tail (@c) or the new
-+ * done tail (@e). So, done tail updates and reads need
-+ * to use the rel-acq semantics. If the concurrent kworker
-+ * observes the old done tail, the newly queued work
-+ * execution will process the updated done tail. If the
-+ * concurrent kworker observes the new done tail, then
-+ * the newly queued work will skip processing the done
-+ * tail, as workqueue semantics guarantees that the new
-+ * work is executed only after the previous one completes.
-+ *
-+ * f. kworker callbacks processing complete:
-+ *
-+ *
-+ *                   DONE TAIL
-+ *                     |
-+ *                     |
-+ *                     v
-+ * +----------+     +--------+
-+ * |          |     |        |
-+ * |   head   ------> wait   |
-+ * |          |     | head2  |
-+ * +----------+     +--------+
-+ *
++ * Tracepoint for a normal synchronize_rcu() states. The first argument
++ * is the RCU flavor, the second argument is a pointer to rcu_head the
++ * last one is an event.
 + */
-+static bool rcu_sr_is_wait_head(struct llist_node *node)
-+{
-+	return &(rcu_state.srs_wait_nodes)[0].node <= node &&
-+		node <= &(rcu_state.srs_wait_nodes)[SR_NORMAL_GP_WAIT_HEAD_MAX - 1].node;
-+}
++TRACE_EVENT_RCU(rcu_sr_normal,
 +
-+static struct llist_node *rcu_sr_get_wait_head(void)
-+{
-+	struct sr_wait_node *sr_wn;
-+	int i;
++	TP_PROTO(const char *rcuname, struct rcu_head *rhp, const char *srevent),
 +
-+	for (i = 0; i < SR_NORMAL_GP_WAIT_HEAD_MAX; i++) {
-+		sr_wn = &(rcu_state.srs_wait_nodes)[i];
++	TP_ARGS(rcuname, rhp, srevent),
 +
-+		if (!atomic_cmpxchg_acquire(&sr_wn->inuse, 0, 1))
-+			return &sr_wn->node;
-+	}
++	TP_STRUCT__entry(
++		__field(const char *, rcuname)
++		__field(void *, rhp)
++		__field(const char *, srevent)
++	),
 +
-+	return NULL;
-+}
++	TP_fast_assign(
++		__entry->rcuname = rcuname;
++		__entry->rhp = rhp;
++		__entry->srevent = srevent;
++	),
 +
-+static void rcu_sr_put_wait_head(struct llist_node *node)
-+{
-+	struct sr_wait_node *sr_wn = container_of(node, struct sr_wait_node, node);
-+	atomic_set_release(&sr_wn->inuse, 0);
-+}
-+
-+/* Disabled by default. */
-+static int rcu_normal_wake_from_gp;
-+module_param(rcu_normal_wake_from_gp, int, 0644);
-+
-+static void rcu_sr_normal_complete(struct llist_node *node)
-+{
-+	struct rcu_synchronize *rs = container_of(
-+		(struct rcu_head *) node, struct rcu_synchronize, head);
-+	unsigned long oldstate = (unsigned long) rs->head.func;
-+
-+	WARN_ONCE(IS_ENABLED(CONFIG_PROVE_RCU) &&
-+		!poll_state_synchronize_rcu(oldstate),
-+		"A full grace period is not passed yet: %lu",
-+		rcu_seq_diff(get_state_synchronize_rcu(), oldstate));
-+
-+	/* Finally. */
-+	complete(&rs->completion);
-+}
-+
-+static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-+{
-+	struct llist_node *done, *rcu, *next, *head;
-+
-+	/*
-+	 * This work execution can potentially execute
-+	 * while a new done tail is being updated by
-+	 * grace period kthread in rcu_sr_normal_gp_cleanup().
-+	 * So, read and updates of done tail need to
-+	 * follow acq-rel semantics.
-+	 *
-+	 * Given that wq semantics guarantees that a single work
-+	 * cannot execute concurrently by multiple kworkers,
-+	 * the done tail list manipulations are protected here.
-+	 */
-+	done = smp_load_acquire(&rcu_state.srs_done_tail);
-+	if (!done)
-+		return;
-+
-+	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-+	head = done->next;
-+	done->next = NULL;
-+
-+	/*
-+	 * The dummy node, which is pointed to by the
-+	 * done tail which is acq-read above is not removed
-+	 * here.  This allows lockless additions of new
-+	 * rcu_synchronize nodes in rcu_sr_normal_add_req(),
-+	 * while the cleanup work executes. The dummy
-+	 * nodes is removed, in next round of cleanup
-+	 * work execution.
-+	 */
-+	llist_for_each_safe(rcu, next, head) {
-+		if (!rcu_sr_is_wait_head(rcu)) {
-+			rcu_sr_normal_complete(rcu);
-+			continue;
-+		}
-+
-+		rcu_sr_put_wait_head(rcu);
-+	}
-+}
-+
-+/*
-+ * Helper function for rcu_gp_cleanup().
-+ */
-+static void rcu_sr_normal_gp_cleanup(void)
-+{
-+	struct llist_node *wait_tail;
-+
-+	wait_tail = rcu_state.srs_wait_tail;
-+	if (wait_tail == NULL)
-+		return;
-+
-+	rcu_state.srs_wait_tail = NULL;
-+	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
-+
-+	// concurrent sr_normal_gp_cleanup work might observe this update.
-+	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-+	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
-+
-+	if (wait_tail)
-+		queue_work(system_highpri_wq, &rcu_state.srs_cleanup_work);
-+}
-+
-+/*
-+ * Helper function for rcu_gp_init().
-+ */
-+static bool rcu_sr_normal_gp_init(void)
-+{
-+	struct llist_node *first;
-+	struct llist_node *wait_head;
-+	bool start_new_poll = false;
-+
-+	first = READ_ONCE(rcu_state.srs_next.first);
-+	if (!first || rcu_sr_is_wait_head(first))
-+		return start_new_poll;
-+
-+	wait_head = rcu_sr_get_wait_head();
-+	if (!wait_head) {
-+		// Kick another GP to retry.
-+		start_new_poll = true;
-+		return start_new_poll;
-+	}
-+
-+	/* Inject a wait-dummy-node. */
-+	llist_add(wait_head, &rcu_state.srs_next);
-+
-+	/*
-+	 * A waiting list of rcu_synchronize nodes should be empty on
-+	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
-+	 * rolls it over. If not, it is a BUG, warn a user.
-+	 */
-+	WARN_ON_ONCE(rcu_state.srs_wait_tail != NULL);
-+	rcu_state.srs_wait_tail = wait_head;
-+	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
-+
-+	return start_new_poll;
-+}
-+
-+static void rcu_sr_normal_add_req(struct rcu_synchronize *rs)
-+{
-+	llist_add((struct llist_node *) &rs->head, &rcu_state.srs_next);
-+}
++	TP_printk("%s rhp=0x%p event=%s",
++		__entry->rcuname, __entry->rhp, __entry->srevent)
++);
 +
  /*
-  * Initialize a new grace period.  Return false if no grace period required.
-  */
-@@ -1432,6 +1711,7 @@ static noinline_for_stack bool rcu_gp_init(void)
- 	unsigned long mask;
- 	struct rcu_data *rdp;
- 	struct rcu_node *rnp = rcu_get_root();
-+	bool start_new_poll;
+  * Tracepoint for exiting rcu_do_batch after RCU callbacks have been
+  * invoked.  The first argument is the name of the RCU flavor,
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 1328da63c3cd..3bf6b3c5ef05 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3863,9 +3863,11 @@ static void synchronize_rcu_normal(void)
+ {
+ 	struct rcu_synchronize rs;
  
- 	WRITE_ONCE(rcu_state.gp_activity, jiffies);
- 	raw_spin_lock_irq_rcu_node(rnp);
-@@ -1456,10 +1736,24 @@ static noinline_for_stack bool rcu_gp_init(void)
- 	/* Record GP times before starting GP, hence rcu_seq_start(). */
- 	rcu_seq_start(&rcu_state.gp_seq);
- 	ASSERT_EXCLUSIVE_WRITER(rcu_state.gp_seq);
-+	start_new_poll = rcu_sr_normal_gp_init();
- 	trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq, TPS("start"));
- 	rcu_poll_gp_seq_start(&rcu_state.gp_seq_polled_snap);
- 	raw_spin_unlock_irq_rcu_node(rnp);
- 
-+	/*
-+	 * The "start_new_poll" is set to true, only when this GP is not able
-+	 * to handle anything and there are outstanding users. It happens when
-+	 * the rcu_sr_normal_gp_init() function was not able to insert a dummy
-+	 * separator to the llist, because there were no left any dummy-nodes.
-+	 *
-+	 * Number of dummy-nodes is fixed, it could be that we are run out of
-+	 * them, if so we start a new pool request to repeat a try. It is rare
-+	 * and it means that a system is doing a slow processing of callbacks.
-+	 */
-+	if (start_new_poll)
-+		(void) start_poll_synchronize_rcu();
++	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("request"));
 +
- 	/*
- 	 * Apply per-leaf buffered online and offline operations to
- 	 * the rcu_node tree. Note that this new grace period need not
-@@ -1825,6 +2119,9 @@ static noinline void rcu_gp_cleanup(void)
+ 	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
+ 		wait_rcu_gp(call_rcu_hurry);
+-		return;
++		goto trace_complete_out;
  	}
- 	raw_spin_unlock_irq_rcu_node(rnp);
  
-+	// Make synchronize_rcu() users aware of the end of old grace period.
-+	rcu_sr_normal_gp_cleanup();
+ 	init_rcu_head_on_stack(&rs.head);
+@@ -3886,6 +3888,9 @@ static void synchronize_rcu_normal(void)
+ 	/* Now we can wait. */
+ 	wait_for_completion(&rs.completion);
+ 	destroy_rcu_head_on_stack(&rs.head);
 +
- 	// If strict, make all CPUs aware of the end of the old grace period.
- 	if (IS_ENABLED(CONFIG_RCU_STRICT_GRACE_PERIOD))
- 		on_each_cpu(rcu_strict_gp_boundary, NULL, 0);
-@@ -3559,6 +3856,38 @@ static int rcu_blocking_is_gp(void)
- 	return true;
++trace_complete_out:
++	trace_rcu_sr_normal(rcu_state.name, &rs.head, TPS("complete"));
  }
  
-+/*
-+ * Helper function for the synchronize_rcu() API.
-+ */
-+static void synchronize_rcu_normal(void)
-+{
-+	struct rcu_synchronize rs;
-+
-+	if (!READ_ONCE(rcu_normal_wake_from_gp)) {
-+		wait_rcu_gp(call_rcu_hurry);
-+		return;
-+	}
-+
-+	init_rcu_head_on_stack(&rs.head);
-+	init_completion(&rs.completion);
-+
-+	/*
-+	 * This code might be preempted, therefore take a GP
-+	 * snapshot before adding a request.
-+	 */
-+	if (IS_ENABLED(CONFIG_PROVE_RCU))
-+		rs.head.func = (void *) get_state_synchronize_rcu();
-+
-+	rcu_sr_normal_add_req(&rs);
-+
-+	/* Kick a GP and start waiting. */
-+	(void) start_poll_synchronize_rcu();
-+
-+	/* Now we can wait. */
-+	wait_for_completion(&rs.completion);
-+	destroy_rcu_head_on_stack(&rs.head);
-+}
-+
  /**
-  * synchronize_rcu - wait until a grace period has elapsed.
-  *
-@@ -3610,7 +3939,7 @@ void synchronize_rcu(void)
- 		if (rcu_gp_is_expedited())
- 			synchronize_rcu_expedited();
- 		else
--			wait_rcu_gp(call_rcu_hurry);
-+			synchronize_rcu_normal();
- 		return;
- 	}
- 
-diff --git a/kernel/rcu/tree_exp.h b/kernel/rcu/tree_exp.h
-index 6b83537480b1..8a1d9c8bd9f7 100644
---- a/kernel/rcu/tree_exp.h
-+++ b/kernel/rcu/tree_exp.h
-@@ -930,7 +930,7 @@ void synchronize_rcu_expedited(void)
- 
- 	/* If expedited grace periods are prohibited, fall back to normal. */
- 	if (rcu_gp_is_normal()) {
--		wait_rcu_gp(call_rcu_hurry);
-+		synchronize_rcu_normal();
- 		return;
- 	}
- 
 -- 
 2.39.2
 
