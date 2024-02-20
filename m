@@ -1,103 +1,122 @@
-Return-Path: <linux-kernel+bounces-72589-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BDF85B5A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:42:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0A485B5A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:42:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 484621C22844
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:42:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16878285840
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 08:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF0A5D729;
-	Tue, 20 Feb 2024 08:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AvRrnv1v"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D975D735;
+	Tue, 20 Feb 2024 08:42:32 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C585A0E9;
-	Tue, 20 Feb 2024 08:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26BE25D462
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 08:42:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708418540; cv=none; b=HwBMrZAN0bgCLqBZCelZBsEZ20u/EGgYyJoe3rPwpvi0W1ykJBYabHZOMUddQKLO65YLP00KUO3/ni4dhiWj+QIyqIoz1f2F4Pv/HmZv32a5+YAExSgIHEfa3ntJvLQo5gJa6lUGPE+p3KF19ISnfZltjJv5xmfOEQRFP0Bp7to=
+	t=1708418552; cv=none; b=HImMGxwRdtIb9BXq+FV6iJ1k2s51FnKrng7da3p8NECEb8T33qGAxtLtEjzKm4Dl5NYVw46rPgjc/YC3x47ialtp3kjasA4HCNzdZkd6Yywk70S487MHHeFjxAz1gTym7Ch1lk9m4B+EKQbitlzcuk+Aih4aEbYTFw3KIlGgVc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708418540; c=relaxed/simple;
-	bh=Fs5/rbAElEAfIede4OYqsYTavZtu15762Va+NBHML18=;
+	s=arc-20240116; t=1708418552; c=relaxed/simple;
+	bh=5i2yVe3YvLkbc1bjl/rywBySn9/ebqlo3gBQ6m35U8k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HVi/cP5PJESzQk3rTZ6SJEIxw4asrqH/VdWfS3B5f5vUdDXBFACTW6at7ORpKnzsScvMTHcaqg3F3yOm6iMhF+sUH/pSpMOEfpzHXPLw/EvHNlvfJ9RP4AyouQx/BJicmPRriSWDE7Z7UUF4B+71d47w9K4yZCvo1laFyBAN9/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AvRrnv1v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DF5DC433C7;
-	Tue, 20 Feb 2024 08:42:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708418539;
-	bh=Fs5/rbAElEAfIede4OYqsYTavZtu15762Va+NBHML18=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AvRrnv1vaO93pL8t5tolzacV6QkJ59bPs4hD2Oh/AGFUEGpUHPZ2TLteoVYjFuHgx
-	 5jt7uNUw7sPxHv9WGZZU5yzeJafRq1X2P/0TBG4j92vGh0JRDGOZ8upVaR87ftJTkA
-	 wS3odx0BJfSZgokJd3vuQcWQQFGh11enM1Y3g0coMcDaBLRQ96Xflv8vv/Qm9MU0Aa
-	 JIp/2pQMYb408hVpSvdcKwWhXUvV2g3Nsw0TnZbBJnYoJjsrO7iX6UBiKM7b2RzbWp
-	 3vh8bLHoLl4Tg/M561+cjBR191qh3PeIuOnEcsD4AVuc+fHO72v1+GRy9kguEXYIx1
-	 Yi+wn4GUT5D3Q==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rcLhh-000000002hC-1gp8;
-	Tue, 20 Feb 2024 09:42:18 +0100
-Date: Tue, 20 Feb 2024 09:42:17 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] dt-bindings: PCI: qcom: Do not require
- 'msi-map-mask'
-Message-ID: <ZdRl6fzEOQqkXqLt@hovoldconsulting.com>
-References: <20240212165043.26961-1-johan+linaro@kernel.org>
- <20240212165043.26961-3-johan+linaro@kernel.org>
- <e396cf20-8598-4437-b635-09a4a737a772@linaro.org>
- <Zcy4Atjmb6-wofCL@hovoldconsulting.com>
- <59bd6e54-0d5d-4e1a-818a-475a96c223ff@linaro.org>
- <20240216165406.GD39963@thinkpad>
- <ZdRXpQnbDbojlMkV@hovoldconsulting.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=O46Nzo1xLazDjSdKmPBg3yR9YsJLSLwpMK2dx7vJWkwM+t6dJAXTAhW4tGFuiMAqOgzhGEfP8jnukflRo8skDh7jhduDyvLh8F0YDTOU9slEA6yvzBHZi8TeKbbboRJS8VBZpMPWe1QyTN0T4cQ6w4FubLVIEQJ6jmP2wy3j7Do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rcLhn-0000H0-23; Tue, 20 Feb 2024 09:42:23 +0100
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rcLhm-001oB5-CU; Tue, 20 Feb 2024 09:42:22 +0100
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 0A7C1292ECA;
+	Tue, 20 Feb 2024 08:42:22 +0000 (UTC)
+Date: Tue, 20 Feb 2024 09:42:21 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent Mailhol <vincent.mailhol@gmail.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] can: raw: raw_getsockopt(): reduce scope of err
+Message-ID: <20240220-tremor-suspend-36bc012b061c-mkl@pengutronix.de>
+References: <20240220-raw-setsockopt-v1-1-7d34cb1377fc@pengutronix.de>
+ <CAMZ6RqKPUUrgfVpdu4y=mGUFjNTbfH7q46ZwcMwOn6zEwfHnZg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="g4vopqhpjlyktekh"
 Content-Disposition: inline
-In-Reply-To: <ZdRXpQnbDbojlMkV@hovoldconsulting.com>
+In-Reply-To: <CAMZ6RqKPUUrgfVpdu4y=mGUFjNTbfH7q46ZwcMwOn6zEwfHnZg@mail.gmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-On Tue, Feb 20, 2024 at 08:41:25AM +0100, Johan Hovold wrote:
-> On Fri, Feb 16, 2024 at 10:24:06PM +0530, Manivannan Sadhasivam wrote:
 
-> > msi-map-mask is definitely needed as it would allow all the devices under the
-> > same bus to reuse the MSI identifier. Currently, excluding this property will
-> > not cause any issue since there is a single device under each bus. But we cannot
-> > assume that is going to be the case on all boards.
-> 
-> Are you saying that there is never a use case for an identity mapping?
-> Just on Qualcomm hardware or in general?
-> 
-> It looks like we have a fairly large number of mainline devicetrees that
-> do use an identity mapping here (i.e. do not specify 'msi-map-mask') and
-> the binding document also has an explicit example of this.
-> 
-> 	Documentation/devicetree/bindings/pci/pci-msi.txt
+--g4vopqhpjlyktekh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The above should have said "linear mapping" as the msi-base is not
-always identical to the rid-base, but you get the point.
+On 20.02.2024 17:27:05, Vincent Mailhol wrote:
+> On Tue. 20 Feb. 2024 at 17:16, Marc Kleine-Budde <mkl@pengutronix.de> wro=
+te:
+> > Reduce the scope of the variable "err" to the individual cases. This
+> > is to avoid the mistake of setting "err" in the mistaken belief that
+> > it will be evaluated later.
+> >
+> > Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+>=20
+> One nitpick to remove a newline, but aside from that:
+>=20
+> Reviewed-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+>=20
+> (as usual, I do not mind if the nitpick gets resolved while applying).
 
-Johan
+Thanks for the review, fixed that while applying.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--g4vopqhpjlyktekh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmXUZeoACgkQKDiiPnot
+vG/JKwf9Fjdu8IgIhXwRaJizysOl76e9n79st3d0kq2yQau5Hlgw6sjOW2IoGlkS
+TAk1YnxkerpQSjjJ1i550qZ+kmAXFPl8Lp3DHfddcIciQYqiTxUc0iTGo/XxEQRv
+hxPguYeMJAsYFEqh5lGXCjxcm3sbIzkUZ5Lb2lbAPukVLa9w9gYeO4dYl+EwUwam
+RWlIAeOOfjOo0QCUTauv/o4P6dwjuV5dzZCI1lv/DD5G76fCblJYnIwsmoyMKrgz
+NFeNLpixKfv0vAPrvl67GvuJEw0YGWJJMFbu2K9i/Pu6+2BIprqPgRwB7PA5yJES
+GBx7BoEa5YKFglY59+KRtBNthNfX4w==
+=boQJ
+-----END PGP SIGNATURE-----
+
+--g4vopqhpjlyktekh--
 
