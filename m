@@ -1,196 +1,325 @@
-Return-Path: <linux-kernel+bounces-72821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0357F85B8FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:27:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 424A285B902
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 11:27:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 276C21C22478
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:27:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21B06285B8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:27:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA31634EB;
-	Tue, 20 Feb 2024 10:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D22CD64CCC;
+	Tue, 20 Feb 2024 10:27:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bang-olufsen.dk header.i=@bang-olufsen.dk header.b="BINvbA+w"
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2096.outbound.protection.outlook.com [40.107.104.96])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="g4UHC2OI"
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F2A627F3;
-	Tue, 20 Feb 2024 10:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.104.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708424811; cv=fail; b=bedfyRxg4Xj+xRGVj646lHWuv4RPGeQyG4A/LWXNRXfV7GlLymSCIDMU+8qy+APoRkhEVC/rlTaqESjdlvVjxM6E9bfnM8IRxVmyeYYpU3WZhwugdLkNBfVmewfW7ud5nVKILUDsznZmgKsXcXow6RwNKFInLEkVWvVYO8+Wn7I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708424811; c=relaxed/simple;
-	bh=OeJll9x+89WzqLxiVrl0RC01pWEQhVnzmX1mALO1PjE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=rED3O9B5oCZgbBtp/LypjCCQmGMrft4/mcoL7stcvjPCWlwd59owQzgycxaHucSg5TefaDXRdI+1DX0mHHFqDSpDjwNsVlsU+/FIG1q05sfF3D2jt8JJ7cW0XAxnhWCdEovEkDv4wgBVmlMVh3gbU645xwqB9uxRNZxXybQggX4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bang-olufsen.dk; spf=pass smtp.mailfrom=bang-olufsen.dk; dkim=pass (1024-bit key) header.d=bang-olufsen.dk header.i=@bang-olufsen.dk header.b=BINvbA+w; arc=fail smtp.client-ip=40.107.104.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bang-olufsen.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bang-olufsen.dk
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eOfX4ypxSBQ6tns2Wu0vIhx+jDQZMwJGAfm7XNWKbXW/MUbVDubM6PGxKaRkxF+6SqvE2lGSPG8w72zuQbag3lsCHKy4zi3V6khaDQ17pK66KsfknpOqlyqWpfR+z73STaQnxNfC2ActeLhjEdMOFjHKW5QIfz+IXWwXh/02pE8hZSNAMPp0Yx0jr24IC9E2Wmy5rvV/60Sqy3VFkjwGxq7atbAlbLVlu6eQ0KRi7oRllyERNAszrZYP1Vh3LLa2s+iOQ7Z/Ej24LL4VL2Pb5eGGsqb5Ns3TkOeKnDJZ8qf01vPpF1bHeHDwxa6j12lRyAQa+53XNNSvzWiC8aNKOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OeJll9x+89WzqLxiVrl0RC01pWEQhVnzmX1mALO1PjE=;
- b=hqr+Q2NAEzoxay+GeccJC1TGxnzrTsjEggp5gReujdnRzd1U0ydDzXXoqxVsHSf13YxBjql4Bz7MscVw1DOvgEly9fkl8kQldboqNSqUQYhv2vSd/uPiVPBOU2LiJ5djrv1zqZWUQkdPbixsUbqAL40HKNWt50hMsQccM03SpdyXgecWvA43TP8JH8ii3Sj9jRMjTLM7NH8isrlhqtwWWqnoD9woGvgXnionsLzia1QAmN3plRGYoSj6uaufOeJq9gseIVY7Mj9+0G6lAOIJctSs1tWdIAxp1w4jyVn8xkBj9q6MREEM9f5jK/sSAe2GDgYoRAKJe6XJzsofN0vWNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bang-olufsen.dk; dmarc=pass action=none
- header.from=bang-olufsen.dk; dkim=pass header.d=bang-olufsen.dk; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bang-olufsen.dk;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OeJll9x+89WzqLxiVrl0RC01pWEQhVnzmX1mALO1PjE=;
- b=BINvbA+wsD8q83X3Ez5SVb/vZ4jQBA1ypVSoC4br/7i7I6kgK8ZxlnWkFveHWGZ7TBHPfDN1mqfVrrxBWPUxrqtZCR/L/WUWSbmVh+MkzQEpmYp7JNOl67EbD/8Ylx7e/gU8GiZ+DzFyuXGTEuEnNVl9CEp9it7EfLzbTwDdOH8=
-Received: from AS8PR03MB8805.eurprd03.prod.outlook.com (2603:10a6:20b:53e::20)
- by PA6PR03MB10322.eurprd03.prod.outlook.com (2603:10a6:102:3d5::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
- 2024 10:26:46 +0000
-Received: from AS8PR03MB8805.eurprd03.prod.outlook.com
- ([fe80::3c77:8de8:801c:42a7]) by AS8PR03MB8805.eurprd03.prod.outlook.com
- ([fe80::3c77:8de8:801c:42a7%4]) with mapi id 15.20.7292.036; Tue, 20 Feb 2024
- 10:26:46 +0000
-From: =?utf-8?B?QWx2aW4gxaBpcHJhZ2E=?= <ALSI@bang-olufsen.dk>
-To: Luiz Angelo Daros de Luca <luizluca@gmail.com>
-CC: Linus Walleij <linus.walleij@linaro.org>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean <olteanv@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>, "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v4 3/3] net: dsa: realtek: support reset
- controller
-Thread-Topic: [PATCH net-next v4 3/3] net: dsa: realtek: support reset
- controller
-Thread-Index: AQHaY42tH0aJAWy/AU6VqyhRW8ot+rETB3+A
-Date: Tue, 20 Feb 2024 10:26:45 +0000
-Message-ID: <lvt7su5mmf7b3w4gbxd6vlt25klsyziuuaznfzjy7d4oxz46qx@4dzc4cgmfkbc>
-References: <20240219-realtek-reset-v4-0-858b82a29503@gmail.com>
- <20240219-realtek-reset-v4-3-858b82a29503@gmail.com>
-In-Reply-To: <20240219-realtek-reset-v4-3-858b82a29503@gmail.com>
-Accept-Language: en-US
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36A3964AAA
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:27:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708424822; cv=none; b=ZI0IGX5FTdm6RRiKAr4uNwey5SmlOSTMb3W5tpWFvz4kZojLsm14wXgO/hUm6aff6D23/Feqn05TQJfgB7IrCnUgOpsYiHSEgznMHYki1zU3tvTY+uS+qjbna6H/Q7l/HYV6hmlCLkeo/l+np6Or97bBHvc/3K1pAIlU+uCLjdk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708424822; c=relaxed/simple;
+	bh=q0kPfjDVjTWxPpSsv7vqSFUm6CXaLJ2o1fR/B46A6iQ=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:Content-Type:
+	 MIME-Version:References; b=rZKjkTMnw4kajkKOD7ZDViQDVdSIUt2NmId7PMJio3SwJc5n2xDOiT0zBFKfyZTbzb2sXKuc02EHes6heHEl709SnGFlj9FPOy9ZBYuybl7+cStDf1L7sT/3j12wFdVsrbKp0FtXhtreTg3/p738rYCEua9flzlgy72aG4twaXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=g4UHC2OI; arc=none smtp.client-ip=210.118.77.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20240220102651euoutp017bcba92cc25c27eb8be834f7fa804e30~1i1CaJHp40875108751euoutp01i
+	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 10:26:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20240220102651euoutp017bcba92cc25c27eb8be834f7fa804e30~1i1CaJHp40875108751euoutp01i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1708424811;
+	bh=sTY7ZRk35VsBSy0i3v23h9cFe5OPagqweTLl8auI+eQ=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+	b=g4UHC2OI52ZZLkGT8VCTfOBxOsGJ/IW6EEorqYO02kvd2XQav0keIyo9+XSfptQ4/
+	 FR++xaEJI/+HcMwQgHlPloo4SRiCDLzpItY4a8PHolxqy5K7VZzdUIeHoCvL5XpeDM
+	 MKxCBP+yEU2OZryEIO3t+o5FA0MK7TEi1h19WkLg=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240220102651eucas1p1a21d0aa60706eb9bccd9823eb48c6361~1i1B_p1we0582105821eucas1p1U;
+	Tue, 20 Feb 2024 10:26:51 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id 46.73.09539.B6E74D56; Tue, 20
+	Feb 2024 10:26:51 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+	20240220102651eucas1p2e91df10d53d15bd0b0563d6f583e54a3~1i1BklAJu0042900429eucas1p20;
+	Tue, 20 Feb 2024 10:26:51 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240220102651eusmtrp11d925864ec25430c55dcbf12cabb6c35~1i1Bj-xSt2942329423eusmtrp1s;
+	Tue, 20 Feb 2024 10:26:51 +0000 (GMT)
+X-AuditID: cbfec7f2-515ff70000002543-99-65d47e6b3528
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+	eusmgms1.samsung.com (EUCPMTA) with SMTP id 23.BC.09146.A6E74D56; Tue, 20
+	Feb 2024 10:26:50 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+	20240220102650eusmtip16a646dbb0038cbbb3932f8898113a892~1i1BVO6lQ1236712367eusmtip1T;
+	Tue, 20 Feb 2024 10:26:50 +0000 (GMT)
+Received: from CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) by
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348) with Microsoft SMTP
+	Server (TLS) id 15.0.1497.2; Tue, 20 Feb 2024 10:26:48 +0000
+Received: from CAMSVWEXC02.scsc.local ([::1]) by CAMSVWEXC02.scsc.local
+	([fe80::3c08:6c51:fa0a:6384%13]) with mapi id 15.00.1497.012; Tue, 20 Feb
+	2024 10:26:48 +0000
+From: Daniel Gomez <da.gomez@samsung.com>
+To: Hugh Dickins <hughd@google.com>
+CC: "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+	"brauner@kernel.org" <brauner@kernel.org>, "jack@suse.cz" <jack@suse.cz>,
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "dagmcr@gmail.com"
+	<dagmcr@gmail.com>, "linux-fsdevel@vger.kernel.org"
+	<linux-fsdevel@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"willy@infradead.org" <willy@infradead.org>, "hch@infradead.org"
+	<hch@infradead.org>, "mcgrof@kernel.org" <mcgrof@kernel.org>, Pankaj Raghav
+	<p.raghav@samsung.com>, "gost.dev@samsung.com" <gost.dev@samsung.com>
+Subject: Re: [RFC PATCH 0/9] shmem: fix llseek in hugepages
+Thread-Topic: [RFC PATCH 0/9] shmem: fix llseek in hugepages
+Thread-Index: AQHaW2RT7xV/K52STUGwCHRBbQ9MBbEKRvYAgAc7d4CAAZVngA==
+Date: Tue, 20 Feb 2024 10:26:48 +0000
+Message-ID: <r3ws3x36uaiv6ycuk23nvpe2cn2oyzkk56af2bjlczfzmkfmuv@72otrsbffped>
+In-Reply-To: <e3602f54-b333-7c8c-0031-6a14b32a3990@google.com>
+Accept-Language: en-US, en-GB
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bang-olufsen.dk;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AS8PR03MB8805:EE_|PA6PR03MB10322:EE_
-x-ms-office365-filtering-correlation-id: 0b654a2d-c228-43ec-62f8-08dc31fe7087
-x-ms-exchange-atpmessageproperties: SA
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- pl5vg3IPNAMIJP2LSf8c/YnOIJZ7LOlvHg/ApIi7dhdKYaFDLlKtSqZHpO3Yjq0qy86Y4CD7vPhd7UT47cZcmLJMF6N0DVTu2hNJT4HGb+yTwdMF0BEQkYbGEmjsYlMmtUlju94rC2oRkCTf3qukl89tz6GQoaRi7t6mQufNTh9eRHJcciZohy6PSHfb/R3Zhz4X2KOyr7SMzPBQpb5jSTrpTREQBahE9nTEFwf9iBSt48NAcJAb6nOZhEE9RX2Eqj9byQXFA9PSOAtlO2SM9zG6mu5Ur1JTLjWM4Bdki9hY3iZxjcsnrhNusY3VVvQpZ/worJSHWcF5jUhYkTfkGxj6mB6ht9HYSJJacTsWT9xotkEOxANYmnC9vzEu55Ls2M+1CsPtaj7pOZTCwRAhFUqsn210BM7dHIHLLncZeYw13Uuy0h1UZL8VEhQt20O/4SCk50qb18YtOZ0gUDC3z04pEPIL6T1k7kPJ6ikklAcjKbTeDj8Z8FPGQmc4F2eF6ov+PNbvTSujCr/dzz4Ej5L1YdJFOMKB/3xplmv7ZQ9bDUHKIdrS/6ZSB4zkiy0owUGiq/xmGIpxxybH+GSZvoW/8pTKtxjTUQR7fpuOWqw=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AS8PR03MB8805.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(230273577357003)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?ejZ2TGJTdHVpU0ErQ3k3OGY3ZGNyQlg3dnIrbG1hS3RMUWVHRmIvdFFGcXhz?=
- =?utf-8?B?MFJiUDQ3Y2dwN0gzSFNBOVNHMFlhZEwwRXQzL0ZyV2I4MnlxMHdUcHV5dU9s?=
- =?utf-8?B?UnFFbXd3QnVua2d2a2tlS2trRzVXcGNvd1h6dEVuc24vQTltRDk0bTlKUWJk?=
- =?utf-8?B?NHhLUG9TTVJTKzY4Zkc4dVlHRFkvWlh1dnpPejFKdThnNFpiTmlVcm5wR2VQ?=
- =?utf-8?B?dHY4MktjNjB2dDRlMVNnWWY2RUFXN0xCeDZOWHlMcTd2djRsYTg2Ryt0c1Uv?=
- =?utf-8?B?dXkvMVIreFFXYW1rQmVhdXFWYjc2dzE2aWxTWXkycGMxVmNqR2pneTZnN0Q4?=
- =?utf-8?B?MlBDYjRVZFIvZkFwNnc5eGt0SmQ4TUVmZFo1bnhsd3Z4b2VudVNCcWRIT1Q3?=
- =?utf-8?B?SWRMMXQvMnRnN085YnI4MEc5bHlrcXNnekFFbXdqMENLRG1NRUdXYjNDdjZx?=
- =?utf-8?B?S0dlTGlOMU9ZcFRTcEtjckh3S1hFUmJYblJYbmw1emoydEtvUitpc2xucTRI?=
- =?utf-8?B?eUw4eEFIMURLMWxTVVE2WHcvMEp2QktzOGJuUTFMT25xOTBNQlVVbFdnMnlV?=
- =?utf-8?B?RGV4Z2hMaE5rMStpdXVwOHVuOW5VNUNHakIxbjJrUGJIRWVyVXg1WVM4M0I5?=
- =?utf-8?B?bmRSbnNJZVdKSzg0c1R2TTZ3Zkh6RUVJVTVXSy9UYStKTlpYYkdqTmdBc2JZ?=
- =?utf-8?B?cGlhejd1YjFxWGlNQTRNVXZjTE1iSTJNbkxNOFpBZ3ZMaU1wQUFuOGFMbTRa?=
- =?utf-8?B?ZmFhVUtOZFVyWWgwTTh5L0JxSG1CSC9sN1hWYWM3NUJkZDkxK0U1VnZ5Sndh?=
- =?utf-8?B?NHN1ZzIrOVdWeG1tckRvWGdlSkkxYS9kbm50ZHZTSlEvcFlrVEtURHlmalp3?=
- =?utf-8?B?Sm81RjNlTnRmYmNTbTNuOEpnOGpsNmVCUzY0bnc2bnZrWkp1OW5id3VUV1Fm?=
- =?utf-8?B?SU51UDJmSGdwcFpKeHhockRwOXhUc2xkb25yNTRVcjViamxGUUM1a3B2TzdH?=
- =?utf-8?B?YjFoODlpWEVpdmg1cEZ5OHRxM0JKWEttRHpuRVFheTlCSXo2RGkrVGVIanlW?=
- =?utf-8?B?cjBQSWx3bThWdDgrakZ6UjIwaWFuZmNvWFMwQy9ZV2QxUmkzN1U0Q1o0SFZN?=
- =?utf-8?B?cDdZMGFKWGZja2IvcXR0V3Q0VXFhMXJHVkkvZFdUZk5IbzJjZlo3TWpKM0tL?=
- =?utf-8?B?RWRKQTF6UUJqd2pTSVJHYU0yeTBqdzhTVU1leTBRYitsYjlKT3FZVlhjZW02?=
- =?utf-8?B?aXEyNGtqbkVmYWxvNnpsaWUvZmVPL2NndHdYUmNWVG1pM0ovNWtwQ2ZmRzAx?=
- =?utf-8?B?T1VzUnBtWGpBQlQ0NE81RlFoRURDL3NUa3R5MC9MZkZNRDZVaGNIL05sUFVE?=
- =?utf-8?B?c0lDSlUvYlVmcVRKdUt6RTV1eGFUL3doM2x3ZjFEbi9PdmZ0eDdFM2lPZkky?=
- =?utf-8?B?Vm95YTBCa0FXWUdqaVVVMG4xcDlJMERGNXZCeFNvRytTWlpseWFWNHBaMWMx?=
- =?utf-8?B?WmtCSko3TExpbjFEeDY0VTF3L0xzd0tOcFUyZHFKVjJVN29vSmlnUkR4dkZi?=
- =?utf-8?B?cU5paU13aGUxcTZ1REtNWXJmYnMwODVMRUE1bUVPSDFQT1hSWk1CdnJPZVZ0?=
- =?utf-8?B?dEpVRWpqc0NscUlRQlQ2U0FtVXh4NFBuSjNvV3haSFVGZnEvT1Vaa2hkMEk4?=
- =?utf-8?B?UEp1WUlpRnoyenpjZlpHY3J5QyszVVBkSzZhR0lROGdBRXJpSkN0elVlYkNT?=
- =?utf-8?B?dTZiN29sMHUwNkxvZk03YVgzWk5mam5PQTJkakVKUE5xMzRsQzhjR1F1bEY0?=
- =?utf-8?B?dWJneTNYQVZkdGdjMGxDTnJYcGpsK3A5eWpZMk5xSWF5b1dZYXZwTWltV2xE?=
- =?utf-8?B?UzVxQUxMS2ZBNytrL0ptbS9Dc1pKSkR5bDd3bWREYWdPS3VES3BRYW9qUHRw?=
- =?utf-8?B?WWF0TTdydStobm9EMDFmdnc0cjIxK2lJTlA2WGREY2gxcENMVU94RkhmMDNH?=
- =?utf-8?B?MHd5elBNSWRWbnhLVGpVYTFaam4zTzAwYWMzdm9WaFhYaHZnUW9tWkFQKzVR?=
- =?utf-8?B?dFZJZGxNM1FCTVhxNUpZbTVxUEg1czQ4Tjk4Q3R0aWM2UFc0K2RVekhpSjYv?=
- =?utf-8?Q?PuDlzRnmfRExcDLEbQvMj29Js?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <18D6C47CB7CACB418A1C8552E26A5761@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <416A2C7CA50F0A44B8296ACC92A73E9F@scsc.local>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bang-olufsen.dk
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR03MB8805.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b654a2d-c228-43ec-62f8-08dc31fe7087
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Feb 2024 10:26:45.8843
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 210d08b8-83f7-470a-bc96-381193ca14a1
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ziQuzRNa339lgq/JDOiEZnYqvj56LZ2IpjnrnXsDDRc3PCJ1odg7BsPxvATWrwjbMvOizX6R1rbcyk3OUV2cog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PA6PR03MB10322
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBKsWRmVeSWpSXmKPExsWy7djPc7rZdVdSDe7cFLeYs34Nm8Xrw58Y
+	Lc72/WazOD1hEZPF0099LBazpzczWezZe5LF4vKuOWwW99b8Z7W4MeEpo8X5v8dZLX7/mMPm
+	wOOxc9Zddo8Fm0o9Nq/Q8ti0qpPNY9OnSeweJ2b8ZvE4s+AIu8fnTXIem568ZQrgjOKySUnN
+	ySxLLdK3S+DK6PvKUTDHpGLvi5lMDYz/NbsYOTkkBEwktjz9yNLFyMUhJLCCUeL6lQ/sEM4X
+	Ron9cy5BZT4zSmw+1cEO03LiwVIWEFtIYDmjxMPZInBFXxZsYYVwzjBKLDxyA8pZySixYPEp
+	ZpAWNgFNiX0nN4GNEhFQlljX/JQJxGYW+MAi0bQ4CMQWFrCWOHV4FiNEjY3EpoZmJgjbSWLP
+	xD4wm0VAVeLqztNgNq+Ar8SZ04vBbE4BO4llJ+6zgdiMArISj1b+YoeYLy5x68l8JogXBCUW
+	zd7DDGGLSfzb9ZANwtaROHv9CSOEbSCxdek+FghbUaLj2E02iDk6Egt2f4KyLSV6JyyDmq8t
+	sWzha2aIewQlTs58Ag47CYGpXBK/tjyCWuwiMWfBLmg4Cku8Or6FfQKjziwk981CsmMWkh2z
+	kOyYhWTHAkbWVYziqaXFuempxYZ5qeV6xYm5xaV56XrJ+bmbGIGJ7/S/4592MM599VHvECMT
+	B+MhRgkOZiURXpbyK6lCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeVVT5FOFBNITS1KzU1MLUotg
+	skwcnFINTA78vhbVEny2GqlpuybLz+nK8768p63bXWqRz2mGpwYHFy/4+Uuwvdx80pfNHsrs
+	l2IM6wrYhD+3aF+7Ilqif+Lvds6Ej9uOZ+4Xm+m39rieCktN3PG3N6LuOuRsCM446DRFc+2l
+	XfVyq3aIMkrc3Hhp9pFmz5NvouaY3NyvkPM9IY7L6P9RudQlqyYzyZpn+qzzb7vtnqp99eLG
+	NUKLBD0epuopiE/0Xr/wtHe5TxnXpssxTU4TrrA/fRxwKPijYdqkX7f8/mofieK9fqP8rrdO
+	uyO/lYzDp3T+3UfmL+m0fFzt/6Ju9iL9hYGPis5/+DxtwoaN9XtjZOM0D63MXpzhwBawf+ub
+	WRt3nJT9wKrEUpyRaKjFXFScCAAtfvI46wMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIKsWRmVeSWpSXmKPExsVy+t/xu7pZdVdSDXZ9tLaYs34Nm8Xrw58Y
+	Lc72/WazOD1hEZPF0099LBazpzczWezZe5LF4vKuOWwW99b8Z7W4MeEpo8X5v8dZLX7/mMPm
+	wOOxc9Zddo8Fm0o9Nq/Q8ti0qpPNY9OnSeweJ2b8ZvE4s+AIu8fnTXIem568ZQrgjNKzKcov
+	LUlVyMgvLrFVija0MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DL6PvKUTDHpGLv
+	i5lMDYz/NbsYOTkkBEwkTjxYygJiCwksZZS4d40ZIi4jsfHLVVYIW1jiz7Uuti5GLqCaj4wS
+	PY3XGCGcM4wSrScnQTkrGSWWt99lB2lhE9CU2HdyE5gtIqAssa75KRNIEbPABxaJHZfvM4Ik
+	hAWsJU4dnsUIUWQjsamhmQnCdpLYM7EPzGYRUJW4uvM0mM0r4Ctx5vRiJohtbUwSc47eAzuW
+	U8BOYtmJ+2wgNqOArMSjlb/ANjMLiEvcejKfCeIJAYkle85DPScq8fLxP6jndCTOXn/CCGEb
+	SGxduo8FwlaU6Dh2kw1ijo7Egt2foGxLid4Jy6Dma0ssW/iaGeI4QYmTM5+wTGCUmYVk9Swk
+	7bOQtM9C0j4LSfsCRtZVjCKppcW56bnFhnrFibnFpXnpesn5uZsYgWlt27Gfm3cwznv1Ue8Q
+	IxMH4yFGCQ5mJRFelvIrqUK8KYmVValF+fFFpTmpxYcYTYGBN5FZSjQ5H5hY80riDc0MTA1N
+	zCwNTC3NjJXEeT0LOhKFBNITS1KzU1MLUotg+pg4OKUamBh2SJskrNyq23cnyqhTufPmkxfn
+	LuyVPHj04hLNhIaN6jt7Kl7+8Pz7b/2U3zNVSq+u2KEms9fpv+n24smTt4TYP7n8+US5stE+
+	r7gMh0sHFL6teZT3s5Gn28j0IfdzH4332eckJtZrH3m4f+rX9awaLQVpRgv5p7+Le28WLyK4
+	LzXB7sZ6hwvb004eflP966uy2fHf10NeaV5PFUyR0GGdXew3/WV8X5Cl246jab0tedcvv1PZ
+	rGNbNnnzcb2ZMSax1gq710TErJbt2elw+8ODqEupr4z2ass8Cjmlnyaq5cHrvlTOav0ete0u
+	S3b+PJJk8+SJaRTPmW/WTGysB+ZwxO8+dsxhyxWbnox5C+4qsRRnJBpqMRcVJwIAlWYMBPQD
+	AAA=
+X-CMS-MailID: 20240220102651eucas1p2e91df10d53d15bd0b0563d6f583e54a3
+X-Msg-Generator: CA
+X-RootMTR: 20240214194911eucas1p187ae3bc5b2be4e0d2155f9ce792fdf8b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240214194911eucas1p187ae3bc5b2be4e0d2155f9ce792fdf8b
+References: <20240209142901.126894-1-da.gomez@samsung.com>
+	<CGME20240214194911eucas1p187ae3bc5b2be4e0d2155f9ce792fdf8b@eucas1p1.samsung.com>
+	<25i3n46nanffixvzdby6jwxgboi64qnleixz33dposwuwmzj7p@6yvgyakozars>
+	<e3602f54-b333-7c8c-0031-6a14b32a3990@google.com>
 
-T24gTW9uLCBGZWIgMTksIDIwMjQgYXQgMDg6NDQ6NDJQTSAtMDMwMCwgTHVpeiBBbmdlbG8gRGFy
-b3MgZGUgTHVjYSB3cm90ZToNCj4gK3ZvaWQgcnRsODN4eF9yZXNldF9hc3NlcnQoc3RydWN0IHJl
-YWx0ZWtfcHJpdiAqcHJpdikNCj4gK3sNCj4gKwlpbnQgcmV0Ow0KPiArDQo+ICsJcmV0ID0gcmVz
-ZXRfY29udHJvbF9hc3NlcnQocHJpdi0+cmVzZXRfY3RsKTsNCj4gKwlpZiAoIXJldCkNCj4gKwkJ
-cmV0dXJuOw0KDQpJZiBwcml2LT5yZXNldF9jdGwgaXMgTlVMTCAtIGkuZS4gaWYgbm8gRFQgcHJv
-cGVydHkgaXMgc3BlY2lmaWVkIC0gdGhlbg0KdGhpcyB3aWxsIGFsd2F5cyByZXR1cm4gZWFybHkg
-YW5kIHRoZSBHUElPIHdpbGwgbm90IGJlIGFzc2VydGVkLg0KDQo+ICsNCj4gKwlkZXZfd2Fybihw
-cml2LT5kZXYsDQo+ICsJCSAiRmFpbGVkIHRvIGFzc2VydCB0aGUgc3dpdGNoIHJlc2V0IGNvbnRy
-b2w6ICVwZVxuIiwNCj4gKwkJIEVSUl9QVFIocmV0KSk7DQoNCllvdSBvbmx5IGxvZyBhbiBlcnJv
-ciBpZiB0aGUgcmVzZXQgY29udHJvbGxlciBhc3NlcnQgZmFpbHMsIGJ1dCBub3QgaWYNCnRoZSBH
-UElPIGFzc2VydCBmYWlscy4gV2h5IHRoZSB1bmVxdWFsIHRyZWF0bWVudD8NCg0KSSBzdWdnZXN0
-IGtlZXBpbmcgaXQgc2ltcGxlOg0KDQp2b2lkIHJ0bDgzeHhfcmVzZXRfYXNzZXJ0KHN0cnVjdCBy
-ZWFsdGVrX3ByaXYgKnByaXYpDQp7DQogIGludCByZXQ7DQoNCiAgcmV0ID0gcmVzZXRfY29udHJv
-bF9hc3NlcnQocHJpdi0+cmVzZXRfY3RsKTsNCiAgaWYgKHJldCkNCiAgICBkZXZfd2Fybihwcml2
-LT5kZXYsICJmYWlsZWQgdG8gYXNzZXJ0IHJlc2V0IGNvbnRyb2w6ICVkXG4iLCByZXQpOw0KDQog
-IHJldCA9IGdwaW9kX3NldF92YWx1ZShwcml2LT5yZXNldCwgZmFsc2UpOw0KICBpZiAocmV0KQ0K
-ICAgIGRldl93YXJuKHByaXYtPmRldiwgImZhaWxlZCB0byBhc3NlcnQgcmVzZXQgR1BJTzogJWRc
-biIsIHJldCk7DQp9DQoNCm9yIGV2ZW4gZHJvcCB0aGUgd2FybmluZ3MgYWx0b2dldGhlci4NCg0K
-PiArDQo+ICsJZ3Bpb2Rfc2V0X3ZhbHVlKHByaXYtPnJlc2V0LCB0cnVlKTsNCj4gK30NCj4gKw0K
-PiArdm9pZCBydGw4M3h4X3Jlc2V0X2RlYXNzZXJ0KHN0cnVjdCByZWFsdGVrX3ByaXYgKnByaXYp
-DQo+ICt7DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCXJldCA9IHJlc2V0X2NvbnRyb2xfZGVhc3Nl
-cnQocHJpdi0+cmVzZXRfY3RsKTsNCj4gKwlpZiAoIXJldCkNCj4gKwkJcmV0dXJuOw0KPiArDQo+
-ICsJZGV2X3dhcm4ocHJpdi0+ZGV2LA0KPiArCQkgIkZhaWxlZCB0byBkZWFzc2VydCB0aGUgc3dp
-dGNoIHJlc2V0IGNvbnRyb2w6ICVwZVxuIiwNCj4gKwkJIEVSUl9QVFIocmV0KSk7DQo+ICsNCj4g
-KwlncGlvZF9zZXRfdmFsdWUocHJpdi0+cmVzZXQsIGZhbHNlKTsNCj4gK30NCg0KU2FtZSBjb21t
-ZW50cyBhcHBseSB0byB0aGlzIGZ1bmN0aW9uLiBKdXN0IGRlYXNzZXJ0IGJvdGguDQoNCj4gKw0K
-PiAgTU9EVUxFX0FVVEhPUigiTHVpeiBBbmdlbG8gRGFyb3MgZGUgTHVjYSA8bHVpemx1Y2FAZ21h
-aWwuY29tPiIpOw0KPiAgTU9EVUxFX0FVVEhPUigiTGludXMgV2FsbGVpaiA8bGludXMud2FsbGVp
-akBsaW5hcm8ub3JnPiIpOw0KPiAgTU9EVUxFX0RFU0NSSVBUSU9OKCJSZWFsdGVrIERTQSBzd2l0
-Y2hlcyBjb21tb24gbW9kdWxlIik7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC9kc2EvcmVh
-bHRlay9ydGw4M3h4LmggYi9kcml2ZXJzL25ldC9kc2EvcmVhbHRlay9ydGw4M3h4LmgNCj4gaW5k
-ZXggMGRkZmYzM2RmNmIwLi5jOGEwZmY4ZmQ3NWUgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbmV0
-L2RzYS9yZWFsdGVrL3J0bDgzeHguaA0KPiArKysgYi9kcml2ZXJzL25ldC9kc2EvcmVhbHRlay9y
-dGw4M3h4LmgNCj4gQEAgLTE4LDUgKzE4LDcgQEAgaW50IHJ0bDgzeHhfcmVnaXN0ZXJfc3dpdGNo
-KHN0cnVjdCByZWFsdGVrX3ByaXYgKnByaXYpOw0KPiAgdm9pZCBydGw4M3h4X3VucmVnaXN0ZXJf
-c3dpdGNoKHN0cnVjdCByZWFsdGVrX3ByaXYgKnByaXYpOw0KPiAgdm9pZCBydGw4M3h4X3NodXRk
-b3duKHN0cnVjdCByZWFsdGVrX3ByaXYgKnByaXYpOw0KPiAgdm9pZCBydGw4M3h4X3JlbW92ZShz
-dHJ1Y3QgcmVhbHRla19wcml2ICpwcml2KTsNCj4gK3ZvaWQgcnRsODN4eF9yZXNldF9hc3NlcnQo
-c3RydWN0IHJlYWx0ZWtfcHJpdiAqcHJpdik7DQo+ICt2b2lkIHJ0bDgzeHhfcmVzZXRfZGVhc3Nl
-cnQoc3RydWN0IHJlYWx0ZWtfcHJpdiAqcHJpdik7DQo+ICANCj4gICNlbmRpZiAvKiBfUlRMODNY
-WF9IICovDQo+IA0KPiAtLSANCj4gMi40My4wDQo+
+On Mon, Feb 19, 2024 at 02:15:47AM -0800, Hugh Dickins wrote:
+> On Wed, 14 Feb 2024, Daniel Gomez wrote:
+> > On Fri, Feb 09, 2024 at 02:29:01PM +0000, Daniel Gomez wrote:
+> > > Hi,
+> > >=20
+> > > The following series fixes the generic/285 and generic/436 fstests fo=
+r huge
+> > > pages (huge=3Dalways). These are tests for llseek (SEEK_HOLE and SEEK=
+_DATA).
+> > >=20
+> > > The implementation to fix above tests is based on iomap per-block tra=
+cking for
+> > > uptodate and dirty states but applied to shmem uptodate flag.
+> >=20
+> > Hi Hugh, Andrew,
+> >=20
+> > Could you kindly provide feedback on these patches/fixes? I'd appreciat=
+e your
+> > input on whether we're headed in the right direction, or maybe not.
+>=20
+> I am sorry, Daniel, but I see this series as misdirected effort.
+>=20
+> We do not want to add overhead to tmpfs and the kernel, just to pass two
+> tests which were (very reasonably) written for fixed block size, before
+> the huge page possibility ever came in.
+
+Is this overhead a concern in performance? Can you clarify what do you mean=
+?
+
+I guess is a matter of which kind of granularity we want for a filesystem. =
+Then,
+we can either adapt the test to work with different block sizes or change t=
+he
+filesystem to support this fixed and minimum block size.
+
+I believe the tests should remain unchanged if we still want to operate at =
+this
+fixed block size, regardless of how the memory is managed in the filesystem=
+ side
+(whether is a huge page or a large folio with arbitrary order).
+
+>=20
+> If one opts for transparent huge pages in the filesystem, then of course
+> the dividing line between hole and data becomes more elastic than before.
+
+I'm uncertain when we may want to be more elastic. In the case of XFS with =
+iomap
+and support for large folios, for instance, we are 'less' elastic than here=
+ So,
+what exactly is the rationale behind wanting shmem to be 'more elastic'?
+
+If we ever move shmem to large folios [1], and we use them in an oportunist=
+ic way,
+then we are going to be more elastic in the default path.
+
+[1] https://lore.kernel.org/all/20230919135536.2165715-1-da.gomez@samsung.c=
+om
+
+In addition, I think that having this block granularity can benefit quota
+support and the reclaim path. For example, in the generic/100 fstest, aroun=
+d
+~26M of data are reported as 1G of used disk when using tmpfs with huge pag=
+es.
+
+>=20
+> It would be a serious bug if lseek ever reported an area of non-0 data as
+> in a hole; but I don't think that is what generic/285 or generic/436 find=
+.
+
+I agree this is not the case here. We mark the entire folio (huge page) as
+uptodate, hence we report that full area as data, making steps of 2M.
+
+>=20
+> Beyond that, "man 2 lseek" is very forgiving of filesystem implementation=
+.
+
+Thanks for bringing that up. This got me thinking along the same lines as
+before, wanting to understand where we want to draw the line and the reason=
+s
+benhind it.
+
+>=20
+> I'll send you my stack of xfstests patches (which, as usual, I cannot
+> afford the time now to re-review and post): there are several tweaks to
+> seek_sanity_test in there for tmpfs huge pages, along with other fixes
+> for tmpfs (and some fixes to suit an old 32-bit build environment).
+>=20
+> With those tweaks, generic/285 and generic/436 and others (but not all)
+> have been passing on huge tmpfs for several years.  If you see something
+> you'd like to add your name to in that stack, or can improve upon, please
+> go ahead and post to the fstests list (Cc me).
+
+Thanks for the patches Hugh. I see how you are making the seeking tests a b=
+it
+more 'elastic'. I will post them shortly and see if we can make sure we can
+minimize the number of failures [2].
+
+In kdevops [3], we are discussing the possibility to add tmpfs to 0-day and
+track for any regressions.
+
+[2] https://github.com/linux-kdevops/kdevops/tree/master/workflows/fstests/=
+expunges/6.8.0-rc2/tmpfs/unassigned
+[3] https://github.com/linux-kdevops/kdevops
+
+>=20
+> Thanks,
+> Hugh
+>=20
+> >=20
+> > Thanks,
+> > Daniel
+> >=20
+> > >=20
+> > > The motivation is to avoid any regressions in tmpfs once it gets supp=
+ort for
+> > > large folios.
+> > >=20
+> > > Testing with kdevops
+> > > Testing has been performed using fstests with kdevops for the v6.8-rc=
+2 tag.
+> > > There are currently different profiles supported [1] and for each of =
+these,
+> > > a baseline of 20 loops has been performed with the following failures=
+ for
+> > > hugepages profiles: generic/080, generic/126, generic/193, generic/24=
+5,
+> > > generic/285, generic/436, generic/551, generic/619 and generic/732.
+> > >=20
+> > > If anyone interested, please find all of the failures in the expunges=
+ directory:
+> > > https://protect2.fireeye.com/v1/url?k=3D9a7b8131-fbf09401-9a7a0a7e-00=
+0babffaa23-2e83e8b120fdf45e&q=3D1&e=3De25c026a-1bb5-45f4-8acb-884e4a5e4d91&=
+u=3Dhttps%3A%2F%2Fgithub.com%2Flinux-kdevops%2Fkdevops%2Ftree%2Fmaster%2Fwo=
+rkflows%2Ffstests%2Fexpunges%2F6.8.0-rc2%2Ftmpfs%2Funassigned
+> > >=20
+> > > [1] tmpfs profiles supported in kdevops: default, tmpfs_noswap_huge_n=
+ever,
+> > > tmpfs_noswap_huge_always, tmpfs_noswap_huge_within_size,
+> > > tmpfs_noswap_huge_advise, tmpfs_huge_always, tmpfs_huge_within_size a=
+nd
+> > > tmpfs_huge_advise.
+> > >=20
+> > > More information:
+> > > https://protect2.fireeye.com/v1/url?k=3D70096f39-11827a09-7008e476-00=
+0babffaa23-4c0e0d7b2ec659b6&q=3D1&e=3De25c026a-1bb5-45f4-8acb-884e4a5e4d91&=
+u=3Dhttps%3A%2F%2Fgithub.com%2Flinux-kdevops%2Fkdevops%2Ftree%2Fmaster%2Fwo=
+rkflows%2Ffstests%2Fexpunges%2F6.8.0-rc2%2Ftmpfs%2Funassigned
+> > >=20
+> > > All the patches has been tested on top of v6.8-rc2 and rebased onto l=
+atest next
+> > > tag available (next-20240209).
+> > >=20
+> > > Daniel
+> > >=20
+> > > Daniel Gomez (8):
+> > >   shmem: add per-block uptodate tracking for hugepages
+> > >   shmem: move folio zero operation to write_begin()
+> > >   shmem: exit shmem_get_folio_gfp() if block is uptodate
+> > >   shmem: clear_highpage() if block is not uptodate
+> > >   shmem: set folio uptodate when reclaim
+> > >   shmem: check if a block is uptodate before splice into pipe
+> > >   shmem: clear uptodate blocks after PUNCH_HOLE
+> > >   shmem: enable per-block uptodate
+> > >=20
+> > > Pankaj Raghav (1):
+> > >   splice: don't check for uptodate if partially uptodate is impl
+> > >=20
+> > >  fs/splice.c |  17 ++-
+> > >  mm/shmem.c  | 340 ++++++++++++++++++++++++++++++++++++++++++++++++--=
+--
+> > >  2 files changed, 332 insertions(+), 25 deletions(-)
+> > >=20
+> > > --=20
+> > > 2.43.0=
 
