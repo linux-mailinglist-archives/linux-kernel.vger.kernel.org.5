@@ -1,344 +1,219 @@
-Return-Path: <linux-kernel+bounces-72705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-72708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7AE285B7B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:37:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15FEE85B7BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 10:40:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC21D1C2245B
-	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:37:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFAAC283741
+	for <lists+linux-kernel@lfdr.de>; Tue, 20 Feb 2024 09:40:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E47A5D8E4;
-	Tue, 20 Feb 2024 09:37:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D0E6605DC;
+	Tue, 20 Feb 2024 09:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="U6ULFgyv"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b="iRZ64pif"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2128.outbound.protection.outlook.com [40.107.21.128])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B245BAFA
-	for <linux-kernel@vger.kernel.org>; Tue, 20 Feb 2024 09:37:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708421840; cv=none; b=WtIuc299TEtxLpe3achYU52o9LhjrD6WYTB5OegdTCo2phxhX3XMM4nv/bboyBeMasUAMJrh7IKfAH7ezM2Yc4gRpWy8AO5XgJAHJvP3QffJvlfMZeS/0VKNgF8kAszb9jM5KaDGif8/La8LIIpKG4qW2q/AGKPwDsuVmss6IQw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708421840; c=relaxed/simple;
-	bh=FRB5sOLZ4Bg6Jvp09Xh9mOF7HciJe97iuWZQZd8AylA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lDMfMGhqMU6W13p4ityCZ64e2Nm6HMroWljPYlULIhqNMXf6ryxuMDZqoj3efkcw/qYJlZ0qt9o5oCm3uKW1MYxtzjrYKE72mqGHapW938vFEmDEG4SWCmJYJKGE6zPNaYcrKR8om9JFG+SMdaAX/OeyAyEq4+Nsg8wj3sHkoJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=U6ULFgyv; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: a136bd86cfd311eea2298b7352fd921d-20240220
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=/+VjVeu6YW5cdiWhf4xJoF6pgv0RKnyjDr8r/B5h97o=;
-	b=U6ULFgyvSS5sMKuUnHeQgB+BV8HQ8mgRLQJUUbaob/kAHsrgxGWZ84WY2UFeb0Xug34T9ep9tw4rBjOo7p2f5DmuLVzA2fb5adicuel6wKkDDG0k6j6ZybhEEi2Dv3LxqU4ki4GFv9kgBOvNXWqOtgXVLn5wnhko6wy1HZVMPf8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:def4a1a2-0f69-4f5c-bc96-0741701e9cea,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:55699980-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: a136bd86cfd311eea2298b7352fd921d-20240220
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
-	(envelope-from <shawn.sung@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 200880732; Tue, 20 Feb 2024 17:37:14 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 20 Feb 2024 17:37:12 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 20 Feb 2024 17:37:12 +0800
-From: Shawn Sung <shawn.sung@mediatek.com>
-To: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
-	<dri-devel@lists.freedesktop.org>, <linux-mediatek@lists.infradead.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	"Hsiao Chien Sung" <shawn.sung@mediatek.corp-partner.google.com>
-Subject: [PATCH v3 1/1] drm/mediatek: Filter modes according to hardware capability
-Date: Tue, 20 Feb 2024 17:37:11 +0800
-Message-ID: <20240220093711.20546-2-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240220093711.20546-1-shawn.sung@mediatek.com>
-References: <20240220093711.20546-1-shawn.sung@mediatek.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 216F75FDB2;
+	Tue, 20 Feb 2024 09:39:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.128
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1708422001; cv=fail; b=Q0FGNE29RA1oZiW5t8Me+s5R3GNq7jLLjBLOBk/44uH48jQkb/bYeta4VXbbl4CgkUDqVLrXNlL0LaUKgzUEp9BpY/Aiqxuns6ZaC6L31/DbYRtqO9Knw4dvbMn4DcMVy6rQgwOKaZuRg92cUQWh0jcMIJrYzs7K4THznizxRHs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1708422001; c=relaxed/simple;
+	bh=SSsiyR5F+baV5Wa4Kxv1QNdEidSQJbzpUuAR4CTA43w=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=Ux8tNuIo3t4i8A9FWy0VtlUMfxqp2JL7a7qL9XRnj3z1Hc2WobKb96ZLnTfE902HzU9+APJpWxB1C5E8al3MAVTkqUqZYPpVgbz4M0QwJRwOtmMuD7g1GRAAKRyrQj08+Gd1wLpBPjpgoOae3h+HjlEFpIq+P76Zx9Xi1pb00w0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net; spf=pass smtp.mailfrom=wolfvision.net; dkim=pass (1024-bit key) header.d=wolfvision.net header.i=@wolfvision.net header.b=iRZ64pif; arc=fail smtp.client-ip=40.107.21.128
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wolfvision.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wolfvision.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DPCDV78F9jqojCELD2ld+FCEbVWb0qfIBuDwLRsaWOF01kDX0wXxlhL+WbuXrpnh2rV8YK4SOyuIWIt5EljJpklutgzmBpgIfXL1KgErKNSCWD47SMBcZ7VpdCCYrwrA+6oXa87R7+P9+v0FfsuWQrYmmR+gp4ufkkeLXBuYPbdAepunz4Boetzs2SLf+nc34uB1k9kPCQ1OIzFcMeWNYPypnl7VU/6of0lONlszr6FNHCvJzDxp4+UXe1Un+PH1tR7r/1lhYEI5zHt9CUDZQMObgXngszNjMsBvwLKLFwxJhbXcn+mqkTEkHry0obmivMfdtLbPzzDliqTBAcOqgw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AiaN7W5eiyPC5VUvBvlFHU/wq4/L3G2u5D+qOHcU4BU=;
+ b=O2kSNE0GCcWDHhY48XpOKfmaXaRUnSJ8i7HWuV/Dqgizo1XSPvCl2qVcY0GYa+kH4q14ewSpwcaHsRqOMJEUZxyFswdREG9AFZLKt5bS/Qhi3/JG2J9kz2fPPfVbD4c6IYZCxEi/5Rzsk/gUFTMlocfWmdxOr2pYcz9zzDoyX2tNImq6yLdvLouAJ7c5VN5wRNhOALZEQTg/qYK076uThDIzujUBTrxoqbWr83pqXLvfb///senZkE0pJlpADZ/mLSSeK9gl1grGWJ9NJpRG7PcHE8Ys3XbRULLa4wr4+j4ppK3zZfZaLcIzZvP6axoDkg2nKKpuM2Qh0Y9wzSWxXA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wolfvision.net; dmarc=pass action=none
+ header.from=wolfvision.net; dkim=pass header.d=wolfvision.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wolfvision.net;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AiaN7W5eiyPC5VUvBvlFHU/wq4/L3G2u5D+qOHcU4BU=;
+ b=iRZ64pifm7lqhFysipYQG+gx3yR9FsLL3Zj0z6DJVEeCyDP64H0AOzq238Y3mok7kIKicuPRFlGTpNnXD+SWT9rdRIwGsJvGrViftsHRs2FVG8E0Xx9TcTyRbFUN+WSHLg99q84XWN8y/EyMQMc/IqWg9+6lSMvUfzWyRza2els=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wolfvision.net;
+Received: from DU0PR08MB9155.eurprd08.prod.outlook.com (2603:10a6:10:416::5)
+ by DB9PR08MB6763.eurprd08.prod.outlook.com (2603:10a6:10:2af::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.39; Tue, 20 Feb
+ 2024 09:39:56 +0000
+Received: from DU0PR08MB9155.eurprd08.prod.outlook.com
+ ([fe80::7409:db60:8209:c9f4]) by DU0PR08MB9155.eurprd08.prod.outlook.com
+ ([fe80::7409:db60:8209:c9f4%6]) with mapi id 15.20.7270.043; Tue, 20 Feb 2024
+ 09:39:56 +0000
+From: Michael Riesch <michael.riesch@wolfvision.net>
+Subject: [PATCH 00/14] media: rockchip: cif: add support for rk3568 vicap
+Date: Tue, 20 Feb 2024 10:39:10 +0100
+Message-Id: <20240220-v6-8-topic-rk3568-vicap-v1-0-2680a1fa640b@wolfvision.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAD5z1GUC/x2NQQrDIBAAvxL23AWjJsR+pfSgZq1LqRENUgj5e
+ 02PwzDMAZUKU4X7cEChxpW31GG8DeCjTS9CXjuDFFILKQW2GRfct8wey1tN84KNvc3ojFPBGDk
+ FraHXzlZCV2zy8eo/FFfGNqrL5UKBv//r43mePxv7mtOFAAAA
+To: Mehdi Djait <mehdi.djait.k@gmail.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: linux-media@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, 
+ Michael Riesch <michael.riesch@wolfvision.net>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1708421995; l=2934;
+ i=michael.riesch@wolfvision.net; s=20230803; h=from:subject:message-id;
+ bh=SSsiyR5F+baV5Wa4Kxv1QNdEidSQJbzpUuAR4CTA43w=;
+ b=4Gt2zT7H8uLDKAB1s7mcmlCld+BsMMgsMSMLMdVL0jA9wOav2Nx4y/HzJ/o+7OSLNr9MqSrlp
+ DERkXmFTThEAuviKmHOqoC5o2nUovK/blJsbu6CZVTaJEOong60CFIm
+X-Developer-Key: i=michael.riesch@wolfvision.net; a=ed25519;
+ pk=9ral3sulLe95bLcbaiNXTgUTRiBayRBEFZ5OVIEHp+0=
+X-ClientProxiedBy: VI1PR04CA0128.eurprd04.prod.outlook.com
+ (2603:10a6:803:f0::26) To DU0PR08MB9155.eurprd08.prod.outlook.com
+ (2603:10a6:10:416::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--9.699400-8.000000
-X-TMASE-MatchedRID: OqZPkXNGKDf8rQJMqxBG8Izb2GR6Ttd3Kx5ICGp/WtG7qpOHKudqc61l
-	cDruwbtbIkxDXi0u/CvJgrDniXuCV0JF8hwyENQ8nIGynr5ObIa4vBuE2X0HlU00Gfbn1vTVPlA
-	WwfVA2w4hax9eXp8NDBKqjdlR+seHJjR5Quw0FeUVglQa/gMvfJKLNrbpy/A01yGUyFK3oV4wKY
-	tIU69m3V+2TZ8bogGeASo1XNPhrPrsz8PwlGcGDaKa0xB73sAABcsh1y6QslbYCfmDULr78j3n7
-	3EfAgPtHa1OFK8PqLpfSNXDXIBWnv6sIX4Dc0fpBNs0AUqdiH1NedaYR0zWEeIpRqgiF5rtlOts
-	73NQ5aOv/ywMrWTE9jowbcM3oyOGI6RtAg4ny/ltD1qg9KZYkfQ7szeVKdNbJLfQYoCQHFYtFkD
-	k0067+UfSb/e+ISPMsu3nPiE1MDPlRxm3A2wKuhRFJJyf5BJe3QfwsVk0UbuGrPnef/I+eo0HAc
-	mov1aJasRtmtDFJ+oc79OKiiFbkBpNIfhEsVgiSUt3T068WM8=
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--9.699400-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP:
-	D3C9A7EE4B5BDF73D4A9861D36F9E43181267D69474E656C93DBE5E9F467E0712000:8
-X-MTK: N
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR08MB9155:EE_|DB9PR08MB6763:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4661655-c3f3-4491-77f8-08dc31f7e5bd
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	t19GDH34ejbyJn9s/RmngRzYVgJbXgkWU2sJa9vzgGcocEunlRoNet4sIZk+PnEVAG20dWJB4ty5TQqJsT9dYKIfsK8oR+bokVJ4Yi6BckAvc5HflmSRzEfkq+wW4WQ/WxdF1JxmarGW32KFiln5NKrgPBUXd0buRPH6W+W76dtZKO1FKC1kry7as5A6YdFXWy2lxuLTpglILvI8I21QB9kpRn3gW6As1xhCdZZIuLTPuZXmaHS0dVGllZEQAHgI/ibe8ow4qkGql3HICfvmcoImUItgC2GyIjjDi8oQdkqKjZfJGtxQygPHqrfXRh2Tw/9iE4A3O4ABtCc/jOjQmW6YSpm2u3KlK42bWKR0x9powmuodsFaai7Ou7eAgvuRZECymQ6kAcNxbLL05gc+7czBfOzIJz2SEwocyNWJSMcRJ/j7fU9YSiKxE130n3lbl2vShMQvv8qfx+xeZh6GNsTxLxUWPClfyr32DeBBU3fl2JYv2smqO3Vo16TqrnDvFIo3jMi9mFmJvfaJ4Ce3KpDo0FFaV/p/Dpoa1KlG6oeJU7MlVw+HOqHV3qlHtZvOTCn54QiB2F1xdIMXMxyfJgNUTt5VhYDcHOPV8EkEI5Tjtbe6DEW9JPNY8OPOB2no
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9155.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(921011)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WVlCNENOUnJHSFh0R2VVTEkrQ01mdVVZVlZFVmE5d1NaQzdMY1hWWUU1andu?=
+ =?utf-8?B?dDR4c25pUWg0ZWZ4MTFXa3UyckRVSC93LzFia1hlbWZDcDdTV3dZeHB0MWVz?=
+ =?utf-8?B?NTBJZ203M2lLeVRLMVlRZm1GOWFrT29CWnVkVWcwdWp2WWRjWm9DQTFQN0JR?=
+ =?utf-8?B?ZktXT0l5WmROVGs1dm1GV3I3bTR5M2JrbFN4amNvZjU3aVlQTVdhVnhZWWJv?=
+ =?utf-8?B?dEpWekcxTHFuT3UwOGwwWVc2R2dQL0JaVWhaTUNRT3pLYmUvdWpnZitpRWQ1?=
+ =?utf-8?B?OWZUZnpUL1ZsMGVyVVB6VDUvSHV6S2xpdXBnWGJoRlV5UUdwMFZwS2p4ZjYy?=
+ =?utf-8?B?Y0dBSWM5VFdrd3E3V0w5MktKVnNJNm9pckViY1BzMmdtQnIzQlozTzBKUktS?=
+ =?utf-8?B?Q3hScGVmSFVuZStoa3E2WXNiZU9BVHcwQndCUWR1SWZrZWhwelExN3RoUjdt?=
+ =?utf-8?B?R2pURUw3TGs4dnZrYk94cjliVVVYandpRjJDM1BBRndvcE9pQ2NzbENzeTBW?=
+ =?utf-8?B?M1Jud0poYVc1MTV3SlpoejlzWjRVc2RoRlpOWHJvZENYYm9iV2UyNS9hdm9H?=
+ =?utf-8?B?N1RmdHVEVmxIK1dGbmsweFpWaWd5b0owMkVEZjFwdlVKVWdhek02QTBCSDVK?=
+ =?utf-8?B?YTlzTWg1WWVTQi9IMFVGbG1nVjFhdUxWSXJvN0JvZmppUllhZmZoU0dyelor?=
+ =?utf-8?B?YWUrT1NJY01BTUFLb2huVlZuM0s0Z2NJTEJKZWtMbUY3b0ZacE9CY0w3dFlY?=
+ =?utf-8?B?ZW5SQU5TR05yMWZxcWFXaVdGNGs0K2YxQ2YrT3JhUUtraDFxU3BwTmJ5RGtK?=
+ =?utf-8?B?QjVYb2huU0k4ek1QYUxrVmpySktDODNMZEE3a0h0TURjYVBiR1RVOWpoK2JP?=
+ =?utf-8?B?U2JzaEFaUkJncStQajdoM1dzczBmQ1NtRjBPQ2VEb1d3bnQ3Y2VjMTk5akll?=
+ =?utf-8?B?c3NnU1VHZFhraWdLUHdKc3M3SGFHNWlVZ0p4dVk5aVdFWXY2MWNERmVoSWdB?=
+ =?utf-8?B?aWJoaGlYS3FSaFRtV0tkUVJHTlkxR3ZUbU11TmNsMEREaFJmbXM5WXJnbzJY?=
+ =?utf-8?B?am1rZlVxRzNUZHlaNzIxQWkxbnAzcGtyK05WMnNiOUtHano3ZndCN3M5Zm90?=
+ =?utf-8?B?eHNDdFIxdnl6N2QxdGx5VFZhMFM3TEE4ZlpIbFByQjQ1OXlBM2dWV2h1aCt0?=
+ =?utf-8?B?YTJjWmR1OTBJM0I2QzR1WHlWdUtYNzlwVnpTOVd0YnJBRTdlOTF2SWdLZEMx?=
+ =?utf-8?B?aUNjeFc1akdqT09xTWRGY1ZUVG4wNC9nYlU3Z0k1ZVUzMG1jN0c3eUZrY0Ft?=
+ =?utf-8?B?TGJRMHBuTkZKQlJleko1eVhOekViYlhudmVPMkc2RVRUYlBGWWtXZHl6WWlV?=
+ =?utf-8?B?QXhFNGlLcDJtRnE0aVMxbnk4R2E5L01heTFqQi9CUmVzaXRzRjczQnp6aXFz?=
+ =?utf-8?B?YmFzUWp3RkRPd3ptRnpSVWlvV1RVTEwwbWg2ckRFK2lxenJpUUNXZ0N5a2hM?=
+ =?utf-8?B?Vm9CcWFSL0gybmdCNzQxMkgxKyttTXJxTWMvNnZ0akFOUERpaVFmb3NZekpw?=
+ =?utf-8?B?eXRqaHJnV1hZVmplTVQxV3lOMmVRZzNjZmdaby9wRmI5aEF0Y01EQVIrUkdq?=
+ =?utf-8?B?elh5MWllcXc5T0s3MUdWcFY3Qno2elpxZnlqK0JlS3EzQlJPUjg1UEhSbTZK?=
+ =?utf-8?B?TVZvOUg1ZGQyeEpOMWxDNFBndEpUbmMvRlVsWHQrR0Uzdys2eGYrQlU5NWl6?=
+ =?utf-8?B?TktiNkU5MHkrY0pDVDlIL0VPU2NlaFQreXREUE5rVmN3MGJ1eUc3TUpUL0Fj?=
+ =?utf-8?B?emo2RU5JS1RXbmViNG9JQTFCd0k2QkJ1aGc0QUV5Q0ZuN0lnOEhGWlFjOUVk?=
+ =?utf-8?B?T2JLMXpNejNCYjFRYXZHR0VsNmg2ZEdpRkhnUDZ5WmlyeDZBZmZucnNIWDlC?=
+ =?utf-8?B?Qmt2dHUranczWGNFWDVRRkJVeGdsUlFpNGFZQzRBeDd5aXhLWnNPT0tuYVAv?=
+ =?utf-8?B?MUUrMzBwSGdhaHVNUFIzY09HV0VhZzYrMHNaR2RkSkI0Rkd0R0N5ZHNqaDVB?=
+ =?utf-8?B?Sk9pZ2t3RENuRjlxV2hYd1RDR290a2hXT1hKenRKaSswZGY5UVdLY1U2VWFU?=
+ =?utf-8?B?MXl3TnJJekF6dlkyMHRuZkZ5WmRkZkQ2YXc2UVNvYnhOd1JDWXRncGV0Y1pq?=
+ =?utf-8?B?M3c9PQ==?=
+X-OriginatorOrg: wolfvision.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4661655-c3f3-4491-77f8-08dc31f7e5bd
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9155.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2024 09:39:56.1474
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e94ec9da-9183-471e-83b3-51baa8eb804f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ezrTDzn7lypNij9mtyqJgOPbIdHNs2bZWUkaEtWT9O74z8U8g4/OvvGKOjB6hDWuN/pETlxx3SmRKjCGwkXTXUzsp7KOWHyrvfa+f0qDUTk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR08MB6763
 
-From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+Habidere,
 
-We found a stability issue on MT8188 when connecting an external monitor
-in 2560x1440@144Hz mode. Checked with the designer, there is a function
-called "prefetch" which is working during VBP (triggered by VSYNC).
-If the duration of VBP is too short, the throughput requirement could
-increase more than 3 times and lead to stability issues.
+This series introduces support for the Rockchip RK3568 Video Capture
+(VICAP) block. It bases on the work of several Bootlin developers who
+have been tirelessly submitting support for the PX30 Video Input
+Processor (VIP) block for inclusion in mainline. The most recent
+iteration is Mehdi Djait's v13 [0], which is a prerequisite for the
+patches of this series.
 
-The mode settings that VDOSYS supports are mainly affected by clock
-rate and throughput, display driver should filter these settings
-according to the SoC's limitation to avoid unstable conditions.
+The PX30 VIP and the RK3568 VICAP are similar enough to share a common
+driver, but there are some subtle differences that require some tweaks
+in the submitted code.
 
-Since currently the mode filter is only available on MT8195 and MT8188
-and they share the same compatible name, the reference number (8250)
-is hard coded instead of in the driver data.
+Although the v13 patches are still WIP and need some revision, I have
+decided to push the current state of the art in order to gather a
+first round of reviews and comments.
 
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+The patches are functional and have been tested successfully on a
+custom RK3568 board including the ITE Tech. IT6801 HDMI receiver as
+attached subdevice. The IT6801 driver still needs some loving care but
+shall be submitted as well at some point.
+
+Looking forward to your comments!
+
+[0] https://lore.kernel.org/linux-media/cover.1707677804.git.mehdi.djait.k@gmail.com/
+
+Signed-off-by: Michael Riesch <michael.riesch@wolfvision.net>
 ---
- drivers/gpu/drm/mediatek/mtk_disp_drv.h       |  4 ++
- drivers/gpu/drm/mediatek/mtk_disp_merge.c     | 65 +++++++++++++++++++
- .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   | 17 +++++
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c       | 17 +++++
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c   |  1 +
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h   | 12 ++++
- 6 files changed, 116 insertions(+)
+Michael Riesch (14):
+      media: dt-bindings: media: video-interfaces: add defines for sampling modes
+      media: dt-bindings: media: rockchip-cif: add port definitions
+      media: dt-bindings: media: rockchip,px30-vip: add optional property iommus
+      media: dt-bindings: media: rockchip,px30-vip: allow for different variants
+      media: dt-bindings: media: rockchip,px30-vip: add rk3568-vicap compatible
+      media: rockchip: cif: store endpoint information in private data
+      media: rockchip: cif: fix formatting of find_output_fmt
+      media: rockchip: cif: use port definitions from new header file
+      media: rockchip: cif: add support for grf
+      media: rockchip: cif: add variant specific input format list
+      media: rockchip: cif: make scaler support variant specific
+      media: rockchip: cif: make register access variant specific
+      media: rockchip: cif: add support for rk3568 vicap
+      arm64: dts: rockchip: add vicap node to rk356x
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_drv.h b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-index eb738f14f09e3..4a5661334fb1a 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_drv.h
-@@ -72,6 +72,8 @@ void mtk_merge_advance_config(struct device *dev, unsigned int l_w, unsigned int
- 			      struct cmdq_pkt *cmdq_pkt);
- void mtk_merge_start_cmdq(struct device *dev, struct cmdq_pkt *cmdq_pkt);
- void mtk_merge_stop_cmdq(struct device *dev, struct cmdq_pkt *cmdq_pkt);
-+enum drm_mode_status mtk_merge_mode_valid(struct device *dev,
-+					  const struct drm_display_mode *mode);
- 
- void mtk_ovl_bgclr_in_on(struct device *dev);
- void mtk_ovl_bgclr_in_off(struct device *dev);
-@@ -130,6 +132,8 @@ unsigned int mtk_ovl_adaptor_layer_nr(struct device *dev);
- struct device *mtk_ovl_adaptor_dma_dev_get(struct device *dev);
- const u32 *mtk_ovl_adaptor_get_formats(struct device *dev);
- size_t mtk_ovl_adaptor_get_num_formats(struct device *dev);
-+enum drm_mode_status mtk_ovl_adaptor_mode_valid(struct device *dev,
-+						const struct drm_display_mode *mode);
- 
- void mtk_rdma_bypass_shadow(struct device *dev);
- int mtk_rdma_clk_enable(struct device *dev);
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_merge.c b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-index c19fb1836034d..80953b3e8ace6 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_merge.c
-@@ -223,6 +223,71 @@ void mtk_merge_clk_disable(struct device *dev)
- 	clk_disable_unprepare(priv->clk);
- }
- 
-+enum drm_mode_status mtk_merge_mode_valid(struct device *dev,
-+					  const struct drm_display_mode *mode)
-+{
-+	struct mtk_disp_merge *priv = dev_get_drvdata(dev);
-+	unsigned long rate = 0;
-+
-+	rate = clk_get_rate(priv->clk);
-+
-+	/* Convert to KHz and round the number */
-+	rate = (rate + 500) / 1000;
-+
-+	if (rate && mode->clock > rate) {
-+		dev_dbg(dev, "invalid clock: %d (>%lu)\n", mode->clock, rate);
-+		return MODE_CLOCK_HIGH;
-+	}
-+
-+	/*
-+	 * Measure the bandwidth requirement of hardware prefetch (per frame)
-+	 *
-+	 * let N = prefetch buffer size in lines
-+	 *         (ex. N=3, then prefetch buffer size = 3 lines)
-+	 *
-+	 * prefetch size = htotal * N (pixels)
-+	 * time per line = 1 / fps / vtotal (seconds)
-+	 * duration      = vbp * time per line
-+	 *               = vbp / fps / vtotal
-+	 *
-+	 * data rate = prefetch size / duration
-+	 *           = htotal * N / (vbp / fps / vtotal)
-+	 *           = htotal * vtotal * fps * N / vbp
-+	 *           = clk * N / vbp (pixels per second)
-+	 *
-+	 * Say 4K60 (CEA-861) is the maximum mode supported by the SoC
-+	 * data rate = 594000K * N / 72 = 8250 (standard)
-+	 * (remove K * N due to the same unit)
-+	 *
-+	 * For 2560x1440@144 (clk=583600K, vbp=17):
-+	 * data rate = 583600 / 17 ~= 34329 > 8250 (NG)
-+	 *
-+	 * For 2560x1440@120 (clk=497760K, vbp=77):
-+	 * data rate = 497760 / 77 ~= 6464 < 8250 (OK)
-+	 *
-+	 * A non-standard 4K60 timing (clk=521280K, vbp=54)
-+	 * data rate = 521280 / 54 ~= 9653 > 8250 (NG)
-+	 *
-+	 * Bandwidth requirement of hardware prefetch increases significantly
-+	 * when the VBP decreases (more than 4x in this example).
-+	 *
-+	 * The proposed formula is only one way to estimate whether our SoC
-+	 * supports the mode setting. The basic idea behind it is just to check
-+	 * if the data rate requirement is too high (directly proportional to
-+	 * pixel clock, inversely proportional to vbp). Please adjust the
-+	 * function if it doesn't fit your situation in the future.
-+	 */
-+	rate = mode->clock / (mode->vtotal - mode->vsync_end);
-+
-+	if (rate > 8250) {
-+		dev_dbg(dev, "invalid rate: %lu (>8250): " DRM_MODE_FMT "\n",
-+			rate, DRM_MODE_ARG(mode));
-+		return MODE_BAD;
-+	}
-+
-+	return MODE_OK;
-+}
-+
- static int mtk_disp_merge_bind(struct device *dev, struct device *master,
- 			       void *data)
- {
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-index 10d23e76acaa9..6d4334955e3d3 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl_adaptor.c
-@@ -88,6 +88,7 @@ static const struct mtk_ddp_comp_funcs ethdr = {
- static const struct mtk_ddp_comp_funcs merge = {
- 	.clk_enable = mtk_merge_clk_enable,
- 	.clk_disable = mtk_merge_clk_disable,
-+	.mode_valid = mtk_merge_mode_valid,
- };
- 
- static const struct mtk_ddp_comp_funcs padding = {
-@@ -341,6 +342,22 @@ void mtk_ovl_adaptor_clk_disable(struct device *dev)
- 	}
- }
- 
-+enum drm_mode_status mtk_ovl_adaptor_mode_valid(struct device *dev,
-+						const struct drm_display_mode *mode)
-+
-+{
-+	int i;
-+	struct mtk_disp_ovl_adaptor *ovl_adaptor = dev_get_drvdata(dev);
-+
-+	for (i = 0; i < OVL_ADAPTOR_ID_MAX; i++) {
-+		dev = ovl_adaptor->ovl_adaptor_comp[i];
-+		if (!dev || !comp_matches[i].funcs->mode_valid)
-+			continue;
-+		return comp_matches[i].funcs->mode_valid(dev, mode);
-+	}
-+	return MODE_OK;
-+}
-+
- unsigned int mtk_ovl_adaptor_layer_nr(struct device *dev)
- {
- 	return MTK_OVL_ADAPTOR_LAYER_NUM;
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 1dac8d0fbc669..14cf75fa217f9 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -212,6 +212,22 @@ static void mtk_drm_crtc_destroy_state(struct drm_crtc *crtc,
- 	kfree(to_mtk_crtc_state(state));
- }
- 
-+static enum drm_mode_status
-+mtk_drm_crtc_mode_valid(struct drm_crtc *crtc,
-+			const struct drm_display_mode *mode)
-+{
-+	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
-+	enum drm_mode_status status = MODE_OK;
-+	int i;
-+
-+	for (i = 0; i < mtk_crtc->ddp_comp_nr; i++) {
-+		status = mtk_ddp_comp_mode_valid(mtk_crtc->ddp_comp[i], mode);
-+		if (status != MODE_OK)
-+			break;
-+	}
-+	return status;
-+}
-+
- static bool mtk_drm_crtc_mode_fixup(struct drm_crtc *crtc,
- 				    const struct drm_display_mode *mode,
- 				    struct drm_display_mode *adjusted_mode)
-@@ -830,6 +846,7 @@ static const struct drm_crtc_funcs mtk_crtc_funcs = {
- static const struct drm_crtc_helper_funcs mtk_crtc_helper_funcs = {
- 	.mode_fixup	= mtk_drm_crtc_mode_fixup,
- 	.mode_set_nofb	= mtk_drm_crtc_mode_set_nofb,
-+	.mode_valid	= mtk_drm_crtc_mode_valid,
- 	.atomic_begin	= mtk_drm_crtc_atomic_begin,
- 	.atomic_flush	= mtk_drm_crtc_atomic_flush,
- 	.atomic_enable	= mtk_drm_crtc_atomic_enable,
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 9633e860cc3ce..94590227c56a9 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -416,6 +416,7 @@ static const struct mtk_ddp_comp_funcs ddp_ovl_adaptor = {
- 	.remove = mtk_ovl_adaptor_remove_comp,
- 	.get_formats = mtk_ovl_adaptor_get_formats,
- 	.get_num_formats = mtk_ovl_adaptor_get_num_formats,
-+	.mode_valid = mtk_ovl_adaptor_mode_valid,
- };
- 
- static const char * const mtk_ddp_comp_stem[MTK_DDP_COMP_TYPE_MAX] = {
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-index f8c7e8d8ddc12..215b7234ff13c 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h
-@@ -12,6 +12,8 @@
- #include <linux/soc/mediatek/mtk-mmsys.h>
- #include <linux/soc/mediatek/mtk-mutex.h>
- 
-+#include <drm/drm_modes.h>
-+
- struct device;
- struct device_node;
- struct drm_crtc;
-@@ -84,6 +86,7 @@ struct mtk_ddp_comp_funcs {
- 	void (*add)(struct device *dev, struct mtk_mutex *mutex);
- 	void (*remove)(struct device *dev, struct mtk_mutex *mutex);
- 	unsigned int (*encoder_index)(struct device *dev);
-+	enum drm_mode_status (*mode_valid)(struct device *dev, const struct drm_display_mode *mode);
- };
- 
- struct mtk_ddp_comp {
-@@ -125,6 +128,15 @@ static inline void mtk_ddp_comp_clk_disable(struct mtk_ddp_comp *comp)
- 		comp->funcs->clk_disable(comp->dev);
- }
- 
-+static inline
-+enum drm_mode_status mtk_ddp_comp_mode_valid(struct mtk_ddp_comp *comp,
-+					     const struct drm_display_mode *mode)
-+{
-+	if (comp && comp->funcs && comp->funcs->mode_valid)
-+		return comp->funcs->mode_valid(comp->dev, mode);
-+	return MODE_OK;
-+}
-+
- static inline void mtk_ddp_comp_config(struct mtk_ddp_comp *comp,
- 				       unsigned int w, unsigned int h,
- 				       unsigned int vrefresh, unsigned int bpc,
+ .../bindings/media/rockchip,px30-vip.yaml          | 110 ++++--
+ arch/arm64/boot/dts/rockchip/rk356x.dtsi           |  45 +++
+ drivers/media/platform/rockchip/cif/cif-capture.c  | 172 +-------
+ drivers/media/platform/rockchip/cif/cif-common.h   |  33 +-
+ drivers/media/platform/rockchip/cif/cif-dev.c      | 434 ++++++++++++++++++++-
+ drivers/media/platform/rockchip/cif/cif-regs.h     |  56 +--
+ include/dt-bindings/media/rockchip-cif.h           |  12 +
+ include/dt-bindings/media/video-interfaces.h       |   4 +
+ 8 files changed, 652 insertions(+), 214 deletions(-)
+---
+base-commit: b465b3c117718e5b8f4f3100d6ee780f7dc7b59d
+change-id: 20240220-v6-8-topic-rk3568-vicap-b9b3f9925f44
+
+Best regards,
 -- 
-2.18.0
+Michael Riesch <michael.riesch@wolfvision.net>
 
 
